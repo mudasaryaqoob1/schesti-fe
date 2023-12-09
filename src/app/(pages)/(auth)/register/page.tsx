@@ -6,15 +6,15 @@ import { Form } from 'antd';
 import Image from 'next/image';
 // module imports
 import FormControl from '@/app/component/formControl';
-import { primaryHeading, quinaryHeading } from '@/globals/tailwindvariables';
-import Heading from '@/app/component/customHeading/heading';
-import Paragraph from '@/app/component/customParagraph/paragraph';
+import { quinaryHeading } from '@/globals/tailwindvariables';
 import { twMerge } from 'tailwind-merge';
 import { useRouter } from 'next/navigation';
 import GoogleButton from '@/app/component/googleBtn';
 import WelcomeWrapper from '@/app/component/welcomeLayout';
 import { useSignupMutation } from '@/app/redux/authApi';
 import { toast } from 'react-toastify';
+import PrimaryHeading from '@/app/component/headings/primary';
+import Description from '@/app/component/description';
 
 export type SignupInfo = {
   name: string;
@@ -72,16 +72,14 @@ const Register = () => {
       />
       <section className=" grid place-items-center h-full">
         <div className="w-full max-w-md">
-          <Heading
-            classes="text-center"
-            styledVars={primaryHeading}
+          <PrimaryHeading
+            className="text-center"
             title="
             Registration
             "
           />
-          <Paragraph
-            classes="my-2 text-center text-slateGray"
-            styledVars={quinaryHeading}
+          <Description
+            className="my-2 text-center text-slateGray"
             title=" Sign up to your account"
           />
           <Formik
@@ -155,9 +153,8 @@ const Register = () => {
                   </div>
                   <GoogleButton text="Sign up" />
                   <div className=" flex gap-2  justify-center mt-4">
-                    <Paragraph
-                      styledVars={quinaryHeading}
-                      classes="text-ebonyGray"
+                    <Description
+                      className="text-ebonyGray"
                       title=" Already have an account?"
                     />
                     <p

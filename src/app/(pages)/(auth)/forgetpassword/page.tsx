@@ -7,12 +7,11 @@ import Image from 'next/image';
 // module imports
 import FormControl from '@/app/component/formControl';
 // style imports
-import { primaryHeading, quinaryHeading } from '@/globals/tailwindvariables';
 import Button from '@/app/component/customButton/button';
 import { useRouter } from 'next/navigation';
 import WelcomeWrapper from '@/app/component/welcomeLayout';
-import Heading from '@/app/component/customHeading/heading';
-import Paragraph from '@/app/component/customParagraph/paragraph';
+import Description from '@/app/component/description';
+import PrimaryHeading from '@/app/component/headings/primary';
 const initialValues = {
   name: '',
 };
@@ -39,14 +38,12 @@ const Forget = () => {
       />
       <div className="h-full grid place-items-center">
         <div className="w-full max-w-md ">
-          <Heading
-            styledVars={primaryHeading}
+          <PrimaryHeading
             title="Forget Password"
-            classes="text-center"
+            className="text-center"
           />
-          <Paragraph
-            styledVars={quinaryHeading}
-            classes="text-center mt-2 mb-10 font-normal leading-[24px] text-slateGray"
+          <Description
+            className="text-center mt-2 mb-10 font-normal leading-[24px] text-slateGray"
             title="Enter the email address associated with your account and we'll send
             you a link to reset your password"
           />
