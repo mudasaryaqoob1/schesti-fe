@@ -13,16 +13,9 @@ import { twMerge } from 'tailwind-merge';
 import { useRouter } from 'next/navigation';
 import GoogleButton from '@/app/component/googleBtn';
 import WelcomeWrapper from '@/app/component/welcomeLayout';
-import { useSignupMutation } from '@/app/redux/authApi';
-import { toast } from 'react-toastify';
+import { ISignUpInterface } from '@/app/interfaces/signup.interface';
 
-export type SignupInfo = {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword?: string;
-};
-const initialValues: SignupInfo = {
+const initialValues: ISignUpInterface = {
   name: '',
   email: '',
   password: '',
@@ -44,20 +37,11 @@ const RegisterSchema: any = Yup.object({
 
 const Register = () => {
   const router = useRouter();
-  const [registerHandler, { isLoading }] = useSignupMutation();
 
-  const submitHandler = async (values: SignupInfo) => {
+  const submitHandler = async (values: ISignUpInterface) => {
     const { name, email, password } = values;
-    try {
-      await registerHandler({ name, email, password }).unwrap();
-      toast.success('Register Successfull');
-      router.push('/');
-    } catch (error) {
-      const {
-        data: { message },
-      } = error as { data: { message: string } };
-      toast.error(message);
-    }
+    console.log({ name, email, password });
+
     router.push('/checkmail');
   };
   return (
@@ -143,7 +127,7 @@ const Register = () => {
                     text="Register"
                     className="!p-[12px] mt-4"
                     type="submit"
-                    isLoading={isLoading}
+                    isLoading={false}
                   />
                   <div
                     className="flex justify-between items-center gap-[17px]

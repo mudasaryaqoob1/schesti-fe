@@ -1,13 +1,9 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import StyledJsxRegistry from './registry';
-import StoreProvider from './storeProvider';
 import { ToastContainer } from 'react-toastify';
-
+import { ReduxProvider } from '@/app/redux/provider';
 import 'react-toastify/dist/ReactToastify.css';
-import ClientNavbar from './component/navbar/clientnavbar';
-import Tabs from './component/tabs';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -24,15 +20,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <StyledJsxRegistry>
-          <StoreProvider>
-            <ToastContainer />
-            {/* <ClientNavbar />
-            <Tabs /> */}
-            {children}
-          </StoreProvider>
-        </StyledJsxRegistry>
-
+        <ReduxProvider>
+          <ToastContainer />
+          {children}
+        </ReduxProvider>
       </body>
     </html>
   );

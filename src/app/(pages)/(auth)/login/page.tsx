@@ -17,15 +17,14 @@ import { twMerge } from 'tailwind-merge';
 import { useRouter } from 'next/navigation';
 import GoogleButton from '@/app/component/googleBtn';
 import WelcomeWrapper from '@/app/component/welcomeLayout';
-import { useLoginMutation } from '@/app/redux/authApi';
+import { ILogInInterface } from '@/app/interfaces/login.interface';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/app/redux/store';
+import { login } from '@/app/redux/authSlices/auth.thunk';
+// import { handleError } from '@/app/utils/catchErrorToast';
 import { toast } from 'react-toastify';
 
-export type LoginInfo = {
-  email: string;
-  password: string;
-  remember?: boolean;
-};
-const initialValues: LoginInfo = {
+const initialValues: ILogInInterface = {
   email: '',
   password: '',
   remember: false,
@@ -43,18 +42,19 @@ const LoginSchema = Yup.object({
 
 const Login = () => {
   const router = useRouter();
-  const [loginHandler, { isLoading }] = useLoginMutation();
-  const submitHandler = async ({ email, password }: LoginInfo) => {
-    try {
-      await loginHandler({ email, password }).unwrap();
-      toast.success('login successfull');
-      router.push('/');
-    } catch (error) {
-      const {
-        data: { message },
-      } = error as { data: { message: string } };
-      toast.error(message);
+  const dispatch = useDispatch<AppDispatch>();
+
+  const submitHandler = async ({ email, password }: ILogInInterface) => {
+    let result: any = await dispatch(login({ email, password }));
+
+    if (result.payload.statusCode == 200) {
+      toast.success('Successfully Sign in');
+    } else {
+      toast.error(result.payload.message);
     }
+
+    // .then((result) => console.log('result---', result))
+    // .catch(handleError);
   };
 
   return (
@@ -123,7 +123,7 @@ const Login = () => {
                   </div>
                   {/* Login button */}
                   <Button
-                    isLoading={isLoading}
+                    isLoading={false}
                     text="Login"
                     className="!p-3 mt-8"
                     type="submit"
