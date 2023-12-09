@@ -1,0 +1,14 @@
+{
+  "extends": ["next", "next/core-web-vitals", "eslint:recommended"],
+  "plugins": ["@typescript-eslint"],
+  "globals": {
+    "React": "readonly"
+  },
+  "rules": {
+    "no-unused-vars": [1, { "args": "after-used", "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/no-unused-vars" : ["error"],
+    "import/no-unresolved" : "error",
+    "import/named" : "error"
+  }
+}
+

@@ -1,0 +1,65 @@
+'use client';
+import Button from '@/app/component/customButton/button';
+import { tertiaryHeading, quinaryHeading, primaryHeading, minHeading } from '@/globals/tailwindvariables';
+import { useRouter } from 'next/navigation';
+import { Fragment } from 'react';
+import { twMerge } from 'tailwind-merge';
+
+interface PropSinglePlan {
+  title: string;
+  price: number | string;
+  info: string
+  benefits: string[];
+}
+const SinglePlan = ({ title, price, benefits, info }: PropSinglePlan) => {
+  const router = useRouter();
+  return (
+    <div
+      className={
+        `m-5  p-8  rounded-[20px] items-center flex flex-col  justify-between shadow-secondaryShadow gap-5`}
+    >
+      <div className=" flex flex-col gap-8 items-start">
+        <h2 className={`${tertiaryHeading} text-graphiteGray`}>
+          {title}
+        </h2>
+        <div className='flex items-center'>
+          <span
+            className={`${primaryHeading} 
+            tracking-[-0.72px]
+            text-[42px] leading-[46px] text-goldenrodYellow`}
+          >
+            ${price}
+          </span>
+          <p
+            className={
+              `${minHeading} text-lightdark  font-normal`}
+          >
+            /month
+          </p>
+        </div>
+        <p className={`${quinaryHeading} text-lightdark2`}>{info}</p>
+        <div className="w-full h-px bg-mistyWhite"></div>
+        <h4 className={`${tertiaryHeading} font-normal text-ebonyGray`}>Features</h4>
+        {benefits?.map((benefit, index) => (
+          <Fragment key={index}>
+            <div className="self-start flex gap-3 items-center">
+              <input type="checkbox" name={benefit} id={benefit} className='w-5 h-5 rounded-md  checked:bg-[#8449EB]' />
+              <label htmlFor={benefit} className={twMerge(`${quinaryHeading} text-ebonyGray leading-normal`)}>
+                {benefit}
+              </label>
+            </div>
+          </Fragment>
+        ))}
+      </div>
+      <div className="p-[10px] w-full">
+        <Button
+          text="Buy"
+          className="text-white self-stretch w-full"
+          onClick={() => router.push('/payment')}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default SinglePlan;

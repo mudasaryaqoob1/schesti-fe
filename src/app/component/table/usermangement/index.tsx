@@ -1,0 +1,130 @@
+'use client';
+import { useState } from 'react';
+import { twMerge } from 'tailwind-merge';
+import { senaryHeading } from '@/globals/tailwindvariables';
+import Menu from './menu';
+import Image from 'next/image';
+import { useAppSelector } from '@/app/hooks/hooks';
+interface Props {
+    headings: string[];
+
+}
+const Index = ({ headings }: Props) => {
+    const [openMenuIndex, setOpenMenuIndex] = useState<number>(-1);
+    const { clients } = useAppSelector((state) => state.clientData)
+
+    const toggleMenu = (index: number) => {
+        setOpenMenuIndex((prevIndex) => (prevIndex === index ? -1 : index));
+    };
+    return (
+        <>
+            <div className="relative  shadow-md sm:rounded-lg ">
+                <table className="w-full text-sm text-left rtl:text-right text-gray-500 h-full ">
+                    <thead className="text-xs text-gray-700 uppercase bg-cosmicGray  dark:text-gray-400">
+                        <tr>
+                            {headings?.map((heading, i) => {
+                                return (
+                                    <th scope="col" className="px-6 py-3" key={i}>
+                                        {heading}
+                                    </th>
+                                );
+                            })}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {clients?.map(
+                            ({ id, firstName, lastName, companyName, email, phoneNumber, status, address }, i) => {
+                                return (
+                                    <tr key={id}>
+                                        <td
+                                            className={twMerge(
+                                                `${senaryHeading} text-slateGray px-6 py-4
+                        border-0  border-solid border-nebulaGray border-b
+                        `
+                                            )}
+                                        >
+                                            {firstName}{lastName}
+                                        </td>
+                                        <td
+                                            className={twMerge(
+                                                `${senaryHeading} text-slateGray px-6 py-4
+                        border-0  border-solid border-nebulaGray border-b
+                        `
+                                            )}
+                                        >
+                                            {companyName}
+                                        </td>
+                                        <td
+                                            className={twMerge(
+                                                `${senaryHeading} text-slateGray px-6 py-4
+                        border-0  border-solid border-nebulaGray border-b
+                        `
+                                            )}
+                                        >
+                                            {email}
+                                        </td>
+                                        <td
+                                            className={twMerge(
+                                                `${senaryHeading} text-slateGray px-6 py-4
+                        border-0  border-solid border-nebulaGray border-b
+                        `
+                                            )}
+                                        >
+                                            {phoneNumber}
+                                        </td>
+                                        <td
+                                            className={twMerge(
+                                                `${senaryHeading} text-slateGray px-6 py-4
+                      border-0  border-solid border-nebulaGray border-b
+                      `
+                                            )}
+                                        >{address}</td>
+                                        <td
+                                            className={twMerge(
+                                                `${senaryHeading} text-slateGray px-6 py-4
+                        border-0  border-solid border-nebulaGray border-b
+                        `
+                                            )}
+                                        >
+                                            <a
+                                                href="#"
+                                                className="font-medium
+                        text-emeraldGreen hover:underline
+                        mix-blend-multiply rounded-2xl bg-mintGreen px-4 py-2
+                        "
+                                            >
+                                                {status}
+                                            </a>
+                                        </td>
+                                        <td
+                                            className={twMerge(`${senaryHeading} text-slateGray px-6 py-4 cursor-pointer relative
+                      border-0  border-solid border-nebulaGray border-b
+                    `)}
+                                        >
+                                            <Image
+                                                src="/moreOptions.svg"
+                                                alt="action"
+                                                width={20}
+                                                height={20}
+                                                onClick={() => toggleMenu(i)}
+                                            />
+                                            {openMenuIndex === i && (
+                                                <Menu className="absolute w-56 h-auto top-[-146px ] right-24 z-50"
+                                                    clientID={id}
+                                                />
+                                            )}
+                                        </td>
+                                    </tr>
+
+                                );
+                            }
+                        )}
+                    </tbody>
+                </table>
+            </div>
+        </>
+
+    )
+}
+
+export default Index
