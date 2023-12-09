@@ -9,27 +9,25 @@ import { Form } from 'antd';
 import FormControl from '@/app/component/formControl';
 
 import { twMerge } from 'tailwind-merge';
-import NavBar from '@/app/component/navbar';
+import NavBar from '@/app/component/navbar/authBar';
 import { useRouter } from 'next/navigation';
 import Progessbar from '@/app/component/progressBar';
 const initialValues = {
   CompanyName: '',
-  industryName: "",
-  employee: undefined
-
+  industryName: '',
+  employee: undefined,
 };
 
 const CompanyDetailsSchema: any = Yup.object({
   CompanyName: Yup.string().required('Company Name is required!'),
   industryName: Yup.string().required('industry Name is required!'),
   employee: Yup.number().required('no. employee is required!'),
-
 });
 
 const CompanyDetails = () => {
   const router = useRouter();
   const submitHandler = () => {
-    router.push('/plans')
+    router.push('/plans');
   };
   return (
     <>
@@ -70,7 +68,7 @@ const CompanyDetails = () => {
                     name="basic"
                     onFinish={formik.handleSubmit}
                     autoComplete="off"
-                  // validateMessages={formik.handleSubmit}
+                    // validateMessages={formik.handleSubmit}
                   >
                     <div className="mt-10">
                       <FormControl
@@ -96,10 +94,9 @@ const CompanyDetails = () => {
                       />
                     </div>
                     <Button
-                      text='Submit'
+                      text="Submit"
                       className="w-full my-3"
-                      type='submit'
-
+                      type="submit"
                     />
                   </Form>
                 );

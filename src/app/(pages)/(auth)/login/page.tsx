@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import Image from 'next/image';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 
@@ -13,7 +14,6 @@ import Heading from '@/app/component/customHeading/heading';
 import Paragraph from '@/app/component/customParagraph/paragraph';
 // import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
-import NavBar from '@/app/component/navbar';
 import { useRouter } from 'next/navigation';
 import GoogleButton from '@/app/component/googleBtn';
 import WelcomeWrapper from '@/app/component/welcomeLayout';
@@ -60,7 +60,14 @@ const Login = () => {
   return (
     <WelcomeWrapper>
       <React.Fragment>
-        <NavBar />
+        <Image
+          className="cursor-pointer"
+          src={'/logo.svg'}
+          alt="logo website"
+          width={100}
+          height={30}
+          onClick={() => router.push('/')}
+        />
         <section className="grid place-items-center h-full">
           <div className="w-full max-w-md">
             <Heading

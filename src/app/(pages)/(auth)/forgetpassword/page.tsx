@@ -3,13 +3,12 @@ import React from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Form } from 'antd';
-
+import Image from 'next/image';
 // module imports
 import FormControl from '@/app/component/formControl';
 // style imports
 import { primaryHeading, quinaryHeading } from '@/globals/tailwindvariables';
 import Button from '@/app/component/customButton/button';
-import NavBar from '@/app/component/navbar';
 import { useRouter } from 'next/navigation';
 import WelcomeWrapper from '@/app/component/welcomeLayout';
 import Heading from '@/app/component/customHeading/heading';
@@ -30,7 +29,14 @@ const Forget = () => {
   };
   return (
     <WelcomeWrapper>
-      <NavBar />
+      <Image
+        className="cursor-pointer"
+        src={'/logo.svg'}
+        alt="logo website"
+        width={100}
+        height={30}
+        onClick={() => router.push('/')}
+      />
       <div className="h-full grid place-items-center">
         <div className="w-full max-w-md ">
           <Heading

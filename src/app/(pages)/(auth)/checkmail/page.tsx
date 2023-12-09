@@ -1,8 +1,8 @@
 'use client';
 import Button from '@/app/component/customButton/button';
-import Heading from '@/app/component/customheading/heading';
-import Paragraph from '@/app/component/customparagraph/paragraph';
-import NavBar from '@/app/component/navbar';
+import Heading from '@/app/component/customHeading/heading';
+import Paragraph from '@/app/component/customParagraph/paragraph';
+import NavBar from '@/app/component/navbar/authBar';
 import { quinaryHeading, primaryHeading } from '@/globals/tailwindvariables';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -14,14 +14,11 @@ const CheckYourEmail = () => {
     <>
       <NavBar login={true} />
       <div className="h-[calc(100vh-100px)] grid place-items-center rounded-s">
-        {/* content center */}
-        {/*  */}
         <div
           className="max-w-[497px] min-w-[300px] px-8 py-7 
       shadow-secondaryShadow
       flex flex-col rounded-lg bg-snowWhite"
         >
-          {/* start */}
           <Image
             src={'/mail.svg'}
             alt="mail icon"
@@ -29,7 +26,7 @@ const CheckYourEmail = () => {
             height={80}
             className="self-center"
           />
-          {/* // logo */}
+
           <Heading
             classes="text-center mt-8"
             styledVars={primaryHeading}
@@ -76,9 +73,7 @@ const CheckYourEmail = () => {
             className="!p-2"
             onClick={() => router.push('/companydetails')}
           />
-          {/* end */}
         </div>
-        {/* content end */}
       </div>
     </>
   );

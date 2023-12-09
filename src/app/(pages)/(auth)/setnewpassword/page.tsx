@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation';
 // module imports
 import FormControl from '@/app/component/formControl';
 import WelcomeWrapper from '@/app/component/welcomeLayout';
-import NavBar from '@/app/component/navbar';
+import NavBar from '@/app/component/navbar/authBar';
 
 const initialValues = {
   password: '',
@@ -20,17 +20,16 @@ const initialValues = {
 };
 
 const SetPasswordSchema: any = Yup.object({
-  password: Yup.string()
-    .required('Password is required!'),
+  password: Yup.string().required('Password is required!'),
   confirmPassword: Yup.string()
     .required('Please retype your password.')
-    .oneOf([Yup.ref('password')], 'Your passwords do not match.')
+    .oneOf([Yup.ref('password')], 'Your passwords do not match.'),
 });
 const SetNewPassword = () => {
   const router = useRouter();
 
   const submitHandler = () => {
-    router.push("/login");
+    router.push('/login');
   };
 
   return (
@@ -39,7 +38,7 @@ const SetNewPassword = () => {
       <div className="h-[100vh] grid place-items-center w-full">
         <div className="w-full px-10">
           <Heading
-            classes='text-center'
+            classes="text-center"
             styledVars={primaryHeading}
             title="
             Set New Password 
@@ -61,9 +60,9 @@ const SetNewPassword = () => {
                   name="basic"
                   onFinish={formik.handleSubmit}
                   autoComplete="off"
-                // validateMessages={LoginSchema}
+                  // validateMessages={LoginSchema}
                 >
-                  <div className='mt-10'>
+                  <div className="mt-10">
                     <FormControl
                       control="password"
                       label="set new password"
@@ -84,7 +83,6 @@ const SetNewPassword = () => {
               );
             }}
           </Formik>
-
         </div>
       </div>
     </WelcomeWrapper>

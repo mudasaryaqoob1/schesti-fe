@@ -12,7 +12,7 @@ const NavBar = ({ login, socialicons }: props) => {
   const router = useRouter();
   return (
     <div
-      className={`w-full  flex h-16 items-center justify-between
+      className={`px-16 w-full flex h-24 items-center justify-between
     ${login ? 'shadow-quinary' : ''}
     ${socialicons ? 'bg-primaryGradient' : ''}
     `}

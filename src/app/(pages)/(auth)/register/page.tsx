@@ -3,14 +3,13 @@ import Button from '@/app/component/customButton/button';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Form } from 'antd';
-
+import Image from 'next/image';
 // module imports
 import FormControl from '@/app/component/formControl';
 import { primaryHeading, quinaryHeading } from '@/globals/tailwindvariables';
 import Heading from '@/app/component/customHeading/heading';
 import Paragraph from '@/app/component/customParagraph/paragraph';
 import { twMerge } from 'tailwind-merge';
-import NavBar from '@/app/component/navbar';
 import { useRouter } from 'next/navigation';
 import GoogleButton from '@/app/component/googleBtn';
 import WelcomeWrapper from '@/app/component/welcomeLayout';
@@ -63,7 +62,14 @@ const Register = () => {
   };
   return (
     <WelcomeWrapper>
-      <NavBar />
+      <Image
+        className="cursor-pointer"
+        src={'/logo.svg'}
+        alt="logo website"
+        width={100}
+        height={30}
+        onClick={() => router.push('/')}
+      />
       <section className=" grid place-items-center h-full">
         <div className="w-full max-w-md">
           <Heading

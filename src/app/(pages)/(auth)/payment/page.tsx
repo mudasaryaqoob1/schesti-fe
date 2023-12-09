@@ -1,5 +1,5 @@
 'use client';
-import NavBar from '@/app/component/navbar';
+import NavBar from '@/app/component/navbar/authBar';
 import Progessbar from '@/app/component/progressBar';
 import { secondaryHeading } from '@/globals/tailwindvariables';
 import Image from 'next/image';

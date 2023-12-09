@@ -1,7 +1,7 @@
 'use client';
 import Button from '@/app/component/customButton/button';
 import Paragraph from '@/app/component/customparagraph/paragraph';
-import NavBar from '@/app/component/navbar';
+import NavBar from '@/app/component/navbar/authBar';
 import WelcomeWrapper from '@/app/component/welcomeLayout';
 import {
   quaternaryHeading,

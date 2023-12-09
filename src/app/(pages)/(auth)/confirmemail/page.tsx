@@ -1,6 +1,6 @@
 import { quinaryHeading } from '../../../../globals/tailwindvariables';
 import Button from '@/app/component/customButton/button';
-import NavBar from '@/app/component/navbar';
+import NavBar from '@/app/component/navbar/authBar';
 import Footer from './index';
 import { twMerge } from 'tailwind-merge';
 const ConfirmEmail = () => {
