@@ -26,13 +26,13 @@ const Forget = () => {
   const router = useRouter();
 
   const submitHandler = () => {
-    router.push('/sendcode')
+    router.push('/sendcode');
   };
   return (
     <WelcomeWrapper>
       <NavBar />
       <div className="h-full grid place-items-center">
-        <div className="w-full px-[40px] ">
+        <div className="w-full max-w-md ">
           <Heading
             styledVars={primaryHeading}
             title="Forget Password"
@@ -69,7 +69,7 @@ const Forget = () => {
                   <Button
                     text="Verify Email"
                     className="!p-[12px] mt-10"
-                    type='submit'
+                    type="submit"
                   />
                 </Form>
               );

@@ -17,18 +17,17 @@ import WelcomeWrapper from '@/app/component/welcomeLayout';
 import { useSignupMutation } from '@/app/redux/authApi';
 import { toast } from 'react-toastify';
 
-
 export type SignupInfo = {
   name: string;
   email: string;
   password: string;
   confirmPassword?: string;
-}
+};
 const initialValues: SignupInfo = {
   name: '',
   email: '',
   password: '',
-  confirmPassword: ''
+  confirmPassword: '',
 };
 
 const RegisterSchema: any = Yup.object({
@@ -52,23 +51,21 @@ const Register = () => {
     const { name, email, password } = values;
     try {
       await registerHandler({ name, email, password }).unwrap();
-      toast.success("Register Successfull");
+      toast.success('Register Successfull');
       router.push('/');
-
     } catch (error) {
-      const { data: { message } } = error as { data: { message: string } };
+      const {
+        data: { message },
+      } = error as { data: { message: string } };
       toast.error(message);
     }
-    router.push('/checkmail')
+    router.push('/checkmail');
   };
   return (
     <WelcomeWrapper>
       <NavBar />
-      <section className="h-[calc(100vh-190px)] grid place-items-center w-full">
-        {/* content center */}
-        {/*  */}
-        <div className="w-full flex flex-col py-0 px-10 rounded-lg">
-          {/* start */}
+      <section className=" grid place-items-center h-full">
+        <div className="w-full max-w-md">
           <Heading
             classes="text-center"
             styledVars={primaryHeading}
@@ -93,7 +90,7 @@ const Register = () => {
                   onFinish={formik.handleSubmit}
                   autoComplete="off"
                 >
-                  <div className="mt-4">
+                  <div className="flex flex-col gap-3 mt-4">
                     <FormControl
                       control="input"
                       label="Name"
@@ -139,7 +136,7 @@ const Register = () => {
                   <Button
                     text="Register"
                     className="!p-[12px] mt-4"
-                    type='submit'
+                    type="submit"
                     isLoading={isLoading}
                   />
                   <div
@@ -170,8 +167,6 @@ const Register = () => {
             }}
           </Formik>
         </div>
-        {/* end */}
-        {/* content end */}
       </section>
     </WelcomeWrapper>
   );

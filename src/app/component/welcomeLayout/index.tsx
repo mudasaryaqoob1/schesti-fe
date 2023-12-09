@@ -6,10 +6,10 @@ type Props = {
 
 const WelcomeWrapper = ({ children }: Props) => {
   return (
-    <div className="relative grid grid-cols-1 md:grid-cols-2 ">
-      <div className="">{children}</div>
+    <div className="h-[100vh] relative grid grid-cols-1 md:grid-cols-2 overflow-hidden ">
+      <div className="px-14 py-7">{children}</div>
       <div
-        className="items-center relative bg-cloudWhite
+        className="items-center relative  bg-cloudWhite
        hidden md:flex h-full"
       >
         <Welcome />

@@ -24,11 +24,11 @@ export type LoginInfo = {
   email: string;
   password: string;
   remember?: boolean;
-}
+};
 const initialValues: LoginInfo = {
   email: '',
   password: '',
-  remember: false
+  remember: false,
 };
 
 const LoginSchema = Yup.object({
@@ -36,9 +36,9 @@ const LoginSchema = Yup.object({
     .required('Email is required!')
     .email('Email should be valid'),
   password: Yup.string()
-    .required('Invalid credentials. Please try again!')
+    .required('Password is required')
     .min(6, 'Minimum six character is required'),
-  remember: Yup.boolean().optional()
+  remember: Yup.boolean().optional(),
 });
 
 const Login = () => {
@@ -47,11 +47,12 @@ const Login = () => {
   const submitHandler = async ({ email, password }: LoginInfo) => {
     try {
       await loginHandler({ email, password }).unwrap();
-      toast.success("login successfull");
+      toast.success('login successfull');
       router.push('/');
-
     } catch (error) {
-      const { data: { message } } = error as { data: { message: string } };
+      const {
+        data: { message },
+      } = error as { data: { message: string } };
       toast.error(message);
     }
   };
@@ -60,10 +61,10 @@ const Login = () => {
     <WelcomeWrapper>
       <React.Fragment>
         <NavBar />
-        <section className="grid place-items-center">
-          <div className="flex flex-col w-full px-10">
+        <section className="grid place-items-center h-full">
+          <div className="w-full max-w-md">
             <Heading
-              classes="self-center"
+              classes="text-center"
               styledVars={primaryHeading}
               title=" Login to your account"
             />
@@ -73,12 +74,8 @@ const Login = () => {
               onSubmit={submitHandler}
             >
               {({ handleSubmit }) => (
-                <Form
-                  name="basic"
-                  autoComplete="off"
-                  onSubmit={handleSubmit}
-                >
-                  <div className="mt-10">
+                <Form name="basic" autoComplete="off" onSubmit={handleSubmit}>
+                  <div className="flex flex-col gap-3 mt-16">
                     <FormControl
                       control="input"
                       label="email"
@@ -96,7 +93,7 @@ const Login = () => {
                   </div>
 
                   {/* Remember me checkbox */}
-                  <div className='flex justify-between items-center'>
+                  <div className="flex justify-between items-center mt-4">
                     <div className="">
                       <div className="flex gap-2 items-center">
                         <Field type="checkbox" name="remember" id="remember" />
@@ -104,7 +101,11 @@ const Login = () => {
                           Remember me
                         </label>
                       </div>
-                      <ErrorMessage name="remember" component="div" className='text-red-700' />
+                      <ErrorMessage
+                        name="remember"
+                        component="div"
+                        className="text-red-700"
+                      />
                     </div>
                     <Paragraph
                       styledVars={quinaryHeading}
@@ -114,12 +115,17 @@ const Login = () => {
                     />
                   </div>
                   {/* Login button */}
-                  <Button isLoading={isLoading} text="Login" className="!p-3 mt-8" type='submit' />
+                  <Button
+                    isLoading={isLoading}
+                    text="Login"
+                    className="!p-3 mt-8"
+                    type="submit"
+                  />
 
                   {/* Divider */}
                   <div className="flex justify-between items-center self-stretch my-6">
                     <div className="w-[100%] h-[1px] bg-lightSteelGray"></div>
-                    <span className={quinaryHeading}>Or</span>
+                    <span className={`${quinaryHeading} mx-4`}>Or</span>
                     <div className="w-[100%] h-[1px] bg-lightSteelGray"></div>
                   </div>
 
@@ -134,7 +140,9 @@ const Login = () => {
                       title="Don’t have an account?"
                     />
                     <p
-                      className={twMerge(`${quinaryHeading} font-bold cursor-pointer hover:underline`)}
+                      className={twMerge(
+                        `${quinaryHeading} font-bold cursor-pointer hover:underline`
+                      )}
                       onClick={() => router.push('/register')}
                     >
                       Sign Up
@@ -142,11 +150,12 @@ const Login = () => {
                   </div>
                 </Form>
               )}
-            </Formik>;
+            </Formik>
+            ;
           </div>
         </section>
       </React.Fragment>
-    </WelcomeWrapper >
+    </WelcomeWrapper>
   );
 };
 
