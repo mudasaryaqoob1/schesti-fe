@@ -15,8 +15,7 @@ const SinglePlan = ({ title, price, benefits, info }: PropSinglePlan) => {
   const router = useRouter();
   return (
     <div
-      className={
-        `m-5  p-8  rounded-[20px] items-center flex flex-col  justify-between shadow-secondaryShadow gap-5`}
+      className={`p-8  rounded-[20px] items-center flex flex-col  justify-between shadow-secondaryShadow gap-5`}
     >
       <div className=" flex flex-col gap-8 items-start">
         <h2 className={`${tertiaryHeading} text-graphiteGray`}>
@@ -40,18 +39,20 @@ const SinglePlan = ({ title, price, benefits, info }: PropSinglePlan) => {
         <p className={`${quinaryHeading} text-lightdark2`}>{info}</p>
         <div className="w-full h-px bg-mistyWhite"></div>
         <h4 className={`${tertiaryHeading} font-normal text-ebonyGray`}>Features</h4>
-        {benefits?.map((benefit, index) => (
-          <Fragment key={index}>
-            <div className="self-start flex gap-3 items-center">
-              <input type="checkbox" name={benefit} id={benefit} className='w-5 h-5 rounded-md  checked:bg-[#8449EB]' />
-              <label htmlFor={benefit} className={twMerge(`${quinaryHeading} text-ebonyGray leading-normal`)}>
-                {benefit}
-              </label>
-            </div>
-          </Fragment>
-        ))}
+        <div className='flex gap-2 flex-col'>
+          {benefits?.map((benefit, index) => (
+            <Fragment key={index}>
+              <div className="self-start flex gap-2 items-center">
+                <input type="checkbox" name={benefit} id={benefit} className='w-5 h-5 rounded-md  checked:bg-[#8449EB]' checked />
+                <label htmlFor={benefit} className={twMerge(`${quinaryHeading} text-ebonyGray leading-normal`)}>
+                  {benefit}
+                </label>
+              </div>
+            </Fragment>
+          ))}
+        </div>
       </div>
-      <div className="p-[10px] w-full">
+      <div className="w-full">
         <Button
           text="Buy"
           className="text-white self-stretch w-full"
