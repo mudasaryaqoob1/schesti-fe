@@ -19,10 +19,10 @@ import GoogleButton from '@/app/component/googleBtn';
 import WelcomeWrapper from '@/app/component/welcomeLayout';
 import { ILogInInterface } from '@/app/interfaces/login.interface';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@/app/redux/store';
-import { login } from '@/app/redux/authSlices/auth.thunk';
+import { AppDispatch } from '@/redux/store';
+import { login } from '@/redux/authSlices/auth.thunk';
 // import { handleError } from '@/app/utils/catchErrorToast';
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
 
 const initialValues: ILogInInterface = {
   email: '',
@@ -45,13 +45,13 @@ const Login = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const submitHandler = async ({ email, password }: ILogInInterface) => {
-    let result: any = await dispatch(login({ email, password }));
+    await dispatch(login({ email, password }));
 
-    if (result.payload.statusCode == 200) {
-      toast.success('Successfully Sign in');
-    } else {
-      toast.error(result.payload.message);
-    }
+    // if (result.payload.statusCode == 200) {
+    //   toast.success('Successfully Sign in');
+    // } else {
+    //   toast.error(result.payload.message);
+    // }
 
     // .then((result) => console.log('result---', result))
     // .catch(handleError);
