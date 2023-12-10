@@ -3,23 +3,20 @@ import { useAppDispatch } from '@/app/hooks/hooks';
 import { deleteClient } from '@/app/redux/clientSlice';
 import { quinaryHeading } from '@/globals/tailwindvariables';
 import { useRouter } from 'next/navigation';
-import { twMerge } from 'tailwind-merge';
 
 interface Props {
-  className?: string;
   clientID: number
 }
-const Menu = ({ className, clientID }: Props) => {
+const Menu = ({ clientID }: Props) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
 
   return (
     <div
-      className={twMerge(`flex flex-col p-4 
+      className="flex flex-col p-4 
     shadow-tertiaryMystery3  rounded-lg bg-snowWhite gap-3
-    border border-nebulaGray 
-    ${className}`)}
+    border border-nebulaGray  absolute w-56 h-auto top-[-50px] right-24 z-50"
     >
       <p
         className={`text-graphiteGray 

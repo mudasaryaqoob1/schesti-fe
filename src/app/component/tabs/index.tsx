@@ -15,31 +15,26 @@ const Tabs = () => {
   const router = useRouter()
 
   return (
-    <Wrapper className="flex justify-between items-center px-14 h-16 pt-2 mb-6 shadow-quinaryGentle">
-      <div>
-        <ul
-          className="list-none flex flex-wrap -mb-px text-sm font-medium text-center
-            text-gray-500 dark:text-gray-400"
-        >
-          {tabsData.map(({ name, route }, i) => {
-            return (
-              <li className="me-2" key={i}>
-                <p
-                  className={twMerge(
-                    clsx(`${quaternaryHeading} text-steelGray
-                    inline-flex items-center justify-center py-2 px-4
-                    rounded-t-lg cursor-pointer
-                    `, pathname.includes(route.split('/')[1]) && "active")
-                  )}
-                  onClick={() => router.push(route)}
-                >
-                  {name}
-                </p>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
+    <Wrapper className="md:flex block justify-between items-center px-16 xl:h-[67px] shadow-quinaryGentle">
+      <ul
+        className="list-none flex flex-wrap xl:gap-8 gap-3 text-sm font-medium text-center
+            text-gray-500 dark:text-gray-400 justify-center mb-0"
+      >
+        {tabsData.map(({ name, route }, i) => {
+          return (
+            <li className={twMerge(
+              clsx(`${quaternaryHeading} text-steelGray
+                flex items-stretch justify-center py-2 
+                 cursor-pointer
+                `, pathname.includes(route.split('/')[1]) && "active")
+            )}
+              onClick={() => router.push(route)} key={i}>
+
+              {name}
+            </li>
+          );
+        })}
+      </ul>
     </Wrapper>
   );
 };

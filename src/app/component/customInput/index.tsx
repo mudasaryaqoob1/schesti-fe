@@ -6,7 +6,7 @@ import { twMerge } from 'tailwind-merge';
 const InputField = (props: any) => {
   const { label, prefix, maxLength, placeholder, name, ...rest } = props;
   return (
-    <div>
+    <div className='mt-4'>
       <label
         className={twMerge('font-[500] leading-[20px] capitalize')}
         htmlFor={name}
@@ -18,7 +18,7 @@ const InputField = (props: any) => {
           <Input
             prefix={prefix}
             className={twMerge(
-              'border-gray-400 !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 !mt-1.5 '
+              'border-gray-400  !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 !mt-1.5 '
             )}
             type="text"
             maxLength={maxLength}

@@ -57,7 +57,7 @@ const CreateClient = () => {
 
   return (
     <>
-      <section className="px-16">
+      <section className="mx-16">
         <div className="flex gap-4 items-center my-6">
           <Image src={'/home.svg'} alt="home icon" width={20} height={20} />
           <Image
@@ -79,13 +79,13 @@ const CreateClient = () => {
           />
 
           <MinDesc
-            title="Add new client"
+            title="Add New Client"
             className={`${senaryHeading} font-semibold text-lavenderPurple cursor-pointer underline`}
           />
         </div>
         <div
           className="p-5 flex flex-col rounded-lg border
-     border-silverGray shadow-secondaryShadow2"
+     border-silverGray shadow-secondaryShadow2 bg-white"
         >
           <TertiaryHeading
             className="text-graphiteGray"
@@ -157,7 +157,7 @@ const CreateClient = () => {
                     />
                   </div>
                   <div
-                    className="self-end flex justify-end items-center gap-5 md:my-5 my-3"
+                    className="self-end flex justify-end items-center gap-5 md:mt-4 my-3"
                   >
                     <div>
                       <CustomButton
@@ -167,7 +167,7 @@ const CreateClient = () => {
                       />
                     </div>
                     <div>
-                      <CustomButton className='mx-w-30' type="submit" text="Save and Continue" />
+                      <CustomButton type="submit" text="Save and Continue" />
                     </div>
                   </div>
                 </Form>

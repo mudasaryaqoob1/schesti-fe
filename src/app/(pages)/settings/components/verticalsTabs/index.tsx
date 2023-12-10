@@ -1,5 +1,4 @@
 "use client"
-import Paragraph from '@/app/component/customParagraph/paragraph'
 import { senaryHeading } from '@/globals/tailwindvariables'
 import React from 'react'
 import styled from 'styled-components'
@@ -17,42 +16,42 @@ const Index = () => {
     return (
         <StyledDiv >
             <div className='flex flex-col items-start gap-3'>
-                <Paragraph
-                    classes={`${active} py-1 px-3`}
-                    title='General setting'
-                    styledVars={senaryHeading}
+                <p
+                    className={`${active} py-1 px-3 ${senaryHeading}`}
 
-                />
-                <Paragraph
-                    classes=' py-1 px-3 cursor-pointer'
-                    title='Plans'
-                    styledVars={senaryHeading}
+                >
+                    General setting
+                </p>
+                <p
+                    className={`${active} py-1 px-3 ${senaryHeading}`}
 
-                />
-                <Paragraph
-                    classes=' py-1 px-3 cursor-pointer'
-                    title='User Managements'
-                    styledVars={senaryHeading}
+                >
+                    Plans
+                </p>
+                <p
+                    className={`${active} py-1 px-3 ${senaryHeading}`}
 
-                />
-                <Paragraph
-                    classes=' py-1 px-3 cursor-pointer'
-                    title='Material Settings'
-                    styledVars={senaryHeading}
+                >
+                    User Managements
+                </p>
+                <p
+                    className={`${active} py-1 px-3 ${senaryHeading}`}
 
-                />
-                <Paragraph
-                    classes=' py-1 px-3 cursor-pointer'
-                    title='Materials'
-                    styledVars={senaryHeading}
+                >
+                    Material Settings
+                </p>
+                <p
+                    className={`${active} py-1 px-3 ${senaryHeading}`}
 
-                />
-                <Paragraph
-                    classes=' py-1 px-3 cursor-pointer'
-                    title='Target'
-                    styledVars={senaryHeading}
+                >
+                    Materials
+                </p>
+                <p
+                    className={`${active} py-1 px-3 ${senaryHeading}`}
 
-                />
+                >
+                    Target
+                </p>
             </div>
 
         </StyledDiv>

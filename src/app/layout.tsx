@@ -27,8 +27,8 @@ export default function RootLayout({
         <StyledJsxRegistry>
           <StoreProvider>
             <ToastContainer />
-            {/* <ClientNavbar />
-            <Tabs /> */}
+            <ClientNavbar />
+            <Tabs />
             {children}
           </StoreProvider>
         </StyledJsxRegistry>

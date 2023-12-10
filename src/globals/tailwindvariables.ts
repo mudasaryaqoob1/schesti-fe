@@ -37,7 +37,7 @@ export const btnStyle = twMerge(
   'shadow-[rgba(16, 24, 40, 0.05)]',
   "cursor-pointer"
 );
-export const Backgrounder = twMerge(
+export const backgrounder = twMerge(
   "rounded-xl",
   "border border-solid border-silverGray",
   "bg-snowWhite",

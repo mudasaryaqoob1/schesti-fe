@@ -1,17 +1,17 @@
 'use client';
 import FormControl from '@/app/component/formControl';
-import Heading from '@/app/component/customHeading/heading';
-import { senaryHeading, tertiaryHeading } from '@/globals/tailwindvariables';
+import { senaryHeading, } from '@/globals/tailwindvariables';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Form } from 'antd';
-import Paragraph from '@/app/component/customParagraph/paragraph';
 import Image from 'next/image';
 import CustomButton from '@/app/component/customButton/button';
 import { useParams, useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/app/hooks/hooks';
 import { editClient } from '@/app/redux/clientSlice';
 import { newClientTypes } from '../../create/page';
+import TertiaryHeading from '@/app/component/headings/tertiary';
+import MinDescription from '@/app/component/description/minDesc';
 
 
 
@@ -57,11 +57,11 @@ const EditClient = () => {
                         width={16}
                         height={16}
                     />
-                    <Paragraph
-                        title="My Client"
-                        styledVars={senaryHeading}
-                        classes="font-base text-slateGray"
-                    />
+                    <p
+                        className={`font-base text-slateGray ${senaryHeading}`}
+                    >
+                        My Client
+                    </p>
                     <Image
                         src={'/chevron-right.svg'}
                         alt="chevron-right icon"
@@ -69,19 +69,17 @@ const EditClient = () => {
                         height={16}
                     />
 
-                    <Paragraph
-                        title="Add new client"
-                        styledVars={senaryHeading}
-                        classes="font-semibold text-lavenderPurple cursor-pointer underline"
+                    <MinDescription
+                        title="Edit Client"
+                        className={`${senaryHeading} font-semibold text-lavenderPurple cursor-pointer underline`}
                     />
                 </div>
                 <div
                     className="p-5 flex flex-col rounded-lg border
      border-silverGray shadow-secondaryShadow2"
                 >
-                    <Heading
-                        classes="text-graphiteGray"
-                        styledVars={tertiaryHeading}
+                    <TertiaryHeading
+                        className="text-graphiteGray"
                         title="Add New Client"
                     />
                     <Formik
@@ -96,7 +94,7 @@ const EditClient = () => {
                                     onFinish={handleSubmit}
                                     autoComplete="off"
                                 >
-                                    <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-4 gap-x-5">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-4 gap-x-4">
                                         <FormControl
                                             control="input"
                                             label="First Name"
@@ -150,7 +148,7 @@ const EditClient = () => {
                                         />
                                     </div>
                                     <div
-                                        className="self-end flex justify-end items-center gap-5 md:my-5 my-3"
+                                        className="self-end flex justify-end items-center gap-3 md:mt-4 mt-3"
                                     >
                                         <div>
                                             <CustomButton

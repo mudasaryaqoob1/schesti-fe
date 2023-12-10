@@ -35,6 +35,7 @@ export default {
         lightGrayish: "#F2F4F7",
         silverGray: "#F6F6F6",
         Gainsboro: "#DFDFDF",
+        graylittle: "#ECECEC",
         // Deep and Dark Colors
         royalIndigo: '#036',
         obsidianBlack: '#1A141F',
