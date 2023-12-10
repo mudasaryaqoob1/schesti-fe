@@ -1,64 +1,31 @@
 'use client';
-import { twMerge } from 'tailwind-merge';
+import { useState } from 'react';
 import { senaryHeading } from '@/globals/tailwindvariables';
-
-import Image from 'next/image';
+// import Menu from './menu';
+import { useAppSelector } from '@/app/hooks/hooks';
 interface Props {
   headings: string[];
-  clientData: {
-    id: number
-    name?: string;
-    company?: string
-    email?: string;
-    phoneNumber?: string;
-    address?: string;
-    status?: string;
-    ProjectName?: string;
-    ClientName?: string;
-    Number?: string;
-    City?: string;
-  }[];
-  requestsData?: {
-    Status?: string;
-    ProjectName?: string;
-    ClientName?: string;
-    Number?: string;
-    City?: string;
-    Estimator?: string;
-    SalePerson?: string;
-  }[];
+
 }
-const Table = ({ headings, requestsData }: Props) => {
+const Index = ({ headings }: Props) => {
+  const [openMenuIndex, setOpenMenuIndex] = useState<number>(-1);
+  const { clients } = useAppSelector((state) => state.clientData)
 
-
+  const toggleMenu = (index: number) => {
+    setOpenMenuIndex((prevIndex) => (prevIndex === index ? -1 : index));
+  };
   return (
-    <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-      <table className="w-full text-sm text-left rtl:text-right text-gray-500">
-        <thead className="text-xs text-gray-700 uppercase bg-cosmicGray  dark:text-gray-400">
-          {/* <tr>
-            <th scope="col" className="px-6 py-3">
-              client name
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Email
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Phone number
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Address
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Status
-            </th>
-            <th scope="col" className="px-6 py-3">
-              Action
-            </th>
-          </tr> */}
-          <tr>
+    <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-4">
+      <table className="w-full text-sm text-left rtl:text-right">
+        <thead className="text-xs bg-cosmicGray ">
+          <tr >
             {headings?.map((heading, i) => {
               return (
-                <th scope="col" className="px-6 py-3" key={i}>
+                <th scope="col" className={
+                  `px-4 py-3 text-start !rounded-tl-12 !rounded-tr-12 !rounded-br-0 !rounded-bl-0
+                                        ${senaryHeading}
+                                        `
+                } key={i}>
                   {heading}
                 </th>
               );
@@ -66,192 +33,98 @@ const Table = ({ headings, requestsData }: Props) => {
           </tr>
         </thead>
         <tbody>
-          {/* {clientsDate?.length &&
-            clientsDate?.map(
-              ({ id, name, company, email, phoneNumber, status, address }, i) => {
-                return (
-                  <tr key={id}>
-                    <td
-                      className={twMerge(
-                        `${senaryHeading} text-slateGray px-6 py-4
+          {clients?.map(
+            ({ id, firstName, lastName, companyName, email, phoneNumber, status, address }, i) => {
+              return (
+                <tr key={id}>
+                  <td
+                    className={
+                      `${senaryHeading} text-slateGray p-5
                         border-0  border-solid border-nebulaGray border-b
                         `
-                      )}
-                    >
-                      {name}
-                    </td>
-                    <td
-                      className={twMerge(
-                        `${senaryHeading} text-slateGray px-6 py-4
+                    }
+                  >
+                    {firstName}{lastName}
+                  </td>
+                  <td
+                    className={
+                      `${senaryHeading} text-slateGray  p-5
                         border-0  border-solid border-nebulaGray border-b
                         `
-                      )}
-                    >
-                      {company}
-                    </td>
-                    <td
-                      className={twMerge(
-                        `${senaryHeading} text-slateGray px-6 py-4
+                    }
+                  >
+                    {companyName}
+                  </td>
+                  <td
+                    className={
+                      `${senaryHeading} text-slateGray  p-5
                         border-0  border-solid border-nebulaGray border-b
                         `
-                      )}
-                    >
-                      {email}
-                    </td>
-                    <td
-                      className={twMerge(
-                        `${senaryHeading} text-slateGray px-6 py-4
+                    }
+                  >
+                    {email}
+                  </td>
+                  <td
+                    className={
+                      `${senaryHeading} text-slateGray  p-5
                         border-0  border-solid border-nebulaGray border-b
                         `
-                      )}
-                    >
-                      {phoneNumber}
-                    </td>
-                    <td
-                      className={twMerge(
-                        `${senaryHeading} text-slateGray px-6 py-4
+                    }
+                  >
+                    {phoneNumber}
+                  </td>
+                  <td
+                    className={
+                      `${senaryHeading} text-slateGray  p-5
                       border-0  border-solid border-nebulaGray border-b
                       `
-                      )}
-                    >{address}</td>
-                    <td
-                      className={twMerge(
-                        `${senaryHeading} text-slateGray px-6 py-4
+                    }
+                  >{address}</td>
+                  <td
+                    className={
+                      `${senaryHeading} text-slateGray  p-5
                         border-0  border-solid border-nebulaGray border-b
                         `
-                      )}
-                    >
-                      <a
-                        href="#"
-                        className="font-medium
+                    }
+                  >
+                    <a
+                      href="#"
+                      className="font-medium
                         text-emeraldGreen hover:underline
-                        mix-blend-multiply rounded-2xl bg-mintGreen px-4 py-2
+                        mix-blend-multiply rounded-2xl bg-mintGreen  p-2
                         "
-                      >
-                        {status}
-                      </a>
-                    </td>
-                    <td
-                      className={twMerge(`${senaryHeading} text-slateGray px-6 py-4 cursor-pointer relative
+                    >
+                      {status}
+                    </a>
+                  </td>
+                  {/* <td
+                    className={`${senaryHeading} text-slateGray  p-5 cursor-pointer relative
                       border-0  border-solid border-nebulaGray border-b
-                    `)}
-                    >
-                      <Image
-                        src="/moreOptions.svg"
-                        alt="action"
-                        width={20}
-                        height={20}
-                        onClick={() => toggleMenu(i)}
+                    `}
+                  >
+                    <Image
+                      src="/moreOptions.svg"
+                      alt="action"
+                      width={20}
+                      height={20}
+                      onClick={() => toggleMenu(i)}
+                    />
+                    {openMenuIndex === i && (
+                      <Menu
+                        clientID={id}
                       />
-                      {openMenuIndex === i && (
-                        <Menu className="absolute w-56 h-auto top-[-146px ] right-24 z-50"
-                          clientID={id} deleteHandle={deleteHandle}
-                        />
-                      )}
-                    </td>
-                  </tr>
-                );
-              }
-            )} */}
+                    )}
+                  </td> */}
+                </tr>
 
-          {requestsData?.length &&
-            requestsData?.map(
-              (
-                {
-                  ProjectName,
-                  ClientName,
-                  Estimator,
-                  City,
-                  SalePerson,
-                  Number,
-                  Status,
-                },
-                i
-              ) => {
-                return (
-                  <tr key={i}>
-                    <td
-                      className={twMerge(
-                        `${senaryHeading} text-slateGray px-6 py-4`
-                      )}
-                    >
-                      {ProjectName}
-                    </td>
-                    <td
-                      className={twMerge(
-                        `${senaryHeading} text-slateGray px-6 py-4`
-                      )}
-                    >
-                      {ClientName}
-                    </td>
-                    <td
-                      className={twMerge(
-                        `${senaryHeading} text-slateGray px-6 py-4`
-                      )}
-                    >
-                      {Number}
-                    </td>
-                    <td
-                      className={twMerge(
-                        `${senaryHeading} text-slateGray px-6 py-4`
-                      )}
-                    >
-                      {City}
-                    </td>
-                    <td
-                      className={twMerge(
-                        `${senaryHeading} text-slateGray px-6 py-4`
-                      )}
-                    >
-                      {SalePerson}
-                    </td>
-                    <td
-                      className={twMerge(
-                        `${senaryHeading} text-slateGray px-6 py-4`
-                      )}
-                    >
-                      {Estimator}
-                    </td>
-                    <td
-                      className={twMerge(
-                        `${senaryHeading} text-slateGray px-6 py-4`
-                      )}
-                    >
-                      <a
-                        href="#"
-                        className="font-medium
-                        text-emeraldGreen hover:underline
-                        mix-blend-multiply rounded-2xl bg-mintGreen px-4 py-2
-                        "
-                      >
-                        {Status}
-                      </a>
-                    </td>
-
-                    <td
-                      className={twMerge(`${senaryHeading} text-slateGray px-6 py-4 cursor-pointer relative
-                   
-                    `)}
-                    >
-                      <Image
-                        src="/moreOptions.svg"
-                        alt="action"
-                        width={20}
-                        height={20}
-                      // onClick={() => toggleMenu(i)}
-                      />
-                      {/* {showMenu[i] && (
-                      <Menu className="absolute w-56 h-auto top-1 right-24 z-50" />
-                    )} */}
-                    </td>
-                  </tr>
-                );
-              }
-            )}
+              );
+            }
+          )}
         </tbody>
       </table>
     </div>
-  );
-};
 
-export default Table;
+  )
+}
+
+export default Index

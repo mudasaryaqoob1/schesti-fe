@@ -8,7 +8,7 @@ interface Props {
 }
 const QuaternaryHeading = ({ title, className }: Props) => {
   return (
-    <h5 className={twMerge(clsx(quaternaryHeading, className && className))}>{title}</h5>
+    <h4 className={twMerge(clsx(quaternaryHeading, className && className))}>{title}</h4>
   );
 };
 

@@ -1,11 +1,10 @@
 'use client';
 import Button from '@/app/component/customButton/button';
-import Heading from '@/app/component/customHeading/heading';
-import { tertiaryHeading } from '@/globals/tailwindvariables';
 import { useRouter } from 'next/navigation';
 import Table from '@/app/component/table/table';
 import Pagination from '../../../../component/pagination';
 import { takeoffRecords, takeoffRecordsHeadings } from '../../data';
+import TertiaryHeading from '@/app/component/headings/tertiary';
 
 const Records = () => {
     const router = useRouter();
@@ -15,10 +14,8 @@ const Records = () => {
             <section className="pt-2.5 pb-3 px-12">
                 <div className="p-5 rounded-s-xl border-2 border-silverGray">
                     <div className="flex justify-between items-center mb-3">
-                        <Heading
-                            styledVars={tertiaryHeading}
+                        <TertiaryHeading
                             title="Recent Measurements"
-                            classes="text-graphiteGray"
                         />
                         <Button
                             text="Start Measurements"

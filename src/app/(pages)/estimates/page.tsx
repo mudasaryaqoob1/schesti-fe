@@ -4,19 +4,17 @@ import Records from './components/records'
 import NoData from './components/noData'
 import { estimateRequests } from './data'
 import CustomButton from '@/app/component/customButton/button'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 
-const page = () => {
-    const router = useRouter()
+const Page = () => {
     return (
         <div>
-            <div className='flex justify-end  me-3 mb-2'>
+            <Link href={"/estimates/generated/estimates"} className='flex justify-end  me-3 my-2'>
                 <CustomButton
                     text="Estimates Requests"
                     className="!w-auto"
-                    onClick={() => router.push('/estimates/generated/estimates')}
                 />
-            </div>
+            </Link>
             {estimateRequests.length > 0 ?
                 <Records /> : <NoData />
             }
@@ -24,4 +22,4 @@ const page = () => {
     )
 }
 
-export default page
+export default Page

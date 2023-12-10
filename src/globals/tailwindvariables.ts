@@ -37,6 +37,28 @@ export const btnStyle = twMerge(
   'shadow-[rgba(16, 24, 40, 0.05)]',
   "cursor-pointer"
 );
+export const btnWhiteStyle = twMerge(
+  "bg-snowWhite",
+  'rounded-[8px] border-[1px] ',
+  'text-[#FFFFFF]',
+  'leading-[24px]',
+  'h-auto',
+  'w-full',
+  'font-[600]',
+  "py-2.5 px-4",
+  'self-stretch',
+  'shadow-[0px 1px 2px 0px]',
+  'shadow-[rgba(16, 24, 40, 0.05)]',
+  "cursor-pointer",
+  "text-graphiteGray",
+  "text-[16px]",
+  "font-semibold",
+  "leading-[24px]",
+  "border border-solid border-[#D0D5DD]",
+  "bg-snowWhite",
+  "shadow-secondaryTwist"
+
+)
 export const backgrounder = twMerge(
   "rounded-xl",
   "border border-solid border-silverGray",

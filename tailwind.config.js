@@ -24,6 +24,7 @@ export default {
         paleblueGray: "#F9FAFB",
         alabasterWhite: '#F5F6F8',
         doveGray: '#D0D0D0',
+        elboneyGray: "#E9E9E9",
         ebonyGray: '#101828',
         slateGray: '#475467',
         graphiteGray: '#344054',
@@ -49,7 +50,8 @@ export default {
         lightBlueGray: "#E7EAEE",
         greenishGreen: "#36B37E",
         lightdark: "rgba(4, 4, 4, 0.50)",
-        lightdark2: "rgba(0, 0, 0, 0.60)"
+        lightdark2: "rgba(0, 0, 0, 0.60)",
+        lightGray: "#F7F9FF"
       },
       boxShadow: {
         // Soft Glow for Primary Element

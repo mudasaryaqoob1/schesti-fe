@@ -9,7 +9,7 @@ interface Props {
 }
 const MinDescription = ({ title, className }: Props) => {
     return (
-        <p className={twMerge(clsx(minHeading, className && className))}>{title}</p>
+        <p className={twMerge(clsx(`${minHeading} text-midnightBlue font-popin ${className && className}`))}>{title}</p>
     );
 };
 

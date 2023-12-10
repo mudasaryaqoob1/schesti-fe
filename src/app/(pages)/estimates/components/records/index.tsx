@@ -1,24 +1,22 @@
 'use client';
 import Button from '@/app/component/customButton/button';
-import Heading from '@/app/component/customHeading/heading';
-import { tertiaryHeading } from '@/globals/tailwindvariables';
 import { useRouter } from 'next/navigation';
 import Table from '@/app/component/table/table';
 import Pagination from '@/app/component/pagination';
 import { estimateRequests, RequestsHeadings } from '../../data';
+import TertiaryHeading from '@/app/component/headings/tertiary';
+import { backgrounder } from '@/globals/tailwindvariables';
 
 const Records = () => {
     const router = useRouter();
 
     return (
         <>
-            <section className="pt-2.5 pb-3 px-12">
-                <div className="p-5 rounded-s-xl border-2 border-silverGray">
+            <section className="my-5   px-16">
+                <div className={`${backgrounder} p-5`}>
                     <div className="flex justify-between items-center mb-3">
-                        <Heading
-                            styledVars={tertiaryHeading}
+                        <TertiaryHeading
                             title="My Estimate request"
-                            classes="text-graphiteGray"
                         />
                         <Button
                             text="Start New Esstimate"

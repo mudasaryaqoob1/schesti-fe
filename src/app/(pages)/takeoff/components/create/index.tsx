@@ -1,7 +1,6 @@
 import CustomButton from '@/app/component/customButton/button';
-import Heading from '@/app/component/customHeading/heading';
-import Paragraph from '@/app/component/customParagraph/paragraph';
-import { quinaryHeading, secondaryHeading } from '@/globals/tailwindvariables';
+import Description from '@/app/component/description';
+import SecondaryHeading from '@/app/component/headings/Secondary';
 import Image from 'next/image';
 const Create = () => {
     return (
@@ -26,15 +25,13 @@ const Create = () => {
                         height={134}
                         className="mt-6 mb-12"
                     />
-                    <Heading
+                    <SecondaryHeading
                         title="No take off Record"
-                        classes="text-obsidianBlack2"
-                        styledVars={secondaryHeading}
+                        className="text-obsidianBlack2"
                     />
-                    <Paragraph
+                    <Description
                         title="Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content."
-                        styledVars={quinaryHeading}
-                        classes="text-steelGray text-center mb-6"
+                        className="text-steelGray text-center mb-6"
                     />
                     <CustomButton text="Create your TakeOff" />
                 </div>
