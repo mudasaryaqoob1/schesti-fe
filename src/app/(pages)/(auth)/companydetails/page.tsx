@@ -1,7 +1,6 @@
 'use client';
 import Button from '@/app/component/customButton/button';
-import Heading from '@/app/component/customHeading/heading';
-import { tertiaryHeading, primaryHeading } from '@/globals/tailwindvariables';
+import { tertiaryHeading } from '@/globals/tailwindvariables';
 // import Image from 'next/image';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -12,6 +11,7 @@ import { twMerge } from 'tailwind-merge';
 import NavBar from '@/app/component/navbar/authBar';
 import { useRouter } from 'next/navigation';
 import Progessbar from '@/app/component/progressBar';
+import PrimaryHeading from '@/app/component/headings/primary';
 const initialValues = {
   CompanyName: '',
   industryName: '',
@@ -52,10 +52,9 @@ const CompanyDetails = () => {
         shadow-tertiaryMystery p-10"
           >
             {/* // logo */}
-            <Heading
-              styledVars={primaryHeading}
+            <PrimaryHeading
               title="Company Details"
-              classes="text-center"
+              className="text-center"
             />
             <Formik
               initialValues={initialValues}
@@ -68,7 +67,7 @@ const CompanyDetails = () => {
                     name="basic"
                     onFinish={formik.handleSubmit}
                     autoComplete="off"
-                    // validateMessages={formik.handleSubmit}
+                  // validateMessages={formik.handleSubmit}
                   >
                     <div className="mt-10">
                       <FormControl

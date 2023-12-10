@@ -1,9 +1,9 @@
 'use client';
 import Button from '@/app/component/customButton/button';
-import Heading from '@/app/component/customHeading/heading';
-import Paragraph from '@/app/component/customParagraph/paragraph';
+import Description from '@/app/component/description';
+import PrimaryHeading from '@/app/component/headings/primary';
 import NavBar from '@/app/component/navbar/authBar';
-import { quinaryHeading, primaryHeading } from '@/globals/tailwindvariables';
+import { quinaryHeading } from '@/globals/tailwindvariables';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
@@ -27,29 +27,25 @@ const CheckYourEmail = () => {
             className="self-center"
           />
 
-          <Heading
-            classes="text-center mt-8"
-            styledVars={primaryHeading}
+          <PrimaryHeading
+            className="text-center mt-8"
             title="Check your mail"
           />
-          <Paragraph
-            classes="mt-1  text-center text-slateGray"
-            styledVars={quinaryHeading}
+          <Description
+            className="mt-1  text-center text-slateGray"
             title="We’ve sent a verification email to abc@example.com"
           />
 
-          <Paragraph
-            classes="font-popin text-midnightBlue font-normal
+          <Description
+            className="font-popin text-midnightBlue font-normal
             mt-8
            leading-[26px] text-center "
-            styledVars={quinaryHeading}
             title="Click the link in your email to verify your account."
           />
 
-          <Paragraph
-            classes="font-popin text-doveGrayer font-normal
+          <Description
+            className="font-popin text-doveGrayer font-normal
            leading-[26px] text-center my-1"
-            styledVars={quinaryHeading}
             title="    If you have trouble finding your email, check your spam folder for
                 an email from noreply@example.com"
           />

@@ -1,5 +1,4 @@
 'use client';
-import Paragraph from '@/app/component/customParagraph/paragraph';
 import { useAppDispatch } from '@/app/hooks/hooks';
 import { deleteClient } from '@/app/redux/clientSlice';
 import { quinaryHeading } from '@/globals/tailwindvariables';
@@ -22,16 +21,19 @@ const Menu = ({ className, clientID }: Props) => {
     border border-nebulaGray 
     ${className}`)}
     >
-      <Paragraph
-        title="Create estimate request"
-        styledVars={quinaryHeading}
-        classes="text-graphiteGray  hover:underline "
-      />
-      <Paragraph
-        title="Create Schedule"
-        styledVars={quinaryHeading}
-        classes="text-graphiteGray  hover:underline "
-      />
+      <p
+        className={`text-graphiteGray 
+       hover:underline ${{ quinaryHeading }}`}
+      >
+        Create estimate request
+      </p>
+
+      <p
+        className={`text-graphiteGray 
+       hover:underline ${{ quinaryHeading }}`}
+      >
+        Create Schedule
+      </p>
       <p
         className={`text-graphiteGray 
         active:border hover:underline ${{ quinaryHeading }}`}

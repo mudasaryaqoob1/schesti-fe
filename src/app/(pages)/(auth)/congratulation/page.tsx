@@ -1,8 +1,7 @@
 'use client';
 import Button from '@/app/component/customButton/button';
-import Heading from '@/app/component/customheading/heading';
-import Paragraph from '@/app/component/customparagraph/paragraph';
-import { quinaryHeading, secondaryHeading } from '@/globals/tailwindvariables';
+import SecondaryHeading from '@/app/component/headings/Secondary';
+import QuinaryHeading from '@/app/component/headings/quinary';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import React from 'react';
@@ -29,15 +28,13 @@ const Congratulations = () => {
         </div>
         {/* logo */}
         <Image src={'/Modal.png'} alt="modal icon" width={200} height={100} />
-        <Heading
-          classes={'mt-[20px] mb-[12px'}
-          styledVars={secondaryHeading}
+        <SecondaryHeading
+          className={'mt-[20px] mb-[12px'}
           title=" Congratulations!"
         />
 
-        <Paragraph
-          classes={'font-normal text-slateGray my-2'}
-          styledVars={quinaryHeading}
+        <QuinaryHeading
+          className={'font-normal text-slateGray my-2'}
           title=" Your account is successfully created."
         />
         <Button

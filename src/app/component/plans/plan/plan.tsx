@@ -1,6 +1,7 @@
 'use client';
 import Button from '@/app/component/customButton/button';
 import { tertiaryHeading, quinaryHeading, primaryHeading, minHeading } from '@/globals/tailwindvariables';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Fragment } from 'react';
 import { twMerge } from 'tailwind-merge';
@@ -43,7 +44,7 @@ const SinglePlan = ({ title, price, benefits, info }: PropSinglePlan) => {
           {benefits?.map((benefit, index) => (
             <Fragment key={index}>
               <div className="self-start flex gap-2 items-center">
-                <input type="checkbox" name={benefit} id={benefit} className='w-5 h-5 rounded-md  checked:bg-[#8449EB]' checked />
+                <Image src={"/tickpurle.svg"} width={20} height={20} className='rounded-md' alt='tick icon' />
                 <label htmlFor={benefit} className={twMerge(`${quinaryHeading} text-ebonyGray leading-normal`)}>
                   {benefit}
                 </label>

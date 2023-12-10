@@ -72,7 +72,7 @@ const SetNewPassword = () => {
                     placeholder="Confirm password"
                   />
                   {/* </div> */}
-                  <Button text="Verify Email" className="!p-[12px] mt-8" />
+                  <Button text="Set Password" className="!p-[12px] mt-8" />
                 </Form>
               );
             }}

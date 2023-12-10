@@ -1,16 +1,15 @@
 'use client';
 import FormControl from '@/app/component/formControl';
-import Heading from '@/app/component/customHeading/heading';
-import { senaryHeading, tertiaryHeading } from '@/globals/tailwindvariables';
-import { Formik } from 'formik';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { Form } from 'antd';
-import Paragraph from '@/app/component/customParagraph/paragraph';
-import Image from 'next/image';
 import CustomButton from '@/app/component/customButton/button';
 import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/app/hooks/hooks';
-import { addClient, editClient } from '@/app/redux/clientSlice';
+import { addClient } from '@/app/redux/clientSlice';
+import MinDesc from '@/app/component/description/minDesc';
+import Image from 'next/image';
+import { senaryHeading } from '@/globals/tailwindvariables';
+import TertiaryHeading from '@/app/component/headings/tertiary';
 export interface newClientTypes {
   firstName: string
   lastName: string
@@ -34,9 +33,8 @@ const newClientSchema: any = Yup.object({
   address2: Yup.string(),
 });
 const CreateClient = () => {
-  const { editID, clients } = useAppSelector((state) => state.clientData)
-  const editedClient = clients.find((client) => client.id === editID);
-  const initialValues = editedClient || {
+  const { clients } = useAppSelector((state) => state.clientData)
+  const initialValues = {
     firstName: '',
     lastName: '',
     email: '',
@@ -48,22 +46,15 @@ const CreateClient = () => {
   const router = useRouter();
   const dispatch = useAppDispatch()
   const submitHandler = (values: any) => {
-    if (editID !== 0) {
-      // If editID is set, dispatch editClient action
-      dispatch(editClient({ updatedClient: values }));
-    } else {
-      // Otherwise, dispatch addClient action
-      const newClientId = clients.length > 0 ? Math.max(...clients.map(client => client.id)) + 1 : 1;
-      dispatch(addClient({
-        id: newClientId,
-        status: "active",
-        ...values
-      }));
-    }
-
-    // resetForm();
+    const newClientId = clients.length > 0 ? Math.max(...clients.map(client => client.id)) + 1 : 1;
+    dispatch(addClient({
+      id: newClientId,
+      status: "active",
+      ...values
+    }));
     router.push('/client');
-  };
+  }
+
   return (
     <>
       <section className="px-16">
@@ -75,11 +66,11 @@ const CreateClient = () => {
             width={16}
             height={16}
           />
-          <Paragraph
-            title="My Client"
-            styledVars={senaryHeading}
-            classes="font-base text-slateGray"
-          />
+          <p
+            className={`${senaryHeading} font-base text-slateGray`}
+          >
+            My Client
+          </p>
           <Image
             src={'/chevron-right.svg'}
             alt="chevron-right icon"
@@ -87,19 +78,17 @@ const CreateClient = () => {
             height={16}
           />
 
-          <Paragraph
+          <MinDesc
             title="Add new client"
-            styledVars={senaryHeading}
-            classes="font-semibold text-lavenderPurple cursor-pointer underline"
+            className={`${senaryHeading} font-semibold text-lavenderPurple cursor-pointer underline`}
           />
         </div>
         <div
           className="p-5 flex flex-col rounded-lg border
      border-silverGray shadow-secondaryShadow2"
         >
-          <Heading
-            classes="text-graphiteGray"
-            styledVars={tertiaryHeading}
+          <TertiaryHeading
+            className="text-graphiteGray"
             title="Add New Client"
           />
           <Formik
@@ -111,7 +100,7 @@ const CreateClient = () => {
               return (
                 <Form
                   name="basic"
-                  onFinish={handleSubmit}
+                  onSubmit={handleSubmit}
                   autoComplete="off"
                 >
                   <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-4 gap-x-5">

@@ -7,10 +7,10 @@ interface Props {
     title: string;
     className?: string;
 }
-const MinDesc = ({ title, className }: Props) => {
+const MinDescription = ({ title, className }: Props) => {
     return (
         <p className={twMerge(clsx(minHeading, className && className))}>{title}</p>
     );
 };
 
-export default MinDesc;
+export default MinDescription;
