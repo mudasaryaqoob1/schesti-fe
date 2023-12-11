@@ -1,61 +1,34 @@
 "use client"
-import Paragraph from '@/app/component/customParagraph/paragraph'
-import { senaryHeading } from '@/globals/tailwindvariables'
-import React from 'react'
-import styled from 'styled-components'
-
-const Index = () => {
-    const StyledDiv = styled.div`
-    width: 250px;
-    height:auto;
-    padding: 12px;
-    border-radius: 12px;
-    background: #FFF;
-    box-shadow: 0px 0px 20px 0px rgba(52, 73, 92, 0.07);
-`;
+import { bg_style, senaryHeading } from '@/globals/tailwindvariables'
+import React, { Dispatch } from 'react'
+interface Props {
+    setPrevNext: Dispatch<React.SetStateAction<number>>
+    prevNext: number
+}
+const Index = ({ prevNext, setPrevNext }: Props) => {
     const active = "bg-cosmicGray  text-rotalPurple w-full rounded-[6px] font-semibold"
+    const tabs = [
+        { id: 1, name: "General Settings" },
+        { id: 2, name: "Plans" },
+        { id: 3, name: "User Managements" },
+        { id: 4, name: "Material Settings" },
+        { id: 5, name: "Materials" },
+        { id: 6, name: "Target" },
+    ];
     return (
-        <StyledDiv >
-            <div className='flex flex-col items-start gap-3'>
-                <Paragraph
-                    classes={`${active} py-1 px-3`}
-                    title='General setting'
-                    styledVars={senaryHeading}
-
-                />
-                <Paragraph
-                    classes=' py-1 px-3 cursor-pointer'
-                    title='Plans'
-                    styledVars={senaryHeading}
-
-                />
-                <Paragraph
-                    classes=' py-1 px-3 cursor-pointer'
-                    title='User Managements'
-                    styledVars={senaryHeading}
-
-                />
-                <Paragraph
-                    classes=' py-1 px-3 cursor-pointer'
-                    title='Material Settings'
-                    styledVars={senaryHeading}
-
-                />
-                <Paragraph
-                    classes=' py-1 px-3 cursor-pointer'
-                    title='Materials'
-                    styledVars={senaryHeading}
-
-                />
-                <Paragraph
-                    classes=' py-1 px-3 cursor-pointer'
-                    title='Target'
-                    styledVars={senaryHeading}
-
-                />
+        <div className={`${bg_style} md:min-w-[222px] h-auto p-3`}>
+            <div className='flex flex-col items-start gap-1'>
+                {tabs.map((tab) => (
+                    <p
+                        key={tab.id}
+                        className={`py-1 px-3 cursor-pointer transition-colors ${senaryHeading} ${tab.id === prevNext ? active : ""}`}
+                        onClick={() => setPrevNext(tab.id)}
+                    >
+                        {tab.name}
+                    </p>
+                ))}
             </div>
-
-        </StyledDiv>
+        </div>
     )
 }
 

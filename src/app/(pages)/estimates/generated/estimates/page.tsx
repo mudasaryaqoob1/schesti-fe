@@ -1,39 +1,35 @@
-'use client';
 import Button from '@/app/component/customButton/button';
-import Heading from '@/app/component/customheading/heading';
-import { tertiaryHeading } from '@/globals/tailwindvariables';
-import { useRouter } from 'next/navigation';
-// import Table from '@/app/component/table/submittedestimate/';
+import Table from '@/app/component/table/table';
 import Pagination from '@/app/component/pagination';
-import { submittedestimateData, submittedestimateHeadings } from './data';
+import { submittedestimateHeadings } from './data';
+import TertiaryHeading from '@/app/component/headings/tertiary';
+import { bg_style } from '@/globals/tailwindvariables';
+import Link from 'next/link';
 
 const Client = () => {
-    const router = useRouter();
 
     return (
-        <>
-            <section className="pb-3 px-12">
-                <div className="p-5 rounded-s-xl border-2 border-silverGray">
-                    <div className="flex justify-between items-center mb-3">
-                        <Heading
-                            styledVars={tertiaryHeading}
-                            title="Submitted Estimate"
-                            className="text-graphiteGray"
-                        />
+        <section className="pt-7 px-16 pb-6">
+            <div className={`${bg_style} p-5`}>
+                <div className="flex justify-between items-center mb-3">
+                    <TertiaryHeading
+                        title="Submitted Estimate"
+                        className="text-graphiteGray"
+                    />
+                    <Link href={'/estimates/generated'}>
                         <Button
                             text="Start New Esstimate"
                             className="!w-auto"
-                            icon="plus.svg"
+                            icon="/plus.svg"
                             iconwidth={20}
                             iconheight={20}
-                            onClick={() => router.push('/estimates/generated/add')}
                         />
-                    </div>
-                    {/* <Table submittedData={submittedestimateData} headings={submittedestimateHeadings} /> */}
-                    <Pagination />
+                    </Link>
                 </div>
-            </section>
-        </>
+                <Table headings={submittedestimateHeadings} />
+                <Pagination />
+            </div>
+        </section>
     );
 };
 

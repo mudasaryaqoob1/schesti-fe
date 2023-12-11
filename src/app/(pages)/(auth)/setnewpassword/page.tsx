@@ -1,68 +1,74 @@
 'use client';
 import Button from '@/app/component/customButton/button';
-import { quinaryHeading, primaryHeading } from '@/globals/tailwindvariables';
-import Heading from '@/app/component/customheading/heading';
-import Paragraph from '@/app/component/customparagraph/paragraph';
-import React from 'react';
-import { Formik } from 'formik';
+import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { Form } from 'antd';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
+import { useDispatch } from 'react-redux';
 
 // module imports
+import { AppDispatch } from '@/redux/store';
 import FormControl from '@/app/component/formControl';
 import WelcomeWrapper from '@/app/component/welcomeLayout';
-import NavBar from '@/app/component/navbar/authBar';
+import PrimaryHeading from '@/app/component/headings/primary';
+import Description from '@/app/component/description';
+import { IResetPasswordInterface } from '@/app/interfaces/resetPassword.interface';
+import { resetPasswordHandler } from '@/redux/authSlices/auth.thunk';
 
-const initialValues = {
+const initialValues: IResetPasswordInterface = {
   password: '',
   confirmPassword: '',
 };
 
-const SetPasswordSchema: any = Yup.object({
+const newPasswordSchema: any = Yup.object({
   password: Yup.string().required('Password is required!'),
   confirmPassword: Yup.string()
     .required('Please retype your password.')
     .oneOf([Yup.ref('password')], 'Your passwords do not match.'),
 });
 const SetNewPassword = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
-  const submitHandler = () => {
+  const submitHandler = async (values: IResetPasswordInterface) => {
+    let result = await dispatch(resetPasswordHandler(values));
+
+    console.log(result, 'resultresult');
+
     router.push('/login');
   };
 
   return (
     <WelcomeWrapper>
-      <NavBar />
-      <div className="h-[100vh] grid place-items-center w-full">
-        <div className="w-full px-10">
-          <Heading
-            classes="text-center"
-            styledVars={primaryHeading}
+      <Image
+        className="cursor-pointer"
+        src={'/logo.svg'}
+        alt="logo website"
+        width={100}
+        height={30}
+        onClick={() => router.push('/')}
+      />
+      <div className="h-full grid place-items-center">
+        <div className="w-full max-w-md">
+          <PrimaryHeading
+            className="text-center"
             title="
             Set New Password 
             "
           />
-          <Paragraph
-            classes="mt-2 mb-10 font-normal leading-[24px] text-center"
-            styledVars={quinaryHeading}
+          <Description
+            className="mt-2 mb-10 font-normal leading-[24px] text-center"
             title="Please enter your new password"
           />
           <Formik
             initialValues={initialValues}
-            validationSchema={SetPasswordSchema}
+            validationSchema={newPasswordSchema}
             onSubmit={submitHandler}
           >
-            {(formik: any) => {
+            {({ handleSubmit }) => {
               return (
-                <Form
-                  name="basic"
-                  onFinish={formik.handleSubmit}
-                  autoComplete="off"
-                  // validateMessages={LoginSchema}
-                >
-                  <div className="mt-10">
+                <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
+                  <div className="flex flex-col gap-6">
                     <FormControl
                       control="password"
                       label="set new password"
@@ -78,7 +84,7 @@ const SetNewPassword = () => {
                       placeholder="Confirm password"
                     />
                   </div>
-                  <Button text="Verify Email" className="!p-[12px] mt-8" />
+                  <Button type="submit" text="Set Password" className=" mt-8" />
                 </Form>
               );
             }}

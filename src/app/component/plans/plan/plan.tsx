@@ -1,6 +1,7 @@
 'use client';
 import Button from '@/app/component/customButton/button';
-import { tertiaryHeading, quinaryHeading, primaryHeading, minHeading } from '@/globals/tailwindvariables';
+import { tertiaryHeading, quinaryHeading, minHeading } from '@/globals/tailwindvariables';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Fragment } from 'react';
 import { twMerge } from 'tailwind-merge';
@@ -15,8 +16,7 @@ const SinglePlan = ({ title, price, benefits, info }: PropSinglePlan) => {
   const router = useRouter();
   return (
     <div
-      className={
-        `m-5  p-8  rounded-[20px] items-center flex flex-col  justify-between shadow-secondaryShadow gap-5`}
+      className={`p-8  rounded-[20px] items-center flex flex-col  justify-between shadow-secondaryShadow gap-5`}
     >
       <div className=" flex flex-col gap-8 items-start">
         <h2 className={`${tertiaryHeading} text-graphiteGray`}>
@@ -24,9 +24,9 @@ const SinglePlan = ({ title, price, benefits, info }: PropSinglePlan) => {
         </h2>
         <div className='flex items-center'>
           <span
-            className={`${primaryHeading} 
-            tracking-[-0.72px]
-            text-[42px] leading-[46px] text-goldenrodYellow`}
+            className="
+            tracking-[-0.72px] font-semibold
+            text-[42px] leading-[46px] !text-goldenrodYellow"
           >
             ${price}
           </span>
@@ -40,18 +40,20 @@ const SinglePlan = ({ title, price, benefits, info }: PropSinglePlan) => {
         <p className={`${quinaryHeading} text-lightdark2`}>{info}</p>
         <div className="w-full h-px bg-mistyWhite"></div>
         <h4 className={`${tertiaryHeading} font-normal text-ebonyGray`}>Features</h4>
-        {benefits?.map((benefit, index) => (
-          <Fragment key={index}>
-            <div className="self-start flex gap-3 items-center">
-              <input type="checkbox" name={benefit} id={benefit} className='w-5 h-5 rounded-md  checked:bg-[#8449EB]' />
-              <label htmlFor={benefit} className={twMerge(`${quinaryHeading} text-ebonyGray leading-normal`)}>
-                {benefit}
-              </label>
-            </div>
-          </Fragment>
-        ))}
+        <div className='flex gap-2 flex-col'>
+          {benefits?.map((benefit, index) => (
+            <Fragment key={index}>
+              <div className="self-start flex gap-2 items-center">
+                <Image src={"/tickpurle.svg"} width={20} height={20} className='rounded-md' alt='tick icon' />
+                <label htmlFor={benefit} className={twMerge(`${quinaryHeading} text-ebonyGray leading-normal`)}>
+                  {benefit}
+                </label>
+              </div>
+            </Fragment>
+          ))}
+        </div>
       </div>
-      <div className="p-[10px] w-full">
+      <div className="w-full">
         <Button
           text="Buy"
           className="text-white self-stretch w-full"

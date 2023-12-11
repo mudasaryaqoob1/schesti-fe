@@ -2,25 +2,40 @@ import { Field, ErrorMessage } from 'formik';
 import ErrorMsg from '../errorMessage';
 import { Input } from 'antd';
 import { twMerge } from 'tailwind-merge';
-
+import clsx from 'clsx';
+import { quinaryHeading } from '@/globals/tailwindvariables';
 const InputField = (props: any) => {
-  const { label, prefix, maxLength, placeholder, name, ...rest } = props;
+  const {
+    label,
+    prefix,
+    maxLength,
+    inputStyle = '!mt-1.5',
+    labelStyle,
+    placeholder,
+    name,
+    ...rest
+  } = props;
   return (
     <div>
-      <label
-        className={twMerge('font-[500] leading-[20px] capitalize')}
-        htmlFor={name}
-      >
-        {label}
-      </label>
+      {label && (
+        <label
+          className={twMerge(clsx(`${labelStyle && quinaryHeading} `))}
+          htmlFor={name}
+        >
+          {label}
+        </label>
+      )}
       <Field name={name} id={name}>
         {({ field }: { field: any }) => (
           <Input
             prefix={prefix}
             className={twMerge(
-              'border-gray-400 !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 !mt-1.5 '
+              clsx(
+                `border-gray-400 !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 ${
+                  inputStyle && inputStyle
+                }`
+              )
             )}
-            type="text"
             maxLength={maxLength}
             {...rest}
             placeholder={placeholder}

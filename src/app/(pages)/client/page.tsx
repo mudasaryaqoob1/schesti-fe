@@ -1,21 +1,20 @@
 'use client';
 import Button from '@/app/component/customButton/button';
-import Heading from '@/app/component/customHeading/heading';
-import { tertiaryHeading } from '@/globals/tailwindvariables';
 import Table from '../../component/table/clients/index';
 import { useRouter } from 'next/navigation';
 import Pagination from '../../component/pagination';
 import { clientHeading } from './data';
+import TertiaryHeading from '@/app/component/headings/tertiary';
+import { bg_style } from '@/globals/tailwindvariables';
 const Client = () => {
   const router = useRouter();
   return (
-    <section className="pt-2.5 pb-3 px-12">
-      <div className="p-5 rounded-s-xl border border-silverGray">
-        <div className="flex justify-between items-center mb-3">
-          <Heading
-            styledVars={tertiaryHeading}
+    <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
+      <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
+        <div className="flex justify-between items-center">
+          <TertiaryHeading
             title="Client List"
-            classes="text-graphiteGray"
+            className="text-graphiteGray"
           />
           <Button
             text="Add New client"

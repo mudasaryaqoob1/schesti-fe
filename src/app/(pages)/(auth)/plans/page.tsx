@@ -8,7 +8,7 @@ const Plans = () => {
   return (
     <>
       <NavBar login={true} />
-      <div className="flex flex-col mx-24 justify-center flex-wrap">
+      <div className="flex flex-col mx-4 md:mx-24 justify-center flex-wrap">
         <TertiaryHeading className={'mt-1 mb-2'} title="Select Your Plan" />
         <PaymentPlans />
         <Progessbar progress={'50%'} step={2} />

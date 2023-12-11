@@ -53,8 +53,6 @@ export class HttpService {
     body?: any,
     options = {}
   ): Promise<any> => {
-    console.log(`${Config}/${url}`, '${Config}/${url}');
-
     const res = await axios.post(`${Config}/${url}`, body, {
       ...options,
       withCredentials: true,

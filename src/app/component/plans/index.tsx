@@ -26,14 +26,14 @@ const PaymentPlans = () => {
     const selectedPlans = isEnterprise ? (isYearly ? Enterpriseplansyearly : EnterpriseplansMonthly) : (isYearly ? Individualplansyearly : IndividualplansMonthly)
     return (
         <>
-            <div className="w-full h-px bg-mistyWhite"></div>
-            <div className='flex w-full align-items-center justify-center mt-6'>
+            <div className="w-full h-px bg-mistyWhite mt-4 mb-6"></div>
+            <div className='flex w-full align-items-center justify-center '>
                 <ToggleBtn onChange={handleToggleChange} />
             </div>
             <div className='flex w-full align-items-center justify-center my-6'>
                 <SwitchBtn onChange={handleSwitchChange} />
             </div>
-            <div className="flex gap-1 justify-center">
+            <div className="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-5">
                 {selectedPlans?.map((plan: PlanInfo, index: React.Key | null | undefined) => {
                     return <SinglePlan key={index} {...plan} />;
                 })}

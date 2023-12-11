@@ -1,36 +1,35 @@
 "use client"
 import Image from "next/image"
-import Table from '@/app/component/table/usermangement/index'
+import Table from '@/app/component/table/table'
 import { clientHeading } from './data'
-import Heading from "@/app/component/customHeading/heading"
-import { tertiaryHeading } from "@/globals/tailwindvariables"
 import Button from "@/app/component/customButton/button"
-import { useRouter } from "next/navigation"
-const Index = () => {
-    const router = useRouter()
+import TertiaryHeading from "@/app/component/headings/tertiary"
+import { Dispatch } from "react"
+interface Props {
+    setShowAddUser: Dispatch<React.SetStateAction<boolean>>
+}
+const Index = ({ setShowAddUser }: Props) => {
     return (
-        <div>
-
+        <div className="w-full">
             <div className="flex justify-between items-center mb-3">
-                <Heading
-                    styledVars={tertiaryHeading}
-                    title="Client List"
-                    classes="text-graphiteGray"
+                <TertiaryHeading
+                    title="User Managements"
                 />
                 <Button
-                    text="Add New client"
+                    text="Invite new user"
                     className="!w-auto "
-                    icon="plus.svg"
+                    icon="/plus.svg"
                     iconwidth={20}
                     iconheight={20}
-                    onClick={() => router.push('/settings/usermanagment/adduser')}
+                    onClick={() => setShowAddUser(true)}
                 />
             </div>
             <article className="bg-snowWhite rounded-2xl shadow-instentWhite py-5 px-6">
 
                 <div
-                    className="rounded-lg border border-Gainsboro bg-silverGray w-[335px] h-[40px] 
-                      my-5 flex items-center px-3">x
+                    className="rounded-lg border border-Gainsboro
+                     bg-silverGray w-[464px] h-[40px] 
+                      my-5 flex items-center gap-2 px-3.5 py-2.5">
                     <Image
                         src={'/search.svg'}
                         alt="search icon "
@@ -55,7 +54,6 @@ const Index = () => {
                     </div>
                 </div>
             </article>
-
         </div>
 
     )

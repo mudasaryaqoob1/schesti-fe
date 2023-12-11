@@ -4,16 +4,21 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Form } from 'antd';
 import Image from 'next/image';
-// module imports
-import FormControl from '@/app/component/formControl';
-import { primaryHeading, quinaryHeading } from '@/globals/tailwindvariables';
-import Heading from '@/app/component/customHeading/heading';
-import Paragraph from '@/app/component/customParagraph/paragraph';
 import { twMerge } from 'tailwind-merge';
 import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
+
+// module imports
+import FormControl from '@/app/component/formControl';
+import { quinaryHeading } from '@/globals/tailwindvariables';
 import GoogleButton from '@/app/component/googleBtn';
 import WelcomeWrapper from '@/app/component/welcomeLayout';
 import { ISignUpInterface } from '@/app/interfaces/signup.interface';
+import PrimaryHeading from '@/app/component/headings/primary';
+import Description from '@/app/component/description';
+import { signup } from '@/redux/authSlices/auth.thunk';
+import { AppDispatch } from '@/redux/store';
 
 const initialValues: ISignUpInterface = {
   name: '',
@@ -28,7 +33,7 @@ const RegisterSchema: any = Yup.object({
     .required('Email is required!')
     .email('Email should be valid'),
   password: Yup.string()
-    .required('Invalid credentials. Please try again!')
+    .required('Password is required!')
     .min(6, 'Minimum six character is required'),
   confirmPassword: Yup.string()
     .required('Confirm Password is required!')
@@ -37,12 +42,16 @@ const RegisterSchema: any = Yup.object({
 
 const Register = () => {
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
 
   const submitHandler = async (values: ISignUpInterface) => {
-    const { name, email, password } = values;
-    console.log({ name, email, password });
+    let result: any = await dispatch(signup(values));
 
-    router.push('/checkmail');
+    if (result.payload.status == 201) {
+      router.push('/checkmail');
+    } else {
+      toast.error(result.payload.message);
+    }
   };
   return (
     <WelcomeWrapper>
@@ -56,16 +65,14 @@ const Register = () => {
       />
       <section className=" grid place-items-center h-full">
         <div className="w-full max-w-md">
-          <Heading
-            classes="text-center"
-            styledVars={primaryHeading}
+          <PrimaryHeading
+            className="text-center"
             title="
             Registration
             "
           />
-          <Paragraph
-            classes="my-2 text-center text-slateGray"
-            styledVars={quinaryHeading}
+          <Description
+            className="my-2 text-center text-slateGray"
             title=" Sign up to your account"
           />
           <Formik
@@ -80,7 +87,7 @@ const Register = () => {
                   onFinish={formik.handleSubmit}
                   autoComplete="off"
                 >
-                  <div className="flex flex-col gap-3 mt-4">
+                  <div className="flex flex-col gap-3">
                     <FormControl
                       control="input"
                       label="Name"
@@ -139,9 +146,8 @@ const Register = () => {
                   </div>
                   <GoogleButton text="Sign up" />
                   <div className=" flex gap-2  justify-center mt-4">
-                    <Paragraph
-                      styledVars={quinaryHeading}
-                      classes="text-ebonyGray"
+                    <Description
+                      className="text-ebonyGray"
                       title=" Already have an account?"
                     />
                     <p

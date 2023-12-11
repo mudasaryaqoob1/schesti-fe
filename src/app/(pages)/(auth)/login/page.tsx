@@ -3,27 +3,24 @@ import React from 'react';
 import Image from 'next/image';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import { useRouter } from 'next/navigation';
+import { twMerge } from 'tailwind-merge';
+import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
 
 // module imports
 import FormControl from '@/app/component/formControl';
 
 // style imports
-import { primaryHeading, quinaryHeading } from '@/globals/tailwindvariables';
+import { quinaryHeading } from '@/globals/tailwindvariables';
 import Button from '@/app/component/customButton/button';
-import Heading from '@/app/component/customHeading/heading';
-import Paragraph from '@/app/component/customParagraph/paragraph';
-// import Image from 'next/image';
-import { twMerge } from 'tailwind-merge';
-import { useRouter } from 'next/navigation';
 import GoogleButton from '@/app/component/googleBtn';
 import WelcomeWrapper from '@/app/component/welcomeLayout';
 import { ILogInInterface } from '@/app/interfaces/login.interface';
-import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { login } from '@/redux/authSlices/auth.thunk';
-import { toast } from 'react-toastify';
-// import { handleError } from '@/app/utils/catchErrorToast';
-// import { toast } from 'react-toastify';
+import PrimaryHeading from '@/app/component/headings/primary';
+import Description from '@/app/component/description';
 
 const initialValues: ILogInInterface = {
   email: '',
@@ -46,10 +43,12 @@ const Login = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const submitHandler = async ({ email, password }: ILogInInterface) => {
-    let result = await dispatch(login({ email, password }));
+    let result: any = await dispatch(login({ email, password }));
 
-    if (result.payload.statusCode == 200) {
+    if (result.payload.status == 200) {
+      localStorage.setItem('schestiToken', result.payload.token);
       toast.success('Successfully Sign in');
+      router.push('/client');
     } else {
       toast.error(result.payload.message);
     }
@@ -71,9 +70,8 @@ const Login = () => {
         />
         <section className="grid place-items-center h-full">
           <div className="w-full max-w-md">
-            <Heading
-              classes="text-center"
-              styledVars={primaryHeading}
+            <PrimaryHeading
+              className="text-center"
               title=" Login to your account"
             />
             <Formik
@@ -115,9 +113,8 @@ const Login = () => {
                         className="text-red-700"
                       />
                     </div>
-                    <Paragraph
-                      styledVars={quinaryHeading}
-                      classes="text-graphiteGray font-semibold cursor-pointer hover:underline"
+                    <Description
+                      className="text-graphiteGray font-semibold cursor-pointer hover:underline"
                       title=" Forget Password?"
                       onClick={() => router.push('/forgetpassword')}
                     />
@@ -142,9 +139,8 @@ const Login = () => {
 
                   {/* Sign up section */}
                   <div className=" flex gap-2 justify-center mt-10">
-                    <Paragraph
-                      styledVars={quinaryHeading}
-                      classes="text-ebonyGray"
+                    <Description
+                      className="text-ebonyGray"
                       title="Don’t have an account?"
                     />
                     <p

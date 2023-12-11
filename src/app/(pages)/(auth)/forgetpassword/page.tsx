@@ -4,27 +4,34 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Form } from 'antd';
 import Image from 'next/image';
-// module imports
-import FormControl from '@/app/component/formControl';
-// style imports
-import { primaryHeading, quinaryHeading } from '@/globals/tailwindvariables';
-import Button from '@/app/component/customButton/button';
 import { useRouter } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+// module imports
+import { AppDispatch } from '@/redux/store';
+import FormControl from '@/app/component/formControl';
+import Button from '@/app/component/customButton/button';
 import WelcomeWrapper from '@/app/component/welcomeLayout';
-import Heading from '@/app/component/customHeading/heading';
-import Paragraph from '@/app/component/customParagraph/paragraph';
-const initialValues = {
-  name: '',
+import Description from '@/app/component/description';
+import PrimaryHeading from '@/app/component/headings/primary';
+import { IForgotPasswordInterface } from '@/app/interfaces/forgotPassword.interface';
+import { forgotPasswordHandler } from '@/redux/authSlices/auth.thunk';
+
+const initialValues: IForgotPasswordInterface = {
+  email: '',
 };
 
 const LoginSchema: any = Yup.object({
-  name: Yup.string().required('Email is required!').email('Invalid email!'),
+  email: Yup.string().required('Email is required!').email('Invalid email!'),
 });
 
-const Forget = () => {
+const ForgetPassword = () => {
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
 
-  const submitHandler = () => {
+  const submitHandler = async (values: IForgotPasswordInterface) => {
+    let result = await dispatch(forgotPasswordHandler(values));
+    console.log(result);
+
     router.push('/sendcode');
   };
   return (
@@ -39,14 +46,9 @@ const Forget = () => {
       />
       <div className="h-full grid place-items-center">
         <div className="w-full max-w-md ">
-          <Heading
-            styledVars={primaryHeading}
-            title="Forget Password"
-            classes="text-center"
-          />
-          <Paragraph
-            styledVars={quinaryHeading}
-            classes="text-center mt-2 mb-10 font-normal leading-[24px] text-slateGray"
+          <PrimaryHeading title="Forget Password" className="text-center" />
+          <Description
+            className="text-center mt-2 mb-10 font-normal leading-[24px] text-slateGray"
             title="Enter the email address associated with your account and we'll send
             you a link to reset your password"
           />
@@ -68,7 +70,7 @@ const Forget = () => {
                       control="input"
                       label="Email"
                       type="email"
-                      name="name"
+                      name="email"
                       placeholder="Enter your email"
                     />
                   </div>
@@ -87,4 +89,4 @@ const Forget = () => {
   );
 };
 
-export default Forget;
+export default ForgetPassword;
