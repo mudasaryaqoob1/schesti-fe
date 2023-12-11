@@ -5,7 +5,7 @@ import Table from '@/app/component/table/table';
 import Pagination from '@/app/component/pagination';
 import { estimateRequests, RequestsHeadings } from '../../data';
 import TertiaryHeading from '@/app/component/headings/tertiary';
-import { backgrounder } from '@/globals/tailwindvariables';
+import { bg_style } from '@/globals/tailwindvariables';
 
 const Records = () => {
     const router = useRouter();
@@ -13,7 +13,7 @@ const Records = () => {
     return (
         <>
             <section className="my-5   px-16">
-                <div className={`${backgrounder} p-5`}>
+                <div className={`${bg_style} p-5`}>
                     <div className="flex justify-between items-center mb-3">
                         <TertiaryHeading
                             title="My Estimate request"

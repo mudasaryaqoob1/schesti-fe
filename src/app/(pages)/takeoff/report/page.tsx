@@ -1,18 +1,18 @@
-import Paragraph from '@/app/component/customparagraph/paragraph';
 import Button from '@/app/component/customButton/button';
+import WhiteButton from '@/app/component/customButton/white';
 import {
-    quaternaryHeading,
-    secondaryHeading,
-    senaryHeading,
+    bg_style,
 } from '@/globals/tailwindvariables';
 import Image from 'next/image';
-import Heading from '@/app/component/customheading/heading';
+import SenaryHeading from '@/app/component/headings/senaryHeading';
+import SecondaryHeading from '@/app/component/headings/Secondary';
+import Description from '@/app/component/description';
 
 const page = () => {
     return (
         <>
-            <section className="px-16">
-                <div className="flex gap-4 items-center my-6">
+            <section className="md:px-16 px-8 pb-4">
+                <div className="flex gap-4 items-center mt-6">
                     <Image src={'/home.svg'} alt="home icon" width={20} height={20} />
                     <Image
                         src={'/chevron-right.svg'}
@@ -20,9 +20,8 @@ const page = () => {
                         width={16}
                         height={16}
                     />
-                    <Paragraph
-                        title="My Client"
-                        styledVars={senaryHeading}
+                    <SenaryHeading
+                        title="Takeoff"
                         className="font-base text-slateGray"
                     />
                     <Image
@@ -32,20 +31,18 @@ const page = () => {
                         height={16}
                     />
 
-                    <Paragraph
+                    <SenaryHeading
                         title="Add new client"
-                        styledVars={senaryHeading}
                         className="font-semibold text-lavenderPurple cursor-pointer underline"
                     />
                 </div>
                 {/* search project */}
-                <div className="flex justify-between items-center mb-4">
+                <div className="bg-white flex justify-between items-center mt-6 ">
                     <div
-                        className="rounded-lg border border-Gainsboro bg-silverGray w-[335px] h-[40px] 
-        my-5
-        flex 
-      items-center
-      px-3"
+                        className="rounded-lg border border-Gainsboro bg-silverGray  h-[51px] 
+                        flex 
+                        items-center
+                            px-3"
                     >
                         <input
                             type="search"
@@ -66,7 +63,7 @@ const page = () => {
                     <div>
                         <Button
                             text="Generate Report"
-                            icon="plus.svg"
+                            icon="/plus.svg"
                             iconwidth={20}
                             iconheight={20}
                         //   onClick={() => router.push('/createclient')}
@@ -74,7 +71,7 @@ const page = () => {
                     </div>
                 </div>
                 {/* icons */}
-                <div className="flex justify-center items-center gap-3 rounded-lg">
+                <div className={`flex justify-center items-center gap-3 rounded-lg px-2 py-1 mt-5 pt-5 ${bg_style}`}>
                     <Image
                         src={'/export.svg'}
                         alt="export icon"
@@ -105,39 +102,34 @@ const page = () => {
                     />
                 </div>
                 {/* drag and drop */}
-                <div className="grid place-items-center h-screen shadow-sceneryShadow rounded-lg mt-4">
+                <div className={`grid place-items-center shadow-sceneryShadow rounded-lg mt-4 ${bg_style} h-[580px] `}>
                     {/*  */}
-                    <div className="flex items-center flex-col gap-2 justify-center shadow-sceneryShadow rounded-lg">
+                    <div className="md:min-w-[493px] flex items-center flex-col gap-2 justify-center shadow-sceneryShadow rounded-lg">
                         <Image
                             src={'/uploadcloud.svg'}
                             alt="upload icon"
-                            width={86}
-                            height={86}
+                            width={80}
+                            height={80}
                         />
-                        <Heading
+                        <SecondaryHeading
                             title="Drag and Drop here"
-                            styledVars={secondaryHeading}
                             className="cursor-pointer text-graphiteGray"
                         />
-                        <Paragraph
+                        <Description
                             title="or"
-                            styledVars={secondaryHeading}
                             className="cursor-pointer text-coolGray"
                         />
-                        <label htmlFor="fileInput" className="relative cursor-pointer">
+                        <label htmlFor="fileInput" className='w-full mt-2 cursor-pointer'>
                             <input
                                 type="file"
                                 id="fileInput"
                                 name="fileInput"
                                 className="hidden"
-                                style={{ opacity: 0, position: 'absolute', zIndex: -1 }}
                             />
-                            <div className="bg-transparentp-2 rounded-md">
-                                {/* Your custom label or icon can go here */}
-                                <p className={`${quaternaryHeading} text-pitchBlack`}>
-                                    Select file
-                                </p>
-                            </div>
+                            <WhiteButton
+                                className='w-full'
+                                text='Select file'
+                            />
                         </label>
                     </div>
                 </div>

@@ -10,6 +10,7 @@ export default {
         rotalPurple: "#6941C6",
         // Whites and Grays
         snowWhite: '#FFF',
+        lightyGray: "#90A0B7",
         mistyWhite: '#E7E7E7',
         nastyWhite: "#FCFCFD",
         lightGrayishBlue: "#E3E8EF",
@@ -37,6 +38,8 @@ export default {
         silverGray: "#F6F6F6",
         Gainsboro: "#DFDFDF",
         graylittle: "#ECECEC",
+        graylighty: "#E5E1E6",
+        darkgrayish: "#464646",
         // Deep and Dark Colors
         royalIndigo: '#036',
         obsidianBlack: '#1A141F',
@@ -51,7 +54,8 @@ export default {
         greenishGreen: "#36B37E",
         lightdark: "rgba(4, 4, 4, 0.50)",
         lightdark2: "rgba(0, 0, 0, 0.60)",
-        lightGray: "#F7F9FF"
+        lightGray: "#F7F9FF",
+        lightyGrayish: "#6A6A6A"
       },
       boxShadow: {
         // Soft Glow for Primary Element

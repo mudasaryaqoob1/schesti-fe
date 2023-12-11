@@ -1,6 +1,6 @@
 'use client';
 import Button from '@/app/component/customButton/button';
-import { tertiaryHeading, quinaryHeading, primaryHeading, minHeading } from '@/globals/tailwindvariables';
+import { tertiaryHeading, quinaryHeading, minHeading } from '@/globals/tailwindvariables';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Fragment } from 'react';
@@ -24,9 +24,9 @@ const SinglePlan = ({ title, price, benefits, info }: PropSinglePlan) => {
         </h2>
         <div className='flex items-center'>
           <span
-            className={`${primaryHeading} 
-            tracking-[-0.72px]
-            text-[42px] leading-[46px] text-goldenrodYellow`}
+            className="
+            tracking-[-0.72px] font-semibold
+            text-[42px] leading-[46px] !text-goldenrodYellow"
           >
             ${price}
           </span>

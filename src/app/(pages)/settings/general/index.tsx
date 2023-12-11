@@ -1,15 +1,10 @@
 'use client';
 import FormControl from '@/app/component/formControl';
-import Heading from '@/app/component/customHeading/heading';
-import ClientNavbar from '@/app/component/navbar/clientnavbar';
-import { Backgrounder, minHeading, senaryHeading, tertiaryHeading } from '@/globals/tailwindvariables';
+import { bg_style, minHeading, senaryHeading } from '@/globals/tailwindvariables';
 import Button from '@/app/component/customButton/button'
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import Paragraph from '@/app/component/customParagraph/paragraph';
 import Image from 'next/image';
-import CustomButton from '@/app/component/customButton/button';
-import { useRouter } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
 // interface newClientTypes {
 //   firstName: string
@@ -56,12 +51,13 @@ const Index = () => {
                             name="basic"
                             onSubmit={handleSubmit}
                             autoComplete="off"
-                            className={`${Backgrounder} py-5 px-6 mb-4`}
+                            className={`${bg_style} p-5 `}
                         >
-                            <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-4 gap-5">
+                            <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-3 gap-x-5 ">
                                 <FormControl
                                     control="input"
                                     label="Company Name"
+                                    labelStyle="!text-lightyGrayish"
                                     type="text"
                                     name="companyName"
                                     placeholder="Enter Company Name"
@@ -71,6 +67,7 @@ const Index = () => {
                                     label="email"
                                     type="email"
                                     name="email"
+                                    labelStyle="!text-lightyGrayish"
                                     placeholder="Email Address"
                                 />
                                 <FormControl
@@ -78,6 +75,7 @@ const Index = () => {
                                     label="industry"
                                     type="text"
                                     name="industry"
+                                    labelStyle="!text-lightyGrayish"
                                     placeholder="industry"
                                 />
                                 <FormControl
@@ -85,6 +83,7 @@ const Index = () => {
                                     label="total empolyee"
                                     type="text"
                                     name="totalemployees"
+                                    labelStyle="!text-lightyGrayish"
                                     placeholder="total empolyee"
                                 />
                                 <FormControl
@@ -92,6 +91,7 @@ const Index = () => {
                                     label="Phone Number"
                                     type="text"
                                     name="phoneNumber"
+                                    labelStyle="!text-lightyGrayish"
                                     placeholder="Phone number"
                                 />
                                 <FormControl
@@ -99,6 +99,7 @@ const Index = () => {
                                     label="website"
                                     type="text"
                                     name="website"
+                                    labelStyle="!text-lightyGrayish"
                                     placeholder="abc@company.com"
                                 />
                             </div>
@@ -108,19 +109,22 @@ const Index = () => {
                 }}
             </Formik>
             {/* upload */}
-            <div className={`${Backgrounder} py-5 px-6 my-4 `}>
-                <div className='px-6 py-4 flex flex-col items-center gap-3'>
+            <div className={`${bg_style} p-5 mt-4 `}>
+                <div className={`px-6 py-4 flex flex-col items-center gap-3
+                ${bg_style}
+                `}>
                     <input type="text" id='upload' className='hidden' />
-                    <div className='relative'>
+                    <div className='bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5'>
                         <Image src={"/uploadcloud.svg"} alt='upload icon' width={20} height={20}
-                            className=' bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray' />
+                        />
                     </div>
                     <div className='flex gap-2'>
                         <label htmlFor='upload' className={twMerge(
                             `${senaryHeading} text-RoyalPurple font-semibold 
-                            cusor-pointer
+                            cursor-pointer
                             `
                         )}>Upload Logo</label>
+                        <input type="file" name="upload" id="upload" className='hidden' />
                         <p className={`text-steelGray ${minHeading}
                         `}>or drag and drop</p>
 
@@ -129,7 +133,7 @@ const Index = () => {
                         `}>SVG, PNG, JPG or GIF (max. 800x400px)</p>
                 </div>
             </div>
-            <div className=' px-5 flex justify-end gap-4 my-5'>
+            <div className='flex justify-end gap-4  mt-4 pb-2'>
                 <div className=''>
                     <Button
                         text='Cancel'

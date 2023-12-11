@@ -4,7 +4,7 @@ import {
   minHeading,
   senaryHeading,
 } from '@/globals/tailwindvariables';
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
 import ClientInfo from './clientInfo';
@@ -15,13 +15,21 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import MinDescription from '@/app/component/description/minDesc';
 import CustomWhiteButton from '@/app/component/customButton/white';
+import Existing from '../../components/existing';
+import ModalComponent from '@/app/component/modal';
+
 const TakeOff = () => {
   const router = useRouter();
+  const [showModal, setShowModal] = useState(false)
+
   return (
     <>
+      <ModalComponent open={showModal} setOpen={setShowModal}>
+        <Existing setModalOpen={setShowModal} />
+      </ModalComponent>
       <section className="pt-6 pb-3 px-16">
         <div className=" flex flex-col">
-          <div className="flex justify-between items-center  md:flex-wrap ">
+          <div className="flex justify-between items-center  md:flex-wrap relative">
             <TertiaryHeading
               title="Take Off Measurements"
             />
@@ -31,7 +39,7 @@ const TakeOff = () => {
               icon="/plusblack.svg"
               iconwidth={20}
               iconheight={20}
-              onClick={() => router.push('/estimates/requests/existing')}
+              onClick={() => setShowModal(true)}
             />
           </div>
           <ClientInfo />
@@ -150,6 +158,7 @@ const TakeOff = () => {
           </div>
         </div>
       </section>
+
     </>
   );
 };

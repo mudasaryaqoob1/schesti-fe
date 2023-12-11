@@ -1,5 +1,4 @@
-import Heading from '@/app/component/customheading/heading';
-import { senaryHeading } from '@/globals/tailwindvariables';
+import SenaryHeading from '@/app/component/headings/senaryHeading';
 import Image from 'next/image';
 
 const page = () => {
@@ -7,8 +6,7 @@ const page = () => {
         <>
             <section className="m-5">
                 <div className="p-3">
-                    <Heading
-                        styledVars={senaryHeading}
+                    <SenaryHeading
                         className="text-royalIndigo font-medium"
                         title="Area Measurement (2)"
                     />

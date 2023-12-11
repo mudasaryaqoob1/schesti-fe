@@ -3,6 +3,7 @@ import { twMerge } from 'tailwind-merge';
 import { btnWhiteStyle } from '@/globals/tailwindvariables';
 import { voidFc } from '@/app/utils/types';
 import Image from 'next/image';
+import clsx from 'clsx';
 
 type PropsBtn = {
     text: string;
@@ -17,9 +18,9 @@ type PropsBtn = {
     loadingText?: string
 
 };
-const CustomWhiteButton = ({ text, type = "button", loadingText, className, disabled = false, icon, iconwidth, iconheight, isLoading = false, onClick = () => { } }: PropsBtn) => {
+const CustomButton = ({ text, type = "button", loadingText, className, disabled = false, icon, iconwidth, iconheight, isLoading = false, onClick = () => { } }: PropsBtn) => {
     return (
-        <button type={type} disabled={disabled || isLoading} className={twMerge(`${className} ${btnWhiteStyle} ${icon ? "flex gap-3 justify-between items-center" : ""}`)}
+        <button type={type} disabled={disabled || isLoading} className={twMerge(clsx(`${className && className} ${btnWhiteStyle} ${icon ? "flex gap-3 justify-between items-center" : ""}`))}
             onClick={onClick}
         >
             {icon && <Image src={icon} alt='btn icon' width={iconwidth} height={iconheight} />}
@@ -28,4 +29,4 @@ const CustomWhiteButton = ({ text, type = "button", loadingText, className, disa
     );
 };
 
-export default CustomWhiteButton;
+export default CustomButton;

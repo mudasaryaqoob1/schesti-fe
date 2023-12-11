@@ -19,7 +19,7 @@ const ClientNavbar = () => {
       </Link>
 
       <div className="flex flex-col md:flex-row gap-6 justify-between items-center">
-        <Link href={"/upgradeplan"} className='md:my-0 my-2'>
+        <Link href={"/upgradeplans"} className='md:my-0 my-2'>
           <CustomButton
             className="!py-2.5 !px-6 h-10
           

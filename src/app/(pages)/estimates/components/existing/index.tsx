@@ -1,22 +1,20 @@
 'use client';
 import { Fragment } from 'react';
-
 import Button from '@/app/component/customButton/button'
-
 import Image from 'next/image';
 import { existingClients } from './data';
-import { useRouter } from 'next/navigation';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import SecondaryHeading from '@/app/component/headings/Secondary';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
-
-const Index = () => {
-    const router = useRouter();
+interface Props {
+    setModalOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
+const Existing = ({ setModalOpen }: Props) => {
 
     return (
-        <div className='max-w-[898px] absolute py-2.5 px-6 bg-white border border-solid border-elboneyGray rounded-[4px] '>
-            <section>
+        <div className='py-2.5 px-6 bg-white border border-solid border-elboneyGray rounded-[4px] z-50'>
+            <section className='w-full'>
                 <div className="flex justify-between items-center border-b-Gainsboro ">
                     <div>
                         <QuaternaryHeading
@@ -34,7 +32,7 @@ const Index = () => {
                         width={24}
                         height={24}
                         className="cursor-pointer"
-                        onClick={() => router.push('takeoff')}
+                        onClick={() => setModalOpen(false)}
                     />
                 </div>
                 <div
@@ -109,12 +107,14 @@ const Index = () => {
                     <Button
                         text='Cancel'
                         className='!bg-snowWhite !text-abyssalBlack'
-                        onClick={() => router.push("/estimates/requests/takeoff")}
+                        onClick={() => setModalOpen(false)}
                     />
                 </div>
                 <div>
                     <Button
-                        text='Next  '
+                        text='Next'
+                        onClick={() => setModalOpen(false)}
+
                     />
                 </div>
             </div>
@@ -123,4 +123,4 @@ const Index = () => {
     );
 };
 
-export default Index;
+export default Existing;
