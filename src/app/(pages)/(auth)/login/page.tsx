@@ -21,6 +21,7 @@ import { ILogInInterface } from '@/app/interfaces/login.interface';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { login } from '@/redux/authSlices/auth.thunk';
+import { toast } from 'react-toastify';
 // import { handleError } from '@/app/utils/catchErrorToast';
 // import { toast } from 'react-toastify';
 
@@ -45,13 +46,13 @@ const Login = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const submitHandler = async ({ email, password }: ILogInInterface) => {
-    await dispatch(login({ email, password }));
+    let result = await dispatch(login({ email, password }));
 
-    // if (result.payload.statusCode == 200) {
-    //   toast.success('Successfully Sign in');
-    // } else {
-    //   toast.error(result.payload.message);
-    // }
+    if (result.payload.statusCode == 200) {
+      toast.success('Successfully Sign in');
+    } else {
+      toast.error(result.payload.message);
+    }
 
     // .then((result) => console.log('result---', result))
     // .catch(handleError);

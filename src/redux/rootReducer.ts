@@ -5,7 +5,7 @@ import storage from 'redux-persist/lib/storage';
 import authReducer from './authSlices/authSlice';
 
 export type RootState = {
-  auth: ReturnType<typeof authReducer>;
+  auth: any;
 };
 
 const persistConfig = {

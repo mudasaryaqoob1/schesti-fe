@@ -12,16 +12,14 @@ import { ISignUpInterface } from '@/app/interfaces/signup.interface';
 import { IToken } from '@/app/interfaces/token.interface';
 
 class AuthService extends HttpService {
-  private readonly prefix: string = 'api/v1/auth';
+  private readonly prefix: string = 'api/auth';
 
   signupHandler = (
     data: ISignUpInterface
   ): Promise<IResponseInterface<{ token: IToken; user: IUser }>> =>
     this.post(`${this.prefix}/signup`, data);
 
-  loginHandler = (
-    data: ILogInInterface
-  ): Promise<IResponseInterface<{ token: IToken; user: IUser }>> =>
+  loginHandler = (data: ILogInInterface): Promise<any> =>
     this.post(`${this.prefix}/login`, data);
 }
 export const authService = new AuthService();
