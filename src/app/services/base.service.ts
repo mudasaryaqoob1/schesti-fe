@@ -1,12 +1,12 @@
 // base.service.ts
 
-import axios, { CancelTokenStatic, CancelTokenSource } from 'axios';
+import axios from 'axios';
 
 const Config = process.env.NEXT_PUBLIC_APP_BASE_URL;
 
 export class HttpService {
-  CancelToken: CancelTokenStatic;
-  source: CancelTokenSource;
+  CancelToken: any;
+  source: any;
 
   constructor() {
     this.CancelToken = axios.CancelToken;
@@ -53,6 +53,8 @@ export class HttpService {
     body?: any,
     options = {}
   ): Promise<any> => {
+    console.log(`${Config}/${url}`, '${Config}/${url}');
+
     const res = await axios.post(`${Config}/${url}`, body, {
       ...options,
       withCredentials: true,
