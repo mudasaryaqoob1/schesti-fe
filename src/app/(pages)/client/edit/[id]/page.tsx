@@ -1,46 +1,47 @@
-import FormControl from '@/app/component/formControl';
-import { senaryHeading } from '@/globals/tailwindvariables';
-import { Formik } from 'formik';
-import * as Yup from 'yup';
-import { Form } from 'antd';
-import Image from 'next/image';
-import CustomButton from '@/app/component/customButton/button';
-import { useRouter } from 'next/navigation';
-import TertiaryHeading from '@/app/component/headings/tertiary';
-import MinDescription from '@/app/component/description/minDesc';
+import React from 'react';
+// import FormControl from '@/app/component/formControl';
+// import { senaryHeading } from '@/globals/tailwindvariables';
+// import { Formik } from 'formik';
+// import * as Yup from 'yup';
+// import { Form } from 'antd';
+// import Image from 'next/image';
+// import CustomButton from '@/app/component/customButton/button';
+// import { useRouter } from 'next/navigation';
+// import TertiaryHeading from '@/app/component/headings/tertiary';
+// import MinDescription from '@/app/component/description/minDesc';
 
-const editClientSchema = Yup.object({
-  firstName: Yup.string().required(' first name is required!'),
-  lastName: Yup.string().required('last name is required!'),
-  email: Yup.string()
-    .required('Email is required!')
-    .email('Email should be valid'),
-  phoneNumber: Yup.string().required('phone number is required!'),
-  companyName: Yup.string().required('company Name is required!'),
-  address: Yup.string().required('Address is required!'),
-  address2: Yup.string(),
-});
+// const editClientSchema = Yup.object({
+//   firstName: Yup.string().required(' first name is required!'),
+//   lastName: Yup.string().required('last name is required!'),
+//   email: Yup.string()
+//     .required('Email is required!')
+//     .email('Email should be valid'),
+//   phoneNumber: Yup.string().required('phone number is required!'),
+//   companyName: Yup.string().required('company Name is required!'),
+//   address: Yup.string().required('Address is required!'),
+//   address2: Yup.string(),
+// });
 const EditClient = () => {
   // const { id } = useParams();
 
-  const initialValues = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    phoneNumber: '',
-    companyName: '',
-    address: '',
-    address2: '',
-  };
-  const router = useRouter();
+  // const initialValues = {
+  //   firstName: '',
+  //   lastName: '',
+  //   email: '',
+  //   phoneNumber: '',
+  //   companyName: '',
+  //   address: '',
+  //   address2: '',
+  // };
+  // const router = useRouter();
 
-  const submitHandler = () => {
-    router.push('/client');
-  };
+  // const submitHandler = () => {
+  //   router.push('/client');
+  // };
   return (
     <>
       <section className="px-16">
-        <div className="flex gap-4 items-center my-6">
+        {/* <div className="flex gap-4 items-center my-6">
           <Image src={'/home.svg'} alt="home icon" width={20} height={20} />
           <Image
             src={'/chevron-right.svg'}
@@ -152,7 +153,7 @@ const EditClient = () => {
               );
             }}
           </Formik>
-        </div>
+        </div> */}
       </section>
     </>
   );
