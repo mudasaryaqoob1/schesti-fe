@@ -13,6 +13,7 @@ import { AppDispatch } from '@/redux/store';
 import { fetchedClients } from '@/redux/clientSlice/client.thunk';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
+import CustomNavbar from '@/app/component/customNavbar';
 
 const Client = () => {
   const router = useRouter();
@@ -36,23 +37,30 @@ const Client = () => {
   }, []);
 
   return (
-    <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
-      <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
-        <div className="flex justify-between items-center">
-          <TertiaryHeading title="Client List" className="text-graphiteGray" />
-          <Button
-            text="Add New client"
-            className="!w-auto "
-            icon="plus.svg"
-            iconwidth={20}
-            iconheight={20}
-            onClick={() => router.push('/client/create')}
-          />
+    <CustomNavbar>
+      <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
+        <div
+          className={`${bg_style} p-5 border border-solid border-silverGray`}
+        >
+          <div className="flex justify-between items-center">
+            <TertiaryHeading
+              title="Client List"
+              className="text-graphiteGray"
+            />
+            <Button
+              text="Add New client"
+              className="!w-auto "
+              icon="plus.svg"
+              iconwidth={20}
+              iconheight={20}
+              onClick={() => router.push('/client/create')}
+            />
+          </div>
+          <Table headings={clientHeading} clients={clientsData} />
+          <Pagination />
         </div>
-        <Table headings={clientHeading} clients={clientsData} />
-        <Pagination />
-      </div>
-    </section>
+      </section>
+    </CustomNavbar>
   );
 };
 
