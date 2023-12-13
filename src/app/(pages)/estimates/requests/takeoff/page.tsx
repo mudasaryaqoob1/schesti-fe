@@ -1,16 +1,13 @@
 'use client';
 import CustomButton from '@/app/component/customButton/button';
-import {
-  minHeading,
-  senaryHeading,
-} from '@/globals/tailwindvariables';
+import { minHeading, senaryHeading } from '@/globals/tailwindvariables';
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
 import ClientInfo from './clientInfo';
 import Projectinformation from './projectinformation';
 import Assignments from './assignments';
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import MinDescription from '@/app/component/description/minDesc';
@@ -20,7 +17,7 @@ import ModalComponent from '@/app/component/modal';
 
 const TakeOff = () => {
   const router = useRouter();
-  const [showModal, setShowModal] = useState(false)
+  const [showModal, setShowModal] = useState(false);
 
   return (
     <>
@@ -30,9 +27,7 @@ const TakeOff = () => {
       <section className="pt-6 pb-3 px-16">
         <div className=" flex flex-col">
           <div className="flex justify-between items-center  md:flex-wrap relative">
-            <TertiaryHeading
-              title="Take Off Measurements"
-            />
+            <TertiaryHeading title="Take Off Measurements" />
             <CustomWhiteButton
               text="Add Existing Client"
               className="!w-auto "
@@ -53,9 +48,7 @@ const TakeOff = () => {
             />
             <div className="flex items-center gap-3">
               <div className="w-60">
-                <p
-                  className={`${senaryHeading} text-midnightBlue font-popin`}
-                >
+                <p className={`${senaryHeading} text-midnightBlue font-popin`}>
                   Architecture
                 </p>
                 <div
@@ -92,9 +85,7 @@ const TakeOff = () => {
                 </div>
               </div>
               <div className="w-60">
-                <p
-                  className={`${senaryHeading} text-midnightBlue font-popin`}
-                >
+                <p className={`${senaryHeading} text-midnightBlue font-popin`}>
                   Other Documents
                 </p>
                 <div
@@ -119,9 +110,9 @@ const TakeOff = () => {
                         Click to upload
                       </p>
                     </div>
-                    <p
-                      className={`${minHeading} text-midnightBlue font-popin`}
-                    >or drag and drop</p>
+                    <p className={`${minHeading} text-midnightBlue font-popin`}>
+                      or drag and drop
+                    </p>
                   </div>
                   <p
                     className={`${minHeading} text-midnightBlue font-popin text-center `}
@@ -151,14 +142,15 @@ const TakeOff = () => {
               />
             </div>
             <div className="!px-5 !py-3 !w-64">
-              <CustomButton text="Next" className="!px-5 !py-3"
+              <CustomButton
+                text="Next"
+                className="!px-5 !py-3"
                 onClick={() => router.push('/estimates')}
               />
             </div>
           </div>
         </div>
       </section>
-
     </>
   );
 };

@@ -4,7 +4,7 @@ import { Pagination } from 'antd';
 const Index = () => {
   return (
     <div className="flex mt-5 overflow-x-auto w-full justify-center md:justify-between items-center">
-      <div className='lg:block hidden'>
+      <div className="lg:block hidden">
         <CustomButton
           className={`!bg-transparent   !border-celestialGray 
         shadow-scenarySubdued2 px-5 py-2.5   
@@ -17,11 +17,15 @@ const Index = () => {
       </div>
 
       <Pagination defaultCurrent={1} total={100} />
-      <div className=' gap-2 rounded-lg border-celestialGray border !bg-snowWhite shadow-scenarySubdued2 
+      <div
+        className=" gap-2 rounded-lg border-celestialGray border !bg-snowWhite shadow-scenarySubdued2 
       lg:flex hidden
-      px-5 py-2.5'>
+      px-5 py-2.5"
+      >
         <button
-          className={"!bg-transparent  !border-0 cursor-pointer  text-graphiteGray min-w-40 "}
+          className={
+            '!bg-transparent  !border-0 cursor-pointer  text-graphiteGray min-w-40 '
+          }
         >
           Next
         </button>

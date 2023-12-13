@@ -6,10 +6,7 @@ import Link from 'next/link';
 const ClientNavbar = () => {
   return (
     <nav className="py-3 px-16 md:h-[60px] md:flex flex-col  md:flex-row items-center justify-between w-full bg-primaryGradient">
-      <Link
-        href={'/'}
-        className="cursor-pointer active:scale-105 mb-2 md:mb-0"
-      >
+      <Link href={'/'} className="cursor-pointer active:scale-105 mb-2 md:mb-0">
         <Image
           src={'/logowhite.svg'}
           alt="logo white icon"
@@ -19,7 +16,7 @@ const ClientNavbar = () => {
       </Link>
 
       <div className="flex flex-col md:flex-row gap-6 justify-between items-center">
-        <Link href={"/upgradeplans"} className='md:my-0 my-2'>
+        <Link href={'/upgradeplans'} className="md:my-0 my-2">
           <CustomButton
             className="!py-2.5 !px-6 h-10
           
@@ -31,10 +28,9 @@ const ClientNavbar = () => {
             text="
         Upgrade Plan    
         "
-
           />
         </Link>
-        <div className='flex items-center gap-4'>
+        <div className="flex items-center gap-4">
           <Link href={'/settings'}>
             <Image
               src={'/setting.svg'}
@@ -44,10 +40,9 @@ const ClientNavbar = () => {
               className="cursor-pointer
             
             "
-
             />
           </Link>
-          <Link href={"/notifications"}>
+          <Link href={'/notifications'}>
             <Image
               src={'/bell-02.svg'}
               alt="logo white icon"
@@ -62,7 +57,7 @@ const ClientNavbar = () => {
             width={40}
             height={40}
           />
-          <Link href={"/profile"} className="relative">
+          <Link href={'/profile'} className="relative">
             <Image
               src={'/profile.svg'}
               alt="logo white icon"

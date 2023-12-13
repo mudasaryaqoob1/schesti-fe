@@ -1,4 +1,5 @@
 'use client';
+import React, { useState } from 'react';
 import Button from '@/app/component/customButton/button';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -44,12 +45,17 @@ const Register = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const submitHandler = async (values: ISignUpInterface) => {
+    setIsLoading(true);
     let result: any = await dispatch(signup(values));
 
     if (result.payload.status == 201) {
+      setIsLoading(false);
       router.push('/checkmail');
     } else {
+      setIsLoading(false);
       toast.error(result.payload.message);
     }
   };
@@ -117,24 +123,12 @@ const Register = () => {
                       placeholder="confirm Password"
                     />
                   </div>
-                  {/* <div className="flex justify-between align-items-center w-full">
-                <div className='flex gap-2 items-center'>
-                  <Image src={"/check.svg"} alt="check icon" width={14} height={14}
-                   className="cursor-pointer"/>
-                <p className={quinaryHeading} >
-                  Remember me</p>
-                </div>
-                <Paragraph
-                  styledVars={quinaryHeading}
-                  classes='text-graphiteGray font-semibold cursor-pointer hover:underline'
-                  title=" Forget Password?"
-                />
-              </div> */}
+
                   <Button
                     text="Register"
                     className="!p-[12px] mt-4"
                     type="submit"
-                    isLoading={false}
+                    isLoading={isLoading}
                   />
                   <div
                     className="flex justify-between items-center gap-[17px]

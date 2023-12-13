@@ -1,11 +1,10 @@
-
 export const clientHeading = [
-  "Name",
-  "Email",
-  "Role",
-  "Invitation dsate",
-  "Action"
-]
+  'Name',
+  'Email',
+  'Role',
+  'Invitation dsate',
+  'Action',
+];
 export const clientsData = [
   {
     id: 1,
@@ -100,4 +99,3 @@ export const clientsData = [
 ];
 
 // Now `data` contains an array of 10 objects with unique IDs.
-

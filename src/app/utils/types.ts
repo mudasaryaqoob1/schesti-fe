@@ -1,1 +1,1 @@
-export type voidFc=()=>void;
+export type voidFc = () => void;

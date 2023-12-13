@@ -8,31 +8,28 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 
 const Records = () => {
-    const router = useRouter();
+  const router = useRouter();
 
-    return (
-        <div className={`${bg_style} p-5`}>
-            <div className="flex justify-between items-center mb-3">
-                <TertiaryHeading
-                    title="Recent Measurements"
-                />
-                <Button
-                    text="Start Measurements"
-                    className="!w-auto"
-                    icon="plus.svg"
-                    iconwidth={20}
-                    iconheight={20}
-                />
-            </div>
+  return (
+    <div className={`${bg_style} p-5`}>
+      <div className="flex justify-between items-center mb-3">
+        <TertiaryHeading title="Recent Measurements" />
+        <Button
+          text="Start Measurements"
+          className="!w-auto"
+          icon="plus.svg"
+          iconwidth={20}
+          iconheight={20}
+        />
+      </div>
 
-            <Table
-                takeoffRecords={takeoffRecords}
-                headings={takeoffRecordsHeadings}
-            />
-            <Pagination />
-
-        </div>
-    );
+      <Table
+        takeoffRecords={takeoffRecords}
+        headings={takeoffRecordsHeadings}
+      />
+      <Pagination />
+    </div>
+  );
 };
 
 export default Records;

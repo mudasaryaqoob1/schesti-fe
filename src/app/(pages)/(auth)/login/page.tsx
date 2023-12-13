@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
@@ -23,8 +23,8 @@ import PrimaryHeading from '@/app/component/headings/primary';
 import Description from '@/app/component/description';
 
 const initialValues: ILogInInterface = {
-  email: '',
-  password: '',
+  email: 'azher@gmail.com',
+  password: 'qwertyuiop',
   remember: false,
 };
 
@@ -41,20 +41,24 @@ const LoginSchema = Yup.object({
 const Login = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  // const data = useSelector((state: any) => state.auth);
+  // console.log('data ============', data);
+
+  const [loading, setLoading] = useState(false);
 
   const submitHandler = async ({ email, password }: ILogInInterface) => {
+    setLoading(true);
     let result: any = await dispatch(login({ email, password }));
 
     if (result.payload.status == 200) {
+      setLoading(false);
       localStorage.setItem('schestiToken', result.payload.token);
       toast.success('Successfully Sign in');
       router.push('/client');
     } else {
+      setLoading(false);
       toast.error(result.payload.message);
     }
-
-    // .then((result) => console.log('result---', result))
-    // .catch(handleError);
   };
 
   return (
@@ -121,7 +125,7 @@ const Login = () => {
                   </div>
                   {/* Login button */}
                   <Button
-                    isLoading={false}
+                    isLoading={loading}
                     text="Login"
                     className="!p-3 mt-8"
                     type="submit"

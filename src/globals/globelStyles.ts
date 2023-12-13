@@ -1,1 +1,1 @@
-export const goldenrodYellow = "#EF9F28"
+export const goldenrodYellow = '#EF9F28';

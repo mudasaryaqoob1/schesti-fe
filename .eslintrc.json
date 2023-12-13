@@ -6,9 +6,8 @@
   },
   "rules": {
     "no-unused-vars": [1, { "args": "after-used", "argsIgnorePattern": "^_" }],
-    "@typescript-eslint/no-unused-vars" : ["error"],
-    "import/no-unresolved" : "error",
-    "import/named" : "error"
+    "@typescript-eslint/no-unused-vars": ["error"],
+    "import/no-unresolved": "error",
+    "import/named": "error"
   }
 }
-

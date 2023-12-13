@@ -3,9 +3,7 @@ import Button from '@/app/component/customButton/button';
 import SecondaryHeading from '@/app/component/headings/Secondary';
 import NavBar from '@/app/component/navbar/authBar';
 import WelcomeWrapper from '@/app/component/welcomeLayout';
-import {
-  quaternaryHeading,
-} from '@/globals/tailwindvariables';
+import { quaternaryHeading } from '@/globals/tailwindvariables';
 import { useRouter } from 'next/navigation';
 
 const Resendcode = () => {
@@ -15,9 +13,7 @@ const Resendcode = () => {
       <NavBar />
       <section className="grid place-items-center h-[100vh]">
         <div className="flex flex-col w-[500px]">
-          <SecondaryHeading
-            title={'Thanks!'}
-          />
+          <SecondaryHeading title={'Thanks!'} />
 
           <SecondaryHeading
             title={`If arslan.anjum951@gmail.com matches an email we have on file, then we've sent you an

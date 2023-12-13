@@ -20,13 +20,10 @@ const clientInfoSchema: any = Yup.object({
     .email('Email should be valid'),
 });
 const ClientInfo = () => {
-  const submitHandler = () => { };
+  const submitHandler = () => {};
   return (
     <div className="p-5 mt-4 border border-solid border-silverGray pb-4 rounded-lg shadow-quinarGentleDepth">
-      <QuaternaryHeading
-        title="Client Information"
-        className="font-semibold"
-      />
+      <QuaternaryHeading title="Client Information" className="font-semibold" />
       <Formik
         initialValues={initialValues}
         validationSchema={clientInfoSchema}

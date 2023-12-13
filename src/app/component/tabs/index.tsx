@@ -2,17 +2,16 @@
 
 import tabsData from './data';
 import { quaternaryHeading } from '@/globals/tailwindvariables';
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 import { goldenrodYellow } from '@/globals/globelStyles';
 import clsx from 'clsx';
 import { usePathname } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
 
-
 const Tabs = () => {
   const pathname = usePathname();
-  const router = useRouter()
+  const router = useRouter();
 
   return (
     <Wrapper className="md:flex block justify-between items-center px-16 xl:h-[67px] shadow-quinaryGentle">
@@ -22,14 +21,19 @@ const Tabs = () => {
       >
         {tabsData.map(({ name, route }, i) => {
           return (
-            <li className={twMerge(
-              clsx(`${quaternaryHeading} text-steelGray
+            <li
+              className={twMerge(
+                clsx(
+                  `${quaternaryHeading} text-steelGray
                 flex items-stretch justify-center py-2 
                  cursor-pointer
-                `, pathname.includes(route.split('/')[1]) && "active")
-            )}
-              onClick={() => router.push(route)} key={i}>
-
+                `,
+                  pathname.includes(route.split('/')[1]) && 'active'
+                )
+              )}
+              onClick={() => router.push(route)}
+              key={i}
+            >
               {name}
             </li>
           );
@@ -41,11 +45,10 @@ const Tabs = () => {
 
 export default Tabs;
 
-
 const Wrapper = styled.section`
-.active{
-  border-bottom: 2px solid ${goldenrodYellow};
-  color:#1A141F ;
-  font-weight: 600;
-}
+  .active {
+    border-bottom: 2px solid ${goldenrodYellow};
+    color: #1a141f;
+    font-weight: 600;
+  }
 `;

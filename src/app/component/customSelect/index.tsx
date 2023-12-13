@@ -11,11 +11,18 @@ const defaultOptions = [
   { value: 'option 1', label: 'Option 1' },
   { value: 'option 2', label: 'Option 2' },
   { value: 'option 3', label: 'Option 3' },
-
 ];
 
 const SelectComp = (props: any) => {
-  const { name, placeholder, label, labelStyle, className, options = defaultOptions, ...rest } = props;
+  const {
+    name,
+    placeholder,
+    label,
+    labelStyle,
+    className,
+    options = defaultOptions,
+    ...rest
+  } = props;
 
   const OptionsArr = options?.map((option: { value: string; key: string }) => {
     return (
@@ -27,11 +34,19 @@ const SelectComp = (props: any) => {
 
   return (
     <Wrapper>
-      {
-        label && (
-          <label htmlFor={name} className={twMerge(clsx(`${quinaryHeading} mb-1.5  text-darkgrayish `, labelStyle && labelStyle))}>{label}</label>
-        )
-      }
+      {label && (
+        <label
+          htmlFor={name}
+          className={twMerge(
+            clsx(
+              `${quinaryHeading} mb-1.5  text-darkgrayish `,
+              labelStyle && labelStyle
+            )
+          )}
+        >
+          {label}
+        </label>
+      )}
       <div className={className}>
         <Field name={name} id={name} {...rest}>
           {({ form }: { form: any }) => {
@@ -41,7 +56,7 @@ const SelectComp = (props: any) => {
                 className="w-full"
                 name={name}
                 id={name}
-                size='large'
+                size="large"
                 {...rest}
                 placeholder={placeholder}
                 // You have to provide the onChange function and on changing the value you should call

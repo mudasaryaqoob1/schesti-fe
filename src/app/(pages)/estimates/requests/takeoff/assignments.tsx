@@ -20,7 +20,7 @@ const assignmentsSchema: any = Yup.object({
     .email('Email should be valid'),
 });
 const Assignments = () => {
-  const submitHandler = () => { };
+  const submitHandler = () => {};
 
   return (
     <>

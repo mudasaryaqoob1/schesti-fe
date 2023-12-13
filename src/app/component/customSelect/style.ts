@@ -1,11 +1,10 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const Wrapper = styled.div`
-
-.ant-select-selector {
-  height: 22px;
-  width: 100%;
-  /* padding: 20px !important; */
+  .ant-select-selector {
+    height: 22px;
+    width: 100%;
+    /* padding: 20px !important; */
     /* @media (min-width: 768px){
       display: flex;
     align-items: center;
@@ -15,6 +14,5 @@ export const Wrapper = styled.div`
     background:  #FFF;
   }
   margin-top: 4px !important;*/
-   
   }
-`
+`;

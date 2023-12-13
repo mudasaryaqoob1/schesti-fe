@@ -1,6 +1,5 @@
 'use client';
 
-
 import FormControl from '@/app/component/formControl';
 
 import { Formik } from 'formik';
@@ -23,7 +22,7 @@ const projectInformationSchema: any = Yup.object({
     .email('Email should be valid'),
 });
 const Projectinformation = () => {
-  const submitHandler = () => { };
+  const submitHandler = () => {};
 
   return (
     <>

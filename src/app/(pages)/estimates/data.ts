@@ -6,9 +6,15 @@
 //     'Sale Person': '',
 //     Estimator
 export const RequestsHeadings = [
-  "Project Name", "Client Name", "Number", "City",
-  "Sale Person", "Estimator", "Status", "Action"
-]
+  'Project Name',
+  'Client Name',
+  'Number',
+  'City',
+  'Sale Person',
+  'Estimator',
+  'Status',
+  'Action',
+];
 
 export const estimateRequests = [
   {
@@ -102,4 +108,3 @@ export const estimateRequests = [
     Status: 'inactive',
   },
 ];
-

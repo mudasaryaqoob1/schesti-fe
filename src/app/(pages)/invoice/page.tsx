@@ -1,14 +1,12 @@
-import UnderDevelop from '@/app/component/underDevelopement'
-import React from 'react'
+import UnderDevelop from '@/app/component/underDevelopement';
+import React from 'react';
 
 const Invoice = () => {
-    return (
-        <div>
-            <UnderDevelop
-                title={"InVoice"}
-            />
-        </div>
-    )
-}
+  return (
+    <div>
+      <UnderDevelop title={'InVoice'} />
+    </div>
+  );
+};
 
-export default Invoice
+export default Invoice;

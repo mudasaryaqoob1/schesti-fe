@@ -8,7 +8,9 @@ interface Props {
 }
 const QuinaryHeading = ({ title, className }: Props) => {
   return (
-    <h5 className={twMerge(clsx(quinaryHeading, className && className))}>{title}</h5>
+    <h5 className={twMerge(clsx(quinaryHeading, className && className))}>
+      {title}
+    </h5>
   );
 };
 

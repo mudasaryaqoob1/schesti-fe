@@ -8,7 +8,9 @@ interface Props {
 }
 const SecondaryHeading = ({ title, className }: Props) => {
   return (
-    <h2 className={twMerge(clsx(secondaryHeading, className && className))}>{title}</h2>
+    <h2 className={twMerge(clsx(secondaryHeading, className && className))}>
+      {title}
+    </h2>
   );
 };
 

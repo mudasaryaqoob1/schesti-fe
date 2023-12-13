@@ -1,13 +1,13 @@
-import styled from "styled-components";
-
+import styled from 'styled-components';
 
 export const StyleWrapper = styled.div`
-html, body {
-	height: 100vh;
-	width: 100vw;
-	background-color: #151515;
-}
-.switch-button {
+  html,
+  body {
+    height: 100vh;
+    width: 100vw;
+    background-color: #151515;
+  }
+  .switch-button {
     width: 400px;
     height: 40px;
     text-align: center;
@@ -19,7 +19,7 @@ html, body {
     cursor: pointer;
     transition: 0.3s ease all;
     border: 1px solid white;
-  
+
     &-case {
       display: inline-block;
       background: none;
@@ -32,17 +32,17 @@ html, body {
       text-transform: uppercase;
       letter-spacing: 5px;
       padding-bottom: 1px;
-  
+
       &:hover {
         color: grey;
         cursor: pointer;
       }
-  
+
       &:focus {
         outline: none;
       }
     }
-  
+
     .active {
       color: #151515;
       background-color: white;
@@ -53,13 +53,13 @@ html, body {
       height: 100%;
       z-index: -1;
       transition: 0.3s ease-out all;
-  
+
       &-case {
         color: #151515;
       }
     }
   }
-  
+
   .signature {
     position: fixed;
     font-family: sans-serif;
@@ -74,5 +74,4 @@ html, body {
     text-transform: uppercase;
     text-decoration: none;
   }
-
-`
+`;
