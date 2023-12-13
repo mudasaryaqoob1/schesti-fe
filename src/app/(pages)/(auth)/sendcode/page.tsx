@@ -26,8 +26,8 @@ const Resendcode = () => {
          
         `}
           >
-            If you haven't received an email in 5 minutes, check your spam.
-            check your spam,
+            If you havent received an email in 5 minutes, check your spam. check
+            your spam,
             <span className={`text-goldenrodYellow font-bold my-3`}>
               Resend
             </span>

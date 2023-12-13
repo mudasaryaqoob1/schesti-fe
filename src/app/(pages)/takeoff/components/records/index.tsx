@@ -1,14 +1,14 @@
 'use client';
 import Button from '@/app/component/customButton/button';
-import { useRouter } from 'next/navigation';
-import Table from '@/app/component/table/table';
+// import { useRouter } from 'next/navigation';
+// import Table from '@/app/component/table/table';
 import Pagination from '../../../../component/pagination';
-import { takeoffRecords, takeoffRecordsHeadings } from '../../data';
+// import { takeoffRecords, takeoffRecordsHeadings } from '../../data';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 
 const Records = () => {
-  const router = useRouter();
+  // const router = useRouter();
 
   return (
     <div className={`${bg_style} p-5`}>
@@ -23,10 +23,10 @@ const Records = () => {
         />
       </div>
 
-      <Table
+      {/* <Table
         takeoffRecords={takeoffRecords}
         headings={takeoffRecordsHeadings}
-      />
+      /> */}
       <Pagination />
     </div>
   );

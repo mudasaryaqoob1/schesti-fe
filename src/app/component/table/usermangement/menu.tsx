@@ -1,6 +1,4 @@
 'use client';
-import Paragraph from '@/app/component/customParagraph/paragraph';
-import { useAppDispatch } from '@/app/hooks/hooks';
 import { quinaryHeading } from '@/globals/tailwindvariables';
 import { useRouter } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
@@ -8,10 +6,9 @@ interface Props {
   className?: string;
   clientID: number;
 }
-const Menu = ({ className, clientID }: Props) => {
+const Menu = ({ className }: Props) => {
   const router = useRouter();
-  const dispatch = useAppDispatch();
-  const handleEdit = (id: any) => {
+  const handleEdit = () => {
     router.push('/createclient');
   };
   return (
@@ -21,16 +18,21 @@ const Menu = ({ className, clientID }: Props) => {
     border border-nebulaGray 
     ${className}`)}
     >
-      <Paragraph
-        title="Create estimate request"
-        styledVars={quinaryHeading}
-        classes="text-graphiteGray active:border hover:underline active:border-blue-600"
-      />
-      <Paragraph
-        title="Create Schedule"
-        styledVars={quinaryHeading}
-        classes="text-graphiteGray active:border hover:underline active:border-blue-600"
-      />
+      <p
+        className={`text-graphiteGray  hover:underline 
+        ${quinaryHeading}
+        `}
+      >
+        Create estimate request
+      </p>
+      <p
+        className={`text-graphiteGray  hover:underline 
+        ${quinaryHeading}
+        `}
+      >
+        Create Schedule
+      </p>
+
       <p
         className={`text-graphiteGray 
         hover:bg-green-600 hover:text-snowWhite rounded-sm  hover:text-center
@@ -47,7 +49,7 @@ const Menu = ({ className, clientID }: Props) => {
         hover:bg-red-600 hover:text-snowWhite rounded-sm hover:text-center active:text-center
         ${quinaryHeading}
         `}
-        onClick={() => handleEdit(clientID)}
+        onClick={() => handleEdit()}
       >
         Edit client details
       </p>
