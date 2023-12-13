@@ -1,10 +1,9 @@
 'use client';
 import { useEffect, useLayoutEffect, useState } from 'react';
 import Button from '@/app/component/customButton/button';
-import Table from '../../component/table/clients/index';
+import Table from '@/app/component/table/client';
 import { useRouter } from 'next/navigation';
 import Pagination from '../../component/pagination';
-import { clientHeading } from './data';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 import { useDispatch, useSelector } from 'react-redux';
@@ -58,7 +57,7 @@ const Client = () => {
               onClick={() => router.push('/client/create')}
             />
           </div>
-          <Table headings={clientHeading} clients={clientsData} />
+          <Table />
           <Pagination />
         </div>
       </section>

@@ -3,7 +3,7 @@ import React from 'react';
 import CustomButton from '../customButton/button';
 import Link from 'next/link';
 
-const ClientNavbar = () => {
+const Navbar = () => {
   return (
     <nav className="py-3 px-16 md:h-[60px] md:flex flex-col  md:flex-row items-center justify-between w-full bg-primaryGradient">
       <Link href={'/'} className="cursor-pointer active:scale-105 mb-2 md:mb-0">
@@ -80,4 +80,4 @@ const ClientNavbar = () => {
   );
 };
 
-export default ClientNavbar;
+export default Navbar;

@@ -3,7 +3,6 @@ import ErrorMsg from '../errorMessage';
 import { Input } from 'antd';
 import { twMerge } from 'tailwind-merge';
 import clsx from 'clsx';
-import { quinaryHeading } from '@/globals/tailwindvariables';
 const InputField = (props: any) => {
   const {
     label,
@@ -19,7 +18,11 @@ const InputField = (props: any) => {
     <div>
       {label && (
         <label
-          className={twMerge(clsx(`${labelStyle && quinaryHeading} `))}
+          className={twMerge(
+            clsx(
+              `${labelStyle} text-graphiteGray text-sm font-medium leading-6 capitalize`
+            )
+          )}
           htmlFor={name}
         >
           {label}

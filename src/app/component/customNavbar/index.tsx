@@ -1,5 +1,5 @@
 import React from 'react';
-import Navbar from '../navbar/clientnavbar';
+import Navbar from '../navbar/minnavbar';
 import Tabs from '../tabs/index';
 
 const CustomNavbar = ({ children }: any) => {
