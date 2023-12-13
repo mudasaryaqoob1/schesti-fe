@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-const Config = process.env.NEXT_PUBLIC_APP_BASE_URL;
+const Config = 'https://bf83-223-123-1-240.ngrok-free.app';
 
 export class HttpService {
   CancelToken: any;

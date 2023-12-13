@@ -23,8 +23,8 @@ import PrimaryHeading from '@/app/component/headings/primary';
 import Description from '@/app/component/description';
 
 const initialValues: ILogInInterface = {
-  email: 'azher@gmail.com',
-  password: 'qwertyuiop',
+  email: '',
+  password: '',
   remember: false,
 };
 
