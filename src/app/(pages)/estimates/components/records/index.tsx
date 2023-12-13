@@ -1,9 +1,9 @@
 'use client';
 import Button from '@/app/component/customButton/button';
 import { useRouter } from 'next/navigation';
-import Table from '@/app/component/table/table';
+// import Table from '@/app/component/table/table';
 import Pagination from '@/app/component/pagination';
-import { estimateRequests, RequestsHeadings } from '../../data';
+// import { estimateRequests, RequestsHeadings } from '../../data';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 
@@ -25,7 +25,7 @@ const Records = () => {
               onClick={() => router.push('/estimates/requests/takeoff')}
             />
           </div>
-          <Table requestsData={estimateRequests} headings={RequestsHeadings} />
+          {/* <Table requestsData={estimateRequests} headings={RequestsHeadings} /> */}
           <Pagination />
         </div>
       </section>
