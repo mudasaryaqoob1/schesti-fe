@@ -3,10 +3,10 @@ import CustomWhiteButton from '@/app/component/customButton/white';
 import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import FormControl from '@/app/component/formControl';
-import AddItemTable from '@/app/component/table/table';
+// import AddItemTable from '@/app/component/table/table';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { headings } from './data';
+// import { headings } from './data';
 const initialValues = {
   firstName: '',
   lastName: '',
@@ -210,7 +210,7 @@ const Custom = ({ setPrevNext }: Props) => {
           );
         }}
       </Formik>
-      <AddItemTable headings={headings} />
+      {/* <AddItemTable headings={headings} /> */}
     </div>
   );
 };

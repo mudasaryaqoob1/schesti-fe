@@ -4,8 +4,8 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 import Image from 'next/image';
 // import { useRouter } from 'next/navigation';
-import AddItemTable from '@/app/component/table/table';
-import { headings } from './data';
+// import AddItemTable from '@/app/component/table/table';
+// import { headings } from './data';
 import Description from '@/app/component/description/index';
 import MinDesc from '@/app/component/description/minDesc';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
@@ -153,7 +153,7 @@ const Summary = ({ setPrevNext }: Props) => {
             className="text-lg font-normal"
           />
         </div>
-        <AddItemTable headings={headings} />
+        {/* <AddItemTable headings={headings} /> */}
       </div>
       <div className={`${bg_style} p-5 mt-4`}>
         <div className="flex items-center justify-between">
@@ -172,7 +172,7 @@ const Summary = ({ setPrevNext }: Props) => {
             className="text-lg font-normal"
           />
         </div>
-        <AddItemTable headings={headings} />
+        {/* <AddItemTable headings={headings} /> */}
       </div>
       <div className={`${bg_style} p-5 mt-4`}>
         <div className="flex items-center justify-between">
@@ -191,7 +191,7 @@ const Summary = ({ setPrevNext }: Props) => {
             className="text-lg font-normal"
           />
         </div>
-        <AddItemTable headings={headings} />
+        {/* <AddItemTable headings={headings} /> */}
       </div>
       <div className="bg-celestialGray h-px  w-full my-4"></div>
       <div className="flex w-full justify-between flex-col gap-2 my-4">

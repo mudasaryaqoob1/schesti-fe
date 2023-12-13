@@ -9,8 +9,8 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { Dispatch, SetStateAction } from 'react';
 import CustomWhiteButton from '@/app/component/customButton/white';
-import AddItemTable from '@/app/component/table/table';
-import { headings } from './data';
+// import AddItemTable from '@/app/component/table/table';
+// import { headings } from './data';
 const initialValues = {
   firstName: '',
   lastName: '',
@@ -158,7 +158,7 @@ const Add = ({ setPrevNext }: Props) => {
             className="text-lg font-normal"
           />
         </div>
-        <AddItemTable headings={headings} />
+        {/* <AddItemTable headings={headings} /> */}
       </div>
     </div>
   );

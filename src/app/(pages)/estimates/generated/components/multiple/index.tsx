@@ -5,10 +5,10 @@ import Description from '@/app/component/description';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import FormControl from '@/app/component/formControl';
-import { headings } from './data';
+// import { headings } from './data';
 import { bg_style } from '@/globals/tailwindvariables';
 import { Formik, Form } from 'formik';
-import Table from '@/app/component/table/table';
+// import Table from '@/app/component/table/table';
 import * as Yup from 'yup';
 const initialValues = {
   firstName: '',
@@ -145,7 +145,7 @@ const Multiple = ({ setPrevNext }: Props) => {
                         "
                 />
               </div>
-              <Table headings={headings} />
+              {/* <Table headings={headings} /> */}
               <div className="self-end flex justify-end items-center gap-5 md:mt-5  my-3">
                 <div>
                   <CustomWhiteButton
@@ -179,7 +179,7 @@ const Multiple = ({ setPrevNext }: Props) => {
             className="text-lg font-normal"
           />
         </div>
-        <Table headings={headings} />
+        {/* <Table headings={headings} /> */}
       </div>
       <div className={`${bg_style} p-5 mt-4`}>
         <div className="flex items-center gap-2">
@@ -192,7 +192,7 @@ const Multiple = ({ setPrevNext }: Props) => {
             className="text-lg font-normal"
           />
         </div>
-        <Table headings={headings} />
+        {/* <Table headings={headings} /> */}
       </div>
       <div className={`${bg_style} p-5 mt-4`}>
         <div className="flex items-center gap-2">
@@ -205,7 +205,7 @@ const Multiple = ({ setPrevNext }: Props) => {
             className="text-lg font-normal"
           />
         </div>
-        <Table headings={headings} />
+        {/* <Table headings={headings} /> */}
       </div>
       <div className={`${bg_style} p-5 mt-4`}>
         <div className="flex items-center gap-2">
@@ -218,7 +218,7 @@ const Multiple = ({ setPrevNext }: Props) => {
             className="text-lg font-normal"
           />
         </div>
-        <Table headings={headings} />
+        {/* <Table headings={headings} /> */}
       </div>
     </div>
   );

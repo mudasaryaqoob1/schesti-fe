@@ -3,8 +3,8 @@ import CustomButton from '@/app/component/customButton/button';
 import CustomWhiteButton from '@/app/component/customButton/white';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import FormControl from '@/app/component/formControl';
-import AddItemTable from '@/app/component/table/table';
-import { headings } from './data';
+// import AddItemTable from '@/app/component/table/table';
+// import { headings } from './data';
 import { Dispatch, SetStateAction } from 'react';
 
 import { Formik, Form } from 'formik';
@@ -143,7 +143,7 @@ const New = ({ setPrevNext }: Props) => {
                         "
                 />
               </div>
-              <AddItemTable headings={headings} />
+              {/* <AddItemTable headings={headings} /> */}
               <div className="self-end flex justify-end items-center gap-5 md:mt-5  my-3">
                 <div>
                   <CustomWhiteButton

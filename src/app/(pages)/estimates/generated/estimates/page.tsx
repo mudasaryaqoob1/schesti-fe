@@ -1,7 +1,7 @@
 import Button from '@/app/component/customButton/button';
-import Table from '@/app/component/table/table';
+// import Table from '@/app/component/table/table';
 import Pagination from '@/app/component/pagination';
-import { submittedestimateHeadings } from './data';
+// import { submittedestimateHeadings } from './data';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 import Link from 'next/link';
@@ -25,7 +25,7 @@ const Client = () => {
             />
           </Link>
         </div>
-        <Table headings={submittedestimateHeadings} />
+        {/* <Table headings={submittedestimateHeadings} /> */}
         <Pagination />
       </div>
     </section>
