@@ -2,7 +2,7 @@ export const clientHeading = [
   'Name',
   'Email',
   'Role',
-  'Invitation dsate',
+  'Invitation Date',
   'Action',
 ];
 export const clientsData = [

@@ -1,47 +1,70 @@
 'use client';
-import FormControl from '@/app/component/formControl';
+import { useLayoutEffect, useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import CustomButton from '@/app/component/customButton/button';
 import { useRouter } from 'next/navigation';
-import MinDesc from '@/app/component/description/minDesc';
 import Image from 'next/image';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+
+// module imports
+import { IClientInterface } from '@/app/interfaces/clien.interface';
 import { senaryHeading } from '@/globals/tailwindvariables';
 import TertiaryHeading from '@/app/component/headings/tertiary';
-export interface newClientTypes {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
-  companyName: string;
-  address: string;
-  address2?: string;
-}
+import MinDesc from '@/app/component/description/minDesc';
+import CustomButton from '@/app/component/customButton/button';
+import FormControl from '@/app/component/formControl';
 
-const newClientSchema: any = Yup.object({
-  firstName: Yup.string().required(' first name is required!'),
-  lastName: Yup.string().required('last name is required!'),
+// redux module
+import { newClient } from '@/redux/clientSlice/client.thunk';
+import { AppDispatch } from '@/redux/store';
+import { selectToken } from '@/redux/authSlices/auth.selector';
+import { HttpService } from '@/app/services/base.service';
+
+const newClientSchema = Yup.object({
+  firstName: Yup.string().required('First name is required!'),
+  lastName: Yup.string().required('Last name is required!'),
   email: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
-  phoneNumber: Yup.string().required('phone number is required!'),
-  companyName: Yup.string().required('company Name is required!'),
+  phone: Yup.string().required('Phone number is required!'),
+  companyName: Yup.string().required('Company Name is required!'),
   address: Yup.string().required('Address is required!'),
   address2: Yup.string(),
 });
+const initialValues: IClientInterface = {
+  firstName: '',
+  lastName: '',
+  email: '',
+  phone: '',
+  companyName: '',
+  address: '',
+  secondAddress: '',
+};
+
 const CreateClient = () => {
-  const initialValues = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    phoneNumber: '',
-    companyName: '',
-    address: '',
-    address2: '',
-  };
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-  const submitHandler = () => {
-    router.push('/client');
+  const token = useSelector(selectToken);
+
+  useLayoutEffect(() => {
+    if (token) {
+      HttpService.setToken(token);
+    }
+  }, [token]);
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const submitHandler = async (values: IClientInterface) => {
+    let result: any = await dispatch(newClient(values));
+
+    if (result.payload.statusCode == 201) {
+      setIsLoading(false);
+      router.push('/client');
+    } else {
+      setIsLoading(false);
+      toast.error(result.payload.message);
+    }
   };
 
   return (
@@ -75,7 +98,7 @@ const CreateClient = () => {
      border-silverGray shadow-secondaryShadow2 bg-white"
         >
           <TertiaryHeading
-            className="text-graphiteGray"
+            className="text-graphiteGray mb-4 "
             title="Add New Client"
           />
           <Formik
@@ -86,7 +109,7 @@ const CreateClient = () => {
             {({ handleSubmit }) => {
               return (
                 <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
-                  <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-4 gap-x-5">
+                  <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-4 gap-4">
                     <FormControl
                       control="input"
                       label="First Name"
@@ -104,8 +127,8 @@ const CreateClient = () => {
                     <FormControl
                       control="input"
                       label="Phone Number"
-                      type="text"
-                      name="phoneNumber"
+                      type="number"
+                      name="phone"
                       placeholder="Phone number"
                     />
                     <FormControl
@@ -133,7 +156,7 @@ const CreateClient = () => {
                     />
                     <FormControl
                       control="input"
-                      label="Address 2 (optional)"
+                      label="Address 2"
                       type="text"
                       name="address2"
                       placeholder="Address 2"
@@ -142,6 +165,7 @@ const CreateClient = () => {
                   <div className="self-end flex justify-end items-center gap-5 md:mt-4 my-3">
                     <div>
                       <CustomButton
+                        isLoading={isLoading}
                         className=" !border-celestialGray !shadow-scenarySubdued2 !text-graphiteGray !bg-snowWhite"
                         text="Cancel"
                         onClick={() => router.push('/client')}

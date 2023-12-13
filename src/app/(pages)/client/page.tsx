@@ -1,4 +1,5 @@
 'use client';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import Button from '@/app/component/customButton/button';
 import Table from '../../component/table/clients/index';
 import { useRouter } from 'next/navigation';
@@ -6,8 +7,33 @@ import Pagination from '../../component/pagination';
 import { clientHeading } from './data';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
+import { useDispatch, useSelector } from 'react-redux';
+// module imports
+import { AppDispatch } from '@/redux/store';
+import { fetchedClients } from '@/redux/clientSlice/client.thunk';
+import { selectToken } from '@/redux/authSlices/auth.selector';
+import { HttpService } from '@/app/services/base.service';
+
 const Client = () => {
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+
+  const token = useSelector(selectToken);
+
+  useLayoutEffect(() => {
+    if (token) {
+      HttpService.setToken(token);
+    }
+  }, [token]);
+
+  const [clientsData, setClientsData] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      let result: any = await dispatch(fetchedClients({ page: 1, limit: 10 }));
+      setClientsData(result.payload.data);
+    })();
+  }, []);
 
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
@@ -23,7 +49,7 @@ const Client = () => {
             onClick={() => router.push('/client/create')}
           />
         </div>
-        <Table headings={clientHeading} />
+        <Table headings={clientHeading} clients={clientsData} />
         <Pagination />
       </div>
     </section>

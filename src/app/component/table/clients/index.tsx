@@ -1,20 +1,20 @@
 'use client';
-import { useState } from 'react';
 import { senaryHeading } from '@/globals/tailwindvariables';
-import Menu from './menu';
+// import Menu from './menu';
 import Image from 'next/image';
-import { clientsData } from '@/app/constants/constant';
 interface Props {
   headings: string[];
+  clients: any;
 }
-const Index = ({ headings }: Props) => {
-  const [openMenuIndex, setOpenMenuIndex] = useState<number>(-1);
+const Index = ({ headings, clients }: Props) => {
+  // const [openMenuIndex, setOpenMenuIndex] = useState<number>(-1);
 
-  const clients = clientsData;
+  // const toggleMenu = (index: number) => {
+  //   setOpenMenuIndex((prevIndex) => (prevIndex === index ? -1 : index));
+  // };
 
-  const toggleMenu = (index: number) => {
-    setOpenMenuIndex((prevIndex) => (prevIndex === index ? -1 : index));
-  };
+  console.log(clients, 'clientsclients');
+
   return (
     <div className="!rounded-lg md:overflow-hidden overflow-x-auto">
       <table className="mt-4 w-full border-solid table-auto border-graylittle border h-full rounded-xl bg-snowWhite">
@@ -37,21 +37,18 @@ const Index = ({ headings }: Props) => {
         </thead>
         <tbody>
           {clients?.map(
-            (
-              {
-                id,
-                firstName,
-                lastName,
-                companyName,
-                email,
-                phoneNumber,
-                status,
-                address,
-              },
-              i
-            ) => {
+            ({
+              _id,
+              firstName,
+              lastName,
+              companyName,
+              email,
+              phone,
+              status,
+              address,
+            }: any) => {
               return (
-                <tr key={id}>
+                <tr key={_id}>
                   <td
                     className={`${senaryHeading} text-slateGray p-5
                         border-0  border-solid border-nebulaGray border-b
@@ -79,7 +76,7 @@ const Index = ({ headings }: Props) => {
                         border-0  border-solid border-nebulaGray border-b
                         `}
                   >
-                    {phoneNumber}
+                    {phone}
                   </td>
                   <td
                     className={`${senaryHeading} text-slateGray  p-5
@@ -100,7 +97,7 @@ const Index = ({ headings }: Props) => {
                         mix-blend-multiply rounded-2xl bg-mintGreen  p-2
                         "
                     >
-                      {status}
+                      {status ? 'Active' : 'Blocked'}
                     </a>
                   </td>
                   <td
@@ -113,9 +110,9 @@ const Index = ({ headings }: Props) => {
                       alt="action"
                       width={20}
                       height={20}
-                      onClick={() => toggleMenu(i)}
+                      // onClick={() => toggleMenu(_id)}
                     />
-                    {openMenuIndex === i && <Menu clientID={id} />}
+                    {/* {openMenuIndex === _id && <Menu clientID={_id} />} */}
                   </td>
                 </tr>
               );

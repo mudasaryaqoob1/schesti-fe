@@ -1,10 +1,11 @@
 import { senaryHeading } from '@/globals/tailwindvariables';
-import { clientsData } from '@/app/constants/constant';
+import moment from 'moment';
 // import Menu from './menu';
 interface Props {
   headings: string[];
+  clientsData: any;
 }
-const Index = ({ headings }: Props) => {
+const Index = ({ headings, clientsData }: Props) => {
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-4">
       <table className="w-full text-sm text-left rtl:text-right">
@@ -27,16 +28,7 @@ const Index = ({ headings }: Props) => {
         </thead>
         <tbody>
           {clientsData?.map(
-            ({
-              id,
-              firstName,
-              lastName,
-              companyName,
-              email,
-              phoneNumber,
-              status,
-              address,
-            }) => {
+            ({ id, firstName, lastName, role, email, createdAt }: any) => {
               return (
                 <tr key={id}>
                   <td
@@ -44,15 +36,7 @@ const Index = ({ headings }: Props) => {
                         border-0  border-solid border-nebulaGray border-b
                         `}
                   >
-                    {firstName}
-                    {lastName}
-                  </td>
-                  <td
-                    className={`${senaryHeading} text-slateGray  p-5
-                        border-0  border-solid border-nebulaGray border-b
-                        `}
-                  >
-                    {companyName}
+                    {firstName} {lastName}
                   </td>
                   <td
                     className={`${senaryHeading} text-slateGray  p-5
@@ -66,15 +50,16 @@ const Index = ({ headings }: Props) => {
                         border-0  border-solid border-nebulaGray border-b
                         `}
                   >
-                    {phoneNumber}
+                    {role}
                   </td>
                   <td
                     className={`${senaryHeading} text-slateGray  p-5
-                      border-0  border-solid border-nebulaGray border-b
-                      `}
+                        border-0  border-solid border-nebulaGray border-b
+                        `}
                   >
-                    {address}
+                    {moment(createdAt).format('ll')}
                   </td>
+
                   <td
                     className={`${senaryHeading} text-slateGray  p-5
                         border-0  border-solid border-nebulaGray border-b
@@ -87,7 +72,7 @@ const Index = ({ headings }: Props) => {
                         mix-blend-multiply rounded-2xl bg-mintGreen  p-2
                         "
                     >
-                      {status}
+                      Active
                     </a>
                   </td>
                   {/* <td

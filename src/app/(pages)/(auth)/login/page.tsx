@@ -41,8 +41,6 @@ const LoginSchema = Yup.object({
 const Login = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  // const data = useSelector((state: any) => state.auth);
-  // console.log('data ============', data);
 
   const [loading, setLoading] = useState(false);
 

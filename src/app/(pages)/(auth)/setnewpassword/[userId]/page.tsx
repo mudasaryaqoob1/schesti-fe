@@ -1,8 +1,9 @@
 'use client';
+import React, { useState } from 'react';
 import Button from '@/app/component/customButton/button';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useDispatch } from 'react-redux';
 
@@ -14,6 +15,7 @@ import PrimaryHeading from '@/app/component/headings/primary';
 import Description from '@/app/component/description';
 import { IResetPasswordInterface } from '@/app/interfaces/resetPassword.interface';
 import { resetPasswordHandler } from '@/redux/authSlices/auth.thunk';
+import { toast } from 'react-toastify';
 
 const initialValues: IResetPasswordInterface = {
   password: '',
@@ -29,13 +31,22 @@ const newPasswordSchema: any = Yup.object({
 const SetNewPassword = () => {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
+  const { userId } = useParams();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const submitHandler = async (values: IResetPasswordInterface) => {
-    let result = await dispatch(resetPasswordHandler(values));
-
-    console.log(result, 'resultresult');
-
-    router.push('/login');
+    setIsLoading(true);
+    let result: any = await dispatch(
+      resetPasswordHandler({ ...values, userId: userId })
+    );
+    if (result.payload.statusCode == 200) {
+      setIsLoading(false);
+      router.push('/login');
+    } else {
+      setIsLoading(false);
+      toast.error(result.payload.message);
+    }
   };
 
   return (
@@ -84,7 +95,12 @@ const SetNewPassword = () => {
                       placeholder="Confirm password"
                     />
                   </div>
-                  <Button type="submit" text="Set Password" className=" mt-8" />
+                  <Button
+                    isLoading={isLoading}
+                    type="submit"
+                    text="Set Password"
+                    className=" mt-8"
+                  />
                 </Form>
               );
             }}

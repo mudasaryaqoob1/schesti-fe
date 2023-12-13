@@ -13,8 +13,8 @@ export class HttpService {
     this.source = this.CancelToken.source();
     axios.interceptors.response.use(undefined, function (error) {
       if (error?.response?.status == 401) {
-        localStorage.clear();
-        window.location.reload();
+        // localStorage.clear();
+        // window.location.reload();
       }
       return Promise.reject(error);
     });

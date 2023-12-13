@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Form } from 'antd';
@@ -15,12 +15,13 @@ import Description from '@/app/component/description';
 import PrimaryHeading from '@/app/component/headings/primary';
 import { IForgotPasswordInterface } from '@/app/interfaces/forgotPassword.interface';
 import { forgotPasswordHandler } from '@/redux/authSlices/auth.thunk';
+import { toast } from 'react-toastify';
 
 const initialValues: IForgotPasswordInterface = {
   email: '',
 };
 
-const LoginSchema: any = Yup.object({
+const ForgotPasswordSchema: any = Yup.object({
   email: Yup.string().required('Email is required!').email('Invalid email!'),
 });
 
@@ -28,11 +29,19 @@ const ForgetPassword = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
-  const submitHandler = async (values: IForgotPasswordInterface) => {
-    let result = await dispatch(forgotPasswordHandler(values));
-    console.log(result);
+  const [isLoading, setIsLoading] = useState(false);
 
-    router.push('/sendcode');
+  const submitHandler = async (values: IForgotPasswordInterface) => {
+    setIsLoading(true);
+    let result: any = await dispatch(forgotPasswordHandler(values));
+
+    if (result.payload.statusCode == 200) {
+      setIsLoading(false);
+      router.push('/sendcode');
+    } else {
+      setIsLoading(false);
+      toast.error(result.payload.message);
+    }
   };
   return (
     <WelcomeWrapper>
@@ -54,7 +63,7 @@ const ForgetPassword = () => {
           />
           <Formik
             initialValues={initialValues}
-            validationSchema={LoginSchema}
+            validationSchema={ForgotPasswordSchema}
             onSubmit={submitHandler}
           >
             {(formik: any) => {
@@ -63,7 +72,7 @@ const ForgetPassword = () => {
                   name="basic"
                   onFinish={formik.handleSubmit}
                   autoComplete="off"
-                  validateMessages={LoginSchema}
+                  validateMessages={ForgotPasswordSchema}
                 >
                   <div className="mt-10">
                     <FormControl
@@ -75,6 +84,7 @@ const ForgetPassword = () => {
                     />
                   </div>
                   <Button
+                    isLoading={isLoading}
                     text="Verify Email"
                     className="!p-[12px] mt-10"
                     type="submit"

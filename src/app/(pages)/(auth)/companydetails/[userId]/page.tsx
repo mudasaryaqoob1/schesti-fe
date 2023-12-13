@@ -33,11 +33,11 @@ const CompanyDetailsSchema: any = Yup.object({
 const CompanyDetails = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const { companyId } = useParams();
+  const { userId } = useParams();
 
   const submitHandler = async (values: ICompanyDetailInterface) => {
     let result: any = await dispatch(
-      addCompanyDetail({ ...values, companyId: companyId })
+      addCompanyDetail({ ...values, userId: userId })
     );
 
     if (result.payload.statusCode == 200) {

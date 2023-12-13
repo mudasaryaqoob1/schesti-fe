@@ -1,14 +1,43 @@
 'use client';
+import { Dispatch, useEffect, useLayoutEffect, useState } from 'react';
 import Image from 'next/image';
-import Table from '@/app/component/table/table';
 import { clientHeading } from './data';
+import { useDispatch, useSelector } from 'react-redux';
+
+// module imports
+import { AppDispatch } from '@/redux/store';
 import Button from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
-import { Dispatch } from 'react';
+import Table from '@/app/component/table/table';
+import { fetchCompanyUsers } from '@/redux/userSlice/user.thunk';
+import { selectToken } from '@/redux/authSlices/auth.selector';
+import { HttpService } from '@/app/services/base.service';
+
 interface Props {
   setShowAddUser: Dispatch<React.SetStateAction<boolean>>;
 }
 const Index = ({ setShowAddUser }: Props) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const token = useSelector(selectToken);
+
+  const data = useSelector((state: any) => state.auth);
+  let companyId = data.user._id;
+
+  useLayoutEffect(() => {
+    if (token) {
+      HttpService.setToken(token);
+    }
+  }, [token]);
+
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      let result: any = await dispatch(fetchCompanyUsers(companyId));
+      setUserData(result.payload.data);
+    })();
+  }, []);
+
   return (
     <div className="w-full">
       <div className="flex justify-between items-center mb-3">
@@ -43,13 +72,7 @@ const Index = ({ setShowAddUser }: Props) => {
             className="w-full h-full bg-transparent outline-none"
           />
         </div>
-        <Table headings={clientHeading} />
-        <div className="flex my-6 justify-between">
-          {/* dropdown */}
-          <div>dropdown</div>
-          {/* pagination */}
-          <div>pagination</div>
-        </div>
+        <Table headings={clientHeading} clientsData={userData} />
       </article>
     </div>
   );

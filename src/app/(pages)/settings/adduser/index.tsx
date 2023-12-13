@@ -1,39 +1,71 @@
 'use client';
-import FormControl from '@/app/component/formControl';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import CustomButton from '@/app/component/customButton/button';
 import Image from 'next/image';
+import { useDispatch, useSelector } from 'react-redux';
+
+// module imports
+import { AppDispatch } from '@/redux/store';
+import { INewUserInterface } from '@/app/interfaces/newUser';
+import { userRoles } from '@/app/enums/role.enums';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import Description from '@/app/component/description';
+import CustomButton from '@/app/component/customButton/button';
 import { bg_style } from '@/globals/tailwindvariables';
-import { Dispatch } from 'react';
-interface Props {
-  setShowAddUser: Dispatch<React.SetStateAction<boolean>>;
-}
-const AddNewUser = ({ setShowAddUser }: Props) => {
+import FormControl from '@/app/component/formControl';
+import { selectToken } from '@/redux/authSlices/auth.selector';
+import { useLayoutEffect } from 'react';
+import { HttpService } from '@/app/services/base.service';
+import { addNewUser } from '@/redux/userSlice/user.thunk';
+import { toast } from 'react-toastify';
+
+const defaultOptions = [
+  { value: userRoles.COMPANY, label: 'Option 1' },
+  { value: userRoles.ACCOUNTS_MANAGER, label: 'Option 2' },
+  { value: userRoles.ESTIMATOR, label: 'Option 3' },
+  { value: userRoles.PROJECT_MANAGER, label: 'Option 3' },
+  { value: userRoles.SALES_MANAGER, label: 'Option 3' },
+];
+
+const AddNewUser = ({ setShowAddUser }: any) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const token = useSelector(selectToken);
+
+  useLayoutEffect(() => {
+    if (token) {
+      HttpService.setToken(token);
+    }
+  }, [token]);
+
   const newClientSchema: any = Yup.object({
-    firstName: Yup.string().required(' first name is required!'),
-    lastName: Yup.string().required('last name is required!'),
+    firstName: Yup.string().required('First name is required!'),
+    lastName: Yup.string().required('Last name is required!'),
     email: Yup.string()
       .required('Email is required!')
       .email('Email should be valid'),
-    phoneNumber: Yup.string().required('phone number is required!'),
-    companyName: Yup.string().required('company Name is required!'),
-    address: Yup.string().required('Address is required!'),
-    address2: Yup.string(),
+    role: Yup.string().required('Role is required'),
   });
 
-  const initialValues = {
+  const initialValues: INewUserInterface = {
     firstName: '',
     lastName: '',
     email: '',
-    phoneNumber: '',
-    companyName: '',
-    address: '',
-    address2: '',
+    role: '',
   };
-  const submitHandler = (values: any, { resetForm }: unknown) => {};
+  const submitHandler = async (
+    values: INewUserInterface,
+    { resetForm }: any
+  ) => {
+    let result: any = await dispatch(addNewUser(values));
+
+    if (result.payload.statusCode == 201) {
+      resetForm();
+      toast.success('User Added');
+      setShowAddUser(false);
+    } else {
+      toast.error(result.payload.message);
+    }
+  };
   return (
     <div className="w-full">
       <div className="flex gap-4 items-center">
@@ -71,7 +103,7 @@ const AddNewUser = ({ setShowAddUser }: Props) => {
               autoComplete="off"
               className={`${bg_style} p-5`}
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-2 gap-x-5 ">
+              <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-2 gap-4 ">
                 <FormControl
                   control="input"
                   label="First Name"
@@ -87,11 +119,11 @@ const AddNewUser = ({ setShowAddUser }: Props) => {
                   placeholder="Last Name"
                 />
                 <FormControl
-                  control="input"
-                  label="Phone Number"
-                  type="text"
-                  name="phoneNumber"
-                  placeholder="Phone number"
+                  control="select"
+                  label="Role"
+                  name="role"
+                  options={defaultOptions}
+                  placeholder="Select User Role"
                 />
                 <FormControl
                   control="input"
@@ -102,13 +134,6 @@ const AddNewUser = ({ setShowAddUser }: Props) => {
                 />
               </div>
               <div className="self-end flex justify-end items-center gap-5 md:mt-5 my-3">
-                <div>
-                  <CustomButton
-                    className=" !border-celestialGray !shadow-scenarySubdued2 !text-graphiteGray !bg-snowWhite"
-                    text="Cancel"
-                    onClick={() => setShowAddUser(false)}
-                  />
-                </div>
                 <div>
                   <CustomButton
                     className="mx-w-30"

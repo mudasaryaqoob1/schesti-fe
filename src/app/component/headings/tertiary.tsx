@@ -1,7 +1,7 @@
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import clsx from 'clsx';
-import { quinaryHeading, tertiaryHeading } from '@/globals/tailwindvariables';
+import { tertiaryHeading } from '@/globals/tailwindvariables';
 interface Props {
   title: string;
   className?: string;
