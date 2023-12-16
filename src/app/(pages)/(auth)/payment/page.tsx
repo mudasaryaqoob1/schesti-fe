@@ -1,5 +1,5 @@
 'use client';
-import NavBar from '@/app/component/navbar/authBar';
+import NavBar from '@/app/(pages)/(auth)/authNavbar';
 import Progessbar from '@/app/component/progressBar';
 import { secondaryHeading } from '@/globals/tailwindvariables';
 import Image from 'next/image';
@@ -10,7 +10,7 @@ const Payment = () => {
   const router = useRouter();
   return (
     <>
-      <NavBar login={true} />
+      <NavBar />
       <section className="grid place-items-center mt-10">
         <div className="min-w-[750px]">
           <h2 className={secondaryHeading}>Payments Method</h2>

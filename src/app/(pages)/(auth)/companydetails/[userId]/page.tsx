@@ -6,8 +6,9 @@ import FormControl from '@/app/component/formControl';
 import { useParams, useRouter } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
 import { useDispatch } from 'react-redux';
-// module imports
+import { toast } from 'react-toastify';
 
+// module imports
 import Progessbar from '@/app/component/progressBar';
 import PrimaryHeading from '@/app/component/headings/primary';
 import Button from '@/app/component/customButton/button';
@@ -15,7 +16,7 @@ import { tertiaryHeading } from '@/globals/tailwindvariables';
 import { AppDispatch } from '@/redux/store';
 import { IRegisterCompany } from '@/app/interfaces/companyInterfaces/companyRegister.interface';
 import { addCompanyDetail } from '@/redux/authSlices/auth.thunk';
-import { toast } from 'react-toastify';
+import AuthNavbar from '@/app/(pages)/(auth)/authNavbar';
 
 const initialValues: IRegisterCompany = {
   companyName: '',
@@ -47,6 +48,7 @@ const CompanyDetails = () => {
   };
   return (
     <>
+      <AuthNavbar />
       <div className="h-[calc(100vh-100px)] grid place-items-center">
         <div className="w-full max-w-xl bg-snowWhite">
           <h2 className={twMerge(`${tertiaryHeading} mb-4 `)}>

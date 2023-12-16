@@ -1,11 +1,13 @@
 'use client';
 import Description from '@/app/component/description';
 import PrimaryHeading from '@/app/component/headings/primary';
+import AuthNavbar from '@/app/(pages)/(auth)/authNavbar';
 import Image from 'next/image';
 
 const CheckYourEmail = () => {
   return (
     <>
+      <AuthNavbar />
       <div className="h-[calc(100vh-100px)] grid place-items-center rounded-s">
         <div
           className="max-w-[497px] min-w-[300px] px-8 py-7 
