@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
-import ToggleBtn from '@/app/component/customToggleBtn/index';
-import SwitchBtn from '@/app/component/customswitchbtn/index';
+import ToggleBtn from './toggleBtn/index';
+import SwitchBtn from './switchbtn/index';
 import React from 'react';
 import SinglePlan from './plan/plan';
 import {

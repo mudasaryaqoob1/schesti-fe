@@ -12,7 +12,7 @@ const PasswordField = (props: any) => {
   return (
     <div>
       <label
-        className={twMerge('font-[500] leading-[20px] capitalize')}
+        className={'text-graphiteGray text-sm font-medium leading-6 capitalize'}
         htmlFor={name}
       >
         {label}
