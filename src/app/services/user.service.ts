@@ -14,16 +14,17 @@ class UserService extends HttpService {
   ): Promise<IResponseInterface<{ token: IToken }>> =>
     this.post(`${this.prefix}/updateCompanyDetail`, data);
 
-  httpAddNewUser = (
-    data: any
-  ): Promise<IResponseInterface<{ token: IToken }>> =>
-    this.post(`${this.prefix}/newUser`, data);
+  httpAddNewEmployee = (data: any): Promise<IResponseInterface<any>> =>
+    this.post(`${this.prefix}/newEmployee`, data);
 
-  httpGetCompanyDetail = (comapnyId: string): Promise<IResponseInterface> =>
-    this.get(`${this.prefix}/companyDetail/${comapnyId}`);
+  httpGetCompanyDetail = (): Promise<IResponseInterface> =>
+    this.get(`${this.prefix}/companyDetail`);
 
-  httpGetCompanyUsers = (comapnyId: string): Promise<IResponseInterface> =>
-    this.get(`${this.prefix}/companyUsers/${comapnyId}`);
+  httpGetCompanyEmployee = (
+    page: number,
+    limit: number = 9
+  ): Promise<IResponseInterface<any>> =>
+    this.get(`${this.prefix}/companyEmployees?page=${page}&limit=${limit}`);
 
   // company client services
   httpGetCompanyClients = (

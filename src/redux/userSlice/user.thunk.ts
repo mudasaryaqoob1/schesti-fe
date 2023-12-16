@@ -3,6 +3,11 @@ import { userService } from '@/app/services/user.service';
 // import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
 import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 
+interface FetchClientParams {
+  page: number;
+  limit: number;
+}
+
 export const updateCompanyDetail = createAsyncThunk(
   'user/companyDetail',
   async (credentials: any, thunkAPI) => {
@@ -31,12 +36,11 @@ export const addNewUser = createAsyncThunk(
   }
 );
 
-export const fetchCompanyUsers = createAsyncThunk(
-  'user/companyUser',
-  async (companyId: string, { rejectWithValue }) => {
+export const fetchCompanyEmployee = createAsyncThunk(
+  'user/companyEmployee',
+  async ({ page, limit }: FetchClientParams, { rejectWithValue }: any) => {
     try {
-      //@ts-ignore
-      const response = await userService.httpGetCompanyUsers(companyId);
+      const response = await userService.httpGetCompanyEmployee(page, limit);
       return response;
     } catch (error: any) {
       return rejectWithValue(

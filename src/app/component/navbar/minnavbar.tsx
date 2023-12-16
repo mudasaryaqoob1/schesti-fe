@@ -1,9 +1,21 @@
 import Image from 'next/image';
 import React from 'react';
-import CustomButton from '../customButton/button';
 import Link from 'next/link';
+import { useDispatch } from 'react-redux';
+
+// module imports
+import { AppDispatch } from '@/redux/store';
+import CustomButton from '../customButton/button';
+import { logout } from '@/redux/authSlices/authSlice';
 
 const Navbar = () => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const logoutHandler = () => {
+    dispatch(logout());
+    localStorage.removeItem('schestiToken');
+    window.location.pathname = '/login';
+  };
   return (
     <nav className="py-3 px-16 md:h-[60px] md:flex flex-col  md:flex-row items-center justify-between w-full bg-primaryGradient">
       <Link href={'/'} className="cursor-pointer active:scale-105 mb-2 md:mb-0">
@@ -31,7 +43,7 @@ const Navbar = () => {
           />
         </Link>
         <div className="flex items-center gap-4">
-          <Link href={'/settings'}>
+          <Link href={'/settings/general'}>
             <Image
               src={'/setting.svg'}
               alt="logo white icon"
@@ -57,7 +69,7 @@ const Navbar = () => {
             width={40}
             height={40}
           />
-          <Link href={'/profile'} className="relative">
+          <Link href={'#'} onClick={logoutHandler} className="relative">
             <Image
               src={'/profile.svg'}
               alt="logo white icon"

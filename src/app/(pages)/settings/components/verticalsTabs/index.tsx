@@ -1,31 +1,29 @@
 'use client';
 import { bg_style, senaryHeading } from '@/globals/tailwindvariables';
-import React, { Dispatch } from 'react';
-interface Props {
-  setPrevNext: Dispatch<React.SetStateAction<number>>;
-  prevNext: number;
-}
-const Index = ({ prevNext, setPrevNext }: Props) => {
+import { useRouter } from 'next/navigation';
+
+const Index = () => {
+  const router = useRouter();
   const active =
     'bg-cosmicGray  text-rotalPurple w-full rounded-[6px] font-semibold';
   const tabs = [
-    { id: 1, name: 'General Settings' },
-    { id: 2, name: 'Plans' },
-    { id: 3, name: 'User Managements' },
-    { id: 4, name: 'Material Settings' },
-    { id: 5, name: 'Materials' },
-    { id: 6, name: 'Target' },
+    { id: 1, name: 'General Settings', route: '/settings/general' },
+    { id: 2, name: 'Plans', route: '/settings/plans' },
+    { id: 3, name: 'User Managements', route: '/settings/companyUser' },
+    { id: 4, name: 'Material Settings', route: '/settings/MeterialSettings' },
+    { id: 5, name: 'Materials', route: '/settings/meterials' },
+    { id: 6, name: 'Target', route: '/settings/targets' },
   ];
   return (
-    <div className={`${bg_style} md:min-w-[222px] h-auto p-3`}>
-      <div className="flex flex-col items-start gap-1">
+    <div
+      className={`${bg_style} md:min-w-[222px] p-3 sticky top-0 left-0 right-0`}
+    >
+      <div className="flex flex-col gap-2">
         {tabs.map((tab) => (
           <p
             key={tab.id}
-            className={`py-1 px-3 cursor-pointer transition-colors ${senaryHeading} ${
-              tab.id === prevNext ? active : ''
-            }`}
-            onClick={() => setPrevNext(tab.id)}
+            className={`py-3 px-3 !text-sm cursor-pointer transition-colors ${senaryHeading} ${active}`}
+            onClick={() => router.push(tab.route)}
           >
             {tab.name}
           </p>
