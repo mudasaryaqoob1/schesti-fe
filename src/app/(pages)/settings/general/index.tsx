@@ -15,7 +15,7 @@ import {
 
 // module imports
 import FormControl from '@/app/component/formControl';
-import { ICompanyDetailInterface } from '@/app/interfaces/addCompanyDetail.interface';
+import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
 import {
   bg_style,
   // minHeading,
@@ -26,7 +26,7 @@ import { HttpService } from '@/app/services/base.service';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { toast } from 'react-toastify';
 
-const initialValues: ICompanyDetailInterface = {
+const initialValues: IUpdateCompanyDetail = {
   companyName: '',
   email: '',
   industry: '',
@@ -67,7 +67,7 @@ const GeneralSetting = () => {
     })();
   }, []);
 
-  const submitHandler = async (values: ICompanyDetailInterface) => {
+  const submitHandler = async (values: any) => {
     let result: any = await dispatch(
       updateCompanyDetail({
         companyName: values.companyName,

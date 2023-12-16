@@ -13,7 +13,7 @@ import Button from '@/app/component/customButton/button';
 import WelcomeWrapper from '@/app/component/welcomeLayout';
 import Description from '@/app/component/description';
 import PrimaryHeading from '@/app/component/headings/primary';
-import { IForgotPasswordInterface } from '@/app/interfaces/forgotPassword.interface';
+import { IForgotPasswordInterface } from '@/app/interfaces/authInterfaces/forgotPassword.interface';
 import { forgotPasswordHandler } from '@/redux/authSlices/auth.thunk';
 import { toast } from 'react-toastify';
 

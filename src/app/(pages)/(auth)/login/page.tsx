@@ -16,7 +16,7 @@ import { quinaryHeading } from '@/globals/tailwindvariables';
 import Button from '@/app/component/customButton/button';
 import GoogleButton from '@/app/component/googleBtn';
 import WelcomeWrapper from '@/app/component/welcomeLayout';
-import { ILogInInterface } from '@/app/interfaces/login.interface';
+import { ILogInInterface } from '@/app/interfaces/authInterfaces/login.interface';
 import { AppDispatch } from '@/redux/store';
 import { login } from '@/redux/authSlices/auth.thunk';
 import PrimaryHeading from '@/app/component/headings/primary';

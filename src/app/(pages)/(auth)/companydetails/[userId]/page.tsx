@@ -8,17 +8,16 @@ import { twMerge } from 'tailwind-merge';
 import { useDispatch } from 'react-redux';
 // module imports
 
-import NavBar from '@/app/component/navbar/authBar';
 import Progessbar from '@/app/component/progressBar';
 import PrimaryHeading from '@/app/component/headings/primary';
 import Button from '@/app/component/customButton/button';
 import { tertiaryHeading } from '@/globals/tailwindvariables';
 import { AppDispatch } from '@/redux/store';
-import { ICompanyDetailInterface } from '@/app/interfaces/addCompanyDetail.interface';
+import { IRegisterCompany } from '@/app/interfaces/companyInterfaces/companyRegister.interface';
 import { addCompanyDetail } from '@/redux/authSlices/auth.thunk';
 import { toast } from 'react-toastify';
 
-const initialValues: ICompanyDetailInterface = {
+const initialValues: IRegisterCompany = {
   companyName: '',
   industry: '',
   employee: 1,
@@ -35,7 +34,7 @@ const CompanyDetails = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { userId } = useParams();
 
-  const submitHandler = async (values: ICompanyDetailInterface) => {
+  const submitHandler = async (values: IRegisterCompany) => {
     let result: any = await dispatch(
       addCompanyDetail({ ...values, userId: userId })
     );
@@ -48,7 +47,6 @@ const CompanyDetails = () => {
   };
   return (
     <>
-      <NavBar login={true} />
       <div className="h-[calc(100vh-100px)] grid place-items-center">
         <div className="w-full max-w-xl bg-snowWhite">
           <h2 className={twMerge(`${tertiaryHeading} mb-4 `)}>

@@ -13,7 +13,7 @@ import FormControl from '@/app/component/formControl';
 import WelcomeWrapper from '@/app/component/welcomeLayout';
 import PrimaryHeading from '@/app/component/headings/primary';
 import Description from '@/app/component/description';
-import { IResetPasswordInterface } from '@/app/interfaces/resetPassword.interface';
+import { IResetPasswordInterface } from '@/app/interfaces/authInterfaces/resetPassword.interface';
 import { resetPasswordHandler } from '@/redux/authSlices/auth.thunk';
 import { toast } from 'react-toastify';
 

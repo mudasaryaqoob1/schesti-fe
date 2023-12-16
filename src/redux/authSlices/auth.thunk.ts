@@ -1,10 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { ILogInInterface } from '@/app/interfaces/login.interface';
-import { ISignUpInterface } from '@/app/interfaces/signup.interface';
+import { ILogInInterface } from '@/app/interfaces/authInterfaces/login.interface';
+import { ISignUpInterface } from '@/app/interfaces/authInterfaces/signup.interface';
 import { authService } from '@/app/services/auth.service';
-import { ICompanyDetailInterface } from '@/app/interfaces/addCompanyDetail.interface';
-import { IForgotPasswordInterface } from '@/app/interfaces/forgotPassword.interface';
-import { IResetPasswordInterface } from '@/app/interfaces/resetPassword.interface';
+import { IRegisterCompany } from '@/app/interfaces/companyInterfaces/companyRegister.interface';
+import { IForgotPasswordInterface } from '@/app/interfaces/authInterfaces/forgotPassword.interface';
+import { IResetPasswordInterface } from '@/app/interfaces/authInterfaces/resetPassword.interface';
 
 export const login = createAsyncThunk(
   'auth/login',
@@ -36,7 +36,7 @@ export const signup = createAsyncThunk(
 
 export const addCompanyDetail = createAsyncThunk(
   'auth/companyDetail',
-  async (credentials: ICompanyDetailInterface, thunkAPI) => {
+  async (credentials: IRegisterCompany, thunkAPI) => {
     try {
       const response = await authService.addCompanyDetailHandle(credentials);
       return response;

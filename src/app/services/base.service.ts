@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-const Config = 'https://bf83-223-123-1-240.ngrok-free.app';
+const Config = process.env.NEXT_PUBLIC_APP_BASE_URL;
 
 export class HttpService {
   CancelToken: any;
@@ -15,7 +15,6 @@ export class HttpService {
       if (error?.response?.status == 401) {
         localStorage.clear();
         window.location.href = '/login';
-
         // window.location.reload();
       }
       return Promise.reject(error);

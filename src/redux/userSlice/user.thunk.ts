@@ -1,11 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { userService } from '@/app/services/user.service';
-import { ICompanyDetailInterface } from '@/app/interfaces/addCompanyDetail.interface';
-import { INewUserInterface } from '@/app/interfaces/newUser';
+// import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
+import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 
 export const updateCompanyDetail = createAsyncThunk(
   'user/companyDetail',
-  async (credentials: ICompanyDetailInterface, thunkAPI) => {
+  async (credentials: any, thunkAPI) => {
     try {
       const response = await userService.httpUpdateCompanyDetail(credentials);
       return response;
@@ -19,7 +19,7 @@ export const updateCompanyDetail = createAsyncThunk(
 
 export const addNewUser = createAsyncThunk(
   'user/newUser',
-  async (credentials: INewUserInterface, thunkAPI) => {
+  async (credentials: IUser, thunkAPI) => {
     try {
       const response = await userService.httpAddNewUser(credentials);
       return response;

@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 // module imports
 import { AppDispatch } from '@/redux/store';
-import { INewUserInterface } from '@/app/interfaces/newUser';
+import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 import { userRoles } from '@/app/enums/role.enums';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import Description from '@/app/component/description';
@@ -46,16 +46,13 @@ const AddNewUser = ({ setShowAddUser }: any) => {
     role: Yup.string().required('Role is required'),
   });
 
-  const initialValues: INewUserInterface = {
+  const initialValues: IUser = {
     firstName: '',
     lastName: '',
     email: '',
     role: '',
   };
-  const submitHandler = async (
-    values: INewUserInterface,
-    { resetForm }: any
-  ) => {
+  const submitHandler = async (values: IUser, { resetForm }: any) => {
     let result: any = await dispatch(addNewUser(values));
 
     if (result.payload.statusCode == 201) {

@@ -1,18 +1,11 @@
 'use client';
-// import Button from '@/app/component/customButton/button';
 import Description from '@/app/component/description';
 import PrimaryHeading from '@/app/component/headings/primary';
-import NavBar from '@/app/component/navbar/authBar';
-// import { quinaryHeading } from '@/globals/tailwindvariables';
 import Image from 'next/image';
-// import { useRouter } from 'next/navigation';
-// import { twMerge } from 'tailwind-merge';
 
 const CheckYourEmail = () => {
-  // const router = useRouter();
   return (
     <>
-      <NavBar login={true} />
       <div className="h-[calc(100vh-100px)] grid place-items-center rounded-s">
         <div
           className="max-w-[497px] min-w-[300px] px-8 py-7 

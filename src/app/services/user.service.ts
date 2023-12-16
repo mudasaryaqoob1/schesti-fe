@@ -1,20 +1,21 @@
 // Importing base class
 import { HttpService } from '@/app/services/base.service';
-import { ICompanyDetailInterface } from '@/app/interfaces/addCompanyDetail.interface';
-import { INewUserInterface } from '@/app/interfaces/newUser';
+// import { ICompanyDetailInterface } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
+// import { INewUserInterface } from '@/app/interfaces/newUser';
+import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
-import { IToken } from '@/app/interfaces/token.interface';
+import { IToken } from '@/app/interfaces/authInterfaces/token.interface';
 
 class UserService extends HttpService {
   private readonly prefix: string = 'api/company';
 
   httpUpdateCompanyDetail = (
-    data: ICompanyDetailInterface
+    data: any
   ): Promise<IResponseInterface<{ token: IToken }>> =>
     this.post(`${this.prefix}/updateCompanyDetail`, data);
 
   httpAddNewUser = (
-    data: INewUserInterface
+    data: any
   ): Promise<IResponseInterface<{ token: IToken }>> =>
     this.post(`${this.prefix}/newUser`, data);
 
@@ -23,5 +24,23 @@ class UserService extends HttpService {
 
   httpGetCompanyUsers = (comapnyId: string): Promise<IResponseInterface> =>
     this.get(`${this.prefix}/companyUsers/${comapnyId}`);
+
+  // company client services
+  httpGetCompanyClients = (
+    page: number,
+    limit: number = 9
+  ): Promise<IResponseInterface> =>
+    this.get(`${this.prefix}/allClients?page=${page}&limit=${limit}`);
+
+  httpDeleteClient = (clientId: string): Promise<IResponseInterface> =>
+    this.post(`${this.prefix}/deleteClient/${clientId}`);
+
+  httpAddNewClient = (data: IClient): Promise<IResponseInterface<any>> =>
+    this.post(`${this.prefix}/newClient`, data);
+  httpUpdateClient = (
+    data: IClient,
+    clientId: string | string[]
+  ): Promise<IResponseInterface<any>> =>
+    this.post(`${this.prefix}/updateClient/${clientId}`, data);
 }
 export const userService = new UserService();

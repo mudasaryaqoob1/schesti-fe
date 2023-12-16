@@ -15,7 +15,7 @@ import FormControl from '@/app/component/formControl';
 import { quinaryHeading } from '@/globals/tailwindvariables';
 import GoogleButton from '@/app/component/googleBtn';
 import WelcomeWrapper from '@/app/component/welcomeLayout';
-import { ISignUpInterface } from '@/app/interfaces/signup.interface';
+import { ISignUpInterface } from '@/app/interfaces/authInterfaces/signup.interface';
 import PrimaryHeading from '@/app/component/headings/primary';
 import Description from '@/app/component/description';
 import { signup } from '@/redux/authSlices/auth.thunk';

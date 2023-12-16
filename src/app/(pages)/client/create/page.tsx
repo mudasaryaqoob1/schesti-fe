@@ -4,22 +4,23 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 // module imports
-import { IClientInterface } from '@/app/interfaces/clien.interface';
+import { IClient } from '@/app/interfaces/companyEmployeeInterfaces/client.interface';
 import { senaryHeading } from '@/globals/tailwindvariables';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import MinDesc from '@/app/component/description/minDesc';
 import CustomButton from '@/app/component/customButton/button';
 import FormControl from '@/app/component/formControl';
-
+import CustomNavbar from '@/app/component/customNavbar';
 // redux module
-import { newClient } from '@/redux/clientSlice/client.thunk';
-import { AppDispatch } from '@/redux/store';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
+
+// client service
+import { userService } from '@/app/services/user.service';
 
 const newClientSchema = Yup.object({
   firstName: Yup.string().required('First name is required!'),
@@ -32,7 +33,7 @@ const newClientSchema = Yup.object({
   address: Yup.string().required('Address is required!'),
   address2: Yup.string(),
 });
-const initialValues: IClientInterface = {
+const initialValues: IClient = {
   firstName: '',
   lastName: '',
   email: '',
@@ -43,7 +44,6 @@ const initialValues: IClientInterface = {
 };
 
 const CreateClient = () => {
-  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const token = useSelector(selectToken);
 
@@ -55,20 +55,19 @@ const CreateClient = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const submitHandler = async (values: IClientInterface) => {
-    let result: any = await dispatch(newClient(values));
-
-    if (result.payload.statusCode == 201) {
+  const submitHandler = async (values: IClient) => {
+    let result = await userService.httpAddNewClient(values);
+    if (result.statusCode == 201) {
       setIsLoading(false);
       router.push('/client');
     } else {
       setIsLoading(false);
-      toast.error(result.payload.message);
+      toast.error(result.message);
     }
   };
 
   return (
-    <>
+    <CustomNavbar>
       <section className="mx-16">
         <div className="flex gap-4 items-center my-6">
           <Image src={'/home.svg'} alt="home icon" width={20} height={20} />
@@ -133,7 +132,7 @@ const CreateClient = () => {
                     />
                     <FormControl
                       control="input"
-                      label="email"
+                      label="Email"
                       type="email"
                       name="email"
                       placeholder="Email Address"
@@ -165,14 +164,17 @@ const CreateClient = () => {
                   <div className="self-end flex justify-end items-center gap-5 md:mt-4 my-3">
                     <div>
                       <CustomButton
-                        isLoading={isLoading}
                         className=" !border-celestialGray !shadow-scenarySubdued2 !text-graphiteGray !bg-snowWhite"
                         text="Cancel"
                         onClick={() => router.push('/client')}
                       />
                     </div>
                     <div>
-                      <CustomButton type="submit" text="Save and Continue" />
+                      <CustomButton
+                        isLoading={isLoading}
+                        type="submit"
+                        text="Save"
+                      />
                     </div>
                   </div>
                 </Form>
@@ -181,7 +183,7 @@ const CreateClient = () => {
           </Formik>
         </div>
       </section>
-    </>
+    </CustomNavbar>
   );
 };
 
