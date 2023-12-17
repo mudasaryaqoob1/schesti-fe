@@ -1,0 +1,141 @@
+
+import React, { useCallback, useEffect, useLayoutEffect } from 'react';
+import type { ColumnsType } from 'antd/es/table';
+import { Dropdown, MenuProps, Table } from 'antd';
+import { DownOutlined } from '@ant-design/icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
+import { AppDispatch } from '@/redux/store';
+import { selectToken } from '@/redux/authSlices/auth.selector';
+import { HttpService } from '@/app/services/base.service';
+import { selectEstimateRequests, selectEstimateRequestsLoading } from '@/redux/company/estimateRequestSelector';
+import { deleteEstimateRequest, fetchEstimateRequests } from '@/redux/company/company.thunk';
+
+interface DataType {
+    key: React.Key;
+    ProjectName: string;
+    ClientName: string;
+    Number: string;
+    City: string;
+    SalePerson: string;
+    Estimator: string;
+    Status: string;
+    Action: string;
+}
+
+const EstimateRequestTable: React.FC = () => {
+
+    const estimateRequestsLoading = useSelector(selectEstimateRequestsLoading);
+    const estimateRequestsData = useSelector(selectEstimateRequests);
+    const router = useRouter();
+
+    const dispatch = useDispatch<AppDispatch>();
+
+    const token = useSelector(selectToken);
+
+    useLayoutEffect(() => {
+        if (token) {
+            HttpService.setToken(token);
+        }
+    }, [token]);
+
+    useEffect(() => {
+        memoizedSetPerson();
+    }, []);
+
+    const memoizedSetPerson = useCallback(async () => {
+        await dispatch(fetchEstimateRequests({ page: 1, limit: 10 }));
+    }, []);
+
+
+    const items: MenuProps['items'] = [
+        {
+            key: 'editEstimateRequest',
+            label: <a href="#">Edit Request</a>,
+        },
+        {
+            key: 'deleteEstimateRequest',
+            label: <p>Delete</p>,
+        },
+    ];
+
+    const handleDropdownItemClick = async (key: string, estimateRequest: any) => {
+        if (key == 'deleteEstimateRequest') {
+            await dispatch(deleteEstimateRequest(estimateRequest._id));
+        } else if (key == 'editEstimateRequest') {
+            router.push(`/estimates/requests/edit/${estimateRequest._id}`);
+        }
+    };
+
+    const columns: ColumnsType<DataType> = [
+        {
+            title: 'Project Name',
+            dataIndex: 'projectName',
+        },
+        {
+            title: 'Client Name',
+            dataIndex: 'clientName',
+            ellipsis: true,
+        },
+        {
+            title: 'Phone Number',
+            dataIndex: 'phone',
+        },
+        {
+            title: 'City',
+            dataIndex: 'city',
+        },
+        {
+            title: 'Sale Person ',
+            dataIndex: 'salePerson',
+        },
+        {
+            title: 'Estimator',
+            dataIndex: 'estimator',
+        },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            render: () => (
+                <a className="text-[#027A48] bg-[#ECFDF3] px-2 py-1 rounded-full">
+                    Active
+                </a>
+            ),
+        },
+        {
+            title: 'Action',
+            dataIndex: 'action',
+            align: 'center',
+            key: 'action',
+            render: (text, record) => (
+                <Dropdown
+                    menu={{
+                        items,
+                        onClick: (event) => {
+                            const { key } = event;
+                            handleDropdownItemClick(key, record);
+                        },
+                    }}
+                    placement="bottomRight"
+                >
+                    <a>
+                        <DownOutlined />
+                    </a>
+                </Dropdown>
+            ),
+        },
+    ];
+
+
+    return (
+        <Table
+            loading={estimateRequestsLoading}
+            columns={columns}
+            dataSource={estimateRequestsData}
+            pagination={{ position: ['bottomCenter'] }}
+        />
+
+    );
+};
+
+export default EstimateRequestTable;

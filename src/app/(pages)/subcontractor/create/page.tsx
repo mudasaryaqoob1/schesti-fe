@@ -20,7 +20,7 @@ import { HttpService } from '@/app/services/base.service';
 
 // subcontractorServic service
 import { subcontractorService } from '@/app/services/subcontractor.service';
-import { ISubcontract } from '../subcontractor.interface';
+import { ISubcontract } from '../../../interfaces/companyEmployeeInterfaces/subcontractor.interface';
 
 const newSubcontractorSchema = Yup.object({
   companyRep: Yup.string().required('Company Rep is required!'),

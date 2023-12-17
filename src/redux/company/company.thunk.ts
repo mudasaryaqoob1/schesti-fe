@@ -1,6 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { userService } from '@/app/services/user.service';
 import { subcontractorService } from '@/app/services/subcontractor.service';
+import { estimateRequestService } from '@/app/services/estimateRequest.service';
 
 interface FetchClientParams {
   page: number;
@@ -37,6 +38,21 @@ export const fetchCompanySubcontractors = createAsyncThunk(
   }
 );
 
+export const fetchEstimateRequests = createAsyncThunk(
+  'company/getAllEstimateRequests',
+  async ({ page, limit }: FetchClientParams, { rejectWithValue }) => {
+    try {
+      const response = await estimateRequestService.httpGetAllEstimateRequests(page, limit);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data ||
+        'An error occurred while fetching the feed records'
+      );
+    }
+  }
+);
+
 export const deleteCompanyClient = createAsyncThunk(
   'company/deleteClient',
   async (clientId: string, { rejectWithValue }) => {
@@ -56,6 +72,21 @@ export const deleteSubcontractor = createAsyncThunk(
   async (clientId: string, { rejectWithValue }) => {
     try {
       const response = await subcontractorService.httpDeleteSubcontractor(clientId);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data ||
+        'An error occurred while fetching the feed records'
+      );
+    }
+  }
+);
+
+export const deleteEstimateRequest = createAsyncThunk(
+  'company/deleteEstimateRequest',
+  async (clientId: string, { rejectWithValue }) => {
+    try {
+      const response = await estimateRequestService.httpDeleteEstimateRequest(clientId);
       return response;
     } catch (error: any) {
       return rejectWithValue(

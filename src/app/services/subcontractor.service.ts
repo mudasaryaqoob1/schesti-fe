@@ -2,7 +2,7 @@
 import { HttpService } from '@/app/services/base.service';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { IToken } from '@/app/interfaces/authInterfaces/token.interface';
-import { ISubcontract } from '../(pages)/subcontractor/subcontractor.interface';
+import { ISubcontract } from '../interfaces/companyEmployeeInterfaces/subcontractor.interface';
 
 class SubcontractorsService extends HttpService {
     private readonly prefix: string = 'api/subcontractor';
