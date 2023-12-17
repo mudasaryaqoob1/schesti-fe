@@ -13,7 +13,6 @@ import { toast } from 'react-toastify';
 // module imports
 import FormControl from '@/app/component/formControl';
 import { quinaryHeading } from '@/globals/tailwindvariables';
-import GoogleButton from '@/app/component/googleBtn';
 import WelcomeWrapper from '@/app/component/welcomeLayout';
 import { ISignUpInterface } from '@/app/interfaces/authInterfaces/signup.interface';
 import PrimaryHeading from '@/app/component/headings/primary';
@@ -138,7 +137,7 @@ const Register = () => {
                     <span className={quinaryHeading}>Or</span>
                     <div className="w-[100%] h-[1px] bg-lightSteelGray"></div>
                   </div>
-                  <GoogleButton text="Sign up" />
+                  {/* <GoogleButton text="Sign up" /> */}
                   <div className=" flex gap-2  justify-center mt-4">
                     <Description
                       className="text-ebonyGray"

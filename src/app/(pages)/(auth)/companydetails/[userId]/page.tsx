@@ -1,4 +1,5 @@
 'use client';
+import React, { useState } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Form } from 'antd';
@@ -35,14 +36,20 @@ const CompanyDetails = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { userId } = useParams();
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const submitHandler = async (values: IRegisterCompany) => {
+    setIsLoading(true);
     let result: any = await dispatch(
       addCompanyDetail({ ...values, userId: userId })
     );
 
     if (result.payload.statusCode == 200) {
+      setIsLoading(false);
+      localStorage.setItem('schestiToken', result.payload.token);
       router.push('/plans');
     } else {
+      setIsLoading(false);
       toast.error(result.payload.message);
     }
   };
@@ -97,6 +104,7 @@ const CompanyDetails = () => {
                       />
                     </div>
                     <Button
+                      isLoading={isLoading}
                       text="Submit"
                       className="w-full my-3"
                       type="submit"

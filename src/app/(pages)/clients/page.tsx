@@ -82,7 +82,7 @@ const ClientTable = () => {
     if (key == 'deleteClient') {
       await dispatch(deleteCompanyClient(client._id));
     } else if (key == 'editClientDetail') {
-      router.push(`/client/edit/${client._id}`);
+      router.push(`/clients/edit/${client._id}`);
     }
   };
 
@@ -158,7 +158,7 @@ const ClientTable = () => {
               icon="plus.svg"
               iconwidth={20}
               iconheight={20}
-              onClick={() => router.push('/client/create')}
+              onClick={() => router.push('/clients/create')}
             />
           </div>
           <Table

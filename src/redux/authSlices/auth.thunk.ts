@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { ILogInInterface } from '@/app/interfaces/authInterfaces/login.interface';
+import { ILoginWithGoogle } from '@/app/interfaces/authInterfaces/loginWithGoogle.interface';
 import { ISignUpInterface } from '@/app/interfaces/authInterfaces/signup.interface';
 import { authService } from '@/app/services/auth.service';
 import { IRegisterCompany } from '@/app/interfaces/companyInterfaces/companyRegister.interface';
@@ -11,6 +12,21 @@ export const login = createAsyncThunk(
   async (credentials: ILogInInterface, thunkAPI) => {
     try {
       const response = await authService.loginHandler(credentials);
+      return response;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || 'Error during login'
+      );
+    }
+  }
+);
+
+export const loginWithGoogle = createAsyncThunk(
+  'auth/loginwithGoogle',
+  async (credentials: ILoginWithGoogle, thunkAPI) => {
+    try {
+      const response =
+        await authService.httpLoginWithGoogleHandler(credentials);
       return response;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(

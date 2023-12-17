@@ -59,7 +59,7 @@ const CreateClient = () => {
     let result = await userService.httpAddNewClient(values);
     if (result.statusCode == 201) {
       setIsLoading(false);
-      router.push('/client');
+      router.push('/clients');
     } else {
       setIsLoading(false);
       toast.error(result.message);

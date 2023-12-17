@@ -7,6 +7,7 @@ import { HttpService } from '@/app/services/base.service';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { IUser } from '../interfaces/companyEmployeeInterfaces/user.interface';
 import { ILogInInterface } from '@/app/interfaces/authInterfaces/login.interface';
+import { ILoginWithGoogle } from '@/app/interfaces/authInterfaces/loginWithGoogle.interface';
 import { ISignUpInterface } from '@/app/interfaces/authInterfaces/signup.interface';
 import { IRegisterCompany } from '../interfaces/companyInterfaces/companyRegister.interface';
 import { IForgotPasswordInterface } from '../interfaces/authInterfaces/forgotPassword.interface';
@@ -25,9 +26,7 @@ class AuthService extends HttpService {
   ): Promise<IResponseInterface<any>> =>
     this.post(`${this.prefix}/forgot-password`, data);
 
-  addCompanyDetailHandle = (
-    data: IRegisterCompany
-  ): Promise<IResponseInterface<any>> =>
+  addCompanyDetailHandle = (data: IRegisterCompany): Promise<any> =>
     this.post(`${this.prefix}/add-company-detail`, data);
 
   signupHandler = (data: ISignUpInterface): Promise<IResponseInterface<any>> =>
@@ -37,5 +36,14 @@ class AuthService extends HttpService {
     data: ILogInInterface
   ): Promise<{ token: string; user: IUser; message: string }> =>
     this.post(`${this.prefix}/login`, data);
+
+  httpLoginWithGoogleHandler = (
+    data: ILoginWithGoogle
+  ): Promise<{
+    token: string;
+    user: IUser;
+    message: string;
+    statusCode: number;
+  }> => this.post(`${this.prefix}/auth-with-google`, data);
 }
 export const authService = new AuthService();
