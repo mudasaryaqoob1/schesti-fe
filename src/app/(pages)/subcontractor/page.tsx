@@ -19,10 +19,10 @@ import { bg_style } from '@/globals/tailwindvariables';
 import Button from '@/app/component/customButton/button';
 import { deleteSubcontractor, fetchCompanySubcontractors } from '@/redux/company/company.thunk';
 
-interface DataType {
-  firstName: string;
-  companyName: string;
-  email: number;
+export interface DataType {
+  company: string;
+  companyRep: string;
+  email: string;
   phone: string;
   address: string;
   status: string;
@@ -50,8 +50,8 @@ const SubcontractTable = () => {
 
   const token = useSelector(selectToken);
 
-  const clientsData = useSelector(selectClients);
-  const companyClientsLoading = useSelector(selectClientsLoading);
+  const subcontractersData = useSelector(selectClients);
+  const subcontractersLoading = useSelector(selectClientsLoading);
 
   useLayoutEffect(() => {
     if (token) {
@@ -77,12 +77,12 @@ const SubcontractTable = () => {
 
   const columns: ColumnsType<DataType> = [
     {
-      title: 'Client Name',
-      dataIndex: 'firstName',
-    },
-    {
       title: 'Company',
       dataIndex: 'companyName',
+    },
+    {
+      title: 'Company Rep',
+      dataIndex: 'companyRep',
       ellipsis: true,
     },
     {
@@ -138,7 +138,7 @@ const SubcontractTable = () => {
         >
           <div className="flex justify-between items-center mb-4">
             <TertiaryHeading
-              title="Client List"
+              title="Subcontractor List"
               className="text-graphiteGray"
             />
             <Button
@@ -151,9 +151,9 @@ const SubcontractTable = () => {
             />
           </div>
           <Table
-            loading={companyClientsLoading}
+            loading={subcontractersLoading}
             columns={columns}
-            dataSource={clientsData}
+            dataSource={subcontractersData}
             pagination={{ position: ['bottomCenter'] }}
           />
         </div>

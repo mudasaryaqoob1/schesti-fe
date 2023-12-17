@@ -8,7 +8,6 @@ import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 // module imports
-import { IClient } from '@/app/interfaces/companyEmployeeInterfaces/client.interface';
 import { senaryHeading } from '@/globals/tailwindvariables';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import MinDesc from '@/app/component/description/minDesc';
@@ -20,11 +19,11 @@ import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
 
 // subcontractorServic service
-import { subcontractorService } from '@/app/services/user.service';
+import { subcontractorService } from '@/app/services/subcontractor.service';
+import { ISubcontract } from '../subcontractor.interface';
 
-const newClientSchema = Yup.object({
-  firstName: Yup.string().required('First name is required!'),
-  lastName: Yup.string().required('Last name is required!'),
+const newSubcontractorSchema = Yup.object({
+  companyRep: Yup.string().required('Company Rep is required!'),
   email: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
@@ -33,12 +32,11 @@ const newClientSchema = Yup.object({
   address: Yup.string().required('Address is required!'),
   address2: Yup.string(),
 });
-const initialValues: IClient = {
-  firstName: '',
-  lastName: '',
+const initialValues: ISubcontract = {
+  companyRep: '',
+  companyName: '',
   email: '',
   phone: '',
-  companyName: '',
   address: '',
   secondAddress: '',
 };
@@ -55,7 +53,7 @@ const CreateSubcontractor = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const submitHandler = async (values: IClient) => {
+  const submitHandler = async (values: ISubcontract) => {
     let result = await subcontractorService.httpAddNewSubcontractor(values);
     if (result.statusCode == 201) {
       setIsLoading(false);
@@ -78,7 +76,7 @@ const CreateSubcontractor = () => {
             height={16}
           />
           <p className={`${senaryHeading} font-base text-slateGray`}>
-            My Client
+            My Subcontractor
           </p>
           <Image
             src={'/chevron-right.svg'}
@@ -88,7 +86,7 @@ const CreateSubcontractor = () => {
           />
 
           <MinDesc
-            title="Add New Client"
+            title="New Subcontractor"
             className={`${senaryHeading} font-semibold text-lavenderPurple cursor-pointer underline`}
           />
         </div>
@@ -98,11 +96,11 @@ const CreateSubcontractor = () => {
         >
           <TertiaryHeading
             className="text-graphiteGray mb-4 "
-            title="Add New Client"
+            title="Add New Subcontractor"
           />
           <Formik
             initialValues={initialValues}
-            validationSchema={newClientSchema}
+            validationSchema={newSubcontractorSchema}
             onSubmit={submitHandler}
           >
             {({ handleSubmit }) => {
@@ -111,17 +109,17 @@ const CreateSubcontractor = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-4 gap-4">
                     <FormControl
                       control="input"
-                      label="First Name"
+                      label="Company Rep"
                       type="text"
-                      name="firstName"
-                      placeholder="First Name"
+                      name="companyRep"
+                      placeholder="Company Rep"
                     />
                     <FormControl
                       control="input"
-                      label="Last Name"
+                      label="Company Name"
                       type="text"
-                      name="lastName"
-                      placeholder="Last Name"
+                      name="companyName"
+                      placeholder="Company Name"
                     />
                     <FormControl
                       control="input"

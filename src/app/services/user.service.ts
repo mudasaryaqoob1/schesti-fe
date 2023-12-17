@@ -44,28 +44,4 @@ class UserService extends HttpService {
     this.post(`${this.prefix}/updateClient/${clientId}`, data);
 }
 
-class SubcontractorsService extends HttpService {
-  private readonly prefix: string = 'api/subcontractor';
-
-  httpAddNewSubcontractor = (
-    data: any
-  ): Promise<IResponseInterface<{ token: IToken }>> =>
-    this.post(`${this.prefix}/addNewSubcontractor`, data);
-
-  httpGetAllSubcontractors = (
-    page: number,
-    limit: number = 9
-  ): Promise<IResponseInterface> =>
-    this.get(`${this.prefix}/getAllSubcontractors?page=${page}&limit=${limit}`);
-
-  httpUpdateSubontractor = (
-    data: IClient,
-    clientId: string | string[]
-  ): Promise<IResponseInterface<any>> =>
-    this.post(`${this.prefix}/updateSubcontractor/${clientId}`, data);
-
-  httpDeleteSubcontractor = (subcontractorId: string): Promise<IResponseInterface> =>
-    this.post(`${this.prefix}/deleteSubcontractor/${subcontractorId}`);
-}
 export const userService = new UserService();
-export const subcontractorService = new SubcontractorsService();

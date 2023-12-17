@@ -8,7 +8,6 @@ import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 // module imports
-import { IClient } from '@/app/interfaces/companyEmployeeInterfaces/client.interface';
 import { senaryHeading } from '@/globals/tailwindvariables';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import MinDesc from '@/app/component/description/minDesc';
@@ -20,12 +19,12 @@ import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
 
 // subcontractorService service
-import { subcontractorService } from '@/app/services/user.service';
+import { subcontractorService } from '@/app/services/subcontractor.service';
 import { selectClients } from '@/redux/company/companySelector';
+import { ISubcontract } from '../../subcontractor.interface';
 
-const newClientSchema = Yup.object({
-  firstName: Yup.string().required('First name is required!'),
-  lastName: Yup.string().required('Last name is required!'),
+const editSubcontractorSchema = Yup.object({
+  companyRep: Yup.string().required('Company Rep is required!'),
   email: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
@@ -34,12 +33,11 @@ const newClientSchema = Yup.object({
   address: Yup.string().required('Address is required!'),
   address2: Yup.string(),
 });
-const initialValues: IClient = {
-  firstName: '',
-  lastName: '',
+const initialValues: ISubcontract = {
+  companyRep: '',
+  companyName: '',
   email: '',
   phone: '',
-  companyName: '',
   address: '',
   secondAddress: '',
 };
@@ -48,7 +46,7 @@ const EditSubcontractor = () => {
   const router = useRouter();
   const params = useParams();
   const token = useSelector(selectToken);
-  const clientsData = useSelector(selectClients);
+  const subcontractsData = useSelector(selectClients);
 
   const { id } = params;
 
@@ -59,18 +57,18 @@ const EditSubcontractor = () => {
   }, [token]);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [clientData, setclientData] = useState(null);
+  const [subcontractorData, setSubcontractorData] = useState(null);
 
   useEffect(() => {
-    setclientData(clientsData.find((item: any) => item._id === id));
+    setSubcontractorData(subcontractsData.find((item: any) => item._id === id));
   }, [id]);
 
-  const submitHandler = async (values: IClient) => {
+  const submitHandler = async (values: ISubcontract) => {
     let updateContractorBody = {
-      firstName: values.firstName,
-      lastName: values.lastName,
-      phone: values.phone,
+      companyRep: values.companyRep,
       companyName: values.companyName,
+      email: values.email,
+      phone: values.phone,
       address: values.address,
       secondAddress: values.secondAddress,
     };
@@ -84,8 +82,6 @@ const EditSubcontractor = () => {
     }
   };
 
-  console.log(clientData, 'clientData');
-
   return (
     <CustomNavbar>
       <section className="mx-16">
@@ -98,7 +94,7 @@ const EditSubcontractor = () => {
             height={16}
           />
           <p className={`${senaryHeading} font-base text-slateGray`}>
-            My Client
+            My Subcontract
           </p>
           <Image
             src={'/chevron-right.svg'}
@@ -108,7 +104,7 @@ const EditSubcontractor = () => {
           />
 
           <MinDesc
-            title="Add New Client"
+            title="Edit Subcontractor"
             className={`${senaryHeading} font-semibold text-lavenderPurple cursor-pointer underline`}
           />
         </div>
@@ -118,12 +114,13 @@ const EditSubcontractor = () => {
         >
           <TertiaryHeading
             className="text-graphiteGray mb-4 "
-            title="Add New Client"
+            title="Edit Subcontractor"
+
           />
           <Formik
-            initialValues={clientData ? clientData : initialValues}
+            initialValues={subcontractorData ? subcontractorData : initialValues}
             enableReinitialize={true}
-            validationSchema={newClientSchema}
+            validationSchema={editSubcontractorSchema}
             onSubmit={submitHandler}
           >
             {({ handleSubmit }) => {
@@ -132,17 +129,17 @@ const EditSubcontractor = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-4 gap-4">
                     <FormControl
                       control="input"
-                      label="First Name"
+                      label="Company Rep"
                       type="text"
-                      name="firstName"
-                      placeholder="First Name"
+                      name="companyRep"
+                      placeholder="Company Rep"
                     />
                     <FormControl
                       control="input"
-                      label="Last Name"
+                      label="Company Name"
                       type="text"
-                      name="lastName"
-                      placeholder="Last Name"
+                      name="companyName"
+                      placeholder="Company Name"
                     />
                     <FormControl
                       control="input"
