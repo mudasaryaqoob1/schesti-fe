@@ -4,6 +4,7 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { Skeleton } from 'antd';
 
 // import Image from 'next/image';
 // import { twMerge } from 'tailwind-merge';
@@ -78,99 +79,101 @@ const GeneralSetting = () => {
     }
   };
 
-  if (!clientsData) {
-    return <h1>Loading</h1>;
-  }
-
   return (
     <SettingSideBar>
-      <div className="w-full">
-        <Formik
-          initialValues={clientsData ? clientsData : initialValues}
-          enableReinitialize={true}
-          validationSchema={generalSettingSchema}
-          onSubmit={submitHandler}
-        >
-          {({ handleSubmit }) => {
-            return (
-              <Form
-                name="basic"
-                onSubmit={handleSubmit}
-                autoComplete="off"
-                className={`${bg_style} p-5 `}
-              >
-                <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-3 gap-4 ">
-                  <FormControl
-                    control="input"
-                    label="Company Name"
-                    labelStyle="!text-lightyGrayish"
-                    type="text"
-                    name="companyName"
-                    placeholder="Enter Company Name"
-                  />
-                  <FormControl
-                    control="input"
-                    label="Email"
-                    type="email"
-                    name="email"
-                    labelStyle="!text-lightyGrayish"
-                    placeholder="Email Address"
-                    readOnly={true}
-                  />
-                  <FormControl
-                    control="input"
-                    label="Industry"
-                    type="text"
-                    name="industry"
-                    labelStyle="!text-lightyGrayish"
-                    placeholder="industry"
-                  />
-                  <FormControl
-                    control="input"
-                    label="Total Empolyee"
-                    type="number"
-                    name="employee"
-                    labelStyle="!text-lightyGrayish"
-                    placeholder="total empolyee"
-                  />
-                  <FormControl
-                    control="input"
-                    label="Phone Number"
-                    type="number"
-                    name="phone"
-                    labelStyle="!text-lightyGrayish"
-                    placeholder="Phone number"
-                  />
-                  <FormControl
-                    control="input"
-                    label="Website"
-                    type="text"
-                    name="website"
-                    labelStyle="!text-lightyGrayish"
-                    placeholder="abc@company.com"
-                  />
-                </div>
-                <div className="flex justify-end gap-4 mt-6">
-                  <div className="">
-                    <Button
-                      text="Cancel"
-                      className={`!bg-snowWhite !text-[#344054] !py-3 !px-5 !w-28`}
+      {!clientsData ? (
+        <div className="flex flex-col w-full mt-5">
+          <Skeleton active />
+          <Skeleton active />
+        </div>
+      ) : (
+        <div className="w-full">
+          <Formik
+            initialValues={clientsData ? clientsData : initialValues}
+            enableReinitialize={true}
+            validationSchema={generalSettingSchema}
+            onSubmit={submitHandler}
+          >
+            {({ handleSubmit }) => {
+              return (
+                <Form
+                  name="basic"
+                  onSubmit={handleSubmit}
+                  autoComplete="off"
+                  className={`${bg_style} p-5 `}
+                >
+                  <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-3 gap-4 ">
+                    <FormControl
+                      control="input"
+                      label="Company Name"
+                      labelStyle="!text-lightyGrayish"
+                      type="text"
+                      name="companyName"
+                      placeholder="Enter Company Name"
+                    />
+                    <FormControl
+                      control="input"
+                      label="Email"
+                      type="email"
+                      name="email"
+                      labelStyle="!text-lightyGrayish"
+                      placeholder="Email Address"
+                      readOnly={true}
+                    />
+                    <FormControl
+                      control="input"
+                      label="Industry"
+                      type="text"
+                      name="industry"
+                      labelStyle="!text-lightyGrayish"
+                      placeholder="industry"
+                    />
+                    <FormControl
+                      control="input"
+                      label="Total Empolyee"
+                      type="number"
+                      name="employee"
+                      labelStyle="!text-lightyGrayish"
+                      placeholder="total empolyee"
+                    />
+                    <FormControl
+                      control="input"
+                      label="Phone Number"
+                      type="number"
+                      name="phone"
+                      labelStyle="!text-lightyGrayish"
+                      placeholder="Phone number"
+                    />
+                    <FormControl
+                      control="input"
+                      label="Website"
+                      type="text"
+                      name="website"
+                      labelStyle="!text-lightyGrayish"
+                      placeholder="abc@company.com"
                     />
                   </div>
-                  <div className="w-28">
-                    <Button
-                      text="Update"
-                      type="submit"
-                      className="!py-3 !px-5"
-                    />
+                  <div className="flex justify-end gap-4 mt-6">
+                    <div className="">
+                      <Button
+                        text="Cancel"
+                        className={`!bg-snowWhite !text-[#344054] !py-3 !px-5 !w-28`}
+                      />
+                    </div>
+                    <div className="w-28">
+                      <Button
+                        text="Update"
+                        type="submit"
+                        className="!py-3 !px-5"
+                      />
+                    </div>
                   </div>
-                </div>
-              </Form>
-            );
-          }}
-        </Formik>
-        {/* upload */}
-        {/* <div className={`${bg_style} p-5 mt-4 `}>
+                </Form>
+              );
+            }}
+          </Formik>
+          {/* upload */}
+          {/* <div className={`${bg_style} p-5 mt-4 `}>
         <div
           className={`px-6 py-4 flex flex-col items-center gap-3
                 ${bg_style}
@@ -212,7 +215,8 @@ const GeneralSetting = () => {
           </p>
         </div>
       </div> */}
-      </div>
+        </div>
+      )}
     </SettingSideBar>
   );
 };
