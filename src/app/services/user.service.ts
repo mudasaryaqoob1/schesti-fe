@@ -44,4 +44,5 @@ class UserService extends HttpService {
   ): Promise<IResponseInterface<any>> =>
     this.post(`${this.prefix}/updateClient/${clientId}`, data);
 }
+
 export const userService = new UserService();
