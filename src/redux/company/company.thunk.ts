@@ -36,10 +36,6 @@ export const fetchCompanySubcontractors = createAsyncThunk(
         page,
         limit
       );
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
       return response;
     } catch (error: any) {
       return rejectWithValue(
@@ -87,11 +83,7 @@ export const deleteSubcontractor = createAsyncThunk(
   async (subcontractorId: string, { rejectWithValue }) => {
     try {
       const response =
-<<<<<<< Updated upstream
         await subcontractorService.httpDeleteSubcontractor(subcontractorId);
-=======
-        await subcontractorService.httpDeleteSubcontractor(clientId);
->>>>>>> Stashed changes
       return response;
     } catch (error: any) {
       return rejectWithValue(

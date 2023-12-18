@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import initialCompanyClientState from './companyClient.initialState';
+import initialCompanyClientState from './clientSlice/companyClient.initialState';
 import { deleteEstimateRequest, fetchEstimateRequests } from './company.thunk';
 
 export const companySlice = createSlice({
