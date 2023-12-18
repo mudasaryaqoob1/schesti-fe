@@ -6,14 +6,16 @@ import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { Skeleton } from 'antd';
 
-// import Image from 'next/image';
-// import { twMerge } from 'tailwind-merge';
+import Image from 'next/image';
+import { twMerge } from 'tailwind-merge';
 
 // module imports
 import FormControl from '@/app/component/formControl';
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
 import {
   bg_style,
+  minHeading,
+  senaryHeading,
   // minHeading,
   // senaryHeading,
 } from '@/globals/tailwindvariables';
@@ -96,13 +98,10 @@ const GeneralSetting = () => {
           >
             {({ handleSubmit }) => {
               return (
-                <Form
-                  name="basic"
-                  onSubmit={handleSubmit}
-                  autoComplete="off"
-                  className={`${bg_style} p-5 `}
-                >
-                  <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-3 gap-4 ">
+                <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
+                  <div
+                    className={`grid grid-cols-1 md:grid-cols-2 grid-rows-3 gap-4 ${bg_style} p-5`}
+                  >
                     <FormControl
                       control="input"
                       label="Company Name"
@@ -153,6 +152,46 @@ const GeneralSetting = () => {
                       placeholder="abc@company.com"
                     />
                   </div>
+
+                  {/* Upload Image Div */}
+                  <div className={`${bg_style} p-5 mt-4 `}>
+                    <div
+                      className={`px-6 py-4 flex flex-col items-center gap-3 ${bg_style}`}
+                    >
+                      <input type="text" id="upload" className="hidden" />
+                      <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
+                        <Image
+                          src={'/uploadcloud.svg'}
+                          alt="upload icon"
+                          width={20}
+                          height={20}
+                        />
+                      </div>
+                      <div className="flex gap-2">
+                        <label
+                          htmlFor="uploadCompanyLogo"
+                          className={twMerge(
+                            `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
+                          )}
+                        >
+                          Upload Logo
+                        </label>
+                        <input
+                          type="file"
+                          name="uploadLogo"
+                          id="uploadCompanyLogo"
+                          className="hidden"
+                          onChange={() => console.log('uplaod')}
+                        />
+                        <p className={`text-steelGray ${minHeading}`}>
+                          or drag and drop
+                        </p>
+                      </div>
+                      <p className={`text-steelGray ${minHeading}`}>
+                        SVG, PNG, JPG or GIF (max. 800x400px)
+                      </p>
+                    </div>
+                  </div>
                   <div className="flex justify-end gap-4 mt-6">
                     <div className="">
                       <Button
@@ -173,48 +212,6 @@ const GeneralSetting = () => {
             }}
           </Formik>
           {/* upload */}
-          {/* <div className={`${bg_style} p-5 mt-4 `}>
-        <div
-          className={`px-6 py-4 flex flex-col items-center gap-3
-                ${bg_style}
-                `}
-        >
-          <input type="text" id="upload" className="hidden" />
-          <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
-            <Image
-              src={'/uploadcloud.svg'}
-              alt="upload icon"
-              width={20}
-              height={20}
-            />
-          </div>
-          <div className="flex gap-2">
-            <label
-              htmlFor="upload"
-              className={twMerge(
-                `${senaryHeading} text-RoyalPurple font-semibold 
-                            cursor-pointer
-                            `
-              )}
-            >
-              Upload Logo
-            </label>
-            <input type="file" name="upload" id="upload" className="hidden" />
-            <p
-              className={`text-steelGray ${minHeading}
-                        `}
-            >
-              or drag and drop
-            </p>
-          </div>
-          <p
-            className={`text-steelGray ${minHeading}
-                        `}
-          >
-            SVG, PNG, JPG or GIF (max. 800x400px)
-          </p>
-        </div>
-      </div> */}
         </div>
       )}
     </SettingSideBar>
