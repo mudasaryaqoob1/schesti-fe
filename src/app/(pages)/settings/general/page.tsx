@@ -10,6 +10,8 @@ import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
 
 // module imports
+import AwsS3 from '@/app/utils/S3Intergration';
+
 import FormControl from '@/app/component/formControl';
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
 import {
@@ -24,6 +26,7 @@ import { HttpService } from '@/app/services/base.service';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import SettingSideBar from '@/app/(pages)/settings/verticleBar';
 import { userService } from '@/app/services/user.service';
+import { byteConverter } from '@/app/utils/byteConverter';
 
 const initialValues: IUpdateCompanyDetail = {
   companyName: '',
@@ -53,11 +56,12 @@ const GeneralSetting = () => {
     }
   }, [token]);
 
-  const [clientsData, setClientsData] = useState(null);
+  const [userData, setUserData] = useState(null);
+  // const [avatar, setAvatar] = useState('')
 
   const getUserDetail = useCallback(async () => {
     let { data } = await userService.httpGetCompanyDetail();
-    setClientsData(data.companyDetail);
+    setUserData(data.companyDetail);
   }, []);
 
   useEffect(() => {
@@ -81,9 +85,21 @@ const GeneralSetting = () => {
     }
   };
 
+  const avatarUploadHandler = async (e: any) => {
+    let selectedFile = e.target.files[0];
+
+    if (byteConverter(selectedFile.size, 'MB').size > 5) {
+      toast.warning('Cannot upload image more then 5 mb of size');
+      return;
+    }
+
+    const url = await new AwsS3(selectedFile, 'photos/avatars/').getS3URL();
+    console.log(url);
+  };
+
   return (
     <SettingSideBar>
-      {!clientsData ? (
+      {!userData ? (
         <div className="flex flex-col w-full mt-5">
           <Skeleton active />
           <Skeleton active />
@@ -91,7 +107,7 @@ const GeneralSetting = () => {
       ) : (
         <div className="w-full">
           <Formik
-            initialValues={clientsData ? clientsData : initialValues}
+            initialValues={userData ? userData : initialValues}
             enableReinitialize={true}
             validationSchema={generalSettingSchema}
             onSubmit={submitHandler}
@@ -181,7 +197,7 @@ const GeneralSetting = () => {
                           name="uploadLogo"
                           id="uploadCompanyLogo"
                           className="hidden"
-                          onChange={() => console.log('uplaod')}
+                          onChange={avatarUploadHandler}
                         />
                         <p className={`text-steelGray ${minHeading}`}>
                           or drag and drop

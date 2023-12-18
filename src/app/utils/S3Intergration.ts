@@ -23,11 +23,6 @@ class AwsS3 {
     const randomBytes = promisify(crypto.randomBytes);
     const rawBytes = await randomBytes(16);
     const imageName = rawBytes.toString('hex');
-
-    console.log(
-      process.env.NEXT_PUBLIC_BUCKET,
-      'process.env.NEXT_PUBLIC_BUCKET'
-    );
     const params: S3.PutObjectRequest = {
       Body: this.fileUpload,
       Bucket: process.env.NEXT_PUBLIC_BUCKET!,

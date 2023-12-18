@@ -21,7 +21,7 @@ import { HttpService } from '@/app/services/base.service';
 // subcontractorService service
 import { subcontractorService } from '@/app/services/subcontractor.service';
 import { ISubcontract } from '../../../../interfaces/companyInterfaces/subcontractor.interface';
-import { selectSubcontractors } from '@/redux/company/subcontractorSelector';
+import { selectSubcontractors } from '@/redux/company/subcontractorSlice/subcontractorSelector';
 
 const editSubcontractorSchema = Yup.object({
   companyRep: Yup.string().required('Company Rep is required!'),
