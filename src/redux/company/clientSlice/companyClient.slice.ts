@@ -24,6 +24,11 @@ export const companySlice = createSlice({
       state.error = action.error.message;
     });
 
+<<<<<<< Updated upstream:src/redux/company/clientSlice/companyClient.slice.ts
+=======
+    // delete client
+
+>>>>>>> Stashed changes:src/redux/company/companyClient.slice.ts
     builder.addCase(deleteCompanyClient.pending, (state) => {
       state.loading = true;
     });

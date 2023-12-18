@@ -35,10 +35,10 @@ const ModalComponent = ({
 export default ModalComponent;
 
 const Wrapper = styled.div`
-.ant-modal-content{
-  height: 94vh;
+  .ant-modal-content {
+    height: 94vh;
     background: transparent;
     box-shadow: none;
     padding: 0px;
-}
+  }
 `;

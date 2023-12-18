@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 type Props = {
   btnText: string;
   link: string;
-}
+};
 const NoData = ({ btnText, link }: Props) => {
   const router = useRouter();
   return (
@@ -37,10 +37,7 @@ const NoData = ({ btnText, link }: Props) => {
           title="Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content."
           className="text-steelGray text-center mb-7"
         />
-        <CustomButton
-          text={btnText}
-          onClick={() => router.push(link)}
-        />
+        <CustomButton text={btnText} onClick={() => router.push(link)} />
       </div>
     </div>
   );

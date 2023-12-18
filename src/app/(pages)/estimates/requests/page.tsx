@@ -21,37 +21,25 @@ import CustomNavbar from '@/app/component/customNavbar';
 import { IClient } from '@/app/interfaces/companyEmployeeInterfaces/client.interface';
 
 const clientInfoSchema: any = Yup.object({
-  clientName: Yup.string()
-    .required('Field is required!'),
-  companyName: Yup.string()
-    .required('Field is required!'),
+  clientName: Yup.string().required('Field is required!'),
+  companyName: Yup.string().required('Field is required!'),
   email: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
-  phone: Yup.string()
-    .required('Field is required!'),
-  city: Yup.string()
-    .required('Field is required!'),
-  projectName: Yup.string()
-    .required('Field is required!'),
-  leadSource: Yup.string()
-    .required('Field is required!'),
-  projectValue: Yup.string()
-    .required('Field is required!'),
-  projectInformation: Yup.string()
-    .required('Field is required!'),
-  salePerson: Yup.string()
-    .required('Field is required!'),
-  estimator: Yup.string()
-    .required('Field is required!'),
+  phone: Yup.string().required('Field is required!'),
+  city: Yup.string().required('Field is required!'),
+  projectName: Yup.string().required('Field is required!'),
+  leadSource: Yup.string().required('Field is required!'),
+  projectValue: Yup.string().required('Field is required!'),
+  projectInformation: Yup.string().required('Field is required!'),
+  salePerson: Yup.string().required('Field is required!'),
+  estimator: Yup.string().required('Field is required!'),
 });
-
 
 const TakeOff = () => {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
 
   const initialValues: IEstimateRequest = {
     clientName: '',
@@ -64,13 +52,14 @@ const TakeOff = () => {
     projectValue: '',
     projectInformation: '',
     salePerson: '',
-    estimator: ''
+    estimator: '',
   };
 
-
   const submitHandler = async (values: IEstimateRequest) => {
-
-    let result = await estimateRequestService.httpAddNewEstimateRequest({ ...values, phone: +values.phone });
+    let result = await estimateRequestService.httpAddNewEstimateRequest({
+      ...values,
+      phone: +values.phone,
+    });
     if (result.statusCode == 201) {
       setIsLoading(false);
       router.push('/estimates');
@@ -102,23 +91,36 @@ const TakeOff = () => {
               onSubmit={submitHandler}
             >
               {({ handleSubmit, values, errors, setFieldValue }) => {
-                console.log({ values, errors })
+                console.log({ values, errors });
                 return (
                   <>
                     <ModalComponent open={showModal} setOpen={setShowModal}>
-                      <ExistingClient setModalOpen={setShowModal} onSelectClient={({ firstName, lastName, companyName, email, phone }: IClient) => {
-                        setFieldValue('clientName', `${firstName} ${lastName}`);
-                        setFieldValue('companyName', companyName);
-                        setFieldValue('email', email);
-                        setFieldValue('phone', phone);
-                      }} />
+                      <ExistingClient
+                        setModalOpen={setShowModal}
+                        onSelectClient={({
+                          firstName,
+                          lastName,
+                          companyName,
+                          email,
+                          phone,
+                        }: IClient) => {
+                          setFieldValue(
+                            'clientName',
+                            `${firstName} ${lastName}`
+                          );
+                          setFieldValue('companyName', companyName);
+                          setFieldValue('email', email);
+                          setFieldValue('phone', phone);
+                        }}
+                      />
                     </ModalComponent>
 
-                    <Form
-                      onSubmit={handleSubmit}
-                    >
+                    <Form onSubmit={handleSubmit}>
                       <div className="p-5 mt-4 border border-solid border-silverGray pb-4 rounded-lg shadow-quinarGentleDepth">
-                        <QuaternaryHeading title="Client Information" className="font-semibold" />
+                        <QuaternaryHeading
+                          title="Client Information"
+                          className="font-semibold"
+                        />
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 grid-rows-1 gap-x-5">
                           <FormControl
                             control="input"
@@ -148,7 +150,6 @@ const TakeOff = () => {
                             name="phone"
                             placeholder="Phone number"
                           />
-
                         </div>
                       </div>
 
@@ -186,8 +187,6 @@ const TakeOff = () => {
                             name="projectInformation"
                             placeholder="Enter Project Information"
                           />
-
-
                         </div>
                       </div>
 
@@ -222,13 +221,12 @@ const TakeOff = () => {
                         />
                         <div className="flex items-center gap-3">
                           <div className="w-60">
-                            <p className={`${senaryHeading} text-midnightBlue font-popin`}>
+                            <p
+                              className={`${senaryHeading} text-midnightBlue font-popin`}
+                            >
                               Architecture
                             </p>
-                            <div
-                              className="my-2 p-4 flex items-center flex-col gap-2 border-2
-                 border-silverGray pb-4 rounded-lg "
-                            >
+                            <div className="my-2 p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg ">
                               <Image
                                 src={'/uploadcloud.svg'}
                                 alt="upload icon"
@@ -240,8 +238,7 @@ const TakeOff = () => {
                                 <div>
                                   <p
                                     className={twMerge(
-                                      `${senaryHeading}
-                         text-RoyalPurple font-semibold`
+                                      `${senaryHeading} text-RoyalPurple font-semibold`
                                     )}
                                   >
                                     Click to upload
@@ -259,13 +256,12 @@ const TakeOff = () => {
                             </div>
                           </div>
                           <div className="w-60">
-                            <p className={`${senaryHeading} text-midnightBlue font-popin`}>
+                            <p
+                              className={`${senaryHeading} text-midnightBlue font-popin`}
+                            >
                               Other Documents
                             </p>
-                            <div
-                              className="p-4 my-2 flex items-center flex-col gap-2 border-2
-                 border-silverGray pb-4 rounded-lg "
-                            >
+                            <div className="p-4 my-2 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg ">
                               <Image
                                 src={'/uploadcloud.svg'}
                                 alt="upload icon"
@@ -277,14 +273,15 @@ const TakeOff = () => {
                                 <div>
                                   <p
                                     className={twMerge(
-                                      `${senaryHeading}
-                         text-RoyalPurple font-semibold`
+                                      `${senaryHeading} text-RoyalPurple font-semibold`
                                     )}
                                   >
                                     Click to upload
                                   </p>
                                 </div>
-                                <p className={`${minHeading} text-midnightBlue font-popin`}>
+                                <p
+                                  className={`${minHeading} text-midnightBlue font-popin`}
+                                >
                                   or drag and drop
                                 </p>
                               </div>
@@ -298,18 +295,10 @@ const TakeOff = () => {
                         </div>
                       </div>
                       {/* buttons */}
-                      <div
-                        className="self-end  flex justify-end items-center gap-1
-           md:my-5 my-3 bg-white shadow-secondaryTwist"
-                      >
+                      <div className="self-end  flex justify-end items-center gap-1 md:my-5 my-3 bg-white shadow-secondaryTwist">
                         <div className="!px-5 !py-3 ">
                           <CustomButton
-                            className="  !border-celestialGray 
-            !shadow-scenarySubdued2  
-             !text-graphiteGray 
-              !bg-snowWhite
-              !px-5 !py-3
-              "
+                            className="  !border-celestialGray  !shadow-scenarySubdued2   !text-graphiteGray  !bg-snowWhite !px-5 !py-3 "
                             text="Cancel"
                             onClick={() => router.push('/estimates')}
                           />
@@ -317,7 +306,7 @@ const TakeOff = () => {
                         <div className="!px-5 !py-3 !w-64">
                           <CustomButton
                             text="Next"
-                            type='submit'
+                            type="submit"
                             isLoading={isLoading}
                             className="!px-5 !py-3"
                           />
@@ -325,16 +314,12 @@ const TakeOff = () => {
                       </div>
                     </Form>
                   </>
-
-                )
-
+                );
               }}
             </Formik>
-
           </div>
         </section>
       </CustomNavbar>
-
     </>
   );
 };

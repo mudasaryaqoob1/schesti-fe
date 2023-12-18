@@ -36,7 +36,10 @@ export const fetchCompanySubcontractors = createAsyncThunk(
         page,
         limit
       );
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
       return response;
     } catch (error: any) {
       return rejectWithValue(
@@ -51,12 +54,15 @@ export const fetchEstimateRequests = createAsyncThunk(
   'company/getAllEstimateRequests',
   async ({ page, limit }: FetchClientParams, { rejectWithValue }) => {
     try {
-      const response = await estimateRequestService.httpGetAllEstimateRequests(page, limit);
+      const response = await estimateRequestService.httpGetAllEstimateRequests(
+        page,
+        limit
+      );
       return response;
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
-        'An error occurred while fetching the feed records'
+          'An error occurred while fetching the feed records'
       );
     }
   }
@@ -81,7 +87,11 @@ export const deleteSubcontractor = createAsyncThunk(
   async (subcontractorId: string, { rejectWithValue }) => {
     try {
       const response =
+<<<<<<< Updated upstream
         await subcontractorService.httpDeleteSubcontractor(subcontractorId);
+=======
+        await subcontractorService.httpDeleteSubcontractor(clientId);
+>>>>>>> Stashed changes
       return response;
     } catch (error: any) {
       return rejectWithValue(
@@ -96,12 +106,13 @@ export const deleteEstimateRequest = createAsyncThunk(
   'company/deleteEstimateRequest',
   async (clientId: string, { rejectWithValue }) => {
     try {
-      const response = await estimateRequestService.httpDeleteEstimateRequest(clientId);
+      const response =
+        await estimateRequestService.httpDeleteEstimateRequest(clientId);
       return response;
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
-        'An error occurred while fetching the feed records'
+          'An error occurred while fetching the feed records'
       );
     }
   }

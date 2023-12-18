@@ -20,6 +20,13 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 import Button from '@/app/component/customButton/button';
 import {
+<<<<<<< Updated upstream
+=======
+  selectSubcontractors,
+  selectSubcontractorsLoading,
+} from '@/redux/company/subcontractorSelector';
+import {
+>>>>>>> Stashed changes
   deleteSubcontractor,
   fetchCompanySubcontractors,
 } from '@/redux/company/company.thunk';

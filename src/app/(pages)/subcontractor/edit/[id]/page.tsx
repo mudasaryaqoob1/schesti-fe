@@ -73,7 +73,11 @@ const EditSubcontractor = () => {
       address: values.address,
       secondAddress: values.secondAddress,
     };
+<<<<<<< Updated upstream
 
+=======
+    setIsLoading(true);
+>>>>>>> Stashed changes
     let result = await subcontractorService.httpUpdateSubontractor(
       updateContractorBody,
       id

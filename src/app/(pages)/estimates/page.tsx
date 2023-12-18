@@ -10,10 +10,7 @@ const Page = () => {
   return (
     <CustomNavbar>
       <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
-        <Link
-          href='/estimates/requests'
-          className="flex justify-end me-3 my-2"
-        >
+        <Link href="/estimates/requests" className="flex justify-end me-3 my-2">
           <CustomButton text="+ Start New Estimate " className="!w-auto" />
         </Link>
         <div
