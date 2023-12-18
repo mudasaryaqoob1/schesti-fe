@@ -82,3 +82,15 @@ a {
   opacity: 0.6; /* Reduces opacity for a faded appearance */
   cursor: not-allowed; /* Change the cursor to 'not-allowed' */
 }
+
+.ant-modal-content{
+  background: transparent !important;
+  box-shadow: none;
+  padding: 0px;
+}
+
+.ant-modal-content {
+  height: 94vh !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}

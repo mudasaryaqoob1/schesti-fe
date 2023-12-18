@@ -1,25 +1,38 @@
 'use client';
-import { Fragment } from 'react';
+import { Fragment, useCallback, useEffect, useState } from 'react';
 import Button from '@/app/component/customButton/button';
 import Image from 'next/image';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
-import SecondaryHeading from '@/app/component/headings/Secondary';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
-
-export const existingClients = [
-    { name: 'Robert Fox', img: '/clientimage.png' },
-    { name: 'Jane Cooper', img: '/clientimage2.png' },
-    { name: 'Devon Lane', img: '/clientimage3.png' },
-    { name: 'Dianne Russell', img: '/clientimage4.png' },
-    { name: 'Albert Flores', img: '/clientimage5.png' },
-    { name: 'Cody Fisher', img: '/clientimage6.png' },
-];
+import { AppDispatch } from '@/redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCompanyClients } from '@/redux/company/company.thunk';
+import { selectClients, selectClientsLoading } from '@/redux/company/companySelector';
+import { IClient } from '@/app/interfaces/companyEmployeeInterfaces/client.interface';
 
 interface Props {
     setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    onSelectClient: (data: IClient) => void
 }
-const ExistingClient = ({ setModalOpen }: Props) => {
+
+
+const ExistingClient = ({ setModalOpen, onSelectClient }: Props) => {
+
+    const dispatch = useDispatch<AppDispatch>();
+    const clientLoading = useSelector(selectClientsLoading);
+    const clientsData = useSelector(selectClients);
+    const [selectedClientId, setSelectedClientId] = useState(clientsData?.[0]?._id);
+
+    useEffect(() => {
+        memoizedSetPerson();
+    }, []);
+
+    // getting clients
+    const memoizedSetPerson = useCallback(async () => {
+        await dispatch(fetchCompanyClients({ page: 1, limit: 10 }));
+    }, []);
+
     return (
         <div className="py-2.5 px-6 bg-white border border-solid border-elboneyGray rounded-[4px] z-50">
             <section className="w-full">
@@ -44,21 +57,14 @@ const ExistingClient = ({ setModalOpen }: Props) => {
                     />
                 </div>
                 <div
-                    className="rounded-lg border border-Gainsboro bg-silverGray w-[335px] h-[40px] 
-        my-5
-        flex 
-      items-center
-      px-3"
+                    className="rounded-lg border border-Gainsboro bg-silverGray w-[335px] h-[40px] my-5 flex items-center px-3"
                 >
                     <input
                         type="search"
                         name=""
                         id=""
                         placeholder="Search..."
-                        className="w-full h-full
-         
-          bg-transparent outline-none"
-                    />
+                        className="w-full h-full bg-transparent outline-none" />
                     <Image
                         src={'/search.svg'}
                         alt="search icon "
@@ -68,38 +74,31 @@ const ExistingClient = ({ setModalOpen }: Props) => {
                     />
                 </div>
                 {/* Table */}
-                <div className="rounded-md border-2 border-lightGrayishBlue ">
+                <div className="rounded-md border-2 border-lightGrayishBlue h-[50vh] overflow-x-auto">
                     <div
-                        className="px-4 py-2
-                 border-t-lightGrayishBlue
-                 bg-paleGrayishWhite border border-l-lightGrayishBlue"
+                        className="px-4 py-2 border-t-lightGrayishBlue bg-paleGrayishWhite border border-l-lightGrayishBlue"
                     >
-                        <SecondaryHeading
+                        <QuinaryHeading
                             title="Name"
                             className="font-medium text-graphiteGray"
                         />
                     </div>
 
-                    {existingClients.map(({ name, img }, i) => {
+                    {(!clientsData || clientLoading) ? <h6 className='text-center'>Loading...</h6> : clientsData.map(({ _id, firstName }: any, i: number) => {
                         return (
                             <Fragment key={i}>
                                 <div
-                                    className="border-b-lightGrayishBlue
-                 p-4 flex gap-5 items-center
-                 bg-snowWhite border"
-                                >
+                                    className="border-b-lightGrayishBlue p-4 flex gap-4 items-center bg-snowWhite border">
                                     <input
                                         type="radio"
-                                        name="client name"
-                                        id="client name"
-                                        width={24}
-                                        height={24}
-                                        className="hidden"
+                                        name='client name'
+                                        id={_id}
+                                        onChange={() => setSelectedClientId(_id)}
                                     />
-                                    <Image src={img} alt="client icon" width={30} height={30} />
-                                    <label htmlFor={name}>
+                                    {/* <Image src={img} alt="client icon" width={30} height={30} /> */}
+                                    <label htmlFor={_id} className='cursor-pointer'>
                                         <SenaryHeading
-                                            title={name}
+                                            title={firstName}
                                             className="text-darkSteelBlue"
                                         />
                                     </label>
@@ -110,7 +109,7 @@ const ExistingClient = ({ setModalOpen }: Props) => {
                 </div>
             </section>
             <div className="h-px bg-elboneyGray w-full mt-6"></div>
-            <div className="px-5 flex justify-end gap-4 mt-5 mb-2">
+            <div className="flex justify-end gap-4 mt-5 mb-2">
                 <div>
                     <Button
                         text="Cancel"
@@ -119,7 +118,10 @@ const ExistingClient = ({ setModalOpen }: Props) => {
                     />
                 </div>
                 <div>
-                    <Button text="Next" onClick={() => setModalOpen(false)} />
+                    <Button text="Add Client" onClick={() => {
+                        onSelectClient(clientsData.find(({ _id }: any) => _id === selectedClientId));
+                        setModalOpen(false);
+                    }} />
                 </div>
             </div>
         </div>

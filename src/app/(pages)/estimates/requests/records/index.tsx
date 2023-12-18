@@ -10,6 +10,7 @@ import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
 import { selectEstimateRequests, selectEstimateRequestsLoading } from '@/redux/company/estimateRequestSelector';
 import { deleteEstimateRequest, fetchEstimateRequests } from '@/redux/company/company.thunk';
+import NoData from '@/app/component/noData';
 
 interface DataType {
     key: React.Key;
@@ -128,13 +129,14 @@ const EstimateRequestTable: React.FC = () => {
 
 
     return (
-        <Table
-            loading={estimateRequestsLoading}
-            columns={columns}
-            dataSource={estimateRequestsData}
-            pagination={{ position: ['bottomCenter'] }}
-        />
 
+        (estimateRequestsData && estimateRequestsData.length < 1) ? <NoData btnText='Create new estimates request' link='/estimates/requests' /> :
+            <Table
+                loading={estimateRequestsLoading}
+                columns={columns}
+                dataSource={estimateRequestsData}
+                pagination={{ position: ['bottomCenter'] }}
+            />
     );
 };
 

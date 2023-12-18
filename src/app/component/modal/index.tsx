@@ -1,4 +1,5 @@
 import { Modal } from 'antd';
+import styled from 'styled-components';
 interface Props {
   children: React.ReactNode;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -16,17 +17,28 @@ const ModalComponent = ({
   };
 
   return (
-    <Modal
-      open={open}
-      closable={false}
-      footer={null}
-      centered={true}
-      onCancel={handleCancel}
-      width={width}
-    >
-      {children}
-    </Modal>
+    <Wrapper>
+      <Modal
+        open={open}
+        closable={false}
+        footer={null}
+        centered={true}
+        onCancel={handleCancel}
+        width={width}
+      >
+        {children}
+      </Modal>
+    </Wrapper>
   );
 };
 
 export default ModalComponent;
+
+const Wrapper = styled.div`
+.ant-modal-content{
+  height: 94vh;
+    background: transparent;
+    box-shadow: none;
+    padding: 0px;
+}
+`;

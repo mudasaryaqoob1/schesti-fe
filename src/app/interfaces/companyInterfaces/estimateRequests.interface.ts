@@ -2,7 +2,7 @@ export interface IEstimateRequest {
     clientName: string;
     companyName: string;
     email: string;
-    phone: string;
+    phone: string | number;
     city: string;
     projectName: string;
     leadSource: string;
