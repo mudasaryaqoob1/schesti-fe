@@ -5,7 +5,7 @@ import storage from 'redux-persist/lib/storage';
 import authReducer from './authSlices/authSlice';
 import companyClientReducer from './company/clientSlice/companyClient.slice';
 import subContractorReducer from './company/subcontractorSlice/companySubcontractor.slice';
-import estimateRequestSlice from './company/estimateRequest.slice';
+import estimateRequestSlice from './estimate/estimateRequest.slice';
 
 export type RootState = {
   auth: any;

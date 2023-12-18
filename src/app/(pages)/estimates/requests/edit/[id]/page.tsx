@@ -17,7 +17,7 @@ import { estimateRequestService } from '@/app/services/estimateRequest.service';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { IEstimateRequest } from '@/app/interfaces/companyInterfaces/estimateRequests.interface';
-import { selectEstimateRequests } from '@/redux/company/estimateRequestSelector';
+import { selectEstimateRequests } from '@/redux/estimate/estimateRequestSelector';
 import ExistingClient from '../../existingClient';
 import { IClient } from '@/app/interfaces/companyEmployeeInterfaces/client.interface';
 import CustomNavbar from '@/app/component/customNavbar';

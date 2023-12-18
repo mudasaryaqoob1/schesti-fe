@@ -10,7 +10,7 @@ import { HttpService } from '@/app/services/base.service';
 import {
   selectEstimateRequests,
   selectEstimateRequestsLoading,
-} from '@/redux/company/estimateRequestSelector';
+} from '@/redux/estimate/estimateRequestSelector';
 import {
   deleteEstimateRequest,
   fetchEstimateRequests,
