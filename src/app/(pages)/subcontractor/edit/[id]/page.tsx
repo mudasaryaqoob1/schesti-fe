@@ -20,8 +20,8 @@ import { HttpService } from '@/app/services/base.service';
 
 // subcontractorService service
 import { subcontractorService } from '@/app/services/subcontractor.service';
-import { selectClients } from '@/redux/company/companySelector';
 import { ISubcontract } from '../../../../interfaces/companyInterfaces/subcontractor.interface';
+import { selectSubcontractors } from '@/redux/company/subcontractorSelector';
 
 const editSubcontractorSchema = Yup.object({
   companyRep: Yup.string().required('Company Rep is required!'),
@@ -46,7 +46,7 @@ const EditSubcontractor = () => {
   const router = useRouter();
   const params = useParams();
   const token = useSelector(selectToken);
-  const subcontractsData = useSelector(selectClients);
+  const subcontractsData = useSelector(selectSubcontractors);
 
   const { id } = params;
 
@@ -64,6 +64,7 @@ const EditSubcontractor = () => {
   }, [id]);
 
   const submitHandler = async (values: ISubcontract) => {
+    setIsLoading(true);
     let updateContractorBody = {
       companyRep: values.companyRep,
       companyName: values.companyName,
@@ -72,6 +73,7 @@ const EditSubcontractor = () => {
       address: values.address,
       secondAddress: values.secondAddress,
     };
+
     let result = await subcontractorService.httpUpdateSubontractor(
       updateContractorBody,
       id

@@ -7,6 +7,7 @@ export const companySlice = createSlice({
   initialState: initialCompanyClientState,
   reducers: {},
   extraReducers: (builder) => {
+    // fetch all clients
     builder.addCase(fetchCompanyClients.pending, (state) => {
       state.loading = true;
     });
