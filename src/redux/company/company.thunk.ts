@@ -7,6 +7,11 @@ interface FetchClientParams {
   limit: number;
 }
 
+interface FetchSubcontractorParams {
+  page: number;
+  limit: number;
+}
+
 export const fetchCompanyClients = createAsyncThunk(
   'company/clients',
   async ({ page, limit }: FetchClientParams, { rejectWithValue }) => {
@@ -16,7 +21,7 @@ export const fetchCompanyClients = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
-        'An error occurred while fetching the feed records'
+          'An error occurred while fetching the feed records'
       );
     }
   }
@@ -24,14 +29,18 @@ export const fetchCompanyClients = createAsyncThunk(
 
 export const fetchCompanySubcontractors = createAsyncThunk(
   'company/subcontractors',
-  async ({ page, limit }: FetchClientParams, { rejectWithValue }) => {
+  async ({ page, limit }: FetchSubcontractorParams, { rejectWithValue }) => {
     try {
-      const response = await subcontractorService.httpGetAllSubcontractors(page, limit);
+      const response = await subcontractorService.httpGetAllSubcontractors(
+        page,
+        limit
+      );
+
       return response;
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
-        'An error occurred while fetching the feed records'
+          'An error occurred while fetching the feed records'
       );
     }
   }
@@ -46,21 +55,22 @@ export const deleteCompanyClient = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
-        'An error occurred while fetching the feed records'
+          'An error occurred while fetching the feed records'
       );
     }
   }
 );
 export const deleteSubcontractor = createAsyncThunk(
   'company/deleteSubcontractor',
-  async (clientId: string, { rejectWithValue }) => {
+  async (subcontractorId: string, { rejectWithValue }) => {
     try {
-      const response = await subcontractorService.httpDeleteSubcontractor(clientId);
+      const response =
+        await subcontractorService.httpDeleteSubcontractor(subcontractorId);
       return response;
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
-        'An error occurred while fetching the feed records'
+          'An error occurred while fetching the feed records'
       );
     }
   }

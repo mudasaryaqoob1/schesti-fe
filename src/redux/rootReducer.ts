@@ -3,11 +3,13 @@ import { combineReducers } from '@reduxjs/toolkit';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import authReducer from './authSlices/authSlice';
-import companyReducer from './company/companyClient.slice';
+import companyClientReducer from './company/clientSlice/companyClient.slice';
+import subContractorReducer from './company/subcontractorSlice/companySubcontractor.slice';
 
 export type RootState = {
   auth: any;
-  company: any;
+  companyClient: any;
+  companySubContractor: any;
 };
 
 const persistConfig = {
@@ -18,6 +20,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers<RootState>({
   auth: authReducer,
-  company: companyReducer,
+  companyClient: companyClientReducer,
+  companySubContractor: subContractorReducer,
 });
 export default persistReducer(persistConfig, rootReducer);

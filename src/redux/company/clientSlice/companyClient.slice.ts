@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import initialCompanyClientState from './companyClient.initialState';
-import { fetchCompanyClients, deleteCompanyClient } from './company.thunk';
+import { fetchCompanyClients, deleteCompanyClient } from '../company.thunk';
 
 export const companySlice = createSlice({
   name: 'clients',

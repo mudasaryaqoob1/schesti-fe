@@ -3,9 +3,9 @@ import initialCompanySubcontractorState from './companySubcontractor.initialStat
 import {
   fetchCompanySubcontractors,
   deleteSubcontractor,
-} from './company.thunk';
+} from '../company.thunk';
 
-export const companySlice = createSlice({
+export const subcontractorSlice = createSlice({
   name: 'subcontractor',
   initialState: initialCompanySubcontractorState,
   reducers: {},
@@ -17,7 +17,7 @@ export const companySlice = createSlice({
     builder.addCase(fetchCompanySubcontractors.fulfilled, (state, action) => {
       state.loading = false;
       state.message = action.payload.message;
-      state.data = action.payload.data.clients;
+      state.data = action.payload.data.subcontractors;
       state.statusCode = action.payload.statusCode;
     });
 
@@ -45,4 +45,4 @@ export const companySlice = createSlice({
   },
 });
 
-export default companySlice.reducer;
+export default subcontractorSlice.reducer;

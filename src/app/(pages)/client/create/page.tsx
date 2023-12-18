@@ -57,6 +57,7 @@ const CreateClient = () => {
 
   const submitHandler = async (values: IClient) => {
     let result = await userService.httpAddNewClient(values);
+
     if (result.statusCode == 201) {
       setIsLoading(false);
       router.push('/client');

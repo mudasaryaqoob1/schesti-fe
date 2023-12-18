@@ -10,8 +10,10 @@ import { useDispatch, useSelector } from 'react-redux';
 // module imports
 import { AppDispatch } from '@/redux/store';
 import { selectToken } from '@/redux/authSlices/auth.selector';
-import { selectClients } from '@/redux/company/companySelector';
-import { selectClientsLoading } from '@/redux/company/companySelector';
+import {
+  selectSubcontracters,
+  selectSubcontractLoading,
+} from '@/redux/company/companySelector';
 import { HttpService } from '@/app/services/base.service';
 import CustomNavbar from '@/app/component/customNavbar';
 import TertiaryHeading from '@/app/component/headings/tertiary';
@@ -53,10 +55,8 @@ const SubcontractTable = () => {
 
   const token = useSelector(selectToken);
 
-  const subcontractersData = useSelector(selectClients);
-  const subcontractersLoading = useSelector(selectClientsLoading);
-
-  console.log(subcontractersData, 'subcontractersData');
+  const subcontractersData = useSelector(selectSubcontracters);
+  const subcontractersLoading = useSelector(selectSubcontractLoading);
 
   useLayoutEffect(() => {
     if (token) {
