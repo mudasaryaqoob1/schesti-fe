@@ -1,33 +1,36 @@
 import { createSlice } from '@reduxjs/toolkit';
-import initialCompanyClientState from './companyClient.initialState';
-import { fetchCompanyClients, deleteCompanyClient } from './company.thunk';
+import initialCompanySubcontractorState from './companySubcontractor.initialState';
+import {
+  fetchCompanySubcontractors,
+  deleteSubcontractor,
+} from './company.thunk';
 
 export const companySlice = createSlice({
-  name: 'clients',
-  initialState: initialCompanyClientState,
+  name: 'subcontractor',
+  initialState: initialCompanySubcontractorState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchCompanyClients.pending, (state) => {
+    builder.addCase(fetchCompanySubcontractors.pending, (state) => {
       state.loading = true;
     });
 
-    builder.addCase(fetchCompanyClients.fulfilled, (state, action) => {
+    builder.addCase(fetchCompanySubcontractors.fulfilled, (state, action) => {
       state.loading = false;
       state.message = action.payload.message;
       state.data = action.payload.data.clients;
       state.statusCode = action.payload.statusCode;
     });
 
-    builder.addCase(fetchCompanyClients.rejected, (state, action) => {
+    builder.addCase(fetchCompanySubcontractors.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     });
 
-    builder.addCase(deleteCompanyClient.pending, (state) => {
+    builder.addCase(deleteSubcontractor.pending, (state) => {
       state.loading = true;
     });
 
-    builder.addCase(deleteCompanyClient.fulfilled, (state, action) => {
+    builder.addCase(deleteSubcontractor.fulfilled, (state, action) => {
       console.log(action.payload);
       state.loading = false;
       state.data = state.data.filter(
@@ -35,7 +38,7 @@ export const companySlice = createSlice({
       );
     });
 
-    builder.addCase(deleteCompanyClient.rejected, (state, action) => {
+    builder.addCase(deleteSubcontractor.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     });

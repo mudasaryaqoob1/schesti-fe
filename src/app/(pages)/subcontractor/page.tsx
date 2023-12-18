@@ -17,7 +17,10 @@ import CustomNavbar from '@/app/component/customNavbar';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 import Button from '@/app/component/customButton/button';
-import { deleteSubcontractor, fetchCompanySubcontractors } from '@/redux/company/company.thunk';
+import {
+  deleteSubcontractor,
+  fetchCompanySubcontractors,
+} from '@/redux/company/company.thunk';
 
 export interface DataType {
   company: string;
@@ -53,6 +56,8 @@ const SubcontractTable = () => {
   const subcontractersData = useSelector(selectClients);
   const subcontractersLoading = useSelector(selectClientsLoading);
 
+  console.log(subcontractersData, 'subcontractersData');
+
   useLayoutEffect(() => {
     if (token) {
       HttpService.setToken(token);
@@ -60,10 +65,10 @@ const SubcontractTable = () => {
   }, [token]);
 
   useEffect(() => {
-    memoizedSetPerson();
+    fetchSubcontactors();
   }, []);
 
-  const memoizedSetPerson = useCallback(async () => {
+  const fetchSubcontactors = useCallback(async () => {
     await dispatch(fetchCompanySubcontractors({ page: 1, limit: 10 }));
   }, []);
 

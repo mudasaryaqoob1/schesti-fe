@@ -21,7 +21,7 @@ import { HttpService } from '@/app/services/base.service';
 // subcontractorService service
 import { subcontractorService } from '@/app/services/subcontractor.service';
 import { selectClients } from '@/redux/company/companySelector';
-import { ISubcontract } from '../../subcontractor.interface';
+import { ISubcontract } from '../../../../interfaces/companyInterfaces/subcontractor.interface';
 
 const editSubcontractorSchema = Yup.object({
   companyRep: Yup.string().required('Company Rep is required!'),
@@ -72,7 +72,10 @@ const EditSubcontractor = () => {
       address: values.address,
       secondAddress: values.secondAddress,
     };
-    let result = await subcontractorService.httpUpdateSubontractor(updateContractorBody, id);
+    let result = await subcontractorService.httpUpdateSubontractor(
+      updateContractorBody,
+      id
+    );
     if (result.statusCode == 200) {
       setIsLoading(false);
       router.push('/subcontractor');
@@ -115,10 +118,11 @@ const EditSubcontractor = () => {
           <TertiaryHeading
             className="text-graphiteGray mb-4 "
             title="Edit Subcontractor"
-
           />
           <Formik
-            initialValues={subcontractorData ? subcontractorData : initialValues}
+            initialValues={
+              subcontractorData ? subcontractorData : initialValues
+            }
             enableReinitialize={true}
             validationSchema={editSubcontractorSchema}
             onSubmit={submitHandler}
