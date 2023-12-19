@@ -2,24 +2,20 @@
 import { useEffect, useLayoutEffect, useState, useCallback } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { Skeleton } from 'antd';
-
 import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
 
 // module imports
 import AwsS3 from '@/app/utils/S3Intergration';
-
 import FormControl from '@/app/component/formControl';
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
 import {
   bg_style,
   minHeading,
   senaryHeading,
-  // minHeading,
-  // senaryHeading,
 } from '@/globals/tailwindvariables';
 import Button from '@/app/component/customButton/button';
 import { HttpService } from '@/app/services/base.service';
@@ -27,18 +23,21 @@ import { selectToken } from '@/redux/authSlices/auth.selector';
 import SettingSideBar from '@/app/(pages)/settings/verticleBar';
 import { userService } from '@/app/services/user.service';
 import { byteConverter } from '@/app/utils/byteConverter';
+import { AppDispatch } from '@/redux/store';
+import { updateProfileHandler } from '@/redux/authSlices/auth.thunk';
 
 const initialValues: IUpdateCompanyDetail = {
-  companyName: '',
+  name: '',
   email: '',
   industry: '',
   employee: 1,
   phone: 0,
   website: '',
+  avatar: '',
 };
 
 const generalSettingSchema: any = Yup.object({
-  companyName: Yup.string().required('Company Name is required!'),
+  name: Yup.string().required('Company Name is required!'),
   email: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
@@ -49,6 +48,7 @@ const generalSettingSchema: any = Yup.object({
 });
 const GeneralSetting = () => {
   const token = useSelector(selectToken);
+  const dispatch = useDispatch<AppDispatch>();
 
   useLayoutEffect(() => {
     if (token) {
@@ -57,11 +57,13 @@ const GeneralSetting = () => {
   }, [token]);
 
   const [userData, setUserData] = useState(null);
-  // const [avatar, setAvatar] = useState('')
+  const [avatar, setAvatar] = useState('');
+  const [avatarLoading, setavatarLoading] = useState(false);
 
   const getUserDetail = useCallback(async () => {
     let { data } = await userService.httpGetCompanyDetail();
-    setUserData(data.companyDetail);
+    setAvatar(data.user.avatar);
+    setUserData(data.user);
   }, []);
 
   useEffect(() => {
@@ -70,31 +72,34 @@ const GeneralSetting = () => {
 
   const submitHandler = async (values: any) => {
     let obj = {
-      companyName: values.companyName,
+      name: values.name,
       industry: values.industry,
       employee: Number(values.employee),
       phone: Number(values.phone),
       website: values.website,
+      avatar: avatar,
     };
-    let result = await userService.httpUpdateCompanyDetail(obj);
 
-    if (result.statusCode == 200) {
+    let result: any = await dispatch(updateProfileHandler(obj));
+
+    if (result.payload.statusCode == 200) {
       toast.success('Detail Update Successfull');
     } else {
-      toast.error(result.message);
+      toast.error(result.payload.message);
     }
   };
 
   const avatarUploadHandler = async (e: any) => {
     let selectedFile = e.target.files[0];
-
+    setavatarLoading(true);
     if (byteConverter(selectedFile.size, 'MB').size > 5) {
       toast.warning('Cannot upload image more then 5 mb of size');
       return;
     }
 
     const url = await new AwsS3(selectedFile, 'photos/avatars/').getS3URL();
-    console.log(url);
+    setavatarLoading(false);
+    setAvatar(url);
   };
 
   return (
@@ -123,7 +128,7 @@ const GeneralSetting = () => {
                       label="Company Name"
                       labelStyle="!text-lightyGrayish"
                       type="text"
-                      name="companyName"
+                      name="name"
                       placeholder="Enter Company Name"
                     />
                     <FormControl
@@ -183,26 +188,31 @@ const GeneralSetting = () => {
                           height={20}
                         />
                       </div>
-                      <div className="flex gap-2">
-                        <label
-                          htmlFor="uploadCompanyLogo"
-                          className={twMerge(
-                            `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
-                          )}
-                        >
-                          Upload Logo
-                        </label>
-                        <input
-                          type="file"
-                          name="uploadLogo"
-                          id="uploadCompanyLogo"
-                          className="hidden"
-                          onChange={avatarUploadHandler}
-                        />
-                        <p className={`text-steelGray ${minHeading}`}>
-                          or drag and drop
-                        </p>
-                      </div>
+                      {avatarLoading ? (
+                        <p>Uploading...</p>
+                      ) : (
+                        <div className="flex gap-2">
+                          <label
+                            htmlFor="uploadCompanyLogo"
+                            className={twMerge(
+                              `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
+                            )}
+                          >
+                            Upload Logo
+                          </label>
+                          <input
+                            type="file"
+                            name="uploadLogo"
+                            id="uploadCompanyLogo"
+                            className="hidden"
+                            onChange={avatarUploadHandler}
+                          />
+                          <p className={`text-steelGray ${minHeading}`}>
+                            or drag and drop
+                          </p>
+                        </div>
+                      )}
+
                       <p className={`text-steelGray ${minHeading}`}>
                         SVG, PNG, JPG or GIF (max. 800x400px)
                       </p>

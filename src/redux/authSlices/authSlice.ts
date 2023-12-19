@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import initialAuthState from './auth.initialState';
-import { login } from './auth.thunk';
+import { login, updateProfileHandler } from './auth.thunk';
 
 export const authSlice = createSlice({
   name: 'auth',
@@ -23,6 +23,20 @@ export const authSlice = createSlice({
     });
 
     builder.addCase(login.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+    });
+    builder.addCase(updateProfileHandler.pending, (state) => {
+      state.loading = true;
+    });
+
+    builder.addCase(updateProfileHandler.fulfilled, (state, action) => {
+      state.loading = false;
+      state.user = action.payload.data.user;
+      state.message = action.payload.message;
+    });
+
+    builder.addCase(updateProfileHandler.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     });

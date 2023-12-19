@@ -1,8 +1,9 @@
 export interface IUpdateCompanyDetail {
-  companyName: string;
+  name: string;
   industry: string;
   employee: number;
-  email: string;
+  email?: string;
   phone: Number;
   website: string;
+  avatar: string;
 }
