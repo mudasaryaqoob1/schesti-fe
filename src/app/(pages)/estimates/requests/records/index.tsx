@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useLayoutEffect } from 'react';
 import type { ColumnsType } from 'antd/es/table';
-import { Dropdown, MenuProps, Table } from 'antd';
+import { Dropdown, Table } from 'antd';
+import type { MenuProps } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';

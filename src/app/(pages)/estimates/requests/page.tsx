@@ -18,7 +18,7 @@ import { toast } from 'react-toastify';
 import { IEstimateRequest } from '@/app/interfaces/companyInterfaces/estimateRequests.interface';
 import ExistingClient from './existingClient';
 import CustomNavbar from '@/app/component/customNavbar';
-import { IClient } from '@/app/interfaces/companyEmployeeInterfaces/client.interface';
+import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 
 const clientInfoSchema: any = Yup.object({
   clientName: Yup.string().required('Field is required!'),

@@ -12,15 +12,8 @@ type Props = {
 const NoData = ({ btnText, link }: Props) => {
   const router = useRouter();
   return (
-    <div
-      className="px-10 grid place-items-center border-5 border-silverGray
-        shadow-secondaryTwist bg-white mx-16 mt-[46px] rounded-lg "
-    >
-      <div
-        className="rounded-lg py-2 px-4  max-w-[563px]  
-        flex flex-col items-center justify-between my-5 p-5 gap-2
-        "
-      >
+    <div className="grid place-items-center border-5 rounded-lg h-[calc(100vh-100px)]">
+      <div className="max-w-[563px] flex flex-col items-center justify-between gap-2 ">
         <div className="bg-lightGray rounded-full h-56 w-56 flex justify-center items-center">
           <Image
             src={'/estimateempty.svg'}

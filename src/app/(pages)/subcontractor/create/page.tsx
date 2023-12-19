@@ -20,7 +20,7 @@ import { HttpService } from '@/app/services/base.service';
 
 // subcontractorServic service
 import { subcontractorService } from '@/app/services/subcontractor.service';
-import { ISubcontract } from '../../../interfaces/companyInterfaces/subcontractor.interface';
+import { ISubcontract } from '../../../interfaces/companyEmployeeInterfaces/subcontractor.interface';
 
 const newSubcontractorSchema = Yup.object({
   companyRep: Yup.string().required('Company Rep is required!'),
@@ -106,7 +106,7 @@ const CreateSubcontractor = () => {
             {({ handleSubmit }) => {
               return (
                 <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
-                  <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-4 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-3 gap-4">
                     <FormControl
                       control="input"
                       label="Company Rep"
@@ -135,15 +135,7 @@ const CreateSubcontractor = () => {
                       name="email"
                       placeholder="Email Address"
                     />
-                    <div className="md:col-span-full">
-                      <FormControl
-                        control="input"
-                        label="Company Name"
-                        type="text"
-                        name="companyName"
-                        placeholder="Enter Company Name"
-                      />
-                    </div>
+
                     <FormControl
                       control="input"
                       label="Address"

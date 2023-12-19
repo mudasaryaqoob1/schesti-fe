@@ -15,6 +15,11 @@ export const subcontractorSlice = createSlice({
     });
 
     builder.addCase(fetchCompanySubcontractors.fulfilled, (state, action) => {
+      console.log(
+        action.payload.data.subcontractors,
+        'action.payload.data.subcontractors'
+      );
+
       state.loading = false;
       state.message = action.payload.message;
       state.data = action.payload.data.subcontractors;
