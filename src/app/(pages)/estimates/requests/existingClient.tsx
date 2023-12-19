@@ -12,14 +12,14 @@ import {
   selectClients,
   selectClientsLoading,
 } from '@/redux/company/companySelector';
-import { IClient } from '@/app/interfaces/companyEmployeeInterfaces/client.interface';
+import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 
 interface Props {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   onSelectClient: (data: IClient) => void;
 }
 
-const ExistingClient = ({ setModalOpen, onSelectClient }: Props) => {
+const ExistingClients = ({ setModalOpen, onSelectClient }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const clientLoading = useSelector(selectClientsLoading);
   const clientsData = useSelector(selectClients);
@@ -136,4 +136,4 @@ const ExistingClient = ({ setModalOpen, onSelectClient }: Props) => {
   );
 };
 
-export default ExistingClient;
+export default ExistingClients;

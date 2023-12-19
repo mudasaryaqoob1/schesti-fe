@@ -1,13 +1,12 @@
 'use client';
-// modules import
-import React, { useEffect, useState } from 'react';
+// module imports
+import React, { useState } from 'react';
 import * as Yup from 'yup';
-import { twMerge } from 'tailwind-merge';
 import Image from 'next/image';
-import { useRouter, useParams } from 'next/navigation';
-import { Form, Formik } from 'formik';
+import { useRouter } from 'next/navigation';
+import { twMerge } from 'tailwind-merge';
 import { toast } from 'react-toastify';
-import { useSelector } from 'react-redux';
+import { Form, Formik } from 'formik';
 
 import CustomButton from '@/app/component/customButton/button';
 import { minHeading, senaryHeading } from '@/globals/tailwindvariables';
@@ -17,38 +16,32 @@ import MinDescription from '@/app/component/description/minDesc';
 import CustomWhiteButton from '@/app/component/customButton/white';
 import ModalComponent from '@/app/component/modal';
 import FormControl from '@/app/component/formControl';
-import { estimateRequestService } from '@/app/services/estimateRequest.service';
 import { IEstimateRequest } from '@/app/interfaces/companyInterfaces/estimateRequests.interface';
-import { selectEstimateRequests } from '@/redux/estimate/estimateRequestSelector';
-import ExistingClient from '../../existingClient';
+import ExistingClient from '../existingClient';
 import CustomNavbar from '@/app/component/customNavbar';
+import { estimateRequestService } from '@/app/services/estimateRequest.service';
 import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 
 const clientInfoSchema: any = Yup.object({
-  clientName: Yup.string().required('Field is required!'),
-  companyName: Yup.string().required('Field is required!'),
+  clientName: Yup.string().required('Client is required!'),
+  companyName: Yup.string().required('Company name is required!'),
   email: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
-  phone: Yup.string().required('Field is required!'),
-  city: Yup.string().required('Field is required!'),
-  projectName: Yup.string().required('Field is required!'),
-  leadSource: Yup.string().required('Field is required!'),
-  projectValue: Yup.string().required('Field is required!'),
-  projectInformation: Yup.string().required('Field is required!'),
-  salePerson: Yup.string().required('Field is required!'),
-  estimator: Yup.string().required('Field is required!'),
+  phone: Yup.string().required('Phone is required!'),
+  city: Yup.string().required('City is required!'),
+  projectName: Yup.string().required('Project name is required!'),
+  leadSource: Yup.string().required('Load source is required!'),
+  projectValue: Yup.string().required('Project value is required!'),
+  projectInformation: Yup.string().required('Project info is required!'),
+  salePerson: Yup.string().required('Sale person is required!'),
+  estimator: Yup.string().required('Estimator is required!'),
 });
 
-const EditEstimateRequest = () => {
+const CreateEstimateRequest = () => {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [estimateRequestData, setEstimateRequestData] = useState(null);
-  const estimateRequestsData = useSelector(selectEstimateRequests);
-  const params = useParams();
-
-  const { id } = params;
 
   const initialValues: IEstimateRequest = {
     clientName: '',
@@ -64,34 +57,12 @@ const EditEstimateRequest = () => {
     estimator: '',
   };
 
-  useEffect(() => {
-    if (id) {
-      setEstimateRequestData(
-        estimateRequestsData?.find((item: any) => item._id === id)
-      );
-    }
-  }, [id]);
-
   const submitHandler = async (values: IEstimateRequest) => {
-    let updateEstimateRequestData = {
-      clientName: values.clientName,
-      companyName: values.companyName,
-      email: values.email,
+    let result = await estimateRequestService.httpAddNewEstimateRequest({
+      ...values,
       phone: +values.phone,
-      city: values.city,
-      projectName: values.projectName,
-      leadSource: values.leadSource,
-      projectValue: values.projectValue,
-      projectInformation: values.projectInformation,
-      salePerson: values.salePerson,
-      estimator: values.estimator,
-    };
-
-    let result = await estimateRequestService.httpUpdateEstimateRequest(
-      updateEstimateRequestData,
-      id
-    );
-    if (result.statusCode == 200) {
+    });
+    if (result.statusCode == 201) {
       setIsLoading(false);
       router.push('/estimates');
     } else {
@@ -115,9 +86,8 @@ const EditEstimateRequest = () => {
           />
         </div>
         <Formik
-          initialValues={estimateRequestData ? estimateRequestData : initialValues}
+          initialValues={initialValues}
           validationSchema={clientInfoSchema}
-          enableReinitialize
           onSubmit={submitHandler}
         >
           {({ handleSubmit, setFieldValue }) => {
@@ -332,7 +302,7 @@ const EditEstimateRequest = () => {
                     </div>
                     <div className='w-[116px]'>
                       <CustomButton
-                        text="Update"
+                        text="Create"
                         type="submit"
                         isLoading={isLoading}
                         className="!px-5 !py-3 w-full"
@@ -349,4 +319,4 @@ const EditEstimateRequest = () => {
   );
 };
 
-export default EditEstimateRequest;
+export default CreateEstimateRequest;

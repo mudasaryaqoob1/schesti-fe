@@ -17,6 +17,8 @@ import {
   fetchEstimateRequests,
 } from '@/redux/company/company.thunk';
 import NoData from '@/app/component/noData';
+import CustomButton from '@/app/component/customButton/button';
+import TertiaryHeading from '@/app/component/headings/tertiary';
 
 interface DataType {
   key: React.Key;
@@ -132,14 +134,35 @@ const EstimateRequestTable: React.FC = () => {
   ];
 
   return estimateRequestsData && estimateRequestsData.length < 1 ? (
-    <NoData btnText="Create new estimates request" link="/estimates/requests" />
+    <NoData btnText="Create new estimates request" link="/estimates/requests/create" />
   ) : (
-    <Table
-      loading={estimateRequestsLoading}
-      columns={columns}
-      dataSource={estimateRequestsData}
-      pagination={{ position: ['bottomCenter'] }}
-    />
+    <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid border-silverGray shadow-secondaryTwist">
+      <div className="flex justify-between items-center">
+        <TertiaryHeading
+          title="My Estimate request"
+          className="text-graphiteGray"
+        />
+        <CustomButton
+          text="Start New Estimate "
+          className="!w-auto "
+          icon="plus.svg"
+          iconwidth={20}
+          iconheight={20}
+          onClick={() => router.push('/estimates/requests/create')}
+        />
+      </div>
+      <div
+        className='mt-4'
+      >
+        <Table
+          loading={estimateRequestsLoading}
+          columns={columns}
+          dataSource={estimateRequestsData}
+          pagination={{ position: ['bottomCenter'] }}
+        />
+      </div>
+    </section>
+
   );
 };
 
