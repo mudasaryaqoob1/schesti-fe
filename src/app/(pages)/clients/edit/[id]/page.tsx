@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 // module imports
-import { IClient } from '@/app/interfaces/companyEmployeeInterfaces/client.interface';
+import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 import { senaryHeading } from '@/globals/tailwindvariables';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import MinDesc from '@/app/component/description/minDesc';
