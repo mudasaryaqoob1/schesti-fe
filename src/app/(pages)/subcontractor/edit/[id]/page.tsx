@@ -61,7 +61,7 @@ const EditSubcontractor = () => {
 
   useEffect(() => {
     setSubcontractorData(subcontractsData.find((item: any) => item._id === id));
-  }, [id]);
+  }, [id, subcontractsData]);
 
   const submitHandler = async (values: ISubcontract) => {
     setIsLoading(true);

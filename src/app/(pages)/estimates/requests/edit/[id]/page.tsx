@@ -70,7 +70,7 @@ const EditEstimateRequest = () => {
         estimateRequestsData?.find((item: any) => item._id === id)
       );
     }
-  }, [id]);
+  }, [id, estimateRequestsData]);
 
   const submitHandler = async (values: IEstimateRequest) => {
     let updateEstimateRequestData = {

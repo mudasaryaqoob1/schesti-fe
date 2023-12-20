@@ -68,7 +68,7 @@ const GeneralSetting = () => {
 
   useEffect(() => {
     getUserDetail();
-  }, []);
+  }, [getUserDetail]);
 
   const submitHandler = async (values: any) => {
     let obj = {

@@ -79,11 +79,11 @@ const Index = () => {
         };
       })
     );
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     fetchCompanyEmployeeHandler();
-  }, []);
+  }, [fetchCompanyEmployeeHandler]);
 
   const handleDropdownItemClick = async (key: string, client: any) => {
     console.log(key, client);

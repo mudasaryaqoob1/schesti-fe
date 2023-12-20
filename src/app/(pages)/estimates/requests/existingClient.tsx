@@ -19,7 +19,7 @@ interface Props {
   onSelectClient: (data: IClient) => void;
 }
 
-const ExistingClients = ({ setModalOpen, onSelectClient }: Props) => {
+const ExistingClient = ({ setModalOpen, onSelectClient }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const clientLoading = useSelector(selectClientsLoading);
   const clientsData = useSelector(selectClients);
@@ -27,14 +27,13 @@ const ExistingClients = ({ setModalOpen, onSelectClient }: Props) => {
     clientsData?.[0]?._id
   );
 
-  useEffect(() => {
-    memoizedSetPerson();
-  }, []);
-
-  // getting clients
   const memoizedSetPerson = useCallback(async () => {
     await dispatch(fetchCompanyClients({ page: 1, limit: 10 }));
-  }, []);
+  }, [dispatch]);
+
+  useEffect(() => {
+    memoizedSetPerson();
+  }, [memoizedSetPerson]);
 
   return (
     <div className="py-2.5 px-6 bg-white border border-solid border-elboneyGray rounded-[4px] z-50">
@@ -136,4 +135,4 @@ const ExistingClients = ({ setModalOpen, onSelectClient }: Props) => {
   );
 };
 
-export default ExistingClients;
+export default ExistingClient;

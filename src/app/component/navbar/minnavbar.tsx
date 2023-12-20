@@ -84,6 +84,7 @@ const Navbar = () => {
                 height={40}
                 className="w-full h-full object-cover rounded-full"
               /> */}
+
               <img
                 className="w-full h-full object-cover rounded-full"
                 src={

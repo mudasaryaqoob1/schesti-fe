@@ -46,13 +46,13 @@ const EstimateRequestTable: React.FC = () => {
     }
   }, [token]);
 
-  useEffect(() => {
-    memoizedSetPerson();
-  }, []);
-
   const memoizedSetPerson = useCallback(async () => {
     await dispatch(fetchEstimateRequests({ page: 1, limit: 10 }));
-  }, []);
+  }, [dispatch]);
+
+  useEffect(() => {
+    memoizedSetPerson();
+  }, [memoizedSetPerson]);
 
   const items: MenuProps['items'] = [
     {

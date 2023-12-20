@@ -70,13 +70,13 @@ const ClientTable = () => {
     }
   }, [token]);
 
-  useEffect(() => {
-    memoizedSetPerson();
-  }, []);
-
   const memoizedSetPerson = useCallback(async () => {
     await dispatch(fetchCompanyClients({ page: 1, limit: 10 }));
-  }, []);
+  }, [dispatch]);
+
+  useEffect(() => {
+    memoizedSetPerson();
+  }, [memoizedSetPerson]);
 
   const handleDropdownItemClick = async (key: string, client: any) => {
     if (key == 'deleteClient') {

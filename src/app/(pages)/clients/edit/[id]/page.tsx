@@ -63,7 +63,7 @@ const EditClient = () => {
 
   useEffect(() => {
     setclientData(clientsData.find((item: any) => item._id === id));
-  }, [id]);
+  }, [id, clientsData]);
 
   const submitHandler = async (values: IClient) => {
     let updateClientBody = {

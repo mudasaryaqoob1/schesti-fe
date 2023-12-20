@@ -64,13 +64,13 @@ const SubcontractTable = () => {
     }
   }, [token]);
 
-  useEffect(() => {
-    fetchSubcontactors();
-  }, []);
-
   const fetchSubcontactors = useCallback(async () => {
     await dispatch(fetchCompanySubcontractors({ page: 1, limit: 10 }));
-  }, []);
+  }, [dispatch]);
+
+  useEffect(() => {
+    fetchSubcontactors();
+  }, [fetchSubcontactors]);
 
   const handleDropdownItemClick = async (key: string, subcontractor: any) => {
     if (key == 'deleteSubcontractor') {
