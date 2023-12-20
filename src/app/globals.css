@@ -94,3 +94,9 @@ a {
   background: transparent !important;
   box-shadow: none !important;
 }
+.customSelectError .ant-select-selector {
+  border: 1px solid red !important;
+}
+.customSelect .ant-select-selector {
+  border: 1px solid #cbd5e0 !important;
+}

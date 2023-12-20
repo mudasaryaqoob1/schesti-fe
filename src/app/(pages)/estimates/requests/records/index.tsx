@@ -33,13 +33,12 @@ interface DataType {
 }
 
 const EstimateRequestTable: React.FC = () => {
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const token = useSelector(selectToken);
+
   const estimateRequestsLoading = useSelector(selectEstimateRequestsLoading);
   const estimateRequestsData = useSelector(selectEstimateRequests);
-  const router = useRouter();
-
-  const dispatch = useDispatch<AppDispatch>();
-
-  const token = useSelector(selectToken);
 
   useLayoutEffect(() => {
     if (token) {
@@ -134,7 +133,10 @@ const EstimateRequestTable: React.FC = () => {
   ];
 
   return estimateRequestsData && estimateRequestsData.length < 1 ? (
-    <NoData btnText="Create new estimates request" link="/estimates/requests/create" />
+    <NoData
+      btnText="Create new estimates request"
+      link="/estimates/requests/create"
+    />
   ) : (
     <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid border-silverGray shadow-secondaryTwist">
       <div className="flex justify-between items-center">
@@ -151,9 +153,7 @@ const EstimateRequestTable: React.FC = () => {
           onClick={() => router.push('/estimates/requests/create')}
         />
       </div>
-      <div
-        className='mt-4'
-      >
+      <div className="mt-4">
         <Table
           loading={estimateRequestsLoading}
           columns={columns}
@@ -162,7 +162,6 @@ const EstimateRequestTable: React.FC = () => {
         />
       </div>
     </section>
-
   );
 };
 
