@@ -53,7 +53,7 @@ const Register = () => {
 
     if (result.payload.status == 201) {
       setIsLoading(false);
-      router.push('/checkmail');
+      router.push(`/checkmail?email=${values.email}`);
     } else {
       setIsLoading(false);
       toast.error(result.payload.message);

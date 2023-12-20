@@ -3,8 +3,11 @@ import Description from '@/app/component/description';
 import PrimaryHeading from '@/app/component/headings/primary';
 import AuthNavbar from '@/app/(pages)/(auth)/authNavbar';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 
 const CheckYourEmail = () => {
+  const searchParams = useSearchParams();
+  const emailQueryParameter = searchParams.get('email');
   return (
     <>
       <AuthNavbar />
@@ -28,7 +31,7 @@ const CheckYourEmail = () => {
           />
           <Description
             className="mt-1  text-center text-slateGray"
-            title="We’ve sent a verification email to abc@example.com"
+            title={`We’ve sent a verification email to ${emailQueryParameter}`}
           />
 
           <Description
@@ -41,8 +44,8 @@ const CheckYourEmail = () => {
           <Description
             className="font-popin text-doveGrayer font-normal
            leading-[26px] text-center my-1"
-            title="    If you have trouble finding your email, check your spam folder for
-                an email from noreply@example.com"
+            title={`If you have trouble finding your email, check your spam folder for
+                an email from ${emailQueryParameter}`}
           />
           {/* <div
             className={twMerge(`${quinaryHeading} font-popin  font-normal
