@@ -37,7 +37,7 @@ const ForgetPassword = () => {
 
     if (result.payload.statusCode == 200) {
       setIsLoading(false);
-      router.push(`/sendcode?email=${values}`);
+      router.push(`/sendcode?email=${values.email}`);
     } else {
       setIsLoading(false);
       toast.error(result.payload.message);

@@ -54,14 +54,18 @@ const CreateSubcontractor = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const submitHandler = async (values: ISubcontract) => {
-    let result = await subcontractorService.httpAddNewSubcontractor(values);
-    if (result.statusCode == 201) {
-      setIsLoading(false);
-      router.push('/subcontractor');
-    } else {
-      setIsLoading(false);
-      toast.error(result.message);
-    }
+    subcontractorService
+      .httpAddNewSubcontractor(values)
+      .then((response: any) => {
+        if (response.statusCode == 201) {
+          setIsLoading(false);
+          router.push('/subcontractor');
+        }
+      })
+      .catch(({ response }: any) => {
+        setIsLoading(false);
+        toast.error(response.data.message);
+      });
   };
 
   return (

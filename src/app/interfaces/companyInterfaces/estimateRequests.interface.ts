@@ -10,4 +10,6 @@ export interface IEstimateRequest {
   projectInformation: string;
   salePerson: string;
   estimator: string;
+  architecureDocument?: string;
+  otherDocument?: string;
 }

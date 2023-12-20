@@ -25,6 +25,11 @@ class AuthService extends HttpService {
   ): Promise<IResponseInterface<any>> =>
     this.post(`${this.prefix}/forgot-password`, data);
 
+  httpResendForgotPasswordEmail = (
+    data: IForgotPasswordInterface
+  ): Promise<IResponseInterface<any>> =>
+    this.post(`${this.prefix}/resend-forgot-password-email`, data);
+
   addCompanyDetailHandle = (
     data: IRegisterCompany
   ): Promise<IResponseInterface<any>> =>

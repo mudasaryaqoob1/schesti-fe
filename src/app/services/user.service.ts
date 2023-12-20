@@ -39,6 +39,7 @@ class UserService extends HttpService {
 
   httpAddNewClient = (data: IClient): Promise<IResponseInterface<any>> =>
     this.post(`${this.companyPrefix}/newClient`, data);
+
   httpUpdateClient = (
     data: IClient,
     clientId: string | string[]

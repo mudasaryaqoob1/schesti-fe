@@ -5,19 +5,14 @@ import QuaternaryHeading from '@/app/component/headings/quaternary';
 const Welcome = () => {
   return (
     <>
-      <div className="flex-1 text-center m-5 mb-0">
+      <div className="flex-1 px-[80px]">
         <PrimaryHeading
-          title="Welcome to the system"
-          className="
-        text-4xl leading-[46px]
-        text-midnightBlue2 text-center"
+          title="Welcome to SCHESTI"
+          className=" text-4xl leading-[46px] text-midnightBlue2"
         />
         <QuaternaryHeading
-          className="text-start px-[30px] m-2 ms-4 text-slateGray"
-          title="Lorem ipsum dolor sit amet consectetur. Suspendisse integer non
-        praesent mi ornare leo tincidunt elementum sem. Dui mattis vulputate
-          mauris at amet.
-"
+          className="mt-4 text-slateGray"
+          title="Embark on a journey where efficiency meets precision. From AI-powered estimate generation to seamless scheduling, we're here to elevate your experience. Let's shape success together. Welcome to a place where your aspirations come to life."
         />
       </div>
     </>

@@ -12,7 +12,7 @@ import CustomButton from '@/app/component/customButton/button';
 import { minHeading, senaryHeading } from '@/globals/tailwindvariables';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import MinDescription from '@/app/component/description/minDesc';
+// import MinDescription from '@/app/component/description/minDesc';
 import CustomWhiteButton from '@/app/component/customButton/white';
 import ModalComponent from '@/app/component/modal';
 import FormControl from '@/app/component/formControl';
@@ -21,6 +21,7 @@ import ExistingClient from '../existingClient';
 import CustomNavbar from '@/app/component/customNavbar';
 import { estimateRequestService } from '@/app/services/estimateRequest.service';
 import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
+import AwsS3 from '@/app/utils/S3Intergration';
 
 const clientInfoSchema: any = Yup.object({
   clientName: Yup.string().required('Client is required!'),
@@ -42,6 +43,11 @@ const CreateEstimateRequest = () => {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [architecureDocument, setArchitecureDocument] = useState('');
+  const [architectureDocumentLoading, setarchitectureDocumentLoading] =
+    useState(false);
+  const [otherDocument, setOtherDocument] = useState('');
+  const [otherDocumentLoading, setotherDocumentLoading] = useState(false);
 
   const initialValues: IEstimateRequest = {
     clientName: '',
@@ -61,6 +67,8 @@ const CreateEstimateRequest = () => {
     let result = await estimateRequestService.httpAddNewEstimateRequest({
       ...values,
       phone: +values.phone,
+      architecureDocument: architecureDocument,
+      otherDocument: otherDocument,
     });
     if (result.statusCode == 201) {
       setIsLoading(false);
@@ -69,6 +77,29 @@ const CreateEstimateRequest = () => {
       setIsLoading(false);
       toast.error(result.message);
     }
+  };
+
+  const uploadArchitectureDocumentHandler = async (e: any) => {
+    setarchitectureDocumentLoading(true);
+    let selectedFile = e.target.files[0];
+
+    const url = await new AwsS3(
+      selectedFile,
+      'documents/estimates/'
+    ).getS3URL();
+    setarchitectureDocumentLoading(false);
+    setArchitecureDocument(url);
+  };
+  const uploadOtherDocumentHandler = async (e: any) => {
+    setotherDocumentLoading(true);
+    let selectedFile = e.target.files[0];
+
+    const url = await new AwsS3(
+      selectedFile,
+      'documents/estimates/'
+    ).getS3URL();
+    setotherDocumentLoading(false);
+    setOtherDocument(url);
   };
 
   return (
@@ -103,10 +134,7 @@ const CreateEstimateRequest = () => {
                       email,
                       phone,
                     }: IClient) => {
-                      setFieldValue(
-                        'clientName',
-                        `${firstName} ${lastName}`
-                      );
+                      setFieldValue('clientName', `${firstName} ${lastName}`);
                       setFieldValue('companyName', companyName);
                       setFieldValue('email', email);
                       setFieldValue('phone', phone);
@@ -211,96 +239,121 @@ const CreateEstimateRequest = () => {
                     </div>
                   </div>
 
-                  <div className="p-5 mt-4 border-2  border-silverGray pb-4 rounded-lg shadow-quinarGentleDepth">
-                    <QuaternaryHeading
-                      title="Uploads"
-                      className="text-graphiteGray font-semibold"
-                    />
+                  <div className=" border-2  border-silverGray  rounded-lg shadow-quinarGentleDepth mt-4 p-5">
+                    <h3 className="my-4">Upload</h3>
                     <div className="flex items-center gap-3">
-                      <div className="w-60">
+                      <div>
                         <p
-                          className={`${senaryHeading} text-midnightBlue font-popin`}
+                          className={`${senaryHeading} text-midnightBlue font-popin mb-2`}
                         >
                           Architecture
                         </p>
-                        <div className="my-2 p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg ">
-                          <Image
-                            src={'/uploadcloud.svg'}
-                            alt="upload icon"
-                            width={20}
-                            height={20}
-                            className="rounded-3xl border-5 border-paleblueGray bg-lightGrayish"
-                          />
-                          <div className="flex gap-3 items-center">
-                            <div>
-                              <p
-                                className={twMerge(
-                                  `${senaryHeading} text-RoyalPurple font-semibold`
-                                )}
-                              >
-                                Click to upload
-                              </p>
+                        <div className="p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg ">
+                          <div
+                            className={`px-6 py-4 flex flex-col items-center gap-3 `}
+                          >
+                            <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
+                              <Image
+                                src={'/uploadcloud.svg'}
+                                alt="upload icon"
+                                width={20}
+                                height={20}
+                              />
                             </div>
-                            <MinDescription
-                              className="text-steelGray font-popin text-center"
-                              title="or drag and drop"
-                            />
+                            {architectureDocumentLoading ? (
+                              <p>Uploading...</p>
+                            ) : (
+                              <div className="flex gap-2">
+                                <label
+                                  htmlFor="uploadArchitectureDocument"
+                                  className={twMerge(
+                                    `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
+                                  )}
+                                >
+                                  Click to Upload
+                                </label>
+                                <input
+                                  type="file"
+                                  name="uploadLogo"
+                                  id="uploadArchitectureDocument"
+                                  className="hidden"
+                                  accept="application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                                  onChange={uploadArchitectureDocumentHandler}
+                                />
+                                <p className={`text-steelGray ${minHeading}`}>
+                                  or drag and drop
+                                </p>
+                              </div>
+                            )}
+
+                            <p className={`text-steelGray ${minHeading}`}>
+                              SVG, PNG, JPG or GIF (max. 800x400px)
+                            </p>
                           </div>
-                          <MinDescription
-                            className="text-steelGray font-popin text-center"
-                            title="SVG, PNG, JPG or GIF (max. 800x400px)"
-                          />
                         </div>
                       </div>
-                      <div className="w-60">
+                      <div>
                         <p
-                          className={`${senaryHeading} text-midnightBlue font-popin`}
+                          className={`${senaryHeading} text-midnightBlue font-popin mb-2`}
                         >
                           Other Documents
                         </p>
-                        <div className="p-4 my-2 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg ">
-                          <Image
-                            src={'/uploadcloud.svg'}
-                            alt="upload icon"
-                            width={20}
-                            height={20}
-                            className="rounded-3xl border-5 border-paleblueGray bg-lightGrayish"
-                          />
-                          <div className="flex gap-3 items-center">
-                            <div>
-                              <p
-                                className={twMerge(
-                                  `${senaryHeading} text-RoyalPurple font-semibold`
-                                )}
-                              >
-                                Click to upload
-                              </p>
+                        <div className="p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg ">
+                          <div
+                            className={`px-6 py-4 flex flex-col items-center gap-3 `}
+                          >
+                            <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
+                              <Image
+                                src={'/uploadcloud.svg'}
+                                alt="upload icon"
+                                width={20}
+                                height={20}
+                              />
                             </div>
-                            <p
-                              className={`${minHeading} text-midnightBlue font-popin`}
-                            >
-                              or drag and drop
+                            {otherDocumentLoading ? (
+                              <p>Uploading...</p>
+                            ) : (
+                              <div className="flex gap-2">
+                                <label
+                                  htmlFor="uploadOtherDocument"
+                                  className={twMerge(
+                                    `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
+                                  )}
+                                >
+                                  Click to Upload
+                                </label>
+                                <input
+                                  type="file"
+                                  name="uploadLogo"
+                                  id="uploadOtherDocument"
+                                  className="hidden"
+                                  onChange={uploadOtherDocumentHandler}
+                                  accept="application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                                />
+                                <p className={`text-steelGray ${minHeading}`}>
+                                  or drag and drop
+                                </p>
+                              </div>
+                            )}
+
+                            <p className={`text-steelGray ${minHeading}`}>
+                              SVG, PNG, JPG or GIF (max. 800x400px)
                             </p>
                           </div>
-                          <p
-                            className={`${minHeading} text-midnightBlue font-popin text-center `}
-                          >
-                            SVG, PNG, JPG or GIF (max. 800x400px)
-                          </p>
                         </div>
                       </div>
                     </div>
                   </div>
                   {/* buttons */}
                   <div className="flex justify-end items-center gap-2 md:mt-12 mt-6 p-4 bg-white shadow-secondaryTwist">
-                    <div className='w-[116px]'>
+                    <div className="w-[116px]">
                       <CustomButton
                         className="!border-celestialGray shadow-scenarySubdued2 !text-graphiteGray !bg-snowWhite !px-5 !py-3 w-full"
                         text="Cancel"
                         onClick={() => router.push('/estimates')}
                       />
                     </div>
-                    <div className='w-[116px]'>
+                    <div className="w-[116px]">
                       <CustomButton
                         text="Create"
                         type="submit"

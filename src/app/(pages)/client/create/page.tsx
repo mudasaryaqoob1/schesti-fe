@@ -56,15 +56,18 @@ const CreateClient = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const submitHandler = async (values: IClient) => {
-    let result = await userService.httpAddNewClient(values);
-
-    if (result.statusCode == 201) {
-      setIsLoading(false);
-      router.push('/client');
-    } else {
-      setIsLoading(false);
-      toast.error(result.message);
-    }
+    userService
+      .httpAddNewClient(values)
+      .then((response: any) => {
+        if (response.statusCode == 201) {
+          setIsLoading(false);
+          router.push('/client');
+        }
+      })
+      .catch(({ response }: any) => {
+        setIsLoading(false);
+        toast.error(response.data.message);
+      });
   };
 
   return (
