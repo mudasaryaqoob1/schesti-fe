@@ -1,9 +1,7 @@
 import React from 'react';
-import { Field, ErrorMessage } from 'formik';
-import ErrorMsg from '../errorMessage';
+import { Field, useField } from 'formik';
 import { Select } from 'antd';
 import { Wrapper } from './style';
-import { quinaryHeading } from '@/globals/tailwindvariables';
 import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -19,7 +17,6 @@ const SelectComp = (props: any) => {
     placeholder,
     label,
     labelStyle,
-    className,
     options = defaultOptions,
     ...rest
   } = props;
@@ -32,6 +29,11 @@ const SelectComp = (props: any) => {
     );
   });
 
+  const [field, meta] = useField(name);
+
+  console.log(field, 'fieldfield');
+
+  const hasError = meta.touched && meta.error;
   return (
     <Wrapper>
       {label && (
@@ -39,40 +41,37 @@ const SelectComp = (props: any) => {
           htmlFor={name}
           className={twMerge(
             clsx(
-              `${quinaryHeading} mb-1.5  text-darkgrayish `,
-              labelStyle && labelStyle
+              `${labelStyle} text-graphiteGray text-sm font-medium leading-6 capitalize mb-1`
             )
           )}
         >
           {label}
         </label>
       )}
-      <div className={className}>
+      <div className="mt-1">
         <Field name={name} id={name} {...rest}>
           {({ form }: { form: any }) => {
             return (
-              // <Form.Item name={name}>
               <Select
-                className="w-full"
+                className={
+                  hasError ? 'w-full customSelectError' : 'w-full customSelect'
+                }
                 name={name}
                 id={name}
                 size="large"
                 {...rest}
                 placeholder={placeholder}
-                // You have to provide the onChange function and on changing the value you should call
-                // the setFieldValue function provided by the prop of "form"
                 onChange={(val) => {
                   form.setFieldValue(name, val);
                 }}
               >
                 {OptionsArr}
               </Select>
-              // </Form.Item>
             );
           }}
         </Field>
       </div>
-      <ErrorMessage name={name} component={ErrorMsg} />
+      {/* <ErrorMessage name={name} component={ErrorMsg} /> */}
     </Wrapper>
   );
 };

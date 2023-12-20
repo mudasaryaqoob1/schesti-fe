@@ -1,15 +1,20 @@
 import Image from 'next/image';
 import React from 'react';
 import Link from 'next/link';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // module imports
 import { AppDispatch } from '@/redux/store';
 import CustomButton from '../customButton/button';
 import { logout } from '@/redux/authSlices/authSlice';
+import { selectUser } from '@/redux/authSlices/auth.selector';
 
 const Navbar = () => {
   const dispatch = useDispatch<AppDispatch>();
+
+  let user = useSelector(selectUser);
+
+  console.log(user, 'useruser');
 
   const logoutHandler = () => {
     dispatch(logout());
@@ -69,22 +74,24 @@ const Navbar = () => {
             width={40}
             height={40}
           />
-          <Link href={'#'} onClick={logoutHandler} className="relative">
-            <Image
-              src={'/profile.svg'}
-              alt="logo white icon"
-              width={36}
-              height={32}
-              className="active:scale-105 cursor-pointer"
-            />
-            <Image
-              src={'/online.svg'}
-              alt="logo white icon"
-              width={10}
-              height={10}
-              className="active:scale-105 absolute top-[65%] 
-            right-[5%]"
-            />
+          {/* profileAvatar.png */}
+          <Link href={'#'} onClick={logoutHandler}>
+            <div className="w-9 h-9">
+              {/* <Image
+                src={'/profileAvatar.png'}
+                alt="logo white icon"
+                width={40}
+                height={40}
+                className="w-full h-full object-cover rounded-full"
+              /> */}
+              <img
+                className="w-full h-full object-cover rounded-full"
+                src={
+                  user?.user?.avatar ? user?.user?.avatar : '/profileAvatar.png'
+                }
+                alt={user?.user?.name}
+              />
+            </div>
           </Link>
         </div>
       </div>

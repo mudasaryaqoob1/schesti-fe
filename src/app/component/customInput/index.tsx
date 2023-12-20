@@ -1,5 +1,5 @@
-import { Field, ErrorMessage } from 'formik';
-import ErrorMsg from '../errorMessage';
+import { useField } from 'formik';
+// import ErrorMsg from '../errorMessage';
 import { Input } from 'antd';
 import { twMerge } from 'tailwind-merge';
 import clsx from 'clsx';
@@ -14,39 +14,42 @@ const InputField = (props: any) => {
     name,
     ...rest
   } = props;
+  const [field, meta] = useField(name);
+  const hasError = meta.touched && meta.error;
   return (
     <div>
-      {label && (
-        <label
-          className={twMerge(
-            clsx(
-              `${labelStyle} text-graphiteGray text-sm font-medium leading-6 capitalize`
-            )
-          )}
-          htmlFor={name}
-        >
-          {label}
-        </label>
-      )}
-      <Field name={name} id={name}>
-        {({ field }: { field: any }) => (
-          <Input
-            prefix={prefix}
-            className={twMerge(
-              clsx(
-                `border-gray-400 !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 ${
-                  inputStyle && inputStyle
-                }`
-              )
-            )}
-            maxLength={maxLength}
-            {...rest}
-            placeholder={placeholder}
-            {...field}
-          />
+      <label
+        className={twMerge(
+          clsx(
+            `${labelStyle} text-graphiteGray text-sm font-medium leading-6 capitalize`
+          )
         )}
-      </Field>
-      <ErrorMessage name={name} component={ErrorMsg} />
+        htmlFor={name}
+      >
+        {label}
+      </label>
+
+      {/* <Field name={name} id={name}>
+        {({ field }: { field: any }) => ( */}
+      <Input
+        prefix={prefix}
+        className={twMerge(
+          clsx(
+            `border ${
+              hasError ? 'border-red-500' : 'border-gray-400'
+            } !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 ${
+              inputStyle && inputStyle
+            }`
+          )
+        )}
+        maxLength={maxLength}
+        {...rest}
+        placeholder={placeholder}
+        {...field}
+      />
+      {/* //   )} */}
+      {/* // </Field> */}
+      {/* <ErrorMessage name={name} component={ErrorMsg} /> */}
     </div>
   );
 };

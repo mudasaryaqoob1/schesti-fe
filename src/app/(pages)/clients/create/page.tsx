@@ -8,7 +8,7 @@ import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 // module imports
-import { IClient } from '@/app/interfaces/companyEmployeeInterfaces/client.interface';
+import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 import { senaryHeading } from '@/globals/tailwindvariables';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import MinDesc from '@/app/component/description/minDesc';
@@ -56,14 +56,18 @@ const CreateClient = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const submitHandler = async (values: IClient) => {
-    let result = await userService.httpAddNewClient(values);
-    if (result.statusCode == 201) {
-      setIsLoading(false);
-      router.push('/clients');
-    } else {
-      setIsLoading(false);
-      toast.error(result.message);
-    }
+    userService
+      .httpAddNewClient(values)
+      .then((response: any) => {
+        if (response.statusCode == 201) {
+          setIsLoading(false);
+          router.push('/clients');
+        }
+      })
+      .catch(({ response }: any) => {
+        setIsLoading(false);
+        toast.error(response.data.message);
+      });
   };
 
   return (
@@ -166,7 +170,7 @@ const CreateClient = () => {
                       <CustomButton
                         className=" !border-celestialGray !shadow-scenarySubdued2 !text-graphiteGray !bg-snowWhite"
                         text="Cancel"
-                        onClick={() => router.push('/client')}
+                        onClick={() => router.push('/clients')}
                       />
                     </div>
                     <div>

@@ -26,24 +26,35 @@ class AuthService extends HttpService {
   ): Promise<IResponseInterface<any>> =>
     this.post(`${this.prefix}/forgot-password`, data);
 
-  addCompanyDetailHandle = (data: IRegisterCompany): Promise<any> =>
-    this.post(`${this.prefix}/add-company-detail`, data);
+  httpResendForgotPasswordEmail = (
+    data: IForgotPasswordInterface
+  ): Promise<IResponseInterface<any>> =>
+    this.post(`${this.prefix}/resend-forgot-password-email`, data);
+
+  addCompanyDetailHandler = (
+    data: IRegisterCompany
+  ): Promise<
+    IResponseInterface<{ user: any; token: string; message: string }>
+  > => this.post(`${this.prefix}/add-company-detail`, data);
 
   signupHandler = (data: ISignUpInterface): Promise<IResponseInterface<any>> =>
     this.post(`${this.prefix}/signup`, data);
 
   loginHandler = (
     data: ILogInInterface
-  ): Promise<{ token: string; user: IUser; message: string }> =>
-    this.post(`${this.prefix}/login`, data);
+  ): Promise<
+    IResponseInterface<{ token: string; user: IUser; message: string }>
+  > => this.post(`${this.prefix}/login`, data);
 
   httpLoginWithGoogleHandler = (
     data: ILoginWithGoogle
-  ): Promise<{
-    token: string;
-    user: IUser;
-    message: string;
-    statusCode: number;
-  }> => this.post(`${this.prefix}/auth-with-google`, data);
+  ): Promise<
+    IResponseInterface<{
+      token: string;
+      user: IUser;
+      message: string;
+      statusCode: number;
+    }>
+  > => this.post(`${this.prefix}/auth-with-google`, data);
 }
 export const authService = new AuthService();

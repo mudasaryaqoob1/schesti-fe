@@ -1,6 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import initialAuthState from './auth.initialState';
-import { login, loginWithGoogle, addCompanyDetail } from './auth.thunk';
+import {
+  login,
+  updateProfileHandler,
+  loginWithGoogle,
+  addCompanyDetail,
+} from './auth.thunk';
 
 export const authSlice = createSlice({
   name: 'auth',
@@ -17,12 +22,26 @@ export const authSlice = createSlice({
 
     builder.addCase(login.fulfilled, (state, action) => {
       state.loading = false;
-      state.user = action.payload.user;
+      state.user = action.payload.data;
       state.token = action.payload?.token;
       state.message = action.payload.message;
     });
 
     builder.addCase(login.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+    });
+    builder.addCase(updateProfileHandler.pending, (state) => {
+      state.loading = true;
+    });
+
+    builder.addCase(updateProfileHandler.fulfilled, (state, action) => {
+      state.loading = false;
+      state.user = action.payload.data;
+      state.message = action.payload.message;
+    });
+
+    builder.addCase(updateProfileHandler.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     });
@@ -32,7 +51,7 @@ export const authSlice = createSlice({
 
     builder.addCase(loginWithGoogle.fulfilled, (state, action) => {
       state.loading = false;
-      state.user = action.payload.user;
+      state.user = action.payload.data;
       state.token = action.payload?.token;
       state.message = action.payload.message;
     });
@@ -47,7 +66,7 @@ export const authSlice = createSlice({
 
     builder.addCase(addCompanyDetail.fulfilled, (state, action) => {
       state.loading = false;
-      state.user = action.payload.user;
+      state.user = action.payload.data;
       state.token = action.payload?.token;
       state.message = action.payload.message;
     });

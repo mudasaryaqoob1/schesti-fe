@@ -51,7 +51,7 @@ const Login = () => {
 
     if (result.payload.statusCode == 200) {
       setLoading(false);
-      localStorage.setItem('schestiToken', result.payload.token);
+      // localStorage.setItem('schestiToken', result.payload.token);
       router.push('/clients');
     } else {
       setLoading(false);
@@ -81,10 +81,10 @@ const Login = () => {
         let result: any = await dispatch(loginWithGoogle(responseObj));
 
         if (result.payload.statusCode == 200) {
-          localStorage.setItem('schestiToken', result.payload.token);
+          // localStorage.setItem('schestiToken', result.payload.token);
           router.push(`/clients`);
         } else if (result.payload.statusCode == 400) {
-          router.push(`/companydetails/${result.payload.user._id}`);
+          router.push(`/companydetails/${result.payload.data.user._id}`);
         }
       } catch (error) {
         console.log('Login Failed', error);

@@ -5,4 +5,5 @@ export interface IClient {
   phone: string;
   companyName: string;
   address: string;
+  secondAddress: string;
 }

@@ -77,7 +77,7 @@ const EditClient = () => {
     let result = await userService.httpUpdateClient(updateClientBody, id);
     if (result.statusCode == 200) {
       setIsLoading(false);
-      router.push('/client');
+      router.push('/clients');
     } else {
       setIsLoading(false);
       toast.error(result.message);
@@ -188,7 +188,7 @@ const EditClient = () => {
                       <CustomButton
                         className=" !border-celestialGray !shadow-scenarySubdued2 !text-graphiteGray !bg-snowWhite"
                         text="Cancel"
-                        onClick={() => router.push('/client')}
+                        onClick={() => router.push('/clients')}
                       />
                     </div>
                     <div>

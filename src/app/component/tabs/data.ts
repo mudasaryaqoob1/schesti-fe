@@ -1,13 +1,13 @@
 const tabsData = [
-  { name: 'Dashboard', route: '/dashboard' },
-  { name: 'My Client', route: '/client' },
-  { name: 'My Subcontractor', route: '/contractor' },
-  { name: 'Take off', route: '/takeoff' },
+  { name: 'Dashboard', route: '#' },
+  { name: 'My Client', route: '/clients' },
+  { name: 'My Subcontractor', route: '/subcontractor' },
+  { name: 'Take off', route: '#' },
   { name: 'Estimate', route: '/estimates' },
-  { name: 'Schedule', route: '/schedule' },
-  { name: 'Fiance', route: '/fiance' },
-  { name: 'invoice', route: '/invoice' },
-  { name: 'Meeting', route: '/meeting' },
+  { name: 'Schedule', route: '#' },
+  { name: 'Fiance', route: '#' },
+  { name: 'invoice', route: '#' },
+  { name: 'Meeting', route: '#' },
 ];
 
 export default tabsData;

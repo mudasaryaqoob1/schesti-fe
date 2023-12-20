@@ -1,6 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
-import initialCompanyClientState from './companyClient.initialState';
-import { fetchCompanyClients, deleteCompanyClient } from './company.thunk';
+import initialCompanyClientState from '../company/clientSlice/companyClient.initialState';
+import {
+  deleteEstimateRequest,
+  fetchEstimateRequests,
+} from '../company/company.thunk';
 
 export const companySlice = createSlice({
   name: 'clients',
@@ -11,27 +14,31 @@ export const companySlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchCompanyClients.pending, (state) => {
+    // fetch all estimate requests
+
+    builder.addCase(fetchEstimateRequests.pending, (state) => {
       state.loading = true;
     });
 
-    builder.addCase(fetchCompanyClients.fulfilled, (state, action) => {
+    builder.addCase(fetchEstimateRequests.fulfilled, (state, action) => {
       state.loading = false;
       state.message = action.payload.message;
       state.data = action.payload.data.clients;
       state.statusCode = action.payload.statusCode;
     });
 
-    builder.addCase(fetchCompanyClients.rejected, (state, action) => {
+    builder.addCase(fetchEstimateRequests.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     });
 
-    builder.addCase(deleteCompanyClient.pending, (state) => {
+    // delete estimate request
+
+    builder.addCase(deleteEstimateRequest.pending, (state) => {
       state.loading = true;
     });
 
-    builder.addCase(deleteCompanyClient.fulfilled, (state, action) => {
+    builder.addCase(deleteEstimateRequest.fulfilled, (state, action) => {
       console.log(action.payload);
       state.loading = false;
       state.data = state.data.filter(
@@ -39,7 +46,7 @@ export const companySlice = createSlice({
       );
     });
 
-    builder.addCase(deleteCompanyClient.rejected, (state, action) => {
+    builder.addCase(deleteEstimateRequest.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     });
