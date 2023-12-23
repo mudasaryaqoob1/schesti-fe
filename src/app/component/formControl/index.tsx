@@ -3,6 +3,7 @@ import React from 'react';
 import Input from '../customInput';
 import PasswordField from '../passwordInput';
 import Select from '../customSelect/index';
+import Textarea from '../customTextarea/Index';
 // import Datepicker from './CustomDatePicker/Index';
 // import Textarea from './CustomTextArea/Index';
 // import Checkbox from "./Checkbox";
@@ -18,8 +19,8 @@ const FormikController = (props: any) => {
     //   return <Checkbox {...rest} />;
     case 'password':
       return <PasswordField {...rest} />;
-    // case "textarea":
-    //   return <Textarea {...rest} />;
+    case "textarea":
+      return <Textarea {...rest} />;
 
     // case "radio":
     //   return <Radio {...rest} />;
