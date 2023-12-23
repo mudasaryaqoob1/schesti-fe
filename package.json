@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "rimraf .next & next build",
     "start": "next start",
     "start:local": "cp .env.local .env && next dev",
     "start:dev": "cp .env.dev .env && next dev",
