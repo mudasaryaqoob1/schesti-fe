@@ -1,7 +1,6 @@
 import React from 'react';
 import { Field, useField } from 'formik';
 import { Select } from 'antd';
-import { Wrapper } from './style';
 import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -35,7 +34,7 @@ const SelectComp = (props: any) => {
 
   const hasError = meta.touched && meta.error;
   return (
-    <Wrapper>
+    <div>
       {label && (
         <label
           htmlFor={name}
@@ -72,7 +71,7 @@ const SelectComp = (props: any) => {
         </Field>
       </div>
       {/* <ErrorMessage name={name} component={ErrorMsg} /> */}
-    </Wrapper>
+    </div>
   );
 };
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Table } from 'antd';
 import type { ColumnsType, TableProps } from 'antd/es/table';
-import Wrapper from '../style';
 
 interface DataType {
   key: React.Key;
@@ -74,7 +73,7 @@ const columns: ColumnsType<DataType> = [
   },
 ];
 
-const data = [
+const data : any = [
   {
     key: '1',
     Projectname: 'Kristin Watson',
@@ -116,9 +115,9 @@ const onChange: TableProps<DataType>['onChange'] = (
 
 const index: React.FC = () => {
   return (
-    <Wrapper className="mt-4">
+    <div className="mt-4">
       <Table columns={columns} dataSource={data} onChange={onChange} />
-    </Wrapper>
+    </div>
   );
 };
 

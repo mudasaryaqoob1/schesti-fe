@@ -1,5 +1,4 @@
 import { Modal } from 'antd';
-import styled from 'styled-components';
 interface Props {
   children: React.ReactNode;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -17,7 +16,7 @@ const ModalComponent = ({
   };
 
   return (
-    <Wrapper>
+    <div>
       <Modal
         open={open}
         closable={false}
@@ -28,17 +27,8 @@ const ModalComponent = ({
       >
         {children}
       </Modal>
-    </Wrapper>
+    </div>
   );
 };
 
 export default ModalComponent;
-
-const Wrapper = styled.div`
-  .ant-modal-content {
-    height: 94vh;
-    background: transparent;
-    box-shadow: none;
-    padding: 0px;
-  }
-`;

@@ -26,7 +26,7 @@ export const addNewUser = createAsyncThunk(
   'user/newUser',
   async (credentials: IUser, thunkAPI) => {
     try {
-      const response = await userService.httpAddNewUser(credentials);
+      const response = await userService.httpAddNewEmployee(credentials);
       return response;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(

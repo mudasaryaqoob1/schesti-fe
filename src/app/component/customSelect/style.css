@@ -1,6 +1,4 @@
-import styled from 'styled-components';
 
-export const Wrapper = styled.div`
   .ant-select-selector {
     height: 22px;
     width: 100%;
@@ -15,4 +13,4 @@ export const Wrapper = styled.div`
   }
   margin-top: 4px !important;*/
   }
-`;
+
