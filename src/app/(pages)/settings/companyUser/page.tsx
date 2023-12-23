@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 import { AppDispatch } from '@/redux/store';
 import Button from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
-import { fetchCompanyEmployee } from '@/redux/userSlice/user.thunk';
+import { fetchUsers } from '@/redux/userSlice/user.thunk';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
 import VerticleBar from '@/app/(pages)//settings/verticleBar';
@@ -56,11 +56,11 @@ const Index = () => {
 
   const fetchCompanyEmployeeHandler = useCallback(async () => {
     let result: any = await dispatch(
-      fetchCompanyEmployee({ limit: 9, page: 1 })
+      fetchUsers({ limit: 9, page: 1 })
     );
 
     setUserData(
-      result.payload.data.employees.map((user: any , index: number) => {
+      result.payload?.data?.employees.map((user: any , index: number) => {
         return {
           key: index, 
           name: `${user.firstName} ${user.lastName}`,
@@ -70,11 +70,11 @@ const Index = () => {
         };
       })
     );
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     fetchCompanyEmployeeHandler();
-  }, [fetchCompanyEmployeeHandler]);
+  }, []);
 
   const handleDropdownItemClick = async (key: string, client: any) => {
     console.log(key, client);
