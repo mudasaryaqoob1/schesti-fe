@@ -12,7 +12,6 @@ import CustomButton from '@/app/component/customButton/button';
 import { minHeading, senaryHeading } from '@/globals/tailwindvariables';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-// import MinDescription from '@/app/component/description/minDesc';
 import CustomWhiteButton from '@/app/component/customButton/white';
 import ModalComponent from '@/app/component/modal';
 import FormControl from '@/app/component/formControl';
@@ -30,23 +29,36 @@ const clientInfoSchema: any = Yup.object({
     .required('Email is required!')
     .email('Email should be valid'),
   phone: Yup.string().required('Phone is required!'),
-  city: Yup.string().required('City is required!'),
   projectName: Yup.string().required('Project name is required!'),
   leadSource: Yup.string().required('Load source is required!'),
   projectValue: Yup.string().required('Project value is required!'),
   projectInformation: Yup.string().required('Project info is required!'),
   salePerson: Yup.string().required('Sale person is required!'),
   estimator: Yup.string().required('Estimator is required!'),
+  architectureDocuments: Yup.array(
+    Yup.object({
+      name: Yup.string().required(),
+      size: Yup.string().required(),
+      ext: Yup.string().required(),
+      url: Yup.string().required()
+    })
+  ).min(1, 'architectureDocuments required'),
+  otherDocuments:  Yup.array(
+    Yup.object({
+      name: Yup.string().required(),
+      size: Yup.string().required(),
+      ext: Yup.string().required(),
+      url: Yup.string().required()
+    })
+  ).min(1, 'otherDocuments required'),
 });
 
 const CreateEstimateRequest = () => {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [architecureDocument, setArchitecureDocument] = useState('');
   const [architectureDocumentLoading, setarchitectureDocumentLoading] =
     useState(false);
-  const [otherDocument, setOtherDocument] = useState('');
   const [otherDocumentLoading, setotherDocumentLoading] = useState(false);
 
   const initialValues: IEstimateRequest = {
@@ -54,52 +66,90 @@ const CreateEstimateRequest = () => {
     companyName: '',
     email: '',
     phone: '',
-    city: 'Lahore',
     projectName: '',
     leadSource: '',
     projectValue: '',
     projectInformation: '',
     salePerson: '',
     estimator: '',
+    architectureDocuments : [],
+    otherDocuments : [],
   };
 
   const submitHandler = async (values: IEstimateRequest) => {
-    let result = await estimateRequestService.httpAddNewEstimateRequest({
+    estimateRequestService.httpAddNewEstimateRequest({
       ...values,
       phone: +values.phone,
-      architecureDocument: architecureDocument,
-      otherDocument: otherDocument,
-    });
-    if (result.statusCode == 201) {
+    }).then((resp : any) => {
+
+      if (resp.statusCode == 201) {
+        setIsLoading(false);
+        router.push('/estimates');
+      } 
+    })
+    .catch((error : any) => {
       setIsLoading(false);
-      router.push('/estimates');
-    } else {
-      setIsLoading(false);
-      toast.error(result.message);
-    }
+      toast.error(error.message);
+    })
+    
   };
 
   const uploadArchitectureDocumentHandler = async (e: any) => {
     setarchitectureDocumentLoading(true);
-    let selectedFile = e.target.files[0];
+    let architectureDocs: Object[] = [];
+  
+    try {
+      await Promise.all(
+        Object.keys(e.target.files).map(async (key) => {
 
-    const url = await new AwsS3(
-      selectedFile,
-      'documents/estimates/'
-    ).getS3URL();
-    setarchitectureDocumentLoading(false);
-    setArchitecureDocument(url);
+          const url = await new AwsS3(
+            e.target.files[key],
+            'documents/estimates/'
+          ).getS3URL();
+          let obj = {
+            name : e.target.files[key].name,
+            size : e.target.files[key].size,
+            ext : e.target.files[key].type,
+            url : url
+          }
+          architectureDocs.push(obj);
+        })
+      );
+  
+      return architectureDocs
+    } catch (error) {
+      console.error('Error uploading documents:', error);
+    } finally {
+      setarchitectureDocumentLoading(false);
+    }
   };
   const uploadOtherDocumentHandler = async (e: any) => {
     setotherDocumentLoading(true);
-    let selectedFile = e.target.files[0];
-
-    const url = await new AwsS3(
-      selectedFile,
-      'documents/estimates/'
-    ).getS3URL();
-    setotherDocumentLoading(false);
-    setOtherDocument(url);
+    let otherDocs: Object[] = [];
+  
+    try {
+      await Promise.all(
+        Object.keys(e.target.files).map(async (key) => {
+          const url = await new AwsS3(
+            e.target.files[key],
+            'documents/estimates/'
+          ).getS3URL();
+          let obj = {
+            name : e.target.files[key].name,
+            size : e.target.files[key].size,
+            ext : e.target.files[key].type,
+            url : url
+          }
+          otherDocs.push(obj);
+        })
+      );
+  
+      return otherDocs
+    } catch (error) {
+      console.error('Error uploading documents:', error);
+    } finally {
+      setotherDocumentLoading(false);
+    }
   };
 
   return (
@@ -121,7 +171,8 @@ const CreateEstimateRequest = () => {
           validationSchema={clientInfoSchema}
           onSubmit={submitHandler}
         >
-          {({ handleSubmit, setFieldValue }) => {
+          {({ handleSubmit, setFieldValue , errors }) => {
+
             return (
               <>
                 <ModalComponent open={showModal} setOpen={setShowModal}>
@@ -223,16 +274,14 @@ const CreateEstimateRequest = () => {
                     />
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 grid-rows-1 gap-5 w-full mt-4">
                       <FormControl
-                        control="input"
+                        control="select"
                         label="Sale Person"
-                        type="text"
                         name="salePerson"
                         placeholder="Enter sale person"
                       />
                       <FormControl
-                        control="input"
+                        control="select"
                         label="Estimator"
-                        type="text"
                         name="estimator"
                         placeholder="Select project manager"
                       />
@@ -248,7 +297,7 @@ const CreateEstimateRequest = () => {
                         >
                           Architecture
                         </p>
-                        <div className="p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg ">
+                        <div className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray ${ errors.architectureDocuments ? '!border border-rose-600' : ''} pb-4 rounded-lg`}>
                           <div
                             className={`px-6 py-4 flex flex-col items-center gap-3 `}
                           >
@@ -273,13 +322,13 @@ const CreateEstimateRequest = () => {
                                   Click to Upload
                                 </label>
                                 <input
+                                multiple
                                   type="file"
-                                  name="uploadLogo"
+                                  name="architectureDocuments"
                                   id="uploadArchitectureDocument"
                                   className="hidden"
                                   accept="application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                                  onChange={uploadArchitectureDocumentHandler}
-                                />
+                                  onChange={async (e) => setFieldValue('architectureDocuments' , await uploadArchitectureDocumentHandler(e)) }/>
                                 <p className={`text-steelGray ${minHeading}`}>
                                   or drag and drop
                                 </p>
@@ -298,7 +347,7 @@ const CreateEstimateRequest = () => {
                         >
                           Other Documents
                         </p>
-                        <div className="p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg ">
+                        <div className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray ${ errors.otherDocuments ? '!border border-rose-600' : ''} pb-4 rounded-lg`}>
                           <div
                             className={`px-6 py-4 flex flex-col items-center gap-3 `}
                           >
@@ -324,10 +373,10 @@ const CreateEstimateRequest = () => {
                                 </label>
                                 <input
                                   type="file"
-                                  name="uploadLogo"
+                                  name="otherDocuments"
                                   id="uploadOtherDocument"
                                   className="hidden"
-                                  onChange={uploadOtherDocumentHandler}
+                                  onChange={async (e) => setFieldValue('otherDocuments' , await uploadOtherDocumentHandler(e)) }
                                   accept="application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                                 />
                                 <p className={`text-steelGray ${minHeading}`}>

@@ -13,7 +13,7 @@ class AwsS3 {
       secretAccessKey: process.env.NEXT_PUBLIC_SECRET,
       signatureVersion: process.env.NEXT_PUBLIC_BUCKET_SIGNATURE_VERSION,
     };
-    console.log(config);
+
     this.fileUpload = fileUpload;
     this.s3 = new aws.S3(config);
     this.buffer = buffer;

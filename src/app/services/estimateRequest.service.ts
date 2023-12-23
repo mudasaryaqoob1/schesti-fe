@@ -5,7 +5,7 @@ import { IToken } from '@/app/interfaces/authInterfaces/token.interface';
 import { IEstimateRequest } from '../interfaces/companyInterfaces/estimateRequests.interface';
 
 class EstimateRequestsService extends HttpService {
-  private readonly prefix: string = 'api/estimateRequests';
+  private readonly prefix: string = 'api/estimate';
 
   httpAddNewEstimateRequest = (
     data: IEstimateRequest

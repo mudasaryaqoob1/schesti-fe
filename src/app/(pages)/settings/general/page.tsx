@@ -31,7 +31,7 @@ const initialValues: IUpdateCompanyDetail = {
   email: '',
   industry: '',
   employee: 1,
-  phone: 0,
+  phone: '',
   website: '',
   avatar: '',
 };
@@ -43,8 +43,7 @@ const generalSettingSchema: any = Yup.object({
     .email('Email should be valid'),
   industry: Yup.string().required('Industry  is required!'),
   employee: Yup.string().required('Employee is required!'),
-  phone: Yup.string().required('Phone  is required!'),
-  website: Yup.string().required('Address is required!'),
+  avatar: Yup.string().required('Avatar is required!'),
 });
 const GeneralSetting = () => {
   const token = useSelector(selectToken);
@@ -57,12 +56,9 @@ const GeneralSetting = () => {
   }, [token]);
 
   const [userData, setUserData] = useState(null);
-  const [avatar, setAvatar] = useState('');
   const [avatarLoading, setavatarLoading] = useState(false);
-
   const getUserDetail = useCallback(async () => {
     let { data } = await userService.httpGetCompanyDetail();
-    setAvatar(data.user.avatar);
     setUserData(data.user);
   }, []);
 
@@ -77,7 +73,7 @@ const GeneralSetting = () => {
       employee: Number(values.employee),
       phone: Number(values.phone),
       website: values.website,
-      avatar: avatar,
+      avatar: values.avatar,
     };
 
     let result: any = await dispatch(updateProfileHandler(obj));
@@ -90,16 +86,34 @@ const GeneralSetting = () => {
   };
 
   const avatarUploadHandler = async (e: any) => {
-    let selectedFile = e.target.files[0];
     setavatarLoading(true);
-    if (byteConverter(selectedFile.size, 'MB').size > 5) {
+    let avatarUrl = ''
+
+    if (byteConverter(e.target.files[0].size, 'MB').size > 5) {
       toast.warning('Cannot upload image more then 5 mb of size');
+      setavatarLoading(false);
       return;
     }
 
-    const url = await new AwsS3(selectedFile, 'photos/avatars/').getS3URL();
-    setavatarLoading(false);
-    setAvatar(url);
+    try {
+      await Promise.all(
+        Object.keys(e.target.files).map(async (key) => {
+          const url = await new AwsS3(
+            e.target.files[key],
+            'documents/estimates/'
+          ).getS3URL();
+          avatarUrl = url
+        })
+      );
+  
+      return avatarUrl
+    } catch (error) {
+      console.error('Error uploading documents:', error);
+    } finally {
+      setavatarLoading(false);
+    }
+
+
   };
 
   return (
@@ -117,7 +131,7 @@ const GeneralSetting = () => {
             validationSchema={generalSettingSchema}
             onSubmit={submitHandler}
           >
-            {({ handleSubmit }) => {
+            {({ handleSubmit , errors , setFieldValue}) => {
               return (
                 <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
                   <div
@@ -177,10 +191,9 @@ const GeneralSetting = () => {
                   {/* Upload Image Div */}
                   <div className={`${bg_style} p-5 mt-4 `}>
                     <div
-                      className={`px-6 py-4 flex flex-col items-center gap-3 ${bg_style}`}
-                    >
+                      className={`px-6 py-4 flex flex-col items-center gap-3 ${ errors.avatar ? 'border-rose-600' : ''}  ${bg_style}`} >
                       <input type="text" id="upload" className="hidden" />
-                      <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
+                      <div className="bg-lightGrayish rounded-[28px] border border-solid border-red flex justify-center items-center p-2.5">
                         <Image
                           src={'/uploadcloud.svg'}
                           alt="upload icon"
@@ -205,7 +218,7 @@ const GeneralSetting = () => {
                             name="uploadLogo"
                             id="uploadCompanyLogo"
                             className="hidden"
-                            onChange={avatarUploadHandler}
+                            onChange={async(e) => {setFieldValue('avatar' , await avatarUploadHandler(e)) }}
                           />
                           <p className={`text-steelGray ${minHeading}`}>
                             or drag and drop

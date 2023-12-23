@@ -112,9 +112,9 @@ const ClientTable = () => {
       title: 'Status',
       dataIndex: 'status',
       render: () => (
-        <a className="bg-lime-100 text-[#027A48] bg-[#ECFDF3] px-2 py-1 rounded-full">
+        <p className="bg-lime-100 text-[#027A48] bg-[#ECFDF3] px-2 py-1 rounded-full">
           Active
-        </a>
+        </p>
       ),
     },
     {

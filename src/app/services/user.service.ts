@@ -14,7 +14,7 @@ class UserService extends HttpService {
     this.post(`${this.userPrefix}/updateCompanyDetail`, data);
 
   httpAddNewEmployee = (data: any): Promise<IResponseInterface<any>> =>
-    this.post(`${this.companyPrefix}/newEmployee`, data);
+    this.post(`${this.userPrefix}/newEmployee`, data);
 
   httpGetCompanyDetail = (): Promise<IResponseInterface> =>
     this.get(`${this.userPrefix}/companyDetail`);
@@ -24,7 +24,7 @@ class UserService extends HttpService {
     limit: number = 9
   ): Promise<IResponseInterface<any>> =>
     this.get(
-      `${this.companyPrefix}/companyEmployees?page=${page}&limit=${limit}`
+      `${this.userPrefix}/companyEmployees?page=${page}&limit=${limit}`
     );
 
   // company client services

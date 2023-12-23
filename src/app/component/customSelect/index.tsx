@@ -20,10 +20,10 @@ const SelectComp = (props: any) => {
     ...rest
   } = props;
 
-  const OptionsArr = options?.map((option: { value: string; key: string }) => {
+  const OptionsArr = options?.map((option: { value: string; label: string }) => {
     return (
       <Select.Option key={option.value} value={option.value}>
-        {option.key}
+        {option.label}
       </Select.Option>
     );
   });
@@ -57,7 +57,6 @@ const SelectComp = (props: any) => {
                 }
                 name={name}
                 id={name}
-                size="large"
                 {...rest}
                 placeholder={placeholder}
                 onChange={(val) => {

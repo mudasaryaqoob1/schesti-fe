@@ -25,7 +25,6 @@ interface DataType {
   ProjectName: string;
   ClientName: string;
   Number: string;
-  City: string;
   SalePerson: string;
   Estimator: string;
   Status: string;
@@ -65,7 +64,7 @@ const EstimateRequestTable: React.FC = () => {
     },
   ];
 
-  const handleDropdownItemClick = async (key: string, estimateRequest: any) => {
+  const handleDropdownItemClick = async (key: string, estimateRequest: any) => {    
     if (key == 'deleteEstimateRequest') {
       await dispatch(deleteEstimateRequest(estimateRequest._id));
     } else if (key == 'editEstimateRequest') {
@@ -87,10 +86,7 @@ const EstimateRequestTable: React.FC = () => {
       title: 'Phone Number',
       dataIndex: 'phone',
     },
-    {
-      title: 'City',
-      dataIndex: 'city',
-    },
+   
     {
       title: 'Sale Person ',
       dataIndex: 'salePerson',

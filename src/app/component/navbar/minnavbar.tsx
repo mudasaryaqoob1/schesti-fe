@@ -14,7 +14,6 @@ const Navbar = () => {
 
   let user = useSelector(selectUser);
 
-  console.log(user, 'useruser');
 
   const logoutHandler = () => {
     dispatch(logout());
