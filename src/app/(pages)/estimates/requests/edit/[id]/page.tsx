@@ -1,6 +1,6 @@
 'use client';
 // modules import
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState ,useLayoutEffect } from 'react';
 import * as Yup from 'yup';
 import { twMerge } from 'tailwind-merge';
 import Image from 'next/image';
@@ -18,11 +18,14 @@ import CustomWhiteButton from '@/app/component/customButton/white';
 import ModalComponent from '@/app/component/modal';
 import FormControl from '@/app/component/formControl';
 import { estimateRequestService } from '@/app/services/estimateRequest.service';
+import {userService} from '@/app/services/user.service';
 import { IEstimateRequest } from '@/app/interfaces/companyInterfaces/estimateRequests.interface';
 import { selectEstimateRequests } from '@/redux/estimate/estimateRequestSelector';
 import ExistingClient from '../../existingClient';
 import CustomNavbar from '@/app/component/customNavbar';
 import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
+import { HttpService } from '@/app/services/base.service';
+import { selectToken } from '@/redux/authSlices/auth.selector';
 
 const clientInfoSchema: any = Yup.object({
   clientName: Yup.string().required('Field is required!'),
@@ -31,38 +34,72 @@ const clientInfoSchema: any = Yup.object({
     .required('Email is required!')
     .email('Email should be valid'),
   phone: Yup.string().required('Field is required!'),
-  city: Yup.string().required('Field is required!'),
   projectName: Yup.string().required('Field is required!'),
   leadSource: Yup.string().required('Field is required!'),
   projectValue: Yup.string().required('Field is required!'),
   projectInformation: Yup.string().required('Field is required!'),
   salePerson: Yup.string().required('Field is required!'),
   estimator: Yup.string().required('Field is required!'),
+  architectureDocuments: Yup.array(
+    Yup.object({
+      name: Yup.string().required(),
+      size: Yup.string().required(),
+      ext: Yup.string().required(),
+      url: Yup.string().required(),
+    })
+  ).min(1, 'architectureDocuments required'),
+  otherDocuments: Yup.array(
+    Yup.object({
+      name: Yup.string().required(),
+      size: Yup.string().required(),
+      ext: Yup.string().required(),
+      url: Yup.string().required(),
+    })
+  ).min(1, 'otherDocuments required'),
 });
+
+
+const initialValues: IEstimateRequest = {
+  clientName: '',
+  companyName: '',
+  email: '',
+  phone: '',
+  projectName: '',
+  leadSource: '',
+  projectValue: '',
+  projectInformation: '',
+  salePerson: '',
+  estimator: '',
+  architectureDocuments: [],
+  otherDocuments: [],
+};
 
 const EditEstimateRequest = () => {
   const router = useRouter();
-  const [showModal, setShowModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [estimateRequestData, setEstimateRequestData] = useState(null);
-  const estimateRequestsData = useSelector(selectEstimateRequests);
   const params = useParams();
-
   const { id } = params;
 
-  const initialValues: IEstimateRequest = {
-    clientName: '',
-    companyName: '',
-    email: '',
-    phone: '',
-    city: 'Lahore',
-    projectName: '',
-    leadSource: '',
-    projectValue: '',
-    projectInformation: '',
-    salePerson: '',
-    estimator: '',
-  };
+  const token = useSelector(selectToken);
+
+  useLayoutEffect(() => {
+    if (token) {
+      HttpService.setToken(token);
+    }
+  }, [token]);
+
+
+
+
+
+  const estimateRequestsData = useSelector(selectEstimateRequests);
+
+  const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [salePersonsOption, setSalePersonsOption] = useState([]);
+  const [estimatorsOption, setEstimatorsOption] = useState([]);
+  const [estimateRequestData, setEstimateRequestData] = useState(null);
+
+ 
 
   useEffect(() => {
     if (id) {
@@ -70,7 +107,38 @@ const EditEstimateRequest = () => {
         estimateRequestsData?.find((item: any) => item._id === id)
       );
     }
-  }, [id, estimateRequestsData]);
+  }, [id]);
+
+  useEffect(() => {
+    fetchUsersHandler();
+  }, []);
+
+
+  const fetchUsersHandler = useCallback(async () => {
+    let result: any = await  userService.httpGetUsers( 1,  9 ,'Estimator,Sales Manager' );
+
+    const estimatorData = result.data?.employees.filter((user: any) =>
+      user.roles.includes('Estimator')
+    ).map((option : any) => {
+      return{
+        label : `${option.firstName} ${option.lastName}`,
+        value : `${option._id}`
+      }
+    });
+
+    setEstimatorsOption(estimatorData);
+    const saleManagers = result.data?.employees.filter((user: any) =>
+      user.roles.includes('Sales Manager')
+    ).map((option : any) => {
+      return{
+        label : `${option.firstName} ${option.lastName}`,
+        value : `${option._id}`
+      }
+    });    
+    setSalePersonsOption(saleManagers);
+  }, []);
+
+  
 
   const submitHandler = async (values: IEstimateRequest) => {
     let updateEstimateRequestData = {
@@ -78,13 +146,14 @@ const EditEstimateRequest = () => {
       companyName: values.companyName,
       email: values.email,
       phone: +values.phone,
-      city: values.city,
       projectName: values.projectName,
       leadSource: values.leadSource,
       projectValue: values.projectValue,
       projectInformation: values.projectInformation,
       salePerson: values.salePerson,
       estimator: values.estimator,
+      architectureDocuments: values.architectureDocuments,
+      otherDocuments: values.otherDocuments,
     };
 
     let result = await estimateRequestService.httpUpdateEstimateRequest(
@@ -122,7 +191,10 @@ const EditEstimateRequest = () => {
           enableReinitialize
           onSubmit={submitHandler}
         >
-          {({ handleSubmit, setFieldValue }) => {
+          {({ handleSubmit, setFieldValue  , errors } ) => {
+
+console.log(errors , 'errors');
+
             return (
               <>
                 <ModalComponent open={showModal} setOpen={setShowModal}>
@@ -224,18 +296,18 @@ const EditEstimateRequest = () => {
                     />
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 grid-rows-1 gap-5 w-full mt-4">
                       <FormControl
-                        control="input"
+                        control="select"
                         label="Sale Person"
-                        type="text"
                         name="salePerson"
                         placeholder="Enter sale person"
+                        options={salePersonsOption}
                       />
                       <FormControl
-                        control="input"
+                        control="select"
                         label="Estimator"
-                        type="text"
                         name="estimator"
                         placeholder="Select project manager"
+                        options={estimatorsOption}
                       />
                     </div>
                   </div>

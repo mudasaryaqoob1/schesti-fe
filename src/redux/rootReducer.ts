@@ -12,20 +12,20 @@ export type RootState = {
   auth: any;
   companyClient: any;
   companySubContractor: any;
-  estimateRequests: any;
+  estimates: any;
   supportTickets: any;
 };
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth', 'company'],
+  whitelist: ['auth' , 'estimates'],
 };
 
 const rootReducer = combineReducers<RootState>({
   auth: authReducer,
   companyClient: companyClientReducer,
   companySubContractor: subContractorReducer,
-  estimateRequests: estimateRequestSlice,
+  estimates: estimateRequestSlice,
   supportTickets: supportTicketsSlice,
 });
 export default persistReducer(persistConfig, rootReducer);

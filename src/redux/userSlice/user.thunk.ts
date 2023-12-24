@@ -38,7 +38,7 @@ export const addNewUser = createAsyncThunk(
 );
 
 export const fetchUsers = createAsyncThunk(
-  'user/companyEmployee',
+  'user/companyEmployees',
   async ({ page, limit , queryRoles }: FetchClientParams, { rejectWithValue }: any) => {
     try {
       const response = await userService.httpGetUsers(page, limit , queryRoles);

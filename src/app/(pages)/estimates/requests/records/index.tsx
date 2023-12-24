@@ -55,7 +55,6 @@ const EstimateRequestTable: React.FC = () => {
 
   useEffect(() => {
     memoizedSetPerson();
-
   }, []);
 
   const items: MenuProps['items'] = [
@@ -95,10 +94,12 @@ const EstimateRequestTable: React.FC = () => {
     {
       title: 'Sale Person ',
       dataIndex: 'salePerson',
+      render: (text, record : any) => `${record?.salePerson?.firstName} ${record?.salePerson?.lastName}`,
     },
     {
       title: 'Estimator',
       dataIndex: 'estimator',
+      render: (text, record : any) => `${record?.estimator?.firstName} ${record?.estimator?.lastName}`,
     },
     {
       title: 'Status',

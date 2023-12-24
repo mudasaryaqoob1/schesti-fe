@@ -221,6 +221,8 @@ const CreateEstimateRequest = () => {
           onSubmit={submitHandler}
         >
           {({ handleSubmit, setFieldValue, errors }) => {
+            console.log(errors , 'errorserrors');
+            
             return (
               <>
                 <ModalComponent open={showModal} setOpen={setShowModal}>
@@ -351,7 +353,7 @@ const CreateEstimateRequest = () => {
                         <div
                           className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray ${
                             errors.architectureDocuments
-                              ? '!border border-rose-600'
+                              ? '!border !border-rose-600'
                               : ''
                           } pb-4 rounded-lg`}
                         >
@@ -413,7 +415,7 @@ const CreateEstimateRequest = () => {
                         <div
                           className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray ${
                             errors.otherDocuments
-                              ? '!border border-rose-600'
+                              ? '!border !border-rose-600'
                               : ''
                           } pb-4 rounded-lg`}
                         >

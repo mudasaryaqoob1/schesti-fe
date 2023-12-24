@@ -72,10 +72,9 @@ const AddNewUser = () => {
       }
      })
      .catch((error : any) =>{
-      console.log(error ,'errorerrorerror');
-      
+
       setisLoading(false)
-      toast.error(error.response.message);
+      toast.error(error.response.data.message);
      })
 
 
