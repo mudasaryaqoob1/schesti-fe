@@ -2,6 +2,7 @@
 import { HttpService } from '@/app/services/base.service';
 import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
+import { String } from 'aws-sdk/clients/acm';
 // import { IUpdateCompanyDetail } from '../interfaces/companyInterfaces/updateCompany.interface';
 
 class UserService extends HttpService {
@@ -19,12 +20,14 @@ class UserService extends HttpService {
   httpGetCompanyDetail = (): Promise<IResponseInterface> =>
     this.get(`${this.userPrefix}/companyDetail`);
 
-  httpGetCompanyEmployee = (
+  httpGetUsers = (
     page: number,
-    limit: number = 9
+    limit: number = 9,
+    queryRoles : String
   ): Promise<IResponseInterface<any>> =>
+  
     this.get(
-      `${this.userPrefix}/companyEmployees?page=${page}&limit=${limit}`
+      `${this.userPrefix}/users?page=${page}&limit=${limit}&queryRoles=${queryRoles}`
     );
 
   // company client services

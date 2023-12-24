@@ -1,12 +1,19 @@
 'use client';
-// module imports
-import React, { useState } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useLayoutEffect,
+} from 'react';
 import * as Yup from 'yup';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
 import { toast } from 'react-toastify';
 import { Form, Formik } from 'formik';
+import { useDispatch, useSelector } from 'react-redux';
+
+// module imports
 
 import CustomButton from '@/app/component/customButton/button';
 import { minHeading, senaryHeading } from '@/globals/tailwindvariables';
@@ -21,6 +28,10 @@ import CustomNavbar from '@/app/component/customNavbar';
 import { estimateRequestService } from '@/app/services/estimateRequest.service';
 import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 import AwsS3 from '@/app/utils/S3Intergration';
+import { AppDispatch } from '@/redux/store';
+import { fetchUsers } from '@/redux/userSlice/user.thunk';
+import { selectToken } from '@/redux/authSlices/auth.selector';
+import { HttpService } from '@/app/services/base.service';
 
 const clientInfoSchema: any = Yup.object({
   clientName: Yup.string().required('Client is required!'),
@@ -40,83 +51,121 @@ const clientInfoSchema: any = Yup.object({
       name: Yup.string().required(),
       size: Yup.string().required(),
       ext: Yup.string().required(),
-      url: Yup.string().required()
+      url: Yup.string().required(),
     })
   ).min(1, 'architectureDocuments required'),
-  otherDocuments:  Yup.array(
+  otherDocuments: Yup.array(
     Yup.object({
       name: Yup.string().required(),
       size: Yup.string().required(),
       ext: Yup.string().required(),
-      url: Yup.string().required()
+      url: Yup.string().required(),
     })
   ).min(1, 'otherDocuments required'),
 });
 
+const initialValues: IEstimateRequest = {
+  clientName: '',
+  companyName: '',
+  email: '',
+  phone: '',
+  projectName: '',
+  leadSource: '',
+  projectValue: '',
+  projectInformation: '',
+  salePerson: '',
+  estimator: '',
+  architectureDocuments: [],
+  otherDocuments: [],
+};
 const CreateEstimateRequest = () => {
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const token = useSelector(selectToken);
+
+  useLayoutEffect(() => {
+    if (token) {
+      HttpService.setToken(token);
+    }
+  }, [token]);
+
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [architectureDocumentLoading, setarchitectureDocumentLoading] =
     useState(false);
   const [otherDocumentLoading, setotherDocumentLoading] = useState(false);
+  const [salePersonsOption, setSalePersonsOption] = useState([]);
+  const [estimatorsOption, setEstimatorsOption] = useState([]);
 
-  const initialValues: IEstimateRequest = {
-    clientName: '',
-    companyName: '',
-    email: '',
-    phone: '',
-    projectName: '',
-    leadSource: '',
-    projectValue: '',
-    projectInformation: '',
-    salePerson: '',
-    estimator: '',
-    architectureDocuments : [],
-    otherDocuments : [],
-  };
+  const fetchUsersHandler = useCallback(async () => {
+    let result: any = await dispatch(
+      fetchUsers({ limit: 9, page: 1 , queryRoles:'Estimator,Sales Manager' })
+    );
+    const estimatorData = result.payload.data?.employees.filter((user: any) =>
+      user.roles.includes('Estimator')
+    ).map((option : any) => {
+      return{
+        label : `${option.firstName} ${option.lastName}`,
+        value : `${option._id}`
+      }
+    });
+    setEstimatorsOption(estimatorData);
+    const saleManagers = result.payload.data?.employees.filter((user: any) =>
+      user.roles.includes('Sales Manager')
+    ).map((option : any) => {
+      return{
+        label : `${option.firstName} ${option.lastName}`,
+        value : `${option._id}`
+      }
+    });
+    setSalePersonsOption(saleManagers);
+  }, []);
+
+  useEffect(() => {
+    fetchUsersHandler();
+  }, []);
+
 
   const submitHandler = async (values: IEstimateRequest) => {
-    estimateRequestService.httpAddNewEstimateRequest({
-      ...values,
-      phone: +values.phone,
-    }).then((resp : any) => {
-
-      if (resp.statusCode == 201) {
+    estimateRequestService
+      .httpAddNewEstimateRequest({
+        ...values,
+        phone: +values.phone,
+      })
+      .then((resp: any) => {
+        if (resp.statusCode == 201) {
+          setIsLoading(false);
+          router.push('/estimates');
+        }
+      })
+      .catch((error: any) => {
         setIsLoading(false);
-        router.push('/estimates');
-      } 
-    })
-    .catch((error : any) => {
-      setIsLoading(false);
-      toast.error(error.message);
-    })
-    
+        toast.error(error.message);
+      });
   };
 
   const uploadArchitectureDocumentHandler = async (e: any) => {
     setarchitectureDocumentLoading(true);
     let architectureDocs: Object[] = [];
-  
+
     try {
       await Promise.all(
         Object.keys(e.target.files).map(async (key) => {
-
           const url = await new AwsS3(
             e.target.files[key],
             'documents/estimates/'
           ).getS3URL();
           let obj = {
-            name : e.target.files[key].name,
-            size : e.target.files[key].size,
-            ext : e.target.files[key].type,
-            url : url
-          }
+            name: e.target.files[key].name,
+            size: e.target.files[key].size,
+            ext: e.target.files[key].type,
+            url: url,
+          };
           architectureDocs.push(obj);
         })
       );
-  
-      return architectureDocs
+
+      return architectureDocs;
     } catch (error) {
       console.error('Error uploading documents:', error);
     } finally {
@@ -126,7 +175,7 @@ const CreateEstimateRequest = () => {
   const uploadOtherDocumentHandler = async (e: any) => {
     setotherDocumentLoading(true);
     let otherDocs: Object[] = [];
-  
+
     try {
       await Promise.all(
         Object.keys(e.target.files).map(async (key) => {
@@ -135,16 +184,16 @@ const CreateEstimateRequest = () => {
             'documents/estimates/'
           ).getS3URL();
           let obj = {
-            name : e.target.files[key].name,
-            size : e.target.files[key].size,
-            ext : e.target.files[key].type,
-            url : url
-          }
+            name: e.target.files[key].name,
+            size: e.target.files[key].size,
+            ext: e.target.files[key].type,
+            url: url,
+          };
           otherDocs.push(obj);
         })
       );
-  
-      return otherDocs
+
+      return otherDocs;
     } catch (error) {
       console.error('Error uploading documents:', error);
     } finally {
@@ -171,8 +220,9 @@ const CreateEstimateRequest = () => {
           validationSchema={clientInfoSchema}
           onSubmit={submitHandler}
         >
-          {({ handleSubmit, setFieldValue , errors }) => {
-
+          {({ handleSubmit, setFieldValue, errors }) => {
+            console.log(errors , 'errorserrors');
+            
             return (
               <>
                 <ModalComponent open={showModal} setOpen={setShowModal}>
@@ -278,12 +328,15 @@ const CreateEstimateRequest = () => {
                         label="Sale Person"
                         name="salePerson"
                         placeholder="Enter sale person"
+                        options={salePersonsOption}
+                        def
                       />
                       <FormControl
                         control="select"
                         label="Estimator"
                         name="estimator"
                         placeholder="Select project manager"
+                        options={estimatorsOption}
                       />
                     </div>
                   </div>
@@ -297,7 +350,13 @@ const CreateEstimateRequest = () => {
                         >
                           Architecture
                         </p>
-                        <div className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray ${ errors.architectureDocuments ? '!border border-rose-600' : ''} pb-4 rounded-lg`}>
+                        <div
+                          className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray ${
+                            errors.architectureDocuments
+                              ? '!border !border-rose-600'
+                              : ''
+                          } pb-4 rounded-lg`}
+                        >
                           <div
                             className={`px-6 py-4 flex flex-col items-center gap-3 `}
                           >
@@ -322,13 +381,19 @@ const CreateEstimateRequest = () => {
                                   Click to Upload
                                 </label>
                                 <input
-                                multiple
+                                  multiple
                                   type="file"
                                   name="architectureDocuments"
                                   id="uploadArchitectureDocument"
                                   className="hidden"
                                   accept="application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                                  onChange={async (e) => setFieldValue('architectureDocuments' , await uploadArchitectureDocumentHandler(e)) }/>
+                                  onChange={async (e) =>
+                                    setFieldValue(
+                                      'architectureDocuments',
+                                      await uploadArchitectureDocumentHandler(e)
+                                    )
+                                  }
+                                />
                                 <p className={`text-steelGray ${minHeading}`}>
                                   or drag and drop
                                 </p>
@@ -347,7 +412,13 @@ const CreateEstimateRequest = () => {
                         >
                           Other Documents
                         </p>
-                        <div className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray ${ errors.otherDocuments ? '!border border-rose-600' : ''} pb-4 rounded-lg`}>
+                        <div
+                          className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray ${
+                            errors.otherDocuments
+                              ? '!border !border-rose-600'
+                              : ''
+                          } pb-4 rounded-lg`}
+                        >
                           <div
                             className={`px-6 py-4 flex flex-col items-center gap-3 `}
                           >
@@ -376,7 +447,12 @@ const CreateEstimateRequest = () => {
                                   name="otherDocuments"
                                   id="uploadOtherDocument"
                                   className="hidden"
-                                  onChange={async (e) => setFieldValue('otherDocuments' , await uploadOtherDocumentHandler(e)) }
+                                  onChange={async (e) =>
+                                    setFieldValue(
+                                      'otherDocuments',
+                                      await uploadOtherDocumentHandler(e)
+                                    )
+                                  }
                                   accept="application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                                 />
                                 <p className={`text-steelGray ${minHeading}`}>

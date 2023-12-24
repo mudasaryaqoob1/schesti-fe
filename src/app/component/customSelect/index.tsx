@@ -20,6 +20,7 @@ const SelectComp = (props: any) => {
     options = defaultOptions,
     ...rest
   } = props;
+  
 
   const OptionsArr = options?.map((option: { value: string; label: string }) => {
     return (

@@ -6,7 +6,7 @@ import {
 } from '../company/company.thunk';
 
 export const companySlice = createSlice({
-  name: 'clients',
+  name: 'estimates',
   initialState: initialCompanyClientState,
   reducers: {
     logout: () => {

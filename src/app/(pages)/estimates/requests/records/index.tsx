@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useLayoutEffect } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect  } from 'react';
 import type { ColumnsType } from 'antd/es/table';
 import { Dropdown, Table } from 'antd';
 import type { MenuProps } from 'antd';
@@ -47,11 +47,15 @@ const EstimateRequestTable: React.FC = () => {
 
   const memoizedSetPerson = useCallback(async () => {
     await dispatch(fetchEstimateRequests({ page: 1, limit: 10 }));
-  }, [dispatch]);
+  }, []);
+
+ 
+
+
 
   useEffect(() => {
     memoizedSetPerson();
-  }, [memoizedSetPerson]);
+  }, []);
 
   const items: MenuProps['items'] = [
     {
@@ -90,10 +94,12 @@ const EstimateRequestTable: React.FC = () => {
     {
       title: 'Sale Person ',
       dataIndex: 'salePerson',
+      render: (text, record : any) => `${record?.salePerson?.firstName} ${record?.salePerson?.lastName}`,
     },
     {
       title: 'Estimator',
       dataIndex: 'estimator',
+      render: (text, record : any) => `${record?.estimator?.firstName} ${record?.estimator?.lastName}`,
     },
     {
       title: 'Status',

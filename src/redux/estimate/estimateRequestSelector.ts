@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 
-export const estimateRequest = (state: RootState) => state.estimateRequests;
+export const estimateRequest = (state: RootState) => state.estimates;
 
 export const selectEstimateRequestsLoading = createSelector(
   [estimateRequest],
