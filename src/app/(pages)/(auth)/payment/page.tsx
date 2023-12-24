@@ -8,31 +8,29 @@ import { secondaryHeading } from '@/globals/tailwindvariables';
 import Progessbar from '@/app/component/progressBar';
 import NavBar from '@/app/(pages)/(auth)/authNavbar';
 import PaypalInteration from './paypalIntegration';
-import {authService} from '@/app/services/auth.service'
+import { authService } from '@/app/services/auth.service';
 import { IPaymentProps } from '@/app/interfaces/authInterfaces/payment.interface';
 import { toast } from 'react-toastify';
 
 const Payment = () => {
-
-  const [product]   = useState<IPaymentProps>({
+  const [product] = useState<IPaymentProps>({
     packageName: 'Go FullStack with KnowledgeHut',
     packagePrice: 1000,
   });
 
   const stripePaymentHandler = async () => {
-    const stripe: any = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!);
-    const response : any = await authService.httpStripeCheckout(product)
+    const stripe: any = await loadStripe(
+      process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!
+    );
+    const response: any = await authService.httpStripeCheckout(product);
     const result = stripe.redirectToCheckout({
       sessionId: response.data.id,
     });
 
-    if(result.error){
-      toast.error('Something went wrong')
+    if (result.error) {
+      toast.error('Something went wrong');
     }
-  
   };
-
-
 
   return (
     <>
@@ -53,11 +51,8 @@ const Payment = () => {
                 height={80}
               />
             </div>
-            <div
-              className="h-52 grid place-items-center w-80 border-2  border-doveGray rounded-s"
-            >
+            <div className="h-52 grid place-items-center w-80 border-2  border-doveGray rounded-s">
               <PaypalInteration />
-             
 
               {/* <Image
                 src={'/paypal.svg'}
@@ -65,8 +60,6 @@ const Payment = () => {
                 width={190}
                 height={80}
               /> */}
-
-          
             </div>
           </div>
           <Progessbar progress={'75%'} step={3} className="my-3" />

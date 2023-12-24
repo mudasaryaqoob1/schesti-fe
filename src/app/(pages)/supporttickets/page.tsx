@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useLayoutEffect } from 'react';
 // module imports
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import Moment from 'react-moment';
+import moment from 'moment';
 import { Dropdown } from 'antd';
 import type { MenuProps } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
@@ -26,7 +26,7 @@ import {
   deleteSupportTicket,
   fetchSupportTickets,
 } from '@/redux/company/company.thunk';
-import { ISupportTicket } from '@/app/interfaces/companyInterfaces/supportTicket.interface';
+import { ISupportTicket } from '@/app/interfaces/supportTicket.interface';
 
 const SupportTickets = () => {
   const router = useRouter();
@@ -119,7 +119,7 @@ const SupportTickets = () => {
                     </div>
                     <div className="flex items-center gap-2">
                       <Description
-                        title="4 seconds ago"
+                        title={moment(createdAt).startOf('hour').fromNow()}
                         className="text-lightenGreyish"
                       />
                       <Dropdown
@@ -158,7 +158,7 @@ const SupportTickets = () => {
                         width={12}
                         height={12}
                       />
-                      Date: <Moment format="YYYY/MM/DD">{createdAt}</Moment>
+                      Date: {moment(createdAt).format('ll')}
                     </p>
                     <p className="text-xs text-slateGray font-normal flex gap-1 items-center">
                       <Image
@@ -167,7 +167,7 @@ const SupportTickets = () => {
                         width={16}
                         height={14}
                       />
-                      Last reply: <Moment toNow>{updatedAt}</Moment>
+                      Last reply: {moment(updatedAt).format('ll')}
                     </p>
                   </div>
                 </div>

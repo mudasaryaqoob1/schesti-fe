@@ -2,7 +2,7 @@
 
 import React, { useLayoutEffect, useState } from 'react';
 import { Formik, Form } from 'formik';
-import { twMerge } from 'tailwind-merge';
+// import { twMerge } from 'tailwind-merge';
 import Image from 'next/image';
 import * as Yup from 'yup';
 import { useRouter } from 'next/navigation';
@@ -10,9 +10,9 @@ import { toast } from 'react-toastify';
 
 // module imports
 import Description from '@/app/component/description';
-import MinDescription from '@/app/component/description/minDesc';
+// import MinDescription from '@/app/component/description/minDesc';
 import FormControl from '@/app/component/formControl';
-import { senaryHeading } from '@/globals/tailwindvariables';
+// import { senaryHeading } from '@/globals/tailwindvariables';
 import CustomButton from '@/app/component/customButton/button';
 import CustomNavbar from '@/app/component/customNavbar';
 // redux imports
@@ -21,7 +21,7 @@ import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
 
 // support tickets service
-import { ISupportTicket } from '@/app/interfaces/companyInterfaces/supportTicket.interface';
+import { ISupportTicket } from '@/app/interfaces/supportTicket.interface';
 import { supportTicketService } from '@/app/services/supportTicket.service';
 
 const validationSchema = Yup.object({
@@ -47,9 +47,11 @@ const CreateTicket = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = async (values: ISupportTicket) => {
+    setIsLoading(true);
     supportTicketService
       .httpAddNewSupportTicket(values)
       .then((response: any) => {
+        setIsLoading(false);
         if (response.statusCode == 201) {
           setIsLoading(false);
           router.push('/supporttickets');
@@ -89,8 +91,7 @@ const CreateTicket = () => {
               validationSchema={validationSchema}
               onSubmit={onSubmit}
             >
-              {({ handleSubmit, values, errors }) => {
-                console.log({ values, errors });
+              {({ handleSubmit }) => {
                 return (
                   <Form
                     name="basic"
@@ -111,7 +112,7 @@ const CreateTicket = () => {
                       name="description"
                       placeholder="Write message here"
                     />
-                    <div
+                    {/* <div
                       className="p-6 flex items-center flex-col gap-2 border-2
                     border-silverGray pb-4 rounded-lg "
                     >
@@ -142,7 +143,7 @@ const CreateTicket = () => {
                         className="text-steelGray font-popin text-center"
                         title="SVG, PNG, JPG or GIF (max. 800x400px)"
                       />
-                    </div>
+                    </div> */}
                     <div className="flex justify-end gap-2 mt-6">
                       <span>
                         <CustomButton

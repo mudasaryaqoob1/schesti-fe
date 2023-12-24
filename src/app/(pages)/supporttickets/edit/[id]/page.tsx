@@ -18,7 +18,7 @@ import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
 
 // supportTicket service
-import { ISupportTicket } from '@/app/interfaces/companyInterfaces/supportTicket.interface';
+import { ISupportTicket } from '@/app/interfaces/supportTicket.interface';
 import { supportTicketService } from '@/app/services/supportTicket.service';
 
 import Description from '@/app/component/description';

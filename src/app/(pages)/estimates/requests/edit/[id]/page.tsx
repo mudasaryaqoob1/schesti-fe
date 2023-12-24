@@ -24,7 +24,7 @@ import ModalComponent from '@/app/component/modal';
 import FormControl from '@/app/component/formControl';
 import { estimateRequestService } from '@/app/services/estimateRequest.service';
 import { userService } from '@/app/services/user.service';
-import { IEstimateRequest } from '@/app/interfaces/companyInterfaces/estimateRequests.interface';
+import { IEstimateRequest } from '@/app/interfaces/estimatesInterfaces/estimateRequests.interface';
 import { selectEstimateRequests } from '@/redux/estimate/estimateRequestSelector';
 import ExistingClient from '../../existingClient';
 import CustomNavbar from '@/app/component/customNavbar';

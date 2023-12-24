@@ -1,13 +1,15 @@
 import React from 'react';
 import { Input } from 'antd';
-import { useField, ErrorMessage } from 'formik';
-import Errormsg from '../errorMessage';
+import { useField } from 'formik';
+import { twMerge } from 'tailwind-merge';
+import clsx from 'clsx';
+// import Errormsg from '../errorMessage';
 
 const Textarea = ({ placeholder, label, defaultValue, ...props }: any) => {
   const { TextArea } = Input;
 
-  const [field] = useField(props);
-
+  const [field, meta] = useField(props.name);
+  const hasError = meta.touched && meta.error;
   return (
     <div>
       <label className="text-sm" htmlFor={props.id || props.name}>
@@ -15,13 +17,19 @@ const Textarea = ({ placeholder, label, defaultValue, ...props }: any) => {
       </label>
       <TextArea
         defaultValue={defaultValue}
-        className="mt-2"
+        className={twMerge(
+          clsx(
+            `border ${
+              hasError ? 'border-red-500' : 'border-gray-400'
+            } !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 mt-2`
+          )
+        )}
         rows={6}
         placeholder={placeholder}
         {...field}
         {...props}
       />
-      <ErrorMessage name={props.name} component={Errormsg} />
+      {/* <ErrorMessage name={props.name} component={Errormsg} /> */}
     </div>
   );
 };

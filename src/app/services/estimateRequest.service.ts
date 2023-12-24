@@ -2,7 +2,7 @@
 import { HttpService } from '@/app/services/base.service';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { IToken } from '@/app/interfaces/authInterfaces/token.interface';
-import { IEstimateRequest } from '../interfaces/companyInterfaces/estimateRequests.interface';
+import { IEstimateRequest } from '../interfaces/estimatesInterfaces/estimateRequests.interface';
 
 class EstimateRequestsService extends HttpService {
   private readonly prefix: string = 'api/estimate';

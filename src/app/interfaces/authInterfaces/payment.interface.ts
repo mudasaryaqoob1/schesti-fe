@@ -1,6 +1,4 @@
 export interface IPaymentProps {
-    packageName: string;
-    packagePrice: number;
-
-  }
-  
+  packageName: string;
+  packagePrice: number;
+}

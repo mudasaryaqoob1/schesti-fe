@@ -2,7 +2,7 @@
 import { HttpService } from '@/app/services/base.service';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { IToken } from '@/app/interfaces/authInterfaces/token.interface';
-import { ISupportTicket } from '../interfaces/companyInterfaces/supportTicket.interface';
+import { ISupportTicket } from '../interfaces/supportTicket.interface';
 
 class SupportTicketService extends HttpService {
   private readonly prefix: string = 'api/supportTickets';

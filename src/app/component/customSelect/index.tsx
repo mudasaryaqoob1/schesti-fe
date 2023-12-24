@@ -31,10 +31,8 @@ const SelectComp = (props: any) => {
   );
 
   const [field, meta] = useField(name);
-
-  console.log(field, 'fieldfield');
-
   const hasError = meta.touched && meta.error;
+
   return (
     <div>
       {label && (
@@ -57,9 +55,9 @@ const SelectComp = (props: any) => {
                 className={
                   hasError ? 'w-full customSelectError' : 'w-full customSelect'
                 }
-                name={name}
                 id={name}
                 {...rest}
+                {...field}
                 placeholder={placeholder}
                 onChange={(val) => {
                   form.setFieldValue(name, val);
