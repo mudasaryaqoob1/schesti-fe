@@ -18,7 +18,7 @@ export type RootState = {
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth' , 'estimates'],
+  whitelist: ['auth', 'estimates'],
 };
 
 const rootReducer = combineReducers<RootState>({

@@ -12,6 +12,7 @@ import { ISignUpInterface } from '@/app/interfaces/authInterfaces/signup.interfa
 import { IRegisterCompany } from '../interfaces/companyInterfaces/companyRegister.interface';
 import { IForgotPasswordInterface } from '../interfaces/authInterfaces/forgotPassword.interface';
 import { IResetPasswordInterface } from '../interfaces/authInterfaces/resetPassword.interface';
+import { IPaymentProps } from '../interfaces/authInterfaces/payment.interface';
 
 class AuthService extends HttpService {
   private readonly prefix: string = 'api/auth';
@@ -56,5 +57,35 @@ class AuthService extends HttpService {
       statusCode: number;
     }>
   > => this.post(`${this.prefix}/auth-with-google`, data);
+
+  httpStripeCheckout = (
+    data: IPaymentProps
+  ): Promise<
+    IResponseInterface<{
+      status: number;
+      msg: string;
+      data: any;
+    }>
+  > => this.post(`${this.prefix}/stripe-checkout`, data);
+
+  httpPaypalCreateOrder = (
+    data: IPaymentProps
+  ): Promise<
+    IResponseInterface<{
+      status: number;
+      msg: string;
+      data: any;
+    }>
+  > => this.post(`${this.prefix}/create-order`, data);
+
+  httpPaypalCaptureOrder = (
+    orderID: string
+  ): Promise<
+    IResponseInterface<{
+      status: number;
+      msg: string;
+      data: any;
+    }>
+  > => this.post(`${this.prefix}/capture-order`, {orderID : orderID});
 }
 export const authService = new AuthService();

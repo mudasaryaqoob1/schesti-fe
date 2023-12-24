@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-const Config = process.env.NEXT_PUBLIC_APP_BASE_URL;
+const Config = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
 export class HttpService {
   CancelToken: any;

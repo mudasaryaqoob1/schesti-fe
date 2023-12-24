@@ -32,6 +32,7 @@ const InputField = (props: any) => {
       {/* <Field name={name} id={name}>
         {({ field }: { field: any }) => ( */}
       <Input
+        id={name}
         prefix={prefix}
         className={twMerge(
           clsx(

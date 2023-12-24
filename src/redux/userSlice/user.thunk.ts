@@ -6,7 +6,7 @@ import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface
 interface FetchClientParams {
   page: number;
   limit: number;
-  queryRoles?: any
+  queryRoles?: any;
 }
 
 export const updateCompanyDetail = createAsyncThunk(
@@ -39,9 +39,12 @@ export const addNewUser = createAsyncThunk(
 
 export const fetchUsers = createAsyncThunk(
   'user/companyEmployees',
-  async ({ page, limit , queryRoles }: FetchClientParams, { rejectWithValue }: any) => {
+  async (
+    { page, limit, queryRoles }: FetchClientParams,
+    { rejectWithValue }: any
+  ) => {
     try {
-      const response = await userService.httpGetUsers(page, limit , queryRoles);
+      const response = await userService.httpGetUsers(page, limit, queryRoles);
       return response;
     } catch (error: any) {
       return rejectWithValue(

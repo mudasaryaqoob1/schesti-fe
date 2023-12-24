@@ -19,7 +19,7 @@ const FormikController = (props: any) => {
     //   return <Checkbox {...rest} />;
     case 'password':
       return <PasswordField {...rest} />;
-    case "textarea":
+    case 'textarea':
       return <Textarea {...rest} />;
 
     // case "radio":

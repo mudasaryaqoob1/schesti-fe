@@ -1,18 +1,18 @@
-'use client'
+'use client';
 
-import React, { useLayoutEffect, useState } from 'react'
-import { Formik, Form } from 'formik'
+import React, { useLayoutEffect, useState } from 'react';
+import { Formik, Form } from 'formik';
 import { twMerge } from 'tailwind-merge';
-import Image from 'next/image'
+import Image from 'next/image';
 import * as Yup from 'yup';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 
 // module imports
-import Description from '@/app/component/description'
-import MinDescription from '@/app/component/description/minDesc'
-import FormControl from '@/app/component/formControl'
-import { senaryHeading } from '@/globals/tailwindvariables'
+import Description from '@/app/component/description';
+import MinDescription from '@/app/component/description/minDesc';
+import FormControl from '@/app/component/formControl';
+import { senaryHeading } from '@/globals/tailwindvariables';
 import CustomButton from '@/app/component/customButton/button';
 import CustomNavbar from '@/app/component/customNavbar';
 // redux imports
@@ -25,140 +25,149 @@ import { ISupportTicket } from '@/app/interfaces/companyInterfaces/supportTicket
 import { supportTicketService } from '@/app/services/supportTicket.service';
 
 const validationSchema = Yup.object({
-    title: Yup.string().required('Title is required!'),
-    description: Yup.string().required('Description is required!'),
+  title: Yup.string().required('Title is required!'),
+  description: Yup.string().required('Description is required!'),
 });
 
 const initialValues = {
-    title: '',
-    description: ''
+  title: '',
+  description: '',
 };
 
 const CreateTicket = () => {
+  const router = useRouter();
+  const token = useSelector(selectToken);
 
-    const router = useRouter();
-    const token = useSelector(selectToken);
+  useLayoutEffect(() => {
+    if (token) {
+      HttpService.setToken(token);
+    }
+  }, [token]);
 
-    useLayoutEffect(() => {
-        if (token) {
-            HttpService.setToken(token);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const onSubmit = async (values: ISupportTicket) => {
+    supportTicketService
+      .httpAddNewSupportTicket(values)
+      .then((response: any) => {
+        if (response.statusCode == 201) {
+          setIsLoading(false);
+          router.push('/supporttickets');
         }
-    }, [token]);
+      })
+      .catch(({ response }: any) => {
+        setIsLoading(false);
+        toast.error(response.data.message);
+      });
+  };
 
-    const [isLoading, setIsLoading] = useState(false);
-
-    const onSubmit = async (values: ISupportTicket) => {
-        supportTicketService
-            .httpAddNewSupportTicket(values)
-            .then((response: any) => {
-                if (response.statusCode == 201) {
-                    setIsLoading(false);
-                    router.push('/supporttickets');
-                }
-            })
-            .catch(({ response }: any) => {
-                setIsLoading(false);
-                toast.error(response.data.message);
-            });
-    };
-
-    return (
-        <CustomNavbar>
-            <section className='px-16 mt-6'>
-                <div className="flex gap-1 items-center">
-                    <Description title="My Ticket" className="font-base text-slateGray" />
-                    <Image
-                        src={'/chevron-right.svg'}
-                        alt="chevron-right icon"
-                        width={16}
-                        height={16}
+  return (
+    <CustomNavbar>
+      <section className="px-16 mt-6">
+        <div className="flex gap-1 items-center">
+          <Description title="My Ticket" className="font-base text-slateGray" />
+          <Image
+            src={'/chevron-right.svg'}
+            alt="chevron-right icon"
+            width={16}
+            height={16}
+          />
+          <Description title="Create New Ticket" className="text-RoyalPurple" />
+        </div>
+        <div className="mt-6 grid grid-cols-3 mb-3">
+          <div>
+            <Image
+              src="/support-ticket.png"
+              width={400}
+              height={400}
+              alt="support-img"
+            />
+          </div>
+          <div className="col-span-2">
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={onSubmit}
+            >
+              {({ handleSubmit, values, errors }) => {
+                console.log({ values, errors });
+                return (
+                  <Form
+                    name="basic"
+                    onSubmit={handleSubmit}
+                    className="flex flex-col gap-5 px-5 py-6 shadow-primaryGlow rounded-2xl"
+                  >
+                    <FormControl
+                      control="input"
+                      label="Title"
+                      type="text"
+                      name="title"
+                      placeholder="Enter title"
                     />
-                    <Description
-                        title="Create New Ticket"
-                        className='text-RoyalPurple'
+                    <FormControl
+                      control="textarea"
+                      label="Description"
+                      type="text"
+                      name="description"
+                      placeholder="Write message here"
                     />
-                </div>
-                <div className='mt-6 grid grid-cols-3 mb-3'>
-                    <div>
-                        <Image src='/support-ticket.png' width={400} height={400} alt='support-img' />
-                    </div>
-                    <div className='col-span-2'>
-                        <Formik
-                            initialValues={initialValues}
-                            validationSchema={validationSchema}
-                            onSubmit={onSubmit}
-                        >
-
-                            {({ handleSubmit, values, errors }) => {
-                                console.log({ values, errors })
-                                return (
-                                    <Form name="basic" onSubmit={handleSubmit} className='flex flex-col gap-5 px-5 py-6 shadow-primaryGlow rounded-2xl'>
-                                        <FormControl
-                                            control="input"
-                                            label="Title"
-                                            type="text"
-                                            name="title"
-                                            placeholder="Enter title"
-                                        />
-                                        <FormControl
-                                            control="textarea"
-                                            label="Description"
-                                            type="text"
-                                            name="description"
-                                            placeholder="Write message here"
-                                        />
-                                        <div
-                                            className="p-6 flex items-center flex-col gap-2 border-2
+                    <div
+                      className="p-6 flex items-center flex-col gap-2 border-2
                     border-silverGray pb-4 rounded-lg "
-                                        >
-                                            <Image
-                                                src='/uploadcloud.svg'
-                                                alt="upload icon"
-                                                width={20}
-                                                height={20}
-                                                className="rounded-3xl border-5 border-paleblueGray bg-lightGrayish"
-                                            />
-                                            <div className="flex gap-1 items-center">
-                                                <div>
-                                                    <p
-                                                        className={twMerge(
-                                                            `${senaryHeading}
+                    >
+                      <Image
+                        src="/uploadcloud.svg"
+                        alt="upload icon"
+                        width={20}
+                        height={20}
+                        className="rounded-3xl border-5 border-paleblueGray bg-lightGrayish"
+                      />
+                      <div className="flex gap-1 items-center">
+                        <div>
+                          <p
+                            className={twMerge(
+                              `${senaryHeading}
                                 text-RoyalPurple font-semibold`
-                                                        )}
-                                                    >
-                                                        Doc
-                                                    </p>
-                                                </div>
-                                                <MinDescription
-                                                    className="text-steelGray font-popin text-center"
-                                                    title="or drag and drop"
-                                                />
-                                            </div>
-                                            <MinDescription
-                                                className="text-steelGray font-popin text-center"
-                                                title="SVG, PNG, JPG or GIF (max. 800x400px)"
-                                            />
-                                        </div>
-                                        <div className="flex justify-end gap-2 mt-6">
-                                            <span>
-                                                <CustomButton text='Cancel' className='!bg-white !text-graphiteGray !border !border-celestialGray' />
-                                            </span>
-                                            <span>
-                                                <CustomButton text='Create New Ticket'
-                                                    type='submit'
-                                                    className='!bg-mediumSlateBlue' isLoading={isLoading} />
-                                            </span>
-                                        </div>
-                                    </Form>
-                                )
-                            }}
-                        </Formik>
+                            )}
+                          >
+                            Doc
+                          </p>
+                        </div>
+                        <MinDescription
+                          className="text-steelGray font-popin text-center"
+                          title="or drag and drop"
+                        />
+                      </div>
+                      <MinDescription
+                        className="text-steelGray font-popin text-center"
+                        title="SVG, PNG, JPG or GIF (max. 800x400px)"
+                      />
                     </div>
+                    <div className="flex justify-end gap-2 mt-6">
+                      <span>
+                        <CustomButton
+                          text="Cancel"
+                          className="!bg-white !text-graphiteGray !border !border-celestialGray"
+                        />
+                      </span>
+                      <span>
+                        <CustomButton
+                          text="Create New Ticket"
+                          type="submit"
+                          className="!bg-mediumSlateBlue"
+                          isLoading={isLoading}
+                        />
+                      </span>
+                    </div>
+                  </Form>
+                );
+              }}
+            </Formik>
+          </div>
+        </div>
+      </section>
+    </CustomNavbar>
+  );
+};
 
-                </div>
-            </section>
-        </CustomNavbar>
-    )
-}
-
-export default CreateTicket
+export default CreateTicket;

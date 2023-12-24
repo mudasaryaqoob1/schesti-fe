@@ -23,9 +23,8 @@ class UserService extends HttpService {
   httpGetUsers = (
     page: number,
     limit: number = 9,
-    queryRoles : String
+    queryRoles: String
   ): Promise<IResponseInterface<any>> =>
-  
     this.get(
       `${this.userPrefix}/users?page=${page}&limit=${limit}&queryRoles=${queryRoles}`
     );

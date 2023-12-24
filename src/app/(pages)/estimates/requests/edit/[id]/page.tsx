@@ -1,6 +1,11 @@
 'use client';
 // modules import
-import React, { useCallback, useEffect, useState ,useLayoutEffect } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  useLayoutEffect,
+} from 'react';
 import * as Yup from 'yup';
 import { twMerge } from 'tailwind-merge';
 import Image from 'next/image';
@@ -18,7 +23,7 @@ import CustomWhiteButton from '@/app/component/customButton/white';
 import ModalComponent from '@/app/component/modal';
 import FormControl from '@/app/component/formControl';
 import { estimateRequestService } from '@/app/services/estimateRequest.service';
-import {userService} from '@/app/services/user.service';
+import { userService } from '@/app/services/user.service';
 import { IEstimateRequest } from '@/app/interfaces/companyInterfaces/estimateRequests.interface';
 import { selectEstimateRequests } from '@/redux/estimate/estimateRequestSelector';
 import ExistingClient from '../../existingClient';
@@ -58,7 +63,6 @@ const clientInfoSchema: any = Yup.object({
   ).min(1, 'otherDocuments required'),
 });
 
-
 const initialValues: IEstimateRequest = {
   clientName: '',
   companyName: '',
@@ -87,10 +91,6 @@ const EditEstimateRequest = () => {
     }
   }, [token]);
 
-
-
-
-
   const estimateRequestsData = useSelector(selectEstimateRequests);
 
   const [showModal, setShowModal] = useState(false);
@@ -98,8 +98,6 @@ const EditEstimateRequest = () => {
   const [salePersonsOption, setSalePersonsOption] = useState([]);
   const [estimatorsOption, setEstimatorsOption] = useState([]);
   const [estimateRequestData, setEstimateRequestData] = useState(null);
-
- 
 
   useEffect(() => {
     if (id) {
@@ -113,32 +111,33 @@ const EditEstimateRequest = () => {
     fetchUsersHandler();
   }, []);
 
-
   const fetchUsersHandler = useCallback(async () => {
-    let result: any = await  userService.httpGetUsers( 1,  9 ,'Estimator,Sales Manager' );
+    let result: any = await userService.httpGetUsers(
+      1,
+      9,
+      'Estimator,Sales Manager'
+    );
 
-    const estimatorData = result.data?.employees.filter((user: any) =>
-      user.roles.includes('Estimator')
-    ).map((option : any) => {
-      return{
-        label : `${option.firstName} ${option.lastName}`,
-        value : `${option._id}`
-      }
-    });
+    const estimatorData = result.data?.employees
+      .filter((user: any) => user.roles.includes('Estimator'))
+      .map((option: any) => {
+        return {
+          label: `${option.firstName} ${option.lastName}`,
+          value: `${option._id}`,
+        };
+      });
 
     setEstimatorsOption(estimatorData);
-    const saleManagers = result.data?.employees.filter((user: any) =>
-      user.roles.includes('Sales Manager')
-    ).map((option : any) => {
-      return{
-        label : `${option.firstName} ${option.lastName}`,
-        value : `${option._id}`
-      }
-    });    
+    const saleManagers = result.data?.employees
+      .filter((user: any) => user.roles.includes('Sales Manager'))
+      .map((option: any) => {
+        return {
+          label: `${option.firstName} ${option.lastName}`,
+          value: `${option._id}`,
+        };
+      });
     setSalePersonsOption(saleManagers);
   }, []);
-
-  
 
   const submitHandler = async (values: IEstimateRequest) => {
     let updateEstimateRequestData = {
@@ -191,9 +190,8 @@ const EditEstimateRequest = () => {
           enableReinitialize
           onSubmit={submitHandler}
         >
-          {({ handleSubmit, setFieldValue  , errors } ) => {
-
-console.log(errors , 'errors');
+          {({ handleSubmit, setFieldValue, errors }) => {
+            console.log(errors, 'errors');
 
             return (
               <>

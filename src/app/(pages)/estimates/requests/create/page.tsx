@@ -99,32 +99,31 @@ const CreateEstimateRequest = () => {
 
   const fetchUsersHandler = useCallback(async () => {
     let result: any = await dispatch(
-      fetchUsers({ limit: 9, page: 1 , queryRoles:'Estimator,Sales Manager' })
+      fetchUsers({ limit: 9, page: 1, queryRoles: 'Estimator,Sales Manager' })
     );
-    const estimatorData = result.payload.data?.employees.filter((user: any) =>
-      user.roles.includes('Estimator')
-    ).map((option : any) => {
-      return{
-        label : `${option.firstName} ${option.lastName}`,
-        value : `${option._id}`
-      }
-    });
+    const estimatorData = result.payload.data?.employees
+      .filter((user: any) => user.roles.includes('Estimator'))
+      .map((option: any) => {
+        return {
+          label: `${option.firstName} ${option.lastName}`,
+          value: `${option._id}`,
+        };
+      });
     setEstimatorsOption(estimatorData);
-    const saleManagers = result.payload.data?.employees.filter((user: any) =>
-      user.roles.includes('Sales Manager')
-    ).map((option : any) => {
-      return{
-        label : `${option.firstName} ${option.lastName}`,
-        value : `${option._id}`
-      }
-    });
+    const saleManagers = result.payload.data?.employees
+      .filter((user: any) => user.roles.includes('Sales Manager'))
+      .map((option: any) => {
+        return {
+          label: `${option.firstName} ${option.lastName}`,
+          value: `${option._id}`,
+        };
+      });
     setSalePersonsOption(saleManagers);
   }, []);
 
   useEffect(() => {
     fetchUsersHandler();
   }, []);
-
 
   const submitHandler = async (values: IEstimateRequest) => {
     estimateRequestService
@@ -221,8 +220,8 @@ const CreateEstimateRequest = () => {
           onSubmit={submitHandler}
         >
           {({ handleSubmit, setFieldValue, errors }) => {
-            console.log(errors , 'errorserrors');
-            
+            console.log(errors, 'errorserrors');
+
             return (
               <>
                 <ModalComponent open={showModal} setOpen={setShowModal}>

@@ -19,15 +19,16 @@ const SelectComp = (props: any) => {
     options = defaultOptions,
     ...rest
   } = props;
-  
 
-  const OptionsArr = options?.map((option: { value: string; label: string }) => {
-    return (
-      <Select.Option key={option.value} value={option.value}>
-        {option.label}
-      </Select.Option>
-    );
-  });
+  const OptionsArr = options?.map(
+    (option: { value: string; label: string }) => {
+      return (
+        <Select.Option key={option.value} value={option.value}>
+          {option.label}
+        </Select.Option>
+      );
+    }
+  );
 
   const [field, meta] = useField(name);
 

@@ -1,5 +1,5 @@
 'use client';
-import {useState} from 'react'
+import { useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import Image from 'next/image';
@@ -33,7 +33,7 @@ const AddNewUser = () => {
   const token = useSelector(selectToken);
   const router = useRouter();
 
-  const [isLoading, setisLoading] = useState(false)
+  const [isLoading, setisLoading] = useState(false);
 
   useLayoutEffect(() => {
     if (token) {
@@ -55,30 +55,24 @@ const AddNewUser = () => {
     lastName: '',
     email: '',
     roles: '',
-    
   };
   const submitHandler = async (values: IUser, { resetForm }: any) => {
-    setisLoading(true)
-     userService.httpAddNewEmployee({...values , roles : [values.roles]})
-     .then((response : any) => {
-
-      setisLoading(false)
-      if (response.statusCode == 201) {
-        resetForm();
-        router.push('/settings/companyUser');
-      }
-      else{
-        toast.error(response.message);
-      }
-     })
-     .catch((error : any) =>{
-
-      setisLoading(false)
-      toast.error(error.response.data.message);
-     })
-
-
-
+    setisLoading(true);
+    userService
+      .httpAddNewEmployee({ ...values, roles: [values.roles] })
+      .then((response: any) => {
+        setisLoading(false);
+        if (response.statusCode == 201) {
+          resetForm();
+          router.push('/settings/companyUser');
+        } else {
+          toast.error(response.message);
+        }
+      })
+      .catch((error: any) => {
+        setisLoading(false);
+        toast.error(error.response.data.message);
+      });
   };
   return (
     <VerticleBar>
@@ -117,9 +111,9 @@ const AddNewUser = () => {
           validationSchema={newClientSchema}
           onSubmit={submitHandler}
         >
-          {({ handleSubmit  , errors}) => {
-            console.log(errors , 'error');
-            
+          {({ handleSubmit, errors }) => {
+            console.log(errors, 'error');
+
             return (
               <Form
                 name="basic"
@@ -160,7 +154,7 @@ const AddNewUser = () => {
                 <div className="self-end flex justify-end items-center gap-5 md:mt-5 my-3">
                   <div>
                     <CustomButton
-                    isLoading={isLoading}
+                      isLoading={isLoading}
                       className="mx-w-30"
                       type="submit"
                       text="Save and Continue"

@@ -73,7 +73,7 @@ const columns: ColumnsType<DataType> = [
   },
 ];
 
-const data : any = [
+const data: any = [
   {
     key: '1',
     Projectname: 'Kristin Watson',

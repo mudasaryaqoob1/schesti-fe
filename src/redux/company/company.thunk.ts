@@ -19,7 +19,6 @@ interface FetchSupportTicketParams {
   limit: number;
 }
 
-
 export const fetchCompanyClients = createAsyncThunk(
   'company/clients',
   async ({ page, limit }: FetchClientParams, { rejectWithValue }) => {
@@ -29,7 +28,7 @@ export const fetchCompanyClients = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
-        'An error occurred while fetching the feed records'
+          'An error occurred while fetching the feed records'
       );
     }
   }
@@ -47,7 +46,7 @@ export const fetchCompanySubcontractors = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
-        'An error occurred while fetching the feed records'
+          'An error occurred while fetching the feed records'
       );
     }
   }
@@ -65,7 +64,7 @@ export const fetchSupportTickets = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
-        'An error occurred while fetching the feed records'
+          'An error occurred while fetching the feed records'
       );
     }
   }
@@ -83,7 +82,7 @@ export const fetchEstimateRequests = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
-        'An error occurred while fetching the feed records'
+          'An error occurred while fetching the feed records'
       );
     }
   }
@@ -98,7 +97,7 @@ export const deleteCompanyClient = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
-        'An error occurred while fetching the feed records'
+          'An error occurred while fetching the feed records'
       );
     }
   }
@@ -113,7 +112,7 @@ export const deleteSubcontractor = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
-        'An error occurred while fetching the feed records'
+          'An error occurred while fetching the feed records'
       );
     }
   }
@@ -129,7 +128,7 @@ export const deleteEstimateRequest = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
-        'An error occurred while fetching the feed records'
+          'An error occurred while fetching the feed records'
       );
     }
   }
@@ -145,7 +144,7 @@ export const deleteSupportTicket = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
-        'An error occurred while fetching the feed records'
+          'An error occurred while fetching the feed records'
       );
     }
   }

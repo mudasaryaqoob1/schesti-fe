@@ -30,7 +30,6 @@ interface DataType {
 }
 
 const items: MenuProps['items'] = [
- 
   {
     key: 'editUser',
     label: <a href="#">Edit</a>,
@@ -55,14 +54,12 @@ const Index = () => {
   const [userData, setUserData] = useState([]);
 
   const fetchCompanyEmployeeHandler = useCallback(async () => {
-    let result: any = await dispatch(
-      fetchUsers({ limit: 9, page: 1 })
-    );
+    let result: any = await dispatch(fetchUsers({ limit: 9, page: 1 }));
 
     setUserData(
-      result.payload?.data?.employees.map((user: any , index: number) => {
+      result.payload?.data?.employees.map((user: any, index: number) => {
         return {
-          key: index, 
+          key: index,
           name: `${user.firstName} ${user.lastName}`,
           email: user.email,
           roles: user.roles,

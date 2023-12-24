@@ -87,7 +87,7 @@ const GeneralSetting = () => {
 
   const avatarUploadHandler = async (e: any) => {
     setavatarLoading(true);
-    let avatarUrl = ''
+    let avatarUrl = '';
 
     if (byteConverter(e.target.files[0].size, 'MB').size > 5) {
       toast.warning('Cannot upload image more then 5 mb of size');
@@ -102,18 +102,16 @@ const GeneralSetting = () => {
             e.target.files[key],
             'documents/estimates/'
           ).getS3URL();
-          avatarUrl = url
+          avatarUrl = url;
         })
       );
-  
-      return avatarUrl
+
+      return avatarUrl;
     } catch (error) {
       console.error('Error uploading documents:', error);
     } finally {
       setavatarLoading(false);
     }
-
-
   };
 
   return (
@@ -131,7 +129,7 @@ const GeneralSetting = () => {
             validationSchema={generalSettingSchema}
             onSubmit={submitHandler}
           >
-            {({ handleSubmit , errors , setFieldValue}) => {
+            {({ handleSubmit, errors, setFieldValue }) => {
               return (
                 <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
                   <div
@@ -191,7 +189,10 @@ const GeneralSetting = () => {
                   {/* Upload Image Div */}
                   <div className={`${bg_style} p-5 mt-4 `}>
                     <div
-                      className={`px-6 py-4 flex flex-col items-center gap-3 ${ errors.avatar ? 'border-rose-600' : ''}  ${bg_style}`} >
+                      className={`px-6 py-4 flex flex-col items-center gap-3 ${
+                        errors.avatar ? 'border-rose-600' : ''
+                      }  ${bg_style}`}
+                    >
                       <input type="text" id="upload" className="hidden" />
                       <div className="bg-lightGrayish rounded-[28px] border border-solid border-red flex justify-center items-center p-2.5">
                         <Image
@@ -218,7 +219,12 @@ const GeneralSetting = () => {
                             name="uploadLogo"
                             id="uploadCompanyLogo"
                             className="hidden"
-                            onChange={async(e) => {setFieldValue('avatar' , await avatarUploadHandler(e)) }}
+                            onChange={async (e) => {
+                              setFieldValue(
+                                'avatar',
+                                await avatarUploadHandler(e)
+                              );
+                            }}
                           />
                           <p className={`text-steelGray ${minHeading}`}>
                             or drag and drop

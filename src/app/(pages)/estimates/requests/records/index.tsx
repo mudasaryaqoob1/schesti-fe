@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useLayoutEffect  } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect } from 'react';
 import type { ColumnsType } from 'antd/es/table';
 import { Dropdown, Table } from 'antd';
 import type { MenuProps } from 'antd';
@@ -49,10 +49,6 @@ const EstimateRequestTable: React.FC = () => {
     await dispatch(fetchEstimateRequests({ page: 1, limit: 10 }));
   }, []);
 
- 
-
-
-
   useEffect(() => {
     memoizedSetPerson();
   }, []);
@@ -68,7 +64,7 @@ const EstimateRequestTable: React.FC = () => {
     },
   ];
 
-  const handleDropdownItemClick = async (key: string, estimateRequest: any) => {    
+  const handleDropdownItemClick = async (key: string, estimateRequest: any) => {
     if (key == 'deleteEstimateRequest') {
       await dispatch(deleteEstimateRequest(estimateRequest._id));
     } else if (key == 'editEstimateRequest') {
@@ -90,16 +86,18 @@ const EstimateRequestTable: React.FC = () => {
       title: 'Phone Number',
       dataIndex: 'phone',
     },
-   
+
     {
       title: 'Sale Person ',
       dataIndex: 'salePerson',
-      render: (text, record : any) => `${record?.salePerson?.firstName} ${record?.salePerson?.lastName}`,
+      render: (text, record: any) =>
+        `${record?.salePerson?.firstName} ${record?.salePerson?.lastName}`,
     },
     {
       title: 'Estimator',
       dataIndex: 'estimator',
-      render: (text, record : any) => `${record?.estimator?.firstName} ${record?.estimator?.lastName}`,
+      render: (text, record: any) =>
+        `${record?.estimator?.firstName} ${record?.estimator?.lastName}`,
     },
     {
       title: 'Status',

@@ -14,7 +14,6 @@ const Navbar = () => {
 
   let user = useSelector(selectUser);
 
-
   const logoutHandler = () => {
     dispatch(logout());
     localStorage.removeItem('schestiToken');

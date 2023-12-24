@@ -64,10 +64,10 @@ export default {
         lightdark2: 'rgba(0, 0, 0, 0.60)',
         lightGray: '#F7F9FF',
         lightyGrayish: '#6A6A6A',
-        lightblue: "rgba(49, 89, 254, 0.10)",
-        darkblue: "#3159FE",
-        lightenGreyish: "#949494",
-        wedgeWood: '#5A7184'
+        lightblue: 'rgba(49, 89, 254, 0.10)',
+        darkblue: '#3159FE',
+        lightenGreyish: '#949494',
+        wedgeWood: '#5A7184',
       },
       boxShadow: {
         // Soft Glow for Primary Element
