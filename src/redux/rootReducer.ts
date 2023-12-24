@@ -7,6 +7,7 @@ import companyClientReducer from './company/clientSlice/companyClient.slice';
 import subContractorReducer from './company/subcontractorSlice/companySubcontractor.slice';
 import estimateRequestSlice from './estimate/estimateRequest.slice';
 import supportTicketsSlice from './company/supportTicketSlice/supportTickets.slice';
+import settingTargetsSlice from './company/settingSlices/settingTarget.slice';
 
 export type RootState = {
   auth: any;
@@ -14,6 +15,7 @@ export type RootState = {
   companySubContractor: any;
   estimateRequests: any;
   supportTickets: any;
+  settingTargets: any;
 };
 const persistConfig = {
   key: 'root',
@@ -27,5 +29,6 @@ const rootReducer = combineReducers<RootState>({
   companySubContractor: subContractorReducer,
   estimateRequests: estimateRequestSlice,
   supportTickets: supportTicketsSlice,
+  settingTargets: settingTargetsSlice
 });
 export default persistReducer(persistConfig, rootReducer);

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Field, useField } from 'formik';
+import type { FormikValues } from 'formik';
 import { Select } from 'antd';
 import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -48,19 +49,20 @@ const SelectComp = (props: any) => {
         </label>
       )}
       <div className="mt-1">
-        <Field name={name} id={name} {...rest}>
-          {({ form }: { form: any }) => {
+        <Field name={name} id={name} component="select">
+          {({ form: { setFieldValue }, field: { value } }: FormikValues) => {
             return (
               <Select
                 className={
-                  hasError ? 'w-full customSelectError' : 'w-full customSelect'
+                  `w-full h-10 ${hasError ? ' customSelectError' : 'customSelect'}`
                 }
                 name={name}
                 id={name}
                 {...rest}
-                placeholder={placeholder}
+                defaultValue={value}
+                sel
                 onChange={(val) => {
-                  form.setFieldValue(name, val);
+                  setFieldValue(name, val);
                 }}
               >
                 {OptionsArr}
