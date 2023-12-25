@@ -13,35 +13,19 @@ import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
-import {
-  deleteSubcontractor,
-} from '@/redux/company/company.thunk';
-import { fetchUsers } from '@/redux/userSlice/user.thunk';
+import { blockUser, deleteUser, fetchUsers, unBlockUser } from '@/redux/userSlice/user.thunk';
 
 export interface DataType {
   company: string;
-  companyRep: string;
   email: string;
   phone: string;
   address: string;
+  isActive: string;
   status: string;
   action: string;
 }
 
-const items: MenuProps['items'] = [
-  {
-    key: 'details',
-    label: <a href="#">Details</a>,
-  },
-  {
-    key: 'block',
-    label: <a href="#">Block</a>,
-  },
-  {
-    key: 'delete',
-    label: <a href="#">Delete</a>,
-  }
-];
+
 
 const CompaniesTable = () => {
   const router = useRouter();
@@ -69,16 +53,46 @@ const CompaniesTable = () => {
 
   const handleDropdownItemClick = async (key: string, user: any) => {
     if (key == 'details') {
-      router.push(`/user/edit/${user._id}`);
+      router.push(`/user/${user._id}`);
     }
     else if (key == 'delete') {
-      await dispatch(deleteSubcontractor(user._id));
+      await dispatch(deleteUser(user._id));
     } else if (key == 'block') {
-      router.push(`/user/edit/${user._id}`);
+      await dispatch(blockUser(user._id));
+    } else if (key === 'unBlock') {
+      await dispatch(unBlockUser(user._id));
     }
   };
 
-  console.log({ usersData })
+  const items = (type: string): MenuProps['items'] => [
+    {
+      key: 'details',
+      label: <a href="#">Details</a>,
+    },
+    {
+      key: type === 'block' ? 'unBlock' : 'block',
+      label: <a href="#">{type === 'block' ? 'UnBlock' : 'Block'}</a>,
+    },
+    {
+      key: 'delete',
+      label: <a href="#">Delete</a>,
+    }
+  ];
+
+  // const items: MenuProps['items'] = [
+  //   {
+  //     key: 'details',
+  //     label: <a href="#">Details</a>,
+  //   },
+  //   {
+  //     key: 'block',
+  //     label: <a href="#">UnBlock</a>,
+  //   },
+  //   {
+  //     key: 'delete',
+  //     label: <a href="#">Delete</a>,
+  //   }
+  // ];
 
   const columns: ColumnsType<DataType> = [
     {
@@ -115,22 +129,26 @@ const CompaniesTable = () => {
       dataIndex: 'action',
       align: 'center',
       key: 'action',
-      render: (text, record) => (
-        <Dropdown
-          menu={{
-            items,
-            onClick: (event) => {
-              const { key } = event;
-              handleDropdownItemClick(key, record);
-            },
-          }}
-          placement="bottomRight"
-        >
-          <a>
-            <DownOutlined />
-          </a>
-        </Dropdown>
-      ),
+      render: (text, record) => {
+        console.log({ record, items: items(record.isActive) });
+
+        return (
+          <Dropdown
+            menu={{
+              items: items(record.isActive),
+              onClick: (event) => {
+                const { key } = event;
+                handleDropdownItemClick(key, record);
+              },
+            }}
+            placement="bottomRight"
+          >
+            <a>
+              <DownOutlined />
+            </a>
+          </Dropdown>
+        )
+      },
     },
   ];
 

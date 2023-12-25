@@ -39,14 +39,59 @@ export const addNewUser = createAsyncThunk(
 
 export const fetchUsers = createAsyncThunk(
   'user/companyEmployees',
-  async ({ page, limit , queryRoles }: FetchClientParams, { rejectWithValue }: any) => {
+  async ({ page, limit, queryRoles }: FetchClientParams, { rejectWithValue }: any) => {
     try {
-      const response = await userService.httpGetUsers(page, limit , queryRoles);
+      const response = await userService.httpGetUsers(page, limit, queryRoles);
       return response;
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
-          'An error occurred while fetching the Joined Request'
+        'An error occurred while fetching the Joined Request'
+      );
+    }
+  }
+);
+
+export const blockUser = createAsyncThunk(
+  'block/companyEmployee',
+  async (id: string, { rejectWithValue }: any) => {
+    try {
+      const response = await userService.httpBlockEmployee(id);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data ||
+        'An error occurred while block user request'
+      );
+    }
+  }
+);
+
+export const unBlockUser = createAsyncThunk(
+  'unBlock/companyEmployee',
+  async (id: string, { rejectWithValue }: any) => {
+    try {
+      const response = await userService.httpUnBlockEmployee(id);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data ||
+        'An error occurred while block user request'
+      );
+    }
+  }
+);
+
+export const deleteUser = createAsyncThunk(
+  'company/deleteUser',
+  async (userId: string, { rejectWithValue }) => {
+    try {
+      const response = await userService.httpDeleteUser(userId);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data ||
+        'An error occurred while fetching the feed records'
       );
     }
   }
@@ -62,7 +107,7 @@ export const fetchCompanyDetail = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
-          'An error occurred while fetching the Joined Request'
+        'An error occurred while fetching the Joined Request'
       );
     }
   }
