@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useLayoutEffect, useCallback } from 'react';
+import { useEffect, useLayoutEffect, useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Dropdown, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -10,17 +10,13 @@ import { useDispatch, useSelector } from 'react-redux';
 // module imports
 import { AppDispatch } from '@/redux/store';
 import { selectToken } from '@/redux/authSlices/auth.selector';
-import {
-  selectSubcontracters,
-  selectSubcontractLoading,
-} from '@/redux/company/companySelector';
 import { HttpService } from '@/app/services/base.service';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 import {
   deleteSubcontractor,
-  fetchCompanySubcontractors,
 } from '@/redux/company/company.thunk';
+import { fetchUsers } from '@/redux/userSlice/user.thunk';
 
 export interface DataType {
   company: string;
@@ -50,11 +46,9 @@ const items: MenuProps['items'] = [
 const CompaniesTable = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  const [usersData, setUsersData] = useState([]);
 
   const token = useSelector(selectToken);
-
-  const subcontractersData = useSelector(selectSubcontracters);
-  const subcontractersLoading = useSelector(selectSubcontractLoading);
 
   useLayoutEffect(() => {
     if (token) {
@@ -62,29 +56,34 @@ const CompaniesTable = () => {
     }
   }, [token]);
 
-  const fetchSubcontactors = useCallback(async () => {
-    await dispatch(fetchCompanySubcontractors({ page: 1, limit: 10 }));
+  const fetUsers = useCallback(async () => {
+    let result: any = await dispatch(
+      fetchUsers({ limit: 9, page: 1 })
+    );
+    setUsersData(result.payload.data.employees);
   }, [dispatch]);
 
   useEffect(() => {
-    fetchSubcontactors();
-  }, [fetchSubcontactors]);
+    fetUsers();
+  }, [fetUsers]);
 
-  const handleDropdownItemClick = async (key: string, subcontractor: any) => {
+  const handleDropdownItemClick = async (key: string, user: any) => {
     if (key == 'details') {
-      router.push(`/subcontractor/edit/${subcontractor._id}`);
+      router.push(`/user/edit/${user._id}`);
     }
     else if (key == 'delete') {
-      await dispatch(deleteSubcontractor(subcontractor._id));
+      await dispatch(deleteSubcontractor(user._id));
     } else if (key == 'block') {
-      router.push(`/subcontractor/edit/${subcontractor._id}`);
+      router.push(`/user/edit/${user._id}`);
     }
   };
+
+  console.log({ usersData })
 
   const columns: ColumnsType<DataType> = [
     {
       title: 'Company Name',
-      dataIndex: 'compmanyName',
+      dataIndex: 'name',
     },
     {
       title: 'Industry',
@@ -145,9 +144,9 @@ const CompaniesTable = () => {
         className={`${bg_style} p-5 border border-solid border-silverGray`}
       >
         <Table
-          loading={subcontractersLoading}
+          loading={false}
           columns={columns}
-          dataSource={subcontractersData}
+          dataSource={usersData}
           pagination={{ position: ['bottomCenter'] }}
         />
       </div>

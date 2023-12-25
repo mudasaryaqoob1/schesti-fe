@@ -1,11 +1,26 @@
 import { createSlice } from '@reduxjs/toolkit';
 import initialSettingTargetsState from './setting.initialState';
 import { deleteSettingTarget, fetchSettingTargets } from '../setting.thunk';
+import { ISettingTarget } from '@/app/interfaces/companyInterfaces/setting.interface';
 
 export const settingSlice = createSlice({
   name: 'setting/targets',
   initialState: initialSettingTargetsState,
-  reducers: {},
+  reducers: {
+    addSettingTargetData: (state, { payload }) => {
+      state.data.push(payload);
+    },
+    updateSettingTargetData: (state, { payload }) => {
+      state.data = state.data.map((targetData: ISettingTarget) => {
+        if (targetData._id === payload._id) {
+          return payload
+        } else {
+          return targetData
+        }
+      })
+
+    }
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchSettingTargets.pending, (state) => {
       state.loading = true;
@@ -41,5 +56,7 @@ export const settingSlice = createSlice({
     });
   },
 });
+
+export const { addSettingTargetData, updateSettingTargetData } = settingSlice.actions;
 
 export default settingSlice.reducer;

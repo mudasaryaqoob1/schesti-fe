@@ -2,7 +2,7 @@
 import { useLayoutEffect, useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 // module imports
@@ -14,19 +14,21 @@ import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
 
 // settingTarget service
-import { ISettingTaget } from '@/app/interfaces/companyInterfaces/setting.interface';
+import { ISettingTarget } from '@/app/interfaces/companyInterfaces/setting.interface';
 import { settingTargetService } from '@/app/services/setting/targets.service';
 import Image from 'next/image';
 import { resetVoidFc } from '@/app/utils/types';
 import { SettingTargetProps, months } from './create';
+import { updateSettingTargetData } from '@/redux/company/settingSlices/settingTarget.slice';
 
 const validationSchema = Yup.object({
   month: Yup.string().required('Month is required!'),
   price: Yup.string().required('Price is required!'),
 });
 
-const EditTaget = ({ setShowModal, fetchSettingTargetsHandler, selectedTarget }: SettingTargetProps) => {
+const EditTaget = ({ setShowModal, selectedTarget }: SettingTargetProps) => {
   const token = useSelector(selectToken);
+  const dispatch = useDispatch();
 
   useLayoutEffect(() => {
     if (token) {
@@ -34,38 +36,38 @@ const EditTaget = ({ setShowModal, fetchSettingTargetsHandler, selectedTarget }:
     }
   }, [token]);
 
-  const initialValues: ISettingTaget = {
+  const initialValues: ISettingTarget = {
     month: selectedTarget?.month || '',
     price: selectedTarget?.price || ''
   };
   const [isLoading, setIsLoading] = useState(false);
 
-  const submitHandler = async ({ price, month }: ISettingTaget, { resetForm }: resetVoidFc) => {
+  const submitHandler = async ({ price, month }: ISettingTarget, { resetForm }: resetVoidFc) => {
     setIsLoading(true);
     let updateSettingTargetBody = {
       price: price.toString(),
       month
     };
     setIsLoading(true);
-    let result = await settingTargetService.httpUpdateSettingTarget(
+    let { statusCode, data, message } = await settingTargetService.httpUpdateSettingTarget(
       updateSettingTargetBody,
       selectedTarget?._id!
     );
-    if (result.statusCode == 200) {
+    if (statusCode == 200) {
       setIsLoading(false);
       resetForm();
-      fetchSettingTargetsHandler();
+      dispatch(updateSettingTargetData(data));
       setShowModal(false);
     } else {
       setIsLoading(false);
-      toast.error(result.message);
+      toast.error(message);
     }
   };
 
   return (
     <section
       className="p-3 flex flex-col rounded-lg border
- border-silverGray shadow-secondaryShadow2 bg-white max-w-[330]"
+ border-silverGray shadow-secondaryShadow2 bg-white"
     >
       <div className="flex justify-between items-center">
         <TertiaryHeading

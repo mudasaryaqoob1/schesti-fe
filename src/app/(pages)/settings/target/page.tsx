@@ -18,7 +18,7 @@ import ModalComponent from '@/app/component/modal';
 import CreateTaget from './components/create';
 import EditTaget from './components/edit';
 import Image from 'next/image';
-import { ISettingTaget } from '@/app/interfaces/companyInterfaces/setting.interface';
+import { ISettingTarget } from '@/app/interfaces/companyInterfaces/setting.interface';
 
 export interface DataType {
   price: string,
@@ -31,7 +31,7 @@ const TargetsTable = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [selectedTarget, setSelectedTarget] = useState<undefined | ISettingTaget>();
+  const [selectedTarget, setSelectedTarget] = useState<undefined | ISettingTarget>();
 
   const token = useSelector(selectToken);
 
@@ -72,10 +72,8 @@ const TargetsTable = () => {
       key: 'action',
       render: (_, record) => (
         <div className="flex gap-2 justify-center">
-          <Image src='/trash.svg' className='cursor-pointer' width={20} height={20} alt='delete' onClick={() => {
-            dispatch(deleteSettingTarget(record._id));
-            fetchSettingTargetsHandler()
-          }} />
+          <Image src='/trash.svg' className='cursor-pointer' width={20} height={20} alt='delete' onClick={() => dispatch(deleteSettingTarget(record._id))
+          } />
           <Image src='/edit.svg' className='cursor-pointer' width={20} height={20} alt='edit' onClick={() => {
             setSelectedTarget(record);
             setShowEditModal(true);
@@ -87,11 +85,11 @@ const TargetsTable = () => {
 
   return (
     <SettingSidebar>
-      <ModalComponent destroyOnClose title='Add New Target' open={showCreateModal} setOpen={setShowCreateModal}>
-        <CreateTaget setShowModal={setShowCreateModal} fetchSettingTargetsHandler={fetchSettingTargetsHandler} />
+      <ModalComponent width='380px' destroyOnClose title='Add New Target' open={showCreateModal} setOpen={setShowCreateModal}>
+        <CreateTaget setShowModal={setShowCreateModal} />
       </ModalComponent>
-      <ModalComponent destroyOnClose title='Edit Target' open={showEditModal} setOpen={setShowEditModal}>
-        <EditTaget setShowModal={setShowEditModal} fetchSettingTargetsHandler={fetchSettingTargetsHandler} selectedTarget={selectedTarget} />
+      <ModalComponent width='380px' destroyOnClose title='Edit Target' open={showEditModal} setOpen={setShowEditModal}>
+        <EditTaget setShowModal={setShowEditModal} selectedTarget={selectedTarget} />
       </ModalComponent>
       <section>
         <div className="flex justify-between items-center">
