@@ -6,7 +6,7 @@ import React, { useCallback, useEffect, useLayoutEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import moment from 'moment';
-import { Dropdown } from 'antd';
+import { Dropdown, Skeleton } from 'antd';
 import type { MenuProps } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -94,7 +94,10 @@ const SupportTickets = () => {
           />
         </div>
         {supportTicketsLoading ? (
-          <h6>Loading...</h6>
+          <div className="flex flex-col w-full mt-5">
+          <Skeleton active />
+          <Skeleton active />
+        </div>
         ) : (
           supportTicketsData?.map(
             (supportTicket: ISupportTicket, i: number) => {
@@ -119,7 +122,7 @@ const SupportTickets = () => {
                     </div>
                     <div className="flex items-center gap-2">
                       <Description
-                        title={moment(createdAt).startOf('hour').fromNow()}
+                        title={moment(createdAt).startOf('minute').fromNow()}
                         className="text-lightenGreyish"
                       />
                       <Dropdown
