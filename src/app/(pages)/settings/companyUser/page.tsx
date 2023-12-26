@@ -11,12 +11,13 @@ import { useRouter } from 'next/navigation';
 import { AppDispatch } from '@/redux/store';
 import Button from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
-import { fetchUsers } from '@/redux/userSlice/user.thunk';
+import { deleteUser, fetchUsers } from '@/redux/userSlice/user.thunk';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
 import VerticleBar from '@/app/(pages)//settings/verticleBar';
 import { DownOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import { setCurrentUser } from '@/redux/userSlice/user.slice';
 
 interface DataType {
   firstName: string;
@@ -31,11 +32,11 @@ interface DataType {
 
 const items: MenuProps['items'] = [
   {
-    key: 'editUser',
+    key: 'edit',
     label: <a href="#">Edit</a>,
   },
   {
-    key: 'deleteUser',
+    key: 'delete',
     label: <p>Delete</p>,
   },
 ];
@@ -57,9 +58,9 @@ const Index = () => {
     let result: any = await dispatch(fetchUsers({ limit: 9, page: 1 }));
 
     setUserData(
-      result.payload?.data?.employees.map((user: any, index: number) => {
+      result.payload?.data?.employees.map((user: any) => {
         return {
-          key: index,
+          key: user._id,
           name: `${user.firstName} ${user.lastName}`,
           email: user.email,
           roles: user.roles,
@@ -69,12 +70,22 @@ const Index = () => {
     );
   }, []);
 
+  const deleteCompanyEmployeeHandler = useCallback(async (id: string) => {
+    await dispatch(deleteUser(id));
+    fetchCompanyEmployeeHandler();
+  }, []);
+
   useEffect(() => {
     fetchCompanyEmployeeHandler();
   }, []);
 
-  const handleDropdownItemClick = async (key: string, client: any) => {
-    console.log(key, client);
+  const handleDropdownItemClick = async (key: string, user: any) => {
+    if (key === 'edit') {
+      router.push('/settings/companyUser/addCompanyUser/');
+      dispatch(setCurrentUser(user));
+    } else if (key === 'delete') {
+      deleteCompanyEmployeeHandler(user.key)
+    }
   };
 
   const columns: ColumnsType<DataType> = [
@@ -94,7 +105,7 @@ const Index = () => {
         return records.roles.map((role: any) => (
           <p
             key={role}
-            className="bg-lime-100 w-max text-[#027A48] bg-[#ECFDF3] px-2 py-1 rounded-full"
+            className="w-max text-[#027A48] bg-[#ECFDF3] px-2 py-1 rounded-full"
           >
             {role}
           </p>
@@ -117,6 +128,7 @@ const Index = () => {
             items,
             onClick: (event) => {
               const { key } = event;
+              console.log({ record })
               handleDropdownItemClick(key, record);
             },
           }}
@@ -141,7 +153,10 @@ const Index = () => {
             icon="/plus.svg"
             iconwidth={20}
             iconheight={20}
-            onClick={() => router.push('/settings/companyUser/addCompanyUser')}
+            onClick={() => {
+              dispatch(setCurrentUser(null));
+              router.push('/settings/companyUser/addCompanyUser');
+            }}
           />
         </div>
         <article className="bg-snowWhite rounded-2xl shadow-instentWhite py-5 px-6">

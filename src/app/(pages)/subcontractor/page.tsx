@@ -15,7 +15,6 @@ import {
   selectSubcontractLoading,
 } from '@/redux/company/companySelector';
 import { HttpService } from '@/app/services/base.service';
-import CustomNavbar from '@/app/component/customNavbar';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 import Button from '@/app/component/customButton/button';
@@ -136,34 +135,32 @@ const SubcontractTable = () => {
   ];
 
   return (
-    <CustomNavbar>
-      <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
-        <div
-          className={`${bg_style} p-5 border border-solid border-silverGray`}
-        >
-          <div className="flex justify-between items-center mb-4">
-            <TertiaryHeading
-              title="Subcontractor List"
-              className="text-graphiteGray"
-            />
-            <Button
-              text="Add New subcontractor"
-              className="!w-auto "
-              icon="plus.svg"
-              iconwidth={20}
-              iconheight={20}
-              onClick={() => router.push('/subcontractor/create')}
-            />
-          </div>
-          <Table
-            loading={subcontractersLoading}
-            columns={columns}
-            dataSource={subcontractersData}
-            pagination={{ position: ['bottomCenter'] }}
+    <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
+      <div
+        className={`${bg_style} p-5 border border-solid border-silverGray`}
+      >
+        <div className="flex justify-between items-center mb-4">
+          <TertiaryHeading
+            title="Subcontractor List"
+            className="text-graphiteGray"
+          />
+          <Button
+            text="Add New subcontractor"
+            className="!w-auto "
+            icon="plus.svg"
+            iconwidth={20}
+            iconheight={20}
+            onClick={() => router.push('/subcontractor/create')}
           />
         </div>
-      </section>
-    </CustomNavbar>
+        <Table
+          loading={subcontractersLoading}
+          columns={columns}
+          dataSource={subcontractersData}
+          pagination={{ position: ['bottomCenter'] }}
+        />
+      </div>
+    </section>
   );
 };
 

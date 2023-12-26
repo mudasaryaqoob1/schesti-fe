@@ -11,7 +11,6 @@ import { toast } from 'react-toastify';
 import { senaryHeading } from '@/globals/tailwindvariables';
 import CustomButton from '@/app/component/customButton/button';
 import FormControl from '@/app/component/formControl';
-import CustomNavbar from '@/app/component/customNavbar';
 import { twMerge } from 'tailwind-merge';
 // redux module
 import { selectToken } from '@/redux/authSlices/auth.selector';
@@ -80,118 +79,116 @@ const EditSupportTicket = () => {
   };
 
   return (
-    <CustomNavbar>
-      <section className="px-16 mt-6">
-        <div className="flex gap-1 items-center">
-          <Description title="My Ticket" className="font-base text-slateGray" />
+    <section className="px-16 mt-6">
+      <div className="flex gap-1 items-center">
+        <Description title="My Ticket" className="font-base text-slateGray" />
+        <Image
+          src="/chevron-right.svg"
+          alt="chevron-right icon"
+          width={16}
+          height={16}
+        />
+        <Description title="Update Ticket" className="text-RoyalPurple" />
+      </div>
+      <div className="mt-6 grid grid-cols-3 mb-3">
+        <div>
           <Image
-            src="/chevron-right.svg"
-            alt="chevron-right icon"
-            width={16}
-            height={16}
+            src="/support-ticket.png"
+            width={400}
+            height={400}
+            alt="support-img"
           />
-          <Description title="Update Ticket" className="text-RoyalPurple" />
         </div>
-        <div className="mt-6 grid grid-cols-3 mb-3">
-          <div>
-            <Image
-              src="/support-ticket.png"
-              width={400}
-              height={400}
-              alt="support-img"
-            />
-          </div>
-          <div className="col-span-2">
-            <Formik
-              initialValues={
-                supportTicketData
-                  ? {
-                      title: supportTicketData.title,
-                      description: supportTicketData.description,
-                    }
-                  : initialValues
-              }
-              validationSchema={validationSchema}
-              enableReinitialize
-              onSubmit={onSubmit}
-            >
-              {({ handleSubmit }) => {
-                return (
-                  <Form
-                    name="basic"
-                    onSubmit={handleSubmit}
-                    className="flex flex-col gap-5 px-5 py-6 shadow-primaryGlow rounded-2xl"
-                  >
-                    <FormControl
-                      control="input"
-                      label="Title"
-                      type="text"
-                      name="title"
-                      placeholder="Enter title"
-                    />
-                    <FormControl
-                      control="textarea"
-                      label="Description"
-                      type="text"
-                      name="description"
-                      placeholder="Write message here"
-                    />
-                    <div
-                      className="p-6 flex items-center flex-col gap-2 border-2
+        <div className="col-span-2">
+          <Formik
+            initialValues={
+              supportTicketData
+                ? {
+                  title: supportTicketData.title,
+                  description: supportTicketData.description,
+                }
+                : initialValues
+            }
+            validationSchema={validationSchema}
+            enableReinitialize
+            onSubmit={onSubmit}
+          >
+            {({ handleSubmit }) => {
+              return (
+                <Form
+                  name="basic"
+                  onSubmit={handleSubmit}
+                  className="flex flex-col gap-5 px-5 py-6 shadow-primaryGlow rounded-2xl"
+                >
+                  <FormControl
+                    control="input"
+                    label="Title"
+                    type="text"
+                    name="title"
+                    placeholder="Enter title"
+                  />
+                  <FormControl
+                    control="textarea"
+                    label="Description"
+                    type="text"
+                    name="description"
+                    placeholder="Write message here"
+                  />
+                  <div
+                    className="p-6 flex items-center flex-col gap-2 border-2
             border-silverGray pb-4 rounded-lg "
-                    >
-                      <Image
-                        src="/uploadcloud.svg"
-                        alt="upload icon"
-                        width={20}
-                        height={20}
-                        className="rounded-3xl border-5 border-paleblueGray bg-lightGrayish"
-                      />
-                      <div className="flex gap-1 items-center">
-                        <div>
-                          <p
-                            className={twMerge(
-                              `${senaryHeading}
+                  >
+                    <Image
+                      src="/uploadcloud.svg"
+                      alt="upload icon"
+                      width={20}
+                      height={20}
+                      className="rounded-3xl border-5 border-paleblueGray bg-lightGrayish"
+                    />
+                    <div className="flex gap-1 items-center">
+                      <div>
+                        <p
+                          className={twMerge(
+                            `${senaryHeading}
                         text-RoyalPurple font-semibold`
-                            )}
-                          >
-                            Doc
-                          </p>
-                        </div>
-                        <MinDescription
-                          className="text-steelGray font-popin text-center"
-                          title="or drag and drop"
-                        />
+                          )}
+                        >
+                          Doc
+                        </p>
                       </div>
                       <MinDescription
                         className="text-steelGray font-popin text-center"
-                        title="SVG, PNG, JPG or GIF (max. 800x400px)"
+                        title="or drag and drop"
                       />
                     </div>
-                    <div className="flex justify-end gap-2 mt-6">
-                      <span>
-                        <CustomButton
-                          text="Cancel"
-                          className="!bg-white !text-graphiteGray !border !border-celestialGray"
-                        />
-                      </span>
-                      <span>
-                        <CustomButton
-                          text="Update Ticket"
-                          type="submit"
-                          className="!bg-mediumSlateBlue"
-                          isLoading={isLoading}
-                        />
-                      </span>
-                    </div>
-                  </Form>
-                );
-              }}
-            </Formik>
-          </div>
+                    <MinDescription
+                      className="text-steelGray font-popin text-center"
+                      title="SVG, PNG, JPG or GIF (max. 800x400px)"
+                    />
+                  </div>
+                  <div className="flex justify-end gap-2 mt-6">
+                    <span>
+                      <CustomButton
+                        text="Cancel"
+                        className="!bg-white !text-graphiteGray !border !border-celestialGray"
+                      />
+                    </span>
+                    <span>
+                      <CustomButton
+                        text="Update Ticket"
+                        type="submit"
+                        className="!bg-mediumSlateBlue"
+                        isLoading={isLoading}
+                      />
+                    </span>
+                  </div>
+                </Form>
+              );
+            }}
+          </Formik>
         </div>
-      </section>
-    </CustomNavbar>
+      </div>
+    </section>
   );
 };
 

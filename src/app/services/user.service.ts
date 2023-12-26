@@ -17,6 +17,9 @@ class UserService extends HttpService {
   httpAddNewEmployee = (data: any): Promise<IResponseInterface<any>> =>
     this.post(`${this.userPrefix}/newEmployee`, data);
 
+  httpUpdateEmployee = (data: any, id: string): Promise<IResponseInterface<any>> =>
+    this.post(`${this.userPrefix}/updateEmployee/${id}`, data);
+
   httpBlockEmployee = (id: string): Promise<IResponseInterface<any>> =>
     this.post(`${this.userPrefix}/block`, id);
 

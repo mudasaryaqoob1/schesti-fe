@@ -32,6 +32,9 @@ const defaultOptions = [
 const AddNewUser = () => {
   const token = useSelector(selectToken);
   const router = useRouter();
+  const { user } = useSelector((state: any) => state.user);
+
+  console.log({ user });
 
   const [isLoading, setisLoading] = useState(false);
 
@@ -50,29 +53,51 @@ const AddNewUser = () => {
     roles: Yup.string().required('Role required'),
   });
 
+  const [firstName, lastName] = user ? user.name.split(' ') : [];
+
   const initialValues: IUser = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    roles: '',
+    firstName: firstName || '',
+    lastName: lastName || '',
+    email: user?.email || '',
+    roles: user?.roles?.[0] || '',
   };
   const submitHandler = async (values: IUser, { resetForm }: any) => {
     setisLoading(true);
-    userService
-      .httpAddNewEmployee({ ...values, roles: [values.roles] })
-      .then((response: any) => {
-        setisLoading(false);
-        if (response.statusCode == 201) {
-          resetForm();
-          router.push('/settings/companyUser');
-        } else {
-          toast.error(response.message);
-        }
-      })
-      .catch((error: any) => {
-        setisLoading(false);
-        toast.error(error.response.data.message);
-      });
+    if (user) {
+      userService
+        .httpUpdateEmployee({ ...values, roles: [values.roles] }, user.key)
+        .then((response: any) => {
+          setisLoading(false);
+          if (response.statusCode == 201) {
+            resetForm();
+            router.push('/settings/companyUser');
+          } else {
+            toast.error(response.message);
+          }
+        })
+        .catch((error: any) => {
+          setisLoading(false);
+          toast.error(error.response.data.message);
+        });
+    } else {
+      userService
+        .httpAddNewEmployee({ ...values, roles: [values.roles] })
+        .then((response: any) => {
+          setisLoading(false);
+          if (response.statusCode == 201) {
+            resetForm();
+            router.push('/settings/companyUser');
+          } else {
+            toast.error(response.message);
+          }
+        })
+        .catch((error: any) => {
+          setisLoading(false);
+          toast.error(error.response.data.message);
+        });
+    }
+
+
   };
   return (
     <VerticleBar>
@@ -111,8 +136,8 @@ const AddNewUser = () => {
           validationSchema={newClientSchema}
           onSubmit={submitHandler}
         >
-          {({ handleSubmit, errors }) => {
-            console.log(errors, 'error');
+          {({ handleSubmit, errors, values }) => {
+            console.log(errors, 'error', values);
 
             return (
               <Form

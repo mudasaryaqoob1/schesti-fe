@@ -13,7 +13,6 @@ import { selectToken } from '@/redux/authSlices/auth.selector';
 import { selectClients } from '@/redux/company/companySelector';
 import { selectClientsLoading } from '@/redux/company/companySelector';
 import { HttpService } from '@/app/services/base.service';
-import CustomNavbar from '@/app/component/customNavbar';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 import Button from '@/app/component/customButton/button';
@@ -142,34 +141,32 @@ const ClientTable = () => {
   ];
 
   return (
-    <CustomNavbar>
-      <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
-        <div
-          className={`${bg_style} p-5 border border-solid border-silverGray`}
-        >
-          <div className="flex justify-between items-center mb-4">
-            <TertiaryHeading
-              title="Client List"
-              className="text-graphiteGray"
-            />
-            <Button
-              text="Add New client"
-              className="!w-auto "
-              icon="plus.svg"
-              iconwidth={20}
-              iconheight={20}
-              onClick={() => router.push('/clients/create')}
-            />
-          </div>
-          <Table
-            loading={companyClientsLoading}
-            columns={columns}
-            dataSource={clientsData}
-            pagination={{ position: ['bottomCenter'] }}
+    <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
+      <div
+        className={`${bg_style} p-5 border border-solid border-silverGray`}
+      >
+        <div className="flex justify-between items-center mb-4">
+          <TertiaryHeading
+            title="Client List"
+            className="text-graphiteGray"
+          />
+          <Button
+            text="Add New client"
+            className="!w-auto "
+            icon="plus.svg"
+            iconwidth={20}
+            iconheight={20}
+            onClick={() => router.push('/clients/create')}
           />
         </div>
-      </section>
-    </CustomNavbar>
+        <Table
+          loading={companyClientsLoading}
+          columns={columns}
+          dataSource={clientsData}
+          pagination={{ position: ['bottomCenter'] }}
+        />
+      </div>
+    </section>
   );
 };
 
