@@ -46,9 +46,8 @@ const SelectComp = (props: any) => {
           {({ form: { setFieldValue }, field: { value } }: FormikValues) => {
             return (
               <Select
-                className={`w-full h-10 ${
-                  hasError ? ' customSelectError' : 'customSelect'
-                }`}
+                className={`w-full h-10 ${hasError ? ' customSelectError' : 'customSelect'
+                  }`}
                 id={name}
                 {...rest}
                 {...field}

@@ -68,6 +68,9 @@ class AuthService extends HttpService {
     }>
   > => this.post(`${this.prefix}/stripe-checkout`, data);
 
+  httpStripeInvoices = (): Promise<IResponseInterface<any>> =>
+    this.get(`${this.prefix}/stripe-invoices`);
+
   httpPaypalCreateOrder = (
     data: IPaymentProps
   ): Promise<

@@ -13,7 +13,6 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import MinDesc from '@/app/component/description/minDesc';
 import CustomButton from '@/app/component/customButton/button';
 import FormControl from '@/app/component/formControl';
-import CustomNavbar from '@/app/component/customNavbar';
 // redux module
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
@@ -69,115 +68,113 @@ const CreateSubcontractor = () => {
   };
 
   return (
-    <CustomNavbar>
-      <section className="mx-16">
-        <div className="flex gap-4 items-center my-6">
-          <Image src={'/home.svg'} alt="home icon" width={20} height={20} />
-          <Image
-            src={'/chevron-right.svg'}
-            alt="chevron-right icon"
-            width={16}
-            height={16}
-          />
-          <p className={`${senaryHeading} font-base text-slateGray`}>
-            My Subcontractor
-          </p>
-          <Image
-            src={'/chevron-right.svg'}
-            alt="chevron-right icon"
-            width={16}
-            height={16}
-          />
+    <section className="mx-16">
+      <div className="flex gap-4 items-center my-6">
+        <Image src={'/home.svg'} alt="home icon" width={20} height={20} />
+        <Image
+          src={'/chevron-right.svg'}
+          alt="chevron-right icon"
+          width={16}
+          height={16}
+        />
+        <p className={`${senaryHeading} font-base text-slateGray`}>
+          My Subcontractor
+        </p>
+        <Image
+          src={'/chevron-right.svg'}
+          alt="chevron-right icon"
+          width={16}
+          height={16}
+        />
 
-          <MinDesc
-            title="New Subcontractor"
-            className={`${senaryHeading} font-semibold text-lavenderPurple cursor-pointer underline`}
-          />
-        </div>
-        <div
-          className="p-5 flex flex-col rounded-lg border
+        <MinDesc
+          title="New Subcontractor"
+          className={`${senaryHeading} font-semibold text-lavenderPurple cursor-pointer underline`}
+        />
+      </div>
+      <div
+        className="p-5 flex flex-col rounded-lg border
      border-silverGray shadow-secondaryShadow2 bg-white"
+      >
+        <TertiaryHeading
+          className="text-graphiteGray mb-4 "
+          title="Add New Subcontractor"
+        />
+        <Formik
+          initialValues={initialValues}
+          validationSchema={newSubcontractorSchema}
+          onSubmit={submitHandler}
         >
-          <TertiaryHeading
-            className="text-graphiteGray mb-4 "
-            title="Add New Subcontractor"
-          />
-          <Formik
-            initialValues={initialValues}
-            validationSchema={newSubcontractorSchema}
-            onSubmit={submitHandler}
-          >
-            {({ handleSubmit }) => {
-              return (
-                <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
-                  <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-3 gap-4">
-                    <FormControl
-                      control="input"
-                      label="Company Rep"
-                      type="text"
-                      name="companyRep"
-                      placeholder="Company Rep"
-                    />
-                    <FormControl
-                      control="input"
-                      label="Company Name"
-                      type="text"
-                      name="name"
-                      placeholder="Company Name"
-                    />
-                    <FormControl
-                      control="input"
-                      label="Phone Number"
-                      type="number"
-                      name="phone"
-                      placeholder="Phone number"
-                    />
-                    <FormControl
-                      control="input"
-                      label="Email"
-                      type="email"
-                      name="email"
-                      placeholder="Email Address"
-                    />
+          {({ handleSubmit }) => {
+            return (
+              <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
+                <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-3 gap-4">
+                  <FormControl
+                    control="input"
+                    label="Company Rep"
+                    type="text"
+                    name="companyRep"
+                    placeholder="Company Rep"
+                  />
+                  <FormControl
+                    control="input"
+                    label="Company Name"
+                    type="text"
+                    name="name"
+                    placeholder="Company Name"
+                  />
+                  <FormControl
+                    control="input"
+                    label="Phone Number"
+                    type="number"
+                    name="phone"
+                    placeholder="Phone number"
+                  />
+                  <FormControl
+                    control="input"
+                    label="Email"
+                    type="email"
+                    name="email"
+                    placeholder="Email Address"
+                  />
 
-                    <FormControl
-                      control="input"
-                      label="Address"
-                      type="text"
-                      name="address"
-                      placeholder="Address"
-                    />
-                    <FormControl
-                      control="input"
-                      label="Address 2"
-                      type="text"
-                      name="address2"
-                      placeholder="Address 2"
+                  <FormControl
+                    control="input"
+                    label="Address"
+                    type="text"
+                    name="address"
+                    placeholder="Address"
+                  />
+                  <FormControl
+                    control="input"
+                    label="Address 2"
+                    type="text"
+                    name="address2"
+                    placeholder="Address 2"
+                  />
+                </div>
+                <div className="self-end flex justify-end items-center gap-5 md:mt-4 my-3">
+                  <div>
+                    <CustomButton
+                      className=" !border-celestialGray !shadow-scenarySubdued2 !text-graphiteGray !bg-snowWhite"
+                      text="Cancel"
+                      onClick={() => router.push('/subcontractor')}
                     />
                   </div>
-                  <div className="self-end flex justify-end items-center gap-5 md:mt-4 my-3">
-                    <div>
-                      <CustomButton
-                        className=" !border-celestialGray !shadow-scenarySubdued2 !text-graphiteGray !bg-snowWhite"
-                        text="Cancel"
-                        onClick={() => router.push('/subcontractor')}
-                      />
-                    </div>
-                    <div>
-                      <CustomButton
-                        isLoading={isLoading}
-                        type="submit"
-                        text="Save"
-                      />
-                    </div>
+                  <div>
+                    <CustomButton
+                      isLoading={isLoading}
+                      type="submit"
+                      text="Save"
+                    />
                   </div>
-                </Form>
-              );
-            }}
-          </Formik>
-        </div>
-      </section>
-    </CustomNavbar>
+                </div>
+              </Form>
+            );
+          }}
+        </Formik>
+      </div>
+    </section>
   );
 };
 

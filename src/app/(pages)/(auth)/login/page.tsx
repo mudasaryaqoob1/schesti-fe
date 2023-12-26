@@ -21,7 +21,6 @@ import { ILogInInterface } from '@/app/interfaces/authInterfaces/login.interface
 import { login, loginWithGoogle } from '@/redux/authSlices/auth.thunk';
 import PrimaryHeading from '@/app/component/headings/primary';
 import Description from '@/app/component/description';
-// import { authService } from '@/app/services/auth.service';
 
 const initialValues: ILogInInterface = {
   email: '',
@@ -51,8 +50,12 @@ const Login = () => {
 
     if (result.payload.statusCode == 200) {
       setLoading(false);
-      // localStorage.setItem('schestiToken', result.payload.token);
-      router.push('/clients');
+      if(result.payload.data.user.roles.includes('Company')){
+        router.push('/clients');
+      }
+      else if(result.payload.data.user.roles.includes('Admin')){
+        router.push('/admin/companies');
+      }
     } else {
       setLoading(false);
       toast.error(result.payload.message);

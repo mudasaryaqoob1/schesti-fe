@@ -55,6 +55,24 @@ export const fetchUsers = createAsyncThunk(
   }
 );
 
+export const fetchAdminUsers = createAsyncThunk(
+  'user/adminUsers',
+  async (
+    { page, limit, queryRoles }: FetchClientParams,
+    { rejectWithValue }: any
+  ) => {
+    try {
+      const response = await userService.httpGetAdminUsers(page, limit, queryRoles);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data ||
+          'An error occurred while fetching the Joined Request'
+      );
+    }
+  }
+);
+
 export const blockUser = createAsyncThunk(
   'block/companyEmployee',
   async (id: string, { rejectWithValue }: any) => {

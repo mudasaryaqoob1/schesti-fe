@@ -16,11 +16,11 @@ import { bg_style } from '@/globals/tailwindvariables';
 import {
   blockUser,
   deleteUser,
-  fetchUsers,
   unBlockUser,
+  fetchAdminUsers
 } from '@/redux/userSlice/user.thunk';
 
-export interface DataType {
+ interface DataType {
   company: string;
   email: string;
   phone: string;
@@ -34,6 +34,7 @@ const CompaniesTable = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const [usersData, setUsersData] = useState([]);
+  const [isLoading, setisLoading] = useState(true)
 
   const token = useSelector(selectToken);
 
@@ -44,19 +45,22 @@ const CompaniesTable = () => {
   }, [token]);
 
   const fetUsers = useCallback(async () => {
-    let result: any = await dispatch(fetchUsers({ limit: 9, page: 1 }));
-    setUsersData(result.payload.data.employees);
+    let result: any = await dispatch(fetchAdminUsers({ limit: 9, page: 1 }));
+    // let result = await userService.httpGetAdminUsers(1 , 9 , '')
+    setisLoading(false)
+    setUsersData(result.payload.data.users);
   }, [dispatch]);
 
   useEffect(() => {
     fetUsers();
-  }, [fetUsers]);
+  }, []);
 
   const handleDropdownItemClick = async (key: string, user: any) => {
     if (key == 'details') {
       router.push(`/user/${user._id}`);
     } else if (key == 'delete') {
       await dispatch(deleteUser(user._id));
+      fetUsers()
     } else if (key == 'block') {
       await dispatch(blockUser(user._id));
     } else if (key === 'unBlock') {
@@ -78,21 +82,6 @@ const CompaniesTable = () => {
       label: <a href="#">Delete</a>,
     },
   ];
-
-  // const items: MenuProps['items'] = [
-  //   {
-  //     key: 'details',
-  //     label: <a href="#">Details</a>,
-  //   },
-  //   {
-  //     key: 'block',
-  //     label: <a href="#">UnBlock</a>,
-  //   },
-  //   {
-  //     key: 'delete',
-  //     label: <a href="#">Delete</a>,
-  //   }
-  // ];
 
   const columns: ColumnsType<DataType> = [
     {
@@ -157,7 +146,7 @@ const CompaniesTable = () => {
       <TertiaryHeading title="Manage Companies" className="text-graphiteGray" />
       <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
         <Table
-          loading={false}
+          loading={isLoading}
           columns={columns}
           dataSource={usersData}
           pagination={{ position: ['bottomCenter'] }}

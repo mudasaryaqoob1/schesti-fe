@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import clsx from 'clsx';
 import { usePathname } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
+import tabsStyle from './tabs.module.css';
 
 const Tabs = () => {
   const pathname = usePathname();
@@ -26,7 +27,7 @@ const Tabs = () => {
                 flex items-stretch justify-center py-2 
                  cursor-pointer
                 `,
-                  pathname.includes(route.split('/')[1]) && 'active'
+                  pathname.includes(route.split('/')[1]) && tabsStyle.active
                 )
               )}
               onClick={() => router.push(route)}

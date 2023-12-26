@@ -6,10 +6,10 @@ import { usePathname } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
 
 const tabsData = [
-  { name: 'Dashboard', route: '/dashboard' },
-  { name: 'Companies', route: '/companies' },
-  { name: 'Pricing Plans', route: '/pricingplans' },
-  { name: 'Transaction History', route: '/transactionhistory' },
+  { name: 'Dashboard', route: '#' },
+  { name: 'Companies', route: '/admin/companies' },
+  { name: 'Pricing Plans', route: '#' },
+  { name: 'Transaction History', route: '/admin/transactionhistories' },
 ];
 
 const Tabs = () => {
