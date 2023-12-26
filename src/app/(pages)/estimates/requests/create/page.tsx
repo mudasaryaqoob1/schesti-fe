@@ -22,7 +22,7 @@ import QuaternaryHeading from '@/app/component/headings/quaternary';
 import CustomWhiteButton from '@/app/component/customButton/white';
 import ModalComponent from '@/app/component/modal';
 import FormControl from '@/app/component/formControl';
-import { IEstimateRequest } from '@/app/interfaces/estimatesInterfaces/estimateRequests.interface';
+import { IEstimateRequest } from '@/app/interfaces/estimateRequests/estimateRequests.interface';
 import ExistingClient from '../existingClient';
 import CustomNavbar from '@/app/component/customNavbar';
 import { estimateRequestService } from '@/app/services/estimateRequest.service';

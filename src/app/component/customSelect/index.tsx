@@ -1,5 +1,6 @@
 import React from 'react';
 import { Field, useField } from 'formik';
+import type { FormikValues } from 'formik';
 import { Select } from 'antd';
 import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -11,14 +12,7 @@ const defaultOptions = [
 ];
 
 const SelectComp = (props: any) => {
-  const {
-    name,
-    placeholder,
-    label,
-    labelStyle,
-    options = defaultOptions,
-    ...rest
-  } = props;
+  const { name, label, labelStyle, options = defaultOptions, ...rest } = props;
 
   const OptionsArr = options?.map(
     (option: { value: string; label: string }) => {
@@ -48,19 +42,19 @@ const SelectComp = (props: any) => {
         </label>
       )}
       <div className="mt-1">
-        <Field name={name} id={name} {...rest}>
-          {({ form }: { form: any }) => {
+        <Field name={name} id={name} component="select">
+          {({ form: { setFieldValue }, field: { value } }: FormikValues) => {
             return (
               <Select
-                className={
-                  hasError ? 'w-full customSelectError' : 'w-full customSelect'
-                }
+                className={`w-full h-10 ${
+                  hasError ? ' customSelectError' : 'customSelect'
+                }`}
                 id={name}
                 {...rest}
                 {...field}
-                placeholder={placeholder}
+                defaultValue={value}
                 onChange={(val) => {
-                  form.setFieldValue(name, val);
+                  setFieldValue(name, val);
                 }}
               >
                 {OptionsArr}

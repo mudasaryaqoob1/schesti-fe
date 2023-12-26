@@ -90,7 +90,7 @@ a {
 }
 
 .ant-modal-content {
-  height: 94vh !important;
+  /* height: 94vh !important; */
   background: transparent !important;
   box-shadow: none !important;
 }
