@@ -19,8 +19,9 @@ import {
   unBlockUser,
   fetchAdminUsers
 } from '@/redux/userSlice/user.thunk';
+import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 
- interface DataType {
+interface DataType {
   company: string;
   email: string;
   phone: string;
@@ -33,7 +34,7 @@ import {
 const CompaniesTable = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const [usersData, setUsersData] = useState([]);
+  const [usersData, setUsersData] = useState<any>([]);
   const [isLoading, setisLoading] = useState(true)
 
   const token = useSelector(selectToken);
@@ -44,7 +45,7 @@ const CompaniesTable = () => {
     }
   }, [token]);
 
-  const fetUsers = useCallback(async () => {
+  const fetchUsers = useCallback(async () => {
     let result: any = await dispatch(fetchAdminUsers({ limit: 9, page: 1 }));
     // let result = await userService.httpGetAdminUsers(1 , 9 , '')
     setisLoading(false)
@@ -52,19 +53,39 @@ const CompaniesTable = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    fetUsers();
+    fetchUsers();
   }, []);
 
+  console.log({ usersData });
+
   const handleDropdownItemClick = async (key: string, user: any) => {
+    const oldUsers = [...usersData];
     if (key == 'details') {
       router.push(`/user/${user._id}`);
     } else if (key == 'delete') {
       await dispatch(deleteUser(user._id));
-      fetUsers()
+      setUsersData(oldUsers.filter(({ _id }) => _id !== user._id));
     } else if (key == 'block') {
       await dispatch(blockUser(user._id));
+      const newUsers: IUser[] = oldUsers.map((userData: IUser) => {
+        if (userData._id === user._id) {
+          return { ...userData, isActive: 'block' }
+        }
+        return userData
+      });
+      console.log({ newUsers });
+
+      setUsersData(newUsers);
     } else if (key === 'unBlock') {
       await dispatch(unBlockUser(user._id));
+      const newUsers: IUser[] = oldUsers.map((userData: IUser) => {
+        if (userData._id === user._id) {
+          return { ...userData, isActive: 'active' }
+        }
+        return userData
+      });
+      console.log({ newUsers });
+      setUsersData(newUsers);
     }
   };
 
