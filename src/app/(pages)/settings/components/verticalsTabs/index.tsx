@@ -17,7 +17,7 @@ const Index = () => {
     },
     { id: 4, name: 'Material Settings', route: ['/settings/MeterialSettings'] },
     { id: 5, name: 'Materials', route: ['/settings/meterials'] },
-    { id: 6, name: 'Target', route: ['/settings/targets'] },
+    { id: 6, name: 'Target', route: ['/settings/target'] },
   ];
 
   return (

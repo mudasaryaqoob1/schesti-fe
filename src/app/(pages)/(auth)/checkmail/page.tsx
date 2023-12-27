@@ -1,10 +1,37 @@
 'use client';
+import React, { useState } from 'react';
 import Description from '@/app/component/description';
 import PrimaryHeading from '@/app/component/headings/primary';
 import AuthNavbar from '@/app/(pages)/(auth)/authNavbar';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
+import { twMerge } from 'tailwind-merge';
+import { quinaryHeading } from '@/globals/tailwindvariables';
+import CustomButton from '@/app/component/customButton/button';
+import { authService } from '@/app/services/auth.service';
+import { toast } from 'react-toastify';
 
 const CheckYourEmail = () => {
+  const searchParams = useSearchParams();
+  const emailQueryParameter = searchParams.get('email');
+
+  const [isLoading, setIsLoading] = useState(false);
+
+  const resendEmailHandler = async () => {
+    setIsLoading(true);
+    const result = await authService.httpResendForgotPasswordEmail({
+      email: emailQueryParameter,
+    });
+
+    if (result.statusCode == 200) {
+      setIsLoading(false);
+      toast.success(result.message);
+    } else {
+      setIsLoading(false);
+      toast.error(result.message);
+    }
+  };
+
   return (
     <>
       <AuthNavbar />
@@ -28,7 +55,7 @@ const CheckYourEmail = () => {
           />
           <Description
             className="mt-1  text-center text-slateGray"
-            title="We’ve sent a verification email to abc@example.com"
+            title={`We’ve sent a verification email to ${emailQueryParameter}`}
           />
 
           <Description
@@ -41,28 +68,22 @@ const CheckYourEmail = () => {
           <Description
             className="font-popin text-doveGrayer font-normal
            leading-[26px] text-center my-1"
-            title="    If you have trouble finding your email, check your spam folder for
-                an email from noreply@example.com"
+            title={`If you have trouble finding your email, check your spam folder for
+                an email from ${emailQueryParameter}`}
           />
-          {/* <div
+          <div
             className={twMerge(`${quinaryHeading} font-popin  font-normal
            leading-[24px] text-doveGrayer text-center mt-8
            `)}
           >
             Didn’t receive an email?{' '}
-            <span
-              className={twMerge(
-                `font-bold text-royalIndigo underline cursor-pointer`
-              )}
-            >
-              Resend
-            </span>
-          </div> */}
-          {/* <Button
-            text={'Continue'}
+          </div>
+          <CustomButton
+            isLoading={isLoading}
+            text="Resend Email"
             className="!p-2"
-            onClick={() => router.push('/companydetails')}
-          /> */}
+            onClick={resendEmailHandler}
+          />
         </div>
       </div>
     </>

@@ -12,14 +12,15 @@ import { toast } from 'react-toastify';
 
 // module imports
 import FormControl from '@/app/component/formControl';
-import { quinaryHeading } from '@/globals/tailwindvariables';
-import GoogleButton from '@/app/component/googleBtn';
+import { btnStyle, quinaryHeading } from '@/globals/tailwindvariables';
 import WelcomeWrapper from '@/app/component/welcomeLayout';
 import { ISignUpInterface } from '@/app/interfaces/authInterfaces/signup.interface';
 import PrimaryHeading from '@/app/component/headings/primary';
 import Description from '@/app/component/description';
-import { signup } from '@/redux/authSlices/auth.thunk';
+import { signup, loginWithGoogle } from '@/redux/authSlices/auth.thunk';
 import { AppDispatch } from '@/redux/store';
+import { useGoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
 
 const initialValues: ISignUpInterface = {
   name: '',
@@ -53,12 +54,49 @@ const Register = () => {
 
     if (result.payload.status == 201) {
       setIsLoading(false);
-      router.push('/checkmail');
+      router.push(`/checkmail?email=${values.email}`);
     } else {
       setIsLoading(false);
       toast.error(result.payload.message);
     }
   };
+
+  const googleAuthenticationHandler: any = useGoogleLogin({
+    onSuccess: async (respose: any) => {
+      try {
+        const googleAuthResponse = await axios.get(
+          'https://www.googleapis.com/oauth2/v3/userinfo',
+          {
+            headers: {
+              Authorization: `Bearer ${respose.access_token}`,
+            },
+          }
+        );
+
+        let responseObj = {
+          email: googleAuthResponse.data.email,
+          name: googleAuthResponse.data.name,
+          avatar: googleAuthResponse.data.picture,
+          providerId: googleAuthResponse.data.sub,
+        };
+
+        let result: any = await dispatch(loginWithGoogle(responseObj));
+
+        if (result.payload.statusCode == 200) {
+          // localStorage.setItem('schestiToken', result.payload.token);
+          router.push(`/clients`);
+        } else if (result.payload.statusCode == 400) {
+          router.push(`/companydetails/${result.payload.data.user._id}`);
+        }
+      } catch (error) {
+        console.log('Login Failed', error);
+      }
+    },
+    onError: (error: any) => {
+      console.log('Login Failed', error);
+    },
+  });
+
   return (
     <WelcomeWrapper>
       <Image
@@ -138,7 +176,25 @@ const Register = () => {
                     <span className={quinaryHeading}>Or</span>
                     <div className="w-[100%] h-[1px] bg-lightSteelGray"></div>
                   </div>
-                  <GoogleButton text="Sign up" />
+                  {/* <GoogleButton text="Sign up" /> */}
+                  {/* Google sign-in button */}
+                  <button
+                    className={twMerge(
+                      ` ${btnStyle} ${quinaryHeading}  font-semibold flex items-center justify-center gap-3 bg-snowWhite border-2 shadow-scenarySubdued border-doveGray`
+                    )}
+                    type="button"
+                    onClick={googleAuthenticationHandler}
+                  >
+                    <Image
+                      src={'/googleicon.svg'}
+                      alt="google icon"
+                      width={24}
+                      height={24}
+                      className="mr-1"
+                    />
+                    Signin with Google
+                  </button>
+
                   <div className=" flex gap-2  justify-center mt-4">
                     <Description
                       className="text-ebonyGray"

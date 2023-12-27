@@ -2,7 +2,7 @@
 import { useState, FC } from 'react';
 import { quaternaryHeading } from '@/globals/tailwindvariables';
 interface ToggleBtnProps {
-  onChange: (isChecked: boolean) => void;
+  onChange: any;
 }
 const Index: FC<ToggleBtnProps> = ({ onChange }) => {
   const [isChecked, setIsChecked] = useState(false);

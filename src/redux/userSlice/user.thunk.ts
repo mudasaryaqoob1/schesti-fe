@@ -6,6 +6,7 @@ import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface
 interface FetchClientParams {
   page: number;
   limit: number;
+  queryRoles?: any;
 }
 
 export const updateCompanyDetail = createAsyncThunk(
@@ -26,7 +27,7 @@ export const addNewUser = createAsyncThunk(
   'user/newUser',
   async (credentials: IUser, thunkAPI) => {
     try {
-      const response = await userService.httpAddNewUser(credentials);
+      const response = await userService.httpAddNewEmployee(credentials);
       return response;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(
@@ -36,16 +37,80 @@ export const addNewUser = createAsyncThunk(
   }
 );
 
-export const fetchCompanyEmployee = createAsyncThunk(
-  'user/companyEmployee',
-  async ({ page, limit }: FetchClientParams, { rejectWithValue }: any) => {
+export const fetchUsers = createAsyncThunk(
+  'user/companyEmployees',
+  async (
+    { page, limit, queryRoles }: FetchClientParams,
+    { rejectWithValue }: any
+  ) => {
     try {
-      const response = await userService.httpGetCompanyEmployee(page, limit);
+      const response = await userService.httpGetUsers(page, limit, queryRoles);
       return response;
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
           'An error occurred while fetching the Joined Request'
+      );
+    }
+  }
+);
+
+export const fetchAdminUsers = createAsyncThunk(
+  'user/adminUsers',
+  async (
+    { page, limit, queryRoles }: FetchClientParams,
+    { rejectWithValue }: any
+  ) => {
+    try {
+      const response = await userService.httpGetAdminUsers(page, limit, queryRoles);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data ||
+          'An error occurred while fetching the Joined Request'
+      );
+    }
+  }
+);
+
+export const blockUser = createAsyncThunk(
+  'block/companyEmployee',
+  async (id: string, { rejectWithValue }: any) => {
+    try {
+      const response = await userService.httpBlockEmployee(id);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data || 'An error occurred while block user request'
+      );
+    }
+  }
+);
+
+export const unBlockUser = createAsyncThunk(
+  'unBlock/companyEmployee',
+  async (id: string, { rejectWithValue }: any) => {
+    try {
+      const response = await userService.httpUnBlockEmployee(id);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data || 'An error occurred while block user request'
+      );
+    }
+  }
+);
+
+export const deleteUser = createAsyncThunk(
+  'company/deleteUser',
+  async (userId: string, { rejectWithValue }) => {
+    try {
+      const response = await userService.httpDeleteUser(userId);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data ||
+          'An error occurred while fetching the feed records'
       );
     }
   }

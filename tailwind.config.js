@@ -1,3 +1,7 @@
+/* eslint-disable import/no-anonymous-default-export */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-dupe-keys */
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
@@ -22,6 +26,8 @@ export default {
         nebulaGray: '#EAECF0',
         coolGray: '#98A2B3',
         silverGray: '#F0F1F3',
+        silverFoil: '#AEAEAE',
+        silver: '#BDBDBD',
         paleblueGray: '#F9FAFB',
         alabasterWhite: '#F5F6F8',
         doveGray: '#D0D0D0',
@@ -40,6 +46,7 @@ export default {
         graylittle: '#ECECEC',
         graylighty: '#E5E1E6',
         darkgrayish: '#464646',
+        darkGray: '#8B8B8B',
         // Deep and Dark Colors
         royalIndigo: '#036',
         obsidianBlack: '#1A141F',
@@ -50,12 +57,17 @@ export default {
         emeraldGreen: '#027A48',
         mintGreen: '#ECFDF3',
         darkSteelBlue: '#364153',
+        strongBlue: '#0079C2',
         lightBlueGray: '#E7EAEE',
         greenishGreen: '#36B37E',
         lightdark: 'rgba(4, 4, 4, 0.50)',
         lightdark2: 'rgba(0, 0, 0, 0.60)',
         lightGray: '#F7F9FF',
         lightyGrayish: '#6A6A6A',
+        lightblue: 'rgba(49, 89, 254, 0.10)',
+        darkblue: '#3159FE',
+        lightenGreyish: '#949494',
+        wedgeWood: '#5A7184',
       },
       boxShadow: {
         // Soft Glow for Primary Element
@@ -93,7 +105,12 @@ export default {
       lato: ['Lato', 'sans-serif'],
     },
   },
-  plugins: [],
+  plugins: [
+    function ({ addVariant }) {
+      addVariant('child', '& > *');
+      addVariant('child-hover', '& > *:hover');
+    },
+  ],
   corePlugins: {
     preflight: false,
   },

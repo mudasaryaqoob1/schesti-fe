@@ -2,7 +2,7 @@ import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface
 
 interface IAuthState {
   loading: boolean;
-  user?: IUser | null;
+  user?: IUser | null | any;
   token?: string | null;
   error?: string | null;
   message?: string | null;

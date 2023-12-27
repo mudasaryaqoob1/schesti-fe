@@ -1,7 +1,7 @@
 export const userRoles = {
-  COMPANY: 'company',
-  PROJECT_MANAGER: 'project manager',
-  SALES_MANAGER: 'sales manager',
-  ESTIMATOR: 'estimator',
-  ACCOUNTS_MANAGER: 'accounts manager',
+  COMPANY: 'Company',
+  PROJECT_MANAGER: 'Project Manager',
+  SALES_MANAGER: 'Sales Manager',
+  ESTIMATOR: 'Estimator',
+  ACCOUNTS_MANAGER: 'Accounts Manager',
 };

@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { tertiaryHeading } from '@/globals/tailwindvariables';
 interface SwitchBtnProps {
-  onChange: (isYearly: boolean) => void;
+  onChange: any;
 }
 const Index: React.FC<SwitchBtnProps> = ({ onChange }) => {
   const [isYearly, setIsYearly] = useState(false);

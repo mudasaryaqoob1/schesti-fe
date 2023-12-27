@@ -1,4 +1,5 @@
 'use client';
+import { useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import Image from 'next/image';
@@ -21,16 +22,21 @@ import VerticleBar from '@/app/(pages)/settings/verticleBar';
 import { userService } from '@/app/services/user.service';
 
 const defaultOptions = [
-  { value: userRoles.COMPANY, label: 'Option 1' },
-  { value: userRoles.ACCOUNTS_MANAGER, label: 'Option 2' },
-  { value: userRoles.ESTIMATOR, label: 'Option 3' },
-  { value: userRoles.PROJECT_MANAGER, label: 'Option 3' },
-  { value: userRoles.SALES_MANAGER, label: 'Option 3' },
+  { value: userRoles.COMPANY, label: userRoles.COMPANY },
+  { value: userRoles.ACCOUNTS_MANAGER, label: userRoles.ACCOUNTS_MANAGER },
+  { value: userRoles.ESTIMATOR, label: userRoles.ESTIMATOR },
+  { value: userRoles.PROJECT_MANAGER, label: userRoles.PROJECT_MANAGER },
+  { value: userRoles.SALES_MANAGER, label: userRoles.SALES_MANAGER },
 ];
 
-const AddNewUser = ({ setShowAddUser }: any) => {
+const AddNewUser = () => {
   const token = useSelector(selectToken);
   const router = useRouter();
+  const { user } = useSelector((state: any) => state.user);
+
+  console.log({ user });
+
+  const [isLoading, setisLoading] = useState(false);
 
   useLayoutEffect(() => {
     if (token) {
@@ -44,27 +50,54 @@ const AddNewUser = ({ setShowAddUser }: any) => {
     email: Yup.string()
       .required('Email is required!')
       .email('Email should be valid'),
-    role: Yup.string().required('Role is required'),
+    roles: Yup.string().required('Role required'),
   });
 
+  const [firstName, lastName] = user ? user.name.split(' ') : [];
+
   const initialValues: IUser = {
-    firstName: '',
-    lastName: '',
-    email: '',
-    role: '',
+    firstName: firstName || '',
+    lastName: lastName || '',
+    email: user?.email || '',
+    roles: user?.roles?.[0] || '',
   };
   const submitHandler = async (values: IUser, { resetForm }: any) => {
-    const result = await userService.httpAddNewEmployee(values);
-
-    console.log(result.message, 'result.message');
-
-    if (result.statusCode == 201) {
-      resetForm();
-      router.push('/settings/companyUser');
-      setShowAddUser(false);
+    setisLoading(true);
+    if (user) {
+      userService
+        .httpUpdateEmployee({ ...values, roles: [values.roles] }, user.key)
+        .then((response: any) => {
+          setisLoading(false);
+          if (response.statusCode == 201) {
+            resetForm();
+            router.push('/settings/companyUser');
+          } else {
+            toast.error(response.message);
+          }
+        })
+        .catch((error: any) => {
+          setisLoading(false);
+          toast.error(error.response.data.message);
+        });
     } else {
-      toast.error(result.message);
+      userService
+        .httpAddNewEmployee({ ...values, roles: [values.roles] })
+        .then((response: any) => {
+          setisLoading(false);
+          if (response.statusCode == 201) {
+            resetForm();
+            router.push('/settings/companyUser');
+          } else {
+            toast.error(response.message);
+          }
+        })
+        .catch((error: any) => {
+          setisLoading(false);
+          toast.error(error.response.data.message);
+        });
     }
+
+
   };
   return (
     <VerticleBar>
@@ -103,7 +136,9 @@ const AddNewUser = ({ setShowAddUser }: any) => {
           validationSchema={newClientSchema}
           onSubmit={submitHandler}
         >
-          {({ handleSubmit }) => {
+          {({ handleSubmit, errors, values }) => {
+            console.log(errors, 'error', values);
+
             return (
               <Form
                 name="basic"
@@ -129,7 +164,7 @@ const AddNewUser = ({ setShowAddUser }: any) => {
                   <FormControl
                     control="select"
                     label="Role"
-                    name="role"
+                    name="roles"
                     options={defaultOptions}
                     placeholder="Select User Role"
                   />
@@ -144,6 +179,7 @@ const AddNewUser = ({ setShowAddUser }: any) => {
                 <div className="self-end flex justify-end items-center gap-5 md:mt-5 my-3">
                   <div>
                     <CustomButton
+                      isLoading={isLoading}
                       className="mx-w-30"
                       type="submit"
                       text="Save and Continue"
