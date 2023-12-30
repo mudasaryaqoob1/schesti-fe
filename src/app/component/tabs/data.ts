@@ -8,7 +8,6 @@ const tabsData = [
   { name: 'Fiance', route: '#' },
   { name: 'invoice', route: '#' },
   { name: 'Meeting', route: '#' },
-  { name: 'Support Tickets', route: '/supporttickets' },
 ];
 
 export default tabsData;

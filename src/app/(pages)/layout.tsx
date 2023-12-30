@@ -11,7 +11,7 @@ type Props = {
 const CustomNavbar = ({ children }: Props) => {
     const pathname = usePathname();
 
-    const unProtectedRoutes = ['checkmail', 'checkmail', 'companydetails', 'congratulation', 'forgetpassword', 'login', 'payment', 'plans', 'register', 'sendcode', 'setnewpassword', 'admin'];
+    const unProtectedRoutes = ['checkmail', 'checkmail', 'companydetails', 'congratulation', 'forgetpassword', 'login', 'payment', 'plans', 'register', 'sendcode', 'setnewpassword' , 'settings'];
     return (
         <>
             {

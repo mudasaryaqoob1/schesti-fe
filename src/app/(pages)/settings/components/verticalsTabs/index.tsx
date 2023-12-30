@@ -1,10 +1,11 @@
 'use client';
 import { bg_style, senaryHeading } from '@/globals/tailwindvariables';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname , useParams } from 'next/navigation';
 
 const Index = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const {id} = useParams()
   const active =
     'bg-cosmicGray  text-rotalPurple w-full rounded-[6px] font-semibold';
   const tabs = [
@@ -18,6 +19,7 @@ const Index = () => {
     { id: 4, name: 'Material Settings', route: ['/settings/MeterialSettings'] },
     { id: 5, name: 'Materials', route: ['/settings/meterials'] },
     { id: 6, name: 'Target', route: ['/settings/target'] },
+    { id: 7, name: 'Support Ticket', route: ['/settings/supporttickets' , '/settings/supporttickets/create' , `/settings/supporttickets/edit/${id}` , `/settings/supporttickets/${id}` ] },
   ];
 
   return (
