@@ -31,7 +31,7 @@ const SinglePlan = (props: Props) => {
           >
             ${isMonthly ? monthlyPrice : yearlyPrice}
           </span>
-          <p className={`${minHeading} text-lightdark  font-normal`}>/${isMonthly ? 'Month' : 'Year'}</p>
+          <p className={`${minHeading} text-lightdark  font-normal`}>/{isMonthly ? 'Month' : 'Year'}</p>
         </div>
         <p className={`${quinaryHeading} text-lightdark2`}>{planDescription}</p>
         <div className="w-full h-px bg-mistyWhite"></div>
