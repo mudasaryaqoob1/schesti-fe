@@ -9,6 +9,7 @@ import estimateRequestSlice from './estimate/estimateRequest.slice';
 import supportTicketsSlice from './company/supportTicketSlice/supportTickets.slice';
 import settingTargetsSlice from './company/settingSlices/settingTarget.slice';
 import userSlice from './userSlice/user.slice';
+import pricingPlanReducer from './pricingPlanSlice/pricingPlanSlice';
 
 export type RootState = {
   auth: any;
@@ -18,6 +19,7 @@ export type RootState = {
   supportTickets: any;
   settingTargets: any;
   user: any;
+  pricingPlan: any;
 };
 const persistConfig = {
   key: 'root',
@@ -32,6 +34,8 @@ const rootReducer = combineReducers<RootState>({
   estimates: estimateRequestSlice,
   supportTickets: supportTicketsSlice,
   settingTargets: settingTargetsSlice,
-  user: userSlice
+  user: userSlice,
+  pricingPlan: pricingPlanReducer,
+
 });
 export default persistReducer(persistConfig, rootReducer);

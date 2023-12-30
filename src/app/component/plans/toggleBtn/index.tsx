@@ -1,17 +1,12 @@
-'use client';
-import { useState, FC } from 'react';
 import { quaternaryHeading } from '@/globals/tailwindvariables';
-interface ToggleBtnProps {
-  onChange: any;
-}
-const Index: FC<ToggleBtnProps> = ({ onChange }) => {
-  const [isChecked, setIsChecked] = useState(false);
+import { FC } from 'react';
 
-  const handleToggle = () => {
-    const newIsChecked = !isChecked;
-    setIsChecked(newIsChecked);
-    onChange(newIsChecked); // Notify the parent component about the change
-  };
+interface ToggleBtnProps {
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  isChecked: boolean
+}
+const Index: FC<ToggleBtnProps> = ({ isChecked, onChange }) => {
+
   return (
     <div className=" min-w-[350px] h-14">
       <label
@@ -22,7 +17,7 @@ const Index: FC<ToggleBtnProps> = ({ onChange }) => {
           id="Toggle3"
           type="checkbox"
           className="hidden peer"
-          onChange={handleToggle}
+          onChange={onChange}
           checked={isChecked}
         />
         <span
