@@ -211,7 +211,6 @@ const Login = () => {
                 </Form>
               )}
             </Formik>
-            ;
           </div>
         </section>
       </React.Fragment>

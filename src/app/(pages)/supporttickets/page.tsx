@@ -20,11 +20,11 @@ import { HttpService } from '@/app/services/base.service';
 import {
   selectSupportTickets,
   selectSupportTicketsLoading,
-} from '@/redux/company/companySelector';
+} from '@/redux/supportTickets/supportTicketSelector';
 import {
   deleteSupportTicket,
   fetchSupportTickets,
-} from '@/redux/company/company.thunk';
+} from '@/redux/supportTickets/supportTicket.thunk';
 import { ISupportTicket } from '@/app/interfaces/supportTicket.interface';
 
 const SupportTickets = () => {
@@ -99,12 +99,12 @@ const SupportTickets = () => {
       ) : (
         supportTicketsData?.map(
           (supportTicket: ISupportTicket, i: number) => {
-            const { _id, createdAt, title, description, updatedAt } =
+            const { _id, createdAt, title, description, updatedAt , status } =
               supportTicket;
             return (
               <div
                 key={i}
-                className="shadow-primaryGlow rounded-2xl cursor-pointer flex flex-col p-4 mt-6"
+                className="shadow-primaryGlow rounded-2xl flex flex-col p-4 mt-6"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex gap-4">
@@ -112,35 +112,49 @@ const SupportTickets = () => {
                       title={`Ticket # ${_id}`}
                       className="text-steelGray font-semibold"
                     />
-                    <p className="bg-lightblue rounded-xl px-2">
+                     {
+                      status == 'open' ? ( <p className="bg-lightblue rounded-xl px-2">
                       <span className="text-xs text-darkblue font-normal">
-                        In Progress
+                        Open
                       </span>
-                    </p>
+                    </p>) : (
+                       <p className="bg-red-600 rounded-xl px-2 pt-0.5">
+                       <span className="text-xs text-white font-normal">
+                         Closed
+                       </span>
+                     </p>
+                    )
+                    }
                   </div>
                   <div className="flex items-center gap-2">
                     <Description
                       title={moment(createdAt).startOf('minute').fromNow()}
                       className="text-lightenGreyish"
                     />
-                    <Dropdown
-                      menu={{
-                        items,
-                        onClick: (event) => {
-                          const { key } = event;
-                          handleDropdownItemClick(key, supportTicket);
-                        },
-                      }}
-                      placement="bottomRight"
-                    >
-                      <Image
+
+{
+                      status == 'open' ? (
+                        <Dropdown
+                        menu={{
+                          items,
+                          onClick: (event) => {
+                            const { key } = event;
+                            handleDropdownItemClick(key, supportTicket);
+                          },
+                        }}
+                        placement="bottomRight"
+                      >
+                           <Image
                         src="/more-horizontal.svg"
                         width={24}
                         height={6}
                         alt="options"
                         className="cursor-pointer"
                       />
-                    </Dropdown>
+                      </Dropdown>
+                      ) : null
+                    }
+                   
                   </div>
                 </div>
                 <QuinaryHeading

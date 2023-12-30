@@ -4,6 +4,12 @@ import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { IToken } from '@/app/interfaces/authInterfaces/token.interface';
 import { ISupportTicket } from '../interfaces/supportTicket.interface';
 
+
+interface INewMessage {
+  sender: string;
+  message: string;
+  ticketId?: string;
+}
 class SupportTicketService extends HttpService {
   private readonly prefix: string = 'api/supportTickets';
 
@@ -28,5 +34,15 @@ class SupportTicketService extends HttpService {
     supportTicketId: string
   ): Promise<IResponseInterface> =>
     this.post(`${this.prefix}/deleteSupportTicket/${supportTicketId}`);
+
+
+    httpCreateMessage = (body: INewMessage): Promise<IResponseInterface<any>> =>
+    this.post(`${this.prefix}/newMessage/${body.ticketId}`, {
+      sender: body.sender,
+      message: body.message,
+    });
+
+  httpGetMessages = (httpGetMessages: any): Promise<IResponseInterface<any>> =>
+    this.get(`${this.prefix}/getAllMessages/${httpGetMessages}`);
 }
 export const supportTicketService = new SupportTicketService();

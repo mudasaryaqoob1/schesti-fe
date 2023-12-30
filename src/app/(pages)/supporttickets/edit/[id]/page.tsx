@@ -22,7 +22,7 @@ import { supportTicketService } from '@/app/services/supportTicket.service';
 
 import Description from '@/app/component/description';
 import MinDescription from '@/app/component/description/minDesc';
-import { selectSupportTickets } from '@/redux/company/companySelector';
+import { selectSupportTickets } from '@/redux/supportTickets/supportTicketSelector';
 
 const validationSchema = Yup.object({
   title: Yup.string().required('Title is required!'),

@@ -6,7 +6,7 @@ import authReducer from './authSlices/authSlice';
 import companyClientReducer from './company/clientSlice/companyClient.slice';
 import subContractorReducer from './company/subcontractorSlice/companySubcontractor.slice';
 import estimateRequestSlice from './estimate/estimateRequest.slice';
-import supportTicketsSlice from './company/supportTicketSlice/supportTickets.slice';
+import supportTicketsSlice from './supportTickets/supportTickets.slice';
 import settingTargetsSlice from './company/settingSlices/settingTarget.slice';
 import userSlice from './userSlice/user.slice';
 
@@ -22,7 +22,7 @@ export type RootState = {
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth', 'estimates'],
+  whitelist: ['auth', 'estimates' , 'supportTickets'],
 };
 
 const rootReducer = combineReducers<RootState>({

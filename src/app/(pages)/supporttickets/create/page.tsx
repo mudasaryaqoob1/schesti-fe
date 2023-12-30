@@ -2,7 +2,6 @@
 
 import React, { useLayoutEffect, useState } from 'react';
 import { Formik, Form } from 'formik';
-// import { twMerge } from 'tailwind-merge';
 import Image from 'next/image';
 import * as Yup from 'yup';
 import { useRouter } from 'next/navigation';
@@ -10,9 +9,7 @@ import { toast } from 'react-toastify';
 
 // module imports
 import Description from '@/app/component/description';
-// import MinDescription from '@/app/component/description/minDesc';
 import FormControl from '@/app/component/formControl';
-// import { senaryHeading } from '@/globals/tailwindvariables';
 import CustomButton from '@/app/component/customButton/button';
 // redux imports
 import { useSelector } from 'react-redux';
@@ -28,7 +25,7 @@ const validationSchema = Yup.object({
   description: Yup.string().required('Description is required!'),
 });
 
-const initialValues = {
+const initialValues : ISupportTicket = {
   title: '',
   description: '',
 };

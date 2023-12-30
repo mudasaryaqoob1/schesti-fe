@@ -2,7 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { userService } from '@/app/services/user.service';
 import { subcontractorService } from '@/app/services/subcontractor.service';
 import { estimateRequestService } from '@/app/services/estimateRequest.service';
-import { supportTicketService } from '@/app/services/supportTicket.service';
+
 
 interface FetchClientParams {
   page: number;
@@ -14,10 +14,7 @@ interface FetchSubcontractorParams {
   limit: number;
 }
 
-interface FetchSupportTicketParams {
-  page: number;
-  limit: number;
-}
+
 
 export const fetchCompanyClients = createAsyncThunk(
   'company/clients',
@@ -52,23 +49,7 @@ export const fetchCompanySubcontractors = createAsyncThunk(
   }
 );
 
-export const fetchSupportTickets = createAsyncThunk(
-  'getAllSupportTickets',
-  async ({ page, limit }: FetchSupportTicketParams, { rejectWithValue }) => {
-    try {
-      const response = await supportTicketService.httpGetAllSupportTickets(
-        page,
-        limit
-      );
-      return response;
-    } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data ||
-          'An error occurred while fetching the feed records'
-      );
-    }
-  }
-);
+
 
 export const fetchEstimateRequests = createAsyncThunk(
   'company/getAllEstimateRequests',
@@ -134,18 +115,3 @@ export const deleteEstimateRequest = createAsyncThunk(
   }
 );
 
-export const deleteSupportTicket = createAsyncThunk(
-  'deleteSupportTicket',
-  async (supportTicketId: string, { rejectWithValue }) => {
-    try {
-      const response =
-        await supportTicketService.httpDeleteSupportTicket(supportTicketId);
-      return response;
-    } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data ||
-          'An error occurred while fetching the feed records'
-      );
-    }
-  }
-);
