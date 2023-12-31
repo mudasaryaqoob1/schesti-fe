@@ -1,8 +1,8 @@
 'use client';
 import { ChangeEvent, useCallback, useEffect, useLayoutEffect, useState } from 'react';
-import ToggleBtn from './toggleBtn/index';
+import ToggleBtn from './components/toggleBtn';
 import React from 'react';
-import SinglePlan from './plan/plan';
+import SinglePlan from './components/plan/plan';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
@@ -11,9 +11,9 @@ import { Skeleton } from 'antd';
 import { AppDispatch } from '@/redux/store';
 import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
 import { fetchPricingPlan } from '@/redux/pricingPlanSlice/pricingPlan.thunk';
-import SwitchBtn from './switchbtn';
+import SwitchBtn from './components/switchbtn';
 
-const PaymentPlans = () => {
+const Plans = () => {
   const [planType, setPlanType] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const [pricingPlansData, setPricingPlansData] = useState([] as IPricingPlan[]);
@@ -50,26 +50,24 @@ const PaymentPlans = () => {
 
   return (
     <>
-      <div className="w-full h-px bg-mistyWhite mt-4 mb-6"></div>
-
-      <div className="flex w-full align-items-center justify-center">
+      <div className="flex justify-between">
         <ToggleBtn isChecked={planType} onChange={handlePlanType} />
-      </div>
-      <div className="flex w-full align-items-center justify-center my-6">
         <SwitchBtn isChecked={isYearly} onChange={(event) => setIsYearly(event.target.checked)} />
       </div>
-      {
-        isLoading ? <Skeleton /> : isError ? <p>Something Went Wrong</p> :
-          <div className="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-5">
-            {pricingPlansData?.map(
-              (plan: IPricingPlan, index: React.Key | null | undefined) => {
-                return <SinglePlan key={index} {...plan} isYearly={isYearly} />;
-              }
-            )}
-          </div>
-      }
+      <div className="mt-6">
+        {
+          isLoading ? <Skeleton /> : isError ? <p>Something Went Wrong</p> :
+            <div className="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-5">
+              {pricingPlansData?.map(
+                (plan: IPricingPlan, index: React.Key | null | undefined) => {
+                  return <SinglePlan key={index} {...plan} isYearly={isYearly} />;
+                }
+              )}
+            </div>
+        }
+      </div>
     </>
   );
 };
 
-export default PaymentPlans;
+export default Plans;
