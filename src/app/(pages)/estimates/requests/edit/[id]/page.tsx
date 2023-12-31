@@ -18,7 +18,6 @@ import CustomButton from '@/app/component/customButton/button';
 import { minHeading, senaryHeading } from '@/globals/tailwindvariables';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import MinDescription from '@/app/component/description/minDesc';
 import CustomWhiteButton from '@/app/component/customButton/white';
 import ModalComponent from '@/app/component/modal';
 import FormControl from '@/app/component/formControl';
@@ -30,6 +29,8 @@ import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interf
 import { HttpService } from '@/app/services/base.service';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { IEstimateRequest } from '@/app/interfaces/estimateRequests/estimateRequests.interface';
+import { byteConverter } from '@/app/utils/byteConverter';
+import AwsS3 from '@/app/utils/S3Intergration';
 
 const clientInfoSchema: any = Yup.object({
   clientName: Yup.string().required('Field is required!'),
@@ -44,22 +45,6 @@ const clientInfoSchema: any = Yup.object({
   projectInformation: Yup.string().required('Field is required!'),
   salePerson: Yup.string().required('Field is required!'),
   estimator: Yup.string().required('Field is required!'),
-  architectureDocuments: Yup.array(
-    Yup.object({
-      name: Yup.string().required(),
-      size: Yup.string().required(),
-      ext: Yup.string().required(),
-      url: Yup.string().required(),
-    })
-  ).min(1, 'architectureDocuments required'),
-  otherDocuments: Yup.array(
-    Yup.object({
-      name: Yup.string().required(),
-      size: Yup.string().required(),
-      ext: Yup.string().required(),
-      url: Yup.string().required(),
-    })
-  ).min(1, 'otherDocuments required'),
 });
 
 const initialValues: IEstimateRequest = {
@@ -73,8 +58,6 @@ const initialValues: IEstimateRequest = {
   projectInformation: '',
   salePerson: '',
   estimator: '',
-  architectureDocuments: [],
-  otherDocuments: [],
 };
 
 const EditEstimateRequest = () => {
@@ -97,6 +80,10 @@ const EditEstimateRequest = () => {
   const [salePersonsOption, setSalePersonsOption] = useState([]);
   const [estimatorsOption, setEstimatorsOption] = useState([]);
   const [estimateRequestData, setEstimateRequestData] = useState(null);
+  const [uploadDocumentsError, setuploadDocumentsError] = useState('');
+  const [drawingsDocuments, setDrawingsDocuments] = useState<any>([]);
+  const [takeOffReports, setTakeOffReports] = useState<any>([]);
+  const [otherDocuments, setOtherDocuments] = useState<any>([]);
 
   useEffect(() => {
     if (id) {
@@ -139,32 +126,153 @@ const EditEstimateRequest = () => {
   }, []);
 
   const submitHandler = async (values: IEstimateRequest) => {
-    let updateEstimateRequestData = {
-      clientName: values.clientName,
-      companyName: values.companyName,
-      email: values.email,
-      phone: +values.phone,
-      projectName: values.projectName,
-      leadSource: values.leadSource,
-      projectValue: values.projectValue,
-      projectInformation: values.projectInformation,
-      salePerson: values.salePerson,
-      estimator: values.estimator,
-      architectureDocuments: values.architectureDocuments,
-      otherDocuments: values.otherDocuments,
-    };
-
-    let result = await estimateRequestService.httpUpdateEstimateRequest(
-      updateEstimateRequestData,
-      id
-    );
-    if (result.statusCode == 200) {
-      setIsLoading(false);
-      router.push('/estimates');
-    } else {
-      setIsLoading(false);
-      toast.error(result.message);
+    if (drawingsDocuments.length == 0) {
+      setuploadDocumentsError('Drawings Document Required');
+    } else if (takeOffReports.length == 0) {
+      setuploadDocumentsError('Takeoff Reports Required');
+    } 
+    else if(otherDocuments.length == 0){
+      setuploadDocumentsError('Other Documents Required');
     }
+    else {
+      const [drawingDocs, takeOffDocs, otherDocs] = await Promise.all([
+        uploadDocumentToS3Handler(drawingsDocuments),
+        uploadDocumentToS3Handler(takeOffReports),
+        uploadDocumentToS3Handler(otherDocuments),
+      ]);
+
+      Promise.all([drawingDocs, takeOffDocs, otherDocs])
+        .then(async() => {
+          let updateEstimateRequestData = {
+            clientName: values.clientName,
+            companyName: values.companyName,
+            email: values.email,
+            phone: +values.phone,
+            projectName: values.projectName,
+            leadSource: values.leadSource,
+            projectValue: values.projectValue,
+            projectInformation: values.projectInformation,
+            salePerson: values.salePerson,
+            estimator: values.estimator,
+            otherDocuments : otherDocs,
+            takeOffReports : takeOffDocs,
+            drawingsDocuments : drawingDocs,
+          };
+      
+          let result = await estimateRequestService.httpUpdateEstimateRequest(
+            updateEstimateRequestData,
+            id
+          );
+          if (result.statusCode == 200) {
+            setIsLoading(false);
+            router.push('/estimates');
+          } else {
+            setIsLoading(false);
+            toast.error(result.message);
+          }
+        })
+        .catch(() => {
+          toast.error('Some thing went wrong during document uplaoding');
+        });
+    }
+
+
+   
+  };
+
+
+  const uploadDocumentToS3Handler = async (documents: any) => {
+    let documentsData: Object[] = [];
+    try {
+      await Promise.all(
+        Object.keys(documents).map(async (key: any) => {
+          const url = await new AwsS3(
+            documents[key],
+            'documents/estimates/'
+          ).getS3URL();
+          let obj = {
+            name: documents[key].name,
+            size: documents[key].size,
+            ext: documents[key].type,
+            url: url,
+          };
+          documentsData.push(obj);
+        })
+      );
+
+      return documentsData;
+    } catch (error) {
+      toast.error('Error uploading documents');
+      console.error('Error uploading documents:', error);
+    } 
+  };
+  const takeoffReportsUploadHandler = async (e: any) => {
+    setuploadDocumentsError('');
+    const documents = e.target.files;
+    if (!documents[0]) {
+      return;
+    }
+
+    if (byteConverter(documents[0].size, 'MB').size > 10) {
+      setuploadDocumentsError(
+        'Cannot upload document more then 10 mb of size.'
+      );
+      return;
+    }
+    for (let i = 0; i < documents.length; i++) {
+      setTakeOffReports((prev: any) => [...prev, documents[i]]);
+    }
+  };
+
+  const otherDocumentsUploadHandler = (e: any) => {
+    setuploadDocumentsError('');
+    const documents = e.target.files;
+    if (!documents[0]) {
+      return;
+    }
+
+    if (byteConverter(documents[0].size, 'MB').size > 10) {
+      setuploadDocumentsError(
+        'Cannot upload document more then 10 mb of size.'
+      );
+      return;
+    }
+    for (let i = 0; i < documents.length; i++) {
+      setOtherDocuments((prev: any) => [...prev, documents[i]]);
+    }
+  };
+  const drawingsDocumentsUplodadHandler = (e: any) => {
+    setuploadDocumentsError('');
+    const documents = e.target.files;
+    if (!documents[0]) {
+      return;
+    }
+
+    if (byteConverter(documents[0].size, 'MB').size > 10) {
+      setuploadDocumentsError(
+        'Cannot upload document more then 10 mb of size.'
+      );
+      return;
+    }
+    for (let i = 0; i < documents.length; i++) {
+      setDrawingsDocuments((prev: any) => [...prev, documents[i]]);
+    }
+  };
+
+  const drawingDocumentDeleteHandler = (documentName: string) => {
+    setDrawingsDocuments(
+      drawingsDocuments.filter((doc: any) => doc.name !== documentName)
+    );
+  };
+  const takeoffDocumentDeleteHandler = (documentName: string) => {
+    setTakeOffReports(
+      takeOffReports.filter((doc: any) => doc.name !== documentName)
+    );
+  };
+  const otherDocumentDeleteHandler = (documentName: string) => {
+    setOtherDocuments(
+      otherDocuments.filter((doc: any) => doc.name !== documentName)
+    );
   };
 
   return (
@@ -313,78 +421,217 @@ const EditEstimateRequest = () => {
                     title="Uploads"
                     className="text-graphiteGray font-semibold"
                   />
-                  <div className="flex items-center gap-3">
-                    <div className="w-60">
+                     <div className="flex items-center gap-3">
+                    <div>
                       <p
-                        className={`${senaryHeading} text-midnightBlue font-popin`}
+                        className={`${senaryHeading} text-midnightBlue font-popin mb-2`}
                       >
-                        Architecture
+                        Upload Drawings
                       </p>
-                      <div className="my-2 p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg ">
-                        <Image
-                          src={'/uploadcloud.svg'}
-                          alt="upload icon"
-                          width={20}
-                          height={20}
-                          className="rounded-3xl border-5 border-paleblueGray bg-lightGrayish"
-                        />
-                        <div className="flex gap-3 items-center">
-                          <div>
-                            <p
+                      <div
+                        className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg mb-3`}
+                      >
+                        <div
+                          className={`px-6 py-4 flex flex-col items-center gap-3 `}
+                        >
+                          <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
+                            <Image
+                              src={'/uploadcloud.svg'}
+                              alt="upload icon"
+                              width={20}
+                              height={20}
+                            />
+                          </div>
+                          <div className="flex gap-2">
+                            <label
+                              htmlFor="drawingDocuments"
                               className={twMerge(
-                                `${senaryHeading} text-RoyalPurple font-semibold`
+                                `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
                               )}
                             >
-                              Click to upload
+                              Click to Upload
+                            </label>
+                            <input
+                              multiple
+                              type="file"
+                              name="drawingDocuments"
+                              id="drawingDocuments"
+                              className="hidden"
+                              accept="application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                              onChange={drawingsDocumentsUplodadHandler}
+                            />
+                            <p className={`text-steelGray ${minHeading}`}>
+                              or drag and drop
                             </p>
                           </div>
-                          <MinDescription
-                            className="text-steelGray font-popin text-center"
-                            title="or drag and drop"
-                          />
+
+                          <p className={`text-steelGray ${minHeading}`}>
+                            SVG, PNG, JPG or GIF (max. 800x400px)
+                          </p>
                         </div>
-                        <MinDescription
-                          className="text-steelGray font-popin text-center"
-                          title="SVG, PNG, JPG or GIF (max. 800x400px)"
-                        />
                       </div>
                     </div>
-                    <div className="w-60">
+                    <div>
                       <p
-                        className={`${senaryHeading} text-midnightBlue font-popin`}
+                        className={`${senaryHeading} text-midnightBlue font-popin mb-2`}
+                      >
+                        Takeoff Reports
+                      </p>
+                      <div
+                        className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg `}
+                      >
+                        <div
+                          className={`px-6 py-4 flex flex-col items-center gap-3 `}
+                        >
+                          <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
+                            <Image
+                              src={'/uploadcloud.svg'}
+                              alt="upload icon"
+                              width={20}
+                              height={20}
+                            />
+                          </div>
+                          <div className="flex gap-2">
+                            <label
+                              htmlFor="takeoffReports"
+                              className={twMerge(
+                                `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
+                              )}
+                            >
+                              Click to Upload
+                            </label>
+                            <input
+                              multiple
+                              type="file"
+                              name="otherDocuments"
+                              id="takeoffReports"
+                              className="hidden"
+                              onChange={takeoffReportsUploadHandler}
+                              accept="application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                            />
+                            <p className={`text-steelGray ${minHeading}`}>
+                              or drag and drop
+                            </p>
+                          </div>
+                          <p className={`text-steelGray ${minHeading}`}>
+                            SVG, PNG, JPG or GIF (max. 800x400px)
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <p
+                        className={`${senaryHeading} text-midnightBlue font-popin mb-2`}
                       >
                         Other Documents
                       </p>
-                      <div className="p-4 my-2 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg ">
-                        <Image
-                          src={'/uploadcloud.svg'}
-                          alt="upload icon"
-                          width={20}
-                          height={20}
-                          className="rounded-3xl border-5 border-paleblueGray bg-lightGrayish"
-                        />
-                        <div className="flex gap-3 items-center">
-                          <div>
-                            <p
+                      <div
+                        className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg `}
+                      >
+                        <div
+                          className={`px-6 py-4 flex flex-col items-center gap-3 `}
+                        >
+                          <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
+                            <Image
+                              src={'/uploadcloud.svg'}
+                              alt="upload icon"
+                              width={20}
+                              height={20}
+                            />
+                          </div>
+                          <div className="flex gap-2">
+                            <label
+                              htmlFor="otherDocuments"
                               className={twMerge(
-                                `${senaryHeading} text-RoyalPurple font-semibold`
+                                `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
                               )}
                             >
-                              Click to upload
+                              Click to Upload
+                            </label>
+                            <input
+                              multiple
+                              type="file"
+                              name="otherDocuments"
+                              id="otherDocuments"
+                              className="hidden"
+                              onChange={otherDocumentsUploadHandler}
+                              accept="application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                            />
+                            <p className={`text-steelGray ${minHeading}`}>
+                              or drag and drop
                             </p>
                           </div>
-                          <p
-                            className={`${minHeading} text-midnightBlue font-popin`}
-                          >
-                            or drag and drop
+                          <p className={`text-steelGray ${minHeading}`}>
+                            SVG, PNG, JPG or GIF (max. 800x400px)
                           </p>
                         </div>
-                        <p
-                          className={`${minHeading} text-midnightBlue font-popin text-center `}
-                        >
-                          SVG, PNG, JPG or GIF (max. 800x400px)
-                        </p>
                       </div>
+                    </div>
+                  </div>
+                  {uploadDocumentsError && <p>{uploadDocumentsError}</p>}
+                  <div className="grid grid-cols-4">
+                    <div className="max-w-xs">
+                      {drawingsDocuments.map((document: { name: string }) => (
+                        <div
+                          key={document.name}
+                          className="flex justify-between bg-violet-100 rounded-md py-1 px-2 my-2"
+                        >
+                          <p className="truncate hover:text-clip text-[14px]">
+                            {document.name}
+                          </p>
+                          <p
+                            className="cursor-pointer"
+                            onClick={() =>
+                              drawingDocumentDeleteHandler(document.name)
+                            }
+                          >
+                            {' '}
+                            <DeleteOutlined />
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="max-w-xs">
+                      {takeOffReports.map((document: { name: string }) => (
+                        <div
+                          key={document.name}
+                          className="flex justify-between bg-violet-100 rounded-md py-1 px-2 my-2"
+                        >
+                          <p className="truncate hover:text-clip text-[14px]">
+                            {document.name}
+                          </p>
+                          <p
+                            className="cursor-pointer"
+                            onClick={() =>
+                              takeoffDocumentDeleteHandler(document.name)
+                            }
+                          >
+                            {' '}
+                            <DeleteOutlined />
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="max-w-xs">
+                      {otherDocuments.map((document: { name: string }) => (
+                        <div
+                          key={document.name}
+                          className="flex justify-between bg-violet-100 rounded-md py-1 px-2 my-2"
+                        >
+                          <p className="truncate hover:text-clip text-[14px]">
+                            {document.name}
+                          </p>
+                          <p
+                            className="cursor-pointer"
+                            onClick={() =>
+                              otherDocumentDeleteHandler(document.name)
+                            }
+                          >
+                            {' '}
+                            <DeleteOutlined />
+                          </p>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
