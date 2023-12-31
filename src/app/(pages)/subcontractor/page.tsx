@@ -145,7 +145,7 @@ const SubcontractTable = () => {
             className="text-graphiteGray"
           />
           <Button
-            text="Add New subcontractor"
+            text="New subcontractor"
             className="!w-auto "
             icon="plus.svg"
             iconwidth={20}

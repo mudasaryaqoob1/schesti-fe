@@ -15,14 +15,8 @@ interface Props extends IPricingPlan {
   isYearly: boolean
 }
 const SinglePlan = (props: Props) => {
-  const router = useRouter();
-
   const { planName, monthlyPrice, planDescription, features, isYearly, yearlyPrice } = props;
-
-  const pricingPackageSelectionHandler = () => {
-    localStorage.setItem('pricingPlan' , JSON.stringify(props))
-    router.push('/payment')
-  }
+  const router = useRouter();
   return (
     <div
       className={`p-8 rounded-[20px] items-center flex flex-col justify-between shadow-secondaryShadow gap-5`}
@@ -72,7 +66,7 @@ const SinglePlan = (props: Props) => {
         <Button
           text="Buy"
           className="text-white self-stretch w-full"
-          onClick={pricingPackageSelectionHandler}
+          onClick={() => router.push('/payment')}
         />
       </div>
     </div>
