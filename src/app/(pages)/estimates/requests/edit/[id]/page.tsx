@@ -31,6 +31,7 @@ import { selectToken } from '@/redux/authSlices/auth.selector';
 import { IEstimateRequest } from '@/app/interfaces/estimateRequests/estimateRequests.interface';
 import { byteConverter } from '@/app/utils/byteConverter';
 import AwsS3 from '@/app/utils/S3Intergration';
+import { DeleteOutlined } from '@ant-design/icons';
 
 const clientInfoSchema: any = Yup.object({
   clientName: Yup.string().required('Field is required!'),
@@ -87,9 +88,14 @@ const EditEstimateRequest = () => {
 
   useEffect(() => {
     if (id) {
-      setEstimateRequestData(
-        estimateRequestsData?.find((item: any) => item._id === id)
+      const estimateRequest = estimateRequestsData?.find(
+        (item: any) => item._id === id
       );
+      setEstimateRequestData(estimateRequest);
+      setTakeOffReports(estimateRequest);
+      setDrawingsDocuments(estimateRequest.drawingsDocuments);
+      setOtherDocuments(estimateRequest.otherDocuments);
+      setTakeOffReports(estimateRequest.takeOffReports);
     }
   }, [id]);
 
@@ -125,24 +131,23 @@ const EditEstimateRequest = () => {
     setSalePersonsOption(saleManagers);
   }, []);
 
+
   const submitHandler = async (values: IEstimateRequest) => {
     if (drawingsDocuments.length == 0) {
       setuploadDocumentsError('Drawings Document Required');
     } else if (takeOffReports.length == 0) {
       setuploadDocumentsError('Takeoff Reports Required');
-    } 
-    else if(otherDocuments.length == 0){
+    } else if (otherDocuments.length == 0) {
       setuploadDocumentsError('Other Documents Required');
-    }
-    else {
+    } else {
       const [drawingDocs, takeOffDocs, otherDocs] = await Promise.all([
         uploadDocumentToS3Handler(drawingsDocuments),
         uploadDocumentToS3Handler(takeOffReports),
         uploadDocumentToS3Handler(otherDocuments),
       ]);
 
-      Promise.all([drawingDocs, takeOffDocs, otherDocs])
-        .then(async() => {
+      Promise.all([drawingDocs, takeOffDocs, takeOffDocs])
+        .then(async () => {
           let updateEstimateRequestData = {
             clientName: values.clientName,
             companyName: values.companyName,
@@ -154,11 +159,11 @@ const EditEstimateRequest = () => {
             projectInformation: values.projectInformation,
             salePerson: values.salePerson,
             estimator: values.estimator,
-            otherDocuments : otherDocs,
-            takeOffReports : takeOffDocs,
-            drawingsDocuments : drawingDocs,
+            otherDocuments: otherDocs,
+            takeOffReports: takeOffDocs,
+            drawingsDocuments: drawingDocs,
           };
-      
+
           let result = await estimateRequestService.httpUpdateEstimateRequest(
             updateEstimateRequestData,
             id
@@ -172,31 +177,38 @@ const EditEstimateRequest = () => {
           }
         })
         .catch(() => {
-          toast.error('Some thing went wrong during document uplaoding');
+          toast.error('Some thing went wrong during document uploading');
         });
     }
-
-
-   
   };
-
 
   const uploadDocumentToS3Handler = async (documents: any) => {
     let documentsData: Object[] = [];
     try {
       await Promise.all(
         Object.keys(documents).map(async (key: any) => {
-          const url = await new AwsS3(
-            documents[key],
-            'documents/estimates/'
-          ).getS3URL();
-          let obj = {
-            name: documents[key].name,
-            size: documents[key].size,
-            ext: documents[key].type,
-            url: url,
-          };
-          documentsData.push(obj);
+          if (documents[key].url) {
+            let obj = {
+              name: documents[key].name,
+              size: documents[key].size,
+              ext: documents[key].type,
+              url: documents[key].url,
+            };
+
+            documentsData.push(obj);
+          } else {
+            const url = await new AwsS3(
+              documents[key],
+              'documents/estimates/'
+            ).getS3URL();
+            let obj = {
+              name: documents[key].name,
+              size: documents[key].size,
+              ext: documents[key].type,
+              url: url,
+            };
+            documentsData.push(obj);
+          }
         })
       );
 
@@ -204,7 +216,7 @@ const EditEstimateRequest = () => {
     } catch (error) {
       toast.error('Error uploading documents');
       console.error('Error uploading documents:', error);
-    } 
+    }
   };
   const takeoffReportsUploadHandler = async (e: any) => {
     setuploadDocumentsError('');
@@ -296,9 +308,7 @@ const EditEstimateRequest = () => {
         enableReinitialize
         onSubmit={submitHandler}
       >
-        {({ handleSubmit, setFieldValue, errors }) => {
-          console.log(errors, 'errors');
-
+        {({ handleSubmit, setFieldValue }) => {
           return (
             <>
               <ModalComponent open={showModal} setOpen={setShowModal}>
@@ -421,7 +431,7 @@ const EditEstimateRequest = () => {
                     title="Uploads"
                     className="text-graphiteGray font-semibold"
                   />
-                     <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3">
                     <div>
                       <p
                         className={`${senaryHeading} text-midnightBlue font-popin mb-2`}
@@ -571,7 +581,7 @@ const EditEstimateRequest = () => {
                   {uploadDocumentsError && <p>{uploadDocumentsError}</p>}
                   <div className="grid grid-cols-4">
                     <div className="max-w-xs">
-                      {drawingsDocuments.map((document: { name: string }) => (
+                      {drawingsDocuments?.map((document: { name: string }) => (
                         <div
                           key={document.name}
                           className="flex justify-between bg-violet-100 rounded-md py-1 px-2 my-2"
@@ -592,7 +602,7 @@ const EditEstimateRequest = () => {
                       ))}
                     </div>
                     <div className="max-w-xs">
-                      {takeOffReports.map((document: { name: string }) => (
+                      {takeOffReports?.map((document: { name: string }) => (
                         <div
                           key={document.name}
                           className="flex justify-between bg-violet-100 rounded-md py-1 px-2 my-2"
@@ -613,7 +623,7 @@ const EditEstimateRequest = () => {
                       ))}
                     </div>
                     <div className="max-w-xs">
-                      {otherDocuments.map((document: { name: string }) => (
+                      {otherDocuments?.map((document: { name: string }) => (
                         <div
                           key={document.name}
                           className="flex justify-between bg-violet-100 rounded-md py-1 px-2 my-2"
