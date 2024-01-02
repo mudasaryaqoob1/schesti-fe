@@ -50,10 +50,9 @@ const Login = () => {
 
     if (result.payload.statusCode == 200) {
       setLoading(false);
-      if(result.payload.data.user.roles.includes('Company')){
+      if (result.payload.data.user.roles.includes('Company')) {
         router.push('/clients');
-      }
-      else if(result.payload.data.user.roles.includes('Admin')){
+      } else if (result.payload.data.user.roles.includes('Admin')) {
         router.push('/admin/companies');
       }
     } else {

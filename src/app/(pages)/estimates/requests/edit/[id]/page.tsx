@@ -131,7 +131,6 @@ const EditEstimateRequest = () => {
     setSalePersonsOption(saleManagers);
   }, []);
 
-
   const submitHandler = async (values: IEstimateRequest) => {
     if (drawingsDocuments.length == 0) {
       setuploadDocumentsError('Drawings Document Required');

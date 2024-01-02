@@ -3,13 +3,10 @@ import { FC } from 'react';
 
 interface ToggleBtnProps {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  planType: string
+  planType: string;
 }
 const Index: FC<ToggleBtnProps> = ({ planType, onChange }) => {
-
-
-  console.log(planType , 'planTypeplanType');
-  
+  console.log(planType, 'planTypeplanType');
 
   return (
     <div className=" min-w-[350px] h-14">

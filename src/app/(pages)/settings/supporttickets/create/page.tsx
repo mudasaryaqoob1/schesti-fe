@@ -62,7 +62,7 @@ const CreateTicket = () => {
 
   return (
     <SettingSidebar>
-      <section className='w-full' >
+      <section className="w-full">
         <div className="flex gap-1 items-center">
           <Description
             title="Support Ticket"
@@ -138,7 +138,7 @@ const CreateTicket = () => {
                   <div className="flex justify-end gap-2 mt-6">
                     <span>
                       <CustomButton
-                      onClick={() => router.push('/settings/supporttickets')}
+                        onClick={() => router.push('/settings/supporttickets')}
                         text="Cancel"
                         className="!bg-white !text-graphiteGray !border !border-celestialGray"
                       />

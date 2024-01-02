@@ -5,7 +5,6 @@ export const selectComapnyClient = (state: RootState) => state.companyClient;
 export const selectComapnySubcontractor = (state: RootState) =>
   state.companySubContractor;
 
-
 export const selectClientsLoading = createSelector(
   [selectComapnyClient],
   (companyClient) => companyClient.loading
@@ -25,4 +24,3 @@ export const selectSubcontracters = createSelector(
   [selectComapnySubcontractor],
   (companySubcontract) => companySubcontract.data
 );
-

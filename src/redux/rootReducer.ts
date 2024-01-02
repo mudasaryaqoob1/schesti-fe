@@ -24,7 +24,7 @@ export type RootState = {
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth', 'estimates' , 'supportTickets'],
+  whitelist: ['auth', 'estimates', 'supportTickets'],
 };
 
 const rootReducer = combineReducers<RootState>({
@@ -36,6 +36,5 @@ const rootReducer = combineReducers<RootState>({
   settingTargets: settingTargetsSlice,
   user: userSlice,
   pricingPlan: pricingPlanReducer,
-
 });
 export default persistReducer(persistConfig, rootReducer);

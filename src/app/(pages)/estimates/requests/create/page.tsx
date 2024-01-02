@@ -131,11 +131,9 @@ const CreateEstimateRequest = () => {
       setuploadDocumentsError('Drawings Document Required');
     } else if (takeOffReports.length == 0) {
       setuploadDocumentsError('Takeoff Reports Required');
-    } 
-    else if(otherDocuments.length == 0){
+    } else if (otherDocuments.length == 0) {
       setuploadDocumentsError('Other Documents Required');
-    }
-    else {
+    } else {
       const [drawingDocs, takeOffDocs, otherDocs] = await Promise.all([
         uploadDocumentToS3Handler(drawingsDocuments),
         uploadDocumentToS3Handler(takeOffReports),
@@ -148,9 +146,9 @@ const CreateEstimateRequest = () => {
             .httpAddNewEstimateRequest({
               ...values,
               phone: +values.phone,
-              otherDocuments : otherDocs,
-              takeOffReports : takeOffDocs,
-              drawingsDocuments : drawingDocs,
+              otherDocuments: otherDocs,
+              takeOffReports: takeOffDocs,
+              drawingsDocuments: drawingDocs,
             })
             .then((resp: any) => {
               if (resp.statusCode == 201) {
@@ -192,7 +190,7 @@ const CreateEstimateRequest = () => {
     } catch (error) {
       toast.error('Error uploading documents');
       console.error('Error uploading documents:', error);
-    } 
+    }
   };
   const takeoffReportsUploadHandler = async (e: any) => {
     setuploadDocumentsError('');

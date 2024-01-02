@@ -120,9 +120,7 @@ const EditSubcontractor = () => {
           title="Edit Subcontractor"
         />
         <Formik
-          initialValues={
-            subcontractorData ? subcontractorData : initialValues
-          }
+          initialValues={subcontractorData ? subcontractorData : initialValues}
           enableReinitialize={true}
           validationSchema={editSubcontractorSchema}
           onSubmit={submitHandler}

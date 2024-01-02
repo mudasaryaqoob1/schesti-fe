@@ -95,9 +95,7 @@ const EditClient = () => {
           width={16}
           height={16}
         />
-        <p className={`${senaryHeading} font-base text-slateGray`}>
-          My Client
-        </p>
+        <p className={`${senaryHeading} font-base text-slateGray`}>My Client</p>
         <Image
           src={'/chevron-right.svg'}
           alt="chevron-right icon"

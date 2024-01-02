@@ -1,6 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import initialSupportTicketsState from './supportTickets.initialState';
-import { deleteSupportTicket, fetchSupportTickets } from './supportTicket.thunk';
+import {
+  deleteSupportTicket,
+  fetchSupportTickets,
+} from './supportTicket.thunk';
 
 export const supportTicketSlice = createSlice({
   name: 'supportTickets',

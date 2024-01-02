@@ -2,10 +2,9 @@
 import { tertiaryHeading } from '@/globals/tailwindvariables';
 interface SwitchBtnProps {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  isDuration: string
+  isDuration: string;
 }
 const Index: React.FC<SwitchBtnProps> = ({ isDuration, onChange }) => {
-
   return (
     <label
       htmlFor="durationToggle"

@@ -9,7 +9,7 @@ export interface IEstimateRequest {
   projectInformation: string;
   salePerson: string;
   estimator: string;
-  otherDocuments?:Object[];
-  takeOffReports?:Object[];
-  drawingsDocuments?:Object[];
+  otherDocuments?: Object[];
+  takeOffReports?: Object[];
+  drawingsDocuments?: Object[];
 }

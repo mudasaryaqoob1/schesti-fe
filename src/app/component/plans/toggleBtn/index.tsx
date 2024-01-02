@@ -3,10 +3,9 @@ import { FC } from 'react';
 
 interface ToggleBtnProps {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  isChecked: boolean
+  isChecked: boolean;
 }
 const Index: FC<ToggleBtnProps> = ({ isChecked, onChange }) => {
-
   return (
     <div className=" min-w-[350px] h-14">
       <label

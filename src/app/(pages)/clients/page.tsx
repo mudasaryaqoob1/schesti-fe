@@ -58,10 +58,9 @@ const ClientTable = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
-  
   const clientsData = useSelector(selectClients);
   const companyClientsLoading = useSelector(selectClientsLoading);
-  
+
   const token = useSelector(selectToken);
   useLayoutEffect(() => {
     if (token) {
@@ -142,14 +141,9 @@ const ClientTable = () => {
 
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
-      <div
-        className={`${bg_style} p-5 border border-solid border-silverGray`}
-      >
+      <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
         <div className="flex justify-between items-center mb-4">
-          <TertiaryHeading
-            title="Client List"
-            className="text-graphiteGray"
-          />
+          <TertiaryHeading title="Client List" className="text-graphiteGray" />
           <Button
             text="Add New client"
             className="!w-auto "

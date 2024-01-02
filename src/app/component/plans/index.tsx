@@ -41,7 +41,7 @@ const PaymentPlans = () => {
   const [pricingPlansData, setPricingPlansData] = useState(
     [] as IPricingPlan[]
   );
-  const [isDuration, setIsDuration] = useState('monthly')
+  const [isDuration, setIsDuration] = useState('monthly');
 
   useEffect(() => {
     pricingPlansHandler();
@@ -52,7 +52,7 @@ const PaymentPlans = () => {
     const newPlansData = plansData.pricingPlans.filter(
       ({ type }: IPricingPlan) => type === currentPlanType
     );
-    
+
     setPlanType(event.target.checked);
     setPricingPlansData(newPlansData);
   };
@@ -67,12 +67,12 @@ const PaymentPlans = () => {
     if (statusCode === 200) {
       setPricingPlansData(
         pricingPlans.filter(
-          ({ type , duration }: IPricingPlan) => type === 'Individual' && duration === isDuration
+          ({ type, duration }: IPricingPlan) =>
+            type === 'Individual' && duration === isDuration
         )
       );
     }
   }, []);
-  
 
   return (
     <>
@@ -83,7 +83,9 @@ const PaymentPlans = () => {
       <div className="flex w-full align-items-center justify-center my-6">
         <SwitchBtn
           isChecked={isDuration}
-          onChange={(event) => setIsDuration(event.target.checked ? 'yearly' : 'monthly')}
+          onChange={(event) =>
+            setIsDuration(event.target.checked ? 'yearly' : 'monthly')
+          }
         />
       </div>
       {isLoading ? (
@@ -92,11 +94,11 @@ const PaymentPlans = () => {
         <p>Something Went Wrong</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-5">
-          {pricingPlansData.filter((plan) => plan.duration === isDuration)?.map(
-            (plan: IPricingPlan, index: React.Key | null | undefined) => {
+          {pricingPlansData
+            .filter((plan) => plan.duration === isDuration)
+            ?.map((plan: IPricingPlan, index: React.Key | null | undefined) => {
               return <SinglePlan key={index} {...plan} />;
-            }
-          )}
+            })}
         </div>
       )}
     </>

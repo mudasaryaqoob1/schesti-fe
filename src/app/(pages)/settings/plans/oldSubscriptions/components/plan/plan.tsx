@@ -11,10 +11,17 @@ import { Fragment } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 interface Props extends IPricingPlan {
-  setSelectedPlan: any
+  setSelectedPlan: any;
 }
 const SinglePlan = (props: Props) => {
-  const { planName, price, planDescription, features, duration , setSelectedPlan } = props;
+  const {
+    planName,
+    price,
+    planDescription,
+    features,
+    duration,
+    setSelectedPlan,
+  } = props;
   return (
     <div
       className={`p-8 rounded-[20px] items-center flex flex-col justify-between shadow-secondaryShadow gap-5`}
@@ -29,7 +36,9 @@ const SinglePlan = (props: Props) => {
           >
             ${price}
           </span>
-          <p className={`${minHeading} text-lightdark  font-normal`}>/{duration}</p>
+          <p className={`${minHeading} text-lightdark  font-normal`}>
+            /{duration}
+          </p>
         </div>
         <p className={`${quinaryHeading} text-lightdark2`}>{planDescription}</p>
         <div className="w-full h-px bg-mistyWhite"></div>
@@ -64,7 +73,7 @@ const SinglePlan = (props: Props) => {
         <Button
           text="Buy"
           className="text-white self-stretch w-full"
-          onClick={() => setSelectedPlan({planName ,price , duration })}
+          onClick={() => setSelectedPlan({ planName, price, duration })}
         />
       </div>
     </div>

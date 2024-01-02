@@ -68,7 +68,7 @@ export default {
         darkblue: '#3159FE',
         lightenGreyish: '#949494',
         wedgeWood: '#5A7184',
-        vividRed: '#EC2224'
+        vividRed: '#EC2224',
       },
       boxShadow: {
         // Soft Glow for Primary Element

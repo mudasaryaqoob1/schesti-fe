@@ -17,7 +17,10 @@ class UserService extends HttpService {
   httpAddNewEmployee = (data: any): Promise<IResponseInterface<any>> =>
     this.post(`${this.userPrefix}/newEmployee`, data);
 
-  httpUpdateEmployee = (data: any, id: string): Promise<IResponseInterface<any>> =>
+  httpUpdateEmployee = (
+    data: any,
+    id: string
+  ): Promise<IResponseInterface<any>> =>
     this.post(`${this.userPrefix}/updateEmployee/${id}`, data);
 
   httpBlockEmployee = (id: string): Promise<IResponseInterface<any>> =>
@@ -38,14 +41,14 @@ class UserService extends HttpService {
       `${this.userPrefix}/users?page=${page}&limit=${limit}&queryRoles=${queryRoles}`
     );
 
-    httpGetAdminUsers = (
-      page: number,
-      limit: number = 9,
-      queryRoles: String
-    ): Promise<IResponseInterface<any>> =>
-      this.get(
-        `${this.userPrefix}/admin/users?page=${page}&limit=${limit}&queryRoles=${queryRoles}`
-      );
+  httpGetAdminUsers = (
+    page: number,
+    limit: number = 9,
+    queryRoles: String
+  ): Promise<IResponseInterface<any>> =>
+    this.get(
+      `${this.userPrefix}/admin/users?page=${page}&limit=${limit}&queryRoles=${queryRoles}`
+    );
 
   // company client services
   httpGetCompanyClients = (

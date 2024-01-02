@@ -19,8 +19,8 @@ const PaypalIntegration = () => {
   const router = useRouter();
 
   const [product] = useState<IPaymentProps>({
-    packageName: 'Go FullStack with KnowledgeHut',
-    packagePrice: 1000,
+    planID: 'Go FullStack with KnowledgeHut',
+    autoRenew: true,
   });
 
   const createOrder = async () => {

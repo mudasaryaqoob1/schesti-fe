@@ -17,9 +17,9 @@ const SinglePlan = (props: IPricingPlan) => {
   const { planName, price, planDescription, features, duration } = props;
 
   const pricingPackageSelectionHandler = () => {
-    localStorage.setItem('pricingPlan' , JSON.stringify(props))
-    router.push(`/payment`)
-  }
+    localStorage.setItem('pricingPlan', JSON.stringify(props));
+    router.push(`/payment`);
+  };
   return (
     <div
       className={`p-8 rounded-[20px] items-center flex flex-col justify-between shadow-secondaryShadow gap-5`}
@@ -34,7 +34,9 @@ const SinglePlan = (props: IPricingPlan) => {
           >
             ${price}
           </span>
-          <p className={`${minHeading} text-lightdark  font-normal`}>/{duration}</p>
+          <p className={`${minHeading} text-lightdark  font-normal`}>
+            /{duration}
+          </p>
         </div>
         <p className={`${quinaryHeading} text-lightdark2`}>{planDescription}</p>
         <div className="w-full h-px bg-mistyWhite"></div>

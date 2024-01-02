@@ -23,9 +23,8 @@ import { HttpService } from '@/app/services/base.service';
 const Payment = () => {
   const router = useRouter();
 
-
   const token = useSelector(selectToken);
-  
+
   useLayoutEffect(() => {
     if (token) {
       HttpService.setToken(token);
@@ -33,7 +32,7 @@ const Payment = () => {
   }, [token]);
 
   const [selectedPLan, setSelectedPLan] = useState<IPricingPlan>();
-  const [autoRenew, setAutoRenew] = useState(true)
+  const [autoRenew, setAutoRenew] = useState(true);
 
   useEffect(() => {
     let pricingPlan: any = localStorage.getItem('pricingPlan');
@@ -97,7 +96,9 @@ const Payment = () => {
               <div className="">
                 <div className="flex align-center justify-between border-b-[1px] py-4">
                   <p className="text-[#667085] text-[18px]">Plan Price</p>
-                  <h6 className="text-[#1D2939] text-[18px]">${selectedPLan?.price}</h6>
+                  <h6 className="text-[#1D2939] text-[18px]">
+                    ${selectedPLan?.price}
+                  </h6>
                 </div>
                 <div className="flex align-center justify-between border-b-[1px] py-4">
                   <p className="text-[#667085] text-[18px]">Discount</p>
@@ -105,7 +106,9 @@ const Payment = () => {
                 </div>
                 <div className="flex align-center justify-between border-b-[1px] py-4">
                   <p className="text-[#667085] text-[18px]">Total</p>
-                  <h6 className="text-[#1D2939] text-[18px]">${selectedPLan?.price}</h6>
+                  <h6 className="text-[#1D2939] text-[18px]">
+                    ${selectedPLan?.price}
+                  </h6>
                 </div>
                 {/* <h5 className="text-[#1D2939] text-[18px] mt-4">$40.00</h5> */}
               </div>
@@ -125,8 +128,7 @@ const Payment = () => {
                     checkedChildren={<CheckOutlined />}
                     unCheckedChildren={<CloseOutlined />}
                     defaultChecked
-                    onChange={(checked) => setAutoRenew(checked)
-                    }
+                    onChange={(checked) => setAutoRenew(checked)}
                   />
                 </div>
               </div>

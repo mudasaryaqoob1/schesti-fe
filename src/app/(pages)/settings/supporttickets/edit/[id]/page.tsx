@@ -81,19 +81,22 @@ const EditSupportTicket = () => {
 
   return (
     <SettingSidebar>
-        <section className="w-full">
-      <div className="flex gap-1 items-center">
-        <Description title="Support Ticket" className="font-base text-slateGray" />
-        <Image
-          src="/chevron-right.svg"
-          alt="chevron-right icon"
-          width={16}
-          height={16}
-        />
-        <Description title="Update Ticket" className="text-RoyalPurple" />
-      </div>
-      <div className="mt-6 ">
-        {/* <div>
+      <section className="w-full">
+        <div className="flex gap-1 items-center">
+          <Description
+            title="Support Ticket"
+            className="font-base text-slateGray"
+          />
+          <Image
+            src="/chevron-right.svg"
+            alt="chevron-right icon"
+            width={16}
+            height={16}
+          />
+          <Description title="Update Ticket" className="text-RoyalPurple" />
+        </div>
+        <div className="mt-6 ">
+          {/* <div>
           <Image
             src="/support-ticket.png"
             width={400}
@@ -101,99 +104,97 @@ const EditSupportTicket = () => {
             alt="support-img"
           />
         </div> */}
-        <div className="col-span-2">
-          <Formik
-            initialValues={
-              supportTicketData
-                ? {
-                  title: supportTicketData.title,
-                  description: supportTicketData.description,
-                }
-                : initialValues
-            }
-            validationSchema={validationSchema}
-            enableReinitialize
-            onSubmit={onSubmit}
-          >
-            {({ handleSubmit }) => {
-              return (
-                <Form
-                  name="basic"
-                  onSubmit={handleSubmit}
-                  className="flex flex-col gap-5 px-5 py-6 shadow-primaryGlow rounded-2xl"
-                >
-                  <FormControl
-                    control="input"
-                    label="Title"
-                    type="text"
-                    name="title"
-                    placeholder="Enter title"
-                  />
-                  <FormControl
-                    control="textarea"
-                    label="Description"
-                    type="text"
-                    name="description"
-                    placeholder="Write message here"
-                  />
-                  <div
-                    className="p-6 flex items-center flex-col gap-2 border-2
-            border-silverGray pb-4 rounded-lg "
+          <div className="col-span-2">
+            <Formik
+              initialValues={
+                supportTicketData
+                  ? {
+                      title: supportTicketData.title,
+                      description: supportTicketData.description,
+                    }
+                  : initialValues
+              }
+              validationSchema={validationSchema}
+              enableReinitialize
+              onSubmit={onSubmit}
+            >
+              {({ handleSubmit }) => {
+                return (
+                  <Form
+                    name="basic"
+                    onSubmit={handleSubmit}
+                    className="flex flex-col gap-5 px-5 py-6 shadow-primaryGlow rounded-2xl"
                   >
-                    <Image
-                      src="/uploadcloud.svg"
-                      alt="upload icon"
-                      width={20}
-                      height={20}
-                      className="rounded-3xl border-5 border-paleblueGray bg-lightGrayish"
+                    <FormControl
+                      control="input"
+                      label="Title"
+                      type="text"
+                      name="title"
+                      placeholder="Enter title"
                     />
-                    <div className="flex gap-1 items-center">
-                      <div>
-                        <p
-                          className={twMerge(
-                            `${senaryHeading}
+                    <FormControl
+                      control="textarea"
+                      label="Description"
+                      type="text"
+                      name="description"
+                      placeholder="Write message here"
+                    />
+                    <div
+                      className="p-6 flex items-center flex-col gap-2 border-2
+            border-silverGray pb-4 rounded-lg "
+                    >
+                      <Image
+                        src="/uploadcloud.svg"
+                        alt="upload icon"
+                        width={20}
+                        height={20}
+                        className="rounded-3xl border-5 border-paleblueGray bg-lightGrayish"
+                      />
+                      <div className="flex gap-1 items-center">
+                        <div>
+                          <p
+                            className={twMerge(
+                              `${senaryHeading}
                         text-RoyalPurple font-semibold`
-                          )}
-                        >
-                          Doc
-                        </p>
+                            )}
+                          >
+                            Doc
+                          </p>
+                        </div>
+                        <MinDescription
+                          className="text-steelGray font-popin text-center"
+                          title="or drag and drop"
+                        />
                       </div>
                       <MinDescription
                         className="text-steelGray font-popin text-center"
-                        title="or drag and drop"
+                        title="SVG, PNG, JPG or GIF (max. 800x400px)"
                       />
                     </div>
-                    <MinDescription
-                      className="text-steelGray font-popin text-center"
-                      title="SVG, PNG, JPG or GIF (max. 800x400px)"
-                    />
-                  </div>
-                  <div className="flex justify-end gap-2 mt-6">
-                    <span>
-                      <CustomButton
-                        text="Cancel"
-                        className="!bg-white !text-graphiteGray !border !border-celestialGray"
-                      />
-                    </span>
-                    <span>
-                      <CustomButton
-                        text="Update Ticket"
-                        type="submit"
-                        className="!bg-mediumSlateBlue"
-                        isLoading={isLoading}
-                      />
-                    </span>
-                  </div>
-                </Form>
-              );
-            }}
-          </Formik>
+                    <div className="flex justify-end gap-2 mt-6">
+                      <span>
+                        <CustomButton
+                          text="Cancel"
+                          className="!bg-white !text-graphiteGray !border !border-celestialGray"
+                        />
+                      </span>
+                      <span>
+                        <CustomButton
+                          text="Update Ticket"
+                          type="submit"
+                          className="!bg-mediumSlateBlue"
+                          isLoading={isLoading}
+                        />
+                      </span>
+                    </div>
+                  </Form>
+                );
+              }}
+            </Formik>
+          </div>
         </div>
-      </div>
-    </section>
-
+      </section>
     </SettingSidebar>
-  
   );
 };
 

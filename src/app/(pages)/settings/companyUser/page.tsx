@@ -84,7 +84,7 @@ const Index = () => {
       router.push('/settings/companyUser/addCompanyUser/');
       dispatch(setCurrentUser(user));
     } else if (key === 'delete') {
-      deleteCompanyEmployeeHandler(user.key)
+      deleteCompanyEmployeeHandler(user.key);
     }
   };
 
@@ -128,7 +128,7 @@ const Index = () => {
             items,
             onClick: (event) => {
               const { key } = event;
-              console.log({ record })
+              console.log({ record });
               handleDropdownItemClick(key, record);
             },
           }}

@@ -62,7 +62,11 @@ export const fetchAdminUsers = createAsyncThunk(
     { rejectWithValue }: any
   ) => {
     try {
-      const response = await userService.httpGetAdminUsers(page, limit, queryRoles);
+      const response = await userService.httpGetAdminUsers(
+        page,
+        limit,
+        queryRoles
+      );
       return response;
     } catch (error: any) {
       return rejectWithValue(

@@ -5,9 +5,7 @@ import { fetchPricingPlan } from './pricingPlan.thunk';
 export const pricingPlanSlice = createSlice({
   name: 'pricingPlan',
   initialState: initialPricingPlanState,
-  reducers: {
-
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder.addCase(fetchPricingPlan.pending, (state) => {
       state.loading = true;

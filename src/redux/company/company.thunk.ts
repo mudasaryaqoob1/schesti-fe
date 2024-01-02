@@ -3,7 +3,6 @@ import { userService } from '@/app/services/user.service';
 import { subcontractorService } from '@/app/services/subcontractor.service';
 import { estimateRequestService } from '@/app/services/estimateRequest.service';
 
-
 interface FetchClientParams {
   page: number;
   limit: number;
@@ -13,8 +12,6 @@ interface FetchSubcontractorParams {
   page: number;
   limit: number;
 }
-
-
 
 export const fetchCompanyClients = createAsyncThunk(
   'company/clients',
@@ -48,8 +45,6 @@ export const fetchCompanySubcontractors = createAsyncThunk(
     }
   }
 );
-
-
 
 export const fetchEstimateRequests = createAsyncThunk(
   'company/getAllEstimateRequests',
@@ -114,4 +109,3 @@ export const deleteEstimateRequest = createAsyncThunk(
     }
   }
 );
-

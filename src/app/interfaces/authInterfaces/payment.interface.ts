@@ -1,4 +1,4 @@
 export interface IPaymentProps {
-  planID: string | undefined ;
-  autoRenew : boolean
+  planID: string | undefined;
+  autoRenew: boolean;
 }

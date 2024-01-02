@@ -3,9 +3,7 @@ import React from 'react';
 import Records from './requests/records';
 
 const EstimateRequests = () => {
-  return (
-    <Records />
-  );
+  return <Records />;
 };
 
 export default EstimateRequests;

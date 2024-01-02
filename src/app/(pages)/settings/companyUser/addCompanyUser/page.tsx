@@ -96,8 +96,6 @@ const AddNewUser = () => {
           toast.error(error.response.data.message);
         });
     }
-
-
   };
   return (
     <VerticleBar>

@@ -1,4 +1,3 @@
-
 interface IPricingPlanState {
   loading: boolean;
   data?: any;

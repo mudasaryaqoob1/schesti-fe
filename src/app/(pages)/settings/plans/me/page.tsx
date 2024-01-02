@@ -1,7 +1,7 @@
 'use client';
 import Button from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
-import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
+// import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
 import {
   tertiaryHeading,
   quinaryHeading,
@@ -12,10 +12,10 @@ import { useRouter } from 'next/navigation';
 import { Fragment } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-interface Props extends IPricingPlan {
-  isYearly: boolean;
-}
-const MySubscription = (props: Partial<Props>) => {
+// interface Props extends IPricingPlan {
+//   isYearly: boolean;
+// }
+const MySubscription = (props: any) => {
   const {
     planName = 'My Subscriptions',
     price = '25',
@@ -57,7 +57,7 @@ const MySubscription = (props: Partial<Props>) => {
               Features
             </h4>
             <div className="flex gap-2 flex-col">
-              {features.split(',').map((benefit, index) => (
+              {features.split(',').map((benefit : any, index : any) => (
                 <Fragment key={index}>
                   <div className="self-start flex gap-2 items-center">
                     <Image

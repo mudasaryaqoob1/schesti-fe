@@ -2,10 +2,9 @@
 import { tertiaryHeading } from '@/globals/tailwindvariables';
 interface SwitchBtnProps {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  isChecked: string
+  isChecked: string;
 }
 const Index: React.FC<SwitchBtnProps> = ({ isChecked, onChange }) => {
-
   return (
     <label
       htmlFor="durationToggle"

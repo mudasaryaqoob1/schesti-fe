@@ -2,14 +2,17 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { pricingPlanService } from './pricingPlan.service';
 
 type PageLimit = {
-  page: number,
-  limit: number
-}
+  page: number;
+  limit: number;
+};
 export const fetchPricingPlan = createAsyncThunk(
   'admin/pricingPlan',
   async ({ page, limit }: PageLimit, thunkAPI) => {
     try {
-      const response = await pricingPlanService.httpGetPricingPlans(page, limit);
+      const response = await pricingPlanService.httpGetPricingPlans(
+        page,
+        limit
+      );
       return response;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(
