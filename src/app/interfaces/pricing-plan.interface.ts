@@ -1,9 +1,9 @@
 export interface IPricingPlan {
     _id?: string;
-    planType: string;
+    type: string;
     planName: string;
-    monthlyPrice: number;
-    yearlyPrice: number;
+    price: number;
+    duration: string;
     freeTrailDays: number;
     planDescription: string;
     features: string;

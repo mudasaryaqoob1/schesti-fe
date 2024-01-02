@@ -62,8 +62,8 @@ class AuthService extends HttpService {
     data: IPaymentProps
   ): Promise<
     IResponseInterface<{
-      status: number;
-      msg: string;
+      statusCode: number;
+      message: string;
       data: any;
     }>
   > => this.post(`${this.prefix}/stripe-checkout`, data);

@@ -3,9 +3,13 @@ import { FC } from 'react';
 
 interface ToggleBtnProps {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  isChecked: boolean
+  planType: string
 }
-const Index: FC<ToggleBtnProps> = ({ isChecked, onChange }) => {
+const Index: FC<ToggleBtnProps> = ({ planType, onChange }) => {
+
+
+  console.log(planType , 'planTypeplanType');
+  
 
   return (
     <div className=" min-w-[350px] h-14">
@@ -18,7 +22,7 @@ const Index: FC<ToggleBtnProps> = ({ isChecked, onChange }) => {
           type="checkbox"
           className="hidden peer"
           onChange={onChange}
-          checked={isChecked}
+          checked={planType === 'Individual' ? true : false}
         />
         <span
           className={`px-4 py-2 rounded-l-md dark:bg-lavenderPurple peer-checked:dark:bg-cloudWhite flex-1 text-center

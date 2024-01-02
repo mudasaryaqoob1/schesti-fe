@@ -41,7 +41,7 @@ const PaymentPlans = () => {
   const [pricingPlansData, setPricingPlansData] = useState(
     [] as IPricingPlan[]
   );
-  const [isYearly, setIsYearly] = useState(false);
+  const [isDuration, setIsDuration] = useState('monthly')
 
   useEffect(() => {
     pricingPlansHandler();
@@ -50,8 +50,9 @@ const PaymentPlans = () => {
   const handlePlanType = (event: ChangeEvent<HTMLInputElement>) => {
     const currentPlanType = event.target.checked ? 'Enterprise' : 'Individual';
     const newPlansData = plansData.pricingPlans.filter(
-      ({ planType }: IPricingPlan) => planType === currentPlanType
+      ({ type }: IPricingPlan) => type === currentPlanType
     );
+    
     setPlanType(event.target.checked);
     setPricingPlansData(newPlansData);
   };
@@ -66,11 +67,12 @@ const PaymentPlans = () => {
     if (statusCode === 200) {
       setPricingPlansData(
         pricingPlans.filter(
-          ({ planType }: IPricingPlan) => planType === 'Individual'
+          ({ type , duration }: IPricingPlan) => type === 'Individual' && duration === isDuration
         )
       );
     }
   }, []);
+  
 
   return (
     <>
@@ -80,8 +82,8 @@ const PaymentPlans = () => {
       </div>
       <div className="flex w-full align-items-center justify-center my-6">
         <SwitchBtn
-          isChecked={isYearly}
-          onChange={(event) => setIsYearly(event.target.checked)}
+          isChecked={isDuration}
+          onChange={(event) => setIsDuration(event.target.checked ? 'yearly' : 'monthly')}
         />
       </div>
       {isLoading ? (
@@ -90,9 +92,9 @@ const PaymentPlans = () => {
         <p>Something Went Wrong</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-5">
-          {pricingPlansData?.map(
+          {pricingPlansData.filter((plan) => plan.duration === isDuration)?.map(
             (plan: IPricingPlan, index: React.Key | null | undefined) => {
-              return <SinglePlan key={index} {...plan} isYearly={isYearly} />;
+              return <SinglePlan key={index} {...plan} />;
             }
           )}
         </div>

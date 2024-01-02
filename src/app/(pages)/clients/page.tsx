@@ -58,11 +58,11 @@ const ClientTable = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
-  const token = useSelector(selectToken);
-
+  
   const clientsData = useSelector(selectClients);
   const companyClientsLoading = useSelector(selectClientsLoading);
-
+  
+  const token = useSelector(selectToken);
   useLayoutEffect(() => {
     if (token) {
       HttpService.setToken(token);

@@ -11,17 +11,14 @@ import { useRouter } from 'next/navigation';
 import { Fragment } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-interface Props extends IPricingPlan {
-  isYearly: boolean
-}
-const SinglePlan = (props: Props) => {
+const SinglePlan = (props: IPricingPlan) => {
   const router = useRouter();
 
-  const { planName, monthlyPrice, planDescription, features, isYearly, yearlyPrice } = props;
+  const { planName, price, planDescription, features, duration } = props;
 
   const pricingPackageSelectionHandler = () => {
     localStorage.setItem('pricingPlan' , JSON.stringify(props))
-    router.push('/payment')
+    router.push(`/payment`)
   }
   return (
     <div
@@ -35,9 +32,9 @@ const SinglePlan = (props: Props) => {
             tracking-[-0.72px] font-semibold
             text-[42px] leading-[46px] !text-goldenrodYellow"
           >
-            ${isYearly ? yearlyPrice : monthlyPrice}
+            ${price}
           </span>
-          <p className={`${minHeading} text-lightdark  font-normal`}>/{isYearly ? 'Year' : 'Month'}</p>
+          <p className={`${minHeading} text-lightdark  font-normal`}>/{duration}</p>
         </div>
         <p className={`${quinaryHeading} text-lightdark2`}>{planDescription}</p>
         <div className="w-full h-px bg-mistyWhite"></div>

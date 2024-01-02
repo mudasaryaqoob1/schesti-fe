@@ -1,4 +1,4 @@
 export interface IPaymentProps {
-  packageName: string;
-  packagePrice: number;
+  planID: string | undefined ;
+  autoRenew : boolean
 }

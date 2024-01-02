@@ -2,7 +2,7 @@
 import { tertiaryHeading } from '@/globals/tailwindvariables';
 interface SwitchBtnProps {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  isChecked: boolean
+  isChecked: string
 }
 const Index: React.FC<SwitchBtnProps> = ({ isChecked, onChange }) => {
 
@@ -17,7 +17,7 @@ const Index: React.FC<SwitchBtnProps> = ({ isChecked, onChange }) => {
           id="durationToggle"
           type="checkbox"
           className="hidden peer"
-          checked={isChecked}
+          checked={isChecked === 'yearly' ? true : false}
           onChange={onChange}
         />
         <div className="w-16 h-8 rounded-full shadow-inner dark:bg-greenishGreen peer-checked:dark:bg-primaryGradient py-1 px-2 "></div>
