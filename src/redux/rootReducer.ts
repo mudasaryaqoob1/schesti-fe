@@ -10,6 +10,7 @@ import supportTicketsSlice from './supportTickets/supportTickets.slice';
 import settingTargetsSlice from './company/settingSlices/settingTarget.slice';
 import userSlice from './userSlice/user.slice';
 import pricingPlanReducer from './pricingPlanSlice/pricingPlanSlice';
+import companySetupReducer from './company/settingSlices/settingCompanySetup.slice';
 
 export type RootState = {
   auth: any;
@@ -20,6 +21,7 @@ export type RootState = {
   settingTargets: any;
   user: any;
   pricingPlan: any;
+  companySetups: any;
 };
 const persistConfig = {
   key: 'root',
@@ -36,5 +38,6 @@ const rootReducer = combineReducers<RootState>({
   settingTargets: settingTargetsSlice,
   user: userSlice,
   pricingPlan: pricingPlanReducer,
+  companySetups: companySetupReducer
 });
 export default persistReducer(persistConfig, rootReducer);

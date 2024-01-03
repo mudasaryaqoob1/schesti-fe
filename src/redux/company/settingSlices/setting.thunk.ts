@@ -6,6 +6,7 @@ interface FetchSettingTargetParams {
   limit: number;
 }
 
+// setting targets
 export const fetchSettingTargets = createAsyncThunk(
   'setting/targets',
   async ({ page, limit }: FetchSettingTargetParams, { rejectWithValue }) => {
@@ -18,7 +19,7 @@ export const fetchSettingTargets = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
-          'An error occurred while fetching the feed records'
+        'An error occurred while fetching the feed records'
       );
     }
   }
@@ -34,8 +35,44 @@ export const deleteSettingTarget = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
-          'An error occurred while fetching the feed records'
+        'An error occurred while fetching the feed records'
       );
     }
   }
 );
+
+// company setup thunks
+export const fetchCompanySetups = createAsyncThunk(
+  'setting/companySetups',
+  async ({ page, limit }: FetchSettingTargetParams, { rejectWithValue }) => {
+    try {
+      const response = await settingTargetService.httpGetAllSettingTargets(
+        page,
+        limit
+      );
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data ||
+        'An error occurred while fetching the feed records'
+      );
+    }
+  }
+);
+
+export const deleteCompanySetup = createAsyncThunk(
+  'setting/deleteCompanySetup',
+  async (targetId: string, { rejectWithValue }) => {
+    try {
+      const response =
+        await settingTargetService.httpDeleteSettingTarget(targetId);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data ||
+        'An error occurred while fetching the feed records'
+      );
+    }
+  }
+);
+

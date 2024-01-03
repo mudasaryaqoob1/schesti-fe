@@ -14,4 +14,20 @@ const initialSettingTargetsState: SettingTargetsInitialData = {
   statusCode: null,
 };
 
+interface SettingCompanySetupInitialData {
+  loading: boolean;
+  error?: string | null;
+  message?: string | null;
+  statusCode: number | null;
+  data: any;
+}
+
+export const initialCompanySetupState: SettingCompanySetupInitialData = {
+  loading: false,
+  error: null,
+  message: null,
+  data: null,
+  statusCode: null,
+};
+
 export default initialSettingTargetsState;
