@@ -5,7 +5,7 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useRouter } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
@@ -18,7 +18,7 @@ import { quinaryHeading, btnStyle } from '@/globals/tailwindvariables';
 import Button from '@/app/component/customButton/button';
 import WelcomeWrapper from '@/app/component/welcomeLayout';
 import { ILogInInterface } from '@/app/interfaces/authInterfaces/login.interface';
-import { login, loginWithGoogle } from '@/redux/authSlices/auth.thunk';
+import { loginWithGoogle } from '@/redux/authSlices/auth.thunk';
 import PrimaryHeading from '@/app/component/headings/primary';
 import Description from '@/app/component/description';
 
@@ -46,19 +46,43 @@ const Login = () => {
 
   const submitHandler = async ({ email, password }: ILogInInterface) => {
     setLoading(true);
-    let result: any = await dispatch(login({ email, password }));
 
-    if (result.payload.statusCode == 200) {
-      setLoading(false);
-      if (result.payload.data.user.roles.includes('Company')) {
-        router.push('/clients');
-      } else if (result.payload.data.user.roles.includes('Admin')) {
-        router.push('/admin/companies');
-      }
-    } else {
-      setLoading(false);
-      toast.error(result.payload.message);
-    }
+    let data = JSON.stringify({
+      "email": `${email}`,
+      "password": `${password}`
+    });
+    
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: 'http://localhost:4000/api/auth/login',
+      headers: { 
+        'Content-Type': 'application/json'
+      },
+      data : data
+    };
+    
+    axios.request(config)
+    .then((response) => {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+
+    // let result: any = await dispatch(login({ email, password }));
+
+    // if (result.payload.statusCode == 200) {
+    //   setLoading(false);
+    //   if (result.payload.data.user.roles.includes('Company')) {
+    //     router.push('/clients');
+    //   } else if (result.payload.data.user.roles.includes('Admin')) {
+    //     router.push('/admin/companies');
+    //   }
+    // } else {
+    //   setLoading(false);
+    //   toast.error(result.payload.message);
+    // }
   };
 
   const googleAuthenticationHandler: any = useGoogleLogin({
