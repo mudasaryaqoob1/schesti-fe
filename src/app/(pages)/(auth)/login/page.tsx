@@ -47,6 +47,8 @@ const Login = () => {
   const submitHandler = async ({ email, password }: ILogInInterface) => {
     setLoading(true);
 
+    
+
     let data = JSON.stringify({
       "email": `${email}`,
       "password": `${password}`
@@ -55,13 +57,16 @@ const Login = () => {
     let config = {
       method: 'post',
       maxBodyLength: Infinity,
-      url: 'http://localhost:4000/api/auth/login',
+      url: 'https://api.schesti.com/api/auth/login',
       headers: { 
         'Content-Type': 'application/json'
       },
       data : data
     };
     
+
+    console.log(config);
+
     axios.request(config)
     .then((response) => {
       console.log(JSON.stringify(response.data));

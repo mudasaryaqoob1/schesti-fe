@@ -12,6 +12,8 @@ RUN npm install
 
 COPY . ./
 
+RUN cp .env.dev .env
+
 RUN npm run build
 
 EXPOSE 3000
