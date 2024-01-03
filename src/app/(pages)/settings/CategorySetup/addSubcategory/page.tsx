@@ -1,20 +1,20 @@
 'use client';
 
+import React, { useLayoutEffect } from 'react'
+import { Form, Formik } from 'formik';
+import { Table } from 'antd'
+import Image from 'next/image';
+import { useSelector } from 'react-redux';
+import { selectSettingTargets, selectSettingTargetsLoading } from '@/redux/company/settingSlices/settingSelector';
 import { HttpService } from '@/app/services/base.service';
 import { bg_style } from '@/globals/tailwindvariables'
 import { selectToken } from '@/redux/authSlices/auth.selector';
-import { selectSettingTargets, selectSettingTargetsLoading } from '@/redux/company/settingSlices/settingSelector';
-import { Table } from 'antd'
-import Image from 'next/image';
-import React, { useCallback, useEffect, useLayoutEffect } from 'react'
-import { useSelector } from 'react-redux';
 import type { ColumnsType } from 'antd/es/table';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import CustomButton from '@/app/component/customButton/button';
 import SettingSidebar from '../../verticleBar';
 import * as Yup from 'yup';
 import FormControl from '@/app/component/formControl';
-import { Form, Formik } from 'formik';
 
 export interface DataType {
     categoryId: string;
@@ -45,14 +45,6 @@ const AddCategory = () => {
             HttpService.setToken(token);
         }
     }, [token]);
-
-    const fetchSettingTargetsHandler = useCallback(async () => {
-        //   await dispatch(fetchSettingTargets({ page: 1, limit: 10 }));
-    }, []);
-
-    useEffect(() => {
-        fetchSettingTargetsHandler();
-    }, []);
 
     const columns: ColumnsType<DataType> = [
         {
@@ -149,7 +141,6 @@ const AddCategory = () => {
                                             className="!w-auto "
                                             iconwidth={20}
                                             iconheight={20}
-                                        // onClick={() => setShowCreateModal(true)}
                                         />
                                     </div>
                                 </Form>

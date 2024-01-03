@@ -30,4 +30,5 @@ export const initialCompanySetupState: SettingCompanySetupInitialData = {
   statusCode: null,
 };
 
+
 export default initialSettingTargetsState;

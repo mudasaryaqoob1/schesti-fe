@@ -6,7 +6,7 @@ import { selectToken } from '@/redux/authSlices/auth.selector';
 import { selectSettingTargets, selectSettingTargetsLoading } from '@/redux/company/settingSlices/settingSelector';
 import { Table } from 'antd'
 import Image from 'next/image';
-import React, { useCallback, useEffect, useLayoutEffect } from 'react'
+import React, { useLayoutEffect } from 'react'
 import { useSelector } from 'react-redux';
 import type { ColumnsType } from 'antd/es/table';
 import TertiaryHeading from '@/app/component/headings/tertiary';
@@ -42,14 +42,6 @@ const AddCategory = () => {
         }
     }, [token]);
 
-    const fetchSettingTargetsHandler = useCallback(async () => {
-        //   await dispatch(fetchSettingTargets({ page: 1, limit: 10 }));
-    }, []);
-
-    useEffect(() => {
-        fetchSettingTargetsHandler();
-    }, []);
-
     const columns: ColumnsType<DataType> = [
         {
             title: 'Category  ID',
@@ -74,7 +66,6 @@ const AddCategory = () => {
                         width={20}
                         height={20}
                         alt="delete"
-                    // onClick={() => dispatch(deleteSettingTarget(record._id))}
                     />
                     <Image
                         src="/edit.svg"
@@ -82,10 +73,6 @@ const AddCategory = () => {
                         width={20}
                         height={20}
                         alt="edit"
-                        onClick={() => {
-                            // setSelectedTarget(record);
-                            //   setShowEditModal(true);
-                        }}
                     />
                 </div>
             ),
@@ -129,7 +116,6 @@ const AddCategory = () => {
                                             className="!w-auto "
                                             iconwidth={20}
                                             iconheight={20}
-                                        // onClick={() => setShowCreateModal(true)}
                                         />
                                     </div>
                                 </Form>

@@ -40,10 +40,6 @@ const columns: ColumnsType<DataType> = [
                     width={20}
                     height={20}
                     alt="edit"
-                    onClick={() => {
-                        // setSelectedTarget(record);
-                        //   setShowEditModal(true);
-                    }}
                 />
                 <Image
                     src="/trash.svg"
@@ -51,7 +47,6 @@ const columns: ColumnsType<DataType> = [
                     width={20}
                     height={20}
                     alt="delete"
-                // onClick={() => dispatch(deleteSettingTarget(record._id))}
                 />
             </div>
         ),
