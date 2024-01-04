@@ -45,7 +45,7 @@ export const categorySlice = createSlice({
         });
 
         builder.addCase(deleteCategory.fulfilled, (state, action) => {
-            console.log(action.payload);
+            console.log(action.payload, 'delete success');
             state.loading = false;
             state.data = state.data.filter(
                 (item: any) => item?._id !== action.payload.data._id

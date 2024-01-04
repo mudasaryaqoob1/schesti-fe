@@ -13,8 +13,8 @@ import {
   fetchSettingTargets,
 } from '@/redux/company/settingSlices/setting.thunk';
 import SettingSidebar from '../verticleBar';
-import SubCategories from './components/SubCategories';
-import Categories from './components/Categories';
+import AddSubcategory from './Subcategory/page';
+import AddCategory from './Category/page';
 
 export interface DataType {
   categoryId: string;
@@ -43,7 +43,6 @@ const CategoriesTable = () => {
     fetchSettingTargetsHandler();
   }, []);
 
-
   return (
     <SettingSidebar>
       <section className={`${bg_style} p-5 w-full`}>
@@ -56,7 +55,7 @@ const CategoriesTable = () => {
             return {
               key: id.toString(),
               label: name,
-              children: id ? <SubCategories /> : <Categories />,
+              children: id ? <AddSubcategory /> : <AddCategory />,
             };
           })}
         />

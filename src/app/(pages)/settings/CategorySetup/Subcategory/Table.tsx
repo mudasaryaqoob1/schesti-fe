@@ -7,10 +7,9 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { AppDispatch } from '@/redux/store';
-import { deleteSubCategory, fetchSubCategories } from '@/redux/company/settingSlices/companySetup.thunk';
+import { fetchSubCategories } from '@/redux/company/settingSlices/companySetup.thunk';
 import { HttpService } from '@/app/services/base.service';
 import { companySetupSubCategoriesData, companySetupSubcategoriesLoading } from '@/redux/company/companySelector';
-import { useRouter } from 'next/navigation';
 import { setSubcategoryData } from '@/redux/company/settingSlices/companySetup/subcategory.slice';
 import { companySetupService } from '@/app/services/setting/companySetup';
 
@@ -19,14 +18,12 @@ interface DataType {
     category: string;
     subCategory: string;
     price: number;
-    action: null,
+    actions: null,
     children?: DataType[];
 }
 
-
 const SubCategoryTable: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
-    const router = useRouter();
 
     const subcategoriesReduxData = useSelector(companySetupSubCategoriesData);
     const subcategoriesReduxDataLoading = useSelector(companySetupSubcategoriesLoading);
@@ -70,8 +67,10 @@ const SubCategoryTable: React.FC = () => {
             title: 'Action',
             dataIndex: 'action',
             align: 'center',
+            className: 'd-none',
             key: 'action',
             render: (_, subCategoriesData: any) => {
+                console.log({ subCategoriesData }, 'in sub')
                 return (
                     <div className="flex gap-2 justify-center">
                         <Image
@@ -81,7 +80,6 @@ const SubCategoryTable: React.FC = () => {
                             height={20}
                             alt="edit"
                             onClick={() => {
-                                router.push('/settings/CategorySetup/addSubcategory');
                                 dispatch(setSubcategoryData(subCategoriesData))
                             }}
                         />
@@ -118,10 +116,11 @@ const SubCategoryTable: React.FC = () => {
                     _id,
                     category: name,
                     subCategory: '',
-                    children: subcategories?.map(({ _id, price, name }: any) => ({
+                    children: subcategories?.map(({ _id, price, name, categoryId, categoryName }: any) => ({
                         _id,
                         price,
                         subCategory: name,
+                        categoryId, categoryName
                     }))
                 })) : []}
             />

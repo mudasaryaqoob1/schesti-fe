@@ -8,7 +8,7 @@ export const subcategorySlice = createSlice({
     initialState: initialCompanySetupSubcategoryState,
     reducers: {
         addNewSubcategoryData: (state, { payload }) => {
-            state.data.push(payload);
+            state.data.unshift(payload);
         },
         setSubcategoryData: (state, { payload }) => {
             state.subcategoryData = payload;

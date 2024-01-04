@@ -11,7 +11,6 @@ import { HttpService } from "@/app/services/base.service";
 import { selectToken } from "@/redux/authSlices/auth.selector";
 import { companySetupCategoriesData, companySetupCategoriesLoading } from "@/redux/company/companySelector";
 import { setCategoryData } from "@/redux/company/settingSlices/companySetup/category.slice";
-import { useRouter } from "next/navigation";
 
 export interface DataType {
     categoryId: string;
@@ -23,7 +22,6 @@ export interface DataType {
 const CategoryTable = () => {
     const token = useSelector(selectToken);
     const dispatch = useDispatch<AppDispatch>();
-    const router = useRouter();
 
     const selectCompanySetupData = useSelector(companySetupCategoriesData);
     const companySetupLoading = useSelector(companySetupCategoriesLoading);
@@ -69,8 +67,8 @@ const CategoryTable = () => {
                         height={20}
                         alt="edit"
                         onClick={() => {
-                            router.push('/settings/CategorySetup/addCategory');
-                            dispatch(setCategoryData(categoryData))
+                            dispatch(setCategoryData(categoryData));
+                            console.log({ categoryData }, 'category data in edit')
                         }}
                     />
                     <Image
@@ -80,7 +78,10 @@ const CategoryTable = () => {
                         height={20}
                         alt="delete"
                         onClick={
-                            () => dispatch(deleteCategory(categoryData._id!))
+                            () => {
+                                console.log(categoryData, 'category data in edit delete')
+                                dispatch(deleteCategory(categoryData._id!))
+                            }
                         }
                     />
                 </div>
