@@ -46,7 +46,6 @@ const Login = () => {
 
   const submitHandler = async ({ email, password }: ILogInInterface) => {
     setLoading(true);
-   
 
     let result: any = await dispatch(login({ email, password }));
 
@@ -54,8 +53,7 @@ const Login = () => {
       setLoading(false);
       if (result.payload.data.user.roles.includes('Company')) {
         router.push('/clients');
-      }
-      else{
+      } else {
         router.push('/');
       }
     } else {

@@ -18,7 +18,6 @@ import { twMerge } from 'tailwind-merge';
 // }
 const MySubscription = () => {
   // const router = useRouter();
-  
 
   const [userData, setUserData] = useState<any>({});
   const getUserDetail = useCallback(async () => {
@@ -30,16 +29,8 @@ const MySubscription = () => {
     getUserDetail();
   }, [getUserDetail]);
 
-
-
-
   let features = 'CRM,Takeoff Module,Construction Estimate Module';
-  
 
-  
-
-
-  
   return (
     <>
       <TertiaryHeading title="My Subscriptions" className="text-graphiteGray" />
@@ -73,7 +64,7 @@ const MySubscription = () => {
               Features
             </h4>
             <div className="flex gap-2 flex-col">
-              {features?.split(',').map((benefit : any, index : any) => (
+              {features?.split(',').map((benefit: any, index: any) => (
                 <Fragment key={index}>
                   <div className="self-start flex gap-2 items-center">
                     <Image

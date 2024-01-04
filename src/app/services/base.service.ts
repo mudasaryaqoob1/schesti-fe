@@ -54,8 +54,6 @@ export class HttpService {
     body?: any,
     options = {}
   ): Promise<any> => {
-    console.log(Config , 'ConfigConfigConfig');
-    
     const res = await axios.post(`${Config}/${url}`, body, {
       ...options,
       withCredentials: true,
