@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 
-const Config = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
+const Config = 'https://api.schesti.com';
 
 export class HttpService {
   CancelToken: any;
@@ -54,6 +54,8 @@ export class HttpService {
     body?: any,
     options = {}
   ): Promise<any> => {
+    console.log(Config , 'ConfigConfigConfig');
+    
     const res = await axios.post(`${Config}/${url}`, body, {
       ...options,
       withCredentials: true,

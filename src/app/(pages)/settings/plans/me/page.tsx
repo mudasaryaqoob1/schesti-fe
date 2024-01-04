@@ -1,6 +1,7 @@
 'use client';
-import Button from '@/app/component/customButton/button';
+// import Button from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
+import { userService } from '@/app/services/user.service';
 // import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
 import {
   tertiaryHeading,
@@ -8,22 +9,37 @@ import {
   minHeading,
 } from '@/globals/tailwindvariables';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { Fragment } from 'react';
+// import { useRouter } from 'next/navigation';
+import { Fragment, useCallback, useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 // interface Props extends IPricingPlan {
 //   isYearly: boolean;
 // }
-const MySubscription = (props: any) => {
-  const {
-    planName = 'My Subscriptions',
-    price = '25',
-    planDescription = 'New Testing Description',
-    features = 'CRM,Takeoff Module,Construction Estimate Module',
-    duration,
-  } = props;
-  const router = useRouter();
+const MySubscription = () => {
+  // const router = useRouter();
+  
+
+  const [userData, setUserData] = useState<any>({});
+  const getUserDetail = useCallback(async () => {
+    let { data } = await userService.httpGetCompanyDetail();
+    setUserData(data.user.planId);
+  }, []);
+
+  useEffect(() => {
+    getUserDetail();
+  }, [getUserDetail]);
+
+
+
+
+  let features = 'CRM,Takeoff Module,Construction Estimate Module';
+  
+
+  
+
+
+  
   return (
     <>
       <TertiaryHeading title="My Subscriptions" className="text-graphiteGray" />
@@ -31,18 +47,18 @@ const MySubscription = (props: any) => {
         <div className="p-8 rounded-[20px] items-center flex flex-col justify-between shadow-secondaryShadow gap-5">
           <div className=" flex flex-col gap-8 items-start w-full">
             <h2 className={`${tertiaryHeading} text-graphiteGray`}>
-              {planName}
+              {userData?.planName}
             </h2>
             <div className="flex items-center w-full">
               <span className="tracking-[-0.72px] font-semibold text-[42px] leading-[46px] !text-goldenrodYellow">
-                ${price}
+                ${userData?.price}
               </span>
               <p className={`${minHeading} text-lightdark  font-normal`}>
-                /{duration}
+                /{userData?.duration}
               </p>
             </div>
             <p className={`${quinaryHeading} text-lightdark2`}>
-              {planDescription}
+              {userData?.planDescription}
             </p>
             <div className="relative w-full">
               <div className="h-3 w-1/2 absolute rounded-lg z-10 bg-goldenrodYellow" />
@@ -57,7 +73,7 @@ const MySubscription = (props: any) => {
               Features
             </h4>
             <div className="flex gap-2 flex-col">
-              {features.split(',').map((benefit : any, index : any) => (
+              {features?.split(',').map((benefit : any, index : any) => (
                 <Fragment key={index}>
                   <div className="self-start flex gap-2 items-center">
                     <Image
@@ -80,13 +96,13 @@ const MySubscription = (props: any) => {
               ))}
             </div>
           </div>
-          <div className="w-full">
+          {/* <div className="w-full">
             <Button
               text="Buy"
               className="text-white self-stretch w-full"
               onClick={() => router.push('/payment')}
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </>

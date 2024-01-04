@@ -19,7 +19,7 @@ const CheckYourEmail = () => {
 
   const resendEmailHandler = async () => {
     setIsLoading(true);
-    const result = await authService.httpResendForgotPasswordEmail({
+    const result = await authService.httpResendCreateAccountEmail({
       email: emailQueryParameter,
     });
 
