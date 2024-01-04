@@ -19,7 +19,7 @@ import { ICategory } from '@/app/interfaces/companyInterfaces/setting.interface'
 import { companySetupCategoriesData, companySetupSubcategoriesLoading } from '@/redux/company/companySelector';
 import { companySetupService } from '@/app/services/setting/companySetup';
 import { voidFc } from '@/app/utils/types';
-import { refetchSubCategories } from '@/redux/company/settingSlices/companySetup/subcategory.slice';
+import { refetchSubCategories, setSubcategoryData } from '@/redux/company/settingSlices/companySetup/subcategory.slice';
 
 export type SubcategoryInitValues = {
     name: string;
@@ -37,17 +37,18 @@ const validationSchema = Yup.object({
     name: Yup.string().required('Sub Category is required!'),
     price: Yup.string().required('Price is required!'),
 });
-const initialValues: SubcategoryInitValues = {
-    name: '',
-    price: '',
-    category: '',
-};
 
 const AddCategory = () => {
 
     const token = useSelector(selectToken);
     const dispatch = useDispatch<AppDispatch>();
+    const { subcategoryData } = useSelector((state: any) => state.companySetupSubcategory);
 
+    const initialValues: SubcategoryInitValues = {
+        name: subcategoryData?.subCategory || '',
+        price: subcategoryData?.price || '',
+        category: '',
+    };
     const categoriesReduxData = useSelector(companySetupCategoriesData);
     const categoriesReduxDataLoading = useSelector(companySetupSubcategoriesLoading);
 
@@ -76,11 +77,21 @@ const AddCategory = () => {
     }, [token]);
 
     const submitHandler = async (values: SubcategoryInitValues, { resetForm }: { resetForm: voidFc }) => {
-        const { statusCode, data } = await companySetupService.httpAddNewSubcategory(values);
-        console.log(statusCode, data)
-        if (statusCode === 201) {
-            dispatch(refetchSubCategories())
-            resetForm();
+        if (subcategoryData) {
+            const { statusCode, data } = await companySetupService.httpUpdateSubcategory(values);
+            console.log(statusCode, data)
+            if (statusCode === 200) {
+                dispatch(setSubcategoryData(null))
+                resetForm();
+            }
+        } else {
+            const { statusCode, data } = await companySetupService.httpAddNewSubcategory(values);
+            console.log(statusCode, data)
+            if (statusCode === 201) {
+                dispatch(refetchSubCategories())
+                resetForm();
+            }
+
         }
     }
 
@@ -97,6 +108,7 @@ const AddCategory = () => {
                         initialValues={initialValues}
                         validationSchema={validationSchema}
                         onSubmit={submitHandler}
+                        enableReinitialize
                     >
                         {({ handleSubmit, values, errors }) => {
                             console.log({ values, errors })
@@ -135,14 +147,28 @@ const AddCategory = () => {
                                             placeholder="Enter Price"
                                         />
                                     </div>
-                                    <div className="flex justify-end mt-5">
+                                    <div className="flex justify-end mt-5 gap-3">
                                         <CustomButton
-                                            text="Add SubCategory"
+                                            text={
+                                                subcategoryData ? 'Update Subcategory' : "Add Subcategory"
+                                            }
                                             type='submit'
                                             className="!w-auto "
                                             iconwidth={20}
                                             iconheight={20}
                                         />
+                                        {
+                                            subcategoryData && (
+                                                <CustomButton
+                                                    type='button'
+                                                    text="Cancel"
+                                                    onClick={() => dispatch(setSubcategoryData(null))}
+                                                    className="!w-auto !bg-red-500 border-none"
+                                                    iconwidth={20}
+                                                    iconheight={20}
+                                                />
+                                            )
+                                        }
                                     </div>
                                 </Form>
                             )

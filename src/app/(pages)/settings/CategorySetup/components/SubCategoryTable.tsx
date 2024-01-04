@@ -24,40 +24,10 @@ interface DataType {
 }
 
 
-
-// const data: DataType[] = [
-//     {
-//         key: 1,
-//         category: 'John Brown sr.',
-//         subCategory: 'Sub Category 1',
-//         price: 60,
-//         children: [
-//             {
-//                 key: 11,
-//                 category: '',
-//                 price: 43,
-//                 subCategory: 'Sub Catgory 2',
-//             },
-//             {
-//                 key: 12,
-//                 category: '',
-//                 price: 41,
-//                 subCategory: 'Sub Catgory 3',
-//             },
-//             {
-//                 key: 13,
-//                 category: '',
-//                 price: 40,
-//                 subCategory: 'Sub Catgory 4',
-//             },
-
-//         ],
-//     },
-// ];
-
-
 const SubCategoryTable: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
+    const router = useRouter();
+
     const subcategoriesReduxData = useSelector(companySetupSubCategoriesData);
     const subcategoriesReduxDataLoading = useSelector(companySetupSubcategoriesLoading);
 
@@ -101,7 +71,7 @@ const SubCategoryTable: React.FC = () => {
             dataIndex: 'action',
             align: 'center',
             key: 'action',
-            render: (data, subCategoriesData: any) => {
+            render: (_, subCategoriesData: any) => {
                 return (
                     <div className="flex gap-2 justify-center">
                         <Image
@@ -111,8 +81,8 @@ const SubCategoryTable: React.FC = () => {
                             height={20}
                             alt="edit"
                             onClick={() => {
-                                // router.push('/settings/CategorySetup/addCategory');
-                                // dispatch(setSubcategoryData(subCategoriesData))
+                                router.push('/settings/CategorySetup/addSubcategory');
+                                dispatch(setSubcategoryData(subCategoriesData))
                             }}
                         />
                         <Image
@@ -124,7 +94,6 @@ const SubCategoryTable: React.FC = () => {
                             onClick={
                                 async () => {
                                     const { statusCode } = await companySetupService.httpDeleteSubcategory(subCategoriesData._id!);
-                                    console.log({ data })
                                     if (statusCode === 200) {
                                         fetchSubcategoriesHandler()
                                     }

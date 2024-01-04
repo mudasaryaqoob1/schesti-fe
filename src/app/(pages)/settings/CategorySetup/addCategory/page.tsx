@@ -13,7 +13,7 @@ import { voidFc } from '@/app/utils/types';
 import CategoryTable from '../components/CategoryTable';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
-import { addNewCategoryData } from '@/redux/company/settingSlices/companySetup/category.slice';
+import { addNewCategoryData, setCategoryData, updateCategoryData } from '@/redux/company/settingSlices/companySetup/category.slice';
 
 export interface DataType {
     categoryId: string;
@@ -36,15 +36,25 @@ const AddCategory = () => {
 
     console.log({ categoryData })
 
+
     const initialValues: CategoryInitTypes = {
         name: categoryData?.name || ''
     };
 
     const submitHandler = async (values: CategoryInitTypes, { resetForm }: { resetForm: voidFc }) => {
-        const { statusCode, data } = await companySetupService.httpAddNewCategory(values);
-        if (statusCode === 201) {
-            dispatch(addNewCategoryData(data));
-            resetForm();
+        if (categoryData) {
+            const { statusCode, data } = await companySetupService.httpUpdateCategory(categoryData._id, values);
+            if (statusCode === 200) {
+                dispatch(updateCategoryData(data));
+                dispatch(setCategoryData(null));
+                resetForm();
+            }
+        } else {
+            const { statusCode, data } = await companySetupService.httpAddNewCategory(values);
+            if (statusCode === 201) {
+                dispatch(addNewCategoryData(data));
+                resetForm();
+            }
         }
     }
 
@@ -56,9 +66,11 @@ const AddCategory = () => {
                     <Formik
                         initialValues={initialValues}
                         validationSchema={validationSchema}
+                        enableReinitialize
                         onSubmit={submitHandler}
                     >
-                        {({ handleSubmit }) => {
+                        {({ handleSubmit, errors }) => {
+                            console.log({ errors })
                             return (
                                 <Form
                                     name="basic"
@@ -73,14 +85,26 @@ const AddCategory = () => {
                                         name="name"
                                         placeholder="Enter Name"
                                     />
-                                    <div className="flex justify-end mt-5">
+                                    <div className="flex justify-end mt-5 gap-3">
                                         <CustomButton
                                             type='submit'
-                                            text="Add Category"
+                                            text={categoryData ? 'Update Category' : "Add Category"}
                                             className="!w-auto "
                                             iconwidth={20}
                                             iconheight={20}
                                         />
+                                        {
+                                            categoryData && (
+                                                <CustomButton
+                                                    type='button'
+                                                    text="Cancel"
+                                                    onClick={() => dispatch(setCategoryData(null))}
+                                                    className="!w-auto !bg-red-500 border-none"
+                                                    iconwidth={20}
+                                                    iconheight={20}
+                                                />
+                                            )
+                                        }
                                     </div>
                                 </Form>
                             )

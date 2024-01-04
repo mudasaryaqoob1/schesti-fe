@@ -2,7 +2,6 @@
 import { HttpService } from '@/app/services/base.service';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { IToken } from '@/app/interfaces/authInterfaces/token.interface';
-import { ICategory } from '@/app/interfaces/companyInterfaces/setting.interface';
 import { CategoryInitTypes } from '@/app/(pages)/settings/CategorySetup/addCategory/page';
 import { SubcategoryInitValues } from '@/app/(pages)/settings/CategorySetup/addSubcategory/page';
 
@@ -23,7 +22,7 @@ class CompanySetupService extends HttpService {
 
   httpUpdateCategory = (
     categoryId: string,
-    data: ICategory
+    data: CategoryInitTypes
   ): Promise<IResponseInterface<any>> =>
     this.post(`${this.prefix}/updateCategory/${categoryId}`, data);
 
@@ -43,10 +42,9 @@ class CompanySetupService extends HttpService {
     this.get(`${this.prefix}/getAllSubcategories?page=${page}&limit=${limit}`);
 
   httpUpdateSubcategory = (
-    categoryId: string,
-    data: ICategory
+    data: any
   ): Promise<IResponseInterface<any>> =>
-    this.post(`${this.prefix}/updateSubcategory/${categoryId}`, data);
+    this.post(`${this.prefix}/updateSubcategory/${data._id}`, data);
 
   httpDeleteSubcategory = (category: string): Promise<IResponseInterface> =>
     this.delete(`${this.prefix}/subcategory/delete/${category}`);
