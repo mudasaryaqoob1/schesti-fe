@@ -7,6 +7,7 @@ import CustomButton from '@/app/component/customButton/button';
 import SubCategoryTable from './SubCategoryTable';
 import { HttpService } from '@/app/services/base.service';
 import { bg_style } from '@/globals/tailwindvariables'
+import { useRouter } from 'next/navigation';
 
 export interface DataType {
     categoryId: string;
@@ -17,6 +18,7 @@ export interface DataType {
 
 const SubCategories = () => {
 
+    const router = useRouter();
     const token = useSelector(selectToken);
 
     useLayoutEffect(() => {
@@ -32,9 +34,9 @@ const SubCategories = () => {
                 <CustomButton
                     text="Add Sub-category"
                     className="!w-auto "
-                    icon="/plus.svg"
                     iconwidth={20}
                     iconheight={20}
+                    onClick={() => router.push('/settings/CategorySetup/addSubcategory')}
                 />
             </div>
             <div

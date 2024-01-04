@@ -4,8 +4,6 @@ import { RootState } from '../store';
 export const selectComapnyClient = (state: RootState) => state.companyClient;
 export const selectComapnySubcontractor = (state: RootState) =>
   state.companySubContractor;
-export const selectCompanySetup = (state: RootState) =>
-  state.companySetups;
 
 export const selectClientsLoading = createSelector(
   [selectComapnyClient],
@@ -27,13 +25,33 @@ export const selectSubcontracters = createSelector(
   (companySubcontract) => companySubcontract.data
 );
 
+export const companySetupCategoryData = (state: RootState) =>
+  state.companySetupCategory;
+
+export const companySetupSubcategoryData = (state: RootState) =>
+  state.companySetupSubcategory;
+
+
 // company setup data
-export const selectCompanySetupLoading = createSelector(
-  [selectCompanySetup],
+export const companySetupCategoriesLoading = createSelector(
+  [companySetupCategoryData],
   (companySetup) => companySetup.loading
 );
 
-export const selectCompanySetups = createSelector(
-  [selectCompanySetup],
-  (companySetup) => companySetup.data
+export const companySetupCategoriesData = createSelector(
+  [companySetupCategoryData],
+  (companyCategorySetup) => companyCategorySetup.data
 );
+export const companySetupSubcategoriesLoading = createSelector(
+  [companySetupSubcategoryData],
+  (companySubcategorySetup) => companySubcategorySetup.loading
+);
+
+export const companySetupSubCategoriesData = createSelector(
+  [companySetupSubcategoryData],
+  (companySubcategorySetup) => companySubcategorySetup.data
+);
+
+
+
+

@@ -1,20 +1,19 @@
 'use client';
 
-import { HttpService } from '@/app/services/base.service';
+import React from 'react'
 import { bg_style } from '@/globals/tailwindvariables'
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { selectSettingTargets, selectSettingTargetsLoading } from '@/redux/company/settingSlices/settingSelector';
-import { Table } from 'antd'
-import Image from 'next/image';
-import React, { useLayoutEffect } from 'react'
-import { useSelector } from 'react-redux';
-import type { ColumnsType } from 'antd/es/table';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import CustomButton from '@/app/component/customButton/button';
 import SettingSidebar from '../../verticleBar';
 import * as Yup from 'yup';
 import FormikController from '@/app/component/formControl';
 import { Form, Formik } from 'formik';
+import { companySetupService } from '@/app/services/setting/companySetup';
+import { voidFc } from '@/app/utils/types';
+import CategoryTable from '../components/CategoryTable';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch } from '@/redux/store';
+import { addNewCategoryData } from '@/redux/company/settingSlices/companySetup/category.slice';
 
 export interface DataType {
     categoryId: string;
@@ -22,73 +21,37 @@ export interface DataType {
     _id: string;
     action: string;
 }
+
+export type CategoryInitTypes = {
+    name: string
+}
 const validationSchema = Yup.object({
-    categoryName: Yup.string().required('Category Name is required!'),
+    name: Yup.string().required('Category Name is required!'),
 });
-const initialValues = {
-    categoryName: ''
-};
+
 
 const AddCategory = () => {
+    const dispatch = useDispatch<AppDispatch>();
+    const { categoryData } = useSelector((state: any) => state.companySetupCategory);
 
-    const token = useSelector(selectToken);
+    console.log({ categoryData })
 
-    const settingTargetsData = useSelector(selectSettingTargets);
-    const settingTargetsLoading = useSelector(selectSettingTargetsLoading);
+    const initialValues: CategoryInitTypes = {
+        name: categoryData?.name || ''
+    };
 
-    useLayoutEffect(() => {
-        if (token) {
-            HttpService.setToken(token);
+    const submitHandler = async (values: CategoryInitTypes, { resetForm }: { resetForm: voidFc }) => {
+        const { statusCode, data } = await companySetupService.httpAddNewCategory(values);
+        if (statusCode === 201) {
+            dispatch(addNewCategoryData(data));
+            resetForm();
         }
-    }, [token]);
-
-    const columns: ColumnsType<DataType> = [
-        {
-            title: 'Category  ID',
-            dataIndex: 'categoryId',
-        },
-        {
-            title: 'Category  Name',
-            dataIndex: 'companyName',
-            ellipsis: true,
-        },
-
-        {
-            title: 'Action',
-            dataIndex: 'action',
-            align: 'center',
-            key: 'action',
-            render: () => (
-                <div className="flex gap-2 justify-center">
-                    <Image
-                        src="/trash.svg"
-                        className="cursor-pointer"
-                        width={20}
-                        height={20}
-                        alt="delete"
-                    />
-                    <Image
-                        src="/edit.svg"
-                        className="cursor-pointer"
-                        width={20}
-                        height={20}
-                        alt="edit"
-                    />
-                </div>
-            ),
-        },
-    ];
-
-    const submitHandler = async (
-
-    ) => {
-
     }
 
     return (
         <SettingSidebar>
-            <section className={`${bg_style} p-5`}>
-                <div className={`${bg_style} p-5`}>
+            <section className={`${bg_style} p-5 w-full`}>
+                <div className={`${bg_style} p-5 w-full`}>
                     <TertiaryHeading title="Category" className="text-graphiteGray" />
                     <Formik
                         initialValues={initialValues}
@@ -107,11 +70,12 @@ const AddCategory = () => {
                                         control="input"
                                         label="Catgory Name"
                                         type="text"
-                                        name="categoryName"
+                                        name="name"
                                         placeholder="Enter Name"
                                     />
                                     <div className="flex justify-end mt-5">
                                         <CustomButton
+                                            type='submit'
                                             text="Add Category"
                                             className="!w-auto "
                                             iconwidth={20}
@@ -123,18 +87,7 @@ const AddCategory = () => {
                         }}
                     </Formik>
                 </div>
-                <div
-                    className={`${bg_style} border border-solid border-silverGray mt-4 p-5`}
-                >
-                    <TertiaryHeading title="Added Categories" className="text-graphiteGray" />
-                    <Table
-                        loading={settingTargetsLoading}
-                        columns={columns}
-                        className='mt-4'
-                        dataSource={settingTargetsData}
-                        pagination={{ position: ['bottomCenter'] }}
-                    />
-                </div>
+                <CategoryTable />
             </section>
         </SettingSidebar>
     )

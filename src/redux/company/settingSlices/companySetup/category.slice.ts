@@ -1,23 +1,27 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { initialCompanySetupState } from './setting.initialState';
-import { deleteCategory, fetchCategories } from './companySetup.slice';
+import { initialCompanySetupCategoryState } from '../setting.initialState';
+import { deleteCategory, fetchCategories } from '../companySetup.thunk';
+import { ICategory } from '@/app/interfaces/companyInterfaces/setting.interface';
 
-export const compnaySetup = createSlice({
-    name: 'setting/companySetup',
-    initialState: initialCompanySetupState,
+export const categorySlice = createSlice({
+    name: 'setting/companySetup/category',
+    initialState: initialCompanySetupCategoryState,
     reducers: {
-        // addSettingTargetData: (state, { payload }) => {
-        //     state.data.push(payload);
-        // },
-        // updateSettingTargetData: (state, { payload }) => {
-        //     state.data = state.data.map((targetData: ISettingTarget) => {
-        //         if (targetData._id === payload._id) {
-        //             return payload;
-        //         } else {
-        //             return targetData;
-        //         }
-        //     });
-        // },
+        addNewCategoryData: (state, { payload }) => {
+            state.data.push(payload);
+        },
+        setCategoryData: (state, { payload }) => {
+            state.categoryData = payload;
+        },
+        updateCategoryData: (state, { payload }) => {
+            state.data = state.data.map((categoryData: ICategory) => {
+                if (categoryData._id === payload._id) {
+                    return payload;
+                } else {
+                    return categoryData;
+                }
+            });
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(fetchCategories.pending, (state) => {
@@ -54,5 +58,5 @@ export const compnaySetup = createSlice({
         });
     },
 });
-
-export default compnaySetup.reducer;
+export const { addNewCategoryData, setCategoryData } = categorySlice.actions;
+export default categorySlice.reducer;

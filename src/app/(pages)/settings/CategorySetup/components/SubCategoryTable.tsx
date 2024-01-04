@@ -1,96 +1,160 @@
-import React from 'react';
+import React, { useCallback, useEffect, useLayoutEffect } from 'react';
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import Image from 'next/image';
+import { bg_style } from '@/globals/tailwindvariables';
+import TertiaryHeading from '@/app/component/headings/tertiary';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectToken } from '@/redux/authSlices/auth.selector';
+import { AppDispatch } from '@/redux/store';
+import { deleteSubCategory, fetchSubCategories } from '@/redux/company/settingSlices/companySetup.thunk';
+import { HttpService } from '@/app/services/base.service';
+import { companySetupSubCategoriesData, companySetupSubcategoriesLoading } from '@/redux/company/companySelector';
+import { useRouter } from 'next/navigation';
+import { setSubcategoryData } from '@/redux/company/settingSlices/companySetup/subcategory.slice';
+import { companySetupService } from '@/app/services/setting/companySetup';
 
 interface DataType {
-    key: React.ReactNode;
+    _id: string;
     category: string;
     subCategory: string;
     price: number;
+    action: null,
     children?: DataType[];
 }
 
-const columns: ColumnsType<DataType> = [
-    {
-        title: 'Category',
-        dataIndex: 'category',
-        key: 'category',
-    },
-    {
-        title: 'Sub Category',
-        dataIndex: 'subCategory',
-        key: 'subCategory',
-    },
-    {
-        title: 'Price',
-        dataIndex: 'price',
-        key: 'price',
-    },
-    {
-        title: 'Action',
-        dataIndex: 'action',
-        align: 'center',
-        key: 'action',
-        render: () => (
-            <div className="flex gap-2 justify-center">
-                <Image
-                    src="/edit.svg"
-                    className="cursor-pointer"
-                    width={20}
-                    height={20}
-                    alt="edit"
-                />
-                <Image
-                    src="/trash.svg"
-                    className="cursor-pointer"
-                    width={20}
-                    height={20}
-                    alt="delete"
-                />
-            </div>
-        ),
-    },
-];
 
-const data: DataType[] = [
-    {
-        key: 1,
-        category: 'John Brown sr.',
-        subCategory: 'Sub Category 1',
-        price: 60,
-        children: [
-            {
-                key: 11,
-                category: '',
-                price: 43,
-                subCategory: 'Sub Catgory 2',
-            },
-            {
-                key: 12,
-                category: '',
-                price: 41,
-                subCategory: 'Sub Catgory 3',
-            },
-            {
-                key: 13,
-                category: '',
-                price: 40,
-                subCategory: 'Sub Catgory 4',
-            },
 
-        ],
-    },
-];
+// const data: DataType[] = [
+//     {
+//         key: 1,
+//         category: 'John Brown sr.',
+//         subCategory: 'Sub Category 1',
+//         price: 60,
+//         children: [
+//             {
+//                 key: 11,
+//                 category: '',
+//                 price: 43,
+//                 subCategory: 'Sub Catgory 2',
+//             },
+//             {
+//                 key: 12,
+//                 category: '',
+//                 price: 41,
+//                 subCategory: 'Sub Catgory 3',
+//             },
+//             {
+//                 key: 13,
+//                 category: '',
+//                 price: 40,
+//                 subCategory: 'Sub Catgory 4',
+//             },
+
+//         ],
+//     },
+// ];
 
 
 const SubCategoryTable: React.FC = () => {
+    const dispatch = useDispatch<AppDispatch>();
+    const subcategoriesReduxData = useSelector(companySetupSubCategoriesData);
+    const subcategoriesReduxDataLoading = useSelector(companySetupSubcategoriesLoading);
+
+    const { refetch } = useSelector((state: any) => state.companySetupSubcategory);
+
+    const token = useSelector(selectToken);
+
+
+    const fetchSubcategoriesHandler = useCallback(async () => {
+        await dispatch(fetchSubCategories({ page: 1, limit: 10 }));
+    }, []);
+
+    useEffect(() => {
+        fetchSubcategoriesHandler();
+    }, [refetch]);
+
+    useLayoutEffect(() => {
+        if (token) {
+            HttpService.setToken(token);
+        }
+    }, [token]);
+
+    const columns: ColumnsType<DataType> = [
+        {
+            title: 'Category',
+            dataIndex: 'category',
+            key: 'name',
+        },
+        {
+            title: 'Sub Category',
+            dataIndex: 'subCategory',
+            key: 'subCategory',
+        },
+        {
+            title: 'Price',
+            dataIndex: 'price',
+            key: 'price',
+        },
+        {
+            title: 'Action',
+            dataIndex: 'action',
+            align: 'center',
+            key: 'action',
+            render: (data, subCategoriesData: any) => {
+                return (
+                    <div className="flex gap-2 justify-center">
+                        <Image
+                            src="/edit.svg"
+                            className="cursor-pointer"
+                            width={20}
+                            height={20}
+                            alt="edit"
+                            onClick={() => {
+                                // router.push('/settings/CategorySetup/addCategory');
+                                // dispatch(setSubcategoryData(subCategoriesData))
+                            }}
+                        />
+                        <Image
+                            src="/trash.svg"
+                            className="cursor-pointer"
+                            width={20}
+                            height={20}
+                            alt="delete"
+                            onClick={
+                                async () => {
+                                    const { statusCode } = await companySetupService.httpDeleteSubcategory(subCategoriesData._id!);
+                                    console.log({ data })
+                                    if (statusCode === 200) {
+                                        fetchSubcategoriesHandler()
+                                    }
+                                }
+                            }
+                        />
+                    </div>
+                )
+            }
+        },
+    ];
 
     return (
-        <div className='w-full'>
+        <div
+            className={`${bg_style} border border-solid border-silverGray mt-4 p-5`}
+        >
+            <TertiaryHeading title="Sub Categories" className="text-graphiteGray" />
             <Table
+                loading={subcategoriesReduxDataLoading}
                 columns={columns}
-                dataSource={data}
+                dataSource={subcategoriesReduxData ? subcategoriesReduxData?.map(({ _id, name, subcategories }: any) => ({
+                    _id,
+                    category: name,
+                    subCategory: '',
+                    children: subcategories?.map(({ _id, price, name }: any) => ({
+                        _id,
+                        price,
+                        subCategory: name,
+                    }))
+                })) : []}
             />
         </div>
     );

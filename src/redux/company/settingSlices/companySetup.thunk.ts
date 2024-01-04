@@ -6,7 +6,7 @@ interface FetchSettingTargetParams {
     limit: number;
 }
 
-// categories
+// category thuns
 export const fetchCategories = createAsyncThunk(
     'companySetup/categories',
     async ({ page, limit }: FetchSettingTargetParams, { rejectWithValue }) => {
@@ -27,10 +27,10 @@ export const fetchCategories = createAsyncThunk(
 
 export const deleteCategory = createAsyncThunk(
     'companySetup/deleteCategory',
-    async (targetId: string, { rejectWithValue }) => {
+    async (categoryId: string, { rejectWithValue }) => {
         try {
             const response =
-                await companySetupService.httpDeleteCategory(targetId);
+                await companySetupService.httpDeleteCategory(categoryId);
             return response;
         } catch (error: any) {
             return rejectWithValue(
@@ -41,12 +41,12 @@ export const deleteCategory = createAsyncThunk(
     }
 );
 
-// company setup thunks
+// sub category thunks
 export const fetchSubCategories = createAsyncThunk(
     'companySetup/subcatgories',
     async ({ page, limit }: FetchSettingTargetParams, { rejectWithValue }) => {
         try {
-            const response = await companySetupService.httpGetAllCategories(
+            const response = await companySetupService.httpGetAllSubcategories(
                 page,
                 limit
             );
@@ -65,7 +65,7 @@ export const deleteSubCategory = createAsyncThunk(
     async (targetId: string, { rejectWithValue }) => {
         try {
             const response =
-                await companySetupService.httpDeleteCategory(targetId);
+                await companySetupService.httpDeleteSubcategory(targetId);
             return response;
         } catch (error: any) {
             return rejectWithValue(

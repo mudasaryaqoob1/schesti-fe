@@ -1,44 +1,73 @@
 'use client';
 
-import React, { useLayoutEffect } from 'react'
+import React, { useCallback, useEffect, useLayoutEffect } from 'react'
 import { Form, Formik } from 'formik';
-import { Table } from 'antd'
-import Image from 'next/image';
-import { useSelector } from 'react-redux';
-import { selectSettingTargets, selectSettingTargetsLoading } from '@/redux/company/settingSlices/settingSelector';
-import { HttpService } from '@/app/services/base.service';
+
 import { bg_style } from '@/globals/tailwindvariables'
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import type { ColumnsType } from 'antd/es/table';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import CustomButton from '@/app/component/customButton/button';
 import SettingSidebar from '../../verticleBar';
 import * as Yup from 'yup';
 import FormControl from '@/app/component/formControl';
+import SubCategoryTable from '../components/SubCategoryTable';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectToken } from '@/redux/authSlices/auth.selector';
+import { AppDispatch } from '@/redux/store';
+import { HttpService } from '@/app/services/base.service';
+import { fetchCategories, fetchSubCategories } from '@/redux/company/settingSlices/companySetup.thunk';
+import { ICategory } from '@/app/interfaces/companyInterfaces/setting.interface';
+import { companySetupCategoriesData, companySetupSubcategoriesLoading } from '@/redux/company/companySelector';
+import { companySetupService } from '@/app/services/setting/companySetup';
+import { voidFc } from '@/app/utils/types';
+import { refetchSubCategories } from '@/redux/company/settingSlices/companySetup/subcategory.slice';
 
+export type SubcategoryInitValues = {
+    name: string;
+    price: string;
+    category: string;
+}
 export interface DataType {
     categoryId: string;
-    companyName: string;
+    company: string;
     _id: string;
     action: string;
 }
 const validationSchema = Yup.object({
-    categoryName: Yup.string().required('Category Name is required!'),
-    subCategory: Yup.string().required('Sub Category is required!'),
+    category: Yup.string().required('Category Name is required!'),
+    name: Yup.string().required('Sub Category is required!'),
     price: Yup.string().required('Price is required!'),
 });
-const initialValues = {
-    categoryName: '',
-    subCategory: '',
-    price: ''
+const initialValues: SubcategoryInitValues = {
+    name: '',
+    price: '',
+    category: '',
 };
 
 const AddCategory = () => {
 
     const token = useSelector(selectToken);
+    const dispatch = useDispatch<AppDispatch>();
 
-    const settingTargetsData = useSelector(selectSettingTargets);
-    const settingTargetsLoading = useSelector(selectSettingTargetsLoading);
+    const categoriesReduxData = useSelector(companySetupCategoriesData);
+    const categoriesReduxDataLoading = useSelector(companySetupSubcategoriesLoading);
+
+    const fetchSubcategoriesHandler = useCallback(async () => {
+        await dispatch(fetchSubCategories({ page: 1, limit: 10 }));
+    }, []);
+
+    useEffect(() => {
+        fetchSubcategoriesHandler();
+    }, []);
+
+
+    const fetchCategoriesHandler = useCallback(async () => {
+        await dispatch(fetchCategories({ page: 1, limit: 10 }));
+    }, []);
+
+    useEffect(() => {
+        fetchCategoriesHandler();
+    }, []);
+
 
     useLayoutEffect(() => {
         if (token) {
@@ -46,53 +75,18 @@ const AddCategory = () => {
         }
     }, [token]);
 
-    const columns: ColumnsType<DataType> = [
-        {
-            title: 'Category  ID',
-            dataIndex: 'categoryId',
-        },
-        {
-            title: 'Category  Name',
-            dataIndex: 'companyName',
-            ellipsis: true,
-        },
-
-        {
-            title: 'Action',
-            dataIndex: 'action',
-            align: 'center',
-            key: 'action',
-            render: () => (
-                <div className="flex gap-2 justify-center">
-                    <Image
-                        src="/trash.svg"
-                        className="cursor-pointer"
-                        width={20}
-                        height={20}
-                        alt="delete"
-                    // onClick={() => dispatch(deleteSettingTarget(record._id))}
-                    />
-                    <Image
-                        src="/edit.svg"
-                        className="cursor-pointer"
-                        width={20}
-                        height={20}
-                        alt="edit"
-                        onClick={() => {
-                            // setSelectedTarget(record);
-                            //   setShowEditModal(true);
-                        }}
-                    />
-                </div>
-            ),
-        },
-    ];
-
-    const submitHandler = async (
-
-    ) => {
-
+    const submitHandler = async (values: SubcategoryInitValues, { resetForm }: { resetForm: voidFc }) => {
+        const { statusCode, data } = await companySetupService.httpAddNewSubcategory(values);
+        console.log(statusCode, data)
+        if (statusCode === 201) {
+            dispatch(refetchSubCategories())
+            resetForm();
+        }
     }
+
+    const options = categoriesReduxData ? categoriesReduxData.map(({ name, _id }: ICategory) => ({
+        label: name, value: _id
+    })) : [];
 
     return (
         <SettingSidebar>
@@ -104,7 +98,8 @@ const AddCategory = () => {
                         validationSchema={validationSchema}
                         onSubmit={submitHandler}
                     >
-                        {({ handleSubmit }) => {
+                        {({ handleSubmit, values, errors }) => {
+                            console.log({ values, errors })
                             return (
                                 <Form
                                     name="basic"
@@ -113,18 +108,23 @@ const AddCategory = () => {
                                     className="mt-2"
                                 >
                                     <div className="grid grid-cols-3 gap-2 items-center">
-                                        <FormControl
-                                            control="select"
-                                            label="Catgory Name"
-                                            type="text"
-                                            name="categoryName"
-                                            placeholder="Enter Name"
-                                        />
+                                        {
+                                            categoriesReduxDataLoading ? <p>Loading..</p> : (
+                                                <FormControl
+                                                    control="select"
+                                                    label="Catgory Name"
+                                                    type="text"
+                                                    options={options}
+                                                    name="category"
+                                                    placeholder="Enter Name"
+                                                />
+                                            )
+                                        }
                                         <FormControl
                                             control="input"
                                             label="Sub-Catgory"
                                             type="text"
-                                            name="subCategory"
+                                            name="name"
                                             placeholder="Enter Sub-Category"
                                         />
                                         <FormControl
@@ -138,6 +138,7 @@ const AddCategory = () => {
                                     <div className="flex justify-end mt-5">
                                         <CustomButton
                                             text="Add SubCategory"
+                                            type='submit'
                                             className="!w-auto "
                                             iconwidth={20}
                                             iconheight={20}
@@ -148,18 +149,7 @@ const AddCategory = () => {
                         }}
                     </Formik>
                 </div>
-                <div
-                    className={`${bg_style} border border-solid border-silverGray mt-4 p-5`}
-                >
-                    <TertiaryHeading title="Added SubCategories" className="text-graphiteGray" />
-                    <Table
-                        loading={settingTargetsLoading}
-                        columns={columns}
-                        className='mt-4'
-                        dataSource={settingTargetsData}
-                        pagination={{ position: ['bottomCenter'] }}
-                    />
-                </div>
+                <SubCategoryTable />
             </section>
         </SettingSidebar>
     )
