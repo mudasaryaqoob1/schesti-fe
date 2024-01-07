@@ -34,7 +34,7 @@ const SelectComp = (props: any) => {
           htmlFor={name}
           className={twMerge(
             clsx(
-              `${labelStyle} text-graphiteGray text-sm font-medium leading-6 capitalize mb-1`
+              'text-graphiteGray text-sm font-medium leading-6 capitalize mb-1', labelStyle
             )
           )}
         >
@@ -46,9 +46,8 @@ const SelectComp = (props: any) => {
           {({ form: { setFieldValue }, field: { value } }: FormikValues) => {
             return (
               <Select
-                className={`w-full h-10 ${
-                  hasError ? ' customSelectError' : 'customSelect'
-                }`}
+                className={`w-full h-10 ${hasError ? ' customSelectError' : 'customSelect'
+                  }`}
                 id={name}
                 {...rest}
                 {...field}
