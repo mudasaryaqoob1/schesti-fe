@@ -24,3 +24,34 @@ export const selectSubcontracters = createSelector(
   [selectComapnySubcontractor],
   (companySubcontract) => companySubcontract.data
 );
+
+export const companySetupCategoryData = (state: RootState) =>
+  state.companySetupCategory;
+
+export const companySetupSubcategoryData = (state: RootState) =>
+  state.companySetupSubcategory;
+
+
+// company setup data
+export const companySetupCategoriesLoading = createSelector(
+  [companySetupCategoryData],
+  (companySetup) => companySetup.loading
+);
+
+export const companySetupCategoriesData = createSelector(
+  [companySetupCategoryData],
+  (companyCategorySetup) => companyCategorySetup.data
+);
+export const companySetupSubcategoriesLoading = createSelector(
+  [companySetupSubcategoryData],
+  (companySubcategorySetup) => companySubcategorySetup.loading
+);
+
+export const companySetupSubCategoriesData = createSelector(
+  [companySetupSubcategoryData],
+  (companySubcategorySetup) => companySubcategorySetup.data
+);
+
+
+
+

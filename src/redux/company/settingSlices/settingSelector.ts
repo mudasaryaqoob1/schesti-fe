@@ -3,6 +3,7 @@ import { RootState } from '../../store';
 
 export const selectSettingTarget = (state: RootState) => state.settingTargets;
 
+// setting targets
 export const selectSettingTargetsLoading = createSelector(
   [selectSettingTarget],
   (settingTargets) => settingTargets.loading

@@ -11,6 +11,7 @@ const Index = () => {
   const tabs = [
     { id: 1, name: 'General Settings', route: ['/settings/general'] },
     { id: 2, name: 'Plans', route: ['/settings/plans'] },
+    { id: 2, name: 'Category Setup', route: ['/settings/CategorySetup'] },
     {
       id: 3,
       name: 'User Managements',
@@ -39,9 +40,8 @@ const Index = () => {
         {tabs.map((tab) => (
           <p
             key={tab.id}
-            className={`py-3 px-3 !text-sm cursor-pointer transition-colors ${senaryHeading} ${
-              tab.route.includes(pathname) ? active : ''
-            } `}
+            className={`py-3 px-3 !text-sm cursor-pointer transition-colors ${senaryHeading} ${tab.route.includes(pathname) ? active : ''
+              } `}
             onClick={() => router.push(tab.route[0])}
           >
             {tab.name}
