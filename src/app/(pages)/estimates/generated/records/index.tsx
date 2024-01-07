@@ -55,15 +55,19 @@ const EstimateRequestTable: React.FC = () => {
 
   const items: MenuProps['items'] = [
     {
-      key: 'createEstimateRequest',
-      label: <a href="#">Create Estimate</a>,
+      key: 'view',
+      label: <a href="#">View Esstimate</a>,
     },
     {
-      key: 'editEstimateRequest',
-      label: <a href="#">Edit Request</a>,
+      key: 'createSchedule',
+      label: <a href="#">Create schedule</a>,
     },
     {
-      key: 'deleteEstimateRequest',
+      key: 'createInvoice',
+      label: <a href="#">Create invoice</a>,
+    },
+    {
+      key: 'delete',
       label: <p>Delete</p>,
     },
   ];
@@ -74,7 +78,7 @@ const EstimateRequestTable: React.FC = () => {
     } else if (key == 'editEstimateRequest') {
       router.push(`/estimates/requests/edit/${estimateRequest._id}`);
     } else if (key === 'createEstimateRequest') {
-      router.push('/estimates/generated/create');
+      router.push('/estimates/generated');
     }
   };
 
@@ -147,7 +151,7 @@ const EstimateRequestTable: React.FC = () => {
     <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid border-silverGray shadow-secondaryTwist">
       <div className="flex justify-between items-center">
         <TertiaryHeading
-          title="My Estimate request"
+          title="Submitted Estimate"
           className="text-graphiteGray"
         />
         <CustomButton

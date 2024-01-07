@@ -4,6 +4,7 @@ interface IClients {
   message?: string | null;
   statusCode: number | null;
   data: any;
+  generatedEstimatesData: any;
 }
 
 const initialCompanyClientState: IClients = {
@@ -12,6 +13,7 @@ const initialCompanyClientState: IClients = {
   message: null,
   data: null,
   statusCode: null,
+  generatedEstimatesData: null
 };
 
 export default initialCompanyClientState;

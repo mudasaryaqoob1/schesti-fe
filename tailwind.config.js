@@ -20,6 +20,7 @@ export default {
         lightGrayishBlue: '#E3E8EF',
         paleGrayishWhite: '#FBFBFE',
         cloudWhite: '#F4EBFF',
+        cloudWhite2: '#F8F8F8',
         pearlWhite: '#F5F6FA',
         cosmicGray: '#F9F5FF',
         celestialGray: '#D0D5DD',
