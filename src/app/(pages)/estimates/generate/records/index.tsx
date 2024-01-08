@@ -17,7 +17,6 @@ import {
   fetchEstimateRequests,
 } from '@/redux/company/company.thunk';
 import NoData from '@/app/component/noData';
-import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 
 interface DataType {
@@ -78,7 +77,7 @@ const EstimateRequestTable: React.FC = () => {
     } else if (key == 'editEstimateRequest') {
       router.push(`/estimates/requests/edit/${estimateRequest._id}`);
     } else if (key === 'createEstimateRequest') {
-      router.push('/estimates/generated');
+      router.push('/estimates/generate');
     }
   };
 
@@ -154,14 +153,7 @@ const EstimateRequestTable: React.FC = () => {
           title="Submitted Estimate"
           className="text-graphiteGray"
         />
-        <CustomButton
-          text="Start New Estimate "
-          className="!w-auto "
-          icon="plus.svg"
-          iconwidth={20}
-          iconheight={20}
-          onClick={() => router.push('/estimates/requests/create')}
-        />
+
       </div>
       <div className="mt-4">
         <Table

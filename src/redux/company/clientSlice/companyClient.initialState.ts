@@ -13,7 +13,7 @@ const initialCompanyClientState: IClients = {
   message: null,
   data: null,
   statusCode: null,
-  generatedEstimatesData: null
+  generatedEstimatesData: null,
 };
 
 export default initialCompanyClientState;

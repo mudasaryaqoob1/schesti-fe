@@ -21,7 +21,8 @@ const InputField = (props: any) => {
       <label
         className={twMerge(
           clsx(
-            'text-graphiteGray text-sm font-medium leading-6 capitalize', labelStyle
+            'text-graphiteGray text-sm font-medium leading-6 capitalize',
+            labelStyle
           )
         )}
         htmlFor={name}
@@ -36,8 +37,10 @@ const InputField = (props: any) => {
         prefix={prefix}
         className={twMerge(
           clsx(
-            `border ${hasError ? 'border-red-500' : 'border-gray-400'
-            } !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 !mt-1.5 ${inputStyle && inputStyle
+            `border ${
+              hasError ? 'border-red-500' : 'border-gray-400'
+            } !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 !mt-1.5 ${
+              inputStyle && inputStyle
             }`
           )
         )}

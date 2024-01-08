@@ -1,4 +1,4 @@
-import { settingTargetService } from '@/app/services/setting/targets.service';
+import { settingTargetService } from '@/app/services/targets.service';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 interface FetchSettingTargetParams {
@@ -19,7 +19,7 @@ export const fetchSettingTargets = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
-        'An error occurred while fetching the feed records'
+          'An error occurred while fetching the feed records'
       );
     }
   }
@@ -35,7 +35,7 @@ export const deleteSettingTarget = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
-        'An error occurred while fetching the feed records'
+          'An error occurred while fetching the feed records'
       );
     }
   }
@@ -54,7 +54,7 @@ export const fetchCompanySetups = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
-        'An error occurred while fetching the feed records'
+          'An error occurred while fetching the feed records'
       );
     }
   }
@@ -70,9 +70,8 @@ export const deleteCompanySetup = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
-        'An error occurred while fetching the feed records'
+          'An error occurred while fetching the feed records'
       );
     }
   }
 );
-

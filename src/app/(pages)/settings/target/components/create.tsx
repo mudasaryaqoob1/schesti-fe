@@ -14,7 +14,7 @@ import { HttpService } from '@/app/services/base.service';
 
 // setting target service
 import { ISettingTarget } from '@/app/interfaces/companyInterfaces/setting.interface';
-import { settingTargetService } from '@/app/services/setting/targets.service';
+import { settingTargetService } from '@/app/services/targets.service';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import Image from 'next/image';
 import { resetVoidFc } from '@/app/utils/types';

@@ -6,9 +6,9 @@ import { CategoryInitTypes } from '@/app/(pages)/settings/CategorySetup/Category
 import { SubcategoryInitValues } from '@/app/(pages)/settings/CategorySetup/Subcategory/page';
 
 class CompanySetupService extends HttpService {
-  private readonly prefix: string = 'api/setting/companySetup';
+  private readonly prefix: string = 'api/setting/categories';
 
-  // category 
+  // category
   httpAddNewCategory = (
     data: CategoryInitTypes
   ): Promise<IResponseInterface<{ token: IToken }>> =>

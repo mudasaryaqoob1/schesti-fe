@@ -74,7 +74,7 @@ const EstimateRequestTable: React.FC = () => {
     } else if (key == 'editEstimateRequest') {
       router.push(`/estimates/requests/edit/${estimateRequest._id}`);
     } else if (key === 'createEstimateRequest') {
-      router.push('/estimates/generated/create');
+      router.push(`/estimates/generate/create?estimateId=${estimateRequest._id}`);
     }
   };
 

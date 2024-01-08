@@ -29,7 +29,6 @@ interface DataType {
 }
 
 const Summary = ({ setPrevNext }: Props) => {
-
   const columns: ColumnsType<DataType> = [
     {
       title: 'Description',
@@ -255,7 +254,7 @@ const Summary = ({ setPrevNext }: Props) => {
           />
         </div>
         <Table
-          className='mt-2'
+          className="mt-2"
           loading={false}
           columns={columns}
           dataSource={[]}
@@ -266,20 +265,29 @@ const Summary = ({ setPrevNext }: Props) => {
       <div className="bg-celestialGray h-px  w-full my-4"></div>
       <div className="flex w-full justify-between flex-col gap-2 my-4">
         <div className="flex items-center justify-between">
-          <MinDesc title="Sub Total Cost" className='text-darkgrayish' />
-          <Description title="$6,000" className='font-medium' />
+          <MinDesc title="Sub Total Cost" className="text-darkgrayish" />
+          <Description title="$6,000" className="font-medium" />
         </div>
         <div className="flex items-center justify-between">
-          <MinDesc title="Material Tax %" className='text-darkgrayish' />
-          <Description title="0.5%" className='font-medium text-graphiteGray bg-cloudWhite2 rounded-[4px] p-1' />
+          <MinDesc title="Material Tax %" className="text-darkgrayish" />
+          <Description
+            title="0.5%"
+            className="font-medium text-graphiteGray bg-cloudWhite2 rounded-[4px] p-1"
+          />
         </div>
         <div className="flex items-center justify-between">
-          <MinDesc title="Overhead & Profit %" className='text-darkgrayish' />
-          <Description title="0.5%" className='font-medium text-graphiteGray bg-cloudWhite2 rounded-[4px] p-1' />
+          <MinDesc title="Overhead & Profit %" className="text-darkgrayish" />
+          <Description
+            title="0.5%"
+            className="font-medium text-graphiteGray bg-cloudWhite2 rounded-[4px] p-1"
+          />
         </div>
         <div className="flex items-center justify-between">
-          <MinDesc title="Bond Fee %" className='text-darkgrayish' />
-          <Description title="0.5%" className='font-medium text-graphiteGray bg-cloudWhite2 rounded-[4px] p-1' />
+          <MinDesc title="Bond Fee %" className="text-darkgrayish" />
+          <Description
+            title="0.5%"
+            className="font-medium text-graphiteGray bg-cloudWhite2 rounded-[4px] p-1"
+          />
         </div>
       </div>
       <div className="bg-celestialGray h-px w-full my-4"></div>

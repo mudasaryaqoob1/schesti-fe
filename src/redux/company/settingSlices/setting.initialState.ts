@@ -1,4 +1,7 @@
-import { ICategory, ISubcategory } from "@/app/interfaces/companyInterfaces/setting.interface";
+import {
+  ICategory,
+  ISubcategory,
+} from '@/app/interfaces/companyInterfaces/setting.interface';
 
 interface SettingTargetsInitialData {
   loading: boolean;
@@ -22,19 +25,18 @@ interface CompanySetupCategoryInitialData {
   message?: string | null;
   statusCode: number | null;
   data: any;
-  categoryData: null | ICategory
+  categoryData: null | ICategory;
 }
 
-export const initialCompanySetupCategoryState: CompanySetupCategoryInitialData = {
-  loading: false,
-  error: null,
-  message: null,
-  data: null,
-  statusCode: null,
-  categoryData: null
-
-};
-
+export const initialCompanySetupCategoryState: CompanySetupCategoryInitialData =
+  {
+    loading: false,
+    error: null,
+    message: null,
+    data: null,
+    statusCode: null,
+    categoryData: null,
+  };
 
 interface CompanySetupSubcategoryInitialData {
   loading: boolean;
@@ -42,18 +44,19 @@ interface CompanySetupSubcategoryInitialData {
   message?: string | null;
   statusCode: number | null;
   data: any;
-  subcategoryData: null | ISubcategory
+  subcategoryData: null | ISubcategory;
   refetch: boolean;
 }
 
-export const initialCompanySetupSubcategoryState: CompanySetupSubcategoryInitialData = {
-  loading: false,
-  error: null,
-  message: null,
-  data: null,
-  statusCode: null,
-  subcategoryData: null,
-  refetch: false,
-};
+export const initialCompanySetupSubcategoryState: CompanySetupSubcategoryInitialData =
+  {
+    loading: false,
+    error: null,
+    message: null,
+    data: null,
+    statusCode: null,
+    subcategoryData: null,
+    refetch: false,
+  };
 
 export default initialSettingTargetsState;

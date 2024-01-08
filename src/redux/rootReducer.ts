@@ -41,6 +41,6 @@ const rootReducer = combineReducers<RootState>({
   user: userSlice,
   pricingPlan: pricingPlanReducer,
   companySetupCategory: companySetupCategoryReducer,
-  companySetupSubcategory: companySetupSubcategoryReducer
+  companySetupSubcategory: companySetupSubcategoryReducer,
 });
 export default persistReducer(persistConfig, rootReducer);

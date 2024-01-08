@@ -9,9 +9,7 @@ import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
-import {
-  fetchSettingTargets,
-} from '@/redux/company/settingSlices/setting.thunk';
+import { fetchSettingTargets } from '@/redux/company/settingSlices/setting.thunk';
 import SettingSidebar from '../verticleBar';
 import AddSubcategory from './Subcategory/page';
 import AddCategory from './Category/page';
@@ -27,7 +25,6 @@ const CategoriesTable = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const token = useSelector(selectToken);
-
 
   useLayoutEffect(() => {
     if (token) {
@@ -49,9 +46,9 @@ const CategoriesTable = () => {
         <TertiaryHeading title="Category Setup" className="text-graphiteGray" />
         <Tabs
           defaultActiveKey="0"
-          className='mt-2'
+          className="mt-2"
           destroyInactiveTabPane
-          items={["Category", "Sub Category"].map((name, id) => {
+          items={['Category', 'Sub Category'].map((name, id) => {
             return {
               key: id.toString(),
               label: name,
@@ -59,7 +56,6 @@ const CategoriesTable = () => {
             };
           })}
         />
-
       </section>
     </SettingSidebar>
   );

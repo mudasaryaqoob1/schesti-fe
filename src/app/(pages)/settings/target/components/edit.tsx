@@ -15,7 +15,7 @@ import { HttpService } from '@/app/services/base.service';
 
 // settingTarget service
 import { ISettingTarget } from '@/app/interfaces/companyInterfaces/setting.interface';
-import { settingTargetService } from '@/app/services/setting/targets.service';
+import { settingTargetService } from '@/app/services/targets.service';
 import Image from 'next/image';
 import { resetVoidFc } from '@/app/utils/types';
 import { SettingTargetProps, months } from './create';

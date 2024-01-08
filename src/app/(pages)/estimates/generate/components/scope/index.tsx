@@ -1,13 +1,13 @@
 'use client';
+import * as Yup from 'yup';
+import { Table } from 'antd';
+import { Formik, Form } from 'formik';
+
 import CustomWhiteButton from '@/app/component/customButton/white';
 import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import FormControl from '@/app/component/formControl';
-import { Formik, Form } from 'formik';
-import * as Yup from 'yup';
 import type { ColumnsType } from 'antd/es/table';
-import { Table } from 'antd';
-
 
 type InitialValuesType = {
   category: string;
@@ -20,7 +20,7 @@ type InitialValuesType = {
   perHourLaborRate: string;
   unitMaterialCost: string;
   unitEquipmentCost: string;
-}
+};
 
 const validationSchema = Yup.object({
   category: Yup.string().required('category name is required!'),
@@ -32,7 +32,9 @@ const validationSchema = Yup.object({
   unitLaborHours: Yup.string().required('unitLaborHours name is required!'),
   perHourLaborRate: Yup.string().required('perHourLaborRate name is required!'),
   unitMaterialCost: Yup.string().required('unitMaterialCost name is required!'),
-  unitEquipmentCost: Yup.string().required('unitEquipmentCost name is required!'),
+  unitEquipmentCost: Yup.string().required(
+    'unitEquipmentCost name is required!'
+  ),
 });
 import { Dispatch, SetStateAction, useState } from 'react';
 import { bg_style } from '@/globals/tailwindvariables';
@@ -63,7 +65,9 @@ interface DataType {
 
 const Scope = ({ setPrevNext }: Props) => {
   const [estimatesData, setEstimatesData] = useState<any>({});
-  const [SingleEstimateData, setSingleEstimateData] = useState<null | DataType>(null);
+  const [SingleEstimateData, setSingleEstimateData] = useState<null | DataType>(
+    null
+  );
 
   const initialValues: InitialValuesType = {
     category: SingleEstimateData?.category || '',
@@ -78,15 +82,17 @@ const Scope = ({ setPrevNext }: Props) => {
     unitEquipmentCost: SingleEstimateData?.unitEquipmentCost || '',
   };
 
-  const submitHandler = (estimateTableItemValues: InitialValuesType, { resetForm }: { resetForm: voidFc }) => {
-
+  const submitHandler = (
+    estimateTableItemValues: InitialValuesType,
+    { resetForm }: { resetForm: voidFc }
+  ) => {
     // destructing values for estimate table item
     const { category, subCategory } = estimateTableItemValues;
 
     // changing reference for old estimates
     const estimates = { ...estimatesData };
     // key for table
-    const estimateTableKey = `${category} ${subCategory}`
+    const estimateTableKey = `${category} ${subCategory}`;
 
     const oldEstimateKeys = Object.keys(estimatesData);
 
@@ -94,9 +100,13 @@ const Scope = ({ setPrevNext }: Props) => {
       const { tableKey, tableItemKey } = SingleEstimateData;
       estimates[tableKey] = estimates[tableKey].map((tableItem: DataType) => {
         if (tableItem.tableItemKey === tableItemKey) {
-          return { ...estimateTableItemValues, tableKey: tableItem.tableKey, tableItemKey: tableItem.tableItemKey }
+          return {
+            ...estimateTableItemValues,
+            tableKey: tableItem.tableKey,
+            tableItemKey: tableItem.tableItemKey,
+          };
         } else {
-          return tableItem
+          return tableItem;
         }
       });
       setEstimatesData(estimates);
@@ -108,13 +118,32 @@ const Scope = ({ setPrevNext }: Props) => {
     if (oldEstimateKeys.length > 0) {
       oldEstimateKeys.forEach((key: string) => {
         if (oldEstimateKeys.includes(estimateTableKey)) {
-          estimates[key] = [...estimates[key], { ...estimateTableItemValues, tableKey: estimateTableKey, tableItemKey: estimates[key].length + 1 }];
+          estimates[key] = [
+            ...estimates[key],
+            {
+              ...estimateTableItemValues,
+              tableKey: estimateTableKey,
+              tableItemKey: estimates[key].length + 1,
+            },
+          ];
         } else {
-          estimates[estimateTableKey] = [{ ...estimateTableItemValues, tableKey: estimateTableKey, tableItemKey: 0 }];
+          estimates[estimateTableKey] = [
+            {
+              ...estimateTableItemValues,
+              tableKey: estimateTableKey,
+              tableItemKey: 0,
+            },
+          ];
         }
-      })
+      });
     } else {
-      estimates[estimateTableKey] = [{ ...estimateTableItemValues, tableKey: estimateTableKey, tableItemKey: 0 }];
+      estimates[estimateTableKey] = [
+        {
+          ...estimateTableItemValues,
+          tableKey: estimateTableKey,
+          tableItemKey: 0,
+        },
+      ];
     }
     setEstimatesData(estimates);
     resetForm();
@@ -178,9 +207,7 @@ const Scope = ({ setPrevNext }: Props) => {
             width={20}
             height={20}
             alt="edit"
-            onClick={
-              () => setSingleEstimateData(record)
-            }
+            onClick={() => setSingleEstimateData(record)}
           />
           <Image
             src="/trash.svg"
@@ -188,20 +215,19 @@ const Scope = ({ setPrevNext }: Props) => {
             width={20}
             height={20}
             alt="delete"
-            onClick={
-              () => {
-                const oldEstimatesData = { ...estimatesData };
-                const { tableKey, tableItemKey } = record;
-                oldEstimatesData[tableKey] = oldEstimatesData[tableKey].filter((tableItem: DataType) => tableItem.tableItemKey !== tableItemKey);
-                setEstimatesData(oldEstimatesData);
-              }
-            }
+            onClick={() => {
+              const oldEstimatesData = { ...estimatesData };
+              const { tableKey, tableItemKey } = record;
+              oldEstimatesData[tableKey] = oldEstimatesData[tableKey].filter(
+                (tableItem: DataType) => tableItem.tableItemKey !== tableItemKey
+              );
+              setEstimatesData(oldEstimatesData);
+            }}
           />
         </div>
       ),
     },
   ];
-
 
   return (
     <div>
@@ -249,7 +275,7 @@ const Scope = ({ setPrevNext }: Props) => {
                 <FormControl
                   control="select"
                   label="Category"
-                  labelStyle='font-normal'
+                  labelStyle="font-normal"
                   type="text"
                   name="category"
                   disabled={SingleEstimateData}
@@ -259,7 +285,7 @@ const Scope = ({ setPrevNext }: Props) => {
                 <FormControl
                   control="select"
                   label="Sub Category"
-                  labelStyle='font-normal'
+                  labelStyle="font-normal"
                   type="text"
                   disabled={SingleEstimateData}
                   name="subCategory"
@@ -273,9 +299,9 @@ const Scope = ({ setPrevNext }: Props) => {
                   <FormControl
                     control="input"
                     type="text"
-                    inputStyle='!py-2'
-                    labelStyle='font-normal'
-                    label='Description'
+                    inputStyle="!py-2"
+                    labelStyle="font-normal"
+                    label="Description"
                     name="description"
                     placeholder="Enter Description"
                     mt="mt-0"
@@ -284,9 +310,9 @@ const Scope = ({ setPrevNext }: Props) => {
                 <FormControl
                   control="input"
                   type="text"
-                  inputStyle='!py-2'
-                  labelStyle='font-normal'
-                  label='Unit'
+                  inputStyle="!py-2"
+                  labelStyle="font-normal"
+                  label="Unit"
                   name="unit"
                   placeholder="Select unit"
                   mt="mt-0"
@@ -294,9 +320,9 @@ const Scope = ({ setPrevNext }: Props) => {
                 <FormControl
                   control="input"
                   type="text"
-                  inputStyle='!py-2'
-                  labelStyle='font-normal'
-                  label='Qty'
+                  inputStyle="!py-2"
+                  labelStyle="font-normal"
+                  label="Qty"
                   name="qty"
                   placeholder="Enter Qtyr"
                   mt="mt-0"
@@ -308,69 +334,67 @@ const Scope = ({ setPrevNext }: Props) => {
                   control="input"
                   type="text"
                   name="wastage"
-                  inputStyle='!py-2'
-                  labelStyle='font-normal'
-                  label='Wastage'
+                  inputStyle="!py-2"
+                  labelStyle="font-normal"
+                  label="Wastage"
                   placeholder="Enter Wastage"
                 />
                 <FormControl
                   control="input"
                   type="text"
                   name="unitLaborHours"
-                  inputStyle='!py-2'
-                  labelStyle='font-normal'
-                  label='Unit labor hours'
+                  inputStyle="!py-2"
+                  labelStyle="font-normal"
+                  label="Unit labor hours"
                   placeholder="Enter Labor Hour"
                 />
                 <FormControl
                   control="input"
                   type="text"
                   name="perHourLaborRate"
-                  inputStyle='!py-2'
-                  labelStyle='font-normal'
-                  label='Per hours labor rate'
+                  inputStyle="!py-2"
+                  labelStyle="font-normal"
+                  label="Per hours labor rate"
                   placeholder="Enter Labor Rate"
                 />
                 <FormControl
                   control="input"
                   type="text"
-                  inputStyle='!py-2'
-                  labelStyle='font-normal'
-                  label='Unit material cost'
+                  inputStyle="!py-2"
+                  labelStyle="font-normal"
+                  label="Unit material cost"
                   name="unitMaterialCost"
                   placeholder="Enter Material Cost"
                 />
                 <FormControl
                   control="input"
                   type="text"
-                  inputStyle='!py-2'
-                  labelStyle='font-normal'
-                  label='Unit equipment cost'
+                  inputStyle="!py-2"
+                  labelStyle="font-normal"
+                  label="Unit equipment cost"
                   name="unitEquipmentCost"
                   placeholder="Enter Equipment Cost"
                 />
                 <CustomWhiteButton
                   type="submit"
-                  text={SingleEstimateData ? 'Update Item' : "Add item"}
+                  text={SingleEstimateData ? 'Update Item' : 'Add item'}
                   className="self-end md:w-auto w-full md:my-0 mt-4 !bg-goldenrodYellow !p-2.5 !text-white"
                 />
               </div>
-              {
-                SingleEstimateData && (
-                  <div className="flex justify-end my-3">
-                    <CustomButton
-                      className="!w-40"
-                      type="button"
-                      text="Reset"
-                      onClick={() => setSingleEstimateData(null)}
-                      iconwidth={20}
-                      iconheight={20}
-                    />
-                  </div>
-                )
-              }
-              {
-                Object.entries(estimatesData).map(([key, value]: any[], i) => (
+              {SingleEstimateData && (
+                <div className="flex justify-end my-3">
+                  <CustomButton
+                    className="!w-40"
+                    type="button"
+                    text="Reset"
+                    onClick={() => setSingleEstimateData(null)}
+                    iconwidth={20}
+                    iconheight={20}
+                  />
+                </div>
+              )}
+              {Object.entries(estimatesData).map(
+                ([key, value]: any[], i) =>
                   value?.length > 0 && (
                     <div key={i} className={`${bg_style} p-5 mt-3`}>
                       <div className="flex items-center justify-between">
@@ -388,21 +412,16 @@ const Scope = ({ setPrevNext }: Props) => {
 
                       {value?.length > 0 && (
                         <Table
-                          className='mt-2'
+                          className="mt-2"
                           loading={false}
                           columns={columns}
                           dataSource={value as DataType[]}
                           pagination={{ position: ['bottomCenter'] }}
                         />
                       )}
-
                     </div>
                   )
-                )
-                )
-              }
-
-
+              )}
             </Form>
           );
         }}

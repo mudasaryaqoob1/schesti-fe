@@ -1,35 +1,72 @@
+import {
+  Dispatch,
+  SetStateAction,
+  useState,
+  useEffect,
+  useCallback,
+  useLayoutEffect,
+} from 'react';
+import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
+
 import CustomButton from '@/app/component/customButton/button';
 import CustomWhiteButton from '@/app/component/customButton/white';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
-import Image from 'next/image';
 import MinDesc from '@/app/component/description/minDesc';
-import { bg_style, minHeading, senaryHeading } from '@/globals/tailwindvariables';
-import { Dispatch, SetStateAction, useState } from 'react';
-import { twMerge } from 'tailwind-merge';
+import {
+  bg_style,
+  minHeading,
+  senaryHeading,
+} from '@/globals/tailwindvariables';
+import { estimateRequestService } from '@/app/services/estimateRequest.service';
+import { selectToken } from '@/redux/authSlices/auth.selector';
+import { useSelector } from 'react-redux';
+import { HttpService } from '@/app/services/base.service';
 
 interface Props {
   setPrevNext: Dispatch<SetStateAction<number>>;
+  pevNext: number;
 }
 
-const TakeOff = ({ setPrevNext }: Props) => {
+const TakeOff = ({ setPrevNext, pevNext }: Props) => {
+  const searchParams = useSearchParams();
+  const estimateId: null | string = searchParams.get('estimateId');
+
+
+  const token = useSelector(selectToken);
+
+  useLayoutEffect(() => {
+    if (token) {
+      HttpService.setToken(token);
+    }
+  }, [token]);
 
   const [showEstimateDetails, setShowEstimateDetails] = useState(true);
   const [showTakeoffDocs, setShowTakeoffDocs] = useState(true);
+  const [estimateRequestDetail, setEstimateRequestDetail] = useState<any>({});
+
+  const fetchEstimateDetail = useCallback(async () => {
+    const result =
+      await estimateRequestService.httpGetEstimateDetail(estimateId);
+    setEstimateRequestDetail(result.data.estimateDetail);
+  }, []);
+
+  useEffect(() => {
+    fetchEstimateDetail();
+  }, []);
+
   return (
     <>
-      {/* scope */}
       <div className="flex justify-between items-center">
         <TertiaryHeading
           title="Take Off Measurements"
           className="text-graphiteGray font-semibold"
         />
         <div className="flex gap-3 items-center">
-          <CustomWhiteButton
-            text="Previous"
-            className="md:w-32"
-          // onClick={() => setPrevNext(prev => prev - 1)}
-          />
+          {pevNext !== 0 && (
+            <CustomWhiteButton text="Previous" className="md:w-32" />
+          )}
 
           <CustomButton
             text="Next"
@@ -38,56 +75,57 @@ const TakeOff = ({ setPrevNext }: Props) => {
           />
         </div>
       </div>
-      {/* middle */}
+
       <div className={`${bg_style} p-5 mt-4`}>
         <div className="flex justify-between items-center ">
           <QuaternaryHeading
             title="Estimate Details"
             className="text-graphiteGray font-bold"
           />
-          <div className="bg-silverGray rounded-s border border-solid border-Gainsboro cursor-pointer p-1" onClick={() => setShowEstimateDetails(prev => !prev)}>
-            <Image
-              src='/chevron-down.svg'
-              alt="icon"
-              width={16}
-              height={16}
-            />
+          <div
+            className="bg-silverGray rounded-s border border-solid border-Gainsboro cursor-pointer p-1"
+            onClick={() => setShowEstimateDetails((prev) => !prev)}
+          >
+            <Image src="/chevron-down.svg" alt="icon" width={16} height={16} />
           </div>
         </div>
-        <div className={`mt-4 md:grid-cols-4 md:grid-rows-2 gap-y-6 ${showEstimateDetails ? 'grid' : 'hidden'}`}>
-          {/* 1 */}
+        <div
+          className={`mt-4 md:grid-cols-4 md:grid-rows-2 gap-y-6 ${
+            showEstimateDetails ? 'grid' : 'hidden'
+          }`}
+        >
           <div>
             <MinDesc
               title="Client Name"
               className="font-popin text-base text-lightyGray font-normal"
             />
             <MinDesc
-              title="Albert Flores"
+              title={estimateRequestDetail?.clientName}
               className="font-popin text-base text-midnightBlue mt-2"
             />
           </div>
-          {/* 2 */}
+
           <div>
             <MinDesc
               title="Company Name"
               className="font-popin font-normal text-base text-lightyGray"
             />
             <MinDesc
-              title="Jenny Wilson"
+              title={estimateRequestDetail?.companyName}
               className="font-popin text-base text-midnightBlue mt-2"
             />
           </div>
-          {/* 3 */}
+
           <div>
             <MinDesc
               title="Phone Number"
               className="font-popin text-base font-normal text-lightyGray"
             />
             <MinDesc
-              title="(938) 861-8764"
+              title={estimateRequestDetail?.phone}
               className="font-popin text-base text-midnightBlue my-2"
             />
-            <div className="flex items-center gap-1">
+            {/* <div className="flex items-center gap-1">
               <MinDesc
                 title="(938) 861-8764"
                 className="font-popin text-base text-midnightBlue "
@@ -96,7 +134,7 @@ const TakeOff = ({ setPrevNext }: Props) => {
                 title="(Alternate)"
                 className="font-popin text-base text-lightyGray"
               />
-            </div>
+            </div> */}
           </div>
           {/* 4 */}
           <div>
@@ -105,19 +143,9 @@ const TakeOff = ({ setPrevNext }: Props) => {
               className="font-popin text-base font-normal text-lightyGray"
             />
             <MinDesc
-              title="james@example.com"
+              title={estimateRequestDetail?.email}
               className="font-popin text-base text-midnightBlue my-2"
             />
-            <div className="flex items-center gap-2">
-              <MinDesc
-                title="james@example.com"
-                className="font-popin text-base text-midnightBlue"
-              />
-              <MinDesc
-                title="(Alternate)"
-                className="font-popin text-base text-lightyGray"
-              />
-            </div>
           </div>
           {/* 5 */}
           <div>
@@ -126,7 +154,7 @@ const TakeOff = ({ setPrevNext }: Props) => {
               className="font-popin font-normal text-base text-lightyGray"
             />
             <MinDesc
-              title="Bessie Cooper"
+              title={estimateRequestDetail?.projectName}
               className="font-popin text-base text-midnightBlue mt-2"
             />
           </div>
@@ -137,7 +165,7 @@ const TakeOff = ({ setPrevNext }: Props) => {
               className="font-popin font-normal text-base text-lightyGray"
             />
             <MinDesc
-              title="Ralph Edwards"
+              title={`${estimateRequestDetail?.salePerson?.firstName} ${estimateRequestDetail?.salePerson?.lastName}`}
               className="font-popin text-base text-midnightBlue mt-2"
             />
           </div>
@@ -148,7 +176,7 @@ const TakeOff = ({ setPrevNext }: Props) => {
               className="font-popin  font-normal text-base text-lightyGray"
             />
             <MinDesc
-              title="Leslie Alexander"
+              title={`${estimateRequestDetail?.estimator?.firstName} ${estimateRequestDetail?.estimator?.lastName}`}
               className="font-popin text-base text-midnightBlue mt-2"
             />
           </div>
@@ -165,14 +193,16 @@ const TakeOff = ({ setPrevNext }: Props) => {
           </div>
         </div>
       </div>
-      {/* takeoff */}
       <div className={`${bg_style} p-5 mt-6`}>
         <div className="flex justify-between">
           <QuaternaryHeading
             title="Take off"
             className="text-graphiteGray font-bold"
           />
-          <div className="bg-silverGray rounded-s border border-solid border-Gainsboro cursor-pointer p-1" onClick={() => setShowTakeoffDocs(prev => !prev)}>
+          <div
+            className="bg-silverGray rounded-s border border-solid border-Gainsboro cursor-pointer p-1"
+            onClick={() => setShowTakeoffDocs((prev) => !prev)}
+          >
             <Image
               src={'/chevron-down.svg'}
               alt="icon"
@@ -181,19 +211,19 @@ const TakeOff = ({ setPrevNext }: Props) => {
             />
           </div>
         </div>
-        <div className={`grid-cols-3 gap-3 mt-4 ${showTakeoffDocs ? 'grid' : 'hidden'}`}>
+        <div
+          className={`grid-cols-3 gap-3 mt-4 ${
+            showTakeoffDocs ? 'grid' : 'hidden'
+          }`}
+        >
           <div>
-            <p
-              className={`${senaryHeading} text-midnightBlue font-popin mb-2`}
-            >
+            <p className={`${senaryHeading} text-midnightBlue font-popin mb-2`}>
               Drawings
             </p>
             <div
               className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg mb-3`}
             >
-              <div
-                className='p-4 flex flex-col items-center gap-3'
-              >
+              <div className="p-4 flex flex-col items-center gap-3">
                 <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
                   <Image
                     src={'/uploadcloud.svg'}
@@ -202,30 +232,27 @@ const TakeOff = ({ setPrevNext }: Props) => {
                     height={20}
                   />
                 </div>
-                <div className="flex gap-2">
-                  <p className={`text-steelGray ${minHeading}`}>
-                    Hannah.pdf
-                  </p>
-                </div>
-
-                <p className={twMerge(minHeading, 'text-goldenrodYellow cursor-pointer')}>
-                  Click to view
-                </p>
+                {estimateRequestDetail?.drawingsDocuments?.map((doc: any) => (
+                  <a
+                    key={doc._id}
+                    href={doc.url}
+                    className={`text-steelGray ${minHeading}`}
+                  >
+                    {doc.name}
+                    <span className="text-goldenrodYellow cursor-pointer ml-2">
+                      View
+                    </span>
+                  </a>
+                ))}
               </div>
             </div>
           </div>
           <div>
-            <p
-              className={`${senaryHeading} text-midnightBlue font-popin mb-2`}
-            >
+            <p className={`${senaryHeading} text-midnightBlue font-popin mb-2`}>
               Takeoff Reports
             </p>
-            <div
-              className='p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg'
-            >
-              <div
-                className='p-4 flex flex-col items-center gap-3'
-              >
+            <div className="p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg">
+              <div className="p-4 flex flex-col items-center gap-3">
                 <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
                   <Image
                     src={'/uploadcloud.svg'}
@@ -234,29 +261,27 @@ const TakeOff = ({ setPrevNext }: Props) => {
                     height={20}
                   />
                 </div>
-                <div className="flex gap-2">
-                  <p className={`text-steelGray ${minHeading}`}>
-                    Hannah.pdf
-                  </p>
-                </div>
-                <p className={twMerge(minHeading, 'text-goldenrodYellow cursor-pointer')}>
-                  Click to view
-                </p>
+                {estimateRequestDetail?.takeOffReports?.map((doc: any) => (
+                  <a
+                    key={doc._id}
+                    href={doc.url}
+                    className={`text-steelGray ${minHeading}`}
+                  >
+                    {doc.name}
+                    <span className="text-goldenrodYellow cursor-pointer ml-2">
+                      View
+                    </span>
+                  </a>
+                ))}
               </div>
             </div>
           </div>
           <div>
-            <p
-              className={`${senaryHeading} text-midnightBlue font-popin mb-2`}
-            >
+            <p className={`${senaryHeading} text-midnightBlue font-popin mb-2`}>
               Other Documents
             </p>
-            <div
-              className='p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg'
-            >
-              <div
-                className={`px-6 py-4 flex flex-col items-center gap-3 `}
-              >
+            <div className="p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg">
+              <div className={`px-6 py-4 flex flex-col items-center gap-3 `}>
                 <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
                   <Image
                     src={'/uploadcloud.svg'}
@@ -265,19 +290,22 @@ const TakeOff = ({ setPrevNext }: Props) => {
                     height={20}
                   />
                 </div>
-                <div className="flex gap-2">
-                  <p className={`text-steelGray ${minHeading}`}>
-                    Hannah.pdf
-                  </p>
-                </div>
-                <p className={twMerge(minHeading, 'text-goldenrodYellow cursor-pointer')}>
-                  Click to view
-                </p>
+                {estimateRequestDetail?.otherDocuments?.map((doc: any) => (
+                  <a
+                    key={doc._id}
+                    href={doc.url}
+                    className={`text-steelGray ${minHeading}`}
+                  >
+                    {doc.name}
+                    <span className="text-goldenrodYellow cursor-pointer ml-2">
+                      View
+                    </span>
+                  </a>
+                ))}
               </div>
             </div>
           </div>
         </div>
-
       </div>
     </>
   );

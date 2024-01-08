@@ -20,6 +20,9 @@ class EstimateRequestsService extends HttpService {
       `${this.prefix}/getAllEstimateRequests?page=${page}&limit=${limit}`
     );
 
+  httpGetEstimateDetail = (id: string | null): Promise<IResponseInterface> =>
+    this.get(`${this.prefix}//estimateDetail/${id}`);
+
   httpUpdateEstimateRequest = (
     data: IEstimateRequest,
     estimateId: string | string[]

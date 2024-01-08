@@ -31,7 +31,6 @@ export const companySetupCategoryData = (state: RootState) =>
 export const companySetupSubcategoryData = (state: RootState) =>
   state.companySetupSubcategory;
 
-
 // company setup data
 export const companySetupCategoriesLoading = createSelector(
   [companySetupCategoryData],
@@ -51,7 +50,3 @@ export const companySetupSubCategoriesData = createSelector(
   [companySetupSubcategoryData],
   (companySubcategorySetup) => companySubcategorySetup.data
 );
-
-
-
-
