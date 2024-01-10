@@ -12,7 +12,7 @@ const defaultOptions = [
 ];
 
 const SelectComp = (props: any) => {
-  const { name, label, labelStyle, options = defaultOptions, ...rest } = props;
+  const { name, label, labelStyle, options = defaultOptions, selectStyle, className, ...rest } = props;
 
   const OptionsArr = options?.map(
     (option: { value: string; label: string }) => {
@@ -41,13 +41,13 @@ const SelectComp = (props: any) => {
           {label}
         </label>
       )}
-      <div className="mt-1">
+      <div className={twMerge(clsx("mt-1", className))}>
         <Field name={name} id={name} component="select">
           {({ form: { setFieldValue }, field: { value } }: FormikValues) => {
             return (
               <Select
-                className={`w-full h-10 ${hasError ? ' customSelectError' : 'customSelect'
-                  }`}
+                className={twMerge(clsx('w-full h-10', hasError ? ' customSelectError' : 'customSelect', selectStyle && selectStyle
+                ))}
                 id={name}
                 {...rest}
                 {...field}

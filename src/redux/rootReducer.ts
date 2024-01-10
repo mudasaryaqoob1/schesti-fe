@@ -12,6 +12,7 @@ import userSlice from './userSlice/user.slice';
 import pricingPlanReducer from './pricingPlanSlice/pricingPlanSlice';
 import companySetupCategoryReducer from './company/settingSlices/companySetup/category.slice';
 import companySetupSubcategoryReducer from './company/settingSlices/companySetup/subcategory.slice';
+import materialsReducer from './company/settingSlices/materials.slice';
 
 export type RootState = {
   auth: any;
@@ -24,6 +25,7 @@ export type RootState = {
   pricingPlan: any;
   companySetupCategory: any;
   companySetupSubcategory: any;
+  materials: any;
 };
 const persistConfig = {
   key: 'root',
@@ -41,6 +43,7 @@ const rootReducer = combineReducers<RootState>({
   user: userSlice,
   pricingPlan: pricingPlanReducer,
   companySetupCategory: companySetupCategoryReducer,
-  companySetupSubcategory: companySetupSubcategoryReducer
+  companySetupSubcategory: companySetupSubcategoryReducer,
+  materials: materialsReducer
 });
 export default persistReducer(persistConfig, rootReducer);
