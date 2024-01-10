@@ -22,7 +22,7 @@ import {
   companySetupCategoriesData,
   companySetupSubcategoriesLoading,
 } from '@/redux/company/companySelector';
-import { companySetupService } from '@/app/services/categories.service';
+import { categoriesService } from '@/app/services/categories.service';
 import { voidFc } from '@/app/utils/types';
 import {
   refetchSubCategories,
@@ -91,7 +91,7 @@ const AddSubcategory = () => {
   ) => {
     if (subcategoryData) {
       const { statusCode, data } =
-        await companySetupService.httpUpdateSubcategory(subcategoryData._id, {
+        await categoriesService.httpUpdateSubcategory(subcategoryData._id, {
           ...values,
           category: subcategoryData.categoryId,
         });
@@ -103,7 +103,7 @@ const AddSubcategory = () => {
       }
     } else {
       const { statusCode, data } =
-        await companySetupService.httpAddNewSubcategory(values);
+        await categoriesService.httpAddNewSubcategory(values);
       console.log(statusCode, data);
       if (statusCode === 201) {
         dispatch(refetchSubCategories());

@@ -5,7 +5,7 @@ import { IToken } from '@/app/interfaces/authInterfaces/token.interface';
 import { CategoryInitTypes } from '@/app/(pages)/settings/CategorySetup/Category/page';
 import { SubcategoryInitValues } from '@/app/(pages)/settings/CategorySetup/Subcategory/page';
 
-class CompanySetupService extends HttpService {
+class CategoriesService extends HttpService {
   private readonly prefix: string = 'api/setting/categories';
 
   // category
@@ -50,4 +50,4 @@ class CompanySetupService extends HttpService {
   httpDeleteSubcategory = (category: string): Promise<IResponseInterface> =>
     this.delete(`${this.prefix}/subcategory/delete/${category}`);
 }
-export const companySetupService = new CompanySetupService();
+export const categoriesService = new CategoriesService();

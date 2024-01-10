@@ -1,13 +1,13 @@
 'use client';
 
-import React from 'react';
+import React  from 'react';
 import { bg_style } from '@/globals/tailwindvariables';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import CustomButton from '@/app/component/customButton/button';
 import * as Yup from 'yup';
 import FormikController from '@/app/component/formControl';
 import { Form, Formik } from 'formik';
-import { companySetupService } from '@/app/services/categories.service';
+import { categoriesService } from '@/app/services/categories.service';
 import { voidFc } from '@/app/utils/types';
 import CategoryTable from './Table';
 import { useDispatch, useSelector } from 'react-redux';
@@ -37,7 +37,7 @@ const AddCategory = () => {
   const { categoryData } = useSelector(
     (state: any) => state.companySetupCategory
   );
-
+  
 
   const initialValues: CategoryInitTypes = {
     name: categoryData?.name || '',
@@ -48,7 +48,7 @@ const AddCategory = () => {
     { resetForm }: { resetForm: voidFc }
   ) => {
     if (categoryData) {
-      const { statusCode, data } = await companySetupService.httpUpdateCategory(
+      const { statusCode, data } = await categoriesService.httpUpdateCategory(
         categoryData._id,
         values
       );
@@ -59,7 +59,7 @@ const AddCategory = () => {
       }
     } else {
       const { statusCode, data } =
-        await companySetupService.httpAddNewCategory(values);
+        await categoriesService.httpAddNewCategory(values);
       if (statusCode === 201) {
         dispatch(addNewCategoryData(data));
         resetForm();

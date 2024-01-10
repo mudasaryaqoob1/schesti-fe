@@ -27,6 +27,10 @@ const SelectComp = (props: any) => {
   const [field, meta] = useField(name);
   const hasError = meta.touched && meta.error;
 
+
+  console.log(hasError , 'hasErrorhasError');
+  
+
   return (
     <div>
       {label && (
@@ -48,7 +52,7 @@ const SelectComp = (props: any) => {
             return (
               <Select
                 className={`w-full h-10 ${
-                  hasError ? ' customSelectError' : 'customSelect'
+                  hasError ? 'customSelectError' : 'customSelect'
                 }`}
                 id={name}
                 {...rest}

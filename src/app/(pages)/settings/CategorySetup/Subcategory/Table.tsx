@@ -14,7 +14,7 @@ import {
   companySetupSubcategoriesLoading,
 } from '@/redux/company/companySelector';
 import { setSubcategoryData } from '@/redux/company/settingSlices/companySetup/subcategory.slice';
-import { companySetupService } from '@/app/services/categories.service';
+import { categoriesService } from '@/app/services/categories.service';
 
 interface DataType {
   _id: string;
@@ -97,7 +97,7 @@ const SubCategoryTable: React.FC = () => {
               alt="delete"
               onClick={async () => {
                 const { statusCode } =
-                  await companySetupService.httpDeleteSubcategory(
+                  await categoriesService.httpDeleteSubcategory(
                     subCategoriesData._id!
                   );
                 if (statusCode === 200) {

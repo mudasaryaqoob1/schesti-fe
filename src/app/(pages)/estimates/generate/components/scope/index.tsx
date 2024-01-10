@@ -1,13 +1,26 @@
 'use client';
+import {
+  Dispatch,
+  SetStateAction,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
 import * as Yup from 'yup';
 import { Table } from 'antd';
 import { Formik, Form } from 'formik';
+import type { ColumnsType } from 'antd/es/table';
+import Image from 'next/image';
 
 import CustomWhiteButton from '@/app/component/customButton/white';
 import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import FormControl from '@/app/component/formControl';
-import type { ColumnsType } from 'antd/es/table';
+import { categoriesService } from '@/app/services/categories.service';
+import { bg_style } from '@/globals/tailwindvariables';
+import QuaternaryHeading from '@/app/component/headings/quaternary';
+import Description from '@/app/component/description';
+import { voidFc } from '@/app/utils/types';
 
 type InitialValuesType = {
   category: string;
@@ -36,12 +49,6 @@ const validationSchema = Yup.object({
     'unitEquipmentCost name is required!'
   ),
 });
-import { Dispatch, SetStateAction, useState } from 'react';
-import { bg_style } from '@/globals/tailwindvariables';
-import QuaternaryHeading from '@/app/component/headings/quaternary';
-import Description from '@/app/component/description';
-import { voidFc } from '@/app/utils/types';
-import Image from 'next/image';
 
 interface Props {
   setPrevNext: Dispatch<SetStateAction<number>>;
@@ -68,18 +75,54 @@ const Scope = ({ setPrevNext }: Props) => {
   const [SingleEstimateData, setSingleEstimateData] = useState<null | DataType>(
     null
   );
+  const [categories, setCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState<Object[]>([]);
+
+  const fetchCategories = useCallback(async () => {
+    const result = await categoriesService.httpGetAllCategories(1, 9);
+    let modifyCategories = result.data.map(
+      (cat: { name: string; _id: string }) => {
+        return {
+          label: cat.name,
+          value: cat._id,
+        };
+      }
+    );
+    setCategories(modifyCategories);
+  }, []);
+  const fetchSubCategories = useCallback(async () => {
+    const result = await categoriesService.httpGetAllSubcategories(1, 9);
+    const flattenedSubcategories: Object[] = [];
+
+    result.data.forEach((category: any) => {
+      category.subcategories.forEach((subcategory: any) => {
+        const flattenedSubcategory = {
+          label: subcategory.name,
+          value: subcategory._id,
+          categoryId: subcategory.categoryId,
+        };
+        flattenedSubcategories.push(flattenedSubcategory);
+      });
+    });
+    setSubCategories(flattenedSubcategories);
+  }, []);
+
+  useEffect(() => {
+    fetchCategories();
+    fetchSubCategories();
+  }, []);
 
   const initialValues: InitialValuesType = {
-    category: SingleEstimateData?.category || '',
-    subCategory: SingleEstimateData?.subCategory || '',
-    description: SingleEstimateData?.description || '',
-    unit: SingleEstimateData?.unit || '',
-    qty: SingleEstimateData?.qty || '',
-    wastage: SingleEstimateData?.wastage || '',
-    unitLaborHours: SingleEstimateData?.unitLaborHours || '',
-    perHourLaborRate: SingleEstimateData?.perHourLaborRate || '',
-    unitMaterialCost: SingleEstimateData?.unitMaterialCost || '',
-    unitEquipmentCost: SingleEstimateData?.unitEquipmentCost || '',
+    category:  '',
+    subCategory:  '',
+    description: '',
+    unit:  '',
+    qty:  '',
+    wastage: '',
+    unitLaborHours: '',
+    perHourLaborRate:  '',
+    unitMaterialCost:  '',
+    unitEquipmentCost: '',
   };
 
   const submitHandler = (
@@ -263,7 +306,8 @@ const Scope = ({ setPrevNext }: Props) => {
         validationSchema={validationSchema}
         onSubmit={submitHandler}
       >
-        {({ handleSubmit }) => {
+        {({ handleSubmit, values}) => {
+
           return (
             <Form
               name="basic"
@@ -278,7 +322,7 @@ const Scope = ({ setPrevNext }: Props) => {
                   labelStyle="font-normal"
                   type="text"
                   name="category"
-                  disabled={SingleEstimateData}
+                  options={categories}
                   placeholder="Enter Category"
                   className="w-full h-10"
                 />
@@ -286,9 +330,10 @@ const Scope = ({ setPrevNext }: Props) => {
                   control="select"
                   label="Sub Category"
                   labelStyle="font-normal"
-                  type="text"
-                  disabled={SingleEstimateData}
                   name="subCategory"
+                  options={subCategories.filter(
+                    (cat: any) => cat.categoryId === values.category
+                  )}
                   placeholder="Enter Subcategory"
                   className="w-full h-10"
                 />

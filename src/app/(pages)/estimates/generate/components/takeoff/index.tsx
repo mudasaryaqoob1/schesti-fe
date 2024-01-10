@@ -45,6 +45,7 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
   const [showEstimateDetails, setShowEstimateDetails] = useState(true);
   const [showTakeoffDocs, setShowTakeoffDocs] = useState(true);
   const [estimateRequestDetail, setEstimateRequestDetail] = useState<any>({});
+ 
 
   const fetchEstimateDetail = useCallback(async () => {
     const result =

@@ -1,4 +1,4 @@
-import { companySetupService } from '@/app/services/categories.service';
+import { categoriesService } from '@/app/services/categories.service';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 interface FetchSettingTargetParams {
@@ -11,7 +11,7 @@ export const fetchCategories = createAsyncThunk(
   'companySetup/categories',
   async ({ page, limit }: FetchSettingTargetParams, { rejectWithValue }) => {
     try {
-      const response = await companySetupService.httpGetAllCategories(
+      const response = await categoriesService.httpGetAllCategories(
         page,
         limit
       );
@@ -29,7 +29,7 @@ export const deleteCategory = createAsyncThunk(
   'companySetup/deleteCategory',
   async (categoryId: string, { rejectWithValue }) => {
     try {
-      const response = await companySetupService.httpDeleteCategory(categoryId);
+      const response = await categoriesService.httpDeleteCategory(categoryId);
       return response;
     } catch (error: any) {
       return rejectWithValue(
@@ -45,7 +45,7 @@ export const fetchSubCategories = createAsyncThunk(
   'companySetup/subcatgories',
   async ({ page, limit }: FetchSettingTargetParams, { rejectWithValue }) => {
     try {
-      const response = await companySetupService.httpGetAllSubcategories(
+      const response = await categoriesService.httpGetAllSubcategories(
         page,
         limit
       );
@@ -64,7 +64,7 @@ export const deleteSubCategory = createAsyncThunk(
   async (targetId: string, { rejectWithValue }) => {
     try {
       const response =
-        await companySetupService.httpDeleteSubcategory(targetId);
+        await categoriesService.httpDeleteSubcategory(targetId);
       return response;
     } catch (error: any) {
       return rejectWithValue(
