@@ -18,7 +18,7 @@ const Index = () => {
       route: ['/settings/companyUser', '/settings/companyUser/addCompanyUser'],
     },
     { id: 4, name: 'Material Settings', route: ['/settings/MeterialSettings'] },
-    { id: 5, name: 'Materials', route: ['/settings/meterials'] },
+    { id: 5, name: 'Materials', route: ['/settings/materials'] },
     { id: 6, name: 'Target', route: ['/settings/target'] },
     {
       id: 7,

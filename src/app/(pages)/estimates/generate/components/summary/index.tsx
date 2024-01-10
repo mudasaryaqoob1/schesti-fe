@@ -80,7 +80,7 @@ const Summary = ({ setPrevNext }: Props) => {
       dataIndex: 'action',
       align: 'center',
       key: 'action',
-      render: (text, record) => (
+      render: () => (
         <div className="flex gap-2 justify-center">
           <Image
             src="/edit.svg"

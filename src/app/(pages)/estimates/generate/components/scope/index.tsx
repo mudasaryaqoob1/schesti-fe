@@ -113,15 +113,15 @@ const Scope = ({ setPrevNext }: Props) => {
   }, []);
 
   const initialValues: InitialValuesType = {
-    category:  '',
-    subCategory:  '',
+    category: '',
+    subCategory: '',
     description: '',
-    unit:  '',
-    qty:  '',
+    unit: '',
+    qty: '',
     wastage: '',
     unitLaborHours: '',
-    perHourLaborRate:  '',
-    unitMaterialCost:  '',
+    perHourLaborRate: '',
+    unitMaterialCost: '',
     unitEquipmentCost: '',
   };
 
@@ -306,8 +306,7 @@ const Scope = ({ setPrevNext }: Props) => {
         validationSchema={validationSchema}
         onSubmit={submitHandler}
       >
-        {({ handleSubmit, values}) => {
-
+        {({ handleSubmit, values }) => {
           return (
             <Form
               name="basic"

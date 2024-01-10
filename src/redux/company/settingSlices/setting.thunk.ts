@@ -1,4 +1,5 @@
 import { settingTargetService } from '@/app/services/targets.service';
+import { materialService } from '@/app/services/material.service';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
 interface FetchSettingTargetParams {
@@ -66,6 +67,40 @@ export const deleteCompanySetup = createAsyncThunk(
     try {
       const response =
         await settingTargetService.httpDeleteSettingTarget(targetId);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data ||
+          'An error occurred while fetching the feed records'
+      );
+    }
+  }
+);
+
+// material setup thunks
+export const fetchMaterials = createAsyncThunk(
+  'setting/companySetups',
+  async ({ page, limit }: FetchSettingTargetParams, { rejectWithValue }) => {
+    try {
+      const response = await materialService.httpGetAllMaterialsData(
+        page,
+        limit
+      );
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data ||
+          'An error occurred while fetching the feed records'
+      );
+    }
+  }
+);
+
+export const deleteMaterial = createAsyncThunk(
+  'setting/deleteCompanySetup',
+  async (targetId: string, { rejectWithValue }) => {
+    try {
+      const response = await materialService.httpDeleteMaterial(targetId);
       return response;
     } catch (error: any) {
       return rejectWithValue(

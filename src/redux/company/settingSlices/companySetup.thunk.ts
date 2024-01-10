@@ -63,8 +63,7 @@ export const deleteSubCategory = createAsyncThunk(
   'companySetup/deleteSubcategory',
   async (targetId: string, { rejectWithValue }) => {
     try {
-      const response =
-        await categoriesService.httpDeleteSubcategory(targetId);
+      const response = await categoriesService.httpDeleteSubcategory(targetId);
       return response;
     } catch (error: any) {
       return rejectWithValue(

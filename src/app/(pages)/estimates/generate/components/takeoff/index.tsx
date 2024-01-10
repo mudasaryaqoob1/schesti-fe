@@ -33,7 +33,6 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
   const searchParams = useSearchParams();
   const estimateId: null | string = searchParams.get('estimateId');
 
-
   const token = useSelector(selectToken);
 
   useLayoutEffect(() => {
@@ -45,7 +44,6 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
   const [showEstimateDetails, setShowEstimateDetails] = useState(true);
   const [showTakeoffDocs, setShowTakeoffDocs] = useState(true);
   const [estimateRequestDetail, setEstimateRequestDetail] = useState<any>({});
- 
 
   const fetchEstimateDetail = useCallback(async () => {
     const result =

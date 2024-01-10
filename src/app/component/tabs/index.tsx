@@ -1,6 +1,5 @@
 'use client';
 
-
 import { quaternaryHeading } from '@/globals/tailwindvariables';
 import { useRouter } from 'next/navigation';
 import { Dropdown, Space } from 'antd';
@@ -10,12 +9,12 @@ import { usePathname } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
 import tabsStyle from './tabs.module.css';
 import { DownOutlined } from '@ant-design/icons';
-import Link from 'next/link'
+import Link from 'next/link';
 
 const items: MenuProps['items'] = [
   {
     key: '1',
-    label:  <Link href="/estimates">Estimates Requests</Link>,
+    label: <Link href="/estimates">Estimates Requests</Link>,
   },
 
   {

@@ -58,15 +58,17 @@ const Index = () => {
     let result: any = await dispatch(fetchUsers({ limit: 9, page: 1 }));
 
     setUserData(
-      result.payload?.data?.employees.filter((u : any) => !u.roles.includes('Subcontractor')).map((user: any) => {
-        return {
-          key: user._id,
-          name: `${user.firstName} ${user.lastName}`,
-          email: user.email,
-          roles: user.roles,
-          invitationDate: moment(user.createdAt).format('ll'),
-        };
-      })
+      result.payload?.data?.employees
+        .filter((u: any) => !u.roles.includes('Subcontractor'))
+        .map((user: any) => {
+          return {
+            key: user._id,
+            name: `${user.firstName} ${user.lastName}`,
+            email: user.email,
+            roles: user.roles,
+            invitationDate: moment(user.createdAt).format('ll'),
+          };
+        })
     );
   }, []);
 

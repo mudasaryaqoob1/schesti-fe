@@ -153,7 +153,6 @@ const EstimateRequestTable: React.FC = () => {
           title="Submitted Estimate"
           className="text-graphiteGray"
         />
-
       </div>
       <div className="mt-4">
         <Table

@@ -1,6 +1,6 @@
 'use client';
 
-import React  from 'react';
+import React from 'react';
 import { bg_style } from '@/globals/tailwindvariables';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import CustomButton from '@/app/component/customButton/button';
@@ -37,7 +37,6 @@ const AddCategory = () => {
   const { categoryData } = useSelector(
     (state: any) => state.companySetupCategory
   );
-  
 
   const initialValues: CategoryInitTypes = {
     name: categoryData?.name || '',
