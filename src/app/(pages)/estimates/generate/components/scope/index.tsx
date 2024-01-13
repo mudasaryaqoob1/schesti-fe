@@ -17,9 +17,11 @@ import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import FormControl from '@/app/component/formControl';
 import { categoriesService } from '@/app/services/categories.service';
+import { materialService } from '@/app/services/material.service';
 import { bg_style } from '@/globals/tailwindvariables';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import Description from '@/app/component/description';
+// import Description from '@/app/component/description';
+import './scopeStyle.css';
 import { voidFc } from '@/app/utils/types';
 
 type InitialValuesType = {
@@ -29,10 +31,10 @@ type InitialValuesType = {
   unit: string;
   qty: string;
   wastage: string;
-  unitLaborHours: string;
+  unitLabourHour: string;
   perHourLaborRate: string;
   unitMaterialCost: string;
-  unitEquipmentCost: string;
+  unitEquipments: string;
 };
 
 const validationSchema = Yup.object({
@@ -42,12 +44,10 @@ const validationSchema = Yup.object({
   unit: Yup.string().required('unit name is required!'),
   qty: Yup.string().required('qty name is required!'),
   wastage: Yup.string().required('wastage name is required!'),
-  unitLaborHours: Yup.string().required('unitLaborHours name is required!'),
+  unitLabourHour: Yup.string().required('unitLaborHours name is required!'),
   perHourLaborRate: Yup.string().required('perHourLaborRate name is required!'),
   unitMaterialCost: Yup.string().required('unitMaterialCost name is required!'),
-  unitEquipmentCost: Yup.string().required(
-    'unitEquipmentCost name is required!'
-  ),
+  unitEquipments: Yup.string().required('unitEquipmentCost name is required!'),
 });
 
 interface Props {
@@ -61,15 +61,27 @@ interface DataType {
   unit: string;
   qty: string;
   wastage: string;
-  unitLaborHours: string;
+  unitLabourHour: string;
   perHourLaborRate: string;
   unitMaterialCost: string;
-  unitEquipmentCost: string;
+  unitEquipments: string;
   tableKey: string;
   tableItemKey: string;
   Action: string;
 }
 
+const initialValues: InitialValuesType = {
+  category: '',
+  subCategory: '',
+  description: '',
+  unit: '',
+  qty: '',
+  wastage: '5',
+  unitLabourHour: '',
+  perHourLaborRate: '',
+  unitMaterialCost: '',
+  unitEquipments: '',
+};
 const Scope = ({ setPrevNext }: Props) => {
   const [estimatesData, setEstimatesData] = useState<any>({});
   const [SingleEstimateData, setSingleEstimateData] = useState<null | DataType>(
@@ -77,6 +89,14 @@ const Scope = ({ setPrevNext }: Props) => {
   );
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState<Object[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedSubCategory, setSelectedSubCategory] = useState('');
+  const [estimateDescriptions, setEstimateDescriptions] = useState([]);
+  const [units, setUnits] = useState([]);
+  const [unitLabourHours, setUnitLabourHours] = useState([]);
+  const [perHourLabourRates, setPerHourLabourRates] = useState([]);
+  const [unitMaterialCosts, setUnitMaterialCosts] = useState([]);
+  const [unitEquipmentCost, setUnitEquipmentCost] = useState([]);
 
   const fetchCategories = useCallback(async () => {
     const result = await categoriesService.httpGetAllCategories(1, 9);
@@ -106,36 +126,158 @@ const Scope = ({ setPrevNext }: Props) => {
     });
     setSubCategories(flattenedSubcategories);
   }, []);
+  const fetchMeterialDetail = useCallback(
+    async (categoryId: string, subCategory: string) => {
+      materialService
+        .httpGetMeterialWithCategoryId(categoryId, subCategory)
+        .then((result) => {
+          let uniqueDescriptionsSet = new Set();
+
+          let fetchedDescriptions = result.data
+            .map((material: DataType) => {
+              const description = material.description;
+
+              if (!uniqueDescriptionsSet.has(description)) {
+                uniqueDescriptionsSet.add(description);
+                return {
+                  label: description,
+                  value: description,
+                };
+              } else {
+                return null;
+              }
+            })
+            .filter((description: any) => description !== null);
+          let uniqueUnitsSet = new Set();
+          let fetchedUnits = result.data
+            .map((material: DataType) => {
+              const unit = material.unit;
+              if (!uniqueUnitsSet.has(unit)) {
+                uniqueUnitsSet.add(unit);
+                return {
+                  label: unit,
+                  value: unit,
+                };
+              } else {
+                return null;
+              }
+            })
+            .filter((unit: any) => unit !== null);
+
+          let uniqueLabourHoursSet = new Set();
+
+          let fetchUnitsLabourHours = result.data
+            .map((material: DataType) => {
+              const unitLabourHour = material.unitLabourHour;
+
+              if (!uniqueLabourHoursSet.has(unitLabourHour)) {
+                uniqueLabourHoursSet.add(unitLabourHour);
+                return {
+                  label: unitLabourHour,
+                  value: unitLabourHour,
+                };
+              } else {
+                return null;
+              }
+            })
+            .filter((unitLabourHour: any) => unitLabourHour !== null);
+          let uniquePerHourLaborRatesSet = new Set();
+
+          let fetchPerHourLabourRates = result.data
+            .map((material: DataType) => {
+              const perHourLaborRate = material.perHourLaborRate;
+
+              if (!uniquePerHourLaborRatesSet.has(perHourLaborRate)) {
+                uniquePerHourLaborRatesSet.add(perHourLaborRate);
+                return {
+                  label: perHourLaborRate,
+                  value: perHourLaborRate,
+                };
+              } else {
+                return null;
+              }
+            })
+            .filter((perHourLaborRate: any) => perHourLaborRate !== null);
+          let uniqueUnitMaterialCostSet = new Set();
+
+          let fetchUnitMaterialCost = result.data
+            .map((material: DataType) => {
+              const unitMaterialCost = material.unitMaterialCost;
+
+              if (!uniqueUnitMaterialCostSet.has(unitMaterialCost)) {
+                uniqueUnitMaterialCostSet.add(unitMaterialCost);
+                return {
+                  label: unitMaterialCost,
+                  value: unitMaterialCost,
+                };
+              } else {
+                return null;
+              }
+            })
+            .filter((unitMaterialCost: any) => unitMaterialCost !== null);
+          let uniqueUnitEquipmentCostSet = new Set();
+
+          let fetchUnitEquipmentCost = result.data
+            .map((material: DataType) => {
+              const unitEquipments = material.unitEquipments;
+
+              if (!uniqueUnitEquipmentCostSet.has(unitEquipments)) {
+                uniqueUnitEquipmentCostSet.add(unitEquipments);
+                return {
+                  label: unitEquipments,
+                  value: unitEquipments,
+                };
+              } else {
+                return null;
+              }
+            })
+            .filter((unitEquipments: any) => unitEquipments !== null);
+
+          setEstimateDescriptions(fetchedDescriptions);
+          setUnits(fetchedUnits);
+          setUnitLabourHours(fetchUnitsLabourHours);
+          setPerHourLabourRates(fetchPerHourLabourRates);
+          setUnitMaterialCosts(fetchUnitMaterialCost);
+          setUnitEquipmentCost(fetchUnitEquipmentCost);
+        })
+        .catch((error) => {
+          console.log(error, 'error in fetch meterials');
+        });
+    },
+    []
+  );
 
   useEffect(() => {
     fetchCategories();
     fetchSubCategories();
   }, []);
 
-  const initialValues: InitialValuesType = {
-    category: '',
-    subCategory: '',
-    description: '',
-    unit: '',
-    qty: '',
-    wastage: '',
-    unitLaborHours: '',
-    perHourLaborRate: '',
-    unitMaterialCost: '',
-    unitEquipmentCost: '',
-  };
+  useEffect(() => {
+    if (selectedCategory && selectedSubCategory) {
+      fetchMeterialDetail(selectedCategory, selectedSubCategory);
+    }
+    setEstimateDescriptions([])
+    setUnits([])
+    setUnitLabourHours([])
+    setPerHourLabourRates([])
+    setUnitMaterialCosts([])
+    setUnitEquipmentCost([])
+  }, [selectedCategory, selectedSubCategory]);
 
-  const submitHandler = (
-    estimateTableItemValues: InitialValuesType,
-    { resetForm }: { resetForm: voidFc }
-  ) => {
-    // destructing values for estimate table item
+  
+
+  const submitHandler = (estimateTableItemValues: InitialValuesType ,  { resetForm }: { resetForm: voidFc }) => {
     const { category, subCategory } = estimateTableItemValues;
 
-    // changing reference for old estimates
+    const selctedCatoryName: any = categories.find(
+      (cat: any) => cat.value === category
+    );
+    const selctedSubCategoryName: any = subCategories.find(
+      (cat: any) => cat.value === subCategory
+    );
+
     const estimates = { ...estimatesData };
-    // key for table
-    const estimateTableKey = `${category} ${subCategory}`;
+    const estimateTableKey = `${selctedCatoryName.label} ${selctedSubCategoryName.label}`;
 
     const oldEstimateKeys = Object.keys(estimatesData);
 
@@ -274,7 +416,6 @@ const Scope = ({ setPrevNext }: Props) => {
 
   return (
     <div>
-      {/*  */}
       <div className="flex justify-between items-center mb-3">
         <TertiaryHeading
           title="Scope"
@@ -302,11 +443,11 @@ const Scope = ({ setPrevNext }: Props) => {
       </div>
       <Formik
         initialValues={initialValues}
-        enableReinitialize
         validationSchema={validationSchema}
         onSubmit={submitHandler}
       >
         {({ handleSubmit, values }) => {
+
           return (
             <Form
               name="basic"
@@ -316,47 +457,49 @@ const Scope = ({ setPrevNext }: Props) => {
             >
               <div className="grid grid-cols-1 grid-rows-1 md:grid-cols-2 mb-3 gap-2">
                 <FormControl
-                  control="select"
+                  control="inputselect"
                   label="Category"
                   labelStyle="font-normal"
                   type="text"
                   name="category"
                   options={categories}
-                  placeholder="Enter Category"
+                  placeholder="Enter or create category"
                   className="w-full h-10"
+                  setCustomState={setSelectedCategory}
                 />
                 <FormControl
-                  control="select"
+                  control="inputselect"
                   label="Sub Category"
                   labelStyle="font-normal"
                   name="subCategory"
                   options={subCategories.filter(
                     (cat: any) => cat.categoryId === values.category
                   )}
-                  placeholder="Enter Subcategory"
+                  placeholder="Enter or create subcategory"
                   className="w-full h-10"
+                  setCustomState={setSelectedSubCategory}
                 />
               </div>
               <div className="bg-graylighty h-px w-full my-5"></div>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-x-2 ">
                 <div className="md:col-start-1 md:col-end-3">
                   <FormControl
-                    control="input"
-                    type="text"
+                    control="inputselect"
                     inputStyle="!py-2"
                     labelStyle="font-normal"
                     label="Description"
                     name="description"
-                    placeholder="Enter Description"
+                    options={estimateDescriptions}
+                    placeholder="Select Description"
                     mt="mt-0"
                   />
                 </div>
                 <FormControl
-                  control="input"
-                  type="text"
+                  control="inputselect"
                   inputStyle="!py-2"
                   labelStyle="font-normal"
                   label="Unit"
+                  options={units}
                   name="unit"
                   placeholder="Select unit"
                   mt="mt-0"
@@ -384,39 +527,40 @@ const Scope = ({ setPrevNext }: Props) => {
                   placeholder="Enter Wastage"
                 />
                 <FormControl
-                  control="input"
+                  control="inputselect"
                   type="text"
-                  name="unitLaborHours"
+                  name="unitLabourHour"
+                  options={unitLabourHours}
                   inputStyle="!py-2"
                   labelStyle="font-normal"
                   label="Unit labor hours"
                   placeholder="Enter Labor Hour"
                 />
                 <FormControl
-                  control="input"
-                  type="text"
+                  control="inputselect"
                   name="perHourLaborRate"
+                  options={perHourLabourRates}
                   inputStyle="!py-2"
                   labelStyle="font-normal"
                   label="Per hours labor rate"
                   placeholder="Enter Labor Rate"
                 />
                 <FormControl
-                  control="input"
-                  type="text"
+                  control="inputselect"
                   inputStyle="!py-2"
                   labelStyle="font-normal"
+                  options={unitMaterialCosts}
                   label="Unit material cost"
                   name="unitMaterialCost"
                   placeholder="Enter Material Cost"
                 />
                 <FormControl
-                  control="input"
-                  type="text"
+                  control="inputselect"
                   inputStyle="!py-2"
                   labelStyle="font-normal"
                   label="Unit equipment cost"
-                  name="unitEquipmentCost"
+                  name="unitEquipments"
+                  options={unitEquipmentCost}
                   placeholder="Enter Equipment Cost"
                 />
                 <CustomWhiteButton
@@ -448,21 +592,23 @@ const Scope = ({ setPrevNext }: Props) => {
                             className="font-semibold"
                           />
                         </div>
-                        <Description
-                          title=" Trade Cost: $42"
+                        {/* <Description
+                          title="Add New Item"
                           className="text-lg font-normal"
-                        />
+                        /> */}
                       </div>
-
-                      {value?.length > 0 && (
-                        <Table
-                          className="mt-2"
-                          loading={false}
-                          columns={columns}
-                          dataSource={value as DataType[]}
-                          pagination={{ position: ['bottomCenter'] }}
-                        />
-                      )}
+                      <div className="estimateTable_container">
+                        {value?.length > 0 && (
+                          <Table
+                            className="mt-2"
+                            loading={false}
+                            columns={columns}
+                            dataSource={value as DataType[]}
+                            // pagination={{ position: ['bottomCenter'] }}
+                            pagination={false}
+                          />
+                        )}
+                      </div>
                     </div>
                   )
               )}

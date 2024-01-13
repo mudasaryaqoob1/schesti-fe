@@ -29,29 +29,20 @@ import { materialService } from '@/app/services/material.service';
 import { updateMaterialData } from '@/redux/company/settingSlices/materials.slice';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { toast } from 'react-toastify';
+import { categoriesService } from '@/app/services/categories.service';
 
 type InitialValuesTypes = {
   unitLabourHour: string;
   unitMaterialCost: string;
   unitEquipments: string;
   category: string;
+  subCategory: string;
   _id?: string;
 };
 const Materials = () => {
-  const [isUploadingMaterials, setIsUploadingMaterials] = useState(false);
-  const [selectedRowId, setSelectedRowId] = useState('');
-  const [materialUploadingError , setMaterialUploadingError] =
-    useState<any>(false);
-
   const dispatch = useDispatch<AppDispatch>();
 
   const token = useSelector(selectToken);
-
-  console.log(materialUploadingError , 'materialUploadingErrormaterialUploadingError');
-  
-
-  const materialsData = useSelector(reduxMaterialsData);
-  const materialsLoading = useSelector(reduxMaterialsLoading);
 
   useLayoutEffect(() => {
     if (token) {
@@ -59,12 +50,65 @@ const Materials = () => {
     }
   }, [token]);
 
+  const materialsData = useSelector(reduxMaterialsData);
+  const materialsLoading = useSelector(reduxMaterialsLoading);
+
+
+
+
+  const [isUploadingMaterials, setIsUploadingMaterials] = useState(false);
+  const [selectedRowId, setSelectedRowId] = useState('');
+  const [categories, setCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState<Object[]>([]);
+  const [meterialDataWithCategories, setMeterialDataWithCategories] = useState([])
+  const [materialUploadingError, setMaterialUploadingError] =
+    useState<any>(false);
+
+ 
+
+
   const fetchMaterialsData = useCallback(async () => {
-    await dispatch(fetchMaterials({ page: 1, limit: 10 }));
-  }, [dispatch]);
+    let result : any = await dispatch(fetchMaterials({ page: 1, limit: 10 }));
+    if(result.payload.data.length){
+      setMeterialDataWithCategories(result.payload.data)
+    }
+  }, []);
+
+
+  const fetchCategories = useCallback(async () => {
+    const result = await categoriesService.httpGetAllCategories(1, 9);
+    let modifyCategories = result.data.map(
+      (cat: { name: string; _id: string }) => {
+        return {
+          label: cat.name,
+          value: cat._id,
+        };
+      }
+    );
+    setCategories(modifyCategories);
+  }, []);
+
+  const fetchSubCategories = useCallback(async () => {
+    const result = await categoriesService.httpGetAllSubcategories(1, 9);
+    const flattenedSubcategories: Object[] = [];
+
+    result.data.forEach((category: any) => {
+      category.subcategories.forEach((subcategory: any) => {
+        const flattenedSubcategory = {
+          label: subcategory.name,
+          value: subcategory._id,
+          categoryId: subcategory.categoryId,
+        };
+        flattenedSubcategories.push(flattenedSubcategory);
+      });
+    });
+    setSubCategories(flattenedSubcategories);
+  }, []);
 
   useEffect(() => {
     fetchMaterialsData();
+    fetchCategories();
+    fetchSubCategories();
   }, []);
 
   const initialValues: InitialValuesTypes = {
@@ -72,6 +116,7 @@ const Materials = () => {
     unitMaterialCost: '',
     unitEquipments: '',
     category: '',
+    subCategory: ''
   };
 
   const validationSchema = Yup.object({
@@ -83,6 +128,7 @@ const Materials = () => {
   const uploadMaterialsHandler = async (
     e: any,
     category: string,
+    subCategory: string,
     resetCategory: () => void
   ) => {
     setMaterialUploadingError('');
@@ -100,11 +146,10 @@ const Materials = () => {
       setIsUploadingMaterials(true);
       const formData = new FormData();
       formData.append('category', category);
+      formData.append('subCategory', subCategory);
       formData.append('file', file[0]);
       const { statusCode } =
         await materialService.httpUploadMaterialsData(formData);
-
-      console.log({ statusCode });
       if (statusCode === 201) {
         toast.success('Material Uploaded Successfully');
         setSelectedRowId('');
@@ -133,11 +178,10 @@ const Materials = () => {
     }
   };
 
-  const categoryOptions = [
-    { value: 'Category 1', label: 'Category 1' },
-    { value: 'Category 2', label: 'Category 2' },
-    { value: 'Category 3', label: 'Category 3' },
-  ];
+  console.log(materialUploadingError, 'materialUploadingError');
+
+  console.log(meterialDataWithCategories , 'meterialDataWithCategoriesmeterialDataWithCategories');
+  
 
   return (
     <>
@@ -178,9 +222,20 @@ const Materials = () => {
                     <FormControl
                       control="select"
                       type="text"
-                      options={categoryOptions}
+                      options={categories}
                       className="w-48"
                       name="category"
+                      placeholder='Select Category'
+                    />
+                     <FormControl
+                      control="select"
+                      type="text"
+                      options={subCategories.filter(
+                        (cat: any) => cat.categoryId === values.category
+                      )}
+                      className="w-48"
+                      name="subCategory"
+                      placeholder='Select Subcategory'
                     />
                     <div>
                       {isUploadingMaterials ? (
@@ -210,7 +265,7 @@ const Materials = () => {
                               }
                             }}
                             onChange={(e: any) => {
-                              uploadMaterialsHandler(e, values.category, () =>
+                              uploadMaterialsHandler(e, values.category , values.subCategory, () =>
                                 setFieldValue('category', '')
                               );
                             }}
@@ -222,7 +277,6 @@ const Materials = () => {
                 </div>
                 <div>
                   <div className="grid grid-cols-8 bg-graphiteGray p-3 rounded-lg mt-7 bg-opacity-10">
-                    <Description title="Sub-Category" className="col-span-1" />
                     <Description title="Description" className="col-span-2" />
                     <Description title="Unit" className="col-span-1" />
                     <Description
@@ -253,13 +307,17 @@ const Materials = () => {
                         title="No Data Available"
                       />
                     ) : (
-                      materialsData?.map(
-                        ({ _id: category, subcategories }: any, i: number) => {
+                      meterialDataWithCategories?.map(
+                        ({ _id: category, meterialsData }: any, i: number) => {
                           return (
                             <div key={i}>
                               <div className="flex items-center gap-3 mt-4">
                                 <QuaternaryHeading
-                                  title={category}
+                                  title={category.categoryName}
+                                  className="font-bold capitalize"
+                                />
+                                 <QuaternaryHeading
+                                  title={category.subcategoryName}
                                   className="font-bold capitalize"
                                 />
                                 <div className="bg-silverGray rounded-s border border-solid border-Gainsboro cursor-pointer w-5 h-5 flex justify-center items-center">
@@ -271,10 +329,9 @@ const Materials = () => {
                                   />
                                 </div>
                               </div>
-                              {subcategories?.map(
+                              {meterialsData?.map(
                                 ({
                                   _id,
-                                  subCategory,
                                   description,
                                   unit,
                                   unitLabourHour,
@@ -283,10 +340,6 @@ const Materials = () => {
                                 }: any) => (
                                   <div key={_id} className="mt-3">
                                     <div className="grid grid-cols-8 gap-2 border border-b-graphiteGray border-transparent p-3 mt-3 border-opacity-20 bg-opacity-10">
-                                      <Description
-                                        title={subCategory}
-                                        className="col-span-1"
-                                      />
                                       <Description
                                         title={description}
                                         className="col-span-2"
