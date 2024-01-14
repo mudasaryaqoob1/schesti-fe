@@ -10,8 +10,8 @@ import supportTicketsSlice from './supportTickets/supportTickets.slice';
 import settingTargetsSlice from './company/settingSlices/settingTarget.slice';
 import userSlice from './userSlice/user.slice';
 import pricingPlanReducer from './pricingPlanSlice/pricingPlanSlice';
-import companySetupCategoryReducer from './company/settingSlices/companySetup/category.slice';
-import companySetupSubcategoryReducer from './company/settingSlices/companySetup/subcategory.slice';
+import companySetupCategoryReducer from './company/settingSlices/categories/category.slice';
+import companySetupSubcategoryReducer from './company/settingSlices/categories/subcategory.slice';
 import materialsReducer from './company/settingSlices/materials.slice';
 
 export type RootState = {

@@ -12,6 +12,9 @@ import { Formik, Form } from 'formik';
 import type { ColumnsType } from 'antd/es/table';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
+import { toast } from 'react-toastify';
+import './scopeStyle.css';
+import {useDispatch , useSelector} from 'react-redux'
 
 import ModalComponent from '@/app/component/modal';
 import CustomWhiteButton from '@/app/component/customButton/white';
@@ -22,11 +25,10 @@ import { categoriesService } from '@/app/services/categories.service';
 import { materialService } from '@/app/services/material.service';
 import { bg_style } from '@/globals/tailwindvariables';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-// import Description from '@/app/component/description';
-import './scopeStyle.css';
-// import { voidFc } from '@/app/utils/types';
 import { estimateRequestService } from '@/app/services/estimateRequest.service';
-import { toast } from 'react-toastify';
+import { saveEstimateDetail } from '@/redux/estimate/estimateRequest.slice';
+import {selectGeneratedEstimateDetail} from '@/redux/estimate/estimateRequestSelector'
+
 
 type InitialValuesType = {
   category: string;
@@ -80,7 +82,7 @@ const initialValues: InitialValuesType = {
   description: '',
   unit: '',
   qty: '',
-  wastage: '',
+  wastage: '5',
   unitLabourHour: '',
   perHourLaborRate: '',
   unitMaterialCost: '',
@@ -88,7 +90,10 @@ const initialValues: InitialValuesType = {
 };
 const Scope = ({ setPrevNext }: Props) => {
   const searchParams = useSearchParams();
-  // const defaultLayoutPluginInstance = defaultLayoutPlugin();
+const dispatch = useDispatch()
+
+const {generateEstimateDetail} = useSelector(selectGeneratedEstimateDetail)
+
   const estimateIdQueryParameter = searchParams.get('estimateId');
   const [estimatesData, setEstimatesData] = useState<any>({});
   const [confirmEstimates, setConfirmEstimates] = useState<any>([]);
@@ -279,6 +284,12 @@ const Scope = ({ setPrevNext }: Props) => {
     setUnitEquipmentCost([]);
   }, [selectedCategory, selectedSubCategory]);
 
+  useEffect(() => {
+    if(generateEstimateDetail?.scopeDetail?.length){
+      setConfirmEstimates(generateEstimateDetail?.scopeDetail)
+    }
+  },[generateEstimateDetail])
+
   const submitHandler = (
     estimateTableItemValues: InitialValuesType
     // { resetForm }: { resetForm: voidFc }
@@ -303,14 +314,12 @@ const Scope = ({ setPrevNext }: Props) => {
       return;
     }
 
-    const newArray = confirmEstimates.find((obj: any) => {
+    const existEstimateRecord = confirmEstimates.find((obj: any) => {
       const key = Object.keys(obj)[0];
       return !oldEstimateKeys.includes(key);
     });
 
-    console.log(newArray, 'newArray');
-
-    if (newArray) {
+    if (existEstimateRecord) {
       toast.warning('Record already added with these category and subcategory');
       return;
     }
@@ -464,6 +473,10 @@ const Scope = ({ setPrevNext }: Props) => {
 
     setConfirmEstimates(newArray);
   };
+  const nextStepHandler = () => {
+    setPrevNext((prev) => prev + 1)
+    dispatch(saveEstimateDetail({scopeDetail : confirmEstimates , takeOffDetail : generateEstimateDetail.takeOffDetail}))
+  }
 
   return (
     <div>
@@ -487,9 +500,11 @@ const Scope = ({ setPrevNext }: Props) => {
           />
 
           <CustomButton
+          disabled={confirmEstimates.length == 0}
+
             text="Next"
             className="!w-full"
-            onClick={() => setPrevNext((prev) => prev + 1)}
+            onClick={nextStepHandler}
           />
         </div>
       </div>

@@ -12,3 +12,7 @@ export const selectEstimateRequests = createSelector(
   [estimateRequest],
   (estimateRequest) => estimateRequest.data
 );
+export const selectGeneratedEstimateDetail = createSelector(
+  [estimateRequest],
+  (estimateRequest) => estimateRequest
+);

@@ -13,7 +13,7 @@ import {
   companySetupSubCategoriesData,
   companySetupSubcategoriesLoading,
 } from '@/redux/company/companySelector';
-import { setSubcategoryData } from '@/redux/company/settingSlices/companySetup/subcategory.slice';
+import { setSubcategoryData } from '@/redux/company/settingSlices/categories/subcategory.slice';
 import { categoriesService } from '@/app/services/categories.service';
 
 interface DataType {

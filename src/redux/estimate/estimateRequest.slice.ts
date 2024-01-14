@@ -1,16 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
-import initialCompanyClientState from '../company/clientSlice/companyClient.initialState';
+import initialEstimateSlice from './estimateRequest.initialState';
 import {
   deleteEstimateRequest,
   fetchEstimateRequests,
 } from '../company/company.thunk';
 
-export const companySlice = createSlice({
+export const estimateSlice = createSlice({
   name: 'estimates',
-  initialState: initialCompanyClientState,
+  initialState: initialEstimateSlice,
   reducers: {
-    logout: () => {
-      return initialCompanyClientState;
+    saveEstimateDetail: (state, { payload }) => {
+      state.generateEstimateDetail = {takeOffDetail : payload.takeOffDetail , scopeDetail : payload.scopeDetail};
     },
   },
   extraReducers: (builder) => {
@@ -53,5 +53,7 @@ export const companySlice = createSlice({
   },
 });
 
-export const { logout } = companySlice.actions;
-export default companySlice.reducer;
+
+
+export const { saveEstimateDetail } = estimateSlice.actions;
+export default estimateSlice.reducer;

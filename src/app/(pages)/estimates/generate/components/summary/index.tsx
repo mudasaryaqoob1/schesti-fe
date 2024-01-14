@@ -1,8 +1,13 @@
 'use client';
+import { Dispatch, SetStateAction, useState, useEffect } from 'react';
+import { Table } from 'antd';
+import Image from 'next/image';
+import type { ColumnsType } from 'antd/es/table';
+import { useSelector } from 'react-redux';
+
 import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
-import Image from 'next/image';
 // import { useRouter } from 'next/navigation';
 // import AddItemTable from '@/app/component/table/table';
 // import { headings } from './data';
@@ -10,9 +15,7 @@ import Description from '@/app/component/description/index';
 import MinDesc from '@/app/component/description/minDesc';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
-import { Dispatch, SetStateAction } from 'react';
-import type { ColumnsType } from 'antd/es/table';
-import { Table } from 'antd';
+import { selectGeneratedEstimateDetail } from '@/redux/estimate/estimateRequestSelector';
 
 interface Props {
   setPrevNext: Dispatch<SetStateAction<number>>;
@@ -29,6 +32,8 @@ interface DataType {
 }
 
 const Summary = ({ setPrevNext }: Props) => {
+  const { generateEstimateDetail } = useSelector(selectGeneratedEstimateDetail);
+  const [estimateDetailsSummay, setEstimateDetailsSummay] = useState({});
   const columns: ColumnsType<DataType> = [
     {
       title: 'Description',
@@ -101,6 +106,12 @@ const Summary = ({ setPrevNext }: Props) => {
     },
   ];
 
+  useEffect(() => {
+    setEstimateDetailsSummay(generateEstimateDetail);
+  }, [generateEstimateDetail]);
+
+  console.log(estimateDetailsSummay, 'estimateDetailsSummay');
+
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -119,8 +130,7 @@ const Summary = ({ setPrevNext }: Props) => {
           <CustomButton text="Generate" className="!w-full" />
         </div>
       </div>
-      {/*center part  */}
-      {/*  */}
+
       <div className={`${bg_style} p-5 mt-4`}>
         <div className="flex justify-between items-center">
           <QuaternaryHeading title="Client Information" className="font-bold" />

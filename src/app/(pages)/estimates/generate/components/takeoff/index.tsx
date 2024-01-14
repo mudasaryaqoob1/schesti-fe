@@ -7,6 +7,7 @@ import {
   useLayoutEffect,
 } from 'react';
 import Image from 'next/image';
+import {useDispatch} from 'react-redux'
 import { useSearchParams } from 'next/navigation';
 
 import CustomButton from '@/app/component/customButton/button';
@@ -14,6 +15,7 @@ import CustomWhiteButton from '@/app/component/customButton/white';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import MinDesc from '@/app/component/description/minDesc';
+import {saveEstimateDetail} from '@/redux/estimate/estimateRequest.slice'
 import {
   bg_style,
   minHeading,
@@ -30,6 +32,7 @@ interface Props {
 }
 
 const TakeOff = ({ setPrevNext, pevNext }: Props) => {
+  const dispatch = useDispatch()
   const searchParams = useSearchParams();
   const estimateId: null | string = searchParams.get('estimateId');
 
@@ -55,6 +58,12 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
     fetchEstimateDetail();
   }, []);
 
+
+  const nextStepHandler = () => {
+    setPrevNext((prev) => prev + 1)
+    dispatch(saveEstimateDetail({takeOffDetail : estimateRequestDetail}))
+  }
+
   return (
     <>
       <div className="flex justify-between items-center">
@@ -70,7 +79,7 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
           <CustomButton
             text="Next"
             className="md:w-32"
-            onClick={() => setPrevNext((prev) => prev + 1)}
+            onClick={nextStepHandler}
           />
         </div>
       </div>

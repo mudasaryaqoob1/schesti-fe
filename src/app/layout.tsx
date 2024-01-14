@@ -5,9 +5,6 @@ import { ToastContainer } from 'react-toastify';
 import { ReduxProvider } from '@/redux/provider';
 import 'react-toastify/dist/ReactToastify.css';
 import { GoogleOAuthProvider } from '@react-oauth/google';
-// Import the styles provided by the react-pdf-viewer packages
-import '@react-pdf-viewer/core/lib/styles/index.css';
-import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 
 const inter = Inter({ subsets: ['latin'] });
 

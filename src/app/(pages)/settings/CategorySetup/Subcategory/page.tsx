@@ -27,7 +27,7 @@ import { voidFc } from '@/app/utils/types';
 import {
   refetchSubCategories,
   setSubcategoryData,
-} from '@/redux/company/settingSlices/companySetup/subcategory.slice';
+} from '@/redux/company/settingSlices/categories/subcategory.slice';
 
 export type SubcategoryInitValues = {
   name: string;
