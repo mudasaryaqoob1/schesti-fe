@@ -258,7 +258,6 @@ const EditEstimateRequest = () => {
     if (!documents[0]) {
       return;
     }
-
     if (byteConverter(documents[0].size, 'MB').size > 10) {
       setuploadDocumentsError(
         'Cannot upload document more then 10 mb of size.'
@@ -266,7 +265,15 @@ const EditEstimateRequest = () => {
       return;
     }
     for (let i = 0; i < documents.length; i++) {
-      setDrawingsDocuments((prev: any) => [...prev, documents[i]]);
+      if (
+        documents[i].type === 'application/pdf' ||
+        documents[i].type === 'image/png' ||
+        documents[i].type === 'image/jpeg'
+      ) {
+        setDrawingsDocuments((prev: any) => [...prev, documents[i]]);
+      } else {
+        setuploadDocumentsError('Document should be image or pdf')
+      }
     }
   };
 
@@ -466,7 +473,7 @@ const EditEstimateRequest = () => {
                               name="drawingDocuments"
                               id="drawingDocuments"
                               className="hidden"
-                              accept="application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                              accept="image/jpeg,image/png,application/pdf "
                               onChange={drawingsDocumentsUplodadHandler}
                             />
                             <p className={`text-steelGray ${minHeading}`}>

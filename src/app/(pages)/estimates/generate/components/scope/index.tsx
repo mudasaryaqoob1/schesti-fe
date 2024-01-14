@@ -11,7 +11,9 @@ import { Table } from 'antd';
 import { Formik, Form } from 'formik';
 import type { ColumnsType } from 'antd/es/table';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 
+import ModalComponent from '@/app/component/modal';
 import CustomWhiteButton from '@/app/component/customButton/white';
 import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
@@ -23,6 +25,7 @@ import QuaternaryHeading from '@/app/component/headings/quaternary';
 // import Description from '@/app/component/description';
 import './scopeStyle.css';
 import { voidFc } from '@/app/utils/types';
+import { estimateRequestService } from '@/app/services/estimateRequest.service';
 
 type InitialValuesType = {
   category: string;
@@ -83,10 +86,13 @@ const initialValues: InitialValuesType = {
   unitEquipments: '',
 };
 const Scope = ({ setPrevNext }: Props) => {
+  const searchParams = useSearchParams();
+  // const defaultLayoutPluginInstance = defaultLayoutPlugin();
+  const estimateIdQueryParameter = searchParams.get('estimateId');
   const [estimatesData, setEstimatesData] = useState<any>({});
-  const [SingleEstimateData, setSingleEstimateData] = useState<null | DataType>(
-    null
-  );
+  const [SingleEstimateData, setSingleEstimateData] = useState<any>(null);
+  const [estimateDetail, setEstimateDetail] = useState<any>({});
+  const [viewPlansModel, setViewPlansModel] = useState(false);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState<Object[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('');
@@ -125,6 +131,12 @@ const Scope = ({ setPrevNext }: Props) => {
       });
     });
     setSubCategories(flattenedSubcategories);
+  }, []);
+  const fetchEstimateDetail = useCallback(async () => {
+    let result = await estimateRequestService.httpGetEstimateDetail(
+      estimateIdQueryParameter
+    );
+    setEstimateDetail(result.data.estimateDetail);
   }, []);
   const fetchMeterialDetail = useCallback(
     async (categoryId: string, subCategory: string) => {
@@ -250,23 +262,25 @@ const Scope = ({ setPrevNext }: Props) => {
   useEffect(() => {
     fetchCategories();
     fetchSubCategories();
+    fetchEstimateDetail();
   }, []);
 
   useEffect(() => {
     if (selectedCategory && selectedSubCategory) {
       fetchMeterialDetail(selectedCategory, selectedSubCategory);
     }
-    setEstimateDescriptions([])
-    setUnits([])
-    setUnitLabourHours([])
-    setPerHourLabourRates([])
-    setUnitMaterialCosts([])
-    setUnitEquipmentCost([])
+    setEstimateDescriptions([]);
+    setUnits([]);
+    setUnitLabourHours([]);
+    setPerHourLabourRates([]);
+    setUnitMaterialCosts([]);
+    setUnitEquipmentCost([]);
   }, [selectedCategory, selectedSubCategory]);
 
-  
-
-  const submitHandler = (estimateTableItemValues: InitialValuesType ,  { resetForm }: { resetForm: voidFc }) => {
+  const submitHandler = (
+    estimateTableItemValues: InitialValuesType,
+    { resetForm }: { resetForm: voidFc }
+  ) => {
     const { category, subCategory } = estimateTableItemValues;
 
     const selctedCatoryName: any = categories.find(
@@ -414,6 +428,11 @@ const Scope = ({ setPrevNext }: Props) => {
     },
   ];
 
+  console.log(
+    estimateDetail?.drawingsDocuments,
+    'estimateDetail?.drawingsDocuments'
+  );
+
   return (
     <div>
       <div className="flex justify-between items-center mb-3">
@@ -426,6 +445,7 @@ const Scope = ({ setPrevNext }: Props) => {
             text="View Plans"
             className="!text-graphiteGray !bg-snowWhite !shadow-scenarySubdued 
                     border-2 border-solid !border-celestialGray "
+            onClick={() => setViewPlansModel(true)}
           />
           <CustomButton
             text="Previous"
@@ -440,14 +460,16 @@ const Scope = ({ setPrevNext }: Props) => {
             onClick={() => setPrevNext((prev) => prev + 1)}
           />
         </div>
+
+    
       </div>
       <Formik
-        initialValues={initialValues}
+        initialValues={SingleEstimateData ? SingleEstimateData : initialValues}
+        enableReinitialize
         validationSchema={validationSchema}
         onSubmit={submitHandler}
       >
         {({ handleSubmit, values }) => {
-
           return (
             <Form
               name="basic"
@@ -616,7 +638,23 @@ const Scope = ({ setPrevNext }: Props) => {
           );
         }}
       </Formik>
-      {/* <AddItemTable headings={headings} /> */}
+      <ModalComponent open={viewPlansModel} setOpen={setViewPlansModel}>
+        <div className="bg-white">
+          {estimateDetail?.drawingsDocuments?.length &&
+          estimateDetail?.drawingsDocuments[0]?.ext === 'image/png' ? (
+            <img
+              className="object-cover h-auto w-full"
+              src={estimateDetail?.drawingsDocuments[0].url}
+              alt="url"
+            />
+          ) : estimateDetail?.drawingsDocuments?.length &&
+            estimateDetail?.drawingsDocuments[0]?.ext === 'application/pdf' ? (
+            'ok'
+          ) : (
+            'ds'
+          )}
+        </div>
+      </ModalComponent>
     </div>
   );
 };

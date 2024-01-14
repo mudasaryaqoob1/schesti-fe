@@ -142,6 +142,7 @@ const CreateEstimateRequest = () => {
 
       Promise.all([drawingDocs, takeOffDocs, otherDocs])
         .then(() => {
+          setIsLoading(true)
           estimateRequestService
             .httpAddNewEstimateRequest({
               ...values,
@@ -151,6 +152,7 @@ const CreateEstimateRequest = () => {
               drawingsDocuments: drawingDocs,
             })
             .then((resp: any) => {
+              setIsLoading(false)
               if (resp.statusCode == 201) {
                 setIsLoading(false);
                 router.push('/estimates');
@@ -233,7 +235,6 @@ const CreateEstimateRequest = () => {
     if (!documents[0]) {
       return;
     }
-
     if (byteConverter(documents[0].size, 'MB').size > 10) {
       setuploadDocumentsError(
         'Cannot upload document more then 10 mb of size.'
@@ -241,7 +242,15 @@ const CreateEstimateRequest = () => {
       return;
     }
     for (let i = 0; i < documents.length; i++) {
-      setDrawingsDocuments((prev: any) => [...prev, documents[i]]);
+      if (
+        documents[i].type === 'application/pdf' ||
+        documents[i].type === 'image/png' ||
+        documents[i].type === 'image/jpeg'
+      ) {
+        setDrawingsDocuments((prev: any) => [...prev, documents[i]]);
+      } else {
+        setuploadDocumentsError('Document should be image or pdf')
+      }
     }
   };
 
@@ -436,7 +445,7 @@ const CreateEstimateRequest = () => {
                               name="drawingDocuments"
                               id="drawingDocuments"
                               className="hidden"
-                              accept="application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                              accept="image/jpeg,image/png,application/pdf "
                               onChange={drawingsDocumentsUplodadHandler}
                             />
                             <p className={`text-steelGray ${minHeading}`}>
@@ -445,7 +454,7 @@ const CreateEstimateRequest = () => {
                           </div>
 
                           <p className={`text-steelGray ${minHeading}`}>
-                            SVG, PNG, JPG or GIF (max. 800x400px)
+                            SVG, PNG, JPG or PDF (max. 800x400px)
                           </p>
                         </div>
                       </div>
