@@ -24,8 +24,9 @@ import { bg_style } from '@/globals/tailwindvariables';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 // import Description from '@/app/component/description';
 import './scopeStyle.css';
-import { voidFc } from '@/app/utils/types';
+// import { voidFc } from '@/app/utils/types';
 import { estimateRequestService } from '@/app/services/estimateRequest.service';
+import { toast } from 'react-toastify';
 
 type InitialValuesType = {
   category: string;
@@ -79,7 +80,7 @@ const initialValues: InitialValuesType = {
   description: '',
   unit: '',
   qty: '',
-  wastage: '5',
+  wastage: '',
   unitLabourHour: '',
   perHourLaborRate: '',
   unitMaterialCost: '',
@@ -90,6 +91,7 @@ const Scope = ({ setPrevNext }: Props) => {
   // const defaultLayoutPluginInstance = defaultLayoutPlugin();
   const estimateIdQueryParameter = searchParams.get('estimateId');
   const [estimatesData, setEstimatesData] = useState<any>({});
+  const [confirmEstimates, setConfirmEstimates] = useState<any>([]);
   const [SingleEstimateData, setSingleEstimateData] = useState<any>(null);
   const [estimateDetail, setEstimateDetail] = useState<any>({});
   const [viewPlansModel, setViewPlansModel] = useState(false);
@@ -278,8 +280,8 @@ const Scope = ({ setPrevNext }: Props) => {
   }, [selectedCategory, selectedSubCategory]);
 
   const submitHandler = (
-    estimateTableItemValues: InitialValuesType,
-    { resetForm }: { resetForm: voidFc }
+    estimateTableItemValues: InitialValuesType
+    // { resetForm }: { resetForm: voidFc }
   ) => {
     const { category, subCategory } = estimateTableItemValues;
 
@@ -289,11 +291,32 @@ const Scope = ({ setPrevNext }: Props) => {
     const selctedSubCategoryName: any = subCategories.find(
       (cat: any) => cat.value === subCategory
     );
+    const oldEstimateKeys = Object.keys(estimatesData);
+
+    if (
+      Object.keys(estimatesData).length &&
+      !oldEstimateKeys.includes(
+        `${selctedCatoryName.label} ${selctedSubCategoryName.label}`
+      )
+    ) {
+      toast.warning('Please add div first then create new');
+      return;
+    }
+
+    const newArray = confirmEstimates.find((obj: any) => {
+      const key = Object.keys(obj)[0];
+      return !oldEstimateKeys.includes(key);
+    });
+
+    console.log(newArray, 'newArray');
+
+    if (newArray) {
+      toast.warning('Record already added with these category and subcategory');
+      return;
+    }
 
     const estimates = { ...estimatesData };
     const estimateTableKey = `${selctedCatoryName.label} ${selctedSubCategoryName.label}`;
-
-    const oldEstimateKeys = Object.keys(estimatesData);
 
     if (SingleEstimateData) {
       const { tableKey, tableItemKey } = SingleEstimateData;
@@ -310,7 +333,7 @@ const Scope = ({ setPrevNext }: Props) => {
       });
       setEstimatesData(estimates);
       setSingleEstimateData(null);
-      resetForm();
+      // resetForm();
       return;
     }
 
@@ -345,7 +368,7 @@ const Scope = ({ setPrevNext }: Props) => {
       ];
     }
     setEstimatesData(estimates);
-    resetForm();
+    // resetForm();
   };
   const columns: ColumnsType<DataType> = [
     {
@@ -427,11 +450,20 @@ const Scope = ({ setPrevNext }: Props) => {
       ),
     },
   ];
+  const confirmEstimateHandler = () => {
+    setConfirmEstimates([...confirmEstimates, estimatesData]);
+    setEstimatesData({});
+  };
+  const revertConfirmTableHandler = (estimateRecord: any) => {
+    setEstimatesData(estimateRecord);
+    const tableKey = Object.keys(estimateRecord);
+    const newArray = confirmEstimates.filter((obj: any) => {
+      const key = Object.keys(obj)[0];
+      return !tableKey.includes(key);
+    });
 
-  console.log(
-    estimateDetail?.drawingsDocuments,
-    'estimateDetail?.drawingsDocuments'
-  );
+    setConfirmEstimates(newArray);
+  };
 
   return (
     <div>
@@ -460,8 +492,6 @@ const Scope = ({ setPrevNext }: Props) => {
             onClick={() => setPrevNext((prev) => prev + 1)}
           />
         </div>
-
-    
       </div>
       <Formik
         initialValues={SingleEstimateData ? SingleEstimateData : initialValues}
@@ -469,175 +499,232 @@ const Scope = ({ setPrevNext }: Props) => {
         validationSchema={validationSchema}
         onSubmit={submitHandler}
       >
-        {({ handleSubmit, values }) => {
+        {({ handleSubmit, values, resetForm }) => {
           return (
-            <Form
-              name="basic"
-              onSubmit={handleSubmit}
-              autoComplete="off"
-              className={`p-5 ${bg_style} mt-4`}
-            >
-              <div className="grid grid-cols-1 grid-rows-1 md:grid-cols-2 mb-3 gap-2">
-                <FormControl
-                  control="inputselect"
-                  label="Category"
-                  labelStyle="font-normal"
-                  type="text"
-                  name="category"
-                  options={categories}
-                  placeholder="Enter or create category"
-                  className="w-full h-10"
-                  setCustomState={setSelectedCategory}
-                />
-                <FormControl
-                  control="inputselect"
-                  label="Sub Category"
-                  labelStyle="font-normal"
-                  name="subCategory"
-                  options={subCategories.filter(
-                    (cat: any) => cat.categoryId === values.category
-                  )}
-                  placeholder="Enter or create subcategory"
-                  className="w-full h-10"
-                  setCustomState={setSelectedSubCategory}
-                />
-              </div>
-              <div className="bg-graylighty h-px w-full my-5"></div>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-x-2 ">
-                <div className="md:col-start-1 md:col-end-3">
+            <>
+              <Form
+                name="basic"
+                onSubmit={handleSubmit}
+                autoComplete="off"
+                className={`p-5 ${bg_style} mt-4`}
+              >
+                <div className="grid grid-cols-1 grid-rows-1 md:grid-cols-2 mb-3 gap-2">
+                  <FormControl
+                    control="inputselect"
+                    label="Category"
+                    labelStyle="font-normal"
+                    type="text"
+                    name="category"
+                    options={categories}
+                    placeholder="Enter or create category"
+                    className="w-full h-10"
+                    setCustomState={setSelectedCategory}
+                  />
+                  <FormControl
+                    control="inputselect"
+                    label="Sub Category"
+                    labelStyle="font-normal"
+                    name="subCategory"
+                    options={subCategories.filter(
+                      (cat: any) => cat.categoryId === values.category
+                    )}
+                    placeholder="Enter or create subcategory"
+                    className="w-full h-10"
+                    setCustomState={setSelectedSubCategory}
+                  />
+                </div>
+                <div className="bg-graylighty h-px w-full my-5"></div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-x-2 ">
+                  <div className="md:col-start-1 md:col-end-3">
+                    <FormControl
+                      control="inputselect"
+                      inputStyle="!py-2"
+                      labelStyle="font-normal"
+                      label="Description"
+                      name="description"
+                      options={estimateDescriptions}
+                      placeholder="Select Description"
+                      mt="mt-0"
+                    />
+                  </div>
                   <FormControl
                     control="inputselect"
                     inputStyle="!py-2"
                     labelStyle="font-normal"
-                    label="Description"
-                    name="description"
-                    options={estimateDescriptions}
-                    placeholder="Select Description"
+                    label="Unit"
+                    options={units}
+                    name="unit"
+                    placeholder="Select unit"
+                    mt="mt-0"
+                  />
+                  <FormControl
+                    control="input"
+                    type="text"
+                    inputStyle="!py-2"
+                    labelStyle="font-normal"
+                    label="Qty"
+                    name="qty"
+                    placeholder="Enter Qtyr"
                     mt="mt-0"
                   />
                 </div>
-                <FormControl
-                  control="inputselect"
-                  inputStyle="!py-2"
-                  labelStyle="font-normal"
-                  label="Unit"
-                  options={units}
-                  name="unit"
-                  placeholder="Select unit"
-                  mt="mt-0"
-                />
-                <FormControl
-                  control="input"
-                  type="text"
-                  inputStyle="!py-2"
-                  labelStyle="font-normal"
-                  label="Qty"
-                  name="qty"
-                  placeholder="Enter Qtyr"
-                  mt="mt-0"
-                />
-              </div>
-              <div className="grid grid-cols-1  grid-rows-1 md:grid-cols-6 gap-x-2 grid-y-5 mt-5">
-                {/* div close */}
-                <FormControl
-                  control="input"
-                  type="text"
-                  name="wastage"
-                  inputStyle="!py-2"
-                  labelStyle="font-normal"
-                  label="Wastage"
-                  placeholder="Enter Wastage"
-                />
-                <FormControl
-                  control="inputselect"
-                  type="text"
-                  name="unitLabourHour"
-                  options={unitLabourHours}
-                  inputStyle="!py-2"
-                  labelStyle="font-normal"
-                  label="Unit labor hours"
-                  placeholder="Enter Labor Hour"
-                />
-                <FormControl
-                  control="inputselect"
-                  name="perHourLaborRate"
-                  options={perHourLabourRates}
-                  inputStyle="!py-2"
-                  labelStyle="font-normal"
-                  label="Per hours labor rate"
-                  placeholder="Enter Labor Rate"
-                />
-                <FormControl
-                  control="inputselect"
-                  inputStyle="!py-2"
-                  labelStyle="font-normal"
-                  options={unitMaterialCosts}
-                  label="Unit material cost"
-                  name="unitMaterialCost"
-                  placeholder="Enter Material Cost"
-                />
-                <FormControl
-                  control="inputselect"
-                  inputStyle="!py-2"
-                  labelStyle="font-normal"
-                  label="Unit equipment cost"
-                  name="unitEquipments"
-                  options={unitEquipmentCost}
-                  placeholder="Enter Equipment Cost"
-                />
-                <CustomWhiteButton
-                  type="submit"
-                  text={SingleEstimateData ? 'Update Item' : 'Add item'}
-                  className="self-end md:w-auto w-full md:my-0 mt-4 !bg-goldenrodYellow !p-2.5 !text-white"
-                />
-              </div>
-              {SingleEstimateData && (
-                <div className="flex justify-end my-3">
-                  <CustomButton
-                    className="!w-40"
-                    type="button"
-                    text="Reset"
-                    onClick={() => setSingleEstimateData(null)}
-                    iconwidth={20}
-                    iconheight={20}
+                <div className="grid grid-cols-1  grid-rows-1 md:grid-cols-6 gap-x-2 grid-y-5 mt-5">
+                  {/* div close */}
+                  <FormControl
+                    control="input"
+                    type="text"
+                    name="wastage"
+                    inputStyle="!py-2"
+                    labelStyle="font-normal"
+                    label="Wastage"
+                    placeholder="Enter Wastage"
+                  />
+                  <FormControl
+                    control="inputselect"
+                    type="text"
+                    name="unitLabourHour"
+                    options={unitLabourHours}
+                    inputStyle="!py-2"
+                    labelStyle="font-normal"
+                    label="Unit labor hours"
+                    placeholder="Enter Labor Hour"
+                  />
+                  <FormControl
+                    control="inputselect"
+                    name="perHourLaborRate"
+                    options={perHourLabourRates}
+                    inputStyle="!py-2"
+                    labelStyle="font-normal"
+                    label="Per hours labor rate"
+                    placeholder="Enter Labor Rate"
+                  />
+                  <FormControl
+                    control="inputselect"
+                    inputStyle="!py-2"
+                    labelStyle="font-normal"
+                    options={unitMaterialCosts}
+                    label="Unit material cost"
+                    name="unitMaterialCost"
+                    placeholder="Enter Material Cost"
+                  />
+                  <FormControl
+                    control="inputselect"
+                    inputStyle="!py-2"
+                    labelStyle="font-normal"
+                    label="Unit equipment cost"
+                    name="unitEquipments"
+                    options={unitEquipmentCost}
+                    placeholder="Enter Equipment Cost"
+                  />
+                  <CustomWhiteButton
+                    type="submit"
+                    text={SingleEstimateData ? 'Update Item' : 'Add item'}
+                    className="self-end md:w-auto w-full md:my-0 mt-4 !bg-goldenrodYellow !p-2.5 !text-white"
                   />
                 </div>
-              )}
-              {Object.entries(estimatesData).map(
-                ([key, value]: any[], i) =>
-                  value?.length > 0 && (
-                    <div key={i} className={`${bg_style} p-5 mt-3`}>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <QuaternaryHeading
-                            title={key}
-                            className="font-semibold"
-                          />
-                        </div>
-                        {/* <Description
+                {SingleEstimateData && (
+                  <div className="flex justify-end my-3">
+                    <CustomButton
+                      className="!w-40"
+                      type="button"
+                      text="Reset"
+                      onClick={() => setSingleEstimateData(null)}
+                      iconwidth={20}
+                      iconheight={20}
+                    />
+                  </div>
+                )}
+                {Object.entries(estimatesData).map(
+                  ([key, value]: any[], i) =>
+                    value?.length > 0 && (
+                      <div key={i} className={`${bg_style} p-5 mt-3`}>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <QuaternaryHeading
+                              title={key}
+                              className="font-semibold"
+                            />
+                          </div>
+                          {/* <Description
                           title="Add New Item"
                           className="text-lg font-normal"
                         /> */}
-                      </div>
-                      <div className="estimateTable_container">
-                        {value?.length > 0 && (
-                          <Table
-                            className="mt-2"
-                            loading={false}
-                            columns={columns}
-                            dataSource={value as DataType[]}
-                            // pagination={{ position: ['bottomCenter'] }}
-                            pagination={false}
+                        </div>
+                        <div className="estimateTable_container">
+                          {value?.length > 0 && (
+                            <Table
+                              className="mt-2"
+                              loading={false}
+                              columns={columns}
+                              dataSource={value as DataType[]}
+                              // pagination={{ position: ['bottomCenter'] }}
+                              pagination={false}
+                            />
+                          )}
+                        </div>
+                        <div className="flex justify-end mt-5">
+                          <CustomButton
+                            text="+ Add Div"
+                            className="!w-32"
+                            onClick={() => {
+                              confirmEstimateHandler(), resetForm();
+                            }}
                           />
+                        </div>
+                      </div>
+                    )
+                )}
+              </Form>
+              <div>
+                {confirmEstimates.map((estimate: any) => {
+                  return (
+                    <>
+                      <div>
+                        {Object.entries(estimate).map(
+                          ([key, value]: any[], i) =>
+                            value?.length > 0 && (
+                              <div key={i} className={`${bg_style} p-5 mt-3`}>
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-2">
+                                    <QuaternaryHeading
+                                      title={key}
+                                      className="font-semibold"
+                                    />
+                                  </div>
+                                  <div className="flex justify-end mt-5">
+                                    <CustomButton
+                                      text="Add Item"
+                                      className="!text-graphiteGray !bg-snowWhite !shadow-scenarySubdued border-2 border-solid !border-celestialGray "
+                                      onClick={() =>
+                                        {revertConfirmTableHandler(estimate) , resetForm()}
+                                      }
+                                    />
+                                  </div>
+                                </div>
+                                <div className="estimateTable_container">
+                                  {value?.length > 0 && (
+                                    <Table
+                                      className="mt-2"
+                                      loading={false}
+                                      columns={columns}
+                                      dataSource={value as DataType[]}
+                                      pagination={false}
+                                    />
+                                  )}
+                                </div>
+                              </div>
+                            )
                         )}
                       </div>
-                    </div>
-                  )
-              )}
-            </Form>
+                    </>
+                  );
+                })}
+              </div>
+            </>
           );
         }}
       </Formik>
+
       <ModalComponent open={viewPlansModel} setOpen={setViewPlansModel}>
         <div className="bg-white">
           {estimateDetail?.drawingsDocuments?.length &&
