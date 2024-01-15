@@ -272,7 +272,7 @@ const EditEstimateRequest = () => {
       ) {
         setDrawingsDocuments((prev: any) => [...prev, documents[i]]);
       } else {
-        setuploadDocumentsError('Document should be image or pdf')
+        setuploadDocumentsError('Document should be image or pdf');
       }
     }
   };

@@ -19,7 +19,7 @@ const SelectComp = (props: any) => {
     options = defaultOptions,
     selectStyle,
     className,
-    placeholder
+    placeholder,
   } = props;
 
   const OptionsArr = options?.map(
@@ -34,7 +34,6 @@ const SelectComp = (props: any) => {
 
   const [field, meta] = useField(name);
   const hasError = meta.touched && meta.error;
-  
 
   return (
     <div>

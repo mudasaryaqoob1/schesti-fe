@@ -20,7 +20,6 @@ class CategoriesService extends HttpService {
   ): Promise<IResponseInterface> =>
     this.get(`${this.prefix}/getAllCategories?page=${page}&limit=${limit}`);
 
-
   httpUpdateCategory = (
     categoryId: string,
     data: CategoryInitTypes

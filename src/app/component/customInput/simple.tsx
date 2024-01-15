@@ -35,7 +35,7 @@ const SimpleInput = (props: any) => {
       )}
 
       <Field name={name} id={name}>
-        {({form: { setFieldValue } }: { _: any; form: any }) => {
+        {({ form: { setFieldValue } }: { _: any; form: any }) => {
           return (
             <Input
               id={name}

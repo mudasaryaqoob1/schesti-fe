@@ -142,7 +142,7 @@ const CreateEstimateRequest = () => {
 
       Promise.all([drawingDocs, takeOffDocs, otherDocs])
         .then(() => {
-          setIsLoading(true)
+          setIsLoading(true);
           estimateRequestService
             .httpAddNewEstimateRequest({
               ...values,
@@ -152,7 +152,7 @@ const CreateEstimateRequest = () => {
               drawingsDocuments: drawingDocs,
             })
             .then((resp: any) => {
-              setIsLoading(false)
+              setIsLoading(false);
               if (resp.statusCode == 201) {
                 setIsLoading(false);
                 router.push('/estimates');
@@ -249,7 +249,7 @@ const CreateEstimateRequest = () => {
       ) {
         setDrawingsDocuments((prev: any) => [...prev, documents[i]]);
       } else {
-        setuploadDocumentsError('Document should be image or pdf')
+        setuploadDocumentsError('Document should be image or pdf');
       }
     }
   };

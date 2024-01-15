@@ -10,7 +10,10 @@ export const estimateSlice = createSlice({
   initialState: initialEstimateSlice,
   reducers: {
     saveEstimateDetail: (state, { payload }) => {
-      state.generateEstimateDetail = {takeOffDetail : payload.takeOffDetail , scopeDetail : payload.scopeDetail};
+      state.generateEstimateDetail = {
+        takeOffDetail: payload.takeOffDetail,
+        scopeDetail: payload.scopeDetail,
+      };
     },
   },
   extraReducers: (builder) => {
@@ -52,8 +55,6 @@ export const estimateSlice = createSlice({
     });
   },
 });
-
-
 
 export const { saveEstimateDetail } = estimateSlice.actions;
 export default estimateSlice.reducer;

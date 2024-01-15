@@ -315,7 +315,11 @@ const Scope = ({ setPrevNext }: Props) => {
       return;
     }
 
-    const existEstimateRecord = confirmEstimates.find((obj: any) => Object.keys(obj)[0] === `${selctedCatoryName.label} ${selctedSubCategoryName.label}`);
+    const existEstimateRecord = confirmEstimates.find(
+      (obj: any) =>
+        Object.keys(obj)[0] ===
+        `${selctedCatoryName.label} ${selctedSubCategoryName.label}`
+    );
     if (existEstimateRecord) {
       toast.warning('Record already added with these category and subcategory');
       return;
@@ -400,7 +404,7 @@ const Scope = ({ setPrevNext }: Props) => {
       title: 'Qty with wastage',
       dataIndex: 'qtyWithWastage',
       align: 'center',
-      render: (text : string, record: DataType) => {
+      render: (text: string, record: DataType) => {
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
         let result = quantity * (1 + wastagePercentage / 100);
@@ -416,7 +420,7 @@ const Scope = ({ setPrevNext }: Props) => {
       title: 'Total Labor Cost',
       dataIndex: 'totalLaborCost',
       align: 'center',
-      render: (text : string, record: DataType) => {
+      render: (text: string, record: DataType) => {
         let unitLabourHour = parseFloat(record.unitLabourHour);
         let quantity = parseFloat(record.qty);
         let result = quantity * unitLabourHour;
@@ -432,7 +436,7 @@ const Scope = ({ setPrevNext }: Props) => {
       title: 'Total Material Cost',
       dataIndex: 'totalMaterialCost',
       align: 'center',
-      render: (text : string, record: DataType) => {
+      render: (text: string, record: DataType) => {
         let unitMaterialCost = parseFloat(record.unitMaterialCost);
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
@@ -445,7 +449,7 @@ const Scope = ({ setPrevNext }: Props) => {
       title: 'Total Equipment Cost',
       dataIndex: 'totalEquipmentCost',
       align: 'center',
-      render: (text : string, record: DataType) => {
+      render: (text: string, record: DataType) => {
         let unitEquipments = parseFloat(record.unitEquipments);
         let quantity = parseFloat(record.qty);
         let result = unitEquipments * quantity;
@@ -456,7 +460,7 @@ const Scope = ({ setPrevNext }: Props) => {
       title: 'Total Cost',
       dataIndex: 'totalCost',
       align: 'center',
-      render: (text : string, record: DataType) => {
+      render: (text: string, record: DataType) => {
         let unitLabourHour = parseFloat(record.unitLabourHour);
         let quantity = parseFloat(record.qty);
         let totalLabourCost = quantity * unitLabourHour;
@@ -475,7 +479,7 @@ const Scope = ({ setPrevNext }: Props) => {
       dataIndex: 'action',
       align: 'center',
       key: 'action',
-      render: (text : string, record : DataType) => (
+      render: (text: string, record: DataType) => (
         <div className="flex gap-2 justify-center">
           <Image
             src="/edit.svg"
@@ -541,12 +545,10 @@ const Scope = ({ setPrevNext }: Props) => {
     setConfirmEstimates(newArray);
   };
   const nextStepHandler = () => {
-
-    if(Object.keys(estimatesData).length){
+    if (Object.keys(estimatesData).length) {
       toast.warning('Please add div first then move forward');
       return;
-    }
-    else{
+    } else {
       setPrevNext((prev) => prev + 1);
       dispatch(
         saveEstimateDetail({
@@ -555,7 +557,6 @@ const Scope = ({ setPrevNext }: Props) => {
         })
       );
     }
-    
   };
 
   return (

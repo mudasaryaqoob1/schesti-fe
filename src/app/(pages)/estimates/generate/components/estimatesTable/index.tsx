@@ -115,21 +115,19 @@ const columns: ColumnsType<DataType> = [
 ];
 
 interface IProps {
-    category: string;
-    subCategory: string;
-    description: string;
-    unit: string;
-    qty: string;
-    wastage: string;
-    unitLabourHour: string;
-    perHourLaborRate: string;
-    unitMaterialCost: string;
-    unitEquipments: string;
+  category: string;
+  subCategory: string;
+  description: string;
+  unit: string;
+  qty: string;
+  wastage: string;
+  unitLabourHour: string;
+  perHourLaborRate: string;
+  unitMaterialCost: string;
+  unitEquipments: string;
 }
 
-
-
-const EstimatesTable = ({estimates} : {estimates : IProps[]}) => {
+const EstimatesTable = ({ estimates }: { estimates: IProps[] }) => {
   return (
     <div className="estimateTable_container">
       {estimates?.length > 0 && (

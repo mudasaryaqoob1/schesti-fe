@@ -52,7 +52,7 @@ const Summary = ({ setPrevNext }: Props) => {
 
   useEffect(() => {
     setEstimateDetailsSummary(generateEstimateDetail);
-    if(generateEstimateDetail?.scopeDetail?.length){
+    if (generateEstimateDetail?.scopeDetail?.length) {
       let totalCost: any = 0;
       generateEstimateDetail?.scopeDetail?.forEach((entry: any) => {
         Object.values(entry).forEach((items: any) => {
@@ -63,7 +63,6 @@ const Summary = ({ setPrevNext }: Props) => {
       });
       setSubcostRecord(totalCost);
     }
-    
   }, [generateEstimateDetail]);
 
   return (

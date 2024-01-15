@@ -53,27 +53,22 @@ const Materials = () => {
   const materialsData = useSelector(reduxMaterialsData);
   const materialsLoading = useSelector(reduxMaterialsLoading);
 
-
-
-
   const [isUploadingMaterials, setIsUploadingMaterials] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState('');
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState<Object[]>([]);
-  const [meterialDataWithCategories, setMeterialDataWithCategories] = useState([])
+  const [meterialDataWithCategories, setMeterialDataWithCategories] = useState(
+    []
+  );
   const [materialUploadingError, setMaterialUploadingError] =
     useState<any>(false);
 
- 
-
-
   const fetchMaterialsData = useCallback(async () => {
-    let result : any = await dispatch(fetchMaterials({ page: 1, limit: 10 }));
-    if(result.payload.data.length){
-      setMeterialDataWithCategories(result.payload.data)
+    let result: any = await dispatch(fetchMaterials({ page: 1, limit: 10 }));
+    if (result.payload.data.length) {
+      setMeterialDataWithCategories(result.payload.data);
     }
   }, []);
-
 
   const fetchCategories = useCallback(async () => {
     const result = await categoriesService.httpGetAllCategories(1, 9);
@@ -116,7 +111,7 @@ const Materials = () => {
     unitMaterialCost: '',
     unitEquipments: '',
     category: '',
-    subCategory: ''
+    subCategory: '',
   };
 
   const validationSchema = Yup.object({
@@ -180,8 +175,10 @@ const Materials = () => {
 
   console.log(materialUploadingError, 'materialUploadingError');
 
-  console.log(meterialDataWithCategories , 'meterialDataWithCategoriesmeterialDataWithCategories');
-  
+  console.log(
+    meterialDataWithCategories,
+    'meterialDataWithCategoriesmeterialDataWithCategories'
+  );
 
   return (
     <>
@@ -225,9 +222,9 @@ const Materials = () => {
                       options={categories}
                       className="w-48"
                       name="category"
-                      placeholder='Select Category'
+                      placeholder="Select Category"
                     />
-                     <FormControl
+                    <FormControl
                       control="select"
                       type="text"
                       options={subCategories.filter(
@@ -235,7 +232,7 @@ const Materials = () => {
                       )}
                       className="w-48"
                       name="subCategory"
-                      placeholder='Select Subcategory'
+                      placeholder="Select Subcategory"
                     />
                     <div>
                       {isUploadingMaterials ? (
@@ -265,8 +262,11 @@ const Materials = () => {
                               }
                             }}
                             onChange={(e: any) => {
-                              uploadMaterialsHandler(e, values.category , values.subCategory, () =>
-                                setFieldValue('category', '')
+                              uploadMaterialsHandler(
+                                e,
+                                values.category,
+                                values.subCategory,
+                                () => setFieldValue('category', '')
                               );
                             }}
                           />
@@ -316,7 +316,7 @@ const Materials = () => {
                                   title={category.categoryName}
                                   className="font-bold capitalize"
                                 />
-                                 <QuaternaryHeading
+                                <QuaternaryHeading
                                   title={category.subcategoryName}
                                   className="font-bold capitalize"
                                 />
