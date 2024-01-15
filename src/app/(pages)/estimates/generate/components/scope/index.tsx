@@ -9,12 +9,11 @@ import {
 import * as Yup from 'yup';
 import { Table } from 'antd';
 import { Formik, Form } from 'formik';
-import type { ColumnsType } from 'antd/es/table';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { toast } from 'react-toastify';
-import './scopeStyle.css';
-import {useDispatch , useSelector} from 'react-redux'
+import '../scopeStyle.css';
+import { useDispatch, useSelector } from 'react-redux';
 
 import ModalComponent from '@/app/component/modal';
 import CustomWhiteButton from '@/app/component/customButton/white';
@@ -27,8 +26,8 @@ import { bg_style } from '@/globals/tailwindvariables';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { estimateRequestService } from '@/app/services/estimateRequest.service';
 import { saveEstimateDetail } from '@/redux/estimate/estimateRequest.slice';
-import {selectGeneratedEstimateDetail} from '@/redux/estimate/estimateRequestSelector'
-
+import { selectGeneratedEstimateDetail } from '@/redux/estimate/estimateRequestSelector';
+import EstimatesTable from '../estimatesTable';
 
 type InitialValuesType = {
   category: string;
@@ -90,13 +89,15 @@ const initialValues: InitialValuesType = {
 };
 const Scope = ({ setPrevNext }: Props) => {
   const searchParams = useSearchParams();
-const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-const {generateEstimateDetail} = useSelector(selectGeneratedEstimateDetail)
+  const { generateEstimateDetail } = useSelector(selectGeneratedEstimateDetail);
 
   const estimateIdQueryParameter = searchParams.get('estimateId');
   const [estimatesData, setEstimatesData] = useState<any>({});
-  const [confirmEstimates, setConfirmEstimates] = useState<any>([]);
+  const [confirmEstimates, setConfirmEstimates] = useState<InitialValuesType[]>(
+    []
+  );
   const [SingleEstimateData, setSingleEstimateData] = useState<any>(null);
   const [estimateDetail, setEstimateDetail] = useState<any>({});
   const [viewPlansModel, setViewPlansModel] = useState(false);
@@ -285,10 +286,10 @@ const {generateEstimateDetail} = useSelector(selectGeneratedEstimateDetail)
   }, [selectedCategory, selectedSubCategory]);
 
   useEffect(() => {
-    if(generateEstimateDetail?.scopeDetail?.length){
-      setConfirmEstimates(generateEstimateDetail?.scopeDetail)
+    if (generateEstimateDetail?.scopeDetail?.length) {
+      setConfirmEstimates(generateEstimateDetail?.scopeDetail);
     }
-  },[generateEstimateDetail])
+  }, [generateEstimateDetail]);
 
   const submitHandler = (
     estimateTableItemValues: InitialValuesType
@@ -314,10 +315,12 @@ const {generateEstimateDetail} = useSelector(selectGeneratedEstimateDetail)
       return;
     }
 
-    const existEstimateRecord = confirmEstimates.find((obj: any) => {
-      const key = Object.keys(obj)[0];
-      return !oldEstimateKeys.includes(key);
-    });
+
+    
+
+    const existEstimateRecord = confirmEstimates.find((obj: any) => Object.keys(obj)[0] === `${selctedCatoryName.label} ${selctedSubCategoryName.label}`);
+
+    console.log(existEstimateRecord , confirmEstimates , 'confirmEstimates' );
 
     if (existEstimateRecord) {
       toast.warning('Record already added with these category and subcategory');
@@ -379,7 +382,7 @@ const {generateEstimateDetail} = useSelector(selectGeneratedEstimateDetail)
     setEstimatesData(estimates);
     // resetForm();
   };
-  const columns: ColumnsType<DataType> = [
+  const columns: any = [
     {
       title: 'Description',
       dataIndex: 'description',
@@ -387,42 +390,90 @@ const {generateEstimateDetail} = useSelector(selectGeneratedEstimateDetail)
     {
       title: 'Unit',
       dataIndex: 'unit',
+      align: 'center',
     },
     {
       title: 'Qty',
       dataIndex: 'qty',
+      align: 'center',
     },
     {
       title: 'Wastage',
       dataIndex: 'wastage',
+      align: 'center',
     },
     {
       title: 'Qty with wastage',
-      dataIndex: 'qty',
+      dataIndex: 'qtyWithWastage',
+      align: 'center',
+      render: (text : string, record: DataType) => {
+        let quantity = parseFloat(record.qty);
+        let wastagePercentage = parseFloat(record.wastage);
+        let result = quantity * (1 + wastagePercentage / 100);
+        return result.toFixed(2);
+      },
     },
     {
-      title: 'Labor Cost (per hour)',
-      dataIndex: 'wastage',
+      title: 'Per Hours Labor Rate',
+      dataIndex: 'perHourLaborRate',
+      align: 'center',
     },
     {
-      title: 'Total Labor Hour',
-      dataIndex: 'unitLaborHours',
+      title: 'Total Labor Cost',
+      dataIndex: 'totalLaborCost',
+      align: 'center',
+      render: (text : string, record: DataType) => {
+        let unitLabourHour = parseFloat(record.unitLabourHour);
+        let quantity = parseFloat(record.qty);
+        let result = quantity * unitLabourHour;
+        return result.toFixed(2);
+      },
     },
     {
       title: 'Unit Material Cost',
-      dataIndex: 'perHourLaborRate',
+      dataIndex: 'unitMaterialCost',
+      align: 'center',
     },
     {
       title: 'Total Material Cost',
-      dataIndex: 'unitMaterialCost',
+      dataIndex: 'totalMaterialCost',
+      align: 'center',
+      render: (text : string, record: DataType) => {
+        let unitMaterialCost = parseFloat(record.unitMaterialCost);
+        let quantity = parseFloat(record.qty);
+        let wastagePercentage = parseFloat(record.wastage);
+        let qtyWithWastage = quantity * (1 + wastagePercentage / 100);
+        let result = unitMaterialCost * qtyWithWastage;
+        return result.toFixed(2);
+      },
     },
     {
       title: 'Total Equipment Cost',
-      dataIndex: 'unitEquipmentCost',
+      dataIndex: 'totalEquipmentCost',
+      align: 'center',
+      render: (text : string, record: DataType) => {
+        let unitEquipments = parseFloat(record.unitEquipments);
+        let quantity = parseFloat(record.qty);
+        let result = unitEquipments * quantity;
+        return result.toFixed(2);
+      },
     },
     {
       title: 'Total Cost',
-      dataIndex: 'qty',
+      dataIndex: 'totalCost',
+      align: 'center',
+      render: (text : string, record: DataType) => {
+        let unitLabourHour = parseFloat(record.unitLabourHour);
+        let quantity = parseFloat(record.qty);
+        let totalLabourCost = quantity * unitLabourHour;
+        let unitMaterialCost = parseFloat(record.unitMaterialCost);
+        let wastagePercentage = parseFloat(record.wastage);
+        let qtyWithWastage = quantity * (1 + wastagePercentage / 100);
+        let totalMeterialCost = unitMaterialCost * qtyWithWastage;
+        let unitEquipments = parseFloat(record.unitEquipments);
+        let result = totalLabourCost * totalMeterialCost * unitEquipments;
+        return result.toFixed(2);
+      },
     },
 
     {
@@ -430,7 +481,7 @@ const {generateEstimateDetail} = useSelector(selectGeneratedEstimateDetail)
       dataIndex: 'action',
       align: 'center',
       key: 'action',
-      render: (text, record) => (
+      render: (text : string, record : DataType) => (
         <div className="flex gap-2 justify-center">
           <Image
             src="/edit.svg"
@@ -459,8 +510,30 @@ const {generateEstimateDetail} = useSelector(selectGeneratedEstimateDetail)
       ),
     },
   ];
-  const confirmEstimateHandler = () => {
-    setConfirmEstimates([...confirmEstimates, estimatesData]);
+  const confirmEstimateHandler = (dataSource: any) => {
+    const updatedConfirmEstimates = dataSource.map((record: any) => ({
+      ...record,
+      totalCostRecord: columns
+        .find((col: any) => col?.dataIndex === 'totalCost')
+        ?.render(record.dataIndex, record),
+    }));
+
+    const updatedEstimatesData = Object.fromEntries(
+      Object.entries(estimatesData).map(([key, values]: any) => [
+        key,
+        values.map((obj: any) => {
+          const matchingItem = updatedConfirmEstimates.find(
+            (item: any) =>
+              item.tableKey === key && item.tableItemKey === obj.tableItemKey
+          );
+          return matchingItem
+            ? { ...obj, totalCostRecord: matchingItem.totalCostRecord }
+            : obj;
+        }),
+      ])
+    );
+
+    setConfirmEstimates([...confirmEstimates, updatedEstimatesData]);
     setEstimatesData({});
   };
   const revertConfirmTableHandler = (estimateRecord: any) => {
@@ -474,9 +547,14 @@ const {generateEstimateDetail} = useSelector(selectGeneratedEstimateDetail)
     setConfirmEstimates(newArray);
   };
   const nextStepHandler = () => {
-    setPrevNext((prev) => prev + 1)
-    dispatch(saveEstimateDetail({scopeDetail : confirmEstimates , takeOffDetail : generateEstimateDetail.takeOffDetail}))
-  }
+    setPrevNext((prev) => prev + 1);
+    dispatch(
+      saveEstimateDetail({
+        scopeDetail: confirmEstimates,
+        takeOffDetail: generateEstimateDetail.takeOffDetail,
+      })
+    );
+  };
 
   return (
     <div>
@@ -500,8 +578,7 @@ const {generateEstimateDetail} = useSelector(selectGeneratedEstimateDetail)
           />
 
           <CustomButton
-          disabled={confirmEstimates.length == 0}
-
+            disabled={confirmEstimates.length == 0}
             text="Next"
             className="!w-full"
             onClick={nextStepHandler}
@@ -642,7 +719,7 @@ const {generateEstimateDetail} = useSelector(selectGeneratedEstimateDetail)
                     <CustomButton
                       className="!w-40"
                       type="button"
-                      text="Reset"
+                      text="Cancel"
                       onClick={() => setSingleEstimateData(null)}
                       iconwidth={20}
                       iconheight={20}
@@ -682,7 +759,7 @@ const {generateEstimateDetail} = useSelector(selectGeneratedEstimateDetail)
                             text="+ Add Div"
                             className="!w-32"
                             onClick={() => {
-                              confirmEstimateHandler(), resetForm();
+                              confirmEstimateHandler(value), resetForm();
                             }}
                           />
                         </div>
@@ -710,21 +787,16 @@ const {generateEstimateDetail} = useSelector(selectGeneratedEstimateDetail)
                                     <CustomButton
                                       text="Add Item"
                                       className="!text-graphiteGray !bg-snowWhite !shadow-scenarySubdued border-2 border-solid !border-celestialGray "
-                                      onClick={() =>
-                                        {revertConfirmTableHandler(estimate) , resetForm()}
-                                      }
+                                      onClick={() => {
+                                        revertConfirmTableHandler(estimate),
+                                          resetForm();
+                                      }}
                                     />
                                   </div>
                                 </div>
                                 <div className="estimateTable_container">
                                   {value?.length > 0 && (
-                                    <Table
-                                      className="mt-2"
-                                      loading={false}
-                                      columns={columns}
-                                      dataSource={value as DataType[]}
-                                      pagination={false}
-                                    />
+                                    <EstimatesTable estimates={value} />
                                   )}
                                 </div>
                               </div>

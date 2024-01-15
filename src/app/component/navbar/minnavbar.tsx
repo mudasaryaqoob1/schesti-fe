@@ -20,12 +20,12 @@ const Navbar = () => {
   return (
     <nav className="py-3 px-16 md:h-[60px] md:flex flex-col  md:flex-row items-center justify-between w-full bg-primaryGradient">
       <Link href={'/'} className="cursor-pointer active:scale-105 mb-2 md:mb-0">
-        <Image
+        {/* <Image
           src={'/logowhite.svg'}
           alt="logo white icon"
           width={80}
           height={20}
-        />
+        /> */}
       </Link>
 
       <div className="flex flex-col md:flex-row gap-6 justify-between items-center">

@@ -1,4 +1,4 @@
-import React, { useState, useRef , useEffect  } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Divider, Input, Select, Space, Button } from 'antd';
 import type { InputRef } from 'antd';
@@ -8,18 +8,25 @@ import { Field, useField } from 'formik';
 import type { FormikValues } from 'formik';
 
 const CustomInputSelect: React.FC = (props: any) => {
-  const { name, label, labelStyle, options, placeholder,selectStyle, className , setCustomState = () => {} } =
-    props;
+  const {
+    name,
+    label,
+    labelStyle,
+    options,
+    placeholder,
+    selectStyle,
+    className,
+    setCustomState = () => {},
+  } = props;
 
-    
-
-  const [items, setItems] = useState<{label : string, value : string}[]>(options);
+  const [items, setItems] =
+    useState<{ label: string; value: string }[]>(options);
   const [newOption, setNewOption] = useState('');
   const inputRef = useRef<InputRef>(null);
 
   useEffect(() => {
-    setItems(options)
-  },[options])
+    setItems(options);
+  }, [options]);
 
   const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setNewOption(event.target.value);
@@ -38,7 +45,11 @@ const CustomInputSelect: React.FC = (props: any) => {
 
   const [field, meta] = useField(name);
   const hasError = meta.touched && meta.error;
-  
+  const filterOption = (
+    input: string,
+    option?: { label: string; value: string }
+  ) => (`${option?.label}` ?? '').toLowerCase().includes(input.toLowerCase());
+
   return (
     <div>
       {label && (
@@ -59,6 +70,9 @@ const CustomInputSelect: React.FC = (props: any) => {
           {({ form: { setFieldValue } }: FormikValues) => {
             return (
               <Select
+                showSearch
+                optionFilterProp="children"
+                filterOption={filterOption}
                 className={twMerge(
                   clsx(
                     'w-full h-10',
@@ -73,7 +87,7 @@ const CustomInputSelect: React.FC = (props: any) => {
                     <Divider style={{ margin: '8px 0' }} />
                     <Space style={{ padding: '0 8px 4px' }}>
                       <Input
-                        placeholder="Please enter item"
+                        placeholder="Enter item"
                         ref={inputRef}
                         value={newOption}
                         onChange={onNameChange}
@@ -83,6 +97,7 @@ const CustomInputSelect: React.FC = (props: any) => {
                         type="text"
                         icon={<PlusOutlined />}
                         onClick={addItem}
+                        disabled={newOption === ''}
                       >
                         Add New
                       </Button>
@@ -92,7 +107,7 @@ const CustomInputSelect: React.FC = (props: any) => {
                 id={name}
                 value={field.value}
                 onChange={(val) => {
-                  setCustomState(val)
+                  setCustomState(val);
                   setFieldValue(name, val);
                 }}
                 options={items.map(

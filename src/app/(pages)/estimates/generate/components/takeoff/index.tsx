@@ -31,6 +31,7 @@ interface Props {
   pevNext: number;
 }
 
+
 const TakeOff = ({ setPrevNext, pevNext }: Props) => {
   const dispatch = useDispatch()
   const searchParams = useSearchParams();

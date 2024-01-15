@@ -1,8 +1,6 @@
 'use client';
 import { Dispatch, SetStateAction, useState, useEffect } from 'react';
-import { Table } from 'antd';
 import Image from 'next/image';
-import type { ColumnsType } from 'antd/es/table';
 import { useSelector } from 'react-redux';
 
 import CustomButton from '@/app/component/customButton/button';
@@ -16,101 +14,45 @@ import MinDesc from '@/app/component/description/minDesc';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import { selectGeneratedEstimateDetail } from '@/redux/estimate/estimateRequestSelector';
+import EstimatesTable from '../estimatesTable';
 
 interface Props {
   setPrevNext: Dispatch<SetStateAction<number>>;
 }
 
-interface DataType {
-  Description: string;
-  Unit: string;
-  Qty: string;
-  Wastage: string;
-  Estimator: string;
-  Status: string;
-  Action: string;
+interface basicInformation {
+  clientName: string;
+  companyName: string;
+  phone: string;
+  email: string;
+  leadSource: string;
+  projectName: string;
+  projectValue: string;
+  projectInformation: string;
+  salePerson: {
+    firstName: string;
+    lastName: string;
+  };
+  estimator: {
+    firstName: string;
+    lastName: string;
+  };
+  drawingsDocuments: [];
+  takeOffReports: [];
+  otherDocuments: [];
 }
 
 const Summary = ({ setPrevNext }: Props) => {
   const { generateEstimateDetail } = useSelector(selectGeneratedEstimateDetail);
-  const [estimateDetailsSummay, setEstimateDetailsSummay] = useState({});
-  const columns: ColumnsType<DataType> = [
-    {
-      title: 'Description',
-      dataIndex: 'description',
-    },
-    {
-      title: 'Unit',
-      dataIndex: 'unit',
-    },
-    {
-      title: 'Qty',
-      dataIndex: 'qty',
-    },
-    {
-      title: 'Wastage',
-      dataIndex: 'wastage',
-    },
-    {
-      title: 'Qty with wastage',
-      dataIndex: 'qty',
-    },
-    {
-      title: 'Labor Cost (per hour)',
-      dataIndex: 'qty',
-    },
-    {
-      title: 'Total Labor Hour',
-      dataIndex: 'qty',
-    },
-    {
-      title: 'Unit Material Cost',
-      dataIndex: 'qty',
-    },
-    {
-      title: 'Total Material Cost',
-      dataIndex: 'qty',
-    },
-    {
-      title: 'Total Equipment Cost',
-      dataIndex: 'qty',
-    },
-    {
-      title: 'Total Cost',
-      dataIndex: 'qty',
-    },
-
-    {
-      title: 'Action',
-      dataIndex: 'action',
-      align: 'center',
-      key: 'action',
-      render: () => (
-        <div className="flex gap-2 justify-center">
-          <Image
-            src="/edit.svg"
-            className="cursor-pointer"
-            width={20}
-            height={20}
-            alt="edit"
-          />
-          <Image
-            src="/trash.svg"
-            className="cursor-pointer"
-            width={20}
-            height={20}
-            alt="delete"
-          />
-        </div>
-      ),
-    },
-  ];
+  const [estimateDetailsSummary, setEstimateDetailsSummary] = useState<{
+    takeOffDetail: basicInformation;
+    scopeDetail: Object[];
+  }>();
 
   useEffect(() => {
-    setEstimateDetailsSummay(generateEstimateDetail);
+    setEstimateDetailsSummary(generateEstimateDetail);
   }, [generateEstimateDetail]);
 
-  console.log(estimateDetailsSummay, 'estimateDetailsSummay');
 
   return (
     <div>
@@ -147,7 +89,7 @@ const Summary = ({ setPrevNext }: Props) => {
           <div>
             <QuinaryHeading title="Client Name" className="text-lightyGray" />
             <Description
-              title="Albert Flores"
+              title={estimateDetailsSummary?.takeOffDetail?.clientName!}
               className="text-midnightBlue font-popin"
             />
           </div>
@@ -155,7 +97,7 @@ const Summary = ({ setPrevNext }: Props) => {
           <div>
             <QuinaryHeading title="Company Name" className="text-lightyGray" />
             <Description
-              title="Jenny Wilson"
+              title={estimateDetailsSummary?.takeOffDetail?.companyName!}
               className="text-midnightBlue font-popin"
             />
           </div>
@@ -163,7 +105,7 @@ const Summary = ({ setPrevNext }: Props) => {
           <div>
             <QuinaryHeading title="Phone Number" className="text-lightyGray" />
             <Description
-              title="(938) 861-8764"
+              title={estimateDetailsSummary?.takeOffDetail?.phone!}
               className="text-midnightBlue font-popin"
             />
           </div>
@@ -171,7 +113,7 @@ const Summary = ({ setPrevNext }: Props) => {
           <div>
             <QuinaryHeading title="Email" className="text-lightyGray" />
             <Description
-              title="james@example.com"
+              title={estimateDetailsSummary?.takeOffDetail?.email!}
               className="text-midnightBlue font-popin"
             />
           </div>
@@ -182,7 +124,7 @@ const Summary = ({ setPrevNext }: Props) => {
       <div className={`${bg_style} p-5 mt-4`}>
         <div className="flex justify-between items-center">
           <QuaternaryHeading
-            title="Project Information"
+            title={estimateDetailsSummary?.takeOffDetail?.projectName!}
             className="font-bold"
           />
           <div className="bg-silverGray rounded-s border border-solid border-Gainsboro cursor-pointer w-8 h-8 flex justify-center items-center">
@@ -198,33 +140,39 @@ const Summary = ({ setPrevNext }: Props) => {
           {/* 1 */}
           <div>
             <QuinaryHeading title="Project Name" className="text-lightyGray" />
-            <Description title="ABC" className="text-midnightBlue font-popin" />
+            <Description
+              title={estimateDetailsSummary?.takeOffDetail?.projectName!}
+              className="text-midnightBlue font-popin"
+            />
           </div>
           {/* 2 */}
           <div>
             <QuinaryHeading title="Lead Source" className="text-lightyGray" />
             <Description
-              title="Source 101"
+              title={estimateDetailsSummary?.takeOffDetail?.leadSource!}
               className="text-midnightBlue font-popin"
             />
           </div>
           {/* 2 */}
           <div>
             <QuinaryHeading title="Project Value" className="text-lightyGray" />
-            <Description title="5M" className="text-midnightBlue font-popin" />
+            <Description
+              title={estimateDetailsSummary?.takeOffDetail?.projectValue!}
+              className="text-midnightBlue font-popin"
+            />
           </div>
           {/* 3 */}
           <div>
             <QuinaryHeading title="Email" className="text-lightyGray" />
             <Description
-              title="james@example.com"
+              title={estimateDetailsSummary?.takeOffDetail?.email!}
               className="text-midnightBlue font-popin"
             />
           </div>
           <div>
             <QuinaryHeading title="Address" className="text-lightyGray" />
             <Description
-              title="House# 112 Johen markes , UK "
+              title="----"
               className="text-midnightBlue font-popin"
             />
           </div>
@@ -235,7 +183,7 @@ const Summary = ({ setPrevNext }: Props) => {
               className="text-lightyGray"
             />
             <Description
-              title="Lorem ipsum dolor sit amet consectetur. Lobortis non malesuada bibendum nunc. Ultrices feugiat egestas tempus aliquam diam blandit. Aliquet nisl id aliquet eget. Hendrerit enim odio nullam ut pulvinar."
+              title={estimateDetailsSummary?.takeOffDetail?.projectInformation!}
               className="text-midnightBlue font-popin"
             />
           </div>
@@ -246,30 +194,47 @@ const Summary = ({ setPrevNext }: Props) => {
         title="Estimates"
         className="text-graphiteGray font-semibold my-4"
       />
-      <div className={`${bg_style} p-5`}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <QuaternaryHeading
-              title="DIV-03 - Concrete "
-              className="font-semibold"
-            />
-            <Description
-              title="Concrete - Building"
-              className="text-lg font-normal"
-            />
-          </div>
-          <Description
-            title=" Trade Cost: $42563"
-            className="text-lg font-normal"
-          />
-        </div>
-        <Table
-          className="mt-2"
-          loading={false}
-          columns={columns}
-          dataSource={[]}
-          pagination={{ position: ['bottomCenter'] }}
-        />
+
+      <div>
+        {estimateDetailsSummary?.scopeDetail.map((estimate: any) => {
+          return (
+            <>
+              <div>
+                {Object.entries(estimate).map(
+                  ([key, value]: any[], i) => {
+                    const totalCostRecordTotal = value.reduce((total : any, obj : any) => {
+                      return total + parseFloat(obj.totalCostRecord);
+                    }, 0);
+                    
+                    if(value?.length > 0){
+                      return (
+                        <div key={i} className={`${bg_style} p-5 mt-3`}>
+
+                          <div className="flex items-center justify-between gap-2">
+                            <QuaternaryHeading
+                              title={key}
+                              className="font-semibold"
+                            />
+                            <Description
+                              title={`Trade Cost: $${totalCostRecordTotal}`}
+                              className="text-lg font-normal"
+                            />
+                          </div>
+                        <div className="estimateTable_container">
+                          {value?.length > 0 && (
+                            <EstimatesTable estimates={value} />
+                          )}
+                        </div>
+                      </div>
+                      )
+                    }
+                  }
+
+                )}
+              </div>
+            </>
+          );
+        })}
       </div>
 
       <div className="bg-celestialGray h-px  w-full my-4"></div>
