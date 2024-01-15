@@ -315,13 +315,7 @@ const Scope = ({ setPrevNext }: Props) => {
       return;
     }
 
-
-    
-
     const existEstimateRecord = confirmEstimates.find((obj: any) => Object.keys(obj)[0] === `${selctedCatoryName.label} ${selctedSubCategoryName.label}`);
-
-    console.log(existEstimateRecord , confirmEstimates , 'confirmEstimates' );
-
     if (existEstimateRecord) {
       toast.warning('Record already added with these category and subcategory');
       return;
@@ -547,13 +541,21 @@ const Scope = ({ setPrevNext }: Props) => {
     setConfirmEstimates(newArray);
   };
   const nextStepHandler = () => {
-    setPrevNext((prev) => prev + 1);
-    dispatch(
-      saveEstimateDetail({
-        scopeDetail: confirmEstimates,
-        takeOffDetail: generateEstimateDetail.takeOffDetail,
-      })
-    );
+
+    if(Object.keys(estimatesData).length){
+      toast.warning('Please add div first then move forward');
+      return;
+    }
+    else{
+      setPrevNext((prev) => prev + 1);
+      dispatch(
+        saveEstimateDetail({
+          scopeDetail: confirmEstimates,
+          takeOffDetail: generateEstimateDetail.takeOffDetail,
+        })
+      );
+    }
+    
   };
 
   return (
@@ -737,10 +739,6 @@ const Scope = ({ setPrevNext }: Props) => {
                               className="font-semibold"
                             />
                           </div>
-                          {/* <Description
-                          title="Add New Item"
-                          className="text-lg font-normal"
-                        /> */}
                         </div>
                         <div className="estimateTable_container">
                           {value?.length > 0 && (
@@ -749,7 +747,6 @@ const Scope = ({ setPrevNext }: Props) => {
                               loading={false}
                               columns={columns}
                               dataSource={value as DataType[]}
-                              // pagination={{ position: ['bottomCenter'] }}
                               pagination={false}
                             />
                           )}

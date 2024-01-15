@@ -48,11 +48,23 @@ const Summary = ({ setPrevNext }: Props) => {
     takeOffDetail: basicInformation;
     scopeDetail: Object[];
   }>();
+  const [subcostRecord, setSubcostRecord] = useState<Number>(0);
 
   useEffect(() => {
     setEstimateDetailsSummary(generateEstimateDetail);
+    if(generateEstimateDetail?.scopeDetail?.length){
+      let totalCost: any = 0;
+      generateEstimateDetail?.scopeDetail?.forEach((entry: any) => {
+        Object.values(entry).forEach((items: any) => {
+          items.forEach((item: any) => {
+            totalCost += parseFloat(item.totalCostRecord);
+          });
+        });
+      });
+      setSubcostRecord(totalCost);
+    }
+    
   }, [generateEstimateDetail]);
-
 
   return (
     <div>
@@ -200,37 +212,36 @@ const Summary = ({ setPrevNext }: Props) => {
           return (
             <>
               <div>
-                {Object.entries(estimate).map(
-                  ([key, value]: any[], i) => {
-                    const totalCostRecordTotal = value.reduce((total : any, obj : any) => {
+                {Object.entries(estimate).map(([key, value]: any[], i) => {
+                  const totalCostRecordTotal = value.reduce(
+                    (total: any, obj: any) => {
                       return total + parseFloat(obj.totalCostRecord);
-                    }, 0);
-                    
-                    if(value?.length > 0){
-                      return (
-                        <div key={i} className={`${bg_style} p-5 mt-3`}>
+                    },
+                    0
+                  );
 
-                          <div className="flex items-center justify-between gap-2">
-                            <QuaternaryHeading
-                              title={key}
-                              className="font-semibold"
-                            />
-                            <Description
-                              title={`Trade Cost: $${totalCostRecordTotal}`}
-                              className="text-lg font-normal"
-                            />
-                          </div>
+                  if (value?.length > 0) {
+                    return (
+                      <div key={i} className={`${bg_style} p-5 mt-3`}>
+                        <div className="flex items-center justify-between gap-2">
+                          <QuaternaryHeading
+                            title={key}
+                            className="font-semibold"
+                          />
+                          <Description
+                            title={`Trade Cost: $${totalCostRecordTotal}`}
+                            className="text-lg font-normal"
+                          />
+                        </div>
                         <div className="estimateTable_container">
                           {value?.length > 0 && (
                             <EstimatesTable estimates={value} />
                           )}
                         </div>
                       </div>
-                      )
-                    }
+                    );
                   }
-
-                )}
+                })}
               </div>
             </>
           );
@@ -241,7 +252,7 @@ const Summary = ({ setPrevNext }: Props) => {
       <div className="flex w-full justify-between flex-col gap-2 my-4">
         <div className="flex items-center justify-between">
           <MinDesc title="Sub Total Cost" className="text-darkgrayish" />
-          <Description title="$6,000" className="font-medium" />
+          <Description title={`$${subcostRecord}`} className="font-medium" />
         </div>
         <div className="flex items-center justify-between">
           <MinDesc title="Material Tax %" className="text-darkgrayish" />
@@ -268,7 +279,7 @@ const Summary = ({ setPrevNext }: Props) => {
       <div className="bg-celestialGray h-px w-full my-4"></div>
       <div className="flex items-center justify-between">
         <QuaternaryHeading title="Total Bid" />
-        <Description title="$20,000" />
+        <Description title={`$${subcostRecord}`} />
       </div>
     </div>
   );
