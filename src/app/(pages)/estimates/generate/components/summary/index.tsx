@@ -1,6 +1,6 @@
 'use client';
-import { Dispatch, SetStateAction, useState, useEffect } from 'react';
-import Image from 'next/image';
+import { Dispatch, SetStateAction, useState, useEffect, useRef } from 'react';
+// import Image from 'next/image';
 import { useSelector } from 'react-redux';
 
 import CustomButton from '@/app/component/customButton/button';
@@ -15,6 +15,7 @@ import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import { selectGeneratedEstimateDetail } from '@/redux/estimate/estimateRequestSelector';
 import EstimatesTable from '../estimatesTable';
+import { useReactToPrint } from 'react-to-print';
 
 interface Props {
   setPrevNext: Dispatch<SetStateAction<number>>;
@@ -42,7 +43,42 @@ interface basicInformation {
   otherDocuments: [];
 }
 
+const pageStyle = `
+    @page {
+        size: A4;
+        padding-top: 100mm;
+    }
+
+    header, footer {
+        position: fixed;
+        left: 0;
+        right: 0;
+        background-color: #000000; /* Set the background color as needed */
+        padding: 10px; /* Adjust the padding value as needed */
+      }
+      
+      header {
+        top: 0;
+      }
+      
+      footer {
+        bottom: 0;
+      }
+      
+    @media all {
+        .pagebreak {
+          display: none;
+        }
+      }
+
+      @media print {
+        .pagebreak {
+          page-break-before: always;
+        }
+      }
+  `;
 const Summary = ({ setPrevNext }: Props) => {
+  const componentRef = useRef<HTMLDivElement>();
   const { generateEstimateDetail } = useSelector(selectGeneratedEstimateDetail);
   const [estimateDetailsSummary, setEstimateDetailsSummary] = useState<{
     takeOffDetail: basicInformation;
@@ -65,6 +101,10 @@ const Summary = ({ setPrevNext }: Props) => {
     }
   }, [generateEstimateDetail]);
 
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current!,
+    pageStyle,
+  });
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -80,205 +120,226 @@ const Summary = ({ setPrevNext }: Props) => {
             onClick={() => setPrevNext((prev) => prev - 1)}
           />
 
-          <CustomButton text="Generate" className="!w-full" />
-        </div>
-      </div>
-
-      <div className={`${bg_style} p-5 mt-4`}>
-        <div className="flex justify-between items-center">
-          <QuaternaryHeading title="Client Information" className="font-bold" />
-          <div className="bg-silverGray rounded-s border border-solid border-Gainsboro cursor-pointer w-8 h-8 flex justify-center items-center">
-            <Image
-              src={'/chevron-down.svg'}
-              alt="icon"
-              width={16}
-              height={16}
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-6 mt-4">
-          <div>
-            <QuinaryHeading title="Client Name" className="text-lightyGray" />
-            <Description
-              title={estimateDetailsSummary?.takeOffDetail?.clientName!}
-              className="text-midnightBlue font-popin"
-            />
-          </div>
-          {/* 1 */}
-          <div>
-            <QuinaryHeading title="Company Name" className="text-lightyGray" />
-            <Description
-              title={estimateDetailsSummary?.takeOffDetail?.companyName!}
-              className="text-midnightBlue font-popin"
-            />
-          </div>
-          {/* 2 */}
-          <div>
-            <QuinaryHeading title="Phone Number" className="text-lightyGray" />
-            <Description
-              title={estimateDetailsSummary?.takeOffDetail?.phone!}
-              className="text-midnightBlue font-popin"
-            />
-          </div>
-          {/* 3 */}
-          <div>
-            <QuinaryHeading title="Email" className="text-lightyGray" />
-            <Description
-              title={estimateDetailsSummary?.takeOffDetail?.email!}
-              className="text-midnightBlue font-popin"
-            />
-          </div>
-        </div>
-      </div>
-      {/*  */}
-
-      <div className={`${bg_style} p-5 mt-4`}>
-        <div className="flex justify-between items-center">
-          <QuaternaryHeading
-            title={estimateDetailsSummary?.takeOffDetail?.projectName!}
-            className="font-bold"
+          <CustomButton
+            onClick={handlePrint}
+            text="Generate"
+            className="!w-full"
           />
-          <div className="bg-silverGray rounded-s border border-solid border-Gainsboro cursor-pointer w-8 h-8 flex justify-center items-center">
+        </div>
+      </div>
+      <div ref={componentRef as React.RefObject<HTMLDivElement>}>
+        <div className={`${bg_style} p-5 mt-4`}>
+          <div className="flex justify-between items-center">
+            <QuaternaryHeading
+              title="Client Information"
+              className="font-bold"
+            />
+            {/* <div className="bg-silverGray rounded-s border border-solid border-Gainsboro cursor-pointer w-8 h-8 flex justify-center items-center">
             <Image
               src={'/chevron-down.svg'}
               alt="icon"
               width={16}
               height={16}
             />
+          </div> */}
+          </div>
+          <div className="grid grid-cols-4 mt-4">
+            <div>
+              <QuinaryHeading title="Client Name" className="text-lightyGray" />
+              <Description
+                title={estimateDetailsSummary?.takeOffDetail?.clientName!}
+                className="text-midnightBlue font-popin"
+              />
+            </div>
+            {/* 1 */}
+            <div>
+              <QuinaryHeading
+                title="Company Name"
+                className="text-lightyGray"
+              />
+              <Description
+                title={estimateDetailsSummary?.takeOffDetail?.companyName!}
+                className="text-midnightBlue font-popin"
+              />
+            </div>
+            {/* 2 */}
+            <div>
+              <QuinaryHeading
+                title="Phone Number"
+                className="text-lightyGray"
+              />
+              <Description
+                title={estimateDetailsSummary?.takeOffDetail?.phone!}
+                className="text-midnightBlue font-popin"
+              />
+            </div>
+            {/* 3 */}
+            <div>
+              <QuinaryHeading title="Email" className="text-lightyGray" />
+              <Description
+                title={estimateDetailsSummary?.takeOffDetail?.email!}
+                className="text-midnightBlue font-popin"
+              />
+            </div>
           </div>
         </div>
-        <div className="grid grid-cols-6 grid-rows-2 mt-2 gap-y-2">
-          {/* 1 */}
-          <div>
-            <QuinaryHeading title="Project Name" className="text-lightyGray" />
-            <Description
+
+        <div className={`${bg_style} p-5 mt-4`}>
+          <div className="flex justify-between items-center">
+            <QuaternaryHeading
               title={estimateDetailsSummary?.takeOffDetail?.projectName!}
-              className="text-midnightBlue font-popin"
+              className="font-bold"
             />
+            {/* <div className="bg-silverGray rounded-s border border-solid border-Gainsboro cursor-pointer w-8 h-8 flex justify-center items-center">
+              <Image
+                src={'/chevron-down.svg'}
+                alt="icon"
+                width={16}
+                height={16}
+              />
+            </div> */}
           </div>
-          {/* 2 */}
-          <div>
-            <QuinaryHeading title="Lead Source" className="text-lightyGray" />
-            <Description
-              title={estimateDetailsSummary?.takeOffDetail?.leadSource!}
-              className="text-midnightBlue font-popin"
-            />
-          </div>
-          {/* 2 */}
-          <div>
-            <QuinaryHeading title="Project Value" className="text-lightyGray" />
-            <Description
-              title={estimateDetailsSummary?.takeOffDetail?.projectValue!}
-              className="text-midnightBlue font-popin"
-            />
-          </div>
-          {/* 3 */}
-          <div>
-            <QuinaryHeading title="Email" className="text-lightyGray" />
-            <Description
-              title={estimateDetailsSummary?.takeOffDetail?.email!}
-              className="text-midnightBlue font-popin"
-            />
-          </div>
-          <div>
-            <QuinaryHeading title="Address" className="text-lightyGray" />
-            <Description
-              title="----"
-              className="text-midnightBlue font-popin"
-            />
-          </div>
-          {/* 3 */}
-          <div className="col-span-full row-span-2 text-start">
-            <QuinaryHeading
-              title="Project Information"
-              className="text-lightyGray"
-            />
-            <Description
-              title={estimateDetailsSummary?.takeOffDetail?.projectInformation!}
-              className="text-midnightBlue font-popin"
-            />
+          <div className="grid grid-cols-5 grid-rows-2 mt-2 gap-y-2">
+            {/* 1 */}
+            <div>
+              <QuinaryHeading
+                title="Project Name"
+                className="text-lightyGray"
+              />
+              <Description
+                title={estimateDetailsSummary?.takeOffDetail?.projectName!}
+                className="text-midnightBlue font-popin"
+              />
+            </div>
+            {/* 2 */}
+            <div>
+              <QuinaryHeading title="Lead Source" className="text-lightyGray" />
+              <Description
+                title={estimateDetailsSummary?.takeOffDetail?.leadSource!}
+                className="text-midnightBlue font-popin"
+              />
+            </div>
+            {/* 2 */}
+            <div>
+              <QuinaryHeading
+                title="Project Value"
+                className="text-lightyGray"
+              />
+              <Description
+                title={estimateDetailsSummary?.takeOffDetail?.projectValue!}
+                className="text-midnightBlue font-popin"
+              />
+            </div>
+            {/* 3 */}
+            <div>
+              <QuinaryHeading title="Email" className="text-lightyGray" />
+              <Description
+                title={estimateDetailsSummary?.takeOffDetail?.email!}
+                className="text-midnightBlue font-popin"
+              />
+            </div>
+            <div>
+              <QuinaryHeading title="Address" className="text-lightyGray" />
+              <Description
+                title="----"
+                className="text-midnightBlue font-popin"
+              />
+            </div>
+            {/* 3 */}
+            <div className="col-span-full row-span-2 text-start">
+              <QuinaryHeading
+                title="Project Information"
+                className="text-lightyGray"
+              />
+              <Description
+                title={
+                  estimateDetailsSummary?.takeOffDetail?.projectInformation!
+                }
+                className="text-midnightBlue font-popin"
+              />
+            </div>
           </div>
         </div>
-      </div>
-      {/* center part */}
-      <TertiaryHeading
-        title="Estimates"
-        className="text-graphiteGray font-semibold my-4"
-      />
+        {/* center part */}
+        <TertiaryHeading
+          title="Estimates"
+          className="text-graphiteGray font-semibold my-4"
+        />
 
-      <div>
-        {estimateDetailsSummary?.scopeDetail.map((estimate: any) => {
-          return (
-            <>
-              <div>
-                {Object.entries(estimate).map(([key, value]: any[], i) => {
-                  const totalCostRecordTotal = value.reduce(
-                    (total: any, obj: any) => {
-                      return total + parseFloat(obj.totalCostRecord);
-                    },
-                    0
-                  );
-
-                  if (value?.length > 0) {
-                    return (
-                      <div key={i} className={`${bg_style} p-5 mt-3`}>
-                        <div className="flex items-center justify-between gap-2">
-                          <QuaternaryHeading
-                            title={key}
-                            className="font-semibold"
-                          />
-                          <Description
-                            title={`Trade Cost: $${totalCostRecordTotal}`}
-                            className="text-lg font-normal"
-                          />
-                        </div>
-                        <div className="estimateTable_container">
-                          {value?.length > 0 && (
-                            <EstimatesTable estimates={value} />
-                          )}
-                        </div>
-                      </div>
+        <div>
+          {estimateDetailsSummary?.scopeDetail.map((estimate: any) => {
+            return (
+              <>
+                <div>
+                  {Object.entries(estimate).map(([key, value]: any[], i) => {
+                    const totalCostRecordTotal = value.reduce(
+                      (total: any, obj: any) => {
+                        return total + parseFloat(obj.totalCostRecord);
+                      },
+                      0
                     );
-                  }
-                })}
-              </div>
-            </>
-          );
-        })}
-      </div>
 
-      <div className="bg-celestialGray h-px  w-full my-4"></div>
-      <div className="flex w-full justify-between flex-col gap-2 my-4">
-        <div className="flex items-center justify-between">
-          <MinDesc title="Sub Total Cost" className="text-darkgrayish" />
-          <Description title={`$${subcostRecord}`} className="font-medium" />
+                    if (value?.length > 0) {
+                      return (
+                        <div key={i} className={`${bg_style} p-5 mt-3`}>
+                          <div className="flex items-center justify-between gap-2">
+                            <QuaternaryHeading
+                              title={key}
+                              className="font-semibold"
+                            />
+                            <Description
+                              title={`Trade Cost: $${totalCostRecordTotal}`}
+                              className="text-lg font-normal"
+                            />
+                          </div>
+                          <div className="estimateTable_container">
+                            {value?.length > 0 && (
+                              <EstimatesTable estimates={value} />
+                            )}
+                          </div>
+                        </div>
+                      );
+                    }
+                  })}
+                </div>
+              </>
+            );
+          })}
         </div>
-        <div className="flex items-center justify-between">
-          <MinDesc title="Material Tax %" className="text-darkgrayish" />
-          <Description
-            title="0.5%"
-            className="font-medium text-graphiteGray bg-cloudWhite2 rounded-[4px] p-1"
-          />
+
+        <div className="bg-celestialGray h-px  w-full my-4"></div>
+        <div className="flex w-full justify-between flex-col gap-2 my-4">
+          <div className="flex items-center justify-between">
+            <MinDesc title="Sub Total Cost" className="text-darkgrayish" />
+            <Description title={`$${subcostRecord}`} className="font-medium" />
+          </div>
+          <div className="flex items-center justify-between">
+            <MinDesc title="Material Tax %" className="text-darkgrayish" />
+            <Description
+              title="0.5%"
+              className="font-medium text-graphiteGray bg-cloudWhite2 rounded-[4px] p-1"
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            <MinDesc title="Overhead & Profit %" className="text-darkgrayish" />
+            <Description
+              title="0.5%"
+              className="font-medium text-graphiteGray bg-cloudWhite2 rounded-[4px] p-1"
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            <MinDesc title="Bond Fee %" className="text-darkgrayish" />
+            <Description
+              title="0.5%"
+              className="font-medium text-graphiteGray bg-cloudWhite2 rounded-[4px] p-1"
+            />
+          </div>
         </div>
+        <div className="bg-celestialGray h-px w-full my-4"></div>
         <div className="flex items-center justify-between">
-          <MinDesc title="Overhead & Profit %" className="text-darkgrayish" />
-          <Description
-            title="0.5%"
-            className="font-medium text-graphiteGray bg-cloudWhite2 rounded-[4px] p-1"
-          />
+          <QuaternaryHeading title="Total Bid" />
+          <Description title={`$${subcostRecord}`} />
         </div>
-        <div className="flex items-center justify-between">
-          <MinDesc title="Bond Fee %" className="text-darkgrayish" />
-          <Description
-            title="0.5%"
-            className="font-medium text-graphiteGray bg-cloudWhite2 rounded-[4px] p-1"
-          />
-        </div>
-      </div>
-      <div className="bg-celestialGray h-px w-full my-4"></div>
-      <div className="flex items-center justify-between">
-        <QuaternaryHeading title="Total Bid" />
-        <Description title={`$${subcostRecord}`} />
       </div>
     </div>
   );
