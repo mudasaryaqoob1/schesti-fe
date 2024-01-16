@@ -4,7 +4,6 @@ import { useRouter } from 'next/navigation';
 import { Dropdown, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { MenuProps } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 
 // module imports
@@ -20,6 +19,7 @@ import {
   deleteCompanyClient,
   fetchCompanyClients,
 } from '@/redux/company/company.thunk';
+import Image from 'next/image';
 
 interface DataType {
   firstName: string;
@@ -131,9 +131,13 @@ const ClientTable = () => {
           }}
           placement="bottomRight"
         >
-          <a>
-            <DownOutlined />
-          </a>
+          <Image
+            src={'/menuIcon.svg'}
+            alt="logo white icon"
+            width={20}
+            height={20}
+            className="active:scale-105 cursor-pointer"
+          />
         </Dropdown>
       ),
     },

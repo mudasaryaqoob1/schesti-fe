@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useLayoutEffect } from 'react';
 import type { ColumnsType } from 'antd/es/table';
 import { Dropdown, Table } from 'antd';
 import type { MenuProps } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { AppDispatch } from '@/redux/store';
@@ -18,6 +17,7 @@ import {
 } from '@/redux/company/company.thunk';
 import NoData from '@/app/component/noData';
 import TertiaryHeading from '@/app/component/headings/tertiary';
+import Image from 'next/image';
 
 interface DataType {
   key: React.Key;
@@ -133,9 +133,13 @@ const EstimateRequestTable: React.FC = () => {
           }}
           placement="bottomRight"
         >
-          <a>
-            <DownOutlined />
-          </a>
+          <Image
+            src={'/menuIcon.svg'}
+            alt="logo white icon"
+            width={20}
+            height={20}
+            className="active:scale-105 cursor-pointer"
+          />
         </Dropdown>
       ),
     },

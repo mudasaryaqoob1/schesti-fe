@@ -1,5 +1,5 @@
 'use client';
-import { Dispatch, SetStateAction, useState, useEffect, useRef } from 'react';
+import { Dispatch, SetStateAction, useState, useEffect } from 'react';
 // import Image from 'next/image';
 import { useSelector } from 'react-redux';
 
@@ -15,7 +15,9 @@ import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import { selectGeneratedEstimateDetail } from '@/redux/estimate/estimateRequestSelector';
 import EstimatesTable from '../estimatesTable';
-import { useReactToPrint } from 'react-to-print';
+import { PDFDownloadLink } from '@react-pdf/renderer';
+import ClientPDF from '../clientPDF';
+import data from '../clientPDF/data.json'
 
 interface Props {
   setPrevNext: Dispatch<SetStateAction<number>>;
@@ -43,42 +45,7 @@ interface basicInformation {
   otherDocuments: [];
 }
 
-const pageStyle = `
-    @page {
-        size: A4;
-        padding-top: 100mm;
-    }
-
-    header, footer {
-        position: fixed;
-        left: 0;
-        right: 0;
-        background-color: #000000; /* Set the background color as needed */
-        padding: 10px; /* Adjust the padding value as needed */
-      }
-      
-      header {
-        top: 0;
-      }
-      
-      footer {
-        bottom: 0;
-      }
-      
-    @media all {
-        .pagebreak {
-          display: none;
-        }
-      }
-
-      @media print {
-        .pagebreak {
-          page-break-before: always;
-        }
-      }
-  `;
 const Summary = ({ setPrevNext }: Props) => {
-  const componentRef = useRef<HTMLDivElement>();
   const { generateEstimateDetail } = useSelector(selectGeneratedEstimateDetail);
   const [estimateDetailsSummary, setEstimateDetailsSummary] = useState<{
     takeOffDetail: basicInformation;
@@ -101,10 +68,6 @@ const Summary = ({ setPrevNext }: Props) => {
     }
   }, [generateEstimateDetail]);
 
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current!,
-    pageStyle,
-  });
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -120,14 +83,19 @@ const Summary = ({ setPrevNext }: Props) => {
             onClick={() => setPrevNext((prev) => prev - 1)}
           />
 
-          <CustomButton
-            onClick={handlePrint}
-            text="Generate"
-            className="!w-full"
-          />
+          <PDFDownloadLink document={<ClientPDF data={data} />} fileName="somename.pdf">
+            {({ loading }) => (
+              <CustomButton
+                isLoading={loading}
+                loadingText="Downloading"
+                text="Generate"
+                className="!w-full"
+              />
+            )}
+          </PDFDownloadLink>
         </div>
       </div>
-      <div ref={componentRef as React.RefObject<HTMLDivElement>}>
+      <div>
         <div className={`${bg_style} p-5 mt-4`}>
           <div className="flex justify-between items-center">
             <QuaternaryHeading
