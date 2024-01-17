@@ -41,7 +41,7 @@ const newClientSchema = Yup.object({
   invoiceDetails: Yup.array().of(
     Yup.object()
       .shape({
-        invoiceDetailDescription: Yup.string().required(
+        description: Yup.string().required(
           'Description is required!'
         ),
         quantity: Yup.number().required('Quantity is required!'),
@@ -76,22 +76,23 @@ const initialValues = {
 };
 
 type InvoiceDetail = {
+  id: string;
   description: string;
   quantity: number;
   unitCost: number;
-  totalPrice: number;
 };
 const CreateInvoice = () => {
   const router = useRouter();
   const token = useSelector(selectToken);
   const [details, setDetails] = useState<InvoiceDetail[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const [isEditDetail, setIsEditDetail] = useState(false);
 
   const [detail, setDetail] = useState<InvoiceDetail>({
+    id: '',
     description: '',
     quantity: 0,
     unitCost: 0,
-    totalPrice: 0,
   })
 
 
@@ -116,6 +117,9 @@ const CreateInvoice = () => {
     {
       title: 'Total Price',
       dataIndex: 'totalPrice',
+      render(_value, record) {
+        return `$${record.quantity * record.unitCost}`;
+      },
     },
     {
       title: 'Action',
@@ -138,6 +142,10 @@ const CreateInvoice = () => {
             icon="/edit.svg"
             iconwidth={13}
             iconheight={13}
+            onClick={() => {
+              setIsEditDetail(true);
+              setDetail(r);
+            }}
           />
         </div>
       ),
@@ -156,10 +164,14 @@ const CreateInvoice = () => {
     setDetails(newDetails);
   }
   // update detail
-  function updateDetail(index: number, invoice: InvoiceDetail) {
+  function updateDetail(id: string, invoice: InvoiceDetail) {
     const newDetails = [...details];
-    newDetails[index] = invoice;
-    setDetails(newDetails);
+    const index = newDetails.findIndex((detail) => detail.id === id);
+    if (index !== -1) {
+      newDetails[index] = invoice;
+      setDetails(newDetails);
+    }
+    setIsEditDetail(false);
   }
   // calculate total
   function calculateTotal(invoice: InvoiceDetail) {
@@ -395,15 +407,20 @@ const CreateInvoice = () => {
                             />
                           </div>
                           <ColoredButton
-                            text="Add"
+                            text={isEditDetail ? "Update" : "Add"}
                             className="!w-auto "
                             onClick={() => {
-                              addDetail({
-                                description: detail.description,
-                                quantity: detail.quantity,
-                                unitCost: detail.unitCost,
-                                totalPrice: detail.quantity * detail.unitCost,
-                              });
+                              if (isEditDetail) {
+                                updateDetail(detail.id, detail);
+                              } else {
+                                addDetail({
+                                  id: new Date().getTime().toString(),
+                                  description: detail.description,
+                                  quantity: detail.quantity,
+                                  unitCost: detail.unitCost,
+                                });
+                              }
+                              setDetail({ id: '', description: '', quantity: 0, unitCost: 0, })
                             }}
                           />
                         </div>
