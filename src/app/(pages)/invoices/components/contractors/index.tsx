@@ -1,12 +1,11 @@
 import type { ColumnsType } from 'antd/es/table';
-import { Formik } from 'formik';
 import { Dropdown, Table, type MenuProps } from 'antd';
 import { useRouter } from 'next/navigation';
 import { SearchOutlined, DownOutlined } from '@ant-design/icons';
 
 import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
-import FormControl from '@/app/component/formControl';
+import { InputComponent } from '@/app/component/customInput/Input';
 
 export function Contractors() {
   const router = useRouter();
@@ -63,7 +62,7 @@ export function Contractors() {
         <Dropdown
           menu={{
             items,
-            onClick: () => {},
+            onClick: () => { },
           }}
           placement="bottomRight"
         >
@@ -82,21 +81,17 @@ export function Contractors() {
           className="text-graphiteGray"
         />
         <div className="flex items-center space-x-2 flex-1 justify-end">
-          <Formik initialValues={{ search: '' }} onSubmit={() => {}}>
-            {() => {
-              return (
-                <div className="w-96 ">
-                  <FormControl
-                    control="input"
-                    type="text"
-                    placeholder="Search"
-                    name="search"
-                    prefix={<SearchOutlined />}
-                  />
-                </div>
-              );
-            }}
-          </Formik>
+          <div className="w-96 ">
+            <InputComponent
+              label=''
+              placeholder="Search"
+              name="search"
+              prefix={<SearchOutlined />}
+              field={{
+                type: "text"
+              }}
+            />
+          </div>
           <CustomButton
             text="Create Invoice"
             icon="/plus.svg"

@@ -1,10 +1,9 @@
 import CustomButton from '@/app/component/customButton/button';
-import FormControl from '@/app/component/formControl';
+import { InputComponent } from '@/app/component/customInput/Input';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { DownOutlined, SearchOutlined } from '@ant-design/icons';
 import { Dropdown, Table, type MenuProps } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { Formik } from 'formik';
 import { useRouter } from 'next/navigation';
 
 export function Clients() {
@@ -66,7 +65,7 @@ export function Clients() {
         <Dropdown
           menu={{
             items,
-            onClick: () => {},
+            onClick: () => { },
           }}
           placement="bottomRight"
         >
@@ -82,21 +81,17 @@ export function Clients() {
       <div className="flex justify-between flex-wrap items-center md:flex-nowrap mb-2">
         <TertiaryHeading title="Client invoice" className="text-graphiteGray" />
         <div className="flex items-center space-x-2 flex-1 justify-end">
-          <Formik initialValues={{ search: '' }} onSubmit={() => {}}>
-            {() => {
-              return (
-                <div className="w-96 ">
-                  <FormControl
-                    control="input"
-                    type="text"
-                    placeholder="Search"
-                    name="search"
-                    prefix={<SearchOutlined />}
-                  />
-                </div>
-              );
-            }}
-          </Formik>
+          <div className="w-96 ">
+            <InputComponent
+              label=''
+              placeholder="Search"
+              name="search"
+              prefix={<SearchOutlined />}
+              field={{
+                type: "text"
+              }}
+            />
+          </div>
           <CustomButton
             text="Create Invoice"
             icon="/plus.svg"
