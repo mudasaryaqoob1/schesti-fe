@@ -5,4 +5,5 @@ export interface ISupportTicket {
   description: string;
   createdAt?: string;
   updatedAt?: string;
+  avatar?: string;
 }

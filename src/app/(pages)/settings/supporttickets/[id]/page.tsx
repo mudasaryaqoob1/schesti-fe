@@ -140,6 +140,14 @@ const SupportTicketDetails = () => {
                 className="text-steelGray"
                 title={`${supportDetailDetail?.description}`}
               />
+              {supportDetailDetail?.avatar && (
+                <img
+                  width="100%"
+                  height="auto"
+                  src={supportDetailDetail?.avatar}
+                  alt="supportticketavatar"
+                />
+              )}
             </div>
           </div>
           <div className="shadow-primaryGlow rounded-2xl p-5 md:col-span-2">
