@@ -19,6 +19,7 @@ import { Divider } from 'antd';
 import ModalComponent from '@/app/component/modal';
 import ExistingSubContractor from './ExistingSubContractors';
 import { useRouter } from 'next/navigation';
+import { InputComponent } from '@/app/component/customInput/Input';
 
 const newClientSchema = Yup.object({
   firstName: Yup.string().required('First name is required!'),
@@ -345,30 +346,30 @@ const CreateInvoice = () => {
                   <div className="mt-3">
                     <div className="mt-2 space-y-2">
                       <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-1 gap-4 mt-3">
-                        <FormControl
-                          control="input"
+                        <InputComponent
                           label="Description"
-                          type="text"
                           name="invoiceDetailDescription"
                           placeholder="Enter description here"
                         />
                         <div className="flex space-x-3 items-end col-span-2">
                           <div className='flex-1'>
-                            <FormControl
-                              control="input"
+                            <InputComponent
                               label="Quantity"
-                              type="number"
                               name="quantity"
                               placeholder="Enter quantity here"
+                              field={{
+                                type: "number"
+                              }}
                             />
                           </div>
                           <div className='flex-1'>
-                            <FormControl
-                              control="input"
+                            <InputComponent
                               label="Unit Cost"
-                              type="number"
                               name="unitCost"
                               placeholder="Enter unit cost here"
+                              field={{
+                                type: "number"
+                              }}
                             />
                           </div>
                           <ColoredButton
