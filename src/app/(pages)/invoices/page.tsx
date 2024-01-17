@@ -1,44 +1,46 @@
-"use client"
-import TertiaryHeading from "@/app/component/headings/tertiary";
-import { HttpService } from "@/app/services/base.service";
-import { bg_style } from "@/globals/tailwindvariables";
-import { selectToken } from "@/redux/authSlices/auth.selector";
-import { useLayoutEffect } from "react";
-import { useSelector } from "react-redux";
-import Button from '@/app/component/customButton/button';
-import { useRouter } from "next/navigation";
+'use client';
+import { HttpService } from '@/app/services/base.service';
+import { selectToken } from '@/redux/authSlices/auth.selector';
+import { useLayoutEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Tabs } from 'antd';
+import { Contractors } from './components/contractors';
+import { Clients } from './components/clients';
 
-const ClientTable = () => {
-    const router = useRouter();
+const CONTRACTOR_KEY = 'Contractor';
+const CLIENT_KEY = 'Client';
 
-    const token = useSelector(selectToken);
-    useLayoutEffect(() => {
-        if (token) {
-            HttpService.setToken(token);
-        }
-    }, [token]);
+const InvoicePage = () => {
+  const token = useSelector(selectToken);
+  const [tab, setTab] = useState(CONTRACTOR_KEY);
 
+  useLayoutEffect(() => {
+    if (token) {
+      HttpService.setToken(token);
+    }
+  }, [token]);
 
-
-
-
-    return (
-        <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
-            <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
-                <div className="flex justify-between items-center mb-4">
-                    <TertiaryHeading title="Invoices" className="text-graphiteGray" />
-                    <Button
-                        text="Add New client"
-                        className="!w-auto "
-                        icon="plus.svg"
-                        iconwidth={20}
-                        iconheight={20}
-                        onClick={() => router.push('/clients/create')}
-                    />
-                </div>
-            </div>
-        </section>
-    );
+  return (
+    <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
+      <div className="w-full mb-4">
+        <Tabs
+          defaultActiveKey={CONTRACTOR_KEY}
+          destroyInactiveTabPane
+          onChange={(type) => {
+            setTab(type);
+          }}
+          items={[CONTRACTOR_KEY, CLIENT_KEY].map((type) => {
+            return {
+              key: type,
+              label: type,
+              tabKey: type,
+              children: tab === CONTRACTOR_KEY ? <Contractors /> : <Clients />,
+            };
+          })}
+        />
+      </div>
+    </section>
+  );
 };
 
-export default ClientTable;
+export default InvoicePage;

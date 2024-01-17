@@ -18,7 +18,7 @@ import QuinaryHeading from '@/app/component/headings/quinary';
 import { Divider } from 'antd';
 import ModalComponent from '@/app/component/modal';
 import ExistingSubContractor from './ExistingSubContractors';
-
+import { useRouter } from 'next/navigation';
 
 const newClientSchema = Yup.object({
   firstName: Yup.string().required('First name is required!'),
@@ -38,16 +38,19 @@ const newClientSchema = Yup.object({
   dueDate: Yup.string().required('Due date is required!'),
 
   invoiceDetails: Yup.array().of(
-    Yup.object().shape({
-      invoiceDetailDescription: Yup.string().required('Description is required!'),
-      quantity: Yup.number().required('Quantity is required!'),
-      unitCost: Yup.number().required('Unit cost is required!'),
-    }).required("Invoice detail is required")
+    Yup.object()
+      .shape({
+        invoiceDetailDescription: Yup.string().required(
+          'Description is required!'
+        ),
+        quantity: Yup.number().required('Quantity is required!'),
+        unitCost: Yup.number().required('Unit cost is required!'),
+      })
+      .required('Invoice detail is required')
   ),
   discount: Yup.number().required('Discount is required!'),
   taxes: Yup.string().required('Taxes is required!'),
   profitAndOverhead: Yup.number().required('Profit and overhead is required!'),
-
 });
 const initialValues = {
   firstName: '',
@@ -69,7 +72,6 @@ const initialValues = {
   discount: 0,
   taxes: 0,
   profitAndOverhead: 0,
-
 };
 
 type InvoiceDetail = {
@@ -77,9 +79,9 @@ type InvoiceDetail = {
   quantity: number;
   unitCost: number;
   totalPrice: number;
-}
+};
 const CreateInvoice = () => {
-
+  const router = useRouter();
   const token = useSelector(selectToken);
   const [details, setDetails] = useState<InvoiceDetail[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -112,7 +114,7 @@ const CreateInvoice = () => {
       align: 'center',
       key: 'action',
       render: (v, r, i) => (
-        <div className='flex justify-center space-x-3'>
+        <div className="flex justify-center space-x-3">
           <Button
             text=""
             className="!w-auto"
@@ -161,362 +163,352 @@ const CreateInvoice = () => {
     }, 0);
   }
 
-
   function submitHandler(values: any) {
     console.log({ ...values, invoiceDetails: details });
   }
 
-  return (<section className="mx-16 my-2">
-    <Formik
-      initialValues={initialValues}
-      validationSchema={newClientSchema}
-      onSubmit={submitHandler}
-    >
-      {({ handleSubmit, setFieldValue, values }) => {
-        return (
-          <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
-            {/* Modal */}
-            <ModalComponent open={showModal} setOpen={setShowModal}>
-              <ExistingSubContractor
-                setModalOpen={setShowModal}
-                onSelectSubcontract={({
-                  address, companyRep, email, name, phone
-                }) => {
-                  setFieldValue('address', address);
-                  setFieldValue('companyName', companyRep);
-                  setFieldValue('firstName', name);
+  return (
+    <section className="mx-16 my-2">
+      <Formik
+        initialValues={initialValues}
+        validationSchema={newClientSchema}
+        onSubmit={submitHandler}
 
-                  setFieldValue('email', email);
-                  setFieldValue('phone', phone);
-                }}
-              />
-            </ModalComponent>
-            {/* END  Modal */}
+      >
+        {({ handleSubmit, setFieldValue, values }) => {
+          return (
+            <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
+              {/* Modal */}
+              <ModalComponent open={showModal} setOpen={setShowModal}>
+                <ExistingSubContractor
+                  setModalOpen={setShowModal}
+                  onSelectSubcontract={({
+                    address,
+                    companyRep,
+                    email,
+                    name,
+                    phone,
+                  }) => {
+                    setFieldValue('address', address);
+                    setFieldValue('companyName', companyRep);
+                    setFieldValue('firstName', name);
 
-
-            {/* Sub Contractors */}
-            <div
-              className="p-5 flex flex-col rounded-lg border
-            border-silverGray shadow-secondaryShadow2 bg-white"
-            >
-              <div className="flex justify-between items-center mb-4">
-                <TertiaryHeading title="Subcontractor" className="text-graphiteGray" />
-                <Button
-                  text="Add Existing Subcontractor"
-                  className="!w-auto "
-                  icon="/plusblack.svg"
-                  iconwidth={20}
-                  iconheight={20}
-                  onClick={() => setShowModal(true)}
+                    setFieldValue('email', email);
+                    setFieldValue('phone', phone);
+                  }}
                 />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-2 gap-4">
-                <FormControl
-                  control="input"
-                  label="First Name"
-                  type="text"
-                  name="firstName"
-                  placeholder="Enter first name"
-                />
-                <FormControl
-                  control="input"
-                  label="Last Name"
-                  type="text"
-                  name="lastName"
-                  placeholder="Enter last name"
-                />
-                <FormControl
-                  control="input"
-                  label="Company Name"
-                  type="text"
-                  name="companyName"
-                  placeholder="Enter company name"
-                />
+              </ModalComponent>
+              {/* END  Modal */}
 
-
-                <FormControl
-                  control="input"
-                  label="Phone Number"
-                  type="number"
-                  name="phone"
-                  placeholder="Enter phone number"
-                />
-
-                <FormControl
-                  control="input"
-                  label="Email"
-                  type="email"
-                  name="email"
-                  placeholder="Enter email address"
-                />
-
-                <FormControl
-                  control="input"
-                  label="Address"
-                  type="text"
-                  name="address"
-                  placeholder="Enter address"
-                />
-
-              </div>
-            </div>
-            {/* END Sub Contractors */}
-
-            {/* Invoice Info */}
-            <div className='mt-2'>
+              {/* Sub Contractors */}
               <div
                 className="p-5 flex flex-col rounded-lg border
-                  border-silverGray shadow-secondaryShadow2 bg-white"
+            border-silverGray shadow-secondaryShadow2 bg-white"
               >
-                <TertiaryHeading title="Invoice info" className="text-graphiteGray" />
-
-
-                <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-2 gap-4 mt-3">
+                <div className="flex justify-between items-center mb-4">
+                  <TertiaryHeading
+                    title="Subcontractor"
+                    className="text-graphiteGray"
+                  />
+                  <Button
+                    text="Add Existing Subcontractor"
+                    className="!w-auto "
+                    icon="/plusblack.svg"
+                    iconwidth={20}
+                    iconheight={20}
+                    onClick={() => setShowModal(true)}
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-2 gap-4">
                   <FormControl
                     control="input"
-                    label="Invoice #"
+                    label="First Name"
                     type="text"
-                    name="invoice"
-                    placeholder="Enter invoice number"
+                    name="firstName"
+                    placeholder="Enter first name"
+                  />
+                  <FormControl
+                    control="input"
+                    label="Last Name"
+                    type="text"
+                    name="lastName"
+                    placeholder="Enter last name"
+                  />
+                  <FormControl
+                    control="input"
+                    label="Company Name"
+                    type="text"
+                    name="companyName"
+                    placeholder="Enter company name"
                   />
 
                   <FormControl
                     control="input"
-                    label="Project Name"
-                    type="text"
-                    name="projectName"
-                    placeholder="Enter project name"
+                    label="Phone Number"
+                    type="number"
+                    name="phone"
+                    placeholder="Enter phone number"
                   />
 
                   <FormControl
                     control="input"
-                    label="Application Number"
-                    type="text"
-                    name="applicationNumber"
-                    placeholder="Enter the application number"
+                    label="Email"
+                    type="email"
+                    name="email"
+                    placeholder="Enter email address"
                   />
 
                   <FormControl
                     control="input"
-                    label="Invoice Subject"
+                    label="Address"
                     type="text"
-                    name="invoiceSubject"
-                    placeholder="Enter invoice subject"
+                    name="address"
+                    placeholder="Enter address"
                   />
-
-                  <FormControl
-                    control="input"
-                    label="Issue Date"
-                    type="text"
-                    name="issueDate"
-                    placeholder="Enter issue date"
-                  />
-                  <FormControl
-                    control="input"
-                    label="Due Date"
-                    type="text"
-                    name="dueDate"
-                    placeholder="Enter date here"
-                  />
-
                 </div>
               </div>
-            </div>
-            {/* END Invoice Info */}
+              {/* END Sub Contractors */}
 
-
-            {/* Invoice Details */}
-            <div className='mt-2'>
-              <div
-                className="p-5 flex flex-col rounded-lg border
+              {/* Invoice Info */}
+              <div className="mt-2">
+                <div
+                  className="p-5 flex flex-col rounded-lg border
                   border-silverGray shadow-secondaryShadow2 bg-white"
-              >
-                <TertiaryHeading title="Invoice details" className="text-graphiteGray" />
-                <div className='mt-3'>
-                  <div className='mt-2 space-y-2'>
-                    <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-1 gap-4 mt-3">
-                      <FormControl
-                        control="input"
-                        label="Description"
-                        type="text"
-                        name="invoiceDetailDescription"
-                        placeholder="Enter description here"
+                >
+                  <TertiaryHeading
+                    title="Invoice info"
+                    className="text-graphiteGray"
+                  />
 
+                  <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-2 gap-4 mt-3">
+                    <FormControl
+                      control="input"
+                      label="Invoice #"
+                      type="text"
+                      name="invoice"
+                      placeholder="Enter invoice number"
+                    />
+
+                    <FormControl
+                      control="input"
+                      label="Project Name"
+                      type="text"
+                      name="projectName"
+                      placeholder="Enter project name"
+                    />
+
+                    <FormControl
+                      control="input"
+                      label="Application Number"
+                      type="text"
+                      name="applicationNumber"
+                      placeholder="Enter the application number"
+                    />
+
+                    <FormControl
+                      control="input"
+                      label="Invoice Subject"
+                      type="text"
+                      name="invoiceSubject"
+                      placeholder="Enter invoice subject"
+                    />
+
+                    <FormControl
+                      control="input"
+                      label="Issue Date"
+                      type="text"
+                      name="issueDate"
+                      placeholder="Enter issue date"
+                    />
+                    <FormControl
+                      control="input"
+                      label="Due Date"
+                      type="text"
+                      name="dueDate"
+                      placeholder="Enter date here"
+                    />
+                  </div>
+                </div>
+              </div>
+              {/* END Invoice Info */}
+
+              {/* Invoice Details */}
+              <div className="mt-2">
+                <div
+                  className="p-5 flex flex-col rounded-lg border
+                  border-silverGray shadow-secondaryShadow2 bg-white"
+                >
+                  <TertiaryHeading
+                    title="Invoice details"
+                    className="text-graphiteGray"
+                  />
+                  <div className="mt-3">
+                    <div className="mt-2 space-y-2">
+                      <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-1 gap-4 mt-3">
+                        <FormControl
+                          control="input"
+                          label="Description"
+                          type="text"
+                          name="invoiceDetailDescription"
+                          placeholder="Enter description here"
+                        />
+                        <div className="flex space-x-3 items-end">
+                          <FormControl
+                            control="input"
+                            label="Quantity"
+                            type="number"
+                            name="quantity"
+                            placeholder="Enter quantity here"
+                          />
+                          <FormControl
+                            control="input"
+                            label="Unit Cost"
+                            type="number"
+                            name="unitCost"
+                            placeholder="Enter unit cost here"
+                          />
+                          <ColoredButton
+                            text="Add"
+                            className="!w-auto "
+                            onClick={() => {
+                              addDetail({
+                                // @ts-ignore
+                                description: values['invoiceDetailDescription'],
+                                // @ts-ignore
+                                quantity: parseInt(values['quantity']),
+                                // @ts-ignore
+                                unitCost: parseInt(values['unitCost']),
+                                // @ts-ignore
+                                totalPrice: parseInt(values['quantity']) * parseInt(values['unitCost']),
+                              });
+
+                              setFieldValue('invoiceDetailDescription', '');
+                              setFieldValue('quantity', 0);
+                              setFieldValue('unitCost', 0);
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <Table
+                        loading={false}
+                        columns={columns}
+                        dataSource={details}
+                        pagination={{ position: ['bottomCenter'] }}
                       />
-                      <div className='flex space-x-3 items-end'>
-                        <FormControl
-                          control="input"
-                          label="Quantity"
-                          type="number"
-                          name="quantity"
-                          placeholder="Enter quantity here"
-                        />
-                        <FormControl
-                          control="input"
-                          label="Unit Cost"
-                          type="number"
-                          name="unitCost"
-                          placeholder="Enter unit cost here"
-                        />
-                        <ColoredButton
-                          text="Add"
-                          className="!w-auto "
-                          onClick={() => {
-                            addDetail({
-                              // @ts-ignore
-                              description: values['invoiceDetailDescription'],
-                              // @ts-ignore
-                              quantity: parseInt(values['quantity']),
-                              // @ts-ignore
-                              unitCost: parseInt(values['unitCost']),
-                              // @ts-ignore
-                              totalPrice: parseInt(values['quantity']) * parseInt(values['unitCost'])
-                            })
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {/* END Invoice Details */}
 
-                            setFieldValue('invoiceDetailDescription', '')
-                            setFieldValue('quantity', 0)
-                            setFieldValue('unitCost', 0);
-                          }}
+              {/* Discount & Tax */}
+              <div className="mt-2">
+                <div
+                  className="p-5 flex flex-col rounded-lg border
+                  border-silverGray shadow-secondaryShadow2 bg-white"
+                >
+                  <TertiaryHeading
+                    title="Discount & Tax"
+                    className="text-graphiteGray"
+                  />
+                  <div className="mt-3">
+                    <div className="mt-2 space-y-2">
+                      <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-1 gap-4 mt-3">
+                        <FormControl
+                          control="input"
+                          label="Discount"
+                          type="number"
+                          name="discount"
+                          placeholder="Enter discount here"
+                        />
+
+                        <FormControl
+                          control="input"
+                          label="Taxes"
+                          type="number"
+                          name="taxes"
+                          placeholder="Enter taxes here"
+                        />
+
+                        <FormControl
+                          control="input"
+                          label="Profit and Overhead %"
+                          type="number"
+                          name="profitAndOverhead"
+                          placeholder="Enter profit and overhead here"
                         />
                       </div>
                     </div>
-                    <Table
-                      loading={false}
-                      columns={columns}
-                      dataSource={details}
-                      pagination={{ position: ['bottomCenter'] }}
+                  </div>
+                </div>
+              </div>
+              {/* Discount & Tax */}
+
+              {/* Calculation */}
+              <div className="mt-2">
+                <div className="flex justify-between items-center flex-wrap">
+                  <div className="flex items-center space-x-2">
+                    <QuaternaryHeading title="Sub total:" />
+                    <QuinaryHeading
+                      title={`$${calculateSubTotal()}`}
+                      className="font-bold"
                     />
+                  </div>
 
+                  <div className="flex items-center space-x-2">
+                    <QuaternaryHeading title="Discount:" />
+                    <QuinaryHeading
+                      title={`$${values['discount']}`}
+                      className="font-bold"
+                    />
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <QuaternaryHeading title="Taxes:" />
+                    <QuinaryHeading
+                      title={`$${values['taxes']}`}
+                      className="font-bold"
+                    />
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <QuaternaryHeading title="Profit And Overhead:" />
+                    <QuinaryHeading
+                      title={`${values['profitAndOverhead']}%`}
+                      className="font-bold"
+                    />
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <QuaternaryHeading title="Total:" />
+                    <QuinaryHeading
+                      title={`$${calculateSubTotal() + values['taxes'] - values['discount'] + calculateSubTotal() * (values['profitAndOverhead'] / 100)}`}
+                      className="font-bold"
+                    />
                   </div>
                 </div>
               </div>
-            </div>
-            {/* END Invoice Details */}
+              {/* END Calculation */}
 
+              <Divider />
 
-            {/* Discount & Tax */}
-            <div className='mt-2'>
-              <div
-                className="p-5 flex flex-col rounded-lg border
-                  border-silverGray shadow-secondaryShadow2 bg-white"
-              >
-                <TertiaryHeading title="Discount & Tax" className="text-graphiteGray" />
-                <div className='mt-3'>
-                  <div className='mt-2 space-y-2'>
-                    <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-1 gap-4 mt-3">
-                      <FormControl
-                        control="input"
-                        label="Discount"
-                        type="number"
-                        name="discount"
-                        placeholder="Enter discount here"
-                      />
-
-                      <FormControl
-                        control="input"
-                        label="Taxes"
-                        type="number"
-                        name="taxes"
-                        placeholder="Enter taxes here"
-                      />
-
-                      <FormControl
-                        control="input"
-                        label="Profit and Overhead %"
-                        type="number"
-                        name="profitAndOverhead"
-                        placeholder="Enter profit and overhead here"
-                      />
-                    </div>
+              {/* SEND */}
+              <div className="mt-2">
+                <div className="flex justify-between">
+                  <div></div>
+                  <div className="flex space-x-3">
+                    <Button text="Cancel" onClick={() => router.back()} />
+                    <ColoredButton type="submit" text="Send" />
                   </div>
                 </div>
               </div>
-            </div>
-            {/* Discount & Tax */}
-
-
-
-            {/* Calculation */}
-            <div className='mt-2'>
-              <div className='flex justify-between items-center flex-wrap'>
-                <div className='flex items-center space-x-2'>
-                  <QuaternaryHeading
-                    title='Sub total:'
-                  />
-                  <QuinaryHeading
-                    title={`$${calculateSubTotal()}`}
-                    className='font-bold'
-                  />
-                </div>
-
-                <div className='flex items-center space-x-2'>
-                  <QuaternaryHeading
-                    title='Discount:'
-                  />
-                  <QuinaryHeading
-                    title={`$${values['discount']}`}
-                    className='font-bold'
-                  />
-                </div>
-
-                <div className='flex items-center space-x-2'>
-                  <QuaternaryHeading
-                    title='Taxes:'
-                  />
-                  <QuinaryHeading
-                    title={`$${values['taxes']}`}
-                    className='font-bold'
-                  />
-                </div>
-
-                <div className='flex items-center space-x-2'>
-                  <QuaternaryHeading
-                    title='Profit And Overhead:'
-                  />
-                  <QuinaryHeading
-                    title={`${values['profitAndOverhead']}%`}
-                    className='font-bold'
-                  />
-                </div>
-
-                <div className='flex items-center space-x-2'>
-                  <QuaternaryHeading
-                    title='Total:'
-                  />
-                  <QuinaryHeading
-                    title={`$${(calculateSubTotal() + values['taxes']) - values['discount'] + (calculateSubTotal() * (values['profitAndOverhead'] / 100))}`}
-                    className='font-bold'
-                  />
-                </div>
-              </div>
-            </div>
-            {/* END Calculation */}
-
-            <Divider />
-
-            {/* SEND */}
-            <div className='mt-2'>
-              <div className='flex justify-between'>
-                <div></div>
-                <div className='flex space-x-3'>
-                  <Button
-                    text='Cancel'
-                  />
-                  <ColoredButton
-                    type='submit'
-                    text='Send'
-                  />
-                </div>
-              </div>
-            </div>
-            {/* END SEND */}
-
-          </Form>
-        );
-      }}
-    </Formik>
-  </section>
-  )
+              {/* END SEND */}
+            </Form>
+          );
+        }}
+      </Formik>
+    </section>
+  );
 };
 
 export default CreateInvoice;
