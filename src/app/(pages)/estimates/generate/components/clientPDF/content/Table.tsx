@@ -50,6 +50,11 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
   },
+  descriptionCell: {
+    fontWeight: 'bold',
+    width: '100%',
+    flex: 1,
+  },
   totalAmountContainer: {
     paddingTop: 3,
     display: 'flex',
@@ -76,15 +81,21 @@ export const PdfTable: React.FC<Props> = ({ items, totalAmount }) => {
           </View>
         </View>
         <View style={styles.table}>
-          {items.map((item, index) => {
-            return (
-              <View key={index} style={styles.bodyRow}>
-                <PdfText text={item.description} style={styles.bodyCell} />
-                <PdfText text={item.quantity} style={styles.bodyCell} />
-                <PdfText text={item.totalPrice} style={styles.bodyCell} />
-              </View>
-            );
-          })}
+          {items?.length &&
+            items?.map((item, index) => {
+              console.log(items, 'itemsitemsitemsitems');
+
+              return (
+                <View key={index} style={styles.bodyRow}>
+                  <PdfText
+                    text={item.description}
+                    style={styles.descriptionCell}
+                  />
+                  <PdfText text={item.quantity} style={styles.bodyCell} />
+                  <PdfText text={item.totalPrice} style={styles.bodyCell} />
+                </View>
+              );
+            })}
         </View>
       </View>
       <TotalAmount amount={totalAmount} />

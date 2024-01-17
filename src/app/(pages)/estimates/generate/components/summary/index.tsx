@@ -17,7 +17,6 @@ import { selectGeneratedEstimateDetail } from '@/redux/estimate/estimateRequestS
 import EstimatesTable from '../estimatesTable';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import ClientPDF from '../clientPDF';
-import data from '../clientPDF/data.json'
 
 interface Props {
   setPrevNext: Dispatch<SetStateAction<number>>;
@@ -51,7 +50,9 @@ const Summary = ({ setPrevNext }: Props) => {
     takeOffDetail: basicInformation;
     scopeDetail: Object[];
   }>();
+  const [pdfData, setPdfData] = useState<Object[]>([]);
   const [subcostRecord, setSubcostRecord] = useState<Number>(0);
+  const [saveChanges, setSaveChanges] = useState(false);
 
   useEffect(() => {
     setEstimateDetailsSummary(generateEstimateDetail);
@@ -65,6 +66,24 @@ const Summary = ({ setPrevNext }: Props) => {
         });
       });
       setSubcostRecord(totalCost);
+
+      const extractProperties = (arr: Object[]) => {
+        return arr.map((item: any) => {
+          const key = Object.keys(item)[0]; // Get the dynamic key
+          const entry = item[key][0]; // Extract the entry from the array
+          return {
+            description: entry.description,
+            totalPrice: entry.totalCostRecord,
+            quantity: entry.qty,
+          };
+        });
+      };
+
+      // Apply the function to each object in the original array
+      const transformedArray: Object[] = extractProperties(
+        generateEstimateDetail?.scopeDetail
+      );
+      setPdfData(transformedArray);
     }
   }, [generateEstimateDetail]);
 
@@ -83,18 +102,43 @@ const Summary = ({ setPrevNext }: Props) => {
             onClick={() => setPrevNext((prev) => prev - 1)}
           />
 
-          <PDFDownloadLink document={<ClientPDF data={data} />} fileName="somename.pdf">
-            {({ loading }) => (
-              <CustomButton
-                isLoading={loading}
-                loadingText="Downloading"
-                text="Generate"
-                className="!w-full"
-              />
-            )}
-          </PDFDownloadLink>
+          {saveChanges ? (
+            <PDFDownloadLink
+              document={
+                <ClientPDF
+                  data={estimateDetailsSummary}
+                  subcostRecord={subcostRecord}
+                  pdfData={pdfData}
+                />
+              }
+              fileName="somename.pdf"
+            >
+              {({ loading }) => (
+                <CustomButton
+                  isLoading={loading}
+                  loadingText="Downloading"
+                  text="Generate"
+                  className="!w-full"
+                />
+              )}
+            </PDFDownloadLink>
+          ) : (
+            <CustomButton
+              text="Save Changes"
+              className="!w-full"
+              onClick={() => setSaveChanges(true)}
+            />
+          )}
         </div>
       </div>
+      {/* <PDFViewer className="h-full w-full">
+        <ClientPDF
+          data={estimateDetailsSummary}
+          subcostRecord={subcostRecord}
+          pdfData={pdfData}
+          
+        />
+      </PDFViewer> */}
       <div>
         <div className={`${bg_style} p-5 mt-4`}>
           <div className="flex justify-between items-center">
