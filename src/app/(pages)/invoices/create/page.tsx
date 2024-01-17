@@ -352,21 +352,25 @@ const CreateInvoice = () => {
                           name="invoiceDetailDescription"
                           placeholder="Enter description here"
                         />
-                        <div className="flex space-x-3 items-end">
-                          <FormControl
-                            control="input"
-                            label="Quantity"
-                            type="number"
-                            name="quantity"
-                            placeholder="Enter quantity here"
-                          />
-                          <FormControl
-                            control="input"
-                            label="Unit Cost"
-                            type="number"
-                            name="unitCost"
-                            placeholder="Enter unit cost here"
-                          />
+                        <div className="flex space-x-3 items-end col-span-2">
+                          <div className='flex-1'>
+                            <FormControl
+                              control="input"
+                              label="Quantity"
+                              type="number"
+                              name="quantity"
+                              placeholder="Enter quantity here"
+                            />
+                          </div>
+                          <div className='flex-1'>
+                            <FormControl
+                              control="input"
+                              label="Unit Cost"
+                              type="number"
+                              name="unitCost"
+                              placeholder="Enter unit cost here"
+                            />
+                          </div>
                           <ColoredButton
                             text="Add"
                             className="!w-auto "
