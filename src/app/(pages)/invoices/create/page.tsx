@@ -87,6 +87,14 @@ const CreateInvoice = () => {
   const [details, setDetails] = useState<InvoiceDetail[]>([]);
   const [showModal, setShowModal] = useState(false);
 
+  const [detail, setDetail] = useState<InvoiceDetail>({
+    description: '',
+    quantity: 0,
+    unitCost: 0,
+    totalPrice: 0,
+  })
+
+
   useLayoutEffect(() => {
     if (token) {
       HttpService.setToken(token);
@@ -350,6 +358,12 @@ const CreateInvoice = () => {
                           label="Description"
                           name="invoiceDetailDescription"
                           placeholder="Enter description here"
+                          field={{
+                            value: detail.description,
+                            onChange: (e) => {
+                              setDetail({ ...detail, description: e.target.value })
+                            }
+                          }}
                         />
                         <div className="flex space-x-3 items-end col-span-2">
                           <div className='flex-1'>
@@ -358,7 +372,11 @@ const CreateInvoice = () => {
                               name="quantity"
                               placeholder="Enter quantity here"
                               field={{
-                                type: "number"
+                                type: "number",
+                                value: detail.quantity,
+                                onChange: (e) => {
+                                  setDetail({ ...detail, quantity: Number(e.target.value) })
+                                }
                               }}
                             />
                           </div>
@@ -368,7 +386,11 @@ const CreateInvoice = () => {
                               name="unitCost"
                               placeholder="Enter unit cost here"
                               field={{
-                                type: "number"
+                                type: "number",
+                                value: detail.unitCost,
+                                onChange: (e) => {
+                                  setDetail({ ...detail, unitCost: Number(e.target.value) })
+                                }
                               }}
                             />
                           </div>
@@ -377,19 +399,11 @@ const CreateInvoice = () => {
                             className="!w-auto "
                             onClick={() => {
                               addDetail({
-                                // @ts-ignore
-                                description: values['invoiceDetailDescription'],
-                                // @ts-ignore
-                                quantity: parseInt(values['quantity']),
-                                // @ts-ignore
-                                unitCost: parseInt(values['unitCost']),
-                                // @ts-ignore
-                                totalPrice: parseInt(values['quantity']) * parseInt(values['unitCost']),
+                                description: detail.description,
+                                quantity: detail.quantity,
+                                unitCost: detail.unitCost,
+                                totalPrice: detail.quantity * detail.unitCost,
                               });
-
-                              setFieldValue('invoiceDetailDescription', '');
-                              setFieldValue('quantity', 0);
-                              setFieldValue('unitCost', 0);
                             }}
                           />
                         </div>
