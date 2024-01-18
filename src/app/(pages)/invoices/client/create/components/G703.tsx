@@ -1,10 +1,12 @@
+import { DownOutlined } from "@ant-design/icons";
+import { Divider, Dropdown, type MenuProps } from "antd";
 
+import CustomButton from "@/app/component/customButton/button";
+import WhiteButton from "@/app/component/customButton/white";
 import PrimaryHeading from "@/app/component/headings/primary";
 import QuaternaryHeading from "@/app/component/headings/quaternary";
 import QuinaryHeading from "@/app/component/headings/quinary";
 import SenaryHeading from "@/app/component/headings/senaryHeading";
-import { DownOutlined } from "@ant-design/icons";
-import { Dropdown, type MenuProps } from "antd";
 
 export function G703Component() {
 
@@ -49,6 +51,29 @@ export function G703Component() {
                     </div>
                 </Dropdown>
             </div>
+
+        </div>
+        <Divider />
+
+        <div className="flex">
+            <div>
+
+            </div>
+
+            <div></div>
+        </div>
+
+        <div className="flex justify-end space-x-4">
+            <WhiteButton
+                text="Cancel"
+                className="!w-40"
+            />
+            <CustomButton
+                text="Next"
+                className="!w-40"
+
+            />
+
         </div>
     </section>
 }
