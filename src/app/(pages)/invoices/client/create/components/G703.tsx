@@ -26,13 +26,7 @@ export function G703Component() {
         ['A4', 'B4', 'C4', 'D4', 'E4', 'F4', 'G4', 'H4', 'I4',],
         ['A5', 'B5', 'C5', 'D5', 'E5', 'F5', 'G5', 'H5', 'I5',],
     ];
-    function firstRowRenderer(instance: Parameters<BaseRenderer>[0], td: Parameters<BaseRenderer>[1],) {
-        textRenderer.apply(this, arguments);
-        // td.style.fontWeight = 'bold';
-        // td.style.color = 'green';
-        // td.style.height = '30px';
-        // td.style.background = '#CEC';
-    }
+
     return <section>
         <div className="flex justify-between items-center">
             <div>
@@ -117,17 +111,9 @@ export function G703Component() {
         <div className="px-4 ">
             <HotTable
                 data={data}
-                cells={function (row, col) {
-                    let cellProperties = {};
-                    this.renderer
-                    if (row === 0) {
-                        cellProperties.renderer = firstRowRenderer;
-                    }
-                    return cellProperties;
-                }}
                 nestedHeaders={[
                     ['Description of work', 'Scheduled value', { label: 'Work Completed', colspan: 2 }, 'MATERIALS PRESENTLY STORED (NOT IN D OR E)', { label: 'Work Completed', colspan: 2 }, "BALANCE (C - G)", "RETAINAGE (IF VARIABLE RATE) 5%"],
-                    ['', '', 'E', 'F', '', 'TOTAL COMPLETED AND STORED TO DATE (D+E+F)', '% (G ÷ C)', '', ''],
+                    ['', '', 'From previous application (D+E)', 'This period', '', 'TOTAL COMPLETED AND STORED TO DATE (D+E+F)', '% (G ÷ C)', '', ''],
                 ]}
                 licenseKey="non-commercial-and-evaluation"
                 rowHeaders={true}
@@ -135,6 +121,9 @@ export function G703Component() {
                 height="auto"
                 autoWrapRow={true}
                 autoWrapCol={true}
+                allowInsertRow
+                contextMenu
+                className="clientTable"
             />
         </div>
         {/* END Spreadsheet */}
