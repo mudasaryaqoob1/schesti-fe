@@ -52,7 +52,7 @@ const Summary = ({ setPrevNext }: Props) => {
   }>();
   const [pdfData, setPdfData] = useState<Object[]>([]);
   const [subcostRecord, setSubcostRecord] = useState<Number>(0);
-  const [saveChanges, setSaveChanges] = useState(false);
+  const [saveChanges, setSaveChanges] = useState(true);
 
   useEffect(() => {
     setEstimateDetailsSummary(generateEstimateDetail);
@@ -299,10 +299,15 @@ const Summary = ({ setPrevNext }: Props) => {
                               title={key}
                               className="font-semibold"
                             />
+                            <div className='flex gap-x-3 items-center' >
+                              {/* <p>Sub-contractor Cost:</p>
+                              <input className='border-1 border-b-[1px] border-[#DBD7D7] outline-none' placeholder='Write Cost'/> */}
                             <Description
                               title={`Trade Cost: $${totalCostRecordTotal}`}
                               className="text-lg font-normal"
                             />
+                            </div>
+                           
                           </div>
                           <div className="estimateTable_container">
                             {value?.length > 0 && (

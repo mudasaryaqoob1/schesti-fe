@@ -440,7 +440,6 @@ const CreateEstimateRequest = () => {
                               Click to Upload
                             </label>
                             <input
-                              multiple
                               type="file"
                               name="drawingDocuments"
                               id="drawingDocuments"
