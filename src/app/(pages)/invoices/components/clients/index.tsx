@@ -136,7 +136,7 @@ export function Clients() {
                   <CustomButton
                     text='Next'
                     className='!w-[100px]'
-
+                    onClick={() => router.push('/invoices/client/create')}
                   />
                 </div>
               </div>
