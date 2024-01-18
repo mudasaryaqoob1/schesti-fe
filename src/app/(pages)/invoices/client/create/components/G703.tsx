@@ -5,8 +5,6 @@ import WhiteButton from "@/app/component/customButton/white";
 import PrimaryHeading from "@/app/component/headings/primary";
 import QuaternaryHeading from "@/app/component/headings/quaternary";
 import React from "react";
-import { twMerge } from "tailwind-merge";
-import clsx from "clsx";
 
 export function G703Component() {
 
@@ -42,7 +40,7 @@ export function G703Component() {
                                         Contractor's signed certification is attached.
 
                                         In tabulations below, amounts are stated to the nearest dollar.
-                                        
+
                                         Use Column I on Contracts where variable retainage for line items may apply.`}
 
                     className="max-w-2xl" />
@@ -55,7 +53,7 @@ export function G703Component() {
                     </label>
                     <input
                         id="application-date"
-                        className="px-2 py-1 border border-gray-300"
+                        className="px-2 py-1 border border-gray-300 outline-none"
                         type="text"
                     />
                 </div>
@@ -65,7 +63,7 @@ export function G703Component() {
                     </label>
                     <input
                         id="application-date"
-                        className="px-2 py-1 border border-gray-300"
+                        className="px-2 py-1 border border-gray-300 outline-none"
                         type="text"
                     />
                 </div>
@@ -75,7 +73,7 @@ export function G703Component() {
                     </label>
                     <input
                         id="application-date"
-                        className="px-2 py-1 border border-gray-300"
+                        className="px-2 py-1 border border-gray-300 outline-none"
                         type="text"
                     />
                 </div>
@@ -85,7 +83,7 @@ export function G703Component() {
                     </label>
                     <input
                         id="application-date"
-                        className="px-2 py-1 border border-gray-300"
+                        className="px-2 py-1 border border-gray-300 outline-none"
                         type="text"
                     />
                 </div>
