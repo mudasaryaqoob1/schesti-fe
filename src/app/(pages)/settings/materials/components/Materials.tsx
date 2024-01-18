@@ -13,9 +13,7 @@ import FormControl from '@/app/component/formControl';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import Description from '@/app/component/description';
 import { Skeleton } from 'antd';
-import { twMerge } from 'tailwind-merge';
-import { btnStyle } from '@/globals/tailwindvariables';
-import { byteConverter } from '@/app/utils/byteConverter';
+
 import { useDispatch, useSelector } from 'react-redux';
 import {
   reduxMaterialsData,
@@ -28,8 +26,8 @@ import { fetchMaterials } from '@/redux/company/settingSlices/setting.thunk';
 import { materialService } from '@/app/services/material.service';
 import { updateMaterialData } from '@/redux/company/settingSlices/materials.slice';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import { toast } from 'react-toastify';
-import { categoriesService } from '@/app/services/categories.service';
+import ImportMaterialModal from './importMaterialModal'
+import NoData from './NoData';
 
 type InitialValuesTypes = {
   unitLabourHour: string;
@@ -52,16 +50,11 @@ const Materials = () => {
 
   const materialsData = useSelector(reduxMaterialsData);
   const materialsLoading = useSelector(reduxMaterialsLoading);
-
-  const [isUploadingMaterials, setIsUploadingMaterials] = useState(false);
+  const [materialModal, setMaterialModal] = useState(false)
   const [selectedRowId, setSelectedRowId] = useState('');
-  const [categories, setCategories] = useState([]);
-  const [subCategories, setSubCategories] = useState<Object[]>([]);
   const [meterialDataWithCategories, setMeterialDataWithCategories] = useState(
     []
-  );
-  const [materialUploadingError, setMaterialUploadingError] =
-    useState<any>(false);
+  )
 
   const fetchMaterialsData = useCallback(async () => {
     let result: any = await dispatch(fetchMaterials({ page: 1, limit: 10 }));
@@ -70,40 +63,8 @@ const Materials = () => {
     }
   }, []);
 
-  const fetchCategories = useCallback(async () => {
-    const result = await categoriesService.httpGetAllCategories(1, 9);
-    let modifyCategories = result.data.map(
-      (cat: { name: string; _id: string }) => {
-        return {
-          label: cat.name,
-          value: cat._id,
-        };
-      }
-    );
-    setCategories(modifyCategories);
-  }, []);
-
-  const fetchSubCategories = useCallback(async () => {
-    const result = await categoriesService.httpGetAllSubcategories(1, 9);
-    const flattenedSubcategories: Object[] = [];
-
-    result.data.forEach((category: any) => {
-      category.subcategories.forEach((subcategory: any) => {
-        const flattenedSubcategory = {
-          label: subcategory.name,
-          value: subcategory._id,
-          categoryId: subcategory.categoryId,
-        };
-        flattenedSubcategories.push(flattenedSubcategory);
-      });
-    });
-    setSubCategories(flattenedSubcategories);
-  }, []);
-
   useEffect(() => {
     fetchMaterialsData();
-    fetchCategories();
-    fetchSubCategories();
   }, []);
 
   const initialValues: InitialValuesTypes = {
@@ -120,42 +81,7 @@ const Materials = () => {
     unitEquipments: Yup.string().required('Unit Equipment is required!'),
   });
 
-  const uploadMaterialsHandler = async (
-    e: any,
-    category: string,
-    subCategory: string,
-    resetCategory: () => void
-  ) => {
-    setMaterialUploadingError('');
-    const file = e.target.files;
-    if (!file[0]) {
-      return;
-    }
-    if (byteConverter(file[0].size, 'MB').size > 10) {
-      setMaterialUploadingError(
-        'Cannot upload document more then 10 mb of size.'
-      );
-      return;
-    }
-    try {
-      setIsUploadingMaterials(true);
-      const formData = new FormData();
-      formData.append('category', category);
-      formData.append('subCategory', subCategory);
-      formData.append('file', file[0]);
-      const { statusCode } =
-        await materialService.httpUploadMaterialsData(formData);
-      if (statusCode === 201) {
-        toast.success('Material Uploaded Successfully');
-        setSelectedRowId('');
-        resetCategory();
-        fetchMaterialsData();
-      }
-      setIsUploadingMaterials(false);
-    } catch (error) {
-      setIsUploadingMaterials(false);
-    }
-  };
+
 
   const handleUpdateMaterial = async ({
     unitEquipments,
@@ -173,16 +99,9 @@ const Materials = () => {
     }
   };
 
-  console.log(materialUploadingError, 'materialUploadingError');
-
-  console.log(
-    meterialDataWithCategories,
-    'meterialDataWithCategoriesmeterialDataWithCategories'
-  );
 
   return (
     <>
-      {
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -197,7 +116,9 @@ const Materials = () => {
                 autoComplete="off"
                 className="mt-2"
               >
-                <div className="flex justify-between items-center gap-4">
+                {materialsData?.length ? (
+                  <>
+                    <div className="flex justify-between items-center gap-4">
                   <TertiaryHeading title="Materials" />
                   <div className="flex gap-4 items-center">
                     <div className="rounded-lg border border-Gainsboro w-[335px] h-[40px]  flex items-center px-3">
@@ -215,63 +136,6 @@ const Materials = () => {
                         height={16}
                         className="cursor-pointer"
                       />
-                    </div>
-                    <FormControl
-                      control="select"
-                      type="text"
-                      options={categories}
-                      className="w-48"
-                      name="category"
-                      placeholder="Select Category"
-                    />
-                    <FormControl
-                      control="select"
-                      type="text"
-                      options={subCategories.filter(
-                        (cat: any) => cat.categoryId === values.category
-                      )}
-                      className="w-48"
-                      name="subCategory"
-                      placeholder="Select Subcategory"
-                    />
-                    <div>
-                      {isUploadingMaterials ? (
-                        <p>Uploading...</p>
-                      ) : (
-                        <div>
-                          <label
-                            htmlFor="import-estimates"
-                            className={twMerge(
-                              `${btnStyle} font-semibold cursor-pointer`
-                            )}
-                          >
-                            Import Estimate
-                          </label>
-                          <input
-                            multiple
-                            type="file"
-                            name="upload-file"
-                            id="import-estimates"
-                            className="hidden"
-                            accept="application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                            onClick={(e) => {
-                              if (!values.category) {
-                                e.preventDefault();
-                                toast.error('Category is required!');
-                                return;
-                              }
-                            }}
-                            onChange={(e: any) => {
-                              uploadMaterialsHandler(
-                                e,
-                                values.category,
-                                values.subCategory,
-                                () => setFieldValue('category', '')
-                              );
-                            }}
-                          />
-                        </div>
-                      )}
                     </div>
                   </div>
                 </div>
@@ -301,12 +165,7 @@ const Materials = () => {
                       <div className="mt-4">
                         <Skeleton />{' '}
                       </div>
-                    ) : materialsData?.length < 1 ? (
-                      <TertiaryHeading
-                        className="mt-4 text-center"
-                        title="No Data Available"
-                      />
-                    ) : (
+                    )  : (
                       meterialDataWithCategories?.map(
                         ({ _id: category, meterialsData }: any, i: number) => {
                           return (
@@ -463,12 +322,14 @@ const Materials = () => {
                       )
                     )}
                   </div>
-                </div>
+                </div></>
+                )  : <NoData setMaterialModal={setMaterialModal}/>}
+              
               </Form>
             );
           }}
         </Formik>
-      }
+      <ImportMaterialModal materialModal={materialModal} fetchMaterialsData={fetchMaterialsData} setMaterialModal={setMaterialModal}/>
     </>
   );
 };

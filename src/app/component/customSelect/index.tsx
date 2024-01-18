@@ -20,6 +20,7 @@ const SelectComp = (props: any) => {
     selectStyle,
     className,
     placeholder,
+    isLoading
   } = props;
 
   const OptionsArr = options?.map(
@@ -34,6 +35,12 @@ const SelectComp = (props: any) => {
 
   const [field, meta] = useField(name);
   const hasError = meta.touched && meta.error;
+
+  const filterOption = (
+    input: string,
+    option?: { label: string; value: string  , children : string}
+  ) => (`${option?.children}` ?? '').toLowerCase().includes(input.toLowerCase());
+  
 
   return (
     <div>
@@ -64,6 +71,10 @@ const SelectComp = (props: any) => {
                 )}
                 id={name}
                 value={field.value}
+                showSearch
+                optionFilterProp="children"
+                filterOption={filterOption}
+                loading={isLoading}
                 placeholder={placeholder}
                 onChange={(val) => {
                   setFieldValue(name, val);

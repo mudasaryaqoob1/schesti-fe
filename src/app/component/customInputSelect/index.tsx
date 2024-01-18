@@ -73,6 +73,7 @@ const CustomInputSelect: React.FC = (props: any) => {
                 showSearch
                 optionFilterProp="children"
                 filterOption={filterOption}
+                placeholder={placeholder}
                 className={twMerge(
                   clsx(
                     'w-full h-10',
@@ -80,7 +81,6 @@ const CustomInputSelect: React.FC = (props: any) => {
                     selectStyle && selectStyle
                   )
                 )}
-                placeholder={placeholder}
                 dropdownRender={(menu) => (
                   <>
                     {menu}

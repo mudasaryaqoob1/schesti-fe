@@ -6,7 +6,6 @@ const page = () => {
   return (
     <SettingSidebar>
       <section className={`${bg_style} p-5 w-full`}>
-        {/* <NoData btnText="+ Import Materials" link="" /> */}
         <Materials />
       </section>
     </SettingSidebar>
