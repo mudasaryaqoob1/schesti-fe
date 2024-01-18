@@ -43,8 +43,9 @@ export function G703Component() {
                     >
                         <QuinaryHeading
                             title="Select Previous Phase"
+                            className="text-gray-400"
                         />
-                        <DownOutlined />
+                        <DownOutlined className="text-gray-400" />
                     </div>
                 </Dropdown>
             </div>
