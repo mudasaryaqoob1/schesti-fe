@@ -9,6 +9,8 @@ import { HttpService } from "@/app/services/base.service";
 import { selectToken } from "@/redux/authSlices/auth.selector";
 import TertiaryHeading from "@/app/component/headings/tertiary";
 import QuaternaryHeading from "@/app/component/headings/quaternary";
+import { G703Component } from "./components/G703";
+import { G702Component } from "./components/G702";
 
 
 const G703_KEY = "G703";
@@ -66,7 +68,7 @@ export default function CreateClientInvoicePage() {
                 ),
                 tabKey: type,
                 children:
-                  tab === G703_KEY ? "G703" : "G702",
+                  tab === G703_KEY ? <G703Component /> : <G702Component />
               };
             })}
           />
