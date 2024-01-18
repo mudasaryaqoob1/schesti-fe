@@ -41,9 +41,7 @@ const newClientSchema = Yup.object({
   invoiceDetails: Yup.array().of(
     Yup.object()
       .shape({
-        description: Yup.string().required(
-          'Description is required!'
-        ),
+        description: Yup.string().required('Description is required!'),
         quantity: Yup.number().required('Quantity is required!'),
         unitCost: Yup.number().required('Unit cost is required!'),
       })
@@ -93,8 +91,7 @@ const CreateInvoice = () => {
     description: '',
     quantity: 0,
     unitCost: 0,
-  })
-
+  });
 
   useLayoutEffect(() => {
     if (token) {
@@ -194,7 +191,6 @@ const CreateInvoice = () => {
         initialValues={initialValues}
         validationSchema={newClientSchema}
         onSubmit={submitHandler}
-
       >
         {({ handleSubmit, setFieldValue, values }) => {
           return (
@@ -373,41 +369,50 @@ const CreateInvoice = () => {
                           field={{
                             value: detail.description,
                             onChange: (e) => {
-                              setDetail({ ...detail, description: e.target.value })
-                            }
+                              setDetail({
+                                ...detail,
+                                description: e.target.value,
+                              });
+                            },
                           }}
                         />
                         <div className="flex space-x-3 items-end col-span-2">
-                          <div className='flex-1'>
+                          <div className="flex-1">
                             <InputComponent
                               label="Quantity"
                               name="quantity"
                               placeholder="Enter quantity here"
                               field={{
-                                type: "number",
+                                type: 'number',
                                 value: detail.quantity,
                                 onChange: (e) => {
-                                  setDetail({ ...detail, quantity: Number(e.target.value) })
-                                }
+                                  setDetail({
+                                    ...detail,
+                                    quantity: Number(e.target.value),
+                                  });
+                                },
                               }}
                             />
                           </div>
-                          <div className='flex-1'>
+                          <div className="flex-1">
                             <InputComponent
                               label="Unit Cost"
                               name="unitCost"
                               placeholder="Enter unit cost here"
                               field={{
-                                type: "number",
+                                type: 'number',
                                 value: detail.unitCost,
                                 onChange: (e) => {
-                                  setDetail({ ...detail, unitCost: Number(e.target.value) })
-                                }
+                                  setDetail({
+                                    ...detail,
+                                    unitCost: Number(e.target.value),
+                                  });
+                                },
                               }}
                             />
                           </div>
                           <ColoredButton
-                            text={isEditDetail ? "Update" : "Add"}
+                            text={isEditDetail ? 'Update' : 'Add'}
                             className="!w-auto "
                             onClick={() => {
                               if (isEditDetail) {
@@ -420,7 +425,12 @@ const CreateInvoice = () => {
                                   unitCost: detail.unitCost,
                                 });
                               }
-                              setDetail({ id: '', description: '', quantity: 0, unitCost: 0, })
+                              setDetail({
+                                id: '',
+                                description: '',
+                                quantity: 0,
+                                unitCost: 0,
+                              });
                             }}
                           />
                         </div>
@@ -518,7 +528,13 @@ const CreateInvoice = () => {
                   <div className="flex items-center space-x-2">
                     <QuaternaryHeading title="Total:" />
                     <QuinaryHeading
-                      title={`$${calculateSubTotal() + values['taxes'] - values['discount'] + calculateSubTotal() * (values['profitAndOverhead'] / 100)}`}
+                      title={`$${
+                        calculateSubTotal() +
+                        values['taxes'] -
+                        values['discount'] +
+                        calculateSubTotal() *
+                          (values['profitAndOverhead'] / 100)
+                      }`}
                       className="font-bold"
                     />
                   </div>

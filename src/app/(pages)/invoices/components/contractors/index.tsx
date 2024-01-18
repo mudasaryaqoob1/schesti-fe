@@ -62,7 +62,7 @@ export function Contractors() {
         <Dropdown
           menu={{
             items,
-            onClick: () => { },
+            onClick: () => {},
           }}
           placement="bottomRight"
         >
@@ -83,12 +83,12 @@ export function Contractors() {
         <div className="flex items-center space-x-2 flex-1 justify-end">
           <div className="w-96 ">
             <InputComponent
-              label=''
+              label=""
               placeholder="Search"
               name="search"
               prefix={<SearchOutlined />}
               field={{
-                type: "text"
+                type: 'text',
               }}
             />
           </div>

@@ -189,12 +189,12 @@ const SupportTicketDetails = () => {
                   />
                   <div className="flex gap-3 items-center absolute top-2 right-3">
                     <img
-                  width={24}
-                  height={24}
-                  src="/select-file.svg"
-                  alt="select file"
-                />
-                <div className="w-0.5 h-7 bg-darkGray" />
+                      width={24}
+                      height={24}
+                      src="/select-file.svg"
+                      alt="select file"
+                    />
+                    <div className="w-0.5 h-7 bg-darkGray" />
                     <span>
                       <CustomButton
                         isLoading={messageLoading}

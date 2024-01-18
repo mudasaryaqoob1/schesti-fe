@@ -65,7 +65,7 @@ export function Clients() {
         <Dropdown
           menu={{
             items,
-            onClick: () => { },
+            onClick: () => {},
           }}
           placement="bottomRight"
         >
@@ -83,12 +83,12 @@ export function Clients() {
         <div className="flex items-center space-x-2 flex-1 justify-end">
           <div className="w-96 ">
             <InputComponent
-              label=''
+              label=""
               placeholder="Search"
               name="search"
               prefix={<SearchOutlined />}
               field={{
-                type: "text"
+                type: 'text',
               }}
             />
           </div>
