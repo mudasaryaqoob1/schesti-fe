@@ -12,7 +12,7 @@ import { useState } from 'react';
 export function Clients() {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
-
+  const [invoiceName, setInvoiceName] = useState('')
 
   const items: MenuProps['items'] = [
     {
@@ -126,6 +126,11 @@ export function Clients() {
                   label='Invoice Name'
                   placeholder='Enter invoice name'
                   name='invoiceName'
+                  field={{
+                    type: 'text',
+                    onChange: (e) => setInvoiceName(e.target.value),
+                    value: invoiceName
+                  }}
                 />
 
                 <div className='flex justify-end py-2 space-x-2'>
@@ -137,6 +142,7 @@ export function Clients() {
                     text='Next'
                     className='!w-[100px]'
                     onClick={() => router.push('/invoices/client/create')}
+                    disabled={!invoiceName}
                   />
                 </div>
               </div>
