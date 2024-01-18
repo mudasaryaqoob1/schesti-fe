@@ -1,15 +1,38 @@
+'use client'
+import React from "react";
 import { Divider, Select } from "antd";
+import { HotTable, } from '@handsontable/react';
+import { textRenderer, type BaseRenderer } from 'handsontable/renderers';
+import { } from 'handsontable';
+import { registerAllModules } from 'handsontable/registry';
+import 'handsontable/dist/handsontable.full.min.css';
+
 
 import CustomButton from "@/app/component/customButton/button";
 import WhiteButton from "@/app/component/customButton/white";
 import PrimaryHeading from "@/app/component/headings/primary";
 import QuaternaryHeading from "@/app/component/headings/quaternary";
-import React from "react";
+
+
+// register Handsontable's modules
+registerAllModules();
 
 export function G703Component() {
 
-
-
+    const data = [
+        ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1', 'I1',],
+        ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2', 'I2',],
+        ['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'H3', 'I3',],
+        ['A4', 'B4', 'C4', 'D4', 'E4', 'F4', 'G4', 'H4', 'I4',],
+        ['A5', 'B5', 'C5', 'D5', 'E5', 'F5', 'G5', 'H5', 'I5',],
+    ];
+    function firstRowRenderer(instance: Parameters<BaseRenderer>[0], td: Parameters<BaseRenderer>[1],) {
+        textRenderer.apply(this, arguments);
+        // td.style.fontWeight = 'bold';
+        // td.style.color = 'green';
+        // td.style.height = '30px';
+        // td.style.background = '#CEC';
+    }
     return <section>
         <div className="flex justify-between items-center">
             <div>
@@ -89,6 +112,32 @@ export function G703Component() {
                 </div>
             </div>
         </div >
+
+        {/* Spreadsheet */}
+        <div className="px-4 ">
+            <HotTable
+                data={data}
+                cells={function (row, col) {
+                    let cellProperties = {};
+                    this.renderer
+                    if (row === 0) {
+                        cellProperties.renderer = firstRowRenderer;
+                    }
+                    return cellProperties;
+                }}
+                nestedHeaders={[
+                    ['Description of work', 'Scheduled value', { label: 'Work Completed', colspan: 2 }, 'MATERIALS PRESENTLY STORED (NOT IN D OR E)', { label: 'Work Completed', colspan: 2 }, "BALANCE (C - G)", "RETAINAGE (IF VARIABLE RATE) 5%"],
+                    ['', '', 'E', 'F', '', 'TOTAL COMPLETED AND STORED TO DATE (D+E+F)', '% (G ÷ C)', '', ''],
+                ]}
+                licenseKey="non-commercial-and-evaluation"
+                rowHeaders={true}
+                colHeaders={true}
+                height="auto"
+                autoWrapRow={true}
+                autoWrapCol={true}
+            />
+        </div>
+        {/* END Spreadsheet */}
 
         <div className="flex justify-end space-x-4">
             <WhiteButton
