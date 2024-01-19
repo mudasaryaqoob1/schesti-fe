@@ -54,7 +54,7 @@ const newClientSchema = Yup.object({
   taxes: Yup.string().required('Taxes is required!'),
   profitAndOverhead: Yup.number().required('Profit and overhead is required!'),
 });
-const initialValues: CreateInvoiceData = {
+const initialValues = {
   applicationNumber: '',
   projectName: '',
   invoiceSubject: '',
@@ -69,7 +69,7 @@ const initialValues: CreateInvoiceData = {
   subContractorEmail: '',
   subContractorFirstName: '',
   subContractorLastName: '',
-  subContractorPhoneNumber: 0,
+  subContractorPhoneNumber: '0',
   taxes: 0,
 };
 
@@ -186,7 +186,8 @@ const CreateInvoice = () => {
     return (calculateSubTotal() + taxes) - discount + (calculateSubTotal() * (profitAndOverhead / 100));
   }
 
-  function submitHandler(values: CreateInvoiceData) {
+  function submitHandler(values: any) {
+    setIsLoading(true);
     const updatedDetails = details.map((detail) => {
       return {
         description: detail.description,
@@ -209,7 +210,7 @@ const CreateInvoice = () => {
       .then((response) => {
         if (response.statusCode == 201) {
           setIsLoading(false);
-          toast.success(response.message);
+          router.push("/invoices")
         }
       })
       .catch(({ response }: any) => {
@@ -242,9 +243,9 @@ const CreateInvoice = () => {
                     setFieldValue('subContractorAddress', address);
                     setFieldValue('companyName', companyRep);
                     setFieldValue('subContractorFirstName', name);
-
+                    console.log(phone)
                     setFieldValue('subContractorEmail', email);
-                    setFieldValue('subContractorPhoneNumber', phone);
+                    setFieldValue('subContractorPhoneNumber', Number(phone));
                   }}
                 />
               </ModalComponent>
