@@ -85,6 +85,7 @@ const ImportMaterialModal = ({
     setIsLoading(true);
 
     let file: any = values.file;
+    
 
     if (byteConverter(file.size, 'MB').size > 10) {
       setIsLoading(false);
@@ -92,11 +93,13 @@ const ImportMaterialModal = ({
       return;
     }
 
+    console.log(file , 'filefile');
+    
     try {
       const formData = new FormData();
       formData.append('category', values.category);
       formData.append('subCategory', values.subCategory);
-      formData.append('file', file);
+      formData.append('file', file.originFileObj);
       const { statusCode } =
         await materialService.httpUploadMaterialsData(formData);
       if (statusCode === 201) {
@@ -169,6 +172,8 @@ const ImportMaterialModal = ({
                   action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
                   name="file"
                   onChange={(info) => {
+                    console.log(info , 'infoinfoinfoinfo');
+                    
                     if (status === 'done') {
                       message.success(
                         `${info.file.name} file uploaded successfully.`

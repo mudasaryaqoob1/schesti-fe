@@ -153,6 +153,7 @@ const SubCategoryTable: React.FC = () => {
         loading={subcategoriesReduxDataLoading}
         columns={columns}
         dataSource={subCategories}
+        expandable={{defaultExpandAllRows:true}}
       />
     </div>
   );

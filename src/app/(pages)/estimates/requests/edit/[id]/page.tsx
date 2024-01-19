@@ -31,7 +31,6 @@ import { selectToken } from '@/redux/authSlices/auth.selector';
 import { IEstimateRequest } from '@/app/interfaces/estimateRequests/estimateRequests.interface';
 import { byteConverter } from '@/app/utils/byteConverter';
 import AwsS3 from '@/app/utils/S3Intergration';
-import { DeleteOutlined } from '@ant-design/icons';
 
 const clientInfoSchema: any = Yup.object({
   clientName: Yup.string().required('Field is required!'),
@@ -432,224 +431,313 @@ const EditEstimateRequest = () => {
                   </div>
                 </div>
 
-                <div className="p-5 mt-4 border-2  border-silverGray pb-4 rounded-lg shadow-quinarGentleDepth">
-                  <QuaternaryHeading
-                    title="Uploads"
-                    className="text-graphiteGray font-semibold"
-                  />
-                  <div className="flex items-center gap-3">
+                <div className=" border-2  border-silverGray  rounded-lg shadow-quinarGentleDepth mt-4 p-5">
+                  <h3 className="my-4">Upload</h3>
+                  <div className="flex gap-3">
                     <div>
                       <p
-                        className={`${senaryHeading} text-midnightBlue font-popin mb-2`}
+                        className={`${senaryHeading} !text-[14px] text-midnightBlue font-popin mb-2`}
                       >
                         Upload Drawings
                       </p>
-                      <div
-                        className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg mb-3`}
-                      >
-                        <div
-                          className={`px-6 py-4 flex flex-col items-center gap-3 `}
-                        >
-                          <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
-                            <Image
-                              src={'/uploadcloud.svg'}
-                              alt="upload icon"
-                              width={20}
-                              height={20}
-                            />
-                          </div>
-                          <div className="flex gap-2">
-                            <label
-                              htmlFor="drawingDocuments"
-                              className={twMerge(
-                                `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
-                              )}
-                            >
-                              Click to Upload
-                            </label>
-                            <input
-                              multiple
-                              type="file"
-                              name="drawingDocuments"
-                              id="drawingDocuments"
-                              className="hidden"
-                              accept="image/jpeg,image/png,application/pdf "
-                              onChange={drawingsDocumentsUplodadHandler}
-                            />
-                            <p className={`text-steelGray ${minHeading}`}>
-                              or drag and drop
-                            </p>
-                          </div>
+                      <>
+                        {drawingsDocuments.length ? (
+                          <div
+                            className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg mb-3`}
+                          >
+                            {drawingsDocuments?.map(
+                              (doc: {
+                                name: string;
+                                size: number;
+                                url: string;
+                              }) => (
+                                <div
+                                  key={doc.size}
+                                  className={`px-4 py-4 relative max-w-32 `}
+                                >
+                                  <Image
+                                    src={'/documentIcon.svg'}
+                                    alt="documentIcon icon"
+                                    width={20}
+                                    height={20}
+                                  />
+                                  <Image
+                                    src={'/closeicon.svg'}
+                                    alt="documentIcon icon"
+                                    width={20}
+                                    height={20}
+                                    className="absolute top-0 right-0 cursor-pointer"
+                                    onClick={() =>
+                                      drawingDocumentDeleteHandler(doc.name)
+                                    }
+                                  />
 
-                          <p className={`text-steelGray ${minHeading}`}>
-                            SVG, PNG, JPG or GIF (max. 800x400px)
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      <p
-                        className={`${senaryHeading} text-midnightBlue font-popin mb-2`}
-                      >
-                        Takeoff Reports
-                      </p>
-                      <div
-                        className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg `}
-                      >
-                        <div
-                          className={`px-6 py-4 flex flex-col items-center gap-3 `}
-                        >
-                          <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
-                            <Image
-                              src={'/uploadcloud.svg'}
-                              alt="upload icon"
-                              width={20}
-                              height={20}
-                            />
+                                  <p className="text-[#353535] text-[16px] font-[500] mt-2 truncate">
+                                    {doc?.name}
+                                  </p>
+                                  <p className="text-[#989692] text-[12px] font-[400] my-2">
+                                    {byteConverter(doc?.size, 'KB').size} KB
+                                  </p>
+                                  <a
+                                    href={doc.url}
+                                    className="text-[#7138DF] text-[12px] font-[400] my-2"
+                                    target="_blank"
+                                  >
+                                    Click to View
+                                  </a>
+                                </div>
+                              )
+                            )}
                           </div>
-                          <div className="flex gap-2">
-                            <label
-                              htmlFor="takeoffReports"
-                              className={twMerge(
-                                `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
-                              )}
+                        ) : (
+                          <div
+                            className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg mb-3`}
+                          >
+                            <div
+                              className={`px-6 py-4 flex flex-col items-center gap-3 `}
                             >
-                              Click to Upload
-                            </label>
-                            <input
-                              multiple
-                              type="file"
-                              name="otherDocuments"
-                              id="takeoffReports"
-                              className="hidden"
-                              onChange={takeoffReportsUploadHandler}
-                              accept="application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                            />
-                            <p className={`text-steelGray ${minHeading}`}>
-                              or drag and drop
-                            </p>
+                              <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
+                                <Image
+                                  src={'/uploadcloud.svg'}
+                                  alt="upload icon"
+                                  width={20}
+                                  height={20}
+                                />
+                              </div>
+                              <div className="flex gap-2">
+                                <label
+                                  htmlFor="drawingDocuments"
+                                  className={twMerge(
+                                    `${senaryHeading} !text-[14px] text-RoyalPurple font-semibold cursor-pointer`
+                                  )}
+                                >
+                                  Click to Upload
+                                </label>
+                                <input
+                                  type="file"
+                                  name="drawingDocuments"
+                                  id="drawingDocuments"
+                                  className="hidden"
+                                  accept="image/jpeg,image/png,application/pdf "
+                                  onChange={drawingsDocumentsUplodadHandler}
+                                />
+                                <p className={`text-steelGray ${minHeading}`}>
+                                  or drag and drop
+                                </p>
+                              </div>
+
+                              <p className={`text-steelGray ${minHeading}`}>
+                                SVG, PNG, JPG or PDF (max. 800x400px)
+                              </p>
+                            </div>
                           </div>
-                          <p className={`text-steelGray ${minHeading}`}>
-                            SVG, PNG, JPG or GIF (max. 800x400px)
-                          </p>
-                        </div>
-                      </div>
+                        )}
+                      </>
                     </div>
                     <div>
                       <p
-                        className={`${senaryHeading} text-midnightBlue font-popin mb-2`}
+                        className={`${senaryHeading} !text-[14px] text-midnightBlue font-popin mb-2`}
+                      >
+                        Takeoff Report
+                      </p>
+                      <>
+                        {takeOffReports.length ? (
+                          <div
+                            className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg mb-3`}
+                          >
+                            {takeOffReports?.map(
+                              (doc: {
+                                name: string;
+                                size: number;
+                                url: string;
+                              }) => (
+                                <div
+                                  key={doc.size}
+                                  className={`px-4 py-4 relative max-w-32 `}
+                                >
+                                  <Image
+                                    src={'/documentIcon.svg'}
+                                    alt="documentIcon icon"
+                                    width={20}
+                                    height={20}
+                                  />
+                                  <Image
+                                    src={'/closeicon.svg'}
+                                    alt="documentIcon icon"
+                                    width={20}
+                                    height={20}
+                                    className="absolute top-0 right-0 cursor-pointer"
+                                    onClick={() =>
+                                      takeoffDocumentDeleteHandler(doc.name)
+                                    }
+                                  />
+
+                                  <p className="text-[#353535] text-[16px] font-[500] mt-2 truncate">
+                                    {doc?.name}
+                                  </p>
+                                  <p className="text-[#989692] text-[12px] font-[400] my-2">
+                                    {byteConverter(doc?.size, 'KB').size} KB
+                                  </p>
+                                  <a
+                                    href={doc.url}
+                                    className="text-[#7138DF] text-[12px] font-[400] my-2"
+                                    target="_blank"
+                                  >
+                                    Click to View
+                                  </a>
+                                </div>
+                              )
+                            )}
+                          </div>
+                        ) : (
+                          <div
+                            className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg `}
+                          >
+                            <div
+                              className={`px-6 py-4 flex flex-col items-center gap-3 `}
+                            >
+                              <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
+                                <Image
+                                  src={'/uploadcloud.svg'}
+                                  alt="upload icon"
+                                  width={20}
+                                  height={20}
+                                />
+                              </div>
+                              <div className="flex gap-2">
+                                <label
+                                  htmlFor="takeoffReports"
+                                  className={twMerge(
+                                    `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
+                                  )}
+                                >
+                                  Click to Upload
+                                </label>
+                                <input
+                                  type="file"
+                                  name="otherDocuments"
+                                  id="takeoffReports"
+                                  className="hidden"
+                                  onChange={takeoffReportsUploadHandler}
+                                  accept="application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                                />
+                                <p className={`text-steelGray ${minHeading}`}>
+                                  or drag and drop
+                                </p>
+                              </div>
+                              <p className={`text-steelGray ${minHeading}`}>
+                                SVG, PNG, JPG or GIF (max. 800x400px)
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    </div>
+                    <div>
+                      <p
+                        className={`${senaryHeading} !text-[14px] text-midnightBlue font-popin mb-2`}
                       >
                         Other Documents
                       </p>
-                      <div
-                        className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg `}
-                      >
-                        <div
-                          className={`px-6 py-4 flex flex-col items-center gap-3 `}
-                        >
-                          <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
-                            <Image
-                              src={'/uploadcloud.svg'}
-                              alt="upload icon"
-                              width={20}
-                              height={20}
-                            />
+                      <>
+                        {otherDocuments.length ? (
+                          <div
+                            className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg mb-3`}
+                          >
+                            {otherDocuments?.map(
+                              (doc: {
+                                name: string;
+                                size: number;
+                                url: string;
+                              }) => (
+                                <div
+                                  key={doc.size}
+                                  className={`px-4 py-4 relative max-w-32 `}
+                                >
+                                  <Image
+                                    src={'/documentIcon.svg'}
+                                    alt="documentIcon icon"
+                                    width={20}
+                                    height={20}
+                                  />
+                                  <Image
+                                    src={'/closeicon.svg'}
+                                    alt="documentIcon icon"
+                                    width={20}
+                                    height={20}
+                                    className="absolute top-0 right-0 cursor-pointer"
+                                    onClick={() =>
+                                      otherDocumentDeleteHandler(doc.name)
+                                    }
+                                  />
+
+                                  <p className="text-[#353535] text-[16px] font-[500] mt-2 truncate">
+                                    {doc?.name}
+                                  </p>
+                                  <p className="text-[#989692] text-[12px] font-[400] my-2">
+                                    {byteConverter(doc?.size, 'KB').size} KB
+                                  </p>
+                                  <a
+                                    href={doc.url}
+                                    className="text-[#7138DF] text-[12px] font-[400] my-2"
+                                    target="_blank"
+                                  >
+                                    Click to View
+                                  </a>
+                                </div>
+                              )
+                            )}
                           </div>
-                          <div className="flex gap-2">
-                            <label
-                              htmlFor="otherDocuments"
-                              className={twMerge(
-                                `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
-                              )}
+                        ) : (
+                          <div
+                            className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg `}
+                          >
+                            <div
+                              className={`px-6 py-4 flex flex-col items-center gap-3 `}
                             >
-                              Click to Upload
-                            </label>
-                            <input
-                              multiple
-                              type="file"
-                              name="otherDocuments"
-                              id="otherDocuments"
-                              className="hidden"
-                              onChange={otherDocumentsUploadHandler}
-                              accept="application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                            />
-                            <p className={`text-steelGray ${minHeading}`}>
-                              or drag and drop
-                            </p>
+                              <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
+                                <Image
+                                  src={'/uploadcloud.svg'}
+                                  alt="upload icon"
+                                  width={20}
+                                  height={20}
+                                />
+                              </div>
+                              <div className="flex gap-2">
+                                <label
+                                  htmlFor="otherDocuments"
+                                  className={twMerge(
+                                    `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
+                                  )}
+                                >
+                                  Click to Upload
+                                </label>
+                                <input
+                                  type="file"
+                                  name="otherDocuments"
+                                  id="otherDocuments"
+                                  className="hidden"
+                                  onChange={otherDocumentsUploadHandler}
+                                  accept="application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                                />
+                                <p className={`text-steelGray ${minHeading}`}>
+                                  or drag and drop
+                                </p>
+                              </div>
+                              <p className={`text-steelGray ${minHeading}`}>
+                                SVG, PNG, JPG or GIF (max. 800x400px)
+                              </p>
+                            </div>
                           </div>
-                          <p className={`text-steelGray ${minHeading}`}>
-                            SVG, PNG, JPG or GIF (max. 800x400px)
-                          </p>
-                        </div>
-                      </div>
+                        )}
+                      </>
                     </div>
                   </div>
-                  {uploadDocumentsError && <p>{uploadDocumentsError}</p>}
-                  <div className="grid grid-cols-4">
-                    <div className="max-w-xs">
-                      {drawingsDocuments?.map((document: { name: string }) => (
-                        <div
-                          key={document.name}
-                          className="flex justify-between bg-violet-100 rounded-md py-1 px-2 my-2"
-                        >
-                          <p className="truncate hover:text-clip text-[14px]">
-                            {document.name}
-                          </p>
-                          <p
-                            className="cursor-pointer"
-                            onClick={() =>
-                              drawingDocumentDeleteHandler(document.name)
-                            }
-                          >
-                            {' '}
-                            <DeleteOutlined />
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="max-w-xs">
-                      {takeOffReports?.map((document: { name: string }) => (
-                        <div
-                          key={document.name}
-                          className="flex justify-between bg-violet-100 rounded-md py-1 px-2 my-2"
-                        >
-                          <p className="truncate hover:text-clip text-[14px]">
-                            {document.name}
-                          </p>
-                          <p
-                            className="cursor-pointer"
-                            onClick={() =>
-                              takeoffDocumentDeleteHandler(document.name)
-                            }
-                          >
-                            {' '}
-                            <DeleteOutlined />
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="max-w-xs">
-                      {otherDocuments?.map((document: { name: string }) => (
-                        <div
-                          key={document.name}
-                          className="flex justify-between bg-violet-100 rounded-md py-1 px-2 my-2"
-                        >
-                          <p className="truncate hover:text-clip text-[14px]">
-                            {document.name}
-                          </p>
-                          <p
-                            className="cursor-pointer"
-                            onClick={() =>
-                              otherDocumentDeleteHandler(document.name)
-                            }
-                          >
-                            {' '}
-                            <DeleteOutlined />
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                  {uploadDocumentsError && (
+                    <p className="text-red-500 text-[14px]">
+                      {uploadDocumentsError}
+                    </p>
+                  )}
                 </div>
                 {/* buttons */}
                 <div className="flex justify-end items-center gap-2 md:mt-12 mt-6 p-4 bg-white shadow-secondaryTwist">
