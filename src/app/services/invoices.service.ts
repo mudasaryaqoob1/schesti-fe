@@ -27,6 +27,13 @@ class InvoiceService extends HttpService {
         data: CreateInvoiceData
     ): Promise<IResponseInterface<IInvoiceType>> =>
         this.post(`${this.prefix}/createInvoice`, data);
+
+    httpGetAllSubcontractorInvoices = (
+        page: number,
+        limit: number = 9
+    ): Promise<IResponseInterface> =>
+        this.get(`${this.prefix}/getInvoices?page=${page}&limit=${limit}`);
+
 }
 
 export const invoiceService = new InvoiceService();
