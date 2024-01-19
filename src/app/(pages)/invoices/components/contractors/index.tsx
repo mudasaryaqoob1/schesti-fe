@@ -6,9 +6,29 @@ import { SearchOutlined, DownOutlined } from '@ant-design/icons';
 import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { InputComponent } from '@/app/component/customInput/Input';
+import { useCallback, useEffect } from 'react';
+import { fetchSubcontractorInvoices } from '@/redux/invoice/invoice.thunk';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch } from '@/redux/store';
+import { selectInvoices, selectInvoicesLoading } from '@/redux/invoice/invoice.selector';
+import { IInvoiceType } from '@/app/interfaces/invoices.interface';
 
 export function Contractors() {
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const subcontractersInvoices = useSelector(selectInvoices);
+  const subcontractersInvoicesLoading = useSelector(selectInvoicesLoading);
+
+
+  const fetchSubcontactorsInvoices = useCallback(async () => {
+    await dispatch(fetchSubcontractorInvoices({}));
+  }, [dispatch]);
+
+  useEffect(() => {
+    fetchSubcontactorsInvoices();
+  }, [fetchSubcontactorsInvoices]);
+
+
   const items: MenuProps['items'] = [
     {
       key: 'editInvoice',
@@ -27,14 +47,14 @@ export function Contractors() {
       label: <a href="#">Delete</a>,
     },
   ];
-  const columns: ColumnsType<{}> = [
+  const columns: ColumnsType<IInvoiceType['invoice']> = [
     {
       title: 'Invoice #',
-      dataIndex: 'invoice',
+      dataIndex: 'invoiceNumber',
     },
     {
       title: 'Subcontractor Name',
-      dataIndex: 'name',
+      dataIndex: 'subContractorFirstName',
       ellipsis: true,
     },
     {
@@ -51,7 +71,7 @@ export function Contractors() {
     },
     {
       title: 'Total Payable',
-      dataIndex: 'total',
+      dataIndex: 'totalPayable',
     },
     {
       title: 'Action',
@@ -62,7 +82,7 @@ export function Contractors() {
         <Dropdown
           menu={{
             items,
-            onClick: () => {},
+            onClick: () => { },
           }}
           placement="bottomRight"
         >
@@ -104,18 +124,9 @@ export function Contractors() {
       </div>
 
       <Table
-        loading={false}
+        loading={subcontractersInvoicesLoading}
         columns={columns}
-        dataSource={[
-          {
-            invoice: '123',
-            projectName: 'sadasd',
-            name: 'ASsad',
-            issueDate: '12th Jan',
-            dueDate: '17th Jan',
-            total: 1000,
-          },
-        ]}
+        dataSource={subcontractersInvoices}
         pagination={{ position: ['bottomCenter'] }}
       />
     </div>
