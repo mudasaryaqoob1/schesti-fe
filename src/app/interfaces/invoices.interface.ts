@@ -1,4 +1,4 @@
-export interface ISupportTicket {
+export interface IInvoiceType {
     invoice: Invoice
 }
 
