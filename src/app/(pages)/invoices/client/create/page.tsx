@@ -20,7 +20,7 @@ export default function CreateClientInvoicePage() {
   const token = useSelector(selectToken);
   const searchParams = useSearchParams()
   const invoiceName = searchParams.get("invoiceName");
-  const [tab, setTab] = useState(G703_KEY);
+  const [tab, setTab] = useState(G702_KEY);
 
   useLayoutEffect(() => {
     if (token) {

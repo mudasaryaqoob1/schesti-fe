@@ -1,11 +1,10 @@
 'use client'
 import React from "react";
 import { Divider, Select } from "antd";
-import { HotTable, } from '@handsontable/react';
-import { textRenderer, type BaseRenderer } from 'handsontable/renderers';
-import { } from 'handsontable';
-import { registerAllModules } from 'handsontable/registry';
-import 'handsontable/dist/handsontable.full.min.css';
+// import { HotTable, } from '@handsontable/react';
+// import { } from 'handsontable';
+// import { registerAllModules } from 'handsontable/registry';
+// import 'handsontable/dist/handsontable.full.min.css';
 
 
 import CustomButton from "@/app/component/customButton/button";
@@ -15,7 +14,7 @@ import QuaternaryHeading from "@/app/component/headings/quaternary";
 
 
 // register Handsontable's modules
-registerAllModules();
+// registerAllModules();
 
 export function G703Component() {
 
@@ -108,7 +107,7 @@ export function G703Component() {
         </div >
 
         {/* Spreadsheet */}
-        <div className="px-4 ">
+        {/* <div className="px-4 ">
             <HotTable
                 data={data}
                 nestedHeaders={[
@@ -125,7 +124,7 @@ export function G703Component() {
                 contextMenu
                 className="clientTable"
             />
-        </div>
+        </div> */}
         {/* END Spreadsheet */}
 
         <div className="flex justify-end space-x-4">
