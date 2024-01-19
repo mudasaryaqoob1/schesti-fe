@@ -43,17 +43,17 @@ export function G702Component() {
                     </div>
 
                     <div>
-                        <div className="flex space-x-8">
+                        <div className="grid grid-cols-2 space-x-1">
                             <label className="text-right text-graphiteGray font-normal" htmlFor="application-date">
                                 PROJECT:
                             </label>
                             <input
                                 id="application-date"
-                                className="px-2 py-2 mr-2  border border-gray-300 outline-none"
+                                className="px-2 py-2  border border-gray-300 outline-none"
                                 type="text"
                             />
                         </div>
-                        <div className="flex space-x-10">
+                        <div className="grid grid-cols-2 space-x-1">
                             <label className="text-right text-graphiteGray font-normal" htmlFor="application-date">
                                 Address:
                             </label>
@@ -63,29 +63,29 @@ export function G702Component() {
                                 type="text"
                             />
                         </div>
-                        <div className="flex space-x-3">
+                        <div className="grid grid-cols-2 space-x-1">
                             <label className="text-right text-graphiteGray font-normal" htmlFor="application-date">
                                 Via Engineer:
                             </label>
                             <input
                                 id="application-date"
-                                className="px-2 ml-2 py-1 border border-gray-300 outline-none"
+                                className="px-2 py-1 border border-gray-300 outline-none"
                                 type="text"
                             />
                         </div>
                     </div>
                     <div className="">
-                        <div className="flex ">
+                        <div className="grid grid-cols-2 space-x-1 ">
                             <label className="text-right text-graphiteGray font-normal" htmlFor="application-date">
                                 APPLICATION NO:
                             </label>
                             <input
                                 id="application-date"
-                                className="px-2 py-2 mr-2  border border-gray-300 outline-none"
+                                className="px-2 py-2  border border-gray-300 outline-none"
                                 type="text"
                             />
                         </div>
-                        <div className="flex ">
+                        <div className="grid grid-cols-2 space-x-1">
                             <label className="text-right text-graphiteGray font-normal" htmlFor="application-date">
                                 APPLICATION DATE:
                             </label>
@@ -95,29 +95,29 @@ export function G702Component() {
                                 type="text"
                             />
                         </div>
-                        <div className="flex ">
+                        <div className="grid grid-cols-2 space-x-1">
                             <label className="text-right text-graphiteGray font-normal" htmlFor="application-date">
                                 PERIOD TO:
                             </label>
                             <input
                                 id="application-date"
-                                className="px-2 ml-2 py-1 border border-gray-300 outline-none"
+                                className="px-2 py-1 border border-gray-300 outline-none"
                                 type="text"
                             />
                         </div>
-                        <div className="flex ">
+                        <div className="grid grid-cols-2 space-x-1">
                             <label className="text-right text-graphiteGray font-normal" htmlFor="application-date">
                                 PROJECT NO:
                             </label>
                             <input
                                 id="application-date"
-                                className="px-2 ml-2 py-1 border border-gray-300 outline-none"
+                                className="px-2 py-1 border border-gray-300 outline-none"
                                 type="text"
                             />
                         </div>
                     </div>
                     <div className="flex flex-col space-y-2">
-                        <QuinaryHeading title="Distribution to" />
+                        <QuinaryHeading title="Distribution to" className="font-medium" />
                         <Checkbox>
                             <QuinaryHeading
                                 title="Distribution to" />
