@@ -28,7 +28,7 @@ export type RootState = {
   companySetupCategory: any;
   companySetupSubcategory: any;
   materials: any;
-  invoice: any
+  invoices: any
 };
 const persistConfig = {
   key: 'root',
@@ -48,6 +48,6 @@ const rootReducer = combineReducers<RootState>({
   companySetupCategory: companySetupCategoryReducer,
   companySetupSubcategory: companySetupSubcategoryReducer,
   materials: materialsReducer,
-  invoice: invoiceReducer
+  invoices: invoiceReducer
 });
 export default persistReducer(persistConfig, rootReducer);
