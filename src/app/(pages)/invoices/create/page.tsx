@@ -39,7 +39,7 @@ const newClientSchema = Yup.object({
   issueDate: Yup.string().required('Issue date is required!'),
   dueDate: Yup.string().required('Due date is required!'),
 
-  invoiceDetails: Yup.array().of(
+  invoiceItems: Yup.array().of(
     Yup.object()
       .shape({
         description: Yup.string().required('Description is required!'),
@@ -169,18 +169,39 @@ const CreateInvoice = () => {
     setIsEditDetail(false);
   }
   // calculate total
-  function calculateTotal(invoice: InvoiceDetail) {
+  function calculateInvoiceItemTotal(invoice: InvoiceDetail) {
     return invoice.quantity * invoice.unitCost;
   }
   // calculate sub total
   function calculateSubTotal() {
     return details.reduce((total, invoice) => {
-      return total + calculateTotal(invoice);
+      return total + calculateInvoiceItemTotal(invoice);
     }, 0);
   }
 
+  function calculateTotalPayable(taxes: number, profitAndOverhead: number, discount: number) {
+    return (calculateSubTotal() + taxes) - discount + (calculateSubTotal() * (profitAndOverhead / 100));
+  }
+
   function submitHandler(values: CreateInvoiceData) {
-    console.log({ ...values, invoiceDetails: details });
+    const updatedDetails = details.map((detail) => {
+      return {
+        description: detail.description,
+        quantity: detail.quantity,
+        unitCost: detail.unitCost,
+        total: detail.quantity * detail.unitCost,
+      };
+    });
+    const data: CreateInvoiceData = {
+      ...values,
+      invoiceItems: updatedDetails,
+      totalPayable: calculateTotalPayable(
+        Number(values.taxes),
+        Number(values.profitAndOverhead),
+        Number(values.discount)
+      ),
+    };
+    console.log(data);
   }
 
   return (
@@ -526,12 +547,7 @@ const CreateInvoice = () => {
                   <div className="flex items-center space-x-2">
                     <QuaternaryHeading title="Total:" />
                     <QuinaryHeading
-                      title={`$${calculateSubTotal() +
-                        values['taxes'] -
-                        values['discount'] +
-                        calculateSubTotal() *
-                        (Number(values['profitAndOverhead']) / 100)
-                        }`}
+                      title={`$${calculateTotalPayable(values['taxes'], Number(values['profitAndOverhead']), values['discount'])}`}
                       className="font-bold"
                     />
                   </div>
