@@ -20,7 +20,9 @@ import ModalComponent from '@/app/component/modal';
 import ExistingSubContractor from './ExistingSubContractors';
 import { useRouter } from 'next/navigation';
 import { InputComponent } from '@/app/component/customInput/Input';
-import { CreateInvoiceData } from '@/app/services/invoices.service';
+import { CreateInvoiceData, invoiceService } from '@/app/services/invoices.service';
+import { toast } from 'react-toastify';
+import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 
 const newClientSchema = Yup.object({
   subContractorFirstName: Yup.string().required('First name is required!'),
@@ -83,6 +85,7 @@ const CreateInvoice = () => {
   const [details, setDetails] = useState<InvoiceDetail[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [isEditDetail, setIsEditDetail] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [detail, setDetail] = useState<InvoiceDetail>({
     id: '',
@@ -201,7 +204,18 @@ const CreateInvoice = () => {
         Number(values.discount)
       ),
     };
-    console.log(data);
+
+    invoiceService.httpAddNewInvoice(data)
+      .then((response) => {
+        if (response.statusCode == 201) {
+          setIsLoading(false);
+          toast.success(response.message);
+        }
+      })
+      .catch(({ response }: any) => {
+        setIsLoading(false);
+        toast.error(response.data.message);
+      });
   }
 
   return (
@@ -211,7 +225,7 @@ const CreateInvoice = () => {
         validationSchema={newClientSchema}
         onSubmit={submitHandler}
       >
-        {({ handleSubmit, setFieldValue, values }) => {
+        {({ handleSubmit, setFieldValue, values, handleBlur, errors, touched }) => {
           return (
             <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
               {/* Modal */}
@@ -348,20 +362,29 @@ const CreateInvoice = () => {
                       name="invoiceSubject"
                       placeholder="Enter invoice subject"
                     />
-
-                    <FormControl
-                      control="input"
+                    <DateInputComponent
                       label="Issue Date"
-                      type="text"
                       name="issueDate"
                       placeholder="Enter issue date"
+                      fieldProps={{
+                        onChange: (_date, dateString) => {
+                          setFieldValue('issueDate', dateString);
+                        },
+                        onBlur: handleBlur,
+                      }}
+                      hasError={touched.issueDate && !!errors.issueDate}
                     />
-                    <FormControl
-                      control="input"
-                      label="Due Date"
-                      type="text"
+                    <DateInputComponent
+                      label="Issue Date"
                       name="dueDate"
-                      placeholder="Enter date here"
+                      placeholder="Enter issue date"
+                      fieldProps={{
+                        onChange: (_date, dateString) => {
+                          setFieldValue('dueDate', dateString);
+                        },
+                        onBlur: handleBlur,
+                      }}
+                      hasError={touched.issueDate && !!errors.issueDate}
                     />
                   </div>
                 </div>
@@ -498,7 +521,7 @@ const CreateInvoice = () => {
                         <FormControl
                           control="input"
                           label="Profit and Overhead %"
-                          type="number"
+                          type="text"
                           name="profitAndOverhead"
                           placeholder="Enter profit and overhead here"
                         />
@@ -563,7 +586,7 @@ const CreateInvoice = () => {
                   <div></div>
                   <div className="flex space-x-3">
                     <Button text="Cancel" onClick={() => router.back()} />
-                    <ColoredButton type="submit" text="Send" />
+                    <ColoredButton isLoading={isLoading} type="submit" text="Send" />
                   </div>
                 </div>
               </div>
