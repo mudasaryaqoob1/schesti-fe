@@ -336,37 +336,37 @@ export function G702Component() {
                         </div>
 
                         <div className="grid gap-2 grid-cols-2 justify-between my-3">
-                            <div className="flex items-center space-x-2">
-                                <QuinaryHeading title="By:" />
+                            <div className="grid grid-cols-12 items-center gap-1">
+                                <QuinaryHeading className="col-span-2" title="By:" />
                                 <input
                                     id="application-date"
-                                    className="px-2 py-1 border border-gray-300 outline-none"
+                                    className="px-2 col-span-6 py-1 border border-gray-300 outline-none"
                                     type="text"
                                 />
                             </div>
 
-                            <div className="flex items-center space-x-2">
-                                <QuinaryHeading title="Date:" />
+                            <div className="grid grid-cols-12 items-center gap-1">
+                                <QuinaryHeading className="col-span-2" title="Date:" />
                                 <input
                                     id="application-date"
-                                    className="px-2 py-1 border border-gray-300 outline-none"
+                                    className="col-span-6 px-2 py-1 border border-gray-300 outline-none"
                                     type="text"
                                 />
                             </div>
 
-                            <div className="flex items-center space-x-2">
-                                <QuinaryHeading title="State of:" />
+                            <div className="grid grid-cols-12 gap-1 items-center">
+                                <QuinaryHeading className="col-span-2" title="State of:" />
                                 <input
                                     id="application-date"
-                                    className="px-2 py-1 border border-gray-300 outline-none"
+                                    className="col-span-6 px-2 py-1 border border-gray-300 outline-none"
                                     type="text"
                                 />
                             </div>
-                            <div className="flex items-center space-x-2">
-                                <QuinaryHeading title="Country of:" />
+                            <div className="grid grid-cols-12 gap-1 items-center">
+                                <QuinaryHeading className="col-span-2" title="Country of:" />
                                 <input
                                     id="application-date"
-                                    className="px-2 py-1 border border-gray-300 outline-none"
+                                    className="px-2 col-span-6 py-1 border border-gray-300 outline-none"
                                     type="text"
                                 />
                             </div>
