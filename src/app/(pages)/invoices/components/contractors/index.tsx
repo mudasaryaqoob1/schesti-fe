@@ -11,7 +11,7 @@ import { fetchSubcontractorInvoices } from '@/redux/invoice/invoice.thunk';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { selectInvoices, selectInvoicesLoading } from '@/redux/invoice/invoice.selector';
-import { IInvoiceType } from '@/app/interfaces/invoices.interface';
+import type { IInvoice } from '@/app/interfaces/invoices.interface';
 
 export function Contractors() {
   const router = useRouter();
@@ -47,7 +47,7 @@ export function Contractors() {
       label: <a href="#">Delete</a>,
     },
   ];
-  const columns: ColumnsType<IInvoiceType['invoice']> = [
+  const columns: ColumnsType<IInvoice> = [
     {
       title: 'Invoice #',
       dataIndex: 'invoiceNumber',

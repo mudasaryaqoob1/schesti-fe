@@ -1,8 +1,8 @@
 export interface IInvoiceType {
-    invoice: Invoice
+    invoices: IInvoice[]
 }
 
-interface Invoice {
+export interface IInvoice {
     subContractorFirstName: string
     subContractorLastName: string
     subContractorPhoneNumber: string
