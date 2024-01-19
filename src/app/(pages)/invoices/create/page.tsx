@@ -239,12 +239,12 @@ const CreateInvoice = () => {
                     name,
                     phone,
                   }) => {
-                    setFieldValue('address', address);
+                    setFieldValue('subContractorAddress', address);
                     setFieldValue('companyName', companyRep);
-                    setFieldValue('firstName', name);
+                    setFieldValue('subContractorFirstName', name);
 
-                    setFieldValue('email', email);
-                    setFieldValue('phone', phone);
+                    setFieldValue('subContractorEmail', email);
+                    setFieldValue('subContractorPhoneNumber', phone);
                   }}
                 />
               </ModalComponent>
