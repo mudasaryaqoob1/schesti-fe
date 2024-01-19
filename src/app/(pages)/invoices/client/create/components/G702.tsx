@@ -1,3 +1,5 @@
+import CustomButton from "@/app/component/customButton/button";
+import WhiteButton from "@/app/component/customButton/white";
 import QuinaryHeading from "@/app/component/headings/quinary";
 import TertiaryHeading from "@/app/component/headings/tertiary";
 import { Checkbox, Divider } from "antd";
@@ -462,6 +464,19 @@ export function G702Component() {
 
                     </div>
                 </div>
+            </div>
+
+            <div className="flex justify-end space-x-4">
+                <WhiteButton
+                    text="Cancel"
+                    className="!w-40"
+                />
+                <CustomButton
+                    text="Download for invoice"
+                    className="!w-48"
+
+                />
+
             </div>
         </div>
     )
