@@ -2,7 +2,24 @@ import { IResponseInterface } from "../interfaces/api-response.interface";
 import { IInvoiceType } from "../interfaces/invoices.interface";
 import { HttpService } from "./base.service";
 
-type CreateInvoiceData = Omit<IInvoiceType['invoice'], 'id' | "_id" | "createdAt" | "updatedAt" | "__v">;
+export type CreateInvoiceData = {
+    subContractorFirstName: string
+    subContractorLastName: string
+    subContractorPhoneNumber: number
+    subContractorEmail: string
+    subContractorAddress: string
+    invoiceNumber: string
+    projectName: string
+    applicationNumber: string
+    invoiceSubject: string
+    issueDate: string
+    dueDate: string
+    discount: number
+    taxes: number
+    profitAndOverhead: string
+    totalPayable: number
+    invoiceItems: { [key: string]: any }[]
+}
 class InvoiceService extends HttpService {
     private readonly prefix: string = 'api/invoices';
 

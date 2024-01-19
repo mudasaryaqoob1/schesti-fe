@@ -20,18 +20,19 @@ import ModalComponent from '@/app/component/modal';
 import ExistingSubContractor from './ExistingSubContractors';
 import { useRouter } from 'next/navigation';
 import { InputComponent } from '@/app/component/customInput/Input';
+import { CreateInvoiceData } from '@/app/services/invoices.service';
 
 const newClientSchema = Yup.object({
-  firstName: Yup.string().required('First name is required!'),
-  lastName: Yup.string().required('Last name is required!'),
-  email: Yup.string()
+  subContractorFirstName: Yup.string().required('First name is required!'),
+  subContractorLastName: Yup.string().required('Last name is required!'),
+  subContractorEmail: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
-  phone: Yup.string().required('Phone number is required!'),
+  subContractorPhoneNumber: Yup.string().required('Phone number is required!'),
   companyName: Yup.string().required('Company name is required!'),
-  address: Yup.string().required('Address is required!'),
+  subContractorAddress: Yup.string().required('Address is required!'),
 
-  invoice: Yup.string().required('Invoice is required!'),
+  invoiceNumber: Yup.string().required('Invoice is required!'),
   projectName: Yup.string().required('Project name is required!'),
   applicationNumber: Yup.string().required('Application number is required!'),
   invoiceSubject: Yup.string().required('Invoice subject is required!'),
@@ -51,26 +52,23 @@ const newClientSchema = Yup.object({
   taxes: Yup.string().required('Taxes is required!'),
   profitAndOverhead: Yup.number().required('Profit and overhead is required!'),
 });
-const initialValues = {
-  firstName: '',
-  lastName: '',
-  email: '',
-  phone: '',
-  companyName: '',
-  address: '',
-
-  invoice: '',
-  projectName: '',
+const initialValues: CreateInvoiceData = {
   applicationNumber: '',
+  projectName: '',
   invoiceSubject: '',
   issueDate: '',
   dueDate: '',
-
-  invoiceDetails: [],
-
+  invoiceItems: [],
+  profitAndOverhead: '',
+  totalPayable: 0,
   discount: 0,
+  invoiceNumber: '',
+  subContractorAddress: '',
+  subContractorEmail: '',
+  subContractorFirstName: '',
+  subContractorLastName: '',
+  subContractorPhoneNumber: 0,
   taxes: 0,
-  profitAndOverhead: 0,
 };
 
 type InvoiceDetail = {
@@ -181,7 +179,7 @@ const CreateInvoice = () => {
     }, 0);
   }
 
-  function submitHandler(values: any) {
+  function submitHandler(values: CreateInvoiceData) {
     console.log({ ...values, invoiceDetails: details });
   }
 
@@ -241,14 +239,14 @@ const CreateInvoice = () => {
                     control="input"
                     label="First Name"
                     type="text"
-                    name="firstName"
+                    name="subContractorFirstName"
                     placeholder="Enter first name"
                   />
                   <FormControl
                     control="input"
                     label="Last Name"
                     type="text"
-                    name="lastName"
+                    name="subContractorLastName"
                     placeholder="Enter last name"
                   />
                   <FormControl
@@ -263,7 +261,7 @@ const CreateInvoice = () => {
                     control="input"
                     label="Phone Number"
                     type="number"
-                    name="phone"
+                    name="subContractorPhoneNumber"
                     placeholder="Enter phone number"
                   />
 
@@ -271,7 +269,7 @@ const CreateInvoice = () => {
                     control="input"
                     label="Email"
                     type="email"
-                    name="email"
+                    name="subContractorEmail"
                     placeholder="Enter email address"
                   />
 
@@ -279,7 +277,7 @@ const CreateInvoice = () => {
                     control="input"
                     label="Address"
                     type="text"
-                    name="address"
+                    name="subContractorAddress"
                     placeholder="Enter address"
                   />
                 </div>
@@ -302,7 +300,7 @@ const CreateInvoice = () => {
                       control="input"
                       label="Invoice #"
                       type="text"
-                      name="invoice"
+                      name="invoiceNumber"
                       placeholder="Enter invoice number"
                     />
 
@@ -528,13 +526,12 @@ const CreateInvoice = () => {
                   <div className="flex items-center space-x-2">
                     <QuaternaryHeading title="Total:" />
                     <QuinaryHeading
-                      title={`$${
-                        calculateSubTotal() +
+                      title={`$${calculateSubTotal() +
                         values['taxes'] -
                         values['discount'] +
                         calculateSubTotal() *
-                          (values['profitAndOverhead'] / 100)
-                      }`}
+                        (Number(values['profitAndOverhead']) / 100)
+                        }`}
                       className="font-bold"
                     />
                   </div>
