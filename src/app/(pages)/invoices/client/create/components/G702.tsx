@@ -149,56 +149,45 @@ export function G702Component() {
                             title="Application is made for payment, as shown below, in connection with the Contract. Continuation Sheet, AIA Document G703, is attached."
                         />
                         <div className="space-y-2">
-                            <div className="flex items-center justify-between mx-auto">
-                                <div className="flex items-center space-x-2">
-                                    <QuinaryHeading title="1. ORIGINAL CONTRACT SUM" />
-                                    <p className="text-sm text-gray-500">...............................................</p>
-                                    <input
-                                        id="application-date"
-                                        className="px-2 py-1 border border-gray-300 outline-none"
-                                        type="text"
-                                    />
-                                </div>
+                            <div className="grid grid-cols-3 gap-1">
+                                <QuinaryHeading className="col-span-2" title="1. ORIGINAL CONTRACT SUM  ................................" />
+                                <input
+                                    id="application-date"
+                                    className="px-2 py-1 border border-gray-300 outline-none"
+                                    type="text"
+                                />
                             </div>
-                            <div className="flex items-center justify-between mx-auto">
-                                <div className="flex items-center space-x-2">
-                                    <QuinaryHeading title="2. Net change by Change Orders" />
-                                    <p className="text-sm text-gray-500">...............................................</p>
-                                    <input
-                                        id="application-date"
-                                        className="px-2 py-1 border border-gray-300 outline-none"
-                                        type="text"
-                                    />
-                                </div>
+                            <div className="grid grid-cols-3 gap-1">
+                                <QuinaryHeading className="col-span-2" title="2. Net change by Change Orders  ................................" />
+                                <input
+                                    id="application-date"
+                                    className="px-2 py-1 border border-gray-300 outline-none"
+                                    type="text"
+                                />
                             </div>
-                            <div className="flex items-center justify-between mx-auto">
-                                <div className="flex items-center space-x-2">
-                                    <QuinaryHeading title="3. CONTRACT SUM TO DATE (Line 1 ± 2) $" />
-                                    <p className="text-sm text-gray-500">...............................................</p>
-                                    <input
-                                        id="application-date"
-                                        className="px-2 py-1 border border-gray-300 outline-none"
-                                        type="text"
-                                    />
-                                </div>
+                            <div className="grid grid-cols-3 gap-1">
+                                <QuinaryHeading className="col-span-2" title="3. CONTRACT SUM TO DATE (Line 1 ± 2) $  ................................" />
+                                <input
+                                    id="application-date"
+                                    className="px-2 py-1 border border-gray-300 outline-none"
+                                    type="text"
+                                />
                             </div>
-                            <div className="flex items-center">
-                                <div className="flex items-center space-x-2">
-                                    <QuinaryHeading title="4. TOTAL COMPLETED & STORED TO DATE (Column G on G703) " />
-                                    <p className="text-sm text-gray-500">...............................................</p>
-                                    <input
-                                        id="application-date"
-                                        className="px-2 py-1 border border-gray-300 outline-none"
-                                        type="text"
-                                    />
-                                </div>
+                            <div className="grid grid-cols-3 gap-1">
+                                <QuinaryHeading className="col-span-2" title="4. TOTAL COMPLETED & STORED TO DATE (Column G on G703)   .............." />
+                                <input
+                                    id="application-date"
+                                    className="px-2 py-1 border border-gray-300 outline-none"
+                                    type="text"
+                                />
                             </div>
+
 
                             <div>
                                 <QuinaryHeading title="5. RETAINAGE: " />
-                                <div className="px-3">
-                                    <div className="flex items-center space-x-2 justify-between">
-                                        <div className="flex items-center space-x-2">
+                                <div className="pl-3">
+                                    <div className="grid grid-cols-3 ">
+                                        <div className="flex items-center col-span-2 space-x-2">
                                             <QuinaryHeading title="a." />
                                             <input
                                                 id="application-date"
@@ -215,9 +204,9 @@ export function G702Component() {
                                     </div>
                                     <QuinaryHeading title="(Column D + E on G703)" className="pl-4" />
                                 </div>
-                                <div className="px-3">
-                                    <div className="flex items-center space-x-2 justify-between">
-                                        <div className="flex items-center space-x-2">
+                                <div className="pl-3">
+                                    <div className="grid grid-cols-3 ">
+                                        <div className="flex items-center col-span-2 space-x-2">
                                             <QuinaryHeading title="b." />
                                             <input
                                                 id="application-date"
@@ -232,11 +221,13 @@ export function G702Component() {
                                             type="text"
                                         />
                                     </div>
-                                    <div className="pl-4">
+                                    <div >
                                         <QuinaryHeading title="(Column F on G703)" />
 
-                                        <div className="flex items-center justify-between space-x-2">
-                                            <QuinaryHeading title="Total Retainage ( Lines 5a + 5b or Total in Colum I of G703" />
+                                        <div className="grid grid-cols-3">
+                                            <QuinaryHeading
+                                                className="col-span-2 pl-4"
+                                                title="Total Retainage ( Lines 5a + 5b or Total in Colum I of G703" />
                                             <input
                                                 id="application-date"
                                                 className="px-2 py-1 border border-gray-300 outline-none"
@@ -248,47 +239,41 @@ export function G702Component() {
                                 </div>
                             </div>
 
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center space-x-2">
-                                    <QuinaryHeading title="6. TOTAL EARNED LESS RETAINAGE Total in Column I of G703)" />
-                                    <input
-                                        id="application-date"
-                                        className="px-2 py-1 border border-gray-300 outline-none"
-                                        type="text"
-                                    />
-                                </div>
+                            <div className="grid grid-cols-3 gap-1">
+                                <QuinaryHeading className="col-span-2" title="6. TOTAL EARNED LESS RETAINAGE Total in Column I of G703)" />
+                                <input
+                                    id="application-date"
+                                    className="px-2 py-1 border border-gray-300 outline-none"
+                                    type="text"
+                                />
                             </div>
 
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center space-x-2">
-                                    <QuinaryHeading title="7. LESS PREVIOUS CERTIFICATES FOR PAYMENT (Line 6 from prior Certificate)" />
-                                    <input
-                                        id="application-date"
-                                        className="px-2 py-1 border border-gray-300 outline-none"
-                                        type="text"
-                                    />
-                                </div>
+                            <div className="grid grid-cols-3 gap-1 items-start">
+                                <QuinaryHeading className="col-span-2" title="7. LESS PREVIOUS CERTIFICATES FOR PAYMENT (Line 6 from prior Certificate)" />
+                                <input
+                                    id="application-date"
+                                    className="px-2 py-1 border border-gray-300 outline-none"
+                                    type="text"
+                                />
                             </div>
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center space-x-2">
-                                    <QuinaryHeading title="8. CURRENT PAYMENT DUE" />
-                                    <input
-                                        id="application-date"
-                                        className="px-2 py-1 border border-gray-300 outline-none"
-                                        type="text"
-                                    />
-                                </div>
+
+                            <div className="grid grid-cols-3 gap-1">
+                                <QuinaryHeading className="col-span-2" title="8. CURRENT PAYMENT DUE" />
+                                <input
+                                    id="application-date"
+                                    className="px-2 py-1 border border-gray-300 outline-none"
+                                    type="text"
+                                />
                             </div>
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center space-x-2">
-                                    <QuinaryHeading title="9. BALANCE TO FINISH, INCLUDING RETAINAGE $ (Line 3 less Line 6)" />
-                                    <input
-                                        id="application-date"
-                                        className="px-2 py-1 border border-gray-300 outline-none"
-                                        type="text"
-                                    />
-                                </div>
+                            <div className="grid grid-cols-3 gap-1">
+                                <QuinaryHeading className="col-span-2" title="9. BALANCE TO FINISH, INCLUDING RETAINAGE $ (Line 3 less Line 6)" />
+                                <input
+                                    id="application-date"
+                                    className="px-2 py-1 border border-gray-300 outline-none"
+                                    type="text"
+                                />
                             </div>
+
                         </div>
 
                         <table className="w-full my-1 caption-bottom text-sm border border-gray-300 divide-x divide-gray-300">
