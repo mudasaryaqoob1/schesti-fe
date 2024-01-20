@@ -30,8 +30,8 @@ const newClientSchema = Yup.object({
   subContractorEmail: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
-  subContractorPhoneNumber: Yup.string().required('Phone number is required!'),
-  companyName: Yup.string().required('Company name is required!'),
+  subContractorPhoneNumber: Yup.number().required('Phone number is required!'),
+  subContractorCompanyName: Yup.string().required('Company name is required!'),
   subContractorAddress: Yup.string().required('Address is required!'),
 
   invoiceNumber: Yup.string().required('Invoice is required!'),
@@ -51,17 +51,18 @@ const newClientSchema = Yup.object({
       .required('Invoice detail is required')
   ),
   discount: Yup.number().required('Discount is required!'),
-  taxes: Yup.string().required('Taxes is required!'),
+  taxes: Yup.number().required('Taxes is required!'),
   profitAndOverhead: Yup.number().required('Profit and overhead is required!'),
 });
 const initialValues = {
   applicationNumber: '',
   projectName: '',
   invoiceSubject: '',
+  subContractorCompanyName: '',
   issueDate: '',
   dueDate: '',
   invoiceItems: [],
-  profitAndOverhead: '',
+  profitAndOverhead: 0,
   totalPayable: 0,
   discount: 0,
   invoiceNumber: '',
@@ -69,7 +70,7 @@ const initialValues = {
   subContractorEmail: '',
   subContractorFirstName: '',
   subContractorLastName: '',
-  subContractorPhoneNumber: '0',
+  subContractorPhoneNumber: 0,
   taxes: 0,
 };
 
@@ -241,7 +242,7 @@ const CreateInvoice = () => {
                     phone,
                   }) => {
                     setFieldValue('subContractorAddress', address);
-                    setFieldValue('companyName', companyRep);
+                    setFieldValue('subContractorCompanyName', companyRep);
                     setFieldValue('subContractorFirstName', name);
                     console.log(phone)
                     setFieldValue('subContractorEmail', email);
@@ -376,7 +377,7 @@ const CreateInvoice = () => {
                       hasError={touched.issueDate && !!errors.issueDate}
                     />
                     <DateInputComponent
-                      label="Issue Date"
+                      label="Due Date"
                       name="dueDate"
                       placeholder="Enter due date"
                       fieldProps={{
@@ -522,7 +523,7 @@ const CreateInvoice = () => {
                         <FormControl
                           control="input"
                           label="Profit and Overhead %"
-                          type="text"
+                          type="number"
                           name="profitAndOverhead"
                           placeholder="Enter profit and overhead here"
                         />
