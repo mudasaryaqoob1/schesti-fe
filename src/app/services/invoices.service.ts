@@ -1,5 +1,5 @@
 import { IResponseInterface } from "../interfaces/api-response.interface";
-import { IInvoiceType } from "../interfaces/invoices.interface";
+import { IInvoice, IInvoiceType } from "../interfaces/invoices.interface";
 import { HttpService } from "./base.service";
 
 export type CreateInvoiceData = {
@@ -30,6 +30,12 @@ class InvoiceService extends HttpService {
 
     httpGetAllSubcontractorInvoices = (): Promise<IResponseInterface> =>
         this.get(`${this.prefix}/getInvoices`);
+
+    httpUpdateSubcontractorInvoice = (
+        data: CreateInvoiceData,
+        id: string
+    ): Promise<IResponseInterface<{ invoice: IInvoice }>> =>
+        this.post(`${this.prefix}/update-contractor/${id}`, data);
 
 }
 
