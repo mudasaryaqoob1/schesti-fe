@@ -1,7 +1,7 @@
 import type { ColumnsType } from 'antd/es/table';
 import { Dropdown, Table, type MenuProps } from 'antd';
 import { useRouter } from 'next/navigation';
-import { SearchOutlined, DownOutlined } from '@ant-design/icons';
+import { SearchOutlined, } from '@ant-design/icons';
 
 import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { selectInvoices, selectInvoicesLoading } from '@/redux/invoice/invoice.selector';
 import type { IInvoice } from '@/app/interfaces/invoices.interface';
+import Image from 'next/image';
 
 export function Contractors() {
   const router = useRouter();
@@ -86,9 +87,13 @@ export function Contractors() {
           }}
           placement="bottomRight"
         >
-          <a>
-            <DownOutlined />
-          </a>
+          <Image
+            src={'/menuIcon.svg'}
+            alt="logo white icon"
+            width={20}
+            height={20}
+            className="active:scale-105 cursor-pointer"
+          />
         </Dropdown>
       ),
     },
