@@ -48,6 +48,12 @@ export function Contractors() {
       label: <a href="#">Delete</a>,
     },
   ];
+
+  function handleDropdownItemClick(key: string, record: IInvoice) {
+    if (key === 'editInvoice') {
+      router.push(`/invoices/edit/${record._id}`);
+    }
+  }
   const columns: ColumnsType<IInvoice> = [
     {
       title: 'Invoice #',
@@ -79,11 +85,14 @@ export function Contractors() {
       dataIndex: 'action',
       align: 'center',
       key: 'action',
-      render: () => (
+      render: (text, record) => (
         <Dropdown
           menu={{
             items,
-            onClick: () => { },
+            onClick: (event) => {
+              const { key } = event;
+              handleDropdownItemClick(key, record);
+            },
           }}
           placement="bottomRight"
         >
