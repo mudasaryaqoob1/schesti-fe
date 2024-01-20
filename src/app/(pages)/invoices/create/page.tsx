@@ -228,6 +228,7 @@ const CreateInvoice = () => {
         onSubmit={submitHandler}
       >
         {({ handleSubmit, setFieldValue, values, handleBlur, errors, touched }) => {
+          console.log(errors)
           return (
             <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
               {/* Modal */}
@@ -290,7 +291,7 @@ const CreateInvoice = () => {
                     control="input"
                     label="Company Name"
                     type="text"
-                    name="companyName"
+                    name="subContractorCompanyName"
                     placeholder="Enter company name"
                   />
 
