@@ -233,7 +233,7 @@ const EditSubcontractorInvoice = () => {
 
 
   return (
-    <section className="mx-16">
+    <section className="mx-16 my-2">
       <Formik
         initialValues={invoiceData ? invoiceData : initialValues}
         enableReinitialize={true}

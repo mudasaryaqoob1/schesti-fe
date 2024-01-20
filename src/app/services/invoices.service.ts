@@ -37,6 +37,10 @@ class InvoiceService extends HttpService {
     ): Promise<IResponseInterface<{ invoice: IInvoice }>> =>
         this.post(`${this.prefix}/update-contractor/${id}`, data);
 
+    httpDeleteContractorInvoice = (
+        clientId: string
+    ): Promise<IResponseInterface<{ invoice: IInvoice }>> =>
+        this.delete(`${this.prefix}/contractor/${clientId}`);
 }
 
 export const invoiceService = new InvoiceService();
