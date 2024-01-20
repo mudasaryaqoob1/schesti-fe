@@ -17,7 +17,25 @@ export const fetchSubcontractorInvoices = createAsyncThunk(
         } catch (error: any) {
             return rejectWithValue(
                 error.response?.data ||
-                'An error occurred while fetching the Joined Request'
+                'An error occurred while fetching the invoices'
+            );
+        }
+    }
+);
+
+
+
+export const deleteContractorInvoiceRequest = createAsyncThunk(
+    'invoices/deleteContractorInvoice',
+    async (invoiceId: string, { rejectWithValue }) => {
+        try {
+            const response =
+                await invoiceService.httpDeleteContractorInvoice(invoiceId);
+            return response;
+        } catch (error: any) {
+            return rejectWithValue(
+                error.response?.data ||
+                'An error occurred while deleting the invoice'
             );
         }
     }

@@ -7,7 +7,7 @@ import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { InputComponent } from '@/app/component/customInput/Input';
 import { useCallback, useEffect } from 'react';
-import { fetchSubcontractorInvoices } from '@/redux/invoice/invoice.thunk';
+import { deleteContractorInvoiceRequest, fetchSubcontractorInvoices } from '@/redux/invoice/invoice.thunk';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { selectInvoices, selectInvoicesLoading } from '@/redux/invoice/invoice.selector';
@@ -49,9 +49,12 @@ export function Contractors() {
     },
   ];
 
-  function handleDropdownItemClick(key: string, record: IInvoice) {
+  async function handleDropdownItemClick(key: string, record: IInvoice) {
     if (key === 'editInvoice') {
       router.push(`/invoices/edit/${record._id}`);
+    }
+    else if (key === 'delete') {
+      await dispatch(deleteContractorInvoiceRequest(record._id));
     }
   }
   const columns: ColumnsType<IInvoice> = [
