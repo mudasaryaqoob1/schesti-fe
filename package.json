@@ -27,6 +27,7 @@
     "aws-sdk": "^2.1521.0",
     "axios": "^1.6.2",
     "clsx": "^2.0.0",
+    "dayjs": "^1.11.10",
     "formik": "^2.4.5",
     "handsontable": "^14.1.0",
     "html-to-image": "^1.11.11",
