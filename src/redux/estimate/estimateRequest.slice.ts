@@ -17,8 +17,6 @@ export const estimateSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // fetch all estimate requests
-
     builder.addCase(fetchEstimateRequests.pending, (state) => {
       state.loading = true;
     });

@@ -56,35 +56,37 @@ const Summary = ({ setPrevNext }: Props) => {
 
   useEffect(() => {
     setEstimateDetailsSummary(generateEstimateDetail);
-    if (generateEstimateDetail?.scopeDetail?.length) {
-      let totalCost: any = 0;
-      generateEstimateDetail?.scopeDetail?.forEach((entry: any) => {
-        Object.values(entry).forEach((items: any) => {
-          items.forEach((item: any) => {
-            totalCost += parseFloat(item.totalCostRecord);
-          });
-        });
-      });
-      setSubcostRecord(totalCost);
+    console.log(generateEstimateDetail , 'generateEstimateDetail');
+    
+    // if (generateEstimateDetail?.scopeDetail?.length) {
+    //   let totalCost: any = 0;
+    //   generateEstimateDetail?.scopeDetail?.forEach((entry: any) => {
+    //     Object.values(entry).forEach((items: any) => {
+    //       items.forEach((item: any) => {
+    //         totalCost += parseFloat(item.totalCostRecord);
+    //       });
+    //     });
+    //   });
+    //   setSubcostRecord(totalCost);
 
-      const extractProperties = (arr: Object[]) => {
-        return arr.map((item: any) => {
-          const key = Object.keys(item)[0]; // Get the dynamic key
-          const entry = item[key][0]; // Extract the entry from the array
-          return {
-            description: entry.description,
-            totalPrice: entry.totalCostRecord,
-            quantity: entry.qty,
-          };
-        });
-      };
+    //   const extractProperties = (arr: Object[]) => {
+    //     return arr.map((item: any) => {
+    //       const key = Object.keys(item)[0]; // Get the dynamic key
+    //       const entry = item[key][0]; // Extract the entry from the array
+    //       return {
+    //         description: entry.description,
+    //         totalPrice: entry.totalCostRecord,
+    //         quantity: entry.qty,
+    //       };
+    //     });
+    //   };
 
-      // Apply the function to each object in the original array
-      const transformedArray: Object[] = extractProperties(
-        generateEstimateDetail?.scopeDetail
-      );
-      setPdfData(transformedArray);
-    }
+    //   // Apply the function to each object in the original array
+    //   const transformedArray: Object[] = extractProperties(
+    //     generateEstimateDetail?.scopeDetail
+    //   );
+    //   setPdfData(transformedArray);
+    // }
   }, [generateEstimateDetail]);
 
   return (
@@ -278,50 +280,7 @@ const Summary = ({ setPrevNext }: Props) => {
           className="text-graphiteGray font-semibold my-4"
         />
 
-        <div>
-          {estimateDetailsSummary?.scopeDetail.map((estimate: any) => {
-            return (
-              <>
-                <div>
-                  {Object.entries(estimate).map(([key, value]: any[], i) => {
-                    const totalCostRecordTotal = value.reduce(
-                      (total: any, obj: any) => {
-                        return total + parseFloat(obj.totalCostRecord);
-                      },
-                      0
-                    );
-
-                    if (value?.length > 0) {
-                      return (
-                        <div key={i} className={`${bg_style} p-5 mt-3`}>
-                          <div className="flex items-center justify-between gap-2">
-                            <QuaternaryHeading
-                              title={key}
-                              className="font-semibold"
-                            />
-                            <div className="flex gap-x-3 items-center">
-                              {/* <p>Sub-contractor Cost:</p>
-                              <input className='border-1 border-b-[1px] border-[#DBD7D7] outline-none' placeholder='Write Cost'/> */}
-                              <Description
-                                title={`Trade Cost: $${totalCostRecordTotal}`}
-                                className="text-lg font-normal"
-                              />
-                            </div>
-                          </div>
-                          <div className="estimateTable_container">
-                            {value?.length > 0 && (
-                              <EstimatesTable estimates={value} />
-                            )}
-                          </div>
-                        </div>
-                      );
-                    }
-                  })}
-                </div>
-              </>
-            );
-          })}
-        </div>
+       
 
         <div className="bg-celestialGray h-px  w-full my-4"></div>
         <div className="flex w-full justify-between flex-col gap-2 my-4">
