@@ -32,20 +32,24 @@ export function Contractors() {
 
   const items: MenuProps['items'] = [
     {
+      key: 'view',
+      label: <p>View Invoice</p>,
+    },
+    {
       key: 'editInvoice',
-      label: <a href="#">Edit Invoice</a>,
+      label: <p>Edit Invoice</p>,
     },
     {
       key: 'collectPayments',
-      label: <a href="#">Collect Payments</a>,
+      label: <p>Collect Payments</p>,
     },
     {
       key: 'markAsClosed',
-      label: <a href="#">Mark as closed</a>,
+      label: <p>Mark as closed</p>,
     },
     {
       key: 'delete',
-      label: <a href="#">Delete</a>,
+      label: <p>Delete</p>,
     },
   ];
 
@@ -55,6 +59,8 @@ export function Contractors() {
     }
     else if (key === 'delete') {
       await dispatch(deleteContractorInvoiceRequest(record._id));
+    } else if (key === 'view') {
+      router.push(`/invoices/view/${record._id}`);
     }
   }
   const columns: ColumnsType<IInvoice> = [
