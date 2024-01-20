@@ -378,14 +378,14 @@ const CreateInvoice = () => {
                     <DateInputComponent
                       label="Issue Date"
                       name="dueDate"
-                      placeholder="Enter issue date"
+                      placeholder="Enter due date"
                       fieldProps={{
                         onChange: (_date, dateString) => {
                           setFieldValue('dueDate', dateString);
                         },
                         onBlur: handleBlur,
                       }}
-                      hasError={touched.issueDate && !!errors.issueDate}
+                      hasError={touched.dueDate && !!errors.dueDate}
                     />
                   </div>
                 </div>
