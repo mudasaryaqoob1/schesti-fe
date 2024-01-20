@@ -5,9 +5,10 @@ export interface IInvoiceType {
 export interface IInvoice {
     subContractorFirstName: string
     subContractorLastName: string
-    subContractorPhoneNumber: string
+    subContractorPhoneNumber: number
     subContractorEmail: string
     subContractorAddress: string
+    subContractorCompanyName: string;
     invoiceNumber: string
     projectName: string
     applicationNumber: string
@@ -15,9 +16,9 @@ export interface IInvoice {
     issueDate: string
     dueDate: string
     invoiceItems: InvoiceItem[]
-    discount: string
-    taxes: string
-    profitAndOverhead: string
+    discount: number
+    taxes: number
+    profitAndOverhead: number
     totalPayable: number
     associatedComapny: string
     _id: string

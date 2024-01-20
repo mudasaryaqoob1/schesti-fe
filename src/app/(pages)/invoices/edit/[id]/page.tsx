@@ -22,7 +22,8 @@ import { InputComponent } from '@/app/component/customInput/Input';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import { Divider } from 'antd';
-import { CreateInvoiceData } from '@/app/services/invoices.service';
+import { CreateInvoiceData, invoiceService } from '@/app/services/invoices.service';
+import { toast } from 'react-toastify';
 
 const SubcontractorSchema = Yup.object({
   subContractorFirstName: Yup.string().required('First name is required!'),
@@ -110,7 +111,7 @@ const EditSubcontractorInvoice = () => {
     const invoice = subcontractorInvoices?.find((item: any) => item._id === id);
     setInvoiceData(invoice);
     if (invoice) {
-      setDetails(invoice.invoiceItems || []);
+      setDetails(invoice.invoiceItems);
     }
 
   }, [id, subcontractorInvoices]);
@@ -187,14 +188,11 @@ const EditSubcontractorInvoice = () => {
     }
     setIsEditDetail(false);
   }
-  // calculate total
-  function calculateInvoiceItemTotal(invoice: InvoiceDetail) {
-    return invoice.total;
-  }
+
   // calculate sub total
-  function calculateSubTotal(details: InvoiceDetail[]) {
-    return details.reduce((total, invoice) => {
-      return total + calculateInvoiceItemTotal(invoice);
+  function calculateSubTotal(items: InvoiceDetail[]) {
+    return items.reduce((total, invoice) => {
+      return total + (invoice.quantity * invoice.unitCost);
     }, 0);
   }
 
@@ -203,11 +201,10 @@ const EditSubcontractorInvoice = () => {
     return result;
   }
   const submitHandler = async (values: any) => {
+    setIsLoading(true);
     const updatedDetails = details.map((detail) => {
       return {
-        description: detail.description,
-        quantity: detail.quantity,
-        unitCost: detail.unitCost,
+        ...detail,
         total: detail.quantity * detail.unitCost,
       };
     });
@@ -221,7 +218,16 @@ const EditSubcontractorInvoice = () => {
         Number(values.discount)
       ),
     };
-    console.log(data);
+    if (id) {
+      let result = await invoiceService.httpUpdateSubcontractorInvoice(data, id as string);
+      if (result.statusCode == 200) {
+        setIsLoading(false);
+        router.push('/invoices');
+      } else {
+        setIsLoading(false);
+        toast.error(result.message);
+      }
+    }
   };
 
 
@@ -379,7 +385,8 @@ const EditSubcontractorInvoice = () => {
                           setFieldValue('issueDate', dateString);
                         },
                         onBlur: handleBlur,
-                        value: dayjs(values.issueDate)
+                        value: dayjs(values.issueDate),
+                        defaultValue: dayjs('2015-01-01', 'YYYY-MM-DD'),
                       }}
                       hasError={touched.issueDate && !!errors.issueDate}
                     />
@@ -392,7 +399,8 @@ const EditSubcontractorInvoice = () => {
                           setFieldValue('dueDate', dateString);
                         },
                         onBlur: handleBlur,
-                        value: dayjs(values.dueDate)
+                        value: dayjs(values.dueDate),
+                        defaultValue: dayjs('2015-01-01', 'YYYY-MM-DD'),
                       }}
                       hasError={touched.dueDate && !!errors.dueDate}
                     />
