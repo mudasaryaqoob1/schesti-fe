@@ -109,7 +109,9 @@ const EditSubcontractorInvoice = () => {
   useEffect(() => {
     const invoice = subcontractorInvoices?.find((item: any) => item._id === id);
     setInvoiceData(invoice);
-    setDetails(invoice.invoiceItems || []);
+    if (invoice) {
+      setDetails(invoice.invoiceItems || []);
+    }
 
   }, [id, subcontractorInvoices]);
 
