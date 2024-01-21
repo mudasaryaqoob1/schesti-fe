@@ -128,7 +128,7 @@ const Scope = ({ setPrevNext }: Props) => {
     unitMaterialCost: '',
     unitEquipments: '',
   });
-  const calculateTotalCost = (record : DataType) => {
+  const calculateTotalCost = (record: DataType) => {
     let unitLabourHour = parseFloat(record.unitLabourHour);
     let quantity = parseFloat(record.qty);
     let totalLabourCost = quantity * unitLabourHour;
@@ -382,7 +382,7 @@ const Scope = ({ setPrevNext }: Props) => {
           (item: any) => {
             return {
               ...item,
-              totalCostRecord : calculateTotalCost(item),
+              totalCostRecord: calculateTotalCost(item),
               data: item.data.map((dataItem: any) =>
                 dataItem.index === estimateTableItemValues.index
                   ? estimateTableItemValues
@@ -457,7 +457,6 @@ const Scope = ({ setPrevNext }: Props) => {
     setEditItem(false);
     setEditConfirmItem(true);
   };
- 
 
   const columns: any = [
     {
@@ -554,7 +553,7 @@ const Scope = ({ setPrevNext }: Props) => {
       width: 150,
       render: (text: string, record: DataType) => {
         let result = calculateTotalCost(record);
-        return result
+        return result;
       },
     },
 
@@ -681,8 +680,8 @@ const Scope = ({ setPrevNext }: Props) => {
       align: 'center',
       width: 150,
       render: (text: string, record: DataType) => {
-        let result = calculateTotalCost(record)
-        return result
+        let result = calculateTotalCost(record);
+        return result;
       },
     },
 
@@ -723,7 +722,12 @@ const Scope = ({ setPrevNext }: Props) => {
     const index = confirmEstimates.findIndex(
       (item) => item.title === dataSource.title
     );
-    
+
+
+    dataSource.data.forEach((record: any) => {
+      record.totalCostRecord = calculateTotalCost(record);
+    });
+
     if (index !== -1) {
       let modifyArray = confirmEstimates.map((item, i) =>
         i === index
@@ -753,8 +757,6 @@ const Scope = ({ setPrevNext }: Props) => {
       );
     }
   };
-
-  console.log(confirmEstimates, 'estimateDetailestimateDetailestimateDetail');
 
   return (
     <div>

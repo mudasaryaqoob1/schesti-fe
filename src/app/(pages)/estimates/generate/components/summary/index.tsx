@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import CustomButton from '@/app/component/customButton/button';
+import FormControl from '@/app/component/formControl';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 // import { useRouter } from 'next/navigation';
@@ -52,42 +53,54 @@ const Summary = ({ setPrevNext }: Props) => {
   }>();
   const [pdfData, setPdfData] = useState<Object[]>([]);
   const [subcostRecord, setSubcostRecord] = useState<Number>(0);
-  const [saveChanges, setSaveChanges] = useState(true);
+  const [saveChanges, setSaveChanges] = useState(false);
+  const [estimatesRecords, setEstimatesRecords] = useState([]);
 
   useEffect(() => {
     setEstimateDetailsSummary(generateEstimateDetail);
-    console.log(generateEstimateDetail , 'generateEstimateDetail');
-    
-    // if (generateEstimateDetail?.scopeDetail?.length) {
-    //   let totalCost: any = 0;
-    //   generateEstimateDetail?.scopeDetail?.forEach((entry: any) => {
-    //     Object.values(entry).forEach((items: any) => {
-    //       items.forEach((item: any) => {
-    //         totalCost += parseFloat(item.totalCostRecord);
-    //       });
-    //     });
-    //   });
-    //   setSubcostRecord(totalCost);
 
-    //   const extractProperties = (arr: Object[]) => {
-    //     return arr.map((item: any) => {
-    //       const key = Object.keys(item)[0]; // Get the dynamic key
-    //       const entry = item[key][0]; // Extract the entry from the array
-    //       return {
-    //         description: entry.description,
-    //         totalPrice: entry.totalCostRecord,
-    //         quantity: entry.qty,
-    //       };
-    //     });
-    //   };
+    if (generateEstimateDetail?.scopeDetail?.length) {
+      const updatedDataArray = generateEstimateDetail?.scopeDetail.map(
+        (titleObject: any) => {
+          const totalCostForTitle = titleObject.data.reduce(
+            (total: any, dataItem: any) => {
+              return total + parseFloat(dataItem.totalCostRecord);
+            },
+            0
+          );
+          return {
+            ...titleObject,
+            totalCostForTitle: totalCostForTitle.toFixed(2),
+          };
+        }
+      );
+      const totalCostForAllRecords = updatedDataArray.reduce(
+        (total: any, titleObject: any) => {
+          return total + parseFloat(titleObject.totalCostForTitle);
+        },
+        0
+      );
 
-    //   // Apply the function to each object in the original array
-    //   const transformedArray: Object[] = extractProperties(
-    //     generateEstimateDetail?.scopeDetail
-    //   );
-    //   setPdfData(transformedArray);
-    // }
+      setEstimatesRecords(updatedDataArray);
+      setSubcostRecord(totalCostForAllRecords);
+
+      const transformedArray = updatedDataArray.flatMap(({ data }: any) =>
+        data.map(({ description, qty, totalCostRecord }: any) => ({
+          description,
+          quantity: qty,
+          totalPrice: totalCostRecord,
+        }))
+      );
+
+      setPdfData(transformedArray);
+    }
   }, [generateEstimateDetail]);
+
+  console.log(
+    subcostRecord,
+    estimatesRecords,
+    'estimatesRecordsestimatesRecords'
+  );
 
   return (
     <div>
@@ -279,8 +292,31 @@ const Summary = ({ setPrevNext }: Props) => {
           title="Estimates"
           className="text-graphiteGray font-semibold my-4"
         />
-
-       
+        <div>
+          {estimatesRecords?.length
+            ? estimatesRecords.map((estimate: any) => (
+                <div key={estimate.title} className={`${bg_style} p-5 mt-3`}>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <QuaternaryHeading
+                        title={estimate.title}
+                        className="font-semibold"
+                      />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <QuaternaryHeading
+                        title={`Total Cost: ${estimate.totalCostForTitle}`}
+                        className="font-semibold"
+                      />
+                    </div>
+                  </div>
+                  <div className="estimateTable_container">
+                    <EstimatesTable estimates={estimate.data} />
+                  </div>
+                </div>
+              ))
+            : null}
+        </div>
 
         <div className="bg-celestialGray h-px  w-full my-4"></div>
         <div className="flex w-full justify-between flex-col gap-2 my-4">
@@ -290,10 +326,7 @@ const Summary = ({ setPrevNext }: Props) => {
           </div>
           <div className="flex items-center justify-between">
             <MinDesc title="Material Tax %" className="text-darkgrayish" />
-            <Description
-              title="0.5%"
-              className="font-medium text-graphiteGray bg-cloudWhite2 rounded-[4px] p-1"
-            />
+            <FormControl control='simpleInput' />
           </div>
           <div className="flex items-center justify-between">
             <MinDesc title="Overhead & Profit %" className="text-darkgrayish" />
