@@ -4,7 +4,6 @@ import { Dispatch, SetStateAction, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import CustomButton from '@/app/component/customButton/button';
-import FormControl from '@/app/component/formControl';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 // import { useRouter } from 'next/navigation';
@@ -18,6 +17,7 @@ import { selectGeneratedEstimateDetail } from '@/redux/estimate/estimateRequestS
 import EstimatesTable from '../estimatesTable';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import ClientPDF from '../clientPDF';
+import { InputComponent } from '@/app/component/customInput/Input';
 
 interface Props {
   setPrevNext: Dispatch<SetStateAction<number>>;
@@ -53,8 +53,14 @@ const Summary = ({ setPrevNext }: Props) => {
   }>();
   const [pdfData, setPdfData] = useState<Object[]>([]);
   const [subcostRecord, setSubcostRecord] = useState<Number>(0);
+  const [totalCostRecord, setTotalCostRecord] = useState<any>(0);
   const [saveChanges, setSaveChanges] = useState(false);
   const [estimatesRecords, setEstimatesRecords] = useState([]);
+  const [detail, setDetail] = useState<any>({
+    materialTax: 0,
+    overheadAndProfit: 0,
+    bondFee: 0,
+  });
 
   useEffect(() => {
     setEstimateDetailsSummary(generateEstimateDetail);
@@ -83,6 +89,7 @@ const Summary = ({ setPrevNext }: Props) => {
 
       setEstimatesRecords(updatedDataArray);
       setSubcostRecord(totalCostForAllRecords);
+      setTotalCostRecord(totalCostForAllRecords);
 
       const transformedArray = updatedDataArray.flatMap(({ data }: any) =>
         data.map(({ description, qty, totalCostRecord }: any) => ({
@@ -96,11 +103,21 @@ const Summary = ({ setPrevNext }: Props) => {
     }
   }, [generateEstimateDetail]);
 
-  console.log(
-    subcostRecord,
-    estimatesRecords,
-    'estimatesRecordsestimatesRecords'
-  );
+  useEffect(() => {
+    const hasValue = Object.values(detail).some((value) => value !== 0);
+    if (hasValue) {
+      const materialTaxValue = detail.materialTax;
+      const overheadAndProfitValue = detail.overheadAndProfit;
+      const bondFeeValue = detail.bondFee;
+
+      const updatedTotalCostRecord =
+        totalCostRecord *
+        (1 + materialTaxValue / 100) *
+        (1 + overheadAndProfitValue / 100) *
+        (1 + bondFeeValue / 100);
+      setTotalCostRecord(updatedTotalCostRecord);
+    }
+  }, [detail]);
 
   return (
     <div>
@@ -326,27 +343,63 @@ const Summary = ({ setPrevNext }: Props) => {
           </div>
           <div className="flex items-center justify-between">
             <MinDesc title="Material Tax %" className="text-darkgrayish" />
-            <FormControl control='simpleInput' />
+            <InputComponent
+              label=""
+              type="number"
+              name="materialTax"
+              placeholder="Enter Material Tax"
+              field={{
+                value: detail.materialTax,
+                onChange: (e) => {
+                  setDetail({
+                    ...detail,
+                    materialTax: e.target.value,
+                  });
+                },
+              }}
+            />
           </div>
           <div className="flex items-center justify-between">
             <MinDesc title="Overhead & Profit %" className="text-darkgrayish" />
-            <Description
-              title="0.5%"
-              className="font-medium text-graphiteGray bg-cloudWhite2 rounded-[4px] p-1"
+            <InputComponent
+              label=""
+              type="number"
+              name="overheadAndProfit"
+              placeholder="Enter Overhead & Profit"
+              field={{
+                value: detail.overheadAndProfit,
+                onChange: (e) => {
+                  setDetail({
+                    ...detail,
+                    overheadAndProfit: e.target.value,
+                  });
+                },
+              }}
             />
           </div>
           <div className="flex items-center justify-between">
             <MinDesc title="Bond Fee %" className="text-darkgrayish" />
-            <Description
-              title="0.5%"
-              className="font-medium text-graphiteGray bg-cloudWhite2 rounded-[4px] p-1"
+            <InputComponent
+              label=""
+              type="number"
+              name="bondFee"
+              placeholder="Enter Bond Fee"
+              field={{
+                value: detail.bondFee,
+                onChange: (e) => {
+                  setDetail({
+                    ...detail,
+                    bondFee: e.target.value,
+                  });
+                },
+              }}
             />
           </div>
         </div>
         <div className="bg-celestialGray h-px w-full my-4"></div>
         <div className="flex items-center justify-between">
           <QuaternaryHeading title="Total Bid" />
-          <Description title={`$${subcostRecord}`} />
+          <Description title={`$${totalCostRecord}`} />
         </div>
       </div>
     </div>

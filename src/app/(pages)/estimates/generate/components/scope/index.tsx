@@ -121,12 +121,12 @@ const Scope = ({ setPrevNext }: Props) => {
     subCategory: '',
     description: '',
     unit: '',
-    qty: '',
+    qty: 0,
     wastage: '5',
-    unitLabourHour: '',
-    perHourLaborRate: '',
-    unitMaterialCost: '',
-    unitEquipments: '',
+    unitLabourHour: 0,
+    perHourLaborRate: 0,
+    unitMaterialCost: 0,
+    unitEquipments: 0,
   });
   const calculateTotalCost = (record: DataType) => {
     let unitLabourHour = parseFloat(record.unitLabourHour);
@@ -312,14 +312,14 @@ const Scope = ({ setPrevNext }: Props) => {
       );
       setSingleEstimateData({
         ...SingleEstimateData,
-        perHourLaborRate: subCategoryPrice.perHourLaborRate,
+        perHourLaborRate: subCategoryPrice?.perHourLaborRate && 0,
         category: selectedCategory,
         subCategory: selectedSubCategory,
       });
 
       setSingleEstimateData((prev: any) => ({
         ...prev,
-        perHourLaborRate: subCategoryPrice.perHourLaborRate,
+        perHourLaborRate: subCategoryPrice?.perHourLaborRate && 0,
       }));
     }
     setEstimateDescriptions([]);
@@ -335,10 +335,10 @@ const Scope = ({ setPrevNext }: Props) => {
         category: selectedCategory,
         subCategory: selectedSubCategory,
         description: selecteddescription,
-        unit: findDescriptionDetail.unit,
-        unitLabourHour: findDescriptionDetail?.unitLabourHour,
-        unitMaterialCost: findDescriptionDetail?.unitMaterialCost,
-        unitEquipments: findDescriptionDetail?.unitEquipments,
+        unit: findDescriptionDetail?.unit && 0,
+        unitLabourHour: findDescriptionDetail?.unitLabourHour && 0,
+        unitMaterialCost: findDescriptionDetail?.unitMaterialCost && 0,
+        unitEquipments: findDescriptionDetail?.unitEquipments && 0,
       });
     }
   }, [selecteddescription]);
@@ -354,14 +354,25 @@ const Scope = ({ setPrevNext }: Props) => {
     actions: any
   ) => {
     let generateRandomNumber = Math.floor(Math.random() * 103440 + 1);
-    const selctedCatoryName: any = categories.find(
-      (cat: any) => cat.value === estimateTableItemValues.category
-    );
-    const selctedSubCategoryName: any = subCategories.find(
-      (cat: any) => cat.value === estimateTableItemValues.subCategory
-    );
-
-    let selectedCategory = `${selctedCatoryName.label} ${selctedSubCategoryName.label}`;
+    let selectedCategory = '';
+    if (
+      categories.find(
+        (cat: any) => cat.value === estimateTableItemValues.category
+      ) &&
+      subCategories.find(
+        (cat: any) => cat.value === estimateTableItemValues.subCategory
+      )
+    ) {
+      const selctedCatoryName: any = categories.find(
+        (cat: any) => cat.value === estimateTableItemValues.category
+      );
+      const selctedSubCategoryName: any = subCategories.find(
+        (cat: any) => cat.value === estimateTableItemValues.subCategory
+      );
+      selectedCategory = `${selctedCatoryName.label} ${selctedSubCategoryName.label}`;
+    } else {
+      selectedCategory = `${estimateTableItemValues.category} ${estimateTableItemValues.subCategory}`;
+    }
 
     if (estimateData.data.length && estimateData.title !== selectedCategory) {
       toast.warn('Please add first to create new one');
@@ -723,7 +734,6 @@ const Scope = ({ setPrevNext }: Props) => {
       (item) => item.title === dataSource.title
     );
 
-
     dataSource.data.forEach((record: any) => {
       record.totalCostRecord = calculateTotalCost(record);
     });
@@ -810,7 +820,9 @@ const Scope = ({ setPrevNext }: Props) => {
         validationSchema={validationSchema}
         onSubmit={submitHandler}
       >
-        {({ handleSubmit, values }) => {
+        {({ handleSubmit, values, errors }) => {
+          console.log(errors, 'submitsubmit');
+
           return (
             <>
               <Form

@@ -409,6 +409,7 @@ const CreateInvoice = () => {
                       <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-1 gap-4 mt-3">
                         <InputComponent
                           label="Description"
+                          type='string'
                           name="invoiceDetailDescription"
                           placeholder="Enter description here"
                           field={{
@@ -426,6 +427,7 @@ const CreateInvoice = () => {
                             <InputComponent
                               label="Quantity"
                               name="quantity"
+                              type='string'
                               placeholder="Enter quantity here"
                               field={{
                                 type: 'number',
@@ -443,6 +445,7 @@ const CreateInvoice = () => {
                             <InputComponent
                               label="Unit Cost"
                               name="unitCost"
+                              type='string'
                               placeholder="Enter unit cost here"
                               field={{
                                 type: 'number',
