@@ -1,13 +1,19 @@
 import CustomButton from '@/app/component/customButton/button';
+import WhiteButton from '@/app/component/customButton/white';
 import { InputComponent } from '@/app/component/customInput/Input';
 import TertiaryHeading from '@/app/component/headings/tertiary';
-import { DownOutlined, SearchOutlined } from '@ant-design/icons';
+import ModalComponent from '@/app/component/modal';
+import { CloseOutlined, DownOutlined, SearchOutlined } from '@ant-design/icons';
 import { Dropdown, Table, type MenuProps } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export function Clients() {
   const router = useRouter();
+  const [showModal, setShowModal] = useState(false);
+  const [invoiceName, setInvoiceName] = useState('')
+
   const items: MenuProps['items'] = [
     {
       key: 'editInvoice',
@@ -65,7 +71,7 @@ export function Clients() {
         <Dropdown
           menu={{
             items,
-            onClick: () => {},
+            onClick: () => { },
           }}
           placement="bottomRight"
         >
@@ -98,8 +104,50 @@ export function Clients() {
             className="!w-auto"
             iconwidth={20}
             iconheight={20}
-            onClick={() => router.push('/invoices/create')}
+            onClick={() => setShowModal(true)}
           />
+          <ModalComponent
+            open={showModal}
+            setOpen={setShowModal}
+            title='Invoice Details'
+            width='40%'
+          >
+            <div className="bg-white border border-solid border-elboneyGray rounded-[4px] z-50">
+              <div className='flex px-6 py-2.5 justify-between bg-mistyWhite'>
+                <TertiaryHeading title="Invoice Details" className="text-graphiteGray" />
+                <CloseOutlined className='cursor-pointer'
+                  width={24}
+                  height={24}
+                />
+              </div>
+
+              <div className='px-6 py-2.5'>
+                <InputComponent
+                  label='Invoice Name'
+                  placeholder='Enter invoice name'
+                  name='invoiceName'
+                  field={{
+                    type: 'text',
+                    onChange: (e) => setInvoiceName(e.target.value),
+                    value: invoiceName
+                  }}
+                />
+
+                <div className='flex justify-end py-2 space-x-2'>
+                  <WhiteButton
+                    text='Cancel'
+                    className='!w-[100px]'
+                  />
+                  <CustomButton
+                    text='Next'
+                    className='!w-[100px]'
+                    onClick={() => router.push(`/invoices/client/create?invoiceName=${invoiceName}`)}
+                    disabled={!invoiceName}
+                  />
+                </div>
+              </div>
+            </div>
+          </ModalComponent>
         </div>
       </div>
 

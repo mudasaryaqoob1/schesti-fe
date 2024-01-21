@@ -69,7 +69,7 @@ const Tabs = () => {
                  cursor-pointer
                 `,
               pathname.includes('/subcontractor'.split('/')[1]) &&
-                tabsStyle.active
+              tabsStyle.active
             )
           )}
           onClick={() => router.push('/subcontractor')}
@@ -150,7 +150,7 @@ const Tabs = () => {
               pathname.includes('#'.split('/')[1]) && tabsStyle.active
             )
           )}
-          onClick={() => router.push('#')}
+          onClick={() => router.push('/invoices')}
         >
           Invoice
         </li>

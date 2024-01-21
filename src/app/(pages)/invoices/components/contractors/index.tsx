@@ -1,40 +1,76 @@
 import type { ColumnsType } from 'antd/es/table';
 import { Dropdown, Table, type MenuProps } from 'antd';
 import { useRouter } from 'next/navigation';
-import { SearchOutlined, DownOutlined } from '@ant-design/icons';
+import { SearchOutlined, } from '@ant-design/icons';
 
 import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { InputComponent } from '@/app/component/customInput/Input';
+import { useCallback, useEffect } from 'react';
+import { deleteContractorInvoiceRequest, fetchSubcontractorInvoices } from '@/redux/invoice/invoice.thunk';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch } from '@/redux/store';
+import { selectInvoices, selectInvoicesLoading } from '@/redux/invoice/invoice.selector';
+import type { IInvoice } from '@/app/interfaces/invoices.interface';
+import Image from 'next/image';
 
 export function Contractors() {
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  const subcontractersInvoices = useSelector(selectInvoices);
+  const subcontractersInvoicesLoading = useSelector(selectInvoicesLoading);
+
+
+  const fetchSubcontactorsInvoices = useCallback(async () => {
+    await dispatch(fetchSubcontractorInvoices({}));
+  }, [dispatch]);
+
+  useEffect(() => {
+    fetchSubcontactorsInvoices();
+  }, [fetchSubcontactorsInvoices]);
+
+
   const items: MenuProps['items'] = [
     {
+      key: 'view',
+      label: <p>View Invoice</p>,
+    },
+    {
       key: 'editInvoice',
-      label: <a href="#">Edit Invoice</a>,
+      label: <p>Edit Invoice</p>,
     },
     {
       key: 'collectPayments',
-      label: <a href="#">Collect Payments</a>,
+      label: <p>Collect Payments</p>,
     },
     {
       key: 'markAsClosed',
-      label: <a href="#">Mark as closed</a>,
+      label: <p>Mark as closed</p>,
     },
     {
       key: 'delete',
-      label: <a href="#">Delete</a>,
+      label: <p>Delete</p>,
     },
   ];
-  const columns: ColumnsType<{}> = [
+
+  async function handleDropdownItemClick(key: string, record: IInvoice) {
+    if (key === 'editInvoice') {
+      router.push(`/invoices/edit/${record._id}`);
+    }
+    else if (key === 'delete') {
+      await dispatch(deleteContractorInvoiceRequest(record._id));
+    } else if (key === 'view') {
+      router.push(`/invoices/view/${record._id}`);
+    }
+  }
+  const columns: ColumnsType<IInvoice> = [
     {
       title: 'Invoice #',
-      dataIndex: 'invoice',
+      dataIndex: 'invoiceNumber',
     },
     {
       title: 'Subcontractor Name',
-      dataIndex: 'name',
+      dataIndex: 'subContractorFirstName',
       ellipsis: true,
     },
     {
@@ -51,24 +87,31 @@ export function Contractors() {
     },
     {
       title: 'Total Payable',
-      dataIndex: 'total',
+      dataIndex: 'totalPayable',
     },
     {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
       key: 'action',
-      render: () => (
+      render: (text, record) => (
         <Dropdown
           menu={{
             items,
-            onClick: () => {},
+            onClick: (event) => {
+              const { key } = event;
+              handleDropdownItemClick(key, record);
+            },
           }}
           placement="bottomRight"
         >
-          <a>
-            <DownOutlined />
-          </a>
+          <Image
+            src={'/menuIcon.svg'}
+            alt="logo white icon"
+            width={20}
+            height={20}
+            className="active:scale-105 cursor-pointer"
+          />
         </Dropdown>
       ),
     },
@@ -104,18 +147,9 @@ export function Contractors() {
       </div>
 
       <Table
-        loading={false}
+        loading={subcontractersInvoicesLoading}
         columns={columns}
-        dataSource={[
-          {
-            invoice: '123',
-            projectName: 'sadasd',
-            name: 'ASsad',
-            issueDate: '12th Jan',
-            dueDate: '17th Jan',
-            total: 1000,
-          },
-        ]}
+        dataSource={subcontractersInvoices}
         pagination={{ position: ['bottomCenter'] }}
       />
     </div>
