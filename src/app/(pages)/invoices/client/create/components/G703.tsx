@@ -1,10 +1,11 @@
 'use client'
-import React from "react";
+import React, { useState } from "react";
 import { Divider, Select } from "antd";
-// import { HotTable, } from '@handsontable/react';
-// import { } from 'handsontable';
-// import { registerAllModules } from 'handsontable/registry';
-// import 'handsontable/dist/handsontable.full.min.css';
+import { HotTable, } from '@handsontable/react';
+import { } from 'handsontable';
+import { registerAllModules } from 'handsontable/registry';
+import 'handsontable/dist/handsontable.full.min.css';
+import { HyperFormula } from 'hyperformula';
 
 
 import CustomButton from "@/app/component/customButton/button";
@@ -14,17 +15,26 @@ import QuaternaryHeading from "@/app/component/headings/quaternary";
 
 
 // register Handsontable's modules
-// registerAllModules();
+registerAllModules();
 
 export function G703Component() {
+    const [data, setData] = useState([
+        ['1', '2', '=0 + D1', '3', '4', '=C1 + D1 + E1', '6', '7', '8'],
+        ['9', '10', '=0 + D2', '11', '12', '=C2 + D2 + E2', '14', '15', '16'],
 
-    const data = [
-        ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1', 'I1',],
-        ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2', 'I2',],
-        ['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'H3', 'I3',],
-        ['A4', 'B4', 'C4', 'D4', 'E4', 'F4', 'G4', 'H4', 'I4',],
-        ['A5', 'B5', 'C5', 'D5', 'E5', 'F5', 'G5', 'H5', 'I5',],
-    ];
+    ]);
+
+    function rowTemplate(index: number) {
+        return ['0', '0', `=0 + D${index}`, '0', '0', `=C${index} + D${index} + E${index}`, '=', '0', '0']
+    }
+
+    function addRow() {
+        const newRow = rowTemplate(data.length + 1)
+        setData([...data, newRow,]);
+    }
+    function getCalculatedRows() {
+        return ["GRAND TOTAL", `=SUM(B1:B${data.length})`, `=SUM(C1:C${data.length})`, `=SUM(D1:D${data.length})`, `=SUM(E1:E${data.length})`, `=SUM(F1:F${data.length})`, `=SUM(G1:G${data.length})`, `=SUM(H1:H${data.length})`, `=SUM(I1:I${data.length})`];
+    }
 
     return <section>
         <div className="flex justify-between items-center">
@@ -107,27 +117,50 @@ export function G703Component() {
         </div >
 
         {/* Spreadsheet */}
-        {/* <div className="px-4 ">
+        <div className="px-4">
             <HotTable
-                data={data}
+                data={[
+                    ...data,
+                    getCalculatedRows()]}
+                colWidths={[50, 50, 100, 50, 100, 50, 50]}
                 nestedHeaders={[
                     ['Description of work', 'Scheduled value', { label: 'Work Completed', colspan: 2 }, 'MATERIALS PRESENTLY STORED (NOT IN D OR E)', { label: 'Work Completed', colspan: 2 }, "BALANCE (C - G)", "RETAINAGE (IF VARIABLE RATE) 5%"],
-                    ['', '', 'From previous application (D+E)', 'This period', '', 'TOTAL COMPLETED AND STORED TO DATE (D+E+F)', '% (G ÷ C)', '', ''],
+                    ['', '', 'From previous application (D+E)', 'This period', '', 'TOTAL COMPLETED AND STORED TO DATE (D+E+F)', '% (G ÷ C)', '', ""],
                 ]}
+                formulas={{
+                    engine: HyperFormula,
+                }}
                 licenseKey="non-commercial-and-evaluation"
                 rowHeaders={true}
                 colHeaders={true}
                 height="auto"
+                // cells={function (row, col, prop) {
+                //     if (col === 2) {
+                //         this.type = 'formula';
+                //         this.formula = '=B' + (row + 1) + '+C' + (row + 1); // Formula for adding Column 2 to Column 3
+                //     }
+                // }}
                 autoWrapRow={true}
                 autoWrapCol={true}
-                allowInsertRow
-                contextMenu
+                contextMenu={
+                    {
+                        items: [
+                            {
+                                "name": "Add Row",
+                                callback() {
+                                    addRow();
+                                },
+
+                            }
+                        ]
+                    }
+                }
                 className="clientTable"
             />
-        </div> */}
+        </div>
         {/* END Spreadsheet */}
 
-        <div className="flex justify-end space-x-4">
+        <div className="flex justify-end space-x-4 mt-2">
             <WhiteButton
                 text="Cancel"
                 className="!w-40"

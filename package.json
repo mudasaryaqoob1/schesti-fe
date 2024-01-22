@@ -31,6 +31,7 @@
     "formik": "^2.4.5",
     "handsontable": "^14.1.0",
     "html-to-image": "^1.11.11",
+    "hyperformula": "^2.6.1",
     "moment": "^2.29.4",
     "next": "14.0.2",
     "react": "^18",
