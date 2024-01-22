@@ -17,19 +17,19 @@ export function Clients() {
   const items: MenuProps['items'] = [
     {
       key: 'editInvoice',
-      label: <a href="#">Edit Invoice</a>,
+      label: <p>Edit Invoice</p>,
     },
     {
       key: 'collectPayments',
-      label: <a href="#">Collect Payments</a>,
+      label: <p>Collect Payments</p>,
     },
     {
       key: 'markAsClosed',
-      label: <a href="#">Mark as closed</a>,
+      label: <p>Mark as closed</p>,
     },
     {
       key: 'delete',
-      label: <a href="#">Delete</a>,
+      label: <p>Delete</p>,
     },
   ];
   const columns: ColumnsType<{}> = [
