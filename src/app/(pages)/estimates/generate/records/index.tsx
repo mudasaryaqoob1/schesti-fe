@@ -1,23 +1,15 @@
-import React, { useCallback, useEffect, useLayoutEffect } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect , useState} from 'react';
 import type { ColumnsType } from 'antd/es/table';
 import { Dropdown, Table } from 'antd';
 import type { MenuProps } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
-import { AppDispatch } from '@/redux/store';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
-import {
-  selectEstimateRequests,
-  selectEstimateRequestsLoading,
-} from '@/redux/estimate/estimateRequestSelector';
-import {
-  deleteEstimateRequest,
-  fetchEstimateRequests,
-} from '@/redux/company/company.thunk';
 import NoData from '@/app/component/noData';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import Image from 'next/image';
+import { estimateRequestService } from '@/app/services/estimates.service';
 
 interface DataType {
   key: React.Key;
@@ -32,11 +24,7 @@ interface DataType {
 
 const EstimateRequestTable: React.FC = () => {
   const router = useRouter();
-  const dispatch = useDispatch<AppDispatch>();
   const token = useSelector(selectToken);
-
-  const estimateRequestsLoading = useSelector(selectEstimateRequestsLoading);
-  const estimateRequestsData = useSelector(selectEstimateRequests);
 
   useLayoutEffect(() => {
     if (token) {
@@ -44,40 +32,54 @@ const EstimateRequestTable: React.FC = () => {
     }
   }, [token]);
 
-  const memoizedSetPerson = useCallback(async () => {
-    await dispatch(fetchEstimateRequests({ page: 1, limit: 10 }));
+
+  const [generatedEstimates, setGeneratedEstimates] = useState([])
+
+  const fetchGeneratedEstiamtesHandler = useCallback(async () => {
+    let result = await estimateRequestService.httpGetAllGeneratedEstimates(
+      1,
+      9
+    );
+    
+    let updatedGeneratedEstimate = result?.data?.generatedEstiamtes.map((estimate : any) => {
+      return {
+        id : estimate._id,
+        projectName : estimate.estimateRequestID.projectName,
+        clientName : estimate.estimateRequestID.clientName,
+        salePerson : `${estimate?.estimateRequestID.salePerson?.firstName} ${estimate?.estimateRequestID.salePerson?.lastName}`,
+        estimator : `${estimate?.estimateRequestID.estimator?.firstName} ${estimate?.estimateRequestID.estimator?.lastName}`,
+        totalCost : estimate.estimateRequestID.totalCost,
+        estimateRequestId : estimate.estimateRequestID._id,
+      }
+    })
+    setGeneratedEstimates(updatedGeneratedEstimate)
   }, []);
 
   useEffect(() => {
-    memoizedSetPerson();
+    fetchGeneratedEstiamtesHandler();
   }, []);
 
   const items: MenuProps['items'] = [
     {
-      key: 'view',
-      label: <a href="#">View Esstimate</a>,
+      key: 'viewDetail',
+      label: 'View Detail',
     },
     {
-      key: 'createSchedule',
-      label: <a href="#">Create schedule</a>,
-    },
-    {
-      key: 'createInvoice',
-      label: <a href="#">Create invoice</a>,
-    },
-    {
-      key: 'delete',
+      key: 'deleteEstimate',
       label: <p>Delete</p>,
     },
   ];
 
-  const handleDropdownItemClick = async (key: string, estimateRequest: any) => {
-    if (key == 'deleteEstimateRequest') {
-      await dispatch(deleteEstimateRequest(estimateRequest._id));
-    } else if (key == 'editEstimateRequest') {
-      router.push(`/estimates/requests/edit/${estimateRequest._id}`);
-    } else if (key === 'createEstimateRequest') {
-      router.push('/estimates/generate');
+  const handleDropdownItemClick = async (key: string, estimate: any) => {
+    console.log(key ,estimate , 'estimateestimate' );
+    
+    if (key == 'viewDetail') {
+      router.push(`/estimates/generate/${estimate.estimateRequestId}`);
+    } else if (key == 'deleteEstimate') {
+      let deleteEstimateResult = await estimateRequestService.httpDeleteGeneratedEstimate(estimate.estimateRequestId)
+      if(deleteEstimateResult.statusCode === 200){
+        fetchGeneratedEstiamtesHandler()
+      }
     }
   };
 
@@ -92,21 +94,17 @@ const EstimateRequestTable: React.FC = () => {
       ellipsis: true,
     },
     {
-      title: 'Phone Number',
-      dataIndex: 'phone',
+      title: 'Sale Person',
+      dataIndex: 'salePerson',
     },
 
     {
-      title: 'Sale Person ',
-      dataIndex: 'salePerson',
-      render: (text, record: any) =>
-        `${record?.salePerson?.firstName} ${record?.salePerson?.lastName}`,
-    },
-    {
       title: 'Estimator',
       dataIndex: 'estimator',
-      render: (text, record: any) =>
-        `${record?.estimator?.firstName} ${record?.estimator?.lastName}`,
+    },
+    {
+      title: 'Total Cost',
+      dataIndex: 'totalCost',
     },
     {
       title: 'Status',
@@ -144,8 +142,9 @@ const EstimateRequestTable: React.FC = () => {
       ),
     },
   ];
+  
 
-  return estimateRequestsData && estimateRequestsData.length < 1 ? (
+  return generatedEstimates && generatedEstimates.length < 1 ? (
     <NoData
       btnText="Create new estimates request"
       link="/estimates/requests/create"
@@ -160,9 +159,8 @@ const EstimateRequestTable: React.FC = () => {
       </div>
       <div className="mt-4">
         <Table
-          loading={estimateRequestsLoading}
           columns={columns}
-          dataSource={estimateRequestsData}
+          dataSource={generatedEstimates}
           pagination={{ position: ['bottomCenter'] }}
         />
       </div>

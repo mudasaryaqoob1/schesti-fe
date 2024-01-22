@@ -24,7 +24,7 @@ import ModalComponent from '@/app/component/modal';
 import FormControl from '@/app/component/formControl';
 import { IEstimateRequest } from '@/app/interfaces/estimateRequests/estimateRequests.interface';
 import ExistingClient from '../existingClient';
-import { estimateRequestService } from '@/app/services/estimateRequest.service';
+import { estimateRequestService } from '@/app/services/estimates.service';
 import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 import AwsS3 from '@/app/utils/S3Intergration';
 import { AppDispatch } from '@/redux/store';

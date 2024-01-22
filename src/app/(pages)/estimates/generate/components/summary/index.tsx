@@ -1,13 +1,11 @@
 'use client';
 import { Dispatch, SetStateAction, useState, useEffect } from 'react';
-// import Image from 'next/image';
 import { useSelector } from 'react-redux';
-
+import { useSearchParams } from 'next/navigation';
 import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
-// import { useRouter } from 'next/navigation';
-// import AddItemTable from '@/app/component/table/table';
+import { useRouter } from 'next/navigation';
 // import { headings } from './data';
 import Description from '@/app/component/description/index';
 import MinDesc from '@/app/component/description/minDesc';
@@ -15,9 +13,12 @@ import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import { selectGeneratedEstimateDetail } from '@/redux/estimate/estimateRequestSelector';
 import EstimatesTable from '../estimatesTable';
-import { PDFDownloadLink } from '@react-pdf/renderer';
-import ClientPDF from '../clientPDF';
+// import { PDFDownloadLink } from '@react-pdf/renderer';
+// import ClientPDF from '../clientPDF';
 import { InputComponent } from '@/app/component/customInput/Input';
+import { estimateRequestService } from '@/app/services/estimates.service';
+import { estimateSummary } from '@/redux/estimate/estimateRequest.slice';
+import { useDispatch } from 'react-redux';
 
 interface Props {
   setPrevNext: Dispatch<SetStateAction<number>>;
@@ -46,20 +47,31 @@ interface basicInformation {
 }
 
 const Summary = ({ setPrevNext }: Props) => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const estimateId: null | string = searchParams.get('estimateId');
+
   const { generateEstimateDetail } = useSelector(selectGeneratedEstimateDetail);
+
   const [estimateDetailsSummary, setEstimateDetailsSummary] = useState<{
     takeOffDetail: basicInformation;
     scopeDetail: Object[];
   }>();
-  const [pdfData, setPdfData] = useState<Object[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [subcostRecord, setSubcostRecord] = useState<Number>(0);
   const [totalCostRecord, setTotalCostRecord] = useState<any>(0);
-  const [saveChanges, setSaveChanges] = useState(false);
+  const [totalCostBaseRecord, setTotalCostBaseRecord] = useState<any>(0);
   const [estimatesRecords, setEstimatesRecords] = useState([]);
-  const [detail, setDetail] = useState<any>({
+  const [totalBidDetail, setTotalBidDetail] = useState<any>({
     materialTax: 0,
     overheadAndProfit: 0,
     bondFee: 0,
+  });
+  const [totalBaseBidDetail, setTotalBaseBidDetail] = useState({
+    materialTax: totalCostBaseRecord,
+    overheadAndProfit: totalCostBaseRecord,
+    bondFee: totalCostBaseRecord,
   });
 
   useEffect(() => {
@@ -89,35 +101,68 @@ const Summary = ({ setPrevNext }: Props) => {
 
       setEstimatesRecords(updatedDataArray);
       setSubcostRecord(totalCostForAllRecords);
+      setTotalCostBaseRecord(totalCostForAllRecords);
       setTotalCostRecord(totalCostForAllRecords);
 
-      const transformedArray = updatedDataArray.flatMap(({ data }: any) =>
-        data.map(({ description, qty, totalCostRecord }: any) => ({
-          description,
-          quantity: qty,
-          totalPrice: totalCostRecord,
-        }))
-      );
-
-      setPdfData(transformedArray);
+  
     }
   }, [generateEstimateDetail]);
 
   useEffect(() => {
-    const hasValue = Object.values(detail).some((value) => value !== 0);
-    if (hasValue) {
-      const materialTaxValue = detail.materialTax;
-      const overheadAndProfitValue = detail.overheadAndProfit;
-      const bondFeeValue = detail.bondFee;
+    handleDetailChange('materialTax', totalBidDetail.materialTax);
+  }, [totalBidDetail.materialTax]);
 
-      const updatedTotalCostRecord =
-        totalCostRecord *
-        (1 + materialTaxValue / 100) *
-        (1 + overheadAndProfitValue / 100) *
-        (1 + bondFeeValue / 100);
-      setTotalCostRecord(updatedTotalCostRecord);
+  useEffect(() => {
+    handleDetailChange('overheadAndProfit', totalBidDetail.overheadAndProfit);
+  }, [totalBidDetail.overheadAndProfit]);
+
+  useEffect(() => {
+    handleDetailChange('bondFee', totalBidDetail.bondFee);
+  }, [totalBidDetail.bondFee]);
+
+  useEffect(() => {
+    const sum: any = Object.values(totalBaseBidDetail).reduce(
+      (accumulator: any, currentValue: any) => accumulator + currentValue,
+      0
+    );
+    if (sum > 0) {
+      setTotalCostRecord(sum);
     }
-  }, [detail]);
+  }, [totalBaseBidDetail]);
+
+  const handleDetailChange = (key: any, value: any) => {
+    const updatedTotalCostRecord =
+      totalCostBaseRecord + (value * totalCostBaseRecord) / 100;
+    if (!isNaN(updatedTotalCostRecord)) {
+      const cost = { ...totalCostRecord };
+      cost[key] = updatedTotalCostRecord;
+      setTotalBaseBidDetail({ ...cost });
+    }
+  };
+
+  const generateBidHandler = async () => {
+    setIsLoading(true);
+    let obj = {
+      totalBidDetail: totalBidDetail,
+      totalCost: totalCostRecord,
+      estimateRequestID: estimateId,
+      estimateItems: generateEstimateDetail.scopeDetail,
+    };
+
+    dispatch(
+      estimateSummary({
+        ...obj,
+        estimateRequestID: estimateDetailsSummary?.takeOffDetail,
+      })
+    );
+
+    let result = await estimateRequestService.httpAddGeneratedEstimate(obj);
+
+    if (result.statusCode == 201) {
+      setIsLoading(false);
+      router.push(`/estimates/generate/${estimateId}`);
+    }
+  };
 
   return (
     <div>
@@ -134,33 +179,12 @@ const Summary = ({ setPrevNext }: Props) => {
             onClick={() => setPrevNext((prev) => prev - 1)}
           />
 
-          {saveChanges ? (
-            <PDFDownloadLink
-              document={
-                <ClientPDF
-                  data={estimateDetailsSummary}
-                  subcostRecord={subcostRecord}
-                  pdfData={pdfData}
-                />
-              }
-              fileName="somename.pdf"
-            >
-              {({ loading }) => (
-                <CustomButton
-                  isLoading={loading}
-                  loadingText="Downloading"
-                  text="Generate"
-                  className="!w-full"
-                />
-              )}
-            </PDFDownloadLink>
-          ) : (
-            <CustomButton
-              text="Save Changes"
-              className="!w-full"
-              onClick={() => setSaveChanges(true)}
-            />
-          )}
+          <CustomButton
+            text="Generate"
+            className="!w-full"
+            isLoading={isLoading}
+            onClick={generateBidHandler}
+          />
         </div>
       </div>
       {/* <PDFViewer className="h-full w-full">
@@ -234,14 +258,6 @@ const Summary = ({ setPrevNext }: Props) => {
               title={estimateDetailsSummary?.takeOffDetail?.projectName!}
               className="font-bold"
             />
-            {/* <div className="bg-silverGray rounded-s border border-solid border-Gainsboro cursor-pointer w-8 h-8 flex justify-center items-center">
-              <Image
-                src={'/chevron-down.svg'}
-                alt="icon"
-                width={16}
-                height={16}
-              />
-            </div> */}
           </div>
           <div className="grid grid-cols-5 grid-rows-2 mt-2 gap-y-2">
             {/* 1 */}
@@ -349,10 +365,10 @@ const Summary = ({ setPrevNext }: Props) => {
               name="materialTax"
               placeholder="Enter Material Tax"
               field={{
-                value: detail.materialTax,
+                value: totalBidDetail.materialTax,
                 onChange: (e) => {
-                  setDetail({
-                    ...detail,
+                  setTotalBidDetail({
+                    ...totalBidDetail,
                     materialTax: e.target.value,
                   });
                 },
@@ -367,10 +383,10 @@ const Summary = ({ setPrevNext }: Props) => {
               name="overheadAndProfit"
               placeholder="Enter Overhead & Profit"
               field={{
-                value: detail.overheadAndProfit,
+                value: totalBidDetail.overheadAndProfit,
                 onChange: (e) => {
-                  setDetail({
-                    ...detail,
+                  setTotalBidDetail({
+                    ...totalBidDetail,
                     overheadAndProfit: e.target.value,
                   });
                 },
@@ -385,10 +401,10 @@ const Summary = ({ setPrevNext }: Props) => {
               name="bondFee"
               placeholder="Enter Bond Fee"
               field={{
-                value: detail.bondFee,
+                value: totalBidDetail.bondFee,
                 onChange: (e) => {
-                  setDetail({
-                    ...detail,
+                  setTotalBidDetail({
+                    ...totalBidDetail,
                     bondFee: e.target.value,
                   });
                 },

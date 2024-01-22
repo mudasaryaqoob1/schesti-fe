@@ -25,7 +25,7 @@ import { categoriesService } from '@/app/services/categories.service';
 import { materialService } from '@/app/services/material.service';
 import { bg_style, btnStyle } from '@/globals/tailwindvariables';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import { estimateRequestService } from '@/app/services/estimateRequest.service';
+import { estimateRequestService } from '@/app/services/estimates.service';
 import { saveEstimateDetail } from '@/redux/estimate/estimateRequest.slice';
 import { selectGeneratedEstimateDetail } from '@/redux/estimate/estimateRequestSelector';
 
@@ -121,23 +121,25 @@ const Scope = ({ setPrevNext }: Props) => {
     subCategory: '',
     description: '',
     unit: '',
-    qty: 0,
+    qty: '',
     wastage: '5',
-    unitLabourHour: 0,
-    perHourLaborRate: 0,
-    unitMaterialCost: 0,
-    unitEquipments: 0,
+    unitLabourHour: '',
+    perHourLaborRate: '',
+    unitMaterialCost: '',
+    unitEquipments: '',
   });
   const calculateTotalCost = (record: DataType) => {
+    let perHourLaborRate = parseFloat(record.perHourLaborRate);
     let unitLabourHour = parseFloat(record.unitLabourHour);
     let quantity = parseFloat(record.qty);
-    let totalLabourCost = quantity * unitLabourHour;
     let unitMaterialCost = parseFloat(record.unitMaterialCost);
     let wastagePercentage = parseFloat(record.wastage);
-    let qtyWithWastage = quantity * (1 + wastagePercentage / 100);
+    let qtyWithWastage = quantity * (wastagePercentage / 100);
+    let totalLabourHours = quantity * unitLabourHour;
     let totalMeterialCost = unitMaterialCost * qtyWithWastage;
-    let unitEquipments = parseFloat(record.unitEquipments);
-    let result = totalLabourCost * totalMeterialCost * unitEquipments;
+    let totalLabourCost = totalLabourHours * perHourLaborRate;
+    let totalMaterialCost = unitMaterialCost * qtyWithWastage;
+    let result = totalLabourCost * totalMeterialCost * totalMaterialCost;
     return result.toFixed(2);
   };
   const fetchCategories = useCallback(async () => {
@@ -199,97 +201,7 @@ const Scope = ({ setPrevNext }: Props) => {
             })
             .filter((description: any) => description !== null);
 
-          // let uniqueUnitsSet = new Set();
-          // let fetchedUnits = result.data
-          //   .map((material: DataType) => {
-          //     const unit = material.unit;
-          //     if (!uniqueUnitsSet.has(unit)) {
-          //       uniqueUnitsSet.add(unit);
-          //       return {
-          //         label: unit,
-          //         value: unit,
-          //       };
-          //     } else {
-          //       return null;
-          //     }
-          //   })
-          //   .filter((unit: any) => unit !== null);
-
-          // let uniqueLabourHoursSet = new Set();
-
-          // let fetchUnitsLabourHours = result.data
-          //   .map((material: DataType) => {
-          //     const unitLabourHour = material.unitLabourHour;
-
-          //     if (!uniqueLabourHoursSet.has(unitLabourHour)) {
-          //       uniqueLabourHoursSet.add(unitLabourHour);
-          //       return {
-          //         label: unitLabourHour,
-          //         value: unitLabourHour,
-          //       };
-          //     } else {
-          //       return null;
-          //     }
-          //   })
-          //   .filter((unitLabourHour: any) => unitLabourHour !== null);
-          // let uniquePerHourLaborRatesSet = new Set();
-
-          // let fetchPerHourLabourRates = result.data
-          //   .map((material: DataType) => {
-          //     const perHourLaborRate = material.perHourLaborRate;
-
-          //     if (!uniquePerHourLaborRatesSet.has(perHourLaborRate)) {
-          //       uniquePerHourLaborRatesSet.add(perHourLaborRate);
-          //       return {
-          //         label: perHourLaborRate,
-          //         value: perHourLaborRate,
-          //       };
-          //     } else {
-          //       return null;
-          //     }
-          //   })
-          //   .filter((perHourLaborRate: any) => perHourLaborRate !== null);
-          // let uniqueUnitMaterialCostSet = new Set();
-
-          // let fetchUnitMaterialCost = result.data
-          //   .map((material: DataType) => {
-          //     const unitMaterialCost = material.unitMaterialCost;
-
-          //     if (!uniqueUnitMaterialCostSet.has(unitMaterialCost)) {
-          //       uniqueUnitMaterialCostSet.add(unitMaterialCost);
-          //       return {
-          //         label: unitMaterialCost,
-          //         value: unitMaterialCost,
-          //       };
-          //     } else {
-          //       return null;
-          //     }
-          //   })
-          //   .filter((unitMaterialCost: any) => unitMaterialCost !== null);
-          // let uniqueUnitEquipmentCostSet = new Set();
-
-          // let fetchUnitEquipmentCost = result.data
-          //   .map((material: DataType) => {
-          //     const unitEquipments = material.unitEquipments;
-
-          //     if (!uniqueUnitEquipmentCostSet.has(unitEquipments)) {
-          //       uniqueUnitEquipmentCostSet.add(unitEquipments);
-          //       return {
-          //         label: unitEquipments,
-          //         value: unitEquipments,
-          //       };
-          //     } else {
-          //       return null;
-          //     }
-          //   })
-          //   .filter((unitEquipments: any) => unitEquipments !== null);
-
           setEstimateDescriptions(fetchedDescriptions);
-          // setUnits(fetchedUnits);
-          // setUnitLabourHours(fetchUnitsLabourHours);
-          // setPerHourLabourRates(fetchPerHourLabourRates);
-          // setUnitMaterialCosts(fetchUnitMaterialCost);
-          // setUnitEquipmentCost(fetchUnitEquipmentCost);
         })
         .catch((error) => {
           console.log(error, 'error in fetch meterials');
@@ -312,14 +224,18 @@ const Scope = ({ setPrevNext }: Props) => {
       );
       setSingleEstimateData({
         ...SingleEstimateData,
-        perHourLaborRate: subCategoryPrice?.perHourLaborRate && 0,
+        perHourLaborRate: subCategoryPrice?.perHourLaborRate
+          ? subCategoryPrice?.perHourLaborRate
+          : 0,
         category: selectedCategory,
         subCategory: selectedSubCategory,
       });
 
       setSingleEstimateData((prev: any) => ({
         ...prev,
-        perHourLaborRate: subCategoryPrice?.perHourLaborRate && 0,
+        perHourLaborRate: subCategoryPrice?.perHourLaborRate
+          ? subCategoryPrice?.perHourLaborRate
+          : 0,
       }));
     }
     setEstimateDescriptions([]);
@@ -335,10 +251,16 @@ const Scope = ({ setPrevNext }: Props) => {
         category: selectedCategory,
         subCategory: selectedSubCategory,
         description: selecteddescription,
-        unit: findDescriptionDetail?.unit && 0,
-        unitLabourHour: findDescriptionDetail?.unitLabourHour && 0,
-        unitMaterialCost: findDescriptionDetail?.unitMaterialCost && 0,
-        unitEquipments: findDescriptionDetail?.unitEquipments && 0,
+        unit: findDescriptionDetail?.unit ? findDescriptionDetail?.unit : 0,
+        unitLabourHour: findDescriptionDetail?.unitLabourHour
+          ? findDescriptionDetail?.unitLabourHour
+          : 0,
+        unitMaterialCost: findDescriptionDetail?.unitMaterialCost
+          ? findDescriptionDetail?.unitMaterialCost
+          : 0,
+        unitEquipments: findDescriptionDetail?.unitEquipments
+          ? findDescriptionDetail?.unitEquipments
+          : 0,
       });
     }
   }, [selecteddescription]);
@@ -503,7 +425,19 @@ const Scope = ({ setPrevNext }: Props) => {
       render: (text: string, record: DataType) => {
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
-        let result = quantity * (1 + wastagePercentage / 100);
+        let result = quantity * (wastagePercentage / 100);
+        return result.toFixed(2);
+      },
+    },
+    {
+      title: 'Total Labour Hours',
+      dataIndex: 'totalLabourHours',
+      align: 'center',
+      width: 150,
+      render: (text: string, record: DataType) => {
+        let unitLabourHour = parseFloat(record.unitLabourHour);
+        let quantity = parseFloat(record.qty);
+        let result = quantity * unitLabourHour;
         return result.toFixed(2);
       },
     },
@@ -521,7 +455,9 @@ const Scope = ({ setPrevNext }: Props) => {
       render: (text: string, record: DataType) => {
         let unitLabourHour = parseFloat(record.unitLabourHour);
         let quantity = parseFloat(record.qty);
-        let result = quantity * unitLabourHour;
+        let perHourLaborRate = parseFloat(record.perHourLaborRate);
+        let totalLabourHours = quantity * unitLabourHour;
+        let result = totalLabourHours * perHourLaborRate;
         return result.toFixed(2);
       },
     },
@@ -540,7 +476,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let unitMaterialCost = parseFloat(record.unitMaterialCost);
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
-        let qtyWithWastage = quantity * (1 + wastagePercentage / 100);
+        let qtyWithWastage = quantity * (wastagePercentage / 100);
         let result = unitMaterialCost * qtyWithWastage;
         return result.toFixed(2);
       },
@@ -631,7 +567,19 @@ const Scope = ({ setPrevNext }: Props) => {
       render: (text: string, record: DataType) => {
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
-        let result = quantity * (1 + wastagePercentage / 100);
+        let result = quantity * (wastagePercentage / 100);
+        return result.toFixed(2);
+      },
+    },
+    {
+      title: 'Total Labour Hours',
+      dataIndex: 'totalLabourHours',
+      align: 'center',
+      width: 150,
+      render: (text: string, record: DataType) => {
+        let unitLabourHour = parseFloat(record.unitLabourHour);
+        let quantity = parseFloat(record.qty);
+        let result = quantity * unitLabourHour;
         return result.toFixed(2);
       },
     },
@@ -649,7 +597,9 @@ const Scope = ({ setPrevNext }: Props) => {
       render: (text: string, record: DataType) => {
         let unitLabourHour = parseFloat(record.unitLabourHour);
         let quantity = parseFloat(record.qty);
-        let result = quantity * unitLabourHour;
+        let perHourLaborRate = parseFloat(record.perHourLaborRate);
+        let totalLabourHours = quantity * unitLabourHour;
+        let result = totalLabourHours * perHourLaborRate;
         return result.toFixed(2);
       },
     },
@@ -668,7 +618,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let unitMaterialCost = parseFloat(record.unitMaterialCost);
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
-        let qtyWithWastage = quantity * (1 + wastagePercentage / 100);
+        let qtyWithWastage = quantity * (wastagePercentage / 100);
         let result = unitMaterialCost * qtyWithWastage;
         return result.toFixed(2);
       },

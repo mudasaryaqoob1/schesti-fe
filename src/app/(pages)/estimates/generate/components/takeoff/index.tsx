@@ -17,7 +17,7 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import MinDesc from '@/app/component/description/minDesc';
 import { saveEstimateDetail } from '@/redux/estimate/estimateRequest.slice';
 import { bg_style, senaryHeading } from '@/globals/tailwindvariables';
-import { estimateRequestService } from '@/app/services/estimateRequest.service';
+import { estimateRequestService } from '@/app/services/estimates.service';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { useSelector } from 'react-redux';
 import { HttpService } from '@/app/services/base.service';

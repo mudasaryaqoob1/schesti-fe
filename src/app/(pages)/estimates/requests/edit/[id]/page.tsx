@@ -21,7 +21,7 @@ import QuaternaryHeading from '@/app/component/headings/quaternary';
 import CustomWhiteButton from '@/app/component/customButton/white';
 import ModalComponent from '@/app/component/modal';
 import FormControl from '@/app/component/formControl';
-import { estimateRequestService } from '@/app/services/estimateRequest.service';
+import { estimateRequestService } from '@/app/services/estimates.service';
 import { userService } from '@/app/services/user.service';
 import { selectEstimateRequests } from '@/redux/estimate/estimateRequestSelector';
 import ExistingClient from '../../existingClient';

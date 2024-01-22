@@ -20,18 +20,19 @@ interface DataType {
 
 
 const calculateTotalCost = (record: DataType) => {
+  let perHourLaborRate = parseFloat(record.perHourLaborRate);
   let unitLabourHour = parseFloat(record.unitLabourHour);
   let quantity = parseFloat(record.qty);
-  let totalLabourCost = quantity * unitLabourHour;
   let unitMaterialCost = parseFloat(record.unitMaterialCost);
   let wastagePercentage = parseFloat(record.wastage);
-  let qtyWithWastage = quantity * (1 + wastagePercentage / 100);
+  let qtyWithWastage = quantity * (wastagePercentage / 100);
+  let totalLabourHours = quantity * unitLabourHour;
   let totalMeterialCost = unitMaterialCost * qtyWithWastage;
-  let unitEquipments = parseFloat(record.unitEquipments);
-  let result = totalLabourCost * totalMeterialCost * unitEquipments;
+  let totalLabourCost = totalLabourHours * perHourLaborRate;
+  let totalMaterialCost = unitMaterialCost * qtyWithWastage;
+  let result = totalLabourCost * totalMeterialCost * totalMaterialCost;
   return result.toFixed(2);
 };
-
 
 const confirmColumns: any = [
   {
@@ -67,7 +68,19 @@ const confirmColumns: any = [
     render: (text: string, record: DataType) => {
       let quantity = parseFloat(record.qty);
       let wastagePercentage = parseFloat(record.wastage);
-      let result = quantity * (1 + wastagePercentage / 100);
+      let result = quantity * (wastagePercentage / 100);
+      return result.toFixed(2);
+    },
+  },
+  {
+    title: 'Total Labour Hours',
+    dataIndex: 'totalLabourHours',
+    align: 'center',
+    width: 150,
+    render: (text: string, record: DataType) => {
+      let unitLabourHour = parseFloat(record.unitLabourHour);
+      let quantity = parseFloat(record.qty);
+      let result = quantity * unitLabourHour;
       return result.toFixed(2);
     },
   },
@@ -85,7 +98,9 @@ const confirmColumns: any = [
     render: (text: string, record: DataType) => {
       let unitLabourHour = parseFloat(record.unitLabourHour);
       let quantity = parseFloat(record.qty);
-      let result = quantity * unitLabourHour;
+      let perHourLaborRate = parseFloat(record.perHourLaborRate);
+      let totalLabourHours = quantity * unitLabourHour;
+      let result = totalLabourHours * perHourLaborRate;
       return result.toFixed(2);
     },
   },
@@ -104,7 +119,7 @@ const confirmColumns: any = [
       let unitMaterialCost = parseFloat(record.unitMaterialCost);
       let quantity = parseFloat(record.qty);
       let wastagePercentage = parseFloat(record.wastage);
-      let qtyWithWastage = quantity * (1 + wastagePercentage / 100);
+      let qtyWithWastage = quantity * (wastagePercentage / 100);
       let result = unitMaterialCost * qtyWithWastage;
       return result.toFixed(2);
     },
@@ -125,7 +140,6 @@ const confirmColumns: any = [
     title: 'Total Cost',
     dataIndex: 'totalCost',
     align: 'center',
-    fixed: 'right',
     width: 150,
     render: (text: string, record: DataType) => {
       let result = calculateTotalCost(record);
