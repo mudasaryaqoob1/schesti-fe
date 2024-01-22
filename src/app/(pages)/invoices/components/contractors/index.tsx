@@ -2,6 +2,7 @@ import type { ColumnsType } from 'antd/es/table';
 import { Dropdown, Table, type MenuProps } from 'antd';
 import { useRouter } from 'next/navigation';
 import { SearchOutlined, } from '@ant-design/icons';
+import { saveAs } from 'file-saver'
 
 import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
@@ -20,7 +21,6 @@ export function Contractors() {
   const dispatch = useDispatch<AppDispatch>();
   const subcontractersInvoices = useSelector(selectInvoices);
   const subcontractersInvoicesLoading = useSelector(selectInvoicesLoading);
-
 
   const fetchSubcontactorsInvoices = useCallback(async () => {
     await dispatch(fetchSubcontractorInvoices({}));
@@ -63,6 +63,7 @@ export function Contractors() {
     } else if (key === 'view') {
       router.push(`/invoices/view/${record._id}`);
     }
+
   }
   const columns: ColumnsType<IInvoice> = [
     {
