@@ -122,7 +122,13 @@ export function G703Component({ setState, state }: Props) {
                 ]}
                 colWidths={[50, 50, 100, 50, 100, 50, 50]}
                 nestedHeaders={[
-                    ['Description of work', 'Scheduled value', { label: 'Work Completed', colspan: 2 }, 'MATERIALS PRESENTLY STORED (NOT IN D OR E)', { label: 'Work Completed', colspan: 2 }, "BALANCE (C - G)", "RETAINAGE (IF VARIABLE RATE) 5%"],
+                    ['Description of work', // "A"
+                        'Scheduled value', // "B"
+                        { label: 'Work Completed', colspan: 2 },  // "C", "D"
+                        'MATERIALS PRESENTLY STORED (NOT IN D OR E)',  // "E"
+                        { label: 'Work Completed', colspan: 2 },  // "F" , "G"
+                        "BALANCE (C - G)", "RETAINAGE (IF VARIABLE RATE) 5%" // "`H`"
+                    ],
                     ['', '', 'From previous application (D+E)', 'This period', '', 'TOTAL COMPLETED AND STORED TO DATE (D+E+F)', '% (G ÷ C)', '', ""],
                 ]}
                 formulas={{
