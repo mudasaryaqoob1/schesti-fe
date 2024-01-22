@@ -127,7 +127,8 @@ export function G703Component({ setState, state }: Props) {
                         { label: 'Work Completed', colspan: 2 },  // "C", "D"
                         'MATERIALS PRESENTLY STORED (NOT IN D OR E)',  // "E"
                         { label: 'Work Completed', colspan: 2 },  // "F" , "G"
-                        "BALANCE (C - G)", "RETAINAGE (IF VARIABLE RATE) 5%" // "`H`"
+                        "BALANCE (C - G)",
+                        "RETAINAGE (IF VARIABLE RATE) 5%" // "`H`"
                     ],
                     ['', '', 'From previous application (D+E)', 'This period', '', 'TOTAL COMPLETED AND STORED TO DATE (D+E+F)', '% (G ÷ C)', '', ""],
                 ]}

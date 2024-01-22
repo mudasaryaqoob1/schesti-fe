@@ -4,7 +4,6 @@ export type G703State = {
     periodTo: string,
     projectNo: string;
     data: Array<G703Row>;
-    phase: string;
 }
 export type G703Row = [string, string, string, string, string, string, string, string, string];
 

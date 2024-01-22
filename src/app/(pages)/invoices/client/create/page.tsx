@@ -28,7 +28,6 @@ export default function CreateClientInvoicePage() {
     applicationDate: "",
     periodTo: "",
     projectNo: "",
-    phase: '',
     data: [
       rowTemplate(1)
     ],
