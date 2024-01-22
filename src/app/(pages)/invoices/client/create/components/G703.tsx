@@ -1,5 +1,5 @@
 'use client'
-import React, { } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { Divider, Select } from "antd";
 import { HotTable, } from '@handsontable/react';
 import { } from 'handsontable';
@@ -12,19 +12,27 @@ import CustomButton from "@/app/component/customButton/button";
 import WhiteButton from "@/app/component/customButton/white";
 import PrimaryHeading from "@/app/component/headings/primary";
 import QuaternaryHeading from "@/app/component/headings/quaternary";
-import { G703Row } from "../utils";
+import { G703Row, G703State, rowTemplate } from "../utils";
 
 
 // register Handsontable's modules
 registerAllModules();
 
 type Props = {
-    data: Array<G703Row>,
-    addRow: () => void,
-    getCalculatedRows: () => G703Row
+    state: G703State,
+    setState: Dispatch<SetStateAction<G703State>>
 }
-export function G703Component({ addRow, data, getCalculatedRows }: Props) {
+export function G703Component({ setState, state }: Props) {
+    function addRow() {
+        // add rowTempate in data
+        setState({ ...state, data: [...state.data, rowTemplate(state.data.length + 1)] })
+    }
 
+    // getCalculatedRows
+    function getCalculatedRows(): G703Row {
+        const data = state.data
+        return ["GRAND TOTAL", `=SUM(B1:B${data.length})`, `=SUM(C1:C${data.length})`, `=SUM(D1:D${data.length})`, `=SUM(E1:E${data.length})`, `=SUM(F1:F${data.length})`, `=SUM(G1:G${data.length})`, `=SUM(H1:H${data.length})`, `=SUM(I1:I${data.length})`]
+    }
     return <section>
         <div className="flex justify-between items-center">
             <div>
@@ -109,8 +117,9 @@ export function G703Component({ addRow, data, getCalculatedRows }: Props) {
         <div className="px-4">
             <HotTable
                 data={[
-                    ...data,
-                    getCalculatedRows()]}
+                    ...state.data,
+                    getCalculatedRows()
+                ]}
                 colWidths={[50, 50, 100, 50, 100, 50, 50]}
                 nestedHeaders={[
                     ['Description of work', 'Scheduled value', { label: 'Work Completed', colspan: 2 }, 'MATERIALS PRESENTLY STORED (NOT IN D OR E)', { label: 'Work Completed', colspan: 2 }, "BALANCE (C - G)", "RETAINAGE (IF VARIABLE RATE) 5%"],

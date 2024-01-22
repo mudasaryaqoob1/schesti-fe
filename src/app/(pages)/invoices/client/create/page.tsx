@@ -11,18 +11,12 @@ import TertiaryHeading from "@/app/component/headings/tertiary";
 import QuaternaryHeading from "@/app/component/headings/quaternary";
 import { G703Component } from "./components/G703";
 import { G702Component } from "./components/G702";
-import { type G703Row, rowTemplate } from "./utils";
+import { rowTemplate, type G703State } from "./utils";
 
 
 const G703_KEY = "G703";
 const G702_KEY = "G702";
-type G703State = {
-  applicationNo: string,
-  applicationDate: string,
-  periodTo: string,
-  projectNo: string;
-  data: Array<G703Row>;
-}
+
 
 export default function CreateClientInvoicePage() {
   const token = useSelector(selectToken);
@@ -45,16 +39,7 @@ export default function CreateClientInvoicePage() {
     }
   }, [token]);
 
-  function addRow() {
-    // add rowTempate in data
-    setG703State({ ...g703State, data: [...g703State.data, rowTemplate(g703State.data.length + 1)] })
-  }
 
-  // getCalculatedRows
-  function getCalculatedRows(): G703Row {
-    const data = g703State.data
-    return ["GRAND TOTAL", `=SUM(B1:B${data.length})`, `=SUM(C1:C${data.length})`, `=SUM(D1:D${data.length})`, `=SUM(E1:E${data.length})`, `=SUM(F1:F${data.length})`, `=SUM(G1:G${data.length})`, `=SUM(H1:H${data.length})`, `=SUM(I1:I${data.length})`]
-  }
 
   return (
     <section className="mx-16 my-2">
@@ -96,9 +81,9 @@ export default function CreateClientInvoicePage() {
                 tabKey: type,
                 children:
                   tab === G703_KEY ? <G703Component
-                    addRow={addRow}
-                    getCalculatedRows={getCalculatedRows}
-                    data={g703State.data}
+                    state={g703State}
+                    setState={setG703State}
+
                   /> : <G702Component />
               };
             })}
