@@ -131,6 +131,13 @@ export function G703Component({ setState, state }: Props) {
                     ],
                     ['', '', 'From previous application (D+E)', 'This period', '', 'TOTAL COMPLETED AND STORED TO DATE (D+E+F)', '% (G ÷ C)', '', ""],
                 ]}
+                cells={(row, col) => {
+                    let cellProperties = {};
+                    if (col === 2) {
+                        cellProperties.readOnly = true;
+                    }
+                    return cellProperties;
+                }}
                 formulas={{
                     engine: HyperFormula,
                 }}
