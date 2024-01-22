@@ -13,6 +13,7 @@ import { AppDispatch } from '@/redux/store';
 import { selectInvoices, selectInvoicesLoading } from '@/redux/invoice/invoice.selector';
 import type { IInvoice } from '@/app/interfaces/invoices.interface';
 import Image from 'next/image';
+import moment from 'moment';
 
 export function Contractors() {
   const router = useRouter();
@@ -80,10 +81,16 @@ export function Contractors() {
     {
       title: 'Invoice Date',
       dataIndex: 'issueDate',
+      render(value) {
+        return <p>{moment(value).format('DD/MM/YYYY')}</p>;
+      },
     },
     {
       title: 'Payment Due',
       dataIndex: 'dueDate',
+      render(value) {
+        return <p>{moment(value).format('DD/MM/YYYY')}</p>;
+      },
     },
     {
       title: 'Total Payable',

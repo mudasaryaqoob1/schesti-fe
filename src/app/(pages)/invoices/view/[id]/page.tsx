@@ -15,6 +15,7 @@ import { ConfigProvider, Divider } from "antd";
 import CustomButton from "@/app/component/customButton/button";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import ClientPDF from "./clientPDF";
+import moment from "moment";
 
 
 
@@ -133,7 +134,9 @@ export default function ViewSubcontractorInvoicePage() {
                     />
 
                     <QuaternaryHeading
-                        title={invoiceData.issueDate}
+                        title={moment(invoiceData.issueDate).format(
+                            "MM/DD/YYYY"
+                        )}
                     />
                 </div>
                 <div>
@@ -143,7 +146,9 @@ export default function ViewSubcontractorInvoicePage() {
                     />
 
                     <QuaternaryHeading
-                        title={invoiceData.dueDate}
+                        title={moment(invoiceData.dueDate).format(
+                            "MM/DD/YYYY"
+                        )}
                     />
                 </div>
                 <div>
