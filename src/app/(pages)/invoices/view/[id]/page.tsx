@@ -13,6 +13,9 @@ import QuaternaryHeading from "@/app/component/headings/quaternary";
 import Table, { type ColumnType } from "antd/es/table";
 import { ConfigProvider, Divider } from "antd";
 import CustomButton from "@/app/component/customButton/button";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import ClientPDF from "./clientPDF";
+import moment from "moment";
 
 
 
@@ -131,7 +134,9 @@ export default function ViewSubcontractorInvoicePage() {
                     />
 
                     <QuaternaryHeading
-                        title={invoiceData.issueDate}
+                        title={moment(invoiceData.issueDate).format(
+                            "MM/DD/YYYY"
+                        )}
                     />
                 </div>
                 <div>
@@ -141,7 +146,9 @@ export default function ViewSubcontractorInvoicePage() {
                     />
 
                     <QuaternaryHeading
-                        title={invoiceData.dueDate}
+                        title={moment(invoiceData.dueDate).format(
+                            "MM/DD/YYYY"
+                        )}
                     />
                 </div>
                 <div>
@@ -264,10 +271,24 @@ export default function ViewSubcontractorInvoicePage() {
         </div>
         <Divider />
         <div className="mt-4 flex justify-end">
-            <CustomButton
-                text="Download"
-                className="!w-48"
-            />
+            <PDFDownloadLink
+                document={
+                    <ClientPDF
+                        invoice={invoiceData}
+                    />
+                }
+                fileName="invoice.pdf"
+            >
+                {({ loading }) => (
+                    <CustomButton
+                        isLoading={loading}
+                        loadingText="Downloading"
+                        text={loading ? "Downloading..." : "Download"}
+                        className="!w-48"
+                    />
+                )}
+            </PDFDownloadLink>
+
         </div>
     </section>
 }

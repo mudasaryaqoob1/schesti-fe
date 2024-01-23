@@ -1,31 +1,38 @@
 'use client'
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { Divider, Select } from "antd";
-// import { HotTable, } from '@handsontable/react';
-// import { } from 'handsontable';
-// import { registerAllModules } from 'handsontable/registry';
-// import 'handsontable/dist/handsontable.full.min.css';
+import { HotTable, } from '@handsontable/react';
+import { } from 'handsontable';
+import { registerAllModules } from 'handsontable/registry';
+import 'handsontable/dist/handsontable.full.min.css';
+import { HyperFormula } from 'hyperformula';
 
 
 import CustomButton from "@/app/component/customButton/button";
 import WhiteButton from "@/app/component/customButton/white";
 import PrimaryHeading from "@/app/component/headings/primary";
 import QuaternaryHeading from "@/app/component/headings/quaternary";
+import { G703Row, G703State, rowTemplate } from "../utils";
 
 
 // register Handsontable's modules
-// registerAllModules();
+registerAllModules();
 
-export function G703Component() {
+type Props = {
+    state: G703State,
+    setState: Dispatch<SetStateAction<G703State>>
+}
+export function G703Component({ setState, state }: Props) {
+    function addRow() {
+        // add rowTempate in data
+        setState({ ...state, data: [...state.data, rowTemplate(state.data.length + 1)] })
+    }
 
-    const data = [
-        ['A1', 'B1', 'C1', 'D1', 'E1', 'F1', 'G1', 'H1', 'I1',],
-        ['A2', 'B2', 'C2', 'D2', 'E2', 'F2', 'G2', 'H2', 'I2',],
-        ['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'H3', 'I3',],
-        ['A4', 'B4', 'C4', 'D4', 'E4', 'F4', 'G4', 'H4', 'I4',],
-        ['A5', 'B5', 'C5', 'D5', 'E5', 'F5', 'G5', 'H5', 'I5',],
-    ];
-
+    // getCalculatedRows
+    function getCalculatedRows(): G703Row {
+        const data = state.data
+        return ["GRAND TOTAL", `=SUM(B1:B${data.length})`, `=SUM(C1:C${data.length})`, `=SUM(D1:D${data.length})`, `=SUM(E1:E${data.length})`, `=SUM(F1:F${data.length})`, `=SUM(G1:G${data.length})`, `=SUM(H1:H${data.length})`, `=SUM(I1:I${data.length})`]
+    }
     return <section>
         <div className="flex justify-between items-center">
             <div>
@@ -107,27 +114,59 @@ export function G703Component() {
         </div >
 
         {/* Spreadsheet */}
-        {/* <div className="px-4 ">
+        <div className="px-4">
             <HotTable
-                data={data}
-                nestedHeaders={[
-                    ['Description of work', 'Scheduled value', { label: 'Work Completed', colspan: 2 }, 'MATERIALS PRESENTLY STORED (NOT IN D OR E)', { label: 'Work Completed', colspan: 2 }, "BALANCE (C - G)", "RETAINAGE (IF VARIABLE RATE) 5%"],
-                    ['', '', 'From previous application (D+E)', 'This period', '', 'TOTAL COMPLETED AND STORED TO DATE (D+E+F)', '% (G ÷ C)', '', ''],
+                data={[
+                    ...state.data,
+                    getCalculatedRows()
                 ]}
+                colWidths={[50, 50, 100, 50, 100, 50, 50]}
+                nestedHeaders={[
+                    ['Description of work', // "A"
+                        'Scheduled value', // "B"
+                        { label: 'Work Completed', colspan: 2 },  // "C", "D"
+                        'MATERIALS PRESENTLY STORED (NOT IN D OR E)',  // "E"
+                        { label: 'Work Completed', colspan: 2 },  // "F" , "G"
+                        "BALANCE (C - G)",
+                        "RETAINAGE (IF VARIABLE RATE) 5%" // "`H`"
+                    ],
+                    ['', '', 'From previous application (D+E)', 'This period', '', 'TOTAL COMPLETED AND STORED TO DATE (D+E+F)', '% (G ÷ C)', '', ""],
+                ]}
+                cells={(row, col) => {
+                    let cellProperties = {};
+                    if (col === 2) {
+                        cellProperties.readOnly = true;
+                    }
+                    return cellProperties;
+                }}
+                formulas={{
+                    engine: HyperFormula,
+                }}
                 licenseKey="non-commercial-and-evaluation"
                 rowHeaders={true}
                 colHeaders={true}
                 height="auto"
                 autoWrapRow={true}
                 autoWrapCol={true}
-                allowInsertRow
-                contextMenu
+                contextMenu={
+                    {
+                        items: [
+                            {
+                                "name": "Add Row",
+                                callback() {
+                                    addRow();
+                                },
+
+                            }
+                        ]
+                    }
+                }
                 className="clientTable"
             />
-        </div> */}
+        </div>
         {/* END Spreadsheet */}
 
-        <div className="flex justify-end space-x-4">
+        <div className="flex justify-end space-x-4 mt-2">
             <WhiteButton
                 text="Cancel"
                 className="!w-40"
