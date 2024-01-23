@@ -137,7 +137,7 @@ export function Contractors() {
           <div className="w-96 ">
             <InputComponent
               label=""
-              type='text'
+              type="text"
               placeholder="Search"
               name="search"
               prefix={<SearchOutlined />}

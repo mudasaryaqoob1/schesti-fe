@@ -163,7 +163,7 @@ export function G703Component({ setState, state }: Props) {
             ],
           ]}
           cells={(row, col) => {
-            let cellProperties : any = {};
+            let cellProperties: any = {};
             if (col === 2) {
               cellProperties.readOnly = true;
             }

@@ -90,7 +90,7 @@ export function Clients() {
           <div className="w-96 ">
             <InputComponent
               label=""
-              type='text'
+              type="text"
               placeholder="Search"
               name="search"
               prefix={<SearchOutlined />}
@@ -129,7 +129,7 @@ export function Clients() {
               <div className="px-6 py-2.5">
                 <InputComponent
                   label="Invoice Name"
-                  type='text'
+                  type="text"
                   placeholder="Enter invoice name"
                   name="invoiceName"
                   field={{

@@ -441,7 +441,7 @@ const EditSubcontractorInvoice = () => {
                       <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-1 gap-4 mt-3">
                         <InputComponent
                           label="Description"
-                          type='text'
+                          type="text"
                           name="invoiceDetailDescription"
                           placeholder="Enter description here"
                           field={{
@@ -458,7 +458,7 @@ const EditSubcontractorInvoice = () => {
                           <div className="flex-1">
                             <InputComponent
                               label="Quantity"
-                              type='text'
+                              type="text"
                               name="quantity"
                               placeholder="Enter quantity here"
                               field={{
@@ -477,7 +477,7 @@ const EditSubcontractorInvoice = () => {
                             <InputComponent
                               label="Unit Cost"
                               name="unitCost"
-                              type='number'
+                              type="number"
                               placeholder="Enter unit cost here"
                               field={{
                                 value: detail.unitCost,
