@@ -15,10 +15,11 @@ export const estimateSlice = createSlice({
         scopeDetail: payload.scopeDetail,
       };
     },
+    estimateSummary: (state, { payload }) => {
+      state.estimateSummary = payload;
+    },
   },
   extraReducers: (builder) => {
-    // fetch all estimate requests
-
     builder.addCase(fetchEstimateRequests.pending, (state) => {
       state.loading = true;
     });
@@ -56,5 +57,5 @@ export const estimateSlice = createSlice({
   },
 });
 
-export const { saveEstimateDetail } = estimateSlice.actions;
+export const { saveEstimateDetail, estimateSummary } = estimateSlice.actions;
 export default estimateSlice.reducer;

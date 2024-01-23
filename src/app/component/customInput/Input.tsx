@@ -12,12 +12,14 @@ type Props = {
   inputStyle?: ClassValue;
   hasError?: boolean;
   field?: InputProps;
+  type: string;
 };
 
 export function InputComponent({
   label,
   labelStyle,
   name,
+  type,
   prefix,
   placeholder,
   maxLength,
@@ -44,6 +46,7 @@ export function InputComponent({
       {({ field }: { field: any }) => ( */}
       <Input
         id={name}
+        type={type}
         prefix={prefix}
         className={twMerge(
           clsx(

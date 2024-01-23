@@ -101,12 +101,11 @@ a {
   border: 1px solid #cbd5e0 !important;
 }
 
-
 @layer components {
-  .clientTable thead th span{
+  .clientTable thead th span {
     @apply text-center block whitespace-normal font-normal text-base;
   }
-  
+
   .clientTable thead th {
     @apply text-graphiteGray h-9;
   }

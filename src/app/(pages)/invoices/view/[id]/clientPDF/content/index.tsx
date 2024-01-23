@@ -22,10 +22,9 @@ const infoStyles = StyleSheet.create({
 
 type Props = {
   invoice: IInvoice;
-}
+};
 
 export function PageContent({ invoice }: Props) {
-
   return (
     <View style={styles.content}>
       {/* INFO */}
@@ -38,16 +37,17 @@ export function PageContent({ invoice }: Props) {
           />
           <InfoContainer
             title="Recipient"
-            description={invoice.subContractorFirstName + ' ' + invoice.subContractorLastName}
+            description={
+              invoice.subContractorFirstName +
+              ' ' +
+              invoice.subContractorLastName
+            }
           />
           <InfoContainer
             title="Job site"
             description={`${invoice.subContractorAddress}`}
           />
-          <InfoContainer
-            title="Property"
-            description={invoice.projectName}
-          />
+          <InfoContainer title="Property" description={invoice.projectName} />
           <InfoContainer
             title="Company Name"
             description={invoice.subContractorCompanyName}
@@ -60,7 +60,10 @@ export function PageContent({ invoice }: Props) {
       </View>
 
       {/* Table */}
-      <PdfTable items={invoice.invoiceItems} totalAmount={invoice.invoiceItems.reduce((a, b) => a + b.total, 0)} />
+      <PdfTable
+        items={invoice.invoiceItems}
+        totalAmount={invoice.invoiceItems.reduce((a, b) => a + b.total, 0)}
+      />
       {/* END Table */}
 
       {/*  Approval */}

@@ -20,7 +20,10 @@ import ModalComponent from '@/app/component/modal';
 import ExistingSubContractor from './ExistingSubContractors';
 import { useRouter } from 'next/navigation';
 import { InputComponent } from '@/app/component/customInput/Input';
-import { CreateInvoiceData, invoiceService } from '@/app/services/invoices.service';
+import {
+  CreateInvoiceData,
+  invoiceService,
+} from '@/app/services/invoices.service';
 import { toast } from 'react-toastify';
 import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 
@@ -183,8 +186,17 @@ const CreateInvoice = () => {
     }, 0);
   }
 
-  function calculateTotalPayable(taxes: number, profitAndOverhead: number, discount: number) {
-    return (calculateSubTotal() + taxes) - discount + (calculateSubTotal() * (profitAndOverhead / 100));
+  function calculateTotalPayable(
+    taxes: number,
+    profitAndOverhead: number,
+    discount: number
+  ) {
+    return (
+      calculateSubTotal() +
+      taxes -
+      discount +
+      calculateSubTotal() * (profitAndOverhead / 100)
+    );
   }
 
   function submitHandler(values: any) {
@@ -207,11 +219,12 @@ const CreateInvoice = () => {
       ),
     };
 
-    invoiceService.httpAddNewInvoice(data)
+    invoiceService
+      .httpAddNewInvoice(data)
       .then((response) => {
         if (response.statusCode == 201) {
           setIsLoading(false);
-          router.push("/invoices")
+          router.push('/invoices');
         }
       })
       .catch(({ response }: any) => {
@@ -227,8 +240,15 @@ const CreateInvoice = () => {
         validationSchema={newClientSchema}
         onSubmit={submitHandler}
       >
-        {({ handleSubmit, setFieldValue, values, handleBlur, errors, touched }) => {
-          console.log(errors)
+        {({
+          handleSubmit,
+          setFieldValue,
+          values,
+          handleBlur,
+          errors,
+          touched,
+        }) => {
+          console.log(errors);
           return (
             <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
               {/* Modal */}
@@ -245,7 +265,7 @@ const CreateInvoice = () => {
                     setFieldValue('subContractorAddress', address);
                     setFieldValue('subContractorCompanyName', companyRep);
                     setFieldValue('subContractorFirstName', name);
-                    console.log(phone)
+                    console.log(phone);
                     setFieldValue('subContractorEmail', email);
                     setFieldValue('subContractorPhoneNumber', Number(phone));
                   }}
@@ -409,6 +429,7 @@ const CreateInvoice = () => {
                       <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-1 gap-4 mt-3">
                         <InputComponent
                           label="Description"
+                          type="string"
                           name="invoiceDetailDescription"
                           placeholder="Enter description here"
                           field={{
@@ -426,6 +447,7 @@ const CreateInvoice = () => {
                             <InputComponent
                               label="Quantity"
                               name="quantity"
+                              type="string"
                               placeholder="Enter quantity here"
                               field={{
                                 type: 'number',
@@ -443,6 +465,7 @@ const CreateInvoice = () => {
                             <InputComponent
                               label="Unit Cost"
                               name="unitCost"
+                              type="string"
                               placeholder="Enter unit cost here"
                               field={{
                                 type: 'number',
@@ -573,7 +596,11 @@ const CreateInvoice = () => {
                   <div className="flex items-center space-x-2">
                     <QuaternaryHeading title="Total:" />
                     <QuinaryHeading
-                      title={`$${calculateTotalPayable(values['taxes'], Number(values['profitAndOverhead']), values['discount'])}`}
+                      title={`$${calculateTotalPayable(
+                        values['taxes'],
+                        Number(values['profitAndOverhead']),
+                        values['discount']
+                      )}`}
                       className="font-bold"
                     />
                   </div>
@@ -589,7 +616,11 @@ const CreateInvoice = () => {
                   <div></div>
                   <div className="flex space-x-3">
                     <Button text="Cancel" onClick={() => router.back()} />
-                    <ColoredButton isLoading={isLoading} type="submit" text="Send" />
+                    <ColoredButton
+                      isLoading={isLoading}
+                      type="submit"
+                      text="Send"
+                    />
                   </div>
                 </div>
               </div>
