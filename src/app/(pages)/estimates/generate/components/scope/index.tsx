@@ -109,13 +109,13 @@ const Scope = ({ setPrevNext }: Props) => {
   const [confirmEstimates, setConfirmEstimates] = useState<
     {
       title: string;
-      data: Object[];
+      scopeItems: Object[];
     }[]
   >([]);
   const [estimateData, setEstimateData] = useState<{
     title: string;
-    data: Object[];
-  }>({ title: '', data: [] });
+    scopeItems: Object[];
+  }>({ title: '', scopeItems: [] });
   const [SingleEstimateData, setSingleEstimateData] = useState<any>({
     category: '',
     subCategory: '',
@@ -212,9 +212,13 @@ const Scope = ({ setPrevNext }: Props) => {
 
   useEffect(() => {
     fetchCategories();
-    fetchSubCategories();
     fetchEstimateDetail();
   }, []);
+  useEffect(() => {
+    if (selectedCategory) {
+      fetchSubCategories();
+    }
+  }, [selectedCategory]);
 
   useEffect(() => {
     if (selectedCategory && selectedSubCategory) {
@@ -238,8 +242,7 @@ const Scope = ({ setPrevNext }: Props) => {
           : 0,
       }));
     }
-    setEstimateDescriptions([]);
-  }, [selectedCategory, selectedSubCategory]);
+  }, [selectedSubCategory]);
   useEffect(() => {
     if (selecteddescription) {
       const findDescriptionDetail: any = estimateDescriptions.find(
@@ -266,14 +269,14 @@ const Scope = ({ setPrevNext }: Props) => {
   }, [selecteddescription]);
 
   useEffect(() => {
-    if (generateEstimateDetail?.scopeDetail?.length) {
-      setConfirmEstimates(generateEstimateDetail?.scopeDetail);
+    if (generateEstimateDetail?.estimateScope?.length) {
+      setConfirmEstimates(generateEstimateDetail?.estimateScope);
     }
   }, [generateEstimateDetail]);
 
   const submitHandler = (
     estimateTableItemValues: InitialValuesType,
-    actions: any
+    // actions: any
   ) => {
     let generateRandomNumber = Math.floor(Math.random() * 103440 + 1);
     let selectedCategory = '';
@@ -296,20 +299,36 @@ const Scope = ({ setPrevNext }: Props) => {
       selectedCategory = `${estimateTableItemValues.category} ${estimateTableItemValues.subCategory}`;
     }
 
-    if (estimateData.data.length && estimateData.title !== selectedCategory) {
+    if (
+      estimateData.scopeItems.length &&
+      estimateData.title !== selectedCategory && !editItem && !editConfirmItem
+    ) {
       toast.warn('Please add first to create new one');
     } else {
       if (editItem && !editConfirmItem) {
-        const updateEstimateArray: any = estimateData.data.map(
+        const updateEstimateArray: any = estimateData.scopeItems.map(
           (dataItem: any) =>
             dataItem.index === estimateTableItemValues.index
               ? estimateTableItemValues
               : dataItem
         );
 
-        setEstimateData({ ...estimateData, data: updateEstimateArray });
+        setEstimateData({ ...estimateData, scopeItems: updateEstimateArray });
         setEditItem(false);
-        actions.resetForm({ values: initialValues });
+        // setEstimateDescriptions([]);
+        // setSingleEstimateData({
+        //   category: '',
+        //   subCategory: '',
+        //   description: '',
+        //   unit: '',
+        //   qty: '',
+        //   wastage: '5',
+        //   unitLabourHour: '',
+        //   perHourLaborRate: '',
+        //   unitMaterialCost: '',
+        //   unitEquipments: '',
+        // });
+        // actions.resetForm({ values: initialValues });
       } else if (!editItem && editConfirmItem) {
         const updateConfirmEstimateArray: any = confirmEstimates.map(
           (item: any) => {
@@ -327,30 +346,58 @@ const Scope = ({ setPrevNext }: Props) => {
 
         setConfirmEstimates(updateConfirmEstimateArray);
         setEditConfirmItem(false);
-        actions.resetForm({ values: initialValues });
+        // setEstimateDescriptions([]);
+
+        // setSingleEstimateData({
+        //   category: '',
+        //   subCategory: '',
+        //   description: '',
+        //   unit: '',
+        //   qty: '',
+        //   wastage: '5',
+        //   unitLabourHour: '',
+        //   perHourLaborRate: '',
+        //   unitMaterialCost: '',
+        //   unitEquipments: '',
+        // });
+        // actions.resetForm({ values: initialValues });
       } else {
         setEstimateData((prevData) => ({
           ...prevData,
           title: selectedCategory,
-          data: [
-            ...prevData.data,
+          scopeItems: [
+            ...prevData.scopeItems,
             { ...estimateTableItemValues, index: generateRandomNumber },
           ],
         }));
-        actions.resetForm({ values: initialValues });
+        // setEstimateDescriptions([]);
+
+        // setSingleEstimateData({
+        //   category: '',
+        //   subCategory: '',
+        //   description: '',
+        //   unit: '',
+        //   qty: '',
+        //   wastage: '5',
+        //   unitLabourHour: '',
+        //   perHourLaborRate: '',
+        //   unitMaterialCost: '',
+        //   unitEquipments: '',
+        // });
+        // actions.resetForm({ values: initialValues });
       }
     }
   };
 
   const deleteEstimateRecordHandler = (record: any) => {
     if (
-      estimateData.data.some(
+      estimateData.scopeItems.some(
         (dataItem: any) => dataItem.description === record.description
       )
     ) {
       setEstimateData({
         ...estimateData,
-        data: estimateData.data.filter(
+        scopeItems: estimateData.scopeItems.filter(
           (dataItem) => JSON.stringify(dataItem) !== JSON.stringify(record)
         ),
       });
@@ -369,7 +416,7 @@ const Scope = ({ setPrevNext }: Props) => {
       if (item && item.title === selectedCategory) {
         return {
           ...item,
-          data: item.data.filter(
+          data: item.scopeItems.filter(
             (dataItem: any) => dataItem.index !== record.index
           ),
         };
@@ -677,33 +724,44 @@ const Scope = ({ setPrevNext }: Props) => {
   ];
   const confirmEstimateHandler = (dataSource: {
     title: string;
-    data: Object[];
+    scopeItems: Object[];
   }) => {
-    setEstimateData({ title: '', data: [] });
+     setEstimateDescriptions([]);
+        setSingleEstimateData({
+          category: '',
+          subCategory: '',
+          description: '',
+          unit: '',
+          qty: '',
+          wastage: '5',
+          unitLabourHour: '',
+          perHourLaborRate: '',
+          unitMaterialCost: '',
+          unitEquipments: '',
+        });
+    setEstimateData({ title: '', scopeItems: [] });
     const index = confirmEstimates.findIndex(
       (item) => item.title === dataSource.title
     );
 
-    dataSource.data.forEach((record: any) => {
+    dataSource.scopeItems.forEach((record: any) => {
       record.totalCostRecord = calculateTotalCost(record);
     });
 
     if (index !== -1) {
       let modifyArray = confirmEstimates.map((item, i) =>
         i === index
-          ? { ...item, data: [...item.data, ...dataSource.data] }
+          ? { ...item, scopeItems: [...item.scopeItems, ...dataSource.scopeItems] }
           : item
       );
       setConfirmEstimates(modifyArray);
     } else {
-      let modifyArray = [...confirmEstimates, dataSource];
+      let modifyArray: any = [...confirmEstimates, dataSource];
       setConfirmEstimates(modifyArray);
     }
   };
 
   const nextStepHandler = () => {
-    console.log(confirmEstimates, 'confirmEstimatesconfirmEstimates');
-
     if (!confirmEstimates.length) {
       toast.warning('Please add div first then move forward');
       return;
@@ -711,8 +769,8 @@ const Scope = ({ setPrevNext }: Props) => {
       setPrevNext((prev) => prev + 1);
       dispatch(
         saveEstimateDetail({
-          scopeDetail: confirmEstimates,
-          takeOffDetail: generateEstimateDetail.takeOffDetail,
+          estimateScope: confirmEstimates,
+          estimateIdDetail: generateEstimateDetail.estimateIdDetail,
         })
       );
     }
@@ -770,8 +828,8 @@ const Scope = ({ setPrevNext }: Props) => {
         validationSchema={validationSchema}
         onSubmit={submitHandler}
       >
-        {({ handleSubmit, values, errors }) => {
-          console.log(errors, 'submitsubmit');
+        {({ handleSubmit, values }) => {
+          console.log(values, 'valuesvaluesvalues');
 
           return (
             <>
@@ -902,14 +960,14 @@ const Scope = ({ setPrevNext }: Props) => {
                     />
                   )}
                 </div>
-                {estimateData?.data.length ? (
+                {estimateData?.scopeItems.length ? (
                   <>
                     <div className="estimateTable_container">
                       <Table
                         className="mt-2"
                         loading={false}
                         columns={columns}
-                        dataSource={estimateData.data as DataType[]}
+                        dataSource={estimateData.scopeItems as DataType[]}
                         pagination={false}
                         scroll={{ x: 1000 }}
                       />
@@ -920,7 +978,7 @@ const Scope = ({ setPrevNext }: Props) => {
                         text="+ Add Div"
                         className="!w-32"
                         type="button"
-                        disabled={estimateData.data.length === 0}
+                        disabled={estimateData.scopeItems.length === 0}
                         onClick={() => {
                           confirmEstimateHandler(estimateData);
                         }}
@@ -958,7 +1016,7 @@ const Scope = ({ setPrevNext }: Props) => {
                             className="mt-2"
                             loading={false}
                             columns={confirmColumns}
-                            dataSource={estimate.data as DataType[]}
+                            dataSource={estimate.scopeItems as DataType[]}
                             pagination={false}
                             scroll={{ x: 1000 }}
                           />

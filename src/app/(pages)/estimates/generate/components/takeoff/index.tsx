@@ -57,7 +57,7 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
 
   const nextStepHandler = () => {
     setPrevNext((prev) => prev + 1);
-    dispatch(saveEstimateDetail({ takeOffDetail: estimateRequestDetail }));
+    dispatch(saveEstimateDetail({ estimateIdDetail: estimateRequestDetail }));
   };
 
   return (
@@ -257,7 +257,7 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
             <p
               className={`${senaryHeading} !text-[14px] text-midnightBlue font-popin mb-2`}
             >
-              Takeoff Reports
+              {estimateRequestDetail?.takeOffReports?.length ? 'Takeoff Reports' : null}
             </p>
             {estimateRequestDetail?.takeOffReports?.map(
               (doc: { name: string; size: number; url: string }) => (
@@ -293,7 +293,8 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
             <p
               className={`${senaryHeading} !text-[14px] text-midnightBlue font-popin mb-2`}
             >
-              Other Documents
+              {estimateRequestDetail?.otherDocuments?.length ? 'Other Documents' : null}
+             
             </p>
             {estimateRequestDetail?.otherDocuments?.map(
               (doc: { name: string; size: number; url: string }) => (

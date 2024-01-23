@@ -11,8 +11,8 @@ export const estimateSlice = createSlice({
   reducers: {
     saveEstimateDetail: (state, { payload }) => {
       state.generateEstimateDetail = {
-        takeOffDetail: payload.takeOffDetail,
-        scopeDetail: payload.scopeDetail,
+        estimateIdDetail: payload.estimateIdDetail,
+        estimateScope: payload.estimateScope,
       };
     },
     estimateSummary: (state, { payload }) => {
