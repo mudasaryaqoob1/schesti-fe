@@ -2,7 +2,6 @@ import type { ColumnsType } from 'antd/es/table';
 import { Dropdown, Table, type MenuProps } from 'antd';
 import { useRouter } from 'next/navigation';
 import { SearchOutlined, } from '@ant-design/icons';
-import { saveAs } from 'file-saver'
 
 import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
