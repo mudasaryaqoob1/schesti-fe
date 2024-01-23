@@ -164,7 +164,7 @@ const Tabs = () => {
               pathname.includes('#'.split('/')[1]) && tabsStyle.active
             )
           )}
-          onClick={() => router.push('#')}
+          onClick={() => router.push('/meeting')}
         >
           Meeting
         </li>
