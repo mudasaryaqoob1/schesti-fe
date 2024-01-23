@@ -1,4 +1,9 @@
-import React, { useCallback, useEffect, useLayoutEffect , useState} from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from 'react';
 import type { ColumnsType } from 'antd/es/table';
 import { Dropdown, Table } from 'antd';
 import type { MenuProps } from 'antd';
@@ -32,27 +37,28 @@ const EstimateRequestTable: React.FC = () => {
     }
   }, [token]);
 
-
-  const [generatedEstimates, setGeneratedEstimates] = useState([])
+  const [generatedEstimates, setGeneratedEstimates] = useState([]);
 
   const fetchGeneratedEstiamtesHandler = useCallback(async () => {
     let result = await estimateRequestService.httpGetAllGeneratedEstimates(
       1,
       9
     );
-    
-    let updatedGeneratedEstimate = result?.data?.generatedEstiamtes.map((estimate : any) => {
-      return {
-        id : estimate._id,
-        projectName : estimate.estimateRequestID.projectName,
-        clientName : estimate.estimateRequestID.clientName,
-        salePerson : `${estimate?.estimateRequestID.salePerson?.firstName} ${estimate?.estimateRequestID.salePerson?.lastName}`,
-        estimator : `${estimate?.estimateRequestID.estimator?.firstName} ${estimate?.estimateRequestID.estimator?.lastName}`,
-        totalCost : estimate.estimateRequestID.totalCost,
-        estimateRequestId : estimate.estimateRequestID._id,
+
+    let updatedGeneratedEstimate = result?.data?.generatedEstiamtes.map(
+      (estimate: any) => {
+        return {
+          id: estimate._id,
+          projectName: estimate.estimateRequestID.projectName,
+          clientName: estimate.estimateRequestID.clientName,
+          salePerson: `${estimate?.estimateRequestID.salePerson?.firstName} ${estimate?.estimateRequestID.salePerson?.lastName}`,
+          estimator: `${estimate?.estimateRequestID.estimator?.firstName} ${estimate?.estimateRequestID.estimator?.lastName}`,
+          totalCost: estimate.estimateRequestID.totalCost,
+          estimateRequestId: estimate.estimateRequestID._id,
+        };
       }
-    })
-    setGeneratedEstimates(updatedGeneratedEstimate)
+    );
+    setGeneratedEstimates(updatedGeneratedEstimate);
   }, []);
 
   useEffect(() => {
@@ -71,14 +77,17 @@ const EstimateRequestTable: React.FC = () => {
   ];
 
   const handleDropdownItemClick = async (key: string, estimate: any) => {
-    console.log(key ,estimate , 'estimateestimate' );
-    
+    console.log(key, estimate, 'estimateestimate');
+
     if (key == 'viewDetail') {
       router.push(`/estimates/generate/${estimate.estimateRequestId}`);
     } else if (key == 'deleteEstimate') {
-      let deleteEstimateResult = await estimateRequestService.httpDeleteGeneratedEstimate(estimate.estimateRequestId)
-      if(deleteEstimateResult.statusCode === 200){
-        fetchGeneratedEstiamtesHandler()
+      let deleteEstimateResult =
+        await estimateRequestService.httpDeleteGeneratedEstimate(
+          estimate.estimateRequestId
+        );
+      if (deleteEstimateResult.statusCode === 200) {
+        fetchGeneratedEstiamtesHandler();
       }
     }
   };
@@ -142,7 +151,6 @@ const EstimateRequestTable: React.FC = () => {
       ),
     },
   ];
-  
 
   return generatedEstimates && generatedEstimates.length < 1 ? (
     <NoData

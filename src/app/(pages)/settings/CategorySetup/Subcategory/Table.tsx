@@ -57,7 +57,7 @@ const SubCategoryTable: React.FC = () => {
           return {
             key: cat._id,
             category: cat.name,
-            mainRow : true,
+            mainRow: true,
             children: cat.subcategories.map(
               ({ _id, price, name, categoryId, categoryName }: any) => {
                 return {
@@ -107,7 +107,7 @@ const SubCategoryTable: React.FC = () => {
       className: 'd-none',
       key: 'action',
       render: (_, subCategoriesData: any) => {
-        if(!subCategoriesData.mainRow){
+        if (!subCategoriesData.mainRow) {
           return (
             <div className="flex gap-2 justify-center">
               <Image
@@ -139,7 +139,6 @@ const SubCategoryTable: React.FC = () => {
             </div>
           );
         }
-       
       },
     },
   ];
@@ -153,7 +152,7 @@ const SubCategoryTable: React.FC = () => {
         loading={subcategoriesReduxDataLoading}
         columns={columns}
         dataSource={subCategories}
-        expandable={{defaultExpandAllRows:true}}
+        expandable={{ defaultExpandAllRows: true }}
       />
     </div>
   );

@@ -22,7 +22,10 @@ import { InputComponent } from '@/app/component/customInput/Input';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import { Divider } from 'antd';
-import { CreateInvoiceData, invoiceService } from '@/app/services/invoices.service';
+import {
+  CreateInvoiceData,
+  invoiceService,
+} from '@/app/services/invoices.service';
 import { toast } from 'react-toastify';
 
 const SubcontractorSchema = Yup.object({
@@ -75,11 +78,11 @@ const initialValues = {
   taxes: 0,
 };
 type InvoiceDetail = {
-  description: string
-  quantity: number
-  unitCost: number
-  total: number
-  _id: string
+  description: string;
+  quantity: number;
+  unitCost: number;
+  total: number;
+  _id: string;
 };
 const EditSubcontractorInvoice = () => {
   const router = useRouter();
@@ -107,14 +110,12 @@ const EditSubcontractorInvoice = () => {
     }
   }, [token]);
 
-
   useEffect(() => {
     const invoice = subcontractorInvoices?.find((item: any) => item._id === id);
     setInvoiceData(invoice);
     if (invoice) {
       setDetails(invoice.invoiceItems);
     }
-
   }, [id, subcontractorInvoices]);
 
   const columns: ColumnType<InvoiceDetail>[] = [
@@ -193,12 +194,18 @@ const EditSubcontractorInvoice = () => {
   // calculate sub total
   function calculateSubTotal(items: InvoiceDetail[]) {
     return items.reduce((total, invoice) => {
-      return total + (invoice.quantity * invoice.unitCost);
+      return total + invoice.quantity * invoice.unitCost;
     }, 0);
   }
 
-  function calculateTotalPayable(subtotal: number, taxes: number, profitAndOverhead: number, discount: number) {
-    const result = (subtotal + taxes) - discount + (subtotal * (profitAndOverhead / 100));
+  function calculateTotalPayable(
+    subtotal: number,
+    taxes: number,
+    profitAndOverhead: number,
+    discount: number
+  ) {
+    const result =
+      subtotal + taxes - discount + subtotal * (profitAndOverhead / 100);
     return result;
   }
   const submitHandler = async (values: any) => {
@@ -220,7 +227,10 @@ const EditSubcontractorInvoice = () => {
       ),
     };
     if (id) {
-      let result = await invoiceService.httpUpdateSubcontractorInvoice(data, id as string);
+      let result = await invoiceService.httpUpdateSubcontractorInvoice(
+        data,
+        id as string
+      );
       if (result.statusCode == 200) {
         setIsLoading(false);
         router.push('/invoices');
@@ -231,7 +241,6 @@ const EditSubcontractorInvoice = () => {
     }
   };
 
-
   return (
     <section className="mx-16 my-2">
       <Formik
@@ -240,7 +249,14 @@ const EditSubcontractorInvoice = () => {
         validationSchema={SubcontractorSchema}
         onSubmit={submitHandler}
       >
-        {({ handleSubmit, setFieldValue, values, handleBlur, errors, touched }) => {
+        {({
+          handleSubmit,
+          setFieldValue,
+          values,
+          handleBlur,
+          errors,
+          touched,
+        }) => {
           return (
             <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
               {/* Modal */}
@@ -257,7 +273,7 @@ const EditSubcontractorInvoice = () => {
                     setFieldValue('subContractorAddress', address);
                     setFieldValue('companyName', companyRep);
                     setFieldValue('subContractorFirstName', name);
-                    console.log(phone)
+                    console.log(phone);
                     setFieldValue('subContractorEmail', email);
                     setFieldValue('subContractorPhoneNumber', Number(phone));
                   }}
@@ -425,6 +441,7 @@ const EditSubcontractorInvoice = () => {
                       <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-1 gap-4 mt-3">
                         <InputComponent
                           label="Description"
+                          type='text'
                           name="invoiceDetailDescription"
                           placeholder="Enter description here"
                           field={{
@@ -441,6 +458,7 @@ const EditSubcontractorInvoice = () => {
                           <div className="flex-1">
                             <InputComponent
                               label="Quantity"
+                              type='text'
                               name="quantity"
                               placeholder="Enter quantity here"
                               field={{
@@ -459,9 +477,9 @@ const EditSubcontractorInvoice = () => {
                             <InputComponent
                               label="Unit Cost"
                               name="unitCost"
+                              type='number'
                               placeholder="Enter unit cost here"
                               field={{
-                                type: 'number',
                                 value: detail.unitCost,
                                 onChange: (e) => {
                                   setDetail({
@@ -612,7 +630,11 @@ const EditSubcontractorInvoice = () => {
                   <div></div>
                   <div className="flex space-x-3">
                     <Button text="Cancel" onClick={() => router.back()} />
-                    <ColoredButton isLoading={isLoading} type="submit" text="Send" />
+                    <ColoredButton
+                      isLoading={isLoading}
+                      type="submit"
+                      text="Send"
+                    />
                   </div>
                 </div>
               </div>

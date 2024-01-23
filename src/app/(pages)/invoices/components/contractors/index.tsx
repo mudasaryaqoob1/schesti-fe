@@ -1,17 +1,22 @@
 import type { ColumnsType } from 'antd/es/table';
 import { Dropdown, Table, type MenuProps } from 'antd';
 import { useRouter } from 'next/navigation';
-import { SearchOutlined, } from '@ant-design/icons';
-import { saveAs } from 'file-saver'
+import { SearchOutlined } from '@ant-design/icons';
 
 import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { InputComponent } from '@/app/component/customInput/Input';
 import { useCallback, useEffect } from 'react';
-import { deleteContractorInvoiceRequest, fetchSubcontractorInvoices } from '@/redux/invoice/invoice.thunk';
+import {
+  deleteContractorInvoiceRequest,
+  fetchSubcontractorInvoices,
+} from '@/redux/invoice/invoice.thunk';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
-import { selectInvoices, selectInvoicesLoading } from '@/redux/invoice/invoice.selector';
+import {
+  selectInvoices,
+  selectInvoicesLoading,
+} from '@/redux/invoice/invoice.selector';
 import type { IInvoice } from '@/app/interfaces/invoices.interface';
 import Image from 'next/image';
 import moment from 'moment';
@@ -29,7 +34,6 @@ export function Contractors() {
   useEffect(() => {
     fetchSubcontactorsInvoices();
   }, [fetchSubcontactorsInvoices]);
-
 
   const items: MenuProps['items'] = [
     {
@@ -57,13 +61,11 @@ export function Contractors() {
   async function handleDropdownItemClick(key: string, record: IInvoice) {
     if (key === 'editInvoice') {
       router.push(`/invoices/edit/${record._id}`);
-    }
-    else if (key === 'delete') {
+    } else if (key === 'delete') {
       await dispatch(deleteContractorInvoiceRequest(record._id));
     } else if (key === 'view') {
       router.push(`/invoices/view/${record._id}`);
     }
-
   }
   const columns: ColumnsType<IInvoice> = [
     {
@@ -135,6 +137,7 @@ export function Contractors() {
           <div className="w-96 ">
             <InputComponent
               label=""
+              type='text'
               placeholder="Search"
               name="search"
               prefix={<SearchOutlined />}

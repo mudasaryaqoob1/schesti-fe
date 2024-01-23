@@ -12,7 +12,7 @@ type Props = {
   inputStyle?: ClassValue;
   hasError?: boolean;
   field?: InputProps;
-  type : string
+  type: string;
 };
 
 export function InputComponent({

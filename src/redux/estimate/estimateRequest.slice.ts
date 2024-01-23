@@ -57,5 +57,5 @@ export const estimateSlice = createSlice({
   },
 });
 
-export const { saveEstimateDetail , estimateSummary} = estimateSlice.actions;
+export const { saveEstimateDetail, estimateSummary } = estimateSlice.actions;
 export default estimateSlice.reducer;

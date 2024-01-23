@@ -18,7 +18,6 @@ interface DataType {
   Action: string;
 }
 
-
 const calculateTotalCost = (record: DataType) => {
   let perHourLaborRate = parseFloat(record.perHourLaborRate);
   let unitLabourHour = parseFloat(record.unitLabourHour);

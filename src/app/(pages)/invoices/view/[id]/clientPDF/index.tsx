@@ -8,17 +8,14 @@ import { IInvoice } from '@/app/interfaces/invoices.interface';
 
 type Props = {
   invoice: IInvoice;
-}
+};
 
 const ClientPDF = ({ invoice }: Props) => {
-
   return (
     <Document>
       <Page size={'A4'}>
         <PdfHeader />
-        <PageContent
-          invoice={invoice}
-        />
+        <PageContent invoice={invoice} />
         <PdfFooter />
       </Page>
     </Document>

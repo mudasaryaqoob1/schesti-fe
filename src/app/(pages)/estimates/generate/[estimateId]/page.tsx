@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect, useCallback } from 'react';
-import { useParams } from 'next/navigation'
+import { useParams } from 'next/navigation';
 import Description from '@/app/component/description';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
@@ -16,8 +16,8 @@ import { PDFDownloadLink } from '@react-pdf/renderer';
 import { estimateRequestService } from '@/app/services/estimates.service';
 
 const ViewEstimateDetail = () => {
-  const {estimateId} = useParams();
-  
+  const { estimateId } = useParams();
+
   const { estimateSummary } = useSelector(selectGeneratedEstimateDetail);
 
   const [pdfData, setPdfData] = useState<Object[]>([]);
@@ -57,40 +57,43 @@ const ViewEstimateDetail = () => {
   }, [estimateSummary]);
 
   const fetchEstimateDetail = useCallback(async () => {
-    const result = await estimateRequestService.httpGetGeneratedEstimateDetail(estimateId)
-    if(result.statusCode === 200){
-        setEstimateDetailsSummary({...result.data , ...result.data.estimateRequestID})
+    const result =
+      await estimateRequestService.httpGetGeneratedEstimateDetail(estimateId);
+    if (result.statusCode === 200) {
+      setEstimateDetailsSummary({
+        ...result.data,
+        ...result.data.estimateRequestID,
+      });
 
+      if (result.data?.estimateItems?.length) {
+        const updatedDataArray = result.data?.estimateItems.map(
+          (titleObject: any) => {
+            const totalCostForTitle = titleObject.estimateItems.reduce(
+              (total: any, dataItem: any) => {
+                return total + parseFloat(dataItem.totalCostRecord);
+              },
+              0
+            );
+            return {
+              ...titleObject,
+              data: titleObject.estimateItems,
+              totalCostForTitle: totalCostForTitle.toFixed(2),
+            };
+          }
+        );
 
-       if (result.data?.estimateItems?.length) {
-      const updatedDataArray = result.data?.estimateItems.map(
-        (titleObject: any) => {
-          const totalCostForTitle = titleObject.estimateItems.reduce(
-            (total: any, dataItem: any) => {
-              return total + parseFloat(dataItem.totalCostRecord);
-            },
-            0
-          );
-          return {
-            ...titleObject,
-            data : titleObject.estimateItems,
-            totalCostForTitle: totalCostForTitle.toFixed(2),
-          };
-        }
-      )
-      
-      setEstimatesRecord(updatedDataArray);
+        setEstimatesRecord(updatedDataArray);
 
-      const transformedArray = updatedDataArray.flatMap(({ data }: any) =>
-        data.map(({ description, qty, totalCostRecord }: any) => ({
-          description,
-          quantity: qty,
-          totalPrice: totalCostRecord,
-        }))
-      );
+        const transformedArray = updatedDataArray.flatMap(({ data }: any) =>
+          data.map(({ description, qty, totalCostRecord }: any) => ({
+            description,
+            quantity: qty,
+            totalPrice: totalCostRecord,
+          }))
+        );
 
-      setPdfData(transformedArray);
-    }
+        setPdfData(transformedArray);
+      }
     }
   }, []);
 
@@ -100,7 +103,7 @@ const ViewEstimateDetail = () => {
     }
   }, [estimateId]);
 
-  console.log(estimateDetailsSummary , 'estimatesRecordestimatesRecord');
+  console.log(estimateDetailsSummary, 'estimatesRecordestimatesRecord');
 
   return (
     <div className="p-12">

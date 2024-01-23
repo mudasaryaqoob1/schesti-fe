@@ -20,7 +20,7 @@ const SelectComp = (props: any) => {
     selectStyle,
     className,
     placeholder,
-    isLoading
+    isLoading,
   } = props;
 
   const OptionsArr = options?.map(
@@ -38,9 +38,9 @@ const SelectComp = (props: any) => {
 
   const filterOption = (
     input: string,
-    option?: { label: string; value: string  , children : string}
-  ) => (`${option?.children}` ?? '').toLowerCase().includes(input.toLowerCase());
-  
+    option?: { label: string; value: string; children: string }
+  ) =>
+    (`${option?.children}` ?? '').toLowerCase().includes(input.toLowerCase());
 
   return (
     <div>

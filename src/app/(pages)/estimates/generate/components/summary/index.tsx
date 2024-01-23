@@ -103,8 +103,6 @@ const Summary = ({ setPrevNext }: Props) => {
       setSubcostRecord(totalCostForAllRecords);
       setTotalCostBaseRecord(totalCostForAllRecords);
       setTotalCostRecord(totalCostForAllRecords);
-
-  
     }
   }, [generateEstimateDetail]);
 

@@ -5,11 +5,11 @@ export const invoicesSelector = (state: RootState) => state.invoices;
 
 // support invoices redux data
 export const selectInvoicesLoading = createSelector(
-    [invoicesSelector],
-    (invoices) => invoices.loading
+  [invoicesSelector],
+  (invoices) => invoices.loading
 );
 
 export const selectInvoices = createSelector(
-    [invoicesSelector],
-    (invoices) => invoices.data?.invoices
+  [invoicesSelector],
+  (invoices) => invoices.data?.invoices
 );

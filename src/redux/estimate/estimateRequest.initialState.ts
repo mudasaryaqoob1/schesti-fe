@@ -5,7 +5,7 @@ interface IEstimateRequests {
   statusCode: number | null;
   data: any;
   generateEstimateDetail: { takeOffDetail: Object; scopeDetail: Object[] };
-  estimateSummary : any
+  estimateSummary: any;
 }
 
 const initialEstimateRequestState: IEstimateRequests = {

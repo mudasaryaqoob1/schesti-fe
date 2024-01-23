@@ -5,11 +5,10 @@ import SecondaryHeading from '@/app/component/headings/Secondary';
 import Image from 'next/image';
 
 interface Iprops {
-  setMaterialModal : React.Dispatch<React.SetStateAction<boolean>>;
+  setMaterialModal: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-
-const NoData = ({setMaterialModal} : Iprops) => {
+const NoData = ({ setMaterialModal }: Iprops) => {
   return (
     <section className="mt-6 mx-4 grid items-center h-[70vh]">
       <div className="grid place-items-center">

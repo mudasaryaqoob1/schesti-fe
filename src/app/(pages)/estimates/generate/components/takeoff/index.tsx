@@ -215,13 +215,11 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
             />
           </div>
         </div>
-        <div
-          className={` gap-3 mt-4 ${
-            showTakeoffDocs ? 'flex' : 'hidden'
-          }`}
-        >
+        <div className={` gap-3 mt-4 ${showTakeoffDocs ? 'flex' : 'hidden'}`}>
           <div>
-            <p className={`${senaryHeading} !text-[14px] text-midnightBlue font-popin mb-2`}>
+            <p
+              className={`${senaryHeading} !text-[14px] text-midnightBlue font-popin mb-2`}
+            >
               Drawings
             </p>
 
@@ -256,7 +254,9 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
             )}
           </div>
           <div>
-            <p className={`${senaryHeading} !text-[14px] text-midnightBlue font-popin mb-2`}>
+            <p
+              className={`${senaryHeading} !text-[14px] text-midnightBlue font-popin mb-2`}
+            >
               Takeoff Reports
             </p>
             {estimateRequestDetail?.takeOffReports?.map(
@@ -290,7 +290,9 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
             )}
           </div>
           <div>
-            <p className={`${senaryHeading} !text-[14px] text-midnightBlue font-popin mb-2`}>
+            <p
+              className={`${senaryHeading} !text-[14px] text-midnightBlue font-popin mb-2`}
+            >
               Other Documents
             </p>
             {estimateRequestDetail?.otherDocuments?.map(
