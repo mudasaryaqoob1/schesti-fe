@@ -1,4 +1,3 @@
-import { useState } from "react";
 import CustomButton from "@/app/component/customButton/button";
 import { IMeeting } from "../types";
 import Image from "next/image";
@@ -59,9 +58,7 @@ export function UpcomingComponent({ setState, state }: Props) {
     }
 
     return <div>
-        {/* {roomName ? <a href={domainName + "/" + roomName}
-            target='_blank'
-        >Join the link {domainName + "/" + roomName}</a> : null} */}
+
 
         {
             state.map((item, index) => {
@@ -75,6 +72,7 @@ export function UpcomingComponent({ setState, state }: Props) {
                         />
                         <QuinaryHeading
                             title={item.link}
+                            className="font-medium"
                         />
                         <SenaryHeading
                             title={`Time: ${moment(item.date).format("h:mm a")}`}
