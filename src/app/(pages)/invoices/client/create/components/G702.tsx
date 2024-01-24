@@ -10,8 +10,7 @@ type Props = {
 }
 
 export function G702Component({ g703 }: Props) {
-  console.log(getGrandTotal(getColumnFromRows(g703.data, 5)))
-  // console.log(g703.data[1])
+
   return (
     <div>
       <div>

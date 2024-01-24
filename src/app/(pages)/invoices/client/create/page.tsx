@@ -37,6 +37,7 @@ export default function CreateClientInvoicePage() {
       rowTemplate(9),
       rowTemplate(10),
     ],
+    rows: []
   });
 
   useLayoutEffect(() => {
@@ -45,7 +46,6 @@ export default function CreateClientInvoicePage() {
     }
   }, [token]);
 
-  console.log(g703State);
 
   return (
     <section className="mx-16 my-2">

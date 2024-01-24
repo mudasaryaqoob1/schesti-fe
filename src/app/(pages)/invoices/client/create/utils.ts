@@ -4,6 +4,7 @@ export type G703State = {
   periodTo: string;
   projectNo: string;
   data: Array<G703Row>;
+  rows: Array<any>;
 };
 export type G703Row = [
   string,
@@ -50,8 +51,7 @@ export function getCalculatedRows(data: Array<G703Row>): G703Row {
   ];
 }
 
-// write a function that will get G703Row as a argument and return total sum
-// of each column
+
 export function getGrandTotal(data: string[]) {
   return data.reduce((acc, curr) => {
     return acc + Number(curr);

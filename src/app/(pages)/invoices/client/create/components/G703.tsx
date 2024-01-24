@@ -1,5 +1,5 @@
 'use client';
-import React, { Dispatch, SetStateAction, useEffect, useRef, } from 'react';
+import React, { Dispatch, SetStateAction, useRef, } from 'react';
 import { Divider, Select } from 'antd';
 import { HotTable, } from '@handsontable/react';
 import { registerAllModules } from 'handsontable/registry';
@@ -10,19 +10,21 @@ import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import PrimaryHeading from '@/app/component/headings/primary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import { G703Row, G703State, getColumnFromRows, rowTemplate } from '../utils';
+import { G703Row, G703State, rowTemplate } from '../utils';
 import { ChangeSource } from 'aws-sdk/clients/cloudformation';
 
-// register Handsontable's modules
+
 registerAllModules();
 
 type Props = {
   state: G703State;
   setState: Dispatch<SetStateAction<G703State>>;
 };
+type P = React.ComponentProps<typeof HotTable>;
+type HotTableClassFromProps<P> = P extends React.RefAttributes<infer T> ? T : never;
+type ExtractedHotTableClass = HotTableClassFromProps<P>;
 export function G703Component({ setState, state }: Props) {
-  console.log(getColumnFromRows(state.data, 5))
-  const ref = useRef();
+  const ref = useRef<ExtractedHotTableClass | null>(null);
 
   function addRow() {
     // add rowTempate in data
@@ -30,22 +32,6 @@ export function G703Component({ setState, state }: Props) {
       ...state,
       data: [...state.data, rowTemplate(state.data.length + 1)],
     });
-  }
-
-  // getCalculatedRows
-  function getCalculatedRows(): G703Row {
-    const data = state.data;
-    return [
-      'GRAND TOTAL',
-      `=SUM(B1:B${data.length})`,
-      `=SUM(C1:C${data.length})`,
-      `=SUM(D1:D${data.length})`,
-      `=SUM(E1:E${data.length})`,
-      `=SUM(F1:F${data.length})`,
-      `=SUM(G1:G${data.length})`,
-      `=SUM(H1:H${data.length})`,
-      `=SUM(I1:I${data.length})`,
-    ];
   }
 
   function handleState<K extends keyof G703State>(key: K, value: typeof state[K]) {
@@ -235,7 +221,6 @@ export function G703Component({ setState, state }: Props) {
           rowHeaders={true}
           // @ts-ignore
           afterChange={handleUpdate}
-          colHeaders={true}
           height="auto"
           autoWrapRow={true}
           autoWrapCol={true}
