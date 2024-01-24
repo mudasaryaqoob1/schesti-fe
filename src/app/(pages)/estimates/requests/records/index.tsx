@@ -146,8 +146,10 @@ const EstimateRequestTable: React.FC = () => {
 
   return estimateRequestsData && estimateRequestsData.length < 1 ? (
     <NoData
-      btnText="Create new estimates request"
+      btnText="Add Request"
       link="/estimates/requests/create"
+      title="Create New Estimate Request"
+      description="There is not any record yet . To get started, Create an estimate request by clicking the button below and sharing details about your project."
     />
   ) : (
     <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid border-silverGray shadow-secondaryTwist">

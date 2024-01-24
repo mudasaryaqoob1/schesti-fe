@@ -20,6 +20,7 @@ import {
   fetchCompanyClients,
 } from '@/redux/company/company.thunk';
 import Image from 'next/image';
+import NoData from '@/app/component/noData';
 
 interface DataType {
   firstName: string;
@@ -145,25 +146,39 @@ const ClientTable = () => {
 
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
-      <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
-        <div className="flex justify-between items-center mb-4">
-          <TertiaryHeading title="Client List" className="text-graphiteGray" />
-          <Button
-            text="Add New client"
-            className="!w-auto "
-            icon="plus.svg"
-            iconwidth={20}
-            iconheight={20}
-            onClick={() => router.push('/clients/create')}
+      {clientsData?.length ? (
+        <div
+          className={`${bg_style} p-5 border border-solid border-silverGray`}
+        >
+          <div className="flex justify-between items-center mb-4">
+            <TertiaryHeading
+              title="Client List"
+              className="text-graphiteGray"
+            />
+            <Button
+              text="Add New client"
+              className="!w-auto "
+              icon="plus.svg"
+              iconwidth={20}
+              iconheight={20}
+              onClick={() => router.push('/clients/create')}
+            />
+          </div>
+          <Table
+            loading={companyClientsLoading}
+            columns={columns}
+            dataSource={clientsData}
+            pagination={{ position: ['bottomCenter'] }}
           />
         </div>
-        <Table
-          loading={companyClientsLoading}
-          columns={columns}
-          dataSource={clientsData}
-          pagination={{ position: ['bottomCenter'] }}
+      ) : (
+        <NoData
+          btnText="Add client"
+          link="/clients/create"
+          title="Create New Client"
+          description=""
         />
-      </div>
+      )}
     </section>
   );
 };

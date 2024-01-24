@@ -26,7 +26,7 @@ import { materialService } from '@/app/services/material.service';
 import { bg_style, btnStyle } from '@/globals/tailwindvariables';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { estimateRequestService } from '@/app/services/estimates.service';
-import { saveEstimateDetail } from '@/redux/estimate/estimateRequest.slice';
+import { generateEstimateDetailAction } from '@/redux/estimate/estimateRequest.slice';
 import { selectGeneratedEstimateDetail } from '@/redux/estimate/estimateRequestSelector';
 
 type InitialValuesType = {
@@ -275,7 +275,7 @@ const Scope = ({ setPrevNext }: Props) => {
   }, [generateEstimateDetail]);
 
   const submitHandler = (
-    estimateTableItemValues: InitialValuesType,
+    estimateTableItemValues: InitialValuesType
     // actions: any
   ) => {
     let generateRandomNumber = Math.floor(Math.random() * 103440 + 1);
@@ -301,9 +301,11 @@ const Scope = ({ setPrevNext }: Props) => {
 
     if (
       estimateData.scopeItems.length &&
-      estimateData.title !== selectedCategory && !editItem && !editConfirmItem
+      estimateData.title !== selectedCategory &&
+      !editItem &&
+      !editConfirmItem
     ) {
-      toast.warn('Please add first to create new one');
+      toast.warn('Please add Div first to create new one');
     } else {
       if (editItem && !editConfirmItem) {
         const updateEstimateArray: any = estimateData.scopeItems.map(
@@ -726,19 +728,19 @@ const Scope = ({ setPrevNext }: Props) => {
     title: string;
     scopeItems: Object[];
   }) => {
-     setEstimateDescriptions([]);
-        setSingleEstimateData({
-          category: '',
-          subCategory: '',
-          description: '',
-          unit: '',
-          qty: '',
-          wastage: '5',
-          unitLabourHour: '',
-          perHourLaborRate: '',
-          unitMaterialCost: '',
-          unitEquipments: '',
-        });
+    //  setEstimateDescriptions([]);
+    setSingleEstimateData({
+      category: '',
+      subCategory: '',
+      description: '',
+      unit: '',
+      qty: '',
+      wastage: '5',
+      unitLabourHour: '',
+      perHourLaborRate: '',
+      unitMaterialCost: '',
+      unitEquipments: '',
+    });
     setEstimateData({ title: '', scopeItems: [] });
     const index = confirmEstimates.findIndex(
       (item) => item.title === dataSource.title
@@ -751,7 +753,10 @@ const Scope = ({ setPrevNext }: Props) => {
     if (index !== -1) {
       let modifyArray = confirmEstimates.map((item, i) =>
         i === index
-          ? { ...item, scopeItems: [...item.scopeItems, ...dataSource.scopeItems] }
+          ? {
+              ...item,
+              scopeItems: [...item.scopeItems, ...dataSource.scopeItems],
+            }
           : item
       );
       setConfirmEstimates(modifyArray);
@@ -768,9 +773,10 @@ const Scope = ({ setPrevNext }: Props) => {
     } else {
       setPrevNext((prev) => prev + 1);
       dispatch(
-        saveEstimateDetail({
+        generateEstimateDetailAction({
           estimateScope: confirmEstimates,
-          estimateIdDetail: generateEstimateDetail.estimateIdDetail,
+          estimateRequestIdDetail:
+            generateEstimateDetail.estimateRequestIdDetail,
         })
       );
     }
@@ -909,6 +915,7 @@ const Scope = ({ setPrevNext }: Props) => {
                     labelStyle="font-normal"
                     label="Wastage"
                     placeholder="Enter Wastage"
+                    suffix="%"
                   />
                   <FormControl
                     control="input"

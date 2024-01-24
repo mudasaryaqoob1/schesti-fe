@@ -13,6 +13,7 @@ type Props = {
   hasError?: boolean;
   field?: InputProps;
   type: string;
+  suffix?: any;
 };
 
 export function InputComponent({

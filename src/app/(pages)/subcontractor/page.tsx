@@ -22,6 +22,7 @@ import {
   fetchCompanySubcontractors,
 } from '@/redux/company/company.thunk';
 import Image from 'next/image';
+import NoData from '@/app/component/noData';
 
 export interface DataType {
   company: string;
@@ -140,28 +141,39 @@ const SubcontractTable = () => {
 
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
-      <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
-        <div className="flex justify-between items-center mb-4">
-          <TertiaryHeading
-            title="Subcontractor List"
-            className="text-graphiteGray"
-          />
-          <Button
-            text="New subcontractor"
-            className="!w-auto "
-            icon="plus.svg"
-            iconwidth={20}
-            iconheight={20}
-            onClick={() => router.push('/subcontractor/create')}
+      {subcontractersData?.length ? (
+        <div
+          className={`${bg_style} p-5 border border-solid border-silverGray`}
+        >
+          <div className="flex justify-between items-center mb-4">
+            <TertiaryHeading
+              title="Subcontractor List"
+              className="text-graphiteGray"
+            />
+            <Button
+              text="New subcontractor"
+              className="!w-auto "
+              icon="plus.svg"
+              iconwidth={20}
+              iconheight={20}
+              onClick={() => router.push('/subcontractor/create')}
+            />
+          </div>
+          <Table
+            loading={subcontractersLoading}
+            columns={columns}
+            dataSource={subcontractersData}
+            pagination={{ position: ['bottomCenter'] }}
           />
         </div>
-        <Table
-          loading={subcontractersLoading}
-          columns={columns}
-          dataSource={subcontractersData}
-          pagination={{ position: ['bottomCenter'] }}
+      ) : (
+        <NoData
+          title="Create New Subcontractor"
+          btnText="Add Subcontractor"
+          description=""
+          link="/subcontractor/create"
         />
-      </div>
+      )}
     </section>
   );
 };

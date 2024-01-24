@@ -17,9 +17,10 @@ import EstimatesTable from '../estimatesTable';
 // import ClientPDF from '../clientPDF';
 import { InputComponent } from '@/app/component/customInput/Input';
 import { estimateRequestService } from '@/app/services/estimates.service';
-import { estimateSummary } from '@/redux/estimate/estimateRequest.slice';
+import { generateEstimateDetailAction } from '@/redux/estimate/estimateRequest.slice';
 import { useDispatch } from 'react-redux';
-
+import { toast } from 'react-toastify';
+import { PercentageOutlined } from '@ant-design/icons';
 interface Props {
   setPrevNext: Dispatch<SetStateAction<number>>;
 }
@@ -55,7 +56,7 @@ const Summary = ({ setPrevNext }: Props) => {
   const { generateEstimateDetail } = useSelector(selectGeneratedEstimateDetail);
 
   const [estimateDetailsSummary, setEstimateDetailsSummary] = useState<{
-    estimateIdDetail: basicInformation;
+    estimateRequestIdDetail: basicInformation;
     estimateScope: Object[];
   }>();
   const [isLoading, setIsLoading] = useState(false);
@@ -75,7 +76,6 @@ const Summary = ({ setPrevNext }: Props) => {
   });
 
   useEffect(() => {
-    
     setEstimateDetailsSummary(generateEstimateDetail);
 
     if (generateEstimateDetail?.estimateScope?.length) {
@@ -94,9 +94,12 @@ const Summary = ({ setPrevNext }: Props) => {
         }
       );
 
-    console.log(generateEstimateDetail.estimateScope , 'generateEstimateDetailgenerateEstimateDetail' , updatedDataArray);
+      console.log(
+        generateEstimateDetail.estimateScope,
+        'generateEstimateDetailgenerateEstimateDetail',
+        updatedDataArray
+      );
 
-      
       const totalCostForAllRecords = updatedDataArray.reduce(
         (total: any, titleObject: any) => {
           return total + parseFloat(titleObject.totalCostForTitle);
@@ -148,22 +151,20 @@ const Summary = ({ setPrevNext }: Props) => {
     let obj = {
       totalBidDetail: totalBidDetail,
       totalCost: totalCostRecord,
-      estimateRequestID: estimateId,
-      estimateItems: generateEstimateDetail.estimateScope,
+      estimateRequestIdDetail: estimateId,
+      estimateScope: generateEstimateDetail.estimateScope,
     };
 
-    dispatch(
-      estimateSummary({
-        ...obj,
-        estimateRequestID: estimateDetailsSummary?.estimateIdDetail,
-      })
-    );
+    dispatch(generateEstimateDetailAction(obj));
 
     let result = await estimateRequestService.httpAddGeneratedEstimate(obj);
 
     if (result.statusCode == 201) {
       setIsLoading(false);
-      router.push(`/estimates/generate/${estimateId}`);
+      router.push(`/estimates/generate/${result?.data?._id}`);
+    } else {
+      setIsLoading(false);
+      toast.error('Something went wrong');
     }
   };
 
@@ -218,7 +219,9 @@ const Summary = ({ setPrevNext }: Props) => {
             <div>
               <QuinaryHeading title="Client Name" className="text-lightyGray" />
               <Description
-                title={estimateDetailsSummary?.estimateIdDetail?.clientName!}
+                title={
+                  estimateDetailsSummary?.estimateRequestIdDetail?.clientName!
+                }
                 className="text-midnightBlue font-popin"
               />
             </div>
@@ -229,7 +232,9 @@ const Summary = ({ setPrevNext }: Props) => {
                 className="text-lightyGray"
               />
               <Description
-                title={estimateDetailsSummary?.estimateIdDetail?.companyName!}
+                title={
+                  estimateDetailsSummary?.estimateRequestIdDetail?.companyName!
+                }
                 className="text-midnightBlue font-popin"
               />
             </div>
@@ -240,7 +245,7 @@ const Summary = ({ setPrevNext }: Props) => {
                 className="text-lightyGray"
               />
               <Description
-                title={estimateDetailsSummary?.estimateIdDetail?.phone!}
+                title={estimateDetailsSummary?.estimateRequestIdDetail?.phone!}
                 className="text-midnightBlue font-popin"
               />
             </div>
@@ -248,7 +253,7 @@ const Summary = ({ setPrevNext }: Props) => {
             <div>
               <QuinaryHeading title="Email" className="text-lightyGray" />
               <Description
-                title={estimateDetailsSummary?.estimateIdDetail?.email!}
+                title={estimateDetailsSummary?.estimateRequestIdDetail?.email!}
                 className="text-midnightBlue font-popin"
               />
             </div>
@@ -258,7 +263,9 @@ const Summary = ({ setPrevNext }: Props) => {
         <div className={`${bg_style} p-5 mt-4`}>
           <div className="flex justify-between items-center">
             <QuaternaryHeading
-              title={estimateDetailsSummary?.estimateIdDetail?.projectName!}
+              title={
+                estimateDetailsSummary?.estimateRequestIdDetail?.projectName!
+              }
               className="font-bold"
             />
           </div>
@@ -270,7 +277,9 @@ const Summary = ({ setPrevNext }: Props) => {
                 className="text-lightyGray"
               />
               <Description
-                title={estimateDetailsSummary?.estimateIdDetail?.projectName!}
+                title={
+                  estimateDetailsSummary?.estimateRequestIdDetail?.projectName!
+                }
                 className="text-midnightBlue font-popin"
               />
             </div>
@@ -278,7 +287,9 @@ const Summary = ({ setPrevNext }: Props) => {
             <div>
               <QuinaryHeading title="Lead Source" className="text-lightyGray" />
               <Description
-                title={estimateDetailsSummary?.estimateIdDetail?.leadSource!}
+                title={
+                  estimateDetailsSummary?.estimateRequestIdDetail?.leadSource!
+                }
                 className="text-midnightBlue font-popin"
               />
             </div>
@@ -289,7 +300,9 @@ const Summary = ({ setPrevNext }: Props) => {
                 className="text-lightyGray"
               />
               <Description
-                title={estimateDetailsSummary?.estimateIdDetail?.projectValue!}
+                title={
+                  estimateDetailsSummary?.estimateRequestIdDetail?.projectValue!
+                }
                 className="text-midnightBlue font-popin"
               />
             </div>
@@ -297,14 +310,7 @@ const Summary = ({ setPrevNext }: Props) => {
             <div>
               <QuinaryHeading title="Email" className="text-lightyGray" />
               <Description
-                title={estimateDetailsSummary?.estimateIdDetail?.email!}
-                className="text-midnightBlue font-popin"
-              />
-            </div>
-            <div>
-              <QuinaryHeading title="Address" className="text-lightyGray" />
-              <Description
-                title="----"
+                title={estimateDetailsSummary?.estimateRequestIdDetail?.email!}
                 className="text-midnightBlue font-popin"
               />
             </div>
@@ -316,7 +322,8 @@ const Summary = ({ setPrevNext }: Props) => {
               />
               <Description
                 title={
-                  estimateDetailsSummary?.estimateIdDetail?.projectInformation!
+                  estimateDetailsSummary?.estimateRequestIdDetail
+                    ?.projectInformation!
                 }
                 className="text-midnightBlue font-popin"
               />
@@ -363,6 +370,7 @@ const Summary = ({ setPrevNext }: Props) => {
           <div className="flex items-center justify-between">
             <MinDesc title="Material Tax %" className="text-darkgrayish" />
             <InputComponent
+              suffix={<PercentageOutlined />}
               label=""
               type="number"
               name="materialTax"
@@ -381,6 +389,7 @@ const Summary = ({ setPrevNext }: Props) => {
           <div className="flex items-center justify-between">
             <MinDesc title="Overhead & Profit %" className="text-darkgrayish" />
             <InputComponent
+              suffix={<PercentageOutlined />}
               label=""
               type="number"
               name="overheadAndProfit"
@@ -399,6 +408,7 @@ const Summary = ({ setPrevNext }: Props) => {
           <div className="flex items-center justify-between">
             <MinDesc title="Bond Fee %" className="text-darkgrayish" />
             <InputComponent
+              suffix={<PercentageOutlined />}
               label=""
               type="number"
               name="bondFee"

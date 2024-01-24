@@ -36,7 +36,7 @@ class EstimateRequestsService extends HttpService {
 
   httpAddGeneratedEstimate = (
     data: any
-  ): Promise<IResponseInterface<{ token: IToken }>> =>
+  ): Promise<IResponseInterface<{ token: IToken; _id?: string }>> =>
     this.post(`${this.prefix}/addNewGenerateEstimate`, data);
 
   httpGetAllGeneratedEstimates = (

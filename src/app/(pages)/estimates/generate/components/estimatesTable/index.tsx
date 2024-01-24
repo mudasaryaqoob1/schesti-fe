@@ -100,7 +100,7 @@ const confirmColumns: any = [
       let perHourLaborRate = parseFloat(record.perHourLaborRate);
       let totalLabourHours = quantity * unitLabourHour;
       let result = totalLabourHours * perHourLaborRate;
-      return result.toFixed(2);
+      return `$${result.toFixed(2)}`;
     },
   },
   {
@@ -120,7 +120,7 @@ const confirmColumns: any = [
       let wastagePercentage = parseFloat(record.wastage);
       let qtyWithWastage = quantity * (wastagePercentage / 100);
       let result = unitMaterialCost * qtyWithWastage;
-      return result.toFixed(2);
+      return `${result.toFixed(2)}`;
     },
   },
   {
@@ -132,17 +132,18 @@ const confirmColumns: any = [
       let unitEquipments = parseFloat(record.unitEquipments);
       let quantity = parseFloat(record.qty);
       let result = unitEquipments * quantity;
-      return result.toFixed(2);
+      return `$${result.toFixed(2)}`;
     },
   },
   {
     title: 'Total Cost',
     dataIndex: 'totalCost',
     align: 'center',
+    fixed: 'right',
     width: 150,
     render: (text: string, record: DataType) => {
       let result = calculateTotalCost(record);
-      return result;
+      return `$${result}`;
     },
   },
 ];

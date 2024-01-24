@@ -7,8 +7,6 @@ import QuinaryHeading from '@/app/component/headings/quinary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 import MinDesc from '@/app/component/description/minDesc';
-import { useSelector } from 'react-redux';
-import { selectGeneratedEstimateDetail } from '@/redux/estimate/estimateRequestSelector';
 import EstimatesTable from '../components/estimatesTable';
 import ClientPDF from '../components/clientPDF';
 import CustomButton from '@/app/component/customButton/button';
@@ -18,78 +16,48 @@ import { estimateRequestService } from '@/app/services/estimates.service';
 const ViewEstimateDetail = () => {
   const { estimateId } = useParams();
 
-  const { estimateSummary } = useSelector(selectGeneratedEstimateDetail);
-
   const [pdfData, setPdfData] = useState<Object[]>([]);
   const [estimateDetailsSummary, setEstimateDetailsSummary] = useState<any>();
   const [estimatesRecord, setEstimatesRecord] = useState([]);
-
-  useEffect(() => {
-    setEstimateDetailsSummary(estimateSummary);
-
-    if (estimateSummary?.estimateItems?.length) {
-      const updatedDataArray = estimateSummary?.estimateItems.map(
-        (titleObject: any) => {
-          const totalCostForTitle = titleObject.data.reduce(
-            (total: any, dataItem: any) => {
-              return total + parseFloat(dataItem.totalCostRecord);
-            },
-            0
-          );
-          return {
-            ...titleObject,
-            totalCostForTitle: totalCostForTitle.toFixed(2),
-          };
-        }
-      );
-      setEstimatesRecord(updatedDataArray);
-
-      const transformedArray = updatedDataArray.flatMap(({ data }: any) =>
-        data.map(({ description, qty, totalCostRecord }: any) => ({
-          description,
-          quantity: qty,
-          totalPrice: totalCostRecord,
-        }))
-      );
-
-      setPdfData(transformedArray);
-    }
-  }, [estimateSummary]);
 
   const fetchEstimateDetail = useCallback(async () => {
     const result =
       await estimateRequestService.httpGetGeneratedEstimateDetail(estimateId);
     if (result.statusCode === 200) {
       setEstimateDetailsSummary({
-        ...result.data,
-        ...result.data.estimateRequestID,
+        estimateRequestIdDetail:
+          result.data.generatedEstimates.estimateRequestIdDetail,
+        totalBidDetail: result.data.generatedEstimates.totalBidDetail,
+        totalCost: result.data.generatedEstimates.totalCost,
       });
 
-      if (result.data?.estimateItems?.length) {
-        const updatedDataArray = result.data?.estimateItems.map(
-          (titleObject: any) => {
-            const totalCostForTitle = titleObject.estimateItems.reduce(
-              (total: any, dataItem: any) => {
-                return total + parseFloat(dataItem.totalCostRecord);
-              },
-              0
-            );
-            return {
-              ...titleObject,
-              data: titleObject.estimateItems,
-              totalCostForTitle: totalCostForTitle.toFixed(2),
-            };
-          }
-        );
+      if (result.data?.generatedEstimates?.estimateScope?.length) {
+        const updatedDataArray =
+          result.data?.generatedEstimates?.estimateScope.map(
+            (titleObject: any) => {
+              const totalCostForTitle = titleObject.scopeItems.reduce(
+                (total: any, dataItem: any) => {
+                  return total + parseFloat(dataItem.totalCostRecord);
+                },
+                0
+              );
+              return {
+                ...titleObject,
+                scopeItems: titleObject.scopeItems,
+                totalCostForTitle: totalCostForTitle.toFixed(2),
+              };
+            }
+          );
 
         setEstimatesRecord(updatedDataArray);
 
-        const transformedArray = updatedDataArray.flatMap(({ data }: any) =>
-          data.map(({ description, qty, totalCostRecord }: any) => ({
-            description,
-            quantity: qty,
-            totalPrice: totalCostRecord,
-          }))
+        const transformedArray = updatedDataArray.flatMap(
+          ({ scopeItems }: any) =>
+            scopeItems.map(({ description, qty, totalCostRecord }: any) => ({
+              description,
+              quantity: qty,
+              totalPrice: totalCostRecord,
+            }))
         );
 
         setPdfData(transformedArray);
@@ -103,8 +71,6 @@ const ViewEstimateDetail = () => {
     }
   }, [estimateId]);
 
-  console.log(estimateDetailsSummary, 'estimatesRecordestimatesRecord');
-
   return (
     <div className="p-12">
       <div className="flex justify-between items-center">
@@ -116,15 +82,12 @@ const ViewEstimateDetail = () => {
           <PDFDownloadLink
             document={
               <ClientPDF
-                data={{
-                  ...estimateDetailsSummary,
-                  takeOffDetail: estimateDetailsSummary?.totalBidDetail,
-                }}
+                estimateDetail={estimateDetailsSummary}
                 subcostRecord={estimateDetailsSummary?.totalCost}
                 pdfData={pdfData}
               />
             }
-            fileName="somename.pdf"
+            fileName="estimate-document.pdf"
           >
             {({ loading }) => (
               <CustomButton
@@ -146,7 +109,9 @@ const ViewEstimateDetail = () => {
           <div>
             <QuinaryHeading title="Client Name" className="text-lightyGray" />
             <Description
-              title={estimateDetailsSummary?.estimateRequestID?.clientName!}
+              title={
+                estimateDetailsSummary?.estimateRequestIdDetail?.clientName!
+              }
               className="text-midnightBlue font-popin"
             />
           </div>
@@ -154,7 +119,9 @@ const ViewEstimateDetail = () => {
           <div>
             <QuinaryHeading title="Company Name" className="text-lightyGray" />
             <Description
-              title={estimateDetailsSummary?.estimateRequestID?.companyName!}
+              title={
+                estimateDetailsSummary?.estimateRequestIdDetail?.companyName!
+              }
               className="text-midnightBlue font-popin"
             />
           </div>
@@ -162,7 +129,7 @@ const ViewEstimateDetail = () => {
           <div>
             <QuinaryHeading title="Phone Number" className="text-lightyGray" />
             <Description
-              title={estimateDetailsSummary?.estimateRequestID?.phone!}
+              title={estimateDetailsSummary?.estimateRequestIdDetail?.phone!}
               className="text-midnightBlue font-popin"
             />
           </div>
@@ -170,7 +137,7 @@ const ViewEstimateDetail = () => {
           <div>
             <QuinaryHeading title="Email" className="text-lightyGray" />
             <Description
-              title={estimateDetailsSummary?.estimateRequestID?.email!}
+              title={estimateDetailsSummary?.estimateRequestIdDetail?.email!}
               className="text-midnightBlue font-popin"
             />
           </div>
@@ -180,7 +147,9 @@ const ViewEstimateDetail = () => {
       <div className={`${bg_style} p-5 mt-4`}>
         <div className="flex justify-between items-center">
           <QuaternaryHeading
-            title={estimateDetailsSummary?.estimateRequestID?.projectName!}
+            title={
+              estimateDetailsSummary?.estimateRequestIdDetail?.projectName!
+            }
             className="font-bold"
           />
         </div>
@@ -189,7 +158,9 @@ const ViewEstimateDetail = () => {
           <div>
             <QuinaryHeading title="Project Name" className="text-lightyGray" />
             <Description
-              title={estimateDetailsSummary?.estimateRequestID?.projectName!}
+              title={
+                estimateDetailsSummary?.estimateRequestIdDetail?.projectName!
+              }
               className="text-midnightBlue font-popin"
             />
           </div>
@@ -197,7 +168,9 @@ const ViewEstimateDetail = () => {
           <div>
             <QuinaryHeading title="Lead Source" className="text-lightyGray" />
             <Description
-              title={estimateDetailsSummary?.estimateRequestID?.leadSource!}
+              title={
+                estimateDetailsSummary?.estimateRequestIdDetail?.leadSource!
+              }
               className="text-midnightBlue font-popin"
             />
           </div>
@@ -205,7 +178,9 @@ const ViewEstimateDetail = () => {
           <div>
             <QuinaryHeading title="Project Value" className="text-lightyGray" />
             <Description
-              title={estimateDetailsSummary?.estimateRequestID?.projectValue!}
+              title={
+                estimateDetailsSummary?.estimateRequestIdDetail?.projectValue!
+              }
               className="text-midnightBlue font-popin"
             />
           </div>
@@ -213,7 +188,7 @@ const ViewEstimateDetail = () => {
           <div>
             <QuinaryHeading title="Email" className="text-lightyGray" />
             <Description
-              title={estimateDetailsSummary?.estimateRequestID?.email!}
+              title={estimateDetailsSummary?.estimateRequestIdDetail?.email!}
               className="text-midnightBlue font-popin"
             />
           </div>
@@ -232,7 +207,8 @@ const ViewEstimateDetail = () => {
             />
             <Description
               title={
-                estimateDetailsSummary?.estimateRequestID?.projectInformation!
+                estimateDetailsSummary?.estimateRequestIdDetail
+                  ?.projectInformation!
               }
               className="text-midnightBlue font-popin"
             />
@@ -263,7 +239,7 @@ const ViewEstimateDetail = () => {
                   </div>
                 </div>
                 <div className="estimateTable_container">
-                  <EstimatesTable estimates={estimate.data} />
+                  <EstimatesTable estimates={estimate.scopeItems} />
                 </div>
               </div>
             ))

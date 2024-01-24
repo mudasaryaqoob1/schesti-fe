@@ -18,7 +18,7 @@ const infoStyles = StyleSheet.create({
     justifyContent: 'space-between',
   },
 });
-export function PageContent({ data, subcostRecord, pdfData }: any) {
+export function PageContent({ estimateDetail, subcostRecord, pdfData }: any) {
   return (
     <View style={styles.content}>
       {/* INFO */}
@@ -27,31 +27,31 @@ export function PageContent({ data, subcostRecord, pdfData }: any) {
         <View style={infoStyles.gridContainer}>
           <InfoContainer
             title="Client Name"
-            description={data?.takeOffDetail?.clientName}
+            description={estimateDetail?.estimateRequestIdDetail?.clientName}
           />
           <InfoContainer
             title="Company Name"
-            description={data?.takeOffDetail?.companyName}
+            description={estimateDetail?.estimateRequestIdDetail?.companyName}
           />
           <InfoContainer
             title="Phone Number"
-            description={data?.takeOffDetail?.phone}
+            description={estimateDetail?.estimateRequestIdDetail?.phone}
           />
           <InfoContainer
             title="Email"
-            description={data?.takeOffDetail?.email}
+            description={estimateDetail?.estimateRequestIdDetail?.email}
           />
           <InfoContainer
             title="Project Name"
-            description={data?.takeOffDetail?.projectName}
+            description={estimateDetail?.estimateRequestIdDetail?.projectName}
           />
           <InfoContainer
             title="Lead Source"
-            description={data?.takeOffDetail?.leadSource}
+            description={estimateDetail?.estimateRequestIdDetail?.leadSource}
           />
           <InfoContainer
             title="Project Value"
-            description={data?.takeOffDetail?.projectValue}
+            description={estimateDetail?.estimateRequestIdDetail?.projectValue}
           />
         </View>
       </View>

@@ -44,17 +44,17 @@ const EstimateRequestTable: React.FC = () => {
       1,
       9
     );
-
     let updatedGeneratedEstimate = result?.data?.generatedEstiamtes.map(
       (estimate: any) => {
         return {
-          id: estimate._id,
-          projectName: estimate.estimateRequestID.projectName,
-          clientName: estimate.estimateRequestID.clientName,
-          salePerson: `${estimate?.estimateRequestID.salePerson?.firstName} ${estimate?.estimateRequestID.salePerson?.lastName}`,
-          estimator: `${estimate?.estimateRequestID.estimator?.firstName} ${estimate?.estimateRequestID.estimator?.lastName}`,
-          totalCost: estimate.estimateRequestID.totalCost,
-          estimateRequestId: estimate.estimateRequestID._id,
+          _id: estimate?._id,
+          projectName: estimate?.estimateRequestIdDetail?.projectName,
+          clientName: estimate?.estimateRequestIdDetail?.clientName,
+          salePerson: `${estimate?.estimateRequestIdDetail?.salePerson?.firstName} ${estimate?.estimateRequestIdDetail?.salePerson?.lastName}`,
+          estimator: `${estimate?.estimateRequestIdDetail?.estimator?.firstName} ${estimate?.estimateRequestIdDetail?.estimator?.lastName}`,
+          totalCost: estimate?.totalCost,
+          status: estimate?.status,
+          estimateRequestIdDetail: estimate.estimateRequestIdDetail?._id,
         };
       }
     );
@@ -77,15 +77,11 @@ const EstimateRequestTable: React.FC = () => {
   ];
 
   const handleDropdownItemClick = async (key: string, estimate: any) => {
-    console.log(key, estimate, 'estimateestimate');
-
     if (key == 'viewDetail') {
-      router.push(`/estimates/generate/${estimate.estimateRequestId}`);
+      router.push(`/estimates/generate/${estimate._id}`);
     } else if (key == 'deleteEstimate') {
       let deleteEstimateResult =
-        await estimateRequestService.httpDeleteGeneratedEstimate(
-          estimate.estimateRequestId
-        );
+        await estimateRequestService.httpDeleteGeneratedEstimate(estimate._id);
       if (deleteEstimateResult.statusCode === 200) {
         fetchGeneratedEstiamtesHandler();
       }
@@ -118,11 +114,6 @@ const EstimateRequestTable: React.FC = () => {
     {
       title: 'Status',
       dataIndex: 'status',
-      render: () => (
-        <a className="text-[#027A48] bg-[#ECFDF3] px-2 py-1 rounded-full">
-          Active
-        </a>
-      ),
     },
     {
       title: 'Action',
@@ -152,26 +143,32 @@ const EstimateRequestTable: React.FC = () => {
     },
   ];
 
-  return generatedEstimates && generatedEstimates.length < 1 ? (
-    <NoData
-      btnText="Create new estimates request"
-      link="/estimates/requests/create"
-    />
-  ) : (
+  return (
     <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid border-silverGray shadow-secondaryTwist">
-      <div className="flex justify-between items-center">
-        <TertiaryHeading
-          title="Submitted Estimate"
-          className="text-graphiteGray"
+      {generatedEstimates?.length ? (
+        <>
+          <div className="flex justify-between items-center">
+            <TertiaryHeading
+              title="Submitted Estimate"
+              className="text-graphiteGray"
+            />
+          </div>
+          <div className="mt-4">
+            <Table
+              columns={columns}
+              dataSource={generatedEstimates}
+              pagination={{ position: ['bottomCenter'] }}
+            />
+          </div>
+        </>
+      ) : (
+        <NoData
+          btnText="Add Request"
+          title="Create Estimate Request"
+          description="There is not any record yet . To get started, Create an estimate request by clicking the button below and sharing details about your project."
+          link="/estimates/requests/create"
         />
-      </div>
-      <div className="mt-4">
-        <Table
-          columns={columns}
-          dataSource={generatedEstimates}
-          pagination={{ position: ['bottomCenter'] }}
-        />
-      </div>
+      )}
     </section>
   );
 };

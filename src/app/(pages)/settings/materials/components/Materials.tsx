@@ -243,6 +243,7 @@ const Materials = () => {
                                             disabled={_id !== selectedRowId}
                                             placeholder="Material Cost"
                                             name="unitMaterialCost"
+                                            prefix="$"
                                           />
                                         </div>
                                         <div className="col-span-1 flex gap-2">
@@ -257,6 +258,7 @@ const Materials = () => {
                                             disabled={_id !== selectedRowId}
                                             placeholder="Unit Equipment"
                                             name="unitEquipments"
+                                            prefix="$"
                                           />
                                         </div>
                                         <div className="col-span-1 flex justify-center items-center">

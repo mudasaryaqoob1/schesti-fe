@@ -3,15 +3,14 @@ import { Document, Page } from '@react-pdf/renderer';
 import { PdfHeader } from './Header';
 import { PdfFooter } from './Footer';
 import { PageContent } from './content';
-// import { PdfData } from './type';
 
-const ClientPDF = ({ data, subcostRecord, pdfData }: any) => {
+const ClientPDF = ({ estimateDetail, subcostRecord, pdfData }: any) => {
   return (
     <Document>
       <Page size={'A4'}>
         <PdfHeader />
         <PageContent
-          data={data}
+          estimateDetail={estimateDetail}
           subcostRecord={subcostRecord}
           pdfData={pdfData}
         />

@@ -9,14 +9,11 @@ export const estimateSlice = createSlice({
   name: 'estimates',
   initialState: initialEstimateSlice,
   reducers: {
-    saveEstimateDetail: (state, { payload }) => {
+    generateEstimateDetailAction: (state, { payload }) => {
       state.generateEstimateDetail = {
-        estimateIdDetail: payload.estimateIdDetail,
+        estimateRequestIdDetail: payload.estimateRequestIdDetail,
         estimateScope: payload.estimateScope,
       };
-    },
-    estimateSummary: (state, { payload }) => {
-      state.estimateSummary = payload;
     },
   },
   extraReducers: (builder) => {
@@ -57,5 +54,5 @@ export const estimateSlice = createSlice({
   },
 });
 
-export const { saveEstimateDetail, estimateSummary } = estimateSlice.actions;
+export const { generateEstimateDetailAction } = estimateSlice.actions;
 export default estimateSlice.reducer;

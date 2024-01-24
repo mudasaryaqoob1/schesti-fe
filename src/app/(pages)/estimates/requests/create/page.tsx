@@ -39,7 +39,10 @@ const clientInfoSchema: any = Yup.object({
   email: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
-  phone: Yup.string().required('Phone is required!'),
+  phone: Yup.string()
+    .min(11, 'Phone number must be at least 11 characters')
+    .max(14, 'Phone number must be at most 14 characters')
+    .required('Phone number is required'),
   projectName: Yup.string().required('Project name is required!'),
   leadSource: Yup.string().required('Load source is required!'),
   projectValue: Yup.string().required('Project value is required!'),
@@ -130,12 +133,12 @@ const CreateEstimateRequest = () => {
 
     if (drawingsDocuments.length == 0) {
       setuploadDocumentsError('Drawings Document Required');
-    } 
+    }
     // else if (takeOffReports.length == 0) {
     //   setuploadDocumentsError('Takeoff Reports Required');
     // } else if (otherDocuments.length == 0) {
     //   setuploadDocumentsError('Other Documents Required');
-    // } 
+    // }
     else {
       const [drawingDocs, takeOffDocs, otherDocs] = await Promise.all([
         uploadDocumentToS3Handler(drawingsDocuments),

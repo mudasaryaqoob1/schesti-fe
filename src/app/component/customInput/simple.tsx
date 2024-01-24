@@ -1,7 +1,7 @@
 import { Field, useField } from 'formik';
-// import ErrorMsg from '../errorMessage';
 import { Input } from 'antd';
 import { twMerge } from 'tailwind-merge';
+import './style.css';
 import clsx from 'clsx';
 const SimpleInput = (props: any) => {
   const {
@@ -46,7 +46,7 @@ const SimpleInput = (props: any) => {
               className={twMerge(
                 clsx(
                   `border ${hasError ? 'border-red-500' : 'border-gray-400'} ${
-                    disabled ? '!text-black' : ''
+                    disabled ? 'disable_custom_class !text-black' : ''
                   } !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 !mt-1.5 ${
                     inputStyle && inputStyle
                   }`

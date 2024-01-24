@@ -15,7 +15,7 @@ import CustomWhiteButton from '@/app/component/customButton/white';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import MinDesc from '@/app/component/description/minDesc';
-import { saveEstimateDetail } from '@/redux/estimate/estimateRequest.slice';
+import { generateEstimateDetailAction } from '@/redux/estimate/estimateRequest.slice';
 import { bg_style, senaryHeading } from '@/globals/tailwindvariables';
 import { estimateRequestService } from '@/app/services/estimates.service';
 import { selectToken } from '@/redux/authSlices/auth.selector';
@@ -57,7 +57,11 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
 
   const nextStepHandler = () => {
     setPrevNext((prev) => prev + 1);
-    dispatch(saveEstimateDetail({ estimateIdDetail: estimateRequestDetail }));
+    dispatch(
+      generateEstimateDetailAction({
+        estimateRequestIdDetail: estimateRequestDetail,
+      })
+    );
   };
 
   return (
@@ -257,7 +261,9 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
             <p
               className={`${senaryHeading} !text-[14px] text-midnightBlue font-popin mb-2`}
             >
-              {estimateRequestDetail?.takeOffReports?.length ? 'Takeoff Reports' : null}
+              {estimateRequestDetail?.takeOffReports?.length
+                ? 'Takeoff Reports'
+                : null}
             </p>
             {estimateRequestDetail?.takeOffReports?.map(
               (doc: { name: string; size: number; url: string }) => (
@@ -293,8 +299,9 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
             <p
               className={`${senaryHeading} !text-[14px] text-midnightBlue font-popin mb-2`}
             >
-              {estimateRequestDetail?.otherDocuments?.length ? 'Other Documents' : null}
-             
+              {estimateRequestDetail?.otherDocuments?.length
+                ? 'Other Documents'
+                : null}
             </p>
             {estimateRequestDetail?.otherDocuments?.map(
               (doc: { name: string; size: number; url: string }) => (
