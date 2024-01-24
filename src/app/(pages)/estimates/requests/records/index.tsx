@@ -59,6 +59,10 @@ const EstimateRequestTable: React.FC = () => {
       label: <a href="#">Create Estimate</a>,
     },
     {
+      key: 'editEstimateRequest',
+      label: <a href="#">Edit Request</a>,
+    },
+    {
       key: 'deleteEstimateRequest',
       label: <p>Delete</p>,
     },
@@ -67,6 +71,8 @@ const EstimateRequestTable: React.FC = () => {
   const handleDropdownItemClick = async (key: string, estimateRequest: any) => {
     if (key == 'deleteEstimateRequest') {
       await dispatch(deleteEstimateRequest(estimateRequest._id));
+    } else if (key == 'editEstimateRequest') {
+      router.push(`/estimates/requests/edit/${estimateRequest._id}`);
     } else if (key === 'createEstimateRequest') {
       router.push(
         `/estimates/generate/create?estimateId=${estimateRequest._id}`

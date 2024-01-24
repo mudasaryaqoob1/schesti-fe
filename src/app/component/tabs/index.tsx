@@ -26,6 +26,7 @@ const items: MenuProps['items'] = [
 const Tabs = () => {
   const pathname = usePathname();
   const router = useRouter();
+  
 
   return (
     <div className="md:flex block justify-between items-center px-16 xl:h-[67px] shadow-quinaryGentle">
@@ -98,12 +99,13 @@ const Tabs = () => {
             }}
           >
             <Space
-              className={twMerge(
+               className={twMerge(
                 clsx(
                   `${quaternaryHeading} text-steelGray
-              flex items-stretch justify-center py-2 
-               cursor-pointer
-              `
+                    flex items-stretch justify-center py-2 
+                     cursor-pointer
+                    `,
+                  pathname.includes('/estimates'.split('/')[1]) && tabsStyle.active
                 )
               )}
             >
@@ -147,7 +149,7 @@ const Tabs = () => {
                 flex items-stretch justify-center py-2 
                  cursor-pointer
                 `,
-              pathname.includes('#'.split('/')[1]) && tabsStyle.active
+              pathname.includes('/invoices'.split('/')[1]) && tabsStyle.active
             )
           )}
           onClick={() => router.push('/invoices')}
@@ -161,7 +163,7 @@ const Tabs = () => {
                 flex items-stretch justify-center py-2 
                  cursor-pointer
                 `,
-              pathname.includes('#'.split('/')[1]) && tabsStyle.active
+              pathname.includes('/meeting'.split('/')[1]) && tabsStyle.active
             )
           )}
           onClick={() => router.push('/meeting')}
