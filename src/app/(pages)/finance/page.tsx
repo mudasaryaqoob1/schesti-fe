@@ -40,7 +40,7 @@ const Fiance = () => {
   ];
 
   return (
-    <section className='my-4 px-4'>
+    <section className='my-4  mx-8 px-4'>
       <div className='grid grid-cols-12 gap-8'>
         <div className='col-span-12 md:col-span-8  shadow bg-white p-4 rounded-md'>
           <div className='flex justify-between items-center'>
