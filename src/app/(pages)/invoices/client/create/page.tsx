@@ -86,7 +86,9 @@ export default function CreateClientInvoicePage() {
                   tab === G703_KEY ? (
                     <G703Component state={g703State} setState={setG703State} />
                   ) : (
-                    <G702Component />
+                    <G702Component
+                      g703={g703State}
+                    />
                   ),
               };
             })}
