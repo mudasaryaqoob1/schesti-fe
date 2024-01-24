@@ -3,13 +3,15 @@ import WhiteButton from '@/app/component/customButton/white';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { Checkbox, Divider } from 'antd';
-import { G703State } from '../utils';
+import { G703State, getColumnFromRows, getGrandTotal } from '../utils';
 
 type Props = {
   g703: G703State
 }
 
 export function G702Component({ g703 }: Props) {
+  console.log(getGrandTotal(getColumnFromRows(g703.data, 5)))
+  // console.log(g703.data[1])
   return (
     <div>
       <div>
@@ -161,6 +163,7 @@ export function G702Component({ g703 }: Props) {
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
+                  value={getGrandTotal(getColumnFromRows(g703.data, 1))}
                 />
               </div>
               <div className="grid grid-cols-3 gap-1">
@@ -191,6 +194,7 @@ export function G702Component({ g703 }: Props) {
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
+                  value={getGrandTotal(getColumnFromRows(g703.data, 5))}
                 />
               </div>
 

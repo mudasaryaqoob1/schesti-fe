@@ -1,7 +1,7 @@
 'use client';
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useRef, } from 'react';
 import { Divider, Select } from 'antd';
-import { HotTable } from '@handsontable/react';
+import { HotTable, } from '@handsontable/react';
 import { registerAllModules } from 'handsontable/registry';
 import 'handsontable/dist/handsontable.full.min.css';
 import { type CellValue, HyperFormula } from 'hyperformula';
@@ -10,7 +10,7 @@ import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import PrimaryHeading from '@/app/component/headings/primary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import { G703Row, G703State, rowTemplate } from '../utils';
+import { G703Row, G703State, getColumnFromRows, rowTemplate } from '../utils';
 import { ChangeSource } from 'aws-sdk/clients/cloudformation';
 
 // register Handsontable's modules
@@ -21,6 +21,9 @@ type Props = {
   setState: Dispatch<SetStateAction<G703State>>;
 };
 export function G703Component({ setState, state }: Props) {
+  console.log(getColumnFromRows(state.data, 5))
+  const ref = useRef();
+
   function addRow() {
     // add rowTempate in data
     setState({
@@ -76,6 +79,7 @@ export function G703Component({ setState, state }: Props) {
 
     }
   }
+
   return (
     <section>
       <div className="flex justify-between items-center">
@@ -178,7 +182,8 @@ export function G703Component({ setState, state }: Props) {
       {/* Spreadsheet */}
       <div className="px-4">
         <HotTable
-          data={[...state.data, getCalculatedRows()]}
+          ref={ref}
+          data={[...state.data, ['Grand Total']]}
           colWidths={[50, 50, 100, 50, 100, 50, 50]}
           nestedHeaders={[
             [
@@ -202,6 +207,7 @@ export function G703Component({ setState, state }: Props) {
               '',
             ],
           ]}
+
           cells={(row, col) => {
             let cellProperties: any = {};
             if (col === 2) {
@@ -214,6 +220,17 @@ export function G703Component({ setState, state }: Props) {
               precisionRounding: 2
             }),
           }}
+          columnSummary={[
+            { sourceColumn: 1, destinationRow: state.data.length, type: "sum", forceNumeric: true, destinationColumn: 1 },
+            { sourceColumn: 2, destinationRow: state.data.length, type: "sum", forceNumeric: true, destinationColumn: 2 },
+            { sourceColumn: 3, destinationRow: state.data.length, type: "sum", forceNumeric: true, destinationColumn: 3 },
+            { sourceColumn: 4, destinationRow: state.data.length, type: "sum", forceNumeric: true, destinationColumn: 4 },
+            { sourceColumn: 5, destinationRow: state.data.length, type: "sum", forceNumeric: true, destinationColumn: 5 },
+            { sourceColumn: 6, destinationRow: state.data.length, type: "sum", forceNumeric: true, destinationColumn: 6 },
+            { sourceColumn: 7, destinationRow: state.data.length, type: "sum", forceNumeric: true, destinationColumn: 7 },
+            { sourceColumn: 8, destinationRow: state.data.length, type: "sum", forceNumeric: true, destinationColumn: 8 },
+          ]}
+
           licenseKey="non-commercial-and-evaluation"
           rowHeaders={true}
           // @ts-ignore
