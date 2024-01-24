@@ -4,7 +4,7 @@ import React from 'react';
 const Fiance = () => {
   return (
     <div>
-      <UnderDevelop title={'Fiance'} />
+      <UnderDevelop title={'Finance'} />
     </div>
   );
 };
