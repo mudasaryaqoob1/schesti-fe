@@ -110,7 +110,7 @@ export const config1: ColumnConfig = {
     yField: 'amount',
     seriesField: 'type',
     style: {
-        fill: ({ type }) => {
+        fill: ({ type }: typeof data1[0]) => {
             return type === 'recieveable' ? '#7F56D9' : '#EF9F28';
         },
         radiusTopLeft: 50,

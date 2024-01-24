@@ -19,14 +19,23 @@ const Fiance = () => {
     {
       title: 'Receivable',
       dataIndex: 'receivable',
+      render(value) {
+        return `$${value}`
+      },
     },
     {
       title: 'Target',
       dataIndex: 'amount',
+      render(value) {
+        return `$${value}`
+      },
     },
     {
       title: 'Target %',
       dataIndex: 'percentage',
+      render(value) {
+        return `${value}%`
+      },
     },
   ];
 
@@ -75,7 +84,7 @@ const Fiance = () => {
             />
           </div>
           <div className='flex justify-center'>
-            <Progress showInfo type="dashboard" percent={75} />
+            <Progress showInfo type="dashboard" strokeColor={"#7F56D9"} strokeWidth={12} size={200} percent={75} />
           </div>
           <div className='flex justify-between items-center'>
             <Badge color='#0074D9' status='default' text="Completed" />
