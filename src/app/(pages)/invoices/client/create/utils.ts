@@ -19,14 +19,15 @@ export type G703Row = [
 
 export function rowTemplate(index: number): G703Row {
   return [
-    '0',
-    '0',
-    `=0 + D${index}`,
-    '0',
-    '0',
+    '',
+    '',
+    // `=0 + D${index}`,
+    '',
+    '',
+    '',
     `=C${index} + D${index} + E${index}`,
     `=(F${index} / B${index}) * 100`,
     `=B${index} - F${index}`,
-    '0',
+    `=(10 / 100) * F${index}`,
   ];
 }

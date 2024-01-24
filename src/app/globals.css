@@ -103,7 +103,7 @@ a {
 
 @layer components {
   .clientTable thead th span {
-    @apply text-center block whitespace-normal font-normal text-base;
+    @apply text-center block whitespace-normal font-normal text-xs;
   }
 
   .clientTable thead th {
@@ -111,6 +111,6 @@ a {
   }
 
   .clientTable thead {
-    @apply bg-[#D0D5DD];
+    @apply bg-[#F0F1F3];
   }
 }

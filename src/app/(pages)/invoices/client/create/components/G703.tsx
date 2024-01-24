@@ -2,7 +2,7 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { Divider, Select } from 'antd';
 import { HotTable } from '@handsontable/react';
-import {} from 'handsontable';
+import { } from 'handsontable';
 import { registerAllModules } from 'handsontable/registry';
 import 'handsontable/dist/handsontable.full.min.css';
 import { HyperFormula } from 'hyperformula';
@@ -170,10 +170,13 @@ export function G703Component({ setState, state }: Props) {
             return cellProperties;
           }}
           formulas={{
-            engine: HyperFormula,
+            engine: HyperFormula.buildEmpty({
+              precisionRounding: 2
+            }),
           }}
           licenseKey="non-commercial-and-evaluation"
           rowHeaders={true}
+
           colHeaders={true}
           height="auto"
           autoWrapRow={true}
