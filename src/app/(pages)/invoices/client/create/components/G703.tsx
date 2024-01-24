@@ -176,7 +176,9 @@ export function G703Component({ setState, state }: Props) {
           }}
           licenseKey="non-commercial-and-evaluation"
           rowHeaders={true}
-
+          afterChange={(changes, source) => {
+            console.log(changes, source);
+          }}
           colHeaders={true}
           height="auto"
           autoWrapRow={true}

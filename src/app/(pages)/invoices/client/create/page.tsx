@@ -45,6 +45,8 @@ export default function CreateClientInvoicePage() {
     }
   }, [token]);
 
+  console.log(g703State);
+
   return (
     <section className="mx-16 my-2">
       <div className="p-5 shadow-md rounded-lg border border-silverGray  bg-white">
