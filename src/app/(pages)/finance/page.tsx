@@ -124,11 +124,10 @@ const Fiance = () => {
                 { label: "Year 2022", value: "2022" },
                 { label: "Year 2021", value: "2021" },
               ]}
-              size='large'
             />
             <CustomButton
               text='Download'
-              className='!w-48 !py-2'
+              className='!w-44 !py-2'
             />
           </div>
         </div>
