@@ -45,6 +45,10 @@ export function G703Component({ setState, state }: Props) {
     ];
   }
 
+  function handleState<K extends keyof G703State>(key: K, value: typeof state[K]) {
+    setState({ ...state, [key]: value });
+  }
+
   function handleUpdate(changes: [number, string | number, CellValue, CellValue][] | null, source: ChangeSource) {
     if (source === 'edit' && changes) {
       const updatedRow = changes.map(([row, prop, oldValue, newValue]) => {
@@ -111,7 +115,7 @@ export function G703Component({ setState, state }: Props) {
           <div className="flex self-end space-x-3 items-center">
             <label
               className="text-right text-graphiteGray font-normal"
-              htmlFor="application-date"
+
             >
               APPLICATION NO:
             </label>
@@ -119,12 +123,14 @@ export function G703Component({ setState, state }: Props) {
               id="application-date"
               className="px-2 py-1 border border-gray-300 outline-none"
               type="text"
+              value={state.applicationNo}
+              onChange={e => handleState('applicationNo', e.target.value)}
             />
           </div>
           <div className="flex self-end space-x-3 items-center">
             <label
               className="text-right text-graphiteGray font-normal"
-              htmlFor="application-date"
+
             >
               APPLICATION DATE:
             </label>
@@ -132,12 +138,14 @@ export function G703Component({ setState, state }: Props) {
               id="application-date"
               className="px-2 py-1 border border-gray-300 outline-none"
               type="text"
+              value={state.applicationDate}
+              onChange={e => handleState('applicationDate', e.target.value)}
             />
           </div>
           <div className="flex self-end space-x-3 items-center">
             <label
               className="text-right text-graphiteGray font-normal"
-              htmlFor="application-date"
+
             >
               PERIOD TO:
             </label>
@@ -145,12 +153,14 @@ export function G703Component({ setState, state }: Props) {
               id="application-date"
               className="px-2 py-1 border border-gray-300 outline-none"
               type="text"
+              value={state.periodTo}
+              onChange={e => handleState('periodTo', e.target.value)}
             />
           </div>
           <div className="flex self-end space-x-3 items-center">
             <label
               className="text-right text-graphiteGray font-normal"
-              htmlFor="application-date"
+
             >
               PROJECT NO:
             </label>
@@ -158,6 +168,8 @@ export function G703Component({ setState, state }: Props) {
               id="application-date"
               className="px-2 py-1 border border-gray-300 outline-none"
               type="text"
+              value={state.projectNo}
+              onChange={e => handleState('projectNo', e.target.value)}
             />
           </div>
         </div>
