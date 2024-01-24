@@ -43,7 +43,7 @@ export function UpcomingComponent({ setState, state }: Props) {
               className="text-obsidianBlack2 mt-8"
             />
             <Description
-              title="Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content."
+              title="There are no scheduled meeting. Initiate one by using the Jitsi integration."
               className="text-steelGray text-center font-normal"
             />
             <CustomButton

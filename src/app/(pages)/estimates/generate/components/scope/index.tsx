@@ -128,20 +128,7 @@ const Scope = ({ setPrevNext }: Props) => {
     unitMaterialCost: '',
     unitEquipments: '',
   });
-  const calculateTotalCost = (record: DataType) => {
-    let perHourLaborRate = parseFloat(record.perHourLaborRate);
-    let unitLabourHour = parseFloat(record.unitLabourHour);
-    let quantity = parseFloat(record.qty);
-    let unitMaterialCost = parseFloat(record.unitMaterialCost);
-    let wastagePercentage = parseFloat(record.wastage);
-    let qtyWithWastage = quantity * (wastagePercentage / 100);
-    let totalLabourHours = quantity * unitLabourHour;
-    let totalMeterialCost = unitMaterialCost * qtyWithWastage;
-    let totalLabourCost = totalLabourHours * perHourLaborRate;
-    let totalMaterialCost = unitMaterialCost * qtyWithWastage;
-    let result = totalLabourCost * totalMeterialCost * totalMaterialCost;
-    return result.toFixed(2);
-  };
+
   const fetchCategories = useCallback(async () => {
     const result = await categoriesService.httpGetAllCategories(1, 9);
 
@@ -296,7 +283,7 @@ const Scope = ({ setPrevNext }: Props) => {
       );
       selectedCategory = `${selctedCatoryName.label} ${selctedSubCategoryName.label}`;
     } else {
-      selectedCategory = `${estimateTableItemValues.category} ${estimateTableItemValues.subCategory}`;
+      selectedCategory = `${estimateTableItemValues?.category} ${estimateTableItemValues?.subCategory}`;
     }
 
     if (
@@ -440,6 +427,21 @@ const Scope = ({ setPrevNext }: Props) => {
     setEditConfirmItem(true);
   };
 
+  const calculateTotalCost = (record: DataType) => {
+    let perHourLaborRate = parseFloat(record.perHourLaborRate);
+    let unitLabourHour = parseFloat(record.unitLabourHour);
+    let quantity = parseFloat(record.qty);
+    let unitMaterialCost = parseFloat(record.unitMaterialCost);
+    let wastagePercentage = parseFloat(record.wastage);
+    let qtyWithWastage =  quantity * ((1 + wastagePercentage / 100));
+    let totalLabourHours = qtyWithWastage * unitLabourHour;
+    let totalMeterialCost = unitMaterialCost * qtyWithWastage;
+    let totalLabourCost = totalLabourHours * perHourLaborRate;
+    let totalMaterialCost = unitMaterialCost * qtyWithWastage;
+    let result = totalLabourCost * totalMeterialCost * totalMaterialCost;
+    return result.toFixed(2);
+  };
+
   const columns: any = [
     {
       title: 'Description',
@@ -474,7 +476,7 @@ const Scope = ({ setPrevNext }: Props) => {
       render: (text: string, record: DataType) => {
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
-        let result = quantity * (wastagePercentage / 100);
+        let result = quantity * ((1 + wastagePercentage / 100));
         return result.toFixed(2);
       },
     },
@@ -485,8 +487,10 @@ const Scope = ({ setPrevNext }: Props) => {
       width: 150,
       render: (text: string, record: DataType) => {
         let unitLabourHour = parseFloat(record.unitLabourHour);
+        let wastagePercentage = parseFloat(record.wastage);
         let quantity = parseFloat(record.qty);
-        let result = quantity * unitLabourHour;
+        let quantityWithWastage = quantity * ((1 + wastagePercentage / 100));
+        let result = quantityWithWastage * unitLabourHour;
         return result.toFixed(2);
       },
     },
@@ -504,8 +508,10 @@ const Scope = ({ setPrevNext }: Props) => {
       render: (text: string, record: DataType) => {
         let unitLabourHour = parseFloat(record.unitLabourHour);
         let quantity = parseFloat(record.qty);
+        let wastagePercentage = parseFloat(record.wastage);
+        let quantityWithWastage = quantity * ((1 + wastagePercentage / 100));
         let perHourLaborRate = parseFloat(record.perHourLaborRate);
-        let totalLabourHours = quantity * unitLabourHour;
+        let totalLabourHours = quantityWithWastage * unitLabourHour;
         let result = totalLabourHours * perHourLaborRate;
         return result.toFixed(2);
       },
@@ -525,8 +531,8 @@ const Scope = ({ setPrevNext }: Props) => {
         let unitMaterialCost = parseFloat(record.unitMaterialCost);
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
-        let qtyWithWastage = quantity * (wastagePercentage / 100);
-        let result = unitMaterialCost * qtyWithWastage;
+        let quantityWithWastage = quantity * ((1 + wastagePercentage / 100));
+        let result = unitMaterialCost * quantityWithWastage;
         return result.toFixed(2);
       },
     },
@@ -538,7 +544,9 @@ const Scope = ({ setPrevNext }: Props) => {
       render: (text: string, record: DataType) => {
         let unitEquipments = parseFloat(record.unitEquipments);
         let quantity = parseFloat(record.qty);
-        let result = unitEquipments * quantity;
+        let wastagePercentage = parseFloat(record.wastage);
+        let quantityWithWastage = quantity * ((1 + wastagePercentage / 100));
+        let result = unitEquipments * quantityWithWastage;
         return result.toFixed(2);
       },
     },
@@ -616,7 +624,7 @@ const Scope = ({ setPrevNext }: Props) => {
       render: (text: string, record: DataType) => {
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
-        let result = quantity * (wastagePercentage / 100);
+        let result = quantity * ((1 + wastagePercentage / 100));
         return result.toFixed(2);
       },
     },
@@ -627,8 +635,10 @@ const Scope = ({ setPrevNext }: Props) => {
       width: 150,
       render: (text: string, record: DataType) => {
         let unitLabourHour = parseFloat(record.unitLabourHour);
+        let wastagePercentage = parseFloat(record.wastage);
         let quantity = parseFloat(record.qty);
-        let result = quantity * unitLabourHour;
+        let quantityWithWastage = quantity * ((1 + wastagePercentage / 100));
+        let result = quantityWithWastage * unitLabourHour;
         return result.toFixed(2);
       },
     },
@@ -646,8 +656,10 @@ const Scope = ({ setPrevNext }: Props) => {
       render: (text: string, record: DataType) => {
         let unitLabourHour = parseFloat(record.unitLabourHour);
         let quantity = parseFloat(record.qty);
+        let wastagePercentage = parseFloat(record.wastage);
+        let quantityWithWastage = quantity * ((1 + wastagePercentage / 100));
         let perHourLaborRate = parseFloat(record.perHourLaborRate);
-        let totalLabourHours = quantity * unitLabourHour;
+        let totalLabourHours = quantityWithWastage * unitLabourHour;
         let result = totalLabourHours * perHourLaborRate;
         return result.toFixed(2);
       },
@@ -667,8 +679,8 @@ const Scope = ({ setPrevNext }: Props) => {
         let unitMaterialCost = parseFloat(record.unitMaterialCost);
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
-        let qtyWithWastage = quantity * (wastagePercentage / 100);
-        let result = unitMaterialCost * qtyWithWastage;
+        let quantityWithWastage = quantity * ((1 + wastagePercentage / 100));
+        let result = unitMaterialCost * quantityWithWastage;
         return result.toFixed(2);
       },
     },
@@ -680,7 +692,9 @@ const Scope = ({ setPrevNext }: Props) => {
       render: (text: string, record: DataType) => {
         let unitEquipments = parseFloat(record.unitEquipments);
         let quantity = parseFloat(record.qty);
-        let result = unitEquipments * quantity;
+        let wastagePercentage = parseFloat(record.wastage);
+        let quantityWithWastage = quantity * ((1 + wastagePercentage / 100));
+        let result = unitEquipments * quantityWithWastage;
         return result.toFixed(2);
       },
     },
