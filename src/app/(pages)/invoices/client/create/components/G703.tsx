@@ -2,16 +2,16 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { Divider, Select } from 'antd';
 import { HotTable } from '@handsontable/react';
-import { } from 'handsontable';
 import { registerAllModules } from 'handsontable/registry';
 import 'handsontable/dist/handsontable.full.min.css';
-import { HyperFormula } from 'hyperformula';
+import { type CellValue, HyperFormula } from 'hyperformula';
 
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import PrimaryHeading from '@/app/component/headings/primary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { G703Row, G703State, rowTemplate } from '../utils';
+import { ChangeSource } from 'aws-sdk/clients/cloudformation';
 
 // register Handsontable's modules
 registerAllModules();
@@ -43,6 +43,34 @@ export function G703Component({ setState, state }: Props) {
       `=SUM(H1:H${data.length})`,
       `=SUM(I1:I${data.length})`,
     ];
+  }
+
+  function handleUpdate(changes: [number, string | number, CellValue, CellValue][] | null, source: ChangeSource) {
+    if (source === 'edit' && changes) {
+      const updatedRow = changes.map(([row, prop, oldValue, newValue]) => {
+        return {
+          row,
+          column: prop,
+          oldValue,
+          newValue,
+        };
+      });
+
+      setState(prev => {
+        const newState = { ...prev };
+        const oldData = [...prev.data];
+        updatedRow.forEach(({ row, column, _, newValue }) => {
+          const oldRow = oldData[row];
+          const newRow = [...oldRow];
+          let c = Number(column);
+          newRow[c] = newValue as string;
+          oldData[row] = newRow as G703Row;
+        });
+        newState.data = oldData;
+        return newState;
+      })
+
+    }
   }
   return (
     <section>
@@ -176,9 +204,8 @@ export function G703Component({ setState, state }: Props) {
           }}
           licenseKey="non-commercial-and-evaluation"
           rowHeaders={true}
-          afterChange={(changes, source) => {
-            console.log(changes, source);
-          }}
+          // @ts-ignore
+          afterChange={handleUpdate}
           colHeaders={true}
           height="auto"
           autoWrapRow={true}
