@@ -87,6 +87,7 @@ export function G702Component({ g703 }: Props) {
               <input
                 className="px-2 py-2  border border-gray-300 outline-none"
                 type="text"
+                value={g703.applicationNo}
               />
             </div>
             <div className="grid grid-cols-2 space-x-1">
@@ -98,6 +99,7 @@ export function G702Component({ g703 }: Props) {
               <input
                 className="px-2 py-1 border border-gray-300 outline-none"
                 type="text"
+                value={g703.applicationDate}
               />
             </div>
             <div className="grid grid-cols-2 space-x-1">
@@ -109,6 +111,7 @@ export function G702Component({ g703 }: Props) {
               <input
                 className="px-2 py-1 border border-gray-300 outline-none"
                 type="text"
+                value={g703.periodTo}
               />
             </div>
             <div className="grid grid-cols-2 space-x-1">
@@ -120,6 +123,7 @@ export function G702Component({ g703 }: Props) {
               <input
                 className="px-2 py-1 border border-gray-300 outline-none"
                 type="text"
+                value={g703.projectNo}
               />
             </div>
           </div>
