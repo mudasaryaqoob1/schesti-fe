@@ -40,6 +40,7 @@ export function G703Component({ setState, state }: Props) {
     newData = updateColumn6(newData, row);
     newData = updateColumn7(newData, row);
     newData = updateColumn8(newData, row);
+    newData = updateColumn9(newData, row);
     setData(newData)
   }
 
@@ -73,6 +74,16 @@ export function G703Component({ setState, state }: Props) {
     let columnC = Number(row[2]);
     let result = columnC - columnG;
     newData[rowIndex][8] = `${result}`;
+    return newData;
+  }
+
+  function updateColumn9(data: Array<string[]>, rowIndex: number) {
+    const newData = [...data];
+    const row = newData[rowIndex];
+    let columnF = row[5];
+    // 10% of F
+    let result = (10 / 100) * Number(columnF);
+    newData[rowIndex][9] = `${result}`;
     return newData;
   }
 
