@@ -21,6 +21,19 @@ export function G703Component({ setState, state }: Props) {
   function handleState<K extends keyof G703State>(key: K, value: typeof state[K]) {
     setState({ ...state, [key]: value });
   }
+
+  function sumColumn(rows: Array<string[]>, column: number) {
+    let sum = 0;
+    data.forEach(row => {
+      sum += Number(row[column])
+    })
+    return sum
+  }
+
+  function getCellValue(row: string[], column: number) {
+    return row[column]
+  }
+
   return (
     <section>
       <div className="flex justify-between items-center">
@@ -122,9 +135,11 @@ export function G703Component({ setState, state }: Props) {
 
       {/* Spreadsheet */}
       <div className="px-4">
-        <Table bordered dataSource={[...data,
-        ['', 'Grand Total', '', '', '', '', '', '', '']
-        ]} pagination={false}
+        <Table bordered dataSource={[
+          ...data,
+          ['', 'Grand Total', `${sumColumn(data, 2)}`, `${sumColumn(data, 3)}`, `${sumColumn(data, 4)}`, `${sumColumn(data, 5)}`, `${sumColumn(data, 6)}`, `${sumColumn(data, 7)}`, `${sumColumn(data, 8)}`, `${sumColumn(data, 9)}`]
+        ]}
+          pagination={false}
         >
           <Column
             title={<SenaryHeading title='Item No' />}
@@ -149,7 +164,7 @@ export function G703Component({ setState, state }: Props) {
             dataIndex={2}
             render={(value, record, index) => {
               if (index === data.length) {
-                return null;
+                return value;
               }
               return <Input
                 value={value}
@@ -169,12 +184,13 @@ export function G703Component({ setState, state }: Props) {
             <Column
               title={<SenaryHeading title="From previous application (D+E)" />}
               dataIndex={3}
-              render={(value, record, index) => {
+              render={(value, record: string[], index) => {
                 if (index === data.length) {
-                  return null;
+                  return value;
                 }
+                let columnE = getCellValue(record, 4)
                 return <Input
-                  value={value}
+                  value={value + Number(columnE)}
                   type='number'
                   disabled
                   onChange={e => {
@@ -191,7 +207,7 @@ export function G703Component({ setState, state }: Props) {
               dataIndex={4}
               render={(value, record, index) => {
                 if (index === data.length) {
-                  return null;
+                  return value;
                 }
                 return <Input
                   value={value}
@@ -211,7 +227,7 @@ export function G703Component({ setState, state }: Props) {
             dataIndex={5}
             render={(value, record, index) => {
               if (index === data.length) {
-                return null;
+                return value;
               }
               return <Input
                 value={value}
@@ -233,7 +249,7 @@ export function G703Component({ setState, state }: Props) {
               dataIndex={6}
               render={(value, record, index) => {
                 if (index === data.length) {
-                  return null;
+                  return value;
                 }
                 return <Input
                   value={value}
@@ -272,7 +288,7 @@ export function G703Component({ setState, state }: Props) {
             dataIndex={8}
             render={(value, record, index) => {
               if (index === data.length) {
-                return null;
+                return value;
               }
               return <Input
                 value={value}
@@ -291,7 +307,7 @@ export function G703Component({ setState, state }: Props) {
             dataIndex={9}
             render={(value, record, index) => {
               if (index === data.length) {
-                return null;
+                return value;
               }
               return <Input
                 value={value}

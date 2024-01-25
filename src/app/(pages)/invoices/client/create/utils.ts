@@ -34,7 +34,7 @@ export function rowTemplate(): G703Row {
 
 export function generateData() {
   return Array.from({ length: 10 }).map((_, index) => {
-    return [index, `item-${index}`, '', '', '', '', '', '', '']
+    return [`${index}`, `item-${index}`, '', '', '', '', '', '', '', '']
   });
 }
 
