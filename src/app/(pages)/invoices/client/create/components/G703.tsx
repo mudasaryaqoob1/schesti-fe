@@ -1,6 +1,6 @@
 'use client';
 import React, { Dispatch, SetStateAction, useState, } from 'react';
-import { Divider, Input, Select, Table, } from 'antd';
+import { Divider, Input, InputNumber, Select, Table, } from 'antd';
 
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
@@ -32,6 +32,48 @@ export function G703Component({ setState, state }: Props) {
 
   function getCellValue(row: string[], column: number) {
     return row[column]
+  }
+
+  function updateCellValue(row: number, column: number, value: number) {
+    let newData = [...data]
+    newData[row][column] = `${value}`;
+    newData = updateColumn6(newData, row);
+    newData = updateColumn7(newData, row);
+    newData = updateColumn8(newData, row);
+    setData(newData)
+  }
+
+  console.log(data);
+  function updateColumn6(data: Array<string[]>, rowIndex: number) {
+    const newData = [...data];
+    const row = newData[rowIndex];
+    let columnD = row[3];
+    let columnE = row[4];
+    let columnF = row[5];
+    let sum = Number(columnD) + Number(columnE) + Number(columnF);
+    newData[rowIndex][6] = `${sum}`;
+    return newData;
+  }
+
+  function updateColumn7(data: Array<string[]>, rowIndex: number) {
+    const newData = [...data];
+    const row = newData[rowIndex];
+    let columnC = Number(row[2]);
+    let columnG = Number(row[6]);
+    // % (G ÷ C)
+    let result = (columnG / columnC) * 100;
+    newData[rowIndex][7] = `${result}`;
+    return newData;
+  }
+
+  function updateColumn8(data: Array<string[]>, rowIndex: number) {
+    const newData = [...data];
+    const row = newData[rowIndex];
+    let columnG = Number(row[6]);
+    let columnC = Number(row[2]);
+    let result = columnC - columnG;
+    newData[rowIndex][8] = `${result}`;
+    return newData;
   }
 
   return (
@@ -137,7 +179,7 @@ export function G703Component({ setState, state }: Props) {
       <div className="px-4">
         <Table bordered dataSource={[
           ...data,
-          ['', 'Grand Total', `${sumColumn(data, 2)}`, `${sumColumn(data, 3)}`, `${sumColumn(data, 4)}`, `${sumColumn(data, 5)}`, `${sumColumn(data, 6)}`, `${sumColumn(data, 7)}`, `${sumColumn(data, 8)}`, `${sumColumn(data, 9)}`]
+          ['', 'Grand Total', `${sumColumn(data, 2)}`, `${sumColumn(data, 3)}`, `${sumColumn(data, 4)}`, `${sumColumn(data, 5)}`, `${sumColumn(data, 6)}`, `${sumColumn(data, 7).toPrecision(2)}`, `${sumColumn(data, 8)}`, `${sumColumn(data, 9)}`]
         ]}
           pagination={false}
         >
@@ -162,17 +204,15 @@ export function G703Component({ setState, state }: Props) {
           <Column
             title={<SenaryHeading title="Scheduled value" />}
             dataIndex={2}
-            render={(value, record, index) => {
+            render={(value, record: string[], index) => {
               if (index === data.length) {
                 return value;
               }
               return <Input
-                value={value}
+                value={getCellValue(record, 2)}
                 type='number'
                 onChange={e => {
-                  const newData = [...data]
-                  newData[index][2] = e.target.value
-                  setData(newData)
+                  updateCellValue(index, 2, Number(e.target.value));
                 }
                 }
               />
@@ -188,17 +228,11 @@ export function G703Component({ setState, state }: Props) {
                 if (index === data.length) {
                   return value;
                 }
-                let columnE = getCellValue(record, 4)
+                let columnE = Number(getCellValue(record, 4));
                 return <Input
-                  value={value + Number(columnE)}
+                  value={columnE}
                   type='number'
                   disabled
-                  onChange={e => {
-                    const newData = [...data]
-                    newData[index][3] = e.target.value
-                    setData(newData)
-                  }
-                  }
                 />
               }}
             />
@@ -213,9 +247,8 @@ export function G703Component({ setState, state }: Props) {
                   value={value}
                   type='number'
                   onChange={e => {
-                    const newData = [...data]
-                    newData[index][4] = e.target.value
-                    setData(newData)
+                    updateCellValue(index, 4, Number(e.target.value));
+                    updateCellValue(index, 3, Number(e.target.value));
                   }
                   }
                 />
@@ -233,9 +266,7 @@ export function G703Component({ setState, state }: Props) {
                 value={value}
                 type='number'
                 onChange={e => {
-                  const newData = [...data]
-                  newData[index][5] = e.target.value
-                  setData(newData)
+                  updateCellValue(index, 5, Number(e.target.value));
                 }
                 }
               />
@@ -247,17 +278,20 @@ export function G703Component({ setState, state }: Props) {
             <Column
               title={<SenaryHeading title="TOTAL COMPLETED AND STORED TO DATE (D+E+F)" />}
               dataIndex={6}
-              render={(value, record, index) => {
+              render={(value, record: string[], index) => {
                 if (index === data.length) {
                   return value;
                 }
+                let columnD = Number(getCellValue(record, 3));
+                let columnE = Number(getCellValue(record, 4));
+                let columnF = Number(getCellValue(record, 5));
+
                 return <Input
-                  value={value}
+                  value={columnD + columnE + columnF}
                   type='number'
+                  disabled
                   onChange={e => {
-                    const newData = [...data]
-                    newData[index][6] = e.target.value
-                    setData(newData)
+                    updateCellValue(index, 6, Number(e.target.value));
                   }
                   }
                 />
@@ -266,19 +300,13 @@ export function G703Component({ setState, state }: Props) {
             <Column
               title={<SenaryHeading title="% (G ÷ C)" />}
               dataIndex={7}
-              render={(value, record, index) => {
+              render={(value, record: string[], index) => {
                 if (index === data.length) {
-                  return null;
+                  return value;
                 }
-                return <Input
-                  value={value}
-                  type='number'
-                  onChange={e => {
-                    const newData = [...data]
-                    newData[index][7] = e.target.value
-                    setData(newData)
-                  }
-                  }
+                return <InputNumber
+                  value={record[7]}
+                  precision={2}
                 />
               }}
             />
@@ -286,19 +314,13 @@ export function G703Component({ setState, state }: Props) {
           <Column
             title={<SenaryHeading title="BALANCE (C - G)" />}
             dataIndex={8}
-            render={(value, record, index) => {
+            render={(value, record: string[], index) => {
               if (index === data.length) {
                 return value;
               }
               return <Input
-                value={value}
+                value={record[8]}
                 type='number'
-                onChange={e => {
-                  const newData = [...data]
-                  newData[index][8] = e.target.value
-                  setData(newData)
-                }
-                }
               />
             }}
           />
