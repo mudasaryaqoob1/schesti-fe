@@ -18,10 +18,10 @@ export type G703Row = [
   string,
 ];
 
-export function rowTemplate(): G703Row {
+export function rowTemplate(index: number) {
   return [
-    '',
-    '',
+    `${index}`,
+    `item-${index}`,
     '',
     '',
     '',
@@ -34,12 +34,9 @@ export function rowTemplate(): G703Row {
 
 export function generateData() {
   return Array.from({ length: 10 }).map((_, index) => {
-    return [`${index}`, `item-${index}`, '', '', '', '', '', '', '', '']
+    return rowTemplate(index);
   });
 }
-
-
-
 
 export function getCalculatedRows(data: Array<G703Row>): G703Row {
 

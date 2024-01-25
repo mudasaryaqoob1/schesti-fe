@@ -6,7 +6,7 @@ import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import PrimaryHeading from '@/app/component/headings/primary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import { G703State, generateData, } from '../utils';
+import { G703State, generateData, rowTemplate, } from '../utils';
 import ColumnGroup from 'antd/es/table/ColumnGroup';
 import Column from 'antd/es/table/Column';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
@@ -15,6 +15,7 @@ type Props = {
   state: G703State;
   setState: Dispatch<SetStateAction<G703State>>;
 };
+
 export function G703Component({ setState, state }: Props) {
   const [data, setData] = useState(generateData())
 
@@ -24,7 +25,7 @@ export function G703Component({ setState, state }: Props) {
 
   function sumColumn(rows: Array<string[]>, column: number) {
     let sum = 0;
-    data.forEach(row => {
+    rows.forEach(row => {
       sum += Number(row[column])
     })
     return sum
@@ -34,14 +35,14 @@ export function G703Component({ setState, state }: Props) {
     return row[column]
   }
 
-  function updateCellValue(row: number, column: number, value: number) {
+  function updateCellValue(row: number, column: number, value: number | string) {
     let newData = [...data]
     newData[row][column] = `${value}`;
     newData = updateColumn6(newData, row);
     newData = updateColumn7(newData, row);
     newData = updateColumn8(newData, row);
     newData = updateColumn9(newData, row);
-    setData(newData)
+    setData(() => newData);
   }
 
   console.log(data);
@@ -187,7 +188,14 @@ export function G703Component({ setState, state }: Props) {
       </div>
 
       {/* Spreadsheet */}
-      <div className="px-4">
+      <div className="px-4 space-y-2">
+        <CustomButton
+          text='Add Row'
+          onClick={() => {
+            setData([...data, rowTemplate(data.length)])
+          }}
+          className='!w-40'
+        />
         <Table bordered dataSource={[
           ...data,
           ['', 'Grand Total', `${sumColumn(data, 2)}`, `${sumColumn(data, 3)}`, `${sumColumn(data, 4)}`, `${sumColumn(data, 5)}`, `${sumColumn(data, 6)}`, `${sumColumn(data, 7).toPrecision(2)}`, `${sumColumn(data, 8)}`, `${sumColumn(data, 9)}`]
@@ -198,16 +206,14 @@ export function G703Component({ setState, state }: Props) {
             title={<SenaryHeading title='Item No' />}
             dataIndex={0} />
           <Column title={<SenaryHeading title="Description Of Work" />} dataIndex={1}
-            render={(value, record, index) => {
+            render={(value, record: string[], index) => {
               if (index === data.length) {
                 return value;
               }
               return <Input
-                value={value}
+                value={getCellValue(record, 1)}
                 onChange={e => {
-                  const newData = [...data]
-                  newData[index][1] = e.target.value
-                  setData(newData)
+                  updateCellValue(index, 1, e.target.value)
                 }}
               />
             }}
@@ -338,17 +344,15 @@ export function G703Component({ setState, state }: Props) {
           <Column
             title={<SenaryHeading title="RETAINAGE (IF VARIABLE RATE) 5%" />}
             dataIndex={9}
-            render={(value, record, index) => {
+            render={(value, record: string[], index) => {
               if (index === data.length) {
                 return value;
               }
-              return <Input
-                value={value}
-                type='number'
+              return <InputNumber
+                value={record[9]}
+                precision={2}
                 onChange={e => {
-                  const newData = [...data]
-                  newData[index][9] = e.target.value
-                  setData(newData)
+                  updateCellValue(index, 9, String(e));
                 }
                 }
               />
