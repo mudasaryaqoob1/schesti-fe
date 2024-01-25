@@ -1,71 +1,26 @@
 'use client';
-import React, { Dispatch, SetStateAction, useRef, } from 'react';
-import { Divider, Select } from 'antd';
-import { HotTable, } from '@handsontable/react';
-import { registerAllModules } from 'handsontable/registry';
-import 'handsontable/dist/handsontable.full.min.css';
-import { type CellValue, HyperFormula } from 'hyperformula';
+import React, { Dispatch, SetStateAction, useState, } from 'react';
+import { Divider, Input, Select, Table, } from 'antd';
 
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import PrimaryHeading from '@/app/component/headings/primary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import { G703Row, G703State, rowTemplate } from '../utils';
-import { ChangeSource } from 'aws-sdk/clients/cloudformation';
-
-
-registerAllModules();
+import { G703State, generateData, } from '../utils';
+import ColumnGroup from 'antd/es/table/ColumnGroup';
+import Column from 'antd/es/table/Column';
+import QuinaryHeading from '@/app/component/headings/quinary';
 
 type Props = {
   state: G703State;
   setState: Dispatch<SetStateAction<G703State>>;
 };
-type P = React.ComponentProps<typeof HotTable>;
-type HotTableClassFromProps<P> = P extends React.RefAttributes<infer T> ? T : never;
-type ExtractedHotTableClass = HotTableClassFromProps<P>;
 export function G703Component({ setState, state }: Props) {
-  const ref = useRef<ExtractedHotTableClass | null>(null);
-
-  function addRow() {
-    // add rowTempate in data
-    setState({
-      ...state,
-      data: [...state.data, rowTemplate(state.data.length + 1)],
-    });
-  }
+  const [data, setData] = useState(generateData())
 
   function handleState<K extends keyof G703State>(key: K, value: typeof state[K]) {
     setState({ ...state, [key]: value });
   }
-
-  function handleUpdate(changes: [number, string | number, CellValue, CellValue][] | null, source: ChangeSource) {
-    if (source === 'edit' && changes) {
-      const updatedRow = changes.map(([row, prop, oldValue, newValue]) => {
-        return {
-          row,
-          column: prop,
-          oldValue,
-          newValue,
-        };
-      });
-
-      setState(prev => {
-        const newState = { ...prev };
-        const oldData = [...prev.data];
-        updatedRow.forEach(({ row, column, _, newValue }) => {
-          const oldRow = oldData[row];
-          const newRow = [...oldRow];
-          let c = Number(column);
-          newRow[c] = newValue as string;
-          oldData[row] = newRow as G703Row;
-        });
-        newState.data = oldData;
-        return newState;
-      })
-
-    }
-  }
-
   return (
     <section>
       <div className="flex justify-between items-center">
@@ -167,76 +122,190 @@ export function G703Component({ setState, state }: Props) {
 
       {/* Spreadsheet */}
       <div className="px-4">
-        <HotTable
-          ref={ref}
-          data={[...state.data, ['Grand Total']]}
-          colWidths={[50, 50, 100, 50, 100, 50, 50]}
-          nestedHeaders={[
-            [
-              'Description of work', // "A"
-              'Scheduled value', // "B"
-              { label: 'Work Completed', colspan: 2 }, // "C", "D"
-              'MATERIALS PRESENTLY STORED (NOT IN D OR E)', // "E"
-              { label: 'Work Completed', colspan: 2 }, // "F" , "G"
-              'BALANCE (C - G)',
-              'RETAINAGE (IF VARIABLE RATE) 5%', // "`H`"
-            ],
-            [
-              '',
-              '',
-              'From previous application (D+E)',
-              'This period',
-              '',
-              'TOTAL COMPLETED AND STORED TO DATE (D+E+F)',
-              '% (G ÷ C)',
-              '',
-              '',
-            ],
-          ]}
-
-          cells={(row, col) => {
-            let cellProperties: any = {};
-            if (col === 2) {
-              cellProperties.readOnly = true;
-            }
-            return cellProperties;
-          }}
-          formulas={{
-            engine: HyperFormula.buildEmpty({
-              precisionRounding: 2
-            }),
-          }}
-          columnSummary={[
-            { sourceColumn: 1, destinationRow: state.data.length, type: "sum", forceNumeric: true, destinationColumn: 1 },
-            { sourceColumn: 2, destinationRow: state.data.length, type: "sum", forceNumeric: true, destinationColumn: 2 },
-            { sourceColumn: 3, destinationRow: state.data.length, type: "sum", forceNumeric: true, destinationColumn: 3 },
-            { sourceColumn: 4, destinationRow: state.data.length, type: "sum", forceNumeric: true, destinationColumn: 4 },
-            { sourceColumn: 5, destinationRow: state.data.length, type: "sum", forceNumeric: true, destinationColumn: 5 },
-            { sourceColumn: 6, destinationRow: state.data.length, type: "sum", forceNumeric: true, destinationColumn: 6 },
-            { sourceColumn: 7, destinationRow: state.data.length, type: "sum", forceNumeric: true, destinationColumn: 7 },
-            { sourceColumn: 8, destinationRow: state.data.length, type: "sum", forceNumeric: true, destinationColumn: 8 },
-          ]}
-
-          licenseKey="non-commercial-and-evaluation"
-          rowHeaders={true}
-          // @ts-ignore
-          afterChange={handleUpdate}
-          height="auto"
-          autoWrapRow={true}
-          autoWrapCol={true}
-          //@ts-ignore
-          contextMenu={{
-            items: [
-              {
-                name: 'Add Row',
-                callback() {
-                  addRow();
-                },
-              },
-            ],
-          }}
-          className="clientTable"
-        />
+        <Table bordered dataSource={[...data,
+        ['', 'Grand Total', '', '', '', '', '', '', '']
+        ]} pagination={false}
+        >
+          <Column
+            title={<QuinaryHeading title='Item No' />}
+            dataIndex={0} />
+          <Column title={<QuinaryHeading title="Description Of Work" />} dataIndex={1}
+            render={(value, record, index) => {
+              if (index === data.length) {
+                return value;
+              }
+              return <Input
+                value={value}
+                onChange={e => {
+                  const newData = [...data]
+                  newData[index][1] = e.target.value
+                  setData(newData)
+                }}
+              />
+            }}
+          />
+          <Column
+            title={<QuinaryHeading title="Scheduled value" />}
+            dataIndex={2}
+            render={(value, record, index) => {
+              if (index === data.length) {
+                return null;
+              }
+              return <Input
+                value={value}
+                type='number'
+                onChange={e => {
+                  const newData = [...data]
+                  newData[index][2] = e.target.value
+                  setData(newData)
+                }
+                }
+              />
+            }}
+          />
+          <ColumnGroup
+            title={<QuinaryHeading title="Completed Work" />}
+          >
+            <Column
+              title={<QuinaryHeading title="From previous application (D+E)" />}
+              dataIndex={3}
+              render={(value, record, index) => {
+                if (index === data.length) {
+                  return null;
+                }
+                return <Input
+                  value={value}
+                  type='number'
+                  disabled
+                  onChange={e => {
+                    const newData = [...data]
+                    newData[index][3] = e.target.value
+                    setData(newData)
+                  }
+                  }
+                />
+              }}
+            />
+            <Column
+              title={<QuinaryHeading title="This period" />}
+              dataIndex={4}
+              render={(value, record, index) => {
+                if (index === data.length) {
+                  return null;
+                }
+                return <Input
+                  value={value}
+                  type='number'
+                  onChange={e => {
+                    const newData = [...data]
+                    newData[index][4] = e.target.value
+                    setData(newData)
+                  }
+                  }
+                />
+              }}
+            />
+          </ColumnGroup>
+          <Column
+            title={<QuinaryHeading title="Materials presently stored (not in D or E)" />}
+            dataIndex={5}
+            render={(value, record, index) => {
+              if (index === data.length) {
+                return null;
+              }
+              return <Input
+                value={value}
+                type='number'
+                onChange={e => {
+                  const newData = [...data]
+                  newData[index][5] = e.target.value
+                  setData(newData)
+                }
+                }
+              />
+            }}
+          />
+          <ColumnGroup
+            title={<QuinaryHeading title="Work Completed" />}
+          >
+            <Column
+              title={<QuinaryHeading title="TOTAL COMPLETED AND STORED TO DATE (D+E+F)" />}
+              dataIndex={6}
+              render={(value, record, index) => {
+                if (index === data.length) {
+                  return null;
+                }
+                return <Input
+                  value={value}
+                  type='number'
+                  onChange={e => {
+                    const newData = [...data]
+                    newData[index][6] = e.target.value
+                    setData(newData)
+                  }
+                  }
+                />
+              }}
+            />
+            <Column
+              title={<QuinaryHeading title="% (G ÷ C)" />}
+              dataIndex={7}
+              render={(value, record, index) => {
+                if (index === data.length) {
+                  return null;
+                }
+                return <Input
+                  value={value}
+                  type='number'
+                  onChange={e => {
+                    const newData = [...data]
+                    newData[index][7] = e.target.value
+                    setData(newData)
+                  }
+                  }
+                />
+              }}
+            />
+          </ColumnGroup>
+          <Column
+            title={<QuinaryHeading title="BALANCE (C - G)" />}
+            dataIndex={8}
+            render={(value, record, index) => {
+              if (index === data.length) {
+                return null;
+              }
+              return <Input
+                value={value}
+                type='number'
+                onChange={e => {
+                  const newData = [...data]
+                  newData[index][8] = e.target.value
+                  setData(newData)
+                }
+                }
+              />
+            }}
+          />
+          <Column
+            title={<QuinaryHeading title="RETAINAGE (IF VARIABLE RATE) 5%" />}
+            dataIndex={9}
+            render={(value, record, index) => {
+              if (index === data.length) {
+                return null;
+              }
+              return <Input
+                value={value}
+                type='number'
+                onChange={e => {
+                  const newData = [...data]
+                  newData[index][9] = e.target.value
+                  setData(newData)
+                }
+                }
+              />
+            }}
+          />
+        </Table>
       </div>
       {/* END Spreadsheet */}
 

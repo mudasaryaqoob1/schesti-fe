@@ -18,19 +18,24 @@ export type G703Row = [
   string,
 ];
 
-export function rowTemplate(index: number): G703Row {
+export function rowTemplate(): G703Row {
   return [
     '',
     '',
-    // `=0 + D${index}`,
     '',
     '',
     '',
-    `=C${index} + D${index} + E${index}`,
-    `=(F${index} / B${index}) * 100`,
-    `=B${index} - F${index}`,
-    `=(10 / 100) * F${index}`,
+    ``,
+    ``,
+    ``,
+    ``,
   ];
+}
+
+export function generateData() {
+  return Array.from({ length: 10 }).map((_, index) => {
+    return [index, `item-${index}`, '', '', '', '', '', '', '']
+  });
 }
 
 
