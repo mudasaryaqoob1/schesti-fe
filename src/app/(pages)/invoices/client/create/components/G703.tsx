@@ -10,6 +10,7 @@ import { G703State, generateData, rowTemplate, } from '../utils';
 import ColumnGroup from 'antd/es/table/ColumnGroup';
 import Column from 'antd/es/table/Column';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
+import { DeleteOutlined } from '@ant-design/icons';
 
 type Props = {
   state: G703State;
@@ -86,6 +87,12 @@ export function G703Component({ setState, state }: Props) {
     let result = (10 / 100) * Number(columnF);
     newData[rowIndex][9] = `${isNaN(result) ? 0 : result}`;
     return newData;
+  }
+
+  function deleteRow(rowIndex: number) {
+    const newData = [...data];
+    newData.splice(rowIndex, 1);
+    setData(() => newData);
   }
 
   return (
@@ -355,6 +362,22 @@ export function G703Component({ setState, state }: Props) {
                   updateCellValue(index, 9, String(e));
                 }
                 }
+              />
+            }}
+          />
+
+          <Column
+            title=""
+            className='border-none border-b'
+            render={(value, record: string[], index) => {
+              if (index === data.length) {
+                return null;
+              }
+              return <DeleteOutlined
+                className='text-xl text-red-500 cursor-pointer'
+                onClick={() => {
+                  deleteRow(index);
+                }}
               />
             }}
           />
