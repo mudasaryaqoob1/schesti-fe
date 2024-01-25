@@ -1,7 +1,6 @@
 'use client';
 import React, { Dispatch, SetStateAction, } from 'react';
 import { Divider, Input, InputNumber, Select, Table, } from 'antd';
-
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import PrimaryHeading from '@/app/component/headings/primary';
@@ -26,7 +25,8 @@ export function G703Component({ setState, state }: Props) {
   function sumColumn(rows: Array<string[]>, column: number) {
     let sum = 0;
     rows.forEach(row => {
-      sum += Number(row[column])
+      let val = Number(row[column]);
+      sum += isNaN(val) ? 0 : val;
     })
     return isNaN(sum) ? 0 : sum;
   }
@@ -83,7 +83,7 @@ export function G703Component({ setState, state }: Props) {
     let columnF = row[5];
     // 10% of F
     let result = (10 / 100) * Number(columnF);
-    newData[rowIndex][9] = `${isNaN(result) ? 0 : result}`;
+    newData[rowIndex][9] = `${isNaN(result) ? 0 : Math.ceil(result)}`;
     return newData;
   }
 
@@ -93,8 +93,6 @@ export function G703Component({ setState, state }: Props) {
     handleState('data', newData);
   }
 
-
-  console.log(state);
   return (
     <section>
       <div className="flex justify-between items-center">
@@ -205,7 +203,7 @@ export function G703Component({ setState, state }: Props) {
         />
         <Table bordered dataSource={[
           ...state.data,
-          ['', 'Grand Total', `${sumColumn(state.data, 2)}`, `${sumColumn(state.data, 3)}`, `${sumColumn(state.data, 4)}`, `${sumColumn(state.data, 5)}`, `${sumColumn(state.data, 6)}`, `${sumColumn(state.data, 7).toFixed(2)}`, `${sumColumn(state.data, 8)}`, `${sumColumn(state.data, 9)}`]
+          ['', 'Grand Total', `${sumColumn(state.data, 2)}`, `${sumColumn(state.data, 3)}`, `${sumColumn(state.data, 4)}`, `${sumColumn(state.data, 5)}`, `${sumColumn(state.data, 6)}`, `${sumColumn(state.data, 7).toFixed(2)}`, `${sumColumn(state.data, 8)}`, `${sumColumn(state.data, 9).toFixed(2)}`]
         ]}
           pagination={false}
         >
@@ -358,10 +356,6 @@ export function G703Component({ setState, state }: Props) {
               return <InputNumber
                 value={record[9]}
                 precision={2}
-                onChange={e => {
-                  updateCellValue(index, 9, String(e));
-                }
-                }
               />
             }}
           />
