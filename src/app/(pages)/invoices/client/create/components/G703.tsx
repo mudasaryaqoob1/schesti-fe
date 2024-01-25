@@ -9,7 +9,7 @@ import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { G703State, generateData, } from '../utils';
 import ColumnGroup from 'antd/es/table/ColumnGroup';
 import Column from 'antd/es/table/Column';
-import QuinaryHeading from '@/app/component/headings/quinary';
+import SenaryHeading from '@/app/component/headings/senaryHeading';
 
 type Props = {
   state: G703State;
@@ -127,9 +127,9 @@ export function G703Component({ setState, state }: Props) {
         ]} pagination={false}
         >
           <Column
-            title={<QuinaryHeading title='Item No' />}
+            title={<SenaryHeading title='Item No' />}
             dataIndex={0} />
-          <Column title={<QuinaryHeading title="Description Of Work" />} dataIndex={1}
+          <Column title={<SenaryHeading title="Description Of Work" />} dataIndex={1}
             render={(value, record, index) => {
               if (index === data.length) {
                 return value;
@@ -145,7 +145,7 @@ export function G703Component({ setState, state }: Props) {
             }}
           />
           <Column
-            title={<QuinaryHeading title="Scheduled value" />}
+            title={<SenaryHeading title="Scheduled value" />}
             dataIndex={2}
             render={(value, record, index) => {
               if (index === data.length) {
@@ -164,10 +164,10 @@ export function G703Component({ setState, state }: Props) {
             }}
           />
           <ColumnGroup
-            title={<QuinaryHeading title="Completed Work" />}
+            title={<SenaryHeading title="Work Completed" />}
           >
             <Column
-              title={<QuinaryHeading title="From previous application (D+E)" />}
+              title={<SenaryHeading title="From previous application (D+E)" />}
               dataIndex={3}
               render={(value, record, index) => {
                 if (index === data.length) {
@@ -187,7 +187,7 @@ export function G703Component({ setState, state }: Props) {
               }}
             />
             <Column
-              title={<QuinaryHeading title="This period" />}
+              title={<SenaryHeading title="This period" />}
               dataIndex={4}
               render={(value, record, index) => {
                 if (index === data.length) {
@@ -207,7 +207,7 @@ export function G703Component({ setState, state }: Props) {
             />
           </ColumnGroup>
           <Column
-            title={<QuinaryHeading title="Materials presently stored (not in D or E)" />}
+            title={<SenaryHeading title="Materials presently stored (not in D or E)" />}
             dataIndex={5}
             render={(value, record, index) => {
               if (index === data.length) {
@@ -226,10 +226,10 @@ export function G703Component({ setState, state }: Props) {
             }}
           />
           <ColumnGroup
-            title={<QuinaryHeading title="Work Completed" />}
+            title={<SenaryHeading title="Work Completed" />}
           >
             <Column
-              title={<QuinaryHeading title="TOTAL COMPLETED AND STORED TO DATE (D+E+F)" />}
+              title={<SenaryHeading title="TOTAL COMPLETED AND STORED TO DATE (D+E+F)" />}
               dataIndex={6}
               render={(value, record, index) => {
                 if (index === data.length) {
@@ -248,7 +248,7 @@ export function G703Component({ setState, state }: Props) {
               }}
             />
             <Column
-              title={<QuinaryHeading title="% (G ÷ C)" />}
+              title={<SenaryHeading title="% (G ÷ C)" />}
               dataIndex={7}
               render={(value, record, index) => {
                 if (index === data.length) {
@@ -268,7 +268,7 @@ export function G703Component({ setState, state }: Props) {
             />
           </ColumnGroup>
           <Column
-            title={<QuinaryHeading title="BALANCE (C - G)" />}
+            title={<SenaryHeading title="BALANCE (C - G)" />}
             dataIndex={8}
             render={(value, record, index) => {
               if (index === data.length) {
@@ -287,7 +287,7 @@ export function G703Component({ setState, state }: Props) {
             }}
           />
           <Column
-            title={<QuinaryHeading title="RETAINAGE (IF VARIABLE RATE) 5%" />}
+            title={<SenaryHeading title="RETAINAGE (IF VARIABLE RATE) 5%" />}
             dataIndex={9}
             render={(value, record, index) => {
               if (index === data.length) {
