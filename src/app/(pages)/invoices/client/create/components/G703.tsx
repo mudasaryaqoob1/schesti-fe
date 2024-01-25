@@ -1,12 +1,12 @@
 'use client';
-import React, { Dispatch, SetStateAction, useState, } from 'react';
+import React, { Dispatch, SetStateAction, } from 'react';
 import { Divider, Input, InputNumber, Select, Table, } from 'antd';
 
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import PrimaryHeading from '@/app/component/headings/primary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import { G703State, generateData, rowTemplate, } from '../utils';
+import { G703State, rowTemplate, } from '../utils';
 import ColumnGroup from 'antd/es/table/ColumnGroup';
 import Column from 'antd/es/table/Column';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
@@ -18,7 +18,6 @@ type Props = {
 };
 
 export function G703Component({ setState, state }: Props) {
-  const [data, setData] = useState(generateData())
 
   function handleState<K extends keyof G703State>(key: K, value: typeof state[K]) {
     setState({ ...state, [key]: value });
@@ -37,16 +36,15 @@ export function G703Component({ setState, state }: Props) {
   }
 
   function updateCellValue(row: number, column: number, value: number | string) {
-    let newData = [...data]
+    let newData = [...state.data]
     newData[row][column] = `${value}`;
     newData = updateColumn6(newData, row);
     newData = updateColumn7(newData, row);
     newData = updateColumn8(newData, row);
     newData = updateColumn9(newData, row);
-    setData(() => newData);
+    handleState('data', newData);
   }
 
-  console.log(data);
   function updateColumn6(data: Array<string[]>, rowIndex: number) {
     const newData = [...data];
     const row = newData[rowIndex];
@@ -90,11 +88,13 @@ export function G703Component({ setState, state }: Props) {
   }
 
   function deleteRow(rowIndex: number) {
-    const newData = [...data];
+    const newData = [...state.data];
     newData.splice(rowIndex, 1);
-    setData(() => newData);
+    handleState('data', newData);
   }
 
+
+  console.log(state);
   return (
     <section>
       <div className="flex justify-between items-center">
@@ -199,13 +199,13 @@ export function G703Component({ setState, state }: Props) {
         <CustomButton
           text='Add Row'
           onClick={() => {
-            setData([...data, rowTemplate(data.length)])
+            handleState('data', [...state.data, rowTemplate(state.data.length)])
           }}
           className='!w-40'
         />
         <Table bordered dataSource={[
-          ...data,
-          ['', 'Grand Total', `${sumColumn(data, 2)}`, `${sumColumn(data, 3)}`, `${sumColumn(data, 4)}`, `${sumColumn(data, 5)}`, `${sumColumn(data, 6)}`, `${sumColumn(data, 7).toFixed(2)}`, `${sumColumn(data, 8)}`, `${sumColumn(data, 9)}`]
+          ...state.data,
+          ['', 'Grand Total', `${sumColumn(state.data, 2)}`, `${sumColumn(state.data, 3)}`, `${sumColumn(state.data, 4)}`, `${sumColumn(state.data, 5)}`, `${sumColumn(state.data, 6)}`, `${sumColumn(state.data, 7).toFixed(2)}`, `${sumColumn(state.data, 8)}`, `${sumColumn(state.data, 9)}`]
         ]}
           pagination={false}
         >
@@ -214,7 +214,7 @@ export function G703Component({ setState, state }: Props) {
             dataIndex={0} />
           <Column title={<SenaryHeading title="Description Of Work" />} dataIndex={1}
             render={(value, record: string[], index) => {
-              if (index === data.length) {
+              if (index === state.data.length) {
                 return value;
               }
               return <Input
@@ -229,7 +229,7 @@ export function G703Component({ setState, state }: Props) {
             title={<SenaryHeading title="Scheduled value" />}
             dataIndex={2}
             render={(value, record: string[], index) => {
-              if (index === data.length) {
+              if (index === state.data.length) {
                 return value;
               }
               return <Input
@@ -249,7 +249,7 @@ export function G703Component({ setState, state }: Props) {
               title={<SenaryHeading title="From previous application (D+E)" />}
               dataIndex={3}
               render={(value, record: string[], index) => {
-                if (index === data.length) {
+                if (index === state.data.length) {
                   return value;
                 }
                 let columnE = Number(getCellValue(record, 4));
@@ -264,7 +264,7 @@ export function G703Component({ setState, state }: Props) {
               title={<SenaryHeading title="This period" />}
               dataIndex={4}
               render={(value, record, index) => {
-                if (index === data.length) {
+                if (index === state.data.length) {
                   return value;
                 }
                 return <Input
@@ -283,7 +283,7 @@ export function G703Component({ setState, state }: Props) {
             title={<SenaryHeading title="Materials presently stored (not in D or E)" />}
             dataIndex={5}
             render={(value, record, index) => {
-              if (index === data.length) {
+              if (index === state.data.length) {
                 return value;
               }
               return <Input
@@ -303,7 +303,7 @@ export function G703Component({ setState, state }: Props) {
               title={<SenaryHeading title="TOTAL COMPLETED AND STORED TO DATE (D+E+F)" />}
               dataIndex={6}
               render={(value, record: string[], index) => {
-                if (index === data.length) {
+                if (index === state.data.length) {
                   return value;
                 }
                 let columnD = Number(getCellValue(record, 3));
@@ -325,7 +325,7 @@ export function G703Component({ setState, state }: Props) {
               title={<SenaryHeading title="% (G ÷ C)" />}
               dataIndex={7}
               render={(value, record: string[], index) => {
-                if (index === data.length) {
+                if (index === state.data.length) {
                   return value;
                 }
                 return <InputNumber
@@ -339,7 +339,7 @@ export function G703Component({ setState, state }: Props) {
             title={<SenaryHeading title="BALANCE (C - G)" />}
             dataIndex={8}
             render={(value, record: string[], index) => {
-              if (index === data.length) {
+              if (index === state.data.length) {
                 return value;
               }
               return <Input
@@ -352,7 +352,7 @@ export function G703Component({ setState, state }: Props) {
             title={<SenaryHeading title="RETAINAGE (IF VARIABLE RATE) 5%" />}
             dataIndex={9}
             render={(value, record: string[], index) => {
-              if (index === data.length) {
+              if (index === state.data.length) {
                 return value;
               }
               return <InputNumber
@@ -370,7 +370,7 @@ export function G703Component({ setState, state }: Props) {
             title=""
             className='border-none border-b'
             render={(value, record: string[], index) => {
-              if (index === data.length) {
+              if (index === state.data.length) {
                 return null;
               }
               return <DeleteOutlined

@@ -10,7 +10,7 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { G703Component } from './components/G703';
 import { G702Component } from './components/G702';
-import { type G703State } from './utils';
+import { generateData, type G703State } from './utils';
 
 const G703_KEY = 'G703';
 const G702_KEY = 'G702';
@@ -25,7 +25,7 @@ export default function CreateClientInvoicePage() {
     applicationDate: '',
     periodTo: '',
     projectNo: '',
-    data: [],
+    data: generateData(),
     rows: []
   });
 
