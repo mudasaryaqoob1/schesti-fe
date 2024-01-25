@@ -32,14 +32,6 @@ export function G702Component({ g703 }: Props) {
                 className="px-2 py-2 border border-gray-300 outline-none"
                 type="text"
               />
-              <input
-                className="px-2 py-1 border border-gray-300 outline-none"
-                type="text"
-              />
-              <input
-                className="px-2 py-1 border border-gray-300 outline-none"
-                type="text"
-              />
             </div>
           </div>
 
