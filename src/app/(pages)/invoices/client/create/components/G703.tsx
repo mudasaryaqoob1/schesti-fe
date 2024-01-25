@@ -28,7 +28,7 @@ export function G703Component({ setState, state }: Props) {
     rows.forEach(row => {
       sum += Number(row[column])
     })
-    return sum
+    return isNaN(sum) ? 0 : sum;
   }
 
   function getCellValue(row: string[], column: number) {
@@ -64,7 +64,7 @@ export function G703Component({ setState, state }: Props) {
     let columnG = Number(row[6]);
     // % (G ÷ C)
     let result = (columnG / columnC) * 100;
-    newData[rowIndex][7] = `${result}`;
+    newData[rowIndex][7] = `${isNaN(result) ? 0 : result}`;
     return newData;
   }
 
@@ -74,7 +74,7 @@ export function G703Component({ setState, state }: Props) {
     let columnG = Number(row[6]);
     let columnC = Number(row[2]);
     let result = columnC - columnG;
-    newData[rowIndex][8] = `${result}`;
+    newData[rowIndex][8] = `${isNaN(result) ? 0 : result}`;
     return newData;
   }
 
@@ -84,7 +84,7 @@ export function G703Component({ setState, state }: Props) {
     let columnF = row[5];
     // 10% of F
     let result = (10 / 100) * Number(columnF);
-    newData[rowIndex][9] = `${result}`;
+    newData[rowIndex][9] = `${isNaN(result) ? 0 : result}`;
     return newData;
   }
 
@@ -198,7 +198,7 @@ export function G703Component({ setState, state }: Props) {
         />
         <Table bordered dataSource={[
           ...data,
-          ['', 'Grand Total', `${sumColumn(data, 2)}`, `${sumColumn(data, 3)}`, `${sumColumn(data, 4)}`, `${sumColumn(data, 5)}`, `${sumColumn(data, 6)}`, `${sumColumn(data, 7).toPrecision(2)}`, `${sumColumn(data, 8)}`, `${sumColumn(data, 9)}`]
+          ['', 'Grand Total', `${sumColumn(data, 2)}`, `${sumColumn(data, 3)}`, `${sumColumn(data, 4)}`, `${sumColumn(data, 5)}`, `${sumColumn(data, 6)}`, `${sumColumn(data, 7).toFixed(2)}`, `${sumColumn(data, 8)}`, `${sumColumn(data, 9)}`]
         ]}
           pagination={false}
         >
