@@ -16,6 +16,11 @@ type Props = {
 export function G702Component({ state, handleState, sumColumns }: Props) {
   console.log(state);
 
+  const p5a = Number(sumColumns(state.data, 6));
+  const p5b = Number(sumColumns(state.data, 6));
+  const twoPercentOfP5b = p5b * 0.02;
+
+
   return (
     <div>
       <div>
@@ -228,7 +233,8 @@ export function G702Component({ state, handleState, sumColumns }: Props) {
                     </div>
                     <input
                       className="px-2 py-1 border border-gray-300 outline-none"
-                      type="text"
+                      type="number"
+                      value={sumColumns(state.data, 9).toFixed(2)}
                     />
                   </div>
                   <QuinaryHeading
@@ -250,7 +256,8 @@ export function G702Component({ state, handleState, sumColumns }: Props) {
                     </div>
                     <input
                       className="px-2 py-1 border border-gray-300 outline-none"
-                      type="text"
+                      type="number"
+                      value={twoPercentOfP5b.toFixed(2)}
                     />
                   </div>
                   <div>
@@ -263,7 +270,8 @@ export function G702Component({ state, handleState, sumColumns }: Props) {
                       />
                       <input
                         className="px-2 py-1 border border-gray-300 outline-none"
-                        type="text"
+                        type="number"
+                        value={(Number(sumColumns(state.data, 9)) + twoPercentOfP5b).toFixed(2)}
                       />
                     </div>
                   </div>
