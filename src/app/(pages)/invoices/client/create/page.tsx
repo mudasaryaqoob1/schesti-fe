@@ -45,11 +45,15 @@ export default function CreateClientInvoicePage() {
     toOwner: '',
     viaEngineer: '',
   });
+
   useLayoutEffect(() => {
     if (token) {
       HttpService.setToken(token);
+      if (invoiceName) {
+        handleState('invoiceName', invoiceName);
+      }
     }
-  }, [token]);
+  }, [token, invoiceName]);
 
   function handleState<K extends keyof G7State>(key: K, value: typeof state[K]) {
     setState({ ...state, [key]: value });
