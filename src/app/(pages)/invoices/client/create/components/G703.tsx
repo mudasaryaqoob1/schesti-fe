@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { DatePicker, Divider, Input, InputNumber, Select, Table, } from 'antd';
+import { Button, ConfigProvider, DatePicker, Divider, Input, InputNumber, Select, Table, } from 'antd';
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import PrimaryHeading from '@/app/component/headings/primary';
@@ -9,7 +9,7 @@ import { rowTemplate, } from '../utils';
 import ColumnGroup from 'antd/es/table/ColumnGroup';
 import Column from 'antd/es/table/Column';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
-import { DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import { G7State } from '@/app/interfaces/client-invoice.interface';
 import dayjs from 'dayjs';
 
@@ -188,13 +188,7 @@ export function G703Component({ state, handleState, sumColumns, onCancel, onNext
 
       {/* Spreadsheet */}
       <div className="px-4 space-y-2">
-        <CustomButton
-          text='Add Row'
-          onClick={() => {
-            handleState('data', [...state.data, rowTemplate(state.data.length)])
-          }}
-          className='!w-40'
-        />
+
         <Table bordered dataSource={[
           ...state.data,
           ['', 'Grand Total', `${sumColumns(state.data, 2)}`, `${sumColumns(state.data, 3)}`, `${sumColumns(state.data, 4)}`, `${sumColumns(state.data, 5)}`, `${sumColumns(state.data, 6)}`, `${sumColumns(state.data, 7).toFixed(2)}`, `${sumColumns(state.data, 8)}`, `${sumColumns(state.data, 9).toFixed(2)}`]
@@ -363,7 +357,29 @@ export function G703Component({ state, handleState, sumColumns, onCancel, onNext
             className='border-none border-b'
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
-                return null;
+                return <ConfigProvider
+                  theme={{
+                    components: {
+                      Button: {
+                        defaultBg: "#7F56D9",
+                        textHoverBg: "#fff",
+                        colorPrimaryText: "#fff",
+                        colorText: "#fff",
+                        colorPrimaryHover: "#fff",
+                        colorPrimaryActive: "#fff"
+                      }
+                    }
+                  }}
+                >
+                  <Button
+                    onClick={() => {
+                      handleState('data', [...state.data, rowTemplate(state.data.length)])
+                    }}
+                    icon={<PlusOutlined />}
+                    shape="circle"
+                    type='default'
+                  />
+                </ConfigProvider>;
               }
               return <DeleteOutlined
                 className='text-xl text-red-500 cursor-pointer'
