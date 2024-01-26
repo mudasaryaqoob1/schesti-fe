@@ -7,7 +7,7 @@ import { IClientInvoice } from '@/app/interfaces/client-invoice.interface';
 import { selectClientInvoices, selectClientInvoicesLoading } from '@/redux/client-invoices/client-invoice.selector';
 import { fetchClientInvoices } from '@/redux/client-invoices/client-invoice.thunk';
 import { AppDispatch } from '@/redux/store';
-import { CloseOutlined, DownOutlined, SearchOutlined } from '@ant-design/icons';
+import { CloseOutlined, SearchOutlined } from '@ant-design/icons';
 import { Dropdown, Table, type MenuProps } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import Image from 'next/image';
