@@ -217,6 +217,8 @@ export function G702Component({ state, handleState }: Props) {
                       <input
                         className="px-2 py-1 w-16 border border-gray-300 outline-none"
                         type="text"
+                        value={10}
+                        disabled
                       />
                       <QuinaryHeading title="% of Completed Work $" />
                     </div>
@@ -237,6 +239,8 @@ export function G702Component({ state, handleState }: Props) {
                       <input
                         className="px-2 py-1 w-16 border border-gray-300 outline-none"
                         type="text"
+                        value={2}
+                        disabled
                       />
                       <QuinaryHeading title="% of Stored Material " />
                     </div>
