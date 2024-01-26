@@ -70,7 +70,7 @@ export default function CreateClientInvoicePage() {
   }
 
   function handleSubmit(data: G7State) {
-
+    console.log(data);
   }
 
 
@@ -121,6 +121,7 @@ export default function CreateClientInvoicePage() {
                       state={state}
                       handleState={handleState}
                       sumColumns={sumColumns}
+                      handleSubmit={handleSubmit}
                     />
                   ),
               };
