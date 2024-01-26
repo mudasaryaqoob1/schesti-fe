@@ -10,7 +10,7 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { G703Component } from './components/G703';
 import { G702Component } from './components/G702';
-import { generateData, type G703State } from './utils';
+import { generateData, type G7State } from './utils';
 
 const G703_KEY = 'G703';
 const G702_KEY = 'G702';
@@ -20,13 +20,12 @@ export default function CreateClientInvoicePage() {
   const searchParams = useSearchParams();
   const invoiceName = searchParams.get('invoiceName');
   const [tab, setTab] = useState(G703_KEY);
-  const [g703State, setG703State] = useState<G703State>({
+  const [state, setState] = useState<G7State>({
     applicationNo: '',
     applicationDate: '',
     periodTo: '',
     projectNo: '',
     data: generateData(),
-    rows: []
   });
 
   useLayoutEffect(() => {
@@ -73,10 +72,10 @@ export default function CreateClientInvoicePage() {
                 tabKey: type,
                 children:
                   tab === G703_KEY ? (
-                    <G703Component state={g703State} setState={setG703State} />
+                    <G703Component state={state} setState={setState} />
                   ) : (
                     <G702Component
-                      g703={g703State}
+                      g703={state}
                     />
                   ),
               };

@@ -3,10 +3,10 @@ import WhiteButton from '@/app/component/customButton/white';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { Checkbox, Divider } from 'antd';
-import { G703State } from '../utils';
+import { G7State } from '../utils';
 
 type Props = {
-  g703: G703State
+  g703: G7State
 }
 
 export function G702Component({ g703 }: Props) {

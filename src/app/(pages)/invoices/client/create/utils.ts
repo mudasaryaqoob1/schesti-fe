@@ -1,10 +1,9 @@
-export type G703State = {
+export type G7State = {
   applicationNo: string;
   applicationDate: string;
   periodTo: string;
   projectNo: string;
-  data: string[][]
-  rows: Array<any>;
+  data: string[][];
 };
 export function rowTemplate(index: number) {
   return [

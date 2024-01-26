@@ -5,20 +5,20 @@ import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import PrimaryHeading from '@/app/component/headings/primary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import { G703State, rowTemplate, } from '../utils';
+import { G7State, rowTemplate, } from '../utils';
 import ColumnGroup from 'antd/es/table/ColumnGroup';
 import Column from 'antd/es/table/Column';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { DeleteOutlined } from '@ant-design/icons';
 
 type Props = {
-  state: G703State;
-  setState: Dispatch<SetStateAction<G703State>>;
+  state: G7State;
+  setState: Dispatch<SetStateAction<G7State>>;
 };
 
 export function G703Component({ setState, state }: Props) {
 
-  function handleState<K extends keyof G703State>(key: K, value: typeof state[K]) {
+  function handleState<K extends keyof G7State>(key: K, value: typeof state[K]) {
     setState({ ...state, [key]: value });
   }
 
