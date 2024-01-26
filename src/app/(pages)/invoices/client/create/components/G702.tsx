@@ -16,10 +16,10 @@ type Props = {
 export function G702Component({ state, handleState, sumColumns }: Props) {
   console.log(state);
 
-  const p5a = Number(sumColumns(state.data, 6));
+
   const p5b = Number(sumColumns(state.data, 6));
   const twoPercentOfP5b = p5b * 0.02;
-
+  const p5Total = (Number(sumColumns(state.data, 9)) + twoPercentOfP5b);
 
   return (
     <div>
@@ -271,7 +271,7 @@ export function G702Component({ state, handleState, sumColumns }: Props) {
                       <input
                         className="px-2 py-1 border border-gray-300 outline-none"
                         type="number"
-                        value={(Number(sumColumns(state.data, 9)) + twoPercentOfP5b).toFixed(2)}
+                        value={p5Total.toFixed(2)}
                       />
                     </div>
                   </div>
@@ -285,7 +285,8 @@ export function G702Component({ state, handleState, sumColumns }: Props) {
                 />
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
-                  type="text"
+                  type="number"
+                  value={(Number(sumColumns(state.data, 6)) - p5Total).toFixed(2)}
                 />
               </div>
 
