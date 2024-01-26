@@ -404,6 +404,8 @@ export function G702Component({ state, handleState, sumColumns }: Props) {
                 <input
                   className="px-2 col-span-6 py-1 border border-gray-300 outline-none"
                   type="text"
+                  value={state.by}
+                  onChange={e => handleState('by', e.target.value)}
                 />
               </div>
 
@@ -412,6 +414,8 @@ export function G702Component({ state, handleState, sumColumns }: Props) {
                 <input
                   className="col-span-6 px-2 py-1 border border-gray-300 outline-none"
                   type="text"
+                  value={state.date}
+                  onChange={e => handleState('date', e.target.value)}
                 />
               </div>
 
@@ -420,6 +424,8 @@ export function G702Component({ state, handleState, sumColumns }: Props) {
                 <input
                   className="col-span-6 px-2 py-1 border border-gray-300 outline-none"
                   type="text"
+                  value={state.stateOf}
+                  onChange={e => handleState('stateOf', e.target.value)}
                 />
               </div>
               <div className="grid grid-cols-12 gap-1 items-center">
@@ -427,6 +433,8 @@ export function G702Component({ state, handleState, sumColumns }: Props) {
                 <input
                   className="px-2 col-span-6 py-1 border border-gray-300 outline-none"
                   type="text"
+                  value={state.country}
+                  onChange={e => handleState('country', e.target.value)}
                 />
               </div>
               <div className="col-span-2 flex items-center space-x-2">
@@ -434,6 +442,8 @@ export function G702Component({ state, handleState, sumColumns }: Props) {
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
+                  value={state.subscribedAndSworn}
+                  onChange={e => handleState('subscribedAndSworn', e.target.value)}
                 />
               </div>
 
@@ -442,6 +452,8 @@ export function G702Component({ state, handleState, sumColumns }: Props) {
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
+                  value={state.notaryPublic}
+                  onChange={e => handleState('notaryPublic', e.target.value)}
                 />
               </div>
 
@@ -450,6 +462,8 @@ export function G702Component({ state, handleState, sumColumns }: Props) {
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
+                  value={state.myCommissionExpires}
+                  onChange={e => handleState('myCommissionExpires', e.target.value)}
                 />
               </div>
             </div>
@@ -464,7 +478,9 @@ export function G702Component({ state, handleState, sumColumns }: Props) {
                   <QuinaryHeading title="AMOUNT CERTIFIED:" />
                   <input
                     className="px-2 py-1 border border-gray-300 outline-none"
-                    type="text"
+                    type="number"
+                    value={state.amountCertified1}
+                    onChange={e => handleState('amountCertified1', e.target.value)}
                   />
                 </div>
                 <QuinaryHeading title="(Attach explanation if amount certified differs from the amount applied. Initial all figures on this Application and onthe Continuation Sheet that are changed to conform with the amount certified.)" />
@@ -477,7 +493,9 @@ export function G702Component({ state, handleState, sumColumns }: Props) {
                     <QuinaryHeading title="AMOUNT CERTIFIED:" />
                     <input
                       className="px-2 py-1 border border-gray-300 outline-none"
-                      type="text"
+                      type="number"
+                      value={state.amountCertified2}
+                      onChange={e => handleState('amountCertified2', e.target.value)}
                     />
                   </div>
                   <div className="flex items-center space-x-2">
@@ -497,7 +515,7 @@ export function G702Component({ state, handleState, sumColumns }: Props) {
 
       <div className="flex justify-end space-x-4">
         <WhiteButton text="Cancel" className="!w-40" />
-        <CustomButton text="Download for invoice" className="!w-48" />
+        <CustomButton text="Create" className="!w-48" />
       </div>
     </div>
   );
