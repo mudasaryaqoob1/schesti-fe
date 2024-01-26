@@ -12,8 +12,6 @@ export type G7State = {
   distributionTo: string;
   orignalContractSum: string;
   netChangeByOrders: string;
-  currentPaymentDue: string;
-  balanceToFinish: string;
   amountCertified1: string;
   amountCertified2: string;
   lessPreviousCertificatesForPayment: string;
