@@ -23,3 +23,10 @@ export type G7State = {
     notaryPublic: string;
     myCommissionExpires: string;
 };
+
+export type IClientInvoice = {
+    associatedComapny: string;
+    _id: string;
+    createdAt: string;
+    updatedAt: string;
+} & G7State;
