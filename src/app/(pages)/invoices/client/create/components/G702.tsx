@@ -20,7 +20,10 @@ export function G702Component({ state, handleState, sumColumns }: Props) {
   const p5b = Number(sumColumns(state.data, 6));
   const twoPercentOfP5b = p5b * 0.02;
   const p5Total = (Number(sumColumns(state.data, 9)) + twoPercentOfP5b);
-
+  const p6Total = (Number(sumColumns(state.data, 6)) - p5Total);
+  const p3Total = (parseFloat(state.orignalContractSum) + parseFloat(state.netChangeByOrders));
+  const p8Total = (p6Total - Number(state.lessPreviousCertificatesForPayment));
+  const p9Total = p3Total - Number(state.lessPreviousCertificatesForPayment) - p8Total;
   return (
     <div>
       <div>
@@ -202,7 +205,7 @@ export function G702Component({ state, handleState, sumColumns }: Props) {
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="number"
-                  value={(parseFloat(state.orignalContractSum) + parseFloat(state.netChangeByOrders)).toFixed(2)}
+                  value={p3Total.toFixed(2)}
                 />
               </div>
               <div className="grid grid-cols-3 gap-1">
@@ -286,7 +289,7 @@ export function G702Component({ state, handleState, sumColumns }: Props) {
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="number"
-                  value={(Number(sumColumns(state.data, 6)) - p5Total).toFixed(2)}
+                  value={p6Total.toFixed(2)}
                 />
               </div>
 
@@ -300,6 +303,7 @@ export function G702Component({ state, handleState, sumColumns }: Props) {
                   type="number"
                   value={state.lessPreviousCertificatesForPayment}
                   onChange={e => handleState('lessPreviousCertificatesForPayment', e.target.value)}
+                  defaultValue={0.00}
                 />
               </div>
 
@@ -310,7 +314,8 @@ export function G702Component({ state, handleState, sumColumns }: Props) {
                 />
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
-                  type="text"
+                  type="number"
+                  value={p8Total.toFixed(2)}
                 />
               </div>
               <div className="grid grid-cols-3 gap-1">
@@ -320,7 +325,9 @@ export function G702Component({ state, handleState, sumColumns }: Props) {
                 />
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
-                  type="text"
+                  type="number"
+                  value={p9Total.toFixed(2)}
+                  defaultValue={0.00}
                 />
               </div>
             </div>

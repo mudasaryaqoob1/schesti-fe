@@ -3,6 +3,7 @@ export type G7State = {
   applicationDate: string;
   periodTo: string;
   projectNo: string;
+  invoiceName: string;
   data: string[][];
   toOwner: string;
   project: string;

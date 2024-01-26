@@ -22,6 +22,7 @@ export default function CreateClientInvoicePage() {
   const [tab, setTab] = useState(G703_KEY);
   const [state, setState] = useState<G7State>({
     applicationNo: '',
+    invoiceName: '',
     applicationDate: '',
     periodTo: '',
     projectNo: '',
@@ -38,7 +39,7 @@ export default function CreateClientInvoicePage() {
     myCommissionExpires: '',
     netChangeByOrders: '',
     notaryPublic: '',
-    lessPreviousCertificatesForPayment: '',
+    lessPreviousCertificatesForPayment: '0.00',
     orignalContractSum: '',
     project: '',
     stateOf: '',
