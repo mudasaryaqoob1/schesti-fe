@@ -17,8 +17,12 @@ import { useSelector } from 'react-redux';
 
 const Schedule = () => {
   const token = useSelector(selectToken);
-  const [showModal, setShowModal] = useState(false);
+  const [info, setInfo] = useState<{ projectName: string, duration?: number }>({
+    projectName: '',
+  });
 
+  const [showModal, setShowModal] = useState(false);
+  const [showModal2, setShowModal2] = useState(false);
 
   useLayoutEffect(() => {
     if (token) {
@@ -93,7 +97,22 @@ const Schedule = () => {
       ),
     },
   ];
+  function handleInfo<K extends keyof typeof info>(key: K, value: typeof info[K]) {
+    setInfo({ ...info, [key]: value })
+  }
 
+  function handleSchedule() {
+    // validate info
+    if (!info.projectName) {
+      return;
+    }
+    if (!info.duration) {
+      return;
+    }
+    // set Modals
+    setShowModal(false);
+    setShowModal2(true);
+  }
   return (
     <section className="mt-6 shadow p-4 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
 
@@ -122,13 +141,19 @@ const Schedule = () => {
               type="text"
               placeholder="Enter project name"
               name="invoiceName"
+              field={{
+                value: info.projectName,
+                onChange: (e) => handleInfo('projectName', e.target.value)
+              }}
             />
             <SelectComponent
               label='Duration'
               name='duration'
               placeholder='Select duration'
               field={{
-                options: [{ label: "3 Months", value: 3 }, { label: "6 Months", value: 6 }, { label: "12 Months", value: 12 }]
+                options: [{ label: "3 Months", value: 3 }, { label: "6 Months", value: 6 }, { label: "12 Months", value: 12 }],
+                value: info.duration,
+                onChange(value) { handleInfo('duration', value) }
               }}
             />
 
@@ -137,6 +162,7 @@ const Schedule = () => {
               <CustomButton
                 text="Schedule"
                 className="!w-28"
+                onClick={handleSchedule}
               />
             </div>
           </div>
