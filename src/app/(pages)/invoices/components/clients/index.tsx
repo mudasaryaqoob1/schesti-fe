@@ -3,17 +3,33 @@ import WhiteButton from '@/app/component/customButton/white';
 import { InputComponent } from '@/app/component/customInput/Input';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import ModalComponent from '@/app/component/modal';
+import { IClientInvoice } from '@/app/interfaces/client-invoice.interface';
+import { selectClientInvoices, selectClientInvoicesLoading } from '@/redux/client-invoices/client-invoice.selector';
+import { fetchClientInvoices } from '@/redux/client-invoices/client-invoice.thunk';
+import { AppDispatch } from '@/redux/store';
 import { CloseOutlined, DownOutlined, SearchOutlined } from '@ant-design/icons';
 import { Dropdown, Table, type MenuProps } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 export function Clients() {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
   const [invoiceName, setInvoiceName] = useState('');
+  const dispatch = useDispatch<AppDispatch>();
+  const clientInvoices = useSelector(selectClientInvoices);
+  const clientInvoicesLoading = useSelector(selectClientInvoicesLoading);
 
+  const fetchSubcontactorsInvoices = useCallback(async () => {
+    await dispatch(fetchClientInvoices({}));
+  }, [dispatch]);
+
+  useEffect(() => {
+    fetchSubcontactorsInvoices();
+  }, [fetchSubcontactorsInvoices]);
   const items: MenuProps['items'] = [
     {
       key: 'editInvoice',
@@ -32,10 +48,10 @@ export function Clients() {
       label: <p>Delete</p>,
     },
   ];
-  const columns: ColumnsType<{}> = [
+  const columns: ColumnsType<IClientInvoice> = [
     {
       title: 'Invoice #',
-      dataIndex: 'invoice',
+      dataIndex: 'applicationNo',
     },
     {
       title: 'Invoice Name',
@@ -44,23 +60,23 @@ export function Clients() {
     },
     {
       title: 'Client Name',
-      dataIndex: 'clientName',
+      dataIndex: 'toOwner',
     },
     {
       title: 'Project Name',
-      dataIndex: 'projectName',
+      dataIndex: 'project',
     },
     {
-      title: 'Invoice Date',
-      dataIndex: 'issueDate',
+      title: 'Address',
+      dataIndex: 'address',
     },
     {
-      title: 'Payment Due',
-      dataIndex: 'dueDate',
+      title: 'Original Sum',
+      dataIndex: 'orignalContractSum',
     },
     {
-      title: 'Total Payable',
-      dataIndex: 'total',
+      title: 'Net Change By Orders',
+      dataIndex: 'netChangeByOrders',
     },
     {
       title: 'Action',
@@ -71,13 +87,17 @@ export function Clients() {
         <Dropdown
           menu={{
             items,
-            onClick: () => {},
+            onClick: () => { },
           }}
           placement="bottomRight"
         >
-          <a>
-            <DownOutlined />
-          </a>
+          <Image
+            src={'/menuIcon.svg'}
+            alt="logo white icon"
+            width={20}
+            height={20}
+            className="active:scale-105 cursor-pointer"
+          />
         </Dropdown>
       ),
     },
@@ -159,18 +179,9 @@ export function Clients() {
       </div>
 
       <Table
-        loading={false}
+        loading={clientInvoicesLoading}
         columns={columns}
-        dataSource={[
-          {
-            invoice: '123',
-            projectName: 'sadasd',
-            name: 'ASsad',
-            issueDate: '12th Jan',
-            dueDate: '17th Jan',
-            total: 1000,
-          },
-        ]}
+        dataSource={clientInvoices}
         pagination={{ position: ['bottomCenter'] }}
       />
     </div>
