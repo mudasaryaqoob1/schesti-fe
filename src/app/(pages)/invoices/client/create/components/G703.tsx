@@ -203,7 +203,11 @@ export function G703Component({ state, handleState, sumColumns, onCancel, onNext
         >
           <Column
             title={<SenaryHeading title='Item No' />}
-            dataIndex={0} />
+            dataIndex={0}
+            render={(value, record: string[], index) => {
+              return index;
+            }}
+          />
           <Column title={<SenaryHeading title="Description Of Work" />} dataIndex={1}
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
