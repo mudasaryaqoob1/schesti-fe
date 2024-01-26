@@ -2,8 +2,8 @@ import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
+import { G7State } from '@/app/interfaces/client-invoice.interface';
 import { Checkbox, Divider } from 'antd';
-import { G7State } from '../utils';
 
 type Props = {
   state: G7State;

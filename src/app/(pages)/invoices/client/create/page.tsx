@@ -10,7 +10,8 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { G703Component } from './components/G703';
 import { G702Component } from './components/G702';
-import { generateData, type G7State } from './utils';
+import { generateData, } from './utils';
+import { G7State } from '@/app/interfaces/client-invoice.interface';
 
 const G703_KEY = 'G703';
 const G702_KEY = 'G702';
@@ -67,6 +68,11 @@ export default function CreateClientInvoicePage() {
     })
     return isNaN(sum) ? 0 : sum;
   }
+
+  function handleSubmit(data: G7State) {
+
+  }
+
 
   return (
     <section className="mx-16 my-2">

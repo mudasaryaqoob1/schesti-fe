@@ -5,11 +5,12 @@ import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import PrimaryHeading from '@/app/component/headings/primary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import { G7State, rowTemplate, } from '../utils';
+import { rowTemplate, } from '../utils';
 import ColumnGroup from 'antd/es/table/ColumnGroup';
 import Column from 'antd/es/table/Column';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { DeleteOutlined } from '@ant-design/icons';
+import { G7State } from '@/app/interfaces/client-invoice.interface';
 
 type Props = {
   state: G7State;
