@@ -2,7 +2,7 @@
 export function rowTemplate(index: number) {
   return [
     `${index}`,
-    `item-${index}`,
+    `item`,
     '',
     '',
     '',
