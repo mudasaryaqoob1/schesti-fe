@@ -1,5 +1,5 @@
 'use client';
-import React, { Dispatch, SetStateAction, } from 'react';
+import React from 'react';
 import { Divider, Input, InputNumber, Select, Table, } from 'antd';
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
@@ -13,21 +13,15 @@ import { DeleteOutlined } from '@ant-design/icons';
 
 type Props = {
   state: G7State;
-  setState: Dispatch<SetStateAction<G7State>>;
   // eslint-disable-next-line no-unused-vars
   handleState<K extends keyof G7State>(key: K, value: G7State[K]): void;
+  // eslint-disable-next-line no-unused-vars
+  sumColumns(rows: Array<string[]>, column: number): number;
 };
 
-export function G703Component({ state, handleState }: Props) {
+export function G703Component({ state, handleState, sumColumns }: Props) {
 
-  function sumColumn(rows: Array<string[]>, column: number) {
-    let sum = 0;
-    rows.forEach(row => {
-      let val = Number(row[column]);
-      sum += isNaN(val) ? 0 : val;
-    })
-    return isNaN(sum) ? 0 : sum;
-  }
+
 
   function getCellValue(row: string[], column: number) {
     return row[column]
@@ -201,7 +195,7 @@ export function G703Component({ state, handleState }: Props) {
         />
         <Table bordered dataSource={[
           ...state.data,
-          ['', 'Grand Total', `${sumColumn(state.data, 2)}`, `${sumColumn(state.data, 3)}`, `${sumColumn(state.data, 4)}`, `${sumColumn(state.data, 5)}`, `${sumColumn(state.data, 6)}`, `${sumColumn(state.data, 7).toFixed(2)}`, `${sumColumn(state.data, 8)}`, `${sumColumn(state.data, 9).toFixed(2)}`]
+          ['', 'Grand Total', `${sumColumns(state.data, 2)}`, `${sumColumns(state.data, 3)}`, `${sumColumns(state.data, 4)}`, `${sumColumns(state.data, 5)}`, `${sumColumns(state.data, 6)}`, `${sumColumns(state.data, 7).toFixed(2)}`, `${sumColumns(state.data, 8)}`, `${sumColumns(state.data, 9).toFixed(2)}`]
         ]}
           pagination={false}
         >

@@ -45,15 +45,24 @@ export default function CreateClientInvoicePage() {
     toOwner: '',
     viaEngineer: '',
   });
-  function handleState<K extends keyof G7State>(key: K, value: typeof state[K]) {
-    setState({ ...state, [key]: value });
-  }
   useLayoutEffect(() => {
     if (token) {
       HttpService.setToken(token);
     }
   }, [token]);
 
+  function handleState<K extends keyof G7State>(key: K, value: typeof state[K]) {
+    setState({ ...state, [key]: value });
+  }
+
+  function sumColumns(rows: Array<string[]>, column: number): number {
+    let sum = 0;
+    rows.forEach(row => {
+      let val = Number(row[column]);
+      sum += isNaN(val) ? 0 : val;
+    })
+    return isNaN(sum) ? 0 : sum;
+  }
 
   return (
     <section className="mx-16 my-2">
@@ -92,7 +101,11 @@ export default function CreateClientInvoicePage() {
                 tabKey: type,
                 children:
                   tab === G703_KEY ? (
-                    <G703Component state={state} setState={setState} handleState={handleState} />
+                    <G703Component
+                      state={state}
+                      handleState={handleState}
+                      sumColumns={sumColumns}
+                    />
                   ) : (
                     <G702Component
                       state={state}
