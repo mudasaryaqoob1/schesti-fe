@@ -26,7 +26,7 @@ const items: MenuProps['items'] = [
 const Tabs = () => {
   const pathname = usePathname();
   const router = useRouter();
-  
+
 
   return (
     <div className="md:flex block justify-between items-center px-16 xl:h-[67px] shadow-quinaryGentle">
@@ -70,7 +70,7 @@ const Tabs = () => {
                  cursor-pointer
                 `,
               pathname.includes('/subcontractor'.split('/')[1]) &&
-                tabsStyle.active
+              tabsStyle.active
             )
           )}
           onClick={() => router.push('/subcontractor')}
@@ -99,7 +99,7 @@ const Tabs = () => {
             }}
           >
             <Space
-               className={twMerge(
+              className={twMerge(
                 clsx(
                   `${quaternaryHeading} text-steelGray
                     flex items-stretch justify-center py-2 
@@ -121,10 +121,10 @@ const Tabs = () => {
                 flex items-stretch justify-center py-2 
                  cursor-pointer
                 `,
-              pathname.includes('#'.split('/')[1]) && tabsStyle.active
+              pathname.includes('/schedule') && tabsStyle.active
             )
           )}
-          onClick={() => router.push('#')}
+          onClick={() => router.push('/schedule')}
         >
           Schedule
         </li>
