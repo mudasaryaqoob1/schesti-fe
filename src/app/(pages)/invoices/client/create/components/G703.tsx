@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { Divider, Input, InputNumber, Select, Table, } from 'antd';
+import { DatePicker, Divider, Input, InputNumber, Select, Table, } from 'antd';
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import PrimaryHeading from '@/app/component/headings/primary';
@@ -11,6 +11,7 @@ import Column from 'antd/es/table/Column';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { DeleteOutlined } from '@ant-design/icons';
 import { G7State } from '@/app/interfaces/client-invoice.interface';
+import dayjs from 'dayjs';
 
 type Props = {
   state: G7State;
@@ -146,12 +147,11 @@ export function G703Component({ state, handleState, sumColumns, onCancel, onNext
             >
               APPLICATION DATE:
             </label>
-            <input
+            <DatePicker
               id="application-date"
-              className="px-2 py-1 border border-gray-300 outline-none"
-              type="text"
-              value={state.applicationDate}
-              onChange={e => handleState('applicationDate', e.target.value)}
+              className="px-2 w-full rounded-none py-[7px] border border-gray-300 outline-none"
+              defaultValue={dayjs(state.applicationDate)}
+              onChange={(_d, dateString) => handleState('applicationDate', dateString)}
             />
           </div>
           <div className="flex self-end space-x-3 items-center">
@@ -161,12 +161,11 @@ export function G703Component({ state, handleState, sumColumns, onCancel, onNext
             >
               PERIOD TO:
             </label>
-            <input
+            <DatePicker
               id="application-date"
-              className="px-2 py-1 border border-gray-300 outline-none"
-              type="text"
-              value={state.periodTo}
-              onChange={e => handleState('periodTo', e.target.value)}
+              className="px-4 w-full rounded-none py-[7px] border border-gray-300 outline-none"
+              defaultValue={dayjs(state.periodTo)}
+              onChange={(_d, dateString) => handleState('periodTo', dateString)}
             />
           </div>
           <div className="flex self-end space-x-3 items-center">

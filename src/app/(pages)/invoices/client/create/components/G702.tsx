@@ -3,7 +3,8 @@ import WhiteButton from '@/app/component/customButton/white';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { G7State } from '@/app/interfaces/client-invoice.interface';
-import { Checkbox, Divider } from 'antd';
+import { Checkbox, DatePicker, Divider } from 'antd';
+import dayjs from 'dayjs';
 
 type Props = {
   state: G7State;
@@ -110,10 +111,11 @@ export function G702Component({ state, handleState, sumColumns, onCancel, onNext
               >
                 APPLICATION DATE:
               </label>
-              <input
-                className="px-2 py-1 border border-gray-300 outline-none"
-                type="text"
-                value={state.applicationDate}
+              <DatePicker
+                id="application-date"
+                className="px-2  rounded-none py-[7px] border border-gray-300 outline-none"
+                defaultValue={dayjs(state.applicationDate)}
+                onChange={(_d, dateString) => handleState('applicationDate', dateString)}
               />
             </div>
             <div className="grid grid-cols-2 space-x-1">
@@ -122,10 +124,11 @@ export function G702Component({ state, handleState, sumColumns, onCancel, onNext
               >
                 PERIOD TO:
               </label>
-              <input
-                className="px-2 py-1 border border-gray-300 outline-none"
-                type="text"
-                value={state.periodTo}
+              <DatePicker
+                id="application-date"
+                className="px-2  rounded-none py-[7px] border border-gray-300 outline-none"
+                defaultValue={dayjs(state.periodTo)}
+                onChange={(_d, dateString) => handleState('periodTo', dateString)}
               />
             </div>
             <div className="grid grid-cols-2 space-x-1">
@@ -411,11 +414,11 @@ export function G702Component({ state, handleState, sumColumns, onCancel, onNext
 
               <div className="grid grid-cols-12 items-center gap-1">
                 <QuinaryHeading className="col-span-2" title="Date:" />
-                <input
-                  className="col-span-6 px-2 py-1 border border-gray-300 outline-none"
-                  type="text"
-                  value={state.date}
-                  onChange={e => handleState('date', e.target.value)}
+                <DatePicker
+
+                  className="px-2 col-span-6 rounded-none py-[7px] border border-gray-300 outline-none"
+                  defaultValue={dayjs(state.date)}
+                  onChange={(_d, dateString) => handleState('date', dateString)}
                 />
               </div>
 
