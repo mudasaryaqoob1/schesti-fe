@@ -5,6 +5,8 @@ import { twMerge } from 'tailwind-merge';
 type Props = {
   label: string;
   labelStyle?: ClassValue;
+  label2?: string;
+  label2Style?: ClassValue;
   name: string;
   prefix?: React.ReactNode;
   placeholder?: string;
@@ -17,6 +19,8 @@ type Props = {
 
 export function InputComponent({
   label,
+  label2,
+  label2Style,
   labelStyle,
   name,
   type,
@@ -33,13 +37,13 @@ export function InputComponent({
       <label
         className={twMerge(
           clsx(
-            'text-graphiteGray text-sm font-medium leading-6 capitalize',
+            `text-graphiteGray ${label2 ? 'flex justify-between' : 'block'} text-sm font-medium leading-6 capitalize`,
             labelStyle
           )
         )}
         htmlFor={name}
       >
-        {label}
+        {label} {label2 && <span className={twMerge(clsx('text-right text-[#98A2B3]', label2Style))}>{label2}</span>}
       </label>
 
       {/* <Field name={name} id={name}>

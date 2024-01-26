@@ -14,6 +14,7 @@ import moment from 'moment';
 import Image from 'next/image';
 import React, { useLayoutEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { SetWorkWeek } from './components/SetWorkWeek';
 
 const Schedule = () => {
   const token = useSelector(selectToken);
@@ -115,23 +116,31 @@ const Schedule = () => {
   }
   return (
     <section className="mt-6 shadow p-4 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
-
+      <ModalComponent
+        open={showModal2}
+        setOpen={setShowModal2}
+        title="Set Workweek"
+        width="100%"
+      >
+        <SetWorkWeek onClose={() => setShowModal2(false)} />
+      </ModalComponent>
       <ModalComponent
         open={showModal}
         setOpen={setShowModal}
-        title="Invoice Details"
+        title="Create project"
         width="50%"
       >
         <div className="bg-white border border-solid border-elboneyGray rounded-[4px] z-50">
           <div className="flex px-6 py-2.5 justify-between bg-mistyWhite">
             <TertiaryHeading
-              title="Invoice Details"
+              title="Create project"
               className="text-graphiteGray"
             />
             <CloseOutlined
               className="cursor-pointer"
               width={24}
               height={24}
+              onClick={() => setShowModal(false)}
             />
           </div>
 
