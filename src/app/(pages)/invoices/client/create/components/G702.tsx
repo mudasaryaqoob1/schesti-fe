@@ -9,9 +9,11 @@ type Props = {
   state: G7State;
   // eslint-disable-next-line no-unused-vars
   handleState<K extends keyof G7State>(k: K, v: G7State[K]): void;
+  // eslint-disable-next-line no-unused-vars
+  sumColumns(rows: string[][], column: number): number;
 }
 
-export function G702Component({ state, handleState }: Props) {
+export function G702Component({ state, handleState, sumColumns }: Props) {
   console.log(state);
 
   return (
@@ -166,6 +168,7 @@ export function G702Component({ state, handleState }: Props) {
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="number"
                   value={state.orignalContractSum}
+                  defaultValue={0.00}
                   onChange={(e) =>
                     handleState('orignalContractSum', e.target.value)
                   }
@@ -180,6 +183,7 @@ export function G702Component({ state, handleState }: Props) {
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
                   value={state.netChangeByOrders}
+                  defaultValue={0.00}
                   onChange={(e) =>
                     handleState('netChangeByOrders', e.target.value)
                   }
@@ -192,8 +196,8 @@ export function G702Component({ state, handleState }: Props) {
                 />
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
-                  type="text"
-                  value={parseFloat(state.orignalContractSum) + parseFloat(state.netChangeByOrders)}
+                  type="number"
+                  value={(parseFloat(state.orignalContractSum) + parseFloat(state.netChangeByOrders)).toFixed(2)}
                 />
               </div>
               <div className="grid grid-cols-3 gap-1">
@@ -203,8 +207,8 @@ export function G702Component({ state, handleState }: Props) {
                 />
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
-                  type="text"
-
+                  type="number"
+                  value={sumColumns(state.data, 6).toFixed(2)}
                 />
               </div>
 

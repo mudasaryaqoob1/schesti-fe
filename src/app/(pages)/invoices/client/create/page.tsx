@@ -110,6 +110,7 @@ export default function CreateClientInvoicePage() {
                     <G702Component
                       state={state}
                       handleState={handleState}
+                      sumColumns={sumColumns}
                     />
                   ),
               };
