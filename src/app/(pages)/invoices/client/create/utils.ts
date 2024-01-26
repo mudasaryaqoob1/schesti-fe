@@ -4,6 +4,24 @@ export type G7State = {
   periodTo: string;
   projectNo: string;
   data: string[][];
+  toOwner: string;
+  project: string;
+  address: string;
+  viaEngineer: string;
+  distributionTo: string;
+  orignalContractSum: string;
+  netChangeByOrders: string;
+  currentPaymentDue: string;
+  balanceToFinish: string;
+  amountCertified1: string;
+  amountCertified2: string;
+  by: string;
+  stateOf: string;
+  date: string;
+  country: string;
+  subscribedAndSworn: string;
+  notaryPublic: string;
+  myCommissionExpires: string;
 };
 export function rowTemplate(index: number) {
   return [
