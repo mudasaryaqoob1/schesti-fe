@@ -297,7 +297,9 @@ export function G702Component({ state, handleState, sumColumns }: Props) {
                 />
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
-                  type="text"
+                  type="number"
+                  value={state.lessPreviousCertificatesForPayment}
+                  onChange={e => handleState('lessPreviousCertificatesForPayment', e.target.value)}
                 />
               </div>
 

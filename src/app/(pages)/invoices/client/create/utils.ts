@@ -15,6 +15,7 @@ export type G7State = {
   balanceToFinish: string;
   amountCertified1: string;
   amountCertified2: string;
+  lessPreviousCertificatesForPayment: string;
   by: string;
   stateOf: string;
   date: string;
