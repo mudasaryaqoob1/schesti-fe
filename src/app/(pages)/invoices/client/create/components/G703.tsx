@@ -191,7 +191,7 @@ export function G703Component({ state, handleState, sumColumns, onCancel, onNext
 
         <Table bordered dataSource={[
           ...state.data,
-          ['', 'Grand Total', `${sumColumns(state.data, 2)}`, `${sumColumns(state.data, 3)}`, `${sumColumns(state.data, 4)}`, `${sumColumns(state.data, 5)}`, `${sumColumns(state.data, 6)}`, `${sumColumns(state.data, 7).toFixed(2)}`, `${sumColumns(state.data, 8)}`, `${sumColumns(state.data, 9).toFixed(2)}`]
+          ['', 'Grand Total', `${sumColumns(state.data, 2).toFixed(2)}`, `${sumColumns(state.data, 3).toFixed(2)}`, `${sumColumns(state.data, 4).toFixed(2)}`, `${sumColumns(state.data, 5).toFixed(2)}`, `${sumColumns(state.data, 6).toFixed(2)}`, `${sumColumns(state.data, 7).toFixed(2)}`, `${sumColumns(state.data, 8).toFixed(2)}`, `${sumColumns(state.data, 9).toFixed(2)}`]
         ]}
           pagination={false}
         >
