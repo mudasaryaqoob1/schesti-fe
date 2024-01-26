@@ -45,7 +45,9 @@ export default function CreateClientInvoicePage() {
     toOwner: '',
     viaEngineer: '',
   });
-
+  function handleState<K extends keyof G7State>(key: K, value: typeof state[K]) {
+    setState({ ...state, [key]: value });
+  }
   useLayoutEffect(() => {
     if (token) {
       HttpService.setToken(token);
@@ -90,10 +92,11 @@ export default function CreateClientInvoicePage() {
                 tabKey: type,
                 children:
                   tab === G703_KEY ? (
-                    <G703Component state={state} setState={setState} />
+                    <G703Component state={state} setState={setState} handleState={handleState} />
                   ) : (
                     <G702Component
-                      g703={state}
+                      state={state}
+                      handleState={handleState}
                     />
                   ),
               };

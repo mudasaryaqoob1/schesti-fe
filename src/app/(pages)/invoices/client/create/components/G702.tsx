@@ -6,10 +6,13 @@ import { Checkbox, Divider } from 'antd';
 import { G7State } from '../utils';
 
 type Props = {
-  g703: G7State
+  state: G7State;
+  // eslint-disable-next-line no-unused-vars
+  handleState<K extends keyof G7State>(k: K, v: G7State[K]): void;
 }
 
-export function G702Component({ g703 }: Props) {
+export function G702Component({ state, handleState }: Props) {
+  console.log(state);
 
   return (
     <div>
@@ -31,6 +34,8 @@ export function G702Component({ g703 }: Props) {
               <input
                 className="px-2 py-2 border border-gray-300 outline-none"
                 type="text"
+                value={state.toOwner}
+                onChange={(e) => handleState('toOwner', e.target.value)}
               />
             </div>
           </div>
@@ -45,6 +50,8 @@ export function G702Component({ g703 }: Props) {
               <input
                 className="px-2 py-2  border border-gray-300 outline-none"
                 type="text"
+                value={state.project}
+                onChange={(e) => handleState('project', e.target.value)}
               />
             </div>
             <div className="grid grid-cols-2 space-x-1">
@@ -56,6 +63,8 @@ export function G702Component({ g703 }: Props) {
               <input
                 className="px-2 py-1 border border-gray-300 outline-none"
                 type="text"
+                value={state.address}
+                onChange={(e) => handleState('address', e.target.value)}
               />
             </div>
             <div className="grid grid-cols-2 space-x-1">
@@ -67,6 +76,8 @@ export function G702Component({ g703 }: Props) {
               <input
                 className="px-2 py-1 border border-gray-300 outline-none"
                 type="text"
+                value={state.viaEngineer}
+                onChange={(e) => handleState('viaEngineer', e.target.value)}
               />
             </div>
           </div>
@@ -80,7 +91,7 @@ export function G702Component({ g703 }: Props) {
               <input
                 className="px-2 py-2  border border-gray-300 outline-none"
                 type="text"
-                value={g703.applicationNo}
+                value={state.applicationNo}
               />
             </div>
             <div className="grid grid-cols-2 space-x-1">
@@ -92,7 +103,7 @@ export function G702Component({ g703 }: Props) {
               <input
                 className="px-2 py-1 border border-gray-300 outline-none"
                 type="text"
-                value={g703.applicationDate}
+                value={state.applicationDate}
               />
             </div>
             <div className="grid grid-cols-2 space-x-1">
@@ -104,7 +115,7 @@ export function G702Component({ g703 }: Props) {
               <input
                 className="px-2 py-1 border border-gray-300 outline-none"
                 type="text"
-                value={g703.periodTo}
+                value={state.periodTo}
               />
             </div>
             <div className="grid grid-cols-2 space-x-1">
@@ -116,7 +127,7 @@ export function G702Component({ g703 }: Props) {
               <input
                 className="px-2 py-1 border border-gray-300 outline-none"
                 type="text"
-                value={g703.projectNo}
+                value={state.projectNo}
               />
             </div>
           </div>
@@ -153,8 +164,11 @@ export function G702Component({ g703 }: Props) {
                 />
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
-                  type="text"
-
+                  type="number"
+                  value={state.orignalContractSum}
+                  onChange={(e) =>
+                    handleState('orignalContractSum', e.target.value)
+                  }
                 />
               </div>
               <div className="grid grid-cols-3 gap-1">
@@ -165,6 +179,10 @@ export function G702Component({ g703 }: Props) {
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
+                  value={state.netChangeByOrders}
+                  onChange={(e) =>
+                    handleState('netChangeByOrders', e.target.value)
+                  }
                 />
               </div>
               <div className="grid grid-cols-3 gap-1">
@@ -175,6 +193,7 @@ export function G702Component({ g703 }: Props) {
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
+                  value={Number(state.orignalContractSum) + Number(state.netChangeByOrders)}
                 />
               </div>
               <div className="grid grid-cols-3 gap-1">

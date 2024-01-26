@@ -14,13 +14,11 @@ import { DeleteOutlined } from '@ant-design/icons';
 type Props = {
   state: G7State;
   setState: Dispatch<SetStateAction<G7State>>;
+  // eslint-disable-next-line no-unused-vars
+  handleState<K extends keyof G7State>(key: K, value: G7State[K]): void;
 };
 
-export function G703Component({ setState, state }: Props) {
-
-  function handleState<K extends keyof G7State>(key: K, value: typeof state[K]) {
-    setState({ ...state, [key]: value });
-  }
+export function G703Component({ state, handleState }: Props) {
 
   function sumColumn(rows: Array<string[]>, column: number) {
     let sum = 0;
