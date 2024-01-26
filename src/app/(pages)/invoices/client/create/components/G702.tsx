@@ -193,7 +193,7 @@ export function G702Component({ state, handleState }: Props) {
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
-                  value={Number(state.orignalContractSum) + Number(state.netChangeByOrders)}
+                  value={parseFloat(state.orignalContractSum) + parseFloat(state.netChangeByOrders)}
                 />
               </div>
               <div className="grid grid-cols-3 gap-1">
