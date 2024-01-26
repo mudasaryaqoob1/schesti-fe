@@ -13,4 +13,4 @@ class ClientInvoiceService extends HttpService {
 
 }
 
-export const invoiceService = new ClientInvoiceService();
+export const clientInvoiceService = new ClientInvoiceService();

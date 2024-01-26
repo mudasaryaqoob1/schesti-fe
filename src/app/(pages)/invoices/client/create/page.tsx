@@ -2,7 +2,7 @@
 import { useLayoutEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { ConfigProvider, Tabs } from 'antd';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { HttpService } from '@/app/services/base.service';
 import { selectToken } from '@/redux/authSlices/auth.selector';
@@ -12,11 +12,14 @@ import { G703Component } from './components/G703';
 import { G702Component } from './components/G702';
 import { generateData, } from './utils';
 import { G7State } from '@/app/interfaces/client-invoice.interface';
+import { clientInvoiceService } from '@/app/services/client-invoices.service';
+import { toast } from 'react-toastify';
 
 const G703_KEY = 'G703';
 const G702_KEY = 'G702';
 
 export default function CreateClientInvoicePage() {
+  const router = useRouter();
   const token = useSelector(selectToken);
   const searchParams = useSearchParams();
   const invoiceName = searchParams.get('invoiceName');
@@ -34,7 +37,7 @@ export default function CreateClientInvoicePage() {
     by: '',
     country: '',
     date: '',
-    distributionTo: '',
+    distributionTo: 'Architect',
     myCommissionExpires: '',
     netChangeByOrders: '',
     notaryPublic: '',
@@ -70,7 +73,16 @@ export default function CreateClientInvoicePage() {
   }
 
   function handleSubmit(data: G7State) {
-    console.log(data);
+    clientInvoiceService
+      .httpAddNewInvoice(data)
+      .then((response) => {
+        if (response.statusCode == 201) {
+          router.push('/invoices');
+        }
+      })
+      .catch(({ response }: any) => {
+        toast.error(response.data.message);
+      });
   }
 
 
