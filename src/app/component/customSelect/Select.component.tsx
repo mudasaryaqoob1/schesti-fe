@@ -43,7 +43,7 @@ export function SelectComponent({
                         } !w-full !rounded-lg focus:border-blue-500  ${field?.className}`
                     )
                 )}
-                style={{ border: 0 }}
+                style={{ border: 0, }}
                 size='large'
                 placeholder={placeholder}
                 {...field}

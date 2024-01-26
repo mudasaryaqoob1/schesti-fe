@@ -116,7 +116,7 @@ const Schedule = () => {
             />
           </div>
 
-          <div className="px-6 py-2.5">
+          <div className="px-6 py-2.5 space-y-3">
             <InputComponent
               label="Project name"
               type="text"
