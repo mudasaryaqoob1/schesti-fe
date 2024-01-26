@@ -11,11 +11,11 @@ type Props = {
   handleState<K extends keyof G7State>(k: K, v: G7State[K]): void;
   // eslint-disable-next-line no-unused-vars
   sumColumns(rows: string[][], column: number): number;
-
-  handleSubmit(_data: G7State): void;
+  onCancel: () => void;
+  onNext(): void;
 }
 
-export function G702Component({ state, handleState, sumColumns, handleSubmit }: Props) {
+export function G702Component({ state, handleState, sumColumns, onCancel, onNext }: Props) {
 
   const p5b = Number(sumColumns(state.data, 6));
   const twoPercentOfP5b = p5b * 0.02;
@@ -514,9 +514,9 @@ export function G702Component({ state, handleState, sumColumns, handleSubmit }: 
       </div>
 
       <div className="flex justify-end space-x-4">
-        <WhiteButton text="Cancel" className="!w-40" />
+        <WhiteButton onClick={onCancel} text="Cancel" className="!w-40" />
         <CustomButton text="Create" className="!w-48"
-          onClick={() => handleSubmit(state)}
+          onClick={onNext}
         />
       </div>
     </div>

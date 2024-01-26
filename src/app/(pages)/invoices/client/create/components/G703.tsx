@@ -18,9 +18,11 @@ type Props = {
   handleState<K extends keyof G7State>(key: K, value: G7State[K]): void;
   // eslint-disable-next-line no-unused-vars
   sumColumns(rows: Array<string[]>, column: number): number;
+  onCancel: () => void;
+  onNext(): void;
 };
 
-export function G703Component({ state, handleState, sumColumns }: Props) {
+export function G703Component({ state, handleState, sumColumns, onCancel, onNext }: Props) {
 
 
 
@@ -373,8 +375,8 @@ export function G703Component({ state, handleState, sumColumns }: Props) {
       {/* END Spreadsheet */}
 
       <div className="flex justify-end space-x-4 mt-2">
-        <WhiteButton text="Cancel" className="!w-40" />
-        <CustomButton text="Next" className="!w-40" />
+        <WhiteButton onClick={onCancel} text="Cancel" className="!w-40" />
+        <CustomButton onClick={onNext} text="Next" className="!w-40" />
       </div>
     </section>
   );

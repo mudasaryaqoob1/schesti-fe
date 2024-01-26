@@ -106,11 +106,8 @@ export default function CreateClientInvoicePage() {
           }}
         >
           <Tabs
-            defaultActiveKey={G703_KEY}
             destroyInactiveTabPane
-            onChange={(type) => {
-              setTab(type);
-            }}
+            activeKey={G703_KEY}
             items={[G703_KEY, G702_KEY].map((type) => {
               return {
                 key: type,
@@ -127,13 +124,26 @@ export default function CreateClientInvoicePage() {
                       state={state}
                       handleState={handleState}
                       sumColumns={sumColumns}
+                      onCancel={() => {
+                        router.back();
+                      }}
+                      onNext={() => {
+                        setTab(G702_KEY);
+                      }
+                      }
                     />
                   ) : (
                     <G702Component
                       state={state}
                       handleState={handleState}
                       sumColumns={sumColumns}
-                      handleSubmit={handleSubmit}
+                      onCancel={() => {
+                        router.back();
+                      }}
+                      onNext={() => {
+                        handleSubmit(state);
+                      }
+                      }
                     />
                   ),
               };
