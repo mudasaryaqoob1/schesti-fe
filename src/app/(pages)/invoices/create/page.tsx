@@ -157,6 +157,9 @@ const CreateInvoice = () => {
   // write crud operations for details state
   // add detail
   function addDetail(invoice: InvoiceDetail) {
+    if (!invoice.description || !invoice.quantity || !invoice.unitCost) {
+      return;
+    }
     setDetails([...details, invoice]);
   }
   // remove detail
