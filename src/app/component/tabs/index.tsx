@@ -27,6 +27,7 @@ const Tabs = () => {
   const pathname = usePathname();
   const router = useRouter();
 
+
   return (
     <div className="md:flex block justify-between items-center px-16 xl:h-[67px] shadow-quinaryGentle">
       <ul
@@ -69,7 +70,7 @@ const Tabs = () => {
                  cursor-pointer
                 `,
               pathname.includes('/subcontractor'.split('/')[1]) &&
-                tabsStyle.active
+              tabsStyle.active
             )
           )}
           onClick={() => router.push('/subcontractor')}
@@ -135,12 +136,12 @@ const Tabs = () => {
                 flex items-stretch justify-center py-2 
                  cursor-pointer
                 `,
-              pathname.includes('#'.split('/')[1]) && tabsStyle.active
+              pathname.includes('/finance') && tabsStyle.active
             )
           )}
-          onClick={() => router.push('#')}
+          onClick={() => router.push('/finance')}
         >
-          Fiance
+          Finance
         </li>
         <li
           className={twMerge(
