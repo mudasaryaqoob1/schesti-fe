@@ -1,26 +1,31 @@
 'use client';
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useRef, } from 'react';
 import { Divider, Select } from 'antd';
-import { HotTable } from '@handsontable/react';
-import {} from 'handsontable';
+import { HotTable, } from '@handsontable/react';
 import { registerAllModules } from 'handsontable/registry';
 import 'handsontable/dist/handsontable.full.min.css';
-import { HyperFormula } from 'hyperformula';
+import { type CellValue, HyperFormula } from 'hyperformula';
 
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import PrimaryHeading from '@/app/component/headings/primary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { G703Row, G703State, rowTemplate } from '../utils';
+import { ChangeSource } from 'aws-sdk/clients/cloudformation';
 
-// register Handsontable's modules
+
 registerAllModules();
 
 type Props = {
   state: G703State;
   setState: Dispatch<SetStateAction<G703State>>;
 };
+type P = React.ComponentProps<typeof HotTable>;
+type HotTableClassFromProps<P> = P extends React.RefAttributes<infer T> ? T : never;
+type ExtractedHotTableClass = HotTableClassFromProps<P>;
 export function G703Component({ setState, state }: Props) {
+  const ref = useRef<ExtractedHotTableClass | null>(null);
+
   function addRow() {
     // add rowTempate in data
     setState({
@@ -29,21 +34,38 @@ export function G703Component({ setState, state }: Props) {
     });
   }
 
-  // getCalculatedRows
-  function getCalculatedRows(): G703Row {
-    const data = state.data;
-    return [
-      'GRAND TOTAL',
-      `=SUM(B1:B${data.length})`,
-      `=SUM(C1:C${data.length})`,
-      `=SUM(D1:D${data.length})`,
-      `=SUM(E1:E${data.length})`,
-      `=SUM(F1:F${data.length})`,
-      `=SUM(G1:G${data.length})`,
-      `=SUM(H1:H${data.length})`,
-      `=SUM(I1:I${data.length})`,
-    ];
+  function handleState<K extends keyof G703State>(key: K, value: typeof state[K]) {
+    setState({ ...state, [key]: value });
   }
+
+  function handleUpdate(changes: [number, string | number, CellValue, CellValue][] | null, source: ChangeSource) {
+    if (source === 'edit' && changes) {
+      const updatedRow = changes.map(([row, prop, oldValue, newValue]) => {
+        return {
+          row,
+          column: prop,
+          oldValue,
+          newValue,
+        };
+      });
+
+      setState(prev => {
+        const newState = { ...prev };
+        const oldData = [...prev.data];
+        updatedRow.forEach(({ row, column, _, newValue }) => {
+          const oldRow = oldData[row];
+          const newRow = [...oldRow];
+          let c = Number(column);
+          newRow[c] = newValue as string;
+          oldData[row] = newRow as G703Row;
+        });
+        newState.data = oldData;
+        return newState;
+      })
+
+    }
+  }
+
   return (
     <section>
       <div className="flex justify-between items-center">
@@ -83,7 +105,7 @@ export function G703Component({ setState, state }: Props) {
           <div className="flex self-end space-x-3 items-center">
             <label
               className="text-right text-graphiteGray font-normal"
-              htmlFor="application-date"
+
             >
               APPLICATION NO:
             </label>
@@ -91,12 +113,14 @@ export function G703Component({ setState, state }: Props) {
               id="application-date"
               className="px-2 py-1 border border-gray-300 outline-none"
               type="text"
+              value={state.applicationNo}
+              onChange={e => handleState('applicationNo', e.target.value)}
             />
           </div>
           <div className="flex self-end space-x-3 items-center">
             <label
               className="text-right text-graphiteGray font-normal"
-              htmlFor="application-date"
+
             >
               APPLICATION DATE:
             </label>
@@ -104,12 +128,14 @@ export function G703Component({ setState, state }: Props) {
               id="application-date"
               className="px-2 py-1 border border-gray-300 outline-none"
               type="text"
+              value={state.applicationDate}
+              onChange={e => handleState('applicationDate', e.target.value)}
             />
           </div>
           <div className="flex self-end space-x-3 items-center">
             <label
               className="text-right text-graphiteGray font-normal"
-              htmlFor="application-date"
+
             >
               PERIOD TO:
             </label>
@@ -117,12 +143,14 @@ export function G703Component({ setState, state }: Props) {
               id="application-date"
               className="px-2 py-1 border border-gray-300 outline-none"
               type="text"
+              value={state.periodTo}
+              onChange={e => handleState('periodTo', e.target.value)}
             />
           </div>
           <div className="flex self-end space-x-3 items-center">
             <label
               className="text-right text-graphiteGray font-normal"
-              htmlFor="application-date"
+
             >
               PROJECT NO:
             </label>
@@ -130,6 +158,8 @@ export function G703Component({ setState, state }: Props) {
               id="application-date"
               className="px-2 py-1 border border-gray-300 outline-none"
               type="text"
+              value={state.projectNo}
+              onChange={e => handleState('projectNo', e.target.value)}
             />
           </div>
         </div>
@@ -138,7 +168,8 @@ export function G703Component({ setState, state }: Props) {
       {/* Spreadsheet */}
       <div className="px-4">
         <HotTable
-          data={[...state.data, getCalculatedRows()]}
+          ref={ref}
+          data={[...state.data, ['Grand Total']]}
           colWidths={[50, 50, 100, 50, 100, 50, 50]}
           nestedHeaders={[
             [
@@ -162,6 +193,7 @@ export function G703Component({ setState, state }: Props) {
               '',
             ],
           ]}
+
           cells={(row, col) => {
             let cellProperties: any = {};
             if (col === 2) {
@@ -170,11 +202,25 @@ export function G703Component({ setState, state }: Props) {
             return cellProperties;
           }}
           formulas={{
-            engine: HyperFormula,
+            engine: HyperFormula.buildEmpty({
+              precisionRounding: 2
+            }),
           }}
+          columnSummary={[
+            { sourceColumn: 1, destinationRow: state.data.length, type: "sum", forceNumeric: true, destinationColumn: 1 },
+            { sourceColumn: 2, destinationRow: state.data.length, type: "sum", forceNumeric: true, destinationColumn: 2 },
+            { sourceColumn: 3, destinationRow: state.data.length, type: "sum", forceNumeric: true, destinationColumn: 3 },
+            { sourceColumn: 4, destinationRow: state.data.length, type: "sum", forceNumeric: true, destinationColumn: 4 },
+            { sourceColumn: 5, destinationRow: state.data.length, type: "sum", forceNumeric: true, destinationColumn: 5 },
+            { sourceColumn: 6, destinationRow: state.data.length, type: "sum", forceNumeric: true, destinationColumn: 6 },
+            { sourceColumn: 7, destinationRow: state.data.length, type: "sum", forceNumeric: true, destinationColumn: 7 },
+            { sourceColumn: 8, destinationRow: state.data.length, type: "sum", forceNumeric: true, destinationColumn: 8 },
+          ]}
+
           licenseKey="non-commercial-and-evaluation"
           rowHeaders={true}
-          colHeaders={true}
+          // @ts-ignore
+          afterChange={handleUpdate}
           height="auto"
           autoWrapRow={true}
           autoWrapCol={true}

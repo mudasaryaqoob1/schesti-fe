@@ -3,8 +3,14 @@ import WhiteButton from '@/app/component/customButton/white';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { Checkbox, Divider } from 'antd';
+import { G703State, getColumnFromRows, getGrandTotal } from '../utils';
 
-export function G702Component() {
+type Props = {
+  g703: G703State
+}
+
+export function G702Component({ g703 }: Props) {
+
   return (
     <div>
       <div>
@@ -18,23 +24,19 @@ export function G702Component() {
           <div className="flex space-x-2">
             <label
               className="text-right text-graphiteGray font-normal"
-              htmlFor="application-date"
             >
               To Owner:
             </label>
             <div className="flex flex-col">
               <input
-                id="application-date"
                 className="px-2 py-2 border border-gray-300 outline-none"
                 type="text"
               />
               <input
-                id="application-date"
                 className="px-2 py-1 border border-gray-300 outline-none"
                 type="text"
               />
               <input
-                id="application-date"
                 className="px-2 py-1 border border-gray-300 outline-none"
                 type="text"
               />
@@ -45,12 +47,10 @@ export function G702Component() {
             <div className="grid grid-cols-2 space-x-1">
               <label
                 className="text-right text-graphiteGray font-normal"
-                htmlFor="application-date"
               >
                 PROJECT:
               </label>
               <input
-                id="application-date"
                 className="px-2 py-2  border border-gray-300 outline-none"
                 type="text"
               />
@@ -58,12 +58,10 @@ export function G702Component() {
             <div className="grid grid-cols-2 space-x-1">
               <label
                 className="text-right text-graphiteGray font-normal"
-                htmlFor="application-date"
               >
                 Address:
               </label>
               <input
-                id="application-date"
                 className="px-2 py-1 border border-gray-300 outline-none"
                 type="text"
               />
@@ -71,12 +69,10 @@ export function G702Component() {
             <div className="grid grid-cols-2 space-x-1">
               <label
                 className="text-right text-graphiteGray font-normal"
-                htmlFor="application-date"
               >
                 Via Engineer:
               </label>
               <input
-                id="application-date"
                 className="px-2 py-1 border border-gray-300 outline-none"
                 type="text"
               />
@@ -86,53 +82,49 @@ export function G702Component() {
             <div className="grid grid-cols-2 space-x-1 ">
               <label
                 className="text-right text-graphiteGray font-normal"
-                htmlFor="application-date"
               >
                 APPLICATION NO:
               </label>
               <input
-                id="application-date"
                 className="px-2 py-2  border border-gray-300 outline-none"
                 type="text"
+                value={g703.applicationNo}
               />
             </div>
             <div className="grid grid-cols-2 space-x-1">
               <label
                 className="text-right text-graphiteGray font-normal"
-                htmlFor="application-date"
               >
                 APPLICATION DATE:
               </label>
               <input
-                id="application-date"
                 className="px-2 py-1 border border-gray-300 outline-none"
                 type="text"
+                value={g703.applicationDate}
               />
             </div>
             <div className="grid grid-cols-2 space-x-1">
               <label
                 className="text-right text-graphiteGray font-normal"
-                htmlFor="application-date"
               >
                 PERIOD TO:
               </label>
               <input
-                id="application-date"
                 className="px-2 py-1 border border-gray-300 outline-none"
                 type="text"
+                value={g703.periodTo}
               />
             </div>
             <div className="grid grid-cols-2 space-x-1">
               <label
                 className="text-right text-graphiteGray font-normal"
-                htmlFor="application-date"
               >
                 PROJECT NO:
               </label>
               <input
-                id="application-date"
                 className="px-2 py-1 border border-gray-300 outline-none"
                 type="text"
+                value={g703.projectNo}
               />
             </div>
           </div>
@@ -168,9 +160,9 @@ export function G702Component() {
                   title="1. ORIGINAL CONTRACT SUM  ................................"
                 />
                 <input
-                  id="application-date"
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
+                  value={getGrandTotal(getColumnFromRows(g703.data, 1))}
                 />
               </div>
               <div className="grid grid-cols-3 gap-1">
@@ -179,7 +171,6 @@ export function G702Component() {
                   title="2. Net change by Change Orders  ................................"
                 />
                 <input
-                  id="application-date"
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
                 />
@@ -190,7 +181,6 @@ export function G702Component() {
                   title="3. CONTRACT SUM TO DATE (Line 1 ± 2) $  ................................"
                 />
                 <input
-                  id="application-date"
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
                 />
@@ -201,9 +191,9 @@ export function G702Component() {
                   title="4. TOTAL COMPLETED & STORED TO DATE (Column G on G703)   .............."
                 />
                 <input
-                  id="application-date"
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
+                  value={getGrandTotal(getColumnFromRows(g703.data, 5))}
                 />
               </div>
 
@@ -214,14 +204,12 @@ export function G702Component() {
                     <div className="flex items-center col-span-2 space-x-2">
                       <QuinaryHeading title="a." />
                       <input
-                        id="application-date"
                         className="px-2 py-1 w-16 border border-gray-300 outline-none"
                         type="text"
                       />
                       <QuinaryHeading title="% of Completed Work $" />
                     </div>
                     <input
-                      id="application-date"
                       className="px-2 py-1 border border-gray-300 outline-none"
                       type="text"
                     />
@@ -236,14 +224,12 @@ export function G702Component() {
                     <div className="flex items-center col-span-2 space-x-2">
                       <QuinaryHeading title="b." />
                       <input
-                        id="application-date"
                         className="px-2 py-1 w-16 border border-gray-300 outline-none"
                         type="text"
                       />
                       <QuinaryHeading title="% of Stored Material " />
                     </div>
                     <input
-                      id="application-date"
                       className="px-2 py-1 border border-gray-300 outline-none"
                       type="text"
                     />
@@ -257,7 +243,6 @@ export function G702Component() {
                         title="Total Retainage ( Lines 5a + 5b or Total in Colum I of G703"
                       />
                       <input
-                        id="application-date"
                         className="px-2 py-1 border border-gray-300 outline-none"
                         type="text"
                       />
@@ -272,7 +257,6 @@ export function G702Component() {
                   title="6. TOTAL EARNED LESS RETAINAGE Total in Column I of G703)"
                 />
                 <input
-                  id="application-date"
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
                 />
@@ -284,7 +268,6 @@ export function G702Component() {
                   title="7. LESS PREVIOUS CERTIFICATES FOR PAYMENT (Line 6 from prior Certificate)"
                 />
                 <input
-                  id="application-date"
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
                 />
@@ -296,7 +279,6 @@ export function G702Component() {
                   title="8. CURRENT PAYMENT DUE"
                 />
                 <input
-                  id="application-date"
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
                 />
@@ -307,7 +289,6 @@ export function G702Component() {
                   title="9. BALANCE TO FINISH, INCLUDING RETAINAGE $ (Line 3 less Line 6)"
                 />
                 <input
-                  id="application-date"
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
                 />
@@ -384,7 +365,6 @@ export function G702Component() {
               <div className="grid grid-cols-12 items-center gap-1">
                 <QuinaryHeading className="col-span-2" title="By:" />
                 <input
-                  id="application-date"
                   className="px-2 col-span-6 py-1 border border-gray-300 outline-none"
                   type="text"
                 />
@@ -393,7 +373,6 @@ export function G702Component() {
               <div className="grid grid-cols-12 items-center gap-1">
                 <QuinaryHeading className="col-span-2" title="Date:" />
                 <input
-                  id="application-date"
                   className="col-span-6 px-2 py-1 border border-gray-300 outline-none"
                   type="text"
                 />
@@ -402,7 +381,6 @@ export function G702Component() {
               <div className="grid grid-cols-12 gap-1 items-center">
                 <QuinaryHeading className="col-span-2" title="State of:" />
                 <input
-                  id="application-date"
                   className="col-span-6 px-2 py-1 border border-gray-300 outline-none"
                   type="text"
                 />
@@ -410,7 +388,6 @@ export function G702Component() {
               <div className="grid grid-cols-12 gap-1 items-center">
                 <QuinaryHeading className="col-span-2" title="Country of:" />
                 <input
-                  id="application-date"
                   className="px-2 col-span-6 py-1 border border-gray-300 outline-none"
                   type="text"
                 />
@@ -418,7 +395,6 @@ export function G702Component() {
               <div className="col-span-2 flex items-center space-x-2">
                 <QuinaryHeading title="Subscribed and sworn to before me this:" />
                 <input
-                  id="application-date"
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
                 />
@@ -427,7 +403,6 @@ export function G702Component() {
               <div className="flex items-center space-x-2">
                 <QuinaryHeading title="Notary Public:" />
                 <input
-                  id="application-date"
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
                 />
@@ -436,7 +411,6 @@ export function G702Component() {
               <div className="flex items-center space-x-2">
                 <QuinaryHeading title="My Commission expires:" />
                 <input
-                  id="application-date"
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
                 />
@@ -452,7 +426,6 @@ export function G702Component() {
                 <div className="flex items-center space-x-2">
                   <QuinaryHeading title="AMOUNT CERTIFIED:" />
                   <input
-                    id="application-date"
                     className="px-2 py-1 border border-gray-300 outline-none"
                     type="text"
                   />
@@ -466,7 +439,6 @@ export function G702Component() {
                   <div className="flex items-center space-x-2">
                     <QuinaryHeading title="AMOUNT CERTIFIED:" />
                     <input
-                      id="application-date"
                       className="px-2 py-1 border border-gray-300 outline-none"
                       type="text"
                     />
@@ -474,7 +446,6 @@ export function G702Component() {
                   <div className="flex items-center space-x-2">
                     <QuinaryHeading title="AMOUNT CERTIFIED:" />
                     <input
-                      id="application-date"
                       className="px-2 py-1 border border-gray-300 outline-none"
                       type="text"
                     />
