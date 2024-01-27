@@ -37,16 +37,16 @@ export function SelectComponent({
       {({ field }: { field: any }) => ( */}
             <Select
                 id={name}
+                style={{ border: 0, }}
+                size='large'
+                placeholder={placeholder}
+                {...field}
                 className={twMerge(
                     clsx(
                         ` p-0 h-full border ${hasError ? 'border-red-500' : 'border-gray-400'
                         } !w-full !rounded-lg focus:border-blue-500  ${field?.className}`
                     )
                 )}
-                style={{ border: 0, }}
-                size='large'
-                placeholder={placeholder}
-                {...field}
             />
 
         </div>
