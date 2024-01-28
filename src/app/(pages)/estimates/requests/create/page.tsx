@@ -129,7 +129,6 @@ const CreateEstimateRequest = () => {
   }, []);
 
   const submitHandler = async (values: IEstimateRequest) => {
-    setIsLoading(true);
 
     if (drawingsDocuments.length == 0) {
       setuploadDocumentsError('Drawings Document Required');
@@ -140,6 +139,8 @@ const CreateEstimateRequest = () => {
     //   setuploadDocumentsError('Other Documents Required');
     // }
     else {
+    setIsLoading(true);
+
       const [drawingDocs, takeOffDocs, otherDocs] = await Promise.all([
         uploadDocumentToS3Handler(drawingsDocuments),
         uploadDocumentToS3Handler(takeOffReports),
@@ -275,8 +276,6 @@ const CreateEstimateRequest = () => {
     );
   };
 
-  console.log(byteConverter(361862, 'KB'), 'drawingsDocuments');
-
   return (
     <section className="my-5 px-16">
       <div className="flex justify-between flex-wrap items-center md:flex-nowrap">
@@ -354,38 +353,46 @@ const CreateEstimateRequest = () => {
                 </div>
                 <div className="p-5 my-4 border border-silverGray rounded-lg shadow-quinarGentleDepth">
                   <QuaternaryHeading
-                    title="Project information"
+                    title="Project Details"
                     className="text-graphiteGray font-semibold"
                   />
-                  <div className="grid grid-cols-1 gap-y-2 md:grid-cols-2 lg:grid-cols-3 grid-rows-2 gap-4 mt-4">
-                    <FormControl
-                      control="input"
-                      label="Project Name"
-                      type="text"
-                      name="projectName"
-                      placeholder="Enter Project Name"
-                    />
-                    <FormControl
-                      control="input"
-                      label="Lead Source Value"
-                      type="text"
-                      name="leadSource"
-                      placeholder="Select source"
-                    />
-                    <FormControl
-                      control="input"
-                      label="Project Value"
-                      type="text"
-                      name="projectValue"
-                      placeholder="Select source"
-                    />
-                    <FormControl
-                      control="input"
-                      label="Project Information"
-                      type="text"
-                      name="projectInformation"
-                      placeholder="Enter Project Information"
-                    />
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="...">
+                      <FormControl
+                        control="input"
+                        label="Project Name"
+                        type="text"
+                        name="projectName"
+                        placeholder="Enter Project Name"
+                      />
+                    </div>
+                    <div className="...">
+                      <FormControl
+                        control="input"
+                        label="Lead Source Value"
+                        type="text"
+                        name="leadSource"
+                        placeholder="Lead Source"
+                      />
+                    </div>
+                    <div className="...">
+                      <FormControl
+                        control="input"
+                        label="Project Value"
+                        type="text"
+                        name="projectValue"
+                        placeholder="Project Value"
+                      />
+                    </div>
+                    <div className="col-span-3 ...">
+                      <FormControl
+                        control="textarea"
+                        label="Project Information"
+                        type="text"
+                        name="projectInformation"
+                        placeholder="Enter Project Information"
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -416,7 +423,7 @@ const CreateEstimateRequest = () => {
 
                 <div className=" border-2  border-silverGray  rounded-lg shadow-quinarGentleDepth mt-4 p-5">
                   <h3 className="my-4">Upload</h3>
-                  <div className="flex gap-3">
+                  <div className="grid grid-cols-4 gap-4">
                     <div>
                       <p
                         className={`${senaryHeading} !text-[14px] text-midnightBlue font-popin mb-2`}
@@ -436,7 +443,7 @@ const CreateEstimateRequest = () => {
                               }) => (
                                 <div
                                   key={doc.lastModified}
-                                  className={`px-4 py-4 relative max-w-32 `}
+                                  className={`px-6 py-4 relative max-w-80 `}
                                 >
                                   <Image
                                     src={'/documentIcon.svg'}
@@ -449,7 +456,7 @@ const CreateEstimateRequest = () => {
                                     alt="documentIcon icon"
                                     width={20}
                                     height={20}
-                                    className="absolute top-0 right-0 cursor-pointer"
+                                    className="absolute top-0 right-4 cursor-pointer"
                                     onClick={() =>
                                       drawingDocumentDeleteHandler(doc.name)
                                     }
@@ -708,7 +715,7 @@ const CreateEstimateRequest = () => {
                         >
                           <div className="flex gap-2">
                             <label
-                              htmlFor="otherDocuments"
+                              htmlFor="needTakemeasureToTakeoff"
                               className={twMerge(
                                 `${senaryHeading} text-[#475467] font-semibold cursor-pointer`
                               )}

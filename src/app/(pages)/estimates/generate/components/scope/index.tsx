@@ -106,6 +106,7 @@ const Scope = ({ setPrevNext }: Props) => {
   const [selecteddescription, setsSelecteddescription] = useState('');
   const [editItem, setEditItem] = useState(false);
   const [editConfirmItem, setEditConfirmItem] = useState(false);
+  const [estiamteUnits, setEstiamteUnits] = useState<Object[]>([])
   const [confirmEstimates, setConfirmEstimates] = useState<
     {
       title: string;
@@ -171,8 +172,11 @@ const Scope = ({ setPrevNext }: Props) => {
         .httpGetMeterialWithCategoryId(categoryId, subCategory)
         .then((result) => {
           let uniqueDescriptionsSet = new Set();
+          let uniqueUnitsSet = new Set();
           let fetchedDescriptions = result.data
             .map((material: DataType) => {
+              console.log(material , 'materialmaterial');
+              
               const description = material.description;
 
               if (!uniqueDescriptionsSet.has(description)) {
@@ -188,7 +192,26 @@ const Scope = ({ setPrevNext }: Props) => {
             })
             .filter((description: any) => description !== null);
 
+            let fetchedUnits = result.data
+            .map((material: DataType) => {
+              const unit = material.unit;
+
+              if (!uniqueUnitsSet.has(unit)) {
+                uniqueUnitsSet.add(unit);
+                return {
+                  ...material,
+                  label: unit,
+                  value: unit,
+                };
+              } else {
+                return null;
+              }
+            })
+            .filter((unit: any) => unit !== null);
+
+
           setEstimateDescriptions(fetchedDescriptions);
+          setEstiamteUnits(fetchedUnits)
         })
         .catch((error) => {
           console.log(error, 'error in fetch meterials');
@@ -262,8 +285,8 @@ const Scope = ({ setPrevNext }: Props) => {
   }, [generateEstimateDetail]);
 
   const submitHandler = (
-    estimateTableItemValues: InitialValuesType
-    // actions: any
+    estimateTableItemValues: InitialValuesType,
+    actions: any
   ) => {
     let generateRandomNumber = Math.floor(Math.random() * 103440 + 1);
     let selectedCategory = '';
@@ -304,10 +327,8 @@ const Scope = ({ setPrevNext }: Props) => {
 
         setEstimateData({ ...estimateData, scopeItems: updateEstimateArray });
         setEditItem(false);
-        // setEstimateDescriptions([]);
+        setEstimateDescriptions([]);
         // setSingleEstimateData({
-        //   category: '',
-        //   subCategory: '',
         //   description: '',
         //   unit: '',
         //   qty: '',
@@ -317,7 +338,7 @@ const Scope = ({ setPrevNext }: Props) => {
         //   unitMaterialCost: '',
         //   unitEquipments: '',
         // });
-        // actions.resetForm({ values: initialValues });
+        actions.resetForm({ values: initialValues });
       } else if (!editItem && editConfirmItem) {
         const updateConfirmEstimateArray: any = confirmEstimates.map(
           (item: any) => {
@@ -351,6 +372,7 @@ const Scope = ({ setPrevNext }: Props) => {
         // });
         // actions.resetForm({ values: initialValues });
       } else {
+        
         setEstimateData((prevData) => ({
           ...prevData,
           title: selectedCategory,
@@ -361,18 +383,19 @@ const Scope = ({ setPrevNext }: Props) => {
         }));
         // setEstimateDescriptions([]);
 
-        // setSingleEstimateData({
-        //   category: '',
-        //   subCategory: '',
-        //   description: '',
-        //   unit: '',
-        //   qty: '',
-        //   wastage: '5',
-        //   unitLabourHour: '',
-        //   perHourLaborRate: '',
-        //   unitMaterialCost: '',
-        //   unitEquipments: '',
-        // });
+        setSingleEstimateData({
+          ...SingleEstimateData,
+          // category: '',
+          // subCategory: '',
+          description: '',
+          unit: '',
+          qty: '',
+          wastage: '5',
+          unitLabourHour: '',
+          // perHourLaborRate: '',
+          unitMaterialCost: '',
+          unitEquipments: '',
+        });
         // actions.resetForm({ values: initialValues });
       }
     }
@@ -433,7 +456,7 @@ const Scope = ({ setPrevNext }: Props) => {
     let quantity = parseFloat(record.qty);
     let unitMaterialCost = parseFloat(record.unitMaterialCost);
     let wastagePercentage = parseFloat(record.wastage);
-    let qtyWithWastage =  quantity * ((1 + wastagePercentage / 100));
+    let qtyWithWastage = quantity * (1 + wastagePercentage / 100);
     let totalLabourHours = qtyWithWastage * unitLabourHour;
     let totalMeterialCost = unitMaterialCost * qtyWithWastage;
     let totalLabourCost = totalLabourHours * perHourLaborRate;
@@ -476,7 +499,7 @@ const Scope = ({ setPrevNext }: Props) => {
       render: (text: string, record: DataType) => {
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
-        let result = quantity * ((1 + wastagePercentage / 100));
+        let result = quantity * (1 + wastagePercentage / 100);
         return result.toFixed(2);
       },
     },
@@ -489,7 +512,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let unitLabourHour = parseFloat(record.unitLabourHour);
         let wastagePercentage = parseFloat(record.wastage);
         let quantity = parseFloat(record.qty);
-        let quantityWithWastage = quantity * ((1 + wastagePercentage / 100));
+        let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = quantityWithWastage * unitLabourHour;
         return result.toFixed(2);
       },
@@ -509,7 +532,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let unitLabourHour = parseFloat(record.unitLabourHour);
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
-        let quantityWithWastage = quantity * ((1 + wastagePercentage / 100));
+        let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let perHourLaborRate = parseFloat(record.perHourLaborRate);
         let totalLabourHours = quantityWithWastage * unitLabourHour;
         let result = totalLabourHours * perHourLaborRate;
@@ -531,7 +554,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let unitMaterialCost = parseFloat(record.unitMaterialCost);
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
-        let quantityWithWastage = quantity * ((1 + wastagePercentage / 100));
+        let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = unitMaterialCost * quantityWithWastage;
         return result.toFixed(2);
       },
@@ -545,7 +568,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let unitEquipments = parseFloat(record.unitEquipments);
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
-        let quantityWithWastage = quantity * ((1 + wastagePercentage / 100));
+        let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = unitEquipments * quantityWithWastage;
         return result.toFixed(2);
       },
@@ -624,7 +647,7 @@ const Scope = ({ setPrevNext }: Props) => {
       render: (text: string, record: DataType) => {
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
-        let result = quantity * ((1 + wastagePercentage / 100));
+        let result = quantity * (1 + wastagePercentage / 100);
         return result.toFixed(2);
       },
     },
@@ -637,7 +660,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let unitLabourHour = parseFloat(record.unitLabourHour);
         let wastagePercentage = parseFloat(record.wastage);
         let quantity = parseFloat(record.qty);
-        let quantityWithWastage = quantity * ((1 + wastagePercentage / 100));
+        let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = quantityWithWastage * unitLabourHour;
         return result.toFixed(2);
       },
@@ -657,7 +680,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let unitLabourHour = parseFloat(record.unitLabourHour);
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
-        let quantityWithWastage = quantity * ((1 + wastagePercentage / 100));
+        let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let perHourLaborRate = parseFloat(record.perHourLaborRate);
         let totalLabourHours = quantityWithWastage * unitLabourHour;
         let result = totalLabourHours * perHourLaborRate;
@@ -679,7 +702,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let unitMaterialCost = parseFloat(record.unitMaterialCost);
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
-        let quantityWithWastage = quantity * ((1 + wastagePercentage / 100));
+        let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = unitMaterialCost * quantityWithWastage;
         return result.toFixed(2);
       },
@@ -693,7 +716,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let unitEquipments = parseFloat(record.unitEquipments);
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
-        let quantityWithWastage = quantity * ((1 + wastagePercentage / 100));
+        let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = unitEquipments * quantityWithWastage;
         return result.toFixed(2);
       },
@@ -742,7 +765,9 @@ const Scope = ({ setPrevNext }: Props) => {
     title: string;
     scopeItems: Object[];
   }) => {
-    //  setEstimateDescriptions([]);
+    setSelectedCategory('')
+    setSelectedSubCategory('')
+    setEstimateDescriptions([]);
     setSingleEstimateData({
       category: '',
       subCategory: '',
@@ -796,6 +821,10 @@ const Scope = ({ setPrevNext }: Props) => {
     }
   };
 
+
+  console.log(estiamteUnits , 'estiamteUnitsestiamteUnits');
+  
+
   return (
     <div>
       <div className="flex justify-between items-center mb-3">
@@ -848,7 +877,7 @@ const Scope = ({ setPrevNext }: Props) => {
         validationSchema={validationSchema}
         onSubmit={submitHandler}
       >
-        {({ handleSubmit, values }) => {
+        {({ handleSubmit, values, resetForm }) => {
           console.log(values, 'valuesvaluesvalues');
 
           return (
@@ -900,13 +929,14 @@ const Scope = ({ setPrevNext }: Props) => {
                     />
                   </div>
                   <FormControl
-                    control="input"
+                    control="inputselect"
                     inputStyle="!py-2"
                     labelStyle="font-normal"
                     label="Unit"
                     name="unit"
                     placeholder="Write Unit"
                     mt="mt-0"
+                    options={estiamteUnits}
                   />
                   <FormControl
                     control="input"
@@ -1002,6 +1032,7 @@ const Scope = ({ setPrevNext }: Props) => {
                         disabled={estimateData.scopeItems.length === 0}
                         onClick={() => {
                           confirmEstimateHandler(estimateData);
+                          resetForm();
                         }}
                       />
                     </div>

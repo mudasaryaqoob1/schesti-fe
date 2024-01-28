@@ -2,15 +2,36 @@ import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
-import { Checkbox, Divider } from 'antd';
-import { G703State, getColumnFromRows, getGrandTotal } from '../utils';
+import { G7State } from '@/app/interfaces/client-invoice.interface';
+import { Checkbox, DatePicker, Divider } from 'antd';
+import dayjs from 'dayjs';
 
 type Props = {
-  g703: G703State
-}
+  state: G7State;
+  // eslint-disable-next-line no-unused-vars
+  handleState<K extends keyof G7State>(k: K, v: G7State[K]): void;
+  // eslint-disable-next-line no-unused-vars
+  sumColumns(rows: string[][], column: number): number;
+  onCancel: () => void;
+  onNext(): void;
+};
 
-export function G702Component({ g703 }: Props) {
-
+export function G702Component({
+  state,
+  handleState,
+  sumColumns,
+  onCancel,
+  onNext,
+}: Props) {
+  const p5b = Number(sumColumns(state.data, 6));
+  const twoPercentOfP5b = p5b * 0.02;
+  const p5Total = Number(sumColumns(state.data, 9)) + twoPercentOfP5b;
+  const p6Total = Number(sumColumns(state.data, 6)) - p5Total;
+  const p3Total =
+    parseFloat(state.orignalContractSum) + parseFloat(state.netChangeByOrders);
+  const p8Total = p6Total - Number(state.lessPreviousCertificatesForPayment);
+  const p9Total =
+    p3Total - Number(state.lessPreviousCertificatesForPayment) - p8Total;
   return (
     <div>
       <div>
@@ -22,109 +43,99 @@ export function G702Component({ g703 }: Props) {
         <Divider className="m-0 mt-3" />
         <div className="flex space-x-2 justify-between">
           <div className="flex space-x-2">
-            <label
-              className="text-right text-graphiteGray font-normal"
-            >
+            <label className="text-right text-graphiteGray font-normal">
               To Owner:
             </label>
             <div className="flex flex-col">
               <input
                 className="px-2 py-2 border border-gray-300 outline-none"
                 type="text"
-              />
-              <input
-                className="px-2 py-1 border border-gray-300 outline-none"
-                type="text"
-              />
-              <input
-                className="px-2 py-1 border border-gray-300 outline-none"
-                type="text"
+                value={state.toOwner}
+                onChange={(e) => handleState('toOwner', e.target.value)}
               />
             </div>
           </div>
 
           <div>
             <div className="grid grid-cols-2 space-x-1">
-              <label
-                className="text-right text-graphiteGray font-normal"
-              >
+              <label className="text-right text-graphiteGray font-normal">
                 PROJECT:
               </label>
               <input
                 className="px-2 py-2  border border-gray-300 outline-none"
                 type="text"
+                value={state.project}
+                onChange={(e) => handleState('project', e.target.value)}
               />
             </div>
             <div className="grid grid-cols-2 space-x-1">
-              <label
-                className="text-right text-graphiteGray font-normal"
-              >
+              <label className="text-right text-graphiteGray font-normal">
                 Address:
               </label>
               <input
                 className="px-2 py-1 border border-gray-300 outline-none"
                 type="text"
+                value={state.address}
+                onChange={(e) => handleState('address', e.target.value)}
               />
             </div>
             <div className="grid grid-cols-2 space-x-1">
-              <label
-                className="text-right text-graphiteGray font-normal"
-              >
+              <label className="text-right text-graphiteGray font-normal">
                 Via Engineer:
               </label>
               <input
                 className="px-2 py-1 border border-gray-300 outline-none"
                 type="text"
+                value={state.viaEngineer}
+                onChange={(e) => handleState('viaEngineer', e.target.value)}
               />
             </div>
           </div>
           <div className="">
             <div className="grid grid-cols-2 space-x-1 ">
-              <label
-                className="text-right text-graphiteGray font-normal"
-              >
+              <label className="text-right text-graphiteGray font-normal">
                 APPLICATION NO:
               </label>
               <input
                 className="px-2 py-2  border border-gray-300 outline-none"
                 type="text"
-                value={g703.applicationNo}
+                value={state.applicationNo}
               />
             </div>
             <div className="grid grid-cols-2 space-x-1">
-              <label
-                className="text-right text-graphiteGray font-normal"
-              >
+              <label className="text-right text-graphiteGray font-normal">
                 APPLICATION DATE:
               </label>
-              <input
-                className="px-2 py-1 border border-gray-300 outline-none"
-                type="text"
-                value={g703.applicationDate}
+              <DatePicker
+                id="application-date"
+                className="px-2  rounded-none py-[7px] border border-gray-300 outline-none"
+                defaultValue={dayjs(state.applicationDate)}
+                onChange={(_d, dateString) =>
+                  handleState('applicationDate', dateString)
+                }
               />
             </div>
             <div className="grid grid-cols-2 space-x-1">
-              <label
-                className="text-right text-graphiteGray font-normal"
-              >
+              <label className="text-right text-graphiteGray font-normal">
                 PERIOD TO:
               </label>
-              <input
-                className="px-2 py-1 border border-gray-300 outline-none"
-                type="text"
-                value={g703.periodTo}
+              <DatePicker
+                id="application-date"
+                className="px-2  rounded-none py-[7px] border border-gray-300 outline-none"
+                defaultValue={dayjs(state.periodTo)}
+                onChange={(_d, dateString) =>
+                  handleState('periodTo', dateString)
+                }
               />
             </div>
             <div className="grid grid-cols-2 space-x-1">
-              <label
-                className="text-right text-graphiteGray font-normal"
-              >
+              <label className="text-right text-graphiteGray font-normal">
                 PROJECT NO:
               </label>
               <input
                 className="px-2 py-1 border border-gray-300 outline-none"
                 type="text"
-                value={g703.projectNo}
+                value={state.projectNo}
               />
             </div>
           </div>
@@ -161,8 +172,12 @@ export function G702Component({ g703 }: Props) {
                 />
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
-                  type="text"
-                  value={getGrandTotal(getColumnFromRows(g703.data, 1))}
+                  type="number"
+                  value={state.orignalContractSum}
+                  defaultValue={0.0}
+                  onChange={(e) =>
+                    handleState('orignalContractSum', e.target.value)
+                  }
                 />
               </div>
               <div className="grid grid-cols-3 gap-1">
@@ -173,6 +188,11 @@ export function G702Component({ g703 }: Props) {
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
+                  value={state.netChangeByOrders}
+                  defaultValue={0.0}
+                  onChange={(e) =>
+                    handleState('netChangeByOrders', e.target.value)
+                  }
                 />
               </div>
               <div className="grid grid-cols-3 gap-1">
@@ -182,7 +202,8 @@ export function G702Component({ g703 }: Props) {
                 />
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
-                  type="text"
+                  type="number"
+                  value={p3Total.toFixed(2)}
                 />
               </div>
               <div className="grid grid-cols-3 gap-1">
@@ -192,8 +213,8 @@ export function G702Component({ g703 }: Props) {
                 />
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
-                  type="text"
-                  value={getGrandTotal(getColumnFromRows(g703.data, 5))}
+                  type="number"
+                  value={sumColumns(state.data, 6).toFixed(2)}
                 />
               </div>
 
@@ -206,12 +227,15 @@ export function G702Component({ g703 }: Props) {
                       <input
                         className="px-2 py-1 w-16 border border-gray-300 outline-none"
                         type="text"
+                        value={10}
+                        disabled
                       />
                       <QuinaryHeading title="% of Completed Work $" />
                     </div>
                     <input
                       className="px-2 py-1 border border-gray-300 outline-none"
-                      type="text"
+                      type="number"
+                      value={sumColumns(state.data, 9).toFixed(2)}
                     />
                   </div>
                   <QuinaryHeading
@@ -226,12 +250,15 @@ export function G702Component({ g703 }: Props) {
                       <input
                         className="px-2 py-1 w-16 border border-gray-300 outline-none"
                         type="text"
+                        value={2}
+                        disabled
                       />
                       <QuinaryHeading title="% of Stored Material " />
                     </div>
                     <input
                       className="px-2 py-1 border border-gray-300 outline-none"
-                      type="text"
+                      type="number"
+                      value={twoPercentOfP5b.toFixed(2)}
                     />
                   </div>
                   <div>
@@ -244,7 +271,8 @@ export function G702Component({ g703 }: Props) {
                       />
                       <input
                         className="px-2 py-1 border border-gray-300 outline-none"
-                        type="text"
+                        type="number"
+                        value={p5Total.toFixed(2)}
                       />
                     </div>
                   </div>
@@ -258,7 +286,8 @@ export function G702Component({ g703 }: Props) {
                 />
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
-                  type="text"
+                  type="number"
+                  value={p6Total.toFixed(2)}
                 />
               </div>
 
@@ -269,7 +298,15 @@ export function G702Component({ g703 }: Props) {
                 />
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
-                  type="text"
+                  type="number"
+                  value={state.lessPreviousCertificatesForPayment}
+                  onChange={(e) =>
+                    handleState(
+                      'lessPreviousCertificatesForPayment',
+                      e.target.value
+                    )
+                  }
+                  defaultValue={0.0}
                 />
               </div>
 
@@ -280,7 +317,8 @@ export function G702Component({ g703 }: Props) {
                 />
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
-                  type="text"
+                  type="number"
+                  value={p8Total.toFixed(2)}
                 />
               </div>
               <div className="grid grid-cols-3 gap-1">
@@ -290,7 +328,9 @@ export function G702Component({ g703 }: Props) {
                 />
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
-                  type="text"
+                  type="number"
+                  value={p9Total.toFixed(2)}
+                  defaultValue={0.0}
                 />
               </div>
             </div>
@@ -367,14 +407,17 @@ export function G702Component({ g703 }: Props) {
                 <input
                   className="px-2 col-span-6 py-1 border border-gray-300 outline-none"
                   type="text"
+                  value={state.by}
+                  onChange={(e) => handleState('by', e.target.value)}
                 />
               </div>
 
               <div className="grid grid-cols-12 items-center gap-1">
                 <QuinaryHeading className="col-span-2" title="Date:" />
-                <input
-                  className="col-span-6 px-2 py-1 border border-gray-300 outline-none"
-                  type="text"
+                <DatePicker
+                  className="px-2 col-span-6 rounded-none py-[7px] border border-gray-300 outline-none"
+                  defaultValue={dayjs(state.date)}
+                  onChange={(_d, dateString) => handleState('date', dateString)}
                 />
               </div>
 
@@ -383,6 +426,8 @@ export function G702Component({ g703 }: Props) {
                 <input
                   className="col-span-6 px-2 py-1 border border-gray-300 outline-none"
                   type="text"
+                  value={state.stateOf}
+                  onChange={(e) => handleState('stateOf', e.target.value)}
                 />
               </div>
               <div className="grid grid-cols-12 gap-1 items-center">
@@ -390,6 +435,8 @@ export function G702Component({ g703 }: Props) {
                 <input
                   className="px-2 col-span-6 py-1 border border-gray-300 outline-none"
                   type="text"
+                  value={state.country}
+                  onChange={(e) => handleState('country', e.target.value)}
                 />
               </div>
               <div className="col-span-2 flex items-center space-x-2">
@@ -397,6 +444,10 @@ export function G702Component({ g703 }: Props) {
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
+                  value={state.subscribedAndSworn}
+                  onChange={(e) =>
+                    handleState('subscribedAndSworn', e.target.value)
+                  }
                 />
               </div>
 
@@ -405,6 +456,8 @@ export function G702Component({ g703 }: Props) {
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
+                  value={state.notaryPublic}
+                  onChange={(e) => handleState('notaryPublic', e.target.value)}
                 />
               </div>
 
@@ -413,6 +466,10 @@ export function G702Component({ g703 }: Props) {
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
+                  value={state.myCommissionExpires}
+                  onChange={(e) =>
+                    handleState('myCommissionExpires', e.target.value)
+                  }
                 />
               </div>
             </div>
@@ -427,7 +484,11 @@ export function G702Component({ g703 }: Props) {
                   <QuinaryHeading title="AMOUNT CERTIFIED:" />
                   <input
                     className="px-2 py-1 border border-gray-300 outline-none"
-                    type="text"
+                    type="number"
+                    value={state.amountCertified1}
+                    onChange={(e) =>
+                      handleState('amountCertified1', e.target.value)
+                    }
                   />
                 </div>
                 <QuinaryHeading title="(Attach explanation if amount certified differs from the amount applied. Initial all figures on this Application and onthe Continuation Sheet that are changed to conform with the amount certified.)" />
@@ -440,7 +501,11 @@ export function G702Component({ g703 }: Props) {
                     <QuinaryHeading title="AMOUNT CERTIFIED:" />
                     <input
                       className="px-2 py-1 border border-gray-300 outline-none"
-                      type="text"
+                      type="number"
+                      value={state.amountCertified2}
+                      onChange={(e) =>
+                        handleState('amountCertified2', e.target.value)
+                      }
                     />
                   </div>
                   <div className="flex items-center space-x-2">
@@ -459,8 +524,8 @@ export function G702Component({ g703 }: Props) {
       </div>
 
       <div className="flex justify-end space-x-4">
-        <WhiteButton text="Cancel" className="!w-40" />
-        <CustomButton text="Download for invoice" className="!w-48" />
+        <WhiteButton onClick={onCancel} text="Cancel" className="!w-40" />
+        <CustomButton text="Create" className="!w-48" onClick={onNext} />
       </div>
     </div>
   );

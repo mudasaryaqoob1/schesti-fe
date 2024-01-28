@@ -27,7 +27,6 @@ const Tabs = () => {
   const pathname = usePathname();
   const router = useRouter();
 
-
   return (
     <div className="md:flex block justify-between items-center px-16 xl:h-[67px] shadow-quinaryGentle">
       <ul
@@ -70,7 +69,7 @@ const Tabs = () => {
                  cursor-pointer
                 `,
               pathname.includes('/subcontractor'.split('/')[1]) &&
-              tabsStyle.active
+                tabsStyle.active
             )
           )}
           onClick={() => router.push('/subcontractor')}

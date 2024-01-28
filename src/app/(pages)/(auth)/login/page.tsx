@@ -51,13 +51,18 @@ const Login = () => {
 
     if (result.payload.statusCode == 200) {
       setLoading(false);
-      if (result.payload.data.user.roles.includes('Company') && result.payload.data.user?.isPaymentConfirm) {
+      if (
+        result.payload.data.user.roles.includes('Company') &&
+        result.payload.data.user?.isPaymentConfirm
+      ) {
         router.push('/clients');
-      } else if(result.payload.data.user.roles.includes('Company') && !result.payload.data.user?.isPaymentConfirm) {
+      } else if (
+        result.payload.data.user.roles.includes('Company') &&
+        !result.payload.data.user?.isPaymentConfirm
+      ) {
         router.push('/plans');
-      }
-      else{
-       toast.warning('you are not allowed to login')
+      } else {
+        toast.warning('you are not allowed to login');
       }
     } else {
       setLoading(false);

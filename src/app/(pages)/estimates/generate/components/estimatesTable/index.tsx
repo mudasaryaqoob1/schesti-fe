@@ -18,20 +18,20 @@ interface DataType {
   Action: string;
 }
 
- const calculateTotalCost = (record: DataType) => {
-    let perHourLaborRate = parseFloat(record.perHourLaborRate);
-    let unitLabourHour = parseFloat(record.unitLabourHour);
-    let quantity = parseFloat(record.qty);
-    let unitMaterialCost = parseFloat(record.unitMaterialCost);
-    let wastagePercentage = parseFloat(record.wastage);
-    let qtyWithWastage =  quantity * ((1 + wastagePercentage / 100));
-    let totalLabourHours = qtyWithWastage * unitLabourHour;
-    let totalMeterialCost = unitMaterialCost * qtyWithWastage;
-    let totalLabourCost = totalLabourHours * perHourLaborRate;
-    let totalMaterialCost = unitMaterialCost * qtyWithWastage;
-    let result = totalLabourCost * totalMeterialCost * totalMaterialCost;
-    return result.toFixed(2);
-  };
+const calculateTotalCost = (record: DataType) => {
+  let perHourLaborRate = parseFloat(record.perHourLaborRate);
+  let unitLabourHour = parseFloat(record.unitLabourHour);
+  let quantity = parseFloat(record.qty);
+  let unitMaterialCost = parseFloat(record.unitMaterialCost);
+  let wastagePercentage = parseFloat(record.wastage);
+  let qtyWithWastage = quantity * (1 + wastagePercentage / 100);
+  let totalLabourHours = qtyWithWastage * unitLabourHour;
+  let totalMeterialCost = unitMaterialCost * qtyWithWastage;
+  let totalLabourCost = totalLabourHours * perHourLaborRate;
+  let totalMaterialCost = unitMaterialCost * qtyWithWastage;
+  let result = totalLabourCost * totalMeterialCost * totalMaterialCost;
+  return result.toFixed(2);
+};
 
 const confirmColumns: any = [
   {
@@ -67,7 +67,7 @@ const confirmColumns: any = [
     render: (text: string, record: DataType) => {
       let quantity = parseFloat(record.qty);
       let wastagePercentage = parseFloat(record.wastage);
-      let result = quantity * ((1 + wastagePercentage / 100));
+      let result = quantity * (1 + wastagePercentage / 100);
       return result.toFixed(2);
     },
   },
@@ -80,7 +80,7 @@ const confirmColumns: any = [
       let unitLabourHour = parseFloat(record.unitLabourHour);
       let wastagePercentage = parseFloat(record.wastage);
       let quantity = parseFloat(record.qty);
-      let quantityWithWastage = quantity * ((1 + wastagePercentage / 100));
+      let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
       let result = quantityWithWastage * unitLabourHour;
       return result.toFixed(2);
     },
@@ -100,7 +100,7 @@ const confirmColumns: any = [
       let unitLabourHour = parseFloat(record.unitLabourHour);
       let quantity = parseFloat(record.qty);
       let wastagePercentage = parseFloat(record.wastage);
-      let quantityWithWastage = quantity * ((1 + wastagePercentage / 100));
+      let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
       let perHourLaborRate = parseFloat(record.perHourLaborRate);
       let totalLabourHours = quantityWithWastage * unitLabourHour;
       let result = totalLabourHours * perHourLaborRate;
@@ -122,7 +122,7 @@ const confirmColumns: any = [
       let unitMaterialCost = parseFloat(record.unitMaterialCost);
       let quantity = parseFloat(record.qty);
       let wastagePercentage = parseFloat(record.wastage);
-      let quantityWithWastage = quantity * ((1 + wastagePercentage / 100));
+      let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
       let result = unitMaterialCost * quantityWithWastage;
       return result.toFixed(2);
     },
@@ -136,7 +136,7 @@ const confirmColumns: any = [
       let unitEquipments = parseFloat(record.unitEquipments);
       let quantity = parseFloat(record.qty);
       let wastagePercentage = parseFloat(record.wastage);
-      let quantityWithWastage = quantity * ((1 + wastagePercentage / 100));
+      let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
       let result = unitEquipments * quantityWithWastage;
       return result.toFixed(2);
     },
@@ -151,7 +151,6 @@ const confirmColumns: any = [
       return result;
     },
   },
-
 ];
 
 interface IProps {
