@@ -107,10 +107,11 @@ const Scope = ({ setPrevNext }: Props) => {
   const [editItem, setEditItem] = useState(false);
   const [editConfirmItem, setEditConfirmItem] = useState(false);
   const [estiamteUnits, setEstiamteUnits] = useState<Object[]>([]);
-  const [confirmEstimates, setConfirmEstimates] = useState<{
-      title: string,
-      categoryName : string,
-      subCategoryName : string,
+  const [confirmEstimates, setConfirmEstimates] = useState<
+    {
+      title: string;
+      categoryName: string;
+      subCategoryName: string;
       scopeItems: Object[];
     }[]
   >([]);
@@ -350,14 +351,12 @@ const Scope = ({ setPrevNext }: Props) => {
         });
         // actions.resetForm({ values: initialValues });
       } else if (!editItem && editConfirmItem) {
-
         const updateConfirmEstimateArray: any = confirmEstimates.map(
           (item: any) => {
             return {
               ...item,
               totalCostRecord: calculateTotalCost(item),
-              scopeItems: item.scopeItems
-              .map((dataItem: any) =>
+              scopeItems: item.scopeItems.map((dataItem: any) =>
                 dataItem.index === estimateTableItemValues.index
                   ? estimateTableItemValues
                   : dataItem
@@ -368,10 +367,10 @@ const Scope = ({ setPrevNext }: Props) => {
 
         setConfirmEstimates(updateConfirmEstimateArray);
         setEditConfirmItem(false);
-        setEstiamteUnits([])
+        setEstiamteUnits([]);
         setEstimateDescriptions([]);
-        setSelectedSubCategory('')
-        setSelectedCategory('')
+        setSelectedSubCategory('');
+        setSelectedCategory('');
         setSingleEstimateData({
           category: '',
           subCategory: '',
@@ -461,9 +460,9 @@ const Scope = ({ setPrevNext }: Props) => {
   };
   const editConfirmEstimateRecordHandler = (record: any) => {
     setSingleEstimateData(record);
-    fetchMeterialDetail(record.category , record.subCategory)
-    setSelectedCategory(record.category)
-    setSelectedSubCategory(record.subCategory)
+    fetchMeterialDetail(record.category, record.subCategory);
+    setSelectedCategory(record.category);
+    setSelectedSubCategory(record.subCategory);
     setEditItem(false);
     setEditConfirmItem(true);
   };
@@ -845,8 +844,6 @@ const Scope = ({ setPrevNext }: Props) => {
     }
   };
 
-
-  
   return (
     <div>
       <div className="flex justify-between items-center mb-3">
@@ -1051,7 +1048,7 @@ const Scope = ({ setPrevNext }: Props) => {
                         type="button"
                         disabled={estimateData.scopeItems.length === 0}
                         onClick={() => {
-                          confirmEstimateHandler(estimateData)
+                          confirmEstimateHandler(estimateData);
                         }}
                       />
                     </div>
@@ -1068,11 +1065,11 @@ const Scope = ({ setPrevNext }: Props) => {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <QuaternaryHeading
-                              title={estimate.categoryName                              }
+                              title={estimate.categoryName}
                               className="font-semibold"
                             />
-                             <QuaternaryHeading
-                              title={estimate.subCategoryName                              }
+                            <QuaternaryHeading
+                              title={estimate.subCategoryName}
                               className="!font=[#344054] font-light"
                             />
                           </div>

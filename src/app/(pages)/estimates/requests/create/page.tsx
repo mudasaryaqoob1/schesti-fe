@@ -129,7 +129,6 @@ const CreateEstimateRequest = () => {
   }, []);
 
   const submitHandler = async (values: IEstimateRequest) => {
-
     if (drawingsDocuments.length == 0) {
       setuploadDocumentsError('Drawings Document Required');
     }
@@ -139,7 +138,7 @@ const CreateEstimateRequest = () => {
     //   setuploadDocumentsError('Other Documents Required');
     // }
     else {
-    setIsLoading(true);
+      setIsLoading(true);
 
       const [drawingDocs, takeOffDocs, otherDocs] = await Promise.all([
         uploadDocumentToS3Handler(drawingsDocuments),

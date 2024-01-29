@@ -38,7 +38,9 @@ export function InputComponent({
       <label
         className={twMerge(
           clsx(
-            `text-graphiteGray ${label2 ? 'flex justify-between' : 'block'} text-sm font-medium leading-6 capitalize`,
+            `text-graphiteGray ${
+              label2 ? 'flex justify-between' : 'block'
+            } text-sm font-medium leading-6 capitalize`,
             labelStyle
           )
         )}
@@ -63,7 +65,7 @@ export function InputComponent({
         className={twMerge(
           clsx(
             `border ${
-              hasError ? 'border-red-500' : 'border-gray-400'
+              hasError ? 'border-red-500' : 'border-gray-200'
             } !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 !mt-1.5 ${
               inputStyle && inputStyle
             }`

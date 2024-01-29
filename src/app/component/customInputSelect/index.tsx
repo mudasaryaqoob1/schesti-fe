@@ -36,7 +36,7 @@ const CustomInputSelect: React.FC = (props: any) => {
     e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>
   ) => {
     e.preventDefault();
-    setItems([ { label: newOption, value: newOption } , ...items,]);
+    setItems([{ label: newOption, value: newOption }, ...items]);
     setNewOption('');
     setTimeout(() => {
       inputRef.current?.focus();

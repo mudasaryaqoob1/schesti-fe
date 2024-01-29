@@ -145,7 +145,7 @@ const confirmColumns: any = [
     title: 'Total Cost',
     dataIndex: 'totalCost',
     align: 'center',
-    fixed : 'right',
+    fixed: 'right',
     width: 150,
     render: (text: string, record: DataType) => {
       let result = calculateTotalCost(record);
