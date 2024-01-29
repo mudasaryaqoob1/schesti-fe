@@ -15,11 +15,18 @@ import Image from 'next/image';
 import React, { useLayoutEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { SetWorkWeek } from './components/SetWorkWeek';
+import { IScheduleState } from './type';
+import { regularWorkingDays } from './utils';
 
 const Schedule = () => {
   const token = useSelector(selectToken);
-  const [info, setInfo] = useState<{ projectName: string, duration?: number }>({
+  const [info, setInfo] = useState<IScheduleState>({
     projectName: '',
+    fullDaysPerWeek: 0,
+    hoursPerDay: 0,
+    regularWorkingDays,
+    scheduleType: "",
+    duration: undefined
   });
 
   const [showModal, setShowModal] = useState(false);
@@ -114,6 +121,8 @@ const Schedule = () => {
     setShowModal(false);
     setShowModal2(true);
   }
+
+  console.log(info);
   return (
     <section className="mt-6 shadow p-4 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       <ModalComponent
@@ -122,7 +131,10 @@ const Schedule = () => {
         title="Set Workweek"
         width="100%"
       >
-        <SetWorkWeek onClose={() => setShowModal2(false)} />
+        <SetWorkWeek
+          handleInfo={handleInfo}
+          info={info}
+          onClose={() => setShowModal2(false)} />
       </ModalComponent>
       <ModalComponent
         open={showModal}

@@ -7,5 +7,6 @@ export type IScheduleState = {
     regularWorkingDays: {
         day: string;
         hours: number;
+        isChecked: boolean;
     }[]
 }
