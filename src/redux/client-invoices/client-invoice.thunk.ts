@@ -1,7 +1,7 @@
 import { clientInvoiceService } from '@/app/services/client-invoices.service';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-interface FetchInvoiceParams { }
+interface FetchInvoiceParams {}
 
 export const fetchClientInvoices = createAsyncThunk(
   'invoices/getInvoices',

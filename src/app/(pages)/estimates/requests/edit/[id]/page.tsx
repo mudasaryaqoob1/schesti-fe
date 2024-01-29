@@ -134,12 +134,12 @@ const EditEstimateRequest = () => {
     setIsLoading(true);
     if (drawingsDocuments.length == 0) {
       setuploadDocumentsError('Drawings Document Required');
-    } 
+    }
     // else if (takeOffReports.length == 0) {
     //   setuploadDocumentsError('Takeoff Reports Required');
     // } else if (otherDocuments.length == 0) {
     //   setuploadDocumentsError('Other Documents Required');
-    // } 
+    // }
     else {
       const [drawingDocs, takeOffDocs, otherDocs] = await Promise.all([
         uploadDocumentToS3Handler(drawingsDocuments),

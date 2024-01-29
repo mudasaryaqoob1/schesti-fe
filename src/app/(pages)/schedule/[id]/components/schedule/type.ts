@@ -1,15 +1,13 @@
 type Category = {
-    label: string;
-    value: string;
-}
+  label: string;
+  value: string;
+};
 
 type SubCategory = {
-    categoryId: string;
-} & Category
-
-
+  categoryId: string;
+} & Category;
 
 export type IWBSType = {
-    category: Category;
-    subCategory: SubCategory;
-} 
+  category: Category;
+  subCategory: SubCategory;
+};

@@ -1,11 +1,20 @@
 'use client';
 import React from 'react';
-import { Button, ConfigProvider, DatePicker, Divider, Input, InputNumber, Select, Table, } from 'antd';
+import {
+  Button,
+  ConfigProvider,
+  DatePicker,
+  Divider,
+  Input,
+  InputNumber,
+  Select,
+  Table,
+} from 'antd';
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import PrimaryHeading from '@/app/component/headings/primary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import { rowTemplate, } from '../utils';
+import { rowTemplate } from '../utils';
 import ColumnGroup from 'antd/es/table/ColumnGroup';
 import Column from 'antd/es/table/Column';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
@@ -23,16 +32,23 @@ type Props = {
   onNext(): void;
 };
 
-export function G703Component({ state, handleState, sumColumns, onCancel, onNext }: Props) {
-
-
-
+export function G703Component({
+  state,
+  handleState,
+  sumColumns,
+  onCancel,
+  onNext,
+}: Props) {
   function getCellValue(row: string[], column: number) {
-    return row[column]
+    return row[column];
   }
 
-  function updateCellValue(row: number, column: number, value: number | string) {
-    let newData = [...state.data]
+  function updateCellValue(
+    row: number,
+    column: number,
+    value: number | string
+  ) {
+    let newData = [...state.data];
     newData[row][column] = `${value}`;
     newData = updateColumn6(newData, row);
     newData = updateColumn7(newData, row);
@@ -126,10 +142,7 @@ export function G703Component({ state, handleState, sumColumns, onCancel, onNext
 
         <div className="flex flex-col p-4 space-y-3 bg-white flex-1">
           <div className="flex self-end space-x-3 items-center">
-            <label
-              className="text-right text-graphiteGray font-normal"
-
-            >
+            <label className="text-right text-graphiteGray font-normal">
               APPLICATION NO:
             </label>
             <input
@@ -137,28 +150,24 @@ export function G703Component({ state, handleState, sumColumns, onCancel, onNext
               className="px-2 py-1 border border-gray-300 outline-none"
               type="text"
               value={state.applicationNo}
-              onChange={e => handleState('applicationNo', e.target.value)}
+              onChange={(e) => handleState('applicationNo', e.target.value)}
             />
           </div>
           <div className="flex self-end space-x-3 items-center">
-            <label
-              className="text-right text-graphiteGray font-normal"
-
-            >
+            <label className="text-right text-graphiteGray font-normal">
               APPLICATION DATE:
             </label>
             <DatePicker
               id="application-date"
               className="px-2 w-full rounded-none py-[7px] border border-gray-300 outline-none"
               defaultValue={dayjs(state.applicationDate)}
-              onChange={(_d, dateString) => handleState('applicationDate', dateString)}
+              onChange={(_d, dateString) =>
+                handleState('applicationDate', dateString)
+              }
             />
           </div>
           <div className="flex self-end space-x-3 items-center">
-            <label
-              className="text-right text-graphiteGray font-normal"
-
-            >
+            <label className="text-right text-graphiteGray font-normal">
               PERIOD TO:
             </label>
             <DatePicker
@@ -169,10 +178,7 @@ export function G703Component({ state, handleState, sumColumns, onCancel, onNext
             />
           </div>
           <div className="flex self-end space-x-3 items-center">
-            <label
-              className="text-right text-graphiteGray font-normal"
-
-            >
+            <label className="text-right text-graphiteGray font-normal">
               PROJECT NO:
             </label>
             <input
@@ -180,7 +186,7 @@ export function G703Component({ state, handleState, sumColumns, onCancel, onNext
               className="px-2 py-1 border border-gray-300 outline-none"
               type="text"
               value={state.projectNo}
-              onChange={e => handleState('projectNo', e.target.value)}
+              onChange={(e) => handleState('projectNo', e.target.value)}
             />
           </div>
         </div>
@@ -188,31 +194,47 @@ export function G703Component({ state, handleState, sumColumns, onCancel, onNext
 
       {/* Spreadsheet */}
       <div className="px-4 space-y-2">
-
-        <Table bordered dataSource={[
-          ...state.data,
-          ['', 'Grand Total', `${sumColumns(state.data, 2).toFixed(2)}`, `${sumColumns(state.data, 3).toFixed(2)}`, `${sumColumns(state.data, 4).toFixed(2)}`, `${sumColumns(state.data, 5).toFixed(2)}`, `${sumColumns(state.data, 6).toFixed(2)}`, `${sumColumns(state.data, 7).toFixed(2)}`, `${sumColumns(state.data, 8).toFixed(2)}`, `${sumColumns(state.data, 9).toFixed(2)}`]
-        ]}
+        <Table
+          bordered
+          dataSource={[
+            ...state.data,
+            [
+              '',
+              'Grand Total',
+              `${sumColumns(state.data, 2).toFixed(2)}`,
+              `${sumColumns(state.data, 3).toFixed(2)}`,
+              `${sumColumns(state.data, 4).toFixed(2)}`,
+              `${sumColumns(state.data, 5).toFixed(2)}`,
+              `${sumColumns(state.data, 6).toFixed(2)}`,
+              `${sumColumns(state.data, 7).toFixed(2)}`,
+              `${sumColumns(state.data, 8).toFixed(2)}`,
+              `${sumColumns(state.data, 9).toFixed(2)}`,
+            ],
+          ]}
           pagination={false}
         >
           <Column
-            title={<SenaryHeading title='Item No' />}
+            title={<SenaryHeading title="Item No" />}
             dataIndex={0}
             render={(value, record: string[], index) => {
               return index;
             }}
           />
-          <Column title={<SenaryHeading title="Description Of Work" />} dataIndex={1}
+          <Column
+            title={<SenaryHeading title="Description Of Work" />}
+            dataIndex={1}
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
                 return value;
               }
-              return <Input
-                value={getCellValue(record, 1)}
-                onChange={e => {
-                  updateCellValue(index, 1, e.target.value)
-                }}
-              />
+              return (
+                <Input
+                  value={getCellValue(record, 1)}
+                  onChange={(e) => {
+                    updateCellValue(index, 1, e.target.value);
+                  }}
+                />
+              );
             }}
           />
           <Column
@@ -222,19 +244,18 @@ export function G703Component({ state, handleState, sumColumns, onCancel, onNext
               if (index === state.data.length) {
                 return value;
               }
-              return <Input
-                value={getCellValue(record, 2)}
-                type='number'
-                onChange={e => {
-                  updateCellValue(index, 2, Number(e.target.value));
-                }
-                }
-              />
+              return (
+                <Input
+                  value={getCellValue(record, 2)}
+                  type="number"
+                  onChange={(e) => {
+                    updateCellValue(index, 2, Number(e.target.value));
+                  }}
+                />
+              );
             }}
           />
-          <ColumnGroup
-            title={<SenaryHeading title="Work Completed" />}
-          >
+          <ColumnGroup title={<SenaryHeading title="Work Completed" />}>
             <Column
               title={<SenaryHeading title="From previous application (D+E)" />}
               dataIndex={3}
@@ -243,11 +264,7 @@ export function G703Component({ state, handleState, sumColumns, onCancel, onNext
                   return value;
                 }
                 let columnE = Number(getCellValue(record, 4));
-                return <Input
-                  value={columnE}
-                  type='number'
-                  disabled
-                />
+                return <Input value={columnE} type="number" disabled />;
               }}
             />
             <Column
@@ -257,40 +274,44 @@ export function G703Component({ state, handleState, sumColumns, onCancel, onNext
                 if (index === state.data.length) {
                   return value;
                 }
-                return <Input
-                  value={value}
-                  type='number'
-                  onChange={e => {
-                    updateCellValue(index, 4, Number(e.target.value));
-                    updateCellValue(index, 3, Number(e.target.value));
-                  }
-                  }
-                />
+                return (
+                  <Input
+                    value={value}
+                    type="number"
+                    onChange={(e) => {
+                      updateCellValue(index, 4, Number(e.target.value));
+                      updateCellValue(index, 3, Number(e.target.value));
+                    }}
+                  />
+                );
               }}
             />
           </ColumnGroup>
           <Column
-            title={<SenaryHeading title="Materials presently stored (not in D or E)" />}
+            title={
+              <SenaryHeading title="Materials presently stored (not in D or E)" />
+            }
             dataIndex={5}
             render={(value, record, index) => {
               if (index === state.data.length) {
                 return value;
               }
-              return <Input
-                value={value}
-                type='number'
-                onChange={e => {
-                  updateCellValue(index, 5, Number(e.target.value));
-                }
-                }
-              />
+              return (
+                <Input
+                  value={value}
+                  type="number"
+                  onChange={(e) => {
+                    updateCellValue(index, 5, Number(e.target.value));
+                  }}
+                />
+              );
             }}
           />
-          <ColumnGroup
-            title={<SenaryHeading title="Work Completed" />}
-          >
+          <ColumnGroup title={<SenaryHeading title="Work Completed" />}>
             <Column
-              title={<SenaryHeading title="TOTAL COMPLETED AND STORED TO DATE (D+E+F)" />}
+              title={
+                <SenaryHeading title="TOTAL COMPLETED AND STORED TO DATE (D+E+F)" />
+              }
               dataIndex={6}
               render={(value, record: string[], index) => {
                 if (index === state.data.length) {
@@ -300,15 +321,16 @@ export function G703Component({ state, handleState, sumColumns, onCancel, onNext
                 let columnE = Number(getCellValue(record, 4));
                 let columnF = Number(getCellValue(record, 5));
 
-                return <Input
-                  value={columnD + columnE + columnF}
-                  type='number'
-                  disabled
-                  onChange={e => {
-                    updateCellValue(index, 6, Number(e.target.value));
-                  }
-                  }
-                />
+                return (
+                  <Input
+                    value={columnD + columnE + columnF}
+                    type="number"
+                    disabled
+                    onChange={(e) => {
+                      updateCellValue(index, 6, Number(e.target.value));
+                    }}
+                  />
+                );
               }}
             />
             <Column
@@ -318,10 +340,7 @@ export function G703Component({ state, handleState, sumColumns, onCancel, onNext
                 if (index === state.data.length) {
                   return value;
                 }
-                return <InputNumber
-                  value={record[7]}
-                  precision={2}
-                />
+                return <InputNumber value={record[7]} precision={2} />;
               }}
             />
           </ColumnGroup>
@@ -332,10 +351,7 @@ export function G703Component({ state, handleState, sumColumns, onCancel, onNext
               if (index === state.data.length) {
                 return value;
               }
-              return <Input
-                value={record[8]}
-                type='number'
-              />
+              return <Input value={record[8]} type="number" />;
             }}
           />
           <Column
@@ -345,48 +361,52 @@ export function G703Component({ state, handleState, sumColumns, onCancel, onNext
               if (index === state.data.length) {
                 return value;
               }
-              return <InputNumber
-                value={record[9]}
-                precision={2}
-              />
+              return <InputNumber value={record[9]} precision={2} />;
             }}
           />
 
           <Column
             title=""
-            className='border-none border-b'
+            className="border-none border-b"
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
-                return <ConfigProvider
-                  theme={{
-                    components: {
-                      Button: {
-                        defaultBg: "#7F56D9",
-                        textHoverBg: "#fff",
-                        colorPrimaryText: "#fff",
-                        colorText: "#fff",
-                        colorPrimaryHover: "#fff",
-                        colorPrimaryActive: "#fff"
-                      }
-                    }
-                  }}
-                >
-                  <Button
-                    onClick={() => {
-                      handleState('data', [...state.data, rowTemplate(state.data.length)])
+                return (
+                  <ConfigProvider
+                    theme={{
+                      components: {
+                        Button: {
+                          defaultBg: '#7F56D9',
+                          textHoverBg: '#fff',
+                          colorPrimaryText: '#fff',
+                          colorText: '#fff',
+                          colorPrimaryHover: '#fff',
+                          colorPrimaryActive: '#fff',
+                        },
+                      },
                     }}
-                    icon={<PlusOutlined />}
-                    shape="circle"
-                    type='default'
-                  />
-                </ConfigProvider>;
+                  >
+                    <Button
+                      onClick={() => {
+                        handleState('data', [
+                          ...state.data,
+                          rowTemplate(state.data.length),
+                        ]);
+                      }}
+                      icon={<PlusOutlined />}
+                      shape="circle"
+                      type="default"
+                    />
+                  </ConfigProvider>
+                );
               }
-              return <DeleteOutlined
-                className='text-xl text-red-500 cursor-pointer'
-                onClick={() => {
-                  deleteRow(index);
-                }}
-              />
+              return (
+                <DeleteOutlined
+                  className="text-xl text-red-500 cursor-pointer"
+                  onClick={() => {
+                    deleteRow(index);
+                  }}
+                />
+              );
             }}
           />
         </Table>
