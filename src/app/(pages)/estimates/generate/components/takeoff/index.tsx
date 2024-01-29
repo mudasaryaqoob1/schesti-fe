@@ -257,7 +257,9 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
             <p
               className={`${senaryHeading} !text-[14px] text-midnightBlue font-popin mb-2`}
             >
-              {estimateRequestDetail?.takeOffReports?.length ? 'Takeoff Reports' : null}
+              {estimateRequestDetail?.takeOffReports?.length
+                ? 'Takeoff Reports'
+                : null}
             </p>
             {estimateRequestDetail?.takeOffReports?.map(
               (doc: { name: string; size: number; url: string }) => (
@@ -293,8 +295,9 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
             <p
               className={`${senaryHeading} !text-[14px] text-midnightBlue font-popin mb-2`}
             >
-              {estimateRequestDetail?.otherDocuments?.length ? 'Other Documents' : null}
-             
+              {estimateRequestDetail?.otherDocuments?.length
+                ? 'Other Documents'
+                : null}
             </p>
             {estimateRequestDetail?.otherDocuments?.map(
               (doc: { name: string; size: number; url: string }) => (

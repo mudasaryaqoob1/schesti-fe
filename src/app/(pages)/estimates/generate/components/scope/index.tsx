@@ -275,7 +275,7 @@ const Scope = ({ setPrevNext }: Props) => {
   }, [generateEstimateDetail]);
 
   const submitHandler = (
-    estimateTableItemValues: InitialValuesType,
+    estimateTableItemValues: InitialValuesType
     // actions: any
   ) => {
     let generateRandomNumber = Math.floor(Math.random() * 103440 + 1);
@@ -301,7 +301,9 @@ const Scope = ({ setPrevNext }: Props) => {
 
     if (
       estimateData.scopeItems.length &&
-      estimateData.title !== selectedCategory && !editItem && !editConfirmItem
+      estimateData.title !== selectedCategory &&
+      !editItem &&
+      !editConfirmItem
     ) {
       toast.warn('Please add first to create new one');
     } else {
@@ -726,19 +728,19 @@ const Scope = ({ setPrevNext }: Props) => {
     title: string;
     scopeItems: Object[];
   }) => {
-     setEstimateDescriptions([]);
-        setSingleEstimateData({
-          category: '',
-          subCategory: '',
-          description: '',
-          unit: '',
-          qty: '',
-          wastage: '5',
-          unitLabourHour: '',
-          perHourLaborRate: '',
-          unitMaterialCost: '',
-          unitEquipments: '',
-        });
+    setEstimateDescriptions([]);
+    setSingleEstimateData({
+      category: '',
+      subCategory: '',
+      description: '',
+      unit: '',
+      qty: '',
+      wastage: '5',
+      unitLabourHour: '',
+      perHourLaborRate: '',
+      unitMaterialCost: '',
+      unitEquipments: '',
+    });
     setEstimateData({ title: '', scopeItems: [] });
     const index = confirmEstimates.findIndex(
       (item) => item.title === dataSource.title
@@ -751,7 +753,10 @@ const Scope = ({ setPrevNext }: Props) => {
     if (index !== -1) {
       let modifyArray = confirmEstimates.map((item, i) =>
         i === index
-          ? { ...item, scopeItems: [...item.scopeItems, ...dataSource.scopeItems] }
+          ? {
+              ...item,
+              scopeItems: [...item.scopeItems, ...dataSource.scopeItems],
+            }
           : item
       );
       setConfirmEstimates(modifyArray);

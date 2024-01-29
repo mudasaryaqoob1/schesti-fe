@@ -75,7 +75,6 @@ const Summary = ({ setPrevNext }: Props) => {
   });
 
   useEffect(() => {
-    
     setEstimateDetailsSummary(generateEstimateDetail);
 
     if (generateEstimateDetail?.estimateScope?.length) {
@@ -94,9 +93,12 @@ const Summary = ({ setPrevNext }: Props) => {
         }
       );
 
-    console.log(generateEstimateDetail.estimateScope , 'generateEstimateDetailgenerateEstimateDetail' , updatedDataArray);
+      console.log(
+        generateEstimateDetail.estimateScope,
+        'generateEstimateDetailgenerateEstimateDetail',
+        updatedDataArray
+      );
 
-      
       const totalCostForAllRecords = updatedDataArray.reduce(
         (total: any, titleObject: any) => {
           return total + parseFloat(titleObject.totalCostForTitle);

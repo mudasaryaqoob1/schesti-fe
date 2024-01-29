@@ -50,6 +50,6 @@ const rootReducer = combineReducers<RootState>({
   companySetupSubcategory: companySetupSubcategoryReducer,
   materials: materialsReducer,
   invoices: invoiceReducer,
-  clientInvoices: clientInvoiceReducer
+  clientInvoices: clientInvoiceReducer,
 });
 export default persistReducer(persistConfig, rootReducer);

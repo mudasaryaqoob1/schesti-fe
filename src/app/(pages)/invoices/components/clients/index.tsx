@@ -4,7 +4,10 @@ import { InputComponent } from '@/app/component/customInput/Input';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import ModalComponent from '@/app/component/modal';
 import { IClientInvoice } from '@/app/interfaces/client-invoice.interface';
-import { selectClientInvoices, selectClientInvoicesLoading } from '@/redux/client-invoices/client-invoice.selector';
+import {
+  selectClientInvoices,
+  selectClientInvoicesLoading,
+} from '@/redux/client-invoices/client-invoice.selector';
 import { fetchClientInvoices } from '@/redux/client-invoices/client-invoice.thunk';
 import { AppDispatch } from '@/redux/store';
 import { CloseOutlined, SearchOutlined } from '@ant-design/icons';
@@ -87,7 +90,7 @@ export function Clients() {
         <Dropdown
           menu={{
             items,
-            onClick: () => { },
+            onClick: () => {},
           }}
           placement="bottomRight"
         >

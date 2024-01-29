@@ -14,17 +14,24 @@ type Props = {
   sumColumns(rows: string[][], column: number): number;
   onCancel: () => void;
   onNext(): void;
-}
+};
 
-export function G702Component({ state, handleState, sumColumns, onCancel, onNext }: Props) {
-
+export function G702Component({
+  state,
+  handleState,
+  sumColumns,
+  onCancel,
+  onNext,
+}: Props) {
   const p5b = Number(sumColumns(state.data, 6));
   const twoPercentOfP5b = p5b * 0.02;
-  const p5Total = (Number(sumColumns(state.data, 9)) + twoPercentOfP5b);
-  const p6Total = (Number(sumColumns(state.data, 6)) - p5Total);
-  const p3Total = (parseFloat(state.orignalContractSum) + parseFloat(state.netChangeByOrders));
-  const p8Total = (p6Total - Number(state.lessPreviousCertificatesForPayment));
-  const p9Total = p3Total - Number(state.lessPreviousCertificatesForPayment) - p8Total;
+  const p5Total = Number(sumColumns(state.data, 9)) + twoPercentOfP5b;
+  const p6Total = Number(sumColumns(state.data, 6)) - p5Total;
+  const p3Total =
+    parseFloat(state.orignalContractSum) + parseFloat(state.netChangeByOrders);
+  const p8Total = p6Total - Number(state.lessPreviousCertificatesForPayment);
+  const p9Total =
+    p3Total - Number(state.lessPreviousCertificatesForPayment) - p8Total;
   return (
     <div>
       <div>
@@ -36,9 +43,7 @@ export function G702Component({ state, handleState, sumColumns, onCancel, onNext
         <Divider className="m-0 mt-3" />
         <div className="flex space-x-2 justify-between">
           <div className="flex space-x-2">
-            <label
-              className="text-right text-graphiteGray font-normal"
-            >
+            <label className="text-right text-graphiteGray font-normal">
               To Owner:
             </label>
             <div className="flex flex-col">
@@ -53,9 +58,7 @@ export function G702Component({ state, handleState, sumColumns, onCancel, onNext
 
           <div>
             <div className="grid grid-cols-2 space-x-1">
-              <label
-                className="text-right text-graphiteGray font-normal"
-              >
+              <label className="text-right text-graphiteGray font-normal">
                 PROJECT:
               </label>
               <input
@@ -66,9 +69,7 @@ export function G702Component({ state, handleState, sumColumns, onCancel, onNext
               />
             </div>
             <div className="grid grid-cols-2 space-x-1">
-              <label
-                className="text-right text-graphiteGray font-normal"
-              >
+              <label className="text-right text-graphiteGray font-normal">
                 Address:
               </label>
               <input
@@ -79,9 +80,7 @@ export function G702Component({ state, handleState, sumColumns, onCancel, onNext
               />
             </div>
             <div className="grid grid-cols-2 space-x-1">
-              <label
-                className="text-right text-graphiteGray font-normal"
-              >
+              <label className="text-right text-graphiteGray font-normal">
                 Via Engineer:
               </label>
               <input
@@ -94,9 +93,7 @@ export function G702Component({ state, handleState, sumColumns, onCancel, onNext
           </div>
           <div className="">
             <div className="grid grid-cols-2 space-x-1 ">
-              <label
-                className="text-right text-graphiteGray font-normal"
-              >
+              <label className="text-right text-graphiteGray font-normal">
                 APPLICATION NO:
               </label>
               <input
@@ -106,35 +103,33 @@ export function G702Component({ state, handleState, sumColumns, onCancel, onNext
               />
             </div>
             <div className="grid grid-cols-2 space-x-1">
-              <label
-                className="text-right text-graphiteGray font-normal"
-              >
+              <label className="text-right text-graphiteGray font-normal">
                 APPLICATION DATE:
               </label>
               <DatePicker
                 id="application-date"
                 className="px-2  rounded-none py-[7px] border border-gray-300 outline-none"
                 defaultValue={dayjs(state.applicationDate)}
-                onChange={(_d, dateString) => handleState('applicationDate', dateString)}
+                onChange={(_d, dateString) =>
+                  handleState('applicationDate', dateString)
+                }
               />
             </div>
             <div className="grid grid-cols-2 space-x-1">
-              <label
-                className="text-right text-graphiteGray font-normal"
-              >
+              <label className="text-right text-graphiteGray font-normal">
                 PERIOD TO:
               </label>
               <DatePicker
                 id="application-date"
                 className="px-2  rounded-none py-[7px] border border-gray-300 outline-none"
                 defaultValue={dayjs(state.periodTo)}
-                onChange={(_d, dateString) => handleState('periodTo', dateString)}
+                onChange={(_d, dateString) =>
+                  handleState('periodTo', dateString)
+                }
               />
             </div>
             <div className="grid grid-cols-2 space-x-1">
-              <label
-                className="text-right text-graphiteGray font-normal"
-              >
+              <label className="text-right text-graphiteGray font-normal">
                 PROJECT NO:
               </label>
               <input
@@ -179,7 +174,7 @@ export function G702Component({ state, handleState, sumColumns, onCancel, onNext
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="number"
                   value={state.orignalContractSum}
-                  defaultValue={0.00}
+                  defaultValue={0.0}
                   onChange={(e) =>
                     handleState('orignalContractSum', e.target.value)
                   }
@@ -194,7 +189,7 @@ export function G702Component({ state, handleState, sumColumns, onCancel, onNext
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
                   value={state.netChangeByOrders}
-                  defaultValue={0.00}
+                  defaultValue={0.0}
                   onChange={(e) =>
                     handleState('netChangeByOrders', e.target.value)
                   }
@@ -305,8 +300,13 @@ export function G702Component({ state, handleState, sumColumns, onCancel, onNext
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="number"
                   value={state.lessPreviousCertificatesForPayment}
-                  onChange={e => handleState('lessPreviousCertificatesForPayment', e.target.value)}
-                  defaultValue={0.00}
+                  onChange={(e) =>
+                    handleState(
+                      'lessPreviousCertificatesForPayment',
+                      e.target.value
+                    )
+                  }
+                  defaultValue={0.0}
                 />
               </div>
 
@@ -330,7 +330,7 @@ export function G702Component({ state, handleState, sumColumns, onCancel, onNext
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="number"
                   value={p9Total.toFixed(2)}
-                  defaultValue={0.00}
+                  defaultValue={0.0}
                 />
               </div>
             </div>
@@ -408,14 +408,13 @@ export function G702Component({ state, handleState, sumColumns, onCancel, onNext
                   className="px-2 col-span-6 py-1 border border-gray-300 outline-none"
                   type="text"
                   value={state.by}
-                  onChange={e => handleState('by', e.target.value)}
+                  onChange={(e) => handleState('by', e.target.value)}
                 />
               </div>
 
               <div className="grid grid-cols-12 items-center gap-1">
                 <QuinaryHeading className="col-span-2" title="Date:" />
                 <DatePicker
-
                   className="px-2 col-span-6 rounded-none py-[7px] border border-gray-300 outline-none"
                   defaultValue={dayjs(state.date)}
                   onChange={(_d, dateString) => handleState('date', dateString)}
@@ -428,7 +427,7 @@ export function G702Component({ state, handleState, sumColumns, onCancel, onNext
                   className="col-span-6 px-2 py-1 border border-gray-300 outline-none"
                   type="text"
                   value={state.stateOf}
-                  onChange={e => handleState('stateOf', e.target.value)}
+                  onChange={(e) => handleState('stateOf', e.target.value)}
                 />
               </div>
               <div className="grid grid-cols-12 gap-1 items-center">
@@ -437,7 +436,7 @@ export function G702Component({ state, handleState, sumColumns, onCancel, onNext
                   className="px-2 col-span-6 py-1 border border-gray-300 outline-none"
                   type="text"
                   value={state.country}
-                  onChange={e => handleState('country', e.target.value)}
+                  onChange={(e) => handleState('country', e.target.value)}
                 />
               </div>
               <div className="col-span-2 flex items-center space-x-2">
@@ -446,7 +445,9 @@ export function G702Component({ state, handleState, sumColumns, onCancel, onNext
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
                   value={state.subscribedAndSworn}
-                  onChange={e => handleState('subscribedAndSworn', e.target.value)}
+                  onChange={(e) =>
+                    handleState('subscribedAndSworn', e.target.value)
+                  }
                 />
               </div>
 
@@ -456,7 +457,7 @@ export function G702Component({ state, handleState, sumColumns, onCancel, onNext
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
                   value={state.notaryPublic}
-                  onChange={e => handleState('notaryPublic', e.target.value)}
+                  onChange={(e) => handleState('notaryPublic', e.target.value)}
                 />
               </div>
 
@@ -466,7 +467,9 @@ export function G702Component({ state, handleState, sumColumns, onCancel, onNext
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
                   value={state.myCommissionExpires}
-                  onChange={e => handleState('myCommissionExpires', e.target.value)}
+                  onChange={(e) =>
+                    handleState('myCommissionExpires', e.target.value)
+                  }
                 />
               </div>
             </div>
@@ -483,7 +486,9 @@ export function G702Component({ state, handleState, sumColumns, onCancel, onNext
                     className="px-2 py-1 border border-gray-300 outline-none"
                     type="number"
                     value={state.amountCertified1}
-                    onChange={e => handleState('amountCertified1', e.target.value)}
+                    onChange={(e) =>
+                      handleState('amountCertified1', e.target.value)
+                    }
                   />
                 </div>
                 <QuinaryHeading title="(Attach explanation if amount certified differs from the amount applied. Initial all figures on this Application and onthe Continuation Sheet that are changed to conform with the amount certified.)" />
@@ -498,7 +503,9 @@ export function G702Component({ state, handleState, sumColumns, onCancel, onNext
                       className="px-2 py-1 border border-gray-300 outline-none"
                       type="number"
                       value={state.amountCertified2}
-                      onChange={e => handleState('amountCertified2', e.target.value)}
+                      onChange={(e) =>
+                        handleState('amountCertified2', e.target.value)
+                      }
                     />
                   </div>
                   <div className="flex items-center space-x-2">
@@ -518,9 +525,7 @@ export function G702Component({ state, handleState, sumColumns, onCancel, onNext
 
       <div className="flex justify-end space-x-4">
         <WhiteButton onClick={onCancel} text="Cancel" className="!w-40" />
-        <CustomButton text="Create" className="!w-48"
-          onClick={onNext}
-        />
+        <CustomButton text="Create" className="!w-48" onClick={onNext} />
       </div>
     </div>
   );

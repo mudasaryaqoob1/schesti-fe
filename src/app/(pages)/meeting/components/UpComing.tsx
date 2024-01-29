@@ -12,7 +12,6 @@ type Props = {
   setState: React.Dispatch<React.SetStateAction<IMeeting[]>>;
 };
 export function UpcomingComponent({ setState, state }: Props) {
-
   function generateRoom() {
     const roomName = `SchestiMeetRoomNo${Math.random() * 100}-${Date.now()}`;
     const meeting: IMeeting = {

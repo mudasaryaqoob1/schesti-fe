@@ -10,7 +10,7 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { G703Component } from './components/G703';
 import { G702Component } from './components/G702';
-import { generateData, } from './utils';
+import { generateData } from './utils';
 import { G7State } from '@/app/interfaces/client-invoice.interface';
 import { clientInvoiceService } from '@/app/services/client-invoices.service';
 import { toast } from 'react-toastify';
@@ -59,16 +59,19 @@ export default function CreateClientInvoicePage() {
     }
   }, [token, invoiceName]);
 
-  function handleState<K extends keyof G7State>(key: K, value: typeof state[K]) {
+  function handleState<K extends keyof G7State>(
+    key: K,
+    value: (typeof state)[K]
+  ) {
     setState({ ...state, [key]: value });
   }
 
   function sumColumns(rows: Array<string[]>, column: number): number {
     let sum = 0;
-    rows.forEach(row => {
+    rows.forEach((row) => {
       let val = Number(row[column]);
       sum += isNaN(val) ? 0 : val;
-    })
+    });
     return isNaN(sum) ? 0 : sum;
   }
 
@@ -84,7 +87,6 @@ export default function CreateClientInvoicePage() {
         toast.error(response.data.message);
       });
   }
-
 
   return (
     <section className="mx-16 my-2">
@@ -129,8 +131,7 @@ export default function CreateClientInvoicePage() {
                       }}
                       onNext={() => {
                         setTab(G702_KEY);
-                      }
-                      }
+                      }}
                     />
                   ) : (
                     <G702Component
@@ -142,8 +143,7 @@ export default function CreateClientInvoicePage() {
                       }}
                       onNext={() => {
                         handleSubmit(state);
-                      }
-                      }
+                      }}
                     />
                   ),
               };

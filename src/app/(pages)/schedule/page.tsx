@@ -18,7 +18,7 @@ import { SetWorkWeek } from './components/SetWorkWeek';
 
 const Schedule = () => {
   const token = useSelector(selectToken);
-  const [info, setInfo] = useState<{ projectName: string, duration?: number }>({
+  const [info, setInfo] = useState<{ projectName: string; duration?: number }>({
     projectName: '',
   });
 
@@ -72,7 +72,11 @@ const Schedule = () => {
       title: 'Status',
       dataIndex: 'status',
       render(value) {
-        return <Tag color="green" className='rounded-full' >{value}</Tag>;
+        return (
+          <Tag color="green" className="rounded-full">
+            {value}
+          </Tag>
+        );
       },
     },
     {
@@ -98,8 +102,11 @@ const Schedule = () => {
       ),
     },
   ];
-  function handleInfo<K extends keyof typeof info>(key: K, value: typeof info[K]) {
-    setInfo({ ...info, [key]: value })
+  function handleInfo<K extends keyof typeof info>(
+    key: K,
+    value: (typeof info)[K]
+  ) {
+    setInfo({ ...info, [key]: value });
   }
 
   function handleSchedule() {
@@ -152,17 +159,23 @@ const Schedule = () => {
               name="invoiceName"
               field={{
                 value: info.projectName,
-                onChange: (e) => handleInfo('projectName', e.target.value)
+                onChange: (e) => handleInfo('projectName', e.target.value),
               }}
             />
             <SelectComponent
-              label='Duration'
-              name='duration'
-              placeholder='Select duration'
+              label="Duration"
+              name="duration"
+              placeholder="Select duration"
               field={{
-                options: [{ label: "3 Months", value: 3 }, { label: "6 Months", value: 6 }, { label: "12 Months", value: 12 }],
+                options: [
+                  { label: '3 Months', value: 3 },
+                  { label: '6 Months', value: 6 },
+                  { label: '12 Months', value: 12 },
+                ],
                 value: info.duration,
-                onChange(value) { handleInfo('duration', value) }
+                onChange(value) {
+                  handleInfo('duration', value);
+                },
               }}
             />
 
@@ -179,10 +192,7 @@ const Schedule = () => {
       </ModalComponent>
 
       <div className="flex justify-between flex-wrap items-center md:flex-nowrap mb-2">
-        <TertiaryHeading
-          title="Schedule"
-          className="text-graphiteGray"
-        />
+        <TertiaryHeading title="Schedule" className="text-graphiteGray" />
         <div className="flex items-center space-x-2 flex-1 justify-end">
           <div className="w-96 ">
             <InputComponent
@@ -207,14 +217,20 @@ const Schedule = () => {
         </div>
       </div>
 
-      <div className='mt-3'>
+      <div className="mt-3">
         <Table
           loading={false}
           columns={columns}
           dataSource={[
             {
-              project: "0001", projectName: "Project Name", managingCompany: "Managing Company", ownerRepresentative: "Owner Representative", dueDate: "Due Date", task: "Task", status: "Status"
-            }
+              project: '0001',
+              projectName: 'Project Name',
+              managingCompany: 'Managing Company',
+              ownerRepresentative: 'Owner Representative',
+              dueDate: 'Due Date',
+              task: 'Task',
+              status: 'Status',
+            },
           ]}
           pagination={{ position: ['bottomCenter'] }}
         />

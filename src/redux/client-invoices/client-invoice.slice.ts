@@ -1,8 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import initialClientInvoiceState from './client-invoice.initialState';
-import {
-  fetchClientInvoices,
-} from './client-invoice.thunk';
+import { fetchClientInvoices } from './client-invoice.thunk';
 
 export const clientInvoiceSlice = createSlice({
   name: 'client-invoices',
@@ -24,7 +22,6 @@ export const clientInvoiceSlice = createSlice({
       state.loading = false;
       state.error = action.error.message;
     });
-
   },
 });
 
