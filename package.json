@@ -6,7 +6,7 @@
     "node": ">=18.9.0"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbo",
     "build": "rimraf .next & next build",
     "start": "next start",
     "start:local": "cp .env.local .env && next dev",
