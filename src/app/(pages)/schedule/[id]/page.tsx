@@ -6,7 +6,7 @@ import SenaryHeading from "@/app/component/headings/senaryHeading";
 import { UserOutlined } from "@ant-design/icons";
 import { Avatar, ConfigProvider, Tabs, Tag } from "antd";
 import { useLayoutEffect, useState } from "react";
-import { Schedule } from "./components/Schedule";
+import { Schedule } from "./components/schedule";
 import { Gantt } from "./components/Gantt";
 import { useSelector } from "react-redux";
 import { selectToken } from "@/redux/authSlices/auth.selector";
