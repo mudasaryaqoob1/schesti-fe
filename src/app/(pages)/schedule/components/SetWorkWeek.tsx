@@ -1,9 +1,12 @@
+import CustomButton from "@/app/component/customButton/button";
+import WhiteButton from "@/app/component/customButton/white";
 import { InputComponent } from "@/app/component/customInput/Input";
 import { SelectComponent } from "@/app/component/customSelect/Select.component";
+import QuaternaryHeading from "@/app/component/headings/quaternary";
+import QuinaryHeading from "@/app/component/headings/quinary";
 import TertiaryHeading from "@/app/component/headings/tertiary";
 import { CloseOutlined } from "@ant-design/icons";
-import { Space } from "antd";
-
+import { Checkbox } from "antd";
 type Props = {
     onClose: () => void;
 };
@@ -62,24 +65,183 @@ export function SetWorkWeek({ onClose }: Props) {
         </div>
 
 
-        <div>
-            <Space.Compact size="large">
-                <InputComponent
-                    placeholder="large size"
-                    label="Regular Working Days"
-                    name="regularWorkingDays"
-                    type="number"
-                    labelStyle="text-[#344054] font-normal"
-                    inputStyle='border-r-0 !rounded-none '
-                />
-                <InputComponent
-                    placeholder="large size"
-                    label="Regular Working Days"
-                    name="regularWorkingDays"
-                    type="number"
-                    labelStyle="text-[#344054] font-normal"
-                />
-            </Space.Compact>
+        <div className="my-6">
+
+            <div className="grid grid-cols-12 gap-4">
+                <div className="col-span-2">
+                    <QuaternaryHeading
+                        title=" Regular Working Days"
+                    />
+                </div>
+                <div className="col-span-5">
+                    <QuaternaryHeading
+                        title="Hours"
+                    />
+                </div>
+            </div>
+
+            <div className="grid grid-cols-12 gap-4">
+                <div className="col-span-2 pr-8">
+                    <Checkbox className="border w-full px-3.5 py-2 mt-1.5 rounded-lg">
+                        <QuinaryHeading
+                            title="Monday"
+                        />
+                    </Checkbox>
+
+                </div>
+                <div className="col-span-5">
+                    <InputComponent
+                        label=""
+                        name="monday"
+                        type="number"
+                        placeholder="Enter Number of Hours"
+                        labelStyle="text-[#344054] font-normal"
+                        inputStyle='!py-2 border-gray-200'
+                    />
+                </div>
+            </div>
+
+
+            <div className="grid grid-cols-12 gap-4">
+                <div className="col-span-2 pr-8">
+                    <Checkbox className="border w-full px-3.5 py-2 mt-1.5 rounded-lg">
+                        <QuinaryHeading
+                            title="Tuesday"
+                        />
+                    </Checkbox>
+
+                </div>
+                <div className="col-span-5">
+                    <InputComponent
+                        label=""
+                        name="monday"
+                        type="number"
+                        placeholder="Enter Number of Hours"
+                        labelStyle="text-[#344054] font-normal"
+                        inputStyle='!py-2 border-gray-200'
+                    />
+                </div>
+            </div>
+
+            <div className="grid grid-cols-12 gap-4">
+                <div className="col-span-2 pr-8">
+                    <Checkbox className="border w-full px-3.5 py-2 mt-1.5 rounded-lg">
+                        <QuinaryHeading
+                            title="Wednesday"
+                        />
+                    </Checkbox>
+
+                </div>
+                <div className="col-span-5">
+                    <InputComponent
+                        label=""
+                        name="monday"
+                        type="number"
+                        placeholder="Enter Number of Hours"
+                        labelStyle="text-[#344054] font-normal"
+                        inputStyle='!py-2 border-gray-200'
+                    />
+                </div>
+            </div>
+
+
+            <div className="grid grid-cols-12 gap-4">
+                <div className="col-span-2 pr-8">
+                    <Checkbox className="border w-full px-3.5 py-2 mt-1.5 rounded-lg">
+                        <QuinaryHeading
+                            title="Thursday"
+                        />
+                    </Checkbox>
+
+                </div>
+                <div className="col-span-5">
+                    <InputComponent
+                        label=""
+                        name="monday"
+                        type="number"
+                        placeholder="Enter Number of Hours"
+                        labelStyle="text-[#344054] font-normal"
+                        inputStyle='!py-2 border-gray-200'
+                    />
+                </div>
+            </div>
+
+
+            <div className="grid grid-cols-12 gap-4">
+                <div className="col-span-2 pr-8">
+                    <Checkbox className="border w-full px-3.5 py-2 mt-1.5 rounded-lg">
+                        <QuinaryHeading
+                            title="Friday"
+                        />
+                    </Checkbox>
+
+                </div>
+                <div className="col-span-5">
+                    <InputComponent
+                        label=""
+                        name="monday"
+                        type="number"
+                        placeholder="Enter Number of Hours"
+                        labelStyle="text-[#344054] font-normal"
+                        inputStyle='!py-2 border-gray-200'
+                    />
+                </div>
+            </div>
+
+
+
+            <div className="grid grid-cols-12 gap-4">
+                <div className="col-span-2 pr-8">
+                    <Checkbox className="border w-full px-3.5 py-2 mt-1.5 rounded-lg">
+                        <QuinaryHeading
+                            title="Saturday"
+                        />
+                    </Checkbox>
+
+                </div>
+                <div className="col-span-5">
+                    <InputComponent
+                        label=""
+                        name="monday"
+                        type="number"
+                        placeholder="Enter Number of Hours"
+                        labelStyle="text-[#344054] font-normal"
+                        inputStyle='!py-2 border-gray-200'
+                    />
+                </div>
+            </div>
+
+
+
+            <div className="grid grid-cols-12 gap-4">
+                <div className="col-span-2 pr-8">
+                    <Checkbox className="border w-full px-3.5 py-2 mt-1.5 rounded-lg">
+                        <QuinaryHeading
+                            title="Sunday"
+                        />
+                    </Checkbox>
+
+                </div>
+                <div className="col-span-5">
+                    <InputComponent
+                        label=""
+                        name="monday"
+                        type="number"
+                        placeholder="Enter Number of Hours"
+                        labelStyle="text-[#344054] font-normal"
+                        inputStyle='!py-2 border-gray-200'
+                    />
+                </div>
+            </div>
+
+
+
+        </div>
+
+
+        <div className="flex justify-end space-x-4 mt-2">
+            <WhiteButton text="Skip" className="!w-40" />
+            <CustomButton text="Setup" className="!w-40" />
         </div>
 
     </div>
