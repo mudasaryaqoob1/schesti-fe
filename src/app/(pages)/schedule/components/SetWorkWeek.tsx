@@ -114,7 +114,7 @@ export function SetWorkWeek({ onClose }: Props) {
                 <div className="col-span-5">
                     <InputComponent
                         label=""
-                        name="monday"
+                        name="tuesday"
                         type="number"
                         placeholder="Enter Number of Hours"
                         labelStyle="text-[#344054] font-normal"
@@ -135,7 +135,7 @@ export function SetWorkWeek({ onClose }: Props) {
                 <div className="col-span-5">
                     <InputComponent
                         label=""
-                        name="monday"
+                        name="wednesday"
                         type="number"
                         placeholder="Enter Number of Hours"
                         labelStyle="text-[#344054] font-normal"
@@ -157,7 +157,7 @@ export function SetWorkWeek({ onClose }: Props) {
                 <div className="col-span-5">
                     <InputComponent
                         label=""
-                        name="monday"
+                        name="thursday"
                         type="number"
                         placeholder="Enter Number of Hours"
                         labelStyle="text-[#344054] font-normal"
@@ -179,7 +179,7 @@ export function SetWorkWeek({ onClose }: Props) {
                 <div className="col-span-5">
                     <InputComponent
                         label=""
-                        name="monday"
+                        name="friday"
                         type="number"
                         placeholder="Enter Number of Hours"
                         labelStyle="text-[#344054] font-normal"
@@ -202,7 +202,7 @@ export function SetWorkWeek({ onClose }: Props) {
                 <div className="col-span-5">
                     <InputComponent
                         label=""
-                        name="monday"
+                        name="saturday"
                         type="number"
                         placeholder="Enter Number of Hours"
                         labelStyle="text-[#344054] font-normal"
@@ -225,7 +225,7 @@ export function SetWorkWeek({ onClose }: Props) {
                 <div className="col-span-5">
                     <InputComponent
                         label=""
-                        name="monday"
+                        name="sunday"
                         type="number"
                         placeholder="Enter Number of Hours"
                         labelStyle="text-[#344054] font-normal"
