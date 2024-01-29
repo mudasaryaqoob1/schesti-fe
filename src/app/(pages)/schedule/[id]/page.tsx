@@ -5,9 +5,12 @@ import QuinaryHeading from "@/app/component/headings/quinary";
 import SenaryHeading from "@/app/component/headings/senaryHeading";
 import { UserOutlined } from "@ant-design/icons";
 import { Avatar, ConfigProvider, Tabs, Tag } from "antd";
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { Schedule } from "./components/Schedule";
 import { Gantt } from "./components/Gantt";
+import { useSelector } from "react-redux";
+import { selectToken } from "@/redux/authSlices/auth.selector";
+import { HttpService } from "@/app/services/base.service";
 
 const SCHEDULE_KEY = "Schedule";
 const GANTT_KEY = "Gantt";
@@ -15,6 +18,12 @@ const GANTT_KEY = "Gantt";
 
 export default function SchedulePage() {
     const [tab, setTab] = useState(SCHEDULE_KEY);
+    const token = useSelector(selectToken);
+    useLayoutEffect(() => {
+        if (token) {
+            HttpService.setToken(token);
+        }
+    }, [token]);
 
 
     return <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
