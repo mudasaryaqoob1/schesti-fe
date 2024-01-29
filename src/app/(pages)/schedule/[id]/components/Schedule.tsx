@@ -4,7 +4,7 @@ import SecondaryHeading from "@/app/component/headings/Secondary";
 
 export function Schedule() {
     return (
-        <section className="mx-4 rounded-xl  grid items-center border border-solid border-silverGray shadow-secondaryTwist">
+        <section className="mx-4 rounded-xl h-[calc(100vh-450px)] grid items-center border border-solid border-silverGray shadow-secondaryTwist">
             <div className="grid place-items-center">
                 <div className="max-w-[500px] flex flex-col items-center p-4">
                     <SecondaryHeading
