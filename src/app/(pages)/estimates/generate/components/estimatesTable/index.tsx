@@ -39,31 +39,31 @@ const confirmColumns: any = [
     dataIndex: 'description',
     key: 'description',
     fixed: 'left',
-    width: 300,
+    width: 200,
   },
   {
     title: 'Unit',
     dataIndex: 'unit',
     align: 'center',
-    width: 100,
+    width: 80,
   },
   {
     title: 'Qty',
     dataIndex: 'qty',
     align: 'center',
-    width: 100,
+    width: 80,
   },
   {
     title: 'Wastage',
     dataIndex: 'wastage',
     align: 'center',
-    width: 100,
+    width: 90,
   },
   {
     title: 'Qty with wastage',
     dataIndex: 'qtyWithWastage',
     align: 'center',
-    width: 150,
+    width: 100,
     render: (text: string, record: DataType) => {
       let quantity = parseFloat(record.qty);
       let wastagePercentage = parseFloat(record.wastage);
@@ -75,7 +75,7 @@ const confirmColumns: any = [
     title: 'Total Labour Hours',
     dataIndex: 'totalLabourHours',
     align: 'center',
-    width: 150,
+    width: 120,
     render: (text: string, record: DataType) => {
       let unitLabourHour = parseFloat(record.unitLabourHour);
       let wastagePercentage = parseFloat(record.wastage);
@@ -89,13 +89,13 @@ const confirmColumns: any = [
     title: 'Per Hours Labor Rate',
     dataIndex: 'perHourLaborRate',
     align: 'center',
-    width: 150,
+    width: 120,
   },
   {
     title: 'Total Labor Cost',
     dataIndex: 'totalLaborCost',
     align: 'center',
-    width: 150,
+    width: 120,
     render: (text: string, record: DataType) => {
       let unitLabourHour = parseFloat(record.unitLabourHour);
       let quantity = parseFloat(record.qty);
@@ -111,13 +111,13 @@ const confirmColumns: any = [
     title: 'Unit Material Cost',
     dataIndex: 'unitMaterialCost',
     align: 'center',
-    width: 150,
+    width: 120,
   },
   {
     title: 'Total Material Cost',
     dataIndex: 'totalMaterialCost',
     align: 'center',
-    width: 150,
+    width: 120,
     render: (text: string, record: DataType) => {
       let unitMaterialCost = parseFloat(record.unitMaterialCost);
       let quantity = parseFloat(record.qty);
@@ -131,7 +131,7 @@ const confirmColumns: any = [
     title: 'Total Equipment Cost',
     dataIndex: 'totalEquipmentCost',
     align: 'center',
-    width: 150,
+    width: 140,
     render: (text: string, record: DataType) => {
       let unitEquipments = parseFloat(record.unitEquipments);
       let quantity = parseFloat(record.qty);
@@ -145,6 +145,7 @@ const confirmColumns: any = [
     title: 'Total Cost',
     dataIndex: 'totalCost',
     align: 'center',
+    fixed : 'right',
     width: 150,
     render: (text: string, record: DataType) => {
       let result = calculateTotalCost(record);

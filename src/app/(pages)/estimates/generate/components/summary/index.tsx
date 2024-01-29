@@ -168,6 +168,8 @@ const Summary = ({ setPrevNext }: Props) => {
     }
   };
 
+  console.log(estimatesRecords, 'estimatesRecordsestimatesRecords');
+
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -342,8 +344,12 @@ const Summary = ({ setPrevNext }: Props) => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <QuaternaryHeading
-                        title={estimate.title}
+                        title={estimate.categoryName}
                         className="font-semibold"
+                      />
+                      <QuaternaryHeading
+                        title={estimate.subCategoryName}
+                        className="!font=[#344054] font-light"
                       />
                     </div>
                     <div className="flex items-center gap-2">
@@ -427,8 +433,11 @@ const Summary = ({ setPrevNext }: Props) => {
         </div>
         <div className="bg-celestialGray h-px w-full my-4"></div>
         <div className="flex items-center justify-between">
-          <QuaternaryHeading title="Total Bid" />
-          <Description title={`$${totalCostRecord}`} />
+          <QuaternaryHeading title="Total Bid" className="font-semibold" />
+          <Description
+            title={`$${totalCostRecord}`}
+            className="font-semibold"
+          />
         </div>
       </div>
     </div>

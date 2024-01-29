@@ -106,17 +106,20 @@ const Scope = ({ setPrevNext }: Props) => {
   const [selecteddescription, setsSelecteddescription] = useState('');
   const [editItem, setEditItem] = useState(false);
   const [editConfirmItem, setEditConfirmItem] = useState(false);
-  const [estiamteUnits, setEstiamteUnits] = useState<Object[]>([])
-  const [confirmEstimates, setConfirmEstimates] = useState<
-    {
-      title: string;
+  const [estiamteUnits, setEstiamteUnits] = useState<Object[]>([]);
+  const [confirmEstimates, setConfirmEstimates] = useState<{
+      title: string,
+      categoryName : string,
+      subCategoryName : string,
       scopeItems: Object[];
     }[]
   >([]);
   const [estimateData, setEstimateData] = useState<{
     title: string;
+    categoryName: string;
+    subCategoryName: string;
     scopeItems: Object[];
-  }>({ title: '', scopeItems: [] });
+  }>({ title: '', categoryName: '', subCategoryName: '', scopeItems: [] });
   const [SingleEstimateData, setSingleEstimateData] = useState<any>({
     category: '',
     subCategory: '',
@@ -175,8 +178,8 @@ const Scope = ({ setPrevNext }: Props) => {
           let uniqueUnitsSet = new Set();
           let fetchedDescriptions = result.data
             .map((material: DataType) => {
-              console.log(material , 'materialmaterial');
-              
+              console.log(material, 'materialmaterial');
+
               const description = material.description;
 
               if (!uniqueDescriptionsSet.has(description)) {
@@ -192,7 +195,7 @@ const Scope = ({ setPrevNext }: Props) => {
             })
             .filter((description: any) => description !== null);
 
-            let fetchedUnits = result.data
+          let fetchedUnits = result.data
             .map((material: DataType) => {
               const unit = material.unit;
 
@@ -209,9 +212,8 @@ const Scope = ({ setPrevNext }: Props) => {
             })
             .filter((unit: any) => unit !== null);
 
-
           setEstimateDescriptions(fetchedDescriptions);
-          setEstiamteUnits(fetchedUnits)
+          setEstiamteUnits(fetchedUnits);
         })
         .catch((error) => {
           console.log(error, 'error in fetch meterials');
@@ -290,6 +292,14 @@ const Scope = ({ setPrevNext }: Props) => {
   ) => {
     let generateRandomNumber = Math.floor(Math.random() * 103440 + 1);
     let selectedCategory = '';
+    const selectedCategoryName: any = categories.find(
+      (cat: any) => cat.value === estimateTableItemValues.category
+    );
+
+    const selctedSubCategoryName: any = subCategories.find(
+      (cat: any) => cat.value === estimateTableItemValues.subCategory
+    );
+
     if (
       categories.find(
         (cat: any) => cat.value === estimateTableItemValues.category
@@ -298,13 +308,7 @@ const Scope = ({ setPrevNext }: Props) => {
         (cat: any) => cat.value === estimateTableItemValues.subCategory
       )
     ) {
-      const selctedCatoryName: any = categories.find(
-        (cat: any) => cat.value === estimateTableItemValues.category
-      );
-      const selctedSubCategoryName: any = subCategories.find(
-        (cat: any) => cat.value === estimateTableItemValues.subCategory
-      );
-      selectedCategory = `${selctedCatoryName.label} ${selctedSubCategoryName.label}`;
+      selectedCategory = `${selectedCategoryName.label} ${selctedSubCategoryName.label}`;
     } else {
       selectedCategory = `${estimateTableItemValues?.category} ${estimateTableItemValues?.subCategory}`;
     }
@@ -325,27 +329,35 @@ const Scope = ({ setPrevNext }: Props) => {
               : dataItem
         );
 
-        setEstimateData({ ...estimateData, scopeItems: updateEstimateArray });
+        setEstimateData({
+          ...estimateData,
+          categoryName: selectedCategoryName.label,
+          subCategoryName: selctedSubCategoryName.label,
+          scopeItems: updateEstimateArray,
+        });
         setEditItem(false);
-        setEstimateDescriptions([]);
-        // setSingleEstimateData({
-        //   description: '',
-        //   unit: '',
-        //   qty: '',
-        //   wastage: '5',
-        //   unitLabourHour: '',
-        //   perHourLaborRate: '',
-        //   unitMaterialCost: '',
-        //   unitEquipments: '',
-        // });
-        actions.resetForm({ values: initialValues });
+        // setEstimateDescriptions([]);
+        setSingleEstimateData({
+          ...SingleEstimateData,
+          description: '',
+          unit: '',
+          qty: '',
+          wastage: '5',
+          unitLabourHour: '',
+          // perHourLaborRate: '',
+          unitMaterialCost: '',
+          unitEquipments: '',
+        });
+        // actions.resetForm({ values: initialValues });
       } else if (!editItem && editConfirmItem) {
+
         const updateConfirmEstimateArray: any = confirmEstimates.map(
           (item: any) => {
             return {
               ...item,
               totalCostRecord: calculateTotalCost(item),
-              data: item.data.map((dataItem: any) =>
+              scopeItems: item.scopeItems
+              .map((dataItem: any) =>
                 dataItem.index === estimateTableItemValues.index
                   ? estimateTableItemValues
                   : dataItem
@@ -356,26 +368,29 @@ const Scope = ({ setPrevNext }: Props) => {
 
         setConfirmEstimates(updateConfirmEstimateArray);
         setEditConfirmItem(false);
-        // setEstimateDescriptions([]);
-
-        // setSingleEstimateData({
-        //   category: '',
-        //   subCategory: '',
-        //   description: '',
-        //   unit: '',
-        //   qty: '',
-        //   wastage: '5',
-        //   unitLabourHour: '',
-        //   perHourLaborRate: '',
-        //   unitMaterialCost: '',
-        //   unitEquipments: '',
-        // });
-        // actions.resetForm({ values: initialValues });
+        setEstiamteUnits([])
+        setEstimateDescriptions([]);
+        setSelectedSubCategory('')
+        setSelectedCategory('')
+        setSingleEstimateData({
+          category: '',
+          subCategory: '',
+          description: '',
+          unit: '',
+          qty: '',
+          wastage: '5',
+          unitLabourHour: '',
+          perHourLaborRate: '',
+          unitMaterialCost: '',
+          unitEquipments: '',
+        });
+        actions.resetForm({ values: initialValues });
       } else {
-        
         setEstimateData((prevData) => ({
           ...prevData,
           title: selectedCategory,
+          categoryName: selectedCategoryName.label,
+          subCategoryName: selctedSubCategoryName.label,
           scopeItems: [
             ...prevData.scopeItems,
             { ...estimateTableItemValues, index: generateRandomNumber },
@@ -446,6 +461,9 @@ const Scope = ({ setPrevNext }: Props) => {
   };
   const editConfirmEstimateRecordHandler = (record: any) => {
     setSingleEstimateData(record);
+    fetchMeterialDetail(record.category , record.subCategory)
+    setSelectedCategory(record.category)
+    setSelectedSubCategory(record.subCategory)
     setEditItem(false);
     setEditConfirmItem(true);
   };
@@ -471,31 +489,31 @@ const Scope = ({ setPrevNext }: Props) => {
       dataIndex: 'description',
       key: 'description',
       fixed: 'left',
-      width: 300,
+      width: 200,
     },
     {
       title: 'Unit',
       dataIndex: 'unit',
       align: 'center',
-      width: 100,
+      width: 80,
     },
     {
       title: 'Qty',
       dataIndex: 'qty',
       align: 'center',
-      width: 100,
+      width: 80,
     },
     {
       title: 'Wastage',
       dataIndex: 'wastage',
       align: 'center',
-      width: 100,
+      width: 90,
     },
     {
       title: 'Qty with wastage',
       dataIndex: 'qtyWithWastage',
       align: 'center',
-      width: 150,
+      width: 100,
       render: (text: string, record: DataType) => {
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
@@ -507,7 +525,7 @@ const Scope = ({ setPrevNext }: Props) => {
       title: 'Total Labour Hours',
       dataIndex: 'totalLabourHours',
       align: 'center',
-      width: 150,
+      width: 120,
       render: (text: string, record: DataType) => {
         let unitLabourHour = parseFloat(record.unitLabourHour);
         let wastagePercentage = parseFloat(record.wastage);
@@ -521,13 +539,13 @@ const Scope = ({ setPrevNext }: Props) => {
       title: 'Per Hours Labor Rate',
       dataIndex: 'perHourLaborRate',
       align: 'center',
-      width: 150,
+      width: 120,
     },
     {
       title: 'Total Labor Cost',
       dataIndex: 'totalLaborCost',
       align: 'center',
-      width: 150,
+      width: 120,
       render: (text: string, record: DataType) => {
         let unitLabourHour = parseFloat(record.unitLabourHour);
         let quantity = parseFloat(record.qty);
@@ -543,13 +561,13 @@ const Scope = ({ setPrevNext }: Props) => {
       title: 'Unit Material Cost',
       dataIndex: 'unitMaterialCost',
       align: 'center',
-      width: 150,
+      width: 120,
     },
     {
       title: 'Total Material Cost',
       dataIndex: 'totalMaterialCost',
       align: 'center',
-      width: 150,
+      width: 120,
       render: (text: string, record: DataType) => {
         let unitMaterialCost = parseFloat(record.unitMaterialCost);
         let quantity = parseFloat(record.qty);
@@ -563,7 +581,7 @@ const Scope = ({ setPrevNext }: Props) => {
       title: 'Total Equipment Cost',
       dataIndex: 'totalEquipmentCost',
       align: 'center',
-      width: 150,
+      width: 140,
       render: (text: string, record: DataType) => {
         let unitEquipments = parseFloat(record.unitEquipments);
         let quantity = parseFloat(record.qty);
@@ -619,31 +637,31 @@ const Scope = ({ setPrevNext }: Props) => {
       dataIndex: 'description',
       key: 'description',
       fixed: 'left',
-      width: 300,
+      width: 200,
     },
     {
       title: 'Unit',
       dataIndex: 'unit',
       align: 'center',
-      width: 100,
+      width: 80,
     },
     {
       title: 'Qty',
       dataIndex: 'qty',
       align: 'center',
-      width: 100,
+      width: 80,
     },
     {
       title: 'Wastage',
       dataIndex: 'wastage',
       align: 'center',
-      width: 100,
+      width: 90,
     },
     {
       title: 'Qty with wastage',
       dataIndex: 'qtyWithWastage',
       align: 'center',
-      width: 150,
+      width: 100,
       render: (text: string, record: DataType) => {
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
@@ -655,7 +673,7 @@ const Scope = ({ setPrevNext }: Props) => {
       title: 'Total Labour Hours',
       dataIndex: 'totalLabourHours',
       align: 'center',
-      width: 150,
+      width: 120,
       render: (text: string, record: DataType) => {
         let unitLabourHour = parseFloat(record.unitLabourHour);
         let wastagePercentage = parseFloat(record.wastage);
@@ -669,13 +687,13 @@ const Scope = ({ setPrevNext }: Props) => {
       title: 'Per Hours Labor Rate',
       dataIndex: 'perHourLaborRate',
       align: 'center',
-      width: 150,
+      width: 120,
     },
     {
       title: 'Total Labor Cost',
       dataIndex: 'totalLaborCost',
       align: 'center',
-      width: 150,
+      width: 120,
       render: (text: string, record: DataType) => {
         let unitLabourHour = parseFloat(record.unitLabourHour);
         let quantity = parseFloat(record.qty);
@@ -691,13 +709,13 @@ const Scope = ({ setPrevNext }: Props) => {
       title: 'Unit Material Cost',
       dataIndex: 'unitMaterialCost',
       align: 'center',
-      width: 150,
+      width: 120,
     },
     {
       title: 'Total Material Cost',
       dataIndex: 'totalMaterialCost',
       align: 'center',
-      width: 150,
+      width: 120,
       render: (text: string, record: DataType) => {
         let unitMaterialCost = parseFloat(record.unitMaterialCost);
         let quantity = parseFloat(record.qty);
@@ -711,7 +729,7 @@ const Scope = ({ setPrevNext }: Props) => {
       title: 'Total Equipment Cost',
       dataIndex: 'totalEquipmentCost',
       align: 'center',
-      width: 150,
+      width: 140,
       render: (text: string, record: DataType) => {
         let unitEquipments = parseFloat(record.unitEquipments);
         let quantity = parseFloat(record.qty);
@@ -765,9 +783,10 @@ const Scope = ({ setPrevNext }: Props) => {
     title: string;
     scopeItems: Object[];
   }) => {
-    setSelectedCategory('')
-    setSelectedSubCategory('')
+    setSelectedCategory('');
+    setSelectedSubCategory('');
     setEstimateDescriptions([]);
+    setEstiamteUnits([]);
     setSingleEstimateData({
       category: '',
       subCategory: '',
@@ -780,7 +799,12 @@ const Scope = ({ setPrevNext }: Props) => {
       unitMaterialCost: '',
       unitEquipments: '',
     });
-    setEstimateData({ title: '', scopeItems: [] });
+    setEstimateData({
+      title: '',
+      categoryName: '',
+      subCategoryName: '',
+      scopeItems: [],
+    });
     const index = confirmEstimates.findIndex(
       (item) => item.title === dataSource.title
     );
@@ -822,9 +846,7 @@ const Scope = ({ setPrevNext }: Props) => {
   };
 
 
-  console.log(estiamteUnits , 'estiamteUnitsestiamteUnits');
   
-
   return (
     <div>
       <div className="flex justify-between items-center mb-3">
@@ -877,9 +899,7 @@ const Scope = ({ setPrevNext }: Props) => {
         validationSchema={validationSchema}
         onSubmit={submitHandler}
       >
-        {({ handleSubmit, values, resetForm }) => {
-          console.log(values, 'valuesvaluesvalues');
-
+        {({ handleSubmit, values }) => {
           return (
             <>
               <Form
@@ -1031,8 +1051,7 @@ const Scope = ({ setPrevNext }: Props) => {
                         type="button"
                         disabled={estimateData.scopeItems.length === 0}
                         onClick={() => {
-                          confirmEstimateHandler(estimateData);
-                          resetForm();
+                          confirmEstimateHandler(estimateData)
                         }}
                       />
                     </div>
@@ -1049,19 +1068,14 @@ const Scope = ({ setPrevNext }: Props) => {
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <QuaternaryHeading
-                              title={estimate.title}
+                              title={estimate.categoryName                              }
                               className="font-semibold"
                             />
+                             <QuaternaryHeading
+                              title={estimate.subCategoryName                              }
+                              className="!font=[#344054] font-light"
+                            />
                           </div>
-                          {/* <div className="flex justify-end mt-5">
-                        <CustomButton
-                          text="Add Item"
-                          className="!text-graphiteGray !bg-snowWhite !shadow-scenarySubdued border-2 border-solid !border-celestialGray "
-                           onClick={() => {
-                             revertConfirmTableHandler(item), resetForm();
-                           }}
-                        />
-                      </div> */}
                         </div>
                         <div className="estimateTable_container">
                           <Table
