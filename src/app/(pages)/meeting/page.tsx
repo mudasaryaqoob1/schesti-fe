@@ -21,7 +21,7 @@ const Meeting = () => {
       id: new Date().getTime().toString(),
       date: new Date().toString(),
       topic: 'Random Topic ' + meetings.length,
-      link: 'https://meet.jit.si' + '/' + roomName,
+      link: '/meeting/' + roomName,
     };
     setMeetings([...meetings, meeting]);
   }

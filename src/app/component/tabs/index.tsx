@@ -121,10 +121,10 @@ const Tabs = () => {
                 flex items-stretch justify-center py-2 
                  cursor-pointer
                 `,
-              pathname.includes('#'.split('/')[1]) && tabsStyle.active
+              pathname.includes('/schedule') && tabsStyle.active
             )
           )}
-          onClick={() => router.push('#')}
+          onClick={() => router.push('/schedule')}
         >
           Schedule
         </li>

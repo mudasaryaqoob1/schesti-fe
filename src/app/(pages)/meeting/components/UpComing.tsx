@@ -12,15 +12,13 @@ type Props = {
   setState: React.Dispatch<React.SetStateAction<IMeeting[]>>;
 };
 export function UpcomingComponent({ setState, state }: Props) {
-  const domainName = 'https://meet.jit.si';
-
   function generateRoom() {
     const roomName = `SchestiMeetRoomNo${Math.random() * 100}-${Date.now()}`;
     const meeting: IMeeting = {
       id: new Date().getTime().toString(),
       date: new Date().toString(),
       topic: 'Random Topic ' + state.length,
-      link: domainName + '/' + roomName,
+      link: '/meeting/' + roomName,
     };
     setState([...state, meeting]);
   }
