@@ -53,7 +53,7 @@ export function Schedule() {
           onClick={() => setMaterialModal(true)}
         />
       </div>
-      <div className="mx-4 rounded-xl h-[calc(100vh-450px)]">
+      <div className="mx-4 rounded-xl">
         {wbs.length > 0 ? (
           <div>
             <Collapse
@@ -67,12 +67,12 @@ export function Schedule() {
                   key: i,
                   label: (
                     <div className="flex items-center space-x-2">
-                      {Array.isArray(active) && active.includes('1') ? (
+                      {Array.isArray(active) && active.includes(i.toString()) ? (
                         <DownOutlined className="text-obsidianBlack2 p-1 border rounded text-lg" />
                       ) : (
                         <RightOutlined className="text-obsidianBlack2 p-1 border rounded text-lg" />
                       )}
-                      <div className="flex border justify-between w-1/4 px-4 rounded-full bg-[#F9FAFB] items-center">
+                      <div className="flex border flex-wrap justify-between w-[33%] px-4 rounded-full bg-[#F9FAFB] items-center">
                         <SenaryHeading
                           title={item.title}
                           className="text-obsidianBlack2 font-semibold text-base tracking-wider"
