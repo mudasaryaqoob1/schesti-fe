@@ -1,7 +1,11 @@
 import CustomButton from "@/app/component/customButton/white";
+import { InputComponent } from "@/app/component/customInput/Input";
+import { SelectComponent } from "@/app/component/customSelect/Select.component";
+import { DateInputComponent } from "@/app/component/cutomDate/CustomDateInput";
+import QuaternaryHeading from "@/app/component/headings/quaternary";
 import QuinaryHeading from "@/app/component/headings/quinary";
 import { PlusOutlined } from "@ant-design/icons";
-import { Checkbox, Drawer, Form, type GetRef, Input, Table, DatePicker, } from "antd";
+import { Checkbox, Drawer, Form, type GetRef, Input, Table, DatePicker, Tag, } from "antd";
 import { type ColumnType } from "antd/es/table";
 import dayjs from "dayjs";
 
@@ -92,6 +96,8 @@ export function ScheduleTable() {
     const [data, setData] = useState(_data);
     const [checkedList, setCheckedList] = useState(defaultCheckedList);
     const [open, setOpen] = useState(false);
+    const [openDetails, setOpenDetails] = useState(false);
+    const [selectedItem, setSelectedItem] = useState<Item | null>(null);
 
     const showDrawer = () => {
         setOpen(true);
@@ -205,6 +211,135 @@ export function ScheduleTable() {
                 </div>
             </Checkbox.Group>
         </Drawer>
+
+        <Drawer
+            title={<Tag
+                color="#F9F5FF"
+                className="rounded-full py-1"
+                style={{ color: '#6941C6' }}
+
+            >
+                Inprogress
+            </Tag>
+            }
+            open={openDetails}
+            onClose={() => setOpenDetails(false)}
+        >
+            {selectedItem ? <>
+                <div>
+                    <QuaternaryHeading title={selectedItem.description} />
+                    <div className="flex items-center justify-between">
+                        <QuinaryHeading title="Activity" />
+                        <QuinaryHeading title={"A102"} />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                        <QuinaryHeading title="Original Duration" />
+                        <QuinaryHeading title={selectedItem.orignalDuration} />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                        <QuinaryHeading title="Start" />
+                        <QuinaryHeading title={dayjs(selectedItem.start).format('DD/MM/YYYY')} />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                        <QuinaryHeading title="Finish" />
+                        <QuinaryHeading title={dayjs(selectedItem.finish).format('DD/MM/YYYY')} />
+                    </div>
+
+                </div>
+
+                <div className="mt-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <QuinaryHeading title="Assign" />
+                            <PlusOutlined className="border cursor-pointer text-base rounded-full bg-[#b1b3b6] text-[#667085] p-2" />
+                        </div>
+                        <div>
+                            <QuinaryHeading title="Status" />
+                            <Tag
+                                color="#F9F5FF"
+                                className="rounded-full py-1"
+                                style={{ color: '#6941C6' }}
+
+                            >
+                                Inprogress
+                            </Tag>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center space-x-4 justify-between">
+                        <DateInputComponent
+                            label="Actual Start"
+                            name="actualStart"
+                            inputStyle="border-gray-200"
+                        />
+                        <DateInputComponent
+                            label="Actual Finish"
+                            name="actualFinish"
+                            inputStyle="border-gray-200"
+                        />
+                    </div>
+
+                    <div className="flex items-center space-x-4 justify-between">
+                        <InputComponent
+                            label="Activity Type"
+                            name="activityType"
+                            type="text"
+                            placeholder="Activity Type"
+                        />
+                        <InputComponent
+                            label="Activity Calender"
+                            name="activityCode"
+                            type="text"
+                            placeholder="Activity Calender"
+                        />
+                    </div>
+                </div>
+
+                <div className='mt-4'>
+                    <QuinaryHeading title="Predecessors" />
+
+                    <div className="flex items-center space-x-4 justify-between">
+                        <SelectComponent
+                            label="Relation"
+                            name="relation"
+                            placeholder="Relation"
+                            field={{
+                                options: [{ label: "SS", value: "SS" }, { label: "FF", value: "FF" }, { label: "SF", value: "SF" }, { label: "FS", value: "FS" }],
+                                className: "mt-1"
+                            }}
+                        />
+                        <InputComponent
+                            label="Lags"
+                            name="lags"
+                            type="text"
+                            placeholder="Lags"
+                        />
+                    </div>
+                </div>
+
+                <div className='mt-4'>
+                    <QuinaryHeading title="Constraints" />
+
+                    <div className="flex items-center space-x-4 justify-between">
+                        <InputComponent
+                            label="Primary"
+                            name="primary"
+                            placeholder="Primary"
+                            type="text"
+                        />
+                        <DateInputComponent
+                            label="Date"
+                            name="date"
+                            placeholder="Date"
+                            inputStyle="border-gray-200"
+                        />
+                    </div>
+                </div>
+            </> : null}
+        </Drawer>
         <Table
             columns={[...newColumns, ...extras] as ColumnType<Item>[]}
             dataSource={data}
@@ -226,6 +361,12 @@ export function ScheduleTable() {
                     </h4>
                 </div>
             }}
+            onRow={(data => ({
+                onClick: () => {
+                    setOpenDetails(true);
+                    setSelectedItem(data);
+                }
+            }))}
         />
 
     </div>
