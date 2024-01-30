@@ -13,24 +13,27 @@ import {
 } from '@ant-design/icons';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { Collapse } from 'antd';
+import { ScheduleTable } from './Table';
 
 export function Schedule() {
   const [materialModal, setMaterialModal] = useState(false);
   const [active, setActive] = useState<string | string[]>(['']);
 
-  const [wbs, setWbs] = useState<Partial<IWBSType>>({
-    category: undefined,
-    subCategory: undefined,
-  });
+  const [wbs, setWbs] = useState<IWBSType[]>([]);
 
   function handleWbs(
     category: IWBSType['category'],
     subCategory: IWBSType['subCategory']
   ) {
-    setWbs({ category, subCategory });
-  }
+    const item: IWBSType = {
+      category,
+      subCategory,
+      title: `${category.label} / ${subCategory.label}`,
+      scopeItems: []
+    };
 
-  console.log(active);
+    setWbs([...wbs, item]);
+  }
 
   return (
     <section>
@@ -51,7 +54,7 @@ export function Schedule() {
         />
       </div>
       <div className="mx-4 rounded-xl h-[calc(100vh-450px)]">
-        {wbs.category && wbs.subCategory ? (
+        {wbs.length > 0 ? (
           <div>
             <Collapse
               ghost
@@ -59,9 +62,9 @@ export function Schedule() {
                 console.log(key);
                 setActive(key);
               }}
-              items={[
-                {
-                  key: '1',
+              items={wbs.map((item, i) => {
+                return {
+                  key: i,
                   label: (
                     <div className="flex items-center space-x-2">
                       {Array.isArray(active) && active.includes('1') ? (
@@ -71,12 +74,8 @@ export function Schedule() {
                       )}
                       <div className="flex border justify-between w-1/4 px-4 rounded-full bg-[#F9FAFB] items-center">
                         <SenaryHeading
-                          title={wbs.category.label}
+                          title={item.title}
                           className="text-obsidianBlack2 font-semibold text-base tracking-wider"
-                        />
-                        <SecondaryHeading
-                          title={wbs.subCategory.label}
-                          className="text-obsidianBlack2 font-normal text-base"
                         />
                         <div className="space-x-1">
                           <EditOutlined className="text-obsidianBlack2 border rounded bg-[#EAECF0] p-2 text-lg " />
@@ -86,9 +85,9 @@ export function Schedule() {
                     </div>
                   ),
                   showArrow: false,
-                  children: <div>Children</div>,
-                },
-              ]}
+                  children: <ScheduleTable />,
+                }
+              })}
             />
           </div>
         ) : (

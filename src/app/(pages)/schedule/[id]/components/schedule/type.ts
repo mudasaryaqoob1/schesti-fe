@@ -8,6 +8,8 @@ type SubCategory = {
 } & Category;
 
 export type IWBSType = {
+  title: string;
   category: Category;
   subCategory: SubCategory;
+  scopeItems: []
 };
