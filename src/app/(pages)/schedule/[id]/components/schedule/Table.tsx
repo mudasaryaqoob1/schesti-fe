@@ -1,8 +1,9 @@
 import CustomButton from "@/app/component/customButton/white";
 import QuinaryHeading from "@/app/component/headings/quinary";
 import { PlusOutlined } from "@ant-design/icons";
-import { Checkbox, Drawer, Form, type GetRef, Input, Table, } from "antd";
+import { Checkbox, Drawer, Form, type GetRef, Input, Table, DatePicker, } from "antd";
 import { type ColumnType } from "antd/es/table";
+import dayjs from "dayjs";
 
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 const columns: ColumnType<{}>[] = [
@@ -26,10 +27,10 @@ const _data = [{
     id: '1',
     description: 'Design',
     orignalDuration: '12',
-    start: '12',
-    finish: '12',
-    actualStart: '12',
-    actualFinish: '12',
+    start: new Date().toDateString(),
+    finish: new Date().toDateString(),
+    actualStart: new Date().toDateString(),
+    actualFinish: new Date().toDateString(),
     remainingDuration: '12',
     scheduleCompleted: '12',
     totalFloat: '12',
@@ -42,10 +43,10 @@ const _data = [{
     id: '2',
     description: 'Design',
     orignalDuration: '12',
-    start: '12',
-    finish: '12',
-    actualStart: '12',
-    actualFinish: '12',
+    start: new Date().toDateString(),
+    finish: new Date().toDateString(),
+    actualStart: new Date().toDateString(),
+    actualFinish: new Date().toDateString(),
     remainingDuration: '12',
     scheduleCompleted: '12',
     totalFloat: '12',
@@ -58,10 +59,10 @@ const _data = [{
     id: '3',
     description: 'Design',
     orignalDuration: '12',
-    start: '12',
-    finish: '12',
-    actualStart: '12',
-    actualFinish: '12',
+    start: new Date().toDateString(),
+    finish: new Date().toDateString(),
+    actualStart: new Date().toDateString(),
+    actualFinish: new Date().toDateString(),
     remainingDuration: '12',
     scheduleCompleted: '12',
     totalFloat: '12',
@@ -74,10 +75,10 @@ const _data = [{
     id: '4',
     description: 'Design',
     orignalDuration: '12',
-    start: '12',
-    finish: '12',
-    actualStart: '12',
-    actualFinish: '12',
+    start: new Date().toDateString(),
+    finish: new Date().toDateString(),
+    actualStart: new Date().toDateString(),
+    actualFinish: new Date().toDateString(),
     remainingDuration: '12',
     scheduleCompleted: '12',
     totalFloat: '12',
@@ -105,15 +106,15 @@ export function ScheduleTable() {
         const item: Item = {
             activityCalendar: "_",
             activityType: "_",
-            actualFinish: "_",
-            actualStart: "_",
+            actualFinish: new Date().toDateString(),
+            actualStart: new Date().toDateString(),
             description: "_",
-            finish: "_",
+            finish: new Date().toDateString(),
             id: new Date().getMilliseconds().toString(),
             orignalDuration: "_",
             predecessors: "_",
             remainingDuration: "_",
-            start: "_",
+            start: new Date().toDateString(),
             scheduleCompleted: "_",
             successors: "_",
             totalFloat: "_"
@@ -126,7 +127,6 @@ export function ScheduleTable() {
         const index = newData.findIndex(item => item.id === record.id);
         newData[index] = record;
         setData(newData);
-        console.log(record)
     }
 
     function deleteRow(record: Item) {
@@ -151,7 +151,6 @@ export function ScheduleTable() {
                 dataIndex: col.dataIndex as string,
                 title: col.title,
                 handleSave(record: Item) {
-                    console.log({ record })
                     updateRow(record);
                 }
             })
@@ -274,7 +273,12 @@ function EditableCell({
     const [editing, setEditing] = useState(false);
     const inputRef = useRef<InputRef>(null);
     const form = useContext(EditableContext)!;
-
+    const dateDataIndexes = [
+        "start",
+        "finish",
+        "actualStart",
+        "actualFinish"
+    ]
     useEffect(() => {
         if (editing) {
             // @ts-ignore
@@ -290,7 +294,6 @@ function EditableCell({
     const save = async () => {
         try {
             const values = await form.validateFields();
-
             toggleEdit();
             handleSave({ ...record, ...values });
         } catch (errInfo) {
@@ -311,12 +314,22 @@ function EditableCell({
                         message: `${title} is required.`,
                     },
                 ]}
+                getValueProps={i => {
+                    return ({ value: dateDataIndexes.includes(dataIndex) ? dayjs(i) : i })
+                }}
             >
-                <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+                {
+                    dateDataIndexes.includes(dataIndex) ?
+                        <DatePicker ref={inputRef}
+                            onChange={save}
+                            value={dayjs(record[dataIndex])}
+                            onBlur={save} /> :
+                        <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+                }
             </Form.Item>
         ) : (
             <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit}>
-                {children}
+                {dateDataIndexes.includes(dataIndex) ? dayjs(record[dataIndex]).format("DD/MM/YYYY") : children}
             </div>
         );
     }
