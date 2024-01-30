@@ -1,3 +1,4 @@
+import CustomButton from "@/app/component/customButton/white";
 import QuinaryHeading from "@/app/component/headings/quinary";
 import { PlusOutlined } from "@ant-design/icons";
 import { Checkbox, Drawer, Form, type GetRef, Input, Table, } from "antd";
@@ -21,7 +22,7 @@ const columns: ColumnType<{}>[] = [
 ];
 
 const defaultCheckedList = columns.map(item => item.key);
-const data = [{
+const _data = [{
     id: '1',
     description: 'Design',
     orignalDuration: '12',
@@ -87,6 +88,7 @@ const data = [{
 },
 ]
 export function ScheduleTable() {
+    const [data, setData] = useState(_data);
     const [checkedList, setCheckedList] = useState(defaultCheckedList);
     const [open, setOpen] = useState(false);
 
@@ -97,6 +99,41 @@ export function ScheduleTable() {
     const onClose = () => {
         setOpen(false);
     };
+
+    // add item in data
+    function addItem() {
+        const item: Item = {
+            activityCalendar: "_",
+            activityType: "_",
+            actualFinish: "_",
+            actualStart: "_",
+            description: "_",
+            finish: "_",
+            id: new Date().getMilliseconds().toString(),
+            orignalDuration: "_",
+            predecessors: "_",
+            remainingDuration: "_",
+            start: "_",
+            scheduleCompleted: "_",
+            successors: "_",
+            totalFloat: "_"
+        };
+        setData([...data, item])
+    }
+
+    function updateRow(record: Item) {
+        const newData = [...data];
+        const index = newData.findIndex(item => item.id === record.id);
+        newData[index] = record;
+        setData(newData);
+        console.log(record)
+    }
+
+    function deleteRow(record: Item) {
+        const newData = data.filter(item => item.id !== record.id);
+        setData(newData);
+    }
+
     let newColumns = columns.map((item) => ({
         ...item,
         editable: true,
@@ -114,19 +151,38 @@ export function ScheduleTable() {
                 dataIndex: col.dataIndex as string,
                 title: col.title,
                 handleSave(record: Item) {
-                    console.log("handle save", record)
+                    console.log({ record })
+                    updateRow(record);
                 }
             })
         }
     });
 
-    newColumns = [...newColumns, {
-        title: <PlusOutlined className="text-lg" onClick={showDrawer} />,
-        hidden: false,
-        render: () => null,
-        editable: false,
-        dataIndex: ""
-    }];
+    const extras: (ColumnType<Item> & { editable: boolean })[] = [
+        {
+            title: <QuinaryHeading title="Actions" />,
+            dataIndex: "actions",
+            key: "actions",
+            editable: false,
+            hidden: false,
+            render(_: any, record: Item) {
+                return <CustomButton
+                    text=""
+                    className="!w-auto"
+                    icon="/trash.svg"
+                    iconwidth={13}
+                    iconheight={13}
+                    onClick={() => deleteRow(record)}
+                />
+            }
+        },
+        {
+            title: <PlusOutlined className="text-lg" onClick={showDrawer} />,
+            hidden: false,
+            render: () => null,
+            editable: false,
+            dataIndex: "plus"
+        }];
 
     const options = columns.map(({ key, title }) => ({
         label: title,
@@ -151,7 +207,7 @@ export function ScheduleTable() {
             </Checkbox.Group>
         </Drawer>
         <Table
-            columns={newColumns as ColumnType<Item>[]}
+            columns={[...newColumns, ...extras] as ColumnType<Item>[]}
             dataSource={data}
             key={'id'}
             components={{
@@ -162,8 +218,7 @@ export function ScheduleTable() {
             }}
             footer={() => {
                 return <div
-                    onClick={() => {
-                    }}
+                    onClick={() => addItem()}
                     className="border border-dashed rounded cursor-pointer py-3 px-2 border-[#EAECF0] bg-white"
                 >
                     <h4 className="space-x-2 tracking-wide">
@@ -197,7 +252,7 @@ function EditableRow({ index, ...props }: EditableRowProps) {
         </Form>
     );
 }
-type Item = typeof data[0];
+type Item = typeof _data[0];
 interface EditableCellProps {
     title: React.ReactNode;
     editable: boolean;
