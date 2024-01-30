@@ -160,7 +160,20 @@ export function ScheduleTable() {
                     cell: EditableCell
                 }
             }}
+            footer={() => {
+                return <div
+                    onClick={() => {
+                    }}
+                    className="border border-dashed rounded cursor-pointer py-3 px-2 border-[#EAECF0] bg-white"
+                >
+                    <h4 className="space-x-2 tracking-wide">
+                        <PlusOutlined />
+                        <span>Create your activity</span>
+                    </h4>
+                </div>
+            }}
         />
+
     </div>
 }
 
