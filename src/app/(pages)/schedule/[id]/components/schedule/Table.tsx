@@ -8,8 +8,9 @@ import { PlusOutlined } from "@ant-design/icons";
 import { Checkbox, Drawer, Form, type GetRef, Input, Table, DatePicker, Tag, } from "antd";
 import { type ColumnType } from "antd/es/table";
 import dayjs from "dayjs";
-
 import { createContext, useContext, useEffect, useRef, useState } from "react";
+import type { IWBSType, ScopeItem } from "./type";
+
 const columns: ColumnType<{}>[] = [
     { title: <QuinaryHeading title="Activities" />, dataIndex: 'description', key: '1' },
     { title: <QuinaryHeading title='Original Duration' />, dataIndex: 'orignalDuration', key: '2' },
@@ -27,77 +28,19 @@ const columns: ColumnType<{}>[] = [
 ];
 
 const defaultCheckedList = columns.map(item => item.key);
-const _data = [{
-    id: '1',
-    description: 'Design',
-    orignalDuration: '12',
-    start: new Date().toDateString(),
-    finish: new Date().toDateString(),
-    actualStart: new Date().toDateString(),
-    actualFinish: new Date().toDateString(),
-    remainingDuration: '12',
-    scheduleCompleted: '12',
-    totalFloat: '12',
-    activityType: '12',
-    predecessors: '12',
-    successors: '12',
-    activityCalendar: '12',
-},
-{
-    id: '2',
-    description: 'Design',
-    orignalDuration: '12',
-    start: new Date().toDateString(),
-    finish: new Date().toDateString(),
-    actualStart: new Date().toDateString(),
-    actualFinish: new Date().toDateString(),
-    remainingDuration: '12',
-    scheduleCompleted: '12',
-    totalFloat: '12',
-    activityType: '12',
-    predecessors: '12',
-    successors: '12',
-    activityCalendar: '12',
-},
-{
-    id: '3',
-    description: 'Design',
-    orignalDuration: '12',
-    start: new Date().toDateString(),
-    finish: new Date().toDateString(),
-    actualStart: new Date().toDateString(),
-    actualFinish: new Date().toDateString(),
-    remainingDuration: '12',
-    scheduleCompleted: '12',
-    totalFloat: '12',
-    activityType: '12',
-    predecessors: '12',
-    successors: '12',
-    activityCalendar: '12',
-},
-{
-    id: '4',
-    description: 'Design',
-    orignalDuration: '12',
-    start: new Date().toDateString(),
-    finish: new Date().toDateString(),
-    actualStart: new Date().toDateString(),
-    actualFinish: new Date().toDateString(),
-    remainingDuration: '12',
-    scheduleCompleted: '12',
-    totalFloat: '12',
-    activityType: '12',
-    predecessors: '12',
-    successors: '12',
-    activityCalendar: '12',
-},
-]
-export function ScheduleTable() {
-    const [data, setData] = useState(_data);
+
+
+
+type Props = {
+    updateWbsScopeItems(_id: string, _scopeItems: ScopeItem[]): void;
+    wbs: IWBSType;
+}
+
+export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
     const [checkedList, setCheckedList] = useState(defaultCheckedList);
     const [open, setOpen] = useState(false);
     const [openDetails, setOpenDetails] = useState(false);
-    const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+    const [selectedItem, setSelectedItem] = useState<ScopeItem | null>(null);
 
     const showDrawer = () => {
         setOpen(true);
@@ -109,7 +52,7 @@ export function ScheduleTable() {
 
     // add item in data
     function addItem() {
-        const item: Item = {
+        const item: ScopeItem = {
             activityCalendar: "_",
             activityType: "_",
             actualFinish: new Date().toDateString(),
@@ -125,19 +68,21 @@ export function ScheduleTable() {
             successors: "_",
             totalFloat: "_"
         };
-        setData([...data, item])
+        const newData = [...wbs.scopeItems, item];
+        updateWbsScopeItems(wbs.id, newData);
+
     }
 
-    function updateRow(record: Item) {
-        const newData = [...data];
+    function updateRow(record: ScopeItem) {
+        const newData = [...wbs.scopeItems];
         const index = newData.findIndex(item => item.id === record.id);
         newData[index] = record;
-        setData(newData);
+        updateWbsScopeItems(wbs.id, newData);
     }
 
-    function deleteRow(record: Item) {
-        const newData = data.filter(item => item.id !== record.id);
-        setData(newData);
+    function deleteRow(record: ScopeItem) {
+        const newData = wbs.scopeItems.filter(item => item.id !== record.id);
+        updateWbsScopeItems(wbs.id, newData);
     }
 
     let newColumns = columns.map((item) => ({
@@ -151,26 +96,26 @@ export function ScheduleTable() {
         }
         return {
             ...col,
-            onCell: (record: Item) => ({
+            onCell: (record: ScopeItem) => ({
                 record,
                 editable: col.editable,
                 dataIndex: col.dataIndex as string,
                 title: col.title,
-                handleSave(record: Item) {
+                handleSave(record: ScopeItem) {
                     updateRow(record);
                 }
             })
         }
     });
 
-    const extras: (ColumnType<Item> & { editable: boolean })[] = [
+    const extras: (ColumnType<ScopeItem> & { editable: boolean })[] = [
         {
             title: <QuinaryHeading title="Actions" />,
             dataIndex: "actions",
             key: "actions",
             editable: false,
             hidden: false,
-            render(_: any, record: Item) {
+            render(_: any, record: ScopeItem) {
                 return <CustomButton
                     text=""
                     className="!w-auto"
@@ -341,8 +286,8 @@ export function ScheduleTable() {
             </> : null}
         </Drawer>
         <Table
-            columns={[...newColumns, ...extras] as ColumnType<Item>[]}
-            dataSource={data}
+            columns={[...newColumns, ...extras] as ColumnType<ScopeItem>[]}
+            dataSource={wbs.scopeItems}
             key={'id'}
             components={{
                 body: {
@@ -392,14 +337,13 @@ function EditableRow({ index, ...props }: EditableRowProps) {
         </Form>
     );
 }
-type Item = typeof _data[0];
 interface EditableCellProps {
     title: React.ReactNode;
     editable: boolean;
     children: React.ReactNode;
-    dataIndex: keyof Item;
-    record: Item;
-    handleSave: (_record: Item) => void;
+    dataIndex: keyof ScopeItem;
+    record: ScopeItem;
+    handleSave: (_record: ScopeItem) => void;
 }
 
 function EditableCell({

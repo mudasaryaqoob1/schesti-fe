@@ -14,34 +14,48 @@ import {
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { Collapse } from 'antd';
 import { ScheduleTable } from './Table';
+import { scopeItems } from './utils';
 
 export function Schedule() {
   const [materialModal, setMaterialModal] = useState(false);
   const [active, setActive] = useState<string | string[]>(['']);
 
-  const [wbs, setWbs] = useState<IWBSType[]>([]);
+  const [state, setState] = useState<IWBSType[]>([]);
 
-  function handleWbs(
+  function addWbs(
     category: IWBSType['category'],
     subCategory: IWBSType['subCategory']
   ) {
     const item: IWBSType = {
-      id: new Date().getMilliseconds().toString(),
+      id: new Date().getTime().toString(),
       category,
       subCategory,
       title: `${category.label} / ${subCategory.label}`,
-      scopeItems: []
+      scopeItems
     };
 
-    setWbs([...wbs, item]);
+    setState([...state, item]);
   }
 
+  function updateWbsScopeItems(wbsId: string, scopeItems: IWBSType['scopeItems']) {
+    const updatedWbs = state.map((item) => {
+      if (item.id === wbsId) {
+        return {
+          ...item,
+          scopeItems
+        }
+      }
+      return item
+    });
+    setState(updatedWbs);
+  }
+  console.log(state)
   return (
     <section>
       <CategoryModal
         materialModal={materialModal}
         setMaterialModal={setMaterialModal}
-        handleWbs={handleWbs}
+        handleWbs={addWbs}
       />
       <div className=" flex items-center justify-between mt-4">
         <TertiaryHeading title="Schedule" className="text-lg tracking-wide" />
@@ -55,15 +69,14 @@ export function Schedule() {
         />
       </div>
       <div className="mx-4 rounded-xl">
-        {wbs.length > 0 ? (
+        {state.length > 0 ? (
           <div>
             <Collapse
               ghost
               onChange={(key) => {
-                console.log(key);
                 setActive(key);
               }}
-              items={wbs.map((item, i) => {
+              items={state.map((item, i) => {
                 return {
                   key: i,
                   label: (
@@ -86,7 +99,7 @@ export function Schedule() {
                     </div>
                   ),
                   showArrow: false,
-                  children: <ScheduleTable />,
+                  children: <ScheduleTable updateWbsScopeItems={updateWbsScopeItems} wbs={item} />,
                 }
               })}
             />

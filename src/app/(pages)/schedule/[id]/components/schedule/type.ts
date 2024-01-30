@@ -12,5 +12,22 @@ export type IWBSType = {
   title: string;
   category: Category;
   subCategory: SubCategory;
-  scopeItems: []
+  scopeItems: ScopeItem[]
 };
+
+export type ScopeItem = {
+  id: string;
+  description: string;
+  orignalDuration: string;
+  start: string;
+  finish: string;
+  actualStart: string;
+  actualFinish: string;
+  remainingDuration: string;
+  scheduleCompleted: string;
+  totalFloat: string;
+  activityType: string;
+  predecessors: string;
+  successors: string;
+  activityCalendar: string;
+}
