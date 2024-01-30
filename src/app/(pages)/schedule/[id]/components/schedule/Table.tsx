@@ -469,7 +469,10 @@ function EditableCell({
                 }
             </Form.Item>
         ) : (
-            <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={toggleEdit}>
+            <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={e => {
+                e.stopPropagation();
+                toggleEdit();
+            }}>
                 {dateDataIndexes.includes(dataIndex) ? dayjs(record[dataIndex]).format("DD/MM/YYYY") : children}
             </div>
         );
