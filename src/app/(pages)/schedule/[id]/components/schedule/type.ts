@@ -8,6 +8,7 @@ type SubCategory = {
 } & Category;
 
 export type IWBSType = {
+  id: string;
   title: string;
   category: Category;
   subCategory: SubCategory;

@@ -26,6 +26,7 @@ export function Schedule() {
     subCategory: IWBSType['subCategory']
   ) {
     const item: IWBSType = {
+      id: new Date().getMilliseconds().toString(),
       category,
       subCategory,
       title: `${category.label} / ${subCategory.label}`,
