@@ -4,7 +4,7 @@ import SecondaryHeading from '@/app/component/headings/Secondary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { useState } from 'react';
 import { CategoryModal } from './Category';
-import { IWBSType } from './type';
+import { IWBSType, ScopeItem } from '../../type';
 import {
   DownOutlined,
   EditOutlined,
@@ -14,42 +14,17 @@ import {
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { Collapse } from 'antd';
 import { ScheduleTable } from './Table';
-import { scopeItems } from './utils';
 
-export function Schedule() {
+type Props = {
+  updateWbsScopeItems: (_id: string, _scopeItems: ScopeItem[]) => void;
+  addWbs: (_category: IWBSType['category'], _subCategory: IWBSType['subCategory']) => void;
+  state: IWBSType[];
+}
+
+export function Schedule({ addWbs, state, updateWbsScopeItems }: Props) {
   const [materialModal, setMaterialModal] = useState(false);
   const [active, setActive] = useState<string | string[]>(['']);
 
-  const [state, setState] = useState<IWBSType[]>([]);
-
-  function addWbs(
-    category: IWBSType['category'],
-    subCategory: IWBSType['subCategory']
-  ) {
-    const item: IWBSType = {
-      id: new Date().getTime().toString(),
-      category,
-      subCategory,
-      title: `${category.label} / ${subCategory.label}`,
-      scopeItems
-    };
-
-    setState([...state, item]);
-  }
-
-  function updateWbsScopeItems(wbsId: string, scopeItems: IWBSType['scopeItems']) {
-    const updatedWbs = state.map((item) => {
-      if (item.id === wbsId) {
-        return {
-          ...item,
-          scopeItems
-        }
-      }
-      return item
-    });
-    setState(updatedWbs);
-  }
-  console.log(state)
   return (
     <section>
       <CategoryModal

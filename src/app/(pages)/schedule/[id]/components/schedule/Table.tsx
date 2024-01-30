@@ -1,15 +1,14 @@
-import CustomButton from "@/app/component/customButton/white";
 import { InputComponent } from "@/app/component/customInput/Input";
 import { SelectComponent } from "@/app/component/customSelect/Select.component";
 import { DateInputComponent } from "@/app/component/cutomDate/CustomDateInput";
 import QuaternaryHeading from "@/app/component/headings/quaternary";
 import QuinaryHeading from "@/app/component/headings/quinary";
-import { PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { Checkbox, Drawer, Form, type GetRef, Input, Table, DatePicker, Tag, } from "antd";
 import { type ColumnType } from "antd/es/table";
 import dayjs from "dayjs";
 import { createContext, useContext, useEffect, useRef, useState } from "react";
-import type { IWBSType, ScopeItem } from "./type";
+import type { IWBSType, ScopeItem } from "../../type";
 
 const columns: ColumnType<{}>[] = [
     { title: <QuinaryHeading title="Activities" />, dataIndex: 'description', key: '1' },
@@ -116,13 +115,12 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
             editable: false,
             hidden: false,
             render(_: any, record: ScopeItem) {
-                return <CustomButton
-                    text=""
-                    className="!w-auto"
-                    icon="/trash.svg"
-                    iconwidth={13}
-                    iconheight={13}
-                    onClick={() => deleteRow(record)}
+                return <DeleteOutlined
+                    onClick={e => {
+                        e.stopPropagation();
+                        deleteRow(record);
+                    }}
+                    className="text-lg border p-2 rounded-lg text-gray-500"
                 />
             }
         },
