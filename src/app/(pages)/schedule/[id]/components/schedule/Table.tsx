@@ -217,6 +217,10 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
               {
                 key: 'view',
                 label: <p>View Details</p>,
+                onClick: () => {
+                  setOpenDetails(true);
+                  setSelectedItem(record);
+                }
               },
               {
                 key: 'predecessors',
@@ -474,12 +478,6 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
             </div>
           );
         }}
-        onRow={(data) => ({
-          onClick: () => {
-            // setOpenDetails(true);
-            setSelectedItem(data);
-          },
-        })}
       />
     </div>
   );
