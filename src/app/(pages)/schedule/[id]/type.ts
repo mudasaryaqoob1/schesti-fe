@@ -26,6 +26,7 @@ export type ScopeItem = {
   remainingDuration: string;
   scheduleCompleted: string;
   totalFloat: string;
+  status: "New" | "Planned" | "In Progress" | "Completed" | "Review",
   activityType: string;
   predecessors: string;
   successors: string;

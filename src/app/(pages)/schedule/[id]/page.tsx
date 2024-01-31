@@ -12,7 +12,6 @@ import { useSelector } from 'react-redux';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
 import { IWBSType } from './type';
-import { scopeItems } from './utils';
 
 const SCHEDULE_KEY = 'Schedule';
 const GANTT_KEY = 'Gantt';
@@ -37,7 +36,7 @@ export default function SchedulePage() {
       category,
       subCategory,
       title: `${category.label} / ${subCategory.label}`,
-      scopeItems,
+      scopeItems: [],
     };
 
     setState([...state, item]);

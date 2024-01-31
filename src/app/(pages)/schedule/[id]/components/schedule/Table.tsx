@@ -33,6 +33,12 @@ const columns: ColumnType<{}>[] = [
     width: 150,
   },
   {
+    title: <QuinaryHeading title="Status" />,
+    dataIndex: 'status',
+    key: '2',
+    width: 150,
+  },
+  {
     title: <QuinaryHeading title="Start" />, dataIndex: 'start', key: '3',
     width: 150,
   },
@@ -133,6 +139,7 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
       remainingDuration: '_',
       start: new Date().toDateString(),
       scheduleCompleted: '_',
+      status: "New",
       successors: '_',
       totalFloat: '_',
     };
