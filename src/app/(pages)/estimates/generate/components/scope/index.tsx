@@ -1094,7 +1094,19 @@ const Scope = ({ setPrevNext }: Props) => {
       </Formik>
 
       <ModalComponent open={viewPlansModel} setOpen={setViewPlansModel}>
-        <div className="bg-white">
+        <div className="bg-white p-4 rounded">
+          <div className='flex justify-between mb-4' >
+            <p className='text=[#344054] text=[16px]' >View Plans</p>
+
+            <Image
+              className="cursor-pointer"
+              src={'/closeicon.svg'}
+              alt="close icon"
+              width={70}
+              height={20}
+              onClick={() => setViewPlansModel(false)}
+            />
+          </div>
           <img
             className="object-cover h-auto w-full"
             src={

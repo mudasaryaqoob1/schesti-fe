@@ -64,6 +64,7 @@ const Summary = ({ setPrevNext }: Props) => {
   const [totalCostRecord, setTotalCostRecord] = useState<any>(0);
   const [totalCostBaseRecord, setTotalCostBaseRecord] = useState<any>(0);
   const [estimatesRecords, setEstimatesRecords] = useState([]);
+  const [subcontractorCosts, setSubcontractorCosts] = useState<any>({});
   const [totalBidDetail, setTotalBidDetail] = useState<any>({
     materialTax: 0,
     overheadAndProfit: 0,
@@ -93,19 +94,14 @@ const Summary = ({ setPrevNext }: Props) => {
           };
         }
       );
-
-      console.log(
-        generateEstimateDetail.estimateScope,
-        'generateEstimateDetailgenerateEstimateDetail',
-        updatedDataArray
-      );
-
       const totalCostForAllRecords = updatedDataArray.reduce(
         (total: any, titleObject: any) => {
           return total + parseFloat(titleObject.totalCostForTitle);
         },
         0
       );
+
+      console.log(updatedDataArray, 'updatedDataArray');
 
       setEstimatesRecords(updatedDataArray);
       setSubcostRecord(totalCostForAllRecords);
@@ -166,6 +162,35 @@ const Summary = ({ setPrevNext }: Props) => {
       setIsLoading(false);
       toast.error('Something went wrong');
     }
+  };
+
+  const handleSubcontractorCostChange = (title: any, value: any) => {
+    setSubcontractorCosts((prevCosts: any) => ({
+      ...prevCosts,
+      [title]: parseFloat(value) || 0,
+    }));
+
+    setEstimatesRecords((prevEstimates: any) =>
+      prevEstimates.map((estimate: any) => {
+        if (estimate.title === title) {
+          const subcontractorCost = parseFloat(value) || 0;
+
+          return {
+            ...estimate,
+            totalCostForTitle: (
+              parseFloat(estimate.totalCostForTitle) + subcontractorCost
+            ).toFixed(2), // Convert to string with 2 decimal places
+            scopeItems: estimate.scopeItems.map((scopeItem: any) => ({
+              ...scopeItem,
+              totalCostRecord: (
+                parseFloat(scopeItem.totalCostRecord) + subcontractorCost
+              ).toFixed(2),
+            })),
+          };
+        }
+        return estimate;
+      })
+    );
   };
 
   console.log(estimatesRecords, 'estimatesRecordsestimatesRecords');
@@ -353,6 +378,19 @@ const Summary = ({ setPrevNext }: Props) => {
                       />
                     </div>
                     <div className="flex items-center gap-2">
+                      <div>
+                        <input
+                          placeholder="subcontractor cost"
+                          type="number"
+                          value={subcontractorCosts[estimate.title] || ''}
+                          onChange={(e) =>
+                            handleSubcontractorCostChange(
+                              estimate.title,
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
                       <QuaternaryHeading
                         title={`Total Cost: ${estimate.totalCostForTitle}`}
                         className="font-semibold"
@@ -368,76 +406,87 @@ const Summary = ({ setPrevNext }: Props) => {
         </div>
 
         <div className="bg-celestialGray h-px  w-full my-4"></div>
-        <div className="flex w-full justify-between flex-col gap-2 my-4">
-          <div className="flex items-center justify-between">
-            <MinDesc title="Sub Total Cost" className="text-darkgrayish" />
-            <Description title={`$${subcostRecord}`} className="font-medium" />
-          </div>
-          <div className="flex items-center justify-between">
-            <MinDesc title="Material Tax %" className="text-darkgrayish" />
-            <InputComponent
-              suffix={<PercentageOutlined />}
-              label=""
-              type="number"
-              name="materialTax"
-              placeholder="Enter Material Tax"
-              field={{
-                value: totalBidDetail.materialTax,
-                onChange: (e) => {
-                  setTotalBidDetail({
-                    ...totalBidDetail,
-                    materialTax: e.target.value,
-                  });
-                },
-              }}
-            />
-          </div>
-          <div className="flex items-center justify-between">
-            <MinDesc title="Overhead & Profit %" className="text-darkgrayish" />
-            <InputComponent
-              suffix={<PercentageOutlined />}
-              label=""
-              type="number"
-              name="overheadAndProfit"
-              placeholder="Enter Overhead & Profit"
-              field={{
-                value: totalBidDetail.overheadAndProfit,
-                onChange: (e) => {
-                  setTotalBidDetail({
-                    ...totalBidDetail,
-                    overheadAndProfit: e.target.value,
-                  });
-                },
-              }}
-            />
-          </div>
-          <div className="flex items-center justify-between">
-            <MinDesc title="Bond Fee %" className="text-darkgrayish" />
-            <InputComponent
-              suffix={<PercentageOutlined />}
-              label=""
-              type="number"
-              name="bondFee"
-              placeholder="Enter Bond Fee"
-              field={{
-                value: totalBidDetail.bondFee,
-                onChange: (e) => {
-                  setTotalBidDetail({
-                    ...totalBidDetail,
-                    bondFee: e.target.value,
-                  });
-                },
-              }}
-            />
+        <div className="flex justify-end">
+          <div className="flex w-full justify-between flex-col gap-2 max-w-lg my-4">
+            <div className="flex items-center justify-between">
+              <MinDesc title="Sub Total Cost" className="text-darkgrayish" />
+              <Description
+                title={`$${subcostRecord}`}
+                className="font-medium"
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <MinDesc title="Material Tax %" className="text-darkgrayish" />
+              <InputComponent
+                suffix={<PercentageOutlined />}
+                label=""
+                type="number"
+                name="materialTax"
+                placeholder="Enter Material Tax"
+                field={{
+                  value: totalBidDetail.materialTax,
+                  onChange: (e) => {
+                    setTotalBidDetail({
+                      ...totalBidDetail,
+                      materialTax: e.target.value,
+                    });
+                  },
+                }}
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <MinDesc
+                title="Overhead & Profit %"
+                className="text-darkgrayish"
+              />
+              <InputComponent
+                suffix={<PercentageOutlined />}
+                label=""
+                type="number"
+                name="overheadAndProfit"
+                placeholder="Enter Overhead & Profit"
+                field={{
+                  value: totalBidDetail.overheadAndProfit,
+                  onChange: (e) => {
+                    setTotalBidDetail({
+                      ...totalBidDetail,
+                      overheadAndProfit: e.target.value,
+                    });
+                  },
+                }}
+              />
+            </div>
+            <div className="flex items-center justify-between">
+              <MinDesc title="Bond Fee %" className="text-darkgrayish" />
+              <InputComponent
+                suffix={<PercentageOutlined />}
+                label=""
+                type="number"
+                name="bondFee"
+                placeholder="Enter Bond Fee"
+                field={{
+                  value: totalBidDetail.bondFee,
+                  onChange: (e) => {
+                    setTotalBidDetail({
+                      ...totalBidDetail,
+                      bondFee: e.target.value,
+                    });
+                  },
+                }}
+              />
+            </div>
           </div>
         </div>
+
         <div className="bg-celestialGray h-px w-full my-4"></div>
-        <div className="flex items-center justify-between">
-          <QuaternaryHeading title="Total Bid" className="font-semibold" />
-          <Description
-            title={`$${totalCostRecord}`}
-            className="font-semibold"
-          />
+        <div className="flex justify-end">
+          <div className="flex items-center w-full justify-between max-w-lg">
+            <QuaternaryHeading title="Total Bid" className="font-semibold" />
+            <Description
+              title={`$${totalCostRecord}`}
+              className="font-semibold"
+            />
+          </div>
         </div>
       </div>
     </div>
