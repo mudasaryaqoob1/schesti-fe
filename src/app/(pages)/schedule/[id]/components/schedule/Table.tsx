@@ -3,7 +3,7 @@ import { SelectComponent } from '@/app/component/customSelect/Select.component';
 import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import {
   Checkbox,
   Drawer,
@@ -15,6 +15,7 @@ import {
   Tag,
   Select,
   ConfigProvider,
+  Dropdown,
 } from 'antd';
 import { type ColumnType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -22,8 +23,15 @@ import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import type { IWBSType, ScopeItem } from '../../type';
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
+import Image from 'next/image';
 
 const columns: ColumnType<{}>[] = [
+  {
+    title: "ID",
+    dataIndex: 'id',
+    key: '0',
+    width: 100,
+  },
   {
     title: "Activities",
     dataIndex: 'description',
@@ -138,7 +146,7 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
       actualStart: new Date().toDateString(),
       description: '_',
       finish: new Date().toDateString(),
-      id: new Date().getMilliseconds().toString(),
+      id: `ID${wbs.scopeItems.length}`,
       orignalDuration: '_',
       predecessors: '_',
       remainingDuration: '_',
@@ -173,7 +181,7 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
           className='text-sm font-medium tracking-wide'
         />
       ),
-      editable: true,
+      editable: item.dataIndex === 'id' ? false : true,
       dataIndex: item.dataIndex,
       hidden: !checkedList.includes(item.key as string),
     }))
@@ -203,15 +211,45 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
       editable: false,
       hidden: false,
       render(_: any, record: ScopeItem) {
-        return (
-          <DeleteOutlined
-            onClick={(e) => {
-              e.stopPropagation();
-              deleteRow(record);
-            }}
-            className="text-lg border p-2 rounded-lg text-gray-500"
+        return <Dropdown
+          menu={{
+            items: [
+              {
+                key: 'view',
+                label: <p>View Details</p>,
+              },
+              {
+                key: 'predecessors',
+                label: <p>Predecessors</p>,
+              },
+              {
+                key: 'successors',
+                label: <p>Successors</p>,
+              },
+              {
+                key: 'rename',
+                label: <p>Rename</p>,
+              },
+              {
+                key: 'delete',
+                label: <p>Delete</p>,
+                onClick: () => {
+                  deleteRow(record);
+                }
+              },
+            ],
+          }}
+          placement="bottomRight"
+        >
+          <Image
+            src={'/menuIcon.svg'}
+            alt="logo white icon"
+            width={20}
+            height={20}
+            className="active:scale-105 cursor-pointer"
           />
-        );
+        </Dropdown>
+
       },
       fixed: 'right',
       width: 150,
