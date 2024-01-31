@@ -121,13 +121,13 @@ type Props = {
   updateWbsScopeItems(_id: string, _scopeItems: ScopeItem[]): void;
   wbs: IWBSType;
 };
-
 export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
   const [checkedList, setCheckedList] = useState(defaultCheckedList);
   const [filters, setFilters] = useState(defaultCheckedList);
   const [open, setOpen] = useState(false);
   const [openDetails, setOpenDetails] = useState(false);
   const [selectedItem, setSelectedItem] = useState<ScopeItem | null>(null);
+  const [ID, setID] = useState(0);
 
   const showDrawer = () => {
     setOpen(true);
@@ -146,7 +146,7 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
       actualStart: new Date().toDateString(),
       description: '_',
       finish: new Date().toDateString(),
-      id: `ID${wbs.scopeItems.length}`,
+      id: `ID${ID}`,
       orignalDuration: '_',
       predecessors: '_',
       remainingDuration: '_',
@@ -158,6 +158,7 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
     };
     const newData = [...wbs.scopeItems, item];
     updateWbsScopeItems(wbs.id, newData);
+    setID(ID + 1);
   }
 
   function updateRow(record: ScopeItem) {
