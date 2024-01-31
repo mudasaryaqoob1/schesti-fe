@@ -17,9 +17,11 @@ import { SetWorkWeek } from './components/SetWorkWeek';
 import { IScheduleState } from './type';
 import { regularWorkingDays } from './utils';
 import { ISchedule } from '@/app/interfaces/schedule/schedule.type';
-import { addSchedule, selectSchedules } from '@/redux/schedule/schedule.slice';
+import { addSchedule, deleteSchedule, selectSchedules } from '@/redux/schedule/schedule.slice';
+import { useRouter } from 'next/navigation';
 
 const Schedule = () => {
+  const router = useRouter();
   const token = useSelector(selectToken);
   const schedules = useSelector(selectSchedules);
   const dispatch = useDispatch();
@@ -104,10 +106,13 @@ const Schedule = () => {
       dataIndex: 'action',
       align: 'center',
       key: 'action',
-      render: () => (
+      render: (_value, record) => (
         <Dropdown
           menu={{
             items,
+            onClick: (e) => {
+              handleMenuItemClick(e.key, record)
+            }
           }}
           placement="bottomRight"
         >
@@ -122,6 +127,17 @@ const Schedule = () => {
       ),
     },
   ];
+
+  function handleMenuItemClick(key: string, record: ISchedule) {
+    if (key === 'schedule') {
+      router.push(`/schedule/${record._id}`);
+    }
+    else if (key === 'delete') {
+      dispatch(deleteSchedule(record._id));
+    }
+  }
+
+
   function handleInfo<K extends keyof typeof info>(
     key: K,
     value: (typeof info)[K]
@@ -158,7 +174,6 @@ const Schedule = () => {
     setShowModal2(false);
   }
 
-  console.log(info);
   return (
     <section className="mt-6 shadow p-4 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       <ModalComponent
