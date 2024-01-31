@@ -2,7 +2,6 @@
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import { InputComponent } from '@/app/component/customInput/Input';
-import { SelectComponent } from '@/app/component/customSelect/Select.component';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import ModalComponent from '@/app/component/modal';
 import { HttpService } from '@/app/services/base.service';
@@ -175,20 +174,19 @@ const Schedule = () => {
                 onChange: (e) => handleInfo('projectName', e.target.value),
               }}
             />
-            <SelectComponent
+            <InputComponent
               label="Duration"
               name="duration"
-              placeholder="Select duration"
+              placeholder="Duration"
+              type='number'
               field={{
-                options: [
-                  { label: '3 Months', value: 3 },
-                  { label: '6 Months', value: 6 },
-                  { label: '12 Months', value: 12 },
-                ],
                 value: info.duration,
-                onChange(value) {
-                  handleInfo('duration', value);
+                onChange(e) {
+                  handleInfo('duration', Number(e.target.value));
                 },
+                addonAfter: "Days",
+                size: "large",
+                className: "border-none"
               }}
             />
 
