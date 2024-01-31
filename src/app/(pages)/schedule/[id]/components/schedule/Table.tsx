@@ -24,57 +24,75 @@ const columns: ColumnType<{}>[] = [
     title: <QuinaryHeading title="Activities" />,
     dataIndex: 'description',
     key: '1',
+    width: 150,
   },
   {
     title: <QuinaryHeading title="Original Duration" />,
     dataIndex: 'orignalDuration',
     key: '2',
+    width: 150,
   },
-  { title: <QuinaryHeading title="Start" />, dataIndex: 'start', key: '3' },
-  { title: <QuinaryHeading title="Finish" />, dataIndex: 'finish', key: '4' },
+  {
+    title: <QuinaryHeading title="Start" />, dataIndex: 'start', key: '3',
+    width: 150,
+  },
+  {
+    title: <QuinaryHeading title="Finish" />, dataIndex: 'finish', key: '4',
+    width: 150,
+  },
   {
     title: <QuinaryHeading title="Actual Start" />,
     dataIndex: 'actualStart',
     key: '5',
+    width: 150,
+
   },
   {
     title: <QuinaryHeading title="Actual Finish" />,
     dataIndex: 'actualFinish',
     key: '6',
+    width: 150,
   },
   {
     title: <QuinaryHeading title="Remaining Duration" />,
     dataIndex: 'remainingDuration',
+    width: 150,
     key: '7',
   },
   {
     title: <QuinaryHeading title="Schedule % Completed" />,
     dataIndex: 'scheduleCompleted',
+    width: 150,
     key: '8',
   },
   {
     title: <QuinaryHeading title="Total Float" />,
     dataIndex: 'totalFloat',
+    width: 150,
     key: '9',
   },
   {
     title: <QuinaryHeading title="Activity Type" />,
     dataIndex: 'activityType',
+    width: 150,
     key: '10',
   },
   {
     title: <QuinaryHeading title="Predecessors" />,
     dataIndex: 'predecessors',
+    width: 150,
     key: '11',
   },
   {
     title: <QuinaryHeading title="Successors" />,
     dataIndex: 'successors',
+    width: 150,
     key: '12',
   },
   {
     title: <QuinaryHeading title="Activity Calendar" />,
     dataIndex: 'activityCalendar',
+    width: 150,
     key: '13',
   },
 ];
@@ -177,6 +195,8 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
           />
         );
       },
+      fixed: 'right',
+      width: 150,
     },
     {
       title: <PlusOutlined className="text-lg" onClick={showDrawer} />,
@@ -184,7 +204,10 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
       render: () => null,
       editable: false,
       dataIndex: 'plus',
+      fixed: 'right',
+      width: 150,
     },
+
   ];
 
   const options = columns.map(({ key, title }) => ({
@@ -352,13 +375,13 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
         columns={[...newColumns, ...extras] as ColumnType<ScopeItem>[]}
         dataSource={wbs.scopeItems}
         key={'id'}
-        className='overflow-x-auto'
         components={{
           body: {
             row: EditableRow,
             cell: EditableCell,
           },
         }}
+        scroll={{ x: 1500, y: 300 }}
         footer={() => {
           return (
             <div
