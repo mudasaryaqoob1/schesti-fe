@@ -352,6 +352,7 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
         columns={[...newColumns, ...extras] as ColumnType<ScopeItem>[]}
         dataSource={wbs.scopeItems}
         key={'id'}
+        className='overflow-x-auto'
         components={{
           body: {
             row: EditableRow,
