@@ -79,12 +79,24 @@ const Schedule = () => {
     {
       title: 'Status',
       dataIndex: 'status',
-      render(value) {
-        return (
-          <Tag color="green" className="rounded-full">
-            {value}
+      render(_value) {
+        if (_value === 'active') {
+          return <Tag color="green" className="rounded-full capitalize">
+            {_value}
           </Tag>
-        );
+        }
+        else if (_value === 'pending') {
+          return <Tag color="red" className="rounded-full capitalize">
+            {_value}
+          </Tag>
+        }
+        else {
+          return (
+            <Tag color="blue" className="rounded-full capitalize">
+              {_value}
+            </Tag>
+          );
+        }
       },
     },
     {
