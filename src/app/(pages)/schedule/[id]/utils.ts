@@ -1,6 +1,7 @@
-import { ScopeItem } from "./type";
+import { ScopeItem } from './type';
 
-export const scopeItems: ScopeItem[] = [{
+export const scopeItems: ScopeItem[] = [
+  {
     id: '1',
     description: 'Design',
     orignalDuration: '12',
@@ -15,8 +16,8 @@ export const scopeItems: ScopeItem[] = [{
     predecessors: '12',
     successors: '12',
     activityCalendar: '12',
-},
-{
+  },
+  {
     id: '2',
     description: 'Design',
     orignalDuration: '12',
@@ -31,8 +32,8 @@ export const scopeItems: ScopeItem[] = [{
     predecessors: '12',
     successors: '12',
     activityCalendar: '12',
-},
-{
+  },
+  {
     id: '3',
     description: 'Design',
     orignalDuration: '12',
@@ -47,8 +48,8 @@ export const scopeItems: ScopeItem[] = [{
     predecessors: '12',
     successors: '12',
     activityCalendar: '12',
-},
-{
+  },
+  {
     id: '4',
     description: 'Design',
     orignalDuration: '12',
@@ -63,5 +64,5 @@ export const scopeItems: ScopeItem[] = [{
     predecessors: '12',
     successors: '12',
     activityCalendar: '12',
-},
-]
+  },
+];

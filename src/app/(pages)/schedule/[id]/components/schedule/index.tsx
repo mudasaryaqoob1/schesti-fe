@@ -17,9 +17,12 @@ import { ScheduleTable } from './Table';
 
 type Props = {
   updateWbsScopeItems: (_id: string, _scopeItems: ScopeItem[]) => void;
-  addWbs: (_category: IWBSType['category'], _subCategory: IWBSType['subCategory']) => void;
+  addWbs: (
+    _category: IWBSType['category'],
+    _subCategory: IWBSType['subCategory']
+  ) => void;
   state: IWBSType[];
-}
+};
 
 export function Schedule({ addWbs, state, updateWbsScopeItems }: Props) {
   const [materialModal, setMaterialModal] = useState(false);
@@ -56,7 +59,8 @@ export function Schedule({ addWbs, state, updateWbsScopeItems }: Props) {
                   key: i,
                   label: (
                     <div className="flex items-center space-x-2">
-                      {Array.isArray(active) && active.includes(i.toString()) ? (
+                      {Array.isArray(active) &&
+                      active.includes(i.toString()) ? (
                         <DownOutlined className="text-obsidianBlack2 p-1 border rounded text-lg" />
                       ) : (
                         <RightOutlined className="text-obsidianBlack2 p-1 border rounded text-lg" />
@@ -74,8 +78,13 @@ export function Schedule({ addWbs, state, updateWbsScopeItems }: Props) {
                     </div>
                   ),
                   showArrow: false,
-                  children: <ScheduleTable updateWbsScopeItems={updateWbsScopeItems} wbs={item} />,
-                }
+                  children: (
+                    <ScheduleTable
+                      updateWbsScopeItems={updateWbsScopeItems}
+                      wbs={item}
+                    />
+                  ),
+                };
               })}
             />
           </div>

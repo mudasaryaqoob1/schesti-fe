@@ -12,7 +12,7 @@ export type IWBSType = {
   title: string;
   category: Category;
   subCategory: SubCategory;
-  scopeItems: ScopeItem[]
+  scopeItems: ScopeItem[];
 };
 
 export type ScopeItem = {
@@ -30,4 +30,4 @@ export type ScopeItem = {
   predecessors: string;
   successors: string;
   activityCalendar: string;
-}
+};

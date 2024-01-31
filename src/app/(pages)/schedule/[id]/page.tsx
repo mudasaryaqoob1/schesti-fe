@@ -7,7 +7,7 @@ import { UserOutlined } from '@ant-design/icons';
 import { Avatar, ConfigProvider, Tabs, Tag } from 'antd';
 import { useLayoutEffect, useState } from 'react';
 import { Schedule } from './components/schedule';
-import { Gantt } from './components/Gantt';
+import { GanttComponent } from './components/gantt';
 import { useSelector } from 'react-redux';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
@@ -37,21 +37,24 @@ export default function SchedulePage() {
       category,
       subCategory,
       title: `${category.label} / ${subCategory.label}`,
-      scopeItems
+      scopeItems,
     };
 
     setState([...state, item]);
   }
 
-  function updateWbsScopeItems(wbsId: string, scopeItems: IWBSType['scopeItems']) {
+  function updateWbsScopeItems(
+    wbsId: string,
+    scopeItems: IWBSType['scopeItems']
+  ) {
     const updatedWbs = state.map((item) => {
       if (item.id === wbsId) {
         return {
           ...item,
-          scopeItems
-        }
+          scopeItems,
+        };
       }
-      return item
+      return item;
     });
     setState(updatedWbs);
   }
@@ -202,11 +205,16 @@ export default function SchedulePage() {
                   />
                 ),
                 tabKey: type,
-                children: tab === SCHEDULE_KEY ? <Schedule
-                  addWbs={addWbs}
-                  state={state}
-                  updateWbsScopeItems={updateWbsScopeItems}
-                /> : <Gantt />,
+                children:
+                  tab === SCHEDULE_KEY ? (
+                    <Schedule
+                      addWbs={addWbs}
+                      state={state}
+                      updateWbsScopeItems={updateWbsScopeItems}
+                    />
+                  ) : (
+                    <GanttComponent />
+                  ),
                 style: {},
               };
             })}

@@ -1,15 +1,19 @@
 'use client';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { Badge, Progress, Select } from 'antd';
-import React from 'react';
-import { Column } from '@ant-design/plots';
-import { config1 } from './data1';
+import React, { useEffect, useState } from 'react';
+// import { Column } from '@ant-design/plots';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import CustomButton from '@/app/component/customButton/white';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import Table, { type ColumnsType } from 'antd/es/table';
 
 const Fiance = () => {
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
   const columns: ColumnsType<{}> = [
     {
       title: 'Month',
@@ -38,6 +42,10 @@ const Fiance = () => {
     },
   ];
 
+  if (!isMounted) {
+    return null
+  }
+
   return (
     <section className="my-4  mx-8 px-4">
       <div className="grid grid-cols-12 gap-8">
@@ -62,7 +70,8 @@ const Fiance = () => {
             />
           </div>
 
-          <Column {...config1} />
+          {/* <Column
+            {...config1} /> */}
         </div>
         <div className="col-span-12 md:col-span-4 space-y-4 shadow bg-white p-4 rounded-md">
           <div className="flex justify-between items-center">
