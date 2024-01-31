@@ -13,6 +13,7 @@ import {
   Table,
   DatePicker,
   Tag,
+  Select,
 } from 'antd';
 import { type ColumnType } from 'antd/es/table';
 import dayjs from 'dayjs';
@@ -404,7 +405,7 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
         }}
         onRow={(data) => ({
           onClick: () => {
-            setOpenDetails(true);
+            // setOpenDetails(true);
             setSelectedItem(data);
           },
         })}
@@ -442,7 +443,6 @@ interface EditableCellProps {
 }
 
 function EditableCell({
-  title,
   editable,
   children,
   dataIndex,
@@ -477,6 +477,20 @@ function EditableCell({
   };
 
   let childNode = children;
+  const status = record ? record.status : "";
+  let statusColor: string = "";
+  if (status === 'New') {
+    statusColor = "#2db7f5";
+  } else if (status === 'Planned') {
+    statusColor = "#108ee9";
+  } else if (status === 'In Progress') {
+    statusColor = "#3BC8D0";
+  } else if (status === 'Completed') {
+    statusColor = "#87d068";
+  } else if (status === 'Review') {
+    statusColor = "yellow"
+  }
+
 
   if (editable) {
     childNode = editing ? (
@@ -486,23 +500,32 @@ function EditableCell({
         rules={[
           {
             required: true,
-            message: `${title} is required.`,
+            message: `${dataIndex} is required.`,
           },
         ]}
         getValueProps={(i) => {
           return { value: dateDataIndexes.includes(dataIndex) ? dayjs(i) : i };
         }}
       >
-        {dateDataIndexes.includes(dataIndex) ? (
-          <DatePicker
-            ref={inputRef}
-            onChange={save}
-            value={dayjs(record[dataIndex])}
-            onBlur={save}
-          />
-        ) : (
-          <Input ref={inputRef} onPressEnter={save} onBlur={save} />
-        )}
+        {dataIndex === 'status' ? <Select
+          ref={inputRef}
+          onBlur={save}
+          value={record[dataIndex]}
+          options={[{ label: 'New', value: 'New' }, { label: 'Planned', value: 'Planned' }, { label: 'In Progress', value: 'In Progress' }, { label: 'Completed', value: 'Completed' }, { label: 'Review', value: 'Review' }]}
+          dropdownRender={menu => {
+            return menu;
+          }}
+        />
+          : dateDataIndexes.includes(dataIndex) ? (
+            <DatePicker
+              ref={inputRef}
+              onChange={save}
+              value={dayjs(record[dataIndex])}
+              onBlur={save}
+            />
+          ) : (
+            <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+          )}
       </Form.Item>
     ) : (
       <div
@@ -513,7 +536,9 @@ function EditableCell({
           toggleEdit();
         }}
       >
-        {dateDataIndexes.includes(dataIndex)
+        {dataIndex === 'status' ? (
+          <Tag className='w-full text-center p-[2px]' color={statusColor}>{record[dataIndex]}</Tag>
+        ) : dateDataIndexes.includes(dataIndex)
           ? dayjs(record[dataIndex]).format('DD/MM/YYYY')
           : children}
       </div>
