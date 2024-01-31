@@ -1,9 +1,7 @@
 export type IScheduleState = {
   projectName: string;
-  duration?: number;
+  duration: number;
   hoursPerDay: number;
-  scheduleType: string;
-  fullDaysPerWeek: number;
   regularWorkingDays: {
     day: string;
     hours: number;

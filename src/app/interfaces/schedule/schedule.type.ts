@@ -4,5 +4,8 @@ export type ISchedule = {
     duration: number;
     hoursPerDay: number;
     regularWokingDays: { day: string; hours: number }[];
-    date: Date;
+    status: "active" | "pending" | "completed";
+    dueDate: string;
+    managingCompany: string;
+    ownerRepresentation: string;
 }

@@ -12,20 +12,22 @@ import { type ColumnsType } from 'antd/es/table';
 import moment from 'moment';
 import Image from 'next/image';
 import React, { useLayoutEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { SetWorkWeek } from './components/SetWorkWeek';
 import { IScheduleState } from './type';
 import { regularWorkingDays } from './utils';
+import { ISchedule } from '@/app/interfaces/schedule/schedule.type';
+import { addSchedule, selectSchedules } from '@/redux/schedule/schedule.slice';
 
 const Schedule = () => {
   const token = useSelector(selectToken);
+  const schedules = useSelector(selectSchedules);
+  const dispatch = useDispatch();
   const [info, setInfo] = useState<IScheduleState>({
     projectName: '',
-    fullDaysPerWeek: 0,
+    duration: 0,
     hoursPerDay: 0,
     regularWorkingDays,
-    scheduleType: '',
-    duration: undefined,
   });
 
   const [showModal, setShowModal] = useState(false);
@@ -46,10 +48,10 @@ const Schedule = () => {
       label: <p>Delete</p>,
     },
   ];
-  const columns: ColumnsType<{}> = [
+  const columns: ColumnsType<ISchedule> = [
     {
       title: 'Project #',
-      dataIndex: 'project',
+      dataIndex: '_id',
     },
     {
       title: 'Project Name',
@@ -128,6 +130,22 @@ const Schedule = () => {
     setShowModal2(true);
   }
 
+  function handleConfirm() {
+    const item: ISchedule = {
+      _id: new Date().getTime().toString(),
+      dueDate: new Date().toDateString(),
+      duration: info.duration as number,
+      hoursPerDay: info.hoursPerDay,
+      managingCompany: '',
+      ownerRepresentation: '',
+      projectName: info.projectName,
+      regularWokingDays: info.regularWorkingDays,
+      status: 'active'
+    };
+    dispatch(addSchedule(item));
+    setShowModal2(false);
+  }
+
   console.log(info);
   return (
     <section className="mt-6 shadow p-4 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
@@ -141,6 +159,8 @@ const Schedule = () => {
           handleInfo={handleInfo}
           info={info}
           onClose={() => setShowModal2(false)}
+          onCancel={() => setShowModal2(false)}
+          onConfirm={handleConfirm}
         />
       </ModalComponent>
       <ModalComponent
@@ -191,7 +211,7 @@ const Schedule = () => {
             />
 
             <div className="flex justify-end py-2 space-x-2">
-              <WhiteButton text="Cancel" className="!w-28" />
+              <WhiteButton text="Cancel" className="!w-28" onClick={() => setShowModal2(false)} />
               <CustomButton
                 text="Schedule"
                 className="!w-28"
@@ -232,17 +252,7 @@ const Schedule = () => {
         <Table
           loading={false}
           columns={columns}
-          dataSource={[
-            {
-              project: '0001',
-              projectName: 'Project Name',
-              managingCompany: 'Managing Company',
-              ownerRepresentative: 'Owner Representative',
-              dueDate: 'Due Date',
-              task: 'Task',
-              status: 'Status',
-            },
-          ]}
+          dataSource={schedules}
           pagination={{ position: ['bottomCenter'] }}
         />
       </div>
