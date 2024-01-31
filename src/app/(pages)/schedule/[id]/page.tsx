@@ -7,10 +7,12 @@ import { UserOutlined } from '@ant-design/icons';
 import { Avatar, ConfigProvider, Tabs, Tag } from 'antd';
 import { useLayoutEffect, useState } from 'react';
 import { Schedule } from './components/schedule';
-import { Gantt } from './components/Gantt';
+import { GanttComponent } from './components/gantt';
 import { useSelector } from 'react-redux';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
+import { IWBSType } from './type';
+import { scopeItems } from './utils';
 
 const SCHEDULE_KEY = 'Schedule';
 const GANTT_KEY = 'Gantt';
@@ -18,11 +20,44 @@ const GANTT_KEY = 'Gantt';
 export default function SchedulePage() {
   const [tab, setTab] = useState(SCHEDULE_KEY);
   const token = useSelector(selectToken);
+  const [state, setState] = useState<IWBSType[]>([]);
+
   useLayoutEffect(() => {
     if (token) {
       HttpService.setToken(token);
     }
   }, [token]);
+
+  function addWbs(
+    category: IWBSType['category'],
+    subCategory: IWBSType['subCategory']
+  ) {
+    const item: IWBSType = {
+      id: new Date().getTime().toString(),
+      category,
+      subCategory,
+      title: `${category.label} / ${subCategory.label}`,
+      scopeItems,
+    };
+
+    setState([...state, item]);
+  }
+
+  function updateWbsScopeItems(
+    wbsId: string,
+    scopeItems: IWBSType['scopeItems']
+  ) {
+    const updatedWbs = state.map((item) => {
+      if (item.id === wbsId) {
+        return {
+          ...item,
+          scopeItems,
+        };
+      }
+      return item;
+    });
+    setState(updatedWbs);
+  }
 
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
@@ -170,7 +205,16 @@ export default function SchedulePage() {
                   />
                 ),
                 tabKey: type,
-                children: tab === SCHEDULE_KEY ? <Schedule /> : <Gantt />,
+                children:
+                  tab === SCHEDULE_KEY ? (
+                    <Schedule
+                      addWbs={addWbs}
+                      state={state}
+                      updateWbsScopeItems={updateWbsScopeItems}
+                    />
+                  ) : (
+                    <GanttComponent />
+                  ),
                 style: {},
               };
             })}
