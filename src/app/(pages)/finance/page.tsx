@@ -9,11 +9,11 @@ import QuinaryHeading from '@/app/component/headings/quinary';
 import Table, { type ColumnsType } from 'antd/es/table';
 
 const Fiance = () => {
-  const [isMounted, setIsMounted] = useState(false)
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true)
-  }, [])
+    setIsMounted(true);
+  }, []);
   const columns: ColumnsType<{}> = [
     {
       title: 'Month',
@@ -43,7 +43,7 @@ const Fiance = () => {
   ];
 
   if (!isMounted) {
-    return null
+    return null;
   }
 
   return (
