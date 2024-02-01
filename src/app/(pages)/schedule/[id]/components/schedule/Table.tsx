@@ -567,39 +567,58 @@ function EditableCell({
 
   if (editable) {
     childNode = editing ? (
-      <Form.Item
-        style={{ margin: 0 }}
-        name={dataIndex}
-        rules={[
-          {
-            required: true,
-            message: `${dataIndex} is required.`,
-          },
-        ]}
-        getValueProps={(i) => {
-          return { value: dateDataIndexes.includes(dataIndex) ? dayjs(i) : i };
+      <ConfigProvider
+        theme={{
+          components: {
+            Input: {
+              colorPrimary: "darkgrey",
+            },
+            Select: {
+              colorPrimary: "grey",
+              colorPrimaryHover: "grey",
+              colorPrimaryActive: "lightgrey"
+            },
+            DatePicker: {
+              colorPrimary: "darkgrey",
+            }
+          }
         }}
       >
-        {dataIndex === 'status' ? <Select
-          ref={inputRef}
-          onBlur={save}
-          value={record[dataIndex]}
-          options={[{ label: 'New', value: 'New' }, { label: 'Planned', value: 'Planned' }, { label: 'In Progress', value: 'In Progress' }, { label: 'Completed', value: 'Completed' }, { label: 'Review', value: 'Review' }]}
-          dropdownRender={menu => {
-            return menu;
+
+        <Form.Item
+          style={{ margin: 0 }}
+          name={dataIndex}
+          rules={[
+            {
+              required: true,
+              message: `${dataIndex} is required.`,
+            },
+          ]}
+          getValueProps={(i) => {
+            return { value: dateDataIndexes.includes(dataIndex) ? dayjs(i) : i };
           }}
-        />
-          : dateDataIndexes.includes(dataIndex) ? (
-            <DatePicker
-              ref={inputRef}
-              onChange={save}
-              value={dayjs(record[dataIndex])}
-              onBlur={save}
-            />
-          ) : (
-            <Input ref={inputRef} onPressEnter={save} onBlur={save} />
-          )}
-      </Form.Item>
+        >
+          {dataIndex === 'status' ? <Select
+            ref={inputRef}
+            onBlur={save}
+            value={record[dataIndex]}
+            options={[{ label: 'New', value: 'New' }, { label: 'Planned', value: 'Planned' }, { label: 'In Progress', value: 'In Progress' }, { label: 'Completed', value: 'Completed' }, { label: 'Review', value: 'Review' }]}
+            dropdownRender={menu => {
+              return menu;
+            }}
+          />
+            : dateDataIndexes.includes(dataIndex) ? (
+              <DatePicker
+                ref={inputRef}
+                onChange={save}
+                value={dayjs(record[dataIndex])}
+                onBlur={save}
+              />
+            ) : (
+              <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+            )}
+        </Form.Item>
+      </ConfigProvider>
     ) : (
       <div
         className="editable-cell-value-wrap"
