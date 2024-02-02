@@ -7,7 +7,7 @@ import SenaryHeading from '@/app/component/headings/senaryHeading';
 import moment from 'moment';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import dayjs from 'dayjs';
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   state: IMeeting[];
@@ -16,7 +16,7 @@ type Props = {
 
 };
 export function UpcomingComponent({ state, onOpenModal }: Props) {
-  const [selectedMeeeting, setSelectedMeeting] = useState<IMeeting | null>();
+  const router = useRouter();
 
   if (!state.length) {
     return (
@@ -49,11 +49,7 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
       </section>
     );
   }
-  if (selectedMeeeting) {
-    return <div>
-      Meeting Selected
-    </div>
-  }
+
   return (
     <div>
       {state.filter(item => {
@@ -81,7 +77,7 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
                 className="!w-20"
                 text={'Join'}
                 onClick={() => {
-                  setSelectedMeeting(item);
+                  router.push(`/meeting/${item.roomName}`)
                 }}
               />
             </div>
