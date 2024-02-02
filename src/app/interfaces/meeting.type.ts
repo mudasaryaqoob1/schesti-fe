@@ -5,7 +5,7 @@ export type IMeeting = {
     roomName: string
     invitees: string[]
     date: string
-    associatedComapny: string
+    associatedCompany: string
     createdAt: string
     updatedAt: string
 }
