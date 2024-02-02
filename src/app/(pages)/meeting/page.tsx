@@ -13,7 +13,7 @@ import { CloseOutlined } from '@ant-design/icons';
 import { InputComponent } from '@/app/component/customInput/Input';
 import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import { useSelector } from 'react-redux';
-import { selectMeetings } from '@/redux/meeting/meeting.slice';
+import { addNewMeetingAction, selectMeetings } from '@/redux/meeting/meeting.slice';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { fetchMeetings } from '@/redux/meeting/meeting.thunk';
@@ -58,7 +58,9 @@ const Meeting = () => {
         link: `http://localhost:3000/meeting/${roomName}}`,
         topic: values.topic
       }).then((response) => {
-        console.log("Response", response);
+        if (response.data) {
+          dispatch(addNewMeetingAction(response.data.meeting));
+        }
         setIsScheduling(false);
         setShowModal(false);
         formik.resetForm();
