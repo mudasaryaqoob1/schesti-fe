@@ -1,13 +1,19 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { initalMeetingState } from "./meeting.intialState";
 import { RootState } from "../store";
 import { fetchMeetings } from "./meeting.thunk";
+import { IMeeting } from "@/app/interfaces/meeting.type";
 
 export const meetingSlice = createSlice({
     name: "meeting",
     initialState: initalMeetingState,
     reducers: {
-
+        addNewMeeting(state, action: PayloadAction<IMeeting>) {
+            state.data.push(action.payload);
+        },
+        deleteMeeting(state, action: PayloadAction<string>) {
+            state.data = state.data.filter(meeting => meeting._id !== action.payload)
+        }
     },
     extraReducers(builder) {
         builder.addCase(fetchMeetings.fulfilled, (state, action) => {
