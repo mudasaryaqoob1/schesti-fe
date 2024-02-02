@@ -9,7 +9,7 @@ export default function JoinMeeting() {
     <div>
       <div className='h-screen'>
         <JaaSMeeting
-          appId='vpaas-magic-cookie-6703af8cdb62487c8b5f0ec66cf8466b'
+          appId={process.env.NEXT_PUBLIC_JITSI_APP_ID as string}
           roomName={link as string}
           configOverwrite={{
             startWithAudioMuted: true,

@@ -63,8 +63,8 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
     })
 
     const disabledDate: RangePickerProps['disabledDate'] = (current) => {
-        // Can not select days before today and today
-        return current < dayjs().endOf('day');
+        // Can not select days yesterday and backwards
+        return current < dayjs().add(-1, 'days');
     };
     return <ModalComponent width='50%' open={showModal} setOpen={setShowModal} title='Schedule a meeting'>
         <div className="bg-white border border-solid border-elboneyGray rounded-[4px] z-50">
@@ -96,9 +96,9 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
                         }}
                     />
                     <InputComponent
-                        label="Email Address"
+                        label="Invite Client"
                         type="email"
-                        placeholder="Email Address"
+                        placeholder="Invite Client"
                         name="email"
                         hasError={formik.touched.email && !!formik.errors.email}
                         field={{

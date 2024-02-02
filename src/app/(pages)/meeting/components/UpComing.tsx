@@ -8,6 +8,9 @@ import QuinaryHeading from '@/app/component/headings/quinary';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
 import { IMeeting } from '@/app/interfaces/meeting.type';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import { Skeleton } from 'antd';
 
 type Props = {
   state: IMeeting[];
@@ -17,7 +20,7 @@ type Props = {
 const TIME_TO_ENABLE = 15; // minutes
 export function UpcomingComponent({ state, onOpenModal }: Props) {
   const router = useRouter();
-
+  const meetingsLoading = useSelector((state: RootState) => state.meetings.loading);
 
   function enableJoin15MinutesLeft(item: IMeeting) {
     const today = dayjs();
@@ -26,7 +29,11 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
     return diff <= TIME_TO_ENABLE;
   }
 
-  if (!state.length) {
+  if (meetingsLoading) {
+    return <Skeleton active className='mt-6' />
+  }
+
+  if (state.length === 0) {
     return (
       <section className="mt-6 mx-4 rounded-xl h-[calc(100vh-200px)] grid items-center border border-solid border-silverGray shadow-secondaryTwist">
         <div className="grid place-items-center">
