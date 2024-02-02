@@ -22,6 +22,8 @@ import { HttpService } from '@/app/services/base.service';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import dayjs from 'dayjs';
+import { meetingService } from '@/app/services/meeting.service';
+import { toast } from 'react-toastify';
 
 const UPCOMING_MEETING_KEY = 'Upcoming Meeting';
 const RECENT_MEETING_KEY = 'Recent Meeting';
@@ -47,7 +49,24 @@ const Meeting = () => {
     },
     validationSchema: CreateMeetingSchema,
     onSubmit(values) {
-      console.log(values);
+      setIsScheduling(true);
+      let roomName = `Schesti-${Math.random() * 1000}`;
+      meetingService.httpCreateMeeting({
+        date: dayjs(values.date).format('YYYY-MM-DDTHH:mm:ss'),
+        invitees: [values.email],
+        roomName,
+        link: `http://localhost:3000/meeting/${roomName}}`,
+        topic: values.topic
+      }).then((response) => {
+        console.log("Response", response);
+        setIsScheduling(false);
+        setShowModal(false);
+        formik.resetForm();
+      })
+        .catch(({ response }: any) => {
+          setIsScheduling(false);
+          toast.error(response.data.message);
+        });
     }
   })
 
