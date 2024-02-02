@@ -11,6 +11,9 @@ class MeetingService extends HttpService {
     httpCreateMeeting = (
         data: CreateMeetingType
     ): Promise<IResponseInterface<{ meeting: IMeeting }>> =>
-        this.post(`${this.prefix}/upload-materials`, data,);
+        this.post(`${this.prefix}/create`, data,);
+
+    httpGetMeetings = (): Promise<IResponseInterface<{ meetings: IMeeting[] }>> =>
+        this.get(`${this.prefix}/all`);
 }
 export const meetingService = new MeetingService();
