@@ -4,7 +4,7 @@ import { RootState } from "../store";
 import { fetchMeetings } from "./meeting.thunk";
 
 export const meetingSlice = createSlice({
-    name: "schedule",
+    name: "meeting",
     initialState: initalMeetingState,
     reducers: {
 
