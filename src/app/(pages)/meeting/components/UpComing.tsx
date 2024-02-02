@@ -6,22 +6,17 @@ import Description from '@/app/component/description';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import moment from 'moment';
 import QuinaryHeading from '@/app/component/headings/quinary';
+import dayjs from 'dayjs';
+import { useState } from 'react';
 
 type Props = {
   state: IMeeting[];
   setState: React.Dispatch<React.SetStateAction<IMeeting[]>>;
+  onOpenModal: () => void;
+
 };
-export function UpcomingComponent({ setState, state }: Props) {
-  function generateRoom() {
-    const roomName = `SchestiMeetRoomNo${Math.random() * 100}-${Date.now()}`;
-    const meeting: IMeeting = {
-      id: new Date().getTime().toString(),
-      date: new Date().toString(),
-      topic: 'Random Topic ' + state.length,
-      link: '/meeting/' + roomName,
-    };
-    setState([...state, meeting]);
-  }
+export function UpcomingComponent({ state, onOpenModal }: Props) {
+  const [selectedMeeeting, setSelectedMeeting] = useState<IMeeting | null>();
 
   if (!state.length) {
     return (
@@ -47,17 +42,25 @@ export function UpcomingComponent({ setState, state }: Props) {
             <CustomButton
               className="mt-7"
               text={'Schedule a meeting'}
-              onClick={generateRoom}
+              onClick={onOpenModal}
             />
           </div>
         </div>
       </section>
     );
   }
-
+  if (selectedMeeeting) {
+    return <div>
+      Meeting Selected
+    </div>
+  }
   return (
     <div>
-      {state.map((item, index) => {
+      {state.filter(item => {
+        const today = dayjs();
+        const isToday = dayjs(item.date).isSame(today, 'date');
+        return isToday;
+      }).map((item, index) => {
         return (
           <div
             key={index}
@@ -68,7 +71,7 @@ export function UpcomingComponent({ setState, state }: Props) {
               <SenaryHeading
                 title={moment(item.date).format('MMMM Do, YYYY')}
               />
-              <QuinaryHeading title={item.link} className="font-medium" />
+              <QuinaryHeading title={item.roomName} className="font-medium" />
               <SenaryHeading
                 title={`Time: ${moment(item.date).format('h:mm a')}`}
               />
@@ -78,7 +81,7 @@ export function UpcomingComponent({ setState, state }: Props) {
                 className="!w-20"
                 text={'Join'}
                 onClick={() => {
-                  window.open(item.link, '_blank');
+                  setSelectedMeeting(item);
                 }}
               />
             </div>
