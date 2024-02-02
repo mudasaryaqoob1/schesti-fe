@@ -5,7 +5,7 @@ type IMeetingState = {
     error?: string | null;
     message?: string | null;
     statusCode: number | null;
-    meetings: IMeeting[];
+    data: IMeeting[];
 }
 
 export const initalMeetingState: IMeetingState = {
@@ -13,5 +13,5 @@ export const initalMeetingState: IMeetingState = {
     error: null,
     message: null,
     statusCode: null,
-    meetings: []
+    data: []
 }

@@ -10,5 +10,5 @@ export const meetingSlice = createSlice({
     }
 });
 
-export const selectMeetings = (state: RootState) => state;
+export const selectMeetings = (state: RootState) => state.meetings.data;
 export default meetingSlice.reducer;
