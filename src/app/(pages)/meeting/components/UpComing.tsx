@@ -14,8 +14,17 @@ type Props = {
   onOpenModal: () => void;
 
 };
+const TIME_TO_ENABLE = 15; // minutes
 export function UpcomingComponent({ state, onOpenModal }: Props) {
   const router = useRouter();
+
+
+  function enableJoin15MinutesLeft(item: IMeeting) {
+    const today = dayjs();
+    const meetingDate = dayjs(item.date);
+    const diff = meetingDate.diff(today, 'minute');
+    return diff <= TIME_TO_ENABLE;
+  }
 
   if (!state.length) {
     return (
@@ -73,11 +82,12 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
             </div>
             <div>
               <CustomButton
-                className="!w-20"
+                className={`!w-20 ${!enableJoin15MinutesLeft(item) && '!bg-lavenderPurple opacity-50'}`}
                 text={'Join'}
                 onClick={() => {
                   router.push(`/meeting/${item.roomName}`)
                 }}
+                disabled={!enableJoin15MinutesLeft(item)}
               />
             </div>
           </div>
