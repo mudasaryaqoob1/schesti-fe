@@ -8,10 +8,10 @@ export const meetingSlice = createSlice({
     name: "meeting",
     initialState: initalMeetingState,
     reducers: {
-        addNewMeeting(state, action: PayloadAction<IMeeting>) {
+        addNewMeetingAction(state, action: PayloadAction<IMeeting>) {
             state.data.push(action.payload);
         },
-        deleteMeeting(state, action: PayloadAction<string>) {
+        deleteMeetingAction(state, action: PayloadAction<string>) {
             state.data = state.data.filter(meeting => meeting._id !== action.payload)
         }
     },
@@ -30,6 +30,6 @@ export const meetingSlice = createSlice({
 
     },
 });
-
+export const { addNewMeetingAction, deleteMeetingAction } = meetingSlice.actions;
 export const selectMeetings = (state: RootState) => state.meetings.data;
 export default meetingSlice.reducer;
