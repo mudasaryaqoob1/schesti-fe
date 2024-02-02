@@ -142,7 +142,9 @@ export function CategoryModal({
           />
 
           <div className="flex mt-3 justify-end py-2 space-x-2">
-            <WhiteButton text="Cancel" className="!w-28"
+            <WhiteButton
+              text="Cancel"
+              className="!w-28"
               onClick={() => setMaterialModal(false)}
             />
             <CustomButton

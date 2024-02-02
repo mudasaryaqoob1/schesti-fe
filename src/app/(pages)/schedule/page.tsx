@@ -17,7 +17,11 @@ import { SetWorkWeek } from './components/SetWorkWeek';
 import { IScheduleState } from './type';
 import { regularWorkingDays } from './utils';
 import { ISchedule } from '@/app/interfaces/schedule/schedule.type';
-import { addSchedule, deleteSchedule, selectSchedules } from '@/redux/schedule/schedule.slice';
+import {
+  addSchedule,
+  deleteSchedule,
+  selectSchedules,
+} from '@/redux/schedule/schedule.slice';
 import { useRouter } from 'next/navigation';
 
 const Schedule = () => {
@@ -83,16 +87,18 @@ const Schedule = () => {
       dataIndex: 'status',
       render(_value) {
         if (_value === 'active') {
-          return <Tag color="green" className="rounded-full capitalize">
-            {_value}
-          </Tag>
-        }
-        else if (_value === 'pending') {
-          return <Tag color="red" className="rounded-full capitalize">
-            {_value}
-          </Tag>
-        }
-        else {
+          return (
+            <Tag color="green" className="rounded-full capitalize">
+              {_value}
+            </Tag>
+          );
+        } else if (_value === 'pending') {
+          return (
+            <Tag color="red" className="rounded-full capitalize">
+              {_value}
+            </Tag>
+          );
+        } else {
           return (
             <Tag color="blue" className="rounded-full capitalize">
               {_value}
@@ -111,8 +117,8 @@ const Schedule = () => {
           menu={{
             items,
             onClick: (e) => {
-              handleMenuItemClick(e.key, record)
-            }
+              handleMenuItemClick(e.key, record);
+            },
           }}
           placement="bottomRight"
         >
@@ -131,12 +137,10 @@ const Schedule = () => {
   function handleMenuItemClick(key: string, record: ISchedule) {
     if (key === 'schedule') {
       router.push(`/schedule/${record._id}`);
-    }
-    else if (key === 'delete') {
+    } else if (key === 'delete') {
       dispatch(deleteSchedule(record._id));
     }
   }
-
 
   function handleInfo<K extends keyof typeof info>(
     key: K,
@@ -168,7 +172,7 @@ const Schedule = () => {
       ownerRepresentation: '',
       projectName: info.projectName,
       regularWokingDays: info.regularWorkingDays,
-      status: 'active'
+      status: 'active',
     };
     dispatch(addSchedule(item));
     setShowModal2(false);
@@ -225,20 +229,24 @@ const Schedule = () => {
               label="Duration"
               name="duration"
               placeholder="Duration"
-              type='number'
+              type="number"
               field={{
                 value: info.duration,
                 onChange(e) {
                   handleInfo('duration', Number(e.target.value));
                 },
-                addonAfter: "Days",
-                size: "large",
-                className: "border-none"
+                addonAfter: 'Days',
+                size: 'large',
+                className: 'border-none',
               }}
             />
 
             <div className="flex justify-end py-2 space-x-2">
-              <WhiteButton text="Cancel" className="!w-28" onClick={() => setShowModal2(false)} />
+              <WhiteButton
+                text="Cancel"
+                className="!w-28"
+                onClick={() => setShowModal2(false)}
+              />
               <CustomButton
                 text="Schedule"
                 className="!w-28"

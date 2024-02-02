@@ -15,12 +15,13 @@ import { Skeleton } from 'antd';
 type Props = {
   state: IMeeting[];
   onOpenModal: () => void;
-
 };
 const TIME_TO_ENABLE = 15; // minutes
 export function UpcomingComponent({ state, onOpenModal }: Props) {
   const router = useRouter();
-  const meetingsLoading = useSelector((state: RootState) => state.meetings.loading);
+  const meetingsLoading = useSelector(
+    (state: RootState) => state.meetings.loading
+  );
 
   function enableJoin15MinutesLeft(item: IMeeting) {
     const today = dayjs();
@@ -30,7 +31,7 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
   }
 
   if (meetingsLoading) {
-    return <Skeleton active className='mt-6' />
+    return <Skeleton active className="mt-6" />;
   }
 
   if (state.length === 0) {
@@ -67,39 +68,41 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
 
   return (
     <div>
-      {state.filter(item => {
-        const today = dayjs();
-        const isToday = dayjs(item.date).isSame(today, 'date');
-        return isToday;
-      }).map((item, index) => {
-        return (
-          <div
-            key={index}
-            className="flex justify-between shadow p-3 my-2 rounded-lg"
-          >
-            <div className="space-y-1">
-              <QuinaryHeading title={item.topic} />
-              <SenaryHeading
-                title={moment(item.date).format('MMMM Do, YYYY')}
-              />
-              <QuinaryHeading title={item.roomName} className="font-medium" />
-              <SenaryHeading
-                title={`Time: ${moment(item.date).format('h:mm a')}`}
-              />
+      {state
+        .filter((item) => {
+          const today = dayjs();
+          const isToday = dayjs(item.date).isSame(today, 'date');
+          return isToday;
+        })
+        .map((item, index) => {
+          return (
+            <div
+              key={index}
+              className="flex justify-between shadow p-3 my-2 rounded-lg"
+            >
+              <div className="space-y-1">
+                <QuinaryHeading title={item.topic} />
+                <SenaryHeading
+                  title={moment(item.date).format('MMMM Do, YYYY')}
+                />
+                <QuinaryHeading title={item.roomName} className="font-medium" />
+                <SenaryHeading
+                  title={`Time: ${moment(item.date).format('h:mm a')}`}
+                />
+              </div>
+              <div>
+                <CustomButton
+                  className={`!w-20 ${!enableJoin15MinutesLeft(item) && '!bg-lavenderPurple opacity-50'}`}
+                  text={'Join'}
+                  onClick={() => {
+                    router.push(`/meeting/${item.roomName}`);
+                  }}
+                  disabled={!enableJoin15MinutesLeft(item)}
+                />
+              </div>
             </div>
-            <div>
-              <CustomButton
-                className={`!w-20 ${!enableJoin15MinutesLeft(item) && '!bg-lavenderPurple opacity-50'}`}
-                text={'Join'}
-                onClick={() => {
-                  router.push(`/meeting/${item.roomName}`)
-                }}
-                disabled={!enableJoin15MinutesLeft(item)}
-              />
-            </div>
-          </div>
-        );
-      })}
+          );
+        })}
     </div>
   );
 }

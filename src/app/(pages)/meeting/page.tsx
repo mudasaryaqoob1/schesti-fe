@@ -1,5 +1,10 @@
 'use client';
-import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from 'react';
 
 import { ConfigProvider, Tabs } from 'antd';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
@@ -39,10 +44,12 @@ const Meeting = () => {
     fetchMeetingsCB();
   }, [fetchMeetingsCB]);
 
-
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
-      <CreateMeeting showModal={showModal} setShowModal={() => setShowModal(false)} />
+      <CreateMeeting
+        showModal={showModal}
+        setShowModal={() => setShowModal(false)}
+      />
       <div className="flex items-center justify-between my-3">
         <SecondaryHeading title="Meeting" />
         <CustomButton

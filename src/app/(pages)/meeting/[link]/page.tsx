@@ -7,13 +7,13 @@ export default function JoinMeeting() {
 
   return (
     <div>
-      <div className='h-screen'>
+      <div className="h-screen">
         <JaaSMeeting
           appId={process.env.NEXT_PUBLIC_JITSI_APP_ID as string}
           roomName={link as string}
           configOverwrite={{
             startWithAudioMuted: true,
-            startWithVideoMuted: true
+            startWithVideoMuted: true,
           }}
           spinner={() => <div>Loading...</div>}
           getIFrameRef={(iframeRef) => {

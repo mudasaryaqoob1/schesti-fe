@@ -59,15 +59,17 @@ export function Schedule({ addWbs, state, updateWbsScopeItems }: Props) {
                   label: (
                     <div className="flex items-center space-x-2">
                       {Array.isArray(active) &&
-                        active.includes(i.toString()) ? (
+                      active.includes(i.toString()) ? (
                         <DownOutlined className="text-gray-600 p-1 bg-gray-50 rounded text-lg" />
                       ) : (
                         <RightOutlined className="text-gray-600 p-1 bg-gray-50 rounded text-lg" />
                       )}
                       <div className="flex flex-wrap justify-between w-[20%] px-4  rounded-md bg-gray-50 items-center">
-                        <h3 className='flex space-x-5 items-center pt-1'>
-                          <span className='tracking-wider'>{item.category.label}  </span>
-                          <span className='text-base text-gray-500 font-normal'>
+                        <h3 className="flex space-x-5 items-center pt-1">
+                          <span className="tracking-wider">
+                            {item.category.label}{' '}
+                          </span>
+                          <span className="text-base text-gray-500 font-normal">
                             {item.subCategory.label}
                           </span>
                         </h3>

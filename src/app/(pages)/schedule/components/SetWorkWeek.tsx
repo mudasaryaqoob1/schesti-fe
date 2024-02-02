@@ -18,7 +18,13 @@ type Props = {
   onCancel: () => void;
 };
 
-export function SetWorkWeek({ onClose, handleInfo, info, onCancel, onConfirm }: Props) {
+export function SetWorkWeek({
+  onClose,
+  handleInfo,
+  info,
+  onCancel,
+  onConfirm,
+}: Props) {
   // write a function to update the value in the array at index
   const updateRegularWorkingDays = (
     index: number,
