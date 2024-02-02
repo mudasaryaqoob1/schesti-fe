@@ -1,5 +1,4 @@
 import CustomButton from '@/app/component/customButton/button';
-import { IMeeting } from '../types';
 import Image from 'next/image';
 import SecondaryHeading from '@/app/component/headings/Secondary';
 import Description from '@/app/component/description';
@@ -8,10 +7,10 @@ import moment from 'moment';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/navigation';
+import { IMeeting } from '@/app/interfaces/meeting.type';
 
 type Props = {
   state: IMeeting[];
-  setState: React.Dispatch<React.SetStateAction<IMeeting[]>>;
   onOpenModal: () => void;
 
 };

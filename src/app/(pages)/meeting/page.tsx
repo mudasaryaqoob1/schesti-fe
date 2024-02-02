@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 
 import { ConfigProvider, Tabs } from 'antd';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
@@ -7,46 +7,48 @@ import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import SecondaryHeading from '@/app/component/headings/Secondary';
 import { UpcomingComponent } from './components/UpComing';
-import { IMeeting } from './types';
 import ModalComponent from '@/app/component/modal';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { CloseOutlined } from '@ant-design/icons';
 import { InputComponent } from '@/app/component/customInput/Input';
 import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
-import dayjs from 'dayjs';
+import { useSelector } from 'react-redux';
+import { selectMeetings } from '@/redux/meeting/meeting.slice';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/redux/store';
+import { fetchMeetings } from '@/redux/meeting/meeting.thunk';
+import { selectToken } from '@/redux/authSlices/auth.selector';
+import { HttpService } from '@/app/services/base.service';
 
 const UPCOMING_MEETING_KEY = 'Upcoming Meeting';
 const RECENT_MEETING_KEY = 'Recent Meeting';
 
 const Meeting = () => {
+  const token = useSelector(selectToken);
   const [tab, setTab] = useState(UPCOMING_MEETING_KEY);
-  const [meetings, setMeetings] = useState<IMeeting[]>([]);
-  const [meeting, setMeeting] = useState<IMeeting>({
-    date: new Date().toString(),
-    emailAddress: "",
-    id: "",
-    roomName: "",
-    topic: ""
-  });
-
+  const meetings = useSelector(selectMeetings);
   const [showModal, setShowModal] = useState(false);
-  function handleMeeting<K extends keyof IMeeting>(key: K, value: IMeeting[K]) {
-    setMeeting({ ...meeting, [key]: value });
-  }
-  function addNewSchedule() {
-    if (!meeting.topic || !meeting.emailAddress || !meeting.date) {
-      return;
+  const dispatch = useDispatch<AppDispatch>();
+
+  useLayoutEffect(() => {
+    if (token) {
+      HttpService.setToken(token);
     }
-    let newMeeting: IMeeting = {
-      ...meeting,
-      roomName: `${meeting.topic}-${Math.random() * 100}`,
-      id: `${meeting.topic}-${new Date().getTime()}`
-    };
+  }, [token]);
 
-    setMeetings([newMeeting, ...meetings]);
-    setShowModal(false);
+  const fetchMeetingsCB = useCallback(async () => {
+    await dispatch(fetchMeetings({}));
+  }, [dispatch]);
+
+  useEffect(() => {
+    fetchMeetingsCB();
+  }, [fetchMeetingsCB]);
+
+
+  function addNewSchedule() {
+
   }
-
+  console.log(meetings);
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       <ModalComponent width='50%' open={showModal} setOpen={setShowModal} title='Schedule a meeting'>
@@ -71,9 +73,8 @@ const Meeting = () => {
               placeholder="Topic"
               name="topic"
               field={{
-                value: meeting.topic,
-                onChange: (e) => {
-                  handleMeeting('topic', e.target.value);
+                onChange: () => {
+
                 }
               }}
             />
@@ -83,9 +84,9 @@ const Meeting = () => {
               placeholder="Email Address"
               name="email"
               field={{
-                value: meeting.emailAddress,
-                onChange: (e) => {
-                  handleMeeting('emailAddress', e.target.value);
+
+                onChange: () => {
+
                 }
               }}
             />
@@ -95,12 +96,8 @@ const Meeting = () => {
               inputStyle={"border-gray-200"}
               fieldProps={{
                 showTime: true,
-                value: dayjs(meeting.date),
-                onChange(_value, dateString) {
-                  handleMeeting(
-                    'date',
-                    dateString
-                  )
+                onChange() {
+
                 },
               }}
             />
@@ -155,7 +152,6 @@ const Meeting = () => {
                 children:
                   tab === UPCOMING_MEETING_KEY ? (
                     <UpcomingComponent
-                      setState={setMeetings}
                       state={meetings}
                       onOpenModal={() => setShowModal(true)}
                     />
