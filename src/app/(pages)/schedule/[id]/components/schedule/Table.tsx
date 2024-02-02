@@ -3,7 +3,7 @@ import { SelectComponent } from '@/app/component/customSelect/Select.component';
 import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import {
   Checkbox,
   Drawer,
@@ -13,84 +13,121 @@ import {
   Table,
   DatePicker,
   Tag,
+  Select,
+  ConfigProvider,
+  Dropdown,
 } from 'antd';
 import { type ColumnType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import type { IWBSType, ScopeItem } from '../../type';
+import CustomButton from '@/app/component/customButton/button';
+import WhiteButton from '@/app/component/customButton/white';
+import Image from 'next/image';
 
 const columns: ColumnType<{}>[] = [
   {
-    title: <QuinaryHeading title="Activities" />,
+    title: "ID",
+    dataIndex: 'id',
+    key: '0',
+    width: 100,
+  },
+  {
+    title: "Activities",
     dataIndex: 'description',
     key: '1',
+    width: 150,
   },
   {
-    title: <QuinaryHeading title="Original Duration" />,
+    title: "Original Duration",
     dataIndex: 'orignalDuration',
     key: '2',
+    width: 150,
   },
-  { title: <QuinaryHeading title="Start" />, dataIndex: 'start', key: '3' },
-  { title: <QuinaryHeading title="Finish" />, dataIndex: 'finish', key: '4' },
   {
-    title: <QuinaryHeading title="Actual Start" />,
+    title: "Status",
+    dataIndex: 'status',
+    key: '2',
+    width: 150,
+  },
+  {
+    title: "Start", dataIndex: 'start', key: '3',
+    width: 150,
+  },
+  {
+    title: "Finish", dataIndex: 'finish', key: '4',
+    width: 150,
+  },
+  {
+    title: "Actual Start",
     dataIndex: 'actualStart',
     key: '5',
+    width: 150,
+
   },
   {
-    title: <QuinaryHeading title="Actual Finish" />,
+    title: "Actual Finish",
     dataIndex: 'actualFinish',
     key: '6',
+    width: 150,
   },
   {
-    title: <QuinaryHeading title="Remaining Duration" />,
+    title: "Remaining Duration",
     dataIndex: 'remainingDuration',
+    width: 150,
     key: '7',
   },
   {
-    title: <QuinaryHeading title="Schedule % Completed" />,
+    title: "Schedule % Completed",
     dataIndex: 'scheduleCompleted',
+    width: 150,
     key: '8',
   },
   {
-    title: <QuinaryHeading title="Total Float" />,
+    title: "Total Float",
     dataIndex: 'totalFloat',
+    width: 150,
     key: '9',
   },
   {
-    title: <QuinaryHeading title="Activity Type" />,
+    title: "Activity Type",
     dataIndex: 'activityType',
+    width: 150,
     key: '10',
   },
   {
-    title: <QuinaryHeading title="Predecessors" />,
+    title: "Predecessors",
     dataIndex: 'predecessors',
+    width: 150,
     key: '11',
   },
   {
-    title: <QuinaryHeading title="Successors" />,
+    title: "Successors",
     dataIndex: 'successors',
+    width: 150,
     key: '12',
   },
   {
-    title: <QuinaryHeading title="Activity Calendar" />,
+    title: "Activity Calendar",
     dataIndex: 'activityCalendar',
+    width: 150,
     key: '13',
   },
 ];
 
-const defaultCheckedList = columns.map((item) => item.key);
+const defaultCheckedList = columns.map((item, i) => i % 2 === 0 && item.key);
 
 type Props = {
   updateWbsScopeItems(_id: string, _scopeItems: ScopeItem[]): void;
   wbs: IWBSType;
 };
-
 export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
   const [checkedList, setCheckedList] = useState(defaultCheckedList);
+  const [filters, setFilters] = useState(defaultCheckedList);
   const [open, setOpen] = useState(false);
   const [openDetails, setOpenDetails] = useState(false);
   const [selectedItem, setSelectedItem] = useState<ScopeItem | null>(null);
+  const [ID, setID] = useState(0);
 
   const showDrawer = () => {
     setOpen(true);
@@ -109,17 +146,19 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
       actualStart: new Date().toDateString(),
       description: '_',
       finish: new Date().toDateString(),
-      id: new Date().getMilliseconds().toString(),
+      id: `ID${ID}`,
       orignalDuration: '_',
       predecessors: '_',
       remainingDuration: '_',
       start: new Date().toDateString(),
       scheduleCompleted: '_',
+      status: "New",
       successors: '_',
       totalFloat: '_',
     };
     const newData = [...wbs.scopeItems, item];
     updateWbsScopeItems(wbs.id, newData);
+    setID(ID + 1);
   }
 
   function updateRow(record: ScopeItem) {
@@ -137,7 +176,13 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
   let newColumns = columns
     .map((item) => ({
       ...item,
-      editable: true,
+      title: (
+        <QuaternaryHeading
+          title={item.title as string}
+          className='text-sm font-medium tracking-wide'
+        />
+      ),
+      editable: item.dataIndex === 'id' ? false : true,
       dataIndex: item.dataIndex,
       hidden: !checkedList.includes(item.key as string),
     }))
@@ -167,16 +212,52 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
       editable: false,
       hidden: false,
       render(_: any, record: ScopeItem) {
-        return (
-          <DeleteOutlined
-            onClick={(e) => {
-              e.stopPropagation();
-              deleteRow(record);
-            }}
-            className="text-lg border p-2 rounded-lg text-gray-500"
+        return <Dropdown
+          menu={{
+            items: [
+              {
+                key: 'view',
+                label: <p>View Details</p>,
+                onClick: () => {
+                  setOpenDetails(true);
+                  setSelectedItem(record);
+                }
+              },
+              {
+                key: 'predecessors',
+                label: <p>Predecessors</p>,
+              },
+              {
+                key: 'successors',
+                label: <p>Successors</p>,
+              },
+              {
+                key: 'rename',
+                label: <p>Rename</p>,
+              },
+              {
+                key: 'delete',
+                label: <p>Delete</p>,
+                onClick: () => {
+                  deleteRow(record);
+                }
+              },
+            ],
+          }}
+          placement="bottomRight"
+        >
+          <Image
+            src={'/menuIcon.svg'}
+            alt="logo white icon"
+            width={20}
+            height={20}
+            className="active:scale-105 cursor-pointer"
           />
-        );
+        </Dropdown>
+
       },
+      fixed: 'right',
+      width: 150,
     },
     {
       title: <PlusOutlined className="text-lg" onClick={showDrawer} />,
@@ -184,7 +265,10 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
       render: () => null,
       editable: false,
       dataIndex: 'plus',
+      fixed: 'right',
+      width: 150,
     },
+
   ];
 
   const options = columns.map(({ key, title }) => ({
@@ -193,22 +277,45 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
   }));
   return (
     <div>
-      <Drawer title="Customise Table" onClose={onClose} open={open}>
-        <Checkbox.Group
-          style={{ width: '100%' }}
-          value={checkedList as string[]}
-          onChange={(value) => {
-            setCheckedList(value as string[]);
+      <Drawer title="Customise Table" onClose={onClose} open={open} footer={
+
+        <div className="flex justify-between py-2 space-x-2">
+          <WhiteButton text="Cancel" />
+          <CustomButton
+            text="Apply Filters"
+            onClick={() => {
+              setCheckedList(filters);
+              onClose();
+            }}
+          />
+        </div>
+      }>
+        <ConfigProvider
+          theme={{
+            token: {
+              colorPrimary: '#6941C6',
+              fontSize: 20
+            }
           }}
         >
-          <div className="grid grid-cols-12">
-            {options.map(({ label, value }, index) => (
-              <div key={index} className="col-span-12">
-                <Checkbox value={value}>{label as string}</Checkbox>
-              </div>
-            ))}
-          </div>
-        </Checkbox.Group>
+          <Checkbox.Group
+            style={{ width: '100%' }}
+            value={filters as string[]}
+            onChange={(value) => {
+              setFilters(value as string[]);
+            }}
+          >
+            <div className="grid grid-cols-12 gap-4">
+              {options.map(({ label, value }, index) => (
+                <div key={index} className="col-span-12">
+                  <Checkbox value={value} className='text-gray-500 text-base font-light'>
+                    {label as string}
+                  </Checkbox>
+                </div>
+              ))}
+            </div>
+          </Checkbox.Group>
+        </ConfigProvider>
       </Drawer>
 
       <Drawer
@@ -358,6 +465,7 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
             cell: EditableCell,
           },
         }}
+        scroll={{ x: 1500, y: 300 }}
         footer={() => {
           return (
             <div
@@ -371,12 +479,6 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
             </div>
           );
         }}
-        onRow={(data) => ({
-          onClick: () => {
-            setOpenDetails(true);
-            setSelectedItem(data);
-          },
-        })}
       />
     </div>
   );
@@ -411,6 +513,8 @@ interface EditableCellProps {
 }
 
 function EditableCell({
+
+  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
   title,
   editable,
   children,
@@ -446,33 +550,75 @@ function EditableCell({
   };
 
   let childNode = children;
+  const status = record ? record.status : "";
+  let statusColor: string = "";
+  if (status === 'New') {
+    statusColor = "#2db7f5";
+  } else if (status === 'Planned') {
+    statusColor = "#108ee9";
+  } else if (status === 'In Progress') {
+    statusColor = "#3BC8D0";
+  } else if (status === 'Completed') {
+    statusColor = "#87d068";
+  } else if (status === 'Review') {
+    statusColor = "yellow"
+  }
+
 
   if (editable) {
     childNode = editing ? (
-      <Form.Item
-        style={{ margin: 0 }}
-        name={dataIndex}
-        rules={[
-          {
-            required: true,
-            message: `${title} is required.`,
-          },
-        ]}
-        getValueProps={(i) => {
-          return { value: dateDataIndexes.includes(dataIndex) ? dayjs(i) : i };
+      <ConfigProvider
+        theme={{
+          components: {
+            Input: {
+              colorPrimary: "darkgrey",
+            },
+            Select: {
+              colorPrimary: "grey",
+              colorPrimaryHover: "grey",
+              colorPrimaryActive: "lightgrey"
+            },
+            DatePicker: {
+              colorPrimary: "darkgrey",
+            }
+          }
         }}
       >
-        {dateDataIndexes.includes(dataIndex) ? (
-          <DatePicker
+
+        <Form.Item
+          style={{ margin: 0 }}
+          name={dataIndex}
+          rules={[
+            {
+              required: true,
+              message: `${dataIndex} is required.`,
+            },
+          ]}
+          getValueProps={(i) => {
+            return { value: dateDataIndexes.includes(dataIndex) ? dayjs(i) : i };
+          }}
+        >
+          {dataIndex === 'status' ? <Select
             ref={inputRef}
-            onChange={save}
-            value={dayjs(record[dataIndex])}
             onBlur={save}
+            value={record[dataIndex]}
+            options={[{ label: 'New', value: 'New' }, { label: 'Planned', value: 'Planned' }, { label: 'In Progress', value: 'In Progress' }, { label: 'Completed', value: 'Completed' }, { label: 'Review', value: 'Review' }]}
+            dropdownRender={menu => {
+              return menu;
+            }}
           />
-        ) : (
-          <Input ref={inputRef} onPressEnter={save} onBlur={save} />
-        )}
-      </Form.Item>
+            : dateDataIndexes.includes(dataIndex) ? (
+              <DatePicker
+                ref={inputRef}
+                onChange={save}
+                value={dayjs(record[dataIndex])}
+                onBlur={save}
+              />
+            ) : (
+              <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+            )}
+        </Form.Item>
+      </ConfigProvider>
     ) : (
       <div
         className="editable-cell-value-wrap"
@@ -482,7 +628,9 @@ function EditableCell({
           toggleEdit();
         }}
       >
-        {dateDataIndexes.includes(dataIndex)
+        {dataIndex === 'status' ? (
+          <Tag className='w-full text-center p-[2px]' color={statusColor}>{record[dataIndex]}</Tag>
+        ) : dateDataIndexes.includes(dataIndex)
           ? dayjs(record[dataIndex]).format('DD/MM/YYYY')
           : children}
       </div>

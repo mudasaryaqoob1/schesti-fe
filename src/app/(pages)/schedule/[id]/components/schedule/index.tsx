@@ -11,7 +11,6 @@ import {
   MoreOutlined,
   RightOutlined,
 } from '@ant-design/icons';
-import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { Collapse } from 'antd';
 import { ScheduleTable } from './Table';
 
@@ -60,19 +59,21 @@ export function Schedule({ addWbs, state, updateWbsScopeItems }: Props) {
                   label: (
                     <div className="flex items-center space-x-2">
                       {Array.isArray(active) &&
-                      active.includes(i.toString()) ? (
-                        <DownOutlined className="text-obsidianBlack2 p-1 border rounded text-lg" />
+                        active.includes(i.toString()) ? (
+                        <DownOutlined className="text-gray-600 p-1 bg-gray-50 rounded text-lg" />
                       ) : (
-                        <RightOutlined className="text-obsidianBlack2 p-1 border rounded text-lg" />
+                        <RightOutlined className="text-gray-600 p-1 bg-gray-50 rounded text-lg" />
                       )}
-                      <div className="flex border flex-wrap justify-between w-[33%] px-4 rounded-full bg-[#F9FAFB] items-center">
-                        <SenaryHeading
-                          title={item.title}
-                          className="text-obsidianBlack2 font-semibold text-base tracking-wider"
-                        />
+                      <div className="flex flex-wrap justify-between w-[20%] px-4  rounded-md bg-gray-50 items-center">
+                        <h3 className='flex space-x-5 items-center pt-1'>
+                          <span className='tracking-wider'>{item.category.label}  </span>
+                          <span className='text-base text-gray-500 font-normal'>
+                            {item.subCategory.label}
+                          </span>
+                        </h3>
                         <div className="space-x-1">
-                          <EditOutlined className="text-obsidianBlack2 border rounded bg-[#EAECF0] p-2 text-lg " />
-                          <MoreOutlined className="text-obsidianBlack2 border rounded bg-[#EAECF0] p-2 text-lg " />
+                          <EditOutlined className="text-gray-600  rounded bg-gray-100 p-1 text-base " />
+                          <MoreOutlined className="text-gray-600  rounded bg-gray-100 p-1 text-base " />
                         </div>
                       </div>
                     </div>

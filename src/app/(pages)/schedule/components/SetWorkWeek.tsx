@@ -1,9 +1,7 @@
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import { InputComponent } from '@/app/component/customInput/Input';
-import { SelectComponent } from '@/app/component/customSelect/Select.component';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import QuinaryHeading from '@/app/component/headings/quinary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { CloseOutlined } from '@ant-design/icons';
 import { Checkbox } from 'antd';
@@ -16,9 +14,11 @@ type Props = {
     _key: K,
     _value: IScheduleState[K]
   ): void;
+  onConfirm: () => void;
+  onCancel: () => void;
 };
 
-export function SetWorkWeek({ onClose, handleInfo, info }: Props) {
+export function SetWorkWeek({ onClose, handleInfo, info, onCancel, onConfirm }: Props) {
   // write a function to update the value in the array at index
   const updateRegularWorkingDays = (
     index: number,
@@ -59,7 +59,7 @@ export function SetWorkWeek({ onClose, handleInfo, info }: Props) {
         />
       </div>
 
-      <div className="grid my-2 grid-cols-12 gap-3 items-center">
+      {/* <div className="grid my-2 grid-cols-12 gap-3 items-center">
         <div className="col-span-8">
           <SelectComponent
             label="Schedule"
@@ -95,7 +95,7 @@ export function SetWorkWeek({ onClose, handleInfo, info }: Props) {
             }}
           />
         </div>
-      </div>
+      </div> */}
 
       <div className="my-6">
         <div className="grid grid-cols-12 gap-4">
@@ -109,7 +109,7 @@ export function SetWorkWeek({ onClose, handleInfo, info }: Props) {
 
         {info.regularWorkingDays.map((item, index) => {
           return (
-            <div className="grid grid-cols-12 gap-4" key={index}>
+            <div className="grid grid-cols-12 gap-4 items-center" key={index}>
               <div className="col-span-2 pr-8">
                 <Checkbox
                   checked={item.isChecked}
@@ -119,9 +119,9 @@ export function SetWorkWeek({ onClose, handleInfo, info }: Props) {
                       isChecked: e.target.checked,
                     });
                   }}
-                  className="border w-full px-3.5 py-2 mt-1.5 rounded-lg"
+                  className="border w-full px-3.5 py-[7px] mt-1.5 rounded-lg text-graphiteGray text-sm font-normal leading-6"
                 >
-                  <QuinaryHeading title={item.day} />
+                  {item.day}
                 </Checkbox>
               </div>
               <div className="col-span-5">
@@ -149,8 +149,8 @@ export function SetWorkWeek({ onClose, handleInfo, info }: Props) {
       </div>
 
       <div className="flex justify-end space-x-4 mt-2">
-        <WhiteButton text="Skip" className="!w-40" />
-        <CustomButton text="Setup" className="!w-40" />
+        <WhiteButton text="Skip" className="!w-40" onClick={onCancel} />
+        <CustomButton text="Setup" className="!w-40" onClick={onConfirm} />
       </div>
     </div>
   );

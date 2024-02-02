@@ -15,6 +15,7 @@ import companySetupSubcategoryReducer from './company/settingSlices/categories/s
 import materialsReducer from './company/settingSlices/materials.slice';
 import invoiceReducer from './invoice/invoice.slice';
 import clientInvoiceReducer from './client-invoices/client-invoice.slice';
+import scheduleReducer from './schedule/schedule.slice';
 
 export type RootState = {
   auth: any;
@@ -30,6 +31,7 @@ export type RootState = {
   materials: any;
   invoices: any;
   clientInvoices: any;
+  schedule: typeof scheduleReducer
 };
 const persistConfig = {
   key: 'root',
@@ -51,5 +53,6 @@ const rootReducer = combineReducers<RootState>({
   materials: materialsReducer,
   invoices: invoiceReducer,
   clientInvoices: clientInvoiceReducer,
+  schedule: scheduleReducer,
 });
 export default persistReducer(persistConfig, rootReducer);

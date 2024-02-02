@@ -2,7 +2,6 @@
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import { InputComponent } from '@/app/component/customInput/Input';
-import { SelectComponent } from '@/app/component/customSelect/Select.component';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import ModalComponent from '@/app/component/modal';
 import { HttpService } from '@/app/services/base.service';
@@ -13,20 +12,24 @@ import { type ColumnsType } from 'antd/es/table';
 import moment from 'moment';
 import Image from 'next/image';
 import React, { useLayoutEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { SetWorkWeek } from './components/SetWorkWeek';
 import { IScheduleState } from './type';
 import { regularWorkingDays } from './utils';
+import { ISchedule } from '@/app/interfaces/schedule/schedule.type';
+import { addSchedule, deleteSchedule, selectSchedules } from '@/redux/schedule/schedule.slice';
+import { useRouter } from 'next/navigation';
 
 const Schedule = () => {
+  const router = useRouter();
   const token = useSelector(selectToken);
+  const schedules = useSelector(selectSchedules);
+  const dispatch = useDispatch();
   const [info, setInfo] = useState<IScheduleState>({
     projectName: '',
-    fullDaysPerWeek: 0,
+    duration: 0,
     hoursPerDay: 0,
     regularWorkingDays,
-    scheduleType: '',
-    duration: undefined,
   });
 
   const [showModal, setShowModal] = useState(false);
@@ -47,10 +50,10 @@ const Schedule = () => {
       label: <p>Delete</p>,
     },
   ];
-  const columns: ColumnsType<{}> = [
+  const columns: ColumnsType<ISchedule> = [
     {
       title: 'Project #',
-      dataIndex: 'project',
+      dataIndex: '_id',
     },
     {
       title: 'Project Name',
@@ -78,12 +81,24 @@ const Schedule = () => {
     {
       title: 'Status',
       dataIndex: 'status',
-      render(value) {
-        return (
-          <Tag color="green" className="rounded-full">
-            {value}
+      render(_value) {
+        if (_value === 'active') {
+          return <Tag color="green" className="rounded-full capitalize">
+            {_value}
           </Tag>
-        );
+        }
+        else if (_value === 'pending') {
+          return <Tag color="red" className="rounded-full capitalize">
+            {_value}
+          </Tag>
+        }
+        else {
+          return (
+            <Tag color="blue" className="rounded-full capitalize">
+              {_value}
+            </Tag>
+          );
+        }
       },
     },
     {
@@ -91,10 +106,13 @@ const Schedule = () => {
       dataIndex: 'action',
       align: 'center',
       key: 'action',
-      render: () => (
+      render: (_value, record) => (
         <Dropdown
           menu={{
             items,
+            onClick: (e) => {
+              handleMenuItemClick(e.key, record)
+            }
           }}
           placement="bottomRight"
         >
@@ -109,6 +127,17 @@ const Schedule = () => {
       ),
     },
   ];
+
+  function handleMenuItemClick(key: string, record: ISchedule) {
+    if (key === 'schedule') {
+      router.push(`/schedule/${record._id}`);
+    }
+    else if (key === 'delete') {
+      dispatch(deleteSchedule(record._id));
+    }
+  }
+
+
   function handleInfo<K extends keyof typeof info>(
     key: K,
     value: (typeof info)[K]
@@ -129,7 +158,22 @@ const Schedule = () => {
     setShowModal2(true);
   }
 
-  console.log(info);
+  function handleConfirm() {
+    const item: ISchedule = {
+      _id: new Date().getTime().toString(),
+      dueDate: new Date().toDateString(),
+      duration: info.duration as number,
+      hoursPerDay: info.hoursPerDay,
+      managingCompany: '',
+      ownerRepresentation: '',
+      projectName: info.projectName,
+      regularWokingDays: info.regularWorkingDays,
+      status: 'active'
+    };
+    dispatch(addSchedule(item));
+    setShowModal2(false);
+  }
+
   return (
     <section className="mt-6 shadow p-4 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       <ModalComponent
@@ -142,6 +186,8 @@ const Schedule = () => {
           handleInfo={handleInfo}
           info={info}
           onClose={() => setShowModal2(false)}
+          onCancel={() => setShowModal2(false)}
+          onConfirm={handleConfirm}
         />
       </ModalComponent>
       <ModalComponent
@@ -175,25 +221,24 @@ const Schedule = () => {
                 onChange: (e) => handleInfo('projectName', e.target.value),
               }}
             />
-            <SelectComponent
+            <InputComponent
               label="Duration"
               name="duration"
-              placeholder="Select duration"
+              placeholder="Duration"
+              type='number'
               field={{
-                options: [
-                  { label: '3 Months', value: 3 },
-                  { label: '6 Months', value: 6 },
-                  { label: '12 Months', value: 12 },
-                ],
                 value: info.duration,
-                onChange(value) {
-                  handleInfo('duration', value);
+                onChange(e) {
+                  handleInfo('duration', Number(e.target.value));
                 },
+                addonAfter: "Days",
+                size: "large",
+                className: "border-none"
               }}
             />
 
             <div className="flex justify-end py-2 space-x-2">
-              <WhiteButton text="Cancel" className="!w-28" />
+              <WhiteButton text="Cancel" className="!w-28" onClick={() => setShowModal2(false)} />
               <CustomButton
                 text="Schedule"
                 className="!w-28"
@@ -234,17 +279,7 @@ const Schedule = () => {
         <Table
           loading={false}
           columns={columns}
-          dataSource={[
-            {
-              project: '0001',
-              projectName: 'Project Name',
-              managingCompany: 'Managing Company',
-              ownerRepresentative: 'Owner Representative',
-              dueDate: 'Due Date',
-              task: 'Task',
-              status: 'Status',
-            },
-          ]}
+          dataSource={schedules}
           pagination={{ position: ['bottomCenter'] }}
         />
       </div>
