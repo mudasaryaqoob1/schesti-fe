@@ -209,7 +209,7 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
       };
     });
 
-  const extras: any = [
+  const extras: (ColumnType<ScopeItem> & { editable: boolean })[] = [
     {
       title: <QuinaryHeading title="Actions" />,
       dataIndex: 'actions',
@@ -219,6 +219,7 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
       render(_: any, record: ScopeItem) {
         return (
           <Dropdown
+            className="!bg-grey"
             menu={{
               items: [
                 {
@@ -245,7 +246,8 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
                   },
                 },
               ],
-            }}
+            }
+            }
             placement="bottomRight"
           >
             <Image
@@ -255,7 +257,7 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
               height={20}
               className="active:scale-105 cursor-pointer"
             />
-          </Dropdown>
+          </Dropdown >
         );
       },
       fixed: 'right',
@@ -579,7 +581,8 @@ function EditableCell({
         theme={{
           components: {
             Input: {
-              colorPrimary: '#fff',
+              colorPrimary: 'transparent',
+              controlOutline: "transparent",
               colorBorder: "transparent",
               lineHeight: 4,
               borderRadius: 0,
@@ -589,13 +592,15 @@ function EditableCell({
               colorPrimaryHover: 'transparent',
               colorPrimaryActive: 'transparent',
               colorBorder: "transparent",
-              paddingContentVertical: 3
+              controlHeight: 47,
+              borderRadius: 0
             },
             DatePicker: {
               controlHeight: 55,
               borderRadius: 0,
               colorPrimary: "white",
-              colorBorder: "transparent"
+              colorBorder: "transparent",
+              controlOutline: "transparent",
             },
             Tag: {
               defaultColor: "transparent",
@@ -631,6 +636,7 @@ function EditableCell({
               }}
               defaultOpen
               style={{ width: '150px' }}
+              className='!my-2'
             >
               {selectOptions.map((option, i) => {
                 return <Select.Option value={option.value} key={i}>
@@ -669,7 +675,7 @@ function EditableCell({
         }}
       >
         {dataIndex === 'status' ? (
-          <Tag className={`w-full space-x-2 `} color={`${returnStatusColor(record[dataIndex])}8C`}
+          <Tag className={`w-full h-full space-x-2 py-1`} color={`${returnStatusColor(record[dataIndex])}8C`}
             style={{ filter: 'alpha(opacity=50)' }}>
 
             <span style={{ borderColor: returnStatusColor(record[dataIndex]) }}
@@ -689,7 +695,7 @@ function EditableCell({
     );
   }
 
-  return <td {...restProps} className='!p-0 border'>{childNode}</td>;
+  return <td {...restProps} className='!p-0 border bg-white'>{childNode}</td>;
 }
 
 
