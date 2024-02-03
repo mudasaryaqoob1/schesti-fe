@@ -47,7 +47,7 @@ const columns: ColumnType<{}>[] = [
     title: 'Status',
     dataIndex: 'status',
     key: '2',
-    width: 150,
+    width: 170,
   },
   {
     title: 'Start',
@@ -619,6 +619,7 @@ function EditableCell({
                 return menu;
               }}
               defaultOpen
+              style={{ width: '150px' }}
             >
               {selectOptions.map((option, i) => {
                 return <Select.Option value={option.value} key={i}>
