@@ -17,7 +17,7 @@ import { IWBSType } from '../../type';
 type Props = {
   setMaterialModal: Dispatch<SetStateAction<boolean>>;
   materialModal: boolean;
-  handleWbs(
+  addWbsHandler(
     _category: IWBSType['category'],
     _subCategory: IWBSType['subCategory']
   ): void;
@@ -25,7 +25,7 @@ type Props = {
 export function CategoryModal({
   materialModal,
   setMaterialModal,
-  handleWbs,
+  addWbsHandler,
 }: Props) {
   const [categories, setCategories] = useState<
     {
@@ -92,7 +92,7 @@ export function CategoryModal({
     if (!c || !s) {
       return;
     }
-    handleWbs(c, s);
+    addWbsHandler(c, s);
     setMaterialModal(false);
   }
 
@@ -113,7 +113,7 @@ export function CategoryModal({
         </div>
         <div className="p-2 space-y-3">
           <SelectComponent
-            label="CSI Section"
+            label="Category"
             labelStyle="!text-[#464646] !text-base !font-normal"
             field={{
               options: categories,
@@ -126,7 +126,7 @@ export function CategoryModal({
             placeholder="Select CSI Section"
           />
           <SelectComponent
-            label="Title"
+            label="SubCategory"
             labelStyle="!text-[#464646] !text-base !font-normal"
             field={{
               options: subCategories.filter(
@@ -142,7 +142,9 @@ export function CategoryModal({
           />
 
           <div className="flex mt-3 justify-end py-2 space-x-2">
-            <WhiteButton text="Cancel" className="!w-28"
+            <WhiteButton
+              text="Cancel"
+              className="!w-28"
               onClick={() => setMaterialModal(false)}
             />
             <CustomButton

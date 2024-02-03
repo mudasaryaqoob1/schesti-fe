@@ -2,9 +2,9 @@
 import SecondaryHeading from '@/app/component/headings/Secondary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
-import SenaryHeading from '@/app/component/headings/senaryHeading';
-import { UserOutlined } from '@ant-design/icons';
-import { Avatar, ConfigProvider, Tabs, Tag } from 'antd';
+// import SenaryHeading from '@/app/component/headings/senaryHeading';
+// import { UserOutlined } from '@ant-design/icons';
+import {  ConfigProvider, Tabs, Tag } from 'antd';
 import { useLayoutEffect, useState } from 'react';
 import { Schedule } from './components/schedule';
 import { GanttComponent } from './components/gantt';
@@ -12,14 +12,16 @@ import { useSelector } from 'react-redux';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
 import { IWBSType } from './type';
+import CustomButton from '@/app/component/customButton/button';
+
+import { projectDetailStore } from '@/redux/schedule/scheduleSelector';
+
 
 const SCHEDULE_KEY = 'Schedule';
 const GANTT_KEY = 'Gantt';
 
 export default function SchedulePage() {
-  const [tab, setTab] = useState(SCHEDULE_KEY);
   const token = useSelector(selectToken);
-  const [state, setState] = useState<IWBSType[]>([]);
 
   useLayoutEffect(() => {
     if (token) {
@@ -27,7 +29,14 @@ export default function SchedulePage() {
     }
   }, [token]);
 
-  function addWbs(
+  const schedules = useSelector(projectDetailStore);
+
+  const [tab, setTab] = useState(SCHEDULE_KEY);
+  const [state, setState] = useState<IWBSType[]>([]);
+
+ 
+
+  function addWbsHandler(
     category: IWBSType['category'],
     subCategory: IWBSType['subCategory']
   ) {
@@ -35,7 +44,7 @@ export default function SchedulePage() {
       id: new Date().getTime().toString(),
       category,
       subCategory,
-      title: `${category.label} / ${subCategory.label}`,
+      title: `${category.label} ${subCategory.label}`,
       scopeItems: [],
     };
 
@@ -88,7 +97,7 @@ export default function SchedulePage() {
                 />
               </div>
 
-              <div className="flex flex-col">
+              {/* <div className="flex flex-col">
                 <QuinaryHeading
                   title="Tasks"
                   className="text-[#667085]  font-medium"
@@ -98,7 +107,7 @@ export default function SchedulePage() {
                   title="14"
                   className="text-[#475467] font-semibold"
                 />
-              </div>
+              </div> */}
 
               <div className="flex flex-col">
                 <QuinaryHeading
@@ -107,7 +116,7 @@ export default function SchedulePage() {
                 />
 
                 <QuinaryHeading
-                  title="3 Months"
+                  title={`${String(schedules.duration)} Month`}
                   className="text-[#475467] font-semibold"
                 />
               </div>
@@ -124,7 +133,7 @@ export default function SchedulePage() {
                 />
               </div>
 
-              <div className="flex flex-col">
+              {/* <div className="flex flex-col">
                 <QuinaryHeading
                   title="Daily Hours"
                   className="text-[#667085]  font-medium"
@@ -158,10 +167,10 @@ export default function SchedulePage() {
                   title="ABC Builders"
                   className="text-[#475467] font-semibold"
                 />
-              </div>
+              </div> */}
             </div>
           </div>
-          <div className="flex flex-col">
+          {/* <div className="flex flex-col">
             <SenaryHeading
               title="Manager"
               className="text-[#475467] font-semibold"
@@ -173,7 +182,7 @@ export default function SchedulePage() {
                 className="text-[#475467] font-semibold"
               />
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -206,11 +215,14 @@ export default function SchedulePage() {
                 tabKey: type,
                 children:
                   tab === SCHEDULE_KEY ? (
+                 <>
                     <Schedule
-                      addWbs={addWbs}
+                    addWbsHandler={addWbsHandler}
                       state={state}
                       updateWbsScopeItems={updateWbsScopeItems}
                     />
+                     {state.length && <CustomButton text="Generate Schedule" className="max-w-max float-right" /> }  
+                    </>
                   ) : (
                     <GanttComponent />
                   ),

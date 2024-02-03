@@ -16,23 +16,24 @@ import { ScheduleTable } from './Table';
 
 type Props = {
   updateWbsScopeItems: (_id: string, _scopeItems: ScopeItem[]) => void;
-  addWbs: (
+  addWbsHandler: (
     _category: IWBSType['category'],
     _subCategory: IWBSType['subCategory']
   ) => void;
   state: IWBSType[];
 };
 
-export function Schedule({ addWbs, state, updateWbsScopeItems }: Props) {
+export function Schedule({ addWbsHandler, state, updateWbsScopeItems }: Props) {
   const [materialModal, setMaterialModal] = useState(false);
   const [active, setActive] = useState<string | string[]>(['']);
+  
 
   return (
     <section>
       <CategoryModal
         materialModal={materialModal}
         setMaterialModal={setMaterialModal}
-        handleWbs={addWbs}
+        addWbsHandler={addWbsHandler}
       />
       <div className=" flex items-center justify-between mt-4">
         <TertiaryHeading title="Schedule" className="text-lg tracking-wide" />
@@ -45,7 +46,7 @@ export function Schedule({ addWbs, state, updateWbsScopeItems }: Props) {
           onClick={() => setMaterialModal(true)}
         />
       </div>
-      <div className="mx-4 rounded-xl">
+      <div className="rounded-xl">
         {state.length > 0 ? (
           <div>
             <Collapse

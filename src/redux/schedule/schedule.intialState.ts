@@ -1,9 +1,10 @@
-import { ISchedule } from "@/app/interfaces/schedule/schedule.type";
+import { IProject } from '@/app/interfaces/schedule/project.schedule.interface';
 
-type IScheduleState = {
-    schedules: ISchedule[];
-}
 
-export const initialScheduleState: IScheduleState = {
-    schedules: []
+
+export const initialScheduleState: IProject = {
+    projectName: '',
+    duration: 1,
+    hoursPerDay: 0,
+    regularWorkingDays : []
 }

@@ -1,34 +1,52 @@
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
-import { InputComponent } from '@/app/component/customInput/Input';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { CloseOutlined } from '@ant-design/icons';
+import * as Yup from 'yup';
 import { Checkbox } from 'antd';
-import { IScheduleState } from '../type';
+import { Formik, Form } from 'formik';
+import { IProject } from '@/app/interfaces/schedule/project.schedule.interface';
+import FormControl from '@/app/component/formControl';
+import { twMerge } from 'tailwind-merge';
+import clsx from 'clsx';
 
 type Props = {
+  initialValues: IProject;
   onClose: () => void;
-  info: IScheduleState;
-  handleInfo<K extends keyof IScheduleState>(
-    _key: K,
-    _value: IScheduleState[K]
-  ): void;
-  onConfirm: () => void;
   onCancel: () => void;
+  onConfirm: (values: IProject) => void;
 };
 
-export function SetWorkWeek({ onClose, handleInfo, info, onCancel, onConfirm }: Props) {
-  // write a function to update the value in the array at index
-  const updateRegularWorkingDays = (
-    index: number,
-    value: (typeof arr)[number],
-    arr: IScheduleState['regularWorkingDays'] = info.regularWorkingDays
-  ) => {
-    const newArr = [...arr];
-    newArr[index] = value;
-    handleInfo('regularWorkingDays', newArr);
+const setWorkWeekValidationSchema = Yup.object({
+  hoursPerDay: Yup.string()
+    .required('Hour per day  is required!')
+    .min(1, 'Hours must be a positive number'),
+  // regularWorkingDays: Yup.array()
+  // .of(
+  //   Yup.object().shape({
+  //     isChecked: Yup.boolean().required('Checkbox status is required'),
+  //     hours: Yup.number()
+  //       .required('Hours are required')
+  //       .min(1, 'Hours must be a positive number'),
+  //   })
+  // )
+});
+
+
+
+export function SetWorkWeek({
+  onClose,
+  initialValues,
+  onCancel,
+  onConfirm
+}: Props) {
+
+
+  const submitHandler = (values : IProject) => {
+    onConfirm(values)
   };
+
 
   return (
     <div className="px-4 py-2 bg-white border border-solid border-elboneyGray rounded-[4px] z-50">
@@ -42,116 +60,79 @@ export function SetWorkWeek({ onClose, handleInfo, info, onCancel, onConfirm }: 
         />
       </div>
 
-      <div>
-        <InputComponent
-          label="Hours Per Day"
-          name="hours"
-          type="number"
-          placeholder="Set number of hours per day"
-          labelStyle="text-[#344054] font-normal"
-          label2="Zero regular hours will result in a zero hourly rate for unpaid leave deductions."
-          field={{
-            value: info.hoursPerDay,
-            onChange: (e) => {
-              handleInfo('hoursPerDay', Number(e.target.value));
-            },
-          }}
-        />
-      </div>
-
-      {/* <div className="grid my-2 grid-cols-12 gap-3 items-center">
-        <div className="col-span-8">
-          <SelectComponent
-            label="Schedule"
-            name="schedule"
-            placeholder="Select Schedule"
-            labelStyle="text-[#344054] font-normal"
-            field={{
-              options: [
-                { label: 'Fixed, Mixed', value: 'fixed' },
-                { label: 'Flexible', value: 'flexible' },
-              ],
-              className: '!mt-1',
-              value: info.scheduleType,
-              onChange: (e) => {
-                handleInfo('scheduleType', e);
-              },
-            }}
-          />
-        </div>
-        <div className="col-span-4">
-          <InputComponent
-            label="Full Days Per Week"
-            name="fullDays"
-            type="number"
-            placeholder="Set number of full days per week"
-            labelStyle="text-[#344054] font-normal"
-            inputStyle="!py-2"
-            field={{
-              value: info.fullDaysPerWeek,
-              onChange: (e) => {
-                handleInfo('fullDaysPerWeek', Number(e.target.value));
-              },
-            }}
-          />
-        </div>
-      </div> */}
-
-      <div className="my-6">
-        <div className="grid grid-cols-12 gap-4">
-          <div className="col-span-2">
-            <QuaternaryHeading title=" Regular Working Days" />
-          </div>
-          <div className="col-span-5">
-            <QuaternaryHeading title="Hours" />
-          </div>
-        </div>
-
-        {info.regularWorkingDays.map((item, index) => {
+      <Formik
+        initialValues={initialValues}
+        validationSchema={setWorkWeekValidationSchema}
+        onSubmit={submitHandler}
+      >
+        {({ handleSubmit, setFieldValue, errors }) => {
           return (
-            <div className="grid grid-cols-12 gap-4 items-center" key={index}>
-              <div className="col-span-2 pr-8">
-                <Checkbox
-                  checked={item.isChecked}
-                  onChange={(e) => {
-                    updateRegularWorkingDays(index, {
-                      ...item,
-                      isChecked: e.target.checked,
-                    });
-                  }}
-                  className="border w-full px-3.5 py-[7px] mt-1.5 rounded-lg text-graphiteGray text-sm font-normal leading-6"
-                >
-                  {item.day}
-                </Checkbox>
-              </div>
-              <div className="col-span-5">
-                <InputComponent
-                  label=""
-                  name={item.day}
+            <Form name="basic" autoComplete="off" onSubmit={handleSubmit}>
+              <div className="flex flex-col gap-3">
+                <FormControl
+                  control="input"
+                  label="Hours per Day"
                   type="number"
-                  placeholder="Enter Number of Hours"
-                  labelStyle="text-[#344054] font-normal"
-                  inputStyle="!py-2 border-gray-200"
-                  field={{
-                    value: item.hours,
-                    onChange: (e) => {
-                      updateRegularWorkingDays(index, {
-                        ...item,
-                        hours: Number(e.target.value),
-                      });
-                    },
-                  }}
+                  name="hoursPerDay"
+                  placeholder="Set number of hours per day"
                 />
-              </div>
-            </div>
-          );
-        })}
-      </div>
 
-      <div className="flex justify-end space-x-4 mt-2">
-        <WhiteButton text="Skip" className="!w-40" onClick={onCancel} />
-        <CustomButton text="Setup" className="!w-40" onClick={onConfirm} />
-      </div>
+                <div className="grid grid-cols-6 gap-4 items-center">
+                  <QuaternaryHeading title=" Regular Working Days" />
+                  <QuaternaryHeading title="Hours" />
+                </div>
+
+                {initialValues.regularWorkingDays.map(
+                  (item: any, index: number) => {
+                    return (
+                      <div
+                        className="grid grid-cols-12 gap-4 items-center"
+                        key={index}
+                      >
+                        <div className="col-span-2">
+                          <Checkbox
+                            defaultChecked={item.isChecked}
+                            name={`regularWorkingDays[${index}].isChecked`}
+                            onChange={(e) =>
+                              setFieldValue(
+                                `regularWorkingDays[${index}].isChecked`,
+                                e.target.checked
+                              )
+                            }
+                            className={twMerge(
+                              clsx(
+                                `border ${
+                                  errors.regularWorkingDays
+                                    ? 'border-red-500'
+                                    : 'border-gray-400'
+                                } border w-full px-3.5 py-[7px] mt-1.5 rounded-lg text-graphiteGray text-sm font-normal leading-6`
+                              )
+                            )}
+                          >
+                            {item.day}
+                          </Checkbox>
+                        </div>
+                        <div className="col-span-3">
+                          <FormControl
+                            control="input"
+                            type="number"
+                            name={`regularWorkingDays[${index}].hours`}
+                            placeholder="Set number of hours per day"
+                          />
+                        </div>
+                      </div>
+                    );
+                  }
+                )}
+              </div>
+              <div className="flex justify-end space-x-4 mt-2">
+                <WhiteButton text="Skip" className="!w-40" onClick={onCancel} />
+                <CustomButton type="submit" text="Setup" className="!w-40" />
+              </div>
+            </Form>
+          );
+        }}
+      </Formik>
     </div>
   );
 }

@@ -1,4 +1,16 @@
 'use client';
+import React, { useLayoutEffect, useState } from 'react';
+import moment from 'moment';
+import Image from 'next/image';
+import { Formik, Form } from 'formik';
+import { Dropdown, type MenuProps, Table, Tag } from 'antd';
+import { type ColumnsType } from 'antd/es/table';
+import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/navigation';
+import { CloseOutlined, SearchOutlined } from '@ant-design/icons';
+import * as Yup from 'yup';
+
+// module imports
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import { InputComponent } from '@/app/component/customInput/Input';
@@ -6,40 +18,82 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import ModalComponent from '@/app/component/modal';
 import { HttpService } from '@/app/services/base.service';
 import { selectToken } from '@/redux/authSlices/auth.selector';
-import { CloseOutlined, SearchOutlined } from '@ant-design/icons';
-import { Dropdown, type MenuProps, Table, Tag } from 'antd';
-import { type ColumnsType } from 'antd/es/table';
-import moment from 'moment';
-import Image from 'next/image';
-import React, { useLayoutEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { SetWorkWeek } from './components/SetWorkWeek';
-import { IScheduleState } from './type';
-import { regularWorkingDays } from './utils';
+import { IProject } from '@/app/interfaces/schedule/project.schedule.interface';
 import { ISchedule } from '@/app/interfaces/schedule/schedule.type';
-import { addSchedule, deleteSchedule, selectSchedules } from '@/redux/schedule/schedule.slice';
-import { useRouter } from 'next/navigation';
+import {
+  addSchedule
+} from '@/redux/schedule/schedule.slice';
+import FormControl from '@/app/component/formControl';
+
+const initialValues: IProject = {
+  projectName: '',
+  duration: 1,
+  hoursPerDay: 0,
+  regularWorkingDays: [
+    {
+      day: 'Monday',
+      isChecked: false,
+      hours: 0,
+    },
+    {
+      day: 'Tuesday',
+      isChecked: false,
+      hours: 0,
+    },
+    {
+      day: 'Wednesday',
+      isChecked: false,
+      hours: 0,
+    },
+    {
+      day: 'Thursday',
+      isChecked: false,
+      hours: 0,
+    },
+    {
+      day: 'Friday',
+      isChecked: false,
+      hours: 0,
+    },
+    {
+      day: 'Saturday',
+      isChecked: false,
+      hours: 0,
+    },
+    {
+      day: 'Sunday',
+      isChecked: false,
+      hours: 0,
+    },
+  ],
+};
+
+const createProjectSchema = Yup.object({
+  projectName: Yup.string().required('Project Name is required!'),
+  duration: Yup.number()
+    .required('Duration is required')
+    .min(1, 'Minimum one day is required'),
+});
 
 const Schedule = () => {
   const router = useRouter();
-  const token = useSelector(selectToken);
-  const schedules = useSelector(selectSchedules);
   const dispatch = useDispatch();
-  const [info, setInfo] = useState<IScheduleState>({
-    projectName: '',
-    duration: 0,
-    hoursPerDay: 0,
-    regularWorkingDays,
-  });
 
-  const [showModal, setShowModal] = useState(false);
-  const [showModal2, setShowModal2] = useState(false);
-
+  const token = useSelector(selectToken);
   useLayoutEffect(() => {
     if (token) {
       HttpService.setToken(token);
     }
   }, [token]);
+
+  
+
+
+  const [createProjectModal, setCreateProjectModal] = useState(false);
+  const [worksheetModal, setWorksheetModal] = useState(false);
+  const [projectDetail, setProjectDetail] = useState<IProject>();
+
   const items: MenuProps['items'] = [
     {
       key: 'schedule',
@@ -83,16 +137,18 @@ const Schedule = () => {
       dataIndex: 'status',
       render(_value) {
         if (_value === 'active') {
-          return <Tag color="green" className="rounded-full capitalize">
-            {_value}
-          </Tag>
-        }
-        else if (_value === 'pending') {
-          return <Tag color="red" className="rounded-full capitalize">
-            {_value}
-          </Tag>
-        }
-        else {
+          return (
+            <Tag color="green" className="rounded-full capitalize">
+              {_value}
+            </Tag>
+          );
+        } else if (_value === 'pending') {
+          return (
+            <Tag color="red" className="rounded-full capitalize">
+              {_value}
+            </Tag>
+          );
+        } else {
           return (
             <Tag color="blue" className="rounded-full capitalize">
               {_value}
@@ -111,8 +167,8 @@ const Schedule = () => {
           menu={{
             items,
             onClick: (e) => {
-              handleMenuItemClick(e.key, record)
-            }
+              handleMenuItemClick(e.key, record);
+            },
           }}
           placement="bottomRight"
         >
@@ -131,121 +187,109 @@ const Schedule = () => {
   function handleMenuItemClick(key: string, record: ISchedule) {
     if (key === 'schedule') {
       router.push(`/schedule/${record._id}`);
-    }
-    else if (key === 'delete') {
-      dispatch(deleteSchedule(record._id));
-    }
   }
+}
 
-
-  function handleInfo<K extends keyof typeof info>(
-    key: K,
-    value: (typeof info)[K]
-  ) {
-    setInfo({ ...info, [key]: value });
-  }
-
-  function handleSchedule() {
-    // validate info
-    if (!info.projectName) {
-      return;
-    }
-    if (!info.duration) {
-      return;
-    }
-    // set Modals
-    setShowModal(false);
-    setShowModal2(true);
-  }
-
-  function handleConfirm() {
-    const item: ISchedule = {
-      _id: new Date().getTime().toString(),
-      dueDate: new Date().toDateString(),
-      duration: info.duration as number,
-      hoursPerDay: info.hoursPerDay,
-      managingCompany: '',
-      ownerRepresentation: '',
-      projectName: info.projectName,
-      regularWokingDays: info.regularWorkingDays,
-      status: 'active'
+  function handleConfirm(item: IProject) {
+    let finalObject : any = {
+      projectName: projectDetail?.projectName,
+      duration: projectDetail?.duration,
+      hoursPerDay: item.hoursPerDay,
+      regularWorkingDays: item.regularWorkingDays,
     };
-    dispatch(addSchedule(item));
-    setShowModal2(false);
+
+    dispatch(addSchedule(finalObject));
+    setWorksheetModal(false);
+    router.push(`/schedule/${1}`);
   }
+
+  const submitHandler = (values: any) => {
+    setProjectDetail(values);
+    setCreateProjectModal(false);
+    setWorksheetModal(true);
+  };
 
   return (
     <section className="mt-6 shadow p-4 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       <ModalComponent
-        open={showModal2}
-        setOpen={setShowModal2}
+        open={worksheetModal}
+        setOpen={setWorksheetModal}
         title="Set Workweek"
         width="100%"
       >
         <SetWorkWeek
-          handleInfo={handleInfo}
-          info={info}
-          onClose={() => setShowModal2(false)}
-          onCancel={() => setShowModal2(false)}
+          initialValues={initialValues}
+          onClose={() => setWorksheetModal(false)}
+          onCancel={() => setWorksheetModal(false)}
           onConfirm={handleConfirm}
         />
       </ModalComponent>
       <ModalComponent
-        open={showModal}
-        setOpen={setShowModal}
+        open={createProjectModal}
+        setOpen={setCreateProjectModal}
         title="Create project"
         width="50%"
       >
         <div className="bg-white border border-solid border-elboneyGray rounded-[4px] z-50">
           <div className="flex px-6 py-2.5 justify-between bg-mistyWhite">
             <TertiaryHeading
-              title="Create project"
+              title="Create Project"
               className="text-graphiteGray"
             />
             <CloseOutlined
               className="cursor-pointer"
               width={24}
               height={24}
-              onClick={() => setShowModal(false)}
+              onClick={() => setCreateProjectModal(false)}
             />
           </div>
 
-          <div className="px-6 py-2.5 space-y-3">
-            <InputComponent
-              label="Project name"
-              type="text"
-              placeholder="Enter project name"
-              name="invoiceName"
-              field={{
-                value: info.projectName,
-                onChange: (e) => handleInfo('projectName', e.target.value),
-              }}
-            />
-            <InputComponent
-              label="Duration"
-              name="duration"
-              placeholder="Duration"
-              type='number'
-              field={{
-                value: info.duration,
-                onChange(e) {
-                  handleInfo('duration', Number(e.target.value));
-                },
-                addonAfter: "Days",
-                size: "large",
-                className: "border-none"
-              }}
-            />
-
-            <div className="flex justify-end py-2 space-x-2">
-              <WhiteButton text="Cancel" className="!w-28" onClick={() => setShowModal2(false)} />
-              <CustomButton
-                text="Schedule"
-                className="!w-28"
-                onClick={handleSchedule}
-              />
-            </div>
-          </div>
+          <Formik
+            initialValues={initialValues}
+            validationSchema={createProjectSchema}
+            onSubmit={submitHandler}
+          >
+            {({ handleSubmit, setFieldValue }) => {
+              return (
+                <Form name="basic" autoComplete="off" onSubmit={handleSubmit}>
+                  <div className="flex flex-col gap-3 p-4">
+                    <FormControl
+                      control="input"
+                      label="Project Name"
+                      type="text"
+                      name="projectName"
+                      placeholder="Project Name"
+                    />
+                    <FormControl
+                      control="input"
+                      label="Duration"
+                      type="number"
+                      name="duration"
+                      placeholder="Duration"
+                    />
+                    <div className="space-y-3">
+                      <div className="flex justify-end py-2 space-x-2">
+                        <WhiteButton
+                          text="Cancel"
+                          className="!w-28"
+                          onClick={() => {
+                            setCreateProjectModal(false);
+                            setFieldValue('projectName', '');
+                            setFieldValue('duration', 1);
+                          }}
+                        />
+                        <CustomButton
+                          text="Schedule"
+                          className="!w-28"
+                          type="submit"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </Form>
+              );
+            }}
+          </Formik>
         </div>
       </ModalComponent>
 
@@ -270,7 +314,7 @@ const Schedule = () => {
             className="!w-auto"
             iconwidth={20}
             iconheight={20}
-            onClick={() => setShowModal(true)}
+            onClick={() => setCreateProjectModal(true)}
           />
         </div>
       </div>
@@ -279,7 +323,7 @@ const Schedule = () => {
         <Table
           loading={false}
           columns={columns}
-          dataSource={schedules}
+          dataSource={[]}
           pagination={{ position: ['bottomCenter'] }}
         />
       </div>
