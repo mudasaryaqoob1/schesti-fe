@@ -49,11 +49,12 @@ export function Schedule({ addWbsHandler, state, updateWbsScopeItems }: Props) {
               onChange={(key) => {
                 setActive(key);
               }}
+              className='group'
               items={state.map((item, i) => {
                 return {
                   key: i,
                   label: (
-                    <div className="flex group gap-5 max-md:flex-wrap space-x-2">
+                    <div className="flex items-center gap-5 max-md:flex-wrap space-x-2">
                       <Image
                         src={'/arrow-down.svg'}
                         alt='arrow-down'
@@ -61,11 +62,11 @@ export function Schedule({ addWbsHandler, state, updateWbsScopeItems }: Props) {
                         height={20}
                         className="my-auto w-6 aspect-square stroke-[1px] stroke-gray-300"
                       />
-                      <div className="flex group items-center gap-5 px-4 py-1 bg-gray-50 rounded-2xl">
+                      <div className="flex  items-center gap-5 px-4 py-1 rounded-2xl">
                         <h3 className="grow my-auto text-lg font-semibold leading-9 whitespace-nowrap text-slate-700">
                           {item.category.label}
                         </h3>
-                        <section className="flex-auto self-start mt-2 text-lg leading-9 text-slate-700">
+                        <section className="flex-auto self-start  text-lg leading-9 text-slate-700">
                           {item.subCategory.label}
                         </section>
                         <div className="flex gap-2 justify-between opacity-20 group-hover:opacity-100 transition-all group-hover:translate-x-4">
@@ -90,11 +91,16 @@ export function Schedule({ addWbsHandler, state, updateWbsScopeItems }: Props) {
                                   {
                                     key: 'delete',
                                     label: <p>Delete</p>,
+                                    onClick(e) {
+                                      e.domEvent.stopPropagation();
+                                    }
                                   },
                                 ],
                               }
                               }
                               placement="bottomCenter"
+                              trigger={["click"]}
+
                             >
                               <Image
                                 loading="lazy"
@@ -103,6 +109,9 @@ export function Schedule({ addWbsHandler, state, updateWbsScopeItems }: Props) {
                                 height={20}
                                 className="w-full aspect-square cursor-pointer"
                                 alt="Menu"
+                                onClick={e => {
+                                  e.stopPropagation();
+                                }}
                               />
                             </Dropdown >
 
