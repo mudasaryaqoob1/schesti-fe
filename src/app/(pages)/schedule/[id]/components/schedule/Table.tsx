@@ -516,7 +516,7 @@ function EditableRow({ index, ...props }: EditableRowProps) {
   return (
     <Form form={form} component={false} key={index}>
       <EditableContext.Provider value={form}>
-        <tr {...props} />
+        <tr {...props} className='bg-white  hover:bg-gray-100' />
       </EditableContext.Provider>
     </Form>
   );
@@ -584,7 +584,6 @@ function EditableCell({
               colorPrimary: 'transparent',
               controlOutline: "transparent",
               colorBorder: "transparent",
-              lineHeight: 4,
               borderRadius: 0,
             },
             Select: {
@@ -592,8 +591,7 @@ function EditableCell({
               colorPrimaryHover: 'transparent',
               colorPrimaryActive: 'transparent',
               colorBorder: "transparent",
-              controlHeight: 47,
-              borderRadius: 0
+              borderRadius: 0,
             },
             DatePicker: {
               controlHeight: 55,
@@ -611,7 +609,7 @@ function EditableCell({
         }}
       >
         <Form.Item
-          style={{ margin: 0 }}
+          style={{ margin: 0, height: "100%" }}
           name={dataIndex}
           rules={[
             {
@@ -629,14 +627,10 @@ function EditableCell({
             <Select
               ref={inputRef}
               onBlur={save}
+              onChange={save}
               value={record[dataIndex]}
-              dropdownRender={(menu) => {
-
-                return menu;
-              }}
               defaultOpen
-              style={{ width: '150px' }}
-              className='!my-2'
+              style={{ height: "40px", margin: "1px 0px" }}
             >
               {selectOptions.map((option, i) => {
                 return <Select.Option value={option.value} key={i}>
@@ -658,16 +652,16 @@ function EditableCell({
               onChange={save}
               value={dayjs(record[dataIndex])}
               onBlur={save}
-              className='w-full h-full'
+              style={{ height: "40px" }}
             />
           ) : (
-            <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+            <Input style={{ height: "40px" }} ref={inputRef} onPressEnter={save} onBlur={save} />
           )}
         </Form.Item>
       </ConfigProvider>
     ) : (
       <div
-        className={`editable-cell-value-wrap p-4 w-full h-full`}
+        className={`editable-cell-value-wrap px-4 py-1.5 w-full h-full`}
         style={{ minHeight: 20 }}
         onClick={(e) => {
           e.stopPropagation();
@@ -695,7 +689,7 @@ function EditableCell({
     );
   }
 
-  return <td {...restProps} className='!p-0 border bg-white'>{childNode}</td>;
+  return <td {...restProps} className='!p-0 border bg-white hover:bg-gray-100 box-border'>{childNode}</td>;
 }
 
 

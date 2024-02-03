@@ -5,7 +5,7 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import { useState } from 'react';
 import { CategoryModal } from './Category';
 import { IWBSType, ScopeItem } from '../../type';
-import { Collapse } from 'antd';
+import { Collapse, Dropdown } from 'antd';
 import { ScheduleTable } from './Table';
 import Image from 'next/image';
 
@@ -20,6 +20,7 @@ type Props = {
 
 export function Schedule({ addWbsHandler, state, updateWbsScopeItems }: Props) {
   const [materialModal, setMaterialModal] = useState(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   const [active, setActive] = useState<string | string[]>(['']);
 
   return (
@@ -52,7 +53,7 @@ export function Schedule({ addWbsHandler, state, updateWbsScopeItems }: Props) {
                 return {
                   key: i,
                   label: (
-                    <div className="flex gap-5 max-md:flex-wrap space-x-2">
+                    <div className="flex group gap-5 max-md:flex-wrap space-x-2">
                       <Image
                         src={'/arrow-down.svg'}
                         alt='arrow-down'
@@ -67,26 +68,44 @@ export function Schedule({ addWbsHandler, state, updateWbsScopeItems }: Props) {
                         <section className="flex-auto self-start mt-2 text-lg leading-9 text-slate-700">
                           {item.subCategory.label}
                         </section>
-                        <div className="flex gap-2 justify-between opacity-0 group-hover:opacity-100 transition-all group-hover:translate-x-4">
+                        <div className="flex gap-2 justify-between opacity-20 group-hover:opacity-100 transition-all group-hover:translate-x-4">
                           <div className="flex justify-center items-center px-2  bg-gray-200 rounded-lg aspect-square">
                             <Image
                               loading="lazy"
                               src="/edit-icon.svg"
                               width={20}
                               height={20}
-                              className="w-full aspect-square"
+                              className="w-full aspect-square cursor-pointer"
+                              onClick={e => {
+                                e.stopPropagation();
+                              }}
                               alt="Edit"
                             />
                           </div>
                           <div className="flex justify-center items-center px-2  bg-gray-200 rounded-lg aspect-square">
-                            <Image
-                              loading="lazy"
-                              src={'/menuIcon.svg'}
-                              width={20}
-                              height={20}
-                              className="w-full aspect-square"
-                              alt="Menu"
-                            />
+                            <Dropdown
+                              className="!bg-grey"
+                              menu={{
+                                items: [
+                                  {
+                                    key: 'delete',
+                                    label: <p>Delete</p>,
+                                  },
+                                ],
+                              }
+                              }
+                              placement="bottomCenter"
+                            >
+                              <Image
+                                loading="lazy"
+                                src={'/menuIcon.svg'}
+                                width={20}
+                                height={20}
+                                className="w-full aspect-square cursor-pointer"
+                                alt="Menu"
+                              />
+                            </Dropdown >
+
                           </div>
                         </div>
                       </div>
