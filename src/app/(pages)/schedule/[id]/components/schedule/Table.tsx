@@ -563,7 +563,13 @@ function EditableCell({
   };
 
   let childNode = children;
-
+  const selectOptions = [
+    { label: 'New', value: 'New' },
+    { label: 'Planned', value: 'Planned' },
+    { label: 'In Progress', value: 'In Progress' },
+    { label: 'Completed', value: 'Completed' },
+    { label: 'Review', value: 'Review' },
+  ];
   if (editable) {
     childNode = editing ? (
       <ConfigProvider
@@ -580,6 +586,11 @@ function EditableCell({
             DatePicker: {
               colorPrimary: 'darkgrey',
             },
+            Tag: {
+              defaultColor: "transparent",
+              defaultBg: "transparent",
+              borderRadius: 0,
+            }
           },
         }}
       >
@@ -603,18 +614,26 @@ function EditableCell({
               ref={inputRef}
               onBlur={save}
               value={record[dataIndex]}
-              options={[
-                { label: 'New', value: 'New' },
-                { label: 'Planned', value: 'Planned' },
-                { label: 'In Progress', value: 'In Progress' },
-                { label: 'Completed', value: 'Completed' },
-                { label: 'Review', value: 'Review' },
-              ]}
               dropdownRender={(menu) => {
+
                 return menu;
               }}
               defaultOpen
-            />
+            >
+              {selectOptions.map((option, i) => {
+                return <Select.Option value={option.value} key={i}>
+                  <Tag bordered={undefined} className={`w-full border-none space-x-2 py-[2px]`}>
+                    <span style={{ borderColor: returnStatusColor(option.value as IWBSType['scopeItems'][0]['status']) }}
+                      className={`border-2 rounded mr-1`}>
+                      {" "}
+                    </span>
+                    <span className='font-medium text-black text-sm'>
+                      {option.label}
+                    </span>
+                  </Tag>
+                </Select.Option>
+              })}
+            </Select>
           ) : dateDataIndexes.includes(dataIndex) ? (
             <DatePicker
               ref={inputRef}
