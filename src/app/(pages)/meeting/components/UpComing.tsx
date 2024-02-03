@@ -22,6 +22,7 @@ type Props = {
 const TIME_TO_ENABLE = 15; // minutes
 export function UpcomingComponent({ state, onOpenModal }: Props) {
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   const [copiedText, copy] = useCopyToClipboard()
   const meetingsLoading = useSelector(
     (state: RootState) => state.meetings.loading
