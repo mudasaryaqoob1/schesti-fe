@@ -637,6 +637,7 @@ function EditableCell({
               onChange={save}
               value={record[dataIndex]}
               defaultOpen
+              autoFocus
               style={{ height: "40px", margin: "1px 0px" }}
             >
               {selectOptions.map((option, i) => {
@@ -659,6 +660,8 @@ function EditableCell({
               onChange={save}
               value={dayjs(record[dataIndex])}
               onBlur={save}
+              autoFocus
+              defaultOpen
               style={{ height: "40px" }}
             />
           ) : (
