@@ -12,7 +12,6 @@ import { IMeeting } from '@/app/interfaces/meeting.type';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { Skeleton } from 'antd';
-import { CopyOutlined } from '@ant-design/icons';
 import { useCopyToClipboard } from 'usehooks-ts'
 import { toast } from 'react-toastify';
 
@@ -98,17 +97,23 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
               <div className="space-y-1">
                 <SenaryHeading
                   title={moment(item.date).format('MMMM Do, YYYY')}
+                  className='text-[#475467]'
                 />
                 <QuinaryHeading title={item.topic} className='text-[#475467] font-semibold' />
                 <div className='flex items-center space-x-3'>
                   <QuinaryHeading title={item.roomName} className="font-medium text-[#667085]" />
-                  <CopyOutlined
-                    className='text-[#7F56D9] mb-1 text-base font-normal leading-6'
-                    onClick={() => handleCopy(item.link)}
+                  <Image
+                    src={'/copy.svg'}
+                    alt="copy icon"
+                    width={30}
+                    height={30}
+                    className='cursor-pointer'
+                    onClick={() => handleCopy(item.roomName)}
                   />
                 </div>
                 <SenaryHeading
                   title={`Time: ${moment(item.date).format('h:mm a')}`}
+                  className='text-[#667085]'
                 />
               </div>
               <div>
