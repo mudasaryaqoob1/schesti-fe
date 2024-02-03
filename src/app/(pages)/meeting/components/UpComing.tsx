@@ -1,4 +1,5 @@
 import CustomButton from '@/app/component/customButton/button';
+import WhiteButton from '@/app/component/customButton/white';
 import Image from 'next/image';
 import SecondaryHeading from '@/app/component/headings/Secondary';
 import Description from '@/app/component/description';
@@ -11,6 +12,9 @@ import { IMeeting } from '@/app/interfaces/meeting.type';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { Skeleton } from 'antd';
+import { CopyOutlined } from '@ant-design/icons';
+import { useCopyToClipboard } from 'usehooks-ts'
+import { toast } from 'react-toastify';
 
 type Props = {
   state: IMeeting[];
@@ -19,6 +23,7 @@ type Props = {
 const TIME_TO_ENABLE = 15; // minutes
 export function UpcomingComponent({ state, onOpenModal }: Props) {
   const router = useRouter();
+  const [copiedText, copy] = useCopyToClipboard()
   const meetingsLoading = useSelector(
     (state: RootState) => state.meetings.loading
   );
@@ -28,6 +33,16 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
     const meetingDate = dayjs(item.date);
     const diff = meetingDate.diff(today, 'minute');
     return diff <= TIME_TO_ENABLE;
+  }
+
+
+  async function handleCopy(text: string) {
+    try {
+      await copy(text)
+      toast.success('Copied to clipboard');
+    } catch (error) {
+      toast.error('Failed to copy to clipboard');
+    }
   }
 
   if (meetingsLoading) {
@@ -81,27 +96,33 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
               className="flex justify-between shadow p-3 my-2 rounded-lg"
             >
               <div className="space-y-1">
-                <QuinaryHeading title={item.topic} />
                 <SenaryHeading
                   title={moment(item.date).format('MMMM Do, YYYY')}
                 />
-                <QuinaryHeading title={item.roomName} className="font-medium" />
+                <QuinaryHeading title={item.topic} className='text-[#475467] font-semibold' />
+                <div className='flex items-center space-x-3'>
+                  <QuinaryHeading title={item.roomName} className="font-medium text-[#667085]" />
+                  <CopyOutlined
+                    className='text-[#7F56D9] mb-1 text-base font-normal leading-6'
+                    onClick={() => handleCopy(item.link)}
+                  />
+                </div>
                 <SenaryHeading
                   title={`Time: ${moment(item.date).format('h:mm a')}`}
                 />
               </div>
               <div>
-                <CustomButton
-                  className={`!w-20 ${
-                    !enableJoin15MinutesLeft(item) &&
-                    '!bg-lavenderPurple opacity-50'
-                  }`}
+                {!enableJoin15MinutesLeft(item) ? <WhiteButton
+                  className='!w-20'
+                  text='Join'
+                /> : <CustomButton
+                  className={`!w-20`}
                   text={'Join'}
                   onClick={() => {
                     router.push(`/meeting/${item.roomName}`);
                   }}
-                  disabled={!enableJoin15MinutesLeft(item)}
-                />
+
+                />}
               </div>
             </div>
           );

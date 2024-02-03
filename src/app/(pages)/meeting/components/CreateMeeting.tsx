@@ -34,7 +34,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
     initialValues: {
       topic: '',
       email: '',
-      date: new Date(),
+      date: undefined,
     },
     validationSchema: CreateMeetingSchema,
     onSubmit(values) {
@@ -105,7 +105,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
             <InputComponent
               label="Invite Client"
               type="email"
-              placeholder="Invite Client"
+              placeholder="Client Email Address"
               name="email"
               hasError={formik.touched.email && !!formik.errors.email}
               field={{

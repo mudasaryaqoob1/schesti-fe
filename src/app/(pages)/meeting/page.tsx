@@ -61,7 +61,7 @@ const Meeting = () => {
           onClick={() => setShowModal(true)}
         />
       </div>
-      <div className="w-full mb-4">
+      <div className="w-full mb-4 shadow rounded p-3">
         <ConfigProvider
           theme={{
             components: {
