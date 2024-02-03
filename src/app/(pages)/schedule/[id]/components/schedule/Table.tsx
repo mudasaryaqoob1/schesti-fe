@@ -576,15 +576,21 @@ function EditableCell({
         theme={{
           components: {
             Input: {
-              colorPrimary: 'darkgrey',
+              colorPrimary: 'transparent',
+              lineHeight: 4,
+              borderRadius: 0,
             },
             Select: {
               colorPrimary: 'grey',
-              colorPrimaryHover: 'grey',
-              colorPrimaryActive: 'lightgrey',
+              colorPrimaryHover: 'transparent',
+              colorPrimaryActive: 'transparent',
+              colorBorder: "transparent",
             },
             DatePicker: {
-              colorPrimary: 'darkgrey',
+              controlHeight: 55,
+              borderRadius: 0,
+              colorPrimary: "white",
+              colorBorder: "transparent"
             },
             Tag: {
               defaultColor: "transparent",
@@ -618,6 +624,7 @@ function EditableCell({
 
                 return menu;
               }}
+              className='w-full h-full'
               defaultOpen
               style={{ width: '150px' }}
             >
@@ -641,6 +648,7 @@ function EditableCell({
               onChange={save}
               value={dayjs(record[dataIndex])}
               onBlur={save}
+              className='w-full h-full'
             />
           ) : (
             <Input ref={inputRef} onPressEnter={save} onBlur={save} />
@@ -649,7 +657,7 @@ function EditableCell({
       </ConfigProvider>
     ) : (
       <div
-        className={`editable-cell-value-wrap`}
+        className={`editable-cell-value-wrap p-4 w-full h-full`}
         style={{ minHeight: 20 }}
         onClick={(e) => {
           e.stopPropagation();
@@ -677,7 +685,7 @@ function EditableCell({
     );
   }
 
-  return <td {...restProps}>{childNode}</td>;
+  return <td {...restProps} className='!p-0  border'>{childNode}</td>;
 }
 
 
