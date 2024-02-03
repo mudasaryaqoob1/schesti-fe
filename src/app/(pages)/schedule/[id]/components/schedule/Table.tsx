@@ -563,19 +563,6 @@ function EditableCell({
   };
 
   let childNode = children;
-  const status = record ? record.status : '';
-  let statusColor: string = '';
-  if (status === 'New') {
-    statusColor = '#2db7f5';
-  } else if (status === 'Planned') {
-    statusColor = '#108ee9';
-  } else if (status === 'In Progress') {
-    statusColor = '#3BC8D0';
-  } else if (status === 'Completed') {
-    statusColor = '#87d068';
-  } else if (status === 'Review') {
-    statusColor = 'yellow';
-  }
 
   if (editable) {
     childNode = editing ? (
@@ -626,6 +613,7 @@ function EditableCell({
               dropdownRender={(menu) => {
                 return menu;
               }}
+              defaultOpen
             />
           ) : dateDataIndexes.includes(dataIndex) ? (
             <DatePicker
@@ -649,8 +637,16 @@ function EditableCell({
         }}
       >
         {dataIndex === 'status' ? (
-          <Tag className="w-full text-center p-[2px]" color={statusColor}>
-            {record[dataIndex]}
+          <Tag className={`w-full space-x-2 py-[2px]`} color={`${returnStatusColor(record[dataIndex])}8C`}
+            style={{ filter: 'alpha(opacity=50)' }}>
+
+            <span style={{ borderColor: returnStatusColor(record[dataIndex]) }}
+              className={`border-2 rounded mr-1`}>
+              {" "}
+            </span>
+            <span className='font-medium text-black text-sm'>
+              {record[dataIndex]}
+            </span>
           </Tag>
         ) : dateDataIndexes.includes(dataIndex) ? (
           dayjs(record[dataIndex]).format('DD/MM/YYYY')
@@ -663,3 +659,18 @@ function EditableCell({
 
   return <td {...restProps}>{childNode}</td>;
 }
+
+
+function returnStatusColor(status: IWBSType['scopeItems'][0]['status']) {
+  if (status === 'Planned') {
+    return '#108ee9';
+  } else if (status === 'In Progress') {
+    return '#3BC8D0';
+  } else if (status === 'Completed') {
+    return '#87d068';
+  } else if (status === 'Review') {
+    return 'yellow';
+  }
+  return "#2db7f5";
+}
+
