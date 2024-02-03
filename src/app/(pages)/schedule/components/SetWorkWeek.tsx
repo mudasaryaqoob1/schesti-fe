@@ -33,20 +33,15 @@ const setWorkWeekValidationSchema = Yup.object({
   // )
 });
 
-
-
 export function SetWorkWeek({
   onClose,
   initialValues,
   onCancel,
-  onConfirm
+  onConfirm,
 }: Props) {
-
-
-  const submitHandler = (values : IProject) => {
-    onConfirm(values)
+  const submitHandler = (values: IProject) => {
+    onConfirm(values);
   };
-
 
   return (
     <div className="px-4 py-2 bg-white border border-solid border-elboneyGray rounded-[4px] z-50">

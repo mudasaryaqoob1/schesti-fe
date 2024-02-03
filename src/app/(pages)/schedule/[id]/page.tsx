@@ -4,7 +4,7 @@ import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
 // import SenaryHeading from '@/app/component/headings/senaryHeading';
 // import { UserOutlined } from '@ant-design/icons';
-import {  ConfigProvider, Tabs, Tag } from 'antd';
+import { ConfigProvider, Tabs, Tag } from 'antd';
 import { useLayoutEffect, useState } from 'react';
 import { Schedule } from './components/schedule';
 import { GanttComponent } from './components/gantt';
@@ -13,9 +13,9 @@ import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
 import { IWBSType } from './type';
 import CustomButton from '@/app/component/customButton/button';
+import {scheduleService} from '@/app/services/schedule.service'
 
 import { projectDetailStore } from '@/redux/schedule/scheduleSelector';
-
 
 const SCHEDULE_KEY = 'Schedule';
 const GANTT_KEY = 'Gantt';
@@ -33,8 +33,6 @@ export default function SchedulePage() {
 
   const [tab, setTab] = useState(SCHEDULE_KEY);
   const [state, setState] = useState<IWBSType[]>([]);
-
- 
 
   function addWbsHandler(
     category: IWBSType['category'],
@@ -67,6 +65,18 @@ export default function SchedulePage() {
     setState(updatedWbs);
   }
 
+
+  const generateScheduleHandler = async () => {
+    console.log(state , 'statestate');
+    
+    // const newSchedule = await scheduleService.httpGenerateSchedule(state)
+    // console.log(newSchedule , 'newSchedulenewSchedule');
+    
+  }
+
+
+
+  
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       <div className="p-5 flex flex-col rounded-lg border border-silverGray shadow bg-white">
@@ -215,13 +225,19 @@ export default function SchedulePage() {
                 tabKey: type,
                 children:
                   tab === SCHEDULE_KEY ? (
-                 <>
-                    <Schedule
-                    addWbsHandler={addWbsHandler}
-                      state={state}
-                      updateWbsScopeItems={updateWbsScopeItems}
-                    />
-                     {state.length && <CustomButton text="Generate Schedule" className="max-w-max float-right" /> }  
+                    <>
+                      <Schedule
+                        addWbsHandler={addWbsHandler}
+                        state={state}
+                        updateWbsScopeItems={updateWbsScopeItems}
+                      />
+                      {state?.length > 0 ? (
+                        <CustomButton
+                          text="Generate Schedule"
+                          className="max-w-max float-right"
+                          onClick={generateScheduleHandler}
+                        />
+                      ) : null}
                     </>
                   ) : (
                     <GanttComponent />

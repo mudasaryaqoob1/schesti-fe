@@ -21,9 +21,7 @@ import { selectToken } from '@/redux/authSlices/auth.selector';
 import { SetWorkWeek } from './components/SetWorkWeek';
 import { IProject } from '@/app/interfaces/schedule/project.schedule.interface';
 import { ISchedule } from '@/app/interfaces/schedule/schedule.type';
-import {
-  addSchedule
-} from '@/redux/schedule/schedule.slice';
+import { addSchedule } from '@/redux/schedule/schedule.slice';
 import FormControl from '@/app/component/formControl';
 
 const initialValues: IProject = {
@@ -86,9 +84,6 @@ const Schedule = () => {
       HttpService.setToken(token);
     }
   }, [token]);
-
-  
-
 
   const [createProjectModal, setCreateProjectModal] = useState(false);
   const [worksheetModal, setWorksheetModal] = useState(false);
@@ -187,11 +182,11 @@ const Schedule = () => {
   function handleMenuItemClick(key: string, record: ISchedule) {
     if (key === 'schedule') {
       router.push(`/schedule/${record._id}`);
+    }
   }
-}
 
   function handleConfirm(item: IProject) {
-    let finalObject : any = {
+    let finalObject: any = {
       projectName: projectDetail?.projectName,
       duration: projectDetail?.duration,
       hoursPerDay: item.hoursPerDay,

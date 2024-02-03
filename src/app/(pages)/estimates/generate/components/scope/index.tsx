@@ -1095,8 +1095,8 @@ const Scope = ({ setPrevNext }: Props) => {
 
       <ModalComponent open={viewPlansModel} setOpen={setViewPlansModel}>
         <div className="bg-white p-4 rounded">
-          <div className='flex justify-between mb-4' >
-            <p className='text=[#344054] text=[16px]' >View Plans</p>
+          <div className="flex justify-between mb-4">
+            <p className="text=[#344054] text=[16px]">View Plans</p>
 
             <Image
               className="cursor-pointer"

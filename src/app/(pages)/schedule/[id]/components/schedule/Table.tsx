@@ -124,7 +124,6 @@ type Props = {
   wbs: IWBSType;
 };
 export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
-  
   const [checkedList, setCheckedList] = useState(defaultCheckedList);
   const [filters, setFilters] = useState(defaultCheckedList);
   const [open, setOpen] = useState(false);
@@ -257,7 +256,7 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
         );
       },
       fixed: 'right',
-      align:'center',
+      align: 'center',
       width: 100,
     },
     {
@@ -531,14 +530,12 @@ function EditableCell({
   const form = useContext(EditableContext)!;
   const dateDataIndexes = ['start', 'finish', 'actualStart', 'actualFinish'];
 
-  
   useEffect(() => {
     if (editing) {
       // @ts-ignore
       inputRef.current!.focus();
     }
   }, [editing]);
-
 
   const toggleEdit = () => {
     setEditing(!editing);

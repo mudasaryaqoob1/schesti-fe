@@ -1,31 +1,27 @@
 'use client';
+import { JaaSMeeting } from '@jitsi/react-sdk';
 import { useParams } from 'next/navigation';
-import { JitsiMeeting } from '@jitsi/react-sdk';
 
 export default function JoinMeeting() {
   const { link } = useParams();
-  console.log(link);
 
   return (
     <div>
-      <JitsiMeeting
-        roomName={link as string}
-        configOverwrite={{
-          startWithAudioMuted: true,
-          disableModeratorIndicator: false,
-          startScreenSharing: true,
-          enableEmailInStats: false,
-        }}
-        interfaceConfigOverwrite={{
-          DISABLE_JOIN_LEAVE_NOTIFICATIONS: true,
-        }}
-        onApiReady={(externalApi) => {
-          console.log(externalApi);
-        }}
-        getIFrameRef={(iframeRef) => {
-          iframeRef.style.height = '400px';
-        }}
-      />
+      <div className="h-screen">
+        <JaaSMeeting
+          appId={process.env.NEXT_PUBLIC_JITSI_APP_ID as string}
+          roomName={link as string}
+          configOverwrite={{
+            startWithAudioMuted: true,
+            startWithVideoMuted: true,
+          }}
+          spinner={() => <div>Loading...</div>}
+          getIFrameRef={(iframeRef) => {
+            iframeRef.style.height = '100vh';
+            iframeRef.style.width = '100%';
+          }}
+        />
+      </div>
     </div>
   );
 }

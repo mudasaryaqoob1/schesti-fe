@@ -1,33 +1,55 @@
 'use client';
-import React, { useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from 'react';
 
 import { ConfigProvider, Tabs } from 'antd';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import CustomButton from '@/app/component/customButton/button';
 import SecondaryHeading from '@/app/component/headings/Secondary';
 import { UpcomingComponent } from './components/UpComing';
-import { IMeeting } from './types';
+import { useSelector } from 'react-redux';
+import { selectMeetings } from '@/redux/meeting/meeting.slice';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/redux/store';
+import { fetchMeetings } from '@/redux/meeting/meeting.thunk';
+import { selectToken } from '@/redux/authSlices/auth.selector';
+import { HttpService } from '@/app/services/base.service';
+import { CreateMeeting } from './components/CreateMeeting';
 
 const UPCOMING_MEETING_KEY = 'Upcoming Meeting';
 const RECENT_MEETING_KEY = 'Recent Meeting';
 
 const Meeting = () => {
+  const token = useSelector(selectToken);
   const [tab, setTab] = useState(UPCOMING_MEETING_KEY);
-  const [meetings, setMeetings] = useState<IMeeting[]>([]);
+  const meetings = useSelector(selectMeetings);
+  const [showModal, setShowModal] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
 
-  function scheduleMeeting() {
-    const roomName = `SchestiMeetRoomNo${Math.random() * 100}-${Date.now()}`;
-    const meeting: IMeeting = {
-      id: new Date().getTime().toString(),
-      date: new Date().toString(),
-      topic: 'Random Topic ' + meetings.length,
-      link: '/meeting/' + roomName,
-    };
-    setMeetings([...meetings, meeting]);
-  }
+  useLayoutEffect(() => {
+    if (token) {
+      HttpService.setToken(token);
+    }
+  }, [token]);
+
+  const fetchMeetingsCB = useCallback(async () => {
+    await dispatch(fetchMeetings({}));
+  }, [dispatch]);
+
+  useEffect(() => {
+    fetchMeetingsCB();
+  }, [fetchMeetingsCB]);
 
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
+      <CreateMeeting
+        showModal={showModal}
+        setShowModal={() => setShowModal(false)}
+      />
       <div className="flex items-center justify-between my-3">
         <SecondaryHeading title="Meeting" />
         <CustomButton
@@ -36,7 +58,7 @@ const Meeting = () => {
           iconwidth={20}
           iconheight={20}
           className="!w-48 !text-xs !text-white"
-          onClick={scheduleMeeting}
+          onClick={() => setShowModal(true)}
         />
       </div>
       <div className="w-full mb-4">
@@ -68,8 +90,8 @@ const Meeting = () => {
                 children:
                   tab === UPCOMING_MEETING_KEY ? (
                     <UpcomingComponent
-                      setState={setMeetings}
                       state={meetings}
+                      onOpenModal={() => setShowModal(true)}
                     />
                   ) : (
                     tab
