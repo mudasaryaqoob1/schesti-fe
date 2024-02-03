@@ -13,7 +13,6 @@ import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
 import { IWBSType } from './type';
 import CustomButton from '@/app/component/customButton/button';
-import {scheduleService} from '@/app/services/schedule.service'
 
 import { projectDetailStore } from '@/redux/schedule/scheduleSelector';
 
@@ -49,6 +48,21 @@ export default function SchedulePage() {
     setState([...state, item]);
   }
 
+  function updateWbs(id: string, category: IWBSType['category'], subCategory: IWBSType['subCategory']) {
+    const updatedWbs = state.map((item) => {
+      if (item.id === id) {
+        return {
+          ...item,
+          category,
+          subCategory,
+          title: `${category.label} ${subCategory.label}`,
+        };
+      }
+      return item;
+    });
+    setState(updatedWbs);
+  }
+
   function updateWbsScopeItems(
     wbsId: string,
     scopeItems: IWBSType['scopeItems']
@@ -65,18 +79,23 @@ export default function SchedulePage() {
     setState(updatedWbs);
   }
 
+  function deleteWbs(id: string) {
+    const updatedWbs = state.filter((item) => item.id !== id);
+    setState(updatedWbs);
+  }
+
 
   const generateScheduleHandler = async () => {
-    console.log(state , 'statestate');
-    
+    console.log(state, 'statestate');
+
     // const newSchedule = await scheduleService.httpGenerateSchedule(state)
     // console.log(newSchedule , 'newSchedulenewSchedule');
-    
+
   }
 
 
 
-  
+
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       <div className="p-5 flex flex-col rounded-lg border border-silverGray shadow bg-white">
@@ -230,6 +249,8 @@ export default function SchedulePage() {
                         addWbsHandler={addWbsHandler}
                         state={state}
                         updateWbsScopeItems={updateWbsScopeItems}
+                        updateWbs={updateWbs}
+                        deleteWbs={deleteWbs}
                       />
                       {state?.length > 0 ? (
                         <CustomButton

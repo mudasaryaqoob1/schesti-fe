@@ -21,11 +21,15 @@ type Props = {
     _category: IWBSType['category'],
     _subCategory: IWBSType['subCategory']
   ): void;
+  categoryId?: string;
+  subCategoryId?: string;
 };
 export function CategoryModal({
   materialModal,
   setMaterialModal,
   addWbsHandler,
+  categoryId = "",
+  subCategoryId = ""
 }: Props) {
   const [categories, setCategories] = useState<
     {
@@ -40,9 +44,9 @@ export function CategoryModal({
       categoryId: string;
     }[]
   >([]);
-  const [category, setCategory] = useState('');
+  const [category, setCategory] = useState(categoryId);
 
-  const [subCategory, setSubCategory] = useState('');
+  const [subCategory, setSubCategory] = useState(subCategoryId);
 
   const fetchCategories = useCallback(async () => {
     const result = await categoriesService.httpGetAllCategories(1, 9);
@@ -98,7 +102,7 @@ export function CategoryModal({
 
   return (
     <CustomModal setOpen={() => setMaterialModal(false)} open={materialModal}>
-      <div className="rounded-lg z-50 bg-white">
+      <div className="rounded-lg z-50 bg-white" onClick={e => e.stopPropagation()}>
         <div className="bg-[#D0D5DD]  p-2 border-[#D0D5DD] flex  py-2.5 justify-between">
           <TertiaryHeading
             title="Select Project WBS"
@@ -148,7 +152,7 @@ export function CategoryModal({
               onClick={() => setMaterialModal(false)}
             />
             <CustomButton
-              text="Create"
+              text="Done"
               className="!w-28"
               onClick={handleCreateWbs}
             />

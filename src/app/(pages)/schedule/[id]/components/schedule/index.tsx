@@ -16,12 +16,17 @@ type Props = {
     _subCategory: IWBSType['subCategory']
   ) => void;
   state: IWBSType[];
+  updateWbs(_id: string, _category: IWBSType['category'], _subCategory: IWBSType['subCategory']): void;
+  deleteWbs(_id: string): void;
 };
 
-export function Schedule({ addWbsHandler, state, updateWbsScopeItems }: Props) {
+export function Schedule({ addWbsHandler, state, updateWbsScopeItems, updateWbs, deleteWbs }: Props) {
   const [materialModal, setMaterialModal] = useState(false);
+  const [updateMaterialModal, setUpdateMaterialModal] = useState(false);
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   const [active, setActive] = useState<string | string[]>(['']);
+
 
   return (
     <section>
@@ -55,6 +60,17 @@ export function Schedule({ addWbsHandler, state, updateWbsScopeItems }: Props) {
                   key: i,
                   label: (
                     <div className="flex items-center gap-5 max-md:flex-wrap space-x-2">
+                      <CategoryModal
+                        materialModal={updateMaterialModal}
+                        setMaterialModal={setUpdateMaterialModal}
+                        addWbsHandler={(category, subCategory) => {
+                          updateWbs(item.id, category, subCategory);
+                          setUpdateMaterialModal(false);
+                        }}
+                        categoryId={item.category.value}
+                        subCategoryId={item.subCategory.value}
+                        key={i}
+                      />
                       <Image
                         src={'/arrow-down.svg'}
                         alt='arrow-down'
@@ -79,6 +95,7 @@ export function Schedule({ addWbsHandler, state, updateWbsScopeItems }: Props) {
                               className="w-full aspect-square cursor-pointer"
                               onClick={e => {
                                 e.stopPropagation();
+                                setUpdateMaterialModal(true);
                               }}
                               alt="Edit"
                             />
@@ -93,6 +110,7 @@ export function Schedule({ addWbsHandler, state, updateWbsScopeItems }: Props) {
                                     label: <p>Delete</p>,
                                     onClick(e) {
                                       e.domEvent.stopPropagation();
+                                      deleteWbs(item.id);
                                     }
                                   },
                                 ],
