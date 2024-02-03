@@ -30,6 +30,9 @@ const columns: ColumnType<{}>[] = [
     dataIndex: 'id',
     key: '0',
     width: 100,
+    render(value) {
+      return <div className='pl-4'>{value}</div>
+    }
   },
   {
     title: 'Activities',
@@ -576,7 +579,8 @@ function EditableCell({
         theme={{
           components: {
             Input: {
-              colorPrimary: 'transparent',
+              colorPrimary: '#fff',
+              colorBorder: "transparent",
               lineHeight: 4,
               borderRadius: 0,
             },
@@ -585,6 +589,7 @@ function EditableCell({
               colorPrimaryHover: 'transparent',
               colorPrimaryActive: 'transparent',
               colorBorder: "transparent",
+              paddingContentVertical: 3
             },
             DatePicker: {
               controlHeight: 55,
@@ -624,7 +629,6 @@ function EditableCell({
 
                 return menu;
               }}
-              className='w-full h-full'
               defaultOpen
               style={{ width: '150px' }}
             >
@@ -665,7 +669,7 @@ function EditableCell({
         }}
       >
         {dataIndex === 'status' ? (
-          <Tag className={`w-full space-x-2 py-[2px]`} color={`${returnStatusColor(record[dataIndex])}8C`}
+          <Tag className={`w-full space-x-2 `} color={`${returnStatusColor(record[dataIndex])}8C`}
             style={{ filter: 'alpha(opacity=50)' }}>
 
             <span style={{ borderColor: returnStatusColor(record[dataIndex]) }}
@@ -685,7 +689,7 @@ function EditableCell({
     );
   }
 
-  return <td {...restProps} className='!p-0  border'>{childNode}</td>;
+  return <td {...restProps} className='!p-0 border'>{childNode}</td>;
 }
 
 
