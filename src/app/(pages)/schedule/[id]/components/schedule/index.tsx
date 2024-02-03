@@ -5,14 +5,9 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import { useState } from 'react';
 import { CategoryModal } from './Category';
 import { IWBSType, ScopeItem } from '../../type';
-import {
-  DownOutlined,
-  EditOutlined,
-  MoreOutlined,
-  RightOutlined,
-} from '@ant-design/icons';
 import { Collapse } from 'antd';
 import { ScheduleTable } from './Table';
+import Image from 'next/image';
 
 type Props = {
   updateWbsScopeItems: (_id: string, _scopeItems: ScopeItem[]) => void;
@@ -57,25 +52,42 @@ export function Schedule({ addWbsHandler, state, updateWbsScopeItems }: Props) {
                 return {
                   key: i,
                   label: (
-                    <div className="flex items-center space-x-2">
-                      {Array.isArray(active) &&
-                      active.includes(i.toString()) ? (
-                        <DownOutlined className="text-gray-600 p-1 bg-gray-50 rounded text-lg" />
-                      ) : (
-                        <RightOutlined className="text-gray-600 p-1 bg-gray-50 rounded text-lg" />
-                      )}
-                      <div className="flex flex-wrap justify-between w-[20%] px-4  rounded-md bg-gray-50 items-center">
-                        <h3 className="flex space-x-5 items-center pt-1">
-                          <span className="tracking-wider">
-                            {item.category.label}{' '}
-                          </span>
-                          <span className="text-base text-gray-500 font-normal">
-                            {item.subCategory.label}
-                          </span>
+                    <div className="flex gap-5 max-md:flex-wrap space-x-2">
+                      <Image
+                        src={'/arrow-down.svg'}
+                        alt='arrow-down'
+                        width={20}
+                        height={20}
+                        className="my-auto w-6 aspect-square stroke-[1px] stroke-gray-300"
+                      />
+                      <div className="flex group items-center gap-5 px-4 py-1 bg-gray-50 rounded-2xl">
+                        <h3 className="grow my-auto text-lg font-semibold leading-9 whitespace-nowrap text-slate-700">
+                          {item.category.label}
                         </h3>
-                        <div className="space-x-1">
-                          <EditOutlined className="text-gray-600  rounded bg-gray-100 p-1 text-base " />
-                          <MoreOutlined className="text-gray-600  rounded bg-gray-100 p-1 text-base " />
+                        <section className="flex-auto self-start mt-2 text-lg leading-9 text-slate-700">
+                          {item.subCategory.label}
+                        </section>
+                        <div className="flex gap-2 justify-between opacity-0 group-hover:opacity-100 transition-all group-hover:translate-x-4">
+                          <div className="flex justify-center items-center px-2  bg-gray-200 rounded-lg aspect-square">
+                            <Image
+                              loading="lazy"
+                              src="/edit-icon.svg"
+                              width={20}
+                              height={20}
+                              className="w-full aspect-square"
+                              alt="Edit"
+                            />
+                          </div>
+                          <div className="flex justify-center items-center px-2  bg-gray-200 rounded-lg aspect-square">
+                            <Image
+                              loading="lazy"
+                              src={'/menuIcon.svg'}
+                              width={20}
+                              height={20}
+                              className="w-full aspect-square"
+                              alt="Menu"
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>

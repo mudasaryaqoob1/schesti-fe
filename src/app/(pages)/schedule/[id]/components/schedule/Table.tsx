@@ -461,31 +461,41 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
           </>
         ) : null}
       </Drawer>
-      <Table
-        columns={[...newColumns, ...extras] as ColumnType<ScopeItem>[]}
-        dataSource={wbs.scopeItems}
-        key={'id'}
-        components={{
-          body: {
-            row: EditableRow,
-            cell: EditableCell,
-          },
+      <ConfigProvider
+        theme={{
+          components: {
+            Table: {
+              headerBg: "#F4EBFF"
+            }
+          }
         }}
-        scroll={{ x: 1500, y: 300 }}
-        footer={() => {
-          return (
-            <div
-              onClick={() => addItem()}
-              className="max-w-max border border-dashed rounded cursor-pointer py-3 px-2 border-[#EAECF0] bg-white"
-            >
-              <h4 className="space-x-2 tracking-wide">
-                <PlusOutlined />
-                <span>Create New Activity</span>
-              </h4>
-            </div>
-          );
-        }}
-      />
+      >
+        <Table
+          columns={[...newColumns, ...extras] as ColumnType<ScopeItem>[]}
+          dataSource={wbs.scopeItems}
+          key={'id'}
+          components={{
+            body: {
+              row: EditableRow,
+              cell: EditableCell,
+            },
+          }}
+          scroll={{ x: 1500, y: 300 }}
+          footer={() => {
+            return (
+              <div
+                onClick={() => addItem()}
+                className="max-w-max border border-dashed rounded cursor-pointer py-3 px-2 border-[#EAECF0] bg-white"
+              >
+                <h4 className="space-x-2 tracking-wide">
+                  <PlusOutlined />
+                  <span>Create New Activity</span>
+                </h4>
+              </div>
+            );
+          }}
+        />
+      </ConfigProvider>
     </div>
   );
 }
@@ -591,7 +601,7 @@ function EditableCell({
           name={dataIndex}
           rules={[
             {
-              required: true,
+              required: false,
               message: `${dataIndex} is required.`,
             },
           ]}
@@ -631,8 +641,8 @@ function EditableCell({
       </ConfigProvider>
     ) : (
       <div
-        className="editable-cell-value-wrap"
-        style={{ paddingRight: 24 }}
+        className={`editable-cell-value-wrap`}
+        style={{ minHeight: 20 }}
         onClick={(e) => {
           e.stopPropagation();
           toggleEdit();
