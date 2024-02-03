@@ -38,7 +38,7 @@ const columns: ColumnType<{}>[] = [
     title: 'Activities',
     dataIndex: 'description',
     key: '1',
-    width: 150,
+    width: 250,
   },
   {
     title: 'Original Duration',
@@ -135,11 +135,13 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
   const [ID, setID] = useState(0);
 
   const showDrawer = () => {
+    setFilters(checkedList);
     setOpen(true);
   };
 
   const onClose = () => {
     setOpen(false);
+    setFilters(checkedList);
   };
 
   // add item in data
@@ -285,14 +287,18 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
         title="Customise Table"
         onClose={onClose}
         open={open}
+        keyboard={false}
+        closable={false}
+        maskClosable={false}
+        destroyOnClose
         footer={
           <div className="flex justify-between py-2 space-x-2">
-            <WhiteButton text="Cancel" />
+            <WhiteButton text="Cancel" onClick={onClose} />
             <CustomButton
               text="Apply Filters"
               onClick={() => {
-                setCheckedList(filters);
                 onClose();
+                setCheckedList(filters);
               }}
             />
           </div>
@@ -485,6 +491,7 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
               cell: EditableCell,
             },
           }}
+          size='small'
           scroll={{ x: 1500, y: 300 }}
           footer={() => {
             return (
