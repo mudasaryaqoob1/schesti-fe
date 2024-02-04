@@ -13,7 +13,6 @@ import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
 import { IWBSType } from './type';
 import CustomButton from '@/app/component/customButton/button';
-import {scheduleService} from '@/app/services/schedule.service'
 
 import { projectDetailStore } from '@/redux/schedule/scheduleSelector';
 
