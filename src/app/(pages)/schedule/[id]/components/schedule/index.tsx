@@ -5,14 +5,9 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import { useState } from 'react';
 import { CategoryModal } from './Category';
 import { IWBSType, ScopeItem } from '../../type';
-import {
-  DownOutlined,
-  EditOutlined,
-  MoreOutlined,
-  RightOutlined,
-} from '@ant-design/icons';
-import { Collapse } from 'antd';
+import { Collapse, Dropdown } from 'antd';
 import { ScheduleTable } from './Table';
+import Image from 'next/image';
 
 type Props = {
   updateWbsScopeItems: (_id: string, _scopeItems: ScopeItem[]) => void;
@@ -21,11 +16,17 @@ type Props = {
     _subCategory: IWBSType['subCategory']
   ) => void;
   state: IWBSType[];
+  updateWbs(_id: string, _category: IWBSType['category'], _subCategory: IWBSType['subCategory']): void;
+  deleteWbs(_id: string): void;
 };
 
-export function Schedule({ addWbsHandler, state, updateWbsScopeItems }: Props) {
+export function Schedule({ addWbsHandler, state, updateWbsScopeItems, updateWbs, deleteWbs }: Props) {
   const [materialModal, setMaterialModal] = useState(false);
+  const [updateMaterialModal, setUpdateMaterialModal] = useState(false);
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   const [active, setActive] = useState<string | string[]>(['']);
+
 
   return (
     <section>
@@ -53,29 +54,86 @@ export function Schedule({ addWbsHandler, state, updateWbsScopeItems }: Props) {
               onChange={(key) => {
                 setActive(key);
               }}
+              className='group'
               items={state.map((item, i) => {
                 return {
                   key: i,
                   label: (
-                    <div className="flex items-center space-x-2">
-                      {Array.isArray(active) &&
-                      active.includes(i.toString()) ? (
-                        <DownOutlined className="text-gray-600 p-1 bg-gray-50 rounded text-lg" />
-                      ) : (
-                        <RightOutlined className="text-gray-600 p-1 bg-gray-50 rounded text-lg" />
-                      )}
-                      <div className="flex flex-wrap justify-between w-[20%] px-4  rounded-md bg-gray-50 items-center">
-                        <h3 className="flex space-x-5 items-center pt-1">
-                          <span className="tracking-wider">
-                            {item.category.label}{' '}
-                          </span>
-                          <span className="text-base text-gray-500 font-normal">
-                            {item.subCategory.label}
-                          </span>
+                    <div className="flex items-center gap-5 max-md:flex-wrap space-x-2">
+                      <CategoryModal
+                        materialModal={updateMaterialModal}
+                        setMaterialModal={setUpdateMaterialModal}
+                        addWbsHandler={(category, subCategory) => {
+                          updateWbs(item.id, category, subCategory);
+                          setUpdateMaterialModal(false);
+                        }}
+                        categoryId={item.category.value}
+                        subCategoryId={item.subCategory.value}
+                        key={i}
+                      />
+                      <Image
+                        src={'/arrow-down.svg'}
+                        alt='arrow-down'
+                        width={20}
+                        height={20}
+                        className="my-auto w-6 aspect-square stroke-[1px] stroke-gray-300"
+                      />
+                      <div className="flex  items-center gap-5 px-4 py-1 rounded-2xl">
+                        <h3 className="grow my-auto text-lg font-semibold leading-9 whitespace-nowrap text-slate-700">
+                          {item.category.label}
                         </h3>
-                        <div className="space-x-1">
-                          <EditOutlined className="text-gray-600  rounded bg-gray-100 p-1 text-base " />
-                          <MoreOutlined className="text-gray-600  rounded bg-gray-100 p-1 text-base " />
+                        <section className="flex-auto self-start  text-lg leading-9 text-slate-700">
+                          {item.subCategory.label}
+                        </section>
+                        <div className="flex gap-2 justify-between opacity-20 group-hover:opacity-100 transition-all group-hover:translate-x-4">
+                          <div className="flex justify-center items-center px-2  bg-gray-200 rounded-lg aspect-square">
+                            <Image
+                              loading="lazy"
+                              src="/edit-icon.svg"
+                              width={20}
+                              height={20}
+                              className="w-full aspect-square cursor-pointer"
+                              onClick={e => {
+                                e.stopPropagation();
+                                setUpdateMaterialModal(true);
+                              }}
+                              alt="Edit"
+                            />
+                          </div>
+                          <div className="flex justify-center items-center px-2  bg-gray-200 rounded-lg aspect-square">
+                            <Dropdown
+                              className="!bg-grey"
+                              menu={{
+                                items: [
+                                  {
+                                    key: 'delete',
+                                    label: <p>Delete</p>,
+                                    onClick(e) {
+                                      e.domEvent.stopPropagation();
+                                      deleteWbs(item.id);
+                                    }
+                                  },
+                                ],
+                              }
+                              }
+                              placement="bottomCenter"
+                              trigger={["click"]}
+
+                            >
+                              <Image
+                                loading="lazy"
+                                src={'/menuIcon.svg'}
+                                width={20}
+                                height={20}
+                                className="w-full aspect-square cursor-pointer"
+                                alt="Menu"
+                                onClick={e => {
+                                  e.stopPropagation();
+                                }}
+                              />
+                            </Dropdown >
+
+                          </div>
                         </div>
                       </div>
                     </div>

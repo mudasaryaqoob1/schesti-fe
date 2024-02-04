@@ -61,7 +61,7 @@ const Meeting = () => {
           onClick={() => setShowModal(true)}
         />
       </div>
-      <div className="w-full mb-4">
+      <div className="w-full mb-4 shadow rounded p-3">
         <ConfigProvider
           theme={{
             components: {
@@ -80,10 +80,11 @@ const Meeting = () => {
             items={[UPCOMING_MEETING_KEY, RECENT_MEETING_KEY].map((type) => {
               return {
                 key: type,
+
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className="text-RoyalPurple"
+                    className={`${tab === type ? 'text-[#8449EB]' : 'text-[#101828]'}`}
                   />
                 ),
                 tabKey: type,

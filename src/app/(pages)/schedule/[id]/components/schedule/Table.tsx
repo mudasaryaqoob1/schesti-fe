@@ -30,12 +30,15 @@ const columns: ColumnType<{}>[] = [
     dataIndex: 'id',
     key: '0',
     width: 100,
+    render(value) {
+      return <div className='pl-4'>{value}</div>
+    }
   },
   {
     title: 'Activities',
     dataIndex: 'description',
     key: '1',
-    width: 150,
+    width: 250,
   },
   {
     title: 'Original Duration',
@@ -47,7 +50,7 @@ const columns: ColumnType<{}>[] = [
     title: 'Status',
     dataIndex: 'status',
     key: '2',
-    width: 150,
+    width: 170,
   },
   {
     title: 'Start',
@@ -132,11 +135,13 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
   const [ID, setID] = useState(0);
 
   const showDrawer = () => {
+    setFilters(checkedList);
     setOpen(true);
   };
 
   const onClose = () => {
     setOpen(false);
+    setFilters(checkedList);
   };
 
   // add item in data
@@ -206,7 +211,7 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
       };
     });
 
-  const extras: any = [
+  const extras: (ColumnType<ScopeItem> & { editable: boolean })[] = [
     {
       title: <QuinaryHeading title="Actions" />,
       dataIndex: 'actions',
@@ -216,6 +221,7 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
       render(_: any, record: ScopeItem) {
         return (
           <Dropdown
+            className="!bg-grey"
             menu={{
               items: [
                 {
@@ -242,7 +248,8 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
                   },
                 },
               ],
-            }}
+            }
+            }
             placement="bottomRight"
           >
             <Image
@@ -252,7 +259,7 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
               height={20}
               className="active:scale-105 cursor-pointer"
             />
-          </Dropdown>
+          </Dropdown >
         );
       },
       fixed: 'right',
@@ -280,14 +287,18 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
         title="Customise Table"
         onClose={onClose}
         open={open}
+        keyboard={false}
+        closable={false}
+        maskClosable={false}
+        destroyOnClose
         footer={
           <div className="flex justify-between py-2 space-x-2">
-            <WhiteButton text="Cancel" />
+            <WhiteButton text="Cancel" onClick={onClose} />
             <CustomButton
               text="Apply Filters"
               onClick={() => {
-                setCheckedList(filters);
                 onClose();
+                setCheckedList(filters);
               }}
             />
           </div>
@@ -461,31 +472,42 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
           </>
         ) : null}
       </Drawer>
-      <Table
-        columns={[...newColumns, ...extras] as ColumnType<ScopeItem>[]}
-        dataSource={wbs.scopeItems}
-        key={'id'}
-        components={{
-          body: {
-            row: EditableRow,
-            cell: EditableCell,
-          },
+      <ConfigProvider
+        theme={{
+          components: {
+            Table: {
+              headerBg: "#F4EBFF"
+            }
+          }
         }}
-        scroll={{ x: 1500, y: 300 }}
-        footer={() => {
-          return (
-            <div
-              onClick={() => addItem()}
-              className="max-w-max border border-dashed rounded cursor-pointer py-3 px-2 border-[#EAECF0] bg-white"
-            >
-              <h4 className="space-x-2 tracking-wide">
-                <PlusOutlined />
-                <span>Create New Activity</span>
-              </h4>
-            </div>
-          );
-        }}
-      />
+      >
+        <Table
+          columns={[...newColumns, ...extras] as ColumnType<ScopeItem>[]}
+          dataSource={wbs.scopeItems}
+          key={'id'}
+          components={{
+            body: {
+              row: EditableRow,
+              cell: EditableCell,
+            },
+          }}
+          size='small'
+          scroll={{ x: 1500, y: 300 }}
+          footer={() => {
+            return (
+              <div
+                onClick={() => addItem()}
+                className="max-w-max border border-dashed rounded cursor-pointer py-3 px-2 border-[#EAECF0] bg-white"
+              >
+                <h4 className="space-x-2 tracking-wide">
+                  <PlusOutlined />
+                  <span>Create New Activity</span>
+                </h4>
+              </div>
+            );
+          }}
+        />
+      </ConfigProvider>
     </div>
   );
 }
@@ -501,7 +523,7 @@ function EditableRow({ index, ...props }: EditableRowProps) {
   return (
     <Form form={form} component={false} key={index}>
       <EditableContext.Provider value={form}>
-        <tr {...props} />
+        <tr {...props} className='bg-white  hover:bg-gray-100' />
       </EditableContext.Provider>
     </Form>
   );
@@ -553,45 +575,52 @@ function EditableCell({
   };
 
   let childNode = children;
-  const status = record ? record.status : '';
-  let statusColor: string = '';
-  if (status === 'New') {
-    statusColor = '#2db7f5';
-  } else if (status === 'Planned') {
-    statusColor = '#108ee9';
-  } else if (status === 'In Progress') {
-    statusColor = '#3BC8D0';
-  } else if (status === 'Completed') {
-    statusColor = '#87d068';
-  } else if (status === 'Review') {
-    statusColor = 'yellow';
-  }
-
+  const selectOptions = [
+    { label: 'New', value: 'New' },
+    { label: 'Planned', value: 'Planned' },
+    { label: 'In Progress', value: 'In Progress' },
+    { label: 'Completed', value: 'Completed' },
+    { label: 'Review', value: 'Review' },
+  ];
   if (editable) {
     childNode = editing ? (
       <ConfigProvider
         theme={{
           components: {
             Input: {
-              colorPrimary: 'darkgrey',
+              colorPrimary: 'transparent',
+              controlOutline: "transparent",
+              colorBorder: "transparent",
+              borderRadius: 0,
             },
             Select: {
               colorPrimary: 'grey',
-              colorPrimaryHover: 'grey',
-              colorPrimaryActive: 'lightgrey',
+              colorPrimaryHover: 'transparent',
+              colorPrimaryActive: 'transparent',
+              colorBorder: "transparent",
+              borderRadius: 0,
             },
             DatePicker: {
-              colorPrimary: 'darkgrey',
+              controlHeight: 55,
+              borderRadius: 0,
+              colorPrimary: "white",
+              colorBorder: "transparent",
+              controlOutline: "transparent",
             },
+            Tag: {
+              defaultColor: "transparent",
+              defaultBg: "transparent",
+              borderRadius: 0,
+            }
           },
         }}
       >
         <Form.Item
-          style={{ margin: 0 }}
+          style={{ margin: 0, height: "100%" }}
           name={dataIndex}
           rules={[
             {
-              required: true,
+              required: false,
               message: `${dataIndex} is required.`,
             },
           ]}
@@ -605,42 +634,61 @@ function EditableCell({
             <Select
               ref={inputRef}
               onBlur={save}
+              onChange={save}
               value={record[dataIndex]}
-              options={[
-                { label: 'New', value: 'New' },
-                { label: 'Planned', value: 'Planned' },
-                { label: 'In Progress', value: 'In Progress' },
-                { label: 'Completed', value: 'Completed' },
-                { label: 'Review', value: 'Review' },
-              ]}
-              dropdownRender={(menu) => {
-                return menu;
-              }}
-            />
+              defaultOpen
+              autoFocus
+              style={{ height: "40px", margin: "1px 0px" }}
+            >
+              {selectOptions.map((option, i) => {
+                return <Select.Option value={option.value} key={i}>
+                  <Tag bordered={undefined} className={`w-full border-none space-x-2 py-[2px]`}>
+                    <span style={{ borderColor: returnStatusColor(option.value as IWBSType['scopeItems'][0]['status']) }}
+                      className={`border-2 rounded mr-1`}>
+                      {" "}
+                    </span>
+                    <span className='font-medium text-black text-sm'>
+                      {option.label}
+                    </span>
+                  </Tag>
+                </Select.Option>
+              })}
+            </Select>
           ) : dateDataIndexes.includes(dataIndex) ? (
             <DatePicker
               ref={inputRef}
               onChange={save}
               value={dayjs(record[dataIndex])}
               onBlur={save}
+              autoFocus
+              defaultOpen
+              style={{ height: "40px" }}
             />
           ) : (
-            <Input ref={inputRef} onPressEnter={save} onBlur={save} />
+            <Input style={{ height: "40px" }} ref={inputRef} onPressEnter={save} onBlur={save} />
           )}
         </Form.Item>
       </ConfigProvider>
     ) : (
       <div
-        className="editable-cell-value-wrap"
-        style={{ paddingRight: 24 }}
+        className={`editable-cell-value-wrap px-4 py-1.5 w-full h-full`}
+        style={{ minHeight: 20 }}
         onClick={(e) => {
           e.stopPropagation();
           toggleEdit();
         }}
       >
         {dataIndex === 'status' ? (
-          <Tag className="w-full text-center p-[2px]" color={statusColor}>
-            {record[dataIndex]}
+          <Tag className={`w-full h-full space-x-2 py-1`} color={`${returnStatusColor(record[dataIndex])}8C`}
+            style={{ filter: 'alpha(opacity=50)' }}>
+
+            <span style={{ borderColor: returnStatusColor(record[dataIndex]) }}
+              className={`border-2 rounded mr-1`}>
+              {" "}
+            </span>
+            <span className='font-medium text-black text-sm'>
+              {record[dataIndex]}
+            </span>
           </Tag>
         ) : dateDataIndexes.includes(dataIndex) ? (
           dayjs(record[dataIndex]).format('DD/MM/YYYY')
@@ -651,5 +699,20 @@ function EditableCell({
     );
   }
 
-  return <td {...restProps}>{childNode}</td>;
+  return <td {...restProps} className='!p-0 border bg-white hover:bg-gray-100 box-border'>{childNode}</td>;
 }
+
+
+function returnStatusColor(status: IWBSType['scopeItems'][0]['status']) {
+  if (status === 'Planned') {
+    return '#108ee9';
+  } else if (status === 'In Progress') {
+    return '#3BC8D0';
+  } else if (status === 'Completed') {
+    return '#87d068';
+  } else if (status === 'Review') {
+    return 'yellow';
+  }
+  return "#2db7f5";
+}
+
