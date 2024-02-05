@@ -48,7 +48,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
           endDate: dayjs(values.endDate).format('YYYY-MM-DDTHH:mm:ss'),
           invitees: [values.email],
           roomName,
-          link: `http://localhost:3000/meeting/${roomName}}`,
+          link: `${process.env.NEXT_PUBLIC_APP_URL}/meeting/${roomName}}`,
           topic: values.topic,
         })
         .then((response) => {
@@ -67,8 +67,10 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
   });
 
   const disabledDate: RangePickerProps['disabledDate'] = (current) => {
-
-    return current < dayjs().add(-1, 'days');
+    const isPreviousDay = current < dayjs().add(-1, 'days');
+    const isPreviousHour = current < dayjs().add(-1, 'hour');
+    const isPreviousMinute = current < dayjs().add(-1, 'minute');
+    return isPreviousDay || isPreviousHour || isPreviousMinute;
   };
   return (
     <ModalComponent

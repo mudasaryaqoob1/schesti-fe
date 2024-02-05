@@ -1,8 +1,6 @@
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import Image from 'next/image';
-import SecondaryHeading from '@/app/component/headings/Secondary';
-import Description from '@/app/component/description';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import moment from 'moment';
 import QuinaryHeading from '@/app/component/headings/quinary';
@@ -83,7 +81,7 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
                     width={30}
                     height={30}
                     className='cursor-pointer'
-                    onClick={() => handleCopy(item.roomName)}
+                    onClick={() => handleCopy(item.link)}
                   />
                 </div>
                 <SenaryHeading
