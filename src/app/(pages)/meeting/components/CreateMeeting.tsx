@@ -15,6 +15,7 @@ import { CloseOutlined } from '@ant-design/icons';
 import { InputComponent } from '@/app/component/customInput/Input';
 import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import { addNewMeetingAction } from '@/redux/meeting/meeting.slice';
+import Description from '@/app/component/description';
 
 type Props = {
   showModal: boolean;
@@ -24,8 +25,7 @@ type Props = {
 const CreateMeetingSchema = Yup.object().shape({
   topic: Yup.string().required('Topic is required'),
   email: Yup.string().email().required('Email is required'),
-  startDate: Yup.date().required('Start Time is required'),
-  endDate: Yup.date().required('End Time is required'),
+  startDate: Yup.date().required('Start Time is required')
 });
 
 export function CreateMeeting({ showModal, setShowModal }: Props) {
@@ -36,7 +36,6 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
       topic: '',
       email: '',
       startDate: undefined,
-      endDate: undefined,
     },
     validationSchema: CreateMeetingSchema,
     onSubmit(values) {
@@ -45,7 +44,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
       meetingService
         .httpCreateMeeting({
           startDate: dayjs(values.startDate).format('YYYY-MM-DDTHH:mm:ss'),
-          endDate: dayjs(values.endDate).format('YYYY-MM-DDTHH:mm:ss'),
+          endDate: dayjs(values.startDate).add(40, 'minutes').format('YYYY-MM-DDTHH:mm:ss'),
           invitees: [values.email],
           roomName,
           link: `${process.env.NEXT_PUBLIC_APP_URL}/meeting/${roomName}`,
@@ -96,9 +95,9 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
         <form onSubmit={formik.handleSubmit}>
           <div className="px-6 py-2.5 space-y-3">
             <InputComponent
-              label="Topic"
+              label="Title"
               type="text"
-              placeholder="Topic"
+              placeholder="Title"
               name="topic"
               hasError={formik.touched.topic && !!formik.errors.topic}
               field={{
@@ -108,7 +107,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
               }}
             />
             <InputComponent
-              label="Invite Client"
+              label="Invite"
               type="email"
               placeholder="Client Email Address"
               name="email"
@@ -137,31 +136,8 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
               }}
             />
 
-            <DateInputComponent
-              label="Schedule End Date"
-              name="endDate"
-              inputStyle={'border-gray-200'}
-              hasError={formik.touched.endDate && !!formik.errors.endDate}
-              fieldProps={{
-                showTime: { defaultValue: dayjs('00:00:00', 'HH:mm') },
-                value: formik.values.endDate
-                  ? dayjs(formik.values.endDate)
-                  : undefined,
-                onChange(date) {
-                  formik.setFieldValue('endDate', date);
-                },
-                onBlur: formik.handleBlur,
-                disabledDate(current) {
-                  const startDate = dayjs(formik.values.startDate);
-                  const endDate = dayjs(current);
-
-                  // Check if startDate and endDate have the same date, hour, and minute
-                  const isSameDateHourMinute = endDate.isBefore(startDate, 'minute');
-                  const isPreviousHour = endDate.isBefore(startDate, 'hour');
-                  const isPreviousDay = endDate.isBefore(startDate, 'day');
-                  return isSameDateHourMinute || isPreviousHour || isPreviousDay;
-                },
-              }}
+            <Description
+              title='Note: The duration of the meeting cannot be more than 40 minutes'
             />
           </div>
           <div className="flex justify-end px-6 py-2 space-x-2">
