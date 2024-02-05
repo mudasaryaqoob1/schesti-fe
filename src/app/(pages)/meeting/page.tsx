@@ -19,9 +19,10 @@ import { fetchMeetings } from '@/redux/meeting/meeting.thunk';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
 import { CreateMeeting } from './components/CreateMeeting';
+import { PreviousMeetings } from './components/PreviousMeeting';
 
 const UPCOMING_MEETING_KEY = 'Upcoming Meeting';
-const RECENT_MEETING_KEY = 'Recent Meeting';
+const PREVIOUS_MEETING_KEY = 'Previous Meeting';
 
 const Meeting = () => {
   const token = useSelector(selectToken);
@@ -77,7 +78,7 @@ const Meeting = () => {
             onChange={(type) => {
               setTab(type);
             }}
-            items={[UPCOMING_MEETING_KEY, RECENT_MEETING_KEY].map((type) => {
+            items={[UPCOMING_MEETING_KEY, PREVIOUS_MEETING_KEY].map((type) => {
               return {
                 key: type,
 
@@ -95,7 +96,7 @@ const Meeting = () => {
                       onOpenModal={() => setShowModal(true)}
                     />
                   ) : (
-                    tab
+                    <PreviousMeetings meetings={meetings} />
                   ),
                 style: {},
               };
