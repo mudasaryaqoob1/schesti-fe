@@ -67,7 +67,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
   });
 
   const disabledDate: RangePickerProps['disabledDate'] = (current) => {
-    // Can not select days yesterday and backwards
+
     return current < dayjs().add(-1, 'days');
   };
   return (
@@ -123,7 +123,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
               inputStyle={'border-gray-200'}
               hasError={formik.touched.startDate && !!formik.errors.startDate}
               fieldProps={{
-                showTime: { defaultValue: dayjs('00:00:00', 'HH:mm:ss') },
+                showTime: { defaultValue: dayjs('00:00:00', 'HH:mm') },
                 value: formik.values.startDate
                   ? dayjs(formik.values.startDate)
                   : undefined,
@@ -141,7 +141,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
               inputStyle={'border-gray-200'}
               hasError={formik.touched.endDate && !!formik.errors.endDate}
               fieldProps={{
-                showTime: { defaultValue: dayjs('00:00:00', 'HH:mm:ss') },
+                showTime: { defaultValue: dayjs('00:00:00', 'HH:mm') },
                 value: formik.values.endDate
                   ? dayjs(formik.values.endDate)
                   : undefined,
@@ -149,7 +149,15 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
                   formik.setFieldValue('endDate', date);
                 },
                 onBlur: formik.handleBlur,
-                disabledDate,
+                disabledDate(current) {
+                  const startDate = dayjs(formik.values.startDate);
+                  const endDate = dayjs(current);
+
+                  // Check if startDate and endDate have the same date, hour, and minute
+                  const isSameDateHourMinute = startDate.isSame(endDate, 'minute');
+
+                  return isSameDateHourMinute;
+                },
               }}
             />
           </div>
