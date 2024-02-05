@@ -14,6 +14,7 @@ import { RootState } from '@/redux/store';
 import { Skeleton } from 'antd';
 import { useCopyToClipboard } from 'usehooks-ts'
 import { toast } from 'react-toastify';
+import { NoMeetings } from './NoMeetings';
 
 type Props = {
   state: IMeeting[];
@@ -50,47 +51,19 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
   }
 
   if (state.length === 0) {
-    return (
-      <section className="mt-6 mx-4 rounded-xl h-[calc(100vh-200px)] grid items-center border border-solid border-silverGray shadow-secondaryTwist">
-        <div className="grid place-items-center">
-          <div className="max-w-[500px] flex flex-col items-center p-4">
-            <div className="bg-lightGray p-12 rounded-full">
-              <Image
-                src={'/purple-calendar.svg'}
-                alt="create request icon"
-                width={100}
-                height={100}
-              />
-            </div>
-            <SecondaryHeading
-              title="No meeting schedule "
-              className="text-obsidianBlack2 mt-8"
-            />
-            <Description
-              title="There are no scheduled meeting. Initiate one by using the Jitsi integration."
-              className="text-steelGray text-center font-normal"
-            />
-            <CustomButton
-              className="mt-7"
-              text={'Schedule a meeting'}
-              onClick={onOpenModal}
-            />
-          </div>
-        </div>
-      </section>
-    );
+    return <NoMeetings onClick={onOpenModal} />
   }
-
+  const meetings = state
+    .filter((item) => {
+      const endDate = dayjs(item.endDate);
+      const today = dayjs();
+      const beforeTime = today.isBefore(endDate, 'minute');
+      return beforeTime;
+    });
   return (
     <div>
-      {state
-        .filter((item) => {
-          const endDate = dayjs(item.endDate);
-          const today = dayjs();
-          const beforeTime = today.isBefore(endDate, 'minute');
-          return beforeTime;
-        })
-        .map((item, index) => {
+      {meetings.length === 0 ? <NoMeetings onClick={onOpenModal} />
+        : meetings.map((item, index) => {
           return (
             <div
               key={index}
