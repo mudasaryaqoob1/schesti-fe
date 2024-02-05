@@ -154,9 +154,10 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
                   const endDate = dayjs(current);
 
                   // Check if startDate and endDate have the same date, hour, and minute
-                  const isSameDateHourMinute = startDate.isSame(endDate, 'minute');
-
-                  return isSameDateHourMinute;
+                  const isSameDateHourMinute = endDate.isBefore(startDate, 'minute');
+                  const isPreviousHour = endDate.isBefore(startDate, 'hour');
+                  const isPreviousDay = endDate.isBefore(startDate, 'day');
+                  return isSameDateHourMinute || isPreviousHour || isPreviousDay;
                 },
               }}
             />

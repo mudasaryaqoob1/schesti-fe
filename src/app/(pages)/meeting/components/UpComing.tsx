@@ -85,9 +85,10 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
     <div>
       {state
         .filter((item) => {
+          const endDate = dayjs(item.endDate);
           const today = dayjs();
-          const isToday = dayjs(item.startDate).isSame(today, 'date');
-          return isToday;
+          const beforeTime = today.isBefore(endDate, 'minute');
+          return beforeTime;
         })
         .map((item, index) => {
           return (
