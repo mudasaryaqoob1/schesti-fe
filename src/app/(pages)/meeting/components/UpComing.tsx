@@ -30,7 +30,7 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
 
   function enableJoin15MinutesLeft(item: IMeeting) {
     const today = dayjs();
-    const meetingDate = dayjs(item.date);
+    const meetingDate = dayjs(item.startDate);
     const diff = meetingDate.diff(today, 'minute');
     return diff <= TIME_TO_ENABLE;
   }
@@ -86,7 +86,7 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
       {state
         .filter((item) => {
           const today = dayjs();
-          const isToday = dayjs(item.date).isSame(today, 'date');
+          const isToday = dayjs(item.startDate).isSame(today, 'date');
           return isToday;
         })
         .map((item, index) => {
@@ -97,7 +97,7 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
             >
               <div className="space-y-1">
                 <SenaryHeading
-                  title={moment(item.date).format('MMMM Do, YYYY')}
+                  title={moment(item.startDate).format('MMMM Do, YYYY')}
                   className='text-[#475467]'
                 />
                 <QuinaryHeading title={item.topic} className='text-[#475467] font-semibold' />
@@ -113,7 +113,7 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
                   />
                 </div>
                 <SenaryHeading
-                  title={`Time: ${moment(item.date).format('h:mm a')}`}
+                  title={`Time: ${moment(item.startDate).format('h:mm a')}`}
                   className='text-[#667085]'
                 />
               </div>

@@ -24,7 +24,8 @@ type Props = {
 const CreateMeetingSchema = Yup.object().shape({
   topic: Yup.string().required('Topic is required'),
   email: Yup.string().email().required('Email is required'),
-  date: Yup.date().required('Date is required'),
+  startDate: Yup.date().required('Start Time is required'),
+  endDate: Yup.date().required('End Time is required'),
 });
 
 export function CreateMeeting({ showModal, setShowModal }: Props) {
@@ -34,7 +35,8 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
     initialValues: {
       topic: '',
       email: '',
-      date: undefined,
+      startDate: undefined,
+      endDate: undefined,
     },
     validationSchema: CreateMeetingSchema,
     onSubmit(values) {
@@ -42,7 +44,8 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
       let roomName = `Schesti-${Math.random() * 1000}`;
       meetingService
         .httpCreateMeeting({
-          date: dayjs(values.date).format('YYYY-MM-DDTHH:mm:ss'),
+          startDate: dayjs(values.startDate).format('YYYY-MM-DDTHH:mm:ss'),
+          endDate: dayjs(values.endDate).format('YYYY-MM-DDTHH:mm:ss'),
           invitees: [values.email],
           roomName,
           link: `http://localhost:3000/meeting/${roomName}}`,
@@ -115,17 +118,35 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
               }}
             />
             <DateInputComponent
-              label="Schedule Date"
-              name="date"
+              label="Schedule Start Date"
+              name="startDate"
               inputStyle={'border-gray-200'}
-              hasError={formik.touched.date && !!formik.errors.date}
+              hasError={formik.touched.startDate && !!formik.errors.startDate}
               fieldProps={{
                 showTime: { defaultValue: dayjs('00:00:00', 'HH:mm:ss') },
-                value: formik.values.date
-                  ? dayjs(formik.values.date)
+                value: formik.values.startDate
+                  ? dayjs(formik.values.startDate)
                   : undefined,
                 onChange(date) {
-                  formik.setFieldValue('date', date);
+                  formik.setFieldValue('startDate', date);
+                },
+                onBlur: formik.handleBlur,
+                disabledDate,
+              }}
+            />
+
+            <DateInputComponent
+              label="Schedule End Date"
+              name="endDate"
+              inputStyle={'border-gray-200'}
+              hasError={formik.touched.endDate && !!formik.errors.endDate}
+              fieldProps={{
+                showTime: { defaultValue: dayjs('00:00:00', 'HH:mm:ss') },
+                value: formik.values.endDate
+                  ? dayjs(formik.values.endDate)
+                  : undefined,
+                onChange(date) {
+                  formik.setFieldValue('endDate', date);
                 },
                 onBlur: formik.handleBlur,
                 disabledDate,
