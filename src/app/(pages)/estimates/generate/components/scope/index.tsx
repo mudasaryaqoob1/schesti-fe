@@ -313,7 +313,6 @@ const Scope = ({ setPrevNext }: Props) => {
     } else {
       selectedCategory = `${estimateTableItemValues?.category} ${estimateTableItemValues?.subCategory}`;
     }
-
     if (
       estimateData.scopeItems.length &&
       estimateData.title !== selectedCategory &&
@@ -388,8 +387,12 @@ const Scope = ({ setPrevNext }: Props) => {
         setEstimateData((prevData) => ({
           ...prevData,
           title: selectedCategory,
-          categoryName: selectedCategoryName.label,
-          subCategoryName: selctedSubCategoryName.label,
+          categoryName: selectedCategoryName?.label
+            ? selectedCategoryName?.label
+            : estimateTableItemValues?.category,
+          subCategoryName: selctedSubCategoryName?.label
+            ? selctedSubCategoryName?.label
+            : estimateTableItemValues.subCategory,
           scopeItems: [
             ...prevData.scopeItems,
             { ...estimateTableItemValues, index: generateRandomNumber },
