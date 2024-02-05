@@ -48,7 +48,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
           endDate: dayjs(values.endDate).format('YYYY-MM-DDTHH:mm:ss'),
           invitees: [values.email],
           roomName,
-          link: `${process.env.NEXT_PUBLIC_APP_URL}/meeting/${roomName}}`,
+          link: `${process.env.NEXT_PUBLIC_APP_URL}/meeting/${roomName}`,
           topic: values.topic,
         })
         .then((response) => {
