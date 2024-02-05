@@ -101,9 +101,11 @@ const Tabs = () => {
               className={twMerge(
                 clsx(
                   `${quaternaryHeading} text-steelGray
-              flex items-stretch justify-center py-2 
-               cursor-pointer
-              `
+                    flex items-stretch justify-center py-2 
+                     cursor-pointer
+                    `,
+                  pathname.includes('/estimates'.split('/')[1]) &&
+                    tabsStyle.active
                 )
               )}
             >
@@ -119,10 +121,10 @@ const Tabs = () => {
                 flex items-stretch justify-center py-2 
                  cursor-pointer
                 `,
-              pathname.includes('#'.split('/')[1]) && tabsStyle.active
+              pathname.includes('/schedule') && tabsStyle.active
             )
           )}
-          onClick={() => router.push('#')}
+          onClick={() => router.push('/schedule')}
         >
           Schedule
         </li>
@@ -133,12 +135,12 @@ const Tabs = () => {
                 flex items-stretch justify-center py-2 
                  cursor-pointer
                 `,
-              pathname.includes('#'.split('/')[1]) && tabsStyle.active
+              pathname.includes('/finance') && tabsStyle.active
             )
           )}
-          onClick={() => router.push('#')}
+          onClick={() => router.push('/finance')}
         >
-          Fiance
+          Finance
         </li>
         <li
           className={twMerge(
@@ -147,10 +149,10 @@ const Tabs = () => {
                 flex items-stretch justify-center py-2 
                  cursor-pointer
                 `,
-              pathname.includes('#'.split('/')[1]) && tabsStyle.active
+              pathname.includes('/invoices'.split('/')[1]) && tabsStyle.active
             )
           )}
-          onClick={() => router.push('#')}
+          onClick={() => router.push('/invoices')}
         >
           Invoice
         </li>
@@ -161,10 +163,10 @@ const Tabs = () => {
                 flex items-stretch justify-center py-2 
                  cursor-pointer
                 `,
-              pathname.includes('#'.split('/')[1]) && tabsStyle.active
+              pathname.includes('/meeting'.split('/')[1]) && tabsStyle.active
             )
           )}
-          onClick={() => router.push('#')}
+          onClick={() => router.push('/meeting')}
         >
           Meeting
         </li>

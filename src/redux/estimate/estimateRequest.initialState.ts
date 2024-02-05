@@ -4,6 +4,12 @@ interface IEstimateRequests {
   message?: string | null;
   statusCode: number | null;
   data: any;
+  generateEstimateDetail: {
+    estimateRequestIdDetail: Object;
+    estimateScope: Object[];
+    totalBidDetail?: object;
+    totalCost?: number;
+  };
 }
 
 const initialEstimateRequestState: IEstimateRequests = {
@@ -12,6 +18,12 @@ const initialEstimateRequestState: IEstimateRequests = {
   message: null,
   data: null,
   statusCode: null,
+  generateEstimateDetail: {
+    estimateRequestIdDetail: {},
+    estimateScope: [],
+    totalBidDetail: {},
+    totalCost: 0,
+  },
 };
 
 export default initialEstimateRequestState;

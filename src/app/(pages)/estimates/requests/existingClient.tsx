@@ -29,11 +29,11 @@ const ExistingClient = ({ setModalOpen, onSelectClient }: Props) => {
 
   const memoizedSetPerson = useCallback(async () => {
     await dispatch(fetchCompanyClients({ page: 1, limit: 10 }));
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     memoizedSetPerson();
-  }, [memoizedSetPerson]);
+  }, []);
 
   return (
     <div className="py-2.5 px-6 bg-white border border-solid border-elboneyGray rounded-[4px] z-50">

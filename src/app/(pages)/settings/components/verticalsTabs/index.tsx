@@ -20,7 +20,7 @@ const Index = () => {
     { id: 4, name: 'Materials', route: ['/settings/materials'] },
     { id: 5, name: 'Target', route: ['/settings/target'] },
     {
-      id: 7,
+      id: 6,
       name: 'Support Ticket',
       route: [
         '/settings/supporttickets',

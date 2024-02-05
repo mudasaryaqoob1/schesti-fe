@@ -5,10 +5,9 @@ import PasswordField from '../passwordInput';
 import Select from '../customSelect/index';
 import Textarea from '../customTextarea/Index';
 import SimpleInput from '../customInput/simple';
+import CustomInputSelect from '../customInputSelect';
 // import Datepicker from './CustomDatePicker/Index';
-// import Textarea from './CustomTextArea/Index';
 // import Checkbox from "./Checkbox";
-// import PasswordInput from './passwordInput/index';
 const FormikController = (props: any) => {
   const { control, ...rest } = props;
   switch (control) {
@@ -18,6 +17,8 @@ const FormikController = (props: any) => {
       return <SimpleInput {...rest} />;
     case 'select':
       return <Select {...rest} />;
+    case 'inputselect':
+      return <CustomInputSelect {...rest} />;
     // case "checkbox":
     //   return <Checkbox {...rest} />;
     case 'password':

@@ -140,6 +140,14 @@ const SupportTicketDetails = () => {
                 className="text-steelGray"
                 title={`${supportDetailDetail?.description}`}
               />
+              {supportDetailDetail?.avatar && (
+                <img
+                  width="100%"
+                  height="auto"
+                  src={supportDetailDetail?.avatar}
+                  alt="supportticketavatar"
+                />
+              )}
             </div>
           </div>
           <div className="shadow-primaryGlow rounded-2xl p-5 md:col-span-2">
@@ -180,13 +188,13 @@ const SupportTicketDetails = () => {
                     onChange={(e) => setMessage(e.target.value)}
                   />
                   <div className="flex gap-3 items-center absolute top-2 right-3">
-                    {/* <img
-                  width={24}
-                  height={24}
-                  src="/select-file.svg"
-                  alt="select file"
-                />
-                <div className="w-0.5 h-7 bg-darkGray" /> */}
+                    <img
+                      width={24}
+                      height={24}
+                      src="/select-file.svg"
+                      alt="select file"
+                    />
+                    <div className="w-0.5 h-7 bg-darkGray" />
                     <span>
                       <CustomButton
                         isLoading={messageLoading}

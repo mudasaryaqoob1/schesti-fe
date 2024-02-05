@@ -27,7 +27,7 @@ import { voidFc } from '@/app/utils/types';
 import {
   refetchSubCategories,
   setSubcategoryData,
-} from '@/redux/company/settingSlices/companySetup/subcategory.slice';
+} from '@/redux/company/settingSlices/categories/subcategory.slice';
 
 export type SubcategoryInitValues = {
   name: string;
@@ -139,19 +139,17 @@ const AddSubcategory = () => {
                 className="mt-2"
               >
                 <div className="grid grid-cols-3 gap-2 items-center">
-                  {categoriesReduxDataLoading ? (
-                    <p>Loading..</p>
-                  ) : (
-                    <FormControl
-                      control="select"
-                      label="Catgory Name"
-                      type="text"
-                      disabled={subcategoryData}
-                      options={options}
-                      name="category"
-                      placeholder="Enter Name"
-                    />
-                  )}
+                  <FormControl
+                    control="select"
+                    label="Catgory Name"
+                    type="text"
+                    disabled={subcategoryData}
+                    options={options}
+                    searchable={true}
+                    isLoading={categoriesReduxDataLoading}
+                    name="category"
+                    placeholder="Search Category Name"
+                  />
                   <FormControl
                     control="input"
                     label="Sub-Catgory"

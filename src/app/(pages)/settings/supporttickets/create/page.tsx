@@ -20,6 +20,14 @@ import { HttpService } from '@/app/services/base.service';
 import { ISupportTicket } from '@/app/interfaces/supportTicket.interface';
 import { supportTicketService } from '@/app/services/supportTicket.service';
 import SettingSidebar from '../../verticleBar';
+import {
+  bg_style,
+  minHeading,
+  senaryHeading,
+} from '@/globals/tailwindvariables';
+import { twMerge } from 'tailwind-merge';
+import { byteConverter } from '@/app/utils/byteConverter';
+import AwsS3 from '@/app/utils/S3Intergration';
 
 const validationSchema = Yup.object({
   title: Yup.string().required('Title is required!'),
@@ -29,6 +37,7 @@ const validationSchema = Yup.object({
 const initialValues: ISupportTicket = {
   title: '',
   description: '',
+  avatar: '',
 };
 
 const CreateTicket = () => {
@@ -42,6 +51,7 @@ const CreateTicket = () => {
   }, [token]);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [avatarLoading, setavatarLoading] = useState(false);
 
   const onSubmit = async (values: ISupportTicket) => {
     setIsLoading(true);
@@ -60,6 +70,34 @@ const CreateTicket = () => {
       });
   };
 
+  const avatarUploadHandler = async (e: any) => {
+    setavatarLoading(true);
+    let avatarUrl = '';
+
+    if (byteConverter(e.target.files[0].size, 'MB').size > 5) {
+      toast.warning('Cannot upload image more then 5 mb of size');
+      setavatarLoading(false);
+      return;
+    }
+
+    try {
+      await Promise.all(
+        Object.keys(e.target.files).map(async (key) => {
+          const url = await new AwsS3(
+            e.target.files[key],
+            'documents/supportTickets/'
+          ).getS3URL();
+          avatarUrl = url;
+        })
+      );
+
+      return avatarUrl;
+    } catch (error) {
+      console.error('Error uploading documents:', error);
+    } finally {
+      setavatarLoading(false);
+    }
+  };
   return (
     <SettingSidebar>
       <section className="w-full">
@@ -82,7 +120,7 @@ const CreateTicket = () => {
             validationSchema={validationSchema}
             onSubmit={onSubmit}
           >
-            {({ handleSubmit }) => {
+            {({ handleSubmit, setFieldValue }) => {
               return (
                 <Form
                   name="basic"
@@ -103,38 +141,55 @@ const CreateTicket = () => {
                     name="description"
                     placeholder="Write message here"
                   />
-                  {/* <div
-                      className="p-6 flex items-center flex-col gap-2 border-2
-                    border-silverGray pb-4 rounded-lg "
+                  {/* Upload Image Div */}
+                  <div className={`${bg_style} p-5 mt-4 `}>
+                    <div
+                      className={`px-6 py-4 flex flex-col items-center gap-3 ${bg_style}`}
                     >
-                      <Image
-                        src="/uploadcloud.svg"
-                        alt="upload icon"
-                        width={20}
-                        height={20}
-                        className="rounded-3xl border-5 border-paleblueGray bg-lightGrayish"
-                      />
-                      <div className="flex gap-1 items-center">
-                        <div>
-                          <p
-                            className={twMerge(
-                              `${senaryHeading}
-                                text-RoyalPurple font-semibold`
-                            )}
-                          >
-                            Doc
-                          </p>
-                        </div>
-                        <MinDescription
-                          className="text-steelGray font-popin text-center"
-                          title="or drag and drop"
+                      <input type="text" id="upload" className="hidden" />
+                      <div className="bg-lightGrayish rounded-[28px] border border-solid border-red flex justify-center items-center p-2.5">
+                        <Image
+                          src={'/uploadcloud.svg'}
+                          alt="upload icon"
+                          width={20}
+                          height={20}
                         />
                       </div>
-                      <MinDescription
-                        className="text-steelGray font-popin text-center"
-                        title="SVG, PNG, JPG or GIF (max. 800x400px)"
-                      />
-                    </div> */}
+                      {avatarLoading ? (
+                        <p>Uploading...</p>
+                      ) : (
+                        <div className="flex gap-2">
+                          <label
+                            htmlFor="uploadCompanyLogo"
+                            className={twMerge(
+                              `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
+                            )}
+                          >
+                            Upload Logo
+                          </label>
+                          <input
+                            type="file"
+                            name="uploadLogo"
+                            id="uploadCompanyLogo"
+                            className="hidden"
+                            onChange={async (e) => {
+                              setFieldValue(
+                                'avatar',
+                                await avatarUploadHandler(e)
+                              );
+                            }}
+                          />
+                          <p className={`text-steelGray ${minHeading}`}>
+                            or drag and drop
+                          </p>
+                        </div>
+                      )}
+
+                      <p className={`text-steelGray ${minHeading}`}>
+                        SVG, PNG, JPG or GIF (max. 800x400px)
+                      </p>
+                    </div>
+                  </div>
                   <div className="flex justify-end gap-2 mt-6">
                     <span>
                       <CustomButton

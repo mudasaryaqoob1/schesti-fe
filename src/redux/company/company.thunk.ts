@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { userService } from '@/app/services/user.service';
 import { subcontractorService } from '@/app/services/subcontractor.service';
-import { estimateRequestService } from '@/app/services/estimateRequest.service';
+import { estimateRequestService } from '@/app/services/estimates.service';
 
 interface FetchClientParams {
   page: number;

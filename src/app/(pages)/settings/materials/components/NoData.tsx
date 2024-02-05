@@ -4,9 +4,13 @@ import Description from '@/app/component/description';
 import SecondaryHeading from '@/app/component/headings/Secondary';
 import Image from 'next/image';
 
-const NoData = () => {
+interface Iprops {
+  setMaterialModal: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const NoData = ({ setMaterialModal }: Iprops) => {
   return (
-    <section className="mt-6 mx-4 grid items-center">
+    <section className="mt-6 mx-4 grid items-center h-[70vh]">
       <div className="grid place-items-center">
         <div className="max-w-[500px] flex flex-col items-center p-4 gap-y-8">
           <div className="bg-lightGray p-12 rounded-full">
@@ -29,12 +33,13 @@ const NoData = () => {
           </div>
           <div>
             <CustomButton
-              type="submit"
-              text="Import Estimate"
+              type="button"
+              text="Import Materials"
               className="!w-auto !p-2.5"
               icon="/plus.svg"
               iconwidth={20}
               iconheight={20}
+              onClick={() => setMaterialModal(true)}
             />
           </div>
         </div>

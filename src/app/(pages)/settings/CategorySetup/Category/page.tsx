@@ -16,7 +16,7 @@ import {
   addNewCategoryData,
   setCategoryData,
   updateCategoryData,
-} from '@/redux/company/settingSlices/companySetup/category.slice';
+} from '@/redux/company/settingSlices/categories/category.slice';
 
 export interface DataType {
   categoryId: string;

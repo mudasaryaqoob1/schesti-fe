@@ -7,6 +7,7 @@ import {
   useLayoutEffect,
 } from 'react';
 import Image from 'next/image';
+import { useDispatch } from 'react-redux';
 import { useSearchParams } from 'next/navigation';
 
 import CustomButton from '@/app/component/customButton/button';
@@ -14,15 +15,13 @@ import CustomWhiteButton from '@/app/component/customButton/white';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import MinDesc from '@/app/component/description/minDesc';
-import {
-  bg_style,
-  minHeading,
-  senaryHeading,
-} from '@/globals/tailwindvariables';
-import { estimateRequestService } from '@/app/services/estimateRequest.service';
+import { generateEstimateDetailAction } from '@/redux/estimate/estimateRequest.slice';
+import { bg_style, senaryHeading } from '@/globals/tailwindvariables';
+import { estimateRequestService } from '@/app/services/estimates.service';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { useSelector } from 'react-redux';
 import { HttpService } from '@/app/services/base.service';
+import { byteConverter } from '@/app/utils/byteConverter';
 
 interface Props {
   setPrevNext: Dispatch<SetStateAction<number>>;
@@ -30,6 +29,7 @@ interface Props {
 }
 
 const TakeOff = ({ setPrevNext, pevNext }: Props) => {
+  const dispatch = useDispatch();
   const searchParams = useSearchParams();
   const estimateId: null | string = searchParams.get('estimateId');
 
@@ -55,6 +55,15 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
     fetchEstimateDetail();
   }, []);
 
+  const nextStepHandler = () => {
+    setPrevNext((prev) => prev + 1);
+    dispatch(
+      generateEstimateDetailAction({
+        estimateRequestIdDetail: estimateRequestDetail,
+      })
+    );
+  };
+
   return (
     <>
       <div className="flex justify-between items-center">
@@ -70,7 +79,7 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
           <CustomButton
             text="Next"
             className="md:w-32"
-            onClick={() => setPrevNext((prev) => prev + 1)}
+            onClick={nextStepHandler}
           />
         </div>
       </div>
@@ -210,99 +219,119 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
             />
           </div>
         </div>
-        <div
-          className={`grid-cols-3 gap-3 mt-4 ${
-            showTakeoffDocs ? 'grid' : 'hidden'
-          }`}
-        >
+        <div className={` gap-3 mt-4 ${showTakeoffDocs ? 'flex' : 'hidden'}`}>
           <div>
-            <p className={`${senaryHeading} text-midnightBlue font-popin mb-2`}>
+            <p
+              className={`${senaryHeading} !text-[14px] text-midnightBlue font-popin mb-2`}
+            >
               Drawings
             </p>
-            <div
-              className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg mb-3`}
+
+            {estimateRequestDetail?.drawingsDocuments?.map(
+              (doc: { name: string; size: number; url: string }) => (
+                <div
+                  key={doc.size}
+                  className={`p-4  max-w-32 border-2 border-silverGray pb-4 rounded-lg `}
+                >
+                  <Image
+                    src={'/documentIcon.svg'}
+                    alt="documentIcon icon"
+                    width={20}
+                    height={20}
+                  />
+
+                  <p className="text-[#353535] text-[16px] font-[500] mt-2 truncate">
+                    {doc?.name}
+                  </p>
+                  <p className="text-[#989692] text-[12px] font-[400] my-2">
+                    {byteConverter(doc?.size, 'KB').size} KB
+                  </p>
+                  <a
+                    href={doc.url}
+                    className="text-goldenrodYellow text-[12px] font-[400] my-2"
+                    target="_blank"
+                  >
+                    Click to View
+                  </a>
+                </div>
+              )
+            )}
+          </div>
+          <div>
+            <p
+              className={`${senaryHeading} !text-[14px] text-midnightBlue font-popin mb-2`}
             >
-              <div className="p-4 flex flex-col items-center gap-3">
-                <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
+              {estimateRequestDetail?.takeOffReports?.length
+                ? 'Takeoff Reports'
+                : null}
+            </p>
+            {estimateRequestDetail?.takeOffReports?.map(
+              (doc: { name: string; size: number; url: string }) => (
+                <div
+                  key={doc.size}
+                  className={`p-4  max-w-32 border-2 border-silverGray pb-4 rounded-lg `}
+                >
                   <Image
-                    src={'/uploadcloud.svg'}
-                    alt="upload icon"
+                    src={'/documentIcon.svg'}
+                    alt="documentIcon icon"
                     width={20}
                     height={20}
                   />
-                </div>
-                {estimateRequestDetail?.drawingsDocuments?.map((doc: any) => (
+
+                  <p className="text-[#353535] text-[16px] font-[500] mt-2 truncate">
+                    {doc?.name}
+                  </p>
+                  <p className="text-[#989692] text-[12px] font-[400] my-2">
+                    {byteConverter(doc?.size, 'KB').size} KB
+                  </p>
                   <a
-                    key={doc._id}
                     href={doc.url}
-                    className={`text-steelGray ${minHeading}`}
+                    className="text-goldenrodYellow text-[12px] font-[400] my-2"
+                    target="_blank"
                   >
-                    {doc.name}
-                    <span className="text-goldenrodYellow cursor-pointer ml-2">
-                      View
-                    </span>
+                    Click to View
                   </a>
-                ))}
-              </div>
-            </div>
+                </div>
+              )
+            )}
           </div>
           <div>
-            <p className={`${senaryHeading} text-midnightBlue font-popin mb-2`}>
-              Takeoff Reports
+            <p
+              className={`${senaryHeading} !text-[14px] text-midnightBlue font-popin mb-2`}
+            >
+              {estimateRequestDetail?.otherDocuments?.length
+                ? 'Other Documents'
+                : null}
             </p>
-            <div className="p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg">
-              <div className="p-4 flex flex-col items-center gap-3">
-                <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
+            {estimateRequestDetail?.otherDocuments?.map(
+              (doc: { name: string; size: number; url: string }) => (
+                <div
+                  key={doc.size}
+                  className={`p-4  max-w-32 border-2 border-silverGray pb-4 rounded-lg `}
+                >
                   <Image
-                    src={'/uploadcloud.svg'}
-                    alt="upload icon"
+                    src={'/documentIcon.svg'}
+                    alt="documentIcon icon"
                     width={20}
                     height={20}
                   />
-                </div>
-                {estimateRequestDetail?.takeOffReports?.map((doc: any) => (
+
+                  <p className="text-[#353535] text-[16px] font-[500] mt-2 truncate">
+                    {doc?.name}
+                  </p>
+                  <p className="text-[#989692] text-[12px] font-[400] my-2">
+                    {byteConverter(doc?.size, 'KB').size} KB
+                  </p>
                   <a
-                    key={doc._id}
                     href={doc.url}
-                    className={`text-steelGray ${minHeading}`}
+                    className="text-goldenrodYellow text-[12px] font-[400] my-2"
+                    target="_blank"
                   >
-                    {doc.name}
-                    <span className="text-goldenrodYellow cursor-pointer ml-2">
-                      View
-                    </span>
+                    Click to View
                   </a>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div>
-            <p className={`${senaryHeading} text-midnightBlue font-popin mb-2`}>
-              Other Documents
-            </p>
-            <div className="p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg">
-              <div className={`px-6 py-4 flex flex-col items-center gap-3 `}>
-                <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
-                  <Image
-                    src={'/uploadcloud.svg'}
-                    alt="upload icon"
-                    width={20}
-                    height={20}
-                  />
                 </div>
-                {estimateRequestDetail?.otherDocuments?.map((doc: any) => (
-                  <a
-                    key={doc._id}
-                    href={doc.url}
-                    className={`text-steelGray ${minHeading}`}
-                  >
-                    {doc.name}
-                    <span className="text-goldenrodYellow cursor-pointer ml-2">
-                      View
-                    </span>
-                  </a>
-                ))}
-              </div>
-            </div>
+              )
+            )}
           </div>
         </div>
       </div>

@@ -15,6 +15,14 @@ class MaterialService extends HttpService {
       },
     });
 
+  httpGetMeterialWithCategoryId = (
+    categoryId: string,
+    subCategoryId: string
+  ): Promise<IResponseInterface> =>
+    this.get(
+      `${this.prefix}/getMetarialwithCategory/${categoryId}/${subCategoryId}`
+    );
+
   httpGetAllMaterialsData = (
     page: number,
     limit: number = 9

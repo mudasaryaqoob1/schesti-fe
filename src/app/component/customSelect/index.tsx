@@ -19,7 +19,8 @@ const SelectComp = (props: any) => {
     options = defaultOptions,
     selectStyle,
     className,
-    ...rest
+    placeholder,
+    isLoading,
   } = props;
 
   const OptionsArr = options?.map(
@@ -35,7 +36,11 @@ const SelectComp = (props: any) => {
   const [field, meta] = useField(name);
   const hasError = meta.touched && meta.error;
 
-  console.log(hasError, 'hasErrorhasError');
+  const filterOption = (
+    input: string,
+    option?: { label: string; value: string; children: string }
+  ) =>
+    (`${option?.children}` ?? '').toLowerCase().includes(input.toLowerCase());
 
   return (
     <div>
@@ -54,7 +59,7 @@ const SelectComp = (props: any) => {
       )}
       <div className={twMerge(clsx('mt-1', className))}>
         <Field name={name} id={name} component="select">
-          {({ form: { setFieldValue }, field: { value } }: FormikValues) => {
+          {({ form: { setFieldValue } }: FormikValues) => {
             return (
               <Select
                 className={twMerge(
@@ -65,9 +70,12 @@ const SelectComp = (props: any) => {
                   )
                 )}
                 id={name}
-                {...rest}
-                {...field}
-                defaultValue={value}
+                value={field.value}
+                showSearch
+                optionFilterProp="children"
+                filterOption={filterOption}
+                loading={isLoading}
+                placeholder={placeholder}
                 onChange={(val) => {
                   setFieldValue(name, val);
                 }}
@@ -78,7 +86,6 @@ const SelectComp = (props: any) => {
           }}
         </Field>
       </div>
-      {/* <ErrorMessage name={name} component={ErrorMsg} /> */}
     </div>
   );
 };

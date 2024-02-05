@@ -100,3 +100,17 @@ a {
 .customSelect .ant-select-selector {
   border: 1px solid #cbd5e0 !important;
 }
+
+@layer components {
+  .clientTable thead th span {
+    @apply text-center block whitespace-normal font-normal text-xs;
+  }
+
+  .clientTable thead th {
+    @apply text-graphiteGray h-9;
+  }
+
+  .clientTable thead {
+    @apply bg-[#F0F1F3];
+  }
+}

@@ -10,9 +10,13 @@ import supportTicketsSlice from './supportTickets/supportTickets.slice';
 import settingTargetsSlice from './company/settingSlices/settingTarget.slice';
 import userSlice from './userSlice/user.slice';
 import pricingPlanReducer from './pricingPlanSlice/pricingPlanSlice';
-import companySetupCategoryReducer from './company/settingSlices/companySetup/category.slice';
-import companySetupSubcategoryReducer from './company/settingSlices/companySetup/subcategory.slice';
+import companySetupCategoryReducer from './company/settingSlices/categories/category.slice';
+import companySetupSubcategoryReducer from './company/settingSlices/categories/subcategory.slice';
 import materialsReducer from './company/settingSlices/materials.slice';
+import invoiceReducer from './invoice/invoice.slice';
+import clientInvoiceReducer from './client-invoices/client-invoice.slice';
+import scheduleReducer from './schedule/schedule.slice';
+import meetingReducer from './meeting/meeting.slice';
 
 export type RootState = {
   auth: any;
@@ -26,6 +30,10 @@ export type RootState = {
   companySetupCategory: any;
   companySetupSubcategory: any;
   materials: any;
+  invoices: any;
+  clientInvoices: any;
+  schedule: typeof scheduleReducer;
+  meetings: typeof meetingReducer;
 };
 const persistConfig = {
   key: 'root',
@@ -45,5 +53,9 @@ const rootReducer = combineReducers<RootState>({
   companySetupCategory: companySetupCategoryReducer,
   companySetupSubcategory: companySetupSubcategoryReducer,
   materials: materialsReducer,
+  invoices: invoiceReducer,
+  clientInvoices: clientInvoiceReducer,
+  schedule: scheduleReducer,
+  meetings: meetingReducer,
 });
 export default persistReducer(persistConfig, rootReducer);

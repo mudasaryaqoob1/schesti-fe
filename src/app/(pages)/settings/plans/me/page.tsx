@@ -56,9 +56,9 @@ const MySubscription = () => {
               <div className="h-3 w-full absolute rounded-lg bg-slate-200" />
             </div>
 
-            <p className="text-end text-vividRed font-semibold w-full">
+            {/* <p className="text-end text-vividRed font-semibold w-full">
               Expires in 14 days left
-            </p>
+            </p> */}
             <div className="w-full h-px bg-mistyWhite"></div>
             <h4 className={`${tertiaryHeading} font-normal text-ebonyGray`}>
               Features

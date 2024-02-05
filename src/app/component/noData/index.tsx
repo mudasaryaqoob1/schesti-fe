@@ -8,8 +8,15 @@ import { useRouter } from 'next/navigation';
 type Props = {
   btnText: string;
   link: string;
+  title: string;
+  description?: string;
 };
-const NoData = ({ btnText, link }: Props) => {
+const NoData = ({
+  btnText = 'text',
+  link = '/',
+  title = 'This is title',
+  description = 'This is description',
+}: Props) => {
   const router = useRouter();
   return (
     <section className="mt-6 mx-4 rounded-xl h-[calc(100vh-200px)] grid items-center border border-solid border-silverGray shadow-secondaryTwist">
@@ -24,11 +31,11 @@ const NoData = ({ btnText, link }: Props) => {
             />
           </div>
           <SecondaryHeading
-            title="There is no estimate request"
+            title={title}
             className="text-obsidianBlack2 mt-8"
           />
           <Description
-            title="Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content."
+            title={description}
             className="text-steelGray text-center font-normal"
           />
           <CustomButton

@@ -28,7 +28,10 @@ const newClientSchema = Yup.object({
   email: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
-  phone: Yup.string().required('Phone number is required!'),
+  phone: Yup.string()
+    .min(11, 'Phone number must be at least 11 characters')
+    .max(14, 'Phone number must be at most 14 characters')
+    .required('Phone number is required'),
   companyName: Yup.string().required('Company Name is required!'),
   address: Yup.string().required('Address is required!'),
   address2: Yup.string(),

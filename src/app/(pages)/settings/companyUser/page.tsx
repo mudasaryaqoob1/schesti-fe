@@ -15,7 +15,6 @@ import { deleteUser, fetchUsers } from '@/redux/userSlice/user.thunk';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
 import VerticleBar from '@/app/(pages)//settings/verticleBar';
-import { DownOutlined } from '@ant-design/icons';
 import moment from 'moment';
 import { setCurrentUser } from '@/redux/userSlice/user.slice';
 
@@ -136,9 +135,13 @@ const Index = () => {
           }}
           placement="bottomRight"
         >
-          <a>
-            <DownOutlined />
-          </a>
+          <Image
+            src={'/menuIcon.svg'}
+            alt="logo white icon"
+            width={20}
+            height={20}
+            className="active:scale-105 cursor-pointer"
+          />
         </Dropdown>
       ),
     },
