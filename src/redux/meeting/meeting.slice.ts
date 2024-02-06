@@ -29,6 +29,10 @@ export const meetingSlice = createSlice({
       state.loading = false;
       state.error = action.error.message;
     });
+
+    builder.addCase(fetchMeetings.pending, (state) => {
+      state.loading = true;
+    });
   },
 });
 export const { addNewMeetingAction, deleteMeetingAction } =

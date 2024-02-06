@@ -15,6 +15,7 @@ import { CloseOutlined } from '@ant-design/icons';
 import { InputComponent } from '@/app/component/customInput/Input';
 import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import { addNewMeetingAction } from '@/redux/meeting/meeting.slice';
+import Description from '@/app/component/description';
 
 type Props = {
   showModal: boolean;
@@ -24,7 +25,7 @@ type Props = {
 const CreateMeetingSchema = Yup.object().shape({
   topic: Yup.string().required('Topic is required'),
   email: Yup.string().email().required('Email is required'),
-  date: Yup.date().required('Date is required'),
+  startDate: Yup.date().required('Start Time is required'),
 });
 
 export function CreateMeeting({ showModal, setShowModal }: Props) {
@@ -34,7 +35,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
     initialValues: {
       topic: '',
       email: '',
-      date: undefined,
+      startDate: undefined,
     },
     validationSchema: CreateMeetingSchema,
     onSubmit(values) {
@@ -42,10 +43,13 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
       let roomName = `Schesti-${Math.random() * 1000}`;
       meetingService
         .httpCreateMeeting({
-          date: dayjs(values.date).format('YYYY-MM-DDTHH:mm:ss'),
+          startDate: dayjs(values.startDate).format('YYYY-MM-DDTHH:mm:ss'),
+          endDate: dayjs(values.startDate)
+            .add(40, 'minutes')
+            .format('YYYY-MM-DDTHH:mm:ss'),
           invitees: [values.email],
           roomName,
-          link: `http://localhost:3000/meeting/${roomName}}`,
+          link: `${process.env.NEXT_PUBLIC_APP_URL}/meeting/${roomName}`,
           topic: values.topic,
         })
         .then((response) => {
@@ -64,8 +68,10 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
   });
 
   const disabledDate: RangePickerProps['disabledDate'] = (current) => {
-    // Can not select days yesterday and backwards
-    return current < dayjs().add(-1, 'days');
+    const isPreviousDay = current < dayjs().add(-1, 'days');
+    const isPreviousHour = current < dayjs().add(-1, 'hour');
+    const isPreviousMinute = current < dayjs().add(-1, 'minute');
+    return isPreviousDay || isPreviousHour || isPreviousMinute;
   };
   return (
     <ModalComponent
@@ -91,9 +97,9 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
         <form onSubmit={formik.handleSubmit}>
           <div className="px-6 py-2.5 space-y-3">
             <InputComponent
-              label="Topic"
+              label="Title"
               type="text"
-              placeholder="Topic"
+              placeholder="Title"
               name="topic"
               hasError={formik.touched.topic && !!formik.errors.topic}
               field={{
@@ -103,7 +109,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
               }}
             />
             <InputComponent
-              label="Invite Client"
+              label="Invite"
               type="email"
               placeholder="Client Email Address"
               name="email"
@@ -115,22 +121,24 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
               }}
             />
             <DateInputComponent
-              label="Schedule Date"
-              name="date"
+              label="Schedule Start Date"
+              name="startDate"
               inputStyle={'border-gray-200'}
-              hasError={formik.touched.date && !!formik.errors.date}
+              hasError={formik.touched.startDate && !!formik.errors.startDate}
               fieldProps={{
-                showTime: { defaultValue: dayjs('00:00:00', 'HH:mm:ss') },
-                value: formik.values.date
-                  ? dayjs(formik.values.date)
+                showTime: { defaultValue: dayjs('00:00:00', 'HH:mm') },
+                value: formik.values.startDate
+                  ? dayjs(formik.values.startDate)
                   : undefined,
                 onChange(date) {
-                  formik.setFieldValue('date', date);
+                  formik.setFieldValue('startDate', date);
                 },
                 onBlur: formik.handleBlur,
                 disabledDate,
               }}
             />
+
+            <Description title="Note: The duration of the meeting cannot be more than 40 minutes" />
           </div>
           <div className="flex justify-end px-6 py-2 space-x-2">
             <WhiteButton

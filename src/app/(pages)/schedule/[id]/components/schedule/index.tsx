@@ -16,17 +16,26 @@ type Props = {
     _subCategory: IWBSType['subCategory']
   ) => void;
   state: IWBSType[];
-  updateWbs(_id: string, _category: IWBSType['category'], _subCategory: IWBSType['subCategory']): void;
+  updateWbs(
+    _id: string,
+    _category: IWBSType['category'],
+    _subCategory: IWBSType['subCategory']
+  ): void;
   deleteWbs(_id: string): void;
 };
 
-export function Schedule({ addWbsHandler, state, updateWbsScopeItems, updateWbs, deleteWbs }: Props) {
+export function Schedule({
+  addWbsHandler,
+  state,
+  updateWbsScopeItems,
+  updateWbs,
+  deleteWbs,
+}: Props) {
   const [materialModal, setMaterialModal] = useState(false);
   const [updateMaterialModal, setUpdateMaterialModal] = useState(false);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   const [active, setActive] = useState<string | string[]>(['']);
-
 
   return (
     <section>
@@ -54,7 +63,7 @@ export function Schedule({ addWbsHandler, state, updateWbsScopeItems, updateWbs,
               onChange={(key) => {
                 setActive(key);
               }}
-              className='group'
+              className="group"
               items={state.map((item, i) => {
                 return {
                   key: i,
@@ -73,7 +82,7 @@ export function Schedule({ addWbsHandler, state, updateWbsScopeItems, updateWbs,
                       />
                       <Image
                         src={'/arrow-down.svg'}
-                        alt='arrow-down'
+                        alt="arrow-down"
                         width={20}
                         height={20}
                         className="my-auto w-6 aspect-square stroke-[1px] stroke-gray-300"
@@ -93,7 +102,7 @@ export function Schedule({ addWbsHandler, state, updateWbsScopeItems, updateWbs,
                               width={20}
                               height={20}
                               className="w-full aspect-square cursor-pointer"
-                              onClick={e => {
+                              onClick={(e) => {
                                 e.stopPropagation();
                                 setUpdateMaterialModal(true);
                               }}
@@ -111,14 +120,12 @@ export function Schedule({ addWbsHandler, state, updateWbsScopeItems, updateWbs,
                                     onClick(e) {
                                       e.domEvent.stopPropagation();
                                       deleteWbs(item.id);
-                                    }
+                                    },
                                   },
                                 ],
-                              }
-                              }
+                              }}
                               placement="bottomCenter"
-                              trigger={["click"]}
-
+                              trigger={['click']}
                             >
                               <Image
                                 loading="lazy"
@@ -127,12 +134,11 @@ export function Schedule({ addWbsHandler, state, updateWbsScopeItems, updateWbs,
                                 height={20}
                                 className="w-full aspect-square cursor-pointer"
                                 alt="Menu"
-                                onClick={e => {
+                                onClick={(e) => {
                                   e.stopPropagation();
                                 }}
                               />
-                            </Dropdown >
-
+                            </Dropdown>
                           </div>
                         </div>
                       </div>
