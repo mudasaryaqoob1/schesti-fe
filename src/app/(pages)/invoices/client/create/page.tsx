@@ -110,6 +110,7 @@ export default function CreateClientInvoicePage() {
                 borderRadius: 0,
                 colorBorder: 'transparent',
                 controlHeight: 32,
+                colorTextDisabled: 'black',
               },
               InputNumber: {
                 borderRadius: 0,

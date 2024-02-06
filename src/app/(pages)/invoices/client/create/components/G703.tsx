@@ -266,9 +266,12 @@ export function G703Component({
                   return <div className='px-3'>{value}</div>;
                 }
                 let columnE = Number(getCellValue(record, 4));
-                return <Input value={state.phase > 0 ? columnE : undefined}
+                return <Input
+                  value={state.phase > 0 ? columnE : undefined}
                   prefix="$"
-                  type="number" disabled />;
+                  type="number"
+                  disabled
+                />;
               }}
             />
             <Column
@@ -327,12 +330,9 @@ export function G703Component({
 
                 return (
                   <Input
-                    value={columnD + columnE + columnF}
+                    value={`${(columnD + columnE + columnF).toFixed(2)}`}
                     type="number"
-                    prefix="$" disabled
-                    onChange={(e) => {
-                      updateCellValue(index, 6, Number(e.target.value));
-                    }}
+                    prefix="$"
                   />
                 );
               }}
