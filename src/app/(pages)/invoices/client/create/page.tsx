@@ -108,12 +108,12 @@ export default function CreateClientInvoicePage() {
                 padding: 0,
                 borderRadius: 0,
                 colorBorder: 'transparent',
-                controlHeight: 32
+                controlHeight: 32,
               },
               InputNumber: {
                 borderRadius: 0,
                 colorBorder: 'transparent',
-                controlHeight: 32
+                controlHeight: 32,
               },
               Table: {
                 cellPaddingBlock: 0,
