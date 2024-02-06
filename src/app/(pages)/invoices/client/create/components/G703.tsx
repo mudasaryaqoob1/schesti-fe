@@ -6,7 +6,6 @@ import {
   DatePicker,
   Divider,
   Input,
-  InputNumber,
   Select,
   Table,
 } from 'antd';
@@ -199,14 +198,14 @@ export function G703Component({
             [
               '',
               'Grand Total',
-              `${sumColumns(state.data, 2).toFixed(2)}`,
-              `${sumColumns(state.data, 3).toFixed(2)}`,
-              `${sumColumns(state.data, 4).toFixed(2)}`,
-              `${sumColumns(state.data, 5).toFixed(2)}`,
-              `${sumColumns(state.data, 6).toFixed(2)}`,
-              `${sumColumns(state.data, 7).toFixed(2)}`,
-              `${sumColumns(state.data, 8).toFixed(2)}`,
-              `${sumColumns(state.data, 9).toFixed(2)}`,
+              `$${sumColumns(state.data, 2).toFixed(2)}`,
+              `$${sumColumns(state.data, 3).toFixed(2)}`,
+              `$${sumColumns(state.data, 4).toFixed(2)}`,
+              `$${sumColumns(state.data, 5).toFixed(2)}`,
+              `$${sumColumns(state.data, 6).toFixed(2)}`,
+              `$${sumColumns(state.data, 7).toFixed(2)}`,
+              `$${sumColumns(state.data, 8).toFixed(2)}`,
+              `$${sumColumns(state.data, 9).toFixed(2)}`,
             ],
           ]}
           pagination={false}
@@ -342,7 +341,7 @@ export function G703Component({
                 if (index === state.data.length) {
                   return value;
                 }
-                return <InputNumber value={record[7]} precision={2} />;
+                return <Input type='number' value={`${Number(record[7]).toFixed(2)}`} />;
               }}
             />
           </ColumnGroup>
@@ -353,7 +352,7 @@ export function G703Component({
               if (index === state.data.length) {
                 return value;
               }
-              return <Input value={record[8]} type="number" />;
+              return <Input value={Number(record[8]).toFixed(2)} type="number" />;
             }}
           />
           <Column
@@ -363,7 +362,7 @@ export function G703Component({
               if (index === state.data.length) {
                 return value;
               }
-              return <InputNumber value={record[9]} precision={2} />;
+              return <Input type='number' value={`${Number(record[9]).toFixed(2)}`} />;
             }}
           />
 
