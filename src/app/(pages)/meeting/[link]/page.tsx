@@ -78,6 +78,7 @@ export default function JoinMeeting() {
         </ModalComponent> : isMeetingNotStarted(meeting) ? <ModalComponent open={!isMeetingActive(meeting)} setOpen={() => { }}
           title='Meeting link is not active' width='40%'>
           <LinkMessage
+            type='inactive'
             title='Meeting link is not active'
             description="Please wait for meeting start time to active the link. Meeting link is active before 15 mint"
             onClose={() => router.push('/meeting')}

@@ -12,9 +12,8 @@ import CustomButton from '@/app/component/customButton/button';
 import SecondaryHeading from '@/app/component/headings/Secondary';
 import { UpcomingComponent } from './components/UpComing';
 import { useSelector } from 'react-redux';
-import { selectMeetings } from '@/redux/meeting/meeting.slice';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@/redux/store';
+import { AppDispatch, RootState } from '@/redux/store';
 import { fetchMeetings } from '@/redux/meeting/meeting.thunk';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
@@ -27,7 +26,7 @@ const PREVIOUS_MEETING_KEY = 'Previous Meeting';
 const Meeting = () => {
   const token = useSelector(selectToken);
   const [tab, setTab] = useState(UPCOMING_MEETING_KEY);
-  const meetings = useSelector(selectMeetings);
+  const meetings = useSelector((state: RootState) => state.meetings.data);
   const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
 
