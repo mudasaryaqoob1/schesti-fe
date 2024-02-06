@@ -10,7 +10,7 @@ import { IMeeting } from '@/app/interfaces/meeting.type';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { Skeleton } from 'antd';
-import { useCopyToClipboard } from 'usehooks-ts'
+import { useCopyToClipboard } from 'usehooks-ts';
 import { toast } from 'react-toastify';
 import { NoMeetings } from './NoMeetings';
 
@@ -22,7 +22,7 @@ const TIME_TO_ENABLE = 15; // minutes
 export function UpcomingComponent({ state, onOpenModal }: Props) {
   const router = useRouter();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-  const [copiedText, copy] = useCopyToClipboard()
+  const [copiedText, copy] = useCopyToClipboard();
   const meetingsLoading = useSelector(
     (state: RootState) => state.meetings.loading
   );
@@ -34,10 +34,9 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
     return diff <= TIME_TO_ENABLE;
   }
 
-
   async function handleCopy(text: string) {
     try {
-      await copy(text)
+      await copy(text);
       toast.success('Copied to clipboard');
     } catch (error) {
       toast.error('Failed to copy to clipboard');
@@ -49,19 +48,20 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
   }
 
   if (state.length === 0) {
-    return <NoMeetings onClick={onOpenModal} />
+    return <NoMeetings onClick={onOpenModal} />;
   }
-  const meetings = state
-    .filter((item) => {
-      const endDate = dayjs(item.endDate);
-      const today = dayjs();
-      const beforeTime = today.isBefore(endDate, 'minute');
-      return beforeTime;
-    });
+  const meetings = state.filter((item) => {
+    const endDate = dayjs(item.endDate);
+    const today = dayjs();
+    const beforeTime = today.isBefore(endDate, 'minute');
+    return beforeTime;
+  });
   return (
     <div>
-      {meetings.length === 0 ? <NoMeetings onClick={onOpenModal} />
-        : meetings.map((item, index) => {
+      {meetings.length === 0 ? (
+        <NoMeetings onClick={onOpenModal} />
+      ) : (
+        meetings.map((item, index) => {
           return (
             <div
               key={index}
@@ -70,41 +70,48 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
               <div className="space-y-1">
                 <SenaryHeading
                   title={moment(item.startDate).format('MMMM Do, YYYY')}
-                  className='text-[#475467]'
+                  className="text-[#475467]"
                 />
-                <QuinaryHeading title={item.topic} className='text-[#475467] font-semibold' />
-                <div className='flex items-center space-x-3'>
-                  <QuinaryHeading title={item.link} className="font-medium text-[#667085]" />
+                <QuinaryHeading
+                  title={item.topic}
+                  className="text-[#475467] font-semibold"
+                />
+                <div className="flex items-center space-x-3">
+                  <QuinaryHeading
+                    title={item.link}
+                    className="font-medium text-[#667085]"
+                  />
                   <Image
                     src={'/copy.svg'}
                     alt="copy icon"
                     width={30}
                     height={30}
-                    className='cursor-pointer'
+                    className="cursor-pointer"
                     onClick={() => handleCopy(item.link)}
                   />
                 </div>
                 <SenaryHeading
                   title={`Time: ${moment(item.startDate).format('h:mm a')}`}
-                  className='text-[#667085]'
+                  className="text-[#667085]"
                 />
               </div>
               <div>
-                {!enableJoin15MinutesLeft(item) ? <WhiteButton
-                  className='!w-20'
-                  text='Join'
-                /> : <CustomButton
-                  className={`!w-20`}
-                  text={'Join'}
-                  onClick={() => {
-                    router.push(`/meeting/${item.roomName}`);
-                  }}
-
-                />}
+                {!enableJoin15MinutesLeft(item) ? (
+                  <WhiteButton className="!w-20" text="Join" />
+                ) : (
+                  <CustomButton
+                    className={`!w-20`}
+                    text={'Join'}
+                    onClick={() => {
+                      router.push(`/meeting/${item.roomName}`);
+                    }}
+                  />
+                )}
               </div>
             </div>
           );
-        })}
+        })
+      )}
     </div>
   );
 }

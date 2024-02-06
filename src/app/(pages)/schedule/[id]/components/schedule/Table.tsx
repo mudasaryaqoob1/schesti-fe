@@ -31,8 +31,8 @@ const columns: ColumnType<{}>[] = [
     key: '0',
     width: 100,
     render(value) {
-      return <div className='pl-4'>{value}</div>
-    }
+      return <div className="pl-4">{value}</div>;
+    },
   },
   {
     title: 'Activities',
@@ -248,8 +248,7 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
                   },
                 },
               ],
-            }
-            }
+            }}
             placement="bottomRight"
           >
             <Image
@@ -259,7 +258,7 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
               height={20}
               className="active:scale-105 cursor-pointer"
             />
-          </Dropdown >
+          </Dropdown>
         );
       },
       fixed: 'right',
@@ -476,9 +475,9 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
         theme={{
           components: {
             Table: {
-              headerBg: "#F4EBFF"
-            }
-          }
+              headerBg: '#F4EBFF',
+            },
+          },
         }}
       >
         <Table
@@ -491,7 +490,7 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
               cell: EditableCell,
             },
           }}
-          size='small'
+          size="small"
           scroll={{ x: 1500, y: 300 }}
           footer={() => {
             return (
@@ -523,7 +522,7 @@ function EditableRow({ index, ...props }: EditableRowProps) {
   return (
     <Form form={form} component={false} key={index}>
       <EditableContext.Provider value={form}>
-        <tr {...props} className='bg-white  hover:bg-gray-100' />
+        <tr {...props} className="bg-white  hover:bg-gray-100" />
       </EditableContext.Provider>
     </Form>
   );
@@ -589,34 +588,34 @@ function EditableCell({
           components: {
             Input: {
               colorPrimary: 'transparent',
-              controlOutline: "transparent",
-              colorBorder: "transparent",
+              controlOutline: 'transparent',
+              colorBorder: 'transparent',
               borderRadius: 0,
             },
             Select: {
               colorPrimary: 'grey',
               colorPrimaryHover: 'transparent',
               colorPrimaryActive: 'transparent',
-              colorBorder: "transparent",
+              colorBorder: 'transparent',
               borderRadius: 0,
             },
             DatePicker: {
               controlHeight: 55,
               borderRadius: 0,
-              colorPrimary: "white",
-              colorBorder: "transparent",
-              controlOutline: "transparent",
+              colorPrimary: 'white',
+              colorBorder: 'transparent',
+              controlOutline: 'transparent',
             },
             Tag: {
-              defaultColor: "transparent",
-              defaultBg: "transparent",
+              defaultColor: 'transparent',
+              defaultBg: 'transparent',
               borderRadius: 0,
-            }
+            },
           },
         }}
       >
         <Form.Item
-          style={{ margin: 0, height: "100%" }}
+          style={{ margin: 0, height: '100%' }}
           name={dataIndex}
           rules={[
             {
@@ -638,20 +637,31 @@ function EditableCell({
               value={record[dataIndex]}
               defaultOpen
               autoFocus
-              style={{ height: "40px", margin: "1px 0px" }}
+              style={{ height: '40px', margin: '1px 0px' }}
             >
               {selectOptions.map((option, i) => {
-                return <Select.Option value={option.value} key={i}>
-                  <Tag bordered={undefined} className={`w-full border-none space-x-2 py-[2px]`}>
-                    <span style={{ borderColor: returnStatusColor(option.value as IWBSType['scopeItems'][0]['status']) }}
-                      className={`border-2 rounded mr-1`}>
-                      {" "}
-                    </span>
-                    <span className='font-medium text-black text-sm'>
-                      {option.label}
-                    </span>
-                  </Tag>
-                </Select.Option>
+                return (
+                  <Select.Option value={option.value} key={i}>
+                    <Tag
+                      bordered={undefined}
+                      className={`w-full border-none space-x-2 py-[2px]`}
+                    >
+                      <span
+                        style={{
+                          borderColor: returnStatusColor(
+                            option.value as IWBSType['scopeItems'][0]['status']
+                          ),
+                        }}
+                        className={`border-2 rounded mr-1`}
+                      >
+                        {' '}
+                      </span>
+                      <span className="font-medium text-black text-sm">
+                        {option.label}
+                      </span>
+                    </Tag>
+                  </Select.Option>
+                );
               })}
             </Select>
           ) : dateDataIndexes.includes(dataIndex) ? (
@@ -662,10 +672,15 @@ function EditableCell({
               onBlur={save}
               autoFocus
               defaultOpen
-              style={{ height: "40px" }}
+              style={{ height: '40px' }}
             />
           ) : (
-            <Input style={{ height: "40px" }} ref={inputRef} onPressEnter={save} onBlur={save} />
+            <Input
+              style={{ height: '40px' }}
+              ref={inputRef}
+              onPressEnter={save}
+              onBlur={save}
+            />
           )}
         </Form.Item>
       </ConfigProvider>
@@ -679,14 +694,18 @@ function EditableCell({
         }}
       >
         {dataIndex === 'status' ? (
-          <Tag className={`w-full h-full space-x-2 py-1`} color={`${returnStatusColor(record[dataIndex])}8C`}
-            style={{ filter: 'alpha(opacity=50)' }}>
-
-            <span style={{ borderColor: returnStatusColor(record[dataIndex]) }}
-              className={`border-2 rounded mr-1`}>
-              {" "}
+          <Tag
+            className={`w-full h-full space-x-2 py-1`}
+            color={`${returnStatusColor(record[dataIndex])}8C`}
+            style={{ filter: 'alpha(opacity=50)' }}
+          >
+            <span
+              style={{ borderColor: returnStatusColor(record[dataIndex]) }}
+              className={`border-2 rounded mr-1`}
+            >
+              {' '}
             </span>
-            <span className='font-medium text-black text-sm'>
+            <span className="font-medium text-black text-sm">
               {record[dataIndex]}
             </span>
           </Tag>
@@ -699,9 +718,15 @@ function EditableCell({
     );
   }
 
-  return <td {...restProps} className='!p-0 border bg-white hover:bg-gray-100 box-border'>{childNode}</td>;
+  return (
+    <td
+      {...restProps}
+      className="!p-0 border bg-white hover:bg-gray-100 box-border"
+    >
+      {childNode}
+    </td>
+  );
 }
-
 
 function returnStatusColor(status: IWBSType['scopeItems'][0]['status']) {
   if (status === 'Planned') {
@@ -713,6 +738,5 @@ function returnStatusColor(status: IWBSType['scopeItems'][0]['status']) {
   } else if (status === 'Review') {
     return 'yellow';
   }
-  return "#2db7f5";
+  return '#2db7f5';
 }
-

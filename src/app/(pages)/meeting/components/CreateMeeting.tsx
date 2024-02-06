@@ -25,7 +25,7 @@ type Props = {
 const CreateMeetingSchema = Yup.object().shape({
   topic: Yup.string().required('Topic is required'),
   email: Yup.string().email().required('Email is required'),
-  startDate: Yup.date().required('Start Time is required')
+  startDate: Yup.date().required('Start Time is required'),
 });
 
 export function CreateMeeting({ showModal, setShowModal }: Props) {
@@ -44,7 +44,9 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
       meetingService
         .httpCreateMeeting({
           startDate: dayjs(values.startDate).format('YYYY-MM-DDTHH:mm:ss'),
-          endDate: dayjs(values.startDate).add(40, 'minutes').format('YYYY-MM-DDTHH:mm:ss'),
+          endDate: dayjs(values.startDate)
+            .add(40, 'minutes')
+            .format('YYYY-MM-DDTHH:mm:ss'),
           invitees: [values.email],
           roomName,
           link: `${process.env.NEXT_PUBLIC_APP_URL}/meeting/${roomName}`,
@@ -136,9 +138,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
               }}
             />
 
-            <Description
-              title='Note: The duration of the meeting cannot be more than 40 minutes'
-            />
+            <Description title="Note: The duration of the meeting cannot be more than 40 minutes" />
           </div>
           <div className="flex justify-end px-6 py-2 space-x-2">
             <WhiteButton

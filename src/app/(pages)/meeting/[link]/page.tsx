@@ -9,7 +9,7 @@ import { AppDispatch, RootState } from '@/redux/store';
 import { JaaSMeeting } from '@jitsi/react-sdk';
 import { Skeleton } from 'antd';
 import { useParams, useRouter } from 'next/navigation';
-import { useCallback, useEffect, useLayoutEffect, } from 'react';
+import { useCallback, useEffect, useLayoutEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { MeetingMessage } from './Message';
@@ -24,7 +24,9 @@ export default function JoinMeeting() {
   const router = useRouter();
   const token = useSelector(selectToken);
   const meetings = useSelector(selectMeetings);
-  const meetingLoading = useSelector((state: RootState) => state.meetings.loading);
+  const meetingLoading = useSelector(
+    (state: RootState) => state.meetings.loading
+  );
   const dispatch = useDispatch<AppDispatch>();
   useLayoutEffect(() => {
     if (token) {
@@ -40,10 +42,6 @@ export default function JoinMeeting() {
     fetchMeetingsCB();
   }, []);
 
-
-
-
-
   if (meetingLoading) {
     return <Skeleton active className="m-6" />;
   }
@@ -51,43 +49,57 @@ export default function JoinMeeting() {
   const meeting = meetings.find((m: IMeeting) => m.roomName === roomName);
 
   if (!meeting) {
-    return <MeetingMessage
-      title='No meeting found'
-      description='There is no scheduled meeting. Initiate one by using the Jitsi integration.'
-    >
-      <CustomButton
-        className="mt-7"
-        text={'Go Back'}
-        onClick={() => router.back()}
-      />
-    </MeetingMessage>
+    return (
+      <MeetingMessage
+        title="No meeting found"
+        description="There is no scheduled meeting. Initiate one by using the Jitsi integration."
+      >
+        <CustomButton
+          className="mt-7"
+          text={'Go Back'}
+          onClick={() => router.back()}
+        />
+      </MeetingMessage>
+    );
   }
 
   return (
     <div>
       <div className="h-screen">
-        {isMeetingEnded(meeting) ? <ModalComponent open={!isMeetingActive(meeting)} setOpen={() => { }}
-          title='Meeting Expired/InActive' width='40%'>
-          <LinkMessage
-            title='Link Expired'
-            description="Your meeting link is expired. You can contact with admin"
-            onClose={() => router.push('/meeting')}
+        {isMeetingEnded(meeting) ? (
+          <ModalComponent
+            open={!isMeetingActive(meeting)}
+            setOpen={() => {}}
+            title="Meeting Expired/InActive"
+            width="40%"
           >
-            <div></div>
-          </LinkMessage>
-        </ModalComponent> : isMeetingNotStarted(meeting) ? <ModalComponent open={!isMeetingActive(meeting)} setOpen={() => { }}
-          title='Meeting link is not active' width='40%'>
-          <LinkMessage
-            type='inactive'
-            title='Meeting link is not active'
-            description="Please wait for meeting start time to active the link. Meeting link is active before 15 mint"
-            onClose={() => router.push('/meeting')}
+            <LinkMessage
+              title="Link Expired"
+              description="Your meeting link is expired. You can contact with admin"
+              onClose={() => router.push('/meeting')}
+            >
+              <div></div>
+            </LinkMessage>
+          </ModalComponent>
+        ) : isMeetingNotStarted(meeting) ? (
+          <ModalComponent
+            open={!isMeetingActive(meeting)}
+            setOpen={() => {}}
+            title="Meeting link is not active"
+            width="40%"
           >
-            <Description
-              title={`Meeting time: ${moment(meeting.startDate).format('ddd, MMM DD, YYYY, hh:mm A')}`}
-            />
-          </LinkMessage>
-        </ModalComponent> : null}
+            <LinkMessage
+              type="inactive"
+              title="Meeting link is not active"
+              description="Please wait for meeting start time to active the link. Meeting link is active before 15 mint"
+              onClose={() => router.push('/meeting')}
+            >
+              <Description
+                title={`Meeting time: ${moment(meeting.startDate).format('ddd, MMM DD, YYYY, hh:mm A')}`}
+              />
+            </LinkMessage>
+          </ModalComponent>
+        ) : null}
         <JaaSMeeting
           appId={process.env.NEXT_PUBLIC_JITSI_APP_ID as string}
           roomName={meeting.roomName}
@@ -107,6 +119,4 @@ export default function JoinMeeting() {
       </div>
     </div>
   );
-
-
 }
