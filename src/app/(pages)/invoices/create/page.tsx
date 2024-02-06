@@ -118,6 +118,9 @@ const CreateInvoice = () => {
     {
       title: 'Unit Cost',
       dataIndex: 'unitCost',
+      render(value) {
+        return `$${value}`
+      }
     },
     {
       title: 'Total Price',
