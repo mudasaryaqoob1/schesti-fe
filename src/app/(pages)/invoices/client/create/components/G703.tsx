@@ -198,14 +198,14 @@ export function G703Component({
             [
               '',
               'Grand Total',
-              `$${sumColumns(state.data, 2).toFixed(2)}`,
-              `$${sumColumns(state.data, 3).toFixed(2)}`,
-              `$${sumColumns(state.data, 4).toFixed(2)}`,
-              `$${sumColumns(state.data, 5).toFixed(2)}`,
-              `$${sumColumns(state.data, 6).toFixed(2)}`,
-              `$${sumColumns(state.data, 7).toFixed(2)}`,
-              `$${sumColumns(state.data, 8).toFixed(2)}`,
-              `$${sumColumns(state.data, 9).toFixed(2)}`,
+              `$ ${sumColumns(state.data, 2).toFixed(2)}`,
+              `$ ${sumColumns(state.data, 3).toFixed(2)}`,
+              `$ ${sumColumns(state.data, 4).toFixed(2)}`,
+              `$ ${sumColumns(state.data, 5).toFixed(2)}`,
+              `$ ${sumColumns(state.data, 6).toFixed(2)}`,
+              `$ ${sumColumns(state.data, 7).toFixed(2)}`,
+              `$ ${sumColumns(state.data, 8).toFixed(2)}`,
+              `$ ${sumColumns(state.data, 9).toFixed(2)}`,
             ],
           ]}
           pagination={false}
