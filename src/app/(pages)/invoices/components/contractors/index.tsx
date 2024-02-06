@@ -1,5 +1,5 @@
 import type { ColumnsType } from 'antd/es/table';
-import { Dropdown, Table, type MenuProps } from 'antd';
+import { Dropdown, Table, type MenuProps, Tag } from 'antd';
 import { useRouter } from 'next/navigation';
 import { SearchOutlined } from '@ant-design/icons';
 
@@ -96,8 +96,21 @@ export function Contractors() {
       },
     },
     {
+      title: "Status",
+      dataIndex: "status",
+      render(value) {
+        if (value === 'paid') {
+          return <Tag color="green">Paid</Tag>
+        }
+        return <Tag color="red">Unpaid</Tag>
+      },
+    },
+    {
       title: 'Total Payable',
       dataIndex: 'totalPayable',
+      render(value) {
+        return `$${value}`
+      },
     },
     {
       title: 'Action',
