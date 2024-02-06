@@ -210,7 +210,7 @@ export function G703Component({
             ],
           ]}
           pagination={false}
-          scroll={{ x: 1300 }}
+          scroll={{ x: 1300, y: 240 }}
         >
           <Column
             title={<SenaryHeading title="#" className='text-[12px]' />}
@@ -370,7 +370,6 @@ export function G703Component({
           <Column
             title=""
             className="border-none border-b"
-            fixed
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
                 return (
@@ -398,6 +397,7 @@ export function G703Component({
                       icon={<PlusOutlined />}
                       shape="circle"
                       type="default"
+                      className='w-full mx-auto'
                     />
                   </ConfigProvider>
                 );

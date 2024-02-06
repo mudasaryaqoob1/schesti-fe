@@ -104,6 +104,16 @@ export default function CreateClientInvoicePage() {
               Tabs: {
                 inkBarColor: '#8449EB',
               },
+              Input: {
+                padding: 0,
+                borderRadius: 0,
+                colorBorder: 'transparent',
+                controlHeight: 32
+              },
+              Table: {
+                cellPaddingBlock: 0,
+                cellPaddingInline: 0
+              }
             },
           }}
         >
