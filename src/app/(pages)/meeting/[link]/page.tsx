@@ -99,7 +99,9 @@ export default function JoinMeeting() {
             iframeRef.style.height = '100vh';
             iframeRef.style.width = '100%';
           }}
-
+          onReadyToClose={() => {
+            router.push('/meeting');
+          }}
         />
       </div>
     </div>
