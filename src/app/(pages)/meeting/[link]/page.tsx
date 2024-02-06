@@ -10,11 +10,13 @@ import { JaaSMeeting } from '@jitsi/react-sdk';
 import { Skeleton } from 'antd';
 import { useParams } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useLayoutEffect } from 'react';
+import { useCallback, useEffect, useLayoutEffect, } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { MeetingMessage } from './Message';
 import { isMeetingActive } from './utils';
+import ModalComponent from '@/app/component/modal';
+import { LinkMessage } from './LinkMessage';
 
 export default function JoinMeeting() {
   const { link: roomName } = useParams();
@@ -23,7 +25,6 @@ export default function JoinMeeting() {
   const meetings = useSelector(selectMeetings);
   const meetingLoading = useSelector((state: RootState) => state.meetings.loading);
   const dispatch = useDispatch<AppDispatch>();
-
   useLayoutEffect(() => {
     if (token) {
       HttpService.setToken(token);
@@ -36,14 +37,18 @@ export default function JoinMeeting() {
 
   useEffect(() => {
     fetchMeetingsCB();
-  }, [fetchMeetingsCB]);
+  }, []);
+
+
+
+
 
   if (meetingLoading) {
     return <Skeleton active className="m-6" />;
   }
 
   const meeting = meetings.find((m: IMeeting) => m.roomName === roomName);
-  console.log({ meeting })
+
   if (!meeting) {
     return <MeetingMessage
       title='No meeting found'
@@ -57,23 +62,27 @@ export default function JoinMeeting() {
     </MeetingMessage>
   }
 
-  if (!isMeetingActive(meeting)) {
-    return <MeetingMessage
-      title='Expired/InActive'
-      description='The meeting link is either expired or not activated.'
-    />
-  }
-
-
   return (
     <div>
       <div className="h-screen">
+        <ModalComponent open={!isMeetingActive(meeting)} setOpen={() => { }}
+          title='Meeting Expired/InActive' width='40%'>
+          <LinkMessage
+            title='Link Expired'
+            description="Your meeting link is expaired. You can contact with admin"
+            onClose={() => router.back()}
+          />
+        </ModalComponent>
         <JaaSMeeting
           appId={process.env.NEXT_PUBLIC_JITSI_APP_ID as string}
           roomName={meeting.roomName}
           configOverwrite={{
             startWithAudioMuted: true,
             startWithVideoMuted: true,
+            toolbarButtons: [
+              'microphone',
+              'embedmeeting'
+            ]
           }}
           spinner={() => <div>Loading...</div>}
           getIFrameRef={(iframeRef) => {
