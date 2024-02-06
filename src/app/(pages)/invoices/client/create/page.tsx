@@ -109,14 +109,17 @@ export default function CreateClientInvoicePage() {
         >
           <Tabs
             destroyInactiveTabPane
-            activeKey={G703_KEY}
+            onChange={(key) => {
+              setTab(key);
+            }}
+            activeKey={tab}
             items={[G703_KEY, G702_KEY].map((type) => {
               return {
                 key: type,
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className="text-RoyalPurple"
+                    className={`${tab === type ? "text-RoyalPurple" : 'text-black'}`}
                   />
                 ),
                 tabKey: type,
