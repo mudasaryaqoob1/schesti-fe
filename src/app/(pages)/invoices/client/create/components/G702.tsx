@@ -524,7 +524,7 @@ export function G702Component({
       </div>
 
       <div className="flex justify-end space-x-4">
-        <WhiteButton onClick={onCancel} text="Cancel" className="!w-40" />
+        <WhiteButton onClick={onCancel} text="Previous" className="!w-40" />
         <CustomButton text="Create" className="!w-48" onClick={onNext} />
       </div>
     </div>

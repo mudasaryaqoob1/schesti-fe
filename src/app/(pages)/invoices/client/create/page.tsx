@@ -159,7 +159,7 @@ export default function CreateClientInvoicePage() {
                       handleState={handleState}
                       sumColumns={sumColumns}
                       onCancel={() => {
-                        router.back();
+                        setTab(G703_KEY);
                       }}
                       onNext={() => {
                         handleSubmit(state);
