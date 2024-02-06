@@ -46,6 +46,7 @@ export default function CreateClientInvoicePage() {
     project: '',
     stateOf: '',
     subscribedAndSworn: '',
+    phase: 0,
     toOwner: '',
     viaEngineer: '',
   });
@@ -117,7 +118,7 @@ export default function CreateClientInvoicePage() {
               },
               Table: {
                 cellPaddingBlock: 0,
-                cellPaddingInline: 0
+                cellPaddingInline: 0,
               }
             },
           }}

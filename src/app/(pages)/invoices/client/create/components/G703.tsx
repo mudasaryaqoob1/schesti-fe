@@ -215,7 +215,7 @@ export function G703Component({
             title={<SenaryHeading title="#" className='text-[12px]' />}
             dataIndex={0}
             render={(value, record: string[], index) => {
-              return <div className='px-3'>{index}</div>;
+              return index === state.data.length ? null : <div className='px-3'>{index}</div>;
             }}
             width={40}
           />
@@ -266,7 +266,7 @@ export function G703Component({
                   return <div className='px-3'>{value}</div>;
                 }
                 let columnE = Number(getCellValue(record, 4));
-                return <Input value={columnE}
+                return <Input value={state.phase > 0 ? columnE : undefined}
                   prefix="$"
                   type="number" disabled />;
               }}
@@ -285,7 +285,6 @@ export function G703Component({
                     type="number"
                     onChange={(e) => {
                       updateCellValue(index, 4, Number(e.target.value));
-                      updateCellValue(index, 3, Number(e.target.value));
                     }}
                   />
                 );

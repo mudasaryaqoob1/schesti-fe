@@ -22,6 +22,7 @@ export type G7State = {
   subscribedAndSworn: string;
   notaryPublic: string;
   myCommissionExpires: string;
+  phase: number;
 };
 
 export type IClientInvoice = {
