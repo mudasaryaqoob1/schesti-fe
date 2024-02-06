@@ -215,7 +215,7 @@ export function G703Component({
             title={<SenaryHeading title="#" className='text-[12px]' />}
             dataIndex={0}
             render={(value, record: string[], index) => {
-              return index;
+              return <div className='px-3'>{index}</div>;
             }}
             width={40}
           />
@@ -225,7 +225,7 @@ export function G703Component({
             width={300}
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
-                return value;
+                return <div className='px-3'>{value}</div>;
               }
               return (
                 <Input
@@ -243,7 +243,7 @@ export function G703Component({
             dataIndex={2}
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
-                return value;
+                return <div className='px-3'>{value}</div>;
               }
               return (
                 <Input
@@ -263,7 +263,7 @@ export function G703Component({
               dataIndex={3}
               render={(value, record: string[], index) => {
                 if (index === state.data.length) {
-                  return value;
+                  return <div className='px-3'>{value}</div>;
                 }
                 let columnE = Number(getCellValue(record, 4));
                 return <Input value={columnE}
@@ -276,7 +276,7 @@ export function G703Component({
               dataIndex={4}
               render={(value, record, index) => {
                 if (index === state.data.length) {
-                  return value;
+                  return <div className='px-3'>{value}</div>;
                 }
                 return (
                   <Input
@@ -299,7 +299,7 @@ export function G703Component({
             dataIndex={5}
             render={(value, record, index) => {
               if (index === state.data.length) {
-                return value;
+                return <div className='px-3'>{value}</div>;
               }
               return (
                 <Input
@@ -320,7 +320,7 @@ export function G703Component({
               dataIndex={6}
               render={(value, record: string[], index) => {
                 if (index === state.data.length) {
-                  return value;
+                  return <div className='px-3'>{value}</div>;
                 }
                 let columnD = Number(getCellValue(record, 3));
                 let columnE = Number(getCellValue(record, 4));
@@ -343,7 +343,7 @@ export function G703Component({
               dataIndex={7}
               render={(value, record: string[], index) => {
                 if (index === state.data.length) {
-                  return value;
+                  return <div className='px-3'>{value}</div>;
                 }
                 return <Input type='number'
                   prefix="$" value={`${Number(record[7]).toFixed(2)}`} />;
@@ -355,7 +355,7 @@ export function G703Component({
             dataIndex={8}
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
-                return value;
+                return <div className='px-3'>{value}</div>;
               }
               return <Input
                 prefix="$" value={Number(record[8]).toFixed(2)} type="number" />;
@@ -366,7 +366,7 @@ export function G703Component({
             dataIndex={9}
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
-                return value;
+                return <div className='px-3'>{value}</div>;
               }
               return <Input type='number'
                 prefix="$"
@@ -404,14 +404,14 @@ export function G703Component({
                       icon={<PlusOutlined />}
                       shape="circle"
                       type="default"
-                      className='w-full mx-auto'
+                      className='!ml-3'
                     />
                   </ConfigProvider>
                 );
               }
               return (
                 <DeleteOutlined
-                  className="text-xl text-red-500 cursor-pointer"
+                  className="text-xl px-4 text-red-500 cursor-pointer"
                   onClick={() => {
                     deleteRow(index);
                   }}
