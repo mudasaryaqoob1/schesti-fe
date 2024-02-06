@@ -24,7 +24,7 @@ export default function CreateClientInvoicePage() {
   const searchParams = useSearchParams();
   const invoiceName = searchParams.get('invoiceName');
   const [tab, setTab] = useState(G703_KEY);
-  const [state, setState] = useState<G7State>({
+  const [g7State, setG7State] = useState<G7State>({
     applicationNo: '',
     invoiceName: '',
     applicationDate: new Date().toString(),
@@ -55,16 +55,16 @@ export default function CreateClientInvoicePage() {
     if (token) {
       HttpService.setToken(token);
       if (invoiceName) {
-        handleState('invoiceName', invoiceName);
+        handleG7State('invoiceName', invoiceName);
       }
     }
   }, [token, invoiceName]);
 
-  function handleState<K extends keyof G7State>(
+  function handleG7State<K extends keyof G7State>(
     key: K,
-    value: (typeof state)[K]
+    value: (typeof g7State)[K]
   ) {
-    setState({ ...state, [key]: value });
+    setG7State({ ...g7State, [key]: value });
   }
 
   function sumColumns(rows: Array<string[]>, column: number): number {
@@ -143,8 +143,8 @@ export default function CreateClientInvoicePage() {
                 children:
                   tab === G703_KEY ? (
                     <G703Component
-                      state={state}
-                      handleState={handleState}
+                      state={g7State}
+                      handleState={handleG7State}
                       sumColumns={sumColumns}
                       onCancel={() => {
                         router.back();
@@ -155,14 +155,14 @@ export default function CreateClientInvoicePage() {
                     />
                   ) : (
                     <G702Component
-                      state={state}
-                      handleState={handleState}
+                      state={g7State}
+                      handleState={handleG7State}
                       sumColumns={sumColumns}
                       onCancel={() => {
                         setTab(G703_KEY);
                       }}
                       onNext={() => {
-                        handleSubmit(state);
+                        handleSubmit(g7State);
                       }}
                     />
                   ),
