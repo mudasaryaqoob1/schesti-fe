@@ -162,7 +162,7 @@ export function G703Component({
               className="px-2 w-full rounded-none py-[7px] border border-gray-300 outline-none"
               defaultValue={dayjs(state.applicationDate)}
               onChange={(_d, dateString) =>
-                handleState('applicationDate', dateString)
+                handleState('applicationDate', dateString as string)
               }
             />
           </div>
@@ -174,7 +174,7 @@ export function G703Component({
               id="application-date"
               className="px-4 w-full rounded-none py-[7px] border border-gray-300 outline-none"
               defaultValue={dayjs(state.periodTo)}
-              onChange={(_d, dateString) => handleState('periodTo', dateString)}
+              onChange={(_d, dateString) => handleState('periodTo', dateString as string)}
             />
           </div>
           <div className="flex self-end space-x-3 items-center">
