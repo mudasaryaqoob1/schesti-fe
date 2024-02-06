@@ -23,19 +23,20 @@ export function G702Component({
   onCancel,
   onNext,
 }: Props) {
-  const p5b = Number(sumColumns(state.data, 6));
-  const twoPercentOfP5b = p5b * 0.02;
-  const p5Total = Number(sumColumns(state.data, 9)) + twoPercentOfP5b;
-  const p6Total = Number(sumColumns(state.data, 6)) - p5Total;
-  const p3Total =
-    parseFloat(state.orignalContractSum) + parseFloat(state.netChangeByOrders);
-  const p8Total = p6Total - Number(state.lessPreviousCertificatesForPayment);
-  const p9Total =
-    p3Total - Number(state.lessPreviousCertificatesForPayment) - p8Total;
+
 
   const changeOrderSummaryAdditionSum = state.totalAdditionThisMonth + state.totalAdditionPreviousMonth;
   const changeOrderSummaryDeductionSum = state.totalDeductionThisMonth + state.totalDeductionPreviousMonth;
   const changeOrderNetChanges = changeOrderSummaryAdditionSum - changeOrderSummaryDeductionSum;
+  const p5b = Number(sumColumns(state.data, 6));
+  const twoPercentOfP5b = p5b * 0.02;
+  const p5Total = Number(sumColumns(state.data, 9)) + twoPercentOfP5b;
+  const p6Total = Number(sumColumns(state.data, 6)) - p5Total;
+  const p3Total = state.orignalContractSum + changeOrderNetChanges;
+  const p8Total = p6Total - Number(state.lessPreviousCertificatesForPayment);
+  const p9Total =
+    p3Total - Number(state.lessPreviousCertificatesForPayment) - p8Total;
+
 
   return (
     <div>
@@ -182,7 +183,7 @@ export function G702Component({
                   defaultValue={0.0}
                   prefix="$"
                   onChange={(e) =>
-                    handleState('orignalContractSum', e.target.value)
+                    handleState('orignalContractSum', Number(e.target.value))
                   }
                 />
               </div>
@@ -195,11 +196,7 @@ export function G702Component({
                   className="px-2 py-1 border border-gray-300 "
                   type="text"
                   prefix="$"
-                  value={state.netChangeByOrders}
-                  defaultValue={0.0}
-                  onChange={(e) =>
-                    handleState('netChangeByOrders', e.target.value)
-                  }
+                  value={changeOrderNetChanges.toFixed(2)}
                 />
               </div>
               <div className="grid grid-cols-3 gap-1">
@@ -369,7 +366,7 @@ export function G702Component({
               </thead>
               <tbody className="[&amp;_tr:last-child]:border-0">
                 <tr className="border-b">
-                  <td className="p-4 text-gray-700 align-middle  border-r border-gray-300">
+                  <td className="px-2 text-gray-700 align-middle  border-r border-gray-300">
                     Total changes approved in previous months by Owner
                   </td>
                   <td className="align-middle text-gray-700 text-center border-r border-gray-300">
@@ -396,14 +393,14 @@ export function G702Component({
                   </td>
                 </tr>
                 <tr className="border-b">
-                  <td className="px-4 align-middle text-gray-700 border-r border-gray-300">
+                  <td className="px-2 align-middle text-gray-700 border-r border-gray-300">
                     Total approved this Month
                   </td>
                   <td className=" align-middle  text-gray-700 text-center border-r border-gray-300">
                     <Input
                       type='number'
                       prefix='$'
-                      className='px-2 py-1 outline-none focus:outline-none border-none hover:border-none focus-within:border-none focus-within:outline-none focus-visible:outline-none !shadow-none'
+                      className='px-2  outline-none focus:outline-none border-none hover:border-none focus-within:border-none focus-within:outline-none focus-visible:outline-none !shadow-none'
                       value={state.totalAdditionThisMonth}
                       onChange={e => {
                         handleState('totalAdditionThisMonth', Number(e.target.value))
@@ -423,19 +420,19 @@ export function G702Component({
                   </td>
                 </tr>
                 <tr className="border-b">
-                  <td className="p-4 align-middle text-gray-700 border-r border-gray-300">
+                  <td className="px-2 align-middle text-gray-700 border-r border-gray-300">
                     TOTALS
                   </td>
-                  <td className="p-4 align-middle text-gray-700 text-center border-r border-gray-300">
+                  <td className="px-2 align-middle text-gray-700  border-r border-gray-300">
                     $ {changeOrderSummaryAdditionSum.toFixed(2)}
                   </td>
-                  <td className="p-4 align-middle text-center">$ {changeOrderSummaryDeductionSum.toFixed(2)}</td>
+                  <td className="px-2 align-middle ">$ {changeOrderSummaryDeductionSum.toFixed(2)}</td>
                 </tr>
                 <tr className="border-b">
-                  <td className="p-4 align-middle text-gray-700 border-r border-gray-300">
+                  <td className="px-2 align-middle text-gray-700 border-r border-gray-300">
                     NET CHANGES by Change Order
                   </td>
-                  <td colSpan={2} className="p-4 align-middle text-gray-700 text-center border-r border-gray-300">
+                  <td colSpan={2} className="px-2 align-middle text-gray-700  border-r border-gray-300">
                     $ {changeOrderNetChanges}
                   </td>
                 </tr>

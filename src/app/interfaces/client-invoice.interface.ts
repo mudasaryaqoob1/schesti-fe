@@ -10,8 +10,7 @@ export type G7State = {
   address: string;
   viaEngineer: string;
   distributionTo: string;
-  orignalContractSum: string;
-  netChangeByOrders: string;
+  orignalContractSum: number;
   amountCertified1: string;
   amountCertified2: string;
   amountCertified3: string;
