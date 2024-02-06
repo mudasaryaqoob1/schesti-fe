@@ -28,11 +28,11 @@ export function LinkMessage({ description, onClose, title, children }: Props) {
                 />
                 <Description
                     title={description}
-                    className="text-black text-center font-normal"
+                    className="text-black font-normal pr-1"
                 />
             </div>
         </div>
-        <div className='flex justify-end px-2'>
+        <div className='flex items-center justify-between px-2'>
             {children}
             <WhiteButton
                 text='Okay'

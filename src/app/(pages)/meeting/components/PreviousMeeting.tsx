@@ -27,7 +27,7 @@ export function PreviousMeetings({ meetings }: Props) {
                         />
                         <QuinaryHeading title={item.topic} className='text-[#475467] font-semibold' />
                         <div className='flex items-center space-x-3'>
-                            <QuinaryHeading title={item.roomName} className="font-medium text-[#667085]" />
+                            <QuinaryHeading title={item.link} className="font-medium text-[#667085]" />
                         </div>
                         <SenaryHeading
                             title={`Time: ${moment(item.startDate).format('h:mm a')}`}

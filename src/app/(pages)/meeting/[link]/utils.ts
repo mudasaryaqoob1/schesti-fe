@@ -11,3 +11,15 @@ export function isMeetingActive(meeting: IMeeting) {
     const end = moment(meeting.endDate);
     return current.isBetween(start, end);
 }
+
+export function isMeetingEnded(meeting: IMeeting) {
+    const current = moment();
+    const end = moment(meeting.endDate);
+    return current.isAfter(end);
+}
+
+export function isMeetingNotStarted(meeting: IMeeting) {
+    const current = moment();
+    const start = moment(meeting.startDate);
+    return current.isBefore(start);
+}
