@@ -608,42 +608,42 @@
     fontkit "^2.0.2"
     is-url "^1.2.4"
 
-"@react-pdf/image@^2.2.3":
-  version "2.2.3"
-  resolved "https://registry.npmjs.org/@react-pdf/image/-/image-2.2.3.tgz"
-  integrity sha512-ckGsBEXwZ1fF3xK2ymERMiRLrvDeYrGD29wDq0iP7SwrVjBex5tHIWwHTHHfShFPEgCvrMF2FT9LaNXI7j9d8Q==
+"@react-pdf/image@2.2.1":
+  version "2.2.1"
+  resolved "https://registry.npmjs.org/@react-pdf/image/-/image-2.2.1.tgz"
+  integrity sha512-f0+cEP6pSBmk8eS/wP2tMsJcv2c7xjzca6cr1kwcapr1nzkPrh6fMdEeFl6kR2/HlJK/JoHo+xxlzRiQ8V2lrw==
   dependencies:
     "@babel/runtime" "^7.20.13"
     "@react-pdf/png-js" "^2.2.0"
     cross-fetch "^3.1.5"
 
-"@react-pdf/layout@^3.8.0":
-  version "3.8.0"
-  resolved "https://registry.npmjs.org/@react-pdf/layout/-/layout-3.8.0.tgz"
-  integrity sha512-SxoX4jX1l2ykjyyuzeEDudpTc8RCbt5RcNjMya0ADi/rfW2aHy/kK44fUgrC0+Z2Y6+Sd9aIzcvtU93mcL7szw==
+"@react-pdf/layout@3.6.2":
+  version "3.6.2"
+  resolved "https://registry.npmjs.org/@react-pdf/layout/-/layout-3.6.2.tgz"
+  integrity sha512-YD3/tDC6p5XPCXI04zH79bgX8LytjxEYfeCtsIzEFk0A2VvIHoRnRRDZ2OhZmO5g112ykyjY8vn9//ubTt+Ktg==
   dependencies:
     "@babel/runtime" "^7.20.13"
     "@react-pdf/fns" "2.0.1"
-    "@react-pdf/image" "^2.2.3"
-    "@react-pdf/pdfkit" "^3.0.4"
+    "@react-pdf/image" "^2.2.1"
+    "@react-pdf/pdfkit" "^3.0.2"
     "@react-pdf/primitives" "^3.0.0"
-    "@react-pdf/stylesheet" "^4.1.9"
-    "@react-pdf/textkit" "^4.2.1"
-    "@react-pdf/types" "^2.3.5"
+    "@react-pdf/stylesheet" "^4.1.7"
+    "@react-pdf/textkit" "^4.2.0"
+    "@react-pdf/types" "^2.3.3"
+    "@react-pdf/yoga" "^4.1.2"
     cross-fetch "^3.1.5"
     emoji-regex "^10.2.1"
     queue "^6.0.1"
-    yoga-layout "^2.0.1"
 
-"@react-pdf/pdfkit@^3.0.4":
-  version "3.0.4"
-  resolved "https://registry.npmjs.org/@react-pdf/pdfkit/-/pdfkit-3.0.4.tgz"
-  integrity sha512-3TiuFqCUHwgcYd0NYe6v3y9b5hyfSc3C6KttuEVpYFSsMssN1vMzodchl9ibAMtMu3N0S/nTZ3HxZyistDXZZA==
+"@react-pdf/pdfkit@3.0.2":
+  version "3.0.2"
+  resolved "https://registry.npmjs.org/@react-pdf/pdfkit/-/pdfkit-3.0.2.tgz"
+  integrity sha512-+m5rwNCwyEH6lmnZWpsQJvdqb6YaCCR0nMWrc/KKDwznuPMrGmGWyNxqCja+bQPORcHZyl6Cd/iFL0glyB3QGw==
   dependencies:
     "@babel/runtime" "^7.20.13"
     "@react-pdf/png-js" "^2.2.0"
     browserify-zlib "^0.2.0"
-    crypto-js "^4.2.0"
+    crypto-js "^4.0.0"
     fontkit "^2.0.2"
     vite-compatible-readable-stream "^3.6.1"
 
@@ -693,7 +693,7 @@
     queue "^6.0.1"
     scheduler "^0.17.0"
 
-"@react-pdf/stylesheet@^4.1.9":
+"@react-pdf/stylesheet@^4.1.7":
   version "4.1.9"
   resolved "https://registry.npmjs.org/@react-pdf/stylesheet/-/stylesheet-4.1.9.tgz"
   integrity sha512-kV2drqzgN11wGrPLdHpkxl6TFoO9iS9kotTFSm4sMf2+qXMqyZ/yuuUgtiuBHI3712n+n8PyzXCsod1K4yniXg==
@@ -706,7 +706,7 @@
     media-engine "^1.0.3"
     postcss-value-parser "^4.1.0"
 
-"@react-pdf/textkit@^4.2.1":
+"@react-pdf/textkit@^4.2.0", "@react-pdf/textkit@^4.2.1":
   version "4.2.1"
   resolved "https://registry.npmjs.org/@react-pdf/textkit/-/textkit-4.2.1.tgz"
   integrity sha512-qUGN1/Ej4WnYTivXBImbgz8LTbxiT+taJtenC3fpOSyQOZnYHUXldW1C6RMmVTi8P4BckLepOiBxLUIzCd+HCQ==
@@ -716,10 +716,17 @@
     hyphen "^1.6.4"
     unicode-properties "^1.4.1"
 
-"@react-pdf/types@^2.3.5":
+"@react-pdf/types@^2.3.3", "@react-pdf/types@^2.3.5":
   version "2.3.5"
   resolved "https://registry.npmjs.org/@react-pdf/types/-/types-2.3.5.tgz"
   integrity sha512-bcIFcLCCVs7rERcC4kYbAJ2GX7Y0avho1E81mf8uG5m0HgLZIXxaPP0yC5R5aY02atIPyBc2bupoicun/HbmxQ==
+
+"@react-pdf/yoga@^4.1.2":
+  version "4.1.2"
+  resolved "https://registry.npmjs.org/@react-pdf/yoga/-/yoga-4.1.2.tgz"
+  integrity sha512-OlMZkFrJDj4GyKZ70thiObwwPVZ52B7mlPyfzwa+sgwsioqHXg9nMWOO+7SQFNUbbOGagMUu0bCuTv+iXYZuaQ==
+  dependencies:
+    "@babel/runtime" "^7.20.13"
 
 "@reduxjs/toolkit@^2.0.1":
   version "2.0.1"
@@ -1486,7 +1493,7 @@ cross-spawn@^7.0.2:
     shebang-command "^2.0.0"
     which "^2.0.1"
 
-crypto-js@^4.2.0:
+crypto-js@^4.0.0:
   version "4.2.0"
   resolved "https://registry.npmjs.org/crypto-js/-/crypto-js-4.2.0.tgz"
   integrity sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==
@@ -2261,6 +2268,11 @@ functions-have-names@^1.2.3:
   resolved "https://registry.npmjs.org/functions-have-names/-/functions-have-names-1.2.3.tgz"
   integrity sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==
 
+gantt-task-react@^0.3.9:
+  version "0.3.9"
+  resolved "https://registry.npmjs.org/gantt-task-react/-/gantt-task-react-0.3.9.tgz"
+  integrity sha512-ged2OGrAJJ+ATrfVVkd4/8cUu4jOu1mXi0NaBeKx4uoGP6YhyryL+Snr2OY48AXdFelUAg7BbqylSej9X6PCCQ==
+
 get-intrinsic@^1.0.2, get-intrinsic@^1.1.1, get-intrinsic@^1.1.3, get-intrinsic@^1.2.0, get-intrinsic@^1.2.1, get-intrinsic@^1.2.2:
   version "1.2.2"
   resolved "https://registry.npmjs.org/get-intrinsic/-/get-intrinsic-1.2.2.tgz"
@@ -2929,6 +2941,11 @@ lodash-es@^4.17.21:
   version "4.17.21"
   resolved "https://registry.npmjs.org/lodash-es/-/lodash-es-4.17.21.tgz"
   integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
+
+lodash.debounce@^4.0.8:
+  version "4.0.8"
+  resolved "https://registry.npmjs.org/lodash.debounce/-/lodash.debounce-4.0.8.tgz"
+  integrity sha512-FT1yDzDYEoYWhnSGnpE/4Kj1fLZkDFyqRb7fNt6FdYOSxlUWAtp42Eh6Wb0rGIv/m9Bgo7x4GhQbm5Ys4SG5ow==
 
 lodash.merge@^4.6.2:
   version "4.6.2"
@@ -3833,7 +3850,7 @@ react-toastify@^9.1.3:
   dependencies:
     clsx "^1.1.1"
 
-react@*, "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.8.6 || ^17.0.0 || ^18.0.0", "react@^16.9.0 || ^17.0.0 || ^18", react@^18, react@^18.0, react@^18.2.0, "react@>= 16.8.0 || 17.x.x || ^18.0.0-0", react@>=15.4, react@>=16, react@>=16.0.0, react@>=16.11.0, react@>=16.8.0, react@>=16.8.4, react@>=16.9.0, "react@16 || 17 || 18":
+react@*, "react@^16.8.0  || ^17 || ^18", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.8.6 || ^17.0.0 || ^18.0.0", "react@^16.9.0 || ^17.0.0 || ^18", react@^18, react@^18.0, react@^18.0.0, react@^18.2.0, "react@>= 16.8.0 || 17.x.x || ^18.0.0-0", react@>=15.4, react@>=16, react@>=16.0.0, react@>=16.11.0, react@>=16.8.0, react@>=16.8.4, react@>=16.9.0, "react@16 || 17 || 18":
   version "18.2.0"
   resolved "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
   integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ==
@@ -4565,6 +4582,13 @@ use-sync-external-store@^1.0.0:
   resolved "https://registry.npmjs.org/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz"
   integrity sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==
 
+usehooks-ts@^2.12.1:
+  version "2.12.1"
+  resolved "https://registry.npmjs.org/usehooks-ts/-/usehooks-ts-2.12.1.tgz"
+  integrity sha512-meo93qn2hyBJdHVczbalnsU2FU2WQ1ZVRmppRn8+P6TXo9hORNe10pFVKJfIBYfb2FFapqNuF5vUviLRSy/vAw==
+  dependencies:
+    lodash.debounce "^4.0.8"
+
 util-deprecate@^1.0.1, util-deprecate@^1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/util-deprecate/-/util-deprecate-1.0.2.tgz"
@@ -4735,11 +4759,6 @@ yocto-queue@^0.1.0:
   version "0.1.0"
   resolved "https://registry.npmjs.org/yocto-queue/-/yocto-queue-0.1.0.tgz"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
-
-yoga-layout@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.npmjs.org/yoga-layout/-/yoga-layout-2.0.1.tgz"
-  integrity sha512-tT/oChyDXelLo2A+UVnlW9GU7CsvFMaEnd9kVFsaiCQonFAXd3xrHhkLYu+suwwosrAEQ746xBU+HvYtm1Zs2Q==
 
 yup@^1.3.2:
   version "1.3.3"

@@ -28,8 +28,8 @@ export function CategoryModal({
   materialModal,
   setMaterialModal,
   addWbsHandler,
-  categoryId = "",
-  subCategoryId = ""
+  categoryId = '',
+  subCategoryId = '',
 }: Props) {
   const [categories, setCategories] = useState<
     {
@@ -102,7 +102,10 @@ export function CategoryModal({
 
   return (
     <CustomModal setOpen={() => setMaterialModal(false)} open={materialModal}>
-      <div className="rounded-lg z-50 bg-white" onClick={e => e.stopPropagation()}>
+      <div
+        className="rounded-lg z-50 bg-white"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="bg-[#D0D5DD]  p-2 border-[#D0D5DD] flex  py-2.5 justify-between">
           <TertiaryHeading
             title="Select Project WBS"

@@ -18,6 +18,9 @@ class MeetingService extends HttpService {
   httpGetMeetings = (): Promise<IResponseInterface<{ meetings: IMeeting[] }>> =>
     this.get(`${this.prefix}/all`);
 
-  httpGetMeetingByRoomName = (roomName = ""): Promise<IResponseInterface<{ meeting: IMeeting }>> => this.get(`${this.prefix}/roomName/${roomName}`)
+  httpGetMeetingByRoomName = (
+    roomName = ''
+  ): Promise<IResponseInterface<{ meeting: IMeeting }>> =>
+    this.get(`${this.prefix}/roomName/${roomName}`);
 }
 export const meetingService = new MeetingService();

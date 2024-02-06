@@ -28,8 +28,6 @@ package-lock.json
 README.md
 
 # local env files
-.env*.local
-
 # vercel
 .vercel
 

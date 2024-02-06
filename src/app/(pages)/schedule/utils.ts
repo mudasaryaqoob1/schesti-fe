@@ -1,4 +1,6 @@
-export const regularWorkingDays = [
+// import { IScheduleState } from './type';
+
+export const regularWorkingDays: any = [
   {
     day: 'Monday',
     isChecked: false,

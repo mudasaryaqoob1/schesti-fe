@@ -48,7 +48,11 @@ export default function SchedulePage() {
     setState([...state, item]);
   }
 
-  function updateWbs(id: string, category: IWBSType['category'], subCategory: IWBSType['subCategory']) {
+  function updateWbs(
+    id: string,
+    category: IWBSType['category'],
+    subCategory: IWBSType['subCategory']
+  ) {
     const updatedWbs = state.map((item) => {
       if (item.id === id) {
         return {
@@ -84,17 +88,12 @@ export default function SchedulePage() {
     setState(updatedWbs);
   }
 
-
   const generateScheduleHandler = async () => {
     console.log(state, 'statestate');
 
     // const newSchedule = await scheduleService.httpGenerateSchedule(state)
     // console.log(newSchedule , 'newSchedulenewSchedule');
-
-  }
-
-
-
+  };
 
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
