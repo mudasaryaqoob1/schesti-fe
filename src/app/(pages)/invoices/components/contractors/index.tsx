@@ -176,7 +176,7 @@ export function Contractors() {
             iconheight={20}
             onClick={() => router.push('/invoices/create')}
           />
-          D</div>
+        </div>
       </div>
 
       <Table
