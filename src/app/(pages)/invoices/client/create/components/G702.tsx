@@ -32,6 +32,11 @@ export function G702Component({
   const p8Total = p6Total - Number(state.lessPreviousCertificatesForPayment);
   const p9Total =
     p3Total - Number(state.lessPreviousCertificatesForPayment) - p8Total;
+
+  const changeOrderSummaryAdditionSum = state.totalAdditionThisMonth + state.totalAdditionPreviousMonth;
+  const changeOrderSummaryDeductionSum = state.totalDeductionThisMonth + state.totalDeductionPreviousMonth;
+  const changeOrderNetChanges = changeOrderSummaryAdditionSum - changeOrderSummaryDeductionSum;
+
   return (
     <div>
       <div>
@@ -372,7 +377,10 @@ export function G702Component({
                       type='number'
                       prefix='$'
                       className='px-2 py-1 outline-none focus:outline-none border-none hover:border-none focus-within:border-none focus-within:outline-none focus-visible:outline-none !shadow-none'
-
+                      value={state.totalAdditionPreviousMonth}
+                      onChange={e => {
+                        handleState('totalAdditionPreviousMonth', Number(e.target.value))
+                      }}
                     />
                   </td>
                   <td className=" align-middle text-gray-700  text-center">
@@ -380,7 +388,10 @@ export function G702Component({
                       type='number'
                       prefix='$'
                       className='px-2 py-1 outline-none focus:outline-none border-none hover:border-none focus-within:border-none focus-within:outline-none focus-visible:outline-none !shadow-none'
-
+                      value={state.totalDeductionPreviousMonth}
+                      onChange={e => {
+                        handleState('totalDeductionPreviousMonth', Number(e.target.value))
+                      }}
                     />
                   </td>
                 </tr>
@@ -393,7 +404,10 @@ export function G702Component({
                       type='number'
                       prefix='$'
                       className='px-2 py-1 outline-none focus:outline-none border-none hover:border-none focus-within:border-none focus-within:outline-none focus-visible:outline-none !shadow-none'
-
+                      value={state.totalAdditionThisMonth}
+                      onChange={e => {
+                        handleState('totalAdditionThisMonth', Number(e.target.value))
+                      }}
                     />
                   </td>
                   <td className=" align-middle text-gray-700 text-center">
@@ -401,7 +415,10 @@ export function G702Component({
                       type='number'
                       prefix='$'
                       className='px-2 py-1 outline-none focus:outline-none border-none hover:border-none focus-within:border-none focus-within:outline-none focus-visible:outline-none !shadow-none'
-
+                      value={state.totalDeductionThisMonth}
+                      onChange={e => {
+                        handleState('totalDeductionThisMonth', Number(e.target.value))
+                      }}
                     />
                   </td>
                 </tr>
@@ -410,19 +427,16 @@ export function G702Component({
                     TOTALS
                   </td>
                   <td className="p-4 align-middle text-gray-700 text-center border-r border-gray-300">
-                    7,000
+                    $ {changeOrderSummaryAdditionSum.toFixed(2)}
                   </td>
-                  <td className="p-4 align-middle text-center">1,500,000</td>
+                  <td className="p-4 align-middle text-center">$ {changeOrderSummaryDeductionSum.toFixed(2)}</td>
                 </tr>
                 <tr className="border-b">
                   <td className="p-4 align-middle text-gray-700 border-r border-gray-300">
                     NET CHANGES by Change Order
                   </td>
-                  <td className="p-4 align-middle text-gray-700 text-center border-r border-gray-300">
-                    7,000
-                  </td>
-                  <td className="p-4 align-middle text-gray-700 text-center">
-                    1,500,000
+                  <td colSpan={2} className="p-4 align-middle text-gray-700 text-center border-r border-gray-300">
+                    $ {changeOrderNetChanges}
                   </td>
                 </tr>
               </tbody>

@@ -72,7 +72,6 @@ export default function CreateClientInvoicePage() {
   ) {
     setG7State({ ...g7State, [key]: value });
   }
-
   function sumColumns(rows: Array<string[]>, column: number): number {
     let sum = 0;
     rows.forEach((row) => {
@@ -94,6 +93,7 @@ export default function CreateClientInvoicePage() {
         toast.error(response.data.message);
       });
   }
+  console.log(g7State)
 
   return (
     <section className="mx-16 my-2">
