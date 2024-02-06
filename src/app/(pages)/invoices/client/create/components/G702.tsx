@@ -417,7 +417,7 @@ export function G702Component({
                 <DatePicker
                   className="px-2 col-span-6 rounded-none py-[7px] border border-gray-300 outline-none"
                   defaultValue={dayjs(state.date)}
-                  onChange={(_d, dateString) => handleState('date', dateString)}
+                  onChange={(_d, dateString) => handleState('date', dateString as string)}
                 />
               </div>
 
