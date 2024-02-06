@@ -90,7 +90,7 @@ export function Clients() {
         <Dropdown
           menu={{
             items,
-            onClick: () => {},
+            onClick: () => { },
           }}
           placement="bottomRight"
         >
@@ -186,6 +186,7 @@ export function Clients() {
         columns={columns}
         dataSource={clientInvoices}
         pagination={{ position: ['bottomCenter'] }}
+        bordered
       />
     </div>
   );

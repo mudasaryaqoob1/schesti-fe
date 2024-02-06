@@ -161,6 +161,7 @@ export function Contractors() {
         loading={subcontractersInvoicesLoading}
         columns={columns}
         dataSource={subcontractersInvoices}
+        bordered
         pagination={{ position: ['bottomCenter'] }}
       />
     </div>
