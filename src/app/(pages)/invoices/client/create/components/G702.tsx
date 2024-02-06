@@ -111,7 +111,7 @@ export function G702Component({
                 className="px-2  rounded-none py-[7px] border border-gray-300 outline-none"
                 defaultValue={dayjs(state.applicationDate)}
                 onChange={(_d, dateString) =>
-                  handleState('applicationDate', dateString)
+                  handleState('applicationDate', dateString as string)
                 }
               />
             </div>
@@ -124,7 +124,7 @@ export function G702Component({
                 className="px-2  rounded-none py-[7px] border border-gray-300 outline-none"
                 defaultValue={dayjs(state.periodTo)}
                 onChange={(_d, dateString) =>
-                  handleState('periodTo', dateString)
+                  handleState('periodTo', dateString as string)
                 }
               />
             </div>

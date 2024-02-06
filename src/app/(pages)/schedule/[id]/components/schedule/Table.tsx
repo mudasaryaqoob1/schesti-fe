@@ -211,7 +211,7 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
       };
     });
 
-  const extras: (ColumnType<ScopeItem> & { editable: boolean })[] = [
+  const extras: (ColumnType<ScopeItem> & { editable: boolean , hidden : boolean })[] = [
     {
       title: <QuinaryHeading title="Actions" />,
       dataIndex: 'actions',

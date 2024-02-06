@@ -3,12 +3,14 @@ import React, { useLayoutEffect, useState } from 'react';
 import moment from 'moment';
 import Image from 'next/image';
 import { Formik, Form } from 'formik';
-import { Dropdown, type MenuProps, Table, Tag } from 'antd';
+import { Dropdown, type MenuProps, Table, Tag, Select, Input } from 'antd';
 import { type ColumnsType } from 'antd/es/table';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { CloseOutlined, SearchOutlined } from '@ant-design/icons';
 import * as Yup from 'yup';
+import { twMerge } from 'tailwind-merge';
+import clsx from 'clsx';
 
 // module imports
 import CustomButton from '@/app/component/customButton/button';
@@ -88,6 +90,7 @@ const Schedule = () => {
   const [createProjectModal, setCreateProjectModal] = useState(false);
   const [worksheetModal, setWorksheetModal] = useState(false);
   const [projectDetail, setProjectDetail] = useState<IProject>();
+  const [durationType, setDurationType] = useState('days');
 
   const items: MenuProps['items'] = [
     {
@@ -189,6 +192,7 @@ const Schedule = () => {
     let finalObject: any = {
       projectName: projectDetail?.projectName,
       duration: projectDetail?.duration,
+      durationType: durationType,
       hoursPerDay: item.hoursPerDay,
       regularWorkingDays: item.regularWorkingDays,
     };
@@ -204,6 +208,17 @@ const Schedule = () => {
     setWorksheetModal(true);
   };
 
+  const { Option } = Select;
+
+  const selectAfter = (
+    <Select
+      onChange={(selectedDurationType) => setDurationType(selectedDurationType)}
+      defaultValue="Days"
+    >
+      <Option value="days">Days</Option>
+      <Option value="month">Month</Option>
+    </Select>
+  );
   return (
     <section className="mt-6 shadow p-4 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       <ModalComponent
@@ -255,13 +270,24 @@ const Schedule = () => {
                       name="projectName"
                       placeholder="Project Name"
                     />
-                    <FormControl
-                      control="input"
-                      label="Duration"
-                      type="number"
-                      name="duration"
-                      placeholder="Duration"
-                    />
+                    <div>
+                      <label className="text-graphiteGray text-sm font-medium leading-6 capitalize">
+                        Duration
+                      </label>
+                      <Input
+                        className={twMerge(
+                          clsx(
+                            `border h-full !w-full !rounded-lg focus:border-blue-500 !mt-1.5 `
+                          )
+                        )}
+                        type="number"
+                        min={1}
+                        addonAfter={selectAfter}
+                        onChange={(e) =>
+                          setFieldValue('duration', e.target.value)
+                        }
+                      />
+                    </div>
                     <div className="space-y-3">
                       <div className="flex justify-end py-2 space-x-2">
                         <WhiteButton
