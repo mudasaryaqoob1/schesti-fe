@@ -29,6 +29,11 @@ export type G7State = {
   totalDeductionPreviousMonth: number,
   totalAdditionThisMonth: number,
   totalDeductionThisMonth: number,
+
+  // G702 5. RETAINAGE: 
+  p5aPercentage: number,
+  p5bPercentage: number,
+
 };
 
 export type IClientInvoice = {

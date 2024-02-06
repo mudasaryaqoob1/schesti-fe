@@ -230,13 +230,15 @@ export function G702Component({
                     <div className="flex items-center col-span-2 space-x-2">
                       <QuinaryHeading title="a." />
                       <Input
-                        className="px-2 py-1 w-16 border border-gray-300 outline-none"
-                        type="text"
-                        value={10}
+                        className="px-2 py-1 w-16 border border-gray-300 "
+                        type="number"
                         prefix="%"
-                        disabled
+                        value={state.p5aPercentage}
+                        onChange={e => {
+                          handleState('p5aPercentage', Number(e.target.value))
+                        }}
                       />
-                      <QuinaryHeading title="% of Completed Work $" />
+                      <QuinaryHeading title="of Completed Work $" />
                     </div>
                     <Input
                       className="px-2 py-1 border border-gray-300 "
@@ -255,11 +257,13 @@ export function G702Component({
                     <div className="flex items-center col-span-2 space-x-2">
                       <QuinaryHeading title="b." />
                       <Input
-                        className="px-2 py-1 w-16 border border-gray-300 outline-none"
-                        type="text"
+                        className="px-2 py-1 w-16 border border-gray-300 "
+                        type="number"
                         prefix="%"
-                        value={2}
-                        disabled
+                        value={state.p5bPercentage}
+                        onChange={e => {
+                          handleState('p5bPercentage', Number(e.target.value))
+                        }}
                       />
                       <QuinaryHeading title="% of Stored Material " />
                     </div>

@@ -53,7 +53,11 @@ export default function CreateClientInvoicePage() {
     totalAdditionPreviousMonth: 0,
     totalAdditionThisMonth: 0,
     totalDeductionPreviousMonth: 0,
-    totalDeductionThisMonth: 0
+    totalDeductionThisMonth: 0,
+
+
+    p5aPercentage: 10,
+    p5bPercentage: 2,
   });
 
   useLayoutEffect(() => {
