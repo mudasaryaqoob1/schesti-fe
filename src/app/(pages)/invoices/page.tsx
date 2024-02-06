@@ -46,7 +46,7 @@ const InvoicePage = () => {
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className="text-RoyalPurple"
+                    className={`${type === tab ? 'text-RoyalPurple' : 'text-black'}`}
                   />
                 ),
                 tabKey: type,
