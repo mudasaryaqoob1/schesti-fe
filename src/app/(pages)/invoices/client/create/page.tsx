@@ -49,6 +49,12 @@ export default function CreateClientInvoicePage() {
     phase: 0,
     toOwner: '',
     viaEngineer: '',
+
+    amountCertified3: '',
+    totalAdditionPreviousMonth: 0,
+    totalAdditionThisMonth: 0,
+    totalDeductionPreviousMonth: 0,
+    totalDeductionThisMonth: 0
   });
 
   useLayoutEffect(() => {

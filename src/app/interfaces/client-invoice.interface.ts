@@ -14,6 +14,7 @@ export type G7State = {
   netChangeByOrders: string;
   amountCertified1: string;
   amountCertified2: string;
+  amountCertified3: string;
   lessPreviousCertificatesForPayment: string;
   by: string;
   stateOf: string;
@@ -23,6 +24,12 @@ export type G7State = {
   notaryPublic: string;
   myCommissionExpires: string;
   phase: number;
+
+  // g702
+  totalAdditionPreviousMonth: number,
+  totalDeductionPreviousMonth: number,
+  totalAdditionThisMonth: number,
+  totalDeductionThisMonth: number,
 };
 
 export type IClientInvoice = {
