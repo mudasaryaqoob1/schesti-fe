@@ -15,7 +15,7 @@ import { HttpService } from '@/app/services/base.service';
 import Table, { type ColumnType } from 'antd/es/table';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
-import { Divider } from 'antd';
+import { ConfigProvider, Divider } from 'antd';
 import ModalComponent from '@/app/component/modal';
 import ExistingSubContractor from './ExistingSubContractors';
 import { useRouter } from 'next/navigation';
@@ -472,6 +472,7 @@ const CreateInvoice = () => {
                               label="Unit Cost"
                               name="unitCost"
                               type="string"
+                              prefix="$"
                               placeholder="Enter unit cost here"
                               field={{
                                 type: 'number',
@@ -509,12 +510,23 @@ const CreateInvoice = () => {
                           />
                         </div>
                       </div>
-                      <Table
-                        loading={false}
-                        columns={columns}
-                        dataSource={details}
-                        pagination={{ position: ['bottomCenter'] }}
-                      />
+                      <ConfigProvider
+                        theme={{
+                          components: {
+                            Table: {
+                              headerBg: "#F9F5FF",
+                            }
+                          }
+                        }}
+                      >
+                        <Table
+                          loading={false}
+                          bordered
+                          columns={columns}
+                          dataSource={details}
+                          pagination={{ position: ['bottomCenter'] }}
+                        />
+                      </ConfigProvider>
                     </div>
                   </div>
                 </div>
@@ -539,6 +551,7 @@ const CreateInvoice = () => {
                           label="Discount"
                           type="number"
                           name="discount"
+                          prefix="$"
                           placeholder="Enter discount here"
                         />
 
@@ -547,6 +560,7 @@ const CreateInvoice = () => {
                           label="Taxes"
                           type="number"
                           name="taxes"
+                          prefix="$"
                           placeholder="Enter taxes here"
                         />
 
@@ -555,6 +569,7 @@ const CreateInvoice = () => {
                           label="Profit and Overhead %"
                           type="number"
                           name="profitAndOverhead"
+                          prefix="%"
                           placeholder="Enter profit and overhead here"
                         />
                       </div>

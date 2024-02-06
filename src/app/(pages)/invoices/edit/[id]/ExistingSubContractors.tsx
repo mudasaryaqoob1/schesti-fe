@@ -44,11 +44,11 @@ const ExistingSubContractor = ({
         <div className="flex justify-between items-center border-b-Gainsboro ">
           <div>
             <QuaternaryHeading
-              title="Existing Clients"
+              title="Existing Subcontractors"
               className="text-graphiteGray font-bold"
             />
             <QuinaryHeading
-              title="Select any existing client from here."
+              title="Select any existing subcontractor from here."
               className="text-coolGray"
             />
           </div>
@@ -124,7 +124,7 @@ const ExistingSubContractor = ({
         </div>
         <div>
           <Button
-            text="Add Client"
+            text="Add Subcontractor"
             onClick={() => {
               onSelectSubcontract(
                 subcontractData.find(

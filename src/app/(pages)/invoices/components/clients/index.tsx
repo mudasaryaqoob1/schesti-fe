@@ -74,12 +74,8 @@ export function Clients() {
       dataIndex: 'address',
     },
     {
-      title: 'Original Sum',
-      dataIndex: 'orignalContractSum',
-    },
-    {
-      title: 'Net Change By Orders',
-      dataIndex: 'netChangeByOrders',
+      title: 'Distributed To',
+      dataIndex: 'distributedTo',
     },
     {
       title: 'Action',
