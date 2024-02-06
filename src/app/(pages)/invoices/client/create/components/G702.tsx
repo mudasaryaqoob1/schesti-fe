@@ -179,8 +179,7 @@ export function G702Component({
                 <Input
                   className="px-2 py-1 border border-gray-300 "
                   type="number"
-                  value={state.orignalContractSum}
-                  defaultValue={0.0}
+                  value={state.orignalContractSum.toFixed(2)}
                   prefix="$"
                   onChange={(e) =>
                     handleState('orignalContractSum', Number(e.target.value))
