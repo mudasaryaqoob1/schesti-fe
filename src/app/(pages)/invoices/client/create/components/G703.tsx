@@ -213,17 +213,17 @@ export function G703Component({
           scroll={{ x: 1300 }}
         >
           <Column
-            title={<SenaryHeading title="Item No" />}
+            title={<SenaryHeading title="#" className='text-[12px]' />}
             dataIndex={0}
             render={(value, record: string[], index) => {
               return index;
             }}
-            width={30}
+            width={40}
           />
           <Column
             title={<SenaryHeading title="Description Of Work" />}
             dataIndex={1}
-            width={250}
+            width={300}
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
                 return value;
