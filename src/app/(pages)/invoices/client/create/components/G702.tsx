@@ -171,7 +171,7 @@ export function G702Component({
                   title="1. ORIGINAL CONTRACT SUM  ................................"
                 />
                 <Input
-                  className="px-2 py-1 border border-gray-300 outline-none"
+                  className="px-2 py-1 border border-gray-300 "
                   type="number"
                   value={state.orignalContractSum}
                   defaultValue={0.0}
@@ -187,7 +187,7 @@ export function G702Component({
                   title="2. Net change by Change Orders  ................................"
                 />
                 <Input
-                  className="px-2 py-1 border border-gray-300 outline-none"
+                  className="px-2 py-1 border border-gray-300 "
                   type="text"
                   prefix="$"
                   value={state.netChangeByOrders}
@@ -203,7 +203,7 @@ export function G702Component({
                   title="3. CONTRACT SUM TO DATE (Line 1 ± 2) $  ................................"
                 />
                 <Input
-                  className="px-2 py-1 border border-gray-300 outline-none"
+                  className="px-2 py-1 border border-gray-300 "
                   type="number"
                   prefix="$"
                   value={p3Total.toFixed(2)}
@@ -215,7 +215,7 @@ export function G702Component({
                   title="4. TOTAL COMPLETED & STORED TO DATE (Column G on G703)   .............."
                 />
                 <Input
-                  className="px-2 py-1 border border-gray-300 outline-none"
+                  className="px-2 py-1 border border-gray-300 "
                   type="number"
                   prefix="$"
                   value={sumColumns(state.data, 6).toFixed(2)}
@@ -238,7 +238,7 @@ export function G702Component({
                       <QuinaryHeading title="% of Completed Work $" />
                     </div>
                     <Input
-                      className="px-2 py-1 border border-gray-300 outline-none"
+                      className="px-2 py-1 border border-gray-300 "
                       type="number"
                       prefix="$"
                       value={sumColumns(state.data, 9).toFixed(2)}
@@ -263,7 +263,7 @@ export function G702Component({
                       <QuinaryHeading title="% of Stored Material " />
                     </div>
                     <Input
-                      className="px-2 py-1 border border-gray-300 outline-none"
+                      className="px-2 py-1 border border-gray-300 "
                       type="number"
                       prefix="$"
                       value={twoPercentOfP5b.toFixed(2)}
@@ -278,7 +278,7 @@ export function G702Component({
                         title="Total Retainage ( Lines 5a + 5b or Total in Colum I of G703"
                       />
                       <Input
-                        className="px-2 py-1 border border-gray-300 outline-none"
+                        className="px-2 py-1 border border-gray-300 "
                         type="number"
                         prefix="$"
                         value={p5Total.toFixed(2)}
@@ -294,7 +294,7 @@ export function G702Component({
                   title="6. TOTAL EARNED LESS RETAINAGE Total in Column I of G703)"
                 />
                 <Input
-                  className="px-2 py-1 border border-gray-300 outline-none"
+                  className="px-2 py-1 border border-gray-300 "
                   type="number"
                   prefix="$"
                   value={p6Total.toFixed(2)}
@@ -307,7 +307,7 @@ export function G702Component({
                   title="7. LESS PREVIOUS CERTIFICATES FOR PAYMENT (Line 6 from prior Certificate)"
                 />
                 <Input
-                  className="px-2 py-1 border border-gray-300 outline-none"
+                  className="px-2 py-1 border border-gray-300 "
                   type="number"
                   value={state.lessPreviousCertificatesForPayment}
                   prefix="$"
@@ -327,7 +327,7 @@ export function G702Component({
                   title="8. CURRENT PAYMENT DUE"
                 />
                 <Input
-                  className="px-2 py-1 border border-gray-300 outline-none"
+                  className="px-2 py-1 border border-gray-300 "
                   type="number"
                   prefix="$"
                   value={p8Total.toFixed(2)}
@@ -339,7 +339,7 @@ export function G702Component({
                   title="9. BALANCE TO FINISH, INCLUDING RETAINAGE $ (Line 3 less Line 6)"
                 />
                 <Input
-                  className="px-2 py-1 border border-gray-300 outline-none"
+                  className="px-2 py-1 border border-gray-300 "
                   type="number"
                   value={p9Total.toFixed(2)}
                   defaultValue={0.0}
@@ -367,22 +367,42 @@ export function G702Component({
                   <td className="p-4 text-gray-700 align-middle  border-r border-gray-300">
                     Total changes approved in previous months by Owner
                   </td>
-                  <td className="p-4 align-middle text-gray-700 text-center border-r border-gray-300">
-                    7,000
+                  <td className="align-middle text-gray-700 text-center border-r border-gray-300">
+                    <Input
+                      type='number'
+                      prefix='$'
+                      className='px-2 py-1 outline-none focus:outline-none border-none hover:border-none focus-within:border-none focus-within:outline-none focus-visible:outline-none !shadow-none'
+
+                    />
                   </td>
-                  <td className="p-4 align-middle text-gray-700  text-center">
-                    1,500,000
+                  <td className=" align-middle text-gray-700  text-center">
+                    <Input
+                      type='number'
+                      prefix='$'
+                      className='px-2 py-1 outline-none focus:outline-none border-none hover:border-none focus-within:border-none focus-within:outline-none focus-visible:outline-none !shadow-none'
+
+                    />
                   </td>
                 </tr>
                 <tr className="border-b">
-                  <td className="p-4 align-middle text-gray-700 border-r border-gray-300">
+                  <td className="px-4 align-middle text-gray-700 border-r border-gray-300">
                     Total approved this Month
                   </td>
-                  <td className="p-4 align-middle  text-gray-700 text-center border-r border-gray-300">
-                    7,000
+                  <td className=" align-middle  text-gray-700 text-center border-r border-gray-300">
+                    <Input
+                      type='number'
+                      prefix='$'
+                      className='px-2 py-1 outline-none focus:outline-none border-none hover:border-none focus-within:border-none focus-within:outline-none focus-visible:outline-none !shadow-none'
+
+                    />
                   </td>
-                  <td className="p-4 align-middle text-gray-700 text-center">
-                    1,500,000
+                  <td className=" align-middle text-gray-700 text-center">
+                    <Input
+                      type='number'
+                      prefix='$'
+                      className='px-2 py-1 outline-none focus:outline-none border-none hover:border-none focus-within:border-none focus-within:outline-none focus-visible:outline-none !shadow-none'
+
+                    />
                   </td>
                 </tr>
                 <tr className="border-b">
