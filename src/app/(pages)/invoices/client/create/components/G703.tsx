@@ -11,7 +11,6 @@ import {
   Table,
 } from 'antd';
 import CustomButton from '@/app/component/customButton/button';
-import WhiteButton from '@/app/component/customButton/white';
 import PrimaryHeading from '@/app/component/headings/primary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { rowTemplate } from '../utils';
@@ -36,7 +35,6 @@ export function G703Component({
   state,
   handleState,
   sumColumns,
-  onCancel,
   onNext,
 }: Props) {
   function getCellValue(row: string[], column: number) {
@@ -371,6 +369,7 @@ export function G703Component({
           <Column
             title=""
             className="border-none border-b"
+            fixed
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
                 return (
@@ -417,7 +416,6 @@ export function G703Component({
       {/* END Spreadsheet */}
 
       <div className="flex justify-end space-x-4 mt-2">
-        <WhiteButton onClick={onCancel} text="Cancel" className="!w-40" />
         <CustomButton onClick={onNext} text="Next" className="!w-40" />
       </div>
     </section>
