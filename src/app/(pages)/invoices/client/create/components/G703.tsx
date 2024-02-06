@@ -249,6 +249,7 @@ export function G703Component({
                 <Input
                   value={getCellValue(record, 2)}
                   type="number"
+                  prefix="$"
                   onChange={(e) => {
                     updateCellValue(index, 2, Number(e.target.value));
                   }}
@@ -265,7 +266,9 @@ export function G703Component({
                   return value;
                 }
                 let columnE = Number(getCellValue(record, 4));
-                return <Input value={columnE} type="number" disabled />;
+                return <Input value={columnE}
+                  prefix="$"
+                  type="number" disabled />;
               }}
             />
             <Column
@@ -278,6 +281,7 @@ export function G703Component({
                 return (
                   <Input
                     value={value}
+                    prefix="$"
                     type="number"
                     onChange={(e) => {
                       updateCellValue(index, 4, Number(e.target.value));
@@ -301,7 +305,7 @@ export function G703Component({
                 <Input
                   value={value}
                   type="number"
-                  onChange={(e) => {
+                  prefix="$" onChange={(e) => {
                     updateCellValue(index, 5, Number(e.target.value));
                   }}
                 />
@@ -326,7 +330,7 @@ export function G703Component({
                   <Input
                     value={columnD + columnE + columnF}
                     type="number"
-                    disabled
+                    prefix="$" disabled
                     onChange={(e) => {
                       updateCellValue(index, 6, Number(e.target.value));
                     }}
@@ -341,7 +345,8 @@ export function G703Component({
                 if (index === state.data.length) {
                   return value;
                 }
-                return <Input type='number' value={`${Number(record[7]).toFixed(2)}`} />;
+                return <Input type='number'
+                  prefix="$" value={`${Number(record[7]).toFixed(2)}`} />;
               }}
             />
           </ColumnGroup>
@@ -352,7 +357,8 @@ export function G703Component({
               if (index === state.data.length) {
                 return value;
               }
-              return <Input value={Number(record[8]).toFixed(2)} type="number" />;
+              return <Input
+                prefix="$" value={Number(record[8]).toFixed(2)} type="number" />;
             }}
           />
           <Column
@@ -362,7 +368,9 @@ export function G703Component({
               if (index === state.data.length) {
                 return value;
               }
-              return <Input type='number' value={`${Number(record[9]).toFixed(2)}`} />;
+              return <Input type='number'
+                prefix="$"
+                value={`${Number(record[9]).toFixed(2)}`} />;
             }}
           />
 
