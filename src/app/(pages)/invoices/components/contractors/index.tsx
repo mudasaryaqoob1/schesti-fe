@@ -1,12 +1,12 @@
 import type { ColumnsType } from 'antd/es/table';
-import { Dropdown, Table, type MenuProps, Tag } from 'antd';
+import { Dropdown, Table, type MenuProps, Tag, Drawer } from 'antd';
 import { useRouter } from 'next/navigation';
 import { SearchOutlined } from '@ant-design/icons';
 
 import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { InputComponent } from '@/app/component/customInput/Input';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   deleteContractorInvoiceRequest,
   fetchSubcontractorInvoices,
@@ -20,12 +20,15 @@ import {
 import type { IInvoice } from '@/app/interfaces/invoices.interface';
 import Image from 'next/image';
 import moment from 'moment';
+import { CollectPayment } from './CollectPayment';
 
 export function Contractors() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const subcontractersInvoices = useSelector(selectInvoices);
   const subcontractersInvoicesLoading = useSelector(selectInvoicesLoading);
+  const [selectedInvoice, setSelectedInvoice] = useState<IInvoice | null>(null);
+
 
   const fetchSubcontactorsInvoices = useCallback(async () => {
     await dispatch(fetchSubcontractorInvoices({}));
@@ -49,10 +52,6 @@ export function Contractors() {
       label: <p>Collect Payments</p>,
     },
     {
-      key: 'markAsClosed',
-      label: <p>Mark as closed</p>,
-    },
-    {
       key: 'delete',
       label: <p>Delete</p>,
     },
@@ -65,6 +64,8 @@ export function Contractors() {
       await dispatch(deleteContractorInvoiceRequest(record._id));
     } else if (key === 'view') {
       router.push(`/invoices/view/${record._id}`);
+    } else if (key === 'collectPayments') {
+      setSelectedInvoice(record);
     }
   }
   const columns: ColumnsType<IInvoice> = [
@@ -146,6 +147,14 @@ export function Contractors() {
           title="Contractor/ Subcontractor/ Vendor invoice"
           className="text-graphiteGray"
         />
+        <Drawer
+          open={selectedInvoice !== null}
+          onClose={() => setSelectedInvoice(null)}
+          title="Payment Installment"
+          width={500}
+        >
+          {selectedInvoice ? <CollectPayment invoice={selectedInvoice} /> : null}
+        </Drawer>
         <div className="flex items-center space-x-2 flex-1 justify-end">
           <div className="w-96 ">
             <InputComponent
@@ -167,7 +176,7 @@ export function Contractors() {
             iconheight={20}
             onClick={() => router.push('/invoices/create')}
           />
-        </div>
+          D</div>
       </div>
 
       <Table
