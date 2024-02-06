@@ -1,5 +1,5 @@
 export function rowTemplate(index: number) {
-  return [`${index}`, `item`, '', '', '', ``, ``, ``, ``];
+  return [`${index}`, ``, '', '', '', ``, ``, ``, ``];
 }
 
 export function generateData(): Array<string[]> {

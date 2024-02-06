@@ -231,6 +231,7 @@ export function G703Component({
               return (
                 <Input
                   value={getCellValue(record, 1)}
+                  placeholder='Enter description of work'
                   onChange={(e) => {
                     updateCellValue(index, 1, e.target.value);
                   }}
