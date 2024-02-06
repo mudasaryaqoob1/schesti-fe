@@ -212,6 +212,7 @@ export function G703Component({
             ],
           ]}
           pagination={false}
+          scroll={{ x: 1300 }}
         >
           <Column
             title={<SenaryHeading title="Item No" />}
@@ -219,10 +220,12 @@ export function G703Component({
             render={(value, record: string[], index) => {
               return index;
             }}
+            width={30}
           />
           <Column
             title={<SenaryHeading title="Description Of Work" />}
             dataIndex={1}
+            width={250}
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
                 return value;
