@@ -91,7 +91,7 @@ export function G703Component({
     const row = newData[rowIndex];
     let columnF = row[5];
     // 10% of F
-    let result = (10 / 100) * Number(columnF);
+    let result = (state.p5aPercentage / 100) * Number(columnF);
     newData[rowIndex][9] = `${isNaN(result) ? 0 : Math.ceil(result)}`;
     return newData;
   }
@@ -203,7 +203,7 @@ export function G703Component({
               `$ ${sumColumns(state.data, 4).toFixed(2)}`,
               `$ ${sumColumns(state.data, 5).toFixed(2)}`,
               `$ ${sumColumns(state.data, 6).toFixed(2)}`,
-              `$ ${sumColumns(state.data, 7).toFixed(2)}`,
+              `% ${sumColumns(state.data, 7).toFixed(2)}`,
               `$ ${sumColumns(state.data, 8).toFixed(2)}`,
               `$ ${sumColumns(state.data, 9).toFixed(2)}`,
             ],
@@ -345,7 +345,7 @@ export function G703Component({
                   return <div className='px-3'>{value}</div>;
                 }
                 return <Input type='number'
-                  prefix="$" value={`${Number(record[7]).toFixed(2)}`} />;
+                  prefix="%" value={`${Number(record[7]).toFixed(2)}`} />;
               }}
             />
           </ColumnGroup>

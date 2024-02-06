@@ -28,9 +28,9 @@ export function G702Component({
   const changeOrderSummaryAdditionSum = state.totalAdditionThisMonth + state.totalAdditionPreviousMonth;
   const changeOrderSummaryDeductionSum = state.totalDeductionThisMonth + state.totalDeductionPreviousMonth;
   const changeOrderNetChanges = changeOrderSummaryAdditionSum - changeOrderSummaryDeductionSum;
-  const p5b = Number(sumColumns(state.data, 6));
-  const twoPercentOfP5b = p5b * 0.02;
-  const p5Total = Number(sumColumns(state.data, 9)) + twoPercentOfP5b;
+  const p5b = Number(sumColumns(state.data, 5));
+  const resultOf_P5b = p5b * (state.p5bPercentage / 100);
+  const p5Total = Number(sumColumns(state.data, 9)) + resultOf_P5b;
   const p6Total = Number(sumColumns(state.data, 6)) - p5Total;
   const p3Total = state.orignalContractSum + changeOrderNetChanges;
   const p8Total = p6Total - Number(state.lessPreviousCertificatesForPayment);
@@ -147,13 +147,10 @@ export function G702Component({
           </div>
           <div className="flex flex-col space-y-2">
             <QuinaryHeading title="Distribution to" className="font-medium" />
-            <Checkbox>
-              <QuinaryHeading title="Distribution to" />
-            </Checkbox>
-            <Checkbox>
+            <Checkbox checked={state.distributionTo === 'architect'} onChange={() => handleState('distributionTo', 'architect')}>
               <QuinaryHeading title="ARCHITECT" />
             </Checkbox>
-            <Checkbox>
+            <Checkbox checked={state.distributionTo === 'contractor'} onChange={() => handleState('distributionTo', 'contractor')}>
               <QuinaryHeading title="CONTRACTOR" />
             </Checkbox>
           </div>
@@ -271,7 +268,7 @@ export function G702Component({
                       className="px-2 py-1 border border-gray-300 "
                       type="number"
                       prefix="$"
-                      value={twoPercentOfP5b.toFixed(2)}
+                      value={resultOf_P5b.toFixed(2)}
                     />
                   </div>
                   <div>
@@ -560,6 +557,10 @@ export function G702Component({
                     <input
                       className="px-2 py-1 border border-gray-300 outline-none"
                       type="text"
+                      value={state.amountCertified3}
+                      onChange={(e) =>
+                        handleState('amountCertified3', e.target.value)
+                      }
                     />
                   </div>
                 </div>
