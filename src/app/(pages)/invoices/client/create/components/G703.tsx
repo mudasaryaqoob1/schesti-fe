@@ -212,7 +212,7 @@ export function G703Component({
           scroll={{ x: 1300, y: 240 }}
         >
           <Column
-            title={<SenaryHeading title="#" className='text-[12px]' />}
+            title={<SenaryHeading title="#" className='px-3 text-[12px]' />}
             dataIndex={0}
             render={(value, record: string[], index) => {
               return index === state.data.length ? null : <div className='px-3'>{index}</div>;
@@ -422,7 +422,7 @@ export function G703Component({
       </div>
       {/* END Spreadsheet */}
 
-      <div className="flex justify-end space-x-4 mt-2">
+      <div className="flex justify-end space-x-4 mt-8">
         <CustomButton onClick={onNext} text="Next" className="!w-40" />
       </div>
     </section>
