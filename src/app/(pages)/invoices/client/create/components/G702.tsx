@@ -3,7 +3,7 @@ import WhiteButton from '@/app/component/customButton/white';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { G7State } from '@/app/interfaces/client-invoice.interface';
-import { Checkbox, DatePicker, Divider } from 'antd';
+import { Checkbox, DatePicker, Divider, Input } from 'antd';
 import dayjs from 'dayjs';
 
 type Props = {
@@ -170,11 +170,12 @@ export function G702Component({
                   className="col-span-2"
                   title="1. ORIGINAL CONTRACT SUM  ................................"
                 />
-                <input
+                <Input
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="number"
                   value={state.orignalContractSum}
                   defaultValue={0.0}
+                  prefix="$"
                   onChange={(e) =>
                     handleState('orignalContractSum', e.target.value)
                   }
@@ -185,9 +186,10 @@ export function G702Component({
                   className="col-span-2"
                   title="2. Net change by Change Orders  ................................"
                 />
-                <input
+                <Input
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
+                  prefix="$"
                   value={state.netChangeByOrders}
                   defaultValue={0.0}
                   onChange={(e) =>
@@ -200,9 +202,10 @@ export function G702Component({
                   className="col-span-2"
                   title="3. CONTRACT SUM TO DATE (Line 1 ± 2) $  ................................"
                 />
-                <input
+                <Input
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="number"
+                  prefix="$"
                   value={p3Total.toFixed(2)}
                 />
               </div>
@@ -211,9 +214,10 @@ export function G702Component({
                   className="col-span-2"
                   title="4. TOTAL COMPLETED & STORED TO DATE (Column G on G703)   .............."
                 />
-                <input
+                <Input
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="number"
+                  prefix="$"
                   value={sumColumns(state.data, 6).toFixed(2)}
                 />
               </div>
@@ -224,17 +228,19 @@ export function G702Component({
                   <div className="grid grid-cols-3 ">
                     <div className="flex items-center col-span-2 space-x-2">
                       <QuinaryHeading title="a." />
-                      <input
+                      <Input
                         className="px-2 py-1 w-16 border border-gray-300 outline-none"
                         type="text"
                         value={10}
+                        prefix="%"
                         disabled
                       />
                       <QuinaryHeading title="% of Completed Work $" />
                     </div>
-                    <input
+                    <Input
                       className="px-2 py-1 border border-gray-300 outline-none"
                       type="number"
+                      prefix="$"
                       value={sumColumns(state.data, 9).toFixed(2)}
                     />
                   </div>
@@ -247,17 +253,19 @@ export function G702Component({
                   <div className="grid grid-cols-3 ">
                     <div className="flex items-center col-span-2 space-x-2">
                       <QuinaryHeading title="b." />
-                      <input
+                      <Input
                         className="px-2 py-1 w-16 border border-gray-300 outline-none"
                         type="text"
+                        prefix="%"
                         value={2}
                         disabled
                       />
                       <QuinaryHeading title="% of Stored Material " />
                     </div>
-                    <input
+                    <Input
                       className="px-2 py-1 border border-gray-300 outline-none"
                       type="number"
+                      prefix="$"
                       value={twoPercentOfP5b.toFixed(2)}
                     />
                   </div>
@@ -269,9 +277,10 @@ export function G702Component({
                         className="col-span-2 pl-4"
                         title="Total Retainage ( Lines 5a + 5b or Total in Colum I of G703"
                       />
-                      <input
+                      <Input
                         className="px-2 py-1 border border-gray-300 outline-none"
                         type="number"
+                        prefix="$"
                         value={p5Total.toFixed(2)}
                       />
                     </div>
@@ -284,9 +293,10 @@ export function G702Component({
                   className="col-span-2"
                   title="6. TOTAL EARNED LESS RETAINAGE Total in Column I of G703)"
                 />
-                <input
+                <Input
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="number"
+                  prefix="$"
                   value={p6Total.toFixed(2)}
                 />
               </div>
@@ -296,10 +306,11 @@ export function G702Component({
                   className="col-span-2"
                   title="7. LESS PREVIOUS CERTIFICATES FOR PAYMENT (Line 6 from prior Certificate)"
                 />
-                <input
+                <Input
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="number"
                   value={state.lessPreviousCertificatesForPayment}
+                  prefix="$"
                   onChange={(e) =>
                     handleState(
                       'lessPreviousCertificatesForPayment',
@@ -315,9 +326,10 @@ export function G702Component({
                   className="col-span-2"
                   title="8. CURRENT PAYMENT DUE"
                 />
-                <input
+                <Input
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="number"
+                  prefix="$"
                   value={p8Total.toFixed(2)}
                 />
               </div>
@@ -326,11 +338,12 @@ export function G702Component({
                   className="col-span-2"
                   title="9. BALANCE TO FINISH, INCLUDING RETAINAGE $ (Line 3 less Line 6)"
                 />
-                <input
+                <Input
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="number"
                   value={p9Total.toFixed(2)}
                   defaultValue={0.0}
+                  prefix="$"
                 />
               </div>
             </div>
