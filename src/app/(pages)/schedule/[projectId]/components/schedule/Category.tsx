@@ -128,6 +128,7 @@ export function CategoryModal({
               onChange: (e) => {
                 setCategory(e);
               },
+              className : '!mt-2'
             }}
             name="category"
             placeholder="Select CSI Section"
@@ -143,6 +144,7 @@ export function CategoryModal({
               onChange: (e) => {
                 setSubCategory(e);
               },
+              className : '!mt-2'
             }}
             name="sub-category"
             placeholder="Select Title"

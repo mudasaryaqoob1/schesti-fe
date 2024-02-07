@@ -18,9 +18,9 @@ import { GanttComponent } from './components/gantt';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
 import { IWBSType } from '@/app/interfaces/schedule/createSchedule.interface';
-import CustomButton from '@/app/component/customButton/button';
 import { scheduleService } from '@/app/services/schedule.service';
 import { IProject } from '@/app/interfaces/schedule/project.schedule.interface';
+import moment from 'moment';
 
 const SCHEDULE_KEY = 'Schedule';
 const GANTT_KEY = 'Gantt';
@@ -112,26 +112,19 @@ export default function SchedulePage() {
     setState(updatedWbs);
   }
 
-  const generateScheduleHandler = async () => {
-    console.log(state, 'statestate');
-
-    
-  };
-
-  console.log(scheduleProjectDetail , 'scheduleProjectDetail');
-  
+ 
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       <div className="p-5 flex flex-col rounded-lg border border-silverGray shadow bg-white">
         <div className="flex justify-between items-center">
-          <SecondaryHeading title="Project - Wall Constrcution" />
+          <SecondaryHeading title={scheduleProjectDetail?.projectName as string} />
 
           <Tag
             color="#F9F5FF"
             className="rounded-full py-1"
             style={{ color: '#6941C6' }}
           >
-            Inprogress
+            {scheduleProjectDetail?.status}
           </Tag>
         </div>
 
@@ -145,7 +138,7 @@ export default function SchedulePage() {
                 />
 
                 <QuinaryHeading
-                  title="14 Jan 2022"
+                  title={moment(scheduleProjectDetail?.createdAt).format('ll')}
                   className="text-[#475467] font-semibold"
                 />
               </div>
@@ -176,7 +169,7 @@ export default function SchedulePage() {
 
               <div className="flex flex-col">
                 <QuinaryHeading
-                  title="Working Days"
+                  title={`Working Day`}
                   className="text-[#667085]  font-medium"
                 />
 
@@ -186,17 +179,21 @@ export default function SchedulePage() {
                 />
               </div>
 
-              {/* <div className="flex flex-col">
+              <div className="flex flex-col">
                 <QuinaryHeading
                   title="Daily Hours"
                   className="text-[#667085]  font-medium"
                 />
 
                 <QuinaryHeading
-                  title="8 hours"
+                  title={`${scheduleProjectDetail?.hoursPerDay} hours`}
                   className="text-[#475467] font-semibold"
                 />
               </div>
+              
+              
+
+              {/* 
 
               <div className="flex flex-col">
                 <QuinaryHeading
@@ -276,13 +273,6 @@ export default function SchedulePage() {
                         updateWbs={updateWbs}
                         deleteWbs={deleteWbs}
                       />
-                      {state?.length > 0 ? (
-                        <CustomButton
-                          text="Generate Schedule"
-                          className="max-w-max float-right"
-                          onClick={generateScheduleHandler}
-                        />
-                      ) : null}
                     </>
                   ) : (
                     <GanttComponent />

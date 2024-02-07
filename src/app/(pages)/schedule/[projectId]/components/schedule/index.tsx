@@ -34,8 +34,8 @@ export function Schedule({
   const [materialModal, setMaterialModal] = useState(false);
   const [updateMaterialModal, setUpdateMaterialModal] = useState(false);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-  const [active, setActive] = useState<string | string[]>(['']);
+
+
 
   return (
     <section>
@@ -60,9 +60,6 @@ export function Schedule({
           <div>
             <Collapse
               ghost
-              onChange={(key) => {
-                setActive(key);
-              }}
               className="group"
               items={state.map((item, i) => {
                 return {
