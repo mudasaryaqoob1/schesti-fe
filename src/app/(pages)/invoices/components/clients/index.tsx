@@ -35,16 +35,8 @@ export function Clients() {
   }, [fetchSubcontactorsInvoices]);
   const items: MenuProps['items'] = [
     {
-      key: 'editInvoice',
-      label: <p>Edit Invoice</p>,
-    },
-    {
-      key: 'collectPayments',
-      label: <p>Collect Payments</p>,
-    },
-    {
-      key: 'markAsClosed',
-      label: <p>Mark as closed</p>,
+      key: "createPhase",
+      label: <p>Create new Invoice</p>
     },
     {
       key: 'delete',
@@ -82,11 +74,15 @@ export function Clients() {
       dataIndex: 'action',
       align: 'center',
       key: 'action',
-      render: () => (
+      render: (_, record) => (
         <Dropdown
           menu={{
             items,
-            onClick: () => {},
+            onClick: ({ key }) => {
+              if (key === 'createPhase') {
+                router.push(`/invoices/client/invoice/${record._id}`);
+              }
+            },
           }}
           placement="bottomRight"
         >
