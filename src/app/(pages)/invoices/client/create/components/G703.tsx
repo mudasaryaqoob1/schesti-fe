@@ -20,6 +20,7 @@ import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { DeleteOutlined, ExclamationCircleFilled, PlusOutlined } from '@ant-design/icons';
 import { G7State } from '@/app/interfaces/client-invoice.interface';
 import dayjs from 'dayjs';
+import { toast } from 'react-toastify';
 
 type Props = {
   state: G7State;
@@ -101,6 +102,31 @@ export function G703Component({
     const newData = [...state.data];
     newData.splice(rowIndex, 1);
     handleState('data', newData);
+  }
+
+  function addNewRow(index: number) {
+    // check if there is a row at previous index
+    const row = state.data[index - 1];
+    // if there is no row then by default don't apply any validation
+    if (!row) {
+      console.log("There is no row at previous index");
+      handleState('data', [
+        ...state.data,
+        rowTemplate(state.data.length),
+      ]);
+      return;
+    }
+    const previousRowDescription = row[1];
+    const previousRowSchdeuledValue = row[2];
+    const previousRowThisPeriodValue = row[4];
+    if (!previousRowDescription || !previousRowSchdeuledValue || !previousRowThisPeriodValue) {
+      toast.error("Please fill Description, Scheduled Value and This Period Value of previous row before adding new row");
+      return;
+    }
+    handleState('data', [
+      ...state.data,
+      rowTemplate(state.data.length),
+    ]);
   }
 
   return (
@@ -396,10 +422,8 @@ export function G703Component({
                   >
                     <Button
                       onClick={() => {
-                        handleState('data', [
-                          ...state.data,
-                          rowTemplate(state.data.length),
-                        ]);
+                        addNewRow(index);
+
                       }}
                       icon={<PlusOutlined />}
                       shape="circle"
