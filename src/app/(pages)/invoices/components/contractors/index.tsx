@@ -101,9 +101,9 @@ export function Contractors() {
       dataIndex: "status",
       render(value) {
         if (value === 'paid') {
-          return <Tag color="green">Paid</Tag>
+          return <Tag className='rounded-full' color="green">Paid</Tag>
         }
-        return <Tag color="red">Unpaid</Tag>
+        return <Tag className='rounded-full' color="red">Unpaid</Tag>
       },
     },
     {
@@ -150,7 +150,18 @@ export function Contractors() {
         <Drawer
           open={selectedInvoice !== null}
           onClose={() => setSelectedInvoice(null)}
+          closable={false}
           title="Payment Installment"
+          extra={<Image
+            src="/closeicon.svg"
+            alt="close"
+            width={20}
+            height={20}
+            className="cursor-pointer"
+            onClick={() => setSelectedInvoice(null)}
+          />
+
+          }
           width={500}
         >
           {selectedInvoice ? <CollectPayment invoice={selectedInvoice} /> : null}
