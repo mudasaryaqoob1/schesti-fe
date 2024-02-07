@@ -40,7 +40,6 @@ export default function CreateClientInvoicePage() {
     distributionTo: 'Architect',
     myCommissionExpires: '',
     notaryPublic: '',
-    lessPreviousCertificatesForPayment: '0.00',
     project: '',
     stateOf: '',
     subscribedAndSworn: '',
