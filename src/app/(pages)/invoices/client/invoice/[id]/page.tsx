@@ -10,6 +10,7 @@ import { selectClientInvoices } from "@/redux/client-invoices/client-invoice.sel
 import { ConfigProvider, Tabs } from "antd";
 import TertiaryHeading from "@/app/component/headings/tertiary";
 import QuaternaryHeading from "@/app/component/headings/quaternary";
+import { G703Component } from "./components/G703";
 
 const G703_KEY = 'G703';
 const G702_KEY = 'G702';
@@ -80,7 +81,14 @@ export default function CreateClientInvoicePage() {
                                 />
                             ),
                             tabKey: type,
-                            children: tab
+                            children: tab === G703_KEY ? <G703Component
+                                handleState={() => { }}
+                                onCancel={() => { }}
+                                onNext={() => { }}
+                                state={parentInvoice}
+                                sumColumns={() => 9}
+                                updateCellValue={() => { }}
+                            /> : tab
                         };
                     })}
                 />
