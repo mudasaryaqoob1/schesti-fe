@@ -17,8 +17,10 @@ export function PhaseComponent({ parentInvoice }: Props) {
     // selected phase will be from allPhases and will be the latest last phase
     const [selectedPhase, setSelectedPhase] = useState<IClientInvoice | null>(null);
     const [tab, setTab] = useState(G703_KEY);
+    // all phases of the parent invoice
     const [allPhases, setAllPhases] = useState<IClientInvoice[]>([]);
-    // parent phase, the id will be in the url
+
+
     useEffect(() => {
         if (parentInvoice._id) {
             (async function () {

@@ -14,7 +14,7 @@ export default function CreateClientInvoicePage() {
     const params = useParams<{ id: string }>();
     // all parent invoices
     const allInvoices = useSelector(selectClientInvoices);
-    // all phases of the parent invoice
+
     const parentInvoice = allInvoices?.find(invoice => invoice._id === params.id);
 
     useLayoutEffect(() => {
