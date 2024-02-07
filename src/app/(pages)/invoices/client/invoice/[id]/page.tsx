@@ -3,7 +3,7 @@
 import { HttpService } from "@/app/services/base.service";
 import { selectToken } from "@/redux/authSlices/auth.selector";
 import { useParams } from "next/navigation";
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { NoInvoiceFound } from "./components/NoInvoiceFound";
 import { selectClientInvoices } from "@/redux/client-invoices/client-invoice.selector";
@@ -12,6 +12,8 @@ import TertiaryHeading from "@/app/component/headings/tertiary";
 import QuaternaryHeading from "@/app/component/headings/quaternary";
 import { G703Component } from "./components/G703";
 import { IClientInvoice } from "@/app/interfaces/client-invoice.interface";
+import { clientInvoiceService } from "@/app/services/client-invoices.service";
+import moment from "moment";
 
 const G703_KEY = 'G703';
 const G702_KEY = 'G702';
@@ -19,7 +21,7 @@ export default function CreateClientInvoicePage() {
     const token = useSelector(selectToken);
     const params = useParams<{ id: string }>();
     const allInvoices = useSelector(selectClientInvoices);
-    const [otherPhases, setOtherPhases] = useState<IClientInvoice[]>([]);
+    const [allPhases, setAllPhases] = useState<IClientInvoice[]>([]);
     const parentInvoice = allInvoices?.find(invoice => invoice._id === params.id);
     const [tab, setTab] = useState(G703_KEY);
 
@@ -28,6 +30,26 @@ export default function CreateClientInvoicePage() {
             HttpService.setToken(token);
         }
     }, [token]);
+
+    useEffect(() => {
+        if (params.id) {
+            (async function () {
+                try {
+                    // get all the phases of the invoice 
+                    const response = await clientInvoiceService.httpGetInvoicePhases(params.id);
+                    if (response.data) {
+                        // add parent phase as a previous phase
+                        const phases = parentInvoice ? [parentInvoice, ...response.data.invoices] : response.data.invoices;
+                        // sort phases by date using moment
+                        phases.sort((a, b) => moment(a.createdAt).unix() - moment(b.createdAt).unix());
+                        setAllPhases(phases)
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+            })()
+        }
+    }, [params.id, parentInvoice])
 
     if (!parentInvoice) {
         return <NoInvoiceFound />
@@ -84,6 +106,7 @@ export default function CreateClientInvoicePage() {
                             ),
                             tabKey: type,
                             children: tab === G703_KEY ? <G703Component
+                                phases={allPhases.map(phase => ({ label: `Pay Application - ${moment(phase.createdAt).format('DD/MM/YYYY')}`, value: phase._id }))}
                                 handleState={() => { }}
                                 onCancel={() => { }}
                                 onNext={() => { }}

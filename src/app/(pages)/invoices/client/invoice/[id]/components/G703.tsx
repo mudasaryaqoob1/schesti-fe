@@ -27,6 +27,7 @@ import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
 
 type Props = {
+  phases: { label: string, value: string }[],
   state: G7State;
   // eslint-disable-next-line no-unused-vars
   handleState<K extends keyof G7State>(key: K, value: G7State[K]): void;
@@ -42,6 +43,7 @@ type Props = {
 };
 
 export function G703Component({
+  phases,
   state,
   handleState,
   sumColumns,
@@ -94,11 +96,7 @@ export function G703Component({
         <div>
           <Select
             placeholder="Select Previous Phase"
-            options={[
-              { value: 'phase1', label: 'Phase 1' },
-              { value: 'phase2', label: 'Phase 2' },
-              { value: 'phase3', label: 'Phase 3' },
-            ]}
+            options={phases}
             style={{ width: 250 }}
             size="large"
           />
