@@ -28,11 +28,12 @@ export function G702Component({
   const changeOrderSummaryAdditionSum = state.totalAdditionThisMonth + state.totalAdditionPreviousMonth;
   const changeOrderSummaryDeductionSum = state.totalDeductionThisMonth + state.totalDeductionPreviousMonth;
   const changeOrderNetChanges = changeOrderSummaryAdditionSum - changeOrderSummaryDeductionSum;
+  const originalContractSum = sumColumns(state.data, 2);
   const p5b = Number(sumColumns(state.data, 5));
   const resultOf_P5b = p5b * (state.p5bPercentage / 100);
   const p5Total = Number(sumColumns(state.data, 9)) + resultOf_P5b;
   const p6Total = Number(sumColumns(state.data, 6)) - p5Total;
-  const p3Total = state.orignalContractSum + changeOrderNetChanges;
+  const p3Total = originalContractSum + changeOrderNetChanges;
   const p8Total = p6Total - Number(state.lessPreviousCertificatesForPayment);
   const p9Total =
     p3Total - Number(state.lessPreviousCertificatesForPayment) - p8Total;
@@ -176,11 +177,8 @@ export function G702Component({
                 <Input
                   className="px-2 py-1 border border-gray-300 "
                   type="number"
-                  value={state.orignalContractSum.toFixed(2)}
+                  value={originalContractSum.toFixed(2)}
                   prefix="$"
-                  onChange={(e) =>
-                    handleState('orignalContractSum', Number(e.target.value))
-                  }
                 />
               </div>
               <div className="grid grid-cols-3 gap-1">

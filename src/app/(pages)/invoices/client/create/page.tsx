@@ -41,7 +41,6 @@ export default function CreateClientInvoicePage() {
     myCommissionExpires: '',
     notaryPublic: '',
     lessPreviousCertificatesForPayment: '0.00',
-    orignalContractSum: 0,
     project: '',
     stateOf: '',
     subscribedAndSworn: '',
