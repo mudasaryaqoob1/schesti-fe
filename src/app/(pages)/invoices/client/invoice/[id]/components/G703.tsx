@@ -257,10 +257,10 @@ export function G703Component({
                 if (index === state.data.length) {
                   return <div className="px-3">{value}</div>;
                 }
-                let columnE = Number(getCellValue(record, 4));
+                let columnF = Number(getCellValue(record, 3));
                 return (
                   <Input
-                    value={state.phase > 0 ? columnE : undefined}
+                    value={columnF}
                     prefix="$"
                     type="number"
                     disabled
