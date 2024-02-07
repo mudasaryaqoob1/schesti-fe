@@ -1,25 +1,34 @@
 'use client';
+import { useLayoutEffect, useState , useEffect  , useCallback} from 'react';
+import { ConfigProvider, Tabs, Tag } from 'antd';
+import { useSelector } from 'react-redux';
+import { useParams , useRouter } from 'next/navigation';
+
+
+
+
 import SecondaryHeading from '@/app/component/headings/Secondary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
 // import SenaryHeading from '@/app/component/headings/senaryHeading';
 // import { UserOutlined } from '@ant-design/icons';
-import { ConfigProvider, Tabs, Tag } from 'antd';
-import { useLayoutEffect, useState } from 'react';
+
 import { Schedule } from './components/schedule';
 import { GanttComponent } from './components/gantt';
-import { useSelector } from 'react-redux';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
-import { IWBSType } from './type';
+import { IWBSType } from '@/app/interfaces/schedule/createSchedule.interface';
 import CustomButton from '@/app/component/customButton/button';
-
-import { projectDetailStore } from '@/redux/schedule/scheduleSelector';
+import { scheduleService } from '@/app/services/schedule.service';
+import { IProject } from '@/app/interfaces/schedule/project.schedule.interface';
 
 const SCHEDULE_KEY = 'Schedule';
 const GANTT_KEY = 'Gantt';
 
 export default function SchedulePage() {
+  const router = useRouter();
+  const { projectId } = useParams();
+
   const token = useSelector(selectToken);
 
   useLayoutEffect(() => {
@@ -28,10 +37,25 @@ export default function SchedulePage() {
     }
   }, [token]);
 
-  const schedules = useSelector(projectDetailStore);
 
   const [tab, setTab] = useState(SCHEDULE_KEY);
   const [state, setState] = useState<IWBSType[]>([]);
+  const [scheduleProjectDetail, setScheduleProjectDetail] = useState<IProject>()
+
+
+  const fetchscheduleDetail = useCallback(async(projectId : string | string[]) => {
+    await scheduleService.httpGetScheduleProjectDetail(projectId as string).then((resp) => {
+      setScheduleProjectDetail(resp.data?.scheduleProjectDetail)
+    })
+    .catch(() => {
+      router.push(`/schedule`);
+    })
+  }, [])
+
+
+  useEffect(() => {
+    fetchscheduleDetail(projectId)
+  },[projectId])
 
   function addWbsHandler(
     category: IWBSType['category'],
@@ -91,10 +115,11 @@ export default function SchedulePage() {
   const generateScheduleHandler = async () => {
     console.log(state, 'statestate');
 
-    // const newSchedule = await scheduleService.httpGenerateSchedule(state)
-    // console.log(newSchedule , 'newSchedulenewSchedule');
+    
   };
 
+  console.log(scheduleProjectDetail , 'scheduleProjectDetail');
+  
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       <div className="p-5 flex flex-col rounded-lg border border-silverGray shadow bg-white">
@@ -144,7 +169,7 @@ export default function SchedulePage() {
                 />
 
                 <QuinaryHeading
-                  title={`${String(schedules.duration)} Month`}
+                  title={`${String(scheduleProjectDetail?.duration)} ${scheduleProjectDetail?.durationType}`}
                   className="text-[#475467] font-semibold"
                 />
               </div>
@@ -156,7 +181,7 @@ export default function SchedulePage() {
                 />
 
                 <QuinaryHeading
-                  title="Regular"
+                  title={String(scheduleProjectDetail?.regularWorkingDays.length)}
                   className="text-[#475467] font-semibold"
                 />
               </div>
