@@ -32,6 +32,11 @@ type Props = {
   handleState<K extends keyof G7State>(key: K, value: G7State[K]): void;
   // eslint-disable-next-line no-unused-vars
   sumColumns(rows: Array<string[]>, column: number): number;
+  updateCellValue(
+    _row: number,
+    _column: number,
+    _value: number | string
+  ): void
   onCancel: () => void;
   onNext(): void;
 };
@@ -41,66 +46,12 @@ export function G703Component({
   handleState,
   sumColumns,
   onNext,
+  updateCellValue
 }: Props) {
   function getCellValue(row: string[], column: number) {
     return row[column];
   }
 
-  function updateCellValue(
-    row: number,
-    column: number,
-    value: number | string
-  ) {
-    let newData = [...state.data];
-    newData[row][column] = `${value}`;
-    newData = updateColumn6(newData, row);
-    newData = updateColumn7(newData, row);
-    newData = updateColumn8(newData, row);
-    newData = updateColumn9(newData, row);
-    handleState('data', newData);
-  }
-
-  function updateColumn6(data: Array<string[]>, rowIndex: number) {
-    const newData = [...data];
-    const row = newData[rowIndex];
-    let columnD = row[3];
-    let columnE = row[4];
-    let columnF = row[5];
-    let sum = Number(columnD) + Number(columnE) + Number(columnF);
-    newData[rowIndex][6] = `${sum}`;
-    return newData;
-  }
-
-  function updateColumn7(data: Array<string[]>, rowIndex: number) {
-    const newData = [...data];
-    const row = newData[rowIndex];
-    let columnC = Number(row[2]);
-    let columnG = Number(row[6]);
-    // % (G ÷ C)
-    let result = (columnG / columnC) * 100;
-    newData[rowIndex][7] = `${isNaN(result) ? 0 : result}`;
-    return newData;
-  }
-
-  function updateColumn8(data: Array<string[]>, rowIndex: number) {
-    const newData = [...data];
-    const row = newData[rowIndex];
-    let columnG = Number(row[6]);
-    let columnC = Number(row[2]);
-    let result = columnC - columnG;
-    newData[rowIndex][8] = `${isNaN(result) ? 0 : result}`;
-    return newData;
-  }
-
-  function updateColumn9(data: Array<string[]>, rowIndex: number) {
-    const newData = [...data];
-    const row = newData[rowIndex];
-    let columnF = row[5];
-    // 10% of F
-    let result = (state.p5aPercentage / 100) * Number(columnF);
-    newData[rowIndex][9] = `${isNaN(result) ? 0 : Math.ceil(result)}`;
-    return newData;
-  }
 
   function deleteRow(rowIndex: number) {
     const newData = [...state.data];
@@ -409,7 +360,7 @@ export function G703Component({
             }}
           />
           <Column
-            title={<SenaryHeading title="RETAINAGE (IF VARIABLE RATE) 5%" />}
+            title={<SenaryHeading title={`RETAINAGE (IF VARIABLE RATE) ${state.p5aPercentage}%`} />}
             dataIndex={9}
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
@@ -471,7 +422,7 @@ export function G703Component({
                       onOk() {
                         deleteRow(index);
                       },
-                      onCancel() {},
+                      onCancel() { },
                     });
                   }}
                 />
