@@ -11,6 +11,7 @@ import { ConfigProvider, Tabs } from "antd";
 import TertiaryHeading from "@/app/component/headings/tertiary";
 import QuaternaryHeading from "@/app/component/headings/quaternary";
 import { G703Component } from "./components/G703";
+import { IClientInvoice } from "@/app/interfaces/client-invoice.interface";
 
 const G703_KEY = 'G703';
 const G702_KEY = 'G702';
@@ -18,6 +19,7 @@ export default function CreateClientInvoicePage() {
     const token = useSelector(selectToken);
     const params = useParams<{ id: string }>();
     const allInvoices = useSelector(selectClientInvoices);
+    const [otherPhases, setOtherPhases] = useState<IClientInvoice[]>([]);
     const parentInvoice = allInvoices?.find(invoice => invoice._id === params.id);
     const [tab, setTab] = useState(G703_KEY);
 
