@@ -35,9 +35,8 @@ export function G702Component({
   const p5Total = Number(sumColumns(state.data, 9)) + resultOf_P5b;
   const p6Total = Number(sumColumns(state.data, 6)) - p5Total;
   const p3Total = originalContractSum + changeOrderNetChanges;
-  const p8Total = p6Total - Number(state.lessPreviousCertificatesForPayment);
-  const p9Total =
-    p3Total - Number(state.lessPreviousCertificatesForPayment) - p8Total;
+  const p8Total = p6Total - 0 /** Point no 7 value will be placed here*/;
+  const p9Total = p3Total - 0/** Point no 7 value will be placed here*/ - p8Total;
 
   return (
     <div>
@@ -194,7 +193,7 @@ export function G702Component({
                 />
                 <Input
                   className="px-2 py-1 border border-gray-300 "
-                  type="text"
+                  type="number"
                   prefix="$"
                   value={changeOrderNetChanges.toFixed(2)}
                 />
@@ -315,15 +314,8 @@ export function G702Component({
                 <Input
                   className="px-2 py-1 border border-gray-300 "
                   type="number"
-                  value={state.lessPreviousCertificatesForPayment}
                   prefix="$"
-                  onChange={(e) =>
-                    handleState(
-                      'lessPreviousCertificatesForPayment',
-                      e.target.value
-                    )
-                  }
-                  defaultValue={0.0}
+                  value={0.0}
                 />
               </div>
 

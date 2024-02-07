@@ -13,7 +13,6 @@ export type G7State = {
   amountCertified1: string;
   amountCertified2: string;
   amountCertified3: string;
-  lessPreviousCertificatesForPayment: string;
   by: string;
   stateOf: string;
   date: string;
