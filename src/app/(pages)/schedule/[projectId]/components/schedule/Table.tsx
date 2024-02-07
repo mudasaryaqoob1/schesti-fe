@@ -19,7 +19,7 @@ import {
 import { type ColumnType } from 'antd/es/table';
 import dayjs from 'dayjs';
 import { createContext, useContext, useEffect, useRef, useState } from 'react';
-import type { IWBSType, ScopeItem } from '../../type';
+import type { IWBSType, ScopeItem } from '@/app/interfaces/schedule/createSchedule.interface';
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import Image from 'next/image';

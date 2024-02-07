@@ -12,7 +12,7 @@ import CustomModal from '@/app/component/modal';
 import { SelectComponent } from '@/app/component/customSelect/Select.component';
 import { CloseOutlined } from '@ant-design/icons';
 import TertiaryHeading from '@/app/component/headings/tertiary';
-import { IWBSType } from '../../type';
+import { IWBSType } from '@/app/interfaces/schedule/createSchedule.interface';
 
 type Props = {
   setMaterialModal: Dispatch<SetStateAction<boolean>>;

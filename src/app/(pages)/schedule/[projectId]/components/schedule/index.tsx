@@ -4,7 +4,7 @@ import SecondaryHeading from '@/app/component/headings/Secondary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { useState } from 'react';
 import { CategoryModal } from './Category';
-import { IWBSType, ScopeItem } from '../../type';
+import { IWBSType, ScopeItem } from '@/app/interfaces/schedule/createSchedule.interface';
 import { Collapse, Dropdown } from 'antd';
 import { ScheduleTable } from './Table';
 import Image from 'next/image';
