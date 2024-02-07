@@ -22,10 +22,10 @@ import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import { ConfigProvider, Divider } from 'antd';
 import {
-  CreateInvoiceData,
   invoiceService,
 } from '@/app/services/invoices.service';
 import { toast } from 'react-toastify';
+import { IInvoice } from '@/app/interfaces/invoices.interface';
 
 const SubcontractorSchema = Yup.object({
   subContractorFirstName: Yup.string().required('First name is required!'),
@@ -221,7 +221,7 @@ const EditSubcontractorInvoice = () => {
         total: detail.quantity * detail.unitCost,
       };
     });
-    const data: CreateInvoiceData = {
+    const data: IInvoice = {
       ...values,
       invoiceItems: updatedDetails,
       totalPayable: calculateTotalPayable(

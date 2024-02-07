@@ -3,13 +3,17 @@ import { InputComponent } from "@/app/component/customInput/Input";
 import { SelectComponent } from "@/app/component/customSelect/Select.component";
 import { DateInputComponent } from "@/app/component/cutomDate/CustomDateInput";
 import { IInvoice } from "@/app/interfaces/invoices.interface"
+import { invoiceService } from "@/app/services/invoices.service";
 import TextArea from "antd/es/input/TextArea";
 import dayjs from "dayjs";
 import { useFormik } from "formik";
+import { useState } from "react";
+import { toast } from "react-toastify";
 import * as Yup from 'yup';
 
 type Props = {
     invoice: IInvoice;
+    onSuccess: () => void;
 }
 
 const CollectPaymentSchema = Yup.object().shape({
@@ -19,8 +23,8 @@ const CollectPaymentSchema = Yup.object().shape({
     additionalDetails: Yup.string()
 })
 
-export function CollectPayment({ invoice }: Props) {
-
+export function CollectPayment({ invoice, onSuccess }: Props) {
+    const [loading, setLoading] = useState(false);
     const formik = useFormik({
         initialValues: {
             amount: invoice.amount,
@@ -29,8 +33,18 @@ export function CollectPayment({ invoice }: Props) {
             additionalDetails: ""
         },
         validationSchema: CollectPaymentSchema,
-        onSubmit: (values) => {
-            console.log(values);
+        onSubmit: async (values) => {
+            let result = await invoiceService.httpUpdateSubcontractorInvoice(
+                { ...invoice, ...values, transactionDate: dayjs(values.transactionDate).format('YYYY-MM-DD'), status: "paid" },
+                invoice._id
+            );
+            if (result.statusCode == 200) {
+                setLoading(false);
+                onSuccess()
+            } else {
+                setLoading(false);
+                toast.error(result.message);
+            }
         }
     });
     return <div >
@@ -111,6 +125,8 @@ export function CollectPayment({ invoice }: Props) {
             <CustomButton
                 text="Save"
                 type="submit"
+                loadingText="Saving..."
+                isLoading={loading}
             />
         </form>
 

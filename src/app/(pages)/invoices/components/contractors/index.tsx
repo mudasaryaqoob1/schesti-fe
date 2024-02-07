@@ -164,7 +164,7 @@ export function Contractors() {
           }
           width={500}
         >
-          {selectedInvoice ? <CollectPayment invoice={selectedInvoice} /> : null}
+          {selectedInvoice ? <CollectPayment invoice={selectedInvoice} onSuccess={() => setSelectedInvoice(null)} /> : null}
         </Drawer>
         <div className="flex items-center space-x-2 flex-1 justify-end">
           <div className="w-96 ">
