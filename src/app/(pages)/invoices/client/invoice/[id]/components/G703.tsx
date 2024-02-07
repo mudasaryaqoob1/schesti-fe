@@ -29,7 +29,7 @@ import moment from 'moment';
 type Props = {
   phases: IClientInvoice[],
   selectedPhase: IClientInvoice | null,
-  setSelectedPhase: React.Dispatch<React.SetStateAction<IClientInvoice | null>>,
+  setSelectedPhase: (_value: string) => void;
   state: G7State;
   // eslint-disable-next-line no-unused-vars
   handleState<K extends keyof G7State>(key: K, value: G7State[K]): void;
@@ -103,7 +103,7 @@ export function G703Component({
             options={phases.map(phase => ({ label: `Pay Application - ${moment(phase.createdAt).format('DD/MM/YYYY')}`, value: phase._id }))}
             value={selectedPhase?._id}
             onChange={(value) => {
-              setSelectedPhase(phases.find(phase => phase._id === value) || null);
+              setSelectedPhase(value);
             }}
             style={{ width: 250 }}
             size="large"

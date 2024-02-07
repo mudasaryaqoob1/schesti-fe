@@ -215,7 +215,13 @@ export function PhaseComponent({ parentInvoice }: Props) {
                             tabKey: type,
                             children: tab === G703_KEY ? <G703Component
                                 selectedPhase={selectedPhase}
-                                setSelectedPhase={setSelectedPhase}
+                                setSelectedPhase={value => {
+                                    const _selectedPhase = allPhases.find(phase => phase._id === value);
+                                    if (_selectedPhase) {
+                                        setSelectedPhase(_selectedPhase);
+                                        updatePreviousApplicationColumn(_selectedPhase);
+                                    }
+                                }}
                                 phases={allPhases}
                                 handleState={handleG7State}
                                 onCancel={() => { }}
