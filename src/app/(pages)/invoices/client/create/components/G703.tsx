@@ -6,6 +6,7 @@ import {
   DatePicker,
   Divider,
   Input,
+  Modal,
   Select,
   Table,
 } from 'antd';
@@ -16,7 +17,7 @@ import { rowTemplate } from '../utils';
 import ColumnGroup from 'antd/es/table/ColumnGroup';
 import Column from 'antd/es/table/Column';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { DeleteOutlined, ExclamationCircleFilled, PlusOutlined } from '@ant-design/icons';
 import { G7State } from '@/app/interfaces/client-invoice.interface';
 import dayjs from 'dayjs';
 
@@ -412,7 +413,21 @@ export function G703Component({
                 <DeleteOutlined
                   className="text-xl px-4 text-red-500 cursor-pointer"
                   onClick={() => {
-                    deleteRow(index);
+                    Modal.confirm({
+                      title: 'Are you sure delete this task?',
+                      icon: <ExclamationCircleFilled />,
+                      okText: 'Yes',
+                      okType: 'danger',
+                      style: { backgroundColor: "white" },
+                      cancelText: 'No',
+                      onOk() {
+                        deleteRow(index);
+                      },
+                      onCancel() {
+
+                      },
+                    });
+
                   }}
                 />
               );
