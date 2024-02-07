@@ -32,8 +32,8 @@ const InvoicePage = () => {
                 inkBarColor: '#8449EB',
               },
               Table: {
-                headerBg: "#F9F5FF",
-              }
+                headerBg: '#F9F5FF',
+              },
             },
           }}
         >

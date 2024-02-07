@@ -62,7 +62,7 @@ export function InputComponent({
         id={name}
         type={type}
         prefix={prefix}
-        min='0'
+        min="0"
         className={twMerge(
           clsx(
             `border ${

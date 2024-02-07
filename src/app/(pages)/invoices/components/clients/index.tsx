@@ -86,7 +86,7 @@ export function Clients() {
         <Dropdown
           menu={{
             items,
-            onClick: () => { },
+            onClick: () => {},
           }}
           placement="bottomRight"
         >

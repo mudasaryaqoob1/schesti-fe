@@ -29,7 +29,6 @@ export function Contractors() {
   const subcontractersInvoicesLoading = useSelector(selectInvoicesLoading);
   const [selectedInvoice, setSelectedInvoice] = useState<IInvoice | null>(null);
 
-
   const fetchSubcontactorsInvoices = useCallback(async () => {
     await dispatch(fetchSubcontractorInvoices({}));
   }, [dispatch]);
@@ -97,20 +96,28 @@ export function Contractors() {
       },
     },
     {
-      title: "Status",
-      dataIndex: "status",
+      title: 'Status',
+      dataIndex: 'status',
       render(value) {
         if (value === 'paid') {
-          return <Tag className='rounded-full' color="green">Paid</Tag>
+          return (
+            <Tag className="rounded-full" color="green">
+              Paid
+            </Tag>
+          );
         }
-        return <Tag className='rounded-full' color="red">Unpaid</Tag>
+        return (
+          <Tag className="rounded-full" color="red">
+            Unpaid
+          </Tag>
+        );
       },
     },
     {
       title: 'Total Payable',
       dataIndex: 'totalPayable',
       render(value) {
-        return `$${value}`
+        return `$${value}`;
       },
     },
     {
@@ -152,19 +159,24 @@ export function Contractors() {
           onClose={() => setSelectedInvoice(null)}
           closable={false}
           title="Payment Installment"
-          extra={<Image
-            src="/closeicon.svg"
-            alt="close"
-            width={20}
-            height={20}
-            className="cursor-pointer"
-            onClick={() => setSelectedInvoice(null)}
-          />
-
+          extra={
+            <Image
+              src="/closeicon.svg"
+              alt="close"
+              width={20}
+              height={20}
+              className="cursor-pointer"
+              onClick={() => setSelectedInvoice(null)}
+            />
           }
           width={500}
         >
-          {selectedInvoice ? <CollectPayment invoice={selectedInvoice} onSuccess={() => setSelectedInvoice(null)} /> : null}
+          {selectedInvoice ? (
+            <CollectPayment
+              invoice={selectedInvoice}
+              onSuccess={() => setSelectedInvoice(null)}
+            />
+          ) : null}
         </Drawer>
         <div className="flex items-center space-x-2 flex-1 justify-end">
           <div className="w-96 ">

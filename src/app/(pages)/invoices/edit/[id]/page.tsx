@@ -21,9 +21,7 @@ import { InputComponent } from '@/app/component/customInput/Input';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import { ConfigProvider, Divider } from 'antd';
-import {
-  invoiceService,
-} from '@/app/services/invoices.service';
+import { invoiceService } from '@/app/services/invoices.service';
 import { toast } from 'react-toastify';
 import { IInvoice } from '@/app/interfaces/invoices.interface';
 
@@ -130,8 +128,8 @@ const EditSubcontractorInvoice = () => {
       title: 'Unit Cost',
       dataIndex: 'unitCost',
       render(value) {
-        return `$${value}`
-      }
+        return `$${value}`;
+      },
     },
     {
       title: 'Total Price',
@@ -526,9 +524,9 @@ const EditSubcontractorInvoice = () => {
                         theme={{
                           components: {
                             Table: {
-                              headerColor: "red"
-                            }
-                          }
+                              headerColor: 'red',
+                            },
+                          },
                         }}
                       >
                         <Table

@@ -24,7 +24,7 @@ export interface IInvoice {
   _id: string;
   __v: number;
 
-  status: "paid" | "unpaid";
+  status: 'paid' | 'unpaid';
   amount: number;
   paymentMethod: string;
   transactionDate: string;

@@ -54,7 +54,6 @@ export default function CreateClientInvoicePage() {
     totalDeductionPreviousMonth: 0,
     totalDeductionThisMonth: 0,
 
-
     p5aPercentage: 10,
     p5bPercentage: 2,
   });
@@ -95,7 +94,7 @@ export default function CreateClientInvoicePage() {
         toast.error(response.data.message);
       });
   }
-  console.log(g7State)
+  console.log(g7State);
 
   return (
     <section className="mx-16 my-2">
@@ -128,7 +127,7 @@ export default function CreateClientInvoicePage() {
               Table: {
                 cellPaddingBlock: 0,
                 cellPaddingInline: 0,
-              }
+              },
             },
           }}
         >
@@ -144,7 +143,7 @@ export default function CreateClientInvoicePage() {
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className={`${tab === type ? "text-RoyalPurple" : 'text-black'}`}
+                    className={`${tab === type ? 'text-RoyalPurple' : 'text-black'}`}
                   />
                 ),
                 tabKey: type,

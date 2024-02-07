@@ -64,8 +64,8 @@ const Summary = ({ setPrevNext }: Props) => {
   const [totalCostRecord, setTotalCostRecord] = useState<any>(0);
   const [totalCostBaseRecord, setTotalCostBaseRecord] = useState<any>(0);
   const [estimatesRecords, setEstimatesRecords] = useState([]);
-  const [totalMaterialBaseCost, setTotalMaterialBaseCost] = useState(0)
-  const [totalMaterialCost, setTotalMaterialCost] = useState(0)
+  const [totalMaterialBaseCost, setTotalMaterialBaseCost] = useState(0);
+  const [totalMaterialCost, setTotalMaterialCost] = useState(0);
   const [subcontractorCosts, setSubcontractorCosts] = useState<any>({});
   const [totalBidDetail, setTotalBidDetail] = useState<any>({
     overheadAndProfit: 0,
@@ -90,8 +90,9 @@ const Summary = ({ setPrevNext }: Props) => {
           );
           const totalMaterialCost = titleObject.scopeItems.reduce(
             (total: any, dataItem: any) => {
-              let qtyWithWastage = dataItem.qty * (1 + dataItem.wastage / 100)
-              let totalMaterialCost : any = dataItem.unitMaterialCost * qtyWithWastage;
+              let qtyWithWastage = dataItem.qty * (1 + dataItem.wastage / 100);
+              let totalMaterialCost: any =
+                dataItem.unitMaterialCost * qtyWithWastage;
               return total + parseFloat(totalMaterialCost);
             },
             0
@@ -99,11 +100,11 @@ const Summary = ({ setPrevNext }: Props) => {
           return {
             ...titleObject,
             totalCostForTitle: totalCostForTitle.toFixed(2),
-            totalMaterialCost : totalMaterialCost.toFixed(2)
+            totalMaterialCost: totalMaterialCost.toFixed(2),
           };
         }
       );
-      
+
       const totalCostForAllRecords = updatedDataArray.reduce(
         (total: any, titleObject: any) => {
           return total + parseFloat(titleObject.totalCostForTitle);
@@ -121,25 +122,24 @@ const Summary = ({ setPrevNext }: Props) => {
       setSubcostRecord(totalCostForAllRecords);
       setTotalCostBaseRecord(totalCostForAllRecords);
       setTotalCostRecord(totalCostForAllRecords);
-      setTotalMaterialBaseCost(totalMaterialCostForAllRecord)
+      setTotalMaterialBaseCost(totalMaterialCostForAllRecord);
     }
   }, [generateEstimateDetail]);
 
   useEffect(() => {
-    if(totalMaterialCost){
-    getPercentageOnMaterialTax(totalMaterialCost)
-
+    if (totalMaterialCost) {
+      getPercentageOnMaterialTax(totalMaterialCost);
     }
   }, [totalMaterialCost]);
-  
 
-  const getPercentageOnMaterialTax = (value : number) => {
-    const updatedTotalCostRecord = totalMaterialBaseCost - (value * totalMaterialBaseCost) / 100;
+  const getPercentageOnMaterialTax = (value: number) => {
+    const updatedTotalCostRecord =
+      totalMaterialBaseCost - (value * totalMaterialBaseCost) / 100;
     if (!isNaN(updatedTotalCostRecord)) {
-      setTotalMaterialBaseCost(Number(updatedTotalCostRecord.toFixed(2)))
+      setTotalMaterialBaseCost(Number(updatedTotalCostRecord.toFixed(2)));
     }
-  }
-  
+  };
+
   useEffect(() => {
     handleDetailChange('overheadAndProfit', totalBidDetail.overheadAndProfit);
   }, [totalBidDetail.overheadAndProfit]);
@@ -203,14 +203,13 @@ const Summary = ({ setPrevNext }: Props) => {
 
           return {
             ...estimate,
-            subContractorCost : subcontractorCost
+            subContractorCost: subcontractorCost,
           };
         }
         return estimate;
       })
     );
   };
-
 
   return (
     <div>
@@ -395,13 +394,15 @@ const Summary = ({ setPrevNext }: Props) => {
                       />
                     </div>
                     <div className="flex items-center gap-3">
-                      <p className='text-[#344054] text-[18px]' >Sub-contractor Cost:</p>
-                      <div className='flex items-center border-b-2 focus:border-purple-500 rounded' >
-                        <p className='text-gray-700' >$</p>
+                      <p className="text-[#344054] text-[18px]">
+                        Sub-contractor Cost:
+                      </p>
+                      <div className="flex items-center border-b-2 focus:border-purple-500 rounded">
+                        <p className="text-gray-700">$</p>
                         <input
                           placeholder="000"
                           min="0"
-                          className='appearance-none w-full py-2 text-gray-700 leading-tight focus:outline-none '
+                          className="appearance-none w-full py-2 text-gray-700 leading-tight focus:outline-none "
                           type="number"
                           value={subcontractorCosts[estimate.title] || ''}
                           onChange={(e) =>
@@ -438,7 +439,10 @@ const Summary = ({ setPrevNext }: Props) => {
             </div>
             <div className="flex items-center justify-between">
               <MinDesc title="Material Tax %" className="text-darkgrayish" />
-              <MinDesc title={`$${totalMaterialBaseCost}`} className="text-darkgrayish" />
+              <MinDesc
+                title={`$${totalMaterialBaseCost}`}
+                className="text-darkgrayish"
+              />
               <InputComponent
                 suffix={<PercentageOutlined />}
                 prefix={<p>$</p>}

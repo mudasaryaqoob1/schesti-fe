@@ -119,8 +119,8 @@ const CreateInvoice = () => {
       title: 'Unit Cost',
       dataIndex: 'unitCost',
       render(value) {
-        return `$${value}`
-      }
+        return `$${value}`;
+      },
     },
     {
       title: 'Total Price',
@@ -517,9 +517,9 @@ const CreateInvoice = () => {
                         theme={{
                           components: {
                             Table: {
-                              headerBg: "#F9F5FF",
-                            }
-                          }
+                              headerBg: '#F9F5FF',
+                            },
+                          },
                         }}
                       >
                         <Table

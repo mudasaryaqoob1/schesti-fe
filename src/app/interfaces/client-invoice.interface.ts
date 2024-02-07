@@ -24,15 +24,14 @@ export type G7State = {
   phase: number;
 
   // g702
-  totalAdditionPreviousMonth: number,
-  totalDeductionPreviousMonth: number,
-  totalAdditionThisMonth: number,
-  totalDeductionThisMonth: number,
+  totalAdditionPreviousMonth: number;
+  totalDeductionPreviousMonth: number;
+  totalAdditionThisMonth: number;
+  totalDeductionThisMonth: number;
 
-  // G702 5. RETAINAGE: 
-  p5aPercentage: number,
-  p5bPercentage: number,
-
+  // G702 5. RETAINAGE:
+  p5aPercentage: number;
+  p5bPercentage: number;
 };
 
 export type IClientInvoice = {

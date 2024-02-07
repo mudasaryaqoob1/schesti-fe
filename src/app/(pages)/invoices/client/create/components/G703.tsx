@@ -17,7 +17,11 @@ import { rowTemplate } from '../utils';
 import ColumnGroup from 'antd/es/table/ColumnGroup';
 import Column from 'antd/es/table/Column';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
-import { DeleteOutlined, ExclamationCircleFilled, PlusOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  ExclamationCircleFilled,
+  PlusOutlined,
+} from '@ant-design/icons';
 import { G7State } from '@/app/interfaces/client-invoice.interface';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
@@ -109,24 +113,24 @@ export function G703Component({
     const row = state.data[index - 1];
     // if there is no row then by default don't apply any validation
     if (!row) {
-      console.log("There is no row at previous index");
-      handleState('data', [
-        ...state.data,
-        rowTemplate(state.data.length),
-      ]);
+      console.log('There is no row at previous index');
+      handleState('data', [...state.data, rowTemplate(state.data.length)]);
       return;
     }
     const previousRowDescription = row[1];
     const previousRowSchdeuledValue = row[2];
     const previousRowThisPeriodValue = row[4];
-    if (!previousRowDescription || !previousRowSchdeuledValue || !previousRowThisPeriodValue) {
-      toast.error("Please fill Description, Scheduled Value and This Period Value of previous row before adding new row");
+    if (
+      !previousRowDescription ||
+      !previousRowSchdeuledValue ||
+      !previousRowThisPeriodValue
+    ) {
+      toast.error(
+        'Please fill Description, Scheduled Value and This Period Value of previous row before adding new row'
+      );
       return;
     }
-    handleState('data', [
-      ...state.data,
-      rowTemplate(state.data.length),
-    ]);
+    handleState('data', [...state.data, rowTemplate(state.data.length)]);
   }
 
   return (
@@ -198,7 +202,9 @@ export function G703Component({
               id="application-date"
               className="px-4 w-full rounded-none py-[7px] border border-gray-300 outline-none"
               defaultValue={dayjs(state.periodTo)}
-              onChange={(_d, dateString) => handleState('periodTo', dateString as string)}
+              onChange={(_d, dateString) =>
+                handleState('periodTo', dateString as string)
+              }
             />
           </div>
           <div className="flex self-end space-x-3 items-center">
@@ -239,10 +245,12 @@ export function G703Component({
           scroll={{ x: 1300, y: 240 }}
         >
           <Column
-            title={<SenaryHeading title="#" className='px-3 text-[12px]' />}
+            title={<SenaryHeading title="#" className="px-3 text-[12px]" />}
             dataIndex={0}
             render={(value, record: string[], index) => {
-              return index === state.data.length ? null : <div className='px-3'>{index}</div>;
+              return index === state.data.length ? null : (
+                <div className="px-3">{index}</div>
+              );
             }}
             width={40}
           />
@@ -252,12 +260,12 @@ export function G703Component({
             width={300}
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
-                return <div className='px-3'>{value}</div>;
+                return <div className="px-3">{value}</div>;
               }
               return (
                 <Input
                   value={getCellValue(record, 1)}
-                  placeholder='Enter description of work'
+                  placeholder="Enter description of work"
                   onChange={(e) => {
                     updateCellValue(index, 1, e.target.value);
                   }}
@@ -270,7 +278,7 @@ export function G703Component({
             dataIndex={2}
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
-                return <div className='px-3'>{value}</div>;
+                return <div className="px-3">{value}</div>;
               }
               return (
                 <Input
@@ -290,15 +298,17 @@ export function G703Component({
               dataIndex={3}
               render={(value, record: string[], index) => {
                 if (index === state.data.length) {
-                  return <div className='px-3'>{value}</div>;
+                  return <div className="px-3">{value}</div>;
                 }
                 let columnE = Number(getCellValue(record, 4));
-                return <Input
-                  value={state.phase > 0 ? columnE : undefined}
-                  prefix="$"
-                  type="number"
-                  disabled
-                />;
+                return (
+                  <Input
+                    value={state.phase > 0 ? columnE : undefined}
+                    prefix="$"
+                    type="number"
+                    disabled
+                  />
+                );
               }}
             />
             <Column
@@ -306,7 +316,7 @@ export function G703Component({
               dataIndex={4}
               render={(value, record, index) => {
                 if (index === state.data.length) {
-                  return <div className='px-3'>{value}</div>;
+                  return <div className="px-3">{value}</div>;
                 }
                 return (
                   <Input
@@ -328,13 +338,14 @@ export function G703Component({
             dataIndex={5}
             render={(value, record, index) => {
               if (index === state.data.length) {
-                return <div className='px-3'>{value}</div>;
+                return <div className="px-3">{value}</div>;
               }
               return (
                 <Input
                   value={value}
                   type="number"
-                  prefix="$" onChange={(e) => {
+                  prefix="$"
+                  onChange={(e) => {
                     updateCellValue(index, 5, Number(e.target.value));
                   }}
                 />
@@ -349,7 +360,7 @@ export function G703Component({
               dataIndex={6}
               render={(value, record: string[], index) => {
                 if (index === state.data.length) {
-                  return <div className='px-3'>{value}</div>;
+                  return <div className="px-3">{value}</div>;
                 }
                 let columnD = Number(getCellValue(record, 3));
                 let columnE = Number(getCellValue(record, 4));
@@ -369,10 +380,15 @@ export function G703Component({
               dataIndex={7}
               render={(value, record: string[], index) => {
                 if (index === state.data.length) {
-                  return <div className='px-3'>{value}</div>;
+                  return <div className="px-3">{value}</div>;
                 }
-                return <Input type='number'
-                  prefix="%" value={`${Number(record[7]).toFixed(2)}`} />;
+                return (
+                  <Input
+                    type="number"
+                    prefix="%"
+                    value={`${Number(record[7]).toFixed(2)}`}
+                  />
+                );
               }}
             />
           </ColumnGroup>
@@ -381,10 +397,15 @@ export function G703Component({
             dataIndex={8}
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
-                return <div className='px-3'>{value}</div>;
+                return <div className="px-3">{value}</div>;
               }
-              return <Input
-                prefix="$" value={Number(record[8]).toFixed(2)} type="number" />;
+              return (
+                <Input
+                  prefix="$"
+                  value={Number(record[8]).toFixed(2)}
+                  type="number"
+                />
+              );
             }}
           />
           <Column
@@ -392,11 +413,15 @@ export function G703Component({
             dataIndex={9}
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
-                return <div className='px-3'>{value}</div>;
+                return <div className="px-3">{value}</div>;
               }
-              return <Input type='number'
-                prefix="$"
-                value={`${Number(record[9]).toFixed(2)}`} />;
+              return (
+                <Input
+                  type="number"
+                  prefix="$"
+                  value={`${Number(record[9]).toFixed(2)}`}
+                />
+              );
             }}
           />
 
@@ -423,12 +448,11 @@ export function G703Component({
                     <Button
                       onClick={() => {
                         addNewRow(index);
-
                       }}
                       icon={<PlusOutlined />}
                       shape="circle"
                       type="default"
-                      className='!ml-3'
+                      className="!ml-3"
                     />
                   </ConfigProvider>
                 );
@@ -442,16 +466,13 @@ export function G703Component({
                       icon: <ExclamationCircleFilled />,
                       okText: 'Yes',
                       okType: 'danger',
-                      style: { backgroundColor: "white" },
+                      style: { backgroundColor: 'white' },
                       cancelText: 'No',
                       onOk() {
                         deleteRow(index);
                       },
-                      onCancel() {
-
-                      },
+                      onCancel() {},
                     });
-
                   }}
                 />
               );
