@@ -1,6 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import initialClientInvoiceState from './client-invoice.initialState';
 import { fetchClientInvoices } from './client-invoice.thunk';
+import { IResponseInterface } from '@/app/interfaces/api-response.interface';
+import { IClientInvoice } from '@/app/interfaces/client-invoice.interface';
 
 export const clientInvoiceSlice = createSlice({
   name: 'client-invoices',
@@ -11,10 +13,10 @@ export const clientInvoiceSlice = createSlice({
       state.loading = true;
     });
 
-    builder.addCase(fetchClientInvoices.fulfilled, (state, action) => {
+    builder.addCase(fetchClientInvoices.fulfilled, (state, action: PayloadAction<IResponseInterface<{ invoices: IClientInvoice[] }>>) => {
       state.loading = false;
       state.message = action.payload.message;
-      state.data = action.payload.data;
+      state.data = action.payload.data!.invoices;
       state.statusCode = action.payload.statusCode;
     });
 
