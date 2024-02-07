@@ -1,4 +1,3 @@
-'use client';
 import React from 'react';
 import {
   Button,
@@ -22,12 +21,15 @@ import {
   ExclamationCircleFilled,
   PlusOutlined,
 } from '@ant-design/icons';
-import { G7State } from '@/app/interfaces/client-invoice.interface';
+import { G7State, IClientInvoice } from '@/app/interfaces/client-invoice.interface';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
+import moment from 'moment';
 
 type Props = {
-  phases: { label: string, value: string }[],
+  phases: IClientInvoice[],
+  selectedPhase: IClientInvoice | null,
+  setSelectedPhase: React.Dispatch<React.SetStateAction<IClientInvoice | null>>,
   state: G7State;
   // eslint-disable-next-line no-unused-vars
   handleState<K extends keyof G7State>(key: K, value: G7State[K]): void;
@@ -44,6 +46,8 @@ type Props = {
 
 export function G703Component({
   phases,
+  selectedPhase,
+  setSelectedPhase,
   state,
   handleState,
   sumColumns,
@@ -96,7 +100,11 @@ export function G703Component({
         <div>
           <Select
             placeholder="Select Previous Phase"
-            options={phases}
+            options={phases.map(phase => ({ label: `Pay Application - ${moment(phase.createdAt).format('DD/MM/YYYY')}`, value: phase._id }))}
+            value={selectedPhase?._id}
+            onChange={(value) => {
+              setSelectedPhase(phases.find(phase => phase._id === value) || null);
+            }}
             style={{ width: 250 }}
             size="large"
           />

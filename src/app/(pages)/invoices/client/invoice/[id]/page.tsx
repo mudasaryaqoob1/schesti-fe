@@ -20,10 +20,15 @@ const G702_KEY = 'G702';
 export default function CreateClientInvoicePage() {
     const token = useSelector(selectToken);
     const params = useParams<{ id: string }>();
+    // all parent invoices
     const allInvoices = useSelector(selectClientInvoices);
+    // all phases of the parent invoice
     const [allPhases, setAllPhases] = useState<IClientInvoice[]>([]);
+    // parent phase, the id will be in the url
     const parentInvoice = allInvoices?.find(invoice => invoice._id === params.id);
     const [tab, setTab] = useState(G703_KEY);
+    // selected phase will be from allPhases and will be the latest last phase
+    const [selectedPhase, setSelectedPhase] = useState<IClientInvoice | null>(null);
 
     useLayoutEffect(() => {
         if (token) {
@@ -42,6 +47,7 @@ export default function CreateClientInvoicePage() {
                         const phases = parentInvoice ? [parentInvoice, ...response.data.invoices] : response.data.invoices;
                         // sort phases by date using moment
                         phases.sort((a, b) => moment(a.createdAt).unix() - moment(b.createdAt).unix());
+                        setSelectedPhase(phases[phases.length - 1])
                         setAllPhases(phases)
                     }
                 } catch (error) {
@@ -54,7 +60,7 @@ export default function CreateClientInvoicePage() {
     if (!parentInvoice) {
         return <NoInvoiceFound />
     }
-
+    console.log(selectedPhase);
     return <section className="mx-16 my-2">
         <div className="p-5 shadow-md rounded-lg border border-silverGray  bg-white">
             <div className="flex space-x-3">
@@ -106,7 +112,9 @@ export default function CreateClientInvoicePage() {
                             ),
                             tabKey: type,
                             children: tab === G703_KEY ? <G703Component
-                                phases={allPhases.map(phase => ({ label: `Pay Application - ${moment(phase.createdAt).format('DD/MM/YYYY')}`, value: phase._id }))}
+                                selectedPhase={selectedPhase}
+                                setSelectedPhase={setSelectedPhase}
+                                phases={allPhases}
                                 handleState={() => { }}
                                 onCancel={() => { }}
                                 onNext={() => { }}
