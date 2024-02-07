@@ -1,11 +1,12 @@
 import QuaternaryHeading from "@/app/component/headings/quaternary";
 import TertiaryHeading from "@/app/component/headings/tertiary";
-import { IClientInvoice } from "@/app/interfaces/client-invoice.interface";
+import { G7State, IClientInvoice } from "@/app/interfaces/client-invoice.interface";
 import { clientInvoiceService } from "@/app/services/client-invoices.service";
 import { ConfigProvider, Tabs } from "antd";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { G703Component } from "./G703";
+import { generateData } from "../utils";
 
 type Props = {
     parentInvoice: IClientInvoice;
@@ -19,7 +20,38 @@ export function PhaseComponent({ parentInvoice }: Props) {
     const [tab, setTab] = useState(G703_KEY);
     // all phases of the parent invoice
     const [allPhases, setAllPhases] = useState<IClientInvoice[]>([]);
+    const [g7State, setG7State] = useState<G7State>({
+        applicationNo: '',
+        invoiceName: '',
+        applicationDate: new Date().toString(),
+        periodTo: new Date().toString(),
+        projectNo: '',
+        data: generateData(),
+        address: '',
+        amountCertified1: '',
+        amountCertified2: '',
+        by: '',
+        country: '',
+        date: new Date().toString(),
+        distributionTo: 'Architect',
+        myCommissionExpires: '',
+        notaryPublic: '',
+        project: '',
+        stateOf: '',
+        subscribedAndSworn: '',
+        phase: 0,
+        toOwner: '',
+        viaEngineer: '',
 
+        amountCertified3: '',
+        totalAdditionPreviousMonth: 0,
+        totalAdditionThisMonth: 0,
+        totalDeductionPreviousMonth: 0,
+        totalDeductionThisMonth: 0,
+
+        p5aPercentage: 10,
+        p5bPercentage: 2,
+    });
 
     useEffect(() => {
         if (parentInvoice._id) {
@@ -32,8 +64,11 @@ export function PhaseComponent({ parentInvoice }: Props) {
                         const phases = [parentInvoice, ...response.data.invoices]
                         // sort phases by date using moment
                         phases.sort((a, b) => moment(a.createdAt).unix() - moment(b.createdAt).unix());
-                        setSelectedPhase(phases[phases.length - 1])
-                        setAllPhases(phases)
+                        const _selectedPhase = phases[phases.length - 1];
+                        setAllPhases(() => phases)
+                        setSelectedPhase(() => _selectedPhase);
+                        setG7State(() => _selectedPhase);
+                        updatePreviousApplicationColumn(_selectedPhase);
                     }
                 } catch (error) {
                     console.log(error);
@@ -41,6 +76,28 @@ export function PhaseComponent({ parentInvoice }: Props) {
             })()
         }
     }, [parentInvoice])
+    function handleG7State<K extends keyof G7State>(
+        key: K,
+        value: (typeof g7State)[K]
+    ) {
+        setG7State(prev => ({ ...prev, [key]: value }));
+    }
+    function updatePreviousApplicationColumn(_selectedPhase: IClientInvoice) {
+        let previousPhaseData = JSON.parse(JSON.stringify(_selectedPhase.data)) as Array<string[]>;
+        const data = [...previousPhaseData];
+        const COLUMN_THIS_PERIOD = 4;
+        const COLUMN_PREVIOUS_APPLICATION = 3;
+
+        // loop over data
+        data.forEach((row) => {
+            const previousPhaseThisPeriodValue = Number(row[COLUMN_THIS_PERIOD]);
+            const previousPhasePreviousApplicationValue = Number(row[COLUMN_PREVIOUS_APPLICATION]);
+            const value = previousPhaseThisPeriodValue + previousPhasePreviousApplicationValue;
+            row[COLUMN_PREVIOUS_APPLICATION] = value.toString();
+            row[COLUMN_THIS_PERIOD] = '';
+        })
+        handleG7State('data', data);
+    }
 
     return <section className="mx-16 my-2">
         <div className="p-5 shadow-md rounded-lg border border-silverGray  bg-white">
@@ -99,7 +156,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
                                 handleState={() => { }}
                                 onCancel={() => { }}
                                 onNext={() => { }}
-                                state={parentInvoice}
+                                state={g7State}
                                 sumColumns={() => 9}
                                 updateCellValue={() => { }}
                             /> : tab
