@@ -1,23 +1,36 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import initialInvoiceState from './invoice.initialState';
 import {
   deleteContractorInvoiceRequest,
   fetchSubcontractorInvoices,
 } from './invoice.thunk';
+import { IInvoice } from '@/app/interfaces/invoices.interface';
+import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 
 export const invoiceSlice = createSlice({
   name: 'invoice',
   initialState: initialInvoiceState,
-  reducers: {},
+  reducers: {
+    updateContractorInvoiceAction: (state, action: PayloadAction<{ invoice: IInvoice }>) => {
+      const oldInvoices = [...state.data];
+      const newInvoices = oldInvoices.map((invoice) => {
+        if (invoice._id === action.payload.invoice._id) {
+          return action.payload.invoice;
+        }
+        return invoice;
+      });
+      state.data = newInvoices;
+    }
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchSubcontractorInvoices.pending, (state) => {
       state.loading = true;
     });
 
-    builder.addCase(fetchSubcontractorInvoices.fulfilled, (state, action) => {
+    builder.addCase(fetchSubcontractorInvoices.fulfilled, (state, action: PayloadAction<IResponseInterface<{ invoices: IInvoice[] }>>) => {
       state.loading = false;
       state.message = action.payload.message;
-      state.data = action.payload.data;
+      state.data = action.payload.data!.invoices;
       state.statusCode = action.payload.statusCode;
     });
 
@@ -35,10 +48,10 @@ export const invoiceSlice = createSlice({
       (state, action) => {
         console.log(action.payload);
         state.loading = false;
-        const invoices = (state.data?.invoices || []).filter(
+        const invoices = (state.data).filter(
           (item: any) => item?._id !== action.payload.data?.invoice._id
         );
-        state.data = { invoices };
+        state.data = invoices;
       }
     );
 
@@ -51,5 +64,7 @@ export const invoiceSlice = createSlice({
     );
   },
 });
+
+export const { updateContractorInvoiceAction } = invoiceSlice.actions;
 
 export default invoiceSlice.reducer;
