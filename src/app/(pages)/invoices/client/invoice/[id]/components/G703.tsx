@@ -100,12 +100,12 @@ export function G703Component({
         <div>
           <Select
             placeholder="Select Previous Phase"
-            options={phases.map(phase => ({ label: `Pay Application - ${moment(phase.applicationDate).format('DD MMM-YYYY')}`, value: phase._id }))}
+            options={phases.map((phase, index) => ({ label: `Pay Application ${index + 1}: ${moment(phase.applicationDate).format('DD MMM-YYYY')} - ${moment(phase.periodTo).format('DD MMM-YYYY')}`, value: phase._id }))}
             value={selectedPhase?._id}
             onChange={(value) => {
               setSelectedPhase(value);
             }}
-            style={{ width: 250 }}
+            style={{ width: 400 }}
             size="large"
           />
         </div>
