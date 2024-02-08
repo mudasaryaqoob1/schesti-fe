@@ -27,7 +27,7 @@ export default function CreateClientInvoicePage() {
   const [g7State, setG7State] = useState<G7State>({
     applicationNo: '',
     invoiceName: '',
-    applicationDate: new Date().toString(),
+    applicationDate: new Date().toISOString(),
     periodTo: '',
     projectNo: '',
     data: generateData(),
