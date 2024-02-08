@@ -82,7 +82,6 @@ export default function CreateClientInvoicePage() {
         return ({
           ...prev,
           [key]: value,
-          data
         });
       }
       return ({ ...prev, [key]: value })
@@ -148,9 +147,10 @@ export default function CreateClientInvoicePage() {
   function updateColumn9(data: Array<string[]>, rowIndex: number) {
     const newData = [...data];
     const row = newData[rowIndex];
-    let columnF = row[5];
-    // 10% of F
-    let result = (g7State.p5aPercentage / 100) * Number(columnF);
+    let columnPreviousPeriod = row[3];
+    let columnThisPeriod = row[4];
+    // 10% of Column Previous Period and Column This Period
+    let result = (g7State.p5aPercentage / 100) * (Number(columnPreviousPeriod) + Number(columnThisPeriod));
     newData[rowIndex][9] = `${isNaN(result) ? 0 : Math.ceil(result)}`;
     return newData;
   }

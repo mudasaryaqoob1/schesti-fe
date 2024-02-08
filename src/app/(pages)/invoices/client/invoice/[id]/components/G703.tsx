@@ -145,7 +145,7 @@ export function G703Component({
             <DatePicker
               id="application-date"
               className="px-2 w-full rounded-none py-[7px] border border-gray-300 outline-none"
-              value={dayjs(state.applicationDate)}
+              defaultValue={dayjs(new Date())}
               onChange={(_d, dateString) =>
                 handleState('applicationDate', dateString as string)
               }
@@ -158,7 +158,7 @@ export function G703Component({
             <DatePicker
               id="application-date"
               className="px-4 w-full rounded-none py-[7px] border border-gray-300 outline-none"
-              value={dayjs(state.periodTo)}
+              defaultValue={undefined}
               onChange={(_d, dateString) =>
                 handleState('periodTo', dateString as string)
               }
