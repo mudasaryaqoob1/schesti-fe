@@ -52,6 +52,7 @@ export function Clients() {
       title: 'Invoice Name',
       dataIndex: 'invoiceName',
       ellipsis: true,
+      width: 300
     },
     {
       title: 'Client Name',
@@ -67,7 +68,8 @@ export function Clients() {
     },
     {
       title: 'Distributed To',
-      dataIndex: 'distributedTo',
+      dataIndex: 'distributionTo',
+      render: (value: string) => value.toUpperCase()
     },
     {
       title: 'Action',

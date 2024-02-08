@@ -73,13 +73,14 @@ export function Contractors() {
       dataIndex: 'invoiceNumber',
     },
     {
+      title: 'Project Name',
+      dataIndex: 'projectName',
+      width: 300
+    },
+    {
       title: 'Subcontractor Name',
       dataIndex: 'subContractorFirstName',
       ellipsis: true,
-    },
-    {
-      title: 'Project Name',
-      dataIndex: 'projectName',
     },
     {
       title: 'Invoice Date',
