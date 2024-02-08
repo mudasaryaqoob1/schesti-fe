@@ -249,18 +249,19 @@ export function PhaseComponent({ parentInvoice }: Props) {
                                 state={g7State}
                                 sumColumns={sumColumns}
                                 updateCellValue={updateCellValue}
-                            /> : <G702Component
-                                handleState={handleG7State}
-                                onCancel={() => {
-                                    setTab(G703_KEY);
-                                }}
-                                onNext={() => {
-                                    handleSubmit(g7State);
-                                }}
-                                state={g7State}
-                                previousPhaseState={selectedPhase}
-                                sumColumns={sumColumns}
-                            />
+                            /> :
+                                <G702Component
+                                    handleState={handleG7State}
+                                    onCancel={() => {
+                                        setTab(G703_KEY);
+                                    }}
+                                    onNext={() => {
+                                        handleSubmit(g7State);
+                                    }}
+                                    state={g7State}
+                                    previousPhaseState={selectedPhase}
+                                    sumColumns={sumColumns}
+                                />
                         };
                     })}
                 />

@@ -69,7 +69,7 @@ export function Clients() {
     {
       title: 'Distributed To',
       dataIndex: 'distributionTo',
-      render: (value: string) => value.toUpperCase()
+      render: (value) => value?.toUpperCase()
     },
     {
       title: 'Action',
