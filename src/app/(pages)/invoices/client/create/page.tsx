@@ -28,7 +28,7 @@ export default function CreateClientInvoicePage() {
     applicationNo: '',
     invoiceName: '',
     applicationDate: new Date().toString(),
-    periodTo: new Date().toString(),
+    periodTo: '',
     projectNo: '',
     data: generateData(),
     address: '',

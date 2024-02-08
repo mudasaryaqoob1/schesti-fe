@@ -152,7 +152,7 @@ export function G703Component({
             <DatePicker
               id="application-date"
               className="px-4 w-full rounded-none py-[7px] border border-gray-300 outline-none"
-              defaultValue={dayjs(state.periodTo)}
+              defaultValue={undefined}
               onChange={(_d, dateString) =>
                 handleState('periodTo', dateString as string)
               }
