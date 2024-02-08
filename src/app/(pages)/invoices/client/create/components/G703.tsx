@@ -7,7 +7,6 @@ import {
   Divider,
   Input,
   Modal,
-  Select,
   Table,
 } from 'antd';
 import CustomButton from '@/app/component/customButton/button';
@@ -90,18 +89,6 @@ export function G703Component({
         <div>
           <QuaternaryHeading title="AIA Document G703, - 1992" />
           <PrimaryHeading title="Continuation Sheet" className="font-normal" />
-        </div>
-        <div>
-          <Select
-            placeholder="Select Previous Phase"
-            options={[
-              { value: 'phase1', label: 'Phase 1' },
-              { value: 'phase2', label: 'Phase 2' },
-              { value: 'phase3', label: 'Phase 3' },
-            ]}
-            style={{ width: 250 }}
-            size="large"
-          />
         </div>
       </div>
       <Divider className="!mt-6 !m-0" />

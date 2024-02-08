@@ -37,7 +37,7 @@ export default function CreateClientInvoicePage() {
     by: '',
     country: '',
     date: new Date().toString(),
-    distributionTo: 'Architect',
+    distributionTo: 'architect',
     myCommissionExpires: '',
     notaryPublic: '',
     project: '',

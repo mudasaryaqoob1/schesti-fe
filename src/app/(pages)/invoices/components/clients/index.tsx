@@ -55,7 +55,7 @@ export function Clients() {
       width: 300
     },
     {
-      title: 'Client Name',
+      title: 'Owner',
       dataIndex: 'toOwner',
     },
     {
