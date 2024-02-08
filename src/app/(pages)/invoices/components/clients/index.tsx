@@ -36,7 +36,7 @@ export function Clients() {
   const items: MenuProps['items'] = [
     {
       key: "createPhase",
-      label: <p>Create new Invoice</p>
+      label: <p>New Payable</p>
     },
     {
       key: 'delete',
