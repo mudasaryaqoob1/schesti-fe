@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 
 type Props = {
   state: G7State;
+  previousPhaseState: G7State | null;
   // eslint-disable-next-line no-unused-vars
   handleState<K extends keyof G7State>(k: K, v: G7State[K]): void;
   // eslint-disable-next-line no-unused-vars
@@ -18,25 +19,39 @@ type Props = {
 
 export function G702Component({
   state,
+  previousPhaseState,
   handleState,
   sumColumns,
   onCancel,
   onNext,
 }: Props) {
+
   const changeOrderSummaryAdditionSum =
     state.totalAdditionThisMonth + state.totalAdditionPreviousMonth;
+
   const changeOrderSummaryDeductionSum =
     state.totalDeductionThisMonth + state.totalDeductionPreviousMonth;
+
   const changeOrderNetChanges =
     changeOrderSummaryAdditionSum - changeOrderSummaryDeductionSum;
+
   const originalContractSum = sumColumns(state.data, 2);
+
   const p5b = Number(sumColumns(state.data, 5));
+
   const resultOf_P5b = p5b * (state.p5bPercentage / 100);
+
   const p5Total = Number(sumColumns(state.data, 9)) + resultOf_P5b;
+
   const p6Total = Number(sumColumns(state.data, 6)) - p5Total;
+
+  const p7Total = Number(previousPhaseState ? sumColumns(previousPhaseState.data, 6) : 0) - p5Total;
+
   const p3Total = originalContractSum + changeOrderNetChanges;
-  const p8Total = p6Total - 0 /** Point no 7 value will be placed here*/;
-  const p9Total = p3Total - 0/** Point no 7 value will be placed here*/ - p8Total;
+
+  const p8Total = p6Total - p7Total /** Point no 7 value will be placed here*/;
+
+  const p9Total = p3Total - p7Total/** Point no 7 value will be placed here*/ - p8Total;
 
   return (
     <div>
@@ -315,7 +330,7 @@ export function G702Component({
                   className="px-2 py-1 border border-gray-300 "
                   type="number"
                   prefix="$"
-                  value={0.0}
+                  value={p7Total.toFixed(2)}
                 />
               </div>
 
@@ -588,7 +603,7 @@ export function G702Component({
 
       <div className="flex justify-end space-x-4">
         <WhiteButton onClick={onCancel} text="Previous" className="!w-40" />
-        <CustomButton text="Create" className="!w-48" onClick={onNext} />
+        <CustomButton text="Create new Phase" className="!w-48" onClick={onNext} />
       </div>
     </div>
   );

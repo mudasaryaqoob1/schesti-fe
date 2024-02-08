@@ -7,6 +7,9 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import { G703Component } from "./G703";
 import { generateData } from "../utils";
+import { G702Component } from "./G702";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 type Props = {
     parentInvoice: IClientInvoice;
@@ -15,6 +18,7 @@ const G703_KEY = 'G703';
 const G702_KEY = 'G702';
 
 export function PhaseComponent({ parentInvoice }: Props) {
+    const router = useRouter();
     // selected phase will be from allPhases and will be the latest last phase
     const [selectedPhase, setSelectedPhase] = useState<IClientInvoice | null>(null);
     const [tab, setTab] = useState(G703_KEY);
@@ -163,6 +167,20 @@ export function PhaseComponent({ parentInvoice }: Props) {
         newData[rowIndex][9] = `${isNaN(result) ? 0 : Math.ceil(result)}`;
         return newData;
     }
+
+    function handleSubmit(data: G7State) {
+        clientInvoiceService
+            .httpCreateNewInvoicePhase(parentInvoice._id, data)
+            .then((response) => {
+                if (response.statusCode == 201) {
+                    // router.push('/invoices');
+                    toast.success("Phase created successfully");
+                }
+            })
+            .catch(({ response }: any) => {
+                toast.error(response?.data.message);
+            });
+    }
     return <section className="mx-16 my-2">
         <div className="p-5 shadow-md rounded-lg border border-silverGray  bg-white">
             <div className="flex space-x-3">
@@ -225,11 +243,24 @@ export function PhaseComponent({ parentInvoice }: Props) {
                                 phases={allPhases}
                                 handleState={handleG7State}
                                 onCancel={() => { }}
-                                onNext={() => { }}
+                                onNext={() => {
+                                    setTab(G702_KEY);
+                                }}
                                 state={g7State}
                                 sumColumns={sumColumns}
                                 updateCellValue={updateCellValue}
-                            /> : tab
+                            /> : <G702Component
+                                handleState={handleG7State}
+                                onCancel={() => {
+                                    setTab(G703_KEY);
+                                }}
+                                onNext={() => {
+                                    handleSubmit(g7State);
+                                }}
+                                state={g7State}
+                                previousPhaseState={selectedPhase}
+                                sumColumns={sumColumns}
+                            />
                         };
                     })}
                 />
