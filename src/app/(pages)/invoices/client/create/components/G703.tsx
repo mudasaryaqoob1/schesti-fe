@@ -229,7 +229,7 @@ export function G703Component({
             dataIndex={2}
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
-                return <div className="px-3">{value}</div>;
+                return <div className="px-3 font-bold">{value}</div>;
               }
               return (
                 <Input
