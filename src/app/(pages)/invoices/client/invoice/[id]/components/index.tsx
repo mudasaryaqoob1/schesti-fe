@@ -80,12 +80,32 @@ export function PhaseComponent({ parentInvoice }: Props) {
             })()
         }
     }, [parentInvoice])
+
+
     function handleG7State<K extends keyof G7State>(
         key: K,
         value: (typeof g7State)[K]
     ) {
-        setG7State(prev => ({ ...prev, [key]: value }));
+        setG7State(prev => {
+            if (key === 'data' || key === 'p5aPercentage' || key === 'p5bPercentage') {
+                const data = [...prev.data];
+                for (let index = 0; index < data.length; index++) {
+                    updateColumn6(data, index);
+                    updateColumn7(data, index);
+                    updateColumn8(data, index);
+                    updateColumn9(data, index);
+                }
+                return ({
+                    ...prev,
+                    [key]: value,
+                    data
+                });
+            }
+            return ({ ...prev, [key]: value })
+        });
     }
+
+
     function updatePreviousApplicationColumn(_selectedPhase: IClientInvoice) {
         let previousPhaseData = JSON.parse(JSON.stringify(_selectedPhase.data)) as Array<string[]>;
         const data = [...previousPhaseData];
