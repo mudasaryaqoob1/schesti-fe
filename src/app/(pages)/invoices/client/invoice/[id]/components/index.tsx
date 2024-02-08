@@ -69,9 +69,9 @@ export function PhaseComponent({ parentInvoice }: Props) {
                         // sort phases by date using moment
                         phases.sort((a, b) => moment(a.createdAt).unix() - moment(b.createdAt).unix());
                         const _selectedPhase = phases[phases.length - 1];
-                        setAllPhases(() => phases)
-                        setSelectedPhase(() => _selectedPhase);
-                        setG7State(() => _selectedPhase);
+                        setAllPhases(phases)
+                        setSelectedPhase(_selectedPhase);
+                        setG7State(_selectedPhase);
                         updatePreviousApplicationColumn(_selectedPhase);
                     }
                 } catch (error) {
@@ -173,8 +173,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
             .httpCreateNewInvoicePhase(parentInvoice._id, data)
             .then((response) => {
                 if (response.statusCode == 201) {
-                    // router.push('/invoices');
-                    toast.success("Phase created successfully");
+                    router.push('/invoices');
                 }
             })
             .catch(({ response }: any) => {
@@ -237,6 +236,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
                                     const _selectedPhase = allPhases.find(phase => phase._id === value);
                                     if (_selectedPhase) {
                                         setSelectedPhase(_selectedPhase);
+                                        setG7State(_selectedPhase);
                                         updatePreviousApplicationColumn(_selectedPhase);
                                     }
                                 }}
