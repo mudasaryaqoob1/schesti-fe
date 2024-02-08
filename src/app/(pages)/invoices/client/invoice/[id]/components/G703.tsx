@@ -100,7 +100,7 @@ export function G703Component({
         <div>
           <Select
             placeholder="Select Previous Phase"
-            options={phases.map(phase => ({ label: `Pay Application - ${moment(phase.createdAt).format('DD/MM/YYYY')}`, value: phase._id }))}
+            options={phases.map(phase => ({ label: `Pay Application - ${moment(phase.applicationDate).format('DD MMM-YYYY')}`, value: phase._id }))}
             value={selectedPhase?._id}
             onChange={(value) => {
               setSelectedPhase(value);
