@@ -132,6 +132,7 @@ export function CollectPayment({ invoice, onSuccess }: Props) {
             value={formik.values.additionalDetails}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            rows={15}
           />
         </div>
         <CustomButton
