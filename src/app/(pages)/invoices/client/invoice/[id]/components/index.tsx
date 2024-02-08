@@ -71,6 +71,8 @@ export function PhaseComponent({ parentInvoice }: Props) {
                         const _selectedPhase = phases[phases.length - 1];
                         setAllPhases(phases)
                         setSelectedPhase(_selectedPhase);
+                        _selectedPhase.periodTo = '';
+                        _selectedPhase.applicationDate = '';
                         setG7State(_selectedPhase);
                         updatePreviousApplicationColumn(_selectedPhase);
                     }
