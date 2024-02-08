@@ -21,6 +21,8 @@ import type { IInvoice } from '@/app/interfaces/invoices.interface';
 import Image from 'next/image';
 import moment from 'moment';
 import { CollectPayment } from './CollectPayment';
+import { usePDF } from '@react-pdf/renderer';
+import ClientPDF from '../../view/[id]/clientPDF';
 
 export function Contractors() {
   const router = useRouter();
@@ -28,6 +30,8 @@ export function Contractors() {
   const subcontractersInvoices = useSelector(selectInvoices);
   const subcontractersInvoicesLoading = useSelector(selectInvoicesLoading);
   const [selectedInvoice, setSelectedInvoice] = useState<IInvoice | null>(null);
+
+  const [pdfInstance, updatePdfInstance] = usePDF({ document: undefined });
 
   const fetchSubcontactorsInvoices = useCallback(async () => {
     await dispatch(fetchSubcontractorInvoices({}));
@@ -38,6 +42,13 @@ export function Contractors() {
   }, [fetchSubcontactorsInvoices]);
 
   const items: MenuProps['items'] = [
+
+    {
+      key: 'download',
+      label: <a href={pdfInstance.url ? pdfInstance.url : undefined} download={`${new Date().toDateString()}.pdf`}>
+        {pdfInstance.url ? 'Download Pdf' : 'Generating Pdf'}
+      </a>
+    },
     {
       key: 'view',
       label: <p>View Invoice</p>,
@@ -128,14 +139,25 @@ export function Contractors() {
       key: 'action',
       render: (text, record) => (
         <Dropdown
+          onOpenChange={(open) => {
+            if (open) {
+              updatePdfInstance(<ClientPDF invoice={record} />)
+            } else {
+              // @ts-ignore
+              updatePdfInstance();
+            }
+            console.log("Visbibility Changing", open);
+          }}
           menu={{
             items,
             onClick: (event) => {
               const { key } = event;
               handleDropdownItemClick(key, record);
             },
+            triggerSubMenuAction: "click"
           }}
           placement="bottomRight"
+          trigger={['click']}
         >
           <Image
             src={'/menuIcon.svg'}
