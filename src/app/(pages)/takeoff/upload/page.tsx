@@ -1,78 +1,141 @@
 'use client';
-
-import React from 'react';
+import { useState } from 'react';
+import Button from '@/app/component/customButton/button';
+import WhiteButton from '@/app/component/customButton/white';
 import { bg_style } from '@/globals/tailwindvariables';
 import Image from 'next/image';
+import SenaryHeading from '@/app/component/headings/senaryHeading';
 import SecondaryHeading from '@/app/component/headings/Secondary';
 import Description from '@/app/component/description';
-import CustomButtonW from '@/app/component/customButton/white';
-import CustomButton from '@/app/component/customButton/button';
-import { useRouter } from 'next/navigation';
+import ModalComponent from '@/app/component/modal';
+import ScaleModal from '../components/scale';
 
 const Upload = () => {
-  const router = useRouter();
+  const [selectedIcon, setSelectedIcon] = useState('');
+  const [showModal, setShowModal] = useState(false);
+
+  const handleClick = (item: string) => {
+    setSelectedIcon(item);
+    setShowModal(true);
+  };
 
   return (
-    <div className={`${bg_style} flex justify-center items-center mx-16 my-6`}>
-      <div
-        className=" h-auto  py-8 
-    flex flex-col items-center  gap-3  px-5 
-    "
-      >
-        <div className="rounded-full flex justify-center items-center bg-lightGray w-64 h-64 ">
+    <>
+      <section className="md:px-16 px-8 pb-4">
+        <div className="flex gap-4 items-center mt-6">
+          <Image src={'/home.svg'} alt="home icon" width={20} height={20} />
           <Image
-            src={'/takeoff.png'}
-            alt="createicon"
-            width={134}
-            height={134}
+            src={'/chevron-right.svg'}
+            alt="chevron-right icon"
+            width={16}
+            height={16}
           />
-        </div>
-        <SecondaryHeading
-          title="Upload"
-          className="text-obsidianBlack2 mt-1.5"
-        />
-        <Description
-          title="Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content."
-          className="text-steelGray text-center mb-6 px-6"
-        />
-        <div className="w-[394px]">
-          <CustomButton
-            text="Create your TakeOff"
-            className="w-full"
-            onClick={() => router.push('/takeoff/report')}
-          />
-        </div>
-      </div>
-      <div
-        className=" h-auto py-2 bg-cosmicGray rounded-2xl
-    flex flex-col items-center  gap-3  px-5  
-    "
-      >
-        <div className="rounded-full flex justify-center items-center bg-lightGray w-64 h-64">
+          <SenaryHeading title="Takeoff" className="font-base text-slateGray" />
           <Image
-            src={'/takeOffAi.svg'}
-            alt="createicon"
-            width={134}
-            height={134}
+            src={'/chevron-right.svg'}
+            alt="chevron-right icon"
+            width={16}
+            height={16}
+          />
+
+          <SenaryHeading
+            title="Add new client"
+            className="font-semibold text-lavenderPurple cursor-pointer underline"
           />
         </div>
-        <SecondaryHeading
-          title="Takeoff by Al"
-          className="text-obsidianBlack2 mt-1.5"
-        />
-        <Description
-          title="Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content."
-          className="text-steelGray text-center mb-6 px-6"
-        />
-        <div className="w-[394px]">
-          <CustomButtonW
-            text="Create your TakeOff"
-            className="w-full"
-            // onClick={() => router.push('/upload')}
-          />
+
+        {/* search project */}
+        <div className="bg-white flex justify-between items-center mt-6 ">
+          <div
+            className="rounded-lg border border-Gainsboro bg-silverGray  h-[51px] 
+                        flex 
+                        items-center
+                            px-3"
+          >
+            <input
+              type="search"
+              name=""
+              id=""
+              placeholder="Enter project name"
+              className="w-full h-full
+          bg-transparent outline-none"
+            />
+          </div>
+          <div className="flex flex-row gap-3">
+            <div>
+              <WhiteButton
+                text="Generate with AI"
+                className="!text-goldenrodYellow !border-goldenrodYellow"
+
+                //   onClick={() => router.push('/createclient')}
+              />
+            </div>
+            <div>
+              <Button
+                text="Generate Report"
+                icon="/plus.svg"
+                iconwidth={20}
+                iconheight={20}
+                //   onClick={() => router.push('/createclient')}
+              />
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
+
+        <div
+          className={`h-12 w-full mt-6 flex flex-row items-center justify-center gap-8  py-[5.5px] ${bg_style}`}
+        >
+          <div
+            className="flex flex-col items-center"
+            onClick={() => handleClick('scale')}
+          >
+            <Image
+              style={{ color: 'red' }}
+              src={'/scale.svg'}
+              alt="createicon"
+              width={19.97}
+              height={11.31}
+            />
+            <label
+              className={`text-xs ${
+                selectedIcon === 'scale' ? 'text-[#6F6AF8]' : 'text-[#767676]'
+              } `}
+            >
+              Scale
+            </label>
+          </div>
+        </div>
+        <div
+          className={`grid place-items-center shadow-sceneryShadow rounded-lg mt-4 ${bg_style} h-[580px] `}
+        >
+          <div className="md:min-w-[493px] flex items-center flex-col gap-2 justify-center shadow-sceneryShadow rounded-lg">
+            <Image
+              src={'/uploadcloud.svg'}
+              alt="upload icon"
+              width={80}
+              height={80}
+            />
+            <SecondaryHeading
+              title="Drag and Drop here"
+              className="cursor-pointer text-graphiteGray"
+            />
+            <Description title="or" className="cursor-pointer text-coolGray" />
+            <label htmlFor="fileInput" className="w-full mt-2 cursor-pointer">
+              <input
+                type="file"
+                id="fileInput"
+                name="fileInput"
+                className="hidden"
+              />
+              <WhiteButton className="w-full" text="Select file" />
+            </label>
+          </div>
+        </div>
+        <ModalComponent open={showModal} setOpen={setShowModal}>
+          <ScaleModal setModalOpen={setShowModal} />
+        </ModalComponent>
+      </section>
+    </>
   );
 };
 
