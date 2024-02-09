@@ -71,10 +71,9 @@ export function PhaseComponent({ parentInvoice }: Props) {
                         const _selectedPhase = phases[phases.length - 1];
                         setAllPhases(phases)
                         setSelectedPhase(_selectedPhase);
-                        _selectedPhase.periodTo = '';
-                        _selectedPhase.applicationDate = '';
-                        setG7State(_selectedPhase);
-                        updatePreviousApplicationColumn(_selectedPhase);
+                        // copy the values;
+                        updateG7StateFromPhase({ ..._selectedPhase });
+
                     }
                 } catch (error) {
                     console.log(error);
@@ -83,7 +82,12 @@ export function PhaseComponent({ parentInvoice }: Props) {
         }
     }, [parentInvoice])
 
-
+    function updateG7StateFromPhase(phase: IClientInvoice) {
+        const data = updatePreviousApplicationColumn(phase);
+        phase.applicationDate = '';
+        phase.periodTo = '';
+        setG7State({ ...phase, data });
+    }
     function handleG7State<K extends keyof G7State>(
         key: K,
         value: (typeof g7State)[K]
@@ -108,7 +112,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
             row[COLUMN_PREVIOUS_APPLICATION] = value.toString();
             row[COLUMN_THIS_PERIOD] = '';
         })
-        handleG7State('data', data);
+        return data;
     }
     function sumColumns(rows: Array<string[]>, column: number): number {
         let sum = 0;
@@ -256,11 +260,10 @@ export function PhaseComponent({ parentInvoice }: Props) {
                             children: tab === G703_KEY ? <G703Component
                                 selectedPhase={selectedPhase}
                                 setSelectedPhase={value => {
-                                    const _selectedPhase = allPhases.find(phase => phase._id === value);
+                                    let _selectedPhase = allPhases.find(phase => phase._id === value);
                                     if (_selectedPhase) {
                                         setSelectedPhase(_selectedPhase);
-                                        setG7State(_selectedPhase);
-                                        updatePreviousApplicationColumn(_selectedPhase);
+                                        updateG7StateFromPhase({ ..._selectedPhase });
                                     }
                                 }}
                                 phases={allPhases}

@@ -107,55 +107,71 @@ export function G703Component({
         </div>
 
         <div className="flex flex-col p-4 space-y-3 bg-white flex-1">
-          <div className="flex self-end space-x-3 items-center">
-            <label className="text-right text-graphiteGray font-normal">
+          <div className="grid grid-cols-6 space-x-3">
+            <label className="text-right col-span-4 text-graphiteGray font-normal">
               APPLICATION NO:
             </label>
-            <input
-              id="application-date"
-              className="px-2 py-1 border border-gray-300 outline-none"
-              type="text"
-              value={state.applicationNo}
-              onChange={(e) => handleState('applicationNo', e.target.value)}
-            />
+            <div className='col-span-2'>
+              <Input
+                className="px-2 py-1  border border-gray-300 "
+                type="text"
+                value={state.applicationNo}
+                onChange={(e) => handleState('applicationNo', e.target.value)}
+              />
+              <p className='text-gray-400'>Application No is required.</p>
+            </div>
           </div>
-          <div className="flex self-end space-x-3 items-center">
-            <label className="text-right text-graphiteGray font-normal">
+
+          <div className="grid grid-cols-6 space-x-3">
+            <label className="text-right col-span-4 text-graphiteGray font-normal">
               APPLICATION DATE:
             </label>
-            <DatePicker
-              id="application-date"
-              className="px-2 w-full rounded-none py-[7px] border border-gray-300 outline-none"
-              defaultValue={dayjs(state.applicationDate)}
-              onChange={(_d, dateString) =>
-                handleState('applicationDate', dateString as string)
-              }
-            />
+            <div className='col-span-2'>
+              <DatePicker
+                id="application-date"
+                className="px-2 w-full rounded-none py-[7px] border border-gray-300 outline-none"
+                defaultValue={dayjs(state.applicationDate)}
+                onChange={(_d, dateString) =>
+                  handleState('applicationDate', dateString as string)
+                }
+              />
+              <p className='text-gray-400'>Application Date is required.</p>
+            </div>
           </div>
-          <div className="flex self-end space-x-3 items-center">
-            <label className="text-right text-graphiteGray font-normal">
+
+
+          <div className="grid grid-cols-6 space-x-3">
+            <label className="text-right col-span-4 text-graphiteGray font-normal">
               PERIOD TO:
             </label>
-            <DatePicker
-              id="application-date"
-              className="px-4 w-full rounded-none py-[7px] border border-gray-300 outline-none"
-              value={!state.periodTo ? undefined : dayjs(state.periodTo)}
-              onChange={(_d, dateString) =>
-                handleState('periodTo', dateString as string)
-              }
-            />
+            <div className="col-span-2">
+              <DatePicker
+                id="application-date"
+                className="px-4 w-full rounded-none py-[7px] border border-gray-300 outline-none"
+                value={!state.periodTo ? undefined : dayjs(state.periodTo)}
+                onChange={(_d, dateString) =>
+                  handleState('periodTo', dateString as string)
+                }
+              />
+              <p className='text-gray-400'>Period To is required.</p>
+            </div>
           </div>
-          <div className="flex self-end space-x-3 items-center">
-            <label className="text-right text-graphiteGray font-normal">
+
+          <div className="grid grid-cols-6 space-x-3">
+            <label className="text-right col-span-4 text-graphiteGray font-normal">
               PROJECT NO:
             </label>
-            <input
-              id="application-date"
-              className="px-2 py-1 border border-gray-300 outline-none"
-              type="text"
-              value={state.projectNo}
-              onChange={(e) => handleState('projectNo', e.target.value)}
-            />
+            <div className="col-span-2">
+
+              <Input
+                className="px-2 py-1  border border-gray-300 "
+                type="text"
+                value={state.projectNo}
+                onChange={(e) => handleState('projectNo', e.target.value)}
+              />
+              <p className='text-gray-400'>Project No is required.</p>
+            </div>
+
           </div>
         </div>
       </div>
