@@ -20,6 +20,8 @@ class ClientInvoiceService extends HttpService {
   > => this.get(`${this.prefix}/getInvoices`);
 
   httpGetInvoicePhases = (invoiceId: string): Promise<IResponseInterface<{ invoices: IClientInvoice[] }>> => this.get(`${this.prefix}/getPhases/${invoiceId}`);
+
+  httpDeleteClientInvoiceAndPhases = (invoiceId: string): Promise<IResponseInterface<{ invoice: IClientInvoice }>> => this.delete(`${this.prefix}/${invoiceId}`)
 }
 
 export const clientInvoiceService = new ClientInvoiceService();
