@@ -8,7 +8,7 @@ import {
   selectClientInvoices,
   selectClientInvoicesLoading,
 } from '@/redux/client-invoices/client-invoice.selector';
-import { fetchClientInvoices } from '@/redux/client-invoices/client-invoice.thunk';
+import { deleteClientInvoiceRequest, fetchClientInvoices } from '@/redux/client-invoices/client-invoice.thunk';
 import { AppDispatch } from '@/redux/store';
 import { CloseOutlined, SearchOutlined } from '@ant-design/icons';
 import { Dropdown, Table, type MenuProps } from 'antd';
@@ -83,6 +83,8 @@ export function Clients() {
             onClick: ({ key }) => {
               if (key === 'createPhase') {
                 router.push(`/invoices/client/invoice/${record._id}`);
+              } else if (key === 'delete') {
+                dispatch(deleteClientInvoiceRequest(record._id))
               }
             },
           }}
