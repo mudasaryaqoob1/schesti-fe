@@ -55,12 +55,13 @@ export function G702Component({
               To Owner:
             </label>
             <div className="flex flex-col">
-              <input
+              <Input
                 className="px-2 py-2 border border-gray-300 outline-none"
                 type="text"
                 value={state.toOwner}
                 onChange={(e) => handleState('toOwner', e.target.value)}
               />
+              <p className='text-gray-400'>Owner is required</p>
             </div>
           </div>
 
@@ -69,7 +70,7 @@ export function G702Component({
               <label className="text-right text-graphiteGray font-normal">
                 PROJECT:
               </label>
-              <input
+              <Input
                 className="px-2 py-2  border border-gray-300 outline-none"
                 type="text"
                 value={state.project}
@@ -80,7 +81,7 @@ export function G702Component({
               <label className="text-right text-graphiteGray font-normal">
                 Address:
               </label>
-              <input
+              <Input
                 className="px-2 py-1 border border-gray-300 outline-none"
                 type="text"
                 value={state.address}
@@ -91,12 +92,16 @@ export function G702Component({
               <label className="text-right text-graphiteGray font-normal">
                 Via Engineer:
               </label>
-              <input
-                className="px-2 py-1 border border-gray-300 outline-none"
-                type="text"
-                value={state.viaEngineer}
-                onChange={(e) => handleState('viaEngineer', e.target.value)}
-              />
+              <div className='w-full'>
+                <Input
+                  className="border border-gray-300 outline-none"
+                  type="text"
+                  value={state.viaEngineer}
+                  onChange={(e) => handleState('viaEngineer', e.target.value)}
+                />
+                <p className='text-gray-400'>All Required.</p>
+              </div>
+
             </div>
           </div>
           <div className="">

@@ -179,7 +179,9 @@ export default function CreateClientInvoicePage() {
         }
       })
       .catch(({ response }: any) => {
-        toast.error(response?.data.message);
+        if (response?.data.message === "Validation Failed") {
+          toast.error("Please fill the required fields.");
+        }
       });
   }
 

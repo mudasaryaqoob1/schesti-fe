@@ -203,8 +203,10 @@ export function PhaseComponent({ parentInvoice }: Props) {
                     router.push('/invoices');
                 }
             })
-            .catch(({ response }: any) => {
-                toast.error(response?.data.message);
+            .catch(({ response }) => {
+                if (response?.data.message === "Validation Failed") {
+                    toast.error("Please fill the required fields.");
+                }
             });
     }
     return <section className="mx-16 my-2">
