@@ -13,6 +13,7 @@ type Props = {
   handleState<K extends keyof G7State>(k: K, v: G7State[K]): void;
   // eslint-disable-next-line no-unused-vars
   sumColumns(rows: string[][], column: number): number;
+  updateRetainage(_value: number): void;
   onCancel: () => void;
   onNext(): void;
 };
@@ -22,6 +23,7 @@ export function G702Component({
   previousPhaseState,
   handleState,
   sumColumns,
+  updateRetainage,
   onCancel,
   onNext,
 }: Props) {
@@ -250,7 +252,7 @@ export function G702Component({
                         prefix="%"
                         value={state.p5aPercentage}
                         onChange={(e) => {
-                          handleState('p5aPercentage', Number(e.target.value));
+                          updateRetainage(Number(e.target.value));
                         }}
                       />
                       <QuinaryHeading title="of Completed Work $" />

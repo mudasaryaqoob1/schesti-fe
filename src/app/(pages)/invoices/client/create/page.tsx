@@ -97,6 +97,21 @@ export default function CreateClientInvoicePage() {
     return isNaN(sum) ? 0 : sum;
   }
 
+  function updateRetainage(value: number) {
+    let dataCopy = [...g7State.data];
+    for (let index = 0; index < dataCopy.length; index++) {
+      dataCopy = updateColumn6(dataCopy, index);
+      dataCopy = updateColumn7(dataCopy, index);
+      dataCopy = updateColumn8(dataCopy, index);
+      dataCopy = updateColumn9(dataCopy, index);
+    }
+    setG7State({
+      ...g7State,
+      data: dataCopy,
+      p5aPercentage: value
+    })
+  }
+
 
   function updateCellValue(
     row: number,
@@ -238,6 +253,7 @@ export default function CreateClientInvoicePage() {
                     <G702Component
                       state={g7State}
                       handleState={handleG7State}
+                      updateRetainage={updateRetainage}
                       sumColumns={sumColumns}
                       onCancel={() => {
                         setTab(G703_KEY);

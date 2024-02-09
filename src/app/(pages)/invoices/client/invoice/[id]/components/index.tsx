@@ -119,6 +119,20 @@ export function PhaseComponent({ parentInvoice }: Props) {
         return isNaN(sum) ? 0 : sum;
     }
 
+    function updateRetainage(value: number) {
+        let dataCopy = [...g7State.data];
+        for (let index = 0; index < dataCopy.length; index++) {
+            dataCopy = updateColumn6(dataCopy, index);
+            dataCopy = updateColumn7(dataCopy, index);
+            dataCopy = updateColumn8(dataCopy, index);
+            dataCopy = updateColumn9(dataCopy, index);
+        }
+        setG7State({
+            ...g7State,
+            data: dataCopy,
+            p5aPercentage: value
+        })
+    }
 
     function updateCellValue(
         row: number,
@@ -261,6 +275,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
                             /> :
                                 <G702Component
                                     handleState={handleG7State}
+                                    updateRetainage={updateRetainage}
                                     onCancel={() => {
                                         setTab(G703_KEY);
                                     }}
