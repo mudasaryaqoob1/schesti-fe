@@ -1,6 +1,6 @@
 'use client';
 import Button from '@/app/component/customButton/button';
-// import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Table from '@/app/component/table/takeoff';
 import Pagination from '../../../../component/pagination';
 // import { takeoffRecords, takeoffRecordsHeadings } from '../../data';
@@ -8,7 +8,7 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 
 const Records = () => {
-  // const router = useRouter();
+  const router = useRouter();
 
   return (
     <div className={`${bg_style} p-5`}>
@@ -20,6 +20,7 @@ const Records = () => {
           icon="plus.svg"
           iconwidth={20}
           iconheight={20}
+          onClick={() => router.push('/takeoff/upload')}
         />
       </div>
       <Table />
