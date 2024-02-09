@@ -37,8 +37,9 @@ export function G702Component({
   const p5Total = Number(sumColumns(state.data, 9)) + resultOf_P5b;
   const p6Total = Number(sumColumns(state.data, 6)) - p5Total;
   const p3Total = originalContractSum + changeOrderNetChanges;
-  const p8Total = p6Total - 0 /** Point no 7 value will be placed here*/;
-  const p9Total = p3Total - 0/** Point no 7 value will be placed here*/ - p8Total;
+  const p8Total = p6Total - 0; /** Point no 7 value will be placed here*/
+  const p9Total =
+    p3Total - 0 /** Point no 7 value will be placed here*/ - p8Total;
 
   return (
     <div>
@@ -61,7 +62,7 @@ export function G702Component({
                 value={state.toOwner}
                 onChange={(e) => handleState('toOwner', e.target.value)}
               />
-              <p className='text-gray-400'>Owner is required</p>
+              <p className="text-gray-400">Owner is required</p>
             </div>
           </div>
 
@@ -92,16 +93,15 @@ export function G702Component({
               <label className="text-right text-graphiteGray font-normal">
                 Via Engineer:
               </label>
-              <div className='w-full'>
+              <div className="w-full">
                 <Input
                   className="border border-gray-300 outline-none"
                   type="text"
                   value={state.viaEngineer}
                   onChange={(e) => handleState('viaEngineer', e.target.value)}
                 />
-                <p className='text-gray-400'>All Required.</p>
+                <p className="text-gray-400">All Required.</p>
               </div>
-
             </div>
           </div>
           <div className="">

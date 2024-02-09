@@ -49,7 +49,9 @@ export function CollectPayment({ invoice, onSuccess }: Props) {
       );
       if (result.statusCode == 200) {
         setLoading(false);
-        dispatch(updateContractorInvoiceAction({ invoice: result.data!.invoice }));
+        dispatch(
+          updateContractorInvoiceAction({ invoice: result.data!.invoice })
+        );
         onSuccess();
       } else {
         setLoading(false);

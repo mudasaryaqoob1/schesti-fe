@@ -11,7 +11,10 @@ export const invoiceSlice = createSlice({
   name: 'invoice',
   initialState: initialInvoiceState,
   reducers: {
-    updateContractorInvoiceAction: (state, action: PayloadAction<{ invoice: IInvoice }>) => {
+    updateContractorInvoiceAction: (
+      state,
+      action: PayloadAction<{ invoice: IInvoice }>
+    ) => {
       const oldInvoices = [...state.data];
       const newInvoices = oldInvoices.map((invoice) => {
         if (invoice._id === action.payload.invoice._id) {
@@ -20,19 +23,25 @@ export const invoiceSlice = createSlice({
         return invoice;
       });
       state.data = newInvoices;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchSubcontractorInvoices.pending, (state) => {
       state.loading = true;
     });
 
-    builder.addCase(fetchSubcontractorInvoices.fulfilled, (state, action: PayloadAction<IResponseInterface<{ invoices: IInvoice[] }>>) => {
-      state.loading = false;
-      state.message = action.payload.message;
-      state.data = action.payload.data!.invoices;
-      state.statusCode = action.payload.statusCode;
-    });
+    builder.addCase(
+      fetchSubcontractorInvoices.fulfilled,
+      (
+        state,
+        action: PayloadAction<IResponseInterface<{ invoices: IInvoice[] }>>
+      ) => {
+        state.loading = false;
+        state.message = action.payload.message;
+        state.data = action.payload.data!.invoices;
+        state.statusCode = action.payload.statusCode;
+      }
+    );
 
     builder.addCase(fetchSubcontractorInvoices.rejected, (state, action) => {
       state.loading = false;
@@ -48,7 +57,7 @@ export const invoiceSlice = createSlice({
       (state, action) => {
         console.log(action.payload);
         state.loading = false;
-        const invoices = (state.data).filter(
+        const invoices = state.data.filter(
           (item: any) => item?._id !== action.payload.data?.invoice._id
         );
         state.data = invoices;

@@ -8,7 +8,10 @@ import {
   selectClientInvoices,
   selectClientInvoicesLoading,
 } from '@/redux/client-invoices/client-invoice.selector';
-import { deleteClientInvoiceRequest, fetchClientInvoices } from '@/redux/client-invoices/client-invoice.thunk';
+import {
+  deleteClientInvoiceRequest,
+  fetchClientInvoices,
+} from '@/redux/client-invoices/client-invoice.thunk';
 import { AppDispatch } from '@/redux/store';
 import { CloseOutlined, SearchOutlined } from '@ant-design/icons';
 import { Dropdown, Table, type MenuProps } from 'antd';
@@ -35,8 +38,8 @@ export function Clients() {
   }, [fetchSubcontactorsInvoices]);
   const items: MenuProps['items'] = [
     {
-      key: "createPhase",
-      label: <p>New Payable</p>
+      key: 'createPhase',
+      label: <p>New Payable</p>,
     },
     {
       key: 'delete',
@@ -52,7 +55,7 @@ export function Clients() {
       title: 'Invoice Name',
       dataIndex: 'invoiceName',
       ellipsis: true,
-      width: 300
+      width: 300,
     },
     {
       title: 'Owner',
@@ -69,7 +72,7 @@ export function Clients() {
     {
       title: 'Distributed To',
       dataIndex: 'distributionTo',
-      render: (value) => value?.toUpperCase()
+      render: (value) => value?.toUpperCase(),
     },
     {
       title: 'Action',
@@ -84,7 +87,7 @@ export function Clients() {
               if (key === 'createPhase') {
                 router.push(`/invoices/client/invoice/${record._id}`);
               } else if (key === 'delete') {
-                dispatch(deleteClientInvoiceRequest(record._id))
+                dispatch(deleteClientInvoiceRequest(record._id));
               }
             },
           }}

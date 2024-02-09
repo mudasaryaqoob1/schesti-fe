@@ -27,7 +27,6 @@ export function G702Component({
   onCancel,
   onNext,
 }: Props) {
-
   const changeOrderSummaryAdditionSum =
     state.totalAdditionThisMonth + state.totalAdditionPreviousMonth;
 
@@ -47,13 +46,16 @@ export function G702Component({
 
   const p6Total = Number(sumColumns(state.data, 6)) - p5Total;
 
-  const p7Total = Number(previousPhaseState ? sumColumns(previousPhaseState.data, 6) : 0) - p5Total;
+  const p7Total =
+    Number(previousPhaseState ? sumColumns(previousPhaseState.data, 6) : 0) -
+    p5Total;
 
   const p3Total = originalContractSum + changeOrderNetChanges;
 
-  const p8Total = p6Total - p7Total /** Point no 7 value will be placed here*/;
+  const p8Total = p6Total - p7Total; /** Point no 7 value will be placed here*/
 
-  const p9Total = p3Total - p7Total/** Point no 7 value will be placed here*/ - p8Total;
+  const p9Total =
+    p3Total - p7Total /** Point no 7 value will be placed here*/ - p8Total;
 
   return (
     <div>
@@ -76,7 +78,7 @@ export function G702Component({
                 value={state.toOwner}
                 onChange={(e) => handleState('toOwner', e.target.value)}
               />
-              <p className='text-gray-400'>Owner is required</p>
+              <p className="text-gray-400">Owner is required</p>
             </div>
           </div>
 
@@ -107,16 +109,15 @@ export function G702Component({
               <label className="text-right text-graphiteGray font-normal">
                 Via Engineer:
               </label>
-              <div className='w-full'>
+              <div className="w-full">
                 <Input
                   className="border border-gray-300 outline-none"
                   type="text"
                   value={state.viaEngineer}
                   onChange={(e) => handleState('viaEngineer', e.target.value)}
                 />
-                <p className='text-gray-400'>All Required.</p>
+                <p className="text-gray-400">All Required.</p>
               </div>
-
             </div>
           </div>
           <div className="">
@@ -137,7 +138,11 @@ export function G702Component({
               <DatePicker
                 id="application-date"
                 className="px-2  rounded-none py-[7px] border border-gray-300 outline-none"
-                value={!state.applicationDate ? undefined : dayjs(state.applicationDate)}
+                value={
+                  !state.applicationDate
+                    ? undefined
+                    : dayjs(state.applicationDate)
+                }
                 onChange={(_d, dateString) =>
                   handleState('applicationDate', dateString as string)
                 }
@@ -610,7 +615,11 @@ export function G702Component({
 
       <div className="flex justify-end space-x-4">
         <WhiteButton onClick={onCancel} text="Previous" className="!w-40" />
-        <CustomButton text="Create new Phase" className="!w-48" onClick={onNext} />
+        <CustomButton
+          text="Create new Phase"
+          className="!w-48"
+          onClick={onNext}
+        />
       </div>
     </div>
   );

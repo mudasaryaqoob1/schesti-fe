@@ -21,25 +21,24 @@ import {
   ExclamationCircleFilled,
   PlusOutlined,
 } from '@ant-design/icons';
-import { G7State, IClientInvoice } from '@/app/interfaces/client-invoice.interface';
+import {
+  G7State,
+  IClientInvoice,
+} from '@/app/interfaces/client-invoice.interface';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
 import moment from 'moment';
 
 type Props = {
-  phases: IClientInvoice[],
-  selectedPhase: IClientInvoice | null,
+  phases: IClientInvoice[];
+  selectedPhase: IClientInvoice | null;
   setSelectedPhase: (_value: string) => void;
   state: G7State;
   // eslint-disable-next-line no-unused-vars
   handleState<K extends keyof G7State>(key: K, value: G7State[K]): void;
   // eslint-disable-next-line no-unused-vars
   sumColumns(rows: Array<string[]>, column: number): number;
-  updateCellValue(
-    _row: number,
-    _column: number,
-    _value: number | string
-  ): void
+  updateCellValue(_row: number, _column: number, _value: number | string): void;
   onCancel: () => void;
   onNext(): void;
 };
@@ -52,12 +51,11 @@ export function G703Component({
   handleState,
   sumColumns,
   onNext,
-  updateCellValue
+  updateCellValue,
 }: Props) {
   function getCellValue(row: string[], column: number) {
     return row[column];
   }
-
 
   function deleteRow(rowIndex: number) {
     const newData = [...state.data];
@@ -100,7 +98,10 @@ export function G703Component({
         <div>
           <Select
             placeholder="Select Previous Phase"
-            options={phases.map((phase, index) => ({ label: `${index + 1}. Pay Application: ${moment(phase.applicationDate).format('DD MMM-YYYY')} - ${moment(phase.periodTo).format('DD MMM-YYYY')}`, value: phase._id }))}
+            options={phases.map((phase, index) => ({
+              label: `${index + 1}. Pay Application: ${moment(phase.applicationDate).format('DD MMM-YYYY')} - ${moment(phase.periodTo).format('DD MMM-YYYY')}`,
+              value: phase._id,
+            }))}
             value={selectedPhase?._id}
             onChange={(value) => {
               setSelectedPhase(value);
@@ -126,42 +127,41 @@ export function G703Component({
         </div>
 
         <div className="flex flex-col p-4 space-y-3 bg-white flex-1">
-
           <div className="grid grid-cols-6 space-x-3">
             <label className="text-right col-span-4 text-graphiteGray font-normal">
               APPLICATION NO:
             </label>
-            <div className='col-span-2'>
+            <div className="col-span-2">
               <Input
                 className="px-2 py-1  border border-gray-300 "
                 type="text"
                 value={state.applicationNo}
                 onChange={(e) => handleState('applicationNo', e.target.value)}
               />
-              <p className='text-gray-400'>Application No is required.</p>
+              <p className="text-gray-400">Application No is required.</p>
             </div>
           </div>
-
 
           <div className="grid grid-cols-6 space-x-3">
             <label className="text-right col-span-4 text-graphiteGray font-normal">
               APPLICATION DATE:
             </label>
             <div className="col-span-2">
-
               <DatePicker
                 id="application-date"
                 className="px-2 w-full rounded-none py-[7px] border border-gray-300 outline-none"
-                value={state.applicationDate ? dayjs(state.applicationDate) : undefined}
+                value={
+                  state.applicationDate
+                    ? dayjs(state.applicationDate)
+                    : undefined
+                }
                 onChange={(_d, dateString) =>
                   handleState('applicationDate', dateString as string)
                 }
               />
-              <p className='text-gray-400'>Application Date is required.</p>
+              <p className="text-gray-400">Application Date is required.</p>
             </div>
-
           </div>
-
 
           <div className="grid grid-cols-6 space-x-3">
             <label className="text-right col-span-4 text-graphiteGray font-normal">
@@ -177,10 +177,9 @@ export function G703Component({
                   handleState('periodTo', dateString as string)
                 }
               />
-              <p className='text-gray-400'>Period To is required.</p>
+              <p className="text-gray-400">Period To is required.</p>
             </div>
           </div>
-
 
           <div className="grid grid-cols-6 space-x-3">
             <label className="text-right col-span-4 text-graphiteGray font-normal">
@@ -188,14 +187,13 @@ export function G703Component({
             </label>
 
             <div className="col-span-2">
-
               <Input
                 className="px-2 py-1  border border-gray-300 "
                 type="text"
                 value={state.projectNo}
                 onChange={(e) => handleState('projectNo', e.target.value)}
               />
-              <p className='text-gray-400'>Project No is required.</p>
+              <p className="text-gray-400">Project No is required.</p>
             </div>
           </div>
         </div>
@@ -281,12 +279,7 @@ export function G703Component({
                 }
                 let columnF = Number(getCellValue(record, 3));
                 return (
-                  <Input
-                    value={columnF}
-                    prefix="$"
-                    type="number"
-                    disabled
-                  />
+                  <Input value={columnF} prefix="$" type="number" disabled />
                 );
               }}
             />
@@ -388,7 +381,11 @@ export function G703Component({
             }}
           />
           <Column
-            title={<SenaryHeading title={`RETAINAGE (IF VARIABLE RATE) ${state.p5aPercentage}%`} />}
+            title={
+              <SenaryHeading
+                title={`RETAINAGE (IF VARIABLE RATE) ${state.p5aPercentage}%`}
+              />
+            }
             dataIndex={9}
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
@@ -450,7 +447,7 @@ export function G703Component({
                       onOk() {
                         deleteRow(index);
                       },
-                      onCancel() { },
+                      onCancel() {},
                     });
                   }}
                 />

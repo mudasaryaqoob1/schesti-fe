@@ -1,3 +1,4 @@
+'use client';
 import type { ColumnsType } from 'antd/es/table';
 import { Dropdown, Table, type MenuProps, Tag, Drawer } from 'antd';
 import { useRouter } from 'next/navigation';
@@ -22,7 +23,8 @@ import Image from 'next/image';
 import moment from 'moment';
 import { CollectPayment } from './CollectPayment';
 import { usePDF } from '@react-pdf/renderer';
-import ClientPDF from '../../view/[id]/clientPDF';
+import dynamic from 'next/dynamic';
+const ClientPDF = dynamic(import('../../view/[id]/clientPDF'), { ssr: false });
 
 export function Contractors() {
   const router = useRouter();
@@ -42,12 +44,16 @@ export function Contractors() {
   }, [fetchSubcontactorsInvoices]);
 
   const items: MenuProps['items'] = [
-
     {
       key: 'download',
-      label: <a href={pdfInstance.url ? pdfInstance.url : undefined} download={`${new Date().toDateString()}.pdf`}>
-        {pdfInstance.url ? 'Download Pdf' : 'Generating Pdf'}
-      </a>
+      label: (
+        <a
+          href={pdfInstance.url ? pdfInstance.url : undefined}
+          download={`${new Date().toDateString()}.pdf`}
+        >
+          {pdfInstance.url ? 'Download Pdf' : 'Generating Pdf'}
+        </a>
+      ),
     },
     {
       key: 'view',
@@ -86,7 +92,7 @@ export function Contractors() {
     {
       title: 'Project Name',
       dataIndex: 'projectName',
-      width: 300
+      width: 300,
     },
     {
       title: 'Subcontractor Name',
@@ -141,12 +147,12 @@ export function Contractors() {
         <Dropdown
           onOpenChange={(open) => {
             if (open) {
-              updatePdfInstance(<ClientPDF invoice={record} />)
+              updatePdfInstance(<ClientPDF invoice={record} />);
             } else {
               // @ts-ignore
               updatePdfInstance();
             }
-            console.log("Visbibility Changing", open);
+            console.log('Visbibility Changing', open);
           }}
           menu={{
             items,
@@ -154,7 +160,7 @@ export function Contractors() {
               const { key } = event;
               handleDropdownItemClick(key, record);
             },
-            triggerSubMenuAction: "click"
+            triggerSubMenuAction: 'click',
           }}
           placement="bottomRight"
           trigger={['click']}

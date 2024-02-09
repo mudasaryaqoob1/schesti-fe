@@ -1,5 +1,5 @@
 'use client';
-import { useLayoutEffect, } from 'react';
+import { useLayoutEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { ConfigProvider, Tabs } from 'antd';
 
@@ -13,12 +13,11 @@ import { useLocalStorageState } from 'ahooks';
 const CONTRACTOR_KEY = 'Contractor';
 const CLIENT_KEY = 'Client';
 
-const InvoicePage = () => {
+export default function InvoicePage() {
   const token = useSelector(selectToken);
   const [tab, setTab] = useLocalStorageState('use-local-storage-state-demo2', {
     defaultValue: CLIENT_KEY,
   });
-
 
   useLayoutEffect(() => {
     if (token) {
@@ -66,6 +65,6 @@ const InvoicePage = () => {
       </div>
     </section>
   );
-};
+}
 
-export default InvoicePage;
+

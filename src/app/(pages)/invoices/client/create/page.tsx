@@ -70,8 +70,12 @@ export default function CreateClientInvoicePage() {
     key: K,
     value: (typeof g7State)[K]
   ) {
-    setG7State(prev => {
-      if (key === 'data' || key === 'p5aPercentage' || key === 'p5bPercentage') {
+    setG7State((prev) => {
+      if (
+        key === 'data' ||
+        key === 'p5aPercentage' ||
+        key === 'p5bPercentage'
+      ) {
         const data = [...prev.data];
         for (let index = 0; index < data.length; index++) {
           updateColumn6(data, index);
@@ -79,12 +83,12 @@ export default function CreateClientInvoicePage() {
           updateColumn8(data, index);
           updateColumn9(data, index);
         }
-        return ({
+        return {
           ...prev,
           [key]: value,
-        });
+        };
       }
-      return ({ ...prev, [key]: value })
+      return { ...prev, [key]: value };
     });
   }
 
@@ -108,10 +112,9 @@ export default function CreateClientInvoicePage() {
     setG7State({
       ...g7State,
       data: dataCopy,
-      p5aPercentage: value
-    })
+      p5aPercentage: value,
+    });
   }
-
 
   function updateCellValue(
     row: number,
@@ -165,11 +168,13 @@ export default function CreateClientInvoicePage() {
     let columnPreviousPeriod = row[3];
     let columnThisPeriod = row[4];
     // 10% of Column Previous Period and Column This Period
-    let result = (g7State.p5aPercentage / 100) * (Number(columnPreviousPeriod) + Number(columnThisPeriod));
+    let result =
+      (g7State.p5aPercentage / 100) *
+      (Number(columnPreviousPeriod) + Number(columnThisPeriod));
     newData[rowIndex][9] = `${isNaN(result) ? 0 : result}`;
     return newData;
   }
-  console.log(g7State)
+  console.log(g7State);
   function handleSubmit(data: G7State) {
     clientInvoiceService
       .httpAddNewInvoice(data)
@@ -179,8 +184,8 @@ export default function CreateClientInvoicePage() {
         }
       })
       .catch(({ response }: any) => {
-        if (response?.data.message === "Validation Failed") {
-          toast.error("Please fill the required fields.");
+        if (response?.data.message === 'Validation Failed') {
+          toast.error('Please fill the required fields.');
         }
       });
   }
@@ -243,7 +248,6 @@ export default function CreateClientInvoicePage() {
                       handleState={handleG7State}
                       sumColumns={sumColumns}
                       updateCellValue={updateCellValue}
-
                       onCancel={() => {
                         router.back();
                       }}
