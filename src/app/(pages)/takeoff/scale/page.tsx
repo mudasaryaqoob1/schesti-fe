@@ -1,9 +1,11 @@
 'use client';
 import { bg_style } from '@/globals/tailwindvariables';
 import NextImage from 'next/image';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { Layer, Image as KonvaImage, Stage } from 'react-konva';
+import { UploadFileContext } from '../context';
+import { UploadFileContextProps } from '../context/UploadFileContext';
 
 type ScaleLabel = 'scale' | 'length' | 'volume' | 'count' | 'area' | 'dynamic';
 
@@ -63,9 +65,10 @@ const scaleNavigation: ScaleNavigation[] = [
 const Scale = () => {
   const [scale, setScale] = useState<ScaleLabel>('scale');
 
+  const { src } = useContext(UploadFileContext) as UploadFileContextProps;
+
   const myImage = new Image();
-  myImage.src =
-    'https://wcs.smartdraw.com/floor-plan/img/house-design-example.png?bn=15100111902';
+  myImage.src = src;
 
   return (
     <section className="mt-[100px] md:px-16 px-8 pb-4">

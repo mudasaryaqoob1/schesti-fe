@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import Button from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import { bg_style } from '@/globals/tailwindvariables';
@@ -9,14 +9,57 @@ import SecondaryHeading from '@/app/component/headings/Secondary';
 import Description from '@/app/component/description';
 import ModalComponent from '@/app/component/modal';
 import ScaleModal from '../components/scale';
+import { UploadFileContext } from '../context';
+import { UploadFileContextProps } from '../context/UploadFileContext';
+import { useRouter } from 'next/navigation';
 
 const Upload = () => {
   const [selectedIcon, setSelectedIcon] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const router = useRouter();
 
   const handleClick = (item: string) => {
     setSelectedIcon(item);
     setShowModal(true);
+  };
+
+  const { handleSrc } = useContext(UploadFileContext) as UploadFileContextProps;
+  const pdfjs = useCallback(async () => {
+    const pdfjs = await import('pdfjs-dist');
+    await import('pdfjs-dist/build/pdf.worker.min.mjs');
+
+    return pdfjs;
+  }, []);
+
+  const handleFileChange = async (event: any) => {
+    const file = event.target.files[0];
+
+    if (file) {
+      const PDFJS = await pdfjs();
+
+      const reader = new FileReader();
+      reader.onload = async (event: any) => {
+        const data = new Uint8Array(event.target.result);
+        const pdf = await PDFJS.getDocument(data).promise;
+
+        const page = await pdf.getPage(1);
+        const scale = 1;
+        const viewport = page.getViewport({ scale });
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const renderContext: any = {
+          canvasContext: context,
+          viewport: viewport,
+        };
+        await page.render(renderContext).promise;
+        const imageDataUrl = canvas.toDataURL('image/png');
+        handleSrc(imageDataUrl);
+        router.push('/takeoff/scale');
+      };
+      reader.readAsArrayBuffer(file);
+    }
   };
 
   return (
@@ -130,6 +173,7 @@ const Upload = () => {
               <WhiteButton className="w-full" text="Select file" />
             </label>
           </div>
+          <input type="file" accept=".pdf" onChange={handleFileChange} />
         </div>
         <ModalComponent open={showModal} setOpen={setShowModal}>
           <ScaleModal setModalOpen={setShowModal} />
