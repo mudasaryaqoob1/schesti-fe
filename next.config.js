@@ -16,6 +16,8 @@ module.exports = {
       use: ['@svgr/webpack'],
     });
 
+    config.externals.push({ canvas: 'commonjs canvas' });
+
     return config;
   },
   images: {

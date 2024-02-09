@@ -1,8 +1,9 @@
 'use client';
 import { bg_style } from '@/globals/tailwindvariables';
-import Image from 'next/image';
+import NextImage from 'next/image';
 import { useState } from 'react';
 import { twMerge } from 'tailwind-merge';
+import { Layer, Image as KonvaImage, Stage } from 'react-konva';
 
 type ScaleLabel = 'scale' | 'length' | 'volume' | 'count' | 'area' | 'dynamic';
 
@@ -61,6 +62,11 @@ const scaleNavigation: ScaleNavigation[] = [
 
 const Scale = () => {
   const [scale, setScale] = useState<ScaleLabel>('scale');
+
+  const myImage = new Image();
+  myImage.src =
+    'https://wcs.smartdraw.com/floor-plan/img/house-design-example.png?bn=15100111902';
+
   return (
     <section className="mt-[100px] md:px-16 px-8 pb-4">
       <div
@@ -73,10 +79,12 @@ const Scale = () => {
               className="flex flex-col items-center cursor-pointer"
               onClick={() => setScale(label)}
             >
-              <Image src={src} alt={alt} width={width} height={height} />
+              <NextImage src={src} alt={alt} width={width} height={height} />
               <span
                 className={twMerge(
-                  `text-xs capitalize ${scale === label ? 'text-[#6F6AF8]' : ''}`
+                  `text-xs capitalize ${
+                    scale === label ? 'text-[#6F6AF8]' : ''
+                  }`
                 )}
               >
                 {label}
@@ -84,6 +92,20 @@ const Scale = () => {
             </div>
           );
         })}
+      </div>
+      <div className="bg-[#F2F2F2] h-[52px] w-full">Configurations</div>
+      <div className="py-6 h-[709px] bg-red-200">
+        <div>
+          <Stage
+            width={600}
+            height={600}
+            className="flex justify-center cursor-pointer"
+          >
+            <Layer>
+              <KonvaImage image={myImage} width={600} height={600} />
+            </Layer>
+          </Stage>
+        </div>
       </div>
     </section>
   );
