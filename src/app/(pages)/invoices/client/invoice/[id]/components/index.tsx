@@ -173,7 +173,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
         let columnThisPeriod = row[4];
         // 10% of Column Previous Period and Column This Period
         let result = (g7State.p5aPercentage / 100) * (Number(columnPreviousPeriod) + Number(columnThisPeriod));
-        newData[rowIndex][9] = `${isNaN(result) ? 0 : Math.ceil(result)}`;
+        newData[rowIndex][9] = `${isNaN(result) ? 0 : result}`;
         return newData;
     }
 

@@ -151,10 +151,10 @@ export default function CreateClientInvoicePage() {
     let columnThisPeriod = row[4];
     // 10% of Column Previous Period and Column This Period
     let result = (g7State.p5aPercentage / 100) * (Number(columnPreviousPeriod) + Number(columnThisPeriod));
-    newData[rowIndex][9] = `${isNaN(result) ? 0 : Math.ceil(result)}`;
+    newData[rowIndex][9] = `${isNaN(result) ? 0 : result}`;
     return newData;
   }
-
+  console.log(g7State)
   function handleSubmit(data: G7State) {
     clientInvoiceService
       .httpAddNewInvoice(data)
