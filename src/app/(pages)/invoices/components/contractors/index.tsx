@@ -52,7 +52,7 @@ export function Contractors() {
           href={pdfInstance.url ? pdfInstance.url : undefined}
           download={`invoice_${new Date().getTime()}.pdf`}
         >
-          {pdfInstance.url ? 'Download Pdf' : 'Generating Pdf'}
+          {pdfInstance.url ? 'Download Pdf' : 'Generating Pdf...'}
         </a>
       ),
     },
@@ -163,6 +163,7 @@ export function Contractors() {
             },
           }}
           placement="bottomRight"
+          trigger={['click']}
         >
           <Image
             src={'/menuIcon.svg'}
