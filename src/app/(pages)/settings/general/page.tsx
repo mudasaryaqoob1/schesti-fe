@@ -35,6 +35,7 @@ const initialValues: IUpdateCompanyDetail = {
   phone: '',
   website: '',
   avatar: '',
+  brandingColor: ""
 };
 
 const generalSettingSchema: any = Yup.object({
@@ -130,7 +131,8 @@ const GeneralSetting = () => {
             validationSchema={generalSettingSchema}
             onSubmit={submitHandler}
           >
-            {({ handleSubmit, errors, setFieldValue }) => {
+            {({ handleSubmit, errors, setFieldValue, values }) => {
+              console.log(values);
               return (
                 <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
                   <div
@@ -241,15 +243,24 @@ const GeneralSetting = () => {
                       <div className='w-28 relative'>
                         <Button
                           text='Primary'
+                          onClick={() => {
+                            setFieldValue('brandingColor', "")
+                          }}
                         />
 
-                        <CheckOutlined className='text-white text-xs bg-[#4CAF50] rounded-full p-1 absolute -top-1 right-0' />
+                        {!values.brandingColor ? <CheckOutlined className='text-white text-xs bg-[#4CAF50] rounded-full p-1 absolute -top-1 right-0' /> : <CheckOutlined className='text-white text-xs bg-[#E7E7E7] rounded-full p-1 absolute -top-1 right-0' />}
                       </div>
 
                       <div className='w-28 relative'>
-                        <ColorPicker>
-                          <Button text='Custom' className='!bg-[#001556] !border-[#001556]' />
-                          <CheckOutlined className='text-white text-xs bg-[#E7E7E7] rounded-full p-1 absolute -top-1 right-0' />
+                        <ColorPicker value={values.brandingColor} onChange={(color) => {
+                          console.log(color.toHexString());
+                          setFieldValue('brandingColor', color.toHexString())
+                        }}>
+                          <button style={{ backgroundColor: values.brandingColor ? values.brandingColor : "#001556", borderColor: values.brandingColor ? values.brandingColor : "#001556" }}
+                            type='button' className={`rounded-[8px] border border-solid text-white leading-6 font-semibold py-3 px-5  cursor-pointer shadow-scenarySubdued h-auto text-sm w-full`}>
+                            Custom
+                          </button>
+                          {values.brandingColor ? <CheckOutlined className='text-white text-xs bg-[#4CAF50] rounded-full p-1 absolute -top-1 right-0' /> : <CheckOutlined className='text-white text-xs bg-[#E7E7E7] rounded-full p-1 absolute -top-1 right-0' />}
                         </ColorPicker>
                       </div>
                     </div>
