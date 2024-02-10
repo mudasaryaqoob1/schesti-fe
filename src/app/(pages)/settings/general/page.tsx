@@ -4,7 +4,7 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { Skeleton } from 'antd';
+import { ColorPicker, Skeleton } from 'antd';
 import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
 
@@ -25,6 +25,7 @@ import { userService } from '@/app/services/user.service';
 import { byteConverter } from '@/app/utils/byteConverter';
 import { AppDispatch } from '@/redux/store';
 import { updateProfileHandler } from '@/redux/authSlices/auth.thunk';
+import { CheckOutlined } from '@ant-design/icons';
 
 const initialValues: IUpdateCompanyDetail = {
   name: '',
@@ -187,11 +188,10 @@ const GeneralSetting = () => {
                   </div>
 
                   {/* Upload Image Div */}
-                  <div className={`${bg_style} p-5 mt-4 `}>
+                  <div className={`${bg_style} grid grid-cols-12 p-5 mt-4 `}>
                     <div
-                      className={`px-6 py-4 flex flex-col items-center gap-3 ${
-                        errors.avatar ? 'border-rose-600' : ''
-                      }  ${bg_style}`}
+                      className={`px-6 py-4 col-span-8 flex flex-col items-center gap-3 ${errors.avatar ? 'border-rose-600' : ''
+                        }  ${bg_style}`}
                     >
                       <input type="text" id="upload" className="hidden" />
                       <div className="bg-lightGrayish rounded-[28px] border border-solid border-red flex justify-center items-center p-2.5">
@@ -235,6 +235,23 @@ const GeneralSetting = () => {
                       <p className={`text-steelGray ${minHeading}`}>
                         SVG, PNG, JPG or GIF (max. 800x400px)
                       </p>
+                    </div>
+
+                    <div className='col-span-4 px-3 items-center flex space-x-3'>
+                      <div className='w-28 relative'>
+                        <Button
+                          text='Primary'
+                        />
+
+                        <CheckOutlined className='text-white text-xs bg-[#4CAF50] rounded-full p-1 absolute -top-1 right-0' />
+                      </div>
+
+                      <div className='w-28 relative'>
+                        <ColorPicker>
+                          <Button text='Custom' className='!bg-[#001556] !border-[#001556]' />
+                          <CheckOutlined className='text-white text-xs bg-[#E7E7E7] rounded-full p-1 absolute -top-1 right-0' />
+                        </ColorPicker>
+                      </div>
                     </div>
                   </div>
                   <div className="flex justify-end gap-4 mt-6">
