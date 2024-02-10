@@ -76,6 +76,7 @@ const GeneralSetting = () => {
       phone: Number(values.phone),
       website: values.website,
       avatar: values.avatar,
+      brandingColor: values.brandingColor
     };
 
     let result: any = await dispatch(updateProfileHandler(obj));
