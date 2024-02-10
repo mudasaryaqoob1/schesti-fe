@@ -23,8 +23,7 @@ import Image from 'next/image';
 import moment from 'moment';
 import { CollectPayment } from './CollectPayment';
 import { usePDF } from '@react-pdf/renderer';
-import dynamic from 'next/dynamic';
-const ClientPDF = dynamic(import('../../view/[id]/clientPDF'), { ssr: false });
+import ClientPDF from './clientPDF';
 
 export function Contractors() {
   const router = useRouter();
@@ -49,7 +48,7 @@ export function Contractors() {
       label: (
         <a
           href={pdfInstance.url ? pdfInstance.url : undefined}
-          download={`${new Date().toDateString()}.pdf`}
+          download={`invoice_${new Date().getTime()}.pdf`}
         >
           {pdfInstance.url ? 'Download Pdf' : 'Generating Pdf'}
         </a>
@@ -160,10 +159,8 @@ export function Contractors() {
               const { key } = event;
               handleDropdownItemClick(key, record);
             },
-            triggerSubMenuAction: 'click',
           }}
           placement="bottomRight"
-          trigger={['click']}
         >
           <Image
             src={'/menuIcon.svg'}

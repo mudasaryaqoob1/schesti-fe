@@ -65,8 +65,7 @@
     "typescript": "^5"
   },
   "overrides": {
-    "@react-pdf/layout": "3.6.2",
-    "@react-pdf/pdfkit": "3.0.2",
-    "@react-pdf/image": "2.2.1"
+    "@react-pdf/font": "2.2.1",
+    "@react-pdf/pdfkit": "2.1.0"
   }
 }
