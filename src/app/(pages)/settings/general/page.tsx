@@ -240,7 +240,7 @@ const GeneralSetting = () => {
                     </div>
 
                     <div className='col-span-4 px-3 items-center flex space-x-3'>
-                      <div className='w-28 relative'>
+                      <div className='flex-1 relative'>
                         <Button
                           text='Primary'
                           onClick={() => {
@@ -251,14 +251,14 @@ const GeneralSetting = () => {
                         {!values.brandingColor ? <CheckOutlined className='text-white text-xs bg-[#4CAF50] rounded-full p-1 absolute -top-1 right-0' /> : <CheckOutlined className='text-white text-xs bg-[#E7E7E7] rounded-full p-1 absolute -top-1 right-0' />}
                       </div>
 
-                      <div className='w-28 relative'>
+                      <div className='flex-1 relative'>
                         <ColorPicker value={values.brandingColor} onChange={(color) => {
                           console.log(color.toHexString());
                           setFieldValue('brandingColor', color.toHexString())
                         }}>
                           <button style={{ backgroundColor: values.brandingColor ? values.brandingColor : "#001556", borderColor: values.brandingColor ? values.brandingColor : "#001556" }}
-                            type='button' className={`rounded-[8px] border border-solid text-white leading-6 font-semibold py-3 px-5  cursor-pointer shadow-scenarySubdued h-auto text-sm w-full`}>
-                            Custom
+                            type='button' className={`rounded-[8px] border border-solid text-white leading-6 font-semibold py-2 px-5  cursor-pointer shadow-scenarySubdued text-right h-auto text-sm w-full`}>
+                            <Image alt='color picker' src={"/Group.svg"} width={30} height={30} />
                           </button>
                           {values.brandingColor ? <CheckOutlined className='text-white text-xs bg-[#4CAF50] rounded-full p-1 absolute -top-1 right-0' /> : <CheckOutlined className='text-white text-xs bg-[#E7E7E7] rounded-full p-1 absolute -top-1 right-0' />}
                         </ColorPicker>
