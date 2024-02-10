@@ -19,7 +19,7 @@ import scheduleReducer from './schedule/schedule.slice';
 import meetingReducer from './meeting/meeting.slice';
 
 export type RootState = {
-  auth: any;
+  auth: typeof authReducer;
   companyClient: any;
   companySubContractor: any;
   estimates: any;

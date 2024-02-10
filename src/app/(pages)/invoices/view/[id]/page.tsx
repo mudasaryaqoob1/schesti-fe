@@ -16,6 +16,8 @@ import CustomButton from '@/app/component/customButton/button';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import ClientPDF from './clientPDF';
 import moment from 'moment';
+import { RootState } from '@/redux/store';
+import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 
 export default function ViewSubcontractorInvoicePage() {
   const token = useSelector(selectToken);
@@ -23,7 +25,8 @@ export default function ViewSubcontractorInvoicePage() {
   const id = params.id;
   const subcontractorInvoices = useSelector(selectInvoices);
   const [invoiceData, setInvoiceData] = useState<IInvoice | null>(null);
-
+  const auth = useSelector((state: RootState) => state.auth);
+  const user = auth.user?.user as IUser | undefined;
   useLayoutEffect(() => {
     if (token) {
       HttpService.setToken(token);
@@ -218,7 +221,7 @@ export default function ViewSubcontractorInvoicePage() {
       <Divider />
       <div className="mt-4 flex justify-end">
         <PDFDownloadLink
-          document={<ClientPDF invoice={invoiceData} />}
+          document={<ClientPDF invoice={invoiceData} user={user} />}
           fileName="invoice.pdf"
         >
           {({ loading }) => (

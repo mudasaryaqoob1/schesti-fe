@@ -13,7 +13,7 @@ import {
   fetchSubcontractorInvoices,
 } from '@/redux/invoice/invoice.thunk';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch } from '@/redux/store';
+import { AppDispatch, RootState } from '@/redux/store';
 import {
   selectInvoices,
   selectInvoicesLoading,
@@ -24,6 +24,7 @@ import moment from 'moment';
 import { CollectPayment } from './CollectPayment';
 import { usePDF } from '@react-pdf/renderer';
 import ClientPDF from './clientPDF';
+import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 
 export function Contractors() {
   const router = useRouter();
@@ -31,7 +32,8 @@ export function Contractors() {
   const subcontractersInvoices = useSelector(selectInvoices);
   const subcontractersInvoicesLoading = useSelector(selectInvoicesLoading);
   const [selectedInvoice, setSelectedInvoice] = useState<IInvoice | null>(null);
-
+  const auth = useSelector((state: RootState) => state.auth);
+  const user = auth.user?.user as IUser | undefined;
   const [pdfInstance, updatePdfInstance] = usePDF({ document: undefined });
 
   const fetchSubcontactorsInvoices = useCallback(async () => {
@@ -146,7 +148,7 @@ export function Contractors() {
         <Dropdown
           onOpenChange={(open) => {
             if (open) {
-              updatePdfInstance(<ClientPDF invoice={record} />);
+              updatePdfInstance(<ClientPDF invoice={record} user={user!} />);
             } else {
               // @ts-ignore
               updatePdfInstance();
