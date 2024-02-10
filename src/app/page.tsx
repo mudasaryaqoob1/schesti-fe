@@ -38,10 +38,10 @@ export default function Home() {
 
         <div className="w-[800px] space-y-3">
           <h3 className="text-[#7138DF] text-lg font-medium">Leading the Way: </h3>
-          <h1 className="text-[#101112] font-medium">
+          <h1 className="text-[#101112] font-medium leading-8">
             Schesti, the Pioneer Application Crafting Precise Estimates Through AI for Exceptional Organizational Success.
           </h1>
-          <p className="text-lg text-[#475467]">Elevate Your Landscaping Venture with Schesti: A Symphony of Precision and Speed, Reshaping the Land</p>
+          <p className="text-lg text-[#475467] leading-8">Elevate Your Landscaping Venture with Schesti: A Symphony of Precision and Speed, Reshaping the Land</p>
         </div>
 
         <div className="mt-3">
@@ -50,13 +50,13 @@ export default function Home() {
               <h1 className="text-[#1D2939] font-bold leading-8">
                 Advanced Takeoff Module with AI Integration
               </h1>
-              <p className="text-lg text-[#475467]">Leverage our sophisticated Takeoff Module, seamlessly integrated with AI technology. Experience precision and efficiency in landscaping estimates, ensuring your projects start on a foundation of accuracy and reliability.</p>
+              <p className="text-lg leading-10 text-[#475467]">Leverage our sophisticated Takeoff Module, seamlessly integrated with AI technology. Experience precision and efficiency in landscaping estimates, ensuring your projects start on a foundation of accuracy and reliability.</p>
             </div>
             <div>
               <Image
                 src={"/ai-integration-img.png"}
-                height={600}
-                width={700}
+                height={500}
+                width={600}
                 alt="dashboard"
               />
             </div>
@@ -73,7 +73,7 @@ export default function Home() {
               Revolutionize your field service business with schesti.
             </h1>
           </div>
-          <p className="text-lg leading-8 text-[#344054]">
+          <p className="text-lg leading-10 text-[#344054]">
             Schesti streamlines your business operations by providing a central hub for all your clients, projects, scheduling, invoicing, and estimating needs. {"It's"} the ultimate tool for businesses who want to save time, increase efficiency, and boost profitability.
           </p>
 
@@ -113,7 +113,7 @@ export default function Home() {
 
             <div className="mt-3 space-y-6">
               <h3 className="text-[#EF9F28] text-xl font-normal">Estimating</h3>
-              <h1 className="text-4xl text-[#1D2939] font-bold leading-[40px]">Automate your business with schesti</h1>
+              <h1 className="text-4xl text-[#1D2939] font-bold leading-10">Automate your business with schesti</h1>
               <p className="text-lg text-[#475467] leading-8">Say goodbye to messy spreadsheets and disorganized paperwork. With schesti, you can easily manage your clients, estimates, sales process, and scheduling, all in one place. Plus, our intuitive interface makes it easy for anyone on your team to use.</p>
             </div>
           </div>
@@ -128,7 +128,7 @@ export default function Home() {
             <h1 className="text-[#1D2939] font-bold leading-8">
               Schedule estimates and create gantt charts
             </h1>
-            <p className="text-lg text-[#475467] leading-8">Efficiently manage your project timelines. Schedule estimates with ease and visualize your project plan through Gantt charts. {"Schesti’s"} intuitive scheduling tools provide a clear overview, helping you stay on top of deadlines and ensuring a well-organized project workflow.</p>
+            <p className="text-lg text-[#475467] leading-10">Efficiently manage your project timelines. Schedule estimates with ease and visualize your project plan through Gantt charts. {"Schesti’s"} intuitive scheduling tools provide a clear overview, helping you stay on top of deadlines and ensuring a well-organized project workflow.</p>
           </div>
           <div>
             <Image
@@ -149,7 +149,7 @@ export default function Home() {
               <div className="space-y-5">
                 <h1 className="text-white text-4xl">Schedule estimates and create gantt charts</h1>
                 <p
-                  className="text-white text-lg leading-8 pr-52"
+                  className="text-white text-lg leading-10 pr-52"
                 >
                   Unlock a prime advertising space for your company! Schesti offers exclusive opportunities for our valued partners to showcase their brand or promotions here.
                 </p>
@@ -250,7 +250,7 @@ export default function Home() {
               <div className="space-y-8">
                 <h1 className="text-white text-center text-4xl">Schesti: Your Gateway to Unmatched Efficiency</h1>
                 <p
-                  className="text-white text-lg leading-8 text-center px-60"
+                  className="text-white text-lg leading-10 text-center px-60"
                 >
                   Empower Your Projects with Schesti: Your Comprehensive Solution for Achieving Exceptional Efficiency in Field Service Excellence
                 </p>
@@ -283,17 +283,17 @@ export default function Home() {
               alt="Schesti"
             />
 
-            <a
-              className={`text-gray-400 cursor-pointer text-lg pb-1 font-medium`}
+            <p
+              className={`text-gray-400  text-lg pb-1 font-medium`}
             >
               Contact
-            </a>
+            </p>
 
-            <a
-              className={`text-white cursor-pointer text-lg pb-1 font-medium`}
+            <p
+              className={`text-white  text-lg pb-1 font-medium`}
             >
               info@shesti.com
-            </a>
+            </p>
           </div>
 
           <div className="flex items-center space-x-8">
@@ -315,21 +315,21 @@ export default function Home() {
           </div>
 
           <div className="flex flex-col justify-end items-start">
-            <a
-              className={`text-white cursor-pointer text-lg pb-1 font-medium`}
+            <p
+              className={`text-white text-lg pb-1 font-medium`}
             >
               Get in touch
-            </a>
-            <a
-              className={`text-gray-400 cursor-pointer text-lg pb-1 font-medium`}
+            </p>
+            <p
+              className={`text-gray-400 text-lg pb-1 font-medium`}
             >
               Stay informed on how you can make difference
-            </a>
+            </p>
 
             <div className="flex justify-center py-2 ">
               <div className="flex items-center rounded-full bg-white px-4 py-1 shadow-md">
                 <input
-                  className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 flex-1 border-none"
+                  className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none  disabled:cursor-not-allowed disabled:opacity-50 flex-1 border-none"
                   placeholder="Enter your email"
                   type="email"
                 />
