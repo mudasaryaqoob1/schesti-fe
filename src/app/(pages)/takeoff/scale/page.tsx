@@ -3,9 +3,9 @@ import { bg_style } from '@/globals/tailwindvariables';
 import NextImage from 'next/image';
 import { useContext, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
-import { Layer, Image as KonvaImage, Stage } from 'react-konva';
 import { UploadFileContext } from '../context';
 import { UploadFileContextProps } from '../context/UploadFileContext';
+import Draw from './Draw';
 
 type ScaleLabel = 'scale' | 'length' | 'volume' | 'count' | 'area' | 'dynamic';
 
@@ -71,7 +71,7 @@ const scaleNavigation: ScaleNavigation[] = [
 
 const Scale = () => {
   const [scale, setScale] = useState<ScaleLabel>('scale');
-
+  const [depth, setDepth] = useState<number>(0);
   const { src } = useContext(UploadFileContext) as UploadFileContextProps;
 
   const myImage = new Image();
@@ -119,19 +119,17 @@ const Scale = () => {
           }
         )}
       </div>
-      <div className="bg-[#F2F2F2] h-[52px] w-full">Configurations</div>
-      <div className="py-6 h-[709px] bg-red-200">
-        <div>
-          <Stage
-            width={600}
-            height={600}
-            className="flex justify-center cursor-pointer"
-          >
-            <Layer>
-              <KonvaImage image={myImage} width={600} height={600} />
-            </Layer>
-          </Stage>
-        </div>
+      <div className="bg-[#F2F2F2] h-[52px] w-full">
+        <input
+          type="number"
+          min={1}
+          placeholder="depth"
+          className="h-1/2"
+          onChange={(e) => setDepth(+e.target.value)}
+        />
+      </div>
+      <div className="py-6 h-[709px]">
+        <Draw selected={scale} depth={depth} />
       </div>
     </section>
   );
