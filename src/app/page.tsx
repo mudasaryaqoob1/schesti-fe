@@ -195,7 +195,7 @@ export default function Home() {
               <div className="rounded-lg border bg-card text-card-foreground shadow-sm w-full" data-v0-t="card">
                 <div className="flex items-center justify-between p-6">
                   <h3 className="text-[18px] leading-[24px] font-semibold text-[#1D2939]">Add client</h3>
-                  <div className="font-outline-2 ">1</div>
+                  <div className="font-outline">1</div>
                 </div>
                 <div className="px-6 pb-6">
                   <p className="text-[16px] leading-[28px] text-[#667085]">
@@ -209,7 +209,7 @@ export default function Home() {
               <div className="rounded-lg border bg-card text-card-foreground shadow-sm w-full" data-v0-t="card">
                 <div className="flex items-center justify-between p-6">
                   <h3 className="text-[18px] leading-[24px] font-semibold text-[#1D2939]">Create project request</h3>
-                  <div className="font-outline-2 ">2</div>
+                  <div className="font-outline">2</div>
                 </div>
                 <div className="px-6 pb-6">
                   <p className="text-[16px] leading-[28px] text-[#667085]">
@@ -221,7 +221,7 @@ export default function Home() {
               <div className="rounded-lg border bg-card text-card-foreground shadow-sm w-full" data-v0-t="card">
                 <div className="flex items-center justify-between p-6">
                   <h3 className="text-[18px] leading-[24px] font-semibold text-[#1D2939]">Takeoff and esstimate</h3>
-                  <div className="font-outline-2 ">3</div>
+                  <div className="font-outline">3</div>
                 </div>
                 <div className="px-6 pb-6">
                   <p className="text-[16px] leading-[28px] text-[#667085]">
@@ -234,7 +234,7 @@ export default function Home() {
               <div className="rounded-lg border bg-card text-card-foreground shadow-sm w-full" data-v0-t="card">
                 <div className="flex items-center justify-between p-6">
                   <h3 className="text-[18px] leading-[24px] font-semibold text-[#1D2939]">Schedule project</h3>
-                  <div className="font-outline-2 ">4</div>
+                  <div className="font-outline">4</div>
                 </div>
                 <div className="px-6 pb-6">
                   <p className="text-[16px] leading-[28px] text-[#667085]">

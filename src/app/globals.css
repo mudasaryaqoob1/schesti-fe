@@ -112,11 +112,12 @@ a {
 }
 
 
-.font-outline-2 {
+.font-outline {
   text-align: right;
   -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: #DEDADA;
   font-size: 60px;
+  font-family: 'Poppins', Arial, Helvetica, sans-serif;
   font-style: normal;
   font-weight: 700;
   color: transparent;
