@@ -56,9 +56,10 @@ const defaultPolyLineState = { points: [], stroke: '', strokeWidth: 0 };
 
 interface Props {
   selected: string;
+  depth: number;
 }
 
-const Draw: React.FC<Props> = ({ selected }) => {
+const Draw: React.FC<Props> = ({ selected, depth }) => {
   const {
     calcLineDistance,
     convertArrayIntoChunks,
@@ -180,7 +181,7 @@ const Draw: React.FC<Props> = ({ selected }) => {
                 const volumeConfig: PolygonConfigInterface = {
                   ...prev,
                   center: polygonCenter,
-                  volume: polygonArea,
+                  volume: polygonArea * depth,
                 };
 
                 return {
@@ -263,15 +264,28 @@ const Draw: React.FC<Props> = ({ selected }) => {
     return [];
   }, [completingLine, polyLine.points]);
 
+  const polygonText = useMemo(() => {
+    if (selected === 'area') {
+      return `${polygonArea?.toFixed(2) || ''} sq`;
+    } else if (selected == 'volume') {
+      return `${((polygonArea || 0) * depth).toFixed(2) || ''} cubic`;
+    }
+    return '';
+  }, [polygonArea, depth, selected]);
+
   return (
     <div
       className="w-fit mx-auto"
       tabIndex={1}
       onKeyDown={(e) => {
-        if (e.key === 'Escape') setEndLiveEditing(true);
+        if (e.key === 'Escape') {
+          // setEndLiveEditing(true);
+          setCurrentLine(defaultCurrentLineState);
+          setCompletingLine(defaultCurrentLineState);
+          setPolyLine(defaultPolyLineState);
+        }
         if (e.key === 'Enter' && selected === 'dynamic') {
           setCurrentLine(defaultCurrentLineState);
-          setEndLiveEditing(true);
 
           setDraw((prevDraw) => ({
             ...prevDraw,
@@ -330,13 +344,14 @@ const Draw: React.FC<Props> = ({ selected }) => {
 
           {/* Drawing Area */}
           {draw.area.map(({ center, area, ...rest }, index) => {
+            const text = `${area?.toFixed(2) || ''}sq`;
             return (
               <Group key={index}>
                 <Line {...rest} />
                 <TextKonva
                   {...center}
                   fontSize={15}
-                  text={area?.toFixed(2) || ''}
+                  text={text}
                   offsetX={30}
                   fill="red"
                   fontStyle="bold"
@@ -353,7 +368,7 @@ const Draw: React.FC<Props> = ({ selected }) => {
                   <TextKonva
                     {...polygonCenter}
                     fontSize={20}
-                    text={polygonArea?.toFixed(2) || ''}
+                    text={polygonText}
                     offsetX={30}
                     fill="red"
                     fontStyle="bold"
@@ -374,13 +389,14 @@ const Draw: React.FC<Props> = ({ selected }) => {
 
           {/* Drawing Volume */}
           {draw.volume.map(({ center, volume, ...rest }, index) => {
+            const text = `${volume?.toFixed(2) || ''} cubic`;
             return (
               <Group key={index}>
                 <Line {...rest} />
                 <TextKonva
                   {...center}
                   fontSize={15}
-                  text={volume?.toFixed(2) || ''}
+                  text={text}
                   offsetX={30}
                   fill="red"
                   fontStyle="bold"
@@ -420,6 +436,7 @@ const Draw: React.FC<Props> = ({ selected }) => {
               />
             )}
 
+          {/* Drawing Count */}
           {draw.count.map((tick) => (
             <KonvaImage
               key={`${tick.x}${tick.y}`}
@@ -429,7 +446,6 @@ const Draw: React.FC<Props> = ({ selected }) => {
               {...tick}
             />
           ))}
-
           <KonvaText
             fontSize={15}
             fontStyle="bold"

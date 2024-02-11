@@ -64,7 +64,7 @@ const scaleNavigation: ScaleNavigation[] = [
 
 const Scale = () => {
   const [scale, setScale] = useState<ScaleLabel>('scale');
-
+  const [depth, setDepth] = useState<number>(0);
   const { src } = useContext(UploadFileContext) as UploadFileContextProps;
 
   const myImage = new Image();
@@ -96,9 +96,17 @@ const Scale = () => {
           );
         })}
       </div>
-      <div className="bg-[#F2F2F2] h-[52px] w-full">Configurations</div>
+      <div className="bg-[#F2F2F2] h-[52px] w-full">
+        <input
+          type="number"
+          min={1}
+          placeholder="depth"
+          className="h-1/2"
+          onChange={(e) => setDepth(+e.target.value)}
+        />
+      </div>
       <div className="py-6 h-[709px]">
-        <Draw selected={scale} />
+        <Draw selected={scale} depth={depth} />
       </div>
     </section>
   );
