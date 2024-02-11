@@ -6,6 +6,8 @@ import { twMerge } from 'tailwind-merge';
 import { UploadFileContext } from '../context';
 import { UploadFileContextProps } from '../context/UploadFileContext';
 import Draw from './Draw';
+import ModalComponent from '@/app/component/modal';
+import ScaleModal from '../components/scale';
 
 type ScaleLabel = 'scale' | 'length' | 'volume' | 'count' | 'area' | 'dynamic';
 
@@ -71,6 +73,7 @@ const scaleNavigation: ScaleNavigation[] = [
 
 const Scale = () => {
   const [scale, setScale] = useState<ScaleLabel>('scale');
+  const [showModal, setShowModal] = useState(false);
   const [depth, setDepth] = useState<number>(0);
   const { src } = useContext(UploadFileContext) as UploadFileContextProps;
 
@@ -88,7 +91,10 @@ const Scale = () => {
               <div
                 key={src}
                 className="flex flex-col items-center cursor-pointer"
-                onClick={() => setScale(label)}
+                onClick={() => {
+                  setShowModal(true);
+                  setScale(label);
+                }}
               >
                 {scale === label ? (
                   <NextImage
@@ -131,6 +137,12 @@ const Scale = () => {
       <div className="py-6 h-[709px]">
         <Draw selected={scale} depth={depth} />
       </div>
+
+      {scale === 'scale' && (
+        <ModalComponent open={showModal} setOpen={setShowModal}>
+          <ScaleModal setModalOpen={setShowModal} />
+        </ModalComponent>
+      )}
     </section>
   );
 };
