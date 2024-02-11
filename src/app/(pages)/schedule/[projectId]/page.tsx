@@ -1,11 +1,8 @@
 'use client';
-import { useLayoutEffect, useState , useEffect  , useCallback} from 'react';
+import { useLayoutEffect, useState, useEffect, useCallback } from 'react';
 import { ConfigProvider, Tabs, Tag } from 'antd';
 import { useSelector } from 'react-redux';
-import { useParams , useRouter } from 'next/navigation';
-
-
-
+import { useParams, useRouter } from 'next/navigation';
 
 import SecondaryHeading from '@/app/component/headings/Secondary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
@@ -21,6 +18,7 @@ import { IWBSType } from '@/app/interfaces/schedule/createSchedule.interface';
 import { scheduleService } from '@/app/services/schedule.service';
 import { IProject } from '@/app/interfaces/schedule/project.schedule.interface';
 import moment from 'moment';
+import { toast } from 'react-toastify';
 
 const SCHEDULE_KEY = 'Schedule';
 const GANTT_KEY = 'Gantt';
@@ -37,69 +35,108 @@ export default function SchedulePage() {
     }
   }, [token]);
 
-
   const [tab, setTab] = useState(SCHEDULE_KEY);
   const [state, setState] = useState<IWBSType[]>([]);
-  const [scheduleProjectDetail, setScheduleProjectDetail] = useState<IProject>()
+  const [scheduleProjectDetail, setScheduleProjectDetail] =
+    useState<IProject>();
 
+  const fetchscheduleDetail = useCallback(
+    async (projectId: string | string[]) => {
+      await scheduleService
+        .httpGetScheduleProjectDetail(projectId as string)
+        .then((resp) => {
+          setScheduleProjectDetail(resp.data?.scheduleProjectDetail);
+        })
+        .catch(() => {
+          router.push(`/schedule`);
+        });
+    },
+    []
+  );
 
-  const fetchscheduleDetail = useCallback(async(projectId : string | string[]) => {
-    await scheduleService.httpGetScheduleProjectDetail(projectId as string).then((resp) => {
-      setScheduleProjectDetail(resp.data?.scheduleProjectDetail)
-    })
-    .catch(() => {
-      router.push(`/schedule`);
-    })
-  }, [])
-
+  const fetchScheduleProjectDivs = useCallback(
+    async (projectId: string | string[]) => {
+      const proejctDivs = await scheduleService.httpGetScheduleProjectDivs(
+        projectId as string
+      );
+      setState(proejctDivs.data?.projectDivs as IWBSType[]);
+    },
+    []
+  );
 
   useEffect(() => {
-    fetchscheduleDetail(projectId)
-  },[projectId])
+    fetchscheduleDetail(projectId);
+    fetchScheduleProjectDivs(projectId);
+  }, [projectId]);
 
-  function addWbsHandler(
+  async function addWbsHandler(
     category: IWBSType['category'],
     subCategory: IWBSType['subCategory']
   ) {
-    const item: IWBSType = {
-      id: new Date().getTime().toString(),
-      category,
-      subCategory,
-      title: `${category.label} ${subCategory.label}`,
-      scopeItems: [],
-    };
-
-    setState([...state, item]);
+    const existProjectDiv = state.find((div) => div.title === `${category} ${subCategory}`)
+    console.log(existProjectDiv , 'existProjectDiv');
+    
+    if(existProjectDiv){
+      toast.warn('This WBS already exist')
+    }
+    else{
+      let object: IWBSType = {
+        category: category,
+        subCategory: subCategory,
+        title: `${category} ${subCategory}`,
+      };
+  
+      const addProjectDiv = await scheduleService.httpAddProjectDiv({
+        projectId: projectId,
+        data: object,
+      });
+  
+      setState([...state, addProjectDiv.data?.scheduleProjectDiv!]);
+    }
+   
   }
 
-  function updateWbs(
+  async function updateWbs(
     id: string,
     category: IWBSType['category'],
     subCategory: IWBSType['subCategory']
   ) {
     const updatedWbs = state.map((item) => {
-      if (item.id === id) {
+      if (item._id === id) {
         return {
           ...item,
           category,
           subCategory,
-          title: `${category.label} ${subCategory.label}`,
+          title: `${category} ${subCategory}`,
         };
       }
       return item;
     });
     setState(updatedWbs);
+
+    let object: IWBSType = {
+      category: category,
+      subCategory: subCategory,
+      title: `${category} ${subCategory}`,
+    };
+
+
+    await scheduleService.httpUpdateProjectDiv({divId : id , data : object});
+
+
   }
 
   function updateWbsScopeItems(
     wbsId: string,
-    scopeItems: IWBSType['scopeItems']
+    scheduleProjectActivities: IWBSType['scheduleProjectActivities']
   ) {
+    console.log(wbsId , scheduleProjectActivities , 'scheduleProjectActivities');
+    
     const updatedWbs = state.map((item) => {
-      if (item.id === wbsId) {
+      if (item._id === wbsId) {
         return {
           ...item,
-          scopeItems,
+          scheduleProjectActivities,
         };
       }
       return item;
@@ -107,17 +144,20 @@ export default function SchedulePage() {
     setState(updatedWbs);
   }
 
-  function deleteWbs(id: string) {
-    const updatedWbs = state.filter((item) => item.id !== id);
+  async function deleteWbs(id: string) {
+
+    const updatedWbs = state.filter((item) => item._id !== id);
     setState(updatedWbs);
+    await scheduleService.httpDeleteProjectDiv(id);
   }
 
- 
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       <div className="p-5 flex flex-col rounded-lg border border-silverGray shadow bg-white">
         <div className="flex justify-between items-center">
-          <SecondaryHeading title={scheduleProjectDetail?.projectName as string} />
+          <SecondaryHeading
+            title={scheduleProjectDetail?.projectName as string}
+          />
 
           <Tag
             color="#F9F5FF"
@@ -162,7 +202,9 @@ export default function SchedulePage() {
                 />
 
                 <QuinaryHeading
-                  title={`${String(scheduleProjectDetail?.duration)} ${scheduleProjectDetail?.durationType}`}
+                  title={`${String(
+                    scheduleProjectDetail?.duration
+                  )} ${scheduleProjectDetail?.durationType}`}
                   className="text-[#475467] font-semibold"
                 />
               </div>
@@ -174,7 +216,9 @@ export default function SchedulePage() {
                 />
 
                 <QuinaryHeading
-                  title={String(scheduleProjectDetail?.regularWorkingDays.length)}
+                  title={String(
+                    scheduleProjectDetail?.regularWorkingDays.length
+                  )}
                   className="text-[#475467] font-semibold"
                 />
               </div>
@@ -190,8 +234,6 @@ export default function SchedulePage() {
                   className="text-[#475467] font-semibold"
                 />
               </div>
-              
-              
 
               {/* 
 

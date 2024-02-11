@@ -1,6 +1,3 @@
-import CustomButton from '@/app/component/customButton/button';
-import WhiteButton from '@/app/component/customButton/white';
-import { categoriesService } from '@/app/services/categories.service';
 import {
   Dispatch,
   SetStateAction,
@@ -8,28 +5,46 @@ import {
   useEffect,
   useState,
 } from 'react';
+import * as Yup from 'yup';
+import { Form, Formik } from 'formik';
+
+import FormControl from '@/app/component/formControl';
+import CustomButton from '@/app/component/customButton/button';
+import WhiteButton from '@/app/component/customButton/white';
+import { categoriesService } from '@/app/services/categories.service';
 import CustomModal from '@/app/component/modal';
-import { SelectComponent } from '@/app/component/customSelect/Select.component';
 import { CloseOutlined } from '@ant-design/icons';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { IWBSType } from '@/app/interfaces/schedule/createSchedule.interface';
 
 type Props = {
-  setMaterialModal: Dispatch<SetStateAction<boolean>>;
-  materialModal: boolean;
-  addWbsHandler(
-    _category: IWBSType['category'],
-    _subCategory: IWBSType['subCategory']
-  ): void;
-  categoryId?: string;
-  subCategoryId?: string;
+  setCategoryModal: Dispatch<SetStateAction<boolean>>;
+  categoryModal: boolean;
+  addWbsHandler: any;
+  updateWBsHandler: any;
+  projectCategoryEditDetail?: IWBSType;
 };
+
+type InitialValuesTypes = {
+  category: string;
+  subCategory: string;
+};
+const initialValues: InitialValuesTypes = {
+  category: '',
+  subCategory: '',
+};
+
+const validationSchema = Yup.object({
+  category: Yup.string().required('Category is required'),
+  subCategory: Yup.string().required('Subcategory is required'),
+});
+
 export function CategoryModal({
-  materialModal,
-  setMaterialModal,
+  categoryModal,
+  setCategoryModal,
   addWbsHandler,
-  categoryId = '',
-  subCategoryId = '',
+  updateWBsHandler,
+  projectCategoryEditDetail,
 }: Props) {
   const [categories, setCategories] = useState<
     {
@@ -44,9 +59,6 @@ export function CategoryModal({
       categoryId: string;
     }[]
   >([]);
-  const [category, setCategory] = useState(categoryId);
-
-  const [subCategory, setSubCategory] = useState(subCategoryId);
 
   const fetchCategories = useCallback(async () => {
     const result = await categoriesService.httpGetAllCategories(1, 9);
@@ -83,25 +95,32 @@ export function CategoryModal({
     fetchSubCategories();
   }, []);
 
-  function handleCreateWbs() {
-    if (!category || !subCategory) {
-      return;
-    }
-    const c = categories.find(
-      (cat: { value: string }) => cat.value === category
+  const categoriSubmitHandler = (values: any, { resetForm }: any) => {
+    const categoryName: any = categories.find(
+      (cat: { value: string }) => cat.value === values.category
     );
-    const s = subCategories.find(
-      (cat: { value: string }) => cat.value === subCategory
+    const subCategoryName: any = subCategories.find(
+      (cat: { value: string }) => cat.value === values.subCategory
     );
-    if (!c || !s) {
-      return;
+    
+    if (projectCategoryEditDetail) {
+      updateWBsHandler(
+        projectCategoryEditDetail._id,
+        categoryName?.label ? categoryName?.label : values.category,
+        subCategoryName?.label ? subCategoryName?.label : values.subCategory
+      );
+    } else {
+      addWbsHandler(
+        categoryName?.label ? categoryName?.label : values.category,
+        subCategoryName?.label ? subCategoryName?.label : values.subCategory
+      );
     }
-    addWbsHandler(c, s);
-    setMaterialModal(false);
-  }
+    setCategoryModal(false);
+    resetForm();
+  };
 
   return (
-    <CustomModal setOpen={() => setMaterialModal(false)} open={materialModal}>
+    <CustomModal setOpen={() => setCategoryModal(false)} open={categoryModal}>
       <div
         className="rounded-lg z-50 bg-white"
         onClick={(e) => e.stopPropagation()}
@@ -115,54 +134,76 @@ export function CategoryModal({
             className="cursor-pointer"
             width={24}
             height={24}
-            onClick={() => setMaterialModal(false)}
+            onClick={() => setCategoryModal(false)}
           />
         </div>
-        <div className="p-2 space-y-3">
-          <SelectComponent
-            label="Category"
-            labelStyle="!text-[#464646] !text-base !font-normal"
-            field={{
-              options: categories,
-              value: category,
-              onChange: (e) => {
-                setCategory(e);
-              },
-              className : '!mt-2'
-            }}
-            name="category"
-            placeholder="Select CSI Section"
-          />
-          <SelectComponent
-            label="SubCategory"
-            labelStyle="!text-[#464646] !text-base !font-normal"
-            field={{
-              options: subCategories.filter(
-                (cat: any) => cat.categoryId === category
-              ),
-              value: subCategory,
-              onChange: (e) => {
-                setSubCategory(e);
-              },
-              className : '!mt-2'
-            }}
-            name="sub-category"
-            placeholder="Select Title"
-          />
 
-          <div className="flex mt-3 justify-end py-2 space-x-2">
-            <WhiteButton
-              text="Cancel"
-              className="!w-28"
-              onClick={() => setMaterialModal(false)}
-            />
-            <CustomButton
-              text="Done"
-              className="!w-28"
-              onClick={handleCreateWbs}
-            />
-          </div>
-        </div>
+        <Formik
+          initialValues={
+            projectCategoryEditDetail
+              ? projectCategoryEditDetail
+              : initialValues
+          }
+          validationSchema={validationSchema}
+          enableReinitialize
+          onSubmit={categoriSubmitHandler}
+        >
+          {({ handleSubmit, values, setFieldValue }) => {
+            return (
+              <Form
+                name="basic"
+                onSubmit={handleSubmit}
+                autoComplete="off"
+                className="mt-2"
+              >
+                <div className="px-5">
+                  <FormControl
+                    control="inputselect"
+                    type="text"
+                    label="Category"
+                    options={categories}
+                    className="w-full mb-3"
+                    name="category"
+                    placeholder="Select Category"
+                    setCustomState={() => setFieldValue('subCategory', '')}
+                  />
+                  <FormControl
+                    control="inputselect"
+                    type="text"
+                    label="Sub-category"
+                    options={subCategories.filter(
+                      (cat: any) => cat.categoryId === values.category
+                    )}
+                    className="w-full mb-3"
+                    name="subCategory"
+                    placeholder="Select Subcategory"
+                  />
+
+                  <div className="flex mt-3 justify-end py-2 space-x-2">
+                    <WhiteButton
+                      text="Cancel"
+                      className="!w-28"
+                      onClick={() => setCategoryModal(false)}
+                    />
+                    {projectCategoryEditDetail ? (
+                      <CustomButton
+                        text="Update"
+                        className="!w-28"
+                        type="submit"
+                      />
+                    ) : (
+                      <CustomButton
+                        text="Done"
+                        className="!w-28"
+                        type="submit"
+                      />
+                    )}
+                  </div>
+                </div>
+              </Form>
+            );
+          }}
+        </Formik>
       </div>
     </CustomModal>
   );

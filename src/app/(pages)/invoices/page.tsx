@@ -31,6 +31,9 @@ const InvoicePage = () => {
               Tabs: {
                 inkBarColor: '#8449EB',
               },
+              Table: {
+                headerBg: '#F9F5FF',
+              },
             },
           }}
         >
@@ -46,7 +49,7 @@ const InvoicePage = () => {
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className="text-RoyalPurple"
+                    className={`${type === tab ? 'text-RoyalPurple' : 'text-black'}`}
                   />
                 ),
                 tabKey: type,

@@ -6,21 +6,25 @@ import {
   DatePicker,
   Divider,
   Input,
-  InputNumber,
+  Modal,
   Select,
   Table,
 } from 'antd';
 import CustomButton from '@/app/component/customButton/button';
-import WhiteButton from '@/app/component/customButton/white';
 import PrimaryHeading from '@/app/component/headings/primary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { rowTemplate } from '../utils';
 import ColumnGroup from 'antd/es/table/ColumnGroup';
 import Column from 'antd/es/table/Column';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  ExclamationCircleFilled,
+  PlusOutlined,
+} from '@ant-design/icons';
 import { G7State } from '@/app/interfaces/client-invoice.interface';
 import dayjs from 'dayjs';
+import { toast } from 'react-toastify';
 
 type Props = {
   state: G7State;
@@ -36,7 +40,6 @@ export function G703Component({
   state,
   handleState,
   sumColumns,
-  onCancel,
   onNext,
 }: Props) {
   function getCellValue(row: string[], column: number) {
@@ -94,7 +97,7 @@ export function G703Component({
     const row = newData[rowIndex];
     let columnF = row[5];
     // 10% of F
-    let result = (10 / 100) * Number(columnF);
+    let result = (state.p5aPercentage / 100) * Number(columnF);
     newData[rowIndex][9] = `${isNaN(result) ? 0 : Math.ceil(result)}`;
     return newData;
   }
@@ -103,6 +106,31 @@ export function G703Component({
     const newData = [...state.data];
     newData.splice(rowIndex, 1);
     handleState('data', newData);
+  }
+
+  function addNewRow(index: number) {
+    // check if there is a row at previous index
+    const row = state.data[index - 1];
+    // if there is no row then by default don't apply any validation
+    if (!row) {
+      console.log('There is no row at previous index');
+      handleState('data', [...state.data, rowTemplate(state.data.length)]);
+      return;
+    }
+    const previousRowDescription = row[1];
+    const previousRowSchdeuledValue = row[2];
+    const previousRowThisPeriodValue = row[4];
+    if (
+      !previousRowDescription ||
+      !previousRowSchdeuledValue ||
+      !previousRowThisPeriodValue
+    ) {
+      toast.error(
+        'Please fill Description, Scheduled Value and This Period Value of previous row before adding new row'
+      );
+      return;
+    }
+    handleState('data', [...state.data, rowTemplate(state.data.length)]);
   }
 
   return (
@@ -174,7 +202,9 @@ export function G703Component({
               id="application-date"
               className="px-4 w-full rounded-none py-[7px] border border-gray-300 outline-none"
               defaultValue={dayjs(state.periodTo)}
-              onChange={(_d, dateString) => handleState('periodTo', dateString as string)}
+              onChange={(_d, dateString) =>
+                handleState('periodTo', dateString as string)
+              }
             />
           </div>
           <div className="flex self-end space-x-3 items-center">
@@ -201,35 +231,41 @@ export function G703Component({
             [
               '',
               'Grand Total',
-              `${sumColumns(state.data, 2).toFixed(2)}`,
-              `${sumColumns(state.data, 3).toFixed(2)}`,
-              `${sumColumns(state.data, 4).toFixed(2)}`,
-              `${sumColumns(state.data, 5).toFixed(2)}`,
-              `${sumColumns(state.data, 6).toFixed(2)}`,
-              `${sumColumns(state.data, 7).toFixed(2)}`,
-              `${sumColumns(state.data, 8).toFixed(2)}`,
-              `${sumColumns(state.data, 9).toFixed(2)}`,
+              `$ ${sumColumns(state.data, 2).toFixed(2)}`,
+              `$ ${sumColumns(state.data, 3).toFixed(2)}`,
+              `$ ${sumColumns(state.data, 4).toFixed(2)}`,
+              `$ ${sumColumns(state.data, 5).toFixed(2)}`,
+              `$ ${sumColumns(state.data, 6).toFixed(2)}`,
+              `% ${sumColumns(state.data, 7).toFixed(2)}`,
+              `$ ${sumColumns(state.data, 8).toFixed(2)}`,
+              `$ ${sumColumns(state.data, 9).toFixed(2)}`,
             ],
           ]}
           pagination={false}
+          scroll={{ x: 1300, y: 240 }}
         >
           <Column
-            title={<SenaryHeading title="Item No" />}
+            title={<SenaryHeading title="#" className="px-3 text-[12px]" />}
             dataIndex={0}
             render={(value, record: string[], index) => {
-              return index;
+              return index === state.data.length ? null : (
+                <div className="px-3">{index}</div>
+              );
             }}
+            width={40}
           />
           <Column
             title={<SenaryHeading title="Description Of Work" />}
             dataIndex={1}
+            width={300}
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
-                return value;
+                return <div className="px-3">{value}</div>;
               }
               return (
                 <Input
                   value={getCellValue(record, 1)}
+                  placeholder="Enter description of work"
                   onChange={(e) => {
                     updateCellValue(index, 1, e.target.value);
                   }}
@@ -242,12 +278,13 @@ export function G703Component({
             dataIndex={2}
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
-                return value;
+                return <div className="px-3">{value}</div>;
               }
               return (
                 <Input
                   value={getCellValue(record, 2)}
                   type="number"
+                  prefix="$"
                   onChange={(e) => {
                     updateCellValue(index, 2, Number(e.target.value));
                   }}
@@ -261,10 +298,17 @@ export function G703Component({
               dataIndex={3}
               render={(value, record: string[], index) => {
                 if (index === state.data.length) {
-                  return value;
+                  return <div className="px-3">{value}</div>;
                 }
                 let columnE = Number(getCellValue(record, 4));
-                return <Input value={columnE} type="number" disabled />;
+                return (
+                  <Input
+                    value={state.phase > 0 ? columnE : undefined}
+                    prefix="$"
+                    type="number"
+                    disabled
+                  />
+                );
               }}
             />
             <Column
@@ -272,15 +316,15 @@ export function G703Component({
               dataIndex={4}
               render={(value, record, index) => {
                 if (index === state.data.length) {
-                  return value;
+                  return <div className="px-3">{value}</div>;
                 }
                 return (
                   <Input
                     value={value}
+                    prefix="$"
                     type="number"
                     onChange={(e) => {
                       updateCellValue(index, 4, Number(e.target.value));
-                      updateCellValue(index, 3, Number(e.target.value));
                     }}
                   />
                 );
@@ -294,12 +338,13 @@ export function G703Component({
             dataIndex={5}
             render={(value, record, index) => {
               if (index === state.data.length) {
-                return value;
+                return <div className="px-3">{value}</div>;
               }
               return (
                 <Input
                   value={value}
                   type="number"
+                  prefix="$"
                   onChange={(e) => {
                     updateCellValue(index, 5, Number(e.target.value));
                   }}
@@ -315,7 +360,7 @@ export function G703Component({
               dataIndex={6}
               render={(value, record: string[], index) => {
                 if (index === state.data.length) {
-                  return value;
+                  return <div className="px-3">{value}</div>;
                 }
                 let columnD = Number(getCellValue(record, 3));
                 let columnE = Number(getCellValue(record, 4));
@@ -323,12 +368,9 @@ export function G703Component({
 
                 return (
                   <Input
-                    value={columnD + columnE + columnF}
+                    value={`${(columnD + columnE + columnF).toFixed(2)}`}
                     type="number"
-                    disabled
-                    onChange={(e) => {
-                      updateCellValue(index, 6, Number(e.target.value));
-                    }}
+                    prefix="$"
                   />
                 );
               }}
@@ -338,9 +380,15 @@ export function G703Component({
               dataIndex={7}
               render={(value, record: string[], index) => {
                 if (index === state.data.length) {
-                  return value;
+                  return <div className="px-3">{value}</div>;
                 }
-                return <InputNumber value={record[7]} precision={2} />;
+                return (
+                  <Input
+                    type="number"
+                    prefix="%"
+                    value={`${Number(record[7]).toFixed(2)}`}
+                  />
+                );
               }}
             />
           </ColumnGroup>
@@ -349,9 +397,15 @@ export function G703Component({
             dataIndex={8}
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
-                return value;
+                return <div className="px-3">{value}</div>;
               }
-              return <Input value={record[8]} type="number" />;
+              return (
+                <Input
+                  prefix="$"
+                  value={Number(record[8]).toFixed(2)}
+                  type="number"
+                />
+              );
             }}
           />
           <Column
@@ -359,9 +413,15 @@ export function G703Component({
             dataIndex={9}
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
-                return value;
+                return <div className="px-3">{value}</div>;
               }
-              return <InputNumber value={record[9]} precision={2} />;
+              return (
+                <Input
+                  type="number"
+                  prefix="$"
+                  value={`${Number(record[9]).toFixed(2)}`}
+                />
+              );
             }}
           />
 
@@ -387,23 +447,32 @@ export function G703Component({
                   >
                     <Button
                       onClick={() => {
-                        handleState('data', [
-                          ...state.data,
-                          rowTemplate(state.data.length),
-                        ]);
+                        addNewRow(index);
                       }}
                       icon={<PlusOutlined />}
                       shape="circle"
                       type="default"
+                      className="!ml-3"
                     />
                   </ConfigProvider>
                 );
               }
               return (
                 <DeleteOutlined
-                  className="text-xl text-red-500 cursor-pointer"
+                  className="text-xl px-4 text-red-500 cursor-pointer"
                   onClick={() => {
-                    deleteRow(index);
+                    Modal.confirm({
+                      title: 'Are you sure delete this task?',
+                      icon: <ExclamationCircleFilled />,
+                      okText: 'Yes',
+                      okType: 'danger',
+                      style: { backgroundColor: 'white' },
+                      cancelText: 'No',
+                      onOk() {
+                        deleteRow(index);
+                      },
+                      onCancel() {},
+                    });
                   }}
                 />
               );
@@ -413,8 +482,7 @@ export function G703Component({
       </div>
       {/* END Spreadsheet */}
 
-      <div className="flex justify-end space-x-4 mt-2">
-        <WhiteButton onClick={onCancel} text="Cancel" className="!w-40" />
+      <div className="flex justify-end space-x-4 mt-8">
         <CustomButton onClick={onNext} text="Next" className="!w-40" />
       </div>
     </section>

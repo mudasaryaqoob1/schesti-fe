@@ -3,7 +3,7 @@ import WhiteButton from '@/app/component/customButton/white';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { G7State } from '@/app/interfaces/client-invoice.interface';
-import { Checkbox, DatePicker, Divider } from 'antd';
+import { Checkbox, DatePicker, Divider, Input } from 'antd';
 import dayjs from 'dayjs';
 
 type Props = {
@@ -23,15 +23,22 @@ export function G702Component({
   onCancel,
   onNext,
 }: Props) {
-  const p5b = Number(sumColumns(state.data, 6));
-  const twoPercentOfP5b = p5b * 0.02;
-  const p5Total = Number(sumColumns(state.data, 9)) + twoPercentOfP5b;
+  const changeOrderSummaryAdditionSum =
+    state.totalAdditionThisMonth + state.totalAdditionPreviousMonth;
+  const changeOrderSummaryDeductionSum =
+    state.totalDeductionThisMonth + state.totalDeductionPreviousMonth;
+  const changeOrderNetChanges =
+    changeOrderSummaryAdditionSum - changeOrderSummaryDeductionSum;
+  const originalContractSum = sumColumns(state.data, 2);
+  const p5b = Number(sumColumns(state.data, 5));
+  const resultOf_P5b = p5b * (state.p5bPercentage / 100);
+  const p5Total = Number(sumColumns(state.data, 9)) + resultOf_P5b;
   const p6Total = Number(sumColumns(state.data, 6)) - p5Total;
-  const p3Total =
-    parseFloat(state.orignalContractSum) + parseFloat(state.netChangeByOrders);
+  const p3Total = originalContractSum + changeOrderNetChanges;
   const p8Total = p6Total - Number(state.lessPreviousCertificatesForPayment);
   const p9Total =
     p3Total - Number(state.lessPreviousCertificatesForPayment) - p8Total;
+
   return (
     <div>
       <div>
@@ -141,13 +148,16 @@ export function G702Component({
           </div>
           <div className="flex flex-col space-y-2">
             <QuinaryHeading title="Distribution to" className="font-medium" />
-            <Checkbox>
-              <QuinaryHeading title="Distribution to" />
-            </Checkbox>
-            <Checkbox>
+            <Checkbox
+              checked={state.distributionTo === 'architect'}
+              onChange={() => handleState('distributionTo', 'architect')}
+            >
               <QuinaryHeading title="ARCHITECT" />
             </Checkbox>
-            <Checkbox>
+            <Checkbox
+              checked={state.distributionTo === 'contractor'}
+              onChange={() => handleState('distributionTo', 'contractor')}
+            >
               <QuinaryHeading title="CONTRACTOR" />
             </Checkbox>
           </div>
@@ -170,14 +180,11 @@ export function G702Component({
                   className="col-span-2"
                   title="1. ORIGINAL CONTRACT SUM  ................................"
                 />
-                <input
-                  className="px-2 py-1 border border-gray-300 outline-none"
+                <Input
+                  className="px-2 py-1 border border-gray-300 "
                   type="number"
-                  value={state.orignalContractSum}
-                  defaultValue={0.0}
-                  onChange={(e) =>
-                    handleState('orignalContractSum', e.target.value)
-                  }
+                  value={originalContractSum.toFixed(2)}
+                  prefix="$"
                 />
               </div>
               <div className="grid grid-cols-3 gap-1">
@@ -185,14 +192,11 @@ export function G702Component({
                   className="col-span-2"
                   title="2. Net change by Change Orders  ................................"
                 />
-                <input
-                  className="px-2 py-1 border border-gray-300 outline-none"
+                <Input
+                  className="px-2 py-1 border border-gray-300 "
                   type="text"
-                  value={state.netChangeByOrders}
-                  defaultValue={0.0}
-                  onChange={(e) =>
-                    handleState('netChangeByOrders', e.target.value)
-                  }
+                  prefix="$"
+                  value={changeOrderNetChanges.toFixed(2)}
                 />
               </div>
               <div className="grid grid-cols-3 gap-1">
@@ -200,9 +204,10 @@ export function G702Component({
                   className="col-span-2"
                   title="3. CONTRACT SUM TO DATE (Line 1 ± 2) $  ................................"
                 />
-                <input
-                  className="px-2 py-1 border border-gray-300 outline-none"
+                <Input
+                  className="px-2 py-1 border border-gray-300 "
                   type="number"
+                  prefix="$"
                   value={p3Total.toFixed(2)}
                 />
               </div>
@@ -211,9 +216,10 @@ export function G702Component({
                   className="col-span-2"
                   title="4. TOTAL COMPLETED & STORED TO DATE (Column G on G703)   .............."
                 />
-                <input
-                  className="px-2 py-1 border border-gray-300 outline-none"
+                <Input
+                  className="px-2 py-1 border border-gray-300 "
                   type="number"
+                  prefix="$"
                   value={sumColumns(state.data, 6).toFixed(2)}
                 />
               </div>
@@ -224,17 +230,21 @@ export function G702Component({
                   <div className="grid grid-cols-3 ">
                     <div className="flex items-center col-span-2 space-x-2">
                       <QuinaryHeading title="a." />
-                      <input
-                        className="px-2 py-1 w-16 border border-gray-300 outline-none"
-                        type="text"
-                        value={10}
-                        disabled
+                      <Input
+                        className="px-2 py-1 w-16 border border-gray-300 "
+                        type="number"
+                        prefix="%"
+                        value={state.p5aPercentage}
+                        onChange={(e) => {
+                          handleState('p5aPercentage', Number(e.target.value));
+                        }}
                       />
-                      <QuinaryHeading title="% of Completed Work $" />
+                      <QuinaryHeading title="of Completed Work $" />
                     </div>
-                    <input
-                      className="px-2 py-1 border border-gray-300 outline-none"
+                    <Input
+                      className="px-2 py-1 border border-gray-300 "
                       type="number"
+                      prefix="$"
                       value={sumColumns(state.data, 9).toFixed(2)}
                     />
                   </div>
@@ -247,18 +257,22 @@ export function G702Component({
                   <div className="grid grid-cols-3 ">
                     <div className="flex items-center col-span-2 space-x-2">
                       <QuinaryHeading title="b." />
-                      <input
-                        className="px-2 py-1 w-16 border border-gray-300 outline-none"
-                        type="text"
-                        value={2}
-                        disabled
+                      <Input
+                        className="px-2 py-1 w-16 border border-gray-300 "
+                        type="number"
+                        prefix="%"
+                        value={state.p5bPercentage}
+                        onChange={(e) => {
+                          handleState('p5bPercentage', Number(e.target.value));
+                        }}
                       />
                       <QuinaryHeading title="% of Stored Material " />
                     </div>
-                    <input
-                      className="px-2 py-1 border border-gray-300 outline-none"
+                    <Input
+                      className="px-2 py-1 border border-gray-300 "
                       type="number"
-                      value={twoPercentOfP5b.toFixed(2)}
+                      prefix="$"
+                      value={resultOf_P5b.toFixed(2)}
                     />
                   </div>
                   <div>
@@ -269,9 +283,10 @@ export function G702Component({
                         className="col-span-2 pl-4"
                         title="Total Retainage ( Lines 5a + 5b or Total in Colum I of G703"
                       />
-                      <input
-                        className="px-2 py-1 border border-gray-300 outline-none"
+                      <Input
+                        className="px-2 py-1 border border-gray-300 "
                         type="number"
+                        prefix="$"
                         value={p5Total.toFixed(2)}
                       />
                     </div>
@@ -284,9 +299,10 @@ export function G702Component({
                   className="col-span-2"
                   title="6. TOTAL EARNED LESS RETAINAGE Total in Column I of G703)"
                 />
-                <input
-                  className="px-2 py-1 border border-gray-300 outline-none"
+                <Input
+                  className="px-2 py-1 border border-gray-300 "
                   type="number"
+                  prefix="$"
                   value={p6Total.toFixed(2)}
                 />
               </div>
@@ -296,10 +312,11 @@ export function G702Component({
                   className="col-span-2"
                   title="7. LESS PREVIOUS CERTIFICATES FOR PAYMENT (Line 6 from prior Certificate)"
                 />
-                <input
-                  className="px-2 py-1 border border-gray-300 outline-none"
+                <Input
+                  className="px-2 py-1 border border-gray-300 "
                   type="number"
                   value={state.lessPreviousCertificatesForPayment}
+                  prefix="$"
                   onChange={(e) =>
                     handleState(
                       'lessPreviousCertificatesForPayment',
@@ -315,9 +332,10 @@ export function G702Component({
                   className="col-span-2"
                   title="8. CURRENT PAYMENT DUE"
                 />
-                <input
-                  className="px-2 py-1 border border-gray-300 outline-none"
+                <Input
+                  className="px-2 py-1 border border-gray-300 "
                   type="number"
+                  prefix="$"
                   value={p8Total.toFixed(2)}
                 />
               </div>
@@ -326,11 +344,12 @@ export function G702Component({
                   className="col-span-2"
                   title="9. BALANCE TO FINISH, INCLUDING RETAINAGE $ (Line 3 less Line 6)"
                 />
-                <input
-                  className="px-2 py-1 border border-gray-300 outline-none"
+                <Input
+                  className="px-2 py-1 border border-gray-300 "
                   type="number"
                   value={p9Total.toFixed(2)}
                   defaultValue={0.0}
+                  prefix="$"
                 />
               </div>
             </div>
@@ -351,45 +370,91 @@ export function G702Component({
               </thead>
               <tbody className="[&amp;_tr:last-child]:border-0">
                 <tr className="border-b">
-                  <td className="p-4 text-gray-700 align-middle  border-r border-gray-300">
+                  <td className="px-2 text-gray-700 align-middle  border-r border-gray-300">
                     Total changes approved in previous months by Owner
                   </td>
-                  <td className="p-4 align-middle text-gray-700 text-center border-r border-gray-300">
-                    7,000
+                  <td className="align-middle text-gray-700 text-center border-r border-gray-300">
+                    <Input
+                      type="number"
+                      prefix="$"
+                      className="px-2 py-1 outline-none focus:outline-none border-none hover:border-none focus-within:border-none focus-within:outline-none focus-visible:outline-none !shadow-none"
+                      value={state.totalAdditionPreviousMonth}
+                      onChange={(e) => {
+                        handleState(
+                          'totalAdditionPreviousMonth',
+                          Number(e.target.value)
+                        );
+                      }}
+                    />
                   </td>
-                  <td className="p-4 align-middle text-gray-700  text-center">
-                    1,500,000
+                  <td className=" align-middle text-gray-700  text-center">
+                    <Input
+                      type="number"
+                      prefix="$"
+                      className="px-2 py-1 outline-none focus:outline-none border-none hover:border-none focus-within:border-none focus-within:outline-none focus-visible:outline-none !shadow-none"
+                      value={state.totalDeductionPreviousMonth}
+                      onChange={(e) => {
+                        handleState(
+                          'totalDeductionPreviousMonth',
+                          Number(e.target.value)
+                        );
+                      }}
+                    />
                   </td>
                 </tr>
                 <tr className="border-b">
-                  <td className="p-4 align-middle text-gray-700 border-r border-gray-300">
+                  <td className="px-2 align-middle text-gray-700 border-r border-gray-300">
                     Total approved this Month
                   </td>
-                  <td className="p-4 align-middle  text-gray-700 text-center border-r border-gray-300">
-                    7,000
+                  <td className=" align-middle  text-gray-700 text-center border-r border-gray-300">
+                    <Input
+                      type="number"
+                      prefix="$"
+                      className="px-2  outline-none focus:outline-none border-none hover:border-none focus-within:border-none focus-within:outline-none focus-visible:outline-none !shadow-none"
+                      value={state.totalAdditionThisMonth}
+                      onChange={(e) => {
+                        handleState(
+                          'totalAdditionThisMonth',
+                          Number(e.target.value)
+                        );
+                      }}
+                    />
                   </td>
-                  <td className="p-4 align-middle text-gray-700 text-center">
-                    1,500,000
+                  <td className=" align-middle text-gray-700 text-center">
+                    <Input
+                      type="number"
+                      prefix="$"
+                      className="px-2 py-1 outline-none focus:outline-none border-none hover:border-none focus-within:border-none focus-within:outline-none focus-visible:outline-none !shadow-none"
+                      value={state.totalDeductionThisMonth}
+                      onChange={(e) => {
+                        handleState(
+                          'totalDeductionThisMonth',
+                          Number(e.target.value)
+                        );
+                      }}
+                    />
                   </td>
                 </tr>
                 <tr className="border-b">
-                  <td className="p-4 align-middle text-gray-700 border-r border-gray-300">
+                  <td className="px-2 align-middle text-gray-700 border-r border-gray-300">
                     TOTALS
                   </td>
-                  <td className="p-4 align-middle text-gray-700 text-center border-r border-gray-300">
-                    7,000
+                  <td className="px-2 align-middle text-gray-700  border-r border-gray-300">
+                    $ {changeOrderSummaryAdditionSum.toFixed(2)}
                   </td>
-                  <td className="p-4 align-middle text-center">1,500,000</td>
+                  <td className="px-2 align-middle ">
+                    $ {changeOrderSummaryDeductionSum.toFixed(2)}
+                  </td>
                 </tr>
                 <tr className="border-b">
-                  <td className="p-4 align-middle text-gray-700 border-r border-gray-300">
+                  <td className="px-2 align-middle text-gray-700 border-r border-gray-300">
                     NET CHANGES by Change Order
                   </td>
-                  <td className="p-4 align-middle text-gray-700 text-center border-r border-gray-300">
-                    7,000
-                  </td>
-                  <td className="p-4 align-middle text-gray-700 text-center">
-                    1,500,000
+                  <td
+                    colSpan={2}
+                    className="px-2 align-middle text-gray-700  border-r border-gray-300"
+                  >
+                    $ {changeOrderNetChanges}
                   </td>
                 </tr>
               </tbody>
@@ -417,7 +482,9 @@ export function G702Component({
                 <DatePicker
                   className="px-2 col-span-6 rounded-none py-[7px] border border-gray-300 outline-none"
                   defaultValue={dayjs(state.date)}
-                  onChange={(_d, dateString) => handleState('date', dateString as string)}
+                  onChange={(_d, dateString) =>
+                    handleState('date', dateString as string)
+                  }
                 />
               </div>
 
@@ -513,6 +580,10 @@ export function G702Component({
                     <input
                       className="px-2 py-1 border border-gray-300 outline-none"
                       type="text"
+                      value={state.amountCertified3}
+                      onChange={(e) =>
+                        handleState('amountCertified3', e.target.value)
+                      }
                     />
                   </div>
                 </div>
@@ -524,7 +595,7 @@ export function G702Component({
       </div>
 
       <div className="flex justify-end space-x-4">
-        <WhiteButton onClick={onCancel} text="Cancel" className="!w-40" />
+        <WhiteButton onClick={onCancel} text="Previous" className="!w-40" />
         <CustomButton text="Create" className="!w-48" onClick={onNext} />
       </div>
     </div>

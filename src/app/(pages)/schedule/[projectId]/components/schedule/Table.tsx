@@ -1,9 +1,5 @@
-import { InputComponent } from '@/app/component/customInput/Input';
-import { SelectComponent } from '@/app/component/customSelect/Select.component';
-import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
-import QuaternaryHeading from '@/app/component/headings/quaternary';
-import QuinaryHeading from '@/app/component/headings/quinary';
-import { PlusOutlined } from '@ant-design/icons';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { useParams } from 'next/navigation';
 import {
   Checkbox,
   Drawer,
@@ -16,20 +12,31 @@ import {
   ConfigProvider,
   Dropdown,
 } from 'antd';
+
 import { type ColumnType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
-import type { IWBSType, ScopeItem } from '@/app/interfaces/schedule/createSchedule.interface';
+import Image from 'next/image';
+import { PlusOutlined } from '@ant-design/icons';
+
+import { scheduleService } from '@/app/services/schedule.service';
+import QuinaryHeading from '@/app/component/headings/quinary';
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
-import Image from 'next/image';
+import { InputComponent } from '@/app/component/customInput/Input';
+import QuaternaryHeading from '@/app/component/headings/quaternary';
+import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
+import { SelectComponent } from '@/app/component/customSelect/Select.component';
+import type {
+  IWBSType,
+  ActivityItem,
+} from '@/app/interfaces/schedule/createSchedule.interface';
 
 const columns: ColumnType<{}>[] = [
   {
     title: 'ID',
     dataIndex: 'id',
     key: '0',
-    width: 100,
+    width: 50,
     render(value) {
       return <div className="pl-4">{value}</div>;
     },
@@ -38,13 +45,14 @@ const columns: ColumnType<{}>[] = [
     title: 'Activities',
     dataIndex: 'description',
     key: '1',
-    width: 250,
+    width: 200,
   },
   {
     title: 'Original Duration',
     dataIndex: 'orignalDuration',
     key: '2',
-    width: 150,
+    width: 100,
+    align : 'center'
   },
   {
     title: 'Status',
@@ -56,66 +64,70 @@ const columns: ColumnType<{}>[] = [
     title: 'Start',
     dataIndex: 'start',
     key: '3',
-    width: 150,
+    width: 120,
   },
   {
     title: 'Finish',
     dataIndex: 'finish',
     key: '4',
-    width: 150,
+    width: 120,
   },
   {
     title: 'Actual Start',
     dataIndex: 'actualStart',
     key: '5',
-    width: 150,
+    width: 120,
   },
   {
     title: 'Actual Finish',
     dataIndex: 'actualFinish',
     key: '6',
-    width: 150,
+    width: 120,
   },
   {
     title: 'Remaining Duration',
     dataIndex: 'remainingDuration',
-    width: 150,
+    width: 100,
     key: '7',
+    align : 'center'
   },
   {
     title: 'Schedule % Completed',
     dataIndex: 'scheduleCompleted',
-    width: 150,
+    width: 100,
     key: '8',
+    align : 'center'
   },
   {
     title: 'Total Float',
     dataIndex: 'totalFloat',
-    width: 150,
+    width: 70,
     key: '9',
+    align : 'center'
   },
   {
     title: 'Activity Type',
     dataIndex: 'activityType',
-    width: 150,
+    width: 100,
     key: '10',
+    align : 'center'
   },
   {
     title: 'Predecessors',
     dataIndex: 'predecessors',
-    width: 150,
+    width: 100,
     key: '11',
   },
   {
     title: 'Successors',
     dataIndex: 'successors',
-    width: 150,
+    width: 100,
     key: '12',
   },
   {
     title: 'Activity Calendar',
     dataIndex: 'activityCalendar',
-    width: 150,
+    width: 100,
     key: '13',
   },
 ];
@@ -123,16 +135,18 @@ const columns: ColumnType<{}>[] = [
 const defaultCheckedList = columns.map((item, i) => i % 2 === 0 && item.key);
 
 type Props = {
-  updateWbsScopeItems(_id: string, _scopeItems: ScopeItem[]): void;
+  updateWbsScopeItems(_id: string, _scopeItems: ActivityItem[]): void;
   wbs: IWBSType;
 };
 export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
+  const { projectId } = useParams();
+
   const [checkedList, setCheckedList] = useState(defaultCheckedList);
   const [filters, setFilters] = useState(defaultCheckedList);
   const [open, setOpen] = useState(false);
   const [openDetails, setOpenDetails] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<ScopeItem | null>(null);
-  const [ID, setID] = useState(0);
+  const [selectedItem, setSelectedItem] = useState<ActivityItem | null>(null);
+  // const [ID, setID] = useState(0);
 
   const showDrawer = () => {
     setFilters(checkedList);
@@ -145,39 +159,59 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
   };
 
   // add item in data
-  function addItem() {
-    const item: ScopeItem = {
+  async function addItem() {
+    const item: ActivityItem = {
+      //  _id: `ID${ID}`,
       activityCalendar: '',
       activityType: '',
       actualFinish: new Date().toDateString(),
       actualStart: new Date().toDateString(),
       description: '',
       finish: new Date().toDateString(),
-      id: `ID${ID}`,
       orignalDuration: '',
       predecessors: '',
-      remainingDuration: '_',
+      remainingDuration: '',
       start: new Date().toDateString(),
       scheduleCompleted: '',
       status: 'New',
       successors: '',
       totalFloat: '',
     };
-    const newData = [...wbs.scopeItems, item];
-    updateWbsScopeItems(wbs.id, newData);
-    setID(ID + 1);
+    const newData = [...wbs.scheduleProjectActivities, item];
+
+    updateWbsScopeItems(wbs._id, newData);
+    // setID(ID + 1);
+
+    await scheduleService.httpAddProjectDivActivity({
+      projectId: projectId,
+      divId: wbs._id,
+      data: item,
+    });
   }
 
-  function updateRow(record: ScopeItem) {
-    const newData = [...wbs.scopeItems];
-    const index = newData.findIndex((item) => item.id === record.id);
+  async function updateRow(record: ActivityItem) {
+    record['orignalDuration'] = record.orignalDuration ? record.orignalDuration : ''
+    
+    let updateActivity  = await scheduleService.httpUpdateProjectDivActivity({activityId : record._id , data : record})
+
+    console.log(updateActivity , 'updateActivityupdateActivity');
+    
+
+
+    const newData = [...wbs.scheduleProjectActivities];
+
+    const index = newData.findIndex((item) => item._id === record._id);
     newData[index] = record;
-    updateWbsScopeItems(wbs.id, newData);
+    updateWbsScopeItems(wbs._id, newData);
+
+    
   }
 
-  function deleteRow(record: ScopeItem) {
-    const newData = wbs.scopeItems.filter((item) => item.id !== record.id);
-    updateWbsScopeItems(wbs.id, newData);
+  function deleteRow(record: ActivityItem) {
+    const newData = wbs.scheduleProjectActivities.filter(
+      (item: any) => item.id !== record._id
+    );
+    updateWbsScopeItems(wbs._id, newData);
   }
 
   let newColumns = columns
@@ -199,26 +233,29 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
       }
       return {
         ...col,
-        onCell: (record: ScopeItem) => ({
+        onCell: (record: ActivityItem) => ({
           record,
           editable: col.editable,
           dataIndex: col.dataIndex as string,
           title: col.title,
-          handleSave(record: ScopeItem) {
+          handleSave(record: ActivityItem) {
             updateRow(record);
           },
         }),
       };
     });
 
-  const extras: (ColumnType<ScopeItem> & { editable: boolean , hidden : boolean })[] = [
+  const extras: (ColumnType<ActivityItem> & {
+    editable: boolean;
+    hidden: boolean;
+  })[] = [
     {
       title: <QuinaryHeading title="Actions" />,
       dataIndex: 'actions',
       key: 'actions',
       editable: false,
       hidden: false,
-      render(_: any, record: ScopeItem) {
+      render(_: any, record: ActivityItem) {
         return (
           <Dropdown
             className="!bg-grey"
@@ -481,8 +518,8 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
         }}
       >
         <Table
-          columns={[...newColumns, ...extras] as ColumnType<ScopeItem>[]}
-          dataSource={wbs.scopeItems}
+          columns={[...newColumns, ...extras] as ColumnType<ActivityItem>[]}
+          dataSource={wbs.scheduleProjectActivities}
           key={'id'}
           components={{
             body: {
@@ -531,9 +568,9 @@ interface EditableCellProps {
   title: React.ReactNode;
   editable: boolean;
   children: React.ReactNode;
-  dataIndex: keyof ScopeItem;
-  record: ScopeItem;
-  handleSave: (_record: ScopeItem) => void;
+  dataIndex: keyof ActivityItem;
+  record: ActivityItem;
+  handleSave: (_record: ActivityItem) => void;
 }
 
 function EditableCell({
@@ -649,7 +686,7 @@ function EditableCell({
                       <span
                         style={{
                           borderColor: returnStatusColor(
-                            option.value as IWBSType['scopeItems'][0]['status']
+                            option.value as IWBSType['scheduleProjectActivities'][0]['status']
                           ),
                         }}
                         className={`border-2 rounded mr-1`}
@@ -728,7 +765,9 @@ function EditableCell({
   );
 }
 
-function returnStatusColor(status: IWBSType['scopeItems'][0]['status']) {
+function returnStatusColor(
+  status: IWBSType['scheduleProjectActivities'][0]['status']
+) {
   if (status === 'Planned') {
     return '#108ee9';
   } else if (status === 'In Progress') {

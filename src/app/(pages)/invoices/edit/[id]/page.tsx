@@ -12,7 +12,6 @@ import FormControl from '@/app/component/formControl';
 // redux module
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
-
 import { selectInvoices } from '@/redux/invoice/invoice.selector';
 import Table, { type ColumnType } from 'antd/es/table';
 import ModalComponent from '@/app/component/modal';
@@ -21,12 +20,10 @@ import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import { InputComponent } from '@/app/component/customInput/Input';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
-import { Divider } from 'antd';
-import {
-  CreateInvoiceData,
-  invoiceService,
-} from '@/app/services/invoices.service';
+import { ConfigProvider, Divider } from 'antd';
+import { invoiceService } from '@/app/services/invoices.service';
 import { toast } from 'react-toastify';
+import { IInvoice } from '@/app/interfaces/invoices.interface';
 
 const SubcontractorSchema = Yup.object({
   subContractorFirstName: Yup.string().required('First name is required!'),
@@ -130,6 +127,9 @@ const EditSubcontractorInvoice = () => {
     {
       title: 'Unit Cost',
       dataIndex: 'unitCost',
+      render(value) {
+        return `$${value}`;
+      },
     },
     {
       title: 'Total Price',
@@ -219,7 +219,7 @@ const EditSubcontractorInvoice = () => {
         total: detail.quantity * detail.unitCost,
       };
     });
-    const data: CreateInvoiceData = {
+    const data: IInvoice = {
       ...values,
       invoiceItems: updatedDetails,
       totalPayable: calculateTotalPayable(
@@ -481,6 +481,7 @@ const EditSubcontractorInvoice = () => {
                               label="Unit Cost"
                               name="unitCost"
                               type="number"
+                              prefix="$"
                               placeholder="Enter unit cost here"
                               field={{
                                 value: detail.unitCost,
@@ -519,12 +520,23 @@ const EditSubcontractorInvoice = () => {
                           />
                         </div>
                       </div>
-                      <Table
-                        loading={false}
-                        columns={columns}
-                        dataSource={details}
-                        pagination={{ position: ['bottomCenter'] }}
-                      />
+                      <ConfigProvider
+                        theme={{
+                          components: {
+                            Table: {
+                              headerColor: 'red',
+                            },
+                          },
+                        }}
+                      >
+                        <Table
+                          loading={false}
+                          columns={columns}
+                          dataSource={details}
+                          bordered
+                          pagination={{ position: ['bottomCenter'] }}
+                        />
+                      </ConfigProvider>
                     </div>
                   </div>
                 </div>
@@ -550,11 +562,13 @@ const EditSubcontractorInvoice = () => {
                           type="number"
                           name="discount"
                           placeholder="Enter discount here"
+                          prefix="$"
                         />
 
                         <FormControl
                           control="input"
                           label="Taxes"
+                          prefix="$"
                           type="number"
                           name="taxes"
                           placeholder="Enter taxes here"
@@ -564,6 +578,7 @@ const EditSubcontractorInvoice = () => {
                           control="input"
                           label="Profit and Overhead %"
                           type="number"
+                          prefix="%"
                           name="profitAndOverhead"
                           placeholder="Enter profit and overhead here"
                         />

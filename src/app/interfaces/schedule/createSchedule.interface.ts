@@ -1,22 +1,22 @@
-type Category = {
-    label: string;
-    value: string;
-  };
+// type Category = {
+//     label: string;
+//     value: string;
+//   };
   
-  type SubCategory = {
-    categoryId: string;
-  } & Category;
+  // type SubCategory = {
+  //   categoryId: string;
+  // } & Category;
   
   export type IWBSType = {
-    id: string;
+    _id?: string | any;
     title: string;
-    category: Category;
-    subCategory: SubCategory;
-    scopeItems: ScopeItem[];
+    category: string;
+    subCategory: string;
+    scheduleProjectActivities?: ActivityItem[] | any;
   };
   
-  export type ScopeItem = {
-    id: string;
+  export type ActivityItem = {
+    _id?: string;
     description: string;
     orignalDuration: string;
     start: string;
