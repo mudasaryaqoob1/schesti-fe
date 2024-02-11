@@ -30,10 +30,14 @@ export function LandingNavbar() {
                 </div>
             </nav>
             <div className="flex space-x-4">
-                <button className="inline-flex items-center justify-center whitespace-nowrap text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 cursor-pointer hover:bg-primary/90 h-10 bg-transparent text-white font-semibold py-2 px-4 rounded-full border border-white hover:border-gray-300 hover:text-gray-300">
+                <button className="inline-flex items-center justify-center whitespace-nowrap text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 cursor-pointer hover:bg-primary/90 h-10 bg-transparent text-white font-semibold py-2 px-4 rounded-full border border-white hover:border-gray-300 hover:text-gray-300"
+                    onClick={() => router.push('/contact')}
+                >
                     Contact Us
                 </button>
-                <button className="inline-flex items-center justify-center whitespace-nowrap text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 cursor-pointer h-10 bg-white text-[#6f42c1] font-semibold py-2 px-4 rounded-full hover:bg-gray-100">
+                <button className="inline-flex items-center justify-center whitespace-nowrap text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 cursor-pointer h-10 bg-white text-[#6f42c1] font-semibold py-2 px-4 rounded-full hover:bg-gray-100"
+                    onClick={() => router.push('/login')}
+                >
                     Login
                 </button>
             </div>

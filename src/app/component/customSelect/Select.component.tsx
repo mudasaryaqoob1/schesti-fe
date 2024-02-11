@@ -43,8 +43,7 @@ export function SelectComponent({
         {...field}
         className={twMerge(
           clsx(
-            ` p-0 h-full border ${
-              hasError ? 'border-red-500' : 'border-gray-400'
+            ` p-0 h-full border ${hasError ? 'border-red-500' : 'border-gray-400'
             } !w-full !rounded-lg focus:border-blue-500  ${field?.className}`
           )
         )}
