@@ -26,8 +26,8 @@ export default function Home() {
         </div>
         <Image
           src={"/landing.png"}
-          height={600}
-          width={1200}
+          height={900}
+          width={1400}
           className="absolute left-[50%] -translate-x-[50%] -bottom-80"
           alt="dashboard"
         />
@@ -162,8 +162,8 @@ export default function Home() {
             <div>
               <Image
                 src={"/request-for-post-img.svg"}
-                height={300}
-                width={300}
+                height={400}
+                width={400}
                 alt="dashboard"
               />
             </div>
