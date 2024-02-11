@@ -3,9 +3,9 @@ import { bg_style } from '@/globals/tailwindvariables';
 import NextImage from 'next/image';
 import { useContext, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
-import { Layer, Image as KonvaImage, Stage } from 'react-konva';
 import { UploadFileContext } from '../context';
 import { UploadFileContextProps } from '../context/UploadFileContext';
+import Draw from './Draw';
 
 type ScaleLabel = 'scale' | 'length' | 'volume' | 'count' | 'area' | 'dynamic';
 
@@ -97,18 +97,8 @@ const Scale = () => {
         })}
       </div>
       <div className="bg-[#F2F2F2] h-[52px] w-full">Configurations</div>
-      <div className="py-6 h-[709px] bg-red-200">
-        <div>
-          <Stage
-            width={600}
-            height={600}
-            className="flex justify-center cursor-pointer"
-          >
-            <Layer>
-              <KonvaImage image={myImage} width={600} height={600} />
-            </Layer>
-          </Stage>
-        </div>
+      <div className="py-6 h-[709px]">
+        <Draw selected={scale} />
       </div>
     </section>
   );
