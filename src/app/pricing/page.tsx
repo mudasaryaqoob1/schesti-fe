@@ -1,5 +1,6 @@
-import CustomButton from "../component/customButton/white";
+'use client'
 import { LandingNavbar } from "../component/navbar/LandingNavbar";
+import ToggleBtn from '@/app/component/plans/toggleBtn';
 
 export default function PricingPage() {
     return <section>
@@ -28,6 +29,13 @@ export default function PricingPage() {
                 <h1 className="mx-auto text-[#1D2939] text-center font-bold mt-[15px] leading-[54.181px] text-[36.121px]">
                     Exclusive Schesti Subscriptions, A gateway to Unparalleled Excellence in Field Service Dynamics.
                 </h1>
+            </div>
+
+
+            <div>
+                <div className="flex w-full align-items-center justify-center">
+                    <ToggleBtn isChecked={true} onChange={() => { }} />
+                </div>
             </div>
         </div>
     </section>
