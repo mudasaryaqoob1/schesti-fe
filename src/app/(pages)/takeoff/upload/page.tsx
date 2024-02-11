@@ -163,17 +163,21 @@ const Upload = () => {
               className="cursor-pointer text-graphiteGray"
             />
             <Description title="or" className="cursor-pointer text-coolGray" />
-            <label htmlFor="fileInput" className="w-full mt-2 cursor-pointer">
+            <label
+              htmlFor="fileInput"
+              className="w-full mt-2 cursor-pointer flex p-4 rounded-md items-center justify-center border border-solid border-gray-300"
+            >
               <input
                 type="file"
                 id="fileInput"
                 name="fileInput"
                 className="hidden"
+                accept=".pdf"
+                onChange={handleFileChange}
               />
-              <WhiteButton className="w-full" text="Select file" />
+              Select File
             </label>
           </div>
-          <input type="file" accept=".pdf" onChange={handleFileChange} />
         </div>
         <ModalComponent open={showModal} setOpen={setShowModal}>
           <ScaleModal setModalOpen={setShowModal} />

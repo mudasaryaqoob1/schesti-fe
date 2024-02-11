@@ -12,6 +12,7 @@ type ScaleLabel = 'scale' | 'length' | 'volume' | 'count' | 'area' | 'dynamic';
 interface ScaleNavigation {
   label: ScaleLabel;
   src: string;
+  selectedSrc: string;
   alt: string;
   width: number;
   height: number;
@@ -21,6 +22,7 @@ const scaleNavigation: ScaleNavigation[] = [
   {
     label: 'scale',
     src: '/scale.svg',
+    selectedSrc: '/selectedScale.svg',
     alt: 'createicon',
     width: 19.97,
     height: 11.31,
@@ -28,6 +30,7 @@ const scaleNavigation: ScaleNavigation[] = [
   {
     label: 'length',
     src: '/length.svg',
+    selectedSrc: '/selectedLength.svg',
     alt: 'createicon',
     width: 19.97,
     height: 11.31,
@@ -35,6 +38,7 @@ const scaleNavigation: ScaleNavigation[] = [
   {
     label: 'volume',
     src: '/volume.svg',
+    selectedSrc: '/selectedVolume.svg',
     alt: 'createicon',
     width: 14,
     height: 16,
@@ -42,6 +46,7 @@ const scaleNavigation: ScaleNavigation[] = [
   {
     label: 'count',
     src: '/count.svg',
+    selectedSrc: '/selectedCount.svg',
     alt: 'createicon',
     width: 19.97,
     height: 11.31,
@@ -49,6 +54,7 @@ const scaleNavigation: ScaleNavigation[] = [
   {
     label: 'area',
     src: '/area.svg',
+    selectedSrc: '/selectedArea.svg',
     alt: 'createicon',
     width: 18.33,
     height: 13.72,
@@ -56,6 +62,7 @@ const scaleNavigation: ScaleNavigation[] = [
   {
     label: 'dynamic',
     src: '/dynamic.svg',
+    selectedSrc: '/selectedDynamic.svg',
     alt: 'createicon',
     width: 15,
     height: 14,
@@ -75,26 +82,42 @@ const Scale = () => {
       <div
         className={`h-12 w-full mt-6 flex flex-row items-center justify-center gap-8  py-[5.5px] ${bg_style}`}
       >
-        {scaleNavigation.map(({ src, height, width, alt, label }) => {
-          return (
-            <div
-              key={src}
-              className="flex flex-col items-center cursor-pointer"
-              onClick={() => setScale(label)}
-            >
-              <NextImage src={src} alt={alt} width={width} height={height} />
-              <span
-                className={twMerge(
-                  `text-xs capitalize ${
-                    scale === label ? 'text-[#6F6AF8]' : ''
-                  }`
-                )}
+        {scaleNavigation.map(
+          ({ src, selectedSrc, height, width, alt, label }) => {
+            return (
+              <div
+                key={src}
+                className="flex flex-col items-center cursor-pointer"
+                onClick={() => setScale(label)}
               >
-                {label}
-              </span>
-            </div>
-          );
-        })}
+                {scale === label ? (
+                  <NextImage
+                    src={selectedSrc}
+                    alt={alt}
+                    width={width}
+                    height={height}
+                  />
+                ) : (
+                  <NextImage
+                    src={src}
+                    alt={alt}
+                    width={width}
+                    height={height}
+                  />
+                )}
+                <span
+                  className={twMerge(
+                    `text-xs capitalize ${
+                      scale === label ? 'text-[#6F6AF8]' : ''
+                    }`
+                  )}
+                >
+                  {label}
+                </span>
+              </div>
+            );
+          }
+        )}
       </div>
       <div className="bg-[#F2F2F2] h-[52px] w-full">Configurations</div>
       <div className="py-6 h-[709px] bg-red-200">
