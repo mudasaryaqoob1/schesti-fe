@@ -7,8 +7,22 @@ export default function Home() {
     <section>
       <main style={{
         background: "linear-gradient(180deg, #8449EB 0%, #6A56F6 100%)"
-      }} className="h-[760px]">
+      }} className="h-[760px] relative">
+        {/* <Image
+          src={"/Rectangle.png"}
+          width={205.37}
+          height={977.55}
+          className="-top-[202.65px] rounded left-[1058.56px] absolute rotate-45"
+          alt="Rectangle"
+        />
 
+        <Image
+          src={"/Rectangle.png"}
+          width={205.37}
+          height={977.55}
+          className="-top-[0.37px] left-[1358.56px] rounded-xl absolute rotate-45"
+          alt="Rectangle"
+        /> */}
         <LandingNavbar />
         <div className="mt-[101px] mx-auto w-[1063px]">
           <h1 className="text-center font-extrabold text-white text-[64px] leading-[80px]">
@@ -45,7 +59,7 @@ export default function Home() {
         </div>
 
         <div className="mt-3">
-          <div className="flex space-x-5 items-center ">
+          <div className="flex justify-between space-x-5 items-center ">
             <div>
               <h1 className="text-[#1D2939] text-[40px] pb-[24px] font-bold leading-[60px]">
                 Advanced Takeoff Module with AI Integration
@@ -181,7 +195,7 @@ export default function Home() {
               <div className="rounded-lg border bg-card text-card-foreground shadow-sm w-full" data-v0-t="card">
                 <div className="flex items-center justify-between p-6">
                   <h3 className="text-[18px] leading-[24px] font-semibold text-[#1D2939]">Add client</h3>
-                  <div className="text-2xl fill-none font-bold text-[#1D2939]">1</div>
+                  <div className="font-outline-2 ">1</div>
                 </div>
                 <div className="px-6 pb-6">
                   <p className="text-[16px] leading-[28px] text-[#667085]">
@@ -195,7 +209,7 @@ export default function Home() {
               <div className="rounded-lg border bg-card text-card-foreground shadow-sm w-full" data-v0-t="card">
                 <div className="flex items-center justify-between p-6">
                   <h3 className="text-[18px] leading-[24px] font-semibold text-[#1D2939]">Create project request</h3>
-                  <div className="text-2xl fill-none font-bold text-[#1D2939]">2</div>
+                  <div className="font-outline-2 ">2</div>
                 </div>
                 <div className="px-6 pb-6">
                   <p className="text-[16px] leading-[28px] text-[#667085]">
@@ -207,7 +221,7 @@ export default function Home() {
               <div className="rounded-lg border bg-card text-card-foreground shadow-sm w-full" data-v0-t="card">
                 <div className="flex items-center justify-between p-6">
                   <h3 className="text-[18px] leading-[24px] font-semibold text-[#1D2939]">Takeoff and esstimate</h3>
-                  <div className="text-2xl fill-none font-bold text-[#1D2939]">3</div>
+                  <div className="font-outline-2 ">3</div>
                 </div>
                 <div className="px-6 pb-6">
                   <p className="text-[16px] leading-[28px] text-[#667085]">
@@ -220,7 +234,7 @@ export default function Home() {
               <div className="rounded-lg border bg-card text-card-foreground shadow-sm w-full" data-v0-t="card">
                 <div className="flex items-center justify-between p-6">
                   <h3 className="text-[18px] leading-[24px] font-semibold text-[#1D2939]">Schedule project</h3>
-                  <div className="text-2xl fill-none font-bold text-[#1D2939]">4</div>
+                  <div className="font-outline-2 ">4</div>
                 </div>
                 <div className="px-6 pb-6">
                   <p className="text-[16px] leading-[28px] text-[#667085]">
@@ -245,10 +259,10 @@ export default function Home() {
         <div className="px-[200px] py-8">
           <div>
             <div className="mt-4 space-y-7">
-              <div className="space-y-8">
+              <div>
                 <h1 className="text-white text-center text-[40px] leading-[60px]">Schesti: Your Gateway to Unmatched Efficiency</h1>
                 <p
-                  className="text-white text-[20px] leading-[38px] pt-[13px] text-center w-[924px] mx-auto"
+                  className="text-white pt-[13px] text-[20px] leading-[38px]  text-center w-[924px] mx-auto"
                 >
                   Empower Your Projects with Schesti: Your Comprehensive Solution for Achieving Exceptional Efficiency in Field Service Excellence
                 </p>
