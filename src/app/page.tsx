@@ -8,21 +8,6 @@ export default function Home() {
       <main style={{
         background: "linear-gradient(180deg, #8449EB 0%, #6A56F6 100%)"
       }} className="h-[760px] relative">
-        {/* <Image
-          src={"/Rectangle.png"}
-          width={205.37}
-          height={977.55}
-          className="-top-[202.65px] rounded left-[1058.56px] absolute rotate-45"
-          alt="Rectangle"
-        />
-
-        <Image
-          src={"/Rectangle.png"}
-          width={205.37}
-          height={977.55}
-          className="-top-[0.37px] left-[1358.56px] rounded-xl absolute rotate-45"
-          alt="Rectangle"
-        /> */}
         <LandingNavbar />
         <div className="mt-[101px] mx-auto w-[1063px]">
           <h1 className="text-center font-extrabold text-white text-[64px] leading-[80px]">
