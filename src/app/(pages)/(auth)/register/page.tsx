@@ -35,8 +35,9 @@ const RegisterSchema: any = Yup.object({
     .required('Email is required!')
     .email('Email should be valid'),
   password: Yup.string()
-    .required('Password is required!')
-    .min(6, 'Minimum six character is required'),
+    .matches(new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/), "The password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one digit.")
+    .min(6, 'Minimum six character is required')
+    .required('Password is required!'),
   confirmPassword: Yup.string()
     .required('Confirm Password is required!')
     .oneOf([Yup.ref('password')], 'Passwords must match'),
