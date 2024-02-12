@@ -1,0 +1,44 @@
+'use client';
+import { Image } from "antd";
+import CustomButton from "../customButton/white";
+import { useRouter } from "next/navigation";
+
+export function RequestForPost() {
+    const router = useRouter();
+
+    return <div className="mt-20 bg-[#344054]">
+        <div className="px-[200px] py-8">
+            <div className="flex space-x-16">
+                <div className="mt-4 space-y-7">
+                    <div>
+                        <h3 className="text-[#EF9F28] text-[24px] font-medium leading-[32px]">
+                            Post advertisements request
+                        </h3>
+                        <h1 className="text-white pt-[14px] pb-[16px] text-[40px] leading-[60px]">
+                            Schedule estimates and create gantt charts
+                        </h1>
+                        <p className="text-white text-[20px] leading-[38px] w-[696.986px]">
+                            Unlock a prime advertising space for your company! Schesti
+                            offers exclusive opportunities for our valued partners to
+                            showcase their
+                            <br /> brand or promotions here.
+                        </p>
+                    </div>
+                    <CustomButton
+                        text="Request for post"
+                        className="!rounded-full !w-48 mt-[48px] !text-[#8449EB]"
+                        onClick={() => router.push('/contact')}
+                    />
+                </div>
+                <div>
+                    <Image
+                        src={'/request-for-post-img.svg'}
+                        height={309}
+                        width={277.65}
+                        alt="dashboard"
+                    />
+                </div>
+            </div>
+        </div>
+    </div>
+}
