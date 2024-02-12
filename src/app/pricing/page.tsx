@@ -1,12 +1,21 @@
 'use client'
 import Image from "next/image";
 import { LandingNavbar } from "../component/navbar/LandingNavbar";
-import ToggleBtn from '@/app/component/plans/toggleBtn';
+import ToggleBtn from '@/app/(pages)/settings/plans/oldSubscriptions/components/toggleBtn';
+import SwitchBtn from '@/app/(pages)/settings/plans/oldSubscriptions/components/switchbtn';
 import CustomButton from "../component/customButton/white";
 import LandingFooter from "../component/footer/LandingFooter";
-import { Collapse, ConfigProvider, theme } from "antd";
+import { Collapse, ConfigProvider, Skeleton, theme } from "antd";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { IPricingPlan } from "../interfaces/pricing-plan.interface";
+import { selectPricingPlans, selectPricingPlansError, selectPricingPlansLoading } from "@/redux/pricingPlanSlice/pricingPlan.selector";
+import { fetchPricingPlan } from "@/redux/pricingPlanSlice/pricingPlan.thunk";
+import SinglePlan from "../(pages)/settings/plans/oldSubscriptions/components/plan/plan";
 
 export default function PricingPage() {
+
     const { token } = theme.useToken();
     const panelStyle: React.CSSProperties = {
         marginBottom: 24,
@@ -14,7 +23,59 @@ export default function PricingPage() {
         borderRadius: token.borderRadiusLG,
         border: 'none',
     };
+    const [planType, setPlanType] = useState('Individual');
+    const dispatch = useDispatch<AppDispatch>();
+    const [pricingPlansData, setPricingPlansData] = useState(
+        [] as IPricingPlan[]
+    );
+    const [isDuration, setIsDuration] = useState('monthly');
+    const [selectedPlan, setSelectedPlan] = useState<any>();
+    const plansData = useSelector(selectPricingPlans);
+    const isLoading = useSelector(selectPricingPlansLoading);
+    const isError = useSelector(selectPricingPlansError);
 
+    const handlePlanType = (event: ChangeEvent<HTMLInputElement>) => {
+        const currentPlanType = event.target.checked ? 'Individual' : 'Enterprise';
+        const newPlansData = plansData.pricingPlans.filter(
+            ({ type, duration }: IPricingPlan) =>
+                type === currentPlanType && duration === isDuration
+        );
+        setPlanType(currentPlanType);
+        setPricingPlansData(newPlansData);
+    };
+
+    const handlePlanDuration = (event: ChangeEvent<HTMLInputElement>) => {
+        const currentPlanDuration = event.target.checked ? 'yearly' : 'monthly';
+        const newPlansData = plansData.pricingPlans.filter(
+            ({ duration, type }: IPricingPlan) =>
+                duration === currentPlanDuration && type === planType
+        );
+        setIsDuration(currentPlanDuration);
+        setPricingPlansData(newPlansData);
+    };
+
+    const pricingPlansHandler = useCallback(async () => {
+        const {
+            payload: {
+                statusCode,
+                data: { pricingPlans },
+            },
+        }: any = await dispatch(fetchPricingPlan({ page: 1, limit: 10 }));
+        if (statusCode === 200) {
+            setPricingPlansData(
+                pricingPlans.filter(
+                    ({ type, duration }: IPricingPlan) =>
+                        type === 'Individual' && duration === isDuration
+                )
+            );
+        }
+    }, []);
+
+    useEffect(() => {
+        pricingPlansHandler();
+    }, []);
+
+    console.log({ selectedPlan });
 
     return <section>
         <main style={{
@@ -45,9 +106,37 @@ export default function PricingPage() {
             </div>
 
 
-            <div>
-                <div className="flex w-full align-items-center justify-center">
-                    <ToggleBtn isChecked={true} onChange={() => { }} />
+            <div className="pt-[65px]">
+                <div>
+
+                    <div className="flex  align-items-center justify-center">
+                        <ToggleBtn planType={planType} onChange={handlePlanType} />
+                    </div>
+                    <div className="flex mt-[32px] justify-center items-center">
+                        <SwitchBtn isDuration={isDuration} onChange={handlePlanDuration} />
+                    </div>
+                </div>
+
+                <div className="mt-6">
+                    {isLoading ? (
+                        <Skeleton />
+                    ) : isError ? (
+                        <p>Something Went Wrong</p>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-5">
+                            {pricingPlansData?.map(
+                                (plan: IPricingPlan, index: React.Key | null | undefined) => {
+                                    return (
+                                        <SinglePlan
+                                            key={index}
+                                            {...plan}
+                                            setSelectedPlan={setSelectedPlan}
+                                        />
+                                    );
+                                }
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
