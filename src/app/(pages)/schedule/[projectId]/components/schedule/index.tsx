@@ -6,14 +6,14 @@ import { useState } from 'react';
 import { CategoryModal } from './Category';
 import {
   IWBSType,
-  ScopeItem,
+  ActivityItem,
 } from '@/app/interfaces/schedule/createSchedule.interface';
 import { Collapse, Dropdown } from 'antd';
 import { ScheduleTable } from './Table';
 import Image from 'next/image';
 
 type Props = {
-  updateWbsScopeItems: (_id: string, _scopeItems: ScopeItem[]) => void;
+  updateWbsScopeItems: (_id: string, _scopeItems: ActivityItem[]) => void;
   addWbsHandler: any;
   state: IWBSType[];
   updateWbs: any;
@@ -47,7 +47,9 @@ export function Schedule({
           iconheight={20}
           iconwidth={20}
           className="!w-44 !bg-white !text-[#EF9F28] !border-[#EF9F28]"
-          onClick={() => {setCategoryModal(true) , setProjectCategoryEditDetail(null)}}
+          onClick={() => {
+            setCategoryModal(true), setProjectCategoryEditDetail(null);
+          }}
         />
       </div>
       <div className="rounded-xl">
@@ -89,7 +91,7 @@ export function Schedule({
                               onClick={(e) => {
                                 e.stopPropagation();
                                 setProjectCategoryEditDetail(item);
-                                setCategoryModal(true)
+                                setCategoryModal(true);
                               }}
                               alt="Edit"
                             />

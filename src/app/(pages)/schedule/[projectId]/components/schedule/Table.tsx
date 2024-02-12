@@ -52,7 +52,7 @@ const columns: ColumnType<{}>[] = [
     dataIndex: 'orignalDuration',
     key: '2',
     width: 100,
-    align : 'center'
+    align: 'center',
   },
   {
     title: 'Status',
@@ -89,28 +89,28 @@ const columns: ColumnType<{}>[] = [
     dataIndex: 'remainingDuration',
     width: 100,
     key: '7',
-    align : 'center'
+    align: 'center',
   },
   {
     title: 'Schedule % Completed',
     dataIndex: 'scheduleCompleted',
     width: 100,
     key: '8',
-    align : 'center'
+    align: 'center',
   },
   {
     title: 'Total Float',
     dataIndex: 'totalFloat',
     width: 70,
     key: '9',
-    align : 'center'
+    align: 'center',
   },
   {
     title: 'Activity Type',
     dataIndex: 'activityType',
     width: 100,
     key: '10',
-    align : 'center'
+    align: 'center',
   },
   {
     title: 'Predecessors',
@@ -190,21 +190,22 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
   }
 
   async function updateRow(record: ActivityItem) {
-    record['orignalDuration'] = record.orignalDuration ? record.orignalDuration : ''
-    
-    let updateActivity  = await scheduleService.httpUpdateProjectDivActivity({activityId : record._id , data : record})
+    record['orignalDuration'] = record.orignalDuration
+      ? record.orignalDuration
+      : '';
 
-    console.log(updateActivity , 'updateActivityupdateActivity');
-    
+    let updateActivity = await scheduleService.httpUpdateProjectDivActivity({
+      activityId: record._id,
+      data: record,
+    });
 
+    console.log(updateActivity, 'updateActivityupdateActivity');
 
     const newData = [...wbs.scheduleProjectActivities];
 
     const index = newData.findIndex((item) => item._id === record._id);
     newData[index] = record;
     updateWbsScopeItems(wbs._id, newData);
-
-    
   }
 
   function deleteRow(record: ActivityItem) {

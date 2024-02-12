@@ -15,13 +15,12 @@ type Props = {
   initialValues: IProject;
   onClose: () => void;
   // onCancel: () => void;
-  isFormSubmitLoading : Boolean;
+  isFormSubmitLoading: Boolean;
   onConfirm: (values: IProject) => void;
 };
 
 const setWorkWeekValidationSchema = Yup.object({
-  hoursPerDay: Yup.string()
-    .required('Hour per day  is required!')
+  hoursPerDay: Yup.string().required('Hour per day  is required!'),
   // regularWorkingDays: Yup.array()
   //   .of(
   //     Yup.object().shape({
@@ -39,7 +38,7 @@ export function SetWorkWeek({
   isFormSubmitLoading,
   onConfirm,
 }: Props) {
-  const submitHandler = (values: IProject ) => {
+  const submitHandler = (values: IProject) => {
     onConfirm(values);
   };
 
@@ -129,7 +128,12 @@ export function SetWorkWeek({
               </div>
               <div className="flex justify-end space-x-4 mt-2">
                 {/* <WhiteButton text="Skip" className="!w-40" onClick={onCancel} /> */}
-                <CustomButton isLoading={isFormSubmitLoading} type="submit" text="Setup" className="!w-40" />
+                <CustomButton
+                  isLoading={isFormSubmitLoading}
+                  type="submit"
+                  text="Setup"
+                  className="!w-40"
+                />
               </div>
             </Form>
           );

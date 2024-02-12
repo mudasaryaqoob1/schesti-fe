@@ -92,7 +92,6 @@ const ImportMaterialModal = ({
       return;
     }
 
-
     try {
       const formData = new FormData();
       formData.append('category', values.category);

@@ -102,7 +102,7 @@ export function CategoryModal({
     const subCategoryName: any = subCategories.find(
       (cat: { value: string }) => cat.value === values.subCategory
     );
-    
+
     if (projectCategoryEditDetail) {
       updateWBsHandler(
         projectCategoryEditDetail._id,
