@@ -1,8 +1,9 @@
-import { useField } from 'formik';
+import { ErrorMessage, useField } from 'formik';
 // import ErrorMsg from '../errorMessage';
 import { Input } from 'antd';
 import { twMerge } from 'tailwind-merge';
 import clsx from 'clsx';
+import Errormsg from '../errorMessage';
 const InputField = (props: any) => {
   const {
     label,
@@ -37,10 +38,8 @@ const InputField = (props: any) => {
         prefix={prefix}
         className={twMerge(
           clsx(
-            `border ${
-              hasError ? 'border-red-500' : 'border-gray-400'
-            } !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 !mt-1.5 ${
-              inputStyle && inputStyle
+            `border ${hasError ? 'border-red-500' : 'border-gray-400'
+            } !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 !mt-1.5 ${inputStyle && inputStyle
             }`
           )
         )}
@@ -51,7 +50,7 @@ const InputField = (props: any) => {
       />
       {/* //   )} */}
       {/* // </Field> */}
-      {/* <ErrorMessage name={name} component={ErrorMsg} /> */}
+      <ErrorMessage name={name} component={Errormsg} />
     </div>
   );
 };

@@ -1,9 +1,10 @@
 import React from 'react';
-import { useField } from 'formik';
+import { ErrorMessage, useField } from 'formik';
 import clsx from 'clsx';
 import { Input } from 'antd';
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import { twMerge } from 'tailwind-merge';
+import Errormsg from '../errorMessage';
 // import { InputStyleContainer } from "./Style";
 
 const PasswordField = (props: any) => {
@@ -27,8 +28,7 @@ const PasswordField = (props: any) => {
       <Input.Password
         className={twMerge(
           clsx(
-            `border ${
-              hasError ? 'border-red-500' : 'border-gray-400'
+            `border ${hasError ? 'border-red-500' : 'border-gray-400'
             } !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 `
           )
         )}
@@ -49,7 +49,7 @@ const PasswordField = (props: any) => {
       />
       {/* )}
       </Field> */}
-      {/* <ErrorMessage name={name} component={ErrorMsg} /> */}
+      <ErrorMessage name={name} component={Errormsg} />
     </div>
   );
 };
