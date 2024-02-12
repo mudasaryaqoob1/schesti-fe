@@ -19,7 +19,7 @@ import clientInvoiceReducer from './client-invoices/client-invoice.slice';
 import meetingReducer from './meeting/meeting.slice';
 
 export type RootState = {
-  auth: any;
+  auth: typeof authReducer;
   companyClient: any;
   companySubContractor: any;
   estimates: any;
@@ -31,8 +31,7 @@ export type RootState = {
   companySetupSubcategory: any;
   materials: any;
   invoices: any;
-  clientInvoices: any;
-  // schedule: typeof scheduleReducer;
+  clientInvoices: typeof clientInvoiceReducer;
   meetings: typeof meetingReducer;
 };
 const persistConfig = {

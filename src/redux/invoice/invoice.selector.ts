@@ -11,5 +11,5 @@ export const selectInvoicesLoading = createSelector(
 
 export const selectInvoices = createSelector(
   [invoicesSelector],
-  (invoices) => invoices.data?.invoices
+  (invoices) => invoices.data
 );

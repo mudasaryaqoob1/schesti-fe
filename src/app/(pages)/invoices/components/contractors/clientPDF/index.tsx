@@ -9,16 +9,16 @@ import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface
 
 type Props = {
   invoice: IInvoice;
-  user?: IUser;
+  user: IUser;
 };
 
 const ClientPDF = ({ invoice, user }: Props) => {
   return (
     <Document>
       <Page size={'A4'}>
-        <PdfHeader logo={user?.avatar} brandingColor={user?.brandingColor} />
+        <PdfHeader logo={user.avatar} brandingColor={user.brandingColor} />
         <PageContent invoice={invoice} />
-        <PdfFooter brandingColor={user?.brandingColor} />
+        <PdfFooter brandingColor={user.brandingColor} />
       </Page>
     </Document>
   );

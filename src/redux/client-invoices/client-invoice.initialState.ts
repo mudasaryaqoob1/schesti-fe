@@ -5,14 +5,14 @@ export interface IClientInvoiceState {
   error?: string | null;
   message?: string | null;
   statusCode: number | null;
-  data: { invoices: IClientInvoice[] } | null;
+  data: IClientInvoice[];
 }
 
 const initialClientInvoiceState: IClientInvoiceState = {
   loading: false,
   error: null,
   message: null,
-  data: null,
+  data: [],
   statusCode: null,
 };
 

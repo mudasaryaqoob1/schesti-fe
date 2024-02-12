@@ -1,34 +1,39 @@
-'use client';
-import { useLayoutEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { ConfigProvider, Tabs } from 'antd';
-import { useRouter, useSearchParams } from 'next/navigation';
-
-import { HttpService } from '@/app/services/base.service';
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import TertiaryHeading from '@/app/component/headings/tertiary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import { G703Component } from './components/G703';
-import { G702Component } from './components/G702';
-import { generateData } from './utils';
-import { G7State } from '@/app/interfaces/client-invoice.interface';
+import TertiaryHeading from '@/app/component/headings/tertiary';
+import {
+  G7State,
+  IClientInvoice,
+} from '@/app/interfaces/client-invoice.interface';
 import { clientInvoiceService } from '@/app/services/client-invoices.service';
+import { ConfigProvider, Tabs } from 'antd';
+import moment from 'moment';
+import { useEffect, useState } from 'react';
+import { G703Component } from './G703';
+import { generateData } from '../utils';
+import { G702Component } from './G702';
+import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 
+type Props = {
+  parentInvoice: IClientInvoice;
+};
 const G703_KEY = 'G703';
 const G702_KEY = 'G702';
 
-export default function CreateClientInvoicePage() {
+export function PhaseComponent({ parentInvoice }: Props) {
   const router = useRouter();
-  const token = useSelector(selectToken);
-  const searchParams = useSearchParams();
-  const invoiceName = searchParams.get('invoiceName');
+  // selected phase will be from allPhases and will be the latest last phase
+  const [selectedPhase, setSelectedPhase] = useState<IClientInvoice | null>(
+    null
+  );
   const [tab, setTab] = useState(G703_KEY);
+  // all phases of the parent invoice
+  const [allPhases, setAllPhases] = useState<IClientInvoice[]>([]);
   const [g7State, setG7State] = useState<G7State>({
     applicationNo: '',
     invoiceName: '',
-    applicationDate: new Date().toISOString(),
-    periodTo: '',
+    applicationDate: new Date().toString(),
+    periodTo: new Date().toString(),
     projectNo: '',
     data: generateData(),
     address: '',
@@ -37,7 +42,7 @@ export default function CreateClientInvoicePage() {
     by: '',
     country: '',
     date: new Date().toString(),
-    distributionTo: 'architect',
+    distributionTo: 'Architect',
     myCommissionExpires: '',
     notaryPublic: '',
     project: '',
@@ -57,41 +62,70 @@ export default function CreateClientInvoicePage() {
     p5bPercentage: 2,
   });
 
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-      if (invoiceName) {
-        handleG7State('invoiceName', invoiceName);
-      }
+  useEffect(() => {
+    if (parentInvoice._id) {
+      (async function () {
+        try {
+          // get all the phases of the invoice
+          const response = await clientInvoiceService.httpGetInvoicePhases(
+            parentInvoice._id
+          );
+          if (response.data) {
+            // add parent phase as a previous phase
+            const phases = [parentInvoice, ...response.data.invoices];
+            // sort phases by date using moment
+            phases.sort(
+              (a, b) => moment(a.createdAt).unix() - moment(b.createdAt).unix()
+            );
+            const _selectedPhase = phases[phases.length - 1];
+            setAllPhases(phases);
+            setSelectedPhase(_selectedPhase);
+            // copy the values;
+            updateG7StateFromPhase({ ..._selectedPhase });
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      })();
     }
-  }, [token, invoiceName]);
+  }, [parentInvoice]);
 
+  function updateG7StateFromPhase(phase: IClientInvoice) {
+    const data = updatePreviousApplicationColumn(phase);
+    phase.applicationDate = '';
+    phase.periodTo = '';
+    setG7State({ ...phase, data });
+  }
   function handleG7State<K extends keyof G7State>(
     key: K,
     value: (typeof g7State)[K]
   ) {
     setG7State((prev) => {
-      if (
-        key === 'data' ||
-        key === 'p5aPercentage' ||
-        key === 'p5bPercentage'
-      ) {
-        const data = [...prev.data];
-        for (let index = 0; index < data.length; index++) {
-          updateColumn6(data, index);
-          updateColumn7(data, index);
-          updateColumn8(data, index);
-          updateColumn9(data, index);
-        }
-        return {
-          ...prev,
-          [key]: value,
-        };
-      }
       return { ...prev, [key]: value };
     });
   }
 
+  function updatePreviousApplicationColumn(_selectedPhase: IClientInvoice) {
+    let previousPhaseData = JSON.parse(
+      JSON.stringify(_selectedPhase.data)
+    ) as Array<string[]>;
+    const data = [...previousPhaseData];
+    const COLUMN_THIS_PERIOD = 4;
+    const COLUMN_PREVIOUS_APPLICATION = 3;
+
+    // loop over data
+    data.forEach((row) => {
+      const previousPhaseThisPeriodValue = Number(row[COLUMN_THIS_PERIOD]);
+      const previousPhasePreviousApplicationValue = Number(
+        row[COLUMN_PREVIOUS_APPLICATION]
+      );
+      const value =
+        previousPhaseThisPeriodValue + previousPhasePreviousApplicationValue;
+      row[COLUMN_PREVIOUS_APPLICATION] = value.toString();
+      row[COLUMN_THIS_PERIOD] = '';
+    });
+    return data;
+  }
   function sumColumns(rows: Array<string[]>, column: number): number {
     let sum = 0;
     rows.forEach((row) => {
@@ -174,28 +208,27 @@ export default function CreateClientInvoicePage() {
     newData[rowIndex][9] = `${isNaN(result) ? 0 : result}`;
     return newData;
   }
-  console.log(g7State);
+
   function handleSubmit(data: G7State) {
     clientInvoiceService
-      .httpAddNewInvoice(data)
+      .httpCreateNewInvoicePhase(parentInvoice._id, data)
       .then((response) => {
         if (response.statusCode == 201) {
           router.push('/invoices');
         }
       })
-      .catch(({ response }: any) => {
+      .catch(({ response }) => {
         if (response?.data.message === 'Validation Failed') {
           toast.error('Please fill the required fields.');
         }
       });
   }
-
   return (
     <section className="mx-16 my-2">
       <div className="p-5 shadow-md rounded-lg border border-silverGray  bg-white">
         <div className="flex space-x-3">
           <TertiaryHeading title="Invoice name:" className="font-medium" />
-          <TertiaryHeading title={`${invoiceName}`} />
+          <TertiaryHeading title={`${parentInvoice.invoiceName}`} />
         </div>
       </div>
 
@@ -244,29 +277,39 @@ export default function CreateClientInvoicePage() {
                 children:
                   tab === G703_KEY ? (
                     <G703Component
-                      state={g7State}
-                      handleState={handleG7State}
-                      sumColumns={sumColumns}
-                      updateCellValue={updateCellValue}
-                      onCancel={() => {
-                        router.back();
+                      selectedPhase={selectedPhase}
+                      setSelectedPhase={(value) => {
+                        let _selectedPhase = allPhases.find(
+                          (phase) => phase._id === value
+                        );
+                        if (_selectedPhase) {
+                          setSelectedPhase(_selectedPhase);
+                          updateG7StateFromPhase({ ..._selectedPhase });
+                        }
                       }}
+                      phases={allPhases}
+                      handleState={handleG7State}
+                      onCancel={() => {}}
                       onNext={() => {
                         setTab(G702_KEY);
                       }}
+                      state={g7State}
+                      sumColumns={sumColumns}
+                      updateCellValue={updateCellValue}
                     />
                   ) : (
                     <G702Component
-                      state={g7State}
                       handleState={handleG7State}
                       updateRetainage={updateRetainage}
-                      sumColumns={sumColumns}
                       onCancel={() => {
                         setTab(G703_KEY);
                       }}
                       onNext={() => {
                         handleSubmit(g7State);
                       }}
+                      state={g7State}
+                      previousPhaseState={selectedPhase}
+                      sumColumns={sumColumns}
                     />
                   ),
               };

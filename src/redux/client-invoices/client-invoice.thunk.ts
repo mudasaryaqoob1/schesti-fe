@@ -17,17 +17,17 @@ export const fetchClientInvoices = createAsyncThunk(
   }
 );
 
-// export const deleteContractorInvoiceRequest = createAsyncThunk(
-//   'invoices/deleteContractorInvoice',
-//   async (invoiceId: string, { rejectWithValue }) => {
-//     try {
-//       const response =
-//         await invoiceService.httpDeleteContractorInvoice(invoiceId);
-//       return response;
-//     } catch (error: any) {
-//       return rejectWithValue(
-//         error.response?.data || 'An error occurred while deleting the invoice'
-//       );
-//     }
-//   }
-// );
+export const deleteClientInvoiceRequest = createAsyncThunk(
+  'client-invoices/:invoice id',
+  async (invoiceId: string, { rejectWithValue }) => {
+    try {
+      const response =
+        await clientInvoiceService.httpDeleteClientInvoiceAndPhases(invoiceId);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data || 'An error occurred while deleting the invoice'
+      );
+    }
+  }
+);

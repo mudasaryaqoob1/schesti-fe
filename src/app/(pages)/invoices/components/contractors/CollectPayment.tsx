@@ -4,10 +4,12 @@ import { SelectComponent } from '@/app/component/customSelect/Select.component';
 import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import { IInvoice } from '@/app/interfaces/invoices.interface';
 import { invoiceService } from '@/app/services/invoices.service';
+import { updateContractorInvoiceAction } from '@/redux/invoice/invoice.slice';
 import TextArea from 'antd/es/input/TextArea';
 import dayjs from 'dayjs';
 import { useFormik } from 'formik';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 
@@ -25,6 +27,8 @@ const CollectPaymentSchema = Yup.object().shape({
 
 export function CollectPayment({ invoice, onSuccess }: Props) {
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+
   const formik = useFormik({
     initialValues: {
       amount: invoice.amount,
@@ -45,6 +49,9 @@ export function CollectPayment({ invoice, onSuccess }: Props) {
       );
       if (result.statusCode == 200) {
         setLoading(false);
+        dispatch(
+          updateContractorInvoiceAction({ invoice: result.data!.invoice })
+        );
         onSuccess();
       } else {
         setLoading(false);
@@ -132,6 +139,7 @@ export function CollectPayment({ invoice, onSuccess }: Props) {
             value={formik.values.additionalDetails}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
+            rows={15}
           />
         </div>
         <CustomButton

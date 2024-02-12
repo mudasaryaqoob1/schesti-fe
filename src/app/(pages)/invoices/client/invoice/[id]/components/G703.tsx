@@ -1,4 +1,3 @@
-'use client';
 import React from 'react';
 import {
   Button,
@@ -7,6 +6,7 @@ import {
   Divider,
   Input,
   Modal,
+  Select,
   Table,
 } from 'antd';
 import CustomButton from '@/app/component/customButton/button';
@@ -21,11 +21,18 @@ import {
   ExclamationCircleFilled,
   PlusOutlined,
 } from '@ant-design/icons';
-import { G7State } from '@/app/interfaces/client-invoice.interface';
+import {
+  G7State,
+  IClientInvoice,
+} from '@/app/interfaces/client-invoice.interface';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
+import moment from 'moment';
 
 type Props = {
+  phases: IClientInvoice[];
+  selectedPhase: IClientInvoice | null;
+  setSelectedPhase: (_value: string) => void;
   state: G7State;
   // eslint-disable-next-line no-unused-vars
   handleState<K extends keyof G7State>(key: K, value: G7State[K]): void;
@@ -37,6 +44,9 @@ type Props = {
 };
 
 export function G703Component({
+  phases,
+  selectedPhase,
+  setSelectedPhase,
   state,
   handleState,
   sumColumns,
@@ -85,6 +95,21 @@ export function G703Component({
           <QuaternaryHeading title="AIA Document G703, - 1992" />
           <PrimaryHeading title="Continuation Sheet" className="font-normal" />
         </div>
+        <div>
+          <Select
+            placeholder="Select Previous Phase"
+            options={phases.map((phase, index) => ({
+              label: `${index + 1}. Pay Application: ${moment(phase.applicationDate).format('DD MMM-YYYY')} - ${moment(phase.periodTo).format('DD MMM-YYYY')}`,
+              value: phase._id,
+            }))}
+            value={selectedPhase?._id}
+            onChange={(value) => {
+              setSelectedPhase(value);
+            }}
+            style={{ width: 400 }}
+            size="large"
+          />
+        </div>
       </div>
       <Divider className="!mt-6 !m-0" />
 
@@ -125,7 +150,11 @@ export function G703Component({
               <DatePicker
                 id="application-date"
                 className="px-2 w-full rounded-none py-[7px] border border-gray-300 outline-none"
-                defaultValue={dayjs(state.applicationDate)}
+                value={
+                  state.applicationDate
+                    ? dayjs(state.applicationDate)
+                    : undefined
+                }
                 onChange={(_d, dateString) =>
                   handleState('applicationDate', dateString as string)
                 }
@@ -138,11 +167,12 @@ export function G703Component({
             <label className="text-right col-span-4 text-graphiteGray font-normal">
               PERIOD TO:
             </label>
+
             <div className="col-span-2">
               <DatePicker
                 id="application-date"
                 className="px-4 w-full rounded-none py-[7px] border border-gray-300 outline-none"
-                value={!state.periodTo ? undefined : dayjs(state.periodTo)}
+                defaultValue={undefined}
                 onChange={(_d, dateString) =>
                   handleState('periodTo', dateString as string)
                 }
@@ -155,6 +185,7 @@ export function G703Component({
             <label className="text-right col-span-4 text-graphiteGray font-normal">
               PROJECT NO:
             </label>
+
             <div className="col-span-2">
               <Input
                 className="px-2 py-1  border border-gray-300 "
@@ -246,14 +277,9 @@ export function G703Component({
                 if (index === state.data.length) {
                   return <div className="px-3">{value}</div>;
                 }
-                let columnE = Number(getCellValue(record, 4));
+                let columnF = Number(getCellValue(record, 3));
                 return (
-                  <Input
-                    value={state.phase > 0 ? columnE : undefined}
-                    prefix="$"
-                    type="number"
-                    disabled
-                  />
+                  <Input value={columnF} prefix="$" type="number" disabled />
                 );
               }}
             />

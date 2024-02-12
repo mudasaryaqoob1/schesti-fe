@@ -10,12 +10,23 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 12,
-    backgroundColor: BG_COLOR,
     justifyContent: 'center',
     alignItems: 'center',
   },
 });
 
-export function PdfFooter() {
-  return <View style={styles.footer} fixed></View>;
+type Props = {
+  brandingColor?: string;
+};
+
+export function PdfFooter({ brandingColor }: Props) {
+  return (
+    <View
+      style={[
+        styles.footer,
+        { backgroundColor: brandingColor ? brandingColor : BG_COLOR },
+      ]}
+      fixed
+    ></View>
+  );
 }

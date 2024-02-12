@@ -1,3 +1,4 @@
+'use client';
 import type { ColumnsType } from 'antd/es/table';
 import { Dropdown, Table, type MenuProps, Tag, Drawer } from 'antd';
 import { useRouter } from 'next/navigation';
@@ -12,7 +13,7 @@ import {
   fetchSubcontractorInvoices,
 } from '@/redux/invoice/invoice.thunk';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch } from '@/redux/store';
+import { AppDispatch, RootState } from '@/redux/store';
 import {
   selectInvoices,
   selectInvoicesLoading,
@@ -21,6 +22,9 @@ import type { IInvoice } from '@/app/interfaces/invoices.interface';
 import Image from 'next/image';
 import moment from 'moment';
 import { CollectPayment } from './CollectPayment';
+import { usePDF } from '@react-pdf/renderer';
+import ClientPDF from './clientPDF';
+import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 
 export function Contractors() {
   const router = useRouter();
@@ -28,6 +32,9 @@ export function Contractors() {
   const subcontractersInvoices = useSelector(selectInvoices);
   const subcontractersInvoicesLoading = useSelector(selectInvoicesLoading);
   const [selectedInvoice, setSelectedInvoice] = useState<IInvoice | null>(null);
+  const auth = useSelector((state: RootState) => state.auth);
+  const user = auth.user?.user as IUser | undefined;
+  const [pdfInstance, updatePdfInstance] = usePDF({ document: undefined });
 
   const fetchSubcontactorsInvoices = useCallback(async () => {
     await dispatch(fetchSubcontractorInvoices({}));
@@ -38,6 +45,17 @@ export function Contractors() {
   }, [fetchSubcontactorsInvoices]);
 
   const items: MenuProps['items'] = [
+    {
+      key: 'download',
+      label: (
+        <a
+          href={pdfInstance.url ? pdfInstance.url : undefined}
+          download={`invoice_${new Date().getTime()}.pdf`}
+        >
+          {pdfInstance.url ? 'Download Pdf' : 'Generating Pdf...'}
+        </a>
+      ),
+    },
     {
       key: 'view',
       label: <p>View Invoice</p>,
@@ -73,13 +91,14 @@ export function Contractors() {
       dataIndex: 'invoiceNumber',
     },
     {
+      title: 'Project Name',
+      dataIndex: 'projectName',
+      width: 300,
+    },
+    {
       title: 'Subcontractor Name',
       dataIndex: 'subContractorFirstName',
       ellipsis: true,
-    },
-    {
-      title: 'Project Name',
-      dataIndex: 'projectName',
     },
     {
       title: 'Invoice Date',
@@ -127,6 +146,15 @@ export function Contractors() {
       key: 'action',
       render: (text, record) => (
         <Dropdown
+          onOpenChange={(open) => {
+            if (open) {
+              updatePdfInstance(<ClientPDF invoice={record} user={user!} />);
+            } else {
+              // @ts-ignore
+              updatePdfInstance();
+            }
+            console.log('Visbibility Changing', open);
+          }}
           menu={{
             items,
             onClick: (event) => {
@@ -135,6 +163,7 @@ export function Contractors() {
             },
           }}
           placement="bottomRight"
+          trigger={['click']}
         >
           <Image
             src={'/menuIcon.svg'}

@@ -8,7 +8,10 @@ import {
   selectClientInvoices,
   selectClientInvoicesLoading,
 } from '@/redux/client-invoices/client-invoice.selector';
-import { fetchClientInvoices } from '@/redux/client-invoices/client-invoice.thunk';
+import {
+  deleteClientInvoiceRequest,
+  fetchClientInvoices,
+} from '@/redux/client-invoices/client-invoice.thunk';
 import { AppDispatch } from '@/redux/store';
 import { CloseOutlined, SearchOutlined } from '@ant-design/icons';
 import { Dropdown, Table, type MenuProps } from 'antd';
@@ -35,16 +38,8 @@ export function Clients() {
   }, [fetchSubcontactorsInvoices]);
   const items: MenuProps['items'] = [
     {
-      key: 'editInvoice',
-      label: <p>Edit Invoice</p>,
-    },
-    {
-      key: 'collectPayments',
-      label: <p>Collect Payments</p>,
-    },
-    {
-      key: 'markAsClosed',
-      label: <p>Mark as closed</p>,
+      key: 'createPhase',
+      label: <p>New Payable</p>,
     },
     {
       key: 'delete',
@@ -60,9 +55,10 @@ export function Clients() {
       title: 'Invoice Name',
       dataIndex: 'invoiceName',
       ellipsis: true,
+      width: 300,
     },
     {
-      title: 'Client Name',
+      title: 'Owner',
       dataIndex: 'toOwner',
     },
     {
@@ -75,18 +71,25 @@ export function Clients() {
     },
     {
       title: 'Distributed To',
-      dataIndex: 'distributedTo',
+      dataIndex: 'distributionTo',
+      render: (value) => value?.toUpperCase(),
     },
     {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
       key: 'action',
-      render: () => (
+      render: (_, record) => (
         <Dropdown
           menu={{
             items,
-            onClick: () => {},
+            onClick: ({ key }) => {
+              if (key === 'createPhase') {
+                router.push(`/invoices/client/invoice/${record._id}`);
+              } else if (key === 'delete') {
+                dispatch(deleteClientInvoiceRequest(record._id));
+              }
+            },
           }}
           placement="bottomRight"
         >
