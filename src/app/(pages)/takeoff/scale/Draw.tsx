@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useContext, useState } from 'react';
 import {
   Stage,
@@ -7,7 +7,7 @@ import {
   Line,
   Group,
   Text as TextKonva,
-  Circle,
+  // Circle,
   Text as KonvaText,
 } from 'react-konva';
 import UploadFileContext, {
@@ -16,11 +16,24 @@ import UploadFileContext, {
 import { useDraw } from '@/app/hooks';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { LineCap } from 'konva/lib/Shape';
-import type { ColorPickerProps, GetProp } from 'antd';
+import { Measurements } from './page';
+
+const defaultCurrentLineState = { startingPoint: null, endingPoint: null };
+const defaultPolyLineState: LineInterface = {
+  points: [],
+  stroke: '',
+  strokeWidth: 0,
+  textUnit: 18,
+};
 
 interface LineState {
   startingPoint: { x: number; y: number } | null;
   endingPoint: { x: number; y: number } | null;
+}
+
+interface CoordinatesInterface {
+  x: number;
+  y: number;
 }
 
 interface LineInterface {
@@ -28,11 +41,7 @@ interface LineInterface {
   stroke: string;
   strokeWidth: number;
   lineCap?: LineCap;
-}
-
-interface CoordinatesInterface {
-  x: number;
-  y: number;
+  textUnit: number;
 }
 
 interface PolygonConfigInterface {
@@ -42,6 +51,7 @@ interface PolygonConfigInterface {
   area?: number;
   volume?: number;
   center: CoordinatesInterface;
+  textUnit: number;
 }
 
 interface DrawInterface {
@@ -52,22 +62,19 @@ interface DrawInterface {
   count: CoordinatesInterface[];
 }
 
-const defaultCurrentLineState = { startingPoint: null, endingPoint: null };
-const defaultPolyLineState = { points: [], stroke: '', strokeWidth: 0 };
-
 interface Props {
   selected: string;
   depth: number;
-  color: GetProp<ColorPickerProps, 'value'>;
+  color: string;
   border: number;
-  setData: Dispatch<SetStateAction<undefined>>;
   unit: number;
+  handleChangeMeasurements: (data: Measurements) => void;
 }
 
-const Draw: React.FC<Props> = ({ selected, depth }) => {
+const Draw: React.FC<Props> = ({ selected, depth, border, unit, color }) => {
   const {
     calcLineDistance,
-    convertArrayIntoChunks,
+    // convertArrayIntoChunks,
     calculateMidpoint,
     calculatePolygonArea,
     calculatePolygonPerimeter,
@@ -128,8 +135,9 @@ const Draw: React.FC<Props> = ({ selected, depth }) => {
           position?.x,
           position?.y,
         ] as number[],
-        stroke: '#7750F1',
-        strokeWidth: 4,
+        stroke: color,
+        strokeWidth: border,
+        textUnit: unit,
       };
       setDraw((prev) => ({ ...prev, line: [...prev.line, newLine] }));
       setCurrentLine(defaultCurrentLineState);
@@ -145,8 +153,9 @@ const Draw: React.FC<Props> = ({ selected, depth }) => {
         if (!prev.points.length) {
           return {
             points: [position?.x || 0, position?.y || 0],
-            stroke: 'black',
-            strokeWidth: 4,
+            stroke: color,
+            strokeWidth: border,
+            textUnit: unit,
           };
         } else {
           if (
@@ -177,6 +186,7 @@ const Draw: React.FC<Props> = ({ selected, depth }) => {
                   ...prev,
                   center: polygonCenter,
                   area: polygonArea,
+                  textUnit: unit,
                 };
 
                 return {
@@ -188,6 +198,7 @@ const Draw: React.FC<Props> = ({ selected, depth }) => {
                   ...prev,
                   center: polygonCenter,
                   volume: polygonArea * depth,
+                  textUnit: unit,
                 };
 
                 return {
@@ -219,8 +230,9 @@ const Draw: React.FC<Props> = ({ selected, depth }) => {
         if (!prev.points.length) {
           return {
             points: [position?.x || 0, position?.y || 0],
-            stroke: 'black',
-            strokeWidth: 4,
+            stroke: color,
+            strokeWidth: border,
+            textUnit: unit,
           };
         } else {
           prev.points.push(...[position?.x || 0, position?.y || 0]);
@@ -300,7 +312,7 @@ const Draw: React.FC<Props> = ({ selected, depth }) => {
               {
                 ...dynamicPolyLine,
                 strokeWidth: 10,
-                stroke: 'purple',
+                stroke: color,
                 lineCap: 'round',
               },
             ],
@@ -319,22 +331,22 @@ const Draw: React.FC<Props> = ({ selected, depth }) => {
           <KonvaImage image={myImage} width={600} height={600} />
 
           {/* Drawing Line */}
-          {draw.line.map((line, index) => {
-            const circles = convertArrayIntoChunks(line.points);
-            const lineDistance = calcLineDistance(line.points);
-            const lineMidPoint = calculateMidpoint(line.points);
+          {draw.line.map(({ textUnit, ...rest }, index) => {
+            // const circles = convertArrayIntoChunks(line.points);
+            const lineDistance = calcLineDistance(rest.points);
+            const lineMidPoint = calculateMidpoint(rest.points);
             return (
               <Group key={`lines-${index}`}>
-                <Line key={index} {...line} />
-                {circles.map((circle: number[]) => {
+                <Line key={index} {...rest} lineCap="round" />
+                {/* {circles.map((circle: number[]) => {
                   const [x, y] = circle;
                   return (
                     <Circle key={x + y} x={x} y={y} fill="#ff0000" radius={4} />
                   );
-                })}
+                })} */}
                 <TextKonva
                   {...lineMidPoint}
-                  fontSize={20}
+                  fontSize={textUnit}
                   text={lineDistance.toString()}
                   fill="red"
                 />
@@ -349,14 +361,14 @@ const Draw: React.FC<Props> = ({ selected, depth }) => {
           {!!dynamicPolyLine.points.length && <Line {...dynamicPolyLine} />}
 
           {/* Drawing Area */}
-          {draw.area.map(({ center, area, ...rest }, index) => {
+          {draw.area.map(({ center, area, textUnit, ...rest }, index) => {
             const text = `${area?.toFixed(2) || ''}sq`;
             return (
               <Group key={index}>
                 <Line {...rest} />
                 <TextKonva
                   {...center}
-                  fontSize={15}
+                  fontSize={textUnit}
                   text={text}
                   offsetX={30}
                   fill="red"
@@ -373,7 +385,7 @@ const Draw: React.FC<Props> = ({ selected, depth }) => {
                 <>
                   <TextKonva
                     {...polygonCenter}
-                    fontSize={20}
+                    fontSize={unit}
                     text={polygonText}
                     offsetX={30}
                     fill="red"
@@ -382,7 +394,7 @@ const Draw: React.FC<Props> = ({ selected, depth }) => {
                   <TextKonva
                     x={40}
                     y={480}
-                    fontSize={20}
+                    fontSize={unit}
                     text={`Perimeter: ${polygonPerimeter?.toFixed(2) || ''}`}
                     offsetX={30}
                     fill="teal"
@@ -394,14 +406,14 @@ const Draw: React.FC<Props> = ({ selected, depth }) => {
           )}
 
           {/* Drawing Volume */}
-          {draw.volume.map(({ center, volume, ...rest }, index) => {
+          {draw.volume.map(({ center, volume, textUnit, ...rest }, index) => {
             const text = `${volume?.toFixed(2) || ''} cubic`;
             return (
               <Group key={index}>
                 <Line {...rest} />
                 <TextKonva
                   {...center}
-                  fontSize={15}
+                  fontSize={textUnit}
                   text={text}
                   offsetX={30}
                   fill="red"
@@ -422,8 +434,8 @@ const Draw: React.FC<Props> = ({ selected, depth }) => {
                   currentLine.endingPoint.x,
                   currentLine.endingPoint.y,
                 ]}
-                stroke="blue"
-                strokeWidth={4}
+                stroke={color}
+                strokeWidth={border}
               />
             )}
 
@@ -437,8 +449,8 @@ const Draw: React.FC<Props> = ({ selected, depth }) => {
                   completingLine.endingPoint.x,
                   completingLine.endingPoint.y,
                 ]}
-                stroke="green"
-                strokeWidth={4}
+                stroke="gray"
+                strokeWidth={border}
               />
             )}
 

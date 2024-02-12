@@ -10,7 +10,6 @@ import ModalComponent from '@/app/component/modal';
 import ScaleModal from '../components/scale';
 import ModalsWrapper from '../components/main';
 import { ColorPicker, InputNumber, Select } from 'antd';
-import type { ColorPickerProps, GetProp } from 'antd';
 
 export type ScaleLabel =
   | 'scale'
@@ -80,19 +79,36 @@ const scaleNavigation: ScaleNavigation[] = [
   },
 ];
 
-const Units = [11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72];
+export interface Measurements {
+  angle?: number;
+  segment?: string;
+  volume?: number;
+  count?: number;
+  parameter?: string;
+  area?: number;
+}
 
-type Color = GetProp<ColorPickerProps, 'value'>;
+const defaultMeasurements: Measurements = {
+  angle: 0,
+  segment: '0',
+  volume: 0,
+  area: 0,
+  count: 0,
+  parameter: '0',
+};
+
+const Units = [11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72];
 
 const Scale = () => {
   const [scale, setScale] = useState<ScaleLabel>('scale');
   const [showModal, setShowModal] = useState(false);
-  const [border, setBorder] = useState<number>(0);
-  const [color, setColor] = useState<Color>('#1677ff');
-  const [unit, setUnit] = useState<number>(0);
+  const [border, setBorder] = useState<number>(4);
+  const [color, setColor] = useState<string>('#1677ff');
+  const [unit, setUnit] = useState<number>(18);
   const [depth, setDepth] = useState<number>(0);
   const { src } = useContext(UploadFileContext) as UploadFileContextProps;
-  const [data, setData] = useState();
+  const [measurements, setMeasurements] =
+    useState<Measurements>(defaultMeasurements);
 
   const myImage = new Image();
   myImage.src = src;
@@ -149,7 +165,11 @@ const Scale = () => {
         </div>
         <div className="flex flex-row gap-2 items-center">
           <label>Units:</label>
-          <Select className="w-[64px]" onChange={(value) => setUnit(value)}>
+          <Select
+            className="w-[64px]"
+            value={unit}
+            onChange={(value) => setUnit(value)}
+          >
             {Units.map((item) => (
               <Select.Option value={item} key={item}>
                 {item}
@@ -162,15 +182,15 @@ const Scale = () => {
           <InputNumber
             min={1}
             max={76}
-            defaultValue={3}
+            value={border}
             onChange={(value) => setBorder(value as number)}
           />
         </div>
         <div className="flex flex-row gap-2 items-center">
           <label>Color:</label>
           <ColorPicker
-            defaultValue="#1677ff"
-            onChange={(color) => setColor(color)}
+            value={color}
+            onChange={(color) => setColor(color.toHexString())}
           />
         </div>
       </div>
@@ -190,7 +210,7 @@ const Scale = () => {
               <ModalsWrapper
                 scale={scale}
                 setModalOpen={setShowModal}
-                data={data}
+                data={measurements}
               />
             </div>
           </div>
@@ -200,8 +220,10 @@ const Scale = () => {
           depth={depth}
           color={color}
           border={border}
-          setData={setData}
           unit={unit}
+          handleChangeMeasurements={(measurements) =>
+            setMeasurements(measurements)
+          }
         />
       </div>
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScaleLabel } from '../../scale/page';
+import { Measurements, ScaleLabel } from '../../scale/page';
 import Length from '../length';
 import Volume from '../volume';
 import Count from '../count';
@@ -9,7 +9,7 @@ import Dynamic from '../dynamic';
 interface Props {
   scale: ScaleLabel;
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  data: undefined;
+  data: Measurements;
 }
 
 const ModalsWrapper: React.FC<Props> = ({ scale, setModalOpen }) => {
