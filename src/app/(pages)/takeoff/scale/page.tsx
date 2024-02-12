@@ -8,8 +8,17 @@ import { UploadFileContextProps } from '../context/UploadFileContext';
 import Draw from './Draw';
 import ModalComponent from '@/app/component/modal';
 import ScaleModal from '../components/scale';
+import ModalsWrapper from '../components/main';
+import { ColorPicker, InputNumber, Select } from 'antd';
+import type { ColorPickerProps, GetProp } from 'antd';
 
-type ScaleLabel = 'scale' | 'length' | 'volume' | 'count' | 'area' | 'dynamic';
+export type ScaleLabel =
+  | 'scale'
+  | 'length'
+  | 'volume'
+  | 'count'
+  | 'area'
+  | 'dynamic';
 
 interface ScaleNavigation {
   label: ScaleLabel;
@@ -71,11 +80,19 @@ const scaleNavigation: ScaleNavigation[] = [
   },
 ];
 
+const Units = [11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72];
+
+type Color = GetProp<ColorPickerProps, 'value'>;
+
 const Scale = () => {
   const [scale, setScale] = useState<ScaleLabel>('scale');
   const [showModal, setShowModal] = useState(false);
+  const [border, setBorder] = useState<number>(0);
+  const [color, setColor] = useState<Color>('#1677ff');
+  const [unit, setUnit] = useState<number>(0);
   const [depth, setDepth] = useState<number>(0);
   const { src } = useContext(UploadFileContext) as UploadFileContextProps;
+  const [data, setData] = useState();
 
   const myImage = new Image();
   myImage.src = src;
@@ -125,6 +142,38 @@ const Scale = () => {
           }
         )}
       </div>
+      <div className="bg-[#F2F2F2] h-[52px] flex flex-row items-center px-4 gap-6">
+        <div className="flex flex-row gap-2 items-center">
+          <label>Totals:</label>
+          <Select></Select>
+        </div>
+        <div className="flex flex-row gap-2 items-center">
+          <label>Units:</label>
+          <Select className="w-[64px]" onChange={(value) => setUnit(value)}>
+            {Units.map((item) => (
+              <Select.Option value={item} key={item}>
+                {item}
+              </Select.Option>
+            ))}
+          </Select>
+        </div>
+        <div className="flex flex-row gap-2 items-center">
+          <label>Border:</label>
+          <InputNumber
+            min={1}
+            max={76}
+            defaultValue={3}
+            onChange={(value) => setBorder(value as number)}
+          />
+        </div>
+        <div className="flex flex-row gap-2 items-center">
+          <label>Color:</label>
+          <ColorPicker
+            defaultValue="#1677ff"
+            onChange={(color) => setColor(color)}
+          />
+        </div>
+      </div>
       <div className="bg-[#F2F2F2] h-[52px] w-full">
         <input
           type="number"
@@ -134,8 +183,26 @@ const Scale = () => {
           onChange={(e) => setDepth(+e.target.value)}
         />
       </div>
-      <div className="py-6 h-[709px]">
-        <Draw selected={scale} depth={depth} />
+      <div className="py-6 h-[709px] relative">
+        <div>
+          <div className="absolute">
+            <div className={`${showModal ? 'block' : 'hidden'}`}>
+              <ModalsWrapper
+                scale={scale}
+                setModalOpen={setShowModal}
+                data={data}
+              />
+            </div>
+          </div>
+        </div>
+        <Draw
+          selected={scale}
+          depth={depth}
+          color={color}
+          border={border}
+          setData={setData}
+          unit={unit}
+        />
       </div>
 
       {scale === 'scale' && (

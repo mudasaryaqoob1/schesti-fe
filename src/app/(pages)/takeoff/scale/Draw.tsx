@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useMemo } from 'react';
 import { useContext, useState } from 'react';
 import {
   Stage,
@@ -16,11 +16,7 @@ import UploadFileContext, {
 import { useDraw } from '@/app/hooks';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { LineCap } from 'konva/lib/Shape';
-import Length from '../components/length';
-import Volume from '../components/volume';
-import Count from '../components/count';
-import Area from '../components/area';
-import Dynamic from '../components/dynamic';
+import type { ColorPickerProps, GetProp } from 'antd';
 
 interface LineState {
   startingPoint: { x: number; y: number } | null;
@@ -62,6 +58,10 @@ const defaultPolyLineState = { points: [], stroke: '', strokeWidth: 0 };
 interface Props {
   selected: string;
   depth: number;
+  color: GetProp<ColorPickerProps, 'value'>;
+  border: number;
+  setData: Dispatch<SetStateAction<undefined>>;
+  unit: number;
 }
 
 const Draw: React.FC<Props> = ({ selected, depth }) => {
@@ -74,8 +74,6 @@ const Draw: React.FC<Props> = ({ selected, depth }) => {
     calculatePolygonCenter,
   } = useDraw();
 
-  const [showModal, setShowModal] = useState(false);
-
   const { src } = useContext(UploadFileContext) as UploadFileContextProps;
   const [draw, setDraw] = useState<DrawInterface>({
     line: [],
@@ -84,6 +82,7 @@ const Draw: React.FC<Props> = ({ selected, depth }) => {
     count: [],
     dynamic: [],
   });
+
   const [polyLine, setPolyLine] = useState<LineInterface>(defaultPolyLineState);
   const [dynamicPolyLine, setDynamicPolyLine] =
     useState<LineInterface>(defaultPolyLineState);
@@ -107,7 +106,6 @@ const Draw: React.FC<Props> = ({ selected, depth }) => {
     setCurrentLine(defaultCurrentLineState);
     setCompletingLine(defaultCurrentLineState);
     setEndLiveEditing(false);
-    setShowModal(true);
   }, [selected]);
 
   const handleMouseDown = (e: KonvaEventObject<MouseEvent>) => {
@@ -312,25 +310,6 @@ const Draw: React.FC<Props> = ({ selected, depth }) => {
         }
       }}
     >
-      <div className="absolute  left-[-300px]">
-        <div className={`${showModal ? 'block' : 'hidden'}`}>
-          <div>
-            {selected === 'length' && <Length setModalOpen={setShowModal} />}
-          </div>
-          <div>
-            {selected === 'volume' && <Volume setModalOpen={setShowModal} />}
-          </div>
-          <div>
-            {selected === 'count' && <Count setModalOpen={setShowModal} />}
-          </div>
-          <div>
-            {selected === 'area' && <Area setModalOpen={setShowModal} />}
-          </div>
-          <div>
-            {selected === 'dynamic' && <Dynamic setModalOpen={setShowModal} />}
-          </div>
-        </div>
-      </div>
       <Stage
         width={600}
         height={600}
