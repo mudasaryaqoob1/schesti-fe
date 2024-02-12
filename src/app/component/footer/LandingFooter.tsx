@@ -1,7 +1,10 @@
+'use client';
 import { Divider } from "antd";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function LandingFooter() {
+    const router = useRouter();
     return <div
         className="bg-[#1D2939] px-[200px] pb-4 pt-[52px]">
         <div className="flex justify-between items-start">
@@ -31,16 +34,20 @@ export default function LandingFooter() {
             <div className="flex items-center space-x-8">
                 <a
                     className={`text-white cursor-pointer text-lg pb-1 font-medium`}
+                    onClick={() => router.push("/")}
                 >
                     Home
                 </a>
                 <a
                     className={`text-white cursor-pointer text-lg pb-1 font-medium`}
+                    onClick={() => router.push("/pricing")}
+
                 >
                     Plans
                 </a>
                 <a
                     className={`text-white cursor-pointer text-lg pb-1 font-medium`}
+                    onClick={() => router.push("/contact")}
                 >
                     Contact Us
                 </a>

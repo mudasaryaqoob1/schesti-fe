@@ -13,9 +13,10 @@ import { IPricingPlan } from "../interfaces/pricing-plan.interface";
 import { selectPricingPlans, selectPricingPlansError, selectPricingPlansLoading } from "@/redux/pricingPlanSlice/pricingPlan.selector";
 import { fetchPricingPlan } from "@/redux/pricingPlanSlice/pricingPlan.thunk";
 import SinglePlan from "../(pages)/settings/plans/oldSubscriptions/components/plan/plan";
+import { useRouter } from "next/navigation";
 
 export default function PricingPage() {
-
+    const router = useRouter();
     const { token } = theme.useToken();
     const panelStyle: React.CSSProperties = {
         marginBottom: 24,
@@ -156,6 +157,7 @@ export default function PricingPage() {
                         <CustomButton
                             text="Request for post"
                             className="!rounded-full !w-48 mt-[48px] !text-[#8449EB]"
+                            onClick={() => router.push("/contact")}
                         />
                     </div>
                     <div>
@@ -221,11 +223,13 @@ export default function PricingPage() {
                             <CustomButton
                                 text="Get start with Schesti"
                                 className="!rounded-full !bg-white !w-48 !text-[#8449EB]"
+                                onClick={() => router.push("/login")}
                             />
 
                             <CustomButton
                                 text="Contact Us"
                                 className="!rounded-full !w-48 !bg-transparent !border-white  !text-white"
+                                onClick={() => router.push("/contact")}
                             />
                         </div>
                     </div>

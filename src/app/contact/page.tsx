@@ -172,10 +172,6 @@ export default function ContactPage() {
                                     className="!rounded-full !bg-white !w-48 !text-[#8449EB]"
                                 />
 
-                                <CustomButton
-                                    text="Contact Us"
-                                    className="!rounded-full !w-48 !bg-transparent !border-white  !text-white"
-                                />
                             </div>
                         </div>
                     </div>

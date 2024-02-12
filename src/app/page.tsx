@@ -1,9 +1,12 @@
+"use client";
 import Image from "next/image";
 import CustomButton from "./component/customButton/white";
 import { LandingNavbar } from "./component/navbar/LandingNavbar";
 import LandingFooter from "./component/footer/LandingFooter";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
   return (
     <section>
       <main style={{
@@ -21,6 +24,7 @@ export default function Home() {
             <CustomButton
               text="Get Started"
               className="!rounded-full !text-[#7138DF]"
+              onClick={() => router.push("/login")}
             />
             <Image
               src={"/landing.png"}
@@ -89,7 +93,7 @@ export default function Home() {
               className="!rounded-full !bg-transparent !text-[#718096] !border-[#718096]"
             />
             <CustomButton
-              text="Invoice"
+              text="Client"
               className="!rounded-full !bg-transparent !text-[#718096] !border-[#718096]"
             />
             <CustomButton
@@ -155,6 +159,7 @@ export default function Home() {
               <CustomButton
                 text="Request for post"
                 className="!rounded-full !w-48 mt-[48px] !text-[#8449EB]"
+                onClick={() => router.push("/contact")}
               />
             </div>
             <div>
@@ -257,11 +262,13 @@ export default function Home() {
                 <CustomButton
                   text="Get start with Schesti"
                   className="!rounded-full !w-48 !text-[#8449EB]"
+                  onClick={() => router.push("/login")}
                 />
 
                 <CustomButton
                   text="Contact Us"
                   className="!rounded-full !w-48 !bg-transparent  !text-white"
+                  onClick={() => router.push("/contact")}
                 />
               </div>
             </div>
