@@ -21,12 +21,18 @@ const styles = StyleSheet.create({
 type Props = {
   logo?: string;
   brandingColor?: string;
-}
+};
 export function PdfHeader({ logo, brandingColor }: Props) {
   return (
-    <View style={[styles.container, { backgroundColor: brandingColor ? brandingColor : BG_COLOR }]} fixed>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: brandingColor ? brandingColor : BG_COLOR },
+      ]}
+      fixed
+    >
       <Image
-        src={logo ? logo : "./logo.svg"}
+        src={logo ? logo : './logo.svg'}
         style={{
           width: 40,
           height: 40,

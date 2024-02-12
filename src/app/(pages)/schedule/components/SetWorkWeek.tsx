@@ -1,5 +1,5 @@
 import CustomButton from '@/app/component/customButton/button';
-import WhiteButton from '@/app/component/customButton/white';
+// import WhiteButton from '@/app/component/customButton/white';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { CloseOutlined } from '@ant-design/icons';
@@ -14,32 +14,32 @@ import clsx from 'clsx';
 type Props = {
   initialValues: IProject;
   onClose: () => void;
-  onCancel: () => void;
+  // onCancel: () => void;
+  isFormSubmitLoading : Boolean;
   onConfirm: (values: IProject) => void;
 };
 
 const setWorkWeekValidationSchema = Yup.object({
   hoursPerDay: Yup.string()
     .required('Hour per day  is required!')
-    .min(1, 'Hours must be a positive number'),
   // regularWorkingDays: Yup.array()
-  // .of(
-  //   Yup.object().shape({
-  //     isChecked: Yup.boolean().required('Checkbox status is required'),
-  //     hours: Yup.number()
-  //       .required('Hours are required')
-  //       .min(1, 'Hours must be a positive number'),
-  //   })
-  // )
+  //   .of(
+  //     Yup.object().shape({
+  //       isChecked: Yup.boolean().required('Checkbox status is required'),
+  //       hours: Yup.number()
+  //         .required('Hours are required')
+  //         .min(1, 'Hours must be a positive number'),
+  //     })
+  //   )
 });
 
 export function SetWorkWeek({
   onClose,
   initialValues,
-  onCancel,
+  isFormSubmitLoading,
   onConfirm,
 }: Props) {
-  const submitHandler = (values: IProject) => {
+  const submitHandler = (values: IProject ) => {
     onConfirm(values);
   };
 
@@ -60,7 +60,7 @@ export function SetWorkWeek({
         validationSchema={setWorkWeekValidationSchema}
         onSubmit={submitHandler}
       >
-        {({ handleSubmit, setFieldValue, errors }) => {
+        {({ handleSubmit, setFieldValue, errors, values }) => {
           return (
             <Form name="basic" autoComplete="off" onSubmit={handleSubmit}>
               <div className="flex flex-col gap-3">
@@ -68,6 +68,7 @@ export function SetWorkWeek({
                   control="input"
                   label="Hours per Day"
                   type="number"
+                  min={0}
                   name="hoursPerDay"
                   placeholder="Set number of hours per day"
                 />
@@ -88,12 +89,18 @@ export function SetWorkWeek({
                           <Checkbox
                             defaultChecked={item.isChecked}
                             name={`regularWorkingDays[${index}].isChecked`}
-                            onChange={(e) =>
+                            onChange={(e) => {
                               setFieldValue(
                                 `regularWorkingDays[${index}].isChecked`,
                                 e.target.checked
-                              )
-                            }
+                              );
+                              if (e.target.checked) {
+                                setFieldValue(
+                                  `regularWorkingDays[${index}].hours`,
+                                  values.hoursPerDay
+                                );
+                              }
+                            }}
                             className={twMerge(
                               clsx(
                                 `border ${
@@ -121,8 +128,8 @@ export function SetWorkWeek({
                 )}
               </div>
               <div className="flex justify-end space-x-4 mt-2">
-                <WhiteButton text="Skip" className="!w-40" onClick={onCancel} />
-                <CustomButton type="submit" text="Setup" className="!w-40" />
+                {/* <WhiteButton text="Skip" className="!w-40" onClick={onCancel} /> */}
+                <CustomButton isLoading={isFormSubmitLoading} type="submit" text="Setup" className="!w-40" />
               </div>
             </Form>
           );

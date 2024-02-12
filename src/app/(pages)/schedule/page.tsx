@@ -1,16 +1,21 @@
 'use client';
-import React, { useLayoutEffect, useState } from 'react';
+import React, {
+  useLayoutEffect,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
 import moment from 'moment';
 import Image from 'next/image';
 import { Formik, Form } from 'formik';
 import { Dropdown, type MenuProps, Table, Tag, Select, Input } from 'antd';
 import { type ColumnsType } from 'antd/es/table';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { CloseOutlined, SearchOutlined } from '@ant-design/icons';
 import * as Yup from 'yup';
-import { twMerge } from 'tailwind-merge';
-import clsx from 'clsx';
+import './style.css';
+import { toast } from 'react-toastify';
 
 // module imports
 import CustomButton from '@/app/component/customButton/button';
@@ -23,12 +28,13 @@ import { selectToken } from '@/redux/authSlices/auth.selector';
 import { SetWorkWeek } from './components/SetWorkWeek';
 import { IProject } from '@/app/interfaces/schedule/project.schedule.interface';
 import { ISchedule } from '@/app/interfaces/schedule/schedule.type';
-import { addSchedule } from '@/redux/schedule/schedule.slice';
 import FormControl from '@/app/component/formControl';
+import { scheduleService } from '@/app/services/schedule.service';
 
 const initialValues: IProject = {
   projectName: '',
   duration: 1,
+  durationType: 'days',
   hoursPerDay: 0,
   regularWorkingDays: [
     {
@@ -78,7 +84,6 @@ const createProjectSchema = Yup.object({
 
 const Schedule = () => {
   const router = useRouter();
-  const dispatch = useDispatch();
 
   const token = useSelector(selectToken);
   useLayoutEffect(() => {
@@ -90,7 +95,26 @@ const Schedule = () => {
   const [createProjectModal, setCreateProjectModal] = useState(false);
   const [worksheetModal, setWorksheetModal] = useState(false);
   const [projectDetail, setProjectDetail] = useState<IProject>();
-  const [durationType, setDurationType] = useState('days');
+  const [isFormSubmitLoading, setIsFormSubmitLoading] = useState(false);
+  const [isTableLoading, setIsTableLoading] = useState(true);
+  const [scheduleProjects, setScheduleProjects] = useState<any>([]);
+
+  const fetchScheduleProjects = useCallback(async () => {
+    await scheduleService
+      .httpGetAllScheduleProjects()
+      .then((resp) => {
+        setIsTableLoading(false);
+        setScheduleProjects(resp.data?.scheduleProjects);
+      })
+      .catch((error) => {
+        console.log(error);
+        setIsTableLoading(false);
+      });
+  }, []);
+
+  useEffect(() => {
+    fetchScheduleProjects();
+  }, []);
 
   const items: MenuProps['items'] = [
     {
@@ -128,7 +152,7 @@ const Schedule = () => {
     },
     {
       title: 'Task',
-      dataIndex: 'task',
+      dataIndex: 'taskCompleted',
     },
     {
       title: 'Status',
@@ -188,18 +212,35 @@ const Schedule = () => {
     }
   }
 
-  function handleConfirm(item: IProject) {
+  async function handleConfirm(item: IProject) {
+    setIsFormSubmitLoading(true);
+
     let finalObject: any = {
       projectName: projectDetail?.projectName,
-      duration: projectDetail?.duration,
-      durationType: durationType,
+      duration: Number(projectDetail?.duration),
+      durationType: projectDetail?.durationType,
       hoursPerDay: item.hoursPerDay,
-      regularWorkingDays: item.regularWorkingDays,
+      regularWorkingDays: item.regularWorkingDays.filter(
+        (day) => day.isChecked
+      ),
     };
 
-    dispatch(addSchedule(finalObject));
-    setWorksheetModal(false);
-    router.push(`/schedule/${1}`);
+    await scheduleService
+      .httpGenerateSchedule(finalObject)
+      .then((resp) => {        
+        setIsFormSubmitLoading(false);
+        setWorksheetModal(false);
+        if(resp.statusCode === 201){
+          router.push(`/schedule/${resp?.data?.createProject?._id}`);
+        }
+        else{
+          fetchScheduleProjects()
+        }
+      })
+      .catch(() => {
+        toast.error('Some thig went wrong');
+        setWorksheetModal(false);
+      });
   }
 
   const submitHandler = (values: any) => {
@@ -210,15 +251,6 @@ const Schedule = () => {
 
   const { Option } = Select;
 
-  const selectAfter = (
-    <Select
-      onChange={(selectedDurationType) => setDurationType(selectedDurationType)}
-      defaultValue="Days"
-    >
-      <Option value="days">Days</Option>
-      <Option value="month">Month</Option>
-    </Select>
-  );
   return (
     <section className="mt-6 shadow p-4 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       <ModalComponent
@@ -230,8 +262,9 @@ const Schedule = () => {
         <SetWorkWeek
           initialValues={initialValues}
           onClose={() => setWorksheetModal(false)}
-          onCancel={() => setWorksheetModal(false)}
+          // onCancel={() => setWorksheetModal(false)}
           onConfirm={handleConfirm}
+          isFormSubmitLoading={isFormSubmitLoading}
         />
       </ModalComponent>
       <ModalComponent
@@ -275,14 +308,23 @@ const Schedule = () => {
                         Duration
                       </label>
                       <Input
-                        className={twMerge(
-                          clsx(
-                            `border h-full !w-full !rounded-lg focus:border-blue-500 !mt-1.5 `
-                          )
-                        )}
+                        className="create_project_input_selection"
                         type="number"
                         min={1}
-                        addonAfter={selectAfter}
+                        addonAfter={
+                          <Select
+                            onChange={(selectedDurationType) =>
+                              setFieldValue(
+                                'durationType',
+                                selectedDurationType
+                              )
+                            }
+                            defaultValue="Days"
+                          >
+                            <Option value="days">Days</Option>
+                            <Option value="month">Month</Option>
+                          </Select>
+                        }
                         onChange={(e) =>
                           setFieldValue('duration', e.target.value)
                         }
@@ -342,9 +384,9 @@ const Schedule = () => {
 
       <div className="mt-3">
         <Table
-          loading={false}
+          loading={isTableLoading}
           columns={columns}
-          dataSource={[]}
+          dataSource={scheduleProjects}
           pagination={{ position: ['bottomCenter'] }}
         />
       </div>

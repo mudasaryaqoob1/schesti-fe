@@ -17,8 +17,16 @@ const styles = StyleSheet.create({
 
 type Props = {
   brandingColor?: string;
-}
+};
 
 export function PdfFooter({ brandingColor }: Props) {
-  return <View style={[styles.footer, { backgroundColor: brandingColor ? brandingColor : BG_COLOR }]} fixed></View>;
+  return (
+    <View
+      style={[
+        styles.footer,
+        { backgroundColor: brandingColor ? brandingColor : BG_COLOR },
+      ]}
+      fixed
+    ></View>
+  );
 }

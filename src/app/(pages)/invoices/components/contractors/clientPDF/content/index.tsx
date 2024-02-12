@@ -10,19 +10,23 @@ type Props = {
 
 export function PageContent({ invoice }: Props) {
   return (
-    <View style={{
-      margin: 10,
-      paddingTop: 10,
-    }}>
+    <View
+      style={{
+        margin: 10,
+        paddingTop: 10,
+      }}
+    >
       {/* INFO */}
 
       <View style={{ marginTop: 8 }}>
-        <View style={{
-          display: 'flex',
-          flexDirection: 'row',
-          flexWrap: 'wrap',
-          justifyContent: 'space-between',
-        }}>
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+          }}
+        >
           <InfoContainer
             title="Proposal ID"
             description={invoice.invoiceNumber}

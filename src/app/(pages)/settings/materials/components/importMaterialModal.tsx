@@ -92,7 +92,6 @@ const ImportMaterialModal = ({
       return;
     }
 
-    console.log(file, 'filefile');
 
     try {
       const formData = new FormData();

@@ -4,23 +4,19 @@ import SecondaryHeading from '@/app/component/headings/Secondary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { useState } from 'react';
 import { CategoryModal } from './Category';
-import { IWBSType, ScopeItem } from '../../type';
+import {
+  IWBSType,
+  ScopeItem,
+} from '@/app/interfaces/schedule/createSchedule.interface';
 import { Collapse, Dropdown } from 'antd';
 import { ScheduleTable } from './Table';
 import Image from 'next/image';
 
 type Props = {
   updateWbsScopeItems: (_id: string, _scopeItems: ScopeItem[]) => void;
-  addWbsHandler: (
-    _category: IWBSType['category'],
-    _subCategory: IWBSType['subCategory']
-  ) => void;
+  addWbsHandler: any;
   state: IWBSType[];
-  updateWbs(
-    _id: string,
-    _category: IWBSType['category'],
-    _subCategory: IWBSType['subCategory']
-  ): void;
+  updateWbs: any;
   deleteWbs(_id: string): void;
 };
 
@@ -31,18 +27,17 @@ export function Schedule({
   updateWbs,
   deleteWbs,
 }: Props) {
-  const [materialModal, setMaterialModal] = useState(false);
-  const [updateMaterialModal, setUpdateMaterialModal] = useState(false);
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-  const [active, setActive] = useState<string | string[]>(['']);
+  const [categoryModal, setCategoryModal] = useState(false);
+  const [projectCategoryEditDetail, setProjectCategoryEditDetail] =
+    useState<any>(null);
 
   return (
     <section>
       <CategoryModal
-        materialModal={materialModal}
-        setMaterialModal={setMaterialModal}
+        categoryModal={categoryModal}
+        setCategoryModal={setCategoryModal}
         addWbsHandler={addWbsHandler}
+        updateWBsHandler={updateWbs}
       />
       <div className=" flex items-center justify-between mt-4">
         <TertiaryHeading title="Schedule" className="text-lg tracking-wide" />
@@ -52,7 +47,7 @@ export function Schedule({
           iconheight={20}
           iconwidth={20}
           className="!w-44 !bg-white !text-[#EF9F28] !border-[#EF9F28]"
-          onClick={() => setMaterialModal(true)}
+          onClick={() => {setCategoryModal(true) , setProjectCategoryEditDetail(null)}}
         />
       </div>
       <div className="rounded-xl">
@@ -60,26 +55,15 @@ export function Schedule({
           <div>
             <Collapse
               ghost
-              onChange={(key) => {
-                setActive(key);
-              }}
               className="group"
-              items={state.map((item, i) => {
+              items={state.map((item: any, i) => {
                 return {
                   key: i,
                   label: (
-                    <div className="flex items-center gap-5 max-md:flex-wrap space-x-2">
-                      <CategoryModal
-                        materialModal={updateMaterialModal}
-                        setMaterialModal={setUpdateMaterialModal}
-                        addWbsHandler={(category, subCategory) => {
-                          updateWbs(item.id, category, subCategory);
-                          setUpdateMaterialModal(false);
-                        }}
-                        categoryId={item.category.value}
-                        subCategoryId={item.subCategory.value}
-                        key={i}
-                      />
+                    <div
+                      className="flex items-center gap-5 max-md:flex-wrap space-x-2"
+                      key={i}
+                    >
                       <Image
                         src={'/arrow-down.svg'}
                         alt="arrow-down"
@@ -89,10 +73,10 @@ export function Schedule({
                       />
                       <div className="flex  items-center gap-5 px-4 py-1 rounded-2xl">
                         <h3 className="grow my-auto text-lg font-semibold leading-9 whitespace-nowrap text-slate-700">
-                          {item.category.label}
+                          {item.category}
                         </h3>
                         <section className="flex-auto self-start  text-lg leading-9 text-slate-700">
-                          {item.subCategory.label}
+                          {item.subCategory}
                         </section>
                         <div className="flex gap-2 justify-between opacity-20 group-hover:opacity-100 transition-all group-hover:translate-x-4">
                           <div className="flex justify-center items-center px-2  bg-gray-200 rounded-lg aspect-square">
@@ -104,7 +88,8 @@ export function Schedule({
                               className="w-full aspect-square cursor-pointer"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setUpdateMaterialModal(true);
+                                setProjectCategoryEditDetail(item);
+                                setCategoryModal(true)
                               }}
                               alt="Edit"
                             />
@@ -119,7 +104,7 @@ export function Schedule({
                                     label: <p>Delete</p>,
                                     onClick(e) {
                                       e.domEvent.stopPropagation();
-                                      deleteWbs(item.id);
+                                      deleteWbs(item._id);
                                     },
                                   },
                                 ],
@@ -170,13 +155,20 @@ export function Schedule({
                 <CustomButton
                   className="mt-7"
                   text={'Create WBS'}
-                  onClick={() => setMaterialModal(true)}
+                  onClick={() => setCategoryModal(true)}
                 />
               </div>
             </div>
           </div>
         )}
       </div>
+      <CategoryModal
+        categoryModal={categoryModal}
+        setCategoryModal={setCategoryModal}
+        updateWBsHandler={updateWbs}
+        projectCategoryEditDetail={projectCategoryEditDetail}
+        addWbsHandler={addWbsHandler}
+      />
     </section>
   );
 }

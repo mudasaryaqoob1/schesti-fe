@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 import { meetingService } from '@/app/services/meeting.service';
 import { toast } from 'react-toastify';
 import { AppDispatch } from '@/redux/store';
-import type { RangePickerProps } from 'antd/es/date-picker';
+// import type { RangePickerProps } from 'antd/es/date-picker';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -67,12 +67,12 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
     },
   });
 
-  const disabledDate: RangePickerProps['disabledDate'] = (current) => {
-    const isPreviousDay = current < dayjs().add(-1, 'days');
-    const isPreviousHour = current < dayjs().add(-1, 'hour');
-    const isPreviousMinute = current < dayjs().add(-1, 'minute');
-    return isPreviousDay || isPreviousHour || isPreviousMinute;
-  };
+  // const disabledDate: RangePickerProps['disabledDate'] = (current) => {
+  //   const isPreviousDay = current < dayjs().add(-1, 'days');
+  //   const isPreviousHour = current < dayjs().add(-1, 'hour');
+  //   const isPreviousMinute = current < dayjs().add(-1, 'minute');
+  //   return isPreviousDay || isPreviousHour || isPreviousMinute;
+  // };
   return (
     <ModalComponent
       width="50%"
@@ -134,7 +134,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
                   formik.setFieldValue('startDate', date);
                 },
                 onBlur: formik.handleBlur,
-                disabledDate,
+                // disabledDate,
               }}
             />
 

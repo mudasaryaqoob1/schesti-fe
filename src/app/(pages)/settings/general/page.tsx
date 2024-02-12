@@ -35,7 +35,7 @@ const initialValues: IUpdateCompanyDetail = {
   phone: '',
   website: '',
   avatar: '',
-  brandingColor: ""
+  brandingColor: '',
 };
 
 const generalSettingSchema: any = Yup.object({
@@ -76,7 +76,7 @@ const GeneralSetting = () => {
       phone: Number(values.phone),
       website: values.website,
       avatar: values.avatar,
-      brandingColor: values.brandingColor
+      brandingColor: values.brandingColor,
     };
 
     let result: any = await dispatch(updateProfileHandler(obj));
@@ -193,8 +193,9 @@ const GeneralSetting = () => {
                   {/* Upload Image Div */}
                   <div className={`${bg_style} grid grid-cols-12 p-5 mt-4 `}>
                     <div
-                      className={`px-6 py-4 col-span-8 flex flex-col items-center gap-3 ${errors.avatar ? 'border-rose-600' : ''
-                        }  ${bg_style}`}
+                      className={`px-6 py-4 col-span-8 flex flex-col items-center gap-3 ${
+                        errors.avatar ? 'border-rose-600' : ''
+                      }  ${bg_style}`}
                     >
                       <input type="text" id="upload" className="hidden" />
                       <div className="bg-lightGrayish rounded-[28px] border border-solid border-red flex justify-center items-center p-2.5">
@@ -240,28 +241,54 @@ const GeneralSetting = () => {
                       </p>
                     </div>
 
-                    <div className='col-span-4 px-3 items-center flex space-x-3'>
-                      <div className='flex-1 relative'>
+                    <div className="col-span-4 px-3 items-center flex space-x-3">
+                      <div className="flex-1 relative">
                         <Button
-                          text='Primary'
+                          text="Primary"
                           onClick={() => {
-                            setFieldValue('brandingColor', "")
+                            setFieldValue('brandingColor', '');
                           }}
                         />
 
-                        {!values.brandingColor ? <CheckOutlined className='text-white text-xs bg-[#4CAF50] rounded-full p-1 absolute -top-1 right-0' /> : <CheckOutlined className='text-white text-xs bg-[#E7E7E7] rounded-full p-1 absolute -top-1 right-0' />}
+                        {!values.brandingColor ? (
+                          <CheckOutlined className="text-white text-xs bg-[#4CAF50] rounded-full p-1 absolute -top-1 right-0" />
+                        ) : (
+                          <CheckOutlined className="text-white text-xs bg-[#E7E7E7] rounded-full p-1 absolute -top-1 right-0" />
+                        )}
                       </div>
 
-                      <div className='flex-1 relative'>
-                        <ColorPicker value={values.brandingColor} onChange={(color) => {
-                          console.log(color.toHexString());
-                          setFieldValue('brandingColor', color.toHexString())
-                        }}>
-                          <button style={{ backgroundColor: values.brandingColor ? values.brandingColor : "#001556", borderColor: values.brandingColor ? values.brandingColor : "#001556" }}
-                            type='button' className={`rounded-[8px] border border-solid text-white leading-6 font-semibold py-2 px-5  cursor-pointer shadow-scenarySubdued text-right h-auto text-sm w-full`}>
-                            <Image alt='color picker' src={"/Group.svg"} width={30} height={30} />
+                      <div className="flex-1 relative">
+                        <ColorPicker
+                          value={values.brandingColor}
+                          onChange={(color) => {
+                            console.log(color.toHexString());
+                            setFieldValue('brandingColor', color.toHexString());
+                          }}
+                        >
+                          <button
+                            style={{
+                              backgroundColor: values.brandingColor
+                                ? values.brandingColor
+                                : '#001556',
+                              borderColor: values.brandingColor
+                                ? values.brandingColor
+                                : '#001556',
+                            }}
+                            type="button"
+                            className={`rounded-[8px] border border-solid text-white leading-6 font-semibold py-2 px-5  cursor-pointer shadow-scenarySubdued text-right h-auto text-sm w-full`}
+                          >
+                            <Image
+                              alt="color picker"
+                              src={'/Group.svg'}
+                              width={30}
+                              height={30}
+                            />
                           </button>
-                          {values.brandingColor ? <CheckOutlined className='text-white text-xs bg-[#4CAF50] rounded-full p-1 absolute -top-1 right-0' /> : <CheckOutlined className='text-white text-xs bg-[#E7E7E7] rounded-full p-1 absolute -top-1 right-0' />}
+                          {values.brandingColor ? (
+                            <CheckOutlined className="text-white text-xs bg-[#4CAF50] rounded-full p-1 absolute -top-1 right-0" />
+                          ) : (
+                            <CheckOutlined className="text-white text-xs bg-[#E7E7E7] rounded-full p-1 absolute -top-1 right-0" />
+                          )}
                         </ColorPicker>
                       </div>
                     </div>
