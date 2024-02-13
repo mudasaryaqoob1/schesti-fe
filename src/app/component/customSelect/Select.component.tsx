@@ -9,6 +9,7 @@ type Props = {
   placeholder?: string;
   hasError?: boolean;
   field?: SelectProps;
+  errorMessage?: string;
 };
 
 export function SelectComponent({
@@ -17,6 +18,7 @@ export function SelectComponent({
   name,
   placeholder,
   field,
+  errorMessage = '',
   hasError,
 }: Props) {
   return (
@@ -49,6 +51,9 @@ export function SelectComponent({
           )
         )}
       />
+      {errorMessage ? (
+        <p className="text-red-500 text-xs">{errorMessage}</p>
+      ) : null}
     </div>
   );
 }

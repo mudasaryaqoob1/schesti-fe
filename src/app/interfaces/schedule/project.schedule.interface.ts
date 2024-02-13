@@ -1,11 +1,11 @@
 export type IProject = {
-  _id?: string,
+  _id?: string;
   projectName: string;
   duration: number;
-  durationType : string,
+  durationType: string;
   hoursPerDay: number;
-  createdAt?: string,
-  status?:string,
+  createdAt?: string;
+  status?: string;
   regularWorkingDays: {
     day: string;
     hours: number;

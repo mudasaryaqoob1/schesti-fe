@@ -110,3 +110,14 @@ a {
 .customSelect .ant-select-selector {
   border: 1px solid #cbd5e0 !important;
 }
+
+.font-outline {
+  text-align: right;
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: #dedada;
+  font-size: 60px;
+  font-family: 'Poppins', Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  color: transparent;
+}

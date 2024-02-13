@@ -227,14 +227,13 @@ const Schedule = () => {
 
     await scheduleService
       .httpGenerateSchedule(finalObject)
-      .then((resp) => {        
+      .then((resp) => {
         setIsFormSubmitLoading(false);
         setWorksheetModal(false);
-        if(resp.statusCode === 201){
+        if (resp.statusCode === 201) {
           router.push(`/schedule/${resp?.data?.createProject?._id}`);
-        }
-        else{
-          fetchScheduleProjects()
+        } else {
+          fetchScheduleProjects();
         }
       })
       .catch(() => {

@@ -4,8 +4,7 @@ import axios from 'axios';
 
 const Config = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
-console.log(Config , 'Config');
-
+console.log(Config, 'Config');
 
 export class HttpService {
   CancelToken: any;

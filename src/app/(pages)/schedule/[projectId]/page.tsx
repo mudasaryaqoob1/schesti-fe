@@ -73,27 +73,27 @@ export default function SchedulePage() {
     category: IWBSType['category'],
     subCategory: IWBSType['subCategory']
   ) {
-    const existProjectDiv = state.find((div) => div.title === `${category} ${subCategory}`)
-    console.log(existProjectDiv , 'existProjectDiv');
-    
-    if(existProjectDiv){
-      toast.warn('This WBS already exist')
-    }
-    else{
+    const existProjectDiv = state.find(
+      (div) => div.title === `${category} ${subCategory}`
+    );
+    console.log(existProjectDiv, 'existProjectDiv');
+
+    if (existProjectDiv) {
+      toast.warn('This WBS already exist');
+    } else {
       let object: IWBSType = {
         category: category,
         subCategory: subCategory,
         title: `${category} ${subCategory}`,
       };
-  
+
       const addProjectDiv = await scheduleService.httpAddProjectDiv({
         projectId: projectId,
         data: object,
       });
-  
+
       setState([...state, addProjectDiv.data?.scheduleProjectDiv!]);
     }
-   
   }
 
   async function updateWbs(
@@ -120,10 +120,7 @@ export default function SchedulePage() {
       title: `${category} ${subCategory}`,
     };
 
-
-    await scheduleService.httpUpdateProjectDiv({divId : id , data : object});
-
-
+    await scheduleService.httpUpdateProjectDiv({ divId: id, data: object });
   }
 
   function updateWbsScopeItems(
@@ -143,7 +140,6 @@ export default function SchedulePage() {
   }
 
   async function deleteWbs(id: string) {
-
     const updatedWbs = state.filter((item) => item._id !== id);
     setState(updatedWbs);
     await scheduleService.httpDeleteProjectDiv(id);

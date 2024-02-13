@@ -19,8 +19,8 @@ const Index: React.FC<SwitchBtnProps> = ({ isDuration, onChange }) => {
           checked={isDuration == 'yearly' ? true : false}
           onChange={onChange}
         />
-        <div className="w-16 h-8 rounded-full shadow-inner dark:bg-greenishGreen peer-checked:dark:bg-primaryGradient py-1 px-2 "></div>
-        <div className="absolute inset-y-0 left-0 w-6 h-6 m-1 rounded-full shadow peer-checked:right-0 peer-checked:left-auto dark:bg-snowWhite"></div>
+        <div className="w-16 h-8 rounded-full shadow-inner bg-greenishGreen peer-checked:dark:bg-primaryGradient py-1 px-2 "></div>
+        <div className="absolute inset-y-0 left-0 w-6 h-6 m-1 rounded-full shadow peer-checked:right-0 peer-checked:left-auto bg-snowWhite"></div>
       </span>
       <span className={`${tertiaryHeading} font-normal`}>Yearly</span>
     </label>

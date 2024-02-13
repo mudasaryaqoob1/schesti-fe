@@ -64,9 +64,10 @@ const Summary = ({ setPrevNext }: Props) => {
   const [totalCostRecord, setTotalCostRecord] = useState<any>(0);
   const [totalCostBaseRecord, setTotalCostBaseRecord] = useState<any>(0);
   const [estimatesRecords, setEstimatesRecords] = useState([]);
-  const [totalMaterialBaseCost, setTotalMaterialBaseCost] = useState(0)
-  const [initialTotalMaterialBaseCost, setInitialTotalMaterialBaseCost] = useState(0)
-  const [totalMaterialCost, setTotalMaterialCost] = useState(0)
+  const [totalMaterialBaseCost, setTotalMaterialBaseCost] = useState(0);
+  const [initialTotalMaterialBaseCost, setInitialTotalMaterialBaseCost] =
+    useState(0);
+  const [totalMaterialCost, setTotalMaterialCost] = useState(0);
   const [subcontractorCosts, setSubcontractorCosts] = useState<any>({});
   const [totalBidDetail, setTotalBidDetail] = useState<any>({
     overheadAndProfit: 0,
@@ -123,20 +124,21 @@ const Summary = ({ setPrevNext }: Props) => {
       setSubcostRecord(totalCostForAllRecords);
       setTotalCostBaseRecord(totalCostForAllRecords);
       setTotalCostRecord(totalCostForAllRecords);
-      setTotalMaterialBaseCost(totalMaterialCostForAllRecord)
-      setInitialTotalMaterialBaseCost(totalMaterialCostForAllRecord)
+      setTotalMaterialBaseCost(totalMaterialCostForAllRecord);
+      setInitialTotalMaterialBaseCost(totalMaterialCostForAllRecord);
     }
   }, [generateEstimateDetail]);
-  
 
-  const getPercentageOnMaterialTax = (value : number) => {
-    if(value>0){
-      const updatedTotalCostRecord = initialTotalMaterialBaseCost - (value * initialTotalMaterialBaseCost) / 100;
+  const getPercentageOnMaterialTax = (value: number) => {
+    if (value > 0) {
+      const updatedTotalCostRecord =
+        initialTotalMaterialBaseCost -
+        (value * initialTotalMaterialBaseCost) / 100;
       if (!isNaN(updatedTotalCostRecord)) {
-        setTotalMaterialBaseCost(Number(updatedTotalCostRecord.toFixed(2)))
+        setTotalMaterialBaseCost(Number(updatedTotalCostRecord.toFixed(2)));
       }
-    }else{
-      setTotalMaterialBaseCost(initialTotalMaterialBaseCost)
+    } else {
+      setTotalMaterialBaseCost(initialTotalMaterialBaseCost);
     }
   };
 
@@ -171,8 +173,8 @@ const Summary = ({ setPrevNext }: Props) => {
   const generateBidHandler = async () => {
     setIsLoading(true);
     let obj = {
-      totalBidDetail: {...totalBidDetail , materialTax : totalMaterialBaseCost},
-      totalCost: totalCostRecord, 
+      totalBidDetail: { ...totalBidDetail, materialTax: totalMaterialBaseCost },
+      totalCost: totalCostRecord,
       estimateRequestIdDetail: estimateId,
       estimateScope: generateEstimateDetail.estimateScope,
     };
@@ -454,7 +456,7 @@ const Summary = ({ setPrevNext }: Props) => {
                   value: totalMaterialCost,
                   onChange: (e) => {
                     setTotalMaterialCost(Number(e.target.value));
-                    getPercentageOnMaterialTax(Number(e.target.value))
+                    getPercentageOnMaterialTax(Number(e.target.value));
                   },
                 }}
               />

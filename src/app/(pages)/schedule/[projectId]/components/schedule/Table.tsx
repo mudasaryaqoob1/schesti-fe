@@ -53,7 +53,7 @@ const columns: ColumnType<{}>[] = [
     dataIndex: 'orignalDuration',
     key: '2',
     width: 100,
-    align : 'center'
+    align: 'center',
   },
   {
     title: 'Status',
@@ -90,28 +90,28 @@ const columns: ColumnType<{}>[] = [
     dataIndex: 'remainingDuration',
     width: 100,
     key: '7',
-    align : 'center'
+    align: 'center',
   },
   {
     title: 'Schedule % Completed',
     dataIndex: 'scheduleCompleted',
     width: 100,
     key: '8',
-    align : 'center'
+    align: 'center',
   },
   {
     title: 'Total Float',
     dataIndex: 'totalFloat',
     width: 70,
     key: '9',
-    align : 'center'
+    align: 'center',
   },
   {
     title: 'Activity Type',
     dataIndex: 'activityType',
     width: 100,
     key: '10',
-    align : 'center'
+    align: 'center',
   },
   {
     title: 'Predecessors',
