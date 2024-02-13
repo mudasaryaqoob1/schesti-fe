@@ -1,3 +1,4 @@
+'use client';
 import Image from 'next/image';
 import { InputComponent } from '../component/customInput/Input';
 import { LandingNavbar } from '../component/navbar/LandingNavbar';
@@ -6,8 +7,45 @@ import { ConfigProvider } from 'antd';
 import CustomButton from '../component/customButton/button';
 import LandingFooter from '../component/footer/LandingFooter';
 import { GatewayToEfficiency } from '../component/landing/GatewayToEfficiency';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { contactService } from '../services/contact.service';
+import { toast } from 'react-toastify';
+import { AxiosError } from 'axios';
+import { IResponseInterface } from '../interfaces/api-response.interface';
+
+const GetInTouchSchema = Yup.object().shape({
+  name: Yup.string()
+    .min(2, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Required'),
+  email: Yup.string().email('Invalid email').required('Required'),
+  phone: Yup.string().required('Required'),
+  company: Yup.string().required("Company name is required"),
+  employees: Yup.string().required('Choose number of employees'),
+})
 
 export default function ContactPage() {
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      email: '',
+      phone: '',
+      company: '',
+      employees: ''
+    },
+    validationSchema: GetInTouchSchema,
+    onSubmit: (values) => {
+      contactService.httpSendContactInfoToClient(values).then((res) => {
+        if (res.statusCode === 201) {
+          formik.resetForm();
+          toast.success(res.message);
+        }
+      }).catch(({ response }: AxiosError<IResponseInterface>) => {
+        toast.error(response?.data?.message || "Something went wrong");
+      })
+    }
+  });
   return (
     <section>
       <main
@@ -94,13 +132,25 @@ export default function ContactPage() {
           </div>
 
           {/* Second Column */}
-          <div className="flex flex-col justify-evenly">
+          <form onSubmit={formik.handleSubmit}
+            className="flex flex-col justify-evenly">
             <InputComponent
               label="Name"
               placeholder="Enter your name"
               name="name"
               type="text"
               inputStyle="!bg-[#D0D5DD32]"
+              field={{
+                value: formik.values.name,
+                onChange: (e) => {
+                  formik.handleChange(e);
+                },
+                onBlur: (e) => {
+                  formik.handleBlur(e);
+                },
+              }}
+              hasError={formik.touched.name && Boolean(formik.errors.name)}
+              errorMessage={formik.errors.name}
             />
             <InputComponent
               label="Email"
@@ -108,13 +158,35 @@ export default function ContactPage() {
               name="email"
               type="email"
               inputStyle="!bg-[#D0D5DD32]"
+              field={{
+                value: formik.values.email,
+                onChange: (e) => {
+                  formik.handleChange(e);
+                },
+                onBlur: (e) => {
+                  formik.handleBlur(e);
+                },
+              }}
+              hasError={formik.touched.email && Boolean(formik.errors.email)}
+              errorMessage={formik.errors.email}
             />
             <InputComponent
               label="Phone number"
               placeholder="Enter your phone"
               name="phone"
-              type="number"
+              type="text"
               inputStyle="!bg-[#D0D5DD32]"
+              field={{
+                value: formik.values.phone,
+                onChange: (e) => {
+                  formik.handleChange(e);
+                },
+                onBlur: (e) => {
+                  formik.handleBlur(e);
+                },
+              }}
+              hasError={formik.touched.phone && Boolean(formik.errors.phone)}
+              errorMessage={formik.errors.phone}
             />
             <InputComponent
               label="Company"
@@ -122,12 +194,24 @@ export default function ContactPage() {
               name="company"
               type="text"
               inputStyle="!bg-[#D0D5DD32]"
+              field={{
+                value: formik.values.company,
+                onChange: (e) => {
+                  formik.handleChange(e);
+                },
+                onBlur: (e) => {
+                  formik.handleBlur(e);
+                },
+              }}
+              hasError={formik.touched.company && Boolean(formik.errors.company)}
+              errorMessage={formik.errors.company}
             />
             <ConfigProvider
               theme={{
                 components: {
                   Select: {
                     colorBgContainer: '#D0D5DD32',
+                    colorBorder: formik.touched.employees && Boolean(formik.errors.employees) ? '#F83F23' : '#D0D5DD',
                   },
                 },
               }}
@@ -143,7 +227,16 @@ export default function ContactPage() {
                     { label: '51-200', value: '51-200' },
                   ],
                   size: 'large',
+                  value: formik.values.employees,
+                  onChange(value) {
+                    formik.setFieldValue('employees', value);
+                  },
+                  onBlur(e) {
+                    formik.handleBlur(e);
+                  },
                 }}
+                hasError={formik.touched.employees && Boolean(formik.errors.employees)}
+                errorMessage={formik.errors.employees}
               />
             </ConfigProvider>
             <p className="mt-[11px] text-[#475467] text-[14px] leading-[34px] font-normal">
@@ -151,10 +244,11 @@ export default function ContactPage() {
               Privacy Policy.
             </p>
             <CustomButton
+              type='submit'
               text="Get in touch"
               className="!rounded-full !w-48 self-end !bg-[#7138DF]"
             />
-          </div>
+          </form>
         </div>
       </div>
 
