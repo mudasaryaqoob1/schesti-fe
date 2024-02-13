@@ -8,21 +8,48 @@ import { useState } from 'react';
 import { RequestForPost } from './component/landing/RequestForPost';
 import { GatewayToEfficiency } from './component/landing/GatewayToEfficiency';
 
-type Key = "estimating" | "invoice" | "meeting" | "client" | "subcontractor";
+type Key = 'estimating' | 'invoice' | 'meeting' | 'client' | 'subcontractor';
 
 // eslint-disable-next-line no-unused-vars
-const featuresData: { [_k in Key]: { title: string, description: string, image: string } } = {
-  "estimating": { title: "Automate your business with schesti", description: "Say goodbye to messy spreadsheets and disorganized paperwork. With schesti, you can easily manage your clients, estimates, sales process, and scheduling, all in one place. Plus, our intuitive interface makes it easy for anyone on your team to use.", image: "/schedule-img.png" },
+const featuresData: {
+  [_k in Key]: { title: string; description: string; image: string };
+} = {
+  estimating: {
+    title: 'Automate your business with schesti',
+    description:
+      'Say goodbye to messy spreadsheets and disorganized paperwork. With schesti, you can easily manage your clients, estimates, sales process, and scheduling, all in one place. Plus, our intuitive interface makes it easy for anyone on your team to use.',
+    image: '/schedule-img.png',
+  },
 
-  "invoice": { title: "Easy and Instant Invoices", description: "Simplify your billing process with Schesti's feature - Easy and Instant Invoices. Create and manage invoices swiftly against clients. Enjoy a seamless billing experience with our user-friendly interface designed to make invoicing quick and effortless. From project-based invoicing to client transactions, our feature ensures precision and speed, giving you more time to focus on what matters. Experience the convenience of managing your financial transactions with Easy and Instant Invoices, where billing becomes instant and hassle-free.", image: "/schedule-img.png" },
-  "meeting": { title: "Streamlined Meetings with Jitsi Meet", description: "Experience the ease of Schesti's integration with Jitsi Meet, making your virtual meetings effortlessly smooth. Connect seamlessly, communicate clearly, and collaborate effectively with teams and clients. Enjoy the simplicity of crystal-clear video calls and intuitive features that enhance every meeting. Jitsu provide a quick catch-up or a crucial client discussion, Schesti and Jitsi Meet bring you hassle-free, streamlined meetings for unparalleled success.", image: "/schedule-img.png" },
-  "client": { title: "Client Management with Schesti", description: "In Schesti, user can able to organize their client efficiently. Client Hub simplifies the way you handle client information. From contact details to project history, stay on top of every interaction. Navigate seamlessly, organize effortlessly, and build lasting connections with ease. Elevate your client management experience and unlock new possibilities for business growth.", image: "/schedule-img.png" },
-  "subcontractor": { title: "Allocate Projects to Subcontractors", description: "Streamline workflows and enhance project efficiency by effortlessly allocating projects to specialized teams. Assign estimates with ease, ensuring a harmonious and productive project workflow with Schesti's advanced allocation capabilities.", image: "/schedule-img.png" },
-}
+  invoice: {
+    title: 'Easy and Instant Invoices',
+    description:
+      "Simplify your billing process with Schesti's feature - Easy and Instant Invoices. Create and manage invoices swiftly against clients. Enjoy a seamless billing experience with our user-friendly interface designed to make invoicing quick and effortless. From project-based invoicing to client transactions, our feature ensures precision and speed, giving you more time to focus on what matters. Experience the convenience of managing your financial transactions with Easy and Instant Invoices, where billing becomes instant and hassle-free.",
+    image: '/schedule-img.png',
+  },
+  meeting: {
+    title: 'Streamlined Meetings with Jitsi Meet',
+    description:
+      "Experience the ease of Schesti's integration with Jitsi Meet, making your virtual meetings effortlessly smooth. Connect seamlessly, communicate clearly, and collaborate effectively with teams and clients. Enjoy the simplicity of crystal-clear video calls and intuitive features that enhance every meeting. Jitsu provide a quick catch-up or a crucial client discussion, Schesti and Jitsi Meet bring you hassle-free, streamlined meetings for unparalleled success.",
+    image: '/schedule-img.png',
+  },
+  client: {
+    title: 'Client Management with Schesti',
+    description:
+      'In Schesti, user can able to organize their client efficiently. Client Hub simplifies the way you handle client information. From contact details to project history, stay on top of every interaction. Navigate seamlessly, organize effortlessly, and build lasting connections with ease. Elevate your client management experience and unlock new possibilities for business growth.',
+    image: '/schedule-img.png',
+  },
+  subcontractor: {
+    title: 'Allocate Projects to Subcontractors',
+    description:
+      "Streamline workflows and enhance project efficiency by effortlessly allocating projects to specialized teams. Assign estimates with ease, ensuring a harmonious and productive project workflow with Schesti's advanced allocation capabilities.",
+    image: '/schedule-img.png',
+  },
+};
 
 export default function Home() {
   const router = useRouter();
-  const [tab, setTab] = useState<Key>("estimating");
+  const [tab, setTab] = useState<Key>('estimating');
 
   return (
     <section>
@@ -122,29 +149,28 @@ export default function Home() {
           <div className="flex justify-center px-28 pt-[37px] pb-[57px] space-x-6">
             <CustomButton
               text="Estimating"
-              className={`!rounded-full !bg-transparent  ${tab === "estimating" ? "!text-[#8449EB] !border-[#8449EB]" : "!text-[#718096] !border-[#718096]"}`}
-              onClick={() => setTab("estimating")}
+              className={`!rounded-full !bg-transparent  ${tab === 'estimating' ? '!text-[#8449EB] !border-[#8449EB]' : '!text-[#718096] !border-[#718096]'}`}
+              onClick={() => setTab('estimating')}
             />
             <CustomButton
               text="Invoice"
-              className={`!rounded-full !bg-transparent  ${tab === "invoice" ? "!text-[#8449EB] !border-[#8449EB]" : "!text-[#718096] !border-[#718096]"}`}
-              onClick={() => setTab("invoice")}
-
+              className={`!rounded-full !bg-transparent  ${tab === 'invoice' ? '!text-[#8449EB] !border-[#8449EB]' : '!text-[#718096] !border-[#718096]'}`}
+              onClick={() => setTab('invoice')}
             />
             <CustomButton
               text="Subcontractor"
-              className={`!rounded-full !bg-transparent  ${tab === "subcontractor" ? "!text-[#8449EB] !border-[#8449EB]" : "!text-[#718096] !border-[#718096]"}`}
-              onClick={() => setTab("subcontractor")}
+              className={`!rounded-full !bg-transparent  ${tab === 'subcontractor' ? '!text-[#8449EB] !border-[#8449EB]' : '!text-[#718096] !border-[#718096]'}`}
+              onClick={() => setTab('subcontractor')}
             />
             <CustomButton
               text="Client"
-              className={`!rounded-full !bg-transparent  ${tab === "client" ? "!text-[#8449EB] !border-[#8449EB]" : "!text-[#718096] !border-[#718096]"}`}
-              onClick={() => setTab("client")}
+              className={`!rounded-full !bg-transparent  ${tab === 'client' ? '!text-[#8449EB] !border-[#8449EB]' : '!text-[#718096] !border-[#718096]'}`}
+              onClick={() => setTab('client')}
             />
             <CustomButton
               text="Meeting"
-              className={`!rounded-full !bg-transparent  ${tab === "meeting" ? "!text-[#8449EB] !border-[#8449EB]" : "!text-[#718096] !border-[#718096]"}`}
-              onClick={() => setTab("meeting")}
+              className={`!rounded-full !bg-transparent  ${tab === 'meeting' ? '!text-[#8449EB] !border-[#8449EB]' : '!text-[#718096] !border-[#718096]'}`}
+              onClick={() => setTab('meeting')}
             />
           </div>
 

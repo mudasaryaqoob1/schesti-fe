@@ -32,7 +32,7 @@ export function InputComponent({
   inputStyle,
   field,
   hasError,
-  errorMessage = "",
+  errorMessage = '',
   ...rest
 }: Props) {
   return (
@@ -40,7 +40,8 @@ export function InputComponent({
       <label
         className={twMerge(
           clsx(
-            `text-graphiteGray ${label2 ? 'flex justify-between' : 'block'
+            `text-graphiteGray ${
+              label2 ? 'flex justify-between' : 'block'
             } text-sm font-medium leading-6 capitalize`,
             labelStyle
           )
@@ -66,8 +67,10 @@ export function InputComponent({
         min="0"
         className={twMerge(
           clsx(
-            `border ${hasError ? 'border-red-500' : 'border-gray-200'
-            } !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 !mt-1.5 ${inputStyle && inputStyle
+            `border ${
+              hasError ? 'border-red-500' : 'border-gray-200'
+            } !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 !mt-1.5 ${
+              inputStyle && inputStyle
             }`
           )
         )}
@@ -76,7 +79,9 @@ export function InputComponent({
         placeholder={placeholder}
         {...field}
       />
-      {errorMessage ? <p className='text-red-500 text-xs mt-1'>{errorMessage}</p> : null}
+      {errorMessage ? (
+        <p className="text-red-500 text-xs mt-1">{errorMessage}</p>
+      ) : null}
       {/* //   )} */}
       {/* // </Field> */}
       {/* <ErrorMessage name={name} component={ErrorMsg} /> */}

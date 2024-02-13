@@ -21,9 +21,9 @@ const GetInTouchSchema = Yup.object().shape({
     .required('Required'),
   email: Yup.string().email('Invalid email').required('Required'),
   phone: Yup.string().required('Required'),
-  company: Yup.string().required("Company name is required"),
+  company: Yup.string().required('Company name is required'),
   employees: Yup.string().required('Choose number of employees'),
-})
+});
 
 export default function ContactPage() {
   const formik = useFormik({
@@ -32,19 +32,22 @@ export default function ContactPage() {
       email: '',
       phone: '',
       company: '',
-      employees: ''
+      employees: '',
     },
     validationSchema: GetInTouchSchema,
     onSubmit: (values) => {
-      contactService.httpSendContactInfoToClient(values).then((res) => {
-        if (res.statusCode === 201) {
-          formik.resetForm();
-          toast.success(res.message);
-        }
-      }).catch(({ response }: AxiosError<IResponseInterface>) => {
-        toast.error(response?.data?.message || "Something went wrong");
-      })
-    }
+      contactService
+        .httpSendContactInfoToClient(values)
+        .then((res) => {
+          if (res.statusCode === 201) {
+            formik.resetForm();
+            toast.success(res.message);
+          }
+        })
+        .catch(({ response }: AxiosError<IResponseInterface>) => {
+          toast.error(response?.data?.message || 'Something went wrong');
+        });
+    },
   });
   return (
     <section>
@@ -132,8 +135,10 @@ export default function ContactPage() {
           </div>
 
           {/* Second Column */}
-          <form onSubmit={formik.handleSubmit}
-            className="flex flex-col justify-evenly">
+          <form
+            onSubmit={formik.handleSubmit}
+            className="flex flex-col justify-evenly"
+          >
             <InputComponent
               label="Name"
               placeholder="Enter your name"
@@ -203,7 +208,9 @@ export default function ContactPage() {
                   formik.handleBlur(e);
                 },
               }}
-              hasError={formik.touched.company && Boolean(formik.errors.company)}
+              hasError={
+                formik.touched.company && Boolean(formik.errors.company)
+              }
               errorMessage={formik.errors.company}
             />
             <ConfigProvider
@@ -211,7 +218,11 @@ export default function ContactPage() {
                 components: {
                   Select: {
                     colorBgContainer: '#D0D5DD32',
-                    colorBorder: formik.touched.employees && Boolean(formik.errors.employees) ? '#F83F23' : '#D0D5DD',
+                    colorBorder:
+                      formik.touched.employees &&
+                      Boolean(formik.errors.employees)
+                        ? '#F83F23'
+                        : '#D0D5DD',
                   },
                 },
               }}
@@ -235,7 +246,9 @@ export default function ContactPage() {
                     formik.handleBlur(e);
                   },
                 }}
-                hasError={formik.touched.employees && Boolean(formik.errors.employees)}
+                hasError={
+                  formik.touched.employees && Boolean(formik.errors.employees)
+                }
                 errorMessage={formik.errors.employees}
               />
             </ConfigProvider>
@@ -244,7 +257,7 @@ export default function ContactPage() {
               Privacy Policy.
             </p>
             <CustomButton
-              type='submit'
+              type="submit"
               text="Get in touch"
               className="!rounded-full !w-48 self-end !bg-[#7138DF]"
             />

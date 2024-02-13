@@ -79,7 +79,6 @@ export default function PricingPage() {
     pricingPlansHandler();
   }, []);
 
-
   return (
     <section>
       <main
@@ -139,7 +138,7 @@ export default function PricingPage() {
                         key={index}
                         {...plan}
                         setSelectedPlan={() => {
-                          router.push("/register")
+                          router.push('/register');
                         }}
                       />
                     );

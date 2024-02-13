@@ -18,7 +18,7 @@ export function SelectComponent({
   name,
   placeholder,
   field,
-  errorMessage = "",
+  errorMessage = '',
   hasError,
 }: Props) {
   return (
@@ -45,12 +45,15 @@ export function SelectComponent({
         {...field}
         className={twMerge(
           clsx(
-            ` p-0 h-full border ${hasError ? 'border-red-500' : 'border-gray-400'
+            ` p-0 h-full border ${
+              hasError ? 'border-red-500' : 'border-gray-400'
             } !w-full !rounded-lg focus:border-blue-500  ${field?.className}`
           )
         )}
       />
-      {errorMessage ? <p className="text-red-500 text-xs">{errorMessage}</p> : null}
+      {errorMessage ? (
+        <p className="text-red-500 text-xs">{errorMessage}</p>
+      ) : null}
     </div>
   );
 }
