@@ -7,9 +7,21 @@ import { Select, Radio } from 'antd';
 import type { RadioChangeEvent } from 'antd';
 import { useState } from 'react';
 
-const precision = [1, 0.1, 0.01, 0.001, 0.0001, 0.00001];
+const precision = ['1', '0.1', '0.01', ' 0.001', '0.0001', '0.00001'];
+const byPrecision = ['1', '1 / 2', '1 / 4', '1 / 8', '1 / 16', '1 / 32'];
 const meters = ['in', 'cm', 'mm'];
-const secondaryMeters = ['in', 'ft', 'yd', 'mi', 'mm', 'cm', 'm', 'km'];
+const secondaryMeters = [
+  'in',
+  'ft',
+  `ft' in'`,
+  `in'`,
+  'yd',
+  'mi',
+  'mm',
+  'cm',
+  'm',
+  'km',
+];
 
 interface Props {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -17,6 +29,7 @@ interface Props {
 
 const ScaleModal = ({ setModalOpen }: Props) => {
   const [value, setValue] = useState(1);
+  const [secMeter, setSecMeter] = useState('');
 
   const onChange = (e: RadioChangeEvent) => {
     setValue(e.target.value);
@@ -76,7 +89,11 @@ const ScaleModal = ({ setModalOpen }: Props) => {
             <Select className="w-[115px]" defaultValue={1}>
               <Select.Option value={1}>1</Select.Option>
             </Select>
-            <Select className="w-[115px]">
+            <Select
+              value={secMeter}
+              className="w-[115px]"
+              onChange={(value) => setSecMeter(value)}
+            >
               {secondaryMeters.map((item) => (
                 <Select.Option key={item} value={item}>
                   {item}
@@ -87,11 +104,17 @@ const ScaleModal = ({ setModalOpen }: Props) => {
           <div className="flex gap-6 items-center">
             <label>Precision:</label>
             <Select className="w-full">
-              {precision.map((prec) => (
-                <Select.Option key={prec} value={prec}>
-                  {prec}
-                </Select.Option>
-              ))}
+              {secMeter === `in'` || secMeter === `ft' in'`
+                ? byPrecision.map((item) => (
+                    <Select.Option key={item} value={item}>
+                      {item}
+                    </Select.Option>
+                  ))
+                : precision.map((item) => (
+                    <Select.Option key={item} value={item}>
+                      {item}
+                    </Select.Option>
+                  ))}
             </Select>
           </div>
         </div>
