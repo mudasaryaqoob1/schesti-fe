@@ -10,6 +10,7 @@ import ModalComponent from '@/app/component/modal';
 import ScaleModal from '../components/scale';
 import ModalsWrapper from '../components/main';
 import { ColorPicker, InputNumber, Select } from 'antd';
+import FinalData from '../components/finalResultTable';
 
 export type ScaleLabel =
   | 'scale'
@@ -193,16 +194,19 @@ const Scale = () => {
             onChange={(color) => setColor(color.toHexString())}
           />
         </div>
+        <div className="flex flex-row gap-2 items-center ">
+          <div className="bg-[#F2F2F2] h-[52px] w-full pt-3">
+            <input
+              type="number"
+              min={1}
+              placeholder="depth"
+              className="h-1/2"
+              onChange={(e) => setDepth(+e.target.value)}
+            />
+          </div>
+        </div>
       </div>
-      <div className="bg-[#F2F2F2] h-[52px] w-full">
-        <input
-          type="number"
-          min={1}
-          placeholder="depth"
-          className="h-1/2"
-          onChange={(e) => setDepth(+e.target.value)}
-        />
-      </div>
+
       <div className="py-6 h-[709px] relative">
         <div>
           <div className="absolute">
@@ -225,6 +229,9 @@ const Scale = () => {
             setMeasurements(measurements)
           }
         />
+        <div>
+          <FinalData />
+        </div>
       </div>
 
       {scale === 'scale' && (
