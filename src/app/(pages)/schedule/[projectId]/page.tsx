@@ -130,8 +130,6 @@ export default function SchedulePage() {
     wbsId: string,
     scheduleProjectActivities: IWBSType['scheduleProjectActivities']
   ) {
-    console.log(wbsId , scheduleProjectActivities , 'scheduleProjectActivities');
-    
     const updatedWbs = state.map((item) => {
       if (item._id === wbsId) {
         return {
