@@ -85,9 +85,11 @@ export default function ViewSubcontractorInvoicePage() {
               <QuaternaryHeading title={invoiceData.invoiceNumber} />
             </div>
           </div>
-          <div className="inline-flex items-center rounded-lg whitespace-nowrap border px-7 py-3 w-fit font-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent text-secondary-foreground hover:bg-secondary/80 text-[#EFA037] text-md bg-yellow-50">
+          {invoiceData.status === 'paid' ? <div className="inline-flex items-center rounded-lg whitespace-nowrap border px-7 py-3 w-fit font-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent text-secondary-foreground hover:bg-secondary/80 text-[#6aa689] text-md bg-green-50">
+            Paid
+          </div> : <div className="inline-flex items-center rounded-lg whitespace-nowrap border px-7 py-3 w-fit font-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent text-secondary-foreground hover:bg-secondary/80 text-[#EFA037] text-md bg-yellow-50">
             Unpaid
-          </div>
+          </div>}
         </div>
         <div className="grid grid-cols-5 gap-5 mt-5">
           <div>
