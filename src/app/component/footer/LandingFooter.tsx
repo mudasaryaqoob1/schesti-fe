@@ -89,8 +89,17 @@ export default function LandingFooter() {
           </p>
         </div>
         <div className="flex items-center space-x-4">
-          <Image src={'/linkedin-img.png'} width={20} height={20} alt="arrow" />
-          <Image src={'/FB.svg'} width={20} height={20} alt="arrow" />
+          <Image src={'/linkedin-img.png'}
+            className='cursor-pointer'
+            width={20} height={20} alt="arrow" onClick={() => {
+              window.location.href = "https://www.linkedin.com/company/schesti/";
+            }} />
+          <Image src={'/FB.svg'} width={20} height={20} alt="arrow"
+            className='cursor-pointer'
+            onClick={() => {
+              window.location.href = "https://www.facebook.com/profile.php?id=61554839685900&mibextid=kFxxJDM";
+            }}
+          />
           <Image src={'/IG.svg'} width={20} height={20} alt="fb" />
           <Image src={'/Twitter.svg'} width={20} height={20} alt="fb" />
         </div>

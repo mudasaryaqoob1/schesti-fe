@@ -158,11 +158,11 @@ export default function Home() {
               />
             </div>
 
-            <div className="mt-3 space-y-6">
-              <h3 className="text-[#EF9F28] text-[24px] leading-[24px] font-normal">
-                {tab.toUpperCase()}
+            <div className="mt-3">
+              <h3 className="text-[#EF9F28] capitalize text-[24px] leading-[24px] font-normal">
+                {tab}
               </h3>
-              <h1 className="text-[40px] text-[#1D2939] font-bold leading-[60px]">
+              <h1 className="text-[40px] pt-[12px] pb-[20px] text-[#1D2939] font-bold leading-[60px]">
                 {featuresData[tab].title}
               </h1>
               <p className="text-[20px] text-[#475467] leading-[38px]">
