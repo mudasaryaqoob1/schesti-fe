@@ -30,6 +30,7 @@ import type {
   IWBSType,
   ActivityItem,
 } from '@/app/interfaces/schedule/createSchedule.interface';
+import { toast } from 'react-toastify';
 
 const columns: ColumnType<{}>[] = [
   {
@@ -146,7 +147,6 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
   const [open, setOpen] = useState(false);
   const [openDetails, setOpenDetails] = useState(false);
   const [selectedItem, setSelectedItem] = useState<ActivityItem | null>(null);
-  // const [ID, setID] = useState(0);
 
   const showDrawer = () => {
     setFilters(checkedList);
@@ -161,7 +161,6 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
   // add item in data
   async function addItem() {
     const item: ActivityItem = {
-      //  _id: `ID${ID}`,
       activityCalendar: '',
       activityType: '',
       actualFinish: new Date().toDateString(),
@@ -177,42 +176,53 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
       successors: '',
       totalFloat: '',
     };
-    const newData = [...wbs.scheduleProjectActivities, item];
+  
 
-    updateWbsScopeItems(wbs._id, newData);
-    // setID(ID + 1);
-
-    await scheduleService.httpAddProjectDivActivity({
+    scheduleService.httpAddProjectDivActivity({
       projectId: projectId,
       divId: wbs._id,
       data: item,
+    }).then((response) => {
+      const newData = [...wbs.scheduleProjectActivities, response.data?.newProjectAcitivity ];
+      updateWbsScopeItems(wbs._id, newData);
+    })
+    .catch(() => {
+      toast.error('Something went wrong')
     });
   }
 
   async function updateRow(record: ActivityItem) {
-    record['orignalDuration'] = record.orignalDuration
-      ? record.orignalDuration
-      : '';
 
-    let updateActivity = await scheduleService.httpUpdateProjectDivActivity({
-      activityId: record._id,
-      data: record,
-    });
+    
+    record['orignalDuration'] = record.orignalDuration ? String(record.orignalDuration) : ''
+    
+    scheduleService.httpUpdateProjectDivActivity({activityId : record._id , data : record})
+    .then((response) => {
+      const newData = [...wbs.scheduleProjectActivities];
+      
 
-    console.log(updateActivity, 'updateActivityupdateActivity');
+      const index = newData.findIndex((item) => item._id === record._id);
+      newData[index] = response.data?.updateProjectAcitivity;
+      updateWbsScopeItems(wbs._id, newData);
+    })
 
-    const newData = [...wbs.scheduleProjectActivities];
+    .catch(() => {
+      toast.error('Something went wrong')
+    })
 
-    const index = newData.findIndex((item) => item._id === record._id);
-    newData[index] = record;
-    updateWbsScopeItems(wbs._id, newData);
+    
   }
 
-  function deleteRow(record: ActivityItem) {
+  async function deleteRow(record: ActivityItem) {
+    console.log(record , 'recordrecord');
+    
     const newData = wbs.scheduleProjectActivities.filter(
-      (item: any) => item.id !== record._id
+      (item: any) => item._id !== record._id
     );
     updateWbsScopeItems(wbs._id, newData);
+    
+    await scheduleService.httpDeleteProjectDivActivity({activityId : record._id})
+
   }
 
   let newColumns = columns
