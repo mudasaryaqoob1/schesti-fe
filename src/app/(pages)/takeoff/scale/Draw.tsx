@@ -24,6 +24,7 @@ const defaultPolyLineState: LineInterface = {
   stroke: '',
   strokeWidth: 0,
   textUnit: 18,
+  // id: '',
 };
 
 interface LineState {
@@ -42,6 +43,7 @@ interface LineInterface {
   strokeWidth: number;
   lineCap?: LineCap;
   textUnit: number;
+  // id?: string;
 }
 
 interface PolygonConfigInterface {
@@ -71,7 +73,14 @@ interface Props {
   handleChangeMeasurements: (data: Measurements) => void;
 }
 
-const Draw: React.FC<Props> = ({ selected, depth, border, unit, color }) => {
+const Draw: React.FC<Props> = ({
+  selected,
+  depth,
+  border,
+  unit,
+  color,
+  handleChangeMeasurements,
+}) => {
   const {
     calcLineDistance,
     // convertArrayIntoChunks,
@@ -101,6 +110,8 @@ const Draw: React.FC<Props> = ({ selected, depth, border, unit, color }) => {
   );
   const [endLiveEditing, setEndLiveEditing] = useState<boolean>(false);
 
+  const [selectedShape, setSelectedShape] = useState<string>('');
+
   const myImage = new Image();
   myImage.src =
     src ||
@@ -117,6 +128,8 @@ const Draw: React.FC<Props> = ({ selected, depth, border, unit, color }) => {
 
   const handleMouseDown = (e: KonvaEventObject<MouseEvent>) => {
     if (endLiveEditing) return;
+    setSelectedShape('');
+
     const stage = e.target.getStage();
     const position = stage?.getPointerPosition();
 
@@ -128,7 +141,7 @@ const Draw: React.FC<Props> = ({ selected, depth, border, unit, color }) => {
     if (selected === 'length' && currentLine.startingPoint) {
       const { startingPoint } = currentLine;
 
-      const newLine = {
+      const newLine: LineInterface = {
         points: [
           startingPoint?.x,
           startingPoint?.y,
@@ -262,6 +275,8 @@ const Draw: React.FC<Props> = ({ selected, depth, border, unit, color }) => {
         endingPoint: { x: position?.x || 0, y: position?.y || 0 },
       }));
     }
+
+    handleChangeMeasurements('123' as any);
   };
 
   const [polygonArea, polygonPerimeter, polygonCenter] = useMemo(() => {
@@ -314,11 +329,30 @@ const Draw: React.FC<Props> = ({ selected, depth, border, unit, color }) => {
                 strokeWidth: 10,
                 stroke: color,
                 lineCap: 'round',
+                id: `dynamic-${draw.dynamic.length + 1}`,
               },
             ],
           }));
 
           setDynamicPolyLine(defaultPolyLineState);
+        }
+
+        if (e.key === 'Delete' && selectedShape) {
+          const [shapeName, shapeNumber] = selectedShape.split('-');
+
+          setDraw((prev) => {
+            const tempPrevShapeData = [
+              ...prev[shapeName as keyof DrawInterface],
+            ];
+            tempPrevShapeData.splice(+shapeNumber, 1);
+
+            return {
+              ...prev,
+              [shapeName]: tempPrevShapeData,
+            };
+          });
+
+          setSelectedShape('');
         }
       }}
     >
@@ -333,11 +367,26 @@ const Draw: React.FC<Props> = ({ selected, depth, border, unit, color }) => {
           {/* Drawing Line */}
           {draw.line.map(({ textUnit, ...rest }, index) => {
             // const circles = convertArrayIntoChunks(line.points);
+            const id = `line-${index}`;
             const lineDistance = calcLineDistance(rest.points);
             const lineMidPoint = calculateMidpoint(rest.points);
+
             return (
-              <Group key={`lines-${index}`}>
-                <Line key={index} {...rest} lineCap="round" />
+              <Group
+                id={id}
+                key={id}
+                onMouseDown={(e) => {
+                  e.cancelBubble = true;
+                  setSelectedShape(e.currentTarget.attrs?.id || '');
+                }}
+              >
+                <Line
+                  key={index}
+                  {...rest}
+                  lineCap="round"
+                  dash={selectedShape === id ? [10, 10] : []}
+                  stroke={selectedShape === id ? 'maroon' : rest.stroke}
+                />
                 {/* {circles.map((circle: number[]) => {
                   const [x, y] = circle;
                   return (
@@ -355,17 +404,52 @@ const Draw: React.FC<Props> = ({ selected, depth, border, unit, color }) => {
           })}
 
           {/* Drawing Dynamic Fill */}
-          {draw.dynamic.map((dynamicPolyLine, index) => {
-            return <Line key={index} {...dynamicPolyLine} />;
+          {draw.dynamic.map(({ ...rest }, index) => {
+            const id = `dynamic-${index}`;
+
+            return (
+              <Group
+                key={id}
+                id={id}
+                onMouseDown={(e) => {
+                  e.cancelBubble = true;
+                  setSelectedShape(e.currentTarget.attrs?.id || '');
+                }}
+              >
+                <Line
+                  {...rest}
+                  dash={selectedShape === id ? [10, 10] : []}
+                  stroke={selectedShape === id ? 'maroon' : rest.stroke}
+                />
+              </Group>
+            );
           })}
           {!!dynamicPolyLine.points.length && <Line {...dynamicPolyLine} />}
 
           {/* Drawing Area */}
           {draw.area.map(({ center, area, textUnit, ...rest }, index) => {
             const text = `${area?.toFixed(2) || ''}sq`;
+            const id = `area-${index}`;
+
             return (
-              <Group key={index}>
-                <Line {...rest} />
+              <Group
+                id={id}
+                key={id}
+                onMouseDown={(e) => {
+                  e.cancelBubble = true;
+                  setSelectedShape(e.currentTarget.attrs?.id || '');
+                }}
+              >
+                <Line
+                  {...rest}
+                  closed={true}
+                  dash={selectedShape === id ? [10, 10] : []}
+                  stroke={selectedShape === id ? 'maroon' : rest.stroke}
+                  onMouseDown={(e) => {
+                    e.cancelBubble = true;
+                    setSelectedShape(e.currentTarget.attrs?.id || '');
+                  }}
+                />
                 <TextKonva
                   {...center}
                   fontSize={textUnit}
@@ -408,9 +492,27 @@ const Draw: React.FC<Props> = ({ selected, depth, border, unit, color }) => {
           {/* Drawing Volume */}
           {draw.volume.map(({ center, volume, textUnit, ...rest }, index) => {
             const text = `${volume?.toFixed(2) || ''} cubic`;
+            const id = `volume-${index}`;
+
             return (
-              <Group key={index}>
-                <Line {...rest} />
+              <Group
+                id={id}
+                key={id}
+                onMouseDown={(e) => {
+                  e.cancelBubble = true;
+                  setSelectedShape(e.currentTarget.attrs?.id || '');
+                }}
+              >
+                <Line
+                  {...rest}
+                  closed={true}
+                  dash={selectedShape === id ? [10, 10] : []}
+                  stroke={selectedShape === id ? 'maroon' : rest.stroke}
+                  onMouseDown={(e) => {
+                    e.cancelBubble = true;
+                    setSelectedShape(e.currentTarget.attrs?.id || '');
+                  }}
+                />
                 <TextKonva
                   {...center}
                   fontSize={textUnit}
