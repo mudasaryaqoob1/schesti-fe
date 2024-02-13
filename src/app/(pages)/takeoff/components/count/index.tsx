@@ -8,7 +8,7 @@ interface Props {
 
 const Count: React.FC<Props> = ({ setModalOpen }) => {
   return (
-    <div className="py-2.5 px-2.5 w-[204px] bg-[#DFDFDF] border border-solid border-elboneyGray rounded-[4px]">
+    <div className="py-2.5 px-2.5 w-[204px] bg-[#F2F2F2] border border-solid border-elboneyGray rounded-[4px]">
       <section className="w-full">
         <div className="flex justify-between items-center border-b-[#6a6767] border  ">
           <div>
