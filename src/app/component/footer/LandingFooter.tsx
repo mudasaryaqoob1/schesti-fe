@@ -1,10 +1,37 @@
 'use client';
+import { IResponseInterface } from '@/app/interfaces/api-response.interface';
+import { newsletterService } from '@/app/services/newsletter.service';
 import { Divider } from 'antd';
+import type { AxiosError } from 'axios';
+import { useFormik } from 'formik';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
+import * as Yup from 'yup';
+
+const SaveNewsLetterSchema = Yup.object().shape({
+  email: Yup.string().email('Invalid email').required('Required'),
+});
 
 export default function LandingFooter() {
   const router = useRouter();
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+    },
+    validationSchema: SaveNewsLetterSchema,
+    onSubmit: (values) => {
+      newsletterService.httpSaveNewsletter(values.email).then((res) => {
+        if (res.statusCode === 201) {
+          toast.success(res.message);
+          formik.resetForm();
+        }
+      }).catch(({ response }: AxiosError<IResponseInterface>) => {
+        console.log(response);
+        toast.error(response?.data?.message)
+      })
+    },
+  })
   return (
     <div className="bg-[#1D2939] px-[200px] pb-4 pt-[52px]">
       <div className="flex justify-between items-start">
@@ -57,17 +84,25 @@ export default function LandingFooter() {
           </div>
 
           <div className="flex justify-center py-2 ">
-            <div className="flex items-center rounded-full bg-white px-4 py-1 shadow-md">
+
+            <div className={`flex items-center border rounded-full bg-white px-4 py-1 shadow-md ${formik.errors.email ? "border-red-500" : ""}`}>
               <input
-                className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none  disabled:cursor-not-allowed disabled:opacity-50 flex-1 border-none"
+                className={`flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none  disabled:cursor-not-allowed disabled:opacity-50 flex-1 border-none
+                `}
                 placeholder="Enter your email"
                 type="email"
+                onChange={formik.handleChange}
+                value={formik.values.email}
+                name="email"
+                onBlur={formik.handleBlur}
               />
               <Image
                 src={'right-arrow-purple.svg'}
                 width={20}
                 height={20}
+                className='cursor-pointer'
                 alt="arrow"
+                onClick={() => formik.handleSubmit()}
               />
             </div>
           </div>
