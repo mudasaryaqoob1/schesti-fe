@@ -1,8 +1,8 @@
 'use client';
 import type { ColumnsType } from 'antd/es/table';
-import { Dropdown, Table, type MenuProps, Tag, Drawer } from 'antd';
+import { Dropdown, Table, type MenuProps, Tag, Drawer, Modal } from 'antd';
 import { useRouter } from 'next/navigation';
-import { SearchOutlined } from '@ant-design/icons';
+import { ExclamationCircleFilled, SearchOutlined } from '@ant-design/icons';
 
 import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
@@ -75,7 +75,19 @@ export function Contractors() {
     if (key === 'editInvoice') {
       router.push(`/invoices/edit/${record._id}`);
     } else if (key === 'delete') {
-      await dispatch(deleteContractorInvoiceRequest(record._id));
+      Modal.confirm({
+        title: 'Are you sure delete this invoice?',
+        icon: <ExclamationCircleFilled />,
+        okText: 'Yes',
+        okType: 'danger',
+        style: { backgroundColor: 'white' },
+        cancelText: 'No',
+        async onOk() {
+          await dispatch(deleteContractorInvoiceRequest(record._id));
+        },
+        onCancel() { },
+      });
+
     } else if (key === 'view') {
       router.push(`/invoices/view/${record._id}`);
     } else if (key === 'collectPayments') {
@@ -172,6 +184,9 @@ export function Contractors() {
   ];
 
   const filteredData = subcontractersInvoices ? subcontractersInvoices.filter((invoice) => {
+    if (search === '') {
+      return invoice;
+    }
     return invoice.projectName.toLowerCase().includes(search.toLowerCase());
   }) : []
   return (

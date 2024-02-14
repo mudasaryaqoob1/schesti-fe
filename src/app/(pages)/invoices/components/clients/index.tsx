@@ -5,16 +5,12 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import ModalComponent from '@/app/component/modal';
 import { IClientInvoice } from '@/app/interfaces/client-invoice.interface';
 import {
-  selectClientInvoices,
-  selectClientInvoicesLoading,
-} from '@/redux/client-invoices/client-invoice.selector';
-import {
   deleteClientInvoiceRequest,
   fetchClientInvoices,
 } from '@/redux/client-invoices/client-invoice.thunk';
-import { AppDispatch } from '@/redux/store';
-import { CloseOutlined, SearchOutlined } from '@ant-design/icons';
-import { Dropdown, Table, type MenuProps } from 'antd';
+import { AppDispatch, RootState } from '@/redux/store';
+import { CloseOutlined, ExclamationCircleFilled, SearchOutlined } from '@ant-design/icons';
+import { Dropdown, Table, type MenuProps, Modal } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -26,8 +22,8 @@ export function Clients() {
   const [showModal, setShowModal] = useState(false);
   const [invoiceName, setInvoiceName] = useState('');
   const dispatch = useDispatch<AppDispatch>();
-  const clientInvoices = useSelector(selectClientInvoices);
-  const clientInvoicesLoading = useSelector(selectClientInvoicesLoading);
+  const clientInvoices = useSelector((state: RootState) => state.clientInvoices.data);
+  const clientInvoicesLoading = useSelector((state: RootState) => state.clientInvoices.loading);
   const [search, setSearch] = useState('');
 
   const fetchSubcontactorsInvoices = useCallback(async () => {
@@ -88,7 +84,18 @@ export function Clients() {
               if (key === 'createPhase') {
                 router.push(`/invoices/client/invoice/${record._id}`);
               } else if (key === 'delete') {
-                dispatch(deleteClientInvoiceRequest(record._id));
+                Modal.confirm({
+                  title: 'Are you sure delete this invoice?',
+                  icon: <ExclamationCircleFilled />,
+                  okText: 'Yes',
+                  okType: 'danger',
+                  style: { backgroundColor: 'white' },
+                  cancelText: 'No',
+                  onOk() {
+                    dispatch(deleteClientInvoiceRequest(record._id));
+                  },
+                  onCancel() { },
+                });
               }
             },
           }}
@@ -106,7 +113,12 @@ export function Clients() {
     },
   ];
 
-  const filteredClientInvoices = clientInvoices ? clientInvoices.filter(invoice => invoice.invoiceName.toLowerCase().includes(search.toLowerCase()) || invoice.toOwner.toLowerCase().includes(search.toLowerCase())) : [];
+  const filteredClientInvoices = clientInvoices.length > 0 ? clientInvoices.filter(invoice => {
+    if (!search) {
+      return invoice;
+    }
+    return invoice.invoiceName === (search) || invoice.toOwner.toLowerCase().includes(search.toLowerCase())
+  }) : [];
 
   return (
     <div className="w-full mb-4">
