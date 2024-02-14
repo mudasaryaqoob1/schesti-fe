@@ -18,9 +18,9 @@ const GetInTouchSchema = Yup.object().shape({
   name: Yup.string()
     .min(2, 'Too Short!')
     .max(50, 'Too Long!')
-    .required('Required'),
-  email: Yup.string().email('Invalid email').required('Required'),
-  phone: Yup.string().required('Required'),
+    .required('Name is required'),
+  email: Yup.string().email('Invalid email').required('Email is required'),
+  phone: Yup.string().required('Phone number is required'),
   company: Yup.string().required('Company name is required'),
   employees: Yup.string().required('Choose number of employees'),
 });
@@ -220,7 +220,7 @@ export default function ContactPage() {
                     colorBgContainer: '#D0D5DD32',
                     colorBorder:
                       formik.touched.employees &&
-                      Boolean(formik.errors.employees)
+                        Boolean(formik.errors.employees)
                         ? '#F83F23'
                         : '#D0D5DD',
                   },
