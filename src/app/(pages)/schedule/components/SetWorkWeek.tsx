@@ -77,7 +77,7 @@ export function SetWorkWeek({
                   <QuaternaryHeading title="Hours" />
                 </div>
 
-                {initialValues.regularWorkingDays.map(
+                {initialValues?.regularWorkingDays?.map(
                   (item: any, index: number) => {
                     return (
                       <div
