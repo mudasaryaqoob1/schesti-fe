@@ -31,6 +31,7 @@ import type {
   ActivityItem,
 } from '@/app/interfaces/schedule/createSchedule.interface';
 import { toast } from 'react-toastify';
+import moment from 'moment';
 
 const columns: ColumnType<{}>[] = [
   {
@@ -38,8 +39,12 @@ const columns: ColumnType<{}>[] = [
     dataIndex: 'id',
     key: '0',
     width: 50,
-    render(value) {
-      return <div className="pl-4">{value}</div>;
+    render(d, record: any) {
+      return (
+        <div className="pl-4">
+          {record._id.substring(record._id.length - 3)}
+        </div>
+      );
     },
   },
   {
@@ -109,7 +114,7 @@ const columns: ColumnType<{}>[] = [
   {
     title: 'Activity Type',
     dataIndex: 'activityType',
-    width: 100,
+    width: 140,
     key: '10',
     align: 'center',
   },
@@ -176,53 +181,55 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
       successors: '',
       totalFloat: '',
     };
-  
 
-    scheduleService.httpAddProjectDivActivity({
-      projectId: projectId,
-      divId: wbs._id,
-      data: item,
-    }).then((response) => {
-      const newData = [...wbs.scheduleProjectActivities, response.data?.newProjectAcitivity ];
-      updateWbsScopeItems(wbs._id, newData);
-    })
-    .catch(() => {
-      toast.error('Something went wrong')
-    });
+    scheduleService
+      .httpAddProjectDivActivity({
+        projectId: projectId,
+        divId: wbs._id,
+        data: item,
+      })
+      .then((response) => {
+        const newData = [
+          ...wbs.scheduleProjectActivities,
+          response.data?.newProjectAcitivity,
+        ];
+        updateWbsScopeItems(wbs._id, newData);
+      })
+      .catch(() => {
+        toast.error('Something went wrong');
+      });
   }
 
   async function updateRow(record: ActivityItem) {
+    record['orignalDuration'] = record.orignalDuration
+      ? String(record.orignalDuration)
+      : '';
 
-    
-    record['orignalDuration'] = record.orignalDuration ? String(record.orignalDuration) : ''
-    
-    scheduleService.httpUpdateProjectDivActivity({activityId : record._id , data : record})
-    .then((response) => {
-      const newData = [...wbs.scheduleProjectActivities];
-      
+    scheduleService
+      .httpUpdateProjectDivActivity({ activityId: record._id, data: record })
+      .then((response) => {
+        const newData = [...wbs.scheduleProjectActivities];
 
-      const index = newData.findIndex((item) => item._id === record._id);
-      newData[index] = response.data?.updateProjectAcitivity;
-      updateWbsScopeItems(wbs._id, newData);
-    })
+        const index = newData.findIndex((item) => item._id === record._id);
+        newData[index] = response.data?.updateProjectAcitivity;
+        updateWbsScopeItems(wbs._id, newData);
+      })
 
-    .catch(() => {
-      toast.error('Something went wrong')
-    })
-
-    
+      .catch(() => {
+        toast.error('Something went wrong');
+      });
   }
 
   async function deleteRow(record: ActivityItem) {
-    console.log(record , 'recordrecord');
-    
+
     const newData = wbs.scheduleProjectActivities.filter(
       (item: any) => item._id !== record._id
     );
     updateWbsScopeItems(wbs._id, newData);
-    
-    await scheduleService.httpDeleteProjectDivActivity({activityId : record._id})
 
+    await scheduleService.httpDeleteProjectDivActivity({
+      activityId: record._id,
+    });
   }
 
   let newColumns = columns
@@ -328,6 +335,8 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
     label: title,
     value: key,
   }));
+  console.log(selectedItem, 'selectedItemselectedItem');
+
   return (
     <div>
       <Drawer
@@ -447,21 +456,31 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
                   label="Actual Start"
                   name="actualStart"
                   inputStyle="border-gray-200"
+                  defaultValue={dayjs(selectedItem.actualStart)}
                 />
                 <DateInputComponent
                   label="Actual Finish"
                   name="actualFinish"
                   inputStyle="border-gray-200"
+                  defaultValue={dayjs(selectedItem.actualFinish)}
                 />
               </div>
 
               <div className="flex items-center space-x-4 justify-between">
-                <InputComponent
+                <SelectComponent
                   label="Activity Type"
                   name="activityType"
-                  type="text"
                   placeholder="Activity Type"
+                  field={{
+                    options: [
+                      { label: 'Finish Milestone', value: 'Finish Milestone' },
+                      { label: 'Start milestone', value: 'Start milestone' },
+                      { label: 'Task Dependent', value: 'Task Dependent' },
+                    ],
+                    className: 'mt-1',
+                  }}
                 />
+
                 <InputComponent
                   label="Activity Calender"
                   name="activityCode"
@@ -576,7 +595,6 @@ function EditableRow({ index, ...props }: EditableRowProps) {
   );
 }
 interface EditableCellProps {
-  title: React.ReactNode;
   editable: boolean;
   children: React.ReactNode;
   dataIndex: keyof ActivityItem;
@@ -585,8 +603,6 @@ interface EditableCellProps {
 }
 
 function EditableCell({
-  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-  title,
   editable,
   children,
   dataIndex,
@@ -621,6 +637,13 @@ function EditableCell({
     }
   };
 
+  function disabledDate(current: any) {
+    // Disable all dates before today
+    if (current && current < moment().startOf('day')) {
+      return true;
+    }
+    return false;
+  }
   let childNode = children;
   const selectOptions = [
     { label: 'New', value: 'New' },
@@ -718,10 +741,35 @@ function EditableCell({
               onChange={save}
               value={dayjs(record[dataIndex])}
               onBlur={save}
+              disabledDate={disabledDate}
               autoFocus
               defaultOpen
               style={{ height: '40px' }}
             />
+          ) : dataIndex === 'orignalDuration' ? (
+            <Input
+              style={{ height: '40px' }}
+              ref={inputRef}
+              onPressEnter={save}
+              onBlur={save}
+              type="number"
+            />
+          ) : dataIndex === 'activityType' ? (
+            <Select
+            ref={inputRef}
+            onBlur={save}
+            onChange={save}
+            value='Finish Milestone'
+            defaultValue='Finish Milestone'
+            defaultOpen
+            autoFocus
+            style={{ height: '40px', margin: '1px 0px' }}
+          >
+            <Select.Option value={'Finish Milestone'} >Finish Milestone</Select.Option>
+            <Select.Option value={'Start Mileston'}>Start Milestone</Select.Option>
+            <Select.Option value={'Task Dependent'}>Task Dependent</Select.Option>
+          </Select>
+
           ) : (
             <Input
               style={{ height: '40px' }}

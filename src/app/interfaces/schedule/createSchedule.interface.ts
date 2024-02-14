@@ -17,6 +17,7 @@ export type IWBSType = {
 
 export type ActivityItem = {
   _id?: string;
+  activityId?: string;
   description: string;
   orignalDuration: string;
   start: string;

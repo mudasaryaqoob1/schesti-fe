@@ -12,6 +12,7 @@ type Props = {
   inputStyle?: ClassValue;
   fieldProps?: DatePickerProps;
   hasError?: boolean;
+  defaultValue?:any
 };
 
 export function DateInputComponent({
@@ -22,6 +23,7 @@ export function DateInputComponent({
   hasError,
   inputStyle,
   fieldProps,
+  defaultValue
 }: Props) {
   return (
     <div>
@@ -51,6 +53,7 @@ export function DateInputComponent({
           )
         )}
         name={name}
+        defaultValue={defaultValue}
         placeholder={placeholder}
         {...fieldProps}
       />

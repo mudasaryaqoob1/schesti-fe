@@ -2,7 +2,6 @@ import * as Yup from 'yup';
 import { meetingService } from '@/app/services/meeting.service';
 import { toast } from 'react-toastify';
 import { AppDispatch } from '@/redux/store';
-// import type { RangePickerProps } from 'antd/es/date-picker';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';

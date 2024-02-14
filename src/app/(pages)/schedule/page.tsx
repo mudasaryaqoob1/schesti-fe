@@ -220,12 +220,12 @@ const Schedule = () => {
       duration: Number(projectDetail?.duration),
       durationType: projectDetail?.durationType,
       hoursPerDay: item.hoursPerDay,
-      regularWorkingDays: item.regularWorkingDays.filter(
+      regularWorkingDays: item?.regularWorkingDays?.filter(
         (day) => day.isChecked
       ),
     };
 
-    await scheduleService
+    scheduleService
       .httpGenerateSchedule(finalObject)
       .then((resp) => {
         setIsFormSubmitLoading(false);

@@ -76,7 +76,7 @@ export default function SchedulePage() {
     const existProjectDiv = state.find(
       (div) => div.title === `${category} ${subCategory}`
     );
-    console.log(existProjectDiv, 'existProjectDiv');
+
 
     if (existProjectDiv) {
       toast.warn('This WBS already exist');
@@ -144,6 +144,7 @@ export default function SchedulePage() {
     setState(updatedWbs);
     await scheduleService.httpDeleteProjectDiv(id);
   }
+  
 
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
@@ -197,8 +198,8 @@ export default function SchedulePage() {
 
                 <QuinaryHeading
                   title={`${String(
-                    scheduleProjectDetail?.duration
-                  )} ${scheduleProjectDetail?.durationType}`}
+                    scheduleProjectDetail?.duration || '-'
+                  )} ${scheduleProjectDetail?.durationType || '-'}`}
                   className="text-[#475467] font-semibold"
                 />
               </div>
@@ -211,7 +212,7 @@ export default function SchedulePage() {
 
                 <QuinaryHeading
                   title={String(
-                    scheduleProjectDetail?.regularWorkingDays.length
+                    scheduleProjectDetail?.regularWorkingDays?.length || '-'
                   )}
                   className="text-[#475467] font-semibold"
                 />
@@ -224,7 +225,7 @@ export default function SchedulePage() {
                 />
 
                 <QuinaryHeading
-                  title={`${scheduleProjectDetail?.hoursPerDay} hours`}
+                  title={`${scheduleProjectDetail?.hoursPerDay || 0} hours`}
                   className="text-[#475467] font-semibold"
                 />
               </div>

@@ -71,6 +71,10 @@ const EstimateRequestTable: React.FC = () => {
       label: 'View Detail',
     },
     {
+      key: 'createSchedule',
+      label: 'Create Schedule',
+    },
+    {
       key: 'deleteEstimate',
       label: <p>Delete</p>,
     },
@@ -85,6 +89,9 @@ const EstimateRequestTable: React.FC = () => {
       if (deleteEstimateResult.statusCode === 200) {
         fetchGeneratedEstiamtesHandler();
       }
+    }
+    else if(key == 'createSchedule'){
+      router.push(`/schedule/estimate/${estimate._id}`);
     }
   };
 
