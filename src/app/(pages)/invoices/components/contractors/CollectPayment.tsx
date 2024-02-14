@@ -145,9 +145,9 @@ export function CollectPayment({ invoice, onSuccess }: Props) {
           />
         </div>
         <CustomButton
-          text="Save"
+          text="Pay"
           type="submit"
-          loadingText="Saving..."
+          loadingText="Paying..."
           isLoading={loading}
         />
       </form>
