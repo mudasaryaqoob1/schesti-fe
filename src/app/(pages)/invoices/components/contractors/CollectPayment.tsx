@@ -31,7 +31,7 @@ export function CollectPayment({ invoice, onSuccess }: Props) {
 
   const formik = useFormik({
     initialValues: {
-      amount: invoice.amount,
+      amount: invoice.totalPayable,
       paymentMethod: invoice.paymentMethod,
       transactionDate: dayjs(new Date()),
       additionalDetails: '',
@@ -71,6 +71,8 @@ export function CollectPayment({ invoice, onSuccess }: Props) {
             onChange: formik.handleChange,
             value: formik.values.amount,
             onBlur: formik.handleBlur,
+            prefix: "$",
+            disabled: true,
           }}
         />
 

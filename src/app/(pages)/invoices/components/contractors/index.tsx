@@ -87,10 +87,6 @@ export function Contractors() {
   }
   const columns: ColumnsType<IInvoice> = [
     {
-      title: 'Invoice #',
-      dataIndex: 'invoiceNumber',
-    },
-    {
       title: 'Project Name',
       dataIndex: 'projectName',
       width: 300,

@@ -30,7 +30,7 @@ export function GatewayToEfficiency() {
               <CustomButton
                 text="Get start with Schesti"
                 className="!rounded-full !w-48 !text-[#8449EB]"
-                onClick={() => router.push('/login')}
+                onClick={() => router.push('/register')}
               />
 
               {pathname !== '/contact' ? (
