@@ -14,10 +14,6 @@ import {
 } from '@/redux/invoice/invoice.thunk';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
-import {
-  selectInvoices,
-  selectInvoicesLoading,
-} from '@/redux/invoice/invoice.selector';
 import type { IInvoice } from '@/app/interfaces/invoices.interface';
 import Image from 'next/image';
 import moment from 'moment';
@@ -29,12 +25,13 @@ import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface
 export function Contractors() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const subcontractersInvoices = useSelector(selectInvoices);
-  const subcontractersInvoicesLoading = useSelector(selectInvoicesLoading);
+  const subcontractersInvoices = useSelector((state: RootState) => state.invoices.data);
+  const subcontractersInvoicesLoading = useSelector((state: RootState) => state.invoices.loading);
   const [selectedInvoice, setSelectedInvoice] = useState<IInvoice | null>(null);
   const auth = useSelector((state: RootState) => state.auth);
   const user = auth.user?.user as IUser | undefined;
   const [pdfInstance, updatePdfInstance] = usePDF({ document: undefined });
+  const [search, setSearch] = useState('');
 
   const fetchSubcontactorsInvoices = useCallback(async () => {
     await dispatch(fetchSubcontractorInvoices({}));
@@ -213,6 +210,10 @@ export function Contractors() {
               prefix={<SearchOutlined />}
               field={{
                 type: 'text',
+                value: search,
+                onChange: (e) => {
+                  setSearch(e.target.value);
+                }
               }}
             />
           </div>

@@ -7,7 +7,6 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import { IInvoice } from '@/app/interfaces/invoices.interface';
 import { HttpService } from '@/app/services/base.service';
 import { selectToken } from '@/redux/authSlices/auth.selector';
-import { selectInvoices } from '@/redux/invoice/invoice.selector';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import Table, { type ColumnType } from 'antd/es/table';
@@ -23,7 +22,7 @@ export default function ViewSubcontractorInvoicePage() {
   const token = useSelector(selectToken);
   const params = useParams<{ id: string }>();
   const id = params.id;
-  const subcontractorInvoices = useSelector(selectInvoices);
+  const subcontractorInvoices = useSelector((state: RootState) => state.invoices.data);
   const [invoiceData, setInvoiceData] = useState<IInvoice | null>(null);
   const auth = useSelector((state: RootState) => state.auth);
   const user = auth.user?.user as IUser | undefined;
@@ -35,7 +34,9 @@ export default function ViewSubcontractorInvoicePage() {
 
   useEffect(() => {
     const invoice = subcontractorInvoices?.find((item: any) => item._id === id);
-    setInvoiceData(invoice);
+    if (invoice) {
+      setInvoiceData(invoice);
+    }
   }, [id, subcontractorInvoices]);
 
   const columns: ColumnType<IInvoice['invoiceItems'][0]>[] = [

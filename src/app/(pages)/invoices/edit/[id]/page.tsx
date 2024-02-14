@@ -12,7 +12,6 @@ import FormControl from '@/app/component/formControl';
 // redux module
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
-import { selectInvoices } from '@/redux/invoice/invoice.selector';
 import Table, { type ColumnType } from 'antd/es/table';
 import ModalComponent from '@/app/component/modal';
 import ExistingSubContractor from './ExistingSubContractors';
@@ -24,6 +23,7 @@ import { ConfigProvider, Divider } from 'antd';
 import { invoiceService } from '@/app/services/invoices.service';
 import { toast } from 'react-toastify';
 import { IInvoice } from '@/app/interfaces/invoices.interface';
+import { RootState } from '@/redux/store';
 
 const SubcontractorSchema = Yup.object({
   subContractorFirstName: Yup.string().required('First name is required!'),
@@ -89,8 +89,8 @@ const EditSubcontractorInvoice = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const params = useParams();
-  const subcontractorInvoices = useSelector(selectInvoices);
-  const [invoiceData, setInvoiceData] = useState(null);
+  const subcontractorInvoices = useSelector((state: RootState) => state.invoices.data);
+  const [invoiceData, setInvoiceData] = useState<IInvoice | null>(null);
   const { id } = params;
   const [detail, setDetail] = useState<InvoiceDetail>({
     _id: '',
@@ -108,8 +108,8 @@ const EditSubcontractorInvoice = () => {
 
   useEffect(() => {
     const invoice = subcontractorInvoices?.find((item: any) => item._id === id);
-    setInvoiceData(invoice);
     if (invoice) {
+      setInvoiceData(invoice);
       setDetails(invoice.invoiceItems);
     }
   }, [id, subcontractorInvoices]);

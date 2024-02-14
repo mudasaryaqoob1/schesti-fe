@@ -28,6 +28,7 @@ export function Clients() {
   const dispatch = useDispatch<AppDispatch>();
   const clientInvoices = useSelector(selectClientInvoices);
   const clientInvoicesLoading = useSelector(selectClientInvoicesLoading);
+  const [search, setSearch] = useState('');
 
   const fetchSubcontactorsInvoices = useCallback(async () => {
     await dispatch(fetchClientInvoices({}));
@@ -118,6 +119,8 @@ export function Clients() {
               prefix={<SearchOutlined />}
               field={{
                 type: 'text',
+                value: search,
+                onChange: (e) => setSearch(e.target.value),
               }}
             />
           </div>
