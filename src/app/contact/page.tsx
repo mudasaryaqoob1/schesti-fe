@@ -2,8 +2,6 @@
 import Image from 'next/image';
 import { InputComponent } from '../component/customInput/Input';
 import { LandingNavbar } from '../component/navbar/LandingNavbar';
-import { SelectComponent } from '../component/customSelect/Select.component';
-import { ConfigProvider } from 'antd';
 import CustomButton from '../component/customButton/button';
 import LandingFooter from '../component/footer/LandingFooter';
 import { GatewayToEfficiency } from '../component/landing/GatewayToEfficiency';
@@ -13,29 +11,34 @@ import { contactService } from '../services/contact.service';
 import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
 import { IResponseInterface } from '../interfaces/api-response.interface';
+import TextArea from 'antd/es/input/TextArea';
+import { useState } from 'react';
 
 const GetInTouchSchema = Yup.object().shape({
   name: Yup.string()
     .min(2, 'Too Short!')
     .max(50, 'Too Long!')
-    .required('Required'),
-  email: Yup.string().email('Invalid email').required('Required'),
-  phone: Yup.string().required('Required'),
-  company: Yup.string().required('Company name is required'),
-  employees: Yup.string().required('Choose number of employees'),
+    .required('Name is required'),
+  email: Yup.string().email('Invalid email').required('Email is required'),
+  phone: Yup.string().required('Phone number is required'),
+  message: Yup.string()
+    .min(2, 'Too Short!')
+    .max(500, 'Too Long!')
+    .required('Message is required'),
 });
 
 export default function ContactPage() {
+  const [loading, setLoading] = useState(false);
   const formik = useFormik({
     initialValues: {
       name: '',
       email: '',
       phone: '',
-      company: '',
-      employees: '',
+      message: '',
     },
     validationSchema: GetInTouchSchema,
     onSubmit: (values) => {
+      setLoading(true);
       contactService
         .httpSendContactInfoToClient(values)
         .then((res) => {
@@ -43,9 +46,11 @@ export default function ContactPage() {
             formik.resetForm();
             toast.success(res.message);
           }
+          setLoading(false);
         })
         .catch(({ response }: AxiosError<IResponseInterface>) => {
           toast.error(response?.data?.message || 'Something went wrong');
+          setLoading(false);
         });
     },
   });
@@ -193,65 +198,27 @@ export default function ContactPage() {
               hasError={formik.touched.phone && Boolean(formik.errors.phone)}
               errorMessage={formik.errors.phone}
             />
-            <InputComponent
-              label="Company"
-              placeholder="Enter company name"
-              name="company"
-              type="text"
-              inputStyle="!bg-[#D0D5DD32]"
-              field={{
-                value: formik.values.company,
-                onChange: (e) => {
-                  formik.handleChange(e);
-                },
-                onBlur: (e) => {
-                  formik.handleBlur(e);
-                },
-              }}
-              hasError={
-                formik.touched.company && Boolean(formik.errors.company)
-              }
-              errorMessage={formik.errors.company}
-            />
-            <ConfigProvider
-              theme={{
-                components: {
-                  Select: {
-                    colorBgContainer: '#D0D5DD32',
-                    colorBorder:
-                      formik.touched.employees &&
-                      Boolean(formik.errors.employees)
-                        ? '#F83F23'
-                        : '#D0D5DD',
-                  },
-                },
-              }}
-            >
-              <SelectComponent
-                label="Number of employees"
-                name="employees"
-                placeholder="Select number of employees"
-                field={{
-                  options: [
-                    { label: '1-10', value: '1-10' },
-                    { label: '11-50', value: '11-50' },
-                    { label: '51-200', value: '51-200' },
-                  ],
-                  size: 'large',
-                  value: formik.values.employees,
-                  onChange(value) {
-                    formik.setFieldValue('employees', value);
-                  },
-                  onBlur(e) {
-                    formik.handleBlur(e);
-                  },
-                }}
-                hasError={
-                  formik.touched.employees && Boolean(formik.errors.employees)
+            <div className="mt-1">
+              <TextArea
+                placeholder="Message"
+                name="message"
+                className={`!bg-[#D0D5DD32]`}
+                value={formik.values.message}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                rows={10}
+                status={
+                  formik.touched.message && Boolean(formik.errors.message)
+                    ? 'error'
+                    : undefined
                 }
-                errorMessage={formik.errors.employees}
               />
-            </ConfigProvider>
+              <p className="text-red-500 text-xs mt-1">
+                {formik.touched.message && formik.errors.message
+                  ? formik.errors.message
+                  : null}
+              </p>
+            </div>
             <p className="mt-[11px] text-[#475467] text-[14px] leading-[34px] font-normal">
               By completing and submitting the form, I acknowledge Wrike’s
               Privacy Policy.
@@ -260,6 +227,7 @@ export default function ContactPage() {
               type="submit"
               text="Get in touch"
               className="!rounded-full !w-48 self-end !bg-[#7138DF]"
+              isLoading={loading}
             />
           </form>
         </div>

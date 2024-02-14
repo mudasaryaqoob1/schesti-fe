@@ -54,11 +54,10 @@ class ScheduleService extends HttpService {
       data
     );
 
-
-        httpDeleteProjectDivActivity = ({
-          activityId,
-        }: any): Promise<IResponseInterface<{ deletedProjectAcitivity: IWBSType }>> =>
-          this.post(`${this.prefix}/delete-project-div-activity/${activityId}`);
+  httpDeleteProjectDivActivity = ({
+    activityId,
+  }: any): Promise<IResponseInterface<{ deletedProjectAcitivity: IWBSType }>> =>
+    this.post(`${this.prefix}/delete-project-div-activity/${activityId}`);
 
   httpUpdateProjectDivActivity = ({
     activityId,

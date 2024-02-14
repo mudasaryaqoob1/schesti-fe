@@ -25,7 +25,7 @@ const featuresData: {
     title: 'Easy and Instant Invoices',
     description:
       "Simplify your billing process with Schesti's feature - Easy and Instant Invoices. Create and manage invoices swiftly against clients. Enjoy a seamless billing experience with our user-friendly interface designed to make invoicing quick and effortless. From project-based invoicing to client transactions, our feature ensures precision and speed, giving you more time to focus on what matters. Experience the convenience of managing your financial transactions with Easy and Instant Invoices, where billing becomes instant and hassle-free.",
-    image: '/schedule-img.png',
+    image: '/invoice-img.png',
   },
   meeting: {
     title: 'Streamlined Meetings with Jitsi Meet',
@@ -37,13 +37,13 @@ const featuresData: {
     title: 'Client Management with Schesti',
     description:
       'In Schesti, user can able to organize their client efficiently. Client Hub simplifies the way you handle client information. From contact details to project history, stay on top of every interaction. Navigate seamlessly, organize effortlessly, and build lasting connections with ease. Elevate your client management experience and unlock new possibilities for business growth.',
-    image: '/schedule-img.png',
+    image: '/Client-img.png',
   },
   subcontractor: {
     title: 'Allocate Projects to Subcontractors',
     description:
       "Streamline workflows and enhance project efficiency by effortlessly allocating projects to specialized teams. Assign estimates with ease, ensuring a harmonious and productive project workflow with Schesti's advanced allocation capabilities.",
-    image: '/schedule-img.png',
+    image: '/Subcontractor-img.png',
   },
 };
 
@@ -73,7 +73,7 @@ export default function Home() {
             <CustomButton
               text="Get Started"
               className="!rounded-full !text-[#7138DF]"
-              onClick={() => router.push('/login')}
+              onClick={() => router.push('/register')}
             />
             <Image
               src={'/landing.png'}
@@ -181,6 +181,7 @@ export default function Home() {
                 height={426.04}
                 width={582.61}
                 alt="dashboard"
+                className="rounded-lg"
               />
             </div>
 

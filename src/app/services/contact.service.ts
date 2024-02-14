@@ -4,9 +4,8 @@ import { HttpService } from './base.service';
 type Data = {
   email: string;
   phone: string;
-  company: string;
+  message: string;
   name: string;
-  employees: string;
 };
 class ContactService extends HttpService {
   private readonly prefix: string = 'api/contact';

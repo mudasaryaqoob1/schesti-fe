@@ -124,7 +124,7 @@ export default function LandingFooter() {
         </div>
         <div>
           <p className="text-white text-[14px] font-normal leading-[18.23px]">
-            © 2023 Schesti | All Rights Reserved
+            © {new Date().getFullYear()} Schesti | All Rights Reserved
           </p>
         </div>
         <div className="flex items-center space-x-4">
