@@ -35,7 +35,6 @@ const SubcontractorSchema = Yup.object({
   subContractorCompanyName: Yup.string().required('Company name is required!'),
   subContractorAddress: Yup.string().required('Address is required!'),
 
-  invoiceNumber: Yup.string().required('Invoice is required!'),
   projectName: Yup.string().required('Project name is required!'),
   applicationNumber: Yup.string().required('Application number is required!'),
   invoiceSubject: Yup.string().required('Invoice subject is required!'),
@@ -66,7 +65,7 @@ const initialValues = {
   profitAndOverhead: 0,
   totalPayable: 0,
   discount: 0,
-  invoiceNumber: '',
+  invoiceNumber: new Date().getTime(),
   subContractorAddress: '',
   subContractorEmail: '',
   subContractorFirstName: '',
@@ -365,13 +364,6 @@ const EditSubcontractorInvoice = () => {
                   />
 
                   <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-2 gap-4 mt-3">
-                    <FormControl
-                      control="input"
-                      label="Invoice #"
-                      type="text"
-                      name="invoiceNumber"
-                      placeholder="Enter invoice number"
-                    />
 
                     <FormControl
                       control="input"
