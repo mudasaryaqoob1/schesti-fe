@@ -362,8 +362,6 @@ const CreateInvoice = () => {
                   />
 
                   <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-2 gap-4 mt-3">
-
-
                     <FormControl
                       control="input"
                       label="Project Name"

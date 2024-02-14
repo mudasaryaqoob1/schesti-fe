@@ -195,7 +195,7 @@ export function G703Component({
             dataIndex={0}
             render={(value, record: string[], index) => {
               return index === state.data.length ? null : (
-                <div className="px-3">{index}</div>
+                <div className="px-3">{index + 1}</div>
               );
             }}
             width={40}

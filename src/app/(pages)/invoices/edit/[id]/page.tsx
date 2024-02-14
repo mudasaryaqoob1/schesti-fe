@@ -89,7 +89,9 @@ const EditSubcontractorInvoice = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const params = useParams();
-  const subcontractorInvoices = useSelector((state: RootState) => state.invoices.data);
+  const subcontractorInvoices = useSelector(
+    (state: RootState) => state.invoices.data
+  );
   const [invoiceData, setInvoiceData] = useState<IInvoice | null>(null);
   const { id } = params;
   const [detail, setDetail] = useState<InvoiceDetail>({
@@ -364,7 +366,6 @@ const EditSubcontractorInvoice = () => {
                   />
 
                   <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-2 gap-4 mt-3">
-
                     <FormControl
                       control="input"
                       label="Project Name"

@@ -198,17 +198,20 @@ export default function ContactPage() {
               hasError={formik.touched.phone && Boolean(formik.errors.phone)}
               errorMessage={formik.errors.phone}
             />
-            <div className='mt-1'>
+            <div className="mt-1">
               <TextArea
                 placeholder="Message"
                 name="message"
                 className={`!bg-[#D0D5DD32]`}
-
                 value={formik.values.message}
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
                 rows={10}
-                status={formik.touched.message && Boolean(formik.errors.message) ? "error" : undefined}
+                status={
+                  formik.touched.message && Boolean(formik.errors.message)
+                    ? 'error'
+                    : undefined
+                }
               />
               <p className="text-red-500 text-xs mt-1">
                 {formik.touched.message && formik.errors.message

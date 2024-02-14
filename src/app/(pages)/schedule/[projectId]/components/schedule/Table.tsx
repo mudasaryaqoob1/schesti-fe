@@ -176,53 +176,56 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
       successors: '',
       totalFloat: '',
     };
-  
 
-    scheduleService.httpAddProjectDivActivity({
-      projectId: projectId,
-      divId: wbs._id,
-      data: item,
-    }).then((response) => {
-      const newData = [...wbs.scheduleProjectActivities, response.data?.newProjectAcitivity ];
-      updateWbsScopeItems(wbs._id, newData);
-    })
-    .catch(() => {
-      toast.error('Something went wrong')
-    });
+    scheduleService
+      .httpAddProjectDivActivity({
+        projectId: projectId,
+        divId: wbs._id,
+        data: item,
+      })
+      .then((response) => {
+        const newData = [
+          ...wbs.scheduleProjectActivities,
+          response.data?.newProjectAcitivity,
+        ];
+        updateWbsScopeItems(wbs._id, newData);
+      })
+      .catch(() => {
+        toast.error('Something went wrong');
+      });
   }
 
   async function updateRow(record: ActivityItem) {
+    record['orignalDuration'] = record.orignalDuration
+      ? String(record.orignalDuration)
+      : '';
 
-    
-    record['orignalDuration'] = record.orignalDuration ? String(record.orignalDuration) : ''
-    
-    scheduleService.httpUpdateProjectDivActivity({activityId : record._id , data : record})
-    .then((response) => {
-      const newData = [...wbs.scheduleProjectActivities];
-      
+    scheduleService
+      .httpUpdateProjectDivActivity({ activityId: record._id, data: record })
+      .then((response) => {
+        const newData = [...wbs.scheduleProjectActivities];
 
-      const index = newData.findIndex((item) => item._id === record._id);
-      newData[index] = response.data?.updateProjectAcitivity;
-      updateWbsScopeItems(wbs._id, newData);
-    })
+        const index = newData.findIndex((item) => item._id === record._id);
+        newData[index] = response.data?.updateProjectAcitivity;
+        updateWbsScopeItems(wbs._id, newData);
+      })
 
-    .catch(() => {
-      toast.error('Something went wrong')
-    })
-
-    
+      .catch(() => {
+        toast.error('Something went wrong');
+      });
   }
 
   async function deleteRow(record: ActivityItem) {
-    console.log(record , 'recordrecord');
-    
+    console.log(record, 'recordrecord');
+
     const newData = wbs.scheduleProjectActivities.filter(
       (item: any) => item._id !== record._id
     );
     updateWbsScopeItems(wbs._id, newData);
-    
-    await scheduleService.httpDeleteProjectDivActivity({activityId : record._id})
 
+    await scheduleService.httpDeleteProjectDivActivity({
+      activityId: record._id,
+    });
   }
 
   let newColumns = columns

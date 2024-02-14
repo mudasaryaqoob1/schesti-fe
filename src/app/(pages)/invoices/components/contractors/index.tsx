@@ -25,8 +25,12 @@ import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface
 export function Contractors() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const subcontractersInvoices = useSelector((state: RootState) => state.invoices.data);
-  const subcontractersInvoicesLoading = useSelector((state: RootState) => state.invoices.loading);
+  const subcontractersInvoices = useSelector(
+    (state: RootState) => state.invoices.data
+  );
+  const subcontractersInvoicesLoading = useSelector(
+    (state: RootState) => state.invoices.loading
+  );
   const [selectedInvoice, setSelectedInvoice] = useState<IInvoice | null>(null);
   const auth = useSelector((state: RootState) => state.auth);
   const user = auth.user?.user as IUser | undefined;
@@ -85,9 +89,8 @@ export function Contractors() {
         async onOk() {
           await dispatch(deleteContractorInvoiceRequest(record._id));
         },
-        onCancel() { },
+        onCancel() {},
       });
-
     } else if (key === 'view') {
       router.push(`/invoices/view/${record._id}`);
     } else if (key === 'collectPayments') {
@@ -96,10 +99,15 @@ export function Contractors() {
   }
   const columns: ColumnsType<IInvoice> = [
     {
-      title: 'Project Name',
+      title: 'Invoice Number',
       dataIndex: 'projectName',
       width: 300,
       filterSearch: true,
+    },
+    {
+      title: 'Project Name',
+      dataIndex: 'projectName',
+      width: 300,
     },
     {
       title: 'Subcontractor Name',
@@ -183,12 +191,14 @@ export function Contractors() {
     },
   ];
 
-  const filteredData = subcontractersInvoices ? subcontractersInvoices.filter((invoice) => {
-    if (search === '') {
-      return invoice;
-    }
-    return invoice.projectName.toLowerCase().includes(search.toLowerCase());
-  }) : []
+  const filteredData = subcontractersInvoices
+    ? subcontractersInvoices.filter((invoice) => {
+        if (search === '') {
+          return invoice;
+        }
+        return invoice.projectName.toLowerCase().includes(search.toLowerCase());
+      })
+    : [];
   return (
     <div className="w-full mb-4">
       <div className="flex justify-between flex-wrap items-center md:flex-nowrap mb-2">
@@ -233,7 +243,7 @@ export function Contractors() {
                 value: search,
                 onChange: (e) => {
                   setSearch(e.target.value);
-                }
+                },
               }}
             />
           </div>
@@ -254,7 +264,6 @@ export function Contractors() {
         dataSource={filteredData}
         bordered
         pagination={{ position: ['bottomCenter'] }}
-
       />
     </div>
   );

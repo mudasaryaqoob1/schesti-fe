@@ -9,7 +9,11 @@ import {
   fetchClientInvoices,
 } from '@/redux/client-invoices/client-invoice.thunk';
 import { AppDispatch, RootState } from '@/redux/store';
-import { CloseOutlined, ExclamationCircleFilled, SearchOutlined } from '@ant-design/icons';
+import {
+  CloseOutlined,
+  ExclamationCircleFilled,
+  SearchOutlined,
+} from '@ant-design/icons';
 import { Dropdown, Table, type MenuProps, Modal } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import Image from 'next/image';
@@ -22,8 +26,12 @@ export function Clients() {
   const [showModal, setShowModal] = useState(false);
   const [invoiceName, setInvoiceName] = useState('');
   const dispatch = useDispatch<AppDispatch>();
-  const clientInvoices = useSelector((state: RootState) => state.clientInvoices.data);
-  const clientInvoicesLoading = useSelector((state: RootState) => state.clientInvoices.loading);
+  const clientInvoices = useSelector(
+    (state: RootState) => state.clientInvoices.data
+  );
+  const clientInvoicesLoading = useSelector(
+    (state: RootState) => state.clientInvoices.loading
+  );
   const [search, setSearch] = useState('');
 
   const fetchSubcontactorsInvoices = useCallback(async () => {
@@ -94,7 +102,7 @@ export function Clients() {
                   onOk() {
                     dispatch(deleteClientInvoiceRequest(record._id));
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
               }
             },
@@ -113,12 +121,18 @@ export function Clients() {
     },
   ];
 
-  const filteredClientInvoices = clientInvoices.length > 0 ? clientInvoices.filter(invoice => {
-    if (!search) {
-      return invoice;
-    }
-    return invoice.invoiceName === (search) || invoice.toOwner.toLowerCase().includes(search.toLowerCase())
-  }) : [];
+  const filteredClientInvoices =
+    clientInvoices.length > 0
+      ? clientInvoices.filter((invoice) => {
+          if (!search) {
+            return invoice;
+          }
+          return (
+            invoice.invoiceName === search ||
+            invoice.toOwner.toLowerCase().includes(search.toLowerCase())
+          );
+        })
+      : [];
 
   return (
     <div className="w-full mb-4">

@@ -181,9 +181,11 @@ export default function PricingPage() {
                       How do I update my payment information?
                     </h3>
                   ),
-                  children: <p>
-                    {` Updating your payment information is quick and easy. Simply log in to your account and navigate to the "Payment Settings" or "Billing Information" section. From there, you can update your credit card details, billing address, or preferred payment method. Ensure that all information entered is accurate and up-to-date to avoid any payment processing issues. If you encounter any difficulties or require assistance, our customer support team is available to guide you through the process and address any concerns you may have.`}
-                  </p>,
+                  children: (
+                    <p>
+                      {` Updating your payment information is quick and easy. Simply log in to your account and navigate to the "Payment Settings" or "Billing Information" section. From there, you can update your credit card details, billing address, or preferred payment method. Ensure that all information entered is accurate and up-to-date to avoid any payment processing issues. If you encounter any difficulties or require assistance, our customer support team is available to guide you through the process and address any concerns you may have.`}
+                    </p>
+                  ),
                   style: panelStyle,
                 },
                 {
@@ -193,7 +195,13 @@ export default function PricingPage() {
                       What payment methods do you accept?
                     </h3>
                   ),
-                  children: <p>We accept payments through major credit cards, including Visa, Mastercard, and American Express. Additionally, we also support PayPal for secure online transactions.</p>,
+                  children: (
+                    <p>
+                      We accept payments through major credit cards, including
+                      Visa, Mastercard, and American Express. Additionally, we
+                      also support PayPal for secure online transactions.
+                    </p>
+                  ),
                   style: panelStyle,
                 },
                 {
@@ -203,7 +211,15 @@ export default function PricingPage() {
                       How long does shipping take?
                     </h3>
                   ),
-                  children: <p>Shipping times vary depending on your location and the shipping method chosen at checkout. Typically, orders are processed and shipped within 1-2 business days. For more precise delivery estimates, please refer to our shipping policy.</p>,
+                  children: (
+                    <p>
+                      Shipping times vary depending on your location and the
+                      shipping method chosen at checkout. Typically, orders are
+                      processed and shipped within 1-2 business days. For more
+                      precise delivery estimates, please refer to our shipping
+                      policy.
+                    </p>
+                  ),
                   style: panelStyle,
                 },
                 {
@@ -214,7 +230,15 @@ export default function PricingPage() {
                     </h3>
                   ),
 
-                  children: <p>We offer a hassle-free return policy within 30 days of purchase. If {"you're"} not completely satisfied with your order, you can return the item(s) for a full refund or exchange. Please review our return policy for detailed instructions and eligibility criteria.</p>,
+                  children: (
+                    <p>
+                      We offer a hassle-free return policy within 30 days of
+                      purchase. If {"you're"} not completely satisfied with your
+                      order, you can return the item(s) for a full refund or
+                      exchange. Please review our return policy for detailed
+                      instructions and eligibility criteria.
+                    </p>
+                  ),
                   style: panelStyle,
                 },
                 {
@@ -225,7 +249,16 @@ export default function PricingPage() {
                     </h3>
                   ),
                   style: panelStyle,
-                  children: <p>Once your order has been shipped, you will receive a tracking number via email. You can use this tracking number to monitor the status of your delivery and track its progress until it reaches your doorstep. Alternatively, you can log in to your account to view your order history and track your shipments.</p>,
+                  children: (
+                    <p>
+                      Once your order has been shipped, you will receive a
+                      tracking number via email. You can use this tracking
+                      number to monitor the status of your delivery and track
+                      its progress until it reaches your doorstep.
+                      Alternatively, you can log in to your account to view your
+                      order history and track your shipments.
+                    </p>
+                  ),
                 },
                 {
                   key: '5',
@@ -235,7 +268,17 @@ export default function PricingPage() {
                     </h3>
                   ),
                   style: panelStyle,
-                  children: <p>We are committed to sustainability and environmental responsibility. Many of our products are sourced from eco-friendly materials and manufactured using environmentally conscious practices. Look for our {`"green"`} label on products that meet our sustainability standards. For more information, please see our environmental policy.</p>,
+                  children: (
+                    <p>
+                      We are committed to sustainability and environmental
+                      responsibility. Many of our products are sourced from
+                      eco-friendly materials and manufactured using
+                      environmentally conscious practices. Look for our{' '}
+                      {`"green"`} label on products that meet our sustainability
+                      standards. For more information, please see our
+                      environmental policy.
+                    </p>
+                  ),
                 },
               ]}
               expandIconPosition="end"

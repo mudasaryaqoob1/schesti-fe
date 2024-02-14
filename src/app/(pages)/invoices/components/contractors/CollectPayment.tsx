@@ -71,7 +71,7 @@ export function CollectPayment({ invoice, onSuccess }: Props) {
             onChange: formik.handleChange,
             value: formik.values.amount,
             onBlur: formik.handleBlur,
-            prefix: "$",
+            prefix: '$',
             disabled: true,
           }}
         />
