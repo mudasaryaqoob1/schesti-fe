@@ -105,6 +105,9 @@ export function Clients() {
       ),
     },
   ];
+
+  const filteredClientInvoices = clientInvoices ? clientInvoices.filter(invoice => invoice.invoiceName.toLowerCase().includes(search.toLowerCase()) || invoice.toOwner.toLowerCase().includes(search.toLowerCase())) : [];
+
   return (
     <div className="w-full mb-4">
       <div className="flex justify-between flex-wrap items-center md:flex-nowrap mb-2">
@@ -186,7 +189,7 @@ export function Clients() {
       <Table
         loading={clientInvoicesLoading}
         columns={columns}
-        dataSource={clientInvoices}
+        dataSource={filteredClientInvoices}
         pagination={{ position: ['bottomCenter'] }}
         bordered
       />

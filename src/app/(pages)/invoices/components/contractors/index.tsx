@@ -87,6 +87,7 @@ export function Contractors() {
       title: 'Project Name',
       dataIndex: 'projectName',
       width: 300,
+      filterSearch: true,
     },
     {
       title: 'Subcontractor Name',
@@ -169,6 +170,10 @@ export function Contractors() {
       ),
     },
   ];
+
+  const filteredData = subcontractersInvoices ? subcontractersInvoices.filter((invoice) => {
+    return invoice.projectName.toLowerCase().includes(search.toLowerCase());
+  }) : []
   return (
     <div className="w-full mb-4">
       <div className="flex justify-between flex-wrap items-center md:flex-nowrap mb-2">
@@ -231,9 +236,10 @@ export function Contractors() {
       <Table
         loading={subcontractersInvoicesLoading}
         columns={columns}
-        dataSource={subcontractersInvoices}
+        dataSource={filteredData}
         bordered
         pagination={{ position: ['bottomCenter'] }}
+
       />
     </div>
   );
