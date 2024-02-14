@@ -73,7 +73,7 @@ export default function Home() {
             <CustomButton
               text="Get Started"
               className="!rounded-full !text-[#7138DF]"
-              onClick={() => router.push('/login')}
+              onClick={() => router.push('/register')}
             />
             <Image
               src={'/landing.png'}
