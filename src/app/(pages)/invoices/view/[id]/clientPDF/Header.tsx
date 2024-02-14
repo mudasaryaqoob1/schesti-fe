@@ -22,7 +22,7 @@ type Props = {
   logo?: string;
   brandingColor?: string;
 };
-const defaultLogo = "https://schesti-dev.s3.eu-north-1.amazonaws.com/2024/documents/estimates/e50ee8bc83d54461995f51e72a192f51-Group%20226.png";
+const defaultLogo = process.env.NEXT_PUBLIC_SCHESTI_IMAGE_URL;
 export function PdfHeader({ logo, brandingColor }: Props) {
   return (
     <View
