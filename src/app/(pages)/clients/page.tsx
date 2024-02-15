@@ -25,6 +25,7 @@ import { InputComponent } from '@/app/component/customInput/Input';
 import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 import { DeleteContent } from '@/app/component/delete/DeleteContent';
 import ModalComponent from '@/app/component/modal';
+import { toast } from 'react-toastify';
 
 interface DataType {
   firstName: string;
@@ -166,6 +167,7 @@ const ClientTable = () => {
           onClick={async () => {
             if ("_id" in selectedClient) {
               await dispatch(deleteCompanyClient(selectedClient._id as string));
+              toast.success("Client deleted successfully");
             }
             setShowDeleteModal(false);
           }}

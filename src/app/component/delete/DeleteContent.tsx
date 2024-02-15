@@ -34,7 +34,7 @@ export function DeleteContent({ onClick, onClose,
                 className="text-[#475467] text-[14px] leading-[23px] font-normal"
             />
         </div>
-        <div className="flex justify-between px-2 py-2 space-x-2">
+        <div className="flex justify-between px-6 py-2 space-x-2">
             <WhiteButton
                 text={cancelText}
                 onClick={onClose}
