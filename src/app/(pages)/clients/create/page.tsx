@@ -58,6 +58,7 @@ const CreateClient = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const submitHandler = async (values: IClient) => {
+    setIsLoading(true);
     userService
       .httpAddNewClient(values)
       .then((response: any) => {
