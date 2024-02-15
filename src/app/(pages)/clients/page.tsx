@@ -23,6 +23,8 @@ import Image from 'next/image';
 import { SearchOutlined } from '@ant-design/icons';
 import { InputComponent } from '@/app/component/customInput/Input';
 import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
+import { DeleteContent } from '@/app/component/delete/DeleteContent';
+import ModalComponent from '@/app/component/modal';
 
 interface DataType {
   firstName: string;
@@ -64,6 +66,8 @@ const ClientTable = () => {
   const clientsData: IClient[] | null = useSelector(selectClients);
   const companyClientsLoading = useSelector(selectClientsLoading);
   const [search, setSearch] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedClient, setSelectedClient] = useState<IClient | null>(null);
 
   const token = useSelector(selectToken);
   useLayoutEffect(() => {
@@ -82,7 +86,10 @@ const ClientTable = () => {
 
   const handleDropdownItemClick = async (key: string, client: any) => {
     if (key == 'deleteClient') {
-      await dispatch(deleteCompanyClient(client._id));
+      setSelectedClient(client);
+      setShowDeleteModal(true);
+
+      // await dispatch(deleteCompanyClient(client._id));
     } else if (key == 'editClientDetail') {
       router.push(`/clients/edit/${client._id}`);
     }
@@ -154,6 +161,17 @@ const ClientTable = () => {
   }) : []
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
+      {selectedClient && showDeleteModal ? <ModalComponent open={showDeleteModal} setOpen={setShowDeleteModal} width='30%'>
+        <DeleteContent
+          onClick={async () => {
+            if ("_id" in selectedClient) {
+              await dispatch(deleteCompanyClient(selectedClient._id as string));
+            }
+            setShowDeleteModal(false);
+          }}
+          onClose={() => setShowDeleteModal(false)}
+        />
+      </ModalComponent> : null}
       <div
         className={`${bg_style} p-5 border border-solid border-silverGray`}
       >
