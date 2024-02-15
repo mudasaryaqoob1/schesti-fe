@@ -102,7 +102,7 @@ export function Clients() {
                   onOk() {
                     dispatch(deleteClientInvoiceRequest(record._id));
                   },
-                  onCancel() {},
+                  onCancel() { },
                 });
               }
             },
@@ -124,14 +124,14 @@ export function Clients() {
   const filteredClientInvoices =
     clientInvoices.length > 0
       ? clientInvoices.filter((invoice) => {
-          if (!search) {
-            return invoice;
-          }
-          return (
-            invoice.invoiceName === search ||
-            invoice.toOwner.toLowerCase().includes(search.toLowerCase())
-          );
-        })
+        if (!search) {
+          return invoice;
+        }
+        return (
+          invoice.invoiceName === search ||
+          invoice.toOwner.toLowerCase().includes(search.toLowerCase())
+        );
+      })
       : [];
 
   return (
@@ -177,6 +177,7 @@ export function Clients() {
                   className="cursor-pointer"
                   width={24}
                   height={24}
+                  onClick={() => setShowModal(false)}
                 />
               </div>
 
@@ -194,7 +195,9 @@ export function Clients() {
                 />
 
                 <div className="flex justify-end py-2 space-x-2">
-                  <WhiteButton text="Cancel" className="!w-[100px]" />
+                  <WhiteButton text="Cancel" className="!w-[100px]"
+                    onClick={() => setShowModal(false)}
+                  />
                   <CustomButton
                     text="Next"
                     className="!w-[100px]"
