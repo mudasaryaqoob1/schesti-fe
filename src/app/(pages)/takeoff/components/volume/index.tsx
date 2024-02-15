@@ -1,12 +1,14 @@
 'use client';
 import Image from 'next/image';
-import { Select } from 'antd';
+import { Input } from 'antd';
+import { Measurements } from '../../scale/page';
 
 interface Props {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  measurements: Measurements;
 }
 
-const Volume: React.FC<Props> = ({ setModalOpen }) => {
+const Volume: React.FC<Props> = ({ setModalOpen, measurements }) => {
   return (
     <div className="py-2.5 px-2.5 w-[204px] bg-[#F2F2F2] border border-solid border-elboneyGray rounded-[4px]">
       <section className="w-full">
@@ -27,13 +29,14 @@ const Volume: React.FC<Props> = ({ setModalOpen }) => {
           <div className="flex flex-row items-center justify-between ">
             <label>Volume</label>
             <div className="w-[92px]">
-              <Select className="!rounded-md w-full">
+              <Input value={measurements.volume} className="!rounded-md" />
+              {/* <Select className="!rounded-md w-full">
                 <Select.Option value="cu">Cu</Select.Option>
                 <Select.Option value="cy">CY</Select.Option>
                 <Select.Option value="cy_ft">CY FT</Select.Option>
                 <Select.Option value="tn">TN</Select.Option>
                 <Select.Option value="sy">SY</Select.Option>
-              </Select>
+              </Select> */}
             </div>
           </div>
         </div>

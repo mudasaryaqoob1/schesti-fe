@@ -1,12 +1,14 @@
 'use client';
 import Image from 'next/image';
 import { Input } from 'antd';
+import { Measurements } from '../../scale/page';
 
 interface Props {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  measurements: Measurements;
 }
 
-const Length: React.FC<Props> = ({ setModalOpen }) => {
+const Length: React.FC<Props> = ({ setModalOpen, measurements }) => {
   return (
     <div className="py-2.5 px-2.5 w-[204px] bg-[#F2F2F2] border border-solid border-elboneyGray rounded-[4px]">
       <section className="w-full">
@@ -27,13 +29,13 @@ const Length: React.FC<Props> = ({ setModalOpen }) => {
           <div className="flex flex-row items-center justify-between ">
             <label>Angle</label>
             <div className="w-[92px]">
-              <Input className="!rounded-md" />
+              <Input value={measurements.angle} className="!rounded-md" />
             </div>
           </div>
           <div className="flex flex-row items-center justify-between ">
             <label>Segment</label>
             <div className="w-[92px]">
-              <Input className="!rounded-md" />
+              <Input value={measurements.segment} className="!rounded-md" />
             </div>
           </div>
         </div>

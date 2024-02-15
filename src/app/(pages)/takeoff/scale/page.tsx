@@ -214,7 +214,7 @@ const Scale = () => {
               <ModalsWrapper
                 scale={scale}
                 setModalOpen={setShowModal}
-                data={measurements}
+                measurements={measurements}
               />
             </div>
           </div>

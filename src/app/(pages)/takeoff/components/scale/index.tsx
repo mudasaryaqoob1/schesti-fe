@@ -7,7 +7,7 @@ import { Select, Radio } from 'antd';
 import type { RadioChangeEvent } from 'antd';
 import { useState } from 'react';
 
-const precision = ['1', '0.1', '0.01', ' 0.001', '0.0001', '0.00001'];
+const precisions = ['1', '0.1', '0.01', ' 0.001', '0.0001', '0.00001'];
 const byPrecision = ['1', '1 / 2', '1 / 4', '1 / 8', '1 / 16', '1 / 32'];
 const meters = ['in', 'cm', 'mm'];
 const secondaryMeters = [
@@ -30,6 +30,8 @@ interface Props {
 const ScaleModal = ({ setModalOpen }: Props) => {
   const [value, setValue] = useState(1);
   const [secMeter, setSecMeter] = useState('');
+  const [meter, setMeter] = useState('');
+  const [precision, setPrecision] = useState('');
 
   const onChange = (e: RadioChangeEvent) => {
     setValue(e.target.value);
@@ -79,7 +81,11 @@ const ScaleModal = ({ setModalOpen }: Props) => {
             <Select className="w-[115px]" defaultValue={1}>
               <Select.Option value={1}>1</Select.Option>
             </Select>
-            <Select className="w-[115px]">
+            <Select
+              value={meter}
+              className="w-[115px]"
+              onChange={(value) => setMeter(value)}
+            >
               {meters.map((item) => (
                 <Select.Option key={item} value={item}>
                   {item}
@@ -103,14 +109,18 @@ const ScaleModal = ({ setModalOpen }: Props) => {
           </div>
           <div className="flex gap-6 items-center">
             <label>Precision:</label>
-            <Select className="w-full">
+            <Select
+              value={precision}
+              className="w-full"
+              onChange={(value) => setPrecision(value)}
+            >
               {secMeter === `in'` || secMeter === `ft' in'`
                 ? byPrecision.map((item) => (
                     <Select.Option key={item} value={item}>
                       {item}
                     </Select.Option>
                   ))
-                : precision.map((item) => (
+                : precisions.map((item) => (
                     <Select.Option key={item} value={item}>
                       {item}
                     </Select.Option>

@@ -9,16 +9,36 @@ import Dynamic from '../dynamic';
 interface Props {
   scale: ScaleLabel;
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  data: Measurements;
+  measurements: Measurements;
 }
 
-const ModalsWrapper: React.FC<Props> = ({ scale, setModalOpen }) => {
+const ModalsWrapper: React.FC<Props> = ({
+  scale,
+  setModalOpen,
+  measurements,
+}) => {
   return (
     <div>
-      <div>{scale === 'length' && <Length setModalOpen={setModalOpen} />}</div>
-      <div>{scale === 'volume' && <Volume setModalOpen={setModalOpen} />}</div>
-      <div>{scale === 'count' && <Count setModalOpen={setModalOpen} />}</div>
-      <div>{scale === 'area' && <Area setModalOpen={setModalOpen} />}</div>
+      <div>
+        {scale === 'length' && (
+          <Length measurements={measurements} setModalOpen={setModalOpen} />
+        )}
+      </div>
+      <div>
+        {scale === 'volume' && (
+          <Volume measurements={measurements} setModalOpen={setModalOpen} />
+        )}
+      </div>
+      <div>
+        {scale === 'count' && (
+          <Count measurements={measurements} setModalOpen={setModalOpen} />
+        )}
+      </div>
+      <div>
+        {scale === 'area' && (
+          <Area measurements={measurements} setModalOpen={setModalOpen} />
+        )}
+      </div>
       <div>
         {scale === 'dynamic' && <Dynamic setModalOpen={setModalOpen} />}
       </div>
