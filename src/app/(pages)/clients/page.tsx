@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useLayoutEffect, useCallback } from 'react';
+import { useEffect, useLayoutEffect, useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Dropdown, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -20,6 +20,9 @@ import {
   fetchCompanyClients,
 } from '@/redux/company/company.thunk';
 import Image from 'next/image';
+import { SearchOutlined } from '@ant-design/icons';
+import { InputComponent } from '@/app/component/customInput/Input';
+import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 
 interface DataType {
   firstName: string;
@@ -58,8 +61,9 @@ const ClientTable = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
-  const clientsData = useSelector(selectClients);
+  const clientsData: IClient[] | null = useSelector(selectClients);
   const companyClientsLoading = useSelector(selectClientsLoading);
+  const [search, setSearch] = useState('');
 
   const token = useSelector(selectToken);
   useLayoutEffect(() => {
@@ -142,7 +146,12 @@ const ClientTable = () => {
       ),
     },
   ];
-
+  const filteredClients = clientsData ? clientsData.filter((client) => {
+    if (!search) {
+      return client;
+    }
+    return client.firstName.toLowerCase().includes(search.toLowerCase()) || client.lastName.toLowerCase().includes(search.toLowerCase()) || client.email?.includes(search);
+  }) : []
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       <div
@@ -153,19 +162,37 @@ const ClientTable = () => {
             title="Client List"
             className="text-graphiteGray"
           />
-          <Button
-            text="Add New client"
-            className="!w-auto "
-            icon="plus.svg"
-            iconwidth={20}
-            iconheight={20}
-            onClick={() => router.push('/clients/create')}
-          />
+          <div className=' flex space-x-3'>
+            <div className="w-96">
+              <InputComponent
+                label=""
+                type="text"
+                placeholder="Search"
+                name="search"
+                prefix={<SearchOutlined />}
+                field={{
+                  type: 'text',
+                  value: search,
+                  onChange: (e: any) => {
+                    setSearch(e.target.value);
+                  }
+                }}
+              />
+            </div>
+            <Button
+              text="Add New client"
+              className="!w-48 "
+              icon="plus.svg"
+              iconwidth={20}
+              iconheight={20}
+              onClick={() => router.push('/clients/create')}
+            />
+          </div>
         </div>
         <Table
           loading={companyClientsLoading}
-          columns={columns}
-          dataSource={clientsData}
+          columns={columns as ColumnsType<IClient>}
+          dataSource={filteredClients}
           pagination={{ position: ['bottomCenter'] }}
         />
       </div>
