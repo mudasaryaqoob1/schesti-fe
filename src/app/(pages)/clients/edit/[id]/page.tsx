@@ -68,6 +68,7 @@ const EditClient = () => {
   }, [id, clientsData]);
 
   const submitHandler = async (values: IClient) => {
+    setIsLoading(true);
     let updateClientBody = {
       firstName: values.firstName,
       lastName: values.lastName,
