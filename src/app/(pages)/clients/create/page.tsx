@@ -133,6 +133,7 @@ const CreateClient = () => {
                     type="number"
                     name="phone"
                     placeholder="Phone number"
+                    min={1}
                   />
                   <FormControl
                     control="input"
