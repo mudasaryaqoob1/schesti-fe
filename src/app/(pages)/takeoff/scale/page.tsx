@@ -89,7 +89,7 @@ export interface Measurements {
   area?: number;
 }
 
-const defaultMeasurements: Measurements = {
+export const defaultMeasurements: Measurements = {
   angle: 0,
   segment: '0',
   volume: 0,
