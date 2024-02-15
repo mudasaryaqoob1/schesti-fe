@@ -8,10 +8,11 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import CustomButton from '../customButton/button';
 import { logout } from '@/redux/authSlices/authSlice';
+import { useRouter } from 'next/navigation';
 
 const Navbar = () => {
   const dispatch = useDispatch<AppDispatch>();
-
+  const router = useRouter();
   const logoutHandler = () => {
     dispatch(logout());
     localStorage.removeItem('schestiToken');
@@ -19,14 +20,14 @@ const Navbar = () => {
   };
   return (
     <nav className="py-3 px-16 md:h-[60px] md:flex flex-col  md:flex-row items-center justify-between w-full bg-primaryGradient">
-      <Link href={'/'} className="cursor-pointer active:scale-105 mb-2 md:mb-0">
+      <div className="cursor-pointer active:scale-105 mb-2 md:mb-0" onClick={() => router.refresh()}>
         <Image
           src={'/logowhite.svg'}
           alt="logo white icon"
           width={80}
           height={20}
         />
-      </Link>
+      </div>
 
       <div className="flex flex-col md:flex-row gap-6 justify-between items-center">
         <div className="flex items-center gap-1">
