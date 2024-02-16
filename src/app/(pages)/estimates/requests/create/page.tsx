@@ -602,8 +602,8 @@ const CreateEstimateRequest = () => {
                                   or drag and drop
                                 </p>
                               </div>
-                              <p className={`text-steelGray ${minHeading}`}>
-                                SVG, PNG, JPG or GIF (max. 800x400px)
+                              <p className={`text-steelGray ${minHeading} text-center`}>
+                                PDF, CSV, SVG, PNG, JPG or GIF (max. 800x400px)
                               </p>
                             </div>
                           </div>
@@ -694,8 +694,8 @@ const CreateEstimateRequest = () => {
                                   or drag and drop
                                 </p>
                               </div>
-                              <p className={`text-steelGray ${minHeading}`}>
-                                SVG, PNG, JPG or GIF (max. 800x400px)
+                              <p className={`text-steelGray ${minHeading} text-center`}>
+                                PDF, CSV, SVG, PNG, JPG or GIF (max. 800x400px)
                               </p>
                             </div>
                           </div>
