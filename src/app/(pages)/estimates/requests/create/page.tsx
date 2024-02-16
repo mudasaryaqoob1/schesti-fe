@@ -423,7 +423,7 @@ const CreateEstimateRequest = () => {
 
                 <div className=" border-2  border-silverGray  rounded-lg shadow-quinarGentleDepth mt-4 p-5">
                   <h3 className="my-4">Upload</h3>
-                  <div className="grid grid-cols-4 gap-4">
+                  <div className="grid lg:grid-cols-4 grid-cols-1 gap-4">
                     <div>
                       <p
                         className={`${senaryHeading} !text-[14px] text-midnightBlue font-popin mb-2`}
@@ -462,8 +462,8 @@ const CreateEstimateRequest = () => {
                                     }
                                   />
 
-                                  <p className="text-[#353535] text-[16px] font-[500] mt-2 truncate">
-                                    {doc?.name}
+                                  <p className="text-[#353535] text-[16px] truncate font-[500] mt-2 ">
+                                    {`${doc?.name.substring(0, 20)}....`}
                                   </p>
                                   <p className="text-[#989692] text-[12px] font-[400] my-2">
                                     {byteConverter(doc?.size, 'KB').size} KB
