@@ -346,6 +346,7 @@ const CreateEstimateRequest = () => {
                       label="Phone Number"
                       type="number"
                       name="phone"
+                      min={1}
                       placeholder="Phone number"
                     />
                   </div>
