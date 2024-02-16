@@ -496,14 +496,13 @@ const CreateEstimateRequest = () => {
                                 </div>
                                 <div className="flex gap-2">
 
-                                  <label
-                                    htmlFor="drawingDocuments"
+                                  <p
                                     className={twMerge(
                                       `${senaryHeading} !text-[14px] text-RoyalPurple font-semibold cursor-pointer`
                                     )}
                                   >
                                     Click to Upload
-                                  </label>
+                                  </p>
                                   <p className={`text-steelGray ${minHeading}`}>
                                     or drag and drop
                                   </p>
@@ -571,7 +570,7 @@ const CreateEstimateRequest = () => {
                             className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg `}
                           >
                             <Upload
-                              name="otherDocuments"
+                              beforeUpload={() => false}
                               id="takeoffReports"
                               onChange={takeoffReportsUploadHandler}
                               accept="application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
@@ -590,14 +589,13 @@ const CreateEstimateRequest = () => {
                                   />
                                 </div>
                                 <div className="flex gap-2">
-                                  <label
-                                    htmlFor="takeoffReports"
+                                  <p
                                     className={twMerge(
                                       `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
                                     )}
                                   >
                                     Click to Upload
-                                  </label>
+                                  </p>
                                   <p className={`text-steelGray ${minHeading}`}>
                                     or drag and drop
                                   </p>
@@ -664,7 +662,7 @@ const CreateEstimateRequest = () => {
                             className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg `}
                           >
                             <Upload
-                              name="otherDocuments"
+
                               id="otherDocuments"
                               onChange={otherDocumentsUploadHandler}
                               accept="application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
@@ -682,14 +680,13 @@ const CreateEstimateRequest = () => {
                                   />
                                 </div>
                                 <div className="flex gap-2">
-                                  <label
-                                    htmlFor="otherDocuments"
+                                  <p
                                     className={twMerge(
                                       `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
                                     )}
                                   >
                                     Click to Upload
-                                  </label>
+                                  </p>
                                   <p className={`text-steelGray ${minHeading}`}>
                                     or drag and drop
                                   </p>
