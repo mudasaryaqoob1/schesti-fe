@@ -43,10 +43,6 @@ const items: MenuProps['items'] = [
     label: <p>Edit subcontractor details</p>,
   },
   {
-    key: 'createNewInvoice',
-    label: <p>Request for estimate</p>,
-  },
-  {
     key: 'deleteSubcontractor',
     label: <p>Delete</p>,
   },
