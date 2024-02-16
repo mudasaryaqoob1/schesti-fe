@@ -44,8 +44,8 @@ const clientInfoSchema: any = Yup.object({
     .max(14, 'Phone number must be at most 14 characters')
     .required('Phone number is required'),
   projectName: Yup.string().required('Project name is required!'),
-  leadSource: Yup.string().required('Lead source is required!'),
-  projectValue: Yup.string().required('Project value is required!'),
+  leadSource: Yup.number().required('Lead source is required!'),
+  projectValue: Yup.number().required('Project value is required!'),
   projectInformation: Yup.string().required('Project info is required!'),
   salePerson: Yup.string().required('Sale person is required!'),
   estimator: Yup.string().required('Estimator is required!'),
@@ -370,7 +370,7 @@ const CreateEstimateRequest = () => {
                       <FormControl
                         control="input"
                         label="Lead Source Value"
-                        type="text"
+                        type="number"
                         name="leadSource"
                         placeholder="Lead Source"
                       />
@@ -379,7 +379,7 @@ const CreateEstimateRequest = () => {
                       <FormControl
                         control="input"
                         label="Project Value"
-                        type="text"
+                        type="number"
                         name="projectValue"
                         placeholder="Project Value"
                       />
