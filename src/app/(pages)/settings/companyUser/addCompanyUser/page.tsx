@@ -60,7 +60,7 @@ const AddNewUser = () => {
     lastName: lastName || '',
     email: user?.email || '',
     roles: user?.roles?.[0] || '',
-    brandingColor: user.brandingColor || '',
+    brandingColor: user?.brandingColor || '',
   };
   const submitHandler = async (values: IUser, { resetForm }: any) => {
     setisLoading(true);
