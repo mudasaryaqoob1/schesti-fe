@@ -13,6 +13,8 @@ import {
   selectClientsLoading,
 } from '@/redux/company/companySelector';
 import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
+import Description from '@/app/component/description';
+import SecondaryHeading from '@/app/component/headings/Secondary';
 
 interface Props {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -83,8 +85,27 @@ const ExistingClient = ({ setModalOpen, onSelectClient }: Props) => {
             />
           </div>
 
-          {!clientsData || clientLoading ? (
+          {clientLoading ? (
             <h6 className="text-center">Loading...</h6>
+          ) : !clientsData || clientsData.length === 0 ? (
+            <div className="max-w-[500px] flex flex-col items-center p-4">
+              <div className="bg-lightGray p-12 rounded-full">
+                <Image
+                  src={'/estimateempty.svg'}
+                  alt="create request icon"
+                  width={100}
+                  height={100}
+                />
+              </div>
+              <SecondaryHeading
+                title={"Existing Clients"}
+                className="text-obsidianBlack2 mt-8"
+              />
+              <Description
+                title={"You don't have any clients yet."}
+                className="text-steelGray text-center font-normal"
+              />
+            </div>
           ) : (
             clientsData.map(({ _id, firstName }: any, i: number) => {
               return (
