@@ -573,7 +573,7 @@ const CreateEstimateRequest = () => {
                               beforeUpload={() => false}
                               id="takeoffReports"
                               onChange={takeoffReportsUploadHandler}
-                              accept="application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                              accept=".png,.jpg,.jpeg,.svg,application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                             >
                               <div
                                 className={`px-6 py-4 flex flex-col items-center gap-3 `}
@@ -665,7 +665,7 @@ const CreateEstimateRequest = () => {
 
                               id="otherDocuments"
                               onChange={otherDocumentsUploadHandler}
-                              accept="application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                              accept=".png,.jpg,.jpeg,.svg,application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                             >
 
                               <div
