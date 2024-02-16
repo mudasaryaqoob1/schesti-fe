@@ -25,6 +25,7 @@ const ExistingClient = ({ setModalOpen, onSelectClient }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const clientLoading = useSelector(selectClientsLoading);
   const clientsData = useSelector(selectClients);
+  const [search, setSearch] = useState('');
   const [selectedClientId, setSelectedClientId] = useState(
     clientsData?.[0]?._id
   );
@@ -67,6 +68,8 @@ const ExistingClient = ({ setModalOpen, onSelectClient }: Props) => {
             id=""
             placeholder="Search..."
             className="w-full h-full bg-transparent outline-none"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
           <Image
             src={'/search.svg'}
@@ -107,7 +110,12 @@ const ExistingClient = ({ setModalOpen, onSelectClient }: Props) => {
               />
             </div>
           ) : (
-            clientsData.map(({ _id, firstName }: any, i: number) => {
+            (clientsData as IClient[]).filter(client => {
+              if (!search) {
+                return client;
+              }
+              return client.firstName.toLowerCase().includes(search.toLowerCase())
+            }).map(({ _id, firstName }: any, i: number) => {
               return (
                 <Fragment key={i}>
                   <div className="border-b-lightGrayishBlue p-4 flex gap-4 items-center bg-snowWhite border">
