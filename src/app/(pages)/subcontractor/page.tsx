@@ -26,6 +26,7 @@ import { ISubcontractor } from '@/app/interfaces/companyInterfaces/subcontractor
 import ModalComponent from '@/app/component/modal';
 import { DeleteContent } from '@/app/component/delete/DeleteContent';
 import { toast } from 'react-toastify';
+import Head from 'next/head';
 
 export interface DataType {
   company: string;
@@ -148,6 +149,9 @@ const SubcontractTable = () => {
 
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
+      <Head>
+        <title>Schesti - Subcontractor</title>
+      </Head>
       {selectedSubcontractor && showDeleteModal ? <ModalComponent open={showDeleteModal} setOpen={handleCloseModal} width='30%'>
         <DeleteContent
           onClick={async () => {
