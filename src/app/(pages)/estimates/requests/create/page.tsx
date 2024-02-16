@@ -44,7 +44,7 @@ const clientInfoSchema: any = Yup.object({
     .max(14, 'Phone number must be at most 14 characters')
     .required('Phone number is required'),
   projectName: Yup.string().required('Project name is required!'),
-  leadSource: Yup.string().required('Load source is required!'),
+  leadSource: Yup.string().required('Lead source is required!'),
   projectValue: Yup.string().required('Project value is required!'),
   projectInformation: Yup.string().required('Project info is required!'),
   salePerson: Yup.string().required('Sale person is required!'),
