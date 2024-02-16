@@ -32,6 +32,7 @@ import { fetchUsers } from '@/redux/userSlice/user.thunk';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
 import { byteConverter } from '@/app/utils/byteConverter';
+import { Upload, type UploadProps } from 'antd';
 
 const clientInfoSchema: any = Yup.object({
   clientName: Yup.string().required('Client is required!'),
@@ -234,13 +235,13 @@ const CreateEstimateRequest = () => {
       setOtherDocuments((prev: any) => [...prev, documents[i]]);
     }
   };
-  const drawingsDocumentsUplodadHandler = (e: any) => {
+  const drawingsDocumentsUplodadHandler: UploadProps['onChange'] = ({ fileList }) => {
     setuploadDocumentsError('');
-    const documents = e.target.files;
+    const documents = fileList;
     if (!documents[0]) {
       return;
     }
-    if (byteConverter(documents[0].size, 'MB').size > 10) {
+    if (documents[0].size && byteConverter(documents[0].size, 'MB').size > 10) {
       setuploadDocumentsError(
         'Cannot upload document more then 10 mb of size.'
       );
@@ -476,43 +477,43 @@ const CreateEstimateRequest = () => {
                           <div
                             className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg mb-3`}
                           >
-                            <div
-                              className={`px-6 py-4 flex flex-col items-center gap-3 `}
+                            <Upload
+                              onChange={drawingsDocumentsUplodadHandler}
+                              accept="image/jpeg,image/png,application/pdf "
+                              name="drawingDocuments"
+                              id="drawingDocuments"
                             >
-                              <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
-                                <Image
-                                  src={'/uploadcloud.svg'}
-                                  alt="upload icon"
-                                  width={20}
-                                  height={20}
-                                />
-                              </div>
-                              <div className="flex gap-2">
-                                <label
-                                  htmlFor="drawingDocuments"
-                                  className={twMerge(
-                                    `${senaryHeading} !text-[14px] text-RoyalPurple font-semibold cursor-pointer`
-                                  )}
-                                >
-                                  Click to Upload
-                                </label>
-                                <input
-                                  type="file"
-                                  name="drawingDocuments"
-                                  id="drawingDocuments"
-                                  className="hidden"
-                                  accept="image/jpeg,image/png,application/pdf "
-                                  onChange={drawingsDocumentsUplodadHandler}
-                                />
+                              <div
+                                className={`px-6 py-4 flex flex-col items-center gap-3 `}
+                              >
+                                <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
+                                  <Image
+                                    src={'/uploadcloud.svg'}
+                                    alt="upload icon"
+                                    width={20}
+                                    height={20}
+                                  />
+                                </div>
+                                <div className="flex gap-2">
+
+                                  <label
+                                    htmlFor="drawingDocuments"
+                                    className={twMerge(
+                                      `${senaryHeading} !text-[14px] text-RoyalPurple font-semibold cursor-pointer`
+                                    )}
+                                  >
+                                    Click to Upload
+                                  </label>
+                                  <p className={`text-steelGray ${minHeading}`}>
+                                    or drag and drop
+                                  </p>
+                                </div>
+
                                 <p className={`text-steelGray ${minHeading}`}>
-                                  or drag and drop
+                                  SVG, PNG, JPG or PDF (max. 800x400px)
                                 </p>
                               </div>
-
-                              <p className={`text-steelGray ${minHeading}`}>
-                                SVG, PNG, JPG or PDF (max. 800x400px)
-                              </p>
-                            </div>
+                            </Upload>
                           </div>
                         )}
                       </>
