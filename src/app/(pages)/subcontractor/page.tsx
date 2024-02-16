@@ -97,7 +97,7 @@ const SubcontractTable = () => {
       dataIndex: 'email',
     },
     {
-      title: 'Phone number',
+      title: 'Phone Number',
       dataIndex: 'phone',
     },
     {
