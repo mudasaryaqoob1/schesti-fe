@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useLayoutEffect, useCallback } from 'react';
+import { useEffect, useLayoutEffect, useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Dropdown, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -22,6 +22,10 @@ import {
   fetchCompanySubcontractors,
 } from '@/redux/company/company.thunk';
 import Image from 'next/image';
+import { ISubcontractor } from '@/app/interfaces/companyInterfaces/subcontractor.interface';
+import ModalComponent from '@/app/component/modal';
+import { DeleteContent } from '@/app/component/delete/DeleteContent';
+import { toast } from 'react-toastify';
 
 export interface DataType {
   company: string;
@@ -36,11 +40,11 @@ export interface DataType {
 const items: MenuProps['items'] = [
   {
     key: 'editSubcontractor',
-    label: <a href="#">Edit subcontractor details</a>,
+    label: <p>Edit subcontractor details</p>,
   },
   {
     key: 'createNewInvoice',
-    label: <a href="#">Request for estimate</a>,
+    label: <p>Request for estimate</p>,
   },
   {
     key: 'deleteSubcontractor',
@@ -56,6 +60,8 @@ const SubcontractTable = () => {
 
   const subcontractersData = useSelector(selectSubcontracters);
   const subcontractersLoading = useSelector(selectSubcontractLoading);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedSubcontractor, setSelectedSubcontractor] = useState<ISubcontractor | null>(null);
 
   useLayoutEffect(() => {
     if (token) {
@@ -73,7 +79,8 @@ const SubcontractTable = () => {
 
   const handleDropdownItemClick = async (key: string, subcontractor: any) => {
     if (key == 'deleteSubcontractor') {
-      await dispatch(deleteSubcontractor(subcontractor._id));
+      setSelectedSubcontractor(subcontractor as ISubcontractor);
+      setShowDeleteModal(true);
     } else if (key == 'editSubcontractor') {
       router.push(`/subcontractor/edit/${subcontractor._id}`);
     }
@@ -138,9 +145,23 @@ const SubcontractTable = () => {
     },
   ];
 
+  function handleCloseModal() {
+    setShowDeleteModal(false);
+    setSelectedSubcontractor(null);
+  }
+
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
-
+      {selectedSubcontractor && showDeleteModal ? <ModalComponent open={showDeleteModal} setOpen={handleCloseModal} width='30%'>
+        <DeleteContent
+          onClick={async () => {
+            await dispatch(deleteSubcontractor(selectedSubcontractor._id));
+            toast.success("Subcontractor deleted successfully");
+            handleCloseModal();
+          }}
+          onClose={handleCloseModal}
+        />
+      </ModalComponent> : null}
       <div
         className={`${bg_style} p-5 border border-solid border-silverGray`}
       >
