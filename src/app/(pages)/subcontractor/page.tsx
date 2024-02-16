@@ -82,13 +82,13 @@ const SubcontractTable = () => {
 
   const columns: ColumnsType<DataType> = [
     {
-      title: 'Company',
-      dataIndex: 'name',
-    },
-    {
       title: 'Company Rep',
       dataIndex: 'companyRep',
       ellipsis: true,
+    },
+    {
+      title: 'Company',
+      dataIndex: 'name',
     },
     {
       title: 'Email',
