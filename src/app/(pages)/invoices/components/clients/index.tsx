@@ -164,13 +164,13 @@ export function Clients() {
           <ModalComponent
             open={showModal}
             setOpen={setShowModal}
-            title="Invoice Details"
+            title="Client Invoice"
             width="40%"
           >
             <div className="bg-white border border-solid border-elboneyGray rounded-[4px] z-50">
               <div className="flex px-6 py-2.5 justify-between bg-mistyWhite">
                 <TertiaryHeading
-                  title="Invoice Details"
+                  title="Client Invoice"
                   className="text-graphiteGray"
                 />
                 <CloseOutlined
