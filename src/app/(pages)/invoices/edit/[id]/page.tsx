@@ -14,7 +14,7 @@ import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
 import Table, { type ColumnType } from 'antd/es/table';
 import ModalComponent from '@/app/component/modal';
-import ExistingSubContractor from './ExistingSubContractors';
+import ExistingSubContractor from './../../components/ExistingSubContractors';
 import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import { InputComponent } from '@/app/component/customInput/Input';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
