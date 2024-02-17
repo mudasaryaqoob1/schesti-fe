@@ -5,14 +5,13 @@ import Image from 'next/image';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
-import { AppDispatch } from '@/redux/store';
+import { AppDispatch, RootState } from '@/redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCompanySubcontractors } from '@/redux/company/company.thunk';
 import {
   selectSubcontractLoading,
-  selectSubcontracters,
 } from '@/redux/company/companySelector';
-import { ISubcontract } from '@/app/interfaces/companyInterfaces/subcontractor.interface';
+import { ISubcontract, ISubcontractor } from '@/app/interfaces/companyInterfaces/subcontractor.interface';
 
 interface Props {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -25,7 +24,7 @@ const ExistingSubContractor = ({
 }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const subcontractLoading = useSelector(selectSubcontractLoading);
-  const subcontractData = useSelector(selectSubcontracters);
+  const subcontractData = useSelector((state: RootState) => state.companySubContractor.data);
   const [selectedSubcontractId, setSelectedSubcontractId] = useState(
     subcontractData?.[0]?._id
   );
@@ -125,11 +124,12 @@ const ExistingSubContractor = ({
         <div>
           <Button
             text="Add Subcontractor"
+            disabled={!selectedSubcontractId}
             onClick={() => {
               onSelectSubcontract(
-                subcontractData.find(
+                subcontractData!.find(
                   ({ _id }: any) => _id === selectedSubcontractId
-                )
+                ) as unknown as ISubcontractor
               );
               setModalOpen(false);
             }}

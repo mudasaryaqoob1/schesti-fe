@@ -38,9 +38,9 @@ export const subcontractorSlice = createSlice({
     builder.addCase(deleteSubcontractor.fulfilled, (state, action) => {
       console.log(action.payload);
       state.loading = false;
-      state.data = state.data.filter(
+      state.data = state.data ? state.data.filter(
         (item: any) => item?._id !== action.payload.data.client._id
-      );
+      ) : null;
     });
 
     builder.addCase(deleteSubcontractor.rejected, (state, action) => {

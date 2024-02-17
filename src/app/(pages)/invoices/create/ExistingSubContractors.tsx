@@ -25,9 +25,9 @@ const ExistingSubContractor = ({
 }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const subcontractLoading = useSelector(selectSubcontractLoading);
-  const subcontractData = useSelector((state: RootState) => state.invoices.data);
+  const subcontractData = useSelector((state: RootState) => state.companySubContractor?.data);
   const [selectedSubcontractId, setSelectedSubcontractId] = useState(
-    subcontractData?.[0]?._id
+    subcontractData ? subcontractData[0]._id : ''
   );
 
   const memoizedSetPerson = useCallback(async () => {
@@ -92,7 +92,7 @@ const ExistingSubContractor = ({
             title='Existing Subcontractors'
             description='No Subcontractors Found'
           /> : (
-            subcontractData.map(({ _id, name }: any, i: number) => {
+            subcontractData.map(({ _id, name }, i: number) => {
               return (
                 <Fragment key={i}>
                   <div className="border-b-lightGrayishBlue p-4 flex gap-4 items-center bg-snowWhite border">
@@ -128,9 +128,10 @@ const ExistingSubContractor = ({
         <div>
           <Button
             text="Add Subcontractor"
+            disabled={!selectedSubcontractId}
             onClick={() => {
               onSelectSubcontract(
-                subcontractData.find(
+                subcontractData!.find(
                   ({ _id }) => _id === selectedSubcontractId
                 ) as unknown as ISubcontractor
               );

@@ -83,7 +83,7 @@ const SubcontractTable = () => {
     }
   };
 
-  const columns: ColumnsType<DataType> = [
+  const columns: ColumnsType<ISubcontractor> = [
     {
       title: 'Company Rep',
       dataIndex: 'companyRep',
@@ -182,7 +182,7 @@ const SubcontractTable = () => {
         <Table
           loading={subcontractersLoading}
           columns={columns}
-          dataSource={subcontractersData}
+          dataSource={subcontractersData ? subcontractersData : undefined}
           pagination={{ position: ['bottomCenter'] }}
         />
       </div>
