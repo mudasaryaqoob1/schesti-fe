@@ -17,7 +17,7 @@ import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import { ConfigProvider, Divider } from 'antd';
 import ModalComponent from '@/app/component/modal';
-import ExistingSubContractor from './ExistingSubContractors';
+import ExistingSubContractor from '../components/ExistingSubContractors';
 import { useRouter } from 'next/navigation';
 import { InputComponent } from '@/app/component/customInput/Input';
 import {

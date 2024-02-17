@@ -26,6 +26,8 @@ const ExistingSubContractor = ({
   const dispatch = useDispatch<AppDispatch>();
   const subcontractLoading = useSelector(selectSubcontractLoading);
   const subcontractData = useSelector((state: RootState) => state.companySubContractor?.data);
+  const [search, setSearch] = useState('');
+
   const [selectedSubcontractId, setSelectedSubcontractId] = useState(
     subcontractData ? subcontractData[0]._id : ''
   );
@@ -68,6 +70,8 @@ const ExistingSubContractor = ({
             id=""
             placeholder="Search..."
             className="w-full h-full bg-transparent outline-none"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
           <Image
             src={'/search.svg'}
@@ -92,7 +96,12 @@ const ExistingSubContractor = ({
             title='Existing Subcontractors'
             description='No Subcontractors Found'
           /> : (
-            subcontractData.map(({ _id, name }, i: number) => {
+            subcontractData.filter((contractor) => {
+              if (!search) {
+                return contractor;
+              }
+              return contractor.name.toLowerCase().includes(search.toLowerCase());
+            }).map(({ _id, name }, i: number) => {
               return (
                 <Fragment key={i}>
                   <div className="border-b-lightGrayishBlue p-4 flex gap-4 items-center bg-snowWhite border">
