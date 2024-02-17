@@ -265,15 +265,12 @@ const CreateInvoice = () => {
                   setModalOpen={setShowModal}
                   onSelectSubcontract={({
                     address,
-                    companyRep,
                     email,
                     name,
                     phone,
                   }) => {
                     setFieldValue('subContractorAddress', address);
-                    setFieldValue('subContractorCompanyName', companyRep);
-                    setFieldValue('subContractorFirstName', name);
-                    console.log(phone);
+                    setFieldValue('subContractorCompanyName', name);
                     setFieldValue('subContractorEmail', email);
                     setFieldValue('subContractorPhoneNumber', Number(phone));
                   }}
