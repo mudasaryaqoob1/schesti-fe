@@ -326,6 +326,7 @@ const CreateInvoice = () => {
                     type="number"
                     name="subContractorPhoneNumber"
                     placeholder="Enter phone number"
+                    min={0}
                   />
 
                   <FormControl
