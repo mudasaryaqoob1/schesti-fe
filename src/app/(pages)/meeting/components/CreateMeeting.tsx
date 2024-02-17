@@ -16,6 +16,7 @@ import { InputComponent } from '@/app/component/customInput/Input';
 import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import { addNewMeetingAction } from '@/redux/meeting/meeting.slice';
 import Description from '@/app/component/description';
+import { SelectComponent } from '@/app/component/customSelect/Select.component';
 
 type Props = {
   showModal: boolean;
@@ -24,7 +25,7 @@ type Props = {
 
 const CreateMeetingSchema = Yup.object().shape({
   topic: Yup.string().required('Topic is required'),
-  email: Yup.string().email().required('Email is required'),
+  email: Yup.array().min(1).of(Yup.string().email("Invalid email\n").required("Email is required")).required('Invite is required'),
   startDate: Yup.date().required('Start Time is required'),
 });
 
@@ -34,7 +35,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
   const formik = useFormik({
     initialValues: {
       topic: '',
-      email: '',
+      email: undefined,
       startDate: undefined,
     },
     validationSchema: CreateMeetingSchema,
@@ -47,7 +48,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
           endDate: dayjs(values.startDate)
             .add(40, 'minutes')
             .format('YYYY-MM-DDTHH:mm:ss'),
-          invitees: [values.email],
+          invitees: values.email as unknown as string[],
           roomName,
           link: `${process.env.NEXT_PUBLIC_APP_URL}/meeting/${roomName}`,
           topic: values.topic,
@@ -66,7 +67,6 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
         });
     },
   });
-
   // const disabledDate: RangePickerProps['disabledDate'] = (current) => {
   //   const isPreviousDay = current < dayjs().add(-1, 'days');
   //   const isPreviousHour = current < dayjs().add(-1, 'hour');
@@ -108,16 +108,18 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
                 onBlur: formik.handleBlur,
               }}
             />
-            <InputComponent
+            <SelectComponent
               label="Invite"
-              type="email"
               placeholder="Client Email Address"
               name="email"
-              hasError={formik.touched.email && !!formik.errors.email}
+              hasError={formik.touched.email && Boolean(formik.errors.email)}
+              errorMessage={formik.errors.email}
               field={{
+                mode: "tags",
                 value: formik.values.email,
-                onChange: formik.handleChange,
+                onChange: value => formik.setFieldValue("email", value),
                 onBlur: formik.handleBlur,
+                status: formik.touched.email && Boolean(formik.errors.email) ? "error" : undefined
               }}
             />
             <DateInputComponent

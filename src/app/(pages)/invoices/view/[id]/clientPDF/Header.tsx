@@ -22,6 +22,7 @@ type Props = {
   logo?: string;
   brandingColor?: string;
 };
+const defaultLogo = process.env.NEXT_PUBLIC_SCHESTI_IMAGE_URL;
 export function PdfHeader({ logo, brandingColor }: Props) {
   return (
     <View
@@ -32,7 +33,7 @@ export function PdfHeader({ logo, brandingColor }: Props) {
       fixed
     >
       <Image
-        src={logo ? logo : './logo.svg'}
+        src={logo ? logo : defaultLogo}
         style={{
           width: 40,
           height: 40,

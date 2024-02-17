@@ -1,12 +1,59 @@
+'use client';
 import Image from 'next/image';
 import { InputComponent } from '../component/customInput/Input';
 import { LandingNavbar } from '../component/navbar/LandingNavbar';
-import { SelectComponent } from '../component/customSelect/Select.component';
-import { ConfigProvider } from 'antd';
 import CustomButton from '../component/customButton/button';
 import LandingFooter from '../component/footer/LandingFooter';
+import { GatewayToEfficiency } from '../component/landing/GatewayToEfficiency';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { contactService } from '../services/contact.service';
+import { toast } from 'react-toastify';
+import { AxiosError } from 'axios';
+import { IResponseInterface } from '../interfaces/api-response.interface';
+import TextArea from 'antd/es/input/TextArea';
+import { useState } from 'react';
+
+const GetInTouchSchema = Yup.object().shape({
+  name: Yup.string()
+    .min(2, 'Too Short!')
+    .max(50, 'Too Long!')
+    .required('Name is required'),
+  email: Yup.string().email('Invalid email').required('Email is required'),
+  phone: Yup.string().required('Phone number is required'),
+  message: Yup.string()
+    .min(2, 'Too Short!')
+    .max(500, 'Too Long!')
+    .required('Message is required'),
+});
 
 export default function ContactPage() {
+  const [loading, setLoading] = useState(false);
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      email: '',
+      phone: '',
+      message: '',
+    },
+    validationSchema: GetInTouchSchema,
+    onSubmit: (values) => {
+      setLoading(true);
+      contactService
+        .httpSendContactInfoToClient(values)
+        .then((res) => {
+          if (res.statusCode === 201) {
+            formik.resetForm();
+            toast.success(res.message);
+          }
+          setLoading(false);
+        })
+        .catch(({ response }: AxiosError<IResponseInterface>) => {
+          toast.error(response?.data?.message || 'Something went wrong');
+          setLoading(false);
+        });
+    },
+  });
   return (
     <section>
       <main
@@ -93,13 +140,27 @@ export default function ContactPage() {
           </div>
 
           {/* Second Column */}
-          <div className="flex flex-col justify-evenly">
+          <form
+            onSubmit={formik.handleSubmit}
+            className="flex flex-col justify-evenly"
+          >
             <InputComponent
               label="Name"
               placeholder="Enter your name"
               name="name"
               type="text"
               inputStyle="!bg-[#D0D5DD32]"
+              field={{
+                value: formik.values.name,
+                onChange: (e) => {
+                  formik.handleChange(e);
+                },
+                onBlur: (e) => {
+                  formik.handleBlur(e);
+                },
+              }}
+              hasError={formik.touched.name && Boolean(formik.errors.name)}
+              errorMessage={formik.errors.name}
             />
             <InputComponent
               label="Email"
@@ -107,85 +168,72 @@ export default function ContactPage() {
               name="email"
               type="email"
               inputStyle="!bg-[#D0D5DD32]"
+              field={{
+                value: formik.values.email,
+                onChange: (e) => {
+                  formik.handleChange(e);
+                },
+                onBlur: (e) => {
+                  formik.handleBlur(e);
+                },
+              }}
+              hasError={formik.touched.email && Boolean(formik.errors.email)}
+              errorMessage={formik.errors.email}
             />
             <InputComponent
               label="Phone number"
               placeholder="Enter your phone"
               name="phone"
-              type="number"
-              inputStyle="!bg-[#D0D5DD32]"
-            />
-            <InputComponent
-              label="Company"
-              placeholder="Enter company name"
-              name="company"
               type="text"
               inputStyle="!bg-[#D0D5DD32]"
-            />
-            <ConfigProvider
-              theme={{
-                components: {
-                  Select: {
-                    colorBgContainer: '#D0D5DD32',
-                  },
+              field={{
+                value: formik.values.phone,
+                onChange: (e) => {
+                  formik.handleChange(e);
+                },
+                onBlur: (e) => {
+                  formik.handleBlur(e);
                 },
               }}
-            >
-              <SelectComponent
-                label="Number of employees"
-                name="employees"
-                placeholder="Select number of employees"
-                field={{
-                  options: [
-                    { label: '1-10', value: '1-10' },
-                    { label: '11-50', value: '11-50' },
-                    { label: '51-200', value: '51-200' },
-                  ],
-                  size: 'large',
-                }}
+              hasError={formik.touched.phone && Boolean(formik.errors.phone)}
+              errorMessage={formik.errors.phone}
+            />
+            <div className="mt-1">
+              <TextArea
+                placeholder="Message"
+                name="message"
+                className={`!bg-[#D0D5DD32]`}
+                value={formik.values.message}
+                onBlur={formik.handleBlur}
+                onChange={formik.handleChange}
+                rows={10}
+                status={
+                  formik.touched.message && Boolean(formik.errors.message)
+                    ? 'error'
+                    : undefined
+                }
               />
-            </ConfigProvider>
+              <p className="text-red-500 text-xs mt-1">
+                {formik.touched.message && formik.errors.message
+                  ? formik.errors.message
+                  : null}
+              </p>
+            </div>
             <p className="mt-[11px] text-[#475467] text-[14px] leading-[34px] font-normal">
               By completing and submitting the form, I acknowledge Wrike’s
               Privacy Policy.
             </p>
             <CustomButton
+              type="submit"
               text="Get in touch"
               className="!rounded-full !w-48 self-end !bg-[#7138DF]"
+              isLoading={loading}
             />
-          </div>
+          </form>
         </div>
       </div>
 
-      <div
-        style={{
-          background: 'linear-gradient(180deg, #8449EB 0%, #6A56F6 100%)',
-        }}
-        className="mt-20"
-      >
-        <div className="px-[200px] py-8">
-          <div>
-            <div className="mt-4 space-y-7">
-              <div>
-                <h1 className="text-white text-center text-[40px] leading-[60px]">
-                  Schesti: Your Gateway to Unmatched Efficiency
-                </h1>
-                <p className="text-white pt-[13px] text-[20px] leading-[38px]  text-center w-[924px] mx-auto">
-                  Empower Your Projects with Schesti: Your Comprehensive
-                  Solution for Achieving Exceptional Efficiency in Field Service
-                  Excellence
-                </p>
-              </div>
-              <div className="flex mt-[42px] justify-center space-x-4">
-                <CustomButton
-                  text="Get start with Schesti"
-                  className="!rounded-full !bg-white !w-48 !text-[#8449EB]"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <GatewayToEfficiency />
 
       <LandingFooter />
     </section>

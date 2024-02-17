@@ -30,7 +30,7 @@ export type RootState = {
   companySetupCategory: any;
   companySetupSubcategory: any;
   materials: any;
-  invoices: any;
+  invoices: typeof invoiceReducer;
   clientInvoices: typeof clientInvoiceReducer;
   meetings: typeof meetingReducer;
 };

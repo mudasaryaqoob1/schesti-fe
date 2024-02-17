@@ -1,8 +1,8 @@
 'use client';
 import type { ColumnsType } from 'antd/es/table';
-import { Dropdown, Table, type MenuProps, Tag, Drawer } from 'antd';
+import { Dropdown, Table, type MenuProps, Tag, Drawer, Modal } from 'antd';
 import { useRouter } from 'next/navigation';
-import { SearchOutlined } from '@ant-design/icons';
+import { ExclamationCircleFilled, SearchOutlined } from '@ant-design/icons';
 
 import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
@@ -14,10 +14,6 @@ import {
 } from '@/redux/invoice/invoice.thunk';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
-import {
-  selectInvoices,
-  selectInvoicesLoading,
-} from '@/redux/invoice/invoice.selector';
 import type { IInvoice } from '@/app/interfaces/invoices.interface';
 import Image from 'next/image';
 import moment from 'moment';
@@ -29,12 +25,17 @@ import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface
 export function Contractors() {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const subcontractersInvoices = useSelector(selectInvoices);
-  const subcontractersInvoicesLoading = useSelector(selectInvoicesLoading);
+  const subcontractersInvoices = useSelector(
+    (state: RootState) => state.invoices.data
+  );
+  const subcontractersInvoicesLoading = useSelector(
+    (state: RootState) => state.invoices.loading
+  );
   const [selectedInvoice, setSelectedInvoice] = useState<IInvoice | null>(null);
   const auth = useSelector((state: RootState) => state.auth);
   const user = auth.user?.user as IUser | undefined;
   const [pdfInstance, updatePdfInstance] = usePDF({ document: undefined });
+  const [search, setSearch] = useState('');
 
   const fetchSubcontactorsInvoices = useCallback(async () => {
     await dispatch(fetchSubcontractorInvoices({}));
@@ -78,7 +79,18 @@ export function Contractors() {
     if (key === 'editInvoice') {
       router.push(`/invoices/edit/${record._id}`);
     } else if (key === 'delete') {
-      await dispatch(deleteContractorInvoiceRequest(record._id));
+      Modal.confirm({
+        title: 'Are you sure delete this invoice?',
+        icon: <ExclamationCircleFilled />,
+        okText: 'Yes',
+        okType: 'danger',
+        style: { backgroundColor: 'white' },
+        cancelText: 'No',
+        async onOk() {
+          await dispatch(deleteContractorInvoiceRequest(record._id));
+        },
+        onCancel() {},
+      });
     } else if (key === 'view') {
       router.push(`/invoices/view/${record._id}`);
     } else if (key === 'collectPayments') {
@@ -87,8 +99,10 @@ export function Contractors() {
   }
   const columns: ColumnsType<IInvoice> = [
     {
-      title: 'Invoice #',
-      dataIndex: 'invoiceNumber',
+      title: 'Invoice Number',
+      dataIndex: 'projectName',
+      width: 300,
+      filterSearch: true,
     },
     {
       title: 'Project Name',
@@ -176,6 +190,15 @@ export function Contractors() {
       ),
     },
   ];
+
+  const filteredData = subcontractersInvoices
+    ? subcontractersInvoices.filter((invoice) => {
+        if (search === '') {
+          return invoice;
+        }
+        return invoice.projectName.toLowerCase().includes(search.toLowerCase());
+      })
+    : [];
   return (
     <div className="w-full mb-4">
       <div className="flex justify-between flex-wrap items-center md:flex-nowrap mb-2">
@@ -217,6 +240,10 @@ export function Contractors() {
               prefix={<SearchOutlined />}
               field={{
                 type: 'text',
+                value: search,
+                onChange: (e) => {
+                  setSearch(e.target.value);
+                },
               }}
             />
           </div>
@@ -234,7 +261,7 @@ export function Contractors() {
       <Table
         loading={subcontractersInvoicesLoading}
         columns={columns}
-        dataSource={subcontractersInvoices}
+        dataSource={filteredData}
         bordered
         pagination={{ position: ['bottomCenter'] }}
       />

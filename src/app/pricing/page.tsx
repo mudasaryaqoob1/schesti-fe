@@ -1,9 +1,7 @@
 'use client';
-import Image from 'next/image';
 import { LandingNavbar } from '../component/navbar/LandingNavbar';
 import ToggleBtn from '@/app/(pages)/settings/plans/oldSubscriptions/components/toggleBtn';
 import SwitchBtn from '@/app/(pages)/settings/plans/oldSubscriptions/components/switchbtn';
-import CustomButton from '../component/customButton/white';
 import LandingFooter from '../component/footer/LandingFooter';
 import { Collapse, ConfigProvider, Skeleton, theme } from 'antd';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
@@ -17,10 +15,11 @@ import {
 } from '@/redux/pricingPlanSlice/pricingPlan.selector';
 import { fetchPricingPlan } from '@/redux/pricingPlanSlice/pricingPlan.thunk';
 import SinglePlan from '../(pages)/settings/plans/oldSubscriptions/components/plan/plan';
+import { GatewayToEfficiency } from '../component/landing/GatewayToEfficiency';
+import { RequestForPost } from '../component/landing/RequestForPost';
 import { useRouter } from 'next/navigation';
 
 export default function PricingPage() {
-  const router = useRouter();
   const { token } = theme.useToken();
   const panelStyle: React.CSSProperties = {
     marginBottom: 24,
@@ -34,7 +33,7 @@ export default function PricingPage() {
     [] as IPricingPlan[]
   );
   const [isDuration, setIsDuration] = useState('monthly');
-  const [selectedPlan, setSelectedPlan] = useState<any>();
+  const router = useRouter();
   const plansData = useSelector(selectPricingPlans);
   const isLoading = useSelector(selectPricingPlansLoading);
   const isError = useSelector(selectPricingPlansError);
@@ -80,8 +79,6 @@ export default function PricingPage() {
     pricingPlansHandler();
   }, []);
 
-  console.log({ selectedPlan });
-
   return (
     <section>
       <main
@@ -105,9 +102,9 @@ export default function PricingPage() {
 
       <div className="px-[200px] mt-[151px]">
         <div className="w-[966.356px] mx-auto">
-          <h1 className="text-center text-[21.672px] text-[#7138DF] leading-[21.672px ]">
+          <h3 className="text-[#EF9F28] text-center text-[24px] font-medium leading-[32px]">
             Craft Your Success
-          </h1>
+          </h3>
           <h1 className="mx-auto text-[#1D2939] text-center font-bold mt-[15px] leading-[54.181px] text-[36.121px]">
             Exclusive Schesti Subscriptions, A gateway to Unparalleled
             Excellence in Field Service Dynamics.
@@ -140,7 +137,9 @@ export default function PricingPage() {
                       <SinglePlan
                         key={index}
                         {...plan}
-                        setSelectedPlan={setSelectedPlan}
+                        setSelectedPlan={() => {
+                          router.push('/register');
+                        }}
                       />
                     );
                   }
@@ -151,43 +150,12 @@ export default function PricingPage() {
         </div>
       </div>
 
-      <div className="mt-20 bg-[#344054]">
-        <div className="px-[200px] py-8">
-          <div className="flex space-x-16">
-            <div className="mt-4 space-y-7">
-              <div>
-                <h1 className="text-white pb-[16px] text-[40px] leading-[60px]">
-                  Schedule estimates and create gantt charts
-                </h1>
-                <p className="text-white text-[20px] leading-[38px] w-[696.986px]">
-                  Unlock a prime advertising space for your company! Schesti
-                  offers exclusive opportunities for our valued partners to
-                  showcase their
-                  <br /> brand or promotions here.
-                </p>
-              </div>
-              <CustomButton
-                text="Request for post"
-                className="!rounded-full !w-48 mt-[48px] !text-[#8449EB]"
-                onClick={() => router.push('/contact')}
-              />
-            </div>
-            <div>
-              <Image
-                src={'/request-for-post-img.svg'}
-                height={309}
-                width={277.65}
-                alt="dashboard"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
+      <RequestForPost />
 
       <div className="py-20 px-[200px]">
-        <h1 className="text-center font-normal text-[24px] leading-[24px] text-[#1D2939]">
+        <h3 className="text-[#EF9F28] text-center text-[24px] font-medium leading-[32px]">
           FAQ
-        </h1>
+        </h3>
         <h1 className="text-center font-bold pt-[20px] text-[40px] leading-[60px] text-[#1D2939]">
           {"You've"} got questions. {"We've"} got answers.
         </h1>
@@ -213,14 +181,26 @@ export default function PricingPage() {
                       How do I update my payment information?
                     </h3>
                   ),
+                  children: (
+                    <p>
+                      {` Updating your payment information is quick and easy. Simply log in to your account and navigate to the "Payment Settings" or "Billing Information" section. From there, you can update your credit card details, billing address, or preferred payment method. Ensure that all information entered is accurate and up-to-date to avoid any payment processing issues. If you encounter any difficulties or require assistance, our customer support team is available to guide you through the process and address any concerns you may have.`}
+                    </p>
+                  ),
                   style: panelStyle,
                 },
                 {
                   key: '1',
                   label: (
                     <h3 className="text-[#344054] text-[17px] leading-[36px] font-normal">
-                      How do I update my payment information?
+                      What payment methods do you accept?
                     </h3>
+                  ),
+                  children: (
+                    <p>
+                      We accept payments through major credit cards, including
+                      Visa, Mastercard, and American Express. Additionally, we
+                      also support PayPal for secure online transactions.
+                    </p>
                   ),
                   style: panelStyle,
                 },
@@ -228,8 +208,17 @@ export default function PricingPage() {
                   key: '2',
                   label: (
                     <h3 className="text-[#344054] text-[17px] leading-[36px] font-normal">
-                      How do I update my payment information?
+                      How long does shipping take?
                     </h3>
+                  ),
+                  children: (
+                    <p>
+                      Shipping times vary depending on your location and the
+                      shipping method chosen at checkout. Typically, orders are
+                      processed and shipped within 1-2 business days. For more
+                      precise delivery estimates, please refer to our shipping
+                      policy.
+                    </p>
                   ),
                   style: panelStyle,
                 },
@@ -237,8 +226,18 @@ export default function PricingPage() {
                   key: '3',
                   label: (
                     <h3 className="text-[#344054] text-[17px] leading-[36px] font-normal">
-                      How do I update my payment information?
+                      What is your return policy?
                     </h3>
+                  ),
+
+                  children: (
+                    <p>
+                      We offer a hassle-free return policy within 30 days of
+                      purchase. If {"you're"} not completely satisfied with your
+                      order, you can return the item(s) for a full refund or
+                      exchange. Please review our return policy for detailed
+                      instructions and eligibility criteria.
+                    </p>
                   ),
                   style: panelStyle,
                 },
@@ -246,19 +245,40 @@ export default function PricingPage() {
                   key: '4',
                   label: (
                     <h3 className="text-[#344054] text-[17px] leading-[36px] font-normal">
-                      How do I update my payment information?
+                      How can I track my order?
                     </h3>
                   ),
                   style: panelStyle,
+                  children: (
+                    <p>
+                      Once your order has been shipped, you will receive a
+                      tracking number via email. You can use this tracking
+                      number to monitor the status of your delivery and track
+                      its progress until it reaches your doorstep.
+                      Alternatively, you can log in to your account to view your
+                      order history and track your shipments.
+                    </p>
+                  ),
                 },
                 {
                   key: '5',
                   label: (
                     <h3 className="text-[#344054] text-[17px] leading-[36px] font-normal">
-                      How do I update my payment information?
+                      Are your products environmentally friendly?
                     </h3>
                   ),
                   style: panelStyle,
+                  children: (
+                    <p>
+                      We are committed to sustainability and environmental
+                      responsibility. Many of our products are sourced from
+                      eco-friendly materials and manufactured using
+                      environmentally conscious practices. Look for our{' '}
+                      {`"green"`} label on products that meet our sustainability
+                      standards. For more information, please see our
+                      environmental policy.
+                    </p>
+                  ),
                 },
               ]}
               expandIconPosition="end"
@@ -267,41 +287,7 @@ export default function PricingPage() {
         </div>
       </div>
 
-      <div
-        style={{
-          background: 'linear-gradient(180deg, #8449EB 0%, #6A56F6 100%)',
-        }}
-      >
-        <div className="px-[200px] py-8">
-          <div>
-            <div className="mt-4 space-y-7">
-              <div>
-                <h1 className="text-white text-center text-[40px] leading-[60px]">
-                  Schesti: Your Gateway to Unmatched Efficiency
-                </h1>
-                <p className="text-white pt-[13px] text-[20px] leading-[38px]  text-center w-[924px] mx-auto">
-                  Empower Your Projects with Schesti: Your Comprehensive
-                  Solution for Achieving Exceptional Efficiency in Field Service
-                  Excellence
-                </p>
-              </div>
-              <div className="flex mt-[42px] justify-center space-x-4">
-                <CustomButton
-                  text="Get start with Schesti"
-                  className="!rounded-full !bg-white !w-48 !text-[#8449EB]"
-                  onClick={() => router.push('/login')}
-                />
-
-                <CustomButton
-                  text="Contact Us"
-                  className="!rounded-full !w-48 !bg-transparent !border-white  !text-white"
-                  onClick={() => router.push('/contact')}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <GatewayToEfficiency />
 
       <LandingFooter />
     </section>

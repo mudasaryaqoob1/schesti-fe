@@ -16,6 +16,7 @@ type Props = {
   field?: InputProps;
   type: string;
   suffix?: any;
+  errorMessage?: string;
 };
 
 export function InputComponent({
@@ -31,6 +32,7 @@ export function InputComponent({
   inputStyle,
   field,
   hasError,
+  errorMessage = '',
   ...rest
 }: Props) {
   return (
@@ -77,6 +79,9 @@ export function InputComponent({
         placeholder={placeholder}
         {...field}
       />
+      {errorMessage ? (
+        <p className="text-red-500 text-xs mt-1">{errorMessage}</p>
+      ) : null}
       {/* //   )} */}
       {/* // </Field> */}
       {/* <ErrorMessage name={name} component={ErrorMsg} /> */}

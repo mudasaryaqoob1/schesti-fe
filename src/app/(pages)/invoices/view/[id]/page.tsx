@@ -7,7 +7,6 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import { IInvoice } from '@/app/interfaces/invoices.interface';
 import { HttpService } from '@/app/services/base.service';
 import { selectToken } from '@/redux/authSlices/auth.selector';
-import { selectInvoices } from '@/redux/invoice/invoice.selector';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import Table, { type ColumnType } from 'antd/es/table';
@@ -23,7 +22,9 @@ export default function ViewSubcontractorInvoicePage() {
   const token = useSelector(selectToken);
   const params = useParams<{ id: string }>();
   const id = params.id;
-  const subcontractorInvoices = useSelector(selectInvoices);
+  const subcontractorInvoices = useSelector(
+    (state: RootState) => state.invoices.data
+  );
   const [invoiceData, setInvoiceData] = useState<IInvoice | null>(null);
   const auth = useSelector((state: RootState) => state.auth);
   const user = auth.user?.user as IUser | undefined;
@@ -35,7 +36,9 @@ export default function ViewSubcontractorInvoicePage() {
 
   useEffect(() => {
     const invoice = subcontractorInvoices?.find((item: any) => item._id === id);
-    setInvoiceData(invoice);
+    if (invoice) {
+      setInvoiceData(invoice);
+    }
   }, [id, subcontractorInvoices]);
 
   const columns: ColumnType<IInvoice['invoiceItems'][0]>[] = [
@@ -85,9 +88,15 @@ export default function ViewSubcontractorInvoicePage() {
               <QuaternaryHeading title={invoiceData.invoiceNumber} />
             </div>
           </div>
-          <div className="inline-flex items-center rounded-lg whitespace-nowrap border px-7 py-3 w-fit font-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent text-secondary-foreground hover:bg-secondary/80 text-[#EFA037] text-md bg-yellow-50">
-            Unpaid
-          </div>
+          {invoiceData.status === 'paid' ? (
+            <div className="inline-flex items-center rounded-lg whitespace-nowrap border px-7 py-3 w-fit font-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent text-secondary-foreground hover:bg-secondary/80 text-[#6aa689] text-md bg-green-50">
+              Paid
+            </div>
+          ) : (
+            <div className="inline-flex items-center rounded-lg whitespace-nowrap border px-7 py-3 w-fit font-normal transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent text-secondary-foreground hover:bg-secondary/80 text-[#EFA037] text-md bg-yellow-50">
+              Unpaid
+            </div>
+          )}
         </div>
         <div className="grid grid-cols-5 gap-5 mt-5">
           <div>
