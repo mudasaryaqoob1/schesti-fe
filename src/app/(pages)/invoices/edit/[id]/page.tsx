@@ -65,7 +65,7 @@ const initialValues = {
   profitAndOverhead: 0,
   totalPayable: 0,
   discount: 0,
-  invoiceNumber: new Date().getTime(),
+  invoiceNumber: new Date().getTime().toString(),
   subContractorAddress: '',
   subContractorEmail: '',
   subContractorFirstName: '',
