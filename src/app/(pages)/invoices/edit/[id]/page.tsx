@@ -19,11 +19,10 @@ import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import { InputComponent } from '@/app/component/customInput/Input';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
-import { ConfigProvider, Divider } from 'antd';
+import { ConfigProvider, Divider, Skeleton } from 'antd';
 import { invoiceService } from '@/app/services/invoices.service';
 import { toast } from 'react-toastify';
 import { IInvoice } from '@/app/interfaces/invoices.interface';
-import { RootState } from '@/redux/store';
 
 const SubcontractorSchema = Yup.object({
   subContractorFirstName: Yup.string().required('First name is required!'),
@@ -86,12 +85,10 @@ const EditSubcontractorInvoice = () => {
   const [details, setDetails] = useState<InvoiceDetail[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [isEditDetail, setIsEditDetail] = useState(false);
+  const [isFetchingInvoice, setIsFetchingInvoice] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const params = useParams();
-  const subcontractorInvoices = useSelector(
-    (state: RootState) => state.invoices.data
-  );
   const [invoiceData, setInvoiceData] = useState<IInvoice | null>(null);
   const { id } = params;
   const [detail, setDetail] = useState<InvoiceDetail>({
@@ -109,12 +106,18 @@ const EditSubcontractorInvoice = () => {
   }, [token]);
 
   useEffect(() => {
-    const invoice = subcontractorInvoices?.find((item: any) => item._id === id);
-    if (invoice) {
-      setInvoiceData(invoice);
-      setDetails(invoice.invoiceItems);
+    if (id) {
+      setIsFetchingInvoice(true);
+      invoiceService.httpGetSubcontractorInvoiceById(id as string).then(res => {
+        setInvoiceData(res.data!.invoice);
+        setIsLoading(false);
+      }).catch(err => {
+        setIsLoading(false);
+        toast.error(err.response.data.message);
+        router.back();
+      });
     }
-  }, [id, subcontractorInvoices]);
+  }, [id]);
 
   const columns: ColumnType<InvoiceDetail>[] = [
     {
@@ -244,6 +247,10 @@ const EditSubcontractorInvoice = () => {
       }
     }
   };
+
+  if (isFetchingInvoice && !invoiceData) {
+    return <Skeleton active />
+  }
 
   return (
     <section className="mx-16 my-2">
