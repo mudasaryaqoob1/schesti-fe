@@ -394,6 +394,7 @@ const CreateInvoice = () => {
                         onBlur: handleBlur,
                       }}
                       hasError={touched.issueDate && !!errors.issueDate}
+                      errorMessage={errors.issueDate}
                     />
                     <DateInputComponent
                       label="Due Date"
@@ -406,6 +407,7 @@ const CreateInvoice = () => {
                         onBlur: handleBlur,
                       }}
                       hasError={touched.dueDate && !!errors.dueDate}
+                      errorMessage={errors.dueDate}
                     />
                   </div>
                 </div>

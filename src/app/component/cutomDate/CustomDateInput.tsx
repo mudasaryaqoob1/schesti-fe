@@ -12,6 +12,7 @@ type Props = {
   inputStyle?: ClassValue;
   fieldProps?: DatePickerProps;
   hasError?: boolean;
+  errorMessage?: string;
 };
 
 export function DateInputComponent({
@@ -22,6 +23,7 @@ export function DateInputComponent({
   hasError,
   inputStyle,
   fieldProps,
+  errorMessage = "",
 }: Props) {
   return (
     <div>
@@ -43,10 +45,8 @@ export function DateInputComponent({
         id={name}
         className={twMerge(
           clsx(
-            `border ${
-              hasError ? 'border-red-500' : 'border-gray-400'
-            } !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 !mt-1.5 ${
-              inputStyle && inputStyle
+            `border ${hasError ? 'border-red-500' : 'border-gray-400'
+            } !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 !mt-1.5 ${inputStyle && inputStyle
             }`
           )
         )}
@@ -56,7 +56,9 @@ export function DateInputComponent({
       />
       {/* //   )} */}
       {/* // </Field> */}
-      {/* <ErrorMessage name={name} component={ErrorMsg} /> */}
+      {hasError && (
+        <p className="text-red-500 text-xs mt-1.5">{errorMessage}</p>
+      )}
     </div>
   );
 }

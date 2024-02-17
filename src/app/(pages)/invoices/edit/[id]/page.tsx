@@ -400,6 +400,7 @@ const EditSubcontractorInvoice = () => {
                         defaultValue: dayjs('2015-01-01', 'YYYY-MM-DD'),
                       }}
                       hasError={touched.issueDate && !!errors.issueDate}
+                      errorMessage={errors.issueDate}
                     />
                     <DateInputComponent
                       label="Due Date"
@@ -414,6 +415,7 @@ const EditSubcontractorInvoice = () => {
                         defaultValue: dayjs('2015-01-01', 'YYYY-MM-DD'),
                       }}
                       hasError={touched.dueDate && !!errors.dueDate}
+                      errorMessage={errors.dueDate}
                     />
                   </div>
                 </div>
