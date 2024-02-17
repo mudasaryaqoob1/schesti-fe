@@ -54,7 +54,7 @@ const newClientSchema = Yup.object({
         unitCost: Yup.number().required('Unit cost is required!'),
       })
       .required('Invoice detail is required')
-  ),
+  ).required('Invoice detail is required'),
   discount: Yup.number().required('Discount is required!'),
   taxes: Yup.number().required('Taxes is required!'),
   profitAndOverhead: Yup.number().required('Profit and overhead is required!'),

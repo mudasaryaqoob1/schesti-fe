@@ -77,7 +77,7 @@ type InvoiceDetail = {
   quantity: number;
   unitCost: number;
   total: number;
-  _id: string;
+  id: string;
 };
 const EditSubcontractorInvoice = () => {
   const router = useRouter();
@@ -92,7 +92,7 @@ const EditSubcontractorInvoice = () => {
   const [invoiceData, setInvoiceData] = useState<IInvoice | null>(null);
   const { id } = params;
   const [detail, setDetail] = useState<InvoiceDetail>({
-    _id: '',
+    id: '',
     description: '',
     quantity: 0,
     unitCost: 0,
@@ -110,6 +110,8 @@ const EditSubcontractorInvoice = () => {
       setIsFetchingInvoice(true);
       invoiceService.httpGetSubcontractorInvoiceById(id as string).then(res => {
         setInvoiceData(res.data!.invoice);
+        const items = res.data!.invoice.invoiceItems.map(i => ({ ...i, id: i._id }));
+        setDetails(items);
         setIsLoading(false);
       }).catch(err => {
         setIsLoading(false);
@@ -190,7 +192,7 @@ const EditSubcontractorInvoice = () => {
   // update detail
   function updateDetail(id: string, invoice: InvoiceDetail) {
     const newDetails = [...details];
-    const index = newDetails.findIndex((detail) => detail._id === id);
+    const index = newDetails.findIndex((detail) => detail.id === id);
     if (index !== -1) {
       newDetails[index] = invoice;
       setDetails(newDetails);
@@ -499,10 +501,10 @@ const EditSubcontractorInvoice = () => {
                             className="!w-auto "
                             onClick={() => {
                               if (isEditDetail) {
-                                updateDetail(detail._id, detail);
+                                updateDetail(detail.id, detail);
                               } else {
                                 addDetail({
-                                  _id: new Date().getTime().toString(),
+                                  id: new Date().getTime().toString(),
                                   description: detail.description,
                                   quantity: detail.quantity,
                                   unitCost: detail.unitCost,
@@ -510,7 +512,7 @@ const EditSubcontractorInvoice = () => {
                                 });
                               }
                               setDetail({
-                                _id: '',
+                                id: '',
                                 description: '',
                                 quantity: 0,
                                 unitCost: 0,
