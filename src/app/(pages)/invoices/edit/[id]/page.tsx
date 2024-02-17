@@ -552,6 +552,7 @@ const EditSubcontractorInvoice = () => {
                         <FormControl
                           control="input"
                           label="Discount"
+                          min={0}
                           type="number"
                           name="discount"
                           placeholder="Enter discount here"
@@ -562,6 +563,7 @@ const EditSubcontractorInvoice = () => {
                           control="input"
                           label="Taxes"
                           prefix="%"
+                          min={0}
                           type="number"
                           name="taxes"
                           placeholder="Enter taxes here"
@@ -570,6 +572,7 @@ const EditSubcontractorInvoice = () => {
                         <FormControl
                           control="input"
                           label="Profit and Overhead %"
+                          min={0}
                           type="number"
                           prefix="%"
                           name="profitAndOverhead"

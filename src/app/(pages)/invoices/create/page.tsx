@@ -547,6 +547,7 @@ const CreateInvoice = () => {
                           name="discount"
                           prefix="%"
                           placeholder="Enter discount here"
+                          min={0}
                         />
 
                         <FormControl
@@ -555,6 +556,7 @@ const CreateInvoice = () => {
                           type="number"
                           name="taxes"
                           prefix="%"
+                          min={0}
                           placeholder="Enter taxes here"
                         />
 
@@ -563,6 +565,7 @@ const CreateInvoice = () => {
                           label="Profit and Overhead %"
                           type="number"
                           name="profitAndOverhead"
+                          min={0}
                           prefix="%"
                           placeholder="Enter profit and overhead here"
                         />
