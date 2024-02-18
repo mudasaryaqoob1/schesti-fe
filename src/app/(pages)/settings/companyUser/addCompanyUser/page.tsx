@@ -181,7 +181,7 @@ const AddNewUser = () => {
                       isLoading={isLoading}
                       className="mx-w-30"
                       type="submit"
-                      text="Save and Continue"
+                      text="Invite"
                     />
                   </div>
                 </div>
