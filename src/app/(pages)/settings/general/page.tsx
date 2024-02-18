@@ -44,7 +44,7 @@ const generalSettingSchema: any = Yup.object({
     .required('Email is required!')
     .email('Email should be valid'),
   industry: Yup.string().required('Industry  is required!'),
-  employee: Yup.string().required('Employee is required!'),
+  employee: Yup.number().min(1).required('Employee is required!'),
   avatar: Yup.string().required('Avatar is required!'),
 });
 const GeneralSetting = () => {
@@ -171,6 +171,7 @@ const GeneralSetting = () => {
                       name="employee"
                       labelStyle="!text-lightyGrayish"
                       placeholder="total empolyee"
+                      min={1}
                     />
                     <FormControl
                       control="input"
