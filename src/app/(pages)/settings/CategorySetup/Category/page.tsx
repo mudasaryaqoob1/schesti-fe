@@ -52,6 +52,7 @@ const AddCategory = () => {
         values
       );
       if (statusCode === 200) {
+        console.log(data);
         dispatch(updateCategoryData(data));
         dispatch(setCategoryData(null));
         resetForm();

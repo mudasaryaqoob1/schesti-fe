@@ -27,7 +27,7 @@ export type RootState = {
   settingTargets: any;
   user: any;
   pricingPlan: any;
-  companySetupCategory: any;
+  companySetupCategory: typeof companySetupCategoryReducer;
   companySetupSubcategory: any;
   materials: any;
   invoices: typeof invoiceReducer;
