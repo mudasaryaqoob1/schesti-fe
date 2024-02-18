@@ -23,6 +23,7 @@ import { ConfigProvider, Divider, Skeleton } from 'antd';
 import { invoiceService } from '@/app/services/invoices.service';
 import { toast } from 'react-toastify';
 import { IInvoice } from '@/app/interfaces/invoices.interface';
+import './styles.css'
 
 const SubcontractorSchema = Yup.object({
   subContractorFirstName: Yup.string().required('First name is required!'),

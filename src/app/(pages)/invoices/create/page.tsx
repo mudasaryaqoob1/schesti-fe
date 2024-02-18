@@ -3,7 +3,7 @@ import { useLayoutEffect, useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useSelector } from 'react-redux';
-
+import './styles.css'
 // module imports
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import Button from '@/app/component/customButton/white';
