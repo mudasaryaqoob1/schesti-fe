@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { useContext, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Stage,
   Layer,
@@ -8,13 +8,20 @@ import {
   Group,
   Text as KonvaText,
 } from 'react-konva';
-import UploadFileContext, {
-  UploadFileContextProps,
-} from '../context/UploadFileContext';
+import { UploadFileData } from '../context/UploadFileContext';
 import { useDraw } from '@/app/hooks';
 import { KonvaEventObject } from 'konva/lib/Node';
-import { LineCap } from 'konva/lib/Shape';
 import { Measurements, defaultMeasurements } from './page';
+import moment from 'moment';
+import { DrawHistoryContext } from '../context';
+import { DrawHistoryContextProps } from '../context/DrawHistoryContext';
+import {
+  CountInterface,
+  DrawInterface,
+  LineInterface,
+  LineState,
+  PolygonConfigInterface,
+} from '../types';
 
 const defaultCurrentLineState = { startingPoint: null, endingPoint: null };
 const defaultPolyLineState: LineInterface = {
@@ -24,44 +31,6 @@ const defaultPolyLineState: LineInterface = {
   textUnit: 18,
 };
 
-interface LineState {
-  startingPoint: { x: number; y: number } | null;
-  endingPoint: { x: number; y: number } | null;
-}
-
-interface CoordinatesInterface {
-  x: number;
-  y: number;
-}
-
-interface CountInterface extends CoordinatesInterface {}
-
-interface LineInterface {
-  points: number[];
-  stroke: string;
-  strokeWidth: number;
-  lineCap?: LineCap;
-  textUnit: number;
-}
-
-interface PolygonConfigInterface {
-  points: number[];
-  stroke: string;
-  strokeWidth: number;
-  area?: number;
-  volume?: number;
-  center: CoordinatesInterface;
-  textUnit: number;
-}
-
-interface DrawInterface {
-  line: LineInterface[];
-  area: PolygonConfigInterface[];
-  volume: PolygonConfigInterface[];
-  dynamic: LineInterface[];
-  count: CountInterface[];
-}
-
 interface Props {
   selected: string;
   depth: number;
@@ -69,6 +38,8 @@ interface Props {
   border: number;
   unit: number;
   handleChangeMeasurements: (data: Measurements) => void;
+  uploadFileData: UploadFileData;
+  pageNumber: number;
 }
 
 const Draw: React.FC<Props> = ({
@@ -78,6 +49,8 @@ const Draw: React.FC<Props> = ({
   unit,
   color,
   handleChangeMeasurements,
+  uploadFileData,
+  pageNumber,
 }) => {
   const {
     calcLineDistance,
@@ -89,7 +62,6 @@ const Draw: React.FC<Props> = ({
     calculateAngle,
   } = useDraw();
 
-  const { src } = useContext(UploadFileContext) as UploadFileContextProps;
   const [draw, setDraw] = useState<DrawInterface>({
     line: [],
     area: [],
@@ -97,7 +69,9 @@ const Draw: React.FC<Props> = ({
     count: [],
     dynamic: [],
   });
-
+  const { handleDrawHistory } = useContext(
+    DrawHistoryContext
+  ) as DrawHistoryContextProps;
   const [polyLine, setPolyLine] = useState<LineInterface>(defaultPolyLineState);
   const [dynamicPolyLine, setDynamicPolyLine] =
     useState<LineInterface>(defaultPolyLineState);
@@ -113,7 +87,7 @@ const Draw: React.FC<Props> = ({
 
   const myImage = new Image();
   myImage.src =
-    src ||
+    uploadFileData.src ||
     'https://wcs.smartdraw.com/floor-plan/img/house-design-example.png?bn=15100111902';
 
   const counterImage = new Image();
@@ -156,6 +130,11 @@ const Draw: React.FC<Props> = ({
     if (selected !== 'count') handleChangeMeasurements(defaultMeasurements);
   }, [selected]);
 
+  useEffect(() => {
+    if (Object.values(draw).some((item) => !!item.length))
+      handleDrawHistory(pageNumber.toString(), draw);
+  }, [draw, pageNumber]);
+
   const handleMouseDown = (e: KonvaEventObject<MouseEvent>) => {
     if (endLiveEditing) return;
     setSelectedShape('');
@@ -183,6 +162,7 @@ const Draw: React.FC<Props> = ({
         stroke: color,
         strokeWidth: border,
         textUnit: unit,
+        dateTime: moment().toDate(),
       };
       setDraw((prev) => ({ ...prev, line: [...prev.line, newLine] }));
       setCurrentLine(defaultCurrentLineState);
@@ -220,8 +200,6 @@ const Draw: React.FC<Props> = ({
 
             setDraw((prevDraw) => {
               const polygonCoordinates = prev.points;
-
-              const polygonCenter = calculatePolygonCenter(polygonCoordinates);
               const parameter = calculatePolygonPerimeter(polygonCoordinates);
 
               if (selected === 'area') {
@@ -242,9 +220,8 @@ const Draw: React.FC<Props> = ({
 
                 const areaConfig: PolygonConfigInterface = {
                   ...prev,
-                  area,
-                  center: polygonCenter,
                   textUnit: unit,
+                  dateTime: moment().toDate(),
                 };
 
                 return {
@@ -272,9 +249,9 @@ const Draw: React.FC<Props> = ({
 
                 const volumeConfig: PolygonConfigInterface = {
                   ...prev,
-                  volume,
-                  center: polygonCenter,
+                  depth,
                   textUnit: unit,
+                  dateTime: moment().toDate(),
                 };
 
                 return {
@@ -296,6 +273,7 @@ const Draw: React.FC<Props> = ({
       const newCount: CountInterface = {
         x: position?.x - 2,
         y: position.y - 15,
+        dateTime: moment().toDate(),
       };
 
       setDraw((prev) => {
@@ -312,6 +290,7 @@ const Draw: React.FC<Props> = ({
             stroke: color,
             strokeWidth: border,
             textUnit: unit,
+            dateTime: moment().toDate(),
           };
         } else {
           prev.points.push(...[position?.x || 0, position?.y || 0]);
@@ -368,26 +347,8 @@ const Draw: React.FC<Props> = ({
     }
   };
 
-  // const [polygonArea, polygonCenter] = useMemo(() => {
-  //   if (completingLine.endingPoint) {
-  //     const polygonCoordinates = [
-  //       ...polyLine.points,
-  //       completingLine.endingPoint.x,
-  //       completingLine.endingPoint.y,
-  //     ];
-
-  //     return [
-  //       calculatePolygonArea(polygonCoordinates),
-  //       calculatePolygonCenter(polygonCoordinates),
-  //     ];
-  //   }
-
-  //   return [];
-  // }, [completingLine, polyLine.points]);
-
   return (
     <div
-      className="w-fit mx-auto relative"
       tabIndex={1}
       onKeyDown={(e) => {
         if (e.key === 'Escape') {
@@ -429,6 +390,11 @@ const Draw: React.FC<Props> = ({
             if (selected === 'count')
               handleChangeMeasurements({ count: tempPrevShapeData.length });
 
+            handleDrawHistory(pageNumber.toString(), {
+              ...prev,
+              [shapeName]: tempPrevShapeData,
+            });
+
             return {
               ...prev,
               [shapeName]: tempPrevShapeData,
@@ -440,13 +406,16 @@ const Draw: React.FC<Props> = ({
       }}
     >
       <Stage
-        width={600}
-        height={600}
-        className="flex justify-center cursor-pointer border"
+        width={uploadFileData.width || 600}
+        height={uploadFileData.height || 600}
+        className="flex justify-center cursor-pointer border-0"
       >
         <Layer onMouseDown={handleMouseDown} onMouseMove={handleMouseMove}>
-          <KonvaImage image={myImage} width={600} height={600} />
-
+          <KonvaImage
+            image={myImage}
+            width={uploadFileData.width || 600}
+            height={uploadFileData.height || 600}
+          />
           {/* Drawing Line */}
           {draw.line.map(({ textUnit, ...rest }, index) => {
             // const circles = convertArrayIntoChunks(line.points);
@@ -511,7 +480,11 @@ const Draw: React.FC<Props> = ({
           {!!dynamicPolyLine.points.length && <Line {...dynamicPolyLine} />}
 
           {/* Drawing Area */}
-          {draw.area.map(({ center, area, textUnit, ...rest }, index) => {
+          {draw.area.map(({ textUnit, ...rest }, index) => {
+            const polygonCoordinates = rest.points;
+            const center = calculatePolygonCenter(polygonCoordinates);
+            const area = calculatePolygonArea(polygonCoordinates);
+
             const text = `${area?.toFixed(4) || ''}sq`;
             const id = `area-${index}`;
 
@@ -575,7 +548,13 @@ const Draw: React.FC<Props> = ({
           )}
 
           {/* Drawing Volume */}
-          {draw.volume.map(({ center, volume, textUnit, ...rest }, index) => {
+          {draw.volume.map(({ depth, textUnit, ...rest }, index) => {
+            const polygonCoordinates = rest.points;
+            const center = calculatePolygonCenter(polygonCoordinates);
+            const volume = calculatePolygonVolume(
+              polygonCoordinates,
+              depth || 0
+            );
             const text = `${volume?.toFixed(2) || ''} cubic`;
             const id = `volume-${index}`;
 
@@ -662,15 +641,6 @@ const Draw: React.FC<Props> = ({
               />
             );
           })}
-          {/* <KonvaText
-            fontSize={15}
-            fontStyle="bold"
-            draggable
-            fill="red"
-            text={`Count: ${draw.count.length}`}
-            x={10}
-            y={10}
-          /> */}
         </Layer>
       </Stage>
     </div>

@@ -10,7 +10,10 @@ import Description from '@/app/component/description';
 import ModalComponent from '@/app/component/modal';
 import ScaleModal from '../components/scale';
 import { UploadFileContext } from '../context';
-import { UploadFileContextProps } from '../context/UploadFileContext';
+import {
+  UploadFileContextProps,
+  UploadFileData,
+} from '../context/UploadFileContext';
 import { useRouter } from 'next/navigation';
 
 const Upload = () => {
@@ -36,26 +39,34 @@ const Upload = () => {
 
     if (file) {
       const PDFJS = await pdfjs();
-
+      const pdfPagesData: UploadFileData[] = [];
       const reader = new FileReader();
       reader.onload = async (event: any) => {
         const data = new Uint8Array(event.target.result);
         const pdf = await PDFJS.getDocument(data).promise;
 
-        const page = await pdf.getPage(1);
-        const scale = 1;
-        const viewport = page.getViewport({ scale });
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
-        const renderContext: any = {
-          canvasContext: context,
-          viewport: viewport,
-        };
-        await page.render(renderContext).promise;
-        const imageDataUrl = canvas.toDataURL('image/png');
-        handleSrc(imageDataUrl);
+        for (let index = 0; index < pdf.numPages; index++) {
+          const page = await pdf.getPage(index + 1);
+          const scale = 1;
+          const viewport = page.getViewport({ scale });
+          const canvas = document.createElement('canvas');
+          const context = canvas.getContext('2d');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          const renderContext: any = {
+            canvasContext: context,
+            viewport: viewport,
+          };
+          await page.render(renderContext).promise;
+
+          pdfPagesData.push({
+            src: canvas.toDataURL('image/png') || '',
+            height: viewport.height,
+            width: viewport.width,
+          });
+        }
+
+        handleSrc(pdfPagesData);
         router.push('/takeoff/scale');
       };
       reader.readAsArrayBuffer(file);

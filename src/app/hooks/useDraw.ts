@@ -1,3 +1,5 @@
+import { DrawInterface } from '../(pages)/takeoff/types';
+
 const useDraw = () => {
   const pixelToInchScale = 72;
 
@@ -169,6 +171,31 @@ const useDraw = () => {
   //   return JSON.stringify(counterImage);
   // };
 
+  const getProjectAndCommentNameForTable = (
+    key: keyof DrawInterface,
+    points: number[],
+    depth = 0
+  ): { projectName: string; comment: string | number } => {
+    if (key === 'line')
+      return {
+        projectName: 'Length Measurement',
+        comment: points?.length ? calcLineDistance(points) : 0,
+      };
+    else if (key === 'area')
+      return {
+        projectName: 'Area Measurement',
+        comment: points?.length ? calculatePolygonArea(points) : 0,
+      };
+    else if (key === 'volume')
+      return {
+        projectName: 'Volume Measurement',
+        comment: points?.length ? calculatePolygonVolume(points, depth) : 0,
+      };
+    else if (key === 'count')
+      return { projectName: 'Count Measurement', comment: '' };
+    else return { projectName: 'Dynamic Measurement', comment: '' };
+  };
+
   return {
     calculatePolygonArea,
     calculatePolygonCenter,
@@ -178,6 +205,7 @@ const useDraw = () => {
     calculateMidpoint,
     calculatePolygonVolume,
     calculateAngle,
+    getProjectAndCommentNameForTable,
   };
 };
 

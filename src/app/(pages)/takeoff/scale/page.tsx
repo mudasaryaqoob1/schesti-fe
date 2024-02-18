@@ -1,16 +1,16 @@
 'use client';
 import { bg_style } from '@/globals/tailwindvariables';
 import NextImage from 'next/image';
-import { useContext, useState } from 'react';
+import { useState, useContext } from 'react';
 import { twMerge } from 'tailwind-merge';
-import { UploadFileContext } from '../context';
-import { UploadFileContextProps } from '../context/UploadFileContext';
 import Draw from './Draw';
 import ModalComponent from '@/app/component/modal';
 import ScaleModal from '../components/scale';
 import ModalsWrapper from '../components/main';
 import { ColorPicker, InputNumber, Select } from 'antd';
-import FinalData from '../components/finalResultTable';
+import { UploadFileContext } from '../context';
+import { UploadFileContextProps } from '../context/UploadFileContext';
+import DrawHistoryTable from '../components/DrawHistoryTable';
 
 export type ScaleLabel =
   | 'scale'
@@ -107,12 +107,12 @@ const Scale = () => {
   const [color, setColor] = useState<string>('#1677ff');
   const [unit, setUnit] = useState<number>(18);
   const [depth, setDepth] = useState<number>(0);
-  const { src } = useContext(UploadFileContext) as UploadFileContextProps;
   const [measurements, setMeasurements] =
     useState<Measurements>(defaultMeasurements);
 
-  const myImage = new Image();
-  myImage.src = src;
+  const { uploadFileData } = useContext(
+    UploadFileContext
+  ) as UploadFileContextProps;
 
   return (
     <section className="mt-[100px] md:px-16 px-8 pb-4">
@@ -219,18 +219,25 @@ const Scale = () => {
             </div>
           </div>
         </div>
-        <Draw
-          selected={scale}
-          depth={depth}
-          color={color}
-          border={border}
-          unit={unit}
-          handleChangeMeasurements={(measurements) =>
-            setMeasurements(measurements)
-          }
-        />
+        <div className="relative h-[527px] overflow-y-auto">
+          {uploadFileData.map((file, index) => (
+            <Draw
+              key={`draw-${index}`}
+              selected={scale}
+              depth={depth}
+              color={color}
+              border={border}
+              unit={unit}
+              uploadFileData={file}
+              pageNumber={index + 1}
+              handleChangeMeasurements={(measurements) =>
+                setMeasurements(measurements)
+              }
+            />
+          ))}
+        </div>
         <div>
-          <FinalData />
+          <DrawHistoryTable />
         </div>
       </div>
 

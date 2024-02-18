@@ -1,10 +1,19 @@
-import { createContext } from "react"
+import { createContext } from 'react';
 
-export interface UploadFileContextProps {
-	src: string,
-	handleSrc: (data: string) => void
+export interface UploadFileData {
+  src: string;
+  width: number;
+  height: number;
 }
 
-const UploadFileContext = createContext<UploadFileContextProps>({src: "", handleSrc: () => undefined})
+export interface UploadFileContextProps {
+  uploadFileData: UploadFileData[];
+  handleSrc: (data: UploadFileData[]) => void;
+}
 
-export default UploadFileContext
+const UploadFileContext = createContext<UploadFileContextProps>({
+  uploadFileData: [],
+  handleSrc: () => undefined,
+});
+
+export default UploadFileContext;
