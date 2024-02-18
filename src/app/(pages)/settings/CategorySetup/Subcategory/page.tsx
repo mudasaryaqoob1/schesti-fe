@@ -43,7 +43,7 @@ export interface DataType {
 const validationSchema = Yup.object({
   category: Yup.string().required('Category Name is required!'),
   name: Yup.string().required('Sub Category is required!'),
-  price: Yup.string().required('Price is required!'),
+  price: Yup.number().min(1, "Price must be greater than 0").required('Price is required!'),
 });
 
 const AddSubcategory = () => {
@@ -114,9 +114,9 @@ const AddSubcategory = () => {
 
   const options = categoriesReduxData
     ? categoriesReduxData.map(({ name, _id }: ICategory) => ({
-        label: name,
-        value: _id,
-      }))
+      label: name,
+      value: _id,
+    }))
     : [];
 
   return (
@@ -163,6 +163,7 @@ const AddSubcategory = () => {
                     type="number"
                     name="price"
                     placeholder="Enter Price"
+                    prefix="$"
                   />
                 </div>
                 <div className="flex justify-end mt-5 gap-3">
