@@ -107,6 +107,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
                 onChange: formik.handleChange,
                 onBlur: formik.handleBlur,
               }}
+              errorMessage={formik.errors.topic}
             />
             <SelectComponent
               label="Invite"
@@ -127,6 +128,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
               name="startDate"
               inputStyle={'border-gray-200'}
               hasError={formik.touched.startDate && !!formik.errors.startDate}
+              errorMessage={formik.errors.startDate}
               fieldProps={{
                 showTime: { defaultValue: dayjs('00:00:00', 'HH:mm') },
                 value: formik.values.startDate
@@ -136,6 +138,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
                   formik.setFieldValue('startDate', date);
                 },
                 onBlur: formik.handleBlur,
+                status: formik.touched.startDate && !!formik.errors.startDate ? 'error' : undefined,
                 // disabledDate,
               }}
             />
