@@ -141,7 +141,7 @@ const AddSubcategory = () => {
                 <div className="grid grid-cols-3 gap-2 items-center">
                   <FormControl
                     control="select"
-                    label="Catgory Name"
+                    label="Category Name"
                     type="text"
                     disabled={subcategoryData}
                     options={options}
@@ -152,7 +152,7 @@ const AddSubcategory = () => {
                   />
                   <FormControl
                     control="input"
-                    label="Sub-Catgory"
+                    label="Sub-Category"
                     type="text"
                     name="name"
                     placeholder="Enter Sub-Category"
