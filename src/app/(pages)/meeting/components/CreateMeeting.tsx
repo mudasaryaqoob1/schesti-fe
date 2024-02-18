@@ -79,6 +79,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
       open={showModal}
       setOpen={setShowModal}
       title="Schedule a meeting"
+      destroyOnClose
     >
       <div className="bg-white border border-solid border-elboneyGray rounded-[4px] z-50">
         <div className="flex px-6 py-2.5 justify-between bg-mistyWhite">
@@ -114,7 +115,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
               placeholder="Client Email Address"
               name="email"
               hasError={formik.touched.email && Boolean(formik.errors.email)}
-              errorMessage={formik.errors.email}
+              errorMessage={Array.isArray(formik.errors.email) ? formik.errors.email[0] : formik.errors.email}
               field={{
                 mode: "tags",
                 value: formik.values.email,
