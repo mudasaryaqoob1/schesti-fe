@@ -179,6 +179,7 @@ const GeneralSetting = () => {
                       name="phone"
                       labelStyle="!text-lightyGrayish"
                       placeholder="Phone number"
+                      min={0}
                     />
                     <FormControl
                       control="input"
@@ -193,9 +194,8 @@ const GeneralSetting = () => {
                   {/* Upload Image Div */}
                   <div className={`${bg_style} grid grid-cols-12 p-5 mt-4 `}>
                     <div
-                      className={`px-6 py-4 col-span-8 flex flex-col items-center gap-3 ${
-                        errors.avatar ? 'border-rose-600' : ''
-                      }  ${bg_style}`}
+                      className={`px-6 py-4 col-span-8 flex flex-col items-center gap-3 ${errors.avatar ? 'border-rose-600' : ''
+                        }  ${bg_style}`}
                     >
                       <input type="text" id="upload" className="hidden" />
                       <div className="bg-lightGrayish rounded-[28px] border border-solid border-red flex justify-center items-center p-2.5">
