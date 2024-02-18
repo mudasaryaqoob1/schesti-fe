@@ -73,11 +73,17 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
   //   const isPreviousMinute = current < dayjs().add(-1, 'minute');
   //   return isPreviousDay || isPreviousHour || isPreviousMinute;
   // };
+
+  function handleCloseModal() {
+    setShowModal();
+    formik.resetForm();
+  }
+
   return (
     <ModalComponent
       width="50%"
       open={showModal}
-      setOpen={setShowModal}
+      setOpen={handleCloseModal}
       title="Schedule a meeting"
       destroyOnClose
     >
@@ -91,7 +97,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
             className="cursor-pointer"
             width={24}
             height={24}
-            onClick={setShowModal}
+            onClick={handleCloseModal}
           />
         </div>
 
@@ -115,7 +121,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
               placeholder="Client Email Address"
               name="email"
               hasError={formik.touched.email && Boolean(formik.errors.email)}
-              errorMessage={Array.isArray(formik.errors.email) ? formik.errors.email[0] : formik.errors.email}
+              errorMessage={formik.touched.email && Boolean(formik.errors.email) && Array.isArray(formik.errors.email) ? formik.errors.email[0] : formik.errors.email}
               field={{
                 mode: "tags",
                 value: formik.values.email,
@@ -139,7 +145,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
                   formik.setFieldValue('startDate', date);
                 },
                 onBlur: formik.handleBlur,
-                status: formik.touched.startDate && !!formik.errors.startDate ? 'error' : undefined,
+                status: formik.touched.startDate && Boolean(formik.errors.startDate) ? 'error' : undefined,
                 // disabledDate,
               }}
             />
@@ -150,7 +156,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
             <WhiteButton
               text="Cancel"
               className="!w-28"
-              onClick={setShowModal}
+              onClick={handleCloseModal}
             />
             <CustomButton
               text="Schedule"
