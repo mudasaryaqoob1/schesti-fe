@@ -5,7 +5,6 @@ import SenaryHeading from '@/app/component/headings/senaryHeading';
 import moment from 'moment';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import dayjs from 'dayjs';
-import { useRouter } from 'next/navigation';
 import { IMeeting } from '@/app/interfaces/meeting.type';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
@@ -20,7 +19,6 @@ type Props = {
 };
 const TIME_TO_ENABLE = 15; // minutes
 export function UpcomingComponent({ state, onOpenModal }: Props) {
-  const router = useRouter();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   const [copiedText, copy] = useCopyToClipboard();
   const meetingsLoading = useSelector(
@@ -103,7 +101,7 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
                     className={`!w-20`}
                     text={'Join'}
                     onClick={() => {
-                      router.push(`/meeting/${item.roomName}`);
+                      window.open(`/meeting/${item.roomName}`, '_blank');
                     }}
                   />
                 )}

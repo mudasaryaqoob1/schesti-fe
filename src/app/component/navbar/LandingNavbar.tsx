@@ -12,13 +12,17 @@ export function LandingNavbar() {
           <Image src={'/logowhite.svg'} width={90} height={90} alt="Schesti" />
           <div className="mt-1 space-x-8">
             <a
-              className={`text-white cursor-pointer text-lg pb-1 font-medium ${pathname === '/' ? ' border-b-2 border-[#ffc107]' : ''}`}
+              className={`text-white cursor-pointer text-lg pb-1 font-medium ${
+                pathname === '/' ? ' border-b-2 border-[#ffc107]' : ''
+              }`}
               onClick={() => router.push('/')}
             >
               Home
             </a>
             <a
-              className={`text-white cursor-pointer text-lg pb-1 font-medium ${pathname === '/pricing' ? ' border-b-2 border-[#ffc107]' : ''}`}
+              className={`text-white cursor-pointer text-lg pb-1 font-medium ${
+                pathname === '/pricing' ? ' border-b-2 border-[#ffc107]' : ''
+              }`}
               onClick={() => router.push('/pricing')}
             >
               Pricing

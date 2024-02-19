@@ -1044,7 +1044,12 @@ const Scope = ({ setPrevNext }: Props) => {
                       />
                     </div>
 
-                    <div className="flex justify-end mt-5">
+                    <div className="flex justify-end space-x-4 mt-5">
+                      <CustomWhiteButton
+                        text="Cancel"
+                        className="!w-32"
+                        type="button"
+                      />
                       <CustomButton
                         text="+ Add Div"
                         className="!w-32"

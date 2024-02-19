@@ -13,6 +13,8 @@ import {
   selectClientsLoading,
 } from '@/redux/company/companySelector';
 import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
+import Description from '@/app/component/description';
+import SecondaryHeading from '@/app/component/headings/Secondary';
 
 interface Props {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -23,6 +25,7 @@ const ExistingClient = ({ setModalOpen, onSelectClient }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const clientLoading = useSelector(selectClientsLoading);
   const clientsData = useSelector(selectClients);
+  const [search, setSearch] = useState('');
   const [selectedClientId, setSelectedClientId] = useState(
     clientsData?.[0]?._id
   );
@@ -65,6 +68,8 @@ const ExistingClient = ({ setModalOpen, onSelectClient }: Props) => {
             id=""
             placeholder="Search..."
             className="w-full h-full bg-transparent outline-none"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
           <Image
             src={'/search.svg'}
@@ -83,30 +88,58 @@ const ExistingClient = ({ setModalOpen, onSelectClient }: Props) => {
             />
           </div>
 
-          {!clientsData || clientLoading ? (
+          {clientLoading ? (
             <h6 className="text-center">Loading...</h6>
+          ) : !clientsData || clientsData.length === 0 ? (
+            <div className="max-w-[500px] flex flex-col items-center p-4">
+              <div className="bg-lightGray p-12 rounded-full">
+                <Image
+                  src={'/estimateempty.svg'}
+                  alt="create request icon"
+                  width={100}
+                  height={100}
+                />
+              </div>
+              <SecondaryHeading
+                title={'Existing Clients'}
+                className="text-obsidianBlack2 mt-8"
+              />
+              <Description
+                title={"You don't have any clients yet."}
+                className="text-steelGray text-center font-normal"
+              />
+            </div>
           ) : (
-            clientsData.map(({ _id, firstName }: any, i: number) => {
-              return (
-                <Fragment key={i}>
-                  <div className="border-b-lightGrayishBlue p-4 flex gap-4 items-center bg-snowWhite border">
-                    <input
-                      type="radio"
-                      name="client name"
-                      id={_id}
-                      onChange={() => setSelectedClientId(_id)}
-                    />
-                    {/* <Image src={img} alt="client icon" width={30} height={30} /> */}
-                    <label htmlFor={_id} className="cursor-pointer">
-                      <SenaryHeading
-                        title={firstName}
-                        className="text-darkSteelBlue"
+            (clientsData as IClient[])
+              .filter((client) => {
+                if (!search) {
+                  return client;
+                }
+                return client.firstName
+                  .toLowerCase()
+                  .includes(search.toLowerCase());
+              })
+              .map(({ _id, firstName }: any, i: number) => {
+                return (
+                  <Fragment key={i}>
+                    <div className="border-b-lightGrayishBlue p-4 flex gap-4 items-center bg-snowWhite border">
+                      <input
+                        type="radio"
+                        name="client name"
+                        id={_id}
+                        onChange={() => setSelectedClientId(_id)}
                       />
-                    </label>
-                  </div>
-                </Fragment>
-              );
-            })
+                      {/* <Image src={img} alt="client icon" width={30} height={30} /> */}
+                      <label htmlFor={_id} className="cursor-pointer">
+                        <SenaryHeading
+                          title={firstName}
+                          className="text-darkSteelBlue"
+                        />
+                      </label>
+                    </div>
+                  </Fragment>
+                );
+              })
           )}
         </div>
       </section>

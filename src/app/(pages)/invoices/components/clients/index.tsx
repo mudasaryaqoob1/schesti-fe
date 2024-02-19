@@ -164,19 +164,20 @@ export function Clients() {
           <ModalComponent
             open={showModal}
             setOpen={setShowModal}
-            title="Invoice Details"
+            title="Client Invoice"
             width="40%"
           >
             <div className="bg-white border border-solid border-elboneyGray rounded-[4px] z-50">
               <div className="flex px-6 py-2.5 justify-between bg-mistyWhite">
                 <TertiaryHeading
-                  title="Invoice Details"
+                  title="Client Invoice"
                   className="text-graphiteGray"
                 />
                 <CloseOutlined
                   className="cursor-pointer"
                   width={24}
                   height={24}
+                  onClick={() => setShowModal(false)}
                 />
               </div>
 
@@ -194,7 +195,11 @@ export function Clients() {
                 />
 
                 <div className="flex justify-end py-2 space-x-2">
-                  <WhiteButton text="Cancel" className="!w-[100px]" />
+                  <WhiteButton
+                    text="Cancel"
+                    className="!w-[100px]"
+                    onClick={() => setShowModal(false)}
+                  />
                   <CustomButton
                     text="Next"
                     className="!w-[100px]"

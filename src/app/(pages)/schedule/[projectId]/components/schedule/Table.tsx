@@ -221,7 +221,6 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
   }
 
   async function deleteRow(record: ActivityItem) {
-
     const newData = wbs.scheduleProjectActivities.filter(
       (item: any) => item._id !== record._id
     );
@@ -756,20 +755,25 @@ function EditableCell({
             />
           ) : dataIndex === 'activityType' ? (
             <Select
-            ref={inputRef}
-            onBlur={save}
-            onChange={save}
-            value='Finish Milestone'
-            defaultValue='Finish Milestone'
-            defaultOpen
-            autoFocus
-            style={{ height: '40px', margin: '1px 0px' }}
-          >
-            <Select.Option value={'Finish Milestone'} >Finish Milestone</Select.Option>
-            <Select.Option value={'Start Mileston'}>Start Milestone</Select.Option>
-            <Select.Option value={'Task Dependent'}>Task Dependent</Select.Option>
-          </Select>
-
+              ref={inputRef}
+              onBlur={save}
+              onChange={save}
+              value="Finish Milestone"
+              defaultValue="Finish Milestone"
+              defaultOpen
+              autoFocus
+              style={{ height: '40px', margin: '1px 0px' }}
+            >
+              <Select.Option value={'Finish Milestone'}>
+                Finish Milestone
+              </Select.Option>
+              <Select.Option value={'Start Mileston'}>
+                Start Milestone
+              </Select.Option>
+              <Select.Option value={'Task Dependent'}>
+                Task Dependent
+              </Select.Option>
+            </Select>
           ) : (
             <Input
               style={{ height: '40px' }}

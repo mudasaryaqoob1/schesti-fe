@@ -60,7 +60,7 @@ const AddNewUser = () => {
     lastName: lastName || '',
     email: user?.email || '',
     roles: user?.roles?.[0] || '',
-    brandingColor: user.brandingColor || '',
+    brandingColor: user?.brandingColor || '',
   };
   const submitHandler = async (values: IUser, { resetForm }: any) => {
     setisLoading(true);
@@ -181,7 +181,7 @@ const AddNewUser = () => {
                       isLoading={isLoading}
                       className="mx-w-30"
                       type="submit"
-                      text="Save and Continue"
+                      text="Invite"
                     />
                   </div>
                 </div>

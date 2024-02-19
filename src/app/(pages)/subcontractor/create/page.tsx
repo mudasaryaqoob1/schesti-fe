@@ -131,6 +131,7 @@ const CreateSubcontractor = () => {
                     label="Phone Number"
                     type="number"
                     name="phone"
+                    min={0}
                     placeholder="Phone number"
                   />
                   <FormControl

@@ -32,6 +32,7 @@ import { fetchUsers } from '@/redux/userSlice/user.thunk';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
 import { byteConverter } from '@/app/utils/byteConverter';
+import { Upload, type UploadProps } from 'antd';
 
 const clientInfoSchema: any = Yup.object({
   clientName: Yup.string().required('Client is required!'),
@@ -44,8 +45,8 @@ const clientInfoSchema: any = Yup.object({
     .max(14, 'Phone number must be at most 14 characters')
     .required('Phone number is required'),
   projectName: Yup.string().required('Project name is required!'),
-  leadSource: Yup.string().required('Load source is required!'),
-  projectValue: Yup.string().required('Project value is required!'),
+  leadSource: Yup.number().required('Lead source is required!'),
+  projectValue: Yup.number().required('Project value is required!'),
   projectInformation: Yup.string().required('Project info is required!'),
   salePerson: Yup.string().required('Sale person is required!'),
   estimator: Yup.string().required('Estimator is required!'),
@@ -199,14 +200,16 @@ const CreateEstimateRequest = () => {
       console.error('Error uploading documents:', error);
     }
   };
-  const takeoffReportsUploadHandler = async (e: any) => {
+  const takeoffReportsUploadHandler: UploadProps['onChange'] = async ({
+    fileList,
+  }) => {
     setuploadDocumentsError('');
-    const documents = e.target.files;
+    const documents = fileList;
     if (!documents[0]) {
       return;
     }
 
-    if (byteConverter(documents[0].size, 'MB').size > 10) {
+    if (documents[0].size && byteConverter(documents[0].size, 'MB').size > 10) {
       setuploadDocumentsError(
         'Cannot upload document more then 10 mb of size.'
       );
@@ -217,14 +220,16 @@ const CreateEstimateRequest = () => {
     }
   };
 
-  const otherDocumentsUploadHandler = (e: any) => {
+  const otherDocumentsUploadHandler: UploadProps['onChange'] = ({
+    fileList,
+  }) => {
     setuploadDocumentsError('');
-    const documents = e.target.files;
+    const documents = fileList;
     if (!documents[0]) {
       return;
     }
 
-    if (byteConverter(documents[0].size, 'MB').size > 10) {
+    if (documents[0].size && byteConverter(documents[0].size, 'MB').size > 10) {
       setuploadDocumentsError(
         'Cannot upload document more then 10 mb of size.'
       );
@@ -234,13 +239,15 @@ const CreateEstimateRequest = () => {
       setOtherDocuments((prev: any) => [...prev, documents[i]]);
     }
   };
-  const drawingsDocumentsUplodadHandler = (e: any) => {
+  const drawingsDocumentsUplodadHandler: UploadProps['onChange'] = ({
+    fileList,
+  }) => {
     setuploadDocumentsError('');
-    const documents = e.target.files;
+    const documents = fileList;
     if (!documents[0]) {
       return;
     }
-    if (byteConverter(documents[0].size, 'MB').size > 10) {
+    if (documents[0].size && byteConverter(documents[0].size, 'MB').size > 10) {
       setuploadDocumentsError(
         'Cannot upload document more then 10 mb of size.'
       );
@@ -346,6 +353,7 @@ const CreateEstimateRequest = () => {
                       label="Phone Number"
                       type="number"
                       name="phone"
+                      min={1}
                       placeholder="Phone number"
                     />
                   </div>
@@ -369,7 +377,7 @@ const CreateEstimateRequest = () => {
                       <FormControl
                         control="input"
                         label="Lead Source Value"
-                        type="text"
+                        type="number"
                         name="leadSource"
                         placeholder="Lead Source"
                       />
@@ -378,7 +386,7 @@ const CreateEstimateRequest = () => {
                       <FormControl
                         control="input"
                         label="Project Value"
-                        type="text"
+                        type="number"
                         name="projectValue"
                         placeholder="Project Value"
                       />
@@ -422,7 +430,7 @@ const CreateEstimateRequest = () => {
 
                 <div className=" border-2  border-silverGray  rounded-lg shadow-quinarGentleDepth mt-4 p-5">
                   <h3 className="my-4">Upload</h3>
-                  <div className="grid grid-cols-4 gap-4">
+                  <div className="grid lg:grid-cols-4 grid-cols-1 gap-4">
                     <div>
                       <p
                         className={`${senaryHeading} !text-[14px] text-midnightBlue font-popin mb-2`}
@@ -461,8 +469,8 @@ const CreateEstimateRequest = () => {
                                     }
                                   />
 
-                                  <p className="text-[#353535] text-[16px] font-[500] mt-2 truncate">
-                                    {doc?.name}
+                                  <p className="text-[#353535] text-[16px] truncate font-[500] mt-2 ">
+                                    {`${doc?.name.substring(0, 20)}....`}
                                   </p>
                                   <p className="text-[#989692] text-[12px] font-[400] my-2">
                                     {byteConverter(doc?.size, 'KB').size} KB
@@ -475,43 +483,41 @@ const CreateEstimateRequest = () => {
                           <div
                             className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg mb-3`}
                           >
-                            <div
-                              className={`px-6 py-4 flex flex-col items-center gap-3 `}
+                            <Upload
+                              onChange={drawingsDocumentsUplodadHandler}
+                              accept="image/jpeg,image/png,application/pdf "
+                              name="drawingDocuments"
+                              id="drawingDocuments"
                             >
-                              <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
-                                <Image
-                                  src={'/uploadcloud.svg'}
-                                  alt="upload icon"
-                                  width={20}
-                                  height={20}
-                                />
-                              </div>
-                              <div className="flex gap-2">
-                                <label
-                                  htmlFor="drawingDocuments"
-                                  className={twMerge(
-                                    `${senaryHeading} !text-[14px] text-RoyalPurple font-semibold cursor-pointer`
-                                  )}
-                                >
-                                  Click to Upload
-                                </label>
-                                <input
-                                  type="file"
-                                  name="drawingDocuments"
-                                  id="drawingDocuments"
-                                  className="hidden"
-                                  accept="image/jpeg,image/png,application/pdf "
-                                  onChange={drawingsDocumentsUplodadHandler}
-                                />
+                              <div
+                                className={`px-6 py-4 flex flex-col items-center gap-3 `}
+                              >
+                                <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
+                                  <Image
+                                    src={'/uploadcloud.svg'}
+                                    alt="upload icon"
+                                    width={20}
+                                    height={20}
+                                  />
+                                </div>
+                                <div className="flex gap-2">
+                                  <p
+                                    className={twMerge(
+                                      `${senaryHeading} !text-[14px] text-RoyalPurple font-semibold cursor-pointer`
+                                    )}
+                                  >
+                                    Click to Upload
+                                  </p>
+                                  <p className={`text-steelGray ${minHeading}`}>
+                                    or drag and drop
+                                  </p>
+                                </div>
+
                                 <p className={`text-steelGray ${minHeading}`}>
-                                  or drag and drop
+                                  SVG, PNG, JPG or PDF (max. 800x400px)
                                 </p>
                               </div>
-
-                              <p className={`text-steelGray ${minHeading}`}>
-                                SVG, PNG, JPG or PDF (max. 800x400px)
-                              </p>
-                            </div>
+                            </Upload>
                           </div>
                         )}
                       </>
@@ -568,42 +574,43 @@ const CreateEstimateRequest = () => {
                           <div
                             className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg `}
                           >
-                            <div
-                              className={`px-6 py-4 flex flex-col items-center gap-3 `}
+                            <Upload
+                              beforeUpload={() => false}
+                              id="takeoffReports"
+                              onChange={takeoffReportsUploadHandler}
+                              accept=".png,.jpg,.jpeg,.svg,application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                             >
-                              <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
-                                <Image
-                                  src={'/uploadcloud.svg'}
-                                  alt="upload icon"
-                                  width={20}
-                                  height={20}
-                                />
-                              </div>
-                              <div className="flex gap-2">
-                                <label
-                                  htmlFor="takeoffReports"
-                                  className={twMerge(
-                                    `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
-                                  )}
+                              <div
+                                className={`px-6 py-4 flex flex-col items-center gap-3 `}
+                              >
+                                <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
+                                  <Image
+                                    src={'/uploadcloud.svg'}
+                                    alt="upload icon"
+                                    width={20}
+                                    height={20}
+                                  />
+                                </div>
+                                <div className="flex gap-2">
+                                  <p
+                                    className={twMerge(
+                                      `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
+                                    )}
+                                  >
+                                    Click to Upload
+                                  </p>
+                                  <p className={`text-steelGray ${minHeading}`}>
+                                    or drag and drop
+                                  </p>
+                                </div>
+                                <p
+                                  className={`text-steelGray ${minHeading} text-center`}
                                 >
-                                  Click to Upload
-                                </label>
-                                <input
-                                  type="file"
-                                  name="otherDocuments"
-                                  id="takeoffReports"
-                                  className="hidden"
-                                  onChange={takeoffReportsUploadHandler}
-                                  accept="application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                                />
-                                <p className={`text-steelGray ${minHeading}`}>
-                                  or drag and drop
+                                  PDF, CSV, SVG, PNG, JPG or GIF (max.
+                                  800x400px)
                                 </p>
                               </div>
-                              <p className={`text-steelGray ${minHeading}`}>
-                                SVG, PNG, JPG or GIF (max. 800x400px)
-                              </p>
-                            </div>
+                            </Upload>
                           </div>
                         )}
                       </>
@@ -660,42 +667,42 @@ const CreateEstimateRequest = () => {
                           <div
                             className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg `}
                           >
-                            <div
-                              className={`px-6 py-4 flex flex-col items-center gap-3 `}
+                            <Upload
+                              id="otherDocuments"
+                              onChange={otherDocumentsUploadHandler}
+                              accept=".png,.jpg,.jpeg,.svg,application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                             >
-                              <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
-                                <Image
-                                  src={'/uploadcloud.svg'}
-                                  alt="upload icon"
-                                  width={20}
-                                  height={20}
-                                />
-                              </div>
-                              <div className="flex gap-2">
-                                <label
-                                  htmlFor="otherDocuments"
-                                  className={twMerge(
-                                    `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
-                                  )}
+                              <div
+                                className={`px-6 py-4 flex flex-col items-center gap-3 `}
+                              >
+                                <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
+                                  <Image
+                                    src={'/uploadcloud.svg'}
+                                    alt="upload icon"
+                                    width={20}
+                                    height={20}
+                                  />
+                                </div>
+                                <div className="flex gap-2">
+                                  <p
+                                    className={twMerge(
+                                      `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
+                                    )}
+                                  >
+                                    Click to Upload
+                                  </p>
+                                  <p className={`text-steelGray ${minHeading}`}>
+                                    or drag and drop
+                                  </p>
+                                </div>
+                                <p
+                                  className={`text-steelGray ${minHeading} text-center`}
                                 >
-                                  Click to Upload
-                                </label>
-                                <input
-                                  type="file"
-                                  name="otherDocuments"
-                                  id="otherDocuments"
-                                  className="hidden"
-                                  onChange={otherDocumentsUploadHandler}
-                                  accept="application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                                />
-                                <p className={`text-steelGray ${minHeading}`}>
-                                  or drag and drop
+                                  PDF, CSV, SVG, PNG, JPG or GIF (max.
+                                  800x400px)
                                 </p>
                               </div>
-                              <p className={`text-steelGray ${minHeading}`}>
-                                SVG, PNG, JPG or GIF (max. 800x400px)
-                              </p>
-                            </div>
+                            </Upload>
                           </div>
                         )}
                       </>

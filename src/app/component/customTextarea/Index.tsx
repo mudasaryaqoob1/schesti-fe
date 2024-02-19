@@ -1,8 +1,9 @@
 import React from 'react';
 import { Input } from 'antd';
-import { useField } from 'formik';
+import { ErrorMessage, useField } from 'formik';
 import { twMerge } from 'tailwind-merge';
 import clsx from 'clsx';
+import Errormsg from '../errorMessage';
 // import Errormsg from '../errorMessage';
 
 const Textarea = ({
@@ -37,7 +38,7 @@ const Textarea = ({
         {...field}
         {...props}
       />
-      {/* <ErrorMessage name={props.name} component={Errormsg} /> */}
+      <ErrorMessage name={props.name} component={Errormsg} />
     </div>
   );
 };

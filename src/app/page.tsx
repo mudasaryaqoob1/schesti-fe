@@ -149,27 +149,47 @@ export default function Home() {
           <div className="flex justify-center px-28 pt-[37px] pb-[57px] space-x-6">
             <CustomButton
               text="Estimating"
-              className={`!rounded-full !bg-transparent  ${tab === 'estimating' ? '!text-[#8449EB] !border-[#8449EB]' : '!text-[#718096] !border-[#718096]'}`}
+              className={`!rounded-full !bg-transparent  ${
+                tab === 'estimating'
+                  ? '!text-[#8449EB] !border-[#8449EB]'
+                  : '!text-[#718096] !border-[#718096]'
+              }`}
               onClick={() => setTab('estimating')}
             />
             <CustomButton
               text="Invoice"
-              className={`!rounded-full !bg-transparent  ${tab === 'invoice' ? '!text-[#8449EB] !border-[#8449EB]' : '!text-[#718096] !border-[#718096]'}`}
+              className={`!rounded-full !bg-transparent  ${
+                tab === 'invoice'
+                  ? '!text-[#8449EB] !border-[#8449EB]'
+                  : '!text-[#718096] !border-[#718096]'
+              }`}
               onClick={() => setTab('invoice')}
             />
             <CustomButton
               text="Subcontractor"
-              className={`!rounded-full !bg-transparent  ${tab === 'subcontractor' ? '!text-[#8449EB] !border-[#8449EB]' : '!text-[#718096] !border-[#718096]'}`}
+              className={`!rounded-full !bg-transparent  ${
+                tab === 'subcontractor'
+                  ? '!text-[#8449EB] !border-[#8449EB]'
+                  : '!text-[#718096] !border-[#718096]'
+              }`}
               onClick={() => setTab('subcontractor')}
             />
             <CustomButton
               text="Client"
-              className={`!rounded-full !bg-transparent  ${tab === 'client' ? '!text-[#8449EB] !border-[#8449EB]' : '!text-[#718096] !border-[#718096]'}`}
+              className={`!rounded-full !bg-transparent  ${
+                tab === 'client'
+                  ? '!text-[#8449EB] !border-[#8449EB]'
+                  : '!text-[#718096] !border-[#718096]'
+              }`}
               onClick={() => setTab('client')}
             />
             <CustomButton
               text="Meeting"
-              className={`!rounded-full !bg-transparent  ${tab === 'meeting' ? '!text-[#8449EB] !border-[#8449EB]' : '!text-[#718096] !border-[#718096]'}`}
+              className={`!rounded-full !bg-transparent  ${
+                tab === 'meeting'
+                  ? '!text-[#8449EB] !border-[#8449EB]'
+                  : '!text-[#718096] !border-[#718096]'
+              }`}
               onClick={() => setTab('meeting')}
             />
           </div>

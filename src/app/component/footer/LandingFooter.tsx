@@ -88,7 +88,9 @@ export default function LandingFooter() {
 
           <div className="flex justify-center py-2 ">
             <div
-              className={`flex items-center border rounded-full bg-white px-4 py-1 shadow-md ${formik.errors.email ? 'border-red-500' : ''}`}
+              className={`flex items-center border rounded-full bg-white px-4 py-1 shadow-md ${
+                formik.errors.email ? 'border-red-500' : ''
+              }`}
             >
               <input
                 className={`flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none  disabled:cursor-not-allowed disabled:opacity-50 flex-1 border-none
@@ -135,8 +137,10 @@ export default function LandingFooter() {
             height={20}
             alt="arrow"
             onClick={() => {
-              window.location.href =
-                'https://www.linkedin.com/company/schesti/';
+              window.open(
+                'https://www.linkedin.com/company/schesti/',
+                '_blank'
+              );
             }}
           />
           <Image
@@ -146,8 +150,10 @@ export default function LandingFooter() {
             alt="arrow"
             className="cursor-pointer"
             onClick={() => {
-              window.location.href =
-                'https://www.facebook.com/profile.php?id=61554839685900&mibextid=kFxxJDM';
+              window.open(
+                'https://www.facebook.com/profile.php?id=61554839685900&mibextid=kFxxJDM',
+                '_blank'
+              );
             }}
           />
           <Image src={'/IG.svg'} width={20} height={20} alt="fb" />

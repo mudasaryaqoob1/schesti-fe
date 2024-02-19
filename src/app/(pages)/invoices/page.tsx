@@ -51,7 +51,9 @@ export default function InvoicePage() {
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className={`${type === tab ? 'text-RoyalPurple' : 'text-black'}`}
+                    className={`${
+                      type === tab ? 'text-RoyalPurple' : 'text-black'
+                    }`}
                   />
                 ),
                 tabKey: type,

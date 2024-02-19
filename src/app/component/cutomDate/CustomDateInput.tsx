@@ -12,7 +12,8 @@ type Props = {
   inputStyle?: ClassValue;
   fieldProps?: DatePickerProps;
   hasError?: boolean;
-  defaultValue?:any
+  defaultValue?: any;
+  errorMessage?: string;
 };
 
 export function DateInputComponent({
@@ -23,7 +24,8 @@ export function DateInputComponent({
   hasError,
   inputStyle,
   fieldProps,
-  defaultValue
+  defaultValue,
+  errorMessage = '',
 }: Props) {
   return (
     <div>
@@ -59,7 +61,9 @@ export function DateInputComponent({
       />
       {/* //   )} */}
       {/* // </Field> */}
-      {/* <ErrorMessage name={name} component={ErrorMsg} /> */}
+      {hasError && (
+        <p className="text-red-500 text-xs mt-1.5">{errorMessage}</p>
+      )}
     </div>
   );
 }

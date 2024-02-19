@@ -15,6 +15,7 @@ import { InputComponent } from '@/app/component/customInput/Input';
 import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import { addNewMeetingAction } from '@/redux/meeting/meeting.slice';
 import Description from '@/app/component/description';
+import { SelectComponent } from '@/app/component/customSelect/Select.component';
 
 type Props = {
   showModal: boolean;
@@ -23,7 +24,10 @@ type Props = {
 
 const CreateMeetingSchema = Yup.object().shape({
   topic: Yup.string().required('Topic is required'),
-  email: Yup.string().email().required('Email is required'),
+  email: Yup.array()
+    .min(1)
+    .of(Yup.string().email('Invalid email\n').required('Email is required'))
+    .required('Email is required'),
   startDate: Yup.date().required('Start Time is required'),
 });
 
@@ -33,7 +37,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
   const formik = useFormik({
     initialValues: {
       topic: '',
-      email: '',
+      email: undefined,
       startDate: undefined,
     },
     validationSchema: CreateMeetingSchema,
@@ -46,7 +50,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
           endDate: dayjs(values.startDate)
             .add(40, 'minutes')
             .format('YYYY-MM-DDTHH:mm:ss'),
-          invitees: [values.email],
+          invitees: values.email as unknown as string[],
           roomName,
           link: `${process.env.NEXT_PUBLIC_APP_URL}/meeting/${roomName}`,
           topic: values.topic,
@@ -65,19 +69,24 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
         });
     },
   });
-
   // const disabledDate: RangePickerProps['disabledDate'] = (current) => {
   //   const isPreviousDay = current < dayjs().add(-1, 'days');
   //   const isPreviousHour = current < dayjs().add(-1, 'hour');
   //   const isPreviousMinute = current < dayjs().add(-1, 'minute');
   //   return isPreviousDay || isPreviousHour || isPreviousMinute;
   // };
+
+  function handleCloseModal() {
+    setShowModal();
+    formik.resetForm();
+  }
   return (
     <ModalComponent
       width="50%"
       open={showModal}
-      setOpen={setShowModal}
+      setOpen={handleCloseModal}
       title="Schedule a meeting"
+      destroyOnClose
     >
       <div className="bg-white border border-solid border-elboneyGray rounded-[4px] z-50">
         <div className="flex px-6 py-2.5 justify-between bg-mistyWhite">
@@ -89,7 +98,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
             className="cursor-pointer"
             width={24}
             height={24}
-            onClick={setShowModal}
+            onClick={handleCloseModal}
           />
         </div>
 
@@ -106,17 +115,31 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
                 onChange: formik.handleChange,
                 onBlur: formik.handleBlur,
               }}
+              errorMessage={formik.errors.topic}
             />
-            <InputComponent
+            <SelectComponent
               label="Invite"
-              type="email"
               placeholder="Client Email Address"
               name="email"
-              hasError={formik.touched.email && !!formik.errors.email}
+              hasError={formik.touched.email && Boolean(formik.errors.email)}
+              errorMessage={
+                formik.touched.email &&
+                Boolean(formik.errors.email) &&
+                Array.isArray(formik.errors.email)
+                  ? formik.errors.email.find(
+                      (item: string | undefined) => item && item.length > 0
+                    )
+                  : formik.errors.email
+              }
               field={{
+                mode: 'tags',
                 value: formik.values.email,
-                onChange: formik.handleChange,
+                onChange: (value) => formik.setFieldValue('email', value),
                 onBlur: formik.handleBlur,
+                status:
+                  formik.touched.email && Boolean(formik.errors.email)
+                    ? 'error'
+                    : undefined,
               }}
             />
             <DateInputComponent
@@ -124,6 +147,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
               name="startDate"
               inputStyle={'border-gray-200'}
               hasError={formik.touched.startDate && !!formik.errors.startDate}
+              errorMessage={formik.errors.startDate}
               fieldProps={{
                 showTime: { defaultValue: dayjs('00:00:00', 'HH:mm') },
                 value: formik.values.startDate
@@ -133,6 +157,10 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
                   formik.setFieldValue('startDate', date);
                 },
                 onBlur: formik.handleBlur,
+                status:
+                  formik.touched.startDate && Boolean(formik.errors.startDate)
+                    ? 'error'
+                    : undefined,
                 // disabledDate,
               }}
             />
@@ -143,7 +171,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
             <WhiteButton
               text="Cancel"
               className="!w-28"
-              onClick={setShowModal}
+              onClick={handleCloseModal}
             />
             <CustomButton
               text="Schedule"

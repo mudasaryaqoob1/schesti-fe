@@ -9,7 +9,6 @@ import {
   Modal,
   Table,
 } from 'antd';
-import CustomButton from '@/app/component/customButton/button';
 import PrimaryHeading from '@/app/component/headings/primary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { rowTemplate } from '../utils';
@@ -32,16 +31,15 @@ type Props = {
   // eslint-disable-next-line no-unused-vars
   sumColumns(rows: Array<string[]>, column: number): number;
   updateCellValue(_row: number, _column: number, _value: number | string): void;
-  onCancel: () => void;
-  onNext(): void;
+  children?: React.ReactNode;
 };
 
 export function G703Component({
   state,
   handleState,
   sumColumns,
-  onNext,
   updateCellValue,
+  children,
 }: Props) {
   function getCellValue(row: string[], column: number) {
     return row[column];
@@ -432,9 +430,7 @@ export function G703Component({
       </div>
       {/* END Spreadsheet */}
 
-      <div className="flex justify-end space-x-4 mt-8">
-        <CustomButton onClick={onNext} text="Next" className="!w-40" />
-      </div>
+      <div className="flex justify-end space-x-4 mt-8">{children}</div>
     </section>
   );
 }

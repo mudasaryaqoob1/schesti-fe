@@ -14,16 +14,15 @@ import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
 import Table, { type ColumnType } from 'antd/es/table';
 import ModalComponent from '@/app/component/modal';
-import ExistingSubContractor from './ExistingSubContractors';
+import ExistingSubContractor from './../../components/ExistingSubContractors';
 import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import { InputComponent } from '@/app/component/customInput/Input';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
-import { ConfigProvider, Divider } from 'antd';
+import { ConfigProvider, Divider, Skeleton } from 'antd';
 import { invoiceService } from '@/app/services/invoices.service';
 import { toast } from 'react-toastify';
 import { IInvoice } from '@/app/interfaces/invoices.interface';
-import { RootState } from '@/redux/store';
 
 const SubcontractorSchema = Yup.object({
   subContractorFirstName: Yup.string().required('First name is required!'),
@@ -65,7 +64,7 @@ const initialValues = {
   profitAndOverhead: 0,
   totalPayable: 0,
   discount: 0,
-  invoiceNumber: new Date().getTime(),
+  invoiceNumber: new Date().getTime().toString(),
   subContractorAddress: '',
   subContractorEmail: '',
   subContractorFirstName: '',
@@ -78,7 +77,7 @@ type InvoiceDetail = {
   quantity: number;
   unitCost: number;
   total: number;
-  _id: string;
+  id: string;
 };
 const EditSubcontractorInvoice = () => {
   const router = useRouter();
@@ -86,16 +85,14 @@ const EditSubcontractorInvoice = () => {
   const [details, setDetails] = useState<InvoiceDetail[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [isEditDetail, setIsEditDetail] = useState(false);
+  const [isFetchingInvoice, setIsFetchingInvoice] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const params = useParams();
-  const subcontractorInvoices = useSelector(
-    (state: RootState) => state.invoices.data
-  );
   const [invoiceData, setInvoiceData] = useState<IInvoice | null>(null);
   const { id } = params;
   const [detail, setDetail] = useState<InvoiceDetail>({
-    _id: '',
+    id: '',
     description: '',
     quantity: 0,
     unitCost: 0,
@@ -109,12 +106,26 @@ const EditSubcontractorInvoice = () => {
   }, [token]);
 
   useEffect(() => {
-    const invoice = subcontractorInvoices?.find((item: any) => item._id === id);
-    if (invoice) {
-      setInvoiceData(invoice);
-      setDetails(invoice.invoiceItems);
+    if (id) {
+      setIsFetchingInvoice(true);
+      invoiceService
+        .httpGetSubcontractorInvoiceById(id as string)
+        .then((res) => {
+          setInvoiceData(res.data!.invoice);
+          const items = res.data!.invoice.invoiceItems.map((i) => ({
+            ...i,
+            id: i._id,
+          }));
+          setDetails(items);
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          setIsLoading(false);
+          toast.error(err.response.data.message);
+          router.back();
+        });
     }
-  }, [id, subcontractorInvoices]);
+  }, [id]);
 
   const columns: ColumnType<InvoiceDetail>[] = [
     {
@@ -187,7 +198,7 @@ const EditSubcontractorInvoice = () => {
   // update detail
   function updateDetail(id: string, invoice: InvoiceDetail) {
     const newDetails = [...details];
-    const index = newDetails.findIndex((detail) => detail._id === id);
+    const index = newDetails.findIndex((detail) => detail.id === id);
     if (index !== -1) {
       newDetails[index] = invoice;
       setDetails(newDetails);
@@ -245,6 +256,10 @@ const EditSubcontractorInvoice = () => {
     }
   };
 
+  if (isFetchingInvoice && !invoiceData) {
+    return <Skeleton active />;
+  }
+
   return (
     <section className="mx-16 my-2">
       <Formik
@@ -267,17 +282,9 @@ const EditSubcontractorInvoice = () => {
               <ModalComponent open={showModal} setOpen={setShowModal}>
                 <ExistingSubContractor
                   setModalOpen={setShowModal}
-                  onSelectSubcontract={({
-                    address,
-                    companyRep,
-                    email,
-                    name,
-                    phone,
-                  }) => {
+                  onSelectSubcontract={({ address, email, name, phone }) => {
                     setFieldValue('subContractorAddress', address);
-                    setFieldValue('companyName', companyRep);
-                    setFieldValue('subContractorFirstName', name);
-                    console.log(phone);
+                    setFieldValue('subContractorCompanyName', name);
                     setFieldValue('subContractorEmail', email);
                     setFieldValue('subContractorPhoneNumber', Number(phone));
                   }}
@@ -333,6 +340,7 @@ const EditSubcontractorInvoice = () => {
                     type="number"
                     name="subContractorPhoneNumber"
                     placeholder="Enter phone number"
+                    min={0}
                   />
 
                   <FormControl
@@ -402,6 +410,7 @@ const EditSubcontractorInvoice = () => {
                         defaultValue: dayjs('2015-01-01', 'YYYY-MM-DD'),
                       }}
                       hasError={touched.issueDate && !!errors.issueDate}
+                      errorMessage={errors.issueDate}
                     />
                     <DateInputComponent
                       label="Due Date"
@@ -416,6 +425,7 @@ const EditSubcontractorInvoice = () => {
                         defaultValue: dayjs('2015-01-01', 'YYYY-MM-DD'),
                       }}
                       hasError={touched.dueDate && !!errors.dueDate}
+                      errorMessage={errors.dueDate}
                     />
                   </div>
                 </div>
@@ -492,10 +502,10 @@ const EditSubcontractorInvoice = () => {
                             className="!w-auto "
                             onClick={() => {
                               if (isEditDetail) {
-                                updateDetail(detail._id, detail);
+                                updateDetail(detail.id, detail);
                               } else {
                                 addDetail({
-                                  _id: new Date().getTime().toString(),
+                                  id: new Date().getTime().toString(),
                                   description: detail.description,
                                   quantity: detail.quantity,
                                   unitCost: detail.unitCost,
@@ -503,7 +513,7 @@ const EditSubcontractorInvoice = () => {
                                 });
                               }
                               setDetail({
-                                _id: '',
+                                id: '',
                                 description: '',
                                 quantity: 0,
                                 unitCost: 0,
@@ -552,6 +562,7 @@ const EditSubcontractorInvoice = () => {
                         <FormControl
                           control="input"
                           label="Discount"
+                          min={0}
                           type="number"
                           name="discount"
                           placeholder="Enter discount here"
@@ -562,6 +573,7 @@ const EditSubcontractorInvoice = () => {
                           control="input"
                           label="Taxes"
                           prefix="%"
+                          min={0}
                           type="number"
                           name="taxes"
                           placeholder="Enter taxes here"
@@ -570,6 +582,7 @@ const EditSubcontractorInvoice = () => {
                         <FormControl
                           control="input"
                           label="Profit and Overhead %"
+                          min={0}
                           type="number"
                           prefix="%"
                           name="profitAndOverhead"

@@ -1,9 +1,10 @@
 import React from 'react';
-import { useField } from 'formik';
+import { ErrorMessage, useField } from 'formik';
 import clsx from 'clsx';
 import { Input } from 'antd';
 import { EyeOutlined, EyeInvisibleOutlined } from '@ant-design/icons';
 import { twMerge } from 'tailwind-merge';
+import Errormsg from '../errorMessage';
 // import { InputStyleContainer } from "./Style";
 
 const PasswordField = (props: any) => {
@@ -49,7 +50,7 @@ const PasswordField = (props: any) => {
       />
       {/* )}
       </Field> */}
-      {/* <ErrorMessage name={name} component={ErrorMsg} /> */}
+      <ErrorMessage name={name} component={Errormsg} />
     </div>
   );
 };

@@ -33,7 +33,6 @@ export function Schedule({
 
   return (
     <section>
-     
       <div className=" flex items-center justify-between mt-4">
         <TertiaryHeading title="Schedule" className="text-lg tracking-wide" />
         <CustomButton
@@ -168,7 +167,7 @@ export function Schedule({
         updateWBsHandler={updateWbs}
       />
 
-{/* this category modal responsible to update existing div */}
+      {/* this category modal responsible to update existing div */}
       <CategoryModal
         categoryModal={categoryModal}
         setCategoryModal={setCategoryModal}

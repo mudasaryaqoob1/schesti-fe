@@ -5,14 +5,15 @@ import Image from 'next/image';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
-import { AppDispatch } from '@/redux/store';
+import { AppDispatch, RootState } from '@/redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCompanySubcontractors } from '@/redux/company/company.thunk';
+import { selectSubcontractLoading } from '@/redux/company/companySelector';
 import {
-  selectSubcontractLoading,
-  selectSubcontracters,
-} from '@/redux/company/companySelector';
-import { ISubcontract } from '@/app/interfaces/companyInterfaces/subcontractor.interface';
+  ISubcontract,
+  ISubcontractor,
+} from '@/app/interfaces/companyInterfaces/subcontractor.interface';
+import { NoDataComponent } from '@/app/component/noData/NoDataComponent';
 
 interface Props {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -25,9 +26,13 @@ const ExistingSubContractor = ({
 }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const subcontractLoading = useSelector(selectSubcontractLoading);
-  const subcontractData = useSelector(selectSubcontracters);
+  const subcontractData = useSelector(
+    (state: RootState) => state.companySubContractor?.data
+  );
+  const [search, setSearch] = useState('');
+
   const [selectedSubcontractId, setSelectedSubcontractId] = useState(
-    subcontractData?.[0]?._id
+    subcontractData ? subcontractData[0]._id : ''
   );
 
   const memoizedSetPerson = useCallback(async () => {
@@ -68,6 +73,8 @@ const ExistingSubContractor = ({
             id=""
             placeholder="Search..."
             className="w-full h-full bg-transparent outline-none"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
           />
           <Image
             src={'/search.svg'}
@@ -86,30 +93,44 @@ const ExistingSubContractor = ({
             />
           </div>
 
-          {!subcontractData || subcontractLoading ? (
+          {subcontractLoading ? (
             <h6 className="text-center">Loading...</h6>
+          ) : !subcontractData || subcontractData.length === 0 ? (
+            <NoDataComponent
+              title="Existing Subcontractors"
+              description="No Subcontractors Found"
+            />
           ) : (
-            subcontractData.map(({ _id, name }: any, i: number) => {
-              return (
-                <Fragment key={i}>
-                  <div className="border-b-lightGrayishBlue p-4 flex gap-4 items-center bg-snowWhite border">
-                    <input
-                      type="radio"
-                      name="client name"
-                      id={_id}
-                      onChange={() => setSelectedSubcontractId(_id)}
-                    />
-                    {/* <Image src={img} alt="client icon" width={30} height={30} /> */}
-                    <label htmlFor={_id} className="cursor-pointer">
-                      <SenaryHeading
-                        title={name}
-                        className="text-darkSteelBlue"
+            subcontractData
+              .filter((contractor) => {
+                if (!search) {
+                  return contractor;
+                }
+                return contractor.name
+                  .toLowerCase()
+                  .includes(search.toLowerCase());
+              })
+              .map(({ _id, name }, i: number) => {
+                return (
+                  <Fragment key={i}>
+                    <div className="border-b-lightGrayishBlue p-4 flex gap-4 items-center bg-snowWhite border">
+                      <input
+                        type="radio"
+                        name="client name"
+                        id={_id}
+                        onChange={() => setSelectedSubcontractId(_id)}
                       />
-                    </label>
-                  </div>
-                </Fragment>
-              );
-            })
+                      {/* <Image src={img} alt="client icon" width={30} height={30} /> */}
+                      <label htmlFor={_id} className="cursor-pointer">
+                        <SenaryHeading
+                          title={name}
+                          className="text-darkSteelBlue"
+                        />
+                      </label>
+                    </div>
+                  </Fragment>
+                );
+              })
           )}
         </div>
       </section>
@@ -125,11 +146,12 @@ const ExistingSubContractor = ({
         <div>
           <Button
             text="Add Subcontractor"
+            disabled={!selectedSubcontractId}
             onClick={() => {
               onSelectSubcontract(
-                subcontractData.find(
-                  ({ _id }: any) => _id === selectedSubcontractId
-                )
+                subcontractData!.find(
+                  ({ _id }) => _id === selectedSubcontractId
+                ) as unknown as ISubcontractor
               );
               setModalOpen(false);
             }}

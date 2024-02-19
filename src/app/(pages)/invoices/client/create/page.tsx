@@ -3,7 +3,6 @@ import { useLayoutEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { ConfigProvider, Tabs } from 'antd';
 import { useRouter, useSearchParams } from 'next/navigation';
-
 import { HttpService } from '@/app/services/base.service';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import TertiaryHeading from '@/app/component/headings/tertiary';
@@ -14,16 +13,19 @@ import { generateData } from './utils';
 import { G7State } from '@/app/interfaces/client-invoice.interface';
 import { clientInvoiceService } from '@/app/services/client-invoices.service';
 import { toast } from 'react-toastify';
+import CustomButton from '@/app/component/customButton/button';
+import WhiteButton from '@/app/component/customButton/white';
 
 const G703_KEY = 'G703';
 const G702_KEY = 'G702';
-
 export default function CreateClientInvoicePage() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   const router = useRouter();
   const token = useSelector(selectToken);
   const searchParams = useSearchParams();
   const invoiceName = searchParams.get('invoiceName');
   const [tab, setTab] = useState(G703_KEY);
+
   const [g7State, setG7State] = useState<G7State>({
     applicationNo: '',
     invoiceName: '',
@@ -180,7 +182,7 @@ export default function CreateClientInvoicePage() {
       .httpAddNewInvoice(data)
       .then((response) => {
         if (response.statusCode == 201) {
-          router.push('/invoices');
+          toast.success('Invoice created successfully');
         }
       })
       .catch(({ response }: any) => {
@@ -237,7 +239,9 @@ export default function CreateClientInvoicePage() {
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className={`${tab === type ? 'text-RoyalPurple' : 'text-black'}`}
+                    className={`${
+                      tab === type ? 'text-RoyalPurple' : 'text-black'
+                    }`}
                   />
                 ),
                 tabKey: type,
@@ -248,26 +252,35 @@ export default function CreateClientInvoicePage() {
                       handleState={handleG7State}
                       sumColumns={sumColumns}
                       updateCellValue={updateCellValue}
-                      onCancel={() => {
-                        router.back();
-                      }}
-                      onNext={() => {
-                        setTab(G702_KEY);
-                      }}
-                    />
+                    >
+                      <CustomButton
+                        onClick={() => setTab(G702_KEY)}
+                        text="Next"
+                        className="!w-40"
+                      />
+                    </G703Component>
                   ) : (
                     <G702Component
                       state={g7State}
                       handleState={handleG7State}
                       updateRetainage={updateRetainage}
                       sumColumns={sumColumns}
-                      onCancel={() => {
-                        setTab(G703_KEY);
-                      }}
-                      onNext={() => {
-                        handleSubmit(g7State);
-                      }}
-                    />
+                    >
+                      <WhiteButton
+                        onClick={() => {
+                          setTab(G703_KEY);
+                        }}
+                        text="Previous"
+                        className="!w-40"
+                      />
+                      <CustomButton
+                        text="Create"
+                        className="!w-48"
+                        onClick={() => {
+                          handleSubmit(g7State);
+                        }}
+                      />
+                    </G702Component>
                   ),
               };
             })}

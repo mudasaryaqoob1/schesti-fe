@@ -11,7 +11,11 @@ const Index: React.FC<SwitchBtnProps> = ({ isDuration, onChange }) => {
       className="inline-flex gap-6 items-center space-x-4 cursor-pointer dark:text-gray-100"
     >
       <span
-        className={`${tertiaryHeading} font-normal ${isDuration == 'monthly' ? 'text-black font-bold' : 'font-normal text-gray-400'}`}
+        className={`${tertiaryHeading} font-normal ${
+          isDuration == 'monthly'
+            ? 'text-black font-bold'
+            : 'font-normal text-gray-400'
+        }`}
       >
         Monthly
       </span>
@@ -27,7 +31,11 @@ const Index: React.FC<SwitchBtnProps> = ({ isDuration, onChange }) => {
         <div className="absolute inset-y-0 left-0 w-6 h-6 m-1 rounded-full shadow peer-checked:right-0 peer-checked:left-auto bg-snowWhite"></div>
       </span>
       <span
-        className={`${tertiaryHeading} font-normal ${isDuration == 'yearly' ? 'text-black font-bold' : 'font-normal text-gray-400'}`}
+        className={`${tertiaryHeading} font-normal ${
+          isDuration == 'yearly'
+            ? 'text-black font-bold'
+            : 'font-normal text-gray-400'
+        }`}
       >
         Yearly
       </span>

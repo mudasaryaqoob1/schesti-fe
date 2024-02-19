@@ -3,7 +3,6 @@ import { useLayoutEffect, useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useSelector } from 'react-redux';
-
 // module imports
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import Button from '@/app/component/customButton/white';
@@ -17,7 +16,7 @@ import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import { ConfigProvider, Divider } from 'antd';
 import ModalComponent from '@/app/component/modal';
-import ExistingSubContractor from './ExistingSubContractors';
+import ExistingSubContractor from '../components/ExistingSubContractors';
 import { useRouter } from 'next/navigation';
 import { InputComponent } from '@/app/component/customInput/Input';
 import {
@@ -46,15 +45,17 @@ const newClientSchema = Yup.object({
   issueDate: Yup.string().required('Issue date is required!'),
   dueDate: Yup.string().required('Due date is required!'),
 
-  invoiceItems: Yup.array().of(
-    Yup.object()
-      .shape({
-        description: Yup.string().required('Description is required!'),
-        quantity: Yup.number().required('Quantity is required!'),
-        unitCost: Yup.number().required('Unit cost is required!'),
-      })
-      .required('Invoice detail is required')
-  ),
+  invoiceItems: Yup.array()
+    .of(
+      Yup.object()
+        .shape({
+          description: Yup.string().required('Description is required!'),
+          quantity: Yup.number().required('Quantity is required!'),
+          unitCost: Yup.number().required('Unit cost is required!'),
+        })
+        .required('Invoice detail is required')
+    )
+    .required('Invoice detail is required'),
   discount: Yup.number().required('Discount is required!'),
   taxes: Yup.number().required('Taxes is required!'),
   profitAndOverhead: Yup.number().required('Profit and overhead is required!'),
@@ -70,7 +71,7 @@ const initialValues = {
   profitAndOverhead: 0,
   totalPayable: 0,
   discount: 0,
-  invoiceNumber: new Date().getTime(),
+  invoiceNumber: new Date().getTime().toString(),
   subContractorAddress: '',
   subContractorEmail: '',
   subContractorFirstName: '',
@@ -263,17 +264,9 @@ const CreateInvoice = () => {
               <ModalComponent open={showModal} setOpen={setShowModal}>
                 <ExistingSubContractor
                   setModalOpen={setShowModal}
-                  onSelectSubcontract={({
-                    address,
-                    companyRep,
-                    email,
-                    name,
-                    phone,
-                  }) => {
+                  onSelectSubcontract={({ address, email, name, phone }) => {
                     setFieldValue('subContractorAddress', address);
-                    setFieldValue('subContractorCompanyName', companyRep);
-                    setFieldValue('subContractorFirstName', name);
-                    console.log(phone);
+                    setFieldValue('subContractorCompanyName', name);
                     setFieldValue('subContractorEmail', email);
                     setFieldValue('subContractorPhoneNumber', Number(phone));
                   }}
@@ -329,6 +322,7 @@ const CreateInvoice = () => {
                     type="number"
                     name="subContractorPhoneNumber"
                     placeholder="Enter phone number"
+                    min={0}
                   />
 
                   <FormControl
@@ -396,6 +390,7 @@ const CreateInvoice = () => {
                         onBlur: handleBlur,
                       }}
                       hasError={touched.issueDate && !!errors.issueDate}
+                      errorMessage={errors.issueDate}
                     />
                     <DateInputComponent
                       label="Due Date"
@@ -408,6 +403,7 @@ const CreateInvoice = () => {
                         onBlur: handleBlur,
                       }}
                       hasError={touched.dueDate && !!errors.dueDate}
+                      errorMessage={errors.dueDate}
                     />
                   </div>
                 </div>
@@ -547,6 +543,7 @@ const CreateInvoice = () => {
                           name="discount"
                           prefix="%"
                           placeholder="Enter discount here"
+                          min={0}
                         />
 
                         <FormControl
@@ -555,6 +552,7 @@ const CreateInvoice = () => {
                           type="number"
                           name="taxes"
                           prefix="%"
+                          min={0}
                           placeholder="Enter taxes here"
                         />
 
@@ -563,6 +561,7 @@ const CreateInvoice = () => {
                           label="Profit and Overhead %"
                           type="number"
                           name="profitAndOverhead"
+                          min={0}
                           prefix="%"
                           placeholder="Enter profit and overhead here"
                         />

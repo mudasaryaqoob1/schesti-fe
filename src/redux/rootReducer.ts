@@ -21,13 +21,13 @@ import meetingReducer from './meeting/meeting.slice';
 export type RootState = {
   auth: typeof authReducer;
   companyClient: any;
-  companySubContractor: any;
+  companySubContractor: typeof subContractorReducer;
   estimates: any;
   supportTickets: any;
   settingTargets: any;
   user: any;
   pricingPlan: any;
-  companySetupCategory: any;
+  companySetupCategory: typeof companySetupCategoryReducer;
   companySetupSubcategory: any;
   materials: any;
   invoices: typeof invoiceReducer;

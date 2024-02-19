@@ -31,8 +31,8 @@ const EstimateSchedule = () => {
       const estimatedScope =
         await estimateRequestService.httpGetGeneratedEstimateDetail(estimateId);
 
-        console.log(estimatedScope , 'estimatedScopeestimatedScope');
-        
+      console.log(estimatedScope, 'estimatedScopeestimatedScope');
+
       let scheduleProject: any = {
         projectName:
           estimatedScope.data.generatedEstimates?.estimateRequestIdDetail

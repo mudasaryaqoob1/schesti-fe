@@ -45,7 +45,7 @@ const CategoryTable = () => {
       HttpService.setToken(token);
     }
   }, [token]);
-
+  console.log(selectCompanySetupData);
   const columns: ColumnsType<DataType> = [
     {
       title: 'Category  ID',
