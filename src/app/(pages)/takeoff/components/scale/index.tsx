@@ -28,7 +28,7 @@ interface Props {
 }
 
 const ScaleModal = ({ setModalOpen }: Props) => {
-  const [value, setValue] = useState(1);
+  const [value, setValue] = useState('present');
   const [secMeter, setSecMeter] = useState('');
   const [meter, setMeter] = useState('');
   const [precision, setPrecision] = useState('');
@@ -69,8 +69,8 @@ const ScaleModal = ({ setModalOpen }: Props) => {
             <div className="flex flex-row gap-6">
               <label>Scale:</label>
               <Radio.Group onChange={onChange} value={value}>
-                <Radio value={1}>Present</Radio>
-                <Radio value={2}>Custom</Radio>
+                <Radio value={'present'}>Present</Radio>
+                <Radio value={'custom'}>Custom</Radio>
               </Radio.Group>
             </div>
             <div>
@@ -78,34 +78,38 @@ const ScaleModal = ({ setModalOpen }: Props) => {
             </div>
           </div>
           <div className="flex gap-4 items-center justify-end">
-            <Select className="w-[115px]" defaultValue={1}>
-              <Select.Option value={1}>1</Select.Option>
-            </Select>
-            <Select
-              value={meter}
-              className="w-[115px]"
-              onChange={(value) => setMeter(value)}
-            >
-              {meters.map((item) => (
-                <Select.Option key={item} value={item}>
-                  {item}
-                </Select.Option>
-              ))}
-            </Select>
-            <Select className="w-[115px]" defaultValue={1}>
-              <Select.Option value={1}>1</Select.Option>
-            </Select>
-            <Select
-              value={secMeter}
-              className="w-[115px]"
-              onChange={(value) => setSecMeter(value)}
-            >
-              {secondaryMeters.map((item) => (
-                <Select.Option key={item} value={item}>
-                  {item}
-                </Select.Option>
-              ))}
-            </Select>
+            {value === 'custom' && (
+              <>
+                <Select className="w-[115px]" defaultValue={1}>
+                  <Select.Option value={1}>1</Select.Option>
+                </Select>
+                <Select
+                  value={meter}
+                  className="w-[115px]"
+                  onChange={(value) => setMeter(value)}
+                >
+                  {meters.map((item) => (
+                    <Select.Option key={item} value={item}>
+                      {item}
+                    </Select.Option>
+                  ))}
+                </Select>
+                <Select className="w-[115px]" defaultValue={1}>
+                  <Select.Option value={1}>1</Select.Option>
+                </Select>
+                <Select
+                  value={secMeter}
+                  className="w-[115px]"
+                  onChange={(value) => setSecMeter(value)}
+                >
+                  {secondaryMeters.map((item) => (
+                    <Select.Option key={item} value={item}>
+                      {item}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </>
+            )}
           </div>
           <div className="flex gap-6 items-center">
             <label>Precision:</label>

@@ -27,11 +27,53 @@ const Dynamic: React.FC<Props> = ({ setModalOpen }) => {
         <div className="mt-4 flex flex-col gap-4">
           <div className="flex flex-col">
             <label>Define :</label>
-            <div className="flex flex-row"></div>
+            <div className="flex flex-col py-2 gap-2">
+              <div className="flex flex-row gap-3">
+                <div className="bg-white px-[15px] py-[11px] rounded-lg ">
+                  <Image src={'/dyn1.svg'} alt="s" width={18} height={18} />
+                </div>
+                <div className="bg-white px-[15px] py-[11px] rounded-lg ">
+                  <Image src={'/dyn2.svg'} alt="s" width={18} height={18} />
+                </div>
+              </div>
+              <div className="flex flex-row gap-3">
+                <div className="bg-white px-[15px] py-[11px] rounded-lg ">
+                  <Image src={'/dyn3.svg'} alt="s" width={18} height={18} />
+                </div>
+                <div className="bg-white px-[15px] py-[11px] rounded-lg ">
+                  <Image src={'/dyn4.svg'} alt="s" width={18} height={18} />
+                </div>
+              </div>
+            </div>
           </div>
           <div className="flex flex-col">
             <label>Create :</label>
-            <div className="flex flex-row"></div>
+            <div className="flex flex-col py-2 gap-2">
+              <div className="flex flex-row gap-3">
+                <div className="bg-white px-[15px] py-[11px] rounded-lg ">
+                  <Image src={'/create1.svg'} alt="s" width={18} height={18} />
+                </div>
+                <div className="bg-white px-[15px] py-[11px] rounded-lg ">
+                  <Image src={'/volume.svg'} alt="s" width={18} height={18} />
+                </div>
+              </div>
+              <div className="flex flex-row gap-3">
+                <div className="bg-white px-[15px] py-[11px] rounded-lg ">
+                  <Image src={'/create3.svg'} alt="s" width={18} height={18} />
+                </div>
+                <div className="bg-white px-[15px] py-[11px] rounded-lg ">
+                  <Image src={'/create4.svg'} alt="s" width={18} height={18} />
+                </div>
+              </div>
+              <div className="flex flex-row gap-3">
+                <div className="bg-white px-[15px] py-[11px] rounded-lg ">
+                  <Image src={'/create5.svg'} alt="s" width={18} height={18} />
+                </div>
+                <div className="bg-white px-[15px] py-[11px] rounded-lg ">
+                  <Image src={'/create6.svg'} alt="s" width={18} height={18} />
+                </div>
+              </div>
+            </div>
           </div>
           <div className="flex flex-col gap-2">
             <Button
