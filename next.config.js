@@ -9,12 +9,14 @@
 // module.exports = nextConfig;
 
 module.exports = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   webpack: (config) => {
     config.module.rules.push({
       test: /\.svg$/,
       use: ['@svgr/webpack'],
     });
+
+    config.externals.push({ canvas: 'commonjs canvas' });
 
     return config;
   },
