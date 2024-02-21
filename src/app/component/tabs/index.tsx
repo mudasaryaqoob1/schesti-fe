@@ -40,10 +40,10 @@ const Tabs = () => {
                 flex items-stretch justify-center py-2 
                  cursor-pointer
                 `,
-              pathname.includes('#'.split('/')[1]) && tabsStyle.active
+              pathname === '/dashboard' && tabsStyle.active
             )
           )}
-          onClick={() => router.push('#')}
+          onClick={() => router.push('/dashboard')}
         >
           Dashboard
         </li>
@@ -69,7 +69,7 @@ const Tabs = () => {
                  cursor-pointer
                 `,
               pathname.includes('/subcontractor'.split('/')[1]) &&
-                tabsStyle.active
+              tabsStyle.active
             )
           )}
           onClick={() => router.push('/subcontractor')}
@@ -105,7 +105,7 @@ const Tabs = () => {
                      cursor-pointer
                     `,
                   pathname.includes('/estimates'.split('/')[1]) &&
-                    tabsStyle.active
+                  tabsStyle.active
                 )
               )}
             >
