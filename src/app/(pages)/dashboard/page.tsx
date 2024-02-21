@@ -2,6 +2,9 @@
 import Image from "next/image";
 import ProjectsReport from "./components/ProjectReport";
 import SenaryHeading from "@/app/component/headings/senaryHeading";
+import { InvoiceReport } from "./components/InvoiceReport";
+import { SelectComponent } from "@/app/component/customSelect/Select.component";
+import { StatisticsReport } from "./components/StatisticsReport";
 const Dashboard = () => {
   return <section className="my-4  mx-8 px-4">
     <div className="grid grid-cols-4 gap-3 my-3">
@@ -68,11 +71,29 @@ const Dashboard = () => {
     </div>
 
     <div className="grid grid-cols-12 gap-3">
-      <div className="col-span-8"></div>
-      <div className="col-span-4 p-3 shadow-md bg-white rounded-md px-4">
-        <h3 className="text-[18px] text-[#344054] leading-[28px] font-semibold">
-          Projects
-        </h3>
+      <div className="col-span-8 p-3 shadow-md bg-white rounded-md px-4">
+        <div className="flex justify-between items-center mb-4">
+
+          <h3 className="text-[18px] text-[#344054] leading-[28px] font-semibold">
+            Projects
+          </h3>
+          <SelectComponent
+            label=""
+            name="month"
+            field={{
+              options: [{ label: "January", value: "January" }, { label: "February", value: "February" }],
+            }}
+            placeholder="Month"
+          />
+        </div>
+        <InvoiceReport />
+      </div>
+      <div className="col-span-4 flex flex-col justify-between p-3 shadow-md bg-white rounded-md px-4">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-[18px] text-[#344054] leading-[28px] font-semibold">
+            Invoice
+          </h3>
+        </div>
         <ProjectsReport />
         <div className="p-5">
           <div className="flex justify-between">
@@ -119,6 +140,40 @@ const Dashboard = () => {
         </div>
       </div>
 
+    </div>
+
+    <div className="my-4 shadow-md bg-white rounded-md p-4">
+      <div className="flex justify-between items-center">
+        <h3 className="text-[18px] text-[#344054] leading-[28px] font-semibold">
+          Statistics
+        </h3>
+        <div className="p-5 flex items-center space-x-4">
+          <div className="flex justify-between">
+            <div className="flex gap-3 items-center">
+              <span className="w-3 h-3 bg-[#7F56D9]" />
+              <SenaryHeading title="Takeoff" />
+            </div>
+
+          </div>
+          <div className="flex justify-between">
+            <div className="flex gap-3 items-center">
+              <span className="w-3 h-3 bg-[#EF9F28]" />
+
+              <SenaryHeading title="Estimate" />
+            </div>
+
+          </div>
+          <div className="flex justify-between">
+            <div className="flex gap-3 items-center">
+              <span className="w-3 h-3 bg-[#27AE60]" />
+
+              <SenaryHeading title="Scheduled " />
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <StatisticsReport />
     </div>
   </section>;
 };
