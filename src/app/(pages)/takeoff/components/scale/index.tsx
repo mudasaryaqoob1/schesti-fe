@@ -23,15 +23,46 @@ const secondaryMeters = [
   'km',
 ];
 
+const byDefaultPerest = [
+  `1'=1'`,
+  `1/32'=1'-0'`,
+  `1/16'=1'-0'`,
+  `3/32'=1'0'`,
+  `1/8=1'-0'`,
+  `3/16'=1'-0'`,
+  `1/4'=1'-0'`,
+  `1/2'=1'-0'`,
+  `3/4'=1'-0'`,
+  `1'=1'-0'`,
+  `11/2'=1'-0'`,
+
+  `1'=80'`,
+  `1'=90'`,
+  `1'=100'`,
+  `1'=200'`,
+  `1'=300'`,
+  `1'=400'`,
+
+  `1:1`,
+  `1:10`,
+  `1:20`,
+  `1:50`,
+  `1:100`,
+  `1:200`,
+  `1:500`,
+  `1:1000`,
+];
+
 interface Props {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ScaleModal = ({ setModalOpen }: Props) => {
-  const [value, setValue] = useState('present');
+  const [value, setValue] = useState('preset');
   const [secMeter, setSecMeter] = useState('');
   const [meter, setMeter] = useState('');
   const [precision, setPrecision] = useState('');
+  const [preset, setPreset] = useState('');
 
   const onChange = (e: RadioChangeEvent) => {
     setValue(e.target.value);
@@ -69,15 +100,30 @@ const ScaleModal = ({ setModalOpen }: Props) => {
             <div className="flex flex-row gap-6">
               <label>Scale:</label>
               <Radio.Group onChange={onChange} value={value}>
-                <Radio value={'present'}>Present</Radio>
+                <Radio value={'preset'}>Present</Radio>
                 <Radio value={'custom'}>Custom</Radio>
               </Radio.Group>
             </div>
-            <div>
-              <WhiteButton text="Add to Preset" />
-            </div>
+            {value === 'custom' && (
+              <div>
+                <WhiteButton text="Add to Preset" />
+              </div>
+            )}
           </div>
           <div className="flex gap-4 items-center justify-end">
+            {value === 'preset' && (
+              <Select
+                className="w-full"
+                value={preset}
+                onChange={(value) => setPreset(value)}
+              >
+                {byDefaultPerest.map((item) => (
+                  <Select.Option key={item} value={item}>
+                    {item}
+                  </Select.Option>
+                ))}
+              </Select>
+            )}
             {value === 'custom' && (
               <>
                 <Select className="w-[115px]" defaultValue={1}>
