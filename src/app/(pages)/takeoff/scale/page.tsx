@@ -208,18 +208,14 @@ const Scale = () => {
       </div>
 
       <div className="py-6 h-[709px] relative">
-        <div>
-          <div className="absolute">
-            <div className={`${showModal ? 'block' : 'hidden'}`}>
-              <ModalsWrapper
-                scale={scale}
-                setModalOpen={setShowModal}
-                measurements={measurements}
-              />
-            </div>
-          </div>
+        <div className={`absolute ${showModal ? 'block' : 'hidden'}`}>
+          <ModalsWrapper
+            scale={scale}
+            setModalOpen={setShowModal}
+            measurements={measurements}
+          />
         </div>
-        <div className="relative h-[527px] overflow-y-auto">
+        <div className="h-[527px] overflow-y-auto">
           {uploadFileData.map((file, index) => (
             <Draw
               key={`draw-${index}`}
