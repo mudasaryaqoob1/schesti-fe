@@ -60,23 +60,23 @@ const Summary = ({ setPrevNext }: Props) => {
     estimateScope: Object[];
   }>();
   const [isLoading, setIsLoading] = useState(false);
-  const [subcostRecord, setSubcostRecord] = useState<Number>(0);
-  const [totalCostRecord, setTotalCostRecord] = useState<any>(0);
-  const [totalCostBaseRecord, setTotalCostBaseRecord] = useState<any>(0);
+  const [subTotalcostRecord, setSubTotalCostRecord] = useState<number | string>(
+    0
+  );
+  const [subcontractorCosts, setSubcontractorCosts] = useState<any>({});
+  const [totalCostRecord, setTotalCostRecord] = useState<number>(0);
   const [estimatesRecords, setEstimatesRecords] = useState([]);
   const [totalMaterialBaseCost, setTotalMaterialBaseCost] = useState(0);
-  const [initialTotalMaterialBaseCost, setInitialTotalMaterialBaseCost] =
-    useState(0);
-  const [totalMaterialCost, setTotalMaterialCost] = useState(0);
-  const [subcontractorCosts, setSubcontractorCosts] = useState<any>({});
-  const [totalBidDetail, setTotalBidDetail] = useState<any>({
-    overheadAndProfit: 0,
-    bondFee: 0,
-  });
-  const [totalBaseBidDetail, setTotalBaseBidDetail] = useState({
-    overheadAndProfit: totalCostBaseRecord,
-    bondFee: totalCostBaseRecord,
-  });
+
+  const [materialPercentage, setMaterialPercentage] = useState<number | string>(
+    5
+  );
+  const [overHeadProfitPercentage, setOverHeadProfitPercentage] = useState<
+    number | string
+  >(5);
+  const [bondFeePercentage, setBondFeePercentage] = useState<number | string>(
+    5
+  );
 
   useEffect(() => {
     setEstimateDetailsSummary(generateEstimateDetail);
@@ -121,59 +121,38 @@ const Summary = ({ setPrevNext }: Props) => {
       );
 
       setEstimatesRecords(updatedDataArray);
-      setSubcostRecord(totalCostForAllRecords);
-      setTotalCostBaseRecord(totalCostForAllRecords);
+      setSubTotalCostRecord(totalCostForAllRecords);
       setTotalCostRecord(totalCostForAllRecords);
       setTotalMaterialBaseCost(totalMaterialCostForAllRecord);
-      setInitialTotalMaterialBaseCost(totalMaterialCostForAllRecord);
     }
   }, [generateEstimateDetail]);
 
-  const getPercentageOnMaterialTax = (value: number) => {
-    if (value > 0) {
-      const updatedTotalCostRecord =
-        initialTotalMaterialBaseCost -
-        (value * initialTotalMaterialBaseCost) / 100;
-      if (!isNaN(updatedTotalCostRecord)) {
-        setTotalMaterialBaseCost(Number(updatedTotalCostRecord.toFixed(2)));
-      }
-    } else {
-      setTotalMaterialBaseCost(initialTotalMaterialBaseCost);
-    }
+  const calculatePercentqge = (
+    value: number | string,
+    percentage: number | string
+  ) => {
+    value = Number(value);
+    percentage = Number(percentage);
+    return (percentage * value) / 100;
   };
 
-  useEffect(() => {
-    handleDetailChange('overheadAndProfit', totalBidDetail.overheadAndProfit);
-  }, [totalBidDetail.overheadAndProfit]);
-
-  useEffect(() => {
-    handleDetailChange('bondFee', totalBidDetail.bondFee);
-  }, [totalBidDetail.bondFee]);
-
-  useEffect(() => {
-    const sum: any = Object.values(totalBaseBidDetail).reduce(
-      (accumulator: any, currentValue: any) => accumulator + currentValue,
-      0
-    );
-    if (sum > 0) {
-      setTotalCostRecord(sum);
-    }
-  }, [totalBaseBidDetail]);
-
-  const handleDetailChange = (key: any, value: any) => {
-    const updatedTotalCostRecord =
-      totalCostBaseRecord + (value * totalCostBaseRecord) / 100;
-    if (!isNaN(updatedTotalCostRecord)) {
-      const cost = { ...totalCostRecord };
-      cost[key] = updatedTotalCostRecord;
-      setTotalBaseBidDetail({ ...cost });
-    }
-  };
+  // const getPercentageOnMaterialTax = (value: number) => {
+  //   if (value > 0) {
+  //     const updatedTotalCostRecord =
+  //       initialTotalMaterialBaseCost -
+  //       (value * initialTotalMaterialBaseCost) / 100;
+  //     if (!isNaN(updatedTotalCostRecord)) {
+  //       setTotalMaterialBaseCost(Number(updatedTotalCostRecord.toFixed(2)));
+  //     }
+  //   } else {
+  //     setTotalMaterialBaseCost(initialTotalMaterialBaseCost);
+  //   }
+  // };
 
   const generateBidHandler = async () => {
     setIsLoading(true);
     let obj = {
-      totalBidDetail: { ...totalBidDetail, materialTax: totalMaterialBaseCost },
+      totalBidDetail: { materialTax: totalMaterialBaseCost },
       totalCost: totalCostRecord,
       estimateRequestIdDetail: estimateId,
       estimateScope: generateEstimateDetail.estimateScope,
@@ -416,7 +395,7 @@ const Summary = ({ setPrevNext }: Props) => {
                         />
                       </div>
                       <QuaternaryHeading
-                        title={`Total Cost: ${estimate.totalCostForTitle}`}
+                        title={`Total Cost: $${estimate.totalCostForTitle}`}
                         className="font-semibold"
                       />
                     </div>
@@ -435,14 +414,17 @@ const Summary = ({ setPrevNext }: Props) => {
             <div className="flex items-center justify-between">
               <MinDesc title="Sub Total Cost" className="text-darkgrayish" />
               <Description
-                title={`$${subcostRecord}`}
+                title={`$${subTotalcostRecord}`}
                 className="font-medium"
               />
             </div>
-            <div className="flex items-center justify-between">
+            <div className="grid grid-cols-3 items-center">
               <MinDesc title="Material Tax %" className="text-darkgrayish" />
               <MinDesc
-                title={`$${totalMaterialBaseCost}`}
+                title={`$${calculatePercentqge(
+                  totalMaterialBaseCost,
+                  materialPercentage
+                )}`}
                 className="text-darkgrayish"
               />
               <InputComponent
@@ -453,17 +435,24 @@ const Summary = ({ setPrevNext }: Props) => {
                 name="materialTax"
                 placeholder="Enter Material Tax"
                 field={{
-                  value: totalMaterialCost,
-                  onChange: (e) => {
-                    setTotalMaterialCost(Number(e.target.value));
-                    getPercentageOnMaterialTax(Number(e.target.value));
-                  },
+                  value: materialPercentage.toString(),
+                  onChange: (e) => setMaterialPercentage(e.target.value),
                 }}
               />
             </div>
-            <div className="flex items-center justify-between">
+            <div className="grid grid-cols-3 items-center">
               <MinDesc
                 title="Overhead & Profit %"
+                className="text-darkgrayish"
+              />
+              <MinDesc
+                title={`$${(
+                  calculatePercentqge(
+                    subTotalcostRecord,
+                    overHeadProfitPercentage
+                  ) +
+                  calculatePercentqge(totalMaterialBaseCost, materialPercentage)
+                ).toFixed(2)}`}
                 className="text-darkgrayish"
               />
               <InputComponent
@@ -474,18 +463,27 @@ const Summary = ({ setPrevNext }: Props) => {
                 name="overheadAndProfit"
                 placeholder="Enter Overhead & Profit"
                 field={{
-                  value: totalBidDetail.overheadAndProfit,
-                  onChange: (e) => {
-                    setTotalBidDetail({
-                      ...totalBidDetail,
-                      overheadAndProfit: e.target.value,
-                    });
-                  },
+                  value: 5,
+                  onChange: (e) => setOverHeadProfitPercentage(e.target.value),
                 }}
               />
             </div>
-            <div className="flex items-center justify-between">
+            <div className="grid grid-cols-3 items-center">
               <MinDesc title="Bond Fee %" className="text-darkgrayish" />
+              <MinDesc
+                title={`$${(
+                  calculatePercentqge(subTotalcostRecord, bondFeePercentage) +
+                  calculatePercentqge(
+                    totalMaterialBaseCost,
+                    materialPercentage
+                  ) +
+                  calculatePercentqge(
+                    subTotalcostRecord,
+                    overHeadProfitPercentage
+                  )
+                ).toFixed(2)}`}
+                className="text-darkgrayish"
+              />
               <InputComponent
                 suffix={<PercentageOutlined />}
                 prefix={<p>$</p>}
@@ -494,13 +492,8 @@ const Summary = ({ setPrevNext }: Props) => {
                 name="bondFee"
                 placeholder="Enter Bond Fee"
                 field={{
-                  value: totalBidDetail.bondFee,
-                  onChange: (e) => {
-                    setTotalBidDetail({
-                      ...totalBidDetail,
-                      bondFee: e.target.value,
-                    });
-                  },
+                  value: bondFeePercentage.toString(),
+                  onChange: (e) => setBondFeePercentage(e.target.value),
                 }}
               />
             </div>
@@ -512,7 +505,27 @@ const Summary = ({ setPrevNext }: Props) => {
           <div className="flex items-center w-full justify-between max-w-lg">
             <QuaternaryHeading title="Total Bid" className="font-semibold" />
             <Description
-              title={`$${totalCostRecord}`}
+              title={`$${(
+                totalCostRecord +
+                calculatePercentqge(totalMaterialBaseCost, materialPercentage) +
+                (calculatePercentqge(
+                  subTotalcostRecord,
+                  overHeadProfitPercentage
+                ) +
+                  calculatePercentqge(
+                    totalMaterialBaseCost,
+                    materialPercentage
+                  )) +
+                (calculatePercentqge(subTotalcostRecord, bondFeePercentage) +
+                  calculatePercentqge(
+                    totalMaterialBaseCost,
+                    materialPercentage
+                  ) +
+                  calculatePercentqge(
+                    subTotalcostRecord,
+                    overHeadProfitPercentage
+                  ))
+              ).toFixed(2)}`}
               className="font-semibold"
             />
           </div>
