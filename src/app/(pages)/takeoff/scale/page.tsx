@@ -100,12 +100,18 @@ export const defaultMeasurements: Measurements = {
 
 const Units = [11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72];
 
+// const selectedScale = {
+//   "1" : {scale:  `3/8"=1'-0"`, precision: `1/34` }
+//   "2" : {scale:  `3/8"=1'-0"`, precision: `1/34` }
+//   "3" : {scale:  `3/8"=1'-0"`, precision: `1/34` }
+// }
+
 const Scale = () => {
   const [scale, setScale] = useState<ScaleLabel>('scale');
   const [showModal, setShowModal] = useState(false);
   const [border, setBorder] = useState<number>(4);
   const [color, setColor] = useState<string>('#1677ff');
-  const [unit, setUnit] = useState<number>(18);
+  const [unit, setUnit] = useState<number>(14);
   const [depth, setDepth] = useState<number>(0);
   const [measurements, setMeasurements] =
     useState<Measurements>(defaultMeasurements);
@@ -223,7 +229,7 @@ const Scale = () => {
               depth={depth}
               color={color}
               border={border}
-              unit={unit}
+              unit={unit * 1.5}
               uploadFileData={file}
               pageNumber={index + 1}
               handleChangeMeasurements={(measurements) =>

@@ -35,7 +35,7 @@ const Length: React.FC<Props> = ({ setModalOpen, measurements }) => {
           <div className="flex flex-row items-center justify-between ">
             <label>Segment</label>
             <div className="w-[92px]">
-              <Input value={measurements.segment} className="!rounded-md" />
+              <Input value={measurements.parameter} className="!rounded-md" />
             </div>
           </div>
         </div>

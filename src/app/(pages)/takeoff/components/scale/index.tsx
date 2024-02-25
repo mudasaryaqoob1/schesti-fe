@@ -8,7 +8,7 @@ import type { RadioChangeEvent } from 'antd';
 import { useState } from 'react';
 
 const precisions = ['1', '0.1', '0.01', ' 0.001', '0.0001', '0.00001'];
-const byPrecision = ['1', '1 / 2', '1 / 4', '1 / 8', '1 / 16', '1 / 32'];
+const byPrecision = ['1', '1/2', '1/4', '1/8', '1/16', '1/32'];
 const meters = ['in', 'cm', 'mm'];
 const secondaryMeters = [
   'in',

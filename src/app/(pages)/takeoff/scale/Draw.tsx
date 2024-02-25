@@ -7,6 +7,7 @@ import {
   Line,
   Group,
   Text as KonvaText,
+  Arrow,
 } from 'react-konva';
 import { UploadFileData } from '../context/UploadFileContext';
 import { useDraw } from '@/app/hooks';
@@ -320,8 +321,18 @@ const Draw: React.FC<Props> = ({
         position?.y || 0,
       ]);
 
+      const parameter = calcLineDistance(
+        [
+          currentLine.startingPoint.x,
+          currentLine.startingPoint.y,
+          position?.x || 0,
+          position?.y || 0,
+        ],
+        true
+      ) as string;
       handleChangeMeasurements({
         angle,
+        ...(selected === 'length' && { parameter }),
         ...(completingLine.endingPoint
           ? {
               parameter: calculatePolygonPerimeter([
@@ -334,6 +345,14 @@ const Draw: React.FC<Props> = ({
                 completingLine.endingPoint.x,
                 completingLine.endingPoint.y,
               ]),
+              volume: calculatePolygonVolume(
+                [
+                  ...polyLine.points,
+                  completingLine.endingPoint.x,
+                  completingLine.endingPoint.y,
+                ],
+                depth
+              ),
             }
           : 0),
       });
@@ -349,6 +368,7 @@ const Draw: React.FC<Props> = ({
 
   return (
     <div
+      className="outline-none"
       tabIndex={1}
       onKeyDown={(e) => {
         if (e.key === 'Escape') {
@@ -408,7 +428,7 @@ const Draw: React.FC<Props> = ({
       <Stage
         width={uploadFileData.width || 600}
         height={uploadFileData.height || 600}
-        className="flex justify-center cursor-pointer border-0"
+        className="flex justify-center cursor-pointer"
       >
         <Layer onMouseDown={handleMouseDown} onMouseMove={handleMouseMove}>
           <KonvaImage
@@ -418,9 +438,8 @@ const Draw: React.FC<Props> = ({
           />
           {/* Drawing Line */}
           {draw.line.map(({ textUnit, ...rest }, index) => {
-            // const circles = convertArrayIntoChunks(line.points);
             const id = `line-${index}`;
-            const lineDistance = calcLineDistance(rest.points);
+            const lineDistance = calcLineDistance(rest.points, true);
             const lineMidPoint = calculateMidpoint(rest.points);
 
             return (
@@ -432,19 +451,15 @@ const Draw: React.FC<Props> = ({
                   setSelectedShape(e.currentTarget.attrs?.id || '');
                 }}
               >
-                <Line
+                <Arrow
                   key={index}
                   {...rest}
                   lineCap="round"
                   dash={selectedShape === id ? [10, 10] : []}
                   stroke={selectedShape === id ? 'maroon' : rest.stroke}
+                  pointerAtEnding={true}
+                  pointerAtBeginning={true}
                 />
-                {/* {circles.map((circle: number[]) => {
-                  const [x, y] = circle;
-                  return (
-                    <Circle key={x + y} x={x} y={y} fill="#ff0000" radius={4} />
-                  );
-                })} */}
                 <KonvaText
                   {...lineMidPoint}
                   fontSize={textUnit}
@@ -520,32 +535,7 @@ const Draw: React.FC<Props> = ({
             );
           })}
 
-          {!!polyLine.points.length && (
-            <Group>
-              <Line {...polyLine} />
-              {/* {polygonArea && (
-                <>
-                  <KonvaText
-                    {...polygonCenter}
-                    fontSize={unit}
-                    text={polygonText}
-                    offsetX={30}
-                    fill="red"
-                    fontStyle="bold"
-                  />
-                  <KonvaText
-                    x={40}
-                    y={480}
-                    fontSize={unit}
-                    text={`Perimeter: ${polygonPerimeter || ''}`}
-                    offsetX={30}
-                    fill="teal"
-                    fontStyle="bold"
-                  />
-                </>
-              )} */}
-            </Group>
-          )}
+          {!!polyLine.points.length && <Line {...polyLine} />}
 
           {/* Drawing Volume */}
           {draw.volume.map(({ depth, textUnit, ...rest }, index) => {
