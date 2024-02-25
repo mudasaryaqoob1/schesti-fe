@@ -29,6 +29,20 @@ export const unitConversion: { [conversion: string]: number } = {
   '---': 0,
 };
 
+export const improperPrecisionConverter: { [key: string]: number } = {
+  '1': 1,
+  '1/2': 0.1,
+  '1/4': 0.01,
+  '1/8': 0.001,
+  '1/16': 0.0001,
+  '1/32': 0.000001,
+  '0.1': 0.1,
+  '0.01': 0.01,
+  '0.001': 0.001,
+  '0.0001': 0.0001,
+  '0.000001': 0.000001,
+};
+
 const useDraw = () => {
   const pixelToInchScale = 72;
 
@@ -229,24 +243,25 @@ const useDraw = () => {
     else return { projectName: 'Dynamic Measurement', comment: '' };
   };
 
-  const convertToFeetAndInches = (inches: number, precision = 0.01) => {
+  const convertToFeetAndInches = (inches: number, precision = '0.1') => {
+    const convertedPrecision = improperPrecisionConverter[precision];
     const feet = Math.floor(inches / 12);
     const wholeInches = Math.floor(inches % 12);
+    const chunksArray: number[] = [];
 
     const remainingInchesDecimal = +(inches - feet * 12 - wholeInches).toFixed(
       2
     );
 
-    if (precision === 1) return getFeetAndInchesFormat(feet, wholeInches);
+    if (convertedPrecision === 1)
+      return getFeetAndInchesFormat(feet, wholeInches);
 
-    const decimalCount = precision.toString().split('.')[1].length;
+    const decimalCount = convertedPrecision.toString().split('.')[1].length;
 
     const chunks = Math.pow(2, decimalCount);
-    const chunksArray: number[] = [];
     for (let index = 1; index < chunks + 1; index++) {
       chunksArray.push(index / chunks);
     }
-
     const closest = findClosestValue(chunksArray, remainingInchesDecimal);
 
     if (closest === 1) return getFeetAndInchesFormat(feet, wholeInches + 1);
@@ -333,9 +348,11 @@ const useDraw = () => {
           0,
           splittedScale[1].length - 1
         );
-        return value * multiplier;
+        return value * multiplier * 12;
       }
     } else {
+      // HANDLING CUSTOM SCALE BELOW
+
       // Left Hand Side, Right Hand Side
       const [LHS, RHS] = scale.split('=');
 
