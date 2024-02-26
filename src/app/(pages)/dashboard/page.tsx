@@ -76,7 +76,7 @@ const Dashboard = () => {
         <div className="flex justify-between items-center mb-4">
 
           <h3 className="text-[18px] text-[#344054] leading-[28px] font-semibold">
-            Projects
+            Invoice
           </h3>
           <SelectComponent
             label=""
@@ -92,7 +92,7 @@ const Dashboard = () => {
       <div className="col-span-4 flex flex-col justify-between p-3 shadow-md bg-white rounded-md px-4">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-[18px] text-[#344054] leading-[28px] font-semibold">
-            Invoice
+            Projects
           </h3>
         </div>
         <ProjectsReport />

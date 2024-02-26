@@ -7,7 +7,26 @@ const data = [
   { name: 'Invoices ', value: 36 },
   { name: 'Scheduled Project', value: 16 },
   { name: 'Meeting', value: 18 },
-];
+] as const;
+
+
+function renderFillColor(name: string) {
+  if (name === 'Takeoff') {
+    return '#001556';
+  }
+  else if (name === 'Estimate Project') {
+    return "#7F56D9";
+  }
+  else if (name === 'Invoices ') {
+    return "#36B37E";
+  }
+  else if (name === 'Scheduled Project') {
+    return "#EF9F28";
+  }
+  else {
+    return "#B58905";
+  }
+}
 
 const renderActiveShape = (props: any) => {
   const RADIAN = Math.PI / 180;
@@ -32,7 +51,6 @@ const renderActiveShape = (props: any) => {
   const ex = mx + (cos >= 0 ? 1 : -1) * 22;
   const ey = my;
   const textAnchor = cos >= 0 ? 'start' : 'end';
-
   return (
     <g>
       <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
@@ -45,7 +63,7 @@ const renderActiveShape = (props: any) => {
         outerRadius={outerRadius}
         startAngle={startAngle}
         endAngle={endAngle}
-        fill={fill}
+        fill={renderFillColor(payload.name)}
       />
       <Sector
         cx={cx}
@@ -54,14 +72,15 @@ const renderActiveShape = (props: any) => {
         endAngle={endAngle}
         innerRadius={outerRadius + 6}
         outerRadius={outerRadius + 10}
-        fill={fill}
+        fill={renderFillColor(payload.name)}
+
       />
       <path
         d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
-        stroke={fill}
+        stroke={renderFillColor(payload.name)}
         fill="none"
       />
-      <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
+      <circle cx={ex} cy={ey} r={2} fill={renderFillColor(payload.name)} stroke="none" />
       <text
         x={ex + (cos >= 0 ? 1 : -1) * 12}
         y={ey}
@@ -89,7 +108,7 @@ export default function ProjectsReport() {
       <Pie
         activeIndex={activeIndex}
         activeShape={renderActiveShape}
-        data={data}
+        data={data as unknown as any[]}
         cx={200}
         cy={200}
         innerRadius={120}
