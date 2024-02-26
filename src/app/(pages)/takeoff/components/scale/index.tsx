@@ -5,7 +5,13 @@ import Image from 'next/image';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { Select, Radio } from 'antd';
 import type { RadioChangeEvent } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { fetchTakeoffPreset } from '@/redux/takeoff/takeoff.thunk';
+import { AppDispatch } from '@/redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectTakeoffPreset } from '@/redux/takeoff/takeoff.Selector';
+import { takeoffPresetService } from '@/app/services/takeoff.service';
+import { addNewTakeoffPresetData } from '@/redux/takeoff/takeoff.slice';
 
 const precisions = ['1', '0.1', '0.01', ' 0.001', '0.0001', '0.00001'];
 const byPrecision = ['1', '1/2', '1/4', '1/8', '1/16', '1/32'];
@@ -24,33 +30,31 @@ const secondaryMeters = [
 ];
 
 const byDefaultPerest = [
-  `1'=1'`,
-  `1/32'=1'-0'`,
-  `1/16'=1'-0'`,
-  `3/32'=1'0'`,
-  `1/8=1'-0'`,
-  `3/16'=1'-0'`,
-  `1/4'=1'-0'`,
-  `1/2'=1'-0'`,
-  `3/4'=1'-0'`,
-  `1'=1'-0'`,
-  `11/2'=1'-0'`,
-
-  `1'=80'`,
-  `1'=90'`,
-  `1'=100'`,
-  `1'=200'`,
-  `1'=300'`,
-  `1'=400'`,
-
-  `1:1`,
-  `1:10`,
-  `1:20`,
-  `1:50`,
-  `1:100`,
-  `1:200`,
-  `1:500`,
-  `1:1000`,
+  { label: `1'=1'`, value: `1'=1'` },
+  { label: `1/32'=1'-0'`, value: `1/32'=1'-0'` },
+  { label: `1/16'=1'-0'`, value: `1/16'=1'-0'` },
+  { label: `3/32'=1'0'`, value: `3/32'=1'0'` },
+  { label: `1/8=1'-0'`, value: `1/8=1'-0'` },
+  { label: `3/16'=1'-0'`, value: `3/16'=1'-0'` },
+  { label: `1/4'=1'-0'`, value: `1/4'=1'-0'` },
+  { label: `1/2'=1'-0'`, value: `1/2'=1'-0'` },
+  { label: `3/4'=1'-0'`, value: `3/4'=1'-0'` },
+  { label: `1'=1'-0'`, value: `1'=1'-0'` },
+  { label: `11/2'=1'-0'`, value: `11/2'=1'-0'` },
+  { label: `1'=80'`, value: `1'=80'` },
+  { label: `1'=90'`, value: `1'=90'` },
+  { label: `1'=100'`, value: `1'=100'` },
+  { label: `1'=200'`, value: `1'=200'` },
+  { label: `1'=300'`, value: `1'=300'` },
+  { label: `1'=400'`, value: `1'=400'` },
+  { label: `1:1`, value: `1:1` },
+  { label: `1:10`, value: `1:10` },
+  { label: `1:20`, value: `1:20` },
+  { label: `1:50`, value: `1:50` },
+  { label: `1:100`, value: `1:100` },
+  { label: `1:200`, value: `1:200` },
+  { label: `1:500`, value: `1:500` },
+  { label: `1:1000`, value: `1:1000` },
 ];
 
 interface Props {
@@ -58,6 +62,10 @@ interface Props {
 }
 
 const ScaleModal = ({ setModalOpen }: Props) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const allPresets = useSelector(selectTakeoffPreset);
+
+  const [mergedPresets, setMergedPresets] = useState<any[]>([]);
   const [value, setValue] = useState('preset');
   const [secMeter, setSecMeter] = useState('');
   const [meter, setMeter] = useState('');
@@ -67,6 +75,26 @@ const ScaleModal = ({ setModalOpen }: Props) => {
   const onChange = (e: RadioChangeEvent) => {
     setValue(e.target.value);
   };
+
+  const handleAddPreset = async () => {
+    takeoffPresetService
+      .httpAddNewPreset({ label: 'dummy', value: 'dummy' })
+      .then((res: any) => {
+        if (res.statusCode == 201) {
+          dispatch(addNewTakeoffPresetData(res.data));
+        }
+      });
+  };
+
+  useEffect(() => {
+    dispatch(fetchTakeoffPreset({}));
+  }, []);
+
+  useEffect(() => {
+    if (allPresets) {
+      setMergedPresets([...allPresets, ...byDefaultPerest]);
+    }
+  }, [allPresets]);
 
   return (
     <div className="py-2.5 px-6 bg-white border border-solid border-elboneyGray rounded-[4px] z-50">
@@ -106,7 +134,7 @@ const ScaleModal = ({ setModalOpen }: Props) => {
             </div>
             {value === 'custom' && (
               <div>
-                <WhiteButton text="Add to Preset" />
+                <WhiteButton text="Add to Preset" onClick={handleAddPreset} />
               </div>
             )}
           </div>
@@ -115,14 +143,11 @@ const ScaleModal = ({ setModalOpen }: Props) => {
               <Select
                 className="w-full"
                 value={preset}
-                onChange={(value) => setPreset(value)}
-              >
-                {byDefaultPerest.map((item) => (
-                  <Select.Option key={item} value={item}>
-                    {item}
-                  </Select.Option>
-                ))}
-              </Select>
+                onChange={(value) => {
+                  setPreset(value);
+                }}
+                options={mergedPresets}
+              />
             )}
             {value === 'custom' && (
               <>

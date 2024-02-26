@@ -7,6 +7,7 @@ import companyClientReducer from './company/clientSlice/companyClient.slice';
 import subContractorReducer from './company/subcontractorSlice/companySubcontractor.slice';
 import estimateRequestSlice from './estimate/estimateRequest.slice';
 import supportTicketsSlice from './supportTickets/supportTickets.slice';
+import takeoffSlice from './takeoff/takeoff.slice';
 import settingTargetsSlice from './company/settingSlices/settingTarget.slice';
 import userSlice from './userSlice/user.slice';
 import pricingPlanReducer from './pricingPlanSlice/pricingPlanSlice';
@@ -20,6 +21,7 @@ export type RootState = {
   companySubContractor: any;
   estimates: any;
   supportTickets: any;
+  takeoff: any;
   settingTargets: any;
   user: any;
   pricingPlan: any;
@@ -39,6 +41,7 @@ const rootReducer = combineReducers<RootState>({
   companySubContractor: subContractorReducer,
   estimates: estimateRequestSlice,
   supportTickets: supportTicketsSlice,
+  takeoff: takeoffSlice,
   settingTargets: settingTargetsSlice,
   user: userSlice,
   pricingPlan: pricingPlanReducer,
