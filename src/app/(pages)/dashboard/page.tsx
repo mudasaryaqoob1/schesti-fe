@@ -6,7 +6,17 @@ import { InvoiceReport } from "./components/InvoiceReport";
 import { SelectComponent } from "@/app/component/customSelect/Select.component";
 import { StatisticsReport } from "./components/StatisticsReport";
 import { AdsManagement } from "./components/AdsManagement";
+import { HttpService } from "@/app/services/base.service";
+import { useLayoutEffect } from "react";
+import { useSelector } from "react-redux";
+import { selectToken } from "@/redux/authSlices/auth.selector";
 const Dashboard = () => {
+  const token = useSelector(selectToken);
+  useLayoutEffect(() => {
+    if (token) {
+      HttpService.setToken(token);
+    }
+  }, [token]);
   return <section className="my-4  mx-8 px-4">
     <div className="grid grid-cols-4 gap-3 my-3">
       <div className="flex justify-between items-center bg-white shadow rounded-md p-4">
