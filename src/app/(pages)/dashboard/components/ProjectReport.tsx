@@ -15,5 +15,13 @@ export default function ProjectsReport() {
     datasets: [
       { data: VALUES, backgroundColor: COLORS, },
     ]
-  }} />
+  }}
+    options={{
+      plugins: {
+        legend: {
+          display: false
+        }
+      },
+    }}
+  />
 }
