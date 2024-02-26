@@ -118,6 +118,7 @@ const CreateTaget = ({ setShowModal }: SettingTargetProps) => {
                 name="price"
                 min={1}
                 placeholder="Enter Price"
+                prefix={"$"}
               />
               <div className="mt-2.5">
                 <FormControl
