@@ -92,8 +92,8 @@ export default function ProjectsReport() {
         data={data}
         cx={200}
         cy={200}
-        innerRadius={60}
-        outerRadius={80}
+        innerRadius={120}
+        outerRadius={160}
         fill="#8884d8"
         dataKey="value"
         onMouseEnter={onPieEnter}

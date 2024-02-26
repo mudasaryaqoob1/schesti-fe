@@ -23,31 +23,13 @@ data = data.map((item, index) => {
     let categoryIndex = index % categories.length;
     return { ...item, value: `$${item.value}`, category: categories[categoryIndex] }
 });
-const colors = {
-    Takeoff: '#7F56D9',
-    Estimate: '#EF9F28',
-    Scheduled: '#36B37E',
-}
 export function StatisticsReport() {
     const config: LineConfig = {
         data,
         xField: 'type',
         yField: 'value',
         sizeField: 'value',
-        legend: true,
         colorField: 'category',
-        // color: ({ category }: { category: string }) => {
-        //     if (category === categories[0]) {
-        //         return colors.Takeoff;
-        //     } else if (category === categories[1]) {
-        //         return colors.Estimate;
-        //     }
-        //     return colors.Scheduled;
-
-        // },
-        style: {
-            color: Object.values(colors)
-        }
     };
     return <Line {...config} />;
 }
