@@ -5,6 +5,7 @@ import SenaryHeading from "@/app/component/headings/senaryHeading";
 import { InvoiceReport } from "./components/InvoiceReport";
 import { SelectComponent } from "@/app/component/customSelect/Select.component";
 import { StatisticsReport } from "./components/StatisticsReport";
+import { AdsManagement } from "./components/AdsManagement";
 const Dashboard = () => {
   return <section className="my-4  mx-8 px-4">
     <div className="grid grid-cols-4 gap-3 my-3">
@@ -174,7 +175,10 @@ const Dashboard = () => {
         </div>
       </div>
       <StatisticsReport />
+
     </div>
+
+    <AdsManagement />
   </section>;
 };
 
