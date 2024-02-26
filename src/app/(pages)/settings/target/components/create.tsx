@@ -116,6 +116,7 @@ const CreateTaget = ({ setShowModal }: SettingTargetProps) => {
                 label="Set Price"
                 type="number"
                 name="price"
+                min={1}
                 placeholder="Enter Price"
               />
               <div className="mt-2.5">
