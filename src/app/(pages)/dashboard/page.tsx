@@ -1,5 +1,4 @@
 'use client';
-import Image from "next/image";
 import ProjectsReport from "./components/ProjectReport";
 import SenaryHeading from "@/app/component/headings/senaryHeading";
 import { InvoiceReport } from "./components/InvoiceReport";
@@ -10,6 +9,7 @@ import { HttpService } from "@/app/services/base.service";
 import { useLayoutEffect } from "react";
 import { useSelector } from "react-redux";
 import { selectToken } from "@/redux/authSlices/auth.selector";
+import { TotalCost } from "./components/TotalCost";
 const Dashboard = () => {
   const token = useSelector(selectToken);
   useLayoutEffect(() => {
@@ -18,68 +18,7 @@ const Dashboard = () => {
     }
   }, [token]);
   return <section className="my-4  mx-8 px-4">
-    <div className="grid grid-cols-4 gap-3 my-3">
-      <div className="flex justify-between items-center bg-white shadow rounded-md p-4">
-        <div className="space-y-2">
-          <h2 className="text-[#EF9F28] font-semibold text-[30px] leading-[38px]">146</h2>
-          <h3 className={'text-[#344054] text-[18px] leading-[26px] font-normal'}>Total Estimates</h3>
-        </div>
-        <div>
-          <Image
-            src={'/documentIcon.svg'}
-            alt="Picture of the author"
-            width={50}
-            height={50}
-            className="text-[#8449EB]"
-          />
-        </div>
-      </div>
-      <div className="flex justify-between items-center bg-white shadow rounded-md p-4">
-        <div className="space-y-2">
-          <h2 className="text-[#EF9F28] font-semibold text-[30px] leading-[38px]">146</h2>
-          <h3 className={'text-[#344054] text-[18px] leading-[26px] font-normal'}>Total Takeoff</h3>
-        </div>
-        <div>
-          <Image
-            src={'/documentIcon.svg'}
-            alt="Picture of the author"
-            width={50}
-            height={50}
-            className="text-[#8449EB]"
-          />
-        </div>
-      </div>
-      <div className="flex justify-between items-center bg-white shadow rounded-md p-4">
-        <div className="space-y-2">
-          <h2 className="text-[#EF9F28] font-semibold text-[30px] leading-[38px]">146</h2>
-          <h3 className={'text-[#344054] text-[18px] leading-[26px] font-normal'}>Project Scheduled</h3>
-        </div>
-        <div>
-          <Image
-            src={'/documentIcon.svg'}
-            alt="Picture of the author"
-            width={50}
-            height={50}
-            className="text-[#8449EB]"
-          />
-        </div>
-      </div>
-      <div className="flex justify-between items-center bg-white shadow rounded-md p-4">
-        <div className="space-y-2">
-          <h2 className="text-[#EF9F28] font-semibold text-[30px] leading-[38px]">146</h2>
-          <h3 className={'text-[#344054] text-[18px] leading-[26px] font-normal'}>Total Clients</h3>
-        </div>
-        <div>
-          <Image
-            src={'/documentIcon.svg'}
-            alt="Picture of the author"
-            width={50}
-            height={50}
-            className="text-[#8449EB]"
-          />
-        </div>
-      </div>
-    </div>
+    <TotalCost />
 
     <div className="grid grid-cols-12 gap-3">
       <div className="col-span-7 shadow-md bg-white rounded-md px-4">
