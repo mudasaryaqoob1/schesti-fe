@@ -27,6 +27,7 @@ import {
 } from '@/redux/supportTickets/supportTicket.thunk';
 import { ISupportTicket } from '@/app/interfaces/supportTicket.interface';
 import SettingSidebar from '../verticleBar';
+import NoData from './components/NoData';
 
 const SupportTickets = () => {
   const router = useRouter();
@@ -98,7 +99,9 @@ const SupportTickets = () => {
             <Skeleton active />
             <Skeleton active />
           </div>
-        ) : (
+        ) : supportTicketsData?.length === 0 ? <NoData
+          onClick={() => router.push('/settings/supporttickets/create')}
+        /> : (
           supportTicketsData?.map(
             (supportTicket: ISupportTicket, i: number) => {
               const { _id, createdAt, title, description, updatedAt, status } =
