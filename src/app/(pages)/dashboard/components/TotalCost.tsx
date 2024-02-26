@@ -62,7 +62,7 @@ export function TotalCost() {
         </div>
         <div className="flex justify-between items-center bg-white shadow rounded-md p-4">
             <div className="space-y-2">
-                <h2 className="text-[#EF9F28] font-semibold text-[30px] leading-[38px]">146</h2>
+                <h2 className="text-[#EF9F28] font-semibold text-[30px] leading-[38px]">{clientQuery.isLoading ? "Loading..." : clientQuery.data && clientQuery.data.data ? clientQuery.data.data.clients.length : 0}</h2>
                 <h3 className={'text-[#344054] text-[18px] leading-[26px] font-normal'}>Total Clients</h3>
             </div>
             <div>
