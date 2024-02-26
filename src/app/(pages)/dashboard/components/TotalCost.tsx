@@ -1,6 +1,19 @@
+import { userService } from "@/app/services/user.service";
 import Image from "next/image";
+import { useQuery } from "react-query";
 
 export function TotalCost() {
+    const clientQuery = useQuery('clients', () => {
+        return userService.httpGetAllCompanyClients();
+    }, {
+        onSuccess: (data) => {
+            console.log("clients", data);
+        },
+        onError(err) {
+            console.log(err);
+        },
+    });
+
     return <div className="grid grid-cols-4 gap-3 my-3">
         <div className="flex justify-between items-center bg-white shadow rounded-md p-4">
             <div className="space-y-2">

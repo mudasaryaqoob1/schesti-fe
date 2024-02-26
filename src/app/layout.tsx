@@ -5,6 +5,7 @@ import { ToastContainer } from 'react-toastify';
 import { ReduxProvider } from '@/redux/provider';
 import 'react-toastify/dist/ReactToastify.css';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import { Providers } from './(pages)/providers';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -26,7 +27,9 @@ export default function RootLayout({
         >
           <ReduxProvider>
             <ToastContainer />
-            {children}
+            <Providers>
+              {children}
+            </Providers>
           </ReduxProvider>
         </GoogleOAuthProvider>
       </body>
