@@ -29,6 +29,7 @@ import QuaternaryHeading from '@/app/component/headings/quaternary';
 import ImportMaterialModal from './importMaterialModal';
 import NoData from './NoData';
 import CustomButton from '@/app/component/customButton/button';
+import { IMaterialSetting } from '@/app/interfaces/settings/material-settings.interface';
 
 type InitialValuesTypes = {
   unitLabourHour: string;
@@ -51,9 +52,10 @@ const Materials = () => {
 
   const materialsData = useSelector(reduxMaterialsData);
   const materialsLoading = useSelector(reduxMaterialsLoading);
+  const [search, setSearch] = useState('');
   const [materialModal, setMaterialModal] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState('');
-  const [meterialDataWithCategories, setMeterialDataWithCategories] = useState(
+  const [meterialDataWithCategories, setMeterialDataWithCategories] = useState<IMaterialSetting[]>(
     []
   );
 
@@ -97,7 +99,12 @@ const Materials = () => {
       updateMaterialData(data);
     }
   };
-
+  const filteredData = meterialDataWithCategories.filter(item => {
+    if (!search) {
+      return item;
+    }
+    return item._id.categoryName.toLowerCase().includes(search.toLowerCase()) || item._id.subcategoryName.toLowerCase().includes(search.toLowerCase())
+  })
   return (
     <>
       <Formik
@@ -125,6 +132,8 @@ const Materials = () => {
                           name=""
                           id=""
                           placeholder="Search..."
+                          onChange={(e) => setSearch(e.target.value)}
+                          value={search}
                           className="w-full h-full bg-transparent outline-none"
                         />
                         <Image
@@ -173,9 +182,9 @@ const Materials = () => {
                           <Skeleton />
                         </div>
                       ) : (
-                        meterialDataWithCategories?.map(
+                        filteredData?.map(
                           (
-                            { _id: category, meterialsData }: any,
+                            { _id: category, materialsData },
                             i: number
                           ) => {
                             return (
@@ -198,7 +207,7 @@ const Materials = () => {
                                     />
                                   </div>
                                 </div>
-                                {meterialsData?.map(
+                                {materialsData?.map(
                                   ({
                                     _id,
                                     description,
