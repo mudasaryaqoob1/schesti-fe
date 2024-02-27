@@ -125,14 +125,14 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
               hasError={formik.touched.email && Boolean(formik.errors.email)}
               errorMessage={
                 formik.touched.email &&
-                Boolean(formik.errors.email) &&
-                Array.isArray(formik.errors.email)
+                  Boolean(formik.errors.email) &&
+                  Array.isArray(formik.errors.email)
                   ? formik.errors.email
-                      .map(
-                        (item: string, idx) =>
-                          `'${formik.values.email![idx]}' ${item}`
-                      )
-                      .toString()
+                    .map(
+                      (item: string, idx) =>
+                        `'${formik.values.email![idx]}' ${item}`
+                    )
+                    .toString()
                   : formik.errors.email
               }
               field={{

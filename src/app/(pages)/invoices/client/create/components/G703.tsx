@@ -23,6 +23,7 @@ import {
 import { G7State } from '@/app/interfaces/client-invoice.interface';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
+import { disabledDate } from '@/app/utils/date.utils';
 
 type Props = {
   state: G7State;
@@ -127,6 +128,7 @@ export function G703Component({
                 onChange={(_d, dateString) =>
                   handleState('applicationDate', dateString as string)
                 }
+                disabledDate={disabledDate}
               />
               <p className="text-gray-400">Application Date is required.</p>
             </div>
@@ -144,6 +146,7 @@ export function G703Component({
                 onChange={(_d, dateString) =>
                   handleState('periodTo', dateString as string)
                 }
+                disabledDate={disabledDate}
               />
               <p className="text-gray-400">Period To is required.</p>
             </div>
@@ -419,7 +422,7 @@ export function G703Component({
                       onOk() {
                         deleteRow(index);
                       },
-                      onCancel() {},
+                      onCancel() { },
                     });
                   }}
                 />
