@@ -250,6 +250,7 @@ export default function CreateClientInvoicePage() {
                       handleState={handleG7State}
                       sumColumns={sumColumns}
                       updateCellValue={updateCellValue}
+                      showAddAndDelete={false}
                     >
                       <CustomButton
                         onClick={() => setTab(G702_KEY)}
