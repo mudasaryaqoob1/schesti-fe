@@ -85,7 +85,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
       destroyOnClose
     >
       <div className="bg-white border border-solid border-elboneyGray rounded-[4px] z-50">
-        <div className="flex px-6 py-2.5 justify-between bg-mistyWhite">
+        <div className="flex px-6 py-2.5 justify-between bg-[#F9F5FF]">
           <TertiaryHeading
             title="Schedule a meeting"
             className="text-graphiteGray"
