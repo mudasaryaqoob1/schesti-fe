@@ -12,6 +12,7 @@ import CustomButton from '@/app/component/customButton/button';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { byteConverter } from '@/app/utils/byteConverter';
 import { materialService } from '@/app/services/material.service';
+import { AxiosError } from 'axios';
 
 interface Iprops {
   materialModal: boolean;
@@ -104,6 +105,10 @@ const ImportMaterialModal = ({
         fetchMaterialsData();
       }
     } catch (error) {
+      const err = error as AxiosError;
+      if (err.response!.status >= 400) {
+        toast.error("Something went wrong. Please try again.");
+      }
       setIsLoading(false);
     }
   };
