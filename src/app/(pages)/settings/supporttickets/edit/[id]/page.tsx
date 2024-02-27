@@ -58,6 +58,7 @@ const EditSupportTicket = () => {
       supportTicketsData?.find((item: any) => item._id === id)
     );
   }, [id, supportTicketsData]);
+  console.log(supportTicketsData);
 
   const onSubmit = async ({ title, description }: ISupportTicket) => {
     setIsLoading(true);
@@ -122,6 +123,7 @@ const EditSupportTicket = () => {
                     ? {
                       title: supportTicketData.title,
                       description: supportTicketData.description,
+                      avatar: supportTicketData.avatar
                     }
                     : initialValues
                 }
@@ -129,7 +131,7 @@ const EditSupportTicket = () => {
                 enableReinitialize
                 onSubmit={onSubmit}
               >
-                {({ handleSubmit }) => {
+                {({ handleSubmit, values }) => {
                   return (
                     <Form
                       name="basic"
@@ -177,6 +179,12 @@ const EditSupportTicket = () => {
                             title="or drag and drop"
                           />
                         </div>
+                        <Image
+                          src={values.avatar!}
+                          alt="upload icon"
+                          width={100}
+                          height={100}
+                        />
                         <MinDescription
                           className="text-steelGray font-popin text-center"
                           title="SVG, PNG, JPG or GIF (max. 800x400px)"

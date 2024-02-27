@@ -43,6 +43,7 @@ const initialValues: ISupportTicket = {
 const CreateTicket = () => {
   const router = useRouter();
   const token = useSelector(selectToken);
+  const [avatarURL, setAvatarURL] = useState('');
 
   useLayoutEffect(() => {
     if (token) {
@@ -56,7 +57,7 @@ const CreateTicket = () => {
   const onSubmit = async (values: ISupportTicket) => {
     setIsLoading(true);
     supportTicketService
-      .httpAddNewSupportTicket(values)
+      .httpAddNewSupportTicket({ ...values, avatar: avatarURL })
       .then((response: any) => {
         setIsLoading(false);
         if (response.statusCode == 201) {
@@ -89,6 +90,7 @@ const CreateTicket = () => {
             'documents/supportTickets/'
           ).getS3URL();
           avatarUrl = url;
+          setAvatarURL(url);
         })
       );
 
@@ -169,7 +171,12 @@ const CreateTicket = () => {
                         </div>
                         {avatarLoading ? (
                           <p>Uploading...</p>
-                        ) : (
+                        ) : avatarURL ? <Image
+                          src={avatarURL}
+                          alt="avatar"
+                          width={100}
+                          height={100}
+                        /> : (
                           <div className="flex gap-2">
                             <label
                               htmlFor="uploadCompanyLogo"
