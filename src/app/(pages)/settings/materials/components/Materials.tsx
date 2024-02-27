@@ -59,6 +59,7 @@ const Materials = () => {
     []
   );
 
+
   const fetchMaterialsData = useCallback(async () => {
     let result: any = await dispatch(fetchMaterials({ page: 1, limit: 10 }));
     if (result.payload.data.length) {
@@ -121,7 +122,7 @@ const Materials = () => {
               autoComplete="off"
               className="mt-2"
             >
-              {materialsData?.length ? (
+              {materialsLoading ? <Skeleton /> : materialsData?.length ? (
                 <>
                   <div className="flex justify-between items-center gap-4">
                     <TertiaryHeading title="Materials" />
@@ -177,12 +178,12 @@ const Materials = () => {
                       />
                     </div>
                     <div className="gap-4">
-                      {materialsLoading ? (
+                      {materialsLoading && !filteredData.length ? (
                         <div className="mt-4">
                           <Skeleton />
                         </div>
                       ) : (
-                        filteredData?.map(
+                        filteredData.map(
                           (
                             { _id: category, materialsData },
                             i: number
