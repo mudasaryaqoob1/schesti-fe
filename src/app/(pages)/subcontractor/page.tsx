@@ -58,7 +58,8 @@ const SubcontractTable = () => {
   const subcontractersData = useSelector(selectSubcontracters);
   const subcontractersLoading = useSelector(selectSubcontractLoading);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedSubcontractor, setSelectedSubcontractor] = useState<ISubcontractor | null>(null);
+  const [selectedSubcontractor, setSelectedSubcontractor] =
+    useState<ISubcontractor | null>(null);
 
   useLayoutEffect(() => {
     if (token) {
@@ -152,19 +153,23 @@ const SubcontractTable = () => {
       <Head>
         <title>Schesti - Subcontractor</title>
       </Head>
-      {selectedSubcontractor && showDeleteModal ? <ModalComponent open={showDeleteModal} setOpen={handleCloseModal} width='30%'>
-        <DeleteContent
-          onClick={async () => {
-            await dispatch(deleteSubcontractor(selectedSubcontractor._id));
-            toast.success("Subcontractor deleted successfully");
-            handleCloseModal();
-          }}
-          onClose={handleCloseModal}
-        />
-      </ModalComponent> : null}
-      <div
-        className={`${bg_style} p-5 border border-solid border-silverGray`}
-      >
+      {selectedSubcontractor && showDeleteModal ? (
+        <ModalComponent
+          open={showDeleteModal}
+          setOpen={handleCloseModal}
+          width="30%"
+        >
+          <DeleteContent
+            onClick={async () => {
+              await dispatch(deleteSubcontractor(selectedSubcontractor._id));
+              toast.success('Subcontractor deleted successfully');
+              handleCloseModal();
+            }}
+            onClose={handleCloseModal}
+          />
+        </ModalComponent>
+      ) : null}
+      <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
         <div className="flex justify-between items-center mb-4">
           <TertiaryHeading
             title="Subcontractor List"
@@ -186,7 +191,6 @@ const SubcontractTable = () => {
           pagination={{ position: ['bottomCenter'] }}
         />
       </div>
-
     </section>
   );
 };

@@ -22,8 +22,12 @@ import { HttpService } from '@/app/services/base.service';
 import { userService } from '@/app/services/user.service';
 
 const newClientSchema = Yup.object({
-  firstName: Yup.string().min(2, 'First name must be at least 2 characters').required('First name is required!'),
-  lastName: Yup.string().min(2, 'Last name must be at least 2 characters').required('Last name is required!'),
+  firstName: Yup.string()
+    .min(2, 'First name must be at least 2 characters')
+    .required('First name is required!'),
+  lastName: Yup.string()
+    .min(2, 'Last name must be at least 2 characters')
+    .required('Last name is required!'),
   email: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),

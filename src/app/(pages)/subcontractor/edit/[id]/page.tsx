@@ -19,7 +19,10 @@ import { HttpService } from '@/app/services/base.service';
 
 // subcontractorService service
 import { subcontractorService } from '@/app/services/subcontractor.service';
-import { ISubcontract, ISubcontractor } from '@/app/interfaces/companyInterfaces/subcontractor.interface';
+import {
+  ISubcontract,
+  ISubcontractor,
+} from '@/app/interfaces/companyInterfaces/subcontractor.interface';
 import { AxiosError } from 'axios';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 
@@ -59,18 +62,21 @@ const EditSubcontractor = () => {
   }, [token]);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [subcontractorData, setSubcontractorData] = useState<ISubcontractor | null>(null);
+  const [subcontractorData, setSubcontractorData] =
+    useState<ISubcontractor | null>(null);
 
   useEffect(() => {
     if (id) {
-      subcontractorService.httpFindSubcontractorById(id as string).then(res => {
-        if (res.statusCode === 200) {
-          setSubcontractorData(res.data!.subcontractor);
-        }
-      }).catch(({ response }: AxiosError<IResponseInterface>) => {
-        toast.error(response?.data.message);
-
-      });
+      subcontractorService
+        .httpFindSubcontractorById(id as string)
+        .then((res) => {
+          if (res.statusCode === 200) {
+            setSubcontractorData(res.data!.subcontractor);
+          }
+        })
+        .catch(({ response }: AxiosError<IResponseInterface>) => {
+          toast.error(response?.data.message);
+        });
     }
   }, [id]);
 

@@ -589,9 +589,7 @@ export function G702Component({
         </div>
       </div>
 
-      <div className="flex justify-end space-x-4">
-        {children}
-      </div>
+      <div className="flex justify-end space-x-4">{children}</div>
     </div>
   );
 }

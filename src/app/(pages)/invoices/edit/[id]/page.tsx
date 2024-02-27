@@ -108,16 +108,22 @@ const EditSubcontractorInvoice = () => {
   useEffect(() => {
     if (id) {
       setIsFetchingInvoice(true);
-      invoiceService.httpGetSubcontractorInvoiceById(id as string).then(res => {
-        setInvoiceData(res.data!.invoice);
-        const items = res.data!.invoice.invoiceItems.map(i => ({ ...i, id: i._id }));
-        setDetails(items);
-        setIsLoading(false);
-      }).catch(err => {
-        setIsLoading(false);
-        toast.error(err.response.data.message);
-        router.back();
-      });
+      invoiceService
+        .httpGetSubcontractorInvoiceById(id as string)
+        .then((res) => {
+          setInvoiceData(res.data!.invoice);
+          const items = res.data!.invoice.invoiceItems.map((i) => ({
+            ...i,
+            id: i._id,
+          }));
+          setDetails(items);
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          setIsLoading(false);
+          toast.error(err.response.data.message);
+          router.back();
+        });
     }
   }, [id]);
 
@@ -251,7 +257,7 @@ const EditSubcontractorInvoice = () => {
   };
 
   if (isFetchingInvoice && !invoiceData) {
-    return <Skeleton active />
+    return <Skeleton active />;
   }
 
   return (
@@ -276,12 +282,7 @@ const EditSubcontractorInvoice = () => {
               <ModalComponent open={showModal} setOpen={setShowModal}>
                 <ExistingSubContractor
                   setModalOpen={setShowModal}
-                  onSelectSubcontract={({
-                    address,
-                    email,
-                    name,
-                    phone,
-                  }) => {
+                  onSelectSubcontract={({ address, email, name, phone }) => {
                     setFieldValue('subContractorAddress', address);
                     setFieldValue('subContractorCompanyName', name);
                     setFieldValue('subContractorEmail', email);

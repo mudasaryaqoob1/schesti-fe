@@ -27,9 +27,7 @@ export default function RootLayout({
         >
           <ReduxProvider>
             <ToastContainer />
-            <Providers>
-              {children}
-            </Providers>
+            <Providers>{children}</Providers>
           </ReduxProvider>
         </GoogleOAuthProvider>
       </body>

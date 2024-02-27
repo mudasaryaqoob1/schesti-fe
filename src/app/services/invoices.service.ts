@@ -33,10 +33,10 @@ class InvoiceService extends HttpService {
     IResponseInterface<{ invoices: IInvoice[] }>
   > => this.get(`${this.prefix}/getInvoices`);
 
-
-  httpGetSubcontractorInvoiceById = (id: string): Promise<
-    IResponseInterface<{ invoice: IInvoice }>
-  > => this.get(`${this.prefix}/get/${id}`);
+  httpGetSubcontractorInvoiceById = (
+    id: string
+  ): Promise<IResponseInterface<{ invoice: IInvoice }>> =>
+    this.get(`${this.prefix}/get/${id}`);
 
   httpUpdateSubcontractorInvoice = (
     data: Partial<IInvoice>,

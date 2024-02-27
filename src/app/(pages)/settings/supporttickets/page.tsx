@@ -99,9 +99,11 @@ const SupportTickets = () => {
             <Skeleton active />
             <Skeleton active />
           </div>
-        ) : supportTicketsData?.length === 0 ? <NoData
-          onClick={() => router.push('/settings/supporttickets/create')}
-        /> : (
+        ) : supportTicketsData?.length === 0 ? (
+          <NoData
+            onClick={() => router.push('/settings/supporttickets/create')}
+          />
+        ) : (
           supportTicketsData?.map(
             (supportTicket: ISupportTicket, i: number) => {
               const { _id, createdAt, title, description, updatedAt, status } =

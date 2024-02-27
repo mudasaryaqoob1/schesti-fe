@@ -110,7 +110,10 @@ const TargetsTable = () => {
         open={showCreateModal}
         setOpen={setShowCreateModal}
       >
-        <CreateTaget setShowModal={setShowCreateModal} settingTargetsData={settingTargetsData} />
+        <CreateTaget
+          setShowModal={setShowCreateModal}
+          settingTargetsData={settingTargetsData}
+        />
       </ModalComponent>
       <ModalComponent
         width="380px"

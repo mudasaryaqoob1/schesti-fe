@@ -4,7 +4,7 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { difference } from 'lodash'
+import { difference } from 'lodash';
 
 // module imports
 import CustomButton from '@/app/component/customButton/button';
@@ -52,7 +52,10 @@ export type SettingTargetProps = {
   selectedTarget?: ISettingTarget;
   settingTargetsData: ISettingTarget[];
 };
-const CreateTaget = ({ setShowModal, settingTargetsData }: SettingTargetProps) => {
+const CreateTaget = ({
+  setShowModal,
+  settingTargetsData,
+}: SettingTargetProps) => {
   const token = useSelector(selectToken);
   const dispatch = useDispatch();
 
@@ -63,10 +66,13 @@ const CreateTaget = ({ setShowModal, settingTargetsData }: SettingTargetProps) =
   }, [token]);
 
   const [isLoading, setIsLoading] = useState(false);
-  const existingMonths = months.map(m => m.value);
-  const targetMonths = settingTargetsData.map(m => m.month);
+  const existingMonths = months.map((m) => m.value);
+  const targetMonths = settingTargetsData.map((m) => m.month);
 
-  const newMonths = difference(existingMonths, targetMonths).map(m => ({ value: m, label: m }));
+  const newMonths = difference(existingMonths, targetMonths).map((m) => ({
+    value: m,
+    label: m,
+  }));
 
   // submit handler
   const submitHandler = async (
@@ -111,7 +117,14 @@ const CreateTaget = ({ setShowModal, settingTargetsData }: SettingTargetProps) =
         validationSchema={validationSchema}
         onSubmit={submitHandler}
       >
-        {({ handleSubmit, values, errors, handleBlur, setFieldValue, touched }) => {
+        {({
+          handleSubmit,
+          values,
+          errors,
+          handleBlur,
+          setFieldValue,
+          touched,
+        }) => {
           return (
             <Form
               name="basic"
@@ -126,7 +139,7 @@ const CreateTaget = ({ setShowModal, settingTargetsData }: SettingTargetProps) =
                 name="price"
                 min={1}
                 placeholder="Enter Price"
-                prefix={"$"}
+                prefix={'$'}
               />
               <div className="mt-2.5">
                 <SelectComponent

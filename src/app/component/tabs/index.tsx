@@ -62,7 +62,7 @@ const Tabs = () => {
                      cursor-pointer
                     `,
                   pathname.includes('/estimates'.split('/')[1]) &&
-                  tabsStyle.active
+                    tabsStyle.active
                 )
               )}
             >
@@ -86,7 +86,7 @@ const Tabs = () => {
                      cursor-pointer
                     `,
                   pathname.includes('/estimates'.split('/')[1]) &&
-                  tabsStyle.active
+                    tabsStyle.active
                 )
               )}
             >
@@ -110,7 +110,7 @@ const Tabs = () => {
                      cursor-pointer
                     `,
                   pathname.includes('/estimates'.split('/')[1]) &&
-                  tabsStyle.active
+                    tabsStyle.active
                 )
               )}
             >
@@ -134,7 +134,7 @@ const Tabs = () => {
                      cursor-pointer
                     `,
                   pathname.includes('/estimates'.split('/')[1]) &&
-                  tabsStyle.active
+                    tabsStyle.active
                 )
               )}
             >
@@ -172,7 +172,7 @@ const Tabs = () => {
                      cursor-pointer
                     `,
                   pathname.includes('/estimates'.split('/')[1]) &&
-                  tabsStyle.active
+                    tabsStyle.active
                 )
               )}
             >

@@ -45,15 +45,17 @@ const newClientSchema = Yup.object({
   issueDate: Yup.string().required('Issue date is required!'),
   dueDate: Yup.string().required('Due date is required!'),
 
-  invoiceItems: Yup.array().of(
-    Yup.object()
-      .shape({
-        description: Yup.string().required('Description is required!'),
-        quantity: Yup.number().required('Quantity is required!'),
-        unitCost: Yup.number().required('Unit cost is required!'),
-      })
-      .required('Invoice detail is required')
-  ).required('Invoice detail is required'),
+  invoiceItems: Yup.array()
+    .of(
+      Yup.object()
+        .shape({
+          description: Yup.string().required('Description is required!'),
+          quantity: Yup.number().required('Quantity is required!'),
+          unitCost: Yup.number().required('Unit cost is required!'),
+        })
+        .required('Invoice detail is required')
+    )
+    .required('Invoice detail is required'),
   discount: Yup.number().required('Discount is required!'),
   taxes: Yup.number().required('Taxes is required!'),
   profitAndOverhead: Yup.number().required('Profit and overhead is required!'),
@@ -262,12 +264,7 @@ const CreateInvoice = () => {
               <ModalComponent open={showModal} setOpen={setShowModal}>
                 <ExistingSubContractor
                   setModalOpen={setShowModal}
-                  onSelectSubcontract={({
-                    address,
-                    email,
-                    name,
-                    phone,
-                  }) => {
+                  onSelectSubcontract={({ address, email, name, phone }) => {
                     setFieldValue('subContractorAddress', address);
                     setFieldValue('subContractorCompanyName', name);
                     setFieldValue('subContractorEmail', email);

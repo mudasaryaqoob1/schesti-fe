@@ -55,10 +55,9 @@ const Materials = () => {
   const [search, setSearch] = useState('');
   const [materialModal, setMaterialModal] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState('');
-  const [meterialDataWithCategories, setMeterialDataWithCategories] = useState<IMaterialSetting[]>(
-    []
-  );
-
+  const [meterialDataWithCategories, setMeterialDataWithCategories] = useState<
+    IMaterialSetting[]
+  >([]);
 
   const fetchMaterialsData = useCallback(async () => {
     let result: any = await dispatch(fetchMaterials({ page: 1, limit: 10 }));
@@ -100,12 +99,15 @@ const Materials = () => {
       updateMaterialData(data);
     }
   };
-  const filteredData = meterialDataWithCategories.filter(item => {
+  const filteredData = meterialDataWithCategories.filter((item) => {
     if (!search) {
       return item;
     }
-    return item._id.categoryName.toLowerCase().includes(search.toLowerCase()) || item._id.subcategoryName.toLowerCase().includes(search.toLowerCase())
-  })
+    return (
+      item._id.categoryName.toLowerCase().includes(search.toLowerCase()) ||
+      item._id.subcategoryName.toLowerCase().includes(search.toLowerCase())
+    );
+  });
   return (
     <>
       <Formik
@@ -122,7 +124,9 @@ const Materials = () => {
               autoComplete="off"
               className="mt-2"
             >
-              {materialsLoading ? <Skeleton /> : materialsData?.length ? (
+              {materialsLoading ? (
+                <Skeleton />
+              ) : materialsData?.length ? (
                 <>
                   <div className="flex justify-between items-center gap-4">
                     <TertiaryHeading title="Materials" />
@@ -184,10 +188,7 @@ const Materials = () => {
                         </div>
                       ) : (
                         filteredData.map(
-                          (
-                            { _id: category, materialsData },
-                            i: number
-                          ) => {
+                          ({ _id: category, materialsData }, i: number) => {
                             return (
                               <div key={i}>
                                 <div className="flex items-center gap-3 mt-4">

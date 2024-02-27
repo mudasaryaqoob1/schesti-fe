@@ -27,7 +27,6 @@ const ValidationSchema = Yup.object({
   invoiceName: Yup.string().required('Invoice name is required'),
 });
 
-
 export function Clients() {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
@@ -45,11 +44,9 @@ export function Clients() {
     },
     validationSchema: ValidationSchema,
     onSubmit(values) {
-      router.push(
-        `/invoices/client/create?invoiceName=${values.invoiceName}`
-      )
+      router.push(`/invoices/client/create?invoiceName=${values.invoiceName}`);
     },
-  })
+  });
 
   const fetchSubcontactorsInvoices = useCallback(async () => {
     await dispatch(fetchClientInvoices({}));
@@ -119,7 +116,7 @@ export function Clients() {
                   onOk() {
                     dispatch(deleteClientInvoiceRequest(record._id));
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
               }
             },
@@ -141,14 +138,14 @@ export function Clients() {
   const filteredClientInvoices =
     clientInvoices.length > 0
       ? clientInvoices.filter((invoice) => {
-        if (!search) {
-          return invoice;
-        }
-        return (
-          invoice.invoiceName === search ||
-          invoice.toOwner.toLowerCase().includes(search.toLowerCase())
-        );
-      })
+          if (!search) {
+            return invoice;
+          }
+          return (
+            invoice.invoiceName === search ||
+            invoice.toOwner.toLowerCase().includes(search.toLowerCase())
+          );
+        })
       : [];
 
   return (
@@ -207,7 +204,9 @@ export function Clients() {
                   type="text"
                   placeholder="Enter invoice name"
                   name="invoiceName"
-                  hasError={formik.touched.invoiceName && !!formik.errors.invoiceName}
+                  hasError={
+                    formik.touched.invoiceName && !!formik.errors.invoiceName
+                  }
                   errorMessage={formik.errors.invoiceName}
                   field={{
                     type: 'text',
@@ -218,7 +217,9 @@ export function Clients() {
                 />
 
                 <div className="flex justify-end py-2 space-x-2">
-                  <WhiteButton text="Cancel" className="!w-[100px]"
+                  <WhiteButton
+                    text="Cancel"
+                    className="!w-[100px]"
                     onClick={() => setShowModal(false)}
                   />
                   <CustomButton
@@ -226,6 +227,7 @@ export function Clients() {
                     className="!w-[100px]"
                     onClick={() => formik.handleSubmit()}
                     disabled={!formik.isValid}
+                    isLoading={formik.isSubmitting}
                   />
                 </div>
               </div>

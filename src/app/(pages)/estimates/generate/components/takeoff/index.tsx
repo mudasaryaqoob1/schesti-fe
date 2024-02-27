@@ -75,11 +75,13 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
         <div className="flex gap-3 items-center">
           {pevNext !== 0 ? (
             <CustomWhiteButton text="Previous" className="md:w-32" />
-          ) : <CustomWhiteButton
-            text='Cancel'
-            className="md:w-32"
-            onClick={() => router.push('/estimates')}
-          />}
+          ) : (
+            <CustomWhiteButton
+              text="Cancel"
+              className="md:w-32"
+              onClick={() => router.push('/estimates')}
+            />
+          )}
 
           <CustomButton
             text="Next"
@@ -103,8 +105,9 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
           </div>
         </div>
         <div
-          className={`mt-4 md:grid-cols-4 md:grid-rows-2 gap-y-6 ${showEstimateDetails ? 'grid' : 'hidden'
-            }`}
+          className={`mt-4 md:grid-cols-4 md:grid-rows-2 gap-y-6 ${
+            showEstimateDetails ? 'grid' : 'hidden'
+          }`}
         >
           <div>
             <MinDesc

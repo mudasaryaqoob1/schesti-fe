@@ -101,9 +101,9 @@ const SubCategoryTable: React.FC = () => {
       key: 'price',
       render(value) {
         if (value) {
-          return `$${value}`
+          return `$${value}`;
         }
-      }
+      },
     },
     {
       title: 'Action',

@@ -25,7 +25,6 @@ class SubcontractorsService extends HttpService {
   ): Promise<IResponseInterface<any>> =>
     this.post(`${this.prefix}/updateSubcontractor/${clientId}`, data);
 
-
   httpFindSubcontractorById = (
     subcontractorId: string
   ): Promise<IResponseInterface<{ subcontractor: ISubcontractor }>> =>

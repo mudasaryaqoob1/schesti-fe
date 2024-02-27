@@ -135,7 +135,10 @@ export default function LandingFooter() {
             height={20}
             alt="arrow"
             onClick={() => {
-              window.open('https://www.linkedin.com/company/schesti/', '_blank')
+              window.open(
+                'https://www.linkedin.com/company/schesti/',
+                '_blank'
+              );
             }}
           />
           <Image
@@ -145,7 +148,10 @@ export default function LandingFooter() {
             alt="arrow"
             className="cursor-pointer"
             onClick={() => {
-              window.open('https://www.facebook.com/profile.php?id=61554839685900&mibextid=kFxxJDM', '_blank');
+              window.open(
+                'https://www.facebook.com/profile.php?id=61554839685900&mibextid=kFxxJDM',
+                '_blank'
+              );
             }}
           />
           <Image src={'/IG.svg'} width={20} height={20} alt="fb" />

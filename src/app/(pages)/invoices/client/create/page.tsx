@@ -16,7 +16,6 @@ import { toast } from 'react-toastify';
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 
-
 const G703_KEY = 'G703';
 const G702_KEY = 'G702';
 export default function CreateClientInvoicePage() {
@@ -59,8 +58,6 @@ export default function CreateClientInvoicePage() {
     p5aPercentage: 10,
     p5bPercentage: 2,
   });
-
-
 
   useLayoutEffect(() => {
     if (token) {
@@ -195,8 +192,6 @@ export default function CreateClientInvoicePage() {
       });
   }
 
-
-
   return (
     <section className="mx-16 my-2">
       <div className="p-5 shadow-md rounded-lg border border-silverGray  bg-white">
@@ -256,7 +251,11 @@ export default function CreateClientInvoicePage() {
                       sumColumns={sumColumns}
                       updateCellValue={updateCellValue}
                     >
-                      <CustomButton onClick={() => setTab(G702_KEY)} text="Next" className="!w-40" />
+                      <CustomButton
+                        onClick={() => setTab(G702_KEY)}
+                        text="Next"
+                        className="!w-40"
+                      />
                     </G703Component>
                   ) : (
                     <G702Component
@@ -265,12 +264,20 @@ export default function CreateClientInvoicePage() {
                       updateRetainage={updateRetainage}
                       sumColumns={sumColumns}
                     >
-                      <WhiteButton onClick={() => {
-                        setTab(G703_KEY);
-                      }} text="Previous" className="!w-40" />
-                      <CustomButton text="Create" className="!w-48" onClick={() => {
-                        handleSubmit(g7State);
-                      }} />
+                      <WhiteButton
+                        onClick={() => {
+                          setTab(G703_KEY);
+                        }}
+                        text="Previous"
+                        className="!w-40"
+                      />
+                      <CustomButton
+                        text="Create"
+                        className="!w-48"
+                        onClick={() => {
+                          handleSubmit(g7State);
+                        }}
+                      />
                     </G702Component>
                   ),
               };

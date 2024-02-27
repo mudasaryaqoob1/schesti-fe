@@ -148,7 +148,6 @@ const EstimateRequestTable: React.FC = () => {
 
   return (
     <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid border-silverGray shadow-secondaryTwist">
-
       <>
         <div className="flex justify-between items-center">
           <TertiaryHeading

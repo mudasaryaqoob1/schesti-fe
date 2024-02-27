@@ -101,7 +101,7 @@ const ExistingClient = ({ setModalOpen, onSelectClient }: Props) => {
                 />
               </div>
               <SecondaryHeading
-                title={"Existing Clients"}
+                title={'Existing Clients'}
                 className="text-obsidianBlack2 mt-8"
               />
               <Description
@@ -110,32 +110,36 @@ const ExistingClient = ({ setModalOpen, onSelectClient }: Props) => {
               />
             </div>
           ) : (
-            (clientsData as IClient[]).filter(client => {
-              if (!search) {
-                return client;
-              }
-              return client.firstName.toLowerCase().includes(search.toLowerCase())
-            }).map(({ _id, firstName }: any, i: number) => {
-              return (
-                <Fragment key={i}>
-                  <div className="border-b-lightGrayishBlue p-4 flex gap-4 items-center bg-snowWhite border">
-                    <input
-                      type="radio"
-                      name="client name"
-                      id={_id}
-                      onChange={() => setSelectedClientId(_id)}
-                    />
-                    {/* <Image src={img} alt="client icon" width={30} height={30} /> */}
-                    <label htmlFor={_id} className="cursor-pointer">
-                      <SenaryHeading
-                        title={firstName}
-                        className="text-darkSteelBlue"
+            (clientsData as IClient[])
+              .filter((client) => {
+                if (!search) {
+                  return client;
+                }
+                return client.firstName
+                  .toLowerCase()
+                  .includes(search.toLowerCase());
+              })
+              .map(({ _id, firstName }: any, i: number) => {
+                return (
+                  <Fragment key={i}>
+                    <div className="border-b-lightGrayishBlue p-4 flex gap-4 items-center bg-snowWhite border">
+                      <input
+                        type="radio"
+                        name="client name"
+                        id={_id}
+                        onChange={() => setSelectedClientId(_id)}
                       />
-                    </label>
-                  </div>
-                </Fragment>
-              );
-            })
+                      {/* <Image src={img} alt="client icon" width={30} height={30} /> */}
+                      <label htmlFor={_id} className="cursor-pointer">
+                        <SenaryHeading
+                          title={firstName}
+                          className="text-darkSteelBlue"
+                        />
+                      </label>
+                    </div>
+                  </Fragment>
+                );
+              })
           )}
         </div>
       </section>

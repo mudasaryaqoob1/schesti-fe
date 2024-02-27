@@ -122,6 +122,11 @@ a {
   color: transparent;
 }
 
-.ant-table .ant-table-container .ant-table-content table thead.ant-table-thead .ant-table-cell {
-  background-color: #F9F5FF !important;
+.ant-table
+  .ant-table-container
+  .ant-table-content
+  table
+  thead.ant-table-thead
+  .ant-table-cell {
+  background-color: #f9f5ff !important;
 }

@@ -154,35 +154,44 @@ const ClientTable = () => {
       ),
     },
   ];
-  const filteredClients = clientsData ? clientsData.filter((client) => {
-    if (!search) {
-      return client;
-    }
-    return client.firstName.toLowerCase().includes(search.toLowerCase()) || client.lastName.toLowerCase().includes(search.toLowerCase()) || client.email?.includes(search);
-  }) : []
+  const filteredClients = clientsData
+    ? clientsData.filter((client) => {
+        if (!search) {
+          return client;
+        }
+        return (
+          client.firstName.toLowerCase().includes(search.toLowerCase()) ||
+          client.lastName.toLowerCase().includes(search.toLowerCase()) ||
+          client.email?.includes(search)
+        );
+      })
+    : [];
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
-      {selectedClient && showDeleteModal ? <ModalComponent open={showDeleteModal} setOpen={setShowDeleteModal} width='30%'>
-        <DeleteContent
-          onClick={async () => {
-            if ("_id" in selectedClient) {
-              await dispatch(deleteCompanyClient(selectedClient._id as string));
-              toast.success("Client deleted successfully");
-            }
-            setShowDeleteModal(false);
-          }}
-          onClose={() => setShowDeleteModal(false)}
-        />
-      </ModalComponent> : null}
-      <div
-        className={`${bg_style} p-5 border border-solid border-silverGray`}
-      >
-        <div className="flex justify-between items-center mb-4">
-          <TertiaryHeading
-            title="Client List"
-            className="text-graphiteGray"
+      {selectedClient && showDeleteModal ? (
+        <ModalComponent
+          open={showDeleteModal}
+          setOpen={setShowDeleteModal}
+          width="30%"
+        >
+          <DeleteContent
+            onClick={async () => {
+              if ('_id' in selectedClient) {
+                await dispatch(
+                  deleteCompanyClient(selectedClient._id as string)
+                );
+                toast.success('Client deleted successfully');
+              }
+              setShowDeleteModal(false);
+            }}
+            onClose={() => setShowDeleteModal(false)}
           />
-          <div className=' flex space-x-3'>
+        </ModalComponent>
+      ) : null}
+      <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
+        <div className="flex justify-between items-center mb-4">
+          <TertiaryHeading title="Client List" className="text-graphiteGray" />
+          <div className=" flex space-x-3">
             <div className="w-96">
               <InputComponent
                 label=""
@@ -195,7 +204,7 @@ const ClientTable = () => {
                   value: search,
                   onChange: (e: any) => {
                     setSearch(e.target.value);
-                  }
+                  },
                 }}
               />
             </div>

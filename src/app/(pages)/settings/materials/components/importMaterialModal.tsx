@@ -107,19 +107,21 @@ const ImportMaterialModal = ({
     } catch (error) {
       const err = error as AxiosError;
       if (err.response!.status >= 400) {
-        toast.error("Something went wrong. Please try again.");
+        toast.error('Something went wrong. Please try again.');
       }
       setIsLoading(false);
     }
   };
   return (
-    <CustomModal setOpen={() => {
-      if (formikRef.current) {
-        formikRef.current.resetForm();
-      }
-      setMaterialModal(false)
-    }}
-      open={materialModal}>
+    <CustomModal
+      setOpen={() => {
+        if (formikRef.current) {
+          formikRef.current.resetForm();
+        }
+        setMaterialModal(false);
+      }}
+      open={materialModal}
+    >
       <div className="py-6 px-6 bg-white border border-solid border-elboneyGray rounded-[20px] z-50">
         <div className="flex justify-between items-center border-b-Gainsboro ">
           <div>

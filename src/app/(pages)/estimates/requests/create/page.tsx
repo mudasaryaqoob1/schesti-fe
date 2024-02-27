@@ -200,7 +200,9 @@ const CreateEstimateRequest = () => {
       console.error('Error uploading documents:', error);
     }
   };
-  const takeoffReportsUploadHandler: UploadProps['onChange'] = async ({ fileList }) => {
+  const takeoffReportsUploadHandler: UploadProps['onChange'] = async ({
+    fileList,
+  }) => {
     setuploadDocumentsError('');
     const documents = fileList;
     if (!documents[0]) {
@@ -218,7 +220,9 @@ const CreateEstimateRequest = () => {
     }
   };
 
-  const otherDocumentsUploadHandler: UploadProps['onChange'] = ({ fileList }) => {
+  const otherDocumentsUploadHandler: UploadProps['onChange'] = ({
+    fileList,
+  }) => {
     setuploadDocumentsError('');
     const documents = fileList;
     if (!documents[0]) {
@@ -235,7 +239,9 @@ const CreateEstimateRequest = () => {
       setOtherDocuments((prev: any) => [...prev, documents[i]]);
     }
   };
-  const drawingsDocumentsUplodadHandler: UploadProps['onChange'] = ({ fileList }) => {
+  const drawingsDocumentsUplodadHandler: UploadProps['onChange'] = ({
+    fileList,
+  }) => {
     setuploadDocumentsError('');
     const documents = fileList;
     if (!documents[0]) {
@@ -495,7 +501,6 @@ const CreateEstimateRequest = () => {
                                   />
                                 </div>
                                 <div className="flex gap-2">
-
                                   <p
                                     className={twMerge(
                                       `${senaryHeading} !text-[14px] text-RoyalPurple font-semibold cursor-pointer`
@@ -578,8 +583,6 @@ const CreateEstimateRequest = () => {
                               <div
                                 className={`px-6 py-4 flex flex-col items-center gap-3 `}
                               >
-
-
                                 <div className="bg-lightGrayish rounded-[28px] border border-solid border-paleblueGray flex justify-center items-center p-2.5">
                                   <Image
                                     src={'/uploadcloud.svg'}
@@ -600,8 +603,11 @@ const CreateEstimateRequest = () => {
                                     or drag and drop
                                   </p>
                                 </div>
-                                <p className={`text-steelGray ${minHeading} text-center`}>
-                                  PDF, CSV, SVG, PNG, JPG or GIF (max. 800x400px)
+                                <p
+                                  className={`text-steelGray ${minHeading} text-center`}
+                                >
+                                  PDF, CSV, SVG, PNG, JPG or GIF (max.
+                                  800x400px)
                                 </p>
                               </div>
                             </Upload>
@@ -662,12 +668,10 @@ const CreateEstimateRequest = () => {
                             className={`p-4 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg `}
                           >
                             <Upload
-
                               id="otherDocuments"
                               onChange={otherDocumentsUploadHandler}
                               accept=".png,.jpg,.jpeg,.svg,application/pdf,.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                             >
-
                               <div
                                 className={`px-6 py-4 flex flex-col items-center gap-3 `}
                               >
@@ -691,12 +695,14 @@ const CreateEstimateRequest = () => {
                                     or drag and drop
                                   </p>
                                 </div>
-                                <p className={`text-steelGray ${minHeading} text-center`}>
-                                  PDF, CSV, SVG, PNG, JPG or GIF (max. 800x400px)
+                                <p
+                                  className={`text-steelGray ${minHeading} text-center`}
+                                >
+                                  PDF, CSV, SVG, PNG, JPG or GIF (max.
+                                  800x400px)
                                 </p>
                               </div>
                             </Upload>
-
                           </div>
                         )}
                       </>

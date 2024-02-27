@@ -42,12 +42,17 @@ const Generated = () => {
               Steps: {
                 dotSize: 18,
                 dotCurrentSize: 18,
-                colorPrimary: "#6941C6",
-              }
-            }
+                colorPrimary: '#6941C6',
+              },
+            },
           }}
         >
-          <Steps progressDot current={pevNext} items={items} labelPlacement="vertical" />
+          <Steps
+            progressDot
+            current={pevNext}
+            items={items}
+            labelPlacement="vertical"
+          />
         </ConfigProvider>
       </div>
 

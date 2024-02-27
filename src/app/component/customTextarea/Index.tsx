@@ -26,8 +26,10 @@ const Textarea = ({
         defaultValue={defaultValue}
         className={twMerge(
           clsx(
-            `border ${hasError ? 'border-red-500' : 'border-gray-400'
-            } !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 mt-2 w-full  ${inputStyle && inputStyle
+            `border ${
+              hasError ? 'border-red-500' : 'border-gray-400'
+            } !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 mt-2 w-full  ${
+              inputStyle && inputStyle
             }`
           )
         )}

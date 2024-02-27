@@ -1,4 +1,4 @@
-import { ISubcontractor } from "@/app/interfaces/companyInterfaces/subcontractor.interface";
+import { ISubcontractor } from '@/app/interfaces/companyInterfaces/subcontractor.interface';
 
 interface ISubcontractorState {
   loading: boolean;

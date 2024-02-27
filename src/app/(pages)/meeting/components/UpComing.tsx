@@ -101,7 +101,7 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
                     className={`!w-20`}
                     text={'Join'}
                     onClick={() => {
-                      window.open(`/meeting/${item.roomName}`, "_blank");
+                      window.open(`/meeting/${item.roomName}`, '_blank');
                     }}
                   />
                 )}

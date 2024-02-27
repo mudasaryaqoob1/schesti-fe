@@ -177,9 +177,9 @@ const AddNewUser = () => {
                   />
                 </div>
                 <div className="self-end flex justify-end items-center gap-5 md:mt-5 my-3">
-                  <div className='flex items-center space-x-3'>
+                  <div className="flex items-center space-x-3">
                     <WhiteButton
-                      text='Cancel'
+                      text="Cancel"
                       className="mx-w-30"
                       onClick={() => router.back()}
                     />

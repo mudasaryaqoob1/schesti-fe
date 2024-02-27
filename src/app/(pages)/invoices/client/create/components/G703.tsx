@@ -39,7 +39,7 @@ export function G703Component({
   handleState,
   sumColumns,
   updateCellValue,
-  children
+  children,
 }: Props) {
   function getCellValue(row: string[], column: number) {
     return row[column];
@@ -419,7 +419,7 @@ export function G703Component({
                       onOk() {
                         deleteRow(index);
                       },
-                      onCancel() { },
+                      onCancel() {},
                     });
                   }}
                 />
@@ -430,9 +430,7 @@ export function G703Component({
       </div>
       {/* END Spreadsheet */}
 
-      <div className="flex justify-end space-x-4 mt-8">
-        {children}
-      </div>
+      <div className="flex justify-end space-x-4 mt-8">{children}</div>
     </section>
   );
 }
