@@ -11,6 +11,7 @@ import { ColorPicker, InputNumber, Select } from 'antd';
 import { UploadFileContext } from '../context';
 import { UploadFileContextProps } from '../context/UploadFileContext';
 import DrawHistoryTable from '../components/DrawHistoryTable';
+import { Measurements, defaultMeasurements } from '../types';
 
 export type ScaleLabel =
   | 'scale'
@@ -80,32 +81,20 @@ const scaleNavigation: ScaleNavigation[] = [
   },
 ];
 
-export interface Measurements {
-  angle?: number;
-  segment?: string;
-  volume?: number;
-  count?: number;
-  parameter?: string;
-  area?: number;
-}
-
-export const defaultMeasurements: Measurements = {
-  angle: 0,
-  segment: '0',
-  volume: 0,
-  area: 0,
-  count: 0,
-  parameter: '0',
-};
-
 const Units = [11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72];
+
+// const selectedScale = {
+//   "1" : {scale:  `3/8"=1'-0"`, precision: `1/34` }
+//   "2" : {scale:  `3/8"=1'-0"`, precision: `1/34` }
+//   "3" : {scale:  `3/8"=1'-0"`, precision: `1/34` }
+// }
 
 const Scale = () => {
   const [scale, setScale] = useState<ScaleLabel>('scale');
   const [showModal, setShowModal] = useState(false);
   const [border, setBorder] = useState<number>(4);
   const [color, setColor] = useState<string>('#1677ff');
-  const [unit, setUnit] = useState<number>(18);
+  const [unit, setUnit] = useState<number>(14);
   const [depth, setDepth] = useState<number>(0);
   const [measurements, setMeasurements] =
     useState<Measurements>(defaultMeasurements);
@@ -208,18 +197,14 @@ const Scale = () => {
       </div>
 
       <div className="py-6 h-[709px] relative">
-        <div>
-          <div className="absolute">
-            <div className={`${showModal ? 'block' : 'hidden'}`}>
-              <ModalsWrapper
-                scale={scale}
-                setModalOpen={setShowModal}
-                measurements={measurements}
-              />
-            </div>
-          </div>
+        <div className={`absolute ${showModal ? 'block' : 'hidden'}`}>
+          <ModalsWrapper
+            scale={scale}
+            setModalOpen={setShowModal}
+            measurements={measurements}
+          />
         </div>
-        <div className="relative h-[527px] overflow-y-auto">
+        <div className="h-[527px] overflow-y-auto">
           {uploadFileData.map((file, index) => (
             <Draw
               key={`draw-${index}`}
@@ -227,7 +212,7 @@ const Scale = () => {
               depth={depth}
               color={color}
               border={border}
-              unit={unit}
+              unit={unit * 1.5}
               uploadFileData={file}
               pageNumber={index + 1}
               handleChangeMeasurements={(measurements) =>

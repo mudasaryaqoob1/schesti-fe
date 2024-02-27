@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import { Input } from 'antd';
-import { Measurements } from '../../scale/page';
+import { Measurements } from '../../types';
 
 interface Props {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -35,7 +35,7 @@ const Length: React.FC<Props> = ({ setModalOpen, measurements }) => {
           <div className="flex flex-row items-center justify-between ">
             <label>Segment</label>
             <div className="w-[92px]">
-              <Input value={measurements.segment} className="!rounded-md" />
+              <Input value={measurements.parameter} className="!rounded-md" />
             </div>
           </div>
         </div>

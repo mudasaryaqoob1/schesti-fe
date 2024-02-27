@@ -1,5 +1,48 @@
 import { DrawInterface } from '../(pages)/takeoff/types';
 
+const measurementUnits = [
+  'in',
+  'cm',
+  'mm',
+  'ft',
+  `ft'in"`,
+  "in'",
+  'yd',
+  'mi',
+  'm',
+  'km',
+];
+
+export const unitConversion: { [conversion: string]: number } = {
+  'in-in': 1,
+  'in-cm': 2.54,
+  'in-mm': 25.4,
+  'ft-in': 12,
+  [`ft'in"-in`]: 12,
+  "in'-in": 1,
+  'yd-in': 36,
+  'mi-in': 63360,
+  'mm-in': 0.0393701,
+  'cm-in': 0.393701,
+  'm-in': 39.3701,
+  'km-in': 39370.1,
+  '---': 0,
+};
+
+export const improperPrecisionConverter: { [key: string]: number } = {
+  '1': 1,
+  '1/2': 0.1,
+  '1/4': 0.01,
+  '1/8': 0.001,
+  '1/16': 0.0001,
+  '1/32': 0.000001,
+  '0.1': 0.1,
+  '0.01': 0.01,
+  '0.001': 0.001,
+  '0.0001': 0.0001,
+  '0.000001': 0.000001,
+};
+
 const useDraw = () => {
   const pixelToInchScale = 72;
 
@@ -38,7 +81,7 @@ const useDraw = () => {
   ): number => {
     const polygonArea = calculatePolygonArea(coordinates);
     const depthInInches = convertPxIntoInches(depth);
-    return polygonArea * depthInInches;
+    return +(polygonArea * depthInInches).toFixed(4);
   };
 
   const calculatePolygonCenter = (
@@ -89,15 +132,19 @@ const useDraw = () => {
       (lastVertexX - firstVertexX) ** 2 + (lastVertexY - firstVertexY) ** 2
     );
 
-    return convertPxIntoInches(perimeter).toFixed(3);
+    return convertToFeetAndInches(convertPxIntoInches(perimeter));
   };
 
-  const calcLineDistance = (coordinates: number[]) => {
+  const calcLineDistance = (coordinates: number[], format = false) => {
     const [x1, y1, x2, y2] = coordinates;
 
     const distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 
-    return convertPxIntoInches(distance).toFixed(2);
+    if (format)
+      return convertToFeetAndInches(
+        addScalerToValue(convertPxIntoInches(distance))
+      );
+    return convertPxIntoInches(distance);
   };
 
   const convertArrayIntoChunks = (data: number[]): number[][] => {
@@ -179,7 +226,7 @@ const useDraw = () => {
     if (key === 'line')
       return {
         projectName: 'Length Measurement',
-        comment: points?.length ? calcLineDistance(points) : 0,
+        comment: points?.length ? calcLineDistance(points, true) : 0,
       };
     else if (key === 'area')
       return {
@@ -196,6 +243,166 @@ const useDraw = () => {
     else return { projectName: 'Dynamic Measurement', comment: '' };
   };
 
+  const convertToFeetAndInches = (inches: number, precision = '0.01') => {
+    const convertedPrecision = improperPrecisionConverter[precision];
+    const feet = Math.floor(inches / 12);
+    const wholeInches = Math.floor(inches % 12);
+    const chunksArray: number[] = [];
+
+    const remainingInchesDecimal = +(inches - feet * 12 - wholeInches).toFixed(
+      2
+    );
+
+    if (convertedPrecision === 1)
+      return getFeetAndInchesFormat(feet, wholeInches);
+
+    const decimalCount = convertedPrecision.toString().split('.')[1].length;
+
+    const chunks = Math.pow(2, decimalCount);
+    for (let index = 1; index < chunks + 1; index++) {
+      chunksArray.push(index / chunks);
+    }
+    const closest = findClosestValue(chunksArray, remainingInchesDecimal);
+
+    if (closest === 1) return getFeetAndInchesFormat(feet, wholeInches + 1);
+    else {
+      const len = closest.toString().length - 2;
+      let denominator = Math.pow(10, len);
+      let numerator = closest * denominator;
+
+      const divisor = gcd(numerator, denominator);
+
+      numerator /= divisor;
+      denominator /= divisor;
+
+      return getFeetAndInchesFormat(
+        feet,
+        wholeInches,
+        `${numerator}/${denominator}`
+      );
+    }
+  };
+
+  const findClosestValue = (array: number[], target: number) => {
+    // If the array is empty, return undefined
+    if (array.length === 0) return target;
+
+    // Initialize variables to keep track of the closest value and its difference
+    let closest = array[0];
+    let minDifference = Math.abs(target - closest);
+
+    // Iterate through the array to find the closest value
+    for (let i = 1; i < array.length; i++) {
+      const difference = Math.abs(target - array[i]);
+      // If the current value is closer than the previous closest, update the closest value and the difference
+      if (difference < minDifference) {
+        closest = array[i];
+        minDifference = difference;
+      }
+    }
+
+    return closest;
+  };
+
+  const gcd = (a: number, b: number): number => {
+    if (b < 0.0000001) return a; // Since there is a limited precision we need to limit the value.
+    return gcd(b, Math.floor(a % b)); // Discard any fractions due to limitations in precision.
+  };
+
+  const getFeetAndInchesFormat = (
+    feet: number,
+    inches: number,
+    fractionalString?: string
+  ) => {
+    const inchesString = inches > 0 ? `${inches}` : '0';
+
+    if (fractionalString) {
+      return `${feet}'- ${inchesString} ${fractionalString}"`;
+    } else return `${feet}'- ${inchesString}"`;
+  };
+  // scale = `3/8'=1'-0"`
+  //"1cm=10in"
+  //"21/11cm=10/11in"
+  //"11111cm=22222in"
+  //"21/11cm=10/11in"
+  // scale = `1:20`
+  const addScalerToValue = (value: number, scale = '1cm=10in'): number => {
+    // HANDLING PRESET SCALE BELOW
+    if (scale.includes(':')) {
+      const multiplier = +scale.split(':')[1];
+      return value * multiplier;
+    } else if (
+      scale.includes('=') &&
+      !measurementUnits.some((unit) => scale.includes(unit))
+    ) {
+      const splittedScale = scale.split('=');
+
+      if (scale.includes(`1'-0"`)) {
+        const [numerator, denominator] = getInchesInFractionFromMixedFraction(
+          splittedScale[0]
+        ).split('/');
+
+        return (12 * value * +denominator) / +numerator;
+      } else {
+        const multiplier = +splittedScale[1].substring(
+          0,
+          splittedScale[1].length - 1
+        );
+        return value * multiplier * 12;
+      }
+    } else {
+      // HANDLING CUSTOM SCALE BELOW
+
+      // Left Hand Side, Right Hand Side
+      const [LHS, RHS] = scale.split('=');
+
+      const LUnit =
+        measurementUnits.find((unit) => LHS.indexOf(unit) >= 0) || '-';
+
+      const LHSValues = LHS.substring(0, LHS.indexOf(LUnit));
+
+      // Left Numerator(LN), Left Denominator (LD)
+      const [LN, LD] = LHSValues.includes('/')
+        ? LHSValues.split('/')
+        : [LHSValues, 1];
+
+      const RUnit =
+        measurementUnits.find((unit) => RHS.indexOf(unit) >= 0) || '-';
+
+      const RHSValues = RHS.substring(0, RHS.indexOf(RUnit));
+
+      //Right Numerator (RN), Right Denominator (RD)
+      const [RN, RD] = RHSValues.includes('/')
+        ? RHSValues.split('/')
+        : [RHSValues, 1];
+
+      const scaledValue =
+        (+RN *
+          +LD *
+          (value * unitConversion[`in-${LUnit}`]) *
+          unitConversion[`${RUnit}-in`]) /
+        (+LN * +RD);
+
+      return scaledValue;
+    }
+  };
+
+  const getInchesInFractionFromMixedFraction = (value = `1 1/2"`) => {
+    const isFraction = value.split('/').length > 1;
+    if (isFraction) return `${value}/1`;
+
+    const isMixedFraction = value.split(' ');
+    if (isMixedFraction.length > 1) {
+      const [coefficient, fraction] = isMixedFraction;
+      const [numerator, denominator] = fraction.includes(`"`)
+        ? fraction.substring(0, fraction.length - 1).split('/')
+        : fraction.split('/');
+
+      return `${+numerator + +coefficient * +denominator}/${denominator}`;
+    } else
+      return value.includes(`"`) ? value.substring(0, value.length - 1) : value;
+  };
+
   return {
     calculatePolygonArea,
     calculatePolygonCenter,
@@ -206,6 +413,7 @@ const useDraw = () => {
     calculatePolygonVolume,
     calculateAngle,
     getProjectAndCommentNameForTable,
+    getInchesInFractionFromMixedFraction,
   };
 };
 

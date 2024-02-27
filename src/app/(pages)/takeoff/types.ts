@@ -39,3 +39,21 @@ export interface DrawInterface {
   dynamic: LineInterface[];
   count: CountInterface[];
 }
+
+export interface Measurements {
+  angle?: number;
+  segment?: string;
+  volume?: number;
+  count?: number;
+  parameter?: string;
+  area?: number;
+}
+
+export const defaultMeasurements = {
+  angle: 0,
+  segment: '0',
+  volume: 0,
+  area: 0,
+  count: 0,
+  parameter: '0',
+};
