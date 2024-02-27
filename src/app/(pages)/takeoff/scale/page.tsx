@@ -89,7 +89,7 @@ export interface Measurements {
   area?: number;
 }
 
-export const initialMeasurements: Measurements = {
+export const defaultMeasurements: Measurements = {
   angle: 0,
   segment: '0',
   volume: 0,
@@ -108,7 +108,7 @@ const Scale = () => {
   const [unit, setUnit] = useState<number>(18);
   const [depth, setDepth] = useState<number>(0);
   const [measurements, setMeasurements] =
-    useState<Measurements>(initialMeasurements);
+    useState<Measurements>(defaultMeasurements);
 
   const { uploadFileData } = useContext(
     UploadFileContext
