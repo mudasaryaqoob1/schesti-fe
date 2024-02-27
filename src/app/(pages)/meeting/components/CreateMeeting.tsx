@@ -26,7 +26,7 @@ const CreateMeetingSchema = Yup.object().shape({
   topic: Yup.string().required('Topic is required'),
   email: Yup.array()
     .min(1)
-    .of(Yup.string().email('Invalid email\n').required('Email is required'))
+    .of(Yup.string().email('is invalid email\n').required('Email is required'))
     .required('Email is required'),
   startDate: Yup.date().required('Start Time is required'),
 });
@@ -126,9 +126,12 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
                 formik.touched.email &&
                 Boolean(formik.errors.email) &&
                 Array.isArray(formik.errors.email)
-                  ? formik.errors.email.find(
-                      (item: string | undefined) => item && item.length > 0
-                    )
+                  ? formik.errors.email
+                      .map(
+                        (item: string, idx) =>
+                          `'${formik.values.email![idx]}' ${item}`
+                      )
+                      .toString()
                   : formik.errors.email
               }
               field={{

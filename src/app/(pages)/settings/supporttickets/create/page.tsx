@@ -61,6 +61,7 @@ const CreateTicket = () => {
         setIsLoading(false);
         if (response.statusCode == 201) {
           setIsLoading(false);
+          toast.success(response.message);
           router.push('/settings/supporttickets');
         }
       })

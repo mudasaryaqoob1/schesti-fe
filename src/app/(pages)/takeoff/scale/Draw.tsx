@@ -11,7 +11,7 @@ import {
 import { UploadFileData } from '../context/UploadFileContext';
 import { useDraw } from '@/app/hooks';
 import { KonvaEventObject } from 'konva/lib/Node';
-import { Measurements, defaultMeasurements } from './page';
+import { Measurements, initialMeasurements } from './page';
 import moment from 'moment';
 import { DrawHistoryContext } from '../context';
 import { DrawHistoryContextProps } from '../context/DrawHistoryContext';
@@ -127,7 +127,7 @@ const Draw: React.FC<Props> = ({
   }, [selected]);
 
   useEffect(() => {
-    if (selected !== 'count') handleChangeMeasurements(defaultMeasurements);
+    if (selected !== 'count') handleChangeMeasurements(initialMeasurements);
   }, [selected]);
 
   useEffect(() => {
@@ -166,7 +166,7 @@ const Draw: React.FC<Props> = ({
       };
       setDraw((prev) => ({ ...prev, line: [...prev.line, newLine] }));
       setCurrentLine(defaultCurrentLineState);
-      handleChangeMeasurements(defaultMeasurements);
+      handleChangeMeasurements(initialMeasurements);
     }
 
     if (selected === 'area' || selected === 'volume') {
@@ -356,7 +356,7 @@ const Draw: React.FC<Props> = ({
           setCompletingLine(defaultCurrentLineState);
           setPolyLine(defaultPolyLineState);
           setDynamicPolyLine(defaultPolyLineState);
-          handleChangeMeasurements(defaultMeasurements);
+          handleChangeMeasurements(initialMeasurements);
         }
         if (e.key === 'Enter' && selected === 'dynamic') {
           setCurrentLine(defaultCurrentLineState);

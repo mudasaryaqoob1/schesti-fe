@@ -1,6 +1,6 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import * as Yup from 'yup';
-import { Form, Formik } from 'formik';
+import { Form, Formik, type FormikProps } from 'formik';
 import { message, Upload } from 'antd';
 import { toast } from 'react-toastify';
 import Image from 'next/image';
@@ -12,6 +12,7 @@ import CustomButton from '@/app/component/customButton/button';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { byteConverter } from '@/app/utils/byteConverter';
 import { materialService } from '@/app/services/material.service';
+import { AxiosError } from 'axios';
 
 interface Iprops {
   materialModal: boolean;
@@ -45,7 +46,7 @@ const ImportMaterialModal = ({
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState<Object[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  const formikRef = useRef<FormikProps<InitialValuesTypes> | null>(null);
   const fetchCategories = useCallback(async () => {
     const result = await categoriesService.httpGetAllCategories(1, 9);
     let modifyCategories = result.data.map(
@@ -104,12 +105,23 @@ const ImportMaterialModal = ({
         fetchMaterialsData();
       }
     } catch (error) {
+      const err = error as AxiosError;
+      if (err.response!.status >= 400) {
+        toast.error('Something went wrong. Please try again.');
+      }
       setIsLoading(false);
     }
   };
-
   return (
-    <CustomModal setOpen={() => setMaterialModal(false)} open={materialModal}>
+    <CustomModal
+      setOpen={() => {
+        if (formikRef.current) {
+          formikRef.current.resetForm();
+        }
+        setMaterialModal(false);
+      }}
+      open={materialModal}
+    >
       <div className="py-6 px-6 bg-white border border-solid border-elboneyGray rounded-[20px] z-50">
         <div className="flex justify-between items-center border-b-Gainsboro ">
           <div>
@@ -133,6 +145,7 @@ const ImportMaterialModal = ({
           validationSchema={validationSchema}
           enableReinitialize
           onSubmit={importMaterialHandler}
+          innerRef={formikRef}
         >
           {({ handleSubmit, values, setFieldValue, errors }) => {
             console.log(errors, 'errorserrorserrors');

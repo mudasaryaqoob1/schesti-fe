@@ -4,6 +4,7 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { difference } from 'lodash';
 
 // module imports
 import CustomButton from '@/app/component/customButton/button';
@@ -19,6 +20,7 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import Image from 'next/image';
 import { resetVoidFc } from '@/app/utils/types';
 import { addSettingTargetData } from '@/redux/company/settingSlices/settingTarget.slice';
+import { SelectComponent } from '@/app/component/customSelect/Select.component';
 
 const validationSchema = Yup.object({
   month: Yup.string().required('Month is required!'),
@@ -26,7 +28,7 @@ const validationSchema = Yup.object({
 });
 const initialValues: ISettingTarget = {
   price: '',
-  month: 'January',
+  month: '',
 };
 
 // months
@@ -48,8 +50,12 @@ export const months = [
 export type SettingTargetProps = {
   setShowModal: Dispatch<SetStateAction<boolean>>;
   selectedTarget?: ISettingTarget;
+  settingTargetsData: ISettingTarget[];
 };
-const CreateTaget = ({ setShowModal }: SettingTargetProps) => {
+const CreateTaget = ({
+  setShowModal,
+  settingTargetsData,
+}: SettingTargetProps) => {
   const token = useSelector(selectToken);
   const dispatch = useDispatch();
 
@@ -60,7 +66,15 @@ const CreateTaget = ({ setShowModal }: SettingTargetProps) => {
   }, [token]);
 
   const [isLoading, setIsLoading] = useState(false);
+  const existingMonths = months.map((m) => m.value);
+  const targetMonths = settingTargetsData.map((m) => m.month);
 
+  const newMonths = difference(existingMonths, targetMonths).map((m) => ({
+    value: m,
+    label: m,
+  }));
+
+  // submit handler
   const submitHandler = async (
     values: ISettingTarget,
     { resetForm }: resetVoidFc
@@ -103,7 +117,14 @@ const CreateTaget = ({ setShowModal }: SettingTargetProps) => {
         validationSchema={validationSchema}
         onSubmit={submitHandler}
       >
-        {({ handleSubmit }) => {
+        {({
+          handleSubmit,
+          values,
+          errors,
+          handleBlur,
+          setFieldValue,
+          touched,
+        }) => {
           return (
             <Form
               name="basic"
@@ -116,15 +137,25 @@ const CreateTaget = ({ setShowModal }: SettingTargetProps) => {
                 label="Set Price"
                 type="number"
                 name="price"
+                min={1}
                 placeholder="Enter Price"
+                prefix={'$'}
               />
               <div className="mt-2.5">
-                <FormControl
-                  control="select"
+                <SelectComponent
                   label="Month"
-                  options={months}
                   name="month"
                   placeholder="Month"
+                  errorMessage={errors.month}
+                  hasError={touched.month && !!errors.month}
+                  field={{
+                    value: values.month,
+                    onChange: (e: any) => {
+                      setFieldValue('month', e.value);
+                    },
+                    onBlur: handleBlur,
+                    options: newMonths,
+                  }}
                 />
               </div>
               <CustomButton

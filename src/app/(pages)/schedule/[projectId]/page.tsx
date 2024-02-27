@@ -11,7 +11,7 @@ import QuinaryHeading from '@/app/component/headings/quinary';
 // import { UserOutlined } from '@ant-design/icons';
 
 import { Schedule } from './components/schedule';
-import { GanttComponent } from './components/gantt';
+import GanttComponent from './components/gantt';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
 import { IWBSType } from '@/app/interfaces/schedule/createSchedule.interface';

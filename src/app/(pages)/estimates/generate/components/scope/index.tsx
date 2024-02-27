@@ -314,7 +314,7 @@ const Scope = ({ setPrevNext }: Props) => {
       selectedCategory = `${estimateTableItemValues?.category} ${estimateTableItemValues?.subCategory}`;
     }
     if (
-      estimateData.scopeItems.length &&
+      !estimateData.scopeItems.length &&
       estimateData.title !== selectedCategory &&
       !editItem &&
       !editConfirmItem
@@ -399,7 +399,6 @@ const Scope = ({ setPrevNext }: Props) => {
           ],
         }));
         // setEstimateDescriptions([]);
-
         setSingleEstimateData({
           ...SingleEstimateData,
           // category: '',
@@ -413,9 +412,9 @@ const Scope = ({ setPrevNext }: Props) => {
           unitMaterialCost: '',
           unitEquipments: '',
         });
-        // actions.resetForm({ values: initialValues });
       }
     }
+    actions.resetForm({ values: initialValues });
   };
 
   const deleteEstimateRecordHandler = (record: any) => {

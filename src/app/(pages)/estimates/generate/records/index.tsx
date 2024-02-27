@@ -46,7 +46,7 @@ const EstimateRequestTable: React.FC = () => {
       1,
       9
     );
-    let updatedGeneratedEstimate = result?.data?.generatedEstiamtes.map(
+    let updatedGeneratedEstimate = result?.data?.generatedEstimates.map(
       (estimate: any) => {
         return {
           _id: estimate?._id,

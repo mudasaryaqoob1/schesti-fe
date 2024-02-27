@@ -50,6 +50,7 @@ export function SelectComponent({
             } !w-full !rounded-lg focus:border-blue-500  ${field?.className}`
           )
         )}
+        status={hasError ? 'error' : undefined}
       />
       {errorMessage ? (
         <p className="text-red-500 text-xs">{errorMessage}</p>

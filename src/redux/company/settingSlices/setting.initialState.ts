@@ -1,5 +1,6 @@
 import {
   ICategory,
+  ISettingTarget,
   ISubcategory,
 } from '@/app/interfaces/companyInterfaces/setting.interface';
 
@@ -8,14 +9,14 @@ interface SettingTargetsInitialData {
   error?: string | null;
   message?: string | null;
   statusCode: number | null;
-  data: any;
+  data: ISettingTarget[];
 }
 
 const initialSettingTargetsState: SettingTargetsInitialData = {
   loading: false,
   error: null,
   message: null,
-  data: null,
+  data: [],
   statusCode: null,
 };
 
