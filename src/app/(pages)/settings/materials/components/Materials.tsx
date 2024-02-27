@@ -157,7 +157,7 @@ const Materials = () => {
                     </div>
                   </div>
                   <div>
-                    <div className="grid grid-cols-8 bg-lavenderPurple p-3 rounded-lg mt-7 bg-opacity-10">
+                    <div className="grid grid-cols-8 sm:grid-cols-8 md:grid-cols-8 lg:grid-cols-8 xl:grid-cols-8 overflow-x-auto bg-lavenderPurple p-3 rounded-lg gap-4 mt-7 bg-opacity-10">
                       <Description title="Description" className="col-span-2" />
                       <Description title="Unit" className="col-span-1" />
                       <Description

@@ -1,5 +1,6 @@
 import {
   ICategory,
+  ISettingTarget,
   ISubcategory,
 } from '@/app/interfaces/companyInterfaces/setting.interface';
 
@@ -8,14 +9,14 @@ interface SettingTargetsInitialData {
   error?: string | null;
   message?: string | null;
   statusCode: number | null;
-  data: any;
+  data: ISettingTarget[];
 }
 
 const initialSettingTargetsState: SettingTargetsInitialData = {
   loading: false,
   error: null,
   message: null,
-  data: null,
+  data: [],
   statusCode: null,
 };
 
@@ -29,14 +30,14 @@ interface CompanySetupCategoryInitialData {
 }
 
 export const initialCompanySetupCategoryState: CompanySetupCategoryInitialData =
-  {
-    loading: false,
-    error: null,
-    message: null,
-    data: null,
-    statusCode: null,
-    categoryData: null,
-  };
+{
+  loading: false,
+  error: null,
+  message: null,
+  data: null,
+  statusCode: null,
+  categoryData: null,
+};
 
 interface CompanySetupSubcategoryInitialData {
   loading: boolean;
@@ -49,14 +50,14 @@ interface CompanySetupSubcategoryInitialData {
 }
 
 export const initialCompanySetupSubcategoryState: CompanySetupSubcategoryInitialData =
-  {
-    loading: false,
-    error: null,
-    message: null,
-    data: null,
-    statusCode: null,
-    subcategoryData: null,
-    refetch: false,
-  };
+{
+  loading: false,
+  error: null,
+  message: null,
+  data: null,
+  statusCode: null,
+  subcategoryData: null,
+  refetch: false,
+};
 
 export default initialSettingTargetsState;

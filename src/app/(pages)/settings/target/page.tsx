@@ -59,7 +59,6 @@ const TargetsTable = () => {
   useEffect(() => {
     fetchSettingTargetsHandler();
   }, []);
-
   const columns: ColumnsType<DataType> = [
     {
       title: 'Month',
@@ -111,7 +110,7 @@ const TargetsTable = () => {
         open={showCreateModal}
         setOpen={setShowCreateModal}
       >
-        <CreateTaget setShowModal={setShowCreateModal} />
+        <CreateTaget setShowModal={setShowCreateModal} settingTargetsData={settingTargetsData} />
       </ModalComponent>
       <ModalComponent
         width="380px"
@@ -123,6 +122,7 @@ const TargetsTable = () => {
         <EditTaget
           setShowModal={setShowEditModal}
           selectedTarget={selectedTarget}
+          settingTargetsData={settingTargetsData}
         />
       </ModalComponent>
       <section>

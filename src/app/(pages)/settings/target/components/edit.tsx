@@ -26,7 +26,7 @@ const validationSchema = Yup.object({
   price: Yup.string().required('Price is required!'),
 });
 
-const EditTaget = ({ setShowModal, selectedTarget }: SettingTargetProps) => {
+const EditTaget = ({ setShowModal, selectedTarget, }: SettingTargetProps) => {
   const token = useSelector(selectToken);
   const dispatch = useDispatch();
 
