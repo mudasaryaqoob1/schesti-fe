@@ -17,6 +17,7 @@ import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import { addNewMeetingAction } from '@/redux/meeting/meeting.slice';
 import Description from '@/app/component/description';
 import { SelectComponent } from '@/app/component/customSelect/Select.component';
+import { disabledDate } from '@/app/utils/date.utils';
 
 type Props = {
   showModal: boolean;
@@ -70,12 +71,6 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
         });
     },
   });
-  // const disabledDate: RangePickerProps['disabledDate'] = (current) => {
-  //   const isPreviousDay = current < dayjs().add(-1, 'days');
-  //   const isPreviousHour = current < dayjs().add(-1, 'hour');
-  //   const isPreviousMinute = current < dayjs().add(-1, 'minute');
-  //   return isPreviousDay || isPreviousHour || isPreviousMinute;
-  // };
 
   function handleCloseModal() {
     setShowModal();
@@ -165,7 +160,9 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
                   formik.touched.startDate && Boolean(formik.errors.startDate)
                     ? 'error'
                     : undefined,
-                // disabledDate,
+                use12Hours: true,
+                disabledDate: disabledDate,
+                showSecond: false
               }}
             />
 
