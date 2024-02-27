@@ -16,15 +16,21 @@ import {
 } from '@ant-design/icons';
 import { Dropdown, Table, type MenuProps, Modal } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import { useFormik } from 'formik';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import * as Yup from 'yup';
+
+const ValidationSchema = Yup.object({
+  invoiceName: Yup.string().required('Invoice name is required'),
+});
+
 
 export function Clients() {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
-  const [invoiceName, setInvoiceName] = useState('');
   const dispatch = useDispatch<AppDispatch>();
   const clientInvoices = useSelector(
     (state: RootState) => state.clientInvoices.data
@@ -33,6 +39,17 @@ export function Clients() {
     (state: RootState) => state.clientInvoices.loading
   );
   const [search, setSearch] = useState('');
+  const formik = useFormik({
+    initialValues: {
+      invoiceName: '',
+    },
+    validationSchema: ValidationSchema,
+    onSubmit(values) {
+      router.push(
+        `/invoices/client/create?invoiceName=${values.invoiceName}`
+      )
+    },
+  })
 
   const fetchSubcontactorsInvoices = useCallback(async () => {
     await dispatch(fetchClientInvoices({}));
@@ -163,7 +180,10 @@ export function Clients() {
           />
           <ModalComponent
             open={showModal}
-            setOpen={setShowModal}
+            setOpen={() => {
+              formik.resetForm();
+              setShowModal(false);
+            }}
             title="Client Invoice"
             width="40%"
           >
@@ -187,10 +207,13 @@ export function Clients() {
                   type="text"
                   placeholder="Enter invoice name"
                   name="invoiceName"
+                  hasError={formik.touched.invoiceName && !!formik.errors.invoiceName}
+                  errorMessage={formik.errors.invoiceName}
                   field={{
                     type: 'text',
-                    onChange: (e) => setInvoiceName(e.target.value),
-                    value: invoiceName,
+                    onChange: formik.handleChange,
+                    onBlur: formik.handleBlur,
+                    value: formik.values.invoiceName,
                   }}
                 />
 
@@ -201,12 +224,8 @@ export function Clients() {
                   <CustomButton
                     text="Next"
                     className="!w-[100px]"
-                    onClick={() =>
-                      router.push(
-                        `/invoices/client/create?invoiceName=${invoiceName}`
-                      )
-                    }
-                    disabled={!invoiceName}
+                    onClick={() => formik.handleSubmit()}
+                    disabled={!formik.isValid}
                   />
                 </div>
               </div>
