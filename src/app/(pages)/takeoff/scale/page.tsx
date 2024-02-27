@@ -11,6 +11,7 @@ import { ColorPicker, InputNumber, Select } from 'antd';
 import { UploadFileContext } from '../context';
 import { UploadFileContextProps } from '../context/UploadFileContext';
 import DrawHistoryTable from '../components/DrawHistoryTable';
+import { Measurements, defaultMeasurements } from '../types';
 
 export type ScaleLabel =
   | 'scale'
@@ -79,24 +80,6 @@ const scaleNavigation: ScaleNavigation[] = [
     height: 14,
   },
 ];
-
-export interface Measurements {
-  angle?: number;
-  segment?: string;
-  volume?: number;
-  count?: number;
-  parameter?: string;
-  area?: number;
-}
-
-export const defaultMeasurements: Measurements = {
-  angle: 0,
-  segment: '0',
-  volume: 0,
-  area: 0,
-  count: 0,
-  parameter: '0',
-};
 
 const Units = [11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72];
 

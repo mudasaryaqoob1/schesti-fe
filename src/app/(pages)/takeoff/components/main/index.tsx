@@ -1,10 +1,11 @@
 import React from 'react';
-import { Measurements, ScaleLabel } from '../../scale/page';
+import { ScaleLabel } from '../../scale/page';
 import Length from '../length';
 import Volume from '../volume';
 import Count from '../count';
 import Area from '../area';
 import Dynamic from '../dynamic';
+import { Measurements } from '../../types';
 
 interface Props {
   scale: ScaleLabel;

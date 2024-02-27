@@ -12,7 +12,6 @@ import {
 import { UploadFileData } from '../context/UploadFileContext';
 import { useDraw } from '@/app/hooks';
 import { KonvaEventObject } from 'konva/lib/Node';
-import { Measurements, defaultMeasurements } from './page';
 import moment from 'moment';
 import { DrawHistoryContext } from '../context';
 import { DrawHistoryContextProps } from '../context/DrawHistoryContext';
@@ -21,7 +20,9 @@ import {
   DrawInterface,
   LineInterface,
   LineState,
+  Measurements,
   PolygonConfigInterface,
+  defaultMeasurements,
 } from '../types';
 
 const defaultCurrentLineState = { startingPoint: null, endingPoint: null };

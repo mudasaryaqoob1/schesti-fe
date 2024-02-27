@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import { Input } from 'antd';
-import { Measurements } from '../../scale/page';
+import { Measurements } from '../../types';
 
 interface Props {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;

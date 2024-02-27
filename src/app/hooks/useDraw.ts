@@ -243,7 +243,7 @@ const useDraw = () => {
     else return { projectName: 'Dynamic Measurement', comment: '' };
   };
 
-  const convertToFeetAndInches = (inches: number, precision = '0.1') => {
+  const convertToFeetAndInches = (inches: number, precision = '0.01') => {
     const convertedPrecision = improperPrecisionConverter[precision];
     const feet = Math.floor(inches / 12);
     const wholeInches = Math.floor(inches % 12);
