@@ -399,7 +399,6 @@ const Scope = ({ setPrevNext }: Props) => {
           ],
         }));
         // setEstimateDescriptions([]);
-
         setSingleEstimateData({
           ...SingleEstimateData,
           // category: '',
@@ -413,9 +412,9 @@ const Scope = ({ setPrevNext }: Props) => {
           unitMaterialCost: '',
           unitEquipments: '',
         });
-        // actions.resetForm({ values: initialValues });
       }
     }
+    actions.resetForm({ values: initialValues });
   };
 
   const deleteEstimateRecordHandler = (record: any) => {
