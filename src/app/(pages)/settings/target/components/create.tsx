@@ -150,8 +150,8 @@ const CreateTaget = ({
                   hasError={touched.month && !!errors.month}
                   field={{
                     value: values.month,
-                    onChange: (e: any) => {
-                      setFieldValue('month', e.value);
+                    onChange: (e) => {
+                      setFieldValue('month', e);
                     },
                     onBlur: handleBlur,
                     options: newMonths,
