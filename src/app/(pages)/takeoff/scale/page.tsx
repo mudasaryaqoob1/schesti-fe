@@ -228,7 +228,10 @@ const Scale = () => {
 
       {scale === 'scale' && (
         <ModalComponent open={showModal} setOpen={setShowModal}>
-          <ScaleModal setModalOpen={setShowModal} />
+          <ScaleModal
+            setModalOpen={setShowModal}
+            scaleData={(data: any) => console.warn('data: ', data)}
+          />
         </ModalComponent>
       )}
     </section>
