@@ -38,7 +38,7 @@ export function AdsManagement() {
     const current = moment();
     return current.isBetween(startDate, expiryDate);
   });
-  console.log({ filteredAds });
+
   return (
     <Carousel
       autoplay={true}
