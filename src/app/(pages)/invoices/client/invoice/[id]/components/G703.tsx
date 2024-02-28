@@ -52,7 +52,7 @@ export function G703Component({
   sumColumns,
   updateCellValue,
   children,
-  showAddAndDelete = true
+  showAddAndDelete = true,
 }: Props) {
   function getCellValue(row: string[], column: number) {
     return row[column];
@@ -450,7 +450,7 @@ export function G703Component({
                       onOk() {
                         deleteRow(index);
                       },
-                      onCancel() { },
+                      onCancel() {},
                     });
                   }}
                 />

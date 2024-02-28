@@ -106,11 +106,10 @@ const CreateTicket = () => {
       <div className="grid grid-cols-12 gap-8 p-8">
         <div className="col-span-4">
           <Image
-            alt='Service24-7'
-            src='/service24-7.svg'
+            alt="Service24-7"
+            src="/service24-7.svg"
             width={498}
             height={628}
-
           />
         </div>
         <section className="w-full col-span-8">
@@ -126,7 +125,10 @@ const CreateTicket = () => {
               width={16}
               height={16}
             />
-            <Description title="Create New Ticket" className="text-RoyalPurple" />
+            <Description
+              title="Create New Ticket"
+              className="text-RoyalPurple"
+            />
           </div>
           <div className="mt-6">
             <Formik
@@ -171,12 +173,14 @@ const CreateTicket = () => {
                         </div>
                         {avatarLoading ? (
                           <p>Uploading...</p>
-                        ) : avatarURL ? <Image
-                          src={avatarURL}
-                          alt="avatar"
-                          width={100}
-                          height={100}
-                        /> : (
+                        ) : avatarURL ? (
+                          <Image
+                            src={avatarURL}
+                            alt="avatar"
+                            width={100}
+                            height={100}
+                          />
+                        ) : (
                           <div className="flex gap-2">
                             <label
                               htmlFor="uploadCompanyLogo"
@@ -212,7 +216,9 @@ const CreateTicket = () => {
                     <div className="flex justify-end gap-2 mt-6">
                       <span>
                         <CustomButton
-                          onClick={() => router.push('/settings/supporttickets')}
+                          onClick={() =>
+                            router.push('/settings/supporttickets')
+                          }
                           text="Cancel"
                           className="!bg-white !text-graphiteGray !border !border-celestialGray"
                         />

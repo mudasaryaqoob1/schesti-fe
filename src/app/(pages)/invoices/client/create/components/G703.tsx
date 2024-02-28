@@ -424,7 +424,7 @@ export function G703Component({
                       onOk() {
                         deleteRow(index);
                       },
-                      onCancel() { },
+                      onCancel() {},
                     });
                   }}
                 />

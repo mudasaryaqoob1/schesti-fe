@@ -15,7 +15,7 @@ import { clientInvoiceService } from '@/app/services/client-invoices.service';
 import { toast } from 'react-toastify';
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
-import { useScreenshot } from '@breezeos-dev/use-react-screenshot'
+import { useScreenshot } from '@breezeos-dev/use-react-screenshot';
 import jsPDF from 'jspdf';
 import { ClientInvoiceHeader } from '../components/ClientInvoiceHeader';
 import { ClientInvoiceFooter } from '../components/ClientInvoiceFooter';
@@ -255,7 +255,14 @@ export default function CreateClientInvoicePage() {
         >
           <Tabs
             destroyInactiveTabPane
-            tabBarExtraContent={showDownload ? <CustomButton text={isDownloading ? "Downloading..." : "Download PDF"} onClick={() => downloadPdf()} /> : null}
+            tabBarExtraContent={
+              showDownload ? (
+                <CustomButton
+                  text={isDownloading ? 'Downloading...' : 'Download PDF'}
+                  onClick={() => downloadPdf()}
+                />
+              ) : null
+            }
             onChange={(key) => {
               setTab(key);
             }}
@@ -312,7 +319,10 @@ export default function CreateClientInvoicePage() {
           />
         </ConfigProvider>
       </div>
-      <div ref={ref as MutableRefObject<HTMLDivElement>} className='space-y-5 w-full absolute z -left-[2500px] border p-6'>
+      <div
+        ref={ref as MutableRefObject<HTMLDivElement>}
+        className="space-y-5 w-full absolute z -left-[2500px] border p-6"
+      >
         <ClientInvoiceHeader />
         <ConfigProvider
           theme={{

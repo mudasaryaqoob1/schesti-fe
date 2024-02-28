@@ -19,7 +19,6 @@ import jsPDF from 'jspdf';
 import { ClientInvoiceFooter } from '../../../components/ClientInvoiceFooter';
 import { ClientInvoiceHeader } from '../../../components/ClientInvoiceHeader';
 
-
 type Props = {
   parentInvoice: IClientInvoice;
 };
@@ -289,7 +288,16 @@ export function PhaseComponent({ parentInvoice }: Props) {
         >
           <Tabs
             destroyInactiveTabPane
-            tabBarExtraContent={showDownload ? <CustomButton loadingText='Downloading...' isLoading={isDownloading} text={"Download PDF"} onClick={() => downloadPdf()} /> : null}
+            tabBarExtraContent={
+              showDownload ? (
+                <CustomButton
+                  loadingText="Downloading..."
+                  isLoading={isDownloading}
+                  text={'Download PDF'}
+                  onClick={() => downloadPdf()}
+                />
+              ) : null
+            }
             onChange={(key) => {
               setTab(key);
             }}
@@ -358,7 +366,10 @@ export function PhaseComponent({ parentInvoice }: Props) {
           />
         </ConfigProvider>
       </div>
-      <div ref={ref as MutableRefObject<HTMLDivElement>} className='space-y-5 w-full absolute z -left-[2500px] border p-6'>
+      <div
+        ref={ref as MutableRefObject<HTMLDivElement>}
+        className="space-y-5 w-full absolute z -left-[2500px] border p-6"
+      >
         <ClientInvoiceHeader />
         <ConfigProvider
           theme={{

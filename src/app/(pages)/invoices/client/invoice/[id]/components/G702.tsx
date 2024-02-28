@@ -21,7 +21,7 @@ export function G702Component({
   handleState,
   sumColumns,
   updateRetainage,
-  children
+  children,
 }: Props) {
   const changeOrderSummaryAdditionSum =
     state.totalAdditionThisMonth + state.totalAdditionPreviousMonth;
