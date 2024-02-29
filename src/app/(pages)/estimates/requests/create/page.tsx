@@ -141,12 +141,10 @@ const CreateEstimateRequest = () => {
     else {
       setIsLoading(true);
 
-      const [drawingDocs, takeOffDocs, otherDocs] = await Promise.all([
-        uploadDocumentToS3Handler(drawingsDocuments),
-        uploadDocumentToS3Handler(takeOffReports),
-        uploadDocumentToS3Handler(otherDocuments),
-      ]);
-
+      const drawingDocs = await uploadDocumentToS3Handler(drawingsDocuments);
+      const takeOffDocs = await uploadDocumentToS3Handler(takeOffReports);
+      const otherDocs = await uploadDocumentToS3Handler(otherDocuments);
+      console.log(drawingDocs, takeOffDocs, otherDocs)
       Promise.all([drawingDocs, takeOffDocs, otherDocs])
         .then(() => {
           estimateRequestService
@@ -156,6 +154,8 @@ const CreateEstimateRequest = () => {
               otherDocuments: otherDocs,
               takeOffReports: takeOffDocs,
               drawingsDocuments: drawingDocs,
+              leadSource: `${values.leadSource}`,
+              projectValue: `${values.projectValue}`
             })
             .then((resp: any) => {
               setIsLoading(false);
@@ -175,25 +175,27 @@ const CreateEstimateRequest = () => {
     }
   };
 
-  const uploadDocumentToS3Handler = async (documents: any) => {
+  const uploadDocumentToS3Handler = async (documents: { name: string, size: number, type: string, originFileObj: File }[]) => {
     let documentsData: Object[] = [];
     try {
-      await Promise.all(
-        Object.keys(documents).map(async (key: any) => {
+      console.log({ documents });
+      documentsData = await Promise.all(
+        documents.map(async (doc) => {
           const url = await new AwsS3(
-            documents[key],
+            doc.originFileObj,
             'documents/estimates/'
           ).getS3URL();
+          console.log({ url });
           let obj = {
-            name: documents[key].name,
-            size: documents[key].size,
-            ext: documents[key].type,
+            name: doc.name,
+            size: doc.size,
+            ext: doc.type,
             url: url,
           };
-          documentsData.push(obj);
+          return obj;
         })
       );
-
+      console.log({ documentsData });
       return documentsData;
     } catch (error) {
       toast.error('Error uploading documents');
