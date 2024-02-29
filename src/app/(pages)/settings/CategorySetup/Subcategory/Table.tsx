@@ -83,7 +83,7 @@ const SubCategoryTable: React.FC = () => {
   useEffect(() => {
     fetchSubcategoriesHandler();
   }, [refetch]);
-
+  console.log({ subCategories });
   const columns: ColumnsType<DataType> = [
     {
       title: 'Category',

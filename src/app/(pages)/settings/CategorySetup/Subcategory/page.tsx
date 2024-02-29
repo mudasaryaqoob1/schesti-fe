@@ -58,7 +58,7 @@ const AddSubcategory = () => {
   const initialValues: SubcategoryInitValues = {
     name: subcategoryData?.subCategory || '',
     price: subcategoryData?.price || '',
-    category: subcategoryData?.categoryName || '',
+    category: subcategoryData?.categoryId || '',
   };
   const categoriesReduxData = useSelector(companySetupCategoriesData);
   const categoriesReduxDataLoading = useSelector(
@@ -95,7 +95,6 @@ const AddSubcategory = () => {
       const { statusCode, data } =
         await categoriesService.httpUpdateSubcategory(subcategoryData._id, {
           ...values,
-          category: subcategoryData.categoryId,
         });
       console.log(statusCode, data);
       if (statusCode === 200) {
@@ -116,9 +115,9 @@ const AddSubcategory = () => {
 
   const options = categoriesReduxData
     ? categoriesReduxData.map(({ name, _id }: ICategory) => ({
-        label: name,
-        value: _id,
-      }))
+      label: name,
+      value: _id,
+    }))
     : [];
 
   return (
@@ -131,8 +130,8 @@ const AddSubcategory = () => {
           onSubmit={submitHandler}
           enableReinitialize
         >
-          {({ handleSubmit, values, errors }) => {
-            console.log({ values, errors });
+          {({ handleSubmit, values }) => {
+            console.log({ values })
             return (
               <Form
                 name="basic"
