@@ -13,32 +13,42 @@ const StatisticsReport = dynamic(
 );
 import { AdsManagement } from './components/AdsManagement';
 import { HttpService } from '@/app/services/base.service';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useLayoutEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { TotalCost } from './components/TotalCost';
 import dynamic from 'next/dynamic';
+import { useQuery } from 'react-query';
+import { userService } from '@/app/services/user.service';
+import { estimateRequestService } from '@/app/services/estimates.service';
+import { ProjectDetails } from './components/ProjectDetails';
+import { clientInvoiceService } from '@/app/services/client-invoices.service';
+import { meetingService } from '@/app/services/meeting.service';
 const Dashboard = () => {
   const token = useSelector(selectToken);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   useLayoutEffect(() => {
     if (token) {
       HttpService.setToken(token);
     }
   }, [token]);
+  const clientQuery = useQuery('clients', () => {
+    return userService.httpGetAllCompanyClients();
+  });
 
-  if (!isMounted) {
-    return null;
-  }
+  const estimateQuery = useQuery(
+    'estimates',
+    () => {
+      return estimateRequestService.httpGetAllGeneratedEstimatesWithoutLimit();
+    }
+  );
+
+  const invoiceQuery = useQuery(['client-invoices'], () => clientInvoiceService.httpGetAllInvoices());
+  const meetingQuery = useQuery(['meetings'], () => meetingService.httpGetMeetings());
 
   return (
     <section className="my-4  mx-8 px-4">
-      <TotalCost />
+      <TotalCost clientQuery={clientQuery} estimateQuery={estimateQuery} />
 
       <div className="grid grid-cols-12 gap-3">
         <div className="col-span-7 shadow-md bg-white rounded-md px-4">
@@ -69,49 +79,11 @@ const Dashboard = () => {
           <div className="mx-auto w-48">
             <ProjectsReport />
           </div>
-          <div className="px-5 space-y-5">
-            <div className="flex justify-between">
-              <div className="flex gap-3 items-center">
-                <span className="w-3 h-3 bg-midnightBlue2" />
-                <SenaryHeading title="Takeoff Project" />
-              </div>
-              <SenaryHeading title="20" className="font-medium" />
-            </div>
-            <div className="flex justify-between">
-              <div className="flex gap-3 items-center">
-                <span className="w-3 h-3 bg-lavenderPurple" />
-
-                <SenaryHeading title="Estimate Project" />
-              </div>
-
-              <SenaryHeading title="23" className="font-medium" />
-            </div>
-            <div className="flex justify-between">
-              <div className="flex gap-3 items-center">
-                <span className="w-3 h-3 bg-[#36B37E]" />
-
-                <SenaryHeading title="Invoices " />
-              </div>
-
-              <SenaryHeading title="23" className="font-medium" />
-            </div>
-            <div className="flex justify-between">
-              <div className="flex items-center gap-3">
-                <span className="w-3 h-3 bg-goldenrodYellow" />
-
-                <SenaryHeading title="Scheduled Project" />
-              </div>
-              <SenaryHeading title="65" className="font-medium" />
-            </div>
-            <div className="flex justify-between">
-              <div className="flex items-center gap-3">
-                <span className="w-3 h-3 bg-[#B58905]" />
-
-                <SenaryHeading title="Meeting" />
-              </div>
-              <SenaryHeading title="65" className="font-medium" />
-            </div>
-          </div>
+          <ProjectDetails
+            estimateQuery={estimateQuery}
+            invoiceQuery={invoiceQuery}
+            meetingQuery={meetingQuery}
+          />
         </div>
       </div>
 
