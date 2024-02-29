@@ -191,7 +191,13 @@ const Upload = () => {
           </div>
         </div>
         <ModalComponent open={showModal} setOpen={setShowModal}>
-          <ScaleModal setModalOpen={setShowModal} />
+          <ScaleModal
+            setModalOpen={setShowModal}
+            scaleData={function (data: any): void {
+              console.log(data);
+              throw new Error('Function not implemented.');
+            }}
+          />
         </ModalComponent>
       </section>
     </>
