@@ -58,10 +58,11 @@ const byDefaultPerest = [
 ];
 
 interface Props {
+  scaleData: (data: any) => void;
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ScaleModal = ({ setModalOpen }: Props) => {
+const ScaleModal = ({ setModalOpen, scaleData }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const allPresets = useSelector(selectTakeoffPreset);
 
@@ -213,7 +214,12 @@ const ScaleModal = ({ setModalOpen }: Props) => {
           />
         </div>
         <div>
-          <Button text="Calibrate" />
+          <Button
+            text="Calibrate"
+            onClick={() =>
+              scaleData({ 1: { scale: preset, precision: precision } })
+            }
+          />
         </div>
       </div>
     </div>
