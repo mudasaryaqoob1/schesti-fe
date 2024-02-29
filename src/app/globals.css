@@ -129,3 +129,12 @@ a {
 canvas {
   border: 1px solid black !important;
 }
+.ant-carousel .slick-dots li button {
+  background: #6b696b;
+  opacity: 0.4;
+}
+
+.ant-carousel .slick-dots li.slick-active button {
+  opacity: 1;
+  background: #000000;
+}

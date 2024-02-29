@@ -9,7 +9,6 @@ import {
   Select,
   Table,
 } from 'antd';
-import CustomButton from '@/app/component/customButton/button';
 import PrimaryHeading from '@/app/component/headings/primary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { rowTemplate } from '../utils';
@@ -28,6 +27,7 @@ import {
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
 import moment from 'moment';
+import { disabledDate } from '@/app/utils/date.utils';
 
 type Props = {
   phases: IClientInvoice[];
@@ -39,8 +39,8 @@ type Props = {
   // eslint-disable-next-line no-unused-vars
   sumColumns(rows: Array<string[]>, column: number): number;
   updateCellValue(_row: number, _column: number, _value: number | string): void;
-  onCancel: () => void;
-  onNext(): void;
+  children?: React.ReactNode;
+  showAddAndDelete?: boolean;
 };
 
 export function G703Component({
@@ -50,8 +50,9 @@ export function G703Component({
   state,
   handleState,
   sumColumns,
-  onNext,
   updateCellValue,
+  children,
+  showAddAndDelete = true,
 }: Props) {
   function getCellValue(row: string[], column: number) {
     return row[column];
@@ -162,6 +163,7 @@ export function G703Component({
                 onChange={(_d, dateString) =>
                   handleState('applicationDate', dateString as string)
                 }
+                disabledDate={disabledDate}
               />
               <p className="text-gray-400">Application Date is required.</p>
             </div>
@@ -180,6 +182,7 @@ export function G703Component({
                 onChange={(_d, dateString) =>
                   handleState('periodTo', dateString as string)
                 }
+                disabledDate={disabledDate}
               />
               <p className="text-gray-400">Period To is required.</p>
             </div>
@@ -432,14 +435,14 @@ export function G703Component({
                       icon={<PlusOutlined />}
                       shape="circle"
                       type="default"
-                      className="!ml-3"
+                      className={`!ml-3 ${showAddAndDelete ? '' : 'hidden'}`}
                     />
                   </ConfigProvider>
                 );
               }
               return (
                 <DeleteOutlined
-                  className="text-xl px-4 text-red-500 cursor-pointer"
+                  className={`text-xl px-4 text-red-500 cursor-pointer ${showAddAndDelete ? '' : 'hidden'}`}
                   onClick={() => {
                     Modal.confirm({
                       title: 'Are you sure delete this task?',
@@ -462,9 +465,7 @@ export function G703Component({
       </div>
       {/* END Spreadsheet */}
 
-      <div className="flex justify-end space-x-4 mt-8">
-        <CustomButton onClick={onNext} text="Next" className="!w-40" />
-      </div>
+      <div className="flex justify-end space-x-4 mt-8">{children}</div>
     </section>
   );
 }

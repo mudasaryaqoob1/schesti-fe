@@ -1,15 +1,16 @@
 'use client';
 import ProjectsReport from './components/ProjectReport';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
-const InvoiceReport = dynamic(
-  () => import('./components/InvoiceReport'),
-  {
-    ssr: false,
-  });
-import { SelectComponent } from '@/app/component/customSelect/Select.component';
-const StatisticsReport = dynamic(() => import('./components/StatisticsReport'), {
+const InvoiceReport = dynamic(() => import('./components/InvoiceReport'), {
   ssr: false,
 });
+import { SelectComponent } from '@/app/component/customSelect/Select.component';
+const StatisticsReport = dynamic(
+  () => import('./components/StatisticsReport'),
+  {
+    ssr: false,
+  }
+);
 import { AdsManagement } from './components/AdsManagement';
 import { HttpService } from '@/app/services/base.service';
 import { useEffect, useLayoutEffect, useState } from 'react';
@@ -19,11 +20,11 @@ import { TotalCost } from './components/TotalCost';
 import dynamic from 'next/dynamic';
 const Dashboard = () => {
   const token = useSelector(selectToken);
-  const [isMounted, setIsMounted] = useState(false)
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setIsMounted(true)
-  }, [])
+    setIsMounted(true);
+  }, []);
 
   useLayoutEffect(() => {
     if (token) {

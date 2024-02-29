@@ -7,12 +7,17 @@ import {
 import { clientInvoiceService } from '@/app/services/client-invoices.service';
 import { ConfigProvider, Tabs } from 'antd';
 import moment from 'moment';
-import { useEffect, useState } from 'react';
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { G703Component } from './G703';
 import { generateData } from '../utils';
 import { G702Component } from './G702';
-import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
+import CustomButton from '@/app/component/customButton/button';
+import WhiteButton from '@/app/component/customButton/white';
+import { useScreenshot } from '@breezeos-dev/use-react-screenshot';
+import jsPDF from 'jspdf';
+import { ClientInvoiceFooter } from '../../../components/ClientInvoiceFooter';
+import { ClientInvoiceHeader } from '../../../components/ClientInvoiceHeader';
 
 type Props = {
   parentInvoice: IClientInvoice;
@@ -21,12 +26,17 @@ const G703_KEY = 'G703';
 const G702_KEY = 'G702';
 
 export function PhaseComponent({ parentInvoice }: Props) {
-  const router = useRouter();
+  // const router = useRouter();
   // selected phase will be from allPhases and will be the latest last phase
   const [selectedPhase, setSelectedPhase] = useState<IClientInvoice | null>(
     null
   );
   const [tab, setTab] = useState(G703_KEY);
+  const ref = useRef<HTMLDivElement>();
+  const [image, takeScreenshot] = useScreenshot();
+  const [showDownload, setShowDownload] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+
   // all phases of the parent invoice
   const [allPhases, setAllPhases] = useState<IClientInvoice[]>([]);
   const [g7State, setG7State] = useState<G7State>({
@@ -214,7 +224,9 @@ export function PhaseComponent({ parentInvoice }: Props) {
       .httpCreateNewInvoicePhase(parentInvoice._id, data)
       .then((response) => {
         if (response.statusCode == 201) {
-          router.push('/invoices');
+          toast.success('Invoice created successfully');
+          takeScreenshot(ref.current);
+          setShowDownload(true);
         }
       })
       .catch(({ response }) => {
@@ -222,6 +234,22 @@ export function PhaseComponent({ parentInvoice }: Props) {
           toast.error('Please fill the required fields.');
         }
       });
+  }
+  function downloadPdf() {
+    setIsDownloading(() => true);
+    var doc = new jsPDF('portrait', 'in', 'a0');
+    if (image) {
+      const imgProps = doc.getImageProperties(image);
+      const width = doc.internal.pageSize.getWidth();
+      const ratio = width / imgProps.width;
+      const height = ratio * imgProps.height;
+      doc.internal.pageSize.height = height;
+      doc.addImage(image, 'JPEG', 0, 0, width, height);
+      setTimeout(() => {
+        setIsDownloading(false);
+        doc.save(`${parentInvoice.invoiceName}-invoice.pdf`);
+      }, 500);
+    }
   }
   return (
     <section className="mx-16 my-2">
@@ -260,6 +288,16 @@ export function PhaseComponent({ parentInvoice }: Props) {
         >
           <Tabs
             destroyInactiveTabPane
+            tabBarExtraContent={
+              showDownload ? (
+                <CustomButton
+                  loadingText="Downloading..."
+                  isLoading={isDownloading}
+                  text={'Download PDF'}
+                  onClick={() => downloadPdf()}
+                />
+              ) : null
+            }
             onChange={(key) => {
               setTab(key);
             }}
@@ -291,33 +329,104 @@ export function PhaseComponent({ parentInvoice }: Props) {
                       }}
                       phases={allPhases}
                       handleState={handleG7State}
-                      onCancel={() => {}}
-                      onNext={() => {
-                        setTab(G702_KEY);
-                      }}
                       state={g7State}
                       sumColumns={sumColumns}
                       updateCellValue={updateCellValue}
-                    />
+                    >
+                      <CustomButton
+                        onClick={() => setTab(G702_KEY)}
+                        text="Next"
+                        className="!w-40"
+                      />
+                    </G703Component>
                   ) : (
                     <G702Component
                       handleState={handleG7State}
                       updateRetainage={updateRetainage}
-                      onCancel={() => {
-                        setTab(G703_KEY);
-                      }}
-                      onNext={() => {
-                        handleSubmit(g7State);
-                      }}
                       state={g7State}
                       previousPhaseState={selectedPhase}
                       sumColumns={sumColumns}
-                    />
+                    >
+                      <WhiteButton
+                        onClick={() => {
+                          setTab(G703_KEY);
+                        }}
+                        text="Previous"
+                        className="!w-40"
+                      />
+                      <CustomButton
+                        text="Create new Phase"
+                        className="!w-48"
+                        onClick={() => {
+                          handleSubmit(g7State);
+                        }}
+                      />
+                    </G702Component>
                   ),
               };
             })}
           />
         </ConfigProvider>
+      </div>
+      <div
+        ref={ref as MutableRefObject<HTMLDivElement>}
+        className="space-y-5 w-full absolute z -left-[2500px] border p-6"
+      >
+        <ClientInvoiceHeader />
+        <ConfigProvider
+          theme={{
+            components: {
+              Tabs: {
+                inkBarColor: '#8449EB',
+              },
+              Input: {
+                padding: 0,
+                borderRadius: 0,
+                colorBorder: 'transparent',
+                controlHeight: 32,
+                colorTextDisabled: 'black',
+              },
+              InputNumber: {
+                borderRadius: 0,
+                colorBorder: 'transparent',
+                controlHeight: 32,
+              },
+              Table: {
+                cellPaddingBlock: 0,
+                cellPaddingInline: 0,
+              },
+            },
+          }}
+        >
+          <G703Component
+            selectedPhase={selectedPhase}
+            setSelectedPhase={(value) => {
+              let _selectedPhase = allPhases.find(
+                (phase) => phase._id === value
+              );
+              if (_selectedPhase) {
+                setSelectedPhase(_selectedPhase);
+                updateG7StateFromPhase({ ..._selectedPhase });
+              }
+            }}
+            phases={allPhases}
+            handleState={handleG7State}
+            state={g7State}
+            sumColumns={sumColumns}
+            updateCellValue={updateCellValue}
+            showAddAndDelete={false}
+          />
+          <ClientInvoiceFooter />
+
+          <G702Component
+            handleState={handleG7State}
+            updateRetainage={updateRetainage}
+            state={g7State}
+            previousPhaseState={selectedPhase}
+            sumColumns={sumColumns}
+          />
+        </ConfigProvider>
+        <ClientInvoiceFooter />
       </div>
     </section>
   );

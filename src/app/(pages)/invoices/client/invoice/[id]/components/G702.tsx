@@ -1,5 +1,3 @@
-import CustomButton from '@/app/component/customButton/button';
-import WhiteButton from '@/app/component/customButton/white';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { G7State } from '@/app/interfaces/client-invoice.interface';
@@ -14,8 +12,7 @@ type Props = {
   // eslint-disable-next-line no-unused-vars
   sumColumns(rows: string[][], column: number): number;
   updateRetainage(_value: number): void;
-  onCancel: () => void;
-  onNext(): void;
+  children?: React.ReactNode;
 };
 
 export function G702Component({
@@ -24,8 +21,7 @@ export function G702Component({
   handleState,
   sumColumns,
   updateRetainage,
-  onCancel,
-  onNext,
+  children,
 }: Props) {
   const changeOrderSummaryAdditionSum =
     state.totalAdditionThisMonth + state.totalAdditionPreviousMonth;
@@ -613,14 +609,7 @@ export function G702Component({
         </div>
       </div>
 
-      <div className="flex justify-end space-x-4">
-        <WhiteButton onClick={onCancel} text="Previous" className="!w-40" />
-        <CustomButton
-          text="Create new Phase"
-          className="!w-48"
-          onClick={onNext}
-        />
-      </div>
+      <div className="flex justify-end space-x-4">{children}</div>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 'use client';
-import { useLayoutEffect, useState } from 'react';
+import { MutableRefObject, useLayoutEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { ConfigProvider, Tabs } from 'antd';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -15,6 +15,10 @@ import { clientInvoiceService } from '@/app/services/client-invoices.service';
 import { toast } from 'react-toastify';
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
+import { useScreenshot } from '@breezeos-dev/use-react-screenshot';
+import jsPDF from 'jspdf';
+import { ClientInvoiceHeader } from '../components/ClientInvoiceHeader';
+import { ClientInvoiceFooter } from '../components/ClientInvoiceFooter';
 
 const G703_KEY = 'G703';
 const G702_KEY = 'G702';
@@ -25,6 +29,10 @@ export default function CreateClientInvoicePage() {
   const searchParams = useSearchParams();
   const invoiceName = searchParams.get('invoiceName');
   const [tab, setTab] = useState(G703_KEY);
+  const ref = useRef<HTMLDivElement>();
+  const [image, takeScreenshot] = useScreenshot();
+  const [showDownload, setShowDownload] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const [g7State, setG7State] = useState<G7State>({
     applicationNo: '',
@@ -176,13 +184,15 @@ export default function CreateClientInvoicePage() {
     newData[rowIndex][9] = `${isNaN(result) ? 0 : result}`;
     return newData;
   }
-  console.log(g7State);
+
   function handleSubmit(data: G7State) {
     clientInvoiceService
       .httpAddNewInvoice(data)
       .then((response) => {
         if (response.statusCode == 201) {
           toast.success('Invoice created successfully');
+          takeScreenshot(ref.current);
+          setShowDownload(true);
         }
       })
       .catch(({ response }: any) => {
@@ -192,6 +202,22 @@ export default function CreateClientInvoicePage() {
       });
   }
 
+  function downloadPdf() {
+    setIsDownloading(true);
+    var doc = new jsPDF('portrait', 'in', 'a0');
+    if (image) {
+      const imgProps = doc.getImageProperties(image);
+      const width = doc.internal.pageSize.getWidth();
+      const ratio = width / imgProps.width;
+      const height = ratio * imgProps.height;
+      doc.internal.pageSize.height = height;
+      doc.addImage(image, 'JPEG', 0, 0, width, height);
+      setTimeout(() => {
+        setIsDownloading(false);
+        doc.save(`${invoiceName}-invoice.pdf`);
+      }, 500);
+    }
+  }
   return (
     <section className="mx-16 my-2">
       <div className="p-5 shadow-md rounded-lg border border-silverGray  bg-white">
@@ -229,6 +255,14 @@ export default function CreateClientInvoicePage() {
         >
           <Tabs
             destroyInactiveTabPane
+            tabBarExtraContent={
+              showDownload ? (
+                <CustomButton
+                  text={isDownloading ? 'Downloading...' : 'Download PDF'}
+                  onClick={() => downloadPdf()}
+                />
+              ) : null
+            }
             onChange={(key) => {
               setTab(key);
             }}
@@ -286,6 +320,54 @@ export default function CreateClientInvoicePage() {
             })}
           />
         </ConfigProvider>
+      </div>
+      <div
+        ref={ref as MutableRefObject<HTMLDivElement>}
+        className="space-y-5 w-full absolute z -left-[2500px] border p-6"
+      >
+        <ClientInvoiceHeader />
+        <ConfigProvider
+          theme={{
+            components: {
+              Tabs: {
+                inkBarColor: '#8449EB',
+              },
+              Input: {
+                padding: 0,
+                borderRadius: 0,
+                colorBorder: 'transparent',
+                controlHeight: 32,
+                colorTextDisabled: 'black',
+              },
+              InputNumber: {
+                borderRadius: 0,
+                colorBorder: 'transparent',
+                controlHeight: 32,
+              },
+              Table: {
+                cellPaddingBlock: 0,
+                cellPaddingInline: 0,
+              },
+            },
+          }}
+        >
+          <G703Component
+            state={g7State}
+            handleState={handleG7State}
+            sumColumns={sumColumns}
+            updateCellValue={updateCellValue}
+            showAddAndDelete={false}
+          />
+          <ClientInvoiceFooter />
+
+          <G702Component
+            state={g7State}
+            handleState={handleG7State}
+            updateRetainage={updateRetainage}
+            sumColumns={sumColumns}
+          />
+        </ConfigProvider>
+        <ClientInvoiceFooter />
       </div>
     </section>
   );
