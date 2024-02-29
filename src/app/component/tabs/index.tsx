@@ -50,7 +50,11 @@ const Tabs = () => {
         <li>
           <Dropdown
             menu={{
-              items,
+              items: [
+                { key: 'bid-owner', label: <Link href="/bid/owner">Owner</Link> },
+                { key: 'bid-contractor', label: <Link href="/bid/contractor">Contractor</Link> },
+                { key: 'bid-sub-contractor', label: <Link href="/bid/sub-contractor">Sub Contractor</Link> },
+              ],
               selectable: true,
             }}
           >
@@ -62,7 +66,7 @@ const Tabs = () => {
                      cursor-pointer
                     `,
                   pathname.includes('/estimates'.split('/')[1]) &&
-                    tabsStyle.active
+                  tabsStyle.active
                 )
               )}
             >
@@ -74,7 +78,11 @@ const Tabs = () => {
         <li>
           <Dropdown
             menu={{
-              items,
+              items: [
+                { key: 'crm-clients', label: <Link href="/clients">Clients</Link> },
+                { key: 'crm-subcontractor', label: <Link href="/subcontractor">Sub Contractors</Link> },
+                { key: 'crm-partners', label: <Link href="/partners">Partners</Link> },
+              ],
               selectable: true,
             }}
           >
@@ -86,7 +94,7 @@ const Tabs = () => {
                      cursor-pointer
                     `,
                   pathname.includes('/estimates'.split('/')[1]) &&
-                    tabsStyle.active
+                  tabsStyle.active
                 )
               )}
             >
@@ -98,7 +106,10 @@ const Tabs = () => {
         <li>
           <Dropdown
             menu={{
-              items,
+              items: [
+                { key: 'manual', label: <Link href="/manual">Manual</Link> },
+                { key: 'ai-takeoff', label: <Link href="/bid/contractor">AI take off</Link> },
+              ],
               selectable: true,
             }}
           >
@@ -110,7 +121,7 @@ const Tabs = () => {
                      cursor-pointer
                     `,
                   pathname.includes('/estimates'.split('/')[1]) &&
-                    tabsStyle.active
+                  tabsStyle.active
                 )
               )}
             >
@@ -134,7 +145,7 @@ const Tabs = () => {
                      cursor-pointer
                     `,
                   pathname.includes('/estimates'.split('/')[1]) &&
-                    tabsStyle.active
+                  tabsStyle.active
                 )
               )}
             >
@@ -160,7 +171,10 @@ const Tabs = () => {
         <li>
           <Dropdown
             menu={{
-              items,
+              items: [
+                { key: 'Invoice-for-contractor', label: <Link href="/finance">Invoice for contractor</Link> },
+                { key: 'Pay-application', label: <Link href="/finance">Pay application</Link> },
+              ],
               selectable: true,
             }}
           >
@@ -172,7 +186,7 @@ const Tabs = () => {
                      cursor-pointer
                     `,
                   pathname.includes('/estimates'.split('/')[1]) &&
-                    tabsStyle.active
+                  tabsStyle.active
                 )
               )}
             >
