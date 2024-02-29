@@ -30,11 +30,10 @@ export function TotalCost({ clientQuery, estimateQuery }: Props) {
         </div>
         <div>
           <Image
-            src={'/documentIcon.svg'}
+            src={'/total-estimate.svg'}
             alt="Picture of the author"
             width={50}
             height={50}
-            className="text-[#8449EB]"
           />
         </div>
       </div>
@@ -51,7 +50,7 @@ export function TotalCost({ clientQuery, estimateQuery }: Props) {
         </div>
         <div>
           <Image
-            src={'/documentIcon.svg'}
+            src={'/total-takeoff.svg'}
             alt="Picture of the author"
             width={50}
             height={50}
@@ -72,7 +71,7 @@ export function TotalCost({ clientQuery, estimateQuery }: Props) {
         </div>
         <div>
           <Image
-            src={'/documentIcon.svg'}
+            src={'/total-scheduled.svg'}
             alt="Picture of the author"
             width={50}
             height={50}
@@ -97,7 +96,7 @@ export function TotalCost({ clientQuery, estimateQuery }: Props) {
         </div>
         <div>
           <Image
-            src={'/documentIcon.svg'}
+            src={'/total-invoices.svg'}
             alt="Picture of the author"
             width={50}
             height={50}
