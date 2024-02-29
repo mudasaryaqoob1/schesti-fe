@@ -144,7 +144,7 @@ const CreateEstimateRequest = () => {
       const drawingDocs = await uploadDocumentToS3Handler(drawingsDocuments);
       const takeOffDocs = await uploadDocumentToS3Handler(takeOffReports);
       const otherDocs = await uploadDocumentToS3Handler(otherDocuments);
-      console.log(drawingDocs, takeOffDocs, otherDocs)
+      console.log(drawingDocs, takeOffDocs, otherDocs);
       Promise.all([drawingDocs, takeOffDocs, otherDocs])
         .then(() => {
           estimateRequestService
@@ -155,7 +155,7 @@ const CreateEstimateRequest = () => {
               takeOffReports: takeOffDocs,
               drawingsDocuments: drawingDocs,
               leadSource: `${values.leadSource}`,
-              projectValue: `${values.projectValue}`
+              projectValue: `${values.projectValue}`,
             })
             .then((resp: any) => {
               setIsLoading(false);
@@ -175,7 +175,14 @@ const CreateEstimateRequest = () => {
     }
   };
 
-  const uploadDocumentToS3Handler = async (documents: { name: string, size: number, type: string, originFileObj: File }[]) => {
+  const uploadDocumentToS3Handler = async (
+    documents: {
+      name: string;
+      size: number;
+      type: string;
+      originFileObj: File;
+    }[]
+  ) => {
     let documentsData: Object[] = [];
     try {
       console.log({ documents });
