@@ -172,7 +172,7 @@ const Tabs = () => {
           <Dropdown
             menu={{
               items: [
-                { key: 'Invoice-for-contractor', label: <Link href="/finance">Invoice for contractor</Link> },
+                { key: 'Invoice-for-contractor', label: <Link href="/invoices">Invoice for contractor</Link> },
                 { key: 'Pay-application', label: <Link href="/finance">Pay application</Link> },
               ],
               selectable: true,
