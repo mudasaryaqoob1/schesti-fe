@@ -20,14 +20,28 @@ export function AdsCarousel({ ads }: Props) {
   }, [currentAdIndex, ads]);
 
   return (
-    <div>
-      {ads[currentAdIndex] && (
-        <img
-          src={ads[currentAdIndex].imageURL}
-          alt={`Ad ${currentAdIndex + 1}`}
-          style={{ width: '100%', height: 200, objectFit: 'cover' }}
-          className="rounded-md shadow-md"
-        />
+    <div className="grid grid-cols-12 gap-8">
+      <div className={`col-span-${ads.length === 1 ? '12' : '8'}`}>
+        {ads[currentAdIndex] && (
+          <img
+            src={ads[currentAdIndex].imageURL}
+            alt={`Ad ${currentAdIndex + 1}`}
+            style={{ width: '100%', height: 200, objectFit: 'cover' }}
+            className="rounded-md shadow-md"
+          />
+        )}
+      </div>
+      {ads.length > 1 && (
+        <div className="col-span-4 hidden md:block">
+          {ads[(currentAdIndex + 1) % ads.length] && (
+            <img
+              src={ads[(currentAdIndex + 1) % ads.length].imageURL}
+              alt={`Ad ${currentAdIndex + 2}`}
+              style={{ width: '100%', height: 200, objectFit: 'cover' }}
+              className="rounded-md shadow-md"
+            />
+          )}
+        </div>
       )}
     </div>
   );
