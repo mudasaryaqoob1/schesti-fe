@@ -77,7 +77,11 @@ const Dashboard = () => {
             </h3>
           </div>
           <div className="mx-auto w-48">
-            <ProjectsReport />
+            <ProjectsReport
+              estimateQuery={estimateQuery}
+              invoiceQuery={invoiceQuery}
+              meetingQuery={meetingQuery}
+            />
           </div>
           <ProjectDetails
             estimateQuery={estimateQuery}
