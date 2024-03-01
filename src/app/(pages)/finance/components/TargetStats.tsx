@@ -4,9 +4,9 @@ import { IResponseInterface } from "@/app/interfaces/api-response.interface"
 import { IClientInvoice } from "@/app/interfaces/client-invoice.interface"
 import { ISettingTarget } from "@/app/interfaces/companyInterfaces/setting.interface"
 import { USCurrencyFormat } from "@/app/utils/format"
-import { Badge, Progress, Skeleton } from "antd"
-import moment from "moment"
+import { Badge, Progress, Skeleton } from "antd";
 import { UseQueryResult } from "react-query"
+import { completedTargets, remainingTargets, targetPercentage, totalCompletedAmount, totalRemainingAmount } from "../utils"
 
 type Props = {
     targetsQuery: UseQueryResult<IResponseInterface<ISettingTarget[]>, unknown>;
@@ -20,25 +20,13 @@ export function TargetStats({ targetsQuery, clientInvoiceQuery }: Props) {
     }
     const invoices = clientInvoiceQuery.data ? clientInvoiceQuery.data.data!.invoices : []
     const targets = targetsQuery.data ? targetsQuery.data.data! : [];
-    const completed = targets.filter(target => {
-        return invoices.find(invoice => {
-            return target.month === moment(invoice.applicationDate).format('MMMM') && invoice.amountPaid >= Number(target.price);
-        })
-    });
+    const completed = completedTargets(targets, invoices);
 
-    const remaining = targets.filter(target => {
-        return invoices.find(invoice => {
-            return target.month === moment(invoice.applicationDate).format('MMMM') && invoice.amountPaid < Number(target.price);
-        })
-    })
-    const percentage = (completed.length / targets.length) * 100;
+    const remaining = remainingTargets(targets, invoices);
+    const percentage = targetPercentage(completed.length, targets.length);
 
-    const completedAmount = completed.reduce(function (accumulator, currentValue) {
-        return accumulator + Number(currentValue.price);
-    }, 0)
-    const remainingAmount = remaining.reduce(function (accumulator, currentValue) {
-        return accumulator + Number(currentValue.price);
-    }, 0)
+    const completedAmount = totalCompletedAmount(completed)
+    const remainingAmount = totalRemainingAmount(remaining);
 
 
 
