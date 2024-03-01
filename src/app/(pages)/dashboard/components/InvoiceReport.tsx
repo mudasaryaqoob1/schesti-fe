@@ -15,25 +15,25 @@ type Props = {
 
 const MONTHS = [
   { label: "Month", value: "", disabled: true },
-  { label: "January", value: "Jan" },
-  { label: "February", value: "Feb" },
-  { label: "March", value: "Mar" },
-  { label: "April", value: "Apr" },
+  { label: "January", value: "January" },
+  { label: "February", value: "February" },
+  { label: "March", value: "March" },
+  { label: "April", value: "April" },
   { label: "May", value: "May" },
-  { label: "June", value: "Jun" },
-  { label: "July", value: "Jul" },
-  { label: "August", value: "Aug" },
-  { label: "September", value: "Sep" },
-  { label: "October", value: "Oct" },
-  { label: "November", value: "Nov" },
-  { label: "December", value: "Dec" },
+  { label: "June", value: "June" },
+  { label: "July", value: "July" },
+  { label: "August", value: "August" },
+  { label: "September", value: "September" },
+  { label: "October", value: "October" },
+  { label: "November", value: "November" },
+  { label: "December", value: "December" },
 ]
 
 export default function InvoiceReport({ invoiceQuery }: Props) {
   const [selectedMonth, setSelectedMonth] = useState("");
 
   let data = invoiceQuery.data ? invoiceQuery.data.data!.invoices.map(invoice => {
-    const month = moment(invoice.applicationDate).format("MMM");
+    const month = moment(invoice.applicationDate).format("MMMM");
     return {
       value: `$${invoice.totalAmount}`,
       type: month

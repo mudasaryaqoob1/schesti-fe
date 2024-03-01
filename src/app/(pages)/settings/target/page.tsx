@@ -68,6 +68,9 @@ const TargetsTable = () => {
       title: 'Target Price',
       dataIndex: 'price',
       ellipsis: true,
+      render(value) {
+        return `$${value}`;
+      }
     },
 
     {
