@@ -412,6 +412,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
             state={g7State}
             previousPhaseState={selectedPhase}
             sumColumns={sumColumns}
+            showValidation={false}
           />
         </ConfigProvider>
         <ClientInvoiceFooter />

@@ -12,6 +12,7 @@ type Props = {
   sumColumns(rows: string[][], column: number): number;
   updateRetainage(_value: number): void;
   children?: React.ReactNode;
+  showValidation?: boolean;
 };
 
 export function G702Component({
@@ -20,6 +21,7 @@ export function G702Component({
   sumColumns,
   updateRetainage,
   children,
+  showValidation = true,
 }: Props) {
   const changeOrderSummaryAdditionSum =
     state.totalAdditionThisMonth + state.totalAdditionPreviousMonth;
@@ -58,7 +60,7 @@ export function G702Component({
                 value={state.toOwner}
                 onChange={(e) => handleState('toOwner', e.target.value)}
               />
-              <p className="text-gray-400">Owner is required</p>
+              {showValidation ? <p className="text-gray-400">Owner is required</p> : null}
             </div>
           </div>
 
@@ -96,7 +98,7 @@ export function G702Component({
                   value={state.viaEngineer}
                   onChange={(e) => handleState('viaEngineer', e.target.value)}
                 />
-                <p className="text-gray-400">All Required.</p>
+                {showValidation ? <p className="text-gray-400">Via Engineer is required</p> : null}
               </div>
             </div>
           </div>

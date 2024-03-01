@@ -139,7 +139,7 @@ export function G703Component({
                 value={state.applicationNo}
                 onChange={(e) => handleState('applicationNo', e.target.value)}
               />
-              <p className="text-gray-400">Application No is required.</p>
+              {showAddAndDelete ? <p className="text-gray-400">Application No is required.</p> : null}
             </div>
           </div>
 
@@ -161,7 +161,7 @@ export function G703Component({
                 }
                 disabledDate={disabledDate}
               />
-              <p className="text-gray-400">Application Date is required.</p>
+              {showAddAndDelete ? <p className="text-gray-400">Application Date is required.</p> : null}
             </div>
           </div>
 
@@ -180,7 +180,7 @@ export function G703Component({
                 }
                 disabledDate={disabledDate}
               />
-              <p className="text-gray-400">Period To is required.</p>
+              {showAddAndDelete ? <p className="text-gray-400">Period To is required.</p> : null}
             </div>
           </div>
 
@@ -196,7 +196,7 @@ export function G703Component({
                 value={state.projectNo}
                 onChange={(e) => handleState('projectNo', e.target.value)}
               />
-              <p className="text-gray-400">Project No is required.</p>
+              {showAddAndDelete ? <p className="text-gray-400">Project No is required.</p> : null}
             </div>
           </div>
         </div>
@@ -450,7 +450,7 @@ export function G703Component({
                       onOk() {
                         deleteRow(index);
                       },
-                      onCancel() {},
+                      onCancel() { },
                     });
                   }}
                 />

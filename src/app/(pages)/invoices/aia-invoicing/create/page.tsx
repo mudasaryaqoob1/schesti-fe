@@ -311,7 +311,7 @@ export default function CreateClientInvoicePage() {
       </div>
       <div
         ref={ref as MutableRefObject<HTMLDivElement>}
-        className="space-y-5 w-full absolute z -left-[2500px] border p-6"
+        className="space-y-5 w-full absolute -left-[2500px] border p-6"
       >
         <ClientInvoiceHeader />
         <ConfigProvider
@@ -353,6 +353,7 @@ export default function CreateClientInvoicePage() {
             handleState={handleG7State}
             updateRetainage={updateRetainage}
             sumColumns={sumColumns}
+            showValidation={false}
           />
         </ConfigProvider>
         <ClientInvoiceFooter />
