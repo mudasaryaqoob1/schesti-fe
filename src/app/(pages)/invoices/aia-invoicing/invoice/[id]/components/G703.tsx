@@ -289,18 +289,28 @@ export function G703Component({
             <Column
               title={<SenaryHeading title="This period" />}
               dataIndex={4}
-              render={(value, record, index) => {
+              render={(value, record: string[], index) => {
                 if (index === state.data.length) {
                   return <div className="px-3">{value}</div>;
                 }
+                const scheduledValue = Number(getCellValue(record, 2));
+                const thisPeriodValue = Number(getCellValue(record, 4));
+                const isGreater = thisPeriodValue > scheduledValue;
+
                 return (
                   <Input
                     value={value}
                     prefix="$"
                     type="number"
                     onChange={(e) => {
+                      if (Number(e.target.value) > scheduledValue) {
+                        updateCellValue(index, 4, 0);
+                        toast.error("This period value cannot be greater than scheduled value");
+                        return;
+                      }
                       updateCellValue(index, 4, Number(e.target.value));
                     }}
+                    status={isGreater ? 'error' : undefined}
                   />
                 );
               }}
