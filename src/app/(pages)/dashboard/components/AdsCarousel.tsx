@@ -13,7 +13,7 @@ export function AdsCarousel({ ads }: Props) {
       () => {
         setCurrentAdIndex((prevIndex) => (prevIndex + 1) % ads.length);
       },
-      ads[currentAdIndex].duration * 1000 || 5000
+      ads[currentAdIndex] ? ads[currentAdIndex].duration * 1000 : 5000
     );
 
     return () => clearInterval(interval);
