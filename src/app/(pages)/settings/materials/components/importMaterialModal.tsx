@@ -13,6 +13,7 @@ import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { byteConverter } from '@/app/utils/byteConverter';
 import { materialService } from '@/app/services/material.service';
 import { AxiosError } from 'axios';
+import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 
 interface Iprops {
   materialModal: boolean;
@@ -105,9 +106,13 @@ const ImportMaterialModal = ({
         fetchMaterialsData();
       }
     } catch (error) {
-      const err = error as AxiosError;
+      const err = error as AxiosError<IResponseInterface>;
       if (err.response!.status >= 400) {
-        toast.error('Something went wrong. Please try again.');
+        toast.error(
+          (err.response?.data?.data as string).includes('Array contains ')
+            ? 'Something went wrong. Try another file.'
+            : 'Something went wrong. Try again later.'
+        );
       }
       setIsLoading(false);
     }

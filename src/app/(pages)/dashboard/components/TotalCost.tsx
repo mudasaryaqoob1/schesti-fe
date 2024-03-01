@@ -1,25 +1,17 @@
-import { estimateRequestService } from '@/app/services/estimates.service';
-import { userService } from '@/app/services/user.service';
+import { IResponseInterface } from '@/app/interfaces/api-response.interface';
+import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
+import { IEstimateRequest } from '@/app/interfaces/estimateRequests/estimateRequests.interface';
 import Image from 'next/image';
-import { useQuery } from 'react-query';
+import { UseQueryResult } from 'react-query';
 
-export function TotalCost() {
-  const clientQuery = useQuery('clients', () => {
-    return userService.httpGetAllCompanyClients();
-  });
+type Props = {
+  clientQuery: UseQueryResult<IResponseInterface<{ clients: IClient[] }>>;
+  estimateQuery: UseQueryResult<
+    IResponseInterface<{ generatedEstimates: IEstimateRequest[] }>
+  >;
+};
 
-  const estimateQuery = useQuery(
-    'estimates',
-    () => {
-      return estimateRequestService.httpGetAllGeneratedEstimatesWithoutLimit();
-    },
-    {
-      onSuccess(data) {
-        console.log(data);
-      },
-    }
-  );
-
+export function TotalCost({ clientQuery, estimateQuery }: Props) {
   return (
     <div className="grid grid-cols-4 gap-3 my-3">
       <div className="flex justify-between items-center bg-white shadow rounded-md p-4">
@@ -39,11 +31,10 @@ export function TotalCost() {
         </div>
         <div>
           <Image
-            src={'/documentIcon.svg'}
+            src={'/total-estimate.svg'}
             alt="Picture of the author"
             width={50}
             height={50}
-            className="text-[#8449EB]"
           />
         </div>
       </div>
@@ -60,7 +51,7 @@ export function TotalCost() {
         </div>
         <div>
           <Image
-            src={'/documentIcon.svg'}
+            src={'/total-takeoff.svg'}
             alt="Picture of the author"
             width={50}
             height={50}
@@ -81,7 +72,7 @@ export function TotalCost() {
         </div>
         <div>
           <Image
-            src={'/documentIcon.svg'}
+            src={'/total-scheduled.svg'}
             alt="Picture of the author"
             width={50}
             height={50}
@@ -106,7 +97,7 @@ export function TotalCost() {
         </div>
         <div>
           <Image
-            src={'/documentIcon.svg'}
+            src={'/total-invoices.svg'}
             alt="Picture of the author"
             width={50}
             height={50}
