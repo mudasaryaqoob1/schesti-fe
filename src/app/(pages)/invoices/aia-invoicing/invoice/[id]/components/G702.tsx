@@ -487,19 +487,15 @@ export function G702Component({
                 <input
                   className="px-2 col-span-6 py-1 border border-gray-300 outline-none"
                   type="text"
-                  value={state.by}
-                  onChange={(e) => handleState('by', e.target.value)}
+                  disabled
                 />
               </div>
 
               <div className="grid grid-cols-12 items-center gap-1">
                 <QuinaryHeading className="col-span-2" title="Date:" />
-                <DatePicker
+                <input
                   className="px-2 col-span-6 rounded-none py-[7px] border border-gray-300 outline-none"
-                  defaultValue={dayjs(state.date)}
-                  onChange={(_d, dateString) =>
-                    handleState('date', dateString as string)
-                  }
+                  disabled
                 />
               </div>
 
@@ -508,8 +504,7 @@ export function G702Component({
                 <input
                   className="col-span-6 px-2 py-1 border border-gray-300 outline-none"
                   type="text"
-                  value={state.stateOf}
-                  onChange={(e) => handleState('stateOf', e.target.value)}
+                  disabled
                 />
               </div>
               <div className="grid grid-cols-12 gap-1 items-center">
@@ -517,8 +512,7 @@ export function G702Component({
                 <input
                   className="px-2 col-span-6 py-1 border border-gray-300 outline-none"
                   type="text"
-                  value={state.country}
-                  onChange={(e) => handleState('country', e.target.value)}
+                  disabled
                 />
               </div>
               <div className="col-span-2 flex items-center space-x-2">
@@ -526,10 +520,7 @@ export function G702Component({
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
-                  value={state.subscribedAndSworn}
-                  onChange={(e) =>
-                    handleState('subscribedAndSworn', e.target.value)
-                  }
+                  disabled
                 />
               </div>
 
@@ -538,8 +529,7 @@ export function G702Component({
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
-                  value={state.notaryPublic}
-                  onChange={(e) => handleState('notaryPublic', e.target.value)}
+                  disabled
                 />
               </div>
 
@@ -548,10 +538,7 @@ export function G702Component({
                 <input
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
-                  value={state.myCommissionExpires}
-                  onChange={(e) =>
-                    handleState('myCommissionExpires', e.target.value)
-                  }
+                  disabled
                 />
               </div>
             </div>
@@ -567,10 +554,7 @@ export function G702Component({
                   <input
                     className="px-2 py-1 border border-gray-300 outline-none"
                     type="number"
-                    value={state.amountCertified1}
-                    onChange={(e) =>
-                      handleState('amountCertified1', e.target.value)
-                    }
+                    disabled
                   />
                 </div>
                 <QuinaryHeading title="(Attach explanation if amount certified differs from the amount applied. Initial all figures on this Application and onthe Continuation Sheet that are changed to conform with the amount certified.)" />
@@ -584,10 +568,7 @@ export function G702Component({
                     <input
                       className="px-2 py-1 border border-gray-300 outline-none"
                       type="number"
-                      value={state.amountCertified2}
-                      onChange={(e) =>
-                        handleState('amountCertified2', e.target.value)
-                      }
+                      disabled
                     />
                   </div>
                   <div className="flex items-center space-x-2">
@@ -595,10 +576,7 @@ export function G702Component({
                     <input
                       className="px-2 py-1 border border-gray-300 outline-none"
                       type="text"
-                      value={state.amountCertified3}
-                      onChange={(e) =>
-                        handleState('amountCertified3', e.target.value)
-                      }
+                      disabled
                     />
                   </div>
                 </div>

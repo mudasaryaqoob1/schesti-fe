@@ -10,16 +10,6 @@ export type G7State = {
   address: string;
   viaEngineer: string;
   distributionTo: string;
-  amountCertified1: string;
-  amountCertified2: string;
-  amountCertified3: string;
-  by: string;
-  stateOf: string;
-  date: string;
-  country: string;
-  subscribedAndSworn: string;
-  notaryPublic: string;
-  myCommissionExpires: string;
   phase: number;
 
   // g702
