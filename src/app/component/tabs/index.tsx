@@ -221,9 +221,10 @@ const Tabs = () => {
                     flex items-stretch justify-center py-2 
                      cursor-pointer
                     `,
-                  (pathname.includes('/standard-invoicing'.split('/')[1]) ||
-                    pathname.includes('/aia-invoicing'.split('/')[1]) ||
-                    pathname.includes('/finance'.split('/')[1])) &&
+                  (
+                    pathname.includes('/finance')
+                    || pathname.includes("/invoices")
+                  ) &&
                   tabsStyle.active
                 )
               )}
