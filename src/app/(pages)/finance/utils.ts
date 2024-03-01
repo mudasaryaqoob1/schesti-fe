@@ -10,6 +10,14 @@ export function completedTargets(targets: ISettingTarget[], invoices: IClientInv
     })
 }
 
+export function totalReceivable(target: ISettingTarget, invoices: IClientInvoice[]) {
+    return invoices.filter(invoice => {
+        return target.month === moment(invoice.applicationDate).format('MMMM') && invoice.amountPaid < Number(target.price);
+    }).reduce((acc, invoice) => {
+        return acc + invoice.amountPaid;
+    }, 0);
+}
+
 export function remainingTargets(targets: ISettingTarget[], invoices: IClientInvoice[]) {
     return targets.filter(target => {
         return invoices.find(invoice => {

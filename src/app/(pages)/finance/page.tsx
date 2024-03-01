@@ -38,7 +38,10 @@ const Fiance = () => {
         <TargetStats targetsQuery={targetsQuery} clientInvoiceQuery={clientInvoiceQuery} />
       </div>
 
-      <TargetTable />
+      <TargetTable
+        clientInvoiceQuery={clientInvoiceQuery}
+        targetsQuery={targetsQuery}
+      />
     </section>
   );
 };
