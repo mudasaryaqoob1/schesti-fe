@@ -65,7 +65,7 @@ const Tabs = () => {
                     flex items-stretch justify-center py-2 
                      cursor-pointer
                     `,
-                  pathname.includes('/estimates'.split('/')[1]) &&
+                  pathname.includes('/bid'.split('/')[1]) &&
                   tabsStyle.active
                 )
               )}
@@ -93,7 +93,9 @@ const Tabs = () => {
                     flex items-stretch justify-center py-2 
                      cursor-pointer
                     `,
-                  pathname.includes('/estimates'.split('/')[1]) &&
+                  (pathname.includes('/clients') ||
+                    pathname.includes('/subcontractor') ||
+                    pathname.includes('/partners')) &&
                   tabsStyle.active
                 )
               )}
@@ -107,8 +109,8 @@ const Tabs = () => {
           <Dropdown
             menu={{
               items: [
-                { key: 'manual', label: <Link href="/manual">Manual</Link> },
-                { key: 'ai-takeoff', label: <Link href="/bid/contractor">AI take off</Link> },
+                { key: 'manual', label: <Link href="/takeoff/manual">Manual</Link> },
+                { key: 'ai-takeoff', label: <Link href="/takeoff/ai">AI take off</Link> },
               ],
               selectable: true,
             }}
@@ -120,7 +122,7 @@ const Tabs = () => {
                     flex items-stretch justify-center py-2 
                      cursor-pointer
                     `,
-                  pathname.includes('/estimates'.split('/')[1]) &&
+                  (pathname.includes('/takeoff')) &&
                   tabsStyle.active
                 )
               )}
@@ -172,8 +174,9 @@ const Tabs = () => {
           <Dropdown
             menu={{
               items: [
-                { key: 'Invoice-for-contractor', label: <Link href="/invoices">Invoice for contractor</Link> },
-                { key: 'Pay-application', label: <Link href="/finance">Pay application</Link> },
+                { key: 'standard-invoicing', label: <Link href="/standard-invoicing">Standard Invoicing</Link> },
+                { key: 'aia-invoicing', label: <Link href="/aia-invoicing">AIA Invoicing</Link> },
+                { key: 'financial-tools', label: <Link href="/finance">Financial Tools</Link> },
               ],
               selectable: true,
             }}
@@ -185,7 +188,7 @@ const Tabs = () => {
                     flex items-stretch justify-center py-2 
                      cursor-pointer
                     `,
-                  pathname.includes('/estimates'.split('/')[1]) &&
+                  (pathname.includes('/standard-invoicing'.split('/')[1]) || pathname.includes('/aia-invoicing'.split('/')[1]) || pathname.includes('/finance'.split('/')[1])) &&
                   tabsStyle.active
                 )
               )}
@@ -216,10 +219,10 @@ const Tabs = () => {
                 flex items-stretch justify-center py-2 
                  cursor-pointer
                 `,
-              pathname.includes('/meeting'.split('/')[1]) && tabsStyle.active
+              pathname.includes('/networking'.split('/')[1]) && tabsStyle.active
             )
           )}
-          onClick={() => router.push('/meeting')}
+          onClick={() => router.push('/networking')}
         >
           Networking
         </li>
