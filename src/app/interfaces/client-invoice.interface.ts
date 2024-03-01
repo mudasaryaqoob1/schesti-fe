@@ -12,6 +12,10 @@ export type G7State = {
   distributionTo: string;
   phase: number;
 
+  // Amount
+  totalAmount: number;
+  amountPaid: number;
+
   // g702
   totalAdditionPreviousMonth: number;
   totalDeductionPreviousMonth: number;

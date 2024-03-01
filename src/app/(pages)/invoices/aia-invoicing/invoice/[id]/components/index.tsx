@@ -60,6 +60,9 @@ export function PhaseComponent({ parentInvoice }: Props) {
 
     p5aPercentage: 10,
     p5bPercentage: 2,
+
+    totalAmount: 0,
+    amountPaid: 0
   });
 
   useEffect(() => {
@@ -210,8 +213,23 @@ export function PhaseComponent({ parentInvoice }: Props) {
   }
 
   function handleSubmit(data: G7State) {
+    const changeOrderSummaryAdditionSum =
+      data.totalAdditionThisMonth + data.totalAdditionPreviousMonth;
+    const changeOrderSummaryDeductionSum =
+      data.totalDeductionThisMonth + data.totalDeductionPreviousMonth;
+    const changeOrderNetChanges =
+      changeOrderSummaryAdditionSum - changeOrderSummaryDeductionSum;
+    const originalContractSum = sumColumns(data.data, 2);
+
+    const totalAmount = originalContractSum + changeOrderNetChanges;
+    const amountPaid = Number(sumColumns(data.data, 6).toFixed(2));
+
     clientInvoiceService
-      .httpCreateNewInvoicePhase(parentInvoice._id, data)
+      .httpCreateNewInvoicePhase(parentInvoice._id, {
+        ...data,
+        totalAmount,
+        amountPaid
+      })
       .then((response) => {
         if (response.statusCode == 201) {
           toast.success('Invoice created successfully');

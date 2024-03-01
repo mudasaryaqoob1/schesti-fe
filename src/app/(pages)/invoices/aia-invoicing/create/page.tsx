@@ -55,6 +55,9 @@ export default function CreateClientInvoicePage() {
 
     p5aPercentage: 10,
     p5bPercentage: 2,
+
+    totalAmount: 0,
+    amountPaid: 0
   });
 
   useLayoutEffect(() => {
@@ -176,8 +179,23 @@ export default function CreateClientInvoicePage() {
   }
 
   function handleSubmit(data: G7State) {
+    // Get total Amount and Total Amount Paid
+    const changeOrderSummaryAdditionSum =
+      data.totalAdditionThisMonth + data.totalAdditionPreviousMonth;
+    const changeOrderSummaryDeductionSum =
+      data.totalDeductionThisMonth + data.totalDeductionPreviousMonth;
+    const changeOrderNetChanges =
+      changeOrderSummaryAdditionSum - changeOrderSummaryDeductionSum;
+    const originalContractSum = sumColumns(data.data, 2);
+
+    const totalAmount = originalContractSum + changeOrderNetChanges;
+    const amountPaid = Number(sumColumns(data.data, 6).toFixed(2));
     clientInvoiceService
-      .httpAddNewInvoice(data)
+      .httpAddNewInvoice({
+        ...data,
+        totalAmount,
+        amountPaid
+      })
       .then((response) => {
         if (response.statusCode == 201) {
           toast.success('Invoice created successfully');
