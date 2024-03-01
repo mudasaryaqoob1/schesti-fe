@@ -69,7 +69,7 @@ export default function JoinMeeting() {
         {isMeetingEnded(meeting) ? (
           <ModalComponent
             open={!isMeetingActive(meeting)}
-            setOpen={() => {}}
+            setOpen={() => { }}
             title="Meeting Expired/InActive"
             width="40%"
           >
@@ -84,14 +84,14 @@ export default function JoinMeeting() {
         ) : isMeetingNotStarted(meeting) ? (
           <ModalComponent
             open={!isMeetingActive(meeting)}
-            setOpen={() => {}}
+            setOpen={() => { }}
             title="Meeting link is not active"
             width="40%"
           >
             <LinkMessage
               type="inactive"
               title="Meeting link is not active"
-              description="Please wait for meeting start time to active the link. Meeting link is active before 15 mint"
+              description="Please wait for meeting start time to active the link. Meeting link is active before 15 minutes."
               onClose={() => router.push('/meeting')}
             >
               <Description
