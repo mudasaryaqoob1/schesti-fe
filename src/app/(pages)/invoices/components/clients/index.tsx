@@ -61,6 +61,14 @@ export function Clients() {
       label: <p>New Payable</p>,
     },
     {
+      key: 'view',
+      label: <p>View</p>,
+    },
+    {
+      key: 'collect',
+      label: <p>Collect Payment</p>,
+    },
+    {
       key: 'delete',
       label: <p>Delete</p>,
     },
