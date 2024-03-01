@@ -2,15 +2,16 @@ import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 import { IEstimateRequest } from '@/app/interfaces/estimateRequests/estimateRequests.interface';
 import Image from 'next/image';
-import { UseQueryResult, } from 'react-query';
+import { UseQueryResult } from 'react-query';
 
 type Props = {
-  clientQuery: UseQueryResult<IResponseInterface<{ clients: IClient[]; }>>;
-  estimateQuery: UseQueryResult<IResponseInterface<{ generatedEstimates: IEstimateRequest[]; }>>;
-}
+  clientQuery: UseQueryResult<IResponseInterface<{ clients: IClient[] }>>;
+  estimateQuery: UseQueryResult<
+    IResponseInterface<{ generatedEstimates: IEstimateRequest[] }>
+  >;
+};
 
 export function TotalCost({ clientQuery, estimateQuery }: Props) {
-
   return (
     <div className="grid grid-cols-4 gap-3 my-3">
       <div className="flex justify-between items-center bg-white shadow rounded-md p-4">

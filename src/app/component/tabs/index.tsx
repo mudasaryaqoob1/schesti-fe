@@ -51,9 +51,18 @@ const Tabs = () => {
           <Dropdown
             menu={{
               items: [
-                { key: 'bid-owner', label: <Link href="/bid/owner">Owner</Link> },
-                { key: 'bid-contractor', label: <Link href="/bid/contractor">Contractor</Link> },
-                { key: 'bid-sub-contractor', label: <Link href="/bid/sub-contractor">Sub Contractor</Link> },
+                {
+                  key: 'bid-owner',
+                  label: <Link href="/bid/owner">Owner</Link>,
+                },
+                {
+                  key: 'bid-contractor',
+                  label: <Link href="/bid/contractor">Contractor</Link>,
+                },
+                {
+                  key: 'bid-sub-contractor',
+                  label: <Link href="/bid/sub-contractor">Sub Contractor</Link>,
+                },
               ],
               selectable: true,
             }}
@@ -65,8 +74,7 @@ const Tabs = () => {
                     flex items-stretch justify-center py-2 
                      cursor-pointer
                     `,
-                  pathname.includes('/bid'.split('/')[1]) &&
-                  tabsStyle.active
+                  pathname.includes('/bid'.split('/')[1]) && tabsStyle.active
                 )
               )}
             >
@@ -79,9 +87,18 @@ const Tabs = () => {
           <Dropdown
             menu={{
               items: [
-                { key: 'crm-clients', label: <Link href="/clients">Clients</Link> },
-                { key: 'crm-subcontractor', label: <Link href="/subcontractor">Sub Contractors</Link> },
-                { key: 'crm-partners', label: <Link href="/partners">Partners</Link> },
+                {
+                  key: 'crm-clients',
+                  label: <Link href="/clients">Clients</Link>,
+                },
+                {
+                  key: 'crm-subcontractor',
+                  label: <Link href="/subcontractor">Sub Contractors</Link>,
+                },
+                {
+                  key: 'crm-partners',
+                  label: <Link href="/partners">Partners</Link>,
+                },
               ],
               selectable: true,
             }}
@@ -96,7 +113,7 @@ const Tabs = () => {
                   (pathname.includes('/clients') ||
                     pathname.includes('/subcontractor') ||
                     pathname.includes('/partners')) &&
-                  tabsStyle.active
+                    tabsStyle.active
                 )
               )}
             >
@@ -109,8 +126,14 @@ const Tabs = () => {
           <Dropdown
             menu={{
               items: [
-                { key: 'manual', label: <Link href="/takeoff/manual">Manual</Link> },
-                { key: 'ai-takeoff', label: <Link href="/takeoff/ai">AI take off</Link> },
+                {
+                  key: 'manual',
+                  label: <Link href="/takeoff/manual">Manual</Link>,
+                },
+                {
+                  key: 'ai-takeoff',
+                  label: <Link href="/takeoff/ai">AI take off</Link>,
+                },
               ],
               selectable: true,
             }}
@@ -122,8 +145,7 @@ const Tabs = () => {
                     flex items-stretch justify-center py-2 
                      cursor-pointer
                     `,
-                  (pathname.includes('/takeoff')) &&
-                  tabsStyle.active
+                  pathname.includes('/takeoff') && tabsStyle.active
                 )
               )}
             >
@@ -147,7 +169,7 @@ const Tabs = () => {
                      cursor-pointer
                     `,
                   pathname.includes('/estimates'.split('/')[1]) &&
-                  tabsStyle.active
+                    tabsStyle.active
                 )
               )}
             >
@@ -174,9 +196,20 @@ const Tabs = () => {
           <Dropdown
             menu={{
               items: [
-                { key: 'standard-invoicing', label: <Link href="/standard-invoicing">Standard Invoicing</Link> },
-                { key: 'aia-invoicing', label: <Link href="/aia-invoicing">AIA Invoicing</Link> },
-                { key: 'financial-tools', label: <Link href="/finance">Financial Tools</Link> },
+                {
+                  key: 'standard-invoicing',
+                  label: (
+                    <Link href="/standard-invoicing">Standard Invoicing</Link>
+                  ),
+                },
+                {
+                  key: 'aia-invoicing',
+                  label: <Link href="/aia-invoicing">AIA Invoicing</Link>,
+                },
+                {
+                  key: 'financial-tools',
+                  label: <Link href="/finance">Financial Tools</Link>,
+                },
               ],
               selectable: true,
             }}
@@ -188,8 +221,10 @@ const Tabs = () => {
                     flex items-stretch justify-center py-2 
                      cursor-pointer
                     `,
-                  (pathname.includes('/standard-invoicing'.split('/')[1]) || pathname.includes('/aia-invoicing'.split('/')[1]) || pathname.includes('/finance'.split('/')[1])) &&
-                  tabsStyle.active
+                  (pathname.includes('/standard-invoicing'.split('/')[1]) ||
+                    pathname.includes('/aia-invoicing'.split('/')[1]) ||
+                    pathname.includes('/finance'.split('/')[1])) &&
+                    tabsStyle.active
                 )
               )}
             >

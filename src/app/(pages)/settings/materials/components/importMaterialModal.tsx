@@ -108,7 +108,11 @@ const ImportMaterialModal = ({
     } catch (error) {
       const err = error as AxiosError<IResponseInterface>;
       if (err.response!.status >= 400) {
-        toast.error((err.response?.data?.data as string).includes("Array contains ") ? 'Something went wrong. Try another file.' : "Something went wrong. Try again later.");
+        toast.error(
+          (err.response?.data?.data as string).includes('Array contains ')
+            ? 'Something went wrong. Try another file.'
+            : 'Something went wrong. Try again later.'
+        );
       }
       setIsLoading(false);
     }

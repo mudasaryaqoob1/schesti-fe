@@ -17,18 +17,36 @@ const LABELS = [
 
 const COLORS = ['#001556', '#7F56D9', '#36B37E', '#EF9F28', '#B58905'];
 type Props = {
-  estimateQuery: UseQueryResult<IResponseInterface<{ generatedEstimates: IEstimateRequest[]; }>>;
-  invoiceQuery: UseQueryResult<IResponseInterface<{
-    invoices: IClientInvoice[];
-  }>, unknown>;
-  meetingQuery: UseQueryResult<IResponseInterface<{
-    meetings: IMeeting[];
-  }>, unknown>;
-}
-export default function ProjectsReport({ estimateQuery, invoiceQuery, meetingQuery }: Props) {
-  const estimateLength = estimateQuery.data ? estimateQuery.data.data!.generatedEstimates.length : 0;
-  const invoiceLength = invoiceQuery.data ? invoiceQuery.data.data!.invoices.length : 0;
-  const meetingLength = meetingQuery.data ? meetingQuery.data.data!.meetings.length : 0;
+  estimateQuery: UseQueryResult<
+    IResponseInterface<{ generatedEstimates: IEstimateRequest[] }>
+  >;
+  invoiceQuery: UseQueryResult<
+    IResponseInterface<{
+      invoices: IClientInvoice[];
+    }>,
+    unknown
+  >;
+  meetingQuery: UseQueryResult<
+    IResponseInterface<{
+      meetings: IMeeting[];
+    }>,
+    unknown
+  >;
+};
+export default function ProjectsReport({
+  estimateQuery,
+  invoiceQuery,
+  meetingQuery,
+}: Props) {
+  const estimateLength = estimateQuery.data
+    ? estimateQuery.data.data!.generatedEstimates.length
+    : 0;
+  const invoiceLength = invoiceQuery.data
+    ? invoiceQuery.data.data!.invoices.length
+    : 0;
+  const meetingLength = meetingQuery.data
+    ? meetingQuery.data.data!.meetings.length
+    : 0;
   const VALUES = [25, estimateLength, invoiceLength, 16, meetingLength];
 
   return (

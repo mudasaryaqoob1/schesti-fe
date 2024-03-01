@@ -36,15 +36,16 @@ const Dashboard = () => {
     return userService.httpGetAllCompanyClients();
   });
 
-  const estimateQuery = useQuery(
-    'estimates',
-    () => {
-      return estimateRequestService.httpGetAllGeneratedEstimatesWithoutLimit();
-    }
-  );
+  const estimateQuery = useQuery('estimates', () => {
+    return estimateRequestService.httpGetAllGeneratedEstimatesWithoutLimit();
+  });
 
-  const invoiceQuery = useQuery(['client-invoices'], () => clientInvoiceService.httpGetAllInvoices());
-  const meetingQuery = useQuery(['meetings'], () => meetingService.httpGetMeetings());
+  const invoiceQuery = useQuery(['client-invoices'], () =>
+    clientInvoiceService.httpGetAllInvoices()
+  );
+  const meetingQuery = useQuery(['meetings'], () =>
+    meetingService.httpGetMeetings()
+  );
 
   return (
     <section className="my-4  mx-8 px-4">

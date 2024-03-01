@@ -115,9 +115,9 @@ const AddSubcategory = () => {
 
   const options = categoriesReduxData
     ? categoriesReduxData.map(({ name, _id }: ICategory) => ({
-      label: name,
-      value: _id,
-    }))
+        label: name,
+        value: _id,
+      }))
     : [];
 
   return (
@@ -131,7 +131,7 @@ const AddSubcategory = () => {
           enableReinitialize
         >
           {({ handleSubmit, values }) => {
-            console.log({ values })
+            console.log({ values });
             return (
               <Form
                 name="basic"
