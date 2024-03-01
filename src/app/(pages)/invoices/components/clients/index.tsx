@@ -44,7 +44,7 @@ export function Clients() {
     },
     validationSchema: ValidationSchema,
     onSubmit(values) {
-      router.push(`/invoices/client/create?invoiceName=${values.invoiceName}`);
+      router.push(`/invoices/aia-invoicing/create?invoiceName=${values.invoiceName}`);
     },
   });
 
@@ -104,7 +104,7 @@ export function Clients() {
             items,
             onClick: ({ key }) => {
               if (key === 'createPhase') {
-                router.push(`/invoices/client/invoice/${record._id}`);
+                router.push(`/invoices/aia-invoicing/invoice/${record._id}`);
               } else if (key === 'delete') {
                 Modal.confirm({
                   title: 'Are you sure delete this invoice?',
@@ -116,7 +116,7 @@ export function Clients() {
                   onOk() {
                     dispatch(deleteClientInvoiceRequest(record._id));
                   },
-                  onCancel() {},
+                  onCancel() { },
                 });
               }
             },
@@ -138,20 +138,20 @@ export function Clients() {
   const filteredClientInvoices =
     clientInvoices.length > 0
       ? clientInvoices.filter((invoice) => {
-          if (!search) {
-            return invoice;
-          }
-          return (
-            invoice.invoiceName === search ||
-            invoice.toOwner.toLowerCase().includes(search.toLowerCase())
-          );
-        })
+        if (!search) {
+          return invoice;
+        }
+        return (
+          invoice.invoiceName === search ||
+          invoice.toOwner.toLowerCase().includes(search.toLowerCase())
+        );
+      })
       : [];
 
   return (
     <div className="w-full mb-4">
       <div className="flex justify-between flex-wrap items-center md:flex-nowrap mb-2">
-        <TertiaryHeading title="Client invoice" className="text-graphiteGray" />
+        <TertiaryHeading title="AIA Invoicing" className="text-graphiteGray" />
         <div className="flex items-center space-x-2 flex-1 justify-end">
           <div className="w-96 ">
             <InputComponent

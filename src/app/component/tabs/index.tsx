@@ -113,7 +113,7 @@ const Tabs = () => {
                   (pathname.includes('/clients') ||
                     pathname.includes('/subcontractor') ||
                     pathname.includes('/partners')) &&
-                    tabsStyle.active
+                  tabsStyle.active
                 )
               )}
             >
@@ -169,7 +169,7 @@ const Tabs = () => {
                      cursor-pointer
                     `,
                   pathname.includes('/estimates'.split('/')[1]) &&
-                    tabsStyle.active
+                  tabsStyle.active
                 )
               )}
             >
@@ -199,12 +199,12 @@ const Tabs = () => {
                 {
                   key: 'standard-invoicing',
                   label: (
-                    <Link href="/standard-invoicing">Standard Invoicing</Link>
+                    <Link href="/invoices/standard-invoicing">Standard Invoicing</Link>
                   ),
                 },
                 {
                   key: 'aia-invoicing',
-                  label: <Link href="/aia-invoicing">AIA Invoicing</Link>,
+                  label: <Link href="/invoices/aia-invoicing">AIA Invoicing</Link>,
                 },
                 {
                   key: 'financial-tools',
@@ -224,7 +224,7 @@ const Tabs = () => {
                   (pathname.includes('/standard-invoicing'.split('/')[1]) ||
                     pathname.includes('/aia-invoicing'.split('/')[1]) ||
                     pathname.includes('/finance'.split('/')[1])) &&
-                    tabsStyle.active
+                  tabsStyle.active
                 )
               )}
             >
