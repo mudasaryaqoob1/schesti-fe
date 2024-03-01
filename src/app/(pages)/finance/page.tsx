@@ -1,15 +1,32 @@
 'use client';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { Badge, Progress, Select } from 'antd';
-import React, { } from 'react';
+import React, { useLayoutEffect } from 'react';
 // import { Column } from '@ant-design/plots';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import CustomButton from '@/app/component/customButton/white';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import Table, { type ColumnsType } from 'antd/es/table';
 import { FinancialStatus } from './components/FinancialStatus';
+import { useQuery } from 'react-query';
+import { clientInvoiceService } from '@/app/services/client-invoices.service';
+import { useSelector } from 'react-redux';
+import { selectToken } from '@/redux/authSlices/auth.selector';
+import { HttpService } from '@/app/services/base.service';
 
 const Fiance = () => {
+  const token = useSelector(selectToken);
+
+
+  useLayoutEffect(() => {
+    if (token) {
+      HttpService.setToken(token);
+    }
+  }, [token]);
+
+  const clientInvoiceQuery = useQuery(['client-invoices-with-children'], () => {
+    return clientInvoiceService.httpGetAllInvoicesWithChildren();
+  })
 
   const columns: ColumnsType<{}> = [
     {
@@ -44,7 +61,7 @@ const Fiance = () => {
   return (
     <section className="my-4  mx-8 px-4">
       <div className="grid grid-cols-12 gap-8">
-        <FinancialStatus />
+        <FinancialStatus clientInvoiceQuery={clientInvoiceQuery} />
         <div className="col-span-12 md:col-span-4 space-y-4 shadow bg-white p-4 rounded-md">
           <div className="flex justify-between items-center">
             <QuaternaryHeading

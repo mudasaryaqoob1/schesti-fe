@@ -1,8 +1,44 @@
 import QuaternaryHeading from "@/app/component/headings/quaternary";
-import { Badge } from "antd";
+import { IResponseInterface } from "@/app/interfaces/api-response.interface";
+import { IClientInvoice } from "@/app/interfaces/client-invoice.interface";
+import { Badge, Skeleton } from "antd";
+import moment from "moment";
+import { UseQueryResult } from "react-query";
+import { Column } from '@ant-design/plots';
 
-export function FinancialStatus() {
-    return <div className="col-span-12 md:col-span-8  shadow bg-white p-4 rounded-md">
+type Props = {
+    clientInvoiceQuery: UseQueryResult<IResponseInterface<{
+        invoices: IClientInvoice[];
+    }>, unknown>
+}
+export function FinancialStatus({ clientInvoiceQuery }: Props) {
+    if (clientInvoiceQuery.isLoading) {
+        return <Skeleton />
+    }
+
+    if (!clientInvoiceQuery.data) {
+        return null;
+    }
+
+    const invoices = clientInvoiceQuery.data.data!.invoices.map(invoice => {
+        const completed = invoice.amountPaid === invoice.totalAmount;
+        const receivable = invoice.amountPaid < invoice.totalAmount;
+        if (completed && !receivable) {
+            return {
+                name: "Completed",
+                value: invoice.totalAmount,
+                month: moment(invoice.applicationDate).format("MMMM")
+            }
+        }
+        return {
+            name: "Receivable",
+            value: invoice.totalAmount,
+            month: moment(invoice.applicationDate).format("MMMM")
+        }
+    });
+
+
+    return <div className="col-span-12 md:col-span-8 h-96 shadow bg-white p-4 rounded-md">
         <div className="flex justify-between items-center">
             <QuaternaryHeading
                 title="Financial Status"
@@ -16,7 +52,17 @@ export function FinancialStatus() {
             <div></div>
         </div>
 
-        {/* <Column
-      {...config1} /> */}
+        <Column
+            data={invoices}
+            xField="month"
+            yField="value"
+            colorField="name"
+            group={true}
+            style={{
+                radius: 50,
+                width: 10
+            }}
+            height={300}
+        />
     </div>
 }
