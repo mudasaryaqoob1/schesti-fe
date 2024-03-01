@@ -254,9 +254,9 @@ export function PhaseComponent({ parentInvoice }: Props) {
       doc.internal.pageSize.height = height;
       doc.addImage(image, 'JPEG', 0, 0, width, height);
       setTimeout(() => {
-        setIsDownloading(false);
         doc.save(`${parentInvoice.invoiceName}-invoice.pdf`);
       }, 500);
+      setIsDownloading(false);
     }
   }
   return (
@@ -404,6 +404,18 @@ export function PhaseComponent({ parentInvoice }: Props) {
             },
           }}
         >
+
+          <G702Component
+            handleState={handleG7State}
+            updateRetainage={updateRetainage}
+            state={g7State}
+            previousPhaseState={selectedPhase}
+            sumColumns={sumColumns}
+            showValidation={false}
+          />
+
+          <ClientInvoiceFooter />
+
           <G703Component
             selectedPhase={selectedPhase}
             setSelectedPhase={(value) => {
@@ -421,16 +433,6 @@ export function PhaseComponent({ parentInvoice }: Props) {
             sumColumns={sumColumns}
             updateCellValue={updateCellValue}
             showAddAndDelete={false}
-          />
-          <ClientInvoiceFooter />
-
-          <G702Component
-            handleState={handleG7State}
-            updateRetainage={updateRetainage}
-            state={g7State}
-            previousPhaseState={selectedPhase}
-            sumColumns={sumColumns}
-            showValidation={false}
           />
         </ConfigProvider>
         <ClientInvoiceFooter />

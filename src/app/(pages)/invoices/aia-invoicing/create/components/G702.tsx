@@ -98,7 +98,7 @@ export function G702Component({
                   value={state.viaEngineer}
                   onChange={(e) => handleState('viaEngineer', e.target.value)}
                 />
-                {showValidation ? <p className="text-gray-400">Via Engineer is required</p> : null}
+                {showValidation ? <p className="text-gray-400">All fields are required</p> : null}
               </div>
             </div>
           </div>

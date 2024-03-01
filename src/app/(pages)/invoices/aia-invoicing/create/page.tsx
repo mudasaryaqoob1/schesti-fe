@@ -221,9 +221,9 @@ export default function CreateClientInvoicePage() {
       doc.internal.pageSize.height = height;
       doc.addImage(image, 'JPEG', 0, 0, width, height);
       setTimeout(() => {
-        setIsDownloading(false);
         doc.save(`${invoiceName}-invoice.pdf`);
       }, 500);
+      setIsDownloading(false);
     }
   }
   return (
@@ -357,15 +357,6 @@ export default function CreateClientInvoicePage() {
             },
           }}
         >
-          <G703Component
-            state={g7State}
-            handleState={handleG7State}
-            sumColumns={sumColumns}
-            updateCellValue={updateCellValue}
-            showAddAndDelete={false}
-          />
-          <ClientInvoiceFooter />
-
           <G702Component
             state={g7State}
             handleState={handleG7State}
@@ -373,6 +364,16 @@ export default function CreateClientInvoicePage() {
             sumColumns={sumColumns}
             showValidation={false}
           />
+          <ClientInvoiceFooter />
+          <G703Component
+            state={g7State}
+            handleState={handleG7State}
+            sumColumns={sumColumns}
+            updateCellValue={updateCellValue}
+            showAddAndDelete={false}
+          />
+
+
         </ConfigProvider>
         <ClientInvoiceFooter />
       </div>
