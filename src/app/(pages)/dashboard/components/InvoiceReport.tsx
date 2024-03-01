@@ -2,6 +2,7 @@ import { SelectComponent } from '@/app/component/customSelect/Select.component';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { IClientInvoice } from '@/app/interfaces/client-invoice.interface';
 import { Column, type ColumnConfig } from '@ant-design/plots';
+import { Skeleton } from 'antd';
 import moment from 'moment';
 import { useState } from 'react';
 import { UseQueryResult } from 'react-query';
@@ -44,6 +45,12 @@ export default function InvoiceReport({ invoiceQuery }: Props) {
     }
     return invoice;
   }) : []
+
+  if (invoiceQuery.isLoading) {
+    return <div className="col-span-7 shadow-md bg-white rounded-md px-4 border border-t">
+      <Skeleton />
+    </div>
+  }
 
   const config: ColumnConfig = {
     data,
