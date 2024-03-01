@@ -44,6 +44,7 @@ export default function InvoiceReport({ invoiceQuery }: Props) {
     }
     return invoice;
   }) : []
+
   const config: ColumnConfig = {
     data,
     xField: 'type',

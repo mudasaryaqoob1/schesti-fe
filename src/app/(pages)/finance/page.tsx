@@ -1,9 +1,7 @@
 'use client';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import { Badge, Progress, Select } from 'antd';
+import { Select } from 'antd';
 import React, { useLayoutEffect } from 'react';
-// import { Column } from '@ant-design/plots';
-import SenaryHeading from '@/app/component/headings/senaryHeading';
 import CustomButton from '@/app/component/customButton/white';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import Table, { type ColumnsType } from 'antd/es/table';
@@ -13,6 +11,8 @@ import { clientInvoiceService } from '@/app/services/client-invoices.service';
 import { useSelector } from 'react-redux';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
+import { settingTargetService } from '@/app/services/targets.service';
+import { TargetStats } from './components/TargetStats';
 
 const Fiance = () => {
   const token = useSelector(selectToken);
@@ -27,6 +27,10 @@ const Fiance = () => {
   const clientInvoiceQuery = useQuery(['client-invoices-with-children'], () => {
     return clientInvoiceService.httpGetAllInvoicesWithChildren();
   })
+
+  const targetsQuery = useQuery(['targets'], () => {
+    return settingTargetService.httpGetAllSettingTargets(1, 20);
+  });
 
   const columns: ColumnsType<{}> = [
     {
@@ -62,32 +66,7 @@ const Fiance = () => {
     <section className="my-4  mx-8 px-4">
       <div className="grid grid-cols-12 gap-8">
         <FinancialStatus clientInvoiceQuery={clientInvoiceQuery} />
-        <div className="col-span-12 md:col-span-4 space-y-4 shadow bg-white p-4 rounded-md">
-          <div className="flex justify-between items-center">
-            <QuaternaryHeading
-              title="Target Status"
-              className="text-[#344054] font-semibold"
-            />
-          </div>
-          <div className="flex justify-center">
-            <Progress
-              showInfo
-              type="dashboard"
-              strokeColor={'#7F56D9'}
-              strokeWidth={12}
-              size={200}
-              percent={75}
-            />
-          </div>
-          <div className="flex justify-between items-center">
-            <Badge color="#0074D9" status="default" text="Completed" />
-            <SenaryHeading title="35k" />
-          </div>
-          <div className="flex justify-between items-center">
-            <Badge status="warning" text="Remaining" />
-            <SenaryHeading title="35k" />
-          </div>
-        </div>
+        <TargetStats targetsQuery={targetsQuery} clientInvoiceQuery={clientInvoiceQuery} />
       </div>
 
       <div className="shadow space-y-4 bg-white p-4 rounded-md my-3">
