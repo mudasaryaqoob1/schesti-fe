@@ -3,9 +3,9 @@ import Button from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import Image from 'next/image';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import { Select, Radio } from 'antd';
+import { Select, Radio, Input } from 'antd';
 import type { RadioChangeEvent } from 'antd';
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { fetchTakeoffPreset } from '@/redux/takeoff/takeoff.thunk';
 import { AppDispatch } from '@/redux/store';
 import { useDispatch, useSelector } from 'react-redux';
@@ -58,11 +58,18 @@ const byDefaultPerest = [
 ];
 
 interface Props {
-  scaleData: (data: any) => void;
+  setScaleData: any;
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  numOfPages: number;
+  page?: number;
 }
 
-const ScaleModal = ({ setModalOpen, scaleData }: Props) => {
+const ScaleModal = ({
+  setModalOpen,
+  numOfPages,
+  page,
+  setScaleData,
+}: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const allPresets = useSelector(selectTakeoffPreset);
 
@@ -72,14 +79,29 @@ const ScaleModal = ({ setModalOpen, scaleData }: Props) => {
   const [meter, setMeter] = useState('');
   const [precision, setPrecision] = useState('');
   const [preset, setPreset] = useState('');
+  const [showOptions, setShowOptions] = useState(false);
+  const [optionsValue, setOptionsValue] = useState('');
+  const [firstValue, setFirstValue] = useState('');
+  const [secondValue, setSecondValue] = useState('');
+
+  const [optionError, setOptionError] = useState(false);
+  const [secValError, setSecValError] = useState(false);
 
   const onChange = (e: RadioChangeEvent) => {
+    setPreset('');
+    setFirstValue('');
+    setMeter('');
+    setSecondValue('');
+    setSecMeter('');
     setValue(e.target.value);
   };
 
   const handleAddPreset = async () => {
     takeoffPresetService
-      .httpAddNewPreset({ label: 'dummy', value: 'dummy' })
+      .httpAddNewPreset({
+        label: `${firstValue}${meter}-${secondValue}${secMeter}`,
+        value: `${firstValue}${meter}-${secondValue}${secMeter}`,
+      })
       .then((res: any) => {
         if (res.statusCode == 201) {
           dispatch(addNewTakeoffPresetData(res.data));
@@ -96,6 +118,60 @@ const ScaleModal = ({ setModalOpen, scaleData }: Props) => {
       setMergedPresets([...allPresets, ...byDefaultPerest]);
     }
   }, [allPresets]);
+
+  const handleOptionChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+
+    const numbers = inputValue.split(/[,-]/);
+    if (
+      numbers.every(
+        (number) =>
+          number === '' ||
+          (parseInt(number) >= 1 && parseInt(number) <= numOfPages)
+      )
+    ) {
+      setOptionsValue(inputValue);
+      setOptionError(false);
+    } else {
+      setOptionError(true);
+    }
+  };
+
+  const handleCalibrate = () => {
+    const newData: any = {};
+    let scale = '';
+
+    if (value === 'preset') {
+      scale = preset;
+    } else if (value === 'custom') {
+      scale = `${firstValue}${meter}-${secondValue}${secMeter}`;
+    }
+
+    if (optionsValue !== 'all' && optionsValue !== 'page') {
+      if (optionsValue?.includes('-')) {
+        const range = optionsValue?.split('-').map(Number);
+        const [start, end] = range;
+        for (let i = start; i <= end; i++) {
+          newData[i] = { scale: scale, precision: precision };
+        }
+      } else if (optionsValue?.includes(',')) {
+        const numbers = optionsValue?.split(',').map(Number);
+        numbers.forEach((num) => {
+          newData[num] = { scale: scale, precision: precision };
+        });
+      }
+    } else if (optionsValue === 'all' || optionsValue === 'page') {
+      if (optionsValue === 'page') {
+        newData[page ? page : '1'] = { scale: scale, precision: precision };
+      } else {
+        for (let i = 1; i <= numOfPages; i++) {
+          newData[i] = { scale: scale, precision: precision };
+        }
+      }
+    }
+
+    setScaleData((prevData: any) => ({ ...prevData, ...newData }));
+  };
 
   return (
     <div className="py-2.5 px-6 bg-white border border-solid border-elboneyGray rounded-[4px] z-50">
@@ -123,8 +199,36 @@ const ScaleModal = ({ setModalOpen, scaleData }: Props) => {
         <div className="flex flex-col p-6 gap-6">
           <div className="flex gap-6 items-center">
             <label>Options:</label>
-            <Select className="w-full" />
+            <div className="flex items-center gap-1">
+              <Input
+                value={optionsValue}
+                className={`w-full ${
+                  optionError && '!border-1 !border-rose-500'
+                }`}
+                onChange={(e) => handleOptionChange(e)}
+              />
+              <div className="">
+                <Image
+                  src={'/chevron-down.svg'}
+                  alt={'alt'}
+                  width={14}
+                  height={14}
+                  onClick={() => setShowOptions(!showOptions)}
+                />
+              </div>
+            </div>
+            {/* <Select className="w-full" /> */}
           </div>
+          {showOptions && (
+            <div className="w-48 absolute left-[148px] top-[124px] z-30 bg-white cursor-pointer">
+              <div onClick={() => setOptionsValue('page')}>{`Current Page (${
+                page ? page : 1
+              }) `}</div>
+              <div onClick={() => setOptionsValue('all')}>
+                {`All pages ( 1 - ${numOfPages} )`}
+              </div>
+            </div>
+          )}
           <div className="flex gap-6 items-center justify-between ">
             <div className="flex flex-row gap-6">
               <label>Scale:</label>
@@ -152,9 +256,11 @@ const ScaleModal = ({ setModalOpen, scaleData }: Props) => {
             )}
             {value === 'custom' && (
               <>
-                <Select className="w-[115px]" defaultValue={1}>
-                  <Select.Option value={1}>1</Select.Option>
-                </Select>
+                <Input
+                  value={firstValue}
+                  className="!w-[115px]"
+                  onChange={(e) => setFirstValue(e.target.value)}
+                />
                 <Select
                   value={meter}
                   className="w-[115px]"
@@ -166,13 +272,52 @@ const ScaleModal = ({ setModalOpen, scaleData }: Props) => {
                     </Select.Option>
                   ))}
                 </Select>
-                <Select className="w-[115px]" defaultValue={1}>
-                  <Select.Option value={1}>1</Select.Option>
-                </Select>
+                <Input
+                  value={secondValue}
+                  className={`!w-[115px] ${
+                    secValError && '!border-1 !border-rose-500'
+                  } `}
+                  onChange={(e) => {
+                    const inputValue = e.target.value;
+
+                    if (secMeter !== `ft' in'` && inputValue.includes('/')) {
+                      setSecValError(true);
+                      return;
+                    }
+
+                    if (inputValue.length > 8) {
+                      setSecValError(true);
+                      return;
+                    }
+
+                    if (inputValue.length > 0 && !/^[1-9]/.test(inputValue)) {
+                      setSecValError(true);
+                      return;
+                    }
+
+                    if (inputValue.includes('/')) {
+                      const parts = inputValue.split('/');
+                      if (
+                        parts.length !== 2 ||
+                        isNaN(Number(parts[0])) ||
+                        isNaN(Number(parts[1])) ||
+                        parts[1].length > 2
+                      ) {
+                        setSecValError(true);
+                        return;
+                      }
+                    }
+                    setSecValError(false);
+                    setSecondValue(inputValue);
+                  }}
+                />
                 <Select
                   value={secMeter}
                   className="w-[115px]"
-                  onChange={(value) => setSecMeter(value)}
+                  onChange={(value) => {
+                    setSecondValue('');
+                    setSecMeter(value);
+                  }}
                 >
                   {secondaryMeters.map((item) => (
                     <Select.Option key={item} value={item}>
@@ -216,8 +361,10 @@ const ScaleModal = ({ setModalOpen, scaleData }: Props) => {
         <div>
           <Button
             text="Calibrate"
-            onClick={() =>
-              scaleData({ 1: { scale: preset, precision: precision } })
+            onClick={
+              () => handleCalibrate()
+
+              // scaleData({ 1: { scale: preset, precision: precision } })
             }
           />
         </div>
