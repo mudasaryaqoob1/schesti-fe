@@ -160,9 +160,7 @@ const Scale = () => {
             />
           ))}
         </div>
-        <div className="h-[160px] overflow-auto">
-          <DrawTable />
-        </div>
+        <DrawTable />
       </div>
 
       {scale.selected === 'scale' && (

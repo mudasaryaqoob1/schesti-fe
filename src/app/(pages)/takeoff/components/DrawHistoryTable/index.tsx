@@ -1,5 +1,5 @@
 import React, { useContext, useMemo } from 'react';
-import { Table } from 'antd';
+import { ConfigProvider, Table } from 'antd';
 import { DrawHistoryContext } from '../../context';
 import { DrawHistoryContextProps } from '../../context/DrawHistoryContext';
 import { useDraw } from '@/app/hooks';
@@ -75,9 +75,8 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
   }, [drawHistory, searchProjectName]);
 
   return (
-    <div>
+    <ConfigProvider theme={{ components: { Table: { headerBg: '#F9F5FF' } } }}>
       <Table
-        pagination={false}
         columns={[
           {
             title: 'Project name',
@@ -127,7 +126,7 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
         dataSource={dataSource}
         size="small"
       />
-    </div>
+    </ConfigProvider>
   );
 };
 
