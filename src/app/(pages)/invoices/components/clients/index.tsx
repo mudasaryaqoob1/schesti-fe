@@ -127,6 +127,9 @@ export function Clients() {
                   onCancel() { },
                 });
               }
+              else if (key === 'view') {
+                router.push(`/invoices/aia-invoicing/view/${record._id}`)
+              }
             },
           }}
           placement="bottomRight"
