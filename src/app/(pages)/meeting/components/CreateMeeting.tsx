@@ -2,8 +2,6 @@ import * as Yup from 'yup';
 import { meetingService } from '@/app/services/meeting.service';
 import { toast } from 'react-toastify';
 import { AppDispatch } from '@/redux/store';
-// import type { RangePickerProps } from 'antd/es/date-picker';
-import dayjs from 'dayjs';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import WhiteButton from '@/app/component/customButton/white';
@@ -17,13 +15,8 @@ import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import { addNewMeetingAction } from '@/redux/meeting/meeting.slice';
 import Description from '@/app/component/description';
 import { SelectComponent } from '@/app/component/customSelect/Select.component';
-import { disabledDate } from '@/app/utils/date.utils';
-import timezone from 'dayjs/plugin/timezone'; // dependent on utc plugin
-import utc from 'dayjs/plugin/utc';
+import { dayjs, disabledDate, getClientLocalTimezone } from '@/app/utils/date.utils';
 
-dayjs.extend(utc);
-// see: https://dayjs.gitee.io/docs/zh-CN/plugin/timezone
-dayjs.extend(timezone);
 type Props = {
   showModal: boolean;
   setShowModal(): void;
@@ -40,14 +33,14 @@ const CreateMeetingSchema = Yup.object().shape({
 let timezones = Intl.supportedValuesOf("timeZone");
 export function CreateMeeting({ showModal, setShowModal }: Props) {
   const [isScheduling, setIsScheduling] = useState(false);
-  const [timezone, setTimezone] = useState("Asia/Karachi");
+  const [timezone, setTimezone] = useState(getClientLocalTimezone());
 
   const dispatch = useDispatch<AppDispatch>();
   const formik = useFormik({
     initialValues: {
       topic: '',
       email: undefined,
-      startDate: new Date().toDateString(),
+      startDate: undefined,
     },
     validationSchema: CreateMeetingSchema,
     onSubmit(values) {
@@ -161,7 +154,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
                   ? dayjs(formik.values.startDate).tz(timezone)
                   : undefined,
                 onChange(date) {
-                  formik.setFieldValue('startDate', date);
+                  formik.setFieldValue('startDate', date?.tz(timezone));
                 },
                 onBlur: formik.handleBlur,
                 status:
@@ -169,7 +162,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
                     ? 'error'
                     : undefined,
                 use12Hours: true,
-                disabledDate: disabledDate,
+                disabledDate: curr => disabledDate(curr, timezone),
                 showSecond: false,
                 renderExtraFooter: () => <SelectComponent
                   label='Timezone'
