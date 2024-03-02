@@ -34,10 +34,13 @@ const Scale = () => {
   const [depth, setDepth] = useState<number>(0);
   const [measurements, setMeasurements] =
     useState<Measurements>(defaultMeasurements);
+  const [scaleData, setScaleData] = useState({});
 
   const { uploadFileData } = useContext(
     UploadFileContext
   ) as UploadFileContextProps;
+
+  console.warn('scaleData: ', scaleData);
 
   return (
     <section className="mt-[96px] md:px-16 px-8 pb-4">
@@ -165,8 +168,9 @@ const Scale = () => {
       {scale.selected === 'scale' && (
         <ModalComponent open={showModal} setOpen={setShowModal}>
           <ScaleModal
+            numOfPages={uploadFileData.length}
             setModalOpen={setShowModal}
-            scaleData={(data: any) => console.warn('data: ', data)}
+            setScaleData={setScaleData}
           />
         </ModalComponent>
       )}
