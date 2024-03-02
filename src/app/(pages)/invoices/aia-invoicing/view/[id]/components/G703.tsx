@@ -1,8 +1,6 @@
 import React from 'react';
 import {
-  DatePicker,
   Divider,
-  Input,
   Select,
   Table,
 } from 'antd';
@@ -17,7 +15,6 @@ import {
 } from '@/app/interfaces/client-invoice.interface';
 import dayjs from 'dayjs';
 import moment from 'moment';
-import { disabledDate } from '@/app/utils/date.utils';
 
 type Props = {
   phases: IClientInvoice[];
@@ -89,11 +86,11 @@ export function G703Component({
               APPLICATION NO:
             </label>
             <div className="col-span-2">
-              <Input
+              <div
                 className="px-2 py-1  border border-gray-300 "
-                type="text"
-                value={state.applicationNo}
-              />
+              >
+                {state.applicationNo}
+              </div>
             </div>
           </div>
 
@@ -102,17 +99,15 @@ export function G703Component({
               APPLICATION DATE:
             </label>
             <div className="col-span-2">
-              <DatePicker
+              <div
                 id="application-date"
                 className="px-2 w-full rounded-none py-[7px] border border-gray-300 outline-none"
-                value={
-                  state.applicationDate
-                    ? dayjs(state.applicationDate)
-                    : undefined
-                }
-                disabledDate={disabledDate}
-                disabled
-              />
+              >
+                {state.applicationDate
+                  ? dayjs(state.applicationDate).format('DD MMM-YYYY')
+                  : null}
+              </div>
+
             </div>
           </div>
 
@@ -122,15 +117,11 @@ export function G703Component({
             </label>
 
             <div className="col-span-2">
-              <DatePicker
-                id="application-date"
-                className="px-4 w-full rounded-none py-[7px] border border-gray-300 outline-none"
-                value={state.periodTo
-                  ? dayjs(state.periodTo)
-                  : undefined}
-                disabledDate={disabledDate}
-                disabled
-              />
+              <div
+                className="px-2 w-full rounded-none py-[7px] border border-gray-300 outline-none"
+              >
+                {state.periodTo ? dayjs(state.periodTo).format('DD MMM-YYYY') : ''}
+              </div>
             </div>
           </div>
 
@@ -140,11 +131,11 @@ export function G703Component({
             </label>
 
             <div className="col-span-2">
-              <Input
+              <div
                 className="px-2 py-1  border border-gray-300 "
-                type="text"
-                value={state.projectNo}
-              />
+              >
+                {state.projectNo}
+              </div>
             </div>
           </div>
         </div>
@@ -190,12 +181,7 @@ export function G703Component({
               if (index === state.data.length) {
                 return <div className="px-3">{value}</div>;
               }
-              return (
-                <Input
-                  value={getCellValue(record, 1)}
-                  placeholder="Enter description of work"
-                />
-              );
+              return <div className="px-3">{getCellValue(record, 1)}</div>;
             }}
           />
           <Column
@@ -205,13 +191,9 @@ export function G703Component({
               if (index === state.data.length) {
                 return <div className="px-3 font-bold">{value}</div>;
               }
-              return (
-                <Input
-                  value={getCellValue(record, 2)}
-                  type="number"
-                  prefix="$"
-                />
-              );
+              return <div className="px-3">
+                $ {getCellValue(record, 2)}
+              </div>
             }}
           />
           <ColumnGroup title={<SenaryHeading title="Work Completed" />}>
@@ -223,9 +205,9 @@ export function G703Component({
                   return <div className="px-3">{value}</div>;
                 }
                 let columnF = Number(getCellValue(record, 3));
-                return (
-                  <Input value={columnF} prefix="$" type="number" disabled />
-                );
+                return <div className="px-3">
+                  $ {columnF}
+                </div>
               }}
             />
             <Column
@@ -235,13 +217,9 @@ export function G703Component({
                 if (index === state.data.length) {
                   return <div className="px-3">{value}</div>;
                 }
-                return (
-                  <Input
-                    value={value}
-                    prefix="$"
-                    type="number"
-                  />
-                );
+                return <div className="px-3">
+                  $ {value}
+                </div>
               }}
             />
           </ColumnGroup>
@@ -254,13 +232,9 @@ export function G703Component({
               if (index === state.data.length) {
                 return <div className="px-3">{value}</div>;
               }
-              return (
-                <Input
-                  value={value}
-                  type="number"
-                  prefix="$"
-                />
-              );
+              return <div className="px-3">
+                $ {value}
+              </div>
             }}
           />
           <ColumnGroup title={<SenaryHeading title="Work Completed" />}>
@@ -277,13 +251,9 @@ export function G703Component({
                 let columnE = Number(getCellValue(record, 4));
                 let columnF = Number(getCellValue(record, 5));
 
-                return (
-                  <Input
-                    value={`${(columnD + columnE + columnF).toFixed(2)}`}
-                    type="number"
-                    prefix="$"
-                  />
-                );
+                return <div className="px-3">
+                  $ {(columnD + columnE + columnF).toFixed(2)}
+                </div>
               }}
             />
             <Column
@@ -293,13 +263,9 @@ export function G703Component({
                 if (index === state.data.length) {
                   return <div className="px-3">{value}</div>;
                 }
-                return (
-                  <Input
-                    type="number"
-                    prefix="%"
-                    value={`${Number(record[7]).toFixed(2)}`}
-                  />
-                );
+                return <div className="px-3">
+                  $ {Number(record[7]).toFixed(2)}
+                </div>
               }}
             />
           </ColumnGroup>
@@ -310,13 +276,9 @@ export function G703Component({
               if (index === state.data.length) {
                 return <div className="px-3">{value}</div>;
               }
-              return (
-                <Input
-                  prefix="$"
-                  value={Number(record[8]).toFixed(2)}
-                  type="number"
-                />
-              );
+              return <div className="px-3">
+                $ {Number(record[8]).toFixed(2)}
+              </div>
             }}
           />
           <Column
@@ -330,13 +292,9 @@ export function G703Component({
               if (index === state.data.length) {
                 return <div className="px-3">{value}</div>;
               }
-              return (
-                <Input
-                  type="number"
-                  prefix="$"
-                  value={`${Number(record[9]).toFixed(2)}`}
-                />
-              );
+              return <div className="px-3">
+                {Number(record[9]).toFixed(2)}%
+              </div>
             }}
           />
 

@@ -62,7 +62,7 @@ export function Clients() {
     },
     {
       key: 'view',
-      label: <p>View</p>,
+      label: <p>View Invoice</p>,
     },
     {
       key: 'collect',
