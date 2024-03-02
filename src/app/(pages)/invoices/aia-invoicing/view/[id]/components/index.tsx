@@ -11,7 +11,6 @@ import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { G703Component } from './G703';
 import { generateData } from '../utils';
 import { G702Component } from './G702';
-import { toast } from 'react-toastify';
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import { useScreenshot } from '@breezeos-dev/use-react-screenshot';
@@ -34,7 +33,6 @@ export function PhaseComponent({ parentInvoice }: Props) {
   const [tab, setTab] = useState(G703_KEY);
   const ref = useRef<HTMLDivElement>();
   const [image, takeScreenshot] = useScreenshot();
-  const [showDownload, setShowDownload] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
 
   // all phases of the parent invoice
@@ -92,6 +90,10 @@ export function PhaseComponent({ parentInvoice }: Props) {
       })();
     }
   }, [parentInvoice]);
+
+  useEffect(() => {
+    takeScreenshot(ref.current);
+  }, [g7State])
 
   function updateG7StateFromPhase(phase: IClientInvoice) {
     const data = updatePreviousApplicationColumn(phase);
@@ -198,37 +200,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
     return newData;
   }
 
-  function handleSubmit(data: G7State) {
-    const changeOrderSummaryAdditionSum =
-      data.totalAdditionThisMonth + data.totalAdditionPreviousMonth;
-    const changeOrderSummaryDeductionSum =
-      data.totalDeductionThisMonth + data.totalDeductionPreviousMonth;
-    const changeOrderNetChanges =
-      changeOrderSummaryAdditionSum - changeOrderSummaryDeductionSum;
-    const originalContractSum = sumColumns(data.data, 2);
 
-    const totalAmount = originalContractSum + changeOrderNetChanges;
-    const amountPaid = Number(sumColumns(data.data, 6).toFixed(2));
-
-    clientInvoiceService
-      .httpCreateNewInvoicePhase(parentInvoice._id, {
-        ...data,
-        totalAmount,
-        amountPaid
-      })
-      .then((response) => {
-        if (response.statusCode == 201) {
-          toast.success('Invoice created successfully');
-          takeScreenshot(ref.current);
-          setShowDownload(true);
-        }
-      })
-      .catch(({ response }) => {
-        if (response?.data.message === 'Validation Failed') {
-          toast.error('Please fill the required fields.');
-        }
-      });
-  }
   function downloadPdf() {
     setIsDownloading(() => true);
     var doc = new jsPDF('portrait', 'in', 'a0');
@@ -242,8 +214,8 @@ export function PhaseComponent({ parentInvoice }: Props) {
       setTimeout(() => {
         doc.save(`${parentInvoice.invoiceName}-invoice.pdf`);
       }, 500);
-      setIsDownloading(false);
     }
+    setIsDownloading(false);
   }
   return (
     <section className="mx-16 my-2">
@@ -282,16 +254,6 @@ export function PhaseComponent({ parentInvoice }: Props) {
         >
           <Tabs
             destroyInactiveTabPane
-            tabBarExtraContent={
-              showDownload ? (
-                <CustomButton
-                  loadingText="Downloading..."
-                  isLoading={isDownloading}
-                  text={'Download PDF'}
-                  onClick={() => downloadPdf()}
-                />
-              ) : null
-            }
             onChange={(key) => {
               setTab(key);
             }}
@@ -346,11 +308,12 @@ export function PhaseComponent({ parentInvoice }: Props) {
                         className="!w-40"
                       />
                       <CustomButton
-                        text="Create new Phase"
-                        className="!w-48"
-                        onClick={() => {
-                          handleSubmit(g7State);
-                        }}
+                        loadingText="Downloading..."
+                        isLoading={isDownloading}
+                        text={'Download PDF'}
+                        onClick={() => downloadPdf()}
+                        className="!w-40"
+
                       />
                     </G702Component>
                   ),
@@ -396,7 +359,6 @@ export function PhaseComponent({ parentInvoice }: Props) {
             state={g7State}
             previousPhaseState={selectedPhase}
             sumColumns={sumColumns}
-            showValidation={false}
           />
 
           <ClientInvoiceFooter />
