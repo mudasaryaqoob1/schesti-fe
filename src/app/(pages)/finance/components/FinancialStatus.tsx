@@ -56,13 +56,15 @@ export function FinancialStatus({ clientInvoiceQuery }: Props) {
             data={invoices}
             xField="month"
             yField="value"
-            colorField="name"
-            group={true}
+            isGroup
+            seriesField="name"
+            maxColumnWidth={10}
+            columnStyle={
+                { radius: 50 }
+            }
             style={{
-                radius: 50,
-                width: 10
+                height: 300
             }}
-            height={300}
         />
     </div>
 }

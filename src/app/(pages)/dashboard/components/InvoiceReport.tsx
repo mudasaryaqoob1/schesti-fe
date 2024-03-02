@@ -4,7 +4,7 @@ import { IClientInvoice } from '@/app/interfaces/client-invoice.interface';
 import { Column, type ColumnConfig } from '@ant-design/plots';
 import { Skeleton } from 'antd';
 import moment from 'moment';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { UseQueryResult } from 'react-query';
 
 
@@ -32,19 +32,19 @@ const MONTHS = [
 
 export default function InvoiceReport({ invoiceQuery }: Props) {
   const [selectedMonth, setSelectedMonth] = useState("");
+  const [invoices, setInvoices] = useState<{ value: string | number; type: string; }[]>([]);
 
-  let data = invoiceQuery.data ? invoiceQuery.data.data!.invoices.map(invoice => {
-    const month = moment(invoice.applicationDate).format("MMMM");
-    return {
-      value: `$${invoice.totalAmount}`,
-      type: month
-    }
-  }).filter(invoice => {
-    if (selectedMonth) {
-      return invoice.type === selectedMonth;
-    }
-    return invoice;
-  }) : []
+  useEffect(() => {
+    const data = invoiceQuery.data ? invoiceQuery.data.data!.invoices.map(invoice => {
+      const month = moment(invoice.applicationDate).format("MMMM");
+      // const value = `$${invoice.totalAmount}`;
+      return {
+        value: invoice.totalAmount,
+        type: month,
+      };
+    }) : [];
+    setInvoices(data);
+  }, [invoiceQuery.data, selectedMonth])
 
   if (invoiceQuery.isLoading) {
     return <div className="col-span-7 shadow-md bg-white rounded-md px-4 border border-t">
@@ -52,16 +52,24 @@ export default function InvoiceReport({ invoiceQuery }: Props) {
     </div>
   }
 
+
   const config: ColumnConfig = {
-    data,
+    data: invoices,
     xField: 'type',
     yField: 'value',
-    colorField: '#7138DF',
-    style: {
-      radius: 50,
-      width: 10,
+    color: (data) => {
+      return data.type === selectedMonth ? "#7F56D9" : "#8f7db5"
     },
-  };
+    maxColumnWidth: 10,
+    columnStyle: {
+      radius: 50
+    },
+    xAxis: {
+      grid: undefined
+    }
+  }
+
+
   return <div className="col-span-7 shadow-md bg-white rounded-md px-4 border border-t">
     <div className="flex justify-between items-center my-4">
       <h3 className="text-[18px] text-[#344054] leading-[28px] font-semibold">
