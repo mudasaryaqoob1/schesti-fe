@@ -6,6 +6,7 @@ export type IMeeting = {
   invitees: string[];
   startDate: string;
   endDate: string;
+  timezone: string;
   associatedCompany: string;
   createdAt: string;
   updatedAt: string;
