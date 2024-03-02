@@ -10,78 +10,14 @@ import ModalsWrapper from '../components/main';
 import { ColorPicker, InputNumber, Select } from 'antd';
 import { UploadFileContext } from '../context';
 import { UploadFileContextProps } from '../context/UploadFileContext';
-import DrawHistoryTable from '../components/DrawHistoryTable';
-import { Measurements, defaultMeasurements } from '../types';
-
-export type ScaleLabel =
-  | 'scale'
-  | 'length'
-  | 'volume'
-  | 'count'
-  | 'area'
-  | 'dynamic';
-
-interface ScaleNavigation {
-  label: ScaleLabel;
-  src: string;
-  selectedSrc: string;
-  alt: string;
-  width: number;
-  height: number;
-}
-
-const scaleNavigation: ScaleNavigation[] = [
-  {
-    label: 'scale',
-    src: '/scale.svg',
-    selectedSrc: '/selectedScale.svg',
-    alt: 'createicon',
-    width: 19.97,
-    height: 11.31,
-  },
-  {
-    label: 'length',
-    src: '/length.svg',
-    selectedSrc: '/selectedLength.svg',
-    alt: 'createicon',
-    width: 19.97,
-    height: 11.31,
-  },
-  {
-    label: 'volume',
-    src: '/volume.svg',
-    selectedSrc: '/selectedVolume.svg',
-    alt: 'createicon',
-    width: 14,
-    height: 16,
-  },
-  {
-    label: 'count',
-    src: '/count.svg',
-    selectedSrc: '/selectedCount.svg',
-    alt: 'createicon',
-    width: 19.97,
-    height: 11.31,
-  },
-  {
-    label: 'area',
-    src: '/area.svg',
-    selectedSrc: '/selectedArea.svg',
-    alt: 'createicon',
-    width: 18.33,
-    height: 13.72,
-  },
-  {
-    label: 'dynamic',
-    src: '/dynamic.svg',
-    selectedSrc: '/selectedDynamic.svg',
-    alt: 'createicon',
-    width: 15,
-    height: 14,
-  },
-];
-
-const Units = [11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72];
+import {
+  Measurements,
+  ScaleInterface,
+  Units,
+  defaultMeasurements,
+  SCALE_NAVIGATION,
+} from '../types';
+import DrawTable from '../components/DrawTable';
 
 // const selectedScale = {
 //   "1" : {scale:  `3/8"=1'-0"`, precision: `1/34` }
@@ -90,7 +26,7 @@ const Units = [11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72];
 // }
 
 const Scale = () => {
-  const [scale, setScale] = useState<ScaleLabel>('scale');
+  const [scale, setScale] = useState<ScaleInterface>({ selected: 'scale' });
   const [showModal, setShowModal] = useState(false);
   const [border, setBorder] = useState<number>(4);
   const [color, setColor] = useState<string>('#1677ff');
@@ -104,11 +40,13 @@ const Scale = () => {
   ) as UploadFileContextProps;
 
   return (
-    <section className="mt-[100px] md:px-16 px-8 pb-4">
+    <section className="mt-[96px] md:px-16 px-8 pb-4">
       <div
-        className={`h-12 w-full mt-6 flex flex-row items-center justify-center gap-8  py-[5.5px] ${bg_style}`}
+        className={twMerge(
+          `h-12 w-full mt-6 flex flex-row items-center justify-center gap-8  py-[5.5px] ${bg_style} rounded-lg`
+        )}
       >
-        {scaleNavigation.map(
+        {SCALE_NAVIGATION.map(
           ({ src, selectedSrc, height, width, alt, label }) => {
             return (
               <div
@@ -116,10 +54,10 @@ const Scale = () => {
                 className="flex flex-col items-center cursor-pointer"
                 onClick={() => {
                   setShowModal(true);
-                  setScale(label);
+                  setScale({ selected: label });
                 }}
               >
-                {scale === label ? (
+                {scale.selected === label ? (
                   <NextImage
                     src={selectedSrc}
                     alt={alt}
@@ -137,7 +75,7 @@ const Scale = () => {
                 <span
                   className={twMerge(
                     `text-xs capitalize ${
-                      scale === label ? 'text-[#6F6AF8]' : ''
+                      scale.selected === label ? 'text-[#6F6AF8]' : ''
                     }`
                   )}
                 >
@@ -148,10 +86,10 @@ const Scale = () => {
           }
         )}
       </div>
-      <div className="bg-[#F2F2F2] h-[52px] flex flex-row items-center px-4 gap-6">
+      <div className="bg-[#F2F2F2] h-[52px] flex flex-row items-center px-4 gap-6 rounded-lg">
         <div className="flex flex-row gap-2 items-center">
           <label>Totals:</label>
-          <Select></Select>
+          <Select value="Length ----" />
         </div>
         <div className="flex flex-row gap-2 items-center">
           <label>Units:</label>
@@ -173,7 +111,7 @@ const Scale = () => {
             min={1}
             max={76}
             value={border}
-            onChange={(value) => setBorder(value as number)}
+            onChange={(value) => value && setBorder(value)}
           />
         </div>
         <div className="flex flex-row gap-2 items-center">
@@ -183,32 +121,30 @@ const Scale = () => {
             onChange={(color) => setColor(color.toHexString())}
           />
         </div>
-        <div className="flex flex-row gap-2 items-center ">
-          <div className="bg-[#F2F2F2] h-[52px] w-full pt-3">
-            <input
-              type="number"
-              min={1}
-              placeholder="depth"
-              className="h-1/2"
-              onChange={(e) => setDepth(+e.target.value)}
-            />
-          </div>
-        </div>
+        {scale.selected === 'volume' && (
+          <InputNumber
+            type="number"
+            min={1}
+            placeholder="Depth"
+            onChange={(value) => value && setDepth(value)}
+          />
+        )}
       </div>
 
       <div className="py-6 h-[709px] relative">
         <div className={`absolute ${showModal ? 'block' : 'hidden'}`}>
           <ModalsWrapper
             scale={scale}
+            setScale={setScale}
             setModalOpen={setShowModal}
             measurements={measurements}
           />
         </div>
-        <div className="h-[527px] overflow-y-auto">
+        <div className="h-[527px] rounded-lg overflow-y-auto">
           {uploadFileData.map((file, index) => (
             <Draw
               key={`draw-${index}`}
-              selected={scale}
+              selectedScale={scale}
               depth={depth}
               color={color}
               border={border}
@@ -221,12 +157,12 @@ const Scale = () => {
             />
           ))}
         </div>
-        <div>
-          <DrawHistoryTable />
+        <div className="h-[160px] overflow-auto">
+          <DrawTable />
         </div>
       </div>
 
-      {scale === 'scale' && (
+      {scale.selected === 'scale' && (
         <ModalComponent open={showModal} setOpen={setShowModal}>
           <ScaleModal
             setModalOpen={setShowModal}

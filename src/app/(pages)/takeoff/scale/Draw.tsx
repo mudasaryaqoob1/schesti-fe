@@ -22,6 +22,7 @@ import {
   LineState,
   Measurements,
   PolygonConfigInterface,
+  ScaleInterface,
   defaultMeasurements,
 } from '../types';
 
@@ -34,7 +35,7 @@ const defaultPolyLineState: LineInterface = {
 };
 
 interface Props {
-  selected: string;
+  selectedScale: ScaleInterface;
   depth: number;
   color: string;
   border: number;
@@ -45,7 +46,7 @@ interface Props {
 }
 
 const Draw: React.FC<Props> = ({
-  selected,
+  selectedScale,
   depth,
   border,
   unit,
@@ -54,6 +55,7 @@ const Draw: React.FC<Props> = ({
   uploadFileData,
   pageNumber,
 }) => {
+  const { selected, subSelected = null } = selectedScale;
   const {
     calcLineDistance,
     calculateMidpoint,
@@ -284,7 +286,7 @@ const Draw: React.FC<Props> = ({
       });
     }
 
-    if (selected === 'dynamic') {
+    if (subSelected === 'clear') {
       setDynamicPolyLine((prev) => {
         if (!prev.points.length) {
           return {
@@ -379,7 +381,7 @@ const Draw: React.FC<Props> = ({
           setDynamicPolyLine(defaultPolyLineState);
           handleChangeMeasurements(defaultMeasurements);
         }
-        if (e.key === 'Enter' && selected === 'dynamic') {
+        if (e.key === 'Enter' && subSelected === 'clear') {
           setCurrentLine(defaultCurrentLineState);
 
           setDraw((prevDraw) => ({

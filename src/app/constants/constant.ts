@@ -160,3 +160,13 @@ export const clientsData = [
     status: 'Active',
   },
 ];
+
+export const debounce = (timeout = 10) => {
+  let time = 0;
+  return function (cb: any) {
+    if (time) clearTimeout(time);
+    time = window.setTimeout(() => {
+      cb();
+    }, timeout);
+  };
+};

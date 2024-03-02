@@ -18,7 +18,11 @@ interface DrawTableHistory {
   space: string;
 }
 
-const DrawHistoryTable = () => {
+interface Props {
+  searchProjectName: string;
+}
+
+const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
   const { getProjectAndCommentNameForTable } = useDraw();
   const { drawHistory } = useContext(
     DrawHistoryContext
@@ -63,13 +67,15 @@ const DrawHistoryTable = () => {
         (a, b) => new Date(a.date).valueOf() - new Date(b.date).valueOf()
       );
 
-      return tableData;
+      return tableData.filter(({ projectName = '' }) =>
+        projectName.includes(searchProjectName)
+      );
     }
     return [];
-  }, [drawHistory]);
+  }, [drawHistory, searchProjectName]);
 
   return (
-    <div className="py-2">
+    <div>
       <Table
         pagination={false}
         columns={[

@@ -57,3 +57,80 @@ export const defaultMeasurements = {
   count: 0,
   parameter: '0',
 };
+
+export type ScaleLabel =
+  | 'scale'
+  | 'length'
+  | 'volume'
+  | 'count'
+  | 'area'
+  | 'dynamic';
+
+export type DynamicScale = 'clear' | 'fill' | 'create';
+
+export interface ScaleInterface {
+  selected: ScaleLabel;
+  subSelected?: DynamicScale;
+}
+
+export interface ScaleNavigation {
+  label: ScaleLabel;
+  src: string;
+  selectedSrc: string;
+  alt: string;
+  width: number;
+  height: number;
+}
+
+export const SCALE_NAVIGATION: ScaleNavigation[] = [
+  {
+    label: 'scale',
+    src: '/scale.svg',
+    selectedSrc: '/selectedScale.svg',
+    alt: 'createicon',
+    width: 19.97,
+    height: 11.31,
+  },
+  {
+    label: 'length',
+    src: '/length.svg',
+    selectedSrc: '/selectedLength.svg',
+    alt: 'createicon',
+    width: 19.97,
+    height: 11.31,
+  },
+  {
+    label: 'volume',
+    src: '/volume.svg',
+    selectedSrc: '/selectedVolume.svg',
+    alt: 'createicon',
+    width: 14,
+    height: 16,
+  },
+  {
+    label: 'count',
+    src: '/count.svg',
+    selectedSrc: '/selectedCount.svg',
+    alt: 'createicon',
+    width: 19.97,
+    height: 11.31,
+  },
+  {
+    label: 'area',
+    src: '/area.svg',
+    selectedSrc: '/selectedArea.svg',
+    alt: 'createicon',
+    width: 18.33,
+    height: 13.72,
+  },
+  {
+    label: 'dynamic',
+    src: '/dynamic.svg',
+    selectedSrc: '/selectedDynamic.svg',
+    alt: 'createicon',
+    width: 15,
+    height: 14,
+  },
+];
+
+export const Units = [11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72];
