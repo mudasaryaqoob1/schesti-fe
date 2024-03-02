@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { TableHeader, TableNavigate } from './components';
-import DrawHistoryTable from '../DrawHistoryTable';
+
+import DrawHistoryTable from './DrawHistoryTable';
+import { TableHeader, TableNavigate } from '.';
 
 const DrawTable = () => {
   const [searchProjectName, setSearchProjectName] = useState('');

@@ -9,12 +9,12 @@ import {
   Text as KonvaText,
   Arrow,
 } from 'react-konva';
-import { UploadFileData } from '../context/UploadFileContext';
+import { UploadFileData } from '../../context/UploadFileContext';
 import { useDraw } from '@/app/hooks';
 import { KonvaEventObject } from 'konva/lib/Node';
 import moment from 'moment';
-import { DrawHistoryContext } from '../context';
-import { DrawHistoryContextProps } from '../context/DrawHistoryContext';
+import { DrawHistoryContext } from '../../context';
+import { DrawHistoryContextProps } from '../../context/DrawHistoryContext';
 import {
   CountInterface,
   DrawInterface,
@@ -24,7 +24,7 @@ import {
   PolygonConfigInterface,
   ScaleInterface,
   defaultMeasurements,
-} from '../types';
+} from '../../types';
 
 const defaultCurrentLineState = { startingPoint: null, endingPoint: null };
 const defaultPolyLineState: LineInterface = {

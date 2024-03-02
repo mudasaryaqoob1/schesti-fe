@@ -1,9 +1,9 @@
 import React from 'react';
-import Length from '../length';
-import Volume from '../volume';
-import Count from '../count';
-import Area from '../area';
-import Dynamic from '../dynamic';
+import Length from './LengthModal';
+import Volume from './VolumeModal';
+import Count from './CountModal';
+import Area from './AreaModal';
+import Dynamic from './DynamicModal';
 import { Measurements, ScaleInterface } from '../../types';
 
 interface Props {

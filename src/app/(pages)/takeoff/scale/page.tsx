@@ -1,12 +1,8 @@
 'use client';
-import { bg_style } from '@/globals/tailwindvariables';
-import NextImage from 'next/image';
 import { useState, useContext } from 'react';
-import { twMerge } from 'tailwind-merge';
-import Draw from './Draw';
 import ModalComponent from '@/app/component/modal';
 import ScaleModal from '../components/scale';
-import ModalsWrapper from '../components/main';
+import ModalsWrapper from './components/ModalWrapper';
 import { ColorPicker, InputNumber, Select } from 'antd';
 import { UploadFileContext } from '../context';
 import { UploadFileContextProps } from '../context/UploadFileContext';
@@ -15,9 +11,8 @@ import {
   ScaleInterface,
   Units,
   defaultMeasurements,
-  SCALE_NAVIGATION,
 } from '../types';
-import DrawTable from '../components/DrawTable';
+import { ScaleNavigation, Draw, DrawTable } from './components';
 
 // const selectedScale = {
 //   "1" : {scale:  `3/8"=1'-0"`, precision: `1/34` }
@@ -44,51 +39,11 @@ const Scale = () => {
 
   return (
     <section className="mt-[96px] md:px-16 px-8 pb-4">
-      <div
-        className={twMerge(
-          `h-12 w-full mt-6 flex flex-row items-center justify-center gap-8  py-[5.5px] ${bg_style} rounded-lg`
-        )}
-      >
-        {SCALE_NAVIGATION.map(
-          ({ src, selectedSrc, height, width, alt, label }) => {
-            return (
-              <div
-                key={src}
-                className="flex flex-col items-center cursor-pointer"
-                onClick={() => {
-                  setShowModal(true);
-                  setScale({ selected: label });
-                }}
-              >
-                {scale.selected === label ? (
-                  <NextImage
-                    src={selectedSrc}
-                    alt={alt}
-                    width={width}
-                    height={height}
-                  />
-                ) : (
-                  <NextImage
-                    src={src}
-                    alt={alt}
-                    width={width}
-                    height={height}
-                  />
-                )}
-                <span
-                  className={twMerge(
-                    `text-xs capitalize ${
-                      scale.selected === label ? 'text-[#6F6AF8]' : ''
-                    }`
-                  )}
-                >
-                  {label}
-                </span>
-              </div>
-            );
-          }
-        )}
-      </div>
+      <ScaleNavigation
+        scale={scale}
+        setScale={setScale}
+        setShowModal={setShowModal}
+      />
       <div className="bg-[#F2F2F2] h-[52px] flex flex-row items-center px-4 gap-6 rounded-lg">
         <div className="flex flex-row gap-2 items-center">
           <label>Totals:</label>
