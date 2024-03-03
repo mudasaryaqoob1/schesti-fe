@@ -5,13 +5,15 @@ import Image from 'next/image';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { Select, Radio, Input } from 'antd';
 import type { RadioChangeEvent } from 'antd';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { fetchTakeoffPreset } from '@/redux/takeoff/takeoff.thunk';
 import { AppDispatch } from '@/redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectTakeoffPreset } from '@/redux/takeoff/takeoff.Selector';
 import { takeoffPresetService } from '@/app/services/takeoff.service';
 import { addNewTakeoffPresetData } from '@/redux/takeoff/takeoff.slice';
+import { ScaleContext } from '../../context';
+import { ScaleDataContextProps } from '../../context/ScaleContext';
 
 const precisions = ['1', '0.1', '0.01', ' 0.001', '0.0001', '0.00001'];
 const byPrecision = ['1', '1/2', '1/4', '1/8', '1/16', '1/32'];
@@ -58,18 +60,12 @@ const byDefaultPerest = [
 ];
 
 interface Props {
-  setScaleData: any;
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   numOfPages: number;
   page?: number;
 }
 
-const ScaleModal = ({
-  setModalOpen,
-  numOfPages,
-  page,
-  setScaleData,
-}: Props) => {
+const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const allPresets = useSelector(selectTakeoffPreset);
 
@@ -86,6 +82,10 @@ const ScaleModal = ({
 
   const [optionError, setOptionError] = useState(false);
   const [secValError, setSecValError] = useState(false);
+
+  const { handleScaleData, scaleData } = useContext(
+    ScaleContext
+  ) as ScaleDataContextProps;
 
   const onChange = (e: RadioChangeEvent) => {
     setPreset('');
@@ -170,7 +170,7 @@ const ScaleModal = ({
       }
     }
 
-    setScaleData((prevData: any) => ({ ...prevData, ...newData }));
+    handleScaleData({ ...scaleData, newData });
   };
 
   return (
