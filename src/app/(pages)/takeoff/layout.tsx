@@ -1,9 +1,10 @@
 'use client';
 import { useState } from 'react';
-import { DrawHistoryContext, UploadFileContext } from './context';
+import { DrawHistoryContext, ScaleContext, UploadFileContext } from './context';
 import { UploadFileData } from './context/UploadFileContext';
 import { DrawHistoryContextInterface } from './context/DrawHistoryContext';
 import { DrawInterface } from './types';
+import { ScaleDataContextInterface } from './context/ScaleContext';
 
 const TakeOffLayout: React.FC<any> = ({
   children,
@@ -14,7 +15,15 @@ const TakeOffLayout: React.FC<any> = ({
   const [drawHistory, setDrawHistory] =
     useState<DrawHistoryContextInterface | null>(null);
 
+  const [scaleData, setScaleData] = useState<ScaleDataContextInterface | null>(
+    null
+  );
+
   const handleSrc = (value: UploadFileData[]) => setUploadFileData(value);
+
+  const handleScaleData = (value: ScaleDataContextInterface) => {
+    setScaleData(value);
+  };
 
   const handleDrawHistory = (key: string, value: DrawInterface) => {
     setDrawHistory((prev) => ({ ...prev, [key]: value }));
@@ -23,7 +32,9 @@ const TakeOffLayout: React.FC<any> = ({
   return (
     <DrawHistoryContext.Provider value={{ drawHistory, handleDrawHistory }}>
       <UploadFileContext.Provider value={{ uploadFileData, handleSrc }}>
-        <div>{children}</div>
+        <ScaleContext.Provider value={{ scaleData, handleScaleData }}>
+          <div>{children}</div>
+        </ScaleContext.Provider>
       </UploadFileContext.Provider>
     </DrawHistoryContext.Provider>
   );

@@ -4,7 +4,7 @@ import ModalComponent from '@/app/component/modal';
 import ScaleModal from '../components/scale';
 import ModalsWrapper from './components/ModalWrapper';
 import { ColorPicker, InputNumber, Select } from 'antd';
-import { UploadFileContext } from '../context';
+import { ScaleContext, UploadFileContext } from '../context';
 import { UploadFileContextProps } from '../context/UploadFileContext';
 import {
   Measurements,
@@ -13,6 +13,7 @@ import {
   defaultMeasurements,
 } from '../types';
 import { ScaleNavigation, Draw } from './components'; // DrawTable
+import { ScaleDataContextProps } from '../context/ScaleContext';
 
 // const selectedScale = {
 //   "1" : {scale:  `3/8"=1'-0"`, precision: `1/34` }
@@ -38,7 +39,9 @@ const Scale = () => {
   const [depth, setDepth] = useState<number>(0);
   const [measurements, setMeasurements] =
     useState<Measurements>(defaultMeasurements);
-  const [scaleData, setScaleData] = useState<PageScale | undefined>();
+  // const [scaleData, setScaleData] = useState<PageScale | undefined>();
+
+  const { scaleData } = useContext(ScaleContext) as ScaleDataContextProps;
 
   const { uploadFileData } = useContext(
     UploadFileContext
@@ -134,7 +137,6 @@ const Scale = () => {
           <ScaleModal
             numOfPages={uploadFileData.length}
             setModalOpen={setShowModal}
-            setScaleData={setScaleData}
           />
         </ModalComponent>
       )}
