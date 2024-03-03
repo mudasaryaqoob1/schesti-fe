@@ -25,6 +25,7 @@ import {
   ScaleInterface,
   defaultMeasurements,
 } from '../../types';
+import { ScaleData } from '../page';
 
 const defaultCurrentLineState = { startingPoint: null, endingPoint: null };
 const defaultPolyLineState: LineInterface = {
@@ -35,7 +36,8 @@ const defaultPolyLineState: LineInterface = {
 };
 
 interface Props {
-  selectedScale: ScaleInterface;
+  selectedTool: ScaleInterface;
+  scale: ScaleData | undefined;
   depth: number;
   color: string;
   border: number;
@@ -43,10 +45,12 @@ interface Props {
   handleChangeMeasurements: (data: Measurements) => void;
   uploadFileData: UploadFileData;
   pageNumber: number;
+  handleScaleModal: (open: boolean) => void;
 }
 
 const Draw: React.FC<Props> = ({
-  selectedScale,
+  selectedTool,
+  scale,
   depth,
   border,
   unit,
@@ -54,8 +58,9 @@ const Draw: React.FC<Props> = ({
   handleChangeMeasurements,
   uploadFileData,
   pageNumber,
+  handleScaleModal,
 }) => {
-  const { selected, subSelected = null } = selectedScale;
+  const { selected, subSelected = null } = selectedTool;
   const {
     calcLineDistance,
     calculateMidpoint,
@@ -139,6 +144,11 @@ const Draw: React.FC<Props> = ({
       handleDrawHistory(pageNumber.toString(), draw);
   }, [draw, pageNumber]);
 
+  if (!scale) {
+    handleScaleModal(true);
+    return;
+  }
+
   const handleMouseDown = (e: KonvaEventObject<MouseEvent>) => {
     if (endLiveEditing) return;
     setSelectedShape('');
@@ -191,11 +201,14 @@ const Draw: React.FC<Props> = ({
           if (
             polyLine?.points.length &&
             currentLine.endingPoint &&
-            +calcLineDistance([
-              ...polyLine.points.slice(0, 2),
-              currentLine.endingPoint?.x,
-              currentLine.endingPoint?.y,
-            ]) <=
+            +calcLineDistance(
+              [
+                ...polyLine.points.slice(0, 2),
+                currentLine.endingPoint?.x,
+                currentLine.endingPoint?.y,
+              ],
+              scale
+            ) <=
               6 / 72
           ) {
             prev.points.push(...polyLine.points.slice(0, 2));
@@ -204,7 +217,10 @@ const Draw: React.FC<Props> = ({
 
             setDraw((prevDraw) => {
               const polygonCoordinates = prev.points;
-              const parameter = calculatePolygonPerimeter(polygonCoordinates);
+              const parameter = calculatePolygonPerimeter(
+                polygonCoordinates,
+                scale.precision
+              );
 
               if (selected === 'area') {
                 const area = calculatePolygonArea(polygonCoordinates);
@@ -331,6 +347,7 @@ const Draw: React.FC<Props> = ({
           position?.x || 0,
           position?.y || 0,
         ],
+        scale,
         true
       ) as string;
       handleChangeMeasurements({
@@ -338,11 +355,14 @@ const Draw: React.FC<Props> = ({
         ...(selected === 'length' && { parameter }),
         ...(completingLine.endingPoint
           ? {
-              parameter: calculatePolygonPerimeter([
-                ...polyLine.points,
-                completingLine.endingPoint.x,
-                completingLine.endingPoint.y,
-              ]),
+              parameter: calculatePolygonPerimeter(
+                [
+                  ...polyLine.points,
+                  completingLine.endingPoint.x,
+                  completingLine.endingPoint.y,
+                ],
+                scale.precision
+              ),
               area: calculatePolygonArea([
                 ...polyLine.points,
                 completingLine.endingPoint.x,
@@ -442,7 +462,7 @@ const Draw: React.FC<Props> = ({
           {/* Drawing Line */}
           {draw.line.map(({ textUnit, ...rest }, index) => {
             const id = `line-${index}`;
-            const lineDistance = calcLineDistance(rest.points, true);
+            const lineDistance = calcLineDistance(rest.points, scale, true);
             const lineMidPoint = calculateMidpoint(rest.points);
 
             return (

@@ -7,10 +7,10 @@ import { DynamicScale, ScaleInterface } from '../../types';
 
 interface Props {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setScale: (payload: ScaleInterface) => void;
+  setTool: (payload: ScaleInterface) => void;
 }
 
-const Dynamic: React.FC<Props> = ({ setModalOpen, setScale }) => {
+const Dynamic: React.FC<Props> = ({ setModalOpen, setTool }) => {
   const [selected, setSelected] = useState<DynamicScale>('create');
 
   return (
@@ -95,7 +95,7 @@ const Dynamic: React.FC<Props> = ({ setModalOpen, setScale }) => {
                 text="Apply"
                 className="!h-9 !text-abyssalBlack flex items-center justify-center"
                 onClick={() =>
-                  setScale({ selected: 'dynamic', subSelected: selected })
+                  setTool({ selected: 'dynamic', subSelected: selected })
                 }
               />
               <WhiteButton

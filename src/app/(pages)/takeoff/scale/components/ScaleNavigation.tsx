@@ -5,16 +5,12 @@ import { bg_style } from '@/globals/tailwindvariables';
 import { SCALE_NAVIGATION, ScaleInterface } from '../../types';
 
 interface Props {
-  scale: ScaleInterface;
-  setScale: (data: ScaleInterface) => void;
+  tool: ScaleInterface;
+  setTool: (data: ScaleInterface) => void;
   setShowModal: (data: boolean) => void;
 }
 
-const ScaleNavigation: React.FC<Props> = ({
-  scale,
-  setScale,
-  setShowModal,
-}) => {
+const ScaleNavigation: React.FC<Props> = ({ tool, setTool, setShowModal }) => {
   return (
     <div
       className={twMerge(
@@ -29,10 +25,10 @@ const ScaleNavigation: React.FC<Props> = ({
               className="flex flex-col items-center cursor-pointer"
               onClick={() => {
                 setShowModal(true);
-                setScale({ selected: label });
+                setTool({ selected: label });
               }}
             >
-              {scale.selected === label ? (
+              {tool.selected === label ? (
                 <NextImage
                   src={selectedSrc}
                   alt={alt}
@@ -45,7 +41,7 @@ const ScaleNavigation: React.FC<Props> = ({
               <span
                 className={twMerge(
                   `text-xs capitalize ${
-                    scale.selected === label ? 'text-[#6F6AF8]' : ''
+                    tool.selected === label ? 'text-[#6F6AF8]' : ''
                   }`
                 )}
               >

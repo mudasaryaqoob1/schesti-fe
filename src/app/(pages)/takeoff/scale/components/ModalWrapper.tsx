@@ -7,19 +7,19 @@ import Dynamic from './DynamicModal';
 import { Measurements, ScaleInterface } from '../../types';
 
 interface Props {
-  scale: ScaleInterface;
+  tool: ScaleInterface;
+  setTool: (payload: ScaleInterface) => void;
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setScale: (payload: ScaleInterface) => void;
   measurements: Measurements;
 }
 
 const ModalsWrapper: React.FC<Props> = ({
-  scale,
-  setScale,
+  tool,
+  setTool,
   setModalOpen,
   measurements,
 }) => {
-  const { selected } = scale;
+  const { selected } = tool;
   return (
     <div>
       <div>
@@ -44,7 +44,7 @@ const ModalsWrapper: React.FC<Props> = ({
       </div>
       <div>
         {selected === 'dynamic' && (
-          <Dynamic setModalOpen={setModalOpen} setScale={setScale} />
+          <Dynamic setModalOpen={setModalOpen} setTool={setTool} />
         )}
       </div>
     </div>

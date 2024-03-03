@@ -20,8 +20,17 @@ import { ScaleNavigation, Draw, DrawTable } from './components';
 //   "3" : {scale:  `3/8"=1'-0"`, precision: `1/34` }
 // }
 
+export interface ScaleData {
+  scale: string;
+  precision: string;
+}
+
+export interface PageScale {
+  [pageNumber: string]: ScaleData;
+}
+
 const Scale = () => {
-  const [scale, setScale] = useState<ScaleInterface>({ selected: 'scale' });
+  const [tool, setTool] = useState<ScaleInterface>({ selected: 'scale' });
   const [showModal, setShowModal] = useState(false);
   const [border, setBorder] = useState<number>(4);
   const [color, setColor] = useState<string>('#1677ff');
@@ -29,7 +38,7 @@ const Scale = () => {
   const [depth, setDepth] = useState<number>(0);
   const [measurements, setMeasurements] =
     useState<Measurements>(defaultMeasurements);
-  const [scaleData, setScaleData] = useState({});
+  const [scaleData, setScaleData] = useState<PageScale | undefined>();
 
   const { uploadFileData } = useContext(
     UploadFileContext
@@ -40,8 +49,8 @@ const Scale = () => {
   return (
     <section className="mt-[96px] md:px-16 px-8 pb-4">
       <ScaleNavigation
-        scale={scale}
-        setScale={setScale}
+        tool={tool}
+        setTool={setTool}
         setShowModal={setShowModal}
       />
       <div className="bg-[#F2F2F2] h-[52px] flex flex-row items-center px-4 gap-6 rounded-lg">
@@ -79,7 +88,7 @@ const Scale = () => {
             onChange={(color) => setColor(color.toHexString())}
           />
         </div>
-        {scale.selected === 'volume' && (
+        {tool.selected === 'volume' && (
           <InputNumber
             type="number"
             min={1}
@@ -92,8 +101,8 @@ const Scale = () => {
       <div className="py-6 h-[709px] relative">
         <div className={`absolute ${showModal ? 'block' : 'hidden'}`}>
           <ModalsWrapper
-            scale={scale}
-            setScale={setScale}
+            tool={tool}
+            setTool={setTool}
             setModalOpen={setShowModal}
             measurements={measurements}
           />
@@ -102,13 +111,15 @@ const Scale = () => {
           {uploadFileData.map((file, index) => (
             <Draw
               key={`draw-${index}`}
-              selectedScale={scale}
+              selectedTool={tool}
+              scale={scaleData?.[`${index + 1}`]}
               depth={depth}
               color={color}
               border={border}
               unit={unit * 1.5}
               uploadFileData={file}
               pageNumber={index + 1}
+              handleScaleModal={(open) => setShowModal(open)}
               handleChangeMeasurements={(measurements) =>
                 setMeasurements(measurements)
               }
@@ -118,7 +129,7 @@ const Scale = () => {
         <DrawTable />
       </div>
 
-      {scale.selected === 'scale' && (
+      {tool.selected === 'scale' && (
         <ModalComponent open={showModal} setOpen={setShowModal}>
           <ScaleModal
             numOfPages={uploadFileData.length}

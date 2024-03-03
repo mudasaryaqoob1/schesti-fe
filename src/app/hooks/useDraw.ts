@@ -1,3 +1,4 @@
+import { ScaleData } from '../(pages)/takeoff/scale/page';
 import { DrawInterface } from '../(pages)/takeoff/types';
 
 const measurementUnits = [
@@ -108,7 +109,10 @@ const useDraw = () => {
     return center;
   };
 
-  const calculatePolygonPerimeter = (coordinates: number[]): string => {
+  const calculatePolygonPerimeter = (
+    coordinates: number[],
+    precision: string
+  ): string => {
     if (coordinates.length < 6 || coordinates.length % 2 !== 0) {
       throw new Error('Invalid number of coordinates for a polygon');
     }
@@ -132,18 +136,25 @@ const useDraw = () => {
       (lastVertexX - firstVertexX) ** 2 + (lastVertexY - firstVertexY) ** 2
     );
 
-    return convertToFeetAndInches(convertPxIntoInches(perimeter));
+    const inches = convertPxIntoInches(perimeter);
+    return convertToFeetAndInches(inches, precision);
   };
 
-  const calcLineDistance = (coordinates: number[], format = false) => {
+  const calcLineDistance = (
+    coordinates: number[],
+    { scale, precision }: ScaleData,
+    format = false
+  ) => {
     const [x1, y1, x2, y2] = coordinates;
 
     const distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 
-    if (format)
-      return convertToFeetAndInches(
-        addScalerToValue(convertPxIntoInches(distance))
-      );
+    if (format) {
+      const inches = convertPxIntoInches(distance);
+      const scaledInches = getScaleMultiplier(scale) * inches;
+      return convertToFeetAndInches(scaledInches, precision);
+    }
+
     return convertPxIntoInches(distance);
   };
 
@@ -226,7 +237,9 @@ const useDraw = () => {
     if (key === 'line')
       return {
         projectName: 'Length Measurement',
-        comment: points?.length ? calcLineDistance(points, true) : 0,
+        comment: points?.length
+          ? calcLineDistance(points, { scale: '', precision: '' }, true)
+          : 0,
       };
     else if (key === 'area')
       return {
@@ -243,7 +256,7 @@ const useDraw = () => {
     else return { projectName: 'Dynamic Measurement', comment: '' };
   };
 
-  const convertToFeetAndInches = (inches: number, precision = '0.01') => {
+  const convertToFeetAndInches = (inches: number, precision: string) => {
     const convertedPrecision = improperPrecisionConverter[precision];
     const feet = Math.floor(inches / 12);
     const wholeInches = Math.floor(inches % 12);
@@ -326,11 +339,12 @@ const useDraw = () => {
   //"11111cm=22222in"
   //"21/11cm=10/11in"
   // scale = `1:20`
-  const addScalerToValue = (value: number, scale = '1cm=10in'): number => {
+  // scale = '1cm=10in'
+  const getScaleMultiplier = (scale: string): number => {
     // HANDLING PRESET SCALE BELOW
     if (scale.includes(':')) {
       const multiplier = +scale.split(':')[1];
-      return value * multiplier;
+      return multiplier;
     } else if (
       scale.includes('=') &&
       !measurementUnits.some((unit) => scale.includes(unit))
@@ -342,15 +356,27 @@ const useDraw = () => {
           splittedScale[0]
         ).split('/');
 
-        return (12 * value * +denominator) / +numerator;
+        return (12 * +denominator) / +numerator;
       } else {
         const multiplier = +splittedScale[1].substring(
           0,
           splittedScale[1].length - 1
         );
-        return value * multiplier * 12;
+        return multiplier * 12;
       }
     } else {
+      // const getNumeratorAndDenominator = (value: string ) => {
+      //   let NM = ""
+      //   let DM = ""
+      //   if (!value) return [1, 1]
+      //   else {
+      //     if (value.split("-").length > 1) {
+
+      //     }
+
+      //   }
+      // }
+
       // HANDLING CUSTOM SCALE BELOW
 
       // Left Hand Side, Right Hand Side
@@ -376,14 +402,14 @@ const useDraw = () => {
         ? RHSValues.split('/')
         : [RHSValues, 1];
 
-      const scaledValue =
+      const multiplier =
         (+RN *
           +LD *
-          (value * unitConversion[`in-${LUnit}`]) *
+          unitConversion[`in-${LUnit}`] *
           unitConversion[`${RUnit}-in`]) /
         (+LN * +RD);
 
-      return scaledValue;
+      return multiplier;
     }
   };
 
