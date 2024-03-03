@@ -29,24 +29,24 @@ const secondaryMeters = [
   'km',
 ];
 
-const byDefaultPerest = [
-  { label: `1'=1'`, value: `1'=1'` },
-  { label: `1/32'=1'-0'`, value: `1/32'=1'-0'` },
-  { label: `1/16'=1'-0'`, value: `1/16'=1'-0'` },
-  { label: `3/32'=1'0'`, value: `3/32'=1'0'` },
-  { label: `1/8=1'-0'`, value: `1/8=1'-0'` },
-  { label: `3/16'=1'-0'`, value: `3/16'=1'-0'` },
-  { label: `1/4'=1'-0'`, value: `1/4'=1'-0'` },
-  { label: `1/2'=1'-0'`, value: `1/2'=1'-0'` },
-  { label: `3/4'=1'-0'`, value: `3/4'=1'-0'` },
-  { label: `1'=1'-0'`, value: `1'=1'-0'` },
-  { label: `11/2'=1'-0'`, value: `11/2'=1'-0'` },
-  { label: `1'=80'`, value: `1'=80'` },
-  { label: `1'=90'`, value: `1'=90'` },
-  { label: `1'=100'`, value: `1'=100'` },
-  { label: `1'=200'`, value: `1'=200'` },
-  { label: `1'=300'`, value: `1'=300'` },
-  { label: `1'=400'`, value: `1'=400'` },
+const byDefaultPrest = [
+  { label: `1"=1"`, value: `1"=1` },
+  { label: `1/32"=1'-0"`, value: `1/32"=1'-0"` },
+  { label: `1/16"=1'-0"`, value: `1/16"=1'-0"` },
+  { label: `3/32"=1'0"`, value: `3/32"=1'0"` },
+  { label: `1/8"=1'-0"`, value: `1/8"=1'-0"` },
+  { label: `3/16"=1'-0"`, value: `3/16"=1'-0"` },
+  { label: `1/4"=1'-0"`, value: `1/4"=1'-0"` },
+  { label: `1/2"=1'-0"`, value: `1/2"=1'-0"` },
+  { label: `3/4"=1'-0"`, value: `3/4"=1'-0"` },
+  { label: `1"=1'-0"`, value: `1"=1'-0"` },
+  { label: `11/2"=1'-0"`, value: `11/2"=1'-0"` },
+  { label: `1"=80'`, value: `1"=80'` },
+  { label: `1"=90'`, value: `1"=90'` },
+  { label: `1"=100'`, value: `1"=100'` },
+  { label: `1"=200'`, value: `1"=200'` },
+  { label: `1"=300'`, value: `1"=300'` },
+  { label: `1"=400'`, value: `1"=400'` },
   { label: `1:1`, value: `1:1` },
   { label: `1:10`, value: `1:10` },
   { label: `1:20`, value: `1:20` },
@@ -115,7 +115,7 @@ const ScaleModal = ({
 
   useEffect(() => {
     if (allPresets) {
-      setMergedPresets([...allPresets, ...byDefaultPerest]);
+      setMergedPresets([...allPresets, ...byDefaultPrest]);
     }
   }, [allPresets]);
 
@@ -171,6 +171,7 @@ const ScaleModal = ({
     }
 
     setScaleData((prevData: any) => ({ ...prevData, ...newData }));
+    setModalOpen(false);
   };
 
   return (
@@ -359,14 +360,7 @@ const ScaleModal = ({
           />
         </div>
         <div>
-          <Button
-            text="Calibrate"
-            onClick={
-              () => handleCalibrate()
-
-              // scaleData({ 1: { scale: preset, precision: precision } })
-            }
-          />
+          <Button text="Calibrate" onClick={handleCalibrate} />
         </div>
       </div>
     </div>

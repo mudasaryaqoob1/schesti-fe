@@ -53,7 +53,10 @@ const useDraw = () => {
     } else return value;
   };
 
-  const calculatePolygonArea = (coordinates: number[]): number => {
+  const calculatePolygonArea = (
+    coordinates: number[],
+    { scale }: ScaleData
+  ): number => {
     if (coordinates.length < 6 || coordinates.length % 2 !== 0) {
       throw new Error('Invalid number of coordinates for a polygon');
     }
@@ -73,14 +76,20 @@ const useDraw = () => {
 
     area = Math.abs(area) / 2;
 
-    return +(area / (pixelToInchScale * pixelToInchScale)).toFixed(4);
+    const scaleMultiplier = getScaleMultiplier(scale);
+
+    return +(
+      (area / (pixelToInchScale * pixelToInchScale)) *
+      scaleMultiplier
+    ).toFixed(4);
   };
 
   const calculatePolygonVolume = (
     coordinates: number[],
-    depth: number
+    depth: number,
+    scale: ScaleData
   ): number => {
-    const polygonArea = calculatePolygonArea(coordinates);
+    const polygonArea = calculatePolygonArea(coordinates, scale);
     const depthInInches = convertPxIntoInches(depth);
     return +(polygonArea * depthInInches).toFixed(4);
   };
@@ -151,6 +160,8 @@ const useDraw = () => {
 
     if (format) {
       const inches = convertPxIntoInches(distance);
+      console.log('inches', inches);
+      console.log('multiplier', getScaleMultiplier(scale));
       const scaledInches = getScaleMultiplier(scale) * inches;
       return convertToFeetAndInches(scaledInches, precision);
     }
@@ -238,18 +249,25 @@ const useDraw = () => {
       return {
         projectName: 'Length Measurement',
         comment: points?.length
-          ? calcLineDistance(points, { scale: '', precision: '' }, true)
+          ? calcLineDistance(points, { scale: '0', precision: '0' }, true)
           : 0,
       };
     else if (key === 'area')
       return {
         projectName: 'Area Measurement',
-        comment: points?.length ? calculatePolygonArea(points) : 0,
+        comment: points?.length
+          ? calculatePolygonArea(points, { scale: '0', precision: '0' })
+          : 0,
       };
     else if (key === 'volume')
       return {
         projectName: 'Volume Measurement',
-        comment: points?.length ? calculatePolygonVolume(points, depth) : 0,
+        comment: points?.length
+          ? calculatePolygonVolume(points, depth, {
+              scale: '0',
+              precision: '0',
+            })
+          : 0,
       };
     else if (key === 'count')
       return { projectName: 'Count Measurement', comment: '' };
@@ -266,8 +284,12 @@ const useDraw = () => {
       2
     );
 
-    if (convertedPrecision === 1)
-      return getFeetAndInchesFormat(feet, wholeInches);
+    // Special use case when precision === 1
+    if (convertedPrecision === 1) {
+      if (remainingInchesDecimal > 0.5)
+        return getFeetAndInchesFormat(feet, wholeInches + 1);
+      else return getFeetAndInchesFormat(feet, wholeInches);
+    }
 
     const decimalCount = convertedPrecision.toString().split('.')[1].length;
 
@@ -327,8 +349,11 @@ const useDraw = () => {
     inches: number,
     fractionalString?: string
   ) => {
-    const inchesString = inches > 0 ? `${inches}` : '0';
-
+    let inchesString = inches > 0 ? `${inches}` : '0';
+    if (+inchesString === 12) {
+      inchesString = '0';
+      feet = feet + 1;
+    }
     if (fractionalString) {
       return `${feet}'- ${inchesString} ${fractionalString}"`;
     } else return `${feet}'- ${inchesString}"`;
@@ -358,6 +383,8 @@ const useDraw = () => {
 
         return (12 * +denominator) / +numerator;
       } else {
+        console.log('----');
+        if (splittedScale[1].includes(`"`)) return 1;
         const multiplier = +splittedScale[1].substring(
           0,
           splittedScale[1].length - 1
@@ -365,18 +392,6 @@ const useDraw = () => {
         return multiplier * 12;
       }
     } else {
-      // const getNumeratorAndDenominator = (value: string ) => {
-      //   let NM = ""
-      //   let DM = ""
-      //   if (!value) return [1, 1]
-      //   else {
-      //     if (value.split("-").length > 1) {
-
-      //     }
-
-      //   }
-      // }
-
       // HANDLING CUSTOM SCALE BELOW
 
       // Left Hand Side, Right Hand Side

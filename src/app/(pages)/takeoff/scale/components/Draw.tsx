@@ -223,7 +223,7 @@ const Draw: React.FC<Props> = ({
               );
 
               if (selected === 'area') {
-                const area = calculatePolygonArea(polygonCoordinates);
+                const area = calculatePolygonArea(polygonCoordinates, scale);
 
                 handleChangeMeasurements({
                   area: area,
@@ -251,7 +251,8 @@ const Draw: React.FC<Props> = ({
               } else {
                 const volume = calculatePolygonVolume(
                   polygonCoordinates,
-                  depth
+                  depth,
+                  scale
                 );
 
                 handleChangeMeasurements({
@@ -363,18 +364,22 @@ const Draw: React.FC<Props> = ({
                 ],
                 scale.precision
               ),
-              area: calculatePolygonArea([
-                ...polyLine.points,
-                completingLine.endingPoint.x,
-                completingLine.endingPoint.y,
-              ]),
+              area: calculatePolygonArea(
+                [
+                  ...polyLine.points,
+                  completingLine.endingPoint.x,
+                  completingLine.endingPoint.y,
+                ],
+                scale
+              ),
               volume: calculatePolygonVolume(
                 [
                   ...polyLine.points,
                   completingLine.endingPoint.x,
                   completingLine.endingPoint.y,
                 ],
-                depth
+                depth,
+                scale
               ),
             }
           : 0),
@@ -521,7 +526,7 @@ const Draw: React.FC<Props> = ({
           {draw.area.map(({ textUnit, ...rest }, index) => {
             const polygonCoordinates = rest.points;
             const center = calculatePolygonCenter(polygonCoordinates);
-            const area = calculatePolygonArea(polygonCoordinates);
+            const area = calculatePolygonArea(polygonCoordinates, scale);
 
             const text = `${area?.toFixed(4) || ''}sq`;
             const id = `area-${index}`;
@@ -552,7 +557,6 @@ const Draw: React.FC<Props> = ({
                   text={text}
                   offsetX={30}
                   fill="red"
-                  fontStyle="bold"
                 />
               </Group>
             );
@@ -566,7 +570,8 @@ const Draw: React.FC<Props> = ({
             const center = calculatePolygonCenter(polygonCoordinates);
             const volume = calculatePolygonVolume(
               polygonCoordinates,
-              depth || 0
+              depth || 0,
+              scale
             );
             const text = `${volume?.toFixed(2) || ''} cubic`;
             const id = `volume-${index}`;
@@ -597,7 +602,6 @@ const Draw: React.FC<Props> = ({
                   text={text}
                   offsetX={30}
                   fill="red"
-                  fontStyle="bold"
                 />
               </Group>
             );

@@ -12,7 +12,7 @@ import {
   Units,
   defaultMeasurements,
 } from '../types';
-import { ScaleNavigation, Draw, DrawTable } from './components';
+import { ScaleNavigation, Draw } from './components'; // DrawTable
 
 // const selectedScale = {
 //   "1" : {scale:  `3/8"=1'-0"`, precision: `1/34` }
@@ -44,7 +44,7 @@ const Scale = () => {
     UploadFileContext
   ) as UploadFileContextProps;
 
-  console.warn('scaleData: ', scaleData);
+  console.log('scaleData: ', scaleData);
 
   return (
     <section className="mt-[96px] md:px-16 px-8 pb-4">
@@ -126,7 +126,7 @@ const Scale = () => {
             />
           ))}
         </div>
-        <DrawTable />
+        {/* <DrawTable /> */}
       </div>
 
       {tool.selected === 'scale' && (
