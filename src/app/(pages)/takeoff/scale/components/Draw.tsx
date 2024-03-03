@@ -16,6 +16,7 @@ import moment from 'moment';
 import { DrawHistoryContext } from '../../context';
 import { DrawHistoryContextProps } from '../../context/DrawHistoryContext';
 import {
+  // CircleInterface,
   CountInterface,
   DrawInterface,
   LineInterface,
@@ -37,7 +38,7 @@ const defaultPolyLineState: LineInterface = {
 
 interface Props {
   selectedTool: ScaleInterface;
-  scale: ScaleData | undefined;
+  scale: ScaleData;
   depth: number;
   color: string;
   border: number;
@@ -58,7 +59,6 @@ const Draw: React.FC<Props> = ({
   handleChangeMeasurements,
   uploadFileData,
   pageNumber,
-  handleScaleModal,
 }) => {
   const { selected, subSelected = null } = selectedTool;
   const {
@@ -91,8 +91,8 @@ const Draw: React.FC<Props> = ({
     defaultCurrentLineState
   );
   const [endLiveEditing, setEndLiveEditing] = useState<boolean>(false);
-
   const [selectedShape, setSelectedShape] = useState<string>('');
+  // const [circle, setCircle] = useState<CircleInterface[]>([]);
 
   const myImage = new Image();
   myImage.src =
@@ -135,6 +135,8 @@ const Draw: React.FC<Props> = ({
     setEndLiveEditing(false);
   }, [selected]);
 
+  console.log('subSelected', subSelected);
+
   useEffect(() => {
     if (selected !== 'count') handleChangeMeasurements(defaultMeasurements);
   }, [selected]);
@@ -144,11 +146,6 @@ const Draw: React.FC<Props> = ({
       handleDrawHistory(pageNumber.toString(), draw);
   }, [draw, pageNumber]);
 
-  if (!scale) {
-    handleScaleModal(true);
-    return;
-  }
-
   const handleMouseDown = (e: KonvaEventObject<MouseEvent>) => {
     if (endLiveEditing) return;
     setSelectedShape('');
@@ -156,7 +153,13 @@ const Draw: React.FC<Props> = ({
     const stage = e.target.getStage();
     const position = stage?.getPointerPosition();
 
-    if (selected !== 'count') {
+    if (subSelected === 'fill') {
+      console.log('123');
+
+      return;
+    }
+
+    if (selected !== 'count' && selected !== 'scale') {
       setCurrentLine((prev) => ({
         ...prev,
         startingPoint: { x: position?.x || 0, y: position?.y || 0 },
@@ -303,7 +306,7 @@ const Draw: React.FC<Props> = ({
       });
     }
 
-    if (subSelected === 'clear') {
+    if (subSelected === 'create') {
       setDynamicPolyLine((prev) => {
         if (!prev.points.length) {
           return {
@@ -394,6 +397,10 @@ const Draw: React.FC<Props> = ({
     }
   };
 
+  const handleMouseOver = (e: KonvaEventObject<MouseEvent>) => {
+    console.log(e);
+  };
+
   return (
     <div
       className="outline-none"
@@ -406,7 +413,7 @@ const Draw: React.FC<Props> = ({
           setDynamicPolyLine(defaultPolyLineState);
           handleChangeMeasurements(defaultMeasurements);
         }
-        if (e.key === 'Enter' && subSelected === 'clear') {
+        if (e.key === 'Enter' && subSelected === 'create') {
           setCurrentLine(defaultCurrentLineState);
 
           setDraw((prevDraw) => ({
@@ -458,7 +465,11 @@ const Draw: React.FC<Props> = ({
         height={uploadFileData.height || 600}
         className="flex justify-center cursor-pointer"
       >
-        <Layer onMouseDown={handleMouseDown} onMouseMove={handleMouseMove}>
+        <Layer
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseOver={handleMouseOver}
+        >
           <KonvaImage
             image={myImage}
             width={uploadFileData.width || 600}

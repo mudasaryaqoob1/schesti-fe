@@ -41,7 +41,7 @@ export const improperPrecisionConverter: { [key: string]: number } = {
   '0.01': 0.01,
   '0.001': 0.001,
   '0.0001': 0.0001,
-  '0.000001': 0.000001,
+  '0.00001': 0.00001,
 };
 
 const useDraw = () => {
@@ -243,21 +243,18 @@ const useDraw = () => {
   const getProjectAndCommentNameForTable = (
     key: keyof DrawInterface,
     points: number[],
-    depth = 0
+    depth = 0,
+    scale: ScaleData
   ): { projectName: string; comment: string | number } => {
     if (key === 'line')
       return {
         projectName: 'Length Measurement',
-        comment: points?.length
-          ? calcLineDistance(points, { scale: '0', precision: '0' }, true)
-          : 0,
+        comment: points?.length ? calcLineDistance(points, scale, true) : 0,
       };
     else if (key === 'area')
       return {
         projectName: 'Area Measurement',
-        comment: points?.length
-          ? calculatePolygonArea(points, { scale: '0', precision: '0' })
-          : 0,
+        comment: points?.length ? calculatePolygonArea(points, scale) : 0,
       };
     else if (key === 'volume')
       return {
@@ -355,7 +352,8 @@ const useDraw = () => {
       feet = feet + 1;
     }
     if (fractionalString) {
-      return `${feet}'- ${inchesString} ${fractionalString}"`;
+      if (inchesString === '0') return `${feet}'- ${fractionalString}"`;
+      else return `${feet}'- ${inchesString} ${fractionalString}"`;
     } else return `${feet}'- ${inchesString}"`;
   };
   // scale = `3/8'=1'-0"`
@@ -378,7 +376,7 @@ const useDraw = () => {
 
       if (scale.includes(`1'-0"`)) {
         const [numerator, denominator] = getInchesInFractionFromMixedFraction(
-          splittedScale[0]
+          splittedScale[0].substring(0, splittedScale[0].length - 1)
         ).split('/');
 
         return (12 * +denominator) / +numerator;
@@ -392,6 +390,7 @@ const useDraw = () => {
         return multiplier * 12;
       }
     } else {
+      console.log('CUSTOM HANDLING');
       // HANDLING CUSTOM SCALE BELOW
 
       // Left Hand Side, Right Hand Side
@@ -430,7 +429,7 @@ const useDraw = () => {
 
   const getInchesInFractionFromMixedFraction = (value = `1 1/2"`) => {
     const isFraction = value.split('/').length > 1;
-    if (isFraction) return `${value}/1`;
+    if (!isFraction) return `${value}/1`;
 
     const isMixedFraction = value.split(' ');
     if (isMixedFraction.length > 1) {

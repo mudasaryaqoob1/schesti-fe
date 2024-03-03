@@ -32,7 +32,7 @@ const secondaryMeters = [
 ];
 
 const byDefaultPrest = [
-  { label: `1"=1"`, value: `1"=1` },
+  { label: `1"=1"`, value: `1"=1"` },
   { label: `1/32"=1'-0"`, value: `1/32"=1'-0"` },
   { label: `1/16"=1'-0"`, value: `1/16"=1'-0"` },
   { label: `3/32"=1'0"`, value: `3/32"=1'0"` },
@@ -99,8 +99,8 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
   const handleAddPreset = async () => {
     takeoffPresetService
       .httpAddNewPreset({
-        label: `${firstValue}${meter}-${secondValue}${secMeter}`,
-        value: `${firstValue}${meter}-${secondValue}${secMeter}`,
+        label: `${firstValue}${meter}=${secondValue}${secMeter}`,
+        value: `${firstValue}${meter}=${secondValue}${secMeter}`,
       })
       .then((res: any) => {
         if (res.statusCode == 201) {
@@ -144,12 +144,12 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
     if (value === 'preset') {
       scale = preset;
     } else if (value === 'custom') {
-      scale = `${firstValue}${meter}-${secondValue}${secMeter}`;
+      scale = `${firstValue}${meter}=${secondValue}${secMeter}`;
     }
 
     if (optionsValue !== 'all' && optionsValue !== 'page') {
-      if (optionsValue?.includes('-')) {
-        const range = optionsValue?.split('-').map(Number);
+      if (optionsValue?.includes('=')) {
+        const range = optionsValue?.split('=').map(Number);
         const [start, end] = range;
         for (let i = start; i <= end; i++) {
           newData[i] = { scale: scale, precision: precision };
@@ -170,7 +170,7 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
       }
     }
 
-    handleScaleData({ ...scaleData, newData });
+    handleScaleData({ ...scaleData, ...newData });
     setModalOpen(false);
   };
 

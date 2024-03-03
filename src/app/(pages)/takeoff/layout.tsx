@@ -33,7 +33,7 @@ const TakeOffLayout: React.FC<any> = ({
     <DrawHistoryContext.Provider value={{ drawHistory, handleDrawHistory }}>
       <UploadFileContext.Provider value={{ uploadFileData, handleSrc }}>
         <ScaleContext.Provider value={{ scaleData, handleScaleData }}>
-          <div>{children}</div>
+          {children}
         </ScaleContext.Provider>
       </UploadFileContext.Provider>
     </DrawHistoryContext.Provider>

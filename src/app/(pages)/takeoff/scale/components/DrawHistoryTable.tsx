@@ -1,10 +1,11 @@
 import React, { useContext, useMemo } from 'react';
 import { ConfigProvider, Table } from 'antd';
-import { DrawHistoryContext } from '../../context';
+import { DrawHistoryContext, ScaleContext } from '../../context';
 import { DrawHistoryContextProps } from '../../context/DrawHistoryContext';
 import { useDraw } from '@/app/hooks';
 import moment from 'moment';
 import { DrawInterface } from '../../types';
+import { ScaleDataContextProps } from '../../context/ScaleContext';
 
 interface DrawTableHistory {
   projectName: string;
@@ -23,13 +24,14 @@ interface Props {
 }
 
 const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
+  const { scaleData } = useContext(ScaleContext) as ScaleDataContextProps;
   const { getProjectAndCommentNameForTable } = useDraw();
   const { drawHistory } = useContext(
     DrawHistoryContext
   ) as DrawHistoryContextProps;
 
   const dataSource = useMemo(() => {
-    if (drawHistory) {
+    if (drawHistory && scaleData) {
       const tableData = Object.entries(drawHistory).flatMap(
         ([pageNumber, pageData]) => {
           const payload: DrawTableHistory[] = [];
@@ -40,7 +42,8 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
                   getProjectAndCommentNameForTable(
                     drawName as keyof DrawInterface,
                     data.points,
-                    data.depth || 0
+                    data.depth || 0,
+                    scaleData[pageNumber.toString()]
                   );
 
                 return {
@@ -72,11 +75,12 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
       );
     }
     return [];
-  }, [drawHistory, searchProjectName]);
+  }, [drawHistory, searchProjectName, scaleData]);
 
   return (
     <ConfigProvider theme={{ components: { Table: { headerBg: '#F9F5FF' } } }}>
       <Table
+        pagination={false}
         columns={[
           {
             title: 'Project name',

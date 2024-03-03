@@ -12,8 +12,9 @@ import {
   Units,
   defaultMeasurements,
 } from '../types';
-import { ScaleNavigation, Draw } from './components'; // DrawTable
+import { ScaleNavigation, Draw, DrawTable } from './components';
 import { ScaleDataContextProps } from '../context/ScaleContext';
+import { useRouter } from 'next/navigation';
 
 // const selectedScale = {
 //   "1" : {scale:  `3/8"=1'-0"`, precision: `1/34` }
@@ -31,6 +32,7 @@ export interface PageScale {
 }
 
 const Scale = () => {
+  const router = useRouter();
   const [tool, setTool] = useState<ScaleInterface>({ selected: 'scale' });
   const [showModal, setShowModal] = useState(false);
   const [border, setBorder] = useState<number>(4);
@@ -39,15 +41,15 @@ const Scale = () => {
   const [depth, setDepth] = useState<number>(0);
   const [measurements, setMeasurements] =
     useState<Measurements>(defaultMeasurements);
-  // const [scaleData, setScaleData] = useState<PageScale | undefined>();
 
   const { scaleData } = useContext(ScaleContext) as ScaleDataContextProps;
-
   const { uploadFileData } = useContext(
     UploadFileContext
   ) as UploadFileContextProps;
 
   console.log('scaleData: ', scaleData);
+
+  if (!uploadFileData.length) router.push('/takeoff/upload');
 
   return (
     <section className="mt-[96px] md:px-16 px-8 pb-4">
@@ -115,7 +117,12 @@ const Scale = () => {
             <Draw
               key={`draw-${index}`}
               selectedTool={tool}
-              scale={scaleData?.[`${index + 1}`]}
+              scale={
+                scaleData?.[`${index + 1}`] || {
+                  scale: `1"=1"`,
+                  precision: '1',
+                }
+              }
               depth={depth}
               color={color}
               border={border}
@@ -129,7 +136,7 @@ const Scale = () => {
             />
           ))}
         </div>
-        {/* <DrawTable /> */}
+        <DrawTable />
       </div>
 
       {tool.selected === 'scale' && (

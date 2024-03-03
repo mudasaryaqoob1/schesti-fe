@@ -23,6 +23,11 @@ export interface LineInterface {
   dateTime?: Date;
 }
 
+export interface CircleInterface extends CoordinatesInterface {
+  fill: string;
+  radius: number;
+}
+
 export interface PolygonConfigInterface {
   points: number[];
   stroke: string;
@@ -66,7 +71,7 @@ export type ScaleLabel =
   | 'area'
   | 'dynamic';
 
-export type DynamicScale = 'clear' | 'fill' | 'create';
+export type DynamicScale = 'fill' | 'create' | 'clear';
 
 export interface ScaleInterface {
   selected: ScaleLabel;

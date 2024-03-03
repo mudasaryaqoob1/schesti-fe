@@ -13,6 +13,8 @@ interface Props {
 const Dynamic: React.FC<Props> = ({ setModalOpen, setTool }) => {
   const [selected, setSelected] = useState<DynamicScale>('create');
 
+  console.log('selected', selected);
+
   return (
     <div className="py-2.5 w-[204px] bg-[#F2F2F2] border border-solid border-elboneyGray rounded-lg">
       <section>
@@ -39,13 +41,29 @@ const Dynamic: React.FC<Props> = ({ setModalOpen, setTool }) => {
                     className="bg-white px-[15px] py-[11px] rounded-lg cursor-pointer"
                     onClick={() => setSelected('create')}
                   >
-                    <Image src={'/dyn1.svg'} alt="s" width={18} height={18} />
+                    <Image
+                      src={
+                        selected === 'create'
+                          ? '/selectedDyn1.svg'
+                          : '/dyn1.svg'
+                      }
+                      alt="s"
+                      width={18}
+                      height={18}
+                    />
                   </div>
                   <div
                     className="bg-white px-[15px] py-[11px] rounded-lg cursor-pointer"
                     onClick={() => setSelected('fill')}
                   >
-                    <Image src={'/dyn2.svg'} alt="s" width={18} height={18} />
+                    <Image
+                      src={
+                        selected === 'fill' ? '/selectedDyn2.svg' : '/dyn2.svg'
+                      }
+                      alt="s"
+                      width={18}
+                      height={18}
+                    />
                   </div>
                 </div>
                 <div className="flex flex-row gap-3">
@@ -53,7 +71,14 @@ const Dynamic: React.FC<Props> = ({ setModalOpen, setTool }) => {
                     className="bg-white px-[15px] py-[11px] rounded-lg cursor-pointer"
                     onClick={() => setSelected('clear')}
                   >
-                    <Image src={'/dyn3.svg'} alt="s" width={18} height={18} />
+                    <Image
+                      src={
+                        selected === 'clear' ? '/selectedDyn3.svg' : '/dyn3.svg'
+                      }
+                      alt="s"
+                      width={18}
+                      height={18}
+                    />
                   </div>
                   {/* <div className="bg-white px-[15px] py-[11px] rounded-lg ">
                   <Image src={'/dyn4.svg'} alt="s" width={18} height={18} />
