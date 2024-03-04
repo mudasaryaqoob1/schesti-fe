@@ -13,8 +13,6 @@ interface Props {
 const Dynamic: React.FC<Props> = ({ setModalOpen, setTool }) => {
   const [selected, setSelected] = useState<DynamicScale>('create');
 
-  console.log('selected', selected);
-
   return (
     <div className="py-2.5 w-[204px] bg-[#F2F2F2] border border-solid border-elboneyGray rounded-lg">
       <section>

@@ -25,7 +25,10 @@ const ScaleNavigation: React.FC<Props> = ({ tool, setTool, setShowModal }) => {
               className="flex flex-col items-center cursor-pointer"
               onClick={() => {
                 setShowModal(true);
-                setTool({ selected: label });
+                setTool({
+                  selected: label,
+                  ...(label === 'dynamic' && { subSelected: 'create' }),
+                });
               }}
             >
               {tool.selected === label ? (

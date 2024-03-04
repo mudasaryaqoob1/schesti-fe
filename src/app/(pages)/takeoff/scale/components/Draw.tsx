@@ -8,6 +8,7 @@ import {
   Group,
   Text as KonvaText,
   Arrow,
+  Circle,
 } from 'react-konva';
 import { UploadFileData } from '../../context/UploadFileContext';
 import { useDraw } from '@/app/hooks';
@@ -16,7 +17,7 @@ import moment from 'moment';
 import { DrawHistoryContext } from '../../context';
 import { DrawHistoryContextProps } from '../../context/DrawHistoryContext';
 import {
-  // CircleInterface,
+  CircleInterface,
   CountInterface,
   DrawInterface,
   LineInterface,
@@ -90,9 +91,10 @@ const Draw: React.FC<Props> = ({
   const [completingLine, setCompletingLine] = useState<LineState>(
     defaultCurrentLineState
   );
-  const [endLiveEditing, setEndLiveEditing] = useState<boolean>(false);
-  const [selectedShape, setSelectedShape] = useState<string>('');
-  // const [circle, setCircle] = useState<CircleInterface[]>([]);
+  const [endLiveEditing, setEndLiveEditing] = useState(false);
+  const [selectedShape, setSelectedShape] = useState('');
+  const [isMouseDown, setIsMouseDown] = useState(false);
+  const [circle, setCircle] = useState<CircleInterface[]>([]);
 
   const myImage = new Image();
   myImage.src =
@@ -138,6 +140,13 @@ const Draw: React.FC<Props> = ({
   console.log('subSelected', subSelected);
 
   useEffect(() => {
+    if (subSelected === 'clear') {
+      setDraw((prev) => ({ ...prev, dynamic: [] }));
+      setCircle([]);
+    }
+  }, [subSelected]);
+
+  useEffect(() => {
     if (selected !== 'count') handleChangeMeasurements(defaultMeasurements);
   }, [selected]);
 
@@ -154,12 +163,25 @@ const Draw: React.FC<Props> = ({
     const position = stage?.getPointerPosition();
 
     if (subSelected === 'fill') {
-      console.log('123');
-
+      setIsMouseDown(true);
+      setCircle((prev) => {
+        prev.push({
+          x: position?.x || 0,
+          y: position?.y || 0,
+          fill: color,
+          radius: 10,
+        });
+        return prev;
+      });
       return;
     }
 
-    if (selected !== 'count' && selected !== 'scale') {
+    if (
+      selected === 'length' ||
+      selected === 'area' ||
+      selected === 'volume' ||
+      subSelected === 'create'
+    ) {
       setCurrentLine((prev) => ({
         ...prev,
         startingPoint: { x: position?.x || 0, y: position?.y || 0 },
@@ -331,6 +353,21 @@ const Draw: React.FC<Props> = ({
     const stage = e.target.getStage();
     const position = stage?.getPointerPosition();
 
+    if (subSelected === 'fill') {
+      if (isMouseDown) {
+        setCircle((prev) => {
+          prev.push({
+            x: position?.x || 0,
+            y: position?.y || 0,
+            fill: color,
+            radius: 10,
+          });
+          return prev;
+        });
+      }
+      return;
+    }
+
     if (currentLine.startingPoint) {
       setCurrentLine((prev) => ({
         ...prev,
@@ -397,8 +434,8 @@ const Draw: React.FC<Props> = ({
     }
   };
 
-  const handleMouseOver = (e: KonvaEventObject<MouseEvent>) => {
-    console.log(e);
+  const handleMouseUp = () => {
+    setIsMouseDown(false);
   };
 
   return (
@@ -468,7 +505,7 @@ const Draw: React.FC<Props> = ({
         <Layer
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
-          onMouseOver={handleMouseOver}
+          onMouseUp={handleMouseUp}
         >
           <KonvaImage
             image={myImage}
@@ -669,6 +706,12 @@ const Draw: React.FC<Props> = ({
               />
             );
           })}
+
+          {/* Drawing Fill Color Dynamic */}
+          {/* <Circle x={10} y={10} radius={10} fill="red" /> */}
+          {circle.map(({ x, y, fill, radius }, index) => (
+            <Circle key={index} x={x} y={y} radius={radius} fill={fill} />
+          ))}
         </Layer>
       </Stage>
     </div>

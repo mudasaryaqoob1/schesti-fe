@@ -31,7 +31,7 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
   ) as DrawHistoryContextProps;
 
   const dataSource = useMemo(() => {
-    if (drawHistory && scaleData) {
+    if (drawHistory) {
       const tableData = Object.entries(drawHistory).flatMap(
         ([pageNumber, pageData]) => {
           const payload: DrawTableHistory[] = [];
@@ -43,7 +43,9 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
                     drawName as keyof DrawInterface,
                     data.points,
                     data.depth || 0,
-                    scaleData[pageNumber.toString()]
+                    scaleData
+                      ? scaleData[pageNumber.toString()]
+                      : { scale: `1"=1"`, precision: '1' }
                   );
 
                 return {
