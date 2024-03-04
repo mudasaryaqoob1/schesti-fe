@@ -28,8 +28,6 @@ export default function StatisticsReport() {
     data,
     xField: 'type',
     yField: 'value',
-    sizeField: 'value',
-    colorField: 'category',
   };
   return <Line {...config} />;
 }

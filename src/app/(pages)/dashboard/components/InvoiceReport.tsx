@@ -47,7 +47,7 @@ export default function InvoiceReport({ invoiceQuery }: Props) {
   }, [invoiceQuery.data, selectedMonth])
 
   if (invoiceQuery.isLoading) {
-    return <div className="col-span-7 shadow-md bg-white rounded-md px-4 border border-t">
+    return <div className="col-span-7 shadow-lg bg-white rounded-md px-4 border border-t">
       <Skeleton />
     </div>
   }
@@ -70,7 +70,7 @@ export default function InvoiceReport({ invoiceQuery }: Props) {
   }
 
 
-  return <div className="col-span-7 shadow-md bg-white rounded-md px-4 border border-t">
+  return <div className="col-span-7 shadow-lg bg-white rounded-md px-4 border border-t">
     <div className="flex justify-between items-center my-4">
       <h3 className="text-[18px] text-[#344054] leading-[28px] font-semibold">
         Invoice

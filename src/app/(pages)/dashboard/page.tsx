@@ -52,7 +52,7 @@ const Dashboard = () => {
 
       <div className="grid grid-cols-12 gap-3">
         <InvoiceReport invoiceQuery={invoiceQuery} />
-        <div className="col-span-5 flex flex-col space-y-8 p-3 shadow-md border border-t bg-white rounded-md px-4">
+        <div className="col-span-5 flex flex-col space-y-8 p-3 shadow-lg border border-t bg-white rounded-md px-4">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-[18px] text-[#344054] leading-[28px] font-semibold">
               Projects
@@ -73,7 +73,7 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="my-4 shadow-md bg-white rounded-md p-4 border border-t">
+      <div className="my-4 shadow-lg bg-white rounded-md p-4 border border-t">
         <div className="flex justify-between items-center">
           <h3 className="text-[18px] text-[#344054] leading-[28px] font-semibold">
             Statistics
