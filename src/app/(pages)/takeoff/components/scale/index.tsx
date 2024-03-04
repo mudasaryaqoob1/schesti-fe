@@ -198,9 +198,9 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
           />
         </div>
         <div className="flex flex-col p-6 gap-6">
-          <div className="flex gap-6 items-center">
+          <div className="flex gap-6 items-center w-full ">
             <label>Options:</label>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 w-full">
               <Input
                 value={optionsValue}
                 className={`w-full ${
@@ -209,23 +209,37 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
                 onChange={(e) => handleOptionChange(e)}
               />
               <div className="">
-                <Image
-                  src={'/chevron-down.svg'}
-                  alt={'alt'}
-                  width={14}
-                  height={14}
-                  onClick={() => setShowOptions(!showOptions)}
-                />
+                {showOptions ? (
+                  <Image
+                    src={'/chevron-down.svg'}
+                    alt={'alt'}
+                    width={14}
+                    height={14}
+                    onClick={() => setShowOptions(!showOptions)}
+                  />
+                ) : (
+                  <Image
+                    src={'/chevron-up.svg'}
+                    alt={'alt'}
+                    width={14}
+                    height={14}
+                    onClick={() => setShowOptions(!showOptions)}
+                  />
+                )}
               </div>
             </div>
             {/* <Select className="w-full" /> */}
           </div>
           {showOptions && (
-            <div className="w-48 absolute left-[148px] top-[124px] z-30 bg-white cursor-pointer">
-              <div onClick={() => setOptionsValue('page')}>{`Current Page (${
-                page ? page : 1
-              }) `}</div>
-              <div onClick={() => setOptionsValue('all')}>
+            <div className="w-[360px] absolute left-[148px] top-[124px] z-30 bg-white cursor-pointer shadow-sm border-2 flex flex-col p-2 gap-2">
+              <div
+                className="hover:bg-slate-200 hover:rounded-sm p-1"
+                onClick={() => setOptionsValue('page')}
+              >{`Current Page (${page ? page : 1}) `}</div>
+              <div
+                onClick={() => setOptionsValue('all')}
+                className="hover:bg-slate-200 hover:rounded-sm p-1"
+              >
                 {`All pages ( 1 - ${numOfPages} )`}
               </div>
             </div>
