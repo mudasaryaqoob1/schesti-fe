@@ -3,11 +3,11 @@ import { ISettingTarget } from "@/app/interfaces/companyInterfaces/setting.inter
 import moment from "moment";
 
 export function completedTargets(targets: ISettingTarget[], invoices: IClientInvoice[]) {
-    return targets.filter(target => {
-        return invoices.find(invoice => {
-            return target.month === moment(invoice.applicationDate).format('MMMM') && invoice.amountPaid >= Number(target.price);
-        })
-    })
+    const result = invoices.filter(invoice => {
+        return targets.find(target => target.month === moment(invoice.applicationDate).format("MMMM"));
+    });
+    console.log("Result", result);
+    return result;
 }
 
 export function totalReceivable(target: ISettingTarget, invoices: IClientInvoice[]) {
@@ -20,8 +20,8 @@ export function totalReceivable(target: ISettingTarget, invoices: IClientInvoice
 
 export function remainingTargets(targets: ISettingTarget[], invoices: IClientInvoice[]) {
     return targets.filter(target => {
-        return invoices.find(invoice => {
-            return target.month === moment(invoice.applicationDate).format('MMMM') && invoice.amountPaid < Number(target.price);
+        return invoices.filter(invoice => {
+            return target.month === moment(invoice.applicationDate).format('MMMM') && target.year === moment(invoice.applicationDate).format('YYYY') && invoice.amountPaid < Number(target.price);
         })
     })
 }

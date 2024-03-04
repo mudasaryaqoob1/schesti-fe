@@ -26,7 +26,7 @@ const validationSchema = Yup.object({
   month: Yup.string().required('Month is required!'),
   price: Yup.string().required('Price is required!'),
 });
-const initialValues: ISettingTarget = {
+const initialValues: Omit<ISettingTarget, "year"> = {
   price: '',
   month: '',
 };
@@ -49,8 +49,8 @@ export const months = [
 
 export type SettingTargetProps = {
   setShowModal: Dispatch<SetStateAction<boolean>>;
-  selectedTarget?: ISettingTarget;
-  settingTargetsData: ISettingTarget[];
+  selectedTarget?: Omit<ISettingTarget, "year">;
+  settingTargetsData: Omit<ISettingTarget, "year">[];
 };
 const CreateTaget = ({
   setShowModal,
@@ -76,7 +76,7 @@ const CreateTaget = ({
 
   // submit handler
   const submitHandler = async (
-    values: ISettingTarget,
+    values: Omit<ISettingTarget, "year">,
     { resetForm }: resetVoidFc
   ) => {
     settingTargetService

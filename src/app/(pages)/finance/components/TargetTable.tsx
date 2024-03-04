@@ -8,8 +8,9 @@ import { USCurrencyFormat } from '@/app/utils/format';
 import { Select, Skeleton } from 'antd';
 import Table, { type ColumnsType } from 'antd/es/table';
 import { UseQueryResult } from 'react-query';
-import { remainingTargets, totalReceivable, totalRemainingAmount } from '../utils';
-
+import _ from 'lodash';
+import { useState } from 'react';
+import { totalReceivable } from '../utils';
 
 
 type Props = {
@@ -18,8 +19,13 @@ type Props = {
         invoices: IClientInvoice[];
     }>, unknown>
 }
-export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
+type Option = {
+    label: string;
+    value: string;
+}
 
+export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
     if (clientInvoiceQuery.isLoading || targetsQuery.isLoading) {
         return <Skeleton />
     }
@@ -27,7 +33,6 @@ export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
     const invoices = clientInvoiceQuery.data ? clientInvoiceQuery.data.data!.invoices : []
     const targets = targetsQuery.data ? targetsQuery.data.data! : [];
 
-    const remaining = remainingTargets(targets, invoices);
 
     const columns: ColumnsType<ISettingTarget> = [
         {
@@ -55,6 +60,23 @@ export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
             },
         },
     ];
+
+    let targetsYear = _.uniq(targets.map(target => target.year)).map(year => ({ label: `Year ${year}`, value: year }));
+    const filteredInvoices = invoices.filter(invoice => new Date(invoice.applicationDate).getFullYear() === selectedYear);
+
+    // Step 2: Calculate total amount of invoices for the desired year
+    const totalAmountInvoices = filteredInvoices.reduce((total, invoice) => total + invoice.totalAmount, 0);
+
+    // Step 3: Filter targets for the desired year
+    const filteredTargets = targets.filter(target => parseInt(target.year) === 2024);
+
+    // Step 4: Calculate total price of targets for the desired year
+    const totalPriceTargets = filteredTargets.reduce((total, target) => total + parseFloat(target.price), 0);
+
+
+    // Step 6: Calculate remaining targets
+    const remainingTargets = totalPriceTargets - totalAmountInvoices;
+
     return <div className="shadow space-y-4 bg-white p-4 rounded-md my-3">
         <div className="flex items-center">
             <QuaternaryHeading
@@ -63,15 +85,13 @@ export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
             />
             <div className="flex flex-1 space-x-5 justify-end items-center">
                 <QuinaryHeading title="Back log" className="text-[#868686]" />
-                <QuinaryHeading title={USCurrencyFormat.format(totalRemainingAmount(remaining))} className="text-[#7F56D9]" />
+                <QuinaryHeading title={USCurrencyFormat.format(remainingTargets)} className="text-[#7F56D9]" />
                 <Select
                     placeholder="Choose Year"
-                    options={[
-                        { label: 'Year 2024', value: '2024' },
-                        { label: 'Year 2023', value: '2023' },
-                        { label: 'Year 2022', value: '2022' },
-                        { label: 'Year 2021', value: '2021' },
-                    ]}
+                    options={targetsYear as Option[]}
+                    value={selectedYear}
+                    onChange={(value) => setSelectedYear(value)}
+                    className='w-40'
                 />
                 <CustomButton text="Download" className="!w-44 !py-2" />
             </div>

@@ -38,7 +38,7 @@ const TargetsTable = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedTarget, setSelectedTarget] = useState<
-    undefined | ISettingTarget
+    undefined | Omit<ISettingTarget, "year">
   >();
 
   const token = useSelector(selectToken);

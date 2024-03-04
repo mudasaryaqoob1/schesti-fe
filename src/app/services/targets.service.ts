@@ -8,7 +8,7 @@ class SettingTargetService extends HttpService {
   private readonly prefix: string = 'api/setting/target';
 
   httpAddNewSettingTarget = (
-    data: ISettingTarget
+    data: Omit<ISettingTarget, "year">
   ): Promise<IResponseInterface<{ token: IToken }>> =>
     this.post(`${this.prefix}/addNewSettingTarget`, data);
 
@@ -19,7 +19,7 @@ class SettingTargetService extends HttpService {
     this.get(`${this.prefix}/getAllSettingTargets?page=${page}&limit=${limit}`);
 
   httpUpdateSettingTarget = (
-    data: ISettingTarget,
+    data: Omit<ISettingTarget, "year">,
     targetId: string | string[]
   ): Promise<IResponseInterface<any>> =>
     this.post(`${this.prefix}/updateSettingTarget/${targetId}`, data);

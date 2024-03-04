@@ -6,7 +6,8 @@ import { ISettingTarget } from "@/app/interfaces/companyInterfaces/setting.inter
 import { USCurrencyFormat } from "@/app/utils/format"
 import { Badge, Progress, Skeleton } from "antd";
 import { UseQueryResult } from "react-query"
-import { completedTargets, remainingTargets, targetPercentage, totalCompletedAmount, totalRemainingAmount } from "../utils"
+// import { completedTargets, remainingTargets, targetPercentage, totalCompletedAmount, totalRemainingAmount } from "../utils"
+// import moment from "moment"
 
 type Props = {
     targetsQuery: UseQueryResult<IResponseInterface<ISettingTarget[]>, unknown>;
@@ -15,20 +16,38 @@ type Props = {
     }>, unknown>
 }
 export function TargetStats({ targetsQuery, clientInvoiceQuery }: Props) {
+    const currentYear = new Date().getFullYear();
     if (targetsQuery.isLoading || clientInvoiceQuery.isLoading) {
         return <Skeleton />
     }
     const invoices = clientInvoiceQuery.data ? clientInvoiceQuery.data.data!.invoices : []
-    const targets = targetsQuery.data ? targetsQuery.data.data! : [];
-    const completed = completedTargets(targets, invoices);
+    const targets = targetsQuery.data ? targetsQuery.data.data!.filter(target => parseInt(target.year) === currentYear) : [];
+    // const completed = completedTargets(targets, invoices);
 
-    const remaining = remainingTargets(targets, invoices);
-    const percentage = targetPercentage(completed.length, targets.length);
+    // const remaining = remainingTargets(targets, invoices);
+    // const percentage = targetPercentage(completed.length, targets.length);
 
-    const completedAmount = totalCompletedAmount(completed)
-    const remainingAmount = totalRemainingAmount(remaining);
+    // const completedAmount = totalCompletedAmount(completed)
+    // const remainingAmount = totalRemainingAmount(remaining);
 
+    // console.log({ completed, remaining });
+    const filteredInvoices = invoices.filter(invoice => new Date(invoice.applicationDate).getFullYear() === 2024);
 
+    // Step 2: Calculate total amount of invoices for the desired year
+    const totalAmountInvoices = filteredInvoices.reduce((total, invoice) => total + invoice.totalAmount, 0);
+
+    // Step 3: Filter targets for the desired year
+    const filteredTargets = targets.filter(target => parseInt(target.year) === 2024);
+
+    // Step 4: Calculate total price of targets for the desired year
+    const totalPriceTargets = filteredTargets.reduce((total, target) => total + parseFloat(target.price), 0);
+
+    // Step 5: Calculate percentage completed
+    const percentageCompleted = (totalAmountInvoices / totalPriceTargets) * 100;
+
+    // Step 6: Calculate remaining targets
+    const remainingTargets = totalPriceTargets - totalAmountInvoices;
+    const completedTargets = Math.min(totalAmountInvoices, totalPriceTargets);
 
     return <div className="col-span-12 md:col-span-4 space-y-4 shadow bg-white p-4 rounded-md">
         <div className="flex justify-between items-center">
@@ -44,16 +63,16 @@ export function TargetStats({ targetsQuery, clientInvoiceQuery }: Props) {
                 strokeColor={'#7F56D9'}
                 strokeWidth={12}
                 size={200}
-                percent={Number(percentage.toFixed(2))}
+                percent={Number(percentageCompleted.toFixed(2))}
             />
         </div>
         <div className="flex justify-between items-center">
             <Badge color="#0074D9" status="default" text="Completed" />
-            <SenaryHeading title={USCurrencyFormat.format(completedAmount)} />
+            <SenaryHeading title={USCurrencyFormat.format(completedTargets)} />
         </div>
         <div className="flex justify-between items-center">
             <Badge status="warning" text="Remaining" />
-            <SenaryHeading title={USCurrencyFormat.format(remainingAmount)} />
+            <SenaryHeading title={USCurrencyFormat.format(remainingTargets)} />
         </div>
     </div>
 }
