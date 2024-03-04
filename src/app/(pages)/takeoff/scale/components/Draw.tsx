@@ -137,8 +137,6 @@ const Draw: React.FC<Props> = ({
     setEndLiveEditing(false);
   }, [selected]);
 
-  console.log('subSelected', subSelected);
-
   useEffect(() => {
     if (subSelected === 'clear') {
       setDraw((prev) => ({ ...prev, dynamic: [] }));

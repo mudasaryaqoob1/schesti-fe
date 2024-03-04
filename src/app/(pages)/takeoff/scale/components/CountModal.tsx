@@ -30,7 +30,10 @@ const Count: React.FC<Props> = ({ setModalOpen, measurements }) => {
           <div className="flex flex-row items-center justify-between ">
             <label>Count</label>
             <div className="w-[92px]">
-              <Input value={measurements.count} className="!rounded-md" />
+              <Input
+                value={measurements.count}
+                className="!rounded-md pointer-events-none"
+              />
             </div>
           </div>
         </div>
