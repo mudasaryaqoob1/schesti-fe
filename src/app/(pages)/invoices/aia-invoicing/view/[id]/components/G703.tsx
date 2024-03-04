@@ -176,7 +176,8 @@ export function G703Component({
           <Column
             title={<SenaryHeading title="Description Of Work" />}
             dataIndex={1}
-            width={300}
+            width={250}
+            align='center'
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
                 return <div className="px-3">{value}</div>;
@@ -187,6 +188,7 @@ export function G703Component({
           <Column
             title={<SenaryHeading title="Scheduled value" />}
             dataIndex={2}
+            align='center'
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
                 return <div className="px-3 font-bold">{value}</div>;
@@ -196,10 +198,13 @@ export function G703Component({
               </div>
             }}
           />
-          <ColumnGroup title={<SenaryHeading title="Work Completed" />}>
+          <ColumnGroup
+            align='center'
+            title={<SenaryHeading title="Work Completed" />}>
             <Column
               title={<SenaryHeading title="From previous application (D+E)" />}
               dataIndex={3}
+              align='center'
               render={(value, record: string[], index) => {
                 if (index === state.data.length) {
                   return <div className="px-3">{value}</div>;
@@ -213,12 +218,13 @@ export function G703Component({
             <Column
               title={<SenaryHeading title="This period" />}
               dataIndex={4}
+              align='center'
               render={(value, record: string[], index) => {
                 if (index === state.data.length) {
                   return <div className="px-3">{value}</div>;
                 }
                 return <div className="px-3">
-                  $ {value}
+                  $ {value ? value : 0}
                 </div>
               }}
             />
@@ -228,6 +234,7 @@ export function G703Component({
               <SenaryHeading title="Materials presently stored (not in D or E)" />
             }
             dataIndex={5}
+            align='center'
             render={(value, record, index) => {
               if (index === state.data.length) {
                 return <div className="px-3">{value}</div>;
@@ -240,9 +247,10 @@ export function G703Component({
           <ColumnGroup title={<SenaryHeading title="Work Completed" />}>
             <Column
               title={
-                <SenaryHeading title="TOTAL COMPLETED AND STORED TO DATE (D+E+F)" />
+                <SenaryHeading title="Total Completed And Stored To Date (D+E+F)" />
               }
               dataIndex={6}
+              align='center'
               render={(value, record: string[], index) => {
                 if (index === state.data.length) {
                   return <div className="px-3">{value}</div>;
@@ -259,6 +267,7 @@ export function G703Component({
             <Column
               title={<SenaryHeading title="% (G ÷ C)" />}
               dataIndex={7}
+              align='center'
               render={(value, record: string[], index) => {
                 if (index === state.data.length) {
                   return <div className="px-3">{value}</div>;
@@ -270,8 +279,9 @@ export function G703Component({
             />
           </ColumnGroup>
           <Column
-            title={<SenaryHeading title="BALANCE (C - G)" />}
+            title={<SenaryHeading title="Balance (C - G)" />}
             dataIndex={8}
+            align='center'
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
                 return <div className="px-3">{value}</div>;
@@ -284,10 +294,12 @@ export function G703Component({
           <Column
             title={
               <SenaryHeading
-                title={`RETAINAGE (IF VARIABLE RATE) ${state.p5aPercentage}%`}
+                title={`Retainage (If Variable Rate) ${state.p5aPercentage}%`}
+                className='px-2'
               />
             }
             dataIndex={9}
+            align='center'
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
                 return <div className="px-3">{value}</div>;
