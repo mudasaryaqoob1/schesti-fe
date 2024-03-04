@@ -10,9 +10,9 @@ interface Props {
 
 const Count: React.FC<Props> = ({ setModalOpen, measurements }) => {
   return (
-    <div className="py-2.5 px-2.5 w-[204px] bg-[#F2F2F2] border border-solid border-elboneyGray rounded-[4px]">
+    <div className="py-2.5 w-[204px] bg-[#F2F2F2] border border-solid border-elboneyGray rounded-lg">
       <section className="w-full">
-        <div className="flex justify-between items-center border-b-[#6a6767] border  ">
+        <div className="flex justify-between items-center px-3">
           <div>
             <label>Count</label>
           </div>
@@ -25,7 +25,8 @@ const Count: React.FC<Props> = ({ setModalOpen, measurements }) => {
             onClick={() => setModalOpen(false)}
           />
         </div>
-        <div className="mt-4 flex flex-col gap-4">
+        <div className="border-b-[2px] mt-1.5"></div>
+        <div className="mt-4 flex flex-col gap-4 px-3">
           <div className="flex flex-row items-center justify-between ">
             <label>Count</label>
             <div className="w-[92px]">
