@@ -12,6 +12,7 @@ import {
   Units,
   defaultMeasurements,
 } from '../types';
+import Image from 'next/image';
 import { ScaleNavigation, Draw, DrawTable } from './components';
 import { ScaleDataContextProps } from '../context/ScaleContext';
 import { useRouter } from 'next/navigation';
@@ -104,6 +105,18 @@ const Scale = () => {
       </div>
 
       <div className="py-6 h-[709px] relative">
+        <div className="absolute bottom-48 left-10 flex gap-6 z-50 ">
+          <Image src={'/cursor.svg'} alt="t" width={24} height={24} />
+          <Image src={'/t1.svg'} alt="t" width={24} height={24} />
+          <Image src={'/t1.svg'} alt="t" width={24} height={24} />
+          <Image src={'/t1.svg'} alt="t" width={24} height={24} />
+          <Image src={'/fx.svg'} alt="t" width={24} height={24} />
+        </div>
+        <div className="absolute top-10 right-10 flex flex-col gap-6 z-50 bg-white px-3 py-2  rounded-sm drop-shadow-md ">
+          <Image src={'/cursor.svg'} alt="t" width={24} height={24} />
+          <Image src={'/t1.svg'} alt="t" width={24} height={24} />
+          <Image src={'/fx.svg'} alt="t" width={24} height={24} />
+        </div>
         <div className={`absolute ${showModal ? 'block' : 'hidden'}`}>
           <ModalsWrapper
             tool={tool}
