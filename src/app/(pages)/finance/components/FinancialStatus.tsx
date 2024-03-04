@@ -11,6 +11,11 @@ type Props = {
         invoices: IClientInvoice[];
     }>, unknown>
 }
+
+const Completed = "Completed";
+const Receivable = "Receivable";
+// const Expences = "Expences";
+
 export function FinancialStatus({ clientInvoiceQuery }: Props) {
     if (clientInvoiceQuery.isLoading) {
         return <Skeleton />
@@ -25,13 +30,13 @@ export function FinancialStatus({ clientInvoiceQuery }: Props) {
         const receivable = invoice.amountPaid < invoice.totalAmount;
         if (completed && !receivable) {
             return {
-                name: "Completed",
+                name: Completed,
                 value: invoice.totalAmount,
                 month: moment(invoice.applicationDate).format("MMMM")
             }
         }
         return {
-            name: "Receivable",
+            name: Receivable,
             value: invoice.totalAmount,
             month: moment(invoice.applicationDate).format("MMMM")
         }
@@ -58,6 +63,17 @@ export function FinancialStatus({ clientInvoiceQuery }: Props) {
             yField="value"
             isGroup
             seriesField="name"
+            color={(data) => {
+                if (data.name === Completed) {
+                    return "#FAAD12"
+                }
+                else if (data.name === Receivable) {
+                    return "#7F56D9"
+                }
+                else {
+                    return "#51C41A"
+                }
+            }}
             maxColumnWidth={10}
             columnStyle={
                 { radius: 50 }
