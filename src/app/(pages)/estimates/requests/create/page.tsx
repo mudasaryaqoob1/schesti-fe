@@ -482,7 +482,7 @@ const CreateEstimateRequest = () => {
                                     {`${doc?.name.substring(0, 20)}....`}
                                   </p>
                                   <p className="text-[#989692] text-[12px] font-[400] my-2">
-                                    {byteConverter(doc?.size, 'KB').size} KB
+                                    {byteConverter(doc?.size, 'KB').size} {byteConverter(doc?.size, 'KB').unit}
                                   </p>
                                 </div>
                               )
@@ -573,7 +573,7 @@ const CreateEstimateRequest = () => {
                                     {doc?.name}
                                   </p>
                                   <p className="text-[#989692] text-[12px] font-[400] my-2">
-                                    {byteConverter(doc?.size, 'KB').size} KB
+                                    {byteConverter(doc?.size, 'KB').size} {byteConverter(doc?.size, 'KB').unit}
                                   </p>
                                 </div>
                               )
@@ -666,7 +666,7 @@ const CreateEstimateRequest = () => {
                                     {doc?.name}
                                   </p>
                                   <p className="text-[#989692] text-[12px] font-[400] my-2">
-                                    {byteConverter(doc?.size, 'KB').size} KB
+                                    {byteConverter(doc?.size, 'KB').size} {byteConverter(doc?.size, 'KB').unit}
                                   </p>
                                 </div>
                               )

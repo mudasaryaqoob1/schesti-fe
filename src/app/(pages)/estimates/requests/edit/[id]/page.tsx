@@ -482,7 +482,7 @@ const EditEstimateRequest = () => {
                                     {doc?.name}
                                   </p>
                                   <p className="text-[#989692] text-[12px] font-[400] my-2">
-                                    {byteConverter(doc?.size, 'KB').size} KB
+                                    {byteConverter(doc?.size, 'KB').size} {byteConverter(doc?.size, 'KB').unit}
                                   </p>
                                   <a
                                     href={doc.url}
@@ -582,7 +582,7 @@ const EditEstimateRequest = () => {
                                     {doc?.name}
                                   </p>
                                   <p className="text-[#989692] text-[12px] font-[400] my-2">
-                                    {byteConverter(doc?.size, 'KB').size} KB
+                                    {byteConverter(doc?.size, 'KB').size} {byteConverter(doc?.size, 'KB').unit}
                                   </p>
                                   <a
                                     href={doc.url}
@@ -681,7 +681,7 @@ const EditEstimateRequest = () => {
                                     {doc?.name}
                                   </p>
                                   <p className="text-[#989692] text-[12px] font-[400] my-2">
-                                    {byteConverter(doc?.size, 'KB').size} KB
+                                    {byteConverter(doc?.size, 'KB').size} {byteConverter(doc?.size, 'KB').unit}
                                   </p>
                                   <a
                                     href={doc.url}
