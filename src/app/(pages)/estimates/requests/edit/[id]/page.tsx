@@ -322,7 +322,7 @@ const EditEstimateRequest = () => {
         {({ handleSubmit, setFieldValue }) => {
           return (
             <>
-              <ModalComponent open={showModal} setOpen={setShowModal}>
+              <ModalComponent open={showModal} setOpen={setShowModal} destroyOnClose>
                 <ExistingClient
                   setModalOpen={setShowModal}
                   onSelectClient={({
