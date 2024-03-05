@@ -20,7 +20,6 @@ import {
   deleteEstimateRequest,
   fetchEstimateRequests,
 } from '@/redux/company/company.thunk';
-import NoData from '@/app/component/noData';
 import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import Image from 'next/image';
@@ -156,58 +155,50 @@ const EstimateRequestTable: React.FC = () => {
     },
   ];
 
-  return estimateRequestsData && estimateRequestsData.length < 1 ? (
-    <NoData
-      btnText="Add Request"
-      link="/estimates/requests/create"
-      title="Create New Estimate Request"
-      description="There is not any record yet . To get started, Create an estimate request by clicking the button below and sharing details about your project."
-    />
-  ) : (
-    <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid border-silverGray shadow-secondaryTwist">
-      {selectedEstimate ? (
-        <ModalComponent
-          open={showDeleteModal}
-          setOpen={() => {
+  return <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid border-silverGray shadow-secondaryTwist">
+    {selectedEstimate ? (
+      <ModalComponent
+        open={showDeleteModal}
+        setOpen={() => {
+          setSelecteEstimate(null);
+          setShowDeleteModal(false);
+        }}
+        destroyOnClose
+      >
+        <DeleteContent
+          onClick={() => {
+            dispatch(deleteEstimateRequest(selectedEstimate._id));
             setSelecteEstimate(null);
             setShowDeleteModal(false);
           }}
-          destroyOnClose
-        >
-          <DeleteContent
-            onClick={() => {
-              dispatch(deleteEstimateRequest(selectedEstimate._id));
-              setSelecteEstimate(null);
-              setShowDeleteModal(false);
-            }}
-            onClose={() => setSelecteEstimate(null)}
-          />
-        </ModalComponent>
-      ) : null}
-      <div className="flex justify-between items-center">
-        <TertiaryHeading
-          title="My Estimate request"
-          className="text-graphiteGray"
+          onClose={() => setSelecteEstimate(null)}
         />
-        <CustomButton
-          text="Start New Estimate "
-          className="!w-auto "
-          icon="plus.svg"
-          iconwidth={20}
-          iconheight={20}
-          onClick={() => router.push('/estimates/requests/create')}
-        />
-      </div>
-      <div className="mt-4">
-        <Table
-          loading={estimateRequestsLoading}
-          columns={columns}
-          dataSource={estimateRequestsData}
-          pagination={{ position: ['bottomCenter'] }}
-        />
-      </div>
-    </section>
-  );
+      </ModalComponent>
+    ) : null}
+    <div className="flex justify-between items-center">
+      <TertiaryHeading
+        title="My Estimate request"
+        className="text-graphiteGray"
+      />
+      <CustomButton
+        text="Start New Estimate "
+        className="!w-auto "
+        icon="plus.svg"
+        iconwidth={20}
+        iconheight={20}
+        onClick={() => router.push('/estimates/requests/create')}
+      />
+    </div>
+    <div className="mt-4">
+      <Table
+        loading={estimateRequestsLoading}
+        columns={columns}
+        dataSource={estimateRequestsData}
+        pagination={{ position: ['bottomCenter'] }}
+      />
+    </div>
+  </section>
+
 };
 
 export default EstimateRequestTable;

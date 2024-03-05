@@ -43,14 +43,17 @@ const Payment = () => {
   }, []);
 
   const stripePaymentHandler = async () => {
-    const stripe: any = await loadStripe(
+    const stripe = await loadStripe(
       process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!
     );
+    if (!stripe) {
+      return;
+    }
     const response: any = await authService.httpStripeCheckout({
       planID: selectedPLan?._id,
       autoRenew: autoRenew,
     });
-    const result = stripe.redirectToCheckout({
+    const result = await stripe.redirectToCheckout({
       sessionId: response.data.id,
     });
 
