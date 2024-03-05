@@ -15,7 +15,7 @@ type Props = {
 }
 
 const MONTHS = [
-  { label: "Month", value: "", disabled: true },
+  { label: "Month", value: "Month", disabled: true },
   { label: "January", value: "January" },
   { label: "February", value: "February" },
   { label: "March", value: "March" },
@@ -31,7 +31,7 @@ const MONTHS = [
 ]
 
 export default function InvoiceReport({ invoiceQuery }: Props) {
-  const [selectedMonth, setSelectedMonth] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState("Month");
   const [invoices, setInvoices] = useState<{ value: string | number; type: string; }[]>([]);
 
   useEffect(() => {
@@ -44,7 +44,11 @@ export default function InvoiceReport({ invoiceQuery }: Props) {
       };
     }) : [];
     setInvoices(data);
-  }, [invoiceQuery.data, selectedMonth])
+  }, [invoiceQuery.data, selectedMonth]);
+
+  function sumMonth(type: string) {
+    return invoices.filter(invoice => invoice.type === type).reduce((a, b) => a + +b.value, 0);
+  }
 
   if (invoiceQuery.isLoading) {
     return <div className="col-span-7 shadow-lg bg-white rounded-md px-4 border border-t">
@@ -58,15 +62,27 @@ export default function InvoiceReport({ invoiceQuery }: Props) {
     xField: 'type',
     yField: 'value',
     color: (data) => {
-      return data.type === selectedMonth ? "#7F56D9" : "#8f7db5"
+      if (selectedMonth === 'Month') {
+        return "#7F56D9";
+      }
+      else if (data.type === selectedMonth) {
+        return "#7F56D9"
+      } else {
+        return "#8f7db5"
+      }
     },
     maxColumnWidth: 10,
     columnStyle: {
       radius: 50
     },
-    xAxis: {
-      grid: undefined
-    }
+
+    label: {
+      content(orignalData) {
+        return `${sumMonth(orignalData.type)}`;
+      }
+    },
+    tooltip: false
+
   }
 
 
@@ -86,7 +102,6 @@ export default function InvoiceReport({ invoiceQuery }: Props) {
             setSelectedMonth(value)
           },
           className: "!w-[150px]",
-          allowClear: true
         }}
       />
     </div>
