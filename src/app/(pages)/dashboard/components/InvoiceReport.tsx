@@ -78,7 +78,7 @@ export default function InvoiceReport({ invoiceQuery }: Props) {
 
     label: {
       content(orignalData) {
-        return `${sumMonth(orignalData.type)}`;
+        return `$${sumMonth(orignalData.type)}`;
       }
     },
     tooltip: false
