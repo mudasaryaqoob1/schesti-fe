@@ -77,7 +77,7 @@ export function Contractors() {
 
   async function handleDropdownItemClick(key: string, record: IInvoice) {
     if (key === 'editInvoice') {
-      router.push(`/invoices/edit/${record._id}`);
+      router.push(`/invoices/standard-invoicing/edit/${record._id}`);
     } else if (key === 'delete') {
       Modal.confirm({
         title: 'Are you sure delete this invoice?',
@@ -92,7 +92,7 @@ export function Contractors() {
         onCancel() {},
       });
     } else if (key === 'view') {
-      router.push(`/invoices/view/${record._id}`);
+      router.push(`/invoices/standard-invoicing/view/${record._id}`);
     } else if (key === 'collectPayments') {
       setSelectedInvoice(record);
     }
@@ -203,7 +203,7 @@ export function Contractors() {
     <div className="w-full mb-4">
       <div className="flex justify-between flex-wrap items-center md:flex-nowrap mb-2">
         <TertiaryHeading
-          title="Contractor/ Subcontractor/ Vendor invoice"
+          title="Standard Invoicing"
           className="text-graphiteGray"
         />
         <Drawer
@@ -253,7 +253,7 @@ export function Contractors() {
             className="!w-auto"
             iconwidth={20}
             iconheight={20}
-            onClick={() => router.push('/invoices/create')}
+            onClick={() => router.push('/invoices/standard-invoicing/create')}
           />
         </div>
       </div>

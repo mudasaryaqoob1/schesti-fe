@@ -1,16 +1,17 @@
 import { IMeeting } from '@/app/interfaces/meeting.type';
 import { NoMeetings } from './NoMeetings';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import QuinaryHeading from '@/app/component/headings/quinary';
+import { getClientLocalTimezone } from '@/app/utils/date.utils';
 
 type Props = {
   meetings: IMeeting[];
 };
 export function PreviousMeetings({ meetings }: Props) {
   meetings = meetings.filter((m) => {
-    const current = moment();
-    const endMeeting = moment(m.endDate);
+    const current = moment.tz(getClientLocalTimezone());
+    const endMeeting = moment(m.endDate).tz(m.timezone);
     return current.isAfter(endMeeting);
   });
   return meetings.length === 0 ? (
@@ -38,7 +39,7 @@ export function PreviousMeetings({ meetings }: Props) {
               />
             </div>
             <SenaryHeading
-              title={`Time: ${moment(item.startDate).format('h:mm a')}`}
+              title={`Time: ${moment(item.startDate).format('h:mm a')} ${item.timezone} - ${moment.tz(item.startDate, item.timezone).tz(getClientLocalTimezone()).format('h:mm a')} ${getClientLocalTimezone()}`}
               className="text-[#667085]"
             />
           </div>

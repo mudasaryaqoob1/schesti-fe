@@ -1,4 +1,3 @@
-'use client';
 import React from 'react';
 import {
   Button,
@@ -7,6 +6,7 @@ import {
   Divider,
   Input,
   Modal,
+  Select,
   Table,
 } from 'antd';
 import PrimaryHeading from '@/app/component/headings/primary';
@@ -20,12 +20,19 @@ import {
   ExclamationCircleFilled,
   PlusOutlined,
 } from '@ant-design/icons';
-import { G7State } from '@/app/interfaces/client-invoice.interface';
+import {
+  G7State,
+  IClientInvoice,
+} from '@/app/interfaces/client-invoice.interface';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
+import moment from 'moment';
 import { disabledDate } from '@/app/utils/date.utils';
 
 type Props = {
+  phases: IClientInvoice[];
+  selectedPhase: IClientInvoice | null;
+  setSelectedPhase: (_value: string) => void;
   state: G7State;
   // eslint-disable-next-line no-unused-vars
   handleState<K extends keyof G7State>(key: K, value: G7State[K]): void;
@@ -37,6 +44,9 @@ type Props = {
 };
 
 export function G703Component({
+  phases,
+  selectedPhase,
+  setSelectedPhase,
   state,
   handleState,
   sumColumns,
@@ -86,6 +96,25 @@ export function G703Component({
           <QuaternaryHeading title="AIA Document G703, - 1992" />
           <PrimaryHeading title="Continuation Sheet" className="font-normal" />
         </div>
+        <div>
+          <Select
+            placeholder="Select Previous Phase"
+            options={phases.map((phase, index) => ({
+              label: `${index + 1}. Pay Application: ${moment(
+                phase.applicationDate
+              ).format('DD MMM-YYYY')} - ${moment(phase.periodTo).format(
+                'DD MMM-YYYY'
+              )}`,
+              value: phase._id,
+            }))}
+            value={selectedPhase?._id}
+            onChange={(value) => {
+              setSelectedPhase(value);
+            }}
+            style={{ width: 400 }}
+            size="large"
+          />
+        </div>
       </div>
       <Divider className="!mt-6 !m-0" />
 
@@ -114,7 +143,9 @@ export function G703Component({
                 value={state.applicationNo}
                 onChange={(e) => handleState('applicationNo', e.target.value)}
               />
-              <p className="text-gray-400">Application No is required.</p>
+              {showAddAndDelete ? (
+                <p className="text-gray-400">Application No is required.</p>
+              ) : null}
             </div>
           </div>
 
@@ -126,13 +157,19 @@ export function G703Component({
               <DatePicker
                 id="application-date"
                 className="px-2 w-full rounded-none py-[7px] border border-gray-300 outline-none"
-                defaultValue={dayjs(state.applicationDate)}
+                value={
+                  state.applicationDate
+                    ? dayjs(state.applicationDate)
+                    : undefined
+                }
                 onChange={(_d, dateString) =>
                   handleState('applicationDate', dateString as string)
                 }
                 disabledDate={disabledDate}
               />
-              <p className="text-gray-400">Application Date is required.</p>
+              {showAddAndDelete ? (
+                <p className="text-gray-400">Application Date is required.</p>
+              ) : null}
             </div>
           </div>
 
@@ -140,17 +177,20 @@ export function G703Component({
             <label className="text-right col-span-4 text-graphiteGray font-normal">
               PERIOD TO:
             </label>
+
             <div className="col-span-2">
               <DatePicker
                 id="application-date"
                 className="px-4 w-full rounded-none py-[7px] border border-gray-300 outline-none"
-                value={!state.periodTo ? undefined : dayjs(state.periodTo)}
+                defaultValue={undefined}
                 onChange={(_d, dateString) =>
                   handleState('periodTo', dateString as string)
                 }
                 disabledDate={disabledDate}
               />
-              <p className="text-gray-400">Period To is required.</p>
+              {showAddAndDelete ? (
+                <p className="text-gray-400">Period To is required.</p>
+              ) : null}
             </div>
           </div>
 
@@ -158,6 +198,7 @@ export function G703Component({
             <label className="text-right col-span-4 text-graphiteGray font-normal">
               PROJECT NO:
             </label>
+
             <div className="col-span-2">
               <Input
                 className="px-2 py-1  border border-gray-300 "
@@ -165,7 +206,9 @@ export function G703Component({
                 value={state.projectNo}
                 onChange={(e) => handleState('projectNo', e.target.value)}
               />
-              <p className="text-gray-400">Project No is required.</p>
+              {showAddAndDelete ? (
+                <p className="text-gray-400">Project No is required.</p>
+              ) : null}
             </div>
           </div>
         </div>
@@ -206,7 +249,8 @@ export function G703Component({
           <Column
             title={<SenaryHeading title="Description Of Work" />}
             dataIndex={1}
-            width={300}
+            align="center"
+            width={250}
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
                 return <div className="px-3">{value}</div>;
@@ -225,6 +269,7 @@ export function G703Component({
           <Column
             title={<SenaryHeading title="Scheduled value" />}
             dataIndex={2}
+            align="center"
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
                 return <div className="px-3 font-bold">{value}</div>;
@@ -245,36 +290,45 @@ export function G703Component({
             <Column
               title={<SenaryHeading title="From previous application (D+E)" />}
               dataIndex={3}
+              align="center"
               render={(value, record: string[], index) => {
                 if (index === state.data.length) {
                   return <div className="px-3">{value}</div>;
                 }
-                let columnE = Number(getCellValue(record, 4));
+                let columnF = Number(getCellValue(record, 3));
                 return (
-                  <Input
-                    value={state.phase > 0 ? columnE : undefined}
-                    prefix="$"
-                    type="number"
-                    disabled
-                  />
+                  <Input value={columnF} prefix="$" type="number" disabled />
                 );
               }}
             />
             <Column
               title={<SenaryHeading title="This period" />}
               dataIndex={4}
-              render={(value, record, index) => {
+              align="center"
+              render={(value, record: string[], index) => {
                 if (index === state.data.length) {
                   return <div className="px-3">{value}</div>;
                 }
+                const scheduledValue = Number(getCellValue(record, 2));
+                const thisPeriodValue = Number(getCellValue(record, 4));
+                const isGreater = thisPeriodValue > scheduledValue;
+
                 return (
                   <Input
                     value={value}
                     prefix="$"
                     type="number"
                     onChange={(e) => {
+                      if (Number(e.target.value) > scheduledValue) {
+                        updateCellValue(index, 4, 0);
+                        toast.error(
+                          'This period value cannot be greater than scheduled value'
+                        );
+                        return;
+                      }
                       updateCellValue(index, 4, Number(e.target.value));
                     }}
+                    status={isGreater ? 'error' : undefined}
                   />
                 );
               }}
@@ -285,6 +339,7 @@ export function G703Component({
               <SenaryHeading title="Materials presently stored (not in D or E)" />
             }
             dataIndex={5}
+            align="center"
             render={(value, record, index) => {
               if (index === state.data.length) {
                 return <div className="px-3">{value}</div>;
@@ -301,11 +356,15 @@ export function G703Component({
               );
             }}
           />
-          <ColumnGroup title={<SenaryHeading title="Work Completed" />}>
+          <ColumnGroup
+            align="center"
+            title={<SenaryHeading title="Work Completed" />}
+          >
             <Column
               title={
-                <SenaryHeading title="TOTAL COMPLETED AND STORED TO DATE (D+E+F)" />
+                <SenaryHeading title="Total Completed And Stored To Date (D+E+F)" />
               }
+              align="center"
               dataIndex={6}
               render={(value, record: string[], index) => {
                 if (index === state.data.length) {
@@ -327,6 +386,7 @@ export function G703Component({
             <Column
               title={<SenaryHeading title="% (G ÷ C)" />}
               dataIndex={7}
+              align="center"
               render={(value, record: string[], index) => {
                 if (index === state.data.length) {
                   return <div className="px-3">{value}</div>;
@@ -342,8 +402,9 @@ export function G703Component({
             />
           </ColumnGroup>
           <Column
-            title={<SenaryHeading title="BALANCE (C - G)" />}
+            title={<SenaryHeading title="Balance (C - G)" />}
             dataIndex={8}
+            align="center"
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
                 return <div className="px-3">{value}</div>;
@@ -360,10 +421,12 @@ export function G703Component({
           <Column
             title={
               <SenaryHeading
-                title={`RETAINAGE (IF VARIABLE RATE) ${state.p5aPercentage}%`}
+                title={`Retainage (If Variable Rate) ${state.p5aPercentage}%`}
+                className="px-2"
               />
             }
             dataIndex={9}
+            align="center"
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
                 return <div className="px-3">{value}</div>;
@@ -381,6 +444,7 @@ export function G703Component({
           <Column
             title=""
             className="border-none border-b"
+            align="center"
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
                 return (
@@ -405,7 +469,7 @@ export function G703Component({
                       icon={<PlusOutlined />}
                       shape="circle"
                       type="default"
-                      className={`!ml-3 ${showAddAndDelete ? '' : 'hidden'}`}
+                      className={`!ml-2 ${showAddAndDelete ? '' : 'hidden'}`}
                     />
                   </ConfigProvider>
                 );

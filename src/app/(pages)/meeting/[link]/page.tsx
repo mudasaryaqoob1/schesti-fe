@@ -13,7 +13,7 @@ import { useCallback, useEffect, useLayoutEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { MeetingMessage } from './Message';
-import { isMeetingActive, isMeetingEnded, isMeetingNotStarted } from './utils';
+import { isMeetingActive, isMeetingNotStarted } from './utils';
 import ModalComponent from '@/app/component/modal';
 import { LinkMessage } from './LinkMessage';
 import moment from 'moment';
@@ -66,42 +66,43 @@ export default function JoinMeeting() {
   return (
     <div>
       <div className="h-screen">
-        {isMeetingEnded(meeting) ? (
-          <ModalComponent
-            open={!isMeetingActive(meeting)}
-            setOpen={() => {}}
-            title="Meeting Expired/InActive"
-            width="40%"
-          >
-            <LinkMessage
-              title="Link Expired"
-              description="Your meeting link is expired. You can contact with admin"
-              onClose={() => router.push('/meeting')}
-            >
-              <div></div>
-            </LinkMessage>
-          </ModalComponent>
-        ) : isMeetingNotStarted(meeting) ? (
-          <ModalComponent
-            open={!isMeetingActive(meeting)}
-            setOpen={() => {}}
-            title="Meeting link is not active"
-            width="40%"
-          >
-            <LinkMessage
-              type="inactive"
+        {
+          // isMeetingEnded(meeting) ? (
+          //   <ModalComponent
+          //     open={!isMeetingActive(meeting)}
+          //     setOpen={() => { }}
+          //     title="Meeting Expired/InActive"
+          //     width="40%"
+          //   >
+          //     <LinkMessage
+          //       title="Link Expired"
+          //       description="Your meeting link is expired. You can contact with admin"
+          //       onClose={() => router.push('/meeting')}
+          //     >
+          //       <div></div>
+          //     </LinkMessage>
+          //   </ModalComponent>
+          // ) :
+          isMeetingNotStarted(meeting) ? (
+            <ModalComponent
+              open={!isMeetingActive(meeting)}
+              setOpen={() => {}}
               title="Meeting link is not active"
-              description="Please wait for meeting start time to active the link. Meeting link is active before 15 mint"
-              onClose={() => router.push('/meeting')}
+              width="40%"
             >
-              <Description
-                title={`Meeting time: ${moment(meeting.startDate).format(
-                  'ddd, MMM DD, YYYY, hh:mm A'
-                )}`}
-              />
-            </LinkMessage>
-          </ModalComponent>
-        ) : null}
+              <LinkMessage
+                type="inactive"
+                title="Meeting link is not active"
+                description="Please wait for meeting start time to active the link. Meeting link is active before 15 minutes."
+                onClose={() => router.push('/meeting')}
+              >
+                <Description
+                  title={`Meeting time: ${moment(meeting.startDate).format('ddd, MMM DD, YYYY, hh:mm A')}`}
+                />
+              </LinkMessage>
+            </ModalComponent>
+          ) : null
+        }
         <JaaSMeeting
           appId={process.env.NEXT_PUBLIC_JITSI_APP_ID as string}
           roomName={meeting.roomName}

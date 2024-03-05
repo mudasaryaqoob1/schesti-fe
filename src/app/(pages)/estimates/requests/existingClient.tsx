@@ -17,8 +17,8 @@ import Description from '@/app/component/description';
 import SecondaryHeading from '@/app/component/headings/Secondary';
 
 interface Props {
-  setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  onSelectClient: (data: IClient) => void;
+  setModalOpen: (_value: boolean) => void;
+  onSelectClient: (_data: IClient) => void;
 }
 
 const ExistingClient = ({ setModalOpen, onSelectClient }: Props) => {
@@ -58,7 +58,10 @@ const ExistingClient = ({ setModalOpen, onSelectClient }: Props) => {
             width={24}
             height={24}
             className="cursor-pointer"
-            onClick={() => setModalOpen(false)}
+            onClick={() => {
+              setModalOpen(false);
+              selectedClientId(undefined);
+            }}
           />
         </div>
         <div className="rounded-lg border border-Gainsboro bg-silverGray w-[335px] h-[40px] my-5 flex items-center px-3">
@@ -149,7 +152,10 @@ const ExistingClient = ({ setModalOpen, onSelectClient }: Props) => {
           <Button
             text="Cancel"
             className="!bg-snowWhite !text-abyssalBlack"
-            onClick={() => setModalOpen(false)}
+            onClick={() => {
+              setSelectedClientId(undefined);
+              setModalOpen(false);
+            }}
           />
         </div>
         <div>

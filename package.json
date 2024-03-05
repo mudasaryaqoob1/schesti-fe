@@ -15,7 +15,7 @@
     "prettier": "prettier --write ."
   },
   "dependencies": {
-    "@ant-design/charts": "^2.0.3",
+    "@ant-design/charts": "1.4.2",
     "@ant-design/icons": "^5.2.6",
     "@breezeos-dev/use-react-screenshot": "^2.0.2",
     "@jitsi/react-sdk": "^1.4.0",
@@ -37,6 +37,7 @@
     "jspdf": "^2.5.1",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
+    "moment-timezone": "^0.5.45",
     "next": "14.0.2",
     "pdfjs-dist": "^4.0.379",
     "react": "^18",

@@ -229,12 +229,12 @@ const EditEstimateRequest = () => {
       return;
     }
 
-    if (byteConverter(documents[0].size, 'MB').size > 10) {
-      setuploadDocumentsError(
-        'Cannot upload document more then 10 mb of size.'
-      );
-      return;
-    }
+    // if (byteConverter(documents[0].size, 'MB').size > 10) {
+    //   setuploadDocumentsError(
+    //     'Cannot upload document more then 10 mb of size.'
+    //   );
+    //   return;
+    // }
     for (let i = 0; i < documents.length; i++) {
       setTakeOffReports((prev: any) => [...prev, documents[i]]);
     }
@@ -247,12 +247,12 @@ const EditEstimateRequest = () => {
       return;
     }
 
-    if (byteConverter(documents[0].size, 'MB').size > 10) {
-      setuploadDocumentsError(
-        'Cannot upload document more then 10 mb of size.'
-      );
-      return;
-    }
+    // if (byteConverter(documents[0].size, 'MB').size > 10) {
+    //   setuploadDocumentsError(
+    //     'Cannot upload document more then 10 mb of size.'
+    //   );
+    //   return;
+    // }
     for (let i = 0; i < documents.length; i++) {
       setOtherDocuments((prev: any) => [...prev, documents[i]]);
     }
@@ -263,12 +263,12 @@ const EditEstimateRequest = () => {
     if (!documents[0]) {
       return;
     }
-    if (byteConverter(documents[0].size, 'MB').size > 10) {
-      setuploadDocumentsError(
-        'Cannot upload document more then 10 mb of size.'
-      );
-      return;
-    }
+    // if (byteConverter(documents[0].size, 'MB').size > 10) {
+    //   setuploadDocumentsError(
+    //     'Cannot upload document more then 10 mb of size.'
+    //   );
+    //   return;
+    // }
     for (let i = 0; i < documents.length; i++) {
       if (
         documents[i].type === 'application/pdf' ||
@@ -301,7 +301,7 @@ const EditEstimateRequest = () => {
   return (
     <section className="my-5 px-16">
       <div className="flex justify-between flex-wrap items-center md:flex-nowrap">
-        <TertiaryHeading title="Take Off Measurements" />
+        <TertiaryHeading title="Edit Estimate Request" />
         <CustomWhiteButton
           text="Add Existing Client"
           className="!w-auto "
@@ -322,7 +322,11 @@ const EditEstimateRequest = () => {
         {({ handleSubmit, setFieldValue }) => {
           return (
             <>
-              <ModalComponent open={showModal} setOpen={setShowModal}>
+              <ModalComponent
+                open={showModal}
+                setOpen={setShowModal}
+                destroyOnClose
+              >
                 <ExistingClient
                   setModalOpen={setShowModal}
                   onSelectClient={({
@@ -482,7 +486,8 @@ const EditEstimateRequest = () => {
                                     {doc?.name}
                                   </p>
                                   <p className="text-[#989692] text-[12px] font-[400] my-2">
-                                    {byteConverter(doc?.size, 'KB').size} KB
+                                    {byteConverter(doc?.size, 'KB').size}{' '}
+                                    {byteConverter(doc?.size, 'KB').unit}
                                   </p>
                                   <a
                                     href={doc.url}
@@ -582,7 +587,8 @@ const EditEstimateRequest = () => {
                                     {doc?.name}
                                   </p>
                                   <p className="text-[#989692] text-[12px] font-[400] my-2">
-                                    {byteConverter(doc?.size, 'KB').size} KB
+                                    {byteConverter(doc?.size, 'KB').size}{' '}
+                                    {byteConverter(doc?.size, 'KB').unit}
                                   </p>
                                   <a
                                     href={doc.url}
@@ -681,7 +687,8 @@ const EditEstimateRequest = () => {
                                     {doc?.name}
                                   </p>
                                   <p className="text-[#989692] text-[12px] font-[400] my-2">
-                                    {byteConverter(doc?.size, 'KB').size} KB
+                                    {byteConverter(doc?.size, 'KB').size}{' '}
+                                    {byteConverter(doc?.size, 'KB').unit}
                                   </p>
                                   <a
                                     href={doc.url}

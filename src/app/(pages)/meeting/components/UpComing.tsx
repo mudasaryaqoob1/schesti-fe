@@ -4,7 +4,6 @@ import Image from 'next/image';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import moment from 'moment';
 import QuinaryHeading from '@/app/component/headings/quinary';
-import dayjs from 'dayjs';
 import { IMeeting } from '@/app/interfaces/meeting.type';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
@@ -12,6 +11,7 @@ import { Skeleton } from 'antd';
 import { useCopyToClipboard } from 'usehooks-ts';
 import { toast } from 'react-toastify';
 import { NoMeetings } from './NoMeetings';
+import { dayjs, getClientLocalTimezone } from '@/app/utils/date.utils';
 
 type Props = {
   state: IMeeting[];
@@ -48,11 +48,14 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
   if (state.length === 0) {
     return <NoMeetings onClick={onOpenModal} />;
   }
+  const userDateTime = dayjs().tz(getClientLocalTimezone());
   const meetings = state.filter((item) => {
-    const endDate = dayjs(item.endDate);
-    const today = dayjs();
-    const beforeTime = today.isBefore(endDate, 'minute');
-    return beforeTime;
+    const startDateTime = dayjs(item.startDate).tz(item.timezone);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+    const endDateTime = dayjs(item.endDate).tz(item.timezone);
+
+    // Check if meeting is happening in the future in user's timezone
+    return userDateTime.isBefore(startDateTime, 'minute');
   });
   return (
     <div>
@@ -89,7 +92,7 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
                   />
                 </div>
                 <SenaryHeading
-                  title={`Time: ${moment(item.startDate).format('h:mm a')}`}
+                  title={`Time: ${moment(item.startDate).format('h:mm a')} ${item.timezone} - ${moment.tz(item.startDate, getClientLocalTimezone()).format('h:mm a')} ${getClientLocalTimezone()}`}
                   className="text-[#667085]"
                 />
               </div>

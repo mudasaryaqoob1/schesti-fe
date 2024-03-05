@@ -199,12 +199,16 @@ const Tabs = () => {
                 {
                   key: 'standard-invoicing',
                   label: (
-                    <Link href="/standard-invoicing">Standard Invoicing</Link>
+                    <Link href="/invoices/standard-invoicing">
+                      Standard Invoicing
+                    </Link>
                   ),
                 },
                 {
                   key: 'aia-invoicing',
-                  label: <Link href="/aia-invoicing">AIA Invoicing</Link>,
+                  label: (
+                    <Link href="/invoices/aia-invoicing">AIA Invoicing</Link>
+                  ),
                 },
                 {
                   key: 'financial-tools',
@@ -221,9 +225,8 @@ const Tabs = () => {
                     flex items-stretch justify-center py-2 
                      cursor-pointer
                     `,
-                  (pathname.includes('/standard-invoicing'.split('/')[1]) ||
-                    pathname.includes('/aia-invoicing'.split('/')[1]) ||
-                    pathname.includes('/finance'.split('/')[1])) &&
+                  (pathname.includes('/finance') ||
+                    pathname.includes('/invoices')) &&
                     tabsStyle.active
                 )
               )}

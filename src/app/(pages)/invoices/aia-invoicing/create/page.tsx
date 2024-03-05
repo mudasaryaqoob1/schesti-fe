@@ -1,68 +1,53 @@
-import QuaternaryHeading from '@/app/component/headings/quaternary';
-import TertiaryHeading from '@/app/component/headings/tertiary';
-import {
-  G7State,
-  IClientInvoice,
-} from '@/app/interfaces/client-invoice.interface';
-import { clientInvoiceService } from '@/app/services/client-invoices.service';
+'use client';
+import { MutableRefObject, useLayoutEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { ConfigProvider, Tabs } from 'antd';
-import moment from 'moment';
-import { MutableRefObject, useEffect, useRef, useState } from 'react';
-import { G703Component } from './G703';
-import { generateData } from '../utils';
-import { G702Component } from './G702';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { HttpService } from '@/app/services/base.service';
+import { selectToken } from '@/redux/authSlices/auth.selector';
+import TertiaryHeading from '@/app/component/headings/tertiary';
+import QuaternaryHeading from '@/app/component/headings/quaternary';
+import { G703Component } from './components/G703';
+import { G702Component } from './components/G702';
+import { generateData } from './utils';
+import { G7State } from '@/app/interfaces/client-invoice.interface';
+import { clientInvoiceService } from '@/app/services/client-invoices.service';
 import { toast } from 'react-toastify';
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import { useScreenshot } from '@breezeos-dev/use-react-screenshot';
 import jsPDF from 'jspdf';
-import { ClientInvoiceFooter } from '../../../components/ClientInvoiceFooter';
-import { ClientInvoiceHeader } from '../../../components/ClientInvoiceHeader';
+import { ClientInvoiceHeader } from '../components/ClientInvoiceHeader';
+import { ClientInvoiceFooter } from '../components/ClientInvoiceFooter';
 
-type Props = {
-  parentInvoice: IClientInvoice;
-};
 const G703_KEY = 'G703';
 const G702_KEY = 'G702';
-
-export function PhaseComponent({ parentInvoice }: Props) {
-  // const router = useRouter();
-  // selected phase will be from allPhases and will be the latest last phase
-  const [selectedPhase, setSelectedPhase] = useState<IClientInvoice | null>(
-    null
-  );
+export default function CreateClientInvoicePage() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  const router = useRouter();
+  const token = useSelector(selectToken);
+  const searchParams = useSearchParams();
+  const invoiceName = searchParams.get('invoiceName');
   const [tab, setTab] = useState(G703_KEY);
   const ref = useRef<HTMLDivElement>();
   const [image, takeScreenshot] = useScreenshot();
   const [showDownload, setShowDownload] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
 
-  // all phases of the parent invoice
-  const [allPhases, setAllPhases] = useState<IClientInvoice[]>([]);
   const [g7State, setG7State] = useState<G7State>({
     applicationNo: '',
     invoiceName: '',
-    applicationDate: new Date().toString(),
-    periodTo: new Date().toString(),
+    applicationDate: new Date().toISOString(),
+    periodTo: '',
     projectNo: '',
     data: generateData(),
     address: '',
-    amountCertified1: '',
-    amountCertified2: '',
-    by: '',
-    country: '',
-    date: new Date().toString(),
-    distributionTo: 'Architect',
-    myCommissionExpires: '',
-    notaryPublic: '',
+    distributionTo: 'architect',
     project: '',
-    stateOf: '',
-    subscribedAndSworn: '',
     phase: 0,
     toOwner: '',
     viaEngineer: '',
 
-    amountCertified3: '',
     totalAdditionPreviousMonth: 0,
     totalAdditionThisMonth: 0,
     totalDeductionPreviousMonth: 0,
@@ -70,72 +55,46 @@ export function PhaseComponent({ parentInvoice }: Props) {
 
     p5aPercentage: 10,
     p5bPercentage: 2,
+
+    totalAmount: 0,
+    amountPaid: 0,
   });
 
-  useEffect(() => {
-    if (parentInvoice._id) {
-      (async function () {
-        try {
-          // get all the phases of the invoice
-          const response = await clientInvoiceService.httpGetInvoicePhases(
-            parentInvoice._id
-          );
-          if (response.data) {
-            // add parent phase as a previous phase
-            const phases = [parentInvoice, ...response.data.invoices];
-            // sort phases by date using moment
-            phases.sort(
-              (a, b) => moment(a.createdAt).unix() - moment(b.createdAt).unix()
-            );
-            const _selectedPhase = phases[phases.length - 1];
-            setAllPhases(phases);
-            setSelectedPhase(_selectedPhase);
-            // copy the values;
-            updateG7StateFromPhase({ ..._selectedPhase });
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      })();
+  useLayoutEffect(() => {
+    if (token) {
+      HttpService.setToken(token);
+      if (invoiceName) {
+        handleG7State('invoiceName', invoiceName);
+      }
     }
-  }, [parentInvoice]);
+  }, [token, invoiceName]);
 
-  function updateG7StateFromPhase(phase: IClientInvoice) {
-    const data = updatePreviousApplicationColumn(phase);
-    phase.applicationDate = '';
-    phase.periodTo = '';
-    setG7State({ ...phase, data });
-  }
   function handleG7State<K extends keyof G7State>(
     key: K,
     value: (typeof g7State)[K]
   ) {
     setG7State((prev) => {
+      if (
+        key === 'data' ||
+        key === 'p5aPercentage' ||
+        key === 'p5bPercentage'
+      ) {
+        const data = [...prev.data];
+        for (let index = 0; index < data.length; index++) {
+          updateColumn6(data, index);
+          updateColumn7(data, index);
+          updateColumn8(data, index);
+          updateColumn9(data, index);
+        }
+        return {
+          ...prev,
+          [key]: value,
+        };
+      }
       return { ...prev, [key]: value };
     });
   }
 
-  function updatePreviousApplicationColumn(_selectedPhase: IClientInvoice) {
-    let previousPhaseData = JSON.parse(
-      JSON.stringify(_selectedPhase.data)
-    ) as Array<string[]>;
-    const data = [...previousPhaseData];
-    const COLUMN_THIS_PERIOD = 4;
-    const COLUMN_PREVIOUS_APPLICATION = 3;
-
-    // loop over data
-    data.forEach((row) => {
-      const previousPhaseThisPeriodValue = Number(row[COLUMN_THIS_PERIOD]);
-      const previousPhasePreviousApplicationValue = Number(
-        row[COLUMN_PREVIOUS_APPLICATION]
-      );
-      const value =
-        previousPhaseThisPeriodValue + previousPhasePreviousApplicationValue;
-      row[COLUMN_PREVIOUS_APPLICATION] = value.toString();
-      row[COLUMN_THIS_PERIOD] = '';
-    });
-    return data;
-  }
   function sumColumns(rows: Array<string[]>, column: number): number {
     let sum = 0;
     rows.forEach((row) => {
@@ -220,8 +179,23 @@ export function PhaseComponent({ parentInvoice }: Props) {
   }
 
   function handleSubmit(data: G7State) {
+    // Get total Amount and Total Amount Paid
+    const changeOrderSummaryAdditionSum =
+      data.totalAdditionThisMonth + data.totalAdditionPreviousMonth;
+    const changeOrderSummaryDeductionSum =
+      data.totalDeductionThisMonth + data.totalDeductionPreviousMonth;
+    const changeOrderNetChanges =
+      changeOrderSummaryAdditionSum - changeOrderSummaryDeductionSum;
+    const originalContractSum = sumColumns(data.data, 2);
+
+    const totalAmount = originalContractSum + changeOrderNetChanges;
+    const amountPaid = Number(sumColumns(data.data, 6).toFixed(2));
     clientInvoiceService
-      .httpCreateNewInvoicePhase(parentInvoice._id, data)
+      .httpAddNewInvoice({
+        ...data,
+        totalAmount,
+        amountPaid,
+      })
       .then((response) => {
         if (response.statusCode == 201) {
           toast.success('Invoice created successfully');
@@ -229,14 +203,15 @@ export function PhaseComponent({ parentInvoice }: Props) {
           setShowDownload(true);
         }
       })
-      .catch(({ response }) => {
+      .catch(({ response }: any) => {
         if (response?.data.message === 'Validation Failed') {
           toast.error('Please fill the required fields.');
         }
       });
   }
+
   function downloadPdf() {
-    setIsDownloading(() => true);
+    setIsDownloading(true);
     var doc = new jsPDF('portrait', 'in', 'a0');
     if (image) {
       const imgProps = doc.getImageProperties(image);
@@ -246,9 +221,9 @@ export function PhaseComponent({ parentInvoice }: Props) {
       doc.internal.pageSize.height = height;
       doc.addImage(image, 'JPEG', 0, 0, width, height);
       setTimeout(() => {
-        setIsDownloading(false);
-        doc.save(`${parentInvoice.invoiceName}-invoice.pdf`);
+        doc.save(`${invoiceName}-invoice.pdf`);
       }, 500);
+      setIsDownloading(false);
     }
   }
   return (
@@ -256,7 +231,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
       <div className="p-5 shadow-md rounded-lg border border-silverGray  bg-white">
         <div className="flex space-x-3">
           <TertiaryHeading title="Invoice name:" className="font-medium" />
-          <TertiaryHeading title={`${parentInvoice.invoiceName}`} />
+          <TertiaryHeading title={`${invoiceName}`} />
         </div>
       </div>
 
@@ -291,9 +266,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
             tabBarExtraContent={
               showDownload ? (
                 <CustomButton
-                  loadingText="Downloading..."
-                  isLoading={isDownloading}
-                  text={'Download PDF'}
+                  text={isDownloading ? 'Downloading...' : 'Download PDF'}
                   onClick={() => downloadPdf()}
                 />
               ) : null
@@ -317,19 +290,8 @@ export function PhaseComponent({ parentInvoice }: Props) {
                 children:
                   tab === G703_KEY ? (
                     <G703Component
-                      selectedPhase={selectedPhase}
-                      setSelectedPhase={(value) => {
-                        let _selectedPhase = allPhases.find(
-                          (phase) => phase._id === value
-                        );
-                        if (_selectedPhase) {
-                          setSelectedPhase(_selectedPhase);
-                          updateG7StateFromPhase({ ..._selectedPhase });
-                        }
-                      }}
-                      phases={allPhases}
-                      handleState={handleG7State}
                       state={g7State}
+                      handleState={handleG7State}
                       sumColumns={sumColumns}
                       updateCellValue={updateCellValue}
                     >
@@ -341,10 +303,9 @@ export function PhaseComponent({ parentInvoice }: Props) {
                     </G703Component>
                   ) : (
                     <G702Component
+                      state={g7State}
                       handleState={handleG7State}
                       updateRetainage={updateRetainage}
-                      state={g7State}
-                      previousPhaseState={selectedPhase}
                       sumColumns={sumColumns}
                     >
                       <WhiteButton
@@ -355,7 +316,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
                         className="!w-40"
                       />
                       <CustomButton
-                        text="Create new Phase"
+                        text="Create"
                         className="!w-48"
                         onClick={() => {
                           handleSubmit(g7State);
@@ -370,7 +331,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
       </div>
       <div
         ref={ref as MutableRefObject<HTMLDivElement>}
-        className="space-y-5 w-full absolute z -left-[2500px] border p-6"
+        className="space-y-5 w-full absolute -left-[2500px] border p-6"
       >
         <ClientInvoiceHeader />
         <ConfigProvider
@@ -398,32 +359,20 @@ export function PhaseComponent({ parentInvoice }: Props) {
             },
           }}
         >
-          <G703Component
-            selectedPhase={selectedPhase}
-            setSelectedPhase={(value) => {
-              let _selectedPhase = allPhases.find(
-                (phase) => phase._id === value
-              );
-              if (_selectedPhase) {
-                setSelectedPhase(_selectedPhase);
-                updateG7StateFromPhase({ ..._selectedPhase });
-              }
-            }}
-            phases={allPhases}
-            handleState={handleG7State}
+          <G702Component
             state={g7State}
+            handleState={handleG7State}
+            updateRetainage={updateRetainage}
+            sumColumns={sumColumns}
+            showValidation={false}
+          />
+          <ClientInvoiceFooter />
+          <G703Component
+            state={g7State}
+            handleState={handleG7State}
             sumColumns={sumColumns}
             updateCellValue={updateCellValue}
             showAddAndDelete={false}
-          />
-          <ClientInvoiceFooter />
-
-          <G702Component
-            handleState={handleG7State}
-            updateRetainage={updateRetainage}
-            state={g7State}
-            previousPhaseState={selectedPhase}
-            sumColumns={sumColumns}
           />
         </ConfigProvider>
         <ClientInvoiceFooter />

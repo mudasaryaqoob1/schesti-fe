@@ -30,7 +30,7 @@ export function LinkMessage({
             />
           </div>
         )}
-        <div className="-space-y-2">
+        <div className="space-y-1">
           <SecondaryHeading title={title} className="text-black" />
           <Description
             title={description}

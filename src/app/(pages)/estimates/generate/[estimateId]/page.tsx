@@ -1,5 +1,10 @@
 'use client';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useLayoutEffect,
+} from 'react';
 import { useParams } from 'next/navigation';
 import Description from '@/app/component/description';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
@@ -12,6 +17,9 @@ import ClientPDF from '../components/clientPDF';
 import CustomButton from '@/app/component/customButton/button';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import { estimateRequestService } from '@/app/services/estimates.service';
+import { useSelector } from 'react-redux';
+import { selectToken } from '@/redux/authSlices/auth.selector';
+import { HttpService } from '@/app/services/base.service';
 
 const ViewEstimateDetail = () => {
   const { estimateId } = useParams();
@@ -19,7 +27,13 @@ const ViewEstimateDetail = () => {
   const [pdfData, setPdfData] = useState<Object[]>([]);
   const [estimateDetailsSummary, setEstimateDetailsSummary] = useState<any>();
   const [estimatesRecord, setEstimatesRecord] = useState([]);
+  const token = useSelector(selectToken);
 
+  useLayoutEffect(() => {
+    if (token) {
+      HttpService.setToken(token);
+    }
+  }, [token]);
   const fetchEstimateDetail = useCallback(async () => {
     const result =
       await estimateRequestService.httpGetGeneratedEstimateDetail(estimateId);
@@ -192,15 +206,15 @@ const ViewEstimateDetail = () => {
               className="text-midnightBlue font-popin"
             />
           </div>
-          <div>
+          {/* <div>
             <QuinaryHeading title="Address" className="text-lightyGray" />
             <Description
               title="----"
               className="text-midnightBlue font-popin"
             />
-          </div>
+          </div> */}
           {/* 3 */}
-          <div className="col-span-full row-span-2 text-start">
+          <div className=" row-span-2 text-start">
             <QuinaryHeading
               title="Project Information"
               className="text-lightyGray"
@@ -258,21 +272,21 @@ const ViewEstimateDetail = () => {
         <div className="flex items-center justify-between">
           <MinDesc title="Material Tax %" className="text-darkgrayish" />
           <Description
-            title={`$${estimateDetailsSummary?.totalBidDetail?.materialTax}`}
+            title={`$${estimateDetailsSummary?.totalBidDetail?.materialTax ?? 0}`}
             className="font-medium"
           />
         </div>
         <div className="flex items-center justify-between">
           <MinDesc title="Overhead & Profit %" className="text-darkgrayish" />
           <Description
-            title={`$${estimateDetailsSummary?.totalBidDetail?.overheadAndProfit}`}
+            title={`$${estimateDetailsSummary?.totalBidDetail?.overheadAndProfit ?? 0}`}
             className="font-medium"
           />
         </div>
         <div className="flex items-center justify-between">
           <MinDesc title="Bond Fee %" className="text-darkgrayish" />
           <Description
-            title={`$${estimateDetailsSummary?.totalBidDetail?.bondFee}`}
+            title={`$${estimateDetailsSummary?.totalBidDetail?.bondFee ?? 0}`}
             className="font-medium"
           />
         </div>

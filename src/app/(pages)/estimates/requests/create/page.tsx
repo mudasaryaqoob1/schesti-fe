@@ -218,12 +218,12 @@ const CreateEstimateRequest = () => {
       return;
     }
 
-    if (documents[0].size && byteConverter(documents[0].size, 'MB').size > 10) {
-      setuploadDocumentsError(
-        'Cannot upload document more then 10 mb of size.'
-      );
-      return;
-    }
+    // if (documents[0].size && byteConverter(documents[0].size, 'MB').size > 10) {
+    //   setuploadDocumentsError(
+    //     'Cannot upload document more then 10 mb of size.'
+    //   );
+    //   return;
+    // }
     for (let i = 0; i < documents.length; i++) {
       setTakeOffReports((prev: any) => [...prev, documents[i]]);
     }
@@ -238,12 +238,12 @@ const CreateEstimateRequest = () => {
       return;
     }
 
-    if (documents[0].size && byteConverter(documents[0].size, 'MB').size > 10) {
-      setuploadDocumentsError(
-        'Cannot upload document more then 10 mb of size.'
-      );
-      return;
-    }
+    // if (documents[0].size && byteConverter(documents[0].size, 'MB').size > 10) {
+    //   setuploadDocumentsError(
+    //     'Cannot upload document more then 10 mb of size.'
+    //   );
+    //   return;
+    // }
     for (let i = 0; i < documents.length; i++) {
       setOtherDocuments((prev: any) => [...prev, documents[i]]);
     }
@@ -256,12 +256,12 @@ const CreateEstimateRequest = () => {
     if (!documents[0]) {
       return;
     }
-    if (documents[0].size && byteConverter(documents[0].size, 'MB').size > 10) {
-      setuploadDocumentsError(
-        'Cannot upload document more then 10 mb of size.'
-      );
-      return;
-    }
+    // if (documents[0].size && byteConverter(documents[0].size, 'MB').size > 10) {
+    //   setuploadDocumentsError(
+    //     'Cannot upload document more then 10 mb of size.'
+    //   );
+    //   return;
+    // }
     for (let i = 0; i < documents.length; i++) {
       if (
         documents[i].type === 'application/pdf' ||
@@ -294,7 +294,7 @@ const CreateEstimateRequest = () => {
   return (
     <section className="my-5 px-16">
       <div className="flex justify-between flex-wrap items-center md:flex-nowrap">
-        <TertiaryHeading title="Take Off Measurements" />
+        <TertiaryHeading title="Create Estimate Request" />
         <CustomWhiteButton
           text="Add Existing Client"
           className="!w-auto "
@@ -312,7 +312,11 @@ const CreateEstimateRequest = () => {
         {({ handleSubmit, setFieldValue }) => {
           return (
             <>
-              <ModalComponent open={showModal} setOpen={setShowModal}>
+              <ModalComponent
+                open={showModal}
+                setOpen={setShowModal}
+                destroyOnClose
+              >
                 <ExistingClient
                   setModalOpen={setShowModal}
                   onSelectClient={({
@@ -482,7 +486,8 @@ const CreateEstimateRequest = () => {
                                     {`${doc?.name.substring(0, 20)}....`}
                                   </p>
                                   <p className="text-[#989692] text-[12px] font-[400] my-2">
-                                    {byteConverter(doc?.size, 'KB').size} KB
+                                    {byteConverter(doc?.size, 'KB').size}{' '}
+                                    {byteConverter(doc?.size, 'KB').unit}
                                   </p>
                                 </div>
                               )
@@ -573,7 +578,8 @@ const CreateEstimateRequest = () => {
                                     {doc?.name}
                                   </p>
                                   <p className="text-[#989692] text-[12px] font-[400] my-2">
-                                    {byteConverter(doc?.size, 'KB').size} KB
+                                    {byteConverter(doc?.size, 'KB').size}{' '}
+                                    {byteConverter(doc?.size, 'KB').unit}
                                   </p>
                                 </div>
                               )
@@ -666,7 +672,8 @@ const CreateEstimateRequest = () => {
                                     {doc?.name}
                                   </p>
                                   <p className="text-[#989692] text-[12px] font-[400] my-2">
-                                    {byteConverter(doc?.size, 'KB').size} KB
+                                    {byteConverter(doc?.size, 'KB').size}{' '}
+                                    {byteConverter(doc?.size, 'KB').unit}
                                   </p>
                                 </div>
                               )

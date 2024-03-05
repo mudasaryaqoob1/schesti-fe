@@ -2,8 +2,11 @@ import CustomButton from '@/app/component/customButton/button';
 import Description from '@/app/component/description';
 import SecondaryHeading from '@/app/component/headings/Secondary';
 import { Image } from 'antd';
+import { useRouter } from 'next/navigation';
 
 export function NoInvoiceFound() {
+  const router = useRouter();
+
   return (
     <section className="mt-6 mx-4 grid items-center h-[70vh]">
       <div className="grid place-items-center">
@@ -34,6 +37,7 @@ export function NoInvoiceFound() {
               icon="/plus.svg"
               iconwidth={20}
               iconheight={20}
+              onClick={() => router.push('/invoices/aia-invoicing')}
             />
           </div>
         </div>

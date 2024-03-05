@@ -14,7 +14,7 @@ type Props = {
 export function TotalCost({ clientQuery, estimateQuery }: Props) {
   return (
     <div className="grid grid-cols-4 gap-3 my-3">
-      <div className="flex justify-between items-center bg-white shadow rounded-md p-4">
+      <div className="flex justify-between items-center bg-white shadow-lg rounded-md p-4 border border-t">
         <div className="space-y-2">
           <h2 className="text-[#EF9F28] font-semibold text-[30px] leading-[38px]">
             {estimateQuery.isLoading
@@ -38,7 +38,7 @@ export function TotalCost({ clientQuery, estimateQuery }: Props) {
           />
         </div>
       </div>
-      <div className="flex justify-between items-center bg-white shadow rounded-md p-4">
+      <div className="flex justify-between items-center bg-white shadow-lg rounded-md p-4 border border-t">
         <div className="space-y-2">
           <h2 className="text-[#EF9F28] font-semibold text-[30px] leading-[38px]">
             146
@@ -59,7 +59,7 @@ export function TotalCost({ clientQuery, estimateQuery }: Props) {
           />
         </div>
       </div>
-      <div className="flex justify-between items-center bg-white shadow rounded-md p-4">
+      <div className="flex justify-between items-center bg-white shadow-lg rounded-md border border-t p-4">
         <div className="space-y-2">
           <h2 className="text-[#EF9F28] font-semibold text-[30px] leading-[38px]">
             146
@@ -80,7 +80,7 @@ export function TotalCost({ clientQuery, estimateQuery }: Props) {
           />
         </div>
       </div>
-      <div className="flex justify-between items-center bg-white shadow rounded-md p-4">
+      <div className="flex justify-between items-center bg-white border border-t shadow-lg rounded-md p-4">
         <div className="space-y-2">
           <h2 className="text-[#EF9F28] font-semibold text-[30px] leading-[38px]">
             {clientQuery.isLoading
@@ -97,7 +97,7 @@ export function TotalCost({ clientQuery, estimateQuery }: Props) {
         </div>
         <div>
           <Image
-            src={'/total-invoices.svg'}
+            src={'/total-clients.png'}
             alt="Picture of the author"
             width={50}
             height={50}
