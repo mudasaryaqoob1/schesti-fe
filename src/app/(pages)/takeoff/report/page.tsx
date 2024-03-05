@@ -3,8 +3,18 @@ import Button from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import Image from 'next/image';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
+import CaptureComponent from '@/app/component/captureComponent';
+import { useContext, useState } from 'react';
+import { DrawHistoryContext, UploadFileContext } from '../context';
+import { DrawHistoryContextProps } from '../context/DrawHistoryContext';
+import { UploadFileContextProps } from '../context/UploadFileContext';
 
 const Report = () => {
+  const { drawHistory } = useContext(
+    DrawHistoryContext
+  ) as DrawHistoryContextProps;
+
+  const [Images, setImages] = useState<{ url: string; key: number }[]>([]);
   return (
     <>
       <section className="md:px-16 px-8 pb-4">
@@ -68,6 +78,12 @@ const Report = () => {
           </div>
         </div>
       </section>
+      <CaptureComponent
+        itemsToCapture={drawHistory || {}}
+        onCapture={(url: string, key: number) => {
+          setImages((prev) => [...prev, { url, key }]);
+        }}
+      />
     </>
   );
 };
