@@ -114,7 +114,9 @@ export function G703Component({
                 value={state.applicationNo}
                 onChange={(e) => handleState('applicationNo', e.target.value)}
               />
-              {showAddAndDelete ? <p className="text-gray-400">Application No is required.</p> : null}
+              {showAddAndDelete ? (
+                <p className="text-gray-400">Application No is required.</p>
+              ) : null}
             </div>
           </div>
 
@@ -132,7 +134,9 @@ export function G703Component({
                 }
                 disabledDate={disabledDate}
               />
-              {showAddAndDelete ? <p className="text-gray-400">Application Date is required.</p> : null}
+              {showAddAndDelete ? (
+                <p className="text-gray-400">Application Date is required.</p>
+              ) : null}
             </div>
           </div>
 
@@ -150,7 +154,9 @@ export function G703Component({
                 }
                 disabledDate={disabledDate}
               />
-              {showAddAndDelete ? <p className="text-gray-400">Period To is required.</p> : null}
+              {showAddAndDelete ? (
+                <p className="text-gray-400">Period To is required.</p>
+              ) : null}
             </div>
           </div>
 
@@ -165,7 +171,9 @@ export function G703Component({
                 value={state.projectNo}
                 onChange={(e) => handleState('projectNo', e.target.value)}
               />
-              {showAddAndDelete ? <p className="text-gray-400">Project No is required.</p> : null}
+              {showAddAndDelete ? (
+                <p className="text-gray-400">Project No is required.</p>
+              ) : null}
             </div>
           </div>
         </div>
@@ -207,7 +215,7 @@ export function G703Component({
             title={<SenaryHeading title="Description Of Work" />}
             dataIndex={1}
             width={250}
-            align='center'
+            align="center"
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
                 return <div className="px-3">{value}</div>;
@@ -226,7 +234,7 @@ export function G703Component({
           <Column
             title={<SenaryHeading title="Scheduled value" />}
             dataIndex={2}
-            align='center'
+            align="center"
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
                 return <div className="px-3 font-bold">{value}</div>;
@@ -247,7 +255,7 @@ export function G703Component({
             <Column
               title={<SenaryHeading title="From previous application (D+E)" />}
               dataIndex={3}
-              align='center'
+              align="center"
               render={(value, record: string[], index) => {
                 if (index === state.data.length) {
                   return <div className="px-3">{value}</div>;
@@ -266,7 +274,7 @@ export function G703Component({
             <Column
               title={<SenaryHeading title="This period" />}
               dataIndex={4}
-              align='center'
+              align="center"
               render={(value, record: string[], index) => {
                 if (index === state.data.length) {
                   return <div className="px-3">{value}</div>;
@@ -283,7 +291,9 @@ export function G703Component({
                     onChange={(e) => {
                       if (Number(e.target.value) > scheduledValue) {
                         updateCellValue(index, 4, 0);
-                        toast.error("This period value cannot be greater than scheduled value");
+                        toast.error(
+                          'This period value cannot be greater than scheduled value'
+                        );
                         return;
                       }
                       updateCellValue(index, 4, Number(e.target.value));
@@ -299,7 +309,7 @@ export function G703Component({
               <SenaryHeading title="Materials presently stored (not in D or E)" />
             }
             dataIndex={5}
-            align='center'
+            align="center"
             render={(value, record, index) => {
               if (index === state.data.length) {
                 return <div className="px-3">{value}</div>;
@@ -317,14 +327,15 @@ export function G703Component({
             }}
           />
           <ColumnGroup
-            align='center'
-            title={<SenaryHeading title="Work Completed" />}>
+            align="center"
+            title={<SenaryHeading title="Work Completed" />}
+          >
             <Column
               title={
                 <SenaryHeading title="Total Completed And Stored To Date (D+E+F)" />
               }
               dataIndex={6}
-              align='center'
+              align="center"
               render={(value, record: string[], index) => {
                 if (index === state.data.length) {
                   return <div className="px-3">{value}</div>;
@@ -345,7 +356,7 @@ export function G703Component({
             <Column
               title={<SenaryHeading title="% (G ÷ C)" />}
               dataIndex={7}
-              align='center'
+              align="center"
               render={(value, record: string[], index) => {
                 if (index === state.data.length) {
                   return <div className="px-3">{value}</div>;
@@ -363,7 +374,7 @@ export function G703Component({
           <Column
             title={<SenaryHeading title="Balance (C - G)" />}
             dataIndex={8}
-            align='center'
+            align="center"
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
                 return <div className="px-3">{value}</div>;
@@ -381,11 +392,11 @@ export function G703Component({
             title={
               <SenaryHeading
                 title={`Retainage (If Variable Rate) ${state.p5aPercentage}%`}
-                className='px-2'
+                className="px-2"
               />
             }
             dataIndex={9}
-            align='center'
+            align="center"
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
                 return <div className="px-3">{value}</div>;
@@ -403,7 +414,7 @@ export function G703Component({
           <Column
             title=""
             className="border-none border-b"
-            align='center'
+            align="center"
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
                 return (
@@ -447,7 +458,7 @@ export function G703Component({
                       onOk() {
                         deleteRow(index);
                       },
-                      onCancel() { },
+                      onCancel() {},
                     });
                   }}
                 />

@@ -44,7 +44,9 @@ export function Clients() {
     },
     validationSchema: ValidationSchema,
     onSubmit(values) {
-      router.push(`/invoices/aia-invoicing/create?invoiceName=${values.invoiceName}`);
+      router.push(
+        `/invoices/aia-invoicing/create?invoiceName=${values.invoiceName}`
+      );
     },
   });
 
@@ -124,11 +126,10 @@ export function Clients() {
                   onOk() {
                     dispatch(deleteClientInvoiceRequest(record._id));
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
-              }
-              else if (key === 'view') {
-                router.push(`/invoices/aia-invoicing/view/${record._id}`)
+              } else if (key === 'view') {
+                router.push(`/invoices/aia-invoicing/view/${record._id}`);
               }
             },
           }}
@@ -149,14 +150,14 @@ export function Clients() {
   const filteredClientInvoices =
     clientInvoices.length > 0
       ? clientInvoices.filter((invoice) => {
-        if (!search) {
-          return invoice;
-        }
-        return (
-          invoice.invoiceName === search ||
-          invoice.toOwner.toLowerCase().includes(search.toLowerCase())
-        );
-      })
+          if (!search) {
+            return invoice;
+          }
+          return (
+            invoice.invoiceName === search ||
+            invoice.toOwner.toLowerCase().includes(search.toLowerCase())
+          );
+        })
       : [];
 
   return (

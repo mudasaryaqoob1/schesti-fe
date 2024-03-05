@@ -113,7 +113,7 @@ const Tabs = () => {
                   (pathname.includes('/clients') ||
                     pathname.includes('/subcontractor') ||
                     pathname.includes('/partners')) &&
-                  tabsStyle.active
+                    tabsStyle.active
                 )
               )}
             >
@@ -169,7 +169,7 @@ const Tabs = () => {
                      cursor-pointer
                     `,
                   pathname.includes('/estimates'.split('/')[1]) &&
-                  tabsStyle.active
+                    tabsStyle.active
                 )
               )}
             >
@@ -199,12 +199,16 @@ const Tabs = () => {
                 {
                   key: 'standard-invoicing',
                   label: (
-                    <Link href="/invoices/standard-invoicing">Standard Invoicing</Link>
+                    <Link href="/invoices/standard-invoicing">
+                      Standard Invoicing
+                    </Link>
                   ),
                 },
                 {
                   key: 'aia-invoicing',
-                  label: <Link href="/invoices/aia-invoicing">AIA Invoicing</Link>,
+                  label: (
+                    <Link href="/invoices/aia-invoicing">AIA Invoicing</Link>
+                  ),
                 },
                 {
                   key: 'financial-tools',
@@ -221,11 +225,9 @@ const Tabs = () => {
                     flex items-stretch justify-center py-2 
                      cursor-pointer
                     `,
-                  (
-                    pathname.includes('/finance')
-                    || pathname.includes("/invoices")
-                  ) &&
-                  tabsStyle.active
+                  (pathname.includes('/finance') ||
+                    pathname.includes('/invoices')) &&
+                    tabsStyle.active
                 )
               )}
             >

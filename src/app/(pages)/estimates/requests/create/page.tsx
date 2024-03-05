@@ -312,7 +312,11 @@ const CreateEstimateRequest = () => {
         {({ handleSubmit, setFieldValue }) => {
           return (
             <>
-              <ModalComponent open={showModal} setOpen={setShowModal} destroyOnClose>
+              <ModalComponent
+                open={showModal}
+                setOpen={setShowModal}
+                destroyOnClose
+              >
                 <ExistingClient
                   setModalOpen={setShowModal}
                   onSelectClient={({
@@ -482,7 +486,8 @@ const CreateEstimateRequest = () => {
                                     {`${doc?.name.substring(0, 20)}....`}
                                   </p>
                                   <p className="text-[#989692] text-[12px] font-[400] my-2">
-                                    {byteConverter(doc?.size, 'KB').size} {byteConverter(doc?.size, 'KB').unit}
+                                    {byteConverter(doc?.size, 'KB').size}{' '}
+                                    {byteConverter(doc?.size, 'KB').unit}
                                   </p>
                                 </div>
                               )
@@ -573,7 +578,8 @@ const CreateEstimateRequest = () => {
                                     {doc?.name}
                                   </p>
                                   <p className="text-[#989692] text-[12px] font-[400] my-2">
-                                    {byteConverter(doc?.size, 'KB').size} {byteConverter(doc?.size, 'KB').unit}
+                                    {byteConverter(doc?.size, 'KB').size}{' '}
+                                    {byteConverter(doc?.size, 'KB').unit}
                                   </p>
                                 </div>
                               )
@@ -666,7 +672,8 @@ const CreateEstimateRequest = () => {
                                     {doc?.name}
                                   </p>
                                   <p className="text-[#989692] text-[12px] font-[400] my-2">
-                                    {byteConverter(doc?.size, 'KB').size} {byteConverter(doc?.size, 'KB').unit}
+                                    {byteConverter(doc?.size, 'KB').size}{' '}
+                                    {byteConverter(doc?.size, 'KB').unit}
                                   </p>
                                 </div>
                               )

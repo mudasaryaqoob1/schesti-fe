@@ -60,7 +60,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
     p5bPercentage: 2,
 
     totalAmount: 0,
-    amountPaid: 0
+    amountPaid: 0,
   });
 
   useEffect(() => {
@@ -93,11 +93,11 @@ export function PhaseComponent({ parentInvoice }: Props) {
 
   useEffect(() => {
     takeScreenshot(ref.current);
-  }, [g7State])
+  }, [g7State]);
 
   function updateG7StateFromPhase(phase: IClientInvoice) {
     const data = updatePreviousApplicationColumn(phase);
-    setG7State({ ...phase, data, });
+    setG7State({ ...phase, data });
   }
   function handleG7State<K extends keyof G7State>(
     key: K,
@@ -153,8 +153,6 @@ export function PhaseComponent({ parentInvoice }: Props) {
     });
   }
 
-
-
   function updateColumn6(data: Array<string[]>, rowIndex: number) {
     const newData = [...data];
     const row = newData[rowIndex];
@@ -199,7 +197,6 @@ export function PhaseComponent({ parentInvoice }: Props) {
     newData[rowIndex][9] = `${isNaN(result) ? 0 : result}`;
     return newData;
   }
-
 
   function downloadPdf() {
     setIsDownloading(() => true);
@@ -313,7 +310,6 @@ export function PhaseComponent({ parentInvoice }: Props) {
                         text={'Download PDF'}
                         onClick={() => downloadPdf()}
                         className="!w-40"
-
                       />
                     </G702Component>
                   ),
@@ -352,7 +348,6 @@ export function PhaseComponent({ parentInvoice }: Props) {
             },
           }}
         >
-
           <G702Component
             handleState={handleG7State}
             updateRetainage={updateRetainage}

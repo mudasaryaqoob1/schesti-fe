@@ -7,55 +7,64 @@ import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { UseQueryResult } from 'react-query';
 
-
 type Props = {
-  invoiceQuery: UseQueryResult<IResponseInterface<{
-    invoices: IClientInvoice[];
-  }>, unknown>
-}
+  invoiceQuery: UseQueryResult<
+    IResponseInterface<{
+      invoices: IClientInvoice[];
+    }>,
+    unknown
+  >;
+};
 
 const MONTHS = [
-  { label: "Month", value: "Month", disabled: true },
-  { label: "January", value: "January" },
-  { label: "February", value: "February" },
-  { label: "March", value: "March" },
-  { label: "April", value: "April" },
-  { label: "May", value: "May" },
-  { label: "June", value: "June" },
-  { label: "July", value: "July" },
-  { label: "August", value: "August" },
-  { label: "September", value: "September" },
-  { label: "October", value: "October" },
-  { label: "November", value: "November" },
-  { label: "December", value: "December" },
-]
+  { label: 'Month', value: 'Month', disabled: true },
+  { label: 'January', value: 'January' },
+  { label: 'February', value: 'February' },
+  { label: 'March', value: 'March' },
+  { label: 'April', value: 'April' },
+  { label: 'May', value: 'May' },
+  { label: 'June', value: 'June' },
+  { label: 'July', value: 'July' },
+  { label: 'August', value: 'August' },
+  { label: 'September', value: 'September' },
+  { label: 'October', value: 'October' },
+  { label: 'November', value: 'November' },
+  { label: 'December', value: 'December' },
+];
 
 export default function InvoiceReport({ invoiceQuery }: Props) {
-  const [selectedMonth, setSelectedMonth] = useState("Month");
-  const [invoices, setInvoices] = useState<{ value: string | number; type: string; }[]>([]);
+  const [selectedMonth, setSelectedMonth] = useState('Month');
+  const [invoices, setInvoices] = useState<
+    { value: string | number; type: string }[]
+  >([]);
 
   useEffect(() => {
-    const data = invoiceQuery.data ? invoiceQuery.data.data!.invoices.map(invoice => {
-      const month = moment(invoice.applicationDate).format("MMMM");
-      // const value = `$${invoice.totalAmount}`;
-      return {
-        value: invoice.totalAmount,
-        type: month,
-      };
-    }) : [];
+    const data = invoiceQuery.data
+      ? invoiceQuery.data.data!.invoices.map((invoice) => {
+          const month = moment(invoice.applicationDate).format('MMMM');
+          // const value = `$${invoice.totalAmount}`;
+          return {
+            value: invoice.totalAmount,
+            type: month,
+          };
+        })
+      : [];
     setInvoices(data);
   }, [invoiceQuery.data, selectedMonth]);
 
   function sumMonth(type: string) {
-    return invoices.filter(invoice => invoice.type === type).reduce((a, b) => a + +b.value, 0);
+    return invoices
+      .filter((invoice) => invoice.type === type)
+      .reduce((a, b) => a + +b.value, 0);
   }
 
   if (invoiceQuery.isLoading) {
-    return <div className="col-span-7 shadow-lg bg-white rounded-md px-4 border border-t">
-      <Skeleton />
-    </div>
+    return (
+      <div className="col-span-7 shadow-lg bg-white rounded-md px-4 border border-t">
+        <Skeleton />
+      </div>
+    );
   }
-
 
   const config: ColumnConfig = {
     data: invoices,
@@ -63,48 +72,47 @@ export default function InvoiceReport({ invoiceQuery }: Props) {
     yField: 'value',
     color: (data) => {
       if (selectedMonth === 'Month') {
-        return "#7F56D9";
-      }
-      else if (data.type === selectedMonth) {
-        return "#7F56D9"
+        return '#7F56D9';
+      } else if (data.type === selectedMonth) {
+        return '#7F56D9';
       } else {
-        return "#8f7db5"
+        return '#8f7db5';
       }
     },
     maxColumnWidth: 10,
     columnStyle: {
-      radius: 50
+      radius: 50,
     },
 
     label: {
       content(orignalData) {
         return `$${sumMonth(orignalData.type)}`;
-      }
+      },
     },
-    tooltip: false
+    tooltip: false,
+  };
 
-  }
-
-
-  return <div className="col-span-7 shadow-lg bg-white rounded-md px-4 border border-t">
-    <div className="flex justify-between items-center my-4">
-      <h3 className="text-[18px] text-[#344054] leading-[28px] font-semibold">
-        Invoice
-      </h3>
-      <SelectComponent
-        label=''
-        name="month"
-        placeholder="Month"
-        field={{
-          options: MONTHS,
-          value: selectedMonth,
-          onChange: (value: string) => {
-            setSelectedMonth(value)
-          },
-          className: "!w-[150px]",
-        }}
-      />
+  return (
+    <div className="col-span-7 shadow-lg bg-white rounded-md px-4 border border-t">
+      <div className="flex justify-between items-center my-4">
+        <h3 className="text-[18px] text-[#344054] leading-[28px] font-semibold">
+          Invoice
+        </h3>
+        <SelectComponent
+          label=""
+          name="month"
+          placeholder="Month"
+          field={{
+            options: MONTHS,
+            value: selectedMonth,
+            onChange: (value: string) => {
+              setSelectedMonth(value);
+            },
+            className: '!w-[150px]',
+          }}
+        />
+      </div>
+      <Column {...config} />
     </div>
-    <Column {...config} />
-  </div>
+  );
 }

@@ -154,7 +154,7 @@ const ExistingClient = ({ setModalOpen, onSelectClient }: Props) => {
             className="!bg-snowWhite !text-abyssalBlack"
             onClick={() => {
               setSelectedClientId(undefined);
-              setModalOpen(false)
+              setModalOpen(false);
             }}
           />
         </div>

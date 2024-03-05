@@ -62,7 +62,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
     p5bPercentage: 2,
 
     totalAmount: 0,
-    amountPaid: 0
+    amountPaid: 0,
   });
 
   useEffect(() => {
@@ -228,7 +228,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
       .httpCreateNewInvoicePhase(parentInvoice._id, {
         ...data,
         totalAmount,
-        amountPaid
+        amountPaid,
       })
       .then((response) => {
         if (response.statusCode == 201) {
@@ -404,7 +404,6 @@ export function PhaseComponent({ parentInvoice }: Props) {
             },
           }}
         >
-
           <G702Component
             handleState={handleG7State}
             updateRetainage={updateRetainage}

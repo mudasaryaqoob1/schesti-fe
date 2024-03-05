@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  Divider,
-  Select,
-  Table,
-} from 'antd';
+import { Divider, Select, Table } from 'antd';
 import PrimaryHeading from '@/app/component/headings/primary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import ColumnGroup from 'antd/es/table/ColumnGroup';
@@ -39,8 +35,6 @@ export function G703Component({
   function getCellValue(row: string[], column: number) {
     return row[column];
   }
-
-
 
   return (
     <section>
@@ -86,9 +80,7 @@ export function G703Component({
               APPLICATION NO:
             </label>
             <div className="col-span-2">
-              <div
-                className="px-2 py-1  border border-gray-300 "
-              >
+              <div className="px-2 py-1  border border-gray-300 ">
                 {state.applicationNo}
               </div>
             </div>
@@ -107,7 +99,6 @@ export function G703Component({
                   ? dayjs(state.applicationDate).format('DD MMM-YYYY')
                   : null}
               </div>
-
             </div>
           </div>
 
@@ -117,10 +108,10 @@ export function G703Component({
             </label>
 
             <div className="col-span-2">
-              <div
-                className="px-2 w-full rounded-none py-[7px] border border-gray-300 outline-none"
-              >
-                {state.periodTo ? dayjs(state.periodTo).format('DD MMM-YYYY') : ''}
+              <div className="px-2 w-full rounded-none py-[7px] border border-gray-300 outline-none">
+                {state.periodTo
+                  ? dayjs(state.periodTo).format('DD MMM-YYYY')
+                  : ''}
               </div>
             </div>
           </div>
@@ -131,9 +122,7 @@ export function G703Component({
             </label>
 
             <div className="col-span-2">
-              <div
-                className="px-2 py-1  border border-gray-300 "
-              >
+              <div className="px-2 py-1  border border-gray-300 ">
                 {state.projectNo}
               </div>
             </div>
@@ -177,7 +166,7 @@ export function G703Component({
             title={<SenaryHeading title="Description Of Work" />}
             dataIndex={1}
             width={250}
-            align='center'
+            align="center"
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
                 return <div className="px-3">{value}</div>;
@@ -188,44 +177,39 @@ export function G703Component({
           <Column
             title={<SenaryHeading title="Scheduled value" />}
             dataIndex={2}
-            align='center'
+            align="center"
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
                 return <div className="px-3 font-bold">{value}</div>;
               }
-              return <div className="px-3">
-                $ {getCellValue(record, 2)}
-              </div>
+              return <div className="px-3">$ {getCellValue(record, 2)}</div>;
             }}
           />
           <ColumnGroup
-            align='center'
-            title={<SenaryHeading title="Work Completed" />}>
+            align="center"
+            title={<SenaryHeading title="Work Completed" />}
+          >
             <Column
               title={<SenaryHeading title="From previous application (D+E)" />}
               dataIndex={3}
-              align='center'
+              align="center"
               render={(value, record: string[], index) => {
                 if (index === state.data.length) {
                   return <div className="px-3">{value}</div>;
                 }
                 let columnF = Number(getCellValue(record, 3));
-                return <div className="px-3">
-                  $ {columnF}
-                </div>
+                return <div className="px-3">$ {columnF}</div>;
               }}
             />
             <Column
               title={<SenaryHeading title="This period" />}
               dataIndex={4}
-              align='center'
+              align="center"
               render={(value, record: string[], index) => {
                 if (index === state.data.length) {
                   return <div className="px-3">{value}</div>;
                 }
-                return <div className="px-3">
-                  $ {value ? value : 0}
-                </div>
+                return <div className="px-3">$ {value ? value : 0}</div>;
               }}
             />
           </ColumnGroup>
@@ -234,14 +218,12 @@ export function G703Component({
               <SenaryHeading title="Materials presently stored (not in D or E)" />
             }
             dataIndex={5}
-            align='center'
+            align="center"
             render={(value, record, index) => {
               if (index === state.data.length) {
                 return <div className="px-3">{value}</div>;
               }
-              return <div className="px-3">
-                $ {value}
-              </div>
+              return <div className="px-3">$ {value}</div>;
             }}
           />
           <ColumnGroup title={<SenaryHeading title="Work Completed" />}>
@@ -250,7 +232,7 @@ export function G703Component({
                 <SenaryHeading title="Total Completed And Stored To Date (D+E+F)" />
               }
               dataIndex={6}
-              align='center'
+              align="center"
               render={(value, record: string[], index) => {
                 if (index === state.data.length) {
                   return <div className="px-3">{value}</div>;
@@ -259,58 +241,58 @@ export function G703Component({
                 let columnE = Number(getCellValue(record, 4));
                 let columnF = Number(getCellValue(record, 5));
 
-                return <div className="px-3">
-                  $ {(columnD + columnE + columnF).toFixed(2)}
-                </div>
+                return (
+                  <div className="px-3">
+                    $ {(columnD + columnE + columnF).toFixed(2)}
+                  </div>
+                );
               }}
             />
             <Column
               title={<SenaryHeading title="% (G ÷ C)" />}
               dataIndex={7}
-              align='center'
+              align="center"
               render={(value, record: string[], index) => {
                 if (index === state.data.length) {
                   return <div className="px-3">{value}</div>;
                 }
-                return <div className="px-3">
-                  $ {Number(record[7]).toFixed(2)}
-                </div>
+                return (
+                  <div className="px-3">$ {Number(record[7]).toFixed(2)}</div>
+                );
               }}
             />
           </ColumnGroup>
           <Column
             title={<SenaryHeading title="Balance (C - G)" />}
             dataIndex={8}
-            align='center'
+            align="center"
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
                 return <div className="px-3">{value}</div>;
               }
-              return <div className="px-3">
-                $ {Number(record[8]).toFixed(2)}
-              </div>
+              return (
+                <div className="px-3">$ {Number(record[8]).toFixed(2)}</div>
+              );
             }}
           />
           <Column
             title={
               <SenaryHeading
                 title={`Retainage (If Variable Rate) ${state.p5aPercentage}%`}
-                className='px-2'
+                className="px-2"
               />
             }
             dataIndex={9}
-            align='center'
+            align="center"
             render={(value, record: string[], index) => {
               if (index === state.data.length) {
                 return <div className="px-3">{value}</div>;
               }
-              return <div className="px-3">
-                {Number(record[9]).toFixed(2)}%
-              </div>
+              return (
+                <div className="px-3">{Number(record[9]).toFixed(2)}%</div>
+              );
             }}
           />
-
-
         </Table>
       </div>
       {/* END Spreadsheet */}

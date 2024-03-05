@@ -38,7 +38,7 @@ const TargetsTable = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedTarget, setSelectedTarget] = useState<
-    undefined | Omit<ISettingTarget, "year">
+    undefined | Omit<ISettingTarget, 'year'>
   >();
 
   const token = useSelector(selectToken);
@@ -70,7 +70,7 @@ const TargetsTable = () => {
       ellipsis: true,
       render(value) {
         return `$${value}`;
-      }
+      },
     },
 
     {

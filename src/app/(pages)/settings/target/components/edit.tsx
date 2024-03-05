@@ -36,14 +36,14 @@ const EditTaget = ({ setShowModal, selectedTarget }: SettingTargetProps) => {
     }
   }, [token]);
 
-  const initialValues: Omit<ISettingTarget, "year"> = {
+  const initialValues: Omit<ISettingTarget, 'year'> = {
     month: selectedTarget?.month || '',
     price: selectedTarget?.price || '',
   };
   const [isLoading, setIsLoading] = useState(false);
 
   const submitHandler = async (
-    { price, month }: Omit<ISettingTarget, "year">,
+    { price, month }: Omit<ISettingTarget, 'year'>,
     { resetForm }: resetVoidFc
   ) => {
     setIsLoading(true);

@@ -13,7 +13,6 @@ import { TargetTable } from './components/TargetTable';
 const Fiance = () => {
   const token = useSelector(selectToken);
 
-
   useLayoutEffect(() => {
     if (token) {
       HttpService.setToken(token);
@@ -22,20 +21,20 @@ const Fiance = () => {
 
   const clientInvoiceQuery = useQuery(['client-invoices-with-children'], () => {
     return clientInvoiceService.httpGetAllInvoicesWithChildren();
-  })
+  });
 
   const targetsQuery = useQuery(['targets'], () => {
     return settingTargetService.httpGetAllSettingTargets(1, 20);
   });
 
-
-
-
   return (
     <section className="my-4  mx-8 px-4">
       <div className="grid grid-cols-12 gap-8">
         <FinancialStatus clientInvoiceQuery={clientInvoiceQuery} />
-        <TargetStats targetsQuery={targetsQuery} clientInvoiceQuery={clientInvoiceQuery} />
+        <TargetStats
+          targetsQuery={targetsQuery}
+          clientInvoiceQuery={clientInvoiceQuery}
+        />
       </div>
 
       <TargetTable

@@ -82,11 +82,11 @@ export default function JoinMeeting() {
           //       <div></div>
           //     </LinkMessage>
           //   </ModalComponent>
-          // ) : 
+          // ) :
           isMeetingNotStarted(meeting) ? (
             <ModalComponent
               open={!isMeetingActive(meeting)}
-              setOpen={() => { }}
+              setOpen={() => {}}
               title="Meeting link is not active"
               width="40%"
             >
@@ -101,7 +101,8 @@ export default function JoinMeeting() {
                 />
               </LinkMessage>
             </ModalComponent>
-          ) : null}
+          ) : null
+        }
         <JaaSMeeting
           appId={process.env.NEXT_PUBLIC_JITSI_APP_ID as string}
           roomName={meeting.roomName}

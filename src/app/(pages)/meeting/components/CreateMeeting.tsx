@@ -15,7 +15,11 @@ import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import { addNewMeetingAction } from '@/redux/meeting/meeting.slice';
 import Description from '@/app/component/description';
 import { SelectComponent } from '@/app/component/customSelect/Select.component';
-import { dayjs, disabledDate, getClientLocalTimezone } from '@/app/utils/date.utils';
+import {
+  dayjs,
+  disabledDate,
+  getClientLocalTimezone,
+} from '@/app/utils/date.utils';
 
 type Props = {
   showModal: boolean;
@@ -30,7 +34,7 @@ const CreateMeetingSchema = Yup.object().shape({
     .required('Email is required'),
   startDate: Yup.date().required('Start Time is required'),
 });
-let timezones = Intl.supportedValuesOf("timeZone");
+let timezones = Intl.supportedValuesOf('timeZone');
 export function CreateMeeting({ showModal, setShowModal }: Props) {
   const [isScheduling, setIsScheduling] = useState(false);
   const [timezone, setTimezone] = useState(getClientLocalTimezone());
@@ -56,7 +60,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
           roomName,
           link: `${process.env.NEXT_PUBLIC_APP_URL}/meeting/${roomName}`,
           topic: values.topic,
-          timezone
+          timezone,
         })
         .then((response) => {
           if (response.data) {
@@ -121,14 +125,14 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
               hasError={formik.touched.email && Boolean(formik.errors.email)}
               errorMessage={
                 formik.touched.email &&
-                  Boolean(formik.errors.email) &&
-                  Array.isArray(formik.errors.email)
+                Boolean(formik.errors.email) &&
+                Array.isArray(formik.errors.email)
                   ? formik.errors.email
-                    .map(
-                      (item: string, idx) =>
-                        `'${formik.values.email![idx]}' ${item}`
-                    )
-                    .toString()
+                      .map(
+                        (item: string, idx) =>
+                          `'${formik.values.email![idx]}' ${item}`
+                      )
+                      .toString()
                   : formik.errors.email
               }
               field={{
@@ -162,21 +166,26 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
                     ? 'error'
                     : undefined,
                 use12Hours: true,
-                disabledDate: curr => disabledDate(curr, timezone),
+                disabledDate: (curr) => disabledDate(curr, timezone),
                 showSecond: false,
-                renderExtraFooter: () => <SelectComponent
-                  label='Timezone'
-                  placeholder='Timezone'
-                  name='timezone'
-                  field={{
-                    options: timezones.map(tz => ({ label: tz, value: tz })),
-                    className: "my-2",
-                    value: timezone,
-                    onChange: (value) => {
-                      setTimezone(value);
-                    }
-                  }}
-                />
+                renderExtraFooter: () => (
+                  <SelectComponent
+                    label="Timezone"
+                    placeholder="Timezone"
+                    name="timezone"
+                    field={{
+                      options: timezones.map((tz) => ({
+                        label: tz,
+                        value: tz,
+                      })),
+                      className: 'my-2',
+                      value: timezone,
+                      onChange: (value) => {
+                        setTimezone(value);
+                      },
+                    }}
+                  />
+                ),
               }}
             />
 

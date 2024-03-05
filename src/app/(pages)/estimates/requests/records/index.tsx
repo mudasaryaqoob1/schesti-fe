@@ -1,4 +1,9 @@
-import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from 'react';
 import type { ColumnsType } from 'antd/es/table';
 import { Dropdown, Table } from 'antd';
 import type { MenuProps } from 'antd';
@@ -38,7 +43,9 @@ const EstimateRequestTable: React.FC = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const token = useSelector(selectToken);
-  const [selectedEstimate, setSelecteEstimate] = useState<IEstimateRequest & { _id: string } | null>(null);
+  const [selectedEstimate, setSelecteEstimate] = useState<
+    (IEstimateRequest & { _id: string }) | null
+  >(null);
   const estimateRequestsLoading = useSelector(selectEstimateRequestsLoading);
   const estimateRequestsData = useSelector(selectEstimateRequests);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -158,23 +165,25 @@ const EstimateRequestTable: React.FC = () => {
     />
   ) : (
     <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid border-silverGray shadow-secondaryTwist">
-      {selectedEstimate ? <ModalComponent
-        open={showDeleteModal}
-        setOpen={() => {
-          setSelecteEstimate(null)
-          setShowDeleteModal(false)
-        }}
-        destroyOnClose
-      >
-        <DeleteContent
-          onClick={() => {
-            dispatch(deleteEstimateRequest(selectedEstimate._id));
+      {selectedEstimate ? (
+        <ModalComponent
+          open={showDeleteModal}
+          setOpen={() => {
             setSelecteEstimate(null);
             setShowDeleteModal(false);
           }}
-          onClose={() => setSelecteEstimate(null)}
-        />
-      </ModalComponent> : null}
+          destroyOnClose
+        >
+          <DeleteContent
+            onClick={() => {
+              dispatch(deleteEstimateRequest(selectedEstimate._id));
+              setSelecteEstimate(null);
+              setShowDeleteModal(false);
+            }}
+            onClose={() => setSelecteEstimate(null)}
+          />
+        </ModalComponent>
+      ) : null}
       <div className="flex justify-between items-center">
         <TertiaryHeading
           title="My Estimate request"

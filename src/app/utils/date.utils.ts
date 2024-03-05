@@ -8,12 +8,10 @@ dayjs.extend(utc);
 // see: https://dayjs.gitee.io/docs/zh-CN/plugin/timezone
 dayjs.extend(timezone);
 
-export { dayjs }
-export const disabledDate = (current: DayjsType, timezone = "Asia/Karachi") => {
-
-  return current.isBefore(dayjs().tz(timezone).startOf('day'), 'day')
+export { dayjs };
+export const disabledDate = (current: DayjsType, timezone = 'Asia/Karachi') => {
+  return current.isBefore(dayjs().tz(timezone).startOf('day'), 'day');
 };
-
 
 export function getClientLocalTimezone() {
   return Intl.DateTimeFormat().resolvedOptions().timeZone;

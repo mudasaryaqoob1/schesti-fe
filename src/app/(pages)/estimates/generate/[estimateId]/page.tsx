@@ -1,5 +1,10 @@
 'use client';
-import React, { useState, useEffect, useCallback, useLayoutEffect } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useLayoutEffect,
+} from 'react';
 import { useParams } from 'next/navigation';
 import Description from '@/app/component/description';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
@@ -232,26 +237,26 @@ const ViewEstimateDetail = () => {
       <div>
         {estimatesRecord?.length
           ? estimatesRecord.map((estimate: any) => (
-            <div key={estimate.title} className={`${bg_style} p-5 mt-3`}>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <QuaternaryHeading
-                    title={estimate.title}
-                    className="font-semibold"
-                  />
+              <div key={estimate.title} className={`${bg_style} p-5 mt-3`}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <QuaternaryHeading
+                      title={estimate.title}
+                      className="font-semibold"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <QuaternaryHeading
+                      title={`Total Cost: ${estimate.totalCostForTitle}`}
+                      className="font-semibold"
+                    />
+                  </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <QuaternaryHeading
-                    title={`Total Cost: ${estimate.totalCostForTitle}`}
-                    className="font-semibold"
-                  />
+                <div className="estimateTable_container">
+                  <EstimatesTable estimates={estimate.scopeItems} />
                 </div>
               </div>
-              <div className="estimateTable_container">
-                <EstimatesTable estimates={estimate.scopeItems} />
-              </div>
-            </div>
-          ))
+            ))
           : null}
       </div>
 

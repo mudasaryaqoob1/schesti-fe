@@ -1,7 +1,7 @@
 import QuinaryHeading from '@/app/component/headings/quinary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { G7State } from '@/app/interfaces/client-invoice.interface';
-import { Checkbox, Divider, } from 'antd';
+import { Checkbox, Divider } from 'antd';
 import dayjs from 'dayjs';
 
 type Props = {
@@ -66,9 +66,7 @@ export function G702Component({
             <label className="text-right text-graphiteGray font-normal">
               To Owner:
             </label>
-            <div
-              className="px-2 h-10 w-52  py-2 border border-gray-300 outline-none"
-            >
+            <div className="px-2 h-10 w-52  py-2 border border-gray-300 outline-none">
               {state.toOwner}
             </div>
           </div>
@@ -78,9 +76,7 @@ export function G702Component({
               <label className="text-right text-graphiteGray font-normal">
                 PROJECT:
               </label>
-              <div
-                className="px-2 h-10 w-52  py-2 border border-gray-300 outline-none"
-              >
+              <div className="px-2 h-10 w-52  py-2 border border-gray-300 outline-none">
                 {state.project}
               </div>
             </div>
@@ -88,9 +84,7 @@ export function G702Component({
               <label className="text-right text-graphiteGray font-normal">
                 Address:
               </label>
-              <div
-                className="px-2 h-10 w-52  py-2 border border-gray-300 outline-none"
-              >
+              <div className="px-2 h-10 w-52  py-2 border border-gray-300 outline-none">
                 {state.address}
               </div>
             </div>
@@ -99,9 +93,7 @@ export function G702Component({
                 Via Engineer:
               </label>
               <div className="w-full">
-                <div
-                  className="px-2 h-10 w-52  py-2 border border-gray-300 outline-none"
-                >
+                <div className="px-2 h-10 w-52  py-2 border border-gray-300 outline-none">
                   {state.viaEngineer}
                 </div>
               </div>
@@ -112,9 +104,7 @@ export function G702Component({
               <label className="text-right text-graphiteGray font-normal">
                 APPLICATION NO:
               </label>
-              <div
-                className="px-2  py-2 border border-gray-300 outline-none"
-              >
+              <div className="px-2  py-2 border border-gray-300 outline-none">
                 {state.applicationNo}
               </div>
             </div>
@@ -122,9 +112,7 @@ export function G702Component({
               <label className="text-right text-graphiteGray font-normal">
                 APPLICATION DATE:
               </label>
-              <div
-                className="px-2  py-2 border border-gray-300 outline-none"
-              >
+              <div className="px-2  py-2 border border-gray-300 outline-none">
                 {dayjs(state.applicationDate).format('DD/MM/YYYY')}
               </div>
             </div>
@@ -132,9 +120,7 @@ export function G702Component({
               <label className="text-right text-graphiteGray font-normal">
                 PERIOD TO:
               </label>
-              <div
-                className="px-2  py-2 border border-gray-300 outline-none"
-              >
+              <div className="px-2  py-2 border border-gray-300 outline-none">
                 {dayjs(state.periodTo).format('DD/MM/YYYY')}
               </div>
             </div>
@@ -142,23 +128,17 @@ export function G702Component({
               <label className="text-right text-graphiteGray font-normal">
                 PROJECT NO:
               </label>
-              <div
-                className="px-2  py-2 border border-gray-300 outline-none"
-              >
+              <div className="px-2  py-2 border border-gray-300 outline-none">
                 {state.projectNo}
               </div>
             </div>
           </div>
           <div className="flex flex-col space-y-2">
             <QuinaryHeading title="Distribution to" className="font-medium" />
-            <Checkbox
-              checked={state.distributionTo === 'architect'}
-            >
+            <Checkbox checked={state.distributionTo === 'architect'}>
               <QuinaryHeading title="ARCHITECT" />
             </Checkbox>
-            <Checkbox
-              checked={state.distributionTo === 'contractor'}
-            >
+            <Checkbox checked={state.distributionTo === 'contractor'}>
               <QuinaryHeading title="CONTRACTOR" />
             </Checkbox>
           </div>
@@ -181,9 +161,7 @@ export function G702Component({
                   className="col-span-2"
                   title="1. ORIGINAL CONTRACT SUM  ................................"
                 />
-                <div
-                  className="px-2  py-1 border border-gray-300 outline-none"
-                >
+                <div className="px-2  py-1 border border-gray-300 outline-none">
                   $ {originalContractSum.toFixed(2)}
                 </div>
               </div>
@@ -192,9 +170,7 @@ export function G702Component({
                   className="col-span-2"
                   title="2. Net change by Change Orders  ................................"
                 />
-                <div
-                  className="px-2  py-1 border border-gray-300 outline-none"
-                >
+                <div className="px-2  py-1 border border-gray-300 outline-none">
                   $ {changeOrderNetChanges.toFixed(2)}
                 </div>
               </div>
@@ -203,9 +179,7 @@ export function G702Component({
                   className="col-span-2"
                   title="3. CONTRACT SUM TO DATE (Line 1 ± 2) $  ................................"
                 />
-                <div
-                  className="px-2  py-1 border border-gray-300 outline-none"
-                >
+                <div className="px-2  py-1 border border-gray-300 outline-none">
                   $ {p3Total.toFixed(2)}
                 </div>
               </div>
@@ -214,9 +188,7 @@ export function G702Component({
                   className="col-span-2"
                   title="4. TOTAL COMPLETED & STORED TO DATE (Column G on G703)   .............."
                 />
-                <div
-                  className="px-2  py-1 border border-gray-300 outline-none"
-                >
+                <div className="px-2  py-1 border border-gray-300 outline-none">
                   $ {sumColumns(state.data, 6).toFixed(2)}
                 </div>
               </div>
@@ -227,16 +199,12 @@ export function G702Component({
                   <div className="grid grid-cols-3 ">
                     <div className="flex items-center col-span-2 space-x-2">
                       <QuinaryHeading title="a." />
-                      <div
-                        className="px-2  py-1 border border-gray-300 outline-none"
-                      >
+                      <div className="px-2  py-1 border border-gray-300 outline-none">
                         % {state.p5aPercentage}
                       </div>
                       <QuinaryHeading title="of Completed Work $" />
                     </div>
-                    <div
-                      className="px-2  py-1 border border-gray-300 outline-none"
-                    >
+                    <div className="px-2  py-1 border border-gray-300 outline-none">
                       $ {sumColumns(state.data, 9).toFixed(2)}
                     </div>
                   </div>
@@ -249,16 +217,12 @@ export function G702Component({
                   <div className="grid grid-cols-3 ">
                     <div className="flex items-center col-span-2 space-x-2">
                       <QuinaryHeading title="b." />
-                      <div
-                        className="px-2  py-1 border border-gray-300 outline-none"
-                      >
+                      <div className="px-2  py-1 border border-gray-300 outline-none">
                         % {state.p5bPercentage}
                       </div>
                       <QuinaryHeading title="% of Stored Material " />
                     </div>
-                    <div
-                      className="px-2  py-1 border border-gray-300 outline-none"
-                    >
+                    <div className="px-2  py-1 border border-gray-300 outline-none">
                       $ {resultOf_P5b.toFixed(2)}
                     </div>
                   </div>
@@ -270,9 +234,7 @@ export function G702Component({
                         className="col-span-2 pl-4"
                         title="Total Retainage ( Lines 5a + 5b or Total in Colum I of G703"
                       />
-                      <div
-                        className="px-2  py-1 border border-gray-300 outline-none"
-                      >
+                      <div className="px-2  py-1 border border-gray-300 outline-none">
                         $ {p5Total.toFixed(2)}
                       </div>
                     </div>
@@ -286,9 +248,7 @@ export function G702Component({
                   title="6. TOTAL EARNED LESS RETAINAGE Total in Column I of G703)"
                 />
 
-                <div
-                  className="px-2  py-1 border border-gray-300 outline-none"
-                >
+                <div className="px-2  py-1 border border-gray-300 outline-none">
                   $ {p6Total.toFixed(2)}
                 </div>
               </div>
@@ -299,10 +259,7 @@ export function G702Component({
                   title="7. LESS PREVIOUS CERTIFICATES FOR PAYMENT (Line 6 from prior Certificate)"
                 />
 
-
-                <div
-                  className="px-2  py-1 border border-gray-300 outline-none"
-                >
+                <div className="px-2  py-1 border border-gray-300 outline-none">
                   $ {p7Total.toFixed(2)}
                 </div>
               </div>
@@ -313,11 +270,7 @@ export function G702Component({
                   title="8. CURRENT PAYMENT DUE"
                 />
 
-
-
-                <div
-                  className="px-2  py-1 border border-gray-300 outline-none"
-                >
+                <div className="px-2  py-1 border border-gray-300 outline-none">
                   $ {p8Total.toFixed(2)}
                 </div>
               </div>
@@ -326,9 +279,7 @@ export function G702Component({
                   className="col-span-2"
                   title="9. BALANCE TO FINISH, INCLUDING RETAINAGE $ (Line 3 less Line 6)"
                 />
-                <div
-                  className="px-2  py-1 border border-gray-300 outline-none"
-                >
+                <div className="px-2  py-1 border border-gray-300 outline-none">
                   $ {p9Total.toFixed(2)}
                 </div>
               </div>
@@ -354,16 +305,12 @@ export function G702Component({
                     Total changes approved in previous months by Owner
                   </td>
                   <td className=" text-gray-700  border-r border-gray-300">
-                    <div
-                      className="px-2  py-1"
-                    >
+                    <div className="px-2  py-1">
                       $ {state.totalAdditionPreviousMonth}
                     </div>
                   </td>
                   <td className="  text-gray-700  ">
-                    <div
-                      className="px-2  py-1 "
-                    >
+                    <div className="px-2  py-1 ">
                       $ {state.totalDeductionPreviousMonth}
                     </div>
                   </td>
@@ -373,17 +320,12 @@ export function G702Component({
                     Total approved this Month
                   </td>
                   <td className="   text-gray-700  border-r border-gray-300">
-                    <div
-                      className="px-2  py-1 "
-                    >
+                    <div className="px-2  py-1 ">
                       $ {state.totalAdditionThisMonth}
                     </div>
                   </td>
                   <td className=" text-gray-700 ">
-
-                    <div
-                      className="px-2  py-1  outline-none"
-                    >
+                    <div className="px-2  py-1  outline-none">
                       $ {state.totalDeductionThisMonth}
                     </div>
                   </td>

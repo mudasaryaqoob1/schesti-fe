@@ -57,7 +57,7 @@ export default function CreateClientInvoicePage() {
     p5bPercentage: 2,
 
     totalAmount: 0,
-    amountPaid: 0
+    amountPaid: 0,
   });
 
   useLayoutEffect(() => {
@@ -194,7 +194,7 @@ export default function CreateClientInvoicePage() {
       .httpAddNewInvoice({
         ...data,
         totalAmount,
-        amountPaid
+        amountPaid,
       })
       .then((response) => {
         if (response.statusCode == 201) {
@@ -372,8 +372,6 @@ export default function CreateClientInvoicePage() {
             updateCellValue={updateCellValue}
             showAddAndDelete={false}
           />
-
-
         </ConfigProvider>
         <ClientInvoiceFooter />
       </div>

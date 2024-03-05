@@ -60,7 +60,9 @@ export function G702Component({
                 value={state.toOwner}
                 onChange={(e) => handleState('toOwner', e.target.value)}
               />
-              {showValidation ? <p className="text-gray-400">Owner is required</p> : null}
+              {showValidation ? (
+                <p className="text-gray-400">Owner is required</p>
+              ) : null}
             </div>
           </div>
 
@@ -98,7 +100,9 @@ export function G702Component({
                   value={state.viaEngineer}
                   onChange={(e) => handleState('viaEngineer', e.target.value)}
                 />
-                {showValidation ? <p className="text-gray-400">All fields are required</p> : null}
+                {showValidation ? (
+                  <p className="text-gray-400">All fields are required</p>
+                ) : null}
               </div>
             </div>
           </div>
@@ -478,7 +482,6 @@ export function G702Component({
                 <input
                   className="col-span-6 px-2 py-1 border border-gray-300 outline-none"
                   disabled
-
                 />
               </div>
 
@@ -488,7 +491,6 @@ export function G702Component({
                   className="col-span-6 px-2 py-1 border border-gray-300 outline-none"
                   type="text"
                   disabled
-
                 />
               </div>
               <div className="grid grid-cols-12 gap-1 items-center">
@@ -497,7 +499,6 @@ export function G702Component({
                   className="px-2 col-span-6 py-1 border border-gray-300 outline-none"
                   type="text"
                   disabled
-
                 />
               </div>
               <div className="col-span-2 flex items-center space-x-2">
@@ -506,7 +507,6 @@ export function G702Component({
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
                   disabled
-
                 />
               </div>
 
@@ -525,7 +525,6 @@ export function G702Component({
                   className="px-2 py-1 border border-gray-300 outline-none"
                   type="text"
                   disabled
-
                 />
               </div>
             </div>

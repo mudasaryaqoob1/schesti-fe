@@ -76,7 +76,9 @@ export function G702Component({
                 value={state.toOwner}
                 onChange={(e) => handleState('toOwner', e.target.value)}
               />
-              {showValidation ? <p className="text-gray-400">Owner is required</p> : null}
+              {showValidation ? (
+                <p className="text-gray-400">Owner is required</p>
+              ) : null}
             </div>
           </div>
 
@@ -114,7 +116,9 @@ export function G702Component({
                   value={state.viaEngineer}
                   onChange={(e) => handleState('viaEngineer', e.target.value)}
                 />
-                {showValidation ? <p className="text-gray-400">All Required.</p> : null}
+                {showValidation ? (
+                  <p className="text-gray-400">All Required.</p>
+                ) : null}
               </div>
             </div>
           </div>
