@@ -218,12 +218,12 @@ const CreateEstimateRequest = () => {
       return;
     }
 
-    if (documents[0].size && byteConverter(documents[0].size, 'MB').size > 10) {
-      setuploadDocumentsError(
-        'Cannot upload document more then 10 mb of size.'
-      );
-      return;
-    }
+    // if (documents[0].size && byteConverter(documents[0].size, 'MB').size > 10) {
+    //   setuploadDocumentsError(
+    //     'Cannot upload document more then 10 mb of size.'
+    //   );
+    //   return;
+    // }
     for (let i = 0; i < documents.length; i++) {
       setTakeOffReports((prev: any) => [...prev, documents[i]]);
     }
@@ -238,12 +238,12 @@ const CreateEstimateRequest = () => {
       return;
     }
 
-    if (documents[0].size && byteConverter(documents[0].size, 'MB').size > 10) {
-      setuploadDocumentsError(
-        'Cannot upload document more then 10 mb of size.'
-      );
-      return;
-    }
+    // if (documents[0].size && byteConverter(documents[0].size, 'MB').size > 10) {
+    //   setuploadDocumentsError(
+    //     'Cannot upload document more then 10 mb of size.'
+    //   );
+    //   return;
+    // }
     for (let i = 0; i < documents.length; i++) {
       setOtherDocuments((prev: any) => [...prev, documents[i]]);
     }
@@ -256,12 +256,12 @@ const CreateEstimateRequest = () => {
     if (!documents[0]) {
       return;
     }
-    if (documents[0].size && byteConverter(documents[0].size, 'MB').size > 10) {
-      setuploadDocumentsError(
-        'Cannot upload document more then 10 mb of size.'
-      );
-      return;
-    }
+    // if (documents[0].size && byteConverter(documents[0].size, 'MB').size > 10) {
+    //   setuploadDocumentsError(
+    //     'Cannot upload document more then 10 mb of size.'
+    //   );
+    //   return;
+    // }
     for (let i = 0; i < documents.length; i++) {
       if (
         documents[i].type === 'application/pdf' ||
