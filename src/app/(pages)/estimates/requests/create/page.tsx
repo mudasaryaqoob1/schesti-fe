@@ -294,7 +294,7 @@ const CreateEstimateRequest = () => {
   return (
     <section className="my-5 px-16">
       <div className="flex justify-between flex-wrap items-center md:flex-nowrap">
-        <TertiaryHeading title="Take Off Measurements" />
+        <TertiaryHeading title="Create Estimate Request" />
         <CustomWhiteButton
           text="Add Existing Client"
           className="!w-auto "
