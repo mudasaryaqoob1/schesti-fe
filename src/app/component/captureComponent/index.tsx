@@ -8,10 +8,17 @@ import UploadFileContext, {
 } from '@/app/(pages)/takeoff/context/UploadFileContext';
 import { LineCap } from 'konva/lib/Shape';
 import ReportCard from '../reportCard';
+import { Text } from 'konva/lib/shapes/Text';
+import { useDraw } from '@/app/hooks';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import { Button } from 'antd';
+import generatePDF from './generatePdf';
 
 export interface dataInterface {
   image: string;
   details: {
+    name?: string;
     points: number[];
     stroke: string;
     strokeWidth: number;
@@ -29,6 +36,16 @@ const CaptureComponent = ({
   itemsToCapture: DrawHistoryContextInterface;
   onCapture: (url: string, key: number) => void;
 }) => {
+  const {
+    calcLineDistance,
+    calculateMidpoint,
+    calculatePolygonArea,
+    calculatePolygonPerimeter,
+    calculatePolygonCenter,
+    calculatePolygonVolume,
+    calculateAngle,
+  } = useDraw();
+
   const stageRef = useRef<Konva.Stage>(null);
   const [data, setData] = useState<dataInterface[]>([]);
 
@@ -199,16 +216,17 @@ const CaptureComponent = ({
         <Layer></Layer>
       </Stage>
       <div>
-        <div className="grid grid-cols-2 gap-4 m-12 ">
+        <div className="grid grid-cols-2 gap-4 m-12 " id="capture">
           {data.map((entity, index) => (
             <div
               key={index}
               className="w-full flex flex-col border-[1px] border-gray-300 rounded-2xl justify-between p-4"
             >
-              <ReportCard entity={[entity, entity]} />
+              <ReportCard entity={[entity]} />
             </div>
           ))}
         </div>
+        <Button onClick={() => generatePDF('capture')}>Download</Button>
       </div>
     </div>
   );

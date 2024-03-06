@@ -8,8 +8,10 @@ interface Props {
 const ReportCard: React.FC<Props> = ({ entity }) => {
   return (
     <div>
-      <div className="pb-4 font-semibold "> Length Measurement </div>
-
+      <div className="pb-4 font-semibold ">
+        {(entity[0].details.name || 'Length Measurement') +
+          `(${entity.length})`}
+      </div>
       {entity.map((item, index) => (
         <>
           <div className=" flex items-center justify-between py-4 ">
@@ -22,7 +24,9 @@ const ReportCard: React.FC<Props> = ({ entity }) => {
               />
             </div>
             <div className="flex flex-col items-end text-xs text-gray-500">
-              <span className="font-medium text-black">Length Measurement</span>
+              <span className="font-medium text-black">
+                {item.details.name || 'Length Measurement'}
+              </span>
               <span>
                 Page Label<span className="font-sm text-black"> 1</span>
               </span>
