@@ -91,30 +91,30 @@ export default function Home() {
         </div>
       </main>
 
-      <div className="px-[200px] mt-[633px]">
+      <div className="px-[100px] lg:px-[200px] mt-[32px] lg:mt-[633px]">
         <div>
           <h3 className="text-[#EF9F28] text-[24px] font-medium leading-[32px]">
             Leading the Way:{' '}
           </h3>
-          <h1 className="text-[#101112] py-[15px] text-[48px] font-medium leading-[66px]">
+          <h1 className="text-[#101112] py-[15px] text-[44px] lg:text-[48px] font-medium leading-[56px] lg:leading-[66px] ">
             Schesti, the Pioneer Application Crafting Precise Estimates Through
             AI for Exceptional
             <br /> Organizational Success.
           </h1>
-          <p className="text-[20px] text-[#475467] mt-[15px] leading-[38px]">
+          <p className="lg:text-[20px] text-[16px] text-[#475467] mt-[15px] lg:leading-[38px] leading-[24px]">
             Elevate Your Landscaping Venture with Schesti: A Symphony of
             Precision and Speed,
             <br /> Reshaping the Land
           </p>
         </div>
 
-        <div className="mt-3">
-          <div className="flex justify-between space-x-5 items-center ">
+        <div className="mt-[62px] lg:mt-3">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:space-x-5 items-center ">
             <div>
               <h3 className="text-[#EF9F28] text-[24px] font-medium leading-[32px]">
                 Quantity Takeoff{' '}
               </h3>
-              <h1 className="text-[#1D2939] text-[40px] py-[15px] font-bold leading-[60px]">
+              <h1 className="text-[#1D2939] text-[28px] lg:text-[40px] py-[15px] font-bold leading-[40px]  lg:leading-[60px]">
                 Advanced Takeoff Module with AI Integration
               </h1>
               <p className="text-[20px] font-normal leading-[38px] text-[#475467]">
@@ -125,10 +125,11 @@ export default function Home() {
               </p>
             </div>
             <div>
-              <Image
+              <AntdImage
                 src={'/ai-integration-img.png'}
-                height={576.46}
-                width={562.3}
+                preview={false}
+                height={responsive.lg ? 576 : 330}
+                width={responsive.lg ? 667 : 400}
                 alt="dashboard"
               />
             </div>
