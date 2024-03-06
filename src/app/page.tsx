@@ -138,21 +138,22 @@ export default function Home() {
       </div>
 
       <div className="mt-20 bg-[#F2F2FF]">
-        <div className="px-[200px] py-16">
-          <h3 className="text-[#EF9F28] text-center text-[24px] font-medium leading-[32px]">
+        <div className="px-[100px] lg:px-[200px] py-4 lg:py-16" >
+          <h3 className="text-[#EF9F28] text-center text-[20px] lg:text-[24px] font-medium leading-[20px] lg:leading-[32px]">
             Features
           </h3>
-          <h1 className="text-center w-[829px] pb-[20px] mx-auto py-[24px] font-extrabold text-[#1D2939] text-[40px] leading-[60px]">
+          <h1 className="text-center w-full lg:w-[829px] pb-[20px] lg:mx-auto py-[24px] font-extrabold text-[#1D2939] text-[28px] leading-[40px]
+          lg:text-[40px] lg:leading-[60px]">
             Revolutionize your field service <br /> business with schesti.
           </h1>
-          <p className="text-[20px] font-normal pb-[37px] leading-[38px] text-[#344054]">
+          <p className="text-[16px] text-center leading-[25px] lg:text-[20px] font-normal pb-[37px] lg:leading-[38px] text-[#344054]">
             Schesti streamlines your business operations by providing a central
             hub for all your clients, projects, scheduling, invoicing, and
             estimating needs. {"It's"} the ultimate tool for businesses who want
             to save time, increase efficiency, and boost profitability.
           </p>
 
-          <div className="flex justify-center px-28 pt-[37px] pb-[57px] space-x-6">
+          <div className="grid grid-cols-1 grid-rows-2 lg:grid-rows-1 lg:grid-cols-5  justify-items-center lg:gap-4 pt-[37px] pb-[57px] gap-6">
             <CustomButton
               text="Estimating"
               className={`!rounded-full !bg-transparent  ${tab === 'estimating'
@@ -195,25 +196,28 @@ export default function Home() {
             />
           </div>
 
-          <div className="flex space-x-10 pb-[64px]">
+          <div className="flex flex-col-reverse items-center lg:items-start justify-between lg:flex-row space-y-10 lg:space-y-0
+           space-x-10 pb-[64px]">
             <div>
               <Image
                 src={featuresData[tab].image}
-                height={426.04}
-                width={582.61}
+                height={responsive.lg ? 426.04 : 260}
+                width={responsive.lg ? 582.61 : 357}
                 alt="dashboard"
                 className="rounded-lg"
               />
             </div>
 
-            <div className="mt-3">
-              <h3 className="text-[#EF9F28] capitalize text-[24px] leading-[24px] font-normal">
+            <div className="mt-3 pb-3">
+              <h3 className="text-[#EF9F28] capitalize  text-[24px] leading-[24px] font-normal">
                 {tab}
               </h3>
-              <h1 className="text-[40px] pt-[12px] pb-[20px] text-[#1D2939] font-bold leading-[60px]">
+              <h1 className="lg:text-[40px] pt-[12px] pb-[20px] text-[#1D2939] font-bold lg:leading-[60px]
+                text-[28px] leading-[40px]
+              ">
                 {featuresData[tab].title}
               </h1>
-              <p className="text-[20px] text-[#475467] leading-[38px]">
+              <p className="lg:text-[20px] text-[#475467] lg:leading-[38px] text-[16px] leading-[26px]">
                 {featuresData[tab].description}
               </p>
             </div>
