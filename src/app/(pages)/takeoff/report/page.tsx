@@ -8,6 +8,7 @@ import { useContext, useState } from 'react';
 import { DrawHistoryContext, UploadFileContext } from '../context';
 import { DrawHistoryContextProps } from '../context/DrawHistoryContext';
 import { UploadFileContextProps } from '../context/UploadFileContext';
+import ReportCard from './components/ReportCard';
 
 const Report = () => {
   const { drawHistory } = useContext(
@@ -76,6 +77,11 @@ const Report = () => {
               />
             </div>
           </div>
+        </div>
+        <div className="py-6 grid grid-cols-2 gap-4 ">
+          <ReportCard image={''} />
+          <ReportCard image={''} />
+          <ReportCard image={''} />
         </div>
       </section>
       <CaptureComponent
