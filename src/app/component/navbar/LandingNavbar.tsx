@@ -1,20 +1,13 @@
 'use client';
+import { useResponseHook } from '@/app/hooks/useResponsive.hook';
 import { MenuOutlined } from '@ant-design/icons';
-import { configResponsive, useResponsive } from 'ahooks/es/index';
 import { Dropdown } from 'antd';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 
-configResponsive({
-  'xs': 0,
-  'sm': 576,
-  'md': 768,
-  'lg': 992,
-  'xl': 1200,
-})
 
 export function LandingNavbar() {
-  const responsive = useResponsive() as { xs: boolean, sm: boolean, md: boolean, lg: boolean, xl: boolean };
+  const responsive = useResponseHook()
   const pathname = usePathname();
   const router = useRouter();
 

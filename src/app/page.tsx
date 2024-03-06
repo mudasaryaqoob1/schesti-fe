@@ -1,5 +1,6 @@
 'use client';
 import Image from 'next/image';
+import { Image as AntdImage } from 'antd'
 import CustomButton from './component/customButton/white';
 import { LandingNavbar } from './component/navbar/LandingNavbar';
 import LandingFooter from './component/footer/LandingFooter';
@@ -7,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { RequestForPost } from './component/landing/RequestForPost';
 import { GatewayToEfficiency } from './component/landing/GatewayToEfficiency';
+import { useResponseHook } from './hooks/useResponsive.hook';
 
 type Key = 'estimating' | 'invoice' | 'meeting' | 'client' | 'subcontractor';
 
@@ -50,37 +52,40 @@ const featuresData: {
 export default function Home() {
   const router = useRouter();
   const [tab, setTab] = useState<Key>('estimating');
-
+  const responsive = useResponseHook();
   return (
     <section>
       <main
         style={{
           background: 'linear-gradient(180deg, #8449EB 0%, #6A56F6 100%)',
         }}
-        className="h-[760px] relative"
+        className="min-h-[800px] lg:h-[800px] relative"
       >
         <LandingNavbar />
-        <div className="mt-[101px] mx-auto w-[1063px]">
-          <h1 className="text-center font-extrabold text-white text-[64px] leading-[80px]">
+        <div className="mt-[101px] mx-auto w-full md:w-[800px] lg:w-[1063px]">
+          <h1 className="text-center font-extrabold text-white text-[40px] leading-[64px] md:text-[64px] md:leading-[80px]">
             Schesti - Revolutionizing Landscaping Estimations and Scheduling
           </h1>
-          <p className="text-center text-white w-[774px] font-light text-xl mx-auto my-[26px]">
+          <p className="text-center px-5 md:px-0 text-white w-full md:w-[774px] font-light text-xl md:mx-auto my-[26px]">
             Take your landscaping projects to new heights with Schesti. Sign up
             now for a smarter way to estimate, schedule, and manage your
             projects
           </p>
-          <div className="w-48 mx-auto relative">
+          <div className="flex flex-col items-center lg:block lg:mx-auto lg:flex-row lg:w-48 relative">
             <CustomButton
               text="Get Started"
-              className="!rounded-full !text-[#7138DF]"
+              className="!rounded-full !text-[#7138DF] !w-48"
               onClick={() => router.push('/register')}
             />
-            <Image
+          </div>
+          <div className='flex items-center flex-col lg:block'>
+            <AntdImage
               src={'/landing.png'}
-              height={758.21}
-              width={1325.71}
-              className="absolute left-[50%] -translate-x-[50%] top-[37px]"
+              height={responsive.lg ? 758.21 : 220}
+              width={responsive.lg ? 1325.71 : 351}
+              className="mx-auto mr-3 lg:mr-0 lg:mx-0 lg:absolute lg:left-[45%] lg:-translate-x-[50%] lg:top-[37px]"
               alt="dashboard"
+              preview={false}
             />
           </div>
         </div>
@@ -149,47 +154,42 @@ export default function Home() {
           <div className="flex justify-center px-28 pt-[37px] pb-[57px] space-x-6">
             <CustomButton
               text="Estimating"
-              className={`!rounded-full !bg-transparent  ${
-                tab === 'estimating'
-                  ? '!text-[#8449EB] !border-[#8449EB]'
-                  : '!text-[#718096] !border-[#718096]'
-              }`}
+              className={`!rounded-full !bg-transparent  ${tab === 'estimating'
+                ? '!text-[#8449EB] !border-[#8449EB]'
+                : '!text-[#718096] !border-[#718096]'
+                }`}
               onClick={() => setTab('estimating')}
             />
             <CustomButton
               text="Invoice"
-              className={`!rounded-full !bg-transparent  ${
-                tab === 'invoice'
-                  ? '!text-[#8449EB] !border-[#8449EB]'
-                  : '!text-[#718096] !border-[#718096]'
-              }`}
+              className={`!rounded-full !bg-transparent  ${tab === 'invoice'
+                ? '!text-[#8449EB] !border-[#8449EB]'
+                : '!text-[#718096] !border-[#718096]'
+                }`}
               onClick={() => setTab('invoice')}
             />
             <CustomButton
               text="Subcontractor"
-              className={`!rounded-full !bg-transparent  ${
-                tab === 'subcontractor'
-                  ? '!text-[#8449EB] !border-[#8449EB]'
-                  : '!text-[#718096] !border-[#718096]'
-              }`}
+              className={`!rounded-full !bg-transparent  ${tab === 'subcontractor'
+                ? '!text-[#8449EB] !border-[#8449EB]'
+                : '!text-[#718096] !border-[#718096]'
+                }`}
               onClick={() => setTab('subcontractor')}
             />
             <CustomButton
               text="Client"
-              className={`!rounded-full !bg-transparent  ${
-                tab === 'client'
-                  ? '!text-[#8449EB] !border-[#8449EB]'
-                  : '!text-[#718096] !border-[#718096]'
-              }`}
+              className={`!rounded-full !bg-transparent  ${tab === 'client'
+                ? '!text-[#8449EB] !border-[#8449EB]'
+                : '!text-[#718096] !border-[#718096]'
+                }`}
               onClick={() => setTab('client')}
             />
             <CustomButton
               text="Meeting"
-              className={`!rounded-full !bg-transparent  ${
-                tab === 'meeting'
-                  ? '!text-[#8449EB] !border-[#8449EB]'
-                  : '!text-[#718096] !border-[#718096]'
-              }`}
+              className={`!rounded-full !bg-transparent  ${tab === 'meeting'
+                ? '!text-[#8449EB] !border-[#8449EB]'
+                : '!text-[#718096] !border-[#718096]'
+                }`}
               onClick={() => setTab('meeting')}
             />
           </div>
