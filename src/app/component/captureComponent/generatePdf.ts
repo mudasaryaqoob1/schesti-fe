@@ -38,13 +38,13 @@ const generatePDF = async (divId: string) => {
         const imgWidth = pageWidth;
 
         // Check if the current image fits on the current page, otherwise add a new page
-        if (position + imgHeight > pdf.internal.pageSize.getHeight() - margin) {
+        if (position + imgHeight > pdf.internal.pageSize.getHeight() - 5) {
           pdf.addPage();
           position = margin; // Reset position for the new page
         }
 
         pdf.addImage(imgData, 'PNG', margin, position, imgWidth, imgHeight);
-        position += imgHeight + margin; // Update position for the next image, adding a margin between images
+        position += imgHeight + 5; // Update position for the next image, adding a margin between images
       });
     }
   }
