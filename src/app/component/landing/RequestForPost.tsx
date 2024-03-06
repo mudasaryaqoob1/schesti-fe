@@ -8,17 +8,17 @@ export function RequestForPost() {
 
   return (
     <div className="mt-20 bg-[#344054]">
-      <div className="px-[200px] py-8">
+      <div className="px-[20px] lg:px-[200px] py-8">
         <div className="flex space-x-16">
           <div className="mt-4 space-y-7">
             <div>
               <h3 className="text-[#EF9F28] text-[24px] font-medium leading-[32px]">
                 Post advertisements request
               </h3>
-              <h1 className="text-white pt-[14px] pb-[16px] text-[40px] leading-[60px]">
+              <h1 className="text-white pt-[14px] pb-[16px] text-[28px] leading-[40px] lg:text-[40px] lg:leading-[60px]">
                 Schedule estimates and create gantt charts
               </h1>
-              <p className="text-white text-[20px] leading-[38px] w-[696.986px]">
+              <p className="text-white text-[16px] leading-[26px] lg:text-[20px] lg:leading-[38px] lg:w-[696.986px]">
                 Unlock a prime advertising space for your company! Schesti
                 offers exclusive opportunities for our valued partners to
                 showcase their
@@ -31,7 +31,7 @@ export function RequestForPost() {
               onClick={() => router.push('/contact')}
             />
           </div>
-          <div>
+          <div className='hidden lg:block'>
             <Image
               src={'/request-for-post-img.svg'}
               height={309}
