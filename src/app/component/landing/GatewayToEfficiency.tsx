@@ -12,21 +12,21 @@ export function GatewayToEfficiency() {
       style={{
         background: 'linear-gradient(180deg, #8449EB 0%, #6A56F6 100%)',
       }}
-      className="mt-20"
+      className="mt-10 lg:mt-20"
     >
-      <div className="px-[200px] py-8">
+      <div className="px-[20px] lg:px-[200px] py-8">
         <div>
           <div className="mt-4 space-y-7">
             <div>
-              <h1 className="text-white text-center text-[40px] leading-[60px]">
+              <h1 className="text-white text-center text-[28px] leading-[40px] lg:text-[40px] lg:leading-[60px]">
                 Schesti: Your Gateway to Unmatched Efficiency
               </h1>
-              <p className="text-white pt-[13px] text-[20px] leading-[38px]  text-center w-[924px] mx-auto">
+              <p className="text-white pt-[13px] text-[16px] lg:text-[20px] leading-[24px] lg:leading-[38px]  text-center lg:w-[924px] lg:mx-auto">
                 Empower Your Projects with Schesti: Your Comprehensive Solution
                 for Achieving Exceptional Efficiency in Field Service Excellence
               </p>
             </div>
-            <div className="flex mt-[42px] justify-center space-x-4">
+            <div className="flex flex-col lg:flex-row items-center space-y-3 mt-[42px] lg:justify-center lg:space-x-4">
               <CustomButton
                 text="Get start with Schesti"
                 className="!rounded-full !w-48 !text-[#8449EB]"
