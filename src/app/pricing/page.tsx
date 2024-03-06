@@ -88,11 +88,11 @@ export default function PricingPage() {
         className="h-[501px] relative"
       >
         <LandingNavbar />
-        <div className="mt-[101px] mx-auto w-[1063px]">
-          <h1 className="text-center font-extrabold text-white text-[64px] leading-[80px]">
+        <div className="mt-[101px] lg:mx-auto lg:w-[1063px]">
+          <h1 className="text-center font-extrabold text-white text-[48px] leading-[57px] lg:text-[64px] lg:leading-[80px]">
             Pricing
           </h1>
-          <p className="text-center text-white w-[774px] leading-[44px] font-light text-[24px] mx-auto my-[26px]">
+          <p className="text-center text-white lg:w-[774px] leading-[30px] text-[18px] lg:leading-[44px] font-light lg:text-[24px] lg:mx-auto my-[26px]">
             Pricing built for businesses of all sizes.
             <br />
             Free 14-day trial • No credit card required • Cancel anytime
@@ -100,12 +100,12 @@ export default function PricingPage() {
         </div>
       </main>
 
-      <div className="px-[200px] mt-[151px]">
-        <div className="w-[966.356px] mx-auto">
+      <div className="px-[20px] lg:px-[200px] mt-[50px] lg:mt-[151px]">
+        <div className="lg:w-[966.356px] lg:mx-auto">
           <h3 className="text-[#EF9F28] text-center text-[24px] font-medium leading-[32px]">
             Craft Your Success
           </h3>
-          <h1 className="mx-auto text-[#1D2939] text-center font-bold mt-[15px] leading-[54.181px] text-[36.121px]">
+          <h1 className="mx-auto text-[#1D2939] text-center font-bold mt-[15px] leading-[48px] text-[36.121px]">
             Exclusive Schesti Subscriptions, A gateway to Unparalleled
             Excellence in Field Service Dynamics.
           </h1>
@@ -152,11 +152,11 @@ export default function PricingPage() {
 
       <RequestForPost />
 
-      <div className="py-20 px-[200px]">
+      <div className="py-20 px-[20px] lg:px-[200px]">
         <h3 className="text-[#EF9F28] text-center text-[24px] font-medium leading-[32px]">
           FAQ
         </h3>
-        <h1 className="text-center font-bold pt-[20px] text-[40px] leading-[60px] text-[#1D2939]">
+        <h1 className="text-center font-bold pt-[20px] text-[36px] leading-[44px] lg:text-[40px] lg:leading-[60px] text-[#1D2939]">
           {"You've"} got questions. {"We've"} got answers.
         </h1>
 

@@ -83,7 +83,7 @@ export default function Home() {
               src={'/landing.png'}
               height={responsive.lg ? 758.21 : 220}
               width={responsive.lg ? 1325.71 : 351}
-              className="mx-auto mr-3 lg:mr-0 lg:mx-0 lg:absolute lg:left-[45%] lg:-translate-x-[50%] lg:top-[37px]"
+              className="mx-auto mr-3 lg:mr-0 lg:mx-0 lg:absolute lg:left-[40%] lg:-translate-x-[50%] lg:top-[37px]"
               alt="dashboard"
               preview={false}
             />
