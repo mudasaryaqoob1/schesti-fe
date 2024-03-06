@@ -7,8 +7,9 @@ import UploadFileContext, {
   UploadFileContextProps,
 } from '@/app/(pages)/takeoff/context/UploadFileContext';
 import { LineCap } from 'konva/lib/Shape';
+import ReportCard from '../reportCard';
 
-interface dataInterface {
+export interface dataInterface {
   image: string;
   details: {
     points: number[];
@@ -202,52 +203,9 @@ const CaptureComponent = ({
           {data.map((entity, index) => (
             <div
               key={index}
-              className="w-full flex  border-[1px] border-gray-300 rounded-2xl justify-between p-4"
+              className="w-full flex flex-col border-[1px] border-gray-300 rounded-2xl justify-between p-4"
             >
-              <div className="border-2  w-fit h-fit cover max-w-[50%]">
-                <img
-                  src={entity.image}
-                  alt={`Captured content ${index}`}
-                  style={{ width: '100%', height: '100%' }}
-                  className="image-cover"
-                />
-              </div>
-              <div className="flex flex-col items-end text-xs text-gray-500">
-                <span>
-                  Page Label<span className="font-sm text-black"> 1</span>
-                </span>
-                <span>
-                  Author<span className="font-sm text-black"> {'---'}</span>
-                </span>
-                <span>
-                  Date
-                  <span className="font-sm text-black">
-                    {' '}
-                    {entity?.details?.dateTime?.toDateString()}
-                  </span>
-                </span>
-                <span>Status</span>
-                <span className="flex">
-                  Color{' '}
-                  {entity?.details?.stroke && (
-                    <div
-                      className="w-4 h-3 ml-2 rounded-2xl border-[1px] border-gray-500"
-                      style={{
-                        background: entity?.details?.stroke,
-                      }}
-                    ></div>
-                  )}
-                </span>
-                <span>
-                  Layer <span className="font-sm text-black"> {'---'}</span>
-                </span>
-                <span>
-                  Space <span className="font-sm text-black"> {'---'}</span>
-                </span>
-                <span>
-                  Value<span className="font-sm text-black"> {'---'}</span>
-                </span>
-              </div>
+              <ReportCard entity={[entity, entity]} />
             </div>
           ))}
         </div>

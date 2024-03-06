@@ -42,20 +42,25 @@ const Report = () => {
 
         {/* search project */}
         <div className="bg-white flex justify-between items-center mt-6 ">
-          <div
-            className="rounded-lg border border-Gainsboro bg-silverGray  h-[51px] 
+          <div className="flex items-end">
+            <div
+              className="rounded-lg border border-Gainsboro bg-silverGray  h-[51px] 
                         flex 
                         items-center
                             px-3"
-          >
-            <input
-              type="search"
-              name=""
-              id=""
-              placeholder="Enter project name"
-              className="w-full h-full
+            >
+              <input
+                type="search"
+                name=""
+                id=""
+                placeholder="Enter project name"
+                className="w-full h-full
           bg-transparent outline-none"
-            />
+              />
+            </div>
+            <div>
+              <Button text="Generate Report" />
+            </div>
           </div>
           <div className="flex flex-row gap-3">
             <div>
