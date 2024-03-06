@@ -126,9 +126,7 @@ a {
   background-color: #f9f5ff !important;
 }
 
-canvas {
-  border: 1px solid black !important;
-}
+
 .ant-carousel .slick-dots li button {
   background: #6b696b;
   opacity: 0.4;
