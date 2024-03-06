@@ -255,16 +255,16 @@ export default function Home() {
 
       <RequestForPost />
 
-      <div className="my-[147px]">
-        <div className="px-[200px] py-8">
+      <div className="my-[40px] lg:my-[147px]">
+        <div className="px-[20px] lg:px-[200px] py-8">
           <h3 className="text-[#EF9F28] text-[24px] text-center font-medium leading-[32px]">
             Work process
           </h3>
-          <h1 className=" text-[40px] font-bold pt-[12px] pb-[49px] leading-[60px] text-[#1D2939] text-center">
+          <h1 className="text-[28px] lg:text-[40px] font-bold pt-[12px] pb-4 lg:pb-[49px] leading-[40px] lg:leading-[60px] text-[#1D2939] text-center">
             This is how schesti works
           </h1>
 
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-12">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               <div
                 className="rounded-lg border bg-card text-card-foreground shadow-sm w-full"
