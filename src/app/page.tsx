@@ -91,7 +91,7 @@ export default function Home() {
         </div>
       </main>
 
-      <div className="px-[100px] lg:px-[200px] mt-[32px] lg:mt-[633px]">
+      <div className="px-[20px] lg:px-[200px] mt-[32px] lg:mt-[633px]">
         <div>
           <h3 className="text-[#EF9F28] text-[24px] font-medium leading-[32px]">
             Leading the Way:{' '}
@@ -138,7 +138,7 @@ export default function Home() {
       </div>
 
       <div className="mt-20 bg-[#F2F2FF]">
-        <div className="px-[100px] lg:px-[200px] py-4 lg:py-16" >
+        <div className="px-[20px] lg:px-[200px] py-4 lg:py-16" >
           <h3 className="text-[#EF9F28] text-center text-[20px] lg:text-[24px] font-medium leading-[20px] lg:leading-[32px]">
             Features
           </h3>
@@ -225,16 +225,16 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="px-[200px] my-[104px]">
-        <div className="flex items-center justify-between space-x-28 w-full">
+      <div className="px-[20px] lg:px-[200px] my-[69px] lg:my-[104px]">
+        <div className="flex flex-col lg:flex-row items-center justify-between lg:space-x-28 w-full">
           <div>
             <h3 className="text-[#EF9F28] text-[24px] font-medium leading-[32px]">
               Project schedule
             </h3>
-            <h1 className="text-[#1D2939] pt-[15px] pb-[24px] font-bold text-[40px] leading-[60px]">
+            <h1 className="text-[#1D2939] pt-[15px] pb-[24px] font-bold text-[28px] leading-[40px] lg:text-[40px] lg:leading-[60px]">
               Schedule estimates and create gantt charts
             </h1>
-            <p className="text-[20px] text-[#475467] leading-[38px]">
+            <p className="text-[16px] lg:text-[20px] text-[#475467] leading-[24px] lg:leading-[38px]">
               Efficiently manage your project timelines. Schedule estimates with
               ease and visualize your project plan through Gantt charts.{' '}
               {'Schesti’s'} intuitive scheduling tools provide a clear overview,
@@ -245,8 +245,8 @@ export default function Home() {
           <div>
             <Image
               src={'/schedule-gantt-img.png'}
-              height={465.93}
-              width={578.32}
+              height={responsive.lg ? 465.93 : 300}
+              width={responsive.lg ? 578.32 : 370}
               alt="dashboard"
             />
           </div>
