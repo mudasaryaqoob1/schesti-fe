@@ -1,28 +1,39 @@
 'use client';
+import { MenuOutlined } from '@ant-design/icons';
+import { configResponsive, useResponsive } from 'ahooks/es/index';
+import { Dropdown } from 'antd';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 
+configResponsive({
+  'xs': 0,
+  'sm': 576,
+  'md': 768,
+  'lg': 992,
+  'xl': 1200,
+})
+
 export function LandingNavbar() {
+  const responsive = useResponsive() as { xs: boolean, sm: boolean, md: boolean, lg: boolean, xl: boolean };
   const pathname = usePathname();
   const router = useRouter();
-  return (
-    <header>
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
+
+  if (responsive.lg) {
+    return <header>
+      <div className="max-w-7xl mx-auto px-4 flex items-center justify-between">
         <nav aria-label="Main" className="flex items-center space-x-52">
           <Image src={'/logowhite.svg'} width={90} height={90} alt="Schesti" />
           <div className="mt-1 space-x-8">
             <a
-              className={`text-white cursor-pointer text-lg pb-1 font-medium ${
-                pathname === '/' ? ' border-b-2 border-[#ffc107]' : ''
-              }`}
+              className={`text-white cursor-pointer text-lg pb-1 font-medium ${pathname === '/' ? ' border-b-2 border-[#ffc107]' : ''
+                }`}
               onClick={() => router.push('/')}
             >
               Home
             </a>
             <a
-              className={`text-white cursor-pointer text-lg pb-1 font-medium ${
-                pathname === '/pricing' ? ' border-b-2 border-[#ffc107]' : ''
-              }`}
+              className={`text-white cursor-pointer text-lg pb-1 font-medium ${pathname === '/pricing' ? ' border-b-2 border-[#ffc107]' : ''
+                }`}
               onClick={() => router.push('/pricing')}
             >
               Pricing
@@ -43,6 +54,64 @@ export function LandingNavbar() {
             Login
           </button>
         </div>
+      </div>
+    </header>
+  }
+
+  return (
+    <header>
+      <div className="max-w-5xl px-10 mx-auto flex items-center justify-between">
+        <nav aria-label="Main" className="flex items-center justify-between flex-1">
+          <div>
+            <Image src={'/logowhite.svg'} width={90} height={90} alt="Schesti" />
+          </div>
+          <Dropdown
+            trigger={['click']} menu={{
+              className: "w-52",
+              items: [
+                {
+                  key: "home", label: <p
+                    className={`font-semibold py-2 px-4    hover:text-gray-600 ${pathname === '/' ? ' border-b-2 border-[#ffc107]' : ''
+                      }`}
+                    onClick={() => router.push('/')}
+                  >
+                    Home
+                  </p>
+                },
+                {
+                  key: "pricing", label: <p
+                    className={`font-semibold py-2 px-4    hover:text-gray-600 ${pathname === '/pricing' ? ' border-b-2 border-[#ffc107]' : ''
+                      }`}
+                    onClick={() => router.push('/pricing')}
+                  >
+                    Pricing
+                  </p>
+                },
+                {
+                  key: "contact",
+                  label: <p
+                    className={`font-semibold py-2 px-4   hover:text-gray-600 ${pathname === '/contact' ? ' border-b-2 border-[#ffc107]' : ''
+                      }`}
+                    onClick={() => router.push('/contact')}
+                  >
+                    Contact Us
+                  </p>
+                },
+                {
+                  key: "login",
+                  label: <p
+                    className=" text-[#6f42c1] font-semibold py-2 px-4 rounded-full"
+                    onClick={() => router.push('/login')}
+                  >
+                    Login
+                  </p>
+                }
+              ]
+            }}>
+            <MenuOutlined className='text-xl text-white cursor-pointer' />
+          </Dropdown>
+        </nav>
+
       </div>
     </header>
   );
