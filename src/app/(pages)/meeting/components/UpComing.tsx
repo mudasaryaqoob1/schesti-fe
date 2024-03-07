@@ -48,14 +48,10 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
   if (state.length === 0) {
     return <NoMeetings onClick={onOpenModal} />;
   }
-  const userDateTime = dayjs().tz(getClientLocalTimezone());
   const meetings = state.filter((item) => {
-    const startDateTime = dayjs(item.startDate).tz(item.timezone);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-    const endDateTime = dayjs(item.endDate).tz(item.timezone);
-
-    // Check if meeting is happening in the future in user's timezone
-    return userDateTime.isBefore(startDateTime, 'minute');
+    const current = moment.tz(getClientLocalTimezone());
+    const endMeeting = moment(item.endDate).tz(item.timezone);
+    return current.isBefore(endMeeting);
   });
   return (
     <div>
@@ -92,7 +88,7 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
                   />
                 </div>
                 <SenaryHeading
-                  title={`Time: ${moment(item.startDate).format('h:mm a')} ${item.timezone} - ${moment.tz(item.startDate, getClientLocalTimezone()).format('h:mm a')} ${getClientLocalTimezone()}`}
+                  title={`Time: ${moment(item.startDate).tz(item.timezone).format('h:mm a')} ${item.timezone} - ${moment.tz(item.startDate, getClientLocalTimezone()).format('h:mm a')} ${getClientLocalTimezone()}`}
                   className="text-[#667085]"
                 />
               </div>

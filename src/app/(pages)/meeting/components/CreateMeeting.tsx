@@ -18,8 +18,8 @@ import { SelectComponent } from '@/app/component/customSelect/Select.component';
 import {
   dayjs,
   disabledDate,
-  getClientLocalTimezone,
 } from '@/app/utils/date.utils';
+import TimezoneSelect, { type ITimezone, type ITimezoneOption } from 'react-timezone-select'
 
 type Props = {
   showModal: boolean;
@@ -34,17 +34,19 @@ const CreateMeetingSchema = Yup.object().shape({
     .required('Email is required'),
   startDate: Yup.date().required('Start Time is required'),
 });
-let timezones = Intl.supportedValuesOf('timeZone');
+// let timezones = Intl.supportedValuesOf('timeZone');
 export function CreateMeeting({ showModal, setShowModal }: Props) {
   const [isScheduling, setIsScheduling] = useState(false);
-  const [timezone, setTimezone] = useState(getClientLocalTimezone());
-
+  const [timezone, setTimezone] = useState<ITimezone>(
+    Intl.DateTimeFormat().resolvedOptions().timeZone
+  )
   const dispatch = useDispatch<AppDispatch>();
+  console.log({ timezone })
   const formik = useFormik({
     initialValues: {
       topic: '',
       email: undefined,
-      startDate: undefined,
+      startDate: dayjs().tz((timezone as ITimezoneOption).value).format("YYYY-MM-DDTHH:mm:ss"),
     },
     validationSchema: CreateMeetingSchema,
     onSubmit(values) {
@@ -60,7 +62,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
           roomName,
           link: `${process.env.NEXT_PUBLIC_APP_URL}/meeting/${roomName}`,
           topic: values.topic,
-          timezone,
+          timezone: (timezone as ITimezoneOption).value,
         })
         .then((response) => {
           if (response.data) {
@@ -125,14 +127,14 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
               hasError={formik.touched.email && Boolean(formik.errors.email)}
               errorMessage={
                 formik.touched.email &&
-                Boolean(formik.errors.email) &&
-                Array.isArray(formik.errors.email)
+                  Boolean(formik.errors.email) &&
+                  Array.isArray(formik.errors.email)
                   ? formik.errors.email
-                      .map(
-                        (item: string, idx) =>
-                          `'${formik.values.email![idx]}' ${item}`
-                      )
-                      .toString()
+                    .map(
+                      (item: string, idx) =>
+                        `'${formik.values.email![idx]}' ${item}`
+                    )
+                    .toString()
                   : formik.errors.email
               }
               field={{
@@ -155,10 +157,10 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
               fieldProps={{
                 showTime: { defaultValue: dayjs('00:00:00', 'HH:mm') },
                 value: formik.values.startDate
-                  ? dayjs(formik.values.startDate).tz(timezone)
+                  ? dayjs(formik.values.startDate).tz((timezone as ITimezoneOption).value)
                   : undefined,
                 onChange(date) {
-                  formik.setFieldValue('startDate', date?.tz(timezone));
+                  formik.setFieldValue('startDate', date?.tz((timezone as ITimezoneOption).value));
                 },
                 onBlur: formik.handleBlur,
                 status:
@@ -166,24 +168,32 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
                     ? 'error'
                     : undefined,
                 use12Hours: true,
-                disabledDate: (curr) => disabledDate(curr, timezone),
+                disabledDate: (curr) => disabledDate(curr, (timezone as ITimezoneOption).value),
                 showSecond: false,
                 renderExtraFooter: () => (
-                  <SelectComponent
-                    label="Timezone"
-                    placeholder="Timezone"
-                    name="timezone"
-                    field={{
-                      options: timezones.map((tz) => ({
-                        label: tz,
-                        value: tz,
-                      })),
-                      className: 'my-2',
-                      value: timezone,
-                      onChange: (value) => {
-                        setTimezone(value);
-                      },
-                    }}
+                  // <SelectComponent
+                  //   label="Timezone"
+                  //   placeholder="Timezone"
+                  //   name="timezone"
+                  //   field={{
+                  //     options: timezones.map((tz) => ({
+                  //       label: tz,
+                  //       value: tz,
+                  //     })),
+                  //     className: 'my-2',
+                  //     value: timezone,
+                  //     onChange: (value) => {
+                  //       setTimezone(value);
+                  //     },
+                  //   }}
+                  // />
+                  <TimezoneSelect
+                    value={timezone}
+                    onChange={setTimezone}
+                    maxMenuHeight={300}
+                    menuPlacement='top'
+                    // remove select focus outline
+                    className='z-50 !outline-none !*:border-none'
                   />
                 ),
               }}
