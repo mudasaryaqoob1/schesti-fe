@@ -122,10 +122,14 @@ a {
   color: transparent;
 }
 
-.ant-table .ant-table-container .ant-table-content table thead.ant-table-thead .ant-table-cell {
+.ant-table
+  .ant-table-container
+  .ant-table-content
+  table
+  thead.ant-table-thead
+  .ant-table-cell {
   background-color: #f9f5ff !important;
 }
-
 
 .ant-carousel .slick-dots li button {
   background: #6b696b;

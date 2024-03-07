@@ -155,50 +155,51 @@ const EstimateRequestTable: React.FC = () => {
     },
   ];
 
-  return <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid border-silverGray shadow-secondaryTwist">
-    {selectedEstimate ? (
-      <ModalComponent
-        open={showDeleteModal}
-        setOpen={() => {
-          setSelecteEstimate(null);
-          setShowDeleteModal(false);
-        }}
-        destroyOnClose
-      >
-        <DeleteContent
-          onClick={() => {
-            dispatch(deleteEstimateRequest(selectedEstimate._id));
+  return (
+    <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid border-silverGray shadow-secondaryTwist">
+      {selectedEstimate ? (
+        <ModalComponent
+          open={showDeleteModal}
+          setOpen={() => {
             setSelecteEstimate(null);
             setShowDeleteModal(false);
           }}
-          onClose={() => setSelecteEstimate(null)}
+          destroyOnClose
+        >
+          <DeleteContent
+            onClick={() => {
+              dispatch(deleteEstimateRequest(selectedEstimate._id));
+              setSelecteEstimate(null);
+              setShowDeleteModal(false);
+            }}
+            onClose={() => setSelecteEstimate(null)}
+          />
+        </ModalComponent>
+      ) : null}
+      <div className="flex justify-between items-center">
+        <TertiaryHeading
+          title="My Estimate request"
+          className="text-graphiteGray"
         />
-      </ModalComponent>
-    ) : null}
-    <div className="flex justify-between items-center">
-      <TertiaryHeading
-        title="My Estimate request"
-        className="text-graphiteGray"
-      />
-      <CustomButton
-        text="Start New Estimate "
-        className="!w-auto "
-        icon="plus.svg"
-        iconwidth={20}
-        iconheight={20}
-        onClick={() => router.push('/estimates/requests/create')}
-      />
-    </div>
-    <div className="mt-4">
-      <Table
-        loading={estimateRequestsLoading}
-        columns={columns}
-        dataSource={estimateRequestsData}
-        pagination={{ position: ['bottomCenter'] }}
-      />
-    </div>
-  </section>
-
+        <CustomButton
+          text="Start New Estimate "
+          className="!w-auto "
+          icon="plus.svg"
+          iconwidth={20}
+          iconheight={20}
+          onClick={() => router.push('/estimates/requests/create')}
+        />
+      </div>
+      <div className="mt-4">
+        <Table
+          loading={estimateRequestsLoading}
+          columns={columns}
+          dataSource={estimateRequestsData}
+          pagination={{ position: ['bottomCenter'] }}
+        />
+      </div>
+    </section>
+  );
 };
 
 export default EstimateRequestTable;

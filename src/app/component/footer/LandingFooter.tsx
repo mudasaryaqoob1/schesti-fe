@@ -51,7 +51,9 @@ export default function LandingFooter() {
             />
 
             <div className="space-y-2">
-              <p className={`text-gray-400  text-lg pb-1 font-medium`}>Contact</p>
+              <p className={`text-gray-400  text-lg pb-1 font-medium`}>
+                Contact
+              </p>
 
               <p className={`text-white  text-lg pb-1 font-medium`}>
                 info@shesti.com
@@ -92,8 +94,9 @@ export default function LandingFooter() {
 
             <div className="flex justify-center py-2 ">
               <div
-                className={`flex items-center border rounded-full bg-white px-4 py-1 shadow-md ${formik.errors.email ? 'border-red-500' : ''
-                  }`}
+                className={`flex items-center border rounded-full bg-white px-4 py-1 shadow-md ${
+                  formik.errors.email ? 'border-red-500' : ''
+                }`}
               >
                 <input
                   className={`flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none  disabled:cursor-not-allowed disabled:opacity-50 flex-1 border-none
@@ -169,7 +172,7 @@ export default function LandingFooter() {
 
   return (
     <div className="bg-[#1D2939] px-[20px] pb-4 pt-[30px]">
-      <div className='flex flex-col space-y-4'>
+      <div className="flex flex-col space-y-4">
         <Image
           src={'/logowhite.svg'}
           width={122.741}
@@ -200,9 +203,7 @@ export default function LandingFooter() {
 
       <div className="flex flex-col mt-4 justify-end items-start space-y-2">
         <div className="space-y-1">
-          <p className={`text-white text-lg font-medium`}>
-            Newsletter
-          </p>
+          <p className={`text-white text-lg font-medium`}>Newsletter</p>
           <p className={`text-gray-400 text-lg  font-medium`}>
             Stay informed on how you can make difference
           </p>
@@ -210,8 +211,9 @@ export default function LandingFooter() {
 
         <div className="flex justify-center py-1 ">
           <div
-            className={`flex items-center border rounded-full bg-white px-4 py-1 shadow-md ${formik.errors.email ? 'border-red-500' : ''
-              }`}
+            className={`flex items-center border rounded-full bg-white px-4 py-1 shadow-md ${
+              formik.errors.email ? 'border-red-500' : ''
+            }`}
           >
             <input
               className={`flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none  disabled:cursor-not-allowed disabled:opacity-50 flex-1 border-none
@@ -236,7 +238,11 @@ export default function LandingFooter() {
       </div>
 
       <div className="space-y-1 mt-3">
-        <p className={`text-gray-400  text-lg pb-1 font-medium tracking-widest`}>Contact</p>
+        <p
+          className={`text-gray-400  text-lg pb-1 font-medium tracking-widest`}
+        >
+          Contact
+        </p>
 
         <p className={`text-white  text-lg pb-1 font-medium`}>
           info@shesti.com
@@ -251,10 +257,7 @@ export default function LandingFooter() {
           height={20}
           alt="arrow"
           onClick={() => {
-            window.open(
-              'https://www.linkedin.com/company/schesti/',
-              '_blank'
-            );
+            window.open('https://www.linkedin.com/company/schesti/', '_blank');
           }}
         />
         <Image
@@ -282,5 +285,5 @@ export default function LandingFooter() {
         </p>
       </div>
     </div>
-  )
+  );
 }

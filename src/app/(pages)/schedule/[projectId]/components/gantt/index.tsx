@@ -1,9 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 const GanttComponent = () => {
-  return (
-    <div>Gantt Chart</div>
-  )
-}
+  return <div>Gantt Chart</div>;
+};
 
-export default GanttComponent
+export default GanttComponent;

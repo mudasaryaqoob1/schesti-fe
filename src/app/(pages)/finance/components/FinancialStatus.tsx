@@ -80,6 +80,7 @@ export function FinancialStatus({ clientInvoiceQuery }: Props) {
         style={{
           height: 300,
         }}
+        legend={false}
       />
     </div>
   );

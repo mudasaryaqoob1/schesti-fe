@@ -43,9 +43,7 @@ const Payment = () => {
   }, []);
 
   const stripePaymentHandler = async () => {
-    const stripe = await loadStripe(
-      process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!
-    );
+    const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!);
     if (!stripe) {
       return;
     }

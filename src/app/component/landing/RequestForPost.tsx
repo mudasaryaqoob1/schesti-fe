@@ -31,7 +31,7 @@ export function RequestForPost() {
               onClick={() => router.push('/contact')}
             />
           </div>
-          <div className='hidden lg:block'>
+          <div className="hidden lg:block">
             <Image
               src={'/request-for-post-img.svg'}
               height={309}
