@@ -15,11 +15,11 @@ import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import { addNewMeetingAction } from '@/redux/meeting/meeting.slice';
 import Description from '@/app/component/description';
 import { SelectComponent } from '@/app/component/customSelect/Select.component';
-import {
-  dayjs,
-  disabledDate,
-} from '@/app/utils/date.utils';
-import TimezoneSelect, { type ITimezone, type ITimezoneOption } from 'react-timezone-select'
+import { dayjs, disabledDate } from '@/app/utils/date.utils';
+import TimezoneSelect, {
+  type ITimezone,
+  type ITimezoneOption,
+} from 'react-timezone-select';
 
 type Props = {
   showModal: boolean;
@@ -39,14 +39,16 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
   const [isScheduling, setIsScheduling] = useState(false);
   const [timezone, setTimezone] = useState<ITimezone>(
     Intl.DateTimeFormat().resolvedOptions().timeZone
-  )
+  );
   const dispatch = useDispatch<AppDispatch>();
-  console.log({ timezone })
+  console.log({ timezone });
   const formik = useFormik({
     initialValues: {
       topic: '',
       email: undefined,
-      startDate: dayjs().tz((timezone as ITimezoneOption).value).format("YYYY-MM-DDTHH:mm:ss"),
+      startDate: dayjs()
+        .tz((timezone as ITimezoneOption).value)
+        .format('YYYY-MM-DDTHH:mm:ss'),
     },
     validationSchema: CreateMeetingSchema,
     onSubmit(values) {
@@ -127,14 +129,14 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
               hasError={formik.touched.email && Boolean(formik.errors.email)}
               errorMessage={
                 formik.touched.email &&
-                  Boolean(formik.errors.email) &&
-                  Array.isArray(formik.errors.email)
+                Boolean(formik.errors.email) &&
+                Array.isArray(formik.errors.email)
                   ? formik.errors.email
-                    .map(
-                      (item: string, idx) =>
-                        `'${formik.values.email![idx]}' ${item}`
-                    )
-                    .toString()
+                      .map(
+                        (item: string, idx) =>
+                          `'${formik.values.email![idx]}' ${item}`
+                      )
+                      .toString()
                   : formik.errors.email
               }
               field={{
@@ -157,10 +159,15 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
               fieldProps={{
                 showTime: { defaultValue: dayjs('00:00:00', 'HH:mm') },
                 value: formik.values.startDate
-                  ? dayjs(formik.values.startDate).tz((timezone as ITimezoneOption).value)
+                  ? dayjs(formik.values.startDate).tz(
+                      (timezone as ITimezoneOption).value
+                    )
                   : undefined,
                 onChange(date) {
-                  formik.setFieldValue('startDate', date?.tz((timezone as ITimezoneOption).value));
+                  formik.setFieldValue(
+                    'startDate',
+                    date?.tz((timezone as ITimezoneOption).value)
+                  );
                 },
                 onBlur: formik.handleBlur,
                 status:
@@ -168,7 +175,8 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
                     ? 'error'
                     : undefined,
                 use12Hours: true,
-                disabledDate: (curr) => disabledDate(curr, (timezone as ITimezoneOption).value),
+                disabledDate: (curr) =>
+                  disabledDate(curr, (timezone as ITimezoneOption).value),
                 showSecond: false,
                 renderExtraFooter: () => (
                   // <SelectComponent
@@ -191,9 +199,9 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
                     value={timezone}
                     onChange={setTimezone}
                     maxMenuHeight={300}
-                    menuPlacement='top'
+                    menuPlacement="top"
                     // remove select focus outline
-                    className='z-50 !outline-none !*:border-none'
+                    className="z-50 !outline-none !*:border-none"
                   />
                 ),
               }}
