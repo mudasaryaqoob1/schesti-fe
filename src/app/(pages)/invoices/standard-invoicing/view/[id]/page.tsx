@@ -13,10 +13,11 @@ import Table, { type ColumnType } from 'antd/es/table';
 import { ConfigProvider, Divider } from 'antd';
 import CustomButton from '@/app/component/customButton/button';
 import { PDFDownloadLink } from '@react-pdf/renderer';
-import ClientPDF from './clientPDF';
+import dynamic from 'next/dynamic';
 import moment from 'moment';
 import { RootState } from '@/redux/store';
 import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
+const ClientPDF = dynamic(() => import('./clientPDF'), { ssr: false });
 
 export default function ViewSubcontractorInvoicePage() {
   const token = useSelector(selectToken);
