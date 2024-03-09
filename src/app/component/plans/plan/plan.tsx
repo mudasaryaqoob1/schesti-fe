@@ -1,5 +1,6 @@
 'use client';
 import Button from '@/app/component/customButton/button';
+import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
 import {
   tertiaryHeading,
@@ -11,15 +12,33 @@ import { useRouter } from 'next/navigation';
 import { Fragment } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-const SinglePlan = (props: IPricingPlan) => {
+
+type Props = {
+  user?: IUser;
+} & IPricingPlan;
+
+const SinglePlan = (props: Props) => {
   const router = useRouter();
 
-  const { planName, price, planDescription, features, duration } = props;
+  const { planName, price, planDescription, features, duration, _id } = props;
 
   const pricingPackageSelectionHandler = () => {
     localStorage.setItem('pricingPlan', JSON.stringify(props));
     router.push(`/payment`);
   };
+  const BTN = props.user && props.user.planId ? (
+    <Button
+      text={props.user.planId === _id ? "Current Plan" : "Upgrade"}
+      className="text-white self-stretch w-full"
+    />
+  ) : (
+    <Button
+      text={"Buy"}
+      className="text-white self-stretch w-full"
+      onClick={pricingPackageSelectionHandler}
+    />
+  )
+
   return (
     <div
       className={`p-8 rounded-[20px] items-center flex flex-col justify-between shadow-secondaryShadow gap-5`}
@@ -68,11 +87,7 @@ const SinglePlan = (props: IPricingPlan) => {
         </div>
       </div>
       <div className="w-full">
-        <Button
-          text="Buy"
-          className="text-white self-stretch w-full"
-          onClick={pricingPackageSelectionHandler}
-        />
+        {BTN}
       </div>
     </div>
   );
