@@ -28,8 +28,12 @@ import SwitchBtn from './components/switchbtn';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import SecondaryHeading from '@/app/component/headings/Secondary';
 import { minHeading } from '@/globals/tailwindvariables';
+import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 
-const Plans = () => {
+type Props = {
+  user?: IUser
+}
+const Plans = ({ user }: Props) => {
   const [planType, setPlanType] = useState('Individual');
   const dispatch = useDispatch<AppDispatch>();
   const [pricingPlansData, setPricingPlansData] = useState(
@@ -37,11 +41,11 @@ const Plans = () => {
   );
   const [isDuration, setIsDuration] = useState('monthly');
   const [selectedPlan, setSelectedPlan] = useState<any>();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   const [autoRenew, setAutoRenew] = useState(true);
 
   const token = useSelector(selectToken);
 
-  console.log(autoRenew);
 
   useLayoutEffect(() => {
     if (token) {
@@ -117,6 +121,7 @@ const Plans = () => {
                         key={index}
                         {...plan}
                         setSelectedPlan={setSelectedPlan}
+                        user={user}
                       />
                     );
                   }
