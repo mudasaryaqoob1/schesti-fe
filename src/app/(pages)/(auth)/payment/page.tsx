@@ -146,7 +146,7 @@ const Payment = () => {
                   />
                 </div>
                 <div className="h-52 grid place-items-center w-full shadow-md   rounded-s">
-                  <PaypalInteration />
+                  {selectedPLan ? <PaypalInteration selectedPlan={selectedPLan} /> : null}
 
                   {/* <Image
                 src={'/paypal.svg'}
