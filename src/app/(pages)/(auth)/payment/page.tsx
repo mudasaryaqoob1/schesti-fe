@@ -54,7 +54,7 @@ const Payment = () => {
     const result = await stripe.redirectToCheckout({
       sessionId: response.data.id,
     });
-
+    console.log({ stripeResult: result });
     if (result.error) {
       toast.error('Something went wrong');
     }

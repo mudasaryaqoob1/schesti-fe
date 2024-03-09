@@ -2,11 +2,31 @@
 import Button from '@/app/component/customButton/button';
 import SecondaryHeading from '@/app/component/headings/Secondary';
 import QuinaryHeading from '@/app/component/headings/quinary';
+import { HttpService } from '@/app/services/base.service';
+import { selectToken } from '@/redux/authSlices/auth.selector';
+import { getLoggedInUserDetails } from '@/redux/authSlices/auth.thunk';
+import { AppDispatch } from '@/redux/store';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 const Congratulations = () => {
   const router = useRouter();
+  const token = useSelector(selectToken);
+  const dispatch = useDispatch<AppDispatch>();
+
+  useLayoutEffect(() => {
+    if (token) {
+      HttpService.setToken(token);
+    }
+  }, [token]);
+
+
+  useEffect(() => {
+    dispatch(getLoggedInUserDetails({}))
+  }, [])
+
+
   return (
     <section className="h-[100vh] grid place-items-center rounded-lg">
       <div
