@@ -31,9 +31,9 @@ const editSubcontractorSchema = Yup.object({
   email: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
-  phone: Yup.string()
-    .min(11, 'Phone number must be at least 11 characters')
-    .max(14, 'Phone number must be at most 14 characters')
+    phone: Yup.string()
+    .min(7, 'Phone number must be at least 7 characters')
+    .max(12, 'Phone number must be at most 12 characters')
     .required('Phone number is required'),
   name: Yup.string().required('Company Name is required!'),
   address: Yup.string().required('Address is required!'),

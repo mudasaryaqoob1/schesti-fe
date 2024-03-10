@@ -90,6 +90,9 @@ const confirmColumns: any = [
     dataIndex: 'perHourLaborRate',
     align: 'center',
     width: 120,
+    render: (value : number) => {
+      return `$${value}`
+    },
   },
   {
     title: 'Total Labor Cost',
@@ -104,7 +107,7 @@ const confirmColumns: any = [
       let perHourLaborRate = parseFloat(record.perHourLaborRate);
       let totalLabourHours = quantityWithWastage * unitLabourHour;
       let result = totalLabourHours * perHourLaborRate;
-      return result.toFixed(2);
+      return `$${result.toFixed(2)}`;
     },
   },
   {
@@ -112,6 +115,9 @@ const confirmColumns: any = [
     dataIndex: 'unitMaterialCost',
     align: 'center',
     width: 120,
+    render: (value : number) => {
+      return `$${value}`
+    },
   },
   {
     title: 'Total Material Cost',
@@ -124,7 +130,7 @@ const confirmColumns: any = [
       let wastagePercentage = parseFloat(record.wastage);
       let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
       let result = unitMaterialCost * quantityWithWastage;
-      return result.toFixed(2);
+      return `$${result.toFixed(2)}`;
     },
   },
   {
@@ -138,7 +144,7 @@ const confirmColumns: any = [
       let wastagePercentage = parseFloat(record.wastage);
       let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
       let result = unitEquipments * quantityWithWastage;
-      return result.toFixed(2);
+      return `$${result.toFixed(2)}`;
     },
   },
   {
@@ -149,7 +155,7 @@ const confirmColumns: any = [
     width: 150,
     render: (text: string, record: DataType) => {
       let result = calculateTotalCost(record);
-      return result;
+      return `$${result}`;
     },
   },
 ];

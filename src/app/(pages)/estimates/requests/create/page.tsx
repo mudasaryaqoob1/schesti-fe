@@ -41,11 +41,11 @@ const clientInfoSchema: any = Yup.object({
     .required('Email is required!')
     .email('Email should be valid'),
   phone: Yup.string()
-    .min(11, 'Phone number must be at least 11 characters')
-    .max(14, 'Phone number must be at most 14 characters')
+    .min(7, 'Phone number must be at least 7 characters')
+    .max(12, 'Phone number must be at most 12 characters')
     .required('Phone number is required'),
   projectName: Yup.string().required('Project name is required!'),
-  leadSource: Yup.number().required('Lead source is required!'),
+  leadSource: Yup.string().required('Lead source is required!'),
   projectValue: Yup.number().required('Project value is required!'),
   projectInformation: Yup.string().required('Project info is required!'),
   salePerson: Yup.string().required('Sale person is required!'),
@@ -140,11 +140,12 @@ const CreateEstimateRequest = () => {
     // }
     else {
       setIsLoading(true);
+      toast.success('File Uploading...', {autoClose: 5})
 
+      
       const drawingDocs = await uploadDocumentToS3Handler(drawingsDocuments);
       const takeOffDocs = await uploadDocumentToS3Handler(takeOffReports);
       const otherDocs = await uploadDocumentToS3Handler(otherDocuments);
-      console.log(drawingDocs, takeOffDocs, otherDocs);
       Promise.all([drawingDocs, takeOffDocs, otherDocs])
         .then(() => {
           estimateRequestService
@@ -185,14 +186,12 @@ const CreateEstimateRequest = () => {
   ) => {
     let documentsData: Object[] = [];
     try {
-      console.log({ documents });
       documentsData = await Promise.all(
         documents.map(async (doc) => {
           const url = await new AwsS3(
             doc.originFileObj,
             'documents/estimates/'
           ).getS3URL();
-          console.log({ url });
           let obj = {
             name: doc.name,
             size: doc.size,
@@ -202,7 +201,6 @@ const CreateEstimateRequest = () => {
           return obj;
         })
       );
-      console.log({ documentsData });
       return documentsData;
     } catch (error) {
       toast.error('Error uploading documents');
@@ -390,7 +388,7 @@ const CreateEstimateRequest = () => {
                       <FormControl
                         control="input"
                         label="Lead Source Value"
-                        type="number"
+                        type="text"
                         name="leadSource"
                         placeholder="Lead Source"
                       />

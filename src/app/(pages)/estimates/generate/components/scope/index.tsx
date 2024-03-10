@@ -44,16 +44,16 @@ type InitialValuesType = {
 };
 
 const validationSchema = Yup.object({
-  category: Yup.string().required('category name is required!'),
-  subCategory: Yup.string().required('subCategory name is required!'),
-  description: Yup.string().required('description name is required!'),
-  unit: Yup.string().required('unit name is required!'),
-  qty: Yup.string().required('qty name is required!'),
-  wastage: Yup.string().required('wastage name is required!'),
-  unitLabourHour: Yup.string().required('unitLaborHours name is required!'),
-  perHourLaborRate: Yup.string().required('perHourLaborRate name is required!'),
-  unitMaterialCost: Yup.string().required('unitMaterialCost name is required!'),
-  unitEquipments: Yup.string().required('unitEquipmentCost name is required!'),
+  category: Yup.string().required('Category is required!'),
+  subCategory: Yup.string().required('SubCategory is required!'),
+  description: Yup.string().required('Description is required!'),
+  unit: Yup.string().required('Unit is required!'),
+  qty: Yup.string().required('Quantity is required'),
+  wastage: Yup.string().required('Wastage is required!'),
+  unitLabourHour: Yup.string().required('Unit labour hour is required!'),
+  perHourLaborRate: Yup.string().required('Per hour labour rate  is required!'),
+  unitMaterialCost: Yup.string().required('Unit material cost is required!'),
+  unitEquipments: Yup.string().required('Unit equipments is required!'),
 });
 
 interface Props {
@@ -179,7 +179,6 @@ const Scope = ({ setPrevNext }: Props) => {
           let uniqueUnitsSet = new Set();
           let fetchedDescriptions = result.data
             .map((material: DataType) => {
-              console.log(material, 'materialmaterial');
 
               const description = material.description;
 
@@ -541,6 +540,9 @@ const Scope = ({ setPrevNext }: Props) => {
       dataIndex: 'perHourLaborRate',
       align: 'center',
       width: 120,
+      render: (value : number) => {
+        return `$${value}`
+      },
     },
     {
       title: 'Total Labor Cost',
@@ -555,7 +557,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let perHourLaborRate = parseFloat(record.perHourLaborRate);
         let totalLabourHours = quantityWithWastage * unitLabourHour;
         let result = totalLabourHours * perHourLaborRate;
-        return result.toFixed(2);
+        return `$${result.toFixed(2)}`;
       },
     },
     {
@@ -563,9 +565,12 @@ const Scope = ({ setPrevNext }: Props) => {
       dataIndex: 'unitMaterialCost',
       align: 'center',
       width: 120,
+      render: (value : number) => {
+        return `$${value}`
+      },
     },
     {
-      title: 'Total Material Cost',
+      title: 'Total Material Cost $',
       dataIndex: 'totalMaterialCost',
       align: 'center',
       width: 120,
@@ -575,7 +580,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let wastagePercentage = parseFloat(record.wastage);
         let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = unitMaterialCost * quantityWithWastage;
-        return result.toFixed(2);
+        return `$${result.toFixed(2)}`;
       },
     },
     {
@@ -589,7 +594,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let wastagePercentage = parseFloat(record.wastage);
         let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = unitEquipments * quantityWithWastage;
-        return result.toFixed(2);
+        return `$${result.toFixed(2)}`;
       },
     },
     {
@@ -599,7 +604,7 @@ const Scope = ({ setPrevNext }: Props) => {
       width: 150,
       render: (text: string, record: DataType) => {
         let result = calculateTotalCost(record);
-        return result;
+        return `$${result}`;
       },
     },
 
@@ -689,6 +694,9 @@ const Scope = ({ setPrevNext }: Props) => {
       dataIndex: 'perHourLaborRate',
       align: 'center',
       width: 120,
+      render: (value : number) => {
+        return `$${value}`
+      },
     },
     {
       title: 'Total Labor Cost',
@@ -703,7 +711,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let perHourLaborRate = parseFloat(record.perHourLaborRate);
         let totalLabourHours = quantityWithWastage * unitLabourHour;
         let result = totalLabourHours * perHourLaborRate;
-        return result.toFixed(2);
+        return `$${result.toFixed(2)}`;
       },
     },
     {
@@ -711,6 +719,9 @@ const Scope = ({ setPrevNext }: Props) => {
       dataIndex: 'unitMaterialCost',
       align: 'center',
       width: 120,
+      render: (value : number) => {
+        return `$${value}`
+      },
     },
     {
       title: 'Total Material Cost',
@@ -723,7 +734,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let wastagePercentage = parseFloat(record.wastage);
         let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = unitMaterialCost * quantityWithWastage;
-        return result.toFixed(2);
+        return `$${result.toFixed(2)}`;
       },
     },
     {
@@ -737,7 +748,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let wastagePercentage = parseFloat(record.wastage);
         let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = unitEquipments * quantityWithWastage;
-        return result.toFixed(2);
+        return `$${result.toFixed(2)}`;
       },
     },
     {
@@ -747,7 +758,7 @@ const Scope = ({ setPrevNext }: Props) => {
       width: 150,
       render: (text: string, record: DataType) => {
         let result = calculateTotalCost(record);
-        return result;
+        return `$${result}`;
       },
     },
 
