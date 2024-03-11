@@ -72,6 +72,16 @@ class AuthService extends HttpService {
     }>
   > => this.post(`${this.prefix}/stripe-checkout`, data);
 
+  httpUpgradeStripeMutation = (
+    data: { planId: string }
+  ): Promise<
+    IResponseInterface<{
+      statusCode: number;
+      message: string;
+      data: { planId: string };
+    }>
+  > => this.post(`${this.prefix}/stripe-upgrade-subscription`, data);
+
   httpStripeInvoices = (): Promise<IResponseInterface<any>> =>
     this.get(`${this.prefix}/stripe-invoices`);
 

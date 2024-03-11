@@ -29,7 +29,7 @@ const SettingPlans = () => {
               key: type,
               label: type,
               tabKey: type,
-              children: mySubscriptionPlan ? <MySubscription /> : <Plans user={user.user} />,
+              children: mySubscriptionPlan ? <MySubscription /> : <Plans user={user ? user.user : undefined} />,
             };
           })}
         />
