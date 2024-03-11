@@ -99,7 +99,7 @@ const PaymentPlans = () => {
           {pricingPlansData
             .filter((plan) => plan.duration === isDuration)
             ?.map((plan: IPricingPlan, index: React.Key | null | undefined) => {
-              return <SinglePlan key={index} {...plan} user={user.user} />;
+              return <SinglePlan key={index} {...plan} user={user ? user.user : undefined} />;
             })}
         </div>
       )}
