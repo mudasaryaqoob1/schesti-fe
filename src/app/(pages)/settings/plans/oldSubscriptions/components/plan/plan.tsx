@@ -39,6 +39,7 @@ const SinglePlan = (props: Props) => {
     return authService.httpUpgradeStripeMutation({ planId });
   }, {
     onSuccess() {
+      toast.success("Plan upgraded successfully");
       dispatch(getLoggedInUserDetails({}))
     },
     onError(error) {
