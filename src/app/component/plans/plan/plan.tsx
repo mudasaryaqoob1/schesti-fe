@@ -38,7 +38,11 @@ const SinglePlan = (props: Props) => {
   const stripeUpgradeMutation = useMutation(['upgradePlan'], async (planId: string) => {
     return authService.httpUpgradeStripeMutation({ planId });
   }, {
-    onSuccess() {
+    onSuccess(data) {
+      if (data.statusCode >= 400) {
+        toast.error(data.message)
+        return
+      }
       toast.success("Plan upgraded successfully");
       dispatch(getLoggedInUserDetails({}))
     },
