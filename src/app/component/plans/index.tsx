@@ -11,7 +11,7 @@ import {
 
 import SwitchBtn from './switchbtn';
 import SinglePlan from './plan/plan';
-import ToggleBtn from './toggleBtn/index';
+import ToggleBtn from './toggleBtn';
 import { AppDispatch, RootState } from '@/redux/store';
 import { HttpService } from '@/app/services/base.service';
 import { selectToken } from '@/redux/authSlices/auth.selector';
@@ -38,7 +38,8 @@ const PaymentPlans = () => {
   const isLoading = useSelector(selectPricingPlansLoading);
   const isError = useSelector(selectPricingPlansError);
 
-  const [planType, setPlanType] = useState(false);
+  const [planType, setPlanType] = useState('Individual');
+
   const [pricingPlansData, setPricingPlansData] = useState(
     [] as IPricingPlan[]
   );
@@ -50,15 +51,14 @@ const PaymentPlans = () => {
   }, []);
 
   const handlePlanType = (event: ChangeEvent<HTMLInputElement>) => {
-    const currentPlanType = event.target.checked ? 'Enterprise' : 'Individual';
+    const currentPlanType = event.target.checked ? 'Individual' : 'Enterprise';
     const newPlansData = plansData.pricingPlans.filter(
-      ({ type }: IPricingPlan) => type === currentPlanType
+      ({ type, duration }: IPricingPlan) =>
+        type === currentPlanType && duration === isDuration
     );
-
-    setPlanType(event.target.checked);
+    setPlanType(currentPlanType);
     setPricingPlansData(newPlansData);
   };
-
   const pricingPlansHandler = useCallback(async () => {
     const {
       payload: {
@@ -76,18 +76,25 @@ const PaymentPlans = () => {
     }
   }, []);
 
+  const handlePlanDuration = (event: ChangeEvent<HTMLInputElement>) => {
+    const currentPlanDuration = event.target.checked ? 'yearly' : 'monthly';
+    const newPlansData = plansData.pricingPlans.filter(
+      ({ duration, type }: IPricingPlan) =>
+        duration === currentPlanDuration && type === planType
+    );
+    setIsDuration(currentPlanDuration);
+    setPricingPlansData(newPlansData);
+  };
+
   return (
     <>
       <div className="w-full h-px bg-mistyWhite mt-4 mb-6"></div>
       <div className="flex w-full align-items-center justify-center">
-        <ToggleBtn isChecked={planType} onChange={handlePlanType} />
+        <ToggleBtn planType={planType} onChange={handlePlanType} />
       </div>
       <div className="flex w-full align-items-center justify-center my-6">
         <SwitchBtn
-          isChecked={isDuration}
-          onChange={(event) =>
-            setIsDuration(event.target.checked ? 'yearly' : 'monthly')
-          }
+          isDuration={isDuration} onChange={handlePlanDuration}
         />
       </div>
       {isLoading ? (
