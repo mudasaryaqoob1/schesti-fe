@@ -20,6 +20,7 @@ import { HttpService } from '@/app/services/base.service';
 
 // client service
 import { userService } from '@/app/services/user.service';
+import { PhoneNumberRegex } from '@/app/utils/regex.util';
 
 const newClientSchema = Yup.object({
   firstName: Yup.string()
@@ -32,6 +33,7 @@ const newClientSchema = Yup.object({
     .required('Email is required!')
     .email('Email should be valid'),
   phone: Yup.string()
+    .matches(PhoneNumberRegex, "Phone number must contain numbers")
     .min(11, 'Phone number must be at least 11 characters')
     .max(14, 'Phone number must be at most 14 characters')
     .required('Phone number is required'),
@@ -134,7 +136,7 @@ const CreateClient = () => {
                   <FormControl
                     control="input"
                     label="Phone Number"
-                    type="number"
+                    type="text"
                     name="phone"
                     placeholder="Phone number"
                     min={1}

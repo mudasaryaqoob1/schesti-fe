@@ -1,0 +1,1 @@
+export const PhoneNumberRegex = /^\+?[0-9]+$/;
