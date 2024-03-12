@@ -88,11 +88,11 @@ export default function PricingPage() {
         className="h-[501px] relative"
       >
         <LandingNavbar />
-        <div className="mt-[101px] lg:mx-auto lg:w-[1063px]">
-          <h1 className="text-center font-extrabold text-white text-[48px] leading-[57px] lg:text-[64px] lg:leading-[80px]">
+        <div className="mt-[101px] xl:mx-auto xl:w-[1063px]">
+          <h1 className="text-center font-extrabold text-white text-[48px] leading-[57px] xl:text-[64px] xl:leading-[80px]">
             Pricing
           </h1>
-          <p className="text-center text-white lg:w-[774px] leading-[30px] text-[18px] lg:leading-[44px] font-light lg:text-[24px] lg:mx-auto my-[26px]">
+          <p className="text-center text-white xl:w-[774px] leading-[30px] text-[18px] xl:leading-[44px] font-light xl:text-[24px] xl:mx-auto my-[26px]">
             Pricing built for businesses of all sizes.
             <br />
             Free 14-day trial • No credit card required • Cancel anytime
@@ -100,8 +100,8 @@ export default function PricingPage() {
         </div>
       </main>
 
-      <div className="px-[20px] lg:px-[200px] mt-[50px] lg:mt-[151px]">
-        <div className="lg:w-[966.356px] lg:mx-auto">
+      <div className="px-[20px] lg:px-[100px] xl:px-[200px] mt-[50px] xl:mt-[151px]">
+        <div className="xl:w-[966.356px] xl:mx-auto">
           <h3 className="text-[#EF9F28] text-center text-[24px] font-medium leading-[32px]">
             Craft Your Success
           </h3>
@@ -130,7 +130,7 @@ export default function PricingPage() {
             ) : isError ? (
               <p>Something Went Wrong</p>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 xl:grid-cols-3 sm:grid-cols-2 gap-5">
                 {pricingPlansData?.map(
                   (plan: IPricingPlan, index: React.Key | null | undefined) => {
                     return (
@@ -152,11 +152,11 @@ export default function PricingPage() {
 
       <RequestForPost />
 
-      <div className="py-20 px-[20px] lg:px-[200px]">
+      <div className="py-20 px-[20px] lg:px-[100px] xl:px-[200px]">
         <h3 className="text-[#EF9F28] text-center text-[24px] font-medium leading-[32px]">
           FAQ
         </h3>
-        <h1 className="text-center font-bold pt-[20px] text-[36px] leading-[44px] lg:text-[40px] lg:leading-[60px] text-[#1D2939]">
+        <h1 className="text-center font-bold pt-[20px] text-[36px] leading-[44px] xl:text-[40px] xl:leading-[60px] text-[#1D2939]">
           {"You've"} got questions. {"We've"} got answers.
         </h1>
 
