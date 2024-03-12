@@ -25,9 +25,11 @@ import { PhoneNumberRegex } from '@/app/utils/regex.util';
 const newClientSchema = Yup.object({
   firstName: Yup.string()
     .min(2, 'First name must be at least 2 characters')
+    .max(15, "First name must be less than 15 characters")
     .required('First name is required!'),
   lastName: Yup.string()
     .min(2, 'Last name must be at least 2 characters')
+    .max(15, "Last name must be less than 15 characters")
     .required('Last name is required!'),
   email: Yup.string()
     .required('Email is required!')
