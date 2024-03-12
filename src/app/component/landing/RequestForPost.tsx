@@ -8,7 +8,7 @@ export function RequestForPost() {
 
   return (
     <div className="mt-20 bg-[#344054]">
-      <div className="px-[20px] lg:px-[200px] py-8">
+      <div className="px-[20px] lg:px-[100px] xl:px-[200px] py-8">
         <div className="flex space-x-16">
           <div className="mt-4 space-y-7">
             <div>
@@ -31,7 +31,7 @@ export function RequestForPost() {
               onClick={() => router.push('/contact')}
             />
           </div>
-          <div className="hidden lg:block">
+          <div className="hidden xl:block">
             <Image
               src={'/request-for-post-img.svg'}
               height={309}

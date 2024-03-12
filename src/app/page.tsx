@@ -62,8 +62,8 @@ export default function Home() {
         className="min-h-[800px] lg:h-[800px] relative"
       >
         <LandingNavbar />
-        <div className="mt-[101px] mx-auto w-full md:w-[800px] lg:w-[1063px]">
-          <h1 className="text-center font-extrabold text-white text-[40px] leading-[64px] md:text-[64px] md:leading-[80px]">
+        <div className="mt-[101px] mx-auto w-full lg:w-[1063px]">
+          <h1 className="text-center font-extrabold text-white text-[40px] leading-[64px] lg:text-[64px] lg:leading-[80px]">
             Schesti - Revolutionizing Landscaping Estimations and Scheduling
           </h1>
           <p className="text-center px-5 md:px-0 text-white w-full md:w-[774px] font-light text-xl md:mx-auto my-[26px]">
@@ -81,9 +81,9 @@ export default function Home() {
           <div className="flex items-center flex-col lg:block">
             <AntdImage
               src={'/landing.png'}
-              height={responsive.lg ? 758.21 : 220}
-              width={responsive.lg ? 1325.71 : 351}
-              className="mx-auto mr-3 lg:mr-0 lg:mx-0 lg:absolute lg:left-[40%] lg:-translate-x-[50%] lg:top-[37px]"
+              height={responsive.xl ? 758.21 : responsive.lg ? 658.21 : responsive.md ? 420 : 220}
+              width={responsive.xl ? 1325.71 : responsive.lg ? 1025.71 : responsive.md ? 720 : 351}
+              className="mx-auto mr-3 lg:mr-0 lg:mx-0 xl:absolute xl:left-[40%] lg:absolute lg:left-[50%] lg:-translate-x-[50%] lg:top-[37px]"
               alt="dashboard"
               preview={false}
             />
@@ -91,7 +91,7 @@ export default function Home() {
         </div>
       </main>
 
-      <div className="px-[20px] lg:px-[200px] mt-[32px] lg:mt-[633px]">
+      <div className="px-[20px] lg:px-[100px] xl:px-[200px] mt-[32px] lg:mt-[533px] xl:mt-[633px]">
         <div>
           <h3 className="text-[#EF9F28] text-[24px] font-medium leading-[32px]">
             Leading the Way:{' '}
@@ -109,7 +109,7 @@ export default function Home() {
         </div>
 
         <div className="mt-[62px] lg:mt-3">
-          <div className="flex flex-col lg:flex-row lg:justify-between lg:space-x-5 items-center ">
+          <div className="flex flex-col xl:flex-row xl:justify-between xl:space-x-5 items-center ">
             <div>
               <h3 className="text-[#EF9F28] text-[24px] font-medium leading-[32px]">
                 Quantity Takeoff{' '}
@@ -138,73 +138,68 @@ export default function Home() {
       </div>
 
       <div className="mt-20 bg-[#F2F2FF]">
-        <div className="px-[20px] lg:px-[200px] py-4 lg:py-16">
-          <h3 className="text-[#EF9F28] text-center text-[20px] lg:text-[24px] font-medium leading-[20px] lg:leading-[32px]">
+        <div className="px-[20px] lg:px-[100px] xl:px-[200px] py-4 xl:py-16">
+          <h3 className="text-[#EF9F28] text-center text-[20px] xl:text-[24px] font-medium leading-[20px] xl:leading-[32px]">
             Features
           </h3>
           <h1
-            className="text-center w-full lg:w-[829px] pb-[20px] lg:mx-auto py-[24px] font-extrabold text-[#1D2939] text-[28px] leading-[40px]
-          lg:text-[40px] lg:leading-[60px]"
+            className="text-center w-full xl:w-[829px] pb-[20px] xl:mx-auto py-[24px] font-extrabold text-[#1D2939] text-[28px] leading-[40px]
+          xl:text-[40px] xl:leading-[60px]"
           >
             Revolutionize your field service <br /> business with schesti.
           </h1>
-          <p className="text-[16px] text-center leading-[25px] lg:text-[20px] font-normal pb-[37px] lg:leading-[38px] text-[#344054]">
+          <p className="text-[16px] text-center leading-[25px] xl:text-[20px] font-normal pb-[37px] xl:leading-[38px] text-[#344054]">
             Schesti streamlines your business operations by providing a central
             hub for all your clients, projects, scheduling, invoicing, and
             estimating needs. {"It's"} the ultimate tool for businesses who want
             to save time, increase efficiency, and boost profitability.
           </p>
 
-          <div className="grid grid-cols-1 grid-rows-2 lg:grid-rows-1 lg:grid-cols-5  justify-items-center lg:gap-4 pt-[37px] pb-[57px] gap-6">
+          <div className="grid grid-cols-1 grid-rows-2 xl:grid-rows-1 xl:grid-cols-5  justify-items-center xl:gap-4 pt-[37px] pb-[57px] gap-6">
             <CustomButton
               text="Estimating"
-              className={`!rounded-full !bg-transparent  ${
-                tab === 'estimating'
-                  ? '!text-[#8449EB] !border-[#8449EB]'
-                  : '!text-[#718096] !border-[#718096]'
-              }`}
+              className={`!rounded-full !bg-transparent  ${tab === 'estimating'
+                ? '!text-[#8449EB] !border-[#8449EB]'
+                : '!text-[#718096] !border-[#718096]'
+                }`}
               onClick={() => setTab('estimating')}
             />
             <CustomButton
               text="Invoice"
-              className={`!rounded-full !bg-transparent  ${
-                tab === 'invoice'
-                  ? '!text-[#8449EB] !border-[#8449EB]'
-                  : '!text-[#718096] !border-[#718096]'
-              }`}
+              className={`!rounded-full !bg-transparent  ${tab === 'invoice'
+                ? '!text-[#8449EB] !border-[#8449EB]'
+                : '!text-[#718096] !border-[#718096]'
+                }`}
               onClick={() => setTab('invoice')}
             />
             <CustomButton
               text="Subcontractor"
-              className={`!rounded-full !bg-transparent  ${
-                tab === 'subcontractor'
-                  ? '!text-[#8449EB] !border-[#8449EB]'
-                  : '!text-[#718096] !border-[#718096]'
-              }`}
+              className={`!rounded-full !bg-transparent  ${tab === 'subcontractor'
+                ? '!text-[#8449EB] !border-[#8449EB]'
+                : '!text-[#718096] !border-[#718096]'
+                }`}
               onClick={() => setTab('subcontractor')}
             />
             <CustomButton
               text="Client"
-              className={`!rounded-full !bg-transparent  ${
-                tab === 'client'
-                  ? '!text-[#8449EB] !border-[#8449EB]'
-                  : '!text-[#718096] !border-[#718096]'
-              }`}
+              className={`!rounded-full !bg-transparent  ${tab === 'client'
+                ? '!text-[#8449EB] !border-[#8449EB]'
+                : '!text-[#718096] !border-[#718096]'
+                }`}
               onClick={() => setTab('client')}
             />
             <CustomButton
               text="Meeting"
-              className={`!rounded-full !bg-transparent  ${
-                tab === 'meeting'
-                  ? '!text-[#8449EB] !border-[#8449EB]'
-                  : '!text-[#718096] !border-[#718096]'
-              }`}
+              className={`!rounded-full !bg-transparent  ${tab === 'meeting'
+                ? '!text-[#8449EB] !border-[#8449EB]'
+                : '!text-[#718096] !border-[#718096]'
+                }`}
               onClick={() => setTab('meeting')}
             />
           </div>
 
           <div
-            className="flex flex-col-reverse items-center lg:items-start justify-between lg:flex-row space-y-10 lg:space-y-0
+            className="flex flex-col-reverse items-center xl:items-start justify-between xl:flex-row space-y-10 xl:space-y-0
            space-x-10 pb-[64px]"
           >
             <div>
@@ -236,16 +231,16 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="px-[20px] lg:px-[200px] my-[69px] lg:my-[104px]">
-        <div className="flex flex-col lg:flex-row items-center justify-between lg:space-x-28 w-full">
+      <div className="px-[20px] lg:px-[100px] xl:px-[200px] my-[69px] xl:my-[104px]">
+        <div className="flex flex-col xl:flex-row items-center justify-between xl:space-x-28 w-full">
           <div>
             <h3 className="text-[#EF9F28] text-[24px] font-medium leading-[32px]">
               Project schedule
             </h3>
-            <h1 className="text-[#1D2939] pt-[15px] pb-[24px] font-bold text-[28px] leading-[40px] lg:text-[40px] lg:leading-[60px]">
+            <h1 className="text-[#1D2939] pt-[15px] pb-[24px] font-bold text-[28px] leading-[40px] xl:text-[40px] xl:leading-[60px]">
               Schedule estimates and create gantt charts
             </h1>
-            <p className="text-[16px] lg:text-[20px] text-[#475467] leading-[24px] lg:leading-[38px]">
+            <p className="text-[16px] xl:text-[20px] text-[#475467] leading-[24px] xl:leading-[38px]">
               Efficiently manage your project timelines. Schedule estimates with
               ease and visualize your project plan through Gantt charts.{' '}
               {'Schesti’s'} intuitive scheduling tools provide a clear overview,
@@ -266,17 +261,17 @@ export default function Home() {
 
       <RequestForPost />
 
-      <div className="my-[40px] lg:my-[147px]">
-        <div className="px-[20px] lg:px-[200px] py-8">
+      <div className="my-[40px] xl:my-[147px]">
+        <div className="px-[20px] lg:px-[100px] xl:px-[200px] py-8">
           <h3 className="text-[#EF9F28] text-[24px] text-center font-medium leading-[32px]">
             Work process
           </h3>
-          <h1 className="text-[28px] lg:text-[40px] font-bold pt-[12px] pb-4 lg:pb-[49px] leading-[40px] lg:leading-[60px] text-[#1D2939] text-center">
+          <h1 className="text-[28px] xl:text-[40px] font-bold pt-[12px] pb-4 xl:pb-[49px] leading-[40px] xl:leading-[60px] text-[#1D2939] text-center">
             This is how schesti works
           </h1>
 
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 lg:py-12">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-8 py-4 xl:py-12">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
               <div
                 className="rounded-lg border bg-card text-card-foreground shadow-sm w-full"
                 data-v0-t="card"
