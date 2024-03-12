@@ -38,6 +38,18 @@ const ExistingClient = ({ setModalOpen, onSelectClient }: Props) => {
     memoizedSetPerson();
   }, []);
 
+
+  const filteredData = (clientsData as IClient[])
+    .filter((client) => {
+      if (!search) {
+        return client;
+      }
+      return client.firstName
+        .toLowerCase()
+        .includes(search.toLowerCase());
+    });
+
+
   return (
     <div className="py-2.5 px-6 bg-white border border-solid border-elboneyGray rounded-[4px] z-50">
       <section className="w-full">
@@ -93,36 +105,9 @@ const ExistingClient = ({ setModalOpen, onSelectClient }: Props) => {
 
           {clientLoading ? (
             <h6 className="text-center">Loading...</h6>
-          ) : !clientsData || clientsData.length === 0 ? (
-            <div className="max-w-[500px] flex flex-col items-center p-4">
-              <div className="bg-lightGray p-12 rounded-full">
-                <Image
-                  src={'/estimateempty.svg'}
-                  alt="create request icon"
-                  width={100}
-                  height={100}
-                />
-              </div>
-              <SecondaryHeading
-                title={'Existing Clients'}
-                className="text-obsidianBlack2 mt-8"
-              />
-              <Description
-                title={"You don't have any clients yet."}
-                className="text-steelGray text-center font-normal"
-              />
-            </div>
-          ) : (
-            (clientsData as IClient[])
-              .filter((client) => {
-                if (!search) {
-                  return client;
-                }
-                return client.firstName
-                  .toLowerCase()
-                  .includes(search.toLowerCase());
-              })
-              .map(({ _id, firstName }: any, i: number) => {
+          ) : !clientsData || clientsData.length === 0 ? <EmptyList /> : (
+            filteredData.length === 0 ? <EmptyList description='No result found.' /> :
+              filteredData.map(({ _id, firstName }: any, i: number) => {
                 return (
                   <Fragment key={i}>
                     <div className="border-b-lightGrayishBlue p-4 flex gap-4 items-center bg-snowWhite border">
@@ -175,3 +160,27 @@ const ExistingClient = ({ setModalOpen, onSelectClient }: Props) => {
 };
 
 export default ExistingClient;
+
+
+function EmptyList({ title = "Existing Clients", description = "You don't have any clients yet." }: { title?: string, description?: string }) {
+  return (
+    <div className="max-w-[500px] flex flex-col items-center p-4">
+      <div className="bg-lightGray p-12 rounded-full">
+        <Image
+          src={'/estimateempty.svg'}
+          alt="create request icon"
+          width={100}
+          height={100}
+        />
+      </div>
+      <SecondaryHeading
+        title={title}
+        className="text-obsidianBlack2 mt-8"
+      />
+      <Description
+        title={description}
+        className="text-steelGray text-center font-normal"
+      />
+    </div>
+  )
+}
