@@ -196,7 +196,7 @@ const EditClient = () => {
                     control="input"
                     label="Address 2"
                     type="text"
-                    name="address2"
+                    name="secondAddress"
                     placeholder="Address 2"
                   />
                 </div>

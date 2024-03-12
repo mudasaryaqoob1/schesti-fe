@@ -41,7 +41,7 @@ const newClientSchema = Yup.object({
     .required('Phone number is required'),
   companyName: Yup.string().required('Company Name is required!'),
   address: Yup.string().required('Address is required!'),
-  address2: Yup.string(),
+  secondAddress: Yup.string(),
 });
 const initialValues: IClient = {
   firstName: '',
@@ -170,7 +170,7 @@ const CreateClient = () => {
                     control="input"
                     label="Address 2"
                     type="text"
-                    name="address2"
+                    name="secondAddress"
                     placeholder="Address 2"
                   />
                 </div>
