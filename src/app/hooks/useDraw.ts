@@ -160,8 +160,8 @@ const useDraw = () => {
 
     if (format) {
       const inches = convertPxIntoInches(distance);
-      console.log('inches', inches);
-      console.log('multiplier', getScaleMultiplier(scale));
+      // console.log('inches', inches);
+      // console.log('multiplier', getScaleMultiplier(scale));
       const scaledInches = getScaleMultiplier(scale) * inches;
       return convertToFeetAndInches(scaledInches, precision);
     }
@@ -381,7 +381,6 @@ const useDraw = () => {
 
         return (12 * +denominator) / +numerator;
       } else {
-        console.log('----');
         if (splittedScale[1].includes(`"`)) return 1;
         const multiplier = +splittedScale[1].substring(
           0,
@@ -390,7 +389,7 @@ const useDraw = () => {
         return multiplier * 12;
       }
     } else {
-      console.log('CUSTOM HANDLING');
+      // console.log('CUSTOM HANDLING');
       // HANDLING CUSTOM SCALE BELOW
 
       // Left Hand Side, Right Hand Side
@@ -443,6 +442,68 @@ const useDraw = () => {
       return value.includes(`"`) ? value.substring(0, value.length - 1) : value;
   };
 
+  const groupDataForTable = (input: any[]) => {
+    const groupedData = input.reduce((result: any, currentItem: any) => {
+      const {
+        projectName,
+        pageLabel,
+        comment,
+        author,
+        date,
+        status,
+        color,
+        layer,
+        space,
+        type,
+      } = currentItem;
+
+      // Check if there's already an entry with the same projectName and pageLabel
+      const existingEntry = result.find(
+        (entry: any) =>
+          entry.projectName === projectName && entry.pageLabel === pageLabel
+      );
+
+      if (existingEntry) {
+        existingEntry.children.push({
+          projectName,
+          pageLabel,
+          comment,
+          author,
+          date,
+          status,
+          color,
+          layer,
+          space,
+          type,
+        });
+      } else {
+        result.push({
+          key: result.length + 1, // Assuming keys start from 1
+          projectName,
+          pageLabel,
+          children: [
+            {
+              projectName,
+              pageLabel,
+              comment,
+              author,
+              date,
+              status,
+              color,
+              layer,
+              space,
+              type,
+            },
+          ],
+        });
+      }
+
+      return result;
+    }, []);
+
+    return groupedData;
+  };
+
   return {
     calculatePolygonArea,
     calculatePolygonCenter,
@@ -454,6 +515,7 @@ const useDraw = () => {
     calculateAngle,
     getProjectAndCommentNameForTable,
     getInchesInFractionFromMixedFraction,
+    groupDataForTable,
   };
 };
 

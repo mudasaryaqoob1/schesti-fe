@@ -31,7 +31,7 @@ const Area: React.FC<Props> = ({ setModalOpen, measurements }) => {
             <label>Angle</label>
             <div className="w-[92px]">
               <Input
-                value={`${measurements.angle} °`}
+                value={`${measurements.angle || 0} °`}
                 className="!rounded-md pointer-events-none"
               />
             </div>
@@ -49,7 +49,7 @@ const Area: React.FC<Props> = ({ setModalOpen, measurements }) => {
             <label>Parameter</label>
             <div className="w-[92px]">
               <Input
-                value={`${measurements.parameter} ft`}
+                value={`${measurements?.parameter || 0} ft`}
                 className="!rounded-md"
               />
             </div>
@@ -58,7 +58,7 @@ const Area: React.FC<Props> = ({ setModalOpen, measurements }) => {
             <label>Area</label>
             <div className="w-[92px]">
               <Input
-                value={`${measurements.area} sq`}
+                value={`${measurements.area || 0} sq`}
                 className="!rounded-md"
               />
             </div>

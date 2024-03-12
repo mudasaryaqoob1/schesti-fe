@@ -1,23 +1,20 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import { ConfigProvider, Table } from 'antd';
-import { DrawHistoryContext, ScaleContext } from '../../context';
+import {
+  DrawHistoryContext,
+  ReportDataContext,
+  ScaleContext,
+} from '../../context';
 import { DrawHistoryContextProps } from '../../context/DrawHistoryContext';
 import { useDraw } from '@/app/hooks';
 import moment from 'moment';
 import { DrawInterface } from '../../types';
 import { ScaleDataContextProps } from '../../context/ScaleContext';
-
-interface DrawTableHistory {
-  projectName: string;
-  pageLabel: string;
-  comment: string | number;
-  author: string;
-  date: Date;
-  status: string;
-  color: string;
-  layer: string;
-  space: string;
-}
+import { EditableText } from '@/app/component/EditableText';
+import {
+  ReportDataContextProps,
+  ReportDataInterface,
+} from '../../context/ReportDataContext';
 
 interface Props {
   searchProjectName: string;
@@ -25,16 +22,18 @@ interface Props {
 
 const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
   const { scaleData } = useContext(ScaleContext) as ScaleDataContextProps;
-  const { getProjectAndCommentNameForTable } = useDraw();
+  const { getProjectAndCommentNameForTable, groupDataForTable } = useDraw();
   const { drawHistory } = useContext(
     DrawHistoryContext
   ) as DrawHistoryContextProps;
+  const { reportData, handleReportData, updateProjectNameInReportData } =
+    useContext(ReportDataContext) as ReportDataContextProps;
 
-  const dataSource = useMemo(() => {
+  useEffect(() => {
     if (drawHistory) {
       const tableData = Object.entries(drawHistory).flatMap(
         ([pageNumber, pageData]) => {
-          const payload: DrawTableHistory[] = [];
+          const payload: ReportDataInterface[] = [];
           Object.entries(pageData).forEach(([drawName, drawData]) => {
             if (drawData.length) {
               const tablePayload = drawData.map((data: any) => {
@@ -58,6 +57,7 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
                   color: data.stroke,
                   layer: '---',
                   space: '---',
+                  type: drawName,
                 };
               });
 
@@ -72,12 +72,15 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
         (a, b) => new Date(a.date).valueOf() - new Date(b.date).valueOf()
       );
 
-      return tableData.filter(({ projectName = '' }) =>
-        projectName.includes(searchProjectName)
-      );
+      handleReportData(tableData);
     }
-    return [];
   }, [drawHistory, searchProjectName, scaleData]);
+
+  const dataSource = useMemo(() => {
+    return groupDataForTable(reportData).filter(({ projectName = '' }) =>
+      projectName.includes(searchProjectName)
+    );
+  }, [reportData, groupDataForTable, searchProjectName]);
 
   return (
     <ConfigProvider theme={{ components: { Table: { headerBg: '#F9F5FF' } } }}>
@@ -88,6 +91,19 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
             title: 'Project name',
             dataIndex: 'projectName',
             key: 'projectName',
+            render: (value, record) => {
+              return !record?.comment ? (
+                <div>{value}</div>
+              ) : (
+                <EditableText
+                  initialText={value}
+                  onPressEnter={(text) => {
+                    const { date, pageLabel } = record;
+                    updateProjectNameInReportData(date, pageLabel, text);
+                  }}
+                />
+              );
+            },
           },
           {
             title: 'Page Label',
@@ -106,7 +122,11 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
             title: 'Date',
             dataIndex: 'date',
             render: (value) => {
-              return <>{moment(value).format('MMMM Do YYYY, h:mm:ss a')}</>;
+              return (
+                <>
+                  {value ? moment(value).format('MMMM Do YYYY, h:mm:ss a') : ''}
+                </>
+              );
             },
           },
           {
