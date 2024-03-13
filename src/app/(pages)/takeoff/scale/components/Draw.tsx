@@ -79,7 +79,7 @@ const Draw: React.FC<Props> = ({
     count: [],
     dynamic: [],
   });
-  const { handleDrawHistory } = useContext(
+  const { deleteDrawHistory, updateDrawHistory } = useContext(
     DrawHistoryContext
   ) as DrawHistoryContextProps;
   const [polyLine, setPolyLine] = useState<LineInterface>(defaultPolyLineState);
@@ -104,33 +104,6 @@ const Draw: React.FC<Props> = ({
   const counterImage = new Image();
   counterImage.src = '/count-draw.png';
 
-  // useEffect(() => {
-  //   const svg = `<svg
-  //         width="36"
-  //         height="36"
-  //         viewBox="0 0 36 36"
-  //         fill="none"
-  //         xmlns="http://www.w3.org/2000/svg"
-  //       >
-  //         <g id="Icon  4">
-  //           <path
-  //             id="Oval"
-  //             opacity="0.15"
-  //             fill-rule="evenodd"
-  //             clip-rule="evenodd"
-  //             d="M18 36C27.9411 36 36 27.9411 36 18C36 8.05887 27.9411 0 18 0C8.05887 0 0 8.05887 0 18C0 27.9411 8.05887 36 18 36Z"
-  //             fill=${color}
-  //           />
-  //           <path
-  //             id="Icon"
-  //             d="M15.5976 23.7363L10.7051 18.873C10.5684 18.7363 10.5 18.5605 10.5 18.3457C10.5 18.1308 10.5684 17.9551 10.7051 17.8183L11.7891 16.7637C11.9258 16.6074 12.0967 16.5293 12.3018 16.5293C12.5068 16.5293 12.6875 16.6074 12.8437 16.7637L16.125 20.0449L23.1562 13.0137C23.3125 12.8574 23.4931 12.7793 23.6982 12.7793C23.9033 12.7793 24.0742 12.8574 24.2109 13.0137L25.2949 14.0684C25.4316 14.2051 25.5 14.3809 25.5 14.5957C25.5 14.8105 25.4316 14.9863 25.2949 15.123L16.6523 23.7363C16.5156 23.8926 16.3398 23.9707 16.125 23.9707C15.9101 23.9707 15.7344 23.8926 15.5976 23.7363Z"
-  //             fill=${color}
-  //           />
-  //         </g>
-  //       </svg>`;
-
-  //   base64Ref.current = `data:image/svg+xml;base64,${btoa(svg)}`;
-  // }, [color]);
   useEffect(() => {
     setCurrentLine(defaultCurrentLineState);
     setCompletingLine(defaultCurrentLineState);
@@ -147,11 +120,6 @@ const Draw: React.FC<Props> = ({
   useEffect(() => {
     if (selected !== 'count') handleChangeMeasurements(defaultMeasurements);
   }, [selected]);
-
-  useEffect(() => {
-    if (Object.values(draw).some((item) => !!item.length))
-      handleDrawHistory(pageNumber.toString(), draw);
-  }, [draw, pageNumber]);
 
   const handleMouseDown = (e: KonvaEventObject<MouseEvent>) => {
     if (endLiveEditing) return;
@@ -202,6 +170,9 @@ const Draw: React.FC<Props> = ({
         dateTime: moment().toDate(),
       };
       setDraw((prev) => ({ ...prev, line: [...prev.line, newLine] }));
+
+      updateDrawHistory(pageNumber.toString(), 'line', newLine);
+
       setCurrentLine(defaultCurrentLineState);
       handleChangeMeasurements(defaultMeasurements);
     }
@@ -267,6 +238,8 @@ const Draw: React.FC<Props> = ({
                   dateTime: moment().toDate(),
                 };
 
+                updateDrawHistory(pageNumber.toString(), 'area', areaConfig);
+
                 return {
                   ...prevDraw,
                   area: [...prevDraw.area, areaConfig],
@@ -298,6 +271,12 @@ const Draw: React.FC<Props> = ({
                   dateTime: moment().toDate(),
                 };
 
+                updateDrawHistory(
+                  pageNumber.toString(),
+                  'volume',
+                  volumeConfig
+                );
+
                 return {
                   ...prevDraw,
                   volume: [...prevDraw.volume, volumeConfig],
@@ -324,6 +303,8 @@ const Draw: React.FC<Props> = ({
         handleChangeMeasurements({ count: [...prev.count, newCount].length });
         return { ...prev, count: [...prev.count, newCount] };
       });
+
+      updateDrawHistory(pageNumber.toString(), 'count', newCount);
     }
 
     if (subSelected === 'create') {
@@ -480,7 +461,7 @@ const Draw: React.FC<Props> = ({
             if (selected === 'count')
               handleChangeMeasurements({ count: tempPrevShapeData.length });
 
-            handleDrawHistory(pageNumber.toString(), {
+            deleteDrawHistory(pageNumber.toString(), {
               ...prev,
               [shapeName]: tempPrevShapeData,
             });

@@ -40,7 +40,7 @@ const Length: React.FC<Props> = ({ setModalOpen, measurements }) => {
             <label>Segment</label>
             <div className="w-[92px]">
               <Input
-                value={`${measurements.parameter} ft`}
+                value={`${measurements?.parameter} ft`}
                 className="!rounded-md pointer-events-none"
               />
             </div>

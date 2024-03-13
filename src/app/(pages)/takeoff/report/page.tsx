@@ -74,7 +74,6 @@ const Report = () => {
             <div>
               <Button
                 text="Generate Report"
-                icon="/plus.svg"
                 iconwidth={20}
                 iconheight={20}
                 //   onClick={() => router.push('/createclient')}
