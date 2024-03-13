@@ -1,4 +1,9 @@
 import { createContext } from 'react';
+import {
+  CountInterface,
+  LineInterface,
+  PolygonConfigInterface,
+} from '../types';
 
 export interface ReportDataInterface {
   projectName: string;
@@ -11,6 +16,7 @@ export interface ReportDataInterface {
   layer: string;
   space: string;
   type: string;
+  config: LineInterface | PolygonConfigInterface | CountInterface;
 }
 
 export interface ReportDataContextProps {
