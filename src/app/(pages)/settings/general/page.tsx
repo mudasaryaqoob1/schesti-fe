@@ -24,7 +24,7 @@ import SettingSideBar from '@/app/(pages)/settings/verticleBar';
 import { userService } from '@/app/services/user.service';
 import { byteConverter } from '@/app/utils/byteConverter';
 import { AppDispatch } from '@/redux/store';
-import { getLoggedInUserDetails, updateProfileHandler } from '@/redux/authSlices/auth.thunk';
+import { updateProfileHandler } from '@/redux/authSlices/auth.thunk';
 import { CheckOutlined } from '@ant-design/icons';
 import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 
@@ -84,7 +84,7 @@ const GeneralSetting = () => {
 
     if (result.payload.statusCode == 200) {
       toast.success('Detail Update Successfull');
-      dispatch(getLoggedInUserDetails({}));
+      setUserData((result.payload.data.user));
     } else {
       toast.error(result.payload.message);
     }
