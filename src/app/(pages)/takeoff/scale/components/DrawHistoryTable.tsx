@@ -58,6 +58,9 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
                   layer: '---',
                   space: '---',
                   type: drawName,
+                  config: {
+                    ...data,
+                  },
                 };
               });
 
