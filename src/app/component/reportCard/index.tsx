@@ -9,7 +9,7 @@ const ReportCard: React.FC<Props> = ({ entity }) => {
   return (
     <div>
       <div className="pb-4 font-semibold ">
-        {(entity[0].details.name || 'Length Measurement') +
+        {(entity[0].details.projectName || 'Length Measurement') +
           `(${entity.length})`}
       </div>
       {entity.map((item, index) => (
@@ -25,29 +25,33 @@ const ReportCard: React.FC<Props> = ({ entity }) => {
             </div>
             <div className="flex flex-col items-end text-xs text-gray-500">
               <span className="font-medium text-black">
-                {item.details.name || 'Length Measurement'}
+                {item.details.projectName || 'Length Measurement'}
               </span>
               <span>
                 Page Label<span className="font-sm text-black"> 1</span>
               </span>
               <span>
-                Author<span className="font-sm text-black"> {'---'}</span>
+                Author
+                <span className="font-sm text-black">
+                  {' '}
+                  {item.details.author || '---'}
+                </span>
               </span>
               <span>
                 Date
                 <span className="font-sm text-black">
                   {' '}
-                  {item?.details?.dateTime?.toDateString()}
+                  {item?.details?.date?.toDateString()}
                 </span>
               </span>
               <span>Status</span>
               <span className="flex">
                 Color{' '}
-                {item?.details?.stroke && (
+                {item?.details?.color && (
                   <div
                     className="w-4 h-3 ml-2 rounded-2xl border-[1px] border-gray-500"
                     style={{
-                      background: item?.details?.stroke,
+                      background: item?.details?.color,
                     }}
                   ></div>
                 )}

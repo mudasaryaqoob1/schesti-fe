@@ -14,28 +14,26 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { Button } from 'antd';
 import generatePDF from './generatePdf';
+import { ReportDataContext } from '@/app/(pages)/takeoff/context';
+import {
+  ReportDataContextProps,
+  ReportDataInterface,
+} from '@/app/(pages)/takeoff/context/ReportDataContext';
 
 export interface dataInterface {
   image: string;
-  details: {
-    name?: string;
-    points: number[];
-    stroke: string;
-    strokeWidth: number;
-    lineCap?: LineCap;
-    depth?: number;
-    textUnit: number;
-    dateTime?: Date;
-  };
+  details: ReportDataInterface;
 }
 
-const CaptureComponent = ({
-  itemsToCapture,
-  onCapture,
-}: {
-  itemsToCapture: DrawHistoryContextInterface;
-  onCapture: (url: string, key: number) => void;
-}) => {
+const CaptureComponent = (
+  {
+    // itemsToCapture,
+    // onCapture,
+  }: {
+    itemsToCapture: DrawHistoryContextInterface;
+    onCapture: (url: string, key: number) => void;
+  }
+) => {
   const {
     calcLineDistance,
     calculateMidpoint,
@@ -52,6 +50,10 @@ const CaptureComponent = ({
   const { uploadFileData } = useContext(
     UploadFileContext
   ) as UploadFileContextProps;
+
+  const { reportData } = useContext(
+    ReportDataContext
+  ) as ReportDataContextProps;
 
   useEffect(() => {
     const loadImage = (src: string) => {
@@ -168,43 +170,60 @@ const CaptureComponent = ({
       });
     };
 
+    // const captureShapes = async () => {
+    //   const background = await loadImage(uploadFileData[0].src);
+    //   const newData: dataInterface[] = [];
+    //   // const urls: string[] = [];
+
+    //   // for (const [page, drawData] of Object.entries(itemsToCapture)) {
+    //   //   for (const shapeType of [
+    //   //     'line',
+    //   //     'area',
+    //   //     'volume',
+    //   //     'dynamic',
+    //   //     'count',
+    //   //   ]) {
+    //   //     for (const shape of drawData[shapeType as keyof DrawInterface]) {
+    //   //       const details = {
+    //   //         type: shapeType,
+    //   //         ...shape,
+    //   //       };
+    //   //       const url = await captureShape(shape, background, shapeType);
+    //   //       urls.push(url);
+    //   //       newData.push({
+    //   //         image: url,
+    //   //         details: details,
+    //   //       });
+
+    //   //       onCapture(url, urls.length - 1);
+    //   //     }
+    //   //   }
+    //   // }
+
+    //   setData(newData as dataInterface[]);
+    // };
+
     const captureShapes = async () => {
-      const background = await loadImage(uploadFileData[0].src);
-      const newData = [];
-      const urls: string[] = [];
+      const background = await loadImage(uploadFileData[0]?.src || ''); // Update based on actual data structure
+      const promises = reportData.map(async (item) => {
+        const url = await captureShape(item.config, background, item.type);
+        return {
+          image: url,
+          details: { ...item },
+        };
+      });
 
-      for (const [page, drawData] of Object.entries(itemsToCapture)) {
-        for (const shapeType of [
-          'line',
-          'area',
-          'volume',
-          'dynamic',
-          'count',
-        ]) {
-          for (const shape of drawData[shapeType as keyof DrawInterface]) {
-            const details = {
-              type: shapeType,
-              ...shape,
-            };
-            const url = await captureShape(shape, background, shapeType);
-            urls.push(url);
-            newData.push({
-              image: url,
-              details: details,
-            });
-
-            onCapture(url, urls.length - 1);
-          }
-        }
-      }
-      setData(newData as dataInterface[]);
+      const newData = await Promise.all(promises);
+      setData(newData);
     };
 
-    captureShapes();
-  }, [itemsToCapture]);
+    if (reportData.length) {
+      captureShapes();
+    }
+  }, [reportData.length]);
 
-  //console.warn('imageUrls', imageUrls);
-  console.log(data, 'data');
+  console.log(reportData, 'reportData');
+  console.log('data', data);
   return (
     <div>
       <Stage

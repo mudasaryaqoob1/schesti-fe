@@ -5,9 +5,12 @@ import Image from 'next/image';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import CaptureComponent from '@/app/component/captureComponent';
 import { useContext, useState } from 'react';
-import { DrawHistoryContext, UploadFileContext } from '../context';
+import {
+  DrawHistoryContext,
+  ReportDataContext,
+  UploadFileContext,
+} from '../context';
 import { DrawHistoryContextProps } from '../context/DrawHistoryContext';
-import { UploadFileContextProps } from '../context/UploadFileContext';
 
 const Report = () => {
   const { drawHistory } = useContext(
