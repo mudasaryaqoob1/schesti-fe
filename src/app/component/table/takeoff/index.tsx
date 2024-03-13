@@ -1,19 +1,21 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Table } from 'antd';
 import type { ColumnsType, TableProps } from 'antd/es/table';
+import { takeoffSummaryService } from '@/app/services/takeoffSummary.service';
+// Import your API service
 
 interface DataType {
   key: React.Key;
-  Projectname: string;
-  Totalscopeofwork: string;
-  MeasurementsDate: string;
-  Action: string;
+  name: string; // Changed to match column dataIndex
+  scope: string;
+  createdAt: string; // Assuming date is returned as a string
+  action: string; // Define how you plan to render actions
 }
 
 const columns: ColumnsType<DataType> = [
   {
     title: 'Project Name',
-    dataIndex: 'Projectname',
+    dataIndex: 'name',
     // filters: [
     //   {
     //     text: 'London',
@@ -28,7 +30,7 @@ const columns: ColumnsType<DataType> = [
   },
   {
     title: 'Total scope of work',
-    dataIndex: 'Totalscopeofwork',
+    dataIndex: 'scope',
     // filters: [
     //   {
     //     text: 'London',
@@ -43,7 +45,7 @@ const columns: ColumnsType<DataType> = [
   },
   {
     title: 'Measurements Date',
-    dataIndex: 'MeasurementsDate',
+    dataIndex: 'createdAt',
     // filters: [
     //   {
     //     text: 'London',
@@ -73,47 +75,54 @@ const columns: ColumnsType<DataType> = [
   },
 ];
 
-const data: any = [
-  {
-    key: '1',
-    Projectname: 'Kristin Watson',
-    Totalscopeofwork: '5 subject',
-    MeasurementsDate: '12 May 2023, 8:30 ',
-    action: 'icon',
-  },
-  {
-    key: '2',
-    Projectname: 'Kristin Watson',
-    Totalscopeofwork: '5 subject',
-    MeasurementsDate: '12 May 2023, 8:30 ',
-    action: 'icon',
-  },
-  {
-    key: '3',
-    Projectname: 'Kristin Watson',
-    Totalscopeofwork: '5 subject',
-    MeasurementsDate: '12 May 2023, 8:30 ',
-    action: 'icon',
-  },
-  {
-    key: '4',
-    Projectname: 'Kristin Watson',
-    Totalscopeofwork: '5 subject',
-    MeasurementsDate: '12 May 2023, 8:30 ',
-    action: 'icon',
-  },
-];
+const Index: React.FC = () => {
+  const [data, setData] = useState<DataType[]>([]);
 
-const onChange: TableProps<DataType>['onChange'] = (
-  pagination,
-  filters,
-  sorter,
-  extra
-) => {
-  console.log('params', pagination, filters, sorter, extra);
-};
+  useEffect(() => {
+    // Define an async function to fetch your data
+    const fetchData = async () => {
+      try {
+        // Call your API here; adjust parameters as needed
+        const response =
+          await takeoffSummaryService.httpGetAllTakeoffSummaries(/* userId, page, limit */);
+        if (response && response.data) {
+          // Map your data to match the DataType structure
+          const formattedData = response.data.map(
+            (
+              item: {
+                id: any;
+                name: any;
+                scope: { toString: () => any };
+                createdAt: any;
+              },
+              index: any
+            ) => ({
+              key: item.id, // Assume each item has a unique id
+              name: item.name,
+              scope: item.scope.toString(), // Ensure scope is a string
+              createdAt: item.createdAt,
+              action: 'icon', // Replace with actual action logic
+            })
+          );
+          setData(formattedData);
+        }
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+      }
+    };
 
-const index: React.FC = () => {
+    fetchData();
+  }, []); // Empty dependency array means this effect runs once on mount
+
+  const onChange: TableProps<DataType>['onChange'] = (
+    pagination,
+    filters,
+    sorter,
+    extra
+  ) => {
+    console.log('params', pagination, filters, sorter, extra);
+  };
+
   return (
     <div className="mt-4">
       <Table columns={columns} dataSource={data} onChange={onChange} />
@@ -121,4 +130,4 @@ const index: React.FC = () => {
   );
 };
 
-export default index;
+export default Index;
