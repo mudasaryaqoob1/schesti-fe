@@ -28,6 +28,7 @@ import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { estimateRequestService } from '@/app/services/estimates.service';
 import { generateEstimateDetailAction } from '@/redux/estimate/estimateRequest.slice';
 import { selectGeneratedEstimateDetail } from '@/redux/estimate/estimateRequestSelector';
+import { PositiveNumberRegex } from '@/app/utils/regex.util';
 
 type InitialValuesType = {
   category: string;
@@ -48,12 +49,12 @@ const validationSchema = Yup.object({
   subCategory: Yup.string().required('subCategory name is required!'),
   description: Yup.string().required('description name is required!'),
   unit: Yup.string().required('unit name is required!'),
-  qty: Yup.string().required('qty name is required!'),
+  qty: Yup.string().matches(PositiveNumberRegex, "qty must be a positive number").required('qty name is required!'),
   wastage: Yup.string().required('wastage name is required!'),
-  unitLabourHour: Yup.string().required('unitLaborHours name is required!'),
-  perHourLaborRate: Yup.string().required('perHourLaborRate name is required!'),
-  unitMaterialCost: Yup.string().required('unitMaterialCost name is required!'),
-  unitEquipments: Yup.string().required('unitEquipmentCost name is required!'),
+  unitLabourHour: Yup.string().matches(PositiveNumberRegex, "unitLabourHour must be a positive number").required('unitLaborHours name is required!'),
+  perHourLaborRate: Yup.string().matches(PositiveNumberRegex, "perHourLaborRate must be a positive number").required('perHourLaborRate name is required!'),
+  unitMaterialCost: Yup.string().matches(PositiveNumberRegex, "unitMaterialCost must be a positive number").required('unitMaterialCost name is required!'),
+  unitEquipments: Yup.string().matches(PositiveNumberRegex, "unitEquipmentCost must be a positive number").required('unitEquipmentCost name is required!'),
 });
 
 interface Props {
@@ -818,9 +819,9 @@ const Scope = ({ setPrevNext }: Props) => {
       let modifyArray = confirmEstimates.map((item, i) =>
         i === index
           ? {
-              ...item,
-              scopeItems: [...item.scopeItems, ...dataSource.scopeItems],
-            }
+            ...item,
+            scopeItems: [...item.scopeItems, ...dataSource.scopeItems],
+          }
           : item
       );
       setConfirmEstimates(modifyArray);
@@ -856,7 +857,7 @@ const Scope = ({ setPrevNext }: Props) => {
         {estimateDetail?.drawingsDocuments?.length && (
           <div className="grid grid-rows-1 md:grid-cols-3 gap-x-2">
             {estimateDetail?.drawingsDocuments?.length &&
-            estimateDetail?.drawingsDocuments[0]?.ext === 'image/png' ? (
+              estimateDetail?.drawingsDocuments[0]?.ext === 'image/png' ? (
               <CustomButton
                 text="View Plans"
                 className="!text-graphiteGray !bg-snowWhite !shadow-scenarySubdued 
@@ -1065,34 +1066,34 @@ const Scope = ({ setPrevNext }: Props) => {
               <div>
                 {confirmEstimates.length
                   ? confirmEstimates.map((estimate) => (
-                      <div
-                        key={estimate.title}
-                        className={`${bg_style} p-5 mt-3`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <QuaternaryHeading
-                              title={estimate.categoryName}
-                              className="font-semibold"
-                            />
-                            <QuaternaryHeading
-                              title={estimate.subCategoryName}
-                              className="!font=[#344054] font-light"
-                            />
-                          </div>
-                        </div>
-                        <div className="estimateTable_container">
-                          <Table
-                            className="mt-2"
-                            loading={false}
-                            columns={confirmColumns}
-                            dataSource={estimate.scopeItems as DataType[]}
-                            pagination={false}
-                            scroll={{ x: 1000 }}
+                    <div
+                      key={estimate.title}
+                      className={`${bg_style} p-5 mt-3`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <QuaternaryHeading
+                            title={estimate.categoryName}
+                            className="font-semibold"
+                          />
+                          <QuaternaryHeading
+                            title={estimate.subCategoryName}
+                            className="!font=[#344054] font-light"
                           />
                         </div>
                       </div>
-                    ))
+                      <div className="estimateTable_container">
+                        <Table
+                          className="mt-2"
+                          loading={false}
+                          columns={confirmColumns}
+                          dataSource={estimate.scopeItems as DataType[]}
+                          pagination={false}
+                          scroll={{ x: 1000 }}
+                        />
+                      </div>
+                    </div>
+                  ))
                   : null}
               </div>
             </>
