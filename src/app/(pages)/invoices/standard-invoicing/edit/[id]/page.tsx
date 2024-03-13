@@ -147,7 +147,7 @@ const EditSubcontractorInvoice = () => {
       title: 'Total Price',
       dataIndex: 'totalPrice',
       render(_value, record) {
-        return `$${record.quantity * record.unitCost}`;
+        return `$${(record.quantity * record.unitCost).toFixed(2)}`;
       },
     },
     {
@@ -248,7 +248,8 @@ const EditSubcontractorInvoice = () => {
       );
       if (result.statusCode == 200) {
         setIsLoading(false);
-        router.push('/invoices');
+        router.push('/invoices/standard-invoicing');
+
       } else {
         setIsLoading(false);
         toast.error(result.message);

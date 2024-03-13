@@ -126,7 +126,7 @@ const CreateInvoice = () => {
       title: 'Total Price',
       dataIndex: 'totalPrice',
       render(_value, record) {
-        return `$${record.quantity * record.unitCost}`;
+        return `$${(record.quantity * record.unitCost).toFixed(2)}`;
       },
     },
     {
@@ -233,7 +233,7 @@ const CreateInvoice = () => {
       .then((response) => {
         if (response.statusCode == 201) {
           setIsLoading(false);
-          router.push('/invoices');
+          router.push('/invoices/standard-invoicing');
         }
       })
       .catch(({ response }: any) => {
