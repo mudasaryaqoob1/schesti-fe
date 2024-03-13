@@ -213,7 +213,8 @@ const GeneralSetting = () => {
                       {avatarLoading ? (
                         <p>Uploading...</p>
                       ) : (
-                        <div className="flex gap-2">
+                        <div className="flex gap-2"
+                        >
                           <label
                             htmlFor="uploadCompanyLogo"
                             className={twMerge(
