@@ -53,7 +53,7 @@ export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
       title: 'Target',
       dataIndex: 'price',
       render(value) {
-        return `$${value}`;
+        return USCurrencyFormat.format(value);
       },
     },
     {
