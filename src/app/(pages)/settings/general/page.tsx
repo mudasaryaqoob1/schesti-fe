@@ -24,8 +24,9 @@ import SettingSideBar from '@/app/(pages)/settings/verticleBar';
 import { userService } from '@/app/services/user.service';
 import { byteConverter } from '@/app/utils/byteConverter';
 import { AppDispatch } from '@/redux/store';
-import { updateProfileHandler } from '@/redux/authSlices/auth.thunk';
+import { getLoggedInUserDetails, updateProfileHandler } from '@/redux/authSlices/auth.thunk';
 import { CheckOutlined } from '@ant-design/icons';
+import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 
 const initialValues: IUpdateCompanyDetail = {
   name: '',
@@ -57,7 +58,7 @@ const GeneralSetting = () => {
     }
   }, [token]);
 
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState<IUser | null>(null);
   const [avatarLoading, setavatarLoading] = useState(false);
   const getUserDetail = useCallback(async () => {
     let { data } = await userService.httpGetCompanyDetail();
@@ -83,6 +84,7 @@ const GeneralSetting = () => {
 
     if (result.payload.statusCode == 200) {
       toast.success('Detail Update Successfull');
+      dispatch(getLoggedInUserDetails({}));
     } else {
       toast.error(result.payload.message);
     }
@@ -195,10 +197,10 @@ const GeneralSetting = () => {
                   {/* Upload Image Div */}
                   <div className={`${bg_style} grid grid-cols-12 p-5 mt-4 `}>
                     <div
-                      className={`px-6 py-4 col-span-8 flex flex-col items-center gap-3 ${
-                        errors.avatar ? 'border-rose-600' : ''
-                      }  ${bg_style}`}
+                      className={`px-6 py-4 col-span-8 flex flex-col items-center gap-3 ${errors.avatar ? 'border-rose-600' : ''
+                        }  ${bg_style}`}
                     >
+                      {userData.avatar ? <Image src={userData.avatar} width={100} height={100} alt='Avatar' /> : null}
                       <input type="text" id="upload" className="hidden" />
                       <div className="bg-lightGrayish rounded-[28px] border border-solid border-red flex justify-center items-center p-2.5">
                         <Image
