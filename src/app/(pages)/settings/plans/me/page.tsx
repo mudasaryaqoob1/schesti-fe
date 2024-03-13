@@ -32,7 +32,7 @@ const MySubscription = () => {
 
   useEffect(() => {
     getUserDetail();
-  }, [getUserDetail]);
+  }, []);
 
   let features = 'CRM,Takeoff Module,Construction Estimate Module';
 
