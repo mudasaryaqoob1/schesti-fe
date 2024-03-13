@@ -104,7 +104,7 @@ export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
     const excel = new Excel();
     excel
       .addSheet("Financial Tools")
-      .addColumns(columns)
+      .addColumns(columns as any)
       .addDataSource(targets, {
         str2Percent: true
       })
