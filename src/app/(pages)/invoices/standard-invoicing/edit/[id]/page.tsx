@@ -249,7 +249,6 @@ const EditSubcontractorInvoice = () => {
       if (result.statusCode == 200) {
         setIsLoading(false);
         router.push('/invoices/standard-invoicing');
-
       } else {
         setIsLoading(false);
         toast.error(result.message);

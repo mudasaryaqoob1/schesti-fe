@@ -25,8 +25,8 @@ import SwitchBtn from './components/switchbtn';
 import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 
 type Props = {
-  user?: IUser
-}
+  user?: IUser;
+};
 const Plans = ({ user }: Props) => {
   const [planType, setPlanType] = useState('Individual');
   const dispatch = useDispatch<AppDispatch>();
@@ -39,7 +39,6 @@ const Plans = ({ user }: Props) => {
   const [autoRenew, setAutoRenew] = useState(true);
 
   const token = useSelector(selectToken);
-
 
   useLayoutEffect(() => {
     if (token) {
@@ -93,34 +92,36 @@ const Plans = ({ user }: Props) => {
 
   console.log(selectedPlan, 'selectedPlanselectedPlan');
 
-  return <>
-    <div className="flex justify-between">
-      <ToggleBtn planType={planType} onChange={handlePlanType} />
-      <SwitchBtn isDuration={isDuration} onChange={handlePlanDuration} />
-    </div>
-    <div className="mt-6">
-      {isLoading ? (
-        <Skeleton />
-      ) : isError ? (
-        <p>Something Went Wrong</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-5">
-          {pricingPlansData?.map(
-            (plan: IPricingPlan, index: React.Key | null | undefined) => {
-              return (
-                <SinglePlan
-                  key={index}
-                  {...plan}
-                  setSelectedPlan={setSelectedPlan}
-                  user={user}
-                />
-              );
-            }
-          )}
-        </div>
-      )}
-    </div>
-  </>
+  return (
+    <>
+      <div className="flex justify-between">
+        <ToggleBtn planType={planType} onChange={handlePlanType} />
+        <SwitchBtn isDuration={isDuration} onChange={handlePlanDuration} />
+      </div>
+      <div className="mt-6">
+        {isLoading ? (
+          <Skeleton />
+        ) : isError ? (
+          <p>Something Went Wrong</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 gap-5">
+            {pricingPlansData?.map(
+              (plan: IPricingPlan, index: React.Key | null | undefined) => {
+                return (
+                  <SinglePlan
+                    key={index}
+                    {...plan}
+                    setSelectedPlan={setSelectedPlan}
+                    user={user}
+                  />
+                );
+              }
+            )}
+          </div>
+        )}
+      </div>
+    </>
+  );
   // return (
   //   <>
   //     {!selectedPlan ? (
@@ -152,7 +153,7 @@ const Plans = ({ user }: Props) => {
   //           )}
   //         </div>
   //       </>
-  //     ) 
+  //     )
   //     : (
   //       <>
   //         <p

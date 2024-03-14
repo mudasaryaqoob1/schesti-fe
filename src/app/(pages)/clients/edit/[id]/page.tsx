@@ -33,7 +33,7 @@ const newClientSchema = Yup.object({
     .required('Email is required!')
     .email('Email should be valid'),
   phone: Yup.string()
-    .matches(PhoneNumberRegex, "Phone number must contain numbers")
+    .matches(PhoneNumberRegex, 'Phone number must contain numbers')
     .min(11, 'Phone number must be at least 11 characters')
     .max(14, 'Phone number must be at most 14 characters')
     .required('Phone number is required'),
@@ -66,18 +66,23 @@ const EditClient = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-
-  const clientQuery = useQuery<IResponseInterface<{ client: IClient }> | null, AxiosError<{ message: string }>>(['get-company-client', id], () => {
-    if (!id) {
-      return null;
-    }
-    return userService.httpFindCompanyClient(id);
-  }, {
-    onError(err) {
-      toast.error(err.response?.data.message)
+  const clientQuery = useQuery<
+    IResponseInterface<{ client: IClient }> | null,
+    AxiosError<{ message: string }>
+  >(
+    ['get-company-client', id],
+    () => {
+      if (!id) {
+        return null;
+      }
+      return userService.httpFindCompanyClient(id);
     },
-  })
-
+    {
+      onError(err) {
+        toast.error(err.response?.data.message);
+      },
+    }
+  );
 
   const submitHandler = async (values: IClient) => {
     setIsLoading(true);
@@ -100,7 +105,7 @@ const EditClient = () => {
   };
 
   if (clientQuery.isLoading) {
-    return <Skeleton />
+    return <Skeleton />;
   }
 
   const clientData = clientQuery.data?.data?.client;

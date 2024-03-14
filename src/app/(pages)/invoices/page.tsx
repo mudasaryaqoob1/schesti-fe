@@ -25,47 +25,45 @@ export default function InvoicePage() {
     }
   }, [token]);
 
-  return (
-    null
-    // <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
-    //   <div className="w-full mb-4">
-    //     <ConfigProvider
-    //       theme={{
-    //         components: {
-    //           Tabs: {
-    //             inkBarColor: '#8449EB',
-    //           },
-    //           Table: {
-    //             headerBg: '#F9F5FF',
-    //           },
-    //         },
-    //       }}
-    //     >
-    //       <Tabs
-    //         defaultActiveKey={tab}
-    //         onChange={(type) => {
-    //           setTab(type);
-    //         }}
-    //         items={[CONTRACTOR_KEY, CLIENT_KEY].map((type) => {
-    //           return {
-    //             key: type,
-    //             label: (
-    //               <QuaternaryHeading
-    //                 title={type}
-    //                 className={`${
-    //                   type === tab ? 'text-RoyalPurple' : 'text-black'
-    //                 }`}
-    //               />
-    //             ),
-    //             tabKey: type,
-    //             children:
-    //               tab === CONTRACTOR_KEY ? <Contractors /> : <Clients />,
-    //             style: {},
-    //           };
-    //         })}
-    //       />
-    //     </ConfigProvider>
-    //   </div>
-    // </section>
-  );
+  return null;
+  // <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
+  //   <div className="w-full mb-4">
+  //     <ConfigProvider
+  //       theme={{
+  //         components: {
+  //           Tabs: {
+  //             inkBarColor: '#8449EB',
+  //           },
+  //           Table: {
+  //             headerBg: '#F9F5FF',
+  //           },
+  //         },
+  //       }}
+  //     >
+  //       <Tabs
+  //         defaultActiveKey={tab}
+  //         onChange={(type) => {
+  //           setTab(type);
+  //         }}
+  //         items={[CONTRACTOR_KEY, CLIENT_KEY].map((type) => {
+  //           return {
+  //             key: type,
+  //             label: (
+  //               <QuaternaryHeading
+  //                 title={type}
+  //                 className={`${
+  //                   type === tab ? 'text-RoyalPurple' : 'text-black'
+  //                 }`}
+  //               />
+  //             ),
+  //             tabKey: type,
+  //             children:
+  //               tab === CONTRACTOR_KEY ? <Contractors /> : <Clients />,
+  //             style: {},
+  //           };
+  //         })}
+  //       />
+  //     </ConfigProvider>
+  //   </div>
+  // </section>
 }

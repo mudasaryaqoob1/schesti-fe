@@ -188,7 +188,7 @@ const SupportTicketDetails = () => {
                     onChange={(e) => setMessage(e.target.value)}
                   />
                   <div className="flex gap-3 items-center absolute top-2 right-3">
-                    <label htmlFor="file" className='cursor-pointer'>
+                    <label htmlFor="file" className="cursor-pointer">
                       <Image
                         width={24}
                         height={24}
@@ -197,10 +197,10 @@ const SupportTicketDetails = () => {
                       />
                     </label>
                     <input
-                      id='file'
+                      id="file"
                       type="file"
-                      className='hidden'
-                      accept='image/*, application/pdf'
+                      className="hidden"
+                      accept="image/*, application/pdf"
                     />
                     <div className="w-0.5 h-7 bg-darkGray" />
                     <span>

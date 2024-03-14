@@ -14,7 +14,9 @@ import { HttpService } from '@/app/services/base.service';
 
 const SettingPlans = () => {
   const [mySubscriptionPlan, setMySubscriptionPlan] = useState(true);
-  const user = useSelector((state: RootState) => state.auth.user as { user?: IUser });
+  const user = useSelector(
+    (state: RootState) => state.auth.user as { user?: IUser }
+  );
   const token = useSelector(selectToken);
 
   useLayoutEffect(() => {
@@ -38,7 +40,11 @@ const SettingPlans = () => {
               key: type,
               label: type,
               tabKey: type,
-              children: mySubscriptionPlan ? <MySubscription /> : <Plans user={user ? user.user : undefined} />,
+              children: mySubscriptionPlan ? (
+                <MySubscription />
+              ) : (
+                <Plans user={user ? user.user : undefined} />
+              ),
             };
           })}
         />

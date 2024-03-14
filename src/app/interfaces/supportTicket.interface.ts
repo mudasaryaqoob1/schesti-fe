@@ -8,16 +8,15 @@ export interface ISupportTicket {
   avatar?: string;
 }
 
-
 export type ITicketMessage = {
-  user: string
-  ticketId: string
-  message: string
-  sender: string
-  isFile: boolean
-  fileExtension: string
-  fileUrl: string
-  _id: string
-  createdAt: string
-  updatedAt: string
-}
+  user: string;
+  ticketId: string;
+  message: string;
+  sender: string;
+  isFile: boolean;
+  fileExtension: string;
+  fileUrl: string;
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+};

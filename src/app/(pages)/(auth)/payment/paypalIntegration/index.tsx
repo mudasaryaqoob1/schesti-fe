@@ -15,12 +15,12 @@ interface IInitialOotions {
 
 let initialOptions: IInitialOotions = {
   clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
-  currency: "USD",
-  intent: "capture",
+  currency: 'USD',
+  intent: 'capture',
 };
 type Props = {
   selectedPlan: IPricingPlan;
-}
+};
 const PaypalIntegration = ({ selectedPlan }: Props) => {
   const router = useRouter();
 
@@ -29,7 +29,7 @@ const PaypalIntegration = ({ selectedPlan }: Props) => {
       autoRenew: false,
       planID: selectedPlan._id,
       name: selectedPlan.planName,
-      price: selectedPlan.price
+      price: selectedPlan.price,
     });
     return response.data.data.id;
   };

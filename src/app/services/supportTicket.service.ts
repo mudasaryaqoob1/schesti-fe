@@ -2,7 +2,10 @@
 import { HttpService } from '@/app/services/base.service';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { IToken } from '@/app/interfaces/authInterfaces/token.interface';
-import { ISupportTicket, ITicketMessage } from '../interfaces/supportTicket.interface';
+import {
+  ISupportTicket,
+  ITicketMessage,
+} from '../interfaces/supportTicket.interface';
 
 interface INewMessage {
   sender: string;
@@ -16,7 +19,7 @@ type INewFileMessage = {
   isFile: boolean;
   fileUrl: string;
   fileExtension: string;
-}
+};
 
 class SupportTicketService extends HttpService {
   private readonly prefix: string = 'api/supportTickets';
@@ -43,7 +46,9 @@ class SupportTicketService extends HttpService {
   ): Promise<IResponseInterface> =>
     this.post(`${this.prefix}/deleteSupportTicket/${supportTicketId}`);
 
-  httpCreateMessage = (body: INewMessage | INewFileMessage): Promise<IResponseInterface<{ newMessage: ITicketMessage }>> =>
+  httpCreateMessage = (
+    body: INewMessage | INewFileMessage
+  ): Promise<IResponseInterface<{ newMessage: ITicketMessage }>> =>
     this.post(`${this.prefix}/newMessage/${body.ticketId}`, body);
 
   httpGetMessages = (httpGetMessages: any): Promise<IResponseInterface<any>> =>

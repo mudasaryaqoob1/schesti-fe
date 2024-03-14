@@ -21,11 +21,9 @@ const Congratulations = () => {
     }
   }, [token]);
 
-
   useEffect(() => {
-    dispatch(getLoggedInUserDetails({}))
-  }, [])
-
+    dispatch(getLoggedInUserDetails({}));
+  }, []);
 
   return (
     <section className="h-[100vh] grid place-items-center rounded-lg">

@@ -20,7 +20,7 @@ import { twMerge } from 'tailwind-merge';
 
 interface Props extends IPricingPlan {
   setSelectedPlan: any;
-  user?: IUser
+  user?: IUser;
 }
 const SinglePlan = (props: Props) => {
   const {
@@ -35,38 +35,43 @@ const SinglePlan = (props: Props) => {
   } = props;
   const dispatch = useDispatch<AppDispatch>();
 
-  const stripeUpgradeMutation = useMutation(['upgradePlan'], async (planId: string) => {
-    return authService.httpUpgradeStripeMutation({ planId });
-  }, {
-    onSuccess() {
-      toast.success("Plan upgraded successfully");
-      dispatch(getLoggedInUserDetails({}))
+  const stripeUpgradeMutation = useMutation(
+    ['upgradePlan'],
+    async (planId: string) => {
+      return authService.httpUpgradeStripeMutation({ planId });
     },
-    onError(error) {
-      const err = error as AxiosError<{ message: string }>;
-      toast.error(err.response?.data?.message || err.message)
-    },
-  })
-  const BTN = user && user.planId ? (
-    <Button
-      text={user?.planId === _id ? "Current Plan" : "Upgrade"}
-      className="text-white self-stretch w-full"
-      onClick={() => {
-        if (_id && props.user?.planId !== _id) {
-          stripeUpgradeMutation.mutate(_id)
-        } else {
-          toast.success("You are already on this plan");
-        }
-      }}
-      isLoading={stripeUpgradeMutation.isLoading}
-    />
-  ) : (
-    <Button
-      text={"Buy"}
-      className="text-white self-stretch w-full"
-      onClick={() => setSelectedPlan({ planName, price, duration })}
-    />
-  )
+    {
+      onSuccess() {
+        toast.success('Plan upgraded successfully');
+        dispatch(getLoggedInUserDetails({}));
+      },
+      onError(error) {
+        const err = error as AxiosError<{ message: string }>;
+        toast.error(err.response?.data?.message || err.message);
+      },
+    }
+  );
+  const BTN =
+    user && user.planId ? (
+      <Button
+        text={user?.planId === _id ? 'Current Plan' : 'Upgrade'}
+        className="text-white self-stretch w-full"
+        onClick={() => {
+          if (_id && props.user?.planId !== _id) {
+            stripeUpgradeMutation.mutate(_id);
+          } else {
+            toast.success('You are already on this plan');
+          }
+        }}
+        isLoading={stripeUpgradeMutation.isLoading}
+      />
+    ) : (
+      <Button
+        text={'Buy'}
+        className="text-white self-stretch w-full"
+        onClick={() => setSelectedPlan({ planName, price, duration })}
+      />
+    );
 
   return (
     <div
@@ -115,9 +120,7 @@ const SinglePlan = (props: Props) => {
           ))}
         </div>
       </div>
-      <div className="w-full">
-        {BTN}
-      </div>
+      <div className="w-full">{BTN}</div>
     </div>
   );
 };

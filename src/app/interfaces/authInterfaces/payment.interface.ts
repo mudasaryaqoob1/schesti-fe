@@ -8,4 +8,4 @@ export type IPaypalPaymentProps = {
   planID: string | undefined;
   autoRenew: boolean;
   name: string;
-}
+};

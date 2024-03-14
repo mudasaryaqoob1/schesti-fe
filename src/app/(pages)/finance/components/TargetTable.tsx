@@ -11,7 +11,7 @@ import { UseQueryResult } from 'react-query';
 import _ from 'lodash';
 import { useState } from 'react';
 import { totalReceivable } from '../utils';
-import { Excel } from "antd-table-saveas-excel";
+import { Excel } from 'antd-table-saveas-excel';
 import moment from 'moment';
 
 type Props = {
@@ -43,19 +43,19 @@ export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
     {
       title: 'Month',
       dataIndex: 'month',
-      key: "month"
+      key: 'month',
     },
     {
       title: 'Receivable',
       dataIndex: 'month',
-      key: "receivable",
+      key: 'receivable',
       render(_value, record) {
         return USCurrencyFormat.format(totalReceivable(record, invoices));
       },
     },
     {
       title: 'Target',
-      key: "target",
+      key: 'target',
       dataIndex: 'price',
       render(value) {
         return USCurrencyFormat.format(value);
@@ -63,8 +63,8 @@ export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
     },
     {
       title: 'Target %',
-      key: "targetPercent",
-      dataIndex: "price",
+      key: 'targetPercent',
+      dataIndex: 'price',
       render(_value, record) {
         return `${((totalReceivable(record, invoices) / Number(record.price)) * 100).toFixed(2)}%`;
       },
@@ -99,16 +99,17 @@ export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
   // Step 6: Calculate remaining targets
   const remainingTargets = totalPriceTargets - totalAmountInvoices;
 
-
   const handleClick = () => {
     const excel = new Excel();
     excel
-      .addSheet("Financial Tools")
+      .addSheet('Financial Tools')
       .addColumns(columns as any)
       .addDataSource(targets, {
-        str2Percent: true
+        str2Percent: true,
       })
-      .saveAs(`${"financial-tools" + "-" + moment().month() + "-" + new Date().getTime()}.xlsx`);
+      .saveAs(
+        `${'financial-tools' + '-' + moment().month() + '-' + new Date().getTime()}.xlsx`
+      );
   };
 
   return (
@@ -131,7 +132,9 @@ export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
             onChange={(value) => setSelectedYear(value)}
             className="w-40"
           />
-          <CustomButton text="Download" className="!w-44 !py-2"
+          <CustomButton
+            text="Download"
+            className="!w-44 !py-2"
             onClick={handleClick}
           />
         </div>

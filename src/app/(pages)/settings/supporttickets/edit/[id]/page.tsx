@@ -120,10 +120,10 @@ const EditSupportTicket = () => {
                 initialValues={
                   supportTicketData
                     ? {
-                      title: supportTicketData.title,
-                      description: supportTicketData.description,
-                      avatar: supportTicketData.avatar,
-                    }
+                        title: supportTicketData.title,
+                        description: supportTicketData.description,
+                        avatar: supportTicketData.avatar,
+                      }
                     : initialValues
                 }
                 validationSchema={validationSchema}
@@ -178,12 +178,14 @@ const EditSupportTicket = () => {
                             title="or drag and drop"
                           />
                         </div>
-                        {values.avatar ? <Image
-                          src={values.avatar!}
-                          alt="upload icon"
-                          width={100}
-                          height={100}
-                        /> : null}
+                        {values.avatar ? (
+                          <Image
+                            src={values.avatar!}
+                            alt="upload icon"
+                            width={100}
+                            height={100}
+                          />
+                        ) : null}
                         <MinDescription
                           className="text-steelGray font-popin text-center"
                           title="SVG, PNG, JPG or GIF (max. 800x400px)"

@@ -77,8 +77,6 @@ export const authSlice = createSlice({
       state.error = action.error.message;
     });
 
-
-
     builder.addCase(getLoggedInUserDetails.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;

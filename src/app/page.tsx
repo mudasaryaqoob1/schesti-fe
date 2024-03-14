@@ -81,8 +81,24 @@ export default function Home() {
           <div className="flex items-center flex-col lg:block">
             <AntdImage
               src={'/landing.png'}
-              height={responsive.xl ? 758.21 : responsive.lg ? 658.21 : responsive.md ? 420 : 220}
-              width={responsive.xl ? 1325.71 : responsive.lg ? 1025.71 : responsive.md ? 720 : 351}
+              height={
+                responsive.xl
+                  ? 758.21
+                  : responsive.lg
+                    ? 658.21
+                    : responsive.md
+                      ? 420
+                      : 220
+              }
+              width={
+                responsive.xl
+                  ? 1325.71
+                  : responsive.lg
+                    ? 1025.71
+                    : responsive.md
+                      ? 720
+                      : 351
+              }
               className="mx-auto mr-3 lg:mr-0 lg:mx-0 xl:absolute xl:left-[40%] lg:absolute lg:left-[50%] lg:-translate-x-[50%] lg:top-[37px]"
               alt="dashboard"
               preview={false}
@@ -158,42 +174,47 @@ export default function Home() {
           <div className="grid grid-cols-1 grid-rows-2 xl:grid-rows-1 xl:grid-cols-5  justify-items-center xl:gap-4 pt-[37px] pb-[57px] gap-6">
             <CustomButton
               text="Estimating"
-              className={`!rounded-full !bg-transparent  ${tab === 'estimating'
-                ? '!text-[#8449EB] !border-[#8449EB]'
-                : '!text-[#718096] !border-[#718096]'
-                }`}
+              className={`!rounded-full !bg-transparent  ${
+                tab === 'estimating'
+                  ? '!text-[#8449EB] !border-[#8449EB]'
+                  : '!text-[#718096] !border-[#718096]'
+              }`}
               onClick={() => setTab('estimating')}
             />
             <CustomButton
               text="Invoice"
-              className={`!rounded-full !bg-transparent  ${tab === 'invoice'
-                ? '!text-[#8449EB] !border-[#8449EB]'
-                : '!text-[#718096] !border-[#718096]'
-                }`}
+              className={`!rounded-full !bg-transparent  ${
+                tab === 'invoice'
+                  ? '!text-[#8449EB] !border-[#8449EB]'
+                  : '!text-[#718096] !border-[#718096]'
+              }`}
               onClick={() => setTab('invoice')}
             />
             <CustomButton
               text="Subcontractor"
-              className={`!rounded-full !bg-transparent  ${tab === 'subcontractor'
-                ? '!text-[#8449EB] !border-[#8449EB]'
-                : '!text-[#718096] !border-[#718096]'
-                }`}
+              className={`!rounded-full !bg-transparent  ${
+                tab === 'subcontractor'
+                  ? '!text-[#8449EB] !border-[#8449EB]'
+                  : '!text-[#718096] !border-[#718096]'
+              }`}
               onClick={() => setTab('subcontractor')}
             />
             <CustomButton
               text="Client"
-              className={`!rounded-full !bg-transparent  ${tab === 'client'
-                ? '!text-[#8449EB] !border-[#8449EB]'
-                : '!text-[#718096] !border-[#718096]'
-                }`}
+              className={`!rounded-full !bg-transparent  ${
+                tab === 'client'
+                  ? '!text-[#8449EB] !border-[#8449EB]'
+                  : '!text-[#718096] !border-[#718096]'
+              }`}
               onClick={() => setTab('client')}
             />
             <CustomButton
               text="Meeting"
-              className={`!rounded-full !bg-transparent  ${tab === 'meeting'
-                ? '!text-[#8449EB] !border-[#8449EB]'
-                : '!text-[#718096] !border-[#718096]'
-                }`}
+              className={`!rounded-full !bg-transparent  ${
+                tab === 'meeting'
+                  ? '!text-[#8449EB] !border-[#8449EB]'
+                  : '!text-[#718096] !border-[#718096]'
+              }`}
               onClick={() => setTab('meeting')}
             />
           </div>

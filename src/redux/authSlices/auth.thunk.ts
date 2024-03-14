@@ -107,7 +107,6 @@ export const updateProfileHandler = createAsyncThunk(
   }
 );
 
-
 export const getLoggedInUserDetails = createAsyncThunk(
   'auth/getLoggedInUser',
   async (credentials: {}, thunkAPI) => {

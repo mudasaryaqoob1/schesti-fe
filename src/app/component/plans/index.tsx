@@ -44,7 +44,9 @@ const PaymentPlans = () => {
     [] as IPricingPlan[]
   );
   const [isDuration, setIsDuration] = useState('monthly');
-  const user = useSelector((state: RootState) => state.auth.user as { user?: IUser });
+  const user = useSelector(
+    (state: RootState) => state.auth.user as { user?: IUser }
+  );
 
   useEffect(() => {
     pricingPlansHandler();
@@ -93,9 +95,7 @@ const PaymentPlans = () => {
         <ToggleBtn planType={planType} onChange={handlePlanType} />
       </div>
       <div className="flex w-full align-items-center justify-center my-6">
-        <SwitchBtn
-          isDuration={isDuration} onChange={handlePlanDuration}
-        />
+        <SwitchBtn isDuration={isDuration} onChange={handlePlanDuration} />
       </div>
       {isLoading ? (
         <Skeleton />
@@ -106,7 +106,13 @@ const PaymentPlans = () => {
           {pricingPlansData
             .filter((plan) => plan.duration === isDuration)
             ?.map((plan: IPricingPlan, index: React.Key | null | undefined) => {
-              return <SinglePlan key={index} {...plan} user={user ? user.user : undefined} />;
+              return (
+                <SinglePlan
+                  key={index}
+                  {...plan}
+                  user={user ? user.user : undefined}
+                />
+              );
             })}
         </div>
       )}

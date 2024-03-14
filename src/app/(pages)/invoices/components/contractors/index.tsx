@@ -89,7 +89,7 @@ export function Contractors() {
         async onOk() {
           await dispatch(deleteContractorInvoiceRequest(record._id));
         },
-        onCancel() { },
+        onCancel() {},
       });
     } else if (key === 'view') {
       router.push(`/invoices/standard-invoicing/view/${record._id}`);
@@ -193,11 +193,11 @@ export function Contractors() {
 
   const filteredData = subcontractersInvoices
     ? subcontractersInvoices.filter((invoice) => {
-      if (search === '') {
-        return invoice;
-      }
-      return invoice.projectName.toLowerCase().includes(search.toLowerCase());
-    })
+        if (search === '') {
+          return invoice;
+        }
+        return invoice.projectName.toLowerCase().includes(search.toLowerCase());
+      })
     : [];
   return (
     <div className="w-full mb-4">

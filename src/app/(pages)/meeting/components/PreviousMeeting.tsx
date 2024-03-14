@@ -15,7 +15,7 @@ export function PreviousMeetings({ meetings }: Props) {
     return current.isAfter(endMeeting);
   });
   return meetings.length === 0 ? (
-    <NoMeetings onClick={() => { }} />
+    <NoMeetings onClick={() => {}} />
   ) : (
     meetings.map((item, index) => {
       return (

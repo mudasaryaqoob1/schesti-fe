@@ -23,7 +23,8 @@ const MySubscription = () => {
   // const router = useRouter();
 
   const [userData, setUserData] = useState<any>({});
-  const [subscription, setSubscription] = useState<IStripeBaseSubscription | null>(null)
+  const [subscription, setSubscription] =
+    useState<IStripeBaseSubscription | null>(null);
   const getUserDetail = useCallback(async () => {
     let { data } = await userService.httpGetCompanyDetail();
     setUserData(data.user.planId);
@@ -36,7 +37,9 @@ const MySubscription = () => {
 
   let features = 'CRM,Takeoff Module,Construction Estimate Module';
 
-  const remainingDays = subscription ? moment.unix(subscription.current_period_end).diff(moment(), 'days') : null;
+  const remainingDays = subscription
+    ? moment.unix(subscription.current_period_end).diff(moment(), 'days')
+    : null;
   return (
     <>
       <TertiaryHeading title="My Subscriptions" className="text-graphiteGray" />
@@ -61,9 +64,10 @@ const MySubscription = () => {
               <div className="h-3 w-1/2 absolute rounded-lg z-10 bg-goldenrodYellow" />
               <div className="h-3 w-full absolute rounded-lg bg-slate-200" />
             </div>
-            <div className='flex justify-end w-full'>
-
-              {remainingDays ? <p className='font-semibold text-[14px]  text-[#EC2224]'>{`Expires in ${remainingDays} day${remainingDays !== 1 ? 's' : ''}`}</p> : null}
+            <div className="flex justify-end w-full">
+              {remainingDays ? (
+                <p className="font-semibold text-[14px]  text-[#EC2224]">{`Expires in ${remainingDays} day${remainingDays !== 1 ? 's' : ''}`}</p>
+              ) : null}
             </div>
 
             {/* <p className="text-end text-vividRed font-semibold w-full">
