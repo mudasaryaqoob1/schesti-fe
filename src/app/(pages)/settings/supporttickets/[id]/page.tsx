@@ -200,6 +200,7 @@ const SupportTicketDetails = () => {
                       id='file'
                       type="file"
                       className='hidden'
+                      accept='image/*, application/pdf'
                     />
                     <div className="w-0.5 h-7 bg-darkGray" />
                     <span>
