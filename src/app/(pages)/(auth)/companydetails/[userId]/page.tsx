@@ -46,7 +46,8 @@ const CompanyDetails = () => {
 
     if (result.payload.statusCode == 200) {
       setIsLoading(false);
-      // localStorage.setItem('schestiToken', result.payload.token);
+      console.log('console.log', result.payload);
+      localStorage.setItem('schestiToken', result.payload.token);
       router.push('/plans');
     } else {
       setIsLoading(false);

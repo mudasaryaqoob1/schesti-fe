@@ -83,7 +83,8 @@ const Register = () => {
         let result: any = await dispatch(loginWithGoogle(responseObj));
 
         if (result.payload.statusCode == 200) {
-          // localStorage.setItem('schestiToken', result.payload.token);
+          console.log('console.log', result.payload);
+          localStorage.setItem('schestiToken', result.payload.token);
           router.push(`/clients`);
         } else if (result.payload.statusCode == 400) {
           router.push(`/companydetails/${result.payload.data.user._id}`);

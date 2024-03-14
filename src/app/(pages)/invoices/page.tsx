@@ -8,6 +8,7 @@ import { selectToken } from '@/redux/authSlices/auth.selector';
 import { Contractors } from './components/contractors';
 import { Clients } from './components/clients';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
+import withAuth from '@/app/hoc/with_auth';
 
 const CONTRACTOR_KEY = 'Contractor';
 const CLIENT_KEY = 'Client';
@@ -62,4 +63,4 @@ const InvoicePage = () => {
   );
 };
 
-export default InvoicePage;
+export default withAuth(InvoicePage);

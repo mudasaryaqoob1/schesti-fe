@@ -6,6 +6,7 @@ interface Props {
 }
 
 import CustomNavbar from '@/app/component/customNavbar';
+import withAuth from '@/app/hoc/with_auth';
 const SettingSidebar = ({ children }: Props) => {
   return (
     <CustomNavbar>
@@ -17,4 +18,4 @@ const SettingSidebar = ({ children }: Props) => {
   );
 };
 
-export default SettingSidebar;
+export default withAuth(SettingSidebar);

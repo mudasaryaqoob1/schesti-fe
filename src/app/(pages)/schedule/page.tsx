@@ -23,6 +23,7 @@ import { IProject } from '@/app/interfaces/schedule/project.schedule.interface';
 import { ISchedule } from '@/app/interfaces/schedule/schedule.type';
 import { addSchedule } from '@/redux/schedule/schedule.slice';
 import FormControl from '@/app/component/formControl';
+import withAuth from '@/app/hoc/with_auth';
 
 const initialValues: IProject = {
   projectName: '',
@@ -326,4 +327,4 @@ const Schedule = () => {
   );
 };
 
-export default Schedule;
+export default withAuth(Schedule);

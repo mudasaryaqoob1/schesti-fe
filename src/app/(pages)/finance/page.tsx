@@ -7,6 +7,7 @@ import SenaryHeading from '@/app/component/headings/senaryHeading';
 import CustomButton from '@/app/component/customButton/white';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import Table, { type ColumnsType } from 'antd/es/table';
+import withAuth from '@/app/hoc/with_auth';
 
 const Fiance = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -147,4 +148,4 @@ const Fiance = () => {
   );
 };
 
-export default Fiance;
+export default withAuth(Fiance);

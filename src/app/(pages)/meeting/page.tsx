@@ -19,6 +19,7 @@ import { fetchMeetings } from '@/redux/meeting/meeting.thunk';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
 import { CreateMeeting } from './components/CreateMeeting';
+import withAuth from '@/app/hoc/with_auth';
 
 const UPCOMING_MEETING_KEY = 'Upcoming Meeting';
 const RECENT_MEETING_KEY = 'Recent Meeting';
@@ -107,4 +108,4 @@ const Meeting = () => {
   );
 };
 
-export default Meeting;
+export default withAuth(Meeting);

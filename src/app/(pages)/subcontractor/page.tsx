@@ -23,6 +23,7 @@ import {
 } from '@/redux/company/company.thunk';
 import Image from 'next/image';
 import NoData from '@/app/component/noData';
+import withAuth from '@/app/hoc/with_auth';
 
 export interface DataType {
   company: string;
@@ -178,4 +179,4 @@ const SubcontractTable = () => {
   );
 };
 
-export default SubcontractTable;
+export default withAuth(SubcontractTable);

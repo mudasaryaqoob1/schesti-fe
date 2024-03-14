@@ -1,3 +1,4 @@
+import withAuth from '@/app/hoc/with_auth';
 import NoData from './components/NoData';
 import Records from './components/records';
 import { takeoffRecords } from './data';
@@ -9,4 +10,4 @@ const TakeOff = () => {
   );
 };
 
-export default TakeOff;
+export default withAuth(TakeOff);

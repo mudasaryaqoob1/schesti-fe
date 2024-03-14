@@ -21,6 +21,7 @@ import {
 } from '@/redux/company/company.thunk';
 import Image from 'next/image';
 import NoData from '@/app/component/noData';
+import withAuth from '@/app/hoc/with_auth';
 
 interface DataType {
   firstName: string;
@@ -183,4 +184,4 @@ const ClientTable = () => {
   );
 };
 
-export default ClientTable;
+export default withAuth(ClientTable);
