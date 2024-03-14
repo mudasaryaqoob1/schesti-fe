@@ -19,6 +19,7 @@ type INewFileMessage = {
   isFile: boolean;
   fileUrl: string;
   fileExtension: string;
+  fileName: string;
 };
 
 class SupportTicketService extends HttpService {

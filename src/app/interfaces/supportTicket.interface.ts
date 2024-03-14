@@ -16,6 +16,7 @@ export type ITicketMessage = {
   isFile: boolean;
   fileExtension: string;
   fileUrl: string;
+  fileName: string;
   _id: string;
   createdAt: string;
   updatedAt: string;
