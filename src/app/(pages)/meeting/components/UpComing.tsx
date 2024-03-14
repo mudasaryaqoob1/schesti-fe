@@ -88,7 +88,7 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
                   />
                 </div>
                 <SenaryHeading
-                  title={`Time: ${moment(item.startDate).tz(item.timezone).format('h:mm a')} ${item.timezone} - ${moment.tz(item.startDate, getClientLocalTimezone()).format('h:mm a')} ${getClientLocalTimezone()}`}
+                  title={`Time: ${moment(item.startDate).tz(item.timezone).format('h:mm a')} ${item.timezone}`}
                   className="text-[#667085]"
                 />
               </div>

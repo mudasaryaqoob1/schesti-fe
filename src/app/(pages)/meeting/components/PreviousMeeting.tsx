@@ -15,7 +15,7 @@ export function PreviousMeetings({ meetings }: Props) {
     return current.isAfter(endMeeting);
   });
   return meetings.length === 0 ? (
-    <NoMeetings onClick={() => {}} />
+    <NoMeetings onClick={() => { }} />
   ) : (
     meetings.map((item, index) => {
       return (
@@ -39,7 +39,7 @@ export function PreviousMeetings({ meetings }: Props) {
               />
             </div>
             <SenaryHeading
-              title={`Time: ${moment(item.startDate).format('h:mm a')} ${item.timezone} - ${moment.tz(item.startDate, item.timezone).tz(getClientLocalTimezone()).format('h:mm a')} ${getClientLocalTimezone()}`}
+              title={`Time: ${moment(item.startDate).format('h:mm a')} ${item.timezone}`}
               className="text-[#667085]"
             />
           </div>
