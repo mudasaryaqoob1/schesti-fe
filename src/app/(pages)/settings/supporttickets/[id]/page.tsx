@@ -188,11 +188,18 @@ const SupportTicketDetails = () => {
                     onChange={(e) => setMessage(e.target.value)}
                   />
                   <div className="flex gap-3 items-center absolute top-2 right-3">
-                    <Image
-                      width={24}
-                      height={24}
-                      src="/select-file.svg"
-                      alt="select file"
+                    <label htmlFor="file" className='cursor-pointer'>
+                      <Image
+                        width={24}
+                        height={24}
+                        src="/select-file.svg"
+                        alt="select file"
+                      />
+                    </label>
+                    <input
+                      id='file'
+                      type="file"
+                      className='hidden'
                     />
                     <div className="w-0.5 h-7 bg-darkGray" />
                     <span>
