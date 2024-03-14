@@ -2,7 +2,7 @@
 import { HttpService } from '@/app/services/base.service';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { IToken } from '@/app/interfaces/authInterfaces/token.interface';
-import { ISupportTicket } from '../interfaces/supportTicket.interface';
+import { ISupportTicket, ITicketMessage } from '../interfaces/supportTicket.interface';
 
 interface INewMessage {
   sender: string;
@@ -34,7 +34,7 @@ class SupportTicketService extends HttpService {
   ): Promise<IResponseInterface> =>
     this.post(`${this.prefix}/deleteSupportTicket/${supportTicketId}`);
 
-  httpCreateMessage = (body: INewMessage): Promise<IResponseInterface<any>> =>
+  httpCreateMessage = (body: INewMessage): Promise<IResponseInterface<{ newMessage: ITicketMessage }>> =>
     this.post(`${this.prefix}/newMessage/${body.ticketId}`, {
       sender: body.sender,
       message: body.message,

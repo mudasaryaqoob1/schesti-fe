@@ -82,7 +82,7 @@ const SupportTicketDetails = () => {
     });
     setMessage('');
     setMessageLoading(false);
-    setMessages([...messages, ...[result.data.newMessage]]);
+    setMessages([...messages, ...[result.data?.newMessage]]);
   };
 
   return (
