@@ -4,6 +4,7 @@ import { InputComponent } from '@/app/component/customInput/Input';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import ModalComponent from '@/app/component/modal';
 import { IClientInvoice } from '@/app/interfaces/client-invoice.interface';
+import { Routes } from '@/app/utils/plans.utils';
 import {
   deleteClientInvoiceRequest,
   fetchClientInvoices,
@@ -45,7 +46,7 @@ export function Clients() {
     validationSchema: ValidationSchema,
     onSubmit(values) {
       router.push(
-        `/invoices/aia-invoicing/create?invoiceName=${values.invoiceName}`
+        `${Routes.Financial['AIA-Invoicing']}/create?invoiceName=${values.invoiceName}`
       );
     },
   });
@@ -114,7 +115,7 @@ export function Clients() {
             items,
             onClick: ({ key }) => {
               if (key === 'createPhase') {
-                router.push(`/invoices/aia-invoicing/invoice/${record._id}`);
+                router.push(`${Routes.Financial['AIA-Invoicing']}/invoice/${record._id}`);
               } else if (key === 'delete') {
                 Modal.confirm({
                   title: 'Are you sure delete this invoice?',
@@ -126,10 +127,10 @@ export function Clients() {
                   onOk() {
                     dispatch(deleteClientInvoiceRequest(record._id));
                   },
-                  onCancel() {},
+                  onCancel() { },
                 });
               } else if (key === 'view') {
-                router.push(`/invoices/aia-invoicing/view/${record._id}`);
+                router.push(`${Routes.Financial['AIA-Invoicing']}/view/${record._id}`);
               }
             },
           }}
@@ -150,14 +151,14 @@ export function Clients() {
   const filteredClientInvoices =
     clientInvoices.length > 0
       ? clientInvoices.filter((invoice) => {
-          if (!search) {
-            return invoice;
-          }
-          return (
-            invoice.invoiceName === search ||
-            invoice.toOwner.toLowerCase().includes(search.toLowerCase())
-          );
-        })
+        if (!search) {
+          return invoice;
+        }
+        return (
+          invoice.invoiceName === search ||
+          invoice.toOwner.toLowerCase().includes(search.toLowerCase())
+        );
+      })
       : [];
 
   return (
