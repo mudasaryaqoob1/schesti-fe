@@ -11,6 +11,17 @@ import tabsStyle from './tabs.module.css';
 import { DownOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { planFeatureOptions } from '@/app/utils/plans.utils';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectToken } from '@/redux/authSlices/auth.selector';
+import { useLayoutEffect } from 'react';
+import { HttpService } from '@/app/services/base.service';
+import { useQuery } from 'react-query';
+import { IResponseInterface } from '@/app/interfaces/api-response.interface';
+import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
+import { AxiosError } from 'axios';
+import { pricingPlanService } from '@/app/services/pricingPlan.service';
+import { AppDispatch } from '@/redux/store';
+import { setUserPricingPlan } from '@/redux/pricingPlanSlice/pricingPlanSlice';
 // const items: MenuProps['items'] = [
 //   {
 //     key: '1',
@@ -26,7 +37,30 @@ import { planFeatureOptions } from '@/app/utils/plans.utils';
 const Tabs = () => {
   const pathname = usePathname();
   const router = useRouter();
+  const token = useSelector(selectToken);
+  const dispatch = useDispatch<AppDispatch>();
 
+  useLayoutEffect(() => {
+    if (token) {
+      HttpService.setToken(token);
+    }
+  }, [token]);
+
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  const userPricingQuery = useQuery<IResponseInterface<{ plan: IPricingPlan }>, AxiosError<{ message: string, statusCode: number }>>(['userPricing'], () => pricingPlanService.httpGetUserPricingPlan(), {
+    onSuccess(data) {
+      if (data.data?.plan) {
+        dispatch(setUserPricingPlan(data.data.plan));
+      }
+    },
+    onError(err) {
+      console.log("User Pricing Plan Error", err.response?.data);
+      if (err.response && err.response.data.statusCode >= 400) {
+        router.push("/login");
+      }
+    },
+  })
   return (
     <div className="md:flex block justify-between bg-[#F0E9FD] items-center px-16 xl:h-[67px] shadow-quinaryGentle">
       <ul
@@ -34,6 +68,7 @@ const Tabs = () => {
             text-gray-500 dark:text-gray-400 justify-center mb-0"
       >
         <li
+          key={'dashboard'}
           className={twMerge(
             clsx(
               `${quaternaryHeading} text-steelGray
@@ -48,14 +83,14 @@ const Tabs = () => {
           Dashboard
         </li>
         {
-          planFeatureOptions.map(feature => {
+          planFeatureOptions.map((feature, index) => {
             if (feature.options) {
-              return <li key={new Date().getTime()}>
+              return <li key={index}>
                 <Dropdown
                   menu={{
-                    items: feature.options.map(option => {
+                    items: feature.options.map((option, index) => {
                       return {
-                        key: option.value,
+                        key: index,
                         label: <Link href={option.value}>{option.label}</Link>,
                       }
                     }),
@@ -79,21 +114,23 @@ const Tabs = () => {
                 </Dropdown>
               </li>
             }
-            return <li
-              key={new Date().getTime()}
-              className={twMerge(
-                clsx(
-                  `${quaternaryHeading} text-steelGray
+            else {
+              return <li
+                key={index}
+                className={twMerge(
+                  clsx(
+                    `${quaternaryHeading} text-steelGray
                   flex items-stretch justify-center py-2 
                    cursor-pointer
                   `,
-                  pathname.includes(feature.value) && tabsStyle.active
-                )
-              )}
-              onClick={() => router.push(feature.value)}
-            >
-              {feature.label}
-            </li>
+                    pathname.includes(feature.value) && tabsStyle.active
+                  )
+                )}
+                onClick={() => router.push(feature.value)}
+              >
+                {feature.label}
+              </li>
+            }
           })
         }
 
