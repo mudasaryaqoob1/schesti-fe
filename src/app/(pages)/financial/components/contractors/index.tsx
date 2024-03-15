@@ -93,7 +93,7 @@ export function Contractors() {
         onCancel() { },
       });
     } else if (key === 'view') {
-      router.push(`${Routes.Financial['Standard-Invoicing']}/${record._id}`);
+      router.push(`${Routes.Financial['Standard-Invoicing']}/view/${record._id}`);
     } else if (key === 'collectPayments') {
       setSelectedInvoice(record);
     }
