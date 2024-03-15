@@ -21,6 +21,7 @@ import { CollectPayment } from './CollectPayment';
 import { usePDF } from '@react-pdf/renderer';
 import ClientPDF from './clientPDF';
 import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
+import { Routes } from '@/app/utils/plans.utils';
 
 export function Contractors() {
   const router = useRouter();
@@ -77,7 +78,7 @@ export function Contractors() {
 
   async function handleDropdownItemClick(key: string, record: IInvoice) {
     if (key === 'editInvoice') {
-      router.push(`/invoices/standard-invoicing/edit/${record._id}`);
+      router.push(`${Routes.Financial['Standard-Invoicing']}/edit/${record._id}`);
     } else if (key === 'delete') {
       Modal.confirm({
         title: 'Are you sure delete this invoice?',
@@ -89,10 +90,10 @@ export function Contractors() {
         async onOk() {
           await dispatch(deleteContractorInvoiceRequest(record._id));
         },
-        onCancel() {},
+        onCancel() { },
       });
     } else if (key === 'view') {
-      router.push(`/invoices/standard-invoicing/view/${record._id}`);
+      router.push(`${Routes.Financial['Standard-Invoicing']}/${record._id}`);
     } else if (key === 'collectPayments') {
       setSelectedInvoice(record);
     }
@@ -193,11 +194,11 @@ export function Contractors() {
 
   const filteredData = subcontractersInvoices
     ? subcontractersInvoices.filter((invoice) => {
-        if (search === '') {
-          return invoice;
-        }
-        return invoice.projectName.toLowerCase().includes(search.toLowerCase());
-      })
+      if (search === '') {
+        return invoice;
+      }
+      return invoice.projectName.toLowerCase().includes(search.toLowerCase());
+    })
     : [];
   return (
     <div className="w-full mb-4">
@@ -253,7 +254,7 @@ export function Contractors() {
             className="!w-auto"
             iconwidth={20}
             iconheight={20}
-            onClick={() => router.push('/invoices/standard-invoicing/create')}
+            onClick={() => router.push(`${Routes.Financial['Standard-Invoicing']}/create`)}
           />
         </div>
       </div>

@@ -1,4 +1,4 @@
-const Routes = {
+export const Routes = {
     "Bid Management": {
         "Owner": "/bid-management/owner",
         "Contractor": "/bid-management/contractor",
@@ -23,7 +23,7 @@ const Routes = {
         "Financial-Tools": "/financial/tools",
     },
     "Schedule": "/schedule",
-    "Meetings": "/meetings",
+    "Meetings": "/meeting",
     "Networking": "/networking",
 }
 export const planFeatureOptions = [

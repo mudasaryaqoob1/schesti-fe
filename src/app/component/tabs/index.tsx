@@ -20,7 +20,7 @@ import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
 import { AxiosError } from 'axios';
 import { pricingPlanService } from '@/app/services/pricingPlan.service';
-import { AppDispatch } from '@/redux/store';
+import { AppDispatch, RootState } from '@/redux/store';
 import { setUserPricingPlan } from '@/redux/pricingPlanSlice/pricingPlanSlice';
 // const items: MenuProps['items'] = [
 //   {
@@ -39,6 +39,7 @@ const Tabs = () => {
   const router = useRouter();
   const token = useSelector(selectToken);
   const dispatch = useDispatch<AppDispatch>();
+  const userPlan = useSelector((state: RootState) => state.pricingPlan.userPlan);
 
   useLayoutEffect(() => {
     if (token) {
@@ -60,7 +61,12 @@ const Tabs = () => {
         router.push("/login");
       }
     },
-  })
+    staleTime: 60 * 5000
+  });
+
+  const userPlanFeatures = userPlan ? userPlan.features.split(',') : [];
+  console.log({ userPlanFeatures })
+
   return (
     <div className="md:flex block justify-between bg-[#F0E9FD] items-center px-16 xl:h-[67px] shadow-quinaryGentle">
       <ul
@@ -91,7 +97,7 @@ const Tabs = () => {
                     items: feature.options.map((option, index) => {
                       return {
                         key: index,
-                        label: <Link href={option.value}>{option.label}</Link>,
+                        label: userPlanFeatures.includes(option.value) ? <Link href={option.value}>{option.label}</Link> : <p className='cursor-not-allowed'>{option.label}</p>,
                       }
                     }),
                     selectable: true,
@@ -128,7 +134,7 @@ const Tabs = () => {
                 )}
                 onClick={() => router.push(feature.value)}
               >
-                {feature.label}
+                {userPlanFeatures.includes(feature.value) ? <Link href={feature.value}>{feature.label}</Link> : <p className='cursor-not-allowed'>{feature.label}</p>}
               </li>
             }
           })

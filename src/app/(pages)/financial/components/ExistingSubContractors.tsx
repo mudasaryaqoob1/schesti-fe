@@ -32,7 +32,7 @@ const ExistingSubContractor = ({
   const [search, setSearch] = useState('');
 
   const [selectedSubcontractId, setSelectedSubcontractId] = useState(
-    subcontractData ? subcontractData[0]._id : ''
+    subcontractData && subcontractData.length > 0 ? subcontractData[0]._id : ''
   );
 
   const memoizedSetPerson = useCallback(async () => {
