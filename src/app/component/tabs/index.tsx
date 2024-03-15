@@ -132,7 +132,6 @@ const Tabs = () => {
                     pathname.includes(feature.value) && tabsStyle.active
                   )
                 )}
-                onClick={() => router.push(feature.value)}
               >
                 {userPlanFeatures.includes(feature.value) ? <Link href={feature.value}>{feature.label}</Link> : <p className='cursor-not-allowed'>{feature.label}</p>}
               </li>
