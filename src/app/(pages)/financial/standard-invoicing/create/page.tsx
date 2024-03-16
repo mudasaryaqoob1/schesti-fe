@@ -649,4 +649,4 @@ const CreateInvoice = () => {
   );
 };
 
-export default withAuth(CreateInvoice)
+export default withAuth(CreateInvoice);

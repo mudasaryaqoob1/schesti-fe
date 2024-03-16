@@ -1,16 +1,14 @@
 'use client';
 
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export function NotAuthorized() {
-    const router = useRouter();
+  const router = useRouter();
 
-    useEffect(() => {
-        router.push("/login");
-    }, [])
+  useEffect(() => {
+    router.push('/login');
+  }, []);
 
-    return <>
-    </>
+  return <></>;
 }

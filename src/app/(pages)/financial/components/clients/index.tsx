@@ -115,7 +115,9 @@ export function Clients() {
             items,
             onClick: ({ key }) => {
               if (key === 'createPhase') {
-                router.push(`${Routes.Financial['AIA-Invoicing']}/invoice/${record._id}`);
+                router.push(
+                  `${Routes.Financial['AIA-Invoicing']}/invoice/${record._id}`
+                );
               } else if (key === 'delete') {
                 Modal.confirm({
                   title: 'Are you sure delete this invoice?',
@@ -127,10 +129,12 @@ export function Clients() {
                   onOk() {
                     dispatch(deleteClientInvoiceRequest(record._id));
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
               } else if (key === 'view') {
-                router.push(`${Routes.Financial['AIA-Invoicing']}/view/${record._id}`);
+                router.push(
+                  `${Routes.Financial['AIA-Invoicing']}/view/${record._id}`
+                );
               }
             },
           }}
@@ -151,14 +155,14 @@ export function Clients() {
   const filteredClientInvoices =
     clientInvoices.length > 0
       ? clientInvoices.filter((invoice) => {
-        if (!search) {
-          return invoice;
-        }
-        return (
-          invoice.invoiceName === search ||
-          invoice.toOwner.toLowerCase().includes(search.toLowerCase())
-        );
-      })
+          if (!search) {
+            return invoice;
+          }
+          return (
+            invoice.invoiceName === search ||
+            invoice.toOwner.toLowerCase().includes(search.toLowerCase())
+          );
+        })
       : [];
 
   return (

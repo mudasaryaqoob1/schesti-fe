@@ -24,4 +24,4 @@ function StandardInvoicingPage() {
   );
 }
 
-export default withAuth(StandardInvoicingPage)
+export default withAuth(StandardInvoicingPage);

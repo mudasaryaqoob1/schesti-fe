@@ -183,7 +183,9 @@ const SubcontractTable = () => {
             icon="/plus.svg"
             iconwidth={20}
             iconheight={20}
-            onClick={() => router.push(`${Routes.CRM['Sub-Contractors']}/create`)}
+            onClick={() =>
+              router.push(`${Routes.CRM['Sub-Contractors']}/create`)
+            }
           />
         </div>
         <Table

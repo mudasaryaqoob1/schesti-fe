@@ -16,12 +16,8 @@ class PricingPlanService extends HttpService {
       `${this.pricingPlanPrefix}/get-pricing-plans?page=${page}&limit=${limit}`
     );
 
-
-  httpGetUserPricingPlan = (): Promise<IResponseInterface<{ plan: IPricingPlan }>> =>
-    this.get(
-      `${this.pricingPlanPrefix}/user`
-    );
-
-
+  httpGetUserPricingPlan = (): Promise<
+    IResponseInterface<{ plan: IPricingPlan }>
+  > => this.get(`${this.pricingPlanPrefix}/user`);
 }
 export const pricingPlanService = new PricingPlanService();

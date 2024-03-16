@@ -158,15 +158,15 @@ const ClientTable = () => {
   ];
   const filteredClients = clientsData
     ? clientsData.filter((client) => {
-      if (!search) {
-        return client;
-      }
-      return (
-        client.firstName.toLowerCase().includes(search.toLowerCase()) ||
-        client.lastName.toLowerCase().includes(search.toLowerCase()) ||
-        client.email?.includes(search)
-      );
-    })
+        if (!search) {
+          return client;
+        }
+        return (
+          client.firstName.toLowerCase().includes(search.toLowerCase()) ||
+          client.lastName.toLowerCase().includes(search.toLowerCase()) ||
+          client.email?.includes(search)
+        );
+      })
     : [];
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">

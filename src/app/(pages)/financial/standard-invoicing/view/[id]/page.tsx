@@ -248,4 +248,4 @@ function ViewSubcontractorInvoicePage() {
   );
 }
 
-export default withAuth(ViewSubcontractorInvoicePage, [])
+export default withAuth(ViewSubcontractorInvoicePage, []);

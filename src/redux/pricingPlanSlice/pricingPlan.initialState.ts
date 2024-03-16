@@ -1,4 +1,4 @@
-import { IPricingPlan } from "@/app/interfaces/pricing-plan.interface";
+import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
 
 interface IPricingPlanState {
   loading: boolean;

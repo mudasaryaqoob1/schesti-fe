@@ -13,7 +13,7 @@ import Link from 'next/link';
 import { planFeatureOptions } from '@/app/utils/plans.utils';
 import {
   // useDispatch,
-  useSelector
+  useSelector,
 } from 'react-redux';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { useLayoutEffect } from 'react';
@@ -25,7 +25,7 @@ import { HttpService } from '@/app/services/base.service';
 // import { pricingPlanService } from '@/app/services/pricingPlan.service';
 import {
   // AppDispatch,
-  RootState
+  RootState,
 } from '@/redux/store';
 // import { setUserPricingPlan } from '@/redux/pricingPlanSlice/pricingPlanSlice';
 // const items: MenuProps['items'] = [
@@ -45,14 +45,15 @@ const Tabs = () => {
   const router = useRouter();
   const token = useSelector(selectToken);
   // const dispatch = useDispatch<AppDispatch>();
-  const userPlan = useSelector((state: RootState) => state.pricingPlan.userPlan);
+  const userPlan = useSelector(
+    (state: RootState) => state.pricingPlan.userPlan
+  );
 
   useLayoutEffect(() => {
     if (token) {
       HttpService.setToken(token);
     }
   }, [token]);
-
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   // const userPricingQuery = useQuery<IResponseInterface<{ plan: IPricingPlan }>, AxiosError<{ message: string, statusCode: number }>>(['userPricing'], () => pricingPlanService.httpGetUserPricingPlan(), {
@@ -71,7 +72,7 @@ const Tabs = () => {
   // });
 
   const userPlanFeatures = userPlan ? userPlan.features.split(',') : [];
-  console.log({ userPlanFeatures })
+  console.log({ userPlanFeatures });
 
   return (
     <div className="md:flex block justify-between bg-[#F0E9FD] items-center px-16 xl:h-[67px] shadow-quinaryGentle">
@@ -94,17 +95,21 @@ const Tabs = () => {
         >
           Dashboard
         </li>
-        {
-          planFeatureOptions.map((feature, index) => {
-            if (feature.options) {
-              return <li key={index}>
+        {planFeatureOptions.map((feature, index) => {
+          if (feature.options) {
+            return (
+              <li key={index}>
                 <Dropdown
                   menu={{
                     items: feature.options.map((option, index) => {
                       return {
                         key: index,
-                        label: userPlanFeatures.includes(option.value) ? <Link href={option.value}>{option.label}</Link> : <p className='cursor-not-allowed'>{option.label}</p>,
-                      }
+                        label: userPlanFeatures.includes(option.value) ? (
+                          <Link href={option.value}>{option.label}</Link>
+                        ) : (
+                          <p className="cursor-not-allowed">{option.label}</p>
+                        ),
+                      };
                     }),
                     selectable: true,
                   }}
@@ -116,7 +121,8 @@ const Tabs = () => {
                         flex items-stretch justify-center py-2 
                          cursor-pointer
                         `,
-                        pathname.includes('/bid'.split('/')[1]) && tabsStyle.active
+                        pathname.includes('/bid'.split('/')[1]) &&
+                          tabsStyle.active
                       )
                     )}
                   >
@@ -125,9 +131,10 @@ const Tabs = () => {
                   </Space>
                 </Dropdown>
               </li>
-            }
-            else {
-              return <li
+            );
+          } else {
+            return (
+              <li
                 key={index}
                 className={twMerge(
                   clsx(
@@ -139,12 +146,15 @@ const Tabs = () => {
                   )
                 )}
               >
-                {userPlanFeatures.includes(feature.value) ? <Link href={feature.value}>{feature.label}</Link> : <p className='cursor-not-allowed'>{feature.label}</p>}
+                {userPlanFeatures.includes(feature.value) ? (
+                  <Link href={feature.value}>{feature.label}</Link>
+                ) : (
+                  <p className="cursor-not-allowed">{feature.label}</p>
+                )}
               </li>
-            }
-          })
-        }
-
+            );
+          }
+        })}
       </ul>
     </div>
   );
@@ -159,7 +169,7 @@ const Tabs = () => {
   //         className={twMerge(
   //           clsx(
   //             `${quaternaryHeading} text-steelGray
-  //               flex items-stretch justify-center py-2 
+  //               flex items-stretch justify-center py-2
   //                cursor-pointer
   //               `,
   //             pathname === '/dashboard' && tabsStyle.active
@@ -193,7 +203,7 @@ const Tabs = () => {
   //             className={twMerge(
   //               clsx(
   //                 `${quaternaryHeading} text-steelGray
-  //                   flex items-stretch justify-center py-2 
+  //                   flex items-stretch justify-center py-2
   //                    cursor-pointer
   //                   `,
   //                 pathname.includes('/bid'.split('/')[1]) && tabsStyle.active
@@ -229,7 +239,7 @@ const Tabs = () => {
   //             className={twMerge(
   //               clsx(
   //                 `${quaternaryHeading} text-steelGray
-  //                   flex items-stretch justify-center py-2 
+  //                   flex items-stretch justify-center py-2
   //                    cursor-pointer
   //                   `,
   //                 (pathname.includes('/clients') ||
@@ -264,7 +274,7 @@ const Tabs = () => {
   //             className={twMerge(
   //               clsx(
   //                 `${quaternaryHeading} text-steelGray
-  //                   flex items-stretch justify-center py-2 
+  //                   flex items-stretch justify-center py-2
   //                    cursor-pointer
   //                   `,
   //                 pathname.includes('/takeoff') && tabsStyle.active
@@ -287,7 +297,7 @@ const Tabs = () => {
   //             className={twMerge(
   //               clsx(
   //                 `${quaternaryHeading} text-steelGray
-  //                   flex items-stretch justify-center py-2 
+  //                   flex items-stretch justify-center py-2
   //                    cursor-pointer
   //                   `,
   //                 pathname.includes('/estimates'.split('/')[1]) &&
@@ -304,7 +314,7 @@ const Tabs = () => {
   //         className={twMerge(
   //           clsx(
   //             `${quaternaryHeading} text-steelGray
-  //               flex items-stretch justify-center py-2 
+  //               flex items-stretch justify-center py-2
   //                cursor-pointer
   //               `,
   //             pathname.includes('/schedule') && tabsStyle.active
@@ -344,7 +354,7 @@ const Tabs = () => {
   //             className={twMerge(
   //               clsx(
   //                 `${quaternaryHeading} text-steelGray
-  //                   flex items-stretch justify-center py-2 
+  //                   flex items-stretch justify-center py-2
   //                    cursor-pointer
   //                   `,
   //                 (pathname.includes('/finance') ||
@@ -362,7 +372,7 @@ const Tabs = () => {
   //         className={twMerge(
   //           clsx(
   //             `${quaternaryHeading} text-steelGray
-  //               flex items-stretch justify-center py-2 
+  //               flex items-stretch justify-center py-2
   //                cursor-pointer
   //               `,
   //             pathname.includes('/meeting'.split('/')[1]) && tabsStyle.active
@@ -376,7 +386,7 @@ const Tabs = () => {
   //         className={twMerge(
   //           clsx(
   //             `${quaternaryHeading} text-steelGray
-  //               flex items-stretch justify-center py-2 
+  //               flex items-stretch justify-center py-2
   //                cursor-pointer
   //               `,
   //             pathname.includes('/networking'.split('/')[1]) && tabsStyle.active

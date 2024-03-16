@@ -164,7 +164,9 @@ const CreateSubcontractor = () => {
                     <CustomButton
                       className=" !border-celestialGray !shadow-scenarySubdued2 !text-graphiteGray !bg-snowWhite"
                       text="Cancel"
-                      onClick={() => router.push(`${Routes.CRM['Sub-Contractors']}`)}
+                      onClick={() =>
+                        router.push(`${Routes.CRM['Sub-Contractors']}`)
+                      }
                     />
                   </div>
                   <div>

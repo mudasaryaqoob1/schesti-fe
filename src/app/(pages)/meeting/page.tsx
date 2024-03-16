@@ -85,8 +85,9 @@ const Meeting = () => {
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className={`${tab === type ? 'text-[#8449EB]' : 'text-[#101828]'
-                      }`}
+                    className={`${
+                      tab === type ? 'text-[#8449EB]' : 'text-[#101828]'
+                    }`}
                   />
                 ),
                 tabKey: type,

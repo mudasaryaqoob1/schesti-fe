@@ -8,8 +8,8 @@ export const pricingPlanSlice = createSlice({
   initialState: initialPricingPlanState,
   reducers: {
     setUserPricingPlan: (state, action: PayloadAction<IPricingPlan>) => {
-      state.userPlan = action.payload
-    }
+      state.userPlan = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchPricingPlan.pending, (state) => {
@@ -29,6 +29,6 @@ export const pricingPlanSlice = createSlice({
   },
 });
 
-export const { setUserPricingPlan } = pricingPlanSlice.actions
+export const { setUserPricingPlan } = pricingPlanSlice.actions;
 
 export default pricingPlanSlice.reducer;

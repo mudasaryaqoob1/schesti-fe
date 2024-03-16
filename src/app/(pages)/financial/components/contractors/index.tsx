@@ -78,7 +78,9 @@ export function Contractors() {
 
   async function handleDropdownItemClick(key: string, record: IInvoice) {
     if (key === 'editInvoice') {
-      router.push(`${Routes.Financial['Standard-Invoicing']}/edit/${record._id}`);
+      router.push(
+        `${Routes.Financial['Standard-Invoicing']}/edit/${record._id}`
+      );
     } else if (key === 'delete') {
       Modal.confirm({
         title: 'Are you sure delete this invoice?',
@@ -90,10 +92,12 @@ export function Contractors() {
         async onOk() {
           await dispatch(deleteContractorInvoiceRequest(record._id));
         },
-        onCancel() { },
+        onCancel() {},
       });
     } else if (key === 'view') {
-      router.push(`${Routes.Financial['Standard-Invoicing']}/view/${record._id}`);
+      router.push(
+        `${Routes.Financial['Standard-Invoicing']}/view/${record._id}`
+      );
     } else if (key === 'collectPayments') {
       setSelectedInvoice(record);
     }
@@ -194,11 +198,11 @@ export function Contractors() {
 
   const filteredData = subcontractersInvoices
     ? subcontractersInvoices.filter((invoice) => {
-      if (search === '') {
-        return invoice;
-      }
-      return invoice.projectName.toLowerCase().includes(search.toLowerCase());
-    })
+        if (search === '') {
+          return invoice;
+        }
+        return invoice.projectName.toLowerCase().includes(search.toLowerCase());
+      })
     : [];
   return (
     <div className="w-full mb-4">
@@ -254,7 +258,9 @@ export function Contractors() {
             className="!w-auto"
             iconwidth={20}
             iconheight={20}
-            onClick={() => router.push(`${Routes.Financial['Standard-Invoicing']}/create`)}
+            onClick={() =>
+              router.push(`${Routes.Financial['Standard-Invoicing']}/create`)
+            }
           />
         </div>
       </div>
