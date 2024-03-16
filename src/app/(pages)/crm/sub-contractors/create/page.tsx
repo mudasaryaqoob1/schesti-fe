@@ -20,6 +20,8 @@ import { HttpService } from '@/app/services/base.service';
 // subcontractorServic service
 import { subcontractorService } from '@/app/services/subcontractor.service';
 import { ISubcontract } from '../../../../interfaces/companyEmployeeInterfaces/subcontractor.interface';
+import { Routes } from '@/app/utils/plans.utils';
+import { withAuth } from '@/app/hoc/withAuth';
 
 const newSubcontractorSchema = Yup.object({
   companyRep: Yup.string().required('Company Rep is required!'),
@@ -61,7 +63,7 @@ const CreateSubcontractor = () => {
       .then((response: any) => {
         if (response.statusCode == 201) {
           setIsLoading(false);
-          router.push('/subcontractor');
+          router.push(`${Routes.CRM['Sub-Contractors']}`);
         }
       })
       .catch(({ response }: any) => {
@@ -162,7 +164,7 @@ const CreateSubcontractor = () => {
                     <CustomButton
                       className=" !border-celestialGray !shadow-scenarySubdued2 !text-graphiteGray !bg-snowWhite"
                       text="Cancel"
-                      onClick={() => router.push('/subcontractor')}
+                      onClick={() => router.push(`${Routes.CRM['Sub-Contractors']}`)}
                     />
                   </div>
                   <div>
@@ -182,4 +184,4 @@ const CreateSubcontractor = () => {
   );
 };
 
-export default CreateSubcontractor;
+export default withAuth(CreateSubcontractor);

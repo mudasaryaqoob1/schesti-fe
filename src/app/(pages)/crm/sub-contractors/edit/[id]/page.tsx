@@ -25,6 +25,7 @@ import {
 } from '@/app/interfaces/companyInterfaces/subcontractor.interface';
 import { AxiosError } from 'axios';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
+import { Routes } from '@/app/utils/plans.utils';
 
 const editSubcontractorSchema = Yup.object({
   companyRep: Yup.string().required('Company Rep is required!'),
@@ -97,7 +98,7 @@ const EditSubcontractor = () => {
     );
     if (result.statusCode == 200) {
       setIsLoading(false);
-      router.push('/subcontractor');
+      router.push(`${Routes.CRM['Sub-Contractors']}`);
     } else {
       setIsLoading(false);
       toast.error(result.message);
@@ -197,7 +198,7 @@ const EditSubcontractor = () => {
                     <CustomButton
                       className=" !border-celestialGray !shadow-scenarySubdued2 !text-graphiteGray !bg-snowWhite"
                       text="Cancel"
-                      onClick={() => router.push('/subcontractor')}
+                      onClick={() => router.push(`${Routes.CRM['Sub-Contractors']}`)}
                     />
                   </div>
                   <div>

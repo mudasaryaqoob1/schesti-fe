@@ -27,6 +27,8 @@ import ModalComponent from '@/app/component/modal';
 import { DeleteContent } from '@/app/component/delete/DeleteContent';
 import { toast } from 'react-toastify';
 import Head from 'next/head';
+import { Routes } from '@/app/utils/plans.utils';
+import { withAuth } from '@/app/hoc/withAuth';
 
 export interface DataType {
   company: string;
@@ -80,7 +82,7 @@ const SubcontractTable = () => {
       setSelectedSubcontractor(subcontractor as ISubcontractor);
       setShowDeleteModal(true);
     } else if (key == 'editSubcontractor') {
-      router.push(`/subcontractor/edit/${subcontractor._id}`);
+      router.push(`${Routes.CRM['Sub-Contractors']}/edit/${subcontractor._id}`);
     }
   };
 
@@ -178,10 +180,10 @@ const SubcontractTable = () => {
           <Button
             text="New subcontractor"
             className="!w-auto "
-            icon="plus.svg"
+            icon="/plus.svg"
             iconwidth={20}
             iconheight={20}
-            onClick={() => router.push('/subcontractor/create')}
+            onClick={() => router.push(`${Routes.CRM['Sub-Contractors']}/create`)}
           />
         </div>
         <Table
@@ -195,4 +197,4 @@ const SubcontractTable = () => {
   );
 };
 
-export default SubcontractTable;
+export default withAuth(SubcontractTable);
