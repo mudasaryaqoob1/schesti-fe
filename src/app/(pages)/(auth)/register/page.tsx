@@ -21,12 +21,14 @@ import { signup, loginWithGoogle } from '@/redux/authSlices/auth.thunk';
 import { AppDispatch } from '@/redux/store';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
+import { USER_ROLES_ENUM } from '@/app/constants/constant';
 
 const initialValues: ISignUpInterface = {
   name: '',
   email: '',
   password: '',
   confirmPassword: '',
+  userRole: ''
 };
 
 const RegisterSchema: any = Yup.object({
@@ -51,6 +53,11 @@ const Register = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const [role, setRole] = useState(USER_ROLES_ENUM.CONTRACTOR);
+  const handleRoleChange = (value: string) => {
+    setRole(value);
+  };
 
   const submitHandler = async (values: ISignUpInterface) => {
     setIsLoading(true);
@@ -123,6 +130,13 @@ const Register = () => {
             className="my-2 text-center text-slateGray"
             title=" Sign up to your account"
           />
+          <div className="flex items-center justify-between space-x-4 bg-gray-200 rounded-md p-2 mt-6 mb-3">
+            <button className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${role === USER_ROLES_ENUM.CONTRACTOR ? 'bg-lavenderPurple text-white' : 'bg-gray-200'}`} onClick={() => handleRoleChange(USER_ROLES_ENUM.CONTRACTOR)}>General-Contractor</button>
+            <button className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${role === USER_ROLES_ENUM.SUBCONTRACTOR ? 'bg-lavenderPurple text-white' : 'bg-gray-200'}`} onClick={() => handleRoleChange(USER_ROLES_ENUM.SUBCONTRACTOR)}>Sub-Contractor</button>
+            <button className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${role === USER_ROLES_ENUM.OWNER ? 'bg-lavenderPurple text-white' : 'bg-gray-200'}`} onClick={() => handleRoleChange(USER_ROLES_ENUM.OWNER)}>Owner</button>
+          </div>
+
+
           <Formik
             initialValues={initialValues}
             validationSchema={RegisterSchema}
