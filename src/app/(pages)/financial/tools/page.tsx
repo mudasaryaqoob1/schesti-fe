@@ -1,24 +1,14 @@
 'use client';
-import React, { useLayoutEffect } from 'react';
+import React from 'react';
 import { FinancialStatus } from './components/FinancialStatus';
 import { useQuery } from 'react-query';
 import { clientInvoiceService } from '@/app/services/client-invoices.service';
-import { useSelector } from 'react-redux';
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
 import { settingTargetService } from '@/app/services/targets.service';
 import { TargetStats } from './components/TargetStats';
 import { TargetTable } from './components/TargetTable';
+import { withAuth } from '@/app/hoc/withAuth';
 
-const Fiance = () => {
-  const token = useSelector(selectToken);
-
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
-
+const Finance = () => {
   const clientInvoiceQuery = useQuery(['client-invoices-with-children'], () => {
     return clientInvoiceService.httpGetAllInvoicesWithChildren();
   });
@@ -45,4 +35,4 @@ const Fiance = () => {
   );
 };
 
-export default Fiance;
+export default withAuth(Finance);

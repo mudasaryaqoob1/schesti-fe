@@ -673,4 +673,4 @@ const EditSubcontractorInvoice = () => {
   );
 };
 
-export default withAuth(EditSubcontractorInvoice, [])
+export default withAuth(EditSubcontractorInvoice)

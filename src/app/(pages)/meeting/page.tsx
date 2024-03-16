@@ -19,6 +19,7 @@ import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
 import { CreateMeeting } from './components/CreateMeeting';
 import { PreviousMeetings } from './components/PreviousMeeting';
+import { withAuth } from '@/app/hoc/withAuth';
 
 const UPCOMING_MEETING_KEY = 'Upcoming Meeting';
 const PREVIOUS_MEETING_KEY = 'Previous Meeting';
@@ -84,9 +85,8 @@ const Meeting = () => {
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className={`${
-                      tab === type ? 'text-[#8449EB]' : 'text-[#101828]'
-                    }`}
+                    className={`${tab === type ? 'text-[#8449EB]' : 'text-[#101828]'
+                      }`}
                   />
                 ),
                 tabKey: type,
@@ -109,4 +109,4 @@ const Meeting = () => {
   );
 };
 
-export default Meeting;
+export default withAuth(Meeting);
