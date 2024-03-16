@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useLayoutEffect } from 'react';
+import React, { useCallback, useEffect, } from 'react';
 
 // module imports
 import Image from 'next/image';
@@ -15,8 +15,6 @@ import Description from '@/app/component/description';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { AppDispatch } from '@/redux/store';
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
 import {
   selectSupportTickets,
   selectSupportTicketsLoading,
@@ -28,21 +26,17 @@ import {
 import { ISupportTicket } from '@/app/interfaces/supportTicket.interface';
 import SettingSidebar from '../verticleBar';
 import NoData from './components/NoData';
+import { withAuth } from '@/app/hoc/withAuth';
 
 const SupportTickets = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
-  const token = useSelector(selectToken);
 
   const supportTicketsData = useSelector(selectSupportTickets);
   const supportTicketsLoading = useSelector(selectSupportTicketsLoading);
 
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
+
 
   const fetchSupportTicketsHandler = useCallback(async () => {
     await dispatch(fetchSupportTickets({ page: 1, limit: 10 }));
@@ -198,4 +192,4 @@ const SupportTickets = () => {
   );
 };
 
-export default SupportTickets;
+export default withAuth(SupportTickets);

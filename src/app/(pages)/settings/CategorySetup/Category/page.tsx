@@ -17,6 +17,7 @@ import {
   setCategoryData,
   updateCategoryData,
 } from '@/redux/company/settingSlices/categories/category.slice';
+import { withAuth } from '@/app/hoc/withAuth';
 
 export interface DataType {
   categoryId: string;
@@ -122,4 +123,4 @@ const AddCategory = () => {
   );
 };
 
-export default AddCategory;
+export default withAuth(AddCategory);

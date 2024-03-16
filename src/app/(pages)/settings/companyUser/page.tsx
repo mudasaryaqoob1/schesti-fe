@@ -1,7 +1,7 @@
 'use client';
-import { useEffect, useLayoutEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Image from 'next/image';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, } from 'react-redux';
 import { Dropdown, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { MenuProps } from 'antd';
@@ -12,11 +12,10 @@ import { AppDispatch } from '@/redux/store';
 import Button from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { deleteUser, fetchUsers } from '@/redux/userSlice/user.thunk';
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
 import VerticleBar from '@/app/(pages)//settings/verticleBar';
 import moment from 'moment';
 import { setCurrentUser } from '@/redux/userSlice/user.slice';
+import { withAuth } from '@/app/hoc/withAuth';
 
 interface DataType {
   firstName: string;
@@ -43,14 +42,7 @@ const items: MenuProps['items'] = [
 const Index = () => {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
-  const token = useSelector(selectToken);
   const [search, setSearch] = useState('');
-
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
 
   const [userData, setUserData] = useState([]);
 
@@ -151,14 +143,14 @@ const Index = () => {
   const filteredUserData =
     userData.length > 0
       ? userData.filter((user: { name: string; email: string }) => {
-          if (!search) {
-            return user;
-          }
-          return (
-            user.name.toLowerCase().includes(search.toLowerCase()) ||
-            user.email.toLowerCase().includes(search.toLowerCase())
-          );
-        })
+        if (!search) {
+          return user;
+        }
+        return (
+          user.name.toLowerCase().includes(search.toLowerCase()) ||
+          user.email.toLowerCase().includes(search.toLowerCase())
+        );
+      })
       : [];
 
   return (
@@ -212,4 +204,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default withAuth(Index);

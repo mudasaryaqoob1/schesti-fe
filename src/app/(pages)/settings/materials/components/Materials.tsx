@@ -3,7 +3,6 @@
 import React, {
   useCallback,
   useEffect,
-  useLayoutEffect,
   useState,
 } from 'react';
 import { Form, Formik } from 'formik';
@@ -19,8 +18,6 @@ import {
   reduxMaterialsData,
   reduxMaterialsLoading,
 } from '@/redux/company/settingSlices/settingSelector';
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
 import { AppDispatch } from '@/redux/store';
 import { fetchMaterials } from '@/redux/company/settingSlices/setting.thunk';
 import { materialService } from '@/app/services/material.service';
@@ -42,13 +39,7 @@ type InitialValuesTypes = {
 const Materials = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const token = useSelector(selectToken);
 
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
 
   const materialsData = useSelector(reduxMaterialsData);
   const materialsLoading = useSelector(reduxMaterialsLoading);

@@ -1,18 +1,17 @@
 'use client';
-import { useEffect, useLayoutEffect, useCallback } from 'react';
+import { useEffect, useCallback } from 'react';
 import { Tabs } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 // module imports
 import { AppDispatch } from '@/redux/store';
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 import { fetchSettingTargets } from '@/redux/company/settingSlices/setting.thunk';
 import SettingSidebar from '../verticleBar';
 import AddSubcategory from './Subcategory/page';
 import AddCategory from './Category/page';
+import { withAuth } from '@/app/hoc/withAuth';
 
 export interface DataType {
   categoryId: string;
@@ -24,13 +23,7 @@ export interface DataType {
 const CategoriesTable = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const token = useSelector(selectToken);
 
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
 
   const fetchSettingTargetsHandler = useCallback(async () => {
     await dispatch(fetchSettingTargets({ page: 1, limit: 10 }));
@@ -61,4 +54,4 @@ const CategoriesTable = () => {
   );
 };
 
-export default CategoriesTable;
+export default withAuth(CategoriesTable);

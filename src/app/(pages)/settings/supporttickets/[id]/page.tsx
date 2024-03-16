@@ -5,7 +5,6 @@ import React, {
   useCallback,
   useEffect,
   useRef,
-  useLayoutEffect,
 } from 'react';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
@@ -24,25 +23,18 @@ import {
   ITicketMessage,
 } from '@/app/interfaces/supportTicket.interface';
 import moment from 'moment';
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
 import SettingSidebar from '../../verticleBar';
 import { byteConverter } from '@/app/utils/byteConverter';
 import { toast } from 'react-toastify';
 import AwsS3 from '@/app/utils/S3Intergration';
+import { withAuth } from '@/app/hoc/withAuth';
 
 const SupportTicketDetails = () => {
   const params = useParams();
   const divRef: any = useRef(null);
   const { id }: any = params;
 
-  const token = useSelector(selectToken);
 
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
 
   const supportTicketData = useSelector(selectSupportTickets);
 
@@ -292,4 +284,4 @@ const SupportTicketDetails = () => {
   );
 };
 
-export default SupportTicketDetails;
+export default withAuth(SupportTicketDetails);

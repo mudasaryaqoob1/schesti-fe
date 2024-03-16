@@ -1,8 +1,8 @@
 'use client';
-import { useEffect, useLayoutEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { ColorPicker, Skeleton } from 'antd';
 import Image from 'next/image';
@@ -18,8 +18,6 @@ import {
   senaryHeading,
 } from '@/globals/tailwindvariables';
 import Button from '@/app/component/customButton/button';
-import { HttpService } from '@/app/services/base.service';
-import { selectToken } from '@/redux/authSlices/auth.selector';
 import SettingSideBar from '@/app/(pages)/settings/verticleBar';
 import { userService } from '@/app/services/user.service';
 import { byteConverter } from '@/app/utils/byteConverter';
@@ -27,6 +25,7 @@ import { AppDispatch } from '@/redux/store';
 import { updateProfileHandler } from '@/redux/authSlices/auth.thunk';
 import { CheckOutlined } from '@ant-design/icons';
 import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
+import { withAuth } from '@/app/hoc/withAuth';
 
 const initialValues: IUpdateCompanyDetail = {
   name: '',
@@ -51,14 +50,7 @@ const generalSettingSchema: any = Yup.object({
   website: Yup.string(),
 });
 const GeneralSetting = () => {
-  const token = useSelector(selectToken);
   const dispatch = useDispatch<AppDispatch>();
-
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
 
   const [userData, setUserData] = useState<IUser | null>(null);
   const [avatarLoading, setavatarLoading] = useState(false);
@@ -332,4 +324,4 @@ const GeneralSetting = () => {
   );
 };
 
-export default GeneralSetting;
+export default withAuth(GeneralSetting);

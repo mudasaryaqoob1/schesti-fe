@@ -3,15 +3,12 @@ import {
   ChangeEvent,
   useCallback,
   useEffect,
-  useLayoutEffect,
   useState,
 } from 'react';
 import ToggleBtn from './components/toggleBtn';
 
 import SinglePlan from './components/plan/plan';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
 import {
   selectPricingPlans,
   selectPricingPlansError,
@@ -38,13 +35,7 @@ const Plans = ({ user }: Props) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   const [autoRenew, setAutoRenew] = useState(true);
 
-  const token = useSelector(selectToken);
 
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
   const plansData = useSelector(selectPricingPlans);
   const isLoading = useSelector(selectPricingPlansLoading);
   const isError = useSelector(selectPricingPlansError);
