@@ -26,6 +26,8 @@ import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interf
 import { DeleteContent } from '@/app/component/delete/DeleteContent';
 import ModalComponent from '@/app/component/modal';
 import { toast } from 'react-toastify';
+import { withAuth } from '@/app/hoc/withAuth';
+import { Routes } from '@/app/utils/plans.utils';
 
 interface DataType {
   firstName: string;
@@ -40,19 +42,19 @@ interface DataType {
 const items: MenuProps['items'] = [
   {
     key: 'createEstimateRequest',
-    label: <a href="#">Create estimate request</a>,
+    label: <p>Create estimate request</p>,
   },
   {
     key: 'createNewInvoice',
-    label: <a href="#">Create new invoice</a>,
+    label: <p>Create new invoice</p>,
   },
   {
     key: 'createSchedule',
-    label: <a href="#">Create Schedule</a>,
+    label: <p>Create Schedule</p>,
   },
   {
     key: 'editClientDetail',
-    label: <a href="#">Edit client details</a>,
+    label: <p>Edit client details</p>,
   },
   {
     key: 'deleteClient',
@@ -92,7 +94,7 @@ const ClientTable = () => {
 
       // await dispatch(deleteCompanyClient(client._id));
     } else if (key == 'editClientDetail') {
-      router.push(`/clients/edit/${client._id}`);
+      router.push(`${Routes.CRM.Clients}/edit/${client._id}`);
     }
   };
 
@@ -156,15 +158,15 @@ const ClientTable = () => {
   ];
   const filteredClients = clientsData
     ? clientsData.filter((client) => {
-        if (!search) {
-          return client;
-        }
-        return (
-          client.firstName.toLowerCase().includes(search.toLowerCase()) ||
-          client.lastName.toLowerCase().includes(search.toLowerCase()) ||
-          client.email?.includes(search)
-        );
-      })
+      if (!search) {
+        return client;
+      }
+      return (
+        client.firstName.toLowerCase().includes(search.toLowerCase()) ||
+        client.lastName.toLowerCase().includes(search.toLowerCase()) ||
+        client.email?.includes(search)
+      );
+    })
     : [];
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
@@ -211,10 +213,10 @@ const ClientTable = () => {
             <Button
               text="Add New client"
               className="!w-48 "
-              icon="plus.svg"
+              icon="/plus.svg"
               iconwidth={20}
               iconheight={20}
-              onClick={() => router.push('/clients/create')}
+              onClick={() => router.push(`${Routes.CRM.Clients}/create`)}
             />
           </div>
         </div>
@@ -229,4 +231,4 @@ const ClientTable = () => {
   );
 };
 
-export default ClientTable;
+export default withAuth(ClientTable);

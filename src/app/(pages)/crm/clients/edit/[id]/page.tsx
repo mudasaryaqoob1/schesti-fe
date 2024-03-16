@@ -25,6 +25,8 @@ import { useQuery } from 'react-query';
 import { Skeleton } from 'antd';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { AxiosError } from 'axios';
+import { withAuth } from '@/app/hoc/withAuth';
+import { Routes } from '@/app/utils/plans.utils';
 
 const newClientSchema = Yup.object({
   firstName: Yup.string().required('First name is required!'),
@@ -97,7 +99,7 @@ const EditClient = () => {
     let result = await userService.httpUpdateClient(updateClientBody, id);
     if (result.statusCode == 200) {
       setIsLoading(false);
-      router.push('/clients');
+      router.push(Routes.CRM.Clients);
     } else {
       setIsLoading(false);
       toast.error(result.message);
@@ -210,7 +212,7 @@ const EditClient = () => {
                     <CustomButton
                       className=" !border-celestialGray !shadow-scenarySubdued2 !text-graphiteGray !bg-snowWhite"
                       text="Cancel"
-                      onClick={() => router.push('/clients')}
+                      onClick={() => router.back()}
                     />
                   </div>
                   <div>
@@ -230,4 +232,4 @@ const EditClient = () => {
   );
 };
 
-export default EditClient;
+export default withAuth(EditClient);

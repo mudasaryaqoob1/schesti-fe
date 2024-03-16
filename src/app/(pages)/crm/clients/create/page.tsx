@@ -21,6 +21,8 @@ import { HttpService } from '@/app/services/base.service';
 // client service
 import { userService } from '@/app/services/user.service';
 import { PhoneNumberRegex } from '@/app/utils/regex.util';
+import { withAuth } from '@/app/hoc/withAuth';
+import { Routes } from '@/app/utils/plans.utils';
 
 const newClientSchema = Yup.object({
   firstName: Yup.string()
@@ -72,7 +74,7 @@ const CreateClient = () => {
       .then((response: any) => {
         if (response.statusCode == 201) {
           setIsLoading(false);
-          router.push('/clients');
+          router.push(Routes.CRM.Clients);
         }
       })
       .catch(({ response }: any) => {
@@ -179,7 +181,7 @@ const CreateClient = () => {
                     <CustomButton
                       className=" !border-celestialGray !shadow-scenarySubdued2 !text-graphiteGray !bg-snowWhite"
                       text="Cancel"
-                      onClick={() => router.push('/clients')}
+                      onClick={() => router.back()}
                     />
                   </div>
                   <div>
@@ -199,4 +201,4 @@ const CreateClient = () => {
   );
 };
 
-export default CreateClient;
+export default withAuth(CreateClient);
