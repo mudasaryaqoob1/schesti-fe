@@ -1,25 +1,80 @@
 'use client';
 import Button from '@/app/component/customButton/button';
+import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
+import { authService } from '@/app/services/auth.service';
 import {
   tertiaryHeading,
   quinaryHeading,
   minHeading,
 } from '@/globals/tailwindvariables';
+import { getLoggedInUserDetails } from '@/redux/authSlices/auth.thunk';
+import { AppDispatch } from '@/redux/store';
+import { AxiosError } from 'axios';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Fragment } from 'react';
+import { useMutation } from 'react-query';
+import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
 import { twMerge } from 'tailwind-merge';
 
-const SinglePlan = (props: IPricingPlan) => {
-  const router = useRouter();
+type Props = {
+  user?: IUser;
+} & IPricingPlan;
 
-  const { planName, price, planDescription, features, duration } = props;
+const SinglePlan = (props: Props) => {
+  const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+
+  const { planName, price, planDescription, features, duration, _id } = props;
 
   const pricingPackageSelectionHandler = () => {
     localStorage.setItem('pricingPlan', JSON.stringify(props));
     router.push(`/payment`);
   };
+
+  const stripeUpgradeMutation = useMutation(
+    ['upgradePlan'],
+    async (planId: string) => {
+      return authService.httpUpgradeStripeMutation({ planId });
+    },
+    {
+      onSuccess(data) {
+        if (data.statusCode >= 400) {
+          toast.error(data.message);
+          return;
+        }
+        toast.success('Plan upgraded successfully');
+        dispatch(getLoggedInUserDetails({}));
+      },
+      onError(error) {
+        const err = error as AxiosError<{ message: string }>;
+        toast.error(err.response?.data?.message || err.message);
+      },
+    }
+  );
+
+  const BTN =
+    props.user && props.user.planId ? (
+      <Button
+        text={props.user.planId === _id ? 'Current Plan' : 'Upgrade'}
+        className="text-white self-stretch w-full"
+        onClick={() => {
+          if (_id && props.user?.planId !== _id) {
+            stripeUpgradeMutation.mutate(_id);
+          }
+        }}
+        isLoading={stripeUpgradeMutation.isLoading}
+      />
+    ) : (
+      <Button
+        text={'Buy'}
+        className="text-white self-stretch w-full"
+        onClick={pricingPackageSelectionHandler}
+      />
+    );
+
   return (
     <div
       className={`p-8 rounded-[20px] items-center flex flex-col justify-between shadow-secondaryShadow gap-5`}
@@ -67,13 +122,7 @@ const SinglePlan = (props: IPricingPlan) => {
           ))}
         </div>
       </div>
-      <div className="w-full">
-        <Button
-          text="Buy"
-          className="text-white self-stretch w-full"
-          onClick={pricingPackageSelectionHandler}
-        />
-      </div>
+      <div className="w-full">{BTN}</div>
     </div>
   );
 };

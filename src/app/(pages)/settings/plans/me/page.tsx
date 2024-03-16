@@ -1,6 +1,7 @@
 'use client';
 // import Button from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
+import { IStripeBaseSubscription } from '@/app/interfaces/stripe.interface';
 import { userService } from '@/app/services/user.service';
 // import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
 import {
@@ -8,6 +9,7 @@ import {
   quinaryHeading,
   minHeading,
 } from '@/globals/tailwindvariables';
+import moment from 'moment';
 import Image from 'next/image';
 // import { useRouter } from 'next/navigation';
 import { Fragment, useCallback, useEffect, useState } from 'react';
@@ -16,21 +18,28 @@ import { twMerge } from 'tailwind-merge';
 // interface Props extends IPricingPlan {
 //   isYearly: boolean;
 // }
+
 const MySubscription = () => {
   // const router = useRouter();
 
   const [userData, setUserData] = useState<any>({});
+  const [subscription, setSubscription] =
+    useState<IStripeBaseSubscription | null>(null);
   const getUserDetail = useCallback(async () => {
     let { data } = await userService.httpGetCompanyDetail();
     setUserData(data.user.planId);
+    setSubscription(data.subscription);
   }, []);
 
   useEffect(() => {
     getUserDetail();
-  }, [getUserDetail]);
+  }, []);
 
   let features = 'CRM,Takeoff Module,Construction Estimate Module';
 
+  const remainingDays = subscription
+    ? moment.unix(subscription.current_period_end).diff(moment(), 'days')
+    : null;
   return (
     <>
       <TertiaryHeading title="My Subscriptions" className="text-graphiteGray" />
@@ -54,6 +63,11 @@ const MySubscription = () => {
             <div className="relative w-full">
               <div className="h-3 w-1/2 absolute rounded-lg z-10 bg-goldenrodYellow" />
               <div className="h-3 w-full absolute rounded-lg bg-slate-200" />
+            </div>
+            <div className="flex justify-end w-full">
+              {remainingDays ? (
+                <p className="font-semibold text-[14px]  text-[#EC2224]">{`Expires in ${remainingDays} day${remainingDays !== 1 ? 's' : ''}`}</p>
+              ) : null}
             </div>
 
             {/* <p className="text-end text-vividRed font-semibold w-full">

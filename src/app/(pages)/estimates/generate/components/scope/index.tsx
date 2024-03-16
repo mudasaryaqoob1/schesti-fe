@@ -28,6 +28,7 @@ import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { estimateRequestService } from '@/app/services/estimates.service';
 import { generateEstimateDetailAction } from '@/redux/estimate/estimateRequest.slice';
 import { selectGeneratedEstimateDetail } from '@/redux/estimate/estimateRequestSelector';
+import { PositiveNumberRegex } from '@/app/utils/regex.util';
 
 type InitialValuesType = {
   category: string;
@@ -45,15 +46,25 @@ type InitialValuesType = {
 
 const validationSchema = Yup.object({
   category: Yup.string().required('Category is required!'),
-  subCategory: Yup.string().required('SubCategory is required!'),
+  subCategory: Yup.string().required('SubCategory is required'),
   description: Yup.string().required('Description is required!'),
   unit: Yup.string().required('Unit is required!'),
-  qty: Yup.string().required('Quantity is required'),
-  wastage: Yup.string().required('Wastage is required!'),
-  unitLabourHour: Yup.string().required('Unit labour hour is required!'),
-  perHourLaborRate: Yup.string().required('Per hour labour rate  is required!'),
-  unitMaterialCost: Yup.string().required('Unit material cost is required!'),
-  unitEquipments: Yup.string().required('Unit equipments is required!'),
+  qty: Yup.string()
+    .matches(PositiveNumberRegex, 'qty must be a positive number')
+    .required('Quantity is required'),
+  wastage: Yup.string().required('Wastage is required'),
+  unitLabourHour: Yup.string()
+    .matches(PositiveNumberRegex, 'Unit labour hour must be a positive number')
+    .required('Unit labour hour is required'),
+  perHourLaborRate: Yup.string()
+    .matches(PositiveNumberRegex, 'Per hour labour rate must be a positive number')
+    .required('Per hour labour rate  is required!'),
+  unitMaterialCost: Yup.string()
+    .matches(PositiveNumberRegex, 'Unit material cost must be a positive number')
+    .required('Unit material cost is required!'),
+  unitEquipments: Yup.string()
+    .matches(PositiveNumberRegex, 'Unit equipments must be a positive number')
+    .required('Unit equipments is required!'),
 });
 
 interface Props {

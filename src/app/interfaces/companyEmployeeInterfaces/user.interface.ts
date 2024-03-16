@@ -7,4 +7,6 @@ export interface IUser {
   avatar?: string;
   brandingColor: string;
   roles: '';
+  planId?: string;
+  isPaymentConfirmed?: boolean;
 }

@@ -100,7 +100,7 @@ export function Contractors() {
   const columns: ColumnsType<IInvoice> = [
     {
       title: 'Invoice Number',
-      dataIndex: 'projectName',
+      dataIndex: 'invoiceNumber',
       width: 300,
       filterSearch: true,
     },

@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useRouter, useParams } from 'next/navigation';
@@ -20,7 +20,11 @@ import { HttpService } from '@/app/services/base.service';
 
 // client service
 import { userService } from '@/app/services/user.service';
-import { selectClients } from '@/redux/company/companySelector';
+import { PhoneNumberRegex } from '@/app/utils/regex.util';
+import { useQuery } from 'react-query';
+import { Skeleton } from 'antd';
+import { IResponseInterface } from '@/app/interfaces/api-response.interface';
+import { AxiosError } from 'axios';
 
 const newClientSchema = Yup.object({
   firstName: Yup.string().required('First name is required!'),
@@ -28,7 +32,8 @@ const newClientSchema = Yup.object({
   email: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
-    phone: Yup.string()
+  phone: Yup.string()
+    .matches(PhoneNumberRegex, 'Phone number must contain numbers')
     .min(7, 'Phone number must be at least 7 characters')
     .max(12, 'Phone number must be at most 12 characters')
     .required('Phone number is required'),
@@ -50,9 +55,8 @@ const EditClient = () => {
   const router = useRouter();
   const params = useParams();
   const token = useSelector(selectToken);
-  const clientsData = useSelector(selectClients);
 
-  const { id } = params;
+  const { id } = params as { id: string };
 
   useLayoutEffect(() => {
     if (token) {
@@ -61,11 +65,24 @@ const EditClient = () => {
   }, [token]);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [clientData, setclientData] = useState(null);
 
-  useEffect(() => {
-    setclientData(clientsData.find((item: any) => item._id === id));
-  }, [id, clientsData]);
+  const clientQuery = useQuery<
+    IResponseInterface<{ client: IClient }> | null,
+    AxiosError<{ message: string }>
+  >(
+    ['get-company-client', id],
+    () => {
+      if (!id) {
+        return null;
+      }
+      return userService.httpFindCompanyClient(id);
+    },
+    {
+      onError(err) {
+        toast.error(err.response?.data.message);
+      },
+    }
+  );
 
   const submitHandler = async (values: IClient) => {
     setIsLoading(true);
@@ -87,7 +104,12 @@ const EditClient = () => {
     }
   };
 
-  console.log(clientData, 'clientData');
+  if (clientQuery.isLoading) {
+    return <Skeleton />;
+  }
+
+  const clientData = clientQuery.data?.data?.client;
+  console.log({ clientData });
 
   return (
     <section className="mx-16">
@@ -147,7 +169,7 @@ const EditClient = () => {
                   <FormControl
                     control="input"
                     label="Phone Number"
-                    type="number"
+                    type="text"
                     name="phone"
                     placeholder="Phone number"
                   />
@@ -179,7 +201,7 @@ const EditClient = () => {
                     control="input"
                     label="Address 2"
                     type="text"
-                    name="address2"
+                    name="secondAddress"
                     placeholder="Address 2"
                   />
                 </div>

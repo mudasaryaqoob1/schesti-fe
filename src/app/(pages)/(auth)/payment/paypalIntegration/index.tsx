@@ -1,30 +1,36 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 
 // module imports
 import { authService } from '@/app/services/auth.service';
-import { IPaymentProps } from '@/app/interfaces/authInterfaces/payment.interface';
+import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
 
 interface IInitialOotions {
   clientId: any;
+  currency: string;
+  intent: string;
 }
 
 let initialOptions: IInitialOotions = {
   clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID,
+  currency: 'USD',
+  intent: 'capture',
 };
-
-const PaypalIntegration = () => {
+type Props = {
+  selectedPlan: IPricingPlan;
+};
+const PaypalIntegration = ({ selectedPlan }: Props) => {
   const router = useRouter();
 
-  const [product] = useState<IPaymentProps>({
-    planID: 'Go FullStack with KnowledgeHut',
-    autoRenew: true,
-  });
-
   const createOrder = async () => {
-    const response: any = await authService.httpPaypalCreateOrder(product);
+    const response: any = await authService.httpPaypalCreateOrder({
+      autoRenew: false,
+      planID: selectedPlan._id,
+      name: selectedPlan.planName,
+      price: selectedPlan.price,
+    });
     return response.data.data.id;
   };
 

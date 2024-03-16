@@ -55,7 +55,7 @@ const Login = () => {
         result.payload.data.user.roles.includes('Company') &&
         result.payload.data.user?.isPaymentConfirm
       ) {
-        router.push('/clients');
+        router.push('/dashboard');
       } else if (
         result.payload.data.user.roles.includes('Company') &&
         !result.payload.data.user?.isPaymentConfirm
