@@ -10,7 +10,7 @@ import CustomModal from '@/app/component/modal';
 import { categoriesService } from '@/app/services/categories.service';
 import CustomButton from '@/app/component/customButton/button';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import { byteConverter } from '@/app/utils/byteConverter';
+// import { byteConverter } from '@/app/utils/byteConverter';
 import { materialService } from '@/app/services/material.service';
 import { AxiosError } from 'axios';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
@@ -88,11 +88,11 @@ const ImportMaterialModal = ({
 
     let file: any = values.file;
 
-    if (byteConverter(file.size, 'MB').size > 10) {
-      setIsLoading(false);
-      toast.warning('Cannot upload document more then 10 mb of size.');
-      return;
-    }
+    // if (byteConverter(file.size, 'MB').size > 10) {
+    //   setIsLoading(false);
+    //   toast.warning('Cannot upload document more then 10 mb of size.');
+    //   return;
+    // }
 
     try {
       const formData = new FormData();
@@ -105,16 +105,21 @@ const ImportMaterialModal = ({
         setMaterialModal(false);
         fetchMaterialsData();
       }
-    } catch (error) {
-      const err = error as AxiosError<IResponseInterface>;
-      if (err.response!.status >= 400) {
-        toast.error(
-          (err.response?.data?.data as string).includes('Array contains ')
-            ? 'Something went wrong. Try another file.'
-            : 'Something went wrong. Try again later.'
-        );
-      }
       setIsLoading(false);
+    } catch (error) {
+      
+      setIsLoading(false);
+      const err : any = error as AxiosError<IResponseInterface>;
+
+      if (err.response?.status == 400) {
+        // toast.error(
+        //   (err.response?.data?.data as string).includes('Array contains ')
+        //     ? 'Something went wrong. Try another file.'
+        //     : 'Something went wrong. Try again later.'
+        // );
+        toast.error('Something went wrong. Try another file')
+      }
+      
     }
   };
   return (

@@ -45,26 +45,16 @@ type InitialValuesType = {
 };
 
 const validationSchema = Yup.object({
-  category: Yup.string().required('category name is required!'),
-  subCategory: Yup.string().required('subCategory name is required!'),
-  description: Yup.string().required('description name is required!'),
-  unit: Yup.string().required('unit name is required!'),
-  qty: Yup.string()
-    .matches(PositiveNumberRegex, 'qty must be a positive number')
-    .required('qty name is required!'),
-  wastage: Yup.string().required('wastage name is required!'),
-  unitLabourHour: Yup.string()
-    .matches(PositiveNumberRegex, 'unitLabourHour must be a positive number')
-    .required('unitLaborHours name is required!'),
-  perHourLaborRate: Yup.string()
-    .matches(PositiveNumberRegex, 'perHourLaborRate must be a positive number')
-    .required('perHourLaborRate name is required!'),
-  unitMaterialCost: Yup.string()
-    .matches(PositiveNumberRegex, 'unitMaterialCost must be a positive number')
-    .required('unitMaterialCost name is required!'),
-  unitEquipments: Yup.string()
-    .matches(PositiveNumberRegex, 'unitEquipmentCost must be a positive number')
-    .required('unitEquipmentCost name is required!'),
+  category: Yup.string().required('Category is required!'),
+  subCategory: Yup.string().required('SubCategory is required!'),
+  description: Yup.string().required('Description is required!'),
+  unit: Yup.string().required('Unit is required!'),
+  qty: Yup.string().required('Quantity is required'),
+  wastage: Yup.string().required('Wastage is required!'),
+  unitLabourHour: Yup.string().required('Unit labour hour is required!'),
+  perHourLaborRate: Yup.string().required('Per hour labour rate  is required!'),
+  unitMaterialCost: Yup.string().required('Unit material cost is required!'),
+  unitEquipments: Yup.string().required('Unit equipments is required!'),
 });
 
 interface Props {
@@ -190,7 +180,6 @@ const Scope = ({ setPrevNext }: Props) => {
           let uniqueUnitsSet = new Set();
           let fetchedDescriptions = result.data
             .map((material: DataType) => {
-              console.log(material, 'materialmaterial');
 
               const description = material.description;
 
@@ -552,6 +541,9 @@ const Scope = ({ setPrevNext }: Props) => {
       dataIndex: 'perHourLaborRate',
       align: 'center',
       width: 120,
+      render: (value: number) => {
+        return `$${value}`
+      },
     },
     {
       title: 'Total Labor Cost',
@@ -566,7 +558,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let perHourLaborRate = parseFloat(record.perHourLaborRate);
         let totalLabourHours = quantityWithWastage * unitLabourHour;
         let result = totalLabourHours * perHourLaborRate;
-        return result.toFixed(2);
+        return `$${result.toFixed(2)}`;
       },
     },
     {
@@ -574,9 +566,12 @@ const Scope = ({ setPrevNext }: Props) => {
       dataIndex: 'unitMaterialCost',
       align: 'center',
       width: 120,
+      render: (value: number) => {
+        return `$${value}`
+      },
     },
     {
-      title: 'Total Material Cost',
+      title: 'Total Material Cost $',
       dataIndex: 'totalMaterialCost',
       align: 'center',
       width: 120,
@@ -586,7 +581,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let wastagePercentage = parseFloat(record.wastage);
         let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = unitMaterialCost * quantityWithWastage;
-        return result.toFixed(2);
+        return `$${result.toFixed(2)}`;
       },
     },
     {
@@ -600,7 +595,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let wastagePercentage = parseFloat(record.wastage);
         let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = unitEquipments * quantityWithWastage;
-        return result.toFixed(2);
+        return `$${result.toFixed(2)}`;
       },
     },
     {
@@ -610,7 +605,7 @@ const Scope = ({ setPrevNext }: Props) => {
       width: 150,
       render: (text: string, record: DataType) => {
         let result = calculateTotalCost(record);
-        return result;
+        return `$${result}`;
       },
     },
 
@@ -700,6 +695,9 @@ const Scope = ({ setPrevNext }: Props) => {
       dataIndex: 'perHourLaborRate',
       align: 'center',
       width: 120,
+      render: (value: number) => {
+        return `$${value}`
+      },
     },
     {
       title: 'Total Labor Cost',
@@ -714,7 +712,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let perHourLaborRate = parseFloat(record.perHourLaborRate);
         let totalLabourHours = quantityWithWastage * unitLabourHour;
         let result = totalLabourHours * perHourLaborRate;
-        return result.toFixed(2);
+        return `$${result.toFixed(2)}`;
       },
     },
     {
@@ -722,6 +720,9 @@ const Scope = ({ setPrevNext }: Props) => {
       dataIndex: 'unitMaterialCost',
       align: 'center',
       width: 120,
+      render: (value: number) => {
+        return `$${value}`
+      },
     },
     {
       title: 'Total Material Cost',
@@ -734,7 +735,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let wastagePercentage = parseFloat(record.wastage);
         let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = unitMaterialCost * quantityWithWastage;
-        return result.toFixed(2);
+        return `$${result.toFixed(2)}`;
       },
     },
     {
@@ -748,7 +749,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let wastagePercentage = parseFloat(record.wastage);
         let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = unitEquipments * quantityWithWastage;
-        return result.toFixed(2);
+        return `$${result.toFixed(2)}`;
       },
     },
     {
@@ -758,7 +759,7 @@ const Scope = ({ setPrevNext }: Props) => {
       width: 150,
       render: (text: string, record: DataType) => {
         let result = calculateTotalCost(record);
-        return result;
+        return `$${result}`;
       },
     },
 
@@ -829,9 +830,9 @@ const Scope = ({ setPrevNext }: Props) => {
       let modifyArray = confirmEstimates.map((item, i) =>
         i === index
           ? {
-              ...item,
-              scopeItems: [...item.scopeItems, ...dataSource.scopeItems],
-            }
+            ...item,
+            scopeItems: [...item.scopeItems, ...dataSource.scopeItems],
+          }
           : item
       );
       setConfirmEstimates(modifyArray);
@@ -867,7 +868,7 @@ const Scope = ({ setPrevNext }: Props) => {
         {estimateDetail?.drawingsDocuments?.length && (
           <div className="grid grid-rows-1 md:grid-cols-3 gap-x-2">
             {estimateDetail?.drawingsDocuments?.length &&
-            estimateDetail?.drawingsDocuments[0]?.ext === 'image/png' ? (
+              estimateDetail?.drawingsDocuments[0]?.ext === 'image/png' ? (
               <CustomButton
                 text="View Plans"
                 className="!text-graphiteGray !bg-snowWhite !shadow-scenarySubdued 
@@ -1076,34 +1077,34 @@ const Scope = ({ setPrevNext }: Props) => {
               <div>
                 {confirmEstimates.length
                   ? confirmEstimates.map((estimate) => (
-                      <div
-                        key={estimate.title}
-                        className={`${bg_style} p-5 mt-3`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <QuaternaryHeading
-                              title={estimate.categoryName}
-                              className="font-semibold"
-                            />
-                            <QuaternaryHeading
-                              title={estimate.subCategoryName}
-                              className="!font=[#344054] font-light"
-                            />
-                          </div>
-                        </div>
-                        <div className="estimateTable_container">
-                          <Table
-                            className="mt-2"
-                            loading={false}
-                            columns={confirmColumns}
-                            dataSource={estimate.scopeItems as DataType[]}
-                            pagination={false}
-                            scroll={{ x: 1000 }}
+                    <div
+                      key={estimate.title}
+                      className={`${bg_style} p-5 mt-3`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <QuaternaryHeading
+                            title={estimate.categoryName}
+                            className="font-semibold"
+                          />
+                          <QuaternaryHeading
+                            title={estimate.subCategoryName}
+                            className="!font=[#344054] font-light"
                           />
                         </div>
                       </div>
-                    ))
+                      <div className="estimateTable_container">
+                        <Table
+                          className="mt-2"
+                          loading={false}
+                          columns={confirmColumns}
+                          dataSource={estimate.scopeItems as DataType[]}
+                          pagination={false}
+                          scroll={{ x: 1000 }}
+                        />
+                      </div>
+                    </div>
+                  ))
                   : null}
               </div>
             </>

@@ -152,7 +152,18 @@ const Summary = ({ setPrevNext }: Props) => {
   const generateBidHandler = async () => {
     setIsLoading(true);
     let obj = {
-      totalBidDetail: { materialTax: totalMaterialBaseCost },
+      totalBidDetail: {
+        materialTax: totalMaterialBaseCost,
+        overheadAndProfit: (
+          calculatePercentqge(subTotalcostRecord, overHeadProfitPercentage) +
+          calculatePercentqge(totalMaterialBaseCost, materialPercentage)
+        ).toFixed(2),
+        bondFee: (
+          calculatePercentqge(subTotalcostRecord, bondFeePercentage) +
+          calculatePercentqge(totalMaterialBaseCost, materialPercentage) +
+          calculatePercentqge(subTotalcostRecord, overHeadProfitPercentage)
+        ).toFixed(2),
+      },
       totalCost: totalCostRecord,
       estimateRequestIdDetail: estimateId,
       estimateScope: generateEstimateDetail.estimateScope,
@@ -429,7 +440,7 @@ const Summary = ({ setPrevNext }: Props) => {
               />
               <InputComponent
                 suffix={<PercentageOutlined />}
-                prefix={<p>$</p>}
+                // prefix={<p>$</p>}
                 label=""
                 type="number"
                 name="materialTax"
@@ -457,13 +468,13 @@ const Summary = ({ setPrevNext }: Props) => {
               />
               <InputComponent
                 suffix={<PercentageOutlined />}
-                prefix={<p>$</p>}
+                // prefix={<p>$</p>}
                 label=""
                 type="number"
                 name="overheadAndProfit"
                 placeholder="Enter Overhead & Profit"
                 field={{
-                  value: 5,
+                  value: overHeadProfitPercentage.toString(),
                   onChange: (e) => setOverHeadProfitPercentage(e.target.value),
                 }}
               />
@@ -486,7 +497,7 @@ const Summary = ({ setPrevNext }: Props) => {
               />
               <InputComponent
                 suffix={<PercentageOutlined />}
-                prefix={<p>$</p>}
+                // prefix={<p>$</p>}
                 label=""
                 type="number"
                 name="bondFee"

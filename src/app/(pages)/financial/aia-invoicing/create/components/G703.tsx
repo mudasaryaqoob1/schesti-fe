@@ -92,12 +92,7 @@ export function G703Component({
       <div className="flex justify-between">
         <div>
           <QuaternaryHeading
-            title={`AIA Document G702, APPLICATION AND CERTIFICATION FOR PAYMENT, containing
-                                        Contractor's signed certification is attached.
-
-                                        In tabulations below, amounts are stated to the nearest dollar.
-
-                                        Use Column I on Contracts where variable retainage for line items may apply.`}
+            title={`AIA Document G702, APPLICATION AND CERTIFICATION FOR PAYMENT, containing Contractor's signed certification is attached. In tabulations below, amounts are stated to the nearest dollar. Use Column I on Contracts where variable retainage for line items may apply.`}
             className="max-w-2xl"
           />
         </div>
@@ -132,6 +127,8 @@ export function G703Component({
                 onChange={(_d, dateString) =>
                   handleState('applicationDate', dateString as string)
                 }
+                //@ts-ignore 
+                //@ts-nocheck
                 disabledDate={disabledDate}
               />
               {showAddAndDelete ? (
@@ -152,6 +149,8 @@ export function G703Component({
                 onChange={(_d, dateString) =>
                   handleState('periodTo', dateString as string)
                 }
+                 //@ts-ignore 
+                //@ts-nocheck
                 disabledDate={disabledDate}
               />
               {showAddAndDelete ? (

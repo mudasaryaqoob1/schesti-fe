@@ -35,8 +35,8 @@ const newClientSchema = Yup.object({
     .required('Email is required!')
     .email('Email should be valid'),
   subContractorPhoneNumber: Yup.string()
-    .min(11, 'Phone number must be at least 11 characters')
-    .max(14, 'Phone number must be at most 14 characters')
+    .min(7, 'Phone number must be at least 7 characters')
+    .max(12, 'Phone number must be at most 12 characters')
     .required('Phone number is required'),
   subContractorCompanyName: Yup.string().required('Company name is required!'),
   subContractorAddress: Yup.string().required('Address is required!'),
@@ -58,9 +58,9 @@ const newClientSchema = Yup.object({
         .required('Invoice detail is required')
     )
     .required('Invoice detail is required'),
-  discount: Yup.number().required('Discount is required!'),
-  taxes: Yup.number().required('Taxes is required!'),
-  profitAndOverhead: Yup.number().required('Profit and overhead is required!'),
+  // discount: Yup.number().required('Discount is required!'),
+  // taxes: Yup.number().required('Taxes is required!'),
+  // profitAndOverhead: Yup.number().required('Profit and overhead is required!'),
 });
 const initialValues = {
   applicationNumber: '',
@@ -78,7 +78,7 @@ const initialValues = {
   subContractorEmail: '',
   subContractorFirstName: '',
   subContractorLastName: '',
-  subContractorPhoneNumber: 0,
+  subContractorPhoneNumber: '',
   taxes: 0,
 };
 
@@ -202,13 +202,25 @@ const CreateInvoice = () => {
     profitAndOverhead: number,
     discount: number
   ) {
+    console.log(taxes , profitAndOverhead , discount);
+    
     return (
       calculateSubTotal() +
       taxes -
       discount +
-      calculateSubTotal() * (profitAndOverhead / 100)
+      profitAndOverhead
+
+      // discount + profitAndOverhead - taxes 
     );
   }
+  const calculatePercentqge = (
+    value: number | string,
+    percentage: number | string
+  ) => {
+    value = Number(value);
+    percentage = Number(percentage);
+    return (percentage * value) / 100;
+  };
 
   function submitHandler(values: any) {
     setIsLoading(true);
@@ -244,6 +256,8 @@ const CreateInvoice = () => {
       });
   }
 
+
+  console.log(calculatePercentqge(calculateSubTotal() , 4))
   return (
     <section className="mx-16 my-2">
       <Formik
@@ -540,20 +554,20 @@ const CreateInvoice = () => {
                       <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-1 gap-4 mt-3">
                         <FormControl
                           control="input"
-                          label="Discount"
+                          label="Discount %"
                           type="number"
                           name="discount"
-                          prefix="%"
+                          // suffix="%"
                           placeholder="Enter discount here"
                           min={0}
                         />
 
                         <FormControl
                           control="input"
-                          label="Taxes"
+                          label="Taxes %"
                           type="number"
                           name="taxes"
-                          prefix="%"
+                          // suffix="%"
                           min={0}
                           placeholder="Enter taxes here"
                         />
@@ -564,7 +578,7 @@ const CreateInvoice = () => {
                           type="number"
                           name="profitAndOverhead"
                           min={0}
-                          prefix="%"
+                          // suffix="%"
                           placeholder="Enter profit and overhead here"
                         />
                       </div>
@@ -588,7 +602,7 @@ const CreateInvoice = () => {
                   <div className="flex items-center space-x-2">
                     <QuaternaryHeading title="Discount:" />
                     <QuinaryHeading
-                      title={`%${values['discount']}`}
+                      title={`%${calculatePercentqge(calculateSubTotal() , values['discount'])}`}
                       className="font-bold"
                     />
                   </div>
@@ -596,7 +610,7 @@ const CreateInvoice = () => {
                   <div className="flex items-center space-x-2">
                     <QuaternaryHeading title="Taxes:" />
                     <QuinaryHeading
-                      title={`%${values['taxes']}`}
+                      title={`%${ calculatePercentqge(calculateSubTotal() , values['taxes'])}`}
                       className="font-bold"
                     />
                   </div>
@@ -604,7 +618,7 @@ const CreateInvoice = () => {
                   <div className="flex items-center space-x-2">
                     <QuaternaryHeading title="Profit And Overhead:" />
                     <QuinaryHeading
-                      title={`%${values['profitAndOverhead']}`}
+                      title={`%${calculatePercentqge(calculateSubTotal() , values['profitAndOverhead'])}`}
                       className="font-bold"
                     />
                   </div>
@@ -612,11 +626,11 @@ const CreateInvoice = () => {
                   <div className="flex items-center space-x-2">
                     <QuaternaryHeading title="Total:" />
                     <QuinaryHeading
-                      title={`$${calculateTotalPayable(
-                        values['taxes'],
-                        Number(values['profitAndOverhead']),
-                        values['discount']
-                      )}`}
+                      title={`$${(calculateTotalPayable(
+                        calculatePercentqge(calculateSubTotal() , values['taxes']),
+                        calculatePercentqge(calculateSubTotal() , values['profitAndOverhead']),
+                        calculatePercentqge(calculateSubTotal() , values['discount'])
+                      )).toFixed(2)}`}
                       className="font-bold"
                     />
                   </div>
