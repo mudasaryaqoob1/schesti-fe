@@ -17,7 +17,7 @@ type PropsBtn = {
   type?: 'button' | 'submit' | 'reset' | undefined;
   className?: string;
   isLoading?: Boolean | any;
-  onClick?: voidFc;
+  onClick?: voidFc | any;
   icon?: string;
   disabled?: boolean;
   iconwidth?: number;
