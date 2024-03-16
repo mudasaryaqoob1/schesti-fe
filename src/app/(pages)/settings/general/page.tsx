@@ -47,6 +47,8 @@ const generalSettingSchema: any = Yup.object({
   industry: Yup.string().required('Industry  is required!'),
   employee: Yup.number().min(1).required('Employee is required!'),
   avatar: Yup.string().required('Avatar is required!'),
+  phone: Yup.string(),
+  website: Yup.string(),
 });
 const GeneralSetting = () => {
   const token = useSelector(selectToken);
@@ -135,7 +137,7 @@ const GeneralSetting = () => {
             onSubmit={submitHandler}
           >
             {({ handleSubmit, errors, setFieldValue, values }) => {
-              console.log(values);
+              console.log(errors);
               return (
                 <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
                   <div
@@ -197,9 +199,8 @@ const GeneralSetting = () => {
                   {/* Upload Image Div */}
                   <div className={`${bg_style} grid grid-cols-12 p-5 mt-4 `}>
                     <div
-                      className={`px-6 py-4 col-span-8 flex flex-col items-center gap-3 ${
-                        errors.avatar ? 'border-rose-600' : ''
-                      }  ${bg_style}`}
+                      className={`px-6 py-4 col-span-8 flex flex-col items-center gap-3 ${errors.avatar ? 'border-red-600' : ''
+                        }  ${bg_style}`}
                     >
                       {userData.avatar ? (
                         <Image

@@ -72,7 +72,6 @@ const Tabs = () => {
   // });
 
   const userPlanFeatures = userPlan ? userPlan.features.split(',') : [];
-  console.log({ userPlanFeatures });
 
   return (
     <div className="md:flex block justify-between bg-[#F0E9FD] items-center px-16 xl:h-[67px] shadow-quinaryGentle">
@@ -122,7 +121,7 @@ const Tabs = () => {
                          cursor-pointer
                         `,
                         pathname.includes('/bid'.split('/')[1]) &&
-                          tabsStyle.active
+                        tabsStyle.active
                       )
                     )}
                   >

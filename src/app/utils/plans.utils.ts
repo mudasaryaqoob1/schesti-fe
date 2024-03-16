@@ -26,6 +26,20 @@ export const Routes = {
   Meetings: '/meeting',
   Networking: '/networking',
 };
+
+export const OtherRoutes = {
+  "Settings": {
+    "General": "/settings/general",
+    "Plans": "/settings/plans",
+    "Category Setup": "/settings/CategorySetup",
+    "User Managements": "/settings/companyUser",
+    "Materials": "/settings/materials",
+    "Target": "/settings/target",
+    "Support Tickets": "/settings/supporttickets",
+  },
+  "Upgrades": "/upgradeplans"
+}
+
 export const planFeatureOptions = [
   {
     title: 'Bid Management',

@@ -28,7 +28,6 @@ import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { estimateRequestService } from '@/app/services/estimates.service';
 import { generateEstimateDetailAction } from '@/redux/estimate/estimateRequest.slice';
 import { selectGeneratedEstimateDetail } from '@/redux/estimate/estimateRequestSelector';
-import { PositiveNumberRegex } from '@/app/utils/regex.util';
 
 type InitialValuesType = {
   category: string;

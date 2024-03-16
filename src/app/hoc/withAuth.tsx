@@ -16,6 +16,7 @@ import { IUser } from '../interfaces/companyEmployeeInterfaces/user.interface';
 import { NotAuthorized } from '../component/NotAuthorized';
 import { Skeleton } from 'antd';
 import _ from 'lodash';
+import { OtherRoutes } from '../utils/plans.utils';
 
 export const withAuth = (
   WrappedComponent: React.FunctionComponent,
@@ -88,8 +89,11 @@ export const withAuth = (
 
   return WrappedComponentWithAuth;
 };
-
+function getAllRoutes(routes = OtherRoutes): string[] {
+  return Object.values(routes).flatMap(route => typeof route === 'string' ? [route] : Object.values(route));
+}
 function canAccessRoute(pathname: string, userFeatures: string[]) {
-  const result = userFeatures.some((route) => pathname.includes(route));
+  const allRoutes = getAllRoutes().concat(userFeatures);
+  const result = allRoutes.some((route) => pathname.includes(route));
   return result;
 }
