@@ -38,7 +38,7 @@ const TargetsTable = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedTarget, setSelectedTarget] = useState<
-    undefined | ISettingTarget
+    undefined | Omit<ISettingTarget, 'year'>
   >();
 
   const token = useSelector(selectToken);
@@ -59,7 +59,6 @@ const TargetsTable = () => {
   useEffect(() => {
     fetchSettingTargetsHandler();
   }, []);
-
   const columns: ColumnsType<DataType> = [
     {
       title: 'Month',
@@ -69,6 +68,9 @@ const TargetsTable = () => {
       title: 'Target Price',
       dataIndex: 'price',
       ellipsis: true,
+      render(value) {
+        return `$${value}`;
+      },
     },
 
     {
@@ -111,7 +113,10 @@ const TargetsTable = () => {
         open={showCreateModal}
         setOpen={setShowCreateModal}
       >
-        <CreateTaget setShowModal={setShowCreateModal} />
+        <CreateTaget
+          setShowModal={setShowCreateModal}
+          settingTargetsData={settingTargetsData}
+        />
       </ModalComponent>
       <ModalComponent
         width="380px"
@@ -123,6 +128,7 @@ const TargetsTable = () => {
         <EditTaget
           setShowModal={setShowEditModal}
           selectedTarget={selectedTarget}
+          settingTargetsData={settingTargetsData}
         />
       </ModalComponent>
       <section>

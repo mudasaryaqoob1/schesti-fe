@@ -43,17 +43,18 @@ const Payment = () => {
   }, []);
 
   const stripePaymentHandler = async () => {
-    const stripe: any = await loadStripe(
-      process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!
-    );
+    const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!);
+    if (!stripe) {
+      return;
+    }
     const response: any = await authService.httpStripeCheckout({
       planID: selectedPLan?._id,
       autoRenew: autoRenew,
     });
-    const result = stripe.redirectToCheckout({
+    const result = await stripe.redirectToCheckout({
       sessionId: response.data.id,
     });
-
+    console.log({ stripeResult: result });
     if (result.error) {
       toast.error('Something went wrong');
     }
@@ -145,7 +146,9 @@ const Payment = () => {
                   />
                 </div>
                 <div className="h-52 grid place-items-center w-full shadow-md   rounded-s">
-                  <PaypalInteration />
+                  {selectedPLan ? (
+                    <PaypalInteration selectedPlan={selectedPLan} />
+                  ) : null}
 
                   {/* <Image
                 src={'/paypal.svg'}

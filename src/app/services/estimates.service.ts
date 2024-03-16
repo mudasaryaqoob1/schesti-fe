@@ -47,6 +47,10 @@ class EstimateRequestsService extends HttpService {
       `${this.prefix}/getGeneratedEstimates?page=${page}&limit=${limit}`
     );
 
+  httpGetAllGeneratedEstimatesWithoutLimit = (): Promise<
+    IResponseInterface<{ generatedEstimates: IEstimateRequest[] }>
+  > => this.get(`${this.prefix}/getGeneratedEstimates`);
+
   httpDeleteGeneratedEstimate = (
     estimateId: string
   ): Promise<IResponseInterface> =>

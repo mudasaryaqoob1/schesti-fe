@@ -5,26 +5,50 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import ModalComponent from '@/app/component/modal';
 import { IClientInvoice } from '@/app/interfaces/client-invoice.interface';
 import {
-  selectClientInvoices,
-  selectClientInvoicesLoading,
-} from '@/redux/client-invoices/client-invoice.selector';
-import { fetchClientInvoices } from '@/redux/client-invoices/client-invoice.thunk';
-import { AppDispatch } from '@/redux/store';
-import { CloseOutlined, SearchOutlined } from '@ant-design/icons';
-import { Dropdown, Table, type MenuProps } from 'antd';
+  deleteClientInvoiceRequest,
+  fetchClientInvoices,
+} from '@/redux/client-invoices/client-invoice.thunk';
+import { AppDispatch, RootState } from '@/redux/store';
+import {
+  CloseOutlined,
+  ExclamationCircleFilled,
+  SearchOutlined,
+} from '@ant-design/icons';
+import { Dropdown, Table, type MenuProps, Modal } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import { useFormik } from 'formik';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import * as Yup from 'yup';
+
+const ValidationSchema = Yup.object({
+  invoiceName: Yup.string().required('Invoice name is required'),
+});
 
 export function Clients() {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
-  const [invoiceName, setInvoiceName] = useState('');
   const dispatch = useDispatch<AppDispatch>();
-  const clientInvoices = useSelector(selectClientInvoices);
-  const clientInvoicesLoading = useSelector(selectClientInvoicesLoading);
+  const clientInvoices = useSelector(
+    (state: RootState) => state.clientInvoices.data
+  );
+  const clientInvoicesLoading = useSelector(
+    (state: RootState) => state.clientInvoices.loading
+  );
+  const [search, setSearch] = useState('');
+  const formik = useFormik({
+    initialValues: {
+      invoiceName: '',
+    },
+    validationSchema: ValidationSchema,
+    onSubmit(values) {
+      router.push(
+        `/invoices/aia-invoicing/create?invoiceName=${values.invoiceName}`
+      );
+    },
+  });
 
   const fetchSubcontactorsInvoices = useCallback(async () => {
     await dispatch(fetchClientInvoices({}));
@@ -35,16 +59,16 @@ export function Clients() {
   }, [fetchSubcontactorsInvoices]);
   const items: MenuProps['items'] = [
     {
-      key: 'editInvoice',
-      label: <p>Edit Invoice</p>,
+      key: 'createPhase',
+      label: <p>New Payable</p>,
     },
     {
-      key: 'collectPayments',
-      label: <p>Collect Payments</p>,
+      key: 'view',
+      label: <p>View Invoice</p>,
     },
     {
-      key: 'markAsClosed',
-      label: <p>Mark as closed</p>,
+      key: 'collect',
+      label: <p>Collect Payment</p>,
     },
     {
       key: 'delete',
@@ -60,9 +84,10 @@ export function Clients() {
       title: 'Invoice Name',
       dataIndex: 'invoiceName',
       ellipsis: true,
+      width: 300,
     },
     {
-      title: 'Client Name',
+      title: 'Owner',
       dataIndex: 'toOwner',
     },
     {
@@ -74,23 +99,39 @@ export function Clients() {
       dataIndex: 'address',
     },
     {
-      title: 'Original Sum',
-      dataIndex: 'orignalContractSum',
-    },
-    {
-      title: 'Net Change By Orders',
-      dataIndex: 'netChangeByOrders',
+      title: 'Distributed To',
+      dataIndex: 'distributionTo',
+      render: (value) => value?.toUpperCase(),
     },
     {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
       key: 'action',
-      render: () => (
+      render: (_, record) => (
         <Dropdown
           menu={{
             items,
-            onClick: () => {},
+            onClick: ({ key }) => {
+              if (key === 'createPhase') {
+                router.push(`/invoices/aia-invoicing/invoice/${record._id}`);
+              } else if (key === 'delete') {
+                Modal.confirm({
+                  title: 'Are you sure delete this invoice?',
+                  icon: <ExclamationCircleFilled />,
+                  okText: 'Yes',
+                  okType: 'danger',
+                  style: { backgroundColor: 'white' },
+                  cancelText: 'No',
+                  onOk() {
+                    dispatch(deleteClientInvoiceRequest(record._id));
+                  },
+                  onCancel() {},
+                });
+              } else if (key === 'view') {
+                router.push(`/invoices/aia-invoicing/view/${record._id}`);
+              }
+            },
           }}
           placement="bottomRight"
         >
@@ -105,10 +146,24 @@ export function Clients() {
       ),
     },
   ];
+
+  const filteredClientInvoices =
+    clientInvoices.length > 0
+      ? clientInvoices.filter((invoice) => {
+          if (!search) {
+            return invoice;
+          }
+          return (
+            invoice.invoiceName === search ||
+            invoice.toOwner.toLowerCase().includes(search.toLowerCase())
+          );
+        })
+      : [];
+
   return (
     <div className="w-full mb-4">
       <div className="flex justify-between flex-wrap items-center md:flex-nowrap mb-2">
-        <TertiaryHeading title="Client invoice" className="text-graphiteGray" />
+        <TertiaryHeading title="AIA Invoicing" className="text-graphiteGray" />
         <div className="flex items-center space-x-2 flex-1 justify-end">
           <div className="w-96 ">
             <InputComponent
@@ -119,6 +174,8 @@ export function Clients() {
               prefix={<SearchOutlined />}
               field={{
                 type: 'text',
+                value: search,
+                onChange: (e) => setSearch(e.target.value),
               }}
             />
           </div>
@@ -132,20 +189,24 @@ export function Clients() {
           />
           <ModalComponent
             open={showModal}
-            setOpen={setShowModal}
-            title="Invoice Details"
+            setOpen={() => {
+              formik.resetForm();
+              setShowModal(false);
+            }}
+            title="Client Invoice"
             width="40%"
           >
             <div className="bg-white border border-solid border-elboneyGray rounded-[4px] z-50">
               <div className="flex px-6 py-2.5 justify-between bg-mistyWhite">
                 <TertiaryHeading
-                  title="Invoice Details"
+                  title="Client Invoice"
                   className="text-graphiteGray"
                 />
                 <CloseOutlined
                   className="cursor-pointer"
                   width={24}
                   height={24}
+                  onClick={() => setShowModal(false)}
                 />
               </div>
 
@@ -155,24 +216,30 @@ export function Clients() {
                   type="text"
                   placeholder="Enter invoice name"
                   name="invoiceName"
+                  hasError={
+                    formik.touched.invoiceName && !!formik.errors.invoiceName
+                  }
+                  errorMessage={formik.errors.invoiceName}
                   field={{
                     type: 'text',
-                    onChange: (e) => setInvoiceName(e.target.value),
-                    value: invoiceName,
+                    onChange: formik.handleChange,
+                    onBlur: formik.handleBlur,
+                    value: formik.values.invoiceName,
                   }}
                 />
 
                 <div className="flex justify-end py-2 space-x-2">
-                  <WhiteButton text="Cancel" className="!w-[100px]" />
+                  <WhiteButton
+                    text="Cancel"
+                    className="!w-[100px]"
+                    onClick={() => setShowModal(false)}
+                  />
                   <CustomButton
                     text="Next"
                     className="!w-[100px]"
-                    onClick={() =>
-                      router.push(
-                        `/invoices/client/create?invoiceName=${invoiceName}`
-                      )
-                    }
-                    disabled={!invoiceName}
+                    onClick={() => formik.handleSubmit()}
+                    disabled={!formik.isValid}
+                    isLoading={formik.isSubmitting}
                   />
                 </div>
               </div>
@@ -184,8 +251,9 @@ export function Clients() {
       <Table
         loading={clientInvoicesLoading}
         columns={columns}
-        dataSource={clientInvoices}
+        dataSource={filteredClientInvoices}
         pagination={{ position: ['bottomCenter'] }}
+        bordered
       />
     </div>
   );

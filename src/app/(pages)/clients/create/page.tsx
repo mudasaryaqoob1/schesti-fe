@@ -20,20 +20,28 @@ import { HttpService } from '@/app/services/base.service';
 
 // client service
 import { userService } from '@/app/services/user.service';
+import { PhoneNumberRegex } from '@/app/utils/regex.util';
 
 const newClientSchema = Yup.object({
-  firstName: Yup.string().required('First name is required!'),
-  lastName: Yup.string().required('Last name is required!'),
+  firstName: Yup.string()
+    .min(2, 'First name must be at least 2 characters')
+    .max(15, 'First name must be less than 15 characters')
+    .required('First name is required!'),
+  lastName: Yup.string()
+    .min(2, 'Last name must be at least 2 characters')
+    .max(15, 'Last name must be less than 15 characters')
+    .required('Last name is required!'),
   email: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
   phone: Yup.string()
-    .min(11, 'Phone number must be at least 11 characters')
-    .max(14, 'Phone number must be at most 14 characters')
+    .matches(PhoneNumberRegex, 'Phone number must contain numbers')
+    .min(7, 'Phone number must be at least 7 characters')
+    .max(12, 'Phone number must be at most 12 characters')
     .required('Phone number is required'),
   companyName: Yup.string().required('Company Name is required!'),
   address: Yup.string().required('Address is required!'),
-  address2: Yup.string(),
+  secondAddress: Yup.string(),
 });
 const initialValues: IClient = {
   firstName: '',
@@ -58,6 +66,7 @@ const CreateClient = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const submitHandler = async (values: IClient) => {
+    setIsLoading(true);
     userService
       .httpAddNewClient(values)
       .then((response: any) => {
@@ -129,9 +138,10 @@ const CreateClient = () => {
                   <FormControl
                     control="input"
                     label="Phone Number"
-                    type="number"
+                    type="text"
                     name="phone"
                     placeholder="Phone number"
+                    min={1}
                   />
                   <FormControl
                     control="input"
@@ -160,7 +170,7 @@ const CreateClient = () => {
                     control="input"
                     label="Address 2"
                     type="text"
-                    name="address2"
+                    name="secondAddress"
                     placeholder="Address 2"
                   />
                 </div>

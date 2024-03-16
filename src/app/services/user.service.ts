@@ -57,6 +57,10 @@ class UserService extends HttpService {
   ): Promise<IResponseInterface> =>
     this.get(`${this.companyPrefix}/allClients?page=${page}&limit=${limit}`);
 
+  httpGetAllCompanyClients = (): Promise<
+    IResponseInterface<{ clients: IClient[] }>
+  > => this.get(`${this.companyPrefix}/allClients`);
+
   httpDeleteClient = (clientId: string): Promise<IResponseInterface> =>
     this.post(`${this.companyPrefix}/deleteClient/${clientId}`);
 
@@ -65,6 +69,11 @@ class UserService extends HttpService {
 
   httpAddNewClient = (data: IClient): Promise<IResponseInterface<any>> =>
     this.post(`${this.companyPrefix}/newClient`, data);
+
+  httpFindCompanyClient = (
+    id: string
+  ): Promise<IResponseInterface<{ client: IClient }>> =>
+    this.get(`${this.companyPrefix}/client/${id}`);
 
   httpUpdateClient = (
     data: IClient,

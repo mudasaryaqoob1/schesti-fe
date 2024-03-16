@@ -1,4 +1,9 @@
-import React, { useCallback, useEffect, useLayoutEffect } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from 'react';
 import type { ColumnsType } from 'antd/es/table';
 import { Dropdown, Table } from 'antd';
 import type { MenuProps } from 'antd';
@@ -15,10 +20,12 @@ import {
   deleteEstimateRequest,
   fetchEstimateRequests,
 } from '@/redux/company/company.thunk';
-import NoData from '@/app/component/noData';
 import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import Image from 'next/image';
+import { IEstimateRequest } from '@/app/interfaces/estimateRequests/estimateRequests.interface';
+import ModalComponent from '@/app/component/modal';
+import { DeleteContent } from '@/app/component/delete/DeleteContent';
 
 interface DataType {
   key: React.Key;
@@ -35,9 +42,12 @@ const EstimateRequestTable: React.FC = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const token = useSelector(selectToken);
-
+  const [selectedEstimate, setSelecteEstimate] = useState<
+    (IEstimateRequest & { _id: string }) | null
+  >(null);
   const estimateRequestsLoading = useSelector(selectEstimateRequestsLoading);
   const estimateRequestsData = useSelector(selectEstimateRequests);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   useLayoutEffect(() => {
     if (token) {
@@ -70,7 +80,8 @@ const EstimateRequestTable: React.FC = () => {
 
   const handleDropdownItemClick = async (key: string, estimateRequest: any) => {
     if (key == 'deleteEstimateRequest') {
-      await dispatch(deleteEstimateRequest(estimateRequest._id));
+      setShowDeleteModal(true);
+      setSelecteEstimate(estimateRequest);
     } else if (key == 'editEstimateRequest') {
       router.push(`/estimates/requests/edit/${estimateRequest._id}`);
     } else if (key === 'createEstimateRequest') {
@@ -144,15 +155,27 @@ const EstimateRequestTable: React.FC = () => {
     },
   ];
 
-  return estimateRequestsData && estimateRequestsData.length < 1 ? (
-    <NoData
-      btnText="Add Request"
-      link="/estimates/requests/create"
-      title="Create New Estimate Request"
-      description="There is not any record yet . To get started, Create an estimate request by clicking the button below and sharing details about your project."
-    />
-  ) : (
+  return (
     <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid border-silverGray shadow-secondaryTwist">
+      {selectedEstimate ? (
+        <ModalComponent
+          open={showDeleteModal}
+          setOpen={() => {
+            setSelecteEstimate(null);
+            setShowDeleteModal(false);
+          }}
+          destroyOnClose
+        >
+          <DeleteContent
+            onClick={() => {
+              dispatch(deleteEstimateRequest(selectedEstimate._id));
+              setSelecteEstimate(null);
+              setShowDeleteModal(false);
+            }}
+            onClose={() => setSelecteEstimate(null)}
+          />
+        </ModalComponent>
+      ) : null}
       <div className="flex justify-between items-center">
         <TertiaryHeading
           title="My Estimate request"

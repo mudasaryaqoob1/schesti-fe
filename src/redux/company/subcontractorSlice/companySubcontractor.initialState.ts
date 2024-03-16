@@ -1,12 +1,14 @@
-interface ISubcontractor {
+import { ISubcontractor } from '@/app/interfaces/companyInterfaces/subcontractor.interface';
+
+interface ISubcontractorState {
   loading: boolean;
   error?: string | null;
   message?: string | null;
   statusCode: number | null;
-  data: any;
+  data: null | ISubcontractor[];
 }
 
-const initialCompanySubcontractorState: ISubcontractor = {
+const initialCompanySubcontractorState: ISubcontractorState = {
   loading: false,
   error: null,
   message: null,

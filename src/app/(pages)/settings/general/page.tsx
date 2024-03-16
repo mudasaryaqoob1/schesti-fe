@@ -4,7 +4,7 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { Skeleton } from 'antd';
+import { ColorPicker, Skeleton } from 'antd';
 import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
 
@@ -25,6 +25,8 @@ import { userService } from '@/app/services/user.service';
 import { byteConverter } from '@/app/utils/byteConverter';
 import { AppDispatch } from '@/redux/store';
 import { updateProfileHandler } from '@/redux/authSlices/auth.thunk';
+import { CheckOutlined } from '@ant-design/icons';
+import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 
 const initialValues: IUpdateCompanyDetail = {
   name: '',
@@ -34,6 +36,7 @@ const initialValues: IUpdateCompanyDetail = {
   phone: '',
   website: '',
   avatar: '',
+  brandingColor: '',
 };
 
 const generalSettingSchema: any = Yup.object({
@@ -42,7 +45,7 @@ const generalSettingSchema: any = Yup.object({
     .required('Email is required!')
     .email('Email should be valid'),
   industry: Yup.string().required('Industry  is required!'),
-  employee: Yup.string().required('Employee is required!'),
+  employee: Yup.number().min(1).required('Employee is required!'),
   avatar: Yup.string().required('Avatar is required!'),
 });
 const GeneralSetting = () => {
@@ -55,7 +58,7 @@ const GeneralSetting = () => {
     }
   }, [token]);
 
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState<IUser | null>(null);
   const [avatarLoading, setavatarLoading] = useState(false);
   const getUserDetail = useCallback(async () => {
     let { data } = await userService.httpGetCompanyDetail();
@@ -74,12 +77,14 @@ const GeneralSetting = () => {
       phone: Number(values.phone),
       website: values.website,
       avatar: values.avatar,
+      brandingColor: values.brandingColor,
     };
 
     let result: any = await dispatch(updateProfileHandler(obj));
 
     if (result.payload.statusCode == 200) {
       toast.success('Detail Update Successfull');
+      setUserData(result.payload.data.user);
     } else {
       toast.error(result.payload.message);
     }
@@ -129,7 +134,8 @@ const GeneralSetting = () => {
             validationSchema={generalSettingSchema}
             onSubmit={submitHandler}
           >
-            {({ handleSubmit, errors, setFieldValue }) => {
+            {({ handleSubmit, errors, setFieldValue, values }) => {
+              console.log(values);
               return (
                 <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
                   <div
@@ -167,6 +173,7 @@ const GeneralSetting = () => {
                       name="employee"
                       labelStyle="!text-lightyGrayish"
                       placeholder="total empolyee"
+                      min={1}
                     />
                     <FormControl
                       control="input"
@@ -175,6 +182,7 @@ const GeneralSetting = () => {
                       name="phone"
                       labelStyle="!text-lightyGrayish"
                       placeholder="Phone number"
+                      min={0}
                     />
                     <FormControl
                       control="input"
@@ -187,12 +195,20 @@ const GeneralSetting = () => {
                   </div>
 
                   {/* Upload Image Div */}
-                  <div className={`${bg_style} p-5 mt-4 `}>
+                  <div className={`${bg_style} grid grid-cols-12 p-5 mt-4 `}>
                     <div
-                      className={`px-6 py-4 flex flex-col items-center gap-3 ${
+                      className={`px-6 py-4 col-span-8 flex flex-col items-center gap-3 ${
                         errors.avatar ? 'border-rose-600' : ''
                       }  ${bg_style}`}
                     >
+                      {userData.avatar ? (
+                        <Image
+                          src={userData.avatar}
+                          width={100}
+                          height={100}
+                          alt="Avatar"
+                        />
+                      ) : null}
                       <input type="text" id="upload" className="hidden" />
                       <div className="bg-lightGrayish rounded-[28px] border border-solid border-red flex justify-center items-center p-2.5">
                         <Image
@@ -235,6 +251,58 @@ const GeneralSetting = () => {
                       <p className={`text-steelGray ${minHeading}`}>
                         SVG, PNG, JPG or GIF (max. 800x400px)
                       </p>
+                    </div>
+
+                    <div className="col-span-4 px-3 items-center flex space-x-3">
+                      <div className="flex-1 relative">
+                        <Button
+                          text="Primary"
+                          onClick={() => {
+                            setFieldValue('brandingColor', '');
+                          }}
+                        />
+
+                        {!values.brandingColor ? (
+                          <CheckOutlined className="text-white text-xs bg-[#4CAF50] rounded-full p-1 absolute -top-1 right-0" />
+                        ) : (
+                          <CheckOutlined className="text-white text-xs bg-[#E7E7E7] rounded-full p-1 absolute -top-1 right-0" />
+                        )}
+                      </div>
+
+                      <div className="flex-1 relative">
+                        <ColorPicker
+                          value={values.brandingColor}
+                          onChange={(color) => {
+                            console.log(color.toHexString());
+                            setFieldValue('brandingColor', color.toHexString());
+                          }}
+                        >
+                          <button
+                            style={{
+                              backgroundColor: values.brandingColor
+                                ? values.brandingColor
+                                : '#001556',
+                              borderColor: values.brandingColor
+                                ? values.brandingColor
+                                : '#001556',
+                            }}
+                            type="button"
+                            className={`rounded-[8px] border border-solid text-white leading-6 font-semibold py-2 px-5  cursor-pointer shadow-scenarySubdued text-right h-auto text-sm w-full`}
+                          >
+                            <Image
+                              alt="color picker"
+                              src={'/Group.svg'}
+                              width={30}
+                              height={30}
+                            />
+                          </button>
+                          {values.brandingColor ? (
+                            <CheckOutlined className="text-white text-xs bg-[#4CAF50] rounded-full p-1 absolute -top-1 right-0" />
+                          ) : (
+                            <CheckOutlined className="text-white text-xs bg-[#E7E7E7] rounded-full p-1 absolute -top-1 right-0" />
+                          )}
+                        </ColorPicker>
+                      </div>
                     </div>
                   </div>
                   <div className="flex justify-end gap-4 mt-6">

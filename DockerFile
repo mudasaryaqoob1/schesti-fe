@@ -6,9 +6,9 @@ WORKDIR /app
 COPY package.json ./
 COPY .npmrc ./
 
-RUN apt-get update && apt-get upgrade -y
+# RUN apt-get update && apt-get upgrade -y
 
-RUN npm install
+RUN npm install --force
 
 COPY . ./
 

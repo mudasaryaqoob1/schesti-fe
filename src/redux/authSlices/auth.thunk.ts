@@ -106,3 +106,17 @@ export const updateProfileHandler = createAsyncThunk(
     }
   }
 );
+
+export const getLoggedInUserDetails = createAsyncThunk(
+  'auth/getLoggedInUser',
+  async (credentials: {}, thunkAPI) => {
+    try {
+      const response = await authService.httpGetLoggedInUserDetails();
+      return response;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || 'Error during login'
+      );
+    }
+  }
+);

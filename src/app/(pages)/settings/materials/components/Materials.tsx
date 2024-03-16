@@ -29,6 +29,7 @@ import QuaternaryHeading from '@/app/component/headings/quaternary';
 import ImportMaterialModal from './importMaterialModal';
 import NoData from './NoData';
 import CustomButton from '@/app/component/customButton/button';
+import { IMaterialSetting } from '@/app/interfaces/settings/material-settings.interface';
 
 type InitialValuesTypes = {
   unitLabourHour: string;
@@ -51,11 +52,12 @@ const Materials = () => {
 
   const materialsData = useSelector(reduxMaterialsData);
   const materialsLoading = useSelector(reduxMaterialsLoading);
+  const [search, setSearch] = useState('');
   const [materialModal, setMaterialModal] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState('');
-  const [meterialDataWithCategories, setMeterialDataWithCategories] = useState(
-    []
-  );
+  const [meterialDataWithCategories, setMeterialDataWithCategories] = useState<
+    IMaterialSetting[]
+  >([]);
 
   const fetchMaterialsData = useCallback(async () => {
     let result: any = await dispatch(fetchMaterials({ page: 1, limit: 10 }));
@@ -97,7 +99,15 @@ const Materials = () => {
       updateMaterialData(data);
     }
   };
-
+  const filteredData = meterialDataWithCategories.filter((item) => {
+    if (!search) {
+      return item;
+    }
+    return (
+      item._id.categoryName.toLowerCase().includes(search.toLowerCase()) ||
+      item._id.subcategoryName.toLowerCase().includes(search.toLowerCase())
+    );
+  });
   return (
     <>
       <Formik
@@ -114,7 +124,9 @@ const Materials = () => {
               autoComplete="off"
               className="mt-2"
             >
-              {materialsData?.length ? (
+              {materialsLoading ? (
+                <Skeleton />
+              ) : materialsData?.length ? (
                 <>
                   <div className="flex justify-between items-center gap-4">
                     <TertiaryHeading title="Materials" />
@@ -125,6 +137,8 @@ const Materials = () => {
                           name=""
                           id=""
                           placeholder="Search..."
+                          onChange={(e) => setSearch(e.target.value)}
+                          value={search}
                           className="w-full h-full bg-transparent outline-none"
                         />
                         <Image
@@ -147,7 +161,7 @@ const Materials = () => {
                     </div>
                   </div>
                   <div>
-                    <div className="grid grid-cols-8 bg-graphiteGray p-3 rounded-lg mt-7 bg-opacity-10">
+                    <div className="grid grid-cols-8 sm:grid-cols-8 md:grid-cols-8 lg:grid-cols-8 xl:grid-cols-8 overflow-x-auto bg-lavenderPurple p-3 rounded-lg gap-4 mt-7 bg-opacity-10">
                       <Description title="Description" className="col-span-2" />
                       <Description title="Unit" className="col-span-1" />
                       <Description
@@ -168,16 +182,13 @@ const Materials = () => {
                       />
                     </div>
                     <div className="gap-4">
-                      {materialsLoading ? (
+                      {materialsLoading && !filteredData.length ? (
                         <div className="mt-4">
                           <Skeleton />
                         </div>
                       ) : (
-                        meterialDataWithCategories?.map(
-                          (
-                            { _id: category, meterialsData }: any,
-                            i: number
-                          ) => {
+                        filteredData.map(
+                          ({ _id: category, materialsData }, i: number) => {
                             return (
                               <div key={i}>
                                 <div className="flex items-center gap-3 mt-4">
@@ -198,7 +209,7 @@ const Materials = () => {
                                     />
                                   </div>
                                 </div>
-                                {meterialsData?.map(
+                                {materialsData?.map(
                                   ({
                                     _id,
                                     description,

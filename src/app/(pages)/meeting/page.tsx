@@ -12,21 +12,21 @@ import CustomButton from '@/app/component/customButton/button';
 import SecondaryHeading from '@/app/component/headings/Secondary';
 import { UpcomingComponent } from './components/UpComing';
 import { useSelector } from 'react-redux';
-import { selectMeetings } from '@/redux/meeting/meeting.slice';
 import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@/redux/store';
+import { AppDispatch, RootState } from '@/redux/store';
 import { fetchMeetings } from '@/redux/meeting/meeting.thunk';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
 import { CreateMeeting } from './components/CreateMeeting';
+import { PreviousMeetings } from './components/PreviousMeeting';
 
 const UPCOMING_MEETING_KEY = 'Upcoming Meeting';
-const RECENT_MEETING_KEY = 'Recent Meeting';
+const PREVIOUS_MEETING_KEY = 'Previous Meeting';
 
 const Meeting = () => {
   const token = useSelector(selectToken);
   const [tab, setTab] = useState(UPCOMING_MEETING_KEY);
-  const meetings = useSelector(selectMeetings);
+  const meetings = useSelector((state: RootState) => state.meetings.data);
   const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
 
@@ -42,7 +42,7 @@ const Meeting = () => {
 
   useEffect(() => {
     fetchMeetingsCB();
-  }, [fetchMeetingsCB]);
+  }, []);
 
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
@@ -77,14 +77,16 @@ const Meeting = () => {
             onChange={(type) => {
               setTab(type);
             }}
-            items={[UPCOMING_MEETING_KEY, RECENT_MEETING_KEY].map((type) => {
+            items={[UPCOMING_MEETING_KEY, PREVIOUS_MEETING_KEY].map((type) => {
               return {
                 key: type,
 
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className={`${tab === type ? 'text-[#8449EB]' : 'text-[#101828]'}`}
+                    className={`${
+                      tab === type ? 'text-[#8449EB]' : 'text-[#101828]'
+                    }`}
                   />
                 ),
                 tabKey: type,
@@ -95,7 +97,7 @@ const Meeting = () => {
                       onOpenModal={() => setShowModal(true)}
                     />
                   ) : (
-                    tab
+                    <PreviousMeetings meetings={meetings} />
                   ),
                 style: {},
               };

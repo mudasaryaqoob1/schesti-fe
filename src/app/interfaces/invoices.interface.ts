@@ -23,6 +23,12 @@ export interface IInvoice {
   associatedComapny: string;
   _id: string;
   __v: number;
+
+  status: 'paid' | 'unpaid';
+  amount: number;
+  paymentMethod: string;
+  transactionDate: string;
+  additionalDetails: string;
 }
 
 interface InvoiceItem {

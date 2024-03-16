@@ -20,6 +20,7 @@ export type CreateInvoiceData = {
   totalPayable: number;
   invoiceItems: { [key: string]: any }[];
 };
+
 class InvoiceService extends HttpService {
   private readonly prefix: string = 'api/invoices';
 
@@ -28,11 +29,17 @@ class InvoiceService extends HttpService {
   ): Promise<IResponseInterface<IInvoiceType>> =>
     this.post(`${this.prefix}/createInvoice`, data);
 
-  httpGetAllSubcontractorInvoices = (): Promise<IResponseInterface> =>
-    this.get(`${this.prefix}/getInvoices`);
+  httpGetAllSubcontractorInvoices = (): Promise<
+    IResponseInterface<{ invoices: IInvoice[] }>
+  > => this.get(`${this.prefix}/getInvoices`);
+
+  httpGetSubcontractorInvoiceById = (
+    id: string
+  ): Promise<IResponseInterface<{ invoice: IInvoice }>> =>
+    this.get(`${this.prefix}/get/${id}`);
 
   httpUpdateSubcontractorInvoice = (
-    data: CreateInvoiceData,
+    data: Partial<IInvoice>,
     id: string
   ): Promise<IResponseInterface<{ invoice: IInvoice }>> =>
     this.post(`${this.prefix}/update-contractor/${id}`, data);

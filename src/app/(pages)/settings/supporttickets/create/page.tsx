@@ -19,7 +19,6 @@ import { HttpService } from '@/app/services/base.service';
 // support tickets service
 import { ISupportTicket } from '@/app/interfaces/supportTicket.interface';
 import { supportTicketService } from '@/app/services/supportTicket.service';
-import SettingSidebar from '../../verticleBar';
 import {
   bg_style,
   minHeading,
@@ -28,6 +27,7 @@ import {
 import { twMerge } from 'tailwind-merge';
 import { byteConverter } from '@/app/utils/byteConverter';
 import AwsS3 from '@/app/utils/S3Intergration';
+import CustomNavbar from '@/app/component/customNavbar';
 
 const validationSchema = Yup.object({
   title: Yup.string().required('Title is required!'),
@@ -43,6 +43,7 @@ const initialValues: ISupportTicket = {
 const CreateTicket = () => {
   const router = useRouter();
   const token = useSelector(selectToken);
+  const [avatarURL, setAvatarURL] = useState('');
 
   useLayoutEffect(() => {
     if (token) {
@@ -56,11 +57,12 @@ const CreateTicket = () => {
   const onSubmit = async (values: ISupportTicket) => {
     setIsLoading(true);
     supportTicketService
-      .httpAddNewSupportTicket(values)
+      .httpAddNewSupportTicket({ ...values, avatar: avatarURL })
       .then((response: any) => {
         setIsLoading(false);
         if (response.statusCode == 201) {
           setIsLoading(false);
+          toast.success(response.message);
           router.push('/settings/supporttickets');
         }
       })
@@ -88,6 +90,7 @@ const CreateTicket = () => {
             'documents/supportTickets/'
           ).getS3URL();
           avatarUrl = url;
+          setAvatarURL(url);
         })
       );
 
@@ -99,121 +102,144 @@ const CreateTicket = () => {
     }
   };
   return (
-    <SettingSidebar>
-      <section className="w-full">
-        <div className="flex gap-1 items-center">
-          <Description
-            title="Support Ticket"
-            className="font-base text-slateGray"
-          />
+    <CustomNavbar>
+      <div className="grid grid-cols-12 gap-8 p-8">
+        <div className="col-span-4">
           <Image
-            src={'/chevron-right.svg'}
-            alt="chevron-right icon"
-            width={16}
-            height={16}
+            alt="Service24-7"
+            src="/service24-7.svg"
+            width={498}
+            height={628}
           />
-          <Description title="Create New Ticket" className="text-RoyalPurple" />
         </div>
-        <div className="mt-6">
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={onSubmit}
-          >
-            {({ handleSubmit, setFieldValue }) => {
-              return (
-                <Form
-                  name="basic"
-                  onSubmit={handleSubmit}
-                  className="flex flex-col gap-5 px-5 py-6 shadow-primaryGlow rounded-2xl"
-                >
-                  <FormControl
-                    control="input"
-                    label="Title"
-                    type="text"
-                    name="title"
-                    placeholder="Enter title"
-                  />
-                  <FormControl
-                    control="textarea"
-                    label="Description"
-                    type="text"
-                    name="description"
-                    placeholder="Write message here"
-                  />
-                  {/* Upload Image Div */}
-                  <div className={`${bg_style} p-5 mt-4 `}>
-                    <div
-                      className={`px-6 py-4 flex flex-col items-center gap-3 ${bg_style}`}
-                    >
-                      <input type="text" id="upload" className="hidden" />
-                      <div className="bg-lightGrayish rounded-[28px] border border-solid border-red flex justify-center items-center p-2.5">
-                        <Image
-                          src={'/uploadcloud.svg'}
-                          alt="upload icon"
-                          width={20}
-                          height={20}
-                        />
-                      </div>
-                      {avatarLoading ? (
-                        <p>Uploading...</p>
-                      ) : (
-                        <div className="flex gap-2">
-                          <label
-                            htmlFor="uploadCompanyLogo"
-                            className={twMerge(
-                              `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
-                            )}
-                          >
-                            Upload Logo
-                          </label>
-                          <input
-                            type="file"
-                            name="uploadLogo"
-                            id="uploadCompanyLogo"
-                            className="hidden"
-                            onChange={async (e) => {
-                              setFieldValue(
-                                'avatar',
-                                await avatarUploadHandler(e)
-                              );
-                            }}
+        <section className="w-full col-span-8">
+          <div className="flex gap-1 items-center">
+            <Description
+              title="Support Ticket"
+              className="font-base text-slateGray cursor-pointer"
+              onClick={() => router.push('/settings/supporttickets')}
+            />
+            <Image
+              src={'/chevron-right.svg'}
+              alt="chevron-right icon"
+              width={16}
+              height={16}
+            />
+            <Description
+              title="Create New Ticket"
+              className="text-RoyalPurple"
+            />
+          </div>
+          <div className="mt-6">
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={onSubmit}
+            >
+              {({ handleSubmit, setFieldValue }) => {
+                return (
+                  <Form
+                    name="basic"
+                    onSubmit={handleSubmit}
+                    className="flex flex-col gap-5 px-5 py-6 shadow-primaryGlow rounded-2xl"
+                  >
+                    <FormControl
+                      control="input"
+                      label="Title"
+                      type="text"
+                      name="title"
+                      placeholder="Enter title"
+                    />
+                    <FormControl
+                      control="textarea"
+                      label="Description"
+                      type="text"
+                      name="description"
+                      placeholder="Write message here"
+                    />
+                    {/* Upload Image Div */}
+                    <div className={`${bg_style} p-5 mt-4 `}>
+                      <div
+                        className={`px-6 py-4 flex flex-col items-center gap-3 ${bg_style}`}
+                      >
+                        <input type="text" id="upload" className="hidden" />
+                        <div className="bg-lightGrayish rounded-[28px] border border-solid border-red flex justify-center items-center p-2.5">
+                          <Image
+                            src={'/uploadcloud.svg'}
+                            alt="upload icon"
+                            width={20}
+                            height={20}
                           />
-                          <p className={`text-steelGray ${minHeading}`}>
-                            or drag and drop
-                          </p>
                         </div>
-                      )}
+                        {avatarLoading ? (
+                          <p>Uploading...</p>
+                        ) : avatarURL ? (
+                          <Image
+                            src={avatarURL}
+                            alt="avatar"
+                            width={100}
+                            height={100}
+                          />
+                        ) : (
+                          <div className="flex gap-2">
+                            <label
+                              htmlFor="uploadCompanyLogo"
+                              className={twMerge(
+                                `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
+                              )}
+                            >
+                              Upload Logo
+                            </label>
+                            <input
+                              type="file"
+                              name="uploadLogo"
+                              id="uploadCompanyLogo"
+                              className="hidden"
+                              onChange={async (e) => {
+                                setFieldValue(
+                                  'avatar',
+                                  await avatarUploadHandler(e)
+                                );
+                              }}
+                            />
+                            <p className={`text-steelGray ${minHeading}`}>
+                              or drag and drop
+                            </p>
+                          </div>
+                        )}
 
-                      <p className={`text-steelGray ${minHeading}`}>
-                        SVG, PNG, JPG or GIF (max. 800x400px)
-                      </p>
+                        <p className={`text-steelGray ${minHeading}`}>
+                          SVG, PNG, JPG or GIF (max. 800x400px)
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex justify-end gap-2 mt-6">
-                    <span>
-                      <CustomButton
-                        onClick={() => router.push('/settings/supporttickets')}
-                        text="Cancel"
-                        className="!bg-white !text-graphiteGray !border !border-celestialGray"
-                      />
-                    </span>
-                    <span>
-                      <CustomButton
-                        text="Create New Ticket"
-                        type="submit"
-                        className="!bg-mediumSlateBlue"
-                        isLoading={isLoading}
-                      />
-                    </span>
-                  </div>
-                </Form>
-              );
-            }}
-          </Formik>
-        </div>
-      </section>
-    </SettingSidebar>
+                    <div className="flex justify-end gap-2 mt-6">
+                      <span>
+                        <CustomButton
+                          onClick={() =>
+                            router.push('/settings/supporttickets')
+                          }
+                          text="Cancel"
+                          className="!bg-white !text-graphiteGray !border !border-celestialGray"
+                        />
+                      </span>
+                      <span>
+                        <CustomButton
+                          text="Create New Ticket"
+                          type="submit"
+                          className="!bg-mediumSlateBlue"
+                          isLoading={isLoading}
+                        />
+                      </span>
+                    </div>
+                  </Form>
+                );
+              }}
+            </Formik>
+          </div>
+        </section>
+      </div>
+    </CustomNavbar>
   );
 };
 

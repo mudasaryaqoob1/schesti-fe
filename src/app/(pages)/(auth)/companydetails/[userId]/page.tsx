@@ -101,6 +101,7 @@ const CompanyDetails = () => {
                         type="number"
                         name="employee"
                         placeholder="Employee"
+                        min={1}
                       />
                     </div>
                     <Button

@@ -8,7 +8,7 @@ export const categorySlice = createSlice({
   initialState: initialCompanySetupCategoryState,
   reducers: {
     addNewCategoryData: (state, { payload }) => {
-      state.data.push(payload);
+      state.data = [...state.data, payload];
     },
     setCategoryData: (state, { payload }) => {
       state.categoryData = payload;

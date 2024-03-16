@@ -22,6 +22,7 @@ import { selectToken } from '@/redux/authSlices/auth.selector';
 import { useSelector } from 'react-redux';
 import { HttpService } from '@/app/services/base.service';
 import { byteConverter } from '@/app/utils/byteConverter';
+import { useRouter } from 'next/navigation';
 
 interface Props {
   setPrevNext: Dispatch<SetStateAction<number>>;
@@ -32,7 +33,7 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
   const dispatch = useDispatch();
   const searchParams = useSearchParams();
   const estimateId: null | string = searchParams.get('estimateId');
-
+  const router = useRouter();
   const token = useSelector(selectToken);
 
   useLayoutEffect(() => {
@@ -72,8 +73,14 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
           className="text-graphiteGray font-semibold"
         />
         <div className="flex gap-3 items-center">
-          {pevNext !== 0 && (
+          {pevNext !== 0 ? (
             <CustomWhiteButton text="Previous" className="md:w-32" />
+          ) : (
+            <CustomWhiteButton
+              text="Cancel"
+              className="md:w-32"
+              onClick={() => router.push('/estimates')}
+            />
           )}
 
           <CustomButton

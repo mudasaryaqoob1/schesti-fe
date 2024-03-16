@@ -43,7 +43,9 @@ export interface DataType {
 const validationSchema = Yup.object({
   category: Yup.string().required('Category Name is required!'),
   name: Yup.string().required('Sub Category is required!'),
-  price: Yup.string().required('Price is required!'),
+  price: Yup.number()
+    .min(1, 'Price must be greater than 0')
+    .required('Price is required!'),
 });
 
 const AddSubcategory = () => {
@@ -56,7 +58,7 @@ const AddSubcategory = () => {
   const initialValues: SubcategoryInitValues = {
     name: subcategoryData?.subCategory || '',
     price: subcategoryData?.price || '',
-    category: subcategoryData?.categoryName || '',
+    category: subcategoryData?.categoryId || '',
   };
   const categoriesReduxData = useSelector(companySetupCategoriesData);
   const categoriesReduxDataLoading = useSelector(
@@ -93,7 +95,6 @@ const AddSubcategory = () => {
       const { statusCode, data } =
         await categoriesService.httpUpdateSubcategory(subcategoryData._id, {
           ...values,
-          category: subcategoryData.categoryId,
         });
       console.log(statusCode, data);
       if (statusCode === 200) {
@@ -129,8 +130,8 @@ const AddSubcategory = () => {
           onSubmit={submitHandler}
           enableReinitialize
         >
-          {({ handleSubmit, values, errors }) => {
-            console.log({ values, errors });
+          {({ handleSubmit, values }) => {
+            console.log({ values });
             return (
               <Form
                 name="basic"
@@ -141,7 +142,7 @@ const AddSubcategory = () => {
                 <div className="grid grid-cols-3 gap-2 items-center">
                   <FormControl
                     control="select"
-                    label="Catgory Name"
+                    label="Category Name"
                     type="text"
                     disabled={subcategoryData}
                     options={options}
@@ -152,7 +153,7 @@ const AddSubcategory = () => {
                   />
                   <FormControl
                     control="input"
-                    label="Sub-Catgory"
+                    label="Sub-Category"
                     type="text"
                     name="name"
                     placeholder="Enter Sub-Category"
@@ -163,6 +164,7 @@ const AddSubcategory = () => {
                     type="number"
                     name="price"
                     placeholder="Enter Price"
+                    prefix="$"
                   />
                 </div>
                 <div className="flex justify-end mt-5 gap-3">

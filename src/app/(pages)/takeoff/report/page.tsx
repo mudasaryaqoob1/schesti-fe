@@ -1,12 +1,10 @@
+'use client';
 import Button from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
-import { bg_style } from '@/globals/tailwindvariables';
 import Image from 'next/image';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
-import SecondaryHeading from '@/app/component/headings/Secondary';
-import Description from '@/app/component/description';
 
-const page = () => {
+const Report = () => {
   return (
     <>
       <section className="md:px-16 px-8 pb-4">
@@ -31,6 +29,7 @@ const page = () => {
             className="font-semibold text-lavenderPurple cursor-pointer underline"
           />
         </div>
+
         {/* search project */}
         <div className="bg-white flex justify-between items-center mt-6 ">
           <div
@@ -48,82 +47,24 @@ const page = () => {
           bg-transparent outline-none"
             />
           </div>
-          <div>
-            <Button
-              text="With AI"
+          <div className="flex flex-row gap-3">
+            <div>
+              <WhiteButton
+                text="Generate with AI"
+                className="!text-goldenrodYellow !border-goldenrodYellow"
 
-              //   onClick={() => router.push('/createclient')}
-            />
-          </div>
-          <div>
-            <Button
-              text="Generate Report"
-              icon="/plus.svg"
-              iconwidth={20}
-              iconheight={20}
-              //   onClick={() => router.push('/createclient')}
-            />
-          </div>
-        </div>
-        {/* icons */}
-        <div
-          className={`flex justify-center items-center gap-3 rounded-lg px-2 py-1 mt-5 pt-5 ${bg_style}`}
-        >
-          <Image
-            src={'/export.svg'}
-            alt="export icon"
-            width={24}
-            height={24}
-            className="cursor-pointer"
-          />
-          <Image
-            src={'/palmofthehand.svg'}
-            alt="hand icon"
-            width={24}
-            height={24}
-            className="cursor-pointer"
-          />
-          <Image
-            src={'/emoji.svg'}
-            alt="emoji icon"
-            width={24}
-            height={24}
-            className="cursor-pointer"
-          />
-          <Image
-            src={'/record.svg'}
-            alt=" record icon"
-            width={24}
-            height={24}
-            className="cursor-pointer"
-          />
-        </div>
-        {/* drag and drop */}
-        <div
-          className={`grid place-items-center shadow-sceneryShadow rounded-lg mt-4 ${bg_style} h-[580px] `}
-        >
-          {/*  */}
-          <div className="md:min-w-[493px] flex items-center flex-col gap-2 justify-center shadow-sceneryShadow rounded-lg">
-            <Image
-              src={'/uploadcloud.svg'}
-              alt="upload icon"
-              width={80}
-              height={80}
-            />
-            <SecondaryHeading
-              title="Drag and Drop here"
-              className="cursor-pointer text-graphiteGray"
-            />
-            <Description title="or" className="cursor-pointer text-coolGray" />
-            <label htmlFor="fileInput" className="w-full mt-2 cursor-pointer">
-              <input
-                type="file"
-                id="fileInput"
-                name="fileInput"
-                className="hidden"
+                //   onClick={() => router.push('/createclient')}
               />
-              <WhiteButton className="w-full" text="Select file" />
-            </label>
+            </div>
+            <div>
+              <Button
+                text="Generate Report"
+                icon="/plus.svg"
+                iconwidth={20}
+                iconheight={20}
+                //   onClick={() => router.push('/createclient')}
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -131,4 +72,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Report;

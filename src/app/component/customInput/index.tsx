@@ -1,8 +1,9 @@
-import { useField } from 'formik';
+import { ErrorMessage, useField } from 'formik';
 // import ErrorMsg from '../errorMessage';
 import { Input } from 'antd';
 import { twMerge } from 'tailwind-merge';
 import clsx from 'clsx';
+import Errormsg from '../errorMessage';
 const InputField = (props: any) => {
   const {
     label,
@@ -51,7 +52,7 @@ const InputField = (props: any) => {
       />
       {/* //   )} */}
       {/* // </Field> */}
-      {/* <ErrorMessage name={name} component={ErrorMsg} /> */}
+      <ErrorMessage name={name} component={Errormsg} />
     </div>
   );
 };

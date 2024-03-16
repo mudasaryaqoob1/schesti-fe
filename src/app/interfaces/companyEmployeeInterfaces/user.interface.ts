@@ -4,5 +4,9 @@ export interface IUser {
   lastName: string;
   email: string;
   token?: any;
+  avatar?: string;
+  brandingColor: string;
   roles: '';
+  planId?: string;
+  isPaymentConfirmed?: boolean;
 }
