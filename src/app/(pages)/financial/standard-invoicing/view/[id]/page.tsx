@@ -17,8 +17,9 @@ import moment from 'moment';
 import { RootState } from '@/redux/store';
 import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 import ClientPDF from './clientPDF';
+import { withAuth } from '@/app/hoc/withAuth';
 
-export default function ViewSubcontractorInvoicePage() {
+function ViewSubcontractorInvoicePage() {
   const token = useSelector(selectToken);
   const params = useParams<{ id: string }>();
   const id = params.id;
@@ -246,3 +247,5 @@ export default function ViewSubcontractorInvoicePage() {
     </section>
   );
 }
+
+export default withAuth(ViewSubcontractorInvoicePage, [])

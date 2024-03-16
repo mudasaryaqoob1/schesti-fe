@@ -24,6 +24,7 @@ import { invoiceService } from '@/app/services/invoices.service';
 import { toast } from 'react-toastify';
 import { IInvoice } from '@/app/interfaces/invoices.interface';
 import { Routes } from '@/app/utils/plans.utils';
+import { withAuth } from '@/app/hoc/withAuth';
 
 const SubcontractorSchema = Yup.object({
   subContractorFirstName: Yup.string().required('First name is required!'),
@@ -672,4 +673,4 @@ const EditSubcontractorInvoice = () => {
   );
 };
 
-export default EditSubcontractorInvoice;
+export default withAuth(EditSubcontractorInvoice, [])

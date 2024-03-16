@@ -4,8 +4,9 @@ import { selectToken } from '@/redux/authSlices/auth.selector';
 import { useLayoutEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Contractors } from '../components/contractors';
+import { withAuth } from '@/app/hoc/withAuth';
 
-export default function StandardInvoicingPage() {
+function StandardInvoicingPage() {
   const token = useSelector(selectToken);
 
   useLayoutEffect(() => {
@@ -22,3 +23,5 @@ export default function StandardInvoicingPage() {
     </section>
   );
 }
+
+export default withAuth(StandardInvoicingPage, ['admin'])

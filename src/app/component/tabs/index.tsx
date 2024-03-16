@@ -11,17 +11,23 @@ import tabsStyle from './tabs.module.css';
 import { DownOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { planFeatureOptions } from '@/app/utils/plans.utils';
-import { useDispatch, useSelector } from 'react-redux';
+import {
+  // useDispatch,
+  useSelector
+} from 'react-redux';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { useLayoutEffect } from 'react';
 import { HttpService } from '@/app/services/base.service';
-import { useQuery } from 'react-query';
-import { IResponseInterface } from '@/app/interfaces/api-response.interface';
-import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
-import { AxiosError } from 'axios';
-import { pricingPlanService } from '@/app/services/pricingPlan.service';
-import { AppDispatch, RootState } from '@/redux/store';
-import { setUserPricingPlan } from '@/redux/pricingPlanSlice/pricingPlanSlice';
+// import { useQuery } from 'react-query';
+// import { IResponseInterface } from '@/app/interfaces/api-response.interface';
+// import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
+// import { AxiosError } from 'axios';
+// import { pricingPlanService } from '@/app/services/pricingPlan.service';
+import {
+  // AppDispatch,
+  RootState
+} from '@/redux/store';
+// import { setUserPricingPlan } from '@/redux/pricingPlanSlice/pricingPlanSlice';
 // const items: MenuProps['items'] = [
 //   {
 //     key: '1',
@@ -38,7 +44,7 @@ const Tabs = () => {
   const pathname = usePathname();
   const router = useRouter();
   const token = useSelector(selectToken);
-  const dispatch = useDispatch<AppDispatch>();
+  // const dispatch = useDispatch<AppDispatch>();
   const userPlan = useSelector((state: RootState) => state.pricingPlan.userPlan);
 
   useLayoutEffect(() => {
@@ -49,20 +55,20 @@ const Tabs = () => {
 
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-  const userPricingQuery = useQuery<IResponseInterface<{ plan: IPricingPlan }>, AxiosError<{ message: string, statusCode: number }>>(['userPricing'], () => pricingPlanService.httpGetUserPricingPlan(), {
-    onSuccess(data) {
-      if (data.data?.plan) {
-        dispatch(setUserPricingPlan(data.data.plan));
-      }
-    },
-    onError(err) {
-      console.log("User Pricing Plan Error", err.response?.data);
-      if (err.response && err.response.data.statusCode >= 400) {
-        router.push("/login");
-      }
-    },
-    staleTime: 60 * 5000
-  });
+  // const userPricingQuery = useQuery<IResponseInterface<{ plan: IPricingPlan }>, AxiosError<{ message: string, statusCode: number }>>(['userPricing'], () => pricingPlanService.httpGetUserPricingPlan(), {
+  //   onSuccess(data) {
+  //     if (data.data?.plan) {
+  //       dispatch(setUserPricingPlan(data.data.plan));
+  //     }
+  //   },
+  //   onError(err) {
+  //     console.log("User Pricing Plan Error", err.response?.data);
+  //     if (err.response && err.response.data.statusCode >= 400) {
+  //       router.push("/login");
+  //     }
+  //   },
+  //   // staleTime: 60 * 5000
+  // });
 
   const userPlanFeatures = userPlan ? userPlan.features.split(',') : [];
   console.log({ userPlanFeatures })

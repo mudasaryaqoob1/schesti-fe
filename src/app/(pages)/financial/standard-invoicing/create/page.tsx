@@ -26,6 +26,7 @@ import {
 import { toast } from 'react-toastify';
 import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import { Routes } from '@/app/utils/plans.utils';
+import { withAuth } from '@/app/hoc/withAuth';
 
 const newClientSchema = Yup.object({
   subContractorFirstName: Yup.string().required('First name is required!'),
@@ -648,4 +649,4 @@ const CreateInvoice = () => {
   );
 };
 
-export default CreateInvoice;
+export default withAuth(CreateInvoice, [])
