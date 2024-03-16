@@ -28,7 +28,6 @@ const initialValues: ISignUpInterface = {
   email: '',
   password: '',
   confirmPassword: '',
-  userRole: ''
 };
 
 const RegisterSchema: any = Yup.object({
