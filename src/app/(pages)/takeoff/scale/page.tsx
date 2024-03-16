@@ -152,10 +152,17 @@ const Scale = () => {
             <Image src={'/t1.svg'} alt="t" width={24} height={24} />
             <Image src={'/fx.svg'} alt="t" width={24} height={24} />
           </div>
-          <div className="absolute top-10 right-10 flex flex-col gap-6 z-50 bg-white px-3 py-2  rounded-sm drop-shadow-md ">
+          <div className="absolute top-10 right-10 flex flex-col gap-3 items-center z-50 bg-white px-3 py-2  rounded-sm drop-shadow-md ">
             <Image src={'/cursor.svg'} alt="t" width={24} height={24} />
+            <Image src={'/pencil.svg'} alt="t" width={34} height={34} />
             <Image src={'/t1.svg'} alt="t" width={24} height={24} />
+            <Image src={'/shapeTool.svg'} alt="t" width={34} height={34} />
+            <Image src={'/stickyNotes.svg'} alt="t" width={34} height={34} />
             <Image src={'/fx.svg'} alt="t" width={24} height={24} />
+            <Image src={'/calculator.svg'} alt="t" width={34} height={34} />
+            <Image src={'/comments.svg'} alt="t" width={34} height={34} />
+            <Image src={'/uploadFile.svg'} alt="t" width={34} height={34} />
+            <Image src={'/library.svg'} alt="t" width={34} height={34} />
           </div>
           <div className={`absolute ${showModal ? 'block' : 'hidden'}`}>
             <ModalsWrapper

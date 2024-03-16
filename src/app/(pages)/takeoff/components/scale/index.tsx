@@ -71,14 +71,14 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
 
   const [mergedPresets, setMergedPresets] = useState<any[]>([]);
   const [value, setValue] = useState('preset');
-  const [secMeter, setSecMeter] = useState('');
-  const [meter, setMeter] = useState('');
+  const [secMeter, setSecMeter] = useState('in');
+  const [meter, setMeter] = useState('in');
   const [precision, setPrecision] = useState('');
   const [preset, setPreset] = useState('');
   const [showOptions, setShowOptions] = useState(false);
   const [optionsValue, setOptionsValue] = useState('');
-  const [firstValue, setFirstValue] = useState('');
-  const [secondValue, setSecondValue] = useState('');
+  const [firstValue, setFirstValue] = useState('1');
+  const [secondValue, setSecondValue] = useState('1');
 
   const [optionError, setOptionError] = useState(false);
   const [secValError, setSecValError] = useState(false);
@@ -88,11 +88,15 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
   ) as ScaleDataContextProps;
 
   const onChange = (e: RadioChangeEvent) => {
-    setPreset('');
-    setFirstValue('');
-    setMeter('');
-    setSecondValue('');
-    setSecMeter('');
+    if (e.target.value === 'custom') {
+      setFirstValue('1');
+      setMeter('in');
+      setSecondValue('1');
+      setSecMeter('in');
+    } else {
+      setPreset(`1"=1"`);
+    }
+
     setValue(e.target.value);
   };
 
@@ -111,6 +115,7 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
 
   useEffect(() => {
     dispatch(fetchTakeoffPreset({}));
+    setPreset(`1"=1"`);
   }, []);
 
   useEffect(() => {
@@ -147,7 +152,7 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
       scale = `${firstValue}${meter}=${secondValue}${secMeter}`;
     }
 
-    if (optionsValue !== 'all' && optionsValue !== 'page') {
+    if (optionsValue !== 'allPages' && optionsValue !== 'currentPage') {
       if (optionsValue?.includes('=')) {
         const range = optionsValue?.split('=').map(Number);
         const [start, end] = range;
@@ -160,8 +165,8 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
           newData[num] = { scale: scale, precision: precision };
         });
       }
-    } else if (optionsValue === 'all' || optionsValue === 'page') {
-      if (optionsValue === 'page') {
+    } else if (optionsValue === 'allPages' || optionsValue === 'currentPage') {
+      if (optionsValue === 'currentPage') {
         newData[page ? page : '1'] = { scale: scale, precision: precision };
       } else {
         for (let i = 1; i <= numOfPages; i++) {
@@ -234,10 +239,16 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
             <div className="w-[360px] absolute left-[148px] top-[124px] z-30 bg-white cursor-pointer shadow-sm border-2 flex flex-col p-2 gap-2">
               <div
                 className="hover:bg-slate-200 hover:rounded-sm p-1"
-                onClick={() => setOptionsValue('page')}
+                onClick={() => {
+                  setShowOptions(!showOptions);
+                  setOptionsValue('currentPage');
+                }}
               >{`Current Page (${page ? page : 1}) `}</div>
               <div
-                onClick={() => setOptionsValue('all')}
+                onClick={() => {
+                  setShowOptions(!showOptions);
+                  setOptionsValue('allPages');
+                }}
                 className="hover:bg-slate-200 hover:rounded-sm p-1"
               >
                 {`All pages ( 1 - ${numOfPages} )`}
@@ -294,6 +305,11 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
                   } `}
                   onChange={(e) => {
                     const inputValue = e.target.value;
+
+                    if (inputValue.includes(' ')) {
+                      setSecValError(true);
+                      return;
+                    }
 
                     if (secMeter !== `ft' in'` && inputValue.includes('/')) {
                       setSecValError(true);
