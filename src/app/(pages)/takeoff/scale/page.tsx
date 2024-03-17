@@ -4,7 +4,7 @@ import ModalComponent from '@/app/component/modal';
 import ScaleModal from '../components/scale';
 import ModalsWrapper from './components/ModalWrapper';
 import { ColorPicker, InputNumber, Select } from 'antd';
-import { ScaleContext, UploadFileContext } from '../context';
+import { ReportDataContext, ScaleContext, UploadFileContext } from '../context';
 import { UploadFileContextProps } from '../context/UploadFileContext';
 import {
   Measurements,
@@ -16,8 +16,8 @@ import Image from 'next/image';
 import { ScaleNavigation, Draw, DrawTable } from './components';
 import { ScaleDataContextProps } from '../context/ScaleContext';
 import { useRouter } from 'next/navigation';
-import WhiteButton from '@/app/component/customButton/white';
 import Button from '@/app/component/customButton/button';
+import { ReportDataContextProps } from '../context/ReportDataContext';
 
 export interface ScaleData {
   scale: string;
@@ -46,6 +46,10 @@ const Scale = () => {
     UploadFileContext
   ) as UploadFileContextProps;
 
+  const { reportData } = useContext(
+    ReportDataContext
+  ) as ReportDataContextProps;
+
   console.log('scaleData: ', scaleData);
 
   if (!uploadFileData.length) router.push('/takeoff/upload');
@@ -60,33 +64,22 @@ const Scale = () => {
 
   return (
     <>
-      <section className="md:px-16 px-8">
-        <div className="bg-white flex justify-between items-center mt-6 ">
-          <div className="rounded-lg border border-Gainsboro bg-silverGray  h-[51px] flex items-center px-3">
-            <input
-              type="search"
-              name=""
-              id=""
-              placeholder="Enter project name"
-              className="w-full h-full
-          bg-transparent outline-none"
-            />
-          </div>
-          <div className="flex flex-row gap-x-3">
-            <div>
+      <>
+        <section className="md:px-16 px-8 pb-4">
+          <div className="flex justify-end pt-4">
+            <div
+              className="flex flex-row gap-x-3 cursor-pointer"
+              onClick={() => router.push('/takeoff/report')}
+            >
               <Button
+                disabled={!uploadFileData.length || !reportData.length}
                 text="Generate Report"
                 icon="/plus.svg"
                 iconwidth={20}
                 iconheight={20}
-                onClick={() => router.push('/takeoff/report')}
               />
             </div>
           </div>
-        </div>
-      </section>
-      <>
-        <section className="md:px-16 px-8 pb-4">
           <ScaleNavigation
             tool={tool}
             setTool={setTool}
@@ -189,71 +182,8 @@ const Scale = () => {
                 />
               ))}
             </div>
-            <div className="flex flex-row gap-2 items-center">
-              <label>Color:</label>
-              <ColorPicker
-                value={color}
-                onChange={(color) => setColor(color.toHexString())}
-              />
-            </div>
-            {tool.selected === 'volume' && (
-              <InputNumber
-                type="number"
-                min={1}
-                placeholder="Depth"
-                onChange={(value) => value && setDepth(value)}
-              />
-            )}
-          </div>
-
-          <div className="py-6 h-[709px] relative">
-            <div className="absolute bottom-48 left-10 flex gap-6 z-50 ">
-              <Image src={'/cursor.svg'} alt="t" width={24} height={24} />
-              <Image src={'/t1.svg'} alt="t" width={24} height={24} />
-              <Image src={'/t1.svg'} alt="t" width={24} height={24} />
-              <Image src={'/t1.svg'} alt="t" width={24} height={24} />
-              <Image src={'/fx.svg'} alt="t" width={24} height={24} />
-            </div>
-            <div className="absolute top-10 right-10 flex flex-col gap-6 z-50 bg-white px-3 py-2  rounded-sm drop-shadow-md ">
-              <Image src={'/cursor.svg'} alt="t" width={24} height={24} />
-              <Image src={'/t1.svg'} alt="t" width={24} height={24} />
-              <Image src={'/fx.svg'} alt="t" width={24} height={24} />
-            </div>
-            <div className={`absolute ${showModal ? 'block' : 'hidden'}`}>
-              <ModalsWrapper
-                tool={tool}
-                setTool={setTool}
-                setModalOpen={setShowModal}
-                measurements={measurements}
-              />
-            </div>
-            <div className="h-[527px] rounded-lg overflow-y-auto">
-              {uploadFileData.map((file, index) => (
-                <Draw
-                  key={`draw-${index}`}
-                  selectedTool={tool}
-                  scale={
-                    scaleData?.[`${index + 1}`] || {
-                      scale: `1"=1"`,
-                      precision: '1',
-                    }
-                  }
-                  depth={depth}
-                  color={color}
-                  border={border}
-                  unit={unit * 1.5}
-                  uploadFileData={file}
-                  pageNumber={index + 1}
-                  handleScaleModal={(open) => setShowModal(open)}
-                  handleChangeMeasurements={(measurements) =>
-                    setMeasurements(measurements)
-                  }
-                />
-              ))}
-            </div>
             <DrawTable />
           </div>
-
           {tool.selected === 'scale' && (
             <ModalComponent open={showModal} setOpen={setShowModal}>
               <ScaleModal

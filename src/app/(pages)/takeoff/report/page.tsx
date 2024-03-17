@@ -1,22 +1,12 @@
 'use client';
 import Button from '@/app/component/customButton/button';
-import WhiteButton from '@/app/component/customButton/white';
 import Image from 'next/image';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import CaptureComponent from '@/app/component/captureComponent';
-import { useContext, useState } from 'react';
-import {
-  DrawHistoryContext,
-  ReportDataContext,
-  UploadFileContext,
-} from '../context';
-import { DrawHistoryContextProps } from '../context/DrawHistoryContext';
+import { useState } from 'react';
 import generatePDF from '@/app/component/captureComponent/generatePdf';
 
 const Report = () => {
-  const { drawHistory } = useContext(
-    DrawHistoryContext
-  ) as DrawHistoryContextProps;
   const [name, setName] = useState('');
   const [save, setSave] = useState(0);
   const [saveLoader, setSaveLoader] = useState(false);
@@ -46,21 +36,13 @@ const Report = () => {
         </div>
 
         {/* search project */}
-        <div className="bg-white flex justify-between items-center mt-6 ">
-          <div className="flex items-end">
-            <div
-              className="rounded-lg border border-Gainsboro bg-silverGray  h-[51px] 
-                        flex 
-                        items-center
-                            px-3"
-            >
+        <div className="bg-white flex justify-between items-end mt-6">
+          <div className="flex items-end space-x-4">
+            <div className="rounded-lg border border-Gainsboro bg-silverGray h-[51px] flex items-center px-3">
               <input
                 type="name"
-                name=""
-                id=""
                 placeholder="Enter project name"
-                className="w-full h-full
-          bg-transparent outline-none"
+                className="w-[350px] h-full bg-transparent outline-none"
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
@@ -71,17 +53,19 @@ const Report = () => {
               />
             </div>
           </div>
+          <div>
+            <Button
+              text="Save"
+              disabled={saveLoader || save > 0}
+              isLoading={saveLoader}
+              onClick={() => {
+                setSaveLoader(true);
+                setSave(1);
+              }}
+              className="disabled:opacity-50 !py-2"
+            />
+          </div>
         </div>
-        <Button
-          text="Save"
-          disabled={saveLoader || save > 0}
-          isLoading={saveLoader}
-          onClick={() => {
-            setSaveLoader(true);
-            setSave(1);
-          }}
-          className="disabled:opacity-50"
-        />
       </section>
       <CaptureComponent
         name={name}

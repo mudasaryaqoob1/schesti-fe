@@ -1,5 +1,6 @@
 import React from 'react';
 import { dataInterface } from '../captureComponent';
+// import Image from 'next/image';
 
 interface Props {
   entity: dataInterface[];
@@ -28,7 +29,10 @@ const ReportCard: React.FC<Props> = ({ entity }) => {
                 {item.details.projectName || 'Length Measurement'}
               </span>
               <span>
-                Page Label<span className="font-sm text-black"> 1</span>
+                Page Label
+                <span className="font-sm text-black">
+                  {item.details.pageLabel}
+                </span>
               </span>
               <span>
                 Author

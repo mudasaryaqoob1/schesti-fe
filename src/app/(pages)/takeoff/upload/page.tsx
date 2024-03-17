@@ -1,14 +1,12 @@
 'use client';
-import { useCallback, useContext, useState } from 'react';
-import Button from '@/app/component/customButton/button';
-import WhiteButton from '@/app/component/customButton/white';
+import { useCallback, useContext } from 'react';
 import { bg_style } from '@/globals/tailwindvariables';
 import Image from 'next/image';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import SecondaryHeading from '@/app/component/headings/Secondary';
 import Description from '@/app/component/description';
-import ModalComponent from '@/app/component/modal';
-import ScaleModal from '../components/scale';
+// import ModalComponent from '@/app/component/modal';
+// import ScaleModal from '../components/scale';
 import { UploadFileContext } from '../context';
 import {
   UploadFileContextProps,
@@ -17,14 +15,14 @@ import {
 import { useRouter } from 'next/navigation';
 
 const Upload = () => {
-  const [selectedIcon, setSelectedIcon] = useState('');
-  const [showModal, setShowModal] = useState(false);
+  // const [selectedIcon, setSelectedIcon] = useState('');
+  // const [showModal, setShowModal] = useState(false);
   const router = useRouter();
 
-  const handleClick = (item: string) => {
-    setSelectedIcon(item);
-    setShowModal(true);
-  };
+  // const handleClick = (item: string) => {
+  //   setSelectedIcon(item);
+  //   setShowModal(true);
+  // };
 
   const { handleSrc } = useContext(UploadFileContext) as UploadFileContextProps;
   const pdfjs = useCallback(async () => {
@@ -99,7 +97,7 @@ const Upload = () => {
         </div>
 
         {/* search project */}
-        <div className="bg-white flex justify-between items-center mt-6 ">
+        {/* <div className="bg-white flex justify-between items-center mt-6 ">
           <div
             className="rounded-lg border border-Gainsboro bg-silverGray  h-[51px] 
                         flex 
@@ -133,9 +131,9 @@ const Upload = () => {
               />
             </div>
           </div>
-        </div>
+        </div> */}
 
-        <div
+        {/* <div
           className={`h-12 w-full mt-6 flex flex-row items-center justify-center gap-8  py-[5.5px] ${bg_style}`}
         >
           <div
@@ -157,9 +155,9 @@ const Upload = () => {
               Scale
             </label>
           </div>
-        </div>
+        </div> */}
         <div
-          className={`grid place-items-center shadow-sceneryShadow rounded-lg mt-4 ${bg_style} h-[580px] `}
+          className={`grid place-items-center shadow-sceneryShadow rounded-lg mt-4 ${bg_style} h-[700px] `}
         >
           <div className="md:min-w-[493px] flex items-center flex-col gap-2 justify-center shadow-sceneryShadow rounded-lg">
             <Image
@@ -189,7 +187,7 @@ const Upload = () => {
             </label>
           </div>
         </div>
-        <ModalComponent open={showModal} setOpen={setShowModal}>
+        {/* <ModalComponent open={showModal} setOpen={setShowModal}>
           <ScaleModal
             setModalOpen={setShowModal}
             scaleData={function (data: any): void {
@@ -197,7 +195,7 @@ const Upload = () => {
               throw new Error('Function not implemented.');
             }}
           />
-        </ModalComponent>
+        </ModalComponent> */}
       </section>
     </>
   );

@@ -1,13 +1,11 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Stage, Layer, Image as KonvaImage, Line, Circle } from 'react-konva';
+import { Stage, Layer } from 'react-konva';
 import Konva from 'konva';
 
 import UploadFileContext, {
   UploadFileContextProps,
 } from '@/app/(pages)/takeoff/context/UploadFileContext';
 import ReportCard from '../reportCard';
-
-import { useDraw } from '@/app/hooks';
 
 import { ReportDataContext } from '@/app/(pages)/takeoff/context';
 import {
@@ -37,16 +35,6 @@ const CaptureComponent = ({
   // itemsToCapture: DrawHistoryContextInterface;
   // onCapture: (url: string, key: number) => void;
 }) => {
-  const {
-    calcLineDistance,
-    calculateMidpoint,
-    calculatePolygonArea,
-    calculatePolygonPerimeter,
-    calculatePolygonCenter,
-    calculatePolygonVolume,
-    calculateAngle,
-  } = useDraw();
-
   const stageRef = useRef<Konva.Stage>(null);
   const [data, setData] = useState<dataInterface[]>([]);
   const [isSaving, setIsSaving] = useState<boolean>(false);
@@ -59,6 +47,8 @@ const CaptureComponent = ({
   const { reportData } = useContext(
     ReportDataContext
   ) as ReportDataContextProps;
+
+  console.log('reportData', reportData);
 
   useEffect(() => {
     const loadImage = (src: string) => {
@@ -107,7 +97,7 @@ const CaptureComponent = ({
 
         // Determine the type of shape and render accordingly
         switch (shapeType) {
-          case 'count':
+          case 'count': {
             // Example for a circle shape
             const { x, y, radius = 20, fill = '#FF3434' } = shape;
             const circle = new Konva.Circle({ x, y, radius, fill });
@@ -119,29 +109,32 @@ const CaptureComponent = ({
             maxX = x + radius + 20;
             maxY = y + radius + 20;
             break;
+          }
 
           case 'line':
           case 'dynamic':
           case 'area':
           case 'volume':
-            // Example for a line or polygon shape
-            const { points, stroke, strokeWidth, lineCap } = shape;
-            const line = new Konva.Line({
-              points,
-              stroke,
-              strokeWidth,
-              lineCap,
-              closed: shapeType === 'area' || shapeType === 'volume', // Close path for areas and volumes
-            });
-            layer.add(line);
+            {
+              // Example for a line or polygon shape
+              const { points, stroke, strokeWidth, lineCap } = shape;
+              const line = new Konva.Line({
+                points,
+                stroke,
+                strokeWidth,
+                lineCap,
+                closed: shapeType === 'area' || shapeType === 'volume', // Close path for areas and volumes
+              });
+              layer.add(line);
 
-            // Calculate bounds for lines and polygons, include margin
-            const xs = points.filter((_: any, i: number) => i % 2 === 0);
-            const ys = points.filter((_: any, i: number) => i % 2 !== 0);
-            minX = Math.min(...xs) - 20;
-            minY = Math.min(...ys) - 20;
-            maxX = Math.max(...xs) + 20;
-            maxY = Math.max(...ys) + 20;
+              // Calculate bounds for lines and polygons, include margin
+              const xs = points.filter((_: any, i: number) => i % 2 === 0);
+              const ys = points.filter((_: any, i: number) => i % 2 !== 0);
+              minX = Math.min(...xs) - 20;
+              minY = Math.min(...ys) - 20;
+              maxX = Math.max(...xs) + 20;
+              maxY = Math.max(...ys) + 20;
+            }
             break;
 
           default:
@@ -175,39 +168,6 @@ const CaptureComponent = ({
       });
     };
 
-    // const captureShapes = async () => {
-    //   const background = await loadImage(uploadFileData[0].src);
-    //   const newData: dataInterface[] = [];
-    //   // const urls: string[] = [];
-
-    //   // for (const [page, drawData] of Object.entries(itemsToCapture)) {
-    //   //   for (const shapeType of [
-    //   //     'line',
-    //   //     'area',
-    //   //     'volume',
-    //   //     'dynamic',
-    //   //     'count',
-    //   //   ]) {
-    //   //     for (const shape of drawData[shapeType as keyof DrawInterface]) {
-    //   //       const details = {
-    //   //         type: shapeType,
-    //   //         ...shape,
-    //   //       };
-    //   //       const url = await captureShape(shape, background, shapeType);
-    //   //       urls.push(url);
-    //   //       newData.push({
-    //   //         image: url,
-    //   //         details: details,
-    //   //       });
-
-    //   //       onCapture(url, urls.length - 1);
-    //   //     }
-    //   //   }
-    //   // }
-
-    //   setData(newData as dataInterface[]);
-    // };
-
     const captureShapes = async () => {
       const background = await loadImage(uploadFileData[0]?.src || ''); // Update based on actual data structure
       const promises = reportData.map(async (item) => {
@@ -222,10 +182,8 @@ const CaptureComponent = ({
       setData(newData);
     };
 
-    if (reportData.length) {
-      captureShapes();
-    }
-  }, [reportData.length]);
+    if (reportData.length) captureShapes();
+  }, [reportData, uploadFileData]);
 
   const saveData = () => {
     if (data.length > 0) {
@@ -247,9 +205,7 @@ const CaptureComponent = ({
     }
   };
   useEffect(() => {
-    if (save) {
-      saveData();
-    }
+    if (save) saveData();
   }, [save]);
 
   return (
@@ -260,7 +216,7 @@ const CaptureComponent = ({
         height={1800}
         style={{ display: 'none' }}
       >
-        <Layer></Layer>
+        <Layer />
       </Stage>
       <div>
         <div className="grid grid-cols-2 gap-4 m-12 " id="capture">
