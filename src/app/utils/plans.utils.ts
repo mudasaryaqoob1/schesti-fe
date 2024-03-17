@@ -37,7 +37,8 @@ export const OtherRoutes = {
     "Target": "/settings/target",
     "Support Tickets": "/settings/supporttickets",
   },
-  "Upgrades": "/upgradeplans"
+  "Upgrades": "/upgradeplans",
+  "Dashboard": "/dashboard"
 }
 
 export const planFeatureOptions = [

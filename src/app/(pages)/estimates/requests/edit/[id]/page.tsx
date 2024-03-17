@@ -4,7 +4,6 @@ import React, {
   useCallback,
   useEffect,
   useState,
-  useLayoutEffect,
 } from 'react';
 import * as Yup from 'yup';
 import { twMerge } from 'tailwind-merge';
@@ -26,11 +25,10 @@ import { userService } from '@/app/services/user.service';
 import { selectEstimateRequests } from '@/redux/estimate/estimateRequestSelector';
 import ExistingClient from '../../existingClient';
 import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
-import { HttpService } from '@/app/services/base.service';
-import { selectToken } from '@/redux/authSlices/auth.selector';
 import { IEstimateRequest } from '@/app/interfaces/estimateRequests/estimateRequests.interface';
 import { byteConverter } from '@/app/utils/byteConverter';
 import AwsS3 from '@/app/utils/S3Intergration';
+import { withAuth } from '@/app/hoc/withAuth';
 
 const clientInfoSchema: any = Yup.object({
   clientName: Yup.string().required('Field is required!'),
@@ -38,7 +36,7 @@ const clientInfoSchema: any = Yup.object({
   email: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
-    phone: Yup.string()
+  phone: Yup.string()
     .min(7, 'Phone number must be at least 7 characters')
     .max(12, 'Phone number must be at most 12 characters')
     .required('Phone number is required'),
@@ -67,14 +65,6 @@ const EditEstimateRequest = () => {
   const router = useRouter();
   const params = useParams();
   const { id } = params;
-
-  const token = useSelector(selectToken);
-
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
 
   const estimateRequestsData = useSelector(selectEstimateRequests);
 
@@ -134,7 +124,7 @@ const EditEstimateRequest = () => {
   }, []);
 
   const submitHandler = async (values: IEstimateRequest) => {
-  
+
     if (drawingsDocuments.length == 0) {
       setuploadDocumentsError('Drawings Document Required');
     }
@@ -145,9 +135,9 @@ const EditEstimateRequest = () => {
     // }
     else {
       setIsLoading(true);
-      toast.success('File Uploading...', {autoClose: 5})
+      toast.success('File Uploading...', { autoClose: 5 })
 
-      
+
       const [drawingDocs, takeOffDocs, otherDocs] = await Promise.all([
         uploadDocumentToS3Handler(drawingsDocuments),
         uploadDocumentToS3Handler(takeOffReports),
@@ -783,4 +773,4 @@ const EditEstimateRequest = () => {
   );
 };
 
-export default EditEstimateRequest;
+export default withAuth(EditEstimateRequest);

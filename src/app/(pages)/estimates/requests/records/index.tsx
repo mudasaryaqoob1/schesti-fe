@@ -1,7 +1,6 @@
 import React, {
   useCallback,
   useEffect,
-  useLayoutEffect,
   useState,
 } from 'react';
 import type { ColumnsType } from 'antd/es/table';
@@ -10,8 +9,6 @@ import type { MenuProps } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { AppDispatch } from '@/redux/store';
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
 import {
   selectEstimateRequests,
   selectEstimateRequestsLoading,
@@ -41,7 +38,7 @@ interface DataType {
 const EstimateRequestTable: React.FC = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const token = useSelector(selectToken);
+
   const [selectedEstimate, setSelecteEstimate] = useState<
     (IEstimateRequest & { _id: string }) | null
   >(null);
@@ -49,11 +46,6 @@ const EstimateRequestTable: React.FC = () => {
   const estimateRequestsData = useSelector(selectEstimateRequests);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
 
   const memoizedSetPerson = useCallback(async () => {
     await dispatch(fetchEstimateRequests({ page: 1, limit: 10 }));

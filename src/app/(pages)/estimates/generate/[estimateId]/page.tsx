@@ -3,7 +3,6 @@ import React, {
   useState,
   useEffect,
   useCallback,
-  useLayoutEffect,
 } from 'react';
 import { useParams } from 'next/navigation';
 import Description from '@/app/component/description';
@@ -17,9 +16,7 @@ import ClientPDF from '../components/clientPDF';
 import CustomButton from '@/app/component/customButton/button';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import { estimateRequestService } from '@/app/services/estimates.service';
-import { useSelector } from 'react-redux';
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
+import { withAuth } from '@/app/hoc/withAuth';
 
 const ViewEstimateDetail = () => {
   const { estimateId } = useParams();
@@ -27,13 +24,7 @@ const ViewEstimateDetail = () => {
   const [pdfData, setPdfData] = useState<Object[]>([]);
   const [estimateDetailsSummary, setEstimateDetailsSummary] = useState<any>();
   const [estimatesRecord, setEstimatesRecord] = useState([]);
-  const token = useSelector(selectToken);
 
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
   const fetchEstimateDetail = useCallback(async () => {
     const result =
       await estimateRequestService.httpGetGeneratedEstimateDetail(estimateId);
@@ -237,26 +228,26 @@ const ViewEstimateDetail = () => {
       <div>
         {estimatesRecord?.length
           ? estimatesRecord.map((estimate: any) => (
-              <div key={estimate.title} className={`${bg_style} p-5 mt-3`}>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <QuaternaryHeading
-                      title={estimate.title}
-                      className="font-semibold"
-                    />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <QuaternaryHeading
-                      title={`Total Cost: ${estimate.totalCostForTitle}`}
-                      className="font-semibold"
-                    />
-                  </div>
+            <div key={estimate.title} className={`${bg_style} p-5 mt-3`}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <QuaternaryHeading
+                    title={estimate.title}
+                    className="font-semibold"
+                  />
                 </div>
-                <div className="estimateTable_container">
-                  <EstimatesTable estimates={estimate.scopeItems} />
+                <div className="flex items-center gap-2">
+                  <QuaternaryHeading
+                    title={`Total Cost: ${estimate.totalCostForTitle}`}
+                    className="font-semibold"
+                  />
                 </div>
               </div>
-            ))
+              <div className="estimateTable_container">
+                <EstimatesTable estimates={estimate.scopeItems} />
+              </div>
+            </div>
+          ))
           : null}
       </div>
 
@@ -300,4 +291,4 @@ const ViewEstimateDetail = () => {
   );
 };
 
-export default ViewEstimateDetail;
+export default withAuth(ViewEstimateDetail);

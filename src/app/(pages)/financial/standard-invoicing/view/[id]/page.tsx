@@ -1,6 +1,6 @@
 'use client';
 import { useParams } from 'next/navigation';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useLayoutEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import TertiaryHeading from '@/app/component/headings/tertiary';
@@ -10,37 +10,50 @@ import { selectToken } from '@/redux/authSlices/auth.selector';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import Table, { type ColumnType } from 'antd/es/table';
-import { ConfigProvider, Divider } from 'antd';
+import { ConfigProvider, Divider, Skeleton } from 'antd';
 import CustomButton from '@/app/component/customButton/button';
-import { PDFDownloadLink } from '@react-pdf/renderer';
+import {
+  PDFDownloadLink,
+} from '@react-pdf/renderer';
 import moment from 'moment';
 import { RootState } from '@/redux/store';
-import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
-import ClientPDF from './clientPDF';
+// import ClientPDF from './clientPDF';
 import { withAuth } from '@/app/hoc/withAuth';
+import { useQuery } from 'react-query';
+import { invoiceService } from '@/app/services/invoices.service';
+import { IResponseInterface } from '@/app/interfaces/api-response.interface';
+import { AxiosError } from 'axios';
+import { toast } from 'react-toastify';
+import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
+// import NewClientPdf from './newClientPdf'
+import ClientPDF from './clientPDF';
+import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 
 function ViewSubcontractorInvoicePage() {
   const token = useSelector(selectToken);
   const params = useParams<{ id: string }>();
   const id = params.id;
-  const subcontractorInvoices = useSelector(
-    (state: RootState) => state.invoices.data
-  );
-  const [invoiceData, setInvoiceData] = useState<IInvoice | null>(null);
   const auth = useSelector((state: RootState) => state.auth);
-  const user = auth.user?.user as IUser | undefined;
+  const user = auth.user?.user as IUpdateCompanyDetail | undefined;
   useLayoutEffect(() => {
     if (token) {
       HttpService.setToken(token);
     }
   }, [token]);
 
-  useEffect(() => {
-    const invoice = subcontractorInvoices?.find((item: any) => item._id === id);
-    if (invoice) {
-      setInvoiceData(invoice);
+  const invoiceQuery = useQuery<IResponseInterface<{ invoice: IInvoice }> | null, AxiosError<{ message: string, statusCode: number }>>(['get-contractor-invoice', id], () => {
+    if (!id) {
+      return null;
     }
-  }, [id, subcontractorInvoices]);
+    return invoiceService.httpGetSubcontractorInvoiceById(id)
+  }, {
+    onError(err) {
+      toast.error(err.response?.data.message || "Unable to get the invoice");
+    },
+    staleTime: 60 * 5000
+  });
+
+
 
   const columns: ColumnType<IInvoice['invoiceItems'][0]>[] = [
     {
@@ -71,9 +84,15 @@ function ViewSubcontractorInvoicePage() {
     }, 0);
   }
 
-  if (!invoiceData) {
+  if (invoiceQuery.isLoading) {
+    return <Skeleton />
+  }
+
+  if (!invoiceQuery.data?.data?.invoice) {
     return null;
   }
+
+  const invoiceData = invoiceQuery.data.data.invoice;
 
   return (
     <section className="mx-16 my-2">
@@ -231,7 +250,7 @@ function ViewSubcontractorInvoicePage() {
       <Divider />
       <div className="mt-4 flex justify-end">
         <PDFDownloadLink
-          document={<ClientPDF invoice={invoiceData} user={user} />}
+          document={<ClientPDF invoice={invoiceData} user={user as unknown as IUser} />}
           fileName="invoice.pdf"
         >
           {({ loading }) => (
@@ -248,4 +267,4 @@ function ViewSubcontractorInvoicePage() {
   );
 }
 
-export default withAuth(ViewSubcontractorInvoicePage, []);
+export default withAuth(ViewSubcontractorInvoicePage);

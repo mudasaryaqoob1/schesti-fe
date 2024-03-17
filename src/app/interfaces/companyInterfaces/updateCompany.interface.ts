@@ -3,7 +3,7 @@ export interface IUpdateCompanyDetail {
   industry: string;
   employee: number;
   email?: string;
-  phone: Number | string;
+  phone: number | string;
   website: string;
   avatar: string;
   brandingColor: string;
