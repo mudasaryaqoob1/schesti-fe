@@ -19,12 +19,6 @@ import { useRouter } from 'next/navigation';
 import WhiteButton from '@/app/component/customButton/white';
 import Button from '@/app/component/customButton/button';
 
-// const selectedScale = {
-//   "1" : {scale:  `3/8"=1'-0"`, precision: `1/34` }
-//   "2" : {scale:  `3/8"=1'-0"`, precision: `1/34` }
-//   "3" : {scale:  `3/8"=1'-0"`, precision: `1/34` }
-// }
-
 export interface ScaleData {
   scale: string;
   precision: string;
@@ -68,12 +62,7 @@ const Scale = () => {
     <>
       <section className="md:px-16 px-8">
         <div className="bg-white flex justify-between items-center mt-6 ">
-          <div
-            className="rounded-lg border border-Gainsboro bg-silverGray  h-[51px] 
-                        flex 
-                        items-center
-                            px-3"
-          >
+          <div className="rounded-lg border border-Gainsboro bg-silverGray  h-[51px] flex items-center px-3">
             <input
               type="search"
               name=""

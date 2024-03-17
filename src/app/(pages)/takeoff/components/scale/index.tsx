@@ -259,7 +259,11 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
             </div>
             {value === 'custom' && (
               <div>
-                <WhiteButton text="Add to Preset" onClick={handleAddPreset} />
+                <WhiteButton
+                  className="!py-1.5"
+                  text="Add to Preset"
+                  onClick={handleAddPreset}
+                />
               </div>
             )}
           </div>
@@ -402,7 +406,7 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
         <div>
           <Button
             text="Cancel"
-            className="!bg-snowWhite !text-abyssalBlack !py-2 "
+            className="!bg-snowWhite !text-abyssalBlack !py-1.5 "
             onClick={() => setModalOpen(false)}
           />
         </div>
@@ -410,7 +414,7 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
           <Button
             text="Calibrate"
             onClick={handleCalibrate}
-            className="!py-2"
+            className="!py-1.5"
           />
         </div>
       </div>
