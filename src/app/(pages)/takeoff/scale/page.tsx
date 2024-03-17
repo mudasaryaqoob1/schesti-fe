@@ -13,7 +13,7 @@ import {
   defaultMeasurements,
 } from '../types';
 import Image from 'next/image';
-import { ScaleNavigation, Draw, DrawTable } from './components';
+import { ScaleNavigation, DrawTable, Draw } from './components';
 import { ScaleDataContextProps } from '../context/ScaleContext';
 import { useRouter } from 'next/navigation';
 import Button from '@/app/component/customButton/button';
