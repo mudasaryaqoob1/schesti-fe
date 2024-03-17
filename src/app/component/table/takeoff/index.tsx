@@ -86,22 +86,46 @@ const Index: React.FC = () => {
         const response =
           await takeoffSummaryService.httpGetAllTakeoffSummaries(/* userId, page, limit */);
         if (response && response.data) {
+          console.warn(response.data);
+
           // Map your data to match the DataType structure
           const formattedData = response.data.map(
             (
               item: {
-                id: any;
+                _id: any;
                 name: any;
+                url: string;
                 scope: { toString: () => any };
                 createdAt: any;
               },
               index: any
             ) => ({
-              key: item.id, // Assume each item has a unique id
+              key: item._id, // Assume each item has a unique id
               name: item.name,
               scope: item.scope.toString(), // Ensure scope is a string
               createdAt: item.createdAt,
-              action: 'icon', // Replace with actual action logic
+              action: (
+                <span className="flex flex-col space-y-2">
+                  <button
+                    id="downloadPdfBtn"
+                    onClick={() => downloadPdfFromS3(item.url)}
+                    className="cursor-pointer"
+                  >
+                    Download PDF
+                  </button>
+                  <button
+                    id="deletePdfBtn"
+                    onClick={() =>
+                      takeoffSummaryService.httpSoftDeleteTakeoffSummary(
+                        item._id
+                      )
+                    }
+                    className="cursor-pointer"
+                  >
+                    Delete
+                  </button>
+                </span>
+              ),
             })
           );
           setData(formattedData);
@@ -131,3 +155,28 @@ const Index: React.FC = () => {
 };
 
 export default Index;
+
+function downloadPdfFromS3(pdfBlobUrl: string, fileName = 'downloaded.pdf') {
+  // Fetch the PDF blob using the Fetch API
+  fetch(pdfBlobUrl)
+    .then((response) => {
+      if (response.ok) return response.blob();
+      throw new Error('Network response was not ok.');
+    })
+    .then((blob) => {
+      // Create a local URL for the blob
+      const blobUrl = window.URL.createObjectURL(blob);
+
+      // Create a temporary link element and trigger the download
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.setAttribute('download', fileName);
+      document.body.appendChild(link);
+      link.click();
+
+      // Clean up by removing the temporary link element and revoking the blob URL
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    })
+    .catch((error) => console.error('Error downloading the PDF:', error));
+}

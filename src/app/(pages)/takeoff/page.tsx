@@ -29,7 +29,6 @@ const TakeOff = () => {
               name: item.name,
               scope: item.scope.toString(), // Ensure scope is a string
               createdAt: item.createdAt,
-              action: 'icon', // Replace with actual action logic
             })
           );
           console.warn(formattedData);

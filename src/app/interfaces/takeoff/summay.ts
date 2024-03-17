@@ -1,7 +1,7 @@
 export interface CreateTakeoffSummaryRequest {
   name: string;
   scope: number;
-  createdBy: string;
+  createdBy: number;
   url: string;
 }
 

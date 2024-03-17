@@ -11,6 +11,7 @@ import {
   UploadFileContext,
 } from '../context';
 import { DrawHistoryContextProps } from '../context/DrawHistoryContext';
+import generatePDF from '@/app/component/captureComponent/generatePdf';
 
 const Report = () => {
   const { drawHistory } = useContext(
@@ -62,24 +63,9 @@ const Report = () => {
               />
             </div>
             <div>
-              <Button text="Generate Report" />
-            </div>
-          </div>
-          <div className="flex flex-row gap-3">
-            <div>
-              <WhiteButton
-                text="Generate with AI"
-                className="!text-goldenrodYellow !border-goldenrodYellow"
-
-                //   onClick={() => router.push('/createclient')}
-              />
-            </div>
-            <div>
               <Button
                 text="Generate Report"
-                iconwidth={20}
-                iconheight={20}
-                //   onClick={() => router.push('/createclient')}
+                onClick={() => generatePDF('capture')}
               />
             </div>
           </div>
