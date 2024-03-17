@@ -2,6 +2,7 @@ export interface ISettingTarget {
   month: string;
   price: string;
   _id?: string;
+  year: string;
 }
 
 export interface ICategory {

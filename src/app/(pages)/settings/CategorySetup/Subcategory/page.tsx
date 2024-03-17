@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useLayoutEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Form, Formik } from 'formik';
 
 import { bg_style } from '@/globals/tailwindvariables';
@@ -10,9 +10,7 @@ import * as Yup from 'yup';
 import FormControl from '@/app/component/formControl';
 import SubCategoryTable from './Table';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectToken } from '@/redux/authSlices/auth.selector';
 import { AppDispatch } from '@/redux/store';
-import { HttpService } from '@/app/services/base.service';
 import {
   fetchCategories,
   fetchSubCategories,
@@ -27,7 +25,8 @@ import { voidFc } from '@/app/utils/types';
 import {
   refetchSubCategories,
   setSubcategoryData,
-} from '@/redux/company/settingSlices/companySetup/subcategory.slice';
+} from '@/redux/company/settingSlices/categories/subcategory.slice';
+import { withAuth } from '@/app/hoc/withAuth';
 
 export type SubcategoryInitValues = {
   name: string;
@@ -43,11 +42,12 @@ export interface DataType {
 const validationSchema = Yup.object({
   category: Yup.string().required('Category Name is required!'),
   name: Yup.string().required('Sub Category is required!'),
-  price: Yup.string().required('Price is required!'),
+  price: Yup.number()
+    .min(1, 'Price must be greater than 0')
+    .required('Price is required!'),
 });
 
 const AddSubcategory = () => {
-  const token = useSelector(selectToken);
   const dispatch = useDispatch<AppDispatch>();
   const { subcategoryData } = useSelector(
     (state: any) => state.companySetupSubcategory
@@ -56,7 +56,7 @@ const AddSubcategory = () => {
   const initialValues: SubcategoryInitValues = {
     name: subcategoryData?.subCategory || '',
     price: subcategoryData?.price || '',
-    category: subcategoryData?.categoryName || '',
+    category: subcategoryData?.categoryId || '',
   };
   const categoriesReduxData = useSelector(companySetupCategoriesData);
   const categoriesReduxDataLoading = useSelector(
@@ -79,12 +79,6 @@ const AddSubcategory = () => {
     fetchCategoriesHandler();
   }, []);
 
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
-
   const submitHandler = async (
     values: SubcategoryInitValues,
     { resetForm }: { resetForm: voidFc }
@@ -93,7 +87,6 @@ const AddSubcategory = () => {
       const { statusCode, data } =
         await categoriesService.httpUpdateSubcategory(subcategoryData._id, {
           ...values,
-          category: subcategoryData.categoryId,
         });
       console.log(statusCode, data);
       if (statusCode === 200) {
@@ -129,8 +122,8 @@ const AddSubcategory = () => {
           onSubmit={submitHandler}
           enableReinitialize
         >
-          {({ handleSubmit, values, errors }) => {
-            console.log({ values, errors });
+          {({ handleSubmit, values }) => {
+            console.log({ values });
             return (
               <Form
                 name="basic"
@@ -139,22 +132,20 @@ const AddSubcategory = () => {
                 className="mt-2"
               >
                 <div className="grid grid-cols-3 gap-2 items-center">
-                  {categoriesReduxDataLoading ? (
-                    <p>Loading..</p>
-                  ) : (
-                    <FormControl
-                      control="select"
-                      label="Catgory Name"
-                      type="text"
-                      disabled={subcategoryData}
-                      options={options}
-                      name="category"
-                      placeholder="Enter Name"
-                    />
-                  )}
+                  <FormControl
+                    control="select"
+                    label="Category Name"
+                    type="text"
+                    disabled={subcategoryData}
+                    options={options}
+                    searchable={true}
+                    isLoading={categoriesReduxDataLoading}
+                    name="category"
+                    placeholder="Search Category Name"
+                  />
                   <FormControl
                     control="input"
-                    label="Sub-Catgory"
+                    label="Sub-Category"
                     type="text"
                     name="name"
                     placeholder="Enter Sub-Category"
@@ -165,6 +156,7 @@ const AddSubcategory = () => {
                     type="number"
                     name="price"
                     placeholder="Enter Price"
+                    prefix="$"
                   />
                 </div>
                 <div className="flex justify-end mt-5 gap-3">
@@ -198,4 +190,4 @@ const AddSubcategory = () => {
   );
 };
 
-export default AddSubcategory;
+export default withAuth(AddSubcategory);

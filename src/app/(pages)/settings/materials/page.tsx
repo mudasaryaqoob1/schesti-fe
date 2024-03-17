@@ -1,16 +1,17 @@
+'use client';
 import { bg_style } from '@/globals/tailwindvariables';
 import SettingSidebar from '../verticleBar';
 import Materials from './components/Materials';
+import { withAuth } from '@/app/hoc/withAuth';
 
-const page = () => {
+function MaterialsPage() {
   return (
     <SettingSidebar>
       <section className={`${bg_style} p-5 w-full`}>
-        {/* <NoData btnText="+ Import Materials" link="" /> */}
         <Materials />
       </section>
     </SettingSidebar>
   );
-};
+}
 
-export default page;
+export default withAuth(MaterialsPage);

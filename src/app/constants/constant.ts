@@ -170,3 +170,9 @@ export const debounce = (timeout = 10) => {
     }, timeout);
   };
 };
+
+export const USER_ROLES_ENUM = {
+  OWNER: 'owner',
+  CONTRACTOR: 'contractor',
+  SUBCONTRACTOR: 'subcontractor',
+};

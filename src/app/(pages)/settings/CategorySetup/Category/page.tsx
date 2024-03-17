@@ -16,7 +16,8 @@ import {
   addNewCategoryData,
   setCategoryData,
   updateCategoryData,
-} from '@/redux/company/settingSlices/companySetup/category.slice';
+} from '@/redux/company/settingSlices/categories/category.slice';
+import { withAuth } from '@/app/hoc/withAuth';
 
 export interface DataType {
   categoryId: string;
@@ -52,6 +53,7 @@ const AddCategory = () => {
         values
       );
       if (statusCode === 200) {
+        console.log(data);
         dispatch(updateCategoryData(data));
         dispatch(setCategoryData(null));
         resetForm();
@@ -121,4 +123,4 @@ const AddCategory = () => {
   );
 };
 
-export default AddCategory;
+export default withAuth(AddCategory);

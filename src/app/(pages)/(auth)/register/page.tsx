@@ -21,6 +21,7 @@ import { signup, loginWithGoogle } from '@/redux/authSlices/auth.thunk';
 import { AppDispatch } from '@/redux/store';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
+import { USER_ROLES_ENUM } from '@/app/constants/constant';
 
 const initialValues: ISignUpInterface = {
   name: '',
@@ -35,8 +36,12 @@ const RegisterSchema: any = Yup.object({
     .required('Email is required!')
     .email('Email should be valid'),
   password: Yup.string()
-    .required('Password is required!')
-    .min(6, 'Minimum six character is required'),
+    .matches(
+      new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/),
+      'The password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one digit.'
+    )
+    .min(6, 'Minimum six character is required')
+    .required('Password is required!'),
   confirmPassword: Yup.string()
     .required('Confirm Password is required!')
     .oneOf([Yup.ref('password')], 'Passwords must match'),
@@ -47,6 +52,11 @@ const Register = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const [role, setRole] = useState(USER_ROLES_ENUM.CONTRACTOR);
+  const handleRoleChange = (value: string) => {
+    setRole(value);
+  };
 
   const submitHandler = async (values: ISignUpInterface) => {
     setIsLoading(true);
@@ -119,6 +129,27 @@ const Register = () => {
             className="my-2 text-center text-slateGray"
             title=" Sign up to your account"
           />
+          <div className="flex items-center justify-between space-x-4 bg-gray-200 rounded-md p-2 mt-6 mb-3">
+            <button
+              className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${role === USER_ROLES_ENUM.CONTRACTOR ? 'bg-lavenderPurple text-white' : 'bg-gray-200'}`}
+              onClick={() => handleRoleChange(USER_ROLES_ENUM.CONTRACTOR)}
+            >
+              General-Contractor
+            </button>
+            <button
+              className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${role === USER_ROLES_ENUM.SUBCONTRACTOR ? 'bg-lavenderPurple text-white' : 'bg-gray-200'}`}
+              onClick={() => handleRoleChange(USER_ROLES_ENUM.SUBCONTRACTOR)}
+            >
+              Sub-Contractor
+            </button>
+            <button
+              className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${role === USER_ROLES_ENUM.OWNER ? 'bg-lavenderPurple text-white' : 'bg-gray-200'}`}
+              onClick={() => handleRoleChange(USER_ROLES_ENUM.OWNER)}
+            >
+              Owner
+            </button>
+          </div>
+
           <Formik
             initialValues={initialValues}
             validationSchema={RegisterSchema}

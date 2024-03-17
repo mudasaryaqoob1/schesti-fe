@@ -1,4 +1,9 @@
-import React, { useCallback, useEffect, useLayoutEffect } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useState,
+} from 'react';
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import Image from 'next/image';
@@ -13,7 +18,7 @@ import {
   companySetupSubCategoriesData,
   companySetupSubcategoriesLoading,
 } from '@/redux/company/companySelector';
-import { setSubcategoryData } from '@/redux/company/settingSlices/companySetup/subcategory.slice';
+import { setSubcategoryData } from '@/redux/company/settingSlices/categories/subcategory.slice';
 import { categoriesService } from '@/app/services/categories.service';
 
 interface DataType {
@@ -27,17 +32,49 @@ interface DataType {
 
 const SubCategoryTable: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const token = useSelector(selectToken);
+
+  useLayoutEffect(() => {
+    if (token) {
+      HttpService.setToken(token);
+    }
+  }, [token]);
 
   const subcategoriesReduxData = useSelector(companySetupSubCategoriesData);
   const subcategoriesReduxDataLoading = useSelector(
     companySetupSubcategoriesLoading
   );
-
   const { refetch } = useSelector(
     (state: any) => state.companySetupSubcategory
   );
 
-  const token = useSelector(selectToken);
+  const [subCategories, setSubCategories] = useState([]);
+
+  useEffect(() => {
+    if (subcategoriesReduxData?.length) {
+      const subCetegoriesChanges = subcategoriesReduxData.map(
+        (cat: { _id: string; name: string; subcategories: Object[] }) => {
+          return {
+            key: cat._id,
+            category: cat.name,
+            mainRow: true,
+            children: cat.subcategories.map(
+              ({ _id, price, name, categoryId, categoryName }: any) => {
+                return {
+                  _id,
+                  price,
+                  subCategory: name,
+                  categoryId,
+                  categoryName,
+                };
+              }
+            ),
+          };
+        }
+      );
+      setSubCategories(subCetegoriesChanges);
+    }
+  }, [subcategoriesReduxData]);
 
   const fetchSubcategoriesHandler = useCallback(async () => {
     await dispatch(fetchSubCategories({ page: 1, limit: 10 }));
@@ -46,13 +83,7 @@ const SubCategoryTable: React.FC = () => {
   useEffect(() => {
     fetchSubcategoriesHandler();
   }, [refetch]);
-
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
-
+  console.log({ subCategories });
   const columns: ColumnsType<DataType> = [
     {
       title: 'Category',
@@ -68,6 +99,11 @@ const SubCategoryTable: React.FC = () => {
       title: 'Price',
       dataIndex: 'price',
       key: 'price',
+      render(value) {
+        if (value) {
+          return `$${value}`;
+        }
+      },
     },
     {
       title: 'Action',
@@ -76,37 +112,38 @@ const SubCategoryTable: React.FC = () => {
       className: 'd-none',
       key: 'action',
       render: (_, subCategoriesData: any) => {
-        console.log({ subCategoriesData }, 'in sub');
-        return (
-          <div className="flex gap-2 justify-center">
-            <Image
-              src="/edit.svg"
-              className="cursor-pointer"
-              width={20}
-              height={20}
-              alt="edit"
-              onClick={() => {
-                dispatch(setSubcategoryData(subCategoriesData));
-              }}
-            />
-            <Image
-              src="/trash.svg"
-              className="cursor-pointer"
-              width={20}
-              height={20}
-              alt="delete"
-              onClick={async () => {
-                const { statusCode } =
-                  await categoriesService.httpDeleteSubcategory(
-                    subCategoriesData._id!
-                  );
-                if (statusCode === 200) {
-                  fetchSubcategoriesHandler();
-                }
-              }}
-            />
-          </div>
-        );
+        if (!subCategoriesData.mainRow) {
+          return (
+            <div className="flex gap-2 justify-center">
+              <Image
+                src="/edit.svg"
+                className="cursor-pointer"
+                width={20}
+                height={20}
+                alt="edit"
+                onClick={() => {
+                  dispatch(setSubcategoryData(subCategoriesData));
+                }}
+              />
+              <Image
+                src="/trash.svg"
+                className="cursor-pointer"
+                width={20}
+                height={20}
+                alt="delete"
+                onClick={async () => {
+                  const { statusCode } =
+                    await categoriesService.httpDeleteSubcategory(
+                      subCategoriesData._id!
+                    );
+                  if (statusCode === 200) {
+                    fetchSubcategoriesHandler();
+                  }
+                }}
+              />
+            </div>
+          );
+        }
       },
     },
   ];
@@ -119,26 +156,8 @@ const SubCategoryTable: React.FC = () => {
       <Table
         loading={subcategoriesReduxDataLoading}
         columns={columns}
-        dataSource={
-          subcategoriesReduxData
-            ? subcategoriesReduxData?.map(
-                ({ _id, name, subcategories }: any) => ({
-                  _id,
-                  category: name,
-                  subCategory: '',
-                  children: subcategories?.map(
-                    ({ _id, price, name, categoryId, categoryName }: any) => ({
-                      _id,
-                      price,
-                      subCategory: name,
-                      categoryId,
-                      categoryName,
-                    })
-                  ),
-                })
-              )
-            : []
-        }
+        dataSource={subCategories}
+        expandable={{ defaultExpandAllRows: true }}
       />
     </div>
   );

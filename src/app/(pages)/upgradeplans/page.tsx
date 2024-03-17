@@ -1,4 +1,7 @@
+'use client';
+
 import PaymentPlans from '@/app/component/plans';
+import { withAuth } from '@/app/hoc/withAuth';
 
 const UpgrdePlan = () => {
   return (
@@ -8,4 +11,4 @@ const UpgrdePlan = () => {
   );
 };
 
-export default UpgrdePlan;
+export default withAuth(UpgrdePlan);

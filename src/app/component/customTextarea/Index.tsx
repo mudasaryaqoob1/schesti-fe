@@ -1,11 +1,18 @@
 import React from 'react';
 import { Input } from 'antd';
-import { useField } from 'formik';
+import { ErrorMessage, useField } from 'formik';
 import { twMerge } from 'tailwind-merge';
 import clsx from 'clsx';
+import Errormsg from '../errorMessage';
 // import Errormsg from '../errorMessage';
 
-const Textarea = ({ placeholder, label, defaultValue, ...props }: any) => {
+const Textarea = ({
+  placeholder,
+  label,
+  defaultValue,
+  inputStyle,
+  ...props
+}: any) => {
   const { TextArea } = Input;
 
   const [field, meta] = useField(props.name);
@@ -21,15 +28,17 @@ const Textarea = ({ placeholder, label, defaultValue, ...props }: any) => {
           clsx(
             `border ${
               hasError ? 'border-red-500' : 'border-gray-400'
-            } !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 mt-2`
+            } !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 mt-2 w-full  ${
+              inputStyle && inputStyle
+            }`
           )
         )}
-        rows={6}
+        rows={5}
         placeholder={placeholder}
         {...field}
         {...props}
       />
-      {/* <ErrorMessage name={props.name} component={Errormsg} /> */}
+      <ErrorMessage name={props.name} component={Errormsg} />
     </div>
   );
 };

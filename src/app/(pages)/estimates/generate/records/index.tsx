@@ -1,23 +1,12 @@
-import React, { useCallback, useEffect, useLayoutEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import type { ColumnsType } from 'antd/es/table';
 import { Dropdown, Table } from 'antd';
 import type { MenuProps } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
-import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
-import { AppDispatch } from '@/redux/store';
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
-import {
-  selectEstimateRequests,
-  selectEstimateRequestsLoading,
-} from '@/redux/estimate/estimateRequestSelector';
-import {
-  deleteEstimateRequest,
-  fetchEstimateRequests,
-} from '@/redux/company/company.thunk';
-import NoData from '@/app/component/noData';
+// import NoData from '@/app/component/noData';
 import TertiaryHeading from '@/app/component/headings/tertiary';
+import Image from 'next/image';
+import { estimateRequestService } from '@/app/services/estimates.service';
 
 interface DataType {
   key: React.Key;
@@ -32,52 +21,64 @@ interface DataType {
 
 const EstimateRequestTable: React.FC = () => {
   const router = useRouter();
-  const dispatch = useDispatch<AppDispatch>();
-  const token = useSelector(selectToken);
+  const [loading, setLoading] = useState(false);
 
-  const estimateRequestsLoading = useSelector(selectEstimateRequestsLoading);
-  const estimateRequestsData = useSelector(selectEstimateRequests);
+  const [generatedEstimates, setGeneratedEstimates] = useState([]);
 
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
-
-  const memoizedSetPerson = useCallback(async () => {
-    await dispatch(fetchEstimateRequests({ page: 1, limit: 10 }));
+  const fetchGeneratedEstiamtesHandler = useCallback(async () => {
+    setLoading(true);
+    let result = await estimateRequestService.httpGetAllGeneratedEstimates(
+      1,
+      9
+    );
+    let updatedGeneratedEstimate = result?.data?.generatedEstimates.map(
+      (estimate: any) => {
+        return {
+          _id: estimate?._id,
+          projectName: estimate?.estimateRequestIdDetail?.projectName,
+          clientName: estimate?.estimateRequestIdDetail?.clientName,
+          salePerson: `${estimate?.estimateRequestIdDetail?.salePerson?.firstName ?? ''} ${estimate?.estimateRequestIdDetail?.salePerson?.lastName ?? ''}`,
+          estimator: `${estimate?.estimateRequestIdDetail?.estimator?.firstName ?? ''} ${estimate?.estimateRequestIdDetail?.estimator?.lastName ?? ''}`,
+          totalCost: estimate?.totalCost,
+          status: estimate?.status,
+          estimateRequestIdDetail: estimate.estimateRequestIdDetail?._id,
+        };
+      }
+    );
+    setGeneratedEstimates(updatedGeneratedEstimate);
+    setLoading(false);
   }, []);
 
   useEffect(() => {
-    memoizedSetPerson();
+    fetchGeneratedEstiamtesHandler();
   }, []);
 
   const items: MenuProps['items'] = [
     {
-      key: 'view',
-      label: <a href="#">View Esstimate</a>,
+      key: 'viewDetail',
+      label: 'View Detail',
     },
     {
       key: 'createSchedule',
-      label: <a href="#">Create schedule</a>,
+      label: 'Create Schedule',
     },
     {
-      key: 'createInvoice',
-      label: <a href="#">Create invoice</a>,
-    },
-    {
-      key: 'delete',
+      key: 'deleteEstimate',
       label: <p>Delete</p>,
     },
   ];
 
-  const handleDropdownItemClick = async (key: string, estimateRequest: any) => {
-    if (key == 'deleteEstimateRequest') {
-      await dispatch(deleteEstimateRequest(estimateRequest._id));
-    } else if (key == 'editEstimateRequest') {
-      router.push(`/estimates/requests/edit/${estimateRequest._id}`);
-    } else if (key === 'createEstimateRequest') {
-      router.push('/estimates/generate');
+  const handleDropdownItemClick = async (key: string, estimate: any) => {
+    if (key == 'viewDetail') {
+      router.push(`/estimates/generate/${estimate._id}`);
+    } else if (key == 'deleteEstimate') {
+      let deleteEstimateResult =
+        await estimateRequestService.httpDeleteGeneratedEstimate(estimate._id);
+      if (deleteEstimateResult.statusCode === 200) {
+        fetchGeneratedEstiamtesHandler();
+      }
+    } else if (key == 'createSchedule') {
+      router.push(`/schedule/estimate/${estimate._id}`);
     }
   };
 
@@ -92,30 +93,21 @@ const EstimateRequestTable: React.FC = () => {
       ellipsis: true,
     },
     {
-      title: 'Phone Number',
-      dataIndex: 'phone',
+      title: 'Sale Person',
+      dataIndex: 'salePerson',
     },
 
     {
-      title: 'Sale Person ',
-      dataIndex: 'salePerson',
-      render: (text, record: any) =>
-        `${record?.salePerson?.firstName} ${record?.salePerson?.lastName}`,
-    },
-    {
       title: 'Estimator',
       dataIndex: 'estimator',
-      render: (text, record: any) =>
-        `${record?.estimator?.firstName} ${record?.estimator?.lastName}`,
+    },
+    {
+      title: 'Total Cost',
+      dataIndex: 'totalCost',
     },
     {
       title: 'Status',
       dataIndex: 'status',
-      render: () => (
-        <a className="text-[#027A48] bg-[#ECFDF3] px-2 py-1 rounded-full">
-          Active
-        </a>
-      ),
     },
     {
       title: 'Action',
@@ -133,35 +125,44 @@ const EstimateRequestTable: React.FC = () => {
           }}
           placement="bottomRight"
         >
-          <a>
-            <DownOutlined />
-          </a>
+          <Image
+            src={'/menuIcon.svg'}
+            alt="logo white icon"
+            width={20}
+            height={20}
+            className="active:scale-105 cursor-pointer"
+          />
         </Dropdown>
       ),
     },
   ];
 
-  return estimateRequestsData && estimateRequestsData.length < 1 ? (
-    <NoData
-      btnText="Create new estimates request"
-      link="/estimates/requests/create"
-    />
-  ) : (
+  return (
     <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid border-silverGray shadow-secondaryTwist">
-      <div className="flex justify-between items-center">
-        <TertiaryHeading
-          title="Submitted Estimate"
-          className="text-graphiteGray"
+      <>
+        <div className="flex justify-between items-center">
+          <TertiaryHeading
+            title="Submitted Estimate"
+            className="text-graphiteGray"
+          />
+        </div>
+        <div className="mt-4">
+          <Table
+            loading={loading}
+            columns={columns}
+            dataSource={generatedEstimates}
+            pagination={{ position: ['bottomCenter'] }}
+          />
+        </div>
+      </>
+      {/**) : (
+        <NoData
+          btnText="Add Request"
+          title="Create Estimate Request"
+          description="There is not any record yet . To get started, Create an estimate request by clicking the button below and sharing details about your project."
+          link="/estimates/requests/create"
         />
-      </div>
-      <div className="mt-4">
-        <Table
-          loading={estimateRequestsLoading}
-          columns={columns}
-          dataSource={estimateRequestsData}
-          pagination={{ position: ['bottomCenter'] }}
-        />
-      </div>
+      )} */}
     </section>
   );
 };

@@ -4,19 +4,17 @@ import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { useCallback, useEffect, useLayoutEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { AppDispatch } from '@/redux/store';
 import {
   deleteCategory,
   fetchCategories,
 } from '@/redux/company/settingSlices/companySetup.thunk';
-import { HttpService } from '@/app/services/base.service';
-import { selectToken } from '@/redux/authSlices/auth.selector';
 import {
   companySetupCategoriesData,
   companySetupCategoriesLoading,
 } from '@/redux/company/companySelector';
-import { setCategoryData } from '@/redux/company/settingSlices/companySetup/category.slice';
+import { setCategoryData } from '@/redux/company/settingSlices/categories/category.slice';
 
 export interface DataType {
   categoryId: string;
@@ -26,7 +24,6 @@ export interface DataType {
 }
 
 const CategoryTable = () => {
-  const token = useSelector(selectToken);
   const dispatch = useDispatch<AppDispatch>();
 
   const selectCompanySetupData = useSelector(companySetupCategoriesData);
@@ -39,12 +36,6 @@ const CategoryTable = () => {
   useEffect(() => {
     fetchCategoriesHandler();
   }, []);
-
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
 
   const columns: ColumnsType<DataType> = [
     {
@@ -64,7 +55,7 @@ const CategoryTable = () => {
       render: (_, categoryData: DataType) => (
         <div className="flex gap-2 justify-center">
           <Image
-            src="/edit.svg"
+            src="/edit-2.svg"
             className="cursor-pointer"
             width={20}
             height={20}
@@ -75,7 +66,7 @@ const CategoryTable = () => {
             }}
           />
           <Image
-            src="/trash.svg"
+            src="/trash-2.svg"
             className="cursor-pointer"
             width={20}
             height={20}

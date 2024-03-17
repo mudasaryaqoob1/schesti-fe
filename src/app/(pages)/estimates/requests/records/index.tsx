@@ -1,13 +1,10 @@
-import React, { useCallback, useEffect, useLayoutEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import type { ColumnsType } from 'antd/es/table';
 import { Dropdown, Table } from 'antd';
 import type { MenuProps } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { AppDispatch } from '@/redux/store';
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
 import {
   selectEstimateRequests,
   selectEstimateRequestsLoading,
@@ -16,9 +13,12 @@ import {
   deleteEstimateRequest,
   fetchEstimateRequests,
 } from '@/redux/company/company.thunk';
-import NoData from '@/app/component/noData';
 import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
+import Image from 'next/image';
+import { IEstimateRequest } from '@/app/interfaces/estimateRequests/estimateRequests.interface';
+import ModalComponent from '@/app/component/modal';
+import { DeleteContent } from '@/app/component/delete/DeleteContent';
 
 interface DataType {
   key: React.Key;
@@ -34,16 +34,13 @@ interface DataType {
 const EstimateRequestTable: React.FC = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const token = useSelector(selectToken);
 
+  const [selectedEstimate, setSelecteEstimate] = useState<
+    (IEstimateRequest & { _id: string }) | null
+  >(null);
   const estimateRequestsLoading = useSelector(selectEstimateRequestsLoading);
   const estimateRequestsData = useSelector(selectEstimateRequests);
-
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const memoizedSetPerson = useCallback(async () => {
     await dispatch(fetchEstimateRequests({ page: 1, limit: 10 }));
@@ -70,7 +67,8 @@ const EstimateRequestTable: React.FC = () => {
 
   const handleDropdownItemClick = async (key: string, estimateRequest: any) => {
     if (key == 'deleteEstimateRequest') {
-      await dispatch(deleteEstimateRequest(estimateRequest._id));
+      setShowDeleteModal(true);
+      setSelecteEstimate(estimateRequest);
     } else if (key == 'editEstimateRequest') {
       router.push(`/estimates/requests/edit/${estimateRequest._id}`);
     } else if (key === 'createEstimateRequest') {
@@ -132,21 +130,39 @@ const EstimateRequestTable: React.FC = () => {
           }}
           placement="bottomRight"
         >
-          <a>
-            <DownOutlined />
-          </a>
+          <Image
+            src={'/menuIcon.svg'}
+            alt="logo white icon"
+            width={20}
+            height={20}
+            className="active:scale-105 cursor-pointer"
+          />
         </Dropdown>
       ),
     },
   ];
 
-  return estimateRequestsData && estimateRequestsData.length < 1 ? (
-    <NoData
-      btnText="Create new estimates request"
-      link="/estimates/requests/create"
-    />
-  ) : (
+  return (
     <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid border-silverGray shadow-secondaryTwist">
+      {selectedEstimate ? (
+        <ModalComponent
+          open={showDeleteModal}
+          setOpen={() => {
+            setSelecteEstimate(null);
+            setShowDeleteModal(false);
+          }}
+          destroyOnClose
+        >
+          <DeleteContent
+            onClick={() => {
+              dispatch(deleteEstimateRequest(selectedEstimate._id));
+              setSelecteEstimate(null);
+              setShowDeleteModal(false);
+            }}
+            onClose={() => setSelecteEstimate(null)}
+          />
+        </ModalComponent>
+      ) : null}
       <div className="flex justify-between items-center">
         <TertiaryHeading
           title="My Estimate request"
@@ -155,7 +171,7 @@ const EstimateRequestTable: React.FC = () => {
         <CustomButton
           text="Start New Estimate "
           className="!w-auto "
-          icon="plus.svg"
+          icon="/plus.svg"
           iconwidth={20}
           iconheight={20}
           onClick={() => router.push('/estimates/requests/create')}

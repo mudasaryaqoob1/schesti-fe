@@ -1,105 +1,207 @@
 'use client';
+import { Dispatch, SetStateAction, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { useSearchParams } from 'next/navigation';
 import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
-import Image from 'next/image';
-// import { useRouter } from 'next/navigation';
-// import AddItemTable from '@/app/component/table/table';
+import { useRouter } from 'next/navigation';
 // import { headings } from './data';
 import Description from '@/app/component/description/index';
 import MinDesc from '@/app/component/description/minDesc';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
-import { Dispatch, SetStateAction } from 'react';
-import type { ColumnsType } from 'antd/es/table';
-import { Table } from 'antd';
-
+import { selectGeneratedEstimateDetail } from '@/redux/estimate/estimateRequestSelector';
+import EstimatesTable from '../estimatesTable';
+// import { PDFDownloadLink } from '@react-pdf/renderer';
+// import ClientPDF from '../clientPDF';
+import { InputComponent } from '@/app/component/customInput/Input';
+import { estimateRequestService } from '@/app/services/estimates.service';
+import { generateEstimateDetailAction } from '@/redux/estimate/estimateRequest.slice';
+import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
+import { PercentageOutlined } from '@ant-design/icons';
 interface Props {
   setPrevNext: Dispatch<SetStateAction<number>>;
 }
 
-interface DataType {
-  Description: string;
-  Unit: string;
-  Qty: string;
-  Wastage: string;
-  Estimator: string;
-  Status: string;
-  Action: string;
+interface basicInformation {
+  clientName: string;
+  companyName: string;
+  phone: string;
+  email: string;
+  leadSource: string;
+  projectName: string;
+  projectValue: string;
+  projectInformation: string;
+  salePerson: {
+    firstName: string;
+    lastName: string;
+  };
+  estimator: {
+    firstName: string;
+    lastName: string;
+  };
+  drawingsDocuments: [];
+  takeOffReports: [];
+  otherDocuments: [];
 }
 
 const Summary = ({ setPrevNext }: Props) => {
-  const columns: ColumnsType<DataType> = [
-    {
-      title: 'Description',
-      dataIndex: 'description',
-    },
-    {
-      title: 'Unit',
-      dataIndex: 'unit',
-    },
-    {
-      title: 'Qty',
-      dataIndex: 'qty',
-    },
-    {
-      title: 'Wastage',
-      dataIndex: 'wastage',
-    },
-    {
-      title: 'Qty with wastage',
-      dataIndex: 'qty',
-    },
-    {
-      title: 'Labor Cost (per hour)',
-      dataIndex: 'qty',
-    },
-    {
-      title: 'Total Labor Hour',
-      dataIndex: 'qty',
-    },
-    {
-      title: 'Unit Material Cost',
-      dataIndex: 'qty',
-    },
-    {
-      title: 'Total Material Cost',
-      dataIndex: 'qty',
-    },
-    {
-      title: 'Total Equipment Cost',
-      dataIndex: 'qty',
-    },
-    {
-      title: 'Total Cost',
-      dataIndex: 'qty',
-    },
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const estimateId: null | string = searchParams.get('estimateId');
 
-    {
-      title: 'Action',
-      dataIndex: 'action',
-      align: 'center',
-      key: 'action',
-      render: () => (
-        <div className="flex gap-2 justify-center">
-          <Image
-            src="/edit.svg"
-            className="cursor-pointer"
-            width={20}
-            height={20}
-            alt="edit"
-          />
-          <Image
-            src="/trash.svg"
-            className="cursor-pointer"
-            width={20}
-            height={20}
-            alt="delete"
-          />
-        </div>
-      ),
-    },
-  ];
+  const { generateEstimateDetail } = useSelector(selectGeneratedEstimateDetail);
+
+  const [estimateDetailsSummary, setEstimateDetailsSummary] = useState<{
+    estimateRequestIdDetail: basicInformation;
+    estimateScope: Object[];
+  }>();
+  const [isLoading, setIsLoading] = useState(false);
+  const [subTotalcostRecord, setSubTotalCostRecord] = useState<number | string>(
+    0
+  );
+  const [subcontractorCosts, setSubcontractorCosts] = useState<any>({});
+  const [totalCostRecord, setTotalCostRecord] = useState<number>(0);
+  const [estimatesRecords, setEstimatesRecords] = useState([]);
+  const [totalMaterialBaseCost, setTotalMaterialBaseCost] = useState(0);
+
+  const [materialPercentage, setMaterialPercentage] = useState<number | string>(
+    5
+  );
+  const [overHeadProfitPercentage, setOverHeadProfitPercentage] = useState<
+    number | string
+  >(5);
+  const [bondFeePercentage, setBondFeePercentage] = useState<number | string>(
+    5
+  );
+
+  useEffect(() => {
+    setEstimateDetailsSummary(generateEstimateDetail);
+
+    if (generateEstimateDetail?.estimateScope?.length) {
+      const updatedDataArray = generateEstimateDetail?.estimateScope.map(
+        (titleObject: any) => {
+          const totalCostForTitle = titleObject.scopeItems.reduce(
+            (total: any, dataItem: any) => {
+              return total + parseFloat(dataItem.totalCostRecord);
+            },
+            0
+          );
+          const totalMaterialCost = titleObject.scopeItems.reduce(
+            (total: any, dataItem: any) => {
+              let qtyWithWastage = dataItem.qty * (1 + dataItem.wastage / 100);
+              let totalMaterialCost: any =
+                dataItem.unitMaterialCost * qtyWithWastage;
+              return total + parseFloat(totalMaterialCost);
+            },
+            0
+          );
+          return {
+            ...titleObject,
+            totalCostForTitle: totalCostForTitle.toFixed(2),
+            totalMaterialCost: totalMaterialCost.toFixed(2),
+          };
+        }
+      );
+
+      const totalCostForAllRecords = updatedDataArray.reduce(
+        (total: any, titleObject: any) => {
+          return total + parseFloat(titleObject.totalCostForTitle);
+        },
+        0
+      );
+      const totalMaterialCostForAllRecord = updatedDataArray.reduce(
+        (total: any, titleObject: any) => {
+          return total + parseFloat(titleObject.totalMaterialCost);
+        },
+        0
+      );
+
+      setEstimatesRecords(updatedDataArray);
+      setSubTotalCostRecord(totalCostForAllRecords);
+      setTotalCostRecord(totalCostForAllRecords);
+      setTotalMaterialBaseCost(totalMaterialCostForAllRecord);
+    }
+  }, [generateEstimateDetail]);
+
+  const calculatePercentqge = (
+    value: number | string,
+    percentage: number | string
+  ) => {
+    value = Number(value);
+    percentage = Number(percentage);
+    return (percentage * value) / 100;
+  };
+
+  // const getPercentageOnMaterialTax = (value: number) => {
+  //   if (value > 0) {
+  //     const updatedTotalCostRecord =
+  //       initialTotalMaterialBaseCost -
+  //       (value * initialTotalMaterialBaseCost) / 100;
+  //     if (!isNaN(updatedTotalCostRecord)) {
+  //       setTotalMaterialBaseCost(Number(updatedTotalCostRecord.toFixed(2)));
+  //     }
+  //   } else {
+  //     setTotalMaterialBaseCost(initialTotalMaterialBaseCost);
+  //   }
+  // };
+
+  const generateBidHandler = async () => {
+    setIsLoading(true);
+    let obj = {
+      totalBidDetail: {
+        materialTax: totalMaterialBaseCost,
+        overheadAndProfit: (
+          calculatePercentqge(subTotalcostRecord, overHeadProfitPercentage) +
+          calculatePercentqge(totalMaterialBaseCost, materialPercentage)
+        ).toFixed(2),
+        bondFee: (
+          calculatePercentqge(subTotalcostRecord, bondFeePercentage) +
+          calculatePercentqge(totalMaterialBaseCost, materialPercentage) +
+          calculatePercentqge(subTotalcostRecord, overHeadProfitPercentage)
+        ).toFixed(2),
+      },
+      totalCost: totalCostRecord,
+      estimateRequestIdDetail: estimateId,
+      estimateScope: generateEstimateDetail.estimateScope,
+    };
+
+    dispatch(generateEstimateDetailAction(obj));
+
+    let result = await estimateRequestService.httpAddGeneratedEstimate(obj);
+
+    if (result.statusCode == 201) {
+      setIsLoading(false);
+      router.push(`/estimates/generate/${result?.data?._id}`);
+    } else {
+      setIsLoading(false);
+      toast.error('Something went wrong');
+    }
+  };
+
+  const handleSubcontractorCostChange = (title: any, value: any) => {
+    setSubcontractorCosts((prevCosts: any) => ({
+      ...prevCosts,
+      [title]: parseFloat(value) || 0,
+    }));
+
+    setEstimatesRecords((prevEstimates: any) =>
+      prevEstimates.map((estimate: any) => {
+        if (estimate.title === title) {
+          const subcontractorCost = parseFloat(value) || 0;
+
+          return {
+            ...estimate,
+            subContractorCost: subcontractorCost,
+          };
+        }
+        return estimate;
+      })
+    );
+  };
 
   return (
     <div>
@@ -116,184 +218,329 @@ const Summary = ({ setPrevNext }: Props) => {
             onClick={() => setPrevNext((prev) => prev - 1)}
           />
 
-          <CustomButton text="Generate" className="!w-full" />
-        </div>
-      </div>
-      {/*center part  */}
-      {/*  */}
-      <div className={`${bg_style} p-5 mt-4`}>
-        <div className="flex justify-between items-center">
-          <QuaternaryHeading title="Client Information" className="font-bold" />
-          <div className="bg-silverGray rounded-s border border-solid border-Gainsboro cursor-pointer w-8 h-8 flex justify-center items-center">
-            <Image
-              src={'/chevron-down.svg'}
-              alt="icon"
-              width={16}
-              height={16}
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-6 mt-4">
-          <div>
-            <QuinaryHeading title="Client Name" className="text-lightyGray" />
-            <Description
-              title="Albert Flores"
-              className="text-midnightBlue font-popin"
-            />
-          </div>
-          {/* 1 */}
-          <div>
-            <QuinaryHeading title="Company Name" className="text-lightyGray" />
-            <Description
-              title="Jenny Wilson"
-              className="text-midnightBlue font-popin"
-            />
-          </div>
-          {/* 2 */}
-          <div>
-            <QuinaryHeading title="Phone Number" className="text-lightyGray" />
-            <Description
-              title="(938) 861-8764"
-              className="text-midnightBlue font-popin"
-            />
-          </div>
-          {/* 3 */}
-          <div>
-            <QuinaryHeading title="Email" className="text-lightyGray" />
-            <Description
-              title="james@example.com"
-              className="text-midnightBlue font-popin"
-            />
-          </div>
-        </div>
-      </div>
-      {/*  */}
-
-      <div className={`${bg_style} p-5 mt-4`}>
-        <div className="flex justify-between items-center">
-          <QuaternaryHeading
-            title="Project Information"
-            className="font-bold"
+          <CustomButton
+            text="Generate"
+            className="!w-full"
+            isLoading={isLoading}
+            onClick={generateBidHandler}
           />
-          <div className="bg-silverGray rounded-s border border-solid border-Gainsboro cursor-pointer w-8 h-8 flex justify-center items-center">
+        </div>
+      </div>
+      {/* <PDFViewer className="h-full w-full">
+        <ClientPDF
+          data={estimateDetailsSummary}
+          subcostRecord={subcostRecord}
+          pdfData={pdfData}
+          
+        />
+      </PDFViewer> */}
+      <div>
+        <div className={`${bg_style} p-5 mt-4`}>
+          <div className="flex justify-between items-center">
+            <QuaternaryHeading
+              title="Client Information"
+              className="font-bold"
+            />
+            {/* <div className="bg-silverGray rounded-s border border-solid border-Gainsboro cursor-pointer w-8 h-8 flex justify-center items-center">
             <Image
               src={'/chevron-down.svg'}
               alt="icon"
               width={16}
               height={16}
             />
+          </div> */}
+          </div>
+          <div className="grid grid-cols-4 mt-4">
+            <div>
+              <QuinaryHeading title="Client Name" className="text-lightyGray" />
+              <Description
+                title={
+                  estimateDetailsSummary?.estimateRequestIdDetail?.clientName!
+                }
+                className="text-midnightBlue font-popin"
+              />
+            </div>
+            {/* 1 */}
+            <div>
+              <QuinaryHeading
+                title="Company Name"
+                className="text-lightyGray"
+              />
+              <Description
+                title={
+                  estimateDetailsSummary?.estimateRequestIdDetail?.companyName!
+                }
+                className="text-midnightBlue font-popin"
+              />
+            </div>
+            {/* 2 */}
+            <div>
+              <QuinaryHeading
+                title="Phone Number"
+                className="text-lightyGray"
+              />
+              <Description
+                title={estimateDetailsSummary?.estimateRequestIdDetail?.phone!}
+                className="text-midnightBlue font-popin"
+              />
+            </div>
+            {/* 3 */}
+            <div>
+              <QuinaryHeading title="Email" className="text-lightyGray" />
+              <Description
+                title={estimateDetailsSummary?.estimateRequestIdDetail?.email!}
+                className="text-midnightBlue font-popin"
+              />
+            </div>
           </div>
         </div>
-        <div className="grid grid-cols-6 grid-rows-2 mt-2 gap-y-2">
-          {/* 1 */}
-          <div>
-            <QuinaryHeading title="Project Name" className="text-lightyGray" />
-            <Description title="ABC" className="text-midnightBlue font-popin" />
-          </div>
-          {/* 2 */}
-          <div>
-            <QuinaryHeading title="Lead Source" className="text-lightyGray" />
-            <Description
-              title="Source 101"
-              className="text-midnightBlue font-popin"
-            />
-          </div>
-          {/* 2 */}
-          <div>
-            <QuinaryHeading title="Project Value" className="text-lightyGray" />
-            <Description title="5M" className="text-midnightBlue font-popin" />
-          </div>
-          {/* 3 */}
-          <div>
-            <QuinaryHeading title="Email" className="text-lightyGray" />
-            <Description
-              title="james@example.com"
-              className="text-midnightBlue font-popin"
-            />
-          </div>
-          <div>
-            <QuinaryHeading title="Address" className="text-lightyGray" />
-            <Description
-              title="House# 112 Johen markes , UK "
-              className="text-midnightBlue font-popin"
-            />
-          </div>
-          {/* 3 */}
-          <div className="col-span-full row-span-2 text-start">
-            <QuinaryHeading
-              title="Project Information"
-              className="text-lightyGray"
-            />
-            <Description
-              title="Lorem ipsum dolor sit amet consectetur. Lobortis non malesuada bibendum nunc. Ultrices feugiat egestas tempus aliquam diam blandit. Aliquet nisl id aliquet eget. Hendrerit enim odio nullam ut pulvinar."
-              className="text-midnightBlue font-popin"
-            />
-          </div>
-        </div>
-      </div>
-      {/* center part */}
-      <TertiaryHeading
-        title="Estimates"
-        className="text-graphiteGray font-semibold my-4"
-      />
-      <div className={`${bg_style} p-5`}>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
+
+        <div className={`${bg_style} p-5 mt-4`}>
+          <div className="flex justify-between items-center">
             <QuaternaryHeading
-              title="DIV-03 - Concrete "
+              title={
+                estimateDetailsSummary?.estimateRequestIdDetail?.projectName!
+              }
+              className="font-bold"
+            />
+          </div>
+          <div className="grid grid-cols-5 grid-rows-2 mt-2 gap-y-2">
+            {/* 1 */}
+            <div>
+              <QuinaryHeading
+                title="Project Name"
+                className="text-lightyGray"
+              />
+              <Description
+                title={
+                  estimateDetailsSummary?.estimateRequestIdDetail?.projectName!
+                }
+                className="text-midnightBlue font-popin"
+              />
+            </div>
+            {/* 2 */}
+            <div>
+              <QuinaryHeading title="Lead Source" className="text-lightyGray" />
+              <Description
+                title={
+                  estimateDetailsSummary?.estimateRequestIdDetail?.leadSource!
+                }
+                className="text-midnightBlue font-popin"
+              />
+            </div>
+            {/* 2 */}
+            <div>
+              <QuinaryHeading
+                title="Project Value"
+                className="text-lightyGray"
+              />
+              <Description
+                title={
+                  estimateDetailsSummary?.estimateRequestIdDetail?.projectValue!
+                }
+                className="text-midnightBlue font-popin"
+              />
+            </div>
+            {/* 3 */}
+            <div>
+              <QuinaryHeading title="Email" className="text-lightyGray" />
+              <Description
+                title={estimateDetailsSummary?.estimateRequestIdDetail?.email!}
+                className="text-midnightBlue font-popin"
+              />
+            </div>
+            {/* 3 */}
+            <div className="col-span-full row-span-2 text-start">
+              <QuinaryHeading
+                title="Project Information"
+                className="text-lightyGray"
+              />
+              <Description
+                title={
+                  estimateDetailsSummary?.estimateRequestIdDetail
+                    ?.projectInformation!
+                }
+                className="text-midnightBlue font-popin"
+              />
+            </div>
+          </div>
+        </div>
+        {/* center part */}
+        <TertiaryHeading
+          title="Estimates"
+          className="text-graphiteGray font-semibold my-4"
+        />
+        <div>
+          {estimatesRecords?.length
+            ? estimatesRecords.map((estimate: any) => (
+                <div key={estimate.title} className={`${bg_style} p-5 mt-3`}>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <QuaternaryHeading
+                        title={estimate.categoryName}
+                        className="font-semibold"
+                      />
+                      <QuaternaryHeading
+                        title={estimate.subCategoryName}
+                        className="!font=[#344054] font-light"
+                      />
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <p className="text-[#344054] text-[18px]">
+                        Sub-contractor Cost:
+                      </p>
+                      <div className="flex items-center border-b-2 focus:border-purple-500 rounded">
+                        <p className="text-gray-700">$</p>
+                        <input
+                          placeholder="000"
+                          min="0"
+                          className="appearance-none w-full py-2 text-gray-700 leading-tight focus:outline-none "
+                          type="number"
+                          value={subcontractorCosts[estimate.title] || ''}
+                          onChange={(e) =>
+                            handleSubcontractorCostChange(
+                              estimate.title,
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
+                      <QuaternaryHeading
+                        title={`Total Cost: $${estimate.totalCostForTitle}`}
+                        className="font-semibold"
+                      />
+                    </div>
+                  </div>
+                  <div className="estimateTable_container">
+                    <EstimatesTable estimates={estimate.scopeItems} />
+                  </div>
+                </div>
+              ))
+            : null}
+        </div>
+
+        <div className="bg-celestialGray h-px  w-full my-4"></div>
+        <div className="flex justify-end">
+          <div className="flex w-full justify-between flex-col gap-2 max-w-lg my-4">
+            <div className="flex items-center justify-between">
+              <MinDesc title="Sub Total Cost" className="text-darkgrayish" />
+              <Description
+                title={`$${subTotalcostRecord}`}
+                className="font-medium"
+              />
+            </div>
+            <div className="grid grid-cols-3 items-center">
+              <MinDesc title="Material Tax %" className="text-darkgrayish" />
+              <MinDesc
+                title={`$${calculatePercentqge(
+                  totalMaterialBaseCost,
+                  materialPercentage
+                )}`}
+                className="text-darkgrayish"
+              />
+              <InputComponent
+                suffix={<PercentageOutlined />}
+                // prefix={<p>$</p>}
+                label=""
+                type="number"
+                name="materialTax"
+                placeholder="Enter Material Tax"
+                field={{
+                  value: materialPercentage.toString(),
+                  onChange: (e) => setMaterialPercentage(e.target.value),
+                }}
+              />
+            </div>
+            <div className="grid grid-cols-3 items-center">
+              <MinDesc
+                title="Overhead & Profit %"
+                className="text-darkgrayish"
+              />
+              <MinDesc
+                title={`$${(
+                  calculatePercentqge(
+                    subTotalcostRecord,
+                    overHeadProfitPercentage
+                  ) +
+                  calculatePercentqge(totalMaterialBaseCost, materialPercentage)
+                ).toFixed(2)}`}
+                className="text-darkgrayish"
+              />
+              <InputComponent
+                suffix={<PercentageOutlined />}
+                // prefix={<p>$</p>}
+                label=""
+                type="number"
+                name="overheadAndProfit"
+                placeholder="Enter Overhead & Profit"
+                field={{
+                  value: overHeadProfitPercentage.toString(),
+                  onChange: (e) => setOverHeadProfitPercentage(e.target.value),
+                }}
+              />
+            </div>
+            <div className="grid grid-cols-3 items-center">
+              <MinDesc title="Bond Fee %" className="text-darkgrayish" />
+              <MinDesc
+                title={`$${(
+                  calculatePercentqge(subTotalcostRecord, bondFeePercentage) +
+                  calculatePercentqge(
+                    totalMaterialBaseCost,
+                    materialPercentage
+                  ) +
+                  calculatePercentqge(
+                    subTotalcostRecord,
+                    overHeadProfitPercentage
+                  )
+                ).toFixed(2)}`}
+                className="text-darkgrayish"
+              />
+              <InputComponent
+                suffix={<PercentageOutlined />}
+                // prefix={<p>$</p>}
+                label=""
+                type="number"
+                name="bondFee"
+                placeholder="Enter Bond Fee"
+                field={{
+                  value: bondFeePercentage.toString(),
+                  onChange: (e) => setBondFeePercentage(e.target.value),
+                }}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-celestialGray h-px w-full my-4"></div>
+        <div className="flex justify-end">
+          <div className="flex items-center w-full justify-between max-w-lg">
+            <QuaternaryHeading title="Total Bid" className="font-semibold" />
+            <Description
+              title={`$${(
+                totalCostRecord +
+                calculatePercentqge(totalMaterialBaseCost, materialPercentage) +
+                (calculatePercentqge(
+                  subTotalcostRecord,
+                  overHeadProfitPercentage
+                ) +
+                  calculatePercentqge(
+                    totalMaterialBaseCost,
+                    materialPercentage
+                  )) +
+                (calculatePercentqge(subTotalcostRecord, bondFeePercentage) +
+                  calculatePercentqge(
+                    totalMaterialBaseCost,
+                    materialPercentage
+                  ) +
+                  calculatePercentqge(
+                    subTotalcostRecord,
+                    overHeadProfitPercentage
+                  ))
+              ).toFixed(2)}`}
               className="font-semibold"
             />
-            <Description
-              title="Concrete - Building"
-              className="text-lg font-normal"
-            />
           </div>
-          <Description
-            title=" Trade Cost: $42563"
-            className="text-lg font-normal"
-          />
         </div>
-        <Table
-          className="mt-2"
-          loading={false}
-          columns={columns}
-          dataSource={[]}
-          pagination={{ position: ['bottomCenter'] }}
-        />
-      </div>
-
-      <div className="bg-celestialGray h-px  w-full my-4"></div>
-      <div className="flex w-full justify-between flex-col gap-2 my-4">
-        <div className="flex items-center justify-between">
-          <MinDesc title="Sub Total Cost" className="text-darkgrayish" />
-          <Description title="$6,000" className="font-medium" />
-        </div>
-        <div className="flex items-center justify-between">
-          <MinDesc title="Material Tax %" className="text-darkgrayish" />
-          <Description
-            title="0.5%"
-            className="font-medium text-graphiteGray bg-cloudWhite2 rounded-[4px] p-1"
-          />
-        </div>
-        <div className="flex items-center justify-between">
-          <MinDesc title="Overhead & Profit %" className="text-darkgrayish" />
-          <Description
-            title="0.5%"
-            className="font-medium text-graphiteGray bg-cloudWhite2 rounded-[4px] p-1"
-          />
-        </div>
-        <div className="flex items-center justify-between">
-          <MinDesc title="Bond Fee %" className="text-darkgrayish" />
-          <Description
-            title="0.5%"
-            className="font-medium text-graphiteGray bg-cloudWhite2 rounded-[4px] p-1"
-          />
-        </div>
-      </div>
-      <div className="bg-celestialGray h-px w-full my-4"></div>
-      <div className="flex items-center justify-between">
-        <QuaternaryHeading title="Total Bid" />
-        <Description title="$20,000" />
       </div>
     </div>
   );

@@ -1,10 +1,11 @@
 'use client';
 import React, { useState } from 'react';
-import { Steps } from 'antd';
+import { ConfigProvider, Steps } from 'antd';
 import Scope from '../components/scope';
 import Summary from '../components/summary';
 import TakeOff from '../components/takeoff';
 import { bg_style } from '@/globals/tailwindvariables';
+import { withAuth } from '@/app/hoc/withAuth';
 
 const steps = [
   {
@@ -36,7 +37,24 @@ const Generated = () => {
   return (
     <div className="md:px-16 px-5 pb-8">
       <div className={`${bg_style} p-9 my-4`}>
-        <Steps current={pevNext} items={items} labelPlacement="vertical" />
+        <ConfigProvider
+          theme={{
+            components: {
+              Steps: {
+                dotSize: 18,
+                dotCurrentSize: 18,
+                colorPrimary: '#6941C6',
+              },
+            },
+          }}
+        >
+          <Steps
+            progressDot
+            current={pevNext}
+            items={items}
+            labelPlacement="vertical"
+          />
+        </ConfigProvider>
       </div>
 
       <EstimateComponent setPrevNext={setPrevNext} pevNext={pevNext} />
@@ -44,4 +62,4 @@ const Generated = () => {
   );
 };
 
-export default Generated;
+export default withAuth(Generated);

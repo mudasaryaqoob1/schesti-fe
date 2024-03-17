@@ -11,25 +11,32 @@ import takeoffSlice from './takeoff/takeoff.slice';
 import settingTargetsSlice from './company/settingSlices/settingTarget.slice';
 import userSlice from './userSlice/user.slice';
 import pricingPlanReducer from './pricingPlanSlice/pricingPlanSlice';
-import companySetupCategoryReducer from './company/settingSlices/companySetup/category.slice';
-import companySetupSubcategoryReducer from './company/settingSlices/companySetup/subcategory.slice';
+import companySetupCategoryReducer from './company/settingSlices/categories/category.slice';
+import companySetupSubcategoryReducer from './company/settingSlices/categories/subcategory.slice';
 import materialsReducer from './company/settingSlices/materials.slice';
 import takeoffSummariesReducer from './takeoffSummaries/takeoffSummaries.slice';
+import invoiceReducer from './invoice/invoice.slice';
+import clientInvoiceReducer from './client-invoices/client-invoice.slice';
+// import scheduleReducer from './schedule/schedule.slice';
+import meetingReducer from './meeting/meeting.slice';
 
 export type RootState = {
-  auth: any;
+  auth: typeof authReducer;
   companyClient: any;
-  companySubContractor: any;
+  companySubContractor: typeof subContractorReducer;
   estimates: any;
   supportTickets: any;
   takeoff: any;
   settingTargets: any;
   user: any;
-  pricingPlan: any;
-  companySetupCategory: any;
+  pricingPlan: typeof pricingPlanReducer;
+  companySetupCategory: typeof companySetupCategoryReducer;
   companySetupSubcategory: any;
   materials: any;
   takeoffSummaries: any;
+  invoices: typeof invoiceReducer;
+  clientInvoices: typeof clientInvoiceReducer;
+  meetings: typeof meetingReducer;
 };
 const persistConfig = {
   key: 'root',
@@ -51,5 +58,9 @@ const rootReducer = combineReducers<RootState>({
   companySetupSubcategory: companySetupSubcategoryReducer,
   materials: materialsReducer,
   takeoffSummaries: takeoffSummariesReducer,
+  invoices: invoiceReducer,
+  clientInvoices: clientInvoiceReducer,
+  // schedule: scheduleReducer,
+  meetings: meetingReducer,
 });
 export default persistReducer(persistConfig, rootReducer);
