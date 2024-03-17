@@ -172,14 +172,14 @@ const CaptureComponent = ({
               minY = Math.min(...ys) - 20;
               maxX = Math.max(...xs) + 20;
               maxY = Math.max(...ys) + 20;
-              const textSize = (maxX - minY) / 60;
+              const textSize = ((maxX - minX) * (maxY - minY)) / 100000;
 
               console.warn(textSize);
               const text = new Konva.Text({
                 x: xText,
                 y: yText,
                 text: shape.text,
-                fontSize: Math.floor(textSize) * 4,
+                fontSize: Math.floor(textSize) * 10 + 25,
                 fontFamily: 'Calibri',
                 fill: 'red',
               });
