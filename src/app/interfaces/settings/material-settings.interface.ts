@@ -38,6 +38,6 @@ interface SubcategoryDetails {
 }
 
 export interface IUnits {
-  label : string,
-  value : string
+  label: string;
+  value: string;
 }

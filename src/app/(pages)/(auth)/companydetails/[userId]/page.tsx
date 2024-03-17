@@ -81,7 +81,7 @@ const CompanyDetails = () => {
                     name="basic"
                     onFinish={formik.handleSubmit}
                     autoComplete="off"
-                  // validateMessages={formik.handleSubmit}
+                    // validateMessages={formik.handleSubmit}
                   >
                     <div className="flex flex-col gap-6">
                       <FormControl

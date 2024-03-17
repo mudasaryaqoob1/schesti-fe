@@ -4,7 +4,6 @@ import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { IToken } from '@/app/interfaces/authInterfaces/token.interface';
 import { IUnits } from '../interfaces/settings/material-settings.interface';
 
-
 class MaterialService extends HttpService {
   private readonly prefix: string = 'api/setting/material';
 
@@ -25,12 +24,9 @@ class MaterialService extends HttpService {
       `${this.prefix}/getMetarialwithCategory/${categoryId}/${subCategoryId}`
     );
 
-
-  httpFetchMaterialUnits = (
-  ): Promise<IResponseInterface<{fetchedUnits : IUnits[]}>> =>
-    this.get(
-      `${this.prefix}/fetchMaterialUnits`
-    );
+  httpFetchMaterialUnits = (): Promise<
+    IResponseInterface<{ fetchedUnits: IUnits[] }>
+  > => this.get(`${this.prefix}/fetchMaterialUnits`);
 
   httpGetAllMaterialsData = (
     page: number,

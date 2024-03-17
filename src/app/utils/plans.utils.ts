@@ -15,7 +15,7 @@ export const Routes = {
   },
   Estimates: {
     'Estimates-Requests': '/estimates/requests',
-    "Estimates-List": "/estimates/generate",
+    'Estimates-List': '/estimates/generate',
   },
   Financial: {
     'Standard-Invoicing': '/financial/standard-invoicing',
