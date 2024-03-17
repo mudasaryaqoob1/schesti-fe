@@ -9,6 +9,7 @@ import {
   fetchTakeoffSummaries,
 } from '@/redux/takeoffSummaries/takeoffSummaries.thunk';
 import { useDispatch, useSelector } from 'react-redux';
+import moment from 'moment';
 // Import your API service
 
 interface DataType {
@@ -97,12 +98,12 @@ const Index: React.FC = () => {
         name: any;
         url: string;
         scope: { toString: () => any };
-        createdAt: any;
+        createdAt: string;
       }) => ({
         key: item._id, // Assume each item has a unique id
         name: item.name,
         scope: item.scope.toString(), // Ensure scope is a string
-        createdAt: item.createdAt,
+        createdAt: moment(item.createdAt).format('YYYY-MM-DD'),
         action: (
           <span className="flex flex-col space-y-2">
             <button
