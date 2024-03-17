@@ -53,6 +53,35 @@ const useDraw = () => {
     } else return value;
   };
 
+  // const calculatePolygonArea = (
+  //   coordinates: number[],
+  //   { scale, xScale, yScale }: ScaleData
+  // ): number => {
+  //   if (coordinates.length % 2 !== 0 || coordinates.length < 6) {
+  //     throw new Error(
+  //       'Invalid coordinates array length. It should contain at least 3 pairs of coordinates (x, y).'
+  //     );
+  //   }
+  //   const convertedCoordinates = coordinates.map(coordinate => coordinate / pixelToInchScale)
+  //   const xScaleMultiplier = getScaleMultiplier(xScale);
+  //   const yScaleMultiplier = getScaleMultiplier(yScale);
+
+  //   // Calculate the area using the shoelace formula
+  //   let area = 0;
+  //   const n = convertedCoordinates.length / 2;
+  //   let j = n - 1;
+  //   for (let i = 0; i < n; i++) {
+  //     const xi = convertedCoordinates[i * 2] * xScaleMultiplier;
+  //     const yi = convertedCoordinates[i * 2 + 1] * yScaleMultiplier;
+  //     const xj = convertedCoordinates[j * 2] * xScaleMultiplier;
+  //     const yj = convertedCoordinates[j * 2 + 1] * yScaleMultiplier;
+  //     area += (xi + xj) * (yj - yi);
+  //     j = i;
+  //   }
+
+  //   return Math.abs(area / 2);
+  // };
+
   const calculatePolygonArea = (
     coordinates: number[],
     { scale }: ScaleData
@@ -90,8 +119,7 @@ const useDraw = () => {
     scale: ScaleData
   ): number => {
     const polygonArea = calculatePolygonArea(coordinates, scale);
-    const depthInInches = convertPxIntoInches(depth);
-    return +(polygonArea * depthInInches).toFixed(4);
+    return +(polygonArea * depth).toFixed(4);
   };
 
   const calculatePolygonCenter = (
@@ -125,10 +153,11 @@ const useDraw = () => {
     if (coordinates.length < 6 || coordinates.length % 2 !== 0) {
       throw new Error('Invalid number of coordinates for a polygon');
     }
-
     const n = coordinates.length / 2;
     let perimeter = 0;
 
+    // const [x1, y1, x2, y2, x3, y3] = coordinates;
+    //  0 -> x2 - x1, -> 1 x3 - x2,
     for (let i = 0; i < n - 1; i++) {
       const deltaX = coordinates[2 * (i + 1)] - coordinates[2 * i];
       const deltaY = coordinates[2 * (i + 1) + 1] - coordinates[2 * i + 1];
@@ -149,6 +178,63 @@ const useDraw = () => {
     return convertToFeetAndInches(inches, precision);
   };
 
+  // const calculatePolygonPerimeter = (
+  //   coordinates: number[],
+  //   scale: ScaleData
+  // ): string => {
+  //   if (coordinates.length < 6 || coordinates.length % 2 !== 0) {
+  //     throw new Error('Invalid number of coordinates for a polygon');
+  //   }
+
+  //   const uniqueCoordinates = coordinates.slice(0, coordinates.length - 2);
+
+  //   let perimeter = 0;
+  //   for (
+  //     let index = 0;
+  //     index < uniqueCoordinates.length - 1;
+  //     index = index + 2
+  //   ) {
+  //     let lineCoordinates = [];
+  //     if (uniqueCoordinates?.[index + 3]) {
+  //       lineCoordinates = uniqueCoordinates.slice(index, index + 3 + 1);
+  //     } else {
+  //       lineCoordinates = [
+  //         ...uniqueCoordinates.slice(0, 2),
+  //         ...uniqueCoordinates.slice(index, index + 2),
+  //       ];
+  //     }
+
+  //     const calculateLineDistance = calcLineDistance(
+  //       lineCoordinates,
+  //       scale
+  //     ) as number;
+
+  //     perimeter += calculateLineDistance;
+  //   }
+  //   return convertToFeetAndInches(perimeter, scale.precision);
+  // };
+
+  // const calcLineDistance = (
+  //   coordinates: number[],
+  //   { scale, precision, xScale = '', yScale = '' }: ScaleData,
+  //   format = false
+  // ) => {
+  //   const [x1, y1, x2, y2] = coordinates;
+  //   const xScaleMultiplier = getScaleMultiplier(xScale);
+  //   const yScaleMultiplier = getScaleMultiplier(yScale);
+
+  //   const distance = Math.sqrt(
+  //     Math.pow(convertPxIntoInches(x2 - x1) * xScaleMultiplier, 2) +
+  //       Math.pow(convertPxIntoInches(y2 - y1) * yScaleMultiplier, 2)
+  //   );
+
+  //   if (format) {
+  //     return convertToFeetAndInches(distance, precision);
+  //   }
+
+  //   return distance;
+  // };
+
   const calcLineDistance = (
     coordinates: number[],
     { scale, precision }: ScaleData,
@@ -160,8 +246,6 @@ const useDraw = () => {
 
     if (format) {
       const inches = convertPxIntoInches(distance);
-      // console.log('inches', inches);
-      // console.log('multiplier', getScaleMultiplier(scale));
       const scaledInches = getScaleMultiplier(scale) * inches;
       return convertToFeetAndInches(scaledInches, precision);
     }

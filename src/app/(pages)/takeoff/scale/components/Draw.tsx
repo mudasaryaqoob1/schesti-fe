@@ -220,6 +220,8 @@ const Draw: React.FC<Props> = ({
                 scale.precision
               );
 
+              console.log('parameter', parameter);
+
               if (selected === 'area') {
                 const area = calculatePolygonArea(polygonCoordinates, scale);
 

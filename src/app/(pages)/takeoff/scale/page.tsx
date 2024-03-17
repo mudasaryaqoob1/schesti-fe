@@ -20,6 +20,8 @@ import Button from '@/app/component/customButton/button';
 import { ReportDataContextProps } from '../context/ReportDataContext';
 
 export interface ScaleData {
+  xScale?: string;
+  yScale?: string;
   scale: string;
   precision: string;
 }
