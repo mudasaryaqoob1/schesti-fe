@@ -7,6 +7,7 @@ import {
   addCompanyDetail,
   getLoggedInUserDetails,
   addVerificationDetails,
+  addSelectedTrades,
 } from './auth.thunk';
 
 export const authSlice = createSlice({
@@ -92,6 +93,7 @@ export const authSlice = createSlice({
       state.token = action.payload?.token;
       state.message = action.payload.message;
     });
+
     builder.addCase(addVerificationDetails.pending, (state) => {
       state.loading = true;
     });
@@ -102,6 +104,19 @@ export const authSlice = createSlice({
       state.message = action.payload.message;
     });
     builder.addCase(addVerificationDetails.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+    });
+
+    builder.addCase(addSelectedTrades.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(addSelectedTrades.fulfilled, (state, action) => {
+      state.loading = false;
+      state.user = action.payload.data;
+      state.message = action.payload.message;
+    });
+    builder.addCase(addSelectedTrades.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     });

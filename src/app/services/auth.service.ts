@@ -45,9 +45,11 @@ class AuthService extends HttpService {
     IResponseInterface<{ user: any; token: string; message: string }>
   > => this.post(`${this.prefix}/add-company-detail`, data);
 
-  addVerificationDetailsHandler = (
-    data: any
-  ): Promise<any> => this.post(`${this.prefix}/add-verification-detail`, data);
+  addVerificationDetailsHandler = (data: any): Promise<any> =>
+    this.post(`${this.prefix}/add-verification-detail`, data);
+
+  addSelectedTradesHandler = (data: any): Promise<any> =>
+    this.post(`${this.prefix}/add-selected-trades`, data);
 
   signupHandler = (data: ISignUpInterface): Promise<IResponseInterface<any>> =>
     this.post(`${this.prefix}/signup`, data);

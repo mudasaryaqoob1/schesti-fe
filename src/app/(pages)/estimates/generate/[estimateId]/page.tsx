@@ -259,14 +259,18 @@ const ViewEstimateDetail = () => {
         <div className="flex items-center justify-between">
           <MinDesc title="Material Tax %" className="text-darkgrayish" />
           <Description
-            title={`$${estimateDetailsSummary?.totalBidDetail?.materialTax ?? 0}`}
+            title={`$${
+              estimateDetailsSummary?.totalBidDetail?.materialTax ?? 0
+            }`}
             className="font-medium"
           />
         </div>
         <div className="flex items-center justify-between">
           <MinDesc title="Overhead & Profit %" className="text-darkgrayish" />
           <Description
-            title={`$${estimateDetailsSummary?.totalBidDetail?.overheadAndProfit ?? 0}`}
+            title={`$${
+              estimateDetailsSummary?.totalBidDetail?.overheadAndProfit ?? 0
+            }`}
             className="font-medium"
           />
         </div>

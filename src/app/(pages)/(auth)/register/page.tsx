@@ -92,7 +92,7 @@ const Register = () => {
           name: googleAuthResponse.data.name,
           avatar: googleAuthResponse.data.picture,
           providerId: googleAuthResponse.data.sub,
-          userRole: role
+          userRole: role,
         };
 
         let result: any = await dispatch(loginWithGoogle(responseObj));
@@ -136,9 +136,34 @@ const Register = () => {
             title=" Sign up to your account"
           />
           <div className="flex items-center justify-between space-x-4 bg-gray-200 rounded-md p-2 mt-6 mb-3">
-            <button className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${role === CONTRACTOR ? 'bg-lavenderPurple text-white' : 'bg-gray-200'}`} onClick={() => handleRoleChange(CONTRACTOR)}>General-Contractor</button>
-            <button className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${role === SUBCONTRACTOR ? 'bg-lavenderPurple text-white' : 'bg-gray-200'}`} onClick={() => handleRoleChange(SUBCONTRACTOR)}>Sub-Contractor</button>
-            <button className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${role === OWNER ? 'bg-lavenderPurple text-white' : 'bg-gray-200'}`} onClick={() => handleRoleChange(OWNER)}>Owner</button>
+            <button
+              className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${
+                role === CONTRACTOR
+                  ? 'bg-lavenderPurple text-white'
+                  : 'bg-gray-200'
+              }`}
+              onClick={() => handleRoleChange(CONTRACTOR)}
+            >
+              General-Contractor
+            </button>
+            <button
+              className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${
+                role === SUBCONTRACTOR
+                  ? 'bg-lavenderPurple text-white'
+                  : 'bg-gray-200'
+              }`}
+              onClick={() => handleRoleChange(SUBCONTRACTOR)}
+            >
+              Sub-Contractor
+            </button>
+            <button
+              className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${
+                role === OWNER ? 'bg-lavenderPurple text-white' : 'bg-gray-200'
+              }`}
+              onClick={() => handleRoleChange(OWNER)}
+            >
+              Owner
+            </button>
           </div>
 
           <Formik
@@ -196,7 +221,9 @@ const Register = () => {
                     <div className="w-[100%] h-[1px] bg-lightSteelGray"></div>
                   </div>
                   <button
-                    className={twMerge(` ${btnStyle} ${quinaryHeading} font-semibold flex items-center justify-center gap-3 bg-snowWhite border-2 shadow-scenarySubdued border-doveGray`)}
+                    className={twMerge(
+                      ` ${btnStyle} ${quinaryHeading} font-semibold flex items-center justify-center gap-3 bg-snowWhite border-2 shadow-scenarySubdued border-doveGray`
+                    )}
                     type="button"
                     onClick={googleAuthenticationHandler}
                   >

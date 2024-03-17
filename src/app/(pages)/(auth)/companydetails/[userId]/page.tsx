@@ -34,19 +34,22 @@ const initialValues: IRegisterCompany = {
 };
 
 const CompanyDetailsSchema: any = Yup.object({
-  companyName: Yup.string().required('Company Name is required!'),
-  industry: Yup.string().required('Industry Name is required!'),
-  employee: Yup.number().required('Number of employee is required!'),
-  phoneNumber: Yup.string().required('Phone Number of employee is required!'),
+  companyName: Yup.string().optional(),
+  industry: Yup.string().optional(),
+  employee: Yup.number().optional(),
+  phoneNumber: Yup.string().optional(),
+  address: Yup.string().optional(),
+  organizationName: Yup.string().optional(),
+  // phoneNumber: Yup.string().optional(),
 });
 
 const CompanyDetails = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const { userId } = useParams();
-  
+
   const auth = useSelector((state: RootState) => state.auth);
-  const {user: userData} = auth;
+  const { user: userData } = auth;
 
   const [isLoading, setIsLoading] = useState(false);
   const [companyLogo, setCompanyLogo] = useState<any>('');
@@ -54,11 +57,11 @@ const CompanyDetails = () => {
   const [selectedUserRole, setSelectedUserRole] = useState<any>(null);
 
   const submitHandler = async (values: IRegisterCompany) => {
-
     if (!companyLogo && userData?.user?.userRole === CONTRACTOR) {
       setCompanyLogoErr('Company Name is required');
       return;
     }
+
     setIsLoading(true);
     if (companyLogo && userData?.user?.userRole === CONTRACTOR) {
       try {
@@ -79,14 +82,13 @@ const CompanyDetails = () => {
       setIsLoading(false);
       console.log('console.log', result.payload);
       localStorage.setItem('schestiToken', result.payload.token);
-      if(userData?.user?.userRole === OWNER) {
+      if (userData?.user?.userRole === OWNER) {
         router.push('/plans');
       } else if (userData?.user?.userRole === SUBCONTRACTOR) {
         router.push('/trades');
       } else if (userData?.user?.userRole === CONTRACTOR) {
         router.push('/verification');
       }
-
     } else {
       setIsLoading(false);
       toast.error(result.payload.message);
@@ -104,8 +106,10 @@ const CompanyDetails = () => {
       setSelectedUserRole(CONTRACTOR);
       return 'Company Details';
     }
+  }, [userData.user]);
 
-  }, [userData.user])
+  console.log('selectedUserRole', selectedUserRole);
+  console.log('userData', userData);
 
   return (
     <>
@@ -117,7 +121,10 @@ const CompanyDetails = () => {
           </h2>
           <div className="w-full h-1 bg-mistyWhite"></div>
           <div className="mt-6 bg-snowWhite shadow-tertiaryMystery p-10">
-            <PrimaryHeading title={primaryHeadingTitle} className="text-center mb-12" />
+            <PrimaryHeading
+              title={primaryHeadingTitle}
+              className="text-center mb-12"
+            />
             <Formik
               initialValues={initialValues}
               validationSchema={CompanyDetailsSchema}
@@ -132,16 +139,17 @@ const CompanyDetails = () => {
                     // validateMessages={formik.handleSubmit}
                   >
                     <div className="flex flex-col gap-6">
-                      {selectedUserRole == SUBCONTRACTOR || selectedUserRole == OWNER && (
-                        <FormControl
-                          control="input"
-                          label="Address"
-                          type="text"
-                          name="address"
-                          placeholder="Enter Company Address"
-                        />
-                      )}
-                      {selectedUserRole != OWNER &&
+                      {selectedUserRole == SUBCONTRACTOR ||
+                        (selectedUserRole == OWNER && (
+                          <FormControl
+                            control="input"
+                            label="Address"
+                            type="text"
+                            name="address"
+                            placeholder="Enter Company Address"
+                          />
+                        ))}
+                      {selectedUserRole != OWNER && (
                         <FormControl
                           control="input"
                           label="Company Name"
@@ -149,7 +157,7 @@ const CompanyDetails = () => {
                           name="companyName"
                           placeholder="Enter Company Name"
                         />
-                      }
+                      )}
 
                       <FormControl
                         control="input"
@@ -166,8 +174,7 @@ const CompanyDetails = () => {
                           name="organizationName"
                           placeholder="Enter Organization Name"
                         />
-                      )
-                      }
+                      )}
                       {selectedUserRole == CONTRACTOR && (
                         <FormControl
                           control="input"
@@ -177,75 +184,76 @@ const CompanyDetails = () => {
                           placeholder="Enter industry Name"
                         />
                       )}
-                      {selectedUserRole == CONTRACTOR || selectedUserRole == SUBCONTRACTOR && (
+                      {(selectedUserRole == CONTRACTOR ||
+                        selectedUserRole == SUBCONTRACTOR) && (
                         <>
-                        <FormControl
-                        control="input"
-                        label="Total Employee"
-                        type="number"
-                        name="employee"
-                        placeholder="Employee"
-                        min={1}
-                        />
-                        <label htmlFor="myInput">Logo/ Picture</label>
-                        <div className="flex items-center">
-                          <label
-                            htmlFor="dropzone-file"
-                            className="flex flex-col items-center justify-center w-22 h-22 border-2 border-gray-300 border-solid rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-                          >
-                            <div className="flex flex-col items-center justify-center p-5">
-                              <svg
-                                className="w-6 h-6 mb-3 text-gray-500 dark:text-gray-400"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 20 16"
-                              >
-                                <path
-                                  stroke="currentColor"
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="2"
-                                  d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                                />
-                              </svg>
-                              <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                <span className="font-semibold text-purple-600">
-                                  Click to upload
-                                </span>
-                              </p>
-                              <p className="text-xs text-gray-500 dark:text-gray-400">
-                                PNG, JPG (max. 800x400px)
-                              </p>
-                            </div>
-                            <input
-                              id="dropzone-file"
-                              onChange={(e: any) => {
-                                const file = e.target.files[0];
-                                if (file) {
-                                  // Check file size (max size: 800x400px)
-                                  const maxFileSize = 800 * 400; // 800x400px
-                                  if (file.size > maxFileSize) {
-                                    setCompanyLogoErr(
-                                      'Image size should be less than 800x400 pixels'
-                                    );
-                                    e.target.value = ''; // Clear the file input to allow re-selection
-                                    return;
+                          <FormControl
+                            control="input"
+                            label="Total Employee"
+                            type="number"
+                            name="employee"
+                            placeholder="Employee"
+                            min={1}
+                          />
+                          <label htmlFor="myInput">Logo/ Picture</label>
+                          <div className="flex items-center">
+                            <label
+                              htmlFor="dropzone-file"
+                              className="flex flex-col items-center justify-center w-22 h-22 border-2 border-gray-300 border-solid rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                            >
+                              <div className="flex flex-col items-center justify-center p-5">
+                                <svg
+                                  className="w-6 h-6 mb-3 text-gray-500 dark:text-gray-400"
+                                  aria-hidden="true"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 20 16"
+                                >
+                                  <path
+                                    stroke="currentColor"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                                  />
+                                </svg>
+                                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                  <span className="font-semibold text-purple-600">
+                                    Click to upload
+                                  </span>
+                                </p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">
+                                  PNG, JPG (max. 800x400px)
+                                </p>
+                              </div>
+                              <input
+                                id="dropzone-file"
+                                onChange={(e: any) => {
+                                  const file = e.target.files[0];
+                                  if (file) {
+                                    // Check file size (max size: 800x400px)
+                                    const maxFileSize = 800 * 400; // 800x400px
+                                    if (file.size > maxFileSize) {
+                                      setCompanyLogoErr(
+                                        'Image size should be less than 800x400 pixels'
+                                      );
+                                      e.target.value = ''; // Clear the file input to allow re-selection
+                                      return;
+                                    }
+                                    setCompanyLogo(file);
+                                    setCompanyLogoErr('');
                                   }
-                                  setCompanyLogo(file);
-                                  setCompanyLogoErr('');
-                                }
-                              }}
-                              type="file"
-                              style={{ opacity: '0' }}
-                              accept="image/*"
-                            />
-                            {companyLogo && <p>{companyLogo?.name}</p>}
-                          </label>
-                        </div>
-                        {!isEmpty(companyLogoErr) && (
-                          <Errormsg>{companyLogoErr}</Errormsg>
-                        )}
+                                }}
+                                type="file"
+                                style={{ opacity: '0' }}
+                                accept="image/*"
+                              />
+                              {companyLogo && <p>{companyLogo?.name}</p>}
+                            </label>
+                          </div>
+                          {!isEmpty(companyLogoErr) && (
+                            <Errormsg>{companyLogoErr}</Errormsg>
+                          )}
                         </>
                       )}
                     </div>
