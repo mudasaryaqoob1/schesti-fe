@@ -56,7 +56,6 @@ export const withAuth = (
           router.push('/login');
         }
       },
-      staleTime: 60 * 5000,
     });
 
     const userRoles: string[] = user.user?.roles || [];

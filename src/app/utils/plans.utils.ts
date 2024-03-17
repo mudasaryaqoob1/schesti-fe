@@ -14,7 +14,7 @@ export const Routes = {
     'AI-Takeoff': '/quantity-takeoff/ai-takeoff',
   },
   Estimates: {
-    "Estimates-Requests": "/estimates/requests",
+    'Estimates-Requests': '/estimates/requests',
     "Estimates-List": "/estimates/generate",
   },
   Financial: {

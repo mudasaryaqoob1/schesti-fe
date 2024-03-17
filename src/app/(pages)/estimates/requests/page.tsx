@@ -3,8 +3,8 @@ import React from 'react';
 import Records from './records';
 import { withAuth } from '@/app/hoc/withAuth';
 
-const GeneratedEstimates = () => {
+const EstimateRequests = () => {
   return <Records />;
 };
 
-export default withAuth(GeneratedEstimates);
+export default withAuth(EstimateRequests);
