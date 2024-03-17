@@ -740,8 +740,8 @@ function EditableCell({
               onChange={save}
               value={dayjs(record[dataIndex])}
               onBlur={save}
-               //@ts-ignore 
-                //@ts-nocheck
+              //@ts-ignore
+              //@ts-nocheck
               disabledDate={disabledDate}
               autoFocus
               defaultOpen

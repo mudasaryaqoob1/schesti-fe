@@ -1,16 +1,8 @@
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import type { ColumnsType } from 'antd/es/table';
 import { Dropdown, Table } from 'antd';
 import type { MenuProps } from 'antd';
-import { useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
 // import NoData from '@/app/component/noData';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import Image from 'next/image';
@@ -29,14 +21,7 @@ interface DataType {
 
 const EstimateRequestTable: React.FC = () => {
   const router = useRouter();
-  const token = useSelector(selectToken);
   const [loading, setLoading] = useState(false);
-
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
 
   const [generatedEstimates, setGeneratedEstimates] = useState([]);
 

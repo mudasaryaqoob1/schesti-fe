@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useState } from 'react';
 import SettingSidebar from '../verticleBar';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { Tabs } from 'antd';
@@ -9,21 +9,13 @@ import Plans from './oldSubscriptions';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
+import { withAuth } from '@/app/hoc/withAuth';
 
 const SettingPlans = () => {
   const [mySubscriptionPlan, setMySubscriptionPlan] = useState(true);
   const user = useSelector(
     (state: RootState) => state.auth.user as { user?: IUser }
   );
-  const token = useSelector(selectToken);
-
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
 
   return (
     <SettingSidebar>
@@ -53,4 +45,4 @@ const SettingPlans = () => {
   );
 };
 
-export default SettingPlans;
+export default withAuth(SettingPlans);

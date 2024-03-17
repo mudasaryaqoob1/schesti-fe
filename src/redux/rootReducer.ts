@@ -28,7 +28,7 @@ export type RootState = {
   takeoff: any;
   settingTargets: any;
   user: any;
-  pricingPlan: any;
+  pricingPlan: typeof pricingPlanReducer;
   companySetupCategory: typeof companySetupCategoryReducer;
   companySetupSubcategory: any;
   materials: any;

@@ -91,8 +91,8 @@ const confirmColumns: any = [
     dataIndex: 'perHourLaborRate',
     align: 'center',
     width: 120,
-    render: (value : number) => {
-      return `$${value}`
+    render: (value: number) => {
+      return `$${value}`;
     },
   },
   {
@@ -116,8 +116,8 @@ const confirmColumns: any = [
     dataIndex: 'unitMaterialCost',
     align: 'center',
     width: 120,
-    render: (value : number) => {
-      return `$${value}`
+    render: (value: number) => {
+      return `$${value}`;
     },
   },
   {

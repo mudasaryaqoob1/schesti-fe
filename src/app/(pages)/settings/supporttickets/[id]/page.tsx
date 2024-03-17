@@ -1,12 +1,6 @@
 'use client';
 
-import React, {
-  useState,
-  useCallback,
-  useEffect,
-  useRef,
-  useLayoutEffect,
-} from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useSelector } from 'react-redux';
@@ -19,27 +13,21 @@ import { senaryHeading } from '@/globals/tailwindvariables';
 import CustomButton from '@/app/component/customButton/button';
 import { supportTicketService } from '@/app/services/supportTicket.service';
 import { selectSupportTickets } from '@/redux/supportTickets/supportTicketSelector';
-import { ISupportTicket, ITicketMessage } from '@/app/interfaces/supportTicket.interface';
+import {
+  ISupportTicket,
+  ITicketMessage,
+} from '@/app/interfaces/supportTicket.interface';
 import moment from 'moment';
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
 import SettingSidebar from '../../verticleBar';
 import { byteConverter } from '@/app/utils/byteConverter';
 import { toast } from 'react-toastify';
 import AwsS3 from '@/app/utils/S3Intergration';
+import { withAuth } from '@/app/hoc/withAuth';
 
 const SupportTicketDetails = () => {
   const params = useParams();
   const divRef: any = useRef(null);
   const { id }: any = params;
-
-  const token = useSelector(selectToken);
-
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
 
   const supportTicketData = useSelector(selectSupportTickets);
 
@@ -49,7 +37,6 @@ const SupportTicketDetails = () => {
   const [messages, setMessages] = useState<ITicketMessage[]>([]);
   const [messageLoading, setMessageLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
-
 
   const fetchedSupportTicketsMessagesHandler = useCallback(async () => {
     let result = await supportTicketService.httpGetMessages(id);
@@ -92,7 +79,6 @@ const SupportTicketDetails = () => {
     }
   };
 
-
   const fileUploadHandler = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setUploading(true);
     const files = e.target.files;
@@ -106,17 +92,14 @@ const SupportTicketDetails = () => {
     try {
       const file = files![0];
       console.log({ file });
-      const url = await new AwsS3(
-        file,
-        'documents/supporttickets/'
-      ).getS3URL();
+      const url = await new AwsS3(file, 'documents/supporttickets/').getS3URL();
       let result = await supportTicketService.httpCreateMessage({
         ticketId: id,
         sender: 'user',
         fileExtension: file.type,
         isFile: true,
         fileUrl: url,
-        fileName: file.name
+        fileName: file.name,
       });
       setMessage('');
       setMessageLoading(false);
@@ -200,20 +183,29 @@ const SupportTicketDetails = () => {
                 <div className="flex flex-col gap-y-5" ref={divRef}>
                   {messages.map((message) => {
                     if (message.sender == 'user') {
-                      return message.isFile ? <div key={message._id} className='bg-slate-100 rounded-l-lg px-4 py-3 mr-8 self-end'>
-                        {message.fileExtension.includes('pdf') ? <a
-                          className="text-[#5A7184] text-[16px] leading-5"
-                          href={message.fileUrl}
-                          target='_blank'
+                      return message.isFile ? (
+                        <div
+                          key={message._id}
+                          className="bg-slate-100 rounded-l-lg px-4 py-3 mr-8 self-end"
                         >
-                          {message.fileName}
-                        </a> : <Image
-                          src={message.fileUrl}
-                          alt={message.fileName}
-                          width={200}
-                          height={200}
-                        />}
-                      </div> : (
+                          {message.fileExtension.includes('pdf') ? (
+                            <a
+                              className="text-[#5A7184] text-[16px] leading-5"
+                              href={message.fileUrl}
+                              target="_blank"
+                            >
+                              {message.fileName}
+                            </a>
+                          ) : (
+                            <Image
+                              src={message.fileUrl}
+                              alt={message.fileName}
+                              width={200}
+                              height={200}
+                            />
+                          )}
+                        </div>
+                      ) : (
                         <p
                           key={message._id}
                           className="bg-slate-100 text-[#5A7184] text-[16px] leading-5 rounded-l-lg px-4 py-3 mr-8 self-end"
@@ -245,20 +237,24 @@ const SupportTicketDetails = () => {
                     onChange={(e) => setMessage(e.target.value)}
                   />
                   <div className="flex gap-3 items-center absolute top-2 right-3">
-                    {uploading ? "Uploading..." : <label htmlFor="file" className='cursor-pointer'>
-                      <Image
-                        width={24}
-                        height={24}
-                        src="/select-file.svg"
-                        alt="select file"
-                      />
-                    </label>}
+                    {uploading ? (
+                      'Uploading...'
+                    ) : (
+                      <label htmlFor="file" className="cursor-pointer">
+                        <Image
+                          width={24}
+                          height={24}
+                          src="/select-file.svg"
+                          alt="select file"
+                        />
+                      </label>
+                    )}
                     <input
-                      id='file'
+                      id="file"
                       type="file"
-                      className='hidden'
-                      accept='image/*, application/pdf'
-                      onChange={e => fileUploadHandler(e)}
+                      className="hidden"
+                      accept="image/*, application/pdf"
+                      onChange={(e) => fileUploadHandler(e)}
                     />
                     <div className="w-0.5 h-7 bg-darkGray" />
                     <span>
@@ -281,4 +277,4 @@ const SupportTicketDetails = () => {
   );
 };
 
-export default SupportTicketDetails;
+export default withAuth(SupportTicketDetails);

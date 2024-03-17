@@ -385,6 +385,22 @@ const Scope = ({ setPrevNext }: Props) => {
       };
 
       confirmEstimateHandler(newValue);
+
+      setSelectedSubCategory('');
+      setSelectedCategory('');
+      setSingleEstimateData({
+        category: '',
+        subCategory: '',
+        description: '',
+        unit: '',
+        qty: '',
+        wastage: '5',
+        unitLabourHour: '',
+        perHourLaborRate: '',
+        unitMaterialCost: '',
+        unitEquipments: '',
+      });
+      actions.resetForm({ values: initialValues });
     }
   };
   // const submitHandlerlast = (
