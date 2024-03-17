@@ -1,5 +1,5 @@
 'use client';
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import ModalComponent from '@/app/component/modal';
 import ScaleModal from '../components/scale';
 import ModalsWrapper from './components/ModalWrapper';
@@ -45,7 +45,9 @@ const Scale = () => {
   const [measurements, setMeasurements] =
     useState<Measurements>(defaultMeasurements);
 
-  const { scaleData } = useContext(ScaleContext) as ScaleDataContextProps;
+  const { scaleData, handleScaleData } = useContext(
+    ScaleContext
+  ) as ScaleDataContextProps;
   const { uploadFileData } = useContext(
     UploadFileContext
   ) as UploadFileContextProps;
@@ -53,6 +55,14 @@ const Scale = () => {
   console.log('scaleData: ', scaleData);
 
   if (!uploadFileData.length) router.push('/takeoff/upload');
+
+  useEffect(() => {
+    const newData: any = {};
+    for (let i = 1; i <= uploadFileData.length; i++) {
+      newData[i] = { scale: `1in=1in`, precision: '1' };
+    }
+    handleScaleData(newData);
+  }, []);
 
   return (
     <>

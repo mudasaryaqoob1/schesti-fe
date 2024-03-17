@@ -14,22 +14,11 @@ import { takeoffPresetService } from '@/app/services/takeoff.service';
 import { addNewTakeoffPresetData } from '@/redux/takeoff/takeoff.slice';
 import { ScaleContext } from '../../context';
 import { ScaleDataContextProps } from '../../context/ScaleContext';
+import { measurementUnits } from '@/app/hooks/useDraw';
 
 const precisions = ['1', '0.1', '0.01', ' 0.001', '0.0001', '0.00001'];
 const byPrecision = ['1', '1/2', '1/4', '1/8', '1/16', '1/32'];
 const meters = ['in', 'cm', 'mm'];
-const secondaryMeters = [
-  'in',
-  'ft',
-  `ft' in'`,
-  `in'`,
-  'yd',
-  'mi',
-  'mm',
-  'cm',
-  'm',
-  'km',
-];
 
 const byDefaultPrest = [
   { label: `1"=1"`, value: `1"=1"` },
@@ -81,6 +70,7 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
   const [secondValue, setSecondValue] = useState('1');
 
   const [optionError, setOptionError] = useState(false);
+  const [firstValError, setFirstValError] = useState(false);
   const [secValError, setSecValError] = useState(false);
 
   const { handleScaleData, scaleData } = useContext(
@@ -116,6 +106,7 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
   useEffect(() => {
     dispatch(fetchTakeoffPreset({}));
     setPreset(`1"=1"`);
+    setPrecision('1');
   }, []);
 
   useEffect(() => {
@@ -152,28 +143,31 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
       scale = `${firstValue}${meter}=${secondValue}${secMeter}`;
     }
 
-    if (optionsValue !== 'allPages' && optionsValue !== 'currentPage') {
-      if (optionsValue?.includes('=')) {
-        const range = optionsValue?.split('=').map(Number);
-        const [start, end] = range;
-        for (let i = start; i <= end; i++) {
-          newData[i] = { scale: scale, precision: precision };
-        }
-      } else if (optionsValue?.includes(',')) {
-        const numbers = optionsValue?.split(',').map(Number);
-        numbers.forEach((num) => {
-          newData[num] = { scale: scale, precision: precision };
-        });
+    // if (optionsValue !== 'allPages' && optionsValue !== 'currentPage') {
+    if (optionsValue?.includes('-')) {
+      const range = optionsValue?.split('-').map(Number);
+      const [start, end] = range;
+      for (let i = start; i <= end; i++) {
+        newData[i] = { scale: scale, precision: precision };
       }
-    } else if (optionsValue === 'allPages' || optionsValue === 'currentPage') {
-      if (optionsValue === 'currentPage') {
-        newData[page ? page : '1'] = { scale: scale, precision: precision };
-      } else {
-        for (let i = 1; i <= numOfPages; i++) {
-          newData[i] = { scale: scale, precision: precision };
-        }
-      }
+    } else if (optionsValue?.includes(',')) {
+      const numbers = optionsValue?.split(',').map(Number);
+      numbers.forEach((num) => {
+        newData[num] = { scale: scale, precision: precision };
+      });
+    } else if (!optionsValue?.includes(',') && !optionsValue?.includes('-')) {
+      newData[optionsValue] = { scale: scale, precision: precision };
     }
+    // }
+    //  else if (optionsValue === 'allPages' || optionsValue === 'currentPage') {
+    //   if (optionsValue === 'currentPage') {
+    //     newData[page ? page : '1'] = { scale: scale, precision: precision };
+    //   } else {
+    //     for (let i = 1; i <= numOfPages; i++) {
+    //       newData[i] = { scale: scale, precision: precision };
+    //     }
+    //   }
+    // }
 
     handleScaleData({ ...scaleData, ...newData });
     setModalOpen(false);
@@ -241,13 +235,13 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
                 className="hover:bg-slate-200 hover:rounded-sm p-1"
                 onClick={() => {
                   setShowOptions(!showOptions);
-                  setOptionsValue('currentPage');
+                  setOptionsValue(`${page ? page : '1'}`);
                 }}
               >{`Current Page (${page ? page : 1}) `}</div>
               <div
                 onClick={() => {
                   setShowOptions(!showOptions);
-                  setOptionsValue('allPages');
+                  setOptionsValue(`1 - ${numOfPages}`);
                 }}
                 className="hover:bg-slate-200 hover:rounded-sm p-1"
               >
@@ -284,8 +278,25 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
               <>
                 <Input
                   value={firstValue}
-                  className="!w-[115px]"
-                  onChange={(e) => setFirstValue(e.target.value)}
+                  className={`!w-[115px] ${
+                    firstValError && '!border-1 !border-rose-500'
+                  } `}
+                  // className="!w-[115px]"
+                  onChange={(e) => {
+                    const inputValue = e.target.value;
+
+                    const isValidInput = /^\d{0,8}(\.\d{0,2})?$/.test(
+                      inputValue
+                    );
+
+                    if (!isValidInput) {
+                      setFirstValError(true);
+                      return;
+                    }
+
+                    setFirstValError(false);
+                    setFirstValue(inputValue);
+                  }}
                 />
                 <Select
                   value={meter}
@@ -311,7 +322,7 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
                       return;
                     }
 
-                    if (secMeter !== `ft' in'` && inputValue.includes('/')) {
+                    if (secMeter !== `ft'in"` && inputValue.includes('-')) {
                       setSecValError(true);
                       return;
                     }
@@ -326,9 +337,15 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
                       return;
                     }
 
-                    if (inputValue.includes('/')) {
-                      const parts = inputValue.split('/');
+                    if (inputValue.includes('-') || inputValue.includes('/')) {
+                      let parts;
+                      if (inputValue.includes('-')) {
+                        parts = inputValue.split('-');
+                      } else if (inputValue.includes('/')) {
+                        parts = inputValue.split('/');
+                      }
                       if (
+                        !parts ||
                         parts.length !== 2 ||
                         isNaN(Number(parts[0])) ||
                         isNaN(Number(parts[1])) ||
@@ -350,7 +367,7 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
                     setSecMeter(value);
                   }}
                 >
-                  {secondaryMeters.map((item) => (
+                  {measurementUnits.map((item) => (
                     <Select.Option key={item} value={item}>
                       {item}
                     </Select.Option>
@@ -366,7 +383,7 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
               className="w-full"
               onChange={(value) => setPrecision(value)}
             >
-              {secMeter === `in'` || secMeter === `ft' in'`
+              {secMeter === `in'` || secMeter === `ft'in"`
                 ? byPrecision.map((item) => (
                     <Select.Option key={item} value={item}>
                       {item}
@@ -385,12 +402,16 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
         <div>
           <Button
             text="Cancel"
-            className="!bg-snowWhite !text-abyssalBlack"
+            className="!bg-snowWhite !text-abyssalBlack !py-2 "
             onClick={() => setModalOpen(false)}
           />
         </div>
         <div>
-          <Button text="Calibrate" onClick={handleCalibrate} />
+          <Button
+            text="Calibrate"
+            onClick={handleCalibrate}
+            className="!py-2"
+          />
         </div>
       </div>
     </div>

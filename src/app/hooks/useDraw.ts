@@ -1,7 +1,7 @@
 import { ScaleData } from '../(pages)/takeoff/scale/page';
 import { DrawInterface } from '../(pages)/takeoff/types';
 
-const measurementUnits = [
+export const measurementUnits = [
   'in',
   'cm',
   'mm',
