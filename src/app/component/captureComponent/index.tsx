@@ -1,42 +1,42 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Stage, Layer, Image as KonvaImage, Line, Circle } from 'react-konva';
 import Konva from 'konva';
-import { DrawHistoryContextInterface } from '@/app/(pages)/takeoff/context/DrawHistoryContext';
-import { DrawInterface } from '@/app/(pages)/takeoff/types';
+
 import UploadFileContext, {
   UploadFileContextProps,
 } from '@/app/(pages)/takeoff/context/UploadFileContext';
-import { LineCap } from 'konva/lib/Shape';
 import ReportCard from '../reportCard';
-import { Text } from 'konva/lib/shapes/Text';
+
 import { useDraw } from '@/app/hooks';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
-import { Button } from 'antd';
-import generatePDF from './generatePdf';
+
 import { ReportDataContext } from '@/app/(pages)/takeoff/context';
 import {
   ReportDataContextProps,
   ReportDataInterface,
 } from '@/app/(pages)/takeoff/context/ReportDataContext';
-import AwsS3 from '@/app/utils/S3Intergration';
+
 import uploadToS3 from './uploadToS3';
-import { takeoffSummaryService } from '@/app/services/takeoffSummary.service';
+
+import { AppDispatch } from '@/redux/store';
+import { useDispatch } from 'react-redux';
+import { createTakeoffSummary } from '@/redux/takeoffSummaries/takeoffSummaries.thunk';
 
 export interface dataInterface {
   image: string;
   details: ReportDataInterface;
 }
 
-const CaptureComponent = (
-  {
-    // itemsToCapture,
-    // onCapture,
-  }: {
-    itemsToCapture: DrawHistoryContextInterface;
-    onCapture: (url: string, key: number) => void;
-  }
-) => {
+const CaptureComponent = ({
+  name,
+  save,
+  onSaveSuccess,
+}: {
+  name: string;
+  save: number;
+  onSaveSuccess: () => void;
+  // itemsToCapture: DrawHistoryContextInterface;
+  // onCapture: (url: string, key: number) => void;
+}) => {
   const {
     calcLineDistance,
     calculateMidpoint,
@@ -50,6 +50,7 @@ const CaptureComponent = (
   const stageRef = useRef<Konva.Stage>(null);
   const [data, setData] = useState<dataInterface[]>([]);
   const [isSaving, setIsSaving] = useState<boolean>(false);
+  const dispatch = useDispatch<AppDispatch>();
 
   const { uploadFileData } = useContext(
     UploadFileContext
@@ -60,7 +61,6 @@ const CaptureComponent = (
   ) as ReportDataContextProps;
 
   useEffect(() => {
-    setIsSaving(true);
     const loadImage = (src: string) => {
       return new Promise<HTMLImageElement>((resolve, reject) => {
         const img = new Image();
@@ -220,24 +220,37 @@ const CaptureComponent = (
 
       const newData = await Promise.all(promises);
       setData(newData);
-      setTimeout(() => {
-        uploadToS3('capture').then((url) => {
-          console.log(url, 'url');
-          takeoffSummaryService.httpCreateTakeoffSummary({
-            name: 'Project Report',
-            scope: data.length,
-            createdBy: 99999,
-            url,
-          });
-          setIsSaving(false);
-        });
-      }, 2000);
     };
 
     if (reportData.length) {
       captureShapes();
     }
   }, [reportData.length]);
+
+  const saveData = () => {
+    if (data.length > 0) {
+      setIsSaving(true);
+      setTimeout(() => {
+        uploadToS3('capture').then((url) => {
+          dispatch(
+            createTakeoffSummary({
+              name: name || 'Untitled',
+              scope: data.length,
+              createdBy: 99999,
+              url,
+            })
+          );
+          setIsSaving(false);
+          onSaveSuccess();
+        });
+      }, 2000);
+    }
+  };
+  useEffect(() => {
+    if (save) {
+      saveData();
+    }
+  }, [save]);
 
   return (
     <div>

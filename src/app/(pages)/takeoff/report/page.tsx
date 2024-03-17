@@ -17,8 +17,9 @@ const Report = () => {
   const { drawHistory } = useContext(
     DrawHistoryContext
   ) as DrawHistoryContextProps;
-
-  const [Images, setImages] = useState<{ url: string; key: number }[]>([]);
+  const [name, setName] = useState('');
+  const [save, setSave] = useState(0);
+  const [saveLoader, setSaveLoader] = useState(false);
   return (
     <>
       <section className="md:px-16 px-8 pb-4">
@@ -54,12 +55,13 @@ const Report = () => {
                             px-3"
             >
               <input
-                type="search"
+                type="name"
                 name=""
                 id=""
                 placeholder="Enter project name"
                 className="w-full h-full
           bg-transparent outline-none"
+                onChange={(e) => setName(e.target.value)}
               />
             </div>
             <div>
@@ -70,11 +72,22 @@ const Report = () => {
             </div>
           </div>
         </div>
+        <Button
+          text="Save"
+          disabled={saveLoader || save > 0}
+          isLoading={saveLoader}
+          onClick={() => {
+            setSaveLoader(true);
+            setSave(1);
+          }}
+          className="disabled:opacity-50"
+        />
       </section>
       <CaptureComponent
-        itemsToCapture={drawHistory || {}}
-        onCapture={(url: string, key: number) => {
-          setImages((prev) => [...prev, { url, key }]);
+        name={name}
+        save={save}
+        onSaveSuccess={() => {
+          setSaveLoader(false);
         }}
       />
     </>

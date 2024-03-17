@@ -1,7 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Table } from 'antd';
 import type { ColumnsType, TableProps } from 'antd/es/table';
 import { takeoffSummaryService } from '@/app/services/takeoffSummary.service';
+import { AppDispatch } from '@/redux/store';
+import { selectTakeoffSummaries } from '@/redux/takeoffSummaries/takeoffSummaries.Selector';
+import {
+  deleteSummaries,
+  fetchTakeoffSummaries,
+} from '@/redux/takeoffSummaries/takeoffSummaries.thunk';
+import { useDispatch, useSelector } from 'react-redux';
 // Import your API service
 
 interface DataType {
@@ -76,67 +83,47 @@ const columns: ColumnsType<DataType> = [
 ];
 
 const Index: React.FC = () => {
-  const [data, setData] = useState<DataType[]>([]);
+  const dispatch = useDispatch<AppDispatch>();
+  const summaries = useSelector(selectTakeoffSummaries);
 
   useEffect(() => {
-    // Define an async function to fetch your data
-    const fetchData = async () => {
-      try {
-        // Call your API here; adjust parameters as needed
-        const response =
-          await takeoffSummaryService.httpGetAllTakeoffSummaries(/* userId, page, limit */);
-        if (response && response.data) {
-          console.warn(response.data);
-
-          // Map your data to match the DataType structure
-          const formattedData = response.data.map(
-            (
-              item: {
-                _id: any;
-                name: any;
-                url: string;
-                scope: { toString: () => any };
-                createdAt: any;
-              },
-              index: any
-            ) => ({
-              key: item._id, // Assume each item has a unique id
-              name: item.name,
-              scope: item.scope.toString(), // Ensure scope is a string
-              createdAt: item.createdAt,
-              action: (
-                <span className="flex flex-col space-y-2">
-                  <button
-                    id="downloadPdfBtn"
-                    onClick={() => downloadPdfFromS3(item.url)}
-                    className="cursor-pointer"
-                  >
-                    Download PDF
-                  </button>
-                  <button
-                    id="deletePdfBtn"
-                    onClick={() =>
-                      takeoffSummaryService.httpSoftDeleteTakeoffSummary(
-                        item._id
-                      )
-                    }
-                    className="cursor-pointer"
-                  >
-                    Delete
-                  </button>
-                </span>
-              ),
-            })
-          );
-          setData(formattedData);
-        }
-      } catch (error) {
-        console.error('Failed to fetch data:', error);
-      }
-    };
-
-    fetchData();
+    dispatch(fetchTakeoffSummaries({ page: 1, limit: 10 }));
   }, []); // Empty dependency array means this effect runs once on mount
+
+  const formattedData = useMemo(() => {
+    return summaries?.map(
+      (item: {
+        _id: any;
+        name: any;
+        url: string;
+        scope: { toString: () => any };
+        createdAt: any;
+      }) => ({
+        key: item._id, // Assume each item has a unique id
+        name: item.name,
+        scope: item.scope.toString(), // Ensure scope is a string
+        createdAt: item.createdAt,
+        action: (
+          <span className="flex flex-col space-y-2">
+            <button
+              id="downloadPdfBtn"
+              onClick={() => downloadPdfFromS3(item.url)}
+              className="cursor-pointer"
+            >
+              Download PDF
+            </button>
+            <button
+              id="deletePdfBtn"
+              onClick={() => dispatch(deleteSummaries(item._id))}
+              className="cursor-pointer"
+            >
+              Delete
+            </button>
+          </span>
+        ),
+      })
+    );
+  }, [summaries]);
 
   const onChange: TableProps<DataType>['onChange'] = (
     pagination,
@@ -149,7 +136,7 @@ const Index: React.FC = () => {
 
   return (
     <div className="mt-4">
-      <Table columns={columns} dataSource={data} onChange={onChange} />
+      <Table columns={columns} dataSource={formattedData} onChange={onChange} />
     </div>
   );
 };
@@ -157,6 +144,8 @@ const Index: React.FC = () => {
 export default Index;
 
 function downloadPdfFromS3(pdfBlobUrl: string, fileName = 'downloaded.pdf') {
+  console.warn('pdfBlobUrl', pdfBlobUrl);
+
   // Fetch the PDF blob using the Fetch API
   fetch(pdfBlobUrl)
     .then((response) => {
