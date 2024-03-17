@@ -107,6 +107,7 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
     dispatch(fetchTakeoffPreset({}));
     setPreset(`1"=1"`);
     setPrecision('1');
+    setOptionsValue(`1-${numOfPages}`);
   }, []);
 
   useEffect(() => {
@@ -241,7 +242,7 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
               <div
                 onClick={() => {
                   setShowOptions(!showOptions);
-                  setOptionsValue(`1 - ${numOfPages}`);
+                  setOptionsValue(`1-${numOfPages}`);
                 }}
                 className="hover:bg-slate-200 hover:rounded-sm p-1"
               >
