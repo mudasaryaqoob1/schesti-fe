@@ -67,7 +67,11 @@ const ReportCard: React.FC<Props> = ({ entity }) => {
                 Space <span className="font-sm text-black"> {'---'}</span>
               </span>
               <span>
-                Value<span className="font-sm text-black"> {'---'}</span>
+                Value
+                <span className="font-sm text-black">
+                  {' '}
+                  {item.details.comment ?? '---'}
+                </span>
               </span>
             </div>
           </div>

@@ -9,9 +9,11 @@ import {
   Text as KonvaText,
   Arrow,
   Circle,
+  KonvaNodeComponent,
 } from 'react-konva';
+
 import { UploadFileData } from '../../context/UploadFileContext';
-import { useDraw } from '@/app/hooks';
+
 import { KonvaEventObject } from 'konva/lib/Node';
 import moment from 'moment';
 import { DrawHistoryContext } from '../../context';
@@ -28,6 +30,8 @@ import {
   defaultMeasurements,
 } from '../../types';
 import { ScaleData } from '../page';
+import useWheelZoom from './useWheelZoom';
+import useDraw from '../../../../hooks/useDraw';
 
 const defaultCurrentLineState = { startingPoint: null, endingPoint: null };
 const defaultPolyLineState: LineInterface = {
@@ -126,7 +130,7 @@ const Draw: React.FC<Props> = ({
     setSelectedShape('');
 
     const stage = e.target.getStage();
-    const position = stage?.getPointerPosition();
+    const position = getRelativePointerPosition(stage);
 
     if (subSelected === 'fill') {
       setIsMouseDown(true);
@@ -330,7 +334,7 @@ const Draw: React.FC<Props> = ({
   const handleMouseMove = (e: KonvaEventObject<MouseEvent>) => {
     if (endLiveEditing) return;
     const stage = e.target.getStage();
-    const position = stage?.getPointerPosition();
+    const position = getRelativePointerPosition(stage);
 
     if (subSelected === 'fill') {
       if (isMouseDown) {
@@ -417,6 +421,7 @@ const Draw: React.FC<Props> = ({
     setIsMouseDown(false);
   };
 
+  const { stageScale, stageX, stageY, handleWheel } = useWheelZoom();
   return (
     <div
       className="outline-none"
@@ -479,6 +484,11 @@ const Draw: React.FC<Props> = ({
       <Stage
         width={uploadFileData.width || 600}
         height={uploadFileData.height || 600}
+        onWheel={handleWheel}
+        scaleX={stageScale}
+        scaleY={stageScale}
+        x={stageX}
+        y={stageY}
         className="flex justify-center cursor-pointer"
       >
         <Layer
@@ -698,3 +708,12 @@ const Draw: React.FC<Props> = ({
 };
 
 export default Draw;
+
+const getRelativePointerPosition = (node: any) => {
+  if (node) {
+    const transform = node?.getAbsoluteTransform().copy();
+    transform.invert();
+    const pos = node.getStage().getPointerPosition();
+    return transform.point(pos);
+  }
+};

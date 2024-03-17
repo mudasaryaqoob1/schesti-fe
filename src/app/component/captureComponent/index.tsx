@@ -18,6 +18,12 @@ import uploadToS3 from './uploadToS3';
 import { AppDispatch } from '@/redux/store';
 import { useDispatch } from 'react-redux';
 import { createTakeoffSummary } from '@/redux/takeoffSummaries/takeoffSummaries.thunk';
+import { useDraw } from '@/app/hooks';
+import { calc } from 'antd/es/theme/internal';
+import { min } from 'lodash';
+
+const counterImage = new Image();
+counterImage.src = '/count-draw.png';
 
 export interface dataInterface {
   image: string;
@@ -39,7 +45,15 @@ const CaptureComponent = ({
   const [data, setData] = useState<dataInterface[]>([]);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
-
+  const {
+    calcLineDistance,
+    calculateMidpoint,
+    calculatePolygonArea,
+    calculatePolygonPerimeter,
+    calculatePolygonCenter,
+    calculatePolygonVolume,
+    calculateAngle,
+  } = useDraw();
   const { uploadFileData } = useContext(
     UploadFileContext
   ) as UploadFileContextProps;
@@ -100,7 +114,14 @@ const CaptureComponent = ({
           case 'count': {
             // Example for a circle shape
             const { x, y, radius = 20, fill = '#FF3434' } = shape;
-            const circle = new Konva.Circle({ x, y, radius, fill });
+            const circle = new Konva.Image({
+              image: counterImage,
+              width: 20,
+              height: 20,
+              x,
+              y,
+              radius,
+            });
             layer.add(circle);
 
             // Adjust bounds for the circle, considering the radius and a margin
@@ -126,6 +147,23 @@ const CaptureComponent = ({
                 closed: shapeType === 'area' || shapeType === 'volume', // Close path for areas and volumes
               });
               layer.add(line);
+              console.warn(shape, 'sssss');
+              let xText = 0,
+                yText = 0,
+                sText: '';
+              if (
+                shapeType === 'area' ||
+                shapeType === 'volume' ||
+                shapeType === 'dynamic'
+              ) {
+                const { x, y } = calculatePolygonCenter(points);
+                xText = x - 20;
+                yText = y - 20;
+              } else {
+                const { x, y } = calculateMidpoint(points);
+                xText = x - 20;
+                yText = y - 20;
+              }
 
               // Calculate bounds for lines and polygons, include margin
               const xs = points.filter((_: any, i: number) => i % 2 === 0);
@@ -134,6 +172,18 @@ const CaptureComponent = ({
               minY = Math.min(...ys) - 20;
               maxX = Math.max(...xs) + 20;
               maxY = Math.max(...ys) + 20;
+              const textSize = (maxX - minY) / 60;
+
+              console.warn(textSize);
+              const text = new Konva.Text({
+                x: xText,
+                y: yText,
+                text: shape.text,
+                fontSize: Math.floor(textSize) * 4,
+                fontFamily: 'Calibri',
+                fill: 'red',
+              });
+              layer.add(text);
             }
             break;
 
@@ -171,7 +221,11 @@ const CaptureComponent = ({
     const captureShapes = async () => {
       const background = await loadImage(uploadFileData[0]?.src || ''); // Update based on actual data structure
       const promises = reportData.map(async (item) => {
-        const url = await captureShape(item.config, background, item.type);
+        const url = await captureShape(
+          { ...item.config, text: item.comment, name: item.projectName },
+          background,
+          item.type
+        );
         return {
           image: url,
           details: { ...item },
@@ -208,6 +262,7 @@ const CaptureComponent = ({
     if (save) saveData();
   }, [save]);
 
+  console.warn('data', reportData);
   return (
     <div>
       <Stage
@@ -251,7 +306,7 @@ const CaptureComponent = ({
               <span className="sr-only">Loading...</span>
             </div>
           ) : (
-            'Saved'
+            ''
           )}
         </div>
       </div>
