@@ -188,7 +188,7 @@ const SupportTicketDetails = () => {
                     onChange={(e) => setMessage(e.target.value)}
                   />
                   <div className="flex gap-3 items-center absolute top-2 right-3">
-                    <img
+                    <Image
                       width={24}
                       height={24}
                       src="/select-file.svg"
@@ -200,6 +200,7 @@ const SupportTicketDetails = () => {
                         isLoading={messageLoading}
                         type="submit"
                         text="Reply"
+                        disabled={message.length === 0}
                         className="!bg-[#EF9F28] !py-2.5 !px-6 !border-none"
                       />
                     </span>

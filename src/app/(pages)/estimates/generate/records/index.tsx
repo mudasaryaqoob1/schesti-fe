@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
-import NoData from '@/app/component/noData';
+// import NoData from '@/app/component/noData';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import Image from 'next/image';
 import { estimateRequestService } from '@/app/services/estimates.service';
@@ -30,6 +30,7 @@ interface DataType {
 const EstimateRequestTable: React.FC = () => {
   const router = useRouter();
   const token = useSelector(selectToken);
+  const [loading, setLoading] = useState(false);
 
   useLayoutEffect(() => {
     if (token) {
@@ -40,11 +41,12 @@ const EstimateRequestTable: React.FC = () => {
   const [generatedEstimates, setGeneratedEstimates] = useState([]);
 
   const fetchGeneratedEstiamtesHandler = useCallback(async () => {
+    setLoading(true);
     let result = await estimateRequestService.httpGetAllGeneratedEstimates(
       1,
       9
     );
-    let updatedGeneratedEstimate = result?.data?.generatedEstiamtes.map(
+    let updatedGeneratedEstimate = result?.data?.generatedEstimates.map(
       (estimate: any) => {
         return {
           _id: estimate?._id,
@@ -59,6 +61,7 @@ const EstimateRequestTable: React.FC = () => {
       }
     );
     setGeneratedEstimates(updatedGeneratedEstimate);
+    setLoading(false);
   }, []);
 
   useEffect(() => {
@@ -69,6 +72,10 @@ const EstimateRequestTable: React.FC = () => {
     {
       key: 'viewDetail',
       label: 'View Detail',
+    },
+    {
+      key: 'createSchedule',
+      label: 'Create Schedule',
     },
     {
       key: 'deleteEstimate',
@@ -85,6 +92,8 @@ const EstimateRequestTable: React.FC = () => {
       if (deleteEstimateResult.statusCode === 200) {
         fetchGeneratedEstiamtesHandler();
       }
+    } else if (key == 'createSchedule') {
+      router.push(`/schedule/estimate/${estimate._id}`);
     }
   };
 
@@ -145,30 +154,30 @@ const EstimateRequestTable: React.FC = () => {
 
   return (
     <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid border-silverGray shadow-secondaryTwist">
-      {generatedEstimates?.length ? (
-        <>
-          <div className="flex justify-between items-center">
-            <TertiaryHeading
-              title="Submitted Estimate"
-              className="text-graphiteGray"
-            />
-          </div>
-          <div className="mt-4">
-            <Table
-              columns={columns}
-              dataSource={generatedEstimates}
-              pagination={{ position: ['bottomCenter'] }}
-            />
-          </div>
-        </>
-      ) : (
+      <>
+        <div className="flex justify-between items-center">
+          <TertiaryHeading
+            title="Submitted Estimate"
+            className="text-graphiteGray"
+          />
+        </div>
+        <div className="mt-4">
+          <Table
+            loading={loading}
+            columns={columns}
+            dataSource={generatedEstimates}
+            pagination={{ position: ['bottomCenter'] }}
+          />
+        </div>
+      </>
+      {/**) : (
         <NoData
           btnText="Add Request"
           title="Create Estimate Request"
           description="There is not any record yet . To get started, Create an estimate request by clicking the button below and sharing details about your project."
           link="/estimates/requests/create"
         />
-      )}
+      )} */}
     </section>
   );
 };

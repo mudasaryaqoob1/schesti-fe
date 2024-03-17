@@ -1,5 +1,5 @@
 'use client';
-import { useLayoutEffect, useState } from 'react';
+import { useLayoutEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { ConfigProvider, Tabs } from 'antd';
 
@@ -8,14 +8,16 @@ import { selectToken } from '@/redux/authSlices/auth.selector';
 import { Contractors } from './components/contractors';
 import { Clients } from './components/clients';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import withAuth from '@/app/hoc/with_auth';
+import { useLocalStorageState } from 'ahooks';
 
 const CONTRACTOR_KEY = 'Contractor';
 const CLIENT_KEY = 'Client';
 
-const InvoicePage = () => {
+export default function InvoicePage() {
   const token = useSelector(selectToken);
-  const [tab, setTab] = useState(CONTRACTOR_KEY);
+  const [tab, setTab] = useLocalStorageState('use-local-storage-state-demo2', {
+    defaultValue: CLIENT_KEY,
+  });
 
   useLayoutEffect(() => {
     if (token) {
@@ -32,12 +34,14 @@ const InvoicePage = () => {
               Tabs: {
                 inkBarColor: '#8449EB',
               },
+              Table: {
+                headerBg: '#F9F5FF',
+              },
             },
           }}
         >
           <Tabs
-            defaultActiveKey={CONTRACTOR_KEY}
-            destroyInactiveTabPane
+            defaultActiveKey={tab}
             onChange={(type) => {
               setTab(type);
             }}
@@ -47,7 +51,9 @@ const InvoicePage = () => {
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className="text-RoyalPurple"
+                    className={`${
+                      type === tab ? 'text-RoyalPurple' : 'text-black'
+                    }`}
                   />
                 ),
                 tabKey: type,
@@ -61,6 +67,4 @@ const InvoicePage = () => {
       </div>
     </section>
   );
-};
-
-export default withAuth(InvoicePage);
+}

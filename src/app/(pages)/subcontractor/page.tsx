@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useLayoutEffect, useCallback } from 'react';
+import { useEffect, useLayoutEffect, useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Dropdown, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -22,8 +22,11 @@ import {
   fetchCompanySubcontractors,
 } from '@/redux/company/company.thunk';
 import Image from 'next/image';
-import NoData from '@/app/component/noData';
-import withAuth from '@/app/hoc/with_auth';
+import { ISubcontractor } from '@/app/interfaces/companyInterfaces/subcontractor.interface';
+import ModalComponent from '@/app/component/modal';
+import { DeleteContent } from '@/app/component/delete/DeleteContent';
+import { toast } from 'react-toastify';
+import Head from 'next/head';
 
 export interface DataType {
   company: string;
@@ -38,11 +41,7 @@ export interface DataType {
 const items: MenuProps['items'] = [
   {
     key: 'editSubcontractor',
-    label: <a href="#">Edit subcontractor details</a>,
-  },
-  {
-    key: 'createNewInvoice',
-    label: <a href="#">Request for estimate</a>,
+    label: <p>Edit subcontractor details</p>,
   },
   {
     key: 'deleteSubcontractor',
@@ -58,6 +57,9 @@ const SubcontractTable = () => {
 
   const subcontractersData = useSelector(selectSubcontracters);
   const subcontractersLoading = useSelector(selectSubcontractLoading);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedSubcontractor, setSelectedSubcontractor] =
+    useState<ISubcontractor | null>(null);
 
   useLayoutEffect(() => {
     if (token) {
@@ -75,28 +77,29 @@ const SubcontractTable = () => {
 
   const handleDropdownItemClick = async (key: string, subcontractor: any) => {
     if (key == 'deleteSubcontractor') {
-      await dispatch(deleteSubcontractor(subcontractor._id));
+      setSelectedSubcontractor(subcontractor as ISubcontractor);
+      setShowDeleteModal(true);
     } else if (key == 'editSubcontractor') {
       router.push(`/subcontractor/edit/${subcontractor._id}`);
     }
   };
 
-  const columns: ColumnsType<DataType> = [
-    {
-      title: 'Company',
-      dataIndex: 'name',
-    },
+  const columns: ColumnsType<ISubcontractor> = [
     {
       title: 'Company Rep',
       dataIndex: 'companyRep',
       ellipsis: true,
     },
     {
+      title: 'Company',
+      dataIndex: 'name',
+    },
+    {
       title: 'Email',
       dataIndex: 'email',
     },
     {
-      title: 'Phone number',
+      title: 'Phone Number',
       dataIndex: 'phone',
     },
     {
@@ -140,43 +143,56 @@ const SubcontractTable = () => {
     },
   ];
 
+  function handleCloseModal() {
+    setShowDeleteModal(false);
+    setSelectedSubcontractor(null);
+  }
+
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
-      {subcontractersData?.length ? (
-        <div
-          className={`${bg_style} p-5 border border-solid border-silverGray`}
+      <Head>
+        <title>Schesti - Subcontractor</title>
+      </Head>
+      {selectedSubcontractor && showDeleteModal ? (
+        <ModalComponent
+          open={showDeleteModal}
+          setOpen={handleCloseModal}
+          width="30%"
         >
-          <div className="flex justify-between items-center mb-4">
-            <TertiaryHeading
-              title="Subcontractor List"
-              className="text-graphiteGray"
-            />
-            <Button
-              text="New subcontractor"
-              className="!w-auto "
-              icon="plus.svg"
-              iconwidth={20}
-              iconheight={20}
-              onClick={() => router.push('/subcontractor/create')}
-            />
-          </div>
-          <Table
-            loading={subcontractersLoading}
-            columns={columns}
-            dataSource={subcontractersData}
-            pagination={{ position: ['bottomCenter'] }}
+          <DeleteContent
+            onClick={async () => {
+              await dispatch(deleteSubcontractor(selectedSubcontractor._id));
+              toast.success('Subcontractor deleted successfully');
+              handleCloseModal();
+            }}
+            onClose={handleCloseModal}
+          />
+        </ModalComponent>
+      ) : null}
+      <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
+        <div className="flex justify-between items-center mb-4">
+          <TertiaryHeading
+            title="Subcontractor List"
+            className="text-graphiteGray"
+          />
+          <Button
+            text="New subcontractor"
+            className="!w-auto "
+            icon="plus.svg"
+            iconwidth={20}
+            iconheight={20}
+            onClick={() => router.push('/subcontractor/create')}
           />
         </div>
-      ) : (
-        <NoData
-          title="Create New Subcontractor"
-          btnText="Add Subcontractor"
-          description=""
-          link="/subcontractor/create"
+        <Table
+          loading={subcontractersLoading}
+          columns={columns}
+          dataSource={subcontractersData ? subcontractersData : undefined}
+          pagination={{ position: ['bottomCenter'] }}
         />
-      )}
+      </div>
     </section>
   );
 };
 
-export default withAuth(SubcontractTable);
+export default SubcontractTable;

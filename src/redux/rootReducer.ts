@@ -7,6 +7,7 @@ import companyClientReducer from './company/clientSlice/companyClient.slice';
 import subContractorReducer from './company/subcontractorSlice/companySubcontractor.slice';
 import estimateRequestSlice from './estimate/estimateRequest.slice';
 import supportTicketsSlice from './supportTickets/supportTickets.slice';
+import takeoffSlice from './takeoff/takeoff.slice';
 import settingTargetsSlice from './company/settingSlices/settingTarget.slice';
 import userSlice from './userSlice/user.slice';
 import pricingPlanReducer from './pricingPlanSlice/pricingPlanSlice';
@@ -15,24 +16,24 @@ import companySetupSubcategoryReducer from './company/settingSlices/categories/s
 import materialsReducer from './company/settingSlices/materials.slice';
 import invoiceReducer from './invoice/invoice.slice';
 import clientInvoiceReducer from './client-invoices/client-invoice.slice';
-import scheduleReducer from './schedule/schedule.slice';
+// import scheduleReducer from './schedule/schedule.slice';
 import meetingReducer from './meeting/meeting.slice';
 
 export type RootState = {
-  auth: any;
+  auth: typeof authReducer;
   companyClient: any;
-  companySubContractor: any;
+  companySubContractor: typeof subContractorReducer;
   estimates: any;
   supportTickets: any;
+  takeoff: any;
   settingTargets: any;
   user: any;
   pricingPlan: any;
-  companySetupCategory: any;
+  companySetupCategory: typeof companySetupCategoryReducer;
   companySetupSubcategory: any;
   materials: any;
-  invoices: any;
-  clientInvoices: any;
-  schedule: typeof scheduleReducer;
+  invoices: typeof invoiceReducer;
+  clientInvoices: typeof clientInvoiceReducer;
   meetings: typeof meetingReducer;
 };
 const persistConfig = {
@@ -47,6 +48,7 @@ const rootReducer = combineReducers<RootState>({
   companySubContractor: subContractorReducer,
   estimates: estimateRequestSlice,
   supportTickets: supportTicketsSlice,
+  takeoff: takeoffSlice,
   settingTargets: settingTargetsSlice,
   user: userSlice,
   pricingPlan: pricingPlanReducer,
@@ -55,7 +57,7 @@ const rootReducer = combineReducers<RootState>({
   materials: materialsReducer,
   invoices: invoiceReducer,
   clientInvoices: clientInvoiceReducer,
-  schedule: scheduleReducer,
+  // schedule: scheduleReducer,
   meetings: meetingReducer,
 });
 export default persistReducer(persistConfig, rootReducer);

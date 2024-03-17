@@ -6,4 +6,5 @@ export interface IUpdateCompanyDetail {
   phone: Number | string;
   website: string;
   avatar: string;
+  brandingColor: string;
 }

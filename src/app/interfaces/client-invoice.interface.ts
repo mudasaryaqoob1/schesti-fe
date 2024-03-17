@@ -10,18 +10,21 @@ export type G7State = {
   address: string;
   viaEngineer: string;
   distributionTo: string;
-  orignalContractSum: string;
-  netChangeByOrders: string;
-  amountCertified1: string;
-  amountCertified2: string;
-  lessPreviousCertificatesForPayment: string;
-  by: string;
-  stateOf: string;
-  date: string;
-  country: string;
-  subscribedAndSworn: string;
-  notaryPublic: string;
-  myCommissionExpires: string;
+  phase: number;
+
+  // Amount
+  totalAmount: number;
+  amountPaid: number;
+
+  // g702
+  totalAdditionPreviousMonth: number;
+  totalDeductionPreviousMonth: number;
+  totalAdditionThisMonth: number;
+  totalDeductionThisMonth: number;
+
+  // G702 5. RETAINAGE:
+  p5aPercentage: number;
+  p5bPercentage: number;
 };
 
 export type IClientInvoice = {

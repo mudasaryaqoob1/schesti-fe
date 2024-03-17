@@ -19,17 +19,21 @@ import { HttpService } from '@/app/services/base.service';
 
 // subcontractorService service
 import { subcontractorService } from '@/app/services/subcontractor.service';
-import { ISubcontract } from '@/app/interfaces/companyInterfaces/subcontractor.interface';
-import { selectSubcontracters } from '@/redux/company/companySelector';
+import {
+  ISubcontract,
+  ISubcontractor,
+} from '@/app/interfaces/companyInterfaces/subcontractor.interface';
+import { AxiosError } from 'axios';
+import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 
 const editSubcontractorSchema = Yup.object({
   companyRep: Yup.string().required('Company Rep is required!'),
   email: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
-  phone: Yup.string()
-    .min(11, 'Phone number must be at least 11 characters')
-    .max(14, 'Phone number must be at most 14 characters')
+    phone: Yup.string()
+    .min(7, 'Phone number must be at least 7 characters')
+    .max(12, 'Phone number must be at most 12 characters')
     .required('Phone number is required'),
   name: Yup.string().required('Company Name is required!'),
   address: Yup.string().required('Address is required!'),
@@ -48,7 +52,6 @@ const EditSubcontractor = () => {
   const router = useRouter();
   const params = useParams();
   const token = useSelector(selectToken);
-  const subcontractsData = useSelector(selectSubcontracters);
 
   const { id } = params;
 
@@ -59,11 +62,23 @@ const EditSubcontractor = () => {
   }, [token]);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [subcontractorData, setSubcontractorData] = useState(null);
+  const [subcontractorData, setSubcontractorData] =
+    useState<ISubcontractor | null>(null);
 
   useEffect(() => {
-    setSubcontractorData(subcontractsData.find((item: any) => item._id === id));
-  }, [id, subcontractsData]);
+    if (id) {
+      subcontractorService
+        .httpFindSubcontractorById(id as string)
+        .then((res) => {
+          if (res.statusCode === 200) {
+            setSubcontractorData(res.data!.subcontractor);
+          }
+        })
+        .catch(({ response }: AxiosError<IResponseInterface>) => {
+          toast.error(response?.data.message);
+        });
+    }
+  }, [id]);
 
   const submitHandler = async (values: ISubcontract) => {
     setIsLoading(true);

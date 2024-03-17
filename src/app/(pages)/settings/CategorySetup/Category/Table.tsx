@@ -45,7 +45,6 @@ const CategoryTable = () => {
       HttpService.setToken(token);
     }
   }, [token]);
-
   const columns: ColumnsType<DataType> = [
     {
       title: 'Category  ID',

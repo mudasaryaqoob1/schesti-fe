@@ -1,15 +1,3 @@
-import { createSelector } from '@reduxjs/toolkit';
-import { RootState } from '../store';
+import { RootState } from '../rootReducer';
 
 export const invoicesSelector = (state: RootState) => state.invoices;
-
-// support invoices redux data
-export const selectInvoicesLoading = createSelector(
-  [invoicesSelector],
-  (invoices) => invoices.loading
-);
-
-export const selectInvoices = createSelector(
-  [invoicesSelector],
-  (invoices) => invoices.data?.invoices
-);

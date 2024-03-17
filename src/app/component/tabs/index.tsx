@@ -28,7 +28,7 @@ const Tabs = () => {
   const router = useRouter();
 
   return (
-    <div className="md:flex block justify-between items-center px-16 xl:h-[67px] shadow-quinaryGentle">
+    <div className="md:flex block justify-between bg-[#F0E9FD] items-center px-16 xl:h-[67px] shadow-quinaryGentle">
       <ul
         className="list-none flex flex-wrap xl:gap-8 gap-3 text-sm font-medium text-center
             text-gray-500 dark:text-gray-400 justify-center mb-0"
@@ -40,55 +40,119 @@ const Tabs = () => {
                 flex items-stretch justify-center py-2 
                  cursor-pointer
                 `,
-              pathname.includes('#'.split('/')[1]) && tabsStyle.active
+              pathname === '/dashboard' && tabsStyle.active
             )
           )}
-          onClick={() => router.push('#')}
+          onClick={() => router.push('/dashboard')}
         >
           Dashboard
         </li>
-        <li
-          className={twMerge(
-            clsx(
-              `${quaternaryHeading} text-steelGray
-                flex items-stretch justify-center py-2 
-                 cursor-pointer
-                `,
-              pathname.includes('/clients'.split('/')[1]) && tabsStyle.active
-            )
-          )}
-          onClick={() => router.push('/clients')}
-        >
-          My Client
+        <li>
+          <Dropdown
+            menu={{
+              items: [
+                {
+                  key: 'bid-owner',
+                  label: <Link href="/bid/owner">Owner</Link>,
+                },
+                {
+                  key: 'bid-contractor',
+                  label: <Link href="/bid/contractor">Contractor</Link>,
+                },
+                {
+                  key: 'bid-sub-contractor',
+                  label: <Link href="/bid/sub-contractor">Sub Contractor</Link>,
+                },
+              ],
+              selectable: true,
+            }}
+          >
+            <Space
+              className={twMerge(
+                clsx(
+                  `${quaternaryHeading} text-steelGray
+                    flex items-stretch justify-center py-2 
+                     cursor-pointer
+                    `,
+                  pathname.includes('/bid'.split('/')[1]) && tabsStyle.active
+                )
+              )}
+            >
+              Bid Management
+              <DownOutlined />
+            </Space>
+          </Dropdown>
         </li>
-        <li
-          className={twMerge(
-            clsx(
-              `${quaternaryHeading} text-steelGray
-                flex items-stretch justify-center py-2 
-                 cursor-pointer
-                `,
-              pathname.includes('/subcontractor'.split('/')[1]) &&
-                tabsStyle.active
-            )
-          )}
-          onClick={() => router.push('/subcontractor')}
-        >
-          My Subcontractor
+        <li>
+          <Dropdown
+            menu={{
+              items: [
+                {
+                  key: 'crm-clients',
+                  label: <Link href="/clients">Clients</Link>,
+                },
+                {
+                  key: 'crm-subcontractor',
+                  label: <Link href="/subcontractor">Sub Contractors</Link>,
+                },
+                {
+                  key: 'crm-partners',
+                  label: <Link href="/partners">Partners</Link>,
+                },
+              ],
+              selectable: true,
+            }}
+          >
+            <Space
+              className={twMerge(
+                clsx(
+                  `${quaternaryHeading} text-steelGray
+                    flex items-stretch justify-center py-2 
+                     cursor-pointer
+                    `,
+                  (pathname.includes('/clients') ||
+                    pathname.includes('/subcontractor') ||
+                    pathname.includes('/partners')) &&
+                    tabsStyle.active
+                )
+              )}
+            >
+              CRM
+              <DownOutlined />
+            </Space>
+          </Dropdown>
         </li>
-        <li
-          className={twMerge(
-            clsx(
-              `${quaternaryHeading} text-steelGray
-                flex items-stretch justify-center py-2 
-                 cursor-pointer
-                `,
-              pathname.includes('#'.split('/')[1]) && tabsStyle.active
-            )
-          )}
-          onClick={() => router.push('#')}
-        >
-          Take off
+        <li>
+          <Dropdown
+            menu={{
+              items: [
+                {
+                  key: 'manual',
+                  label: <Link href="/takeoff/manual">Manual</Link>,
+                },
+                {
+                  key: 'ai-takeoff',
+                  label: <Link href="/takeoff/ai">AI take off</Link>,
+                },
+              ],
+              selectable: true,
+            }}
+          >
+            <Space
+              className={twMerge(
+                clsx(
+                  `${quaternaryHeading} text-steelGray
+                    flex items-stretch justify-center py-2 
+                     cursor-pointer
+                    `,
+                  pathname.includes('/takeoff') && tabsStyle.active
+                )
+              )}
+            >
+              Quantity Takeoff
+              <DownOutlined />
+            </Space>
+          </Dropdown>
         </li>
         <li>
           <Dropdown
@@ -128,33 +192,49 @@ const Tabs = () => {
         >
           Schedule
         </li>
-        <li
-          className={twMerge(
-            clsx(
-              `${quaternaryHeading} text-steelGray
-                flex items-stretch justify-center py-2 
-                 cursor-pointer
-                `,
-              pathname.includes('/finance') && tabsStyle.active
-            )
-          )}
-          onClick={() => router.push('/finance')}
-        >
-          Finance
-        </li>
-        <li
-          className={twMerge(
-            clsx(
-              `${quaternaryHeading} text-steelGray
-                flex items-stretch justify-center py-2 
-                 cursor-pointer
-                `,
-              pathname.includes('/invoices'.split('/')[1]) && tabsStyle.active
-            )
-          )}
-          onClick={() => router.push('/invoices')}
-        >
-          Invoice
+        <li>
+          <Dropdown
+            menu={{
+              items: [
+                {
+                  key: 'standard-invoicing',
+                  label: (
+                    <Link href="/invoices/standard-invoicing">
+                      Standard Invoicing
+                    </Link>
+                  ),
+                },
+                {
+                  key: 'aia-invoicing',
+                  label: (
+                    <Link href="/invoices/aia-invoicing">AIA Invoicing</Link>
+                  ),
+                },
+                {
+                  key: 'financial-tools',
+                  label: <Link href="/finance">Financial Tools</Link>,
+                },
+              ],
+              selectable: true,
+            }}
+          >
+            <Space
+              className={twMerge(
+                clsx(
+                  `${quaternaryHeading} text-steelGray
+                    flex items-stretch justify-center py-2 
+                     cursor-pointer
+                    `,
+                  (pathname.includes('/finance') ||
+                    pathname.includes('/invoices')) &&
+                    tabsStyle.active
+                )
+              )}
+            >
+              Financial
+              <DownOutlined />
+            </Space>
+          </Dropdown>
         </li>
         <li
           className={twMerge(
@@ -168,7 +248,21 @@ const Tabs = () => {
           )}
           onClick={() => router.push('/meeting')}
         >
-          Meeting
+          Meetings
+        </li>
+        <li
+          className={twMerge(
+            clsx(
+              `${quaternaryHeading} text-steelGray
+                flex items-stretch justify-center py-2 
+                 cursor-pointer
+                `,
+              pathname.includes('/networking'.split('/')[1]) && tabsStyle.active
+            )
+          )}
+          onClick={() => router.push('/networking')}
+        >
+          Networking
         </li>
       </ul>
     </div>

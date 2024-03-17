@@ -44,6 +44,7 @@ const Index = () => {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const token = useSelector(selectToken);
+  const [search, setSearch] = useState('');
 
   useLayoutEffect(() => {
     if (token) {
@@ -147,6 +148,19 @@ const Index = () => {
     },
   ];
 
+  const filteredUserData =
+    userData.length > 0
+      ? userData.filter((user: { name: string; email: string }) => {
+          if (!search) {
+            return user;
+          }
+          return (
+            user.name.toLowerCase().includes(search.toLowerCase()) ||
+            user.email.toLowerCase().includes(search.toLowerCase())
+          );
+        })
+      : [];
+
   return (
     <VerticleBar>
       <div className="w-full">
@@ -182,12 +196,14 @@ const Index = () => {
               name=""
               id=""
               placeholder="Search..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
               className="w-full h-full bg-transparent outline-none"
             />
           </div>
           <Table
             columns={columns}
-            dataSource={userData}
+            dataSource={filteredUserData}
             pagination={{ position: ['bottomCenter'] }}
           />
         </article>

@@ -4,7 +4,9 @@ export type IMeeting = {
   link: string;
   roomName: string;
   invitees: string[];
-  date: string;
+  startDate: string;
+  endDate: string;
+  timezone: string;
   associatedCompany: string;
   createdAt: string;
   updatedAt: string;

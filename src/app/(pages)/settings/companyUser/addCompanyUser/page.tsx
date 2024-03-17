@@ -13,6 +13,7 @@ import { userRoles } from '@/app/enums/role.enums';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import Description from '@/app/component/description';
 import CustomButton from '@/app/component/customButton/button';
+import WhiteButton from '@/app/component/customButton/white';
 import { bg_style } from '@/globals/tailwindvariables';
 import FormControl from '@/app/component/formControl';
 import { selectToken } from '@/redux/authSlices/auth.selector';
@@ -60,6 +61,7 @@ const AddNewUser = () => {
     lastName: lastName || '',
     email: user?.email || '',
     roles: user?.roles?.[0] || '',
+    brandingColor: user?.brandingColor || '',
   };
   const submitHandler = async (values: IUser, { resetForm }: any) => {
     setisLoading(true);
@@ -175,12 +177,17 @@ const AddNewUser = () => {
                   />
                 </div>
                 <div className="self-end flex justify-end items-center gap-5 md:mt-5 my-3">
-                  <div>
+                  <div className="flex items-center space-x-3">
+                    <WhiteButton
+                      text="Cancel"
+                      className="mx-w-30"
+                      onClick={() => router.back()}
+                    />
                     <CustomButton
                       isLoading={isLoading}
                       className="mx-w-30"
                       type="submit"
-                      text="Save and Continue"
+                      text="Invite"
                     />
                   </div>
                 </div>

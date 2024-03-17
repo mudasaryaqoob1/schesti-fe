@@ -11,6 +11,7 @@ export const subcategorySlice = createSlice({
       state.data.unshift(payload);
     },
     setSubcategoryData: (state, { payload }) => {
+      console.log({ payload });
       state.subcategoryData = payload;
     },
     refetchSubCategories: (state) => {
