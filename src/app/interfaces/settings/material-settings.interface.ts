@@ -36,3 +36,8 @@ interface SubcategoryDetails {
   updatedAt: string;
   __v: number;
 }
+
+export interface IUnits {
+  label : string,
+  value : string
+}

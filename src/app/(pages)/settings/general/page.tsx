@@ -105,7 +105,7 @@ const GeneralSetting = () => {
         Object.keys(e.target.files).map(async (key) => {
           const url = await new AwsS3(
             e.target.files[key],
-            'documents/estimates/'
+            'documents/setting/'
           ).getS3URL();
           avatarUrl = url;
         })
