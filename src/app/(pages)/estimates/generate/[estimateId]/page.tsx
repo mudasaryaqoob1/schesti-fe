@@ -1,10 +1,5 @@
 'use client';
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useLayoutEffect,
-} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import Description from '@/app/component/description';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
@@ -17,9 +12,7 @@ import ClientPDF from '../components/clientPDF';
 import CustomButton from '@/app/component/customButton/button';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import { estimateRequestService } from '@/app/services/estimates.service';
-import { useSelector } from 'react-redux';
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
+import { withAuth } from '@/app/hoc/withAuth';
 
 const ViewEstimateDetail = () => {
   const { estimateId } = useParams();
@@ -27,13 +20,7 @@ const ViewEstimateDetail = () => {
   const [pdfData, setPdfData] = useState<Object[]>([]);
   const [estimateDetailsSummary, setEstimateDetailsSummary] = useState<any>();
   const [estimatesRecord, setEstimatesRecord] = useState([]);
-  const token = useSelector(selectToken);
 
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
   const fetchEstimateDetail = useCallback(async () => {
     const result =
       await estimateRequestService.httpGetGeneratedEstimateDetail(estimateId);
@@ -300,4 +287,4 @@ const ViewEstimateDetail = () => {
   );
 };
 
-export default ViewEstimateDetail;
+export default withAuth(ViewEstimateDetail);

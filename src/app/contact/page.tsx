@@ -63,24 +63,24 @@ export default function ContactPage() {
         className="h-[501px] relative"
       >
         <LandingNavbar />
-        <div className="mt-[101px] lg:mx-auto lg:w-[1063px]">
-          <h1 className="text-[48px] leading-[57px] text-center font-extrabold text-white lg:text-[64px] lg:leading-[80px]">
+        <div className="mt-[101px] xl:mx-auto xl:w-[1063px]">
+          <h1 className="text-[48px] leading-[57px] text-center font-extrabold text-white xl:text-[64px] xl:leading-[80px]">
             Get in Touch With Us
           </h1>
-          <p className="text-[20px] leading-[36px] text-center text-white lg:w-[774px] lg:leading-[44px] font-light lg:text-[24px] lg:mx-auto my-[26px]">
+          <p className="text-[20px] leading-[36px] text-center text-white xl:w-[774px] xl:leading-[44px] font-light xl:text-[24px] xl:mx-auto my-[26px]">
             Schesti is here to help you at any stage of your project
             <br /> management journey.
           </p>
         </div>
       </main>
 
-      <div className="px-[20px] mt-[50px] lg:px-[200px] lg:mt-[151px]">
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-64">
+      <div className="px-[20px] mt-[50px] lg:px-[100px] xl:px-[200px] xl:mt-[151px]">
+        <div className="grid grid-cols-1 gap-8 xl:grid-cols-2 xl:gap-64">
           <div>
-            <h1 className=" text-[#1D2939] font-bold mt-[15px] leading-[48px] lg:leading-[54.181px] text-[36.121px]">
+            <h1 className=" text-[#1D2939] font-bold mt-[15px] leading-[48px] xl:leading-[54.181px] text-[36.121px]">
               Ready to see Wrike for yourself?
             </h1>
-            <p className="mt-[11px] text-[#475467] text-[20px] leading-[32px] lg:leading-[40px] font-normal">
+            <p className="mt-[11px] text-[#475467] text-[20px] leading-[32px] xl:leading-[40px] font-normal">
               {"We'"}d love to show you how Wrike can help your team do more of
               their best work. Fill out the form and {"we'"}ll be in touch
               within 24 hours.

@@ -1,17 +1,12 @@
 'use client';
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useLayoutEffect,
-} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import * as Yup from 'yup';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
 import { toast } from 'react-toastify';
 import { Form, Formik } from 'formik';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 // module imports
 
@@ -29,10 +24,9 @@ import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interf
 import AwsS3 from '@/app/utils/S3Intergration';
 import { AppDispatch } from '@/redux/store';
 import { fetchUsers } from '@/redux/userSlice/user.thunk';
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
 import { byteConverter } from '@/app/utils/byteConverter';
 import { Upload, type UploadProps } from 'antd';
+import { withAuth } from '@/app/hoc/withAuth';
 
 const clientInfoSchema: any = Yup.object({
   clientName: Yup.string().required('Client is required!'),
@@ -83,13 +77,6 @@ const initialValues: IEstimateRequest = {
 const CreateEstimateRequest = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const token = useSelector(selectToken);
-
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
 
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -140,9 +127,8 @@ const CreateEstimateRequest = () => {
     // }
     else {
       setIsLoading(true);
-      toast.success('File Uploading...', {autoClose: 5})
+      toast.success('File Uploading...', { autoClose: 5 });
 
-      
       const drawingDocs = await uploadDocumentToS3Handler(drawingsDocuments);
       const takeOffDocs = await uploadDocumentToS3Handler(takeOffReports);
       const otherDocs = await uploadDocumentToS3Handler(otherDocuments);
@@ -783,4 +769,4 @@ const CreateEstimateRequest = () => {
   );
 };
 
-export default CreateEstimateRequest;
+export default withAuth(CreateEstimateRequest);

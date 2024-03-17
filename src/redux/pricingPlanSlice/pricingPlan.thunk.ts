@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { pricingPlanService } from './pricingPlan.service';
+import { pricingPlanService } from '../../app/services/pricingPlan.service';
 
 type PageLimit = {
   page: number;

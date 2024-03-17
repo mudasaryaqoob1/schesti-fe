@@ -107,9 +107,8 @@ const ImportMaterialModal = ({
       }
       setIsLoading(false);
     } catch (error) {
-      
       setIsLoading(false);
-      const err : any = error as AxiosError<IResponseInterface>;
+      const err: any = error as AxiosError<IResponseInterface>;
 
       if (err.response?.status == 400) {
         // toast.error(
@@ -117,9 +116,8 @@ const ImportMaterialModal = ({
         //     ? 'Something went wrong. Try another file.'
         //     : 'Something went wrong. Try again later.'
         // );
-        toast.error('Something went wrong. Try another file')
+        toast.error('Something went wrong. Try another file');
       }
-      
     }
   };
   return (

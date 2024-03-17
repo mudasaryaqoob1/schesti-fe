@@ -58,7 +58,7 @@ const Login = () => {
         console.log(result.payload, 'result.payload');
         const session = result.payload?.token;
         localStorage.setItem('schestiToken', session);
-        router.push('/clients');
+        router.push('/dashboard');
       } else if (
         result.payload.data.user.roles.includes('Company') &&
         !result.payload.data.user?.isPaymentConfirm

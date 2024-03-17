@@ -1,8 +1,8 @@
 'use client';
-import { useEffect, useLayoutEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import { ColorPicker, Skeleton } from 'antd';
 import Image from 'next/image';
@@ -18,14 +18,14 @@ import {
   senaryHeading,
 } from '@/globals/tailwindvariables';
 import Button from '@/app/component/customButton/button';
-import { HttpService } from '@/app/services/base.service';
-import { selectToken } from '@/redux/authSlices/auth.selector';
 import SettingSideBar from '@/app/(pages)/settings/verticleBar';
 import { userService } from '@/app/services/user.service';
 import { byteConverter } from '@/app/utils/byteConverter';
 import { AppDispatch } from '@/redux/store';
 import { updateProfileHandler } from '@/redux/authSlices/auth.thunk';
 import { CheckOutlined } from '@ant-design/icons';
+import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
+import { withAuth } from '@/app/hoc/withAuth';
 
 const initialValues: IUpdateCompanyDetail = {
   name: '',
@@ -46,18 +46,13 @@ const generalSettingSchema: any = Yup.object({
   industry: Yup.string().required('Industry  is required!'),
   employee: Yup.number().min(1).required('Employee is required!'),
   avatar: Yup.string().required('Avatar is required!'),
+  phone: Yup.string(),
+  website: Yup.string(),
 });
 const GeneralSetting = () => {
-  const token = useSelector(selectToken);
   const dispatch = useDispatch<AppDispatch>();
 
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
-
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState<IUser | null>(null);
   const [avatarLoading, setavatarLoading] = useState(false);
   const getUserDetail = useCallback(async () => {
     let { data } = await userService.httpGetCompanyDetail();
@@ -83,6 +78,7 @@ const GeneralSetting = () => {
 
     if (result.payload.statusCode == 200) {
       toast.success('Detail Update Successfull');
+      setUserData(result.payload.data.user);
     } else {
       toast.error(result.payload.message);
     }
@@ -103,7 +99,7 @@ const GeneralSetting = () => {
         Object.keys(e.target.files).map(async (key) => {
           const url = await new AwsS3(
             e.target.files[key],
-            'documents/estimates/'
+            'documents/setting/'
           ).getS3URL();
           avatarUrl = url;
         })
@@ -133,7 +129,7 @@ const GeneralSetting = () => {
             onSubmit={submitHandler}
           >
             {({ handleSubmit, errors, setFieldValue, values }) => {
-              console.log(values);
+              console.log(errors);
               return (
                 <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
                   <div
@@ -196,9 +192,17 @@ const GeneralSetting = () => {
                   <div className={`${bg_style} grid grid-cols-12 p-5 mt-4 `}>
                     <div
                       className={`px-6 py-4 col-span-8 flex flex-col items-center gap-3 ${
-                        errors.avatar ? 'border-rose-600' : ''
+                        errors.avatar ? 'border-red-600' : ''
                       }  ${bg_style}`}
                     >
+                      {userData.avatar ? (
+                        <Image
+                          src={userData.avatar}
+                          width={100}
+                          height={100}
+                          alt="Avatar"
+                        />
+                      ) : null}
                       <input type="text" id="upload" className="hidden" />
                       <div className="bg-lightGrayish rounded-[28px] border border-solid border-red flex justify-center items-center p-2.5">
                         <Image
@@ -321,4 +325,4 @@ const GeneralSetting = () => {
   );
 };
 
-export default GeneralSetting;
+export default withAuth(GeneralSetting);

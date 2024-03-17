@@ -16,6 +16,7 @@ const CustomInputSelect: React.FC = (props: any) => {
     placeholder,
     selectStyle,
     className,
+    disabled,
     setCustomState = () => {},
   } = props;
 
@@ -78,6 +79,7 @@ const CustomInputSelect: React.FC = (props: any) => {
                   clsx(
                     'w-full h-10',
                     hasError ? ' customSelectError' : 'customSelect',
+                    disabled ? 'disabled' : '',
                     selectStyle && selectStyle
                   )
                 )}
@@ -90,7 +92,9 @@ const CustomInputSelect: React.FC = (props: any) => {
                         placeholder="Enter item"
                         ref={inputRef}
                         value={newOption}
-                        onChange={onNameChange}
+                        onChange={(e) => {
+                          onNameChange(e), setFieldValue(name, e.target.value);
+                        }}
                         onKeyDown={(e) => e.stopPropagation()}
                       />
                       <Button

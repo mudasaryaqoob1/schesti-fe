@@ -6,9 +6,16 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import { Tabs } from 'antd';
 import MySubscription from './me/page';
 import Plans from './oldSubscriptions';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
+import { withAuth } from '@/app/hoc/withAuth';
 
 const SettingPlans = () => {
   const [mySubscriptionPlan, setMySubscriptionPlan] = useState(true);
+  const user = useSelector(
+    (state: RootState) => state.auth.user as { user?: IUser }
+  );
 
   return (
     <SettingSidebar>
@@ -25,7 +32,11 @@ const SettingPlans = () => {
               key: type,
               label: type,
               tabKey: type,
-              children: mySubscriptionPlan ? <MySubscription /> : <Plans />,
+              children: mySubscriptionPlan ? (
+                <MySubscription />
+              ) : (
+                <Plans user={user ? user.user : undefined} />
+              ),
             };
           })}
         />
@@ -34,4 +45,4 @@ const SettingPlans = () => {
   );
 };
 
-export default SettingPlans;
+export default withAuth(SettingPlans);

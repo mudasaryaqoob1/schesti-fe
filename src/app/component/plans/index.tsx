@@ -11,8 +11,8 @@ import {
 
 import SwitchBtn from './switchbtn';
 import SinglePlan from './plan/plan';
-import ToggleBtn from './toggleBtn/index';
-import { AppDispatch } from '@/redux/store';
+import ToggleBtn from './toggleBtn';
+import { AppDispatch, RootState } from '@/redux/store';
 import { HttpService } from '@/app/services/base.service';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
@@ -22,6 +22,7 @@ import {
   selectPricingPlansError,
   selectPricingPlansLoading,
 } from '@/redux/pricingPlanSlice/pricingPlan.selector';
+import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 
 const PaymentPlans = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -37,26 +38,29 @@ const PaymentPlans = () => {
   const isLoading = useSelector(selectPricingPlansLoading);
   const isError = useSelector(selectPricingPlansError);
 
-  const [planType, setPlanType] = useState(false);
+  const [planType, setPlanType] = useState('Individual');
+
   const [pricingPlansData, setPricingPlansData] = useState(
     [] as IPricingPlan[]
   );
   const [isDuration, setIsDuration] = useState('monthly');
+  const user = useSelector(
+    (state: RootState) => state.auth.user as { user?: IUser }
+  );
 
   useEffect(() => {
     pricingPlansHandler();
   }, []);
 
   const handlePlanType = (event: ChangeEvent<HTMLInputElement>) => {
-    const currentPlanType = event.target.checked ? 'Enterprise' : 'Individual';
+    const currentPlanType = event.target.checked ? 'Individual' : 'Enterprise';
     const newPlansData = plansData.pricingPlans.filter(
-      ({ type }: IPricingPlan) => type === currentPlanType
+      ({ type, duration }: IPricingPlan) =>
+        type === currentPlanType && duration === isDuration
     );
-
-    setPlanType(event.target.checked);
+    setPlanType(currentPlanType);
     setPricingPlansData(newPlansData);
   };
-
   const pricingPlansHandler = useCallback(async () => {
     const {
       payload: {
@@ -74,19 +78,24 @@ const PaymentPlans = () => {
     }
   }, []);
 
+  const handlePlanDuration = (event: ChangeEvent<HTMLInputElement>) => {
+    const currentPlanDuration = event.target.checked ? 'yearly' : 'monthly';
+    const newPlansData = plansData.pricingPlans.filter(
+      ({ duration, type }: IPricingPlan) =>
+        duration === currentPlanDuration && type === planType
+    );
+    setIsDuration(currentPlanDuration);
+    setPricingPlansData(newPlansData);
+  };
+
   return (
     <>
       <div className="w-full h-px bg-mistyWhite mt-4 mb-6"></div>
       <div className="flex w-full align-items-center justify-center">
-        <ToggleBtn isChecked={planType} onChange={handlePlanType} />
+        <ToggleBtn planType={planType} onChange={handlePlanType} />
       </div>
       <div className="flex w-full align-items-center justify-center my-6">
-        <SwitchBtn
-          isChecked={isDuration}
-          onChange={(event) =>
-            setIsDuration(event.target.checked ? 'yearly' : 'monthly')
-          }
-        />
+        <SwitchBtn isDuration={isDuration} onChange={handlePlanDuration} />
       </div>
       {isLoading ? (
         <Skeleton />
@@ -97,7 +106,13 @@ const PaymentPlans = () => {
           {pricingPlansData
             .filter((plan) => plan.duration === isDuration)
             ?.map((plan: IPricingPlan, index: React.Key | null | undefined) => {
-              return <SinglePlan key={index} {...plan} />;
+              return (
+                <SinglePlan
+                  key={index}
+                  {...plan}
+                  user={user ? user.user : undefined}
+                />
+              );
             })}
         </div>
       )}

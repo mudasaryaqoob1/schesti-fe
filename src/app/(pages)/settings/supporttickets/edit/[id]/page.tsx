@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useRouter, useParams } from 'next/navigation';
@@ -13,8 +13,6 @@ import CustomButton from '@/app/component/customButton/button';
 import FormControl from '@/app/component/formControl';
 import { twMerge } from 'tailwind-merge';
 // redux module
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
 
 // supportTicket service
 import { ISupportTicket } from '@/app/interfaces/supportTicket.interface';
@@ -24,6 +22,7 @@ import Description from '@/app/component/description';
 import MinDescription from '@/app/component/description/minDesc';
 import { selectSupportTickets } from '@/redux/supportTickets/supportTicketSelector';
 import CustomNavbar from '@/app/component/customNavbar';
+import { withAuth } from '@/app/hoc/withAuth';
 
 const validationSchema = Yup.object({
   title: Yup.string().required('Title is required!'),
@@ -38,16 +37,9 @@ const initialValues = {
 const EditSupportTicket = () => {
   const router = useRouter();
   const params = useParams();
-  const token = useSelector(selectToken);
   const supportTicketsData = useSelector(selectSupportTickets);
 
   const { id } = params;
-
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [supportTicketData, setSupportTicketData] =
@@ -178,12 +170,14 @@ const EditSupportTicket = () => {
                             title="or drag and drop"
                           />
                         </div>
-                        <Image
-                          src={values.avatar!}
-                          alt="upload icon"
-                          width={100}
-                          height={100}
-                        />
+                        {values.avatar ? (
+                          <Image
+                            src={values.avatar!}
+                            alt="upload icon"
+                            width={100}
+                            height={100}
+                          />
+                        ) : null}
                         <MinDescription
                           className="text-steelGray font-popin text-center"
                           title="SVG, PNG, JPG or GIF (max. 800x400px)"
@@ -217,4 +211,4 @@ const EditSupportTicket = () => {
   );
 };
 
-export default EditSupportTicket;
+export default withAuth(EditSupportTicket);

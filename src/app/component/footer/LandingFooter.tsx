@@ -38,7 +38,7 @@ export default function LandingFooter() {
         });
     },
   });
-  if (responsive.lg) {
+  if (responsive.xl) {
     return (
       <div className="bg-[#1D2939] px-[200px] pb-4 pt-[52px]">
         <div className="flex justify-between items-start">

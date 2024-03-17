@@ -1,9 +1,10 @@
 import React from 'react';
-import { Field, useField } from 'formik';
+import { ErrorMessage, Field, useField } from 'formik';
 import type { FormikValues } from 'formik';
 import { Select } from 'antd';
 import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import Errormsg from '../errorMessage';
 
 const defaultOptions = [
   { value: 'option 1', label: 'Option 1' },
@@ -85,6 +86,7 @@ const SelectComp = (props: any) => {
             );
           }}
         </Field>
+        <ErrorMessage name={name} component={Errormsg} />
       </div>
     </div>
   );

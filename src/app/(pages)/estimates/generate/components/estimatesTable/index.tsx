@@ -28,8 +28,9 @@ const calculateTotalCost = (record: DataType) => {
   let totalLabourHours = qtyWithWastage * unitLabourHour;
   let totalMeterialCost = unitMaterialCost * qtyWithWastage;
   let totalLabourCost = totalLabourHours * perHourLaborRate;
-  let totalMaterialCost = unitMaterialCost * qtyWithWastage;
-  let result = totalLabourCost * totalMeterialCost * totalMaterialCost;
+  let unitEquipments = parseFloat(record.unitEquipments);
+  let totalEquipmentCost = unitEquipments * qtyWithWastage;
+  let result = totalLabourCost + totalMeterialCost + totalEquipmentCost;
   return result.toFixed(2);
 };
 
@@ -90,8 +91,8 @@ const confirmColumns: any = [
     dataIndex: 'perHourLaborRate',
     align: 'center',
     width: 120,
-    render: (value : number) => {
-      return `$${value}`
+    render: (value: number) => {
+      return `$${value}`;
     },
   },
   {
@@ -115,8 +116,8 @@ const confirmColumns: any = [
     dataIndex: 'unitMaterialCost',
     align: 'center',
     width: 120,
-    render: (value : number) => {
-      return `$${value}`
+    render: (value: number) => {
+      return `$${value}`;
     },
   },
   {

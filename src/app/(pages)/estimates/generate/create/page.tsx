@@ -5,6 +5,7 @@ import Scope from '../components/scope';
 import Summary from '../components/summary';
 import TakeOff from '../components/takeoff';
 import { bg_style } from '@/globals/tailwindvariables';
+import { withAuth } from '@/app/hoc/withAuth';
 
 const steps = [
   {
@@ -61,4 +62,4 @@ const Generated = () => {
   );
 };
 
-export default Generated;
+export default withAuth(Generated);

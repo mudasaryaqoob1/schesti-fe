@@ -1,17 +1,27 @@
 'use client';
 import Button from '@/app/component/customButton/button';
+import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
+import { authService } from '@/app/services/auth.service';
+import { getPlanFeatureKeyByValue } from '@/app/utils/plans.utils';
 import {
   tertiaryHeading,
   quinaryHeading,
   minHeading,
 } from '@/globals/tailwindvariables';
+import { getLoggedInUserDetails } from '@/redux/authSlices/auth.thunk';
+import { AppDispatch } from '@/redux/store';
+import { AxiosError } from 'axios';
 import Image from 'next/image';
 import { Fragment } from 'react';
+import { useMutation } from 'react-query';
+import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
 import { twMerge } from 'tailwind-merge';
 
 interface Props extends IPricingPlan {
   setSelectedPlan: any;
+  user?: IUser;
 }
 const SinglePlan = (props: Props) => {
   const {
@@ -21,7 +31,49 @@ const SinglePlan = (props: Props) => {
     features,
     duration,
     setSelectedPlan,
+    user,
+    _id,
   } = props;
+  const dispatch = useDispatch<AppDispatch>();
+
+  const stripeUpgradeMutation = useMutation(
+    ['upgradePlan'],
+    async (planId: string) => {
+      return authService.httpUpgradeStripeMutation({ planId });
+    },
+    {
+      onSuccess() {
+        toast.success('Plan upgraded successfully');
+        dispatch(getLoggedInUserDetails({}));
+      },
+      onError(error) {
+        const err = error as AxiosError<{ message: string }>;
+        toast.error(err.response?.data?.message || err.message);
+      },
+    }
+  );
+  const BTN =
+    user && user.planId ? (
+      <Button
+        text={user?.planId === _id ? 'Current Plan' : 'Upgrade'}
+        className="text-white self-stretch w-full"
+        onClick={() => {
+          if (_id && props.user?.planId !== _id) {
+            stripeUpgradeMutation.mutate(_id);
+          } else {
+            toast.success('You are already on this plan');
+          }
+        }}
+        isLoading={stripeUpgradeMutation.isLoading}
+      />
+    ) : (
+      <Button
+        text={'Buy'}
+        className="text-white self-stretch w-full"
+        onClick={() => setSelectedPlan({ planName, price, duration })}
+      />
+    );
+
   return (
     <div
       className={`p-8 rounded-[20px] items-center flex flex-col justify-between shadow-secondaryShadow gap-5`}
@@ -62,20 +114,14 @@ const SinglePlan = (props: Props) => {
                     `${quinaryHeading} text-ebonyGray leading-normal`
                   )}
                 >
-                  {benefit}
+                  {getPlanFeatureKeyByValue(benefit)}
                 </label>
               </div>
             </Fragment>
           ))}
         </div>
       </div>
-      <div className="w-full">
-        <Button
-          text="Buy"
-          className="text-white self-stretch w-full"
-          onClick={() => setSelectedPlan({ planName, price, duration })}
-        />
-      </div>
+      <div className="w-full">{BTN}</div>
     </div>
   );
 };

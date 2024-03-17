@@ -25,6 +25,7 @@ import { estimateRequestService } from '@/app/services/estimates.service';
 import { ProjectDetails } from './components/ProjectDetails';
 import { clientInvoiceService } from '@/app/services/client-invoices.service';
 import { meetingService } from '@/app/services/meeting.service';
+import { withAuth } from '@/app/hoc/withAuth';
 const Dashboard = () => {
   const token = useSelector(selectToken);
 

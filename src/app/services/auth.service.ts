@@ -12,7 +12,10 @@ import { ISignUpInterface } from '@/app/interfaces/authInterfaces/signup.interfa
 import { IRegisterCompany } from '../interfaces/companyInterfaces/companyRegister.interface';
 import { IForgotPasswordInterface } from '../interfaces/authInterfaces/forgotPassword.interface';
 import { IResetPasswordInterface } from '../interfaces/authInterfaces/resetPassword.interface';
-import { IPaymentProps } from '../interfaces/authInterfaces/payment.interface';
+import {
+  IPaymentProps,
+  IPaypalPaymentProps,
+} from '../interfaces/authInterfaces/payment.interface';
 
 class AuthService extends HttpService {
   private readonly prefix: string = 'api/auth';
@@ -41,6 +44,10 @@ class AuthService extends HttpService {
   ): Promise<
     IResponseInterface<{ user: any; token: string; message: string }>
   > => this.post(`${this.prefix}/add-company-detail`, data);
+
+  addVerificationDetailsHandler = (
+    data: any
+  ): Promise<any> => this.post(`${this.prefix}/add-verification-detail`, data);
 
   signupHandler = (data: ISignUpInterface): Promise<IResponseInterface<any>> =>
     this.post(`${this.prefix}/signup`, data);
@@ -72,11 +79,25 @@ class AuthService extends HttpService {
     }>
   > => this.post(`${this.prefix}/stripe-checkout`, data);
 
+  httpUpgradeStripeMutation = (data: {
+    planId: string;
+  }): Promise<
+    IResponseInterface<{
+      statusCode: number;
+      message: string;
+      data: { planId: string };
+    }>
+  > => this.post(`${this.prefix}/stripe-upgrade-subscription`, data);
+
   httpStripeInvoices = (): Promise<IResponseInterface<any>> =>
     this.get(`${this.prefix}/stripe-invoices`);
 
+  httpGetLoggedInUserDetails = (): Promise<
+    IResponseInterface<{ user: IUser }>
+  > => this.get(`${this.prefix}/me`);
+
   httpPaypalCreateOrder = (
-    data: IPaymentProps
+    data: IPaypalPaymentProps
   ): Promise<
     IResponseInterface<{
       status: number;

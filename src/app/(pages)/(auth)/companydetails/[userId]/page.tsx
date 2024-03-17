@@ -1,12 +1,12 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Form } from 'antd';
 import FormControl from '@/app/component/formControl';
 import { useParams, useRouter } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 // module imports
@@ -14,34 +14,63 @@ import Progessbar from '@/app/component/progressBar';
 import PrimaryHeading from '@/app/component/headings/primary';
 import Button from '@/app/component/customButton/button';
 import { tertiaryHeading } from '@/globals/tailwindvariables';
-import { AppDispatch } from '@/redux/store';
+import { AppDispatch, RootState } from '@/redux/store';
 import { IRegisterCompany } from '@/app/interfaces/companyInterfaces/companyRegister.interface';
 import { addCompanyDetail } from '@/redux/authSlices/auth.thunk';
 import AuthNavbar from '@/app/(pages)/(auth)/authNavbar';
+import { isEmpty } from 'lodash';
+import Errormsg from '@/app/component/errorMessage';
+import AwsS3 from '@/app/utils/S3Intergration';
+import { USER_ROLES_ENUM } from '@/app/constants/constant';
+
+const { CONTRACTOR, SUBCONTRACTOR, OWNER } = USER_ROLES_ENUM;
 
 const initialValues: IRegisterCompany = {
   companyName: '',
   industry: '',
   employee: 1,
   phoneNumber: null,
+  companyLogo: '',
 };
 
 const CompanyDetailsSchema: any = Yup.object({
   companyName: Yup.string().required('Company Name is required!'),
   industry: Yup.string().required('Industry Name is required!'),
   employee: Yup.number().required('Number of employee is required!'),
-  phoneNumber: Yup.number().required('Phone Number of employee is required!'),
+  phoneNumber: Yup.string().required('Phone Number of employee is required!'),
 });
 
 const CompanyDetails = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const { userId } = useParams();
+  
+  const auth = useSelector((state: RootState) => state.auth);
+  const {user: userData} = auth;
 
   const [isLoading, setIsLoading] = useState(false);
+  const [companyLogo, setCompanyLogo] = useState<any>('');
+  const [companyLogoErr, setCompanyLogoErr] = useState<string>('');
+  const [selectedUserRole, setSelectedUserRole] = useState<any>(null);
 
   const submitHandler = async (values: IRegisterCompany) => {
+
+    if (!companyLogo && userData?.user?.userRole === CONTRACTOR) {
+      setCompanyLogoErr('Company Name is required');
+      return;
+    }
     setIsLoading(true);
+    if (companyLogo && userData?.user?.userRole === CONTRACTOR) {
+      try {
+        const url = await new AwsS3(companyLogo, 'company/logos/').getS3URL();
+        console.log('url', url);
+        // logoUrl = url;
+        values.companyLogo = url;
+      } catch (error) {
+        console.error('Error uploading documents:', error);
+      }
+    }
+
     let result: any = await dispatch(
       addCompanyDetail({ ...values, userId: userId })
     );
@@ -50,13 +79,34 @@ const CompanyDetails = () => {
       setIsLoading(false);
       console.log('console.log', result.payload);
       localStorage.setItem('schestiToken', result.payload.token);
-      // router.push('/plans');
-      router.push('/verification');
+      if(userData?.user?.userRole === OWNER) {
+        router.push('/plans');
+      } else if (userData?.user?.userRole === SUBCONTRACTOR) {
+        router.push('/trades');
+      } else if (userData?.user?.userRole === CONTRACTOR) {
+        router.push('/verification');
+      }
+
     } else {
       setIsLoading(false);
       toast.error(result.payload.message);
     }
   };
+
+  const primaryHeadingTitle = useMemo(() => {
+    if (userData.user.userRole == OWNER) {
+      setSelectedUserRole(OWNER);
+      return 'Owner/Client Information';
+    } else if (userData.user.userRole == SUBCONTRACTOR) {
+      setSelectedUserRole(SUBCONTRACTOR);
+      return 'Company/Personal Information';
+    } else {
+      setSelectedUserRole(CONTRACTOR);
+      return 'Company Details';
+    }
+
+  }, [userData.user])
+
   return (
     <>
       <AuthNavbar />
@@ -67,10 +117,7 @@ const CompanyDetails = () => {
           </h2>
           <div className="w-full h-1 bg-mistyWhite"></div>
           <div className="mt-6 bg-snowWhite shadow-tertiaryMystery p-10">
-            <PrimaryHeading
-              title="Company Details"
-              className="text-center mb-12"
-            />
+            <PrimaryHeading title={primaryHeadingTitle} className="text-center mb-12" />
             <Formik
               initialValues={initialValues}
               validationSchema={CompanyDetailsSchema}
@@ -82,51 +129,125 @@ const CompanyDetails = () => {
                     name="basic"
                     onFinish={formik.handleSubmit}
                     autoComplete="off"
-                  // validateMessages={formik.handleSubmit}
+                    // validateMessages={formik.handleSubmit}
                   >
                     <div className="flex flex-col gap-6">
-                      <FormControl
-                        control="input"
-                        label="Company Name"
-                        type="text"
-                        name="companyName"
-                        placeholder="Enter Company Name"
-                      />
+                      {selectedUserRole == SUBCONTRACTOR || selectedUserRole == OWNER && (
+                        <FormControl
+                          control="input"
+                          label="Address"
+                          type="text"
+                          name="address"
+                          placeholder="Enter Company Address"
+                        />
+                      )}
+                      {selectedUserRole != OWNER &&
+                        <FormControl
+                          control="input"
+                          label="Company Name"
+                          type="text"
+                          name="companyName"
+                          placeholder="Enter Company Name"
+                        />
+                      }
+
                       <FormControl
                         control="input"
                         label="Phone Number"
-                        type="number"
+                        type="string"
                         name="phoneNumber"
                         placeholder="Enter Phone Number"
                       />
-                      <FormControl
-                        control="input"
-                        label="Industry"
-                        type="select"
-                        name="industry"
-                        placeholder="Enter industry Name"
-                      />
-                      <FormControl
+                      {selectedUserRole == OWNER && (
+                        <FormControl
+                          control="input"
+                          label="Organization Name"
+                          type="text"
+                          name="organizationName"
+                          placeholder="Enter Organization Name"
+                        />
+                      )
+                      }
+                      {selectedUserRole == CONTRACTOR && (
+                        <FormControl
+                          control="input"
+                          label="Industry"
+                          type="select"
+                          name="industry"
+                          placeholder="Enter industry Name"
+                        />
+                      )}
+                      {selectedUserRole == CONTRACTOR || selectedUserRole == SUBCONTRACTOR && (
+                        <>
+                        <FormControl
                         control="input"
                         label="Total Employee"
                         type="number"
                         name="employee"
                         placeholder="Employee"
                         min={1}
-                      />
-                      <label htmlFor="myInput">Logo/ Picture</label>
-                      <div className="flex items-center">
-                        <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-22 h-22 border-2 border-gray-300 border-solid rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                          <div className="flex flex-col items-center justify-center p-5">
-                            <svg className="w-6 h-6 mb-3 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-                            </svg>
-                            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold text-purple-600">Click to upload</span></p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">PNG, JPG (max. 800x400px)</p>
-                          </div>
-                          <input id="dropzone-file" type="file" className="sr-only" />
-                        </label>
-                      </div>
+                        />
+                        <label htmlFor="myInput">Logo/ Picture</label>
+                        <div className="flex items-center">
+                          <label
+                            htmlFor="dropzone-file"
+                            className="flex flex-col items-center justify-center w-22 h-22 border-2 border-gray-300 border-solid rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                          >
+                            <div className="flex flex-col items-center justify-center p-5">
+                              <svg
+                                className="w-6 h-6 mb-3 text-gray-500 dark:text-gray-400"
+                                aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 20 16"
+                              >
+                                <path
+                                  stroke="currentColor"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                  d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                                />
+                              </svg>
+                              <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                <span className="font-semibold text-purple-600">
+                                  Click to upload
+                                </span>
+                              </p>
+                              <p className="text-xs text-gray-500 dark:text-gray-400">
+                                PNG, JPG (max. 800x400px)
+                              </p>
+                            </div>
+                            <input
+                              id="dropzone-file"
+                              onChange={(e: any) => {
+                                const file = e.target.files[0];
+                                if (file) {
+                                  // Check file size (max size: 800x400px)
+                                  const maxFileSize = 800 * 400; // 800x400px
+                                  if (file.size > maxFileSize) {
+                                    setCompanyLogoErr(
+                                      'Image size should be less than 800x400 pixels'
+                                    );
+                                    e.target.value = ''; // Clear the file input to allow re-selection
+                                    return;
+                                  }
+                                  setCompanyLogo(file);
+                                  setCompanyLogoErr('');
+                                }
+                              }}
+                              type="file"
+                              style={{ opacity: '0' }}
+                              accept="image/*"
+                            />
+                            {companyLogo && <p>{companyLogo?.name}</p>}
+                          </label>
+                        </div>
+                        {!isEmpty(companyLogoErr) && (
+                          <Errormsg>{companyLogoErr}</Errormsg>
+                        )}
+                        </>
+                      )}
                     </div>
                     <Button
                       isLoading={isLoading}

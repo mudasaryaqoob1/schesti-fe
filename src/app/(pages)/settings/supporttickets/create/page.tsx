@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useLayoutEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Formik, Form } from 'formik';
 import Image from 'next/image';
 import * as Yup from 'yup';
@@ -12,9 +12,6 @@ import Description from '@/app/component/description';
 import FormControl from '@/app/component/formControl';
 import CustomButton from '@/app/component/customButton/button';
 // redux imports
-import { useSelector } from 'react-redux';
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
 
 // support tickets service
 import { ISupportTicket } from '@/app/interfaces/supportTicket.interface';
@@ -28,6 +25,7 @@ import { twMerge } from 'tailwind-merge';
 import { byteConverter } from '@/app/utils/byteConverter';
 import AwsS3 from '@/app/utils/S3Intergration';
 import CustomNavbar from '@/app/component/customNavbar';
+import { withAuth } from '@/app/hoc/withAuth';
 
 const validationSchema = Yup.object({
   title: Yup.string().required('Title is required!'),
@@ -42,14 +40,7 @@ const initialValues: ISupportTicket = {
 
 const CreateTicket = () => {
   const router = useRouter();
-  const token = useSelector(selectToken);
   const [avatarURL, setAvatarURL] = useState('');
-
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [avatarLoading, setavatarLoading] = useState(false);
@@ -243,4 +234,4 @@ const CreateTicket = () => {
   );
 };
 
-export default CreateTicket;
+export default withAuth(CreateTicket);

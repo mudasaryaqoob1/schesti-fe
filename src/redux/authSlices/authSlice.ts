@@ -5,6 +5,8 @@ import {
   updateProfileHandler,
   loginWithGoogle,
   addCompanyDetail,
+  getLoggedInUserDetails,
+  addVerificationDetails,
 } from './auth.thunk';
 
 export const authSlice = createSlice({
@@ -72,6 +74,34 @@ export const authSlice = createSlice({
     });
 
     builder.addCase(addCompanyDetail.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+    });
+
+    builder.addCase(getLoggedInUserDetails.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+    });
+    builder.addCase(getLoggedInUserDetails.pending, (state) => {
+      state.loading = true;
+    });
+
+    builder.addCase(getLoggedInUserDetails.fulfilled, (state, action) => {
+      state.loading = false;
+      state.user = action.payload.data;
+      state.token = action.payload?.token;
+      state.message = action.payload.message;
+    });
+    builder.addCase(addVerificationDetails.pending, (state) => {
+      state.loading = true;
+    });
+    builder.addCase(addVerificationDetails.fulfilled, (state, action) => {
+      state.loading = false;
+      state.user = action.payload.data;
+      // state.token = action.payload?.token;
+      state.message = action.payload.message;
+    });
+    builder.addCase(addVerificationDetails.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     });

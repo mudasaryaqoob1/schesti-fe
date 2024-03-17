@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useLayoutEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Form, Formik } from 'formik';
 
 import { bg_style } from '@/globals/tailwindvariables';
@@ -10,9 +10,7 @@ import * as Yup from 'yup';
 import FormControl from '@/app/component/formControl';
 import SubCategoryTable from './Table';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectToken } from '@/redux/authSlices/auth.selector';
 import { AppDispatch } from '@/redux/store';
-import { HttpService } from '@/app/services/base.service';
 import {
   fetchCategories,
   fetchSubCategories,
@@ -28,6 +26,7 @@ import {
   refetchSubCategories,
   setSubcategoryData,
 } from '@/redux/company/settingSlices/categories/subcategory.slice';
+import { withAuth } from '@/app/hoc/withAuth';
 
 export type SubcategoryInitValues = {
   name: string;
@@ -49,7 +48,6 @@ const validationSchema = Yup.object({
 });
 
 const AddSubcategory = () => {
-  const token = useSelector(selectToken);
   const dispatch = useDispatch<AppDispatch>();
   const { subcategoryData } = useSelector(
     (state: any) => state.companySetupSubcategory
@@ -80,12 +78,6 @@ const AddSubcategory = () => {
   useEffect(() => {
     fetchCategoriesHandler();
   }, []);
-
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
 
   const submitHandler = async (
     values: SubcategoryInitValues,
@@ -198,4 +190,4 @@ const AddSubcategory = () => {
   );
 };
 
-export default AddSubcategory;
+export default withAuth(AddSubcategory);
