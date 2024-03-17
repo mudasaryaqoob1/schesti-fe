@@ -1,10 +1,5 @@
 'use client';
-import {
-  ChangeEvent,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import ToggleBtn from './components/toggleBtn';
 
 import SinglePlan from './components/plan/plan';
@@ -34,7 +29,6 @@ const Plans = ({ user }: Props) => {
   const [selectedPlan, setSelectedPlan] = useState<any>();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   const [autoRenew, setAutoRenew] = useState(true);
-
 
   const plansData = useSelector(selectPricingPlans);
   const isLoading = useSelector(selectPricingPlansLoading);

@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import { bg_style } from '@/globals/tailwindvariables';
 import SettingSidebar from '../verticleBar';
 import Materials from './components/Materials';

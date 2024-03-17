@@ -42,8 +42,6 @@ const CreateTicket = () => {
   const router = useRouter();
   const [avatarURL, setAvatarURL] = useState('');
 
-
-
   const [isLoading, setIsLoading] = useState(false);
   const [avatarLoading, setavatarLoading] = useState(false);
 

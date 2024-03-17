@@ -1,10 +1,6 @@
 'use client';
 // modules import
-import React, {
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { twMerge } from 'tailwind-merge';
 import Image from 'next/image';
@@ -124,7 +120,6 @@ const EditEstimateRequest = () => {
   }, []);
 
   const submitHandler = async (values: IEstimateRequest) => {
-
     if (drawingsDocuments.length == 0) {
       setuploadDocumentsError('Drawings Document Required');
     }
@@ -135,8 +130,7 @@ const EditEstimateRequest = () => {
     // }
     else {
       setIsLoading(true);
-      toast.success('File Uploading...', { autoClose: 5 })
-
+      toast.success('File Uploading...', { autoClose: 5 });
 
       const [drawingDocs, takeOffDocs, otherDocs] = await Promise.all([
         uploadDocumentToS3Handler(drawingsDocuments),

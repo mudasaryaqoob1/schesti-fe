@@ -130,11 +130,25 @@ const Register = () => {
             title=" Sign up to your account"
           />
           <div className="flex items-center justify-between space-x-4 bg-gray-200 rounded-md p-2 mt-6 mb-3">
-            <button className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${role === USER_ROLES_ENUM.CONTRACTOR ? 'bg-lavenderPurple text-white' : 'bg-gray-200'}`} onClick={() => handleRoleChange(USER_ROLES_ENUM.CONTRACTOR)}>General-Contractor</button>
-            <button className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${role === USER_ROLES_ENUM.SUBCONTRACTOR ? 'bg-lavenderPurple text-white' : 'bg-gray-200'}`} onClick={() => handleRoleChange(USER_ROLES_ENUM.SUBCONTRACTOR)}>Sub-Contractor</button>
-            <button className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${role === USER_ROLES_ENUM.OWNER ? 'bg-lavenderPurple text-white' : 'bg-gray-200'}`} onClick={() => handleRoleChange(USER_ROLES_ENUM.OWNER)}>Owner</button>
+            <button
+              className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${role === USER_ROLES_ENUM.CONTRACTOR ? 'bg-lavenderPurple text-white' : 'bg-gray-200'}`}
+              onClick={() => handleRoleChange(USER_ROLES_ENUM.CONTRACTOR)}
+            >
+              General-Contractor
+            </button>
+            <button
+              className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${role === USER_ROLES_ENUM.SUBCONTRACTOR ? 'bg-lavenderPurple text-white' : 'bg-gray-200'}`}
+              onClick={() => handleRoleChange(USER_ROLES_ENUM.SUBCONTRACTOR)}
+            >
+              Sub-Contractor
+            </button>
+            <button
+              className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${role === USER_ROLES_ENUM.OWNER ? 'bg-lavenderPurple text-white' : 'bg-gray-200'}`}
+              onClick={() => handleRoleChange(USER_ROLES_ENUM.OWNER)}
+            >
+              Owner
+            </button>
           </div>
-
 
           <Formik
             initialValues={initialValues}

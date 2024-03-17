@@ -12,9 +12,7 @@ import QuaternaryHeading from '@/app/component/headings/quaternary';
 import Table, { type ColumnType } from 'antd/es/table';
 import { ConfigProvider, Divider, Skeleton } from 'antd';
 import CustomButton from '@/app/component/customButton/button';
-import {
-  PDFDownloadLink,
-} from '@react-pdf/renderer';
+import { PDFDownloadLink } from '@react-pdf/renderer';
 import moment from 'moment';
 import { RootState } from '@/redux/store';
 // import ClientPDF from './clientPDF';
@@ -41,19 +39,24 @@ function ViewSubcontractorInvoicePage() {
     }
   }, [token]);
 
-  const invoiceQuery = useQuery<IResponseInterface<{ invoice: IInvoice }> | null, AxiosError<{ message: string, statusCode: number }>>(['get-contractor-invoice', id], () => {
-    if (!id) {
-      return null;
-    }
-    return invoiceService.httpGetSubcontractorInvoiceById(id)
-  }, {
-    onError(err) {
-      toast.error(err.response?.data.message || "Unable to get the invoice");
+  const invoiceQuery = useQuery<
+    IResponseInterface<{ invoice: IInvoice }> | null,
+    AxiosError<{ message: string; statusCode: number }>
+  >(
+    ['get-contractor-invoice', id],
+    () => {
+      if (!id) {
+        return null;
+      }
+      return invoiceService.httpGetSubcontractorInvoiceById(id);
     },
-    staleTime: 60 * 5000
-  });
-
-
+    {
+      onError(err) {
+        toast.error(err.response?.data.message || 'Unable to get the invoice');
+      },
+      staleTime: 60 * 5000,
+    }
+  );
 
   const columns: ColumnType<IInvoice['invoiceItems'][0]>[] = [
     {
@@ -85,7 +88,7 @@ function ViewSubcontractorInvoicePage() {
   }
 
   if (invoiceQuery.isLoading) {
-    return <Skeleton />
+    return <Skeleton />;
   }
 
   if (!invoiceQuery.data?.data?.invoice) {
@@ -250,7 +253,9 @@ function ViewSubcontractorInvoicePage() {
       <Divider />
       <div className="mt-4 flex justify-end">
         <PDFDownloadLink
-          document={<ClientPDF invoice={invoiceData} user={user as unknown as IUser} />}
+          document={
+            <ClientPDF invoice={invoiceData} user={user as unknown as IUser} />
+          }
           fileName="invoice.pdf"
         >
           {({ loading }) => (

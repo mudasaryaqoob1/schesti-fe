@@ -28,18 +28,18 @@ export const Routes = {
 };
 
 export const OtherRoutes = {
-  "Settings": {
-    "General": "/settings/general",
-    "Plans": "/settings/plans",
-    "Category Setup": "/settings/CategorySetup",
-    "User Managements": "/settings/companyUser",
-    "Materials": "/settings/materials",
-    "Target": "/settings/target",
-    "Support Tickets": "/settings/supporttickets",
+  Settings: {
+    General: '/settings/general',
+    Plans: '/settings/plans',
+    'Category Setup': '/settings/CategorySetup',
+    'User Managements': '/settings/companyUser',
+    Materials: '/settings/materials',
+    Target: '/settings/target',
+    'Support Tickets': '/settings/supporttickets',
   },
-  "Upgrades": "/upgradeplans",
-  "Dashboard": "/dashboard"
-}
+  Upgrades: '/upgradeplans',
+  Dashboard: '/dashboard',
+};
 
 export const planFeatureOptions = [
   {

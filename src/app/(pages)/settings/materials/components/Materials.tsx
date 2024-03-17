@@ -1,10 +1,6 @@
 'use client';
 
-import React, {
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import Image from 'next/image';
@@ -38,8 +34,6 @@ type InitialValuesTypes = {
 };
 const Materials = () => {
   const dispatch = useDispatch<AppDispatch>();
-
-
 
   const materialsData = useSelector(reduxMaterialsData);
   const materialsLoading = useSelector(reduxMaterialsLoading);

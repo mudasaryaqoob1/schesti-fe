@@ -41,8 +41,6 @@ const EditSupportTicket = () => {
 
   const { id } = params;
 
-
-
   const [isLoading, setIsLoading] = useState(false);
   const [supportTicketData, setSupportTicketData] =
     useState<ISupportTicket | null>(null);
@@ -114,10 +112,10 @@ const EditSupportTicket = () => {
                 initialValues={
                   supportTicketData
                     ? {
-                      title: supportTicketData.title,
-                      description: supportTicketData.description,
-                      avatar: supportTicketData.avatar,
-                    }
+                        title: supportTicketData.title,
+                        description: supportTicketData.description,
+                        avatar: supportTicketData.avatar,
+                      }
                     : initialValues
                 }
                 validationSchema={validationSchema}

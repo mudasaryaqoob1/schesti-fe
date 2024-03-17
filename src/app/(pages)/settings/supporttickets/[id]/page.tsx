@@ -1,11 +1,6 @@
 'use client';
 
-import React, {
-  useState,
-  useCallback,
-  useEffect,
-  useRef,
-} from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { useSelector } from 'react-redux';
@@ -33,8 +28,6 @@ const SupportTicketDetails = () => {
   const params = useParams();
   const divRef: any = useRef(null);
   const { id }: any = params;
-
-
 
   const supportTicketData = useSelector(selectSupportTickets);
 

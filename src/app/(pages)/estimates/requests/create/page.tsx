@@ -1,16 +1,12 @@
 'use client';
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import * as Yup from 'yup';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
 import { toast } from 'react-toastify';
 import { Form, Formik } from 'formik';
-import { useDispatch, } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 // module imports
 
@@ -131,8 +127,7 @@ const CreateEstimateRequest = () => {
     // }
     else {
       setIsLoading(true);
-      toast.success('File Uploading...', { autoClose: 5 })
-
+      toast.success('File Uploading...', { autoClose: 5 });
 
       const drawingDocs = await uploadDocumentToS3Handler(drawingsDocuments);
       const takeOffDocs = await uploadDocumentToS3Handler(takeOffReports);

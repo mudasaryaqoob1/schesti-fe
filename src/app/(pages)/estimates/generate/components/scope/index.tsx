@@ -179,7 +179,6 @@ const Scope = ({ setPrevNext }: Props) => {
           let uniqueUnitsSet = new Set();
           let fetchedDescriptions = result.data
             .map((material: DataType) => {
-
               const description = material.description;
 
               if (!uniqueDescriptionsSet.has(description)) {
@@ -541,7 +540,7 @@ const Scope = ({ setPrevNext }: Props) => {
       align: 'center',
       width: 120,
       render: (value: number) => {
-        return `$${value}`
+        return `$${value}`;
       },
     },
     {
@@ -566,7 +565,7 @@ const Scope = ({ setPrevNext }: Props) => {
       align: 'center',
       width: 120,
       render: (value: number) => {
-        return `$${value}`
+        return `$${value}`;
       },
     },
     {
@@ -695,7 +694,7 @@ const Scope = ({ setPrevNext }: Props) => {
       align: 'center',
       width: 120,
       render: (value: number) => {
-        return `$${value}`
+        return `$${value}`;
       },
     },
     {
@@ -720,7 +719,7 @@ const Scope = ({ setPrevNext }: Props) => {
       align: 'center',
       width: 120,
       render: (value: number) => {
-        return `$${value}`
+        return `$${value}`;
       },
     },
     {
@@ -829,9 +828,9 @@ const Scope = ({ setPrevNext }: Props) => {
       let modifyArray = confirmEstimates.map((item, i) =>
         i === index
           ? {
-            ...item,
-            scopeItems: [...item.scopeItems, ...dataSource.scopeItems],
-          }
+              ...item,
+              scopeItems: [...item.scopeItems, ...dataSource.scopeItems],
+            }
           : item
       );
       setConfirmEstimates(modifyArray);
@@ -867,7 +866,7 @@ const Scope = ({ setPrevNext }: Props) => {
         {estimateDetail?.drawingsDocuments?.length && (
           <div className="grid grid-rows-1 md:grid-cols-3 gap-x-2">
             {estimateDetail?.drawingsDocuments?.length &&
-              estimateDetail?.drawingsDocuments[0]?.ext === 'image/png' ? (
+            estimateDetail?.drawingsDocuments[0]?.ext === 'image/png' ? (
               <CustomButton
                 text="View Plans"
                 className="!text-graphiteGray !bg-snowWhite !shadow-scenarySubdued 
@@ -1076,34 +1075,34 @@ const Scope = ({ setPrevNext }: Props) => {
               <div>
                 {confirmEstimates.length
                   ? confirmEstimates.map((estimate) => (
-                    <div
-                      key={estimate.title}
-                      className={`${bg_style} p-5 mt-3`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <QuaternaryHeading
-                            title={estimate.categoryName}
-                            className="font-semibold"
-                          />
-                          <QuaternaryHeading
-                            title={estimate.subCategoryName}
-                            className="!font=[#344054] font-light"
+                      <div
+                        key={estimate.title}
+                        className={`${bg_style} p-5 mt-3`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <QuaternaryHeading
+                              title={estimate.categoryName}
+                              className="font-semibold"
+                            />
+                            <QuaternaryHeading
+                              title={estimate.subCategoryName}
+                              className="!font=[#344054] font-light"
+                            />
+                          </div>
+                        </div>
+                        <div className="estimateTable_container">
+                          <Table
+                            className="mt-2"
+                            loading={false}
+                            columns={confirmColumns}
+                            dataSource={estimate.scopeItems as DataType[]}
+                            pagination={false}
+                            scroll={{ x: 1000 }}
                           />
                         </div>
                       </div>
-                      <div className="estimateTable_container">
-                        <Table
-                          className="mt-2"
-                          loading={false}
-                          columns={confirmColumns}
-                          dataSource={estimate.scopeItems as DataType[]}
-                          pagination={false}
-                          scroll={{ x: 1000 }}
-                        />
-                      </div>
-                    </div>
-                  ))
+                    ))
                   : null}
               </div>
             </>

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 // module imports
 import Image from 'next/image';
@@ -32,11 +32,8 @@ const SupportTickets = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
-
   const supportTicketsData = useSelector(selectSupportTickets);
   const supportTicketsLoading = useSelector(selectSupportTicketsLoading);
-
-
 
   const fetchSupportTicketsHandler = useCallback(async () => {
     await dispatch(fetchSupportTickets({ page: 1, limit: 10 }));

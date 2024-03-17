@@ -23,8 +23,6 @@ export interface DataType {
 const CategoriesTable = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-
-
   const fetchSettingTargetsHandler = useCallback(async () => {
     await dispatch(fetchSettingTargets({ page: 1, limit: 10 }));
   }, [dispatch]);

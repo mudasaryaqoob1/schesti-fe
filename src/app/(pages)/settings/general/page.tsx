@@ -191,8 +191,9 @@ const GeneralSetting = () => {
                   {/* Upload Image Div */}
                   <div className={`${bg_style} grid grid-cols-12 p-5 mt-4 `}>
                     <div
-                      className={`px-6 py-4 col-span-8 flex flex-col items-center gap-3 ${errors.avatar ? 'border-red-600' : ''
-                        }  ${bg_style}`}
+                      className={`px-6 py-4 col-span-8 flex flex-col items-center gap-3 ${
+                        errors.avatar ? 'border-red-600' : ''
+                      }  ${bg_style}`}
                     >
                       {userData.avatar ? (
                         <Image

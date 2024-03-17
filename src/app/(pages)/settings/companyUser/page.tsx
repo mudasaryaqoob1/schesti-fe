@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState, useCallback } from 'react';
 import Image from 'next/image';
-import { useDispatch, } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Dropdown, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { MenuProps } from 'antd';
@@ -143,14 +143,14 @@ const Index = () => {
   const filteredUserData =
     userData.length > 0
       ? userData.filter((user: { name: string; email: string }) => {
-        if (!search) {
-          return user;
-        }
-        return (
-          user.name.toLowerCase().includes(search.toLowerCase()) ||
-          user.email.toLowerCase().includes(search.toLowerCase())
-        );
-      })
+          if (!search) {
+            return user;
+          }
+          return (
+            user.name.toLowerCase().includes(search.toLowerCase()) ||
+            user.email.toLowerCase().includes(search.toLowerCase())
+          );
+        })
       : [];
 
   return (

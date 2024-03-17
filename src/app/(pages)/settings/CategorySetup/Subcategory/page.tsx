@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Form, Formik } from 'formik';
 
 import { bg_style } from '@/globals/tailwindvariables';
@@ -79,8 +79,6 @@ const AddSubcategory = () => {
     fetchCategoriesHandler();
   }, []);
 
-
-
   const submitHandler = async (
     values: SubcategoryInitValues,
     { resetForm }: { resetForm: voidFc }
@@ -109,9 +107,9 @@ const AddSubcategory = () => {
 
   const options = categoriesReduxData
     ? categoriesReduxData.map(({ name, _id }: ICategory) => ({
-      label: name,
-      value: _id,
-    }))
+        label: name,
+        value: _id,
+      }))
     : [];
 
   return (

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { useCallback, useEffect, } from 'react';
+import { useCallback, useEffect } from 'react';
 import { AppDispatch } from '@/redux/store';
 import {
   deleteCategory,
@@ -36,7 +36,6 @@ const CategoryTable = () => {
   useEffect(() => {
     fetchCategoriesHandler();
   }, []);
-
 
   const columns: ColumnsType<DataType> = [
     {

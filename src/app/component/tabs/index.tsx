@@ -121,7 +121,7 @@ const Tabs = () => {
                          cursor-pointer
                         `,
                         pathname.includes('/bid'.split('/')[1]) &&
-                        tabsStyle.active
+                          tabsStyle.active
                       )
                     )}
                   >

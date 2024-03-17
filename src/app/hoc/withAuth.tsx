@@ -90,7 +90,9 @@ export const withAuth = (
   return WrappedComponentWithAuth;
 };
 function getAllRoutes(routes = OtherRoutes): string[] {
-  return Object.values(routes).flatMap(route => typeof route === 'string' ? [route] : Object.values(route));
+  return Object.values(routes).flatMap((route) =>
+    typeof route === 'string' ? [route] : Object.values(route)
+  );
 }
 function canAccessRoute(pathname: string, userFeatures: string[]) {
   const allRoutes = getAllRoutes().concat(userFeatures);

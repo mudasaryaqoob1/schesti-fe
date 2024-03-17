@@ -40,11 +40,8 @@ const TargetsTable = () => {
     undefined | Omit<ISettingTarget, 'year'>
   >();
 
-
   const settingTargetsData = useSelector(selectSettingTargets);
   const settingTargetsLoading = useSelector(selectSettingTargetsLoading);
-
-
 
   const fetchSettingTargetsHandler = useCallback(async () => {
     await dispatch(fetchSettingTargets({ page: 1, limit: 10 }));

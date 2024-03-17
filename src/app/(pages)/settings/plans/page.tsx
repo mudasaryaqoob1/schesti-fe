@@ -17,7 +17,6 @@ const SettingPlans = () => {
     (state: RootState) => state.auth.user as { user?: IUser }
   );
 
-
   return (
     <SettingSidebar>
       <div className="w-full mb-4">
