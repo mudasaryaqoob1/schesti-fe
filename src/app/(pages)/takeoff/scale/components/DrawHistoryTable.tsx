@@ -89,13 +89,15 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
     <ConfigProvider theme={{ components: { Table: { headerBg: '#F9F5FF' } } }}>
       <Table
         pagination={false}
+        dataSource={dataSource}
+        size="small"
         columns={[
           {
             title: 'Project name',
             dataIndex: 'projectName',
             key: 'projectName',
             render: (value, record) => {
-              return !record?.comment ? (
+              return !record?.date ? (
                 <div>{value}</div>
               ) : (
                 <EditableText
@@ -152,8 +154,6 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
             dataIndex: 'space',
           },
         ]}
-        dataSource={dataSource}
-        size="small"
       />
     </ConfigProvider>
   );

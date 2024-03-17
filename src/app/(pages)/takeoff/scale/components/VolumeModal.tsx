@@ -31,7 +31,7 @@ const Volume: React.FC<Props> = ({ setModalOpen, measurements }) => {
             <label>Volume</label>
             <div className="w-[92px]">
               <Input
-                value={`${measurements.volume} cu`}
+                value={`${measurements.volume || 0} cu`}
                 className="!rounded-md pointer-events-none"
               />
               {/* <Select className="!rounded-md w-full">

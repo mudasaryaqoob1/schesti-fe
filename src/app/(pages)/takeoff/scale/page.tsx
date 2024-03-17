@@ -1,5 +1,5 @@
 'use client';
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import ModalComponent from '@/app/component/modal';
 import ScaleModal from '../components/scale';
 import ModalsWrapper from './components/ModalWrapper';
@@ -18,12 +18,6 @@ import { ScaleDataContextProps } from '../context/ScaleContext';
 import { useRouter } from 'next/navigation';
 import WhiteButton from '@/app/component/customButton/white';
 import Button from '@/app/component/customButton/button';
-
-// const selectedScale = {
-//   "1" : {scale:  `3/8"=1'-0"`, precision: `1/34` }
-//   "2" : {scale:  `3/8"=1'-0"`, precision: `1/34` }
-//   "3" : {scale:  `3/8"=1'-0"`, precision: `1/34` }
-// }
 
 export interface ScaleData {
   scale: string;
@@ -45,7 +39,9 @@ const Scale = () => {
   const [measurements, setMeasurements] =
     useState<Measurements>(defaultMeasurements);
 
-  const { scaleData } = useContext(ScaleContext) as ScaleDataContextProps;
+  const { scaleData, handleScaleData } = useContext(
+    ScaleContext
+  ) as ScaleDataContextProps;
   const { uploadFileData } = useContext(
     UploadFileContext
   ) as UploadFileContextProps;
@@ -54,27 +50,19 @@ const Scale = () => {
 
   if (!uploadFileData.length) router.push('/takeoff/upload');
 
+  useEffect(() => {
+    const newData: any = {};
+    for (let i = 1; i <= uploadFileData.length; i++) {
+      newData[i] = { scale: `1in=1in`, precision: '1' };
+    }
+    handleScaleData(newData);
+  }, []);
+
   return (
     <>
-      <section className="md:px-16 px-8 pb-1">
-        <div className="flex gap-x-4 items-center mt-1">
-          <Image src={'/home.svg'} alt="home icon" width={20} height={20} />
-          <Image
-            src={'/chevron-right.svg'}
-            alt="chevron-right icon"
-            width={16}
-            height={16}
-          />
-        </div>
-
-        {/* search project */}
-        <div className="bg-white flex justify-between items-center mt-1 ">
-          <div
-            className="rounded-lg border border-Gainsboro bg-silverGray  h-[51px] 
-                        flex 
-                        items-center
-                            px-3"
-          >
+      <section className="md:px-16 px-8">
+        <div className="bg-white flex justify-between items-center mt-6 ">
+          <div className="rounded-lg border border-Gainsboro bg-silverGray  h-[51px] flex items-center px-3">
             <input
               type="search"
               name=""
@@ -131,6 +119,75 @@ const Scale = () => {
                 value={border}
                 onChange={(value) => value && setBorder(value)}
               />
+            </div>
+            <div className="flex flex-row gap-2 items-center">
+              <label>Color:</label>
+              <ColorPicker
+                value={color}
+                onChange={(color) => setColor(color.toHexString())}
+              />
+            </div>
+            {tool.selected === 'volume' && (
+              <InputNumber
+                type="number"
+                min={1}
+                placeholder="Depth"
+                onChange={(value) => value && setDepth(value)}
+              />
+            )}
+          </div>
+
+          <div className="py-6 h-[709px] relative">
+            <div className="absolute bottom-48 left-10 flex gap-6 z-50 ">
+              <Image src={'/cursor.svg'} alt="t" width={24} height={24} />
+              <Image src={'/t1.svg'} alt="t" width={24} height={24} />
+              <Image src={'/t1.svg'} alt="t" width={24} height={24} />
+              <Image src={'/t1.svg'} alt="t" width={24} height={24} />
+              <Image src={'/fx.svg'} alt="t" width={24} height={24} />
+            </div>
+            <div className="absolute top-10 right-10 flex flex-col gap-3 items-center z-50 bg-white px-3 py-2  rounded-sm drop-shadow-md ">
+              <Image src={'/cursor.svg'} alt="t" width={24} height={24} />
+              <Image src={'/pencil.svg'} alt="t" width={34} height={34} />
+              <Image src={'/t1.svg'} alt="t" width={24} height={24} />
+              <Image src={'/shapeTool.svg'} alt="t" width={34} height={34} />
+              <Image src={'/stickyNotes.svg'} alt="t" width={34} height={34} />
+              <Image src={'/fx.svg'} alt="t" width={24} height={24} />
+              <Image src={'/calculator.svg'} alt="t" width={34} height={34} />
+              <Image src={'/comments.svg'} alt="t" width={34} height={34} />
+              <Image src={'/uploadFile.svg'} alt="t" width={34} height={34} />
+              <Image src={'/library.svg'} alt="t" width={34} height={34} />
+            </div>
+            <div className={`absolute ${showModal ? 'block' : 'hidden'}`}>
+              <ModalsWrapper
+                tool={tool}
+                setTool={setTool}
+                setModalOpen={setShowModal}
+                measurements={measurements}
+              />
+            </div>
+            <div className="h-[527px] rounded-lg overflow-y-auto">
+              {uploadFileData.map((file, index) => (
+                <Draw
+                  key={`draw-${index}`}
+                  selectedTool={tool}
+                  scale={
+                    scaleData?.[`${index + 1}`] || {
+                      scale: `1"=1"`,
+                      precision: '1',
+                    }
+                  }
+                  depth={depth}
+                  color={color}
+                  border={border}
+                  unit={unit * 1.5}
+                  uploadFileData={file}
+                  pageNumber={index + 1}
+                  handleScaleModal={(open) => setShowModal(open)}
+                  handleChangeMeasurements={(measurements) =>
+                    setMeasurements(measurements)
+                  }
+                />
+              ))}
             </div>
             <div className="flex flex-row gap-2 items-center">
               <label>Color:</label>
