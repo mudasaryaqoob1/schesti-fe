@@ -115,7 +115,7 @@ const Scope = ({ setPrevNext }: Props) => {
   const estimateIdQueryParameter = searchParams.get('estimateId');
 
   const [estimateDetail, setEstimateDetail] = useState<any>({});
-  const [planDocuments, setPlanDocuments] = useState<Object[]>([])
+  const [planDocuments, setPlanDocuments] = useState<Object[]>([]);
   const [viewPlansModel, setViewPlansModel] = useState(false);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState<Object[]>([]);
@@ -183,17 +183,20 @@ const Scope = ({ setPrevNext }: Props) => {
     });
     setSubCategories(flattenedSubcategories);
   }, []);
-  const fetchMaterialUnits = useCallback(async() => {
-    const unitsMaterials = await materialService.httpFetchMaterialUnits()
+  const fetchMaterialUnits = useCallback(async () => {
+    const unitsMaterials = await materialService.httpFetchMaterialUnits();
     setEstiamteUnits(unitsMaterials.data?.fetchedUnits);
-    
-  },[])
+  }, []);
   const fetchEstimateDetail = useCallback(async () => {
     let result = await estimateRequestService.httpGetEstimateDetail(
       estimateIdQueryParameter
     );
     setEstimateDetail(result.data.estimateDetail);
-    setPlanDocuments([...result.data.estimateDetail.drawingsDocuments , ...result.data.estimateDetail.otherDocuments , ...result.data.estimateDetail.takeOffReports])
+    setPlanDocuments([
+      ...result.data.estimateDetail.drawingsDocuments,
+      ...result.data.estimateDetail.otherDocuments,
+      ...result.data.estimateDetail.takeOffReports,
+    ]);
   }, []);
   // const fetchMeterialDetail = useCallback(
   //   async (categoryId: string, subCategory: string) => {
@@ -249,7 +252,7 @@ const Scope = ({ setPrevNext }: Props) => {
   useEffect(() => {
     fetchCategories();
     fetchEstimateDetail();
-    fetchMaterialUnits()
+    fetchMaterialUnits();
   }, []);
   useEffect(() => {
     if (selectedCategory) {
@@ -311,45 +314,12 @@ const Scope = ({ setPrevNext }: Props) => {
     }
   }, [generateEstimateDetail]);
 
-  const submitHandler = ( estimateTableItemValues: InitialValuesType) => {
-      let selectedCategory = '';
-      const selectedCategoryName: any = categories.find(
-        (cat: any) => cat.value === estimateTableItemValues.category
-      );
-  
-      const selctedSubCategoryName: any = subCategories.find(
-        (cat: any) => cat.value === estimateTableItemValues.subCategory
-      );
-  
-      if (
-        categories.find(
-          (cat: any) => cat.value === estimateTableItemValues.category
-        ) &&
-        subCategories.find(
-          (cat: any) => cat.value === estimateTableItemValues.subCategory
-        )
-      ) {
-        selectedCategory = `${selectedCategoryName.label} ${selctedSubCategoryName.label}`;
-      } else {
-        selectedCategory = `${estimateTableItemValues?.category} ${estimateTableItemValues?.subCategory}`;
-      }
-
-      let value = {
-        title: selectedCategory,
-        categoryName: selectedCategoryName?.label,
-        subCategoryName: selctedSubCategoryName?.label,
-        scopeItems: [estimateTableItemValues]
-    }
-
-    confirmEstimateHandler(value)
-      
-  }
-  const submitHandlerlast = (
+  const submitHandler = (
     estimateTableItemValues: InitialValuesType,
     actions: any
   ) => {
     let generateRandomNumber = Math.floor(Math.random() * 103440 + 1);
-    let selectedCategory = '';
+
     const selectedCategoryName: any = categories.find(
       (cat: any) => cat.value === estimateTableItemValues.category
     );
@@ -358,121 +328,196 @@ const Scope = ({ setPrevNext }: Props) => {
       (cat: any) => cat.value === estimateTableItemValues.subCategory
     );
 
-    if (
-      categories.find(
-        (cat: any) => cat.value === estimateTableItemValues.category
-      ) &&
-      subCategories.find(
-        (cat: any) => cat.value === estimateTableItemValues.subCategory
-      )
-    ) {
-      selectedCategory = `${selectedCategoryName.label} ${selctedSubCategoryName.label}`;
-    } else {
-      selectedCategory = `${estimateTableItemValues?.category} ${estimateTableItemValues?.subCategory}`;
-    }
-    if (
-      estimateData.scopeItems.length &&
-      estimateData.title !== selectedCategory &&
-      !editItem &&
-      !editConfirmItem
-    ) {
-      toast.warn('Please add Div first to create new one');
-    } else {
-      if (editItem && !editConfirmItem) {
-        const updateEstimateArray: any = estimateData.scopeItems.map(
-          (dataItem: any) =>
-            dataItem.index === estimateTableItemValues.index
-              ? estimateTableItemValues
-              : dataItem
-        );
+    let selectedCategory = `${
+      selectedCategoryName?.label
+        ? selectedCategoryName?.label
+        : estimateTableItemValues?.category
+    } ${
+      selctedSubCategoryName?.label
+        ? selctedSubCategoryName?.label
+        : estimateTableItemValues.subCategory
+    }`;
 
-        setEstimateData({
-          ...estimateData,
-          categoryName: selectedCategoryName.label,
-          subCategoryName: selctedSubCategoryName.label,
-          scopeItems: updateEstimateArray,
-        });
-        setEditItem(false);
-        // setEstimateDescriptions([]);
-        setSingleEstimateData({
-          ...SingleEstimateData,
-          description: '',
-          unit: '',
-          qty: '',
-          wastage: '5',
-          unitLabourHour: '',
-          // perHourLaborRate: '',
-          unitMaterialCost: '',
-          unitEquipments: '',
-        });
-        // actions.resetForm({ values: initialValues });
-      } else if (!editItem && editConfirmItem) {
-        const updateConfirmEstimateArray: any = confirmEstimates.map(
-          (item: any) => {
-            return {
-              ...item,
-              totalCostRecord: calculateTotalCost(item),
-              scopeItems: item.scopeItems.map((dataItem: any) =>
-                dataItem.index === estimateTableItemValues.index
-                  ? estimateTableItemValues
-                  : dataItem
-              ),
-            };
-          }
-        );
+    if (editConfirmItem) {
+      const updateConfirmEstimateArray: any = confirmEstimates.map(
+        (item: any) => {
+          return {
+            ...item,
+            totalCostRecord: calculateTotalCost(item),
+            scopeItems: item.scopeItems.map((dataItem: any) =>
+              dataItem.index === estimateTableItemValues.index
+                ? estimateTableItemValues
+                : dataItem
+            ),
+          };
+        }
+      );
+      setConfirmEstimates(updateConfirmEstimateArray);
+      setEditConfirmItem(false);
 
-        setConfirmEstimates(updateConfirmEstimateArray);
-        setEditConfirmItem(false);
-        // setEstiamteUnits([]);
-        // setEstimateDescriptions([]);
-        setSelectedSubCategory('');
-        setSelectedCategory('');
-        setSingleEstimateData({
-          category: '',
-          subCategory: '',
-          description: '',
-          unit: '',
-          qty: '',
-          wastage: '5',
-          unitLabourHour: '',
-          perHourLaborRate: '',
-          unitMaterialCost: '',
-          unitEquipments: '',
-        });
-        actions.resetForm({ values: initialValues });
-      } else {
-        setEstimateData((prevData) => ({
-          ...prevData,
-          title: selectedCategory,
-          categoryName: selectedCategoryName?.label
-            ? selectedCategoryName?.label
-            : estimateTableItemValues?.category,
-          subCategoryName: selctedSubCategoryName?.label
-            ? selctedSubCategoryName?.label
-            : estimateTableItemValues.subCategory,
-          scopeItems: [
-            ...prevData.scopeItems,
-            { ...estimateTableItemValues, index: generateRandomNumber },
-          ],
-        }));
-        // setEstimateDescriptions([]);
-        setSingleEstimateData({
-          ...SingleEstimateData,
-          // category: '',
-          // subCategory: '',
-          description: '',
-          unit: '',
-          qty: '',
-          wastage: '5',
-          unitLabourHour: '',
-          // perHourLaborRate: '',
-          unitMaterialCost: '',
-          unitEquipments: '',
-        });
-      }
+      setSelectedSubCategory('');
+      setSelectedCategory('');
+      setSingleEstimateData({
+        category: '',
+        subCategory: '',
+        description: '',
+        unit: '',
+        qty: '',
+        wastage: '5',
+        unitLabourHour: '',
+        perHourLaborRate: '',
+        unitMaterialCost: '',
+        unitEquipments: '',
+      });
+      actions.resetForm({ values: initialValues });
+    } else {
+      let newValue = {
+        title: selectedCategory,
+        categoryName: selectedCategoryName?.label
+          ? selectedCategoryName?.label
+          : estimateTableItemValues?.category,
+        subCategoryName: selctedSubCategoryName?.label
+          ? selctedSubCategoryName?.label
+          : estimateTableItemValues.subCategory,
+        scopeItems: [
+          { ...estimateTableItemValues, index: generateRandomNumber },
+        ],
+      };
+
+      confirmEstimateHandler(newValue);
     }
-    actions.resetForm({ values: initialValues });
   };
+  // const submitHandlerlast = (
+  //   estimateTableItemValues: InitialValuesType,
+  //   actions: any
+  // ) => {
+  //   console.log(estimateTableItemValues, 'estimateTableItemValues');
+
+  //   let generateRandomNumber = Math.floor(Math.random() * 103440 + 1);
+  //   let selectedCategory = '';
+  //   const selectedCategoryName: any = categories.find(
+  //     (cat: any) => cat.value === estimateTableItemValues.category
+  //   );
+
+  //   const selctedSubCategoryName: any = subCategories.find(
+  //     (cat: any) => cat.value === estimateTableItemValues.subCategory
+  //   );
+
+  //   if (
+  //     categories.find(
+  //       (cat: any) => cat.value === estimateTableItemValues.category
+  //     ) &&
+  //     subCategories.find(
+  //       (cat: any) => cat.value === estimateTableItemValues.subCategory
+  //     )
+  //   ) {
+  //     selectedCategory = `${selectedCategoryName.label} ${selctedSubCategoryName.label}`;
+  //   } else {
+  //     selectedCategory = `${estimateTableItemValues?.category} ${estimateTableItemValues?.subCategory}`;
+  //   }
+  //   if (
+  //     estimateData.scopeItems.length &&
+  //     estimateData.title !== selectedCategory &&
+  //     !editItem &&
+  //     !editConfirmItem
+  //   ) {
+  //     toast.warn('Please add Div first to create new one');
+  //   } else {
+  //     if (editItem && !editConfirmItem) {
+  //       const updateEstimateArray: any = estimateData.scopeItems.map(
+  //         (dataItem: any) =>
+  //           dataItem.index === estimateTableItemValues.index
+  //             ? estimateTableItemValues
+  //             : dataItem
+  //       );
+
+  //       setEstimateData({
+  //         ...estimateData,
+  //         categoryName: selectedCategoryName.label,
+  //         subCategoryName: selctedSubCategoryName.label,
+  //         scopeItems: updateEstimateArray,
+  //       });
+  //       setEditItem(false);
+  //       // setEstimateDescriptions([]);
+  //       setSingleEstimateData({
+  //         ...SingleEstimateData,
+  //         description: '',
+  //         unit: '',
+  //         qty: '',
+  //         wastage: '5',
+  //         unitLabourHour: '',
+  //         // perHourLaborRate: '',
+  //         unitMaterialCost: '',
+  //         unitEquipments: '',
+  //       });
+  //       // actions.resetForm({ values: initialValues });
+  //     } else if (!editItem && editConfirmItem) {
+  //       const updateConfirmEstimateArray: any = confirmEstimates.map(
+  //         (item: any) => {
+  //           return {
+  //             ...item,
+  //             totalCostRecord: calculateTotalCost(item),
+  //             scopeItems: item.scopeItems.map((dataItem: any) =>
+  //               dataItem.index === estimateTableItemValues.index
+  //                 ? estimateTableItemValues
+  //                 : dataItem
+  //             ),
+  //           };
+  //         }
+  //       );
+
+  //       setConfirmEstimates(updateConfirmEstimateArray);
+  //       setEditConfirmItem(false);
+  //       // setEstiamteUnits([]);
+  //       // setEstimateDescriptions([]);
+  //       setSelectedSubCategory('');
+  //       setSelectedCategory('');
+  //       setSingleEstimateData({
+  //         category: '',
+  //         subCategory: '',
+  //         description: '',
+  //         unit: '',
+  //         qty: '',
+  //         wastage: '5',
+  //         unitLabourHour: '',
+  //         perHourLaborRate: '',
+  //         unitMaterialCost: '',
+  //         unitEquipments: '',
+  //       });
+  //       actions.resetForm({ values: initialValues });
+  //     } else {
+  //       setEstimateData((prevData) => ({
+  //         ...prevData,
+  //         title: selectedCategory,
+  //         categoryName: selectedCategoryName?.label
+  //           ? selectedCategoryName?.label
+  //           : estimateTableItemValues?.category,
+  //         subCategoryName: selctedSubCategoryName?.label
+  //           ? selctedSubCategoryName?.label
+  //           : estimateTableItemValues.subCategory,
+  //         scopeItems: [
+  //           ...prevData.scopeItems,
+  //           { ...estimateTableItemValues, index: generateRandomNumber },
+  //         ],
+  //       }));
+  //       // setEstimateDescriptions([]);
+  //       setSingleEstimateData({
+  //         ...SingleEstimateData,
+  //         // category: '',
+  //         // subCategory: '',
+  //         description: '',
+  //         unit: '',
+  //         qty: '',
+  //         wastage: '5',
+  //         unitLabourHour: '',
+  //         // perHourLaborRate: '',
+  //         unitMaterialCost: '',
+  //         unitEquipments: '',
+  //       });
+  //     }
+  //   }
+  //   actions.resetForm({ values: initialValues });
+  // };
 
   const deleteEstimateRecordHandler = (record: any) => {
     if (
@@ -496,12 +541,19 @@ const Scope = ({ setPrevNext }: Props) => {
       (cat: any) => cat.value === record.subCategory
     );
 
-    let selectedCategory = `${selctedCatoryName.label} ${selctedSubCategoryName.label}`;
+    let selectedCategory = `${
+      selctedCatoryName?.label ? selctedCatoryName?.label : record?.category
+    } ${
+      selctedSubCategoryName?.label
+        ? selctedSubCategoryName?.label
+        : record.subCategory
+    }`;
+
     const newArray: any = confirmEstimates.map((item) => {
       if (item && item.title === selectedCategory) {
         return {
           ...item,
-          data: item.scopeItems.filter(
+          scopeItems: item.scopeItems.filter(
             (dataItem: any) => dataItem.index !== record.index
           ),
         };
@@ -510,7 +562,7 @@ const Scope = ({ setPrevNext }: Props) => {
       }
     });
     setConfirmEstimates(
-      newArray.filter((item: any) => item && item.data.length > 0)
+      newArray.filter((item: any) => item && item.scopeItems.length > 0)
     );
   };
   const editEstimateRecordHandler = (record: any) => {
@@ -519,11 +571,11 @@ const Scope = ({ setPrevNext }: Props) => {
   };
   const editConfirmEstimateRecordHandler = (record: any) => {
     setSingleEstimateData(record);
-    // fetchMeterialDetail(record.category, record.subCategory);
-    setSelectedCategory(record.category);
-    setSelectedSubCategory(record.subCategory);
-    setEditItem(false);
+    // setSelectedCategory(record.category);
+    // setSelectedSubCategory(record.subCategory);
+    // setEditItem(false);
     setEditConfirmItem(true);
+    // fetchMeterialDetail(record.category, record.subCategory);
   };
 
   const calculateTotalCost = (record: DataType) => {
@@ -536,8 +588,9 @@ const Scope = ({ setPrevNext }: Props) => {
     let totalLabourHours = qtyWithWastage * unitLabourHour;
     let totalMeterialCost = unitMaterialCost * qtyWithWastage;
     let totalLabourCost = totalLabourHours * perHourLaborRate;
-    let totalMaterialCost = unitMaterialCost * qtyWithWastage;
-    let result = totalLabourCost * totalMeterialCost * totalMaterialCost;
+    let unitEquipments = parseFloat(record.unitEquipments);
+    let totalEquipmentCost = unitEquipments * qtyWithWastage;
+    let result = totalLabourCost + totalMeterialCost + totalEquipmentCost;
     return result.toFixed(2);
   };
 
@@ -853,8 +906,6 @@ const Scope = ({ setPrevNext }: Props) => {
     title: string;
     scopeItems: Object[];
   }) => {
-    console.log(dataSource  , 'dataSourcedataSourcedataSource');
-    
     setSelectedCategory('');
     setSelectedSubCategory('');
     // setEstimateDescriptions([]);
@@ -917,10 +968,6 @@ const Scope = ({ setPrevNext }: Props) => {
     }
   };
 
-
-  console.log(estimateData);
-  
-
   return (
     <div>
       <div className="flex justify-between items-center mb-3">
@@ -979,6 +1026,7 @@ const Scope = ({ setPrevNext }: Props) => {
                     placeholder="Enter or create category"
                     className="w-full h-10"
                     setCustomState={setSelectedCategory}
+                    disabled={editConfirmItem}
                   />
                   <FormControl
                     control="inputselect"
@@ -991,6 +1039,7 @@ const Scope = ({ setPrevNext }: Props) => {
                     placeholder="Enter or create subcategory"
                     className="w-full h-10"
                     setCustomState={setSelectedSubCategory}
+                    disabled={editConfirmItem}
                   />
                 </div>
                 <div className="bg-graylighty h-px w-full my-5"></div>
@@ -1003,7 +1052,7 @@ const Scope = ({ setPrevNext }: Props) => {
                       label="Description"
                       name="description"
                       // options={estimateDescriptions}
-                      placeholder="Select Description"
+                      placeholder="Write Description"
                       mt="mt-0"
                       // setCustomState={setsSelecteddescription}
                     />
@@ -1182,9 +1231,8 @@ const Scope = ({ setPrevNext }: Props) => {
           </div>
           <div className="p-4">
             <div className="grid grid-cols-3 gap-4">
-              {
-                planDocuments?.map((doc : any) => (
-                  <div
+              {planDocuments?.map((doc: any) => (
+                <div
                   key={doc.name}
                   className={`p-4  border-2 border-[#D0D5DD] rounded-lg `}
                 >
@@ -1194,7 +1242,7 @@ const Scope = ({ setPrevNext }: Props) => {
                     width={20}
                     height={20}
                   />
-  
+
                   <p className="text-[#353535] text-[16px] font-[500] mt-2 truncate">
                     {doc?.name}
                   </p>
@@ -1210,9 +1258,7 @@ const Scope = ({ setPrevNext }: Props) => {
                     Click to View
                   </a>
                 </div>
-                ))
-              }
-             
+              ))}
             </div>
           </div>
         </div>
