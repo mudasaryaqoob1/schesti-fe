@@ -29,7 +29,23 @@ export interface dataInterface {
   image: string;
   details: ReportDataInterface;
 }
+const groupByType = (items: dataInterface[]): dataInterface[][] => {
+  const grouped = items.reduce(
+    (acc, item) => {
+      // Initialize the array for this type if it doesn't already exist
+      if (!acc[item.details.projectName]) {
+        acc[item.details.projectName] = [];
+      }
+      // Push the current item into the appropriate group
+      acc[item.details.projectName].push(item);
+      return acc;
+    },
+    {} as Record<string, dataInterface[]>
+  );
 
+  // Extract and return just the array of groups
+  return Object.values(grouped);
+};
 const CaptureComponent = ({
   name,
   save,
@@ -275,12 +291,12 @@ const CaptureComponent = ({
       </Stage>
       <div>
         <div className="grid grid-cols-2 gap-4 m-12 " id="capture">
-          {data.map((entity, index) => (
+          {groupByType(data).map((entity, index) => (
             <div
               key={index}
               className="w-full flex flex-col border-[1px] border-gray-300 rounded-2xl justify-between p-4"
             >
-              <ReportCard entity={[entity]} />
+              <ReportCard entity={entity} />
             </div>
           ))}
         </div>
