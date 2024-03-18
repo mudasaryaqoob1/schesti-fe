@@ -127,7 +127,7 @@ export function getPlanFeatureKeyByValue(
         }
       }
     } else if (option.value === value) {
-      return option.value;
+      return option.label;
     }
   }
   return '';
