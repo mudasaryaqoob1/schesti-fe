@@ -17,13 +17,15 @@ import { isEmpty } from 'lodash';
 const Trades = () => {
   const router = useRouter();
   const dispatch: any = useDispatch();
-  
+
   const auth = useSelector((state: RootState) => state.auth);
   const { user: userData } = auth;
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [activeCollapse, setActiveCollapse] = useState<number | null>(null);
-  const [selectedTabs, setSelectedTabs] = useState<Record<string, string[]>>({});
+  const [selectedTabs, setSelectedTabs] = useState<Record<string, string[]>>(
+    {}
+  );
 
   const toggleCollapse = (index: number) => {
     setActiveCollapse((prevActiveCollapse) =>
@@ -53,32 +55,38 @@ const Trades = () => {
 
   const submitHandler = () => {
     setIsLoading(true);
-    if(isEmpty(selectedTabs)) {
+    if (isEmpty(selectedTabs)) {
       router.push('/plans');
     } else {
       const payload = {
         userId: userData?.user?._id,
         selectedTrades: selectedTabs,
-      }
-      dispatch(addSelectedTrades(payload)).unwrap().then(() => {
-        router.push('/plans');
-        setIsLoading(false);
-      }).catch((err: any) => {
-        console.log('err', err);
-        setIsLoading(false);
-      });
+      };
+      dispatch(addSelectedTrades(payload))
+        .unwrap()
+        .then(() => {
+          router.push('/plans');
+          setIsLoading(false);
+        })
+        .catch((err: any) => {
+          console.log('err', err);
+          setIsLoading(false);
+        });
     }
-  }
+  };
 
   return (
     <>
       <AuthNavbar />
-      <div className="h-[calc(100vh-100px)] grid place-items-center">
+      <div className="h-[calc(100vh-100px)] mt-2 grid place-items-center">
         <div className="w-full max-w-xl bg-snowWhite">
           <h2 className={twMerge(`${tertiaryHeading} mb-4`)}>Trades</h2>
           <div className="w-full h-1 bg-mistyWhite"></div>
           <div className="mt-6 bg-snowWhite shadow-tertiaryMystery p-10">
-            <PrimaryHeading title="Select Trades" className="text-center mb-12" />
+            <PrimaryHeading
+              title="Select Trades"
+              className="text-center mb-12"
+            />
             <div
               id="accordion-flush"
               data-accordion="collapse"
