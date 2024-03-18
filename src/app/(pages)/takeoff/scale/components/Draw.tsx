@@ -216,7 +216,7 @@ const Draw: React.FC<Props> = ({
               const polygonCoordinates = prev.points;
               const parameter = calculatePolygonPerimeter(
                 polygonCoordinates,
-                scale.precision
+                scale
               );
 
               console.log('parameter', parameter);
@@ -375,6 +375,7 @@ const Draw: React.FC<Props> = ({
         scale,
         true
       ) as string;
+
       handleChangeMeasurements({
         angle,
         ...(selected === 'length' && { parameter }),
@@ -386,7 +387,7 @@ const Draw: React.FC<Props> = ({
                   completingLine.endingPoint.x,
                   completingLine.endingPoint.y,
                 ],
-                scale.precision
+                scale
               ),
               area: calculatePolygonArea(
                 [

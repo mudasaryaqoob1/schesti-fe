@@ -185,17 +185,17 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
         const range = optionsValue?.split('-').map(Number);
         const [start, end] = range;
         for (let i = start; i <= end; i++) {
-          newData[i] = { xScale: scale, YScale: scale, precision: precision };
+          newData[i] = { xScale: scale, yScale: scale, precision: precision };
         }
       } else if (optionsValue?.includes(',')) {
         const numbers = optionsValue?.split(',').map(Number);
         numbers.forEach((num) => {
-          newData[num] = { xScale: scale, YScale: scale, precision: precision };
+          newData[num] = { xScale: scale, yScale: scale, precision: precision };
         });
       } else if (!optionsValue?.includes(',') && !optionsValue?.includes('-')) {
         newData[optionsValue] = {
           xScale: scale,
-          YScale: scale,
+          yScale: scale,
           precision: precision,
         };
       }
@@ -217,21 +217,21 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
         const range = optionsValue?.split('-').map(Number);
         const [start, end] = range;
         for (let i = start; i <= end; i++) {
-          newData[i] = { xScale: scaleX, YScale: scaleY, precision: precision };
+          newData[i] = { xScale: scaleX, yScale: scaleY, precision: precision };
         }
       } else if (optionsValue?.includes(',')) {
         const numbers = optionsValue?.split(',').map(Number);
         numbers.forEach((num) => {
           newData[num] = {
             xScale: scaleX,
-            YScale: scaleY,
+            yScale: scaleY,
             precision: precision,
           };
         });
       } else if (!optionsValue?.includes(',') && !optionsValue?.includes('-')) {
         newData[optionsValue] = {
           xScale: scaleX,
-          YScale: scaleY,
+          yScale: scaleY,
           precision: precision,
         };
       }
@@ -358,10 +358,7 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
               <>
                 <Input
                   value={firstValueX}
-                  className={`!w-[115px] ${
-                    firstValErrorX && '!border-1 !border-rose-500'
-                  } `}
-                  // className="!w-[115px]"
+                  className={`!w-[115px] ${firstValErrorX && '!border-1 !border-rose-500'}`}
                   onChange={(e) => {
                     const inputValue = e.target.value;
 
@@ -609,8 +606,13 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
             </>
           )}
 
-          <div>
-            <div>Separate Y Scale</div>
+          <div className="flex space-x-2">
+            <div
+              className="cursor-pointer"
+              onClick={() => setSeparateScale((prev) => !prev)}
+            >
+              Separate Y Scale
+            </div>
             <Checkbox onChange={(e) => setSeparateScale(e.target.checked)} />
           </div>
 
