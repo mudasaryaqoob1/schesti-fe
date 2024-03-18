@@ -1,5 +1,5 @@
 import { useRouter, usePathname } from 'next/navigation';
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 
 const NotLoggedIn = () => {
   const router = useRouter();

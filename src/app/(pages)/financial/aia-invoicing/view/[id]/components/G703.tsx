@@ -47,7 +47,11 @@ export function G703Component({
           <Select
             placeholder="Select Previous Phase"
             options={phases.map((phase, index) => ({
-              label: `${index + 1}. Pay Application: ${moment(phase.applicationDate).format('DD MMM-YYYY')} - ${moment(phase.periodTo).format('DD MMM-YYYY')}`,
+              label: `${index + 1}. Pay Application: ${moment(
+                phase.applicationDate
+              ).format('DD MMM-YYYY')} - ${moment(phase.periodTo).format(
+                'DD MMM-YYYY'
+              )}`,
               value: phase._id,
             }))}
             value={selectedPhase?._id}

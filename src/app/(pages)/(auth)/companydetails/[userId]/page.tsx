@@ -40,7 +40,6 @@ const CompanyDetailsSchema: any = Yup.object({
   phoneNumber: Yup.string().optional(),
   address: Yup.string().optional(),
   organizationName: Yup.string().optional(),
-  // phoneNumber: Yup.string().optional(),
 });
 
 const CompanyDetails = () => {

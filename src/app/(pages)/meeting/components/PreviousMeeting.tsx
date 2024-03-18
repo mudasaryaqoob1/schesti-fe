@@ -39,7 +39,9 @@ export function PreviousMeetings({ meetings }: Props) {
               />
             </div>
             <SenaryHeading
-              title={`Time: ${moment(item.startDate).format('h:mm a')} ${item.timezone}`}
+              title={`Time: ${moment(item.startDate).format('h:mm a')} ${
+                item.timezone
+              }`}
               className="text-[#667085]"
             />
           </div>

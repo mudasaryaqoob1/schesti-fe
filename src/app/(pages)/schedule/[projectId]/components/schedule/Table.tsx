@@ -322,7 +322,7 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
     },
     {
       title: <PlusOutlined className="text-lg" onClick={showDrawer} />,
-            //@ts-ignore
+      //@ts-ignore
       hidden: false,
       render: () => null,
       editable: false,

@@ -261,7 +261,9 @@ export function PhaseComponent({ parentInvoice }: Props) {
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className={`${tab === type ? 'text-RoyalPurple' : 'text-black'}`}
+                    className={`${
+                      tab === type ? 'text-RoyalPurple' : 'text-black'
+                    }`}
                   />
                 ),
                 tabKey: type,

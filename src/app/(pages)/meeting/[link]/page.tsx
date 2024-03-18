@@ -97,7 +97,9 @@ export default function JoinMeeting() {
                 onClose={() => router.push('/meeting')}
               >
                 <Description
-                  title={`Meeting time: ${moment(meeting.startDate).format('ddd, MMM DD, YYYY, hh:mm A')}`}
+                  title={`Meeting time: ${moment(meeting.startDate).format(
+                    'ddd, MMM DD, YYYY, hh:mm A'
+                  )}`}
                 />
               </LinkMessage>
             </ModalComponent>

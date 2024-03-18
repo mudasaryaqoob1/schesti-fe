@@ -480,7 +480,9 @@ export function G703Component({
               }
               return (
                 <DeleteOutlined
-                  className={`text-xl px-4 text-red-500 cursor-pointer ${showAddAndDelete ? '' : 'hidden'}`}
+                  className={`text-xl px-4 text-red-500 cursor-pointer ${
+                    showAddAndDelete ? '' : 'hidden'
+                  }`}
                   onClick={() => {
                     Modal.confirm({
                       title: 'Are you sure delete this task?',
