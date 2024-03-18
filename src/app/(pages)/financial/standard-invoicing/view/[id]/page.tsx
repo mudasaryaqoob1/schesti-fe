@@ -15,7 +15,6 @@ import CustomButton from '@/app/component/customButton/button';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import moment from 'moment';
 import { RootState } from '@/redux/store';
-// import ClientPDF from './clientPDF';
 import { withAuth } from '@/app/hoc/withAuth';
 import { useQuery } from 'react-query';
 import { invoiceService } from '@/app/services/invoices.service';
@@ -23,9 +22,8 @@ import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
-// import NewClientPdf from './newClientPdf'
-import ClientPDF from './clientPDF';
-import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
+
+import NewClientPdf from './newClientPdf';
 
 function ViewSubcontractorInvoicePage() {
   const token = useSelector(selectToken);
@@ -91,12 +89,12 @@ function ViewSubcontractorInvoicePage() {
     return <Skeleton />;
   }
 
-  if (!invoiceQuery.data?.data?.invoice) {
+  if (!invoiceQuery.data?.data?.invoice || !user) {
     return null;
   }
 
   const invoiceData = invoiceQuery.data.data.invoice;
-
+  console.log({ invoiceData })
   return (
     <section className="mx-16 my-2">
       <div className="p-5 flex flex-col rounded-lg border border-silverGray shadow-secondaryShadow2 bg-white">
@@ -254,7 +252,7 @@ function ViewSubcontractorInvoicePage() {
       <div className="mt-4 flex justify-end">
         <PDFDownloadLink
           document={
-            <ClientPDF invoice={invoiceData} user={user as unknown as IUser} />
+            <NewClientPdf invoice={invoiceData} user={user} />
           }
           fileName="invoice.pdf"
         >

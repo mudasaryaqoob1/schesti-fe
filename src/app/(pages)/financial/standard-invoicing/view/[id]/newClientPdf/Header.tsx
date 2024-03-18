@@ -1,18 +1,26 @@
-import { View } from '@react-pdf/renderer';
+import { StyleSheet, View } from '@react-pdf/renderer';
 
 export const BG_COLOR = '#6f42c1';
 type Props = {
   brandingColor?: string;
 };
+
+const styles = StyleSheet.create({
+  header: {
+    height: 44,
+    position: "absolute",
+    top: 0,
+    width: "100%"
+  }
+})
+
 export function Header({ brandingColor }: Props) {
   return (
     <View
       style={[
-        { height: 44 },
+        styles.header,
         {
           backgroundColor: brandingColor ? brandingColor : BG_COLOR,
-          position: 'absolute',
-          top: 0,
         },
       ]}
     ></View>

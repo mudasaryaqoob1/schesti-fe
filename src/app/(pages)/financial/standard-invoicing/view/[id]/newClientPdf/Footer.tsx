@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/alt-text */
 import { Image, View } from '@react-pdf/renderer';
 
 export const PDF_NAVBAR_BG = 'bg-[#6f42c1]';
@@ -32,11 +31,11 @@ export function PdfFooter({ brandingColor }: Props) {
         src={PoweredByImage}
         style={[
           {
-            height: 192,
-            width: 500,
+            height: 20,
+            width: 130,
             position: 'absolute',
             right: 32,
-            bottom: 64,
+            bottom: 24,
           },
         ]}
       />
