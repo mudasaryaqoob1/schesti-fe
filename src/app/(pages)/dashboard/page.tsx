@@ -1,6 +1,5 @@
+'use client';
 import React from 'react';
-import withAuth from '@/app/hoc/with_auth';
-('use client');
 import ProjectsReport from './components/ProjectReport';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 const InvoiceReport = dynamic(() => import('./components/InvoiceReport'), {
@@ -13,10 +12,6 @@ const StatisticsReport = dynamic(
   }
 );
 import { AdsManagement } from './components/AdsManagement';
-import { HttpService } from '@/app/services/base.service';
-import { useLayoutEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { selectToken } from '@/redux/authSlices/auth.selector';
 import { TotalCost } from './components/TotalCost';
 import dynamic from 'next/dynamic';
 import { useQuery } from 'react-query';
@@ -27,13 +22,7 @@ import { clientInvoiceService } from '@/app/services/client-invoices.service';
 import { meetingService } from '@/app/services/meeting.service';
 import { withAuth } from '@/app/hoc/withAuth';
 const Dashboard = () => {
-  const token = useSelector(selectToken);
 
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
   const clientQuery = useQuery('clients', () => {
     return userService.httpGetAllCompanyClients();
   });
