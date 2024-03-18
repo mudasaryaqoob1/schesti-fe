@@ -1,4 +1,6 @@
-'use client';
+import React from 'react';
+import withAuth from '@/app/hoc/with_auth';
+('use client');
 import ProjectsReport from './components/ProjectReport';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 const InvoiceReport = dynamic(() => import('./components/InvoiceReport'), {

@@ -4,4 +4,5 @@ export interface IRegisterCompany {
   employee: number;
   phoneNumber: number | null;
   userId?: string | string[];
+  companyLogo?: string | null;
 }

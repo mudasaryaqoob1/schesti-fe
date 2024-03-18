@@ -598,7 +598,10 @@ const CreateInvoice = () => {
                   <div className="flex items-center space-x-2">
                     <QuaternaryHeading title="Discount:" />
                     <QuinaryHeading
-                      title={`%${calculatePercentqge(calculateSubTotal(), values['discount'])}`}
+                      title={`%${calculatePercentqge(
+                        calculateSubTotal(),
+                        values['discount']
+                      )}`}
                       className="font-bold"
                     />
                   </div>
@@ -606,7 +609,10 @@ const CreateInvoice = () => {
                   <div className="flex items-center space-x-2">
                     <QuaternaryHeading title="Taxes:" />
                     <QuinaryHeading
-                      title={`%${calculatePercentqge(calculateSubTotal(), values['taxes'])}`}
+                      title={`%${calculatePercentqge(
+                        calculateSubTotal(),
+                        values['taxes']
+                      )}`}
                       className="font-bold"
                     />
                   </div>
@@ -614,7 +620,10 @@ const CreateInvoice = () => {
                   <div className="flex items-center space-x-2">
                     <QuaternaryHeading title="Profit And Overhead:" />
                     <QuinaryHeading
-                      title={`%${calculatePercentqge(calculateSubTotal(), values['profitAndOverhead'])}`}
+                      title={`%${calculatePercentqge(
+                        calculateSubTotal(),
+                        values['profitAndOverhead']
+                      )}`}
                       className="font-bold"
                     />
                   </div>

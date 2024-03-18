@@ -271,6 +271,7 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
       dataIndex: 'actions',
       key: 'actions',
       editable: false,
+      //@ts-ignore
       hidden: false,
       render(_: any, record: ActivityItem) {
         return (
@@ -321,6 +322,7 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
     },
     {
       title: <PlusOutlined className="text-lg" onClick={showDrawer} />,
+      //@ts-ignore
       hidden: false,
       render: () => null,
       editable: false,

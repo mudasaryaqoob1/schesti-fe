@@ -23,8 +23,11 @@ import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { USER_ROLES_ENUM } from '@/app/constants/constant';
 
+const { CONTRACTOR, SUBCONTRACTOR, OWNER } = USER_ROLES_ENUM;
+
 const initialValues: ISignUpInterface = {
   name: '',
+  userRole: CONTRACTOR,
   email: '',
   password: '',
   confirmPassword: '',
@@ -53,12 +56,13 @@ const Register = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const [role, setRole] = useState(USER_ROLES_ENUM.CONTRACTOR);
+  const [role, setRole] = useState(CONTRACTOR);
   const handleRoleChange = (value: string) => {
     setRole(value);
   };
 
   const submitHandler = async (values: ISignUpInterface) => {
+    console.log('Im Clicked', values);
     setIsLoading(true);
     let result: any = await dispatch(signup(values));
 
@@ -88,12 +92,14 @@ const Register = () => {
           name: googleAuthResponse.data.name,
           avatar: googleAuthResponse.data.picture,
           providerId: googleAuthResponse.data.sub,
+          userRole: role,
         };
 
         let result: any = await dispatch(loginWithGoogle(responseObj));
 
         if (result.payload.statusCode == 200) {
-          // localStorage.setItem('schestiToken', result.payload.token);
+          console.log('console.log', result.payload);
+          localStorage.setItem('schestiToken', result.payload.token);
           router.push(`/clients`);
         } else if (result.payload.statusCode == 400) {
           router.push(`/companydetails/${result.payload.data.user._id}`);
@@ -131,20 +137,30 @@ const Register = () => {
           />
           <div className="flex items-center justify-between space-x-4 bg-gray-200 rounded-md p-2 mt-6 mb-3">
             <button
-              className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${role === USER_ROLES_ENUM.CONTRACTOR ? 'bg-lavenderPurple text-white' : 'bg-gray-200'}`}
-              onClick={() => handleRoleChange(USER_ROLES_ENUM.CONTRACTOR)}
+              className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${
+                role === CONTRACTOR
+                  ? 'bg-lavenderPurple text-white'
+                  : 'bg-gray-200'
+              }`}
+              onClick={() => handleRoleChange(CONTRACTOR)}
             >
               General-Contractor
             </button>
             <button
-              className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${role === USER_ROLES_ENUM.SUBCONTRACTOR ? 'bg-lavenderPurple text-white' : 'bg-gray-200'}`}
-              onClick={() => handleRoleChange(USER_ROLES_ENUM.SUBCONTRACTOR)}
+              className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${
+                role === SUBCONTRACTOR
+                  ? 'bg-lavenderPurple text-white'
+                  : 'bg-gray-200'
+              }`}
+              onClick={() => handleRoleChange(SUBCONTRACTOR)}
             >
               Sub-Contractor
             </button>
             <button
-              className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${role === USER_ROLES_ENUM.OWNER ? 'bg-lavenderPurple text-white' : 'bg-gray-200'}`}
-              onClick={() => handleRoleChange(USER_ROLES_ENUM.OWNER)}
+              className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${
+                role === OWNER ? 'bg-lavenderPurple text-white' : 'bg-gray-200'
+              }`}
+              onClick={() => handleRoleChange(OWNER)}
             >
               Owner
             </button>
@@ -199,19 +215,14 @@ const Register = () => {
                     type="submit"
                     isLoading={isLoading}
                   />
-                  <div
-                    className="flex justify-between items-center gap-[17px]
-               self-stretch my-6"
-                  >
+                  <div className="flex justify-between items-center gap-[17px] self-stretch my-6">
                     <div className="w-[100%] h-[1px] bg-lightSteelGray"></div>
                     <span className={quinaryHeading}>Or</span>
                     <div className="w-[100%] h-[1px] bg-lightSteelGray"></div>
                   </div>
-                  {/* <GoogleButton text="Sign up" /> */}
-                  {/* Google sign-in button */}
                   <button
                     className={twMerge(
-                      ` ${btnStyle} ${quinaryHeading}  font-semibold flex items-center justify-center gap-3 bg-snowWhite border-2 shadow-scenarySubdued border-doveGray`
+                      ` ${btnStyle} ${quinaryHeading} font-semibold flex items-center justify-center gap-3 bg-snowWhite border-2 shadow-scenarySubdued border-doveGray`
                     )}
                     type="button"
                     onClick={googleAuthenticationHandler}

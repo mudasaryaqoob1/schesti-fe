@@ -9,7 +9,6 @@ import {
 import * as Yup from 'yup';
 import { Table } from 'antd';
 import { Formik, Form } from 'formik';
-import Link from 'next/link';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { toast } from 'react-toastify';
@@ -23,11 +22,14 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import FormControl from '@/app/component/formControl';
 import { categoriesService } from '@/app/services/categories.service';
 import { materialService } from '@/app/services/material.service';
-import { bg_style, btnStyle } from '@/globals/tailwindvariables';
+import { bg_style } from '@/globals/tailwindvariables';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { estimateRequestService } from '@/app/services/estimates.service';
 import { generateEstimateDetailAction } from '@/redux/estimate/estimateRequest.slice';
 import { selectGeneratedEstimateDetail } from '@/redux/estimate/estimateRequestSelector';
+import { PositiveNumberRegex } from '@/app/utils/regex.util';
+import { byteConverter } from '@/app/utils/byteConverter';
+import { IUnits } from '@/app/interfaces/settings/material-settings.interface';
 
 type InitialValuesType = {
   category: string;
@@ -45,15 +47,31 @@ type InitialValuesType = {
 
 const validationSchema = Yup.object({
   category: Yup.string().required('Category is required!'),
-  subCategory: Yup.string().required('SubCategory is required!'),
+  subCategory: Yup.string().required('SubCategory is required'),
   description: Yup.string().required('Description is required!'),
   unit: Yup.string().required('Unit is required!'),
-  qty: Yup.string().required('Quantity is required'),
-  wastage: Yup.string().required('Wastage is required!'),
-  unitLabourHour: Yup.string().required('Unit labour hour is required!'),
-  perHourLaborRate: Yup.string().required('Per hour labour rate  is required!'),
-  unitMaterialCost: Yup.string().required('Unit material cost is required!'),
-  unitEquipments: Yup.string().required('Unit equipments is required!'),
+  qty: Yup.string()
+    .matches(PositiveNumberRegex, 'qty must be a positive number')
+    .required('Quantity is required'),
+  wastage: Yup.string().required('Wastage is required'),
+  unitLabourHour: Yup.string()
+    .matches(PositiveNumberRegex, 'Unit labour hour must be a positive number')
+    .required('Unit labour hour is required'),
+  perHourLaborRate: Yup.string()
+    .matches(
+      PositiveNumberRegex,
+      'Per hour labour rate must be a positive number'
+    )
+    .required('Per hour labour rate  is required!'),
+  unitMaterialCost: Yup.string()
+    .matches(
+      PositiveNumberRegex,
+      'Unit material cost must be a positive number'
+    )
+    .required('Unit material cost is required!'),
+  unitEquipments: Yup.string()
+    .matches(PositiveNumberRegex, 'Unit equipments must be a positive number')
+    .required('Unit equipments is required!'),
 });
 
 interface Props {
@@ -97,16 +115,17 @@ const Scope = ({ setPrevNext }: Props) => {
   const estimateIdQueryParameter = searchParams.get('estimateId');
 
   const [estimateDetail, setEstimateDetail] = useState<any>({});
+  const [planDocuments, setPlanDocuments] = useState<Object[]>([]);
   const [viewPlansModel, setViewPlansModel] = useState(false);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState<Object[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedSubCategory, setSelectedSubCategory] = useState('');
-  const [estimateDescriptions, setEstimateDescriptions] = useState([]);
-  const [selecteddescription, setsSelecteddescription] = useState('');
+  // const [estimateDescriptions, setEstimateDescriptions] = useState([]);
+  // const [selecteddescription, setsSelecteddescription] = useState('');
   const [editItem, setEditItem] = useState(false);
   const [editConfirmItem, setEditConfirmItem] = useState(false);
-  const [estiamteUnits, setEstiamteUnits] = useState<Object[]>([]);
+  const [estiamteUnits, setEstiamteUnits] = useState<IUnits[] | undefined>([]);
   const [confirmEstimates, setConfirmEstimates] = useState<
     {
       title: string;
@@ -164,66 +183,76 @@ const Scope = ({ setPrevNext }: Props) => {
     });
     setSubCategories(flattenedSubcategories);
   }, []);
+  const fetchMaterialUnits = useCallback(async () => {
+    const unitsMaterials = await materialService.httpFetchMaterialUnits();
+    setEstiamteUnits(unitsMaterials.data?.fetchedUnits);
+  }, []);
   const fetchEstimateDetail = useCallback(async () => {
     let result = await estimateRequestService.httpGetEstimateDetail(
       estimateIdQueryParameter
     );
     setEstimateDetail(result.data.estimateDetail);
+    setPlanDocuments([
+      ...result.data.estimateDetail.drawingsDocuments,
+      ...result.data.estimateDetail.otherDocuments,
+      ...result.data.estimateDetail.takeOffReports,
+    ]);
   }, []);
-  const fetchMeterialDetail = useCallback(
-    async (categoryId: string, subCategory: string) => {
-      materialService
-        .httpGetMeterialWithCategoryId(categoryId, subCategory)
-        .then((result) => {
-          let uniqueDescriptionsSet = new Set();
-          let uniqueUnitsSet = new Set();
-          let fetchedDescriptions = result.data
-            .map((material: DataType) => {
-              const description = material.description;
+  // const fetchMeterialDetail = useCallback(
+  //   async (categoryId: string, subCategory: string) => {
+  //     materialService
+  //       .httpGetMeterialWithCategoryId(categoryId, subCategory)
+  //       .then((result) => {
+  //         let uniqueDescriptionsSet = new Set();
+  //         let uniqueUnitsSet = new Set();
+  //         let fetchedDescriptions = result.data
+  //           .map((material: DataType) => {
+  //             const description = material.description;
 
-              if (!uniqueDescriptionsSet.has(description)) {
-                uniqueDescriptionsSet.add(description);
-                return {
-                  ...material,
-                  label: description,
-                  value: description,
-                };
-              } else {
-                return null;
-              }
-            })
-            .filter((description: any) => description !== null);
+  //             if (!uniqueDescriptionsSet.has(description)) {
+  //               uniqueDescriptionsSet.add(description);
+  //               return {
+  //                 ...material,
+  //                 label: description,
+  //                 value: description,
+  //               };
+  //             } else {
+  //               return null;
+  //             }
+  //           })
+  //           .filter((description: any) => description !== null);
 
-          let fetchedUnits = result.data
-            .map((material: DataType) => {
-              const unit = material.unit;
+  //         let fetchedUnits = result.data
+  //           .map((material: DataType) => {
+  //             const unit = material.unit;
 
-              if (!uniqueUnitsSet.has(unit)) {
-                uniqueUnitsSet.add(unit);
-                return {
-                  ...material,
-                  label: unit,
-                  value: unit,
-                };
-              } else {
-                return null;
-              }
-            })
-            .filter((unit: any) => unit !== null);
+  //             if (!uniqueUnitsSet.has(unit)) {
+  //               uniqueUnitsSet.add(unit);
+  //               return {
+  //                 ...material,
+  //                 label: unit,
+  //                 value: unit,
+  //               };
+  //             } else {
+  //               return null;
+  //             }
+  //           })
+  //           .filter((unit: any) => unit !== null);
 
-          setEstimateDescriptions(fetchedDescriptions);
-          setEstiamteUnits(fetchedUnits);
-        })
-        .catch((error) => {
-          console.log(error, 'error in fetch meterials');
-        });
-    },
-    []
-  );
+  //         setEstimateDescriptions(fetchedDescriptions);
+  //         setEstiamteUnits(fetchedUnits);
+  //       })
+  //       .catch((error) => {
+  //         console.log(error, 'error in fetch meterials');
+  //       });
+  //   },
+  //   []
+  // );
 
   useEffect(() => {
     fetchCategories();
     fetchEstimateDetail();
+    fetchMaterialUnits();
   }, []);
   useEffect(() => {
     if (selectedCategory) {
@@ -233,7 +262,7 @@ const Scope = ({ setPrevNext }: Props) => {
 
   useEffect(() => {
     if (selectedCategory && selectedSubCategory) {
-      fetchMeterialDetail(selectedCategory, selectedSubCategory);
+      // fetchMeterialDetail(selectedCategory, selectedSubCategory);
       const subCategoryPrice: any = subCategories.find(
         (cat: any) => cat.value === selectedSubCategory
       );
@@ -254,30 +283,30 @@ const Scope = ({ setPrevNext }: Props) => {
       }));
     }
   }, [selectedSubCategory]);
-  useEffect(() => {
-    if (selecteddescription) {
-      const findDescriptionDetail: any = estimateDescriptions.find(
-        (desc: any) => desc.description === selecteddescription
-      );
+  // useEffect(() => {
+  //   if (selecteddescription) {
+  //     const findDescriptionDetail: any = estimateDescriptions.find(
+  //       (desc: any) => desc.description === selecteddescription
+  //     );
 
-      setSingleEstimateData({
-        ...SingleEstimateData,
-        category: selectedCategory,
-        subCategory: selectedSubCategory,
-        description: selecteddescription,
-        unit: findDescriptionDetail?.unit ? findDescriptionDetail?.unit : 0,
-        unitLabourHour: findDescriptionDetail?.unitLabourHour
-          ? findDescriptionDetail?.unitLabourHour
-          : 0,
-        unitMaterialCost: findDescriptionDetail?.unitMaterialCost
-          ? findDescriptionDetail?.unitMaterialCost
-          : 0,
-        unitEquipments: findDescriptionDetail?.unitEquipments
-          ? findDescriptionDetail?.unitEquipments
-          : 0,
-      });
-    }
-  }, [selecteddescription]);
+  //     setSingleEstimateData({
+  //       ...SingleEstimateData,
+  //       category: selectedCategory,
+  //       subCategory: selectedSubCategory,
+  //       description: selecteddescription,
+  //       unit: findDescriptionDetail?.unit ? findDescriptionDetail?.unit : 0,
+  //       unitLabourHour: findDescriptionDetail?.unitLabourHour
+  //         ? findDescriptionDetail?.unitLabourHour
+  //         : 0,
+  //       unitMaterialCost: findDescriptionDetail?.unitMaterialCost
+  //         ? findDescriptionDetail?.unitMaterialCost
+  //         : 0,
+  //       unitEquipments: findDescriptionDetail?.unitEquipments
+  //         ? findDescriptionDetail?.unitEquipments
+  //         : 0,
+  //     });
+  //   }
+  // }, [selecteddescription]);
 
   useEffect(() => {
     if (generateEstimateDetail?.estimateScope?.length) {
@@ -290,7 +319,7 @@ const Scope = ({ setPrevNext }: Props) => {
     actions: any
   ) => {
     let generateRandomNumber = Math.floor(Math.random() * 103440 + 1);
-    let selectedCategory = '';
+
     const selectedCategoryName: any = categories.find(
       (cat: any) => cat.value === estimateTableItemValues.category
     );
@@ -299,121 +328,212 @@ const Scope = ({ setPrevNext }: Props) => {
       (cat: any) => cat.value === estimateTableItemValues.subCategory
     );
 
-    if (
-      categories.find(
-        (cat: any) => cat.value === estimateTableItemValues.category
-      ) &&
-      subCategories.find(
-        (cat: any) => cat.value === estimateTableItemValues.subCategory
-      )
-    ) {
-      selectedCategory = `${selectedCategoryName.label} ${selctedSubCategoryName.label}`;
-    } else {
-      selectedCategory = `${estimateTableItemValues?.category} ${estimateTableItemValues?.subCategory}`;
-    }
-    if (
-      estimateData.scopeItems.length &&
-      estimateData.title !== selectedCategory &&
-      !editItem &&
-      !editConfirmItem
-    ) {
-      toast.warn('Please add Div first to create new one');
-    } else {
-      if (editItem && !editConfirmItem) {
-        const updateEstimateArray: any = estimateData.scopeItems.map(
-          (dataItem: any) =>
-            dataItem.index === estimateTableItemValues.index
-              ? estimateTableItemValues
-              : dataItem
-        );
+    let selectedCategory = `${
+      selectedCategoryName?.label
+        ? selectedCategoryName?.label
+        : estimateTableItemValues?.category
+    } ${
+      selctedSubCategoryName?.label
+        ? selctedSubCategoryName?.label
+        : estimateTableItemValues.subCategory
+    }`;
 
-        setEstimateData({
-          ...estimateData,
-          categoryName: selectedCategoryName.label,
-          subCategoryName: selctedSubCategoryName.label,
-          scopeItems: updateEstimateArray,
-        });
-        setEditItem(false);
-        // setEstimateDescriptions([]);
-        setSingleEstimateData({
-          ...SingleEstimateData,
-          description: '',
-          unit: '',
-          qty: '',
-          wastage: '5',
-          unitLabourHour: '',
-          // perHourLaborRate: '',
-          unitMaterialCost: '',
-          unitEquipments: '',
-        });
-        // actions.resetForm({ values: initialValues });
-      } else if (!editItem && editConfirmItem) {
-        const updateConfirmEstimateArray: any = confirmEstimates.map(
-          (item: any) => {
-            return {
-              ...item,
-              totalCostRecord: calculateTotalCost(item),
-              scopeItems: item.scopeItems.map((dataItem: any) =>
-                dataItem.index === estimateTableItemValues.index
-                  ? estimateTableItemValues
-                  : dataItem
-              ),
-            };
-          }
-        );
+    if (editConfirmItem) {
+      const updateConfirmEstimateArray: any = confirmEstimates.map(
+        (item: any) => {
+          return {
+            ...item,
+            totalCostRecord: calculateTotalCost(item),
+            scopeItems: item.scopeItems.map((dataItem: any) =>
+              dataItem.index === estimateTableItemValues.index
+                ? estimateTableItemValues
+                : dataItem
+            ),
+          };
+        }
+      );
+      setConfirmEstimates(updateConfirmEstimateArray);
+      setEditConfirmItem(false);
 
-        setConfirmEstimates(updateConfirmEstimateArray);
-        setEditConfirmItem(false);
-        setEstiamteUnits([]);
-        setEstimateDescriptions([]);
-        setSelectedSubCategory('');
-        setSelectedCategory('');
-        setSingleEstimateData({
-          category: '',
-          subCategory: '',
-          description: '',
-          unit: '',
-          qty: '',
-          wastage: '5',
-          unitLabourHour: '',
-          perHourLaborRate: '',
-          unitMaterialCost: '',
-          unitEquipments: '',
-        });
-        actions.resetForm({ values: initialValues });
-      } else {
-        setEstimateData((prevData) => ({
-          ...prevData,
-          title: selectedCategory,
-          categoryName: selectedCategoryName?.label
-            ? selectedCategoryName?.label
-            : estimateTableItemValues?.category,
-          subCategoryName: selctedSubCategoryName?.label
-            ? selctedSubCategoryName?.label
-            : estimateTableItemValues.subCategory,
-          scopeItems: [
-            ...prevData.scopeItems,
-            { ...estimateTableItemValues, index: generateRandomNumber },
-          ],
-        }));
-        // setEstimateDescriptions([]);
-        setSingleEstimateData({
-          ...SingleEstimateData,
-          // category: '',
-          // subCategory: '',
-          description: '',
-          unit: '',
-          qty: '',
-          wastage: '5',
-          unitLabourHour: '',
-          // perHourLaborRate: '',
-          unitMaterialCost: '',
-          unitEquipments: '',
-        });
-      }
+      setSelectedSubCategory('');
+      setSelectedCategory('');
+      setSingleEstimateData({
+        category: '',
+        subCategory: '',
+        description: '',
+        unit: '',
+        qty: '',
+        wastage: '5',
+        unitLabourHour: '',
+        perHourLaborRate: '',
+        unitMaterialCost: '',
+        unitEquipments: '',
+      });
+      actions.resetForm({ values: initialValues });
+    } else {
+      let newValue = {
+        title: selectedCategory,
+        categoryName: selectedCategoryName?.label
+          ? selectedCategoryName?.label
+          : estimateTableItemValues?.category,
+        subCategoryName: selctedSubCategoryName?.label
+          ? selctedSubCategoryName?.label
+          : estimateTableItemValues.subCategory,
+        scopeItems: [
+          { ...estimateTableItemValues, index: generateRandomNumber },
+        ],
+      };
+
+      confirmEstimateHandler(newValue);
+
+      setSelectedSubCategory('');
+      setSelectedCategory('');
+      setSingleEstimateData({
+        category: '',
+        subCategory: '',
+        description: '',
+        unit: '',
+        qty: '',
+        wastage: '5',
+        unitLabourHour: '',
+        perHourLaborRate: '',
+        unitMaterialCost: '',
+        unitEquipments: '',
+      });
+      actions.resetForm({ values: initialValues });
     }
-    actions.resetForm({ values: initialValues });
   };
+  // const submitHandlerlast = (
+  //   estimateTableItemValues: InitialValuesType,
+  //   actions: any
+  // ) => {
+  //   console.log(estimateTableItemValues, 'estimateTableItemValues');
+
+  //   let generateRandomNumber = Math.floor(Math.random() * 103440 + 1);
+  //   let selectedCategory = '';
+  //   const selectedCategoryName: any = categories.find(
+  //     (cat: any) => cat.value === estimateTableItemValues.category
+  //   );
+
+  //   const selctedSubCategoryName: any = subCategories.find(
+  //     (cat: any) => cat.value === estimateTableItemValues.subCategory
+  //   );
+
+  //   if (
+  //     categories.find(
+  //       (cat: any) => cat.value === estimateTableItemValues.category
+  //     ) &&
+  //     subCategories.find(
+  //       (cat: any) => cat.value === estimateTableItemValues.subCategory
+  //     )
+  //   ) {
+  //     selectedCategory = `${selectedCategoryName.label} ${selctedSubCategoryName.label}`;
+  //   } else {
+  //     selectedCategory = `${estimateTableItemValues?.category} ${estimateTableItemValues?.subCategory}`;
+  //   }
+  //   if (
+  //     estimateData.scopeItems.length &&
+  //     estimateData.title !== selectedCategory &&
+  //     !editItem &&
+  //     !editConfirmItem
+  //   ) {
+  //     toast.warn('Please add Div first to create new one');
+  //   } else {
+  //     if (editItem && !editConfirmItem) {
+  //       const updateEstimateArray: any = estimateData.scopeItems.map(
+  //         (dataItem: any) =>
+  //           dataItem.index === estimateTableItemValues.index
+  //             ? estimateTableItemValues
+  //             : dataItem
+  //       );
+
+  //       setEstimateData({
+  //         ...estimateData,
+  //         categoryName: selectedCategoryName.label,
+  //         subCategoryName: selctedSubCategoryName.label,
+  //         scopeItems: updateEstimateArray,
+  //       });
+  //       setEditItem(false);
+  //       // setEstimateDescriptions([]);
+  //       setSingleEstimateData({
+  //         ...SingleEstimateData,
+  //         description: '',
+  //         unit: '',
+  //         qty: '',
+  //         wastage: '5',
+  //         unitLabourHour: '',
+  //         // perHourLaborRate: '',
+  //         unitMaterialCost: '',
+  //         unitEquipments: '',
+  //       });
+  //       // actions.resetForm({ values: initialValues });
+  //     } else if (!editItem && editConfirmItem) {
+  //       const updateConfirmEstimateArray: any = confirmEstimates.map(
+  //         (item: any) => {
+  //           return {
+  //             ...item,
+  //             totalCostRecord: calculateTotalCost(item),
+  //             scopeItems: item.scopeItems.map((dataItem: any) =>
+  //               dataItem.index === estimateTableItemValues.index
+  //                 ? estimateTableItemValues
+  //                 : dataItem
+  //             ),
+  //           };
+  //         }
+  //       );
+
+  //       setConfirmEstimates(updateConfirmEstimateArray);
+  //       setEditConfirmItem(false);
+  //       // setEstiamteUnits([]);
+  //       // setEstimateDescriptions([]);
+  //       setSelectedSubCategory('');
+  //       setSelectedCategory('');
+  //       setSingleEstimateData({
+  //         category: '',
+  //         subCategory: '',
+  //         description: '',
+  //         unit: '',
+  //         qty: '',
+  //         wastage: '5',
+  //         unitLabourHour: '',
+  //         perHourLaborRate: '',
+  //         unitMaterialCost: '',
+  //         unitEquipments: '',
+  //       });
+  //       actions.resetForm({ values: initialValues });
+  //     } else {
+  //       setEstimateData((prevData) => ({
+  //         ...prevData,
+  //         title: selectedCategory,
+  //         categoryName: selectedCategoryName?.label
+  //           ? selectedCategoryName?.label
+  //           : estimateTableItemValues?.category,
+  //         subCategoryName: selctedSubCategoryName?.label
+  //           ? selctedSubCategoryName?.label
+  //           : estimateTableItemValues.subCategory,
+  //         scopeItems: [
+  //           ...prevData.scopeItems,
+  //           { ...estimateTableItemValues, index: generateRandomNumber },
+  //         ],
+  //       }));
+  //       // setEstimateDescriptions([]);
+  //       setSingleEstimateData({
+  //         ...SingleEstimateData,
+  //         // category: '',
+  //         // subCategory: '',
+  //         description: '',
+  //         unit: '',
+  //         qty: '',
+  //         wastage: '5',
+  //         unitLabourHour: '',
+  //         // perHourLaborRate: '',
+  //         unitMaterialCost: '',
+  //         unitEquipments: '',
+  //       });
+  //     }
+  //   }
+  //   actions.resetForm({ values: initialValues });
+  // };
 
   const deleteEstimateRecordHandler = (record: any) => {
     if (
@@ -437,12 +557,19 @@ const Scope = ({ setPrevNext }: Props) => {
       (cat: any) => cat.value === record.subCategory
     );
 
-    let selectedCategory = `${selctedCatoryName.label} ${selctedSubCategoryName.label}`;
+    let selectedCategory = `${
+      selctedCatoryName?.label ? selctedCatoryName?.label : record?.category
+    } ${
+      selctedSubCategoryName?.label
+        ? selctedSubCategoryName?.label
+        : record.subCategory
+    }`;
+
     const newArray: any = confirmEstimates.map((item) => {
       if (item && item.title === selectedCategory) {
         return {
           ...item,
-          data: item.scopeItems.filter(
+          scopeItems: item.scopeItems.filter(
             (dataItem: any) => dataItem.index !== record.index
           ),
         };
@@ -451,7 +578,7 @@ const Scope = ({ setPrevNext }: Props) => {
       }
     });
     setConfirmEstimates(
-      newArray.filter((item: any) => item && item.data.length > 0)
+      newArray.filter((item: any) => item && item.scopeItems.length > 0)
     );
   };
   const editEstimateRecordHandler = (record: any) => {
@@ -460,11 +587,11 @@ const Scope = ({ setPrevNext }: Props) => {
   };
   const editConfirmEstimateRecordHandler = (record: any) => {
     setSingleEstimateData(record);
-    fetchMeterialDetail(record.category, record.subCategory);
-    setSelectedCategory(record.category);
-    setSelectedSubCategory(record.subCategory);
-    setEditItem(false);
+    // setSelectedCategory(record.category);
+    // setSelectedSubCategory(record.subCategory);
+    // setEditItem(false);
     setEditConfirmItem(true);
+    // fetchMeterialDetail(record.category, record.subCategory);
   };
 
   const calculateTotalCost = (record: DataType) => {
@@ -477,8 +604,9 @@ const Scope = ({ setPrevNext }: Props) => {
     let totalLabourHours = qtyWithWastage * unitLabourHour;
     let totalMeterialCost = unitMaterialCost * qtyWithWastage;
     let totalLabourCost = totalLabourHours * perHourLaborRate;
-    let totalMaterialCost = unitMaterialCost * qtyWithWastage;
-    let result = totalLabourCost * totalMeterialCost * totalMaterialCost;
+    let unitEquipments = parseFloat(record.unitEquipments);
+    let totalEquipmentCost = unitEquipments * qtyWithWastage;
+    let result = totalLabourCost + totalMeterialCost + totalEquipmentCost;
     return result.toFixed(2);
   };
 
@@ -796,8 +924,8 @@ const Scope = ({ setPrevNext }: Props) => {
   }) => {
     setSelectedCategory('');
     setSelectedSubCategory('');
-    setEstimateDescriptions([]);
-    setEstiamteUnits([]);
+    // setEstimateDescriptions([]);
+    // setEstiamteUnits([]);
     setSingleEstimateData({
       category: '',
       subCategory: '',
@@ -865,26 +993,12 @@ const Scope = ({ setPrevNext }: Props) => {
         />
         {estimateDetail?.drawingsDocuments?.length && (
           <div className="grid grid-rows-1 md:grid-cols-3 gap-x-2">
-            {estimateDetail?.drawingsDocuments?.length &&
-            estimateDetail?.drawingsDocuments[0]?.ext === 'image/png' ? (
-              <CustomButton
-                text="View Plans"
-                className="!text-graphiteGray !bg-snowWhite !shadow-scenarySubdued 
+            <CustomButton
+              text="View Plans"
+              className="!text-graphiteGray !bg-snowWhite !shadow-scenarySubdued 
                       border-2 border-solid !border-celestialGray "
-                onClick={() => setViewPlansModel(true)}
-              />
-            ) : (
-              <Link
-                href={
-                  estimateDetail?.drawingsDocuments?.length &&
-                  estimateDetail?.drawingsDocuments[0]?.url
-                }
-                className={`!text-graphiteGray ${btnStyle} !bg-snowWhite !border-celestialGray`}
-                target="_blank"
-              >
-                View Plans
-              </Link>
-            )}
+              onClick={() => setViewPlansModel(true)}
+            />
 
             <CustomButton
               text="Previous"
@@ -928,6 +1042,7 @@ const Scope = ({ setPrevNext }: Props) => {
                     placeholder="Enter or create category"
                     className="w-full h-10"
                     setCustomState={setSelectedCategory}
+                    disabled={editConfirmItem}
                   />
                   <FormControl
                     control="inputselect"
@@ -940,25 +1055,26 @@ const Scope = ({ setPrevNext }: Props) => {
                     placeholder="Enter or create subcategory"
                     className="w-full h-10"
                     setCustomState={setSelectedSubCategory}
+                    disabled={editConfirmItem}
                   />
                 </div>
                 <div className="bg-graylighty h-px w-full my-5"></div>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-x-2 ">
                   <div className="md:col-start-1 md:col-end-3">
                     <FormControl
-                      control="inputselect"
+                      control="input"
                       inputStyle="!py-2"
                       labelStyle="font-normal"
                       label="Description"
                       name="description"
-                      options={estimateDescriptions}
-                      placeholder="Select Description"
+                      // options={estimateDescriptions}
+                      placeholder="Write Description"
                       mt="mt-0"
-                      setCustomState={setsSelecteddescription}
+                      // setCustomState={setsSelecteddescription}
                     />
                   </div>
                   <FormControl
-                    control="inputselect"
+                    control="select"
                     inputStyle="!py-2"
                     labelStyle="font-normal"
                     label="Unit"
@@ -1111,27 +1227,56 @@ const Scope = ({ setPrevNext }: Props) => {
       </Formik>
 
       <ModalComponent open={viewPlansModel} setOpen={setViewPlansModel}>
-        <div className="bg-white p-4 rounded">
-          <div className="flex justify-between mb-4">
-            <p className="text=[#344054] text=[16px]">View Plans</p>
+        <div
+          className="bg-white !rounded-t-xl"
+          style={{ borderRadius: '12px' }}
+        >
+          <div className="flex justify-between p-4 bg-[#F5F4FF] rounded-t-xl">
+            <p className="text=[#344054] font-semibold text=[18px]">
+              View Plan & Documents{' '}
+            </p>
 
             <Image
               className="cursor-pointer"
               src={'/closeicon.svg'}
               alt="close icon"
-              width={70}
+              width={20}
               height={20}
               onClick={() => setViewPlansModel(false)}
             />
           </div>
-          <img
-            className="object-cover h-auto w-full"
-            src={
-              estimateDetail?.drawingsDocuments?.length &&
-              estimateDetail?.drawingsDocuments[0].url
-            }
-            alt="url"
-          />
+          <div className="p-4">
+            <div className="grid grid-cols-3 gap-4">
+              {planDocuments?.map((doc: any) => (
+                <div
+                  key={doc.name}
+                  className={`p-4  border-2 border-[#D0D5DD] rounded-lg `}
+                >
+                  <Image
+                    src={'/documentIcon.svg'}
+                    alt="documentIcon icon"
+                    width={20}
+                    height={20}
+                  />
+
+                  <p className="text-[#353535] text-[16px] font-[500] mt-2 truncate">
+                    {doc?.name}
+                  </p>
+                  <p className="text-[#989692] text-[12px] font-[400] my-2">
+                    {' '}
+                    {byteConverter(doc?.size, 'KB').size} KB
+                  </p>
+                  <a
+                    href={doc.url}
+                    className="text-goldenrodYellow text-[12px] font-[400] my-2"
+                    target="_blank"
+                  >
+                    Click to View
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </ModalComponent>
     </div>

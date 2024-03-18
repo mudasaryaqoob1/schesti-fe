@@ -20,6 +20,7 @@ import {
   fetchCompanyClients,
 } from '@/redux/company/company.thunk';
 import Image from 'next/image';
+import withAuth from '@/app/hoc/with_auth';
 import { SearchOutlined } from '@ant-design/icons';
 import { InputComponent } from '@/app/component/customInput/Input';
 import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';

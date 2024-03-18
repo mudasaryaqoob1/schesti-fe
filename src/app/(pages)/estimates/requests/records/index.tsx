@@ -171,7 +171,7 @@ const EstimateRequestTable: React.FC = () => {
         <CustomButton
           text="Start New Estimate "
           className="!w-auto "
-          icon="plus.svg"
+          icon="/plus.svg"
           iconwidth={20}
           iconheight={20}
           onClick={() => router.push('/estimates/requests/create')}

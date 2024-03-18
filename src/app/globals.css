@@ -141,6 +141,9 @@ a {
   background: #000000;
 }
 
+.foundation-primary-400 {
+  background-color: #f4ebff;
+}
 /* .d-none {
   display: none !important;
 } */
