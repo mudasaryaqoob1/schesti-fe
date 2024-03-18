@@ -1,10 +1,6 @@
 import { createContext } from 'react';
 import { ScaleData } from '../scale/page';
 
-export interface PageScale {
-  [pageNumber: string]: ScaleData;
-}
-
 export interface ScaleDataContextInterface {
   [pageNumber: string]: ScaleData;
 }
