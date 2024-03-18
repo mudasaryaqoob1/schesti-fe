@@ -9,7 +9,6 @@ import {
   Text as KonvaText,
   Arrow,
   Circle,
-  KonvaNodeComponent,
 } from 'react-konva';
 
 import { UploadFileData } from '../../context/UploadFileContext';

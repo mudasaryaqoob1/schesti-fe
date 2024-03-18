@@ -26,10 +26,6 @@ export interface ScaleData {
   precision: string;
 }
 
-export interface PageScale {
-  [pageNumber: string]: ScaleData;
-}
-
 const Scale = () => {
   const router = useRouter();
   const [tool, setTool] = useState<ScaleInterface>({ selected: 'scale' });
