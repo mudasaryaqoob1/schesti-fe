@@ -140,7 +140,7 @@ const RegisterVerification = () => {
   return (
     <>
       <AuthNavbar />
-      <div className="h-[calc(100vh-100px)] grid place-items-center">
+      <div className="h-[calc(100vh-100px)] mt-2 grid place-items-center">
         <div className="w-full max-w-xl bg-snowWhite">
           <h2 className={twMerge(`${tertiaryHeading} mb-4 `)}>Verification</h2>
           <div className="w-full h-1 bg-mistyWhite"></div>
@@ -160,7 +160,7 @@ const RegisterVerification = () => {
                 <div className="flex items-center">
                   <label
                     htmlFor="einNumber-file"
-                    className="flex flex-col items-start justify-start w-full border-2 border-gray-300 border-solid rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                    className="flex flex-col items-start justify-start w-full border-2 border-gray-300 border-solid rounded-lg cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
                   >
                     <div className="flex items-center justify-start p-2 w-full">
                       <svg
@@ -220,7 +220,7 @@ const RegisterVerification = () => {
                 <div className="flex items-center">
                   <label
                     htmlFor="secretaryOfState-file"
-                    className="flex flex-col items-start justify-start w-full border-2 border-gray-300 border-solid rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                    className="flex flex-col items-start justify-start w-full border-2 border-gray-300 border-solid rounded-lg cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
                   >
                     <div className="flex items-center justify-start p-2 w-full">
                       <svg
@@ -280,7 +280,7 @@ const RegisterVerification = () => {
                 <div className="flex items-center">
                   <label
                     htmlFor="license-file"
-                    className="flex flex-col items-start justify-start w-full border-2 border-gray-300 border-solid rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                    className="flex flex-col items-start justify-start w-full border-2 border-gray-300 border-solid rounded-lg cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
                   >
                     <div className="flex items-center justify-start p-2 w-full">
                       <svg
@@ -348,7 +348,7 @@ const RegisterVerification = () => {
                 <div className="flex items-center">
                   <label
                     htmlFor="preQualification-file"
-                    className="flex flex-col items-start justify-start w-full border-2 border-gray-300 border-solid rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                    className="flex flex-col items-start justify-start w-full border-2 border-gray-300 border-solid rounded-lg cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
                   >
                     <div className="flex items-center justify-start p-2 w-full">
                       <svg
