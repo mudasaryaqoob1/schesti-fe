@@ -59,7 +59,12 @@ const Scale = () => {
   useEffect(() => {
     const newData: any = {};
     for (let i = 1; i <= uploadFileData.length; i++) {
-      newData[i] = { scale: `1in=1in`, precision: '1' };
+      newData[i] = {
+        scale: `1in=1in`,
+        xScale: `1in=1in`,
+        yScale: `1in=1in`,
+        precision: '1',
+      };
     }
     handleScaleData(newData);
   }, []);
