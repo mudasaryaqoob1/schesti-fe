@@ -21,7 +21,7 @@ import { CollectPayment } from './CollectPayment';
 import { usePDF } from '@react-pdf/renderer';
 import { Routes } from '@/app/utils/plans.utils';
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
-import NewClientPdf from "../../standard-invoicing/view/[id]/newClientPdf";
+import NewClientPdf from '../../standard-invoicing/view/[id]/newClientPdf';
 
 export function Contractors() {
   const router = useRouter();
@@ -92,7 +92,7 @@ export function Contractors() {
         async onOk() {
           await dispatch(deleteContractorInvoiceRequest(record._id));
         },
-        onCancel() { },
+        onCancel() {},
       });
     } else if (key === 'view') {
       router.push(
@@ -198,11 +198,11 @@ export function Contractors() {
 
   const filteredData = subcontractersInvoices
     ? subcontractersInvoices.filter((invoice) => {
-      if (search === '') {
-        return invoice;
-      }
-      return invoice.projectName.toLowerCase().includes(search.toLowerCase());
-    })
+        if (search === '') {
+          return invoice;
+        }
+        return invoice.projectName.toLowerCase().includes(search.toLowerCase());
+      })
     : [];
   return (
     <div className="w-full mb-4">

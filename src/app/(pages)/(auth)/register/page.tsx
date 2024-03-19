@@ -100,7 +100,8 @@ const Register = () => {
         if (result.payload.statusCode == 200) {
           console.log('console.log', result.payload);
           localStorage.setItem('schestiToken', result.payload.token);
-          router.push(`/clients`);
+          // router.push(`/clients`);
+          router.push('/dashboard');
         } else if (result.payload.statusCode == 400) {
           router.push(`/companydetails/${result.payload.data.user._id}`);
         }

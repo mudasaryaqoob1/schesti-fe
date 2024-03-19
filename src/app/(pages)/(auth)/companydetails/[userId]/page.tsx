@@ -26,6 +26,7 @@ import {
   OwnerSchema,
   SubContractorSchema,
 } from '@/app/utils/validationSchemas';
+import PhoneNumberInput from '@/app/component/phoneNumberInput';
 
 const { CONTRACTOR, SUBCONTRACTOR, OWNER } = USER_ROLES_ENUM;
 
@@ -47,12 +48,14 @@ const CompanyDetails = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [companyLogo, setCompanyLogo] = useState<any>('');
-  const [companyLogoErr, setCompanyLogoErr] = useState<string>('');
   const [selectedUserRole, setSelectedUserRole] = useState<any>(null);
+  const [phoneNumber, setPhoneNumber] = useState<any>('');
+  const [phoneNumberErr, setPhoneNumberErr] = useState<string>('');
+  const [companyLogoErr, setCompanyLogoErr] = useState<string>('');
 
   const submitHandler = async (values: IRegisterCompany) => {
     if (!companyLogo && userData?.user?.userRole === CONTRACTOR) {
-      setCompanyLogoErr('Company Name is required');
+      setCompanyLogoErr('Company Logo is required');
       return;
     }
 
@@ -69,7 +72,7 @@ const CompanyDetails = () => {
     }
 
     let result: any = await dispatch(
-      addCompanyDetail({ ...values, userId: userId })
+      addCompanyDetail({ ...values, userId: userId, phoneNumber: phoneNumber })
     );
 
     if (result.payload.statusCode == 200) {
@@ -135,6 +138,7 @@ const CompanyDetails = () => {
               onSubmit={submitHandler}
             >
               {(formik: any) => {
+                console.log('formik', formik);
                 return (
                   <Form
                     name="basic"
@@ -142,7 +146,7 @@ const CompanyDetails = () => {
                     autoComplete="off"
                     // validateMessages={formik.handleSubmit}
                   >
-                    <div className="flex flex-col gap-6">
+                    <div className="flex flex-col gap-4">
                       {(selectedUserRole == SUBCONTRACTOR ||
                         selectedUserRole == OWNER) && (
                         <FormControl
@@ -162,14 +166,20 @@ const CompanyDetails = () => {
                           placeholder="Enter Company Name"
                         />
                       )}
-
-                      <FormControl
+                      <div>
+                        <span>Phone Number</span>
+                        <PhoneNumberInput
+                          phoneNumber={phoneNumber}
+                          setPhoneNumber={setPhoneNumber}
+                        />
+                      </div>
+                      {/* <FormControl
                         control="input"
                         label="Phone Number"
                         type="string"
                         name="phoneNumber"
                         placeholder="Enter Phone Number"
-                      />
+                      /> */}
                       {selectedUserRole == OWNER && (
                         <FormControl
                           control="input"
@@ -240,14 +250,14 @@ const CompanyDetails = () => {
                                   const file = e.target.files[0];
                                   if (file) {
                                     // Check file size (max size: 800x400px)
-                                    const maxFileSize = 800 * 400; // 800x400px
-                                    if (file.size > maxFileSize) {
-                                      setCompanyLogoErr(
-                                        'Image size should be less than 800x400 pixels'
-                                      );
-                                      e.target.value = ''; // Clear the file input to allow re-selection
-                                      return;
-                                    }
+                                    // const maxFileSize = 800 * 400; // 800x400px
+                                    // if (file.size > maxFileSize) {
+                                    //   setCompanyLogoErr(
+                                    //     'Image size should be less than 800x400 pixels'
+                                    //   );
+                                    //   e.target.value = ''; // Clear the file input to allow re-selection
+                                    //   return;
+                                    // }
                                     setCompanyLogo(file);
                                     setCompanyLogoErr('');
                                   }

@@ -156,8 +156,10 @@ const RegisterVerification = () => {
               will help to get more project
             </p>
             <Form name="basic" autoComplete="off">
-              <div className="flex flex-col gap-6">
-                <label htmlFor="myInput">EIN Number</label>
+              <div className="flex flex-col gap-3">
+                <label htmlFor="myInput" className="mt-3">
+                  EIN Number
+                </label>
                 <div className="w-full h-1 bg-mistyWhite"></div>
                 <div className="flex items-center">
                   <label
@@ -415,13 +417,14 @@ const RegisterVerification = () => {
                 className={`w-full my-3 ${isAllowToSubmit() ? 'disabled' : ''}`}
                 type="submit"
               />
-              <Button
-                isLoading={isLoadingSkip}
-                onClick={handleSkipClick}
-                text="Skip"
-                className="w-full my-3"
-                type="submit"
-              />
+              <div className="skipBtn-icon">
+                <span
+                  className={`${isLoading ? 'disabled' : ''}`}
+                  onClick={handleSkipClick}
+                >
+                  Skip
+                </span>
+              </div>
             </Form>
           </div>
         </div>
