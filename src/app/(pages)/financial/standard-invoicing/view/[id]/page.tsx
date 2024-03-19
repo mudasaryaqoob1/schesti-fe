@@ -23,7 +23,7 @@ import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
 
-import NewClientPdf from './newClientPdf';
+import NewClientPdf from '../../../../../component/newClientPdf';
 
 function ViewSubcontractorInvoicePage() {
   const token = useSelector(selectToken);
