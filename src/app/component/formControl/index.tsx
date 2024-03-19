@@ -6,8 +6,7 @@ import Select from '../customSelect/index';
 import Textarea from '../customTextarea/Index';
 import SimpleInput from '../customInput/simple';
 import CustomInputSelect from '../customInputSelect';
-// import Datepicker from './CustomDatePicker/Index';
-// import Checkbox from "./Checkbox";
+
 const FormikController = (props: any) => {
   const { control, ...rest } = props;
   switch (control) {

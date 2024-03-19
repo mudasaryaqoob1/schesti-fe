@@ -1,7 +1,6 @@
 'use client';
 import React, { useMemo, useState } from 'react';
 import { Formik } from 'formik';
-import * as Yup from 'yup';
 import { Form } from 'antd';
 import FormControl from '@/app/component/formControl';
 import { useParams, useRouter } from 'next/navigation';
@@ -22,6 +21,12 @@ import { isEmpty } from 'lodash';
 import Errormsg from '@/app/component/errorMessage';
 import AwsS3 from '@/app/utils/S3Intergration';
 import { USER_ROLES_ENUM } from '@/app/constants/constant';
+import {
+  ContractorSchema,
+  OwnerSchema,
+  SubContractorSchema,
+} from '@/app/utils/validationSchemas';
+import PhoneNumberInput from '@/app/component/phoneNumberInput';
 
 const { CONTRACTOR, SUBCONTRACTOR, OWNER } = USER_ROLES_ENUM;
 
@@ -33,15 +38,6 @@ const initialValues: IRegisterCompany = {
   companyLogo: '',
 };
 
-const CompanyDetailsSchema: any = Yup.object({
-  companyName: Yup.string().optional(),
-  industry: Yup.string().optional(),
-  employee: Yup.number().optional(),
-  phoneNumber: Yup.string().optional(),
-  address: Yup.string().optional(),
-  organizationName: Yup.string().optional(),
-});
-
 const CompanyDetails = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
@@ -52,12 +48,14 @@ const CompanyDetails = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [companyLogo, setCompanyLogo] = useState<any>('');
-  const [companyLogoErr, setCompanyLogoErr] = useState<string>('');
   const [selectedUserRole, setSelectedUserRole] = useState<any>(null);
+  const [phoneNumber, setPhoneNumber] = useState<any>('');
+  const [phoneNumberErr, setPhoneNumberErr] = useState<string>('');
+  const [companyLogoErr, setCompanyLogoErr] = useState<string>('');
 
   const submitHandler = async (values: IRegisterCompany) => {
     if (!companyLogo && userData?.user?.userRole === CONTRACTOR) {
-      setCompanyLogoErr('Company Name is required');
+      setCompanyLogoErr('Company Logo is required');
       return;
     }
 
@@ -74,7 +72,7 @@ const CompanyDetails = () => {
     }
 
     let result: any = await dispatch(
-      addCompanyDetail({ ...values, userId: userId })
+      addCompanyDetail({ ...values, userId: userId, phoneNumber: phoneNumber })
     );
 
     if (result.payload.statusCode == 200) {
@@ -110,10 +108,20 @@ const CompanyDetails = () => {
   console.log('selectedUserRole', selectedUserRole);
   console.log('userData', userData);
 
+  const getValidationSchema = useMemo(() => {
+    if (userData?.user?.userRole == OWNER) {
+      return OwnerSchema;
+    } else if (userData?.user?.userRole == SUBCONTRACTOR) {
+      return SubContractorSchema;
+    } else if (userData?.user?.userRole == CONTRACTOR) {
+      return ContractorSchema;
+    }
+  }, [userData]);
+
   return (
     <>
       <AuthNavbar />
-      <div className="h-[calc(100vh-100px)] grid place-items-center">
+      <div className="h-[calc(100vh-100px)] mt-2 grid place-items-center">
         <div className="w-full max-w-xl bg-snowWhite">
           <h2 className={twMerge(`${tertiaryHeading} mb-4 `)}>
             Setup Company profile
@@ -126,10 +134,11 @@ const CompanyDetails = () => {
             />
             <Formik
               initialValues={initialValues}
-              validationSchema={CompanyDetailsSchema}
+              validationSchema={getValidationSchema}
               onSubmit={submitHandler}
             >
               {(formik: any) => {
+                console.log('formik', formik);
                 return (
                   <Form
                     name="basic"
@@ -137,17 +146,17 @@ const CompanyDetails = () => {
                     autoComplete="off"
                     // validateMessages={formik.handleSubmit}
                   >
-                    <div className="flex flex-col gap-6">
-                      {selectedUserRole == SUBCONTRACTOR ||
-                        (selectedUserRole == OWNER && (
-                          <FormControl
-                            control="input"
-                            label="Address"
-                            type="text"
-                            name="address"
-                            placeholder="Enter Company Address"
-                          />
-                        ))}
+                    <div className="flex flex-col gap-4">
+                      {(selectedUserRole == SUBCONTRACTOR ||
+                        selectedUserRole == OWNER) && (
+                        <FormControl
+                          control="input"
+                          label="Address"
+                          type="text"
+                          name="address"
+                          placeholder="Enter Company Address"
+                        />
+                      )}
                       {selectedUserRole != OWNER && (
                         <FormControl
                           control="input"
@@ -157,14 +166,20 @@ const CompanyDetails = () => {
                           placeholder="Enter Company Name"
                         />
                       )}
-
-                      <FormControl
+                      <div>
+                        <span>Phone Number</span>
+                        <PhoneNumberInput
+                          phoneNumber={phoneNumber}
+                          setPhoneNumber={setPhoneNumber}
+                        />
+                      </div>
+                      {/* <FormControl
                         control="input"
                         label="Phone Number"
                         type="string"
                         name="phoneNumber"
                         placeholder="Enter Phone Number"
-                      />
+                      /> */}
                       {selectedUserRole == OWNER && (
                         <FormControl
                           control="input"
@@ -198,7 +213,7 @@ const CompanyDetails = () => {
                           <div className="flex items-center">
                             <label
                               htmlFor="dropzone-file"
-                              className="flex flex-col items-center justify-center w-22 h-22 border-2 border-gray-300 border-solid rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                              className="flex flex-col items-center justify-center w-22 h-22 border-2 border-solid rounded-lg cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
                             >
                               <div className="flex flex-col items-center justify-center p-5">
                                 <svg
@@ -216,14 +231,18 @@ const CompanyDetails = () => {
                                     d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
                                   />
                                 </svg>
-                                <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                  <span className="font-semibold text-purple-600">
-                                    Click to upload
-                                  </span>
-                                </p>
-                                <p className="text-xs text-gray-500 dark:text-gray-400">
-                                  PNG, JPG (max. 800x400px)
-                                </p>
+                                {!companyLogo && (
+                                  <>
+                                    <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                      <span className="font-semibold text-purple-600">
+                                        Click to upload
+                                      </span>
+                                    </p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                                      PNG, JPG (max. 800x400px)
+                                    </p>
+                                  </>
+                                )}
                               </div>
                               <input
                                 id="dropzone-file"
@@ -231,14 +250,14 @@ const CompanyDetails = () => {
                                   const file = e.target.files[0];
                                   if (file) {
                                     // Check file size (max size: 800x400px)
-                                    const maxFileSize = 800 * 400; // 800x400px
-                                    if (file.size > maxFileSize) {
-                                      setCompanyLogoErr(
-                                        'Image size should be less than 800x400 pixels'
-                                      );
-                                      e.target.value = ''; // Clear the file input to allow re-selection
-                                      return;
-                                    }
+                                    // const maxFileSize = 800 * 400; // 800x400px
+                                    // if (file.size > maxFileSize) {
+                                    //   setCompanyLogoErr(
+                                    //     'Image size should be less than 800x400 pixels'
+                                    //   );
+                                    //   e.target.value = ''; // Clear the file input to allow re-selection
+                                    //   return;
+                                    // }
                                     setCompanyLogo(file);
                                     setCompanyLogoErr('');
                                   }
@@ -247,7 +266,15 @@ const CompanyDetails = () => {
                                 style={{ opacity: '0' }}
                                 accept="image/*"
                               />
-                              {companyLogo && <p>{companyLogo?.name}</p>}
+                              {companyLogo && (
+                                <>
+                                  <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                    <span className="font-semibold text-purple-600">
+                                      {companyLogo?.name}
+                                    </span>
+                                  </p>
+                                </>
+                              )}
                             </label>
                           </div>
                           {!isEmpty(companyLogoErr) && (

@@ -21,7 +21,7 @@ import { CollectPayment } from './CollectPayment';
 import { usePDF } from '@react-pdf/renderer';
 import { Routes } from '@/app/utils/plans.utils';
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
-import NewClientPdf from "../../standard-invoicing/view/[id]/newClientPdf";
+import NewClientPdf from '../../standard-invoicing/view/[id]/newClientPdf';
 
 export function Contractors() {
   const router = useRouter();

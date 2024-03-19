@@ -78,7 +78,7 @@ const Trades = () => {
   return (
     <>
       <AuthNavbar />
-      <div className="h-[calc(100vh-100px)] grid place-items-center">
+      <div className="h-[calc(100vh-100px)] mt-2 grid place-items-center">
         <div className="w-full max-w-xl bg-snowWhite">
           <h2 className={twMerge(`${tertiaryHeading} mb-4`)}>Trades</h2>
           <div className="w-full h-1 bg-mistyWhite"></div>
