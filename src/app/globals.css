@@ -160,6 +160,9 @@ a {
 .bg-lavenderPurple {
   background-color: #7138df;
 }
+.bg-transparent {
+  background: transparent;
+}
 
 .bg-gray-200 {
   color: #344054;
