@@ -20,8 +20,9 @@ import moment from 'moment';
 import { CollectPayment } from './CollectPayment';
 import { usePDF } from '@react-pdf/renderer';
 import { Routes } from '@/app/utils/plans.utils';
-import NewClientPdf from '../../../../component/newClientPdf';
+import dynamic from 'next/dynamic';
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
+const NewClientPdf = dynamic(() => import("@/app/component/newClientPdf"), { ssr: false });
 
 export function Contractors() {
   const router = useRouter();

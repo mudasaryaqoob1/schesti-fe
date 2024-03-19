@@ -22,8 +22,9 @@ import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
+import dynamic from 'next/dynamic';
 
-import NewClientPdf from '../../../../../component/newClientPdf';
+const NewClientPdf = dynamic(() => import("@/app/component/newClientPdf"), { ssr: false });
 
 function ViewSubcontractorInvoicePage() {
   const token = useSelector(selectToken);
@@ -94,7 +95,7 @@ function ViewSubcontractorInvoicePage() {
   }
 
   const invoiceData = invoiceQuery.data.data.invoice;
-  console.log({ invoiceData })
+  console.log({ invoiceData });
   return (
     <section className="mx-16 my-2">
       <div className="p-5 flex flex-col rounded-lg border border-silverGray shadow-secondaryShadow2 bg-white">
@@ -251,9 +252,7 @@ function ViewSubcontractorInvoicePage() {
       <Divider />
       <div className="mt-4 flex justify-end">
         <PDFDownloadLink
-          document={
-            <NewClientPdf invoice={invoiceData} user={user} />
-          }
+          document={<NewClientPdf invoice={invoiceData} user={user} />}
           fileName="invoice.pdf"
         >
           {({ loading }) => (

@@ -22,7 +22,6 @@ import { clientInvoiceService } from '@/app/services/client-invoices.service';
 import { meetingService } from '@/app/services/meeting.service';
 import { withAuth } from '@/app/hoc/withAuth';
 const Dashboard = () => {
-
   const clientQuery = useQuery('clients', () => {
     return userService.httpGetAllCompanyClients();
   });
