@@ -6,6 +6,7 @@ import Image from "next/image"
 import { useState } from "react"
 import { PostBasicInformation } from "./components/BasicInformation"
 import { PostProjectFooter } from "./components/Footer"
+import { PostProjectDetails } from "./components/ProjectDetails"
 
 function StaticTime() {
     return <div className="flex items-center space-x-2">
@@ -110,7 +111,7 @@ function CreatePost() {
                 >
                     <Steps
                         progressDot
-                        current={0}
+                        current={current}
                         direction="vertical"
                         size="default"
                         items={stepItems}
@@ -118,7 +119,7 @@ function CreatePost() {
                 </ConfigProvider>
             </div>
             <div className="col-span-9">
-                <PostBasicInformation >
+                {current === 0 ? <PostBasicInformation >
                     <PostProjectFooter
                         cancelButton={{
                             text: "Cancel",
@@ -128,7 +129,7 @@ function CreatePost() {
                         }}
                         submitButton={{
                             onClick() {
-
+                                nextStep()
                             },
                             text: "Next Step"
                         }}
@@ -137,7 +138,26 @@ function CreatePost() {
                             description: "Welcome to the project post screens"
                         }}
                     />
-                </PostBasicInformation>
+                </PostBasicInformation> : current === 1 ? <PostProjectDetails >
+                    <PostProjectFooter
+                        cancelButton={{
+                            text: "Cancel",
+                            onClick() {
+                                prevStep()
+                            }
+                        }}
+                        submitButton={{
+                            onClick() {
+                                nextStep()
+                            },
+                            text: "Next Step"
+                        }}
+                        info={{
+                            title: `25% Completed`,
+                            description: "You’re almost done! Just 2 step left"
+                        }}
+                    />
+                </PostProjectDetails> : null}
             </div>
         </div>
     </section>

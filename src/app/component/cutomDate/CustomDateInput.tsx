@@ -47,10 +47,8 @@ export function DateInputComponent({
         id={name}
         className={twMerge(
           clsx(
-            `border ${
-              hasError ? 'border-red-500' : 'border-gray-400'
-            } !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 !mt-1.5 ${
-              inputStyle && inputStyle
+            `border ${hasError ? 'border-red-500' : 'border-gray-200'
+            } !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 !mt-1.5 ${inputStyle && inputStyle
             }`
           )
         )}
