@@ -73,6 +73,7 @@ const Draw: React.FC<Props> = ({
     calculatePolygonCenter,
     calculatePolygonVolume,
     calculateAngle,
+    pointInCircle,
   } = useDraw();
 
   const [draw, setDraw] = useState<DrawInterface>({
@@ -198,15 +199,10 @@ const Draw: React.FC<Props> = ({
           if (
             polyLine?.points.length &&
             currentLine.endingPoint &&
-            +calcLineDistance(
-              [
-                ...polyLine.points.slice(0, 2),
-                currentLine.endingPoint?.x,
-                currentLine.endingPoint?.y,
-              ],
-              scale
-            ) <=
-              6 / 72
+            pointInCircle([...polyLine.points.slice(0, 2)], 5, [
+              currentLine.endingPoint.x,
+              currentLine.endingPoint.y,
+            ])
           ) {
             prev.points.push(...polyLine.points.slice(0, 2));
             setCurrentLine({ startingPoint: null, endingPoint: null });

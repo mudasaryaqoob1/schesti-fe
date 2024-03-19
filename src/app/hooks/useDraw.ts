@@ -237,6 +237,20 @@ const useDraw = () => {
     return distance;
   };
 
+  const pointInCircle = (
+    circleCenter: number[],
+    radius: number,
+    point: number[]
+  ) => {
+    const [x1, y1] = circleCenter;
+    const [x2, y2] = point;
+
+    const distanceSquared = Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2);
+    const radiusSquared = Math.pow(radius, 2);
+
+    return distanceSquared <= radiusSquared;
+  };
+
   // const calcLineDistance = (
   //   coordinates: number[],
   //   { scale, precision }: ScaleData,
@@ -560,6 +574,7 @@ const useDraw = () => {
     getProjectAndCommentNameForTable,
     getInchesInFractionFromMixedFraction,
     groupDataForTable,
+    pointInCircle,
   };
 };
 
