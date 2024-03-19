@@ -38,12 +38,12 @@ const ExistingClient = ({ setModalOpen, onSelectClient }: Props) => {
     memoizedSetPerson();
   }, []);
 
-  const filteredData = (clientsData as IClient[]).filter((client) => {
+  const filteredData = clientsData ? (clientsData as IClient[]).filter((client) => {
     if (!search) {
       return client;
     }
     return client.firstName.toLowerCase().includes(search.toLowerCase());
-  });
+  }) : [];
 
   return (
     <div className="py-2.5 px-6 bg-white border border-solid border-elboneyGray rounded-[4px] z-50">
