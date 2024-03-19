@@ -20,7 +20,7 @@ import moment from 'moment';
 import { CollectPayment } from './CollectPayment';
 import { usePDF } from '@react-pdf/renderer';
 import { Routes } from '@/app/utils/plans.utils';
-import NewClientPdf from '../../standard-invoicing/view/[id]/newClientPdf';
+import NewClientPdf from '../../../../component/newClientPdf';
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
 
 export function Contractors() {
