@@ -120,8 +120,8 @@ const Tabs = () => {
                         flex items-stretch justify-center py-2 
                          cursor-pointer
                         `,
-                        pathname.includes('/bid'.split('/')[1]) &&
-                          tabsStyle.active
+                        feature.options.find(option => pathname.includes(option.value)) &&
+                        tabsStyle.active
                       )
                     )}
                   >
