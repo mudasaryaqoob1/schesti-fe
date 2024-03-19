@@ -22,9 +22,8 @@ import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
-import dynamic from 'next/dynamic';
+import NewClientPdf from "./newClientPdf";
 
-const NewClientPdf = dynamic(() => import("@/app/component/newClientPdf"), { ssr: false });
 
 function ViewSubcontractorInvoicePage() {
   const token = useSelector(selectToken);
