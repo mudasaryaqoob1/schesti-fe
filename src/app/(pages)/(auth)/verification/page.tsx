@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 import React, { ChangeEvent, useState } from 'react';
 import { Form } from 'antd';
@@ -117,15 +119,15 @@ const RegisterVerification = () => {
     }
   };
 
-  const handleCancelUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    setFileName('');
-    setUploadProgress(0);
-    if (uploadInterval) {
-      clearInterval(uploadInterval);
-      setUploadInterval(null);
-    }
-  };
+  // const handleCancelUpload = (e: React.MouseEvent<HTMLButtonElement>) => {
+  //   e.stopPropagation();
+  //   setFileName('');
+  //   setUploadProgress(0);
+  //   if (uploadInterval) {
+  //     clearInterval(uploadInterval);
+  //     setUploadInterval(null);
+  //   }
+  // };
 
   const isAllowToSubmit = () => {
     return !einNumber && !license && !preQualification && !secretaryOfState;

@@ -1,6 +1,6 @@
 'use client';
 
-import { Document, Page, } from '@react-pdf/renderer';
+import { Document, Page } from '@react-pdf/renderer';
 import { Header } from './Header';
 import { PdfFooter } from './Footer';
 import { PdfCompanyDetails } from './CompanyDetails';

@@ -8,11 +8,11 @@ type Props = {
 const styles = StyleSheet.create({
   header: {
     height: 44,
-    position: "absolute",
+    position: 'absolute',
     top: 0,
-    width: "100%"
-  }
-})
+    width: '100%',
+  },
+});
 
 export function Header({ brandingColor }: Props) {
   return (
