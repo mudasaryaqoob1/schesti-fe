@@ -103,12 +103,12 @@ export function ProjectUploadFiles({ children }: Props) {
                         </div>
                     </div>
                 })}
-                <div className="place-self-center">
+                {files.length > 0 ? <div className="place-self-center">
                     <CustomButton
                         text="Upload"
                         className=" !w-28"
                     />
-                </div>
+                </div> : null}
             </div>
         </div>
         {children}
