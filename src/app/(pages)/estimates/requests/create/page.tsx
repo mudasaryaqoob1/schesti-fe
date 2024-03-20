@@ -148,7 +148,7 @@ const CreateEstimateRequest = () => {
               setIsLoading(false);
               if (resp.statusCode == 201) {
                 setIsLoading(false);
-                router.push('/estimates');
+                router.push('/estimates/requests');
               }
             })
             .catch((error: any) => {
@@ -748,7 +748,7 @@ const CreateEstimateRequest = () => {
                     <CustomButton
                       className="!border-celestialGray shadow-scenarySubdued2 !text-graphiteGray !bg-snowWhite !px-5 !py-3 w-full"
                       text="Cancel"
-                      onClick={() => router.push('/estimates')}
+                      onClick={() => router.push('/estimates/requests')}
                     />
                   </div>
                   <div className="w-[116px]">

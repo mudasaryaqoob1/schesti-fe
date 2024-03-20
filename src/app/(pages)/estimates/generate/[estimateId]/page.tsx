@@ -72,6 +72,9 @@ const ViewEstimateDetail = () => {
     }
   }, [estimateId]);
 
+
+  
+
   return (
     <div className="p-12">
       <div className="flex justify-between items-center">
