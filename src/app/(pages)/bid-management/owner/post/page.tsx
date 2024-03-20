@@ -9,6 +9,7 @@ import { PostProjectFooter } from './components/Footer';
 import { PostProjectDetails } from './components/ProjectDetails';
 import { PostDesignTeam } from './components/DesignTeam';
 import { PostProjectTrades } from './components/ProjectTrades';
+import { ProjectUploadFiles } from './components/ProjectFile';
 
 function StaticTime() {
   return (
@@ -52,7 +53,7 @@ let stepItems: StepsProps['items'] = [
 ];
 
 function CreatePost() {
-  const [current, setCurrent] = useState(0);
+  const [current, setCurrent] = useState(4);
 
   const nextStep = () => {
     setCurrent(current + 1);
@@ -149,7 +150,7 @@ function CreatePost() {
                 }}
                 info={{
                   title: `25% Completed`,
-                  description: 'You’re almost done! Just 2 step left',
+                  description: 'You’re almost done! Just 4 step left',
                 }}
               />
             </PostProjectDetails>
@@ -189,7 +190,26 @@ function CreatePost() {
                 description: 'You’re almost done! Just 2 step left',
               }}
             />
-          </PostProjectTrades> : null}
+          </PostProjectTrades> : current === 4 ? <ProjectUploadFiles>
+            <PostProjectFooter
+              cancelButton={{
+                text: 'Previous',
+                onClick() {
+                  prevStep();
+                },
+              }}
+              submitButton={{
+                onClick() {
+                  nextStep();
+                },
+                text: 'Next Step',
+              }}
+              info={{
+                title: `90% Completed`,
+                description: 'You’re almost done! Just 1 step left',
+              }}
+            />
+          </ProjectUploadFiles> : null}
         </div>
       </div>
     </section>
