@@ -7,6 +7,7 @@ import { useState } from "react"
 import { PostBasicInformation } from "./components/BasicInformation"
 import { PostProjectFooter } from "./components/Footer"
 import { PostProjectDetails } from "./components/ProjectDetails"
+import { PostDesignTeam } from "./components/DesignTeam"
 
 function StaticTime() {
     return <div className="flex items-center space-x-2">
@@ -141,7 +142,7 @@ function CreatePost() {
                 </PostBasicInformation> : current === 1 ? <PostProjectDetails >
                     <PostProjectFooter
                         cancelButton={{
-                            text: "Cancel",
+                            text: "Previous",
                             onClick() {
                                 prevStep()
                             }
@@ -157,7 +158,22 @@ function CreatePost() {
                             description: "You’re almost done! Just 2 step left"
                         }}
                     />
-                </PostProjectDetails> : null}
+                </PostProjectDetails> : current === 2 ? <PostDesignTeam >
+                    <PostProjectFooter
+                        cancelButton={{
+                            text: "Previous",
+                            onClick() {
+                                prevStep()
+                            }
+                        }}
+                        submitButton={{
+                            onClick() {
+                                nextStep()
+                            },
+                            text: "Next"
+                        }}
+                    />
+                </PostDesignTeam> : null}
             </div>
         </div>
     </section>
