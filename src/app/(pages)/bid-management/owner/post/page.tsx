@@ -8,6 +8,7 @@ import { PostBasicInformation } from './components/BasicInformation';
 import { PostProjectFooter } from './components/Footer';
 import { PostProjectDetails } from './components/ProjectDetails';
 import { PostDesignTeam } from './components/DesignTeam';
+import { PostProjectTrades } from './components/ProjectTrades';
 
 function StaticTime() {
   return (
@@ -85,8 +86,8 @@ function CreatePost() {
         />
       </div>
 
-      <div className="grid grid-cols-12 gap-16 mt-5">
-        <div className="col-span-3 shadow-2xl border rounded-xl p-4">
+      <div className="grid grid-cols-12 gap-6 mt-5">
+        <div className="col-span-3 bg-white shadow-2xl border rounded-xl p-4">
           <ConfigProvider
             theme={{
               components: {
@@ -111,13 +112,13 @@ function CreatePost() {
             />
           </ConfigProvider>
         </div>
-        <div className="col-span-9">
+        <div className="col-span-9 bg-white shadow-2xl rounded-xl border p-4">
           {current === 0 ? (
             <PostBasicInformation>
               <PostProjectFooter
                 cancelButton={{
                   text: 'Cancel',
-                  onClick() {},
+                  onClick() { },
                 }}
                 submitButton={{
                   onClick() {
@@ -169,7 +170,26 @@ function CreatePost() {
                 }}
               />
             </PostDesignTeam>
-          ) : null}
+          ) : current === 3 ? <PostProjectTrades >
+            <PostProjectFooter
+              cancelButton={{
+                text: 'Previous',
+                onClick() {
+                  prevStep();
+                },
+              }}
+              submitButton={{
+                onClick() {
+                  nextStep();
+                },
+                text: 'Next Step',
+              }}
+              info={{
+                title: `75% Completed`,
+                description: 'You’re almost done! Just 2 step left',
+              }}
+            />
+          </PostProjectTrades> : null}
         </div>
       </div>
     </section>

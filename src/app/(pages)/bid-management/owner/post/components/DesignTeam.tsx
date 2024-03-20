@@ -55,7 +55,7 @@ export function PostDesignTeam({ children }: Props) {
     };
 
     return (
-        <div className="shadow-2xl rounded-xl border p-4">
+        <div className="">
             <div className="flex items-center justify-between">
                 <TertiaryHeading
                     title="Design Team"

@@ -10,7 +10,7 @@ type Props = {
 
 export function PostProjectDetails({ children }: Props) {
   return (
-    <div className="shadow-2xl rounded-xl border p-4">
+    <div className="">
       <TertiaryHeading
         title="Project Details"
         className="text-[20px] leading-[30px]"
