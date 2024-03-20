@@ -1,8 +1,10 @@
 'use client';
 import { withAuth } from '@/app/hoc/withAuth';
 import dynamic from 'next/dynamic';
-const Contractors = dynamic(() => import("../components/contractors").then((m) => m.Contractors)
-  , { ssr: false })
+const Contractors = dynamic(
+  () => import('../components/contractors').then((m) => m.Contractors),
+  { ssr: false }
+);
 
 function StandardInvoicingPage() {
   return (

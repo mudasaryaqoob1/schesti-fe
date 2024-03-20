@@ -50,7 +50,7 @@ const CompanyDetails = () => {
   const [companyLogo, setCompanyLogo] = useState<any>('');
   const [selectedUserRole, setSelectedUserRole] = useState<any>(null);
   const [phoneNumber, setPhoneNumber] = useState<any>('');
-  const [phoneNumberErr, setPhoneNumberErr] = useState<string>('');
+  // const [phoneNumberErr, setPhoneNumberErr] = useState<string>('');
   const [companyLogoErr, setCompanyLogoErr] = useState<string>('');
 
   const submitHandler = async (values: IRegisterCompany) => {
@@ -144,19 +144,19 @@ const CompanyDetails = () => {
                     name="basic"
                     onFinish={formik.handleSubmit}
                     autoComplete="off"
-                    // validateMessages={formik.handleSubmit}
+                  // validateMessages={formik.handleSubmit}
                   >
                     <div className="flex flex-col gap-4">
                       {(selectedUserRole == SUBCONTRACTOR ||
                         selectedUserRole == OWNER) && (
-                        <FormControl
-                          control="input"
-                          label="Address"
-                          type="text"
-                          name="address"
-                          placeholder="Enter Company Address"
-                        />
-                      )}
+                          <FormControl
+                            control="input"
+                            label="Address"
+                            type="text"
+                            name="address"
+                            placeholder="Enter Company Address"
+                          />
+                        )}
                       {selectedUserRole != OWNER && (
                         <FormControl
                           control="input"
@@ -200,88 +200,88 @@ const CompanyDetails = () => {
                       )}
                       {(selectedUserRole == CONTRACTOR ||
                         selectedUserRole == SUBCONTRACTOR) && (
-                        <>
-                          <FormControl
-                            control="input"
-                            label="Total Employee"
-                            type="number"
-                            name="employee"
-                            placeholder="Employee"
-                            min={1}
-                          />
-                          <label htmlFor="myInput">Logo/ Picture</label>
-                          <div className="flex items-center">
-                            <label
-                              htmlFor="dropzone-file"
-                              className="flex flex-col items-center justify-center w-22 h-22 border-2 border-solid rounded-lg cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-                            >
-                              <div className="flex flex-col items-center justify-center p-5">
-                                <svg
-                                  className="w-6 h-6 mb-3 text-gray-500 dark:text-gray-400"
-                                  aria-hidden="true"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 20 16"
-                                >
-                                  <path
-                                    stroke="currentColor"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                                  />
-                                </svg>
-                                {!companyLogo && (
+                          <>
+                            <FormControl
+                              control="input"
+                              label="Total Employee"
+                              type="number"
+                              name="employee"
+                              placeholder="Employee"
+                              min={1}
+                            />
+                            <label htmlFor="myInput">Logo/ Picture</label>
+                            <div className="flex items-center">
+                              <label
+                                htmlFor="dropzone-file"
+                                className="flex flex-col items-center justify-center w-22 h-22 border-2 border-solid rounded-lg cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                              >
+                                <div className="flex flex-col items-center justify-center p-5">
+                                  <svg
+                                    className="w-6 h-6 mb-3 text-gray-500 dark:text-gray-400"
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 20 16"
+                                  >
+                                    <path
+                                      stroke="currentColor"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                                    />
+                                  </svg>
+                                  {!companyLogo && (
+                                    <>
+                                      <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                        <span className="font-semibold text-purple-600">
+                                          Click to upload
+                                        </span>
+                                      </p>
+                                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                                        PNG, JPG (max. 800x400px)
+                                      </p>
+                                    </>
+                                  )}
+                                </div>
+                                <input
+                                  id="dropzone-file"
+                                  onChange={(e: any) => {
+                                    const file = e.target.files[0];
+                                    if (file) {
+                                      // Check file size (max size: 800x400px)
+                                      // const maxFileSize = 800 * 400; // 800x400px
+                                      // if (file.size > maxFileSize) {
+                                      //   setCompanyLogoErr(
+                                      //     'Image size should be less than 800x400 pixels'
+                                      //   );
+                                      //   e.target.value = ''; // Clear the file input to allow re-selection
+                                      //   return;
+                                      // }
+                                      setCompanyLogo(file);
+                                      setCompanyLogoErr('');
+                                    }
+                                  }}
+                                  type="file"
+                                  style={{ opacity: '0' }}
+                                  accept="image/*"
+                                />
+                                {companyLogo && (
                                   <>
                                     <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
                                       <span className="font-semibold text-purple-600">
-                                        Click to upload
+                                        {companyLogo?.name}
                                       </span>
-                                    </p>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                                      PNG, JPG (max. 800x400px)
                                     </p>
                                   </>
                                 )}
-                              </div>
-                              <input
-                                id="dropzone-file"
-                                onChange={(e: any) => {
-                                  const file = e.target.files[0];
-                                  if (file) {
-                                    // Check file size (max size: 800x400px)
-                                    // const maxFileSize = 800 * 400; // 800x400px
-                                    // if (file.size > maxFileSize) {
-                                    //   setCompanyLogoErr(
-                                    //     'Image size should be less than 800x400 pixels'
-                                    //   );
-                                    //   e.target.value = ''; // Clear the file input to allow re-selection
-                                    //   return;
-                                    // }
-                                    setCompanyLogo(file);
-                                    setCompanyLogoErr('');
-                                  }
-                                }}
-                                type="file"
-                                style={{ opacity: '0' }}
-                                accept="image/*"
-                              />
-                              {companyLogo && (
-                                <>
-                                  <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                    <span className="font-semibold text-purple-600">
-                                      {companyLogo?.name}
-                                    </span>
-                                  </p>
-                                </>
-                              )}
-                            </label>
-                          </div>
-                          {!isEmpty(companyLogoErr) && (
-                            <Errormsg>{companyLogoErr}</Errormsg>
-                          )}
-                        </>
-                      )}
+                              </label>
+                            </div>
+                            {!isEmpty(companyLogoErr) && (
+                              <Errormsg>{companyLogoErr}</Errormsg>
+                            )}
+                          </>
+                        )}
                     </div>
                     <Button
                       isLoading={isLoading}

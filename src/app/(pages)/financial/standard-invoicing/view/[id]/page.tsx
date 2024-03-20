@@ -22,8 +22,7 @@ import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
-import NewClientPdf from "./newClientPdf";
-
+import NewClientPdf from './newClientPdf';
 
 function ViewSubcontractorInvoicePage() {
   const token = useSelector(selectToken);

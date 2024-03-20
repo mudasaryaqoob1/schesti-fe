@@ -96,7 +96,10 @@ const Tabs = () => {
         </li>
         {planFeatureOptions.map((feature, index) => {
           if (feature.options) {
-            if (process.env.NEXT_PUBLIC_IS_MVP_1 === 'true' && feature.title.includes("Bid")) {
+            if (
+              process.env.NEXT_PUBLIC_IS_MVP_1 === 'true' &&
+              feature.title.includes('Bid')
+            ) {
               return '';
             }
             return (
@@ -123,8 +126,9 @@ const Tabs = () => {
                         flex items-stretch justify-center py-2 
                          cursor-pointer
                         `,
-                        feature.options.find(option => pathname.includes(option.value)) &&
-                        tabsStyle.active
+                        feature.options.find((option) =>
+                          pathname.includes(option.value)
+                        ) && tabsStyle.active
                       )
                     )}
                   >
