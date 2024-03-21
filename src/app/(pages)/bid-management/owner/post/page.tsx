@@ -11,6 +11,7 @@ import { PostDesignTeam } from './components/DesignTeam';
 import { PostProjectTrades } from './components/ProjectTrades';
 import { ProjectUploadFiles } from './components/ProjectFile';
 import { PostFinalize } from './components/PostFinalize';
+import { PostProjectCongratulations } from './components/PostProjectCongratulations';
 
 function StaticTime() {
   return (
@@ -87,7 +88,7 @@ function CreatePost() {
           className="font-semibold text-lavenderPurple cursor-pointer underline"
         />
       </div>
-
+      {/* <PostProjectCongratulations /> */}
       <div className="grid grid-cols-12 gap-6 mt-5">
         <div className="col-span-3 bg-white shadow-2xl border rounded-xl p-4 h-fit">
           <ConfigProvider
