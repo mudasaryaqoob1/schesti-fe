@@ -1,4 +1,4 @@
-import { DrawInterface } from '../(pages)/quantity-takeoff/manual/types';
+import { DrawInterface } from '../(pages)/takeoff/manual/types';
 
 const measurementUnits = [
   'in',
