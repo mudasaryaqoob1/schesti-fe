@@ -1,4 +1,3 @@
-import CustomButton from "@/app/component/customButton/button";
 import TertiaryHeading from "@/app/component/headings/tertiary";
 import type { RcFile } from "antd/es/upload";
 import Dragger from "antd/es/upload/Dragger";
@@ -103,12 +102,6 @@ export function ProjectUploadFiles({ children }: Props) {
                         </div>
                     </div>
                 })}
-                {files.length > 0 ? <div className="place-self-center">
-                    <CustomButton
-                        text="Upload"
-                        className=" !w-28"
-                    />
-                </div> : null}
             </div>
         </div>
         {children}

@@ -19,7 +19,7 @@ export function PostFinalize({ children }: Props) {
                 title="Summary"
                 className="text-[20px] leading-[30px]"
             />
-            <fieldset className="border-[3px] mt-[21px] space-y-4 p-4  border-dashed border-[#A0A3BD] relative">
+            <fieldset className="border-[2px] mt-[21px] space-y-4 p-4  rounded-lg border-dashed border-[#aeafb8] relative">
                 <legend className="text-[#667085] text-[14px] leading-6 absolute -top-4 z-10 bg-white w-fit px-2">Basic Information</legend>
 
                 <div className="grid grid-cols-4 gap-3">
@@ -280,7 +280,7 @@ export function PostFinalize({ children }: Props) {
                         />
                     </Checkbox>
 
-                    <Checkbox >
+                    <Checkbox disabled>
                         <SenaryHeading
                             title="My In-Network members (Sends only to those with matching trades and regions)
                         ( 2603 ) In-Network  | View chevron_right"
