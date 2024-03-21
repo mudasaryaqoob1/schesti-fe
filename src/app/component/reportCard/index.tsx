@@ -1,5 +1,6 @@
 import React from 'react';
 import { dataInterface } from '../captureComponent';
+import Image from 'next/image';
 // import Image from 'next/image';
 
 interface Props {
@@ -17,7 +18,7 @@ const ReportCard: React.FC<Props> = ({ entity }) => {
         <>
           <div className=" flex items-center justify-between py-4 ">
             <div className="border-2  w-fit h-fit cover max-w-[50%]">
-              <img
+              <Image
                 src={item.image}
                 alt={`Captured content ${index}`}
                 style={{ width: '100%', height: '100%' }}
