@@ -96,6 +96,12 @@ const Tabs = () => {
         </li>
         {planFeatureOptions.map((feature, index) => {
           if (feature.options) {
+            if (
+              process.env.NEXT_PUBLIC_IS_MVP_1 === 'true' &&
+              feature.title.includes('Bid')
+            ) {
+              return '';
+            }
             return (
               <li key={index}>
                 <Dropdown
@@ -120,8 +126,9 @@ const Tabs = () => {
                         flex items-stretch justify-center py-2 
                          cursor-pointer
                         `,
-                        pathname.includes('/bid'.split('/')[1]) &&
-                          tabsStyle.active
+                        feature.options.find((option) =>
+                          pathname.includes(option.value)
+                        ) && tabsStyle.active
                       )
                     )}
                   >

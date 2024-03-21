@@ -1,49 +1,63 @@
-import { DatePicker, type DatePickerProps } from 'antd';
+import { type TextAreaProps } from 'antd/es/input/TextArea';
+import { Input } from 'antd';
 import clsx, { ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
+const { TextArea } = Input;
 type Props = {
   label: string;
   labelStyle?: ClassValue;
+  label2?: string;
+  label2Style?: ClassValue;
   name: string;
-  prefix?: React.ReactNode;
   placeholder?: string;
   maxLength?: number;
   inputStyle?: ClassValue;
-  fieldProps?: DatePickerProps;
   hasError?: boolean;
-  defaultValue?: any;
+  field?: TextAreaProps;
   errorMessage?: string;
 };
 
-export function DateInputComponent({
+export function TextAreaComponent({
   label,
+  label2,
+  label2Style,
   labelStyle,
   name,
   placeholder,
-  hasError,
+  maxLength,
   inputStyle,
-  fieldProps,
-  defaultValue,
+  field,
+  hasError,
   errorMessage = '',
+  ...rest
 }: Props) {
   return (
     <div>
       <label
         className={twMerge(
           clsx(
-            'text-graphiteGray text-sm font-medium leading-6 capitalize',
+            `text-graphiteGray ${
+              label2 ? 'flex justify-between' : 'block'
+            } text-sm font-medium leading-6 capitalize`,
             labelStyle
           )
         )}
         htmlFor={name}
       >
-        {label}
+        {label}{' '}
+        {label2 && (
+          <span
+            className={twMerge(clsx('text-right text-[#98A2B3]', label2Style))}
+          >
+            {label2}
+          </span>
+        )}
       </label>
 
       {/* <Field name={name} id={name}>
       {({ field }: { field: any }) => ( */}
-      <DatePicker
+      <TextArea
         id={name}
         className={twMerge(
           clsx(
@@ -54,16 +68,17 @@ export function DateInputComponent({
             }`
           )
         )}
-        name={name}
-        defaultValue={defaultValue}
+        maxLength={maxLength}
+        {...rest}
         placeholder={placeholder}
-        {...fieldProps}
+        {...field}
       />
+      {errorMessage ? (
+        <p className="text-red-500 text-xs mt-1">{errorMessage}</p>
+      ) : null}
       {/* //   )} */}
       {/* // </Field> */}
-      {hasError && (
-        <p className="text-red-500 text-xs mt-1.5">{errorMessage}</p>
-      )}
+      {/* <ErrorMessage name={name} component={ErrorMsg} /> */}
     </div>
   );
 }
