@@ -98,7 +98,7 @@ export function PostProjectTrades({ children }: Props) {
     }
 
     return (
-        <div className="">
+        <div className=" bg-white shadow-2xl rounded-xl border p-4">
             <div className='flex items-center justify-between'>
                 <div className="flex items-center space-x-5">
                     <TertiaryHeading

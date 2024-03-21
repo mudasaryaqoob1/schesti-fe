@@ -17,7 +17,7 @@ export function ProjectUploadFiles({ children }: Props) {
         const newFiles = files.filter(f => f.uid !== file.uid);
         setFiles(newFiles);
     }
-    return <div>
+    return <div className=" bg-white shadow-2xl rounded-xl border p-4">
         <TertiaryHeading
             title="Upload File"
             className="text-[20px] leading-[30px]"

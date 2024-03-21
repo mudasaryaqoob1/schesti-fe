@@ -10,6 +10,7 @@ import { PostProjectDetails } from './components/ProjectDetails';
 import { PostDesignTeam } from './components/DesignTeam';
 import { PostProjectTrades } from './components/ProjectTrades';
 import { ProjectUploadFiles } from './components/ProjectFile';
+import { PostFinalize } from './components/PostFinalize';
 
 function StaticTime() {
   return (
@@ -53,7 +54,7 @@ let stepItems: StepsProps['items'] = [
 ];
 
 function CreatePost() {
-  const [current, setCurrent] = useState(4);
+  const [current, setCurrent] = useState(0);
 
   const nextStep = () => {
     setCurrent(current + 1);
@@ -88,7 +89,7 @@ function CreatePost() {
       </div>
 
       <div className="grid grid-cols-12 gap-6 mt-5">
-        <div className="col-span-3 bg-white shadow-2xl border rounded-xl p-4">
+        <div className="col-span-3 bg-white shadow-2xl border rounded-xl p-4 h-fit">
           <ConfigProvider
             theme={{
               components: {
@@ -113,7 +114,7 @@ function CreatePost() {
             />
           </ConfigProvider>
         </div>
-        <div className="col-span-9 bg-white shadow-2xl rounded-xl border p-4">
+        <div className="col-span-9">
           {current === 0 ? (
             <PostBasicInformation>
               <PostProjectFooter
@@ -209,7 +210,25 @@ function CreatePost() {
                 description: 'You’re almost done! Just 1 step left',
               }}
             />
-          </ProjectUploadFiles> : null}
+          </ProjectUploadFiles> : current === 5 ? <PostFinalize>
+            <PostProjectFooter
+              cancelButton={{
+                text: 'Previous',
+                onClick() {
+                  prevStep();
+                },
+              }}
+              submitButton={{
+                onClick() {
+                },
+                text: 'Post Project',
+              }}
+              info={{
+                title: `100% Completed`,
+                description: 'You’re almost done! Post your project now',
+              }}
+            />
+          </PostFinalize> : null}
         </div>
       </div>
     </section>
