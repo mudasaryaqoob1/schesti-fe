@@ -14,6 +14,7 @@ import pricingPlanReducer from './pricingPlanSlice/pricingPlanSlice';
 import companySetupCategoryReducer from './company/settingSlices/categories/category.slice';
 import companySetupSubcategoryReducer from './company/settingSlices/categories/subcategory.slice';
 import materialsReducer from './company/settingSlices/materials.slice';
+import takeoffSummariesReducer from './takeoffSummaries/takeoffSummaries.slice';
 import invoiceReducer from './invoice/invoice.slice';
 import clientInvoiceReducer from './client-invoices/client-invoice.slice';
 // import scheduleReducer from './schedule/schedule.slice';
@@ -32,6 +33,7 @@ export type RootState = {
   companySetupCategory: typeof companySetupCategoryReducer;
   companySetupSubcategory: any;
   materials: any;
+  takeoffSummaries: any;
   invoices: typeof invoiceReducer;
   clientInvoices: typeof clientInvoiceReducer;
   meetings: typeof meetingReducer;
@@ -55,6 +57,7 @@ const rootReducer = combineReducers<RootState>({
   companySetupCategory: companySetupCategoryReducer,
   companySetupSubcategory: companySetupSubcategoryReducer,
   materials: materialsReducer,
+  takeoffSummaries: takeoffSummariesReducer,
   invoices: invoiceReducer,
   clientInvoices: clientInvoiceReducer,
   // schedule: scheduleReducer,
