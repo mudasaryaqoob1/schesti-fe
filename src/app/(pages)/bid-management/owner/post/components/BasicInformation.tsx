@@ -61,6 +61,8 @@ export function PostBasicInformation({ children }: Props) {
               { label: 'Industrial', value: 'Industrial' },
               { label: 'Residential', value: 'Residential' },
             ],
+            showSearch: true,
+            mode: "multiple"
           }}
         />
       </div>
