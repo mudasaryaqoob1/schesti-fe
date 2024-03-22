@@ -203,7 +203,7 @@ const ClientTable = () => {
             </div>
             <Button
               text="Add New client"
-              className="!w-48 "
+              className="!w-48"
               icon="/plus.svg"
               iconwidth={20}
               iconheight={20}

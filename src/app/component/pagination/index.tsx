@@ -1,6 +1,7 @@
 import CustomButton from '@/app/component/customButton/button';
 import Image from 'next/image';
 import { Pagination } from 'antd';
+
 const Index = () => {
   return (
     <div className="flex mt-5 overflow-x-auto w-full justify-center md:justify-between items-center">
