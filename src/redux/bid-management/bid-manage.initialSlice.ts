@@ -1,9 +1,9 @@
-import { IBidManagemenet } from "@/app/interfaces/bid-management/bid-management.interface";
+import { IBidManagement } from "@/app/interfaces/bid-management/bid-management.interface";
 
 type BidManageInitialSliceState = {
     loading: boolean;
-    data: IBidManagemenet[],
-    drafts: IBidManagemenet[],
+    data: IBidManagement[],
+    drafts: IBidManagement[],
     error: string;
     statusCode?: number;
 }

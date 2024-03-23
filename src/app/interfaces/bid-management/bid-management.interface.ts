@@ -1,16 +1,17 @@
-export interface IBidManagemenet {
+export interface IBidManagement {
     user: string
     projectName: string
     address: string
     zipCode: string
     city: string
-    state: string
+    state: string;
+    country: string;
     constructionTypes: string[]
     projectType: string[]
     projectBuildingUse: string[]
     durationType: "days" | "years" | "months"
-    bidsUsers: IBidManagemenetUser[]
-    selectedTrades: IBidManagemenetTrade[]
+    bidsUsers: IBidManagementUser[]
+    selectedTrades: IBidManagementTrade[]
     projectFiles: {
         url: string;
         extension: string;
@@ -23,16 +24,16 @@ export interface IBidManagemenet {
     updatedAt: string
 }
 
-export interface IBidManagemenetTrade {
+export interface IBidManagementTrade {
     _id: string
     user: string
-    tradeCategoryId: IBidManagemenetTradeCategoryId
+    tradeCategoryId: IBidManagementTradeCategoryId
     name: string
     createdAt: string
     updatedAt: string
 }
 
-export interface IBidManagemenetTradeCategoryId {
+export interface IBidManagementTradeCategoryId {
     _id: string
     user: string
     name: string
@@ -40,7 +41,7 @@ export interface IBidManagemenetTradeCategoryId {
     updatedAt: string
 }
 
-export interface IBidManagemenetUser {
+export interface IBidManagementUser {
     user: string
     name: string
     role: string
