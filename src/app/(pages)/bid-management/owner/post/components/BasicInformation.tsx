@@ -72,7 +72,9 @@ export function PostBasicInformation({ children, formik }: Props) {
                 value: country,
                 onChange: (value) => {
                   setCountry(value)
-                  formik.setFieldValue('country', value)
+                  formik.setFieldValue('country', value);
+                  setState("");
+                  setCity("");
                 }
               }}
               hasError={formik.touched.country && Boolean(formik.errors.country)}
