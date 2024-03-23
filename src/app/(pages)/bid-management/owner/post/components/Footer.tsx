@@ -46,6 +46,8 @@ export function PostProjectFooter({ cancelButton, submitButton, info }: Props) {
             text={submitButton.text}
             onClick={submitButton.onClick}
             className="!w-44"
+            isLoading={submitButton.loading}
+            loadingText='Loading...'
           />
         </div>
       </div>

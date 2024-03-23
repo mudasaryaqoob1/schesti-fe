@@ -117,9 +117,16 @@ export function PostBasicInformation({ children, formik }: Props) {
               onChange(value) {
                 setState(value)
                 formik.setFieldValue('state', value);
+                formik.setFieldValue("city", '');
                 setCity("");
               },
-              onBlur: formik.handleBlur
+              onBlur: formik.handleBlur,
+              onClear() {
+                formik.setFieldValue('state', '');
+                formik.setFieldValue("city", '');
+                setState("");
+                setCity("");
+              }
             }}
             errorMessage={formik.errors.state}
             hasError={Boolean(formik.errors.state)}
