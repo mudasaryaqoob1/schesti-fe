@@ -13,7 +13,7 @@ class BidManagementService extends HttpService {
     ): Promise<IResponseInterface<{ createdProject: IBidManagement }>> =>
         this.post(`${this.prefix}/create-project`, data);
 
-    httpUpdateBidPostProject = (projectId: string, data: Partial<IBidManagement>): Promise<{ updatedProject: IBidManagement }> => this.put(`${this.prefix}/update-project/${projectId}`, data);
+    httpUpdateBidPostProject = (projectId: string, data: Partial<IBidManagement>): Promise<IResponseInterface<{ updatedProject: IBidManagement }>> => this.put(`${this.prefix}/update-project/${projectId}`, data);
 
 }
 

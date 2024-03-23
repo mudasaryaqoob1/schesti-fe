@@ -3,7 +3,6 @@ import Description from '@/app/component/description';
 import { withAuth } from '@/app/hoc/withAuth';
 import { ConfigProvider, Steps, type StepsProps } from 'antd';
 import Image from 'next/image';
-import { useState } from 'react';
 import { PostBasicInformation } from './components/BasicInformation';
 import { PostProjectFooter } from './components/Footer';
 import { PostProjectDetails } from './components/ProjectDetails';
@@ -15,6 +14,13 @@ import { useFormik } from 'formik';
 import { useMutation } from 'react-query';
 import { CreateOwnerPostProjectType, bidManagementService } from '@/app/services/bid-management.service';
 import * as Yup from 'yup';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/redux/store';
+import { setFormStepAction, setPostProjectAction } from '@/redux/post-project/post-project.slice';
+import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
+import { IResponseInterface } from '@/app/interfaces/api-response.interface';
+import { AxiosError } from 'axios';
+import { toast } from 'react-toastify';
 
 // import { DeletePopup } from './components/DeletePopup';
 // import { PostProjectCongratulations } from './components/PostProjectCongratuslations';
@@ -23,7 +29,7 @@ import * as Yup from 'yup';
 const BasicInformationSchema = Yup.object().shape({
   address: Yup.string().required('Address is required'),
   city: Yup.string().required('City is required'),
-  constructionTypes: Yup.string().required('Construction Type is required'),
+  constructionTypes: Yup.array().of(Yup.string()).required('Construction Type is required'),
   country: Yup.string().required('Country is required'),
   projectName: Yup.string().required('Project Name is required'),
   state: Yup.string().required('State is required'),
@@ -73,44 +79,68 @@ let stepItems: StepsProps['items'] = [
 ];
 
 function CreatePost() {
-  const [current, setCurrent] = useState(0);
+  const postProjectState = useSelector((state: RootState) => state.postProject);
+  const dispatch = useDispatch<AppDispatch>();
 
   const nextStep = () => {
-    setCurrent(current + 1);
+    dispatch(setFormStepAction(postProjectState.formStep + 1));
   };
 
   const prevStep = () => {
-    setCurrent(current - 1);
+    dispatch(setFormStepAction(postProjectState.formStep - 1));
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-  const createProjectMutation = useMutation({
+  const createProjectMutation = useMutation<IResponseInterface<{ createdProject: IBidManagement }>, AxiosError<{ message: string }>, CreateOwnerPostProjectType>({
     mutationFn: (values: CreateOwnerPostProjectType) => bidManagementService.httpCreateBidPostProject(values),
-    onSuccess(data,) {
-      console.log(data);
+    onSuccess(res,) {
+      console.log("Create Project Data", res);
+      if (res.data && res.data.createdProject) {
+        dispatch(setPostProjectAction(res.data.createdProject));
+        nextStep();
+      }
     },
     onError(error) {
-      console.log(error);
+      toast.error(error.response?.data?.message || "Something went wrong")
     },
   });
 
+  const updateProjectMutation = useMutation<IResponseInterface<{ updatedProject: IBidManagement }>, AxiosError<{ message: string }>, Partial<IBidManagement>>({
+    mutationKey: "update-post-project",
+    mutationFn: (values) => bidManagementService.httpUpdateBidPostProject(postProjectState.project?._id || "", values),
+    onSuccess(res) {
+      if (res.data && res.data.updatedProject) {
+        dispatch(setPostProjectAction(res.data.updatedProject));
+        nextStep();
+      }
+    },
+    onError(error) {
+      console.log("Update Project Mutation", error);
+      toast.error(error.response?.data?.message || "Something went wrong");
+    },
+  })
+
   const basicInformationFormik = useFormik({
-    initialValues: {
+    initialValues: postProjectState.project ? { ...postProjectState.project } : {
       projectName: '',
-      country: '',
+      country: 'PK',
       city: '',
       zipCode: '',
       state: '',
-      constructionTypes: 'Civil' as string | string[],
+      constructionTypes: ['Civil'] as string | string[],
       address: '',
       status: 'draft' as CreateOwnerPostProjectType['status'],
     },
     onSubmit(values) {
-      console.log(values);
+      if (postProjectState.project) {
+        updateProjectMutation.mutate(values)
+      } else {
+        createProjectMutation.mutate(values);
+      }
     },
-    validationSchema: BasicInformationSchema
+    validationSchema: BasicInformationSchema,
+    enableReinitialize: true
   })
-
+  console.log("basicInformation", basicInformationFormik.values.constructionTypes)
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       <div className="flex gap-4 items-center">
@@ -155,7 +185,7 @@ function CreatePost() {
           >
             <Steps
               progressDot
-              current={current}
+              current={postProjectState.formStep}
               direction="vertical"
               size="default"
               items={stepItems}
@@ -163,7 +193,7 @@ function CreatePost() {
           </ConfigProvider>
         </div>
         <div className="col-span-9">
-          {current === 0 ? (
+          {postProjectState.formStep === 0 ? (
             <PostBasicInformation formik={basicInformationFormik}>
               <PostProjectFooter
                 cancelButton={{
@@ -172,9 +202,10 @@ function CreatePost() {
                 }}
                 submitButton={{
                   onClick() {
-                    nextStep();
+                    basicInformationFormik.submitForm();
                   },
-                  text: 'Next Step',
+                  text: postProjectState.project ? "Update & Continue" : "Save & Continue",
+                  loading: createProjectMutation.isLoading || updateProjectMutation.isLoading
                 }}
                 info={{
                   title: `0% Completed`,
@@ -182,7 +213,7 @@ function CreatePost() {
                 }}
               />
             </PostBasicInformation>
-          ) : current === 1 ? (
+          ) : postProjectState.formStep === 1 ? (
             <PostProjectDetails>
               <PostProjectFooter
                 cancelButton={{
@@ -203,7 +234,7 @@ function CreatePost() {
                 }}
               />
             </PostProjectDetails>
-          ) : current === 2 ? (
+          ) : postProjectState.formStep === 2 ? (
             <PostDesignTeam>
               <PostProjectFooter
                 cancelButton={{
@@ -220,7 +251,7 @@ function CreatePost() {
                 }}
               />
             </PostDesignTeam>
-          ) : current === 3 ? <PostProjectTrades >
+          ) : postProjectState.formStep === 3 ? <PostProjectTrades >
             <PostProjectFooter
               cancelButton={{
                 text: 'Previous',
@@ -239,7 +270,7 @@ function CreatePost() {
                 description: 'You’re almost done! Just 2 step left',
               }}
             />
-          </PostProjectTrades> : current === 4 ? <ProjectUploadFiles>
+          </PostProjectTrades> : postProjectState.formStep === 4 ? <ProjectUploadFiles>
             <PostProjectFooter
               cancelButton={{
                 text: 'Previous',
@@ -258,7 +289,7 @@ function CreatePost() {
                 description: 'You’re almost done! Just 1 step left',
               }}
             />
-          </ProjectUploadFiles> : current === 5 ? <PostFinalize>
+          </ProjectUploadFiles> : postProjectState.formStep === 5 ? <PostFinalize>
             <PostProjectFooter
               cancelButton={{
                 text: 'Previous',
