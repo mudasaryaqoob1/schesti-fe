@@ -3,13 +3,13 @@ import { IBidManagement } from '../interfaces/bid-management/bid-management.inte
 import { HttpService } from './base.service';
 
 
-type CreateOwnerBidType = Pick<IBidManagement, "projectName" | "country" | "city" | "zipCode" | "state" | "constructionTypes" | "address" | "status">
+export type CreateOwnerPostProjectType = Pick<IBidManagement, "projectName" | "country" | "city" | "zipCode" | "state" | "constructionTypes" | "address" | "status">
 
 class BidManagementService extends HttpService {
     private readonly prefix: string = 'api/bids';
 
     httpCreateBidPostProject = (
-        data: CreateOwnerBidType
+        data: CreateOwnerPostProjectType
     ): Promise<IResponseInterface<{ createdProject: IBidManagement }>> =>
         this.post(`${this.prefix}/create-project`, data);
 

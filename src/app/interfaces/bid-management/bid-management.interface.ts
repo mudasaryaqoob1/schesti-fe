@@ -6,7 +6,7 @@ export interface IBidManagement {
     city: string
     state: string;
     country: string;
-    constructionTypes: string[]
+    constructionTypes: string[] | string;
     projectType: string[]
     projectBuildingUse: string[]
     durationType: "days" | "years" | "months"

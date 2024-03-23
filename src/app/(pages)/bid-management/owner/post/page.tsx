@@ -11,8 +11,25 @@ import { PostDesignTeam } from './components/DesignTeam';
 import { PostProjectTrades } from './components/ProjectTrades';
 import { ProjectUploadFiles } from './components/ProjectFile';
 import { PostFinalize } from './components/PostFinalize';
+import { useFormik } from 'formik';
+import { useMutation } from 'react-query';
+import { CreateOwnerPostProjectType, bidManagementService } from '@/app/services/bid-management.service';
+import * as Yup from 'yup';
+
 // import { DeletePopup } from './components/DeletePopup';
 // import { PostProjectCongratulations } from './components/PostProjectCongratuslations';
+
+
+const BasicInformationSchema = Yup.object().shape({
+  address: Yup.string().required('Address is required'),
+  city: Yup.string().required('City is required'),
+  constructionTypes: Yup.string().required('Construction Type is required'),
+  country: Yup.string().required('Country is required'),
+  projectName: Yup.string().required('Project Name is required'),
+  state: Yup.string().required('State is required'),
+  zipCode: Yup.string().required('Zip Code is required'),
+  status: Yup.string().required('Status is required')
+})
 
 function StaticTime() {
   return (
@@ -65,6 +82,34 @@ function CreatePost() {
   const prevStep = () => {
     setCurrent(current - 1);
   };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  const createProjectMutation = useMutation({
+    mutationFn: (values: CreateOwnerPostProjectType) => bidManagementService.httpCreateBidPostProject(values),
+    onSuccess(data,) {
+      console.log(data);
+    },
+    onError(error) {
+      console.log(error);
+    },
+  });
+
+  const basicInformationFormik = useFormik({
+    initialValues: {
+      projectName: '',
+      country: '',
+      city: '',
+      zipCode: '',
+      state: '',
+      constructionTypes: 'Civil' as string | string[],
+      address: '',
+      status: 'draft' as CreateOwnerPostProjectType['status'],
+    },
+    onSubmit(values) {
+      console.log(values);
+    },
+    validationSchema: BasicInformationSchema
+  })
 
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
@@ -119,7 +164,7 @@ function CreatePost() {
         </div>
         <div className="col-span-9">
           {current === 0 ? (
-            <PostBasicInformation>
+            <PostBasicInformation formik={basicInformationFormik}>
               <PostProjectFooter
                 cancelButton={{
                   text: 'Cancel',
