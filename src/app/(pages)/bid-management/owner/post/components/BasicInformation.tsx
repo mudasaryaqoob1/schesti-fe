@@ -1,12 +1,16 @@
 import { InputComponent } from '@/app/component/customInput/Input';
 import { SelectComponent } from '@/app/component/customSelect/Select.component';
 import TertiaryHeading from '@/app/component/headings/tertiary';
+import { Country } from 'country-state-city'
 
 type Props = {
   children?: React.ReactNode;
 };
 
 export function PostBasicInformation({ children }: Props) {
+
+  const countries = Country.getAllCountries().map(country => ({ label: country.name, value: country.isoCode }));
+
   return (
     <div className=" bg-white shadow-2xl rounded-xl border p-4">
       <TertiaryHeading
@@ -31,12 +35,27 @@ export function PostBasicInformation({ children }: Props) {
           />
         </div>
 
-        <InputComponent
-          label="Zip Code"
-          name="zipCode"
-          type="number"
-          placeholder="Enter Zip Code"
-        />
+        <div className='flex items-center space-x-4'>
+          <div className='flex-1'>
+            <SelectComponent
+              label='Country'
+              placeholder='Country'
+              name='country'
+              field={{
+                options: countries,
+                showSearch: true
+              }}
+            />
+          </div>
+          <div className='flex-1'>
+            <InputComponent
+              label="Zip Code"
+              name="zipCode"
+              type="number"
+              placeholder="Enter Zip Code"
+            />
+          </div>
+        </div>
         <div className="grid grid-cols-2 gap-4">
           <SelectComponent label="City" name="city" placeholder="City" />
 
