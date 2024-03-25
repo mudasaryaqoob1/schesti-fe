@@ -217,7 +217,6 @@ function CreatePost() {
       })
 
       const filesData = await Promise.all(promises);
-      console.log("Files Data",filesData);
       mainFormik.setFieldValue("projectFiles", filesData);
       const updatedFiles = filesToUpload.map((file) => ({ ...file, uploading: false }));
       setFiles(updatedFiles);

@@ -39,8 +39,8 @@ export function ProjectUploadFiles({ files, setFiles, children }: Props) {
         });
         setFiles(updatedFiles);
     }
-    console.log({ files });
-    return <div className=" bg-white shadow-2xl rounded-xl border p-4">
+  
+  return <div className=" bg-white shadow-2xl rounded-xl border p-4">
         <TertiaryHeading
             title="Upload File"
             className="text-[20px] leading-[30px]"
