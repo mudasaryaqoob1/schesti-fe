@@ -401,7 +401,7 @@ function CreatePost() {
                 description: 'You’re almost done! Just 1 step left',
               }}
             />
-          </ProjectUploadFiles> : postProjectState.formStep === 5 ? <PostFinalize>
+          </ProjectUploadFiles> : postProjectState.formStep === 5 ? <PostFinalize formik={mainFormik}>
             <PostProjectFooter
               cancelButton={{
                 text: 'Previous',
