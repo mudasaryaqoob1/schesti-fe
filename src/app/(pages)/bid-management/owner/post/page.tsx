@@ -49,6 +49,10 @@ const ProjectDetailsSchema = Yup.object().shape({
   instruction: Yup.string().required('Instruction is required'),
 });
 
+const DesignTeamSchema = Yup.object().shape({
+  teamMembers: Yup.array().of(Yup.string()).min(1).required('Team Members is required')
+});
+
 
 function StaticTime() {
   return (
@@ -162,10 +166,12 @@ function CreatePost() {
     onSubmit(values) {
       updateProjectMutation.mutate(values)
     },
-    validationSchema: postProjectState.formStep === 1 ? ProjectDetailsSchema : undefined
+    validationSchema: postProjectState.formStep === 1 ? ProjectDetailsSchema : postProjectState.formStep === 2 ? DesignTeamSchema : undefined,
+    enableReinitialize:true,
+
   })
 
-
+  console.log("Main Formik",mainFormik.errors,mainFormik.values);
 
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
@@ -262,7 +268,7 @@ function CreatePost() {
               />
             </PostProjectDetails>
           ) : postProjectState.formStep === 2 ? (
-            <PostDesignTeam>
+            <PostDesignTeam mainFormik={mainFormik}>
               <PostProjectFooter
                 cancelButton={{
                   text: 'Previous',
@@ -272,9 +278,11 @@ function CreatePost() {
                 }}
                 submitButton={{
                   onClick() {
-                    nextStep();
+                    mainFormik.handleSubmit();
+                    
                   },
-                  text: 'Next',
+                  text: 'Save & Continue',
+                  loading:updateProjectMutation.isLoading
                 }}
               />
             </PostDesignTeam>
