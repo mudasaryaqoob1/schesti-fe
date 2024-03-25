@@ -1,3 +1,5 @@
+import { ITrade } from "../trade.interface"
+
 export interface IBidManagement {
     user: string
     projectName: string
@@ -16,7 +18,7 @@ export interface IBidManagement {
     description: string;
     instruction: string;
     teamMembers: IBidManagementProjectTeamMember[]
-    selectedTrades: IBidManagementProjectTrade[]
+    selectedTrades: ITrade[] | string[];
     projectFiles: {
         url: string;
         extension: string;
@@ -29,22 +31,6 @@ export interface IBidManagement {
     updatedAt: string
 }
 
-export interface IBidManagementProjectTrade {
-    _id: string
-    user: string
-    tradeCategoryId: IBidManagementTradeCategoryId
-    name: string
-    createdAt: string
-    updatedAt: string
-}
-
-export interface IBidManagementTradeCategoryId {
-    _id: string
-    user: string
-    name: string
-    createdAt: string
-    updatedAt: string
-}
 
 export interface IBidManagementProjectTeamMember {
     user: string

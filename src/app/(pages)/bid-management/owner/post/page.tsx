@@ -53,6 +53,11 @@ const DesignTeamSchema = Yup.object().shape({
   teamMembers: Yup.array().of(Yup.string()).min(1).required('Team Members is required')
 });
 
+const TradesSchema = Yup.object().shape({
+  selectedTrades: Yup.array().of(Yup.string()).min(1).required('Trades is required')
+});
+
+
 
 function StaticTime() {
   return (
@@ -166,7 +171,7 @@ function CreatePost() {
     onSubmit(values) {
       updateProjectMutation.mutate(values)
     },
-    validationSchema: postProjectState.formStep === 1 ? ProjectDetailsSchema : postProjectState.formStep === 2 ? DesignTeamSchema : undefined,
+    validationSchema: postProjectState.formStep === 1 ? ProjectDetailsSchema : postProjectState.formStep === 2 ? DesignTeamSchema : postProjectState.formStep === 3 ? TradesSchema : undefined,
     enableReinitialize:true,
 
   })
@@ -278,6 +283,10 @@ function CreatePost() {
                 }}
                 submitButton={{
                   onClick() {
+                    if (mainFormik.values.teamMembers.length === 0) {
+                      toast.error("Please add team members");
+                      return;
+                    }
                     mainFormik.handleSubmit();
                     
                   },
@@ -286,7 +295,7 @@ function CreatePost() {
                 }}
               />
             </PostDesignTeam>
-          ) : postProjectState.formStep === 3 ? <PostProjectTrades >
+          ) : postProjectState.formStep === 3 ? <PostProjectTrades formik={mainFormik}>
             <PostProjectFooter
               cancelButton={{
                 text: 'Previous',
@@ -296,9 +305,14 @@ function CreatePost() {
               }}
               submitButton={{
                 onClick() {
-                  nextStep();
+                  if (mainFormik.values.selectedTrades.length === 0) {
+                    toast.error("Please select trades");
+                    return;
+                  }
+                  mainFormik.handleSubmit();
                 },
-                text: 'Next Step',
+                text: 'Save & Continue',
+                loading:updateProjectMutation.isLoading
               }}
               info={{
                 title: `75% Completed`,
