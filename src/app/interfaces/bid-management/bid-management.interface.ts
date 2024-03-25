@@ -10,8 +10,8 @@ export interface IBidManagement {
     projectType: string[]
     projectBuildingUse: string[]
     durationType: "days" | "years" | "months"
-    bidsUsers: IBidManagementUser[]
-    selectedTrades: IBidManagementTrade[]
+    teamMembers: IBidManagementProjectTeamMember[]
+    selectedTrades: IBidManagementProjectTrade[]
     projectFiles: {
         url: string;
         extension: string;
@@ -24,7 +24,7 @@ export interface IBidManagement {
     updatedAt: string
 }
 
-export interface IBidManagementTrade {
+export interface IBidManagementProjectTrade {
     _id: string
     user: string
     tradeCategoryId: IBidManagementTradeCategoryId
@@ -41,7 +41,7 @@ export interface IBidManagementTradeCategoryId {
     updatedAt: string
 }
 
-export interface IBidManagementUser {
+export interface IBidManagementProjectTeamMember {
     user: string
     name: string
     role: string

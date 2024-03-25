@@ -11,13 +11,15 @@ export const postProjectSlice = createSlice({
         },
         setFormStepAction: (state, action: PayloadAction<number>) => {
             state.formStep = action.payload;
+        },
+        resetPostProjectAction(state) {
+            state.project = null;
+            state.formStep = 0;
         }
     },
-    extraReducers() {
 
-    },
 });
 
-export const { setFormStepAction, setPostProjectAction } = postProjectSlice.actions;
+export const { setFormStepAction, setPostProjectAction, resetPostProjectAction } = postProjectSlice.actions;
 
 export default postProjectSlice.reducer;

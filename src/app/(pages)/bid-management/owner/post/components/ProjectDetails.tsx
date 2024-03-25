@@ -3,9 +3,12 @@ import { SelectComponent } from '@/app/component/customSelect/Select.component';
 import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { TextAreaComponent } from '@/app/component/textarea';
+import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
+import type { FormikProps } from 'formik';
 
 type Props = {
   children?: React.ReactNode;
+  formik: FormikProps<IBidManagement>
 };
 
 export function PostProjectDetails({ children }: Props) {

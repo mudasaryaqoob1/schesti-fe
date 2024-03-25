@@ -35,7 +35,20 @@ const BasicInformationSchema = Yup.object().shape({
   state: Yup.string().required('State is required'),
   zipCode: Yup.string().required('Zip Code is required'),
   status: Yup.string().required('Status is required')
-})
+});
+
+
+const ProjectDetailsSchema = Yup.object().shape({
+  projectType: Yup.array().of(Yup.string()).required('Project Type is required'),
+  projectBuildingUse: Yup.array().of(Yup.string()).required('Project Building Use is required'),
+  stage: Yup.string().required('Stage is required'),
+  estimatedStartDate: Yup.string().required('Estimated Start Date is required'),
+  estimatedDuration: Yup.string().required('Estimated Duration is required'),
+  durationType: Yup.mixed().oneOf(['days', 'weeks', 'months', 'years']).required('Duration Type is required'),
+  description: Yup.string().required('Description is required'),
+  instruction: Yup.string().required('Instruction is required'),
+});
+
 
 function StaticTime() {
   return (
@@ -141,6 +154,17 @@ function CreatePost() {
     enableReinitialize: true
   });
 
+
+  const formik = useFormik({
+    initialValues: {
+      ...postProjectState.project as IBidManagement
+    },
+    onSubmit(values) {
+      console.log(values);
+    },
+    validationSchema: postProjectState.formStep === 1 ? ProjectDetailsSchema : undefined
+  })
+
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       <div className="flex gap-4 items-center">
@@ -214,7 +238,7 @@ function CreatePost() {
               />
             </PostBasicInformation>
           ) : postProjectState.formStep === 1 ? (
-            <PostProjectDetails>
+            <PostProjectDetails formik={formik}>
               <PostProjectFooter
                 cancelButton={{
                   text: 'Previous',

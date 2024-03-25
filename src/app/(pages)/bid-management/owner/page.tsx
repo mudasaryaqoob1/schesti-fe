@@ -8,8 +8,15 @@ import { SearchOutlined } from "@ant-design/icons";
 import { Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import dummydata from './data.json';
+import { useRouter } from "next/navigation";
+import { Routes } from "@/app/utils/plans.utils";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { resetPostProjectAction } from "@/redux/post-project/post-project.slice";
 
 function Page() {
+    const router = useRouter();
+    const dispatch = useDispatch<AppDispatch>();
 
     const columns: ColumnsType<typeof dummydata[0]> = [
         {
@@ -103,6 +110,10 @@ function Page() {
                     iconheight={20}
                     iconwidth={20}
                     text="Post New Project"
+                    onClick={() => {
+                        dispatch(resetPostProjectAction());
+                        router.push(`${Routes["Bid Management"].Owner}/post`);
+                    }}
                 />
             </div>
         </div>
