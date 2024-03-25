@@ -8,8 +8,13 @@ export interface IBidManagement {
     country: string;
     constructionTypes: string[];
     projectType: string[]
-    projectBuildingUse: string[]
-    durationType: "days" | "years" | "months"
+    projectBuildingUse: string[];
+    stage: string;
+    estimatedStartDate: string;
+    estimatedDuration: string;
+    durationType: "days" | "years" | "months";
+    description: string;
+    instruction: string;
     teamMembers: IBidManagementProjectTeamMember[]
     selectedTrades: IBidManagementProjectTrade[]
     projectFiles: {

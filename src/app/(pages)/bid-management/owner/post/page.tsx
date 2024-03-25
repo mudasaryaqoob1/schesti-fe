@@ -39,8 +39,8 @@ const BasicInformationSchema = Yup.object().shape({
 
 
 const ProjectDetailsSchema = Yup.object().shape({
-  projectType: Yup.array().of(Yup.string()).required('Project Type is required'),
-  projectBuildingUse: Yup.array().of(Yup.string()).required('Project Building Use is required'),
+  projectType: Yup.array().of(Yup.string()).min(1).required('Project Type is required'),
+  projectBuildingUse: Yup.array().of(Yup.string()).min(1).required('Project Building Use is required'),
   stage: Yup.string().required('Stage is required'),
   estimatedStartDate: Yup.string().required('Estimated Start Date is required'),
   estimatedDuration: Yup.string().required('Estimated Duration is required'),
@@ -164,6 +164,10 @@ function CreatePost() {
     },
     validationSchema: postProjectState.formStep === 1 ? ProjectDetailsSchema : undefined
   })
+
+
+  console.log("Formik Values", formik.values);
+
 
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
