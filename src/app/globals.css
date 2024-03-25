@@ -122,6 +122,17 @@ a {
   color: transparent;
 }
 
+:where(.css-dev-only-do-not-override-dkbvqv).ant-color-picker-trigger {
+  padding: 0px !important;
+  min-width: 0px !important;
+  height: 0px !important;
+}
+
+:where(.css-dev-only-do-not-override-dkbvqv).ant-color-picker-trigger
+  .ant-color-picker-color-block {
+  width: 44px !important;
+  height: 36px !important;
+}
 .ant-table
   .ant-table-container
   .ant-table-content

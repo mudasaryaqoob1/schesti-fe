@@ -1,10 +1,15 @@
 'use client';
 import Button from '@/app/component/customButton/button';
-import WhiteButton from '@/app/component/customButton/white';
 import Image from 'next/image';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
+import CaptureComponent from '@/app/component/captureComponent';
+import { useState } from 'react';
+import generatePDF from '@/app/component/captureComponent/generatePdf';
 
 const Report = () => {
+  const [name, setName] = useState('');
+  const [save, setSave] = useState(0);
+  const [saveLoader, setSaveLoader] = useState(false);
   return (
     <>
       <section className="md:px-16 px-8 pb-4">
@@ -31,43 +36,44 @@ const Report = () => {
         </div>
 
         {/* search project */}
-        <div className="bg-white flex justify-between items-center mt-6 ">
-          <div
-            className="rounded-lg border border-Gainsboro bg-silverGray  h-[51px] 
-                        flex 
-                        items-center
-                            px-3"
-          >
-            <input
-              type="search"
-              name=""
-              id=""
-              placeholder="Enter project name"
-              className="w-full h-full
-          bg-transparent outline-none"
-            />
-          </div>
-          <div className="flex flex-row gap-3">
-            <div>
-              <WhiteButton
-                text="Generate with AI"
-                className="!text-goldenrodYellow !border-goldenrodYellow"
-
-                //   onClick={() => router.push('/createclient')}
+        <div className="bg-white flex justify-between items-end mt-6">
+          <div className="flex items-end space-x-4">
+            <div className="rounded-lg border border-Gainsboro bg-silverGray h-[51px] flex items-center px-3">
+              <input
+                type="name"
+                placeholder="Enter project name"
+                className="w-[350px] h-full bg-transparent outline-none"
+                onChange={(e) => setName(e.target.value)}
               />
             </div>
             <div>
               <Button
                 text="Generate Report"
-                icon="/plus.svg"
-                iconwidth={20}
-                iconheight={20}
-                //   onClick={() => router.push('/createclient')}
+                onClick={() => generatePDF('capture')}
               />
             </div>
           </div>
+          <div>
+            <Button
+              text="Save"
+              disabled={saveLoader || save > 0}
+              isLoading={saveLoader}
+              onClick={() => {
+                setSaveLoader(true);
+                setSave(1);
+              }}
+              className="disabled:opacity-50 !py-2"
+            />
+          </div>
         </div>
       </section>
+      <CaptureComponent
+        name={name}
+        save={save}
+        onSaveSuccess={() => {
+          setSaveLoader(false);
+        }}
+      />
     </>
   );
 };

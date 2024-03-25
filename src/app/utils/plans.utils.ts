@@ -10,8 +10,8 @@ export const Routes = {
     Partners: '/crm/partners',
   },
   'Quantity-Takeoff': {
-    Manual: '/quantity-takeoff/manual',
-    'AI-Takeoff': '/quantity-takeoff/ai-takeoff',
+    Manual: '/takeoff',
+    'AI-Takeoff': '#',
   },
   Estimates: {
     'Estimates-Requests': '/estimates/requests',
@@ -24,7 +24,7 @@ export const Routes = {
   },
   Schedule: '/schedule',
   Meetings: '/meeting',
-  Networking: '/networking',
+  Networking: '#',
 };
 
 export const OtherRoutes = {

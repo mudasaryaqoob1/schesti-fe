@@ -162,7 +162,7 @@ const EditEstimateRequest = () => {
           );
           if (result.statusCode == 200) {
             setIsLoading(false);
-            router.push('/estimates');
+            router.push('/estimates/requests');
           } else {
             setIsLoading(false);
             toast.error(result.message);
@@ -746,7 +746,7 @@ const EditEstimateRequest = () => {
                     <CustomButton
                       className="!border-celestialGray shadow-scenarySubdued2 !text-graphiteGray !bg-snowWhite !px-5 !py-3 w-full"
                       text="Cancel"
-                      onClick={() => router.push('/estimates')}
+                      onClick={() => router.push('/estimates/requests')}
                     />
                   </div>
                   <div className="w-[116px]">

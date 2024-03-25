@@ -81,7 +81,7 @@ export function ItemsTable({ invoice }: Props) {
         <View
           style={[styles.subtotalContainer, styles.divider, { marginTop: 5 }]}
         >
-          <Text style={styles.text}>Profit And Overhead</Text>
+          <Text style={[styles.text, { marginRight: 35 }]}>Profit And Overhead</Text>
           <Text style={styles.text}>{invoice.profitAndOverhead}%</Text>
         </View>
 
