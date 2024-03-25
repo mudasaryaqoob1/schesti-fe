@@ -181,7 +181,7 @@ export function PostBasicInformation({ children, formik }: Props) {
             }
           }}
           hasError={Boolean(formik.errors.constructionTypes)}
-          errorMessage={formik.errors.constructionTypes}
+          errorMessage={formik.errors.constructionTypes as string}
         />
       </div>
       {children}

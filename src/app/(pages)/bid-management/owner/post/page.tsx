@@ -139,7 +139,7 @@ function CreatePost() {
       city: '',
       zipCode: '',
       state: '',
-      constructionTypes: ['Civil'] as string | string[],
+      constructionTypes: ['Civil'] as string[],
       address: '',
       status: 'draft' as CreateOwnerPostProjectType['status'],
     },
