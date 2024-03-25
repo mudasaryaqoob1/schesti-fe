@@ -54,6 +54,9 @@ class AuthService extends HttpService {
   signupHandler = (data: ISignUpInterface): Promise<IResponseInterface<any>> =>
     this.post(`${this.prefix}/signup`, data);
 
+  verifyUserEmail = (token: string): Promise<IResponseInterface<any>> =>
+    this.get(`${this.prefix}/verify-user-email/${token}`);
+
   loginHandler = (
     data: ILogInInterface
   ): Promise<

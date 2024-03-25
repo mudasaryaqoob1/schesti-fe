@@ -148,3 +148,17 @@ export const addSelectedTrades = createAsyncThunk(
     }
   }
 );
+
+export const verifyUserEmail = createAsyncThunk(
+  'auth/verifyUserEmail',
+  async (data: string, thunkAPI) => {
+    try {
+      const response = await authService.verifyUserEmail(data);
+      return response;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || 'Error during login'
+      );
+    }
+  }
+);
