@@ -155,18 +155,16 @@ function CreatePost() {
   });
 
 
-  const formik = useFormik({
+  const mainFormik = useFormik({
     initialValues: {
       ...postProjectState.project as IBidManagement
     },
     onSubmit(values) {
-      console.log(values);
+      updateProjectMutation.mutate(values)
     },
     validationSchema: postProjectState.formStep === 1 ? ProjectDetailsSchema : undefined
   })
 
-
-  console.log("Formik Values", formik.values);
 
 
   return (
@@ -242,7 +240,7 @@ function CreatePost() {
               />
             </PostBasicInformation>
           ) : postProjectState.formStep === 1 ? (
-            <PostProjectDetails formik={formik}>
+            <PostProjectDetails formik={mainFormik}>
               <PostProjectFooter
                 cancelButton={{
                   text: 'Previous',
@@ -252,9 +250,10 @@ function CreatePost() {
                 }}
                 submitButton={{
                   onClick() {
-                    nextStep();
+                    mainFormik.handleSubmit()
                   },
-                  text: 'Next Step',
+                  text: 'Save & Continue',
+                  loading: updateProjectMutation.isLoading
                 }}
                 info={{
                   title: `25% Completed`,
