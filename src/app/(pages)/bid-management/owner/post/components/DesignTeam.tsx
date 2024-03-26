@@ -4,20 +4,22 @@ import { InputComponent } from '@/app/component/customInput/Input';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
-import { IBidManagement, IBidManagementProjectTeamMember } from '@/app/interfaces/bid-management/bid-management.interface';
+import { IBidManagementProjectTeamMember } from '@/app/interfaces/bid-management/bid-management.interface';
 import { CreateTeamMemberType, bidManagementService } from '@/app/services/bid-management.service';
-import { Drawer, Table, type TableProps } from 'antd';
+import { postProjectActions } from '@/redux/post-project/post-project.slice';
+import { AppDispatch, RootState } from '@/redux/store';
+import { Drawer, Dropdown, Table, type TableProps } from 'antd';
 import { AxiosError } from 'axios';
-import { type FormikProps, useFormik } from 'formik';
+import { useFormik } from 'formik';
 import Image from 'next/image';
 import { useState } from 'react';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, } from 'react-query';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 
 type Props = {
     children?: React.ReactNode;
-    mainFormik:FormikProps<IBidManagement>
 };
 
 const DesignTeamMemberSchema = Yup.object().shape({
@@ -25,49 +27,16 @@ const DesignTeamMemberSchema = Yup.object().shape({
     role: Yup.string().required('Role is required'),
     companyName: Yup.string().required('Company Name is required'),
     location: Yup.string().required('Location is required'),
-    phoneNumber: Yup.string().min(11,"Phone Number must be at least 11 digits").max(14,"Phone Number must be between 11 and 14 digits").required('Phone Number is required'),
+    phoneNumber: Yup.string().min(11, "Phone Number must be at least 11 digits").max(14, "Phone Number must be between 11 and 14 digits").required('Phone Number is required'),
     email: Yup.string().email('Invalid email').required('Email is required'),
 });
 
-const columns: TableProps['columns'] = [
-    {
-        title: 'Name',
-        dataIndex: 'name',
-        key: 'name',
-    },
-    {
-        title: 'Role',
-        dataIndex: 'role',
-        key: 'role',
-    },
-    {
-        title: 'Company Name',
-        dataIndex: 'companyName',
-        key: 'companyName',
-    },
-    {
-        title: 'Location',
-        dataIndex: 'location',
-        key: 'location',
-    },
-    {
-        title: 'Phone',
-        dataIndex: 'phoneNumber',
-        key: 'phoneNumber',
-    },
-    {
-        title: 'Action',
-        key: 'action',
-        render() {
-            return "Actions";
-        },
-    },
-];
 
-export function PostDesignTeam({mainFormik, children }: Props) {
+export function PostDesignTeam({ children }: Props) {
     const [open, setOpen] = useState(false);
-    const [teamMembers,setTeamMembers] = useState<IBidManagementProjectTeamMember[]>([]);
-
+    const dispatch = useDispatch<AppDispatch>();
+    const postProjectState = useSelector((state: RootState) => state.postProject);
+    const [selectedTeamMember, setSelectedTeamMember] = useState<IBidManagementProjectTeamMember | null>(null);
     const showDrawer = () => {
         setOpen(true);
     };
@@ -75,31 +44,18 @@ export function PostDesignTeam({mainFormik, children }: Props) {
     const onClose = () => {
         setOpen(false);
     };
-    
-    const projectQuery = useQuery<IResponseInterface<{project:IBidManagement}>,AxiosError<{message:string}>>(['project',mainFormik.values._id],() => bidManagementService.httpGetOwnerProjectById(mainFormik.values._id),{
-        enabled:!!mainFormik.values._id,
-        onSuccess(res){
-            if (res.data && res.data.project) {
-                setTeamMembers(res.data.project.teamMembers);
-            }
-        }
-    })
 
-    const createTeamMemberMutation = useMutation<IResponseInterface<{user:IBidManagementProjectTeamMember}>,AxiosError<{message:string}>,CreateTeamMemberType>({
-        mutationKey:"createTeamMember",
-        mutationFn:(values:CreateTeamMemberType) => {
+
+
+    const createTeamMemberMutation = useMutation<IResponseInterface<{ user: IBidManagementProjectTeamMember }>, AxiosError<{ message: string }>, CreateTeamMemberType>({
+        mutationKey: "createTeamMember",
+        mutationFn: (values: CreateTeamMemberType) => {
             return bidManagementService.httpCreateTeamDesignMember(values);
         },
         onSuccess(res) {
             if (res.data && res.data.user) {
                 toast.success("Team Member Added Successfully");
-                setTeamMembers([...teamMembers,res.data.user]);
-                if (!mainFormik.values.teamMembers) {
-                    mainFormik.setFieldValue('teamMembers', [res.data.user._id]);
-                }
-                else{
-                    mainFormik.setFieldValue('teamMembers', [...mainFormik.values.teamMembers, res.data.user._id]);
-                }
+                dispatch(postProjectActions.pushTeamMemberAction(res.data.user));
             }
         },
         onError(error) {
@@ -107,24 +63,132 @@ export function PostDesignTeam({mainFormik, children }: Props) {
                 toast.error(error.response?.data.message);
             }
         },
-    })
+    });
+
+    const updateTeamMemberMutation = useMutation<IResponseInterface<{ updatedUser: IBidManagementProjectTeamMember }>, AxiosError<{ message: string }>, CreateTeamMemberType & { userId: string }>({
+        mutationKey: "updateTeamMember",
+        mutationFn: (values) => {
+            return bidManagementService.httpUpdateTeamDesignMember(values);
+        },
+        onError(error) {
+            if (error.response?.data) {
+                toast.error(error.response?.data.message);
+            }
+        },
+        onSuccess(res) {
+            if (res.data && res.data.updatedUser) {
+                // update the teamMembers in redux state
+                dispatch(postProjectActions.updateTeamMemberAction(res.data.updatedUser));
+                toast.success("Team Member Updated Successfully");
+            }
+        },
+    });
+
+    const deleteTeamMemberMutation = useMutation<IResponseInterface<{ deletedUser: IBidManagementProjectTeamMember }>, AxiosError<{ message: string }>, { userId: string }>({
+        mutationKey: "deleteTeamMember",
+        mutationFn: (values) => {
+            return bidManagementService.httpDeleteTeamDesignMember(values.userId);
+        },
+        onError(error) {
+            if (error.response?.data) {
+                toast.error(error.response?.data.message);
+            }
+        },
+        onSuccess(res) {
+            if (res.data && res.data.deletedUser) {
+                // update the teamMembers in redux state
+                dispatch(postProjectActions.removeTeamMemberAction(res.data.deletedUser._id));
+                toast.success("Team Member Deleted Successfully");
+            }
+        },
+    });
 
 
 
     const designTeamFormik = useFormik({
-        initialValues: {
-            name: '',
-            role: '',
-            companyName: '',
-            location: '',
-            phoneNumber: '',
-            email: '',
-        },
+        initialValues: selectedTeamMember ? { ...selectedTeamMember }
+            : {
+                name: '',
+                role: '',
+                companyName: '',
+                location: '',
+                phoneNumber: '',
+                email: '',
+            },
         validationSchema: DesignTeamMemberSchema,
         onSubmit: values => {
-            createTeamMemberMutation.mutate(values);
+            if (!selectedTeamMember) {
+                createTeamMemberMutation.mutate(values);
+            } else {
+                updateTeamMemberMutation.mutate({ ...values, userId: selectedTeamMember._id });
+            }
         },
+        enableReinitialize: true
     })
+    const columns: TableProps['columns'] = [
+        {
+            title: 'Name',
+            dataIndex: 'name',
+            key: 'name',
+        },
+        {
+            title: 'Role',
+            dataIndex: 'role',
+            key: 'role',
+        },
+        {
+            title: 'Company Name',
+            dataIndex: 'companyName',
+            key: 'companyName',
+        },
+        {
+            title: 'Location',
+            dataIndex: 'location',
+            key: 'location',
+        },
+        {
+            title: 'Phone',
+            dataIndex: 'phoneNumber',
+            key: 'phoneNumber',
+        },
+        {
+            title: 'Action',
+            key: 'action',
+            render(v, record) {
+                return <Dropdown
+                    menu={{
+                        items: [
+                            {
+                                key: 'edit',
+                                label: <p>Edit</p>,
+                            },
+                            {
+                                key: 'delete',
+                                label: <p>Delete</p>,
+                            },
+                        ],
+                        onClick: ({ key }) => {
+                            if (key === 'edit') {
+                                setSelectedTeamMember(record);
+                                showDrawer();
+                            }
+
+                        },
+                    }}
+                    placement="bottomRight"
+                    trigger={['click']}
+                >
+                    <Image
+                        src={'/menuIcon.svg'}
+                        alt="logo white icon"
+                        width={20}
+                        height={20}
+                        className="active:scale-105 cursor-pointer"
+                    />
+                </Dropdown>
+            },
+        },
+    ];
 
     return (
         <div className=" bg-white shadow-2xl rounded-xl border p-4">
@@ -237,7 +301,7 @@ export function PostDesignTeam({mainFormik, children }: Props) {
 
                     <div className="flex items-center justify-between">
                         <WhiteButton text="Cancel" className="!w-40" onClick={onClose} />
-                        <CustomButton text="Save" className="!w-40" 
+                        <CustomButton text="Save" className="!w-40"
                             isLoading={createTeamMemberMutation.isLoading}
                             loadingText='Saving...'
                             onClick={() => designTeamFormik.handleSubmit()}
@@ -247,12 +311,11 @@ export function PostDesignTeam({mainFormik, children }: Props) {
             </Drawer>
 
             <div className="mt-5">
-                <Table 
-                columns={columns}
-                 bordered 
-                 dataSource={teamMembers}
-                 loading={projectQuery.isLoading}
-                 />
+                <Table
+                    columns={columns}
+                    bordered
+                    dataSource={postProjectState.teamMembers}
+                />
             </div>
 
             {children}

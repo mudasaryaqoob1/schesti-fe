@@ -71,7 +71,7 @@ const FilesSchema = Yup.object().shape({
 });
 
 const FinalizeProjectSchema = Yup.object().shape({
-  status:Yup.mixed().oneOf(['draft','archived','expired','active']).required('Status is required')
+  status: Yup.mixed().oneOf(['draft', 'archived', 'expired', 'active']).required('Status is required')
 })
 
 
@@ -159,8 +159,8 @@ function CreatePost() {
           toast.success("Project has been posted successfully");
           router.push(`${Routes['Bid Management'].Owner}`);
           dispatch(resetPostProjectAction());
-          
-        }else{
+
+        } else {
           dispatch(setPostProjectAction(res.data.updatedProject));
           nextStep();
         }
@@ -334,7 +334,7 @@ function CreatePost() {
               />
             </PostProjectDetails>
           ) : postProjectState.formStep === 2 ? (
-            <PostDesignTeam mainFormik={mainFormik}>
+            <PostDesignTeam >
               <PostProjectFooter
                 cancelButton={{
                   text: 'Previous',
@@ -344,10 +344,12 @@ function CreatePost() {
                 }}
                 submitButton={{
                   onClick() {
+                    mainFormik.setFieldValue("teamMembers", postProjectState.teamMembers.map(member => member._id));
                     if (mainFormik.values.teamMembers.length === 0) {
                       toast.error("Please add team members");
                       return;
                     }
+
                     mainFormik.handleSubmit();
 
                   },
@@ -397,16 +399,16 @@ function CreatePost() {
                     toast.error("Please upload files");
                     return;
                   }
-                  if(files.length === mainFormik.values.projectFiles.length){
+                  if (files.length === mainFormik.values.projectFiles.length) {
                     nextStep();
                     return;
-                  }else{
+                  } else {
                     uploadFilesHandler().then(() => {
                       mainFormik.handleSubmit();
                     });
                   }
                 },
-                text: files.length === mainFormik.values.projectFiles.length ? "Continue" :'Upload & Continue',
+                text: files.length === mainFormik.values.projectFiles.length ? "Continue" : 'Upload & Continue',
                 loading: updateProjectMutation.isLoading
               }}
               info={{
@@ -424,7 +426,7 @@ function CreatePost() {
               }}
               submitButton={{
                 onClick() {
-                  mainFormik.setFieldValue("status","active");
+                  mainFormik.setFieldValue("status", "active");
                   if (mainFormik.errors.status) {
                     toast.error("Cannot update the status");
                   }
