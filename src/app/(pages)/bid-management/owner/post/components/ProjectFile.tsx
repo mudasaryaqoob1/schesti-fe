@@ -1,22 +1,46 @@
 import TertiaryHeading from "@/app/component/headings/tertiary";
-import type { RcFile } from "antd/es/upload";
+import type { RcFile, UploadFile } from "antd/es/upload";
 import Dragger from "antd/es/upload/Dragger";
 import Image from "next/image";
-import { useState } from "react";
+import { Dispatch, SetStateAction, } from "react";
 import { toast } from "react-toastify";
+import type { PostProjectFileProps } from "../page";
+import { Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 
 type Props = {
     children?: React.ReactNode;
+    setFiles: Dispatch<SetStateAction<PostProjectFileProps[]>>;
+    files: PostProjectFileProps[]
 }
-export function ProjectUploadFiles({ children }: Props) {
-    const [files, setFiles] = useState<RcFile[]>([]);
+export function ProjectUploadFiles({ files, setFiles, children }: Props) {
 
-
-    function removeFile(file: RcFile) {
-        const newFiles = files.filter(f => f.uid !== file.uid);
+    function removeFile(id: string) {
+        const newFiles = files.filter(f => {
+            // remove invokeFileObject if f.uid === id
+            if (f.uid === id){
+                URL.revokeObjectURL(f.fileUrl);
+            }
+            return f.uid !== id;
+        });
         setFiles(newFiles);
     }
-    return <div className=" bg-white shadow-2xl rounded-xl border p-4">
+
+    function addFiles(newFiles: RcFile[] | UploadFile[]) {
+        
+        const updatedFiles = newFiles.map(file => {
+            let fileUrl = '';
+        if(file && "originFileObj" in file){
+            fileUrl = URL.createObjectURL((file as UploadFile).originFileObj!);
+        }else{
+            fileUrl = URL.createObjectURL(file as RcFile)
+        }
+           return ({ ...file, uploading: false,fileUrl})
+        });
+        setFiles(updatedFiles);
+    }
+  
+  return <div className=" bg-white shadow-2xl rounded-xl border p-4">
         <TertiaryHeading
             title="Upload File"
             className="text-[20px] leading-[30px]"
@@ -35,7 +59,7 @@ export function ProjectUploadFiles({ children }: Props) {
                             return false;
                         }
                     }
-                    setFiles([...FileList]);
+                    // addFiles(FileList);
                     return false;
                 }}
                 style={{
@@ -44,6 +68,9 @@ export function ProjectUploadFiles({ children }: Props) {
                 }}
                 itemRender={() => {
                     return null
+                }}
+                onChange={({ fileList }) => {
+                    addFiles(fileList)
                 }}
             >
                 <p className="ant-upload-drag-icon">
@@ -60,8 +87,8 @@ export function ProjectUploadFiles({ children }: Props) {
                 </p>
             </Dragger>
 
-            <div className="grid grid-cols-4 gap-4 mt-9">
-                {files.map(file => {
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4 mt-9">
+                {files.map((file: PostProjectFileProps) => {
                     return <div key={file.uid} className="border rounded">
                         <div className="bg-[#F4EBFF] flex items-center justify-between px-2 py-1 ">
                             <div className="flex items-center space-x-3">
@@ -75,21 +102,23 @@ export function ProjectUploadFiles({ children }: Props) {
                                     {file.name.slice(0, 12)}.{file.name.split('.').pop()}
                                 </p>
                             </div>
-                            <Image
+                            {file.uploading ? <Spin
+                                indicator={<LoadingOutlined style={{ fontSize: 24 }}
+                                    spin />}
+                            /> : <Image
                                 src={'/trash.svg'}
                                 width={16}
                                 height={16}
                                 alt="close"
                                 className="cursor-pointer"
-                                onClick={() => removeFile(file)}
-                            />
+                                onClick={() => removeFile(file.uid)}
+                            />}
                         </div>
-                        <div className="p-2 h-[190px] w-[220px] relative">
-                            {file.type.includes('image') ? <Image
+                        <div className="p-2 w-auto h-[190px] xl:w-[230px] relative">
+                            {file && file.type && file.type.includes('image') ? <Image
                                 alt="image"
-                                src={URL.createObjectURL(file)}
-                                layout="fill"
-                                objectFit="cover"
+                                src={file.fileUrl}
+                                fill
                             /> :
                                 <div className="relative mt-10 w-[100px] h-[100px] mx-auto">
                                     <Image

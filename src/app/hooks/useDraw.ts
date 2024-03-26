@@ -227,7 +227,7 @@ const useDraw = () => {
 
     const distance = Math.sqrt(
       Math.pow(convertPxIntoInches(x2 - x1) * xScaleMultiplier, 2) +
-        Math.pow(convertPxIntoInches(y2 - y1) * yScaleMultiplier, 2)
+      Math.pow(convertPxIntoInches(y2 - y1) * yScaleMultiplier, 2)
     );
 
     if (format) {

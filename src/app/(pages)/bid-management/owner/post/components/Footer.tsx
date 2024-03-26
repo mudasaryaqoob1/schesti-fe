@@ -2,15 +2,16 @@ import WhiteButton from '@/app/component/customButton/white';
 import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 
+
+type ButtonProps = {
+  text: string;
+  onClick: () => void;
+  loading?: boolean;
+}
+
 type Props = {
-  cancelButton: {
-    text: string;
-    onClick(): void;
-  };
-  submitButton: {
-    text: string;
-    onClick(): void;
-  };
+  cancelButton: ButtonProps;
+  submitButton: ButtonProps;
   info?: {
     title: string;
     description: string;
@@ -45,6 +46,8 @@ export function PostProjectFooter({ cancelButton, submitButton, info }: Props) {
             text={submitButton.text}
             onClick={submitButton.onClick}
             className="!w-44"
+            isLoading={submitButton.loading}
+            loadingText='Loading...'
           />
         </div>
       </div>

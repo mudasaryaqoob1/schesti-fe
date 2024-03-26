@@ -2,15 +2,23 @@ import { InputComponent } from "@/app/component/customInput/Input";
 import { SelectComponent } from "@/app/component/customSelect/Select.component";
 import SenaryHeading from "@/app/component/headings/senaryHeading";
 import TertiaryHeading from "@/app/component/headings/tertiary";
+import { IBidManagement } from "@/app/interfaces/bid-management/bid-management.interface";
 import { Checkbox, Divider } from "antd";
 import Dragger from "antd/es/upload/Dragger";
+import type { FormikProps } from "formik";
+import moment from "moment";
 import Image from "next/image";
+import { getTimezoneFromCountryAndState } from "@/app/utils/date.utils";
 
 type Props = {
     children?: React.ReactNode;
+    formik:FormikProps<IBidManagement>
 }
 
-export function PostFinalize({ children }: Props) {
+export function PostFinalize({ formik, children }: Props) {
+    const {values} = formik;
+
+    
     return <div className="space-y-6">
         <div className=" bg-white shadow-2xl rounded-xl border p-4">
 
@@ -28,28 +36,28 @@ export function PostFinalize({ children }: Props) {
                             title="Project Name"
                             className="text-[14px] leading-6 text-[#98A2B3] font-normal"
                         />
-                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">Seabreeza Village comercial Developemnst - convenience store</p>
+                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">{values.projectName}</p>
                     </div>
                     <div className="space-y-2">
                         <SenaryHeading
                             title="Address"
                             className="text-[14px] leading-6 text-[#98A2B3] font-normal"
                         />
-                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">Address</p>
+                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">{values.address}</p>
                     </div>
                     <div className="space-y-2">
                         <SenaryHeading
                             title="Zip Code"
                             className="text-[14px] leading-6 text-[#98A2B3] font-normal"
                         />
-                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">63100</p>
+                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">{values.zipCode}</p>
                     </div>
                     <div className="space-y-2">
                         <SenaryHeading
                             title="City"
                             className="text-[14px] leading-6 text-[#98A2B3] font-normal"
                         />
-                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">United Kingdom, UK</p>
+                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">{values.city}</p>
                     </div>
 
 
@@ -69,7 +77,9 @@ export function PostFinalize({ children }: Props) {
                             title="Estimated Start Date: "
                             className="text-[14px] leading-6 text-[#98A2B3] font-normal"
                         />
-                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">12 May 2022, 12:40</p>
+                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">
+                            {moment(values.estimatedStartDate).format('DD MMM YYYY')}
+                            </p>
                     </div>
                     <div className="space-y-2">
                         <SenaryHeading
@@ -83,7 +93,9 @@ export function PostFinalize({ children }: Props) {
                             title="Time Zone"
                             className="text-[14px] leading-6 text-[#98A2B3] font-normal"
                         />
-                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">Eastern Time</p>
+                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">
+                            {getTimezoneFromCountryAndState(values.country,values.state)}
+                            </p>
                     </div>
 
 
@@ -96,7 +108,7 @@ export function PostFinalize({ children }: Props) {
                             title="Duration"
                             className="text-[14px] leading-6 text-[#98A2B3] font-normal"
                         />
-                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">12 days</p>
+                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">{values.estimatedDuration} {values.durationType}</p>
                     </div>
                     <div className="space-y-2">
                         <SenaryHeading
@@ -110,14 +122,14 @@ export function PostFinalize({ children }: Props) {
                             title="Project Value"
                             className="text-[14px] leading-6 text-[#98A2B3] font-normal"
                         />
-                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">$2400</p>
+                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">$2,400</p>
                     </div>
                     <div className="space-y-2">
                         <SenaryHeading
                             title="Stage"
                             className="text-[14px] leading-6 text-[#98A2B3] font-normal"
                         />
-                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">GC Awarded/Sub Bidding</p>
+                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">{values.stage}</p>
                     </div>
 
 
@@ -133,15 +145,10 @@ export function PostFinalize({ children }: Props) {
                             />
 
                             <div className="flex items-center space-x-3">
-                                <p className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4">
-                                    Open Shop
+                               {values.projectType.map(pt =>  <p key={pt} className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4">
+                                    {pt}
                                 </p>
-                                <p className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4">
-                                    Private
-                                </p>
-                                <p className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4">
-                                    Union
-                                </p>
+                                )}
                             </div>
                         </div>
                         <div className="space-y-[8px]">
@@ -151,15 +158,9 @@ export function PostFinalize({ children }: Props) {
                             />
 
                             <div className="flex items-center space-x-3">
-                                <p className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4">
-                                    Community Center
-                                </p>
-                                <p className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4">
-                                    Education/School/University
-                                </p>
-                                <p className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4">
-                                    Fire/Police Station
-                                </p>
+                                {values.projectBuildingUse.map(building => <p key={building} className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4">
+                                    {building}
+                                </p>)}
                             </div>
                         </div>
                     </div>
@@ -186,20 +187,14 @@ export function PostFinalize({ children }: Props) {
                         </div>
                         <div className="space-y-[8px]">
                             <SenaryHeading
-                                title="Contraction Type"
+                                title="Construction Type"
                                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
                             />
 
                             <div className="flex items-center space-x-3">
-                                <p className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4">
-                                    Civil
-                                </p>
-                                <p className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4">
-                                    Government / Public
-                                </p>
-                                <p className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4">
-                                    Renovation/Remodel/Repair
-                                </p>
+                                {values.constructionTypes.map(ct => <p key={ct} className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4">
+                                    {ct}
+                                </p>)}
                             </div>
                         </div>
                     </div>
@@ -211,14 +206,14 @@ export function PostFinalize({ children }: Props) {
                             title="Project Description"
                             className="text-[14px] leading-6 text-[#98A2B3] font-normal"
                         />
-                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores consequatur incidunt a, omnis dolorem eos minus rerum, enim voluptates sint vel nulla reiciendis adipisci sit aut laboriosam tenetur ipsa ea?</p>
+                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">{values.description}</p>
                     </div>
                     <div className="space-y-2">
                         <SenaryHeading
                             title="Special Instructions"
                             className="text-[14px] leading-6 text-[#98A2B3] font-normal"
                         />
-                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">Lorem ipsum dolor sit amet consectetur adipisicing elit. Maiores consequatur incidunt a, omnis dolorem eos minus rerum, enim voluptates sint vel nulla reiciendis adipisci sit aut laboriosam tenetur ipsa ea?</p>
+                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">{values.instruction}</p>
                     </div>
                 </div>
             </fieldset>

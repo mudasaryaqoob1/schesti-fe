@@ -58,7 +58,7 @@ export const withAuth = (
       },
     });
 
-    const userRoles: string[] = user.user?.roles || [];
+    const userRoles: string[] = user?.user?.roles || [];
     const userPlanFeatures = userPlan
       ? userPlan.features.split(',')
       : ([] as string[]);

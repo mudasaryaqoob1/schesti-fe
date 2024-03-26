@@ -3,7 +3,6 @@ import Description from '@/app/component/description';
 import { withAuth } from '@/app/hoc/withAuth';
 import { ConfigProvider, Steps, type StepsProps } from 'antd';
 import Image from 'next/image';
-import { useState } from 'react';
 import { PostBasicInformation } from './components/BasicInformation';
 import { PostProjectFooter } from './components/Footer';
 import { PostProjectDetails } from './components/ProjectDetails';
@@ -11,8 +10,71 @@ import { PostDesignTeam } from './components/DesignTeam';
 import { PostProjectTrades } from './components/ProjectTrades';
 import { ProjectUploadFiles } from './components/ProjectFile';
 import { PostFinalize } from './components/PostFinalize';
-import { DeletePopup } from './components/DeletePopup';
+import { useFormik } from 'formik';
+import { useMutation } from 'react-query';
+import { CreateOwnerPostProjectType, bidManagementService } from '@/app/services/bid-management.service';
+import * as Yup from 'yup';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/redux/store';
+import { resetPostProjectAction, setFormStepAction, setPostProjectAction } from '@/redux/post-project/post-project.slice';
+import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
+import { IResponseInterface } from '@/app/interfaces/api-response.interface';
+import { AxiosError } from 'axios';
+import { toast } from 'react-toastify';
+import { useState } from 'react';
+import type { RcFile, UploadFile } from 'antd/es/upload';
+import AwsS3 from '@/app/utils/S3Intergration';
+import { useRouter } from 'next/navigation';
+import { Routes } from '@/app/utils/plans.utils';
+
+// import { DeletePopup } from './components/DeletePopup';
 // import { PostProjectCongratulations } from './components/PostProjectCongratuslations';
+
+
+const BasicInformationSchema = Yup.object().shape({
+  address: Yup.string().required('Address is required'),
+  city: Yup.string().required('City is required'),
+  constructionTypes: Yup.array().of(Yup.string()).required('Construction Type is required'),
+  country: Yup.string().required('Country is required'),
+  projectName: Yup.string().required('Project Name is required'),
+  state: Yup.string().required('State is required'),
+  zipCode: Yup.string().required('Zip Code is required'),
+  status: Yup.string().required('Status is required')
+});
+
+
+const ProjectDetailsSchema = Yup.object().shape({
+  projectType: Yup.array().of(Yup.string()).min(1).required('Project Type is required'),
+  projectBuildingUse: Yup.array().of(Yup.string()).min(1).required('Project Building Use is required'),
+  stage: Yup.string().required('Stage is required'),
+  estimatedStartDate: Yup.string().required('Estimated Start Date is required'),
+  estimatedDuration: Yup.string().required('Estimated Duration is required'),
+  durationType: Yup.mixed().oneOf(['days', 'weeks', 'months', 'years']).required('Duration Type is required'),
+  description: Yup.string().required('Description is required'),
+  instruction: Yup.string().required('Instruction is required'),
+});
+
+const DesignTeamSchema = Yup.object().shape({
+  teamMembers: Yup.array().of(Yup.string()).min(1).required('Team Members is required')
+});
+
+const TradesSchema = Yup.object().shape({
+  selectedTrades: Yup.array().of(Yup.string()).min(1).required('Trades is required')
+});
+
+const FilesSchema = Yup.object().shape({
+  projectFiles: Yup.array().of(Yup.object().shape({
+    url: Yup.string().required('Url is required'),
+    extension: Yup.string().required('Extension is required'),
+    type: Yup.string().required('Type is required')
+  })).min(1).required('Files are required')
+});
+
+const FinalizeProjectSchema = Yup.object().shape({
+  status: Yup.mixed().oneOf(['draft', 'archived', 'expired', 'active']).required('Status is required')
+})
+
+
 
 function StaticTime() {
   return (
@@ -55,16 +117,127 @@ let stepItems: StepsProps['items'] = [
   },
 ];
 
-function CreatePost() {
-  const [current, setCurrent] = useState(0);
+export type PostProjectFileProps = (RcFile | UploadFile) & {
+  uploading: boolean;
+  fileUrl: string;
+};
 
+function CreatePost() {
+  const postProjectState = useSelector((state: RootState) => state.postProject);
+  const [files, setFiles] = useState<PostProjectFileProps[]>([]);
+  const router = useRouter();
+
+  const dispatch = useDispatch<AppDispatch>();
   const nextStep = () => {
-    setCurrent(current + 1);
+    dispatch(setFormStepAction(postProjectState.formStep + 1));
   };
 
   const prevStep = () => {
-    setCurrent(current - 1);
+    dispatch(setFormStepAction(postProjectState.formStep - 1));
   };
+
+  const createProjectMutation = useMutation<IResponseInterface<{ createdProject: IBidManagement }>, AxiosError<{ message: string }>, CreateOwnerPostProjectType>({
+    mutationFn: (values: CreateOwnerPostProjectType) => bidManagementService.httpCreateBidPostProject(values),
+    onSuccess(res,) {
+      console.log("Create Project Data", res);
+      if (res.data && res.data.createdProject) {
+        dispatch(setPostProjectAction(res.data.createdProject));
+        nextStep();
+      }
+    },
+    onError(error) {
+      toast.error(error.response?.data?.message || "Something went wrong")
+    },
+  });
+
+  const updateProjectMutation = useMutation<IResponseInterface<{ updatedProject: IBidManagement }>, AxiosError<{ message: string }>, Partial<IBidManagement>>({
+    mutationKey: "update-post-project",
+    mutationFn: (values) => bidManagementService.httpUpdateBidPostProject(postProjectState.project?._id || "", values),
+    onSuccess(res) {
+      if (res.data && res.data.updatedProject) {
+        if (postProjectState.formStep === 5) {
+          toast.success("Project has been posted successfully");
+          router.push(`${Routes['Bid Management'].Owner}`);
+          dispatch(resetPostProjectAction());
+
+        } else {
+          dispatch(setPostProjectAction(res.data.updatedProject));
+          nextStep();
+        }
+      }
+    },
+    onError(error) {
+      console.log("Update Project Mutation", error);
+      toast.error(error.response?.data?.message || "Something went wrong");
+    },
+  })
+
+  const basicInformationFormik = useFormik({
+    initialValues: postProjectState.project ? { ...postProjectState.project } : {
+      projectName: '',
+      country: 'PK',
+      city: '',
+      zipCode: '',
+      state: '',
+      constructionTypes: ['Civil'] as string[],
+      address: '',
+      status: 'draft' as CreateOwnerPostProjectType['status'],
+    },
+    onSubmit(values) {
+      if (postProjectState.project) {
+        updateProjectMutation.mutate(values)
+      } else {
+        createProjectMutation.mutate(values);
+      }
+    },
+    validationSchema: BasicInformationSchema,
+    enableReinitialize: true
+  });
+
+
+  const mainFormik = useFormik({
+    initialValues: {
+      ...postProjectState.project as IBidManagement
+    },
+    onSubmit(values) {
+      updateProjectMutation.mutate(values)
+    },
+    validationSchema: postProjectState.formStep === 1 ? ProjectDetailsSchema : postProjectState.formStep === 2 ? DesignTeamSchema : postProjectState.formStep === 3 ? TradesSchema : postProjectState.formStep === 4 ? FilesSchema : postProjectState.formStep === 5 ? FinalizeProjectSchema : undefined,
+    enableReinitialize: true,
+  })
+
+  async function uploadFilesHandler() {
+    try {
+      // map over files and set uploading to true
+      const filesToUpload = files.map(file => ({ ...file, uploading: true }));
+      setFiles(filesToUpload);
+
+      // upload files to s3 and return the array like url: string;
+      // extension: string;
+      // type: string;
+
+      const promises = filesToUpload.map(async file => {
+        let url = "";
+        if ("originFileObj" in file) {
+          url = await new AwsS3(file.originFileObj, "documents/post-project/").getS3URL()
+        } else {
+          url = await new AwsS3(file, 'documents/post-project/').getS3URL();
+        }
+        return {
+          url,
+          extension: file.name.split('.').pop() || "",
+          type: file.type
+        }
+      })
+
+      const filesData = await Promise.all(promises);
+      mainFormik.setFieldValue("projectFiles", filesData);
+      const updatedFiles = filesToUpload.map((file) => ({ ...file, uploading: false }));
+      setFiles(updatedFiles);
+    } catch (error) {
+      toast.error("Unable to upload files");
+    }
+  }
 
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
@@ -90,7 +263,7 @@ function CreatePost() {
         />
       </div>
       {/* <PostProjectCongratulations /> */}
-      <DeletePopup />
+      {/* <DeletePopup /> */}
       <div className="grid grid-cols-12 gap-6 mt-5">
         <div className="col-span-3 bg-white shadow-2xl border rounded-xl p-4 h-fit">
           <ConfigProvider
@@ -110,7 +283,7 @@ function CreatePost() {
           >
             <Steps
               progressDot
-              current={current}
+              current={postProjectState.formStep}
               direction="vertical"
               size="default"
               items={stepItems}
@@ -118,8 +291,8 @@ function CreatePost() {
           </ConfigProvider>
         </div>
         <div className="col-span-9">
-          {current === 0 ? (
-            <PostBasicInformation>
+          {postProjectState.formStep === 0 ? (
+            <PostBasicInformation formik={basicInformationFormik}>
               <PostProjectFooter
                 cancelButton={{
                   text: 'Cancel',
@@ -127,9 +300,10 @@ function CreatePost() {
                 }}
                 submitButton={{
                   onClick() {
-                    nextStep();
+                    basicInformationFormik.submitForm();
                   },
-                  text: 'Next Step',
+                  text: postProjectState.project ? "Update & Continue" : "Save & Continue",
+                  loading: createProjectMutation.isLoading || updateProjectMutation.isLoading
                 }}
                 info={{
                   title: `0% Completed`,
@@ -137,8 +311,8 @@ function CreatePost() {
                 }}
               />
             </PostBasicInformation>
-          ) : current === 1 ? (
-            <PostProjectDetails>
+          ) : postProjectState.formStep === 1 ? (
+            <PostProjectDetails formik={mainFormik}>
               <PostProjectFooter
                 cancelButton={{
                   text: 'Previous',
@@ -148,9 +322,10 @@ function CreatePost() {
                 }}
                 submitButton={{
                   onClick() {
-                    nextStep();
+                    mainFormik.handleSubmit()
                   },
-                  text: 'Next Step',
+                  text: 'Save & Continue',
+                  loading: updateProjectMutation.isLoading
                 }}
                 info={{
                   title: `25% Completed`,
@@ -158,8 +333,8 @@ function CreatePost() {
                 }}
               />
             </PostProjectDetails>
-          ) : current === 2 ? (
-            <PostDesignTeam>
+          ) : postProjectState.formStep === 2 ? (
+            <PostDesignTeam >
               <PostProjectFooter
                 cancelButton={{
                   text: 'Previous',
@@ -169,13 +344,21 @@ function CreatePost() {
                 }}
                 submitButton={{
                   onClick() {
-                    nextStep();
+                    mainFormik.setFieldValue("teamMembers", postProjectState.teamMembers.map(member => member._id));
+                    if (mainFormik.values.teamMembers.length === 0) {
+                      toast.error("Please add team members");
+                      return;
+                    }
+
+                    mainFormik.handleSubmit();
+
                   },
-                  text: 'Next',
+                  text: 'Save & Continue',
+                  loading: updateProjectMutation.isLoading
                 }}
               />
             </PostDesignTeam>
-          ) : current === 3 ? <PostProjectTrades >
+          ) : postProjectState.formStep === 3 ? <PostProjectTrades formik={mainFormik}>
             <PostProjectFooter
               cancelButton={{
                 text: 'Previous',
@@ -185,16 +368,24 @@ function CreatePost() {
               }}
               submitButton={{
                 onClick() {
-                  nextStep();
+                  if (mainFormik.values.selectedTrades.length === 0) {
+                    toast.error("Please select trades");
+                    return;
+                  }
+                  mainFormik.handleSubmit();
                 },
-                text: 'Next Step',
+                text: 'Save & Continue',
+                loading: updateProjectMutation.isLoading
               }}
               info={{
                 title: `75% Completed`,
                 description: 'You’re almost done! Just 2 step left',
               }}
             />
-          </PostProjectTrades> : current === 4 ? <ProjectUploadFiles>
+          </PostProjectTrades> : postProjectState.formStep === 4 ? <ProjectUploadFiles
+            files={files}
+            setFiles={setFiles}
+          >
             <PostProjectFooter
               cancelButton={{
                 text: 'Previous',
@@ -203,17 +394,29 @@ function CreatePost() {
                 },
               }}
               submitButton={{
-                onClick() {
-                  nextStep();
+                async onClick() {
+                  if (files.length === 0) {
+                    toast.error("Please upload files");
+                    return;
+                  }
+                  if (files.length === mainFormik.values.projectFiles.length) {
+                    nextStep();
+                    return;
+                  } else {
+                    uploadFilesHandler().then(() => {
+                      mainFormik.handleSubmit();
+                    });
+                  }
                 },
-                text: 'Next Step',
+                text: files.length === mainFormik.values.projectFiles.length ? "Continue" : 'Upload & Continue',
+                loading: updateProjectMutation.isLoading
               }}
               info={{
                 title: `90% Completed`,
                 description: 'You’re almost done! Just 1 step left',
               }}
             />
-          </ProjectUploadFiles> : current === 5 ? <PostFinalize>
+          </ProjectUploadFiles> : postProjectState.formStep === 5 ? <PostFinalize formik={mainFormik}>
             <PostProjectFooter
               cancelButton={{
                 text: 'Previous',
@@ -223,8 +426,14 @@ function CreatePost() {
               }}
               submitButton={{
                 onClick() {
+                  mainFormik.setFieldValue("status", "active");
+                  if (mainFormik.errors.status) {
+                    toast.error("Cannot update the status");
+                  }
+                  mainFormik.handleSubmit();
                 },
-                text: 'Post Project',
+                text: updateProjectMutation.isLoading ? "Posting" : 'Post Project',
+                loading: updateProjectMutation.isLoading
               }}
               info={{
                 title: `100% Completed`,
