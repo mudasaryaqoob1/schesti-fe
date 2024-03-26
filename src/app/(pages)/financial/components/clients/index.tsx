@@ -61,7 +61,7 @@ export function Clients() {
   const items: MenuProps['items'] = [
     {
       key: 'createPhase',
-      label: <p>New Payable</p>,
+      label: <p>Next Payable</p>,
     },
     {
       key: 'view',

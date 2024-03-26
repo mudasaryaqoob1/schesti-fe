@@ -1,6 +1,7 @@
 import React from 'react';
 import { Table } from 'antd';
 import '../scopeStyle.css';
+import { formatNumberWithCommas } from '@/app/utils/helper';
 
 interface DataType {
   category?: string;
@@ -31,7 +32,7 @@ const calculateTotalCost = (record: DataType) => {
   let unitEquipments = parseFloat(record.unitEquipments);
   let totalEquipmentCost = unitEquipments * qtyWithWastage;
   let result = totalLabourCost + totalMeterialCost + totalEquipmentCost;
-  return result.toFixed(2);
+  return formatNumberWithCommas(result);
 };
 
 const confirmColumns: any = [
@@ -69,7 +70,7 @@ const confirmColumns: any = [
       let quantity = parseFloat(record.qty);
       let wastagePercentage = parseFloat(record.wastage);
       let result = quantity * (1 + wastagePercentage / 100);
-      return result.toFixed(2);
+      return formatNumberWithCommas(result);
     },
   },
   {
@@ -83,7 +84,7 @@ const confirmColumns: any = [
       let quantity = parseFloat(record.qty);
       let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
       let result = quantityWithWastage * unitLabourHour;
-      return result.toFixed(2);
+      return formatNumberWithCommas(result);
     },
   },
   {
@@ -108,7 +109,7 @@ const confirmColumns: any = [
       let perHourLaborRate = parseFloat(record.perHourLaborRate);
       let totalLabourHours = quantityWithWastage * unitLabourHour;
       let result = totalLabourHours * perHourLaborRate;
-      return `$${result.toFixed(2)}`;
+      return `$${formatNumberWithCommas(result)}`;
     },
   },
   {
@@ -131,7 +132,7 @@ const confirmColumns: any = [
       let wastagePercentage = parseFloat(record.wastage);
       let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
       let result = unitMaterialCost * quantityWithWastage;
-      return `$${result.toFixed(2)}`;
+      return `$${formatNumberWithCommas(result)}`;
     },
   },
   {
@@ -145,7 +146,7 @@ const confirmColumns: any = [
       let wastagePercentage = parseFloat(record.wastage);
       let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
       let result = unitEquipments * quantityWithWastage;
-      return `$${result.toFixed(2)}`;
+      return `$${formatNumberWithCommas(result)}`;
     },
   },
   {
@@ -156,7 +157,7 @@ const confirmColumns: any = [
     width: 150,
     render: (text: string, record: DataType) => {
       let result = calculateTotalCost(record);
-      return `$${result}`;
+      return `$${formatNumberWithCommas(result)}`;
     },
   },
 ];

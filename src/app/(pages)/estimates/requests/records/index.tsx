@@ -65,7 +65,12 @@ const EstimateRequestTable: React.FC = () => {
     },
   ];
 
+  console.log('estimateRequestestimateRequest');
+  
+
   const handleDropdownItemClick = async (key: string, estimateRequest: any) => {
+    console.log(key , estimateRequest , 'estimateRequestestimateRequest' );
+    
     if (key == 'deleteEstimateRequest') {
       setShowDeleteModal(true);
       setSelecteEstimate(estimateRequest);

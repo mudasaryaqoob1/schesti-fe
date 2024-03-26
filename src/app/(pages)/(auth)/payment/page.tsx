@@ -10,7 +10,7 @@ import { Switch } from 'antd';
 import { minHeading, secondaryHeading } from '@/globals/tailwindvariables';
 import Progessbar from '@/app/component/progressBar';
 import NavBar from '@/app/(pages)/(auth)/authNavbar';
-import PaypalInteration from './paypalIntegration';
+// import PaypalInteration from './paypalIntegration';
 import { authService } from '@/app/services/auth.service';
 import { toast } from 'react-toastify';
 import TertiaryHeading from '@/app/component/headings/tertiary';
@@ -24,6 +24,9 @@ const Payment = () => {
   const router = useRouter();
 
   const token = useSelector(selectToken);
+
+  console.log(token , 'tokentokentoken');
+  
 
   useLayoutEffect(() => {
     if (token) {
@@ -145,10 +148,10 @@ const Payment = () => {
                     height={80}
                   />
                 </div>
-                <div className="h-52 grid place-items-center w-full shadow-md   rounded-s">
+                {/* <div className="h-52 grid place-items-center w-full shadow-md   rounded-s">
                   {selectedPLan ? (
                     <PaypalInteration selectedPlan={selectedPLan} />
-                  ) : null}
+                  ) : null} */}
 
                   {/* <Image
                 src={'/paypal.svg'}
@@ -156,7 +159,7 @@ const Payment = () => {
                 width={190}
                 height={80}
               /> */}
-                </div>
+                {/* </div> */}
               </div>
             </div>
           </div>
