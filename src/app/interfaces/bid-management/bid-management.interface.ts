@@ -23,6 +23,7 @@ export interface IBidManagement {
         url: string;
         extension: string;
         type: string;
+        name:string;
     }[]
     selectedTeamMemberes: string[]
     status: "draft" | 'expired' | 'active' | 'archived'

@@ -11,21 +11,26 @@ import { useRouter } from 'next/navigation';
 import { Routes } from '@/app/utils/plans.utils';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
-import { resetPostProjectAction } from '@/redux/post-project/post-project.slice';
+import { postProjectActions, resetPostProjectAction, setFormStepAction, setPostProjectAction } from '@/redux/post-project/post-project.slice';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
 import { useQuery } from 'react-query';
 import { bidManagementService } from '@/app/services/bid-management.service';
 import { Country } from 'country-state-city';
 import moment from 'moment';
 import Image from 'next/image';
+import { useState } from 'react';
+import { DeletePopup } from './post/components/DeletePopup';
 
 function Page() {
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
+    const [selectedProject, setSelectedProject] = useState<IBidManagement | null>(null);
+    const [showProjectDeleteModal, setShowProjectDeleteModal] = useState<boolean>(false);
 
     const projectsQuery = useQuery(['projects'], () => {
         return bidManagementService.httpGetOwnerProjects();
     });
+
 
     const columns: ColumnsType<IBidManagement> = [
         {
@@ -115,7 +120,7 @@ function Page() {
             dataIndex: 'action',
             align: 'center',
             key: 'action',
-            render: () => (
+            render: (value, record) => (
                 <Dropdown
                     menu={{
                         items: [
@@ -132,7 +137,20 @@ function Page() {
                                 label: <p>Delete</p>,
                             },
                         ],
-                        onClick: () => { },
+                        onClick: ({ key }) => {
+                            if (key === 'edit') {
+                                dispatch(setPostProjectAction(record));
+                                dispatch(setFormStepAction(0));
+                                dispatch(postProjectActions.setTeamMemers(record.teamMembers));
+                                console.log('Edit Team Members', record.teamMembers);
+                                router.push(`${Routes['Bid Management'].Owner}/post`);
+                            }
+                            if (key === 'delete') {
+                                setSelectedProject(record);
+                                setShowProjectDeleteModal(true);
+                            }
+
+                        },
                     }}
                     placement="bottomRight"
                     trigger={['click']}
@@ -158,6 +176,14 @@ function Page() {
                     title="My posted project"
                     className="text-xl leading-7"
                 />
+                {selectedProject ? <DeletePopup
+                    closeModal={() => setShowProjectDeleteModal(false)}
+                    message='Are you sure you want to delete this project?'
+                    onConfirm={() => { }}
+                    open={showProjectDeleteModal}
+                    title='Delete Project'
+                    isLoading={false}
+                /> : null}
                 <div className="flex-1 flex items-center space-x-4 justify-end ">
                     <div className="!w-96">
                         <InputComponent

@@ -2,45 +2,70 @@ import TertiaryHeading from "@/app/component/headings/tertiary";
 import type { RcFile, UploadFile } from "antd/es/upload";
 import Dragger from "antd/es/upload/Dragger";
 import Image from "next/image";
-import { Dispatch, SetStateAction, } from "react";
 import { toast } from "react-toastify";
-import type { PostProjectFileProps } from "../page";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
+import type { FormikProps } from "formik";
+import { IBidManagement } from "@/app/interfaces/bid-management/bid-management.interface";
+import { useState } from "react";
+import AwsS3 from "@/app/utils/S3Intergration";
 
 type Props = {
     children?: React.ReactNode;
-    setFiles: Dispatch<SetStateAction<PostProjectFileProps[]>>;
-    files: PostProjectFileProps[]
+    formik: FormikProps<IBidManagement>;
 }
-export function ProjectUploadFiles({ files, setFiles, children }: Props) {
+export function ProjectUploadFiles({ formik, children }: Props) {
+    const [files, setFiles] = useState<UploadFile[]>([]);
+    const [loading, setLoading] = useState(false);
 
     function removeFile(id: string) {
         const newFiles = files.filter(f => {
-            // remove invokeFileObject if f.uid === id
-            if (f.uid === id){
-                URL.revokeObjectURL(f.fileUrl);
-            }
             return f.uid !== id;
         });
         setFiles(newFiles);
     }
 
     function addFiles(newFiles: RcFile[] | UploadFile[]) {
-        
+
         const updatedFiles = newFiles.map(file => {
             let fileUrl = '';
-        if(file && "originFileObj" in file){
-            fileUrl = URL.createObjectURL((file as UploadFile).originFileObj!);
-        }else{
-            fileUrl = URL.createObjectURL(file as RcFile)
-        }
-           return ({ ...file, uploading: false,fileUrl})
+            if (file && "originFileObj" in file) {
+                fileUrl = URL.createObjectURL((file as UploadFile).originFileObj!);
+            } else {
+                fileUrl = URL.createObjectURL(file as RcFile)
+            }
+            return ({ ...file, uploading: false, fileUrl })
         });
         setFiles(updatedFiles);
     }
-  
-  return <div className=" bg-white shadow-2xl rounded-xl border p-4">
+    const customRequest = async (files: RcFile[]) => {
+
+        try {
+            setLoading(true);
+            const filesData = files.map(async (file) => {
+                const url = await new AwsS3(file, "documents/post-project/").getS3URL();
+                return {
+                    url,
+                    extension: (file as RcFile).name.split(".").pop() || "",
+                    type: (file as RcFile).type as string,
+                    name: (file as RcFile).name,
+                }
+            });
+            const uploadedFiles = await Promise.all(filesData);
+            formik.setFieldValue("projectFiles", [
+                ...(formik.values.projectFiles || []),
+                ...uploadedFiles,
+            ]);
+
+        } catch (error) {
+            console.error("Error uploading file to S3:", error);
+            toast.error(`Unable to upload Files`);
+        } finally {
+            setLoading(false);
+        }
+    };
+    console.log("Main Files", formik.values.projectFiles);
+    return <div className=" bg-white shadow-2xl rounded-xl border p-4">
         <TertiaryHeading
             title="Upload File"
             className="text-[20px] leading-[30px]"
@@ -59,7 +84,8 @@ export function ProjectUploadFiles({ files, setFiles, children }: Props) {
                             return false;
                         }
                     }
-                    // addFiles(FileList);
+                    console.log({ FileList });
+                    customRequest(FileList);
                     return false;
                 }}
                 style={{
@@ -88,7 +114,7 @@ export function ProjectUploadFiles({ files, setFiles, children }: Props) {
             </Dragger>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4 mt-9">
-                {files.map((file: PostProjectFileProps) => {
+                {files.map((file) => {
                     return <div key={file.uid} className="border rounded">
                         <div className="bg-[#F4EBFF] flex items-center justify-between px-2 py-1 ">
                             <div className="flex items-center space-x-3">
@@ -102,7 +128,7 @@ export function ProjectUploadFiles({ files, setFiles, children }: Props) {
                                     {file.name.slice(0, 12)}.{file.name.split('.').pop()}
                                 </p>
                             </div>
-                            {file.uploading ? <Spin
+                            {loading ? <Spin
                                 indicator={<LoadingOutlined style={{ fontSize: 24 }}
                                     spin />}
                             /> : <Image
@@ -117,7 +143,7 @@ export function ProjectUploadFiles({ files, setFiles, children }: Props) {
                         <div className="p-2 w-auto h-[190px] xl:w-[230px] relative">
                             {file && file.type && file.type.includes('image') ? <Image
                                 alt="image"
-                                src={file.fileUrl}
+                                src={URL.createObjectURL(file.originFileObj!)}
                                 fill
                             /> :
                                 <div className="relative mt-10 w-[100px] h-[100px] mx-auto">
