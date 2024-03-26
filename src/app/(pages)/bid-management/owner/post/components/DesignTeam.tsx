@@ -17,6 +17,7 @@ import { useMutation, } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
+import { DeletePopup } from './DeletePopup';
 
 type Props = {
     children?: React.ReactNode;
@@ -37,6 +38,8 @@ export function PostDesignTeam({ children }: Props) {
     const dispatch = useDispatch<AppDispatch>();
     const postProjectState = useSelector((state: RootState) => state.postProject);
     const [selectedTeamMember, setSelectedTeamMember] = useState<IBidManagementProjectTeamMember | null>(null);
+    const [isOpen, setIsOpen] = useState(false);
+
     const showDrawer = () => {
         setOpen(true);
     };
@@ -44,6 +47,17 @@ export function PostDesignTeam({ children }: Props) {
     const onClose = () => {
         setOpen(false);
     };
+
+
+    function showDeletePopup(record: IBidManagementProjectTeamMember) {
+        setIsOpen(true);
+        setSelectedTeamMember(record);
+    }
+
+    function closeDeletePopup() {
+        setIsOpen(false);
+        setSelectedTeamMember(null);
+    }
 
 
 
@@ -92,13 +106,16 @@ export function PostDesignTeam({ children }: Props) {
         onError(error) {
             if (error.response?.data) {
                 toast.error(error.response?.data.message);
+                closeDeletePopup();
             }
         },
         onSuccess(res) {
+            console.log("deletedUser", res.data);
             if (res.data && res.data.deletedUser) {
                 // update the teamMembers in redux state
-                dispatch(postProjectActions.removeTeamMemberAction(res.data.deletedUser._id));
                 toast.success("Team Member Deleted Successfully");
+                dispatch(postProjectActions.removeTeamMemberAction(res.data.deletedUser._id));
+                closeDeletePopup();
             }
         },
     });
@@ -172,6 +189,9 @@ export function PostDesignTeam({ children }: Props) {
                                 setSelectedTeamMember(record);
                                 showDrawer();
                             }
+                            if (key === 'delete') {
+                                showDeletePopup(record);
+                            }
 
                         },
                     }}
@@ -192,6 +212,14 @@ export function PostDesignTeam({ children }: Props) {
 
     return (
         <div className=" bg-white shadow-2xl rounded-xl border p-4">
+            {selectedTeamMember ? <DeletePopup
+                closeModal={closeDeletePopup}
+                message="Are you sure you want to delete this team member?"
+                onConfirm={() => deleteTeamMemberMutation.mutate({ userId: selectedTeamMember._id })}
+                open={isOpen}
+                title="Delete Team Member"
+                isLoading={deleteTeamMemberMutation.isLoading}
+            /> : null}
             <div className="flex items-center justify-between">
                 <TertiaryHeading
                     title="Design Team"
@@ -301,7 +329,9 @@ export function PostDesignTeam({ children }: Props) {
 
                     <div className="flex items-center justify-between">
                         <WhiteButton text="Cancel" className="!w-40" onClick={onClose} />
-                        <CustomButton text="Save" className="!w-40"
+                        <CustomButton
+                            text="Save"
+                            className="!w-40"
                             isLoading={createTeamMemberMutation.isLoading}
                             loadingText='Saving...'
                             onClick={() => designTeamFormik.handleSubmit()}
