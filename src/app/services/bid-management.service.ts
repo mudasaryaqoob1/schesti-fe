@@ -18,6 +18,10 @@ class BidManagementService extends HttpService {
     httpUpdateBidPostProject = (projectId: string, data: Partial<IBidManagement>): Promise<IResponseInterface<{ updatedProject: IBidManagement }>> => this.put(`${this.prefix}/update-project/${projectId}`, data);
 
     httpCreateTeamDesignMember = (data:CreateTeamMemberType):Promise<IResponseInterface<{user:IBidManagementProjectTeamMember}>> => this.post(`${this.prefix}/create-team-member`, data);
+   
+    httpUpdateTeamDesignMember = (data:Partial<CreateTeamMemberType & {userId:string}>):Promise<IResponseInterface<{updatedUser:IBidManagementProjectTeamMember}>> => this.put(`${this.prefix}/update-team-member`, data);
+   
+    httpDeleteTeamDesignMember = (userId:string):Promise<IResponseInterface<{deletedUser:IBidManagementProjectTeamMember}>> => this.delete(`${this.prefix}/delete-team-member/${userId}`);
     
     httpGetOwnerProjectById = (projectId:string):Promise<IResponseInterface<{project:IBidManagement}>> => this.get(`${this.prefix}/project-detail/${projectId}`);
 
