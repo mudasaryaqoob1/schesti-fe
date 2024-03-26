@@ -16,7 +16,7 @@ import { CreateOwnerPostProjectType, bidManagementService } from '@/app/services
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
-import { setFormStepAction, setPostProjectAction } from '@/redux/post-project/post-project.slice';
+import { resetPostProjectAction, setFormStepAction, setPostProjectAction } from '@/redux/post-project/post-project.slice';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { AxiosError } from 'axios';
@@ -24,6 +24,8 @@ import { toast } from 'react-toastify';
 import { useState } from 'react';
 import type { RcFile, UploadFile } from 'antd/es/upload';
 import AwsS3 from '@/app/utils/S3Intergration';
+import { useRouter } from 'next/navigation';
+import { Routes } from '@/app/utils/plans.utils';
 
 // import { DeletePopup } from './components/DeletePopup';
 // import { PostProjectCongratulations } from './components/PostProjectCongratuslations';
@@ -67,6 +69,10 @@ const FilesSchema = Yup.object().shape({
     type: Yup.string().required('Type is required')
   })).min(1).required('Files are required')
 });
+
+const FinalizeProjectSchema = Yup.object().shape({
+  status:Yup.mixed().oneOf(['draft','archived','expired','active']).required('Status is required')
+})
 
 
 
@@ -119,6 +125,7 @@ export type PostProjectFileProps = (RcFile | UploadFile) & {
 function CreatePost() {
   const postProjectState = useSelector((state: RootState) => state.postProject);
   const [files, setFiles] = useState<PostProjectFileProps[]>([]);
+  const router = useRouter();
 
   const dispatch = useDispatch<AppDispatch>();
   const nextStep = () => {
@@ -148,8 +155,15 @@ function CreatePost() {
     mutationFn: (values) => bidManagementService.httpUpdateBidPostProject(postProjectState.project?._id || "", values),
     onSuccess(res) {
       if (res.data && res.data.updatedProject) {
-        dispatch(setPostProjectAction(res.data.updatedProject));
-        nextStep();
+        if (postProjectState.formStep === 5) {
+          toast.success("Project has been posted successfully");
+          router.push(`${Routes['Bid Management'].Owner}`);
+          dispatch(resetPostProjectAction());
+          
+        }else{
+          dispatch(setPostProjectAction(res.data.updatedProject));
+          nextStep();
+        }
       }
     },
     onError(error) {
@@ -188,7 +202,7 @@ function CreatePost() {
     onSubmit(values) {
       updateProjectMutation.mutate(values)
     },
-    validationSchema: postProjectState.formStep === 1 ? ProjectDetailsSchema : postProjectState.formStep === 2 ? DesignTeamSchema : postProjectState.formStep === 3 ? TradesSchema : postProjectState.formStep === 4 ? FilesSchema : undefined,
+    validationSchema: postProjectState.formStep === 1 ? ProjectDetailsSchema : postProjectState.formStep === 2 ? DesignTeamSchema : postProjectState.formStep === 3 ? TradesSchema : postProjectState.formStep === 4 ? FilesSchema : postProjectState.formStep === 5 ? FinalizeProjectSchema : undefined,
     enableReinitialize: true,
   })
 
@@ -225,7 +239,6 @@ function CreatePost() {
     }
   }
 
-  console.log("Main Project Formik", mainFormik.values, mainFormik.errors);
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       <div className="flex gap-4 items-center">
@@ -411,8 +424,14 @@ function CreatePost() {
               }}
               submitButton={{
                 onClick() {
+                  mainFormik.setFieldValue("status","active");
+                  if (mainFormik.errors.status) {
+                    toast.error("Cannot update the status");
+                  }
+                  mainFormik.handleSubmit();
                 },
-                text: 'Post Project',
+                text: updateProjectMutation.isLoading ? "Posting" : 'Post Project',
+                loading: updateProjectMutation.isLoading
               }}
               info={{
                 title: `100% Completed`,
