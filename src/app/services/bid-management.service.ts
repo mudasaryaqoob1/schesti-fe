@@ -20,6 +20,8 @@ class BidManagementService extends HttpService {
     httpCreateTeamDesignMember = (data:CreateTeamMemberType):Promise<IResponseInterface<{user:IBidManagementProjectTeamMember}>> => this.post(`${this.prefix}/create-team-member`, data);
     
     httpGetOwnerProjectById = (projectId:string):Promise<IResponseInterface<{project:IBidManagement}>> => this.get(`${this.prefix}/project-detail/${projectId}`);
+
+    httpGetOwnerProjects = ():Promise<IResponseInterface<{projects:IBidManagement[]}>> => this.get(`${this.prefix}/get-all`);
 }
 
 export const bidManagementService = new BidManagementService();
