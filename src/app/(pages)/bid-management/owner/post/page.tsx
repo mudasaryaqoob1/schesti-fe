@@ -21,11 +21,11 @@ import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.i
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
-import { useState } from 'react';
 import type { RcFile, UploadFile } from 'antd/es/upload';
-import AwsS3 from '@/app/utils/S3Intergration';
 import { useRouter } from 'next/navigation';
 import { Routes } from '@/app/utils/plans.utils';
+import { useState } from 'react';
+import { PostProjectCongratulations } from './components/PostProjectCongratulations';
 
 // import { DeletePopup } from './components/DeletePopup';
 // import { PostProjectCongratulations } from './components/PostProjectCongratuslations';
@@ -51,7 +51,7 @@ const ProjectDetailsSchema = Yup.object().shape({
   estimatedDuration: Yup.string().required('Estimated Duration is required'),
   durationType: Yup.mixed().oneOf(['days', 'weeks', 'months', 'years']).required('Duration Type is required'),
   description: Yup.string().required('Description is required'),
-  instruction: Yup.string().required('Instruction is required'),
+  specialInstructions: Yup.string().required('Special Instructions is required'),
 });
 
 const DesignTeamSchema = Yup.object().shape({
@@ -66,12 +66,23 @@ const FilesSchema = Yup.object().shape({
   projectFiles: Yup.array().of(Yup.object().shape({
     url: Yup.string().required('Url is required'),
     extension: Yup.string().required('Extension is required'),
-    type: Yup.string().required('Type is required')
-  })).min(1).required('Files are required')
+    type: Yup.string().required('Type is required'),
+    name: Yup.string().required('Name is required'),
+  })).required('Files are required')
 });
 
 const FinalizeProjectSchema = Yup.object().shape({
-  status: Yup.mixed().oneOf(['draft', 'archived', 'expired', 'active']).required('Status is required')
+  status: Yup.mixed().oneOf(['draft', 'archived', 'expired', 'active']).required('Status is required'),
+  isMatchingWithTrades: Yup.boolean().required('Matching with trades is required'),
+  invitedMembers: Yup.array().of(Yup.string().email("is invalid email")),
+  invitedMembersAssets: Yup.array().of(Yup.object().shape({
+    name: Yup.string().required('Name is required'),
+    url: Yup.string().required('Url is required'),
+    extension: Yup.string().required('Extension is required'),
+    type: Yup.string().required('Type is required'),
+  })),
+  selectedTeamMembers: Yup.array().of(Yup.string()),
+  platformType: Yup.string().required('Platform Type is required')
 })
 
 
@@ -122,9 +133,10 @@ export type PostProjectFileProps = (RcFile | UploadFile) & {
   fileUrl: string;
 };
 
+
 function CreatePost() {
+  const [showCongratulation, setShowCongratulation] = useState(false);
   const postProjectState = useSelector((state: RootState) => state.postProject);
-  const [files, setFiles] = useState<PostProjectFileProps[]>([]);
   const router = useRouter();
 
   const dispatch = useDispatch<AppDispatch>();
@@ -156,10 +168,7 @@ function CreatePost() {
     onSuccess(res) {
       if (res.data && res.data.updatedProject) {
         if (postProjectState.formStep === 5) {
-          toast.success("Project has been posted successfully");
-          router.push(`${Routes['Bid Management'].Owner}`);
-          dispatch(resetPostProjectAction());
-
+          setShowCongratulation(true);
         } else {
           dispatch(setPostProjectAction(res.data.updatedProject));
           nextStep();
@@ -206,39 +215,7 @@ function CreatePost() {
     enableReinitialize: true,
   })
 
-  async function uploadFilesHandler() {
-    try {
-      // map over files and set uploading to true
-      const filesToUpload = files.map(file => ({ ...file, uploading: true }));
-      setFiles(filesToUpload);
-
-      // upload files to s3 and return the array like url: string;
-      // extension: string;
-      // type: string;
-
-      const promises = filesToUpload.map(async file => {
-        let url = "";
-        if ("originFileObj" in file) {
-          url = await new AwsS3(file.originFileObj, "documents/post-project/").getS3URL()
-        } else {
-          url = await new AwsS3(file, 'documents/post-project/').getS3URL();
-        }
-        return {
-          url,
-          extension: file.name.split('.').pop() || "",
-          type: file.type
-        }
-      })
-
-      const filesData = await Promise.all(promises);
-      mainFormik.setFieldValue("projectFiles", filesData);
-      const updatedFiles = filesToUpload.map((file) => ({ ...file, uploading: false }));
-      setFiles(updatedFiles);
-    } catch (error) {
-      toast.error("Unable to upload files");
-    }
-  }
-
+  console.log("Main Formik", mainFormik.values);
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       <div className="flex gap-4 items-center">
@@ -262,7 +239,24 @@ function CreatePost() {
           className="font-semibold text-lavenderPurple cursor-pointer underline"
         />
       </div>
-      {/* <PostProjectCongratulations /> */}
+      {showCongratulation ? <PostProjectCongratulations
+        cancelBtn={{
+          text: "View Project",
+          onClick() {
+            router.push(`${Routes['Bid Management'].Owner}`);
+            dispatch(resetPostProjectAction());
+          },
+        }}
+        confirmBtn={{
+          text: "Project Dashboard",
+          onClick() {
+            router.push(`${Routes['Bid Management'].Owner}`);
+            dispatch(resetPostProjectAction());
+          },
+        }}
+        text='Your project has been posted successfully'
+        title='Congratulations!'
+      /> : null}
       {/* <DeletePopup /> */}
       <div className="grid grid-cols-12 gap-6 mt-5">
         <div className="col-span-3 bg-white shadow-2xl border rounded-xl p-4 h-fit">
@@ -296,7 +290,10 @@ function CreatePost() {
               <PostProjectFooter
                 cancelButton={{
                   text: 'Cancel',
-                  onClick() { },
+                  onClick() {
+                    router.push(`${Routes['Bid Management'].Owner}`);
+                    dispatch(resetPostProjectAction());
+                  },
                 }}
                 submitButton={{
                   onClick() {
@@ -334,7 +331,9 @@ function CreatePost() {
               />
             </PostProjectDetails>
           ) : postProjectState.formStep === 2 ? (
-            <PostDesignTeam >
+            <PostDesignTeam
+              formik={mainFormik}
+            >
               <PostProjectFooter
                 cancelButton={{
                   text: 'Previous',
@@ -344,12 +343,10 @@ function CreatePost() {
                 }}
                 submitButton={{
                   onClick() {
-                    mainFormik.setFieldValue("teamMembers", postProjectState.teamMembers.map(member => member._id));
-                    if (mainFormik.values.teamMembers.length === 0) {
+                    if (postProjectState.teamMembers.length === 0) {
                       toast.error("Please add team members");
                       return;
                     }
-
                     mainFormik.handleSubmit();
 
                   },
@@ -383,8 +380,7 @@ function CreatePost() {
               }}
             />
           </PostProjectTrades> : postProjectState.formStep === 4 ? <ProjectUploadFiles
-            files={files}
-            setFiles={setFiles}
+            formik={mainFormik}
           >
             <PostProjectFooter
               cancelButton={{
@@ -394,21 +390,14 @@ function CreatePost() {
                 },
               }}
               submitButton={{
-                async onClick() {
-                  if (files.length === 0) {
+                onClick() {
+                  if (mainFormik.values.projectFiles.length === 0) {
                     toast.error("Please upload files");
                     return;
                   }
-                  if (files.length === mainFormik.values.projectFiles.length) {
-                    nextStep();
-                    return;
-                  } else {
-                    uploadFilesHandler().then(() => {
-                      mainFormik.handleSubmit();
-                    });
-                  }
+                  mainFormik.handleSubmit();
                 },
-                text: files.length === mainFormik.values.projectFiles.length ? "Continue" : 'Upload & Continue',
+                text: 'Upload & Continue',
                 loading: updateProjectMutation.isLoading
               }}
               info={{

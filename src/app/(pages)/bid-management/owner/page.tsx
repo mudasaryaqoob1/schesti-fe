@@ -11,21 +11,29 @@ import { useRouter } from 'next/navigation';
 import { Routes } from '@/app/utils/plans.utils';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
-import { resetPostProjectAction } from '@/redux/post-project/post-project.slice';
+import { postProjectActions, resetPostProjectAction, setFormStepAction, setPostProjectAction } from '@/redux/post-project/post-project.slice';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
 import { useQuery } from 'react-query';
 import { bidManagementService } from '@/app/services/bid-management.service';
 import { Country } from 'country-state-city';
 import moment from 'moment';
 import Image from 'next/image';
+import { useState } from 'react';
+import { DeletePopup } from './post/components/DeletePopup';
+import { PDFDownloadLink } from '@react-pdf/renderer'
+import BidListPdf from './components/bid-pdf';
 
 function Page() {
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
+    const [selectedProject, setSelectedProject] = useState<IBidManagement | null>(null);
+    const [showProjectDeleteModal, setShowProjectDeleteModal] = useState<boolean>(false);
+    const [search, setSearch] = useState<string>('');
 
     const projectsQuery = useQuery(['projects'], () => {
         return bidManagementService.httpGetOwnerProjects();
     });
+
 
     const columns: ColumnsType<IBidManagement> = [
         {
@@ -115,7 +123,7 @@ function Page() {
             dataIndex: 'action',
             align: 'center',
             key: 'action',
-            render: () => (
+            render: (value, record) => (
                 <Dropdown
                     menu={{
                         items: [
@@ -132,7 +140,20 @@ function Page() {
                                 label: <p>Delete</p>,
                             },
                         ],
-                        onClick: () => { },
+                        onClick: ({ key }) => {
+                            if (key === 'edit') {
+                                dispatch(setPostProjectAction(record));
+                                dispatch(setFormStepAction(0));
+                                dispatch(postProjectActions.setTeamMemers(record.teamMembers));
+                                console.log('Edit Team Members', record.teamMembers);
+                                router.push(`${Routes['Bid Management'].Owner}/post`);
+                            }
+                            if (key === 'delete') {
+                                setSelectedProject(record);
+                                setShowProjectDeleteModal(true);
+                            }
+
+                        },
                     }}
                     placement="bottomRight"
                     trigger={['click']}
@@ -149,8 +170,13 @@ function Page() {
         },
     ];
 
-    const projects = projectsQuery.data ? projectsQuery.data.data?.projects : [];
-
+    const projects = projectsQuery.data && projectsQuery.data.data ? projectsQuery.data.data?.projects : [];
+    const filteredData = projects.filter((project) => {
+        if (search === '') {
+            return project;
+        }
+        return project.projectName.toLowerCase().includes(search.toLowerCase()) || project.city.toLowerCase().includes(search.toLowerCase()) || project.stage.toLowerCase().includes(search.toLowerCase());
+    })
     return (
         <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl bg-white shadow-xl px-8 py-9">
             <div className="flex justify-between items-center">
@@ -158,6 +184,14 @@ function Page() {
                     title="My posted project"
                     className="text-xl leading-7"
                 />
+                {selectedProject ? <DeletePopup
+                    closeModal={() => setShowProjectDeleteModal(false)}
+                    message='Are you sure you want to delete this project?'
+                    onConfirm={() => { }}
+                    open={showProjectDeleteModal}
+                    title='Delete Project'
+                    isLoading={false}
+                /> : null}
                 <div className="flex-1 flex items-center space-x-4 justify-end ">
                     <div className="!w-96">
                         <InputComponent
@@ -168,16 +202,24 @@ function Page() {
                             prefix={<SearchOutlined />}
                             field={{
                                 type: 'text',
+                                value: search,
+                                onChange: (e) => setSearch(e.target.value),
                             }}
                         />
                     </div>
-                    <WhiteButton
-                        text="Export"
-                        icon="/uploadcloud.svg"
-                        iconheight={20}
-                        className="!w-32"
-                        iconwidth={20}
-                    />
+                    <PDFDownloadLink
+                        document={<BidListPdf bids={filteredData} />}
+                        fileName={`bid-list-${Math.random()}.pdf`}
+                    >
+                        {({ loading }) => <WhiteButton
+                            text={loading ? "Exporting..." : "Export"}
+                            icon="/uploadcloud.svg"
+                            iconheight={20}
+                            className="!w-32"
+                            iconwidth={20}
+                            isLoading={loading}
+                        />}
+                    </PDFDownloadLink>
                     <CustomButton
                         icon="/plus.svg"
                         className="!w-48"
@@ -195,7 +237,7 @@ function Page() {
             <div className="mt-10">
                 <Table
                     columns={columns}
-                    dataSource={projects}
+                    dataSource={filteredData}
                     loading={projectsQuery.isLoading}
                 />
             </div>

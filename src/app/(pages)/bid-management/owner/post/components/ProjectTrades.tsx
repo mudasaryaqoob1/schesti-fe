@@ -48,7 +48,7 @@ export function PostProjectTrades({ formik, children }: Props) {
 
     function selectAllTradesAndCategories(trades: ITrade[]) {
         const newTrades = pickOnlyIds(trades);
-        formik.setFieldValue('selectedTrades',newTrades);
+        formik.setFieldValue('selectedTrades', newTrades);
     }
 
 
@@ -80,11 +80,11 @@ export function PostProjectTrades({ formik, children }: Props) {
             }
             return;
         }
-        else{
+        else {
             const foundTrade = selectedTrades.find(trade => trade._id === tradeCategoryId);
             if (foundTrade) {
                 formik.setFieldValue("selectedTrades", selectedTrades.filter(trade => trade._id !== tradeCategoryId));
-            }else{
+            } else {
                 formik.setFieldValue("selectedTrades", [...selectedTrades, trades.find(trade => trade._id === tradeCategoryId)]);
             }
         }
@@ -130,22 +130,24 @@ export function PostProjectTrades({ formik, children }: Props) {
                         />
                     </Checkbox>
                 </div>
-                <SelectComponent
-                    placeholder='Choose Type'
-                    label=''
-                    name='type'
-                    field={{
-                        className: "!w-auto",
-                        dropdownStyle: { width: 300 },
-                        options: tradeCategoryFilters,
-                        value: selectedCategory,
-                        allowClear: true,
-                        showSearch: true,
-                        onChange(value) {
-                            setSelectedCategory(value);
-                        },
-                    }}
-                />
+                <div>
+                    <SelectComponent
+                        label=''
+                        placeholder='Choose Trade'
+                        name='type'
+                        field={{
+                            className: "!w-44",
+                            dropdownStyle: { width: 300 },
+                            options: tradeCategoryFilters,
+                            defaultValue: selectedCategory,
+                            allowClear: true,
+                            showSearch: true,
+                            onChange(value) {
+                                setSelectedCategory(value);
+                            },
+                        }}
+                    />
+                </div>
             </div>
 
             <div className='mt-5'>
@@ -179,23 +181,23 @@ export function PostProjectTrades({ formik, children }: Props) {
                             </Checkbox> */}
                         </div>
                         <Divider className='mt-1' />
-                        
-                        <div  className="flex flex-wrap gap-2 mt-3">
+
+                        <div className="flex flex-wrap gap-2 mt-3">
                             {filterTradesByParent(trade.value, trades).map((child) => {
-                                return   isArrayString(formik.values.selectedTrades) && formik.values.selectedTrades.includes(child._id) ? <button key={child._id} className="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 border rounded-full px-4 py-1 text-sm font-medium hover:text-gray-700 hover:bg-white cursor-pointer bg-[#F4EBFF] text-[#667085] "
+                                return isArrayString(formik.values.selectedTrades) && formik.values.selectedTrades.includes(child._id) ? <button key={child._id} className="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 border rounded-full px-4 py-1 text-sm font-medium hover:text-gray-700 hover:bg-white cursor-pointer bg-[#F4EBFF] text-[#667085] "
                                     onClick={() => toggleCategory(child._id)}
                                 >
                                     {child.name}
                                     <CloseOutlined className="ml-2 font-bold text-lg" />
                                 </button> : <button key={child._id} className="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-white border rounded-full px-4 py-1 text-sm font-medium text-gray-700 cursor-pointer hover:bg-[#F4EBFF] hover:text-[#667085] "
-                                   onClick={() => toggleCategory(child._id)}
-                                    >
-                                        {child.name}
-                                        <PlusOutlined className="ml-2 font-bold text-lg" />
-                                    </button> 
+                                    onClick={() => toggleCategory(child._id)}
+                                >
+                                    {child.name}
+                                    <PlusOutlined className="ml-2 font-bold text-lg" />
+                                </button>
                             })}
-                            </div>
-                        
+                        </div>
+
                     </div>
                 })}
             </div>
@@ -204,7 +206,7 @@ export function PostProjectTrades({ formik, children }: Props) {
         </div>
     );
 }
- {/* // <button key={service.name} className="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-white border rounded-full px-4 py-1 text-sm font-medium text-gray-700 cursor-pointer hover:bg-[#F4EBFF] hover:text-[#667085] "
+{/* // <button key={service.name} className="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-white border rounded-full px-4 py-1 text-sm font-medium text-gray-700 cursor-pointer hover:bg-[#F4EBFF] hover:text-[#667085] "
                                    
                                 // >
                                 //     {service.name}

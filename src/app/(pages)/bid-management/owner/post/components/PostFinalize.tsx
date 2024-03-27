@@ -1,24 +1,73 @@
-import { InputComponent } from "@/app/component/customInput/Input";
 import { SelectComponent } from "@/app/component/customSelect/Select.component";
 import SenaryHeading from "@/app/component/headings/senaryHeading";
 import TertiaryHeading from "@/app/component/headings/tertiary";
 import { IBidManagement } from "@/app/interfaces/bid-management/bid-management.interface";
-import { Checkbox, Divider } from "antd";
+import { Checkbox, Divider, Spin } from "antd";
 import Dragger from "antd/es/upload/Dragger";
 import type { FormikProps } from "formik";
 import moment from "moment";
 import Image from "next/image";
 import { getTimezoneFromCountryAndState } from "@/app/utils/date.utils";
+import { useCallback, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { fetchUsers } from "@/redux/userSlice/user.thunk";
+import { toast } from "react-toastify";
+import type { RcFile } from "antd/es/upload";
+import AwsS3 from "@/app/utils/S3Intergration";
 
 type Props = {
     children?: React.ReactNode;
-    formik:FormikProps<IBidManagement>
+    formik: FormikProps<IBidManagement>
 }
 
 export function PostFinalize({ formik, children }: Props) {
-    const {values} = formik;
+    const { values } = formik;
+    const [userData, setUserData] = useState<{ label: string, value: string }[]>([]);
+    const dispatch = useDispatch<AppDispatch>();
+    const [loading, setLoading] = useState(false);
 
-    
+    const fetchCompanyEmployeeHandler = useCallback(async () => {
+        let result: any = await dispatch(fetchUsers({ limit: 9, page: 1 }));
+
+        setUserData(
+            result.payload?.data?.employees
+                .filter((u: any) => !u.roles.includes('Subcontractor'))
+                .map((user: any) => {
+                    return {
+                        label: `${user.email} - ${user.roles}`,
+                        value: user.email
+                    };
+                })
+        );
+    }, []);
+
+    useEffect(() => {
+        fetchCompanyEmployeeHandler();
+    }, []);
+
+    const customRequest = async (file: RcFile) => {
+
+        try {
+            setLoading(true);
+            const url = await new AwsS3(file, "documents/post-project/").getS3URL();
+            formik.setFieldValue("invitedMembersAssets", [
+                {
+                    url,
+                    extension: (file as RcFile).name.split(".").pop() || "",
+                    type: (file as RcFile).type as string,
+                    name: (file as RcFile).name,
+                }
+            ]);
+
+        } catch (error) {
+            console.error("Error uploading file to S3:", error);
+            toast.error(`Unable to upload File`);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return <div className="space-y-6">
         <div className=" bg-white shadow-2xl rounded-xl border p-4">
 
@@ -79,7 +128,7 @@ export function PostFinalize({ formik, children }: Props) {
                         />
                         <p className="text-[#344054] text-[14px] leading-6 font-medium ">
                             {moment(values.estimatedStartDate).format('DD MMM YYYY')}
-                            </p>
+                        </p>
                     </div>
                     <div className="space-y-2">
                         <SenaryHeading
@@ -94,8 +143,8 @@ export function PostFinalize({ formik, children }: Props) {
                             className="text-[14px] leading-6 text-[#98A2B3] font-normal"
                         />
                         <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                            {getTimezoneFromCountryAndState(values.country,values.state)}
-                            </p>
+                            {getTimezoneFromCountryAndState(values.country, values.state)}
+                        </p>
                     </div>
 
 
@@ -145,7 +194,7 @@ export function PostFinalize({ formik, children }: Props) {
                             />
 
                             <div className="flex items-center space-x-3">
-                               {values.projectType.map(pt =>  <p key={pt} className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4">
+                                {values.projectType.map(pt => <p key={pt} className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4">
                                     {pt}
                                 </p>
                                 )}
@@ -213,7 +262,7 @@ export function PostFinalize({ formik, children }: Props) {
                             title="Special Instructions"
                             className="text-[14px] leading-6 text-[#98A2B3] font-normal"
                         />
-                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">{values.instruction}</p>
+                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">{values.specialInstructions}</p>
                     </div>
                 </div>
             </fieldset>
@@ -225,7 +274,11 @@ export function PostFinalize({ formik, children }: Props) {
             />
 
             <div className="flex items-center space-x-4 mt-5">
-                <button className="justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-[#7138DF] cursor-pointer disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 flex items-center space-x-2 rounded-lg bg-[#F2F4F7]  p-5">
+                <button className={`justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border ${formik.values.platformType === 'Public' ? "border-[#7138DF] bg-[#F2F4F7]" : "border-[#E4E4E4] bg-white"} cursor-pointer disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 flex items-center space-x-2 rounded-lg   p-5`}
+                    onClick={() => {
+                        formik.setFieldValue("platformType", "Public");
+                    }}
+                >
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#8449EB]">
                         <circle cx="12" cy="12" r="10"></circle>
                         <line x1="2" y1="12" x2="22" y2="12"></line>
@@ -238,7 +291,12 @@ export function PostFinalize({ formik, children }: Props) {
                         <path d="M12 8h.01"></path>
                     </svg>
                 </button>
-                <button className="justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-[#E4E4E4] cursor-pointer disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 flex items-center space-x-2 rounded-lg bg-white  p-5">
+
+                <button className={`justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border ${formik.values.platformType === 'Private' ? "border-[#7138DF] bg-[#F2F4F7]" : "border-[#E4E4E4] bg-white"}  cursor-pointer disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 flex items-center space-x-2 rounded-lg  p-5`}
+                    onClick={() => {
+                        formik.setFieldValue("platformType", "Private");
+                    }}
+                >
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#EF9F28]">
                         <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
@@ -258,9 +316,33 @@ export function PostFinalize({ formik, children }: Props) {
             <div className="mt-5">
                 <SelectComponent
                     label="Select your team members who can receive bids"
-                    name="selectTeamMembers"
+                    name="selectedTeamMembers"
                     labelStyle="text-[14px] leading-6 text-[#98A2B3] font-normal"
                     placeholder="Estimating Team (You)"
+                    field={{
+                        mode: 'tags',
+                        value: formik.values.selectedTeamMembers,
+                        options: userData,
+                        onChange: (value) => formik.setFieldValue('selectedTeamMembers', value),
+                        onBlur: formik.handleBlur,
+                        status:
+                            formik.touched.selectedTeamMembers && Boolean(formik.errors.selectedTeamMembers)
+                                ? 'error'
+                                : undefined,
+                    }}
+                    hasError={formik.touched.selectedTeamMembers && Boolean(formik.errors.selectedTeamMembers)}
+                    errorMessage={
+                        formik.touched.selectedTeamMembers &&
+                            Boolean(formik.errors.selectedTeamMembers) &&
+                            Array.isArray(formik.errors.selectedTeamMembers)
+                            ? formik.errors.selectedTeamMembers
+                                .map(
+                                    (item: string, idx) =>
+                                        `'${formik.values.selectedTeamMembers![idx]}' ${item}`
+                                )
+                                .toString()
+                            : formik.errors.selectedTeamMembers as string
+                    }
                 />
             </div>
 
@@ -268,7 +350,12 @@ export function PostFinalize({ formik, children }: Props) {
 
             <div className="grid grid-cols-2 gap-6 mt-2">
                 <div className="space-y-2">
-                    <Checkbox >
+                    <Checkbox
+                        checked={formik.values.isMatchingWithTrades}
+                        onChange={e => {
+                            formik.setFieldValue('isMatchingWithTrades', e.target.checked);
+                        }}
+                    >
                         <SenaryHeading
                             title="Schesti members with matching trades and region"
                             className="text-[#344054] font-normal leading-7 text-[14px]"
@@ -290,20 +377,47 @@ export function PostFinalize({ formik, children }: Props) {
                         className="text-[#344054] text-[14px] leading-6"
                     />
 
-                    <InputComponent
+                    <SelectComponent
                         label="Add email address"
-                        name="addEmailAddress"
+                        name="invitedMembers"
                         placeholder="Enter email address"
-                        type="email"
+                        field={{
+                            mode: 'tags',
+                            value: formik.values.invitedMembers,
+                            onChange: (value) => formik.setFieldValue('invitedMembers', value),
+                            onBlur: formik.handleBlur,
+                            status:
+                                formik.touched.invitedMembers && Boolean(formik.errors.invitedMembers)
+                                    ? 'error'
+                                    : undefined,
+                        }}
+                        hasError={formik.touched.invitedMembers && Boolean(formik.errors.invitedMembers)}
+                        errorMessage={
+                            formik.touched.invitedMembers &&
+                                Boolean(formik.errors.invitedMembers) &&
+                                Array.isArray(formik.errors.invitedMembers)
+                                ? formik.errors.invitedMembers
+                                    .map(
+                                        (item: string, idx) =>
+                                            `'${formik.values.invitedMembers![idx]}' ${item}`
+                                    )
+                                    .toString()
+                                : formik.errors.invitedMembers as string
+                        }
                     />
 
                     <div className="space-y-1 px-1">
                         <Dragger
                             name={'file'}
                             accept="image/*"
-                            multiple={true}
-                            beforeUpload={() => {
+                            beforeUpload={(file) => {
+                                const isLessThan2MB = file.size < 2 * 1024 * 1024;
+                                if (!isLessThan2MB) {
+                                    toast.error('File size should be less than 2MB');
+                                    return false;
+                                }
 
+                                customRequest(file);
                                 return false;
                             }}
                             style={{
@@ -314,17 +428,27 @@ export function PostFinalize({ formik, children }: Props) {
                                 return null
                             }}
                         >
-                            <p className="ant-upload-drag-icon">
-                                <Image
-                                    src={'/uploadcloud.svg'}
-                                    width={34}
-                                    height={34}
-                                    alt="upload"
-                                />
-                            </p>
-                            <p className="text-[12px] leading-3 text-[#98A2B3]">Drop your image here, or browse</p>
+                            <Spin spinning={loading}>
+                                <p className="ant-upload-drag-icon">
+                                    <Image
+                                        src={'/uploadcloud.svg'}
+                                        width={34}
+                                        height={34}
+                                        alt="upload"
+                                    />
+                                </p>
+                                <p className="text-[12px] leading-3 text-[#98A2B3]">Drop your image here, or browse</p>
 
+                            </Spin>
                         </Dragger>
+                        {formik.values.invitedMembersAssets.map((asset, idx) => {
+                            return <SenaryHeading
+                                key={idx}
+                                title={asset.name}
+                                className="text-[#7F56D9] text-[14px] leading-5"
+                            />
+                        })}
+
                         <SenaryHeading
                             title="Download format"
                             className="text-[#7F56D9] text-[14px] leading-5"

@@ -159,16 +159,16 @@ export function PostProjectDetails({ formik, children }: Props) {
 
           <TextAreaComponent
             label="Special Instructions"
-            name="instruction"
+            name="specialInstructions"
             placeholder="Enter Special Instructions"
             field={{
               rows: 5,
-              value: formik.values.instruction,
-              onChange: e => formik.setFieldValue("instruction", e.target.value),
+              value: formik.values.specialInstructions,
+              onChange: e => formik.setFieldValue("specialInstructions", e.target.value),
               onBlur: formik.handleBlur
             }}
-            hasError={formik.touched.instruction && Boolean(formik.errors.instruction)}
-            errorMessage={formik.touched.instruction && formik.errors.instruction ? formik.errors.instruction : ""}
+            hasError={formik.touched.specialInstructions && Boolean(formik.errors.specialInstructions)}
+            errorMessage={formik.touched.specialInstructions && formik.errors.specialInstructions ? formik.errors.specialInstructions : ""}
           />
         </div>
       </div>
