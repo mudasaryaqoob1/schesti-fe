@@ -20,6 +20,8 @@ import moment from 'moment';
 import Image from 'next/image';
 import { useState } from 'react';
 import { DeletePopup } from './post/components/DeletePopup';
+import { PDFDownloadLink } from '@react-pdf/renderer'
+import BidListPdf from './components/bid-pdf';
 
 function Page() {
     const router = useRouter();
@@ -205,13 +207,19 @@ function Page() {
                             }}
                         />
                     </div>
-                    <WhiteButton
-                        text="Export"
-                        icon="/uploadcloud.svg"
-                        iconheight={20}
-                        className="!w-32"
-                        iconwidth={20}
-                    />
+                    <PDFDownloadLink
+                        document={<BidListPdf bids={filteredData} />}
+                        fileName={`bid-list-${Math.random()}.pdf`}
+                    >
+                        {({ loading }) => <WhiteButton
+                            text={loading ? "Exporting..." : "Export"}
+                            icon="/uploadcloud.svg"
+                            iconheight={20}
+                            className="!w-32"
+                            iconwidth={20}
+                            isLoading={loading}
+                        />}
+                    </PDFDownloadLink>
                     <CustomButton
                         icon="/plus.svg"
                         className="!w-48"
