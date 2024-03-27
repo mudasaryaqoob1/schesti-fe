@@ -2,7 +2,7 @@ import { SelectComponent } from "@/app/component/customSelect/Select.component";
 import SenaryHeading from "@/app/component/headings/senaryHeading";
 import TertiaryHeading from "@/app/component/headings/tertiary";
 import { IBidManagement } from "@/app/interfaces/bid-management/bid-management.interface";
-import { Checkbox, Divider } from "antd";
+import { Checkbox, Divider, Spin } from "antd";
 import Dragger from "antd/es/upload/Dragger";
 import type { FormikProps } from "formik";
 import moment from "moment";
@@ -12,6 +12,9 @@ import { useCallback, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { fetchUsers } from "@/redux/userSlice/user.thunk";
+import { toast } from "react-toastify";
+import type { RcFile } from "antd/es/upload";
+import AwsS3 from "@/app/utils/S3Intergration";
 
 type Props = {
     children?: React.ReactNode;
@@ -22,6 +25,7 @@ export function PostFinalize({ formik, children }: Props) {
     const { values } = formik;
     const [userData, setUserData] = useState<{ label: string, value: string }[]>([]);
     const dispatch = useDispatch<AppDispatch>();
+    const [loading, setLoading] = useState(false);
 
     const fetchCompanyEmployeeHandler = useCallback(async () => {
         let result: any = await dispatch(fetchUsers({ limit: 9, page: 1 }));
@@ -41,6 +45,28 @@ export function PostFinalize({ formik, children }: Props) {
     useEffect(() => {
         fetchCompanyEmployeeHandler();
     }, []);
+
+    const customRequest = async (file: RcFile) => {
+
+        try {
+            setLoading(true);
+            const url = await new AwsS3(file, "documents/post-project/").getS3URL();
+            formik.setFieldValue("invitedMembersAssets", [
+                {
+                    url,
+                    extension: (file as RcFile).name.split(".").pop() || "",
+                    type: (file as RcFile).type as string,
+                    name: (file as RcFile).name,
+                }
+            ]);
+
+        } catch (error) {
+            console.error("Error uploading file to S3:", error);
+            toast.error(`Unable to upload File`);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return <div className="space-y-6">
         <div className=" bg-white shadow-2xl rounded-xl border p-4">
@@ -384,9 +410,14 @@ export function PostFinalize({ formik, children }: Props) {
                         <Dragger
                             name={'file'}
                             accept="image/*"
-                            multiple={true}
-                            beforeUpload={() => {
+                            beforeUpload={(file) => {
+                                const isLessThan2MB = file.size < 2 * 1024 * 1024;
+                                if (!isLessThan2MB) {
+                                    toast.error('File size should be less than 2MB');
+                                    return false;
+                                }
 
+                                customRequest(file);
                                 return false;
                             }}
                             style={{
@@ -397,17 +428,27 @@ export function PostFinalize({ formik, children }: Props) {
                                 return null
                             }}
                         >
-                            <p className="ant-upload-drag-icon">
-                                <Image
-                                    src={'/uploadcloud.svg'}
-                                    width={34}
-                                    height={34}
-                                    alt="upload"
-                                />
-                            </p>
-                            <p className="text-[12px] leading-3 text-[#98A2B3]">Drop your image here, or browse</p>
+                            <Spin spinning={loading}>
+                                <p className="ant-upload-drag-icon">
+                                    <Image
+                                        src={'/uploadcloud.svg'}
+                                        width={34}
+                                        height={34}
+                                        alt="upload"
+                                    />
+                                </p>
+                                <p className="text-[12px] leading-3 text-[#98A2B3]">Drop your image here, or browse</p>
 
+                            </Spin>
                         </Dragger>
+                        {formik.values.invitedMembersAssets.map((asset, idx) => {
+                            return <SenaryHeading
+                                key={idx}
+                                title={asset.name}
+                                className="text-[#7F56D9] text-[14px] leading-5"
+                            />
+                        })}
+
                         <SenaryHeading
                             title="Download format"
                             className="text-[#7F56D9] text-[14px] leading-5"
