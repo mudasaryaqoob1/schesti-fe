@@ -12,6 +12,7 @@ import {
 import {
   deleteEstimateRequest,
   fetchEstimateRequests,
+  changeEstimateStatus
 } from '@/redux/company/company.thunk';
 import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
@@ -42,15 +43,15 @@ const EstimateRequestTable: React.FC = () => {
   const estimateRequestsData = useSelector(selectEstimateRequests);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const memoizedSetPerson = useCallback(async () => {
+  const fetachEstimateRequest = useCallback(async () => {
     await dispatch(fetchEstimateRequests({ page: 1, limit: 10 }));
   }, []);
 
   useEffect(() => {
-    memoizedSetPerson();
+    fetachEstimateRequest();
   }, []);
 
-  const items: MenuProps['items'] = [
+  const activeEstimateMenu: MenuProps['items'] = [
     {
       key: 'createEstimateRequest',
       label: <a href="#">Create Estimate</a>,
@@ -60,17 +61,32 @@ const EstimateRequestTable: React.FC = () => {
       label: <a href="#">Edit Request</a>,
     },
     {
+      key: 'inactiveState',
+      label: <a href="#">In Active</a>,
+    },
+    {
       key: 'deleteEstimateRequest',
       label: <p>Delete</p>,
     },
   ];
 
-  console.log('estimateRequestestimateRequest');
+  const inActiveEstimateMenu: MenuProps['items'] = [
+    {
+      key: 'editEstimateRequest',
+      label: <a href="#">Edit Request</a>,
+    },
+    {
+      key: 'activeState',
+      label: <a href="#">Active</a>,
+    },
+    {
+      key: 'deleteEstimateRequest',
+      label: <p>Delete</p>,
+    },
+  ];
   
 
   const handleDropdownItemClick = async (key: string, estimateRequest: any) => {
-    console.log(key , estimateRequest , 'estimateRequestestimateRequest' );
-    
     if (key == 'deleteEstimateRequest') {
       setShowDeleteModal(true);
       setSelecteEstimate(estimateRequest);
@@ -80,6 +96,22 @@ const EstimateRequestTable: React.FC = () => {
       router.push(
         `/estimates/generate/create?estimateId=${estimateRequest._id}`
       );
+    }
+    else if(key === 'inactiveState'){
+      let statusBody = {
+        status : false,
+        estimateId : estimateRequest._id
+      }
+      dispatch(changeEstimateStatus(statusBody));
+      fetachEstimateRequest()
+    }
+    else if(key === 'activeState'){
+      let statusBody = {
+        status : true,
+        estimateId : estimateRequest._id
+      }
+      dispatch(changeEstimateStatus(statusBody));
+      fetachEstimateRequest()
     }
   };
 
@@ -113,9 +145,9 @@ const EstimateRequestTable: React.FC = () => {
     {
       title: 'Status',
       dataIndex: 'status',
-      render: () => (
-        <a className="text-[#027A48] bg-[#ECFDF3] px-2 py-1 rounded-full">
-          Active
+      render: (text, record: any) => (
+        <a className="text-[#027A48] bg-[#ECFDF3] px-2 py-1 rounded-full capitalize">
+          {record.isActive ? 'Active' : 'In Active'}
         </a>
       ),
     },
@@ -124,26 +156,54 @@ const EstimateRequestTable: React.FC = () => {
       dataIndex: 'action',
       align: 'center',
       key: 'action',
-      render: (text, record) => (
-        <Dropdown
-          menu={{
-            items,
-            onClick: (event) => {
-              const { key } = event;
-              handleDropdownItemClick(key, record);
-            },
-          }}
-          placement="bottomRight"
-        >
-          <Image
-            src={'/menuIcon.svg'}
-            alt="logo white icon"
-            width={20}
-            height={20}
-            className="active:scale-105 cursor-pointer"
-          />
-        </Dropdown>
-      ),
+      render: (text, record : any) => {
+        if(record?.isActive){
+          return (
+            <Dropdown
+              menu={{
+                items : activeEstimateMenu,
+                onClick: (event) => {
+                  const { key } = event;
+                  handleDropdownItemClick(key, record);
+                },
+              }}
+              placement="bottomRight"
+            >
+              <Image
+                src={'/menuIcon.svg'}
+                alt="logo white icon"
+                width={20}
+                height={20}
+                className="active:scale-105 cursor-pointer"
+              />
+            </Dropdown>
+          )
+        }
+        else{
+          return (
+            <Dropdown
+              menu={{
+                items : inActiveEstimateMenu,
+                onClick: (event) => {
+                  const { key } = event;
+                  handleDropdownItemClick(key, record);
+                },
+              }}
+              placement="bottomRight"
+            >
+              <Image
+                src={'/menuIcon.svg'}
+                alt="logo white icon"
+                width={20}
+                height={20}
+                className="active:scale-105 cursor-pointer"
+              />
+            </Dropdown>
+          )
+        }
+        
+        
+      },
     },
   ];
 

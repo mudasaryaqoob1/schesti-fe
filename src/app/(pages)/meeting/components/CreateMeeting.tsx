@@ -64,7 +64,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
           roomName,
           link: `${process.env.NEXT_PUBLIC_APP_URL}/meeting/${roomName}`,
           topic: values.topic,
-          timezone: (timezone as ITimezoneOption).value,
+          timezone: getTimeZoneValue(timezone)
         })
         .then((response) => {
           if (response.data) {
@@ -80,6 +80,14 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
         });
     },
   });
+
+  function getTimeZoneValue(tz: string | ITimezoneOption) {
+    if (typeof tz === 'string') {
+      return tz;
+    }
+    return tz.value
+  }
+
 
   function handleCloseModal() {
     setShowModal();
@@ -129,14 +137,14 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
               hasError={formik.touched.email && Boolean(formik.errors.email)}
               errorMessage={
                 formik.touched.email &&
-                Boolean(formik.errors.email) &&
-                Array.isArray(formik.errors.email)
+                  Boolean(formik.errors.email) &&
+                  Array.isArray(formik.errors.email)
                   ? formik.errors.email
-                      .map(
-                        (item: string, idx) =>
-                          `'${formik.values.email![idx]}' ${item}`
-                      )
-                      .toString()
+                    .map(
+                      (item: string, idx) =>
+                        `'${formik.values.email![idx]}' ${item}`
+                    )
+                    .toString()
                   : formik.errors.email
               }
               field={{
@@ -160,8 +168,8 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
                 showTime: { defaultValue: dayjs('00:00:00', 'HH:mm') },
                 value: formik.values.startDate
                   ? dayjs(formik.values.startDate).tz(
-                      (timezone as ITimezoneOption).value
-                    )
+                    (timezone as ITimezoneOption).value
+                  )
                   : undefined,
                 onChange(date) {
                   formik.setFieldValue(
