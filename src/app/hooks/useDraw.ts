@@ -1,6 +1,7 @@
-import { DrawInterface } from '../(pages)/quantity-takeoff/manual/types';
+import { ScaleData } from '../(pages)/takeoff/scale/page';
+import { DrawInterface } from '../(pages)/takeoff/types';
 
-const measurementUnits = [
+export const measurementUnits = [
   'in',
   'cm',
   'mm',
@@ -40,7 +41,7 @@ export const improperPrecisionConverter: { [key: string]: number } = {
   '0.01': 0.01,
   '0.001': 0.001,
   '0.0001': 0.0001,
-  '0.000001': 0.000001,
+  '0.00001': 0.00001,
 };
 
 const useDraw = () => {
@@ -52,36 +53,75 @@ const useDraw = () => {
     } else return value;
   };
 
-  const calculatePolygonArea = (coordinates: number[]): number => {
-    if (coordinates.length < 6 || coordinates.length % 2 !== 0) {
-      throw new Error('Invalid number of coordinates for a polygon');
+  const calculatePolygonArea = (
+    coordinates: number[],
+    { xScale, yScale }: ScaleData
+  ): number => {
+    if (coordinates.length % 2 !== 0 || coordinates.length < 6) {
+      throw new Error(
+        'Invalid coordinates array length. It should contain at least 3 pairs of coordinates (x, y).'
+      );
     }
+    const convertedCoordinates = coordinates.map(
+      (coordinate) => coordinate / pixelToInchScale
+    );
+    const xScaleMultiplier = getScaleMultiplier(xScale);
+    const yScaleMultiplier = getScaleMultiplier(yScale);
 
-    const n = coordinates.length / 2;
+    // Calculate the area using the shoelace formula
     let area = 0;
-
-    for (let i = 0; i < n - 1; i++) {
-      area +=
-        coordinates[2 * i] * coordinates[2 * i + 3] -
-        coordinates[2 * i + 1] * coordinates[2 * i + 2];
+    const n = convertedCoordinates.length / 2;
+    let j = n - 1;
+    for (let i = 0; i < n; i++) {
+      const xi = convertedCoordinates[i * 2] * xScaleMultiplier;
+      const yi = convertedCoordinates[i * 2 + 1] * yScaleMultiplier;
+      const xj = convertedCoordinates[j * 2] * xScaleMultiplier;
+      const yj = convertedCoordinates[j * 2 + 1] * yScaleMultiplier;
+      area += (xi + xj) * (yj - yi);
+      j = i;
     }
 
-    area +=
-      coordinates[2 * n - 2] * coordinates[1] -
-      coordinates[0] * coordinates[2 * n - 1];
-
-    area = Math.abs(area) / 2;
-
-    return +(area / (pixelToInchScale * pixelToInchScale)).toFixed(4);
+    return +Math.abs(area / 2).toFixed(2);
   };
+
+  // const calculatePolygonArea = (
+  //   coordinates: number[],
+  //   { scale }: ScaleData
+  // ): number => {
+  //   if (coordinates.length < 6 || coordinates.length % 2 !== 0) {
+  //     throw new Error('Invalid number of coordinates for a polygon');
+  //   }
+
+  //   const n = coordinates.length / 2;
+  //   let area = 0;
+
+  //   for (let i = 0; i < n - 1; i++) {
+  //     area +=
+  //       coordinates[2 * i] * coordinates[2 * i + 3] -
+  //       coordinates[2 * i + 1] * coordinates[2 * i + 2];
+  //   }
+
+  //   area +=
+  //     coordinates[2 * n - 2] * coordinates[1] -
+  //     coordinates[0] * coordinates[2 * n - 1];
+
+  //   area = Math.abs(area) / 2;
+
+  //   const scaleMultiplier = getScaleMultiplier(scale);
+
+  //   return +(
+  //     (area / (pixelToInchScale * pixelToInchScale)) *
+  //     scaleMultiplier
+  //   ).toFixed(4);
+  // };
 
   const calculatePolygonVolume = (
     coordinates: number[],
-    depth: number
+    depth: number,
+    scale: ScaleData
   ): number => {
-    const polygonArea = calculatePolygonArea(coordinates);
-    const depthInInches = convertPxIntoInches(depth);
-    return +(polygonArea * depthInInches).toFixed(4);
+    const polygonArea = calculatePolygonArea(coordinates, scale);
+    return +(polygonArea * depth).toFixed(4);
   };
 
   const calculatePolygonCenter = (
@@ -108,44 +148,126 @@ const useDraw = () => {
     return center;
   };
 
-  const calculatePolygonPerimeter = (coordinates: number[]): string => {
+  // const calculatePolygonPerimeter = (
+  //   coordinates: number[],
+  //   precision: string
+  // ): string => {
+  //   if (coordinates.length < 6 || coordinates.length % 2 !== 0) {
+  //     throw new Error('Invalid number of coordinates for a polygon');
+  //   }
+  //   const n = coordinates.length / 2;
+  //   let perimeter = 0;
+
+  //   // const [x1, y1, x2, y2, x3, y3] = coordinates;
+  //   //  0 -> x2 - x1, -> 1 x3 - x2,
+  //   for (let i = 0; i < n - 1; i++) {
+  //     const deltaX = coordinates[2 * (i + 1)] - coordinates[2 * i];
+  //     const deltaY = coordinates[2 * (i + 1) + 1] - coordinates[2 * i + 1];
+  //     perimeter += Math.sqrt(deltaX ** 2 + deltaY ** 2);
+  //   }
+
+  //   // Add the distance from the last vertex to the first to close the loop
+  //   const lastVertexX = coordinates[0];
+  //   const lastVertexY = coordinates[1];
+  //   const firstVertexX = coordinates[coordinates.length - 2];
+  //   const firstVertexY = coordinates[coordinates.length - 1];
+
+  //   perimeter += Math.sqrt(
+  //     (lastVertexX - firstVertexX) ** 2 + (lastVertexY - firstVertexY) ** 2
+  //   );
+
+  //   const inches = convertPxIntoInches(perimeter);
+  //   return convertToFeetAndInches(inches, precision);
+  // };
+
+  const calculatePolygonPerimeter = (
+    coordinates: number[],
+    scale: ScaleData
+  ): string => {
     if (coordinates.length < 6 || coordinates.length % 2 !== 0) {
       throw new Error('Invalid number of coordinates for a polygon');
     }
 
-    const n = coordinates.length / 2;
+    const uniqueCoordinates = coordinates.slice(0, coordinates.length - 2);
+
     let perimeter = 0;
+    for (
+      let index = 0;
+      index < uniqueCoordinates.length - 1;
+      index = index + 2
+    ) {
+      let lineCoordinates = [];
+      if (uniqueCoordinates?.[index + 3]) {
+        lineCoordinates = uniqueCoordinates.slice(index, index + 3 + 1);
+      } else {
+        lineCoordinates = [
+          ...uniqueCoordinates.slice(0, 2),
+          ...uniqueCoordinates.slice(index, index + 2),
+        ];
+      }
 
-    for (let i = 0; i < n - 1; i++) {
-      const deltaX = coordinates[2 * (i + 1)] - coordinates[2 * i];
-      const deltaY = coordinates[2 * (i + 1) + 1] - coordinates[2 * i + 1];
-      perimeter += Math.sqrt(deltaX ** 2 + deltaY ** 2);
+      const calculateLineDistance = calcLineDistance(
+        lineCoordinates,
+        scale
+      ) as number;
+
+      perimeter += calculateLineDistance;
     }
+    return convertToFeetAndInches(perimeter, scale.precision);
+  };
 
-    // Add the distance from the last vertex to the first to close the loop
-    const lastVertexX = coordinates[0];
-    const lastVertexY = coordinates[1];
-    const firstVertexX = coordinates[coordinates.length - 2];
-    const firstVertexY = coordinates[coordinates.length - 1];
+  const calcLineDistance = (
+    coordinates: number[],
+    { precision, xScale, yScale }: ScaleData,
+    format = false
+  ) => {
+    const [x1, y1, x2, y2] = coordinates;
+    const xScaleMultiplier = getScaleMultiplier(xScale);
+    const yScaleMultiplier = getScaleMultiplier(yScale);
 
-    perimeter += Math.sqrt(
-      (lastVertexX - firstVertexX) ** 2 + (lastVertexY - firstVertexY) ** 2
+    const distance = Math.sqrt(
+      Math.pow(convertPxIntoInches(x2 - x1) * xScaleMultiplier, 2) +
+        Math.pow(convertPxIntoInches(y2 - y1) * yScaleMultiplier, 2)
     );
 
-    return convertToFeetAndInches(convertPxIntoInches(perimeter));
+    if (format) {
+      return convertToFeetAndInches(distance, precision);
+    }
+
+    return distance;
   };
 
-  const calcLineDistance = (coordinates: number[], format = false) => {
-    const [x1, y1, x2, y2] = coordinates;
+  const pointInCircle = (
+    circleCenter: number[],
+    radius: number,
+    point: number[]
+  ) => {
+    const [x1, y1] = circleCenter;
+    const [x2, y2] = point;
 
-    const distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+    const distanceSquared = Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2);
+    const radiusSquared = Math.pow(radius, 2);
 
-    if (format)
-      return convertToFeetAndInches(
-        addScalerToValue(convertPxIntoInches(distance))
-      );
-    return convertPxIntoInches(distance);
+    return distanceSquared <= radiusSquared;
   };
+
+  // const calcLineDistance = (
+  //   coordinates: number[],
+  //   { scale, precision }: ScaleData,
+  //   format = false
+  // ) => {
+  //   const [x1, y1, x2, y2] = coordinates;
+
+  //   const distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+
+  //   if (format) {
+  //     const inches = convertPxIntoInches(distance);
+  //     const scaledInches = getScaleMultiplier(scale) * inches;
+  //     return convertToFeetAndInches(scaledInches, precision);
+  //   }
+
+  //   return convertPxIntoInches(distance);
+  // };
 
   const convertArrayIntoChunks = (data: number[]): number[][] => {
     return data.reduce((resultArray: any, item, index) => {
@@ -186,64 +308,35 @@ const useDraw = () => {
     return +angleDegrees.toFixed(2);
   };
 
-  // const getColoredTickSvg = (color: string): string => {
-  //   const counterImage = new Image();
-
-  //   const svg = `<svg
-  //         width="36"
-  //         height="36"
-  //         viewBox="0 0 36 36"
-  //         fill="none"
-  //         xmlns="http://www.w3.org/2000/svg"
-  //       >
-  //         <g id="Icon  4">
-  //           <path
-  //             id="Oval"
-  //             opacity="0.15"
-  //             fill-rule="evenodd"
-  //             clip-rule="evenodd"
-  //             d="M18 36C27.9411 36 36 27.9411 36 18C36 8.05887 27.9411 0 18 0C8.05887 0 0 8.05887 0 18C0 27.9411 8.05887 36 18 36Z"
-  //             fill=${color}
-  //           />
-  //           <path
-  //             id="Icon"
-  //             d="M15.5976 23.7363L10.7051 18.873C10.5684 18.7363 10.5 18.5605 10.5 18.3457C10.5 18.1308 10.5684 17.9551 10.7051 17.8183L11.7891 16.7637C11.9258 16.6074 12.0967 16.5293 12.3018 16.5293C12.5068 16.5293 12.6875 16.6074 12.8437 16.7637L16.125 20.0449L23.1562 13.0137C23.3125 12.8574 23.4931 12.7793 23.6982 12.7793C23.9033 12.7793 24.0742 12.8574 24.2109 13.0137L25.2949 14.0684C25.4316 14.2051 25.5 14.3809 25.5 14.5957C25.5 14.8105 25.4316 14.9863 25.2949 15.123L16.6523 23.7363C16.5156 23.8926 16.3398 23.9707 16.125 23.9707C15.9101 23.9707 15.7344 23.8926 15.5976 23.7363Z"
-  //             fill=${color}
-  //           />
-  //         </g>
-  //       </svg>`;
-
-  //   counterImage.src = `data:image/svg+xml;base64,${btoa(svg)}`;
-
-  //   return JSON.stringify(counterImage);
-  // };
-
   const getProjectAndCommentNameForTable = (
     key: keyof DrawInterface,
     points: number[],
-    depth = 0
+    depth = 0,
+    scale: ScaleData
   ): { projectName: string; comment: string | number } => {
     if (key === 'line')
       return {
         projectName: 'Length Measurement',
-        comment: points?.length ? calcLineDistance(points, true) : 0,
+        comment: points?.length ? calcLineDistance(points, scale, true) : 0,
       };
     else if (key === 'area')
       return {
         projectName: 'Area Measurement',
-        comment: points?.length ? calculatePolygonArea(points) : 0,
+        comment: points?.length ? calculatePolygonArea(points, scale) : 0,
       };
     else if (key === 'volume')
       return {
         projectName: 'Volume Measurement',
-        comment: points?.length ? calculatePolygonVolume(points, depth) : 0,
+        comment: points?.length
+          ? calculatePolygonVolume(points, depth, scale)
+          : 0,
       };
     else if (key === 'count')
       return { projectName: 'Count Measurement', comment: '' };
     else return { projectName: 'Dynamic Measurement', comment: '' };
   };
 
-  const convertToFeetAndInches = (inches: number, precision = '0.01') => {
+  const convertToFeetAndInches = (inches: number, precision: string) => {
     const convertedPrecision = improperPrecisionConverter[precision];
     const feet = Math.floor(inches / 12);
     const wholeInches = Math.floor(inches % 12);
@@ -253,8 +346,12 @@ const useDraw = () => {
       2
     );
 
-    if (convertedPrecision === 1)
-      return getFeetAndInchesFormat(feet, wholeInches);
+    // Special use case when precision === 1
+    if (convertedPrecision === 1) {
+      if (remainingInchesDecimal > 0.5)
+        return getFeetAndInchesFormat(feet, wholeInches + 1);
+      else return getFeetAndInchesFormat(feet, wholeInches);
+    }
 
     const decimalCount = convertedPrecision.toString().split('.')[1].length;
 
@@ -314,23 +411,21 @@ const useDraw = () => {
     inches: number,
     fractionalString?: string
   ) => {
-    const inchesString = inches > 0 ? `${inches}` : '0';
-
+    let inchesString = inches > 0 ? `${inches}` : '0';
+    if (+inchesString === 12) {
+      inchesString = '0';
+      feet = feet + 1;
+    }
     if (fractionalString) {
-      return `${feet}'- ${inchesString} ${fractionalString}"`;
+      if (inchesString === '0') return `${feet}'- ${fractionalString}"`;
+      else return `${feet}'- ${inchesString} ${fractionalString}"`;
     } else return `${feet}'- ${inchesString}"`;
   };
-  // scale = `3/8'=1'-0"`
-  //"1cm=10in"
-  //"21/11cm=10/11in"
-  //"11111cm=22222in"
-  //"21/11cm=10/11in"
-  // scale = `1:20`
-  const addScalerToValue = (value: number, scale = '1cm=10in'): number => {
+  const getScaleMultiplier = (scale: string): number => {
     // HANDLING PRESET SCALE BELOW
     if (scale.includes(':')) {
       const multiplier = +scale.split(':')[1];
-      return value * multiplier;
+      return multiplier;
     } else if (
       scale.includes('=') &&
       !measurementUnits.some((unit) => scale.includes(unit))
@@ -339,19 +434,21 @@ const useDraw = () => {
 
       if (scale.includes(`1'-0"`)) {
         const [numerator, denominator] = getInchesInFractionFromMixedFraction(
-          splittedScale[0]
+          splittedScale[0].substring(0, splittedScale[0].length - 1)
         ).split('/');
 
-        return (12 * value * +denominator) / +numerator;
+        return (12 * +denominator) / +numerator;
       } else {
+        if (splittedScale[1].includes(`"`)) return 1;
         const multiplier = +splittedScale[1].substring(
           0,
           splittedScale[1].length - 1
         );
-        return value * multiplier * 12;
+        return multiplier * 12;
       }
     } else {
       // HANDLING CUSTOM SCALE BELOW
+      console.log('CUSTOM HANDLING');
 
       // Left Hand Side, Right Hand Side
       const [LHS, RHS] = scale.split('=');
@@ -364,7 +461,7 @@ const useDraw = () => {
       // Left Numerator(LN), Left Denominator (LD)
       const [LN, LD] = LHSValues.includes('/')
         ? LHSValues.split('/')
-        : [LHSValues, 1];
+        : [+LHSValues, 1];
 
       const RUnit =
         measurementUnits.find((unit) => RHS.indexOf(unit) >= 0) || '-';
@@ -374,22 +471,22 @@ const useDraw = () => {
       //Right Numerator (RN), Right Denominator (RD)
       const [RN, RD] = RHSValues.includes('/')
         ? RHSValues.split('/')
-        : [RHSValues, 1];
+        : [+RHSValues, 1];
 
-      const scaledValue =
+      const multiplier =
         (+RN *
           +LD *
-          (value * unitConversion[`in-${LUnit}`]) *
+          unitConversion[`in-${LUnit}`] *
           unitConversion[`${RUnit}-in`]) /
         (+LN * +RD);
 
-      return scaledValue;
+      return multiplier;
     }
   };
 
   const getInchesInFractionFromMixedFraction = (value = `1 1/2"`) => {
     const isFraction = value.split('/').length > 1;
-    if (isFraction) return `${value}/1`;
+    if (!isFraction) return `${value}/1`;
 
     const isMixedFraction = value.split(' ');
     if (isMixedFraction.length > 1) {
@@ -403,6 +500,68 @@ const useDraw = () => {
       return value.includes(`"`) ? value.substring(0, value.length - 1) : value;
   };
 
+  const groupDataForTable = (input: any[]) => {
+    const groupedData = input.reduce((result: any, currentItem: any) => {
+      const {
+        projectName,
+        pageLabel,
+        comment,
+        author,
+        date,
+        status,
+        color,
+        layer,
+        space,
+        type,
+      } = currentItem;
+
+      // Check if there's already an entry with the same projectName and pageLabel
+      const existingEntry = result.find(
+        (entry: any) =>
+          entry.projectName === projectName && entry.pageLabel === pageLabel
+      );
+
+      if (existingEntry) {
+        existingEntry.children.push({
+          projectName,
+          pageLabel,
+          comment,
+          author,
+          date,
+          status,
+          color,
+          layer,
+          space,
+          type,
+        });
+      } else {
+        result.push({
+          key: result.length + 1, // Assuming keys start from 1
+          projectName,
+          pageLabel,
+          children: [
+            {
+              projectName,
+              pageLabel,
+              comment,
+              author,
+              date,
+              status,
+              color,
+              layer,
+              space,
+              type,
+            },
+          ],
+        });
+      }
+
+      return result;
+    }, []);
+
+    return groupedData;
+  };
+
   return {
     calculatePolygonArea,
     calculatePolygonCenter,
@@ -414,6 +573,8 @@ const useDraw = () => {
     calculateAngle,
     getProjectAndCommentNameForTable,
     getInchesInFractionFromMixedFraction,
+    groupDataForTable,
+    pointInCircle,
   };
 };
 
