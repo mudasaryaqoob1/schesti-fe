@@ -1,10 +1,8 @@
 'use client';
 import React, { useState } from 'react';
-// import projects from './data.json';
 
 // module imports
 import Button from '@/app/component/customButton/button';
-import PrimaryHeading from '@/app/component/headings/primary';
 import { Pagination, Skeleton } from 'antd';
 import WhiteButton from '@/app/component/customButton/white';
 import { InputComponent } from '@/app/component/customInput/Input';
@@ -18,7 +16,6 @@ import { USCurrencyFormat } from '@/app/utils/format';
 const BidManagement = () => {
 
     const [expandedId, setExpandedId] = useState(null);
-    console.log('expandedId', expandedId);
 
     const handleExpand = (id: any) => {
         if (expandedId === id) {
@@ -67,14 +64,18 @@ const BidManagement = () => {
     return (
         <>
             <div className="h-[calc(100vh-100px)] grid place-items-center mt-7">
-                <section className="bg-white shadow-md rounded-lg w-11/12 lg:w-95">
+                <div className='bg-white shadow-md rounded-lg w-11/12 lg:w-95'>
+                <section className="">
                     <div className="container mx-auto px-6">
                         <div className="px-2 py-4 flex justify-between items-center">
                             <div className="flex items-center">
-                                <PrimaryHeading title="Find a project as Sub-contractor" />
+                            <div className='flex'>
+                                <span style={{fontSize:'18px', fontWeight:'600'}}>Find a project&nbsp;{' '}</span>
+                                <span style={{fontSize:'18px', fontWeight:'400'}}>as Sub-contractor</span>
+                            </div>
                             </div>
                             <div className="flex items-center space-x-3">
-                                <div className="!w-96">
+                                <div className="w-[290px]">
                                     <InputComponent
                                         label=""
                                         type="text"
@@ -109,7 +110,7 @@ const BidManagement = () => {
                     </div>
                 </section>
 
-                <section className="bg-white shadow-md pt-4 rounded-lg w-11/12 lg:w-95">
+                <section className="pt-4">
                     <div className="container mx-auto px-4">
                         <section className="w-12/12 lg:w-95">
                             <div className="container mx-auto px-4">
@@ -373,6 +374,7 @@ const BidManagement = () => {
                         </section >
                     </div>
                 </section>
+                </div>
             </div >
         </>
     );
