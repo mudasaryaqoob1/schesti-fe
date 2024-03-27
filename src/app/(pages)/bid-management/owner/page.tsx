@@ -26,6 +26,7 @@ function Page() {
     const dispatch = useDispatch<AppDispatch>();
     const [selectedProject, setSelectedProject] = useState<IBidManagement | null>(null);
     const [showProjectDeleteModal, setShowProjectDeleteModal] = useState<boolean>(false);
+    const [search, setSearch] = useState<string>('');
 
     const projectsQuery = useQuery(['projects'], () => {
         return bidManagementService.httpGetOwnerProjects();
@@ -167,8 +168,13 @@ function Page() {
         },
     ];
 
-    const projects = projectsQuery.data ? projectsQuery.data.data?.projects : [];
-
+    const projects = projectsQuery.data && projectsQuery.data.data ? projectsQuery.data.data?.projects : [];
+    const filteredData = projects.filter((project) => {
+        if (search === '') {
+            return project;
+        }
+        return project.projectName.toLowerCase().includes(search.toLowerCase()) || project.city.toLowerCase().includes(search.toLowerCase()) || project.stage.toLowerCase().includes(search.toLowerCase());
+    })
     return (
         <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl bg-white shadow-xl px-8 py-9">
             <div className="flex justify-between items-center">
@@ -194,6 +200,8 @@ function Page() {
                             prefix={<SearchOutlined />}
                             field={{
                                 type: 'text',
+                                value: search,
+                                onChange: (e) => setSearch(e.target.value),
                             }}
                         />
                     </div>
@@ -221,7 +229,7 @@ function Page() {
             <div className="mt-10">
                 <Table
                     columns={columns}
-                    dataSource={projects}
+                    dataSource={filteredData}
                     loading={projectsQuery.isLoading}
                 />
             </div>
