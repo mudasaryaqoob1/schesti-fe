@@ -176,6 +176,11 @@ export function PostDesignTeam({ formik, children }: Props) {
             key: 'phoneNumber',
         },
         {
+            title: 'Email',
+            dataIndex: 'email',
+            key: 'email',
+        },
+        {
             title: 'Action',
             key: 'action',
             render(v, record) {

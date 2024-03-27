@@ -280,7 +280,10 @@ function CreatePost() {
               <PostProjectFooter
                 cancelButton={{
                   text: 'Cancel',
-                  onClick() { },
+                  onClick() {
+                    router.push(`${Routes['Bid Management'].Owner}`);
+                    dispatch(resetPostProjectAction());
+                  },
                 }}
                 submitButton={{
                   onClick() {
