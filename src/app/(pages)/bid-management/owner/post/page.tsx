@@ -24,6 +24,8 @@ import { toast } from 'react-toastify';
 import type { RcFile, UploadFile } from 'antd/es/upload';
 import { useRouter } from 'next/navigation';
 import { Routes } from '@/app/utils/plans.utils';
+import { useState } from 'react';
+import { PostProjectCongratulations } from './components/PostProjectCongratulations';
 
 // import { DeletePopup } from './components/DeletePopup';
 // import { PostProjectCongratulations } from './components/PostProjectCongratuslations';
@@ -123,8 +125,8 @@ export type PostProjectFileProps = (RcFile | UploadFile) & {
 
 
 function CreatePost() {
+  const [showCongratulation, setShowCongratulation] = useState(false);
   const postProjectState = useSelector((state: RootState) => state.postProject);
-
   const router = useRouter();
 
   const dispatch = useDispatch<AppDispatch>();
@@ -156,10 +158,7 @@ function CreatePost() {
     onSuccess(res) {
       if (res.data && res.data.updatedProject) {
         if (postProjectState.formStep === 5) {
-          toast.success("Project has been posted successfully");
-          router.push(`${Routes['Bid Management'].Owner}`);
-          dispatch(resetPostProjectAction());
-
+          setShowCongratulation(true);
         } else {
           dispatch(setPostProjectAction(res.data.updatedProject));
           nextStep();
@@ -230,7 +229,24 @@ function CreatePost() {
           className="font-semibold text-lavenderPurple cursor-pointer underline"
         />
       </div>
-      {/* <PostProjectCongratulations /> */}
+      {showCongratulation ? <PostProjectCongratulations
+        cancelBtn={{
+          text: "View Project",
+          onClick() {
+            router.push(`${Routes['Bid Management'].Owner}`);
+            dispatch(resetPostProjectAction());
+          },
+        }}
+        confirmBtn={{
+          text: "Project Dashboard",
+          onClick() {
+            router.push(`${Routes['Bid Management'].Owner}`);
+            dispatch(resetPostProjectAction());
+          },
+        }}
+        text='Your project has been posted successfully'
+        title='Congratulations!'
+      /> : null}
       {/* <DeletePopup /> */}
       <div className="grid grid-cols-12 gap-6 mt-5">
         <div className="col-span-3 bg-white shadow-2xl border rounded-xl p-4 h-fit">

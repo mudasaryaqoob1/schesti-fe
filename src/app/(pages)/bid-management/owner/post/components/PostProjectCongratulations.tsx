@@ -4,7 +4,19 @@ import TertiaryHeading from "@/app/component/headings/tertiary";
 import ModalComponent from "@/app/component/modal";
 import Image from "next/image";
 
-export function PostProjectCongratulations() {
+type ButtonProps = {
+    text: string;
+    isLoading?: string;
+    onClick: () => void;
+}
+type Props = {
+    title: string;
+    text: string;
+    cancelBtn: ButtonProps;
+    confirmBtn: ButtonProps;
+}
+
+export function PostProjectCongratulations({ cancelBtn, confirmBtn, text, title }: Props) {
     return (
         <ModalComponent
             open
@@ -23,20 +35,24 @@ export function PostProjectCongratulations() {
                 </div>
                 <div className="space-y-4">
                     <TertiaryHeading
-                        title="Congratulations"
+                        title={title}
                         className="text-[24px] leading-[30px] text-center font-bold"
                     />
                     <p className="text-[18px] text-center leading-5 text-[#667085] font-normal">
-                        Your project successfully created.
+                        {text}
                     </p>
                 </div>
 
                 <div className="flex items-center space-x-4 !mt-5 justify-between">
                     <WhiteButton
-                        text="View Project"
+                        text={cancelBtn.text}
+                        onClick={cancelBtn.onClick}
+                        isLoading={cancelBtn.isLoading}
                     />
                     <CustomButton
-                        text="Project Dashboard"
+                        text={confirmBtn.text}
+                        onClick={confirmBtn.onClick}
+                        isLoading={confirmBtn.isLoading}
                     />
                 </div>
             </div>
