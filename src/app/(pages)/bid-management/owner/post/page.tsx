@@ -207,7 +207,6 @@ function CreatePost() {
   })
 
 
-
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       <div className="flex gap-4 items-center">
@@ -303,7 +302,9 @@ function CreatePost() {
               />
             </PostProjectDetails>
           ) : postProjectState.formStep === 2 ? (
-            <PostDesignTeam >
+            <PostDesignTeam
+              formik={mainFormik}
+            >
               <PostProjectFooter
                 cancelButton={{
                   text: 'Previous',
@@ -317,8 +318,6 @@ function CreatePost() {
                       toast.error("Please add team members");
                       return;
                     }
-                    mainFormik.setFieldValue("teamMembers", postProjectState.teamMembers.map(member => member._id));
-
                     mainFormik.handleSubmit();
 
                   },

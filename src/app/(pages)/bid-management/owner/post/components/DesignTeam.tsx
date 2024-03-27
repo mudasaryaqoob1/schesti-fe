@@ -4,15 +4,15 @@ import { InputComponent } from '@/app/component/customInput/Input';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
-import { IBidManagementProjectTeamMember } from '@/app/interfaces/bid-management/bid-management.interface';
+import { IBidManagement, IBidManagementProjectTeamMember } from '@/app/interfaces/bid-management/bid-management.interface';
 import { CreateTeamMemberType, bidManagementService } from '@/app/services/bid-management.service';
 import { postProjectActions } from '@/redux/post-project/post-project.slice';
 import { AppDispatch, RootState } from '@/redux/store';
 import { Drawer, Dropdown, Table, type TableProps } from 'antd';
 import { AxiosError } from 'axios';
-import { useFormik } from 'formik';
+import { type FormikProps, useFormik } from 'formik';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, } from 'react-query';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -21,6 +21,7 @@ import { DeletePopup } from './DeletePopup';
 
 type Props = {
     children?: React.ReactNode;
+    formik: FormikProps<IBidManagement>;
 };
 
 const DesignTeamMemberSchema = Yup.object().shape({
@@ -33,12 +34,18 @@ const DesignTeamMemberSchema = Yup.object().shape({
 });
 
 
-export function PostDesignTeam({ children }: Props) {
+export function PostDesignTeam({ formik, children }: Props) {
     const [open, setOpen] = useState(false);
     const dispatch = useDispatch<AppDispatch>();
     const postProjectState = useSelector((state: RootState) => state.postProject);
     const [selectedTeamMember, setSelectedTeamMember] = useState<IBidManagementProjectTeamMember | null>(null);
     const [isOpen, setIsOpen] = useState(false);
+
+    useEffect(() => {
+        if (postProjectState.teamMembers.length !== 0) {
+            formik.setFieldValue('teamMembers', postProjectState.teamMembers.map((member) => member._id));
+        }
+    }, [postProjectState.teamMembers])
 
     const showDrawer = () => {
         setOpen(true);
@@ -330,7 +337,7 @@ export function PostDesignTeam({ children }: Props) {
                     <div className="flex items-center justify-between">
                         <WhiteButton text="Cancel" className="!w-40" onClick={onClose} />
                         <CustomButton
-                            text="Save"
+                            text={selectedTeamMember ? "Update" : "Save"}
                             className="!w-40"
                             isLoading={createTeamMemberMutation.isLoading}
                             loadingText='Saving...'
