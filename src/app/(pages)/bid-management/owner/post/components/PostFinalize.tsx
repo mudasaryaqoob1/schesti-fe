@@ -8,6 +8,10 @@ import type { FormikProps } from "formik";
 import moment from "moment";
 import Image from "next/image";
 import { getTimezoneFromCountryAndState } from "@/app/utils/date.utils";
+import { useCallback, useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { fetchUsers } from "@/redux/userSlice/user.thunk";
 
 type Props = {
     children?: React.ReactNode;
@@ -16,7 +20,27 @@ type Props = {
 
 export function PostFinalize({ formik, children }: Props) {
     const { values } = formik;
+    const [userData, setUserData] = useState<{ label: string, value: string }[]>([]);
+    const dispatch = useDispatch<AppDispatch>();
 
+    const fetchCompanyEmployeeHandler = useCallback(async () => {
+        let result: any = await dispatch(fetchUsers({ limit: 9, page: 1 }));
+
+        setUserData(
+            result.payload?.data?.employees
+                .filter((u: any) => !u.roles.includes('Subcontractor'))
+                .map((user: any) => {
+                    return {
+                        label: `${user.email} - ${user.roles}`,
+                        value: user.email
+                    };
+                })
+        );
+    }, []);
+
+    useEffect(() => {
+        fetchCompanyEmployeeHandler();
+    }, []);
 
     return <div className="space-y-6">
         <div className=" bg-white shadow-2xl rounded-xl border p-4">
@@ -266,9 +290,33 @@ export function PostFinalize({ formik, children }: Props) {
             <div className="mt-5">
                 <SelectComponent
                     label="Select your team members who can receive bids"
-                    name="selectTeamMembers"
+                    name="selectedTeamMembers"
                     labelStyle="text-[14px] leading-6 text-[#98A2B3] font-normal"
                     placeholder="Estimating Team (You)"
+                    field={{
+                        mode: 'tags',
+                        value: formik.values.selectedTeamMembers,
+                        options: userData,
+                        onChange: (value) => formik.setFieldValue('selectedTeamMembers', value),
+                        onBlur: formik.handleBlur,
+                        status:
+                            formik.touched.selectedTeamMembers && Boolean(formik.errors.selectedTeamMembers)
+                                ? 'error'
+                                : undefined,
+                    }}
+                    hasError={formik.touched.selectedTeamMembers && Boolean(formik.errors.selectedTeamMembers)}
+                    errorMessage={
+                        formik.touched.selectedTeamMembers &&
+                            Boolean(formik.errors.selectedTeamMembers) &&
+                            Array.isArray(formik.errors.selectedTeamMembers)
+                            ? formik.errors.selectedTeamMembers
+                                .map(
+                                    (item: string, idx) =>
+                                        `'${formik.values.selectedTeamMembers![idx]}' ${item}`
+                                )
+                                .toString()
+                            : formik.errors.selectedTeamMembers as string
+                    }
                 />
             </div>
 
