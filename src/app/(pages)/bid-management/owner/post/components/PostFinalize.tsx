@@ -1,4 +1,3 @@
-import { InputComponent } from "@/app/component/customInput/Input";
 import { SelectComponent } from "@/app/component/customSelect/Select.component";
 import SenaryHeading from "@/app/component/headings/senaryHeading";
 import TertiaryHeading from "@/app/component/headings/tertiary";
@@ -225,7 +224,11 @@ export function PostFinalize({ formik, children }: Props) {
             />
 
             <div className="flex items-center space-x-4 mt-5">
-                <button className="justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-[#7138DF] cursor-pointer disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 flex items-center space-x-2 rounded-lg bg-[#F2F4F7]  p-5">
+                <button className={`justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border ${formik.values.platformType === 'Public' ? "border-[#7138DF] bg-[#F2F4F7]" : "border-[#E4E4E4] bg-white"} cursor-pointer disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 flex items-center space-x-2 rounded-lg   p-5`}
+                    onClick={() => {
+                        formik.setFieldValue("platformType", "Public");
+                    }}
+                >
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#8449EB]">
                         <circle cx="12" cy="12" r="10"></circle>
                         <line x1="2" y1="12" x2="22" y2="12"></line>
@@ -238,7 +241,12 @@ export function PostFinalize({ formik, children }: Props) {
                         <path d="M12 8h.01"></path>
                     </svg>
                 </button>
-                <button className="justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border border-[#E4E4E4] cursor-pointer disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 flex items-center space-x-2 rounded-lg bg-white  p-5">
+
+                <button className={`justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border ${formik.values.platformType === 'Private' ? "border-[#7138DF] bg-[#F2F4F7]" : "border-[#E4E4E4] bg-white"}  cursor-pointer disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 flex items-center space-x-2 rounded-lg  p-5`}
+                    onClick={() => {
+                        formik.setFieldValue("platformType", "Private");
+                    }}
+                >
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#EF9F28]">
                         <rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect>
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
@@ -268,7 +276,12 @@ export function PostFinalize({ formik, children }: Props) {
 
             <div className="grid grid-cols-2 gap-6 mt-2">
                 <div className="space-y-2">
-                    <Checkbox >
+                    <Checkbox
+                        checked={formik.values.isMatchingWithTrades}
+                        onChange={e => {
+                            formik.setFieldValue('isMatchingWithTrades', e.target.checked);
+                        }}
+                    >
                         <SenaryHeading
                             title="Schesti members with matching trades and region"
                             className="text-[#344054] font-normal leading-7 text-[14px]"
@@ -290,11 +303,33 @@ export function PostFinalize({ formik, children }: Props) {
                         className="text-[#344054] text-[14px] leading-6"
                     />
 
-                    <InputComponent
+                    <SelectComponent
                         label="Add email address"
-                        name="addEmailAddress"
+                        name="invitedMembers"
                         placeholder="Enter email address"
-                        type="email"
+                        field={{
+                            mode: 'tags',
+                            value: formik.values.invitedMembers,
+                            onChange: (value) => formik.setFieldValue('invitedMembers', value),
+                            onBlur: formik.handleBlur,
+                            status:
+                                formik.touched.invitedMembers && Boolean(formik.errors.invitedMembers)
+                                    ? 'error'
+                                    : undefined,
+                        }}
+                        hasError={formik.touched.invitedMembers && Boolean(formik.errors.invitedMembers)}
+                        errorMessage={
+                            formik.touched.invitedMembers &&
+                                Boolean(formik.errors.invitedMembers) &&
+                                Array.isArray(formik.errors.invitedMembers)
+                                ? formik.errors.invitedMembers
+                                    .map(
+                                        (item: string, idx) =>
+                                            `'${formik.values.invitedMembers![idx]}' ${item}`
+                                    )
+                                    .toString()
+                                : formik.errors.invitedMembers as string
+                        }
                     />
 
                     <div className="space-y-1 px-1">

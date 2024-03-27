@@ -74,14 +74,14 @@ const FilesSchema = Yup.object().shape({
 const FinalizeProjectSchema = Yup.object().shape({
   status: Yup.mixed().oneOf(['draft', 'archived', 'expired', 'active']).required('Status is required'),
   isMatchingWithTrades: Yup.boolean().required('Matching with trades is required'),
-  invitedMembers: Yup.array().of(Yup.string()).min(1).required('Invited Members is required'),
+  invitedMembers: Yup.array().of(Yup.string().email("is invalid email")),
   invitedMembersAssets: Yup.array().of(Yup.object().shape({
     name: Yup.string().required('Name is required'),
     url: Yup.string().required('Url is required'),
     extension: Yup.string().required('Extension is required'),
     type: Yup.string().required('Type is required'),
-  })).required('Invited Members Assets is required'),
-  selectedTeamMembers: Yup.array().of(Yup.string()).min(1).required('Selected Team Members is required'),
+  })),
+  selectedTeamMembers: Yup.array().of(Yup.string()),
   platformType: Yup.string().required('Platform Type is required')
 })
 
@@ -215,7 +215,7 @@ function CreatePost() {
     enableReinitialize: true,
   })
 
-
+  console.log("Main Formik", mainFormik.values);
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       <div className="flex gap-4 items-center">

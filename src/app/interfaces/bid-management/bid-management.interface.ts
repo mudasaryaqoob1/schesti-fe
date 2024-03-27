@@ -31,7 +31,7 @@ export interface IBidManagement {
     createdAt: string
     updatedAt: string;
 
-    platformType: string;
+    platformType: "Public" | "Private";
     isMatchingWithTrades: boolean
     invitedMembers: string[];
     invitedMembersAssets:{
