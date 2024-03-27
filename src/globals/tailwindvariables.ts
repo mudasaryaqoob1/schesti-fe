@@ -13,7 +13,7 @@ export const btnStyle =
   'rounded-[8px] border border-solid border-lavenderPurple bg-lavenderPurple text-white leading-6 font-semibold py-3 px-5  cursor-pointer shadow-scenarySubdued h-auto text-sm w-full';
 
 export const btnWhiteStyle =
-  'bg-snowWhite rounded-[8px] border text-white leading-6 font-semibold py-3 px-5 shadow-scenarySubdued cursor-pointer text-gray-700 text-sm border border-solid border-gray-300 h-auto w-full';
+  'bg-snowWhite rounded-[8px] border leading-6 font-semibold py-3 px-5 shadow-scenarySubdued cursor-pointer text-sm border border-solid border-gray-300 h-auto w-full';
 
 export const bg_style =
   'rounded-xl border border-solid border-silverGray bg-snowWhite shadow-secondaryTwist';
