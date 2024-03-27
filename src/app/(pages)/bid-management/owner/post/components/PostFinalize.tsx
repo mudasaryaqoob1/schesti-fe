@@ -12,13 +12,13 @@ import { getTimezoneFromCountryAndState } from "@/app/utils/date.utils";
 
 type Props = {
     children?: React.ReactNode;
-    formik:FormikProps<IBidManagement>
+    formik: FormikProps<IBidManagement>
 }
 
 export function PostFinalize({ formik, children }: Props) {
-    const {values} = formik;
+    const { values } = formik;
 
-    
+
     return <div className="space-y-6">
         <div className=" bg-white shadow-2xl rounded-xl border p-4">
 
@@ -79,7 +79,7 @@ export function PostFinalize({ formik, children }: Props) {
                         />
                         <p className="text-[#344054] text-[14px] leading-6 font-medium ">
                             {moment(values.estimatedStartDate).format('DD MMM YYYY')}
-                            </p>
+                        </p>
                     </div>
                     <div className="space-y-2">
                         <SenaryHeading
@@ -94,8 +94,8 @@ export function PostFinalize({ formik, children }: Props) {
                             className="text-[14px] leading-6 text-[#98A2B3] font-normal"
                         />
                         <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                            {getTimezoneFromCountryAndState(values.country,values.state)}
-                            </p>
+                            {getTimezoneFromCountryAndState(values.country, values.state)}
+                        </p>
                     </div>
 
 
@@ -145,7 +145,7 @@ export function PostFinalize({ formik, children }: Props) {
                             />
 
                             <div className="flex items-center space-x-3">
-                               {values.projectType.map(pt =>  <p key={pt} className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4">
+                                {values.projectType.map(pt => <p key={pt} className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4">
                                     {pt}
                                 </p>
                                 )}
@@ -213,7 +213,7 @@ export function PostFinalize({ formik, children }: Props) {
                             title="Special Instructions"
                             className="text-[14px] leading-6 text-[#98A2B3] font-normal"
                         />
-                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">{values.instruction}</p>
+                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">{values.specialInstructions}</p>
                     </div>
                 </div>
             </fieldset>

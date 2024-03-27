@@ -51,7 +51,7 @@ const ProjectDetailsSchema = Yup.object().shape({
   estimatedDuration: Yup.string().required('Estimated Duration is required'),
   durationType: Yup.mixed().oneOf(['days', 'weeks', 'months', 'years']).required('Duration Type is required'),
   description: Yup.string().required('Description is required'),
-  instruction: Yup.string().required('Instruction is required'),
+  specialInstructions: Yup.string().required('Special Instructions is required'),
 });
 
 const DesignTeamSchema = Yup.object().shape({
@@ -72,7 +72,17 @@ const FilesSchema = Yup.object().shape({
 });
 
 const FinalizeProjectSchema = Yup.object().shape({
-  status: Yup.mixed().oneOf(['draft', 'archived', 'expired', 'active']).required('Status is required')
+  status: Yup.mixed().oneOf(['draft', 'archived', 'expired', 'active']).required('Status is required'),
+  isMatchingWithTrades: Yup.boolean().required('Matching with trades is required'),
+  invitedMembers: Yup.array().of(Yup.string()).min(1).required('Invited Members is required'),
+  invitedMembersAssets: Yup.array().of(Yup.object().shape({
+    name: Yup.string().required('Name is required'),
+    url: Yup.string().required('Url is required'),
+    extension: Yup.string().required('Extension is required'),
+    type: Yup.string().required('Type is required'),
+  })).required('Invited Members Assets is required'),
+  selectedTeamMembers: Yup.array().of(Yup.string()).min(1).required('Selected Team Members is required'),
+  platformType: Yup.string().required('Platform Type is required')
 })
 
 

@@ -16,7 +16,7 @@ export interface IBidManagement {
     estimatedDuration: string;
     durationType: "days" | "years" | "months";
     description: string;
-    instruction: string;
+    specialInstructions: string;
     teamMembers: IBidManagementProjectTeamMember[]
     selectedTrades: ITrade[] | string[];
     projectFiles: {
@@ -25,11 +25,21 @@ export interface IBidManagement {
         type: string;
         name:string;
     }[]
-    selectedTeamMemberes: string[]
+    selectedTeamMembers: string[]
     status: "draft" | 'expired' | 'active' | 'archived'
     _id: string
     createdAt: string
-    updatedAt: string
+    updatedAt: string;
+
+    platformType: string;
+    isMatchingWithTrades: boolean
+    invitedMembers: string[];
+    invitedMembersAssets:{
+        name:string;
+        url:string;
+        extension:string;
+        type:string;
+    }[]
 }
 
 
