@@ -14,7 +14,8 @@ import { AppDispatch } from "@/redux/store";
 import { fetchUsers } from "@/redux/userSlice/user.thunk";
 import { toast } from "react-toastify";
 import type { RcFile } from "antd/es/upload";
-import AwsS3 from "@/app/utils/S3Intergration";
+import { useMutation } from "react-query";
+import { bidManagementService } from "@/app/services/bid-management.service";
 
 type Props = {
     children?: React.ReactNode;
@@ -25,7 +26,6 @@ export function PostFinalize({ formik, children }: Props) {
     const { values } = formik;
     const [userData, setUserData] = useState<{ label: string, value: string }[]>([]);
     const dispatch = useDispatch<AppDispatch>();
-    const [loading, setLoading] = useState(false);
 
     const fetchCompanyEmployeeHandler = useCallback(async () => {
         let result: any = await dispatch(fetchUsers({ limit: 9, page: 1 }));
@@ -46,27 +46,23 @@ export function PostFinalize({ formik, children }: Props) {
         fetchCompanyEmployeeHandler();
     }, []);
 
-    const customRequest = async (file: RcFile) => {
 
-        try {
-            setLoading(true);
-            const url = await new AwsS3(file, "documents/post-project/").getS3URL();
-            formik.setFieldValue("invitedMembersAssets", [
-                {
-                    url,
-                    extension: (file as RcFile).name.split(".").pop() || "",
-                    type: (file as RcFile).type as string,
-                    name: (file as RcFile).name,
-                }
-            ]);
-
-        } catch (error) {
-            console.error("Error uploading file to S3:", error);
-            toast.error(`Unable to upload File`);
-        } finally {
-            setLoading(false);
+    const readCSVMutation = useMutation({
+        mutationKey: "upload-csv",
+        mutationFn: async (file: RcFile) => {
+            const formData = new FormData();
+            formData.append('import-excel', file);
+            return bidManagementService.httpUploadCSVFile(formData);
+        },
+        onError: () => {
+            toast.error("Error in the file");
+        },
+        onSuccess: (res) => {
+            const invitedMembers = res.data.flat();
+            formik.setFieldValue('invitedMembers', invitedMembers);
         }
-    };
+    })
+
 
     return <div className="space-y-6">
         <div className=" bg-white shadow-2xl rounded-xl border p-4">
@@ -409,7 +405,7 @@ export function PostFinalize({ formik, children }: Props) {
                     <div className="space-y-1 px-1">
                         <Dragger
                             name={'file'}
-                            accept="image/*"
+                            accept=".csv,.xlsx,.xls,"
                             beforeUpload={(file) => {
                                 const isLessThan2MB = file.size < 2 * 1024 * 1024;
                                 if (!isLessThan2MB) {
@@ -417,7 +413,7 @@ export function PostFinalize({ formik, children }: Props) {
                                     return false;
                                 }
 
-                                customRequest(file);
+                                readCSVMutation.mutate(file);
                                 return false;
                             }}
                             style={{
@@ -428,7 +424,7 @@ export function PostFinalize({ formik, children }: Props) {
                                 return null
                             }}
                         >
-                            <Spin spinning={loading}>
+                            <Spin spinning={readCSVMutation.isLoading}>
                                 <p className="ant-upload-drag-icon">
                                     <Image
                                         src={'/uploadcloud.svg'}
@@ -441,13 +437,6 @@ export function PostFinalize({ formik, children }: Props) {
 
                             </Spin>
                         </Dragger>
-                        {formik.values.invitedMembersAssets.map((asset, idx) => {
-                            return <SenaryHeading
-                                key={idx}
-                                title={asset.name}
-                                className="text-[#7F56D9] text-[14px] leading-5"
-                            />
-                        })}
 
                         <SenaryHeading
                             title="Download format"

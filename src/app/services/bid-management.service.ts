@@ -28,6 +28,15 @@ class BidManagementService extends HttpService {
     httpGetOwnerProjectById = (projectId:string):Promise<IResponseInterface<{project:IBidManagement}>> => this.get(`${this.prefix}/project-detail/${projectId}`);
 
     httpGetOwnerProjects = ():Promise<IResponseInterface<{projects:IBidManagement[]}>> => this.get(`${this.prefix}/get-all`);
+
+    httpUploadCSVFile(data:FormData):Promise<{data:string[][]}>
+    {
+        return this.post(`${this.prefix}/import-invited-members`,data,{
+            headers:{
+                'Content-Type':'multipart/form-data',
+            }
+        });
+    }
 }
 
 export const bidManagementService = new BidManagementService();
