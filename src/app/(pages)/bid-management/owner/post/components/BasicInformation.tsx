@@ -18,9 +18,9 @@ export function PostBasicInformation({ children, formik }: Props) {
   const [city, setCity] = useState<string>('')
 
   const countries = Country.getAllCountries().map(country => ({ label: country.name, value: country.isoCode }));
-  const states = State.getAllStates().filter(state => state.countryCode === country)
+  const states = State.getAllStates().filter(state => state.countryCode === country || formik.values.country === state.countryCode)
     .map(state => ({ label: state.name, value: state.isoCode }));
-  const cities = City.getCitiesOfState(country, state).map(city => ({ label: city.name, value: city.name }));
+  const cities = City.getCitiesOfState(country, state || formik.values.state).map(city => ({ label: city.name, value: city.name }));
 
   return (
     <div className=" bg-white shadow-2xl rounded-xl border p-4">
@@ -138,12 +138,17 @@ export function PostBasicInformation({ children, formik }: Props) {
             field={{
               options: cities,
               showSearch: true,
-              value: formik.values.city,
+              value: formik.values.city || city,
               onChange: (value) => {
                 setCity(value)
                 formik.setFieldValue('city', value)
               },
               onBlur: formik.handleBlur,
+              allowClear: true,
+              onClear() {
+                formik.setFieldValue('city', '');
+                setCity("");
+              }
             }}
             errorMessage={formik.touched.city && formik.errors.city ? formik.errors.city : ""}
             hasError={formik.touched.city && Boolean(formik.errors.city)}
