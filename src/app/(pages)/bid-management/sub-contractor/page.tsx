@@ -13,10 +13,12 @@ import { useState } from "react";
 import { useQuery } from "react-query";
 import { bidManagementService } from "@/app/services/bid-management.service";
 import { BidDetails } from "./components/BidDetails";
-import { Skeleton } from "antd";
+import { Pagination, Skeleton } from "antd";
 
 function BidManagementSubContractorPage() {
     const [selectedBid, setSelectedBid] = useState<IBidManagement | null>(null);
+    const [invitedCurrentPage, setInvitedCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
 
     const projectsQuery = useQuery(['bid-projects'], () => {
         return bidManagementService.httpGetOwnerProjects();
@@ -117,6 +119,13 @@ function BidManagementSubContractorPage() {
                                     onClick={() => setSelectedBid(bidProject)}
                                 />
                             })}
+
+                        <Pagination
+                            current={invitedCurrentPage}
+                            pageSize={itemsPerPage}
+                            total={invitedProjects.length}
+                            onChange={page => setInvitedCurrentPage(page)}
+                        />
                     </div>
 
                     <div className="mt-3">
