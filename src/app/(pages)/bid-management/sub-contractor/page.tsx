@@ -12,6 +12,8 @@ import { IBidManagement } from "@/app/interfaces/bid-management/bid-management.i
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { bidManagementService } from "@/app/services/bid-management.service";
+import { BidDetails } from "./components/BidDetails";
+import { Skeleton } from "antd";
 
 function BidManagementSubContractorPage() {
     const [selectedBid, setSelectedBid] = useState<IBidManagement | null>(null);
@@ -20,7 +22,14 @@ function BidManagementSubContractorPage() {
         return bidManagementService.httpGetOwnerProjects();
     });
 
+    const invitedUserProjectsQuery = useQuery(['bid-projects'], () => {
+        return bidManagementService.httpGetBidProjectInvitedUsers();
+    });
+
     const projects = projectsQuery.data && projectsQuery.data.data ? projectsQuery.data.data?.projects : [];
+    const invitedProjects = invitedUserProjectsQuery.data && invitedUserProjectsQuery.data.data ? invitedUserProjectsQuery.data.data?.projects : [];
+
+
 
     return <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 ">
         <div className="flex gap-4 items-center">
@@ -92,36 +101,22 @@ function BidManagementSubContractorPage() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-12">
-                <div className="col-span-12">
+            <div className="grid grid-cols-12 gap-3">
+                <div className={`${selectedBid ? "col-span-8" : "col-span-12 "}`}>
                     <div className="my-3">
                         <SenaryHeading
                             title="Invited"
                             className="text-[#344054]  font-semibold text-[20px] leading-7"
                         />
 
-                        <BidIntro
-                            bid={{
-                                projectName: 'Seabreeza Village comercial Developemnst - convenience store',
-                                createdAt: new Date().toDateString(),
-                                bidDueDate: new Date().toDateString(),
-                                city: 'City',
-                                country: 'PK',
-                                stage: "Budgeting/Planning",
-                                projectValue: 1000000,
-                            }}
-                        />
-                        <BidIntro
-                            bid={{
-                                projectName: 'Seabreeza Village comercial Developemnst - convenience store',
-                                createdAt: new Date().toDateString(),
-                                bidDueDate: new Date().toDateString(),
-                                city: 'City',
-                                country: 'PK',
-                                stage: "Budgeting/Planning",
-                                projectValue: 1000000,
-                            }}
-                        />
+                        {invitedUserProjectsQuery.isLoading ? <Skeleton /> :
+                            invitedProjects.map(bidProject => {
+                                return <BidIntro
+                                    key={bidProject._id}
+                                    bid={bidProject}
+                                    onClick={() => setSelectedBid(bidProject)}
+                                />
+                            })}
                     </div>
 
                     <div className="mt-3">
@@ -130,16 +125,23 @@ function BidManagementSubContractorPage() {
                             className="text-[#344054]  font-semibold text-[20px] leading-7"
                         />
 
-                        {projects.filter(project => project.status !== 'draft').map(bidProject => {
-                            return <BidIntro
-                                key={bidProject._id}
-                                bid={bidProject}
-                            />
-                        })}
+                        {projectsQuery.isLoading ? <Skeleton /> :
+                            projects.filter(project => project.status !== 'draft').map(bidProject => {
+                                return <BidIntro
+                                    key={bidProject._id}
+                                    bid={bidProject}
+                                    onClick={() => setSelectedBid(bidProject)}
+                                />
+                            })}
                     </div>
                 </div>
 
                 {/* Side Modal */}
+                {selectedBid ? <div className="col-span-4 py-[24px] px-[17px] rounded-lg mt-3 border border-[#E9E9EA]">
+                    <BidDetails
+                        bid={selectedBid}
+                    />
+                </div> : null}
             </div>
         </div>
 

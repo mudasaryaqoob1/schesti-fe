@@ -6,9 +6,10 @@ import moment from "moment";
 import Image from "next/image";
 
 type Props = {
-    bid: Partial<IBidManagement>;
+    bid: IBidManagement;
+    onClick?: () => void;
 }
-export function BidIntro({ bid }: Props) {
+export function BidIntro({ bid, onClick }: Props) {
     return <div className="mt-3 rounded-lg  bg-[#FCFAFF] border border-[#E8E3EF] p-4">
         <div className="flex items-center space-x-3">
             <Image
@@ -18,7 +19,7 @@ export function BidIntro({ bid }: Props) {
                 alt="trade icon"
             />
             <SenaryHeading
-                title={bid.projectName as string}
+                title={bid.projectName}
                 className="font-medium text-[#001556] text-base leading-6"
             />
         </div>
@@ -53,7 +54,7 @@ export function BidIntro({ bid }: Props) {
                     />
 
                     <SenaryHeading
-                        title={`${bid.city}, ${Country.getCountryByCode(bid.country as string)?.name}`}
+                        title={`${bid.city}, ${Country.getCountryByCode(bid.country)?.name}`}
                         className="text-[#475467] font-semibold text-xs leading-4"
                     />
                 </div>
@@ -71,7 +72,7 @@ export function BidIntro({ bid }: Props) {
 
                 <div className="rounded-full bg-[#E9EBF8] py-[5px] px-[11px]">
                     <SenaryHeading
-                        title={bid.stage as string}
+                        title={bid.stage}
                         className="text-[#7138DF] font-normal text-xs leading-4"
                     />
                 </div>
@@ -82,6 +83,7 @@ export function BidIntro({ bid }: Props) {
                 height={36}
                 alt="forward arrow icon"
                 className="cursor-pointer"
+                onClick={onClick}
             />
         </div>
     </div>
