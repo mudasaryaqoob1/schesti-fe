@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import type { RcFile } from "antd/es/upload";
 import { useMutation } from "react-query";
 import { bidManagementService } from "@/app/services/bid-management.service";
+import { USCurrencyFormat } from "@/app/utils/format";
 
 type Props = {
     children?: React.ReactNode;
@@ -115,7 +116,7 @@ export function PostFinalize({ formik, children }: Props) {
                             title="Bid Due"
                             className="text-[14px] leading-6 text-[#98A2B3] font-normal"
                         />
-                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">12 May 2022, 12:40</p>
+                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">{moment(formik.values.bidDueDate).format("ll")}</p>
                     </div>
                     <div className="space-y-2">
                         <SenaryHeading
@@ -131,7 +132,7 @@ export function PostFinalize({ formik, children }: Props) {
                             title="Estimated Completion Date"
                             className="text-[14px] leading-6 text-[#98A2B3] font-normal"
                         />
-                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">12 May 2022, 12:40</p>
+                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">{moment(formik.values.estimatedCompletionDate).format('ll')}</p>
                     </div>
                     <div className="space-y-2">
                         <SenaryHeading
@@ -160,14 +161,14 @@ export function PostFinalize({ formik, children }: Props) {
                             title="Square Footage"
                             className="text-[14px] leading-6 text-[#98A2B3] font-normal"
                         />
-                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">12 Ft</p>
+                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">{formik.values.squareFootage}</p>
                     </div>
                     <div className="space-y-2">
                         <SenaryHeading
                             title="Project Value"
                             className="text-[14px] leading-6 text-[#98A2B3] font-normal"
                         />
-                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">$2,400</p>
+                        <p className="text-[#344054] text-[14px] leading-6 font-medium ">{USCurrencyFormat.format(formik.values.projectValue)}</p>
                     </div>
                     <div className="space-y-2">
                         <SenaryHeading

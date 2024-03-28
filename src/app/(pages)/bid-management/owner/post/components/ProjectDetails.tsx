@@ -85,7 +85,7 @@ export function PostProjectDetails({ formik, children }: Props) {
           errorMessage={formik.touched.stage && formik.errors.stage ? formik.errors.stage : ""}
         />
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-2">
           <DateInputComponent
             label="Estimated Start Date"
             name="estimatedStartDate"
@@ -98,6 +98,62 @@ export function PostProjectDetails({ formik, children }: Props) {
             }}
             hasError={formik.touched.estimatedStartDate && Boolean(formik.errors.estimatedStartDate)}
             errorMessage={formik.touched.estimatedStartDate && formik.errors.estimatedStartDate ? formik.errors.estimatedStartDate : ""}
+          />
+
+          <DateInputComponent
+            label="Bid Due Date"
+            name="bidDueDate"
+            fieldProps={{
+              value: formik.values.bidDueDate ? dayjs(formik.values.bidDueDate) : undefined,
+              onChange: (v, dateString) => {
+                formik.setFieldValue("bidDueDate", dateString)
+              },
+              onBlur: formik.handleBlur
+            }}
+            hasError={formik.touched.bidDueDate && Boolean(formik.errors.bidDueDate)}
+            errorMessage={formik.touched.bidDueDate && formik.errors.bidDueDate ? formik.errors.bidDueDate : ""}
+          />
+
+          <DateInputComponent
+            label="Estimated Completion Date"
+            name="estimatedCompletionDate"
+            fieldProps={{
+              value: formik.values.estimatedCompletionDate ? dayjs(formik.values.estimatedCompletionDate) : undefined,
+              onChange: (v, dateString) => {
+                formik.setFieldValue("estimatedCompletionDate", dateString)
+              },
+              onBlur: formik.handleBlur
+            }}
+            hasError={formik.touched.estimatedCompletionDate && Boolean(formik.errors.estimatedCompletionDate)}
+            errorMessage={formik.touched.estimatedCompletionDate && formik.errors.estimatedCompletionDate ? formik.errors.estimatedCompletionDate : ""}
+          />
+
+          <InputComponent
+            label="Square Footage"
+            name="squareFootage"
+            placeholder="Square Footage"
+            type="text"
+            field={{
+              value: formik.values.squareFootage,
+              onChange: formik.handleChange,
+              onBlur: formik.handleBlur,
+            }}
+            hasError={formik.touched.squareFootage && Boolean(formik.errors.squareFootage)}
+            errorMessage={formik.touched.squareFootage && formik.errors.squareFootage ? formik.errors.squareFootage : ""}
+          />
+
+          <InputComponent
+            label="Project Value"
+            name="projectValue"
+            placeholder="Project Value"
+            type="number"
+            field={{
+              value: formik.values.projectValue,
+              onChange: e => formik.setFieldValue("projectValue", `${e.target.value}`),
+              onBlur: formik.handleBlur,
+            }}
+            hasError={formik.touched.projectValue && Boolean(formik.errors.projectValue)}
+            errorMessage={formik.touched.projectValue && formik.errors.projectValue ? formik.errors.projectValue : ""}
           />
 
           <InputComponent

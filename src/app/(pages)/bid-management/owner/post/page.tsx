@@ -52,6 +52,11 @@ const ProjectDetailsSchema = Yup.object().shape({
   durationType: Yup.mixed().oneOf(['days', 'weeks', 'months', 'years']).required('Duration Type is required'),
   description: Yup.string().required('Description is required'),
   specialInstructions: Yup.string().required('Special Instructions is required'),
+
+  bidDueDate: Yup.string().required('Bid Due Date is required'),
+  estimatedCompletionDate: Yup.string().required('Estimated Completion Date is required'),
+  squareFootage: Yup.string().required('Square Footage is required'),
+  projectValue: Yup.number().required('Project Value is required'),
 });
 
 const DesignTeamSchema = Yup.object().shape({

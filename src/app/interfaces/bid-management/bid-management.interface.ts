@@ -13,6 +13,10 @@ export interface IBidManagement {
     projectBuildingUse: string[];
     stage: string;
     estimatedStartDate: string;
+    bidDueDate:string;
+    estimatedCompletionDate:string;
+    squareFootage: string;
+    projectValue: number;
     estimatedDuration: string;
     durationType: "days" | "years" | "months";
     description: string;
