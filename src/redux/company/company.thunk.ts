@@ -13,6 +13,11 @@ interface FetchSubcontractorParams {
   limit: number;
 }
 
+interface changeStatusBody {
+  status: boolean;
+  estimateId: string;
+}
+
 export const fetchCompanyClients = createAsyncThunk(
   'company/clients',
   async ({ page, limit }: FetchClientParams, { rejectWithValue }) => {
@@ -96,10 +101,29 @@ export const deleteSubcontractor = createAsyncThunk(
 
 export const deleteEstimateRequest = createAsyncThunk(
   'company/deleteEstimateRequest',
-  async (clientId: string, { rejectWithValue }) => {
+  async (estimateId: string, { rejectWithValue }) => {
     try {
       const response =
-        await estimateRequestService.httpDeleteEstimateRequest(clientId);
+        await estimateRequestService.httpDeleteEstimateRequest(estimateId);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data ||
+          'An error occurred while fetching the feed records'
+      );
+    }
+  }
+);
+
+export const changeEstimateStatus = createAsyncThunk(
+  'company/changeEstimateStatus',
+  async (statusBody: changeStatusBody, { rejectWithValue }) => {
+    try {
+      const response =
+        await estimateRequestService.httpEstimateRequestStatusChangeHandler(
+          statusBody.estimateId,
+          statusBody
+        );
       return response;
     } catch (error: any) {
       return rejectWithValue(

@@ -130,7 +130,7 @@ const EditEstimateRequest = () => {
     // }
     else {
       setIsLoading(true);
-      toast.success('File Uploading...', { autoClose: 5 });
+      toast.success('File Uploading...', { autoClose: 10 });
 
       const [drawingDocs, takeOffDocs, otherDocs] = await Promise.all([
         uploadDocumentToS3Handler(drawingsDocuments),

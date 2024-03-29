@@ -127,7 +127,7 @@ const CreateEstimateRequest = () => {
     // }
     else {
       setIsLoading(true);
-      toast.success('File Uploading...', { autoClose: 5 });
+      toast.success('File Uploading...', { autoClose: 10 });
 
       const drawingDocs = await uploadDocumentToS3Handler(drawingsDocuments);
       const takeOffDocs = await uploadDocumentToS3Handler(takeOffReports);

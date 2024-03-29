@@ -112,7 +112,7 @@ const Tabs = () => {
                         label: userPlanFeatures.includes(option.value) ? (
                           <Link href={option.value}>{option.label}</Link>
                         ) : (
-                          <p className="cursor-not-allowed">{option.label}</p>
+                          <Link href='/upgrade-feature'>{option.label}</Link>
                         ),
                       };
                     }),
@@ -155,7 +155,7 @@ const Tabs = () => {
                 {userPlanFeatures.includes(feature.value) ? (
                   <Link href={feature.value}>{feature.label}</Link>
                 ) : (
-                  <p className="cursor-not-allowed">{feature.label}</p>
+                  <Link href='/upgrade-feature'>{feature.label}</Link>
                 )}
               </li>
             );
