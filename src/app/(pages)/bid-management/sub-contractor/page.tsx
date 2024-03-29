@@ -14,13 +14,21 @@ import { useQuery } from "react-query";
 import { bidManagementService } from "@/app/services/bid-management.service";
 import { BidDetails } from "./components/BidDetails";
 import { Pagination, Skeleton } from "antd";
+import { BidFilters } from "./components/Filters";
 
 const ITEMS_PER_PAGE = 4;
 function BidManagementSubContractorPage() {
     const [selectedBid, setSelectedBid] = useState<IBidManagement | null>(null);
     const [invitedCurrentPage, setInvitedCurrentPage] = useState(1);
     const [exploreCurrentPage, setExploreCurrentPage] = useState(1);
+    const [showFilters, setShowFilters] = useState(false);
 
+    function toggleFilters() {
+        setShowFilters(!showFilters);
+    }
+    function closeFilters() {
+        setShowFilters(false);
+    }
 
     const projectsQuery = useQuery(['bid-projects'], () => {
         return bidManagementService.httpGetOwnerProjects();
@@ -92,13 +100,21 @@ function BidManagementSubContractorPage() {
                         iconwidth={14}
                         iconheight={14}
                     />
-                    <WhiteButton
-                        text="Advance Filters"
-                        icon="/advance-filters.svg"
-                        className="!w-44"
-                        iconwidth={14}
-                        iconheight={14}
-                    />
+                    <div className="relative">
+                        <WhiteButton
+                            text="Advance Filters"
+                            icon="/advance-filters.svg"
+                            className="!w-44"
+                            iconwidth={14}
+                            iconheight={14}
+                            onClick={toggleFilters}
+                        />
+                        <BidFilters
+                            onApply={() => { }}
+                            onCancel={closeFilters}
+                            isVisible={showFilters}
+                        />
+                    </div>
                     <CustomButton
                         text="Post a Project"
                         icon="/plus.svg"
