@@ -62,7 +62,7 @@ function BidManagementSubContractorPage() {
         return project.projectName.toLowerCase().includes(search.toLowerCase()) || project.description.toLowerCase().includes(search.toLowerCase());
     }).slice((exploreCurrentPage - 1) * ITEMS_PER_PAGE, exploreCurrentPage * ITEMS_PER_PAGE);
 
-
+    console.log({ projects });
     return <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 ">
         <div className="flex gap-4 items-center">
             <Image src={'/home.svg'} alt="home icon" width={20} height={20} />
@@ -86,7 +86,7 @@ function BidManagementSubContractorPage() {
             />
         </div>
 
-        <div className="p-5 rounded-lg bg-white mt-5">
+        <div className="p-5 rounded-lg shadow-lg bg-white mt-5">
             <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-1">
                     <SenaryHeading
