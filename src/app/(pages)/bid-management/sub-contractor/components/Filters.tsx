@@ -14,8 +14,11 @@ type Props = {
 }
 
 export function BidFilters({ onApply, onCancel, isVisible }: Props) {
+    if (!isVisible) return null;
+
+
     return <div className={`absolute
-         bg-white w-[400px] right-12 opacity-0 top-14 border rounded-md transition-all ease-in-out
+         bg-white w-[400px] right-12 z-10 opacity-0 top-14 border rounded-md transition-all ease-in-out
           duration-300 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full'}`}>
         <div className="p-3 bg-[#F9F5FF] flex items-center justify-between">
             <SenaryHeading
@@ -44,20 +47,6 @@ export function BidFilters({ onApply, onCancel, isVisible }: Props) {
                 type="number"
             />
 
-            <InputComponent
-                label="Location Range from your office"
-                placeholder="Location Range from your office"
-                name="location"
-                type="text"
-                field={{
-                    suffix: <Image
-                        alt="location icon"
-                        src="/navigation-icon.svg"
-                        width={20}
-                        height={20}
-                    />
-                }}
-            />
         </div>
         <div className="mb-2 p-4 flex items-center space-x-4">
             <WhiteButton

@@ -15,6 +15,9 @@ import { bidManagementService } from "@/app/services/bid-management.service";
 import { BidDetails } from "./components/BidDetails";
 import { Pagination, Skeleton } from "antd";
 import { BidFilters } from "./components/Filters";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { IUpdateCompanyDetail } from "@/app/interfaces/companyInterfaces/updateCompany.interface";
 
 const ITEMS_PER_PAGE = 4;
 function BidManagementSubContractorPage() {
@@ -22,6 +25,8 @@ function BidManagementSubContractorPage() {
     const [invitedCurrentPage, setInvitedCurrentPage] = useState(1);
     const [exploreCurrentPage, setExploreCurrentPage] = useState(1);
     const [showFilters, setShowFilters] = useState(false);
+    const userData = useSelector((state: RootState) => state.auth.user as { user?: IUpdateCompanyDetail });
+    console.log({ userData });
 
     function toggleFilters() {
         setShowFilters(!showFilters);

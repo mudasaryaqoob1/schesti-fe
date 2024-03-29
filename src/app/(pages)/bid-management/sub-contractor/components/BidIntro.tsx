@@ -11,7 +11,10 @@ type Props = {
     isSelected?: boolean;
 }
 export function BidIntro({ bid, onClick, isSelected }: Props) {
-    return <div className={`mt-3 rounded-lg ${isSelected ? "bg-[#e5def0]" : "bg-[#FCFAFF]"}  border border-[#E8E3EF] p-4`}>
+    return <div className={`mt-3 rounded-lg ${isSelected ? "bg-[#e5def0]" : "bg-[#FCFAFF]"}  border border-[#E8E3EF] p-4 cursor-pointer`}
+        onClick={onClick}
+
+    >
         <div className="flex items-center space-x-3">
             <Image
                 src={'/trade.svg'}

@@ -5,15 +5,10 @@ import { Checkbox, Divider, Skeleton } from 'antd';
 import { useState } from 'react';
 import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
 import { ITrade } from '@/app/interfaces/trade.interface';
-import { useQuery } from 'react-query';
-import { tradeService } from '@/app/services/trade.service';
-import { IResponseInterface } from '@/app/interfaces/api-response.interface';
-import { AxiosError } from 'axios';
-import { toast } from 'react-toastify';
 import type { FormikProps } from 'formik';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
-import _ from 'lodash';
 import { isArrayString } from '@/app/utils/typescript.utils';
+import { useTrades } from '@/app/hooks/useTrades';
 
 
 type Props = {
@@ -22,25 +17,9 @@ type Props = {
 };
 export function PostProjectTrades({ formik, children }: Props) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-    const [trades, setTrades] = useState<ITrade[]>([]);
     const [selectedCategory, setSelectedCategory] = useState('');
     const [selectedAll, setSelectAll] = useState(false);
-
-
-    const tradesQuery = useQuery<IResponseInterface<{ trades: ITrade[] }>, AxiosError<{ message: string }>>(['trades'], async () => {
-        return tradeService.httpGetAllTrades();
-    },
-        {
-            onSuccess(res) {
-                if (res.data && res.data.trades) {
-                    setTrades(res.data.trades);
-                }
-            },
-            onError(err) {
-                toast.error(err.response?.data.message);
-            },
-        }
-    );
+    const { trades, tradeCategoryFilters, tradesQuery } = useTrades()
 
     function pickOnlyIds(trades: ITrade[]) {
         return trades.map(trade => trade._id);
@@ -94,12 +73,6 @@ export function PostProjectTrades({ formik, children }: Props) {
     if (tradesQuery.isLoading) {
         return <Skeleton />
     }
-    const tradeCategoryFilters = _.uniqBy(trades.map(trade => ({
-        label: trade.tradeCategoryId.name,
-        value: trade.tradeCategoryId._id
-    })), "value");
-
-
 
     function filterTradesByParent(id: string, trades: ITrade[]) {
         return trades.filter(trade => trade.tradeCategoryId._id === id);
