@@ -61,7 +61,7 @@ export function BidDetails({ bid }: Props) {
             />
 
             <p
-                className="text-[#7F56D9] underline underline-offset-2 mt-4 text-[14px] leading-6 font-normal"
+                className="text-[#7F56D9] underline underline-offset-2 mt-4 text-[14px] leading-6 font-normal cursor-pointer"
             >
                 View full details
             </p>
