@@ -18,7 +18,7 @@ type PropsBtn = {
   className?: string;
   isLoading?: Boolean | any;
   onClick?: voidFc | any;
-  icon?: string;
+  icon?: React.ReactNode | string;
   disabled?: boolean;
   iconwidth?: number;
   iconheight?: number;
@@ -33,7 +33,7 @@ const CustomButton = ({
   iconwidth,
   iconheight,
   isLoading = false,
-  onClick = () => {},
+  onClick = () => { },
 }: PropsBtn) => {
   return (
     <button
@@ -41,21 +41,18 @@ const CustomButton = ({
       disabled={disabled || isLoading}
       className={twMerge(
         clsx(
-          `${className && className} ${isLoading && 'disabled'} ${btnStyle} ${
-            icon ? 'flex gap-3 justify-between items-center' : ''
+          `${className && className} ${isLoading && 'disabled'} ${btnStyle} ${icon ? 'flex gap-3 justify-between items-center' : ''
           }`
         )
       )}
       onClick={onClick}
     >
-      {icon && (
-        <Image
-          src={icon}
-          alt="btn icon"
-          width={iconwidth}
-          height={iconheight}
-        />
+      {icon && typeof icon === 'string' ? (
+        <Image src={icon} alt="btn icon" width={iconwidth} height={iconheight} />
+      ) : (
+        <span>{icon}</span>
       )}
+
       {isLoading ? <ButtonLoading /> : text}
     </button>
   );

@@ -164,12 +164,17 @@ a {
   font-weight: 400;
 }
 
-.skipBtn-icon > span {
+.skipBtn-icon>span {
   cursor: pointer;
   border-bottom: 1px solid #344054;
 }
+
 .bg-lavenderPurple {
   background-color: #7138df;
+}
+
+.bg-transparent {
+  background: transparent;
 }
 
 .bg-gray-200 {
@@ -197,6 +202,10 @@ a {
   background: #e9ebf8;
 }
 
+.foundation-primary-200 {
+  background: #F9F5FF;
+}
+
 .p-font-size {
   font-family: '_Inter_aaf875', '_Inter_Fallback_aaf875';
   font-size: 12px;
@@ -209,4 +218,32 @@ a {
   font-size: 16px;
   font-weight: 500;
   line-height: 24px;
+}
+
+/* Pagination css */
+
+/* .ant-pagination-prev, */
+.ant-pagination-item-link,
+.ant-pagination-next .ant-pagination-disabled,
+.ant-pagination-prev .ant-pagination-disabled {
+  border: 1px solid #F0F1F3 !important;
+  border-radius: 8px !important;
+}
+
+/* Custom Pagination CSS */
+.custom-pagination .ant-pagination-prev .ant-pagination-item-link::before {
+  content: "Previous";
+  float: inline-end;
+  display: inline-block;
+}
+
+.custom-pagination .ant-pagination-next .ant-pagination-item-link::after {
+  content: "Next";
+  float: inline-start;
+  display: inline-block;
+}
+
+.custom-pagination .ant-pagination-item-link {
+  text-align: center;
+  padding: 0px 10px 0px 10px !important;
 }
