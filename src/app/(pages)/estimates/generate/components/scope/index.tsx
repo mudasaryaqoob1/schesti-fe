@@ -30,6 +30,7 @@ import { selectGeneratedEstimateDetail } from '@/redux/estimate/estimateRequestS
 import { PositiveNumberRegex } from '@/app/utils/regex.util';
 import { byteConverter } from '@/app/utils/byteConverter';
 import { IUnits } from '@/app/interfaces/settings/material-settings.interface';
+import { formatNumberWithCommas } from '@/app/utils/helper';
 
 type InitialValuesType = {
   category: string;
@@ -47,7 +48,7 @@ type InitialValuesType = {
 
 const validationSchema = Yup.object({
   category: Yup.string().required('Category is required!'),
-  subCategory: Yup.string().required('SubCategory is required'),
+  // subCategory: Yup.string().required('SubCategory is required'),
   description: Yup.string().required('Description is required!'),
   unit: Yup.string().required('Unit is required!'),
   qty: Yup.string()
@@ -607,7 +608,7 @@ const Scope = ({ setPrevNext }: Props) => {
     let unitEquipments = parseFloat(record.unitEquipments);
     let totalEquipmentCost = unitEquipments * qtyWithWastage;
     let result = totalLabourCost + totalMeterialCost + totalEquipmentCost;
-    return result.toFixed(2);
+    return formatNumberWithCommas(result);
   };
 
   const columns: any = [
@@ -645,7 +646,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
         let result = quantity * (1 + wastagePercentage / 100);
-        return result.toFixed(2);
+        return formatNumberWithCommas(result);
       },
     },
     {
@@ -659,7 +660,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let quantity = parseFloat(record.qty);
         let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = quantityWithWastage * unitLabourHour;
-        return result.toFixed(2);
+        return formatNumberWithCommas(result);
       },
     },
     {
@@ -684,7 +685,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let perHourLaborRate = parseFloat(record.perHourLaborRate);
         let totalLabourHours = quantityWithWastage * unitLabourHour;
         let result = totalLabourHours * perHourLaborRate;
-        return `$${result.toFixed(2)}`;
+        return `$${formatNumberWithCommas(result)}`;
       },
     },
     {
@@ -707,7 +708,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let wastagePercentage = parseFloat(record.wastage);
         let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = unitMaterialCost * quantityWithWastage;
-        return `$${result.toFixed(2)}`;
+        return `$${formatNumberWithCommas(result)}`;
       },
     },
     {
@@ -721,7 +722,9 @@ const Scope = ({ setPrevNext }: Props) => {
         let wastagePercentage = parseFloat(record.wastage);
         let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = unitEquipments * quantityWithWastage;
-        return `$${result.toFixed(2)}`;
+        console.log(formatNumberWithCommas(result) , 'formatNumberWithCommas(result)');
+        
+        return `$${formatNumberWithCommas(result)}`;
       },
     },
     {
@@ -799,7 +802,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
         let result = quantity * (1 + wastagePercentage / 100);
-        return result.toFixed(2);
+        return formatNumberWithCommas(result);
       },
     },
     {
@@ -813,7 +816,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let quantity = parseFloat(record.qty);
         let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = quantityWithWastage * unitLabourHour;
-        return result.toFixed(2);
+        return `$${formatNumberWithCommas(result)}`;
       },
     },
     {
@@ -838,7 +841,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let perHourLaborRate = parseFloat(record.perHourLaborRate);
         let totalLabourHours = quantityWithWastage * unitLabourHour;
         let result = totalLabourHours * perHourLaborRate;
-        return `$${result.toFixed(2)}`;
+        return `$${formatNumberWithCommas(result)}`;
       },
     },
     {
@@ -861,7 +864,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let wastagePercentage = parseFloat(record.wastage);
         let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = unitMaterialCost * quantityWithWastage;
-        return `$${result.toFixed(2)}`;
+        return `$${formatNumberWithCommas(result)}`;
       },
     },
     {
@@ -875,7 +878,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let wastagePercentage = parseFloat(record.wastage);
         let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = unitEquipments * quantityWithWastage;
-        return `$${result.toFixed(2)}`;
+        return `$${formatNumberWithCommas(result)}`;
       },
     },
     {
