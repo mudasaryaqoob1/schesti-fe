@@ -8,9 +8,10 @@ import Image from "next/image";
 type Props = {
     bid: IBidManagement;
     onClick?: () => void;
+    isSelected?: boolean;
 }
-export function BidIntro({ bid, onClick }: Props) {
-    return <div className="mt-3 rounded-lg  bg-[#FCFAFF] border border-[#E8E3EF] p-4">
+export function BidIntro({ bid, onClick, isSelected }: Props) {
+    return <div className={`mt-3 rounded-lg ${isSelected ? "bg-[#e5def0]" : "bg-[#FCFAFF]"}  border border-[#E8E3EF] p-4`}>
         <div className="flex items-center space-x-3">
             <Image
                 src={'/trade.svg'}

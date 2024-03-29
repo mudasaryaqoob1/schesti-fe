@@ -15,10 +15,12 @@ import { bidManagementService } from "@/app/services/bid-management.service";
 import { BidDetails } from "./components/BidDetails";
 import { Pagination, Skeleton } from "antd";
 
+const ITEMS_PER_PAGE = 4;
 function BidManagementSubContractorPage() {
     const [selectedBid, setSelectedBid] = useState<IBidManagement | null>(null);
     const [invitedCurrentPage, setInvitedCurrentPage] = useState(1);
-    const [itemsPerPage, setItemsPerPage] = useState(10);
+    const [exploreCurrentPage, setExploreCurrentPage] = useState(1);
+
 
     const projectsQuery = useQuery(['bid-projects'], () => {
         return bidManagementService.httpGetOwnerProjects();
@@ -31,6 +33,10 @@ function BidManagementSubContractorPage() {
     const projects = projectsQuery.data && projectsQuery.data.data ? projectsQuery.data.data?.projects : [];
     const invitedProjects = invitedUserProjectsQuery.data && invitedUserProjectsQuery.data.data ? invitedUserProjectsQuery.data.data?.projects : [];
 
+
+    const currentInvitedProjects = invitedProjects.slice((invitedCurrentPage - 1) * ITEMS_PER_PAGE, invitedCurrentPage * ITEMS_PER_PAGE);
+
+    const currentExploreProjects = projects.slice((exploreCurrentPage - 1) * ITEMS_PER_PAGE, exploreCurrentPage * ITEMS_PER_PAGE);
 
 
     return <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 ">
@@ -112,20 +118,23 @@ function BidManagementSubContractorPage() {
                         />
 
                         {invitedUserProjectsQuery.isLoading ? <Skeleton /> :
-                            invitedProjects.map(bidProject => {
+                            currentInvitedProjects.map(bidProject => {
                                 return <BidIntro
                                     key={bidProject._id}
                                     bid={bidProject}
                                     onClick={() => setSelectedBid(bidProject)}
+                                    isSelected={selectedBid?._id === bidProject._id}
                                 />
                             })}
 
-                        <Pagination
-                            current={invitedCurrentPage}
-                            pageSize={itemsPerPage}
-                            total={invitedProjects.length}
-                            onChange={page => setInvitedCurrentPage(page)}
-                        />
+                        <div className="mt-1 flex justify-center">
+                            <Pagination
+                                current={invitedCurrentPage}
+                                pageSize={ITEMS_PER_PAGE}
+                                total={invitedProjects.length}
+                                onChange={page => setInvitedCurrentPage(page)}
+                            />
+                        </div>
                     </div>
 
                     <div className="mt-3">
@@ -135,11 +144,12 @@ function BidManagementSubContractorPage() {
                         />
 
                         {projectsQuery.isLoading ? <Skeleton /> :
-                            projects.filter(project => project.status !== 'draft').map(bidProject => {
+                            currentExploreProjects.filter(project => project.status !== 'draft').map(bidProject => {
                                 return <BidIntro
                                     key={bidProject._id}
                                     bid={bidProject}
                                     onClick={() => setSelectedBid(bidProject)}
+                                    isSelected={selectedBid?._id === bidProject._id}
                                 />
                             })}
                     </div>
@@ -151,6 +161,14 @@ function BidManagementSubContractorPage() {
                         bid={selectedBid}
                     />
                 </div> : null}
+            </div>
+            <div className="mt-1 flex justify-center">
+                <Pagination
+                    current={exploreCurrentPage}
+                    pageSize={ITEMS_PER_PAGE}
+                    total={projects.length}
+                    onChange={page => setExploreCurrentPage(page)}
+                />
             </div>
         </div>
 
