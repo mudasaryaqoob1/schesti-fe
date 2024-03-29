@@ -6,16 +6,37 @@ import WhiteButton from "@/app/component/customButton/white";
 import { InputComponent } from "@/app/component/customInput/Input";
 import { SelectComponent } from "@/app/component/customSelect/Select.component";
 import SenaryHeading from "@/app/component/headings/senaryHeading";
+import { useTrades } from "@/app/hooks/useTrades";
+import { useState } from "react";
 
 type Props = {
     onCancel?: () => void;
-    onApply?: () => void;
+    onApply?: (_filters: { trades: string[], projectValue: number }) => void;
     isVisible: boolean;
 }
 
-export function BidFilters({ onApply, onCancel, isVisible }: Props) {
+export function BidFilters({ onApply, onCancel, isVisible, }: Props) {
+    const { trades, tradeCategoryFilters, tradesQuery } = useTrades();
+    const [filters, setFilters] = useState<{
+        trades: string[],
+        projectValue: number
+    }>({
+        trades: [],
+        projectValue: 0,
+    });
+
     if (!isVisible) return null;
 
+    const tradesSubCategories = tradeCategoryFilters.map(parent => {
+        return ({
+            label: parent.label,
+            title: parent.label,
+            options: trades.filter(trade => trade.tradeCategoryId._id === parent.value).map(trade => ({
+                label: trade.name,
+                value: trade._id
+            }))
+        });
+    })
 
     return <div className={`absolute
          bg-white w-[400px] right-12 z-10 opacity-0 top-14 border rounded-md transition-all ease-in-out
@@ -39,12 +60,36 @@ export function BidFilters({ onApply, onCancel, isVisible }: Props) {
                 label="Trades"
                 name="trades"
                 placeholder="Choose your trades"
+                field={{
+                    loading: tradesQuery.isLoading,
+                    options: tradesSubCategories,
+                    allowClear: true,
+                    showSearch: true,
+                    mode: "multiple",
+                    value: filters.trades,
+                    onChange: (value) => {
+                        setFilters({
+                            trades: value,
+                            projectValue: filters.projectValue
+                        });
+                    }
+                }}
             />
             <InputComponent
                 label="Project Value"
                 placeholder="Project Value"
                 name="projectValue"
                 type="number"
+                field={{
+                    min: 1,
+                    value: filters.projectValue,
+                    onChange: (e) => {
+                        setFilters({
+                            trades: filters.trades,
+                            projectValue: parseInt(e.target.value)
+                        });
+                    }
+                }}
             />
 
         </div>
@@ -55,7 +100,11 @@ export function BidFilters({ onApply, onCancel, isVisible }: Props) {
             />
             <CustomButton
                 text="Apply"
-                onClick={onApply}
+                onClick={() => {
+                    if (onApply) {
+                        onApply(filters)
+                    }
+                }}
             />
         </div>
     </div>

@@ -15,18 +15,24 @@ import { bidManagementService } from "@/app/services/bid-management.service";
 import { BidDetails } from "./components/BidDetails";
 import { Pagination, Skeleton } from "antd";
 import { BidFilters } from "./components/Filters";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import { IUpdateCompanyDetail } from "@/app/interfaces/companyInterfaces/updateCompany.interface";
+import _ from "lodash";
+import { isArrayString } from "@/app/utils/typescript.utils";
 
 const ITEMS_PER_PAGE = 4;
+
 function BidManagementSubContractorPage() {
     const [selectedBid, setSelectedBid] = useState<IBidManagement | null>(null);
+    const [search, setSearch] = useState('');
     const [invitedCurrentPage, setInvitedCurrentPage] = useState(1);
     const [exploreCurrentPage, setExploreCurrentPage] = useState(1);
     const [showFilters, setShowFilters] = useState(false);
-    const userData = useSelector((state: RootState) => state.auth.user as { user?: IUpdateCompanyDetail });
-    console.log({ userData });
+    const [filters, setFilters] = useState<{
+        trades: string[],
+        projectValue: number
+    }>({
+        trades: [],
+        projectValue: 0,
+    });
 
     function toggleFilters() {
         setShowFilters(!showFilters);
@@ -49,7 +55,12 @@ function BidManagementSubContractorPage() {
 
     const currentInvitedProjects = invitedProjects.slice((invitedCurrentPage - 1) * ITEMS_PER_PAGE, invitedCurrentPage * ITEMS_PER_PAGE);
 
-    const currentExploreProjects = projects.slice((exploreCurrentPage - 1) * ITEMS_PER_PAGE, exploreCurrentPage * ITEMS_PER_PAGE);
+    const currentExploreProjects = projects.filter(project => {
+        if (!search) {
+            return project;
+        }
+        return project.projectName.toLowerCase().includes(search.toLowerCase()) || project.description.toLowerCase().includes(search.toLowerCase());
+    }).slice((exploreCurrentPage - 1) * ITEMS_PER_PAGE, exploreCurrentPage * ITEMS_PER_PAGE);
 
 
     return <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 ">
@@ -84,7 +95,8 @@ function BidManagementSubContractorPage() {
 
                     <SenaryHeading
                         title={` as Sub-Contractor`}
-                        className="text-[#344054] text-[20px] leading-7 font-normal" />
+                        className="text-[#344054] text-[20px] leading-7 font-normal"
+                    />
 
                 </div>
 
@@ -96,6 +108,12 @@ function BidManagementSubContractorPage() {
                             placeholder="Search"
                             name="search"
                             prefix={<SearchOutlined size={20} />}
+                            field={{
+                                value: search,
+                                onChange(e) {
+                                    setSearch(e.target.value);
+                                }
+                            }}
                         />
                     </div>
                     <WhiteButton
@@ -115,7 +133,10 @@ function BidManagementSubContractorPage() {
                             onClick={toggleFilters}
                         />
                         <BidFilters
-                            onApply={() => { }}
+                            onApply={(appliedFilters) => {
+
+                                setFilters(appliedFilters);
+                            }}
                             onCancel={closeFilters}
                             isVisible={showFilters}
                         />
@@ -165,7 +186,14 @@ function BidManagementSubContractorPage() {
                         />
 
                         {projectsQuery.isLoading ? <Skeleton /> :
-                            currentExploreProjects.filter(project => project.status !== 'draft').map(bidProject => {
+                            currentExploreProjects.filter(project => project.status !== 'draft').filter(bidProject => {
+                                if (filters.trades.length > 0 || filters.projectValue > 0) {
+                                    if (isArrayString(bidProject.selectedTrades)) {
+                                        return _.intersection(bidProject.selectedTrades, filters.trades).length > 0 || bidProject.projectValue >= filters.projectValue;
+                                    }
+                                }
+                                return true;
+                            }).map(bidProject => {
                                 return <BidIntro
                                     key={bidProject._id}
                                     bid={bidProject}
