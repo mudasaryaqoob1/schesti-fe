@@ -1,7 +1,8 @@
 import { ITrade } from "../trade.interface"
+import { IUserInterface } from "../user.interface"
 
 export interface IBidManagement {
-    user: string
+    user: string | IUserInterface;
     projectName: string
     address: string
     zipCode: string
@@ -13,8 +14,8 @@ export interface IBidManagement {
     projectBuildingUse: string[];
     stage: string;
     estimatedStartDate: string;
-    bidDueDate:string;
-    estimatedCompletionDate:string;
+    bidDueDate: string;
+    estimatedCompletionDate: string;
     squareFootage: string;
     projectValue: number;
     estimatedDuration: string;
@@ -27,7 +28,7 @@ export interface IBidManagement {
         url: string;
         extension: string;
         type: string;
-        name:string;
+        name: string;
     }[]
     selectedTeamMembers: string[]
     status: "draft" | 'expired' | 'active' | 'archived'
@@ -38,11 +39,11 @@ export interface IBidManagement {
     platformType: "Public" | "Private";
     isMatchingWithTrades: boolean
     invitedMembers: string[];
-    invitedMembersAssets:{
-        name:string;
-        url:string;
-        extension:string;
-        type:string;
+    invitedMembersAssets: {
+        name: string;
+        url: string;
+        extension: string;
+        type: string;
     }[]
 }
 

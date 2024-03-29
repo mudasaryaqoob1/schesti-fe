@@ -2,7 +2,6 @@ import CustomButton from "@/app/component/customButton/button";
 import SenaryHeading from "@/app/component/headings/senaryHeading";
 import { IBidManagement } from "@/app/interfaces/bid-management/bid-management.interface"
 import { USCurrencyFormat } from "@/app/utils/format";
-import { UserOutlined } from "@ant-design/icons";
 import { Avatar, Divider } from "antd";
 import { Country } from "country-state-city";
 import moment from "moment";
@@ -12,6 +11,7 @@ type Props = {
     bid: IBidManagement;
 }
 export function BidDetails({ bid }: Props) {
+
     return <div>
         <div className="flex items-center justify-between">
             <SenaryHeading
@@ -111,13 +111,15 @@ export function BidDetails({ bid }: Props) {
                 title="Who is bidding the project?"
                 className="text-[#475467] text-base leading-6 font-semibold"
             />
-            <div className="bg-[#FCFAFF] mt-3 rounded-md  p-3 border border-[#EBEAEC]">
+            {typeof bid.user !== 'string' ? <div className="bg-[#FCFAFF] mt-3 rounded-md  p-3 border border-[#EBEAEC]">
                 <div className="flex justify-between">
                     <div className="flex mt-1 space-x-2">
-                        <Avatar size={24} icon={<UserOutlined />} />
+                        <Avatar size={24} src={bid.user.companyLogo} >
+                            {bid.user.name[0]}
+                        </Avatar>
 
                         <SenaryHeading
-                            title="John Doe Construction"
+                            title={bid.user.companyName}
                             className="text-[#475467] text-[14px] leading-6 font-semibold"
                         />
                     </div>
@@ -128,23 +130,24 @@ export function BidDetails({ bid }: Props) {
                             className="text-[#7F56D9] underline underline-offset-2 text-[14px] leading-6 font-normal"
                         />
                         <SenaryHeading
-                            title="John Doe"
+                            title={bid.user.name}
                             className="text-[#475467] text-[14px] leading-6 font-normal"
                         />
                     </div>
                 </div>
                 <div className="flex mt-2 items-center justify-between">
                     <SenaryHeading
-                        title="Phone: (671) 555-0110"
+                        title={`Phone: ${bid.user.phone ? bid.user.phone : ""}`}
                         className="text-[#475467] text-[14px] leading-6 font-normal"
                     />
 
                     <SenaryHeading
-                        title="Email: willie.jennings@example.com"
+                        title={`Email: ${bid.user.email}`}
                         className="text-[#475467] text-[14px] leading-6 font-normal"
                     />
                 </div>
             </div>
+                : null}
         </div>
 
 
