@@ -152,6 +152,9 @@ function Page() {
                                 setSelectedProject(record);
                                 setShowProjectDeleteModal(true);
                             }
+                            if (key === 'view') {
+                                router.push(`${Routes['Bid Management'].Owner}/view/${record._id}`);
+                            }
 
                         },
                     }}
