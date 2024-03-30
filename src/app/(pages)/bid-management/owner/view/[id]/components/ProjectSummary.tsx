@@ -3,7 +3,7 @@ import TertiaryHeading from "@/app/component/headings/tertiary";
 import { USCurrencyFormat } from "@/app/utils/format";
 
 export function ProjectSummary() {
-    return <div>
+    return <div className=" mt-6 mb-4 md:ms-[69px] md:me-[59px] mx-4  p-5 bg-white rounded-lg border shadow-lg">
         <div>
             <TertiaryHeading
                 title="Overview"

@@ -139,15 +139,13 @@ function OwnerProjectDetailsPage() {
             </div>
         </div>
 
+        {activeTab === SUMMARY ? <ProjectSummary /> : null}
+        {activeTab === BIDS ? <ProjectBids /> : null}
+        {activeTab === DESIGN_TEAM ? <ProjectDesignTeam /> : null}
+        {activeTab === ACTIVITY_AND_STATUS_TRACKING ? <ProjectAcitivityAndStatusTracking /> : null}
+        {activeTab === DOCUMENTS ? <ProjectDocuments /> : null}
+        {activeTab === RFI_CENTER ? <ProjectRFICenter /> : null}
 
-        <div className=" mt-6 mb-4 md:ms-[69px] md:me-[59px] mx-4  p-5 bg-white rounded-lg border shadow-lg">
-            {activeTab === SUMMARY ? <ProjectSummary /> : null}
-            {activeTab === BIDS ? <ProjectBids /> : null}
-            {activeTab === DESIGN_TEAM ? <ProjectDesignTeam /> : null}
-            {activeTab === ACTIVITY_AND_STATUS_TRACKING ? <ProjectAcitivityAndStatusTracking /> : null}
-            {activeTab === DOCUMENTS ? <ProjectDocuments /> : null}
-            {activeTab === RFI_CENTER ? <ProjectRFICenter /> : null}
-        </div>
     </section>
 }
 
