@@ -84,7 +84,9 @@ export function PdfCompanyDetails({ estimateDetail, user }: Props) {
           <Text style={styles.text}>
             {`${estimateDetail?.estimateRequestIdDetail?.clientName}`}
           </Text>
-          <Text style={styles.text}>{estimateDetail?.estimateRequestIdDetail?.companyName}</Text>
+          <Text style={styles.text}>
+            {estimateDetail?.estimateRequestIdDetail?.companyName}
+          </Text>
         </View>
 
         {/* <View
@@ -114,12 +116,16 @@ export function PdfCompanyDetails({ estimateDetail, user }: Props) {
         >
           <View>
             <Text style={styles.heading}>Invoice Number</Text>
-            <Text style={styles.text}>{Math.floor(Math.random() * 100) + 10756870}</Text>
+            <Text style={styles.text}>
+              {Math.floor(Math.random() * 100) + 10756870}
+            </Text>
           </View>
 
           <View style={{ marginTop: 5 }}>
             <Text style={styles.heading}>Project Name</Text>
-            <Text style={styles.text}>{estimateDetail?.estimateRequestIdDetail?.projectName}</Text>
+            <Text style={styles.text}>
+              {estimateDetail?.estimateRequestIdDetail?.projectName}
+            </Text>
           </View>
         </View>
 
@@ -130,7 +136,9 @@ export function PdfCompanyDetails({ estimateDetail, user }: Props) {
         >
           <View>
             <Text style={styles.heading}>Amount Due (USD)</Text>
-            <Text style={styles.largeText}>{`$${estimateDetail?.totalCost}`}</Text>
+            <Text
+              style={styles.largeText}
+            >{`$${estimateDetail?.totalCost}`}</Text>
           </View>
         </View>
       </View>

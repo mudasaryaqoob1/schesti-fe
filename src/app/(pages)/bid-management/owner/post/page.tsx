@@ -123,7 +123,7 @@ function CreatePost() {
               <PostProjectFooter
                 cancelButton={{
                   text: 'Cancel',
-                  onClick() { },
+                  onClick() {},
                 }}
                 submitButton={{
                   onClick() {
@@ -175,63 +175,68 @@ function CreatePost() {
                 }}
               />
             </PostDesignTeam>
-          ) : current === 3 ? <PostProjectTrades >
-            <PostProjectFooter
-              cancelButton={{
-                text: 'Previous',
-                onClick() {
-                  prevStep();
-                },
-              }}
-              submitButton={{
-                onClick() {
-                  nextStep();
-                },
-                text: 'Next Step',
-              }}
-              info={{
-                title: `75% Completed`,
-                description: 'You’re almost done! Just 2 step left',
-              }}
-            />
-          </PostProjectTrades> : current === 4 ? <ProjectUploadFiles>
-            <PostProjectFooter
-              cancelButton={{
-                text: 'Previous',
-                onClick() {
-                  prevStep();
-                },
-              }}
-              submitButton={{
-                onClick() {
-                  nextStep();
-                },
-                text: 'Next Step',
-              }}
-              info={{
-                title: `90% Completed`,
-                description: 'You’re almost done! Just 1 step left',
-              }}
-            />
-          </ProjectUploadFiles> : current === 5 ? <PostFinalize>
-            <PostProjectFooter
-              cancelButton={{
-                text: 'Previous',
-                onClick() {
-                  prevStep();
-                },
-              }}
-              submitButton={{
-                onClick() {
-                },
-                text: 'Post Project',
-              }}
-              info={{
-                title: `100% Completed`,
-                description: 'You’re almost done! Post your project now',
-              }}
-            />
-          </PostFinalize> : null}
+          ) : current === 3 ? (
+            <PostProjectTrades>
+              <PostProjectFooter
+                cancelButton={{
+                  text: 'Previous',
+                  onClick() {
+                    prevStep();
+                  },
+                }}
+                submitButton={{
+                  onClick() {
+                    nextStep();
+                  },
+                  text: 'Next Step',
+                }}
+                info={{
+                  title: `75% Completed`,
+                  description: 'You’re almost done! Just 2 step left',
+                }}
+              />
+            </PostProjectTrades>
+          ) : current === 4 ? (
+            <ProjectUploadFiles>
+              <PostProjectFooter
+                cancelButton={{
+                  text: 'Previous',
+                  onClick() {
+                    prevStep();
+                  },
+                }}
+                submitButton={{
+                  onClick() {
+                    nextStep();
+                  },
+                  text: 'Next Step',
+                }}
+                info={{
+                  title: `90% Completed`,
+                  description: 'You’re almost done! Just 1 step left',
+                }}
+              />
+            </ProjectUploadFiles>
+          ) : current === 5 ? (
+            <PostFinalize>
+              <PostProjectFooter
+                cancelButton={{
+                  text: 'Previous',
+                  onClick() {
+                    prevStep();
+                  },
+                }}
+                submitButton={{
+                  onClick() {},
+                  text: 'Post Project',
+                }}
+                info={{
+                  title: `100% Completed`,
+                  description: 'You’re almost done! Post your project now',
+                }}
+              />
+            </PostFinalize>
+          ) : null}
         </div>
       </div>
     </section>

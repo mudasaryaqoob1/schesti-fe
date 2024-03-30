@@ -117,5 +117,8 @@ class AuthService extends HttpService {
       data: any;
     }>
   > => this.post(`${this.prefix}/capture-order`, { orderID: orderID });
+
+  verifyUserEmail = (token: string): Promise<IResponseInterface<any>> =>
+    this.get(`${this.prefix}/verify-user-email/${token}`);
 }
 export const authService = new AuthService();

@@ -358,7 +358,9 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
               <>
                 <Input
                   value={firstValueX}
-                  className={`!w-[115px] ${firstValErrorX && '!border-1 !border-rose-500'}`}
+                  className={`!w-[115px] ${
+                    firstValErrorX && '!border-1 !border-rose-500'
+                  }`}
                   onChange={(e) => {
                     const inputValue = e.target.value;
 
