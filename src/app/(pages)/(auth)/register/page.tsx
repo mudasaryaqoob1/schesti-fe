@@ -136,12 +136,12 @@ const Register = () => {
             className="my-2 text-center text-slateGray"
             title=" Sign up to your account"
           />
-          <div className="flex items-center justify-between space-x-4 bg-gray-200 rounded-md p-2 mt-6 mb-3">
+          <div className="flex items-center bg-silverGray justify-between space-x-4 bg-gray-200 rounded-md p-2 mt-6 mb-3">
             <button
               className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${
                 role === CONTRACTOR
                   ? 'bg-lavenderPurple text-white'
-                  : 'bg-gray-200'
+                  : 'bg-transparent'
               }`}
               onClick={() => handleRoleChange(CONTRACTOR)}
             >
@@ -151,7 +151,7 @@ const Register = () => {
               className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${
                 role === SUBCONTRACTOR
                   ? 'bg-lavenderPurple text-white'
-                  : 'bg-gray-200'
+                  : 'bg-transparent'
               }`}
               onClick={() => handleRoleChange(SUBCONTRACTOR)}
             >
@@ -159,7 +159,9 @@ const Register = () => {
             </button>
             <button
               className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${
-                role === OWNER ? 'bg-lavenderPurple text-white' : 'bg-gray-200'
+                role === OWNER
+                  ? 'bg-lavenderPurple text-white'
+                  : 'bg-transparent'
               }`}
               onClick={() => handleRoleChange(OWNER)}
             >

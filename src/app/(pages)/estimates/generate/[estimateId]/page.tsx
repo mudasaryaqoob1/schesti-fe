@@ -107,10 +107,10 @@ const ViewEstimateDetail = () => {
           <PDFDownloadLink
             document={
               <EstimatePDF
-              estimateDetail={estimateDetailsSummary}
-              pdfData={pdfData}
-              user={user}
-            />
+                estimateDetail={estimateDetailsSummary}
+                pdfData={pdfData}
+                user={user}
+              />
             }
             fileName="estimate-document.pdf"
           >
@@ -266,7 +266,9 @@ const ViewEstimateDetail = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <QuaternaryHeading
-                      title={`Total Cost: ${USCurrencyFormat.format(estimate.totalCostForTitle)}`}
+                      title={`Total Cost: ${USCurrencyFormat.format(
+                        estimate.totalCostForTitle
+                      )}`}
                       className="font-semibold"
                     />
                   </div>
@@ -284,7 +286,9 @@ const ViewEstimateDetail = () => {
         <div className="flex items-center justify-between">
           <MinDesc title="Sub Total Cost" className="text-darkgrayish" />
           <Description
-            title={`${USCurrencyFormat.format(estimateDetailsSummary?.totalCost)}`}
+            title={`${USCurrencyFormat.format(
+              estimateDetailsSummary?.totalCost
+            )}`}
             className="font-medium"
           />
         </div>
@@ -309,7 +313,9 @@ const ViewEstimateDetail = () => {
         <div className="flex items-center justify-between">
           <MinDesc title="Bond Fee %" className="text-darkgrayish" />
           <Description
-            title={`${USCurrencyFormat.format(estimateDetailsSummary?.totalBidDetail?.bondFee)}`}
+            title={`${USCurrencyFormat.format(
+              estimateDetailsSummary?.totalBidDetail?.bondFee
+            )}`}
             className="font-medium"
           />
         </div>
@@ -319,7 +325,9 @@ const ViewEstimateDetail = () => {
         <QuaternaryHeading className="font-semibold" title="Total Bid" />
         <Description
           className="font-semibold"
-          title={`${USCurrencyFormat.format(estimateDetailsSummary?.totalCost)}`}
+          title={`${USCurrencyFormat.format(
+            estimateDetailsSummary?.totalCost
+          )}`}
         />
       </div>
     </div>

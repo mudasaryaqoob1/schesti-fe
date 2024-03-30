@@ -13,7 +13,7 @@ import { pricingPlanService } from '../services/pricingPlan.service';
 import { setUserPricingPlan } from '@/redux/pricingPlanSlice/pricingPlanSlice';
 import { usePathname, useRouter } from 'next/navigation';
 import { IUser } from '../interfaces/companyEmployeeInterfaces/user.interface';
-import {NoDataComponent} from '../component/noData/NoDataComponent';
+import { NoDataComponent } from '../component/noData/NoDataComponent';
 import { Skeleton } from 'antd';
 import _ from 'lodash';
 import { OtherRoutes } from '../utils/plans.utils';
@@ -80,10 +80,20 @@ export const withAuth = (
     }
 
     if (canAccessThePage && !hasRoles) {
-      return <NoDataComponent title='Upgrade Your Plan' description='You can access the page after upgrade featured plan' />;
+      return (
+        <NoDataComponent
+          title="Upgrade Your Plan"
+          description="You can access the page after upgrade featured plan"
+        />
+      );
     }
 
-    return <NoDataComponent title='Upgrade Your Plan' description='You can access the page after upgrade featured plan' />;
+    return (
+      <NoDataComponent
+        title="Upgrade Your Plan"
+        description="You can access the page after upgrade featured plan"
+      />
+    );
   };
 
   return WrappedComponentWithAuth;

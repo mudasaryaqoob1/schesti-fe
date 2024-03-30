@@ -61,9 +61,10 @@ class EstimateRequestsService extends HttpService {
   ): Promise<IResponseInterface> =>
     this.get(`${this.prefix}/getGeneratedEstimateDetail/${estimateId}`);
 
-    httpEstimateRequestStatusChangeHandler = (
-      estimateId: string, bodyObject : any
-    ): Promise<IResponseInterface<{estimateRequestData : IEstimateRequest}>> =>
-      this.put(`${this.prefix}/changeEstimateStatus/${estimateId}` , bodyObject);
+  httpEstimateRequestStatusChangeHandler = (
+    estimateId: string,
+    bodyObject: any
+  ): Promise<IResponseInterface<{ estimateRequestData: IEstimateRequest }>> =>
+    this.put(`${this.prefix}/changeEstimateStatus/${estimateId}`, bodyObject);
 }
 export const estimateRequestService = new EstimateRequestsService();

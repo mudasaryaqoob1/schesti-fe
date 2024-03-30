@@ -8,7 +8,9 @@ import {
   getLoggedInUserDetails,
   addVerificationDetails,
   addSelectedTrades,
+  verifyUserEmail,
 } from './auth.thunk';
+import { isEmpty } from 'lodash';
 
 export const authSlice = createSlice({
   name: 'auth',
@@ -77,6 +79,28 @@ export const authSlice = createSlice({
     builder.addCase(addCompanyDetail.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
+    });
+
+    // User Email Verification
+    builder.addCase(verifyUserEmail.pending, (state) => {
+      state.loading = true;
+    });
+
+    builder.addCase(verifyUserEmail.fulfilled, (state, action) => {
+      state.loading = false;
+      state.user = action.payload.data;
+      console.log('action.pay', action.payload);
+      state.token = action.payload?.token;
+      state.message = action.payload.message;
+      if (!isEmpty(action.payload.data?.user)) {
+        window.location.href = `/companydetails/${action.payload.data.user?._id}`;
+      }
+    });
+
+    builder.addCase(verifyUserEmail.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+      window.location.href = '/login';
     });
 
     builder.addCase(getLoggedInUserDetails.rejected, (state, action) => {

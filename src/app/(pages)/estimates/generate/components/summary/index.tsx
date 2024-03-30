@@ -400,7 +400,9 @@ const Summary = ({ setPrevNext }: Props) => {
                         />
                       </div>
                       <QuaternaryHeading
-                        title={`Total Cost: $${formatNumberWithCommas(estimate.totalCostForTitle)}`}
+                        title={`Total Cost: $${formatNumberWithCommas(
+                          estimate.totalCostForTitle
+                        )}`}
                         className="font-semibold"
                       />
                     </div>
