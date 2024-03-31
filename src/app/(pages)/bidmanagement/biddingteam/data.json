@@ -1,86 +1,86 @@
 [
-    {
-        "name": "Arlene McCoy",
-        "role": "Regional Manager",
-        "company": "Apple",
-        "location": "3891 Ranchview Dr. Richardson, California 62639",
-        "phone": "(505) 555-0125",
-        "email": "maka@yandex.ru"
-    },
-    {
-        "name": "Jenny Wilson",
-        "role": "Organization Administrator",
-        "company": "Microsoft",
-        "location": "2972 Westheimer Rd. Santa Ana, Illinois 85486 ",
-        "phone": "(209) 555-0104",
-        "email": "irnabela@gmail.com"
-    },
-    {
-        "name": "Theresa Webb",
-        "role": "Vice President",
-        "company": "Apple",
-        "location": "8502 Preston Rd. Inglewood, Maine 98380",
-        "phone": "(704) 555-0127",
-        "email": "joie@gmail.com"
-    },
-    {
-        "name": "Dianne Russell",
-        "role": "Tax Officer",
-        "company": "Amazon",
-        "location": "2715 Ash Dr. San Jose, South Dakota 83475",
-        "phone": "(307) 555-0133",
-        "email": "cedennar@gmail.com"
-    },
-    {
-        "name": "Guy Hawkins",
-        "role": "Accountant",
-        "company": "Tesla",
-        "location": "1901 Thornridge Cir. Shiloh, Hawaii 81063",
-        "phone": "(319) 555-0115",
-        "email": "xterris@gmail.com"
-    },
-    {
-        "name": "Leslie Alexander",
-        "role": "Trust Administrator",
-        "company": "Apple",
-        "location": "4140 Parker Rd. Allentown, New Mexico 31134",
-        "phone": "(702) 555-0122",
-        "email": "cido@gmail.com"
-    },
-    {
-        "name": "Kathryn Murphy",
-        "role": "Agent",
-        "company": "Microsoft",
-        "location": "3517 W. Gray St. Utica, Pennsylvania 57867",
-        "phone": "(252) 555-0126",
-        "email": "xeno@yandex.ru"
-    },
-    {
-        "name": "Floyd Miles",
-        "role": "Branch Manager",
-        "company": "Amazon",
-        "location": "2118 Thornridge Cir. Syracuse, Connecticut 35624",
-        "phone": "(302) 555-0107",
-        "email": "osgoodwy@gmail.com"
-    },
-    {
-        "label": "Overview",
-        "value": "overview"
-    },
-    {
-        "label": "Project Team",
-        "value": "project-team"
-    },
-    {
-        "label": "Bidding team",
-        "value": "bidding-team"
-    },
-    {
-        "label": "Documents",
-        "value": "documents"
-    },
-    {
-        "label": "RFI Center",
-        "value": "rfi-center"
-    }
+  {
+    "name": "Arlene McCoy",
+    "role": "Regional Manager",
+    "company": "Apple",
+    "location": "3891 Ranchview Dr. Richardson, California 62639",
+    "phone": "(505) 555-0125",
+    "email": "maka@yandex.ru"
+  },
+  {
+    "name": "Jenny Wilson",
+    "role": "Organization Administrator",
+    "company": "Microsoft",
+    "location": "2972 Westheimer Rd. Santa Ana, Illinois 85486 ",
+    "phone": "(209) 555-0104",
+    "email": "irnabela@gmail.com"
+  },
+  {
+    "name": "Theresa Webb",
+    "role": "Vice President",
+    "company": "Apple",
+    "location": "8502 Preston Rd. Inglewood, Maine 98380",
+    "phone": "(704) 555-0127",
+    "email": "joie@gmail.com"
+  },
+  {
+    "name": "Dianne Russell",
+    "role": "Tax Officer",
+    "company": "Amazon",
+    "location": "2715 Ash Dr. San Jose, South Dakota 83475",
+    "phone": "(307) 555-0133",
+    "email": "cedennar@gmail.com"
+  },
+  {
+    "name": "Guy Hawkins",
+    "role": "Accountant",
+    "company": "Tesla",
+    "location": "1901 Thornridge Cir. Shiloh, Hawaii 81063",
+    "phone": "(319) 555-0115",
+    "email": "xterris@gmail.com"
+  },
+  {
+    "name": "Leslie Alexander",
+    "role": "Trust Administrator",
+    "company": "Apple",
+    "location": "4140 Parker Rd. Allentown, New Mexico 31134",
+    "phone": "(702) 555-0122",
+    "email": "cido@gmail.com"
+  },
+  {
+    "name": "Kathryn Murphy",
+    "role": "Agent",
+    "company": "Microsoft",
+    "location": "3517 W. Gray St. Utica, Pennsylvania 57867",
+    "phone": "(252) 555-0126",
+    "email": "xeno@yandex.ru"
+  },
+  {
+    "name": "Floyd Miles",
+    "role": "Branch Manager",
+    "company": "Amazon",
+    "location": "2118 Thornridge Cir. Syracuse, Connecticut 35624",
+    "phone": "(302) 555-0107",
+    "email": "osgoodwy@gmail.com"
+  },
+  {
+    "label": "Overview",
+    "value": "overview"
+  },
+  {
+    "label": "Project Team",
+    "value": "project-team"
+  },
+  {
+    "label": "Bidding team",
+    "value": "bidding-team"
+  },
+  {
+    "label": "Documents",
+    "value": "documents"
+  },
+  {
+    "label": "RFI Center",
+    "value": "rfi-center"
+  }
 ]

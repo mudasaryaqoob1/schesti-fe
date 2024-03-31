@@ -5,12 +5,17 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import { TextAreaComponent } from '@/app/component/textarea';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
 import type { FormikProps } from 'formik';
-import { bidBuildingUse, bidDurationType, bidProjectTypes, bidStages } from './data';
+import {
+  bidBuildingUse,
+  bidDurationType,
+  bidProjectTypes,
+  bidStages,
+} from './data';
 import { dayjs } from '@/app/utils/date.utils';
 
 type Props = {
   children?: React.ReactNode;
-  formik: FormikProps<IBidManagement>
+  formik: FormikProps<IBidManagement>;
 };
 
 export function PostProjectDetails({ formik, children }: Props) {
@@ -30,19 +35,24 @@ export function PostProjectDetails({ formik, children }: Props) {
               placeholder="Project Type"
               field={{
                 options: bidProjectTypes,
-                mode: "multiple",
+                mode: 'multiple',
                 showSearch: true,
                 defaultValue: formik.values.projectType,
                 onChange(value: string[]) {
-                  formik.setFieldValue("projectType", value);
+                  formik.setFieldValue('projectType', value);
                 },
                 onClear() {
                   formik.setFieldValue('projectType', '');
-                }
+                },
               }}
-
-              hasError={formik.touched.projectType && Boolean(formik.errors.projectType)}
-              errorMessage={formik.touched.projectType && formik.errors.projectType ? formik.errors.projectType as string : ""}
+              hasError={
+                formik.touched.projectType && Boolean(formik.errors.projectType)
+              }
+              errorMessage={
+                formik.touched.projectType && formik.errors.projectType
+                  ? (formik.errors.projectType as string)
+                  : ''
+              }
             />
           </div>
 
@@ -53,19 +63,26 @@ export function PostProjectDetails({ formik, children }: Props) {
               placeholder="Project Building Use"
               field={{
                 options: bidBuildingUse,
-                mode: "multiple",
+                mode: 'multiple',
                 showSearch: true,
                 defaultValue: formik.values.projectBuildingUse,
                 onChange(value: string[]) {
-                  formik.setFieldValue("projectBuildingUse", value);
+                  formik.setFieldValue('projectBuildingUse', value);
                 },
                 onClear() {
                   formik.setFieldValue('projectBuildingUse', '');
-                }
+                },
               }}
-
-              hasError={formik.touched.projectBuildingUse && Boolean(formik.errors.projectBuildingUse)}
-              errorMessage={formik.touched.projectBuildingUse && formik.errors.projectBuildingUse ? formik.errors.projectBuildingUse as string : ""}
+              hasError={
+                formik.touched.projectBuildingUse &&
+                Boolean(formik.errors.projectBuildingUse)
+              }
+              errorMessage={
+                formik.touched.projectBuildingUse &&
+                formik.errors.projectBuildingUse
+                  ? (formik.errors.projectBuildingUse as string)
+                  : ''
+              }
             />
           </div>
         </div>
@@ -78,11 +95,15 @@ export function PostProjectDetails({ formik, children }: Props) {
             options: bidStages,
             showSearch: true,
             value: formik.values.stage,
-            onChange: (value) => formik.setFieldValue("stage", value),
-            onBlur: formik.handleBlur
+            onChange: (value) => formik.setFieldValue('stage', value),
+            onBlur: formik.handleBlur,
           }}
           hasError={formik.touched.stage && Boolean(formik.errors.stage)}
-          errorMessage={formik.touched.stage && formik.errors.stage ? formik.errors.stage : ""}
+          errorMessage={
+            formik.touched.stage && formik.errors.stage
+              ? formik.errors.stage
+              : ''
+          }
         />
 
         <div className="grid grid-cols-2 gap-2">
@@ -90,42 +111,70 @@ export function PostProjectDetails({ formik, children }: Props) {
             label="Estimated Start Date"
             name="estimatedStartDate"
             fieldProps={{
-              value: formik.values.estimatedStartDate ? dayjs(formik.values.estimatedStartDate) : undefined,
+              value: formik.values.estimatedStartDate
+                ? dayjs(formik.values.estimatedStartDate)
+                : undefined,
               onChange: (v, dateString) => {
-                formik.setFieldValue("estimatedStartDate", dateString)
+                formik.setFieldValue('estimatedStartDate', dateString);
               },
-              onBlur: formik.handleBlur
+              onBlur: formik.handleBlur,
             }}
-            hasError={formik.touched.estimatedStartDate && Boolean(formik.errors.estimatedStartDate)}
-            errorMessage={formik.touched.estimatedStartDate && formik.errors.estimatedStartDate ? formik.errors.estimatedStartDate : ""}
+            hasError={
+              formik.touched.estimatedStartDate &&
+              Boolean(formik.errors.estimatedStartDate)
+            }
+            errorMessage={
+              formik.touched.estimatedStartDate &&
+              formik.errors.estimatedStartDate
+                ? formik.errors.estimatedStartDate
+                : ''
+            }
           />
 
           <DateInputComponent
             label="Bid Due Date"
             name="bidDueDate"
             fieldProps={{
-              value: formik.values.bidDueDate ? dayjs(formik.values.bidDueDate) : undefined,
+              value: formik.values.bidDueDate
+                ? dayjs(formik.values.bidDueDate)
+                : undefined,
               onChange: (v, dateString) => {
-                formik.setFieldValue("bidDueDate", dateString)
+                formik.setFieldValue('bidDueDate', dateString);
               },
-              onBlur: formik.handleBlur
+              onBlur: formik.handleBlur,
             }}
-            hasError={formik.touched.bidDueDate && Boolean(formik.errors.bidDueDate)}
-            errorMessage={formik.touched.bidDueDate && formik.errors.bidDueDate ? formik.errors.bidDueDate : ""}
+            hasError={
+              formik.touched.bidDueDate && Boolean(formik.errors.bidDueDate)
+            }
+            errorMessage={
+              formik.touched.bidDueDate && formik.errors.bidDueDate
+                ? formik.errors.bidDueDate
+                : ''
+            }
           />
 
           <DateInputComponent
             label="Estimated Completion Date"
             name="estimatedCompletionDate"
             fieldProps={{
-              value: formik.values.estimatedCompletionDate ? dayjs(formik.values.estimatedCompletionDate) : undefined,
+              value: formik.values.estimatedCompletionDate
+                ? dayjs(formik.values.estimatedCompletionDate)
+                : undefined,
               onChange: (v, dateString) => {
-                formik.setFieldValue("estimatedCompletionDate", dateString)
+                formik.setFieldValue('estimatedCompletionDate', dateString);
               },
-              onBlur: formik.handleBlur
+              onBlur: formik.handleBlur,
             }}
-            hasError={formik.touched.estimatedCompletionDate && Boolean(formik.errors.estimatedCompletionDate)}
-            errorMessage={formik.touched.estimatedCompletionDate && formik.errors.estimatedCompletionDate ? formik.errors.estimatedCompletionDate : ""}
+            hasError={
+              formik.touched.estimatedCompletionDate &&
+              Boolean(formik.errors.estimatedCompletionDate)
+            }
+            errorMessage={
+              formik.touched.estimatedCompletionDate &&
+              formik.errors.estimatedCompletionDate
+                ? formik.errors.estimatedCompletionDate
+                : ''
+            }
           />
 
           <InputComponent
@@ -138,8 +187,15 @@ export function PostProjectDetails({ formik, children }: Props) {
               onChange: formik.handleChange,
               onBlur: formik.handleBlur,
             }}
-            hasError={formik.touched.squareFootage && Boolean(formik.errors.squareFootage)}
-            errorMessage={formik.touched.squareFootage && formik.errors.squareFootage ? formik.errors.squareFootage : ""}
+            hasError={
+              formik.touched.squareFootage &&
+              Boolean(formik.errors.squareFootage)
+            }
+            errorMessage={
+              formik.touched.squareFootage && formik.errors.squareFootage
+                ? formik.errors.squareFootage
+                : ''
+            }
           />
 
           <InputComponent
@@ -149,11 +205,18 @@ export function PostProjectDetails({ formik, children }: Props) {
             type="number"
             field={{
               value: formik.values.projectValue,
-              onChange: e => formik.setFieldValue("projectValue", `${e.target.value}`),
+              onChange: (e) =>
+                formik.setFieldValue('projectValue', `${e.target.value}`),
               onBlur: formik.handleBlur,
             }}
-            hasError={formik.touched.projectValue && Boolean(formik.errors.projectValue)}
-            errorMessage={formik.touched.projectValue && formik.errors.projectValue ? formik.errors.projectValue : ""}
+            hasError={
+              formik.touched.projectValue && Boolean(formik.errors.projectValue)
+            }
+            errorMessage={
+              formik.touched.projectValue && formik.errors.projectValue
+                ? formik.errors.projectValue
+                : ''
+            }
           />
 
           <InputComponent
@@ -169,7 +232,8 @@ export function PostProjectDetails({ formik, children }: Props) {
                 },
               },
               value: formik.values.estimatedDuration,
-              onChange: e => formik.setFieldValue("estimatedDuration", `${e.target.value}`),
+              onChange: (e) =>
+                formik.setFieldValue('estimatedDuration', `${e.target.value}`),
               onBlur: formik.handleBlur,
               className: '!py-1.5',
               addonAfter: (
@@ -185,16 +249,31 @@ export function PostProjectDetails({ formik, children }: Props) {
                     defaultValue: 'days',
                     value: formik.values.durationType,
                     onChange(value) {
-                      formik.setFieldValue("durationType", value);
+                      formik.setFieldValue('durationType', value);
                     },
                   }}
-                  hasError={formik.touched.durationType && Boolean(formik.errors.durationType)}
-                  errorMessage={formik.touched.durationType && formik.errors.durationType ? formik.errors.durationType : ""}
+                  hasError={
+                    formik.touched.durationType &&
+                    Boolean(formik.errors.durationType)
+                  }
+                  errorMessage={
+                    formik.touched.durationType && formik.errors.durationType
+                      ? formik.errors.durationType
+                      : ''
+                  }
                 />
               ),
             }}
-            hasError={formik.touched.estimatedDuration && Boolean(formik.errors.estimatedDuration)}
-            errorMessage={formik.touched.estimatedDuration && formik.errors.estimatedDuration ? formik.errors.estimatedDuration : ""}
+            hasError={
+              formik.touched.estimatedDuration &&
+              Boolean(formik.errors.estimatedDuration)
+            }
+            errorMessage={
+              formik.touched.estimatedDuration &&
+              formik.errors.estimatedDuration
+                ? formik.errors.estimatedDuration
+                : ''
+            }
           />
         </div>
 
@@ -206,11 +285,18 @@ export function PostProjectDetails({ formik, children }: Props) {
             field={{
               rows: 5,
               value: formik.values.description,
-              onChange: e => formik.setFieldValue("description", e.target.value),
-              onBlur: formik.handleBlur
+              onChange: (e) =>
+                formik.setFieldValue('description', e.target.value),
+              onBlur: formik.handleBlur,
             }}
-            hasError={formik.touched.description && Boolean(formik.errors.description)}
-            errorMessage={formik.touched.description && formik.errors.description ? formik.errors.description : ""}
+            hasError={
+              formik.touched.description && Boolean(formik.errors.description)
+            }
+            errorMessage={
+              formik.touched.description && formik.errors.description
+                ? formik.errors.description
+                : ''
+            }
           />
 
           <TextAreaComponent
@@ -220,11 +306,20 @@ export function PostProjectDetails({ formik, children }: Props) {
             field={{
               rows: 5,
               value: formik.values.specialInstructions,
-              onChange: e => formik.setFieldValue("specialInstructions", e.target.value),
-              onBlur: formik.handleBlur
+              onChange: (e) =>
+                formik.setFieldValue('specialInstructions', e.target.value),
+              onBlur: formik.handleBlur,
             }}
-            hasError={formik.touched.specialInstructions && Boolean(formik.errors.specialInstructions)}
-            errorMessage={formik.touched.specialInstructions && formik.errors.specialInstructions ? formik.errors.specialInstructions : ""}
+            hasError={
+              formik.touched.specialInstructions &&
+              Boolean(formik.errors.specialInstructions)
+            }
+            errorMessage={
+              formik.touched.specialInstructions &&
+              formik.errors.specialInstructions
+                ? formik.errors.specialInstructions
+                : ''
+            }
           />
         </div>
       </div>

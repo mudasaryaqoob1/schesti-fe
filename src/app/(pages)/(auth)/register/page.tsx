@@ -159,7 +159,9 @@ const Register = () => {
             </button>
             <button
               className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${
-                role === OWNER ? 'bg-lavenderPurple text-white' : 'bg-transparent'
+                role === OWNER
+                  ? 'bg-lavenderPurple text-white'
+                  : 'bg-transparent'
               }`}
               onClick={() => handleRoleChange(OWNER)}
             >

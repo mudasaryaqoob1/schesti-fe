@@ -164,7 +164,7 @@ a {
   font-weight: 400;
 }
 
-.skipBtn-icon>span {
+.skipBtn-icon > span {
   cursor: pointer;
   border-bottom: 1px solid #344054;
 }
@@ -203,7 +203,7 @@ a {
 }
 
 .foundation-primary-200 {
-  background: #F9F5FF;
+  background: #f9f5ff;
 }
 
 .p-font-size {
@@ -226,19 +226,19 @@ a {
 .ant-pagination-item-link,
 .ant-pagination-next .ant-pagination-disabled,
 .ant-pagination-prev .ant-pagination-disabled {
-  border: 1px solid #F0F1F3 !important;
+  border: 1px solid #f0f1f3 !important;
   border-radius: 8px !important;
 }
 
 /* Custom Pagination CSS */
 .custom-pagination .ant-pagination-prev .ant-pagination-item-link::before {
-  content: "Previous";
+  content: 'Previous';
   float: inline-end;
   display: inline-block;
 }
 
 .custom-pagination .ant-pagination-next .ant-pagination-item-link::after {
-  content: "Next";
+  content: 'Next';
   float: inline-start;
   display: inline-block;
 }

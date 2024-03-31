@@ -12,11 +12,18 @@ import { ProjectUploadFiles } from './components/ProjectFile';
 import { PostFinalize } from './components/PostFinalize';
 import { useFormik } from 'formik';
 import { useMutation } from 'react-query';
-import { CreateOwnerPostProjectType, bidManagementService } from '@/app/services/bid-management.service';
+import {
+  CreateOwnerPostProjectType,
+  bidManagementService,
+} from '@/app/services/bid-management.service';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
-import { resetPostProjectAction, setFormStepAction, setPostProjectAction } from '@/redux/post-project/post-project.slice';
+import {
+  resetPostProjectAction,
+  setFormStepAction,
+  setPostProjectAction,
+} from '@/redux/post-project/post-project.slice';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { AxiosError } from 'axios';
@@ -30,67 +37,93 @@ import { PostProjectCongratulations } from './components/PostProjectCongratulati
 // import { DeletePopup } from './components/DeletePopup';
 // import { PostProjectCongratulations } from './components/PostProjectCongratuslations';
 
-
 const BasicInformationSchema = Yup.object().shape({
   address: Yup.string().required('Address is required'),
   city: Yup.string().required('City is required'),
-  constructionTypes: Yup.array().of(Yup.string()).required('Construction Type is required'),
+  constructionTypes: Yup.array()
+    .of(Yup.string())
+    .required('Construction Type is required'),
   country: Yup.string().required('Country is required'),
   projectName: Yup.string().required('Project Name is required'),
   state: Yup.string().required('State is required'),
   zipCode: Yup.string().required('Zip Code is required'),
-  status: Yup.string().required('Status is required')
+  status: Yup.string().required('Status is required'),
 });
 
-
 const ProjectDetailsSchema = Yup.object().shape({
-  projectType: Yup.array().of(Yup.string()).min(1).required('Project Type is required'),
-  projectBuildingUse: Yup.array().of(Yup.string()).min(1).required('Project Building Use is required'),
+  projectType: Yup.array()
+    .of(Yup.string())
+    .min(1)
+    .required('Project Type is required'),
+  projectBuildingUse: Yup.array()
+    .of(Yup.string())
+    .min(1)
+    .required('Project Building Use is required'),
   stage: Yup.string().required('Stage is required'),
   estimatedStartDate: Yup.string().required('Estimated Start Date is required'),
   estimatedDuration: Yup.string().required('Estimated Duration is required'),
-  durationType: Yup.mixed().oneOf(['days', 'weeks', 'months', 'years']).required('Duration Type is required'),
+  durationType: Yup.mixed()
+    .oneOf(['days', 'weeks', 'months', 'years'])
+    .required('Duration Type is required'),
   description: Yup.string().required('Description is required'),
-  specialInstructions: Yup.string().required('Special Instructions is required'),
+  specialInstructions: Yup.string().required(
+    'Special Instructions is required'
+  ),
 
   bidDueDate: Yup.string().required('Bid Due Date is required'),
-  estimatedCompletionDate: Yup.string().required('Estimated Completion Date is required'),
+  estimatedCompletionDate: Yup.string().required(
+    'Estimated Completion Date is required'
+  ),
   squareFootage: Yup.string().required('Square Footage is required'),
   projectValue: Yup.number().required('Project Value is required'),
 });
 
 const DesignTeamSchema = Yup.object().shape({
-  teamMembers: Yup.array().of(Yup.string()).min(1).required('Team Members is required')
+  teamMembers: Yup.array()
+    .of(Yup.string())
+    .min(1)
+    .required('Team Members is required'),
 });
 
 const TradesSchema = Yup.object().shape({
-  selectedTrades: Yup.array().of(Yup.string()).min(1).required('Trades is required')
+  selectedTrades: Yup.array()
+    .of(Yup.string())
+    .min(1)
+    .required('Trades is required'),
 });
 
 const FilesSchema = Yup.object().shape({
-  projectFiles: Yup.array().of(Yup.object().shape({
-    url: Yup.string().required('Url is required'),
-    extension: Yup.string().required('Extension is required'),
-    type: Yup.string().required('Type is required'),
-    name: Yup.string().required('Name is required'),
-  })).required('Files are required')
+  projectFiles: Yup.array()
+    .of(
+      Yup.object().shape({
+        url: Yup.string().required('Url is required'),
+        extension: Yup.string().required('Extension is required'),
+        type: Yup.string().required('Type is required'),
+        name: Yup.string().required('Name is required'),
+      })
+    )
+    .required('Files are required'),
 });
 
 const FinalizeProjectSchema = Yup.object().shape({
-  status: Yup.mixed().oneOf(['draft', 'archived', 'expired', 'active']).required('Status is required'),
-  isMatchingWithTrades: Yup.boolean().required('Matching with trades is required'),
-  invitedMembers: Yup.array().of(Yup.string().email("is invalid email")),
-  invitedMembersAssets: Yup.array().of(Yup.object().shape({
-    name: Yup.string().required('Name is required'),
-    url: Yup.string().required('Url is required'),
-    extension: Yup.string().required('Extension is required'),
-    type: Yup.string().required('Type is required'),
-  })),
+  status: Yup.mixed()
+    .oneOf(['draft', 'archived', 'expired', 'active'])
+    .required('Status is required'),
+  isMatchingWithTrades: Yup.boolean().required(
+    'Matching with trades is required'
+  ),
+  invitedMembers: Yup.array().of(Yup.string().email('is invalid email')),
+  invitedMembersAssets: Yup.array().of(
+    Yup.object().shape({
+      name: Yup.string().required('Name is required'),
+      url: Yup.string().required('Url is required'),
+      extension: Yup.string().required('Extension is required'),
+      type: Yup.string().required('Type is required'),
+    })
+  ),
   selectedTeamMembers: Yup.array().of(Yup.string()),
-  platformType: Yup.string().required('Platform Type is required')
-})
-
-
+  platformType: Yup.string().required('Platform Type is required'),
+});
 
 function StaticTime() {
   return (
@@ -138,7 +171,6 @@ export type PostProjectFileProps = (RcFile | UploadFile) & {
   fileUrl: string;
 };
 
-
 function CreatePost() {
   const [showCongratulation, setShowCongratulation] = useState(false);
   const postProjectState = useSelector((state: RootState) => state.postProject);
@@ -153,23 +185,36 @@ function CreatePost() {
     dispatch(setFormStepAction(postProjectState.formStep - 1));
   };
 
-  const createProjectMutation = useMutation<IResponseInterface<{ createdProject: IBidManagement }>, AxiosError<{ message: string }>, CreateOwnerPostProjectType>({
-    mutationFn: (values: CreateOwnerPostProjectType) => bidManagementService.httpCreateBidPostProject(values),
-    onSuccess(res,) {
-      console.log("Create Project Data", res);
+  const createProjectMutation = useMutation<
+    IResponseInterface<{ createdProject: IBidManagement }>,
+    AxiosError<{ message: string }>,
+    CreateOwnerPostProjectType
+  >({
+    mutationFn: (values: CreateOwnerPostProjectType) =>
+      bidManagementService.httpCreateBidPostProject(values),
+    onSuccess(res) {
+      console.log('Create Project Data', res);
       if (res.data && res.data.createdProject) {
         dispatch(setPostProjectAction(res.data.createdProject));
         nextStep();
       }
     },
     onError(error) {
-      toast.error(error.response?.data?.message || "Something went wrong")
+      toast.error(error.response?.data?.message || 'Something went wrong');
     },
   });
 
-  const updateProjectMutation = useMutation<IResponseInterface<{ updatedProject: IBidManagement }>, AxiosError<{ message: string }>, Partial<IBidManagement>>({
-    mutationKey: "update-post-project",
-    mutationFn: (values) => bidManagementService.httpUpdateBidPostProject(postProjectState.project?._id || "", values),
+  const updateProjectMutation = useMutation<
+    IResponseInterface<{ updatedProject: IBidManagement }>,
+    AxiosError<{ message: string }>,
+    Partial<IBidManagement>
+  >({
+    mutationKey: 'update-post-project',
+    mutationFn: (values) =>
+      bidManagementService.httpUpdateBidPostProject(
+        postProjectState.project?._id || '',
+        values
+      ),
     onSuccess(res) {
       if (res.data && res.data.updatedProject) {
         if (postProjectState.formStep === 5) {
@@ -181,46 +226,58 @@ function CreatePost() {
       }
     },
     onError(error) {
-      console.log("Update Project Mutation", error);
-      toast.error(error.response?.data?.message || "Something went wrong");
+      console.log('Update Project Mutation', error);
+      toast.error(error.response?.data?.message || 'Something went wrong');
     },
-  })
+  });
 
   const basicInformationFormik = useFormik({
-    initialValues: postProjectState.project ? { ...postProjectState.project } : {
-      projectName: '',
-      country: 'PK',
-      city: '',
-      zipCode: '',
-      state: '',
-      constructionTypes: ['Civil'] as string[],
-      address: '',
-      status: 'draft' as CreateOwnerPostProjectType['status'],
-    },
+    initialValues: postProjectState.project
+      ? { ...postProjectState.project }
+      : {
+          projectName: '',
+          country: 'PK',
+          city: '',
+          zipCode: '',
+          state: '',
+          constructionTypes: ['Civil'] as string[],
+          address: '',
+          status: 'draft' as CreateOwnerPostProjectType['status'],
+        },
     onSubmit(values) {
       if (postProjectState.project) {
-        updateProjectMutation.mutate(values)
+        updateProjectMutation.mutate(values);
       } else {
         createProjectMutation.mutate(values);
       }
     },
     validationSchema: BasicInformationSchema,
-    enableReinitialize: true
+    enableReinitialize: true,
   });
-
 
   const mainFormik = useFormik({
     initialValues: {
-      ...postProjectState.project as IBidManagement
+      ...(postProjectState.project as IBidManagement),
     },
     onSubmit(values) {
-      updateProjectMutation.mutate(values)
+      updateProjectMutation.mutate(values);
     },
-    validationSchema: postProjectState.formStep === 1 ? ProjectDetailsSchema : postProjectState.formStep === 2 ? DesignTeamSchema : postProjectState.formStep === 3 ? TradesSchema : postProjectState.formStep === 4 ? FilesSchema : postProjectState.formStep === 5 ? FinalizeProjectSchema : undefined,
+    validationSchema:
+      postProjectState.formStep === 1
+        ? ProjectDetailsSchema
+        : postProjectState.formStep === 2
+          ? DesignTeamSchema
+          : postProjectState.formStep === 3
+            ? TradesSchema
+            : postProjectState.formStep === 4
+              ? FilesSchema
+              : postProjectState.formStep === 5
+                ? FinalizeProjectSchema
+                : undefined,
     enableReinitialize: true,
-  })
+  });
 
-  console.log("Main Formik", mainFormik.values);
+  console.log('Main Formik', mainFormik.values);
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       <div className="flex gap-4 items-center">
@@ -244,24 +301,26 @@ function CreatePost() {
           className="font-semibold text-lavenderPurple cursor-pointer underline"
         />
       </div>
-      {showCongratulation ? <PostProjectCongratulations
-        cancelBtn={{
-          text: "View Project",
-          onClick() {
-            router.push(`${Routes['Bid Management'].Owner}`);
-            dispatch(resetPostProjectAction());
-          },
-        }}
-        confirmBtn={{
-          text: "Project Dashboard",
-          onClick() {
-            router.push(`${Routes['Bid Management'].Owner}`);
-            dispatch(resetPostProjectAction());
-          },
-        }}
-        text='Your project has been posted successfully'
-        title='Congratulations!'
-      /> : null}
+      {showCongratulation ? (
+        <PostProjectCongratulations
+          cancelBtn={{
+            text: 'View Project',
+            onClick() {
+              router.push(`${Routes['Bid Management'].Owner}`);
+              dispatch(resetPostProjectAction());
+            },
+          }}
+          confirmBtn={{
+            text: 'Project Dashboard',
+            onClick() {
+              router.push(`${Routes['Bid Management'].Owner}`);
+              dispatch(resetPostProjectAction());
+            },
+          }}
+          text="Your project has been posted successfully"
+          title="Congratulations!"
+        />
+      ) : null}
       {/* <DeletePopup /> */}
       <div className="grid grid-cols-12 gap-6 mt-5">
         <div className="col-span-3 bg-white shadow-2xl border rounded-xl p-4 h-fit">
@@ -304,8 +363,12 @@ function CreatePost() {
                   onClick() {
                     basicInformationFormik.submitForm();
                   },
-                  text: postProjectState.project ? "Update & Continue" : "Save & Continue",
-                  loading: createProjectMutation.isLoading || updateProjectMutation.isLoading
+                  text: postProjectState.project
+                    ? 'Update & Continue'
+                    : 'Save & Continue',
+                  loading:
+                    createProjectMutation.isLoading ||
+                    updateProjectMutation.isLoading,
                 }}
                 info={{
                   title: `0% Completed`,
@@ -324,10 +387,10 @@ function CreatePost() {
                 }}
                 submitButton={{
                   onClick() {
-                    mainFormik.handleSubmit()
+                    mainFormik.handleSubmit();
                   },
                   text: 'Save & Continue',
-                  loading: updateProjectMutation.isLoading
+                  loading: updateProjectMutation.isLoading,
                 }}
                 info={{
                   title: `25% Completed`,
@@ -336,9 +399,7 @@ function CreatePost() {
               />
             </PostProjectDetails>
           ) : postProjectState.formStep === 2 ? (
-            <PostDesignTeam
-              formik={mainFormik}
-            >
+            <PostDesignTeam formik={mainFormik}>
               <PostProjectFooter
                 cancelButton={{
                   text: 'Previous',
@@ -349,92 +410,97 @@ function CreatePost() {
                 submitButton={{
                   onClick() {
                     if (postProjectState.teamMembers.length === 0) {
-                      toast.error("Please add team members");
+                      toast.error('Please add team members');
                       return;
                     }
                     mainFormik.handleSubmit();
-
                   },
                   text: 'Save & Continue',
-                  loading: updateProjectMutation.isLoading
+                  loading: updateProjectMutation.isLoading,
                 }}
               />
             </PostDesignTeam>
-          ) : postProjectState.formStep === 3 ? <PostProjectTrades formik={mainFormik}>
-            <PostProjectFooter
-              cancelButton={{
-                text: 'Previous',
-                onClick() {
-                  prevStep();
-                },
-              }}
-              submitButton={{
-                onClick() {
-                  if (mainFormik.values.selectedTrades.length === 0) {
-                    toast.error("Please select trades");
-                    return;
-                  }
-                  mainFormik.handleSubmit();
-                },
-                text: 'Save & Continue',
-                loading: updateProjectMutation.isLoading
-              }}
-              info={{
-                title: `75% Completed`,
-                description: 'You’re almost done! Just 2 step left',
-              }}
-            />
-          </PostProjectTrades> : postProjectState.formStep === 4 ? <ProjectUploadFiles
-            formik={mainFormik}
-          >
-            <PostProjectFooter
-              cancelButton={{
-                text: 'Previous',
-                onClick() {
-                  prevStep();
-                },
-              }}
-              submitButton={{
-                onClick() {
-                  if (mainFormik.values.projectFiles.length === 0) {
-                    toast.error("Please upload files");
-                    return;
-                  }
-                  mainFormik.handleSubmit();
-                },
-                text: 'Upload & Continue',
-                loading: updateProjectMutation.isLoading
-              }}
-              info={{
-                title: `90% Completed`,
-                description: 'You’re almost done! Just 1 step left',
-              }}
-            />
-          </ProjectUploadFiles> : postProjectState.formStep === 5 ? <PostFinalize formik={mainFormik}>
-            <PostProjectFooter
-              cancelButton={{
-                text: 'Previous',
-                onClick() {
-                  prevStep();
-                },
-              }}
-              submitButton={{
-                onClick() {
-                  mainFormik.setFieldValue("status", "active");
-                  if (mainFormik.errors.status) {
-                    toast.error("Cannot update the status");
-                  }
-                  mainFormik.handleSubmit();
-                },
-                text: updateProjectMutation.isLoading ? "Posting" : 'Post Project',
-                loading: updateProjectMutation.isLoading
-              }}
-              info={{
-                title: `100% Completed`,
-                description: 'You’re almost done! Post your project now',
-              }}
-            />
-          </PostFinalize> : null}
+          ) : postProjectState.formStep === 3 ? (
+            <PostProjectTrades formik={mainFormik}>
+              <PostProjectFooter
+                cancelButton={{
+                  text: 'Previous',
+                  onClick() {
+                    prevStep();
+                  },
+                }}
+                submitButton={{
+                  onClick() {
+                    if (mainFormik.values.selectedTrades.length === 0) {
+                      toast.error('Please select trades');
+                      return;
+                    }
+                    mainFormik.handleSubmit();
+                  },
+                  text: 'Save & Continue',
+                  loading: updateProjectMutation.isLoading,
+                }}
+                info={{
+                  title: `75% Completed`,
+                  description: 'You’re almost done! Just 2 step left',
+                }}
+              />
+            </PostProjectTrades>
+          ) : postProjectState.formStep === 4 ? (
+            <ProjectUploadFiles formik={mainFormik}>
+              <PostProjectFooter
+                cancelButton={{
+                  text: 'Previous',
+                  onClick() {
+                    prevStep();
+                  },
+                }}
+                submitButton={{
+                  onClick() {
+                    if (mainFormik.values.projectFiles.length === 0) {
+                      toast.error('Please upload files');
+                      return;
+                    }
+                    mainFormik.handleSubmit();
+                  },
+                  text: 'Upload & Continue',
+                  loading: updateProjectMutation.isLoading,
+                }}
+                info={{
+                  title: `90% Completed`,
+                  description: 'You’re almost done! Just 1 step left',
+                }}
+              />
+            </ProjectUploadFiles>
+          ) : postProjectState.formStep === 5 ? (
+            <PostFinalize formik={mainFormik}>
+              <PostProjectFooter
+                cancelButton={{
+                  text: 'Previous',
+                  onClick() {
+                    prevStep();
+                  },
+                }}
+                submitButton={{
+                  onClick() {
+                    mainFormik.setFieldValue('status', 'active');
+                    if (mainFormik.errors.status) {
+                      toast.error('Cannot update the status');
+                    }
+                    mainFormik.handleSubmit();
+                  },
+                  text: updateProjectMutation.isLoading
+                    ? 'Posting'
+                    : 'Post Project',
+                  loading: updateProjectMutation.isLoading,
+                }}
+                info={{
+                  title: `100% Completed`,
+                  description: 'You’re almost done! Post your project now',
+                }}
+              />
+            </PostFinalize>
+          ) : null}
         </div>
       </div>
     </section>

@@ -25,8 +25,7 @@ const Payment = () => {
 
   const token = useSelector(selectToken);
 
-  console.log(token , 'tokentokentoken');
-  
+  console.log(token, 'tokentokentoken');
 
   useLayoutEffect(() => {
     if (token) {
@@ -153,7 +152,7 @@ const Payment = () => {
                     <PaypalInteration selectedPlan={selectedPLan} />
                   ) : null} */}
 
-                  {/* <Image
+                {/* <Image
                 src={'/paypal.svg'}
                 alt={'paypal icon'}
                 width={190}

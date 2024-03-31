@@ -11,16 +11,16 @@ import { ItemsTable } from './Table';
 type Props = {
   estimateDetail: any;
   user: any;
-  pdfData : any
+  pdfData: any;
 };
 
-function NewClientPdf({ estimateDetail, user  , pdfData}: Props) {
+function NewClientPdf({ estimateDetail, user, pdfData }: Props) {
   return (
     <Document>
       <Page size={'A4'}>
         <Header brandingColor={user?.brandingColor} />
         <PdfCompanyDetails estimateDetail={estimateDetail} user={user} />
-        <ItemsTable pdfData={pdfData}  estimateDetail={estimateDetail} />
+        <ItemsTable pdfData={pdfData} estimateDetail={estimateDetail} />
         <PdfFooter brandingColor={user?.brandingColor} />
       </Page>
     </Document>

@@ -2,25 +2,36 @@ import { InputComponent } from '@/app/component/customInput/Input';
 import { SelectComponent } from '@/app/component/customSelect/Select.component';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { CreateOwnerPostProjectType } from '@/app/services/bid-management.service';
-import { Country, State, City } from 'country-state-city'
+import { Country, State, City } from 'country-state-city';
 import type { FormikProps } from 'formik';
 import { useState } from 'react';
 
 type Props = {
   children?: React.ReactNode;
-  formik: FormikProps<CreateOwnerPostProjectType>
+  formik: FormikProps<CreateOwnerPostProjectType>;
 };
 
 export function PostBasicInformation({ children, formik }: Props) {
-  const [country, setCountry] = useState<string>('PK')
-  const [state, setState] = useState<string>('')
+  const [country, setCountry] = useState<string>('PK');
+  const [state, setState] = useState<string>('');
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-  const [city, setCity] = useState<string>('')
+  const [city, setCity] = useState<string>('');
 
-  const countries = Country.getAllCountries().map(country => ({ label: country.name, value: country.isoCode }));
-  const states = State.getAllStates().filter(state => state.countryCode === country || formik.values.country === state.countryCode)
-    .map(state => ({ label: state.name, value: state.isoCode }));
-  const cities = City.getCitiesOfState(country, state || formik.values.state).map(city => ({ label: city.name, value: city.name }));
+  const countries = Country.getAllCountries().map((country) => ({
+    label: country.name,
+    value: country.isoCode,
+  }));
+  const states = State.getAllStates()
+    .filter(
+      (state) =>
+        state.countryCode === country ||
+        formik.values.country === state.countryCode
+    )
+    .map((state) => ({ label: state.name, value: state.isoCode }));
+  const cities = City.getCitiesOfState(
+    country,
+    state || formik.values.state
+  ).map((city) => ({ label: city.name, value: city.name }));
 
   return (
     <div className=" bg-white shadow-2xl rounded-xl border p-4">
@@ -39,10 +50,16 @@ export function PostBasicInformation({ children, formik }: Props) {
             field={{
               value: formik.values.projectName,
               onChange: formik.handleChange,
-              onBlur: formik.handleBlur
+              onBlur: formik.handleBlur,
             }}
-            hasError={formik.touched.projectName && Boolean(formik.errors.projectName)}
-            errorMessage={formik.touched.projectName && formik.errors.projectName ? formik.errors.projectName : ""}
+            hasError={
+              formik.touched.projectName && Boolean(formik.errors.projectName)
+            }
+            errorMessage={
+              formik.touched.projectName && formik.errors.projectName
+                ? formik.errors.projectName
+                : ''
+            }
           />
 
           <InputComponent
@@ -53,80 +70,99 @@ export function PostBasicInformation({ children, formik }: Props) {
             field={{
               value: formik.values.address,
               onChange: formik.handleChange,
-              onBlur: formik.handleBlur
+              onBlur: formik.handleBlur,
             }}
             hasError={formik.touched.address && Boolean(formik.errors.address)}
-            errorMessage={formik.touched.address && formik.errors.address ? formik.errors.address : ""}
+            errorMessage={
+              formik.touched.address && formik.errors.address
+                ? formik.errors.address
+                : ''
+            }
           />
         </div>
 
-        <div className='flex items-center space-x-4'>
-          <div className='flex-1'>
+        <div className="flex items-center space-x-4">
+          <div className="flex-1">
             <SelectComponent
-              label='Country'
-              placeholder='Country'
-              name='country'
+              label="Country"
+              placeholder="Country"
+              name="country"
               field={{
                 options: countries,
                 showSearch: true,
                 value: formik.values.country,
                 onChange: (value) => {
-                  setCountry(value)
+                  setCountry(value);
                   formik.setFieldValue('country', value);
-                  formik.setFieldValue("state", "");
-                  formik.setFieldValue("city", "");
-                  setState("");
-                  setCity("");
+                  formik.setFieldValue('state', '');
+                  formik.setFieldValue('city', '');
+                  setState('');
+                  setCity('');
                 },
                 onClear() {
                   formik.setFieldValue('country', '');
-                  formik.setFieldValue("state", "");
-                  formik.setFieldValue("city", "");
-                  setCountry("");
-                  setState("");
-                  setCity("");
-                }
+                  formik.setFieldValue('state', '');
+                  formik.setFieldValue('city', '');
+                  setCountry('');
+                  setState('');
+                  setCity('');
+                },
               }}
-              hasError={formik.touched.country && Boolean(formik.errors.country)}
-              errorMessage={formik.touched.country && formik.errors.country ? formik.errors.country : ""}
-
+              hasError={
+                formik.touched.country && Boolean(formik.errors.country)
+              }
+              errorMessage={
+                formik.touched.country && formik.errors.country
+                  ? formik.errors.country
+                  : ''
+              }
             />
           </div>
-          <div className='flex-1'>
+          <div className="flex-1">
             <InputComponent
               label="Zip Code"
               name="zipCode"
-              type='text'
+              type="text"
               placeholder="Enter Zip Code"
               field={{
                 value: formik.values.zipCode,
-                onChange: e => formik.setFieldValue("zipCode", `${e.target.value}`),
-                onBlur: formik.handleBlur
+                onChange: (e) =>
+                  formik.setFieldValue('zipCode', `${e.target.value}`),
+                onBlur: formik.handleBlur,
               }}
-              hasError={formik.touched.zipCode && Boolean(formik.errors.zipCode)}
-              errorMessage={formik.touched.zipCode && formik.errors.zipCode ? formik.errors.zipCode : ""}
+              hasError={
+                formik.touched.zipCode && Boolean(formik.errors.zipCode)
+              }
+              errorMessage={
+                formik.touched.zipCode && formik.errors.zipCode
+                  ? formik.errors.zipCode
+                  : ''
+              }
             />
           </div>
         </div>
         <div className="grid grid-cols-2 gap-4">
-          <SelectComponent label="State" name="state" placeholder="State"
+          <SelectComponent
+            label="State"
+            name="state"
+            placeholder="State"
             field={{
               options: states,
               value: formik.values.state,
               showSearch: true,
               onChange(value) {
-                setState(value)
+                setState(value);
                 formik.setFieldValue('state', value);
-                formik.setFieldValue("city", '');
-                setCity("");
+                formik.setFieldValue('city', '');
+                setCity('');
               },
               onBlur: formik.handleBlur,
               onClear() {
                 formik.setFieldValue('state', '');
-                formik.setFieldValue("city", '');
-                setState("");
-                setCity("");
-              }
+                formik.setFieldValue('city', '');
+                setState('');
+                setCity('');
+              },
             }}
             errorMessage={formik.errors.state}
             hasError={Boolean(formik.errors.state)}
@@ -140,21 +176,23 @@ export function PostBasicInformation({ children, formik }: Props) {
               showSearch: true,
               value: formik.values.city || city,
               onChange: (value) => {
-                setCity(value)
-                formik.setFieldValue('city', value)
+                setCity(value);
+                formik.setFieldValue('city', value);
               },
               onBlur: formik.handleBlur,
               allowClear: true,
               onClear() {
                 formik.setFieldValue('city', '');
-                setCity("");
-              }
+                setCity('');
+              },
             }}
-            errorMessage={formik.touched.city && formik.errors.city ? formik.errors.city : ""}
+            errorMessage={
+              formik.touched.city && formik.errors.city
+                ? formik.errors.city
+                : ''
+            }
             hasError={formik.touched.city && Boolean(formik.errors.city)}
-
           />
-
         </div>
 
         <SelectComponent
@@ -176,14 +214,14 @@ export function PostBasicInformation({ children, formik }: Props) {
               { label: 'Residential', value: 'Residential' },
             ],
             showSearch: true,
-            mode: "multiple",
+            mode: 'multiple',
             defaultValue: formik.values.constructionTypes,
             onChange(value: string[]) {
-              formik.setFieldValue("constructionTypes", value);
+              formik.setFieldValue('constructionTypes', value);
             },
             onClear() {
               formik.setFieldValue('constructionTypes', '');
-            }
+            },
           }}
           hasError={Boolean(formik.errors.constructionTypes)}
           errorMessage={formik.errors.constructionTypes as string}

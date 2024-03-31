@@ -1,5 +1,3 @@
 export function ProjectDocuments() {
-    return <div>
-        Project Documents
-    </div>
+  return <div>Project Documents</div>;
 }

@@ -1,5 +1,3 @@
 export function ProjectDesignTeam() {
-    return <div>
-        Project DesignTeam
-    </div>
+  return <div>Project DesignTeam</div>;
 }

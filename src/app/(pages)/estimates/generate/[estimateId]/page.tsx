@@ -107,10 +107,10 @@ const ViewEstimateDetail = () => {
           <PDFDownloadLink
             document={
               <EstimatePDF
-              estimateDetail={estimateDetailsSummary}
-              pdfData={pdfData}
-              user={user}
-            />
+                estimateDetail={estimateDetailsSummary}
+                pdfData={pdfData}
+                user={user}
+              />
             }
             fileName="estimate-document.pdf"
           >

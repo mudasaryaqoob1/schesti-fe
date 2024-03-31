@@ -10,134 +10,142 @@ import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.i
 import { isArrayString } from '@/app/utils/typescript.utils';
 import { useTrades } from '@/app/hooks/useTrades';
 
-
 type Props = {
-    children?: React.ReactNode;
-    formik: FormikProps<IBidManagement>
+  children?: React.ReactNode;
+  formik: FormikProps<IBidManagement>;
 };
 export function PostProjectTrades({ formik, children }: Props) {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-    const [selectedCategory, setSelectedCategory] = useState('');
-    const [selectedAll, setSelectAll] = useState(false);
-    const { trades, tradeCategoryFilters, tradesQuery } = useTrades()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [selectedAll, setSelectAll] = useState(false);
+  const { trades, tradeCategoryFilters, tradesQuery } = useTrades();
 
-    function pickOnlyIds(trades: ITrade[]) {
-        return trades.map(trade => trade._id);
+  function pickOnlyIds(trades: ITrade[]) {
+    return trades.map((trade) => trade._id);
+  }
+
+  function selectAllTradesAndCategories(trades: ITrade[]) {
+    const newTrades = pickOnlyIds(trades);
+    formik.setFieldValue('selectedTrades', newTrades);
+  }
+
+  function deSelectAllTradesAndCategories() {
+    formik.setFieldValue('selectedTrades', []);
+  }
+
+  // function selectSubCategories(parentId:string){
+  //     const selectedTrades = trades.filter(trade => trade.tradeCategoryId._id === parentId);
+  //     const ids = pickOnlyIds(selectedTrades);
+  //     formik.setFieldValue('selectedTrades', ids);
+  // }
+
+  // function deSelectSubCategories(parentId:string){
+  //     const selectedTrades = trades.filter(trade => trade.tradeCategoryId._id !== parentId);
+  //     const ids = pickOnlyIds(selectedTrades);
+  //     formik.setFieldValue('selectedTrades', ids);
+  // }
+
+  function toggleCategory(tradeCategoryId: string) {
+    const selectedTrades = formik.values.selectedTrades;
+    if (isArrayString(selectedTrades)) {
+      const index = selectedTrades.indexOf(tradeCategoryId);
+      if (index === -1) {
+        formik.setFieldValue('selectedTrades', [
+          ...selectedTrades,
+          tradeCategoryId,
+        ]);
+      } else {
+        formik.setFieldValue(
+          'selectedTrades',
+          selectedTrades.filter((trade) => trade !== tradeCategoryId)
+        );
+      }
+      return;
+    } else {
+      const foundTrade = selectedTrades.find(
+        (trade) => trade._id === tradeCategoryId
+      );
+      if (foundTrade) {
+        formik.setFieldValue(
+          'selectedTrades',
+          selectedTrades.filter((trade) => trade._id !== tradeCategoryId)
+        );
+      } else {
+        formik.setFieldValue('selectedTrades', [
+          ...selectedTrades,
+          trades.find((trade) => trade._id === tradeCategoryId),
+        ]);
+      }
     }
+  }
 
-    function selectAllTradesAndCategories(trades: ITrade[]) {
-        const newTrades = pickOnlyIds(trades);
-        formik.setFieldValue('selectedTrades', newTrades);
-    }
+  if (tradesQuery.isLoading) {
+    return <Skeleton />;
+  }
 
+  function filterTradesByParent(id: string, trades: ITrade[]) {
+    return trades.filter((trade) => trade.tradeCategoryId._id === id);
+  }
 
-    function deSelectAllTradesAndCategories() {
-        formik.setFieldValue('selectedTrades', []);
-    }
+  return (
+    <div className=" bg-white shadow-2xl rounded-xl border p-4">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-5">
+          <TertiaryHeading
+            title="Trades"
+            className="text-[20px] leading-[30px]"
+          />
+          <Checkbox
+            checked={selectedAll}
+            onChange={(e) => {
+              setSelectAll(e.target.checked);
+              if (e.target.checked) {
+                selectAllTradesAndCategories(trades);
+              } else {
+                deSelectAllTradesAndCategories();
+              }
+            }}
+          >
+            <QuinaryHeading title="Select All" className="text-[#98A2B3]" />
+          </Checkbox>
+        </div>
+        <div>
+          <SelectComponent
+            label=""
+            placeholder="Choose Trade"
+            name="type"
+            field={{
+              className: '!w-44',
+              dropdownStyle: { width: 300 },
+              options: tradeCategoryFilters,
+              defaultValue: selectedCategory,
+              allowClear: true,
+              showSearch: true,
+              onChange(value) {
+                setSelectedCategory(value);
+              },
+            }}
+          />
+        </div>
+      </div>
 
-    // function selectSubCategories(parentId:string){
-    //     const selectedTrades = trades.filter(trade => trade.tradeCategoryId._id === parentId);
-    //     const ids = pickOnlyIds(selectedTrades);
-    //     formik.setFieldValue('selectedTrades', ids);
-    // }
-
-    // function deSelectSubCategories(parentId:string){
-    //     const selectedTrades = trades.filter(trade => trade.tradeCategoryId._id !== parentId);
-    //     const ids = pickOnlyIds(selectedTrades);
-    //     formik.setFieldValue('selectedTrades', ids);
-    // }
-
-
-    function toggleCategory(tradeCategoryId: string) {
-        const selectedTrades = formik.values.selectedTrades;
-        if (isArrayString(selectedTrades)) {
-            const index = selectedTrades.indexOf(tradeCategoryId);
-            if (index === -1) {
-                formik.setFieldValue('selectedTrades', [...selectedTrades, tradeCategoryId]);
-            } else {
-                formik.setFieldValue('selectedTrades', selectedTrades.filter(trade => trade !== tradeCategoryId));
+      <div className="mt-5">
+        {tradeCategoryFilters
+          .filter((trade) => {
+            if (!selectedCategory) {
+              return trade;
             }
-            return;
-        }
-        else {
-            const foundTrade = selectedTrades.find(trade => trade._id === tradeCategoryId);
-            if (foundTrade) {
-                formik.setFieldValue("selectedTrades", selectedTrades.filter(trade => trade._id !== tradeCategoryId));
-            } else {
-                formik.setFieldValue("selectedTrades", [...selectedTrades, trades.find(trade => trade._id === tradeCategoryId)]);
-            }
-        }
-    }
-
-
-    if (tradesQuery.isLoading) {
-        return <Skeleton />
-    }
-
-    function filterTradesByParent(id: string, trades: ITrade[]) {
-        return trades.filter(trade => trade.tradeCategoryId._id === id);
-    }
-
-
-    return (
-        <div className=" bg-white shadow-2xl rounded-xl border p-4">
-            <div className='flex items-center justify-between'>
-                <div className="flex items-center space-x-5">
-                    <TertiaryHeading
-                        title="Trades"
-                        className="text-[20px] leading-[30px]"
-                    />
-                    <Checkbox
-                        checked={selectedAll}
-                        onChange={e => {
-                            setSelectAll(e.target.checked);
-                            if (e.target.checked) {
-                                selectAllTradesAndCategories(trades);
-                            } else {
-                                deSelectAllTradesAndCategories();
-                            }
-                        }}>
-                        <QuinaryHeading
-                            title='Select All'
-                            className='text-[#98A2B3]'
-                        />
-                    </Checkbox>
-                </div>
-                <div>
-                    <SelectComponent
-                        label=''
-                        placeholder='Choose Trade'
-                        name='type'
-                        field={{
-                            className: "!w-44",
-                            dropdownStyle: { width: 300 },
-                            options: tradeCategoryFilters,
-                            defaultValue: selectedCategory,
-                            allowClear: true,
-                            showSearch: true,
-                            onChange(value) {
-                                setSelectedCategory(value);
-                            },
-                        }}
-                    />
-                </div>
-            </div>
-
-            <div className='mt-5'>
-
-                {tradeCategoryFilters.filter(trade => {
-                    if (!selectedCategory) {
-                        return trade
-                    }
-                    return trade.value === selectedCategory;
-                }).map((trade) => {
-                    return <div key={trade.value}>
-                        <div className='flex items-center space-x-3 mt-3'>
-                            <TertiaryHeading
-                                title={trade.label}
-                                className="text-[16px] leading-[30px] text-[#344054] font-medium"
-                            />
-                            {/* <Checkbox
+            return trade.value === selectedCategory;
+          })
+          .map((trade) => {
+            return (
+              <div key={trade.value}>
+                <div className="flex items-center space-x-3 mt-3">
+                  <TertiaryHeading
+                    title={trade.label}
+                    className="text-[16px] leading-[30px] text-[#344054] font-medium"
+                  />
+                  {/* <Checkbox
                             key={trade.value}
                                 onChange={e => {
                                     if (e.target.checked) {
@@ -152,36 +160,47 @@ export function PostProjectTrades({ formik, children }: Props) {
                                     className='text-[#98A2B3]'
                                 />
                             </Checkbox> */}
-                        </div>
-                        <Divider className='mt-1' />
+                </div>
+                <Divider className="mt-1" />
 
-                        <div className="flex flex-wrap gap-2 mt-3">
-                            {filterTradesByParent(trade.value, trades).map((child) => {
-                                return isArrayString(formik.values.selectedTrades) && formik.values.selectedTrades.includes(child._id) ? <button key={child._id} className="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 border rounded-full px-4 py-1 text-sm font-medium hover:text-gray-700 hover:bg-white cursor-pointer bg-[#F4EBFF] text-[#667085] "
-                                    onClick={() => toggleCategory(child._id)}
-                                >
-                                    {child.name}
-                                    <CloseOutlined className="ml-2 font-bold text-lg" />
-                                </button> : <button key={child._id} className="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-white border rounded-full px-4 py-1 text-sm font-medium text-gray-700 cursor-pointer hover:bg-[#F4EBFF] hover:text-[#667085] "
-                                    onClick={() => toggleCategory(child._id)}
-                                >
-                                    {child.name}
-                                    <PlusOutlined className="ml-2 font-bold text-lg" />
-                                </button>
-                            })}
-                        </div>
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {filterTradesByParent(trade.value, trades).map((child) => {
+                    return isArrayString(formik.values.selectedTrades) &&
+                      formik.values.selectedTrades.includes(child._id) ? (
+                      <button
+                        key={child._id}
+                        className="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 border rounded-full px-4 py-1 text-sm font-medium hover:text-gray-700 hover:bg-white cursor-pointer bg-[#F4EBFF] text-[#667085] "
+                        onClick={() => toggleCategory(child._id)}
+                      >
+                        {child.name}
+                        <CloseOutlined className="ml-2 font-bold text-lg" />
+                      </button>
+                    ) : (
+                      <button
+                        key={child._id}
+                        className="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-white border rounded-full px-4 py-1 text-sm font-medium text-gray-700 cursor-pointer hover:bg-[#F4EBFF] hover:text-[#667085] "
+                        onClick={() => toggleCategory(child._id)}
+                      >
+                        {child.name}
+                        <PlusOutlined className="ml-2 font-bold text-lg" />
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+      </div>
 
-                    </div>
-                })}
-            </div>
-
-            {children}
-        </div>
-    );
+      {children}
+    </div>
+  );
 }
-{/* // <button key={service.name} className="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-white border rounded-full px-4 py-1 text-sm font-medium text-gray-700 cursor-pointer hover:bg-[#F4EBFF] hover:text-[#667085] "
+{
+  /* // <button key={service.name} className="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-white border rounded-full px-4 py-1 text-sm font-medium text-gray-700 cursor-pointer hover:bg-[#F4EBFF] hover:text-[#667085] "
                                    
                                 // >
                                 //     {service.name}
                                 //     <PlusOutlined className="ml-2 font-bold text-lg" />
-                                // </button> */}
+                                // </button> */
+}

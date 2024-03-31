@@ -12,7 +12,7 @@ import {
 import {
   deleteEstimateRequest,
   fetchEstimateRequests,
-  changeEstimateStatus
+  changeEstimateStatus,
 } from '@/redux/company/company.thunk';
 import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
@@ -84,7 +84,6 @@ const EstimateRequestTable: React.FC = () => {
       label: <p>Delete</p>,
     },
   ];
-  
 
   const handleDropdownItemClick = async (key: string, estimateRequest: any) => {
     if (key == 'deleteEstimateRequest') {
@@ -96,22 +95,20 @@ const EstimateRequestTable: React.FC = () => {
       router.push(
         `/estimates/generate/create?estimateId=${estimateRequest._id}`
       );
-    }
-    else if(key === 'inactiveState'){
+    } else if (key === 'inactiveState') {
       let statusBody = {
-        status : false,
-        estimateId : estimateRequest._id
-      }
+        status: false,
+        estimateId: estimateRequest._id,
+      };
       dispatch(changeEstimateStatus(statusBody));
-      fetachEstimateRequest()
-    }
-    else if(key === 'activeState'){
+      fetachEstimateRequest();
+    } else if (key === 'activeState') {
       let statusBody = {
-        status : true,
-        estimateId : estimateRequest._id
-      }
+        status: true,
+        estimateId: estimateRequest._id,
+      };
       dispatch(changeEstimateStatus(statusBody));
-      fetachEstimateRequest()
+      fetachEstimateRequest();
     }
   };
 
@@ -156,12 +153,12 @@ const EstimateRequestTable: React.FC = () => {
       dataIndex: 'action',
       align: 'center',
       key: 'action',
-      render: (text, record : any) => {
-        if(record?.isActive){
+      render: (text, record: any) => {
+        if (record?.isActive) {
           return (
             <Dropdown
               menu={{
-                items : activeEstimateMenu,
+                items: activeEstimateMenu,
                 onClick: (event) => {
                   const { key } = event;
                   handleDropdownItemClick(key, record);
@@ -177,13 +174,12 @@ const EstimateRequestTable: React.FC = () => {
                 className="active:scale-105 cursor-pointer"
               />
             </Dropdown>
-          )
-        }
-        else{
+          );
+        } else {
           return (
             <Dropdown
               menu={{
-                items : inActiveEstimateMenu,
+                items: inActiveEstimateMenu,
                 onClick: (event) => {
                   const { key } = event;
                   handleDropdownItemClick(key, record);
@@ -199,10 +195,8 @@ const EstimateRequestTable: React.FC = () => {
                 className="active:scale-105 cursor-pointer"
               />
             </Dropdown>
-          )
+          );
         }
-        
-        
       },
     },
   ];
