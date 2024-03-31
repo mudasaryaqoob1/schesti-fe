@@ -608,7 +608,7 @@ const Scope = ({ setPrevNext }: Props) => {
     let unitEquipments = parseFloat(record.unitEquipments);
     let totalEquipmentCost = unitEquipments * qtyWithWastage;
     let result = totalLabourCost + totalMeterialCost + totalEquipmentCost;
-    return formatNumberWithCommas(result);
+    return result;
   };
 
   const columns: any = [
@@ -722,11 +722,6 @@ const Scope = ({ setPrevNext }: Props) => {
         let wastagePercentage = parseFloat(record.wastage);
         let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = unitEquipments * quantityWithWastage;
-        console.log(
-          formatNumberWithCommas(result),
-          'formatNumberWithCommas(result)'
-        );
-
         return `$${formatNumberWithCommas(result)}`;
       },
     },
@@ -737,7 +732,7 @@ const Scope = ({ setPrevNext }: Props) => {
       width: 150,
       render: (text: string, record: DataType) => {
         let result = calculateTotalCost(record);
-        return `$${result}`;
+        return `$${formatNumberWithCommas(result)}`;
       },
     },
 
@@ -891,7 +886,7 @@ const Scope = ({ setPrevNext }: Props) => {
       width: 150,
       render: (text: string, record: DataType) => {
         let result = calculateTotalCost(record);
-        return `$${result}`;
+        return `$${formatNumberWithCommas(result)}`;
       },
     },
 

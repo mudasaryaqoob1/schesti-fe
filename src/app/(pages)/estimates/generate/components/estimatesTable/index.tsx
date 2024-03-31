@@ -157,7 +157,7 @@ const confirmColumns: any = [
     width: 150,
     render: (text: string, record: DataType) => {
       let result = calculateTotalCost(record);
-      return `$${formatNumberWithCommas(result)}`;
+      return `$${result}`;
     },
   },
 ];

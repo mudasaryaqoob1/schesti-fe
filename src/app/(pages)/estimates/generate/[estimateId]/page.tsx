@@ -94,7 +94,7 @@ const ViewEstimateDetail = () => {
     }
   }, [estimateId]);
 
-  console.log(estimateDetailsSummary, 'estimateDetailsSummary');
+  console.log(estimateDetailsSummary, 'estimateDetailsSummary', pdfData);
 
   return (
     <div className="p-12">
@@ -295,7 +295,7 @@ const ViewEstimateDetail = () => {
         <div className="flex items-center justify-between">
           <MinDesc title="Material Tax %" className="text-darkgrayish" />
           <Description
-            title={`$${USCurrencyFormat.format(
+            title={`${USCurrencyFormat.format(
               estimateDetailsSummary?.totalBidDetail?.materialTax
             )}`}
             className="font-medium"
@@ -322,11 +322,14 @@ const ViewEstimateDetail = () => {
       </div>
       <div className="bg-celestialGray h-px w-full my-4"></div>
       <div className="flex items-center justify-between">
-        <QuaternaryHeading className="font-semibold" title="Total Bid" />
+        <QuaternaryHeading className="font-semibold" title="Total Cost" />
         <Description
           className="font-semibold"
           title={`${USCurrencyFormat.format(
-            estimateDetailsSummary?.totalCost
+            estimateDetailsSummary?.totalCost +
+              estimateDetailsSummary?.totalBidDetail?.bondFee +
+              estimateDetailsSummary?.totalBidDetail?.overheadAndProfit +
+              estimateDetailsSummary?.totalBidDetail?.materialTax
           )}`}
         />
       </div>

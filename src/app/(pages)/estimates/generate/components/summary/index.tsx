@@ -155,7 +155,6 @@ const Summary = ({ setPrevNext }: Props) => {
       estimateRequestIdDetail: estimateId,
       estimateScope: generateEstimateDetail.estimateScope,
     };
-
     dispatch(generateEstimateDetailAction(obj));
 
     let result = await estimateRequestService.httpAddGeneratedEstimate(obj);
@@ -439,7 +438,7 @@ const Summary = ({ setPrevNext }: Props) => {
             <div className="grid grid-cols-3 items-center">
               <MinDesc title="Material Tax %" className="text-darkgrayish" />
               <MinDesc
-                title={`$${formatNumberWithCommas(
+                title={`${formatNumberWithCommas(
                   calculatePercentqge(totalMaterialBaseCost, materialPercentage)
                 )}`}
                 className="text-darkgrayish"

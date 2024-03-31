@@ -73,14 +73,14 @@ const CompanyDetails = () => {
   }, [userId]);
 
   const submitHandler = async (values: IRegisterCompany) => {
-    setIsLoading(true);
 
 
 
     if (!companyLogo && userData?.user?.userRole === CONTRACTOR) {
-      setCompanyLogoErr('Company Logo is required');
+      setCompanyLogoErr('Logo is required');
       return;
     }
+    setIsLoading(true);
 
     if (companyLogo && userData?.user?.userRole === CONTRACTOR) {
       try {
@@ -138,12 +138,12 @@ const CompanyDetails = () => {
     <>
       <AuthNavbar />
       <div className="h-[calc(100vh-100px)] mt-2 grid place-items-center">
-        <div className="w-full max-w-xl bg-snowWhite">
-          <h2 className={twMerge(`${tertiaryHeading} mb-4 `)}>
+        <div className="w-full max-w-xl">
+          <h2 className={twMerge(`${tertiaryHeading} border-b-2 border=[#E7E7E7]`)}>
             Setup Company profile
           </h2>
-          <div className="w-full h-1 bg-mistyWhite"></div>
-          <div className="mt-6 bg-snowWhite shadow-tertiaryMystery p-10">
+          {/* <div className="w-full h-1 bg-mistyWhite"></div> */}
+          <div className="mt-6 bg-snowWhite shadow-tertiaryMystery p-10 rounded-md">
             <PrimaryHeading
               title={primaryHeadingTitle}
               className="text-center mb-12"
@@ -276,7 +276,7 @@ const CompanyDetails = () => {
                               />
                               {companyLogo && (
                                 <>
-                                  <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                  <p className="mb-2 text-sm text-gray-500 dark:text-gray-400 max-w-64 text-ellipsis overflow-hidden ...">
                                     <span className="font-semibold text-purple-600">
                                       {companyLogo?.name}
                                     </span>
