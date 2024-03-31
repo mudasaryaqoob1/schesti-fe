@@ -126,7 +126,7 @@ const Schedule = () => {
       label: <p>Delete</p>,
     },
   ];
-  const columns: ColumnsType<ISchedule> = [
+  const columns: ColumnsType<any> = [
     {
       title: 'Project #',
       dataIndex: '_id',

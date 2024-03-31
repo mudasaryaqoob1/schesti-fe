@@ -80,6 +80,8 @@ type InvoiceDetail = {
   unitCost: number;
   total: number;
   id: string;
+  totalPrice?:string;
+  action?:string;
 };
 const EditSubcontractorInvoice = () => {
   const router = useRouter();

@@ -23,13 +23,13 @@ import { DeleteContent } from '@/app/component/delete/DeleteContent';
 
 interface DataType {
   key: React.Key;
-  ProjectName: string;
-  ClientName: string;
-  Number: string;
-  SalePerson: string;
-  Estimator: string;
-  Status: string;
-  Action: string;
+  projectName: string;
+  clientName: string;
+  phone: string;
+  salePerson: string;
+  estimator: string;
+  status: string;
+  action: string;
 }
 
 const EstimateRequestTable: React.FC = () => {
