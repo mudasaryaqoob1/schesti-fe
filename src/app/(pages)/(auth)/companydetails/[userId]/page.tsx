@@ -59,31 +59,32 @@ const CompanyDetails = () => {
 
   useEffect(() => {
     if (!isObjectId(userId) && !isEmpty(userId)) {
-      setIsLoading(true);
+      // setIsLoading(true);
       dispatch(verifyUserEmail(userId))
-        .unwrap()
-        .then(() => {
-          setIsLoading(false);
-        })
-        .catch((err: any) => {
-          setIsLoading(false);
-          console.log('verification err', err);
-        });
+      //   .unwrap()
+      //   .then(() => {
+      //     setIsLoading(false);
+      //   })
+      //   .catch((err: any) => {
+      //     setIsLoading(false);
+      //     console.log('verification err', err);
+      //   });
     }
-  }, [userData, userId]);
+  }, [userId]);
 
   const submitHandler = async (values: IRegisterCompany) => {
+    setIsLoading(true);
+
+
+
     if (!companyLogo && userData?.user?.userRole === CONTRACTOR) {
       setCompanyLogoErr('Company Logo is required');
       return;
     }
 
-    setIsLoading(true);
     if (companyLogo && userData?.user?.userRole === CONTRACTOR) {
       try {
         const url = await new AwsS3(companyLogo, 'company/logos/').getS3URL();
-        console.log('url', url);
-        // logoUrl = url;
         values.companyLogo = url;
       } catch (error) {
         console.error('Error uploading documents:', error);
@@ -96,7 +97,6 @@ const CompanyDetails = () => {
 
     if (result.payload.statusCode == 200) {
       setIsLoading(false);
-      console.log('console.log', result.payload);
       localStorage.setItem('schestiToken', result.payload.token);
       if (userData?.user?.userRole === OWNER) {
         router.push('/plans');
@@ -154,7 +154,6 @@ const CompanyDetails = () => {
               onSubmit={submitHandler}
             >
               {(formik: any) => {
-                console.log('formik', formik);
                 return (
                   <Form
                     name="basic"
@@ -189,13 +188,6 @@ const CompanyDetails = () => {
                           setPhoneNumber={setPhoneNumber}
                         />
                       </div>
-                      {/* <FormControl
-                        control="input"
-                        label="Phone Number"
-                        type="string"
-                        name="phoneNumber"
-                        placeholder="Enter Phone Number"
-                      /> */}
                       {selectedUserRole == OWNER && (
                         <FormControl
                           control="input"
