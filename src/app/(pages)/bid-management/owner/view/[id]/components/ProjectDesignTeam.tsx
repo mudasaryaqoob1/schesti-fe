@@ -1,6 +1,6 @@
-import TertiaryHeading from "@/app/component/headings/tertiary";
-import { Dropdown, Table, type TableProps } from "antd";
-import Image from "next/image";
+import TertiaryHeading from '@/app/component/headings/tertiary';
+import { Dropdown, Table, type TableProps } from 'antd';
+import Image from 'next/image';
 
 export function ProjectDesignTeam() {
   const columns: TableProps['columns'] = [
@@ -37,7 +37,7 @@ export function ProjectDesignTeam() {
     {
       title: 'Action',
       key: 'action',
-      render(v, record) {
+      render() {
         return (
           <Dropdown
             menu={{
@@ -51,13 +51,8 @@ export function ProjectDesignTeam() {
                   label: <p>Delete</p>,
                 },
               ],
-              onClick: ({ key }) => {
-                if (key === 'edit') {
+              onClick: () => {
 
-                }
-                if (key === 'delete') {
-
-                }
               },
             }}
             placement="bottomRight"
@@ -75,23 +70,39 @@ export function ProjectDesignTeam() {
       },
     },
   ];
-  return <div className=" mt-6 mb-4 md:ms-[69px] md:me-[59px] mx-4  p-5 bg-white rounded-lg border shadow-lg">
-    <div>
-      <TertiaryHeading
-        title="Design Team"
-        className="text-[20px] leading-[30px]"
-      />
-    </div>
+  return (
+    <div className=" mt-6 mb-4 md:ms-[69px] md:me-[59px] mx-4  p-5 bg-white rounded-lg border shadow-lg">
+      <div>
+        <TertiaryHeading
+          title="Design Team"
+          className="text-[20px] leading-[30px]"
+        />
+      </div>
 
-    <div className="mt-5">
-      <Table
-        columns={columns}
-        bordered
-        dataSource={[
-          { name: "John Doe", role: "Architect", companyName: "ABC", location: "New York", phoneNumber: "1234567890", email: "johnDoe@gmail.com" },
-          { name: "John Doe", role: "Architect", companyName: "ABC", location: "New York", phoneNumber: "1234567890", email: "john@gmail.com" },
-        ]}
-      />
+      <div className="mt-5">
+        <Table
+          columns={columns}
+          bordered
+          dataSource={[
+            {
+              name: 'John Doe',
+              role: 'Architect',
+              companyName: 'ABC',
+              location: 'New York',
+              phoneNumber: '1234567890',
+              email: 'johnDoe@gmail.com',
+            },
+            {
+              name: 'John Doe',
+              role: 'Architect',
+              companyName: 'ABC',
+              location: 'New York',
+              phoneNumber: '1234567890',
+              email: 'john@gmail.com',
+            },
+          ]}
+        />
+      </div>
     </div>
-  </div>
+  );
 }
