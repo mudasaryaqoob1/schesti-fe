@@ -154,7 +154,7 @@ export function Clients() {
 
   const filteredClientInvoices =
     clientInvoices.length > 0
-      ? clientInvoices.filter((invoice : any) => {
+      ? clientInvoices.filter((invoice: any) => {
           if (!search) {
             return invoice;
           }

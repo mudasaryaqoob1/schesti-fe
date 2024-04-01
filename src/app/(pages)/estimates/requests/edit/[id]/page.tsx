@@ -79,7 +79,11 @@ const EditEstimateRequest = () => {
       const estimateRequest = estimateRequestsData?.find(
         (item: any) => item._id === id
       );
-      setEstimateRequestData({...estimateRequest ,  estimator : estimateRequest.estimator._id , salePerson : estimateRequest.salePerson._id      });
+      setEstimateRequestData({
+        ...estimateRequest,
+        estimator: estimateRequest.estimator._id,
+        salePerson: estimateRequest.salePerson._id,
+      });
       setTakeOffReports(estimateRequest);
       setDrawingsDocuments(estimateRequest.drawingsDocuments);
       setOtherDocuments(estimateRequest.otherDocuments);
@@ -286,8 +290,8 @@ const EditEstimateRequest = () => {
     );
   };
 
-  console.log(estimateRequestData , 'estimateRequestDataestimateRequestData');
-  
+  console.log(estimateRequestData, 'estimateRequestDataestimateRequestData');
+
   return (
     <section className="my-5 px-16">
       <div className="flex justify-between flex-wrap items-center md:flex-nowrap">
