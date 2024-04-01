@@ -62,9 +62,9 @@ const Register = () => {
   };
 
   const submitHandler = async (values: ISignUpInterface) => {
-    console.log('Im Clicked', values);
+    const payload = { ...values, userRole: role };
     setIsLoading(true);
-    let result: any = await dispatch(signup(values));
+    let result: any = await dispatch(signup(payload));
 
     if (result.payload.status == 201) {
       setIsLoading(false);
