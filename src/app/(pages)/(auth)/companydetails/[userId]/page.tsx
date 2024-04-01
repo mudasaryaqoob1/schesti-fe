@@ -60,7 +60,7 @@ const CompanyDetails = () => {
   useEffect(() => {
     if (!isObjectId(userId) && !isEmpty(userId)) {
       // setIsLoading(true);
-      dispatch(verifyUserEmail(userId))
+      dispatch(verifyUserEmail(userId));
       //   .unwrap()
       //   .then(() => {
       //     setIsLoading(false);
@@ -73,9 +73,6 @@ const CompanyDetails = () => {
   }, [userId]);
 
   const submitHandler = async (values: IRegisterCompany) => {
-
-
-
     if (!companyLogo && userData?.user?.userRole === CONTRACTOR) {
       setCompanyLogoErr('Logo is required');
       return;
@@ -139,7 +136,11 @@ const CompanyDetails = () => {
       <AuthNavbar />
       <div className="h-[calc(100vh-100px)] mt-2 grid place-items-center">
         <div className="w-full max-w-xl">
-          <h2 className={twMerge(`${tertiaryHeading} border-b-2 border=[#E7E7E7]`)}>
+          <h2
+            className={twMerge(
+              `${tertiaryHeading} border-b-2 border=[#E7E7E7]`
+            )}
+          >
             Setup Company profile
           </h2>
           {/* <div className="w-full h-1 bg-mistyWhite"></div> */}

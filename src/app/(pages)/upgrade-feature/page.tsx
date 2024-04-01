@@ -15,7 +15,7 @@ const NoDataPage = ({
   // btnText = 'text',
   // link = '/',
   title = 'Upgrade Plan',
-  description = 'You can access this page after upgrade you plan feature',
+  description = 'You can access this page after upgrade your plan feature',
 }: any) => {
   // const router = useRouter();
   return (

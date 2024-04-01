@@ -90,10 +90,8 @@ const RegisterVerification = () => {
     event: ChangeEvent<HTMLInputElement>,
     keyName: string
   ) => {
-    console.log('event', event.target.name);
     const file = event.target.files?.[0];
     // const keyName = event.target.name;
-    console.log('keyName', keyName);
     if (file) {
       // setFileName(file.name);
       if (keyName == 'license') {
@@ -133,34 +131,32 @@ const RegisterVerification = () => {
     return !einNumber && !license && !preQualification && !secretaryOfState;
   };
 
-  console.log('isAllowToSubmit', isAllowToSubmit());
-  console.log('ein', einNumber);
-  console.log('test', license);
-  console.log('qualia', preQualification);
-  console.log('state', secretaryOfState);
-
   return (
     <>
       <AuthNavbar />
       <div className="h-[calc(100vh-100px)] mt-2 grid place-items-center">
-        <div className="w-full max-w-xl bg-snowWhite">
-          <h2 className={twMerge(`${tertiaryHeading} mb-4 `)}>Verification</h2>
-          <div className="w-full h-1 bg-mistyWhite"></div>
-          <div className="mt-6 bg-snowWhite shadow-tertiaryMystery p-10">
-            <PrimaryHeading
-              title="Verification"
-              className="text-center mb-12"
-            />
-            <p className="px-2 ">
+        <div className="w-full max-w-xl">
+          <h2
+            className={twMerge(
+              `${tertiaryHeading} border-b-2 border=[#E7E7E7]`
+            )}
+          >
+            Verification
+          </h2>
+          <div className="mt-6 bg-snowWhite shadow-tertiaryMystery p-10 rounded-lg">
+            <PrimaryHeading title="Verification" className="text-center mb-4" />
+            <p className="px-2 text-center text-[#344054] font-normal leading-6">
               Upload all the documents to get schesti verification badge. That
               will help to get more project
             </p>
             <Form name="basic" autoComplete="off">
               <div className="flex flex-col gap-3">
-                <label htmlFor="myInput" className="mt-3">
+                <label
+                  htmlFor="myInput"
+                  className="mt-3 border-b-2 border=[#E7E7E7] pb-2"
+                >
                   EIN Number
                 </label>
-                <div className="w-full h-1 bg-mistyWhite"></div>
                 <div className="flex items-center">
                   <label
                     htmlFor="einNumber-file"
@@ -219,8 +215,12 @@ const RegisterVerification = () => {
                     />
                   </label>
                 </div>
-                <label htmlFor="myInput">Secretary of State</label>
-                <div className="w-full h-1 bg-mistyWhite"></div>
+                <label
+                  htmlFor="myInput"
+                  className="border-b-2 border=[#E7E7E7] pb-2"
+                >
+                  Secretary of State
+                </label>
                 <div className="flex items-center">
                   <label
                     htmlFor="secretaryOfState-file"
@@ -279,8 +279,12 @@ const RegisterVerification = () => {
                     />
                   </label>
                 </div>
-                <label htmlFor="myInput">License if needed</label>
-                <div className="w-full h-1 bg-mistyWhite"></div>
+                <label
+                  htmlFor="myInput"
+                  className="border-b-2 border=[#E7E7E7] pb-2"
+                >
+                  License if needed
+                </label>
                 <div className="flex items-center">
                   <label
                     htmlFor="license-file"
@@ -330,11 +334,6 @@ const RegisterVerification = () => {
                             </button>
                           </div>
                         )}
-                        {/* <div className="ml-auto">
-                                                    <Flex wrap="wrap" gap="small">
-                                                        <Progress type="circle" percent={uploadProgress} size={25} />
-                                                    </Flex>
-                                                </div> */}
                       </div>
                     </div>
                     <input
@@ -347,8 +346,12 @@ const RegisterVerification = () => {
                   </label>
                 </div>
 
-                <label htmlFor="myInput">Prequalification</label>
-                <div className="w-full h-1 bg-mistyWhite"></div>
+                <label
+                  htmlFor="myInput"
+                  className="border-b-2 border=[#E7E7E7] pb-2"
+                >
+                  Prequalification
+                </label>
                 <div className="flex items-center">
                   <label
                     htmlFor="preQualification-file"

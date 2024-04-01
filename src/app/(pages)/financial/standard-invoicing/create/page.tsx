@@ -87,8 +87,8 @@ type InvoiceDetail = {
   description: string;
   quantity: number;
   unitCost: number;
-  totalPrice?:string;
-  action?:string
+  totalPrice?: string;
+  action?: string;
 };
 const CreateInvoice = () => {
   const router = useRouter();

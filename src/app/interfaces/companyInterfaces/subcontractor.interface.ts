@@ -19,8 +19,8 @@ export interface ISubcontractor {
   companyRep: string;
   address: string;
   secondAddress: string;
-  status? : string,
-  action?:string,
+  status?: string;
+  action?: string;
   phone: string;
   roles: string[];
   brandingColor: string;

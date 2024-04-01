@@ -1,6 +1,6 @@
 // import { IInvoice } from '@/app/interfaces/invoices.interface';
 import { StyleSheet, Text, View } from '@react-pdf/renderer';
-import {USCurrencyFormat} from '@/app/utils/format'
+import { USCurrencyFormat } from '@/app/utils/format';
 
 const PurpleColor = '#7138DF';
 const LightBalck = '#475467';
@@ -52,7 +52,7 @@ export function ItemsTable({ estimateDetail, pdfData }: Props) {
           <Text style={[styles.text, { flex: 1 }]}>{item.description}</Text>
           <Text style={[styles.text, { flex: 1 }]}>{item.quantity}</Text>
           <Text style={[styles.text, { flex: 1 }]}>
-            {USCurrencyFormat.format(item.total) }
+            {USCurrencyFormat.format(item.total)}
           </Text>
         </View>
       ))}
@@ -60,13 +60,17 @@ export function ItemsTable({ estimateDetail, pdfData }: Props) {
       <View style={styles.totalContainer}>
         <View style={styles.subtotalContainer}>
           <Text style={styles.text}>Subtotal</Text>
-          <Text style={styles.text}>{USCurrencyFormat.format(estimateDetail?.totalCost)}</Text>
+          <Text style={styles.text}>
+            {USCurrencyFormat.format(estimateDetail?.totalCost)}
+          </Text>
         </View>
 
         <View style={[styles.subtotalContainer, { marginTop: 5 }]}>
           <Text style={styles.text}>Material Tax</Text>
           <Text style={styles.text}>
-            {USCurrencyFormat.format(estimateDetail?.totalBidDetail?.materialTax)}
+            {USCurrencyFormat.format(
+              estimateDetail?.totalBidDetail?.materialTax
+            )}
           </Text>
         </View>
 
@@ -80,18 +84,21 @@ export function ItemsTable({ estimateDetail, pdfData }: Props) {
         <View style={[styles.subtotalContainer, { marginTop: 5 }]}>
           <Text style={styles.text}>Profit And Overhead</Text>
           <Text style={styles.text}>
-            {USCurrencyFormat.format(estimateDetail?.totalBidDetail?.overheadAndProfit)}
+            {USCurrencyFormat.format(
+              estimateDetail?.totalBidDetail?.overheadAndProfit
+            )}
           </Text>
         </View>
 
         <View style={[styles.subtotalContainer, { marginTop: 5 }]}>
           <Text style={styles.text}>Total Cost</Text>
           <Text style={styles.text}>
-            
-            {USCurrencyFormat.format(estimateDetail?.totalCost +
-              estimateDetail?.totalBidDetail?.materialTax +
-              estimateDetail?.totalBidDetail?.bondFee +
-              estimateDetail?.totalBidDetail?.overheadAndProfit)}
+            {USCurrencyFormat.format(
+              estimateDetail?.totalCost +
+                estimateDetail?.totalBidDetail?.materialTax +
+                estimateDetail?.totalBidDetail?.bondFee +
+                estimateDetail?.totalBidDetail?.overheadAndProfit
+            )}
           </Text>
         </View>
       </View>

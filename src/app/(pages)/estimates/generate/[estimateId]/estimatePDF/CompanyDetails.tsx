@@ -1,7 +1,7 @@
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
 // import { IInvoice } from '@/app/interfaces/invoices.interface';
 import { Image, StyleSheet, Text, View } from '@react-pdf/renderer';
-import {USCurrencyFormat} from '@/app/utils/format'
+import { USCurrencyFormat } from '@/app/utils/format';
 // import moment from 'moment';
 
 type Props = {
