@@ -21,15 +21,6 @@ export function ProjectDocuments() {
               iconheight={20}
             />
           </div>
-
-          <div className="w-48">
-            <CustomButton
-              text="Add Documents"
-              icon="/plus.svg"
-              iconwidth={20}
-              iconheight={20}
-            />
-          </div>
         </div>
       </div>
 
