@@ -26,7 +26,8 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { DeletePopup } from './post/components/DeletePopup';
 import { PDFDownloadLink } from '@react-pdf/renderer';
-import BidListPdf from './components/bid-pdf';
+import dynamic from 'next/dynamic';
+const BidListPdf = dynamic(() => import('./components/bid-pdf'), { ssr: false });
 
 function Page() {
   const router = useRouter();
@@ -206,7 +207,7 @@ function Page() {
           <DeletePopup
             closeModal={() => setShowProjectDeleteModal(false)}
             message="Are you sure you want to delete this project?"
-            onConfirm={() => {}}
+            onConfirm={() => { }}
             open={showProjectDeleteModal}
             title="Delete Project"
             isLoading={false}

@@ -10,13 +10,12 @@ import { estimateRequestService } from '@/app/services/estimates.service';
 
 interface DataType {
   key: React.Key;
-  ProjectName: string;
-  ClientName: string;
-  Number: string;
-  SalePerson: string;
-  Estimator: string;
-  Status: string;
-  Action: string;
+  projectName: string;
+  clientName: string;
+  salePerson: string;
+  estimator: string;
+  totalCost: string;
+  action: string;
 }
 
 const EstimateRequestTable: React.FC = () => {

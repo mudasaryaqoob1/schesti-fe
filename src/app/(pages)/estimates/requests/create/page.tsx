@@ -276,7 +276,7 @@ const CreateEstimateRequest = () => {
   };
 
   return (
-    <section className="my-5 px-16">
+    <section className="my-5 px-16 ">
       <div className="flex justify-between flex-wrap items-center md:flex-nowrap">
         <TertiaryHeading title="Create Estimate Request" />
         <CustomWhiteButton
@@ -318,7 +318,7 @@ const CreateEstimateRequest = () => {
                 />
               </ModalComponent>
               <Form onSubmit={handleSubmit}>
-                <div className="p-5 mt-4 border border-silverGray rounded-lg shadow-quinarGentleDepth">
+                <div className="p-5 mt-4 border border-silverGray rounded-lg shadow-quinarGentleDepth bg-white">
                   <QuaternaryHeading
                     title="Client Information"
                     className="font-semibold"
@@ -355,7 +355,7 @@ const CreateEstimateRequest = () => {
                     />
                   </div>
                 </div>
-                <div className="p-5 my-4 border border-silverGray rounded-lg shadow-quinarGentleDepth">
+                <div className="p-5 my-4 border border-silverGray rounded-lg shadow-quinarGentleDepth bg-white">
                   <QuaternaryHeading
                     title="Project Details"
                     className="text-graphiteGray font-semibold"
@@ -401,7 +401,7 @@ const CreateEstimateRequest = () => {
                 </div>
 
                 {/* assignment */}
-                <div className="p-5 border-2 border-silverGray rounded-lg shadow-quinarGentleDepth">
+                <div className="p-5 border-2 border-silverGray rounded-lg shadow-quinarGentleDepth bg-white">
                   <QuaternaryHeading
                     title="Assignments"
                     className="text-graphiteGray font-semibold"
@@ -425,7 +425,7 @@ const CreateEstimateRequest = () => {
                   </div>
                 </div>
 
-                <div className=" border-2  border-silverGray  rounded-lg shadow-quinarGentleDepth mt-4 p-5">
+                <div className=" border-2  border-silverGray  rounded-lg shadow-quinarGentleDepth mt-4 p-5 bg-white">
                   <h3 className="my-4">Upload</h3>
                   <div className="grid lg:grid-cols-4 grid-cols-1 gap-4">
                     <div>
@@ -743,7 +743,7 @@ const CreateEstimateRequest = () => {
                   )}
                 </div>
                 {/* buttons */}
-                <div className="flex justify-end items-center gap-2 md:mt-12 mt-6 p-4 bg-white shadow-secondaryTwist">
+                <div className="flex justify-end items-center gap-2 md:mt-12 mt-6 p-4 shadow-secondaryTwist">
                   <div className="w-[116px]">
                     <CustomButton
                       className="!border-celestialGray shadow-scenarySubdued2 !text-graphiteGray !bg-snowWhite !px-5 !py-3 w-full"

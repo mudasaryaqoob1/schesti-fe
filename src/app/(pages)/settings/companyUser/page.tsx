@@ -20,6 +20,8 @@ import { withAuth } from '@/app/hoc/withAuth';
 interface DataType {
   firstName: string;
   companyName: string;
+  name?: string;
+  invitationDate?: string;
   email: number;
   phone: string;
   address: string;

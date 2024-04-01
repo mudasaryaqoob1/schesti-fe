@@ -94,7 +94,7 @@ const ViewEstimateDetail = () => {
     }
   }, [estimateId]);
 
-  console.log(estimateDetailsSummary, 'estimateDetailsSummary');
+  console.log(estimateDetailsSummary, 'estimateDetailsSummary', pdfData);
 
   return (
     <div className="p-12">
@@ -266,7 +266,9 @@ const ViewEstimateDetail = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <QuaternaryHeading
-                      title={`Total Cost: ${USCurrencyFormat.format(estimate.totalCostForTitle)}`}
+                      title={`Total Cost: ${USCurrencyFormat.format(
+                        estimate.totalCostForTitle
+                      )}`}
                       className="font-semibold"
                     />
                   </div>
@@ -284,14 +286,16 @@ const ViewEstimateDetail = () => {
         <div className="flex items-center justify-between">
           <MinDesc title="Sub Total Cost" className="text-darkgrayish" />
           <Description
-            title={`${USCurrencyFormat.format(estimateDetailsSummary?.totalCost)}`}
+            title={`${USCurrencyFormat.format(
+              estimateDetailsSummary?.totalCost
+            )}`}
             className="font-medium"
           />
         </div>
         <div className="flex items-center justify-between">
           <MinDesc title="Material Tax %" className="text-darkgrayish" />
           <Description
-            title={`$${USCurrencyFormat.format(
+            title={`${USCurrencyFormat.format(
               estimateDetailsSummary?.totalBidDetail?.materialTax
             )}`}
             className="font-medium"
@@ -309,17 +313,24 @@ const ViewEstimateDetail = () => {
         <div className="flex items-center justify-between">
           <MinDesc title="Bond Fee %" className="text-darkgrayish" />
           <Description
-            title={`${USCurrencyFormat.format(estimateDetailsSummary?.totalBidDetail?.bondFee)}`}
+            title={`${USCurrencyFormat.format(
+              estimateDetailsSummary?.totalBidDetail?.bondFee
+            )}`}
             className="font-medium"
           />
         </div>
       </div>
       <div className="bg-celestialGray h-px w-full my-4"></div>
       <div className="flex items-center justify-between">
-        <QuaternaryHeading className="font-semibold" title="Total Bid" />
+        <QuaternaryHeading className="font-semibold" title="Total Cost" />
         <Description
           className="font-semibold"
-          title={`${USCurrencyFormat.format(estimateDetailsSummary?.totalCost)}`}
+          title={`${USCurrencyFormat.format(
+            estimateDetailsSummary?.totalCost +
+              estimateDetailsSummary?.totalBidDetail?.bondFee +
+              estimateDetailsSummary?.totalBidDetail?.overheadAndProfit +
+              estimateDetailsSummary?.totalBidDetail?.materialTax
+          )}`}
         />
       </div>
     </div>

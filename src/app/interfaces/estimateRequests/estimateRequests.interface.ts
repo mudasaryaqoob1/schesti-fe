@@ -4,7 +4,7 @@ export interface IEstimateRequest {
   email: string;
   phone: string | number;
   projectName: string;
-  status: string;
+  status?: string;
   leadSource: string;
   projectValue: string;
   projectInformation: string;

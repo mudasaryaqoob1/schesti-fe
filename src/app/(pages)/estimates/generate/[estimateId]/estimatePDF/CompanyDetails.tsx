@@ -1,6 +1,7 @@
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
 // import { IInvoice } from '@/app/interfaces/invoices.interface';
 import { Image, StyleSheet, Text, View } from '@react-pdf/renderer';
+import { USCurrencyFormat } from '@/app/utils/format';
 // import moment from 'moment';
 
 type Props = {
@@ -138,7 +139,7 @@ export function PdfCompanyDetails({ estimateDetail, user }: Props) {
             <Text style={styles.heading}>Amount Due (USD)</Text>
             <Text
               style={styles.largeText}
-            >{`$${estimateDetail?.totalCost}`}</Text>
+            >{`${USCurrencyFormat.format(estimateDetail?.totalCost)}`}</Text>
           </View>
         </View>
       </View>

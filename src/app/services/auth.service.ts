@@ -120,5 +120,6 @@ class AuthService extends HttpService {
       data: any;
     }>
   > => this.post(`${this.prefix}/capture-order`, { orderID: orderID });
+
 }
 export const authService = new AuthService();

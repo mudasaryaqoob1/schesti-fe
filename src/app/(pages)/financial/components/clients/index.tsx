@@ -154,13 +154,13 @@ export function Clients() {
 
   const filteredClientInvoices =
     clientInvoices.length > 0
-      ? clientInvoices.filter((invoice) => {
+      ? clientInvoices.filter((invoice: any) => {
           if (!search) {
             return invoice;
           }
           return (
             invoice.invoiceName === search ||
-            invoice.toOwner.toLowerCase().includes(search.toLowerCase())
+            invoice!.toOwner.toLowerCase().includes(search.toLowerCase())
           );
         })
       : [];

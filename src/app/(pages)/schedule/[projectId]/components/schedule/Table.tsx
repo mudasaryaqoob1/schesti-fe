@@ -262,7 +262,7 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
       };
     });
 
-  const extras: (ColumnType<ActivityItem> & {
+  const extras: (ColumnType<any> & {
     editable: boolean;
     hidden: boolean;
   })[] = [

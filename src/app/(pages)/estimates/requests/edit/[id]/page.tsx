@@ -26,9 +26,9 @@ import { byteConverter } from '@/app/utils/byteConverter';
 import AwsS3 from '@/app/utils/S3Intergration';
 import { withAuth } from '@/app/hoc/withAuth';
 
-const clientInfoSchema: any = Yup.object({
-  clientName: Yup.string().required('Field is required!'),
-  companyName: Yup.string().required('Field is required!'),
+const clientInfoSchema: any = Yup.object().shape({
+  clientName: Yup.string().required('Client Name is required!'),
+  companyName: Yup.string().required('Company Name is required!'),
   email: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
@@ -36,12 +36,12 @@ const clientInfoSchema: any = Yup.object({
     .min(7, 'Phone number must be at least 7 characters')
     .max(12, 'Phone number must be at most 12 characters')
     .required('Phone number is required'),
-  projectName: Yup.string().required('Field is required!'),
-  leadSource: Yup.string().required('Field is required!'),
-  projectValue: Yup.string().required('Field is required!'),
-  projectInformation: Yup.string().required('Field is required!'),
-  salePerson: Yup.string().required('Field is required!'),
-  estimator: Yup.string().required('Field is required!'),
+  projectName: Yup.string().required('Project Name is required!'),
+  leadSource: Yup.string().required('Lead Source is required!'),
+  projectValue: Yup.string().required('Project Value is required!'),
+  projectInformation: Yup.string().required('Project Information is required!'),
+  salePerson: Yup.string().required('Sale person is required!'),
+  estimator: Yup.string().required('Estimator is required!'),
 });
 
 const initialValues: IEstimateRequest = {
@@ -79,7 +79,11 @@ const EditEstimateRequest = () => {
       const estimateRequest = estimateRequestsData?.find(
         (item: any) => item._id === id
       );
-      setEstimateRequestData(estimateRequest);
+      setEstimateRequestData({
+        ...estimateRequest,
+        estimator: estimateRequest.estimator._id,
+        salePerson: estimateRequest.salePerson._id,
+      });
       setTakeOffReports(estimateRequest);
       setDrawingsDocuments(estimateRequest.drawingsDocuments);
       setOtherDocuments(estimateRequest.otherDocuments);
@@ -286,6 +290,8 @@ const EditEstimateRequest = () => {
     );
   };
 
+  console.log(estimateRequestData, 'estimateRequestDataestimateRequestData');
+
   return (
     <section className="my-5 px-16">
       <div className="flex justify-between flex-wrap items-center md:flex-nowrap">
@@ -332,7 +338,7 @@ const EditEstimateRequest = () => {
                 />
               </ModalComponent>
               <Form onSubmit={handleSubmit}>
-                <div className="p-5 mt-4 border border-silverGray rounded-lg shadow-quinarGentleDepth">
+                <div className="p-5 mt-4 border border-silverGray rounded-lg shadow-quinarGentleDepth bg-white">
                   <QuaternaryHeading
                     title="Client Information"
                     className="font-semibold"
@@ -368,7 +374,7 @@ const EditEstimateRequest = () => {
                     />
                   </div>
                 </div>
-                <div className="p-5 my-4 border border-silverGray rounded-lg shadow-quinarGentleDepth">
+                <div className="p-5 my-4 border border-silverGray rounded-lg shadow-quinarGentleDepth bg-white">
                   <QuaternaryHeading
                     title="Project information"
                     className="text-graphiteGray font-semibold"
@@ -406,7 +412,7 @@ const EditEstimateRequest = () => {
                 </div>
 
                 {/* assignment */}
-                <div className="p-5 border-2 border-silverGray rounded-lg shadow-quinarGentleDepth">
+                <div className="p-5 border-2 border-silverGray rounded-lg shadow-quinarGentleDepth bg-white">
                   <QuaternaryHeading
                     title="Assignments"
                     className="text-graphiteGray font-semibold"
@@ -429,7 +435,7 @@ const EditEstimateRequest = () => {
                   </div>
                 </div>
 
-                <div className=" border-2  border-silverGray  rounded-lg shadow-quinarGentleDepth mt-4 p-5">
+                <div className=" border-2  border-silverGray  rounded-lg shadow-quinarGentleDepth mt-4 p-5 bg-white">
                   <h3 className="my-4">Upload</h3>
                   <div className="flex gap-3">
                     <div>
@@ -741,7 +747,7 @@ const EditEstimateRequest = () => {
                   )}
                 </div>
                 {/* buttons */}
-                <div className="flex justify-end items-center gap-2 md:mt-12 mt-6 p-4 bg-white shadow-secondaryTwist">
+                <div className="flex justify-end items-center gap-2 md:mt-12 mt-6 p-4 shadow-secondaryTwist">
                   <div className="w-[116px]">
                     <CustomButton
                       className="!border-celestialGray shadow-scenarySubdued2 !text-graphiteGray !bg-snowWhite !px-5 !py-3 w-full"

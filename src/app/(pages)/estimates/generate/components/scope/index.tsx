@@ -329,15 +329,13 @@ const Scope = ({ setPrevNext }: Props) => {
       (cat: any) => cat.value === estimateTableItemValues.subCategory
     );
 
-    let selectedCategory = `${
-      selectedCategoryName?.label
+    let selectedCategory = `${selectedCategoryName?.label
         ? selectedCategoryName?.label
         : estimateTableItemValues?.category
-    } ${
-      selctedSubCategoryName?.label
+      } ${selctedSubCategoryName?.label
         ? selctedSubCategoryName?.label
         : estimateTableItemValues.subCategory
-    }`;
+      }`;
 
     if (editConfirmItem) {
       const updateConfirmEstimateArray: any = confirmEstimates.map(
@@ -558,13 +556,11 @@ const Scope = ({ setPrevNext }: Props) => {
       (cat: any) => cat.value === record.subCategory
     );
 
-    let selectedCategory = `${
-      selctedCatoryName?.label ? selctedCatoryName?.label : record?.category
-    } ${
-      selctedSubCategoryName?.label
+    let selectedCategory = `${selctedCatoryName?.label ? selctedCatoryName?.label : record?.category
+      } ${selctedSubCategoryName?.label
         ? selctedSubCategoryName?.label
         : record.subCategory
-    }`;
+      }`;
 
     const newArray: any = confirmEstimates.map((item) => {
       if (item && item.title === selectedCategory) {
@@ -608,7 +604,7 @@ const Scope = ({ setPrevNext }: Props) => {
     let unitEquipments = parseFloat(record.unitEquipments);
     let totalEquipmentCost = unitEquipments * qtyWithWastage;
     let result = totalLabourCost + totalMeterialCost + totalEquipmentCost;
-    return formatNumberWithCommas(result);
+    return result;
   };
 
   const columns: any = [
@@ -722,11 +718,6 @@ const Scope = ({ setPrevNext }: Props) => {
         let wastagePercentage = parseFloat(record.wastage);
         let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = unitEquipments * quantityWithWastage;
-        console.log(
-          formatNumberWithCommas(result),
-          'formatNumberWithCommas(result)'
-        );
-
         return `$${formatNumberWithCommas(result)}`;
       },
     },
@@ -737,7 +728,7 @@ const Scope = ({ setPrevNext }: Props) => {
       width: 150,
       render: (text: string, record: DataType) => {
         let result = calculateTotalCost(record);
-        return `$${result}`;
+        return `$${formatNumberWithCommas(result)}`;
       },
     },
 
@@ -891,7 +882,7 @@ const Scope = ({ setPrevNext }: Props) => {
       width: 150,
       render: (text: string, record: DataType) => {
         let result = calculateTotalCost(record);
-        return `$${result}`;
+        return `$${formatNumberWithCommas(result)}`;
       },
     },
 
@@ -962,9 +953,9 @@ const Scope = ({ setPrevNext }: Props) => {
       let modifyArray = confirmEstimates.map((item, i) =>
         i === index
           ? {
-              ...item,
-              scopeItems: [...item.scopeItems, ...dataSource.scopeItems],
-            }
+            ...item,
+            scopeItems: [...item.scopeItems, ...dataSource.scopeItems],
+          }
           : item
       );
       setConfirmEstimates(modifyArray);
@@ -1076,7 +1067,7 @@ const Scope = ({ setPrevNext }: Props) => {
                       // options={estimateDescriptions}
                       placeholder="Write Description"
                       mt="mt-0"
-                      // setCustomState={setsSelecteddescription}
+                    // setCustomState={setsSelecteddescription}
                     />
                   </div>
                   <FormControl
@@ -1197,34 +1188,34 @@ const Scope = ({ setPrevNext }: Props) => {
               <div>
                 {confirmEstimates.length
                   ? confirmEstimates.map((estimate) => (
-                      <div
-                        key={estimate.title}
-                        className={`${bg_style} p-5 mt-3`}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <QuaternaryHeading
-                              title={estimate.categoryName}
-                              className="font-semibold"
-                            />
-                            <QuaternaryHeading
-                              title={estimate.subCategoryName}
-                              className="!font=[#344054] font-light"
-                            />
-                          </div>
-                        </div>
-                        <div className="estimateTable_container">
-                          <Table
-                            className="mt-2"
-                            loading={false}
-                            columns={confirmColumns}
-                            dataSource={estimate.scopeItems as DataType[]}
-                            pagination={false}
-                            scroll={{ x: 1000 }}
+                    <div
+                      key={estimate.title}
+                      className={`${bg_style} p-5 mt-3`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <QuaternaryHeading
+                            title={estimate.categoryName}
+                            className="font-semibold"
+                          />
+                          <QuaternaryHeading
+                            title={estimate.subCategoryName}
+                            className="!font=[#344054] font-light"
                           />
                         </div>
                       </div>
-                    ))
+                      <div className="estimateTable_container">
+                        <Table
+                          className="mt-2"
+                          loading={false}
+                          columns={confirmColumns}
+                          dataSource={estimate.scopeItems as DataType[]}
+                          pagination={false}
+                          scroll={{ x: 1000 }}
+                        />
+                      </div>
+                    </div>
+                  ))
                   : null}
               </div>
             </>

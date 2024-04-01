@@ -5,18 +5,18 @@ import SecondaryHeading from '@/app/component/headings/Secondary';
 import Image from 'next/image';
 // import { useRouter } from 'next/navigation';
 
-type Props = {
-  btnText: string;
-  link: string;
-  title: string;
-  description?: string;
-};
-const NoData = ({
+// type Props = {
+//   btnText: string;
+//   link: string;
+//   title: string;
+//   description?: string;
+// };
+const NoDataPage = ({
   // btnText = 'text',
   // link = '/',
   title = 'Upgrade Plan',
-  description = 'You can access this page after upgrade you plan feature',
-}: Props) => {
+  description = 'You can access this page after upgrade your plan feature',
+}: any) => {
   // const router = useRouter();
   return (
     <section className="mt-6 mx-4 rounded-xl h-[calc(100vh-200px)] grid items-center border border-solid border-silverGray shadow-secondaryTwist">
@@ -49,4 +49,4 @@ const NoData = ({
   );
 };
 
-export default NoData;
+export default NoDataPage;
