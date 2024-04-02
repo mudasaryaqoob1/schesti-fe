@@ -1,3 +1,4 @@
+'use client';
 import { withAuth } from "@/app/hoc/withAuth";
 
 function ContractorScreen() {
