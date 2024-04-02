@@ -1,0 +1,72 @@
+import TertiaryHeading from '@/app/component/headings/tertiary';
+import { Table, type TableProps } from 'antd';
+
+export function ProjectBiddingTeam() {
+  const columns: TableProps['columns'] = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'Role',
+      dataIndex: 'role',
+      key: 'role',
+    },
+    {
+      title: 'Company Name',
+      dataIndex: 'companyName',
+      key: 'companyName',
+    },
+    {
+      title: 'Location',
+      dataIndex: 'location',
+      key: 'location',
+    },
+    {
+      title: 'Phone',
+      dataIndex: 'phoneNumber',
+      key: 'phoneNumber',
+    },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+      key: 'email',
+    },
+  ];
+  return (
+    <div className=" mt-6 mb-4 md:ms-[69px] md:me-[59px] mx-4  p-5 bg-white rounded-lg border shadow-lg">
+      <div>
+        <TertiaryHeading
+          title="Bidding Team"
+          className="text-[20px] leading-[30px]"
+        />
+      </div>
+
+      <div className="mt-5">
+        <Table
+          columns={columns}
+          bordered
+          dataSource={[
+            {
+              name: 'John Doe',
+              role: 'Architect',
+              companyName: 'ABC',
+              location: 'New York',
+              phoneNumber: '1234567890',
+              email: 'johnDoe@gmail.com',
+            },
+            {
+              name: 'John Doe',
+              role: 'Architect',
+              companyName: 'ABC',
+              location: 'New York',
+              phoneNumber: '1234567890',
+              email: 'john@gmail.com',
+            },
+          ]}
+        />
+      </div>
+    </div>
+  );
+}

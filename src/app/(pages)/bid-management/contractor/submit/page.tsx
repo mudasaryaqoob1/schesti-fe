@@ -12,10 +12,11 @@ import { ProjectDesignTeam } from './components/ProjectDesignTeam';
 import { ProjectAcitivityAndStatusTracking } from './components/ProjectActivityAndStatusTracking';
 import { ProjectDocuments } from './components/ProjectDocuments';
 import { ProjectRFICenter } from './components/ProjectRFICenter';
+import { ProjectBiddingTeam } from './components/ProjectBiddingTeam';
 
 const SUMMARY = 'Summary';
 const DESIGN_TEAM = 'Design Team';
-const ACTIVITY_AND_STATUS_TRACKING = 'Activity & Status Tracking';
+const BIDDING_TEAM = 'Bidding Team';
 const DOCUMENTS = 'Documents';
 const RFI_CENTER = 'RFI Center';
 
@@ -93,7 +94,7 @@ function OwnerProjectDetailsPage() {
               items={[
                 SUMMARY,
                 DESIGN_TEAM,
-                ACTIVITY_AND_STATUS_TRACKING,
+                BIDDING_TEAM,
                 DOCUMENTS,
                 RFI_CENTER,
               ].map((tab) => ({
@@ -114,9 +115,8 @@ function OwnerProjectDetailsPage() {
 
       {activeTab === SUMMARY ? <ProjectSummary /> : null}
       {activeTab === DESIGN_TEAM ? <ProjectDesignTeam /> : null}
-      {activeTab === ACTIVITY_AND_STATUS_TRACKING ? (
-        <ProjectAcitivityAndStatusTracking />
-      ) : null}
+      {activeTab === BIDDING_TEAM ? <ProjectBiddingTeam /> : null}
+
       {activeTab === DOCUMENTS ? <ProjectDocuments /> : null}
       {activeTab === RFI_CENTER ? <ProjectRFICenter /> : null}
     </section>
