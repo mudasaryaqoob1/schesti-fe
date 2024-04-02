@@ -25,9 +25,15 @@ import moment from 'moment';
 import Image from 'next/image';
 import { useState } from 'react';
 import { DeletePopup } from './post/components/DeletePopup';
-import { PDFDownloadLink } from '@react-pdf/renderer';
+const PDFDownloadLink = dynamic(
+  () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
+  {
+    ssr: false,
+    loading: () => <p>Loading...</p>,
+  },
+);
 import dynamic from 'next/dynamic';
-const BidListPdf = dynamic(() => import('./components/bid-pdf'), { ssr: false });
+import BidListPdf from './components/bid-pdf';
 
 function Page() {
   const router = useRouter();
