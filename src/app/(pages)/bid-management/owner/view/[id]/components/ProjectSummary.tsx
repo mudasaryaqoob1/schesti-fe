@@ -1,8 +1,19 @@
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import TertiaryHeading from '@/app/component/headings/tertiary';
+import { useTrades } from '@/app/hooks/useTrades';
+import { getTimezoneFromCountryAndState } from '@/app/utils/date.utils';
 import { USCurrencyFormat } from '@/app/utils/format';
+import { RootState } from '@/redux/store';
+import _ from 'lodash';
+import moment from 'moment';
+import { useSelector } from 'react-redux';
 
 export function ProjectSummary() {
+  const bid = useSelector((state: RootState) => state.bidManagementOwner.project);
+  const { trades } = useTrades();
+
+  const projectTrades = bid ? _.filter(trades, trade => (bid.selectedTrades as unknown as string).includes(trade._id)) : []
+
   return (
     <div className=" mt-6 mb-4 md:ms-[69px] md:me-[59px] mx-4  p-5 bg-white rounded-lg border shadow-lg">
       <div>
@@ -22,7 +33,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {'Seabreeza Village comercial Developemnst - convenience store'}
+                {bid ? bid.projectName : ''}
               </p>
             </div>
             <div className="space-y-2">
@@ -31,7 +42,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {'Address'}
+                {bid ? bid.address : ""}
               </p>
             </div>
             <div className="space-y-2">
@@ -40,7 +51,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {'63100'}
+                {bid ? bid.zipCode : ""}
               </p>
             </div>
             <div className="space-y-2">
@@ -49,7 +60,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {'City'}
+                {bid ? bid.city : ""}
               </p>
             </div>
           </div>
@@ -61,7 +72,8 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {'12 May 2022, 12:40'}
+                {/* 12 March, 2024 format */}
+                {bid ? moment(bid.bidDueDate).format("DD MMMM, YYYY hh:mm") : ""}
               </p>
             </div>
             <div className="space-y-2">
@@ -70,7 +82,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {'12 May 2022, 12:40'}
+                {bid ? moment(bid.estimatedStartDate).format("DD MMMM, YYYY hh:mm") : ""}
               </p>
             </div>
             <div className="space-y-2">
@@ -79,7 +91,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {'12 May 2022, 12:40'}
+                {bid ? moment(bid.estimatedCompletionDate).format("DD MMMM, YYYY hh:mm") : ""}
               </p>
             </div>
             <div className="space-y-2">
@@ -88,7 +100,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {'Eastern Time'}
+                {bid ? getTimezoneFromCountryAndState(bid.country, bid.state) : ""}
               </p>
             </div>
           </div>
@@ -100,7 +112,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {'6 months'}
+                {bid ? `${bid.estimatedDuration} ${bid.durationType}` : ""}
               </p>
             </div>
             <div className="space-y-2">
@@ -109,7 +121,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {'6ft square'}
+                {bid ? bid.squareFootage : ""}
               </p>
             </div>
             <div className="space-y-2">
@@ -118,7 +130,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {USCurrencyFormat.format(1231)}
+                {bid ? USCurrencyFormat.format(bid.projectValue) : ""}
               </p>
             </div>
             <div className="space-y-2">
@@ -127,7 +139,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {'GC Awarded/Sub Bidding'}
+                {bid ? bid.stage : ""}
               </p>
             </div>
           </div>
@@ -141,14 +153,14 @@ export function ProjectSummary() {
                 />
 
                 <div className="flex items-center space-x-3">
-                  {['Open Shop', 'Private', 'Open'].map((pt) => (
+                  {bid ? bid.projectType.map((pt) => (
                     <p
                       key={pt}
                       className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
                     >
                       {pt}
                     </p>
-                  ))}
+                  )) : ""}
                 </div>
               </div>
               <div className="space-y-[8px]">
@@ -158,18 +170,14 @@ export function ProjectSummary() {
                 />
 
                 <div className="flex items-center space-x-3">
-                  {[
-                    'Community Center',
-                    'Education/School/University',
-                    'Fire/Police Station',
-                  ].map((building) => (
+                  {bid ? bid.projectBuildingUse.map((building) => (
                     <p
                       key={building}
                       className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
                     >
                       {building}
                     </p>
-                  ))}
+                  )) : ""}
                 </div>
               </div>
             </div>
@@ -200,14 +208,14 @@ export function ProjectSummary() {
                 />
 
                 <div className="flex items-center space-x-3">
-                  {['Demolition', 'Demolition'].map((ct) => (
+                  {bid ? bid.constructionTypes.map((ct) => (
                     <p
                       key={ct}
                       className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
                     >
                       {ct}
                     </p>
-                  ))}
+                  )) : ""}
                 </div>
               </div>
             </div>
@@ -220,10 +228,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis
-                quidem quod quos quo impedit dicta earum veritatis magni
-                officiis! Aperiam harum corporis eius deserunt nemo aliquid
-                consequuntur debitis fugit nisi!
+                {bid ? bid.description : ""}
               </p>
             </div>
             <div className="space-y-2">
@@ -232,10 +237,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam
-                illum et ipsa, nihil minima distinctio cum voluptates
-                reprehenderit iure quo commodi sed recusandae corrupti modi
-                perferendis doloribus. Voluptates, laborum ducimus.
+                {bid ? bid.specialInstructions : ""}
               </p>
             </div>
           </div>
@@ -246,37 +248,14 @@ export function ProjectSummary() {
             Trades
           </legend>
 
-          <div className="grid grid-cols-8 gap-4">
-            {[
-              'Electrical',
-              'Plumbing',
-              'HVAC',
-              'Concrete',
-              'Masonry',
-              'Carpentry',
-              'Roofing',
-              'Drywall',
-              'Painting',
-              'Flooring',
-              'Landscaping',
-              'Excavation',
-              'Demolition',
-              'Framing',
-              'Insulation',
-              'Siding',
-              'Windows',
-              'Doors',
-              'Fire Protection',
-              'Security',
-              'Solar',
-              'Other',
-            ].map((trade) => (
+          <div className="grid grid-cols-8 gap-4 items-center">
+            {projectTrades.map((trade) => (
               <p
-                key={trade}
+                key={trade._id}
                 className="px-[12px] bg-[#E9EBF8] rounded-full text-center
-                         py-[7px]  text-[#7138DF] font-semibold text-xs leading-4"
+                         py-[7px]  text-[#7138DF] font-semibold text-xs leading-4 "
               >
-                {trade}
+                {trade.name}
               </p>
             ))}
           </div>
