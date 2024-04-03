@@ -2,6 +2,9 @@ import { IResponseInterface } from '../interfaces/api-response.interface';
 import {
   IBidManagement,
   IBidManagementProjectTeamMember,
+  IGetSavedUserBid,
+  ISaveUserBid,
+  IUpdateUserBid,
 } from '../interfaces/bid-management/bid-management.interface';
 import { HttpService } from './base.service';
 
@@ -65,6 +68,18 @@ class BidManagementService extends HttpService {
   httpGetOwnerProjects = (): Promise<
     IResponseInterface<{ projects: IBidManagement[] }>
   > => this.get(`${this.prefix}/get-all`);
+
+  httpSaveUserProjectBid = (data: any): Promise<
+  IResponseInterface<{ project: ISaveUserBid }>
+  > => this.post(`${this.prefix}/save-user-bid`, data);
+
+  httpUpdateUserProjectBid = (data: IUpdateUserBid): Promise<
+  IResponseInterface<{ project: ISaveUserBid }>
+  > => this.post(`${this.prefix}/update-user-bid`, data);
+
+  httpGetUserSavedBids = (params: IGetSavedUserBid): Promise<
+  IResponseInterface<{ savedBids: ISaveUserBid }>
+  > => this.get(`${this.prefix}/get-user-bids?page=${params.page}&limit=${params.limit}&status=${params.status}`);
 
   httpUploadCSVFile(data: FormData): Promise<{ data: string[][] }> {
     return this.post(`${this.prefix}/import-invited-members`, data, {

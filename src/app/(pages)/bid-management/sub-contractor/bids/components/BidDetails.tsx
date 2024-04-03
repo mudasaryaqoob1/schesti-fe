@@ -1,6 +1,5 @@
 import CustomButton from '@/app/component/customButton/button';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
-import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
 import { USCurrencyFormat } from '@/app/utils/format';
 import { Divider } from 'antd';
 import { Country } from 'country-state-city';
@@ -8,20 +7,21 @@ import moment from 'moment';
 import Image from 'next/image';
 
 type Props = {
-  bid: IBidManagement;
+  bid: any;
 };
 export function BidDetails({ bid }: Props) {
+  console.log('bids', bid);
   return (
     <div>
       <div className="flex items-center justify-between">
         <SenaryHeading
-          title={`Posted: ${moment(bid.createdAt).format('DD MMM YYYY, hh:mm')}`}
+          title={`Posted: ${moment(bid?.projectId.createdAt).format('DD MMM YYYY, hh:mm')}`}
           className="text-[#475467] text-sm leading-4 font-normal"
         />
         <div className="flex items-center space-x-2">
           <div className="rounded-full bg-[#E9EBF8] py-[5px] px-[11px]">
             <SenaryHeading
-              title={bid.stage}
+              title={bid?.projectId.stage}
               className="text-[#7138DF] font-normal text-xs leading-4"
             />
           </div>
@@ -37,12 +37,12 @@ export function BidDetails({ bid }: Props) {
 
       <div className="mt-[14px]">
         <SenaryHeading
-          title={bid.projectName}
+          title={bid?.projectId?.projectName}
           className="text-[#475467] text-base leading-6 font-semibold"
         />
 
         <SenaryHeading
-          title={bid.description}
+          title={bid?.projectId?.description}
           className="text-[#475467] text-[14px] leading-6 font-normal mt-2"
         />
 
@@ -60,7 +60,7 @@ export function BidDetails({ bid }: Props) {
             className="text-[#475467] text-sm leading-4 font-normal"
           />
           <SenaryHeading
-            title={`${bid.city}, ${Country.getCountryByCode(bid.country)?.name}`}
+            title={`${bid?.projectId.city}, ${Country.getCountryByCode(bid?.projectId.country)?.name}`}
             className="text-[#475467] text-sm leading-4 font-semibold"
           />
         </div>
@@ -71,7 +71,7 @@ export function BidDetails({ bid }: Props) {
             className="text-[#475467] text-sm leading-4 font-normal"
           />
           <SenaryHeading
-            title={`${USCurrencyFormat.format(bid.projectValue)}`}
+            title={`${USCurrencyFormat.format(bid?.projectId?.projectValue)}`}
             className="text-[#475467] text-sm leading-4 font-semibold"
           />
         </div>
@@ -82,7 +82,7 @@ export function BidDetails({ bid }: Props) {
             className="text-[#475467] text-sm leading-4 font-normal"
           />
           <SenaryHeading
-            title={`${moment(bid.bidDueDate).format('DD MMM YYYY, hh:mm')}`}
+            title={`${moment(bid?.projectId.bidDueDate).format('DD MMM YYYY, hh:mm')}`}
             className="text-[#475467] text-sm leading-4 font-semibold"
           />
         </div>

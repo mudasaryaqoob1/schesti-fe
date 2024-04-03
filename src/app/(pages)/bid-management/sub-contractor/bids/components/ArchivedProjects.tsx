@@ -1,17 +1,39 @@
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
 import { useState } from 'react';
-import { dummyBidProjects } from '../data';
 import { BidIntro } from '../../components/BidIntro';
 import { BidDetails } from './BidDetails';
+import { bidManagementService } from '@/app/services/bid-management.service';
+import { useQuery } from 'react-query';
 
 export function ArchivedProjects() {
+
   const [selectedBid, setSelectedBid] = useState<IBidManagement | null>(null);
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const params = {
+    page: currentPage, 
+    status: 'archived',
+    limit: 10
+  }
+
+  const savedBids = useQuery(['saved-bids'], () => {
+    return bidManagementService.httpGetUserSavedBids(params);
+  });
+
+  console.log('buidid', savedBids);
+
+  const savedUserBids =
+  savedBids.data && savedBids.data.data
+    ? savedBids.data.data?.savedBids
+    : [];
+
 
   return (
     <div>
       <div className={`grid grid-cols-12 gap-4`}>
         <div className={`${selectedBid ? 'col-span-8' : 'col-span-12'}`}>
-          {dummyBidProjects.map((bidProject) => {
+          {savedUserBids.map((bidProject: any) => {
             return (
               <BidIntro
                 key={bidProject._id}

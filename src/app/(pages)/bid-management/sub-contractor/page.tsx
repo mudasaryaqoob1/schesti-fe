@@ -45,7 +45,7 @@ function BidManagementSubContractorPage() {
     return bidManagementService.httpGetOwnerProjects();
   });
 
-  const invitedUserProjectsQuery = useQuery(['bid-projects'], () => {
+  const invitedUserProjectsQuery = useQuery(['invited-user-projects'], () => {
     return bidManagementService.httpGetBidProjectInvitedUsers();
   });
 

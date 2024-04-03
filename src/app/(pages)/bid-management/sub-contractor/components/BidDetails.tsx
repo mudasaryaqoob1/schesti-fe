@@ -1,21 +1,95 @@
 import CustomButton from '@/app/component/customButton/button';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
-import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
+import {
+  IBidManagement,
+  ISaveUserBid,
+} from '@/app/interfaces/bid-management/bid-management.interface';
 import { USCurrencyFormat } from '@/app/utils/format';
 import { Avatar, Divider } from 'antd';
 import { Country } from 'country-state-city';
 import moment from 'moment';
 import Image from 'next/image';
+import { IResponseInterface } from '@/app/interfaces/api-response.interface';
+import { AxiosError } from 'axios';
+import { toast } from 'react-toastify';
+import { useMutation } from 'react-query';
+import { bidManagementService } from '@/app/services/bid-management.service';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 type Props = {
   bid: IBidManagement;
 };
+
+type SaveUserBidProps =  {
+  projectId: string;
+  isFavourite?: boolean;
+}
 export function BidDetails({ bid }: Props) {
+  const router = useRouter();
+  const [isFavourite, setIsFavourite] = useState(false);
+
+  const saveUserBidMutation = useMutation<
+    IResponseInterface<{ projectId: ISaveUserBid }>,
+    AxiosError<{ message: string }>,
+    SaveUserBidProps
+  >({
+    //@ts-ignore
+    mutationKey: 'saveUserBid',
+    mutationFn: (values: SaveUserBidProps) => {
+      return bidManagementService.httpSaveUserProjectBid(values);
+    },
+    onSuccess(res: any) {
+      console.log('res', res);
+      if (res.data && res.data.savedUserBid) {
+        toast.success('Bid Saved Successfully');
+        router.push(`/bid-management/sub-contractor/bids`);
+        // Dispatch any necessary actions after successful mutation
+      }
+    },
+    onError(error: any) {
+      if (error.response?.data?.message) {
+        toast.error(error.response?.data.message);
+        router.push(`/bid-management/sub-contractor/bids`);
+      } else {
+        toast.error('An error occurred while saving the bid.');
+      }
+    },
+  });
+
+  const updateUserBidMutation = useMutation<
+  IResponseInterface<{ projectId: ISaveUserBid }>,
+  AxiosError<{ message: string }>,
+  SaveUserBidProps
+>({
+  //@ts-ignore
+  mutationKey: 'updateUserBid',
+  mutationFn: (values: SaveUserBidProps) => {
+    return bidManagementService.httpUpdateUserProjectBid(values);
+  },
+  onSuccess(res: any) {
+    if (res.data) {
+      toast.success('Bid updated Successfully');
+      // Dispatch any necessary actions after successful mutation
+    }
+  },
+  onError(error: any) {
+    if (error.response?.data?.message) {
+      toast.error(error.response?.data.message);
+    } else {
+      toast.error('An error occurred while saving the bid.');
+    }
+  },
+});
+
+
   return (
     <div>
       <div className="flex items-center justify-between">
         <SenaryHeading
-          title={`Posted: ${moment(bid.createdAt).format('DD MMM YYYY, hh:mm')}`}
+          title={`Posted: ${moment(bid.createdAt).format(
+            'DD MMM YYYY, hh:mm'
+          )}`}
           className="text-[#475467] text-sm leading-4 font-normal"
         />
         <div className="flex items-center space-x-2">
@@ -35,6 +109,19 @@ export function BidDetails({ bid }: Props) {
           <Image
             alt="share icon"
             src={'/share.svg'}
+            width={16}
+            height={16}
+            className="cursor-pointer"
+          />
+          <Image
+            onClick={() => {
+              setIsFavourite(!isFavourite);
+              setTimeout(() => {
+                updateUserBidMutation.mutate({projectId: bid._id, isFavourite: isFavourite})
+              }, 10);
+            }}
+            alt="favourite icon"
+            src={'/red-heart.png'}
             width={16}
             height={16}
             className="cursor-pointer"
@@ -74,7 +161,8 @@ export function BidDetails({ bid }: Props) {
             className="text-[#475467] text-sm leading-4 font-normal"
           />
           <SenaryHeading
-            title={`${bid.city}, ${Country.getCountryByCode(bid.country)?.name}`}
+            title={`${bid.city}, ${Country.getCountryByCode(bid.country)
+              ?.name}`}
             className="text-[#475467] text-sm leading-4 font-semibold"
           />
         </div>
@@ -168,6 +256,7 @@ export function BidDetails({ bid }: Props) {
         <CustomButton text="Send Bid" />
 
         <CustomButton
+          onClick={() => saveUserBidMutation.mutate({projectId: bid?._id})}
           text="Add to my Bidding Projects"
           className="!bg-white !text-[#7138DF]"
         />

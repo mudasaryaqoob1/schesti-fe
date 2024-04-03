@@ -54,7 +54,7 @@ export function BidIntro({ bid, onClick, isSelected }: Props) {
             />
 
             <SenaryHeading
-              title={`${bid.city}, ${Country.getCountryByCode(bid.country)?.name}`}
+              title={`${bid.projectId?.city}, ${Country.getCountryByCode(bid.projectId?.country)?.name}`}
               className="text-[#475467] font-semibold text-xs leading-4"
             />
           </div>
@@ -65,7 +65,7 @@ export function BidIntro({ bid, onClick, isSelected }: Props) {
             />
 
             <SenaryHeading
-              title={USCurrencyFormat.format(bid.projectValue as number)}
+              title={USCurrencyFormat.format(bid?.projectId.projectValue as number)}
               className="text-[#475467] font-semibold text-xs leading-4"
             />
           </div>

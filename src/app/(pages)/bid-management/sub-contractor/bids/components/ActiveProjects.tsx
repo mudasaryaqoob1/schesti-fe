@@ -1,17 +1,37 @@
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
 import { BidIntro } from '../../components/BidIntro';
-import { dummyBidProjects } from '../data';
 import { useState } from 'react';
 import { BidDetails } from './BidDetails';
+import { useQuery } from 'react-query';
+import { bidManagementService } from '@/app/services/bid-management.service';
+
 
 export function ActiveProjects() {
   const [selectedBid, setSelectedBid] = useState<IBidManagement | null>(null);
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const params = {
+    page: currentPage, 
+    status: 'active',
+    limit: 10
+  }
+
+  const savedBids = useQuery(['saved-bids'], () => {
+    return bidManagementService.httpGetUserSavedBids(params);
+  });
+
+  const savedUserBids =
+  savedBids.data && savedBids.data.data
+    ? savedBids.data.data?.savedBids
+    : [];
+
 
   return (
     <div>
       <div className={`grid grid-cols-12 gap-4`}>
         <div className={`${selectedBid ? 'col-span-8' : 'col-span-12'}`}>
-          {dummyBidProjects.map((bidProject) => {
+          {savedUserBids.map((bidProject: any) => {
             return (
               <BidIntro
                 key={bidProject._id}
@@ -26,7 +46,7 @@ export function ActiveProjects() {
         </div>
         {selectedBid ? (
           <div className="col-span-4 py-[24px] px-[17px] rounded-lg mt-3 border border-[#E9E9EA]">
-            <BidDetails bid={selectedBid as unknown as IBidManagement} />
+            <BidDetails bid={selectedBid as any} />
           </div>
         ) : null}
       </div>

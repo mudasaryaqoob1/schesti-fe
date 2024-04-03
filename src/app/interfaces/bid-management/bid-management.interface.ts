@@ -59,3 +59,26 @@ export interface IBidManagementProjectTeamMember {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface ISaveUserBid {
+  user: string;
+  projectId: string;
+  status: string;
+  companyName: string;
+  isFavourite: boolean;
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface IUpdateUserBid {
+  projectId: string;
+  isFavourite?: boolean
+  status?: string;
+}
+
+export interface IGetSavedUserBid {
+  page: number;
+  limit: number;
+  status?: string;
+}
