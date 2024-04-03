@@ -4,7 +4,7 @@ import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { withAuth } from '@/app/hoc/withAuth';
 import { ConfigProvider, Tabs } from 'antd';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ProjectSummary } from './components/ProjectSummary';
 import { ProjectBids } from './components/ProjectBids';
 import { ProjectDesignTeam } from './components/ProjectDesignTeam';
@@ -13,6 +13,9 @@ import { ProjectDocuments } from './components/ProjectDocuments';
 import { ProjectRFICenter } from './components/ProjectRFICenter';
 import { ProjectIntro } from './components/ProjectIntro';
 import { useParams } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/redux/store';
+import { bidManagementOwnerActions } from '@/redux/bid-management/owner.slice';
 
 const SUMMARY = 'Summary';
 const BIDS = 'Bids';
@@ -24,6 +27,13 @@ const RFI_CENTER = 'RFI Center';
 function OwnerProjectDetailsPage() {
   const [activeTab, setActiveTab] = useState(SUMMARY);
   const params = useParams<{ id: string }>();
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    return () => {
+      dispatch(bidManagementOwnerActions.setProjectAction(null));
+    }
+  }, [])
 
   return (
     <section className="">
@@ -105,7 +115,7 @@ function OwnerProjectDetailsPage() {
       {activeTab === ACTIVITY_AND_STATUS_TRACKING ? (
         <ProjectAcitivityAndStatusTracking />
       ) : null}
-      {activeTab === DOCUMENTS ? <ProjectDocuments /> : null}
+      {activeTab === DOCUMENTS ? <ProjectDocuments id={params.id} /> : null}
       {activeTab === RFI_CENTER ? <ProjectRFICenter /> : null}
     </section>
   );

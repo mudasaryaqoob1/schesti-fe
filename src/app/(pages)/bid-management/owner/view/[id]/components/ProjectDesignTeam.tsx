@@ -1,8 +1,13 @@
 import TertiaryHeading from '@/app/component/headings/tertiary';
+import { RootState } from '@/redux/store';
 import { Dropdown, Table, type TableProps } from 'antd';
 import Image from 'next/image';
+import { useSelector } from 'react-redux';
 
 export function ProjectDesignTeam() {
+  const bid = useSelector((state: RootState) => state.bidManagementOwner.project);
+
+
   const columns: TableProps['columns'] = [
     {
       title: 'Name',
@@ -83,24 +88,7 @@ export function ProjectDesignTeam() {
         <Table
           columns={columns}
           bordered
-          dataSource={[
-            {
-              name: 'John Doe',
-              role: 'Architect',
-              companyName: 'ABC',
-              location: 'New York',
-              phoneNumber: '1234567890',
-              email: 'johnDoe@gmail.com',
-            },
-            {
-              name: 'John Doe',
-              role: 'Architect',
-              companyName: 'ABC',
-              location: 'New York',
-              phoneNumber: '1234567890',
-              email: 'john@gmail.com',
-            },
-          ]}
+          dataSource={bid ? bid.teamMembers : []}
         />
       </div>
     </div>

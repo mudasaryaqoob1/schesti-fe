@@ -10,9 +10,10 @@ import { useSelector } from 'react-redux';
 
 export function ProjectSummary() {
   const bid = useSelector((state: RootState) => state.bidManagementOwner.project);
-  const { trades } = useTrades();
+  const { tradesQuery } = useTrades();
 
-  const projectTrades = bid ? _.filter(trades, trade => (bid.selectedTrades as unknown as string).includes(trade._id)) : []
+  const projectTrades = bid ? _.filter(tradesQuery.data?.data?.trades, trade => (bid.selectedTrades as unknown as string).includes(trade._id)) : []
+
 
   return (
     <div className=" mt-6 mb-4 md:ms-[69px] md:me-[59px] mx-4  p-5 bg-white rounded-lg border shadow-lg">
@@ -248,7 +249,7 @@ export function ProjectSummary() {
             Trades
           </legend>
 
-          <div className="grid grid-cols-8 gap-4 items-center">
+          <div className="grid grid-cols-8 md:grid-cols-3 gap-4 items-center">
             {projectTrades.map((trade) => (
               <p
                 key={trade._id}
