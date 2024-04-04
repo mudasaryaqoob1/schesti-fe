@@ -9,7 +9,6 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { ProjectSummary } from './components/ProjectSummary';
 import { ProjectDesignTeam } from './components/ProjectDesignTeam';
-import { ProjectAcitivityAndStatusTracking } from './components/ProjectActivityAndStatusTracking';
 import { ProjectDocuments } from './components/ProjectDocuments';
 import { ProjectRFICenter } from './components/ProjectRFICenter';
 import { ProjectBiddingTeam } from './components/ProjectBiddingTeam';
