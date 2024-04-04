@@ -7,3 +7,14 @@ export interface IClient {
   address: string;
   secondAddress: string;
 }
+
+
+export interface IPartner {
+  firstName: string;
+  lastName: string;
+  email?: string;
+  phone: string;
+  companyName: string;
+  address: string;
+  secondAddress: string;
+}

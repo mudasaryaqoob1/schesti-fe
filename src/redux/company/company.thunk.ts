@@ -8,6 +8,12 @@ interface FetchClientParams {
   limit: number;
 }
 
+
+interface FetchPartnerParams {
+  page: number;
+  limit: number;
+}
+
 interface FetchSubcontractorParams {
   page: number;
   limit: number;
@@ -23,6 +29,22 @@ export const fetchCompanyClients = createAsyncThunk(
   async ({ page, limit }: FetchClientParams, { rejectWithValue }) => {
     try {
       const response = await userService.httpGetCompanyClients(page, limit);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data ||
+          'An error occurred while fetching the feed records'
+      );
+    }
+  }
+);
+
+
+export const fetchCompanyPartner = createAsyncThunk(
+  'company/partners',
+  async ({ page, limit }: FetchPartnerParams, { rejectWithValue }) => {
+    try {
+      const response = await userService.httpGetCompanyPartners(page, limit);
       return response;
     } catch (error: any) {
       return rejectWithValue(
@@ -74,6 +96,21 @@ export const deleteCompanyClient = createAsyncThunk(
   async (clientId: string, { rejectWithValue }) => {
     try {
       const response = await userService.httpDeleteClient(clientId);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data ||
+          'An error occurred while fetching the feed records'
+      );
+    }
+  }
+);
+
+export const deleteCompanyPartner = createAsyncThunk(
+  'company/partners',
+  async (partnerId: string, { rejectWithValue }) => {
+    try {
+      const response = await userService.httpDeletePartner(partnerId);
       return response;
     } catch (error: any) {
       return rejectWithValue(
