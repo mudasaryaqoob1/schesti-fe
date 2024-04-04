@@ -7,7 +7,7 @@ import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { withAuth } from '@/app/hoc/withAuth';
 import { SearchOutlined } from '@ant-design/icons';
 import Image from 'next/image';
-import { BidIntro } from './components/BidIntro';
+import { BidProjectDdtail } from './components/BidProjectDetail';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
@@ -183,7 +183,7 @@ function BidManagementSubContractorPage() {
               ) : (
                 currentInvitedProjects.map((bidProject) => {
                   return (
-                    <BidIntro
+                    <BidProjectDdtail
                       key={bidProject._id}
                       bid={bidProject}
                       onClick={() => setSelectedBid(bidProject)}
@@ -230,7 +230,7 @@ function BidManagementSubContractorPage() {
                   })
                   .map((bidProject) => {
                     return (
-                      <BidIntro
+                      <BidProjectDdtail
                         key={bidProject._id}
                         bid={bidProject}
                         onClick={() => setSelectedBid(bidProject)}

@@ -6,11 +6,11 @@ import moment from 'moment';
 import Image from 'next/image';
 
 type Props = {
-  bid: IBidManagement | any;
+  bid: IBidManagement;
   onClick?: () => void;
   isSelected?: boolean;
 };
-export function BidIntro({ bid, onClick, isSelected }: Props) {
+export function BidProjectDdtail({ bid, onClick, isSelected }: Props) {
   return (
     <div
       className={`mt-3 rounded-lg ${isSelected ? 'bg-[#e5def0]' : 'bg-[#FCFAFF]'}  border border-[#E8E3EF] p-4 cursor-pointer`}
@@ -54,7 +54,7 @@ export function BidIntro({ bid, onClick, isSelected }: Props) {
             />
 
             <SenaryHeading
-              title={`${bid.projectId?.city}, ${Country.getCountryByCode(bid.projectId?.country)?.name}`}
+              title={`${bid?.city}, ${Country.getCountryByCode(bid.country)?.name}`}
               className="text-[#475467] font-semibold text-xs leading-4"
             />
           </div>
@@ -65,7 +65,7 @@ export function BidIntro({ bid, onClick, isSelected }: Props) {
             />
 
             <SenaryHeading
-              title={USCurrencyFormat.format(bid?.projectId?.projectValue as number)}
+              title={USCurrencyFormat.format(bid?.projectValue as number)}
               className="text-[#475467] font-semibold text-xs leading-4"
             />
           </div>

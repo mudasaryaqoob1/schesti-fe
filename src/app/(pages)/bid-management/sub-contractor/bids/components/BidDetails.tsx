@@ -10,7 +10,6 @@ type Props = {
   bid: any;
 };
 export function BidDetails({ bid }: Props) {
-  console.log('bids', bid);
   return (
     <div>
       <div className="flex items-center justify-between">

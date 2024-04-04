@@ -1,4 +1,3 @@
-import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import Image from 'next/image';

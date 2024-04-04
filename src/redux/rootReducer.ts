@@ -21,7 +21,7 @@ import clientInvoiceReducer from './client-invoices/client-invoice.slice';
 import meetingReducer from './meeting/meeting.slice';
 import postProjectReducer from './post-project/post-project.slice';
 import bidsProjectReducer from './bids-management/bids.slice';
-
+import bidManagementOwnerReducer from './bid-management/owner.slice';
 
 export type RootState = {
   auth: typeof authReducer;
@@ -41,7 +41,8 @@ export type RootState = {
   clientInvoices: typeof clientInvoiceReducer;
   meetings: typeof meetingReducer;
   postProject: typeof postProjectReducer;
-  bidsProject: typeof bidsProjectReducer
+  bidsProject: typeof bidsProjectReducer;
+  bidManagementOwner: typeof bidManagementOwnerReducer;
 };
 const persistConfig = {
   key: 'root',
@@ -68,6 +69,7 @@ const rootReducer = combineReducers<RootState>({
   // schedule: scheduleReducer,
   meetings: meetingReducer,
   postProject: postProjectReducer,
-  bidsProject: bidsProjectReducer
+  bidsProject: bidsProjectReducer,
+  bidManagementOwner: bidManagementOwnerReducer
 });
 export default persistReducer(persistConfig, rootReducer);
