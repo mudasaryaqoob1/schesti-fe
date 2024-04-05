@@ -37,6 +37,7 @@ export const OtherRoutes = {
     Target: '/settings/target',
     'Support Tickets': '/settings/supporttickets',
   },
+  "Bid Management": "/bid-management/submit",
   Upgrades: '/upgradeplans',
   Dashboard: '/dashboard',
 };
