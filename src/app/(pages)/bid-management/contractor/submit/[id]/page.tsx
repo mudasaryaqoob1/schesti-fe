@@ -3,11 +3,10 @@
 import { InputComponent } from "@/app/component/customInput/Input";
 import { SelectComponent } from "@/app/component/customSelect/Select.component";
 import Description from "@/app/component/description";
-import SenaryHeading from "@/app/component/headings/senaryHeading";
 import TertiaryHeading from "@/app/component/headings/tertiary";
 import { withAuth } from "@/app/hoc/withAuth";
 import { USCurrencyFormat } from "@/app/utils/format";
-import { Avatar, Divider, Spin, Table } from "antd";
+import { Divider, Skeleton, Spin, Table } from "antd";
 import Image from "next/image";
 import { bidDurationType } from "../../../owner/post/components/data";
 import { TextAreaComponent } from "@/app/component/textarea";
@@ -22,11 +21,14 @@ import * as Yup from 'yup';
 import { toast } from "react-toastify";
 import type { RcFile } from "antd/es/upload";
 import AwsS3 from "@/app/utils/S3Intergration";
-import { useMutation } from "react-query";
+import { useMutation, useQuery } from "react-query";
 import { IResponseInterface } from "@/app/interfaces/api-response.interface";
 import { AxiosError } from "axios";
 import { proposalService } from "@/app/services/proposal.service";
 import { useParams } from "next/navigation";
+import { bidManagementService } from "@/app/services/bid-management.service";
+import { IBidManagement } from "@/app/interfaces/bid-management/bid-management.interface";
+import { ProjectIntro } from "./components/ProjectInto";
 
 
 type ProjectScope = {
@@ -82,8 +84,25 @@ function ContractorSubmitBidPage() {
     const { tradeCategoryFilters, trades } = useTrades();
     const [showProjectScope, setShowProjectScope] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
+    const [project, setProject] = useState<IBidManagement | null>(null);
+
 
     const params = useParams<{ id: string }>();
+    const query = useQuery(['getOwnerProjectById', params.id], () => {
+        return bidManagementService.httpGetOwnerProjectById(params.id);
+    },
+        {
+            onSuccess(data) {
+                if (data.data && data.data.project) {
+                    setProject(data.data.project);
+                }
+            },
+            onError(error) {
+                const err = error as AxiosError<{ message: string }>;
+                toast.error(err.response?.data.message);
+            }
+        }
+    );
 
     const mutation = useMutation<IResponseInterface<{ submittedProposal: any }>, AxiosError<{ message: string }>, ISubmitBidForm>(['submitBid', params.id], {
         mutationFn: (data) => {
@@ -260,6 +279,10 @@ function ContractorSubmitBidPage() {
 
     }
 
+    if (query.isLoading) {
+        return <Skeleton />
+    }
+
     return <section className="mt-6 mb-4 md:ms-[69px] md:me-[59px] mx-4 ">
         <div className="flex gap-4 items-center">
             <Image src={'/home.svg'} alt="home icon" width={20} height={20} />
@@ -307,121 +330,9 @@ function ContractorSubmitBidPage() {
             />
         </div>
 
-        <div className="bg-white py-[27px] px-[28px] mt-5 rounded-lg shadow-lg">
-            <TertiaryHeading
-                title="Submit a proposal"
-                className="text-[#344054] text-3xl font-semibold leading-9"
-            />
-            <div className="grid mt-4 grid-cols-12 gap-3">
-                <div className="col-span-8 border-r">
-                    <TertiaryHeading
-                        title="Posted: 12 may 2022, 12:40"
-                        className="text-[#475467] text-xs leading-4 font-normal"
-                    />
-
-                    <div className="mt-3">
-                        <TertiaryHeading
-                            title="lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut purus eget nunc. Sed ut purus eget nunc. lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut purus eget nunc. Sed ut purus eget nunc. lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed ut purus eget nunc. Sed ut purus eget nunc.
-                        "
-                            className="text-[#475467] text-[14px] leading-6 font-normal"
-                        />
-                        <p className="text-[#7F56D9] underline underline-offset-2 mt-4 text-[14px] leading-6 font-normal cursor-pointer">
-                            View full details
-                        </p>
-                    </div>
-                </div>
-                <div className="col-span-4">
-                    <div className="flex justify-end items-center space-x-3">
-                        <div className="rounded-full bg-[#E9EBF8] py-[5px] px-[11px]">
-                            <SenaryHeading
-                                title={"Budgeting/Planning"}
-                                className="text-[#7138DF] font-normal text-xs leading-4"
-                            />
-                        </div>
-                        <Image
-                            alt="trash icon"
-                            src={'/trash.svg'}
-                            width={16}
-                            height={16}
-                            className="cursor-pointer"
-                        />
-                        <Image
-                            alt="share icon"
-                            src={'/share.svg'}
-                            width={16}
-                            height={16}
-                            className="cursor-pointer"
-                        />
-                        <Image
-                            alt="heart icon"
-                            src={'/heart.svg'}
-                            width={16}
-                            height={16}
-                            className="cursor-pointer"
-                        />
-                    </div>
-
-                    <div className="mt-4 space-y-2">
-                        <div className="flex items-center justify-between">
-                            <TertiaryHeading
-                                title="Location: "
-                                className="text-[#667085] text-xs leading-4 font-normal"
-                            />
-
-                            <TertiaryHeading
-                                title="Austin"
-                                className="text-[#101828] text-xs leading-4 font-normal"
-                            />
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <TertiaryHeading
-                                title="Project value: "
-                                className="text-[#667085] text-xs leading-4 font-normal"
-                            />
-
-                            <TertiaryHeading
-                                title={USCurrencyFormat.format(123122)}
-                                className="text-[#101828] text-xs leading-4 font-normal"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="mt-4">
-                        <SenaryHeading
-                            title="Who is bidding the project?"
-                            className="text-[#475467] text-base leading-6 font-semibold"
-                        />
-
-                        <div className="bg-[#FCFAFF] mt-2 rounded-md  p-3 border border-[#EBEAEC]">
-                            <div className="flex items-center justify-between">
-                                <div className="flex mt-1 space-x-2">
-                                    <Avatar size={24} src={"/clientimage.png"}>
-
-                                    </Avatar>
-
-                                    <SenaryHeading
-                                        title={"John Doe Company"}
-                                        className="text-[#475467] text-[14px] leading-6 font-semibold"
-                                    />
-                                </div>
-
-                                <div className="">
-                                    <SenaryHeading
-                                        title="Representative"
-                                        className="text-[#7F56D9] underline underline-offset-2 text-[14px] leading-6 font-normal"
-                                    />
-                                    <SenaryHeading
-                                        title={"Johen Markes"}
-                                        className="text-[#475467] text-[14px] leading-6 font-normal"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
+        <ProjectIntro
+            bid={project}
+        />
 
         <div className="bg-white py-[27px] px-[28px] mt-5 rounded-lg shadow-lg">
             <TertiaryHeading
