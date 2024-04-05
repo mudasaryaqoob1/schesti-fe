@@ -9,11 +9,16 @@ import moment from 'moment';
 import { useSelector } from 'react-redux';
 
 export function ProjectSummary() {
-  const bid = useSelector((state: RootState) => state.bidManagementOwner.project);
+  const bid = useSelector(
+    (state: RootState) => state.bidManagementOwner.project
+  );
   const { tradesQuery } = useTrades();
 
-  const projectTrades = bid ? _.filter(tradesQuery.data?.data?.trades, trade => (bid.selectedTrades as unknown as string).includes(trade._id)) : []
-
+  const projectTrades = bid
+    ? _.filter(tradesQuery.data?.data?.trades, (trade) =>
+        (bid.selectedTrades as unknown as string).includes(trade._id)
+      )
+    : [];
 
   return (
     <div className=" mt-6 mb-4 md:ms-[69px] md:me-[59px] mx-4  p-5 bg-white rounded-lg border shadow-lg">
@@ -43,7 +48,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {bid ? bid.address : ""}
+                {bid ? bid.address : ''}
               </p>
             </div>
             <div className="space-y-2">
@@ -52,7 +57,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {bid ? bid.zipCode : ""}
+                {bid ? bid.zipCode : ''}
               </p>
             </div>
             <div className="space-y-2">
@@ -61,7 +66,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {bid ? bid.city : ""}
+                {bid ? bid.city : ''}
               </p>
             </div>
           </div>
@@ -74,7 +79,9 @@ export function ProjectSummary() {
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
                 {/* 12 March, 2024 format */}
-                {bid ? moment(bid.bidDueDate).format("DD MMMM, YYYY hh:mm") : ""}
+                {bid
+                  ? moment(bid.bidDueDate).format('DD MMMM, YYYY hh:mm')
+                  : ''}
               </p>
             </div>
             <div className="space-y-2">
@@ -83,7 +90,9 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {bid ? moment(bid.estimatedStartDate).format("DD MMMM, YYYY hh:mm") : ""}
+                {bid
+                  ? moment(bid.estimatedStartDate).format('DD MMMM, YYYY hh:mm')
+                  : ''}
               </p>
             </div>
             <div className="space-y-2">
@@ -92,7 +101,11 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {bid ? moment(bid.estimatedCompletionDate).format("DD MMMM, YYYY hh:mm") : ""}
+                {bid
+                  ? moment(bid.estimatedCompletionDate).format(
+                      'DD MMMM, YYYY hh:mm'
+                    )
+                  : ''}
               </p>
             </div>
             <div className="space-y-2">
@@ -101,7 +114,9 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {bid ? getTimezoneFromCountryAndState(bid.country, bid.state) : ""}
+                {bid
+                  ? getTimezoneFromCountryAndState(bid.country, bid.state)
+                  : ''}
               </p>
             </div>
           </div>
@@ -113,7 +128,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {bid ? `${bid.estimatedDuration} ${bid.durationType}` : ""}
+                {bid ? `${bid.estimatedDuration} ${bid.durationType}` : ''}
               </p>
             </div>
             <div className="space-y-2">
@@ -122,7 +137,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {bid ? bid.squareFootage : ""}
+                {bid ? bid.squareFootage : ''}
               </p>
             </div>
             <div className="space-y-2">
@@ -131,7 +146,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {bid ? USCurrencyFormat.format(bid.projectValue) : ""}
+                {bid ? USCurrencyFormat.format(bid.projectValue) : ''}
               </p>
             </div>
             <div className="space-y-2">
@@ -140,7 +155,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {bid ? bid.stage : ""}
+                {bid ? bid.stage : ''}
               </p>
             </div>
           </div>
@@ -154,14 +169,16 @@ export function ProjectSummary() {
                 />
 
                 <div className="flex items-center space-x-3">
-                  {bid ? bid.projectType.map((pt) => (
-                    <p
-                      key={pt}
-                      className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
-                    >
-                      {pt}
-                    </p>
-                  )) : ""}
+                  {bid
+                    ? bid.projectType.map((pt) => (
+                        <p
+                          key={pt}
+                          className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
+                        >
+                          {pt}
+                        </p>
+                      ))
+                    : ''}
                 </div>
               </div>
               <div className="space-y-[8px]">
@@ -171,14 +188,16 @@ export function ProjectSummary() {
                 />
 
                 <div className="flex items-center space-x-3">
-                  {bid ? bid.projectBuildingUse.map((building) => (
-                    <p
-                      key={building}
-                      className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
-                    >
-                      {building}
-                    </p>
-                  )) : ""}
+                  {bid
+                    ? bid.projectBuildingUse.map((building) => (
+                        <p
+                          key={building}
+                          className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
+                        >
+                          {building}
+                        </p>
+                      ))
+                    : ''}
                 </div>
               </div>
             </div>
@@ -209,14 +228,16 @@ export function ProjectSummary() {
                 />
 
                 <div className="flex items-center space-x-3">
-                  {bid ? bid.constructionTypes.map((ct) => (
-                    <p
-                      key={ct}
-                      className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
-                    >
-                      {ct}
-                    </p>
-                  )) : ""}
+                  {bid
+                    ? bid.constructionTypes.map((ct) => (
+                        <p
+                          key={ct}
+                          className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
+                        >
+                          {ct}
+                        </p>
+                      ))
+                    : ''}
                 </div>
               </div>
             </div>
@@ -229,7 +250,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {bid ? bid.description : ""}
+                {bid ? bid.description : ''}
               </p>
             </div>
             <div className="space-y-2">
@@ -238,7 +259,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {bid ? bid.specialInstructions : ""}
+                {bid ? bid.specialInstructions : ''}
               </p>
             </div>
           </div>

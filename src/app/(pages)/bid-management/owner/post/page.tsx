@@ -277,7 +277,6 @@ function CreatePost() {
     enableReinitialize: true,
   });
 
-
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       <div className="flex gap-4 items-center">

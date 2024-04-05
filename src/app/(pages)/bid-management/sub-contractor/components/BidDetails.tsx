@@ -169,9 +169,10 @@ export function BidDetails({ bid }: Props) {
       </div>
 
       <div className="mt-4 space-y-2">
-        <CustomButton text="Send Bid"
+        <CustomButton
+          text="Send Bid"
           onClick={() => {
-            router.push(`${Routes['Bid Management'].Submit}/${bid._id}`)
+            router.push(`${Routes['Bid Management'].Submit}/${bid._id}`);
           }}
         />
 

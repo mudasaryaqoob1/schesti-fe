@@ -3,7 +3,7 @@ export const Routes = {
     Owner: '/bid-management/owner',
     Contractor: '/bid-management/contractor',
     'Sub-Contractor': '/bid-management/sub-contractor',
-    Submit: "/bid-management/submit"
+    Submit: '/bid-management/submit',
   },
   CRM: {
     Clients: '/crm/clients',
@@ -38,8 +38,8 @@ export const OtherRoutes = {
     Target: '/settings/target',
     'Support Tickets': '/settings/supporttickets',
   },
-  "Bid Management": {
-    Submit: "/bid-management/submit"
+  'Bid Management': {
+    Submit: '/bid-management/submit',
   },
   Upgrades: '/upgradeplans',
   Dashboard: '/dashboard',

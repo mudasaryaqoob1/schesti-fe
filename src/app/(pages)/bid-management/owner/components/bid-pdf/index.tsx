@@ -1,3 +1,4 @@
+'use client';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
 import { Document, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 import { Country } from 'country-state-city';

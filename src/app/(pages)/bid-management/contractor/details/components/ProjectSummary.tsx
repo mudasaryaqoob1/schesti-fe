@@ -240,7 +240,6 @@ export function ProjectSummary() {
             </div>
           </div>
         </fieldset>
-
       </div>
     </div>
   );
