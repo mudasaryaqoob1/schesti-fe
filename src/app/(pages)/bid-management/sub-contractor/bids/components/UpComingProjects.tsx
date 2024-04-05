@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
 import { BidIntro } from '../../components/BidIntro';
-import { BidDetails } from '../../components/BidDetails';
+import { BidDetails } from './BidDetails';
 import { useQuery } from 'react-query';
 import { bidManagementService } from '@/app/services/bid-management.service';
 
@@ -17,10 +17,14 @@ export function UpComingProjects() {
     limit: 10
   }
 
-  const savedBids = useQuery(['saved-bids'], () => {
+  const fetchSavedBids = async () => {
     return bidManagementService.httpGetUserSavedBids(params);
-  });
+  };
 
+  const savedBids = useQuery(['saved-bids'], fetchSavedBids);
+  const refetchSavedBids = () => {
+    savedBids.refetch();
+  };
   const savedUserBids =
   savedBids.data && savedBids.data.data
     ? savedBids.data.data?.savedBids
@@ -45,7 +49,7 @@ export function UpComingProjects() {
         </div>
         {selectedBid ? (
           <div className="col-span-4 py-[24px] px-[17px] rounded-lg mt-3 border border-[#E9E9EA]">
-            <BidDetails bid={selectedBid as unknown as IBidManagement} />
+            <BidDetails setSelectedBid={setSelectedBid} refetchSavedBids={refetchSavedBids} bid={selectedBid as unknown as IBidManagement} />
           </div>
         ) : null}
       </div>

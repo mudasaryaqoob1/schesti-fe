@@ -16,12 +16,14 @@ export function ArchivedProjects() {
     status: 'archived',
     limit: 10
   }
-
-  const savedBids = useQuery(['saved-bids'], () => {
+  const fetchSavedBids = async () => {
     return bidManagementService.httpGetUserSavedBids(params);
-  });
+  };
 
-  console.log('buidid', savedBids);
+  const savedBids = useQuery(['saved-bids'], fetchSavedBids);
+  const refetchSavedBids = () => {
+    savedBids.refetch();
+  };
 
   const savedUserBids =
   savedBids.data && savedBids.data.data
@@ -48,7 +50,7 @@ export function ArchivedProjects() {
         </div>
         {selectedBid ? (
           <div className="col-span-4 py-[24px] px-[17px] rounded-lg mt-3 border border-[#E9E9EA]">
-            <BidDetails bid={selectedBid as unknown as IBidManagement} />
+            <BidDetails setSelectedBid={setSelectedBid} refetchSavedBids={refetchSavedBids} bid={selectedBid as unknown as IBidManagement} />
           </div>
         ) : null}
       </div>

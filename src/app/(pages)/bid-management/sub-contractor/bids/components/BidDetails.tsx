@@ -3,13 +3,52 @@ import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { USCurrencyFormat } from '@/app/utils/format';
 import { Divider } from 'antd';
 import { Country } from 'country-state-city';
+import { useMutation } from 'react-query';
 import moment from 'moment';
 import Image from 'next/image';
+import { IResponseInterface } from '@/app/interfaces/api-response.interface';
+import { AxiosError } from 'axios';
+import { toast } from 'react-toastify';
+import { bidManagementService } from '@/app/services/bid-management.service';
 
 type Props = {
   bid: any;
+  setSelectedBid: any;
+  refetchSavedBids: ()=>{};
 };
-export function BidDetails({ bid }: Props) {
+type RemoveUserBidProps =  {
+  biddingId: string;
+}
+export function BidDetails({ bid, setSelectedBid, refetchSavedBids }: Props) {
+
+  const removeUserBidMutation = useMutation<
+  IResponseInterface<{ biddingId: RemoveUserBidProps }>,
+  AxiosError<{ message: string }>,
+  RemoveUserBidProps
+>({
+  //@ts-ignore
+  mutationKey: 'saveUserBid',
+  mutationFn: async (values: RemoveUserBidProps) => {
+    return bidManagementService.httpRemoveUserProjectBid(values.biddingId);
+  },
+  onSuccess(res: any) {
+    console.log('res', res);
+    if (res.data && res.data) {
+      toast.success('Bid removed Successfully');
+      setSelectedBid(null);
+      refetchSavedBids();
+      // Dispatch any necessary actions after successful mutation
+    }
+  },
+  onError(error: any) {
+    console.log('error', error);
+    if (error.response?.data?.message) {
+      toast.error(error.response?.data.message);
+      // router.push(`/bid-management/sub-contractor/bids`);
+    }
+  },
+});
+
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -102,6 +141,13 @@ export function BidDetails({ bid }: Props) {
         />
       </div>
 
+      <div className="mt-4 space-y-2">
+        <CustomButton
+          onClick={() => removeUserBidMutation.mutate({biddingId: bid._id})}
+          text="Remove from my bidding projects"
+          className="!text-[red] !bg-transparent !border-[red] !text-base !leading-7 "
+        />
+      </div>
       <div className="mt-4 space-y-2">
         <CustomButton
           text="Send Bid"
