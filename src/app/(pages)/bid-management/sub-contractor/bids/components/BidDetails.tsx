@@ -10,6 +10,7 @@ import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { bidManagementService } from '@/app/services/bid-management.service';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   bid: any;
@@ -20,6 +21,8 @@ type RemoveUserBidProps =  {
   biddingId: string;
 }
 export function BidDetails({ bid, setSelectedBid, refetchSavedBids }: Props) {
+
+  const router = useRouter();
 
   const removeUserBidMutation = useMutation<
   IResponseInterface<{ biddingId: RemoveUserBidProps }>,
@@ -151,6 +154,13 @@ export function BidDetails({ bid, setSelectedBid, refetchSavedBids }: Props) {
       <div className="mt-4 space-y-2">
         <CustomButton
           text="Send Bid"
+          className="!bg-[#EAECF0] !text-[#667085] !border-[#EAECF0] !text-base !leading-7 "
+        />
+      </div>
+      <div className="mt-4 space-y-2">
+        <CustomButton
+          onClick={() => router.push(`/bid-management/contractor/details/${bid.projectId?._id}`)}
+          text="View Details"
           className="!bg-[#EAECF0] !text-[#667085] !border-[#EAECF0] !text-base !leading-7 "
         />
       </div>

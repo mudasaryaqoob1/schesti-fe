@@ -1,7 +1,26 @@
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { Table, type TableProps } from 'antd';
+import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
+import { bidManagementService } from '@/app/services/bid-management.service';
+import { useQuery } from 'react-query';
 
-export function ProjectBiddingTeam() {
+interface IProps {
+  projectData: IBidManagement
+}
+
+export function ProjectBiddingTeam(props: IProps) {
+  const { projectData } = props;
+
+  const fetchBiddingTeam = async () => {
+    return bidManagementService.httpGetProjectBiddingTeamByProjectId(projectData._id);
+  };
+
+  const { data, isLoading } = useQuery(['project-bidding-team'], fetchBiddingTeam);
+
+  if(isLoading) return <h5>Loading...</h5>
+
+  console.log('data', data);
+
   const columns: TableProps['columns'] = [
     {
       title: 'Name',
@@ -47,24 +66,14 @@ export function ProjectBiddingTeam() {
         <Table
           columns={columns}
           bordered
-          dataSource={[
-            {
-              name: 'John Doe',
-              role: 'Architect',
-              companyName: 'ABC',
-              location: 'New York',
-              phoneNumber: '1234567890',
-              email: 'johnDoe@gmail.com',
-            },
-            {
-              name: 'John Doe',
-              role: 'Architect',
-              companyName: 'ABC',
-              location: 'New York',
-              phoneNumber: '1234567890',
-              email: 'john@gmail.com',
-            },
-          ]}
+          dataSource={data?.data?.biddingTeam.map((item: any) => ({
+            name: item.user?.name,
+            role: item.user?.userRole,
+            companyName: item.user?.companyName || item.user?.organizationName || "",
+            location: item.user?.address || "",
+            phoneNumber: item.user?.phone || "",
+            email: item.user?.email
+          }))}
         />
       </div>
     </div>

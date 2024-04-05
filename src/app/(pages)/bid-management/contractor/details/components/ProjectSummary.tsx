@@ -1,8 +1,17 @@
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import TertiaryHeading from '@/app/component/headings/tertiary';
+import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
 import { USCurrencyFormat } from '@/app/utils/format';
+import { Country } from 'country-state-city';
+import moment from 'moment';
 
-export function ProjectSummary() {
+interface IProps {
+  projectData: IBidManagement;
+}
+
+export function ProjectSummary(props: IProps) {
+  const { projectData } = props;
+
   return (
     <div className=" mt-6 mb-4 md:ms-[69px] md:me-[59px] mx-4  p-5 bg-white rounded-lg border shadow-lg">
       <div>
@@ -22,7 +31,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {'Seabreeza Village comercial Developemnst - convenience store'}
+                {projectData.projectName}
               </p>
             </div>
             <div className="space-y-2">
@@ -31,7 +40,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {'Address'}
+                {projectData.address}
               </p>
             </div>
             <div className="space-y-2">
@@ -40,7 +49,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {'63100'}
+                {projectData.zipCode}
               </p>
             </div>
             <div className="space-y-2">
@@ -49,7 +58,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {'City'}
+                {`${projectData?.city}, ${Country.getCountryByCode(projectData.country)?.name}`}
               </p>
             </div>
           </div>
@@ -61,7 +70,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {'12 May 2022, 12:40'}
+                {moment(projectData.bidDueDate).format('DD MMM YYYY, hh:mm')}
               </p>
             </div>
             <div className="space-y-2">
@@ -70,7 +79,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {'12 May 2022, 12:40'}
+                {moment(projectData.estimatedStartDate).format('DD MMM YYYY, hh:mm')}
               </p>
             </div>
             <div className="space-y-2">
@@ -79,7 +88,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {'12 May 2022, 12:40'}
+                {moment(projectData.estimatedCompletionDate).format('DD MMM YYYY, hh:mm')}
               </p>
             </div>
             <div className="space-y-2">
@@ -100,7 +109,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {'6 months'}
+                {projectData.estimatedDuration + ' ' + projectData.durationType}
               </p>
             </div>
             <div className="space-y-2">
@@ -109,7 +118,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {'6ft square'}
+                {projectData.squareFootage}
               </p>
             </div>
             <div className="space-y-2">
@@ -118,7 +127,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {USCurrencyFormat.format(1231)}
+                {USCurrencyFormat.format(projectData.projectValue)}
               </p>
             </div>
             <div className="space-y-2">
@@ -127,7 +136,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {'GC Awarded/Sub Bidding'}
+                {projectData.stage}
               </p>
             </div>
           </div>
@@ -141,7 +150,7 @@ export function ProjectSummary() {
                 />
 
                 <div className="flex items-center space-x-3">
-                  {['Open Shop', 'Private', 'Open'].map((pt) => (
+                  {projectData.projectType?.map((pt) => (
                     <p
                       key={pt}
                       className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
@@ -158,11 +167,7 @@ export function ProjectSummary() {
                 />
 
                 <div className="flex items-center space-x-3">
-                  {[
-                    'Community Center',
-                    'Education/School/University',
-                    'Fire/Police Station',
-                  ].map((building) => (
+                  {projectData.projectBuildingUse.map((building) => (
                     <p
                       key={building}
                       className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
@@ -200,7 +205,7 @@ export function ProjectSummary() {
                 />
 
                 <div className="flex items-center space-x-3">
-                  {['Demolition', 'Demolition'].map((ct) => (
+                  {projectData.constructionTypes.map((ct) => (
                     <p
                       key={ct}
                       className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
@@ -220,10 +225,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis
-                quidem quod quos quo impedit dicta earum veritatis magni
-                officiis! Aperiam harum corporis eius deserunt nemo aliquid
-                consequuntur debitis fugit nisi!
+                {projectData.description}
               </p>
             </div>
             <div className="space-y-2">
@@ -232,10 +234,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Aliquam
-                illum et ipsa, nihil minima distinctio cum voluptates
-                reprehenderit iure quo commodi sed recusandae corrupti modi
-                perferendis doloribus. Voluptates, laborum ducimus.
+                {projectData.specialInstructions}
               </p>
             </div>
           </div>

@@ -1,7 +1,14 @@
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { Table, type TableProps } from 'antd';
+import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
 
-export function ProjectDesignTeam() {
+interface IProps {
+  projectData: IBidManagement
+}
+
+export function ProjectDesignTeam(props: IProps) {
+  const { projectData } = props;
+
   const columns: TableProps['columns'] = [
     {
       title: 'Name',
@@ -47,24 +54,7 @@ export function ProjectDesignTeam() {
         <Table
           columns={columns}
           bordered
-          dataSource={[
-            {
-              name: 'John Doe',
-              role: 'Architect',
-              companyName: 'ABC',
-              location: 'New York',
-              phoneNumber: '1234567890',
-              email: 'johnDoe@gmail.com',
-            },
-            {
-              name: 'John Doe',
-              role: 'Architect',
-              companyName: 'ABC',
-              location: 'New York',
-              phoneNumber: '1234567890',
-              email: 'john@gmail.com',
-            },
-          ]}
+          dataSource={projectData.teamMembers}
         />
       </div>
     </div>

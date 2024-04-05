@@ -7,11 +7,17 @@ import { withAuth } from '@/app/hoc/withAuth';
 import { ConfigProvider, Tabs } from 'antd';
 import Image from 'next/image';
 import { useState } from 'react';
-import { ProjectSummary } from './components/ProjectSummary';
-import { ProjectDesignTeam } from './components/ProjectDesignTeam';
-import { ProjectDocuments } from './components/ProjectDocuments';
-import { ProjectRFICenter } from './components/ProjectRFICenter';
-import { ProjectBiddingTeam } from './components/ProjectBiddingTeam';
+import { ProjectSummary } from '../components/ProjectSummary';
+import { ProjectDesignTeam } from '../components/ProjectDesignTeam';
+import { ProjectDocuments } from '../components/ProjectDocuments';
+import { ProjectRFICenter } from '../components/ProjectRFICenter';
+import { ProjectBiddingTeam } from '../components/ProjectBiddingTeam';
+import { useParams } from 'next/navigation'
+import { bidManagementService } from '@/app/services/bid-management.service';
+import { useQuery } from 'react-query';
+import moment from 'moment';
+
+
 
 const SUMMARY = 'Summary';
 const DESIGN_TEAM = 'Design Team';
@@ -20,7 +26,21 @@ const DOCUMENTS = 'Documents';
 const RFI_CENTER = 'RFI Center';
 
 function OwnerProjectDetailsPage() {
-  const [activeTab, setActiveTab] = useState(SUMMARY);
+    const params = useParams();
+    const { projectId } = params;
+
+    const [activeTab, setActiveTab] = useState(SUMMARY);
+
+    const fetchProjectDetails = async () => {
+        return bidManagementService.httpGetOwnerProjectById(projectId);
+      };
+    
+      const { data, isLoading } = useQuery(['project-details'], fetchProjectDetails);
+
+      console.log('projectDetails', data);
+
+      if(isLoading) return <h6>Loading...</h6>
+      const { project: projectData } = data?.data
 
   return (
     <section className="">
@@ -54,12 +74,12 @@ function OwnerProjectDetailsPage() {
         <div className="flex justify-between items-center">
           <div className="space-y-3">
             <SenaryHeading
-              title="Seabreeza Village comercial Developemnst - convenience store"
+              title={projectData.projectName}
               className="text-[#1D2939] text-2xl font-semibold leading-9"
             />
             <div className="flex space-x-4 items-center text-[#667085] text-base leading-6 font-normal">
-              <SenaryHeading title="Creation Date: 05/22/2023 06:37 AM" />
-              <SenaryHeading title="Bid Date: 06/05/2023 12:00 AM EST" />
+              <SenaryHeading title={moment(projectData.createdAt).format('DD MMM YYYY, hh:mm')} />
+              <SenaryHeading title={moment(projectData.bidDueDate).format('DD MMM YYYY, hh:mm')} />
             </div>
           </div>
 
@@ -112,11 +132,11 @@ function OwnerProjectDetailsPage() {
         </div>
       </div>
 
-      {activeTab === SUMMARY ? <ProjectSummary /> : null}
-      {activeTab === DESIGN_TEAM ? <ProjectDesignTeam /> : null}
-      {activeTab === BIDDING_TEAM ? <ProjectBiddingTeam /> : null}
+      {activeTab === SUMMARY ? <ProjectSummary projectData={projectData} /> : null}
+      {activeTab === DESIGN_TEAM ? <ProjectDesignTeam projectData={projectData} /> : null}
+      {activeTab === BIDDING_TEAM ? <ProjectBiddingTeam projectData={projectData}/> : null}
 
-      {activeTab === DOCUMENTS ? <ProjectDocuments /> : null}
+      {activeTab === DOCUMENTS ? <ProjectDocuments projectData={projectData}/> : null}
       {activeTab === RFI_CENTER ? <ProjectRFICenter /> : null}
     </section>
   );
