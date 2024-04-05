@@ -20,7 +20,7 @@ type Props = {
 
 export function PostProjectDetails({ formik, children }: Props) {
   return (
-    <div className=" bg-white shadow-2xl rounded-xl border p-4">
+    <div className=" bg-white shadow-[0_4px_30px_0px_#2E2D740D] rounded-xl border p-4">
       <TertiaryHeading
         title="Project Details"
         className="text-[20px] leading-[30px]"

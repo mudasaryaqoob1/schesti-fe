@@ -277,7 +277,7 @@ function CreatePost() {
     enableReinitialize: true,
   });
 
-  console.log('Main Formik', mainFormik.values);
+
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       <div className="flex gap-4 items-center">
@@ -323,7 +323,7 @@ function CreatePost() {
       ) : null}
       {/* <DeletePopup /> */}
       <div className="grid grid-cols-12 gap-6 mt-5">
-        <div className="col-span-3 bg-white shadow-2xl border rounded-xl p-4 h-fit">
+        <div className="col-span-3 bg-white shadow-[0_4px_30px_0px_#2E2D740D] border rounded-xl p-4 h-fit">
           <ConfigProvider
             theme={{
               components: {
