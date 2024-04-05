@@ -2,15 +2,19 @@ import CustomButton from '@/app/component/customButton/button';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
 import { USCurrencyFormat } from '@/app/utils/format';
+import { Routes } from '@/app/utils/plans.utils';
 import { Avatar, Divider } from 'antd';
 import { Country } from 'country-state-city';
 import moment from 'moment';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   bid: IBidManagement;
 };
 export function BidDetails({ bid }: Props) {
+  const router = useRouter();
+
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -165,7 +169,11 @@ export function BidDetails({ bid }: Props) {
       </div>
 
       <div className="mt-4 space-y-2">
-        <CustomButton text="Send Bid" />
+        <CustomButton text="Send Bid"
+          onClick={() => {
+            router.push(`${Routes['Bid Management'].Submit}/${bid._id}`)
+          }}
+        />
 
         <CustomButton
           text="Add to my Bidding Projects"

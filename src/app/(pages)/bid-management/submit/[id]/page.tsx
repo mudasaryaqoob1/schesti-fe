@@ -62,7 +62,7 @@ const ValidationSchema = Yup.object().shape({
     projectDuration: Yup.number().required('Duration is required'),
     additionalDetails: Yup.string().required('Additional details is required'),
     priceExpiryDuration: Yup.number().required('Price expiry duration is required'),
-    increaseInPercentage: Yup.number().required('Increase in percentage is required'),
+    increaseInPercentage: Yup.number().min(0, "Percentage should be between 0 - 100").max(100, "Percentage should be between 0 - 100").required('Increase in percentage is required'),
     file: Yup.object().shape({
         url: Yup.string().required('File is required'),
         type: Yup.string().required('File type is required'),
@@ -458,7 +458,7 @@ function ContractorSubmitBidPage() {
                                     { label: "Less than 1 month", value: 1 },
                                     { label: "1 to 3 months", value: 2 },
                                     { label: "3 to 6 months", value: 3 },
-                                    { label: "More than 6 months", value: 3 },
+                                    { label: "More than 6 months", value: 4 },
                                 ],
                                 value: formik.values.priceExpiryDuration,
                                 onChange(value) {
@@ -484,6 +484,7 @@ function ContractorSubmitBidPage() {
                                     formik.setFieldValue('increaseInPercentage', Number(e.target.value));
                                 },
                                 onBlur: formik.handleBlur,
+                                type: 'number'
                             }}
                             hasError={Boolean(formik.errors.increaseInPercentage)}
                             errorMessage={formik.errors.increaseInPercentage as string}

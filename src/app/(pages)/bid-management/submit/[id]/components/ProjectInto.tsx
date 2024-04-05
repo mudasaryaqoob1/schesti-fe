@@ -104,7 +104,7 @@ export function ProjectIntro({ bid }: Props) {
                     <div className="bg-[#FCFAFF] mt-2 rounded-md  p-3 border border-[#EBEAEC]">
                         <div className="flex items-center justify-between">
                             <div className="flex mt-1 space-x-2">
-                                <Avatar size={24} src={bid.user.avatar}>
+                                <Avatar size={24} src={bid.user.avatar || bid.user.companyLogo}>
 
                                 </Avatar>
 
