@@ -64,11 +64,7 @@ function OwnerProjectDetailsPage() {
           </div>
 
           <div className="flex items-center space-x-3 flex-1 justify-end">
-
-            <CustomButton
-              text="Submit a bid"
-              className="!w-40"
-            />
+            <CustomButton text="Submit a bid" className="!w-40" />
           </div>
         </div>
 
@@ -101,8 +97,9 @@ function OwnerProjectDetailsPage() {
                 label: (
                   <QuaternaryHeading
                     title={tab}
-                    className={`!w-full ${activeTab === tab ? 'text-RoyalPurple' : 'text-black'
-                      }`}
+                    className={`!w-full ${
+                      activeTab === tab ? 'text-RoyalPurple' : 'text-black'
+                    }`}
                   />
                 ),
                 tabKey: tab,

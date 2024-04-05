@@ -93,7 +93,9 @@ const CreatePartner = () => {
           width={16}
           height={16}
         />
-        <p className={`${senaryHeading} font-base text-slateGray`}>My Partners</p>
+        <p className={`${senaryHeading} font-base text-slateGray`}>
+          My Partners
+        </p>
         <Image
           src={'/chevron-right.svg'}
           alt="chevron-right icon"

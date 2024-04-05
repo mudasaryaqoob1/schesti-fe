@@ -32,8 +32,8 @@ function OwnerProjectDetailsPage() {
   useEffect(() => {
     return () => {
       dispatch(bidManagementOwnerActions.setProjectAction(null));
-    }
-  }, [])
+    };
+  }, []);
 
   return (
     <section className="">
@@ -64,9 +64,7 @@ function OwnerProjectDetailsPage() {
 
       <div className="bg-white mb-[39px] md:px-[64px] py-5">
         {/* Project Intro */}
-        <ProjectIntro
-          id={params.id}
-        />
+        <ProjectIntro id={params.id} />
 
         {/* Tabs */}
         <div className="mt-3">
@@ -98,8 +96,9 @@ function OwnerProjectDetailsPage() {
                 label: (
                   <QuaternaryHeading
                     title={tab}
-                    className={`!w-full ${activeTab === tab ? 'text-RoyalPurple' : 'text-black'
-                      }`}
+                    className={`!w-full ${
+                      activeTab === tab ? 'text-RoyalPurple' : 'text-black'
+                    }`}
                   />
                 ),
                 tabKey: tab,

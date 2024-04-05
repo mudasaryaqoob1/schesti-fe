@@ -8,7 +8,6 @@ export interface IClient {
   secondAddress: string;
 }
 
-
 export interface IPartner {
   firstName: string;
   lastName: string;

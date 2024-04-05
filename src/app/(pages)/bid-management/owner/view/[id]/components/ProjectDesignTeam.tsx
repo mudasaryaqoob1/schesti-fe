@@ -5,8 +5,9 @@ import Image from 'next/image';
 import { useSelector } from 'react-redux';
 
 export function ProjectDesignTeam() {
-  const bid = useSelector((state: RootState) => state.bidManagementOwner.project);
-
+  const bid = useSelector(
+    (state: RootState) => state.bidManagementOwner.project
+  );
 
   const columns: TableProps['columns'] = [
     {
@@ -56,9 +57,7 @@ export function ProjectDesignTeam() {
                   label: <p>Delete</p>,
                 },
               ],
-              onClick: () => {
-
-              },
+              onClick: () => {},
             }}
             placement="bottomRight"
             trigger={['click']}
