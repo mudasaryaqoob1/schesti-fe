@@ -21,7 +21,7 @@ import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import FormControl from '@/app/component/formControl';
 import { categoriesService } from '@/app/services/categories.service';
-import { materialService } from '@/app/services/material.service';
+// import { materialService } from '@/app/services/material.service';
 import { bg_style } from '@/globals/tailwindvariables';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { estimateRequestService } from '@/app/services/estimates.service';
@@ -29,7 +29,8 @@ import { generateEstimateDetailAction } from '@/redux/estimate/estimateRequest.s
 import { selectGeneratedEstimateDetail } from '@/redux/estimate/estimateRequestSelector';
 import { PositiveNumberRegex } from '@/app/utils/regex.util';
 import { byteConverter } from '@/app/utils/byteConverter';
-import { IUnits } from '@/app/interfaces/settings/material-settings.interface';
+// import { IUnits } from '@/app/interfaces/settings/material-settings.interface';
+import EstimatesUnits from '@/app/constants/estimatesUnits.json'
 import { formatNumberWithCommas } from '@/app/utils/helper';
 
 type InitialValuesType = {
@@ -126,7 +127,7 @@ const Scope = ({ setPrevNext }: Props) => {
   // const [selecteddescription, setsSelecteddescription] = useState('');
   const [editItem, setEditItem] = useState(false);
   const [editConfirmItem, setEditConfirmItem] = useState(false);
-  const [estiamteUnits, setEstiamteUnits] = useState<IUnits[] | undefined>([]);
+  // const [estiamteUnits, setEstiamteUnits] = useState<IUnits[] | undefined>([]);
   const [confirmEstimates, setConfirmEstimates] = useState<
     {
       title: string;
@@ -184,10 +185,10 @@ const Scope = ({ setPrevNext }: Props) => {
     });
     setSubCategories(flattenedSubcategories);
   }, []);
-  const fetchMaterialUnits = useCallback(async () => {
-    const unitsMaterials = await materialService.httpFetchMaterialUnits();
-    setEstiamteUnits(unitsMaterials.data?.fetchedUnits);
-  }, []);
+  // const fetchMaterialUnits = useCallback(async () => {
+  //   const unitsMaterials = await materialService.httpFetchMaterialUnits();
+  //   setEstiamteUnits(unitsMaterials.data?.fetchedUnits);
+  // }, []);
   const fetchEstimateDetail = useCallback(async () => {
     let result = await estimateRequestService.httpGetEstimateDetail(
       estimateIdQueryParameter
@@ -253,7 +254,7 @@ const Scope = ({ setPrevNext }: Props) => {
   useEffect(() => {
     fetchCategories();
     fetchEstimateDetail();
-    fetchMaterialUnits();
+    // fetchMaterialUnits();
   }, []);
   useEffect(() => {
     if (selectedCategory) {
@@ -1082,7 +1083,7 @@ const Scope = ({ setPrevNext }: Props) => {
                     name="unit"
                     placeholder="Write Unit"
                     mt="mt-0"
-                    options={estiamteUnits}
+                    options={EstimatesUnits}
                   />
                   <FormControl
                     control="input"
