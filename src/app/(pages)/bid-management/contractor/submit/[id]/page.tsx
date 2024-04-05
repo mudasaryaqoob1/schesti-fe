@@ -9,7 +9,7 @@ import { withAuth } from "@/app/hoc/withAuth";
 import { USCurrencyFormat } from "@/app/utils/format";
 import { Avatar, Divider, Spin, Table } from "antd";
 import Image from "next/image";
-import { bidDurationType } from "../../owner/post/components/data";
+import { bidDurationType } from "../../../owner/post/components/data";
 import { TextAreaComponent } from "@/app/component/textarea";
 import Dragger from "antd/es/upload/Dragger";
 import type { ColumnsType } from "antd/es/table";
@@ -22,12 +22,17 @@ import * as Yup from 'yup';
 import { toast } from "react-toastify";
 import type { RcFile } from "antd/es/upload";
 import AwsS3 from "@/app/utils/S3Intergration";
+import { useMutation } from "react-query";
+import { IResponseInterface } from "@/app/interfaces/api-response.interface";
+import { AxiosError } from "axios";
+import { proposalService } from "@/app/services/proposal.service";
+import { useParams } from "next/navigation";
 
 
 type ProjectScope = {
     description: string;
     quantity: number;
-    unitPrice: number;
+    price: number;
 }
 
 type ISubmitBidForm = {
@@ -66,7 +71,7 @@ const ValidationSchema = Yup.object().shape({
         Yup.object().shape({
             description: Yup.string().required('Description is required'),
             quantity: Yup.number().required('Quantity is required'),
-            unitPrice: Yup.number().required('Unit price is required'),
+            price: Yup.number().required('Unit price is required'),
         })
     )
 });
@@ -77,6 +82,24 @@ function ContractorSubmitBidPage() {
     const { tradeCategoryFilters, trades } = useTrades();
     const [showProjectScope, setShowProjectScope] = useState(false);
     const [isUploading, setIsUploading] = useState(false);
+
+    const params = useParams<{ id: string }>();
+
+    const mutation = useMutation<IResponseInterface<{ submittedProposal: any }>, AxiosError<{ message: string }>, ISubmitBidForm>(['submitBid', params.id], {
+        mutationFn: (data) => {
+            return proposalService.httpSubmitProposal({
+                ...data,
+                projectId: params.id
+            });
+        },
+        onSuccess(data) {
+            toast.success(data.message);
+            formik.resetForm();
+        },
+        onError(error) {
+            toast.error(error.response?.data.message || 'Unable to submit proposal');
+        },
+    })
 
     const formik = useFormik<ISubmitBidForm>({
         initialValues: {
@@ -97,7 +120,7 @@ function ContractorSubmitBidPage() {
             bidTrades: [],
         },
         onSubmit(values) {
-            console.log(values);
+            mutation.mutate(values);
         },
         validationSchema: ValidationSchema
     });
@@ -110,7 +133,7 @@ function ContractorSubmitBidPage() {
             {
                 description: "",
                 quantity: 0,
-                unitPrice: 0
+                price: 0
             }
         ]);
     }
@@ -167,8 +190,8 @@ function ContractorSubmitBidPage() {
             },
         },
         {
-            key: "unitPrice",
-            dataIndex: "unitPrice",
+            key: "price",
+            dataIndex: "price",
             title: "Unit Price",
             render: (value, _record, index) => {
                 return <input
@@ -176,7 +199,7 @@ function ContractorSubmitBidPage() {
                     type="number"
                     value={value}
                     onChange={(e) => {
-                        updateScope(index, 'unitPrice', Number(e.target.value));
+                        updateScope(index, 'price', Number(e.target.value));
                     }}
                 />
             }
@@ -185,7 +208,7 @@ function ContractorSubmitBidPage() {
             key: "subtotal",
             title: "Sub Total",
             render(_value, record) {
-                return USCurrencyFormat.format(record.quantity * record.unitPrice);
+                return USCurrencyFormat.format(record.quantity * record.price);
             },
         },
         {
