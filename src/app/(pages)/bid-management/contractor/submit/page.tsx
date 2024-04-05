@@ -16,6 +16,8 @@ import type { ColumnsType } from "antd/es/table";
 import CustomButton from "@/app/component/customButton/button";
 import WhiteButton from "@/app/component/customButton/white";
 import { useFormik } from "formik";
+import { useTrades } from "@/app/hooks/useTrades";
+import { useState } from "react";
 
 type ProjectScope = {
     description: string;
@@ -23,6 +25,10 @@ type ProjectScope = {
     unitPrice: number;
 }
 function ContractorSubmitBidPage() {
+
+    const { tradeCategoryFilters, trades } = useTrades();
+    const [showProjectScope, setShowProjectScope] = useState(false);
+
     const formik = useFormik<{ projectScope: ProjectScope[] }>({
         initialValues: {
             projectScope: []
@@ -132,6 +138,21 @@ function ContractorSubmitBidPage() {
             },
         }
     ]
+
+
+    const tradesOptions = tradeCategoryFilters.map(parent => {
+        return {
+            label: <span>{parent.label}</span>,
+            title: parent.label,
+            options: trades.filter(trade => trade.tradeCategoryId._id === parent.value).map(child => {
+                return {
+                    label: <span>{child.name}</span>,
+                    value: child._id,
+                }
+            }
+            )
+        }
+    })
 
     return <section className="mt-6 mb-4 md:ms-[69px] md:me-[59px] mx-4 ">
         <div className="flex gap-4 items-center">
@@ -306,8 +327,10 @@ function ContractorSubmitBidPage() {
                 <SelectComponent
                     label="Bid Trade"
                     name="bidTrade"
+                    placeholder="Select Trade"
                     field={{
-                        options: []
+                        options: tradesOptions,
+                        mode: "tags"
                     }}
                 />
                 <div className="flex items-center space-x-2">
@@ -326,7 +349,7 @@ function ContractorSubmitBidPage() {
                         <InputComponent
                             label="Duration"
                             name="estimatedDuration"
-                            placeholder="Duration"
+                            placeholder="Type Duration"
                             type=""
                             field={{
                                 type: 'number',
@@ -382,18 +405,24 @@ function ContractorSubmitBidPage() {
                             placeholder="Select Period"
                             name="priceDuration"
                             field={{
-                                options: []
+                                options: [
+                                    { label: "Less than 1 month", value: 1 },
+                                    { label: "1 to 3 months", value: 2 },
+                                    { label: "3 to 6 months", value: 3 },
+                                    { label: "More than 6 months", value: 3 },
+                                ]
                             }}
                         />
                     </div>
                     <div className="flex-1">
 
-                        <SelectComponent
+                        <InputComponent
                             label="How much you want to increase"
-                            placeholder="Select Increase"
+                            placeholder="Increase in percentage"
                             name="priceIncrease"
+                            type="number"
                             field={{
-                                options: []
+                                prefix: "%"
                             }}
                         />
                     </div>
@@ -432,7 +461,9 @@ function ContractorSubmitBidPage() {
                     </div>
                 </div>
 
-                <div className="flex w-fit items-center space-x-4 cursor-pointer border-b border-[#7F56D9]">
+                <div className="flex w-fit items-center space-x-4 cursor-pointer border-b border-[#7F56D9]"
+                    onClick={() => setShowProjectScope(!showProjectScope)}
+                >
                     <p className="text-[#7F56D9] text-[14px] leading-6 font-normal ">
                         Add Project Scope
                     </p>
@@ -445,7 +476,7 @@ function ContractorSubmitBidPage() {
                     />
                 </div>
 
-                <div className="py-3">
+                {showProjectScope ? <div className="py-3">
                     <Table
                         columns={columns}
                         dataSource={formik.values.projectScope}
@@ -461,7 +492,7 @@ function ContractorSubmitBidPage() {
                             </div>
                         }}
                     />
-                </div>
+                </div> : null}
             </div>
         </div>
 
