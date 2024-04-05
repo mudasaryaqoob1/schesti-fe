@@ -7,7 +7,7 @@ import SenaryHeading from "@/app/component/headings/senaryHeading";
 import TertiaryHeading from "@/app/component/headings/tertiary";
 import { withAuth } from "@/app/hoc/withAuth";
 import { USCurrencyFormat } from "@/app/utils/format";
-import { Avatar, ConfigProvider, Divider, Table } from "antd";
+import { Avatar, Divider, Spin, Table } from "antd";
 import Image from "next/image";
 import { bidDurationType } from "../../owner/post/components/data";
 import { TextAreaComponent } from "@/app/component/textarea";
@@ -18,31 +18,95 @@ import WhiteButton from "@/app/component/customButton/white";
 import { useFormik } from "formik";
 import { useTrades } from "@/app/hooks/useTrades";
 import { useState } from "react";
+import * as Yup from 'yup';
+import { toast } from "react-toastify";
+import type { RcFile } from "antd/es/upload";
+import AwsS3 from "@/app/utils/S3Intergration";
+
 
 type ProjectScope = {
     description: string;
     quantity: number;
     unitPrice: number;
 }
+
+type ISubmitBidForm = {
+    bidTrades: string[];
+    projectId: string;
+    price: number;
+    projectDuration: number;
+    projectDurationType: string;
+    additionalDetails: string;
+    priceExpiryDuration: number;
+    increaseInPercentage: number;
+    file: {
+        url: string;
+        type: string;
+        extension: string;
+        name: string;
+    };
+    projectScopes: ProjectScope[];
+
+}
+
+const ValidationSchema = Yup.object().shape({
+    bidTrades: Yup.array().of(Yup.string().required('Trade is required')).min(1, 'Atleast 1 trade is required').required('Trade is required'),
+    price: Yup.number().min(1, "Minimum $1 is required").required('Price is required'),
+    projectDuration: Yup.number().required('Duration is required'),
+    additionalDetails: Yup.string().required('Additional details is required'),
+    priceExpiryDuration: Yup.number().required('Price expiry duration is required'),
+    increaseInPercentage: Yup.number().required('Increase in percentage is required'),
+    file: Yup.object().shape({
+        url: Yup.string().required('File is required'),
+        type: Yup.string().required('File type is required'),
+        extension: Yup.string().required('File extension is required'),
+        name: Yup.string().required('File name is required'),
+    }),
+    projectScopes: Yup.array().of(
+        Yup.object().shape({
+            description: Yup.string().required('Description is required'),
+            quantity: Yup.number().required('Quantity is required'),
+            unitPrice: Yup.number().required('Unit price is required'),
+        })
+    )
+});
+
+
 function ContractorSubmitBidPage() {
 
     const { tradeCategoryFilters, trades } = useTrades();
     const [showProjectScope, setShowProjectScope] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
 
-    const formik = useFormik<{ projectScope: ProjectScope[] }>({
+    const formik = useFormik<ISubmitBidForm>({
         initialValues: {
-            projectScope: []
+            projectScopes: [],
+            file: {
+                extension: "",
+                name: "",
+                type: "",
+                url: ""
+            },
+            additionalDetails: "",
+            increaseInPercentage: 0,
+            price: 1,
+            priceExpiryDuration: 1,
+            projectDuration: 0,
+            projectDurationType: "days",
+            projectId: "",
+            bidTrades: [],
         },
         onSubmit(values) {
             console.log(values);
         },
+        validationSchema: ValidationSchema
     });
 
 
 
     function addNewScope() {
-        formik.setFieldValue('projectScope', [
-            ...formik.values.projectScope,
+        formik.setFieldValue('projectScopes', [
+            ...formik.values.projectScopes,
             {
                 description: "",
                 quantity: 0,
@@ -52,12 +116,12 @@ function ContractorSubmitBidPage() {
     }
 
     function deleteScope(index: number) {
-        const newScopes = formik.values.projectScope.filter((_, i) => i !== index);
-        formik.setFieldValue('projectScope', newScopes);
+        const newScopes = formik.values.projectScopes.filter((_, i) => i !== index);
+        formik.setFieldValue('projectScopes', newScopes);
     }
 
     function updateScope(index: number, key: string, value: string | number) {
-        const newScopes = formik.values.projectScope.map((scope, i) => {
+        const newScopes = formik.values.projectScopes.map((scope, i) => {
             if (i === index) {
                 return {
                     ...scope,
@@ -67,7 +131,7 @@ function ContractorSubmitBidPage() {
             return scope;
         });
 
-        formik.setFieldValue('projectScope', newScopes);
+        formik.setFieldValue('projectScopes', newScopes);
     }
 
 
@@ -120,7 +184,7 @@ function ContractorSubmitBidPage() {
         {
             key: "subtotal",
             title: "Sub Total",
-            render(value, record, index) {
+            render(_value, record) {
                 return USCurrencyFormat.format(record.quantity * record.unitPrice);
             },
         },
@@ -153,6 +217,25 @@ function ContractorSubmitBidPage() {
             )
         }
     })
+
+    async function handleFileUpload(file: RcFile) {
+        setIsUploading(true);
+        try {
+            const url = await new AwsS3(file, 'documents/post-project/').getS3URL();
+            const fileData = {
+                url,
+                extension: file.name.split('.').pop() || '',
+                type: file.type as string,
+                name: file.name,
+            };
+            formik.setFieldValue('file', fileData);
+        } catch (error) {
+            toast.error("Unable to upload file");
+        } finally {
+            setIsUploading(false);
+        }
+
+    }
 
     return <section className="mt-6 mb-4 md:ms-[69px] md:me-[59px] mx-4 ">
         <div className="flex gap-4 items-center">
@@ -326,12 +409,19 @@ function ContractorSubmitBidPage() {
             <div className="mt-3 space-y-3">
                 <SelectComponent
                     label="Bid Trade"
-                    name="bidTrade"
+                    name="bidTrades"
                     placeholder="Select Trade"
                     field={{
                         options: tradesOptions,
-                        mode: "tags"
+                        mode: "tags",
+                        value: formik.values.bidTrades,
+                        onChange(value) {
+                            formik.setFieldValue('bidTrades', value);
+                        },
+                        onBlur: formik.handleBlur
                     }}
+                    hasError={Boolean(formik.errors.bidTrades)}
+                    errorMessage={formik.errors.bidTrades as string}
                 />
                 <div className="flex items-center space-x-2">
                     <div className="flex-1">
@@ -341,14 +431,21 @@ function ContractorSubmitBidPage() {
                             type="number"
                             field={{
                                 prefix: "$",
+                                value: formik.values.price,
+                                onChange(e) {
+                                    formik.setFieldValue('price', Number(e.target.value));
+                                },
+                                onBlur: formik.handleBlur
                             }}
+                            hasError={Boolean(formik.errors.price)}
+                            errorMessage={formik.errors.price as string}
                         />
                     </div>
 
                     <div className="flex-1 mt-1">
                         <InputComponent
                             label="Duration"
-                            name="estimatedDuration"
+                            name="projectDuration"
                             placeholder="Type Duration"
                             type=""
                             field={{
@@ -358,12 +455,17 @@ function ContractorSubmitBidPage() {
                                         padding: 10,
                                     },
                                 },
+                                value: formik.values.projectDuration,
+                                onChange(e) {
+                                    formik.setFieldValue('projectDuration', Number(e.target.value));
+                                },
+                                onBlur: formik.handleBlur,
 
                                 className: '!py-1.5',
                                 addonAfter: (
                                     <SelectComponent
                                         label=""
-                                        name="durationType"
+                                        name="projectDurationType"
                                         field={{
                                             className: '!w-28 !pb-1',
                                             options: bidDurationType,
@@ -371,13 +473,19 @@ function ContractorSubmitBidPage() {
                                                 width: 100,
                                             },
                                             defaultValue: 'days',
-
+                                            value: formik.values.projectDurationType,
+                                            onChange(value) {
+                                                formik.setFieldValue('projectDurationType', value);
+                                            },
+                                            onBlur: formik.handleBlur,
                                         }}
-
+                                        hasError={Boolean(formik.errors.projectDurationType)}
+                                        errorMessage={formik.errors.projectDurationType as string}
                                     />
                                 ),
                             }}
-
+                            hasError={Boolean(formik.errors.projectDuration)}
+                            errorMessage={formik.errors.projectDuration as string}
                         />
                     </div>
                 </div>
@@ -386,8 +494,15 @@ function ContractorSubmitBidPage() {
                     label="Additional Details"
                     name="additionalDetails"
                     field={{
-                        rows: 10
+                        rows: 10,
+                        value: formik.values.additionalDetails,
+                        onChange(e) {
+                            formik.setFieldValue('additionalDetails', e.target.value);
+                        },
+                        onBlur: formik.handleBlur
                     }}
+                    hasError={Boolean(formik.errors.additionalDetails)}
+                    errorMessage={formik.errors.additionalDetails as string}
                 />
             </div>
 
@@ -403,15 +518,22 @@ function ContractorSubmitBidPage() {
                         <SelectComponent
                             label="How long this price will stay?"
                             placeholder="Select Period"
-                            name="priceDuration"
+                            name="priceExpiryDuration"
                             field={{
                                 options: [
                                     { label: "Less than 1 month", value: 1 },
                                     { label: "1 to 3 months", value: 2 },
                                     { label: "3 to 6 months", value: 3 },
                                     { label: "More than 6 months", value: 3 },
-                                ]
+                                ],
+                                value: formik.values.priceExpiryDuration,
+                                onChange(value) {
+                                    formik.setFieldValue('priceExpiryDuration', value);
+                                },
+                                onBlur: formik.handleBlur
                             }}
+                            hasError={Boolean(formik.errors.priceExpiryDuration)}
+                            errorMessage={formik.errors.priceExpiryDuration as string}
                         />
                     </div>
                     <div className="flex-1">
@@ -419,11 +541,18 @@ function ContractorSubmitBidPage() {
                         <InputComponent
                             label="How much you want to increase"
                             placeholder="Increase in percentage"
-                            name="priceIncrease"
+                            name="increaseInPercentage"
                             type="number"
                             field={{
-                                prefix: "%"
+                                prefix: "%",
+                                value: formik.values.increaseInPercentage,
+                                onChange(e) {
+                                    formik.setFieldValue('increaseInPercentage', Number(e.target.value));
+                                },
+                                onBlur: formik.handleBlur,
                             }}
+                            hasError={Boolean(formik.errors.increaseInPercentage)}
+                            errorMessage={formik.errors.increaseInPercentage as string}
                         />
                     </div>
                 </div>
@@ -432,12 +561,20 @@ function ContractorSubmitBidPage() {
                         <Dragger
                             name={'file'}
                             accept="image/*,gif,application/pdf"
-                            multiple={true}
-
+                            multiple={false}
                             style={{
                                 borderStyle: 'dashed',
                                 borderWidth: 6,
                                 borderColor: "#CDD2E1"
+                            }}
+                            beforeUpload={(file) => {
+                                const isLessThan2MB = file.size < 2 * 1024 * 1024;
+                                if (!isLessThan2MB) {
+                                    toast.error('File size should be less than 2MB');
+                                    return false;
+                                }
+                                handleFileUpload(file);
+                                return false;
                             }}
                             itemRender={() => {
                                 return null;
@@ -460,6 +597,50 @@ function ContractorSubmitBidPage() {
                         </Dragger>
                     </div>
                 </div>
+                {formik.values.file.url ? <div className="border my-2 rounded w-fit">
+                    <div className="bg-[#F4EBFF] flex items-center justify-between px-2 py-1 ">
+                        <div className="flex items-center space-x-3">
+                            <Image
+                                src={'/file-05.svg'}
+                                width={16}
+                                height={16}
+                                alt="file"
+                            />
+                            <p className="text-[#667085] text-[14px] leading-6">
+                                {formik.values.file.name}
+                            </p>
+                        </div>
+                        <Image
+                            src={'/trash.svg'}
+                            width={16}
+                            height={16}
+                            alt="close"
+                            className="cursor-pointer"
+                            onClick={() => {
+                                formik.setFieldValue('file', {
+                                    extension: "",
+                                    name: "",
+                                    type: "",
+                                    url: ""
+                                });
+                            }}
+                        />
+                    </div>
+                    <div className="p-2 mx-auto w-auto h-[190px] xl:w-[230px] relative">
+                        {formik.values.file.type.includes('image') ? (
+                            <Image alt="image" src={formik.values.file.url} fill />
+                        ) : (
+                            <div className="relative mt-10 w-[100px] h-[100px] mx-auto">
+                                <Image
+                                    alt="pdf"
+                                    src={'/pdf.svg'}
+                                    layout="fill"
+                                    objectFit="cover"
+                                />
+                            </div>
+                        )}
+                    </div>
+                </div> : isUploading ? <Spin /> : null}
 
                 <div className="flex w-fit items-center space-x-4 cursor-pointer border-b border-[#7F56D9]"
                     onClick={() => setShowProjectScope(!showProjectScope)}
@@ -479,7 +660,7 @@ function ContractorSubmitBidPage() {
                 {showProjectScope ? <div className="py-3">
                     <Table
                         columns={columns}
-                        dataSource={formik.values.projectScope}
+                        dataSource={formik.values.projectScopes}
                         bordered
                         pagination={false}
                         footer={() => {
@@ -504,6 +685,7 @@ function ContractorSubmitBidPage() {
             <CustomButton
                 text="Place Bid"
                 className="!w-36"
+                onClick={() => formik.handleSubmit()}
             />
         </div>
     </section>

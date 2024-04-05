@@ -27,9 +27,9 @@ export function useTrades() {
       onError(err) {
         toast.error(err.response?.data.message);
       },
-      refetchOnWindowFocus: false,
+      // refetchOnWindowFocus: false,
       //1 hour in milliseconds
-      staleTime: 1000 * 60 * 60,
+      // staleTime: 1000 * 60 * 60,
     }
   );
 
