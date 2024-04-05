@@ -15,7 +15,7 @@ import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import { addNewMeetingAction } from '@/redux/meeting/meeting.slice';
 import Description from '@/app/component/description';
 import { SelectComponent } from '@/app/component/customSelect/Select.component';
-import { dayjs, disabledDate } from '@/app/utils/date.utils';
+import { dayjs } from '@/app/utils/date.utils';
 import TimezoneSelect, {
   type ITimezone,
   type ITimezoneOption,
@@ -182,8 +182,8 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
                     ? 'error'
                     : undefined,
                 use12Hours: true,
-                disabledDate: (curr) =>
-                  disabledDate(curr, (timezone as ITimezoneOption).value),
+                // disabledDate: (curr) =>
+                //   disabledDate(curr, (timezone as ITimezoneOption).value),
                 showSecond: false,
                 renderExtraFooter: () => (
                   // <SelectComponent
