@@ -5,7 +5,6 @@ import { USCurrencyFormat } from '@/app/utils/format';
 import { Avatar } from 'antd';
 import { Country } from 'country-state-city';
 import moment from 'moment';
-import Image from 'next/image';
 
 type Props = {
   bid: IBidManagement | null;
@@ -47,27 +46,6 @@ export function ProjectIntro({ bid }: Props) {
                 className="text-[#7138DF] font-normal text-xs leading-4"
               />
             </div>
-            <Image
-              alt="trash icon"
-              src={'/trash.svg'}
-              width={16}
-              height={16}
-              className="cursor-pointer"
-            />
-            <Image
-              alt="share icon"
-              src={'/share.svg'}
-              width={16}
-              height={16}
-              className="cursor-pointer"
-            />
-            <Image
-              alt="heart icon"
-              src={'/heart.svg'}
-              width={16}
-              height={16}
-              className="cursor-pointer"
-            />
           </div>
 
           <div className="mt-4 space-y-2">

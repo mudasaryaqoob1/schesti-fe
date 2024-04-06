@@ -37,7 +37,6 @@ export function PostFinalize({ formik, children }: Props) {
       result.payload?.data?.employees
         .filter((u: any) => !u.roles.includes('Subcontractor'))
         .map((user: any) => {
-          console.log({ employees: user });
           return {
             title: `${user.firstName} ${user.lastName}`,
             label: <p>{user.firstName} {user.lastName}</p>,
