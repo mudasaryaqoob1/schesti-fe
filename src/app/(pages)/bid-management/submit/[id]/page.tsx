@@ -197,7 +197,6 @@ function ContractorSubmitBidPage() {
     formik.setFieldValue('projectScopes', newScopes);
   }
 
-  console.log(formik.errors);
 
   const columns: ColumnsType<ProjectScope> = [
     {
