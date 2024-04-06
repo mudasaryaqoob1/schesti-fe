@@ -122,6 +122,9 @@ export function PostDesignTeam({ formik, children }: Props) {
           postProjectActions.updateTeamMemberAction(res.data.updatedUser)
         );
         toast.success('Team Member Updated Successfully');
+        formik.resetForm();
+        onClose();
+        setSelectedTeamMember(null);
       }
     },
   });
@@ -158,13 +161,13 @@ export function PostDesignTeam({ formik, children }: Props) {
     initialValues: selectedTeamMember
       ? { ...selectedTeamMember }
       : {
-          name: '',
-          role: '',
-          companyName: '',
-          location: '',
-          phoneNumber: '',
-          email: '',
-        },
+        name: '',
+        role: '',
+        companyName: '',
+        location: '',
+        phoneNumber: '',
+        email: '',
+      },
     validationSchema: DesignTeamMemberSchema,
     onSubmit: (values) => {
       if (!selectedTeamMember) {
@@ -352,7 +355,7 @@ export function PostDesignTeam({ formik, children }: Props) {
             }
             errorMessage={
               designTeamFormik.touched.companyName &&
-              designTeamFormik.errors.companyName
+                designTeamFormik.errors.companyName
                 ? designTeamFormik.errors.companyName
                 : ''
             }
@@ -374,7 +377,7 @@ export function PostDesignTeam({ formik, children }: Props) {
             }
             errorMessage={
               designTeamFormik.touched.location &&
-              designTeamFormik.errors.location
+                designTeamFormik.errors.location
                 ? designTeamFormik.errors.location
                 : ''
             }
@@ -393,7 +396,7 @@ export function PostDesignTeam({ formik, children }: Props) {
             }
             errorMessage={
               designTeamFormik.touched.phoneNumber &&
-              designTeamFormik.errors.phoneNumber
+                designTeamFormik.errors.phoneNumber
                 ? designTeamFormik.errors.phoneNumber
                 : ''
             }
