@@ -19,7 +19,7 @@ data = data.map((item, index) => {
   let categoryIndex = index % categories.length;
   return {
     ...item,
-    value: `$${item.value}`,
+    value: `${item.value}`,
     category: categories[categoryIndex],
   };
 });

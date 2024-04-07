@@ -16,33 +16,23 @@ import { TotalCost } from './components/TotalCost';
 import dynamic from 'next/dynamic';
 import { useQuery } from 'react-query';
 import { userService } from '@/app/services/user.service';
-import { estimateRequestService } from '@/app/services/estimates.service';
 import { ProjectDetails } from './components/ProjectDetails';
-import { clientInvoiceService } from '@/app/services/client-invoices.service';
-import { meetingService } from '@/app/services/meeting.service';
 import { withAuth } from '@/app/hoc/withAuth';
 const Dashboard = () => {
-  const clientQuery = useQuery('clients', () => {
-    return userService.httpGetAllCompanyClients();
-  });
-
-  const estimateQuery = useQuery('estimates', () => {
-    return estimateRequestService.httpGetAllGeneratedEstimatesWithoutLimit();
-  });
-
-  const invoiceQuery = useQuery(['client-invoices'], () =>
-    clientInvoiceService.httpGetAllInvoices()
-  );
-  const meetingQuery = useQuery(['meetings'], () =>
-    meetingService.httpGetMeetings()
+  const fetchDashboardState = useQuery(
+    'dashboardState',
+    () => {
+      return userService.httpDashbaordStatics();
+    },
+    { refetchOnWindowFocus: false }
   );
 
   return (
     <section className="my-4  mx-8 px-4">
-      <TotalCost clientQuery={clientQuery} estimateQuery={estimateQuery} />
+      <TotalCost fetchDashboardState={fetchDashboardState} />
 
       <div className="grid grid-cols-12 gap-3">
-        <InvoiceReport invoiceQuery={invoiceQuery} />
+        <InvoiceReport fetchDashboardState={fetchDashboardState} />
         <div className="col-span-5 flex flex-col space-y-8 p-3 shadow-lg border border-t bg-white rounded-md px-4">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-[18px] text-[#344054] leading-[28px] font-semibold">
@@ -51,15 +41,11 @@ const Dashboard = () => {
           </div>
           <div className="mx-auto w-48">
             <ProjectsReport
-              estimateQuery={estimateQuery}
-              invoiceQuery={invoiceQuery}
-              meetingQuery={meetingQuery}
+              fetchDashboardState={fetchDashboardState}
             />
           </div>
           <ProjectDetails
-            estimateQuery={estimateQuery}
-            invoiceQuery={invoiceQuery}
-            meetingQuery={meetingQuery}
+          fetchDashboardState={fetchDashboardState}
           />
         </div>
       </div>
