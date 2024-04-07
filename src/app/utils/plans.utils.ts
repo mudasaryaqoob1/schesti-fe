@@ -70,6 +70,7 @@ export const planFeatureOptions = [
       {
         label: 'Post a project',
         value: Routes['Bid Management'].Post_A_Project,
+        isAction: true,
       }
     ]
 
