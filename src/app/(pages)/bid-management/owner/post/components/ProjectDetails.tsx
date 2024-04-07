@@ -114,7 +114,7 @@ export function PostProjectDetails({ formik, children }: Props) {
               value: formik.values.estimatedStartDate
                 ? dayjs(formik.values.estimatedStartDate)
                 : undefined,
-              onChange: (v, dateString) => {
+              onChange: (v, dateString: string) => {
                 formik.setFieldValue('estimatedStartDate', dateString);
 
                 //  set estimatedCompletionDate to estimatedStartDate +1 if it's value is less than estimatedStartDate
