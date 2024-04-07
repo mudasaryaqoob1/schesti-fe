@@ -222,15 +222,16 @@ function Page() {
               type="text"
               placeholder="Search"
               name="search"
-              prefix={<SearchOutlined />}
+              prefix={<SearchOutlined className='text-lg' />}
               field={{
                 type: 'text',
+                className: "!py-3",
                 value: search,
                 onChange: (e) => setSearch(e.target.value),
               }}
             />
           </div>
-          <div className='flex items-center space-x-2 mt-2'>
+          <div className='flex items-center space-x-2'>
             <ExportAll bids={filteredData} />
             <CustomButton
               icon="/plus.svg"

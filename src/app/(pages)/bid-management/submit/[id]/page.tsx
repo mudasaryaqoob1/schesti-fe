@@ -14,9 +14,9 @@ import Dragger from 'antd/es/upload/Dragger';
 import type { ColumnsType } from 'antd/es/table';
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
-import { useFormik } from 'formik';
+import { type FormikErrors, useFormik } from 'formik';
 import { useTrades } from '@/app/hooks/useTrades';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 import type { RcFile } from 'antd/es/upload';
@@ -72,10 +72,10 @@ const ValidationSchema = Yup.object().shape({
     .max(100, 'Percentage should be between 0 - 100')
     .required('Increase in percentage is required'),
   file: Yup.object().shape({
-    url: Yup.string().required('File is required'),
-    type: Yup.string().required('File type is required'),
-    extension: Yup.string().required('File extension is required'),
-    name: Yup.string().required('File name is required'),
+    url: Yup.string(),
+    type: Yup.string(),
+    extension: Yup.string(),
+    name: Yup.string(),
   }),
   projectScopes: Yup.array().of(
     Yup.object().shape({
@@ -91,7 +91,7 @@ function ContractorSubmitBidPage() {
   const [showProjectScope, setShowProjectScope] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [project, setProject] = useState<IBidManagement | null>(null);
-
+  const lastInputRef = useRef<HTMLInputElement>(null);
   const params = useParams<{ id: string }>();
   const query = useQuery(
     ['getOwnerProjectById', params.id],
@@ -110,6 +110,7 @@ function ContractorSubmitBidPage() {
       },
     }
   );
+
 
   const mutation = useMutation<
     IResponseInterface<{ submittedProposal: any }>,
@@ -155,13 +156,24 @@ function ContractorSubmitBidPage() {
     validationSchema: ValidationSchema,
   });
 
+
+  useEffect(() => {
+    if (lastInputRef.current) {
+      if (lastInputRef.current.value === '') {
+        lastInputRef.current.focus();
+      } else {
+        return;
+      }
+    }
+  }, [formik.values.projectScopes]);
+
   function addNewScope() {
     formik.setFieldValue('projectScopes', [
       ...formik.values.projectScopes,
       {
         description: '',
-        quantity: 0,
-        price: 0,
+        quantity: '',
+        price: '',
       },
     ]);
   }
@@ -185,21 +197,32 @@ function ContractorSubmitBidPage() {
     formik.setFieldValue('projectScopes', newScopes);
   }
 
+
   const columns: ColumnsType<ProjectScope> = [
     {
       key: 'description',
       dataIndex: 'description',
       title: 'Description',
       render(value, _record, index) {
+        const error = typeof formik.errors.projectScopes !== 'string' && formik.errors.projectScopes && (formik.errors.projectScopes[index] as FormikErrors<ProjectScope>)?.description;
         return (
-          <input
-            className="border-none focus:outline-none w-full h-full bg-transparent"
-            type="text"
-            value={value}
-            onChange={(e) => {
-              updateScope(index, 'description', e.target.value);
-            }}
-          />
+          <div className='space-y-1'>
+            <input
+              className={`border ${error ? "border-red-500" : ""}  p-2 rounded-md focus:outline-none w-full h-full bg-transparent`}
+              type="text"
+              ref={index === formik.values.projectScopes.length - 1 ? lastInputRef : null}
+              value={value}
+              placeholder='Type Description'
+              onChange={(e) => {
+                updateScope(index, 'description', e.target.value);
+              }}
+              onBlur={formik.handleBlur}
+              name={`description.${index}`}
+            />
+            {error ? <p className='text-xs text-red-500'>
+              {error}
+            </p> : null}
+          </div>
         );
       },
     },
@@ -208,15 +231,22 @@ function ContractorSubmitBidPage() {
       dataIndex: 'quantity',
       title: 'Quantity',
       render(value, _record, index) {
+        const error = typeof formik.errors.projectScopes !== 'string' && formik.errors.projectScopes && (formik.errors.projectScopes[index] as FormikErrors<ProjectScope>)?.quantity;
         return (
-          <input
-            className="border-none focus:outline-none w-full h-full bg-transparent"
-            type="number"
-            value={value}
-            onChange={(e) => {
-              updateScope(index, 'quantity', Number(e.target.value));
-            }}
-          />
+          <div className='space-y-1'>
+            <input
+              className={`border ${error ? "border-red-500" : ""} p-2 rounded-md  focus:outline-none w-full h-full bg-transparent`}
+              type="number"
+              placeholder='Type Quantity'
+              value={value}
+              onChange={(e) => {
+                updateScope(index, 'quantity', Number(e.target.value));
+              }}
+              onBlur={formik.handleBlur}
+              name={`quantity.${index}`}
+            />
+            {error ? <p className='text-xs text-red-500'>{error}</p> : null}
+          </div>
         );
       },
     },
@@ -225,15 +255,22 @@ function ContractorSubmitBidPage() {
       dataIndex: 'price',
       title: 'Unit Price',
       render: (value, _record, index) => {
+        const error = typeof formik.errors.projectScopes !== 'string' && formik.errors.projectScopes && (formik.errors.projectScopes[index] as FormikErrors<ProjectScope>)?.price;
         return (
-          <input
-            className="border-none focus:outline-none w-full h-full bg-transparent"
-            type="number"
-            value={value}
-            onChange={(e) => {
-              updateScope(index, 'price', Number(e.target.value));
-            }}
-          />
+          <div className="space-y-1">
+            <input
+              className={`border ${error ? "border-red-500" : ""} p-2 rounded-md focus:outline-none w-full h-full bg-transparent`}
+              type="number"
+              value={value}
+              placeholder='$0.00'
+              onChange={(e) => {
+                updateScope(index, 'price', Number(e.target.value));
+              }}
+              onBlur={formik.handleBlur}
+              name={`price.${index}`}
+            />
+            {error ? <p className='text-xs text-red-500'>{error}</p> : null}
+          </div>
         );
       },
     },
@@ -246,7 +283,7 @@ function ContractorSubmitBidPage() {
     },
     {
       title: '',
-      render(value, record, index) {
+      render(_value, _record, index) {
         return (
           <Image
             src={'/x-circle.svg'}
@@ -621,14 +658,31 @@ function ContractorSubmitBidPage() {
               <Table
                 columns={columns}
                 dataSource={formik.values.projectScopes}
-                bordered
                 pagination={false}
                 footer={() => {
                   return (
                     <div className="bg-white border border-dashed h-full  p-4 rounded-lg">
                       <p
                         className="text-[#98A2B3] text-[14px] leading-5 font-normal cursor-pointer"
-                        onClick={addNewScope}
+                        onClick={() => {
+                          // check if the last scope has all the fields filled
+                          const lastScope = formik.values.projectScopes[
+                            formik.values.projectScopes.length - 1
+                          ];
+                          if (!lastScope) {
+                            addNewScope();
+                            return;
+                          }
+                          if (
+                            lastScope.description &&
+                            lastScope.price &&
+                            lastScope.quantity
+                          ) {
+                            addNewScope();
+                          } else {
+                            toast.error('Please fill the current scope');
+                          }
+                        }}
                       >
                         + Create new scope
                       </p>
