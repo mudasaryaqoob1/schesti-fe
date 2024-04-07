@@ -73,6 +73,7 @@ const Tabs = () => {
 
   const userPlanFeatures = userPlan ? userPlan.features.split(',') : [];
 
+  console.log("userPlanFeatures", userPlanFeatures);
   return (
     <div className="md:flex block justify-between bg-[#F0E9FD] items-center px-16 xl:h-[67px] shadow-quinaryGentle">
       <ul
@@ -109,11 +110,18 @@ const Tabs = () => {
                     items: feature.options.map((option, index) => {
                       return {
                         key: index,
-                        label: userPlanFeatures.includes(option.value) ? (
+                        label: "children" in option ? option.label : userPlanFeatures.includes(option.value) ? (
                           <Link href={option.value}>{option.label}</Link>
                         ) : (
                           <Link href="/upgrade-feature">{option.label}</Link>
                         ),
+                        children: "children" in option ? option.children?.map(item => {
+                          return {
+                            key: item.value,
+                            label: <Link href={item.value}>{item.label}</Link>,
+                            value: item.value
+                          }
+                        }) : undefined,
                       };
                     }),
                     selectable: true,
@@ -127,7 +135,7 @@ const Tabs = () => {
                          cursor-pointer
                         `,
                         feature.options.find((option) =>
-                          pathname.includes(option.value)
+                          pathname.includes(option.value) || option.children?.find(child => pathname.includes(child.value))
                         ) && tabsStyle.active
                       )
                     )}

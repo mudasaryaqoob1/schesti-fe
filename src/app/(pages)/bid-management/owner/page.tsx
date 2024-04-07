@@ -222,7 +222,7 @@ function Page() {
               type="text"
               placeholder="Search"
               name="search"
-              prefix={<SearchOutlined />}
+              prefix={<SearchOutlined className='text-lg' />}
               field={{
                 type: 'text',
                 className: "!py-3",

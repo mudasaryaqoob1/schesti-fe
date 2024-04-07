@@ -38,11 +38,9 @@ export function PostFinalize({ formik, children }: Props) {
         .filter((u: any) => !u.roles.includes('Subcontractor'))
         .map((user: any) => {
           return {
-            title: `${user.firstName} ${user.lastName}`,
-            label: <p>{user.firstName} {user.lastName}</p>,
-            options: [
-              { value: user.email, label: `${user.email} - ${user.roles}` }
-            ]
+
+            label: `${user.firstName} ${user.lastName}`,
+            value: user.email
           };
         })
     );

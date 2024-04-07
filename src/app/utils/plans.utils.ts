@@ -4,6 +4,9 @@ export const Routes = {
     Contractor: '/bid-management/contractor',
     'Sub-Contractor': '/bid-management/sub-contractor',
     Submit: '/bid-management/submit',
+    Bidding_Projects: '/bid-management/sub-contractor/bids',
+    Posted_Projects: '/bid-management/owner',
+    Post_A_Project: "/bid-management/owner/post",
   },
   CRM: {
     Clients: '/crm/clients',
@@ -38,25 +41,38 @@ export const OtherRoutes = {
     Target: '/settings/target',
     'Support Tickets': '/settings/supporttickets',
   },
-  'Bid Management': {
-    Submit: '/bid-management/submit',
-  },
   Upgrades: '/upgradeplans',
   Dashboard: '/dashboard',
 };
 
 export const planFeatureOptions = [
   {
-    title: 'Bid Management',
     label: 'Bid Management',
+
+    title: 'Bid Management',
     options: [
-      { label: 'Owner', value: Routes['Bid Management'].Owner },
-      { label: 'Contractor', value: Routes['Bid Management'].Contractor },
       {
-        label: 'Sub Contractor',
-        value: Routes['Bid Management']['Sub-Contractor'],
+        label: "Find Project",
+        value: "",
+        children: [
+          { label: 'Contractor', value: Routes['Bid Management'].Contractor },
+          { label: 'Sub Contractor', value: Routes['Bid Management']['Sub-Contractor'] },
+        ]
       },
-    ],
+      {
+        label: "Bidding Projects",
+        value: Routes["Bid Management"].Bidding_Projects,
+      },
+      {
+        label: "Posted Projects",
+        value: Routes["Bid Management"].Posted_Projects,
+      },
+      {
+        label: 'Post a project',
+        value: Routes['Bid Management'].Post_A_Project,
+      }
+    ]
+
   },
 
   {
