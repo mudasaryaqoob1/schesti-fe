@@ -199,7 +199,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
   }
 
   function downloadPdf() {
-    setIsDownloading(() => true);
+    setIsDownloading(true);
     var doc = new jsPDF('portrait', 'in', 'a0');
     if (image) {
       const imgProps = doc.getImageProperties(image);

@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import ProjectsReport from './components/ProjectReport';
-import SenaryHeading from '@/app/component/headings/senaryHeading';
+// import SenaryHeading from '@/app/component/headings/senaryHeading';
 const InvoiceReport = dynamic(() => import('./components/InvoiceReport'), {
   ssr: false,
 });
@@ -55,7 +55,7 @@ const Dashboard = () => {
           <h3 className="text-[18px] text-[#344054] leading-[28px] font-semibold">
             Statistics
           </h3>
-          <div className="p-5 flex items-center space-x-4">
+          {/* <div className="p-5 flex items-center space-x-4">
             <div className="flex justify-between">
               <div className="flex gap-3 items-center">
                 <span className="w-3 h-3 bg-[#7F56D9]" />
@@ -76,9 +76,9 @@ const Dashboard = () => {
                 <SenaryHeading title="Scheduled " />
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
-        <StatisticsReport />
+        <StatisticsReport  fetchDashboardState={fetchDashboardState} />
       </div>
 
       <AdsManagement />

@@ -27,5 +27,8 @@ export interface IDashboardStats {
   totalInvoices : number
   totalMeetings : number
   totalTakeoff : number,
-  invoicesDetail : {type : string , value : string}[]
+  invoicesDetail : {type : string , value : string}[],
+  monthlyTakeOffTotalRecords : Number []
+  monthlyScheduleTotalRecords : Number []
+  monthlyEstimateTotalRecords : Number []
 }
