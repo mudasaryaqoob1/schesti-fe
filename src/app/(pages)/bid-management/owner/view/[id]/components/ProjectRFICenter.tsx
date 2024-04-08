@@ -36,6 +36,8 @@ export function ProjectRFICenter({ projectId }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFileUploading, setIsFileUploading] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
+  const [search, setSearch] = useState('');
+
 
 
   function toggleRfiModal() {
@@ -150,13 +152,22 @@ export function ProjectRFICenter({ projectId }: Props) {
               type="text"
               field={{
                 prefix: <SearchOutlined className="text-xl" />,
+                value: search,
+                onChange: (e) => {
+                  setSearch(e.target.value);
+                },
               }}
             />
           </div>
         </div>
       </div>
 
-      {rfis.map(rfi => {
+      {rfis.filter(rfi => {
+        if (!search) {
+          return true;
+        }
+        return rfi.description.toLowerCase().includes(search.toLowerCase());
+      }).map(rfi => {
         const user = rfi.user;
 
         return <div key={rfi._id} className="mt-4 px-2 flex bg-white rounded-lg shadow">
