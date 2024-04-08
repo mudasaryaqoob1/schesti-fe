@@ -1,5 +1,7 @@
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 import {
   G7State,
   IClientInvoice,
@@ -17,6 +19,8 @@ import { useScreenshot } from '@breezeos-dev/use-react-screenshot';
 import jsPDF from 'jspdf';
 import { ClientInvoiceFooter } from '../../../components/ClientInvoiceFooter';
 import { ClientInvoiceHeader } from '../../../components/ClientInvoiceHeader';
+import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
+import QuinaryHeading from '@/app/component/headings/quinary';
 
 type Props = {
   parentInvoice: IClientInvoice;
@@ -26,6 +30,10 @@ const G702_KEY = 'G702';
 
 export function PhaseComponent({ parentInvoice }: Props) {
   // const router = useRouter();
+
+  const auth = useSelector((state: RootState) => state.auth);
+  const user = auth.user?.user as IUpdateCompanyDetail | undefined;
+
   // selected phase will be from allPhases and will be the latest last phase
   const [selectedPhase, setSelectedPhase] = useState<IClientInvoice | null>(
     null
@@ -214,6 +222,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
     }
     setIsDownloading(false);
   }
+
   return (
     <section className="mx-16 my-2">
       <div className="p-5 shadow-md rounded-lg border border-silverGray  bg-white">
@@ -323,8 +332,19 @@ export function PhaseComponent({ parentInvoice }: Props) {
       <div
         ref={ref as MutableRefObject<HTMLDivElement>}
         className="space-y-5 w-full absolute z -left-[2500px] border p-6"
+        // className="space-y-5 w-full border p-6"
       >
         <ClientInvoiceHeader />
+        <div className="flex justify-end w-full">
+          {/* <div>
+            <img width={100} height={100}  alt='logo' src={user?.avatar ? user?.avatar : '/logo.svg'} />
+          </div> */}
+          <div>
+            <QuinaryHeading title={user!.name} />
+            <QuinaryHeading title={user!.email || ''} className="mt-1" />
+          </div>
+        </div>
+        <div className=""></div>
         <ConfigProvider
           theme={{
             components: {
@@ -377,6 +397,9 @@ export function PhaseComponent({ parentInvoice }: Props) {
             sumColumns={sumColumns}
           />
         </ConfigProvider>
+        {/* <div className="flex justify-end">
+          <Image width={100} height={20} alt="logo" src="/powered-by.png" />
+        </div> */}
         <ClientInvoiceFooter />
       </div>
     </section>

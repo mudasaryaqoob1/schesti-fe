@@ -40,6 +40,7 @@ export const fetchCompanyClients = createAsyncThunk(
 );
 
 
+
 export const fetchCompanyPartner = createAsyncThunk(
   'company/partners',
   async ({ page, limit }: FetchPartnerParams, { rejectWithValue }) => {

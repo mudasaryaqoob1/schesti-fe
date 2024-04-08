@@ -15,7 +15,7 @@ import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import { addNewMeetingAction } from '@/redux/meeting/meeting.slice';
 import Description from '@/app/component/description';
 import { SelectComponent } from '@/app/component/customSelect/Select.component';
-import { dayjs } from '@/app/utils/date.utils';
+import { dayjs, disabledDate } from '@/app/utils/date.utils';
 import TimezoneSelect, {
   type ITimezone,
   type ITimezoneOption,
@@ -41,7 +41,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
     Intl.DateTimeFormat().resolvedOptions().timeZone
   );
   const dispatch = useDispatch<AppDispatch>();
-  console.log({ timezone });
+
   const formik = useFormik({
     initialValues: {
       topic: '',
@@ -164,7 +164,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
               hasError={formik.touched.startDate && !!formik.errors.startDate}
               errorMessage={formik.errors.startDate}
               fieldProps={{
-                showTime: { defaultValue: dayjs('00:00:00', 'HH:mm') },
+                showTime:{ format: 'HH:mm' },
                 value: formik.values.startDate
                   ? dayjs(formik.values.startDate).tz(
                       (timezone as ITimezoneOption).value
@@ -182,9 +182,9 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
                     ? 'error'
                     : undefined,
                 use12Hours: true,
-                // disabledDate: (curr) =>
-                //   disabledDate(curr, (timezone as ITimezoneOption).value),
-                showSecond: false,
+                disabledDate: (curr) =>
+                  disabledDate(curr, (timezone as ITimezoneOption).value) as boolean,
+                // showSecond: false,
                 renderExtraFooter: () => (
                   // <SelectComponent
                   //   label="Timezone"

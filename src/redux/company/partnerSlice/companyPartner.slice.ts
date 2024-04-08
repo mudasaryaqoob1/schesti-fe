@@ -2,12 +2,11 @@ import { createSlice } from '@reduxjs/toolkit';
 import initialState from './companyPartner.initialState';
 import { fetchCompanyPartner, deleteCompanyClient } from '../company.thunk';
 
-export const companySlice = createSlice({
+export const partnerSlice = createSlice({
   name: 'partners',
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
-    // fetch all clients
     builder.addCase(fetchCompanyPartner.pending, (state) => {
       state.loading = true;
     });
@@ -15,7 +14,7 @@ export const companySlice = createSlice({
     builder.addCase(fetchCompanyPartner.fulfilled, (state, action) => {
       state.loading = false;
       state.message = action.payload.message;
-      state.data = action.payload.data.clients;
+      state.data = action.payload.data.partners;
       state.statusCode = action.payload.statusCode;
     });
 
@@ -43,4 +42,4 @@ export const companySlice = createSlice({
   },
 });
 
-export default companySlice.reducer;
+export default partnerSlice.reducer;
