@@ -31,7 +31,7 @@ export interface IBidManagement {
     name: string;
   }[];
   selectedTeamMembers: string[];
-  status: 'draft' | 'expired' | 'active' | 'archived';
+  status: 'draft' | 'expired' | 'active' | 'archived' | 'bid closed';
   _id: string;
   createdAt: string;
   updatedAt: string;

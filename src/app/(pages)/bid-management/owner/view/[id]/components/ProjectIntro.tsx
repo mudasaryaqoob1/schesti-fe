@@ -25,6 +25,7 @@ type Props = {
 };
 export function ProjectIntro({ id }: Props) {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showStatusModal, setShowStatusModal] = useState(false);
 
   const dispatch = useDispatch<AppDispatch>();
   const bid = useSelector(
@@ -55,6 +56,10 @@ export function ProjectIntro({ id }: Props) {
     return <Skeleton />;
   }
 
+  function toggleStatusModal() {
+    setShowStatusModal(!showStatusModal);
+  }
+
   return (
     <div className="flex justify-between items-center">
       <div className="space-y-3">
@@ -79,12 +84,27 @@ export function ProjectIntro({ id }: Props) {
             className="text-[#1D2939] font-normal text-[14px] leading-4"
           />
 
-          <div className="flex items-center border border-[#DC6803] py-1 pr-[10px] pl-3 rounded-full space-x-2">
+          <div className="flex relative cursor-pointer items-center border border-[#DC6803] py-1 pr-[10px] pl-3 rounded-full space-x-2"
+            onClick={toggleStatusModal}>
             <SenaryHeading
               title={bid ? bid.status : ''}
               className="text-[#B54708] capitalize text-[14px] font-medium leading-6"
             />
             <DownOutlined className="text-xs text-[#B54708]" />
+
+            {showStatusModal ? <div className='space-y-1 py-1 cursor-default w-64 border rounded-lg shadow-md right-5 bg-white z-10 top-9 absolute'
+              onClick={e => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+            >
+              {['draft', 'expired', 'active', 'archived', 'bid closed'].map(status => {
+                return <p key={status} className={`text-[#344054] hover:bg-gray-50 px-2 py-1 cursor-pointer rounded-lg  font-normal capitalize text-medium leading-6 ${bid && bid.status === status ? "bg-gray-100" : ""}`}>
+                  {status}
+                </p>
+              })}
+
+            </div> : null}
           </div>
         </div>
         <WhiteButton
