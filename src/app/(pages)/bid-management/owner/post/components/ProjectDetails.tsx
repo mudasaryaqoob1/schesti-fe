@@ -20,7 +20,7 @@ type Props = {
 
 export function PostProjectDetails({ formik, children }: Props) {
   return (
-    <div className=" bg-white shadow-2xl rounded-xl border p-4">
+    <div className=" bg-white shadow-[0_4px_30px_0px_#2E2D740D] rounded-xl border p-4">
       <TertiaryHeading
         title="Project Details"
         className="text-[20px] leading-[30px]"
@@ -79,7 +79,7 @@ export function PostProjectDetails({ formik, children }: Props) {
               }
               errorMessage={
                 formik.touched.projectBuildingUse &&
-                formik.errors.projectBuildingUse
+                  formik.errors.projectBuildingUse
                   ? (formik.errors.projectBuildingUse as string)
                   : ''
               }
@@ -114,8 +114,15 @@ export function PostProjectDetails({ formik, children }: Props) {
               value: formik.values.estimatedStartDate
                 ? dayjs(formik.values.estimatedStartDate)
                 : undefined,
-              onChange: (v, dateString) => {
+              onChange: (v, dateString: any) => {
                 formik.setFieldValue('estimatedStartDate', dateString);
+
+                //  set estimatedCompletionDate to estimatedStartDate +1 if it's value is less than estimatedStartDate
+                if (formik.values.estimatedCompletionDate) {
+                  if (dayjs(formik.values.estimatedCompletionDate).isBefore(dayjs(dateString))) {
+                    formik.setFieldValue('estimatedCompletionDate', dayjs(dateString).add(1, 'day').format('YYYY-MM-DD'));
+                  }
+                }
               },
               onBlur: formik.handleBlur,
             }}
@@ -125,7 +132,7 @@ export function PostProjectDetails({ formik, children }: Props) {
             }
             errorMessage={
               formik.touched.estimatedStartDate &&
-              formik.errors.estimatedStartDate
+                formik.errors.estimatedStartDate
                 ? formik.errors.estimatedStartDate
                 : ''
             }
@@ -164,6 +171,12 @@ export function PostProjectDetails({ formik, children }: Props) {
                 formik.setFieldValue('estimatedCompletionDate', dateString);
               },
               onBlur: formik.handleBlur,
+              disabledDate: (current) => {
+                if (formik.values.estimatedStartDate) {
+                  return current < dayjs(formik.values.estimatedStartDate);
+                }
+                return false;
+              }
             }}
             hasError={
               formik.touched.estimatedCompletionDate &&
@@ -171,7 +184,7 @@ export function PostProjectDetails({ formik, children }: Props) {
             }
             errorMessage={
               formik.touched.estimatedCompletionDate &&
-              formik.errors.estimatedCompletionDate
+                formik.errors.estimatedCompletionDate
                 ? formik.errors.estimatedCompletionDate
                 : ''
             }
@@ -208,6 +221,7 @@ export function PostProjectDetails({ formik, children }: Props) {
               onChange: (e) =>
                 formik.setFieldValue('projectValue', `${e.target.value}`),
               onBlur: formik.handleBlur,
+              prefix: '$',
             }}
             hasError={
               formik.touched.projectValue && Boolean(formik.errors.projectValue)
@@ -270,7 +284,7 @@ export function PostProjectDetails({ formik, children }: Props) {
             }
             errorMessage={
               formik.touched.estimatedDuration &&
-              formik.errors.estimatedDuration
+                formik.errors.estimatedDuration
                 ? formik.errors.estimatedDuration
                 : ''
             }
@@ -316,7 +330,7 @@ export function PostProjectDetails({ formik, children }: Props) {
             }
             errorMessage={
               formik.touched.specialInstructions &&
-              formik.errors.specialInstructions
+                formik.errors.specialInstructions
                 ? formik.errors.specialInstructions
                 : ''
             }

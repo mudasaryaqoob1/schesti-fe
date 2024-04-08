@@ -8,7 +8,6 @@ interface FetchClientParams {
   limit: number;
 }
 
-
 interface FetchPartnerParams {
   page: number;
   limit: number;
@@ -38,7 +37,6 @@ export const fetchCompanyClients = createAsyncThunk(
     }
   }
 );
-
 
 export const fetchCompanyPartner = createAsyncThunk(
   'company/partners',

@@ -5,6 +5,7 @@ import {
   ISaveUserBid,
 } from '@/app/interfaces/bid-management/bid-management.interface';
 import { USCurrencyFormat } from '@/app/utils/format';
+import { Routes } from '@/app/utils/plans.utils';
 import { Avatar, Divider } from 'antd';
 import { Country } from 'country-state-city';
 import moment from 'moment';
@@ -253,7 +254,12 @@ export function BidDetails({ bid }: Props) {
       </div>
 
       <div className="mt-4 space-y-2">
-        <CustomButton text="Send Bid" />
+        <CustomButton
+          text="Send Bid"
+          onClick={() => {
+            router.push(`${Routes['Bid Management'].Submit}/${bid._id}`);
+          }}
+        />
 
         <CustomButton
           onClick={() => saveUserBidMutation.mutate({projectId: bid?._id})}

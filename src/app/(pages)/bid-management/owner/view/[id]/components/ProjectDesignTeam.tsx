@@ -1,12 +1,12 @@
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { RootState } from '@/redux/store';
-import { Dropdown, Table, type TableProps } from 'antd';
-import Image from 'next/image';
+import { Table, type TableProps } from 'antd';
 import { useSelector } from 'react-redux';
 
 export function ProjectDesignTeam() {
-  const bid = useSelector((state: RootState) => state.bidManagementOwner.project);
-
+  const bid = useSelector(
+    (state: RootState) => state.bidManagementOwner.project
+  );
 
   const columns: TableProps['columns'] = [
     {
@@ -38,41 +38,6 @@ export function ProjectDesignTeam() {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
-    },
-    {
-      title: 'Action',
-      key: 'action',
-      render() {
-        return (
-          <Dropdown
-            menu={{
-              items: [
-                {
-                  key: 'edit',
-                  label: <p>Edit</p>,
-                },
-                {
-                  key: 'delete',
-                  label: <p>Delete</p>,
-                },
-              ],
-              onClick: () => {
-
-              },
-            }}
-            placement="bottomRight"
-            trigger={['click']}
-          >
-            <Image
-              src={'/menuIcon.svg'}
-              alt="logo white icon"
-              width={20}
-              height={20}
-              className="active:scale-105 cursor-pointer"
-            />
-          </Dropdown>
-        );
-      },
     },
   ];
   return (

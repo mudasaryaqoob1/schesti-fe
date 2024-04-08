@@ -18,12 +18,12 @@ export function ProjectUploadFiles({ formik, children }: Props) {
   const [files, setFiles] = useState<UploadFile[]>([]);
   const [loading, setLoading] = useState(false);
 
-  function removeFile(id: string) {
-    const newFiles = files.filter((f) => {
-      return f.uid !== id;
-    });
-    setFiles(newFiles);
-  }
+  // function removeFile(id: string) {
+  //   const newFiles = files.filter((f) => {
+  //     return f.uid !== id;
+  //   });
+  //   setFiles(newFiles);
+  // }
 
   function addFiles(newFiles: RcFile[] | UploadFile[]) {
     const updatedFiles = newFiles.map((file) => {
@@ -70,7 +70,7 @@ export function ProjectUploadFiles({ formik, children }: Props) {
   }
 
   return (
-    <div className=" bg-white shadow-2xl rounded-xl border p-4">
+    <div className=" bg-white shadow-[0_4px_30px_0px_#2E2D740D] rounded-xl border p-4">
       <TertiaryHeading
         title="Upload File"
         className="text-[20px] leading-[30px]"
@@ -121,51 +121,53 @@ export function ProjectUploadFiles({ formik, children }: Props) {
         </Dragger>
 
         {/* Files that are already uploaded */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4 mt-9">
-          {formik.values.projectFiles.map((file, index) => {
-            return (
-              <div key={file.url} className="border rounded">
-                <div className="bg-[#F4EBFF] flex items-center justify-between px-2 py-1 ">
-                  <div className="flex items-center space-x-3">
+        <Spin spinning={loading} indicator={<LoadingOutlined />}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4 mt-9">
+            {formik.values.projectFiles.map((file, index) => {
+              return (
+                <div key={file.url} className="border rounded">
+                  <div className="bg-[#F4EBFF] flex items-center justify-between px-2 py-1 ">
+                    <div className="flex items-center space-x-3">
+                      <Image
+                        src={'/file-05.svg'}
+                        width={16}
+                        height={16}
+                        alt="file"
+                      />
+                      <p className="text-[#667085] text-[14px] leading-6">
+                        {file.name.slice(0, 12)}.{file.name.split('.').pop()}
+                      </p>
+                    </div>
                     <Image
-                      src={'/file-05.svg'}
+                      src={'/trash.svg'}
                       width={16}
                       height={16}
-                      alt="file"
+                      alt="close"
+                      className="cursor-pointer"
+                      onClick={() => removeFileFromFromik(index)}
                     />
-                    <p className="text-[#667085] text-[14px] leading-6">
-                      {file.name.slice(0, 12)}.{file.name.split('.').pop()}
-                    </p>
                   </div>
-                  <Image
-                    src={'/trash.svg'}
-                    width={16}
-                    height={16}
-                    alt="close"
-                    className="cursor-pointer"
-                    onClick={() => removeFileFromFromik(index)}
-                  />
+                  <div className="p-2 w-auto h-[190px] xl:w-[230px] relative">
+                    {file.type.includes('image') ? (
+                      <Image alt="image" src={file.url} fill />
+                    ) : (
+                      <div className="relative mt-10 w-[100px] h-[100px] mx-auto">
+                        <Image
+                          alt="pdf"
+                          src={'/pdf.svg'}
+                          layout="fill"
+                          objectFit="cover"
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div className="p-2 w-auto h-[190px] xl:w-[230px] relative">
-                  {file.type.includes('image') ? (
-                    <Image alt="image" src={file.url} fill />
-                  ) : (
-                    <div className="relative mt-10 w-[100px] h-[100px] mx-auto">
-                      <Image
-                        alt="pdf"
-                        src={'/pdf.svg'}
-                        layout="fill"
-                        objectFit="cover"
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        </Spin>
         <Divider />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4 mt-9">
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-4 mt-9">
           {files.map((file) => {
             return (
               <div key={file.uid} className="border rounded">
@@ -219,7 +221,7 @@ export function ProjectUploadFiles({ formik, children }: Props) {
               </div>
             );
           })}
-        </div>
+        </div> */}
       </div>
       {children}
     </div>

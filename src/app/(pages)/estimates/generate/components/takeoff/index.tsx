@@ -68,7 +68,7 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
             <CustomWhiteButton
               text="Cancel"
               className="md:w-32"
-              onClick={() => router.push('/estimates')}
+              onClick={() => router.push('/estimates/requests')}
             />
           )}
 

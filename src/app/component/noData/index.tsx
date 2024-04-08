@@ -10,12 +10,14 @@ type Props = {
   link: string;
   title: string;
   description?: string;
+  isButton?: boolean
 };
 const NoData = ({
   btnText = 'text',
   link = '/',
   title = 'This is title',
   description = 'This is description',
+  isButton = true
 }: Props) => {
   const router = useRouter();
   return (
@@ -38,11 +40,16 @@ const NoData = ({
             title={description}
             className="text-steelGray text-center font-normal"
           />
-          <CustomButton
-            className="mt-7"
-            text={btnText}
-            onClick={() => router.push(link)}
-          />
+          {
+            isButton ? (
+              <CustomButton
+              className="mt-7"
+              text={btnText}
+              onClick={() => router.push(link)}
+            />
+            ) : null
+          }
+         
         </div>
       </div>
     </section>

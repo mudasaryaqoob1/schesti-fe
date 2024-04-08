@@ -23,7 +23,7 @@ import {
 import { G7State } from '@/app/interfaces/client-invoice.interface';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
-import { disabledDate } from '@/app/utils/date.utils';
+// import { disabledDate } from '@/app/utils/date.utils';
 
 type Props = {
   state: G7State;
@@ -129,7 +129,7 @@ export function G703Component({
                 }
                 //@ts-ignore
                 //@ts-nocheck
-                disabledDate={disabledDate}
+                // disabledDate={disabledDate}
               />
               {showAddAndDelete ? (
                 <p className="text-gray-400">Application Date is required.</p>
@@ -151,7 +151,7 @@ export function G703Component({
                 }
                 //@ts-ignore
                 //@ts-nocheck
-                disabledDate={disabledDate}
+                // disabledDate={disabledDate}
               />
               {showAddAndDelete ? (
                 <p className="text-gray-400">Period To is required.</p>

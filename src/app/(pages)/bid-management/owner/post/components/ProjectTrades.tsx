@@ -87,8 +87,10 @@ export function PostProjectTrades({ formik, children }: Props) {
     return trades.filter((trade) => trade.tradeCategoryId._id === id);
   }
 
+  // box-shadow: 0px 4px 30px 0px #2E2D740D;
+
   return (
-    <div className=" bg-white shadow-2xl rounded-xl border p-4">
+    <div className=" bg-white shadow-[0_4px_30px_0px_#2E2D740D] rounded-xl border p-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-5">
           <TertiaryHeading

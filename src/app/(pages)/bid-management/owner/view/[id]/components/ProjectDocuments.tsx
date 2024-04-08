@@ -17,10 +17,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 type Props = {
-  id: string
-}
+  id: string;
+};
 export function ProjectDocuments({ id }: Props) {
-  const bid = useSelector((state: RootState) => state.bidManagementOwner.project);
+  const bid = useSelector(
+    (state: RootState) => state.bidManagementOwner.project
+  );
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
@@ -33,13 +35,14 @@ export function ProjectDocuments({ id }: Props) {
   >({
     mutationKey: 'update-post-project',
     mutationFn: (values) =>
-      bidManagementService.httpUpdateBidPostProject(
-        id,
-        { projectFiles: values.projectFiles }
-      ),
+      bidManagementService.httpUpdateBidPostProject(id, {
+        projectFiles: values.projectFiles,
+      }),
     onSuccess(res) {
       if (res.data && res.data.updatedProject) {
-        dispatch(bidManagementOwnerActions.setProjectAction(res.data.updatedProject));
+        dispatch(
+          bidManagementOwnerActions.setProjectAction(res.data.updatedProject)
+        );
       }
     },
     onError(error) {
@@ -59,14 +62,15 @@ export function ProjectDocuments({ id }: Props) {
         const url = await new AwsS3(file, 'documents/post-project/').getS3URL();
         return {
           url,
-          extension: (file).name.split('.').pop() || '',
-          type: (file).type as string,
-          name: (file).name,
+          extension: file.name.split('.').pop() || '',
+          type: file.type as string,
+          name: file.name,
         };
       });
       const uploadedFiles = await Promise.all(filesData);
-      mutation.mutate({ projectFiles: [...uploadedFiles, ...bid.projectFiles] });
-
+      mutation.mutate({
+        projectFiles: [...uploadedFiles, ...bid.projectFiles],
+      });
     } catch (error) {
       console.error('Error uploading file to S3:', error);
       toast.error(`Unable to upload Files`);
@@ -77,8 +81,8 @@ export function ProjectDocuments({ id }: Props) {
 
   function downloadFile(url: string, name: string) {
     fetch(url)
-      .then(response => response.blob())
-      .then(blob => {
+      .then((response) => response.blob())
+      .then((blob) => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.style.display = 'none';
@@ -87,22 +91,22 @@ export function ProjectDocuments({ id }: Props) {
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
-      })
+      });
   }
 
   function downloadAll() {
     if (bid) {
-      setIsDownloadingAll(true)
-      bid.projectFiles.forEach(file => {
+      setIsDownloadingAll(true);
+      bid.projectFiles.forEach((file) => {
         downloadFile(file.url, file.name);
-      })
+      });
       setIsDownloadingAll(false);
     }
   }
 
   function removeFile(file: IBidManagement['projectFiles'][0]) {
     if (bid) {
-      const updatedFiles = bid.projectFiles.filter(f => f.url !== file.url);
+      const updatedFiles = bid.projectFiles.filter((f) => f.url !== file.url);
       mutation.mutate({ projectFiles: updatedFiles });
     }
   }
@@ -125,18 +129,19 @@ export function ProjectDocuments({ id }: Props) {
               iconheight={20}
               onClick={downloadAll}
               isLoading={isDownloadingAll}
-              loadingText='Downloading...'
+              loadingText="Downloading..."
             />
           </div>
 
           <div className="w-48">
             <label htmlFor="addDocuments">
-              <input type="file"
-                accept='image/*, application/pdf'
+              <input
+                type="file"
+                accept="image/*, application/pdf"
                 id="addDocuments"
                 name="addDocuments"
                 multiple
-                className='hidden'
+                className="hidden"
                 ref={fileInputRef}
                 onChange={handleFileUpload}
               />
@@ -153,64 +158,77 @@ export function ProjectDocuments({ id }: Props) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-5 gap-4 mt-5">
-        {bid ? bid.projectFiles.map((file, i) => (
-          <div key={i} className="border rounded">
-            <div className="bg-[#F4EBFF] flex items-center justify-between px-2 py-1 ">
-              <div className="flex items-center space-x-3">
-                <Image src={'/file-05.svg'} width={16} height={16} alt="file" />
-                <p className="text-[#667085] text-[14px] leading-6">
-                  {file.name.slice(0, 10)}.{file.extension}
-                </p>
-              </div>
-              {loading ? <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} /> :
-                <Dropdown
-                  menu={{
-                    items: [
-                      {
-                        key: "view",
-                        label: "View",
-                      },
-                      {
-                        key: "download",
-                        label: "Download",
-                        onClick: () => downloadFile(file.url, file.name)
-                      },
-                      {
-                        key: "delete",
-                        label: "Delete",
-                        onClick: () => removeFile(file)
+        {bid
+          ? bid.projectFiles.map((file, i) => (
+              <div key={i} className="border rounded">
+                <div className="bg-[#F4EBFF] flex items-center justify-between px-2 py-1 ">
+                  <div className="flex items-center space-x-3">
+                    <Image
+                      src={'/file-05.svg'}
+                      width={16}
+                      height={16}
+                      alt="file"
+                    />
+                    <p className="text-[#667085] text-[14px] leading-6">
+                      {file.name.slice(0, 10)}.{file.extension}
+                    </p>
+                  </div>
+                  {loading ? (
+                    <Spin
+                      indicator={
+                        <LoadingOutlined style={{ fontSize: 24 }} spin />
                       }
-                    ]
-                  }}
-                >
-                  <Image
-                    src={'/menuIcon.svg'}
-                    width={16}
-                    height={16}
-                    alt="close"
-                    className="cursor-pointer"
-                  />
-                </Dropdown>
-              }
-            </div>
-            <div className="p-2 pb-8">
-              {file.type.includes('image') ? (
-                <div className='w-auto h-[190px] xl:w-[230px] mx-auto relative'>
-                  <Image alt="image" src={file.url} fill />
+                    />
+                  ) : (
+                    <Dropdown
+                      menu={{
+                        items: [
+                          {
+                            key: 'view',
+                            label: 'View',
+                          },
+                          {
+                            key: 'download',
+                            label: 'Download',
+                            onClick: () => downloadFile(file.url, file.name),
+                          },
+                          {
+                            key: 'delete',
+                            label: 'Delete',
+                            onClick: () => removeFile(file),
+                          },
+                        ],
+                      }}
+                    >
+                      <Image
+                        src={'/menuIcon.svg'}
+                        width={16}
+                        height={16}
+                        alt="close"
+                        className="cursor-pointer"
+                      />
+                    </Dropdown>
+                  )}
                 </div>
-              ) : (
-                <div className="relative mt-10 w-[100px] h-[100px] mx-auto">
-                  <Image
-                    alt="pdf"
-                    src={'/pdf.svg'}
-                    layout="fill"
-                    objectFit="cover"
-                  />
+                <div className="p-2 pb-8">
+                  {file.type.includes('image') ? (
+                    <div className="w-auto h-[190px] xl:w-[230px] mx-auto relative">
+                      <Image alt="image" src={file.url} fill />
+                    </div>
+                  ) : (
+                    <div className="relative mt-10 w-[100px] h-[100px] mx-auto">
+                      <Image
+                        alt="pdf"
+                        src={'/pdf.svg'}
+                        layout="fill"
+                        objectFit="cover"
+                      />
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          </div>
-        )) : null}
+              </div>
+            ))
+          : null}
       </div>
     </div>
   );

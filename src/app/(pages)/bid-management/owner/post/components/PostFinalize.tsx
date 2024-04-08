@@ -38,8 +38,9 @@ export function PostFinalize({ formik, children }: Props) {
         .filter((u: any) => !u.roles.includes('Subcontractor'))
         .map((user: any) => {
           return {
-            label: `${user.email} - ${user.roles}`,
-            value: user.email,
+
+            label: `${user.firstName} ${user.lastName}`,
+            value: user.email
           };
         })
     );
@@ -67,7 +68,7 @@ export function PostFinalize({ formik, children }: Props) {
 
   return (
     <div className="space-y-6">
-      <div className=" bg-white shadow-2xl rounded-xl border p-4">
+      <div className=" bg-white shadow-[0_4px_30px_0px_#2E2D740D] rounded-xl border p-4">
         <TertiaryHeading
           title="Summary"
           className="text-[20px] leading-[30px]"
@@ -293,7 +294,7 @@ export function PostFinalize({ formik, children }: Props) {
           </div>
         </fieldset>
       </div>
-      <div className=" bg-white shadow-2xl rounded-xl border p-4">
+      <div className=" bg-white shadow-[0_4px_30px_0px_#2E2D740D] rounded-xl border p-4">
         <TertiaryHeading
           title="Invite and Finalize"
           className="text-[20px] leading-[30px]"
@@ -401,7 +402,7 @@ export function PostFinalize({ formik, children }: Props) {
               onBlur: formik.handleBlur,
               status:
                 formik.touched.selectedTeamMembers &&
-                Boolean(formik.errors.selectedTeamMembers)
+                  Boolean(formik.errors.selectedTeamMembers)
                   ? 'error'
                   : undefined,
             }}
@@ -411,14 +412,14 @@ export function PostFinalize({ formik, children }: Props) {
             }
             errorMessage={
               formik.touched.selectedTeamMembers &&
-              Boolean(formik.errors.selectedTeamMembers) &&
-              Array.isArray(formik.errors.selectedTeamMembers)
+                Boolean(formik.errors.selectedTeamMembers) &&
+                Array.isArray(formik.errors.selectedTeamMembers)
                 ? formik.errors.selectedTeamMembers
-                    .map(
-                      (item: string, idx) =>
-                        `'${formik.values.selectedTeamMembers![idx]}' ${item}`
-                    )
-                    .toString()
+                  .map(
+                    (item: string, idx) =>
+                      `'${formik.values.selectedTeamMembers![idx]}' ${item}`
+                  )
+                  .toString()
                 : (formik.errors.selectedTeamMembers as string)
             }
           />
@@ -467,7 +468,7 @@ export function PostFinalize({ formik, children }: Props) {
                 onBlur: formik.handleBlur,
                 status:
                   formik.touched.invitedMembers &&
-                  Boolean(formik.errors.invitedMembers)
+                    Boolean(formik.errors.invitedMembers)
                     ? 'error'
                     : undefined,
               }}
@@ -477,14 +478,14 @@ export function PostFinalize({ formik, children }: Props) {
               }
               errorMessage={
                 formik.touched.invitedMembers &&
-                Boolean(formik.errors.invitedMembers) &&
-                Array.isArray(formik.errors.invitedMembers)
+                  Boolean(formik.errors.invitedMembers) &&
+                  Array.isArray(formik.errors.invitedMembers)
                   ? formik.errors.invitedMembers
-                      .map(
-                        (item: string, idx) =>
-                          `'${formik.values.invitedMembers![idx]}' ${item}`
-                      )
-                      .toString()
+                    .map(
+                      (item: string, idx) =>
+                        `'${formik.values.invitedMembers![idx]}' ${item}`
+                    )
+                    .toString()
                   : (formik.errors.invitedMembers as string)
               }
             />

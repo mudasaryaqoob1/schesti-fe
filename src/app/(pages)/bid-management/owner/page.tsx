@@ -1,6 +1,5 @@
 'use client';
 import CustomButton from '@/app/component/customButton/button';
-import WhiteButton from '@/app/component/customButton/white';
 import { InputComponent } from '@/app/component/customInput/Input';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { withAuth } from '@/app/hoc/withAuth';
@@ -25,15 +24,12 @@ import moment from 'moment';
 import Image from 'next/image';
 import { useState } from 'react';
 import { DeletePopup } from './post/components/DeletePopup';
-const PDFDownloadLink = dynamic(
-  () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
-  {
-    ssr: false,
-    loading: () => <p>Loading...</p>,
-  },
-);
 import dynamic from 'next/dynamic';
-import BidListPdf from './components/bid-pdf';
+
+const ExportAll = dynamic(() => import("./components/ExportAll"), { ssr: false });
+
+
+
 
 function Page() {
   const router = useRouter();
@@ -137,7 +133,7 @@ function Page() {
       dataIndex: 'action',
       align: 'center',
       key: 'action',
-      render: (value, record) => (
+      render: (_value, record) => (
         <Dropdown
           menu={{
             items: [
@@ -226,40 +222,29 @@ function Page() {
               type="text"
               placeholder="Search"
               name="search"
-              prefix={<SearchOutlined />}
+              prefix={<SearchOutlined className='text-lg' />}
               field={{
                 type: 'text',
+                className: "!py-3",
                 value: search,
                 onChange: (e) => setSearch(e.target.value),
               }}
             />
           </div>
-          <PDFDownloadLink
-            document={<BidListPdf bids={filteredData} />}
-            fileName={`bid-list-${Math.random()}.pdf`}
-          >
-            {({ loading }) => (
-              <WhiteButton
-                text={loading ? 'Exporting...' : 'Export'}
-                icon="/uploadcloud.svg"
-                iconheight={20}
-                className="!w-32"
-                iconwidth={20}
-                isLoading={loading}
-              />
-            )}
-          </PDFDownloadLink>
-          <CustomButton
-            icon="/plus.svg"
-            className="!w-48"
-            iconheight={20}
-            iconwidth={20}
-            text="Post New Project"
-            onClick={() => {
-              dispatch(resetPostProjectAction());
-              router.push(`${Routes['Bid Management'].Owner}/post`);
-            }}
-          />
+          <div className='flex items-center space-x-2'>
+            <ExportAll bids={filteredData} />
+            <CustomButton
+              icon="/plus.svg"
+              className="!w-48"
+              iconheight={20}
+              iconwidth={20}
+              text="Post New Project"
+              onClick={() => {
+                dispatch(resetPostProjectAction());
+                router.push(`${Routes['Bid Management'].Owner}/post`);
+              }}
+            />
+          </div>
         </div>
       </div>
 

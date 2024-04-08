@@ -21,7 +21,7 @@ import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import FormControl from '@/app/component/formControl';
 import { categoriesService } from '@/app/services/categories.service';
-import { materialService } from '@/app/services/material.service';
+// import { materialService } from '@/app/services/material.service';
 import { bg_style } from '@/globals/tailwindvariables';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { estimateRequestService } from '@/app/services/estimates.service';
@@ -29,7 +29,8 @@ import { generateEstimateDetailAction } from '@/redux/estimate/estimateRequest.s
 import { selectGeneratedEstimateDetail } from '@/redux/estimate/estimateRequestSelector';
 import { PositiveNumberRegex } from '@/app/utils/regex.util';
 import { byteConverter } from '@/app/utils/byteConverter';
-import { IUnits } from '@/app/interfaces/settings/material-settings.interface';
+// import { IUnits } from '@/app/interfaces/settings/material-settings.interface';
+import EstimatesUnits from '@/app/constants/estimatesUnits.json'
 import { formatNumberWithCommas } from '@/app/utils/helper';
 
 type InitialValuesType = {
@@ -126,7 +127,7 @@ const Scope = ({ setPrevNext }: Props) => {
   // const [selecteddescription, setsSelecteddescription] = useState('');
   const [editItem, setEditItem] = useState(false);
   const [editConfirmItem, setEditConfirmItem] = useState(false);
-  const [estiamteUnits, setEstiamteUnits] = useState<IUnits[] | undefined>([]);
+  // const [estiamteUnits, setEstiamteUnits] = useState<IUnits[] | undefined>([]);
   const [confirmEstimates, setConfirmEstimates] = useState<
     {
       title: string;
@@ -184,10 +185,10 @@ const Scope = ({ setPrevNext }: Props) => {
     });
     setSubCategories(flattenedSubcategories);
   }, []);
-  const fetchMaterialUnits = useCallback(async () => {
-    const unitsMaterials = await materialService.httpFetchMaterialUnits();
-    setEstiamteUnits(unitsMaterials.data?.fetchedUnits);
-  }, []);
+  // const fetchMaterialUnits = useCallback(async () => {
+  //   const unitsMaterials = await materialService.httpFetchMaterialUnits();
+  //   setEstiamteUnits(unitsMaterials.data?.fetchedUnits);
+  // }, []);
   const fetchEstimateDetail = useCallback(async () => {
     let result = await estimateRequestService.httpGetEstimateDetail(
       estimateIdQueryParameter
@@ -253,7 +254,7 @@ const Scope = ({ setPrevNext }: Props) => {
   useEffect(() => {
     fetchCategories();
     fetchEstimateDetail();
-    fetchMaterialUnits();
+    // fetchMaterialUnits();
   }, []);
   useEffect(() => {
     if (selectedCategory) {
@@ -329,13 +330,15 @@ const Scope = ({ setPrevNext }: Props) => {
       (cat: any) => cat.value === estimateTableItemValues.subCategory
     );
 
-    let selectedCategory = `${selectedCategoryName?.label
+    let selectedCategory = `${
+      selectedCategoryName?.label
         ? selectedCategoryName?.label
         : estimateTableItemValues?.category
-      } ${selctedSubCategoryName?.label
+    } ${
+      selctedSubCategoryName?.label
         ? selctedSubCategoryName?.label
         : estimateTableItemValues.subCategory
-      }`;
+    }`;
 
     if (editConfirmItem) {
       const updateConfirmEstimateArray: any = confirmEstimates.map(
@@ -556,11 +559,13 @@ const Scope = ({ setPrevNext }: Props) => {
       (cat: any) => cat.value === record.subCategory
     );
 
-    let selectedCategory = `${selctedCatoryName?.label ? selctedCatoryName?.label : record?.category
-      } ${selctedSubCategoryName?.label
+    let selectedCategory = `${
+      selctedCatoryName?.label ? selctedCatoryName?.label : record?.category
+    } ${
+      selctedSubCategoryName?.label
         ? selctedSubCategoryName?.label
         : record.subCategory
-      }`;
+    }`;
 
     const newArray: any = confirmEstimates.map((item) => {
       if (item && item.title === selectedCategory) {
@@ -953,9 +958,9 @@ const Scope = ({ setPrevNext }: Props) => {
       let modifyArray = confirmEstimates.map((item, i) =>
         i === index
           ? {
-            ...item,
-            scopeItems: [...item.scopeItems, ...dataSource.scopeItems],
-          }
+              ...item,
+              scopeItems: [...item.scopeItems, ...dataSource.scopeItems],
+            }
           : item
       );
       setConfirmEstimates(modifyArray);
@@ -1067,7 +1072,7 @@ const Scope = ({ setPrevNext }: Props) => {
                       // options={estimateDescriptions}
                       placeholder="Write Description"
                       mt="mt-0"
-                    // setCustomState={setsSelecteddescription}
+                      // setCustomState={setsSelecteddescription}
                     />
                   </div>
                   <FormControl
@@ -1078,7 +1083,7 @@ const Scope = ({ setPrevNext }: Props) => {
                     name="unit"
                     placeholder="Write Unit"
                     mt="mt-0"
-                    options={estiamteUnits}
+                    options={EstimatesUnits}
                   />
                   <FormControl
                     control="input"
@@ -1188,34 +1193,34 @@ const Scope = ({ setPrevNext }: Props) => {
               <div>
                 {confirmEstimates.length
                   ? confirmEstimates.map((estimate) => (
-                    <div
-                      key={estimate.title}
-                      className={`${bg_style} p-5 mt-3`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <QuaternaryHeading
-                            title={estimate.categoryName}
-                            className="font-semibold"
-                          />
-                          <QuaternaryHeading
-                            title={estimate.subCategoryName}
-                            className="!font=[#344054] font-light"
+                      <div
+                        key={estimate.title}
+                        className={`${bg_style} p-5 mt-3`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <QuaternaryHeading
+                              title={estimate.categoryName}
+                              className="font-semibold"
+                            />
+                            <QuaternaryHeading
+                              title={estimate.subCategoryName}
+                              className="!font=[#344054] font-light"
+                            />
+                          </div>
+                        </div>
+                        <div className="estimateTable_container">
+                          <Table
+                            className="mt-2"
+                            loading={false}
+                            columns={confirmColumns}
+                            dataSource={estimate.scopeItems as DataType[]}
+                            pagination={false}
+                            scroll={{ x: 1000 }}
                           />
                         </div>
                       </div>
-                      <div className="estimateTable_container">
-                        <Table
-                          className="mt-2"
-                          loading={false}
-                          columns={confirmColumns}
-                          dataSource={estimate.scopeItems as DataType[]}
-                          pagination={false}
-                          scroll={{ x: 1000 }}
-                        />
-                      </div>
-                    </div>
-                  ))
+                    ))
                   : null}
               </div>
             </>

@@ -239,7 +239,6 @@ export function ProjectSummary(props: IProps) {
             </div>
           </div>
         </fieldset>
-
       </div>
     </div>
   );
