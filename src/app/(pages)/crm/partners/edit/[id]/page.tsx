@@ -1,5 +1,5 @@
 'use client';
-import { useLayoutEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useRouter, useParams } from 'next/navigation';
@@ -21,10 +21,6 @@ import { HttpService } from '@/app/services/base.service';
 // partner service
 import { userService } from '@/app/services/user.service';
 import { PhoneNumberRegex } from '@/app/utils/regex.util';
-import { useQuery } from 'react-query';
-import { Skeleton } from 'antd';
-import { IResponseInterface } from '@/app/interfaces/api-response.interface';
-import { AxiosError } from 'axios';
 import { withAuth } from '@/app/hoc/withAuth';
 import { Routes } from '@/app/utils/plans.utils';
 
@@ -67,24 +63,26 @@ const EditPartner = () => {
   }, [token]);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [partnerDetail, setPartnerDetail] = useState<IPartner | undefined>({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    companyName: '',
+    address: '',
+    secondAddress: '',
+  })
 
-  const partnerQuery = useQuery<
-    IResponseInterface<{ client: IPartner }> | null,
-    AxiosError<{ message: string }>
-  >(
-    ['get-company-client', id],
-    () => {
-      if (!id) {
-        return null;
-      }
-      return userService.httpFindCompanyClient(id);
-    },
-    {
-      onError(err) {
-        toast.error(err.response?.data.message);
-      },
-    }
-  );
+
+const fetchPartnerDetail = useCallback(async () => {
+  const partnerDetail = await userService.httpFindCompanyPartnerDetail(id)
+  setPartnerDetail(partnerDetail?.data?.partner)
+},[])
+
+
+  useEffect(() => {
+    fetchPartnerDetail()
+  },[])
 
   const submitHandler = async (values: IPartner) => {
     setIsLoading(true);
@@ -96,7 +94,7 @@ const EditPartner = () => {
       address: values.address,
       secondAddress: values.secondAddress,
     };
-    let result = await userService.httpUpdateClient(updatePartnerBody, id);
+    let result = await userService.httpUpdatePartner(updatePartnerBody, id);
     if (result.statusCode == 200) {
       setIsLoading(false);
       router.push(Routes.CRM.Partners);
@@ -106,11 +104,6 @@ const EditPartner = () => {
     }
   };
 
-  if (partnerQuery.isLoading) {
-    return <Skeleton />;
-  }
-
-  const partnerData = partnerQuery.data?.data?.client;
 
   return (
     <section className="mx-16">
@@ -138,15 +131,14 @@ const EditPartner = () => {
         />
       </div>
       <div
-        className="p-5 flex flex-col rounded-lg border
-     border-silverGray shadow-secondaryShadow2 bg-white"
+        className="p-5 flex flex-col rounded-lg border border-silverGray shadow-secondaryShadow2 bg-white"
       >
         <TertiaryHeading
           className="text-graphiteGray mb-4 "
           title="Add New Partner"
         />
         <Formik
-          initialValues={partnerData ? partnerData : initialValues}
+          initialValues={partnerDetail ? partnerDetail : initialValues}
           enableReinitialize={true}
           validationSchema={newPartnerSchema}
           onSubmit={submitHandler}

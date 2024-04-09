@@ -14,7 +14,7 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 import Button from '@/app/component/customButton/button';
 import {
-  deleteCompanyClient,
+  deleteCompanyPartner,
   fetchCompanyPartner,
 } from '@/redux/company/company.thunk';
 import Image from 'next/image';
@@ -39,18 +39,6 @@ interface DataType {
 
 const items: MenuProps['items'] = [
   {
-    key: 'createEstimateRequest',
-    label: <p>Create estimate request</p>,
-  },
-  {
-    key: 'createNewInvoice',
-    label: <p>Create new invoice</p>,
-  },
-  {
-    key: 'createSchedule',
-    label: <p>Create Schedule</p>,
-  },
-  {
     key: 'editPartnerDetail',
     label: <p>Edit details</p>,
   },
@@ -70,22 +58,16 @@ const PartnerTable = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedPartner, setselectedPartner] = useState<IPartner | null>(null);
 
-  const memoizedSetPerson = useCallback(async () => {
+  const fetchCompanyPartnerHandler = useCallback(async () => {
     await dispatch(fetchCompanyPartner({ page: 1, limit: 10 }));
   }, [dispatch]);
 
   useEffect(() => {
-    memoizedSetPerson();
-  }, [memoizedSetPerson]);
+    fetchCompanyPartnerHandler();
+  }, []);
 
   const handleDropdownItemClick = async (key: string, partner: any) => {
-    if (key === 'createEstimateRequest') {
-      router.push(`/estimates/requests/create`);
-    } else if (key === 'createNewInvoice') {
-      router.push(`/financial/standard-invoicing/create`);
-    } else if (key === 'createSchedule') {
-      router.push(`/schedule`);
-    } else if (key == 'deletePartner') {
+     if (key == 'deletePartner') {
       setselectedPartner(partner);
       setShowDeleteModal(true);
     } else if (key == 'editPartnerDetail') {
@@ -94,7 +76,6 @@ const PartnerTable = () => {
   };
 
 
-  console.log(partnersData , 'partnersData');
   
   const columns: ColumnsType<DataType> = [
     {
@@ -178,7 +159,7 @@ const PartnerTable = () => {
             onClick={async () => {
               if ('_id' in selectedPartner) {
                 await dispatch(
-                  deleteCompanyClient(selectedPartner._id as string)
+                  deleteCompanyPartner(selectedPartner._id as string)
                 );
                 toast.success('Partner deleted successfully');
               }
