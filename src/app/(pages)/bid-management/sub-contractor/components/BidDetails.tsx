@@ -17,6 +17,7 @@ import { useMutation } from 'react-query';
 import { bidManagementService } from '@/app/services/bid-management.service';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { CreateRFI } from './CreateRFI';
 
 type Props = {
   bid: IBidManagement;
@@ -267,9 +268,9 @@ export function BidDetails({ bid }: Props) {
           className="!bg-white !text-[#7138DF]"
         />
 
-        <CustomButton
-          text="Send an RFI"
-          className="!bg-[#F9F5FF] !text-[#7138DF]"
+        <CreateRFI
+          onSuccess={() => { }}
+          projectId={bid._id}
         />
       </div>
     </div>

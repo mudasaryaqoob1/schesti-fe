@@ -8,14 +8,14 @@ import { useDispatch, useSelector } from 'react-redux';
 
 // module imports
 import { AppDispatch } from '@/redux/store';
-import { selectClients } from '@/redux/company/companySelector';
+import { selectPartners } from '@/redux/company/companySelector';
 import { selectClientsLoading } from '@/redux/company/companySelector';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 import Button from '@/app/component/customButton/button';
 import {
   deleteCompanyClient,
-  fetchCompanyClients,
+  fetchCompanyPartner,
 } from '@/redux/company/company.thunk';
 import Image from 'next/image';
 import { SearchOutlined } from '@ant-design/icons';
@@ -64,14 +64,14 @@ const PartnerTable = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
-  const partnersData: IPartner[] | null = useSelector(selectClients);
+  const partnersData: IPartner[] | null = useSelector(selectPartners);
   const partnerLoading = useSelector(selectClientsLoading);
   const [search, setSearch] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedPartner, setselectedPartner] = useState<IPartner | null>(null);
 
   const memoizedSetPerson = useCallback(async () => {
-    await dispatch(fetchCompanyClients({ page: 1, limit: 10 }));
+    await dispatch(fetchCompanyPartner({ page: 1, limit: 10 }));
   }, [dispatch]);
 
   useEffect(() => {
@@ -93,6 +93,9 @@ const PartnerTable = () => {
     }
   };
 
+
+  console.log(partnersData , 'partnersData');
+  
   const columns: ColumnsType<DataType> = [
     {
       title: 'Partner Name',

@@ -4,6 +4,7 @@ import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import authReducer from './authSlices/authSlice';
 import companyClientReducer from './company/clientSlice/companyClient.slice';
+import companyPartnerReducer from './company/partnerSlice/companyPartner.slice';
 import subContractorReducer from './company/subcontractorSlice/companySubcontractor.slice';
 import estimateRequestSlice from './estimate/estimateRequest.slice';
 import supportTicketsSlice from './supportTickets/supportTickets.slice';
@@ -27,6 +28,7 @@ export type RootState = {
   auth: typeof authReducer;
   companyClient: any;
   companySubContractor: typeof subContractorReducer;
+  companyPartnerReducer: typeof companyPartnerReducer;
   estimates: any;
   supportTickets: any;
   takeoff: any;
@@ -56,6 +58,7 @@ const persistConfig = {
 const rootReducer = combineReducers<RootState>({
   auth: authReducer,
   companyClient: companyClientReducer,
+  companyPartnerReducer : companyPartnerReducer,
   companySubContractor: subContractorReducer,
   estimates: estimateRequestSlice,
   supportTickets: supportTicketsSlice,

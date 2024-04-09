@@ -49,9 +49,6 @@ const featuresData: {
   },
 };
 
-console.log('logs for deployment');
-
-
 export default function Home() {
   const router = useRouter();
   const [tab, setTab] = useState<Key>('estimating');

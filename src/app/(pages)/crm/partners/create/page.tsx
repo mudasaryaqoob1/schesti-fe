@@ -70,7 +70,7 @@ const CreatePartner = () => {
   const submitHandler = async (values: IPartner) => {
     setIsLoading(true);
     userService
-      .httpAddNewClient(values)
+      .httpAddNewPartner(values)
       .then((response: any) => {
         if (response.statusCode == 201) {
           setIsLoading(false);

@@ -1,27 +1,21 @@
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
-import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
-import { IEstimateRequest } from '@/app/interfaces/estimateRequests/estimateRequests.interface';
+import { IDashboardStats } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 import Image from 'next/image';
 import { UseQueryResult } from 'react-query';
 
 type Props = {
-  clientQuery: UseQueryResult<IResponseInterface<{ clients: IClient[] }>>;
-  estimateQuery: UseQueryResult<
-    IResponseInterface<{ generatedEstimates: IEstimateRequest[] }>
-  >;
+  fetchDashboardState: UseQueryResult<IResponseInterface<IDashboardStats>>;
 };
 
-export function TotalCost({ clientQuery, estimateQuery }: Props) {
+export function TotalCost({ fetchDashboardState }: Props) {
+  let { data } = fetchDashboardState;
+
   return (
     <div className="grid grid-cols-4 gap-3 my-3">
       <div className="flex justify-between items-center bg-white shadow-lg rounded-md p-4 border border-t">
         <div className="space-y-2">
-          <h2 className="text-[#EF9F28] font-semibold text-[30px] leading-[38px]">
-            {estimateQuery.isLoading
-              ? 'Loading...'
-              : estimateQuery.data && estimateQuery.data.data
-                ? estimateQuery.data.data.generatedEstimates.length
-                : 0}
+        <h2 className="text-[#EF9F28] font-semibold text-[30px] leading-[38px]">
+            {data?.data?.totalGeneratedEstimates}
           </h2>
           <h3
             className={'text-[#344054] text-[18px] leading-[26px] font-normal'}
@@ -41,7 +35,7 @@ export function TotalCost({ clientQuery, estimateQuery }: Props) {
       <div className="flex justify-between items-center bg-white shadow-lg rounded-md p-4 border border-t">
         <div className="space-y-2">
           <h2 className="text-[#EF9F28] font-semibold text-[30px] leading-[38px]">
-            146
+            {data?.data?.totalTakeoff}
           </h2>
           <h3
             className={'text-[#344054] text-[18px] leading-[26px] font-normal'}
@@ -62,7 +56,7 @@ export function TotalCost({ clientQuery, estimateQuery }: Props) {
       <div className="flex justify-between items-center bg-white shadow-lg rounded-md border border-t p-4">
         <div className="space-y-2">
           <h2 className="text-[#EF9F28] font-semibold text-[30px] leading-[38px]">
-            146
+            {data?.data?.totalSchedules}
           </h2>
           <h3
             className={'text-[#344054] text-[18px] leading-[26px] font-normal'}
@@ -82,12 +76,8 @@ export function TotalCost({ clientQuery, estimateQuery }: Props) {
       </div>
       <div className="flex justify-between items-center bg-white border border-t shadow-lg rounded-md p-4">
         <div className="space-y-2">
-          <h2 className="text-[#EF9F28] font-semibold text-[30px] leading-[38px]">
-            {clientQuery.isLoading
-              ? 'Loading...'
-              : clientQuery.data && clientQuery.data.data
-                ? clientQuery.data.data.clients.length
-                : 0}
+        <h2 className="text-[#EF9F28] font-semibold text-[30px] leading-[38px]">
+            {data?.data?.totalClients}
           </h2>
           <h3
             className={'text-[#344054] text-[18px] leading-[26px] font-normal'}
