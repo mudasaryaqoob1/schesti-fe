@@ -94,10 +94,7 @@ class BidManagementService extends HttpService {
   IResponseInterface<{ savedBids: ISaveUserBid }>
   > => this.get(`${this.prefix}/get-user-bids?page=${params.page}&limit=${params.limit}&status=${params.status}`);
 
-  httpGetProjectBidDetails = (projectId: string): Promise<
-  IResponseInterface<{ projectBid: ISaveUserBid | null }>
-  > => this.get(`${this.prefix}/get-bid-details-by-projectId/${projectId}`);
-
+  httpGetProjectSavedBids = (projectId: string) => this.get(`${this.prefix}/get-saved-bid-details/${projectId}`);
 
   httpUploadCSVFile(data: FormData): Promise<{ data: string[][] }> {
     return this.post(`${this.prefix}/import-invited-members`, data, {

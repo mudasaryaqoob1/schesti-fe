@@ -1,11 +1,9 @@
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
-import { bidManagementService } from '@/app/services/bid-management.service';
 import { USCurrencyFormat } from '@/app/utils/format';
 import { Country } from 'country-state-city';
 import moment from 'moment';
 import Image from 'next/image';
-import { useQuery } from 'react-query';
 
 type Props = {
   bid: IBidManagement;
@@ -13,15 +11,8 @@ type Props = {
   isSelected?: boolean;
   selectedBid: any;
 };
-export function BidProjectDdtail({ bid, onClick, isSelected, selectedBid }: Props) {
+export function BidProjectDetail({ bid, onClick, isSelected }: Props) {
   
-  const fetchProjectBidDetails = () => {
-    return bidManagementService.httpGetOwnerProjects(selectedBid._id);
-  }
-
-  const projectBidDetails = useQuery(['project-bid-details'], fetchProjectBidDetails);
-
-  console.log('projectBidDetails', projectBidDetails);
   return (
     <div
       className={`mt-3 rounded-lg ${isSelected ? 'bg-[#e5def0]' : 'bg-[#FCFAFF]'}  border border-[#E8E3EF] p-4 cursor-pointer`}

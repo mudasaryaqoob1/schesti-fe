@@ -16,7 +16,6 @@ export function UpComingProjects() {
     status: 'upcoming',
     limit: 10
   }
-  console.log('setCurrentPage', setCurrentPage);
   const fetchSavedBids = async () => {
     return bidManagementService.httpGetUserSavedBids(params);
   };

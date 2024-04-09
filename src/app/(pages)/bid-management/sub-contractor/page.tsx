@@ -7,7 +7,7 @@ import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { withAuth } from '@/app/hoc/withAuth';
 import { SearchOutlined } from '@ant-design/icons';
 import Image from 'next/image';
-import { BidProjectDdtail } from './components/BidProjectDetail';
+import { BidProjectDetail } from './components/BidProjectDetail';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
@@ -17,6 +17,8 @@ import { Pagination, Skeleton } from 'antd';
 import { BidFilters } from './components/Filters';
 import _, { size } from 'lodash';
 import { isArrayString } from '@/app/utils/typescript.utils';
+import axios from 'axios';
+
 const PDFDownloadLink = dynamic(
   () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
   {
@@ -39,6 +41,7 @@ function BidManagementSubContractorPage() {
   const [invitedCurrentPage, setInvitedCurrentPage] = useState(1);
   const [exploreCurrentPage, setExploreCurrentPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
+  const [selectedProjectSavedBid, setSelectedProjectSavedBid] = useState<any>(null);
   const [filters, setFilters] = useState<{
     trades: string[];
     projectValue: number;
@@ -103,7 +106,22 @@ function BidManagementSubContractorPage() {
       );
     });
 
-  console.log({ projects });
+    const bidClickHandler = async (selectedBid: any) => {
+      setSelectedBid(selectedBid);
+      
+      try {
+        const { data } = await bidManagementService.httpGetProjectSavedBids(selectedBid._id);
+        console.log('data', data);
+        if(data) {
+          setSelectedProjectSavedBid(data?.projectBid);
+        }
+      } catch(err) {
+        console.error('Error fetching project saved bids:', err);
+      }
+
+    }
+
+
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 ">
       <div className="flex gap-4 items-center">
@@ -219,10 +237,10 @@ function BidManagementSubContractorPage() {
               ) : (
                 currentInvitedProjects.map((bidProject) => {
                   return (
-                    <BidProjectDdtail
+                    <BidProjectDetail
                       key={bidProject._id}
                       bid={bidProject}
-                      onClick={() => setSelectedBid(bidProject)}
+                      onClick={() => bidClickHandler(bidProject)}
                       isSelected={selectedBid?._id === bidProject._id}
                       selectedBid={selectedBid}
                     />
@@ -270,10 +288,10 @@ function BidManagementSubContractorPage() {
                   })
                   .map((bidProject) => {
                     return (
-                      <BidProjectDdtail
+                      <BidProjectDetail
                         key={bidProject._id}
                         bid={bidProject}
-                        onClick={() => setSelectedBid(bidProject)}
+                        onClick={() => bidClickHandler(bidProject)}
                         isSelected={selectedBid?._id === bidProject._id}
                         selectedBid={selectedBid}
                       />
@@ -286,7 +304,7 @@ function BidManagementSubContractorPage() {
           {/* Side Modal */}
           {selectedBid ? (
             <div className="col-span-4 py-[24px] px-[17px] rounded-lg mt-3 border border-[#E9E9EA]">
-              <BidDetails bid={selectedBid} />
+              <BidDetails bid={selectedBid} selectedProjectSavedBid={selectedProjectSavedBid} />
             </div>
           ) : null}
         </div>

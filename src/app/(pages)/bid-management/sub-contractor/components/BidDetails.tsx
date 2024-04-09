@@ -19,16 +19,22 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { CreateRFI } from './CreateRFI';
 import Link from 'next/link';
+import { isEmpty } from 'lodash';
 
 type Props = {
   bid: IBidManagement;
+  selectedProjectSavedBid?: any;
 };
+type RemoveUserBidProps =  {
+  biddingId: string;
+}
 
 type SaveUserBidProps = {
   projectId: string;
   isFavourite?: boolean;
-}
-export function BidDetails({ bid }: Props) {
+  // selectedProjectSavedBid?: any;
+};
+export function BidDetails({ bid, selectedProjectSavedBid }: Props) {
   const router = useRouter();
   const [isFavourite, setIsFavourite] = useState(false);
 
@@ -85,6 +91,33 @@ export function BidDetails({ bid }: Props) {
     },
   });
 
+  const removeUserBidMutation = useMutation<
+  IResponseInterface<{ biddingId: RemoveUserBidProps }>,
+  AxiosError<{ message: string }>,
+  RemoveUserBidProps
+>({
+  //@ts-ignore
+  mutationKey: 'saveUserBid',
+  mutationFn: async (values: RemoveUserBidProps) => {
+    return bidManagementService.httpRemoveUserProjectBid(values.biddingId);
+  },
+  onSuccess(res: any) {
+    console.log('res', res);
+    if (res.data && res.data) {
+      toast.success('Bid removed Successfully');
+      // setSelectedBid(null);
+      // refetchSavedBids();
+      // Dispatch any necessary actions after successful mutation
+    }
+  },
+  onError(error: any) {
+    console.log('error', error);
+    if (error.response?.data?.message) {
+      toast.error(error.response?.data.message);
+      // router.push(`/bid-management/sub-contractor/bids`);
+    }
+  },
+});
 
   return (
     <div>
@@ -149,7 +182,10 @@ export function BidDetails({ bid }: Props) {
           title={bid.description}
           className="text-[#475467] text-[14px] leading-6 font-normal mt-2"
         />
-        <Link href={`/bid-management/contractor/details/${bid?._id}`} className="text-[#7F56D9] underline underline-offset-2 mt-4 text-[14px] leading-6 font-normal cursor-pointer">
+        <Link
+          href={`/bid-management/contractor/details/${bid?._id}`}
+          className="text-[#7F56D9] underline underline-offset-2 mt-4 text-[14px] leading-6 font-normal cursor-pointer"
+        >
           View full details
         </Link>
       </div>
@@ -262,16 +298,21 @@ export function BidDetails({ bid }: Props) {
           }}
         />
 
-        <CustomButton
-          onClick={() => saveUserBidMutation.mutate({ projectId: bid?._id })}
-          text="Add to my Bidding Projects"
-          className="!bg-white !text-[#7138DF]"
-        />
+        {isEmpty(selectedProjectSavedBid) ? (
+          <CustomButton
+            onClick={() => saveUserBidMutation.mutate({ projectId: bid?._id })}
+            text="Add to my Bidding Projects"
+            className="!bg-white !text-[#7138DF]"
+          />
+        ) : (
+          <CustomButton
+            onClick={() => removeUserBidMutation.mutate({biddingId: bid._id})}
+            text="Remove from my bidding projects"
+            className="!text-[red] !bg-transparent !border-[red] !text-base !leading-7 "
+          />
+        )}
 
-        <CreateRFI
-          onSuccess={() => { }}
-          projectId={bid._id}
-        />
+        <CreateRFI onSuccess={() => {}} projectId={bid._id} />
       </div>
     </div>
   );

@@ -24,6 +24,34 @@ export function BidDetails({ bid, setSelectedBid, refetchSavedBids }: Props) {
 
   const router = useRouter();
 
+  const removeUserBidMutation = useMutation<
+  IResponseInterface<{ biddingId: RemoveUserBidProps }>,
+  AxiosError<{ message: string }>,
+  RemoveUserBidProps
+>({
+  //@ts-ignore
+  mutationKey: 'saveUserBid',
+  mutationFn: async (values: RemoveUserBidProps) => {
+    return bidManagementService.httpRemoveUserProjectBid(values.biddingId);
+  },
+  onSuccess(res: any) {
+    console.log('res', res);
+    if (res.data && res.data) {
+      toast.success('Bid removed Successfully');
+      setSelectedBid(null);
+      refetchSavedBids();
+      // Dispatch any necessary actions after successful mutation
+    }
+  },
+  onError(error: any) {
+    console.log('error', error);
+    if (error.response?.data?.message) {
+      toast.error(error.response?.data.message);
+      // router.push(`/bid-management/sub-contractor/bids`);
+    }
+  },
+});
+
   return (
     <div>
       <div className="flex items-center justify-between">
