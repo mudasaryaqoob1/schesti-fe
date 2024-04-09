@@ -1,19 +1,12 @@
+import {  useState } from 'react';
 import { SelectComponent } from '@/app/component/customSelect/Select.component';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
-import { IClientInvoice } from '@/app/interfaces/client-invoice.interface';
+import { IDashboardStats } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 import { Column, type ColumnConfig } from '@ant-design/plots';
-import { Skeleton } from 'antd';
-import moment from 'moment';
-import { useEffect, useState } from 'react';
 import { UseQueryResult } from 'react-query';
 
 type Props = {
-  invoiceQuery: UseQueryResult<
-    IResponseInterface<{
-      invoices: IClientInvoice[];
-    }>,
-    unknown
-  >;
+  fetchDashboardState: UseQueryResult<IResponseInterface<IDashboardStats>>;
 };
 
 const MONTHS = [
@@ -32,42 +25,17 @@ const MONTHS = [
   { label: 'December', value: 'December' },
 ];
 
-export default function InvoiceReport({ invoiceQuery }: Props) {
+export default function InvoiceReport({ fetchDashboardState }: Props) {
+
+  let { data } = fetchDashboardState;
+
+
   const [selectedMonth, setSelectedMonth] = useState('Month');
-  const [invoices, setInvoices] = useState<
-    { value: string | number; type: string }[]
-  >([]);
 
-  useEffect(() => {
-    const data = invoiceQuery.data
-      ? invoiceQuery.data.data!.invoices.map((invoice) => {
-          const month = moment(invoice.applicationDate).format('MMMM');
-          // const value = `$${invoice.totalAmount}`;
-          return {
-            value: invoice.totalAmount,
-            type: month,
-          };
-        })
-      : [];
-    setInvoices(data);
-  }, [invoiceQuery.data, selectedMonth]);
 
-  function sumMonth(type: string) {
-    return invoices
-      .filter((invoice) => invoice.type === type)
-      .reduce((a, b) => a + +b.value, 0);
-  }
-
-  if (invoiceQuery.isLoading) {
-    return (
-      <div className="col-span-7 shadow-lg bg-white rounded-md px-4 border border-t">
-        <Skeleton />
-      </div>
-    );
-  }
 
   const config: ColumnConfig = {
-    data: invoices,
+    data: data?.data?.invoicesDetail as Object[],
     xField: 'type',
     yField: 'value',
     color: (data) => {
@@ -85,11 +53,16 @@ export default function InvoiceReport({ invoiceQuery }: Props) {
     },
 
     label: {
-      content(orignalData) {
-        return `$${sumMonth(orignalData.type)}`;
+      //@ts-ignore
+      text: (originData : any) => {
+        const val = parseFloat(originData.value);
+        if (val < 0.05) {
+          return (val * 100).toFixed(1) + '%';
+        }
+        return '';
       },
+      offset: 10,
     },
-    tooltip: false,
   };
 
   return (

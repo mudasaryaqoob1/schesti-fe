@@ -1,32 +1,14 @@
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
-import { IClientInvoice } from '@/app/interfaces/client-invoice.interface';
-import { IEstimateRequest } from '@/app/interfaces/estimateRequests/estimateRequests.interface';
-import { IMeeting } from '@/app/interfaces/meeting.type';
+import { IDashboardStats } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 import { UseQueryResult } from 'react-query';
 
 type Props = {
-  estimateQuery: UseQueryResult<
-    IResponseInterface<{ generatedEstimates: IEstimateRequest[] }>
-  >;
-  invoiceQuery: UseQueryResult<
-    IResponseInterface<{
-      invoices: IClientInvoice[];
-    }>,
-    unknown
-  >;
-  meetingQuery: UseQueryResult<
-    IResponseInterface<{
-      meetings: IMeeting[];
-    }>,
-    unknown
-  >;
+  fetchDashboardState: UseQueryResult<IResponseInterface<IDashboardStats>>;
 };
-export function ProjectDetails({
-  estimateQuery,
-  invoiceQuery,
-  meetingQuery,
-}: Props) {
+
+export function ProjectDetails({ fetchDashboardState }: Props) {
+  let { data } = fetchDashboardState;
   return (
     <div className="px-5 space-y-5">
       <div className="flex justify-between">
@@ -34,7 +16,7 @@ export function ProjectDetails({
           <span className="w-3 h-3 bg-midnightBlue2" />
           <SenaryHeading title="Takeoff Project" />
         </div>
-        <SenaryHeading title="20" className="font-medium" />
+        <SenaryHeading title={`${data?.data?.totalTakeoff}`} className="font-medium" />
       </div>
       <div className="flex justify-between">
         <div className="flex gap-3 items-center">
@@ -44,13 +26,7 @@ export function ProjectDetails({
         </div>
 
         <SenaryHeading
-          title={`${
-            estimateQuery.isLoading
-              ? 'Loading...'
-              : estimateQuery.data && estimateQuery.data.data
-                ? estimateQuery.data.data.generatedEstimates.length
-                : 0
-          }`}
+          title={`${data?.data?.totalGeneratedEstimates}`}
           className="font-medium"
         />
       </div>
@@ -62,13 +38,7 @@ export function ProjectDetails({
         </div>
 
         <SenaryHeading
-          title={`${
-            invoiceQuery.isLoading
-              ? 'Loading...'
-              : invoiceQuery.data && invoiceQuery.data.data
-                ? invoiceQuery.data.data.invoices.length
-                : 0
-          }`}
+          title={`${data?.data?.totalInvoices}`}
           className="font-medium"
         />
       </div>
@@ -78,7 +48,7 @@ export function ProjectDetails({
 
           <SenaryHeading title="Scheduled Project" />
         </div>
-        <SenaryHeading title="65" className="font-medium" />
+        <SenaryHeading title={`${data?.data?.totalSchedules}`} className="font-medium" />
       </div>
       <div className="flex justify-between">
         <div className="flex items-center gap-3">
@@ -87,13 +57,7 @@ export function ProjectDetails({
           <SenaryHeading title="Meeting" />
         </div>
         <SenaryHeading
-          title={`${
-            meetingQuery.isLoading
-              ? 'Loading...'
-              : meetingQuery.data && meetingQuery.data.data
-                ? meetingQuery.data.data.meetings.length
-                : 0
-          }`}
+          title={`${data?.data?.totalMeetings}`}
           className="font-medium"
         />
       </div>

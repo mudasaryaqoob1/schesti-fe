@@ -1,33 +1,77 @@
-import { Line, type LineConfig } from '@ant-design/plots';
-let categories = ['Takeoff', 'Estimate', 'Scheduled'] as const;
+import React from 'react';
+import { IResponseInterface } from '@/app/interfaces/api-response.interface';
+import { IDashboardStats } from '@/app/interfaces/companyInterfaces/companyClient.interface';
+import { UseQueryResult } from 'react-query';
 
-let data: { type: string; value: number | string }[] = [
-  { type: 'Jan', value: 700 },
-  { type: 'Feb', value: 300 },
-  { type: 'Mar', value: 400 },
-  { type: 'Apr', value: 600 },
-  { type: 'May', value: 300 },
-  { type: 'Jun', value: 100 },
-  { type: 'Jul', value: 300 },
-  { type: 'Aug', value: 700 },
-  { type: 'Sep', value: 400 },
-  { type: 'Oct', value: 600 },
-  { type: 'Nov', value: 300 },
-  { type: 'Dec', value: 100 },
-];
-data = data.map((item, index) => {
-  let categoryIndex = index % categories.length;
-  return {
-    ...item,
-    value: `$${item.value}`,
-    category: categories[categoryIndex],
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+export const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: 'top' as const,
+    },
+    title: {
+      display: false,
+      text: 'Chart.js Line Chart',
+    },
+  },
+};
+
+const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July' , 'August' , 'September' , 'October' , 'November' , 'December'];
+
+type Props = {
+  fetchDashboardState: UseQueryResult<IResponseInterface<IDashboardStats>>;
+};
+
+function StatisticsReport({ fetchDashboardState }: Props) {
+  console.log(fetchDashboardState, 'fetchDashboardState');
+
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: 'TakeOff',
+        data: fetchDashboardState.data?.data?.monthlyTakeOffTotalRecords,
+        borderColor: 'rgb(255, 99, 132)',
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      },
+      {
+        label: 'Estimate',
+        data: fetchDashboardState.data?.data?.monthlyEstimateTotalRecords,
+        borderColor: 'rgb(53, 162, 235)',
+        backgroundColor: 'rgba(53, 162, 235, 0.5)',
+      },
+      {
+        label: 'Schedule',
+        data: fetchDashboardState.data?.data?.monthlyScheduleTotalRecords,
+        borderColor: 'rgb(53, 235, 144)',
+        backgroundColor: 'rgba(53, 235, 93, 0.5)',
+      },
+    ],
   };
-});
-export default function StatisticsReport() {
-  const config: LineConfig = {
-    data,
-    xField: 'type',
-    yField: 'value',
-  };
-  return <Line {...config} />;
+
+  return <Line options={options} data={data} />;
 }
+
+export default StatisticsReport;
