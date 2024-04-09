@@ -106,10 +106,10 @@ class UserService extends HttpService {
   httpDeletePartner = (partnerId: string): Promise<IResponseInterface> =>
     this.post(`${this.partnerPrefix}/deletePartner/${partnerId}`);
 
-  httpFindCompanyPartner = (
+    httpFindCompanyPartnerDetail = (
     id: string
-  ): Promise<IResponseInterface<{ client: IPartner }>> =>
-    this.get(`${this.companyPrefix}/partner/${id}`);
+  ): Promise<IResponseInterface<{ partner: IPartner }>> =>
+    this.get(`${this.partnerPrefix}/partner/${id}`);
 
   httpDashbaordStatics = (): Promise<IResponseInterface<IDashboardStats>> =>
     this.get(`${this.userPrefix}/dashboardStats`);
