@@ -3,6 +3,7 @@ import { HttpService } from '@/app/services/base.service';
 import {
   IClient,
   IPartner,
+  IDashboardStats,
 } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { String } from 'aws-sdk/clients/acm';
@@ -109,6 +110,9 @@ class UserService extends HttpService {
     id: string
   ): Promise<IResponseInterface<{ client: IPartner }>> =>
     this.get(`${this.companyPrefix}/partner/${id}`);
+
+  httpDashbaordStatics = (): Promise<IResponseInterface<IDashboardStats>> =>
+    this.get(`${this.userPrefix}/dashboardStats`);
 }
 
 export const userService = new UserService();

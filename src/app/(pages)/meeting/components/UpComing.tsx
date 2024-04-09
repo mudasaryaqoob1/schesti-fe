@@ -62,7 +62,7 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
           return (
             <div
               key={index}
-              className="flex justify-between shadow p-3 my-2 rounded-lg"
+              className="flex justify-between shadow p-3 my-2 rounded-lg bg-white"
             >
               <div className="space-y-1">
                 <SenaryHeading

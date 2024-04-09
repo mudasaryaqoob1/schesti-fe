@@ -17,3 +17,17 @@ export interface IPartner {
   address: string;
   secondAddress: string;
 }
+
+
+export interface IDashboardStats {
+  totalGeneratedEstimates : number
+  totalSchedules : number
+  totalClients : number
+  totalInvoices : number
+  totalMeetings : number
+  totalTakeoff : number,
+  invoicesDetail : {type : string , value : string}[],
+  monthlyTakeOffTotalRecords : Number []
+  monthlyScheduleTotalRecords : Number []
+  monthlyEstimateTotalRecords : Number []
+}

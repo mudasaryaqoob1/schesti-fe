@@ -27,6 +27,7 @@ import { toast } from 'react-toastify';
 import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import { Routes } from '@/app/utils/plans.utils';
 import { withAuth } from '@/app/hoc/withAuth';
+import {USCurrencyFormat} from '@/app/utils/format'
 
 const newClientSchema = Yup.object({
   subContractorFirstName: Yup.string().required('First name is required!'),
@@ -130,7 +131,7 @@ const CreateInvoice = () => {
       title: 'Total Price',
       dataIndex: 'totalPrice',
       render(_value, record) {
-        return `$${(record.quantity * record.unitCost).toFixed(2)}`;
+        return `${USCurrencyFormat.format(record.quantity * record.unitCost)}`;
       },
     },
     {
@@ -255,7 +256,6 @@ const CreateInvoice = () => {
       });
   }
 
-  console.log(calculatePercentqge(calculateSubTotal(), 4));
   return (
     <section className="mx-16 my-2">
       <Formik
@@ -271,7 +271,6 @@ const CreateInvoice = () => {
           errors,
           touched,
         }) => {
-          console.log(errors);
           return (
             <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
               {/* Modal */}
@@ -592,7 +591,7 @@ const CreateInvoice = () => {
                   <div className="flex items-center space-x-2">
                     <QuaternaryHeading title="Sub total:" />
                     <QuinaryHeading
-                      title={`$${calculateSubTotal()}`}
+                      title={`${USCurrencyFormat.format(calculateSubTotal())}`}
                       className="font-bold"
                     />
                   </div>
@@ -633,7 +632,7 @@ const CreateInvoice = () => {
                   <div className="flex items-center space-x-2">
                     <QuaternaryHeading title="Total:" />
                     <QuinaryHeading
-                      title={`$${calculateTotalPayable(
+                      title={`$${USCurrencyFormat.format(calculateTotalPayable(
                         calculatePercentqge(
                           calculateSubTotal(),
                           values['taxes']
@@ -646,7 +645,7 @@ const CreateInvoice = () => {
                           calculateSubTotal(),
                           values['discount']
                         )
-                      ).toFixed(2)}`}
+                      ))}`}
                       className="font-bold"
                     />
                   </div>
