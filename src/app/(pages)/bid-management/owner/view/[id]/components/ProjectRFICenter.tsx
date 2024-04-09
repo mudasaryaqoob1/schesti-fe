@@ -1,11 +1,60 @@
 import WhiteButton from '@/app/component/customButton/white';
 import { InputComponent } from '@/app/component/customInput/Input';
 import TertiaryHeading from '@/app/component/headings/tertiary';
+import { IRFI } from '@/app/interfaces/rfi.interface';
+import { rfiService } from '@/app/services/rfi.service';
 import { SearchOutlined } from '@ant-design/icons';
-import { Avatar } from 'antd';
-import Image from 'next/image';
+import { Avatar, Skeleton, } from 'antd';
+import { AxiosError } from 'axios';
+import moment from 'moment';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import { RFIReply } from './RFIReply';
 
-export function ProjectRFICenter() {
+type Props = {
+  projectId: string
+};
+
+
+export function ProjectRFICenter({ projectId }: Props) {
+  const [rfis, setRfis] = useState<IRFI[]>([]);
+  const [isFetching, setIsFetching] = useState(false);
+  const [search, setSearch] = useState('');
+
+
+
+
+  useEffect(() => {
+    fetchRFIs();
+  }, [projectId])
+
+  async function fetchRFIs() {
+    if (projectId) {
+      setIsFetching(true);
+      rfiService.httpGetAllProjectRFIs(projectId)
+        .then(res => {
+          if (res.data) {
+            setRfis(res.data.rfis);
+          }
+        })
+        .catch(err => {
+          const error = err as AxiosError<{ message: string }>;
+          toast.error(error.response?.data.message || 'An error occurred');
+        })
+        .finally(() => {
+          setIsFetching(false);
+        });
+    }
+  }
+
+
+
+
+
+  if (isFetching) {
+    return <Skeleton />
+  }
+
   return (
     <div className="mb-4 md:ms-[69px] md:me-[59px] mx-4  ">
       <div className="flex items-center justify-between">
@@ -32,48 +81,64 @@ export function ProjectRFICenter() {
               type="text"
               field={{
                 prefix: <SearchOutlined className="text-xl" />,
+                value: search,
+                onChange: (e) => {
+                  setSearch(e.target.value);
+                },
               }}
             />
           </div>
         </div>
       </div>
 
-      <div className="mt-4 flex bg-white rounded-lg shadow">
-        <Avatar
-          src="https://static.vecteezy.com/system/resources/previews/011/883/287/non_2x/modern-letter-c-colorful-logo-with-watter-drop-good-for-technology-logo-company-logo-dummy-logo-bussiness-logo-free-vector.jpg"
-          size={100}
-        />
+      {rfis.filter(rfi => {
+        if (!search) {
+          return true;
+        }
+        return rfi.description.toLowerCase().includes(search.toLowerCase());
+      }).map(rfi => {
+        const user = rfi.user;
 
-        <div className="py-4 flex-1 px-4 space-y-3">
-          <div className="flex justify-between">
-            <TertiaryHeading
-              title="Dale Hockenberry | 2022-02-21 20:03:43"
-              className="text-[14px] leading-5 font-semibold text-[#667085]"
-            />
-            <div className="flex items-center space-x-4">
-              <p className="py-[5px] rounded-full px-[11px] bg-[#E9EBF8] text-[#7138DF] text-xs leading-4">
-                New
-              </p>
-              <div className="flex items-center space-x-1">
-                <Image
-                  src={'/message-circle.svg'}
-                  alt="message-circle icon"
-                  width={17}
-                  height={18}
-                />
-                <TertiaryHeading
-                  title="Reply"
-                  className="text-[#475467] text-[14px] leading-6 font-normal "
+        return <div key={rfi._id} className="mt-4 px-2 flex bg-white rounded-lg shadow">
+          <Avatar
+            src={typeof rfi.user !== 'string' ? rfi.user.avatar || rfi.user.companyLogo : ""}
+            size={40}
+            className='mt-4'
+          />
+
+          <div className="py-4 flex-1 px-4 space-y-2">
+            <div className="flex justify-between">
+              <TertiaryHeading
+                title={`${typeof user !== 'string' ? user.companyName : ""} | ${moment(rfi.createdAt).format('MMM DD, YYYY, hh:mm A')}`}
+                className="text-[14px] leading-5 font-semibold text-[#667085]"
+              />
+              <div className="flex items-center space-x-4">
+                {rfi.type === 'private' ? <p className="py-[5px] rounded-full px-[11px] bg-[#E9EBF8] text-[#7138DF] text-xs leading-4">
+                  Private
+                </p> : null}
+
+                {/* current date === createdAt then display */}
+
+                {moment().isSame(rfi.createdAt, 'day') ? <p className="py-[5px] rounded-full px-[11px] bg-[#E9EBF8] text-[#7138DF] text-xs leading-4">
+                  New
+                </p> : null
+                }
+                <RFIReply
+                  key={rfi._id}
+                  onSuccess={(rfi) => {
+                    setRfis([rfi, ...rfis]);
+                  }}
+                  projectId={rfi.projectId}
                 />
               </div>
             </div>
+            <TertiaryHeading
+              title={rfi.description}
+              className="text-[#475467] text-[14px] leading-6 font-normal "
+            />
           </div>
-          <TertiaryHeading
-            title="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla at nunc sit amet nunc. Nulla at nunc sit amet nunc. Nulla at nunc sit amet nunc. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla at nunc sit amet nunc. Nulla at nunc sit amet nunc. Nulla at nunc sit amet nunc. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla at nunc sit amet nunc. Nulla at nunc sit amet nunc. Nulla at nunc sit amet nunc. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla at nunc sit amet nunc. Nulla at nunc sit amet nunc. Nulla at nunc sit amet nunc. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla at nunc sit amet nunc. Nulla at nunc sit amet nunc. Nulla at nunc sit amet nunc. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla at nunc sit amet nunc. Nulla at nunc sit amet nunc. Nulla at nunc sit amet nunc. "
-            className="text-[#475467] text-[14px] leading-6 font-normal "
-          />
         </div>
-      </div>
+      })}
     </div>
   );
 }

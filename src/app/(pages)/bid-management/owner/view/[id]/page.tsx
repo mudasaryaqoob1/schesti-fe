@@ -96,9 +96,8 @@ function OwnerProjectDetailsPage() {
                 label: (
                   <QuaternaryHeading
                     title={tab}
-                    className={`!w-full ${
-                      activeTab === tab ? 'text-RoyalPurple' : 'text-black'
-                    }`}
+                    className={`!w-full ${activeTab === tab ? 'text-RoyalPurple' : 'text-black'
+                      }`}
                   />
                 ),
                 tabKey: tab,
@@ -115,7 +114,7 @@ function OwnerProjectDetailsPage() {
         <ProjectAcitivityAndStatusTracking />
       ) : null}
       {activeTab === DOCUMENTS ? <ProjectDocuments id={params.id} /> : null}
-      {activeTab === RFI_CENTER ? <ProjectRFICenter /> : null}
+      {activeTab === RFI_CENTER ? <ProjectRFICenter projectId={params.id} /> : null}
     </section>
   );
 }
