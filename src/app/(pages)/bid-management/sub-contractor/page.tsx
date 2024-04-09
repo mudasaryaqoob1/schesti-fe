@@ -15,12 +15,25 @@ import { bidManagementService } from '@/app/services/bid-management.service';
 import { BidDetails } from './components/BidDetails';
 import { Pagination, Skeleton } from 'antd';
 import { BidFilters } from './components/Filters';
-import _ from 'lodash';
+import _, { size } from 'lodash';
 import { isArrayString } from '@/app/utils/typescript.utils';
+const PDFDownloadLink = dynamic(
+  () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
+  {
+    ssr: false,
+    loading: () => <p>Loading...</p>,
+  },
+);
+import dynamic from 'next/dynamic';
+import BidListPdf from './components/bids-pdf';
+import { useRouter } from 'next/navigation';
+
 
 const ITEMS_PER_PAGE = 4;
 
 function BidManagementSubContractorPage() {
+  const router = useRouter();
+
   const [selectedBid, setSelectedBid] = useState<IBidManagement | null>(null);
   const [search, setSearch] = useState('');
   const [invitedCurrentPage, setInvitedCurrentPage] = useState(1);
@@ -41,10 +54,11 @@ function BidManagementSubContractorPage() {
     setShowFilters(false);
   }
 
-  const projectsQuery = useQuery(['bid-projects'], () => {
-    return bidManagementService.httpGetOwnerProjects();
-  });
+  const fetchProjects = () => {
+    return bidManagementService.httpGetOwnerProjects(filters);
+  }
 
+  const projectsQuery = useQuery(['bid-projects'], fetchProjects);
   const invitedUserProjectsQuery = useQuery(['invited-user-projects'], () => {
     return bidManagementService.httpGetBidProjectInvitedUsers();
   });
@@ -77,6 +91,17 @@ function BidManagementSubContractorPage() {
       (exploreCurrentPage - 1) * ITEMS_PER_PAGE,
       exploreCurrentPage * ITEMS_PER_PAGE
     );
+
+    const dataToExport = currentExploreProjects.filter((project) => {
+      if (search === '') {
+        return project;
+      }
+      return (
+        project.projectName.toLowerCase().includes(search.toLowerCase()) ||
+        project.city.toLowerCase().includes(search.toLowerCase()) ||
+        project.stage.toLowerCase().includes(search.toLowerCase())
+      );
+    });
 
   console.log({ projects });
   return (
@@ -136,13 +161,21 @@ function BidManagementSubContractorPage() {
                 }}
               />
             </div>
-            <WhiteButton
-              text="Export"
-              icon="/uploadcloud.svg"
-              className="!w-28"
-              iconwidth={14}
-              iconheight={14}
-            />
+          <PDFDownloadLink
+            document={<BidListPdf bids={dataToExport} />}
+            fileName={`bid-list-${Math.random()}.pdf`}
+          >
+            {({ loading }) => (
+              <WhiteButton
+                text={loading ? 'Exporting...' : 'Export'}
+                icon="/uploadcloud.svg"
+                iconheight={20}
+                className="!w-32"
+                iconwidth={20}
+                isLoading={loading}
+              />
+            )}
+          </PDFDownloadLink>
             <div className="relative">
               <WhiteButton
                 text="Advance Filters"
@@ -155,6 +188,8 @@ function BidManagementSubContractorPage() {
               <BidFilters
                 onApply={(appliedFilters) => {
                   setFilters(appliedFilters);
+                  closeFilters();
+                  console.log('You click to apply filter')
                 }}
                 onCancel={closeFilters}
                 isVisible={showFilters}
@@ -166,6 +201,7 @@ function BidManagementSubContractorPage() {
               iconwidth={14}
               iconheight={14}
               className="!w-44"
+              onClick={() => router.push('/bid-management/owner/post')}
             />
           </div>
         </div>
@@ -188,21 +224,25 @@ function BidManagementSubContractorPage() {
                       bid={bidProject}
                       onClick={() => setSelectedBid(bidProject)}
                       isSelected={selectedBid?._id === bidProject._id}
+                      selectedBid={selectedBid}
                     />
                   );
                 })
               )}
 
-              <div className="mt-1 flex justify-center">
-                <Pagination
-                  current={invitedCurrentPage}
-                  pageSize={ITEMS_PER_PAGE}
-                  total={invitedProjects.length}
-                  onChange={(page) => setInvitedCurrentPage(page)}
-                />
-              </div>
+{
+  size(invitedProjects) >=5 && (
+    <div className="mt-1 flex justify-center">
+    <Pagination
+      current={invitedCurrentPage}
+      pageSize={ITEMS_PER_PAGE}
+      total={invitedProjects.length}
+      onChange={(page) => setInvitedCurrentPage(page)}
+    />
+  </div>
+  )
+}
             </div>
-
             <div className="mt-3">
               <SenaryHeading
                 title="Explore all project"
@@ -235,6 +275,7 @@ function BidManagementSubContractorPage() {
                         bid={bidProject}
                         onClick={() => setSelectedBid(bidProject)}
                         isSelected={selectedBid?._id === bidProject._id}
+                        selectedBid={selectedBid}
                       />
                     );
                   })
@@ -249,14 +290,18 @@ function BidManagementSubContractorPage() {
             </div>
           ) : null}
         </div>
-        <div className="mt-1 flex justify-center">
-          <Pagination
-            current={exploreCurrentPage}
-            pageSize={ITEMS_PER_PAGE}
-            total={projects.length}
-            onChange={(page) => setExploreCurrentPage(page)}
-          />
-        </div>
+        {
+          size(projects) >=5 && (
+            <div className="mt-1 flex justify-center">
+            <Pagination
+              current={exploreCurrentPage}
+              pageSize={ITEMS_PER_PAGE}
+              total={projects.length}
+              onChange={(page) => setExploreCurrentPage(page)}
+            />
+          </div>
+          )
+        }
       </div>
     </section>
   );

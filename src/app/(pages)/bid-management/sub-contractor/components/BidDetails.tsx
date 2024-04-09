@@ -18,6 +18,7 @@ import { bidManagementService } from '@/app/services/bid-management.service';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { CreateRFI } from './CreateRFI';
+import Link from 'next/link';
 
 type Props = {
   bid: IBidManagement;
@@ -101,20 +102,20 @@ export function BidDetails({ bid }: Props) {
               className="text-[#7138DF] font-normal text-xs leading-4"
             />
           </div>
-          <Image
+          {/* <Image
             alt="trash icon"
             src={'/trash.svg'}
             width={16}
             height={16}
             className="cursor-pointer"
-          />
-          <Image
+          /> */}
+          {/* <Image
             alt="share icon"
             src={'/share.svg'}
             width={16}
             height={16}
             className="cursor-pointer"
-          />
+          /> */}
           <Image
             onClick={() => {
               setIsFavourite(!isFavourite);
@@ -148,10 +149,9 @@ export function BidDetails({ bid }: Props) {
           title={bid.description}
           className="text-[#475467] text-[14px] leading-6 font-normal mt-2"
         />
-
-        <p className="text-[#7F56D9] underline underline-offset-2 mt-4 text-[14px] leading-6 font-normal cursor-pointer">
+        <Link href={`/bid-management/contractor/details/${bid?._id}`} className="text-[#7F56D9] underline underline-offset-2 mt-4 text-[14px] leading-6 font-normal cursor-pointer">
           View full details
-        </p>
+        </Link>
       </div>
 
       <Divider />
@@ -215,7 +215,7 @@ export function BidDetails({ bid }: Props) {
 
               <div className="">
                 <SenaryHeading
-                  title="Representative"
+                  title={bid.user.userRole}
                   className="text-[#7F56D9] underline underline-offset-2 text-[14px] leading-6 font-normal"
                 />
                 <SenaryHeading

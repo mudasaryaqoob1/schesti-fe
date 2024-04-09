@@ -1,7 +1,9 @@
+import React, { useState } from 'react';
 import WhiteButton from '@/app/component/customButton/white';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import Image from 'next/image';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
+import { size } from 'lodash';
 
 interface IProps {
   projectData: IBidManagement
@@ -9,6 +11,32 @@ interface IProps {
 
 export function ProjectDocuments(props: IProps) {
   const { projectData } = props;
+  const [isDownloadingAll, setIsDownloadingAll] = useState(false);
+
+  function downloadFile(url: string, name: string) {
+    fetch(url)
+      .then(response => response.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
+  }
+
+  function downloadAll() {
+    if (size(projectData.projectFiles) > 0) {
+      setIsDownloadingAll(true)
+      projectData.projectFiles.forEach(file => {
+        downloadFile(file.url, file.name);
+      })
+      setIsDownloadingAll(false);
+    }
+  }
 
   return (
     <div className=" mt-6 mb-4 md:ms-[69px] md:me-[59px] mx-4  p-5 bg-white rounded-lg border shadow-lg">
@@ -23,6 +51,8 @@ export function ProjectDocuments(props: IProps) {
             <WhiteButton
               text="Download All"
               icon="/uploadcloud.svg"
+              isLoading={isDownloadingAll}
+              onClick={downloadAll}
               iconwidth={20}
               iconheight={20}
             />
@@ -48,15 +78,21 @@ export function ProjectDocuments(props: IProps) {
                 className="cursor-pointer"
               />
             </div>
-            <div className="p-2 pb-8">
-              <div className="relative mt-10 w-[100px] h-[100px] mx-auto">
-                <Image
-                  alt="pdf"
-                  src={'/pdf.svg'}
-                  layout="fill"
-                  objectFit="cover"
-                />
-              </div>
+            <div onClick={() => downloadFile(file.url, file.name)} className="p-2 pb-8">
+              {file.type.includes('image') ? (
+                <div className='w-auto h-[190px] xl:w-[230px] mx-auto relative'>
+                  <Image alt="image" src={file.url} fill />
+                </div>
+              ) : (
+                <div className="relative mt-10 w-[100px] h-[100px] mx-auto">
+                  <Image
+                    alt="pdf"
+                    src={'/pdf.svg'}
+                    layout="fill"
+                    objectFit="cover"
+                  />
+                </div>
+              )}
             </div>
           </div>
         ))}

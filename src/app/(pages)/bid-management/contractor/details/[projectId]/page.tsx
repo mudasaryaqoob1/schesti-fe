@@ -12,12 +12,10 @@ import { ProjectDesignTeam } from '../components/ProjectDesignTeam';
 import { ProjectDocuments } from '../components/ProjectDocuments';
 import { ProjectRFICenter } from '../components/ProjectRFICenter';
 import { ProjectBiddingTeam } from '../components/ProjectBiddingTeam';
-import { useParams } from 'next/navigation'
+import { useParams } from 'next/navigation';
 import { bidManagementService } from '@/app/services/bid-management.service';
 import { useQuery } from 'react-query';
 import moment from 'moment';
-
-
 
 const SUMMARY = 'Summary';
 const DESIGN_TEAM = 'Design Team';
@@ -37,10 +35,8 @@ function OwnerProjectDetailsPage() {
     
       const { data, isLoading } = useQuery(['project-details'], fetchProjectDetails);
 
-      console.log('projectDetails', data);
-
       if(isLoading) return <h6>Loading...</h6>
-      const { project: projectData } = data?.data
+      const { project: projectData } = data?.data;
 
   return (
     <section className="">

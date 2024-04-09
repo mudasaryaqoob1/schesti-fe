@@ -1,6 +1,7 @@
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
+import { getTimezoneFromCountryAndState } from '@/app/utils/date.utils';
 import { USCurrencyFormat } from '@/app/utils/format';
 import { Country } from 'country-state-city';
 import moment from 'moment';
@@ -98,6 +99,7 @@ export function ProjectSummary(props: IProps) {
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
                 {'Eastern Time'}
+                {getTimezoneFromCountryAndState(projectData.country, projectData.state)}
               </p>
             </div>
           </div>
@@ -180,24 +182,6 @@ export function ProjectSummary(props: IProps) {
             </div>
 
             <div className="space-y-[8px]">
-              <div className="space-y-[8px]">
-                <SenaryHeading
-                  title="Sector & Labor Status"
-                  className="text-[14px] leading-6 text-[#98A2B3] font-normal"
-                />
-
-                <div className="flex items-center space-x-4 flex-wrap space-y-2">
-                  <p className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4">
-                    Demolition
-                  </p>
-                  <p className="px-[12px]  rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4">
-                    New Construction no Site Work
-                  </p>
-                  <p className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4">
-                    Renovation/Remodel/Repair
-                  </p>
-                </div>
-              </div>
               <div className="space-y-[8px]">
                 <SenaryHeading
                   title="Construction Type"
