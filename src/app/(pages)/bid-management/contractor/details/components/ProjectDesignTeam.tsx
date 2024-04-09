@@ -1,5 +1,5 @@
 import TertiaryHeading from '@/app/component/headings/tertiary';
-import { Table, type TableProps } from 'antd';
+import { Table } from 'antd';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
 
 interface IProps {
@@ -9,7 +9,7 @@ interface IProps {
 export function ProjectDesignTeam(props: IProps) {
   const { projectData } = props;
 
-  const columns: TableProps['columns'] = [
+  const columns = [
     {
       title: 'Name',
       dataIndex: 'name',

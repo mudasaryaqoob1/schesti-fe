@@ -14,7 +14,7 @@ import {
 } from '@/app/services/bid-management.service';
 import { postProjectActions } from '@/redux/post-project/post-project.slice';
 import { AppDispatch, RootState } from '@/redux/store';
-import { Drawer, Dropdown, Table, type TableProps } from 'antd';
+import { Drawer, Dropdown, Table } from 'antd';
 import { AxiosError } from 'axios';
 import { type FormikProps, useFormik } from 'formik';
 import Image from 'next/image';
@@ -181,7 +181,7 @@ export function PostDesignTeam({ formik, children }: Props) {
     },
     enableReinitialize: true,
   });
-  const columns: TableProps['columns'] = [
+  const columns = [
     {
       title: 'Name',
       dataIndex: 'name',
@@ -215,7 +215,7 @@ export function PostDesignTeam({ formik, children }: Props) {
     {
       title: 'Action',
       key: 'action',
-      render(v, record) {
+      render(_: any, record: any) {
         return (
           <Dropdown
             menu={{

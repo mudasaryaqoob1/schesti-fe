@@ -1,6 +1,6 @@
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { RootState } from '@/redux/store';
-import { Table, type TableProps } from 'antd';
+import { Table } from 'antd';
 import { useSelector } from 'react-redux';
 
 export function ProjectDesignTeam() {
@@ -8,7 +8,7 @@ export function ProjectDesignTeam() {
     (state: RootState) => state.bidManagementOwner.project
   );
 
-  const columns: TableProps['columns'] = [
+  const columns = [
     {
       title: 'Name',
       dataIndex: 'name',

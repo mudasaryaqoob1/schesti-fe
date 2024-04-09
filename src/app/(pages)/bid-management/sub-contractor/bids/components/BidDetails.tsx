@@ -15,7 +15,7 @@ import { useRouter } from 'next/navigation';
 type Props = {
   bid: any;
   setSelectedBid: any;
-  refetchSavedBids: ()=>{};
+  refetchSavedBids: ()=>void;
 };
 type RemoveUserBidProps =  {
   biddingId: string;

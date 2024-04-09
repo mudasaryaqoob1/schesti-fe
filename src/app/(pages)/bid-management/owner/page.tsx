@@ -37,12 +37,21 @@ function Page() {
   const [selectedProject, setSelectedProject] = useState<IBidManagement | null>(
     null
   );
+  // @ts-ignore
+  const [filters, setFilters] = useState<{
+    trades: string[];
+    projectValue: number;
+  }>({
+    trades: [],
+    projectValue: 0,
+  });
   const [showProjectDeleteModal, setShowProjectDeleteModal] =
     useState<boolean>(false);
   const [search, setSearch] = useState<string>('');
 
+  console.log('setFilters', setFilters);
   const projectsQuery = useQuery(['projects'], () => {
-    return bidManagementService.httpGetOwnerProjects();
+    return bidManagementService.httpGetOwnerProjects(filters);
   });
 
   const columns: ColumnsType<IBidManagement> = [

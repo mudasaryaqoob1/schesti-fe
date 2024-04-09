@@ -39,6 +39,7 @@ export interface IBidManagement {
   platformType: 'Public' | 'Private';
   isMatchingWithTrades: boolean;
   invitedMembers: string[];
+  biddingTeam?: any | any[];
   invitedMembersAssets: {
     name: string;
     url: string;

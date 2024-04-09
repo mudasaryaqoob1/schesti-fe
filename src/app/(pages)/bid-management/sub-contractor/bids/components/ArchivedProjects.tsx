@@ -16,6 +16,7 @@ export function ArchivedProjects() {
     status: 'archived',
     limit: 10
   }
+  console.log('setCurrentPage', setCurrentPage);
   const fetchSavedBids = async () => {
     return bidManagementService.httpGetUserSavedBids(params);
   };
@@ -25,7 +26,7 @@ export function ArchivedProjects() {
     savedBids.refetch();
   };
 
-  const savedUserBids =
+  const savedUserBids: any =
   savedBids.data && savedBids.data.data
     ? savedBids.data.data?.savedBids
     : [];

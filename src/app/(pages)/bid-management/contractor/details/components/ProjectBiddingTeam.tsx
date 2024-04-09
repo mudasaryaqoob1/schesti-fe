@@ -1,11 +1,11 @@
 import TertiaryHeading from '@/app/component/headings/tertiary';
-import { Table, type TableProps } from 'antd';
+import { Table } from 'antd';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
 import { bidManagementService } from '@/app/services/bid-management.service';
 import { useQuery } from 'react-query';
 
 interface IProps {
-  projectData: IBidManagement
+  projectData: IBidManagement | any
 }
 
 export function ProjectBiddingTeam(props: IProps) {
@@ -15,13 +15,12 @@ export function ProjectBiddingTeam(props: IProps) {
     return bidManagementService.httpGetProjectBiddingTeamByProjectId(projectData._id);
   };
 
-  const { data, isLoading } = useQuery(['project-bidding-team'], fetchBiddingTeam);
+  const { data, isLoading }: any = useQuery(['project-bidding-team'], fetchBiddingTeam);
 
   if(isLoading) return <h5>Loading...</h5>
 
-  console.log('data', data);
 
-  const columns: TableProps['columns'] = [
+  const columns = [
     {
       title: 'Name',
       dataIndex: 'name',
