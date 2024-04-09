@@ -8,6 +8,7 @@ import { Country } from 'country-state-city';
 import moment from 'moment';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { CreateRFI } from './CreateRFI';
 
 type Props = {
   bid: IBidManagement;
@@ -181,9 +182,9 @@ export function BidDetails({ bid }: Props) {
           className="!bg-white !text-[#7138DF]"
         />
 
-        <CustomButton
-          text="Send an RFI"
-          className="!bg-[#F9F5FF] !text-[#7138DF]"
+        <CreateRFI
+          onSuccess={() => { }}
+          projectId={bid._id}
         />
       </div>
     </div>
