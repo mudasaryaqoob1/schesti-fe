@@ -1,21 +1,22 @@
-import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
-import { BidIntro } from '../../components/BidIntro';
 import { useState } from 'react';
+import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
+import { BidIntro } from '../../sub-contractor/components/BidIntro';
 import { BidDetails } from './BidDetails';
 import { useQuery } from 'react-query';
 import { bidManagementService } from '@/app/services/bid-management.service';
 
 
-export function ActiveProjects() {
-  const [selectedBid, setSelectedBid] = useState<IBidManagement | null>(null);
+export function UpComingProjects() {
 
+  const [selectedBid, setSelectedBid] = useState<IBidManagement | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
   const params = {
-    page: currentPage, 
-    status: 'active',
+    page: currentPage,
+    status: 'upcoming',
     limit: 10
   }
+
   const fetchSavedBids = async () => {
     return bidManagementService.httpGetUserSavedBids(params);
   };
@@ -24,12 +25,10 @@ export function ActiveProjects() {
   const refetchSavedBids = () => {
     savedBids.refetch();
   };
-  
   const savedUserBids =
-  savedBids.data && savedBids.data.data
-    ? savedBids.data.data?.savedBids
-    : [];
-
+    savedBids.data && savedBids.data.data
+      ? savedBids.data.data?.savedBids
+      : [];
 
   return (
     <div>

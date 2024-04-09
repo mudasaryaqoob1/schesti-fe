@@ -4,9 +4,9 @@ export const Routes = {
     Contractor: '/bid-management/contractor',
     'Sub-Contractor': '/bid-management/sub-contractor',
     Submit: '/bid-management/submit',
-    Bidding_Projects: '/bid-management/sub-contractor/bids',
-    Posted_Projects: '/bid-management/owner',
-    Post_A_Project: "/bid-management/owner/post",
+    Bidding_Projects: '/bid-management/bids',
+    Posted_Projects: '/bid-management/projects',
+    Post_A_Project: "/bid-management/post",
   },
   CRM: {
     Clients: '/crm/clients',

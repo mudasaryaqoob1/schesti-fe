@@ -82,8 +82,8 @@ export const withAuth = (
     if (canAccessThePage && !hasRoles) {
       return (
         <NoDataComponent
-          title="Upgrade Your Plan"
-          description="You can access the page after upgrade featured plan"
+          title="Access Denied"
+          description="You don't have access to this page."
         />
       );
     }

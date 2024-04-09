@@ -8,7 +8,7 @@ import { withAuth } from '@/app/hoc/withAuth';
 import { USCurrencyFormat } from '@/app/utils/format';
 import { Divider, Skeleton, Spin, Table } from 'antd';
 import Image from 'next/image';
-import { bidDurationType } from '../../owner/post/components/data';
+import { bidDurationType } from '../../projects/post/components/data';
 import { TextAreaComponent } from '@/app/component/textarea';
 import Dragger from 'antd/es/upload/Dragger';
 import type { ColumnsType } from 'antd/es/table';
