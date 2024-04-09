@@ -41,7 +41,7 @@ const BidManagement = () => {
   const startProjectIndex = (projectPage - 1) * itemsPerPage;
 
   const projectsQuery = useQuery(['projects'], () => {
-    return bidManagementService.httpGetOwnerProjects();
+    return bidManagementService.httpGetOwnerProjects('');
   });
 
   const invitedUsersQuery = useQuery(['invited-projects'], () => {
