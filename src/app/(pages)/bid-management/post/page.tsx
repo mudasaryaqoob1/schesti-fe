@@ -235,15 +235,15 @@ function CreatePost() {
     initialValues: postProjectState.project
       ? { ...postProjectState.project }
       : {
-          projectName: '',
-          country: 'PK',
-          city: '',
-          zipCode: '',
-          state: '',
-          constructionTypes: ['Civil'] as string[],
-          address: '',
-          status: 'draft' as CreateOwnerPostProjectType['status'],
-        },
+        projectName: '',
+        country: 'PK',
+        city: '',
+        zipCode: '',
+        state: '',
+        constructionTypes: ['Civil'] as string[],
+        address: '',
+        status: 'draft' as CreateOwnerPostProjectType['status'],
+      },
     onSubmit(values) {
       if (postProjectState.project) {
         updateProjectMutation.mutate(values);
@@ -305,14 +305,14 @@ function CreatePost() {
           cancelBtn={{
             text: 'View Project',
             onClick() {
-              router.push(`${Routes['Bid Management'].Owner}`);
+              router.push(`${Routes['Bid Management'].Posted_Projects}`);
               dispatch(resetPostProjectAction());
             },
           }}
           confirmBtn={{
             text: 'Project Dashboard',
             onClick() {
-              router.push(`${Routes['Bid Management'].Owner}`);
+              router.push(`${Routes['Bid Management'].Posted_Projects}`);
               dispatch(resetPostProjectAction());
             },
           }}
@@ -354,7 +354,7 @@ function CreatePost() {
                 cancelButton={{
                   text: 'Cancel',
                   onClick() {
-                    router.push(`${Routes['Bid Management'].Owner}`);
+                    router.push(`${Routes['Bid Management'].Posted_Projects}`);
                     dispatch(resetPostProjectAction());
                   },
                 }}

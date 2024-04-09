@@ -24,7 +24,7 @@ type Props = {
   bid: IBidManagement;
 };
 
-type SaveUserBidProps =  {
+type SaveUserBidProps = {
   projectId: string;
   isFavourite?: boolean;
 }
@@ -46,14 +46,14 @@ export function BidDetails({ bid }: Props) {
       console.log('res', res);
       if (res.data && res.data.savedUserBid) {
         toast.success('Bid Saved Successfully');
-        router.push(`/bid-management/sub-contractor/bids`);
+        router.push(`${Routes['Bid Management'].Bidding_Projects}`);
         // Dispatch any necessary actions after successful mutation
       }
     },
     onError(error: any) {
       if (error.response?.data?.message) {
         toast.error(error.response?.data.message);
-        router.push(`/bid-management/sub-contractor/bids`);
+        router.push(`${Routes['Bid Management'].Bidding_Projects}`);
       } else {
         toast.error('An error occurred while saving the bid.');
       }
@@ -61,29 +61,29 @@ export function BidDetails({ bid }: Props) {
   });
 
   const updateUserBidMutation = useMutation<
-  IResponseInterface<{ projectId: ISaveUserBid }>,
-  AxiosError<{ message: string }>,
-  SaveUserBidProps
->({
-  //@ts-ignore
-  mutationKey: 'updateUserBid',
-  mutationFn: (values: SaveUserBidProps) => {
-    return bidManagementService.httpUpdateUserProjectBid(values);
-  },
-  onSuccess(res: any) {
-    if (res.data) {
-      toast.success('Bid updated Successfully');
-      // Dispatch any necessary actions after successful mutation
-    }
-  },
-  onError(error: any) {
-    if (error.response?.data?.message) {
-      toast.error(error.response?.data.message);
-    } else {
-      toast.error('An error occurred while saving the bid.');
-    }
-  },
-});
+    IResponseInterface<{ projectId: ISaveUserBid }>,
+    AxiosError<{ message: string }>,
+    SaveUserBidProps
+  >({
+    //@ts-ignore
+    mutationKey: 'updateUserBid',
+    mutationFn: (values: SaveUserBidProps) => {
+      return bidManagementService.httpUpdateUserProjectBid(values);
+    },
+    onSuccess(res: any) {
+      if (res.data) {
+        toast.success('Bid updated Successfully');
+        // Dispatch any necessary actions after successful mutation
+      }
+    },
+    onError(error: any) {
+      if (error.response?.data?.message) {
+        toast.error(error.response?.data.message);
+      } else {
+        toast.error('An error occurred while saving the bid.');
+      }
+    },
+  });
 
 
   return (
@@ -120,7 +120,7 @@ export function BidDetails({ bid }: Props) {
             onClick={() => {
               setIsFavourite(!isFavourite);
               setTimeout(() => {
-                updateUserBidMutation.mutate({projectId: bid._id, isFavourite: isFavourite})
+                updateUserBidMutation.mutate({ projectId: bid._id, isFavourite: isFavourite })
               }, 10);
             }}
             alt="favourite icon"
@@ -263,7 +263,7 @@ export function BidDetails({ bid }: Props) {
         />
 
         <CustomButton
-          onClick={() => saveUserBidMutation.mutate({projectId: bid?._id})}
+          onClick={() => saveUserBidMutation.mutate({ projectId: bid?._id })}
           text="Add to my Bidding Projects"
           className="!bg-white !text-[#7138DF]"
         />

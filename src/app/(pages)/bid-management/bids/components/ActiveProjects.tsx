@@ -1,5 +1,5 @@
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
-import { BidIntro } from '../../components/BidIntro';
+import { BidIntro } from '../../sub-contractor/components/BidIntro';
 import { useState } from 'react';
 import { BidDetails } from './BidDetails';
 import { useQuery } from 'react-query';
@@ -12,7 +12,7 @@ export function ActiveProjects() {
   const [currentPage, setCurrentPage] = useState(1);
 
   const params = {
-    page: currentPage, 
+    page: currentPage,
     status: 'active',
     limit: 10
   }
