@@ -1,19 +1,19 @@
-import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
 import { useState } from 'react';
-import { BidIntro } from '../../components/BidIntro';
+import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
+import { BidIntro } from '../../sub-contractor/components/BidIntro';
 import { BidDetails } from './BidDetails';
-import { bidManagementService } from '@/app/services/bid-management.service';
 import { useQuery } from 'react-query';
+import { bidManagementService } from '@/app/services/bid-management.service';
 
-export function ArchivedProjects() {
+
+export function UpComingProjects() {
 
   const [selectedBid, setSelectedBid] = useState<IBidManagement | null>(null);
-
   const [currentPage, setCurrentPage] = useState(1);
 
   const params = {
-    page: currentPage, 
-    status: 'archived',
+    page: currentPage,
+    status: 'upcoming',
     limit: 10
   }
   console.log('setCurrentPage', setCurrentPage);
@@ -25,12 +25,10 @@ export function ArchivedProjects() {
   const refetchSavedBids = () => {
     savedBids.refetch();
   };
-
   const savedUserBids: any =
   savedBids.data && savedBids.data.data
     ? savedBids.data.data?.savedBids
     : [];
-
 
   return (
     <div>

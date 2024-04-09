@@ -23,7 +23,7 @@ import { Country } from 'country-state-city';
 import moment from 'moment';
 import Image from 'next/image';
 import { useState } from 'react';
-import { DeletePopup } from './post/components/DeletePopup';
+import { DeletePopup } from '../post/components/DeletePopup';
 import dynamic from 'next/dynamic';
 
 const ExportAll = dynamic(() => import("./components/ExportAll"), { ssr: false });
@@ -165,7 +165,7 @@ function Page() {
               }
               if (key === 'view') {
                 router.push(
-                  `${Routes['Bid Management'].Owner}/view/${record._id}`
+                  `${Routes['Bid Management'].Posted_Projects}/view/${record._id}`
                 );
               }
             },
@@ -242,7 +242,7 @@ function Page() {
               text="Post New Project"
               onClick={() => {
                 dispatch(resetPostProjectAction());
-                router.push(`${Routes['Bid Management'].Owner}/post`);
+                router.push(`${Routes['Bid Management'].Post_A_Project}`);
               }}
             />
           </div>

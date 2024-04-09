@@ -14,7 +14,7 @@ COPY . ./
 
 RUN cp .env.dev .env
 
-RUN npm run build
+RUN yarn
 
 EXPOSE 3000
 

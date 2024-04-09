@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import initialState from './companyPartner.initialState';
-import { fetchCompanyPartner, deleteCompanyClient } from '../company.thunk';
+import { fetchCompanyPartner, deleteCompanyPartner } from '../company.thunk';
 
 export const partnerSlice = createSlice({
   name: 'partners',
@@ -23,19 +23,19 @@ export const partnerSlice = createSlice({
       state.error = action.error.message;
     });
 
-    builder.addCase(deleteCompanyClient.pending, (state) => {
+    builder.addCase(deleteCompanyPartner.pending, (state) => {
       state.loading = true;
     });
 
-    builder.addCase(deleteCompanyClient.fulfilled, (state, action) => {
+    builder.addCase(deleteCompanyPartner.fulfilled, (state, action) => {
       console.log(action.payload);
       state.loading = false;
       state.data = state.data.filter(
-        (item: any) => item?._id !== action.payload.data.client._id
+        (item: any) => item?._id !== action.payload.data.partner._id
       );
     });
 
-    builder.addCase(deleteCompanyClient.rejected, (state, action) => {
+    builder.addCase(deleteCompanyPartner.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     });
