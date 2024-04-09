@@ -36,7 +36,11 @@ function OwnerProjectDetailsPage() {
       const { data, isLoading } = useQuery(['project-details'], fetchProjectDetails);
 
       if(isLoading) return <h6>Loading...</h6>
-      const { project: projectData } = data?.data;
+      let projectData: any = {};
+      if(data && data.data) {
+        projectData = data.data?.project;
+      }
+
 
   return (
     <section className="">
@@ -70,12 +74,12 @@ function OwnerProjectDetailsPage() {
         <div className="flex justify-between items-center">
           <div className="space-y-3">
             <SenaryHeading
-              title={projectData.projectName}
+              title={projectData?.projectName}
               className="text-[#1D2939] text-2xl font-semibold leading-9"
             />
             <div className="flex space-x-4 items-center text-[#667085] text-base leading-6 font-normal">
-              <SenaryHeading title={moment(projectData.createdAt).format('DD MMM YYYY, hh:mm')} />
-              <SenaryHeading title={moment(projectData.bidDueDate).format('DD MMM YYYY, hh:mm')} />
+              <SenaryHeading title={moment(projectData?.createdAt).format('DD MMM YYYY, hh:mm')} />
+              <SenaryHeading title={moment(projectData?.bidDueDate).format('DD MMM YYYY, hh:mm')} />
             </div>
           </div>
 
