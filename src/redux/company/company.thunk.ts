@@ -105,7 +105,7 @@ export const deleteCompanyClient = createAsyncThunk(
 );
 
 export const deleteCompanyPartner = createAsyncThunk(
-  'company/partners',
+  'company/deletePartner',
   async (partnerId: string, { rejectWithValue }) => {
     try {
       const response = await userService.httpDeletePartner(partnerId);
