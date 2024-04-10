@@ -18,15 +18,15 @@ import { BidFilters } from './components/Filters';
 import _, { size } from 'lodash';
 import { isArrayString } from '@/app/utils/typescript.utils';
 
-const PDFDownloadLink = dynamic(
-  () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
-  {
-    ssr: false,
-    loading: () => <p>Loading...</p>,
-  },
-);
-import dynamic from 'next/dynamic';
-import BidListPdf from './components/bids-pdf';
+// const PDFDownloadLink = dynamic(
+//   () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
+//   {
+//     ssr: false,
+//     loading: () => <p>Loading...</p>,
+//   },
+// );
+// import dynamic from 'next/dynamic';
+// import BidListPdf from './components/bids-pdf';
 import { useRouter } from 'next/navigation';
 
 
@@ -94,16 +94,16 @@ function BidManagementSubContractorPage() {
       exploreCurrentPage * ITEMS_PER_PAGE
     );
 
-    const dataToExport = currentExploreProjects.filter((project) => {
-      if (search === '') {
-        return project;
-      }
-      return (
-        project.projectName.toLowerCase().includes(search.toLowerCase()) ||
-        project.city.toLowerCase().includes(search.toLowerCase()) ||
-        project.stage.toLowerCase().includes(search.toLowerCase())
-      );
-    });
+    // const dataToExport = currentExploreProjects.filter((project) => {
+    //   if (search === '') {
+    //     return project;
+    //   }
+    //   return (
+    //     project.projectName.toLowerCase().includes(search.toLowerCase()) ||
+    //     project.city.toLowerCase().includes(search.toLowerCase()) ||
+    //     project.stage.toLowerCase().includes(search.toLowerCase())
+    //   );
+    // });
 
     const bidClickHandler = async (selectedBid: any) => {
       setSelectedBid(selectedBid);
@@ -178,7 +178,7 @@ function BidManagementSubContractorPage() {
                 }}
               />
             </div>
-          <PDFDownloadLink
+          {/* <PDFDownloadLink
             document={<BidListPdf bids={dataToExport} />}
             fileName={`bid-list-${Math.random()}.pdf`}
           >
@@ -192,7 +192,7 @@ function BidManagementSubContractorPage() {
                 isLoading={loading}
               />
             )}
-          </PDFDownloadLink>
+          </PDFDownloadLink> */}
             <div className="relative">
               <WhiteButton
                 text="Advance Filters"
