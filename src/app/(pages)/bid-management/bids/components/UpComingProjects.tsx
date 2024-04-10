@@ -9,7 +9,8 @@ import { bidManagementService } from '@/app/services/bid-management.service';
 export function UpComingProjects() {
 
   const [selectedBid, setSelectedBid] = useState<IBidManagement | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
+
+  let currentPage = 1
 
   const params = {
     page: currentPage,
