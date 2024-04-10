@@ -3,13 +3,8 @@ import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { USCurrencyFormat } from '@/app/utils/format';
 import { Divider } from 'antd';
 import { Country } from 'country-state-city';
-import { useMutation } from 'react-query';
 import moment from 'moment';
 import Image from 'next/image';
-import { IResponseInterface } from '@/app/interfaces/api-response.interface';
-import { AxiosError } from 'axios';
-import { toast } from 'react-toastify';
-import { bidManagementService } from '@/app/services/bid-management.service';
 import { useRouter } from 'next/navigation';
 
 type Props = {
@@ -17,10 +12,8 @@ type Props = {
   setSelectedBid: any;
   refetchSavedBids: ()=>void;
 };
-type RemoveUserBidProps =  {
-  biddingId: string;
-}
-export function BidDetails({ bid, setSelectedBid, refetchSavedBids }: Props) {
+
+export function BidDetails({ bid }: Props) {
 
   const router = useRouter();
 
@@ -118,7 +111,7 @@ export function BidDetails({ bid, setSelectedBid, refetchSavedBids }: Props) {
 
       <div className="mt-4 space-y-2">
         <CustomButton
-          onClick={() => removeUserBidMutation.mutate({biddingId: bid._id})}
+          // onClick={() => removeUserBidMutation.mutate({biddingId: bid._id})}
           text="Remove from my bidding projects"
           className="!text-[red] !bg-transparent !border-[red] !text-base !leading-7 "
         />

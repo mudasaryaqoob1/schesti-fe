@@ -17,7 +17,6 @@ import { Pagination, Skeleton } from 'antd';
 import { BidFilters } from './components/Filters';
 import _, { size } from 'lodash';
 import { isArrayString } from '@/app/utils/typescript.utils';
-import axios from 'axios';
 
 const PDFDownloadLink = dynamic(
   () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
