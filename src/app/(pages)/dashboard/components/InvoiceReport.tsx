@@ -1,12 +1,10 @@
 import {  useState } from 'react';
 import { SelectComponent } from '@/app/component/customSelect/Select.component';
-import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { IDashboardStats } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 import { Column, type ColumnConfig } from '@ant-design/plots';
-import { UseQueryResult } from 'react-query';
 
 type Props = {
-  fetchDashboardState: UseQueryResult<IResponseInterface<IDashboardStats>>;
+  fetchDashboardState: IDashboardStats | undefined;
 };
 
 const MONTHS = [
@@ -27,15 +25,13 @@ const MONTHS = [
 
 export default function InvoiceReport({ fetchDashboardState }: Props) {
 
-  let { data } = fetchDashboardState;
-
 
   const [selectedMonth, setSelectedMonth] = useState('Month');
 
 
 
   const config: ColumnConfig = {
-    data: data?.data?.invoicesDetail as Object[],
+    data: fetchDashboardState?.invoicesDetail as Object[],
     xField: 'type',
     yField: 'value',
     color: (data) => {

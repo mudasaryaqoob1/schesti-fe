@@ -1,14 +1,11 @@
 import SenaryHeading from '@/app/component/headings/senaryHeading';
-import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { IDashboardStats } from '@/app/interfaces/companyInterfaces/companyClient.interface';
-import { UseQueryResult } from 'react-query';
 
 type Props = {
-  fetchDashboardState: UseQueryResult<IResponseInterface<IDashboardStats>>;
+  fetchDashboardState: IDashboardStats | undefined;
 };
 
 export function ProjectDetails({ fetchDashboardState }: Props) {
-  let { data } = fetchDashboardState;
   return (
     <div className="px-5 space-y-5">
       <div className="flex justify-between">
@@ -16,7 +13,7 @@ export function ProjectDetails({ fetchDashboardState }: Props) {
           <span className="w-3 h-3 bg-midnightBlue2" />
           <SenaryHeading title="Takeoff Project" />
         </div>
-        <SenaryHeading title={`${data?.data?.totalTakeoff}`} className="font-medium" />
+        <SenaryHeading title={`${fetchDashboardState?.totalTakeoff}`} className="font-medium" />
       </div>
       <div className="flex justify-between">
         <div className="flex gap-3 items-center">
@@ -26,7 +23,7 @@ export function ProjectDetails({ fetchDashboardState }: Props) {
         </div>
 
         <SenaryHeading
-          title={`${data?.data?.totalGeneratedEstimates}`}
+          title={`${fetchDashboardState?.totalGeneratedEstimates}`}
           className="font-medium"
         />
       </div>
@@ -38,7 +35,7 @@ export function ProjectDetails({ fetchDashboardState }: Props) {
         </div>
 
         <SenaryHeading
-          title={`${data?.data?.totalInvoices}`}
+          title={`${fetchDashboardState?.totalInvoices}`}
           className="font-medium"
         />
       </div>
@@ -48,7 +45,7 @@ export function ProjectDetails({ fetchDashboardState }: Props) {
 
           <SenaryHeading title="Scheduled Project" />
         </div>
-        <SenaryHeading title={`${data?.data?.totalSchedules}`} className="font-medium" />
+        <SenaryHeading title={`${fetchDashboardState?.totalSchedules}`} className="font-medium" />
       </div>
       <div className="flex justify-between">
         <div className="flex items-center gap-3">
@@ -57,7 +54,7 @@ export function ProjectDetails({ fetchDashboardState }: Props) {
           <SenaryHeading title="Meeting" />
         </div>
         <SenaryHeading
-          title={`${data?.data?.totalMeetings}`}
+          title={`${fetchDashboardState?.totalMeetings}`}
           className="font-medium"
         />
       </div>
