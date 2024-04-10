@@ -1,7 +1,5 @@
 import React from 'react';
-import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { IDashboardStats } from '@/app/interfaces/companyInterfaces/companyClient.interface';
-import { UseQueryResult } from 'react-query';
 
 import {
   Chart as ChartJS,
@@ -41,7 +39,7 @@ export const options = {
 const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July' , 'August' , 'September' , 'October' , 'November' , 'December'];
 
 type Props = {
-  fetchDashboardState: UseQueryResult<IResponseInterface<IDashboardStats>>;
+  fetchDashboardState: IDashboardStats | undefined;
 };
 
 function StatisticsReport({ fetchDashboardState }: Props) {
@@ -52,19 +50,19 @@ function StatisticsReport({ fetchDashboardState }: Props) {
     datasets: [
       {
         label: 'TakeOff',
-        data: fetchDashboardState.data?.data?.monthlyTakeOffTotalRecords,
+        data: fetchDashboardState?.monthlyTakeOffTotalRecords,
         borderColor: 'rgb(255, 99, 132)',
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
       },
       {
         label: 'Estimate',
-        data: fetchDashboardState.data?.data?.monthlyEstimateTotalRecords,
+        data: fetchDashboardState?.monthlyEstimateTotalRecords,
         borderColor: 'rgb(53, 162, 235)',
         backgroundColor: 'rgba(53, 162, 235, 0.5)',
       },
       {
         label: 'Schedule',
-        data: fetchDashboardState.data?.data?.monthlyScheduleTotalRecords,
+        data: fetchDashboardState?.monthlyScheduleTotalRecords,
         borderColor: 'rgb(53, 235, 144)',
         backgroundColor: 'rgba(53, 235, 93, 0.5)',
       },
