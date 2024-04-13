@@ -29,7 +29,6 @@ import { isArrayString } from '@/app/utils/typescript.utils';
 // import BidListPdf from './components/bids-pdf';
 import { useRouter } from 'next/navigation';
 
-
 const ITEMS_PER_PAGE = 4;
 
 function BidManagementSubContractorPage() {
@@ -40,7 +39,8 @@ function BidManagementSubContractorPage() {
   const [invitedCurrentPage, setInvitedCurrentPage] = useState(1);
   const [exploreCurrentPage, setExploreCurrentPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
-  const [selectedProjectSavedBid, setSelectedProjectSavedBid] = useState<any>(null);
+  const [selectedProjectSavedBid, setSelectedProjectSavedBid] =
+    useState<any>(null);
   const [filters, setFilters] = useState<{
     trades: string[];
     projectValue: number;
@@ -58,7 +58,7 @@ function BidManagementSubContractorPage() {
 
   const fetchProjects = () => {
     return bidManagementService.httpGetOwnerProjects(filters);
-  }
+  };
 
   const projectsQuery = useQuery(['bid-projects'], fetchProjects);
   const invitedUserProjectsQuery = useQuery(['invited-user-projects'], () => {
@@ -94,32 +94,32 @@ function BidManagementSubContractorPage() {
       exploreCurrentPage * ITEMS_PER_PAGE
     );
 
-    // const dataToExport = currentExploreProjects.filter((project) => {
-    //   if (search === '') {
-    //     return project;
-    //   }
-    //   return (
-    //     project.projectName.toLowerCase().includes(search.toLowerCase()) ||
-    //     project.city.toLowerCase().includes(search.toLowerCase()) ||
-    //     project.stage.toLowerCase().includes(search.toLowerCase())
-    //   );
-    // });
+  // const dataToExport = currentExploreProjects.filter((project) => {
+  //   if (search === '') {
+  //     return project;
+  //   }
+  //   return (
+  //     project.projectName.toLowerCase().includes(search.toLowerCase()) ||
+  //     project.city.toLowerCase().includes(search.toLowerCase()) ||
+  //     project.stage.toLowerCase().includes(search.toLowerCase())
+  //   );
+  // });
 
-    const bidClickHandler = async (selectedBid: any) => {
-      setSelectedBid(selectedBid);
-      
-      try {
-        const { data } = await bidManagementService.httpGetProjectSavedBids(selectedBid._id);
-        console.log('data', data);
-        if(data) {
-          setSelectedProjectSavedBid(data?.projectBid);
-        }
-      } catch(err) {
-        console.error('Error fetching project saved bids:', err);
+  const bidClickHandler = async (selectedBid: any) => {
+    setSelectedBid(selectedBid);
+
+    try {
+      const { data } = await bidManagementService.httpGetProjectSavedBids(
+        selectedBid._id
+      );
+      console.log('data', data);
+      if (data) {
+        setSelectedProjectSavedBid(data?.projectBid);
       }
-
+    } catch (err) {
+      console.error('Error fetching project saved bids:', err);
     }
-
+  };
 
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 ">
@@ -178,7 +178,7 @@ function BidManagementSubContractorPage() {
                 }}
               />
             </div>
-          {/* <PDFDownloadLink
+            {/* <PDFDownloadLink
             document={<BidListPdf bids={dataToExport} />}
             fileName={`bid-list-${Math.random()}.pdf`}
           >
@@ -206,7 +206,7 @@ function BidManagementSubContractorPage() {
                 onApply={(appliedFilters) => {
                   setFilters(appliedFilters);
                   closeFilters();
-                  console.log('You click to apply filter')
+                  console.log('You click to apply filter');
                 }}
                 onCancel={closeFilters}
                 isVisible={showFilters}
@@ -247,18 +247,16 @@ function BidManagementSubContractorPage() {
                 })
               )}
 
-{
-  size(invitedProjects) >=5 && (
-    <div className="mt-1 flex justify-center">
-    <Pagination
-      current={invitedCurrentPage}
-      pageSize={ITEMS_PER_PAGE}
-      total={invitedProjects.length}
-      onChange={(page) => setInvitedCurrentPage(page)}
-    />
-  </div>
-  )
-}
+              {size(invitedProjects) >= 5 && (
+                <div className="mt-1 flex justify-center">
+                  <Pagination
+                    current={invitedCurrentPage}
+                    pageSize={ITEMS_PER_PAGE}
+                    total={invitedProjects.length}
+                    onChange={(page) => setInvitedCurrentPage(page)}
+                  />
+                </div>
+              )}
             </div>
             <div className="mt-3">
               <SenaryHeading
@@ -303,13 +301,16 @@ function BidManagementSubContractorPage() {
           {/* Side Modal */}
           {selectedBid ? (
             <div className="col-span-4 py-[24px] px-[17px] rounded-lg mt-3 border border-[#E9E9EA]">
-              <BidDetails bid={selectedBid} selectedProjectSavedBid={selectedProjectSavedBid} setSelectedProjectSavedBid={setSelectedProjectSavedBid} />
+              <BidDetails
+                bid={selectedBid}
+                selectedProjectSavedBid={selectedProjectSavedBid}
+                setSelectedProjectSavedBid={setSelectedProjectSavedBid}
+              />
             </div>
           ) : null}
         </div>
-        {
-          size(projects) >=5 && (
-            <div className="mt-1 flex justify-center">
+        {size(projects) >= 5 && (
+          <div className="mt-1 flex justify-center">
             <Pagination
               current={exploreCurrentPage}
               pageSize={ITEMS_PER_PAGE}
@@ -317,8 +318,7 @@ function BidManagementSubContractorPage() {
               onChange={(page) => setExploreCurrentPage(page)}
             />
           </div>
-          )
-        }
+        )}
       </div>
     </section>
   );

@@ -1,132 +1,190 @@
 import CustomButton from '@/app/component/customButton/button';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { USCurrencyFormat } from '@/app/utils/format';
-import { Divider } from 'antd';
-import { Country } from 'country-state-city';
-import moment from 'moment';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { Divider, Table } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import moment from 'moment';
+import { isEmpty, size } from 'lodash';
+import { useState } from 'react';
 
 type Props = {
   bid: any;
-  setSelectedBid: any;
-  refetchSavedBids: ()=>void;
+  selectedBidProjectDetails: any;
 };
 
-export function BidDetails({ bid }: Props) {
+export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
+  const [isDownloadingAll, setIsDownloadingAll] = useState(false);
 
-  const router = useRouter();
+  const columns: ColumnsType<{}> = [
+    {
+      key: 'description',
+      title: 'Description',
+      dataIndex: 'description',
+    },
+    {
+      key: 'quantity',
+      title: 'Quantity',
+      dataIndex: 'quantity',
+    },
+    {
+      key: 'unitPrice',
+      title: 'Unit Price',
+      dataIndex: 'unitPrice',
+      render(value) {
+        return USCurrencyFormat.format(value);
+      },
+    },
+    {
+      key: 'total',
+      title: 'Total',
+      dataIndex: 'total',
+      render(value) {
+        return USCurrencyFormat.format(value);
+      },
+    },
+  ];
+
+  const download = (url: string, name: string) => {
+    fetch(url)
+      .then(response => response.blob())
+      .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = name;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
+  }
+
+  const downloadFile = () => {
+    if (!isEmpty(selectedBidProjectDetails.file)) {
+      setIsDownloadingAll(true);
+      download(selectedBidProjectDetails.file.url, selectedBidProjectDetails.file.name);
+      setIsDownloadingAll(false);
+    }
+  };
 
   return (
-    <div>
-      <div className="flex items-center justify-between">
+    <div className="col-span-4 mt-3">
+      <div>
         <SenaryHeading
-          title={`Posted: ${moment(bid?.projectId.createdAt).format('DD MMM YYYY, hh:mm')}`}
-          className="text-[#475467] text-sm leading-4 font-normal"
+          title={'Company Name'}
+          className="font-normal text-[#475467] text-xs leading-4"
         />
-        <div className="flex items-center space-x-2">
-          <div className="rounded-full bg-[#E9EBF8] py-[5px] px-[11px]">
-            <SenaryHeading
-              title={bid?.projectId.stage}
-              className="text-[#7138DF] font-normal text-xs leading-4"
-            />
-          </div>
+        <div className="flex mt-1 items-center space-x-3">
           <Image
-            alt="trash icon"
-            src={'/trash.svg'}
-            width={16}
-            height={16}
-            className="cursor-pointer"
+            src={bid.user?.companyLogo}
+            width={18}
+            height={18}
+            alt="trade icon"
+          />
+          <SenaryHeading
+            title={bid.projectId?.projectName}
+            className="font-medium text-[#001556] text-base leading-6"
           />
         </div>
       </div>
 
-      <div className="mt-[14px]">
-        <SenaryHeading
-          title={bid?.projectId?.projectName}
-          className="text-[#475467] text-base leading-6 font-semibold"
-        />
-
-        <SenaryHeading
-          title={bid?.projectId?.description}
-          className="text-[#475467] text-[14px] leading-6 font-normal mt-2"
-        />
-
-        <p className="text-[#7F56D9] underline underline-offset-2 mt-4 text-[14px] leading-6 font-normal cursor-pointer">
-          View full details
-        </p>
-      </div>
-
-      <Divider />
-
-      <div className="my-4 space-y-3">
-        <div className="flex items-center space-x-1">
+      <div className="mt-3 space-y-2">
+        <div className="flex items-centers space-x-2">
           <SenaryHeading
-            title="Location:"
-            className="text-[#475467] text-sm leading-4 font-normal"
+            title={'Project Price:'}
+            className="font-normal text-[#475467] text-xs leading-4"
           />
+
           <SenaryHeading
-            title={`${bid?.projectId.city}, ${Country.getCountryByCode(bid?.projectId.country)?.name}`}
-            className="text-[#475467] text-sm leading-4 font-semibold"
+            title={bid.projectId?.projectValue}
+            className="font-semibold text-[#475467] text-xs leading-4"
           />
         </div>
-
-        <div className="flex items-center space-x-1">
+        <div className="flex items-centers space-x-2">
           <SenaryHeading
-            title="Project Value:"
-            className="text-[#475467] text-sm leading-4 font-normal"
+            title={'Deadline:'}
+            className="font-normal text-[#475467] text-xs leading-4"
           />
+
           <SenaryHeading
-            title={`${USCurrencyFormat.format(bid?.projectId?.projectValue)}`}
-            className="text-[#475467] text-sm leading-4 font-semibold"
+            title={selectedBidProjectDetails?.projectDuration}
+            className="font-semibold text-[#475467] text-xs leading-4"
           />
         </div>
-
-        <div className="flex items-center space-x-1">
+        <div className="flex items-centers space-x-2">
           <SenaryHeading
-            title="Bid Date:"
-            className="text-[#475467] text-sm leading-4 font-normal"
+            title={'Bid Time:'}
+            className="font-normal text-[#475467] text-xs leading-4"
           />
+
           <SenaryHeading
-            title={`${moment(bid?.projectId.bidDueDate).format('DD MMM YYYY, hh:mm')}`}
-            className="text-[#475467] text-sm leading-4 font-semibold"
+            title={`${moment(selectedBidProjectDetails.createdAt).format(
+              'DD MMM YYYY, hh:mm'
+            )}`}
+            className="font-semibold text-[#475467] text-xs leading-4"
           />
         </div>
       </div>
 
       <Divider />
-
-      <div className="flex items-center py-[5px] px-[11px] space-x-2 cursor-pointer">
-        <Image
-          alt="cloud icon"
-          src={'/uploadcloud.svg'}
-          width={16}
-          height={16}
-        />
+      <div className="mt-3">
         <SenaryHeading
-          title="Download all files"
-          className="text-[#7138DF] text-xs leading-4 font-semibold underline underline-offset-2"
+          title={selectedBidProjectDetails?.additionalDetails}
+          className="font-normal text-[#475467] text-sm leading-6"
         />
       </div>
 
-      <div className="mt-4 space-y-2">
-        <CustomButton
-          // onClick={() => removeUserBidMutation.mutate({biddingId: bid._id})}
-          text="Remove from my bidding projects"
-          className="!text-[red] !bg-transparent !border-[red] !text-base !leading-7 "
-        />
+      <Divider />
+      <div className="mt-2 flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <SenaryHeading
+            title="How long this price will stay?"
+            className="font-normal text-[#667085] text-xs leading-4"
+          />
+          <SenaryHeading
+            title={selectedBidProjectDetails?.projectDuration}
+            className="font-semibold text-[#101828] text-xs leading-4"
+          />
+        </div>
+        <div className="flex items-center space-x-2">
+          <SenaryHeading
+            title="How much you want to increase?"
+            className="font-normal text-[#667085] text-xs leading-4"
+          />
+          <SenaryHeading
+            title={`${selectedBidProjectDetails?.increaseInPercentage} %`}
+            className="font-semibold text-[#101828] text-xs leading-4"
+          />
+        </div>
       </div>
-      <div className="mt-4 space-y-2">
+      <Divider />
+      {size(selectedBidProjectDetails?.projectScopes) > 0 && (
+        <div className="mt-2 space-y-3">
+          <SenaryHeading
+            title="Project Scope"
+            className="font-semibold text-[#101828] text-xs leading-4"
+          />
+
+          <Table
+            columns={columns}
+            dataSource={selectedBidProjectDetails?.projectScopes?.map(
+              (el: any) => ({
+                description: el.description,
+                quantity: el.quantity,
+                price: el.price,
+              })
+            )}
+            pagination={false}
+            bordered
+          />
+        </div>
+      )}
+      <div className="px-4 mt-3">
         <CustomButton
-          text="Send Bid"
-          className="!bg-[#EAECF0] !text-[#667085] !border-[#EAECF0] !text-base !leading-7 "
-        />
-      </div>
-      <div className="mt-4 space-y-2">
-        <CustomButton
-          onClick={() => router.push(`/bid-management/contractor/details/${bid.projectId?._id}`)}
-          text="View Details"
-          className="!bg-[#EAECF0] !text-[#667085] !border-[#EAECF0] !text-base !leading-7 "
+          disabled={isDownloadingAll || isEmpty(selectedBidProjectDetails.file)}
+          onClick={downloadFile}
+          text="Download All Files"
         />
       </div>
     </div>

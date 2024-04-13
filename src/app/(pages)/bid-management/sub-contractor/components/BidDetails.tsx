@@ -1,3 +1,4 @@
+import React from 'react';
 import CustomButton from '@/app/component/customButton/button';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import {
@@ -16,7 +17,6 @@ import { toast } from 'react-toastify';
 import { useMutation } from 'react-query';
 import { bidManagementService } from '@/app/services/bid-management.service';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 import { CreateRFI } from './CreateRFI';
 import Link from 'next/link';
 import { isEmpty } from 'lodash';
@@ -36,7 +36,7 @@ type SaveUserBidProps = {
 };
 export function BidDetails({ bid, selectedProjectSavedBid, setSelectedProjectSavedBid }: Props) {
   const router = useRouter();
-  const [isFavourite, setIsFavourite] = useState(false);
+  // const [isFavourite, setIsFavourite] = useState(false);
 
   const saveUserBidMutation = useMutation<
     IResponseInterface<{ projectId: ISaveUserBid }>,
@@ -64,30 +64,30 @@ export function BidDetails({ bid, selectedProjectSavedBid, setSelectedProjectSav
     },
   });
 
-  const updateUserBidMutation = useMutation<
-    IResponseInterface<{ projectId: ISaveUserBid }>,
-    AxiosError<{ message: string }>,
-    SaveUserBidProps
-  >({
-    //@ts-ignore
-    mutationKey: 'updateUserBid',
-    mutationFn: (values: SaveUserBidProps) => {
-      return bidManagementService.httpUpdateUserProjectBid(values);
-    },
-    onSuccess(res: any) {
-      if (res.data) {
-        toast.success('Bid updated Successfully');
-        // Dispatch any necessary actions after successful mutation
-      }
-    },
-    onError(error: any) {
-      if (error.response?.data?.message) {
-        toast.error(error.response?.data.message);
-      } else {
-        toast.error('An error occurred while saving the bid.');
-      }
-    },
-  });
+  // const updateUserBidMutation = useMutation<
+  //   IResponseInterface<{ projectId: ISaveUserBid }>,
+  //   AxiosError<{ message: string }>,
+  //   SaveUserBidProps
+  // >({
+  //   //@ts-ignore
+  //   mutationKey: 'updateUserBid',
+  //   mutationFn: (values: SaveUserBidProps) => {
+  //     return bidManagementService.httpUpdateUserProjectBid(values);
+  //   },
+  //   onSuccess(res: any) {
+  //     if (res.data) {
+  //       toast.success('Bid updated Successfully');
+  //       // Dispatch any necessary actions after successful mutation
+  //     }
+  //   },
+  //   onError(error: any) {
+  //     if (error.response?.data?.message) {
+  //       toast.error(error.response?.data.message);
+  //     } else {
+  //       toast.error('An error occurred while saving the bid.');
+  //     }
+  //   },
+  // });
 
   const removeUserBidMutation = useMutation<
   IResponseInterface<{ biddingId: RemoveUserBidProps }>,
@@ -138,14 +138,14 @@ export function BidDetails({ bid, selectedProjectSavedBid, setSelectedProjectSav
             height={16}
             className="cursor-pointer"
           /> */}
-          {/* <Image
+          <Image
             alt="share icon"
             src={'/share.svg'}
             width={16}
             height={16}
             className="cursor-pointer"
-          /> */}
-          <Image
+          />
+          {/* <Image
             onClick={() => {
               setIsFavourite(!isFavourite);
               setTimeout(() => {
@@ -157,7 +157,7 @@ export function BidDetails({ bid, selectedProjectSavedBid, setSelectedProjectSav
             width={16}
             height={16}
             className="cursor-pointer"
-          />
+          /> */}
           <Image
             alt="mail-black icon"
             src={'/mail-black.svg'}
@@ -179,7 +179,7 @@ export function BidDetails({ bid, selectedProjectSavedBid, setSelectedProjectSav
           className="text-[#475467] text-[14px] leading-6 font-normal mt-2"
         />
         <Link
-          href={`/bid-management/contractor/details/${bid?._id}`}
+          href={`/bid-management/details/${bid?._id}`}
           className="text-[#7F56D9] underline underline-offset-2 mt-4 text-[14px] leading-6 font-normal cursor-pointer"
         >
           View full details
