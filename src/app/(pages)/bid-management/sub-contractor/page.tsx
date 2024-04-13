@@ -303,7 +303,7 @@ function BidManagementSubContractorPage() {
           {/* Side Modal */}
           {selectedBid ? (
             <div className="col-span-4 py-[24px] px-[17px] rounded-lg mt-3 border border-[#E9E9EA]">
-              <BidDetails bid={selectedBid} selectedProjectSavedBid={selectedProjectSavedBid} />
+              <BidDetails bid={selectedBid} selectedProjectSavedBid={selectedProjectSavedBid} setSelectedProjectSavedBid={setSelectedProjectSavedBid} />
             </div>
           ) : null}
         </div>

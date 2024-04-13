@@ -24,6 +24,7 @@ import { isEmpty } from 'lodash';
 type Props = {
   bid: IBidManagement;
   selectedProjectSavedBid?: any;
+  setSelectedProjectSavedBid?: any;
 };
 type RemoveUserBidProps =  {
   biddingId: string;
@@ -32,9 +33,8 @@ type RemoveUserBidProps =  {
 type SaveUserBidProps = {
   projectId: string;
   isFavourite?: boolean;
-  // selectedProjectSavedBid?: any;
 };
-export function BidDetails({ bid, selectedProjectSavedBid }: Props) {
+export function BidDetails({ bid, selectedProjectSavedBid, setSelectedProjectSavedBid }: Props) {
   const router = useRouter();
   const [isFavourite, setIsFavourite] = useState(false);
 
@@ -52,14 +52,12 @@ export function BidDetails({ bid, selectedProjectSavedBid }: Props) {
       console.log('res', res);
       if (res.data && res.data.savedUserBid) {
         toast.success('Bid Saved Successfully');
-        router.push(`${Routes['Bid Management'].Bidding_Projects}`);
         // Dispatch any necessary actions after successful mutation
       }
     },
     onError(error: any) {
       if (error.response?.data?.message) {
         toast.error(error.response?.data.message);
-        router.push(`${Routes['Bid Management'].Bidding_Projects}`);
       } else {
         toast.error('An error occurred while saving the bid.');
       }
@@ -105,9 +103,7 @@ export function BidDetails({ bid, selectedProjectSavedBid }: Props) {
     console.log('res', res);
     if (res.data && res.data) {
       toast.success('Bid removed Successfully');
-      // setSelectedBid(null);
-      // refetchSavedBids();
-      // Dispatch any necessary actions after successful mutation
+      setSelectedProjectSavedBid(null);
     }
   },
   onError(error: any) {
@@ -306,7 +302,7 @@ export function BidDetails({ bid, selectedProjectSavedBid }: Props) {
           />
         ) : (
           <CustomButton
-            onClick={() => removeUserBidMutation.mutate({biddingId: bid._id})}
+            onClick={() => removeUserBidMutation.mutate({biddingId: selectedProjectSavedBid?._id})}
             text="Remove from my bidding projects"
             className="!text-[red] !bg-transparent !border-[red] !text-base !leading-7 "
           />
