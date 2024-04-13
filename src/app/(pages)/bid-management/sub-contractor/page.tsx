@@ -218,7 +218,7 @@ function BidManagementSubContractorPage() {
               iconwidth={14}
               iconheight={14}
               className="!w-44"
-              onClick={() => router.push('/bid-management/owner/post')}
+              onClick={() => router.push('/bid-management/post')}
             />
           </div>
         </div>
