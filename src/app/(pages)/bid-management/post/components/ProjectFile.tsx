@@ -13,8 +13,9 @@ import AwsS3 from '@/app/utils/S3Intergration';
 type Props = {
   children?: React.ReactNode;
   formik: FormikProps<IBidManagement>;
+  setShouldContinue: React.Dispatch<React.SetStateAction<boolean>>;
 };
-export function ProjectUploadFiles({ formik, children }: Props) {
+export function ProjectUploadFiles({ formik, children, setShouldContinue }: Props) {
   const [files, setFiles] = useState<UploadFile[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -38,8 +39,9 @@ export function ProjectUploadFiles({ formik, children }: Props) {
     setFiles(updatedFiles);
   }
   const customRequest = async (files: RcFile[]) => {
+    setLoading(true);
+    setShouldContinue(false);
     try {
-      setLoading(true);
       const filesData = files.map(async (file) => {
         const url = await new AwsS3(file, 'documents/post-project/').getS3URL();
         return {
@@ -59,6 +61,7 @@ export function ProjectUploadFiles({ formik, children }: Props) {
       toast.error(`Unable to upload Files`);
     } finally {
       setLoading(false);
+      setShouldContinue(true);
     }
   };
 
@@ -78,14 +81,14 @@ export function ProjectUploadFiles({ formik, children }: Props) {
       <div className="mt-4">
         <Dragger
           name={'file'}
-          accept="image/*,gif,application/pdf"
+          accept="image/*,gif,application/pdf,.doc,.docx,.csv, .xls, .xlsx, .ppt, .pptx, .txt, .pdf, .zip, .rar"
           multiple={true}
           fileList={files}
           beforeUpload={(_file, FileList) => {
             for (const file of FileList) {
-              const isLessThan2MB = file.size < 2 * 1024 * 1024;
-              if (!isLessThan2MB) {
-                toast.error('File size should be less than 2MB');
+              const isLessThan500MB = file.size < 500 * 1024 * 1024; // 500MB in bytes
+              if (!isLessThan500MB) {
+                toast.error('File size should be less than 500MB');
                 return false;
               }
             }
@@ -150,11 +153,20 @@ export function ProjectUploadFiles({ formik, children }: Props) {
                   <div className="p-2 w-auto h-[190px] xl:w-[230px] relative">
                     {file.type.includes('image') ? (
                       <Image alt="image" src={file.url} fill />
-                    ) : (
+                    ) : file.type.includes('pdf') ? (
                       <div className="relative mt-10 w-[100px] h-[100px] mx-auto">
                         <Image
                           alt="pdf"
                           src={'/pdf.svg'}
+                          layout="fill"
+                          objectFit="cover"
+                        />
+                      </div>
+                    ) : (
+                      <div className="relative mt-10 w-[100px] h-[100px] mx-auto">
+                        <Image
+                          alt="file"
+                          src={'/file-05.svg'}
                           layout="fill"
                           objectFit="cover"
                         />

@@ -66,10 +66,7 @@ const ProjectDetailsSchema = Yup.object().shape({
     .oneOf(['days', 'weeks', 'months', 'years'])
     .required('Duration Type is required'),
   description: Yup.string().required('Description is required'),
-  specialInstructions: Yup.string().required(
-    'Special Instructions is required'
-  ),
-
+  specialInstructions: Yup.string(),
   bidDueDate: Yup.string().required('Bid Due Date is required'),
   estimatedCompletionDate: Yup.string().required(
     'Estimated Completion Date is required'
@@ -175,6 +172,7 @@ function CreatePost() {
   const [showCongratulation, setShowCongratulation] = useState(false);
   const postProjectState = useSelector((state: RootState) => state.postProject);
   const router = useRouter();
+  const [shouldContinue, setShouldContinue] = useState(true);
 
   const dispatch = useDispatch<AppDispatch>();
   const nextStep = () => {
@@ -446,16 +444,26 @@ function CreatePost() {
               />
             </PostProjectTrades>
           ) : postProjectState.formStep === 4 ? (
-            <ProjectUploadFiles formik={mainFormik}>
+            <ProjectUploadFiles formik={mainFormik}
+              setShouldContinue={setShouldContinue}
+            >
               <PostProjectFooter
                 cancelButton={{
                   text: 'Previous',
                   onClick() {
+                    if (!shouldContinue) {
+                      toast.error('Please wait for the files to upload');
+                      return;
+                    }
                     prevStep();
                   },
                 }}
                 submitButton={{
                   onClick() {
+                    if (!shouldContinue) {
+                      toast.error('Please wait for the files to upload');
+                      return;
+                    }
                     if (mainFormik.values.projectFiles.length === 0) {
                       toast.error('Please upload files');
                       return;

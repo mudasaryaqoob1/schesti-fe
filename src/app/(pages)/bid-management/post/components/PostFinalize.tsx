@@ -220,38 +220,20 @@ export function PostFinalize({ formik, children }: Props) {
                   className="text-[14px] leading-6 text-[#98A2B3] font-normal"
                 />
 
-                <div className="flex items-center space-x-3">
+                <div className="grid grid-cols-4 gap-3 justify-center">
                   {values.projectBuildingUse.map((building) => (
-                    <p
+                    <div
                       key={building}
-                      className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
+                      className="px-[12px] break-words rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
                     >
                       {building}
-                    </p>
+                    </div>
                   ))}
                 </div>
               </div>
             </div>
 
-            <div className="space-y-[8px]">
-              <div className="space-y-[8px]">
-                <SenaryHeading
-                  title="Sector & Labor Status"
-                  className="text-[14px] leading-6 text-[#98A2B3] font-normal"
-                />
-
-                <div className="flex items-center space-x-4 flex-wrap space-y-2">
-                  <p className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4">
-                    Demolition
-                  </p>
-                  <p className="px-[12px]  rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4">
-                    New Construction no Site Work
-                  </p>
-                  <p className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4">
-                    Renovation/Remodel/Repair
-                  </p>
-                </div>
-              </div>
+            <div className="space-y-[8px] self-center">
               <div className="space-y-[8px]">
                 <SenaryHeading
                   title="Construction Type"
@@ -348,6 +330,8 @@ export function PostFinalize({ formik, children }: Props) {
             className={`justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border ${formik.values.platformType === 'Private' ? 'border-[#7138DF] bg-[#F2F4F7]' : 'border-[#E4E4E4] bg-white'}  cursor-pointer disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 flex items-center space-x-2 rounded-lg  p-5`}
             onClick={() => {
               formik.setFieldValue('platformType', 'Private');
+
+              formik.setFieldValue('isMatchingWithTrades', false);
             }}
           >
             <svg
@@ -428,7 +412,7 @@ export function PostFinalize({ formik, children }: Props) {
         <Divider className="border-dashed border-t-2" />
 
         <div className="grid grid-cols-2 gap-6 mt-2">
-          <div className="space-y-2">
+          {formik.values.platformType === 'Public' ? <div className="space-y-2">
             <Checkbox
               checked={formik.values.isMatchingWithTrades}
               onChange={(e) => {
@@ -448,7 +432,7 @@ export function PostFinalize({ formik, children }: Props) {
                 className="text-[#667085] font-normal leading-7 text-[14px] !w-fit"
               />
             </Checkbox>
-          </div>
+          </div> : <div></div>}
 
           <div className="space-y-2">
             <SenaryHeading
@@ -471,6 +455,9 @@ export function PostFinalize({ formik, children }: Props) {
                     Boolean(formik.errors.invitedMembers)
                     ? 'error'
                     : undefined,
+                dropdownStyle: {
+                  display: "none"
+                }
               }}
               hasError={
                 formik.touched.invitedMembers &&
@@ -522,7 +509,7 @@ export function PostFinalize({ formik, children }: Props) {
                     />
                   </p>
                   <p className="text-[12px] leading-3 text-[#98A2B3]">
-                    Drop your image here, or browse
+                    Drop your emails here, or browse
                   </p>
                 </Spin>
               </Dragger>
