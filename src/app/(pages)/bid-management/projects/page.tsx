@@ -157,7 +157,7 @@ function Page() {
                 dispatch(setFormStepAction(0));
                 dispatch(postProjectActions.setTeamMemers(record.teamMembers));
                 console.log('Edit Team Members', record.teamMembers);
-                router.push(`${Routes['Bid Management'].Owner}/post`);
+                router.push(`${Routes['Bid Management'].Post_A_Project}`);
               }
               if (key === 'delete') {
                 setSelectedProject(record);
