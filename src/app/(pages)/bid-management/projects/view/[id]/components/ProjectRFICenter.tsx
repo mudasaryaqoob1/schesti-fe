@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { RFIReply } from './RFIReply';
 import { CreateRFI } from '@/app/(pages)/bid-management/sub-contractor/components/CreateRFI';
+import { UpdateRFI } from '@/app/(pages)/bid-management/sub-contractor/components/UpdateRFI';
 
 type Props = {
   projectId: string
@@ -21,9 +22,6 @@ export function ProjectRFICenter({ projectId }: Props) {
   const [rfis, setRfis] = useState<IRFI[]>([]);
   const [isFetching, setIsFetching] = useState(false);
   const [search, setSearch] = useState('');
-
-
-
 
   useEffect(() => {
     fetchRFIs();
@@ -132,6 +130,7 @@ export function ProjectRFICenter({ projectId }: Props) {
                   projectId={rfi.projectId}
                   messageId={rfi._id}
                 />
+                  <UpdateRFI onSuccess={() => {}} rfiData={rfi} projectId={projectId} />
               </div>
             </div>
             <TertiaryHeading
