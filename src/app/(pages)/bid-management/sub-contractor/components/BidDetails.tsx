@@ -308,7 +308,7 @@ export function BidDetails({ bid, selectedProjectSavedBid, setSelectedProjectSav
           />
         )}
 
-        <CreateRFI onSuccess={() => {}} projectId={bid._id} />
+        <CreateRFI isProjectOwner={false} onSuccess={() => {}} projectId={bid._id} />
       </div>
     </div>
   );

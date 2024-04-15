@@ -10,6 +10,7 @@ import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { RFIReply } from './RFIReply';
+import { CreateRFI } from '@/app/(pages)/bid-management/sub-contractor/components/CreateRFI';
 
 type Props = {
   projectId: string
@@ -59,7 +60,7 @@ export function ProjectRFICenter({ projectId }: Props) {
     <div className="mb-4 md:ms-[69px] md:me-[59px] mx-4  ">
       <div className="flex items-center justify-between">
         <TertiaryHeading
-          title="RFI Center"
+          title="RFI Centerppp"
           className="text-[20px] leading-[30px]"
         />
 
@@ -109,7 +110,7 @@ export function ProjectRFICenter({ projectId }: Props) {
           <div className="py-4 flex-1 px-4 space-y-2">
             <div className="flex justify-between">
               <TertiaryHeading
-                title={`${typeof user !== 'string' ? user.companyName : ""} | ${moment(rfi.createdAt).format('MMM DD, YYYY, hh:mm A')}`}
+                title={`${typeof user !== 'string' ? user.companyName || user.organizationName || user.name: ""} | ${moment(rfi.createdAt).format('MMM DD, YYYY, hh:mm A')}`}
                 className="text-[14px] leading-5 font-semibold text-[#667085]"
               />
               <div className="flex items-center space-x-4">
@@ -120,7 +121,7 @@ export function ProjectRFICenter({ projectId }: Props) {
                 {/* current date === createdAt then display */}
 
                 {moment().isSame(rfi.createdAt, 'day') ? <p className="py-[5px] rounded-full px-[11px] bg-[#E9EBF8] text-[#7138DF] text-xs leading-4">
-                  New
+                  <CreateRFI isProjectOwner={true} onSuccess={() => {}} projectId={projectId} />
                 </p> : null
                 }
                 <RFIReply
@@ -129,6 +130,7 @@ export function ProjectRFICenter({ projectId }: Props) {
                     setRfis([rfi, ...rfis]);
                   }}
                   projectId={rfi.projectId}
+                  messageId={rfi._id}
                 />
               </div>
             </div>
