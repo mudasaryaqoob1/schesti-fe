@@ -60,7 +60,7 @@ export function ProjectRFICenter({ projectId }: Props) {
     <div className="mb-4 md:ms-[69px] md:me-[59px] mx-4  ">
       <div className="flex items-center justify-between">
         <TertiaryHeading
-          title="RFI Centerppp"
+          title="RFI Center"
           className="text-[20px] leading-[30px]"
         />
 
@@ -102,7 +102,7 @@ export function ProjectRFICenter({ projectId }: Props) {
 
         return <div key={rfi._id} className="mt-4 px-2 flex bg-white rounded-lg shadow">
           <Avatar
-            src={typeof rfi.user !== 'string' ? rfi.user.avatar || rfi.user.companyLogo : ""}
+            src={typeof rfi.user !== 'string' ? rfi.user.avatar ?? rfi.user.companyLogo : ""}
             size={40}
             className='mt-4'
           />
@@ -110,7 +110,7 @@ export function ProjectRFICenter({ projectId }: Props) {
           <div className="py-4 flex-1 px-4 space-y-2">
             <div className="flex justify-between">
               <TertiaryHeading
-                title={`${typeof user !== 'string' ? user.companyName || user.organizationName || user.name: ""} | ${moment(rfi.createdAt).format('MMM DD, YYYY, hh:mm A')}`}
+                title={`${typeof user !== 'string' ? user.companyName || user.organizationName || user.name : ""} | ${moment(rfi.createdAt).format('MMM DD, YYYY, hh:mm A')}`}
                 className="text-[14px] leading-5 font-semibold text-[#667085]"
               />
               <div className="flex items-center space-x-4">
@@ -121,7 +121,7 @@ export function ProjectRFICenter({ projectId }: Props) {
                 {/* current date === createdAt then display */}
 
                 {moment().isSame(rfi.createdAt, 'day') ? <p className="py-[5px] rounded-full px-[11px] bg-[#E9EBF8] text-[#7138DF] text-xs leading-4">
-                  <CreateRFI isProjectOwner={true} onSuccess={() => {}} projectId={projectId} />
+                  <CreateRFI isProjectOwner={true} onSuccess={() => { }} projectId={projectId} />
                 </p> : null
                 }
                 <RFIReply
@@ -138,6 +138,17 @@ export function ProjectRFICenter({ projectId }: Props) {
               title={rfi.description}
               className="text-[#475467] text-[14px] leading-6 font-normal "
             />
+
+            <div className='mt-2 p-2 flex items-center border border-[#E1E5EA] rounded-md w-[270px]'>
+              <div className='w-[44px] h-[44px] justify-center items-center flex bg-[#FFEBC6]' >
+                <Avatar
+                  src={"/file-05.svg"}
+                  alt='file icon'
+                  size={"small"}
+                  shape='square'
+                />
+              </div>
+            </div>
           </div>
         </div>
       })}
