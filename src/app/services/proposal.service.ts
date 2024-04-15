@@ -36,6 +36,10 @@ class ProposalService extends HttpService {
   > => {
     return this.post(`${this.endPoint}/submit`, data);
   };
+  httpGetProposalDetailsByProjectId = (projectId: string): Promise<IResponseInterface<{proposalDetails: IProposal}>> => {
+    return this.get(`${this.endPoint}/bid-details/${projectId}`);
+  };
+
 }
 
 export const proposalService = new ProposalService();

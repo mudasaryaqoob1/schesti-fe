@@ -15,12 +15,29 @@ export type CreateRFIData = {
     };
 }
 
+export type ReplyRFIData = {
+    projectId: string;
+    description: string;
+    type: "private" | "public";
+    responseTo: string;
+    file?: {
+        url: string;
+        extension: string;
+        type: string;
+        name: string;
+    };
+}
+
 class RfiService extends HttpService {
     private endPoint = "api/bids";
 
     httpCreateRFI = (data: CreateRFIData): Promise<IResponseInterface<{
         createdRFI: IRFI
     }>> => this.post(`${this.endPoint}/create-rfi`, data);
+
+    httpReplyRFI = (data: ReplyRFIData): Promise<IResponseInterface<{
+        createdRFI: IRFI
+    }>> => this.post(`${this.endPoint}/reply-rfi`, data);
 
     httpGetAllProjectRFIs = (projectId: string): Promise<IResponseInterface<{
         rfis: IRFI[]

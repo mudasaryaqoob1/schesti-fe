@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
 import { BidIntro } from '../../sub-contractor/components/BidIntro';
-import { BidDetails } from './BidDetails';
 import { useQuery } from 'react-query';
 import { bidManagementService } from '@/app/services/bid-management.service';
+import { BiddingProjectDetails } from './BiddingProjectDetails';
 
 
 export function UpComingProjects() {
@@ -49,7 +49,8 @@ export function UpComingProjects() {
         </div>
         {selectedBid ? (
           <div className="col-span-4 py-[24px] px-[17px] rounded-lg mt-3 border border-[#E9E9EA]">
-            <BidDetails setSelectedBid={setSelectedBid} refetchSavedBids={refetchSavedBids} bid={selectedBid as unknown as IBidManagement} />
+            <BiddingProjectDetails refetchSavedBids={refetchSavedBids} setSelectedBid={setSelectedBid} bid={selectedBid as unknown as IBidManagement} />
+            {/* <BidDetails bid={selectedBid as unknown as IBidManagement} /> */}
           </div>
         ) : null}
       </div>

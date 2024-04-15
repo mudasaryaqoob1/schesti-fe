@@ -11,7 +11,7 @@ import { TextAreaComponent } from '@/app/component/textarea';
 
 
 import { IRFI } from "@/app/interfaces/rfi.interface";
-import { CreateRFIData, rfiService } from "@/app/services/rfi.service";
+import { ReplyRFIData, rfiService } from "@/app/services/rfi.service";
 import TertiaryHeading from "@/app/component/headings/tertiary";
 import { Popups } from "@/app/(pages)/bid-management/components/Popups";
 import { Radio, Spin } from "antd";
@@ -19,7 +19,8 @@ import CustomButton from "@/app/component/customButton/button";
 import { useClickAway } from "ahooks/es";
 
 type Props = {
-    projectId: string
+    projectId: string;
+    messageId: string;
     onSuccess: (_rfi: IRFI) => void;
 }
 
@@ -28,7 +29,7 @@ const ValidationSchema = Yup.object().shape({
     type: Yup.string().required('Type is required'),
     file: Yup.mixed(),
 });
-export function RFIReply({ onSuccess, projectId }: Props) {
+export function RFIReply({ onSuccess, projectId, messageId }: Props) {
 
     const ref = useRef<HTMLDivElement>(null);
     const [showRfiModal, setShowRfiModal] = useState(false);
@@ -41,21 +42,23 @@ export function RFIReply({ onSuccess, projectId }: Props) {
         setShowRfiModal(!showRfiModal);
     }
 
-    const rfiFormik = useFormik<Omit<CreateRFIData, "projectId">>({
+    const rfiFormik = useFormik<Omit<ReplyRFIData, "projectId">>({
         initialValues: {
             description: '',
             type: 'private',
+            responseTo: '',
             file: undefined,
         },
         async onSubmit(values, helpers) {
             setIsSubmitting(true);
             try {
-                const res = await rfiService.httpCreateRFI({
+                const res = await rfiService.httpReplyRFI({
                     ...values,
+                    responseTo: messageId,
                     projectId
                 });
                 if (res.data) {
-                    toast.success('RFI created successfully');
+                    toast.success('RFI replied successfully');
                     onSuccess(res.data.createdRFI);
                 }
             } catch (error) {

@@ -1,3 +1,4 @@
+import React from 'react';
 import CustomButton from '@/app/component/customButton/button';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import {
@@ -16,7 +17,6 @@ import { toast } from 'react-toastify';
 import { useMutation } from 'react-query';
 import { bidManagementService } from '@/app/services/bid-management.service';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
 import { CreateRFI } from './CreateRFI';
 import Link from 'next/link';
 import { isEmpty } from 'lodash';
@@ -24,6 +24,7 @@ import { isEmpty } from 'lodash';
 type Props = {
   bid: IBidManagement;
   selectedProjectSavedBid?: any;
+  setSelectedProjectSavedBid?: any;
 };
 type RemoveUserBidProps =  {
   biddingId: string;
@@ -32,11 +33,10 @@ type RemoveUserBidProps =  {
 type SaveUserBidProps = {
   projectId: string;
   isFavourite?: boolean;
-  // selectedProjectSavedBid?: any;
 };
-export function BidDetails({ bid, selectedProjectSavedBid }: Props) {
+export function BidDetails({ bid, selectedProjectSavedBid, setSelectedProjectSavedBid }: Props) {
   const router = useRouter();
-  const [isFavourite, setIsFavourite] = useState(false);
+  // const [isFavourite, setIsFavourite] = useState(false);
 
   const saveUserBidMutation = useMutation<
     IResponseInterface<{ projectId: ISaveUserBid }>,
@@ -52,44 +52,42 @@ export function BidDetails({ bid, selectedProjectSavedBid }: Props) {
       console.log('res', res);
       if (res.data && res.data.savedUserBid) {
         toast.success('Bid Saved Successfully');
-        router.push(`${Routes['Bid Management'].Bidding_Projects}`);
         // Dispatch any necessary actions after successful mutation
       }
     },
     onError(error: any) {
       if (error.response?.data?.message) {
         toast.error(error.response?.data.message);
-        router.push(`${Routes['Bid Management'].Bidding_Projects}`);
       } else {
         toast.error('An error occurred while saving the bid.');
       }
     },
   });
 
-  const updateUserBidMutation = useMutation<
-    IResponseInterface<{ projectId: ISaveUserBid }>,
-    AxiosError<{ message: string }>,
-    SaveUserBidProps
-  >({
-    //@ts-ignore
-    mutationKey: 'updateUserBid',
-    mutationFn: (values: SaveUserBidProps) => {
-      return bidManagementService.httpUpdateUserProjectBid(values);
-    },
-    onSuccess(res: any) {
-      if (res.data) {
-        toast.success('Bid updated Successfully');
-        // Dispatch any necessary actions after successful mutation
-      }
-    },
-    onError(error: any) {
-      if (error.response?.data?.message) {
-        toast.error(error.response?.data.message);
-      } else {
-        toast.error('An error occurred while saving the bid.');
-      }
-    },
-  });
+  // const updateUserBidMutation = useMutation<
+  //   IResponseInterface<{ projectId: ISaveUserBid }>,
+  //   AxiosError<{ message: string }>,
+  //   SaveUserBidProps
+  // >({
+  //   //@ts-ignore
+  //   mutationKey: 'updateUserBid',
+  //   mutationFn: (values: SaveUserBidProps) => {
+  //     return bidManagementService.httpUpdateUserProjectBid(values);
+  //   },
+  //   onSuccess(res: any) {
+  //     if (res.data) {
+  //       toast.success('Bid updated Successfully');
+  //       // Dispatch any necessary actions after successful mutation
+  //     }
+  //   },
+  //   onError(error: any) {
+  //     if (error.response?.data?.message) {
+  //       toast.error(error.response?.data.message);
+  //     } else {
+  //       toast.error('An error occurred while saving the bid.');
+  //     }
+  //   },
+  // });
 
   const removeUserBidMutation = useMutation<
   IResponseInterface<{ biddingId: RemoveUserBidProps }>,
@@ -105,9 +103,7 @@ export function BidDetails({ bid, selectedProjectSavedBid }: Props) {
     console.log('res', res);
     if (res.data && res.data) {
       toast.success('Bid removed Successfully');
-      // setSelectedBid(null);
-      // refetchSavedBids();
-      // Dispatch any necessary actions after successful mutation
+      setSelectedProjectSavedBid(null);
     }
   },
   onError(error: any) {
@@ -142,14 +138,14 @@ export function BidDetails({ bid, selectedProjectSavedBid }: Props) {
             height={16}
             className="cursor-pointer"
           /> */}
-          {/* <Image
+          <Image
             alt="share icon"
             src={'/share.svg'}
             width={16}
             height={16}
             className="cursor-pointer"
-          /> */}
-          <Image
+          />
+          {/* <Image
             onClick={() => {
               setIsFavourite(!isFavourite);
               setTimeout(() => {
@@ -161,7 +157,7 @@ export function BidDetails({ bid, selectedProjectSavedBid }: Props) {
             width={16}
             height={16}
             className="cursor-pointer"
-          />
+          /> */}
           <Image
             alt="mail-black icon"
             src={'/mail-black.svg'}
@@ -183,7 +179,7 @@ export function BidDetails({ bid, selectedProjectSavedBid }: Props) {
           className="text-[#475467] text-[14px] leading-6 font-normal mt-2"
         />
         <Link
-          href={`/bid-management/contractor/details/${bid?._id}`}
+          href={`/bid-management/details/${bid?._id}`}
           className="text-[#7F56D9] underline underline-offset-2 mt-4 text-[14px] leading-6 font-normal cursor-pointer"
         >
           View full details
@@ -306,13 +302,13 @@ export function BidDetails({ bid, selectedProjectSavedBid }: Props) {
           />
         ) : (
           <CustomButton
-            onClick={() => removeUserBidMutation.mutate({biddingId: bid._id})}
+            onClick={() => removeUserBidMutation.mutate({biddingId: selectedProjectSavedBid?._id})}
             text="Remove from my bidding projects"
             className="!text-[red] !bg-transparent !border-[red] !text-base !leading-7 "
           />
         )}
 
-        <CreateRFI onSuccess={() => {}} projectId={bid._id} />
+        <CreateRFI isProjectOwner={false} onSuccess={() => {}} projectId={bid._id} />
       </div>
     </div>
   );

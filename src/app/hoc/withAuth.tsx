@@ -68,6 +68,7 @@ export const withAuth = (
       return <Skeleton />;
     }
     const canAccessThePage = canAccessRoute(pathname, userPlanFeatures);
+    // const canAccessThePage = true;
     console.log({ canAccessThePage, pathname });
     // if the required roles is empty; and there is already and a user with the plan
     if (canAccessThePage && !requiredRoles.length) {
