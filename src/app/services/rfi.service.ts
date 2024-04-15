@@ -54,7 +54,7 @@ class RfiService extends HttpService {
     }>> => this.post(`${this.endPoint}/reply-rfi`, data);
 
     httpUpdateRFI = (data: UpdateRFIData): Promise<IResponseInterface<{
-        createdRFI: IRFI
+        updatedRFI: IRFI
     }>> => this.put(`${this.endPoint}/update-rfi`, data);
 
     httpGetAllProjectRFIs = (projectId: string): Promise<IResponseInterface<{

@@ -4,8 +4,9 @@ export interface IRFI {
     user: string | IUserInterface
     projectId: string
     description: string
-    type: string
-    file: File
+    type: "private" | "public"
+    file?: File;
+    responseTo?: IRFI | string;
     _id: string
     createdAt: string
     updatedAt: string

@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import Image from 'next/image';
@@ -16,11 +16,10 @@ import { Popups } from '@/app/(pages)/bid-management/components/Popups';
 import { Radio, Spin } from 'antd';
 import CustomButton from '@/app/component/customButton/button';
 import { useClickAway } from 'ahooks/es';
-import { isEmpty } from 'lodash';
 
 type Props = {
   projectId: string;
-  rfiData: any;
+  rfiData: IRFI;
   onSuccess: (_rfi: IRFI) => void;
 };
 
@@ -45,10 +44,10 @@ export function UpdateRFI({ onSuccess, projectId, rfiData }: Props) {
 
   const rfiFormik = useFormik<Omit<UpdateRFIData, 'projectId'>>({
     initialValues: {
-      description: '',
-      type: 'private',
-      responseTo: '',
-      file: undefined,
+      description: rfiData.description,
+      type: rfiData.type,
+      responseTo: rfiData.responseTo ? rfiData.responseTo as string : "",
+      file: rfiData.file,
     },
     async onSubmit(values, helpers) {
       setIsSubmitting(true);
@@ -60,12 +59,14 @@ export function UpdateRFI({ onSuccess, projectId, rfiData }: Props) {
         });
         if (res.data) {
           toast.success('RFI updated successfully');
-          onSuccess(res.data.createdRFI);
+          onSuccess(res.data.updatedRFI);
         }
       } catch (error) {
 
         const err = error as AxiosError<{ message: string }>;
-        toast.error(err.response?.data.message || 'An error occurred');
+        if (err.response?.data) {
+          toast.error(err.response?.data.message || 'An error occurred');
+        }
       } finally {
         setIsSubmitting(false);
         setShowRfiModal(false);
@@ -75,13 +76,6 @@ export function UpdateRFI({ onSuccess, projectId, rfiData }: Props) {
     validationSchema: ValidationSchema,
   });
 
-  useEffect(() => {
-    if(!isEmpty(rfiData)) {
-        rfiFormik.setFieldValue('description', rfiData.description);
-        rfiFormik.setFieldValue('file', rfiData.file);
-        rfiFormik.setFieldValue('type', rfiData.type);
-    }
-  }, [rfiData]);
 
   async function handleFileUpload(file: RcFile) {
     setIsFileUploading(true);
@@ -104,7 +98,7 @@ export function UpdateRFI({ onSuccess, projectId, rfiData }: Props) {
   return (
     <div
       ref={ref}
-      className="cursor-pointer flex items-center space-x-1
+      className="cursor-pointer flex items-center space-x-1 hover:bg-gray-100 hover:px-1 hover:py-1 hover:rounded-lg hover:transition-all hover:translate-x-1
         relative
                 "
       onClick={(e) => {
@@ -113,7 +107,16 @@ export function UpdateRFI({ onSuccess, projectId, rfiData }: Props) {
         toggleRfiModal();
       }}
     >
-      {<span>Edit</span>}
+      <Image
+        src={'/edit-icon.svg'}
+        alt="message-circle icon"
+        width={17}
+        height={18}
+      />
+      <TertiaryHeading
+        title="Edit"
+        className="text-[#475467] text-[14px] leading-6 font-normal "
+      />
       {showRfiModal ? (
         <div
           className="absolute z-10 right-20"
