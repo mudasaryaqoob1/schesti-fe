@@ -16,6 +16,7 @@ import { Popups } from '@/app/(pages)/bid-management/components/Popups';
 import { Radio, Spin } from 'antd';
 import CustomButton from '@/app/component/customButton/button';
 import { useClickAway } from 'ahooks/es';
+import ModalComponent from '@/app/component/modal';
 
 type Props = {
   projectId: string;
@@ -107,9 +108,13 @@ export function CreateRFI({ onSuccess, projectId, isProjectOwner }: Props) {
           className="!bg-[#F9F5FF] !text-[#7138DF]"
         />
       )}
-      {showRfiModal ? (
+      <ModalComponent
+        open={showRfiModal}
+        setOpen={setShowRfiModal}
+        destroyOnClose
+      >
+        (
         <div
-          className="absolute z-10 right-20"
           onClick={(e) => {
             e.stopPropagation();
           }}
@@ -202,7 +207,8 @@ export function CreateRFI({ onSuccess, projectId, isProjectOwner }: Props) {
             </Spin>
           </Popups>
         </div>
-      ) : null}
+        )
+      </ModalComponent>
     </div>
   );
 }

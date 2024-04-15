@@ -17,6 +17,7 @@ import { Popups } from "@/app/(pages)/bid-management/components/Popups";
 import { Radio, Spin } from "antd";
 import CustomButton from "@/app/component/customButton/button";
 import { useClickAway } from "ahooks/es";
+import ModalComponent from "@/app/component/modal";
 
 type Props = {
     projectId: string;
@@ -41,6 +42,7 @@ export function RFIReply({ onSuccess, projectId, messageId }: Props) {
     function toggleRfiModal() {
         setShowRfiModal(!showRfiModal);
     }
+
 
     const rfiFormik = useFormik<Omit<ReplyRFIData, "projectId">>({
         initialValues: {
@@ -98,7 +100,6 @@ export function RFIReply({ onSuccess, projectId, messageId }: Props) {
     return <div
         ref={ref}
         className="cursor-pointer flex items-center space-x-1 hover:bg-gray-100 hover:px-1 hover:py-1 hover:rounded-lg hover:transition-all hover:translate-x-1
-        relative
                 "
         onClick={e => {
             e.stopPropagation();
@@ -116,99 +117,106 @@ export function RFIReply({ onSuccess, projectId, messageId }: Props) {
             title="Reply"
             className="text-[#475467] text-[14px] leading-6 font-normal "
         />
-        {showRfiModal ? <div className='absolute z-10 right-20' onClick={e => {
-            e.stopPropagation()
-        }}>
-            <Popups
-                title='RFI'
-                onClose={() => {
-                    setShowRfiModal(false);
-                    rfiFormik.resetForm();
-                    setIsSubmitting(false);
-                    setIsFileUploading(false);
-                }}
-            >
-                <Spin
-                    spinning={isSubmitting}
+        <ModalComponent
+            open={showRfiModal}
+            setOpen={setShowRfiModal}
+            destroyOnClose
+
+        >
+            <div onClick={e => {
+                e.stopPropagation()
+            }}>
+                <Popups
+                    title='RFI'
+                    onClose={() => {
+                        setShowRfiModal(false);
+                        rfiFormik.resetForm();
+                        setIsSubmitting(false);
+                        setIsFileUploading(false);
+                    }}
                 >
-                    <div className='space-y-3'>
-                        <TextAreaComponent
-                            label='Description'
-                            name='description'
-                            field={{
-                                rows: 7,
-                                value: rfiFormik.values.description,
-                                onChange: rfiFormik.handleChange,
-                                onBlur: rfiFormik.handleBlur,
-                            }}
-                            hasError={rfiFormik.touched.description && !!rfiFormik.errors.description}
-                            errorMessage={rfiFormik.errors.description}
-                        />
-                        <div className='space-y-1'>
-                            <TertiaryHeading
-                                title='Type'
-                                className='text-sm font-medium leading-6 capitalize text-graphiteGray '
+                    <Spin
+                        spinning={isSubmitting}
+                    >
+                        <div className='space-y-3'>
+                            <TextAreaComponent
+                                label='Description'
+                                name='description'
+                                field={{
+                                    rows: 7,
+                                    value: rfiFormik.values.description,
+                                    onChange: rfiFormik.handleChange,
+                                    onBlur: rfiFormik.handleBlur,
+                                }}
+                                hasError={rfiFormik.touched.description && !!rfiFormik.errors.description}
+                                errorMessage={rfiFormik.errors.description}
                             />
-                            <Radio.Group
-                                onChange={rfiFormik.handleChange}
-                                value={rfiFormik.values.type}
-                                name='type'
-                            >
-                                <Radio value={'private'}>Private</Radio>
-                                <Radio value={'public'}>Public</Radio>
-                            </Radio.Group>
-                        </div>
-
-                        <div>
-                            <Spin
-                                spinning={isFileUploading}
-                            >
-                                <Dragger
-                                    name={'file'}
-                                    accept="image/*,gif,application/pdf"
-
-                                    beforeUpload={(file) => {
-                                        handleFileUpload(file);
-                                        return false;
-                                    }}
-                                    style={{
-                                        borderStyle: 'dashed',
-                                        borderWidth: 6,
-                                    }}
-                                    itemRender={() => {
-                                        return null;
-                                    }}
+                            <div className='space-y-1'>
+                                <TertiaryHeading
+                                    title='Type'
+                                    className='text-sm font-medium leading-6 capitalize text-graphiteGray '
+                                />
+                                <Radio.Group
+                                    onChange={rfiFormik.handleChange}
+                                    value={rfiFormik.values.type}
+                                    name='type'
                                 >
-                                    <p className="ant-upload-drag-icon">
-                                        <Image
-                                            src={'/uploadcloud.svg'}
-                                            width={50}
-                                            height={50}
-                                            alt="upload"
-                                        />
-                                    </p>
-                                    <p className="text-[12px] py-2 leading-3 text-[#98A2B3]">
-                                        Drop your image here, or browse
-                                    </p>
-                                    <p className="text-[12px] leading-3 text-[#98A2B3]">
-                                        PNG, GIF, JPG, Max size: 2MB
-                                    </p>
-                                </Dragger>
-                                {rfiFormik.values.file ?
-                                    <p>{rfiFormik.values.file.name}</p>
-                                    : null}
-                            </Spin>
+                                    <Radio value={'private'}>Private</Radio>
+                                    <Radio value={'public'}>Public</Radio>
+                                </Radio.Group>
+                            </div>
+
+                            <div>
+                                <Spin
+                                    spinning={isFileUploading}
+                                >
+                                    <Dragger
+                                        name={'file'}
+                                        accept="image/*,gif,application/pdf"
+
+                                        beforeUpload={(file) => {
+                                            handleFileUpload(file);
+                                            return false;
+                                        }}
+                                        style={{
+                                            borderStyle: 'dashed',
+                                            borderWidth: 6,
+                                        }}
+                                        itemRender={() => {
+                                            return null;
+                                        }}
+                                    >
+                                        <p className="ant-upload-drag-icon">
+                                            <Image
+                                                src={'/uploadcloud.svg'}
+                                                width={50}
+                                                height={50}
+                                                alt="upload"
+                                            />
+                                        </p>
+                                        <p className="text-[12px] py-2 leading-3 text-[#98A2B3]">
+                                            Drop your image here, or browse
+                                        </p>
+                                        <p className="text-[12px] leading-3 text-[#98A2B3]">
+                                            PNG, GIF, JPG, Max size: 2MB
+                                        </p>
+                                    </Dragger>
+                                    {rfiFormik.values.file ?
+                                        <p>{rfiFormik.values.file.name}</p>
+                                        : null}
+                                </Spin>
+                            </div>
+
+                            <CustomButton
+                                text='Send'
+                                isLoading={isSubmitting}
+                                onClick={rfiFormik.handleSubmit}
+                            />
                         </div>
+                    </Spin>
 
-                        <CustomButton
-                            text='Send'
-                            isLoading={isSubmitting}
-                            onClick={rfiFormik.handleSubmit}
-                        />
-                    </div>
-                </Spin>
-
-            </Popups>
-        </div> : null}
+                </Popups>
+            </div>
+        </ModalComponent>
     </div>
 }
