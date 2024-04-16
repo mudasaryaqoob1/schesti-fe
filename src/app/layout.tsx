@@ -19,6 +19,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  console.log('logs for deployment');
+  
   return (
     <html lang="en">
       <body className={`${inter.className} bg-gray-100`}>
