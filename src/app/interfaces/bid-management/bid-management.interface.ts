@@ -83,3 +83,12 @@ export interface IGetSavedUserBid {
   limit: number;
   status?: string;
 }
+
+export interface IBidActivity {
+  _id: string;
+  user: string | IUserInterface;
+  projectId: string | IBidManagement;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+}

@@ -16,8 +16,8 @@ export function ProjectSummary() {
 
   const projectTrades = bid
     ? _.filter(tradesQuery.data?.data?.trades, (trade) =>
-        (bid.selectedTrades as unknown as string).includes(trade._id)
-      )
+      (bid.selectedTrades as unknown as string).includes(trade._id)
+    )
     : [];
 
   return (
@@ -103,8 +103,8 @@ export function ProjectSummary() {
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
                 {bid
                   ? moment(bid.estimatedCompletionDate).format(
-                      'DD MMMM, YYYY hh:mm'
-                    )
+                    'DD MMMM, YYYY hh:mm'
+                  )
                   : ''}
               </p>
             </div>
@@ -171,13 +171,13 @@ export function ProjectSummary() {
                 <div className="flex items-center space-x-3">
                   {bid
                     ? bid.projectType.map((pt) => (
-                        <p
-                          key={pt}
-                          className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
-                        >
-                          {pt}
-                        </p>
-                      ))
+                      <p
+                        key={pt}
+                        className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
+                      >
+                        {pt}
+                      </p>
+                    ))
                     : ''}
                 </div>
               </div>
@@ -190,37 +190,19 @@ export function ProjectSummary() {
                 <div className="flex items-center space-x-3">
                   {bid
                     ? bid.projectBuildingUse.map((building) => (
-                        <p
-                          key={building}
-                          className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
-                        >
-                          {building}
-                        </p>
-                      ))
+                      <p
+                        key={building}
+                        className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
+                      >
+                        {building}
+                      </p>
+                    ))
                     : ''}
                 </div>
               </div>
             </div>
 
-            <div className="space-y-[8px]">
-              <div className="space-y-[8px]">
-                <SenaryHeading
-                  title="Sector & Labor Status"
-                  className="text-[14px] leading-6 text-[#98A2B3] font-normal"
-                />
-
-                <div className="flex items-center space-x-4 flex-wrap space-y-2">
-                  <p className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4">
-                    Demolition
-                  </p>
-                  <p className="px-[12px]  rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4">
-                    New Construction no Site Work
-                  </p>
-                  <p className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4">
-                    Renovation/Remodel/Repair
-                  </p>
-                </div>
-              </div>
+            <div className="space-y-[8px] self-center">
               <div className="space-y-[8px]">
                 <SenaryHeading
                   title="Construction Type"
@@ -230,13 +212,13 @@ export function ProjectSummary() {
                 <div className="flex items-center space-x-3">
                   {bid
                     ? bid.constructionTypes.map((ct) => (
-                        <p
-                          key={ct}
-                          className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
-                        >
-                          {ct}
-                        </p>
-                      ))
+                      <p
+                        key={ct}
+                        className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
+                      >
+                        {ct}
+                      </p>
+                    ))
                     : ''}
                 </div>
               </div>

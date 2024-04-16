@@ -1,5 +1,6 @@
 import { IResponseInterface } from '../interfaces/api-response.interface';
 import {
+  IBidActivity,
   IBidManagement,
   IBidManagementProjectTeamMember,
   IGetSavedUserBid,
@@ -75,23 +76,23 @@ class BidManagementService extends HttpService {
   > => this.get(`${this.prefix}/get-all?projectValue=${params.projectValue}&trades=${params.trades?.toString()}`);
 
   httpGetOwnerProjectsWithoutFilters = (): Promise<
-  IResponseInterface<{ projects: IBidManagement[] }>
-> => this.get(`${this.prefix}/get-all`);
+    IResponseInterface<{ projects: IBidManagement[] }>
+  > => this.get(`${this.prefix}/get-all`);
 
   httpSaveUserProjectBid = (data: any): Promise<
-  IResponseInterface<{ project: ISaveUserBid }>
+    IResponseInterface<{ project: ISaveUserBid }>
   > => this.post(`${this.prefix}/save-user-bid`, data);
 
   httpRemoveUserProjectBid = (biddingId: string): Promise<
-  IResponseInterface<{ project: ISaveUserBid }>
+    IResponseInterface<{ project: ISaveUserBid }>
   > => this.post(`${this.prefix}/remove-project-bidding/${biddingId}`, null);
 
   httpUpdateUserProjectBid = (data: IUpdateUserBid): Promise<
-  IResponseInterface<{ project: ISaveUserBid }>
+    IResponseInterface<{ project: ISaveUserBid }>
   > => this.post(`${this.prefix}/update-user-bid`, data);
 
   httpGetUserSavedBids = (params: IGetSavedUserBid): Promise<
-  IResponseInterface<{ savedBids: ISaveUserBid }>
+    IResponseInterface<{ savedBids: ISaveUserBid }>
   > => this.get(`${this.prefix}/get-user-bids?page=${params.page}&limit=${params.limit}&status=${params.status}`);
 
   httpGetProjectSavedBids = (projectId: string) => this.get(`${this.prefix}/get-saved-bid-details/${projectId}`);
@@ -103,6 +104,8 @@ class BidManagementService extends HttpService {
       },
     });
   }
+
+  httpGetProjectActivities = (projectId: string): Promise<IResponseInterface<{ bidsActivities: IBidActivity[] }>> => this.get(`${this.prefix}/get-activities/${projectId}`);
 }
 
 export const bidManagementService = new BidManagementService();

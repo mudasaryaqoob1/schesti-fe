@@ -111,7 +111,7 @@ function OwnerProjectDetailsPage() {
       {activeTab === BIDS ? <ProjectBids /> : null}
       {activeTab === DESIGN_TEAM ? <ProjectDesignTeam /> : null}
       {activeTab === ACTIVITY_AND_STATUS_TRACKING ? (
-        <ProjectAcitivityAndStatusTracking />
+        <ProjectAcitivityAndStatusTracking projectId={params.id} />
       ) : null}
       {activeTab === DOCUMENTS ? <ProjectDocuments id={params.id} /> : null}
       {activeTab === RFI_CENTER ? <ProjectRFICenter projectId={params.id} /> : null}
