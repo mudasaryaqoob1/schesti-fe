@@ -1,6 +1,7 @@
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { useTrades } from '@/app/hooks/useTrades';
+import { ITrade } from '@/app/interfaces/trade.interface';
 import { getTimezoneFromCountryAndState } from '@/app/utils/date.utils';
 import { USCurrencyFormat } from '@/app/utils/format';
 import { RootState } from '@/redux/store';
@@ -12,13 +13,18 @@ export function ProjectSummary() {
   const bid = useSelector(
     (state: RootState) => state.bidManagementOwner.project
   );
-  const { tradesQuery } = useTrades();
+  const { tradesQuery, tradeCategoryFilters } = useTrades();
 
   const projectTrades = bid
     ? _.filter(tradesQuery.data?.data?.trades, (trade) =>
       (bid.selectedTrades as unknown as string).includes(trade._id)
     )
     : [];
+
+  console.log({ projectTrades });
+  function filterTradesByParent(id: string, trades: ITrade[]) {
+    return trades.filter((trade) => trade.tradeCategoryId._id === id);
+  }
 
   return (
     <div className=" mt-6 mb-4 md:ms-[69px] md:me-[59px] mx-4  p-5 bg-white rounded-lg border shadow-lg">
@@ -252,17 +258,23 @@ export function ProjectSummary() {
             Trades
           </legend>
 
-          <div className="grid grid-cols-8 md:grid-cols-3 gap-4 items-center">
-            {projectTrades.map((trade) => (
-              <p
-                key={trade._id}
-                className="px-[12px] bg-[#E9EBF8] rounded-full text-center
-                         py-[7px]  text-[#7138DF] font-semibold text-xs leading-4 "
-              >
-                {trade.name}
-              </p>
-            ))}
-          </div>
+          {tradeCategoryFilters.map(parent => {
+            return <div key={parent.value} className='my-2'>
+              <div className='border-b border-[#DFDFDF]'>
+                <SenaryHeading
+                  title={parent.label}
+                  className="text-xs leading-[30px] text-[#344054] font-normal"
+                />
+              </div>
+              <div className='flex items-center mt-2 gap-4'>
+                {filterTradesByParent(parent.value, projectTrades).map(trade => {
+                  return <p key={trade._id} className='py-2 text-center px-[13px] bg-[#F2F4F7] rounded-full text-[#667085] text-[14px] leading-[14px] font-normal'>
+                    {trade.name}
+                  </p>
+                })}
+              </div>
+            </div>
+          })}
         </fieldset>
       </div>
     </div>
