@@ -19,6 +19,9 @@ import { InputComponent } from '@/app/component/customInput/Input';
 import { TextAreaComponent } from '@/app/component/textarea';
 import Image from 'next/image';
 import Dragger from 'antd/es/upload/Dragger';
+import { postProjectActions, setFormStepAction, setPostProjectAction } from '@/redux/post-project/post-project.slice';
+import { Routes } from '@/app/utils/plans.utils';
+import { useRouter } from 'next/navigation';
 
 type Props = {
   id: string;
@@ -26,6 +29,7 @@ type Props = {
 export function ProjectIntro({ id }: Props) {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
+  const router = useRouter();
 
   const dispatch = useDispatch<AppDispatch>();
   const bid = useSelector(
@@ -98,7 +102,7 @@ export function ProjectIntro({ id }: Props) {
                 e.stopPropagation();
               }}
             >
-              {['draft', 'expired', 'active', 'archived', 'bid closed'].map(status => {
+              {['draft', 'active', 'archived',].map(status => {
                 return <p key={status} className={`text-[#344054] hover:bg-gray-50 px-2 py-1 cursor-pointer rounded-lg  font-normal capitalize text-medium leading-6 ${bid && bid.status === status ? "bg-gray-100" : ""}`}>
                   {status}
                 </p>
@@ -113,6 +117,14 @@ export function ProjectIntro({ id }: Props) {
           icon="/edit-05.svg"
           iconwidth={20}
           iconheight={20}
+          onClick={() => {
+            if (bid) {
+              dispatch(setPostProjectAction(bid));
+              dispatch(setFormStepAction(0));
+              dispatch(postProjectActions.setTeamMemers(bid.teamMembers));
+              router.push(`${Routes['Bid Management'].Post_A_Project}`);
+            }
+          }}
         />
 
         <div className='w-fit relative'>
