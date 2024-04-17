@@ -1,12 +1,34 @@
-import CustomButton from '@/app/component/customButton/button';
+import { Bid_How_Long_Price_Increase } from '@/app/(pages)/bid-management/utils';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
+import type { IBidProjectScope, IProjectBidding } from '@/app/interfaces/bid-management/bid-management.interface';
+import { bidManagementService } from '@/app/services/bid-management.service';
 import { USCurrencyFormat } from '@/app/utils/format';
-import { Divider, Table } from 'antd';
+import { Divider, Skeleton, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import { AxiosError } from 'axios';
+import moment from 'moment';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
-export function ProjectBids() {
-  const columns: ColumnsType<{}> = [
+
+type Props = {
+  projectId: string;
+}
+export function ProjectBids({ projectId }: Props) {
+  const [biddings, setBiddings] = useState<IProjectBidding[]>([]);
+  const [tradeCounts, setTradeCounts] = useState<{
+    trade: string;
+    proposalCount: number;
+  }[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedBid, setSelectedBid] = useState<null | IProjectBidding>(null);
+
+  useEffect(() => {
+    getProjectBiddings();
+  }, [])
+
+  const columns: ColumnsType<IBidProjectScope> = [
     {
       key: 'description',
       title: 'Description',
@@ -20,7 +42,7 @@ export function ProjectBids() {
     {
       key: 'unitPrice',
       title: 'Unit Price',
-      dataIndex: 'unitPrice',
+      dataIndex: 'price',
       render(value) {
         return USCurrencyFormat.format(value);
       },
@@ -28,12 +50,42 @@ export function ProjectBids() {
     {
       key: 'total',
       title: 'Total',
-      dataIndex: 'total',
-      render(value) {
-        return USCurrencyFormat.format(value);
+      render(value, record) {
+        return USCurrencyFormat.format(Number(record.quantity) * Number(record.price));
       },
     },
   ];
+
+  async function getProjectBiddings() {
+    setIsLoading(true);
+    try {
+      if (projectId) {
+        const response = await bidManagementService.httpGetProjectBiddings(projectId);
+        if (response.data) {
+          setBiddings(response.data.projectBiddings);
+          setTradeCounts(response.data.tradeCounts);
+        }
+
+      }
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      if (err.response?.data) {
+        toast.error(err.response.data.message);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  if (isLoading) {
+    return <Skeleton />
+  }
+
+  function getHowLongPriceLabel(duration: number) {
+
+    const result = Bid_How_Long_Price_Increase.find(res => res.value === duration);
+    return result ? result.label : "";
+  }
 
   return (
     <div className=" mt-6 mb-4 md:ms-[69px] md:me-[59px] mx-4 ">
@@ -43,112 +95,131 @@ export function ProjectBids() {
           className="text-xl font-semibold text-[#344054] leading-9"
         />
 
-        <div className="grid grid-cols-8 mt-3">
-          <div className="flex space-x-2 items-center rounded-lg border-[#EAECF0] border bg-[#F9FAFB] py-3 px-4">
-            <div className="flex  items-center space-x-1">
+        <div className="grid gap-3 grid-cols-8 mt-3">
+          {tradeCounts.map((tradeCount, index) => {
+
+            // get same trades
+
+            return <div key={index} className="flex space-x-2 items-center rounded-lg border-[#EAECF0] border bg-[#F9FAFB] py-3 px-4">
+              <div className="flex  items-center space-x-1">
+                <SenaryHeading
+                  title={`${tradeCount.trade.slice(0, 10)}...`}
+                  className="text-[#667085] text-[14px] font-normal leading-6"
+                />
+                <SenaryHeading
+                  title=""
+                  className="text-[#667085] text-2xl font-semibold leading-8"
+                />
+              </div>
               <SenaryHeading
-                title="Trades"
+                title={`${tradeCount.proposalCount} Bids`}
                 className="text-[#667085] text-base font-normal leading-6"
               />
-              <SenaryHeading
-                title="44"
-                className="text-[#667085] text-2xl font-semibold leading-8"
-              />
             </div>
-            <SenaryHeading
-              title="0 Bids"
-              className="text-[#667085] text-base font-normal leading-6"
-            />
-          </div>
+          })}
         </div>
       </div>
 
       <div className=" ">
         <div className="grid grid-cols-12 gap-3">
-          <div
-            className={`mt-3 h-fit col-span-8 rounded-lg bg-white shadow-lg  border border-[#E8E3EF] p-4 cursor-pointer`}
-          >
-            <div className="flex justify-between">
-              <div className="flex items-center space-x-3">
-                <Image
-                  src={'/trade.svg'}
-                  width={18}
-                  height={18}
-                  alt="trade icon"
-                />
-                <SenaryHeading
-                  title={'Johen Markes Property'}
-                  className="font-medium text-[#001556] text-base leading-6"
-                />
+          <div className={`${selectedBid ? 'col-span-8 ' : "col-span-12"}`}>
+
+            {biddings.map(bid => {
+              const bidUser = bid.user;
+
+              return <div key={bid._id}
+                className={`mt-3 h-fit rounded-lg ${selectedBid?._id === bid._id ? '!bg-[#e5def0]' : '!bg-[#FCFAFF]'} bg-white shadow-lg hover:bg-[#e5def0] border border-[#E8E3EF] p-4 cursor-pointer`}
+                onClick={() => {
+                  if (selectedBid && selectedBid._id === bid._id) {
+                    setSelectedBid(null)
+                  } else {
+                    setSelectedBid(bid);
+                  }
+                }}
+              >
+                <div className="flex justify-between">
+                  <div className="flex items-center space-x-3">
+                    <Image
+                      src={'/trade.svg'}
+                      width={18}
+                      height={18}
+                      alt="trade icon"
+                    />
+                    <SenaryHeading
+                      title={typeof bidUser !== 'string' ? bidUser.name : ""}
+                      className="font-medium text-[#001556] text-base leading-6"
+                    />
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <SenaryHeading
+                      title="Trade:"
+                      className="font-normal text-[#667085] text-xs leading-6"
+                    />
+                    <p className="bg-[#E9EBF8] py-[5px] px-[11px] text-xs leading-4 text-[#7138DF] rounded-full">
+                      {typeof bidUser !== 'string' ? bidUser.industry : ""}
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-[17px] flex items-center justify-between">
+                  <div className="flex items-center space-x-6">
+                    <div className="space-y-2">
+                      <SenaryHeading
+                        title="Company Name:"
+                        className="text-[#475467] font-normal text-xs leading-4"
+                      />
+
+                      <SenaryHeading
+                        title={typeof bidUser !== 'string' ? bidUser.companyName : ""}
+                        className="text-[#475467] font-semibold text-xs leading-4"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <SenaryHeading
+                        title="Project value: "
+                        className="text-[#475467] font-normal text-xs leading-4"
+                      />
+
+                      <SenaryHeading
+                        title={USCurrencyFormat.format(bid.price)}
+                        className="text-[#475467] font-semibold text-xs leading-4"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <SenaryHeading
+                        title="Deadline: "
+                        className="text-[#475467] font-normal text-xs leading-4"
+                      />
+
+                      <SenaryHeading
+                        title={`${bid.projectDuration} ${bid.projectDurationType.toUpperCase()}`}
+                        className="text-[#475467] font-semibold text-xs leading-4"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <SenaryHeading
+                        title="Bid date and time:"
+                        className="text-[#475467] font-normal text-xs leading-4"
+                      />
+
+                      <SenaryHeading
+                        title={moment(bid.createdAt).format("DD MMM YYYY, h:mm:A")}
+                        className="text-[#475467] font-semibold text-xs leading-4"
+                      />
+                    </div>
+                  </div>
+                  <Image
+                    src={'/forward-arrow.svg'}
+                    width={46}
+                    height={36}
+                    alt="forward arrow icon"
+                    className="cursor-pointer"
+                  />
+                </div>
               </div>
-              <div className="flex items-center space-x-2">
-                <SenaryHeading
-                  title="Trade:"
-                  className="font-normal text-[#667085] text-xs leading-6"
-                />
-                <p className="bg-[#E9EBF8] py-[5px] px-[11px] text-xs leading-4 text-[#7138DF] rounded-full">
-                  Budgeting/Planning
-                </p>
-              </div>
-            </div>
-            <div className="mt-[17px] flex items-center justify-between">
-              <div className="flex items-center space-x-6">
-                <div className="space-y-2">
-                  <SenaryHeading
-                    title="Company Name:"
-                    className="text-[#475467] font-normal text-xs leading-4"
-                  />
-
-                  <SenaryHeading
-                    title={'Company Devanics'}
-                    className="text-[#475467] font-semibold text-xs leading-4"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <SenaryHeading
-                    title="Project value: "
-                    className="text-[#475467] font-normal text-xs leading-4"
-                  />
-
-                  <SenaryHeading
-                    title={'$ 1,000,000'}
-                    className="text-[#475467] font-semibold text-xs leading-4"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <SenaryHeading
-                    title="Deadline: "
-                    className="text-[#475467] font-normal text-xs leading-4"
-                  />
-
-                  <SenaryHeading
-                    title={`90 Days`}
-                    className="text-[#475467] font-semibold text-xs leading-4"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <SenaryHeading
-                    title="Bid date and time:"
-                    className="text-[#475467] font-normal text-xs leading-4"
-                  />
-
-                  <SenaryHeading
-                    title={'12 May 2022, 12:40'}
-                    className="text-[#475467] font-semibold text-xs leading-4"
-                  />
-                </div>
-              </div>
-              <Image
-                src={'/forward-arrow.svg'}
-                width={46}
-                height={36}
-                alt="forward arrow icon"
-                className="cursor-pointer"
-              />
-            </div>
+            })}
           </div>
 
-          <div className="col-span-4  mt-3 rounded-lg p-4 border border-[#E8E3EF] shadow-lg bg-white">
+          {selectedBid ? <div className="col-span-4  mt-3 rounded-lg p-4 border border-[#E8E3EF] shadow-lg bg-white">
             <div>
               <SenaryHeading
                 title={'Company Name'}
@@ -162,7 +233,7 @@ export function ProjectBids() {
                   alt="trade icon"
                 />
                 <SenaryHeading
-                  title={'Johen Markes Property'}
+                  title={typeof selectedBid.user !== 'string' ? selectedBid.user.name : ""}
                   className="font-medium text-[#001556] text-base leading-6"
                 />
               </div>
@@ -176,7 +247,7 @@ export function ProjectBids() {
                 />
 
                 <SenaryHeading
-                  title={'$ 1,000,000'}
+                  title={USCurrencyFormat.format(selectedBid.price)}
                   className="font-semibold text-[#475467] text-xs leading-4"
                 />
               </div>
@@ -187,7 +258,7 @@ export function ProjectBids() {
                 />
 
                 <SenaryHeading
-                  title={'90 Days'}
+                  title={`${selectedBid.projectDuration} ${selectedBid.projectDurationType.toUpperCase()}`}
                   className="font-semibold text-[#475467] text-xs leading-4"
                 />
               </div>
@@ -198,7 +269,7 @@ export function ProjectBids() {
                 />
 
                 <SenaryHeading
-                  title={'12 May 2022, 12:40'}
+                  title={moment(selectedBid.createdAt).format("DD MMM YYYY, h:mm:A")}
                   className="font-semibold text-[#475467] text-xs leading-4"
                 />
               </div>
@@ -208,7 +279,7 @@ export function ProjectBids() {
             <div className="mt-3">
               <SenaryHeading
                 title={
-                  'lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum'
+                  selectedBid.additionalDetails
                 }
                 className="font-normal text-[#475467] text-sm leading-6"
               />
@@ -217,23 +288,23 @@ export function ProjectBids() {
             <Divider />
 
             <div className="mt-2 flex items-center justify-between">
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1">
                 <SenaryHeading
                   title="How long this price will stay?"
                   className="font-normal text-[#667085] text-xs leading-4"
                 />
                 <SenaryHeading
-                  title="3 months"
+                  title={getHowLongPriceLabel(selectedBid.priceExpiryDuration)}
                   className="font-semibold text-[#101828] text-xs leading-4"
                 />
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-1">
                 <SenaryHeading
                   title="How much you want to increase?"
                   className="font-normal text-[#667085] text-xs leading-4"
                 />
                 <SenaryHeading
-                  title="6 %"
+                  title={`${selectedBid.increaseInPercentage} %`}
                   className="font-semibold text-[#101828] text-xs leading-4"
                 />
               </div>
@@ -249,41 +320,19 @@ export function ProjectBids() {
 
               <Table
                 columns={columns}
-                dataSource={[
-                  {
-                    description: 'Lorem ipsum dolor sit amet',
-                    quantity: 1,
-                    unitPrice: 1000,
-                    total: 1000,
-                  },
-                  {
-                    description: 'Lorem ipsum dolor sit amet',
-                    quantity: 1,
-                    unitPrice: 1000,
-                    total: 1000,
-                  },
-                  {
-                    description: 'Lorem ipsum dolor sit amet',
-                    quantity: 1,
-                    unitPrice: 1000,
-                    total: 1000,
-                  },
-                  {
-                    description: 'Lorem ipsum dolor sit amet',
-                    quantity: 1,
-                    unitPrice: 1000,
-                    total: 1000,
-                  },
-                ]}
+                dataSource={selectedBid.projectScopes}
                 pagination={false}
                 bordered
               />
             </div>
 
             <div className="px-4 mt-3">
-              <CustomButton text="Download All Files" />
+              <a className='rounded-[8px] flex justify-center border border-solid border-lavenderPurple bg-lavenderPurple text-white leading-6 font-semibold py-3 px-5  cursor-pointer shadow-scenarySubdued h-auto text-sm w-full'>
+                Download All Files
+              </a>
             </div>
-          </div>
+          </div> : null}
+
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@ import {
   IBidManagement,
   IBidManagementProjectTeamMember,
   IGetSavedUserBid,
+  IProjectBiddingResponse,
   ISaveUserBid,
   IUpdateUserBid,
 } from '../interfaces/bid-management/bid-management.interface';
@@ -106,6 +107,8 @@ class BidManagementService extends HttpService {
   }
 
   httpGetProjectActivities = (projectId: string): Promise<IResponseInterface<{ bidsActivities: IBidActivity[] }>> => this.get(`${this.prefix}/get-activities/${projectId}`);
+
+  httpGetProjectBiddings = (projectId: string): Promise<IResponseInterface<IProjectBiddingResponse>> => this.get(`${this.prefix}/project-bidding/${projectId}`);
 }
 
 export const bidManagementService = new BidManagementService();
