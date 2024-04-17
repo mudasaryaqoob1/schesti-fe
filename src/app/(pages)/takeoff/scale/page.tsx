@@ -133,24 +133,24 @@ const Scale = () => {
           </div>
 
           <div className="py-6 h-[709px] relative">
-            <div className="absolute bottom-48 left-10 flex gap-6 z-50 ">
+            {/* <div className="absolute bottom-48 left-10 flex gap-6 z-50 ">
               <Image src={'/cursor.svg'} alt="t" width={24} height={24} />
               <Image src={'/t1.svg'} alt="t" width={24} height={24} />
               <Image src={'/t1.svg'} alt="t" width={24} height={24} />
               <Image src={'/t1.svg'} alt="t" width={24} height={24} />
               <Image src={'/fx.svg'} alt="t" width={24} height={24} />
-            </div>
+            </div> */}
             <div className="absolute top-10 right-10 flex flex-col gap-3 items-center z-50 bg-white px-3 py-2  rounded-sm drop-shadow-md ">
               <Image src={'/cursor.svg'} alt="t" width={24} height={24} />
               <Image src={'/pencil.svg'} alt="t" width={34} height={34} />
               <Image src={'/t1.svg'} alt="t" width={24} height={24} />
               <Image src={'/shapeTool.svg'} alt="t" width={34} height={34} />
-              <Image src={'/stickyNotes.svg'} alt="t" width={34} height={34} />
-              <Image src={'/fx.svg'} alt="t" width={24} height={24} />
+              {/* <Image src={'/stickyNotes.svg'} alt="t" width={34} height={34} />
+              <Image src={'/fx.svg'} alt="t" width={24} height={24} /> */}
               <Image src={'/calculator.svg'} alt="t" width={34} height={34} />
-              <Image src={'/comments.svg'} alt="t" width={34} height={34} />
+              {/* <Image src={'/comments.svg'} alt="t" width={34} height={34} />
               <Image src={'/uploadFile.svg'} alt="t" width={34} height={34} />
-              <Image src={'/library.svg'} alt="t" width={34} height={34} />
+              <Image src={'/library.svg'} alt="t" width={34} height={34} /> */}
             </div>
             <div className={`absolute ${showModal ? 'block' : 'hidden'}`}>
               <ModalsWrapper
@@ -160,7 +160,7 @@ const Scale = () => {
                 measurements={measurements}
               />
             </div>
-            <div className="h-[527px] rounded-lg overflow-y-auto">
+            <div className="h-fit rounded-lg overflow-y-auto">
               {uploadFileData.map((file, index) => (
                 <Draw
                   key={`draw-${index}`}
