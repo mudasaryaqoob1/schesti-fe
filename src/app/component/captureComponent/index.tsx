@@ -19,8 +19,6 @@ import { AppDispatch } from '@/redux/store';
 import { useDispatch } from 'react-redux';
 import { createTakeoffSummary } from '@/redux/takeoffSummaries/takeoffSummaries.thunk';
 import { useDraw } from '@/app/hooks';
-import { calc } from 'antd/es/theme/internal';
-import { min } from 'lodash';
 
 const counterImage = new Image();
 counterImage.src = '/count-draw.png';
@@ -61,15 +59,7 @@ const CaptureComponent = ({
   const [data, setData] = useState<dataInterface[]>([]);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
-  const {
-    calcLineDistance,
-    calculateMidpoint,
-    calculatePolygonArea,
-    calculatePolygonPerimeter,
-    calculatePolygonCenter,
-    calculatePolygonVolume,
-    calculateAngle,
-  } = useDraw();
+  const { calculateMidpoint, calculatePolygonCenter } = useDraw();
   const { uploadFileData } = useContext(
     UploadFileContext
   ) as UploadFileContextProps;
@@ -129,7 +119,7 @@ const CaptureComponent = ({
         switch (shapeType) {
           case 'count': {
             // Example for a circle shape
-            const { x, y, radius = 20, fill = '#FF3434' } = shape;
+            const { x, y, radius = 20 } = shape;
             const circle = new Konva.Image({
               image: counterImage,
               width: 20,
@@ -165,8 +155,7 @@ const CaptureComponent = ({
               layer.add(line);
               console.warn(shape, 'sssss');
               let xText = 0,
-                yText = 0,
-                sText: '';
+                yText = 0;
               if (
                 shapeType === 'area' ||
                 shapeType === 'volume' ||

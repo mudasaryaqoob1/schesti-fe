@@ -3,7 +3,7 @@ import Button from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import Image from 'next/image';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import { Select, Radio, Input } from 'antd';
+import { Select, Radio, Input, Checkbox } from 'antd';
 import type { RadioChangeEvent } from 'antd';
 import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { fetchTakeoffPreset } from '@/redux/takeoff/takeoff.thunk';
@@ -59,38 +59,73 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
   const allPresets = useSelector(selectTakeoffPreset);
 
   const [mergedPresets, setMergedPresets] = useState<any[]>([]);
-  const [value, setValue] = useState('preset');
-  const [secMeter, setSecMeter] = useState('in');
-  const [meter, setMeter] = useState('in');
-  const [precision, setPrecision] = useState('');
-  const [preset, setPreset] = useState('');
-  const [showOptions, setShowOptions] = useState(false);
-  const [optionsValue, setOptionsValue] = useState('');
-  const [firstValue, setFirstValue] = useState('1');
-  const [secondValue, setSecondValue] = useState('1');
 
+  const [valueX, setValueX] = useState('preset');
+  const [valueY, setValueY] = useState('preset');
+
+  const [secMeterX, setSecMeterX] = useState('in');
+  const [secMeterY, setSecMeterY] = useState('in');
+
+  const [meterX, setMeterX] = useState('in');
+  const [meterY, setMeterY] = useState('in');
+
+  const [presetX, setPresetX] = useState('');
+  const [presetY, setPresetY] = useState('');
+
+  const [firstValueX, setFirstValueX] = useState('1');
+  const [firstValueY, setFirstValueY] = useState('1');
+
+  const [secondValueX, setSecondValueX] = useState('1');
+  const [secondValueY, setSecondValueY] = useState('1');
+
+  const [firstValErrorX, setFirstValErrorX] = useState(false);
+  const [firstValErrorY, setFirstValErrorY] = useState(false);
+
+  const [secValErrorX, setSecValErrorX] = useState(false);
+  const [secValErrorY, setSecValErrorY] = useState(false);
+
+  const [optionsValue, setOptionsValue] = useState('');
+  const [showOptions, setShowOptions] = useState(false);
+  const [precision, setPrecision] = useState('');
   const [optionError, setOptionError] = useState(false);
-  const [firstValError, setFirstValError] = useState(false);
-  const [secValError, setSecValError] = useState(false);
+
+  const [separateScale, setSeparateScale] = useState(false);
 
   const { handleScaleData, scaleData } = useContext(
     ScaleContext
   ) as ScaleDataContextProps;
 
-  const onChange = (e: RadioChangeEvent) => {
+  const onChangeX = (e: RadioChangeEvent) => {
     if (e.target.value === 'custom') {
-      setFirstValue('1');
-      setMeter('in');
-      setSecondValue('1');
-      setSecMeter('in');
+      setFirstValueX('1');
+      setMeterX('in');
+      setSecondValueX('1');
+      setSecMeterX('in');
     } else {
-      setPreset(`1"=1"`);
+      setPresetX(`1"=1"`);
     }
 
-    setValue(e.target.value);
+    setValueX(e.target.value);
+  };
+  const onChangeY = (e: RadioChangeEvent) => {
+    if (e.target.value === 'custom') {
+      setFirstValueY('1');
+      setMeterY('in');
+      setSecondValueY('1');
+      setSecMeterY('in');
+    } else {
+      setPresetY(`1"=1"`);
+    }
+
+    setValueY(e.target.value);
   };
 
-  const handleAddPreset = async () => {
+  const handleAddPreset = async (
+    firstValue: string,
+    meter: string,
+    secondValue: string,
+    secMeter: string
+  ) => {
     takeoffPresetService
       .httpAddNewPreset({
         label: `${firstValue}${meter}=${secondValue}${secMeter}`,
@@ -105,7 +140,8 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
 
   useEffect(() => {
     dispatch(fetchTakeoffPreset({}));
-    setPreset(`1"=1"`);
+    setPresetX(`1"=1"`);
+    setPresetY(`1"=1"`);
     setPrecision('1');
     setOptionsValue(`1-${numOfPages}`);
   }, []);
@@ -136,39 +172,70 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
 
   const handleCalibrate = () => {
     const newData: any = {};
-    let scale = '';
 
-    if (value === 'preset') {
-      scale = preset;
-    } else if (value === 'custom') {
-      scale = `${firstValue}${meter}=${secondValue}${secMeter}`;
-    }
-
-    // if (optionsValue !== 'allPages' && optionsValue !== 'currentPage') {
-    if (optionsValue?.includes('-')) {
-      const range = optionsValue?.split('-').map(Number);
-      const [start, end] = range;
-      for (let i = start; i <= end; i++) {
-        newData[i] = { scale: scale, precision: precision };
+    if (!separateScale) {
+      let scale = '';
+      if (valueX === 'preset') {
+        scale = presetX;
+      } else if (valueX === 'custom') {
+        scale = `${firstValueX}${meterX}=${secondValueX}${secMeterX}`;
       }
-    } else if (optionsValue?.includes(',')) {
-      const numbers = optionsValue?.split(',').map(Number);
-      numbers.forEach((num) => {
-        newData[num] = { scale: scale, precision: precision };
-      });
-    } else if (!optionsValue?.includes(',') && !optionsValue?.includes('-')) {
-      newData[optionsValue] = { scale: scale, precision: precision };
+
+      if (optionsValue?.includes('-')) {
+        const range = optionsValue?.split('-').map(Number);
+        const [start, end] = range;
+        for (let i = start; i <= end; i++) {
+          newData[i] = { xScale: scale, yScale: scale, precision: precision };
+        }
+      } else if (optionsValue?.includes(',')) {
+        const numbers = optionsValue?.split(',').map(Number);
+        numbers.forEach((num) => {
+          newData[num] = { xScale: scale, yScale: scale, precision: precision };
+        });
+      } else if (!optionsValue?.includes(',') && !optionsValue?.includes('-')) {
+        newData[optionsValue] = {
+          xScale: scale,
+          yScale: scale,
+          precision: precision,
+        };
+      }
+    } else {
+      let scaleX = '';
+      let scaleY = '';
+      if (valueX === 'preset') {
+        scaleX = presetX;
+      } else if (valueX === 'custom') {
+        scaleX = `${firstValueX}${meterX}=${secondValueX}${secMeterX}`;
+      }
+      if (valueY === 'preset') {
+        scaleY = presetY;
+      } else if (valueY === 'custom') {
+        scaleY = `${firstValueY}${meterY}=${secondValueY}${secMeterY}`;
+      }
+
+      if (optionsValue?.includes('-')) {
+        const range = optionsValue?.split('-').map(Number);
+        const [start, end] = range;
+        for (let i = start; i <= end; i++) {
+          newData[i] = { xScale: scaleX, yScale: scaleY, precision: precision };
+        }
+      } else if (optionsValue?.includes(',')) {
+        const numbers = optionsValue?.split(',').map(Number);
+        numbers.forEach((num) => {
+          newData[num] = {
+            xScale: scaleX,
+            yScale: scaleY,
+            precision: precision,
+          };
+        });
+      } else if (!optionsValue?.includes(',') && !optionsValue?.includes('-')) {
+        newData[optionsValue] = {
+          xScale: scaleX,
+          yScale: scaleY,
+          precision: precision,
+        };
+      }
     }
-    // }
-    //  else if (optionsValue === 'allPages' || optionsValue === 'currentPage') {
-    //   if (optionsValue === 'currentPage') {
-    //     newData[page ? page : '1'] = { scale: scale, precision: precision };
-    //   } else {
-    //     for (let i = 1; i <= numOfPages; i++) {
-    //       newData[i] = { scale: scale, precision: precision };
-    //     }
-    //   }
-    // }
 
     handleScaleData({ ...scaleData, ...newData });
     setModalOpen(false);
@@ -250,43 +317,48 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
               </div>
             </div>
           )}
+
           <div className="flex gap-6 items-center justify-between ">
             <div className="flex flex-row gap-6">
-              <label>Scale:</label>
-              <Radio.Group onChange={onChange} value={value}>
+              <label> {`${separateScale ? 'X Scale' : 'Scale'} `}</label>
+              <Radio.Group onChange={onChangeX} value={valueX}>
                 <Radio value={'preset'}>Present</Radio>
                 <Radio value={'custom'}>Custom</Radio>
               </Radio.Group>
             </div>
-            {value === 'custom' && (
+            {valueX === 'custom' && (
               <div>
                 <WhiteButton
                   className="!py-1.5"
                   text="Add to Preset"
-                  onClick={handleAddPreset}
+                  onClick={() =>
+                    handleAddPreset(
+                      firstValueX,
+                      meterX,
+                      secondValueX,
+                      secMeterX
+                    )
+                  }
                 />
               </div>
             )}
           </div>
           <div className="flex gap-4 items-center justify-end">
-            {value === 'preset' && (
+            {valueX === 'preset' && (
               <Select
                 className="w-full"
-                value={preset}
+                value={presetX}
                 onChange={(value) => {
-                  setPreset(value);
+                  setPresetX(value);
                 }}
                 options={mergedPresets}
               />
             )}
-            {value === 'custom' && (
+            {valueX === 'custom' && (
               <>
                 <Input
-                  value={firstValue}
-                  className={`!w-[115px] ${
-                    firstValError && '!border-1 !border-rose-500'
-                  } `}
-                  // className="!w-[115px]"
+                  value={firstValueX}
+                  className={`!w-[115px] ${firstValErrorX && '!border-1 !border-rose-500'}`}
                   onChange={(e) => {
                     const inputValue = e.target.value;
 
@@ -295,18 +367,18 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
                     );
 
                     if (!isValidInput) {
-                      setFirstValError(true);
+                      setFirstValErrorX(true);
                       return;
                     }
 
-                    setFirstValError(false);
-                    setFirstValue(inputValue);
+                    setFirstValErrorX(false);
+                    setFirstValueX(inputValue);
                   }}
                 />
                 <Select
-                  value={meter}
+                  value={meterX}
                   className="w-[115px]"
-                  onChange={(value) => setMeter(value)}
+                  onChange={(value) => setMeterX(value)}
                 >
                   {meters.map((item) => (
                     <Select.Option key={item} value={item}>
@@ -315,30 +387,30 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
                   ))}
                 </Select>
                 <Input
-                  value={secondValue}
+                  value={secondValueX}
                   className={`!w-[115px] ${
-                    secValError && '!border-1 !border-rose-500'
+                    secValErrorX && '!border-1 !border-rose-500'
                   } `}
                   onChange={(e) => {
                     const inputValue = e.target.value;
 
                     if (inputValue.includes(' ')) {
-                      setSecValError(true);
+                      setSecValErrorX(true);
                       return;
                     }
 
-                    if (secMeter !== `ft'in"` && inputValue.includes('-')) {
-                      setSecValError(true);
+                    if (secMeterX !== `ft'in"` && inputValue.includes('-')) {
+                      setSecValErrorX(true);
                       return;
                     }
 
                     if (inputValue.length > 8) {
-                      setSecValError(true);
+                      setSecValErrorX(true);
                       return;
                     }
 
                     if (inputValue.length > 0 && !/^[1-9]/.test(inputValue)) {
-                      setSecValError(true);
+                      setSecValErrorX(true);
                       return;
                     }
 
@@ -356,20 +428,20 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
                         isNaN(Number(parts[1])) ||
                         parts[1].length > 2
                       ) {
-                        setSecValError(true);
+                        setSecValErrorX(true);
                         return;
                       }
                     }
-                    setSecValError(false);
-                    setSecondValue(inputValue);
+                    setSecValErrorX(false);
+                    setSecondValueX(inputValue);
                   }}
                 />
                 <Select
-                  value={secMeter}
+                  value={secMeterX}
                   className="w-[115px]"
                   onChange={(value) => {
-                    setSecondValue('');
-                    setSecMeter(value);
+                    setSecondValueX('');
+                    setSecMeterX(value);
                   }}
                 >
                   {measurementUnits.map((item) => (
@@ -381,6 +453,169 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
               </>
             )}
           </div>
+
+          {separateScale && (
+            <>
+              <div className="flex gap-6 items-center justify-between ">
+                <div className="flex flex-row gap-6">
+                  <label>Y Scale:</label>
+                  <Radio.Group onChange={onChangeY} value={valueY}>
+                    <Radio value={'preset'}>Present</Radio>
+                    <Radio value={'custom'}>Custom</Radio>
+                  </Radio.Group>
+                </div>
+                {valueY === 'custom' && (
+                  <div>
+                    <WhiteButton
+                      className="!py-1.5"
+                      text="Add to Preset"
+                      onClick={() =>
+                        handleAddPreset(
+                          firstValueY,
+                          meterY,
+                          secondValueY,
+                          secMeterY
+                        )
+                      }
+                    />
+                  </div>
+                )}
+              </div>
+              <div className="flex gap-4 items-center justify-end">
+                {valueY === 'preset' && (
+                  <Select
+                    className="w-full"
+                    value={presetY}
+                    onChange={(value) => {
+                      setPresetY(value);
+                    }}
+                    options={mergedPresets}
+                  />
+                )}
+                {valueY === 'custom' && (
+                  <>
+                    <Input
+                      value={firstValueY}
+                      className={`!w-[115px] ${
+                        firstValErrorY && '!border-1 !border-rose-500'
+                      } `}
+                      // className="!w-[115px]"
+                      onChange={(e) => {
+                        const inputValue = e.target.value;
+
+                        const isValidInput = /^\d{0,8}(\.\d{0,2})?$/.test(
+                          inputValue
+                        );
+
+                        if (!isValidInput) {
+                          setFirstValErrorY(true);
+                          return;
+                        }
+
+                        setFirstValErrorY(false);
+                        setFirstValueY(inputValue);
+                      }}
+                    />
+                    <Select
+                      value={meterY}
+                      className="w-[115px]"
+                      onChange={(value) => setMeterY(value)}
+                    >
+                      {meters.map((item) => (
+                        <Select.Option key={item} value={item}>
+                          {item}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                    <Input
+                      value={secondValueY}
+                      className={`!w-[115px] ${
+                        secValErrorY && '!border-1 !border-rose-500'
+                      } `}
+                      onChange={(e) => {
+                        const inputValue = e.target.value;
+
+                        if (inputValue.includes(' ')) {
+                          setSecValErrorY(true);
+                          return;
+                        }
+
+                        if (
+                          secMeterY !== `ft'in"` &&
+                          inputValue.includes('-')
+                        ) {
+                          setSecValErrorY(true);
+                          return;
+                        }
+
+                        if (inputValue.length > 8) {
+                          setSecValErrorY(true);
+                          return;
+                        }
+
+                        if (
+                          inputValue.length > 0 &&
+                          !/^[1-9]/.test(inputValue)
+                        ) {
+                          setSecValErrorY(true);
+                          return;
+                        }
+
+                        if (
+                          inputValue.includes('-') ||
+                          inputValue.includes('/')
+                        ) {
+                          let parts;
+                          if (inputValue.includes('-')) {
+                            parts = inputValue.split('-');
+                          } else if (inputValue.includes('/')) {
+                            parts = inputValue.split('/');
+                          }
+                          if (
+                            !parts ||
+                            parts.length !== 2 ||
+                            isNaN(Number(parts[0])) ||
+                            isNaN(Number(parts[1])) ||
+                            parts[1].length > 2
+                          ) {
+                            setSecValErrorY(true);
+                            return;
+                          }
+                        }
+                        setSecValErrorY(false);
+                        setSecondValueY(inputValue);
+                      }}
+                    />
+                    <Select
+                      value={secMeterY}
+                      className="w-[115px]"
+                      onChange={(value) => {
+                        setSecondValueY('');
+                        setSecMeterY(value);
+                      }}
+                    >
+                      {measurementUnits.map((item) => (
+                        <Select.Option key={item} value={item}>
+                          {item}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  </>
+                )}
+              </div>
+            </>
+          )}
+
+          <div className="flex space-x-2">
+            <div
+              className="cursor-pointer"
+              onClick={() => setSeparateScale((prev) => !prev)}
+            >
+              Separate Y Scale
+            </div>
+            <Checkbox onChange={(e) => setSeparateScale(e.target.checked)} />
+          </div>
+
           <div className="flex gap-6 items-center">
             <label>Precision:</label>
             <Select
@@ -388,7 +623,7 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
               className="w-full"
               onChange={(value) => setPrecision(value)}
             >
-              {secMeter === `in'` || secMeter === `ft'in"`
+              {secMeterX === `in'` || secMeterX === `ft'in"`
                 ? byPrecision.map((item) => (
                     <Select.Option key={item} value={item}>
                       {item}

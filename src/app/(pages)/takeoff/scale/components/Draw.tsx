@@ -1,5 +1,6 @@
-import React, { useContext, useEffect } from 'react';
-import { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { KonvaEventObject } from 'konva/lib/Node';
+import moment from 'moment';
 import {
   Stage,
   Layer,
@@ -9,13 +10,8 @@ import {
   Text as KonvaText,
   Arrow,
   Circle,
-  KonvaNodeComponent,
 } from 'react-konva';
-
 import { UploadFileData } from '../../context/UploadFileContext';
-
-import { KonvaEventObject } from 'konva/lib/Node';
-import moment from 'moment';
 import { DrawHistoryContext } from '../../context';
 import { DrawHistoryContextProps } from '../../context/DrawHistoryContext';
 import {
@@ -31,7 +27,7 @@ import {
 } from '../../types';
 import { ScaleData } from '../page';
 import useWheelZoom from './useWheelZoom';
-import useDraw from '../../../../hooks/useDraw';
+import { useDraw } from '@/app/hooks';
 
 const defaultCurrentLineState = { startingPoint: null, endingPoint: null };
 const defaultPolyLineState: LineInterface = {
@@ -74,6 +70,7 @@ const Draw: React.FC<Props> = ({
     calculatePolygonCenter,
     calculatePolygonVolume,
     calculateAngle,
+    pointInCircle,
   } = useDraw();
 
   const [draw, setDraw] = useState<DrawInterface>({
@@ -199,15 +196,10 @@ const Draw: React.FC<Props> = ({
           if (
             polyLine?.points.length &&
             currentLine.endingPoint &&
-            +calcLineDistance(
-              [
-                ...polyLine.points.slice(0, 2),
-                currentLine.endingPoint?.x,
-                currentLine.endingPoint?.y,
-              ],
-              scale
-            ) <=
-              6 / 72
+            pointInCircle([...polyLine.points.slice(0, 2)], 5, [
+              currentLine.endingPoint.x,
+              currentLine.endingPoint.y,
+            ])
           ) {
             prev.points.push(...polyLine.points.slice(0, 2));
             setCurrentLine({ startingPoint: null, endingPoint: null });
@@ -217,7 +209,7 @@ const Draw: React.FC<Props> = ({
               const polygonCoordinates = prev.points;
               const parameter = calculatePolygonPerimeter(
                 polygonCoordinates,
-                scale.precision
+                scale
               );
 
               console.log('parameter', parameter);
@@ -376,6 +368,7 @@ const Draw: React.FC<Props> = ({
         scale,
         true
       ) as string;
+
       handleChangeMeasurements({
         angle,
         ...(selected === 'length' && { parameter }),
@@ -387,7 +380,7 @@ const Draw: React.FC<Props> = ({
                   completingLine.endingPoint.x,
                   completingLine.endingPoint.y,
                 ],
-                scale.precision
+                scale
               ),
               area: calculatePolygonArea(
                 [

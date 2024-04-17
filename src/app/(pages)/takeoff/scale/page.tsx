@@ -20,9 +20,8 @@ import Button from '@/app/component/customButton/button';
 import { ReportDataContextProps } from '../context/ReportDataContext';
 
 export interface ScaleData {
-  xScale?: string;
-  yScale?: string;
-  scale: string;
+  xScale: string;
+  yScale: string;
   precision: string;
 }
 
@@ -52,14 +51,16 @@ const Scale = () => {
     ReportDataContext
   ) as ReportDataContextProps;
 
-  console.log('scaleData: ', scaleData);
-
   if (!uploadFileData.length) router.push('/takeoff/upload');
 
   useEffect(() => {
     const newData: any = {};
     for (let i = 1; i <= uploadFileData.length; i++) {
-      newData[i] = { scale: `1in=1in`, precision: '1' };
+      newData[i] = {
+        xScale: `1in=1in`,
+        yScale: `1in=1in`,
+        precision: '1',
+      };
     }
     handleScaleData(newData);
   }, []);
@@ -167,7 +168,8 @@ const Scale = () => {
                   selectedTool={tool}
                   scale={
                     scaleData?.[`${index + 1}`] || {
-                      scale: `1"=1"`,
+                      xScale: `1in=1in`,
+                      yScale: `1in=1in`,
                       precision: '1',
                     }
                   }

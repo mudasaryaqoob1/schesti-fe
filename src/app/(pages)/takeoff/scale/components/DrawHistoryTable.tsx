@@ -44,7 +44,7 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
                     data.depth || 0,
                     scaleData
                       ? scaleData[pageNumber.toString()]
-                      : { scale: `1"=1"`, precision: '1' }
+                      : { xScale: `1in=1in`, yScale: `1in=1in`, precision: '1' }
                   );
 
                 return {
