@@ -271,14 +271,6 @@ function CreateClientInvoicePage() {
         >
           <Tabs
             destroyInactiveTabPane
-            tabBarExtraContent={
-              showDownload ? (
-                <CustomButton
-                  text={isDownloading ? 'Downloading...' : 'Download PDF'}
-                  onClick={() => downloadPdf()}
-                />
-              ) : null
-            }
             onChange={(key) => {
               setTab(key);
             }}
@@ -322,13 +314,18 @@ function CreateClientInvoicePage() {
                         text="Previous"
                         className="!w-40"
                       />
-                      <CustomButton
+                      {showDownload ? <CustomButton
+                        text={isDownloading ? 'Downloading...' : 'Download PDF'}
+                        onClick={() => downloadPdf()}
+                        className="!w-48"
+                      /> : <CustomButton
                         text="Create"
                         className="!w-48"
                         onClick={() => {
                           handleSubmit(g7State);
                         }}
                       />
+                      }
                     </G702Component>
                   ),
               };

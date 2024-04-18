@@ -305,16 +305,6 @@ export function PhaseComponent({ parentInvoice }: Props) {
         >
           <Tabs
             destroyInactiveTabPane
-            tabBarExtraContent={
-              showDownload ? (
-                <CustomButton
-                  loadingText="Downloading..."
-                  isLoading={isDownloading}
-                  text={'Download PDF'}
-                  onClick={() => downloadPdf()}
-                />
-              ) : null
-            }
             onChange={(key) => {
               setTab(key);
             }}
@@ -370,13 +360,19 @@ export function PhaseComponent({ parentInvoice }: Props) {
                         text="Previous"
                         className="!w-40"
                       />
-                      <CustomButton
+                      {showDownload ? <CustomButton
+                        loadingText="Downloading..."
+                        isLoading={isDownloading}
+                        text={'Download PDF'}
+                        onClick={() => downloadPdf()}
+                        className="!w-48"
+                      /> : <CustomButton
                         text="Create new Phase"
                         className="!w-48"
                         onClick={() => {
                           handleSubmit(g7State);
                         }}
-                      />
+                      />}
                     </G702Component>
                   ),
               };
