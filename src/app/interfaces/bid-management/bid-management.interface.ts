@@ -104,7 +104,7 @@ export interface IBidProjectScope {
 }
 
 export interface IProjectBidding {
-  file: File
+  file?: IBidDocument
   _id: string
   user: IUserInterface | string;
   projectId: IBidManagement

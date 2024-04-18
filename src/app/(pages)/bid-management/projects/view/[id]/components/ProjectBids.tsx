@@ -326,11 +326,11 @@ export function ProjectBids({ projectId }: Props) {
               />
             </div>
 
-            <div className="px-4 mt-3">
-              <a className='rounded-[8px] flex justify-center border border-solid border-lavenderPurple bg-lavenderPurple text-white leading-6 font-semibold py-3 px-5  cursor-pointer shadow-scenarySubdued h-auto text-sm w-full'>
-                Download All Files
+            {selectedBid.file ? <div className="px-4 mt-3">
+              <a href={selectedBid.file.url} target='_blank' className='rounded-[8px] flex justify-center border border-solid border-lavenderPurple bg-lavenderPurple text-white leading-6 font-semibold py-3 px-5  cursor-pointer shadow-scenarySubdued h-auto text-sm w-full'>
+                Download File
               </a>
-            </div>
+            </div> : null}
           </div> : null}
 
         </div>
