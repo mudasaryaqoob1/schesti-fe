@@ -239,10 +239,11 @@ export function PhaseComponent({ parentInvoice }: Props) {
         amountPaid,
       })
       .then((response) => {
-        if (response.statusCode == 201) {
+        if (response.statusCode == 201 && response.data) {
           toast.success('Invoice created successfully');
           takeScreenshot(ref.current);
           setShowDownload(true);
+          // setSelectedPhase(response.data.invoice);
         }
       })
       .catch(({ response }) => {
@@ -324,9 +325,8 @@ export function PhaseComponent({ parentInvoice }: Props) {
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className={`${
-                      tab === type ? 'text-RoyalPurple' : 'text-black'
-                    }`}
+                    className={`${tab === type ? 'text-RoyalPurple' : 'text-black'
+                      }`}
                   />
                 ),
                 tabKey: type,
@@ -387,7 +387,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
       <div
         ref={ref as MutableRefObject<HTMLDivElement>}
         className="space-y-5 w-full absolute z -left-[2500px] border p-6"
-        // className="space-y-5 w-full  border p-6"
+      // className="space-y-5 w-full  border p-6"
       >
         <ClientInvoiceHeader />
         <div className="flex justify-end w-full">
@@ -454,7 +454,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
             showAddAndDelete={false}
           />
         </ConfigProvider>
-         {/* <div className="flex justify-end">
+        {/* <div className="flex justify-end">
           <Image width={100} height={20} alt="logo" src="/powered-by.png" />
         </div> */}
         <ClientInvoiceFooter />

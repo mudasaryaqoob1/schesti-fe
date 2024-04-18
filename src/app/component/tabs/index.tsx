@@ -109,11 +109,8 @@ const Tabs = () => {
                     items: feature.options.map((option, index) => {
                       return {
                         key: index,
-                        label: userPlanFeatures.includes(option.value) ? (
-                          <Link href={option.value}>{option.label}</Link>
-                        ) : (
-                          <Link href="/upgrade-feature">{option.label}</Link>
-                        ),
+                        label: <Link href={option.value}>{option.label}</Link>
+                        ,
                       };
                     }),
                     selectable: true,
