@@ -22,10 +22,11 @@ import { ClientInvoiceHeader } from '../components/ClientInvoiceHeader';
 import { ClientInvoiceFooter } from '../components/ClientInvoiceFooter';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
+import { withAuth } from '@/app/hoc/withAuth';
 
 const G703_KEY = 'G703';
 const G702_KEY = 'G702';
-export default function CreateClientInvoicePage() {
+function CreateClientInvoicePage() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   const router = useRouter();
 
@@ -288,9 +289,8 @@ export default function CreateClientInvoicePage() {
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className={`${
-                      tab === type ? 'text-RoyalPurple' : 'text-black'
-                    }`}
+                    className={`${tab === type ? 'text-RoyalPurple' : 'text-black'
+                      }`}
                   />
                 ),
                 tabKey: type,
@@ -339,7 +339,7 @@ export default function CreateClientInvoicePage() {
       <div
         ref={ref as MutableRefObject<HTMLDivElement>}
         className="space-y-5 w-full absolute -left-[2500px] border p-6"
-            // className="space-y-5 w-full border p-6"
+      // className="space-y-5 w-full border p-6"
       >
         <ClientInvoiceHeader />
         <div className="flex justify-end w-full">
@@ -400,3 +400,6 @@ export default function CreateClientInvoicePage() {
     </section>
   );
 }
+
+
+export default withAuth(CreateClientInvoicePage);
