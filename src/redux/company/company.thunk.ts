@@ -8,7 +8,6 @@ interface FetchClientParams {
   limit: number;
 }
 
-
 interface FetchPartnerParams {
   page: number;
   limit: number;
@@ -38,8 +37,6 @@ export const fetchCompanyClients = createAsyncThunk(
     }
   }
 );
-
-
 
 export const fetchCompanyPartner = createAsyncThunk(
   'company/partners',
@@ -97,6 +94,24 @@ export const deleteCompanyClient = createAsyncThunk(
   async (clientId: string, { rejectWithValue }) => {
     try {
       const response = await userService.httpDeleteClient(clientId);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data ||
+          'An error occurred while fetching the feed records'
+      );
+    }
+  }
+);
+
+export const changeCompanyClientStatus = createAsyncThunk(
+  'company/changeClientStatus',
+  async (
+    clientDetail: { clientId: string; status: boolean },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await userService.httpChangeClientStatus(clientDetail);
       return response;
     } catch (error: any) {
       return rejectWithValue(

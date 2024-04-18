@@ -57,6 +57,8 @@ const CompanyDetails = () => {
   // const [phoneNumberErr, setPhoneNumberErr] = useState<string>('');
   const [companyLogoErr, setCompanyLogoErr] = useState<string>('');
 
+  console.log(userData , 'userDatauserData');
+  
   useEffect(() => {
     if (!isObjectId(userId) && !isEmpty(userId)) {
       // setIsLoading(true);

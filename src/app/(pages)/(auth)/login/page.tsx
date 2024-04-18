@@ -21,6 +21,7 @@ import { ILogInInterface } from '@/app/interfaces/authInterfaces/login.interface
 import { login, loginWithGoogle } from '@/redux/authSlices/auth.thunk';
 import PrimaryHeading from '@/app/component/headings/primary';
 import Description from '@/app/component/description';
+import { USER_ROLES_ENUM } from '@/app/constants/constant';
 
 const initialValues: ILogInInterface = {
   email: '',
@@ -90,6 +91,7 @@ const Login = () => {
           name: googleAuthResponse.data.name,
           avatar: googleAuthResponse.data.picture,
           providerId: googleAuthResponse.data.sub,
+          userRole: USER_ROLES_ENUM.OWNER,
         };
 
         let result: any = await dispatch(loginWithGoogle(responseObj));
