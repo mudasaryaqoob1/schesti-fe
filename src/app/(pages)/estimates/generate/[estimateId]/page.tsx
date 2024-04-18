@@ -6,27 +6,28 @@ import React, {
   useLayoutEffect,
 } from 'react';
 import { useParams } from 'next/navigation';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 import Description from '@/app/component/description';
+import { selectToken } from '@/redux/authSlices/auth.selector';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 import MinDesc from '@/app/component/description/minDesc';
 import EstimatesTable from '../components/estimatesTable';
-import ClientPDF from '../components/clientPDF';
+import EstimatePDF from './estimatePDF';
 import CustomButton from '@/app/component/customButton/button';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import { estimateRequestService } from '@/app/services/estimates.service';
-import { useSelector } from 'react-redux';
-import { selectToken } from '@/redux/authSlices/auth.selector';
+import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
+import { withAuth } from '@/app/hoc/withAuth';
+import { USCurrencyFormat } from '@/app/utils/format';
 import { HttpService } from '@/app/services/base.service';
 
 const ViewEstimateDetail = () => {
   const { estimateId } = useParams();
 
-  const [pdfData, setPdfData] = useState<Object[]>([]);
-  const [estimateDetailsSummary, setEstimateDetailsSummary] = useState<any>();
-  const [estimatesRecord, setEstimatesRecord] = useState([]);
   const token = useSelector(selectToken);
 
   useLayoutEffect(() => {
@@ -34,6 +35,14 @@ const ViewEstimateDetail = () => {
       HttpService.setToken(token);
     }
   }, [token]);
+
+  const auth = useSelector((state: RootState) => state.auth);
+  const user = auth.user?.user as IUpdateCompanyDetail | undefined;
+
+  const [pdfData, setPdfData] = useState<Object[]>([]);
+  const [estimateDetailsSummary, setEstimateDetailsSummary] = useState<any>();
+  const [estimatesRecord, setEstimatesRecord] = useState([]);
+
   const fetchEstimateDetail = useCallback(async () => {
     const result =
       await estimateRequestService.httpGetGeneratedEstimateDetail(estimateId);
@@ -70,7 +79,7 @@ const ViewEstimateDetail = () => {
             scopeItems.map(({ description, qty, totalCostRecord }: any) => ({
               description,
               quantity: qty,
-              totalPrice: totalCostRecord,
+              total: totalCostRecord,
             }))
         );
 
@@ -85,6 +94,8 @@ const ViewEstimateDetail = () => {
     }
   }, [estimateId]);
 
+  console.log(estimateDetailsSummary, 'estimateDetailsSummary', pdfData);
+
   return (
     <div className="p-12">
       <div className="flex justify-between items-center">
@@ -95,10 +106,10 @@ const ViewEstimateDetail = () => {
         <div className="flex gap-3 items-center">
           <PDFDownloadLink
             document={
-              <ClientPDF
+              <EstimatePDF
                 estimateDetail={estimateDetailsSummary}
-                subcostRecord={estimateDetailsSummary?.totalCost}
                 pdfData={pdfData}
+                user={user}
               />
             }
             fileName="estimate-document.pdf"
@@ -112,6 +123,14 @@ const ViewEstimateDetail = () => {
               />
             )}
           </PDFDownloadLink>
+
+          {/* <PDFViewer>
+            <EstimatePDF
+              estimateDetail={estimateDetailsSummary}
+              pdfData={pdfData}
+              user={user}
+            />
+          </PDFViewer> */}
         </div>
       </div>
 
@@ -247,7 +266,9 @@ const ViewEstimateDetail = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <QuaternaryHeading
-                      title={`Total Cost: ${estimate.totalCostForTitle}`}
+                      title={`Total Cost: ${USCurrencyFormat.format(
+                        estimate.totalCostForTitle
+                      )}`}
                       className="font-semibold"
                     />
                   </div>
@@ -265,39 +286,55 @@ const ViewEstimateDetail = () => {
         <div className="flex items-center justify-between">
           <MinDesc title="Sub Total Cost" className="text-darkgrayish" />
           <Description
-            title={`$${estimateDetailsSummary?.totalCost}`}
+            title={`${USCurrencyFormat.format(
+              estimateDetailsSummary?.totalCost
+            )}`}
             className="font-medium"
           />
         </div>
         <div className="flex items-center justify-between">
           <MinDesc title="Material Tax %" className="text-darkgrayish" />
           <Description
-            title={`$${estimateDetailsSummary?.totalBidDetail?.materialTax ?? 0}`}
+            title={`${USCurrencyFormat.format(
+              estimateDetailsSummary?.totalBidDetail?.materialTax
+            )}`}
             className="font-medium"
           />
         </div>
         <div className="flex items-center justify-between">
           <MinDesc title="Overhead & Profit %" className="text-darkgrayish" />
           <Description
-            title={`$${estimateDetailsSummary?.totalBidDetail?.overheadAndProfit ?? 0}`}
+            title={`${USCurrencyFormat.format(
+              estimateDetailsSummary?.totalBidDetail?.overheadAndProfit
+            )}`}
             className="font-medium"
           />
         </div>
         <div className="flex items-center justify-between">
           <MinDesc title="Bond Fee %" className="text-darkgrayish" />
           <Description
-            title={`$${estimateDetailsSummary?.totalBidDetail?.bondFee ?? 0}`}
+            title={`${USCurrencyFormat.format(
+              estimateDetailsSummary?.totalBidDetail?.bondFee
+            )}`}
             className="font-medium"
           />
         </div>
       </div>
       <div className="bg-celestialGray h-px w-full my-4"></div>
       <div className="flex items-center justify-between">
-        <QuaternaryHeading title="Total Bid" />
-        <Description title={`$${estimateDetailsSummary?.totalCost}`} />
+        <QuaternaryHeading className="font-semibold" title="Total Cost" />
+        <Description
+          className="font-semibold"
+          title={`${USCurrencyFormat.format(
+            estimateDetailsSummary?.totalCost +
+              estimateDetailsSummary?.totalBidDetail?.bondFee +
+              estimateDetailsSummary?.totalBidDetail?.overheadAndProfit +
+              estimateDetailsSummary?.totalBidDetail?.materialTax
+          )}`}
+        />
       </div>
     </div>
   );
 };
 
-export default ViewEstimateDetail;
+export default withAuth(ViewEstimateDetail);

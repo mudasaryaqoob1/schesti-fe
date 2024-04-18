@@ -1,17 +1,10 @@
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import type { ColumnsType } from 'antd/es/table';
 import { Dropdown, Table } from 'antd';
 import type { MenuProps } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
 import { AppDispatch } from '@/redux/store';
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
 import {
   selectEstimateRequests,
   selectEstimateRequestsLoading,
@@ -19,6 +12,7 @@ import {
 import {
   deleteEstimateRequest,
   fetchEstimateRequests,
+  changeEstimateStatus,
 } from '@/redux/company/company.thunk';
 import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
@@ -29,19 +23,19 @@ import { DeleteContent } from '@/app/component/delete/DeleteContent';
 
 interface DataType {
   key: React.Key;
-  ProjectName: string;
-  ClientName: string;
-  Number: string;
-  SalePerson: string;
-  Estimator: string;
-  Status: string;
-  Action: string;
+  projectName: string;
+  clientName: string;
+  phone: string;
+  salePerson: string;
+  estimator: string;
+  status: string;
+  action: string;
 }
 
 const EstimateRequestTable: React.FC = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const token = useSelector(selectToken);
+
   const [selectedEstimate, setSelecteEstimate] = useState<
     (IEstimateRequest & { _id: string }) | null
   >(null);
@@ -49,21 +43,15 @@ const EstimateRequestTable: React.FC = () => {
   const estimateRequestsData = useSelector(selectEstimateRequests);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
-
-  const memoizedSetPerson = useCallback(async () => {
+  const fetachEstimateRequest = useCallback(async () => {
     await dispatch(fetchEstimateRequests({ page: 1, limit: 10 }));
   }, []);
 
   useEffect(() => {
-    memoizedSetPerson();
+    fetachEstimateRequest();
   }, []);
 
-  const items: MenuProps['items'] = [
+  const activeEstimateMenu: MenuProps['items'] = [
     {
       key: 'createEstimateRequest',
       label: <a href="#">Create Estimate</a>,
@@ -71,6 +59,25 @@ const EstimateRequestTable: React.FC = () => {
     {
       key: 'editEstimateRequest',
       label: <a href="#">Edit Request</a>,
+    },
+    {
+      key: 'inactiveState',
+      label: <a href="#">In Active</a>,
+    },
+    {
+      key: 'deleteEstimateRequest',
+      label: <p>Delete</p>,
+    },
+  ];
+
+  const inActiveEstimateMenu: MenuProps['items'] = [
+    {
+      key: 'editEstimateRequest',
+      label: <a href="#">Edit Request</a>,
+    },
+    {
+      key: 'activeState',
+      label: <a href="#">Active</a>,
     },
     {
       key: 'deleteEstimateRequest',
@@ -88,6 +95,20 @@ const EstimateRequestTable: React.FC = () => {
       router.push(
         `/estimates/generate/create?estimateId=${estimateRequest._id}`
       );
+    } else if (key === 'inactiveState') {
+      let statusBody = {
+        status: false,
+        estimateId: estimateRequest._id,
+      };
+      dispatch(changeEstimateStatus(statusBody));
+      fetachEstimateRequest();
+    } else if (key === 'activeState') {
+      let statusBody = {
+        status: true,
+        estimateId: estimateRequest._id,
+      };
+      dispatch(changeEstimateStatus(statusBody));
+      fetachEstimateRequest();
     }
   };
 
@@ -121,9 +142,9 @@ const EstimateRequestTable: React.FC = () => {
     {
       title: 'Status',
       dataIndex: 'status',
-      render: () => (
-        <a className="text-[#027A48] bg-[#ECFDF3] px-2 py-1 rounded-full">
-          Active
+      render: (text, record: any) => (
+        <a className="text-[#027A48] bg-[#ECFDF3] px-2 py-1 rounded-full capitalize">
+          {record.isActive ? 'Active' : 'In Active'}
         </a>
       ),
     },
@@ -132,26 +153,51 @@ const EstimateRequestTable: React.FC = () => {
       dataIndex: 'action',
       align: 'center',
       key: 'action',
-      render: (text, record) => (
-        <Dropdown
-          menu={{
-            items,
-            onClick: (event) => {
-              const { key } = event;
-              handleDropdownItemClick(key, record);
-            },
-          }}
-          placement="bottomRight"
-        >
-          <Image
-            src={'/menuIcon.svg'}
-            alt="logo white icon"
-            width={20}
-            height={20}
-            className="active:scale-105 cursor-pointer"
-          />
-        </Dropdown>
-      ),
+      render: (text, record: any) => {
+        if (record?.isActive) {
+          return (
+            <Dropdown
+              menu={{
+                items: activeEstimateMenu,
+                onClick: (event) => {
+                  const { key } = event;
+                  handleDropdownItemClick(key, record);
+                },
+              }}
+              placement="bottomRight"
+            >
+              <Image
+                src={'/menuIcon.svg'}
+                alt="logo white icon"
+                width={20}
+                height={20}
+                className="active:scale-105 cursor-pointer"
+              />
+            </Dropdown>
+          );
+        } else {
+          return (
+            <Dropdown
+              menu={{
+                items: inActiveEstimateMenu,
+                onClick: (event) => {
+                  const { key } = event;
+                  handleDropdownItemClick(key, record);
+                },
+              }}
+              placement="bottomRight"
+            >
+              <Image
+                src={'/menuIcon.svg'}
+                alt="logo white icon"
+                width={20}
+                height={20}
+                className="active:scale-105 cursor-pointer"
+              />
+            </Dropdown>
+          );
+        }
+      },
     },
   ];
 
@@ -184,7 +230,7 @@ const EstimateRequestTable: React.FC = () => {
         <CustomButton
           text="Start New Estimate "
           className="!w-auto "
-          icon="plus.svg"
+          icon="/plus.svg"
           iconwidth={20}
           iconheight={20}
           onClick={() => router.push('/estimates/requests/create')}

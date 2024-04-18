@@ -41,7 +41,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
     Intl.DateTimeFormat().resolvedOptions().timeZone
   );
   const dispatch = useDispatch<AppDispatch>();
-  console.log({ timezone });
+
   const formik = useFormik({
     initialValues: {
       topic: '',
@@ -64,7 +64,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
           roomName,
           link: `${process.env.NEXT_PUBLIC_APP_URL}/meeting/${roomName}`,
           topic: values.topic,
-          timezone: (timezone as ITimezoneOption).value,
+          timezone: getTimeZoneValue(timezone),
         })
         .then((response) => {
           if (response.data) {
@@ -80,6 +80,13 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
         });
     },
   });
+
+  function getTimeZoneValue(tz: string | ITimezoneOption) {
+    if (typeof tz === 'string') {
+      return tz;
+    }
+    return tz.value;
+  }
 
   function handleCloseModal() {
     setShowModal();
@@ -157,7 +164,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
               hasError={formik.touched.startDate && !!formik.errors.startDate}
               errorMessage={formik.errors.startDate}
               fieldProps={{
-                showTime: { defaultValue: dayjs('00:00:00', 'HH:mm') },
+                showTime:{ format: 'HH:mm' },
                 value: formik.values.startDate
                   ? dayjs(formik.values.startDate).tz(
                       (timezone as ITimezoneOption).value
@@ -176,8 +183,8 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
                     : undefined,
                 use12Hours: true,
                 disabledDate: (curr) =>
-                  disabledDate(curr, (timezone as ITimezoneOption).value),
-                showSecond: false,
+                  disabledDate(curr, (timezone as ITimezoneOption).value) as boolean,
+                // showSecond: false,
                 renderExtraFooter: () => (
                   // <SelectComponent
                   //   label="Timezone"

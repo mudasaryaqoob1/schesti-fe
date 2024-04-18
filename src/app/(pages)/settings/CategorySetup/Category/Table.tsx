@@ -4,14 +4,12 @@ import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { useCallback, useEffect, useLayoutEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { AppDispatch } from '@/redux/store';
 import {
   deleteCategory,
   fetchCategories,
 } from '@/redux/company/settingSlices/companySetup.thunk';
-import { HttpService } from '@/app/services/base.service';
-import { selectToken } from '@/redux/authSlices/auth.selector';
 import {
   companySetupCategoriesData,
   companySetupCategoriesLoading,
@@ -21,12 +19,12 @@ import { setCategoryData } from '@/redux/company/settingSlices/categories/catego
 export interface DataType {
   categoryId: string;
   companyName: string;
+  name?: string;
   _id: string;
   action: string;
 }
 
 const CategoryTable = () => {
-  const token = useSelector(selectToken);
   const dispatch = useDispatch<AppDispatch>();
 
   const selectCompanySetupData = useSelector(companySetupCategoriesData);
@@ -40,11 +38,6 @@ const CategoryTable = () => {
     fetchCategoriesHandler();
   }, []);
 
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
   const columns: ColumnsType<DataType> = [
     {
       title: 'Category  ID',

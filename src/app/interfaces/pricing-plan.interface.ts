@@ -1,5 +1,5 @@
 export interface IPricingPlan {
-  _id?: string;
+  _id: string;
   type: string;
   planName: string;
   price: number;
@@ -7,5 +7,10 @@ export interface IPricingPlan {
   freeTrailDays: number;
   planDescription: string;
   features: string;
-  isActive?: boolean;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+  stripePriceId: string;
+  stripeProductId: string;
 }

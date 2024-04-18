@@ -1,6 +1,10 @@
 // Importing base class
 import { HttpService } from '@/app/services/base.service';
-import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
+import {
+  IClient,
+  IPartner,
+  IDashboardStats,
+} from '@/app/interfaces/companyInterfaces/companyClient.interface';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { String } from 'aws-sdk/clients/acm';
 // import { IUpdateCompanyDetail } from '../interfaces/companyInterfaces/updateCompany.interface';
@@ -8,6 +12,7 @@ import { String } from 'aws-sdk/clients/acm';
 class UserService extends HttpService {
   private readonly companyPrefix: string = 'api/company';
   private readonly userPrefix: string = 'api/user';
+  private readonly partnerPrefix: string = 'api/partner';
 
   httpUpdateCompanyDetail = (
     data: any
@@ -64,6 +69,15 @@ class UserService extends HttpService {
   httpDeleteClient = (clientId: string): Promise<IResponseInterface> =>
     this.post(`${this.companyPrefix}/deleteClient/${clientId}`);
 
+  httpChangeClientStatus = (clientDetail: {
+    clientId: string;
+    status: boolean;
+  }): Promise<IResponseInterface> =>
+    this.post(
+      `${this.companyPrefix}/changeClientStatus/${clientDetail.clientId}`,
+      { status: clientDetail.status }
+    );
+
   httpDeleteUser = (userId: string): Promise<IResponseInterface> =>
     this.delete(`${this.userPrefix}/delete/${userId}`);
 
@@ -80,6 +94,34 @@ class UserService extends HttpService {
     clientId: string | string[]
   ): Promise<IResponseInterface<any>> =>
     this.post(`${this.companyPrefix}/updateClient/${clientId}`, data);
+
+  // company partner service
+
+  httpGetCompanyPartners = (
+    page: number,
+    limit: number = 9
+  ): Promise<IResponseInterface> =>
+    this.get(`${this.partnerPrefix}/allPartners?page=${page}&limit=${limit}`);
+
+  httpAddNewPartner = (data: IPartner): Promise<IResponseInterface<any>> =>
+    this.post(`${this.partnerPrefix}/newPartner`, data);
+
+  httpUpdatePartner = (
+    data: IPartner,
+    partnerId: string | string[]
+  ): Promise<IResponseInterface<any>> =>
+    this.post(`${this.partnerPrefix}/updatePartner/${partnerId}`, data);
+
+  httpDeletePartner = (partnerId: string): Promise<IResponseInterface> =>
+    this.post(`${this.partnerPrefix}/deletePartner/${partnerId}`);
+
+  httpFindCompanyPartnerDetail = (
+    id: string
+  ): Promise<IResponseInterface<{ partner: IPartner }>> =>
+    this.get(`${this.partnerPrefix}/partner/${id}`);
+
+  httpDashbaordStatics = (): Promise<IResponseInterface<IDashboardStats>> =>
+    this.get(`${this.userPrefix}/dashboardStats`);
 }
 
 export const userService = new UserService();

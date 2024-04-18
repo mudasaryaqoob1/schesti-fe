@@ -26,7 +26,7 @@ interface DataType {
   category: string;
   subCategory: string;
   price: number;
-  actions: null;
+  action: null;
   children?: DataType[];
 }
 
@@ -83,7 +83,7 @@ const SubCategoryTable: React.FC = () => {
   useEffect(() => {
     fetchSubcategoriesHandler();
   }, [refetch]);
-  console.log({ subCategories });
+
   const columns: ColumnsType<DataType> = [
     {
       title: 'Category',

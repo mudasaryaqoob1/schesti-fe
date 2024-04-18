@@ -78,12 +78,13 @@ export default function ContactPage() {
         <div className="grid grid-cols-1 gap-8 xl:grid-cols-2 xl:gap-64">
           <div>
             <h1 className=" text-[#1D2939] font-bold mt-[15px] leading-[48px] xl:leading-[54.181px] text-[36.121px]">
-              Ready to see Wrike for yourself?
+              Get in Touch Anytime
             </h1>
             <p className="mt-[11px] text-[#475467] text-[20px] leading-[32px] xl:leading-[40px] font-normal">
-              {"We'"}d love to show you how Wrike can help your team do more of
-              their best work. Fill out the form and {"we'"}ll be in touch
-              within 24 hours.
+              {'We'}re here round the clock to help. Reach out to us 24/7 and{' '}
+              {"let's"} email us about how Schesti can support you. Whether{' '}
+              {"you're"} starting out or need ongoing support, {"we're"} ready
+              whenever you are.
             </p>
             <div className="flex space-x-4 my-[36px]">
               <Image

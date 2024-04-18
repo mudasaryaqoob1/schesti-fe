@@ -120,3 +120,45 @@ export const getLoggedInUserDetails = createAsyncThunk(
     }
   }
 );
+
+export const addVerificationDetails = createAsyncThunk(
+  'auth/addVerificationDetails',
+  async (data: any, thunkAPI) => {
+    try {
+      const response = await authService.addVerificationDetailsHandler(data);
+      return response;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || 'Error during login'
+      );
+    }
+  }
+);
+
+export const addSelectedTrades = createAsyncThunk(
+  'auth/addSelectedTrades',
+  async (data: any, thunkAPI) => {
+    try {
+      const response = await authService.addSelectedTradesHandler(data);
+      return response;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || 'Error during login'
+      );
+    }
+  }
+);
+
+export const verifyUserEmail = createAsyncThunk(
+  'auth/verifyUserEmail',
+  async (data: string, thunkAPI) => {
+    try {
+      const response = await authService.verifyUserEmail(data);
+      return response;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || 'Error during login'
+      );
+    }
+  }
+);

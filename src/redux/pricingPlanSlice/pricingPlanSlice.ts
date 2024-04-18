@@ -1,11 +1,16 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import initialPricingPlanState from './pricingPlan.initialState';
 import { fetchPricingPlan } from './pricingPlan.thunk';
+import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
 
 export const pricingPlanSlice = createSlice({
   name: 'pricingPlan',
   initialState: initialPricingPlanState,
-  reducers: {},
+  reducers: {
+    setUserPricingPlan: (state, action: PayloadAction<IPricingPlan>) => {
+      state.userPlan = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchPricingPlan.pending, (state) => {
       state.loading = true;
@@ -23,5 +28,7 @@ export const pricingPlanSlice = createSlice({
     });
   },
 });
+
+export const { setUserPricingPlan } = pricingPlanSlice.actions;
 
 export default pricingPlanSlice.reducer;

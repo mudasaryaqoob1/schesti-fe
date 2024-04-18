@@ -4,7 +4,6 @@ import {
   useState,
   useEffect,
   useCallback,
-  useLayoutEffect,
 } from 'react';
 import Image from 'next/image';
 import { useDispatch } from 'react-redux';
@@ -18,9 +17,6 @@ import MinDesc from '@/app/component/description/minDesc';
 import { generateEstimateDetailAction } from '@/redux/estimate/estimateRequest.slice';
 import { bg_style, senaryHeading } from '@/globals/tailwindvariables';
 import { estimateRequestService } from '@/app/services/estimates.service';
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { useSelector } from 'react-redux';
-import { HttpService } from '@/app/services/base.service';
 import { byteConverter } from '@/app/utils/byteConverter';
 import { useRouter } from 'next/navigation';
 
@@ -34,13 +30,6 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
   const searchParams = useSearchParams();
   const estimateId: null | string = searchParams.get('estimateId');
   const router = useRouter();
-  const token = useSelector(selectToken);
-
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
 
   const [showEstimateDetails, setShowEstimateDetails] = useState(true);
   const [showTakeoffDocs, setShowTakeoffDocs] = useState(true);
@@ -79,7 +68,7 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
             <CustomWhiteButton
               text="Cancel"
               className="md:w-32"
-              onClick={() => router.push('/estimates')}
+              onClick={() => router.push('/estimates/requests')}
             />
           )}
 

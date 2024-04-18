@@ -1,96 +1,37 @@
 'use client';
-import { bg_style } from '@/globals/tailwindvariables';
-import NextImage from 'next/image';
-import { useState, useContext } from 'react';
-import { twMerge } from 'tailwind-merge';
-import Draw from './Draw';
+import { useState, useContext, useEffect } from 'react';
 import ModalComponent from '@/app/component/modal';
 import ScaleModal from '../components/scale';
-import ModalsWrapper from '../components/main';
+import ModalsWrapper from './components/ModalWrapper';
 import { ColorPicker, InputNumber, Select } from 'antd';
-import { UploadFileContext } from '../context';
+import { ReportDataContext, ScaleContext, UploadFileContext } from '../context';
 import { UploadFileContextProps } from '../context/UploadFileContext';
-import DrawHistoryTable from '../components/DrawHistoryTable';
-import { Measurements, defaultMeasurements } from '../types';
+import {
+  Measurements,
+  ScaleInterface,
+  Units,
+  defaultMeasurements,
+} from '../types';
+import Image from 'next/image';
+import { ScaleNavigation, DrawTable, Draw } from './components';
+import { ScaleDataContextProps } from '../context/ScaleContext';
+import { useRouter } from 'next/navigation';
+import Button from '@/app/component/customButton/button';
+import { ReportDataContextProps } from '../context/ReportDataContext';
 
-export type ScaleLabel =
-  | 'scale'
-  | 'length'
-  | 'volume'
-  | 'count'
-  | 'area'
-  | 'dynamic';
-
-interface ScaleNavigation {
-  label: ScaleLabel;
-  src: string;
-  selectedSrc: string;
-  alt: string;
-  width: number;
-  height: number;
+export interface ScaleData {
+  xScale: string;
+  yScale: string;
+  precision: string;
 }
 
-const scaleNavigation: ScaleNavigation[] = [
-  {
-    label: 'scale',
-    src: '/scale.svg',
-    selectedSrc: '/selectedScale.svg',
-    alt: 'createicon',
-    width: 19.97,
-    height: 11.31,
-  },
-  {
-    label: 'length',
-    src: '/length.svg',
-    selectedSrc: '/selectedLength.svg',
-    alt: 'createicon',
-    width: 19.97,
-    height: 11.31,
-  },
-  {
-    label: 'volume',
-    src: '/volume.svg',
-    selectedSrc: '/selectedVolume.svg',
-    alt: 'createicon',
-    width: 14,
-    height: 16,
-  },
-  {
-    label: 'count',
-    src: '/count.svg',
-    selectedSrc: '/selectedCount.svg',
-    alt: 'createicon',
-    width: 19.97,
-    height: 11.31,
-  },
-  {
-    label: 'area',
-    src: '/area.svg',
-    selectedSrc: '/selectedArea.svg',
-    alt: 'createicon',
-    width: 18.33,
-    height: 13.72,
-  },
-  {
-    label: 'dynamic',
-    src: '/dynamic.svg',
-    selectedSrc: '/selectedDynamic.svg',
-    alt: 'createicon',
-    width: 15,
-    height: 14,
-  },
-];
-
-const Units = [11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72];
-
-// const selectedScale = {
-//   "1" : {scale:  `3/8"=1'-0"`, precision: `1/34` }
-//   "2" : {scale:  `3/8"=1'-0"`, precision: `1/34` }
-//   "3" : {scale:  `3/8"=1'-0"`, precision: `1/34` }
-// }
+export interface PageScale {
+  [pageNumber: string]: ScaleData;
+}
 
 const Scale = () => {
-  const [scale, setScale] = useState<ScaleLabel>('scale');
+  const router = useRouter();
+  const [tool, setTool] = useState<ScaleInterface>({ selected: 'scale' });
   const [showModal, setShowModal] = useState(false);
   const [border, setBorder] = useState<number>(4);
   const [color, setColor] = useState<string>('#1677ff');
@@ -99,142 +40,165 @@ const Scale = () => {
   const [measurements, setMeasurements] =
     useState<Measurements>(defaultMeasurements);
 
+  const { scaleData, handleScaleData } = useContext(
+    ScaleContext
+  ) as ScaleDataContextProps;
   const { uploadFileData } = useContext(
     UploadFileContext
   ) as UploadFileContextProps;
 
+  const { reportData } = useContext(
+    ReportDataContext
+  ) as ReportDataContextProps;
+
+  if (!uploadFileData.length) router.push('/takeoff/upload');
+
+  useEffect(() => {
+    const newData: any = {};
+    for (let i = 1; i <= uploadFileData.length; i++) {
+      newData[i] = {
+        xScale: `1in=1in`,
+        yScale: `1in=1in`,
+        precision: '1',
+      };
+    }
+    handleScaleData(newData);
+  }, []);
+
   return (
-    <section className="mt-[100px] md:px-16 px-8 pb-4">
-      <div
-        className={`h-12 w-full mt-6 flex flex-row items-center justify-center gap-8  py-[5.5px] ${bg_style}`}
-      >
-        {scaleNavigation.map(
-          ({ src, selectedSrc, height, width, alt, label }) => {
-            return (
-              <div
-                key={src}
-                className="flex flex-col items-center cursor-pointer"
-                onClick={() => {
-                  setShowModal(true);
-                  setScale(label);
-                }}
-              >
-                {scale === label ? (
-                  <NextImage
-                    src={selectedSrc}
-                    alt={alt}
-                    width={width}
-                    height={height}
-                  />
-                ) : (
-                  <NextImage
-                    src={src}
-                    alt={alt}
-                    width={width}
-                    height={height}
-                  />
-                )}
-                <span
-                  className={twMerge(
-                    `text-xs capitalize ${
-                      scale === label ? 'text-[#6F6AF8]' : ''
-                    }`
-                  )}
-                >
-                  {label}
-                </span>
-              </div>
-            );
-          }
-        )}
-      </div>
-      <div className="bg-[#F2F2F2] h-[52px] flex flex-row items-center px-4 gap-6">
-        <div className="flex flex-row gap-2 items-center">
-          <label>Totals:</label>
-          <Select></Select>
-        </div>
-        <div className="flex flex-row gap-2 items-center">
-          <label>Units:</label>
-          <Select
-            className="w-[64px]"
-            value={unit}
-            onChange={(value) => setUnit(value)}
-          >
-            {Units.map((item) => (
-              <Select.Option value={item} key={item}>
-                {item}
-              </Select.Option>
-            ))}
-          </Select>
-        </div>
-        <div className="flex flex-row gap-2 items-center">
-          <label>Border:</label>
-          <InputNumber
-            min={1}
-            max={76}
-            value={border}
-            onChange={(value) => setBorder(value as number)}
-          />
-        </div>
-        <div className="flex flex-row gap-2 items-center">
-          <label>Color:</label>
-          <ColorPicker
-            value={color}
-            onChange={(color) => setColor(color.toHexString())}
-          />
-        </div>
-        <div className="flex flex-row gap-2 items-center ">
-          <div className="bg-[#F2F2F2] h-[52px] w-full pt-3">
-            <input
-              type="number"
-              min={1}
-              placeholder="depth"
-              className="h-1/2"
-              onChange={(e) => setDepth(+e.target.value)}
-            />
+    <>
+      <>
+        <section className="md:px-16 px-8 pb-4">
+          <div className="flex justify-end pt-4">
+            <div
+              className="flex flex-row gap-x-3 cursor-pointer"
+              onClick={() => router.push('/takeoff/report')}
+            >
+              <Button
+                disabled={!uploadFileData.length || !reportData.length}
+                text="Generate Report"
+                icon="/plus.svg"
+                iconwidth={20}
+                iconheight={20}
+              />
+            </div>
           </div>
-        </div>
-      </div>
-
-      <div className="py-6 h-[709px] relative">
-        <div className={`absolute ${showModal ? 'block' : 'hidden'}`}>
-          <ModalsWrapper
-            scale={scale}
-            setModalOpen={setShowModal}
-            measurements={measurements}
+          <ScaleNavigation
+            tool={tool}
+            setTool={setTool}
+            setShowModal={setShowModal}
           />
-        </div>
-        <div className="h-[527px] overflow-y-auto">
-          {uploadFileData.map((file, index) => (
-            <Draw
-              key={`draw-${index}`}
-              selected={scale}
-              depth={depth}
-              color={color}
-              border={border}
-              unit={unit * 1.5}
-              uploadFileData={file}
-              pageNumber={index + 1}
-              handleChangeMeasurements={(measurements) =>
-                setMeasurements(measurements)
-              }
-            />
-          ))}
-        </div>
-        <div>
-          <DrawHistoryTable />
-        </div>
-      </div>
+          <div className="bg-[#F2F2F2] h-[52px] flex flex-row items-center px-4 gap-6 rounded-lg">
+            <div className="flex flex-row gap-2 items-center">
+              <label>Totals:</label>
+              <Select value="Length ----" />
+            </div>
+            <div className="flex flex-row gap-2 items-center">
+              <label>Units:</label>
+              <Select
+                className="w-[64px]"
+                value={unit}
+                onChange={(value) => setUnit(value)}
+              >
+                {Units.map((item) => (
+                  <Select.Option value={item} key={item}>
+                    {item}
+                  </Select.Option>
+                ))}
+              </Select>
+            </div>
+            <div className="flex flex-row gap-2 items-center">
+              <label>Border:</label>
+              <InputNumber
+                min={1}
+                max={76}
+                value={border}
+                onChange={(value) => value && setBorder(value)}
+              />
+            </div>
+            <div className="flex flex-row gap-2 items-center">
+              <label>Color:</label>
+              <ColorPicker
+                value={color}
+                onChange={(color) => setColor(color.toHexString())}
+              />
+            </div>
+            {tool.selected === 'volume' && (
+              <InputNumber
+                type="number"
+                min={1}
+                placeholder="Depth"
+                onChange={(value) => value && setDepth(value)}
+              />
+            )}
+          </div>
 
-      {scale === 'scale' && (
-        <ModalComponent open={showModal} setOpen={setShowModal}>
-          <ScaleModal
-            setModalOpen={setShowModal}
-            scaleData={(data: any) => console.warn('data: ', data)}
-          />
-        </ModalComponent>
-      )}
-    </section>
+          <div className="py-6 h-[709px] relative">
+            <div className="absolute bottom-48 left-10 flex gap-6 z-50 ">
+              <Image src={'/cursor.svg'} alt="t" width={24} height={24} />
+              <Image src={'/t1.svg'} alt="t" width={24} height={24} />
+              <Image src={'/t1.svg'} alt="t" width={24} height={24} />
+              <Image src={'/t1.svg'} alt="t" width={24} height={24} />
+              <Image src={'/fx.svg'} alt="t" width={24} height={24} />
+            </div>
+            <div className="absolute top-10 right-10 flex flex-col gap-3 items-center z-50 bg-white px-3 py-2  rounded-sm drop-shadow-md ">
+              <Image src={'/cursor.svg'} alt="t" width={24} height={24} />
+              <Image src={'/pencil.svg'} alt="t" width={34} height={34} />
+              <Image src={'/t1.svg'} alt="t" width={24} height={24} />
+              <Image src={'/shapeTool.svg'} alt="t" width={34} height={34} />
+              <Image src={'/stickyNotes.svg'} alt="t" width={34} height={34} />
+              <Image src={'/fx.svg'} alt="t" width={24} height={24} />
+              <Image src={'/calculator.svg'} alt="t" width={34} height={34} />
+              <Image src={'/comments.svg'} alt="t" width={34} height={34} />
+              <Image src={'/uploadFile.svg'} alt="t" width={34} height={34} />
+              <Image src={'/library.svg'} alt="t" width={34} height={34} />
+            </div>
+            <div className={`absolute ${showModal ? 'block' : 'hidden'}`}>
+              <ModalsWrapper
+                tool={tool}
+                setTool={setTool}
+                setModalOpen={setShowModal}
+                measurements={measurements}
+              />
+            </div>
+            <div className="h-[527px] rounded-lg overflow-y-auto">
+              {uploadFileData.map((file, index) => (
+                <Draw
+                  key={`draw-${index}`}
+                  selectedTool={tool}
+                  scale={
+                    scaleData?.[`${index + 1}`] || {
+                      xScale: `1in=1in`,
+                      yScale: `1in=1in`,
+                      precision: '1',
+                    }
+                  }
+                  depth={depth}
+                  color={color}
+                  border={border}
+                  unit={unit * 1.5}
+                  uploadFileData={file}
+                  pageNumber={index + 1}
+                  handleScaleModal={(open) => setShowModal(open)}
+                  handleChangeMeasurements={(measurements) =>
+                    setMeasurements(measurements)
+                  }
+                />
+              ))}
+            </div>
+            <DrawTable />
+          </div>
+          {tool.selected === 'scale' && (
+            <ModalComponent open={showModal} setOpen={setShowModal}>
+              <ScaleModal
+                numOfPages={uploadFileData.length}
+                setModalOpen={setShowModal}
+              />
+            </ModalComponent>
+          )}
+        </section>
+      </>
+    </>
   );
 };
 

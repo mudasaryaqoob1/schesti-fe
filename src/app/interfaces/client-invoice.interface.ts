@@ -29,6 +29,13 @@ export type G7State = {
 
 export type IClientInvoice = {
   associatedComapny: string;
+  applicationNo?: string;
+  invoiceName?: string;
+  toOwner?: string;
+  project?: string;
+  address?: string;
+  distributionTo?: string;
+  action?: string;
   _id: string;
   createdAt: string;
   updatedAt: string;

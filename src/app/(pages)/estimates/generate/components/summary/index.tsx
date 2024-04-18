@@ -2,25 +2,27 @@
 import { Dispatch, SetStateAction, useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useSearchParams } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
+import { PercentageOutlined } from '@ant-design/icons';
+
+import EstimatesTable from '../estimatesTable';
 import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
-import { useRouter } from 'next/navigation';
-// import { headings } from './data';
 import Description from '@/app/component/description/index';
 import MinDesc from '@/app/component/description/minDesc';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import { selectGeneratedEstimateDetail } from '@/redux/estimate/estimateRequestSelector';
-import EstimatesTable from '../estimatesTable';
-// import { PDFDownloadLink } from '@react-pdf/renderer';
-// import ClientPDF from '../clientPDF';
 import { InputComponent } from '@/app/component/customInput/Input';
 import { estimateRequestService } from '@/app/services/estimates.service';
 import { generateEstimateDetailAction } from '@/redux/estimate/estimateRequest.slice';
-import { useDispatch } from 'react-redux';
-import { toast } from 'react-toastify';
-import { PercentageOutlined } from '@ant-design/icons';
+import { formatNumberWithCommas } from '@/app/utils/helper';
+// import { PDFDownloadLink } from '@react-pdf/renderer';
+// import ClientPDF from '../clientPDF';
+// import { headings } from './data';
 interface Props {
   setPrevNext: Dispatch<SetStateAction<number>>;
 }
@@ -60,9 +62,7 @@ const Summary = ({ setPrevNext }: Props) => {
     estimateScope: Object[];
   }>();
   const [isLoading, setIsLoading] = useState(false);
-  const [subTotalcostRecord, setSubTotalCostRecord] = useState<number | string>(
-    0
-  );
+  const [subTotalcostRecord, setSubTotalCostRecord] = useState<number>(0);
   const [subcontractorCosts, setSubcontractorCosts] = useState<any>({});
   const [totalCostRecord, setTotalCostRecord] = useState<number>(0);
   const [estimatesRecords, setEstimatesRecords] = useState([]);
@@ -136,19 +136,6 @@ const Summary = ({ setPrevNext }: Props) => {
     return (percentage * value) / 100;
   };
 
-  // const getPercentageOnMaterialTax = (value: number) => {
-  //   if (value > 0) {
-  //     const updatedTotalCostRecord =
-  //       initialTotalMaterialBaseCost -
-  //       (value * initialTotalMaterialBaseCost) / 100;
-  //     if (!isNaN(updatedTotalCostRecord)) {
-  //       setTotalMaterialBaseCost(Number(updatedTotalCostRecord.toFixed(2)));
-  //     }
-  //   } else {
-  //     setTotalMaterialBaseCost(initialTotalMaterialBaseCost);
-  //   }
-  // };
-
   const generateBidHandler = async () => {
     setIsLoading(true);
     let obj = {
@@ -168,7 +155,6 @@ const Summary = ({ setPrevNext }: Props) => {
       estimateRequestIdDetail: estimateId,
       estimateScope: generateEstimateDetail.estimateScope,
     };
-
     dispatch(generateEstimateDetailAction(obj));
 
     let result = await estimateRequestService.httpAddGeneratedEstimate(obj);
@@ -202,6 +188,13 @@ const Summary = ({ setPrevNext }: Props) => {
       })
     );
   };
+
+  let totalSum = 0;
+  for (const key in subcontractorCosts) {
+    if (Object.prototype.hasOwnProperty.call(subcontractorCosts, key)) {
+      totalSum += subcontractorCosts[key];
+    }
+  }
 
   return (
     <div>
@@ -406,7 +399,9 @@ const Summary = ({ setPrevNext }: Props) => {
                         />
                       </div>
                       <QuaternaryHeading
-                        title={`Total Cost: $${estimate.totalCostForTitle}`}
+                        title={`Total Cost: $${formatNumberWithCommas(
+                          estimate.totalCostForTitle
+                        )}`}
                         className="font-semibold"
                       />
                     </div>
@@ -423,18 +418,28 @@ const Summary = ({ setPrevNext }: Props) => {
         <div className="flex justify-end">
           <div className="flex w-full justify-between flex-col gap-2 max-w-lg my-4">
             <div className="flex items-center justify-between">
-              <MinDesc title="Sub Total Cost" className="text-darkgrayish" />
+              <MinDesc
+                title="Total Sub-Contractor Amount"
+                className="text-darkgrayish"
+              />
               <Description
-                title={`$${subTotalcostRecord}`}
+                title={`$${formatNumberWithCommas(totalSum)}`}
                 className="font-medium"
               />
             </div>
+            <div className="flex items-center justify-between">
+              <MinDesc title="Sub Total Cost" className="text-darkgrayish" />
+              <Description
+                title={`$${formatNumberWithCommas(subTotalcostRecord)}`}
+                className="font-medium"
+              />
+            </div>
+
             <div className="grid grid-cols-3 items-center">
               <MinDesc title="Material Tax %" className="text-darkgrayish" />
               <MinDesc
-                title={`$${calculatePercentqge(
-                  totalMaterialBaseCost,
-                  materialPercentage
+                title={`${formatNumberWithCommas(
+                  calculatePercentqge(totalMaterialBaseCost, materialPercentage)
                 )}`}
                 className="text-darkgrayish"
               />
@@ -457,13 +462,16 @@ const Summary = ({ setPrevNext }: Props) => {
                 className="text-darkgrayish"
               />
               <MinDesc
-                title={`$${(
+                title={`$${formatNumberWithCommas(
                   calculatePercentqge(
                     subTotalcostRecord,
                     overHeadProfitPercentage
                   ) +
-                  calculatePercentqge(totalMaterialBaseCost, materialPercentage)
-                ).toFixed(2)}`}
+                    calculatePercentqge(
+                      totalMaterialBaseCost,
+                      materialPercentage
+                    )
+                )}`}
                 className="text-darkgrayish"
               />
               <InputComponent
@@ -482,17 +490,17 @@ const Summary = ({ setPrevNext }: Props) => {
             <div className="grid grid-cols-3 items-center">
               <MinDesc title="Bond Fee %" className="text-darkgrayish" />
               <MinDesc
-                title={`$${(
+                title={`$${formatNumberWithCommas(
                   calculatePercentqge(subTotalcostRecord, bondFeePercentage) +
-                  calculatePercentqge(
-                    totalMaterialBaseCost,
-                    materialPercentage
-                  ) +
-                  calculatePercentqge(
-                    subTotalcostRecord,
-                    overHeadProfitPercentage
-                  )
-                ).toFixed(2)}`}
+                    calculatePercentqge(
+                      totalMaterialBaseCost,
+                      materialPercentage
+                    ) +
+                    calculatePercentqge(
+                      subTotalcostRecord,
+                      overHeadProfitPercentage
+                    )
+                )}`}
                 className="text-darkgrayish"
               />
               <InputComponent
@@ -516,27 +524,30 @@ const Summary = ({ setPrevNext }: Props) => {
           <div className="flex items-center w-full justify-between max-w-lg">
             <QuaternaryHeading title="Total Bid" className="font-semibold" />
             <Description
-              title={`$${(
+              title={`$${formatNumberWithCommas(
                 totalCostRecord +
-                calculatePercentqge(totalMaterialBaseCost, materialPercentage) +
-                (calculatePercentqge(
-                  subTotalcostRecord,
-                  overHeadProfitPercentage
-                ) +
-                  calculatePercentqge(
-                    totalMaterialBaseCost,
-                    materialPercentage
-                  )) +
-                (calculatePercentqge(subTotalcostRecord, bondFeePercentage) +
                   calculatePercentqge(
                     totalMaterialBaseCost,
                     materialPercentage
                   ) +
-                  calculatePercentqge(
+                  (calculatePercentqge(
                     subTotalcostRecord,
                     overHeadProfitPercentage
-                  ))
-              ).toFixed(2)}`}
+                  ) +
+                    calculatePercentqge(
+                      totalMaterialBaseCost,
+                      materialPercentage
+                    )) +
+                  (calculatePercentqge(subTotalcostRecord, bondFeePercentage) +
+                    calculatePercentqge(
+                      totalMaterialBaseCost,
+                      materialPercentage
+                    ) +
+                    calculatePercentqge(
+                      subTotalcostRecord,
+                      overHeadProfitPercentage
+                    ))
+              )}`}
               className="font-semibold"
             />
           </div>

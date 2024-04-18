@@ -3,6 +3,7 @@ import Button from '@/app/component/customButton/button';
 import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
 import { authService } from '@/app/services/auth.service';
+import { getPlanFeatureKeyByValue } from '@/app/utils/plans.utils';
 import {
   tertiaryHeading,
   quinaryHeading,
@@ -115,7 +116,7 @@ const SinglePlan = (props: Props) => {
                     `${quinaryHeading} text-ebonyGray leading-normal`
                   )}
                 >
-                  {benefit}
+                  {getPlanFeatureKeyByValue(benefit)}
                 </label>
               </div>
             </Fragment>

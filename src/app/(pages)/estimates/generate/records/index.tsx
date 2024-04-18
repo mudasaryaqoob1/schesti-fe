@@ -1,16 +1,8 @@
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import type { ColumnsType } from 'antd/es/table';
 import { Dropdown, Table } from 'antd';
 import type { MenuProps } from 'antd';
-import { useSelector } from 'react-redux';
 import { useRouter } from 'next/navigation';
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
 // import NoData from '@/app/component/noData';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import Image from 'next/image';
@@ -18,25 +10,17 @@ import { estimateRequestService } from '@/app/services/estimates.service';
 
 interface DataType {
   key: React.Key;
-  ProjectName: string;
-  ClientName: string;
-  Number: string;
-  SalePerson: string;
-  Estimator: string;
-  Status: string;
-  Action: string;
+  projectName: string;
+  clientName: string;
+  salePerson: string;
+  estimator: string;
+  totalCost: string;
+  action: string;
 }
 
 const EstimateRequestTable: React.FC = () => {
   const router = useRouter();
-  const token = useSelector(selectToken);
   const [loading, setLoading] = useState(false);
-
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
 
   const [generatedEstimates, setGeneratedEstimates] = useState([]);
 
@@ -52,10 +36,13 @@ const EstimateRequestTable: React.FC = () => {
           _id: estimate?._id,
           projectName: estimate?.estimateRequestIdDetail?.projectName,
           clientName: estimate?.estimateRequestIdDetail?.clientName,
-          salePerson: `${estimate?.estimateRequestIdDetail?.salePerson?.firstName ?? ''} ${estimate?.estimateRequestIdDetail?.salePerson?.lastName ?? ''}`,
-          estimator: `${estimate?.estimateRequestIdDetail?.estimator?.firstName ?? ''} ${estimate?.estimateRequestIdDetail?.estimator?.lastName ?? ''}`,
+          salePerson: `${
+            estimate?.estimateRequestIdDetail?.salePerson?.firstName ?? ''
+          } ${estimate?.estimateRequestIdDetail?.salePerson?.lastName ?? ''}`,
+          estimator: `${
+            estimate?.estimateRequestIdDetail?.estimator?.firstName ?? ''
+          } ${estimate?.estimateRequestIdDetail?.estimator?.lastName ?? ''}`,
           totalCost: estimate?.totalCost,
-          status: estimate?.status,
           estimateRequestIdDetail: estimate.estimateRequestIdDetail?._id,
         };
       }
@@ -73,10 +60,10 @@ const EstimateRequestTable: React.FC = () => {
       key: 'viewDetail',
       label: 'View Detail',
     },
-    {
-      key: 'createSchedule',
-      label: 'Create Schedule',
-    },
+    // {
+    //   key: 'createSchedule',
+    //   label: 'Create Schedule',
+    // },
     {
       key: 'deleteEstimate',
       label: <p>Delete</p>,
@@ -120,10 +107,10 @@ const EstimateRequestTable: React.FC = () => {
       title: 'Total Cost',
       dataIndex: 'totalCost',
     },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-    },
+    // {
+    //   title: 'Status',
+    //   dataIndex: 'status',
+    // },
     {
       title: 'Action',
       dataIndex: 'action',

@@ -21,6 +21,7 @@ export interface IInvoice {
   profitAndOverhead: number;
   totalPayable: number;
   associatedComapny: string;
+  action?: string;
   _id: string;
   __v: number;
 

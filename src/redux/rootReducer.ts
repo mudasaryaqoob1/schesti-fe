@@ -4,6 +4,7 @@ import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import authReducer from './authSlices/authSlice';
 import companyClientReducer from './company/clientSlice/companyClient.slice';
+import companyPartnerReducer from './company/partnerSlice/companyPartner.slice';
 import subContractorReducer from './company/subcontractorSlice/companySubcontractor.slice';
 import estimateRequestSlice from './estimate/estimateRequest.slice';
 import supportTicketsSlice from './supportTickets/supportTickets.slice';
@@ -14,6 +15,7 @@ import pricingPlanReducer from './pricingPlanSlice/pricingPlanSlice';
 import companySetupCategoryReducer from './company/settingSlices/categories/category.slice';
 import companySetupSubcategoryReducer from './company/settingSlices/categories/subcategory.slice';
 import materialsReducer from './company/settingSlices/materials.slice';
+import takeoffSummariesReducer from './takeoffSummaries/takeoffSummaries.slice';
 import invoiceReducer from './invoice/invoice.slice';
 import clientInvoiceReducer from './client-invoices/client-invoice.slice';
 // import scheduleReducer from './schedule/schedule.slice';
@@ -23,15 +25,17 @@ export type RootState = {
   auth: typeof authReducer;
   companyClient: any;
   companySubContractor: typeof subContractorReducer;
+  companyPartnerReducer: typeof companyPartnerReducer;
   estimates: any;
   supportTickets: any;
   takeoff: any;
   settingTargets: any;
   user: any;
-  pricingPlan: any;
+  pricingPlan: typeof pricingPlanReducer;
   companySetupCategory: typeof companySetupCategoryReducer;
   companySetupSubcategory: any;
   materials: any;
+  takeoffSummaries: any;
   invoices: typeof invoiceReducer;
   clientInvoices: typeof clientInvoiceReducer;
   meetings: typeof meetingReducer;
@@ -45,6 +49,7 @@ const persistConfig = {
 const rootReducer = combineReducers<RootState>({
   auth: authReducer,
   companyClient: companyClientReducer,
+  companyPartnerReducer : companyPartnerReducer,
   companySubContractor: subContractorReducer,
   estimates: estimateRequestSlice,
   supportTickets: supportTicketsSlice,
@@ -55,6 +60,7 @@ const rootReducer = combineReducers<RootState>({
   companySetupCategory: companySetupCategoryReducer,
   companySetupSubcategory: companySetupSubcategoryReducer,
   materials: materialsReducer,
+  takeoffSummaries: takeoffSummariesReducer,
   invoices: invoiceReducer,
   clientInvoices: clientInvoiceReducer,
   // schedule: scheduleReducer,

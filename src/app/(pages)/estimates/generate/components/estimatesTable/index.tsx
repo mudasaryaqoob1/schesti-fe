@@ -1,6 +1,7 @@
 import React from 'react';
 import { Table } from 'antd';
 import '../scopeStyle.css';
+import { formatNumberWithCommas } from '@/app/utils/helper';
 
 interface DataType {
   category?: string;
@@ -28,9 +29,10 @@ const calculateTotalCost = (record: DataType) => {
   let totalLabourHours = qtyWithWastage * unitLabourHour;
   let totalMeterialCost = unitMaterialCost * qtyWithWastage;
   let totalLabourCost = totalLabourHours * perHourLaborRate;
-  let totalMaterialCost = unitMaterialCost * qtyWithWastage;
-  let result = totalLabourCost * totalMeterialCost * totalMaterialCost;
-  return result.toFixed(2);
+  let unitEquipments = parseFloat(record.unitEquipments);
+  let totalEquipmentCost = unitEquipments * qtyWithWastage;
+  let result = totalLabourCost + totalMeterialCost + totalEquipmentCost;
+  return formatNumberWithCommas(result);
 };
 
 const confirmColumns: any = [
@@ -68,7 +70,7 @@ const confirmColumns: any = [
       let quantity = parseFloat(record.qty);
       let wastagePercentage = parseFloat(record.wastage);
       let result = quantity * (1 + wastagePercentage / 100);
-      return result.toFixed(2);
+      return formatNumberWithCommas(result);
     },
   },
   {
@@ -82,7 +84,7 @@ const confirmColumns: any = [
       let quantity = parseFloat(record.qty);
       let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
       let result = quantityWithWastage * unitLabourHour;
-      return result.toFixed(2);
+      return formatNumberWithCommas(result);
     },
   },
   {
@@ -90,8 +92,8 @@ const confirmColumns: any = [
     dataIndex: 'perHourLaborRate',
     align: 'center',
     width: 120,
-    render: (value : number) => {
-      return `$${value}`
+    render: (value: number) => {
+      return `$${value}`;
     },
   },
   {
@@ -107,7 +109,7 @@ const confirmColumns: any = [
       let perHourLaborRate = parseFloat(record.perHourLaborRate);
       let totalLabourHours = quantityWithWastage * unitLabourHour;
       let result = totalLabourHours * perHourLaborRate;
-      return `$${result.toFixed(2)}`;
+      return `$${formatNumberWithCommas(result)}`;
     },
   },
   {
@@ -115,8 +117,8 @@ const confirmColumns: any = [
     dataIndex: 'unitMaterialCost',
     align: 'center',
     width: 120,
-    render: (value : number) => {
-      return `$${value}`
+    render: (value: number) => {
+      return `$${value}`;
     },
   },
   {
@@ -130,7 +132,7 @@ const confirmColumns: any = [
       let wastagePercentage = parseFloat(record.wastage);
       let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
       let result = unitMaterialCost * quantityWithWastage;
-      return `$${result.toFixed(2)}`;
+      return `$${formatNumberWithCommas(result)}`;
     },
   },
   {
@@ -144,7 +146,7 @@ const confirmColumns: any = [
       let wastagePercentage = parseFloat(record.wastage);
       let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
       let result = unitEquipments * quantityWithWastage;
-      return `$${result.toFixed(2)}`;
+      return `$${formatNumberWithCommas(result)}`;
     },
   },
   {

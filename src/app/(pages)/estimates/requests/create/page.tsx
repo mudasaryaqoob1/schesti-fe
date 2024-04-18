@@ -1,17 +1,12 @@
 'use client';
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useLayoutEffect,
-} from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import * as Yup from 'yup';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
 import { toast } from 'react-toastify';
 import { Form, Formik } from 'formik';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 // module imports
 
@@ -29,10 +24,9 @@ import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interf
 import AwsS3 from '@/app/utils/S3Intergration';
 import { AppDispatch } from '@/redux/store';
 import { fetchUsers } from '@/redux/userSlice/user.thunk';
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
 import { byteConverter } from '@/app/utils/byteConverter';
 import { Upload, type UploadProps } from 'antd';
+import { withAuth } from '@/app/hoc/withAuth';
 
 const clientInfoSchema: any = Yup.object({
   clientName: Yup.string().required('Client is required!'),
@@ -83,13 +77,6 @@ const initialValues: IEstimateRequest = {
 const CreateEstimateRequest = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const token = useSelector(selectToken);
-
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
 
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -140,9 +127,8 @@ const CreateEstimateRequest = () => {
     // }
     else {
       setIsLoading(true);
-      toast.success('File Uploading...', {autoClose: 5})
+      toast.success('File Uploading...', { autoClose: 10 });
 
-      
       const drawingDocs = await uploadDocumentToS3Handler(drawingsDocuments);
       const takeOffDocs = await uploadDocumentToS3Handler(takeOffReports);
       const otherDocs = await uploadDocumentToS3Handler(otherDocuments);
@@ -162,7 +148,7 @@ const CreateEstimateRequest = () => {
               setIsLoading(false);
               if (resp.statusCode == 201) {
                 setIsLoading(false);
-                router.push('/estimates');
+                router.push('/estimates/requests');
               }
             })
             .catch((error: any) => {
@@ -290,7 +276,7 @@ const CreateEstimateRequest = () => {
   };
 
   return (
-    <section className="my-5 px-16">
+    <section className="my-5 px-16 ">
       <div className="flex justify-between flex-wrap items-center md:flex-nowrap">
         <TertiaryHeading title="Create Estimate Request" />
         <CustomWhiteButton
@@ -332,7 +318,7 @@ const CreateEstimateRequest = () => {
                 />
               </ModalComponent>
               <Form onSubmit={handleSubmit}>
-                <div className="p-5 mt-4 border border-silverGray rounded-lg shadow-quinarGentleDepth">
+                <div className="p-5 mt-4 border border-silverGray rounded-lg shadow-quinarGentleDepth bg-white">
                   <QuaternaryHeading
                     title="Client Information"
                     className="font-semibold"
@@ -369,7 +355,7 @@ const CreateEstimateRequest = () => {
                     />
                   </div>
                 </div>
-                <div className="p-5 my-4 border border-silverGray rounded-lg shadow-quinarGentleDepth">
+                <div className="p-5 my-4 border border-silverGray rounded-lg shadow-quinarGentleDepth bg-white">
                   <QuaternaryHeading
                     title="Project Details"
                     className="text-graphiteGray font-semibold"
@@ -415,7 +401,7 @@ const CreateEstimateRequest = () => {
                 </div>
 
                 {/* assignment */}
-                <div className="p-5 border-2 border-silverGray rounded-lg shadow-quinarGentleDepth">
+                <div className="p-5 border-2 border-silverGray rounded-lg shadow-quinarGentleDepth bg-white">
                   <QuaternaryHeading
                     title="Assignments"
                     className="text-graphiteGray font-semibold"
@@ -439,7 +425,7 @@ const CreateEstimateRequest = () => {
                   </div>
                 </div>
 
-                <div className=" border-2  border-silverGray  rounded-lg shadow-quinarGentleDepth mt-4 p-5">
+                <div className=" border-2  border-silverGray  rounded-lg shadow-quinarGentleDepth mt-4 p-5 bg-white">
                   <h3 className="my-4">Upload</h3>
                   <div className="grid lg:grid-cols-4 grid-cols-1 gap-4">
                     <div>
@@ -757,12 +743,12 @@ const CreateEstimateRequest = () => {
                   )}
                 </div>
                 {/* buttons */}
-                <div className="flex justify-end items-center gap-2 md:mt-12 mt-6 p-4 bg-white shadow-secondaryTwist">
+                <div className="flex justify-end items-center gap-2 md:mt-12 mt-6 p-4 shadow-secondaryTwist">
                   <div className="w-[116px]">
                     <CustomButton
                       className="!border-celestialGray shadow-scenarySubdued2 !text-graphiteGray !bg-snowWhite !px-5 !py-3 w-full"
                       text="Cancel"
-                      onClick={() => router.push('/estimates')}
+                      onClick={() => router.push('/estimates/requests')}
                     />
                   </div>
                   <div className="w-[116px]">
@@ -783,4 +769,4 @@ const CreateEstimateRequest = () => {
   );
 };
 
-export default CreateEstimateRequest;
+export default withAuth(CreateEstimateRequest);

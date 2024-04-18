@@ -262,7 +262,7 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
       };
     });
 
-  const extras: (ColumnType<ActivityItem> & {
+  const extras: (ColumnType<any> & {
     editable: boolean;
     hidden: boolean;
   })[] = [
@@ -322,7 +322,7 @@ export function ScheduleTable({ updateWbsScopeItems, wbs }: Props) {
     },
     {
       title: <PlusOutlined className="text-lg" onClick={showDrawer} />,
-            //@ts-ignore
+      //@ts-ignore
       hidden: false,
       render: () => null,
       editable: false,
@@ -742,8 +742,8 @@ function EditableCell({
               onChange={save}
               value={dayjs(record[dataIndex])}
               onBlur={save}
-               //@ts-ignore 
-                //@ts-nocheck
+              //@ts-ignore
+              //@ts-nocheck
               disabledDate={disabledDate}
               autoFocus
               defaultOpen

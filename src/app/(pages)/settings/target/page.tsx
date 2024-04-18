@@ -1,13 +1,11 @@
 'use client';
-import { useEffect, useLayoutEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useDispatch, useSelector } from 'react-redux';
 
 // module imports
 import { AppDispatch } from '@/redux/store';
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 import Button from '@/app/component/customButton/button';
@@ -25,6 +23,7 @@ import CreateTaget from './components/create';
 import EditTaget from './components/edit';
 import Image from 'next/image';
 import { ISettingTarget } from '@/app/interfaces/companyInterfaces/setting.interface';
+import { withAuth } from '@/app/hoc/withAuth';
 
 export interface DataType {
   price: string;
@@ -41,16 +40,8 @@ const TargetsTable = () => {
     undefined | Omit<ISettingTarget, 'year'>
   >();
 
-  const token = useSelector(selectToken);
-
   const settingTargetsData = useSelector(selectSettingTargets);
   const settingTargetsLoading = useSelector(selectSettingTargetsLoading);
-
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
 
   const fetchSettingTargetsHandler = useCallback(async () => {
     await dispatch(fetchSettingTargets({ page: 1, limit: 10 }));
@@ -158,4 +149,4 @@ const TargetsTable = () => {
   );
 };
 
-export default TargetsTable;
+export default withAuth(TargetsTable);

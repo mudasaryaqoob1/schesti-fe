@@ -1,7 +1,8 @@
 'use client';
 import Button from '@/app/component/customButton/button';
 import { useRouter } from 'next/navigation';
-import Pagination from '../../../../component/pagination';
+import Table from '@/app/component/table/takeoff';
+// import Pagination from '../../../../component/pagination';
 // import { takeoffRecords, takeoffRecordsHeadings } from '../../data';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
@@ -22,7 +23,8 @@ const Records = () => {
           onClick={() => router.push('/takeoff/upload')}
         />
       </div>
-      <Pagination />
+      <Table />
+      {/* <Pagination /> */}
     </div>
   );
 };
