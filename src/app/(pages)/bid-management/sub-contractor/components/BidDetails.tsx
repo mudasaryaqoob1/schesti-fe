@@ -235,7 +235,7 @@ export function BidDetails({ bid, selectedProjectSavedBid, setSelectedProjectSav
           <div className="bg-[#FCFAFF] mt-3 rounded-md  p-3 border border-[#EBEAEC]">
             <div className="flex justify-between">
               <div className="flex mt-1 space-x-2">
-                <Avatar size={24} src={bid.user.companyLogo}>
+                <Avatar size={24} src={bid.user?.avatar || bid.user?.companyLogo}>
                   {bid.user.name[0]}
                 </Avatar>
 

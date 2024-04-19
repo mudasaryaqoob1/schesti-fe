@@ -20,6 +20,7 @@ import ModalComponent from '@/app/component/modal';
 
 type Props = {
   projectId: string;
+  isProjectDetailsPage?: boolean;
   isProjectOwner: boolean;
   onSuccess: (_rfi: IRFI) => void;
 };
@@ -29,7 +30,7 @@ const ValidationSchema = Yup.object().shape({
   type: Yup.string().required('Type is required'),
   file: Yup.mixed(),
 });
-export function CreateRFI({ onSuccess, projectId, isProjectOwner }: Props) {
+export function CreateRFI({ onSuccess, projectId, isProjectOwner, isProjectDetailsPage }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [showRfiModal, setShowRfiModal] = useState(false);
   useClickAway(() => {
@@ -91,9 +92,7 @@ export function CreateRFI({ onSuccess, projectId, isProjectOwner }: Props) {
   return (
     <div
       ref={ref}
-      className="cursor-pointer flex items-center space-x-1
-        relative
-                "
+      className="cursor-pointer flex items-center space-x-1 relative"
       onClick={(e) => {
         e.stopPropagation();
         e.preventDefault();
@@ -105,7 +104,7 @@ export function CreateRFI({ onSuccess, projectId, isProjectOwner }: Props) {
       ) : (
         <CustomButton
           text="Send an RFI"
-          className="!bg-[#F9F5FF] !text-[#7138DF]"
+          className={`${isProjectDetailsPage ? '': '!bg-[#F9F5FF] !text-[#7138DF]'}`}
         />
       )}
       <ModalComponent

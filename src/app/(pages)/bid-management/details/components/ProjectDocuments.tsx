@@ -71,7 +71,7 @@ export function ProjectDocuments(props: IProps) {
                 </p>
               </div>
               <Image
-                src={'/menuIcon.svg'}
+                src={'/download-icon.svg'}
                 width={16}
                 height={16}
                 alt="close"

@@ -24,7 +24,7 @@ const DOCUMENTS = 'Documents';
 const RFI_CENTER = 'RFI Center';
 
 function OwnerProjectDetailsPage() {
-    const params = useParams();
+    const params: any = useParams();
     const { projectId } = params;
 
     const [activeTab, setActiveTab] = useState(SUMMARY);
@@ -134,7 +134,7 @@ function OwnerProjectDetailsPage() {
       {activeTab === BIDDING_TEAM ? <ProjectBiddingTeam projectData={projectData}/> : null}
 
       {activeTab === DOCUMENTS ? <ProjectDocuments projectData={projectData}/> : null}
-      {activeTab === RFI_CENTER ? <ProjectRFICenter /> : null}
+      {activeTab === RFI_CENTER ? <ProjectRFICenter projectId={projectId}/> : null}
     </section>
   );
 }

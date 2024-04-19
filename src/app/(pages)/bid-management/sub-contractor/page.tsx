@@ -226,11 +226,12 @@ function BidManagementSubContractorPage() {
         <div className="grid grid-cols-12 gap-3">
           <div className={`${selectedBid ? 'col-span-8' : 'col-span-12 '}`}>
             <div className="my-3">
-              <SenaryHeading
-                title="Invited"
-                className="text-[#344054]  font-semibold text-[20px] leading-7"
-              />
-
+              {size(currentInvitedProjects) > 0 && (
+                <SenaryHeading
+                  title="Invited"
+                  className="text-[#344054]  font-semibold text-[20px] leading-7"
+                />
+              )}
               {invitedUserProjectsQuery.isLoading ? (
                 <Skeleton />
               ) : (
