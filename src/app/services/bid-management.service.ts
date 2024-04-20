@@ -4,6 +4,7 @@ import {
   IBidManagement,
   IBidManagementProjectTeamMember,
   IGetSavedUserBid,
+  IProjectBiddingResponse,
   ISaveUserBid,
   IUpdateUserBid,
 } from '../interfaces/bid-management/bid-management.interface';
@@ -91,6 +92,10 @@ class BidManagementService extends HttpService {
     IResponseInterface<{ project: ISaveUserBid }>
   > => this.post(`${this.prefix}/update-user-bid`, data);
 
+  httpUpdateProjectStatus = (projectId: string, status: string): Promise<IResponseInterface<{
+    updatedBid: IBidManagement
+  }>> => this.put(`${this.prefix}/update-status`, { status, projectId });
+
   httpGetUserSavedBids = (params: IGetSavedUserBid): Promise<
     IResponseInterface<{ savedBids: ISaveUserBid }>
   > => this.get(`${this.prefix}/get-user-bids?page=${params.page}&limit=${params.limit}&status=${params.status}`);
@@ -106,6 +111,8 @@ class BidManagementService extends HttpService {
   }
 
   httpGetProjectActivities = (projectId: string): Promise<IResponseInterface<{ bidsActivities: IBidActivity[] }>> => this.get(`${this.prefix}/get-activities/${projectId}`);
+
+  httpGetProjectBiddings = (projectId: string): Promise<IResponseInterface<IProjectBiddingResponse>> => this.get(`${this.prefix}/project-bidding/${projectId}`);
 }
 
 export const bidManagementService = new BidManagementService();

@@ -1,11 +1,11 @@
-import { DownOutlined } from '@ant-design/icons';
+import { DownOutlined, LoadingOutlined } from '@ant-design/icons';
 
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { useQuery } from 'react-query';
 import { bidManagementService } from '@/app/services/bid-management.service';
-import { Skeleton } from 'antd';
+import { Skeleton, Spin } from 'antd';
 import momentTimezone from 'moment-timezone';
 import { getTimezoneFromCountryAndState } from '@/app/utils/date.utils';
 import { useDispatch, useSelector } from 'react-redux';
@@ -29,6 +29,8 @@ type Props = {
 export function ProjectIntro({ id }: Props) {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const router = useRouter();
 
   const dispatch = useDispatch<AppDispatch>();
@@ -59,6 +61,33 @@ export function ProjectIntro({ id }: Props) {
   if (query.isLoading) {
     return <Skeleton />;
   }
+
+
+  function updateBidStatus(status: string) {
+    // Call the API to update the bid status
+    setIsLoading(true);
+    bidManagementService.httpUpdateProjectStatus(id, status)
+      .then(response => {
+        // Handle the successful response
+        toast.success('Bid status updated successfully');
+        // Update the bid status in the Redux store
+        if (response.data && bid) {
+          dispatch(bidManagementOwnerActions.setProjectAction({
+            ...bid,
+            status: response.data.updatedBid.status
+          }));
+          toggleStatusModal();
+        }
+      })
+      .catch(error => {
+        // Handle the error response
+        const err = error as AxiosError<{ message: string }>;
+        toast.error(err.response?.data.message);
+      }).finally(() => {
+        setIsLoading(false);
+      });
+  }
+
 
   function toggleStatusModal() {
     setShowStatusModal(!showStatusModal);
@@ -94,16 +123,23 @@ export function ProjectIntro({ id }: Props) {
               title={bid ? bid.status : ''}
               className="text-[#B54708] capitalize text-[14px] font-medium leading-6"
             />
-            <DownOutlined className="text-xs text-[#B54708]" />
-
+            {
+              isLoading ? <Spin indicator={<LoadingOutlined />} size='small' />
+                :
+                <DownOutlined className="text-xs text-[#B54708]" />
+            }
             {showStatusModal ? <div className='space-y-1 py-1 cursor-default w-64 border rounded-lg shadow-md right-5 bg-white z-10 top-9 absolute'
               onClick={e => {
                 e.preventDefault();
                 e.stopPropagation();
               }}
             >
-              {['draft', 'active', 'archived',].map(status => {
-                return <p key={status} className={`text-[#344054] hover:bg-gray-50 px-2 py-1 cursor-pointer rounded-lg  font-normal capitalize text-medium leading-6 ${bid && bid.status === status ? "bg-gray-100" : ""}`}>
+              {['active', 'archived',].map(status => {
+                return <p key={status} className={`text-[#344054] hover:bg-gray-50 px-2 py-1 cursor-pointer rounded-lg  font-normal capitalize text-medium leading-6 ${bid && bid.status === status ? "bg-gray-100" : ""}`}
+                  onClick={() => {
+                    updateBidStatus(status);
+                  }}
+                >
                   {status}
                 </p>
               })}

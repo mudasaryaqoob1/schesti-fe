@@ -195,8 +195,7 @@ function Page() {
     }
     return (
       project.projectName.toLowerCase().includes(search.toLowerCase()) ||
-      project.city.toLowerCase().includes(search.toLowerCase()) ||
-      project.stage.toLowerCase().includes(search.toLowerCase())
+      project.city.toLowerCase().includes(search.toLowerCase())
     );
   });
   return (

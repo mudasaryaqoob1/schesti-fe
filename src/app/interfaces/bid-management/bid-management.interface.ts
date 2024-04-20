@@ -1,6 +1,14 @@
 import { ITrade } from '../trade.interface';
 import { IUserInterface } from '../user.interface';
 
+
+interface IBidDocument {
+  url: string;
+  extension: string;
+  type: string;
+  name: string;
+}
+
 export interface IBidManagement {
   user: string | IUserInterface;
   projectName: string;
@@ -24,12 +32,7 @@ export interface IBidManagement {
   specialInstructions: string;
   teamMembers: IBidManagementProjectTeamMember[];
   selectedTrades: ITrade[] | string[];
-  projectFiles: {
-    url: string;
-    extension: string;
-    type: string;
-    name: string;
-  }[];
+  projectFiles: IBidDocument[];
   selectedTeamMembers: string[];
   status: 'draft' | 'expired' | 'active' | 'archived' | 'bid closed';
   _id: string;
@@ -91,4 +94,36 @@ export interface IBidActivity {
   status: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface IBidProjectScope {
+  description: string
+  quantity: string
+  price: string
+  _id: string
+}
+
+export interface IProjectBidding {
+  file?: IBidDocument
+  _id: string
+  user: IUserInterface | string;
+  projectId: IBidManagement
+  bidTrades: string[]
+  price: number
+  projectDuration: number
+  projectDurationType: string
+  additionalDetails: string
+  priceExpiryDuration: number
+  increaseInPercentage: number
+  projectScopes: IBidProjectScope[]
+  createdAt: string
+  updatedAt: string
+  __v: number
+}
+export interface IProjectBiddingResponse {
+  projectBiddings: IProjectBidding[]
+  tradeCounts: {
+    trade: string;
+    proposalCount: number;
+  }[]
 }
