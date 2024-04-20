@@ -129,7 +129,6 @@ const GeneralSetting = () => {
             onSubmit={submitHandler}
           >
             {({ handleSubmit, errors, setFieldValue, values }) => {
-              console.log(errors);
               return (
                 <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
                   <div

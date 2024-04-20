@@ -45,6 +45,18 @@ export const OtherRoutes = {
   Dashboard: '/dashboard',
 };
 
+
+export const Plans: { [key: string]: string } = {
+  'Bid Management': "/bid-management",
+  "CRM": '/crm',
+  "Quantity-Takeoff": '/takeoff',
+  "Estimates": "/estimates",
+  "Financial": "/financial",
+  "Schedule": "/schedule",
+  "Meetings": "/meeting",
+  "Networking": "/networking",
+};
+
 export const planFeatureOptions = [
   {
     label: 'Bid Management',
@@ -136,19 +148,15 @@ export const planFeatureOptions = [
   },
 ];
 
+
+
 export function getPlanFeatureKeyByValue(
   value: string,
-  options = planFeatureOptions
+  options = Plans
 ) {
-  for (const option of options) {
-    if (option.options) {
-      for (const subOption of option.options) {
-        if (subOption.value === value) {
-          return `${option.title} - ${subOption.label}`;
-        }
-      }
-    } else if (option.value === value) {
-      return option.label;
+  for (const key in options) {
+    if (options[key] === value) {
+      return key;
     }
   }
   return '';

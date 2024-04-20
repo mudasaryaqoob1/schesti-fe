@@ -52,6 +52,19 @@ export function G702Component({
   const p9Total =
     p3Total - p7Total /** Point no 7 value will be placed here*/ - p8Total;
 
+
+  // calculate point no 7 values based on selected phase
+  const previousP5b = previousPhaseState ? Number(sumColumns(previousPhaseState.data, 5)) : 0;
+
+  const previousResultOf_P5b = previousPhaseState ? previousP5b * (previousPhaseState.p5bPercentage / 100) : 0;
+
+  const previousP5Total = previousPhaseState ? Number(sumColumns(previousPhaseState.data, 9)) + previousResultOf_P5b : 0;
+
+  const previousP7Total =
+    Number(previousPhaseState ? sumColumns(previousPhaseState.data, 6) : 0) -
+    previousP5Total;
+
+
   return (
     <div>
       <div>
@@ -260,7 +273,7 @@ export function G702Component({
                 />
 
                 <div className="px-2  py-1 border border-gray-300 outline-none">
-                  $ {p7Total.toFixed(2)}
+                  $ {previousP7Total.toFixed(2)}
                 </div>
               </div>
 

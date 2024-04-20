@@ -69,6 +69,15 @@ class UserService extends HttpService {
   httpDeleteClient = (clientId: string): Promise<IResponseInterface> =>
     this.post(`${this.companyPrefix}/deleteClient/${clientId}`);
 
+  httpChangeClientStatus = (clientDetail: {
+    clientId: string;
+    status: boolean;
+  }): Promise<IResponseInterface> =>
+    this.post(
+      `${this.companyPrefix}/changeClientStatus/${clientDetail.clientId}`,
+      { status: clientDetail.status }
+    );
+
   httpDeleteUser = (userId: string): Promise<IResponseInterface> =>
     this.delete(`${this.userPrefix}/delete/${userId}`);
 
@@ -106,7 +115,7 @@ class UserService extends HttpService {
   httpDeletePartner = (partnerId: string): Promise<IResponseInterface> =>
     this.post(`${this.partnerPrefix}/deletePartner/${partnerId}`);
 
-    httpFindCompanyPartnerDetail = (
+  httpFindCompanyPartnerDetail = (
     id: string
   ): Promise<IResponseInterface<{ partner: IPartner }>> =>
     this.get(`${this.partnerPrefix}/partner/${id}`);

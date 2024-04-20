@@ -104,6 +104,24 @@ export const deleteCompanyClient = createAsyncThunk(
   }
 );
 
+export const changeCompanyClientStatus = createAsyncThunk(
+  'company/changeClientStatus',
+  async (
+    clientDetail: { clientId: string; status: boolean },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await userService.httpChangeClientStatus(clientDetail);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data ||
+          'An error occurred while fetching the feed records'
+      );
+    }
+  }
+);
+
 export const deleteCompanyPartner = createAsyncThunk(
   'company/deletePartner',
   async (partnerId: string, { rejectWithValue }) => {

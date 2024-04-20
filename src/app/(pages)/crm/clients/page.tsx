@@ -16,6 +16,7 @@ import Button from '@/app/component/customButton/button';
 import {
   deleteCompanyClient,
   fetchCompanyClients,
+  changeCompanyClientStatus,
 } from '@/redux/company/company.thunk';
 import Image from 'next/image';
 import { SearchOutlined } from '@ant-design/icons';
@@ -37,14 +38,37 @@ interface DataType {
   action: string;
 }
 
-const items: MenuProps['items'] = [
+// const items: MenuProps['items'] = [
+//   {
+//     key: 'createEstimateRequest',
+//     label: <p>Create Estimate Request</p>,
+//   },
+//   {
+//     key: 'createNewInvoice',
+//     label: <p>Create New Invoice</p>,
+//   },
+//   {
+//     key: 'createSchedule',
+//     label: <p>Create Schedule</p>,
+//   },
+//   {
+//     key: 'editClientDetail',
+//     label: <p>Edit Client Details</p>,
+//   },
+//   {
+//     key: 'deleteClient',
+//     label: <p>Delete</p>,
+//   },
+// ];
+
+const activeClientMenuItems: MenuProps['items'] = [
   {
     key: 'createEstimateRequest',
-    label: <p>Create estimate request</p>,
+    label: <p>Create Estimate Request</p>,
   },
   {
     key: 'createNewInvoice',
-    label: <p>Create new invoice</p>,
+    label: <p>Create New Invoice</p>,
   },
   {
     key: 'createSchedule',
@@ -52,11 +76,22 @@ const items: MenuProps['items'] = [
   },
   {
     key: 'editClientDetail',
-    label: <p>Edit client details</p>,
+    label: <p>Edit Client Details</p>,
   },
   {
     key: 'deleteClient',
     label: <p>Delete</p>,
+  },
+  {
+    key: 'inActiveClient',
+    label: <p>In Active</p>,
+  },
+];
+
+const inActiveClientMenuItems: MenuProps['items'] = [
+  {
+    key: 'activeClient',
+    label: <p>Active</p>,
   },
 ];
 
@@ -72,13 +107,15 @@ const ClientTable = () => {
 
   const memoizedSetPerson = useCallback(async () => {
     await dispatch(fetchCompanyClients({ page: 1, limit: 10 }));
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     memoizedSetPerson();
-  }, [memoizedSetPerson]);
+  }, []);
 
   const handleDropdownItemClick = async (key: string, client: any) => {
+    console.log(key , 'keykeykeykey');
+    
     if (key === 'createEstimateRequest') {
       router.push(`/estimates/requests/create`);
     } else if (key === 'createNewInvoice') {
@@ -90,6 +127,12 @@ const ClientTable = () => {
       setShowDeleteModal(true);
     } else if (key == 'editClientDetail') {
       router.push(`${Routes.CRM.Clients}/edit/${client._id}`);
+    } else if (key == 'activeClient') {
+      await dispatch(changeCompanyClientStatus({ clientId: client._id, status: true }));
+      memoizedSetPerson();
+    } else if (key === 'inActiveClient') {
+      await dispatch(changeCompanyClientStatus({ clientId: client._id, status: false }));
+      memoizedSetPerson();
     }
   };
 
@@ -118,37 +161,90 @@ const ClientTable = () => {
     {
       title: 'Status',
       dataIndex: 'status',
-      render: () => (
-        <p className="bg-lime-100 w-max text-[#027A48] bg-[#ECFDF3] px-2 py-1 rounded-full">
-          Active
-        </p>
-      ),
+      render: (_, value) => {
+        if (value.status) {
+          return (
+            <p className="bg-lime-100 w-max text-[#027A48] bg-[#ECFDF3] px-2 py-1 rounded-full">
+              Active
+            </p>
+          );
+        } else {
+          return (<p className="bg-lime-100 w-max text-[#b91c1c] bg-[#fecaca] px-2 py-1 rounded-full">
+          In Active
+        </p>)
+        }
+      },
     },
     {
       title: 'Action',
       dataIndex: 'action',
       align: 'center',
       key: 'action',
-      render: (text, record) => (
-        <Dropdown
-          menu={{
-            items,
-            onClick: (event) => {
-              const { key } = event;
-              handleDropdownItemClick(key, record);
-            },
-          }}
-          placement="bottomRight"
-        >
-          <Image
-            src={'/menuIcon.svg'}
-            alt="logo white icon"
-            width={20}
-            height={20}
-            className="active:scale-105 cursor-pointer"
-          />
-        </Dropdown>
-      ),
+      // render: (text, record) => (
+      //   <Dropdown
+      //     menu={{
+      //       items,
+      //       onClick: (event) => {
+      //         const { key } = event;
+      //         handleDropdownItemClick(key, record);
+      //       },
+      //     }}
+      //     placement="bottomRight"
+      //   >
+      //     <Image
+      //       src={'/menuIcon.svg'}
+      //       alt="logo white icon"
+      //       width={20}
+      //       height={20}
+      //       className="active:scale-105 cursor-pointer"
+      //     />
+      //   </Dropdown>
+      // ),
+      render: (text, record: any) => {
+        if (record?.status) {
+          return (
+            <Dropdown
+              menu={{
+                items: activeClientMenuItems,
+                onClick: (event) => {
+                  const { key } = event;
+                  handleDropdownItemClick(key, record);
+                },
+              }}
+              placement="bottomRight"
+            >
+              <Image
+                src={'/menuIcon.svg'}
+                alt="logo white icon"
+                width={20}
+                height={20}
+                className="active:scale-105 cursor-pointer"
+              />
+            </Dropdown>
+          );
+        } else {
+          return (
+            <Dropdown
+              menu={{
+                items: inActiveClientMenuItems,
+                onClick: (event) => {
+                  const { key } = event;
+                  handleDropdownItemClick(key, record);
+                },
+              }}
+              placement="bottomRight"
+            >
+              <Image
+                src={'/menuIcon.svg'}
+                alt="logo white icon"
+                width={20}
+                height={20}
+                className="active:scale-105 cursor-pointer"
+              />
+            </Dropdown>
+          );
+        }
+      },
     },
   ];
   const filteredClients = clientsData
@@ -159,7 +255,9 @@ const ClientTable = () => {
         return (
           client.firstName.toLowerCase().includes(search.toLowerCase()) ||
           client.lastName.toLowerCase().includes(search.toLowerCase()) ||
-          client.email?.includes(search)
+          client.email?.includes(search) || 
+          client.phone?.includes(search) || 
+          client.address?.includes(search)
         );
       })
     : [];
