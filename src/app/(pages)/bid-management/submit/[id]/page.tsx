@@ -183,6 +183,9 @@ function ContractorSubmitBidPage() {
   function deleteScope(index: number) {
     const newScopes = formik.values.projectScopes.filter((_, i) => i !== index);
     formik.setFieldValue('projectScopes', newScopes);
+    if (newScopes.length === 0) {
+      setShowProjectScope(false);
+    }
   }
 
   function updateScope(index: number, key: string, value: string | number) {
@@ -333,11 +336,11 @@ function ContractorSubmitBidPage() {
     }
   }
 
-  function toggleProjectScope() {
+  function openProjectScope() {
     if (formik.values.projectScopes.length === 0) {
       addNewScope();
     }
-    setShowProjectScope(!showProjectScope)
+    setShowProjectScope(true);
   }
 
   if (query.isLoading) {
@@ -537,7 +540,7 @@ function ContractorSubmitBidPage() {
             </div>
             <div className="flex-1">
               <InputComponent
-                label="How much you want to increase"
+                label="How much you want to increase?"
                 placeholder="Increase in percentage"
                 name="increaseInPercentage"
                 type="number"
@@ -650,7 +653,7 @@ function ContractorSubmitBidPage() {
 
           <div
             className="flex w-fit items-center space-x-4 cursor-pointer "
-            onClick={toggleProjectScope}
+            onClick={openProjectScope}
           >
             <p className="text-[#344054] text-[28px] leading-8 font-normal ">
               Add Project Scope
