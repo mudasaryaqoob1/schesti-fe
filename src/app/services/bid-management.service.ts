@@ -109,6 +109,12 @@ class BidManagementService extends HttpService {
       },
     });
   }
+  httpSendEmail(data: FormData): Promise<{ data: any }> {
+    return this.post(`${this.prefix}/send-email`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      }});
+  }
 
   httpGetProjectActivities = (projectId: string): Promise<IResponseInterface<{ bidsActivities: IBidActivity[] }>> => this.get(`${this.prefix}/get-activities/${projectId}`);
 

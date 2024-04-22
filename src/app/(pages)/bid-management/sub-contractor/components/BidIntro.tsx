@@ -19,7 +19,7 @@ export function BidIntro({ bid, onClick, isSelected }: Props) {
       <div className="flex items-center space-x-3">
         <Image src={'/trade.svg'} width={18} height={18} alt="trade icon" />
         <SenaryHeading
-          title={bid.projectName}
+          title={bid?.projectId.projectName}
           className="font-medium text-[#001556] text-base leading-6"
         />
       </div>

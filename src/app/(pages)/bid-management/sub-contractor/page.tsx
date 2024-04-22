@@ -1,6 +1,5 @@
 'use client';
 import WhiteButton from '@/app/component/customButton/white';
-import CustomButton from '@/app/component/customButton/button';
 import { InputComponent } from '@/app/component/customInput/Input';
 import Description from '@/app/component/description';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
@@ -27,12 +26,10 @@ import { isArrayString } from '@/app/utils/typescript.utils';
 // );
 // import dynamic from 'next/dynamic';
 // import BidListPdf from './components/bids-pdf';
-import { useRouter } from 'next/navigation';
 
 const ITEMS_PER_PAGE = 4;
 
 function BidManagementSubContractorPage() {
-  const router = useRouter();
 
   const [selectedBid, setSelectedBid] = useState<IBidManagement | null>(null);
   const [search, setSearch] = useState('');
@@ -212,14 +209,6 @@ function BidManagementSubContractorPage() {
                 isVisible={showFilters}
               />
             </div>
-            <CustomButton
-              text="Post a Project"
-              icon="/plus.svg"
-              iconwidth={14}
-              iconheight={14}
-              className="!w-44"
-              onClick={() => router.push('/bid-management/post')}
-            />
           </div>
         </div>
 

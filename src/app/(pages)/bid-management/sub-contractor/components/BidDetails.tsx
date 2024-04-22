@@ -19,7 +19,9 @@ import { bidManagementService } from '@/app/services/bid-management.service';
 import { useRouter } from 'next/navigation';
 import { CreateRFI } from './CreateRFI';
 import Link from 'next/link';
-import { isEmpty } from 'lodash';
+import { isEmpty, size } from 'lodash';
+import { SendEmailModal } from './SendEamil';
+import { downloadFile } from '@/app/utils/downloadFile';
 
 type Props = {
   bid: IBidManagement;
@@ -36,7 +38,6 @@ type SaveUserBidProps = {
 };
 export function BidDetails({ bid, selectedProjectSavedBid, setSelectedProjectSavedBid }: Props) {
   const router = useRouter();
-  // const [isFavourite, setIsFavourite] = useState(false);
 
   const saveUserBidMutation = useMutation<
     IResponseInterface<{ projectId: ISaveUserBid }>,
@@ -52,7 +53,6 @@ export function BidDetails({ bid, selectedProjectSavedBid, setSelectedProjectSav
       console.log('res', res);
       if (res.data && res.data.savedUserBid) {
         toast.success('Bid Saved Successfully');
-        // Dispatch any necessary actions after successful mutation
       }
     },
     onError(error: any) {
@@ -63,31 +63,6 @@ export function BidDetails({ bid, selectedProjectSavedBid, setSelectedProjectSav
       }
     },
   });
-
-  // const updateUserBidMutation = useMutation<
-  //   IResponseInterface<{ projectId: ISaveUserBid }>,
-  //   AxiosError<{ message: string }>,
-  //   SaveUserBidProps
-  // >({
-  //   //@ts-ignore
-  //   mutationKey: 'updateUserBid',
-  //   mutationFn: (values: SaveUserBidProps) => {
-  //     return bidManagementService.httpUpdateUserProjectBid(values);
-  //   },
-  //   onSuccess(res: any) {
-  //     if (res.data) {
-  //       toast.success('Bid updated Successfully');
-  //       // Dispatch any necessary actions after successful mutation
-  //     }
-  //   },
-  //   onError(error: any) {
-  //     if (error.response?.data?.message) {
-  //       toast.error(error.response?.data.message);
-  //     } else {
-  //       toast.error('An error occurred while saving the bid.');
-  //     }
-  //   },
-  // });
 
   const removeUserBidMutation = useMutation<
   IResponseInterface<{ biddingId: RemoveUserBidProps }>,
@@ -115,6 +90,13 @@ export function BidDetails({ bid, selectedProjectSavedBid, setSelectedProjectSav
   },
 });
 
+  const downloadAllFiles = async (files: any[]) => {
+    files.forEach(async (file: any) => {
+      await downloadFile(file.url, file.name)
+    })
+
+  }
+
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -131,13 +113,6 @@ export function BidDetails({ bid, selectedProjectSavedBid, setSelectedProjectSav
               className="text-[#7138DF] font-normal text-xs leading-4"
             />
           </div>
-          {/* <Image
-            alt="trash icon"
-            src={'/trash.svg'}
-            width={16}
-            height={16}
-            className="cursor-pointer"
-          /> */}
           <Image
             alt="share icon"
             src={'/share.svg'}
@@ -145,26 +120,7 @@ export function BidDetails({ bid, selectedProjectSavedBid, setSelectedProjectSav
             height={16}
             className="cursor-pointer"
           />
-          {/* <Image
-            onClick={() => {
-              setIsFavourite(!isFavourite);
-              setTimeout(() => {
-                updateUserBidMutation.mutate({ projectId: bid._id, isFavourite: isFavourite })
-              }, 10);
-            }}
-            alt="favourite icon"
-            src={'/red-heart.png'}
-            width={16}
-            height={16}
-            className="cursor-pointer"
-          /> */}
-          <Image
-            alt="mail-black icon"
-            src={'/mail-black.svg'}
-            width={16}
-            height={16}
-            className="cursor-pointer"
-          />
+          <SendEmailModal />
         </div>
       </div>
 
@@ -280,10 +236,13 @@ export function BidDetails({ bid, selectedProjectSavedBid, setSelectedProjectSav
           width={16}
           height={16}
         />
-        <SenaryHeading
-          title="Download all files"
-          className="text-[#7138DF] text-xs leading-4 font-semibold underline underline-offset-2"
-        />
+        {size(bid?.projectFiles) > 0 && (
+          <SenaryHeading
+            onClick={()=>downloadAllFiles(bid.projectFiles)}
+            title="Download all files"
+            className="text-[#7138DF] text-xs leading-4 font-semibold underline underline-offset-2"
+          />
+        )}
       </div>
 
       <div className="mt-4 space-y-2">

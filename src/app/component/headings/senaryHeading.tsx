@@ -6,10 +6,12 @@ import { senaryHeading } from '@/globals/tailwindvariables';
 interface Props {
   title: string;
   className?: string;
+  onClick?: any;
 }
-const SenaryHeading = ({ title, className }: Props) => {
+const SenaryHeading = ({ title, className, ...rest }: Props) => {
   return (
     <h6
+      {...rest}
       className={twMerge(
         clsx(
           `${senaryHeading} text-midnightBlue font-popin ${

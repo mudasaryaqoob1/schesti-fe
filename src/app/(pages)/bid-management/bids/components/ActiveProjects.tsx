@@ -23,8 +23,6 @@ export function ActiveProjects() {
     return bidManagementService.httpGetUserSavedBids(params);
   };
 
-  console.log('selectedBidProjectDetails', selectedBidProjectDetails);
-
   const getProjectProposalDetails = async (bidProject: any) => {
     setIsLoading(true);
     setSelectedBidProjectDetails(null);
