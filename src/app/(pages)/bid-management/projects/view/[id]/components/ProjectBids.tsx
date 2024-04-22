@@ -26,7 +26,7 @@ export function ProjectBids({ projectId }: Props) {
 
   useEffect(() => {
     getProjectBiddings();
-  }, [])
+  }, [projectId])
 
   const columns: ColumnsType<IBidProjectScope> = [
     {
@@ -63,7 +63,9 @@ export function ProjectBids({ projectId }: Props) {
         const response = await bidManagementService.httpGetProjectBiddings(projectId);
         if (response.data) {
           setBiddings(response.data.projectBiddings);
-          setTradeCounts(response.data.tradeCounts);
+          if (response.data.tradeCounts) {
+            setTradeCounts(response.data.tradeCounts);
+          }
         }
 
       }
@@ -124,7 +126,7 @@ export function ProjectBids({ projectId }: Props) {
         <div className="grid grid-cols-12 gap-3">
           <div className={`${selectedBid ? 'col-span-8 ' : "col-span-12"}`}>
 
-            {biddings.map(bid => {
+            {biddings.length > 0 && biddings.map(bid => {
               const bidUser = bid.user;
 
               return <div key={bid._id}

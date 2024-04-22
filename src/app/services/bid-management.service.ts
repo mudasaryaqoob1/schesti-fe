@@ -80,6 +80,10 @@ class BidManagementService extends HttpService {
     IResponseInterface<{ projects: IBidManagement[] }>
   > => this.get(`${this.prefix}/get-all`);
 
+  httpGetMyProjects = (): Promise<
+    IResponseInterface<{ projects: IBidManagement[] }>
+  > => this.get(`${this.prefix}/my-projects`);
+
   httpSaveUserProjectBid = (data: any): Promise<
     IResponseInterface<{ project: ISaveUserBid }>
   > => this.post(`${this.prefix}/save-user-bid`, data);

@@ -74,6 +74,7 @@ export function InputComponent({
         maxLength={maxLength}
         {...rest}
         placeholder={placeholder}
+        status={hasError ? 'error' : undefined}
         {...field}
       />
       {errorMessage ? (

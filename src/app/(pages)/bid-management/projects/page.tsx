@@ -43,7 +43,7 @@ function Page() {
   const [search, setSearch] = useState<string>('');
 
   const projectsQuery = useQuery(['projects'], () => {
-    return bidManagementService.httpGetOwnerProjectsWithoutFilters();
+    return bidManagementService.httpGetMyProjects();
   });
 
   const columns: ColumnsType<IBidManagement> = [
