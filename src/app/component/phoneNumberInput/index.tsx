@@ -14,7 +14,6 @@ const PhoneNumberInput = (props: any) => {
       defaultCountry="PK"
       value={phoneNumber}
       onChange={(val: any) => {
-        console.log('valu', val);
         setPhoneNumber(val);
       }}
     />

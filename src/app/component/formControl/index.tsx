@@ -6,6 +6,8 @@ import Select from '../customSelect/index';
 import Textarea from '../customTextarea/Index';
 import SimpleInput from '../customInput/simple';
 import CustomInputSelect from '../customInputSelect';
+// import PhoneInput from '../customPhoneInput'
+import {PhoneNumberInputWithLable} from '../phoneNumberInput/PhoneNumberInputWithLable'
 
 const FormikController = (props: any) => {
   const { control, ...rest } = props;
@@ -24,6 +26,8 @@ const FormikController = (props: any) => {
       return <PasswordField {...rest} />;
     case 'textarea':
       return <Textarea {...rest} />;
+      case 'phoneInput':
+        return <PhoneNumberInputWithLable {...rest} />;
 
     // case "radio":
     //   return <Radio {...rest} />;

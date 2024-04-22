@@ -14,6 +14,7 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import MinDesc from '@/app/component/description/minDesc';
 import CustomButton from '@/app/component/customButton/button';
 import FormControl from '@/app/component/formControl';
+
 // redux module
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
@@ -66,6 +67,7 @@ const CreateClient = () => {
   }, [token]);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState('')
 
   const submitHandler = async (values: IClient) => {
     setIsLoading(true);
@@ -138,11 +140,15 @@ const CreateClient = () => {
                     placeholder="Last Name"
                   />
                   <FormControl
-                    control="input"
+                    control="phoneInput"
                     label="Phone Number"
                     type="number"
                     name="phone"
                     placeholder="Phone number"
+                    onChange={(value) => {
+                      console.log(value , 'valuevalue')
+                    }}
+                    value={`3434`}
                     min={1}
                   />
                   <FormControl
