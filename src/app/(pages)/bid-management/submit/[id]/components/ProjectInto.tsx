@@ -25,10 +25,15 @@ export function ProjectIntro({ bid }: Props) {
         <div className="col-span-8 border-r">
           <TertiaryHeading
             title={`Posted: ${moment(bid.createdAt).format('MM/DD/YYYY hh:mm A')}`}
-            className="text-[#475467] text-xs leading-4 font-normal"
+            className="text-[#1D2939] text-xs leading-4 font-normal"
           />
 
           <div className="mt-3">
+            <TertiaryHeading
+              title={bid.projectName}
+              className="text-[#1D2939] text-[24px] leading-8 font-semibold mb-2"
+            />
+
             <TertiaryHeading
               title={bid.description}
               className="text-[#475467] text-[14px] leading-6 font-normal"
@@ -42,8 +47,8 @@ export function ProjectIntro({ bid }: Props) {
           <div className="flex justify-end items-center space-x-3">
             <div className="rounded-full bg-[#E9EBF8] py-[5px] px-[11px]">
               <SenaryHeading
-                title={'Budgeting/Planning'}
-                className="text-[#7138DF] font-normal text-xs leading-4"
+                title={bid.stage}
+                className="text-[#7138DF] text-xs leading-4 font-semibold"
               />
             </div>
           </div>
@@ -52,23 +57,23 @@ export function ProjectIntro({ bid }: Props) {
             <div className="flex items-center justify-between">
               <TertiaryHeading
                 title="Location: "
-                className="text-[#667085] text-xs leading-4 font-normal"
+                className="text-[#667085] text-[14px] leading-4 font-normal"
               />
 
               <TertiaryHeading
                 title={`${Country.getCountryByCode(bid.country)?.name}`}
-                className="text-[#101828] text-xs leading-4 font-normal"
+                className="text-[#101828] text-[14px] leading-4 font-semibold"
               />
             </div>
             <div className="flex items-center justify-between">
               <TertiaryHeading
                 title="Project value: "
-                className="text-[#667085] text-xs leading-4 font-normal"
+                className="text-[#667085] text-[14px] leading-4 font-normal"
               />
 
               <TertiaryHeading
                 title={USCurrencyFormat.format(bid.projectValue)}
-                className="text-[#101828] text-xs leading-4 font-normal"
+                className="text-[#101828] text-[14px] leading-4 font-semibold"
               />
             </div>
           </div>
