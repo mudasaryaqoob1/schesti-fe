@@ -99,7 +99,7 @@ export function RFIReply({ onSuccess, projectId, messageId }: Props) {
     }
     return <div
         ref={ref}
-        className="cursor-pointer flex items-center space-x-1 hover:bg-gray-100 hover:px-1 hover:py-1 hover:rounded-lg hover:transition-all hover:translate-x-1
+        className="cursor-pointer flex items-center space-x-1 hover:bg-gray-100 rounded-lg p-1
                 "
         onClick={e => {
             e.stopPropagation();

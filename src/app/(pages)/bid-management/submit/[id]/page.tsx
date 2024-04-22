@@ -14,7 +14,7 @@ import Dragger from 'antd/es/upload/Dragger';
 import type { ColumnsType } from 'antd/es/table';
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
-import { type FormikErrors, useFormik } from 'formik';
+import { type FormikErrors, useFormik, type FormikTouched } from 'formik';
 import { useTrades } from '@/app/hooks/useTrades';
 import { useEffect, useRef, useState } from 'react';
 import * as Yup from 'yup';
@@ -202,7 +202,7 @@ function ContractorSubmitBidPage() {
     formik.setFieldValue('projectScopes', newScopes);
   }
 
-
+  console.log(formik.touched.projectScopes);
   const columns: ColumnsType<ProjectScope> = [
     {
       key: 'description',
@@ -210,10 +210,12 @@ function ContractorSubmitBidPage() {
       title: 'Description',
       render(value, _record, index) {
         const error = typeof formik.errors.projectScopes !== 'string' && formik.errors.projectScopes && (formik.errors.projectScopes[index] as FormikErrors<ProjectScope>)?.description;
+        // @ts-ignore
+        const isTouched = formik.touched.projectScopes && (formik.touched.projectScopes as FormikTouched<ProjectScope>).description && (formik.touched.projectScopes)?.description[index];
         return (
           <div className='space-y-1'>
             <input
-              className={`border ${error ? "border-red-500" : ""}  p-2 rounded-md focus:outline-none w-full h-full bg-transparent`}
+              className={`border ${isTouched && error ? "border-red-500" : ""}  p-2 rounded-md focus:outline-none w-full h-full bg-transparent`}
               type="text"
               ref={index === formik.values.projectScopes.length - 1 ? lastInputRef : null}
               value={value}
@@ -222,9 +224,9 @@ function ContractorSubmitBidPage() {
                 updateScope(index, 'description', e.target.value);
               }}
               onBlur={formik.handleBlur}
-              name={`description.${index}`}
+              name={`projectScopes.description[${index}]`}
             />
-            {error ? <p className='text-xs text-red-500'>
+            {isTouched && error ? <p className='text-xs text-red-500'>
               {error}
             </p> : null}
           </div>
@@ -237,10 +239,12 @@ function ContractorSubmitBidPage() {
       title: 'Quantity',
       render(value, _record, index) {
         const error = typeof formik.errors.projectScopes !== 'string' && formik.errors.projectScopes && (formik.errors.projectScopes[index] as FormikErrors<ProjectScope>)?.quantity;
+        // @ts-ignore
+        const isTouched = formik.touched.projectScopes && (formik.touched.projectScopes as FormikTouched<ProjectScope>).quantity && (formik.touched.projectScopes)?.quantity[index];
         return (
           <div className='space-y-1'>
             <input
-              className={`border ${error ? "border-red-500" : ""} p-2 rounded-md  focus:outline-none w-full h-full bg-transparent`}
+              className={`border ${isTouched && error ? "border-red-500" : ""} p-2 rounded-md  focus:outline-none w-full h-full bg-transparent`}
               type="number"
               placeholder='Type Quantity'
               value={value}
@@ -248,9 +252,9 @@ function ContractorSubmitBidPage() {
                 updateScope(index, 'quantity', Number(e.target.value));
               }}
               onBlur={formik.handleBlur}
-              name={`quantity.${index}`}
+              name={`projectScopes.quantity[${index}]`}
             />
-            {error ? <p className='text-xs text-red-500'>{error}</p> : null}
+            {isTouched && error ? <p className='text-xs text-red-500'>{error}</p> : null}
           </div>
         );
       },
@@ -261,10 +265,13 @@ function ContractorSubmitBidPage() {
       title: 'Unit Price',
       render: (value, _record, index) => {
         const error = typeof formik.errors.projectScopes !== 'string' && formik.errors.projectScopes && (formik.errors.projectScopes[index] as FormikErrors<ProjectScope>)?.price;
+        // @ts-ignore
+        const isTouched = formik.touched.projectScopes && (formik.touched.projectScopes as FormikTouched<ProjectScope>).price && (formik.touched.projectScopes)?.price[index];
+
         return (
           <div className="space-y-1">
             <input
-              className={`border ${error ? "border-red-500" : ""} p-2 rounded-md focus:outline-none w-full h-full bg-transparent`}
+              className={`border ${isTouched && error ? "border-red-500" : ""} p-2 rounded-md focus:outline-none w-full h-full bg-transparent`}
               type="number"
               value={value}
               placeholder='$0.00'
@@ -272,9 +279,9 @@ function ContractorSubmitBidPage() {
                 updateScope(index, 'price', Number(e.target.value));
               }}
               onBlur={formik.handleBlur}
-              name={`price.${index}`}
+              name={`projectScopes.price[${index}]`}
             />
-            {error ? <p className='text-xs text-red-500'>{error}</p> : null}
+            {isTouched && error ? <p className='text-xs text-red-500'>{error}</p> : null}
           </div>
         );
       },
@@ -651,11 +658,13 @@ function ContractorSubmitBidPage() {
             <Spin />
           ) : null}
 
+
+          <Divider className='!my-5' />
           <div
             className="flex w-fit items-center space-x-4 cursor-pointer "
             onClick={openProjectScope}
           >
-            <p className="text-[#344054] text-[28px] leading-8 font-normal ">
+            <p className="text-[#344054] text-[24px] leading-8 font-normal ">
               Add Project Scope
             </p>
             {showProjectScope ? <Image
@@ -664,6 +673,11 @@ function ContractorSubmitBidPage() {
               height={23}
               alt="forward arrow icon"
               className="cursor-pointer"
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                setShowProjectScope(false);
+              }}
             /> : null}
           </div>
 
