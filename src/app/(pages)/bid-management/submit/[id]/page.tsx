@@ -629,10 +629,10 @@ function ContractorSubmitBidPage() {
 
           <Divider className='!my-5' />
           <div
-            className="flex w-fit items-center space-x-4 cursor-pointer "
+            className="flex w-fit items-center space-x-2 cursor-pointer "
             onClick={openProjectScope}
           >
-            <p className="text-[#344054] text-[24px] leading-8 font-normal ">
+            <p className="text-[#7138DF] text-[18px] leading-8 font-medium underline underline-offset-2 ">
               Add Project Scope
             </p>
             {showProjectScope ? <Image
