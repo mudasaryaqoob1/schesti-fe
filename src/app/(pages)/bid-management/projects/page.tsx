@@ -25,6 +25,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { DeletePopup } from '../post/components/DeletePopup';
 import dynamic from 'next/dynamic';
+import { USCurrencyFormat } from '@/app/utils/format';
 
 const ExportAll = dynamic(() => import("./components/ExportAll"), { ssr: false });
 
@@ -51,6 +52,25 @@ function Page() {
       key: 'projectName',
       dataIndex: 'projectName',
       title: 'Project',
+      width: 300,
+      render(value, record) {
+        return (
+          <div className="flex items-center justify-between">
+            <div className="text-[#181D25] text-base font-semibold leading-6">
+              {record.projectName}
+            </div>
+            {record.platformType && record.platformType === 'Private' ?
+              <Image
+                src={'/lock-icon.svg'}
+                alt='lock icon'
+                width={15}
+                height={15}
+                loading='lazy'
+              />
+              : null}
+          </div>
+        );
+      },
     },
     {
       key: 'estimatedStartDate',
@@ -73,6 +93,17 @@ function Page() {
       key: 'stage',
       dataIndex: 'stage',
       title: 'Stage',
+    },
+    {
+      key: 'projectValue',
+      dataIndex: 'projectValue',
+      title: 'Budget',
+      render(value, record,) {
+        if (record.projectValue) {
+          return USCurrencyFormat.format(record.projectValue);
+        }
+        return null;
+      },
     },
     {
       key: 'status',
@@ -253,6 +284,7 @@ function Page() {
           columns={columns}
           dataSource={filteredData}
           loading={projectsQuery.isLoading}
+          bordered
         />
       </div>
     </section>
