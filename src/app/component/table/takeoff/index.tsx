@@ -1,7 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Table } from 'antd';
 import type { ColumnsType, TableProps } from 'antd/es/table';
-import { takeoffSummaryService } from '@/app/services/takeoffSummary.service';
 import { AppDispatch } from '@/redux/store';
 import { selectTakeoffSummaries } from '@/redux/takeoffSummaries/takeoffSummaries.Selector';
 import {

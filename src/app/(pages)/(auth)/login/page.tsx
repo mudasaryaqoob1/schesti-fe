@@ -21,6 +21,7 @@ import { ILogInInterface } from '@/app/interfaces/authInterfaces/login.interface
 import { login, loginWithGoogle } from '@/redux/authSlices/auth.thunk';
 import PrimaryHeading from '@/app/component/headings/primary';
 import Description from '@/app/component/description';
+import { USER_ROLES_ENUM } from '@/app/constants/constant';
 
 const initialValues: ILogInInterface = {
   email: '',
@@ -55,6 +56,9 @@ const Login = () => {
         result.payload.data.user.roles.includes('Company') &&
         result.payload.data.user?.isPaymentConfirm
       ) {
+        console.log(result.payload, 'result.payload');
+        const session = result.payload?.token;
+        localStorage.setItem('schestiToken', session);
         router.push('/dashboard');
       } else if (
         result.payload.data.user.roles.includes('Company') &&
@@ -87,13 +91,15 @@ const Login = () => {
           name: googleAuthResponse.data.name,
           avatar: googleAuthResponse.data.picture,
           providerId: googleAuthResponse.data.sub,
+          userRole: USER_ROLES_ENUM.OWNER,
         };
 
         let result: any = await dispatch(loginWithGoogle(responseObj));
 
         if (result.payload.statusCode == 200) {
-          // localStorage.setItem('schestiToken', result.payload.token);
-          router.push(`/clients`);
+          localStorage.setItem('schestiToken', result.payload.token);
+          // router.push(`/clients`);
+          router.push(`/dashboard`);
         } else if (result.payload.statusCode == 400) {
           router.push(`/companydetails/${result.payload.data.user._id}`);
         }

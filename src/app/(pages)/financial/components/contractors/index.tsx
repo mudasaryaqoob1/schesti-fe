@@ -19,9 +19,9 @@ import Image from 'next/image';
 import moment from 'moment';
 import { CollectPayment } from './CollectPayment';
 import { usePDF } from '@react-pdf/renderer';
-import ClientPDF from './clientPDF';
-import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 import { Routes } from '@/app/utils/plans.utils';
+import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
+import NewClientPdf from '../../standard-invoicing/view/[id]/newClientPdf';
 
 export function Contractors() {
   const router = useRouter();
@@ -34,7 +34,7 @@ export function Contractors() {
   );
   const [selectedInvoice, setSelectedInvoice] = useState<IInvoice | null>(null);
   const auth = useSelector((state: RootState) => state.auth);
-  const user = auth.user?.user as IUser | undefined;
+  const user = auth.user?.user as IUpdateCompanyDetail | undefined;
   const [pdfInstance, updatePdfInstance] = usePDF({ document: undefined });
   const [search, setSearch] = useState('');
 
@@ -167,7 +167,7 @@ export function Contractors() {
         <Dropdown
           onOpenChange={(open) => {
             if (open) {
-              updatePdfInstance(<ClientPDF invoice={record} user={user!} />);
+              updatePdfInstance(<NewClientPdf invoice={record} user={user!} />);
             } else {
               // @ts-ignore
               updatePdfInstance();

@@ -1,23 +1,28 @@
+import { ConfigProvider, Tabs } from 'antd';
+import moment from 'moment';
+import { toast } from 'react-toastify';
+import jsPDF from 'jspdf';
+
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
+import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
 import {
   G7State,
   IClientInvoice,
 } from '@/app/interfaces/client-invoice.interface';
 import { clientInvoiceService } from '@/app/services/client-invoices.service';
-import { ConfigProvider, Tabs } from 'antd';
-import moment from 'moment';
 import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { G703Component } from './G703';
 import { generateData } from '../utils';
 import { G702Component } from './G702';
-import { toast } from 'react-toastify';
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import { useScreenshot } from '@breezeos-dev/use-react-screenshot';
-import jsPDF from 'jspdf';
 import { ClientInvoiceFooter } from '../../../components/ClientInvoiceFooter';
 import { ClientInvoiceHeader } from '../../../components/ClientInvoiceHeader';
+import QuinaryHeading from '@/app/component/headings/quinary';
 
 type Props = {
   parentInvoice: IClientInvoice;
@@ -27,6 +32,9 @@ const G702_KEY = 'G702';
 
 export function PhaseComponent({ parentInvoice }: Props) {
   // const router = useRouter();
+  const auth = useSelector((state: RootState) => state.auth);
+  const user = auth.user?.user as IUpdateCompanyDetail | undefined;
+
   // selected phase will be from allPhases and will be the latest last phase
   const [selectedPhase, setSelectedPhase] = useState<IClientInvoice | null>(
     null
@@ -231,10 +239,11 @@ export function PhaseComponent({ parentInvoice }: Props) {
         amountPaid,
       })
       .then((response) => {
-        if (response.statusCode == 201) {
+        if (response.statusCode == 201 && response.data) {
           toast.success('Invoice created successfully');
           takeScreenshot(ref.current);
           setShowDownload(true);
+          // setSelectedPhase(response.data.invoice);
         }
       })
       .catch(({ response }) => {
@@ -296,16 +305,6 @@ export function PhaseComponent({ parentInvoice }: Props) {
         >
           <Tabs
             destroyInactiveTabPane
-            tabBarExtraContent={
-              showDownload ? (
-                <CustomButton
-                  loadingText="Downloading..."
-                  isLoading={isDownloading}
-                  text={'Download PDF'}
-                  onClick={() => downloadPdf()}
-                />
-              ) : null
-            }
             onChange={(key) => {
               setTab(key);
             }}
@@ -316,9 +315,8 @@ export function PhaseComponent({ parentInvoice }: Props) {
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className={`${
-                      tab === type ? 'text-RoyalPurple' : 'text-black'
-                    }`}
+                    className={`${tab === type ? 'text-RoyalPurple' : 'text-black'
+                      }`}
                   />
                 ),
                 tabKey: type,
@@ -362,13 +360,19 @@ export function PhaseComponent({ parentInvoice }: Props) {
                         text="Previous"
                         className="!w-40"
                       />
-                      <CustomButton
+                      {showDownload ? <CustomButton
+                        loadingText="Downloading..."
+                        isLoading={isDownloading}
+                        text={'Download PDF'}
+                        onClick={() => downloadPdf()}
+                        className="!w-48"
+                      /> : <CustomButton
                         text="Create new Phase"
                         className="!w-48"
                         onClick={() => {
                           handleSubmit(g7State);
                         }}
-                      />
+                      />}
                     </G702Component>
                   ),
               };
@@ -379,8 +383,18 @@ export function PhaseComponent({ parentInvoice }: Props) {
       <div
         ref={ref as MutableRefObject<HTMLDivElement>}
         className="space-y-5 w-full absolute z -left-[2500px] border p-6"
+      // className="space-y-5 w-full  border p-6"
       >
         <ClientInvoiceHeader />
+        <div className="flex justify-end w-full">
+          {/* <div>
+            <img width={100} height={100}  alt='logo' src={user?.avatar ? user?.avatar : '/logo.svg'} />
+          </div> */}
+          <div>
+            <QuinaryHeading title={user!.name} />
+            <QuinaryHeading title={user!.email || ''} className="mt-1" />
+          </div>
+        </div>
         <ConfigProvider
           theme={{
             components: {
@@ -436,6 +450,9 @@ export function PhaseComponent({ parentInvoice }: Props) {
             showAddAndDelete={false}
           />
         </ConfigProvider>
+        {/* <div className="flex justify-end">
+          <Image width={100} height={20} alt="logo" src="/powered-by.png" />
+        </div> */}
         <ClientInvoiceFooter />
       </div>
     </section>

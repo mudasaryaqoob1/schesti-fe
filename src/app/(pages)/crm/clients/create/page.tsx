@@ -70,7 +70,7 @@ const CreateClient = () => {
   const submitHandler = async (values: IClient) => {
     setIsLoading(true);
     userService
-      .httpAddNewClient(values)
+      .httpAddNewClient({...values , phone : `${values.phone}`})
       .then((response: any) => {
         if (response.statusCode == 201) {
           setIsLoading(false);
@@ -140,7 +140,7 @@ const CreateClient = () => {
                   <FormControl
                     control="input"
                     label="Phone Number"
-                    type="text"
+                    type="number"
                     name="phone"
                     placeholder="Phone number"
                     min={1}

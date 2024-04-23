@@ -66,7 +66,10 @@ export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
       key: 'targetPercent',
       dataIndex: 'price',
       render(_value, record) {
-        return `${((totalReceivable(record, invoices) / Number(record.price)) * 100).toFixed(2)}%`;
+        return `${(
+          (totalReceivable(record, invoices) / Number(record.price)) *
+          100
+        ).toFixed(2)}%`;
       },
     },
   ];
@@ -108,7 +111,13 @@ export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
         str2Percent: true,
       })
       .saveAs(
-        `${'financial-tools' + '-' + moment().month() + '-' + new Date().getTime()}.xlsx`
+        `${
+          'financial-tools' +
+          '-' +
+          moment().month() +
+          '-' +
+          new Date().getTime()
+        }.xlsx`
       );
   };
 

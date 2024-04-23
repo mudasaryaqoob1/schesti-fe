@@ -21,7 +21,7 @@ import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import FormControl from '@/app/component/formControl';
 import { categoriesService } from '@/app/services/categories.service';
-import { materialService } from '@/app/services/material.service';
+// import { materialService } from '@/app/services/material.service';
 import { bg_style } from '@/globals/tailwindvariables';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { estimateRequestService } from '@/app/services/estimates.service';
@@ -29,7 +29,9 @@ import { generateEstimateDetailAction } from '@/redux/estimate/estimateRequest.s
 import { selectGeneratedEstimateDetail } from '@/redux/estimate/estimateRequestSelector';
 import { PositiveNumberRegex } from '@/app/utils/regex.util';
 import { byteConverter } from '@/app/utils/byteConverter';
-import { IUnits } from '@/app/interfaces/settings/material-settings.interface';
+// import { IUnits } from '@/app/interfaces/settings/material-settings.interface';
+import EstimatesUnits from '@/app/constants/estimatesUnits.json'
+import { formatNumberWithCommas } from '@/app/utils/helper';
 
 type InitialValuesType = {
   category: string;
@@ -47,7 +49,7 @@ type InitialValuesType = {
 
 const validationSchema = Yup.object({
   category: Yup.string().required('Category is required!'),
-  subCategory: Yup.string().required('SubCategory is required'),
+  // subCategory: Yup.string().required('SubCategory is required'),
   description: Yup.string().required('Description is required!'),
   unit: Yup.string().required('Unit is required!'),
   qty: Yup.string()
@@ -125,7 +127,7 @@ const Scope = ({ setPrevNext }: Props) => {
   // const [selecteddescription, setsSelecteddescription] = useState('');
   const [editItem, setEditItem] = useState(false);
   const [editConfirmItem, setEditConfirmItem] = useState(false);
-  const [estiamteUnits, setEstiamteUnits] = useState<IUnits[] | undefined>([]);
+  // const [estiamteUnits, setEstiamteUnits] = useState<IUnits[] | undefined>([]);
   const [confirmEstimates, setConfirmEstimates] = useState<
     {
       title: string;
@@ -183,10 +185,10 @@ const Scope = ({ setPrevNext }: Props) => {
     });
     setSubCategories(flattenedSubcategories);
   }, []);
-  const fetchMaterialUnits = useCallback(async () => {
-    const unitsMaterials = await materialService.httpFetchMaterialUnits();
-    setEstiamteUnits(unitsMaterials.data?.fetchedUnits);
-  }, []);
+  // const fetchMaterialUnits = useCallback(async () => {
+  //   const unitsMaterials = await materialService.httpFetchMaterialUnits();
+  //   setEstiamteUnits(unitsMaterials.data?.fetchedUnits);
+  // }, []);
   const fetchEstimateDetail = useCallback(async () => {
     let result = await estimateRequestService.httpGetEstimateDetail(
       estimateIdQueryParameter
@@ -252,7 +254,7 @@ const Scope = ({ setPrevNext }: Props) => {
   useEffect(() => {
     fetchCategories();
     fetchEstimateDetail();
-    fetchMaterialUnits();
+    // fetchMaterialUnits();
   }, []);
   useEffect(() => {
     if (selectedCategory) {
@@ -607,7 +609,7 @@ const Scope = ({ setPrevNext }: Props) => {
     let unitEquipments = parseFloat(record.unitEquipments);
     let totalEquipmentCost = unitEquipments * qtyWithWastage;
     let result = totalLabourCost + totalMeterialCost + totalEquipmentCost;
-    return result.toFixed(2);
+    return result;
   };
 
   const columns: any = [
@@ -645,7 +647,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
         let result = quantity * (1 + wastagePercentage / 100);
-        return result.toFixed(2);
+        return formatNumberWithCommas(result);
       },
     },
     {
@@ -659,7 +661,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let quantity = parseFloat(record.qty);
         let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = quantityWithWastage * unitLabourHour;
-        return result.toFixed(2);
+        return formatNumberWithCommas(result);
       },
     },
     {
@@ -684,7 +686,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let perHourLaborRate = parseFloat(record.perHourLaborRate);
         let totalLabourHours = quantityWithWastage * unitLabourHour;
         let result = totalLabourHours * perHourLaborRate;
-        return `$${result.toFixed(2)}`;
+        return `$${formatNumberWithCommas(result)}`;
       },
     },
     {
@@ -707,7 +709,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let wastagePercentage = parseFloat(record.wastage);
         let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = unitMaterialCost * quantityWithWastage;
-        return `$${result.toFixed(2)}`;
+        return `$${formatNumberWithCommas(result)}`;
       },
     },
     {
@@ -721,7 +723,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let wastagePercentage = parseFloat(record.wastage);
         let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = unitEquipments * quantityWithWastage;
-        return `$${result.toFixed(2)}`;
+        return `$${formatNumberWithCommas(result)}`;
       },
     },
     {
@@ -731,7 +733,7 @@ const Scope = ({ setPrevNext }: Props) => {
       width: 150,
       render: (text: string, record: DataType) => {
         let result = calculateTotalCost(record);
-        return `$${result}`;
+        return `$${formatNumberWithCommas(result)}`;
       },
     },
 
@@ -799,7 +801,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
         let result = quantity * (1 + wastagePercentage / 100);
-        return result.toFixed(2);
+        return formatNumberWithCommas(result);
       },
     },
     {
@@ -813,7 +815,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let quantity = parseFloat(record.qty);
         let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = quantityWithWastage * unitLabourHour;
-        return result.toFixed(2);
+        return `$${formatNumberWithCommas(result)}`;
       },
     },
     {
@@ -838,7 +840,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let perHourLaborRate = parseFloat(record.perHourLaborRate);
         let totalLabourHours = quantityWithWastage * unitLabourHour;
         let result = totalLabourHours * perHourLaborRate;
-        return `$${result.toFixed(2)}`;
+        return `$${formatNumberWithCommas(result)}`;
       },
     },
     {
@@ -861,7 +863,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let wastagePercentage = parseFloat(record.wastage);
         let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = unitMaterialCost * quantityWithWastage;
-        return `$${result.toFixed(2)}`;
+        return `$${formatNumberWithCommas(result)}`;
       },
     },
     {
@@ -875,7 +877,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let wastagePercentage = parseFloat(record.wastage);
         let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = unitEquipments * quantityWithWastage;
-        return `$${result.toFixed(2)}`;
+        return `$${formatNumberWithCommas(result)}`;
       },
     },
     {
@@ -885,7 +887,7 @@ const Scope = ({ setPrevNext }: Props) => {
       width: 150,
       render: (text: string, record: DataType) => {
         let result = calculateTotalCost(record);
-        return `$${result}`;
+        return `$${formatNumberWithCommas(result)}`;
       },
     },
 
@@ -1081,7 +1083,7 @@ const Scope = ({ setPrevNext }: Props) => {
                     name="unit"
                     placeholder="Write Unit"
                     mt="mt-0"
-                    options={estiamteUnits}
+                    options={EstimatesUnits}
                   />
                   <FormControl
                     control="input"

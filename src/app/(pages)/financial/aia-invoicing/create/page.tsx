@@ -1,6 +1,7 @@
 'use client';
 import { MutableRefObject, useLayoutEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 import { ConfigProvider, Tabs } from 'antd';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { HttpService } from '@/app/services/base.service';
@@ -19,12 +20,19 @@ import { useScreenshot } from '@breezeos-dev/use-react-screenshot';
 import jsPDF from 'jspdf';
 import { ClientInvoiceHeader } from '../components/ClientInvoiceHeader';
 import { ClientInvoiceFooter } from '../components/ClientInvoiceFooter';
+import QuinaryHeading from '@/app/component/headings/quinary';
+import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
+import { withAuth } from '@/app/hoc/withAuth';
 
 const G703_KEY = 'G703';
 const G702_KEY = 'G702';
-export default function CreateClientInvoicePage() {
+function CreateClientInvoicePage() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   const router = useRouter();
+
+  const auth = useSelector((state: RootState) => state.auth);
+  const user = auth.user?.user as IUpdateCompanyDetail | undefined;
+
   const token = useSelector(selectToken);
   const searchParams = useSearchParams();
   const invoiceName = searchParams.get('invoiceName');
@@ -263,14 +271,6 @@ export default function CreateClientInvoicePage() {
         >
           <Tabs
             destroyInactiveTabPane
-            tabBarExtraContent={
-              showDownload ? (
-                <CustomButton
-                  text={isDownloading ? 'Downloading...' : 'Download PDF'}
-                  onClick={() => downloadPdf()}
-                />
-              ) : null
-            }
             onChange={(key) => {
               setTab(key);
             }}
@@ -281,9 +281,8 @@ export default function CreateClientInvoicePage() {
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className={`${
-                      tab === type ? 'text-RoyalPurple' : 'text-black'
-                    }`}
+                    className={`${tab === type ? 'text-RoyalPurple' : 'text-black'
+                      }`}
                   />
                 ),
                 tabKey: type,
@@ -315,13 +314,18 @@ export default function CreateClientInvoicePage() {
                         text="Previous"
                         className="!w-40"
                       />
-                      <CustomButton
+                      {showDownload ? <CustomButton
+                        text={isDownloading ? 'Downloading...' : 'Download PDF'}
+                        onClick={() => downloadPdf()}
+                        className="!w-48"
+                      /> : <CustomButton
                         text="Create"
                         className="!w-48"
                         onClick={() => {
                           handleSubmit(g7State);
                         }}
                       />
+                      }
                     </G702Component>
                   ),
               };
@@ -332,8 +336,18 @@ export default function CreateClientInvoicePage() {
       <div
         ref={ref as MutableRefObject<HTMLDivElement>}
         className="space-y-5 w-full absolute -left-[2500px] border p-6"
+      // className="space-y-5 w-full border p-6"
       >
         <ClientInvoiceHeader />
+        <div className="flex justify-end w-full">
+          {/* <div>
+            <img width={100} height={100}  alt='logo' src={user?.avatar ? user?.avatar : '/logo.svg'} />
+          </div> */}
+          <div>
+            <QuinaryHeading title={user!.name} />
+            <QuinaryHeading title={user!.email || ''} className="mt-1" />
+          </div>
+        </div>
         <ConfigProvider
           theme={{
             components: {
@@ -375,8 +389,14 @@ export default function CreateClientInvoicePage() {
             showAddAndDelete={false}
           />
         </ConfigProvider>
+        {/* <div className="flex justify-end mr-8">
+          <Image width={100} height={20} alt="logo" src="/powered-by.png" />
+        </div> */}
         <ClientInvoiceFooter />
       </div>
     </section>
   );
 }
+
+
+export default withAuth(CreateClientInvoicePage);

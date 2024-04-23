@@ -58,7 +58,7 @@ const Congratulations = () => {
         <Button
           text={'Okay!'}
           className="my-3"
-          onClick={() => router.push('/clients')}
+          onClick={() => router.push('/dashboard')}
         />
       </div>
     </section>

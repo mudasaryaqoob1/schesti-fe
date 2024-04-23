@@ -20,9 +20,6 @@ import { useDispatch } from 'react-redux';
 import { createTakeoffSummary } from '@/redux/takeoffSummaries/takeoffSummaries.thunk';
 import { useDraw } from '@/app/hooks';
 
-const counterImage = new Image();
-counterImage.src = '/count-draw.png';
-
 export interface dataInterface {
   image: string;
   details: ReportDataInterface;
@@ -55,6 +52,9 @@ const CaptureComponent = ({
   // itemsToCapture: DrawHistoryContextInterface;
   // onCapture: (url: string, key: number) => void;
 }) => {
+  const counterImage = new Image();
+  counterImage.src = '/count-draw.png';
+
   const stageRef = useRef<Konva.Stage>(null);
   const [data, setData] = useState<dataInterface[]>([]);
   const [isSaving, setIsSaving] = useState<boolean>(false);

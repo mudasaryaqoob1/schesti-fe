@@ -5,7 +5,7 @@ import {
   DatePicker,
   Divider,
   Input,
-  Modal,
+  // Modal,
   Select,
   Table,
 } from 'antd';
@@ -16,8 +16,8 @@ import ColumnGroup from 'antd/es/table/ColumnGroup';
 import Column from 'antd/es/table/Column';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import {
-  DeleteOutlined,
-  ExclamationCircleFilled,
+  // DeleteOutlined,
+  // ExclamationCircleFilled,
   PlusOutlined,
 } from '@ant-design/icons';
 import {
@@ -27,7 +27,7 @@ import {
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
 import moment from 'moment';
-import { disabledDate } from '@/app/utils/date.utils';
+// import { disabledDate } from '@/app/utils/date.utils';
 
 type Props = {
   phases: IClientInvoice[];
@@ -58,11 +58,11 @@ export function G703Component({
     return row[column];
   }
 
-  function deleteRow(rowIndex: number) {
-    const newData = [...state.data];
-    newData.splice(rowIndex, 1);
-    handleState('data', newData);
-  }
+  // function deleteRow(rowIndex: number) {
+  //   const newData = [...state.data];
+  //   newData.splice(rowIndex, 1);
+  //   handleState('data', newData);
+  // }
 
   function addNewRow(index: number) {
     // check if there is a row at previous index
@@ -165,9 +165,9 @@ export function G703Component({
                 onChange={(_d, dateString) =>
                   handleState('applicationDate', dateString as string)
                 }
-                //@ts-ignore
-                //@ts-nocheck
-                disabledDate={disabledDate}
+              //@ts-ignore
+              //@ts-nocheck
+              // disabledDate={disabledDate}
               />
               {showAddAndDelete ? (
                 <p className="text-gray-400">Application Date is required.</p>
@@ -188,9 +188,9 @@ export function G703Component({
                 onChange={(_d, dateString) =>
                   handleState('periodTo', dateString as string)
                 }
-                //@ts-ignore
-                //@ts-nocheck
-                disabledDate={disabledDate}
+              //@ts-ignore
+              //@ts-nocheck
+              // disabledDate={disabledDate}
               />
               {showAddAndDelete ? (
                 <p className="text-gray-400">Period To is required.</p>
@@ -478,25 +478,28 @@ export function G703Component({
                   </ConfigProvider>
                 );
               }
-              return (
-                <DeleteOutlined
-                  className={`text-xl px-4 text-red-500 cursor-pointer ${showAddAndDelete ? '' : 'hidden'}`}
-                  onClick={() => {
-                    Modal.confirm({
-                      title: 'Are you sure delete this task?',
-                      icon: <ExclamationCircleFilled />,
-                      okText: 'Yes',
-                      okType: 'danger',
-                      style: { backgroundColor: 'white' },
-                      cancelText: 'No',
-                      onOk() {
-                        deleteRow(index);
-                      },
-                      onCancel() {},
-                    });
-                  }}
-                />
-              );
+              return null;
+              // return (
+              //   <DeleteOutlined
+              //     className={`text-xl px-4 text-red-500 cursor-pointer ${
+              //       showAddAndDelete ? '' : 'hidden'
+              //     }`}
+              //     onClick={() => {
+              //       Modal.confirm({
+              //         title: 'Are you sure delete this task?',
+              //         icon: <ExclamationCircleFilled />,
+              //         okText: 'Yes',
+              //         okType: 'danger',
+              //         style: { backgroundColor: 'white' },
+              //         cancelText: 'No',
+              //         onOk() {
+              //           deleteRow(index);
+              //         },
+              //         onCancel() {},
+              //       });
+              //     }}
+              //   />
+              // );
             }}
           />
         </Table>

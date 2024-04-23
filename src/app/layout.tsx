@@ -21,7 +21,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} bg-gray-100`}>
         <GoogleOAuthProvider
           clientId={String(process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID)}
         >

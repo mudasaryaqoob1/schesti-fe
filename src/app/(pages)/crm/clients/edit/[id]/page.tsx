@@ -91,7 +91,7 @@ const EditClient = () => {
     let updateClientBody = {
       firstName: values.firstName,
       lastName: values.lastName,
-      phone: values.phone,
+      phone: `${values.phone}`,
       companyName: values.companyName,
       address: values.address,
       secondAddress: values.secondAddress,
@@ -111,7 +111,6 @@ const EditClient = () => {
   }
 
   const clientData = clientQuery.data?.data?.client;
-  console.log({ clientData });
 
   return (
     <section className="mx-16">
@@ -171,7 +170,7 @@ const EditClient = () => {
                   <FormControl
                     control="input"
                     label="Phone Number"
-                    type="text"
+                    type="number"
                     name="phone"
                     placeholder="Phone number"
                   />

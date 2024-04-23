@@ -8,9 +8,19 @@ interface FetchClientParams {
   limit: number;
 }
 
+interface FetchPartnerParams {
+  page: number;
+  limit: number;
+}
+
 interface FetchSubcontractorParams {
   page: number;
   limit: number;
+}
+
+interface changeStatusBody {
+  status: boolean;
+  estimateId: string;
 }
 
 export const fetchCompanyClients = createAsyncThunk(
@@ -18,6 +28,21 @@ export const fetchCompanyClients = createAsyncThunk(
   async ({ page, limit }: FetchClientParams, { rejectWithValue }) => {
     try {
       const response = await userService.httpGetCompanyClients(page, limit);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data ||
+          'An error occurred while fetching the feed records'
+      );
+    }
+  }
+);
+
+export const fetchCompanyPartner = createAsyncThunk(
+  'company/partners',
+  async ({ page, limit }: FetchPartnerParams, { rejectWithValue }) => {
+    try {
+      const response = await userService.httpGetCompanyPartners(page, limit);
       return response;
     } catch (error: any) {
       return rejectWithValue(
@@ -78,6 +103,39 @@ export const deleteCompanyClient = createAsyncThunk(
     }
   }
 );
+
+export const changeCompanyClientStatus = createAsyncThunk(
+  'company/changeClientStatus',
+  async (
+    clientDetail: { clientId: string; status: boolean },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await userService.httpChangeClientStatus(clientDetail);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data ||
+          'An error occurred while fetching the feed records'
+      );
+    }
+  }
+);
+
+export const deleteCompanyPartner = createAsyncThunk(
+  'company/deletePartner',
+  async (partnerId: string, { rejectWithValue }) => {
+    try {
+      const response = await userService.httpDeletePartner(partnerId);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data ||
+          'An error occurred while fetching the feed records'
+      );
+    }
+  }
+);
 export const deleteSubcontractor = createAsyncThunk(
   'company/deleteSubcontractor',
   async (subcontractorId: string, { rejectWithValue }) => {
@@ -96,10 +154,29 @@ export const deleteSubcontractor = createAsyncThunk(
 
 export const deleteEstimateRequest = createAsyncThunk(
   'company/deleteEstimateRequest',
-  async (clientId: string, { rejectWithValue }) => {
+  async (estimateId: string, { rejectWithValue }) => {
     try {
       const response =
-        await estimateRequestService.httpDeleteEstimateRequest(clientId);
+        await estimateRequestService.httpDeleteEstimateRequest(estimateId);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data ||
+          'An error occurred while fetching the feed records'
+      );
+    }
+  }
+);
+
+export const changeEstimateStatus = createAsyncThunk(
+  'company/changeEstimateStatus',
+  async (statusBody: changeStatusBody, { rejectWithValue }) => {
+    try {
+      const response =
+        await estimateRequestService.httpEstimateRequestStatusChangeHandler(
+          statusBody.estimateId,
+          statusBody
+        );
       return response;
     } catch (error: any) {
       return rejectWithValue(

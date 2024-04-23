@@ -96,6 +96,12 @@ const Tabs = () => {
         </li>
         {planFeatureOptions.map((feature, index) => {
           if (feature.options) {
+            if (
+              process.env.NEXT_PUBLIC_IS_MVP_1 === 'true' &&
+              feature.title.includes('Bid')
+            ) {
+              return '';
+            }
             return (
               <li key={index}>
                 <Dropdown
@@ -103,11 +109,8 @@ const Tabs = () => {
                     items: feature.options.map((option, index) => {
                       return {
                         key: index,
-                        label: userPlanFeatures.includes(option.value) ? (
-                          <Link href={option.value}>{option.label}</Link>
-                        ) : (
-                          <p className="cursor-not-allowed">{option.label}</p>
-                        ),
+                        label: <Link href={option.value}>{option.label}</Link>
+                        ,
                       };
                     }),
                     selectable: true,
@@ -120,8 +123,9 @@ const Tabs = () => {
                         flex items-stretch justify-center py-2 
                          cursor-pointer
                         `,
-                        pathname.includes('/bid'.split('/')[1]) &&
-                          tabsStyle.active
+                        feature.options.find((option) =>
+                          pathname.includes(option.value)
+                        ) && tabsStyle.active
                       )
                     )}
                   >
@@ -148,7 +152,7 @@ const Tabs = () => {
                 {userPlanFeatures.includes(feature.value) ? (
                   <Link href={feature.value}>{feature.label}</Link>
                 ) : (
-                  <p className="cursor-not-allowed">{feature.label}</p>
+                  <Link href="/upgrade-feature">{feature.label}</Link>
                 )}
               </li>
             );

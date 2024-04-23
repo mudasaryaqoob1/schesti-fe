@@ -67,12 +67,13 @@ export function CollectPayment({ invoice, onSuccess }: Props) {
           type="number"
           placeholder="Amount"
           name="amount"
+          inputStyle="disabled"
           field={{
             onChange: formik.handleChange,
             value: formik.values.amount,
             onBlur: formik.handleBlur,
             prefix: '$',
-            disabled: true,
+            // disabled: true,
           }}
         />
 

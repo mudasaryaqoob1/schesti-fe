@@ -10,13 +10,12 @@ import { estimateRequestService } from '@/app/services/estimates.service';
 
 interface DataType {
   key: React.Key;
-  ProjectName: string;
-  ClientName: string;
-  Number: string;
-  SalePerson: string;
-  Estimator: string;
-  Status: string;
-  Action: string;
+  projectName: string;
+  clientName: string;
+  salePerson: string;
+  estimator: string;
+  totalCost: string;
+  action: string;
 }
 
 const EstimateRequestTable: React.FC = () => {
@@ -37,10 +36,13 @@ const EstimateRequestTable: React.FC = () => {
           _id: estimate?._id,
           projectName: estimate?.estimateRequestIdDetail?.projectName,
           clientName: estimate?.estimateRequestIdDetail?.clientName,
-          salePerson: `${estimate?.estimateRequestIdDetail?.salePerson?.firstName ?? ''} ${estimate?.estimateRequestIdDetail?.salePerson?.lastName ?? ''}`,
-          estimator: `${estimate?.estimateRequestIdDetail?.estimator?.firstName ?? ''} ${estimate?.estimateRequestIdDetail?.estimator?.lastName ?? ''}`,
+          salePerson: `${
+            estimate?.estimateRequestIdDetail?.salePerson?.firstName ?? ''
+          } ${estimate?.estimateRequestIdDetail?.salePerson?.lastName ?? ''}`,
+          estimator: `${
+            estimate?.estimateRequestIdDetail?.estimator?.firstName ?? ''
+          } ${estimate?.estimateRequestIdDetail?.estimator?.lastName ?? ''}`,
           totalCost: estimate?.totalCost,
-          status: estimate?.status,
           estimateRequestIdDetail: estimate.estimateRequestIdDetail?._id,
         };
       }
@@ -58,10 +60,10 @@ const EstimateRequestTable: React.FC = () => {
       key: 'viewDetail',
       label: 'View Detail',
     },
-    {
-      key: 'createSchedule',
-      label: 'Create Schedule',
-    },
+    // {
+    //   key: 'createSchedule',
+    //   label: 'Create Schedule',
+    // },
     {
       key: 'deleteEstimate',
       label: <p>Delete</p>,
@@ -105,10 +107,10 @@ const EstimateRequestTable: React.FC = () => {
       title: 'Total Cost',
       dataIndex: 'totalCost',
     },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-    },
+    // {
+    //   title: 'Status',
+    //   dataIndex: 'status',
+    // },
     {
       title: 'Action',
       dataIndex: 'action',
