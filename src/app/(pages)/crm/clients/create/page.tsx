@@ -14,7 +14,7 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import MinDesc from '@/app/component/description/minDesc';
 import CustomButton from '@/app/component/customButton/button';
 import FormControl from '@/app/component/formControl';
-
+import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
 // redux module
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
@@ -67,12 +67,11 @@ const CreateClient = () => {
   }, [token]);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState('')
 
   const submitHandler = async (values: IClient) => {
     setIsLoading(true);
     userService
-      .httpAddNewClient({...values , phone : `${values.phone}`})
+      .httpAddNewClient({ ...values, phone: `${values.phone}` })
       .then((response: any) => {
         if (response.statusCode == 201) {
           setIsLoading(false);
@@ -121,7 +120,14 @@ const CreateClient = () => {
           validationSchema={newClientSchema}
           onSubmit={submitHandler}
         >
-          {({ handleSubmit }) => {
+          {({
+            handleSubmit,
+            setFieldValue,
+            values,
+            setFieldTouched,
+            touched,
+            errors,
+          }) => {
             return (
               <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
                 <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-4 gap-4">
@@ -139,17 +145,15 @@ const CreateClient = () => {
                     name="lastName"
                     placeholder="Last Name"
                   />
-                  <FormControl
-                    control="phoneInput"
+                  <PhoneNumberInputWithLable
                     label="Phone Number"
-                    type="number"
-                    name="phone"
-                    placeholder="Phone number"
-                    onChange={(value) => {
-                      console.log(value , 'valuevalue')
-                    }}
-                    value={`3434`}
-                    min={1}
+                    onChange={(val: string) => setFieldValue('phone', val)}
+                    value={values.phone}
+                    onBlur={() => setFieldTouched('phone', true)}
+                    hasError={touched.phone && Boolean(errors.phone)}
+                    errorMessage={
+                      touched.phone && errors.phone ? errors.phone : ''
+                    }
                   />
                   <FormControl
                     control="input"
