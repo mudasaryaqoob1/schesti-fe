@@ -3,7 +3,7 @@ import type { RcFile, UploadFile } from 'antd/es/upload';
 import Dragger from 'antd/es/upload/Dragger';
 import Image from 'next/image';
 import { toast } from 'react-toastify';
-import { Divider, Spin } from 'antd';
+import { Divider, Progress, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import type { FormikProps } from 'formik';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
@@ -18,6 +18,7 @@ type Props = {
 export function ProjectUploadFiles({ formik, children, setShouldContinue }: Props) {
   const [files, setFiles] = useState<UploadFile[]>([]);
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   // function removeFile(id: string) {
   //   const newFiles = files.filter((f) => {
@@ -43,7 +44,11 @@ export function ProjectUploadFiles({ formik, children, setShouldContinue }: Prop
     setShouldContinue(false);
     try {
       const filesData = files.map(async (file) => {
-        const url = await new AwsS3(file, 'documents/post-project/').getS3URL();
+        const url = await new AwsS3(file, 'documents/post-project/').getS3URLWithProgress(progress => {
+          // calculate progress upto 100%
+          const percent = Math.round((progress.loaded / progress.total) * 100);
+          setProgress(percent);
+        });
         return {
           url,
           extension: (file as RcFile).name.split('.').pop() || '',
@@ -56,6 +61,7 @@ export function ProjectUploadFiles({ formik, children, setShouldContinue }: Prop
         ...(formik.values.projectFiles || []),
         ...uploadedFiles,
       ]);
+      setProgress(0);
     } catch (error) {
       console.error('Error uploading file to S3:', error);
       toast.error(`Unable to upload Files`);
@@ -78,6 +84,7 @@ export function ProjectUploadFiles({ formik, children, setShouldContinue }: Prop
         title="Upload File"
         className="text-[20px] leading-[30px]"
       />
+      {progress > 0 ? <Progress percent={progress} type='line' /> : null}
       <div className="mt-4">
         <Dragger
           name={'file'}
