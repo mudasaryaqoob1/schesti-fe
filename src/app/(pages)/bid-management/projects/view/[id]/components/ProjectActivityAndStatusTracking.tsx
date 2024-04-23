@@ -1,4 +1,3 @@
-import CustomButton from '@/app/component/customButton/white';
 import { InputComponent } from '@/app/component/customInput/Input';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { IBidActivity } from '@/app/interfaces/bid-management/bid-management.interface';
@@ -9,6 +8,7 @@ import moment from 'moment';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import ExportProjectActivityAndStatus from '../../../components/ExportProjectActivityAndStatusTracking';
 
 type Props = {
   projectId: string;
@@ -54,13 +54,7 @@ export function ProjectAcitivityAndStatusTracking({ projectId }: Props) {
         />
         <div className="flex items-center space-x-3">
           <div className="pt-2">
-            <CustomButton
-              text="Export"
-              icon="/uploadcloud.svg"
-              iconwidth={20}
-              iconheight={20}
-              className="!w-28"
-            />
+            <ExportProjectActivityAndStatus activities={activities} />
           </div>
           <div className="w-96">
             <InputComponent
