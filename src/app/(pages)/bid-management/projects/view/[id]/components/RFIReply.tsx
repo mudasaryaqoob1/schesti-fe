@@ -18,6 +18,7 @@ import { Radio, Spin } from "antd";
 import CustomButton from "@/app/component/customButton/button";
 import { useClickAway } from "ahooks/es";
 import ModalComponent from "@/app/component/modal";
+import { ShowFileComponent } from "@/app/(pages)/bid-management/components/ShowFile.component";
 
 type Props = {
     projectId: string;
@@ -170,7 +171,7 @@ export function RFIReply({ onSuccess, projectId, messageId }: Props) {
                                 <Spin
                                     spinning={isFileUploading}
                                 >
-                                    <Dragger
+                                    {!rfiFormik.values.file ? <Dragger
                                         name={'file'}
                                         accept="image/*,gif,application/pdf"
 
@@ -200,9 +201,14 @@ export function RFIReply({ onSuccess, projectId, messageId }: Props) {
                                         <p className="text-[12px] leading-3 text-[#98A2B3]">
                                             PNG, GIF, JPG, Max size: 2MB
                                         </p>
-                                    </Dragger>
+                                    </Dragger> : null}
                                     {rfiFormik.values.file ?
-                                        <p>{rfiFormik.values.file.name}</p>
+                                        <ShowFileComponent
+                                            file={rfiFormik.values.file}
+                                            onDelete={() => {
+                                                rfiFormik.setFieldValue('file', undefined);
+                                            }}
+                                        />
                                         : null}
                                 </Spin>
                             </div>

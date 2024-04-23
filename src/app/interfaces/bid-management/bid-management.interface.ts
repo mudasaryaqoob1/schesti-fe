@@ -2,7 +2,7 @@ import { ITrade } from '../trade.interface';
 import { IUserInterface } from '../user.interface';
 
 
-interface IBidDocument {
+export interface IBidDocument {
   url: string;
   extension: string;
   type: string;
