@@ -122,11 +122,12 @@ const FinalizeProjectSchema = Yup.object().shape({
   platformType: Yup.string().required('Platform Type is required'),
 });
 
-function StaticTime() {
+
+function StaticTime({ minutes = 1 }: { minutes?: number }) {
   return (
     <div className="flex items-center space-x-2">
       <Image src={'/clock.svg'} height={10} width={10} alt="clock" />
-      <Description title="3 Minutes" className="text-[#98A2B3] text-xs" />
+      <Description title={`${minutes} Minute${minutes > 1 ? "s" : ""}`} className="text-[#98A2B3] text-xs" />
     </div>
   );
 }
@@ -153,7 +154,7 @@ let stepItems: StepsProps['items'] = [
   },
   {
     title: <h4>Project file</h4>,
-    description: <StaticTime />,
+    description: <StaticTime minutes={2} />,
     className: 'mt-5',
   },
   {

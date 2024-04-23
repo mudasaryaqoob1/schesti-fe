@@ -514,10 +514,14 @@ export function PostFinalize({ formik, children }: Props) {
                 </Spin>
               </Dragger>
 
-              <SenaryHeading
-                title="Download format"
+              <a
                 className="text-[#7F56D9] text-[14px] leading-5"
-              />
+                // downloadable
+                href="/email-template.xlsx"
+                download="email-template.xlsx"
+              >
+                Download format
+              </a>
             </div>
           </div>
         </div>
