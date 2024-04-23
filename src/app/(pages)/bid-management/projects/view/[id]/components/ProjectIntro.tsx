@@ -22,6 +22,7 @@ import Dragger from 'antd/es/upload/Dragger';
 import { postProjectActions, setFormStepAction, setPostProjectAction } from '@/redux/post-project/post-project.slice';
 import { Routes } from '@/app/utils/plans.utils';
 import { useRouter } from 'next/navigation';
+import ModalComponent from '@/app/component/modal';
 
 type Props = {
   id: string;
@@ -163,7 +164,7 @@ export function ProjectIntro({ id }: Props) {
           }}
         />
 
-        <div className='w-fit relative'>
+        <div className='w-fit'>
           <CustomButton
             text="Update"
             className="!w-32"
@@ -172,69 +173,74 @@ export function ProjectIntro({ id }: Props) {
             iconheight={20}
             onClick={() => setShowUpdateModal(true)}
           />
-          {showUpdateModal ? <div className='absolute right-0 top-12 z-10'>
-            <Popups
-              title='Update'
-              onClose={() => {
-                setShowUpdateModal(false);
-              }}
-            >
-              <div className='space-y-3'>
-                <InputComponent
-                  label='Title'
-                  name='title'
-                  placeholder='Enter title'
-                  type='text'
-                />
+          <ModalComponent
+            open={showUpdateModal}
+            setOpen={setShowUpdateModal}
+          >
+            <div>
+              <Popups
+                title='Update'
+                onClose={() => {
+                  setShowUpdateModal(false);
+                }}
+              >
+                <div className='space-y-3'>
+                  <InputComponent
+                    label='Title'
+                    name='title'
+                    placeholder='Enter title'
+                    type='text'
+                  />
 
-                <TextAreaComponent
-                  label='Description'
-                  name='description'
-                  field={{
-                    rows: 7
-                  }}
-                />
-
-                <div>
-                  <Dragger
-                    name={'file'}
-                    accept="image/*,gif,application/pdf"
-
-                    beforeUpload={() => {
-
-                      return false;
+                  <TextAreaComponent
+                    label='Description'
+                    name='description'
+                    field={{
+                      rows: 7
                     }}
-                    style={{
-                      borderStyle: 'dashed',
-                      borderWidth: 6,
-                    }}
-                    itemRender={() => {
-                      return null;
-                    }}
-                  >
-                    <p className="ant-upload-drag-icon">
-                      <Image
-                        src={'/uploadcloud.svg'}
-                        width={50}
-                        height={50}
-                        alt="upload"
-                      />
-                    </p>
-                    <p className="text-[12px] py-2 leading-3 text-[#98A2B3]">
-                      Drop your image here, or browse
-                    </p>
-                    <p className="text-[12px] leading-3 text-[#98A2B3]">
-                      PNG, GIF, JPG, Max size: 2MB
-                    </p>
-                  </Dragger>
+                  />
+
+                  <div>
+                    <Dragger
+                      name={'file'}
+                      accept="image/*,gif,application/pdf"
+
+                      beforeUpload={() => {
+
+                        return false;
+                      }}
+                      style={{
+                        borderStyle: 'dashed',
+                        borderWidth: 6,
+                      }}
+                      itemRender={() => {
+                        return null;
+                      }}
+                    >
+                      <p className="ant-upload-drag-icon">
+                        <Image
+                          src={'/uploadcloud.svg'}
+                          width={50}
+                          height={50}
+                          alt="upload"
+                        />
+                      </p>
+                      <p className="text-[12px] py-2 leading-3 text-[#98A2B3]">
+                        Drop your image here, or browse
+                      </p>
+                      <p className="text-[12px] leading-3 text-[#98A2B3]">
+                        PNG, GIF, JPG, Max size: 2MB
+                      </p>
+                    </Dragger>
+                  </div>
+
+                  <CustomButton
+                    text='Update'
+                  />
                 </div>
-
-                <CustomButton
-                  text='Update'
-                />
-              </div>
-            </Popups>
-          </div> : null}
+              </Popups>
+            </div>
+          </ModalComponent>
         </div>
       </div>
     </div>
