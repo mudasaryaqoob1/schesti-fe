@@ -98,7 +98,7 @@ const CreateTicket = () => {
         <div className="col-span-4">
           <Image
             alt="Service24-7"
-            src="/service24-7.svg"
+            src="/Service24-7.svg"
             width={498}
             height={628}
           />

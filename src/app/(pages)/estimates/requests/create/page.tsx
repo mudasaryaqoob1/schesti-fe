@@ -7,7 +7,9 @@ import { twMerge } from 'tailwind-merge';
 import { toast } from 'react-toastify';
 import { Form, Formik } from 'formik';
 import { useDispatch } from 'react-redux';
-
+import { useSearchParams } from 'next/navigation';
+import { Upload, type UploadProps } from 'antd';
+import { withAuth } from '@/app/hoc/withAuth';
 // module imports
 
 import CustomButton from '@/app/component/customButton/button';
@@ -21,12 +23,12 @@ import { IEstimateRequest } from '@/app/interfaces/estimateRequests/estimateRequ
 import ExistingClient from '../existingClient';
 import { estimateRequestService } from '@/app/services/estimates.service';
 import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
+import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
 import AwsS3 from '@/app/utils/S3Intergration';
 import { AppDispatch } from '@/redux/store';
 import { fetchUsers } from '@/redux/userSlice/user.thunk';
+import { fetchCompanyClients } from '@/redux/company/company.thunk';
 import { byteConverter } from '@/app/utils/byteConverter';
-import { Upload, type UploadProps } from 'antd';
-import { withAuth } from '@/app/hoc/withAuth';
 
 const clientInfoSchema: any = Yup.object({
   clientName: Yup.string().required('Client is required!'),
@@ -62,21 +64,12 @@ const clientInfoSchema: any = Yup.object({
   // ).min(1, 'otherDocuments required'),
 });
 
-const initialValues: IEstimateRequest = {
-  clientName: '',
-  companyName: '',
-  email: '',
-  phone: '',
-  projectName: '',
-  leadSource: '',
-  projectValue: '',
-  projectInformation: '',
-  salePerson: '',
-  estimator: '',
-};
 const CreateEstimateRequest = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
+  const searchParams = useSearchParams();
+
+  const paramsClientId = searchParams.get('clientId');
 
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -87,6 +80,21 @@ const CreateEstimateRequest = () => {
   const [drawingsDocuments, setDrawingsDocuments] = useState<any>([]);
   const [takeOffReports, setTakeOffReports] = useState<any>([]);
   const [otherDocuments, setOtherDocuments] = useState<any>([]);
+  const [selectedClientDetail, setSelectedClientDetail] = useState<IClient>();
+
+
+  const initialValues: IEstimateRequest = {
+    clientName: selectedClientDetail ? selectedClientDetail.firstName : '',
+    companyName: selectedClientDetail ? selectedClientDetail.lastName : '',
+    email: selectedClientDetail ? selectedClientDetail.email : '',
+    phone: selectedClientDetail ? selectedClientDetail.phone : '',
+    projectName: '',
+    leadSource: '',
+    projectValue: '',
+    projectInformation: '',
+    salePerson: '',
+    estimator: '',
+  };
 
   const fetchUsersHandler = useCallback(async () => {
     let result: any = await dispatch(
@@ -112,8 +120,22 @@ const CreateEstimateRequest = () => {
     setSalePersonsOption(saleManagers);
   }, []);
 
+  const fetchClients = useCallback(async () => {
+    let { payload }: any = await dispatch(
+      fetchCompanyClients({ page: 1, limit: 10 })
+    );
+    if (paramsClientId) {
+      const extractClientDetail = payload?.data?.clients;
+      let selectClient = extractClientDetail.find(
+        (client: IClient) => client._id === paramsClientId
+      );
+      setSelectedClientDetail(selectClient);
+    }
+  }, []);
+
   useEffect(() => {
     fetchUsersHandler();
+    fetchClients();
   }, []);
 
   const submitHandler = async (values: IEstimateRequest) => {
@@ -127,7 +149,7 @@ const CreateEstimateRequest = () => {
     // }
     else {
       setIsLoading(true);
-      toast.success('File Uploading...', { autoClose: 10 });
+      toast.success('File Uploading...', { autoClose: 20 });
 
       const drawingDocs = await uploadDocumentToS3Handler(drawingsDocuments);
       const takeOffDocs = await uploadDocumentToS3Handler(takeOffReports);
@@ -137,7 +159,7 @@ const CreateEstimateRequest = () => {
           estimateRequestService
             .httpAddNewEstimateRequest({
               ...values,
-              phone: +values.phone,
+              phone: values.phone,
               otherDocuments: otherDocs,
               takeOffReports: takeOffDocs,
               drawingsDocuments: drawingDocs,
@@ -292,8 +314,16 @@ const CreateEstimateRequest = () => {
         initialValues={initialValues}
         validationSchema={clientInfoSchema}
         onSubmit={submitHandler}
+        enableReinitialize={true}
       >
-        {({ handleSubmit, setFieldValue }) => {
+        {({
+          handleSubmit,
+          setFieldValue,
+          values,
+          setFieldTouched,
+          touched,
+          errors,
+        }) => {
           return (
             <>
               <ModalComponent
@@ -345,13 +375,15 @@ const CreateEstimateRequest = () => {
                       name="email"
                       placeholder="Enter Email"
                     />
-                    <FormControl
-                      control="input"
+                    <PhoneNumberInputWithLable
                       label="Phone Number"
-                      type="number"
-                      name="phone"
-                      min={1}
-                      placeholder="Phone number"
+                      onChange={(val: string) => setFieldValue('phone', val)}
+                      value={values.phone}
+                      onBlur={() => setFieldTouched('phone', true)}
+                      hasError={touched.phone && Boolean(errors.phone)}
+                      errorMessage={
+                        touched.phone && errors.phone ? errors.phone : ''
+                      }
                     />
                   </div>
                 </div>

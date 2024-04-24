@@ -22,6 +22,7 @@ import { selectEstimateRequests } from '@/redux/estimate/estimateRequestSelector
 import ExistingClient from '../../existingClient';
 import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 import { IEstimateRequest } from '@/app/interfaces/estimateRequests/estimateRequests.interface';
+import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
 import { byteConverter } from '@/app/utils/byteConverter';
 import AwsS3 from '@/app/utils/S3Intergration';
 import { withAuth } from '@/app/hoc/withAuth';
@@ -148,7 +149,7 @@ const EditEstimateRequest = () => {
             clientName: values.clientName,
             companyName: values.companyName,
             email: values.email,
-            phone: +values.phone,
+            phone: values.phone,
             projectName: values.projectName,
             leadSource: values.leadSource,
             projectValue: values.projectValue,
@@ -313,7 +314,12 @@ const EditEstimateRequest = () => {
         enableReinitialize
         onSubmit={submitHandler}
       >
-        {({ handleSubmit, setFieldValue }) => {
+        {({   handleSubmit,
+          setFieldValue,
+          values,
+          setFieldTouched,
+          touched,
+          errors }) => {
           return (
             <>
               <ModalComponent
@@ -365,12 +371,15 @@ const EditEstimateRequest = () => {
                       name="email"
                       placeholder="Enter Email"
                     />
-                    <FormControl
-                      control="input"
+                   <PhoneNumberInputWithLable
                       label="Phone Number"
-                      type="number"
-                      name="phone"
-                      placeholder="Phone number"
+                      onChange={(val: string) => setFieldValue('phone', val)}
+                      value={values.phone}
+                      onBlur={() => setFieldTouched('phone', true)}
+                      hasError={touched.phone && Boolean(errors.phone)}
+                      errorMessage={
+                        touched.phone && errors.phone ? errors.phone : ''
+                      }
                     />
                   </div>
                 </div>

@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { userService } from '@/app/services/user.service';
 // import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
 import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
+import { toast } from 'react-toastify';
 
 interface FetchClientParams {
   page: number;
@@ -110,6 +111,7 @@ export const deleteUser = createAsyncThunk(
   async (userId: string, { rejectWithValue }) => {
     try {
       const response = await userService.httpDeleteUser(userId);
+      toast.success('user deleted successfully');
       return response;
     } catch (error: any) {
       return rejectWithValue(

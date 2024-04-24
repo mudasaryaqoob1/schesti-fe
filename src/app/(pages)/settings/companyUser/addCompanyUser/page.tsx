@@ -35,7 +35,6 @@ const AddNewUser = () => {
   const router = useRouter();
   const { user } = useSelector((state: any) => state.user);
 
-  console.log({ user });
 
   const [isLoading, setisLoading] = useState(false);
 
