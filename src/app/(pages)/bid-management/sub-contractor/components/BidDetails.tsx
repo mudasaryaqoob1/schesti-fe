@@ -93,7 +93,6 @@ export function BidDetails({
       console.log('error', error);
       if (error.response?.data?.message) {
         toast.error(error.response?.data.message);
-        // router.push(`/bid-management/sub-contractor/bids`);
       }
     },
   });
@@ -184,9 +183,7 @@ export function BidDetails({
           View full details
         </Link>
       </div>
-
       <Divider />
-
       <div className="my-4 space-y-3">
         <div className="flex items-center space-x-1">
           <SenaryHeading
@@ -210,7 +207,6 @@ export function BidDetails({
             className="text-[#475467] text-sm leading-4 font-semibold"
           />
         </div>
-
         <div className="flex items-center space-x-1">
           <SenaryHeading
             title="Bid Date:"
@@ -222,9 +218,7 @@ export function BidDetails({
           />
         </div>
       </div>
-
       <Divider />
-
       <div>
         <SenaryHeading
           title="Who is bidding the project?"
@@ -272,9 +266,7 @@ export function BidDetails({
           </div>
         ) : null}
       </div>
-
       <Divider className="my-2" />
-
       <div className="flex items-center py-[5px] px-[11px] space-x-2 cursor-pointer">
         <Image
           alt="cloud icon"
