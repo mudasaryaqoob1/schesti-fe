@@ -25,6 +25,8 @@ export interface dataInterface {
   details: ReportDataInterface;
 }
 const groupByType = (items: dataInterface[]): dataInterface[][] => {
+  console.log(items,' ===> Data interface');
+  
   const grouped = items.reduce(
     (acc, item) => {
       // Initialize the array for this type if it doesn't already exist

@@ -20,6 +20,8 @@ const ReportCard: React.FC<Props> = ({ entity }) => {
             <div className="border-2  w-fit h-fit cover max-w-[50%]">
               <Image
                 src={item.image}
+                width={100}
+                height={100}
                 alt={`Captured content ${index}`}
                 style={{ width: '100%', height: '100%' }}
                 className="image-cover"

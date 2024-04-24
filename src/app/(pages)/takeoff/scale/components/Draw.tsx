@@ -80,6 +80,7 @@ const Draw: React.FC<Props> = ({
     count: [],
     dynamic: [],
   });
+  console.log(draw, 'drawdrawdrawdrawdrawdrawdrawdrawdrawdraw')
   const { deleteDrawHistory, updateDrawHistory } = useContext(
     DrawHistoryContext
   ) as DrawHistoryContextProps;

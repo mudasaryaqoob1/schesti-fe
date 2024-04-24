@@ -34,6 +34,7 @@ const Upload = () => {
 
   const handleFileChange = async (event: any) => {
     const file = event.target.files[0];
+    console.log(file, " file full");
 
     if (file) {
       const PDFJS = await pdfjs();

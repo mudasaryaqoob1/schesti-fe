@@ -64,6 +64,8 @@ const Scale = () => {
     }
     handleScaleData(newData);
   }, []);
+  console.log(uploadFileData, " uploadFileData");
+  
 
   return (
     <>
