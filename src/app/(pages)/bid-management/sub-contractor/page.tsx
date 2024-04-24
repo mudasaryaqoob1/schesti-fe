@@ -159,13 +159,14 @@ function BidManagementSubContractorPage() {
             />
           </div>
 
-          <div className="flex-1 flex items-center justify-end  space-x-2">
+          <div className="flex-1 flex items-center justify-end space-x-2">
             <div className="!w-96">
               <InputComponent
                 label=""
                 type="text"
                 placeholder="Search"
                 name="search"
+                inputStyle={'h-[57px] !mt-0'}
                 prefix={<SearchOutlined size={20} />}
                 field={{
                   value: search,

@@ -11,6 +11,9 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
+import Link from 'next/link';
+import { downloadFile } from '@/app/utils/downloadFile';
+import { size } from 'lodash';
 
 type Props = {
   bid: any;
@@ -40,17 +43,21 @@ export function BiddingProjectDetails({ bid, refetchSavedBids, setSelectedBid }:
       toast.success('Bid removed Successfully');
       setSelectedBid(null);
       refetchSavedBids();
-    //   setSelectedProjectSavedBid(null);
     }
   },
   onError(error: any) {
     console.log('error', error);
     if (error.response?.data?.message) {
       toast.error(error.response?.data.message);
-      // router.push(`/bid-management/sub-contractor/bids`);
     }
   },
 });
+
+const downloadAllFiles = async (files: any[]) => {
+  files.forEach(async (file: any) => {
+    await downloadFile(file.url, file.name)
+  })
+}
 
 
   return (
@@ -67,13 +74,6 @@ export function BiddingProjectDetails({ bid, refetchSavedBids, setSelectedBid }:
               className="text-[#7138DF] font-normal text-xs leading-4"
             />
           </div>
-          <Image
-            alt="trash icon"
-            src={'/trash.svg'}
-            width={16}
-            height={16}
-            className="cursor-pointer"
-          />
         </div>
       </div>
 
@@ -87,10 +87,12 @@ export function BiddingProjectDetails({ bid, refetchSavedBids, setSelectedBid }:
           title={bid?.projectId?.description}
           className="text-[#475467] text-[14px] leading-6 font-normal mt-2"
         />
-
-        <p className="text-[#7F56D9] underline underline-offset-2 mt-4 text-[14px] leading-6 font-normal cursor-pointer">
+        <Link
+          href={`/bid-management/details/${bid.projectId?._id}`}
+          className="text-[#7F56D9] underline underline-offset-2 mt-4 text-[14px] leading-6 font-normal cursor-pointer"
+        >
           View full details
-        </p>
+        </Link>
       </div>
 
       <Divider />
@@ -129,9 +131,7 @@ export function BiddingProjectDetails({ bid, refetchSavedBids, setSelectedBid }:
           />
         </div>
       </div>
-
       <Divider />
-
       <div className="flex items-center py-[5px] px-[11px] space-x-2 cursor-pointer">
         <Image
           alt="cloud icon"
@@ -139,10 +139,13 @@ export function BiddingProjectDetails({ bid, refetchSavedBids, setSelectedBid }:
           width={16}
           height={16}
         />
-        <SenaryHeading
-          title="Download all files"
-          className="text-[#7138DF] text-xs leading-4 font-semibold underline underline-offset-2"
-        />
+        {size(bid?.projectId?.projectFiles) > 0 && (
+          <SenaryHeading
+            onClick={() => downloadAllFiles(bid?.projectId?.projectFiles)}
+            title="Download all files"
+            className="text-[#7138DF] text-xs leading-4 font-semibold underline underline-offset-2"
+          />
+        )}
       </div>
 
       <div className="mt-4 space-y-2">

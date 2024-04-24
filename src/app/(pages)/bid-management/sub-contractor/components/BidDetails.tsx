@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import CustomButton from '@/app/component/customButton/button';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import {
@@ -22,22 +22,30 @@ import Link from 'next/link';
 import { isEmpty, size } from 'lodash';
 import { SendEmailModal } from './SendEamil';
 import { downloadFile } from '@/app/utils/downloadFile';
+import { proposalService } from '@/app/services/proposal.service';
 
 type Props = {
   bid: IBidManagement;
   selectedProjectSavedBid?: any;
   setSelectedProjectSavedBid?: any;
 };
-type RemoveUserBidProps =  {
+type RemoveUserBidProps = {
   biddingId: string;
-}
+};
 
 type SaveUserBidProps = {
   projectId: string;
   isFavourite?: boolean;
 };
-export function BidDetails({ bid, selectedProjectSavedBid, setSelectedProjectSavedBid }: Props) {
+export function BidDetails({
+  bid,
+  selectedProjectSavedBid,
+  setSelectedProjectSavedBid,
+}: Props) {
   const router = useRouter();
+
+  const [isDetailsLoading, setIsDetailsLoading] = useState(false);
+  const [bidSubmittedDetails, setBidSubmittedDetails] = useState(null);
 
   const saveUserBidMutation = useMutation<
     IResponseInterface<{ projectId: ISaveUserBid }>,
@@ -65,40 +73,75 @@ export function BidDetails({ bid, selectedProjectSavedBid, setSelectedProjectSav
   });
 
   const removeUserBidMutation = useMutation<
-  IResponseInterface<{ biddingId: RemoveUserBidProps }>,
-  AxiosError<{ message: string }>,
-  RemoveUserBidProps
->({
-  //@ts-ignore
-  mutationKey: 'saveUserBid',
-  mutationFn: async (values: RemoveUserBidProps) => {
-    return bidManagementService.httpRemoveUserProjectBid(values.biddingId);
-  },
-  onSuccess(res: any) {
-    console.log('res', res);
-    if (res.data && res.data) {
-      toast.success('Bid removed Successfully');
-      setSelectedProjectSavedBid(null);
+    IResponseInterface<{ biddingId: RemoveUserBidProps }>,
+    AxiosError<{ message: string }>,
+    RemoveUserBidProps
+  >({
+    //@ts-ignore
+    mutationKey: 'saveUserBid',
+    mutationFn: async (values: RemoveUserBidProps) => {
+      return bidManagementService.httpRemoveUserProjectBid(values.biddingId);
+    },
+    onSuccess(res: any) {
+      console.log('res', res);
+      if (res.data && res.data) {
+        toast.success('Bid removed Successfully');
+        setSelectedProjectSavedBid(null);
+      }
+    },
+    onError(error: any) {
+      console.log('error', error);
+      if (error.response?.data?.message) {
+        toast.error(error.response?.data.message);
+        // router.push(`/bid-management/sub-contractor/bids`);
+      }
+    },
+  });
+
+  useEffect(() => {
+    if (!isEmpty(bid?._id)) {
+      getProjectProposalDetails(bid?._id);
     }
-  },
-  onError(error: any) {
-    console.log('error', error);
-    if (error.response?.data?.message) {
-      toast.error(error.response?.data.message);
-      // router.push(`/bid-management/sub-contractor/bids`);
+  }, [bid?._id]);
+
+  const getProjectProposalDetails = async (bidProjectId: any) => {
+    setIsDetailsLoading(true);
+    setBidSubmittedDetails(null);
+    try {
+      const { data }: any =
+        await proposalService.httpGetProposalDetailsByProjectId(bidProjectId);
+      if (data && data.bidDetails) {
+        setIsDetailsLoading(false);
+        setBidSubmittedDetails(data?.bidDetails);
+      }
+    } catch (err) {
+      setIsDetailsLoading(false);
+      console.log('could not get project proposal details', err);
     }
-  },
-});
+  };
 
   const downloadAllFiles = async (files: any[]) => {
     files.forEach(async (file: any) => {
-      await downloadFile(file.url, file.name)
-    })
-
-  }
+      await downloadFile(file.url, file.name);
+    });
+  };
 
   return (
     <div>
+      {bidSubmittedDetails && !isDetailsLoading && (
+        <div className="flex rounded p-2 flex-col bg-[#F5F6FA]">
+          <SenaryHeading
+            title={'You have already submitted a proposal'}
+            className="text-[#475467] text-[14px] leading-6 font-normal mt-2"
+          />
+          <Link
+            href={`/bid-management/details/${bid?._id}`}
+            className="text-[#27AE60] underline underline-offset-2 mb-2 text-[14px] leading-6 font-normal cursor-pointer"
+          >
+            View Proposal
+          </Link>
+        </div>
+      )}
       <div className="flex items-center justify-between">
         <SenaryHeading
           title={`Posted: ${moment(bid.createdAt).format(
@@ -191,7 +234,10 @@ export function BidDetails({ bid, selectedProjectSavedBid, setSelectedProjectSav
           <div className="bg-[#FCFAFF] mt-3 rounded-md  p-3 border border-[#EBEAEC]">
             <div className="flex justify-between">
               <div className="flex mt-1 space-x-2">
-                <Avatar size={24} src={bid.user?.avatar || bid.user?.companyLogo}>
+                <Avatar
+                  size={24}
+                  src={bid.user?.avatar || bid.user?.companyLogo}
+                >
                   {bid.user.name[0]}
                 </Avatar>
 
@@ -238,7 +284,7 @@ export function BidDetails({ bid, selectedProjectSavedBid, setSelectedProjectSav
         />
         {size(bid?.projectFiles) > 0 && (
           <SenaryHeading
-            onClick={()=>downloadAllFiles(bid.projectFiles)}
+            onClick={() => downloadAllFiles(bid.projectFiles)}
             title="Download all files"
             className="text-[#7138DF] text-xs leading-4 font-semibold underline underline-offset-2"
           />
@@ -261,13 +307,21 @@ export function BidDetails({ bid, selectedProjectSavedBid, setSelectedProjectSav
           />
         ) : (
           <CustomButton
-            onClick={() => removeUserBidMutation.mutate({biddingId: selectedProjectSavedBid?._id})}
+            onClick={() =>
+              removeUserBidMutation.mutate({
+                biddingId: selectedProjectSavedBid?._id,
+              })
+            }
             text="Remove from my bidding projects"
             className="!text-[red] !bg-transparent !border-[red] !text-base !leading-7 "
           />
         )}
 
-        <CreateRFI isProjectOwner={false} onSuccess={() => {}} projectId={bid._id} />
+        <CreateRFI
+          isProjectOwner={false}
+          onSuccess={() => {}}
+          projectId={bid._id}
+        />
       </div>
     </div>
   );
