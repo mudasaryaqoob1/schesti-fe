@@ -8,7 +8,7 @@ import { CALL_ICON, GREEN_TRACKING_ICON, MAIL_ICON, NAVIGATION_ICON } from "./ic
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        padding: 10,
+        paddingLeft: 30,
         marginTop: 8,
         borderBottomWidth: 1,
         borderBottomColor: '#EAECF0',
@@ -60,7 +60,8 @@ function ProjectActivityAndStatusPDF({ activities }: Props) {
                     fontSize: 20,
                     color: "#344054",
                     fontWeight: "semibold",
-                    marginTop: 8
+                    marginTop: 8,
+                    paddingLeft: 30
                 }}
             >
                 Activity and Status Tracking
@@ -75,15 +76,15 @@ function ProjectActivityAndStatusPDF({ activities }: Props) {
                             {typeof activityUser !== 'string' ? activityUser.companyName : ""}
                         </Text>
                         <View style={styles.secondaryInfo}>
-                            <Image src={NAVIGATION_ICON} style={{ height: 20, width: 20, marginHorizontal: 3 }} />
+                            <Image src={NAVIGATION_ICON} style={{ height: 15, width: 15, marginHorizontal: 3 }} />
                             <Text style={styles.secondaryText}>
                                 {typeof activityUser !== 'string' ? activityUser.address : ""}
                             </Text>
-                            <Image src={MAIL_ICON} style={{ height: 20, width: 20, marginHorizontal: 3 }} />
+                            <Image src={MAIL_ICON} style={{ height: 15, width: 15, marginHorizontal: 3 }} />
                             <Text style={styles.secondaryText}>
                                 {typeof activityUser !== 'string' ? activityUser.email : ""}
                             </Text>
-                            <Image src={CALL_ICON} style={{ height: 20, width: 20, marginHorizontal: 3 }} />
+                            <Image src={CALL_ICON} style={{ height: 15, width: 15, marginHorizontal: 3 }} />
                             <Text style={styles.secondaryText}>
                                 {typeof activityUser !== 'string' ? String(activityUser.phone) : ""}
                             </Text>

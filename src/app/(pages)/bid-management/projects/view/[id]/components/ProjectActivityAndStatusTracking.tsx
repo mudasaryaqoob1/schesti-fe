@@ -8,7 +8,11 @@ import moment from 'moment';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import ExportProjectActivityAndStatus from '../../../components/ExportProjectActivityAndStatusTracking';
+import dynamic from 'next/dynamic';
+const ExportProjectActivityAndStatus = dynamic(
+  () => import('../../../components/ExportProjectActivityAndStatusTracking')
+);
+
 
 type Props = {
   projectId: string;
