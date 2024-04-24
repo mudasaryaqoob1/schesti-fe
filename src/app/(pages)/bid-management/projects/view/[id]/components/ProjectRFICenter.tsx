@@ -1,4 +1,3 @@
-import WhiteButton from '@/app/component/customButton/white';
 import { InputComponent } from '@/app/component/customInput/Input';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { IRFI } from '@/app/interfaces/rfi.interface';
@@ -15,6 +14,10 @@ import { UpdateRFI } from '@/app/(pages)/bid-management/sub-contractor/component
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
+import dynamic from 'next/dynamic';
+const ExportProjectRFIs = dynamic(() => import('../../../components/ExportProjectRFI'), { ssr: false });
+
+
 
 type Props = {
   projectId: string
@@ -69,12 +72,7 @@ export function ProjectRFICenter({ projectId }: Props) {
 
         <div className="flex items-center space-x-2">
           <div className="pt-1">
-            <WhiteButton
-              text="Export"
-              icon="/uploadcloud.svg"
-              iconwidth={20}
-              iconheight={20}
-            />
+            <ExportProjectRFIs rfis={rfis} />
           </div>
 
           <div className="w-96">
