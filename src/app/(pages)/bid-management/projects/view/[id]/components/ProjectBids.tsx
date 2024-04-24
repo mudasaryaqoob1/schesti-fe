@@ -1,9 +1,11 @@
 import { Bid_How_Long_Price_Increase } from '@/app/(pages)/bid-management/utils';
+import CustomButton from '@/app/component/customButton/white';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import type { IBidProjectScope, IProjectBidding } from '@/app/interfaces/bid-management/bid-management.interface';
 import { bidManagementService } from '@/app/services/bid-management.service';
 import { USCurrencyFormat } from '@/app/utils/format';
 import { Divider, Skeleton, Table } from 'antd';
+import { Excel } from 'antd-table-saveas-excel';
 import type { ColumnsType } from 'antd/es/table';
 import { AxiosError } from 'axios';
 import moment from 'moment';
@@ -88,6 +90,20 @@ export function ProjectBids({ projectId }: Props) {
     const result = Bid_How_Long_Price_Increase.find(res => res.value === duration);
     return result ? result.label : "";
   }
+
+  const handleClick = (selectedBid: IProjectBidding) => {
+    const excel = new Excel();
+    excel
+      .addSheet(selectedBid.projectId.projectName)
+      .addColumns(columns as any)
+      .addDataSource(selectedBid.projectScopes, {
+        str2Percent: true,
+      })
+      .saveAs(
+        `${selectedBid.projectId.projectName
+        }.xlsx`
+      );
+  };
 
   return (
     <div className=" mt-6 mb-4 md:ms-[69px] md:me-[59px] mx-4 ">
@@ -289,7 +305,7 @@ export function ProjectBids({ projectId }: Props) {
 
             <Divider />
 
-            <div className="mt-2 flex items-center justify-between">
+            <div className="mt-2 space-y-2">
               <div className="flex items-center space-x-1">
                 <SenaryHeading
                   title="How long this price will stay?"
@@ -326,10 +342,16 @@ export function ProjectBids({ projectId }: Props) {
                 pagination={false}
                 bordered
               />
+
+              <CustomButton
+                text='Export Scope'
+                onClick={() => handleClick(selectedBid)}
+              />
             </div>
 
-            {selectedBid.file ? <div className="px-4 mt-3">
-              <a href={selectedBid.file.url} target='_blank' className='rounded-[8px] flex justify-center border border-solid border-lavenderPurple bg-lavenderPurple text-white leading-6 font-semibold py-3 px-5  cursor-pointer shadow-scenarySubdued h-auto text-sm w-full'>
+            {selectedBid.file?.url ? <div className="px-4 space-y-2 mt-3">
+              <a href={selectedBid.file.url} target='_blank' download={selectedBid.file.url} className='rounded-[8px] flex justify-center border border-solid border-lavenderPurple bg-lavenderPurple text-white leading-6 font-semibold py-3 px-5  cursor-pointer shadow-scenarySubdued h-auto text-sm w-full'
+              >
                 Download File
               </a>
             </div> : null}

@@ -21,7 +21,6 @@ export function ProjectSummary() {
     )
     : [];
 
-  console.log({ projectTrades });
   function filterTradesByParent(id: string, trades: ITrade[]) {
     return trades.filter((trade) => trade.tradeCategoryId._id === id);
   }

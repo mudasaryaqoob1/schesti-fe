@@ -29,6 +29,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { bidManagementService } from '@/app/services/bid-management.service';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
 import { ProjectIntro } from './components/ProjectInto';
+import { ShowFileComponent } from '../../components/ShowFile.component';
 
 type ProjectScope = {
   description: string;
@@ -610,50 +611,17 @@ function ContractorSubmitBidPage() {
             </div>
           </div> : null}
           {formik.values.file.url ? (
-            <div className="border my-2 rounded w-fit">
-              <div className="bg-[#F4EBFF] flex items-center justify-between px-2 py-1 ">
-                <div className="flex items-center space-x-3">
-                  <Image
-                    src={'/file-05.svg'}
-                    width={16}
-                    height={16}
-                    alt="file"
-                  />
-                  <p className="text-[#667085] text-[14px] leading-6">
-                    {formik.values.file.name}
-                  </p>
-                </div>
-                <Image
-                  src={'/trash.svg'}
-                  width={16}
-                  height={16}
-                  alt="close"
-                  className="cursor-pointer"
-                  onClick={() => {
-                    formik.setFieldValue('file', {
-                      extension: '',
-                      name: '',
-                      type: '',
-                      url: '',
-                    });
-                  }}
-                />
-              </div>
-              <div className="p-2 mx-auto w-auto h-[190px] xl:w-[230px] relative">
-                {formik.values.file.type.includes('image') ? (
-                  <Image alt="image" src={formik.values.file.url} fill />
-                ) : (
-                  <div className="relative mt-10 w-[100px] h-[100px] mx-auto">
-                    <Image
-                      alt="pdf"
-                      src={'/pdf.svg'}
-                      layout="fill"
-                      objectFit="cover"
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
+            <ShowFileComponent
+              file={formik.values.file}
+              onDelete={() => {
+                formik.setFieldValue('file', {
+                  extension: '',
+                  name: '',
+                  type: '',
+                  url: '',
+                });
+              }}
+            />
           ) : isUploading ? (
             <Spin />
           ) : null}
@@ -661,10 +629,10 @@ function ContractorSubmitBidPage() {
 
           <Divider className='!my-5' />
           <div
-            className="flex w-fit items-center space-x-4 cursor-pointer "
+            className="flex w-fit items-center space-x-2 cursor-pointer "
             onClick={openProjectScope}
           >
-            <p className="text-[#344054] text-[24px] leading-8 font-normal ">
+            <p className="text-[#7138DF] text-[18px] leading-8 font-medium underline underline-offset-2 ">
               Add Project Scope
             </p>
             {showProjectScope ? <Image
