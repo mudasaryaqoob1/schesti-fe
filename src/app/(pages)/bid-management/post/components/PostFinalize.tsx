@@ -2,7 +2,7 @@ import { SelectComponent } from '@/app/component/customSelect/Select.component';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
-import { Checkbox, Divider, Spin } from 'antd';
+import { Checkbox, ConfigProvider, Divider, Radio, Spin, Switch } from 'antd';
 import Dragger from 'antd/es/upload/Dragger';
 import type { FormikProps } from 'formik';
 import moment from 'moment';
@@ -220,7 +220,7 @@ export function PostFinalize({ formik, children }: Props) {
                   className="text-[14px] leading-6 text-[#98A2B3] font-normal"
                 />
 
-                <div className="grid grid-cols-4 gap-3 justify-center">
+                <div className="grid grid-cols-4 gap-3 justify-center items-center">
                   {values.projectBuildingUse.map((building) => (
                     <div
                       key={building}
@@ -276,6 +276,73 @@ export function PostFinalize({ formik, children }: Props) {
           </div>
         </fieldset>
       </div>
+
+      <div className=" bg-white shadow-[0_4px_30px_0px_#2E2D740D] rounded-xl border p-4">
+        <ConfigProvider
+          theme={{
+            components: {
+              Switch: {
+                colorPrimary: "#6F6AF8",
+                colorPrimaryHover: "#E1E0FF"
+              },
+              Radio: {
+                colorPrimary: "#6F6AF8"
+              },
+              Checkbox: {
+                colorPrimary: "#6F6AF8",
+                colorPrimaryHover: "#6F6AF8",
+              },
+            }
+          }}
+        >
+          <TertiaryHeading
+            title="Add Event"
+            className="text-[20px] leading-[30px]"
+          />
+
+          <div className='mt-5'>
+            <div className='flex items-center space-x-10 '>
+
+              <div className="flex items-center space-x-5">
+                <Switch checkedChildren="ON" unCheckedChildren="OFF" defaultChecked />
+                <TertiaryHeading
+                  title='Required Pre-bid Meeting'
+                  className='text-[#344054] text-[16px] leading-7 font-normal'
+                />
+              </div>
+
+              <div>
+                <Radio.Group>
+                  <Radio value={'Onsite'}>Onsite</Radio>
+                  <Radio value={'Online'}>Online</Radio>
+                </Radio.Group>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-5">
+            <div className="flex items-center space-x-5">
+              <Switch checkedChildren="ON" unCheckedChildren="OFF" defaultChecked />
+              <TertiaryHeading
+                title='Site Walkthrough'
+                className='text-[#344054] text-[16px] leading-7 font-normal'
+              />
+            </div>
+          </div>
+
+          <div className="mt-5">
+            <div className="flex items-center space-x-5">
+              <Switch checkedChildren="ON" unCheckedChildren="OFF" defaultChecked />
+              <TertiaryHeading
+                title='RFI Deadline'
+                className='text-[#344054] text-[16px] leading-7 font-normal'
+              />
+            </div>
+          </div>
+
+        </ConfigProvider>
+      </div>
+
       <div className=" bg-white shadow-[0_4px_30px_0px_#2E2D740D] rounded-xl border p-4">
         <TertiaryHeading
           title="Invite and Finalize"
