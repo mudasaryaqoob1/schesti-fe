@@ -25,7 +25,7 @@ export function NoMeetings({ onClick }: Props) {
             className="text-obsidianBlack2 mt-8"
           />
           <Description
-            title="There are no scheduled meeting. Initiate one by using the Jitsi integration."
+            title="There are no scheduled meeting."
             className="text-steelGray text-center font-normal"
           />
           <CustomButton

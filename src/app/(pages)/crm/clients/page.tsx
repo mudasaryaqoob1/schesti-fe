@@ -226,9 +226,7 @@ const ClientTable = () => {
     ? clientsData.filter((client) => {
         if (!search) {
           return {
-            ...client,
-            firstName : `${client.firstName} ${client.lastName} ok`,
-            azher : 'saeed'
+            ...client
           };
         }
         return (
@@ -238,6 +236,11 @@ const ClientTable = () => {
           client.phone?.includes(search) || 
           client.address?.includes(search)
         );
+      }).map((clientRecord) => {
+        return{
+          ...clientRecord,
+          firstName : `${clientRecord.firstName} ${clientRecord.lastName}`,
+        }
       })
     : [];
 
