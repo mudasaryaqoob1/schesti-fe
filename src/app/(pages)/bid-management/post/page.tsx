@@ -547,7 +547,7 @@ function CreatePost() {
                       toast.error('Cannot update the status');
                     }
 
-                    // mainFormik.handleSubmit();
+                    mainFormik.handleSubmit();
                   },
                   text: mainFormik.values.status === 'active' ? "Update Project" : updateProjectMutation.isLoading
                     ? 'Posting'

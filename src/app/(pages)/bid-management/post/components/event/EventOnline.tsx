@@ -1,7 +1,6 @@
 import { CreateMeeting } from "@/app/(pages)/meeting/components/CreateMeeting";
 import { MeetingCard } from "@/app/(pages)/meeting/components/MeetingCard";
 import { IBidManagement } from "@/app/interfaces/bid-management/bid-management.interface";
-import { IMeeting } from "@/app/interfaces/meeting.type";
 import type { FormikProps } from "formik";
 import Image from "next/image";
 import { useState } from "react";
@@ -13,13 +12,12 @@ type Props = {
 
 export function EventOnlineForm({ formik }: Props) {
     const [showModal, setShowModal] = useState(false);
-    const [meeting, setMeeting] = useState<IMeeting | null>(null);
 
     if (formik.values.preBiddingMeeting?.isChecked && formik.values.preBiddingMeeting?.type === 'Online') {
 
         return <div className='space-y-2 mt-3'>
-            {meeting ? <MeetingCard
-                item={meeting}
+            {formik.values.preBiddingMeeting?.meeting ? <MeetingCard
+                item={formik.values.preBiddingMeeting.meeting}
             /> : <div
                 onClick={() => setShowModal(true)}
                 className="w-[190px] flex items-center py-2 px-[14px] rounded-lg cursor-pointer border border-[#F9F5FF] bg-[#F9F5FF]">
@@ -35,8 +33,7 @@ export function EventOnlineForm({ formik }: Props) {
                 setShowModal={() => setShowModal(false)}
                 showModal={showModal}
                 onSuccess={_meeting => {
-                    formik.setFieldValue('preBiddingMeeting.meeting', _meeting._id);
-                    setMeeting(_meeting);
+                    formik.setFieldValue('preBiddingMeeting.meeting', _meeting);
                 }}
             />
         </div>
