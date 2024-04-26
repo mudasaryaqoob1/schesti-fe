@@ -91,7 +91,6 @@ const SupportTicketDetails = () => {
 
     try {
       const file = files![0];
-      console.log({ file });
       const url = await new AwsS3(file, 'documents/supporttickets/').getS3URL();
       let result = await supportTicketService.httpCreateMessage({
         ticketId: id,

@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import Image from 'next/image';
 import { estimateRequestService } from '@/app/services/estimates.service';
+import NoDataComponent from '@/app/component/noData';
 
 interface DataType {
   key: React.Key;
@@ -141,22 +142,29 @@ const EstimateRequestTable: React.FC = () => {
 
   return (
     <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid border-silverGray shadow-secondaryTwist">
-      <>
-        <div className="flex justify-between items-center">
-          <TertiaryHeading
-            title="Submitted Estimate"
-            className="text-graphiteGray"
-          />
-        </div>
-        <div className="mt-4">
-          <Table
-            loading={loading}
-            columns={columns}
-            dataSource={generatedEstimates}
-            pagination={{ position: ['bottomCenter'] }}
-          />
-        </div>
-      </>
+      {
+        generatedEstimates.length === 0 ? (
+          <NoDataComponent title='No Data Found' description='Please create estimate request first to create an estimate' btnText='Create Estimate Request' isButton={true} link='/estimates/requests/create' />
+        ) : (
+          <>
+          <div className="flex justify-between items-center">
+            <TertiaryHeading
+              title="Submitted Estimate"
+              className="text-graphiteGray"
+            />
+          </div>
+          <div className="mt-4">
+            <Table
+              loading={loading}
+              columns={columns}
+              dataSource={generatedEstimates}
+              pagination={{ position: ['bottomCenter'] }}
+            />
+          </div>
+        </>
+        )
+      }
+    
       {/**) : (
         <NoData
           btnText="Add Request"

@@ -632,7 +632,7 @@ const CreateInvoice = () => {
                   <div className="flex items-center space-x-2">
                     <QuaternaryHeading title="Total:" />
                     <QuinaryHeading
-                      title={`$${USCurrencyFormat.format(calculateTotalPayable(
+                      title={`${USCurrencyFormat.format(calculateTotalPayable(
                         calculatePercentqge(
                           calculateSubTotal(),
                           values['taxes']

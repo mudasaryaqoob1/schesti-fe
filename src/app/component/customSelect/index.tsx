@@ -20,6 +20,8 @@ const SelectComp = (props: any) => {
     options = defaultOptions,
     selectStyle,
     className,
+    labelButton,
+    labelAction,
     placeholder,
     isLoading,
   } = props;
@@ -45,12 +47,13 @@ const SelectComp = (props: any) => {
 
   return (
     <div>
+      <div className='flex space-x-5 justify-between items-center mb-1' >
       {label && (
         <label
           htmlFor={name}
           className={twMerge(
             clsx(
-              'text-graphiteGray text-sm font-medium leading-6 capitalize mb-1',
+              'text-graphiteGray text-sm font-medium leading-6 capitalize ',
               labelStyle
             )
           )}
@@ -58,6 +61,13 @@ const SelectComp = (props: any) => {
           {label}
         </label>
       )}
+      {
+        labelButton ? (
+          labelAction()
+        ) : null
+      }
+      </div>
+      
       <div className={twMerge(clsx('mt-1', className))}>
         <Field name={name} id={name} component="select">
           {({ form: { setFieldValue } }: FormikValues) => {

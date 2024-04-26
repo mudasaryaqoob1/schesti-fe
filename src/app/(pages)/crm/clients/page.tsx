@@ -24,7 +24,6 @@ import { InputComponent } from '@/app/component/customInput/Input';
 import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 import { DeleteContent } from '@/app/component/delete/DeleteContent';
 import ModalComponent from '@/app/component/modal';
-import { toast } from 'react-toastify';
 import { withAuth } from '@/app/hoc/withAuth';
 import { Routes } from '@/app/utils/plans.utils';
 
@@ -38,29 +37,6 @@ interface DataType {
   action: string;
 }
 
-// const items: MenuProps['items'] = [
-//   {
-//     key: 'createEstimateRequest',
-//     label: <p>Create Estimate Request</p>,
-//   },
-//   {
-//     key: 'createNewInvoice',
-//     label: <p>Create New Invoice</p>,
-//   },
-//   {
-//     key: 'createSchedule',
-//     label: <p>Create Schedule</p>,
-//   },
-//   {
-//     key: 'editClientDetail',
-//     label: <p>Edit Client Details</p>,
-//   },
-//   {
-//     key: 'deleteClient',
-//     label: <p>Delete</p>,
-//   },
-// ];
-
 const activeClientMenuItems: MenuProps['items'] = [
   {
     key: 'createEstimateRequest',
@@ -68,7 +44,7 @@ const activeClientMenuItems: MenuProps['items'] = [
   },
   {
     key: 'createNewInvoice',
-    label: <p>Create New Invoice</p>,
+    label: <p>Create Invoice</p>,
   },
   {
     key: 'createSchedule',
@@ -105,21 +81,19 @@ const ClientTable = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedClient, setSelectedClient] = useState<IClient | null>(null);
 
-  const memoizedSetPerson = useCallback(async () => {
+  const fetchClientCall = useCallback(async () => {
     await dispatch(fetchCompanyClients({ page: 1, limit: 10 }));
   }, []);
 
   useEffect(() => {
-    memoizedSetPerson();
+    fetchClientCall();
   }, []);
 
   const handleDropdownItemClick = async (key: string, client: any) => {
-    console.log(key , 'keykeykeykey');
-    
     if (key === 'createEstimateRequest') {
-      router.push(`/estimates/requests/create`);
+      router.push(`/estimates/requests/create?clientId=${client._id}`);
     } else if (key === 'createNewInvoice') {
-      router.push(`/financial/standard-invoicing/create`);
+      router.push(`/financial/aia-invoicing`);
     } else if (key === 'createSchedule') {
       router.push(`/schedule`);
     } else if (key == 'deleteClient') {
@@ -129,10 +103,10 @@ const ClientTable = () => {
       router.push(`${Routes.CRM.Clients}/edit/${client._id}`);
     } else if (key == 'activeClient') {
       await dispatch(changeCompanyClientStatus({ clientId: client._id, status: true }));
-      memoizedSetPerson();
+      fetchClientCall();
     } else if (key === 'inActiveClient') {
       await dispatch(changeCompanyClientStatus({ clientId: client._id, status: false }));
-      memoizedSetPerson();
+      fetchClientCall();
     }
   };
 
@@ -169,7 +143,7 @@ const ClientTable = () => {
             </p>
           );
         } else {
-          return (<p className="bg-lime-100 w-max text-[#b91c1c] bg-[#fecaca] px-2 py-1 rounded-full">
+          return (<p className="bg-lime-100 w-max text-[#b91c1c] bg-[#e7c3c3] px-2 py-1 rounded-full">
           In Active
         </p>)
         }
@@ -247,10 +221,13 @@ const ClientTable = () => {
       },
     },
   ];
+  
   const filteredClients = clientsData
     ? clientsData.filter((client) => {
         if (!search) {
-          return client;
+          return {
+            ...client
+          };
         }
         return (
           client.firstName.toLowerCase().includes(search.toLowerCase()) ||
@@ -259,8 +236,16 @@ const ClientTable = () => {
           client.phone?.includes(search) || 
           client.address?.includes(search)
         );
+      }).map((clientRecord) => {
+        return{
+          ...clientRecord,
+          firstName : `${clientRecord.firstName} ${clientRecord.lastName}`,
+        }
       })
     : [];
+
+    console.log(filteredClients , 'filteredClients');
+    
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       {selectedClient && showDeleteModal ? (
@@ -275,7 +260,7 @@ const ClientTable = () => {
                 await dispatch(
                   deleteCompanyClient(selectedClient._id as string)
                 );
-                toast.success('Client deleted successfully');
+               
               }
               setShowDeleteModal(false);
             }}
