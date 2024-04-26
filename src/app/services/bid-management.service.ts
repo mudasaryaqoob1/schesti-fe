@@ -2,6 +2,7 @@ import { IResponseInterface } from '../interfaces/api-response.interface';
 import {
   IBidActivity,
   IBidManagement,
+  IBidManagementResponse,
   IBidManagementProjectTeamMember,
   IGetSavedUserBid,
   IProjectBiddingResponse,
@@ -35,9 +36,12 @@ class BidManagementService extends HttpService {
   ): Promise<IResponseInterface<{ createdProject: IBidManagement }>> =>
     this.post(`${this.prefix}/create-project`, data);
 
-  httpGetBidProjectInvitedUsers = (): Promise<
-    IResponseInterface<{ projects: IBidManagement[] }>
-  > => this.get(`${this.prefix}/invited-projects`);
+  httpGetBidProjectInvitedUsers = (params: any): Promise<
+    IResponseInterface<{
+      paginationInfo: any;
+      records: IBidManagement[]
+    }>
+  > => this.get(`${this.prefix}/invited-projects&page=${params.page}&limit=${params.limit}`);
 
   httpUpdateBidPostProject = (
     projectId: string,
@@ -72,9 +76,12 @@ class BidManagementService extends HttpService {
   ): Promise<IResponseInterface<{ project: IBidManagement }>> =>
     this.get(`${this.prefix}/project-bidding-team/${projectId}`);
 
+
   httpGetOwnerProjects = (params: any): Promise<
-    IResponseInterface<{ projects: IBidManagement[] }>
-  > => this.get(`${this.prefix}/get-all?projectValue=${params.projectValue}&trades=${params.trades?.toString()}`);
+    IResponseInterface<IBidManagementResponse>> => {
+    return this.get(`${this.prefix}/get-all?projectValue=${params.projectValue}&trades=${params.trades?.toString()}&page=${params.page}&limit=${params.limit}`);
+  };
+
 
   httpGetOwnerProjectsWithoutFilters = (): Promise<
     IResponseInterface<{ projects: IBidManagement[] }>
@@ -117,7 +124,8 @@ class BidManagementService extends HttpService {
     return this.post(`${this.prefix}/send-email`, data, {
       headers: {
         'Content-Type': 'multipart/form-data',
-      }});
+      }
+    });
   }
 
   httpGetProjectActivities = (projectId: string): Promise<IResponseInterface<{ bidsActivities: IBidActivity[] }>> => this.get(`${this.prefix}/get-activities/${projectId}`);

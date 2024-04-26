@@ -17,6 +17,8 @@ import { BidFilters } from './components/Filters';
 import _, { size } from 'lodash';
 import { isArrayString } from '@/app/utils/typescript.utils';
 
+const PAGE_LIMIT = 10;
+
 // const PDFDownloadLink = dynamic(
 //   () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
 //   {
@@ -27,24 +29,34 @@ import { isArrayString } from '@/app/utils/typescript.utils';
 // import dynamic from 'next/dynamic';
 // import BidListPdf from './components/bids-pdf';
 
-const ITEMS_PER_PAGE = 4;
+// const filters.limit = 4;
 
 function BidManagementSubContractorPage() {
 
   const [selectedBid, setSelectedBid] = useState<IBidManagement | null>(null);
   const [search, setSearch] = useState('');
-  const [invitedCurrentPage, setInvitedCurrentPage] = useState(1);
-  const [exploreCurrentPage, setExploreCurrentPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
-  const [selectedProjectSavedBid, setSelectedProjectSavedBid] =
-    useState<any>(null);
+  const [selectedProjectSavedBid, setSelectedProjectSavedBid] = useState<any>(null);
   const [filters, setFilters] = useState<{
     trades: string[];
     projectValue: number;
+    page: number;
+    limit: number;
   }>({
     trades: [],
     projectValue: 0,
+    page: 1,
+    limit: PAGE_LIMIT
   });
+
+  const [invitedfilters, setInvitedFilters] = useState<{
+    page: number;
+    limit: number;
+  }>({
+    page: 1,
+    limit: PAGE_LIMIT
+  });
+
 
   function toggleFilters() {
     setShowFilters(!showFilters);
@@ -57,23 +69,34 @@ function BidManagementSubContractorPage() {
     return bidManagementService.httpGetOwnerProjects(filters);
   };
 
-  const projectsQuery = useQuery(['bid-projects'], fetchProjects);
-  const invitedUserProjectsQuery = useQuery(['invited-user-projects'], () => {
-    return bidManagementService.httpGetBidProjectInvitedUsers();
+
+  const projectsQuery = useQuery(['bid-projects', filters.page, filters.limit, filters.projectValue, filters.trades], fetchProjects);
+  const invitedUserProjectsQuery = useQuery(['invited-user-projects', invitedfilters.page, invitedfilters.limit], () => {
+    return bidManagementService.httpGetBidProjectInvitedUsers(invitedfilters);
   });
 
   const projects =
     projectsQuery.data && projectsQuery.data.data
-      ? projectsQuery.data.data?.projects
+      ? projectsQuery.data.data.records
       : [];
+
+  const paginationInfo = projectsQuery.data && projectsQuery.data.data
+    ? projectsQuery.data.data.paginationInfo
+    : { currentPage: 0, pages: 0, totalRecords: 0, perPage: 0 };
+
+  const invitedPaginationInfo = invitedUserProjectsQuery.data && invitedUserProjectsQuery.data.data
+    ? invitedUserProjectsQuery.data.data.paginationInfo
+    : { currentPage: 0, pages: 0, totalRecords: 0, perPage: 0 };
+
+
   const invitedProjects =
     invitedUserProjectsQuery.data && invitedUserProjectsQuery.data.data
-      ? invitedUserProjectsQuery.data.data?.projects
+      ? invitedUserProjectsQuery.data.data?.records
       : [];
 
   const currentInvitedProjects = invitedProjects.slice(
-    (invitedCurrentPage - 1) * ITEMS_PER_PAGE,
-    invitedCurrentPage * ITEMS_PER_PAGE
+    (invitedfilters.page - 1) * invitedfilters.limit,
+    invitedfilters.page * invitedfilters.limit
   );
 
   const currentExploreProjects = projects
@@ -87,8 +110,8 @@ function BidManagementSubContractorPage() {
       );
     })
     .slice(
-      (exploreCurrentPage - 1) * ITEMS_PER_PAGE,
-      exploreCurrentPage * ITEMS_PER_PAGE
+      (filters.page - 1) * filters.limit,
+      filters.page * filters.limit
     );
 
   // const dataToExport = currentExploreProjects.filter((project) => {
@@ -241,10 +264,12 @@ function BidManagementSubContractorPage() {
               {size(invitedProjects) >= 5 && (
                 <div className="mt-1 flex justify-center">
                   <Pagination
-                    current={invitedCurrentPage}
-                    pageSize={ITEMS_PER_PAGE}
-                    total={invitedProjects.length}
-                    onChange={(page) => setInvitedCurrentPage(page)}
+                    current={invitedfilters.page}
+                    pageSize={invitedfilters.limit}
+                    total={typeof invitedPaginationInfo === 'object' ? invitedPaginationInfo.totalRecords || 0 : 0}
+                    onChange={(page) => {
+                      setInvitedFilters(prevFilters => ({ ...prevFilters, page: page }));
+                    }}
                   />
                 </div>
               )}
@@ -303,10 +328,12 @@ function BidManagementSubContractorPage() {
         {size(projects) >= 5 && (
           <div className="mt-1 flex justify-center">
             <Pagination
-              current={exploreCurrentPage}
-              pageSize={ITEMS_PER_PAGE}
-              total={projects.length}
-              onChange={(page) => setExploreCurrentPage(page)}
+              current={filters.page}
+              pageSize={filters.limit}
+              total={typeof paginationInfo === 'object' ? paginationInfo.totalRecords || 0 : 0}
+              onChange={(page) => {
+                setFilters(prevFilters => ({ ...prevFilters, page: page }));
+              }}
             />
           </div>
         )}

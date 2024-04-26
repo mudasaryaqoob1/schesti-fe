@@ -51,6 +51,18 @@ export interface IBidManagement {
   }[];
 }
 
+export interface IBidManagementResponse {
+  paginationInfo: {
+    currentPage: number;
+    pages: number;
+    totalRecords: number;
+    perPage: number;
+  };
+  records: IBidManagement[];
+}
+
+
+
 export interface IBidManagementProjectTeamMember {
   user: string;
   name: string;
