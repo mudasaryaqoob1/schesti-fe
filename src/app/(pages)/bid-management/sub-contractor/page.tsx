@@ -69,11 +69,13 @@ function BidManagementSubContractorPage() {
     return bidManagementService.httpGetOwnerProjects(filters);
   };
 
+  const fetchInvitedProjects = () => {
+    return bidManagementService.httpGetBidProjectInvitedUsers(invitedfilters);
+  };
+
 
   const projectsQuery = useQuery(['bid-projects', filters.page, filters.limit, filters.projectValue, filters.trades], fetchProjects);
-  const invitedUserProjectsQuery = useQuery(['invited-user-projects', invitedfilters.page, invitedfilters.limit], () => {
-    return bidManagementService.httpGetBidProjectInvitedUsers(invitedfilters);
-  });
+  const invitedUserProjectsQuery = useQuery(['invited-user-projects', invitedfilters.page, invitedfilters.limit], fetchInvitedProjects);
 
   const projects =
     projectsQuery.data && projectsQuery.data.data
