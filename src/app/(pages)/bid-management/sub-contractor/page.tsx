@@ -19,18 +19,6 @@ import { isArrayString } from '@/app/utils/typescript.utils';
 
 const PAGE_LIMIT = 10;
 
-// const PDFDownloadLink = dynamic(
-//   () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
-//   {
-//     ssr: false,
-//     loading: () => <p>Loading...</p>,
-//   },
-// );
-// import dynamic from 'next/dynamic';
-// import BidListPdf from './components/bids-pdf';
-
-// const filters.limit = 4;
-
 function BidManagementSubContractorPage() {
 
   const [selectedBid, setSelectedBid] = useState<IBidManagement | null>(null);
@@ -116,17 +104,6 @@ function BidManagementSubContractorPage() {
       filters.page * filters.limit
     );
 
-  // const dataToExport = currentExploreProjects.filter((project) => {
-  //   if (search === '') {
-  //     return project;
-  //   }
-  //   return (
-  //     project.projectName.toLowerCase().includes(search.toLowerCase()) ||
-  //     project.city.toLowerCase().includes(search.toLowerCase()) ||
-  //     project.stage.toLowerCase().includes(search.toLowerCase())
-  //   );
-  // });
-
   const bidClickHandler = async (selectedBid: any) => {
     setSelectedBid(selectedBid);
 
@@ -201,21 +178,6 @@ function BidManagementSubContractorPage() {
                 }}
               />
             </div>
-            {/* <PDFDownloadLink
-            document={<BidListPdf bids={dataToExport} />}
-            fileName={`bid-list-${Math.random()}.pdf`}
-          >
-            {({ loading }) => (
-              <WhiteButton
-                text={loading ? 'Exporting...' : 'Export'}
-                icon="/uploadcloud.svg"
-                iconheight={20}
-                className="!w-32"
-                iconwidth={20}
-                isLoading={loading}
-              />
-            )}
-          </PDFDownloadLink> */}
             <div className="relative">
               <WhiteButton
                 text="Advance Filters"
