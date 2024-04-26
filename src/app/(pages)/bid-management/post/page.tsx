@@ -102,6 +102,23 @@ const FilesSchema = Yup.object().shape({
     .required('Files are required'),
 });
 
+const onsiteMeetingSchema = Yup.object().shape({
+  isChecked: Yup.boolean(),
+  type: Yup.string(),
+  location: Yup.string(),
+  date: Yup.string(),
+  time: Yup.string(),
+  instruction: Yup.string(),
+  isMandatory: Yup.boolean()
+});
+
+const onlineMeetingSchema = Yup.object().shape({
+  isChecked: Yup.boolean(),
+  type: Yup.string(),
+  meeting: Yup.string(),
+  isMandatory: Yup.boolean()
+});
+
 const FinalizeProjectSchema = Yup.object().shape({
   status: Yup.mixed()
     .oneOf(['draft', 'archived', 'expired', 'active'])
@@ -120,6 +137,25 @@ const FinalizeProjectSchema = Yup.object().shape({
   ),
   selectedTeamMembers: Yup.array().of(Yup.string()),
   platformType: Yup.string().required('Platform Type is required'),
+  preBiddingMeeting: Yup.lazy(value => {
+    if (!value || !value.isChecked) return Yup.mixed().notRequired();
+    if (value.type === 'Onsite') return onsiteMeetingSchema;
+    if (value.type === 'Online') return onlineMeetingSchema;
+    return Yup.mixed().notRequired();
+  }),
+  siteWalkthrough: Yup.object().shape({
+    isChecked: Yup.boolean(),
+    location: Yup.string(),
+    date: Yup.string(),
+    time: Yup.string(),
+    instruction: Yup.string(),
+    isMandatory: Yup.boolean()
+  }),
+  rfiDeadline: Yup.object().shape({
+    isChecked: Yup.boolean(),
+    date: Yup.string(),
+    time: Yup.string()
+  })
 });
 
 
@@ -232,7 +268,22 @@ function CreatePost() {
 
   const basicInformationFormik = useFormik({
     initialValues: postProjectState.project
-      ? { ...postProjectState.project }
+      ? {
+        ...postProjectState.project,
+        preBiddingMeeting: {
+          isChecked: postProjectState.project.preBiddingMeeting?.isChecked || false,
+          type: postProjectState.project.preBiddingMeeting?.type || 'Onsite',
+          ...postProjectState.project.preBiddingMeeting,
+        },
+        siteWalkthrough: {
+          isChecked: postProjectState.project.siteWalkthrough?.isChecked || false,
+          ...postProjectState.project.siteWalkthrough,
+        },
+        rfiDeadline: {
+          isChecked: postProjectState.project.rfiDeadline?.isChecked || false,
+          ...postProjectState.project.rfiDeadline
+        }
+      }
       : {
         projectName: '',
         country: 'PK',
@@ -495,9 +546,10 @@ function CreatePost() {
                     if (mainFormik.errors.status) {
                       toast.error('Cannot update the status');
                     }
+
                     mainFormik.handleSubmit();
                   },
-                  text: updateProjectMutation.isLoading
+                  text: mainFormik.values.status === 'active' ? "Update Project" : updateProjectMutation.isLoading
                     ? 'Posting'
                     : 'Post Project',
                   loading: updateProjectMutation.isLoading,
