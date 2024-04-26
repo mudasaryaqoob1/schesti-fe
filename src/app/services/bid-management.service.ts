@@ -41,7 +41,7 @@ class BidManagementService extends HttpService {
       paginationInfo: any;
       records: IBidManagement[]
     }>
-  > => this.get(`${this.prefix}/invited-projects&page=${params.page}&limit=${params.limit}`);
+  > => this.get(`${this.prefix}/invited-projects?page=${params.page}&limit=${params.limit}`);
 
   httpUpdateBidPostProject = (
     projectId: string,
