@@ -24,7 +24,7 @@ interface IPreBiddingMeetingOnSite {
 interface IPreBiddingMeetingOnline {
   isChecked?: boolean;
   type: "Online",
-  meeting?: IMeeting;
+  meeting?: IMeeting | string;
   isMandatory?: boolean;
 }
 

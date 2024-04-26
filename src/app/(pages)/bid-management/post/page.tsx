@@ -115,7 +115,7 @@ const onsiteMeetingSchema = Yup.object().shape({
 const onlineMeetingSchema = Yup.object().shape({
   isChecked: Yup.boolean(),
   type: Yup.string(),
-  meeting: Yup.string(),
+  meeting: Yup.mixed(),
   isMandatory: Yup.boolean()
 });
 
@@ -270,19 +270,6 @@ function CreatePost() {
     initialValues: postProjectState.project
       ? {
         ...postProjectState.project,
-        preBiddingMeeting: {
-          isChecked: postProjectState.project.preBiddingMeeting?.isChecked || false,
-          type: postProjectState.project.preBiddingMeeting?.type || 'Onsite',
-          ...postProjectState.project.preBiddingMeeting,
-        },
-        siteWalkthrough: {
-          isChecked: postProjectState.project.siteWalkthrough?.isChecked || false,
-          ...postProjectState.project.siteWalkthrough,
-        },
-        rfiDeadline: {
-          isChecked: postProjectState.project.rfiDeadline?.isChecked || false,
-          ...postProjectState.project.rfiDeadline
-        }
       }
       : {
         projectName: '',
@@ -305,9 +292,22 @@ function CreatePost() {
     enableReinitialize: true,
   });
 
-  const mainFormik = useFormik({
+  const mainFormik = useFormik<IBidManagement>({
     initialValues: {
       ...(postProjectState.project as IBidManagement),
+      preBiddingMeeting: {
+        ...(postProjectState.project as IBidManagement)?.preBiddingMeeting,
+        isChecked: (postProjectState.project as IBidManagement)?.preBiddingMeeting?.isChecked || false,
+        type: (postProjectState.project as IBidManagement)?.preBiddingMeeting?.type || 'Onsite',
+      },
+      siteWalkthrough: {
+        ...(postProjectState.project as IBidManagement)?.siteWalkthrough,
+        isChecked: (postProjectState.project as IBidManagement)?.siteWalkthrough?.isChecked || false,
+      },
+      rfiDeadline: {
+        ...(postProjectState.project as IBidManagement)?.rfiDeadline,
+        isChecked: (postProjectState.project as IBidManagement)?.rfiDeadline?.isChecked || false,
+      }
     },
     onSubmit(values) {
       updateProjectMutation.mutate(values);
