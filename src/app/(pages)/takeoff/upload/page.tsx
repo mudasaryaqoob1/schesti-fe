@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useContext } from 'react';
+import { useCallback, useContext, useState } from 'react';
 import { bg_style } from '@/globals/tailwindvariables';
 import Image from 'next/image';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
@@ -13,6 +13,10 @@ import {
   UploadFileData,
 } from '../context/UploadFileContext';
 import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
+import { LoadingOutlined } from '@ant-design/icons';
+import ModalComponent from '@/app/component/modal';
+import SelectPageModal from '../components/selectPageModal';
 
 const Upload = () => {
   // const [selectedIcon, setSelectedIcon] = useState('');
@@ -24,7 +28,9 @@ const Upload = () => {
   //   setShowModal(true);
   // };
 
-  const { handleSrc } = useContext(UploadFileContext) as UploadFileContextProps;
+  const { handleSrc,uploadFileData } = useContext(UploadFileContext) as UploadFileContextProps;
+  const [loading, setloading] = useState<boolean>(false)
+  const [showSelectModal, setshowSelectModal] = useState<boolean>(false)
   const pdfjs = useCallback(async () => {
     const pdfjs = await import('pdfjs-dist');
     await import('pdfjs-dist/build/pdf.worker.min.mjs');
@@ -33,42 +39,52 @@ const Upload = () => {
   }, []);
 
   const handleFileChange = async (event: any) => {
-    const file = event.target.files[0];
-    console.log(file, " file full");
+    setloading(true)
+    try {
+      const file = event.target.files[0];
+      console.log(file, " file full");
 
-    if (file) {
-      const PDFJS = await pdfjs();
-      const pdfPagesData: UploadFileData[] = [];
-      const reader = new FileReader();
-      reader.onload = async (event: any) => {
-        const data = new Uint8Array(event.target.result);
-        const pdf = await PDFJS.getDocument(data).promise;
+      if (file) {
+        const PDFJS = await pdfjs();
+        const pdfPagesData: UploadFileData[] = [];
+        const reader = new FileReader();
+        reader.onload = async (event: any) => {
+          const data = new Uint8Array(event.target.result);
+          const pdf = await PDFJS.getDocument(data).promise;
 
-        for (let index = 0; index < pdf.numPages; index++) {
-          const page = await pdf.getPage(index + 1);
-          const scale = 1;
-          const viewport = page.getViewport({ scale });
-          const canvas = document.createElement('canvas');
-          const context = canvas.getContext('2d');
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
-          const renderContext: any = {
-            canvasContext: context,
-            viewport: viewport,
-          };
-          await page.render(renderContext).promise;
+          for (let index = 0; index < pdf.numPages; index++) {
+            const page = await pdf.getPage(index + 1);
+            console.log(page, typeof (page), " ===> pages while uplaoding")
+            const scale = 1;
+            const viewport = page.getViewport({ scale });
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            const renderContext: any = {
+              canvasContext: context,
+              viewport: viewport,
+            };
+            await page.render(renderContext).promise;
 
-          pdfPagesData.push({
-            src: canvas.toDataURL('image/png') || '',
-            height: viewport.height,
-            width: viewport.width,
-          });
-        }
+            pdfPagesData.push({
+              src: canvas.toDataURL('image/png') || '',
+              height: viewport.height,
+              width: viewport.width,
+            });
+          }
 
-        handleSrc(pdfPagesData);
-        router.push('/takeoff/scale');
-      };
-      reader.readAsArrayBuffer(file);
+          handleSrc(pdfPagesData);
+          // router.push('/takeoff/scale');
+          setloading(false)
+          setshowSelectModal(true)
+        };
+        reader.readAsArrayBuffer(file);
+      }
+    } catch (error) {
+      console.log(error, " ===> Error while reading file")
+      setloading(false)
+      toast.error('Error while reading file')
     }
   };
 
@@ -183,8 +199,9 @@ const Upload = () => {
                 className="hidden"
                 accept=".pdf"
                 onChange={handleFileChange}
+                disabled={loading}
               />
-              Select File
+              {loading? <span className='flex gap-x-2' ><LoadingOutlined /> {"Processing"}</span> :'Select File'}
             </label>
           </div>
         </div>
@@ -197,6 +214,15 @@ const Upload = () => {
             }}
           />
         </ModalComponent> */}
+          <ModalComponent open={showSelectModal} setOpen={()=>{}}>
+            <SelectPageModal
+              numOfPages={uploadFileData.length}
+              setModalOpen={setshowSelectModal}
+              uploadFileData={uploadFileData}
+              handleSrc={handleSrc}
+              router={router}
+            />
+          </ModalComponent>
       </section>
     </>
   );

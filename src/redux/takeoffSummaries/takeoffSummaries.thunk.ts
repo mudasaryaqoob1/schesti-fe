@@ -47,3 +47,19 @@ export const createTakeoffSummary = createAsyncThunk(
     }
   }
 );
+
+export const updateTakeoffSummary = createAsyncThunk(
+  'takeoffSummaries/update',
+  async (data: any, { rejectWithValue }) => {
+    try {
+      const response =
+        await takeoffSummaryService.httpUpdateTakeoffSummary(data);
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(
+        error.response?.data ||
+          'An error occurred while fetching the feed records'
+      );
+    }
+  }
+);

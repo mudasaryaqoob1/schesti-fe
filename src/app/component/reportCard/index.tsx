@@ -48,7 +48,7 @@ const ReportCard: React.FC<Props> = ({ entity }) => {
                 Date
                 <span className="font-sm text-black">
                   {' '}
-                  {item?.details?.date?.toDateString()}
+                  {/* {item?.details?.date ? item?.details?.date?.toDateString() : ''} */}
                 </span>
               </span>
               <span>Status</span>

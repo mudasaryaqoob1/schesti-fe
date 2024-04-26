@@ -9,6 +9,8 @@ import {
 } from '@/redux/takeoffSummaries/takeoffSummaries.thunk';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
+import { NextRouter, useRouter } from 'next/router';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 // Import your API service
 
 interface DataType {
@@ -81,8 +83,9 @@ const columns: ColumnsType<DataType> = [
     // onFilter: (value: string, record) => record.address.indexOf(value) === 0,
   },
 ];
-
-const Index: React.FC = () => {
+export interface ITableProps {handleEditClick:(item:any)=>void}
+const Index: React.FC<ITableProps> = ({handleEditClick}:ITableProps) => {
+  // const router = useRouter()
   const dispatch = useDispatch<AppDispatch>();
   const summaries = useSelector(selectTakeoffSummaries);
 
@@ -105,6 +108,13 @@ const Index: React.FC = () => {
         createdAt: moment(item.createdAt).format('YYYY-MM-DD'),
         action: (
           <span className="flex flex-col space-y-2">
+            <button
+              id="editBtn"
+              onClick={() =>{handleEditClick(item)}}
+              className="cursor-pointer"
+            >
+              Edit
+            </button>
             <button
               id="downloadPdfBtn"
               onClick={() => downloadPdfFromS3(item.url)}

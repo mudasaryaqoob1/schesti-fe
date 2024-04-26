@@ -1,8 +1,9 @@
+import { UploadFileData } from '@/app/(pages)/takeoff/context/UploadFileContext';
 import AwsS3 from '@/app/utils/S3Intergration';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
-const uploadToS3 = async (divId: string) => {
+const uploadToS3 = async (divId: string,pagesData?:UploadFileData[]|any) => {
   const input = document.getElementById(divId);
   if (!input) {
     console.error('Element not found');
@@ -51,13 +52,22 @@ const uploadToS3 = async (divId: string) => {
   }
 
   try {
+    console.log(pagesData, " ===> pagesData")
+    var arrayData:any = [];
+    if(pagesData && pagesData?.length>0){
+      arrayData = await Promise.all(pagesData?.map(async(i:any,index:number)=>{
+        const uploadUrl = await new AwsS3(i?.src,'documents/takeoff-reports/').uploadS3URL()//upload base64 to S3
+        return {width:i?.width,height:i?.height,src: uploadUrl, pagenum:index+1}
+      }))
+    }
+    console.log(arrayData, " ===> Pages Data Result")
     // Convert the jsPDF document to a Blob
     const pdfBlob = pdf.output('blob');
     const url = await new AwsS3(
       pdfBlob,
       'documents/takeoff-reports/'
     ).getS3URL();
-    return url;
+    return {url,pages:arrayData};
   } catch (error) {
     console.error('Error uploading documents:', error);
   }

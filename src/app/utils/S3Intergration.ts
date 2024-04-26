@@ -26,14 +26,38 @@ class AwsS3 {
     const params: S3.PutObjectRequest = {
       Body: this.fileUpload,
       Bucket: process.env.NEXT_PUBLIC_BUCKET!,
-      Key: `${new Date().getFullYear()}/${this.path}${imageName}-${
-        this.fileUpload.name
-      }`,
+      Key: `${new Date().getFullYear()}/${this.path}${imageName}-${this.fileUpload.name
+        }`,
       ContentType: this.fileUpload.type,
       ACL: 'public-read',
     };
     const uploadResult: any = await this.s3.upload(params).promise();
     return uploadResult.Location;
+  };
+
+  uploadS3URL = async () => {
+    try {
+      const randomBytes = promisify(crypto.randomBytes);
+      const rawBytes = await randomBytes(16);
+      const imageName = rawBytes.toString('hex');
+      const base64Data = this.fileUpload.replace(/^data:image\/\w+;base64,/, '');
+      // const fileData = Buffer.from(base64Data, 'base64');
+      console.log(this.fileUpload, " ==> filteuploaded")
+      const params: S3.PutObjectRequest = {
+        Body: Buffer.from(base64Data, 'base64'),
+        // Body: fileData,
+        Bucket: process.env.NEXT_PUBLIC_BUCKET!,
+        Key: `${new Date().getFullYear()}/${this.path}${imageName}-${this.fileUpload.name
+          }`,
+        ACL: 'public-read', // Set the access control
+        ContentType: 'image/png', // Adjust the content type as per your file type
+        // ContentType: 'application/pdf' // Set the content type
+      };
+      const uploadResult: any = await this.s3.upload(params).promise();
+      return uploadResult.Location;
+    } catch (error) {
+      console.log(error, " error uploadS3URL");
+    }
   };
 }
 export default AwsS3;

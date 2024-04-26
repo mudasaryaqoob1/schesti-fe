@@ -4,7 +4,7 @@ import ModalComponent from '@/app/component/modal';
 import ScaleModal from '../components/scale';
 import ModalsWrapper from './components/ModalWrapper';
 import { ColorPicker, InputNumber, Select } from 'antd';
-import { ReportDataContext, ScaleContext, UploadFileContext } from '../context';
+import { EditContext, ReportDataContext, ScaleContext, UploadFileContext } from '../context';
 import { UploadFileContextProps } from '../context/UploadFileContext';
 import {
   Measurements,
@@ -18,6 +18,7 @@ import { ScaleDataContextProps } from '../context/ScaleContext';
 import { useRouter } from 'next/navigation';
 import Button from '@/app/component/customButton/button';
 import { ReportDataContextProps } from '../context/ReportDataContext';
+import SelectPageModal from '../components/selectPageModal';
 
 export interface ScaleData {
   xScale: string;
@@ -30,6 +31,8 @@ export interface PageScale {
 }
 
 const Scale = () => {
+  const urlSearch:any = new URLSearchParams(window.location.search)
+  console.log(window.location, urlSearch, urlSearch.get('edit_id'), " Edit Data Edit Data");
   const router = useRouter();
   const [tool, setTool] = useState<ScaleInterface>({ selected: 'scale' });
   const [showModal, setShowModal] = useState(false);
@@ -50,6 +53,8 @@ const Scale = () => {
   const { reportData } = useContext(
     ReportDataContext
   ) as ReportDataContextProps;
+  const { editData } = useContext(EditContext)
+
 
   if (!uploadFileData.length) router.push('/takeoff/upload');
 
@@ -65,7 +70,7 @@ const Scale = () => {
     handleScaleData(newData);
   }, []);
   console.log(uploadFileData, " uploadFileData");
-  
+
 
   return (
     <>
@@ -74,7 +79,10 @@ const Scale = () => {
           <div className="flex justify-end pt-4">
             <div
               className="flex flex-row gap-x-3 cursor-pointer"
-              onClick={() => router.push('/takeoff/report')}
+              onClick={() => {
+                //@ts-ignore
+                (urlSearch && urlSearch.get('edit_id') && urlSearch.get('edit_id')?.length > 0) ? router.push(`/takeoff/report?edit_id=${urlSearch.get('edit_id')}`) : router.push('/takeoff/report')
+              }}
             >
               <Button
                 disabled={!uploadFileData.length || !reportData.length}
@@ -185,6 +193,8 @@ const Scale = () => {
                   handleChangeMeasurements={(measurements) =>
                     setMeasurements(measurements)
                   }
+                  isEdit={(urlSearch.get('edit_id') && editData) ? true : false}
+                  editData={editData}
                 />
               ))}
             </div>
@@ -198,6 +208,16 @@ const Scale = () => {
               />
             </ModalComponent>
           )}
+          {/* {showModal && ( */}
+          {/* <ModalComponent open={showSelectModal} setOpen={()=>{}}>
+            <SelectPageModal
+              numOfPages={uploadFileData.length}
+              setModalOpen={setshowSelectModal}
+              uploadFileData={uploadFileData}
+              handleSrc={handleSrc}
+            />
+          </ModalComponent> */}
+          {/* )} */}
         </section>
       </>
     </>

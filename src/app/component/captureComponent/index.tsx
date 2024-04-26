@@ -7,7 +7,7 @@ import UploadFileContext, {
 } from '@/app/(pages)/takeoff/context/UploadFileContext';
 import ReportCard from '../reportCard';
 
-import { ReportDataContext } from '@/app/(pages)/takeoff/context';
+import { DrawHistoryContext, ReportDataContext } from '@/app/(pages)/takeoff/context';
 import {
   ReportDataContextProps,
   ReportDataInterface,
@@ -17,7 +17,7 @@ import uploadToS3 from './uploadToS3';
 
 import { AppDispatch } from '@/redux/store';
 import { useDispatch } from 'react-redux';
-import { createTakeoffSummary } from '@/redux/takeoffSummaries/takeoffSummaries.thunk';
+import { createTakeoffSummary, updateTakeoffSummary } from '@/redux/takeoffSummaries/takeoffSummaries.thunk';
 import { useDraw } from '@/app/hooks';
 
 export interface dataInterface {
@@ -25,8 +25,8 @@ export interface dataInterface {
   details: ReportDataInterface;
 }
 const groupByType = (items: dataInterface[]): dataInterface[][] => {
-  console.log(items,' ===> Data interface');
-  
+  console.log(items, ' ===> Data interface');
+
   const grouped = items.reduce(
     (acc, item) => {
       // Initialize the array for this type if it doesn't already exist
@@ -69,8 +69,9 @@ const CaptureComponent = ({
   const { reportData } = useContext(
     ReportDataContext
   ) as ReportDataContextProps;
+  const { drawHistory } = useContext(DrawHistoryContext)
 
-  console.log('reportData', reportData);
+  console.log('reportData', reportData, uploadFileData);
 
   useEffect(() => {
     const loadImage = (src: string) => {
@@ -245,20 +246,42 @@ const CaptureComponent = ({
 
     if (reportData.length) captureShapes();
   }, [reportData, uploadFileData]);
+  const urlSearch = new URLSearchParams(window.location.search)
+  console.log(window.location, urlSearch, urlSearch.get('edit_id'), " Edit Data Edit Data");
 
   const saveData = () => {
     if (data.length > 0) {
       setIsSaving(true);
       setTimeout(() => {
-        uploadToS3('capture').then((url) => {
-          dispatch(
-            createTakeoffSummary({
-              name: name || 'Untitled',
-              scope: data.length,
-              createdBy: 99999,
-              url,
-            })
-          );
+        uploadToS3('capture', uploadFileData).then((result: any) => {
+          console.log(result, "result measurements");
+          //@ts-ignore
+          if (urlSearch && urlSearch.get('edit_id') && urlSearch.get('edit_id')?.length > 0) {
+            dispatch(
+              updateTakeoffSummary({
+                id: urlSearch.get('edit_id'),
+                data: {
+                  name: name || 'Untitled',
+                  scope: data.length,
+                  createdBy: 99999,
+                  url: result?.url,
+                  // pages: result?.pages,
+                  measurements: drawHistory
+                }
+              })
+            );
+          } else {
+            dispatch(
+              createTakeoffSummary({
+                name: name || 'Untitled',
+                scope: data.length,
+                createdBy: 99999,
+                url: result?.url,
+                pages: result?.pages,
+                measurements: drawHistory
+              })
+            );
+          }
           setIsSaving(false);
           onSaveSuccess();
         });

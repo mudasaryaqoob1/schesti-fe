@@ -4,6 +4,7 @@ export interface UploadFileData {
   src: string;
   width: number;
   height: number;
+  pageNum?:number;
 }
 
 export interface UploadFileContextProps {

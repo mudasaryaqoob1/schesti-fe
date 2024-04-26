@@ -10,6 +10,10 @@ class TakeoffSummaryService extends HttpService {
     data: CreateTakeoffSummaryRequest
   ): Promise<IResponseInterface> => this.post(`${this.prefix}/`, data);
 
+  httpUpdateTakeoffSummary = (
+    data: any
+  ): Promise<IResponseInterface> => this.put(`${this.prefix}/${data?.id}`, {...data?.data});
+
   httpGetAllTakeoffSummaries = (): Promise<IResponseInterface> =>
     this.get(`${this.prefix}/`);
 

@@ -5,6 +5,7 @@ import {
   ReportDataContext,
   ScaleContext,
   UploadFileContext,
+  EditContext
 } from './context';
 import { UploadFileData } from './context/UploadFileContext';
 import { DrawHistoryContextInterface } from './context/DrawHistoryContext';
@@ -19,6 +20,7 @@ const TakeOffLayout: React.FC<any> = ({
 }) => {
   const [reportData, setReportData] = useState<ReportDataInterface[]>([]);
   const [uploadFileData, setUploadFileData] = useState<UploadFileData[]>([]);
+  const [editData, seteditData] = useState<any>([])
   const [drawHistory, setDrawHistory] =
     useState<DrawHistoryContextInterface | null>(null);
   const [scaleData, setScaleData] = useState<ScaleDataContextInterface | null>(
@@ -26,6 +28,7 @@ const TakeOffLayout: React.FC<any> = ({
   );
 
   const handleSrc = (value: UploadFileData[]) => setUploadFileData(value);
+  const handleEdit = (value: any[]) => seteditData(value);
 
   const handleScaleData = (value: ScaleDataContextInterface) => {
     setScaleData(value);
@@ -34,6 +37,8 @@ const TakeOffLayout: React.FC<any> = ({
   const deleteDrawHistory = (pageNumber: string, value: DrawInterface) => {
     setDrawHistory((prev) => ({ ...prev, [pageNumber]: value }));
   };
+
+  const setInitialEditDrawHistory = (value:any) => setDrawHistory(value)
 
   const updateDrawHistory = (pageNumber: string, shape: string, value: any) => {
     setDrawHistory((prev) => {
@@ -88,13 +93,16 @@ const TakeOffLayout: React.FC<any> = ({
           drawHistory,
           deleteDrawHistory,
           updateDrawHistory,
+          setInitialEditDrawHistory
         }}
       >
-        <UploadFileContext.Provider value={{ uploadFileData, handleSrc }}>
-          <ScaleContext.Provider value={{ scaleData, handleScaleData }}>
-            {children}
-          </ScaleContext.Provider>
-        </UploadFileContext.Provider>
+        <EditContext.Provider value={{ editData, handleEdit }}>
+          <UploadFileContext.Provider value={{ uploadFileData, handleSrc }}>
+            <ScaleContext.Provider value={{ scaleData, handleScaleData }}>
+              {children}
+            </ScaleContext.Provider>
+          </UploadFileContext.Provider>
+        </EditContext.Provider>
       </DrawHistoryContext.Provider>
     </ReportDataContext.Provider>
   );

@@ -48,6 +48,8 @@ interface Props {
   uploadFileData: UploadFileData;
   pageNumber: number;
   handleScaleModal: (open: boolean) => void;
+  isEdit?:boolean;
+  editData?:any;
 }
 
 const Draw: React.FC<Props> = ({
@@ -60,6 +62,8 @@ const Draw: React.FC<Props> = ({
   handleChangeMeasurements,
   uploadFileData,
   pageNumber,
+  isEdit,
+  editData
 }) => {
   const { selected, subSelected = null } = selectedTool;
   const {
@@ -72,8 +76,12 @@ const Draw: React.FC<Props> = ({
     calculateAngle,
     pointInCircle,
   } = useDraw();
+  const { deleteDrawHistory, updateDrawHistory, drawHistory } = useContext(
+    DrawHistoryContext
+  ) as DrawHistoryContextProps;
+  console.log(drawHistory, isEdit, editData, " ===> drawHistory");
 
-  const [draw, setDraw] = useState<DrawInterface>({
+  const [draw, setDraw] = useState<DrawInterface | any>({
     line: [],
     area: [],
     volume: [],
@@ -81,9 +89,18 @@ const Draw: React.FC<Props> = ({
     dynamic: [],
   });
   console.log(draw, 'drawdrawdrawdrawdrawdrawdrawdrawdrawdraw')
-  const { deleteDrawHistory, updateDrawHistory } = useContext(
-    DrawHistoryContext
-  ) as DrawHistoryContextProps;
+  useEffect(()=>{
+    if(isEdit){
+      console.log("Edit flow run");
+      
+      setDraw({
+        //@ts-ignore
+        line: [],area: [],volume: [], count: [], dynamic: [],...drawHistory[`${pageNumber}`]
+      })
+    }
+  },[drawHistory,isEdit,editData])
+  
+  
   const [polyLine, setPolyLine] = useState<LineInterface>(defaultPolyLineState);
   const [dynamicPolyLine, setDynamicPolyLine] =
     useState<LineInterface>(defaultPolyLineState);
@@ -114,7 +131,7 @@ const Draw: React.FC<Props> = ({
 
   useEffect(() => {
     if (subSelected === 'clear') {
-      setDraw((prev) => ({ ...prev, dynamic: [] }));
+      setDraw((prev:any) => ({ ...prev, dynamic: [] }));
       setCircle([]);
     }
   }, [subSelected]);
@@ -171,7 +188,7 @@ const Draw: React.FC<Props> = ({
         textUnit: unit,
         dateTime: moment().toDate(),
       };
-      setDraw((prev) => ({ ...prev, line: [...prev.line, newLine] }));
+      setDraw((prev:any) => ({ ...prev, line: [...prev.line, newLine] }));
 
       updateDrawHistory(pageNumber.toString(), 'line', newLine);
 
@@ -206,7 +223,7 @@ const Draw: React.FC<Props> = ({
             setCurrentLine({ startingPoint: null, endingPoint: null });
             setCompletingLine({ startingPoint: null, endingPoint: null });
 
-            setDraw((prevDraw) => {
+            setDraw((prevDraw:any) => {
               const polygonCoordinates = prev.points;
               const parameter = calculatePolygonPerimeter(
                 polygonCoordinates,
@@ -298,7 +315,7 @@ const Draw: React.FC<Props> = ({
         dateTime: moment().toDate(),
       };
 
-      setDraw((prev) => {
+      setDraw((prev:any) => {
         handleChangeMeasurements({ count: [...prev.count, newCount].length });
         return { ...prev, count: [...prev.count, newCount] };
       });
@@ -443,7 +460,7 @@ const Draw: React.FC<Props> = ({
         if (e.key === 'Enter' && subSelected === 'create') {
           setCurrentLine(defaultCurrentLineState);
 
-          setDraw((prevDraw) => ({
+          setDraw((prevDraw:any) => ({
             ...prevDraw,
             dynamic: [
               ...prevDraw.dynamic,
@@ -463,7 +480,7 @@ const Draw: React.FC<Props> = ({
         if (e.key === 'Delete' && selectedShape) {
           const [shapeName, shapeNumber] = selectedShape.split('-');
 
-          setDraw((prev) => {
+          setDraw((prev:any) => {
             const tempPrevShapeData = [
               ...prev[shapeName as keyof DrawInterface],
             ];
@@ -584,7 +601,7 @@ const Draw: React.FC<Props> = ({
             height={uploadFileData.height || 600}
           />
           {/* Drawing Line */}
-          {draw.line.map(({ textUnit, ...rest }, index) => {
+          {draw.line.map(({ textUnit, ...rest }:any, index:number) => {
             const id = `line-${index}`;
             const lineDistance = calcLineDistance(rest.points, scale, true);
             const lineMidPoint = calculateMidpoint(rest.points);
@@ -618,7 +635,7 @@ const Draw: React.FC<Props> = ({
           })}
 
           {/* Drawing Dynamic Fill */}
-          {draw.dynamic.map(({ ...rest }, index) => {
+          {draw.dynamic.map(({ ...rest }:any, index:number) => {
             const id = `dynamic-${index}`;
 
             return (
@@ -642,7 +659,7 @@ const Draw: React.FC<Props> = ({
           {!!dynamicPolyLine.points.length && <Line {...dynamicPolyLine} />}
 
           {/* Drawing Area */}
-          {draw.area.map(({ textUnit, ...rest }, index) => {
+          {draw.area.map(({ textUnit, ...rest }:any, index:number) => {
             const polygonCoordinates = rest.points;
             const center = calculatePolygonCenter(polygonCoordinates);
             const area = calculatePolygonArea(polygonCoordinates, scale);
@@ -684,7 +701,7 @@ const Draw: React.FC<Props> = ({
           {!!polyLine.points.length && <Line {...polyLine} />}
 
           {/* Drawing Volume */}
-          {draw.volume.map(({ depth, textUnit, ...rest }, index) => {
+          {draw.volume.map(({ depth, textUnit, ...rest }:any, index:number) => {
             const polygonCoordinates = rest.points;
             const center = calculatePolygonCenter(polygonCoordinates);
             const volume = calculatePolygonVolume(
@@ -758,7 +775,7 @@ const Draw: React.FC<Props> = ({
             )}
 
           {/* Drawing Count */}
-          {draw.count.map(({ ...rest }, index) => {
+          {draw.count.map(({ ...rest }, index:number) => {
             const id = `count-${index}`;
 
             return (
