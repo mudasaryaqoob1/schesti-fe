@@ -16,7 +16,16 @@ export function EventOnlineForm({ formik }: Props) {
     if (formik.values.preBiddingMeeting?.isChecked && formik.values.preBiddingMeeting?.type === 'Online') {
 
         return <div className='space-y-2 mt-3'>
-            {formik.values.preBiddingMeeting?.meeting ? <MeetingCard
+            {typeof formik.values.preBiddingMeeting?.meeting === 'string' ? <div
+                className="w-[190px] flex items-center py-2 px-[14px] rounded-lg cursor-pointer border border-[#F9F5FF] bg-[#F9F5FF]">
+                <Image
+                    src={'/calendar-purple.svg'}
+                    alt="calendar"
+                    width={15}
+                    height={16}
+                />
+                <span className="text-[#7138DF] text-[14px] leading-5 font-semibold  ml-2">{"Meeting is scheduled"}</span>
+            </div> : formik.values.preBiddingMeeting?.meeting ? <MeetingCard
                 item={formik.values.preBiddingMeeting.meeting}
             /> : <div
                 onClick={() => setShowModal(true)}

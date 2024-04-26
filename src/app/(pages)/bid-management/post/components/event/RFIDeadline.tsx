@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import type { FormikProps } from "formik";
 
 export function RfiDeadline({ formik }: { formik: FormikProps<IBidManagement> }) {
+    if (!formik.values.rfiDeadline?.isChecked) return null;
     return <div className='space-y-2 mt-3'>
         <div className='flex items-center space-x-3'>
             <div>

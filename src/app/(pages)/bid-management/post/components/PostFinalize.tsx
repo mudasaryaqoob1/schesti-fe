@@ -332,15 +332,15 @@ export function PostFinalize({ formik, children }: Props) {
               </div> : null
               }
             </div>
-            <div className='my-2'>
+            {formik.values.preBiddingMeeting?.isChecked ? <div className='my-2'>
               <Checkbox
-                value={formik.values.preBiddingMeeting?.isMandatory}
+                checked={formik.values.preBiddingMeeting?.isMandatory}
                 onChange={e => {
                   formik.setFieldValue('preBiddingMeeting.isMandatory', e.target.checked)
                 }}>
                 {"It's a mandatory meeting"}
               </Checkbox>
-            </div>
+            </div> : null}
             <EventOnSiteForm
               formik={formik}
             />
@@ -368,7 +368,8 @@ export function PostFinalize({ formik, children }: Props) {
 
           <div className="mt-5">
             <div className="flex items-center space-x-5">
-              <Switch checkedChildren="ON" unCheckedChildren="OFF" checked={formik.values.rfiDeadline?.isChecked}
+              <Switch checkedChildren="ON" unCheckedChildren="OFF"
+                checked={formik.values.rfiDeadline?.isChecked}
                 onChange={val => formik.setFieldValue("rfiDeadline.isChecked", val)}
               />
               <TertiaryHeading
