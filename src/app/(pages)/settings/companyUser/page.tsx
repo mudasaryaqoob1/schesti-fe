@@ -6,14 +6,16 @@ import { Dropdown, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { MenuProps } from 'antd';
 import { useRouter } from 'next/navigation';
+import { AppDispatch } from '@/redux/store';
+import moment from 'moment';
 
 // module imports
-import { AppDispatch } from '@/redux/store';
+import { DeleteContent } from '@/app/component/delete/DeleteContent';
+import ModalComponent from '@/app/component/modal';
 import Button from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { deleteUser, fetchUsers } from '@/redux/userSlice/user.thunk';
 import VerticleBar from '@/app/(pages)//settings/verticleBar';
-import moment from 'moment';
 import { setCurrentUser } from '@/redux/userSlice/user.slice';
 import { withAuth } from '@/app/hoc/withAuth';
 
@@ -47,6 +49,8 @@ const Index = () => {
   const [search, setSearch] = useState('');
 
   const [userData, setUserData] = useState([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<any | null>(null);
 
   const fetchCompanyEmployeeHandler = useCallback(async () => {
     let result: any = await dispatch(fetchUsers({ limit: 9, page: 1 }));
@@ -80,7 +84,8 @@ const Index = () => {
       router.push('/settings/companyUser/addCompanyUser/');
       dispatch(setCurrentUser(user));
     } else if (key === 'delete') {
-      deleteCompanyEmployeeHandler(user.key);
+      setShowDeleteModal(true)
+      setSelectedUser(user);
     }
   };
 
@@ -202,6 +207,22 @@ const Index = () => {
           />
         </article>
       </div>
+
+      <ModalComponent
+        open={showDeleteModal}
+        setOpen={setShowDeleteModal}
+        width="30%"
+      >
+        <DeleteContent
+          onClick={async () => {
+            if ('key' in selectedUser!) {
+              deleteCompanyEmployeeHandler(selectedUser.key);
+            }
+            setShowDeleteModal(false);
+          }}
+          onClose={() => setShowDeleteModal(false)}
+        />
+      </ModalComponent>
     </VerticleBar>
   );
 };

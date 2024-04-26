@@ -3,6 +3,7 @@ import { HttpService } from '@/app/services/base.service';
 import {
   IClient,
   IPartner,
+  ICreateClient,
   IDashboardStats,
 } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
@@ -90,7 +91,7 @@ class UserService extends HttpService {
     this.get(`${this.companyPrefix}/client/${id}`);
 
   httpUpdateClient = (
-    data: IClient,
+    data: ICreateClient,
     clientId: string | string[]
   ): Promise<IResponseInterface<any>> =>
     this.post(`${this.companyPrefix}/updateClient/${clientId}`, data);

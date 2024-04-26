@@ -1,13 +1,11 @@
 'use client';
-import { Fragment, useCallback, useEffect, useState } from 'react';
+import { Fragment, useState } from 'react';
 import Button from '@/app/component/customButton/button';
 import Image from 'next/image';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
-import { AppDispatch } from '@/redux/store';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchCompanyClients } from '@/redux/company/company.thunk';
+import { useSelector } from 'react-redux';
 import {
   selectClients,
   selectClientsLoading,
@@ -22,21 +20,11 @@ interface Props {
 }
 
 const ExistingClient = ({ setModalOpen, onSelectClient }: Props) => {
-  const dispatch = useDispatch<AppDispatch>();
   const clientLoading = useSelector(selectClientsLoading);
   const clientsData = useSelector(selectClients);
   const [search, setSearch] = useState('');
-  const [selectedClientId, setSelectedClientId] = useState(
-    clientsData?.[0]?._id
-  );
+  const [selectedClientId, setSelectedClientId] = useState('');
 
-  const memoizedSetPerson = useCallback(async () => {
-    await dispatch(fetchCompanyClients({ page: 1, limit: 10 }));
-  }, []);
-
-  useEffect(() => {
-    memoizedSetPerson();
-  }, []);
 
   const filteredData = clientsData
     ? (clientsData as IClient[]).filter((client) => {
@@ -69,7 +57,7 @@ const ExistingClient = ({ setModalOpen, onSelectClient }: Props) => {
             className="cursor-pointer"
             onClick={() => {
               setModalOpen(false);
-              selectedClientId(undefined);
+              setSelectedClientId('');
             }}
           />
         </div>
@@ -138,7 +126,7 @@ const ExistingClient = ({ setModalOpen, onSelectClient }: Props) => {
             text="Cancel"
             className="!bg-snowWhite !text-abyssalBlack"
             onClick={() => {
-              setSelectedClientId(undefined);
+              setSelectedClientId('');
               setModalOpen(false);
             }}
           />

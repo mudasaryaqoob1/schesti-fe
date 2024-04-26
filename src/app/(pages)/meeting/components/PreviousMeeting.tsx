@@ -1,5 +1,5 @@
 import { IMeeting } from '@/app/interfaces/meeting.type';
-import { NoMeetings } from './NoMeetings';
+import NoDataComponent from '@/app/component/noData';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import moment from 'moment-timezone';
 import QuinaryHeading from '@/app/component/headings/quinary';
@@ -15,7 +15,7 @@ export function PreviousMeetings({ meetings }: Props) {
     return current.isAfter(endMeeting);
   });
   return meetings.length === 0 ? (
-    <NoMeetings onClick={() => {}} />
+    <NoDataComponent link='' title='You did not have any previous meeting' description='There are no meeting.' btnText='' isButton={false} />
   ) : (
     meetings.map((item, index) => {
       return (

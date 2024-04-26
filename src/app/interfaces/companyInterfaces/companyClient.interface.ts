@@ -1,4 +1,16 @@
 export interface IClient {
+  _id?:string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  companyName: string;
+  address: string;
+  secondAddress: string;
+}
+
+export interface ICreateClient {
+  _id?:string;
   firstName: string;
   lastName: string;
   email?: string;

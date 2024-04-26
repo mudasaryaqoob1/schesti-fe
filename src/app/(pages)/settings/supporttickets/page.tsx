@@ -73,7 +73,7 @@ const SupportTickets = () => {
 
   return (
     <SettingSidebar>
-      <section className="w-full">
+      <section className="w-full bg-white p-4 rounded-xl">
         <div className="flex justify-between items-center">
           <TertiaryHeading title="Support Ticket" />
           <CustomButton
@@ -102,7 +102,7 @@ const SupportTickets = () => {
               return (
                 <div
                   key={i}
-                  className="shadow-primaryGlow rounded-2xl flex flex-col p-4 mt-6"
+                  className="shadow-primaryGlow rounded-2xl flex flex-col p-4 mt-6 bg-white"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex gap-4">

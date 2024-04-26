@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import { userService } from '@/app/services/user.service';
 import { subcontractorService } from '@/app/services/subcontractor.service';
 import { estimateRequestService } from '@/app/services/estimates.service';
+import { toast } from 'react-toastify';
 
 interface FetchClientParams {
   page: number;
@@ -94,6 +95,7 @@ export const deleteCompanyClient = createAsyncThunk(
   async (clientId: string, { rejectWithValue }) => {
     try {
       const response = await userService.httpDeleteClient(clientId);
+      toast.success('Client deleted successfully');
       return response;
     } catch (error: any) {
       return rejectWithValue(

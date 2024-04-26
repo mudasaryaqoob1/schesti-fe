@@ -8,7 +8,11 @@ import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 // module imports
-import { senaryHeading } from '@/globals/tailwindvariables';
+import {
+  bg_style,
+  minHeading,
+  senaryHeading,
+} from '@/globals/tailwindvariables';
 import CustomButton from '@/app/component/customButton/button';
 import FormControl from '@/app/component/formControl';
 import { twMerge } from 'tailwind-merge';
@@ -19,10 +23,11 @@ import { ISupportTicket } from '@/app/interfaces/supportTicket.interface';
 import { supportTicketService } from '@/app/services/supportTicket.service';
 
 import Description from '@/app/component/description';
-import MinDescription from '@/app/component/description/minDesc';
 import { selectSupportTickets } from '@/redux/supportTickets/supportTicketSelector';
 import CustomNavbar from '@/app/component/customNavbar';
 import { withAuth } from '@/app/hoc/withAuth';
+import { byteConverter } from '@/app/utils/byteConverter';
+import AwsS3 from '@/app/utils/S3Intergration';
 
 const validationSchema = Yup.object({
   title: Yup.string().required('Title is required!'),
@@ -42,21 +47,25 @@ const EditSupportTicket = () => {
   const { id } = params;
 
   const [isLoading, setIsLoading] = useState(false);
+  const [avatarLoading, setavatarLoading] = useState(false);
+  const [avatarURL, setAvatarURL] = useState('');
   const [supportTicketData, setSupportTicketData] =
     useState<ISupportTicket | null>(null);
 
   useEffect(() => {
-    setSupportTicketData(
-      supportTicketsData?.find((item: any) => item._id === id)
+    let selectedSupportTicket = supportTicketsData?.find(
+      (item: any) => item._id === id
     );
+    setSupportTicketData(selectedSupportTicket);
+    setAvatarURL(selectedSupportTicket.avatar);
   }, [id, supportTicketsData]);
-  console.log(supportTicketsData);
 
   const onSubmit = async ({ title, description }: ISupportTicket) => {
     setIsLoading(true);
     let updateSupportTicketBody = {
       title,
       description,
+      avatar: avatarURL,
     };
     setIsLoading(true);
     let result = await supportTicketService.httpUpdateSupportTicket(
@@ -69,6 +78,36 @@ const EditSupportTicket = () => {
     } else {
       setIsLoading(false);
       toast.error(result.message);
+    }
+  };
+
+  const avatarUploadHandler = async (e: any) => {
+    setavatarLoading(true);
+    let avatarUrl = '';
+
+    if (byteConverter(e.target.files[0].size, 'MB').size > 5) {
+      toast.warning('Cannot upload image more then 5 mb of size');
+      setavatarLoading(false);
+      return;
+    }
+
+    try {
+      await Promise.all(
+        Object.keys(e.target.files).map(async (key) => {
+          const url = await new AwsS3(
+            e.target.files[key],
+            'documents/supportTickets/'
+          ).getS3URL();
+          avatarUrl = url;
+          setAvatarURL(url);
+        })
+      );
+
+      return avatarUrl;
+    } catch (error) {
+      console.error('Error uploading documents:', error);
+    } finally {
+      setavatarLoading(false);
     }
   };
 
@@ -122,7 +161,7 @@ const EditSupportTicket = () => {
                 enableReinitialize
                 onSubmit={onSubmit}
               >
-                {({ handleSubmit, values }) => {
+                {({ handleSubmit, setFieldValue }) => {
                   return (
                     <Form
                       name="basic"
@@ -143,9 +182,8 @@ const EditSupportTicket = () => {
                         name="description"
                         placeholder="Write message here"
                       />
-                      <div
-                        className="p-6 flex items-center flex-col gap-2 border-2
-            border-silverGray pb-4 rounded-lg "
+                      {/* <div
+                        className="p-6 flex items-center flex-col gap-2 border-2 border-silverGray pb-4 rounded-lg "
                       >
                         <Image
                           src="/uploadcloud.svg"
@@ -158,8 +196,7 @@ const EditSupportTicket = () => {
                           <div>
                             <p
                               className={twMerge(
-                                `${senaryHeading}
-                        text-RoyalPurple font-semibold`
+                                `${senaryHeading} text-RoyalPurple font-semibold`
                               )}
                             >
                               Doc
@@ -182,12 +219,69 @@ const EditSupportTicket = () => {
                           className="text-steelGray font-popin text-center"
                           title="SVG, PNG, JPG or GIF (max. 800x400px)"
                         />
+                      </div> */}
+                      {/* Upload Image Div */}
+                      <div className={`${bg_style} p-5 mt-4 `}>
+                        <div
+                          className={`px-6 py-4 flex flex-col items-center gap-3 ${bg_style}`}
+                        >
+                          <input type="text" id="upload" className="hidden" />
+                          <div className="bg-lightGrayish rounded-[28px] border border-solid border-red flex justify-center items-center p-2.5">
+                            <Image
+                              src={'/uploadcloud.svg'}
+                              alt="upload icon"
+                              width={20}
+                              height={20}
+                            />
+                          </div>
+                          {avatarLoading ? <p>Uploading...</p> : null}
+
+                          <Image
+                            src={avatarURL}
+                            alt="avatar"
+                            width={100}
+                            height={100}
+                          />
+
+                          <div className="flex gap-2">
+                            <label
+                              htmlFor="uploadCompanyLogo"
+                              className={twMerge(
+                                `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
+                              )}
+                            >
+                              Upload Logo
+                            </label>
+                            <input
+                              type="file"
+                              name="uploadLogo"
+                              id="uploadCompanyLogo"
+                              className="hidden"
+                              onChange={async (e) => {
+                                setFieldValue(
+                                  'avatar',
+                                  await avatarUploadHandler(e)
+                                );
+                              }}
+                            />
+                            <p className={`text-steelGray ${minHeading}`}>
+                              or drag and drop
+                            </p>
+                          </div>
+
+                          <p className={`text-steelGray ${minHeading}`}>
+                            SVG, PNG, JPG or GIF (max. 800x400px)
+                          </p>
+                        </div>
                       </div>
                       <div className="flex justify-end gap-2 mt-6">
                         <span>
                           <CustomButton
                             text="Cancel"
                             className="!bg-white !text-graphiteGray !border !border-celestialGray"
+                            onClick={() =>
+                              router.push('/settings/supporttickets')
+                            }
                           />
                         </span>
                         <span>
