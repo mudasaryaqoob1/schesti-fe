@@ -542,7 +542,9 @@ function CreatePost() {
                 }}
                 submitButton={{
                   onClick() {
-                    mainFormik.setFieldValue('status', 'active');
+                    if (mainFormik.values.status === 'draft') {
+                      mainFormik.setFieldValue('status', 'active');
+                    }
                     if (mainFormik.errors.status) {
                       toast.error('Cannot update the status');
                     }
