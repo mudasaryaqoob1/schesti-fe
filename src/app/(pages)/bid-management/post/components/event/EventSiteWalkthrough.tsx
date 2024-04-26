@@ -2,12 +2,25 @@ import { InputComponent } from "@/app/component/customInput/Input";
 import { DateInputComponent } from "@/app/component/cutomDate/CustomDateInput";
 import { TimeInputComponent } from "@/app/component/cutomDate/CustomTimeInput";
 import { TextAreaComponent } from "@/app/component/textarea";
+import { IBidManagement } from "@/app/interfaces/bid-management/bid-management.interface";
 import { Checkbox } from "antd";
+import dayjs from "dayjs";
+import type { FormikProps } from "formik";
 import Image from "next/image";
 
-export function EventSiteWalkThroughForm() {
+type Props = {
+    formik: FormikProps<IBidManagement>
+}
+export function EventSiteWalkThroughForm({ formik }: Props) {
+    if (!formik.values.siteWalkthrough?.isChecked) {
+        return null;
+    }
+
     return <div className='space-y-2 mt-3'>
-        <Checkbox>{"It's a mandatory meeting"}</Checkbox>
+        <Checkbox
+            checked={formik.values.siteWalkthrough?.isMandatory}
+            onChange={e => formik.setFieldValue('siteWalkthrough.isMandatory', e.target.checked)}
+        >{"It's a mandatory meeting"}</Checkbox>
         <div className='flex items-center space-x-3'>
             <div className='flex-1'>
                 <InputComponent
@@ -17,6 +30,8 @@ export function EventSiteWalkThroughForm() {
                     type='text'
                     field={{
                         suffix: <Image src='/navigation-icon.svg' width={20} height={20} alt='location' />,
+                        value: formik.values?.siteWalkthrough?.location,
+                        onChange: e => formik.setFieldValue('siteWalkthrough.location', e.target.value)
                     }}
                 />
             </div>
@@ -27,7 +42,11 @@ export function EventSiteWalkThroughForm() {
                     name=''
                     placeholder='Select Date'
                     fieldProps={{
-
+                        format: 'MM/DD/YYYY',
+                        value: formik.values.siteWalkthrough && formik.values.siteWalkthrough.date ? dayjs(formik.values.siteWalkthrough.date) : undefined,
+                        onChange: (date, dateString) => {
+                            formik.setFieldValue('siteWalkthrough.date', dateString as string)
+                        }
                     }}
                 />
             </div>
@@ -38,7 +57,12 @@ export function EventSiteWalkThroughForm() {
                     placeholder='Select Time'
                     fieldProps={{
                         use12Hours: true,
-                        format: "h:mm a"
+                        format: "h:mm a",
+                        value: formik.values.siteWalkthrough && formik.values.siteWalkthrough.time ? dayjs(formik.values.siteWalkthrough.time, 'h:mm') : undefined,
+                        onChange: (time, timeString) => {
+                            formik.setFieldValue('siteWalkthrough.time', timeString as string)
+                        },
+                        showNow: false,
                     }}
                 />
             </div>
@@ -46,8 +70,12 @@ export function EventSiteWalkThroughForm() {
         </div>
         <TextAreaComponent
             label=''
-            name='meetingDescription'
+            name='instruction'
             placeholder='Meeting Instructions'
+            field={{
+                value: formik.values.siteWalkthrough?.instruction,
+                onChange: e => formik.setFieldValue('siteWalkthrough.instruction', e.target.value)
+            }}
         />
     </div>
 }
