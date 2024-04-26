@@ -58,7 +58,7 @@ export function EventSiteWalkThroughForm({ formik }: Props) {
                     fieldProps={{
                         use12Hours: true,
                         format: "h:mm a",
-                        value: formik.values.siteWalkthrough && formik.values.siteWalkthrough.time ? dayjs(formik.values.siteWalkthrough.time, 'h:mm') : undefined,
+                        value: formik.values.siteWalkthrough && formik.values.siteWalkthrough.time ? dayjs(formik.values.siteWalkthrough.time, 'h:mm a') : undefined,
                         onChange: (time, timeString) => {
                             formik.setFieldValue('siteWalkthrough.time', timeString as string)
                         },

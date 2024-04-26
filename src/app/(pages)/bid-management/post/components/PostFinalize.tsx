@@ -20,6 +20,7 @@ import { USCurrencyFormat } from '@/app/utils/format';
 import { EventOnlineForm } from './event/EventOnline';
 import { EventOnSiteForm } from './event/OnSite';
 import { EventSiteWalkThroughForm } from './event/EventSiteWalkthrough';
+import { RfiDeadline } from './event/RFIDeadline';
 
 type Props = {
   children?: React.ReactNode;
@@ -367,12 +368,16 @@ export function PostFinalize({ formik, children }: Props) {
 
           <div className="mt-5">
             <div className="flex items-center space-x-5">
-              <Switch checkedChildren="ON" unCheckedChildren="OFF" defaultChecked />
+              <Switch checkedChildren="ON" unCheckedChildren="OFF" checked={formik.values.rfiDeadline?.isChecked}
+                onChange={val => formik.setFieldValue("rfiDeadline.isChecked", val)}
+              />
               <TertiaryHeading
                 title='RFI Deadline'
                 className='text-[#344054] text-[16px] leading-7 font-normal'
               />
             </div>
+
+            <RfiDeadline formik={formik} />
           </div>
 
         </ConfigProvider>

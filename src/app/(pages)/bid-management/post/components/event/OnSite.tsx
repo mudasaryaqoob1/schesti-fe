@@ -52,7 +52,7 @@ export function EventOnSiteForm({ formik }: Props) {
                         fieldProps={{
                             use12Hours: true,
                             format: "h:mm a",
-                            value: formik.values.preBiddingMeeting && formik.values.preBiddingMeeting.time ? dayjs(formik.values.preBiddingMeeting.time, 'h:mm') : undefined,
+                            value: formik.values.preBiddingMeeting && formik.values.preBiddingMeeting.time ? dayjs(formik.values.preBiddingMeeting.time, 'h:mm a') : undefined,
                             onChange: (time, timeString) => {
                                 formik.setFieldValue('preBiddingMeeting.time', timeString as string)
                             },
