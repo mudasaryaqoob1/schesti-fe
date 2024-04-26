@@ -37,7 +37,7 @@ const CreateMeetingSchema = Yup.object().shape({
   startDate: Yup.date().required('Start Time is required'),
 });
 // let timezones = Intl.supportedValuesOf('timeZone');
-export function CreateMeeting({ showModal, setShowModal }: Props) {
+export function CreateMeeting({ showModal, setShowModal, onSuccess }: Props) {
   const [isScheduling, setIsScheduling] = useState(false);
   const [timezone, setTimezone] = useState<ITimezone>(
     Intl.DateTimeFormat().resolvedOptions().timeZone
@@ -71,6 +71,9 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
         .then((response) => {
           if (response.data) {
             dispatch(addNewMeetingAction(response.data.meeting));
+            if (onSuccess) {
+              onSuccess(response.data.meeting);
+            }
           }
           setIsScheduling(false);
           setShowModal();

@@ -17,6 +17,8 @@ import type { RcFile } from 'antd/es/upload';
 import { useMutation } from 'react-query';
 import { bidManagementService } from '@/app/services/bid-management.service';
 import { USCurrencyFormat } from '@/app/utils/format';
+import { EventOnlineForm } from './event/EventOnline';
+import { EventOnSiteForm } from './event/OnSite';
 
 type Props = {
   children?: React.ReactNode;
@@ -50,6 +52,8 @@ export function PostFinalize({ formik, children }: Props) {
     fetchCompanyEmployeeHandler();
   }, []);
 
+  console.log(formik.values);
+
   const readCSVMutation = useMutation({
     mutationKey: 'upload-csv',
     mutationFn: async (file: RcFile) => {
@@ -65,6 +69,7 @@ export function PostFinalize({ formik, children }: Props) {
       formik.setFieldValue('invitedMembers', invitedMembers);
     },
   });
+
 
   return (
     <div className="space-y-6">
@@ -304,20 +309,43 @@ export function PostFinalize({ formik, children }: Props) {
             <div className='flex items-center space-x-10 '>
 
               <div className="flex items-center space-x-5">
-                <Switch checkedChildren="ON" unCheckedChildren="OFF" defaultChecked />
+                <Switch checkedChildren="ON" unCheckedChildren="OFF" checked={formik.values.preBiddingMeeting?.isChecked}
+                  onChange={val => {
+                    formik.setFieldValue('preBiddingMeeting.isChecked', val);
+                  }}
+                />
                 <TertiaryHeading
                   title='Required Pre-bid Meeting'
                   className='text-[#344054] text-[16px] leading-7 font-normal'
                 />
               </div>
 
-              <div>
-                <Radio.Group>
+              {formik.values.preBiddingMeeting?.isChecked ? <div>
+                <Radio.Group value={formik.values.preBiddingMeeting?.type} onChange={e => {
+                  formik.setFieldValue('preBiddingMeeting.type', e.target.value);
+                }}>
                   <Radio value={'Onsite'}>Onsite</Radio>
                   <Radio value={'Online'}>Online</Radio>
                 </Radio.Group>
-              </div>
+              </div> : null
+              }
             </div>
+            <div className='my-2'>
+              <Checkbox
+                value={formik.values.preBiddingMeeting?.isMandatory}
+                onChange={e => {
+                  formik.setFieldValue('preBiddingMeeting.isMandatory', e.target.checked)
+                }}>
+                {"It's a mandatory meeting"}
+              </Checkbox>
+            </div>
+            <EventOnSiteForm
+              formik={formik}
+            />
+
+            <EventOnlineForm
+              formik={formik}
+            />
           </div>
 
           <div className="mt-5">

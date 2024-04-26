@@ -1,3 +1,4 @@
+import { IMeeting } from '../meeting.type';
 import { ITrade } from '../trade.interface';
 import { IUserInterface } from '../user.interface';
 
@@ -7,6 +8,39 @@ export interface IBidDocument {
   extension: string;
   type: string;
   name: string;
+}
+
+
+interface IPreBiddingMeetingOnSite {
+  isChecked?: boolean;
+  type: "Onsite",
+  location?: string;
+  date?: string;
+  time?: string;
+  instruction?: string;
+  isMandatory?: boolean;
+}
+
+interface IPreBiddingMeetingOnline {
+  isChecked?: boolean;
+  type: "Online",
+  meeting?: IMeeting | string;
+  isMandatory?: boolean;
+}
+
+interface ISiteWalkthrough {
+  isChecked?: boolean;
+  location?: string;
+  date?: string;
+  time?: string;
+  instruction?: string;
+  isMandatory?: boolean;
+}
+
+interface IRFIDeadline {
+  date?: string;
+  time?: string;
+  isChecked?: boolean;
 }
 
 export interface IBidManagement {
@@ -49,6 +83,10 @@ export interface IBidManagement {
     extension: string;
     type: string;
   }[];
+
+  preBiddingMeeting?: IPreBiddingMeetingOnSite | IPreBiddingMeetingOnline;
+  siteWalkthrough?: ISiteWalkthrough;
+  rfiDeadline?: IRFIDeadline;
 }
 
 export interface IBidManagementProjectTeamMember {
