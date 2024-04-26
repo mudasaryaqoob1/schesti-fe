@@ -18,7 +18,6 @@ import { useMutation } from 'react-query';
 import { bidManagementService } from '@/app/services/bid-management.service';
 import { useRouter } from 'next/navigation';
 import { CreateRFI } from './CreateRFI';
-import Link from 'next/link';
 import { isEmpty, size } from 'lodash';
 import { SendEmailModal } from './SendEamil';
 import { downloadFile } from '@/app/utils/downloadFile';
@@ -125,6 +124,20 @@ export function BidDetails({
     });
   };
 
+  const createProjectActivity = async (projectId: string) => {
+    try {
+      const data = { projectId: projectId };
+      const res = await bidManagementService.httpCreateProjectActivity(data);
+      console.log({ activities: res });
+
+    } catch (error) { /* empty */ }
+  }
+
+  const handleProposalDetails = async (bidId: string) => {
+    await createProjectActivity(bidId);
+    router.push(`/bid-management/details/${bidId}`);
+  }
+
   return (
     <div>
       {bidSubmittedDetails && !isDetailsLoading && (
@@ -133,12 +146,12 @@ export function BidDetails({
             title={'You have already submitted a proposal'}
             className="text-[#475467] text-[14px] leading-6 font-normal mt-2"
           />
-          <Link
-            href={`/bid-management/details/${bid?._id}`}
+          <div
+            onClick={() => handleProposalDetails(bid?._id)}
             className="text-[#27AE60] underline underline-offset-2 mb-2 text-[14px] leading-6 font-normal cursor-pointer"
           >
             View Proposal
-          </Link>
+          </div>
         </div>
       )}
       <div className="flex items-center justify-between">
@@ -176,12 +189,12 @@ export function BidDetails({
           title={bid.description}
           className="text-[#475467] text-[14px] leading-6 font-normal mt-2"
         />
-        <Link
-          href={`/bid-management/details/${bid?._id}`}
-          className="text-[#7F56D9] underline underline-offset-2 mt-4 text-[14px] leading-6 font-normal cursor-pointer"
+        <div
+          onClick={() => handleProposalDetails(bid?._id)}
+          className="text-[#7F56D9] underline underline-offset-2 text-[14px] leading-6 font-normal cursor-pointer"
         >
           View full details
-        </Link>
+        </div>
       </div>
       <Divider />
       <div className="my-4 space-y-3">
