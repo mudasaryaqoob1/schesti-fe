@@ -149,7 +149,7 @@ const CreateEstimateRequest = () => {
     // }
     else {
       setIsLoading(true);
-      toast.success('File Uploading...', { autoClose: 20 });
+      toast.success('File Uploading...', { autoClose: 50 });
 
       const drawingDocs = await uploadDocumentToS3Handler(drawingsDocuments);
       const takeOffDocs = await uploadDocumentToS3Handler(takeOffReports);
@@ -297,6 +297,30 @@ const CreateEstimateRequest = () => {
     );
   };
 
+  const addSalePersonAction = () => {
+    return (
+      <CustomWhiteButton
+      text="Add Sale Person"
+      className="!w-auto !py-1 !px-2 !text-[12px]"
+      icon="/plusblack.svg"
+      iconwidth={10}
+      iconheight={10}
+      onClick={() => router.push('/settings/companyUser/addCompanyUser')}
+    />
+    )
+  }
+  const addEstimatorAction = () => {
+    return (
+      <CustomWhiteButton
+      text="Add Estimator"
+      className="!w-auto !py-1 !px-2 !text-[12px]"
+      icon="/plusblack.svg"
+      iconwidth={10}
+      iconheight={10}
+      onClick={() => router.push('/settings/companyUser/addCompanyUser')}
+    />
+    )
+  }
   return (
     <section className="my-5 px-16 ">
       <div className="flex justify-between flex-wrap items-center md:flex-nowrap">
@@ -445,7 +469,8 @@ const CreateEstimateRequest = () => {
                       name="salePerson"
                       placeholder="Select Sale person"
                       options={salePersonsOption}
-                      def
+                      labelButton={true}
+                      labelAction={addSalePersonAction}
                     />
                     <FormControl
                       control="select"
@@ -453,6 +478,8 @@ const CreateEstimateRequest = () => {
                       name="estimator"
                       placeholder="Select project manager"
                       options={estimatorsOption}
+                      labelButton={true}
+                      labelAction={addEstimatorAction}
                     />
                   </div>
                 </div>
