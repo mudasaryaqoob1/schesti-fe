@@ -189,6 +189,7 @@ function BidManagementSubContractorPage() {
               />
               <BidFilters
                 onApply={(appliedFilters) => {
+                  //@ts-ignore
                   setFilters(appliedFilters);
                   closeFilters();
                   console.log('You click to apply filter');
