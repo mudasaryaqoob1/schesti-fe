@@ -17,12 +17,24 @@ import { BidFilters } from './components/Filters';
 import _, { size } from 'lodash';
 import { isArrayString } from '@/app/utils/typescript.utils';
 
-const PAGE_LIMIT = 10;
+// const PDFDownloadLink = dynamic(
+//   () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
+//   {
+//     ssr: false,
+//     loading: () => <p>Loading...</p>,
+//   },
+// );
+// import dynamic from 'next/dynamic';
+// import BidListPdf from './components/bids-pdf';
+
+const ITEMS_PER_PAGE = 4;
 
 function BidManagementSubContractorPage() {
 
   const [selectedBid, setSelectedBid] = useState<IBidManagement | null>(null);
   const [search, setSearch] = useState('');
+  const [invitedCurrentPage, setInvitedCurrentPage] = useState(1);
+  const [exploreCurrentPage, setExploreCurrentPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
   const [selectedProjectSavedBid, setSelectedProjectSavedBid] = useState<any>(null);
   const [filters, setFilters] = useState<{
@@ -33,16 +45,6 @@ function BidManagementSubContractorPage() {
   }>({
     trades: [],
     projectValue: 0,
-    page: 1,
-    limit: PAGE_LIMIT
-  });
-
-  const [invitedfilters, setInvitedFilters] = useState<{
-    page: number;
-    limit: number;
-  }>({
-    page: 1,
-    limit: PAGE_LIMIT
   });
 
 
@@ -85,8 +87,8 @@ function BidManagementSubContractorPage() {
       : [];
 
   const currentInvitedProjects = invitedProjects.slice(
-    (invitedfilters.page - 1) * invitedfilters.limit,
-    invitedfilters.page * invitedfilters.limit
+    (invitedCurrentPage - 1) * ITEMS_PER_PAGE,
+    invitedCurrentPage * ITEMS_PER_PAGE
   );
 
   const currentExploreProjects = projects
@@ -100,9 +102,20 @@ function BidManagementSubContractorPage() {
       );
     })
     .slice(
-      (filters.page - 1) * filters.limit,
-      filters.page * filters.limit
+      (exploreCurrentPage - 1) * ITEMS_PER_PAGE,
+      exploreCurrentPage * ITEMS_PER_PAGE
     );
+
+  // const dataToExport = currentExploreProjects.filter((project) => {
+  //   if (search === '') {
+  //     return project;
+  //   }
+  //   return (
+  //     project.projectName.toLowerCase().includes(search.toLowerCase()) ||
+  //     project.city.toLowerCase().includes(search.toLowerCase()) ||
+  //     project.stage.toLowerCase().includes(search.toLowerCase())
+  //   );
+  // });
 
   const bidClickHandler = async (selectedBid: any) => {
     setSelectedBid(selectedBid);
@@ -119,6 +132,8 @@ function BidManagementSubContractorPage() {
       console.error('Error fetching project saved bids:', err);
     }
   };
+
+  
 
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 ">
@@ -228,12 +243,10 @@ function BidManagementSubContractorPage() {
               {size(invitedProjects) >= 5 && (
                 <div className="mt-1 flex justify-center">
                   <Pagination
-                    current={invitedfilters.page}
-                    pageSize={invitedfilters.limit}
-                    total={typeof invitedPaginationInfo === 'object' ? invitedPaginationInfo.totalRecords || 0 : 0}
-                    onChange={(page) => {
-                      setInvitedFilters(prevFilters => ({ ...prevFilters, page: page }));
-                    }}
+                    current={invitedCurrentPage}
+                    pageSize={ITEMS_PER_PAGE}
+                    total={invitedProjects.length}
+                    onChange={(page) => setInvitedCurrentPage(page)}
                   />
                 </div>
               )}
@@ -292,12 +305,10 @@ function BidManagementSubContractorPage() {
         {size(projects) >= 5 && (
           <div className="mt-1 flex justify-center">
             <Pagination
-              current={filters.page}
-              pageSize={filters.limit}
-              total={typeof paginationInfo === 'object' ? paginationInfo.totalRecords || 0 : 0}
-              onChange={(page) => {
-                setFilters(prevFilters => ({ ...prevFilters, page: page }));
-              }}
+              current={exploreCurrentPage}
+              pageSize={ITEMS_PER_PAGE}
+              total={projects.length}
+              onChange={(page) => setExploreCurrentPage(page)}
             />
           </div>
         )}
