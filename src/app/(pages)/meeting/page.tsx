@@ -51,7 +51,7 @@ const Meeting = () => {
         showModal={showModal}
         setShowModal={() => setShowModal(false)}
       />
-      <div className="flex items-center justify-between my-3">
+      <div className="flex items-center justify-between my-3 ">
         <SecondaryHeading title="Meeting" />
         <CustomButton
           text="Schedule a meeting"
@@ -62,7 +62,7 @@ const Meeting = () => {
           onClick={() => setShowModal(true)}
         />
       </div>
-      <div className="w-full mb-4 shadow rounded p-3">
+      <div className="w-full mb-4 shadow rounded p-3 bg-white">
         <ConfigProvider
           theme={{
             components: {

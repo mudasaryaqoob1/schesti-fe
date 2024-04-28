@@ -108,8 +108,7 @@ const CreateClient = () => {
         />
       </div>
       <div
-        className="p-5 flex flex-col rounded-lg border
-     border-silverGray shadow-secondaryShadow2 bg-white"
+        className="p-5 flex flex-col rounded-lg border border-silverGray shadow-secondaryShadow2 bg-white"
       >
         <TertiaryHeading
           className="text-graphiteGray mb-4 "

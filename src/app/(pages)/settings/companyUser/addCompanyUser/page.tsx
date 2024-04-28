@@ -129,7 +129,7 @@ const AddNewUser = () => {
             className="font-semibold text-lavenderPurple cursor-pointer underline"
           />
         </div>
-        <TertiaryHeading title="Client List" className="my-5" />
+        <TertiaryHeading title="New User" className="my-5" />
         <Formik
           initialValues={initialValues}
           validationSchema={newClientSchema}

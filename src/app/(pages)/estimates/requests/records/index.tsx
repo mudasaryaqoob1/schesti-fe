@@ -20,6 +20,7 @@ import Image from 'next/image';
 import { IEstimateRequest } from '@/app/interfaces/estimateRequests/estimateRequests.interface';
 import ModalComponent from '@/app/component/modal';
 import { DeleteContent } from '@/app/component/delete/DeleteContent';
+import NoDataComponent from '@/app/component/noData';
 
 interface DataType {
   key: React.Key;
@@ -237,12 +238,19 @@ const EstimateRequestTable: React.FC = () => {
         />
       </div>
       <div className="mt-4">
-        <Table
-          loading={estimateRequestsLoading}
-          columns={columns}
-          dataSource={estimateRequestsData}
-          pagination={{ position: ['bottomCenter'] }}
-        />
+        {
+          estimateRequestsData.length === 0 ? (
+            <NoDataComponent title='No Data Found' description='Please create estimate request first to create an estimate' btnText='Create Estimate Request' isButton={true} link='/estimates/requests/create' />
+          ) : (
+            <Table
+            loading={estimateRequestsLoading}
+            columns={columns}
+            dataSource={estimateRequestsData}
+            pagination={{ position: ['bottomCenter'] }}
+          />
+          )
+        }
+       
       </div>
     </section>
   );
