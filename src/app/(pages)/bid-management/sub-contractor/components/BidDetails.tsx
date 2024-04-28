@@ -27,6 +27,7 @@ type Props = {
   bid: IBidManagement;
   selectedProjectSavedBid?: any;
   setSelectedProjectSavedBid?: any;
+  bidClickHandler?: any;
 };
 type RemoveUserBidProps = {
   biddingId: string;
@@ -38,6 +39,7 @@ type SaveUserBidProps = {
 };
 export function BidDetails({
   bid,
+  bidClickHandler,
   selectedProjectSavedBid,
   setSelectedProjectSavedBid,
 }: Props) {
@@ -306,7 +308,14 @@ export function BidDetails({
 
         {isEmpty(selectedProjectSavedBid) ? (
           <CustomButton
-            onClick={() => saveUserBidMutation.mutate({ projectId: bid?._id })}
+            onClick={() => {
+              saveUserBidMutation.mutate({ projectId: bid?._id })
+              setTimeout(()=> {
+                if(bidClickHandler) {
+                  bidClickHandler();
+                }
+              }, 500);
+            }}
             text="Add to my Bidding Projects"
             className="!bg-white !text-[#7138DF]"
           />

@@ -19,9 +19,13 @@ export function BidFilters({ onApply, onCancel, isVisible }: Props) {
   const [filters, setFilters] = useState<{
     trades: string[];
     projectValue: number;
+    page: number;
+    limit: number;
   }>({
     trades: [],
     projectValue: 0,
+    page: 1,
+    limit: 10
   });
 
   if (!isVisible) return null;
@@ -73,6 +77,7 @@ export function BidFilters({ onApply, onCancel, isVisible }: Props) {
             value: filters.trades,
             onChange: (value) => {
               setFilters({
+                ...filters,
                 trades: value,
                 projectValue: filters.projectValue,
               });
@@ -89,6 +94,7 @@ export function BidFilters({ onApply, onCancel, isVisible }: Props) {
             value: filters.projectValue,
             onChange: (e) => {
               setFilters({
+                ...filters,
                 trades: filters.trades,
                 projectValue: parseInt(e.target.value),
               });

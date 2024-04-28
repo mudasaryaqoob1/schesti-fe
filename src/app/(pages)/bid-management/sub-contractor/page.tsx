@@ -204,6 +204,7 @@ function BidManagementSubContractorPage() {
               />
               <BidFilters
                 onApply={(appliedFilters) => {
+                  //@ts-ignore
                   setFilters(appliedFilters);
                   closeFilters();
                   console.log('You click to apply filter');
@@ -298,6 +299,7 @@ function BidManagementSubContractorPage() {
                 bid={selectedBid}
                 selectedProjectSavedBid={selectedProjectSavedBid}
                 setSelectedProjectSavedBid={setSelectedProjectSavedBid}
+                bidClickHandler={()=>bidClickHandler(selectedBid)}
               />
             </div>
           ) : null}
