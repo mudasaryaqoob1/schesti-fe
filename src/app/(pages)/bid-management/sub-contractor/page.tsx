@@ -286,6 +286,7 @@ function BidManagementSubContractorPage() {
                 bid={selectedBid}
                 selectedProjectSavedBid={selectedProjectSavedBid}
                 setSelectedProjectSavedBid={setSelectedProjectSavedBid}
+                bidClickHandler={()=>bidClickHandler(selectedBid)}
               />
             </div>
           ) : null}
