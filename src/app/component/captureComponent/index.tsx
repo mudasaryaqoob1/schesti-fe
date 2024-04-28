@@ -19,6 +19,7 @@ import { AppDispatch } from '@/redux/store';
 import { useDispatch } from 'react-redux';
 import { createTakeoffSummary, updateTakeoffSummary } from '@/redux/takeoffSummaries/takeoffSummaries.thunk';
 import { useDraw } from '@/app/hooks';
+import { useRouter } from 'next/navigation';
 
 export interface dataInterface {
   image: string;
@@ -47,13 +48,16 @@ const CaptureComponent = ({
   name,
   save,
   onSaveSuccess,
+  selectedClient,
 }: {
   name: string;
   save: number;
   onSaveSuccess: () => void;
+  selectedClient?:any;
   // itemsToCapture: DrawHistoryContextInterface;
   // onCapture: (url: string, key: number) => void;
 }) => {
+  const router = useRouter()
   const counterImage = new Image();
   counterImage.src = '/count-draw.png';
 
@@ -255,6 +259,8 @@ const CaptureComponent = ({
       setTimeout(() => {
         uploadToS3('capture', uploadFileData).then((result: any) => {
           console.log(result, "result measurements");
+          let clientD = {}
+          if(selectedClient?._id) clientD = {client : selectedClient?._id} 
           //@ts-ignore
           if (urlSearch && urlSearch.get('edit_id') && urlSearch.get('edit_id')?.length > 0) {
             dispatch(
@@ -266,7 +272,8 @@ const CaptureComponent = ({
                   createdBy: 99999,
                   url: result?.url,
                   // pages: result?.pages,
-                  measurements: drawHistory
+                  measurements: drawHistory,
+                  ...clientD
                 }
               })
             );
@@ -278,12 +285,14 @@ const CaptureComponent = ({
                 createdBy: 99999,
                 url: result?.url,
                 pages: result?.pages,
-                measurements: drawHistory
+                measurements: drawHistory,
+                ...clientD
               })
             );
           }
           setIsSaving(false);
           onSaveSuccess();
+          router.push('/takeoff')
         });
       }, 2000);
     }

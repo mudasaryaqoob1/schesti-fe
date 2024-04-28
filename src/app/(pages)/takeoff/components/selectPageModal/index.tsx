@@ -1,53 +1,11 @@
 'use client';
 import Button from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
-import Image from 'next/image';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import { Select, Radio, Input, Checkbox } from 'antd';
-import type { RadioChangeEvent } from 'antd';
-import { ChangeEvent, useContext, useEffect, useState } from 'react';
-import { fetchTakeoffPreset } from '@/redux/takeoff/takeoff.thunk';
 import { AppDispatch } from '@/redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectTakeoffPreset } from '@/redux/takeoff/takeoff.Selector';
-import { takeoffPresetService } from '@/app/services/takeoff.service';
-import { addNewTakeoffPresetData } from '@/redux/takeoff/takeoff.slice';
-import { ScaleContext } from '../../context';
-import { ScaleDataContextProps } from '../../context/ScaleContext';
-import { measurementUnits } from '@/app/hooks/useDraw';
-import { useRouter } from 'next/router';
-
-const precisions = ['1', '0.1', '0.01', ' 0.001', '0.0001', '0.00001'];
-const byPrecision = ['1', '1/2', '1/4', '1/8', '1/16', '1/32'];
-const meters = ['in', 'cm', 'mm'];
-
-const byDefaultPrest = [
-  { label: `1"=1"`, value: `1"=1"` },
-  { label: `1/32"=1'-0"`, value: `1/32"=1'-0"` },
-  { label: `1/16"=1'-0"`, value: `1/16"=1'-0"` },
-  { label: `3/32"=1'0"`, value: `3/32"=1'0"` },
-  { label: `1/8"=1'-0"`, value: `1/8"=1'-0"` },
-  { label: `3/16"=1'-0"`, value: `3/16"=1'-0"` },
-  { label: `1/4"=1'-0"`, value: `1/4"=1'-0"` },
-  { label: `1/2"=1'-0"`, value: `1/2"=1'-0"` },
-  { label: `3/4"=1'-0"`, value: `3/4"=1'-0"` },
-  { label: `1"=1'-0"`, value: `1"=1'-0"` },
-  { label: `11/2"=1'-0"`, value: `11/2"=1'-0"` },
-  { label: `1"=80'`, value: `1"=80'` },
-  { label: `1"=90'`, value: `1"=90'` },
-  { label: `1"=100'`, value: `1"=100'` },
-  { label: `1"=200'`, value: `1"=200'` },
-  { label: `1"=300'`, value: `1"=300'` },
-  { label: `1"=400'`, value: `1"=400'` },
-  { label: `1:1`, value: `1:1` },
-  { label: `1:10`, value: `1:10` },
-  { label: `1:20`, value: `1:20` },
-  { label: `1:50`, value: `1:50` },
-  { label: `1:100`, value: `1:100` },
-  { label: `1:200`, value: `1:200` },
-  { label: `1:500`, value: `1:500` },
-  { label: `1:1000`, value: `1:1000` },
-];
+import { useState } from 'react';
 
 interface Props {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -130,16 +88,16 @@ const SelectPageModal = ({ setModalOpen, numOfPages, page, uploadFileData, handl
         </div>
       </section>
       <div className="flex justify-end gap-4 mt-5 mb-2">
-        {/* <div>
-          <Button
-            text="Cancel"
-            className="!bg-snowWhite !text-abyssalBlack !py-1.5 "
-            onClick={() => setModalOpen(false)}
-          />
-        </div> */}
         <div>
           <Button
-            text="Add"
+            text="Change File"
+            className="!bg-snowWhite !text-abyssalBlack !py-1.5 "
+            onClick={() => {setselectedPages([]);setModalOpen(false)}}
+          />
+        </div>
+        <div>
+          <Button
+            text="Select"
             onClick={handleCalibrate}
             className="!py-1.5 disabled:!bg-lavenderPurple"
             disabled={selectedPages?.length < 1}

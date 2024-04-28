@@ -52,9 +52,11 @@ interface Props {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   numOfPages: number;
   page?: number;
+  drawScale?:boolean;
+  setdrawScale?:any;
 }
 
-const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
+const ScaleModal = ({ setModalOpen, numOfPages, page, drawScale, setdrawScale }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const allPresets = useSelector(selectTakeoffPreset);
 
@@ -270,9 +272,8 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
             <div className="flex items-center gap-1 w-full">
               <Input
                 value={optionsValue}
-                className={`w-full ${
-                  optionError && '!border-1 !border-rose-500'
-                }`}
+                className={`w-full ${optionError && '!border-1 !border-rose-500'
+                  }`}
                 onChange={(e) => handleOptionChange(e)}
               />
               <div className="">
@@ -358,9 +359,8 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
               <>
                 <Input
                   value={firstValueX}
-                  className={`!w-[115px] ${
-                    firstValErrorX && '!border-1 !border-rose-500'
-                  }`}
+                  className={`!w-[115px] ${firstValErrorX && '!border-1 !border-rose-500'
+                    }`}
                   onChange={(e) => {
                     const inputValue = e.target.value;
 
@@ -390,9 +390,8 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
                 </Select>
                 <Input
                   value={secondValueX}
-                  className={`!w-[115px] ${
-                    secValErrorX && '!border-1 !border-rose-500'
-                  } `}
+                  className={`!w-[115px] ${secValErrorX && '!border-1 !border-rose-500'
+                    } `}
                   onChange={(e) => {
                     const inputValue = e.target.value;
 
@@ -498,9 +497,8 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
                   <>
                     <Input
                       value={firstValueY}
-                      className={`!w-[115px] ${
-                        firstValErrorY && '!border-1 !border-rose-500'
-                      } `}
+                      className={`!w-[115px] ${firstValErrorY && '!border-1 !border-rose-500'
+                        } `}
                       // className="!w-[115px]"
                       onChange={(e) => {
                         const inputValue = e.target.value;
@@ -531,9 +529,8 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
                     </Select>
                     <Input
                       value={secondValueY}
-                      className={`!w-[115px] ${
-                        secValErrorY && '!border-1 !border-rose-500'
-                      } `}
+                      className={`!w-[115px] ${secValErrorY && '!border-1 !border-rose-500'
+                        } `}
                       onChange={(e) => {
                         const inputValue = e.target.value;
 
@@ -627,18 +624,23 @@ const ScaleModal = ({ setModalOpen, numOfPages, page }: Props) => {
             >
               {secMeterX === `in'` || secMeterX === `ft'in"`
                 ? byPrecision.map((item) => (
-                    <Select.Option key={item} value={item}>
-                      {item}
-                    </Select.Option>
-                  ))
+                  <Select.Option key={item} value={item}>
+                    {item}
+                  </Select.Option>
+                ))
                 : precisions.map((item) => (
-                    <Select.Option key={item} value={item}>
-                      {item}
-                    </Select.Option>
-                  ))}
+                  <Select.Option key={item} value={item}>
+                    {item}
+                  </Select.Option>
+                ))}
             </Select>
           </div>
         </div>
+        <Button
+          text="Scale from draw"
+          onClick={() => { setModalOpen(false); setdrawScale(true) }}
+          className="!py-1.5"
+        />
       </section>
       <div className="flex justify-end gap-4 mt-5 mb-2">
         <div>

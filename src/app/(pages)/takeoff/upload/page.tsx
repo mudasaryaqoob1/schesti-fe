@@ -108,7 +108,7 @@ const Upload = () => {
           />
 
           <SenaryHeading
-            title="Add new client"
+            title="File Upload"
             className="font-semibold text-lavenderPurple cursor-pointer underline"
           />
         </div>

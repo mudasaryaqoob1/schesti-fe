@@ -10,6 +10,7 @@ import {
   Text as KonvaText,
   Arrow,
   Circle,
+  Rect,
 } from 'react-konva';
 import { UploadFileData } from '../../context/UploadFileContext';
 import { DrawHistoryContext } from '../../context';
@@ -48,8 +49,10 @@ interface Props {
   uploadFileData: UploadFileData;
   pageNumber: number;
   handleScaleModal: (open: boolean) => void;
-  isEdit?:boolean;
-  editData?:any;
+  isEdit?: boolean;
+  editData?: any;
+  drawScale?:any;
+  setdrawScale?:any;
 }
 
 const Draw: React.FC<Props> = ({
@@ -63,7 +66,9 @@ const Draw: React.FC<Props> = ({
   uploadFileData,
   pageNumber,
   isEdit,
-  editData
+  editData,
+  drawScale,
+  setdrawScale
 }) => {
   const { selected, subSelected = null } = selectedTool;
   const {
@@ -87,20 +92,21 @@ const Draw: React.FC<Props> = ({
     volume: [],
     count: [],
     dynamic: [],
+    scale: []
   });
   console.log(draw, 'drawdrawdrawdrawdrawdrawdrawdrawdrawdraw')
-  useEffect(()=>{
-    if(isEdit){
+  useEffect(() => {
+    if (isEdit) {
       console.log("Edit flow run");
-      
+
       setDraw({
         //@ts-ignore
-        line: [],area: [],volume: [], count: [], dynamic: [],...drawHistory[`${pageNumber}`]
+        line: [], area: [], volume: [], count: [], dynamic: [], ...drawHistory[`${pageNumber}`]
       })
     }
-  },[drawHistory,isEdit,editData])
-  
-  
+  }, [drawHistory, isEdit, editData])
+
+
   const [polyLine, setPolyLine] = useState<LineInterface>(defaultPolyLineState);
   const [dynamicPolyLine, setDynamicPolyLine] =
     useState<LineInterface>(defaultPolyLineState);
@@ -114,6 +120,8 @@ const Draw: React.FC<Props> = ({
   const [selectedShape, setSelectedShape] = useState('');
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [circle, setCircle] = useState<CircleInterface[]>([]);
+  console.log(selected, drawScale, " ===> selected and draw scal");
+  
 
   const myImage = new Image();
   myImage.src =
@@ -131,7 +139,7 @@ const Draw: React.FC<Props> = ({
 
   useEffect(() => {
     if (subSelected === 'clear') {
-      setDraw((prev:any) => ({ ...prev, dynamic: [] }));
+      setDraw((prev: any) => ({ ...prev, dynamic: [] }));
       setCircle([]);
     }
   }, [subSelected]);
@@ -165,12 +173,37 @@ const Draw: React.FC<Props> = ({
       selected === 'length' ||
       selected === 'area' ||
       selected === 'volume' ||
+      (selected === 'scale' && drawScale == true) ||
       subSelected === 'create'
     ) {
       setCurrentLine((prev) => ({
         ...prev,
         startingPoint: { x: position?.x || 0, y: position?.y || 0 },
       }));
+    }
+
+    // draw scal handling
+    if (selected === 'scale' && drawScale == true && currentLine.startingPoint) {
+      const { startingPoint } = currentLine;
+
+      const newLine: LineInterface = {
+        points: [
+          startingPoint?.x,
+          startingPoint?.y,
+          position?.x,
+          position?.y,
+        ] as number[],
+        stroke: color,
+        strokeWidth: border,
+        textUnit: unit,
+        dateTime: moment().toDate(),
+      };
+      setDraw((prev: any) => ({ ...prev, scale: [...prev.scale, newLine] }));
+
+      // updateDrawHistory(pageNumber.toString(), 'line', newLine);
+
+      setCurrentLine(defaultCurrentLineState);
+      handleChangeMeasurements(defaultMeasurements);
     }
 
     if (selected === 'length' && currentLine.startingPoint) {
@@ -188,7 +221,7 @@ const Draw: React.FC<Props> = ({
         textUnit: unit,
         dateTime: moment().toDate(),
       };
-      setDraw((prev:any) => ({ ...prev, line: [...prev.line, newLine] }));
+      setDraw((prev: any) => ({ ...prev, line: [...prev.line, newLine] }));
 
       updateDrawHistory(pageNumber.toString(), 'line', newLine);
 
@@ -223,7 +256,7 @@ const Draw: React.FC<Props> = ({
             setCurrentLine({ startingPoint: null, endingPoint: null });
             setCompletingLine({ startingPoint: null, endingPoint: null });
 
-            setDraw((prevDraw:any) => {
+            setDraw((prevDraw: any) => {
               const polygonCoordinates = prev.points;
               const parameter = calculatePolygonPerimeter(
                 polygonCoordinates,
@@ -315,7 +348,7 @@ const Draw: React.FC<Props> = ({
         dateTime: moment().toDate(),
       };
 
-      setDraw((prev:any) => {
+      setDraw((prev: any) => {
         handleChangeMeasurements({ count: [...prev.count, newCount].length });
         return { ...prev, count: [...prev.count, newCount] };
       });
@@ -390,34 +423,35 @@ const Draw: React.FC<Props> = ({
       handleChangeMeasurements({
         angle,
         ...(selected === 'length' && { parameter }),
+        // ...((selected === 'length' && drawScale == true) && { parameter }),
         ...(completingLine.endingPoint
           ? {
-              parameter: calculatePolygonPerimeter(
-                [
-                  ...polyLine.points,
-                  completingLine.endingPoint.x,
-                  completingLine.endingPoint.y,
-                ],
-                scale
-              ),
-              area: calculatePolygonArea(
-                [
-                  ...polyLine.points,
-                  completingLine.endingPoint.x,
-                  completingLine.endingPoint.y,
-                ],
-                scale
-              ),
-              volume: calculatePolygonVolume(
-                [
-                  ...polyLine.points,
-                  completingLine.endingPoint.x,
-                  completingLine.endingPoint.y,
-                ],
-                depth,
-                scale
-              ),
-            }
+            parameter: calculatePolygonPerimeter(
+              [
+                ...polyLine.points,
+                completingLine.endingPoint.x,
+                completingLine.endingPoint.y,
+              ],
+              scale
+            ),
+            area: calculatePolygonArea(
+              [
+                ...polyLine.points,
+                completingLine.endingPoint.x,
+                completingLine.endingPoint.y,
+              ],
+              scale
+            ),
+            volume: calculatePolygonVolume(
+              [
+                ...polyLine.points,
+                completingLine.endingPoint.x,
+                completingLine.endingPoint.y,
+              ],
+              depth,
+              scale
+            ),
+          }
           : 0),
       });
     }
@@ -447,7 +481,7 @@ const Draw: React.FC<Props> = ({
   });
   return (
     <div
-      className="outline-none relative bg-grey-900"
+      className="outline-none relative bg-grey-900 my-3"
       tabIndex={1}
       onKeyDown={(e) => {
         if (e.key === 'Escape') {
@@ -460,7 +494,7 @@ const Draw: React.FC<Props> = ({
         if (e.key === 'Enter' && subSelected === 'create') {
           setCurrentLine(defaultCurrentLineState);
 
-          setDraw((prevDraw:any) => ({
+          setDraw((prevDraw: any) => ({
             ...prevDraw,
             dynamic: [
               ...prevDraw.dynamic,
@@ -480,7 +514,7 @@ const Draw: React.FC<Props> = ({
         if (e.key === 'Delete' && selectedShape) {
           const [shapeName, shapeNumber] = selectedShape.split('-');
 
-          setDraw((prev:any) => {
+          setDraw((prev: any) => {
             const tempPrevShapeData = [
               ...prev[shapeName as keyof DrawInterface],
             ];
@@ -600,8 +634,43 @@ const Draw: React.FC<Props> = ({
             width={uploadFileData.width || 600}
             height={uploadFileData.height || 600}
           />
+
+          {/* Scal Drawing Line */}
+          {draw.scale.map(({ textUnit, ...rest }: any, index: number) => {
+            const id = `line-${index}`;
+            const lineDistance = calcLineDistance(rest.points, scale, true);
+            const lineMidPoint = calculateMidpoint(rest.points);
+
+            return (
+              <Group
+                id={id}
+                key={id}
+                onMouseDown={(e) => {
+                  e.cancelBubble = true;
+                  setSelectedShape(e.currentTarget.attrs?.id || '');
+                }}
+              >
+                <Arrow
+                  key={index}
+                  {...rest}
+                  lineCap="round"
+                  dash={selectedShape === id ? [10, 10] : []}
+                  stroke={selectedShape === id ? 'maroon' : rest.stroke}
+                  pointerAtEnding={true}
+                  pointerAtBeginning={true}
+                />
+                <KonvaText
+                  {...lineMidPoint}
+                  fontSize={textUnit}
+                  text={lineDistance.toString()}
+                  fill="red"
+                />
+              </Group>
+            );
+          })}
+
           {/* Drawing Line */}
-          {draw.line.map(({ textUnit, ...rest }:any, index:number) => {
+          {draw.line.map(({ textUnit, ...rest }: any, index: number) => {
             const id = `line-${index}`;
             const lineDistance = calcLineDistance(rest.points, scale, true);
             const lineMidPoint = calculateMidpoint(rest.points);
@@ -635,7 +704,7 @@ const Draw: React.FC<Props> = ({
           })}
 
           {/* Drawing Dynamic Fill */}
-          {draw.dynamic.map(({ ...rest }:any, index:number) => {
+          {draw.dynamic.map(({ ...rest }: any, index: number) => {
             const id = `dynamic-${index}`;
 
             return (
@@ -659,7 +728,7 @@ const Draw: React.FC<Props> = ({
           {!!dynamicPolyLine.points.length && <Line {...dynamicPolyLine} />}
 
           {/* Drawing Area */}
-          {draw.area.map(({ textUnit, ...rest }:any, index:number) => {
+          {draw.area.map(({ textUnit, ...rest }: any, index: number) => {
             const polygonCoordinates = rest.points;
             const center = calculatePolygonCenter(polygonCoordinates);
             const area = calculatePolygonArea(polygonCoordinates, scale);
@@ -686,6 +755,7 @@ const Draw: React.FC<Props> = ({
                     e.cancelBubble = true;
                     setSelectedShape(e.currentTarget.attrs?.id || '');
                   }}
+                  fill="rgba(255, 0, 0, 0.2)"
                 />
                 <KonvaText
                   {...center}
@@ -701,7 +771,7 @@ const Draw: React.FC<Props> = ({
           {!!polyLine.points.length && <Line {...polyLine} />}
 
           {/* Drawing Volume */}
-          {draw.volume.map(({ depth, textUnit, ...rest }:any, index:number) => {
+          {draw.volume.map(({ depth, textUnit, ...rest }: any, index: number) => {
             const polygonCoordinates = rest.points;
             const center = calculatePolygonCenter(polygonCoordinates);
             const volume = calculatePolygonVolume(
@@ -731,6 +801,7 @@ const Draw: React.FC<Props> = ({
                     e.cancelBubble = true;
                     setSelectedShape(e.currentTarget.attrs?.id || '');
                   }}
+                  fill="rgba(255, 255, 0, 0.2)"
                 />
                 <KonvaText
                   {...center}
@@ -775,7 +846,7 @@ const Draw: React.FC<Props> = ({
             )}
 
           {/* Drawing Count */}
-          {draw.count.map(({ ...rest }, index:number) => {
+          {draw.count.map(({ ...rest }, index: number) => {
             const id = `count-${index}`;
 
             return (
@@ -800,6 +871,9 @@ const Draw: React.FC<Props> = ({
           {circle.map(({ x, y, fill, radius }, index) => (
             <Circle key={index} x={x} y={y} radius={radius} fill={fill} />
           ))}
+
+          {/* Draw for scaling */}
+
         </Layer>
       </Stage>
     </div>

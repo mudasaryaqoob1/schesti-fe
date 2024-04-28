@@ -31,7 +31,7 @@ export interface PageScale {
 }
 
 const Scale = () => {
-  const urlSearch:any = new URLSearchParams(window.location.search)
+  const urlSearch: any = new URLSearchParams(window.location.search)
   console.log(window.location, urlSearch, urlSearch.get('edit_id'), " Edit Data Edit Data");
   const router = useRouter();
   const [tool, setTool] = useState<ScaleInterface>({ selected: 'scale' });
@@ -40,6 +40,7 @@ const Scale = () => {
   const [color, setColor] = useState<string>('#1677ff');
   const [unit, setUnit] = useState<number>(14);
   const [depth, setDepth] = useState<number>(0);
+  const [drawScale, setdrawScale] = useState<boolean>(false)
   const [measurements, setMeasurements] =
     useState<Measurements>(defaultMeasurements);
 
@@ -195,6 +196,8 @@ const Scale = () => {
                   }
                   isEdit={(urlSearch.get('edit_id') && editData) ? true : false}
                   editData={editData}
+                  drawScale={drawScale}
+                  setdrawScale={setdrawScale}
                 />
               ))}
             </div>
@@ -205,6 +208,8 @@ const Scale = () => {
               <ScaleModal
                 numOfPages={uploadFileData.length}
                 setModalOpen={setShowModal}
+                drawScale={drawScale}
+                setdrawScale={setdrawScale}
               />
             </ModalComponent>
           )}

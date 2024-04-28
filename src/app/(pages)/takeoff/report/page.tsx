@@ -3,13 +3,34 @@ import Button from '@/app/component/customButton/button';
 import Image from 'next/image';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import CaptureComponent from '@/app/component/captureComponent';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import generatePDF from '@/app/component/captureComponent/generatePdf';
+import ModalComponent from '@/app/component/modal';
+import ClientModal from '../components/createClientModal';
+import { useSelector } from 'react-redux';
+import { selectTakeoffSummaries } from '@/redux/takeoffSummaries/takeoffSummaries.Selector';
 
 const Report = () => {
+  const summaries = useSelector(selectTakeoffSummaries);
   const [name, setName] = useState('');
   const [save, setSave] = useState(0);
   const [saveLoader, setSaveLoader] = useState(false);
+  const [clientModal, setclientModal] = useState<boolean>(false)
+  const [selectecClient, setselectecClient] = useState<any>({})
+
+  useEffect(() => {
+    const urlSearch = new URLSearchParams(window.location.search)
+    const id = urlSearch.get('edit_id');
+    if (id) {
+      const current = summaries?.find((i: any) => i?._id == id)
+      console.log(current, " Selected Takeoff summary")
+      if (current) {
+        setName(current?.name ?? '')
+        setselectecClient(current?.client ?? {})
+      }
+    }
+  }, [summaries])
+
   return (
     <>
       <section className="md:px-16 px-8 pb-4">
@@ -30,7 +51,7 @@ const Report = () => {
           />
 
           <SenaryHeading
-            title="Add new client"
+            title="Report"
             className="font-semibold text-lavenderPurple cursor-pointer underline"
           />
         </div>
@@ -41,6 +62,7 @@ const Report = () => {
             <div className="rounded-lg border border-Gainsboro bg-silverGray h-[51px] flex items-center px-3">
               <input
                 type="name"
+                value={name}
                 placeholder="Enter project name"
                 className="w-[350px] h-full bg-transparent outline-none"
                 onChange={(e) => setName(e.target.value)}
@@ -52,6 +74,20 @@ const Report = () => {
                 onClick={() => generatePDF('capture')}
               />
             </div>
+            <div>
+              <Button
+                text="Add Client"
+                onClick={() => setclientModal(true)}
+              />
+            </div>
+            {(selectecClient?.firstName || selectecClient?.email || selectecClient?.companyName) && <div>
+              <Button
+                text={`Client: ${selectecClient?.firstName ?? selectecClient?.email ?? selectecClient?.companyName ?? 'N/A'}`}
+                // onClick={() => setclientModal(true)}
+                className='!bg-slate-400 !border-transparent'
+                disabled
+              />
+            </div>}
           </div>
           <div>
             <Button
@@ -73,7 +109,14 @@ const Report = () => {
         onSaveSuccess={() => {
           setSaveLoader(false);
         }}
+        selectedClient={selectecClient}
       />
+      <ModalComponent open={clientModal} setOpen={setclientModal}>
+        <ClientModal
+          setModalOpen={setclientModal}
+          setSelectedClient={setselectecClient}
+        />
+      </ModalComponent>
     </>
   );
 };

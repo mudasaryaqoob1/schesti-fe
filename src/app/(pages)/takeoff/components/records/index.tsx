@@ -67,16 +67,44 @@ const Records = () => {
   const handleEditClick = async (item: any) => {
     try {
       if (Array.isArray(item?.pages) && item?.pages?.length > 0) {
-        const imagesData: UploadFileData[] = [];
+        // const imagesData: UploadFileData[] = [];
 
-        await Promise.all(
-          item?.pages?.map(async (element: any, index: number) => {
-            // Fetch file data from S3 using the URL
-            const response = await fetch(element?.src);
-            const blob = await response.blob();
-            const url = URL.createObjectURL(blob);
+        // await Promise.all(
+        //   item?.pages?.map(async (element: any, index: number) => {
+        //     // Fetch file data from S3 using the URL
+        //     const response = await fetch(element?.src);
+        //     const blob = await response.blob();
+        //     const url = URL.createObjectURL(blob);
 
-            // Load the image onto a canvas
+        //     // Load the image onto a canvas
+        //     const img = new Image();
+        //     img.src = url;
+        //     img.onload = () => {
+        //       const canvas = document.createElement('canvas');
+        //       canvas.width = img.width;
+        //       canvas.height = img.height;
+        //       const context = canvas.getContext('2d');
+        //       if (context) {
+        //         context.drawImage(img, 0, 0);
+        //         imagesData.push({
+        //           src: canvas.toDataURL('image/png') || '',
+        //           height: canvas.height,
+        //           width: canvas.width,
+        //           pageNum: element?.pagenum
+        //         });
+        //         console.log(imagesData, " ===> imagesData");
+        //       }
+        //     };
+        //   })
+        // );
+        const promises = item?.pages?.map(async (element: any) => {
+          // Fetch file data from S3 using the URL
+          const response = await fetch(element?.src);
+          const blob = await response.blob();
+          const url = URL.createObjectURL(blob);
+
+          // Load the image onto a canvas
+          return new Promise((resolve, reject) => {
             const img = new Image();
             img.src = url;
             img.onload = () => {
@@ -86,19 +114,24 @@ const Records = () => {
               const context = canvas.getContext('2d');
               if (context) {
                 context.drawImage(img, 0, 0);
-                imagesData.push({
+                const imageData = {
                   src: canvas.toDataURL('image/png') || '',
                   height: canvas.height,
                   width: canvas.width,
                   pageNum: element?.pagenum
-                });
-                console.log(imagesData, " ===> imagesData");
+                };
+                resolve(imageData);
+              } else {
+                reject(new Error('Failed to get canvas context'));
               }
             };
-          })
-        );
+            img.onerror = (error) => reject(error);
+          });
+        });
 
-        handleSrc(imagesData?.sort((a:any, b:any) => a.pageNum - b.pageNum));
+        const imagesData: UploadFileData[] = await Promise.all(promises);
+
+        handleSrc(imagesData);//?.sort((a: any, b: any) => a.pageNum - b.pageNum)
         if (item?.measurements && Object.keys(item?.measurements)?.length > 0) setInitialEditDrawHistory(item?.measurements)
         handleEdit(item)
         router.push(`/takeoff/scale?edit_id=${item?._id}`);
