@@ -9,8 +9,8 @@
     "dev": "next dev",
     "build": "rimraf .next & next build",
     "start": "next start",
-    "start:local": "cp .env.testing .env && next dev",
-    "start:dev": "cp .env.dev .env && next dev",
+    "start:local": "copy .env.testing .env && next dev",
+    "start:dev": "copy .env.dev .env && next dev",
     "lint": "next lint",
     "prettier": "prettier --write ."
   },

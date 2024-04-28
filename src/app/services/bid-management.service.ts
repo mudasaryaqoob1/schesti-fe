@@ -71,9 +71,10 @@ class BidManagementService extends HttpService {
   > => this.delete(`${this.prefix}/delete-team-member/${userId}`);
 
   httpGetOwnerProjectById = (
-    projectId: string | string[]
+    projectId: string | string[],
+    params: any
   ): Promise<IResponseInterface<{ project: IBidManagement }>> =>
-    this.get(`${this.prefix}/project-detail/${projectId}`);
+    this.get(`${this.prefix}/project-detail/${projectId}?page=${params.page}&limit=${params.limit}`);
 
   httpGetProjectBiddingTeamByProjectId = (
     projectId: string | string[]
@@ -91,9 +92,12 @@ class BidManagementService extends HttpService {
     IResponseInterface<{ projects: IBidManagement[] }>
   > => this.get(`${this.prefix}/get-all`);
 
-  httpGetMyProjects = (): Promise<
-    IResponseInterface<{ projects: IBidManagement[] }>
-  > => this.get(`${this.prefix}/my-projects`);
+  httpGetMyProjects = (params: any): Promise<
+    IResponseInterface<{
+      records: any;
+      paginationInfo: any; projects: IBidManagement[]
+    }>
+  > => this.get(`${this.prefix}/my-projects?page=${params.page}&limit=${params.limit}`);
 
   httpSaveUserProjectBid = (data: any): Promise<
     IResponseInterface<{ project: ISaveUserBid }>

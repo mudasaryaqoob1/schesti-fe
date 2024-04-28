@@ -31,6 +31,9 @@ export function ProjectIntro({ id }: Props) {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [filters, setFilters] = useState({
+    page: 1, limit: 10
+  })
 
   const router = useRouter();
 
@@ -42,7 +45,7 @@ export function ProjectIntro({ id }: Props) {
   const query = useQuery(
     ['getOwnerProjectById', id],
     () => {
-      return bidManagementService.httpGetOwnerProjectById(id);
+      return bidManagementService.httpGetOwnerProjectById(id, filters);
     },
     {
       onSuccess(data) {

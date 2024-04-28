@@ -4,7 +4,7 @@ import Description from '@/app/component/description';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { withAuth } from '@/app/hoc/withAuth';
-import { ConfigProvider, Tabs } from 'antd';
+import { Pagination, ConfigProvider, Tabs } from 'antd';
 import Image from 'next/image';
 import { useState } from 'react';
 import { ProjectSummary } from '../components/ProjectSummary';
@@ -18,29 +18,37 @@ import { useQuery } from 'react-query';
 import moment from 'moment';
 
 const SUMMARY = 'Summary';
-const DESIGN_TEAM = 'Design Team';
+const DESIGN_TEAM = 'Design TeamF';
 const BIDDING_TEAM = 'Bidding Team';
 const DOCUMENTS = 'Documents';
 const RFI_CENTER = 'RFI Center';
 
 function OwnerProjectDetailsPage() {
-    const params: any = useParams();
-    const { projectId } = params;
+  const params: any = useParams();
+  const { projectId } = params;
+  const [paginationSettings, setPaginationSettings] = useState<{
+    page: number;
+    limit: number;
+  }>({
+    page: 1,
+    limit: 3
+  });
 
-    const [activeTab, setActiveTab] = useState(SUMMARY);
 
-    const fetchProjectDetails = async () => {
-        return bidManagementService.httpGetOwnerProjectById(projectId);
-      };
-    
-      const { data, isLoading } = useQuery(['project-details'], fetchProjectDetails);
+  console.log("params",params);
+  
+  const [activeTab, setActiveTab] = useState(SUMMARY);
 
-      if(isLoading) return <h6>Loading...</h6>
-      let projectData: any = {};
-      if(data && data.data) {
-        projectData = data.data?.project;
-      }
+  const fetchProjectDetails = async () => {
+    return bidManagementService.httpGetOwnerProjectById(projectId, paginationSettings);
+  };
+  const { data, isLoading } = useQuery(['project-details'], fetchProjectDetails);
 
+  if (isLoading) return <h6>Loading...</h6>
+  let projectData: any = {};
+  if (data && data.data) {
+    projectData = data.data?.project;
+  }
 
   return (
     <section className="">
@@ -117,9 +125,8 @@ function OwnerProjectDetailsPage() {
                 label: (
                   <QuaternaryHeading
                     title={tab}
-                    className={`!w-full ${
-                      activeTab === tab ? 'text-RoyalPurple' : 'text-black'
-                    }`}
+                    className={`!w-full ${activeTab === tab ? 'text-RoyalPurple' : 'text-black'
+                      }`}
                   />
                 ),
                 tabKey: tab,
@@ -131,10 +138,10 @@ function OwnerProjectDetailsPage() {
 
       {activeTab === SUMMARY ? <ProjectSummary projectData={projectData} /> : null}
       {activeTab === DESIGN_TEAM ? <ProjectDesignTeam projectData={projectData} /> : null}
-      {activeTab === BIDDING_TEAM ? <ProjectBiddingTeam projectData={projectData}/> : null}
+      {activeTab === BIDDING_TEAM ? <ProjectBiddingTeam projectData={projectData} /> : null}
 
-      {activeTab === DOCUMENTS ? <ProjectDocuments projectData={projectData}/> : null}
-      {activeTab === RFI_CENTER ? <ProjectRFICenter projectId={projectId}/> : null}
+      {activeTab === DOCUMENTS ? <ProjectDocuments projectData={projectData} /> : null}
+      {activeTab === RFI_CENTER ? <ProjectRFICenter projectId={projectId} /> : null}
     </section>
   );
 }
