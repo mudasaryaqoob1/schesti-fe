@@ -16,7 +16,7 @@ const initialEstimateRequestState: IEstimateRequests = {
   loading: false,
   error: null,
   message: null,
-  data: null,
+  data: [],
   statusCode: null,
   generateEstimateDetail: {
     estimateRequestIdDetail: {},
