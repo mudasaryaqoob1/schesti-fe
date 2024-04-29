@@ -19,6 +19,8 @@ import { useRouter } from 'next/navigation';
 import Button from '@/app/component/customButton/button';
 import { ReportDataContextProps } from '../context/ReportDataContext';
 import SelectPageModal from '../components/selectPageModal';
+import { useSelector } from 'react-redux';
+import { selectUser } from '@/redux/authSlices/auth.selector';
 
 export interface ScaleData {
   xScale: string;
@@ -34,6 +36,11 @@ const Scale = () => {
   const urlSearch: any = new URLSearchParams(window.location.search)
   console.log(window.location, urlSearch, urlSearch.get('edit_id'), " Edit Data Edit Data");
   const router = useRouter();
+  ////categories
+  const [allCategories, setallCategories] = useState<any>([])
+  const [selectedCategory, setselectedCategory] = useState<any>("")
+  const [inputtxt, setinputtxt] = useState<any>("")
+  ////
   const [tool, setTool] = useState<ScaleInterface>({ selected: 'scale' });
   const [showModal, setShowModal] = useState(false);
   const [border, setBorder] = useState<number>(4);
@@ -41,6 +48,7 @@ const Scale = () => {
   const [unit, setUnit] = useState<number>(14);
   const [depth, setDepth] = useState<number>(0);
   const [drawScale, setdrawScale] = useState<boolean>(false)
+  const [scaleLine, setscaleLine] = useState<any>({})
   const [measurements, setMeasurements] =
     useState<Measurements>(defaultMeasurements);
 
@@ -55,6 +63,8 @@ const Scale = () => {
     ReportDataContext
   ) as ReportDataContextProps;
   const { editData } = useContext(EditContext)
+
+  
 
 
   if (!uploadFileData.length) router.push('/takeoff/upload');
@@ -71,7 +81,7 @@ const Scale = () => {
     handleScaleData(newData);
   }, []);
   console.log(uploadFileData, " uploadFileData");
-
+  useEffect(()=>{console.log(measurements, " ===> measurements")},[measurements])
 
   return (
     <>
@@ -142,6 +152,23 @@ const Scale = () => {
                 onChange={(value) => value && setDepth(value)}
               />
             )}
+            <input placeholder='Add Custom Category' className='p-1' type='text' value={inputtxt} onChange={(e:any)=>{setinputtxt(e.target.value)}} />
+            <button className='bg-RoyalPurple cursor-pointer text-white p-1 rounded font-bold' onClick={()=>{if(inputtxt?.length>0){setallCategories((ps:any)=>([...ps,inputtxt])); setselectedCategory(inputtxt); setinputtxt(""); }}} >Add</button>
+            {
+              allCategories?.map((it:any,ind:number)=>{
+                const isSelected = it == selectedCategory
+                return <div className={`bg-slate-400 cursor-pointer p-1 rounded ${isSelected ? 'bg-RoyalPurple text-white' : ''}`} 
+                onClick={()=>{
+                  if(isSelected){
+                    setselectedCategory("")
+                  }else{
+                    setselectedCategory(it)
+                  }
+                  }} >
+                  {it}
+                </div>
+              })
+            }
           </div>
 
           <div className="py-6 h-[709px] relative">
@@ -198,6 +225,9 @@ const Scale = () => {
                   editData={editData}
                   drawScale={drawScale}
                   setdrawScale={setdrawScale}
+                  setscaleLine={setscaleLine}
+                  setModalOpen={setShowModal}
+                  selectedCategory={selectedCategory}
                 />
               ))}
             </div>
@@ -210,6 +240,7 @@ const Scale = () => {
                 setModalOpen={setShowModal}
                 drawScale={drawScale}
                 setdrawScale={setdrawScale}
+                scaleLine={scaleLine}
               />
             </ModalComponent>
           )}

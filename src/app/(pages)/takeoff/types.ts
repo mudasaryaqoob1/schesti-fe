@@ -12,6 +12,7 @@ export interface CoordinatesInterface {
 
 export interface CountInterface extends CoordinatesInterface {
   dateTime: Date;
+  projectName?:any;
 }
 
 export interface LineInterface {
@@ -21,6 +22,7 @@ export interface LineInterface {
   lineCap?: LineCap;
   textUnit: number;
   dateTime?: Date;
+  projectName?:any;
 }
 
 export interface CircleInterface extends CoordinatesInterface {
@@ -35,6 +37,7 @@ export interface PolygonConfigInterface {
   depth?: number;
   textUnit: number;
   dateTime: Date;
+  projectName?:any;
 }
 
 export interface DrawInterface {

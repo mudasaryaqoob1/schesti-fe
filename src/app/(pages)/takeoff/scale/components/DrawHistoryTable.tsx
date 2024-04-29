@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useMemo } from 'react';
-import { ConfigProvider, Table } from 'antd';
+import { ColorPicker, ConfigProvider, Table } from 'antd';
 import {
   DrawHistoryContext,
   ReportDataContext,
@@ -15,6 +15,8 @@ import {
   ReportDataContextProps,
   ReportDataInterface,
 } from '../../context/ReportDataContext';
+import { useSelector } from 'react-redux';
+import { selectUser } from '@/redux/authSlices/auth.selector';
 
 interface Props {
   searchProjectName: string;
@@ -26,8 +28,13 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
   const { drawHistory } = useContext(
     DrawHistoryContext
   ) as DrawHistoryContextProps;
-  const { reportData, handleReportData, updateProjectNameInReportData } =
+  const { reportData, handleReportData, updateProjectNameInReportData, updateProjectColorInReportData } =
     useContext(ReportDataContext) as ReportDataContextProps;
+
+    console.log(drawHistory, reportData, " newDrawHistory");
+  const userData = useSelector(selectUser)
+  console.log(userData, " userData");
+    
 
   useEffect(() => {
     if (drawHistory) {
@@ -48,10 +55,11 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
                   );
 
                 return {
-                  projectName,
+                  // projectName,//previouse usage
+                  projectName: data?.projectName ?? projectName,//new usage
                   pageLabel: pageNumber,
-                  comment,
-                  author: 'User',
+                  comment : drawName,
+                  author: userData?.user?.name ?? userData?.user?.name ?? 'User',
                   date: data.dateTime,
                   status: '---',
                   color: data.stroke,
@@ -93,7 +101,7 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
         size="small"
         columns={[
           {
-            title: 'Project name',
+            title: 'Measurement Detail',
             dataIndex: 'projectName',
             key: 'projectName',
             render: (value, record) => {
@@ -116,7 +124,7 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
             key: 'pageLabel',
           },
           {
-            title: 'Comment',
+            title: 'type',
             dataIndex: 'comment',
           },
           {
@@ -141,9 +149,33 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
           {
             title: 'Color',
             dataIndex: 'color',
-            render: (value) => (
-              <div style={{ height: 20, width: 20, background: value }} />
-            ),
+            // render: (value) => (
+            //   <div style={{ height: 20, width: 20, background: value }} />
+            //   // <ColorPicker
+            //   //   value={value}
+            //   //   onChange={(color) => setColor(color.toHexString())}
+            //   // />
+            // ),
+            render: (value, record) => {
+              return !record?.date ? (
+                <div>{value}</div>
+              ) : (
+                <ColorPicker
+                value={value}
+                onChange={(color) => {
+                  const { date, pageLabel } = record;
+                  updateProjectColorInReportData(date, pageLabel, color.toHexString())
+                }}
+                />
+                // <EditableText
+                //   initialText={value}
+                //   onPressEnter={(text) => {
+                //     const { date, pageLabel } = record;
+                //     updateProjectNameInReportData(date, pageLabel, text);
+                //   }}
+                // />
+              );
+            },
           },
           {
             title: 'Layer',

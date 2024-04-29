@@ -14,7 +14,7 @@ import { takeoffPresetService } from '@/app/services/takeoff.service';
 import { addNewTakeoffPresetData } from '@/redux/takeoff/takeoff.slice';
 import { ScaleContext } from '../../context';
 import { ScaleDataContextProps } from '../../context/ScaleContext';
-import { measurementUnits } from '@/app/hooks/useDraw';
+import useDraw, { measurementUnits } from '@/app/hooks/useDraw';
 
 const precisions = ['1', '0.1', '0.01', ' 0.001', '0.0001', '0.00001'];
 const byPrecision = ['1', '1/2', '1/4', '1/8', '1/16', '1/32'];
@@ -54,9 +54,11 @@ interface Props {
   page?: number;
   drawScale?:boolean;
   setdrawScale?:any;
+  scaleLine?:any;
 }
 
-const ScaleModal = ({ setModalOpen, numOfPages, page, drawScale, setdrawScale }: Props) => {
+const ScaleModal = ({ setModalOpen, numOfPages, page, drawScale, setdrawScale, scaleLine }: Props) => {
+  const { calcLineDistance } = useDraw()
   const dispatch = useDispatch<AppDispatch>();
   const allPresets = useSelector(selectTakeoffPreset);
 
@@ -96,7 +98,8 @@ const ScaleModal = ({ setModalOpen, numOfPages, page, drawScale, setdrawScale }:
   const { handleScaleData, scaleData } = useContext(
     ScaleContext
   ) as ScaleDataContextProps;
-
+  console.log(scaleLine," ===> scale line");
+  
   const onChangeX = (e: RadioChangeEvent) => {
     if (e.target.value === 'custom') {
       setFirstValueX('1');
@@ -121,6 +124,47 @@ const ScaleModal = ({ setModalOpen, numOfPages, page, drawScale, setdrawScale }:
 
     setValueY(e.target.value);
   };
+
+  const onChangeDrawX = (value:any) => {
+    // if (e.target.value === 'custom') {
+      setFirstValueX(`${value}`);
+      setMeterX('in');
+      setSecondValueX('1');
+      setSecMeterX('in');
+    // } else {
+    //   setPresetX(`1"=1"`);
+    // }
+
+    setValueX("custom");
+  };
+  const onChangeDrawY = (value:any) => {
+    // if (e.target.value === 'custom') {
+      setFirstValueY(`${value}`);
+      setMeterY('in');
+      setSecondValueY('1');
+      setSecMeterY('in');
+    // } else {
+    //   setPresetY(`1"=1"`);
+    // }
+
+    setValueY("custom");
+  };
+  useEffect(()=>{
+    if(scaleLine && scaleLine?.points){
+      console.log(" Cusotm useEffect run");
+      const stringOfDistance = calcLineDistance(scaleLine?.points, {
+        xScale: `1in=1in`,
+        yScale: `1in=1in`,
+        precision: '1',
+      }, true);
+      const [feet,inch] = stringOfDistance?.toString()?.split('-')
+      console.log(stringOfDistance, Number(feet?.trim()?.replace(`'`,'')), Number(inch?.trim()?.replace(`"`,'')), " ===> String of data");
+      const numfeet =  Number(feet?.trim()?.replace(`'`,'')); const numInch =  Number(inch?.trim()?.replace(`"`,''))
+      const valueToUse = (numfeet*12)+numInch
+      onChangeDrawX(valueToUse ?? 1)
+      onChangeDrawY(valueToUse ?? 1)
+    }
+  },[scaleLine])
 
   const handleAddPreset = async (
     firstValue: string,

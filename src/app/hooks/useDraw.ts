@@ -221,6 +221,7 @@ const useDraw = () => {
     { precision, xScale, yScale }: ScaleData,
     format = false
   ) => {
+    console.log(precision,xScale,yScale, " ===> Data of scale")
     const [x1, y1, x2, y2] = coordinates;
     const xScaleMultiplier = getScaleMultiplier(xScale);
     const yScaleMultiplier = getScaleMultiplier(yScale);

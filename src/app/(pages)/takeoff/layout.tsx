@@ -84,9 +84,31 @@ const TakeOffLayout: React.FC<any> = ({
     });
   };
 
+  const updateProjectColorInReportData = (
+    date: Date,
+    pageNumber: string,
+    newProjectName: string
+  ) => {
+    setReportData((prev) => {
+      return prev.map((item) => {
+        if (
+          new Date(item.date).valueOf() === new Date(date).valueOf() &&
+          item.pageLabel === pageNumber
+        ) {
+          return {
+            ...item,
+            color: newProjectName,
+          };
+        } else return item;
+      });
+    });
+  };
+  console.log(reportData, " ===> Report Data", drawHistory, " ===> Draw History");
+  
+
   return (
     <ReportDataContext.Provider
-      value={{ reportData, handleReportData, updateProjectNameInReportData }}
+      value={{ reportData, handleReportData, updateProjectNameInReportData, updateProjectColorInReportData }}
     >
       <DrawHistoryContext.Provider
         value={{

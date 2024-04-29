@@ -25,14 +25,16 @@ export interface ReportDataContextProps {
   updateProjectNameInReportData: (
     date: Date,
     pageNumber: string,
-    newProjectName: string
+    newProjectName: any
   ) => void;
+  updateProjectColorInReportData:any;
 }
 
 const ReportDataContext = createContext<ReportDataContextProps>({
   reportData: [],
   handleReportData: () => undefined,
   updateProjectNameInReportData: () => undefined,
+  updateProjectColorInReportData:()=> undefined
 });
 
 export default ReportDataContext;

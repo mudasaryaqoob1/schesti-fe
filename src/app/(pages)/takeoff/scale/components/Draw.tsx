@@ -53,6 +53,9 @@ interface Props {
   editData?: any;
   drawScale?:any;
   setdrawScale?:any;
+  setscaleLine?:any;
+  setModalOpen?:any;
+  selectedCategory?:any;
 }
 
 const Draw: React.FC<Props> = ({
@@ -68,7 +71,10 @@ const Draw: React.FC<Props> = ({
   isEdit,
   editData,
   drawScale,
-  setdrawScale
+  setdrawScale,
+  setModalOpen,
+  setscaleLine,
+  selectedCategory
 }) => {
   const { selected, subSelected = null } = selectedTool;
   const {
@@ -204,6 +210,14 @@ const Draw: React.FC<Props> = ({
 
       setCurrentLine(defaultCurrentLineState);
       handleChangeMeasurements(defaultMeasurements);
+
+      //Modal states handlings
+      if(selected === 'scale' && drawScale == true){
+        setModalOpen(true);
+        setdrawScale(false);
+        setscaleLine(newLine);
+        setDraw((ps:any)=>({...ps,scale:[]}))
+      }
     }
 
     if (selected === 'length' && currentLine.startingPoint) {
@@ -220,6 +234,7 @@ const Draw: React.FC<Props> = ({
         strokeWidth: border,
         textUnit: unit,
         dateTime: moment().toDate(),
+        projectName: (selectedCategory && selectedCategory?.length>0) ? selectedCategory : 'Length Measurement'
       };
       setDraw((prev: any) => ({ ...prev, line: [...prev.line, newLine] }));
 
@@ -285,6 +300,7 @@ const Draw: React.FC<Props> = ({
                   ...prev,
                   textUnit: unit,
                   dateTime: moment().toDate(),
+                  projectName: (selectedCategory && selectedCategory?.length>0) ? selectedCategory : 'Area Measurement'
                 };
 
                 updateDrawHistory(pageNumber.toString(), 'area', areaConfig);
@@ -318,6 +334,7 @@ const Draw: React.FC<Props> = ({
                   depth,
                   textUnit: unit,
                   dateTime: moment().toDate(),
+                  projectName: (selectedCategory && selectedCategory?.length>0) ? selectedCategory : 'Volume Measurement'
                 };
 
                 updateDrawHistory(
@@ -346,6 +363,7 @@ const Draw: React.FC<Props> = ({
         x: position?.x - 2,
         y: position.y - 15,
         dateTime: moment().toDate(),
+        projectName: (selectedCategory && selectedCategory?.length>0) ? selectedCategory : 'Count Measurement'
       };
 
       setDraw((prev: any) => {
@@ -419,11 +437,13 @@ const Draw: React.FC<Props> = ({
         scale,
         true
       ) as string;
+      console.log(parameter, " ===> Parameters");
+      
 
       handleChangeMeasurements({
         angle,
         ...(selected === 'length' && { parameter }),
-        // ...((selected === 'length' && drawScale == true) && { parameter }),
+        // ...((selected === 'scale' && drawScale == true) && { parameter }),
         ...(completingLine.endingPoint
           ? {
             parameter: calculatePolygonPerimeter(
@@ -466,6 +486,12 @@ const Draw: React.FC<Props> = ({
 
   const handleMouseUp = () => {
     setIsMouseDown(false);
+    // if(selected === 'length' && drawScale == true){
+    //   setModalOpen(true);
+    //   setdrawScale(false);
+    //   setscaleLine(draw?.scale[0]);
+    //   setDraw((ps:any)=>({...ps,scale:[]}))
+    // }
   };
 
   const {
@@ -636,8 +662,8 @@ const Draw: React.FC<Props> = ({
           />
 
           {/* Scal Drawing Line */}
-          {draw.scale.map(({ textUnit, ...rest }: any, index: number) => {
-            const id = `line-${index}`;
+          {draw?.scale && Array.isArray(draw?.scale) && draw?.scale?.map(({ textUnit, ...rest }: any, index: number) => {
+            const id = `draw-${index}`;
             const lineDistance = calcLineDistance(rest.points, scale, true);
             const lineMidPoint = calculateMidpoint(rest.points);
 
