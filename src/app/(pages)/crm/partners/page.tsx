@@ -33,11 +33,23 @@ interface DataType {
   email: number;
   phone: string;
   address: string;
-  status: string;
+  // status: string;
   action: string;
 }
 
 const items: MenuProps['items'] = [
+  {
+    key: 'createEstimateRequest',
+    label: <p>Create Estimate Request</p>,
+  },
+  {
+    key: 'createNewInvoice',
+    label: <p>Create Invoice</p>,
+  },
+  {
+    key: 'createSchedule',
+    label: <p>Create Schedule</p>,
+  },
   {
     key: 'editPartnerDetail',
     label: <p>Edit details</p>,
@@ -60,19 +72,28 @@ const PartnerTable = () => {
 
   const fetchCompanyPartnerHandler = useCallback(async () => {
     await dispatch(fetchCompanyPartner({ page: 1, limit: 10 }));
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     fetchCompanyPartnerHandler();
   }, []);
 
   const handleDropdownItemClick = async (key: string, partner: any) => {
-     if (key == 'deletePartner') {
+
+    if (key === 'createEstimateRequest') {
+      router.push(`/estimates/requests/create`);
+    } else if (key === 'createNewInvoice') {
+      router.push(`/financial/aia-invoicing`);
+    } else if (key === 'createSchedule') {
+      router.push(`/schedule`);
+    } else  if (key == 'deletePartner') {
       setselectedPartner(partner);
       setShowDeleteModal(true);
     } else if (key == 'editPartnerDetail') {
       router.push(`${Routes.CRM.Partners}/edit/${partner._id}`);
     }
+
+
   };
 
 
@@ -99,15 +120,15 @@ const PartnerTable = () => {
       title: 'Address',
       dataIndex: 'address',
     },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      render: () => (
-        <p className="bg-lime-100 w-max text-[#027A48] bg-[#ECFDF3] px-2 py-1 rounded-full">
-          Active
-        </p>
-      ),
-    },
+    // {
+    //   title: 'Status',
+    //   dataIndex: 'status',
+    //   render: () => (
+    //     <p className="bg-lime-100 w-max text-[#027A48] bg-[#ECFDF3] px-2 py-1 rounded-full">
+    //       Active
+    //     </p>
+    //   ),
+    // },
     {
       title: 'Action',
       dataIndex: 'action',

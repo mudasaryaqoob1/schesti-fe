@@ -145,7 +145,7 @@ const EstimateRequestTable: React.FC = () => {
       dataIndex: 'status',
       render: (text, record: any) => (
         <a className="text-[#027A48] bg-[#ECFDF3] px-2 py-1 rounded-full capitalize">
-          {record.isActive ? 'Active' : 'In Active'}
+          {record.status ? 'Active' : 'In Active'}
         </a>
       ),
     },
@@ -155,7 +155,7 @@ const EstimateRequestTable: React.FC = () => {
       align: 'center',
       key: 'action',
       render: (text, record: any) => {
-        if (record?.isActive) {
+        if (record?.status) {
           return (
             <Dropdown
               menu={{
@@ -202,6 +202,9 @@ const EstimateRequestTable: React.FC = () => {
     },
   ];
 
+  console.log(estimateRequestsData , 'estimateRequestsData');
+  
+  
   return (
     <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid border-silverGray shadow-secondaryTwist">
       {selectedEstimate ? (

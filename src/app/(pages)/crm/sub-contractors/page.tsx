@@ -41,7 +41,10 @@ export interface DataType {
 }
 
 const items: MenuProps['items'] = [
- 
+  {
+    key: 'createEstimateRequest',
+    label: <p>Create Estimate Request</p>,
+  },
   {
     key: 'createNewInvoice',
     label: <p>Create Invoice</p>,
@@ -83,14 +86,15 @@ const SubcontractTable = () => {
 
   const handleDropdownItemClick = async (key: string, subcontractor: any) => {
 
-     if (key === 'createNewInvoice') {
+    if (key === 'createEstimateRequest') {
+      router.push(`/estimates/requests/create`);
+    } else if (key === 'createNewInvoice') {
       router.push(`/financial/standard-invoicing/create?subcontractorId=${subcontractor._id}`);
     } else if (key === 'createSchedule') {
       router.push(`/schedule`);
-    } else if (key == 'deleteClient') {
-      setSelectedSubcontractor(subcontractor);
-      setShowDeleteModal(true);
-    }else if (key == 'deleteSubcontractor') {
+    } else if (key == 'editSubcontractor') {
+      router.push(`${Routes.CRM['Sub-Contractors']}/edit/${subcontractor._id}`);
+    } else if (key == 'deleteSubcontractor') {
       setSelectedSubcontractor(subcontractor as ISubcontractor);
       setShowDeleteModal(true);
     } 
