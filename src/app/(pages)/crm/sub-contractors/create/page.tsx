@@ -1,10 +1,9 @@
 'use client';
-import { useLayoutEffect, useState } from 'react';
+import {  useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 // module imports
@@ -13,9 +12,8 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import MinDesc from '@/app/component/description/minDesc';
 import CustomButton from '@/app/component/customButton/button';
 import FormControl from '@/app/component/formControl';
+import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
 // redux module
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
 
 // subcontractorServic service
 import { subcontractorService } from '@/app/services/subcontractor.service';
@@ -47,13 +45,8 @@ const initialValues: ISubcontract = {
 
 const CreateSubcontractor = () => {
   const router = useRouter();
-  const token = useSelector(selectToken);
 
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
+  
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -110,7 +103,14 @@ const CreateSubcontractor = () => {
           validationSchema={newSubcontractorSchema}
           onSubmit={submitHandler}
         >
-          {({ handleSubmit }) => {
+          {({
+            handleSubmit,
+            setFieldValue,
+            values,
+            setFieldTouched,
+            touched,
+            errors,
+          }) => {
             return (
               <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
                 <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-3 gap-4">
@@ -128,13 +128,15 @@ const CreateSubcontractor = () => {
                     name="name"
                     placeholder="Company Name"
                   />
-                  <FormControl
-                    control="input"
+                  <PhoneNumberInputWithLable
                     label="Phone Number"
-                    type="number"
-                    name="phone"
-                    min={0}
-                    placeholder="Phone number"
+                    onChange={(val: string) => setFieldValue('phone', val)}
+                    value={values.phone}
+                    onBlur={() => setFieldTouched('phone', true)}
+                    hasError={touched.phone && Boolean(errors.phone)}
+                    errorMessage={
+                      touched.phone && errors.phone ? errors.phone : ''
+                    }
                   />
                   <FormControl
                     control="input"
