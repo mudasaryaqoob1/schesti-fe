@@ -92,6 +92,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
     setShowModal();
     formik.resetForm();
   }
+
   return (
     <ModalComponent
       width="50%"
@@ -136,14 +137,14 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
               hasError={formik.touched.email && Boolean(formik.errors.email)}
               errorMessage={
                 formik.touched.email &&
-                Boolean(formik.errors.email) &&
-                Array.isArray(formik.errors.email)
+                  Boolean(formik.errors.email) &&
+                  Array.isArray(formik.errors.email)
                   ? formik.errors.email
-                      .map(
-                        (item: string, idx) =>
-                          `'${formik.values.email![idx]}' ${item}`
-                      )
-                      .toString()
+                    .map(
+                      (item: string, idx) =>
+                        `'${formik.values.email![idx]}' ${item}`
+                    )
+                    .toString()
                   : formik.errors.email
               }
               field={{
@@ -164,16 +165,16 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
               hasError={formik.touched.startDate && !!formik.errors.startDate}
               errorMessage={formik.errors.startDate}
               fieldProps={{
-                showTime:{ format: 'HH:mm' },
+                showTime: { format: 'HH:mm' },
                 value: formik.values.startDate
                   ? dayjs(formik.values.startDate).tz(
-                      (timezone as ITimezoneOption).value
-                    )
+                    (timezone as ITimezoneOption).value
+                  )
                   : undefined,
-                onChange(date) {
+                onChange(date, dateString) {
                   formik.setFieldValue(
                     'startDate',
-                    date?.tz((timezone as ITimezoneOption).value)
+                    dayjs(dateString).tz((timezone as ITimezoneOption).value).format('YYYY-MM-DDTHH:mm:ss')
                   );
                 },
                 onBlur: formik.handleBlur,
