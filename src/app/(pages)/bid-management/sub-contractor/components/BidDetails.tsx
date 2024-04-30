@@ -22,6 +22,7 @@ import { isEmpty, size } from 'lodash';
 import { SendEmailModal } from './SendEamil';
 import { downloadFile } from '@/app/utils/downloadFile';
 import { proposalService } from '@/app/services/proposal.service';
+import { WhatsappIcon, WhatsappShareButton } from 'react-share';
 
 type Props = {
   bid: IBidManagement;
@@ -170,13 +171,12 @@ export function BidDetails({
               className="text-[#7138DF] font-normal text-xs leading-4"
             />
           </div>
-          <Image
-            alt="share icon"
-            src={'/share.svg'}
-            width={16}
-            height={16}
-            className="cursor-pointer"
-          />
+          <WhatsappShareButton
+            url={`${window.location.protocol}//${window.location.hostname}/bid-management/details/${bid?._id}`}
+            separator=":: "
+          >
+            <WhatsappIcon size={32} round />
+          </WhatsappShareButton>
           <SendEmailModal />
         </div>
       </div>
