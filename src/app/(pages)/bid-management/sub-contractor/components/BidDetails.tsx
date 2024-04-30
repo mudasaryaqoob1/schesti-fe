@@ -22,7 +22,7 @@ import { isEmpty, size } from 'lodash';
 import { SendEmailModal } from './SendEamil';
 import { downloadFile } from '@/app/utils/downloadFile';
 import { proposalService } from '@/app/services/proposal.service';
-import { WhatsappIcon, WhatsappShareButton } from 'react-share';
+import { WhatsappIcon, WhatsappShareButton, FacebookIcon, FacebookShareButton } from 'react-share';
 
 type Props = {
   bid: IBidManagement;
@@ -175,8 +175,13 @@ export function BidDetails({
             url={`${window.location.protocol}//${window.location.hostname}/bid-management/details/${bid?._id}`}
             separator=":: "
           >
-            <WhatsappIcon size={32} round />
+            <WhatsappIcon size={30} round />
           </WhatsappShareButton>
+          <FacebookShareButton
+            url={`${window.location.protocol}//${window.location.hostname}/bid-management/details/${bid?._id}`}
+          >
+            <FacebookIcon size={30} round />
+          </FacebookShareButton>
           <SendEmailModal />
         </div>
       </div>
