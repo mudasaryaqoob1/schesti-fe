@@ -26,14 +26,11 @@ import { useState } from 'react';
 import { DeletePopup } from '../post/components/DeletePopup';
 import dynamic from 'next/dynamic';
 import { USCurrencyFormat } from '@/app/utils/format';
-
 const ExportAll = dynamic(() => import("./components/ExportAll"), { ssr: false });
 
-
-
+const RES_PER_PAGE = 10;
 
 function Page() {
-  const RES_PER_PAGE = 10;
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const [selectedProject, setSelectedProject] = useState<IBidManagement | null>(

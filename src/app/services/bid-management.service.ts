@@ -2,7 +2,6 @@ import { IResponseInterface } from '../interfaces/api-response.interface';
 import {
   IBidActivity,
   IBidManagement,
-  IBidManagementResponse,
   IBidManagementProjectTeamMember,
   IGetSavedUserBid,
   IProjectBiddingResponse,
