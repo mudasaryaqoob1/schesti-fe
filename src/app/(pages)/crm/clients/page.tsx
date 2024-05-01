@@ -232,6 +232,7 @@ const ClientTable = () => {
         return (
           client.firstName.toLowerCase().includes(search.toLowerCase()) ||
           client.lastName.toLowerCase().includes(search.toLowerCase()) ||
+          client.companyName.toLowerCase().includes(search.toLowerCase()) ||
           client.email?.includes(search) || 
           client.phone?.includes(search) || 
           client.address?.includes(search)
