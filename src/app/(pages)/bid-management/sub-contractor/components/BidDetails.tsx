@@ -22,7 +22,8 @@ import { isEmpty, size } from 'lodash';
 import { SendEmailModal } from './SendEamil';
 import { downloadFile } from '@/app/utils/downloadFile';
 import { proposalService } from '@/app/services/proposal.service';
-import { WhatsappIcon, WhatsappShareButton, FacebookIcon, FacebookShareButton } from 'react-share';
+import { WhatsappIcon, WhatsappShareButton, FacebookIcon, FacebookShareButton, TwitterIcon, TwitterShareButton } from 'react-share';
+
 
 type Props = {
   bid: IBidManagement;
@@ -182,6 +183,11 @@ export function BidDetails({
           >
             <FacebookIcon size={30} round />
           </FacebookShareButton>
+          <TwitterShareButton
+            url={`${window.location.protocol}//${window.location.hostname}/bid-management/details/${bid?._id}`}
+          >
+            <TwitterIcon size={30} round />
+          </TwitterShareButton>
           <SendEmailModal />
         </div>
       </div>
@@ -315,8 +321,8 @@ export function BidDetails({
           <CustomButton
             onClick={() => {
               saveUserBidMutation.mutate({ projectId: bid?._id })
-              setTimeout(()=> {
-                if(bidClickHandler) {
+              setTimeout(() => {
+                if (bidClickHandler) {
                   bidClickHandler();
                 }
               }, 500);
@@ -338,7 +344,7 @@ export function BidDetails({
 
         <CreateRFI
           isProjectOwner={false}
-          onSuccess={() => {}}
+          onSuccess={() => { }}
           projectId={bid._id}
         />
       </div>

@@ -83,8 +83,10 @@ class BidManagementService extends HttpService {
 
 
   httpGetOwnerProjects = (params: any): Promise<
-    IResponseInterface<{ projects: IBidManagement[] }>
-  > => this.get(`${this.prefix}/get-all?projectValue=${params.projectValue}&trades=${params.trades?.toString()}`);
+    IResponseInterface<{
+      paginationInfo: any; records: IBidManagement[] 
+}>
+  > => this.get(`${this.prefix}/get-all?projectValue=${params.projectValue}&trades=${params.trades?.toString()}&page=${params.page}&limit=${params.limit}`);
 
   httpGetOwnerProjectsWithoutFilters = (): Promise<
     IResponseInterface<{ projects: IBidManagement[] }>
