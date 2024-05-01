@@ -178,7 +178,7 @@ const AddNewUser = () => {
                       isLoading={isLoading}
                       className="mx-w-30"
                       type="submit"
-                      text="Invite"
+                      text={user ? 'Update' : 'Invite'}
                     />
                   </div>
                 </div>

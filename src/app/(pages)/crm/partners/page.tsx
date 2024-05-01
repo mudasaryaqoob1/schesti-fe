@@ -38,10 +38,7 @@ interface DataType {
 }
 
 const items: MenuProps['items'] = [
-  {
-    key: 'createEstimateRequest',
-    label: <p>Create Estimate Request</p>,
-  },
+
   {
     key: 'createNewInvoice',
     label: <p>Create Invoice</p>,

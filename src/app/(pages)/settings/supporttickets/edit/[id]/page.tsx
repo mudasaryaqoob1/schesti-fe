@@ -115,12 +115,13 @@ const EditSupportTicket = () => {
     <CustomNavbar>
       <div className="grid grid-cols-12 gap-8 p-8">
         <div className="col-span-4">
-          <Image
+        <Image
             alt="Service24-7"
-            src="/service24-7.svg"
+            src="/Service24-7.svg"
             width={498}
             height={628}
           />
+          
         </div>
         <section className="w-full  col-span-8">
           <div className="flex gap-1 items-center">
