@@ -186,6 +186,7 @@ const CreateTicket = () => {
                               name="uploadLogo"
                               id="uploadCompanyLogo"
                               className="hidden"
+                              accept='image/*'
                               onChange={async (e) => {
                                 setFieldValue(
                                   'avatar',
