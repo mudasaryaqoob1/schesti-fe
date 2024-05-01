@@ -174,7 +174,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
                 onChange(date, dateString) {
                   formik.setFieldValue(
                     'startDate',
-                    dayjs(dateString).tz((timezone as ITimezoneOption).value).format('YYYY-MM-DDTHH:mm:ss')
+                    dayjs(dateString as string).tz((timezone as ITimezoneOption).value).format('YYYY-MM-DDTHH:mm:ss')
                   );
                 },
                 onBlur: formik.handleBlur,
