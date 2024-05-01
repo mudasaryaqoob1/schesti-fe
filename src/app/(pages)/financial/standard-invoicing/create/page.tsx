@@ -188,6 +188,8 @@ const CreateInvoice = () => {
       // discount + profitAndOverhead - taxes
     );
   }
+
+
   const calculatePercentqge = (
     value: number | string,
     percentage: number | string
@@ -211,9 +213,18 @@ const CreateInvoice = () => {
       ...values,
       invoiceItems: updatedDetails,
       totalPayable: calculateTotalPayable(
-        Number(values.taxes),
-        Number(values.profitAndOverhead),
-        Number(values.discount)
+        calculatePercentqge(
+          calculateSubTotal(),
+          values['taxes']
+        ),
+        calculatePercentqge(
+          calculateSubTotal(),
+          values['profitAndOverhead']
+        ),
+        calculatePercentqge(
+          calculateSubTotal(),
+          values['discount']
+        )
       ),
     };
 
@@ -284,11 +295,11 @@ const CreateInvoice = () => {
       ),
     },
   ];
- 
+
   return (
     <section className="mx-16 my-2">
       <Formik
-        initialValues={selectedSubcontractorDetail ? {...initialValues , ...selectedSubcontractorDetail} :initialValues}
+        initialValues={selectedSubcontractorDetail ? { ...initialValues, ...selectedSubcontractorDetail } : initialValues}
         validationSchema={subcontractorSchema}
         onSubmit={submitHandler}
         enableReinitialize={true}
@@ -375,7 +386,7 @@ const CreateInvoice = () => {
                     }
                     errorMessage={
                       touched.subContractorPhoneNumber &&
-                      errors.subContractorPhoneNumber
+                        errors.subContractorPhoneNumber
                         ? errors.subContractorPhoneNumber
                         : ''
                     }
