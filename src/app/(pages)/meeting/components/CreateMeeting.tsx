@@ -183,6 +183,13 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
                     ? 'error'
                     : undefined,
                 use12Hours: true,
+                onOk(date) {
+                  formik.setFieldValue(
+                    'startDate',
+                    dayjs(date).tz((timezone as ITimezoneOption).value).format('YYYY-MM-DDTHH:mm:ss')
+                  );
+                },
+                changeOnBlur: true,
                 disabledDate: (curr) =>
                   disabledDate(curr, (timezone as ITimezoneOption).value) as boolean,
                 // showSecond: false,
