@@ -1,6 +1,5 @@
 'use client';
 import Button from '@/app/component/customButton/button';
-import WhiteButton from "@/app/component/customButton/white";
 import React, { useState } from 'react';
 
 // module imports
