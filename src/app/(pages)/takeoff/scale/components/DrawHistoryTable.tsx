@@ -28,10 +28,10 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
   const { drawHistory } = useContext(
     DrawHistoryContext
   ) as DrawHistoryContextProps;
-  const { reportData, handleReportData, updateProjectNameInReportData, updateProjectColorInReportData } =
+  const { reportData, handleReportData, updateProjectNameInReportData, updateProjectColorInReportData, updateCategoryInReportData } =
     useContext(ReportDataContext) as ReportDataContextProps;
 
-    console.log(drawHistory, reportData, " newDrawHistory");
+  console.log(drawHistory, reportData, " newDrawHistory");
   const userData = useSelector(selectUser)
   console.log(userData, " userData");
     
@@ -57,6 +57,7 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
                 return {
                   // projectName,//previouse usage
                   projectName: data?.projectName ?? projectName,//new usage
+                  category: data?.category ?? projectName,//new usage
                   pageLabel: pageNumber,
                   comment : drawName,
                   author: userData?.user?.name ?? userData?.user?.name ?? 'User',
@@ -87,11 +88,14 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
     }
   }, [drawHistory, searchProjectName, scaleData]);
 
-  const dataSource = useMemo(() => {
-    return groupDataForTable(reportData).filter(({ projectName = '' }) =>
-      projectName.includes(searchProjectName)
-    );
-  }, [reportData, groupDataForTable, searchProjectName]);
+  // const dataSource = useMemo(() => {
+  //   return groupDataForTable(reportData).filter(({ projectName = '' }) =>
+  //     projectName.includes(searchProjectName)
+  //   );
+  // }, [reportData, drawHistory, groupDataForTable, searchProjectName]);
+  const dataSource = groupDataForTable(reportData)
+  console.log(dataSource, ' ===> ===> Report Data DataSource for table');
+  
 
   return (
     <ConfigProvider theme={{ components: { Table: { headerBg: '#F9F5FF' } } }}>
@@ -101,18 +105,18 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
         size="small"
         columns={[
           {
-            title: 'Measurement Detail',
+            title: 'Measurement Details',
             dataIndex: 'projectName',
-            key: 'projectName',
+            // key: 'projectName',
             render: (value, record) => {
               return !record?.date ? (
-                <div>{value}</div>
+                <div>{record?.category}</div>
               ) : (
                 <EditableText
                   initialText={value}
                   onPressEnter={(text) => {
-                    const { date, pageLabel } = record;
-                    updateProjectNameInReportData(date, pageLabel, text);
+                    const { date, pageLabel, type } = record;
+                    updateProjectNameInReportData(date, pageLabel, text,type);
                   }}
                 />
               );
@@ -121,11 +125,28 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
           {
             title: 'Page Label',
             dataIndex: 'pageLabel',
-            key: 'pageLabel',
+            // key: 'pageLabel',
           },
           {
-            title: 'type',
+            title: 'Type',
             dataIndex: 'comment',
+          },
+          {
+            title: 'Category',
+            dataIndex: 'category',
+            render: (value, record) => {
+              return !record?.date ? (
+                <div>{}</div>
+              ) : (
+                <EditableText
+                  initialText={value}
+                  onPressEnter={(text) => {
+                    const { date, pageLabel, type } = record;
+                    updateCategoryInReportData(date, pageLabel, text,type);
+                  }}
+                />
+              );
+            },
           },
           {
             title: 'Author',
@@ -142,10 +163,10 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
               );
             },
           },
-          {
-            title: 'Status',
-            dataIndex: 'status',
-          },
+          // {
+          //   title: 'Status',
+          //   dataIndex: 'status',
+          // },
           {
             title: 'Color',
             dataIndex: 'color',
@@ -163,8 +184,8 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
                 <ColorPicker
                 value={value}
                 onChange={(color) => {
-                  const { date, pageLabel } = record;
-                  updateProjectColorInReportData(date, pageLabel, color.toHexString())
+                  const { date, pageLabel,type } = record;
+                  updateProjectColorInReportData(date, pageLabel, color.toHexString(),type)
                 }}
                 />
                 // <EditableText
@@ -177,14 +198,14 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
               );
             },
           },
-          {
-            title: 'Layer',
-            dataIndex: 'layer',
-          },
-          {
-            title: 'Space',
-            dataIndex: 'space',
-          },
+          // {
+          //   title: 'Layer',
+          //   dataIndex: 'layer',
+          // },
+          // {
+          //   title: 'Space',
+          //   dataIndex: 'space',
+          // },
         ]}
       />
     </ConfigProvider>

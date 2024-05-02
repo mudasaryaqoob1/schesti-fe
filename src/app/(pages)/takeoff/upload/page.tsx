@@ -1,5 +1,5 @@
 'use client';
-import { useCallback, useContext, useState } from 'react';
+import { useCallback, useContext, useRef, useState } from 'react';
 import { bg_style } from '@/globals/tailwindvariables';
 import Image from 'next/image';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
@@ -28,9 +28,10 @@ const Upload = () => {
   //   setShowModal(true);
   // };
 
-  const { handleSrc,uploadFileData } = useContext(UploadFileContext) as UploadFileContextProps;
+  const { handleSrc, uploadFileData } = useContext(UploadFileContext) as UploadFileContextProps;
   const [loading, setloading] = useState<boolean>(false)
   const [showSelectModal, setshowSelectModal] = useState<boolean>(false)
+  const breakLoopRef = useRef<boolean>(false); // Mutable ref for breaking the loop
   const pdfjs = useCallback(async () => {
     const pdfjs = await import('pdfjs-dist');
     await import('pdfjs-dist/build/pdf.worker.min.mjs');
@@ -39,12 +40,15 @@ const Upload = () => {
   }, []);
 
   const handleFileChange = async (event: any) => {
-    setloading(true)
     try {
       const file = event.target.files[0];
       console.log(file, " file full");
+      breakLoopRef.current = false
 
       if (file) {
+        setloading(true)
+        handleSrc([])
+        setshowSelectModal(true)
         const PDFJS = await pdfjs();
         const pdfPagesData: UploadFileData[] = [];
         const reader = new FileReader();
@@ -53,6 +57,12 @@ const Upload = () => {
           const pdf = await PDFJS.getDocument(data).promise;
 
           for (let index = 0; index < pdf.numPages; index++) {
+            console.log(index, " ===> for loop indexing running");
+            if (breakLoopRef.current) { // Check breakLoopRef instead of state
+              console.log('Task interrupted! for loop indexing running');
+              break;
+            }
+
             const page = await pdf.getPage(index + 1);
             console.log(page, typeof (page), " ===> pages while uplaoding")
             const scale = 1;
@@ -72,12 +82,19 @@ const Upload = () => {
               height: viewport.height,
               width: viewport.width,
             });
+            if (!breakLoopRef.current) { // Check breakLoopRef instead of state
+              handleSrc({
+                src: canvas.toDataURL('image/png') || '',
+                height: viewport.height,
+                width: viewport.width,
+              }, true);
+            }
           }
 
-          handleSrc(pdfPagesData);
+          // handleSrc(pdfPagesData);
           // router.push('/takeoff/scale');
           setloading(false)
-          setshowSelectModal(true)
+          // setshowSelectModal(true)
         };
         reader.readAsArrayBuffer(file);
       }
@@ -201,7 +218,7 @@ const Upload = () => {
                 onChange={handleFileChange}
                 disabled={loading}
               />
-              {loading? <span className='flex gap-x-2' ><LoadingOutlined /> {"Processing"}</span> :'Select File'}
+              {loading ? <span className='flex gap-x-2' ><LoadingOutlined /> {"Processing"}</span> : 'Select File'}
             </label>
           </div>
         </div>
@@ -214,15 +231,20 @@ const Upload = () => {
             }}
           />
         </ModalComponent> */}
-          <ModalComponent open={showSelectModal} setOpen={()=>{}}>
-            <SelectPageModal
-              numOfPages={uploadFileData.length}
-              setModalOpen={setshowSelectModal}
-              uploadFileData={uploadFileData}
-              handleSrc={handleSrc}
-              router={router}
-            />
-          </ModalComponent>
+        <ModalComponent open={showSelectModal} setOpen={() => { }}>
+          <SelectPageModal
+            numOfPages={uploadFileData.length}
+            setModalOpen={setshowSelectModal}
+            uploadFileData={uploadFileData}
+            handleSrc={handleSrc}
+            router={router}
+            loadingPre={loading}
+            handleReselect={() => {
+              breakLoopRef.current = true;
+              setloading(false)
+            }}
+          />
+        </ModalComponent>
       </section>
     </>
   );

@@ -27,7 +27,13 @@ const TakeOffLayout: React.FC<any> = ({
     null
   );
 
-  const handleSrc = (value: UploadFileData[]) => setUploadFileData(value);
+  const handleSrc = (value: UploadFileData[],isAppend?:boolean) => {
+    if(isAppend == true){
+      setUploadFileData((ps:any)=>([...ps,value]))
+    }else{
+      setUploadFileData(value)
+    }
+  };
   const handleEdit = (value: any[]) => seteditData(value);
 
   const handleScaleData = (value: ScaleDataContextInterface) => {
@@ -67,7 +73,8 @@ const TakeOffLayout: React.FC<any> = ({
   const updateProjectNameInReportData = (
     date: Date,
     pageNumber: string,
-    newProjectName: string
+    newProjectName: string,
+    type?:string
   ) => {
     setReportData((prev) => {
       return prev.map((item) => {
@@ -82,12 +89,65 @@ const TakeOffLayout: React.FC<any> = ({
         } else return item;
       });
     });
+    setDrawHistory((prev)=>{
+      return {
+        ...prev,
+        //@ts-ignore
+        [pageNumber]:{...prev[pageNumber],
+          //@ts-ignore
+          [type]:prev[pageNumber][type]?.map((item:any)=>{
+            if (
+                  new Date(item.dateTime).valueOf() === new Date(date).valueOf()
+                ){
+                  return {...item,projectName:newProjectName}
+                }else return item
+          })
+        }
+      }
+    })
+  };
+  const updateCategoryInReportData = (
+    date: Date,
+    pageNumber: string,
+    newProjectName: string,
+    type?:string
+  ) => {
+    setReportData((prev) => {
+      return prev.map((item) => {
+        if (
+          new Date(item.date).valueOf() === new Date(date).valueOf() &&
+          item.pageLabel === pageNumber
+        ) {
+          return {
+            ...item,
+            category: newProjectName,
+          };
+        } else return item;
+      });
+    });
+    setDrawHistory((prev)=>{
+      return {
+        ...prev,
+        //@ts-ignore
+        [pageNumber]:{...prev[pageNumber],
+          //@ts-ignore
+          [type]:prev[pageNumber][type]?.map((item:any)=>{
+            if (
+                  new Date(item.dateTime).valueOf() === new Date(date).valueOf()
+                ){
+                  return {...item,category:newProjectName}
+                }else return item
+          })
+        }
+      }
+    })
   };
 
   const updateProjectColorInReportData = (
     date: Date,
     pageNumber: string,
-    newProjectName: string
+    newProjectName: string,
+    type?:any
   ) => {
     setReportData((prev) => {
       return prev.map((item) => {
@@ -102,13 +162,29 @@ const TakeOffLayout: React.FC<any> = ({
         } else return item;
       });
     });
+    setDrawHistory((prev)=>{
+      return {
+        ...prev,
+        //@ts-ignore
+        [pageNumber]:{...prev[pageNumber],
+          //@ts-ignore
+          [type]:prev[pageNumber][type]?.map((item:any)=>{
+            if (
+                  new Date(item.dateTime).valueOf() === new Date(date).valueOf()
+                ){
+                  return {...item,stroke:newProjectName}
+                }else return item
+          })
+        }
+      }
+    })
   };
   console.log(reportData, " ===> Report Data", drawHistory, " ===> Draw History");
   
 
   return (
     <ReportDataContext.Provider
-      value={{ reportData, handleReportData, updateProjectNameInReportData, updateProjectColorInReportData }}
+      value={{ reportData, handleReportData, updateProjectNameInReportData, updateProjectColorInReportData, updateCategoryInReportData }}
     >
       <DrawHistoryContext.Provider
         value={{

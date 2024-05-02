@@ -9,7 +9,7 @@ export interface UploadFileData {
 
 export interface UploadFileContextProps {
   uploadFileData: UploadFileData[];
-  handleSrc: (data: UploadFileData[]) => void;
+  handleSrc: (data: UploadFileData[] | any,isAppend?:boolean) => void;
 }
 
 const UploadFileContext = createContext<UploadFileContextProps>({

@@ -14,9 +14,11 @@ interface Props {
   uploadFileData?: any;
   handleSrc?: any;
   router?: any;
+  loadingPre?:any
+  handleReselect?:any
 }
 
-const SelectPageModal = ({ setModalOpen, numOfPages, page, uploadFileData, handleSrc, router }: Props) => {
+const SelectPageModal = ({ setModalOpen, numOfPages, page, uploadFileData, handleSrc, router,loadingPre,handleReselect }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const allPresets = useSelector(selectTakeoffPreset);
   const [selectedPages, setselectedPages] = useState<any>([])
@@ -36,6 +38,7 @@ const SelectPageModal = ({ setModalOpen, numOfPages, page, uploadFileData, handl
 
   const handleCalibrate = () => {
     try {
+      handleReselect()
       setloading(true)
       handleSrc(selectedPages)
       // setModalOpen(false)
@@ -43,6 +46,7 @@ const SelectPageModal = ({ setModalOpen, numOfPages, page, uploadFileData, handl
     } catch (error) {
       console.log(error, " error while adding");
       setloading(false)
+      handleReselect()
     }
   };
 
@@ -52,7 +56,7 @@ const SelectPageModal = ({ setModalOpen, numOfPages, page, uploadFileData, handl
         <div className="flex justify-between items-center border-b-Gainsboro ">
           <div>
             <QuaternaryHeading
-              title="Select Pages"
+              title={`Select Pages ${loadingPre == true ? (uploadFileData?.length+' pages loaded') : ''}`}
               className="text-graphiteGray font-bold"
             />
             {/* <QuinaryHeading
@@ -84,6 +88,9 @@ const SelectPageModal = ({ setModalOpen, numOfPages, page, uploadFileData, handl
                 </div>
               })
             }
+            {loadingPre && <div className={`border-[2px] relative w-56 h-72 rounded-xl cursor-pointer`} >
+              Loading...
+            </div>}
           </div>
         </div>
       </section>
@@ -92,7 +99,7 @@ const SelectPageModal = ({ setModalOpen, numOfPages, page, uploadFileData, handl
           <Button
             text="Change File"
             className="!bg-snowWhite !text-abyssalBlack !py-1.5 "
-            onClick={() => {setselectedPages([]);setModalOpen(false)}}
+            onClick={() => {setselectedPages([]);setModalOpen(false); if(handleReselect){handleReselect()}}}
           />
         </div>
         <div>

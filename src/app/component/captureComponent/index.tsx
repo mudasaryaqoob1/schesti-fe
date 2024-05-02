@@ -53,7 +53,7 @@ const CaptureComponent = ({
   name: string;
   save: number;
   onSaveSuccess: () => void;
-  selectedClient?:any;
+  selectedClient?: any;
   // itemsToCapture: DrawHistoryContextInterface;
   // onCapture: (url: string, key: number) => void;
 }) => {
@@ -146,6 +146,7 @@ const CaptureComponent = ({
           }
 
           case 'line':
+          case 'perimeter':
           case 'dynamic':
           case 'area':
           case 'volume':
@@ -260,7 +261,7 @@ const CaptureComponent = ({
         uploadToS3('capture', uploadFileData).then((result: any) => {
           console.log(result, "result measurements");
           let clientD = {}
-          if(selectedClient?._id) clientD = {client : selectedClient?._id} 
+          if (selectedClient?._id) clientD = { client: selectedClient?._id }
           //@ts-ignore
           if (urlSearch && urlSearch.get('edit_id') && urlSearch.get('edit_id')?.length > 0) {
             dispatch(

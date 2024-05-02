@@ -13,7 +13,7 @@ import {
   Rect,
 } from 'react-konva';
 import { UploadFileData } from '../../context/UploadFileContext';
-import { DrawHistoryContext } from '../../context';
+import { DrawHistoryContext, ReportDataContext } from '../../context';
 import { DrawHistoryContextProps } from '../../context/DrawHistoryContext';
 import {
   CircleInterface,
@@ -51,11 +51,11 @@ interface Props {
   handleScaleModal: (open: boolean) => void;
   isEdit?: boolean;
   editData?: any;
-  drawScale?:any;
-  setdrawScale?:any;
-  setscaleLine?:any;
-  setModalOpen?:any;
-  selectedCategory?:any;
+  drawScale?: any;
+  setdrawScale?: any;
+  setscaleLine?: any;
+  setModalOpen?: any;
+  selectedCategory?: any;
 }
 
 const Draw: React.FC<Props> = ({
@@ -86,11 +86,13 @@ const Draw: React.FC<Props> = ({
     calculatePolygonVolume,
     calculateAngle,
     pointInCircle,
+    calcPerimeterDistance
   } = useDraw();
   const { deleteDrawHistory, updateDrawHistory, drawHistory } = useContext(
     DrawHistoryContext
   ) as DrawHistoryContextProps;
   console.log(drawHistory, isEdit, editData, " ===> drawHistory");
+  const { reportData } = useContext(ReportDataContext)
 
   const [draw, setDraw] = useState<DrawInterface | any>({
     line: [],
@@ -98,16 +100,17 @@ const Draw: React.FC<Props> = ({
     volume: [],
     count: [],
     dynamic: [],
-    scale: []
+    scale: [],
+    perimeter: []
   });
   console.log(draw, 'drawdrawdrawdrawdrawdrawdrawdrawdrawdraw')
   useEffect(() => {
-    if (isEdit) {
+    if (drawHistory && drawHistory[`${pageNumber}`]) {//isEdit
       console.log("Edit flow run");
 
       setDraw({
         //@ts-ignore
-        line: [], area: [], volume: [], count: [], dynamic: [], ...drawHistory[`${pageNumber}`]
+        line: [], area: [], volume: [], count: [], dynamic: [], perimeter: [], ...drawHistory[`${pageNumber}`]
       })
     }
   }, [drawHistory, isEdit, editData])
@@ -127,7 +130,7 @@ const Draw: React.FC<Props> = ({
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [circle, setCircle] = useState<CircleInterface[]>([]);
   console.log(selected, drawScale, " ===> selected and draw scal");
-  
+
 
   const myImage = new Image();
   myImage.src =
@@ -204,7 +207,7 @@ const Draw: React.FC<Props> = ({
         textUnit: unit,
         dateTime: moment().toDate(),
       };
-      setDraw((prev: any) => ({ ...prev, scale: [...prev.scale, newLine] }));
+      setDraw((prev: any) => ({ ...prev, scale: [newLine] }));//[...prev.scale, newLine]
 
       // updateDrawHistory(pageNumber.toString(), 'line', newLine);
 
@@ -212,11 +215,11 @@ const Draw: React.FC<Props> = ({
       handleChangeMeasurements(defaultMeasurements);
 
       //Modal states handlings
-      if(selected === 'scale' && drawScale == true){
+      if (selected === 'scale' && drawScale == true) {
         setModalOpen(true);
         setdrawScale(false);
         setscaleLine(newLine);
-        setDraw((ps:any)=>({...ps,scale:[]}))
+        // setDraw((ps:any)=>({...ps,scale:[]}))
       }
     }
 
@@ -234,7 +237,8 @@ const Draw: React.FC<Props> = ({
         strokeWidth: border,
         textUnit: unit,
         dateTime: moment().toDate(),
-        projectName: (selectedCategory && selectedCategory?.length>0) ? selectedCategory : 'Length Measurement'
+        projectName:'Length Measurement',
+        category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement'
       };
       setDraw((prev: any) => ({ ...prev, line: [...prev.line, newLine] }));
 
@@ -300,7 +304,8 @@ const Draw: React.FC<Props> = ({
                   ...prev,
                   textUnit: unit,
                   dateTime: moment().toDate(),
-                  projectName: (selectedCategory && selectedCategory?.length>0) ? selectedCategory : 'Area Measurement'
+                  projectName:'Area Measurement',
+                  category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Area Measurement'
                 };
 
                 updateDrawHistory(pageNumber.toString(), 'area', areaConfig);
@@ -334,7 +339,8 @@ const Draw: React.FC<Props> = ({
                   depth,
                   textUnit: unit,
                   dateTime: moment().toDate(),
-                  projectName: (selectedCategory && selectedCategory?.length>0) ? selectedCategory : 'Volume Measurement'
+                  projectName:'Volume Measurement',
+                  category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Volume Measurement',
                 };
 
                 updateDrawHistory(
@@ -363,7 +369,8 @@ const Draw: React.FC<Props> = ({
         x: position?.x - 2,
         y: position.y - 15,
         dateTime: moment().toDate(),
-        projectName: (selectedCategory && selectedCategory?.length>0) ? selectedCategory : 'Count Measurement'
+        projectName:'Count Measurement',
+        category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Count Measurement',
       };
 
       setDraw((prev: any) => {
@@ -398,6 +405,7 @@ const Draw: React.FC<Props> = ({
     if (endLiveEditing) return;
     const stage = e.target.getStage();
     const position = getRelativePointerPosition(stage);
+    console.log(selected, drawScale, currentLine, subSelected, " ===> on mouse move data");
 
     if (subSelected === 'fill') {
       if (isMouseDown) {
@@ -438,7 +446,7 @@ const Draw: React.FC<Props> = ({
         true
       ) as string;
       console.log(parameter, " ===> Parameters");
-      
+
 
       handleChangeMeasurements({
         angle,
@@ -493,6 +501,12 @@ const Draw: React.FC<Props> = ({
     //   setDraw((ps:any)=>({...ps,scale:[]}))
     // }
   };
+  useEffect(() => {
+    setDraw((ps: any) => ({ ...ps, scale: [] }))
+  }, [selected])
+  useEffect(() => {
+    console.log(draw, drawHistory, " ===>reportdata", reportData, " ===> Draw state");
+  }, [draw])
 
   const {
     stageScale,
@@ -507,7 +521,7 @@ const Draw: React.FC<Props> = ({
   });
   return (
     <div
-      className="outline-none relative bg-grey-900 my-3"
+      className={`outline-none relative bg-grey-900 my-3`}
       tabIndex={1}
       onKeyDown={(e) => {
         if (e.key === 'Escape') {
@@ -519,20 +533,57 @@ const Draw: React.FC<Props> = ({
         }
         if (e.key === 'Enter' && subSelected === 'create') {
           setCurrentLine(defaultCurrentLineState);
-
-          setDraw((prevDraw: any) => ({
-            ...prevDraw,
-            dynamic: [
-              ...prevDraw.dynamic,
-              {
-                ...dynamicPolyLine,
-                strokeWidth: 10,
-                stroke: color,
-                lineCap: 'round',
-                id: `dynamic-${draw.dynamic.length + 1}`,
-              },
-            ],
-          }));
+          if (selected == 'dynamic') {
+            setDraw((prevDraw: any) => ({
+              ...prevDraw,
+              dynamic: [
+                ...prevDraw.dynamic,
+                {
+                  ...dynamicPolyLine,
+                  strokeWidth: 10,
+                  stroke: color,
+                  lineCap: 'round',
+                  id: `dynamic-${draw.dynamic.length + 1}`,
+                  projectName:'Dynamic Measurement',
+                  category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Dynamic Measurement',
+                },
+              ],
+            }));
+            updateDrawHistory(pageNumber.toString(), 'dynamic', {
+              ...dynamicPolyLine,
+              strokeWidth: 10,
+              stroke: color,
+              lineCap: 'round',
+              id: `dynamic-${draw.dynamic.length + 1}`,
+              projectName:'Dynamic Measurement',
+              category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Dynamic Measurement',
+            });
+          } else if (selected == 'perimeter') {
+            setDraw((prevDraw: any) => ({
+              ...prevDraw,
+              perimeter: [
+                ...prevDraw.perimeter,
+                {
+                  ...dynamicPolyLine,
+                  // strokeWidth: 10,
+                  stroke: color,
+                  lineCap: 'round',
+                  id: `perimeter-${draw.perimeter.length + 1}`,
+                  projectName:'Perimeter Measurement',
+                  category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Perimeter Measurement',
+                },
+              ],
+            }));
+            updateDrawHistory(pageNumber.toString(), 'perimeter',{
+              ...dynamicPolyLine,
+              // strokeWidth: 10,
+              stroke: color,
+              lineCap: 'round',
+              id: `perimeter-${draw.perimeter.length + 1}`,
+              projectName:'Perimeter Measurement',
+              category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Perimeter Measurement',
+            })
+          }
 
           setDynamicPolyLine(defaultPolyLineState);
         }
@@ -648,7 +699,7 @@ const Draw: React.FC<Props> = ({
         scaleY={stageScale}
         x={stageX}
         y={stageY}
-        className="flex justify-center cursor-pointer bg-slate-600/10"
+        className={`flex justify-center cursor-pointer bg-slate-600/10 ${['area','volume','dynamic','length','perimeter'].includes(selected) ? '!cursor-crosshair' : ''}`}
       >
         <Layer
           onMouseDown={handleMouseDown}
@@ -661,9 +712,9 @@ const Draw: React.FC<Props> = ({
             height={uploadFileData.height || 600}
           />
 
-          {/* Scal Drawing Line */}
+          {/* Scale Drawing Line */}
           {draw?.scale && Array.isArray(draw?.scale) && draw?.scale?.map(({ textUnit, ...rest }: any, index: number) => {
-            const id = `draw-${index}`;
+            const id = `line-${index}`;
             const lineDistance = calcLineDistance(rest.points, scale, true);
             const lineMidPoint = calculateMidpoint(rest.points);
 
@@ -747,6 +798,41 @@ const Draw: React.FC<Props> = ({
                   dash={selectedShape === id ? [10, 10] : []}
                   lineCap={selectedShape === id ? 'square' : rest.lineCap}
                   stroke={selectedShape === id ? 'maroon' : rest.stroke}
+                />
+              </Group>
+            );
+          })}
+          {/* Drawing Perimeter Fill */}
+          {draw.perimeter.map(({ ...rest }: any, index: number) => {
+            const id = `perimeter-${index}`;
+
+            // const lineDistance = calcPerimeterDistance(rest.points, scale, true);
+            // const lineMidPoint = calculateMidpoint(rest.points);
+            const lineDistance = rest?.points?.length > 4 ? calculatePolygonPerimeter(rest.points, scale) : calcLineDistance(rest.points, scale, true);
+            const lineMidPoint = rest?.points?.length > 4 ? calculatePolygonCenter(rest.points) : calculateMidpoint(rest.points);
+
+            return (
+              <Group
+                key={id}
+                id={id}
+                onMouseDown={(e) => {
+                  e.cancelBubble = true;
+                  setSelectedShape(e.currentTarget.attrs?.id || '');
+                }}
+              >
+                <Arrow
+                  {...rest}
+                  dash={selectedShape === id ? [10, 10] : []}
+                  lineCap={selectedShape === id ? 'square' : rest.lineCap}
+                  stroke={selectedShape === id ? 'maroon' : rest.stroke}
+                  pointerAtEnding={true}
+                  pointerAtBeginning={true}
+                />
+                <KonvaText
+                  {...lineMidPoint}
+                  fontSize={rest?.textUnit}
+                  text={lineDistance.toString()}
+                  fill="red"
                 />
               </Group>
             );
@@ -843,7 +929,8 @@ const Draw: React.FC<Props> = ({
           {currentLine.startingPoint &&
             currentLine.endingPoint &&
             selected !== 'count' &&
-            selected !== 'scale' && (
+            !(selected == 'scale' && drawScale != true) &&
+            (
               <Line
                 points={[
                   currentLine.startingPoint.x,

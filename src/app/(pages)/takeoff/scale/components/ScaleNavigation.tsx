@@ -27,7 +27,7 @@ const ScaleNavigation: React.FC<Props> = ({ tool, setTool, setShowModal }) => {
                 setShowModal(true);
                 setTool({
                   selected: label,
-                  ...(label === 'dynamic' && { subSelected: 'create' }),
+                  ...((label === 'dynamic' || label === 'perimeter') && { subSelected: 'create' }),
                 });
               }}
             >

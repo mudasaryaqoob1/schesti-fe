@@ -221,7 +221,28 @@ const useDraw = () => {
     { precision, xScale, yScale }: ScaleData,
     format = false
   ) => {
-    console.log(precision,xScale,yScale, " ===> Data of scale")
+    console.log(precision, coordinates,xScale,yScale, " ===> Data of scale")
+    const [x1, y1, x2, y2] = coordinates;
+    const xScaleMultiplier = getScaleMultiplier(xScale);
+    const yScaleMultiplier = getScaleMultiplier(yScale);
+
+    const distance = Math.sqrt(
+      Math.pow(convertPxIntoInches(x2 - x1) * xScaleMultiplier, 2) +
+        Math.pow(convertPxIntoInches(y2 - y1) * yScaleMultiplier, 2)
+    );
+
+    if (format) {
+      return convertToFeetAndInches(distance, precision);
+    }
+
+    return distance;
+  };
+  const calcPerimeterDistance = (
+    coordinates: number[],
+    { precision, xScale, yScale }: ScaleData,
+    format = false
+  ) => {
+    console.log(precision, coordinates,xScale,yScale, " ===> Data of scale perimeter")
     const [x1, y1, x2, y2] = coordinates;
     const xScaleMultiplier = getScaleMultiplier(xScale);
     const yScaleMultiplier = getScaleMultiplier(yScale);
@@ -334,6 +355,8 @@ const useDraw = () => {
       };
     else if (key === 'count')
       return { projectName: 'Count Measurement', comment: '' };
+    else if (key === 'perimeter')
+      return { projectName: 'Perimeter Measurement', comment: points?.length ? calcLineDistance(points, scale, true) : 0, };
     else return { projectName: 'Dynamic Measurement', comment: '' };
   };
 
@@ -514,12 +537,14 @@ const useDraw = () => {
         layer,
         space,
         type,
+        category
       } = currentItem;
 
       // Check if there's already an entry with the same projectName and pageLabel
       const existingEntry = result.find(
         (entry: any) =>
-          entry.projectName === projectName && entry.pageLabel === pageLabel
+          // entry.projectName === projectName && entry.pageLabel === pageLabel
+        entry.category === category && entry.pageLabel === pageLabel
       );
 
       if (existingEntry) {
@@ -534,11 +559,13 @@ const useDraw = () => {
           layer,
           space,
           type,
+          category
         });
       } else {
         result.push({
           key: result.length + 1, // Assuming keys start from 1
           projectName,
+          category,
           pageLabel,
           children: [
             {
@@ -552,6 +579,7 @@ const useDraw = () => {
               layer,
               space,
               type,
+              category
             },
           ],
         });
@@ -568,6 +596,7 @@ const useDraw = () => {
     calculatePolygonCenter,
     calculatePolygonPerimeter,
     calcLineDistance,
+    calcPerimeterDistance,
     convertArrayIntoChunks,
     calculateMidpoint,
     calculatePolygonVolume,

@@ -13,6 +13,7 @@ export interface CoordinatesInterface {
 export interface CountInterface extends CoordinatesInterface {
   dateTime: Date;
   projectName?:any;
+  category?:any;
 }
 
 export interface LineInterface {
@@ -23,6 +24,7 @@ export interface LineInterface {
   textUnit: number;
   dateTime?: Date;
   projectName?:any;
+  category?:any;
 }
 
 export interface CircleInterface extends CoordinatesInterface {
@@ -38,6 +40,7 @@ export interface PolygonConfigInterface {
   textUnit: number;
   dateTime: Date;
   projectName?:any;
+  category?:any;
 }
 
 export interface DrawInterface {
@@ -46,6 +49,7 @@ export interface DrawInterface {
   volume: PolygonConfigInterface[];
   dynamic: LineInterface[];
   count: CountInterface[];
+  perimeter?:any;
 }
 
 export interface Measurements {
@@ -72,7 +76,8 @@ export type ScaleLabel =
   | 'volume'
   | 'count'
   | 'area'
-  | 'dynamic';
+  | 'dynamic'
+  | 'perimeter'
 
 export type DynamicScale = 'fill' | 'create' | 'clear';
 
@@ -133,6 +138,14 @@ export const SCALE_NAVIGATION: ScaleNavigation[] = [
   },
   {
     label: 'dynamic',
+    src: '/dynamic.svg',
+    selectedSrc: '/selectedDynamic.svg',
+    alt: 'createicon',
+    width: 15,
+    height: 14,
+  },
+  {
+    label: 'perimeter',
     src: '/dynamic.svg',
     selectedSrc: '/selectedDynamic.svg',
     alt: 'createicon',
