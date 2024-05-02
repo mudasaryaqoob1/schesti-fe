@@ -4,7 +4,7 @@ import Description from '@/app/component/description';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { withAuth } from '@/app/hoc/withAuth';
-import { Pagination, ConfigProvider, Tabs } from 'antd';
+import { ConfigProvider, Tabs } from 'antd';
 import Image from 'next/image';
 import { useState } from 'react';
 import { ProjectSummary } from '../components/ProjectSummary';
@@ -35,7 +35,7 @@ function OwnerProjectDetailsPage() {
   });
 
 
-  console.log("params",params);
+  console.log("params",params, setPaginationSettings);
   
   const [activeTab, setActiveTab] = useState(SUMMARY);
 

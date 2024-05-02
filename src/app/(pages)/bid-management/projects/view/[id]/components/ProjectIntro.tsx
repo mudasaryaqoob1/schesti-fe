@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { DownOutlined, LoadingOutlined } from '@ant-design/icons';
 
 import CustomButton from '@/app/component/customButton/button';
@@ -23,6 +24,8 @@ import { postProjectActions, setFormStepAction, setPostProjectAction } from '@/r
 import { Routes } from '@/app/utils/plans.utils';
 import { useRouter } from 'next/navigation';
 import ModalComponent from '@/app/component/modal';
+import AwsS3 from '@/app/utils/S3Intergration';
+import { isEmpty } from 'lodash';
 
 type Props = {
   id: string;
@@ -31,9 +34,11 @@ export function ProjectIntro({ id }: Props) {
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [filters, setFilters] = useState({
-    page: 1, limit: 10
-  })
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [filters] = useState({ page: 1, limit: 10 });
+  const [isFileUploading, setIsFileUploading] = useState(false);
+  const [files, setFiles] = useState<any>([]);
 
   const router = useRouter();
 
@@ -96,6 +101,46 @@ export function ProjectIntro({ id }: Props) {
   function toggleStatusModal() {
     setShowStatusModal(!showStatusModal);
   }
+
+  async function handleUpdate(file: any) {
+    setIsFileUploading(true);
+    console.log('files', file);
+    try {
+      const projectFiles = [];
+      for (let i=0; i< files?.length; i++) {
+        const url = await new AwsS3(files[i]?.originFileObj, 'documents/bids/').getS3URL();
+        const fileData = {
+          url,
+          extension: files[i].name.split('.').pop() || '',
+          type: files[i].type as string,
+          name: files[i].name,
+        };
+        projectFiles.push(fileData);
+      }
+      const payload = {
+        title, 
+        description,
+        projectFiles,
+      }
+      const result = await bidManagementService.httpUpdateProjectDocumentsById(id, payload);
+      console.log('result', result);
+
+      if(!isEmpty(result.data?.project)) {
+        setFiles([]);
+        setShowUpdateModal(false);
+        toast.success('Files updated successfully');
+      }
+      // rfiFormik.setFieldValue('file', fileData);
+    } catch (error) {
+      console.error('Error uploading file to S3:', error);
+      toast.error(`Unable to upload Files`);
+      setIsFileUploading(false);
+    } finally {
+      setIsFileUploading(false);
+    }
+  }
+
+  console.log('file', files);
 
   return (
     <div className="flex justify-between items-center">
@@ -178,13 +223,17 @@ export function ProjectIntro({ id }: Props) {
           />
           <ModalComponent
             open={showUpdateModal}
-            setOpen={setShowUpdateModal}
+            setOpen={(val: any) => {
+              setFiles([]);
+              setShowUpdateModal(val);
+            }}
           >
             <div>
               <Popups
                 title='Update'
                 onClose={() => {
                   setShowUpdateModal(false);
+                  setFiles([]);
                 }}
               >
                 <div className='space-y-3'>
@@ -193,13 +242,23 @@ export function ProjectIntro({ id }: Props) {
                     name='title'
                     placeholder='Enter title'
                     type='text'
+                    field={{
+                      value: title,
+                      onChange(e) {
+                        setTitle(e.target.value);
+                      },
+                    }}
                   />
 
                   <TextAreaComponent
                     label='Description'
                     name='description'
                     field={{
-                      rows: 7
+                      rows: 7,
+                      value: description,
+                      onChange(e) {
+                        setDescription(e.target.value);
+                      }
                     }}
                   />
 
@@ -207,17 +266,15 @@ export function ProjectIntro({ id }: Props) {
                     <Dragger
                       name={'file'}
                       accept="image/*,gif,application/pdf"
-
-                      beforeUpload={() => {
-
-                        return false;
+                      onChange={(info) => {
+                        console.log('info', info);
+                        setFiles(info.fileList);
                       }}
+                      fileList={files}
+                      multiple={true}
                       style={{
                         borderStyle: 'dashed',
                         borderWidth: 6,
-                      }}
-                      itemRender={() => {
-                        return null;
                       }}
                     >
                       <p className="ant-upload-drag-icon">
@@ -236,10 +293,7 @@ export function ProjectIntro({ id }: Props) {
                       </p>
                     </Dragger>
                   </div>
-
-                  <CustomButton
-                    text='Update'
-                  />
+                  <CustomButton text='Update' disabled={isEmpty(title) || isEmpty(description) || isFileUploading} onClick={handleUpdate} />
                 </div>
               </Popups>
             </div>
