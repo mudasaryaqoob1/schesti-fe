@@ -151,10 +151,10 @@ const EditSupportTicket = () => {
                 initialValues={
                   supportTicketData
                     ? {
-                        title: supportTicketData.title,
-                        description: supportTicketData.description,
-                        avatar: supportTicketData.avatar,
-                      }
+                      title: supportTicketData.title,
+                      description: supportTicketData.description,
+                      file: supportTicketData.file,
+                    }
                     : initialValues
                 }
                 validationSchema={validationSchema}

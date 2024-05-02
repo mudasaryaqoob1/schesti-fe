@@ -1,3 +1,10 @@
+export type ITicketFile = {
+  name: string;
+  fileType: string;
+  url: string;
+  size: number;
+}
+
 export interface ISupportTicket {
   _id?: string;
   title: string;
@@ -5,7 +12,7 @@ export interface ISupportTicket {
   description: string;
   createdAt?: string;
   updatedAt?: string;
-  avatar?: string;
+  file?: ITicketFile
 }
 
 export type ITicketMessage = {
