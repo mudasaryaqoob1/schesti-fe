@@ -42,7 +42,7 @@ export function FileView({ extension, name, url, text = "Download", actionIcon }
                 </a>
             </div>
 
-            <div>
+            {actionIcon ? <div>
                 <Image
                     src={actionIcon?.icon || "/trash.svg"}
                     alt='icon'
@@ -51,7 +51,7 @@ export function FileView({ extension, name, url, text = "Download", actionIcon }
                     className="cursor-pointer"
                     onClick={actionIcon?.onClick}
                 />
-            </div>
+            </div> : null}
         </div>
     </div>
 }

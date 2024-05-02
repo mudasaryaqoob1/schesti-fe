@@ -23,6 +23,7 @@ import { byteConverter } from '@/app/utils/byteConverter';
 import { toast } from 'react-toastify';
 import AwsS3 from '@/app/utils/S3Intergration';
 import { withAuth } from '@/app/hoc/withAuth';
+import { FileView } from '@/app/component/file-view/FileView';
 
 const SupportTicketDetails = () => {
   const params = useParams();
@@ -32,7 +33,7 @@ const SupportTicketDetails = () => {
   const supportTicketData = useSelector(selectSupportTickets);
 
   // const [isLoading, setIsLoading] = useState(true);
-  const [supportDetailDetail, setSupportDetailDetail] = useState<any>({});
+  const [supportDetailDetail, setSupportDetailDetail] = useState<Partial<ISupportTicket>>({});
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<ITicketMessage[]>([]);
   const [messageLoading, setMessageLoading] = useState(false);
@@ -99,6 +100,7 @@ const SupportTicketDetails = () => {
         isFile: true,
         fileUrl: url,
         fileName: file.name,
+        fileSize: file.size
       });
       setMessage('');
       setMessageLoading(false);
@@ -166,14 +168,13 @@ const SupportTicketDetails = () => {
                 className="text-steelGray"
                 title={`${supportDetailDetail?.description}`}
               />
-              {supportDetailDetail?.avatar && (
-                <img
-                  width="100%"
-                  height="auto"
-                  src={supportDetailDetail?.avatar}
-                  alt="supportticketavatar"
-                />
-              )}
+              {supportDetailDetail?.file && <FileView
+                extension={supportDetailDetail.file.fileType.split('/')[1]}
+                name={supportDetailDetail.file.name}
+                url={supportDetailDetail.file.url}
+                text='View'
+
+              />}
             </div>
           </div>
           <div className="shadow-primaryGlow rounded-2xl p-5 md:col-span-2">
@@ -185,24 +186,14 @@ const SupportTicketDetails = () => {
                       return message.isFile ? (
                         <div
                           key={message._id}
-                          className="bg-slate-100 rounded-l-lg px-4 py-3 mr-8 self-end"
+                          className="self-end"
                         >
-                          {message.fileExtension.includes('pdf') ? (
-                            <a
-                              className="text-[#5A7184] text-[16px] leading-5"
-                              href={message.fileUrl}
-                              target="_blank"
-                            >
-                              {message.fileName}
-                            </a>
-                          ) : (
-                            <Image
-                              src={message.fileUrl}
-                              alt={message.fileName}
-                              width={200}
-                              height={200}
-                            />
-                          )}
+                          <FileView
+                            extension={message.fileExtension.split('/')[1]}
+                            name={message.fileName}
+                            url={message.fileUrl}
+                            text='View'
+                          />
                         </div>
                       ) : (
                         <p
