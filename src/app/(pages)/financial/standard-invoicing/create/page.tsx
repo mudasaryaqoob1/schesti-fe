@@ -1,37 +1,39 @@
 'use client';
-import { useLayoutEffect, useState } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { useRouter } from 'next/navigation';
+import { ConfigProvider, Divider } from 'antd';
+import Table, { type ColumnType } from 'antd/es/table';
+import { useSearchParams } from 'next/navigation';
+import { AppDispatch } from '@/redux/store';
+import { useDispatch } from 'react-redux';
+
 // module imports
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import Button from '@/app/component/customButton/white';
 import ColoredButton from '@/app/component/customButton/button';
 import FormControl from '@/app/component/formControl';
-// redux module
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
-import Table, { type ColumnType } from 'antd/es/table';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
-import { ConfigProvider, Divider } from 'antd';
 import ModalComponent from '@/app/component/modal';
 import ExistingSubContractor from '../../components/ExistingSubContractors';
-import { useRouter } from 'next/navigation';
 import { InputComponent } from '@/app/component/customInput/Input';
+import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
 import {
   CreateInvoiceData,
   invoiceService,
 } from '@/app/services/invoices.service';
-import { toast } from 'react-toastify';
 import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import { Routes } from '@/app/utils/plans.utils';
 import { withAuth } from '@/app/hoc/withAuth';
-import {USCurrencyFormat} from '@/app/utils/format'
+import { USCurrencyFormat } from '@/app/utils/format';
+import { fetchCompanySubcontractors } from '@/redux/company/company.thunk';
+import { ISubcontract } from '@/app/interfaces/companyEmployeeInterfaces/subcontractor.interface';
 
-const newClientSchema = Yup.object({
-  subContractorFirstName: Yup.string().required('First name is required!'),
-  subContractorLastName: Yup.string().required('Last name is required!'),
+const subcontractorSchema = Yup.object({
+  companyRep: Yup.string().required('Company Rep is required!'),
   subContractorEmail: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
@@ -77,8 +79,7 @@ const initialValues = {
   invoiceNumber: new Date().getTime().toString(),
   subContractorAddress: '',
   subContractorEmail: '',
-  subContractorFirstName: '',
-  subContractorLastName: '',
+  companyRep: '',
   subContractorPhoneNumber: '',
   taxes: 0,
 };
@@ -91,26 +92,156 @@ type InvoiceDetail = {
   totalPrice?: string;
   action?: string;
 };
+
 const CreateInvoice = () => {
   const router = useRouter();
-  const token = useSelector(selectToken);
+  const searchParams = useSearchParams();
+  const dispatch = useDispatch<AppDispatch>();
+
+  const paramsSubContractId = searchParams.get('subcontractorId');
+
   const [details, setDetails] = useState<InvoiceDetail[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [isEditDetail, setIsEditDetail] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
   const [detail, setDetail] = useState<InvoiceDetail>({
     id: '',
     description: '',
     quantity: 0,
     unitCost: 0,
   });
+  const [selectedSubcontractorDetail, setSelectedSubcontractorDetail] =
+    useState({});
 
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
+  const fetchSubcontactors = useCallback(async () => {
+    let { payload }: any = await dispatch(
+      fetchCompanySubcontractors({ page: 1, limit: 10 })
+    );
+    if (paramsSubContractId) {
+      const extractSubcontractorDetail = payload?.data?.subcontractors;
+      let selectedSubcontractor = extractSubcontractorDetail.find(
+        (subcontractor: ISubcontract) =>
+          subcontractor._id === paramsSubContractId
+      );
+
+      setSelectedSubcontractorDetail({
+        subContractorAddress: selectedSubcontractor.address,
+        subContractorCompanyName:
+          selectedSubcontractor.name,
+        subContractorEmail: selectedSubcontractor.email,
+        subContractorPhoneNumber:
+          selectedSubcontractor.phone,
+        companyRep: selectedSubcontractor.companyRep,
+      });
     }
-  }, [token]);
+  }, []);
+
+  useEffect(() => {
+    fetchSubcontactors();
+  }, [fetchSubcontactors]);
+
+  // write crud operations for details state
+  // add detail
+  function addDetail(invoice: InvoiceDetail) {
+    if (!invoice.description || !invoice.quantity || !invoice.unitCost) {
+      return;
+    }
+    setDetails([...details, invoice]);
+  }
+  // remove detail
+  function removeDetail(index: number) {
+    const newDetails = [...details];
+    newDetails.splice(index, 1);
+    setDetails(newDetails);
+  }
+  // update detail
+  function updateDetail(id: string, invoice: InvoiceDetail) {
+    const newDetails = [...details];
+    const index = newDetails.findIndex((detail) => detail.id === id);
+    if (index !== -1) {
+      newDetails[index] = invoice;
+      setDetails(newDetails);
+    }
+    setIsEditDetail(false);
+  }
+  // calculate total
+  function calculateInvoiceItemTotal(invoice: InvoiceDetail) {
+    return invoice.quantity * invoice.unitCost;
+  }
+  // calculate sub total
+  function calculateSubTotal() {
+    return details.reduce((total, invoice) => {
+      return total + calculateInvoiceItemTotal(invoice);
+    }, 0);
+  }
+
+  function calculateTotalPayable(
+    taxes: number,
+    profitAndOverhead: number,
+    discount: number
+  ) {
+    console.log(taxes, profitAndOverhead, discount);
+
+    return (
+      calculateSubTotal() + taxes - discount + profitAndOverhead
+
+      // discount + profitAndOverhead - taxes
+    );
+  }
+
+
+  const calculatePercentqge = (
+    value: number | string,
+    percentage: number | string
+  ) => {
+    value = Number(value);
+    percentage = Number(percentage);
+    return (percentage * value) / 100;
+  };
+
+  function submitHandler(values: any) {
+    setIsLoading(true);
+    const updatedDetails = details.map((detail) => {
+      return {
+        description: detail.description,
+        quantity: detail.quantity,
+        unitCost: detail.unitCost,
+        total: detail.quantity * detail.unitCost,
+      };
+    });
+    const data: CreateInvoiceData = {
+      ...values,
+      invoiceItems: updatedDetails,
+      totalPayable: calculateTotalPayable(
+        calculatePercentqge(
+          calculateSubTotal(),
+          values['taxes']
+        ),
+        calculatePercentqge(
+          calculateSubTotal(),
+          values['profitAndOverhead']
+        ),
+        calculatePercentqge(
+          calculateSubTotal(),
+          values['discount']
+        )
+      ),
+    };
+
+    invoiceService
+      .httpAddNewInvoice(data)
+      .then((response) => {
+        if (response.statusCode == 201) {
+          setIsLoading(false);
+          router.push(Routes.Financial['Standard-Invoicing']);
+        }
+      })
+      .catch(({ response }: any) => {
+        setIsLoading(false);
+        toast.error(response.data.message);
+      });
+  }
+
   const columns: ColumnType<InvoiceDetail>[] = [
     {
       title: 'Description',
@@ -165,103 +296,13 @@ const CreateInvoice = () => {
     },
   ];
 
-  // write crud operations for details state
-  // add detail
-  function addDetail(invoice: InvoiceDetail) {
-    if (!invoice.description || !invoice.quantity || !invoice.unitCost) {
-      return;
-    }
-    setDetails([...details, invoice]);
-  }
-  // remove detail
-  function removeDetail(index: number) {
-    const newDetails = [...details];
-    newDetails.splice(index, 1);
-    setDetails(newDetails);
-  }
-  // update detail
-  function updateDetail(id: string, invoice: InvoiceDetail) {
-    const newDetails = [...details];
-    const index = newDetails.findIndex((detail) => detail.id === id);
-    if (index !== -1) {
-      newDetails[index] = invoice;
-      setDetails(newDetails);
-    }
-    setIsEditDetail(false);
-  }
-  // calculate total
-  function calculateInvoiceItemTotal(invoice: InvoiceDetail) {
-    return invoice.quantity * invoice.unitCost;
-  }
-  // calculate sub total
-  function calculateSubTotal() {
-    return details.reduce((total, invoice) => {
-      return total + calculateInvoiceItemTotal(invoice);
-    }, 0);
-  }
-
-  function calculateTotalPayable(
-    taxes: number,
-    profitAndOverhead: number,
-    discount: number
-  ) {
-    console.log(taxes, profitAndOverhead, discount);
-
-    return (
-      calculateSubTotal() + taxes - discount + profitAndOverhead
-
-      // discount + profitAndOverhead - taxes
-    );
-  }
-  const calculatePercentqge = (
-    value: number | string,
-    percentage: number | string
-  ) => {
-    value = Number(value);
-    percentage = Number(percentage);
-    return (percentage * value) / 100;
-  };
-
-  function submitHandler(values: any) {
-    setIsLoading(true);
-    const updatedDetails = details.map((detail) => {
-      return {
-        description: detail.description,
-        quantity: detail.quantity,
-        unitCost: detail.unitCost,
-        total: detail.quantity * detail.unitCost,
-      };
-    });
-    const data: CreateInvoiceData = {
-      ...values,
-      invoiceItems: updatedDetails,
-      totalPayable: calculateTotalPayable(
-        Number(values.taxes),
-        Number(values.profitAndOverhead),
-        Number(values.discount)
-      ),
-    };
-
-    invoiceService
-      .httpAddNewInvoice(data)
-      .then((response) => {
-        if (response.statusCode == 201) {
-          setIsLoading(false);
-          router.push(Routes.Financial['Standard-Invoicing']);
-        }
-      })
-      .catch(({ response }: any) => {
-        setIsLoading(false);
-        toast.error(response.data.message);
-      });
-  }
-
   return (
     <section className="mx-16 my-2">
       <Formik
-        initialValues={initialValues}
-        validationSchema={newClientSchema}
+        initialValues={selectedSubcontractorDetail ? { ...initialValues, ...selectedSubcontractorDetail } : initialValues}
+        validationSchema={subcontractorSchema}
         onSubmit={submitHandler}
+        enableReinitialize={true}
       >
         {({
           handleSubmit,
@@ -270,6 +311,7 @@ const CreateInvoice = () => {
           handleBlur,
           errors,
           touched,
+          setFieldTouched,
         }) => {
           return (
             <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
@@ -277,11 +319,18 @@ const CreateInvoice = () => {
               <ModalComponent open={showModal} setOpen={setShowModal}>
                 <ExistingSubContractor
                   setModalOpen={setShowModal}
-                  onSelectSubcontract={({ address, email, name, phone }) => {
+                  onSelectSubcontract={({
+                    address,
+                    email,
+                    name,
+                    phone,
+                    companyRep,
+                  }) => {
                     setFieldValue('subContractorAddress', address);
                     setFieldValue('subContractorCompanyName', name);
                     setFieldValue('subContractorEmail', email);
-                    setFieldValue('subContractorPhoneNumber', Number(phone));
+                    setFieldValue('subContractorPhoneNumber', phone);
+                    setFieldValue('companyRep', companyRep);
                   }}
                 />
               </ModalComponent>
@@ -309,17 +358,10 @@ const CreateInvoice = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-2 gap-4">
                   <FormControl
                     control="input"
-                    label="First Name"
+                    label="Company Rep"
                     type="text"
-                    name="subContractorFirstName"
-                    placeholder="Enter first name"
-                  />
-                  <FormControl
-                    control="input"
-                    label="Last Name"
-                    type="text"
-                    name="subContractorLastName"
-                    placeholder="Enter last name"
+                    name="companyRep"
+                    placeholder="Enter Company Rep"
                   />
                   <FormControl
                     control="input"
@@ -329,13 +371,25 @@ const CreateInvoice = () => {
                     placeholder="Enter company name"
                   />
 
-                  <FormControl
-                    control="input"
+                  <PhoneNumberInputWithLable
                     label="Phone Number"
-                    type="number"
-                    name="subContractorPhoneNumber"
-                    placeholder="Enter phone number"
-                    min={0}
+                    onChange={(val: string) =>
+                      setFieldValue('subContractorPhoneNumber', val)
+                    }
+                    value={values.subContractorPhoneNumber}
+                    onBlur={() =>
+                      setFieldTouched('subContractorPhoneNumber', true)
+                    }
+                    hasError={
+                      touched.subContractorPhoneNumber &&
+                      Boolean(errors.subContractorPhoneNumber)
+                    }
+                    errorMessage={
+                      touched.subContractorPhoneNumber &&
+                        errors.subContractorPhoneNumber
+                        ? errors.subContractorPhoneNumber
+                        : ''
+                    }
                   />
 
                   <FormControl
@@ -557,6 +611,7 @@ const CreateInvoice = () => {
                           // suffix="%"
                           placeholder="Enter discount here"
                           min={0}
+                          step="0.001"
                         />
 
                         <FormControl
@@ -566,6 +621,7 @@ const CreateInvoice = () => {
                           name="taxes"
                           // suffix="%"
                           min={0}
+                          step="0.001"
                           placeholder="Enter taxes here"
                         />
 
@@ -575,6 +631,7 @@ const CreateInvoice = () => {
                           type="number"
                           name="profitAndOverhead"
                           min={0}
+                          step="0.001"
                           // suffix="%"
                           placeholder="Enter profit and overhead here"
                         />
@@ -632,20 +689,22 @@ const CreateInvoice = () => {
                   <div className="flex items-center space-x-2">
                     <QuaternaryHeading title="Total:" />
                     <QuinaryHeading
-                      title={`${USCurrencyFormat.format(calculateTotalPayable(
-                        calculatePercentqge(
-                          calculateSubTotal(),
-                          values['taxes']
-                        ),
-                        calculatePercentqge(
-                          calculateSubTotal(),
-                          values['profitAndOverhead']
-                        ),
-                        calculatePercentqge(
-                          calculateSubTotal(),
-                          values['discount']
+                      title={`${USCurrencyFormat.format(
+                        calculateTotalPayable(
+                          calculatePercentqge(
+                            calculateSubTotal(),
+                            values['taxes']
+                          ),
+                          calculatePercentqge(
+                            calculateSubTotal(),
+                            values['profitAndOverhead']
+                          ),
+                          calculatePercentqge(
+                            calculateSubTotal(),
+                            values['discount']
+                          )
                         )
-                      ))}`}
+                      )}`}
                       className="font-bold"
                     />
                   </div>

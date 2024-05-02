@@ -67,6 +67,7 @@ export function CollectPayment({ invoice, onSuccess }: Props) {
           type="number"
           placeholder="Amount"
           name="amount"
+          step="0.001"
           inputStyle="disabled"
           field={{
             onChange: formik.handleChange,

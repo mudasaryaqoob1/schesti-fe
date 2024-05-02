@@ -43,7 +43,6 @@ type Props = {
 };
 
 function StatisticsReport({ fetchDashboardState }: Props) {
-  console.log(fetchDashboardState, 'fetchDashboardState');
 
   const data = {
     labels,
@@ -69,7 +68,7 @@ function StatisticsReport({ fetchDashboardState }: Props) {
     ],
   };
 
-  return <Line options={options} data={data} />;
+  return <Line options={options} data={data}  />;
 }
 
 export default StatisticsReport;
