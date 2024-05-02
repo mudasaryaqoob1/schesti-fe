@@ -14,7 +14,7 @@ import CustomButton from '@/app/component/customButton/button';
 // redux imports
 
 // support tickets service
-import { ISupportTicket } from '@/app/interfaces/supportTicket.interface';
+import { ISupportTicket, ITicketFile } from '@/app/interfaces/supportTicket.interface';
 import { supportTicketService } from '@/app/services/supportTicket.service';
 import {
   bg_style,
@@ -26,6 +26,7 @@ import { byteConverter } from '@/app/utils/byteConverter';
 import AwsS3 from '@/app/utils/S3Intergration';
 import CustomNavbar from '@/app/component/customNavbar';
 import { withAuth } from '@/app/hoc/withAuth';
+import { FileView } from '@/app/component/file-view/FileView';
 
 const validationSchema = Yup.object({
   title: Yup.string().required('Title is required!'),
@@ -35,20 +36,19 @@ const validationSchema = Yup.object({
 const initialValues: ISupportTicket = {
   title: '',
   description: '',
-  avatar: '',
+  file: undefined,
 };
+
 
 const CreateTicket = () => {
   const router = useRouter();
-  const [avatarURL, setAvatarURL] = useState('');
-
   const [isLoading, setIsLoading] = useState(false);
   const [avatarLoading, setavatarLoading] = useState(false);
 
   const onSubmit = async (values: ISupportTicket) => {
     setIsLoading(true);
     supportTicketService
-      .httpAddNewSupportTicket({ ...values, avatar: avatarURL })
+      .httpAddNewSupportTicket({ ...values, })
       .then((response: any) => {
         setIsLoading(false);
         if (response.statusCode == 201) {
@@ -65,7 +65,8 @@ const CreateTicket = () => {
 
   const avatarUploadHandler = async (e: any) => {
     setavatarLoading(true);
-    let avatarUrl = '';
+    let fileObj: ITicketFile | undefined = undefined;
+
 
     if (byteConverter(e.target.files[0].size, 'MB').size > 5) {
       toast.warning('Cannot upload image more then 5 mb of size');
@@ -80,12 +81,16 @@ const CreateTicket = () => {
             e.target.files[key],
             'documents/supportTickets/'
           ).getS3URL();
-          avatarUrl = url;
-          setAvatarURL(url);
+          fileObj = {
+            name: e.target.files[key].name,
+            fileType: e.target.files[key].type,
+            url: url,
+            size: e.target.files[key].size,
+          };
         })
       );
 
-      return avatarUrl;
+      return fileObj;
     } catch (error) {
       console.error('Error uploading documents:', error);
     } finally {
@@ -127,7 +132,7 @@ const CreateTicket = () => {
               validationSchema={validationSchema}
               onSubmit={onSubmit}
             >
-              {({ handleSubmit, setFieldValue }) => {
+              {({ handleSubmit, setFieldValue, values }) => {
                 return (
                   <Form
                     name="basic"
@@ -148,8 +153,23 @@ const CreateTicket = () => {
                       name="description"
                       placeholder="Write message here"
                     />
+
+
                     {/* Upload Image Div */}
-                    <div className={`${bg_style} p-5 mt-4 `}>
+                    {values.file ? <FileView
+                      name={values.file.name}
+                      extension={values.file.fileType.split("/")[1]}
+                      url={values.file.url}
+                      text='View'
+                      actionIcon={{
+                        icon: '/trash.svg',
+                        width: 16,
+                        height: 16,
+                        onClick: () => {
+                          setFieldValue('file', undefined);
+                        },
+                      }}
+                    /> : <div className={`${bg_style} p-5 mt-4 `}>
                       <div
                         className={`px-6 py-4 flex flex-col items-center gap-3 ${bg_style}`}
                       >
@@ -164,13 +184,7 @@ const CreateTicket = () => {
                         </div>
                         {avatarLoading ? (
                           <p>Uploading...</p>
-                        ) : avatarURL ? (
-                          <Image
-                            src={avatarURL}
-                            alt="avatar"
-                            width={100}
-                            height={100}
-                          />
+
                         ) : (
                           <div className="flex gap-2">
                             <label
@@ -189,7 +203,7 @@ const CreateTicket = () => {
                               accept='image/*'
                               onChange={async (e) => {
                                 setFieldValue(
-                                  'avatar',
+                                  'file',
                                   await avatarUploadHandler(e)
                                 );
                               }}
@@ -204,7 +218,7 @@ const CreateTicket = () => {
                           SVG, PNG, JPG or GIF (max. 800x400px)
                         </p>
                       </div>
-                    </div>
+                    </div>}
                     <div className="flex justify-end gap-2 mt-6">
                       <span>
                         <CustomButton
