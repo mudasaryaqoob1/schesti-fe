@@ -10,7 +10,7 @@ import withAuth from '@/app/hoc/with_auth';
 const SettingSidebar = ({ children }: Props) => {
   return (
     <CustomNavbar>
-      <section className="md:px-16 px-8 pt-6 flex gap-2 items-start relative">
+      <section className="md:px-16 px-8 pt-6 flex gap-2 items-start relative bg-white">
         <VerticalsTabs />
         {children}
       </section>
