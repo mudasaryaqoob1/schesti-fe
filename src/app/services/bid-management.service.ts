@@ -10,6 +10,13 @@ import {
 } from '../interfaces/bid-management/bid-management.interface';
 import { HttpService } from './base.service';
 
+// interface PaginationResponse {
+//   currentPage: number,
+//   pages: number,
+//   totalRecords: number,
+//   perPage: number
+// }
+
 export type CreateOwnerPostProjectType = Pick<
   IBidManagement,
   | 'projectName'
@@ -143,6 +150,8 @@ class BidManagementService extends HttpService {
   httpCreateProjectActivity = (data: CreateActivity): Promise<IResponseInterface<{ bidsActivity: IBidActivity }>> => this.post(`${this.prefix}/create-activity/`, data);
 
   httpGetProjectBiddings = (projectId: string): Promise<IResponseInterface<IProjectBiddingResponse>> => this.get(`${this.prefix}/project-bidding/${projectId}`);
+
+  httpPostProjectAsBidder = (projectId: string): Promise<IResponseInterface<any>> => this.post(`${this.prefix}/post-project-bidder/${projectId}`);
 }
 
 export const bidManagementService = new BidManagementService();
