@@ -16,7 +16,8 @@ import { toast } from 'react-toastify';
 
 interface Props {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setSelectedClient:any;
+  setSelectedClient: any;
+  selectecClient?: any;
 }
 
 const newClientSchema = Yup.object({
@@ -50,9 +51,12 @@ const initialValues: IClient = {
   secondAddress: '',
 };
 
-const ScaleModal = ({ setModalOpen,setSelectedClient }: Props) => {
+const ScaleModal = ({ setModalOpen, setSelectedClient, selectecClient }: Props) => {
 
   const [isLoading, setIsLoading] = useState(false);
+  const [clients, setclients] = useState<any>([])
+  const [getLoading, setgetLoading] = useState<boolean>(false)
+  const [isOpen, setIsOpen] = useState<boolean>(false)
 
   const submitHandler = async (values: IClient) => {
     setIsLoading(true);
@@ -73,8 +77,18 @@ const ScaleModal = ({ setModalOpen,setSelectedClient }: Props) => {
       });
   };
 
-  const handleCalibrate = () => {
+  const getClients = () => {
+    setgetLoading(true)
+    userService.httpGetAllCompanyClients().then((res) => {
+      console.log(res?.data?.clients, " get clients");
+      setclients(res?.data?.clients)
+      setgetLoading(false)
+    }).catch((err: any) => {
+      console.log(err, ' err while getting clients')
+      setgetLoading(false)
+    })
   };
+  useEffect(() => { getClients() }, [])
 
   return (
     <div className="py-2.5 px-6 bg-white border border-solid border-elboneyGray rounded-[4px] z-50">
@@ -82,7 +96,7 @@ const ScaleModal = ({ setModalOpen,setSelectedClient }: Props) => {
         <div className="flex justify-between items-center border-b-Gainsboro ">
           <div>
             <QuaternaryHeading
-              title="Scale"
+              title="Add Client"
               className="text-graphiteGray font-bold"
             />
             {/* <QuinaryHeading
@@ -98,6 +112,52 @@ const ScaleModal = ({ setModalOpen,setSelectedClient }: Props) => {
             className="cursor-pointer"
             onClick={() => setModalOpen(false)}
           />
+        </div>
+        <div
+          className="p-5 flex flex-col rounded-lg border border-silverGray shadow-secondaryShadow2 bg-white"
+        >
+          <TertiaryHeading
+            className="text-graphiteGray mb-4 "
+            title="Select Client"
+          />
+          <div className="relative inline-block text-left">
+            <div>
+              <button
+                type="button"
+                className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-100"
+                onClick={() => setIsOpen(!isOpen)} // Add state to manage dropdown visibility
+              >
+                {selectecClient?.firstName ?? selectecClient?.email ?? 'Select Client'}
+                <svg
+                  className="-mr-1 ml-2 h-5 w-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path fillRule="evenodd" d="M10.293 13.707a1 1 0 0 1-1.414 0l-4-4a1 1 0 1 1 1.414-1.414L10 11.586l3.293-3.293a1 1 0 1 1 1.414 1.414l-4 4z" clipRule="evenodd" />
+                </svg>
+              </button>
+            </div>
+
+            {isOpen && (
+              <div
+                className="absolute mt-2 w-full rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none"
+                style={{ zIndex: 9999 }} // Ensure dropdown appears on top
+              >
+                <div className="py-1">
+                  {
+                    clients && Array.isArray(clients) && clients?.length > 0 && clients?.map((it: any, ind: number) => {
+                      return <a onClick={()=>{setSelectedClient(it);setModalOpen(false)}} className="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabIndex={-1} id="options-menu-item-0">{it?.firstName ?? it?.email}</a>
+                    })
+                  }
+                  {getLoading && <a href="#" className="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabIndex={-1} id="options-menu-item-1">Loading...</a>}
+                  {!getLoading && !(clients?.length > 0) && <a href="#" className="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabIndex={-1} id="options-menu-item-1">No Record Found</a>}
+                </div>
+              </div>
+            )}
+          </div>
+
         </div>
         <div
           className="p-5 flex flex-col rounded-lg border border-silverGray shadow-secondaryShadow2 bg-white"
@@ -182,7 +242,7 @@ const ScaleModal = ({ setModalOpen,setSelectedClient }: Props) => {
                       <CustomButton
                         className=" !border-celestialGray !shadow-scenarySubdued2 !text-graphiteGray !bg-snowWhite"
                         text="Cancel"
-                        onClick={() => {setModalOpen(false)}}//router.back()
+                        onClick={() => { setModalOpen(false) }}//router.back()
                       />
                     </div>
                     <div>

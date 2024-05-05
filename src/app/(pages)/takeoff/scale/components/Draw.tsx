@@ -736,12 +736,12 @@ const Draw: React.FC<Props> = ({
                   pointerAtEnding={true}
                   pointerAtBeginning={true}
                 />
-                <KonvaText
+                {/* <KonvaText
                   {...lineMidPoint}
                   fontSize={textUnit}
                   text={lineDistance.toString()}
                   fill="red"
-                />
+                /> */}
               </Group>
             );
           })}

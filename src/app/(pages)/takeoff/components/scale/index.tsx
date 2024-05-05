@@ -157,12 +157,18 @@ const ScaleModal = ({ setModalOpen, numOfPages, page, drawScale, setdrawScale, s
         yScale: `1in=1in`,
         precision: '1',
       }, true);
+      const second = calcLineDistance(scaleLine?.points, {
+        xScale: `1in=1in`,
+        yScale: `1in=1in`,
+        precision: '1',
+      }, false);
       const [feet,inch] = stringOfDistance?.toString()?.split('-')
       console.log(stringOfDistance, Number(feet?.trim()?.replace(`'`,'')), Number(inch?.trim()?.replace(`"`,'')), " ===> String of data");
       const numfeet =  Number(feet?.trim()?.replace(`'`,'')); const numInch =  Number(inch?.trim()?.replace(`"`,''))
       const valueToUse = (numfeet*12)+numInch
-      onChangeDrawX(valueToUse ?? 1)
-      onChangeDrawY(valueToUse ?? 1)
+      console.log(second, valueToUse, stringOfDistance,' ====> Second draw distance ')
+      onChangeDrawX(second ?? 1)
+      onChangeDrawY(second ?? 1)
     }
   },[scaleLine])
 

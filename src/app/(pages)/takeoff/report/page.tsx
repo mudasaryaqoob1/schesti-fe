@@ -115,6 +115,7 @@ const Report = () => {
         <ClientModal
           setModalOpen={setclientModal}
           setSelectedClient={setselectecClient}
+          selectecClient={selectecClient}
         />
       </ModalComponent>
     </>
