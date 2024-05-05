@@ -209,8 +209,7 @@ export function Clients() {
                 />
                 <CloseOutlined
                   className="cursor-pointer"
-                  width={24}
-                  height={24}
+                  style={{ fontSize: '24px' , height : '24px' }}
                   onClick={() => setShowModal(false)}
                 />
               </div>

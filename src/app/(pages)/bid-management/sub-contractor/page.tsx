@@ -196,7 +196,7 @@ function BidManagementSubContractorPage() {
                 placeholder="Search"
                 name="search"
                 inputStyle={'h-[57px] !mt-0'}
-                prefix={<SearchOutlined size={20} />}
+                prefix={<SearchOutlined />}
                 field={{
                   value: search,
                   onChange(e) {

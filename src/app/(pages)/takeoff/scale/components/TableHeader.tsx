@@ -1,14 +1,14 @@
 import { Input, Select } from 'antd';
-import React, { useMemo } from 'react';
+import React from 'react';
 import NextImage from 'next/image';
-import { debounce } from '@/app/constants/constant';
+// import { debounce } from '@/app/constants/constant';
 
 interface Props {
   setSearchProjectName: (data: string) => void;
 }
 
-const TableHeader: React.FC<Props> = ({ setSearchProjectName }) => {
-  const check = useMemo(() => debounce(300), []);
+const TableHeader: React.FC<Props> = () => {
+  // const check = useMemo(() => debounce(300), []);
 
   return (
     <div className="h-8 ml-5 flex space-x-3">
@@ -16,7 +16,7 @@ const TableHeader: React.FC<Props> = ({ setSearchProjectName }) => {
       <Input
         className="w-[257px]"
         placeholder="Search..."
-        onChange={(e) => check(() => setSearchProjectName(e.target.value))}
+        // onChange={(e) => check(() => setSearchProjectName(e.target.value))}
         suffix={
           <NextImage
             src={'/search.svg'}
