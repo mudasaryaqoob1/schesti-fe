@@ -21,9 +21,9 @@ interface DataType {
 
 const EstimateRequestTable: React.FC = () => {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const [generatedEstimates, setGeneratedEstimates] = useState([]);
+  const [generatedEstimates, setGeneratedEstimates] = useState<[]| null>(null);
 
   const fetchGeneratedEstiamtesHandler = useCallback(async () => {
     setLoading(true);
@@ -59,12 +59,16 @@ const EstimateRequestTable: React.FC = () => {
   const items: MenuProps['items'] = [
     {
       key: 'viewDetail',
-      label: 'View Detail',
+      label: 'View Estimate',
     },
-    // {
-    //   key: 'createSchedule',
-    //   label: 'Create Schedule',
-    // },
+    {
+      key: 'createSchedule',
+      label: 'Create Schedule',
+    },
+    {
+      key: 'createInvoice',
+      label: 'Create Invoice',
+    },
     {
       key: 'deleteEstimate',
       label: <p>Delete</p>,
@@ -81,7 +85,10 @@ const EstimateRequestTable: React.FC = () => {
         fetchGeneratedEstiamtesHandler();
       }
     } else if (key == 'createSchedule') {
-      router.push(`/schedule/estimate/${estimate._id}`);
+      // router.push(`/schedule/estimate/${estimate._id}`);
+    }
+    else if(key == 'createInvoice'){
+      router.push(`/financial/aia-invoicing`)
     }
   };
 
@@ -143,7 +150,7 @@ const EstimateRequestTable: React.FC = () => {
   return (
     <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid border-silverGray shadow-secondaryTwist">
       {
-        generatedEstimates.length === 0 ? (
+        generatedEstimates && generatedEstimates.length === 0 ? (
           <NoDataComponent title='No Data Found' description='Please create estimate request first to create an estimate' btnText='Create Estimate Request' isButton={true} link='/estimates/requests/create' />
         ) : (
           <>
@@ -157,7 +164,7 @@ const EstimateRequestTable: React.FC = () => {
             <Table
               loading={loading}
               columns={columns}
-              dataSource={generatedEstimates}
+              dataSource={generatedEstimates || []}
               pagination={{ position: ['bottomCenter'] }}
             />
           </div>
