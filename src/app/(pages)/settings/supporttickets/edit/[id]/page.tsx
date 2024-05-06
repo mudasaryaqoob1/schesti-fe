@@ -19,7 +19,7 @@ import { twMerge } from 'tailwind-merge';
 // redux module
 
 // supportTicket service
-import { ISupportTicket } from '@/app/interfaces/supportTicket.interface';
+import { ISupportTicket, ITicketFile } from '@/app/interfaces/supportTicket.interface';
 import { supportTicketService } from '@/app/services/supportTicket.service';
 
 import Description from '@/app/component/description';
@@ -28,6 +28,7 @@ import CustomNavbar from '@/app/component/customNavbar';
 import { withAuth } from '@/app/hoc/withAuth';
 import { byteConverter } from '@/app/utils/byteConverter';
 import AwsS3 from '@/app/utils/S3Intergration';
+import { FileView } from '@/app/component/file-view/FileView';
 
 const validationSchema = Yup.object({
   title: Yup.string().required('Title is required!'),
@@ -48,7 +49,6 @@ const EditSupportTicket = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [avatarLoading, setavatarLoading] = useState(false);
-  const [avatarURL, setAvatarURL] = useState('');
   const [supportTicketData, setSupportTicketData] =
     useState<ISupportTicket | null>(null);
 
@@ -57,15 +57,14 @@ const EditSupportTicket = () => {
       (item: any) => item._id === id
     );
     setSupportTicketData(selectedSupportTicket);
-    setAvatarURL(selectedSupportTicket.avatar);
   }, [id, supportTicketsData]);
 
-  const onSubmit = async ({ title, description }: ISupportTicket) => {
+  const onSubmit = async ({ title, description, file }: ISupportTicket) => {
     setIsLoading(true);
     let updateSupportTicketBody = {
       title,
       description,
-      avatar: avatarURL,
+      file
     };
     setIsLoading(true);
     let result = await supportTicketService.httpUpdateSupportTicket(
@@ -83,7 +82,8 @@ const EditSupportTicket = () => {
 
   const avatarUploadHandler = async (e: any) => {
     setavatarLoading(true);
-    let avatarUrl = '';
+    let fileObj: ITicketFile | undefined = undefined;
+
 
     if (byteConverter(e.target.files[0].size, 'MB').size > 5) {
       toast.warning('Cannot upload image more then 5 mb of size');
@@ -98,12 +98,16 @@ const EditSupportTicket = () => {
             e.target.files[key],
             'documents/supportTickets/'
           ).getS3URL();
-          avatarUrl = url;
-          setAvatarURL(url);
+          fileObj = {
+            name: e.target.files[key].name,
+            fileType: e.target.files[key].type,
+            url: url,
+            size: e.target.files[key].size,
+          };
         })
       );
 
-      return avatarUrl;
+      return fileObj;
     } catch (error) {
       console.error('Error uploading documents:', error);
     } finally {
@@ -117,10 +121,11 @@ const EditSupportTicket = () => {
         <div className="col-span-4">
           <Image
             alt="Service24-7"
-            src="/service24-7.svg"
+            src="/Service24-7.svg"
             width={498}
             height={628}
           />
+
         </div>
         <section className="w-full  col-span-8">
           <div className="flex gap-1 items-center">
@@ -151,17 +156,17 @@ const EditSupportTicket = () => {
                 initialValues={
                   supportTicketData
                     ? {
-                        title: supportTicketData.title,
-                        description: supportTicketData.description,
-                        avatar: supportTicketData.avatar,
-                      }
+                      title: supportTicketData.title,
+                      description: supportTicketData.description,
+                      file: supportTicketData.file,
+                    }
                     : initialValues
                 }
                 validationSchema={validationSchema}
                 enableReinitialize
                 onSubmit={onSubmit}
               >
-                {({ handleSubmit, setFieldValue }) => {
+                {({ handleSubmit, setFieldValue, values }) => {
                   return (
                     <Form
                       name="basic"
@@ -221,7 +226,20 @@ const EditSupportTicket = () => {
                         />
                       </div> */}
                       {/* Upload Image Div */}
-                      <div className={`${bg_style} p-5 mt-4 `}>
+                      {values.file ? <FileView
+                        name={values.file.name}
+                        extension={values.file.fileType.split("/")[1]}
+                        url={values.file.url}
+                        text='View'
+                        actionIcon={{
+                          icon: '/trash.svg',
+                          width: 16,
+                          height: 16,
+                          onClick: () => {
+                            setFieldValue('file', undefined);
+                          },
+                        }}
+                      /> : <div className={`${bg_style} p-5 mt-4 `}>
                         <div
                           className={`px-6 py-4 flex flex-col items-center gap-3 ${bg_style}`}
                         >
@@ -235,14 +253,6 @@ const EditSupportTicket = () => {
                             />
                           </div>
                           {avatarLoading ? <p>Uploading...</p> : null}
-
-                          <Image
-                            src={avatarURL}
-                            alt="avatar"
-                            width={100}
-                            height={100}
-                          />
-
                           <div className="flex gap-2">
                             <label
                               htmlFor="uploadCompanyLogo"
@@ -259,7 +269,7 @@ const EditSupportTicket = () => {
                               className="hidden"
                               onChange={async (e) => {
                                 setFieldValue(
-                                  'avatar',
+                                  'file',
                                   await avatarUploadHandler(e)
                                 );
                               }}
@@ -273,7 +283,7 @@ const EditSupportTicket = () => {
                             SVG, PNG, JPG or GIF (max. 800x400px)
                           </p>
                         </div>
-                      </div>
+                      </div>}
                       <div className="flex justify-end gap-2 mt-6">
                         <span>
                           <CustomButton

@@ -1,17 +1,13 @@
 'use client';
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import dayjs from 'dayjs';
 import { useRouter, useParams } from 'next/navigation';
-import { useSelector } from 'react-redux';
 import Button from '@/app/component/customButton/white';
 import ColoredButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import FormControl from '@/app/component/formControl';
-// redux module
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
 import Table, { type ColumnType } from 'antd/es/table';
 import ModalComponent from '@/app/component/modal';
 import ExistingSubContractor from '../../../components/ExistingSubContractors';
@@ -25,14 +21,14 @@ import { toast } from 'react-toastify';
 import { IInvoice } from '@/app/interfaces/invoices.interface';
 import { Routes } from '@/app/utils/plans.utils';
 import { withAuth } from '@/app/hoc/withAuth';
+import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
 
 const SubcontractorSchema = Yup.object({
-  subContractorFirstName: Yup.string().required('First name is required!'),
-  subContractorLastName: Yup.string().required('Last name is required!'),
+  companyRep: Yup.string().required('Company Rep is required!'),
   subContractorEmail: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
-  subContractorPhoneNumber: Yup.number().required('Phone number is required!'),
+  subContractorPhoneNumber: Yup.string().required('Phone number is required!'),
   subContractorCompanyName: Yup.string().required('Company name is required!'),
   subContractorAddress: Yup.string().required('Address is required!'),
 
@@ -69,9 +65,8 @@ const initialValues = {
   invoiceNumber: new Date().getTime().toString(),
   subContractorAddress: '',
   subContractorEmail: '',
-  subContractorFirstName: '',
-  subContractorLastName: '',
-  subContractorPhoneNumber: 0,
+  companyRep: '',
+  subContractorPhoneNumber: '',
   taxes: 0,
 };
 type InvoiceDetail = {
@@ -85,7 +80,6 @@ type InvoiceDetail = {
 };
 const EditSubcontractorInvoice = () => {
   const router = useRouter();
-  const token = useSelector(selectToken);
   const [details, setDetails] = useState<InvoiceDetail[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [isEditDetail, setIsEditDetail] = useState(false);
@@ -102,12 +96,6 @@ const EditSubcontractorInvoice = () => {
     unitCost: 0,
     total: 0,
   });
-
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
 
   useEffect(() => {
     if (id) {
@@ -278,6 +266,7 @@ const EditSubcontractorInvoice = () => {
           values,
           handleBlur,
           errors,
+          setFieldTouched,
           touched,
         }) => {
           return (
@@ -286,11 +275,18 @@ const EditSubcontractorInvoice = () => {
               <ModalComponent open={showModal} setOpen={setShowModal}>
                 <ExistingSubContractor
                   setModalOpen={setShowModal}
-                  onSelectSubcontract={({ address, email, name, phone }) => {
+                  onSelectSubcontract={({
+                    address,
+                    email,
+                    name,
+                    phone,
+                    companyRep,
+                  }) => {
                     setFieldValue('subContractorAddress', address);
                     setFieldValue('subContractorCompanyName', name);
                     setFieldValue('subContractorEmail', email);
-                    setFieldValue('subContractorPhoneNumber', Number(phone));
+                    setFieldValue('subContractorPhoneNumber', phone);
+                    setFieldValue('companyRep', companyRep);
                   }}
                 />
               </ModalComponent>
@@ -318,17 +314,10 @@ const EditSubcontractorInvoice = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 grid-rows-2 gap-4">
                   <FormControl
                     control="input"
-                    label="First Name"
+                    label="Company Rep"
                     type="text"
-                    name="subContractorFirstName"
-                    placeholder="Enter first name"
-                  />
-                  <FormControl
-                    control="input"
-                    label="Last Name"
-                    type="text"
-                    name="subContractorLastName"
-                    placeholder="Enter last name"
+                    name="companyRep"
+                    placeholder="Enter Company Rep"
                   />
                   <FormControl
                     control="input"
@@ -338,13 +327,25 @@ const EditSubcontractorInvoice = () => {
                     placeholder="Enter company name"
                   />
 
-                  <FormControl
-                    control="input"
+                  <PhoneNumberInputWithLable
                     label="Phone Number"
-                    type="number"
-                    name="subContractorPhoneNumber"
-                    placeholder="Enter phone number"
-                    min={0}
+                    onChange={(val: string) =>
+                      setFieldValue('subContractorPhoneNumber', val)
+                    }
+                    value={String(values.subContractorPhoneNumber)}
+                    onBlur={() =>
+                      setFieldTouched('subContractorPhoneNumber', true)
+                    }
+                    hasError={
+                      touched.subContractorPhoneNumber &&
+                      Boolean(errors.subContractorPhoneNumber)
+                    }
+                    errorMessage={
+                      touched.subContractorPhoneNumber &&
+                      errors.subContractorPhoneNumber
+                        ? errors.subContractorPhoneNumber
+                        : ''
+                    }
                   />
 
                   <FormControl
@@ -570,17 +571,19 @@ const EditSubcontractorInvoice = () => {
                           type="number"
                           name="discount"
                           placeholder="Enter discount here"
-                          prefix="%"
+                          // prefix="%"
+                          step="0.001"
                         />
 
                         <FormControl
                           control="input"
                           label="Taxes"
-                          prefix="%"
+                          // prefix="%"
                           min={0}
                           type="number"
                           name="taxes"
                           placeholder="Enter taxes here"
+                          step="0.001"
                         />
 
                         <FormControl
@@ -588,7 +591,8 @@ const EditSubcontractorInvoice = () => {
                           label="Profit and Overhead %"
                           min={0}
                           type="number"
-                          prefix="%"
+                          // prefix="%"
+                          step="0.001"
                           name="profitAndOverhead"
                           placeholder="Enter profit and overhead here"
                         />

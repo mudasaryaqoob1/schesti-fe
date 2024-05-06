@@ -232,6 +232,7 @@ const ClientTable = () => {
         return (
           client.firstName.toLowerCase().includes(search.toLowerCase()) ||
           client.lastName.toLowerCase().includes(search.toLowerCase()) ||
+          client.companyName.toLowerCase().includes(search.toLowerCase()) ||
           client.email?.includes(search) || 
           client.phone?.includes(search) || 
           client.address?.includes(search)
@@ -244,7 +245,6 @@ const ClientTable = () => {
       })
     : [];
 
-    console.log(filteredClients , 'filteredClients');
     
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
