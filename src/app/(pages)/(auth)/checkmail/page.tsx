@@ -28,12 +28,11 @@ const CheckYourEmail = () => {
       const result = await authService.httpVerifyUserByEmail({email: decodeURIComponent(emailQueryParameter)});
       console.log('verifyUserEmail', result);
       if (result.data) {
-        router.push('checkEmail');
+        router.push('/login');
       }
     } catch(err) {
       console.log('err', err);
-      router.push('checkEmail');
-
+      router.push('/login');
     }
 
   }
