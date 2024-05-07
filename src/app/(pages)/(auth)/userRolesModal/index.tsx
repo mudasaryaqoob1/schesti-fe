@@ -4,19 +4,32 @@ import { Dispatch, SetStateAction } from 'react';
 
 import ModalComponent from '@/app/component/modal';
 
+
+interface roleObject{
+  role : string,
+  desc : string
+}
 interface IProps {
   viewUserRoleModal: boolean;
+  userRoles : roleObject[];
   setViewUserRoleModal: Dispatch<SetStateAction<boolean>>;
+  userRoleSelectionHandler: Function;
 }
 
 const UserRolesModel = ({
   viewUserRoleModal,
   setViewUserRoleModal,
+  userRoleSelectionHandler,
+  userRoles,
 }: IProps) => {
-  let planDocuments = [null];
+
   return (
     <div>
-      <ModalComponent open={viewUserRoleModal} setOpen={setViewUserRoleModal}>
+      <ModalComponent
+        open={viewUserRoleModal}
+        setOpen={setViewUserRoleModal}
+        width="700px"
+      >
         <div
           className="bg-white !rounded-t-xl"
           style={{ borderRadius: '12px' }}
@@ -38,34 +51,37 @@ const UserRolesModel = ({
           </div>
           <div className="p-4">
             <div>
-              {planDocuments?.map(() => (
+              {userRoles?.map((role) => (
                 <div
                   key={'doc.name'}
-                  className={`p-4  border-2 border-[#D0D5DD] rounded-lg w-full`}
+                  className={`p-4 border-2 border-[#D0D5DD] rounded-lg w-full mb-4 cursor-pointer`}
+                  onClick={() => userRoleSelectionHandler(role?.role)}
                 >
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-6 gap-4">
                     <Image
                       src={'/auth_user_profile.png'}
                       alt="documentIcon icon"
-                      width={100}
-                      height={100}
+                      width={80}
+                      height={80}
                     />
 
-                    <div className="flex flex-col items-start justify-start gap-[8px]">
-                      <div className="leading-[20px] font-semibold">
-                        General-contractor
+                    <div className="flex flex-col items-start justify-start gap-[8px] col-start-2 col-span-4">
+                      <div className="leading-[20px] font-semibold capitalize">
+                        {role?.role}
                       </div>
                       <div className="text-sm leading-[24px] text-gray-400">
                         It is a long established fact that a reader will be
                         distracted by the readable content of
                       </div>
                     </div>
-                    <Image
-                      src={'/documentIcon.svg'}
-                      alt="documentIcon icon"
-                      width={20}
-                      height={20}
-                    />
+                    <div className="grid justify-items-end">
+                      <Image
+                        src={'/auth_modal_arrow.svg'}
+                        alt="documentIcon icon"
+                        width={32}
+                        height={32}
+                      />
+                    </div>
                   </div>
                 </div>
               ))}

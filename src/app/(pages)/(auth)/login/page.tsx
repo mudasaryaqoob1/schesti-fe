@@ -45,6 +45,22 @@ const Login = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const [loading, setLoading] = useState(false);
+  const [userRoleModal, setUserRoleModal] = useState(false)
+  const [userDetail, setUserDetail] = useState<any>([])
+  let userRoles = [
+    {
+      role : USER_ROLES_ENUM.OWNER , 
+      desc : 'It is a long established fact that a reader will be distracted by the readable content of'
+    },
+    {
+      role : USER_ROLES_ENUM.CONTRACTOR , 
+      desc : 'It is a long established fact that a reader will be distracted by the readable content of'
+    },
+    {
+      role : USER_ROLES_ENUM.SUBCONTRACTOR , 
+      desc : 'It is a long established fact that a reader will be distracted by the readable content of'
+    }
+  ]
 
   const submitHandler = async ({ email, password }: ILogInInterface) => {
     setLoading(true);
@@ -86,24 +102,18 @@ const Login = () => {
             },
           }
         );
+        setUserRoleModal(true)
+
 
         let responseObj = {
           email: googleAuthResponse.data.email,
           name: googleAuthResponse.data.name,
           avatar: googleAuthResponse.data.picture,
           providerId: googleAuthResponse.data.sub,
-          userRole: USER_ROLES_ENUM.OWNER,
         };
 
-        let result: any = await dispatch(loginWithGoogle(responseObj));
+        setUserDetail(responseObj)
 
-        if (result.payload.statusCode == 200) {
-          localStorage.setItem('schestiToken', result.payload.token);
-          // router.push(`/clients`);
-          router.push(`/dashboard`);
-        } else if (result.payload.statusCode == 400) {
-          router.push(`/companydetails/${result.payload.data.user._id}`);
-        }
       } catch (error) {
         console.log('Login Failed', error);
       }
@@ -111,7 +121,21 @@ const Login = () => {
     onError: (error: any) => {
       console.log('Login Failed', error);
     },
-  });
+  })
+
+  const userRoleSelectionHandler = async (role : string) => {
+    setLoading(true)
+    let result: any = await dispatch(loginWithGoogle({...userDetail , userRole: role }));
+    setUserRoleModal(false)
+    setLoading(false)
+    if (result.payload.statusCode == 200) {
+      localStorage.setItem('schestiToken', result.payload.token); 
+      // router.push(`/clients`);
+      router.push(`/dashboard`);
+    } else if (result.payload.statusCode == 400) {
+      router.push(`/companydetails/${result.payload.data.user._id}`);
+    }
+  }
 
   return (
     <WelcomeWrapper>
@@ -229,7 +253,7 @@ const Login = () => {
           </div>
         </section>
       </React.Fragment>
-      <UserRoleModal viewUserRoleModal={true} setViewUserRoleModal={() => {}} />
+      <UserRoleModal viewUserRoleModal={userRoleModal} setViewUserRoleModal={setUserRoleModal} userRoles={userRoles} userRoleSelectionHandler={userRoleSelectionHandler} />
     </WelcomeWrapper>
   );
 };
