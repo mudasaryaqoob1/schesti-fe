@@ -22,6 +22,7 @@ import { login, loginWithGoogle } from '@/redux/authSlices/auth.thunk';
 import PrimaryHeading from '@/app/component/headings/primary';
 import Description from '@/app/component/description';
 import { USER_ROLES_ENUM } from '@/app/constants/constant';
+import UserRoleModal from '../userRolesModal'
 
 const initialValues: ILogInInterface = {
   email: '',
@@ -228,6 +229,7 @@ const Login = () => {
           </div>
         </section>
       </React.Fragment>
+      <UserRoleModal viewUserRoleModal={true} setViewUserRoleModal={() => {}} />
     </WelcomeWrapper>
   );
 };
