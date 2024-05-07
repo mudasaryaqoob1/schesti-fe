@@ -65,7 +65,7 @@ const Payment = () => {
   return (
     <>
       <NavBar />
-      <section className="px-16 p-9">
+      <section className="bg-[#ffffff] px-16 p-9">
         <div className="">
           <h2 className={secondaryHeading}>Payment Summary</h2>
           <div className="w-full h-0.5 bg-mistyWhite mt-4 mb-10"></div>

@@ -10,12 +10,32 @@ import { quinaryHeading } from '@/globals/tailwindvariables';
 import CustomButton from '@/app/component/customButton/button';
 import { authService } from '@/app/services/auth.service';
 import { toast } from 'react-toastify';
+// import { useRouter } from 'next/navigation';
 
 const CheckYourEmail = () => {
+  // const router = useRouter();
   const searchParams = useSearchParams();
-  const emailQueryParameter = searchParams.get('email');
+  const emailQueryParameter: any = searchParams.get('email');
 
   const [isLoading, setIsLoading] = useState(false);
+
+  // useEffect(() => {
+  //   verifyUserEmail();
+  // }, [])
+
+  // const verifyUserEmail = async () => {
+  //   try {
+  //     const result = await authService.httpVerifyUserByEmail({email: decodeURIComponent(emailQueryParameter)});
+  //     console.log('verifyUserEmail', result);
+  //     if (result.data) {
+  //       router.push('/login');
+  //     }
+  //   } catch(err) {
+  //     console.log('err', err);
+  //     router.push('/login');
+  //   }
+
+  // }
 
   const resendEmailHandler = async () => {
     setIsLoading(true);
