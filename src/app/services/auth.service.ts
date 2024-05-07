@@ -39,6 +39,9 @@ class AuthService extends HttpService {
   ): Promise<IResponseInterface<any>> =>
     this.post(`${this.prefix}/resend-create-account-email`, data);
 
+  httpVerifyUserByEmail = (data: any): Promise<IResponseInterface<any>> =>
+    this.post(`${this.prefix}/get-details-by-email`, data);
+
   addCompanyDetailHandler = (
     data: IRegisterCompany
   ): Promise<
