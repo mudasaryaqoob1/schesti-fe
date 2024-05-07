@@ -45,10 +45,10 @@ const UserRolesModel = ({
                 >
                   <div className="grid grid-cols-3 gap-4">
                     <Image
-                      src={'/documentIcon.svg'}
+                      src={'/auth_user_profile.png'}
                       alt="documentIcon icon"
-                      width={20}
-                      height={20}
+                      width={100}
+                      height={100}
                     />
 
                     <div className="flex flex-col items-start justify-start gap-[8px]">
