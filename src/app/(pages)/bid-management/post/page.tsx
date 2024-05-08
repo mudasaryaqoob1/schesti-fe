@@ -41,7 +41,8 @@ const BasicInformationSchema = Yup.object().shape({
   address: Yup.string().required('Address is required'),
   city: Yup.string().required('City is required'),
   constructionTypes: Yup.array()
-    .of(Yup.string())
+    .of(Yup.string().required())
+    .min(1, 'Construction Type is required')
     .required('Construction Type is required'),
   country: Yup.string().required('Country is required'),
   projectName: Yup.string().required('Project Name is required'),
@@ -59,20 +60,20 @@ const ProjectDetailsSchema = Yup.object().shape({
     .of(Yup.string())
     .min(1)
     .required('Project Building Use is required'),
-  stage: Yup.string().required('Stage is required'),
+  stage: Yup.string().min(1).required('Stage is required'),
   estimatedStartDate: Yup.string().required('Estimated Start Date is required'),
   estimatedDuration: Yup.string().required('Estimated Duration is required'),
   durationType: Yup.mixed()
     .oneOf(['days', 'weeks', 'months', 'years'])
     .required('Duration Type is required'),
-  description: Yup.string().required('Description is required'),
+  description: Yup.string().min(1).required('Description is required'),
   specialInstructions: Yup.string(),
-  bidDueDate: Yup.string().required('Bid Due Date is required'),
+  bidDueDate: Yup.string().min(1).required('Bid Due Date is required'),
   estimatedCompletionDate: Yup.string().required(
     'Estimated Completion Date is required'
   ),
-  squareFootage: Yup.string().required('Square Footage is required'),
-  projectValue: Yup.number().required('Project Value is required'),
+  squareFootage: Yup.string().min(1).required('Square Footage is required'),
+  projectValue: Yup.number().min(1).required('Project Value is required'),
 });
 
 const DesignTeamSchema = Yup.object().shape({
@@ -277,7 +278,7 @@ function CreatePost() {
         city: '',
         zipCode: '',
         state: '',
-        constructionTypes: ['Civil'] as string[],
+        constructionTypes: [] as string[],
         address: '',
         status: 'draft' as CreateOwnerPostProjectType['status'],
       },
@@ -326,6 +327,7 @@ function CreatePost() {
                 : undefined,
     enableReinitialize: true,
   });
+
 
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
@@ -435,7 +437,7 @@ function CreatePost() {
                   },
                 }}
                 submitButton={{
-                  onClick() {
+                  async onClick() {
                     mainFormik.handleSubmit();
                   },
                   text: 'Save & Continue',
@@ -458,10 +460,6 @@ function CreatePost() {
                 }}
                 submitButton={{
                   onClick() {
-                    if (postProjectState.teamMembers.length === 0) {
-                      toast.error('Please add team members');
-                      return;
-                    }
                     mainFormik.handleSubmit();
                   },
                   text: 'Save & Continue',
@@ -514,10 +512,6 @@ function CreatePost() {
                   onClick() {
                     if (!shouldContinue) {
                       toast.error('Please wait for the files to upload');
-                      return;
-                    }
-                    if (mainFormik.values.projectFiles.length === 0) {
-                      toast.error('Please upload files');
                       return;
                     }
                     mainFormik.handleSubmit();

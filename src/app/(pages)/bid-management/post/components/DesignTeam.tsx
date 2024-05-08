@@ -271,7 +271,7 @@ export function PostDesignTeam({ formik, children }: Props) {
       ) : null}
       <div className="flex items-center justify-between">
         <TertiaryHeading
-          title="Design Team"
+          title="Project Team"
           className="text-[20px] leading-[30px]"
         />
         <CustomButton
@@ -390,6 +390,7 @@ export function PostDesignTeam({ formik, children }: Props) {
             }
             value={designTeamFormik.values.phoneNumber}
             onBlur={() => designTeamFormik.setFieldTouched('phoneNumber', true)}
+            defaultCountry='US'
             hasError={
               designTeamFormik.touched.phoneNumber &&
               Boolean(designTeamFormik.errors.phoneNumber)

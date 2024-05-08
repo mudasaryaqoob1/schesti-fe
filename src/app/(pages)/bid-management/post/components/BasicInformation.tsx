@@ -33,6 +33,9 @@ export function PostBasicInformation({ children, formik }: Props) {
     state || formik.values.state
   ).map((city) => ({ label: city.name, value: city.name }));
 
+
+  console.log("Errors", formik.errors);
+
   return (
     <div className=" bg-white shadow-[0_4px_30px_0px_#2E2D740D] rounded-xl border p-4">
       <TertiaryHeading
@@ -215,16 +218,17 @@ export function PostBasicInformation({ children, formik }: Props) {
             ],
             showSearch: true,
             mode: 'multiple',
-            defaultValue: formik.values.constructionTypes,
+            value: formik.values.constructionTypes,
             onChange(value: string[]) {
               formik.setFieldValue('constructionTypes', value);
             },
             onClear() {
               formik.setFieldValue('constructionTypes', '');
             },
+            onBlur: formik.handleBlur,
           }}
-          hasError={Boolean(formik.errors.constructionTypes)}
-          errorMessage={formik.errors.constructionTypes as string}
+          hasError={formik.touched.constructionTypes && Boolean(formik.errors.constructionTypes)}
+          errorMessage={formik.touched.constructionTypes && formik.errors.constructionTypes ? formik.errors.constructionTypes.toString() : ''}
         />
       </div>
       {children}

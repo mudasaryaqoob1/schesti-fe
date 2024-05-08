@@ -24,6 +24,7 @@ export function PhoneNumberInputWithLable({
             space-x-2 ${props.hasError ? 'border-red-500' : 'border-gray-300'}`}
         international
         defaultCountry="US"
+        countryCallingCodeEditable={false}
         {...props}
       />
       {errorMessage ? (
