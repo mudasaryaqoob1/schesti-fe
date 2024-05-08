@@ -53,12 +53,12 @@ const BasicInformationSchema = Yup.object().shape({
 
 const ProjectDetailsSchema = Yup.object().shape({
   projectType: Yup.array()
-    .of(Yup.string())
-    .min(1)
+    .of(Yup.string().required("Project Type is required"),)
+    .min(1, "At least one Project Type is required")
     .required('Project Type is required'),
   projectBuildingUse: Yup.array()
-    .of(Yup.string())
-    .min(1)
+    .of(Yup.string().required("Project Building Use is required"))
+    .min(1, "At least one Project Building Use is required")
     .required('Project Building Use is required'),
   stage: Yup.string().min(1).required('Stage is required'),
   estimatedStartDate: Yup.string().required('Estimated Start Date is required'),

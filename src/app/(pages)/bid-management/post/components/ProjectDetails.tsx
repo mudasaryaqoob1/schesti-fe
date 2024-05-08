@@ -45,6 +45,7 @@ export function PostProjectDetails({ formik, children }: Props) {
                 onClear() {
                   formik.setFieldValue('projectType', '');
                 },
+                onBlur: formik.handleBlur,
               }}
               hasError={
                 formik.touched.projectType && Boolean(formik.errors.projectType)
@@ -73,6 +74,7 @@ export function PostProjectDetails({ formik, children }: Props) {
                 onClear() {
                   formik.setFieldValue('projectBuildingUse', '');
                 },
+                onBlur: formik.handleBlur,
               }}
               hasError={
                 formik.touched.projectBuildingUse &&
