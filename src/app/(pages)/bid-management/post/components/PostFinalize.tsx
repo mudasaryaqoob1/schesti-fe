@@ -54,6 +54,7 @@ export function PostFinalize({ formik, children }: Props) {
     fetchCompanyEmployeeHandler();
   }, []);
 
+  console.log(formik.errors);
 
   const readCSVMutation = useMutation({
     mutationKey: 'upload-csv',
@@ -394,6 +395,7 @@ export function PostFinalize({ formik, children }: Props) {
             className={`justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border ${formik.values.platformType === 'Public' ? 'border-[#7138DF] bg-[#F2F4F7]' : 'border-[#E4E4E4] bg-white'} cursor-pointer disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 flex items-center space-x-2 rounded-lg   p-5`}
             onClick={() => {
               formik.setFieldValue('platformType', 'Public');
+              formik.setFieldValue('isMatchingWithTrades', true);
             }}
           >
             <svg
@@ -522,9 +524,9 @@ export function PostFinalize({ formik, children }: Props) {
           {formik.values.platformType === 'Public' ? <div className="space-y-2">
             <Checkbox
               checked={formik.values.isMatchingWithTrades}
-              onChange={(e) => {
-                formik.setFieldValue('isMatchingWithTrades', e.target.checked);
-              }}
+            // onChange={(e) => {
+            //   formik.setFieldValue('isMatchingWithTrades', e.target.checked);
+            // }}
             >
               <SenaryHeading
                 title="Schesti members with matching trades and region"

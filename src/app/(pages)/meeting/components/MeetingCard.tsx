@@ -68,9 +68,9 @@ export function MeetingCard({ item, shouldShowJoin = true }: Props) {
             />
         </div>
         <div>
-            {!enableJoin15MinutesLeft(item) ? (
+            {!shouldShowJoin ? null : !enableJoin15MinutesLeft(item) ? (
                 <WhiteButton className="!w-20" text="Join" />
-            ) : shouldShowJoin ? (
+            ) : (
                 <CustomButton
                     className={`!w-20`}
                     text={'Join'}
@@ -78,7 +78,7 @@ export function MeetingCard({ item, shouldShowJoin = true }: Props) {
                         window.open(`/meeting/${item.roomName}`, '_blank');
                     }}
                 />
-            ) : null}
+            )}
         </div>
     </div>
 }

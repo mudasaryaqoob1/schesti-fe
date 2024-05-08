@@ -305,7 +305,8 @@ function CreatePost() {
       rfiDeadline: {
         ...(postProjectState.project as IBidManagement)?.rfiDeadline,
         isChecked: (postProjectState.project as IBidManagement)?.rfiDeadline?.isChecked || false,
-      }
+      },
+      isMatchingWithTrades: (postProjectState.project as IBidManagement)?.isMatchingWithTrades || true,
     },
     onSubmit(values) {
       updateProjectMutation.mutate(values);
