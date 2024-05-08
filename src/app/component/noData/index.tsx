@@ -21,7 +21,7 @@ const NoData = ({
 }: Props) => {
   const router = useRouter();
   return (
-    <section className="mt-6 mx-4 rounded-xl h-[calc(100vh-200px)] grid items-center border border-solid border-silverGray shadow-secondaryTwist">
+    <section className="mt-6 mx-4 rounded-xl h-[calc(100vh-200px)] grid items-center border border-solid border-silverGray shadow-secondaryTwist !bg-white">
       <div className="grid place-items-center">
         <div className="max-w-[500px] flex flex-col items-center p-4">
           <div className="bg-lightGray p-12 rounded-full">

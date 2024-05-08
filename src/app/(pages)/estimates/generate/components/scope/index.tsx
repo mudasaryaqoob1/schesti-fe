@@ -57,22 +57,22 @@ const validationSchema = Yup.object({
     .required('Quantity is required'),
   wastage: Yup.string().required('Wastage is required'),
   unitLabourHour: Yup.string()
-    .matches(PositiveNumberRegex, 'Unit labour hour must be a positive number')
+    // .matches(PositiveNumberRegex, 'Unit labour hour must be a positive number')
     .required('Unit labour hour is required'),
   perHourLaborRate: Yup.string()
-    .matches(
-      PositiveNumberRegex,
-      'Per hour labour rate must be a positive number'
-    )
+    // .matches(
+    //   PositiveNumberRegex,
+    //   'Per hour labour rate must be a positive number'
+    // )
     .required('Per hour labour rate  is required!'),
   unitMaterialCost: Yup.string()
-    .matches(
-      PositiveNumberRegex,
-      'Unit material cost must be a positive number'
-    )
+    // .matches(
+    //   PositiveNumberRegex,
+    //   'Unit material cost must be a positive number'
+    // )
     .required('Unit material cost is required!'),
   unitEquipments: Yup.string()
-    .matches(PositiveNumberRegex, 'Unit equipments must be a positive number')
+    // .matches(PositiveNumberRegex, 'Unit equipments must be a positive number')
     .required('Unit equipments is required!'),
 });
 
@@ -1125,6 +1125,8 @@ const Scope = ({ setPrevNext }: Props) => {
                     labelStyle="font-normal"
                     label="Per hours labor rate"
                     placeholder="Enter Labor Rate"
+                    min={0}
+                    step="0.001"
                   />
                   <FormControl
                     control="input"
@@ -1134,6 +1136,8 @@ const Scope = ({ setPrevNext }: Props) => {
                     label="Unit material cost"
                     name="unitMaterialCost"
                     placeholder="Write Unit Material Cost"
+                    min={0}
+                    step="0.001"
                   />
                   <FormControl
                     control="input"
@@ -1143,6 +1147,8 @@ const Scope = ({ setPrevNext }: Props) => {
                     label="Unit equipment cost"
                     name="unitEquipments"
                     placeholder="Write Unit Equipment Cost"
+                    min={0}
+                    step="0.001"
                   />
                   {editItem || editConfirmItem ? (
                     <CustomWhiteButton

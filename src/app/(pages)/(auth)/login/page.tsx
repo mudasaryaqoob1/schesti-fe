@@ -3,25 +3,26 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
-// import { useGoogleLogin } from '@react-oauth/google';
-// import axios from 'axios';
+import { useGoogleLogin } from '@react-oauth/google';
 
 // module imports
 import { AppDispatch } from '@/redux/store';
 
 import FormControl from '@/app/component/formControl';
-import { quinaryHeading } from '@/globals/tailwindvariables';
+import { btnStyle, quinaryHeading } from '@/globals/tailwindvariables';
 import Button from '@/app/component/customButton/button';
 import WelcomeWrapper from '@/app/component/welcomeLayout';
 import { ILogInInterface } from '@/app/interfaces/authInterfaces/login.interface';
-import { login } from '@/redux/authSlices/auth.thunk';
+import { login, loginWithGoogle } from '@/redux/authSlices/auth.thunk';
 import PrimaryHeading from '@/app/component/headings/primary';
 import Description from '@/app/component/description';
-// import { USER_ROLES_ENUM } from '@/app/constants/constant';
+import { USER_ROLES_ENUM } from '@/app/constants/constant';
+import UserRoleModal from '../userRolesModal'
 
 const initialValues: ILogInInterface = {
   email: '',
@@ -44,6 +45,22 @@ const Login = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const [loading, setLoading] = useState(false);
+  const [userRoleModal, setUserRoleModal] = useState(false)
+  const [userDetail, setUserDetail] = useState<any>([])
+  let userRoles = [
+    {
+      role : USER_ROLES_ENUM.OWNER , 
+      desc : 'It is a long established fact that a reader will be distracted by the readable content of'
+    },
+    {
+      role : USER_ROLES_ENUM.CONTRACTOR , 
+      desc : 'It is a long established fact that a reader will be distracted by the readable content of'
+    },
+    {
+      role : USER_ROLES_ENUM.SUBCONTRACTOR , 
+      desc : 'It is a long established fact that a reader will be distracted by the readable content of'
+    }
+  ]
 
   const submitHandler = async ({ email, password }: ILogInInterface) => {
     setLoading(true);
@@ -74,43 +91,51 @@ const Login = () => {
     }
   };
 
-  // const googleAuthenticationHandler: any = useGoogleLogin({
-  //   onSuccess: async (respose: any) => {
-  //     try {
-  //       const googleAuthResponse = await axios.get(
-  //         'https://www.googleapis.com/oauth2/v3/userinfo',
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${respose.access_token}`,
-  //           },
-  //         }
-  //       );
+  const googleAuthenticationHandler: any = useGoogleLogin({
+    onSuccess: async (respose: any) => {
+      try {
+        const googleAuthResponse = await axios.get(
+          'https://www.googleapis.com/oauth2/v3/userinfo',
+          {
+            headers: {
+              Authorization: `Bearer ${respose.access_token}`,
+            },
+          }
+        );
+        setUserRoleModal(true)
 
-  //       let responseObj = {
-  //         email: googleAuthResponse.data.email,
-  //         name: googleAuthResponse.data.name,
-  //         avatar: googleAuthResponse.data.picture,
-  //         providerId: googleAuthResponse.data.sub,
-  //         userRole: USER_ROLES_ENUM.OWNER,
-  //       };
 
-  //       let result: any = await dispatch(loginWithGoogle(responseObj));
+        let responseObj = {
+          email: googleAuthResponse.data.email,
+          name: googleAuthResponse.data.name,
+          avatar: googleAuthResponse.data.picture,
+          providerId: googleAuthResponse.data.sub,
+        };
 
-  //       if (result.payload.statusCode == 200) {
-  //         localStorage.setItem('schestiToken', result.payload.token);
-  //         // router.push(`/clients`);
-  //         router.push(`/dashboard`);
-  //       } else if (result.payload.statusCode == 400) {
-  //         router.push(`/companydetails/${result.payload.data.user._id}`);
-  //       }
-  //     } catch (error) {
-  //       console.log('Login Failed', error);
-  //     }
-  //   },
-  //   onError: (error: any) => {
-  //     console.log('Login Failed', error);
-  //   },
-  // });
+        setUserDetail(responseObj)
+
+      } catch (error) {
+        console.log('Login Failed', error);
+      }
+    },
+    onError: (error: any) => {
+      console.log('Login Failed', error);
+    },
+  })
+
+  const userRoleSelectionHandler = async (role : string) => {
+    setLoading(true)
+    let result: any = await dispatch(loginWithGoogle({...userDetail , userRole: role }));
+    setUserRoleModal(false)
+    setLoading(false)
+    if (result.payload.statusCode == 200) {
+      localStorage.setItem('schestiToken', result.payload.token); 
+      // router.push(`/clients`);
+      router.push(`/dashboard`);
+    } else if (result.payload.statusCode == 400) {
+      router.push(`/companydetails/${result.payload.data.user._id}`);
+    }
+  }
 
   return (
     <WelcomeWrapper>
@@ -190,7 +215,7 @@ const Login = () => {
                   </div>
 
                   {/* Google sign-in button */}
-                  {/* <button
+                  <button
                     className={twMerge(
                       ` ${btnStyle} ${quinaryHeading}  font-semibold flex items-center justify-center gap-3 bg-snowWhite border-2 shadow-scenarySubdued border-doveGray`
                     )}
@@ -205,7 +230,7 @@ const Login = () => {
                       className="mr-1"
                     />
                     Signin with Google
-                  </button> */}
+                  </button>
 
                   {/* Sign up section */}
                   <div className=" flex gap-2 justify-center mt-10">
@@ -228,6 +253,7 @@ const Login = () => {
           </div>
         </section>
       </React.Fragment>
+      <UserRoleModal viewUserRoleModal={userRoleModal} setViewUserRoleModal={setUserRoleModal} userRoles={userRoles} userRoleSelectionHandler={userRoleSelectionHandler} />
     </WelcomeWrapper>
   );
 };

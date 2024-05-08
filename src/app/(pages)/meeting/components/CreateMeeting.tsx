@@ -109,8 +109,9 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
           />
           <CloseOutlined
             className="cursor-pointer"
-            width={24}
-            height={24}
+            // width={24}
+            // height={24}
+            style={{width : '24px' , height : '24px'}}
             onClick={handleCloseModal}
           />
         </div>

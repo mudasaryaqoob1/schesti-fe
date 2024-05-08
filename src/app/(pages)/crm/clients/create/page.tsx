@@ -146,7 +146,9 @@ const CreateClient = () => {
                   />
                   <PhoneNumberInputWithLable
                     label="Phone Number"
-                    onChange={(val: string) => setFieldValue('phone', val)}
+                    //@ts-ignore
+                    onChange={(val: string) => setFieldValue('phone', val as string)}
+                    //@ts-ignore
                     value={values.phone}
                     onBlur={() => setFieldTouched('phone', true)}
                     hasError={touched.phone && Boolean(errors.phone)}
