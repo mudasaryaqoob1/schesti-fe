@@ -23,6 +23,9 @@ import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { USER_ROLES_ENUM } from '@/app/constants/constant';
 import UserRoleModal from '../userRolesModal'
+// import { authService } from '@/app/services/auth.service';
+
+
 
 const { CONTRACTOR } = USER_ROLES_ENUM;
 
@@ -59,6 +62,7 @@ const Register = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [userRoleModal, setUserRoleModal] = useState(false)
+  const [userRegisterModal, setUserRegisterModal] = useState(false)
   const [userDetail, setUserDetail] = useState<any>([])
   let userRoles = [
     {
@@ -81,18 +85,24 @@ const Register = () => {
   // };
 
   const submitHandler = async (values: ISignUpInterface) => {
-    const payload = { ...values, userRole: CONTRACTOR };
+    setUserRegisterModal(true)
+        setUserDetail(values)
+  };
+
+  const userRegisterHandler = async (role  : string) => {
+    const payload = { ...userDetail, userRole: role };
     setIsLoading(true);
+    setUserRegisterModal(false)
     let result: any = await dispatch(signup(payload));
 
     if (result.payload.status == 201) {
       setIsLoading(false);
-      router.push(`/checkmail?email=${values.email}`);
+      router.push(`/checkmail?email=${userDetail.email}`);
     } else {
       setIsLoading(false);
       toast.error(result.payload.message);
     }
-  };
+  }
 
   const googleAuthenticationHandler: any = useGoogleLogin({
     onSuccess: async (respose: any) => {
@@ -112,6 +122,12 @@ const Register = () => {
           avatar: googleAuthResponse.data.picture,
           providerId: googleAuthResponse.data.sub,
         };
+
+        // const result = await authService.httpUserVerification({
+        //   email: googleAuthResponse.data.email,
+        // });
+
+
         setUserRoleModal(true)
         setUserDetail(responseObj)
       } catch (error) {
@@ -126,8 +142,8 @@ const Register = () => {
 
   const userRoleSelectionHandler = async (role : string) => {
     setIsLoading(true)
-    let result: any = await dispatch(loginWithGoogle({...userDetail , userRole: role }));
     setUserRoleModal(false)
+    let result: any = await dispatch(loginWithGoogle({...userDetail , userRole: role }));
     setIsLoading(false)
     if (result.payload.statusCode == 200) {
       localStorage.setItem('schestiToken', result.payload.token); 
@@ -283,6 +299,7 @@ const Register = () => {
         </div>
       </section>
       <UserRoleModal viewUserRoleModal={userRoleModal} setViewUserRoleModal={setUserRoleModal} userRoles={userRoles} userRoleSelectionHandler={userRoleSelectionHandler} />
+      <UserRoleModal viewUserRoleModal={userRegisterModal} setViewUserRoleModal={setUserRegisterModal} userRoles={userRoles} userRoleSelectionHandler={userRegisterHandler} />
     </WelcomeWrapper>
   );
 };

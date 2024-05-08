@@ -25,8 +25,9 @@ export function LinkMessage({
           <div className="ml-2 px-2 py-1 self-center bg-red-500 border rounded-full">
             <CloseOutlined
               className="cursor-pointer text-white"
-              width={24}
-              height={24}
+              // width={24}
+              // height={24}
+              style={{width : '24px' , height : '24px'}}
             />
           </div>
         )}

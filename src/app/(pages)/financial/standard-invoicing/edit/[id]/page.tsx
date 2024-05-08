@@ -329,9 +329,11 @@ const EditSubcontractorInvoice = () => {
 
                   <PhoneNumberInputWithLable
                     label="Phone Number"
+                    //@ts-ignore
                     onChange={(val: string) =>
                       setFieldValue('subContractorPhoneNumber', val)
                     }
+                    //@ts-ignore
                     value={String(values.subContractorPhoneNumber)}
                     onBlur={() =>
                       setFieldTouched('subContractorPhoneNumber', true)
