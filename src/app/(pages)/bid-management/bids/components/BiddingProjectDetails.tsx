@@ -182,20 +182,24 @@ export function BiddingProjectDetails({
           className="!bg-[#7F56D9] !text-[#ffffff] !border-[#EAECF0] !text-base !leading-7 "
         />
       </div>
-      <div className="mt-4 space-y-2">
-        <CustomButton
-          text="Post this project as a bidder"
-          onClick={handlePostProjectAsBidder}
-          disabled={isLoading}
-          className={'!bg-[#F9F5FF] !text-[#7138DF]'}
-        />
-      </div>
+      {
+        bid.projectId?.user && bid.projectId?.user.roles.includes('Admin') && (
+          <div className="mt-4 space-y-2">
+          <CustomButton
+            text="Post this project as a bidder"
+            onClick={handlePostProjectAsBidder}
+            disabled={isLoading}
+            className={'!bg-[#F9F5FF] !text-[#7138DF]'}
+          />
+        </div>
+        )
+      }
       <div className="mt-4 space-y-2">
         <CustomButton
           onClick={() =>
             router.push(`/bid-management/details/${bid.projectId?._id}`)
           }
-          text="View Details-usama"
+          text="View Details"
           className="!bg-[#EAECF0] !text-[#667085] !border-[#EAECF0] !text-base !leading-7 "
         />
       </div>

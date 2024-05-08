@@ -50,7 +50,6 @@ export function UpComingProjects() {
         {selectedBid ? (
           <div className="col-span-4 py-[24px] px-[17px] rounded-lg mt-3 border border-[#E9E9EA]">
             <BiddingProjectDetails refetchSavedBids={refetchSavedBids} setSelectedBid={setSelectedBid} bid={selectedBid as unknown as IBidManagement} />
-            {/* <BidDetails bid={selectedBid as unknown as IBidManagement} /> */}
           </div>
         ) : null}
       </div>
