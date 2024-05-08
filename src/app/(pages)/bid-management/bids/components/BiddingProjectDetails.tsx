@@ -70,11 +70,13 @@ export function BiddingProjectDetails({
     try {
       const { data }: any = await bidManagementService.httpPostProjectAsBidder(bid?.projectId?._id);
       if(data) {
+        toast.success('Project Posted successfully');
         setIsLoading(false);
       }
-    } catch(err){
+    } catch(err: any) {
       setIsLoading(false);
-      console.log('could not post project as bidder', err);
+      toast.error(err.response?.data?.message || 'Error: could not post project');
+      console.log('could not post project as bidder', );
     }
   }
 
