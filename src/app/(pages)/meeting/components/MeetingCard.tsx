@@ -11,10 +11,11 @@ import { useCopyToClipboard } from 'usehooks-ts';
 
 type Props = {
     item: IMeeting;
+    shouldShowJoin?: boolean;
 }
 const TIME_TO_ENABLE = 15; // minutes
 
-export function MeetingCard({ item }: Props) {
+export function MeetingCard({ item, shouldShowJoin = true }: Props) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
     const [copiedText, copy] = useCopyToClipboard();
 
@@ -69,7 +70,7 @@ export function MeetingCard({ item }: Props) {
         <div>
             {!enableJoin15MinutesLeft(item) ? (
                 <WhiteButton className="!w-20" text="Join" />
-            ) : (
+            ) : shouldShowJoin ? (
                 <CustomButton
                     className={`!w-20`}
                     text={'Join'}
@@ -77,7 +78,7 @@ export function MeetingCard({ item }: Props) {
                         window.open(`/meeting/${item.roomName}`, '_blank');
                     }}
                 />
-            )}
+            ) : null}
         </div>
     </div>
 }

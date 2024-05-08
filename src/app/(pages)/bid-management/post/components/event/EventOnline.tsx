@@ -27,6 +27,7 @@ export function EventOnlineForm({ formik }: Props) {
                 <span className="text-[#7138DF] text-[14px] leading-5 font-semibold  ml-2">{"Meeting is scheduled"}</span>
             </div> : formik.values.preBiddingMeeting?.meeting ? <MeetingCard
                 item={formik.values.preBiddingMeeting.meeting}
+                shouldShowJoin={false}
             /> : <div
                 onClick={() => setShowModal(true)}
                 className="w-[190px] flex items-center py-2 px-[14px] rounded-lg cursor-pointer border border-[#F9F5FF] bg-[#F9F5FF]">

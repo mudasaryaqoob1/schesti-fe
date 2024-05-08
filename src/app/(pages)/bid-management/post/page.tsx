@@ -79,15 +79,12 @@ const ProjectDetailsSchema = Yup.object().shape({
 const DesignTeamSchema = Yup.object().shape({
   teamMembers: Yup.array()
     .of(Yup.string())
-    .min(1)
-    .required('Team Members is required'),
 });
 
 const TradesSchema = Yup.object().shape({
   selectedTrades: Yup.array()
     .of(Yup.string())
-    .min(1)
-    .required('Trades is required'),
+
 });
 
 const FilesSchema = Yup.object().shape({
@@ -100,7 +97,7 @@ const FilesSchema = Yup.object().shape({
         name: Yup.string().required('Name is required'),
       })
     )
-    .required('Files are required'),
+
 });
 
 const onsiteMeetingSchema = Yup.object().shape({
@@ -478,10 +475,6 @@ function CreatePost() {
                 }}
                 submitButton={{
                   onClick() {
-                    if (mainFormik.values.selectedTrades.length === 0) {
-                      toast.error('Please select trades');
-                      return;
-                    }
                     mainFormik.handleSubmit();
                   },
                   text: 'Save & Continue',

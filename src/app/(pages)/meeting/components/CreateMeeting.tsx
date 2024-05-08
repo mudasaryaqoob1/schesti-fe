@@ -114,7 +114,7 @@ export function CreateMeeting({ showModal, setShowModal, onSuccess }: Props) {
           />
           <CloseOutlined
             className="cursor-pointer"
-            style={{ width : '24px' , height : '24px'}}
+            style={{ width: '24px', height: '24px' }}
             onClick={handleCloseModal}
           />
         </div>
@@ -136,7 +136,7 @@ export function CreateMeeting({ showModal, setShowModal, onSuccess }: Props) {
             />
             <SelectComponent
               label="Invite"
-              placeholder="Client Email Address"
+              placeholder="Email Address"
               name="email"
               hasError={formik.touched.email && Boolean(formik.errors.email)}
               errorMessage={

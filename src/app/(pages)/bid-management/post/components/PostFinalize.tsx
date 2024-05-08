@@ -54,7 +54,6 @@ export function PostFinalize({ formik, children }: Props) {
     fetchCompanyEmployeeHandler();
   }, []);
 
-  console.log(formik.values);
 
   const readCSVMutation = useMutation({
     mutationKey: 'upload-csv',
