@@ -52,7 +52,7 @@ export default function JoinMeeting() {
     return (
       <MeetingMessage
         title="No meeting found"
-        description="There is no scheduled meeting. Initiate one by using the Jitsi integration."
+        description="There is no scheduled meeting."
       >
         <CustomButton
           className="mt-7"

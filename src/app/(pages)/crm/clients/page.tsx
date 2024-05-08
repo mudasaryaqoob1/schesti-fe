@@ -226,22 +226,25 @@ const ClientTable = () => {
     ? clientsData.filter((client) => {
         if (!search) {
           return {
-            ...client,
-            firstName : `${client.firstName} ${client.lastName} ok`,
-            azher : 'saeed'
+            ...client
           };
         }
         return (
           client.firstName.toLowerCase().includes(search.toLowerCase()) ||
           client.lastName.toLowerCase().includes(search.toLowerCase()) ||
+          client.companyName.toLowerCase().includes(search.toLowerCase()) ||
           client.email?.includes(search) || 
           client.phone?.includes(search) || 
           client.address?.includes(search)
         );
+      }).map((clientRecord) => {
+        return{
+          ...clientRecord,
+          firstName : `${clientRecord.firstName} ${clientRecord.lastName}`,
+        }
       })
     : [];
 
-    console.log(filteredClients , 'filteredClients');
     
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">

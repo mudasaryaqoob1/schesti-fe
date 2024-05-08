@@ -170,7 +170,7 @@ export function ProjectDocuments({ id }: Props) {
                     alt="file"
                   />
                   <p className="text-[#667085] text-[14px] leading-6">
-                    {file.name.slice(0, 10)}.{file.extension}
+                    {file?.name?.slice(0, 10)}.{file.extension}
                   </p>
                 </div>
                 {loading ? (
@@ -211,7 +211,7 @@ export function ProjectDocuments({ id }: Props) {
                 )}
               </div>
               <div className="p-2 pb-8">
-                {file.type.includes('image') ? (
+                {file && file.type?.includes('image') ? (
                   <div className="w-auto h-[190px] xl:w-[230px] mx-auto relative">
                     <Image alt="image" src={file.url} fill />
                   </div>

@@ -1,32 +1,32 @@
 'use client';
-import { useEffect, useLayoutEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback, useState } from 'react';
+import Head from 'next/head';
 import { useRouter } from 'next/navigation';
 import { Dropdown, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { MenuProps } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch } from '@/redux/store';
+import { toast } from 'react-toastify';
+import { SearchOutlined } from '@ant-design/icons';
+import Image from 'next/image';
 
 // module imports
-import { AppDispatch } from '@/redux/store';
-import { selectToken } from '@/redux/authSlices/auth.selector';
 import {
   selectSubcontracters,
   selectSubcontractLoading,
 } from '@/redux/company/companySelector';
-import { HttpService } from '@/app/services/base.service';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 import Button from '@/app/component/customButton/button';
+import { InputComponent } from '@/app/component/customInput/Input';
 import {
   deleteSubcontractor,
   fetchCompanySubcontractors,
 } from '@/redux/company/company.thunk';
-import Image from 'next/image';
 import { ISubcontractor } from '@/app/interfaces/companyInterfaces/subcontractor.interface';
 import ModalComponent from '@/app/component/modal';
 import { DeleteContent } from '@/app/component/delete/DeleteContent';
-import { toast } from 'react-toastify';
-import Head from 'next/head';
 import { Routes } from '@/app/utils/plans.utils';
 import { withAuth } from '@/app/hoc/withAuth';
 
@@ -36,14 +36,23 @@ export interface DataType {
   email: string;
   phone: string;
   address: string;
-  status: string;
+  // status: string;
   action: string;
 }
 
 const items: MenuProps['items'] = [
+ 
+  {
+    key: 'createNewInvoice',
+    label: <p>Create Invoice</p>,
+  },
+  {
+    key: 'createSchedule',
+    label: <p>Create Schedule</p>,
+  },
   {
     key: 'editSubcontractor',
-    label: <p>Edit subcontractor details</p>,
+    label: <p>Edit Subcontractor Detail</p>,
   },
   {
     key: 'deleteSubcontractor',
@@ -55,35 +64,39 @@ const SubcontractTable = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
-  const token = useSelector(selectToken);
-
   const subcontractersData = useSelector(selectSubcontracters);
   const subcontractersLoading = useSelector(selectSubcontractLoading);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedSubcontractor, setSelectedSubcontractor] =
     useState<ISubcontractor | null>(null);
+    const [search, setSearch] = useState('');
 
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
+ 
 
   const fetchSubcontactors = useCallback(async () => {
     await dispatch(fetchCompanySubcontractors({ page: 1, limit: 10 }));
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     fetchSubcontactors();
   }, [fetchSubcontactors]);
 
   const handleDropdownItemClick = async (key: string, subcontractor: any) => {
-    if (key == 'deleteSubcontractor') {
-      setSelectedSubcontractor(subcontractor as ISubcontractor);
-      setShowDeleteModal(true);
+
+    if (key === 'createEstimateRequest') {
+      router.push(`/estimates/requests/create`);
+    } else if (key === 'createNewInvoice') {
+      router.push(`/financial/standard-invoicing/create?subcontractorId=${subcontractor._id}`);
+    } else if (key === 'createSchedule') {
+      router.push(`/schedule`);
     } else if (key == 'editSubcontractor') {
       router.push(`${Routes.CRM['Sub-Contractors']}/edit/${subcontractor._id}`);
-    }
+    } else if (key == 'deleteSubcontractor') {
+      setSelectedSubcontractor(subcontractor as ISubcontractor);
+      setShowDeleteModal(true);
+    } 
+
+
   };
 
   const columns: ColumnsType<ISubcontractor> = [
@@ -108,15 +121,15 @@ const SubcontractTable = () => {
       title: 'Address',
       dataIndex: 'address',
     },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      render: () => (
-        <a className="text-[#027A48] bg-[#ECFDF3] px-2 py-1 rounded-full">
-          Active
-        </a>
-      ),
-    },
+    // {
+    //   title: 'Status',
+    //   dataIndex: 'status',
+    //   render: () => (
+    //     <a className="text-[#027A48] bg-[#ECFDF3] px-2 py-1 rounded-full">
+    //       Active
+    //     </a>
+    //   ),
+    // },
     {
       title: 'Action',
       dataIndex: 'action',
@@ -150,6 +163,23 @@ const SubcontractTable = () => {
     setSelectedSubcontractor(null);
   }
 
+  const filteredSubcontractor = subcontractersData
+    ? subcontractersData.filter((client) => {
+        if (!search) {
+          return {
+            ...client
+          };
+        }
+        return (
+          client.name.toLowerCase().includes(search.toLowerCase()) ||
+          client.companyRep.toLowerCase().includes(search.toLowerCase()) ||
+          client.email?.includes(search) || 
+          client.phone?.includes(search) || 
+          client.address?.includes(search)
+        );
+      })
+    : [];
+
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       <Head>
@@ -173,25 +203,40 @@ const SubcontractTable = () => {
       ) : null}
       <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
         <div className="flex justify-between items-center mb-4">
-          <TertiaryHeading
-            title="Subcontractor List"
-            className="text-graphiteGray"
-          />
-          <Button
-            text="New subcontractor"
-            className="!w-auto "
-            icon="/plus.svg"
-            iconwidth={20}
-            iconheight={20}
-            onClick={() =>
-              router.push(`${Routes.CRM['Sub-Contractors']}/create`)
-            }
-          />
+          <TertiaryHeading title="Subcontractors List" className="text-graphiteGray" />
+          <div className=" flex space-x-3">
+            <div className="w-96">
+              <InputComponent
+                label=""
+                type="text"
+                placeholder="Search"
+                name="search"
+                prefix={<SearchOutlined />}
+                field={{
+                  type: 'text',
+                  value: search,
+                  onChange: (e: any) => {
+                    setSearch(e.target.value);
+                  },
+                }}
+              />
+            </div>
+            <Button
+              text="Add New Subcontractor"
+              className="!w-auto "
+              icon="/plus.svg"
+              iconwidth={20}
+              iconheight={20}
+              onClick={() =>
+                router.push(`${Routes.CRM['Sub-Contractors']}/create`)
+              }
+            />
+          </div>
         </div>
         <Table
           loading={subcontractersLoading}
           columns={columns}
-          dataSource={subcontractersData ? subcontractersData : undefined}
+          dataSource={filteredSubcontractor}
           pagination={{ position: ['bottomCenter'] }}
         />
       </div>

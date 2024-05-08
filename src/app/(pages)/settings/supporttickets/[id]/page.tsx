@@ -204,7 +204,19 @@ const SupportTicketDetails = () => {
                         </p>
                       );
                     } else {
-                      return (
+                      return message.isFile ? (
+                        <div
+                          key={message._id}
+                          className="self-start mb-1"
+                        >
+                          <FileView
+                            extension={message.fileExtension.split('/')[1]}
+                            name={message.fileName}
+                            url={message.fileUrl}
+                            text='View'
+                          />
+                        </div>
+                      ) : (
                         <p
                           key={message._id}
                           className="bg-sky-100 text-[#5A7184] text-[16px] leading-5 rounded-r-lg px-4 py-3 max-w-max"

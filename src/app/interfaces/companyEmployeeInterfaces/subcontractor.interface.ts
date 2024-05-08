@@ -1,4 +1,5 @@
 export interface ISubcontract {
+  _id?:string;
   companyRep: string;
   name: string;
   email: string;

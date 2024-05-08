@@ -27,24 +27,38 @@ import { isArrayString } from '@/app/utils/typescript.utils';
 // import dynamic from 'next/dynamic';
 // import BidListPdf from './components/bids-pdf';
 
-const ITEMS_PER_PAGE = 4;
+const ITEMS_PER_PAGE = 5;
 
 function BidManagementSubContractorPage() {
 
   const [selectedBid, setSelectedBid] = useState<IBidManagement | null>(null);
   const [search, setSearch] = useState('');
-  const [invitedCurrentPage, setInvitedCurrentPage] = useState(1);
-  const [exploreCurrentPage, setExploreCurrentPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
-  const [selectedProjectSavedBid, setSelectedProjectSavedBid] =
-    useState<any>(null);
+  const [selectedProjectSavedBid, setSelectedProjectSavedBid] = useState<any>(null);
   const [filters, setFilters] = useState<{
     trades: string[];
     projectValue: number;
+    page: number;
+    limit: number;
   }>({
     trades: [],
     projectValue: 0,
+    page: 1,
+    limit: ITEMS_PER_PAGE
   });
+
+  const [invitedfilters, setInvitedfilters] = useState<{
+    trades: string[];
+    projectValue: number;
+    page: number;
+    limit: number;
+  }>({
+    trades: [],
+    projectValue: 0,
+    page: 1,
+    limit: ITEMS_PER_PAGE
+  });
+
 
   function toggleFilters() {
     setShowFilters(!showFilters);
@@ -57,23 +71,36 @@ function BidManagementSubContractorPage() {
     return bidManagementService.httpGetOwnerProjects(filters);
   };
 
-  const projectsQuery = useQuery(['bid-projects'], fetchProjects);
-  const invitedUserProjectsQuery = useQuery(['invited-user-projects'], () => {
-    return bidManagementService.httpGetBidProjectInvitedUsers();
-  });
+  const fetchInvitedProjects = () => {
+    return bidManagementService.httpGetBidProjectInvitedUsers(invitedfilters);
+  };
+
+
+  const projectsQuery = useQuery(['bid-projects', filters.page, filters.limit, filters.projectValue, filters.trades], fetchProjects);
+  const invitedUserProjectsQuery = useQuery(['invited-user-projects', invitedfilters.page, invitedfilters.limit], fetchInvitedProjects);
 
   const projects =
-    projectsQuery.data && projectsQuery.data.data
-      ? projectsQuery.data.data?.projects
+    projectsQuery?.data && projectsQuery?.data?.data
+      ? projectsQuery.data.data.records
       : [];
+
+  const paginationInfo = projectsQuery.data && projectsQuery.data.data
+    ? projectsQuery.data.data.paginationInfo
+    : { currentPage: 0, pages: 0, totalRecords: 0, perPage: 0 };
+
+  const invitedPaginationInfo = invitedUserProjectsQuery.data && invitedUserProjectsQuery.data.data
+    ? invitedUserProjectsQuery.data.data.paginationInfo
+    : { currentPage: 0, pages: 0, totalRecords: 0, perPage: 0 };
+
+
   const invitedProjects =
     invitedUserProjectsQuery.data && invitedUserProjectsQuery.data.data
-      ? invitedUserProjectsQuery.data.data?.projects
+      ? invitedUserProjectsQuery.data.data?.records
       : [];
 
   const currentInvitedProjects = invitedProjects.slice(
-    (invitedCurrentPage - 1) * ITEMS_PER_PAGE,
-    invitedCurrentPage * ITEMS_PER_PAGE
+    (invitedfilters.page - 1) * invitedfilters.limit,
+    invitedfilters.page * invitedfilters.limit
   );
 
   const currentExploreProjects = projects
@@ -87,8 +114,8 @@ function BidManagementSubContractorPage() {
       );
     })
     .slice(
-      (exploreCurrentPage - 1) * ITEMS_PER_PAGE,
-      exploreCurrentPage * ITEMS_PER_PAGE
+      (filters.page - 1) * filters.limit,
+      filters.page * filters.limit
     );
 
   // const dataToExport = currentExploreProjects.filter((project) => {
@@ -117,6 +144,8 @@ function BidManagementSubContractorPage() {
       console.error('Error fetching project saved bids:', err);
     }
   };
+
+
 
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 ">
@@ -167,7 +196,7 @@ function BidManagementSubContractorPage() {
                 placeholder="Search"
                 name="search"
                 inputStyle={'h-[57px] !mt-0'}
-                prefix={<SearchOutlined size={20} />}
+                prefix={<SearchOutlined />}
                 field={{
                   value: search,
                   onChange(e) {
@@ -176,21 +205,6 @@ function BidManagementSubContractorPage() {
                 }}
               />
             </div>
-            {/* <PDFDownloadLink
-            document={<BidListPdf bids={dataToExport} />}
-            fileName={`bid-list-${Math.random()}.pdf`}
-          >
-            {({ loading }) => (
-              <WhiteButton
-                text={loading ? 'Exporting...' : 'Export'}
-                icon="/uploadcloud.svg"
-                iconheight={20}
-                className="!w-32"
-                iconwidth={20}
-                isLoading={loading}
-              />
-            )}
-          </PDFDownloadLink> */}
             <div className="relative">
               <WhiteButton
                 text="Advance Filters"
@@ -202,6 +216,7 @@ function BidManagementSubContractorPage() {
               />
               <BidFilters
                 onApply={(appliedFilters) => {
+                  //@ts-ignore
                   setFilters(appliedFilters);
                   closeFilters();
                   console.log('You click to apply filter');
@@ -241,10 +256,10 @@ function BidManagementSubContractorPage() {
               {size(invitedProjects) >= 5 && (
                 <div className="mt-1 flex justify-center">
                   <Pagination
-                    current={invitedCurrentPage}
-                    pageSize={ITEMS_PER_PAGE}
-                    total={invitedProjects.length}
-                    onChange={(page) => setInvitedCurrentPage(page)}
+                    current={invitedfilters.page}
+                    pageSize={invitedfilters.limit}
+                    total={invitedPaginationInfo.totalRecords}
+                    onChange={(page) => setInvitedfilters(prevFilters => ({ ...prevFilters, page }))}
                   />
                 </div>
               )}
@@ -296,6 +311,7 @@ function BidManagementSubContractorPage() {
                 bid={selectedBid}
                 selectedProjectSavedBid={selectedProjectSavedBid}
                 setSelectedProjectSavedBid={setSelectedProjectSavedBid}
+                bidClickHandler={() => bidClickHandler(selectedBid)}
               />
             </div>
           ) : null}
@@ -303,10 +319,10 @@ function BidManagementSubContractorPage() {
         {size(projects) >= 5 && (
           <div className="mt-1 flex justify-center">
             <Pagination
-              current={exploreCurrentPage}
-              pageSize={ITEMS_PER_PAGE}
-              total={projects.length}
-              onChange={(page) => setExploreCurrentPage(page)}
+              current={filters.page}
+              pageSize={filters.limit}
+              total={paginationInfo.totalRecords}
+              onChange={(page) => setInvitedfilters(prevFilters => ({ ...prevFilters, page }))}
             />
           </div>
         )}

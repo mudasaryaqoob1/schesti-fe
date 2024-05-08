@@ -56,6 +56,8 @@ export function ProjectDesignTeam() {
           dataSource={bid ? bid.teamMembers : []}
         />
       </div>
+      <div className="mt-1 flex justify-center">
+      </div>
     </div>
   );
 }

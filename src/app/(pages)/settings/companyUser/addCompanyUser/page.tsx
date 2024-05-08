@@ -16,9 +16,6 @@ import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import { bg_style } from '@/globals/tailwindvariables';
 import FormControl from '@/app/component/formControl';
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { useLayoutEffect } from 'react';
-import { HttpService } from '@/app/services/base.service';
 import VerticleBar from '@/app/(pages)/settings/verticleBar';
 import { userService } from '@/app/services/user.service';
 
@@ -31,18 +28,13 @@ const defaultOptions = [
 ];
 
 const AddNewUser = () => {
-  const token = useSelector(selectToken);
   const router = useRouter();
   const { user } = useSelector((state: any) => state.user);
 
 
   const [isLoading, setisLoading] = useState(false);
 
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
+ 
 
   const newClientSchema: any = Yup.object({
     firstName: Yup.string().required('First name is required!'),
@@ -129,7 +121,7 @@ const AddNewUser = () => {
             className="font-semibold text-lavenderPurple cursor-pointer underline"
           />
         </div>
-        <TertiaryHeading title="Client List" className="my-5" />
+        <TertiaryHeading title="New User" className="my-5" />
         <Formik
           initialValues={initialValues}
           validationSchema={newClientSchema}
@@ -186,7 +178,7 @@ const AddNewUser = () => {
                       isLoading={isLoading}
                       className="mx-w-30"
                       type="submit"
-                      text="Invite"
+                      text={user ? 'Update' : 'Invite'}
                     />
                   </div>
                 </div>

@@ -4,7 +4,7 @@ import { InputComponent } from '@/app/component/customInput/Input';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { withAuth } from '@/app/hoc/withAuth';
 import { SearchOutlined } from '@ant-design/icons';
-import { Dropdown, Table, Tag } from 'antd';
+import { Pagination, Dropdown, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useRouter } from 'next/navigation';
 import { Routes } from '@/app/utils/plans.utils';
@@ -26,11 +26,9 @@ import { useState } from 'react';
 import { DeletePopup } from '../post/components/DeletePopup';
 import dynamic from 'next/dynamic';
 import { USCurrencyFormat } from '@/app/utils/format';
-
 const ExportAll = dynamic(() => import("./components/ExportAll"), { ssr: false });
 
-
-
+const RES_PER_PAGE = 10;
 
 function Page() {
   const router = useRouter();
@@ -43,9 +41,18 @@ function Page() {
     useState<boolean>(false);
   const [search, setSearch] = useState<string>('');
 
-  const projectsQuery = useQuery(['projects'], () => {
-    return bidManagementService.httpGetMyProjects();
+  const [postedProject, setpostedProject] = useState<{
+    page: number;
+    limit: number;
+  }>({
+    page: 1,
+    limit: RES_PER_PAGE
   });
+
+  const fetchProjectDetails = async () => {
+    return bidManagementService.httpGetMyProjects(postedProject);
+  };
+  const projectsQuery = useQuery(['projects', postedProject.page, postedProject.limit], fetchProjectDetails);
 
   const columns: ColumnsType<IBidManagement> = [
     {
@@ -218,9 +225,14 @@ function Page() {
 
   const projects =
     projectsQuery.data && projectsQuery.data.data
-      ? projectsQuery.data.data?.projects
+      ? projectsQuery.data.data?.records
       : [];
-  const filteredData = projects.filter((project) => {
+
+  const paginationInfo = projectsQuery.data && projectsQuery.data.data
+    ? projectsQuery.data.data.paginationInfo
+    : { currentPage: 0, pages: 0, totalRecords: 0, perPage: 0 };
+
+  const filteredData = projects?.filter((project: { projectName: string; city: string; }) => {
     if (search === '') {
       return project;
     }
@@ -228,7 +240,8 @@ function Page() {
       project.projectName.toLowerCase().includes(search.toLowerCase()) ||
       project.city.toLowerCase().includes(search.toLowerCase())
     );
-  });
+  }) ?? [];
+
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl bg-white shadow-xl px-8 py-9">
       <div className="flex justify-between items-center">
@@ -284,7 +297,18 @@ function Page() {
           columns={columns}
           dataSource={filteredData}
           loading={projectsQuery.isLoading}
+          pagination={false}
           bordered
+        />
+      </div>
+      <div className="mt-1 flex justify-center">
+        <Pagination
+          current={postedProject.page}
+          pageSize={postedProject.limit}
+          total={typeof paginationInfo === 'object' ? paginationInfo.totalRecords || 0 : 0}
+          onChange={(page) => {
+            setpostedProject(prevFilters => ({ ...prevFilters, page: page }));
+          }}
         />
       </div>
     </section>

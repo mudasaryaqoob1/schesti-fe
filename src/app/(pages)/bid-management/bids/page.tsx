@@ -87,7 +87,7 @@ function SubContractorBidsPage() {
                           type="text"
                           placeholder="Search"
                           name="search"
-                          prefix={<SearchOutlined size={20} />}
+                          prefix={<SearchOutlined />}
                         />
                       </div>
                       {activeTab === UPCOMING ? (

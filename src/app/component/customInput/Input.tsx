@@ -17,6 +17,7 @@ type Props = {
   type: string;
   suffix?: any;
   errorMessage?: string;
+  step?:string,
 };
 
 export function InputComponent({

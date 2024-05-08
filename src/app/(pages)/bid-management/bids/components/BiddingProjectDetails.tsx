@@ -14,51 +14,69 @@ import { toast } from 'react-toastify';
 import Link from 'next/link';
 import { downloadFile } from '@/app/utils/downloadFile';
 import { size } from 'lodash';
+import { useState } from 'react';
 
 type Props = {
   bid: any;
   refetchSavedBids: any;
   setSelectedBid: any;
 };
-type RemoveUserBidProps =  {
-    biddingId: string;
-  }
-export function BiddingProjectDetails({ bid, refetchSavedBids, setSelectedBid }: Props) {
-
+type RemoveUserBidProps = {
+  biddingId: string;
+};
+export function BiddingProjectDetails({
+  bid,
+  refetchSavedBids,
+  setSelectedBid,
+}: Props) {
   const router = useRouter();
-  
+  const [isLoading, setIsLoading] = useState(false);
+
   const removeUserBidMutation = useMutation<
-  IResponseInterface<{ biddingId: RemoveUserBidProps }>,
-  AxiosError<{ message: string }>,
-  RemoveUserBidProps
->({
-  //@ts-ignore
-  mutationKey: 'saveUserBid',
-  mutationFn: async (values: RemoveUserBidProps) => {
-    return bidManagementService.httpRemoveUserProjectBid(values.biddingId);
-  },
-  onSuccess(res: any) {
-    console.log('res', res);
-    if (res.data && res.data) {
-      toast.success('Bid removed Successfully');
-      setSelectedBid(null);
-      refetchSavedBids();
-    }
-  },
-  onError(error: any) {
-    console.log('error', error);
-    if (error.response?.data?.message) {
-      toast.error(error.response?.data.message);
-    }
-  },
-});
+    IResponseInterface<{ biddingId: RemoveUserBidProps }>,
+    AxiosError<{ message: string }>,
+    RemoveUserBidProps
+  >({
+    //@ts-ignore
+    mutationKey: 'saveUserBid',
+    mutationFn: async (values: RemoveUserBidProps) => {
+      return bidManagementService.httpPostProjectAsBidder(values.biddingId);
+    },
+    onSuccess(res: any) {
+      console.log('res', res);
+      if (res.data && res.data) {
+        toast.success('Bid removed Successfully');
+        setSelectedBid(null);
+        refetchSavedBids();
+      }
+    },
+    onError(error: any) {
+      console.log('error', error);
+      if (error.response?.data?.message) {
+        toast.error(error.response?.data.message);
+      }
+    },
+  });
 
-const downloadAllFiles = async (files: any[]) => {
-  files.forEach(async (file: any) => {
-    await downloadFile(file.url, file.name)
-  })
-}
+  const downloadAllFiles = async (files: any[]) => {
+    files.forEach(async (file: any) => {
+      await downloadFile(file.url, file.name);
+    });
+  };
 
+  const handlePostProjectAsBidder = async () => {
+    console.log('ddksk');
+    setIsLoading(true);
+    try {
+      const { data }: any = await bidManagementService.httpPostProjectAsBidder(bid?.projectId?._id);
+      if(data) {
+        setIsLoading(false);
+      }
+    } catch(err){
+      setIsLoading(false);
+      console.log('could not post project as bidder', err);
+    }
+  }
 
   return (
     <div>
@@ -150,22 +168,34 @@ const downloadAllFiles = async (files: any[]) => {
 
       <div className="mt-4 space-y-2">
         <CustomButton
-          onClick={() => removeUserBidMutation.mutate({biddingId: bid._id})}
+          onClick={() => removeUserBidMutation.mutate({ biddingId: bid._id })}
           text="Remove from my bidding projects"
           className="!text-[red] !bg-transparent !border-[red] !text-base !leading-7 "
         />
       </div>
       <div className="mt-4 space-y-2">
         <CustomButton
-          onClick={() => router.push(`/bid-management/submit/${bid.projectId?._id}`)}
+          onClick={() =>
+            router.push(`/bid-management/submit/${bid.projectId?._id}`)
+          }
           text="Send Bid"
-          className="!bg-[#EAECF0] !text-[#667085] !border-[#EAECF0] !text-base !leading-7 "
+          className="!bg-[#7F56D9] !text-[#ffffff] !border-[#EAECF0] !text-base !leading-7 "
         />
       </div>
       <div className="mt-4 space-y-2">
         <CustomButton
-          onClick={() => router.push(`/bid-management/details/${bid.projectId?._id}`)}
-          text="View Details"
+          text="Post this project as a bidder"
+          onClick={handlePostProjectAsBidder}
+          disabled={isLoading}
+          className={'!bg-[#F9F5FF] !text-[#7138DF]'}
+        />
+      </div>
+      <div className="mt-4 space-y-2">
+        <CustomButton
+          onClick={() =>
+            router.push(`/bid-management/details/${bid.projectId?._id}`)
+          }
+          text="View Details-usama"
           className="!bg-[#EAECF0] !text-[#667085] !border-[#EAECF0] !text-base !leading-7 "
         />
       </div>

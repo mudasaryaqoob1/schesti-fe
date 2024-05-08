@@ -65,6 +65,6 @@ class EstimateRequestsService extends HttpService {
     estimateId: string,
     bodyObject: any
   ): Promise<IResponseInterface<{ estimateRequestData: IEstimateRequest }>> =>
-    this.put(`${this.prefix}/changeEstimateStatus/${estimateId}`, bodyObject);
+    this.put(`${this.prefix}/changeEstimateStatus/${estimateId}`, {status : bodyObject.status});
 }
 export const estimateRequestService = new EstimateRequestsService();

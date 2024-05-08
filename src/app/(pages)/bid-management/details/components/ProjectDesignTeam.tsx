@@ -11,7 +11,7 @@ export function ProjectDesignTeam(props: IProps) {
 
   const columns = [
     {
-      title: 'Name',
+      title: 'Name dsfer',
       dataIndex: 'name',
       key: 'name',
     },
@@ -45,7 +45,7 @@ export function ProjectDesignTeam(props: IProps) {
     <div className=" mt-6 mb-4 md:ms-[69px] md:me-[59px] mx-4  p-5 bg-white rounded-lg border shadow-lg">
       <div>
         <TertiaryHeading
-          title="Design Team"
+          title="Design Teams"
           className="text-[20px] leading-[30px]"
         />
       </div>

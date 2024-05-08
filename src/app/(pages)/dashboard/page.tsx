@@ -39,7 +39,7 @@ const Dashboard = () => {
       isLoading ? (
         <Skeleton/>
       ) : (
-        <section className="my-4  mx-8 px-4">
+        <section className="my-4  mx-8 px-4 " >
         <TotalCost fetchDashboardState={dashboardStats} />
   
         <div className="grid grid-cols-12 gap-3">
@@ -66,28 +66,6 @@ const Dashboard = () => {
             <h3 className="text-[18px] text-[#344054] leading-[28px] font-semibold">
               Statistics
             </h3>
-            {/* <div className="p-5 flex items-center space-x-4">
-              <div className="flex justify-between">
-                <div className="flex gap-3 items-center">
-                  <span className="w-3 h-3 bg-[#7F56D9]" />
-                  <SenaryHeading title="Takeoff" />
-                </div>
-              </div>
-              <div className="flex justify-between">
-                <div className="flex gap-3 items-center">
-                  <span className="w-3 h-3 bg-[#EF9F28]" />
-  
-                  <SenaryHeading title="Estimate" />
-                </div>
-              </div>
-              <div className="flex justify-between">
-                <div className="flex gap-3 items-center">
-                  <span className="w-3 h-3 bg-[#27AE60]" />
-  
-                  <SenaryHeading title="Scheduled " />
-                </div>
-              </div>
-            </div> */}
           </div>
           <StatisticsReport  fetchDashboardState={dashboardStats} />
         </div>

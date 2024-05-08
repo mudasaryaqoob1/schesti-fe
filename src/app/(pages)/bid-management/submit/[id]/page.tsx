@@ -98,7 +98,7 @@ function ContractorSubmitBidPage() {
   const query = useQuery(
     ['getOwnerProjectById', params.id],
     () => {
-      return bidManagementService.httpGetOwnerProjectById(params.id);
+      return bidManagementService.httpGetOwnerProjectById(params.id , {page : 1 , limit : 10});
     },
     {
       onSuccess(data) {

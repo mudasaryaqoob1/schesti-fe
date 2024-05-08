@@ -18,16 +18,18 @@ import { useMutation } from 'react-query';
 import { bidManagementService } from '@/app/services/bid-management.service';
 import { useRouter } from 'next/navigation';
 import { CreateRFI } from './CreateRFI';
-import Link from 'next/link';
 import { isEmpty, size } from 'lodash';
 import { SendEmailModal } from './SendEamil';
 import { downloadFile } from '@/app/utils/downloadFile';
 import { proposalService } from '@/app/services/proposal.service';
+import { WhatsappIcon, WhatsappShareButton, FacebookIcon, FacebookShareButton, TwitterIcon, TwitterShareButton } from 'react-share';
+
 
 type Props = {
   bid: IBidManagement;
   selectedProjectSavedBid?: any;
   setSelectedProjectSavedBid?: any;
+  bidClickHandler?: any;
 };
 type RemoveUserBidProps = {
   biddingId: string;
@@ -39,6 +41,7 @@ type SaveUserBidProps = {
 };
 export function BidDetails({
   bid,
+  bidClickHandler,
   selectedProjectSavedBid,
   setSelectedProjectSavedBid,
 }: Props) {
@@ -125,6 +128,20 @@ export function BidDetails({
     });
   };
 
+  const createProjectActivity = async (projectId: string) => {
+    try {
+      const data = { projectId: projectId };
+      const res = await bidManagementService.httpCreateProjectActivity(data);
+      console.log({ activities: res });
+
+    } catch (error) { /* empty */ }
+  }
+
+  const handleProposalDetails = async (bidId: string) => {
+    await createProjectActivity(bidId);
+    router.push(`/bid-management/details/${bidId}`);
+  }
+
   return (
     <div>
       {bidSubmittedDetails && !isDetailsLoading && (
@@ -133,12 +150,12 @@ export function BidDetails({
             title={'You have already submitted a proposal'}
             className="text-[#475467] text-[14px] leading-6 font-normal mt-2"
           />
-          <Link
-            href={`/bid-management/details/${bid?._id}`}
+          <div
+            onClick={() => handleProposalDetails(bid?._id)}
             className="text-[#27AE60] underline underline-offset-2 mb-2 text-[14px] leading-6 font-normal cursor-pointer"
           >
             View Proposal
-          </Link>
+          </div>
         </div>
       )}
       <div className="flex items-center justify-between">
@@ -155,13 +172,22 @@ export function BidDetails({
               className="text-[#7138DF] font-normal text-xs leading-4"
             />
           </div>
-          <Image
-            alt="share icon"
-            src={'/share.svg'}
-            width={16}
-            height={16}
-            className="cursor-pointer"
-          />
+          <WhatsappShareButton
+            url={`${window.location.protocol}//${window.location.hostname}/bid-management/details/${bid?._id}`}
+            separator=":: "
+          >
+            <WhatsappIcon size={30} round />
+          </WhatsappShareButton>
+          <FacebookShareButton
+            url={`${window.location.protocol}//${window.location.hostname}/bid-management/details/${bid?._id}`}
+          >
+            <FacebookIcon size={30} round />
+          </FacebookShareButton>
+          <TwitterShareButton
+            url={`${window.location.protocol}//${window.location.hostname}/bid-management/details/${bid?._id}`}
+          >
+            <TwitterIcon size={30} round />
+          </TwitterShareButton>
           <SendEmailModal />
         </div>
       </div>
@@ -176,12 +202,12 @@ export function BidDetails({
           title={bid.description}
           className="text-[#475467] text-[14px] leading-6 font-normal mt-2"
         />
-        <Link
-          href={`/bid-management/details/${bid?._id}`}
-          className="text-[#7F56D9] underline underline-offset-2 mt-4 text-[14px] leading-6 font-normal cursor-pointer"
+        <div
+          onClick={() => handleProposalDetails(bid?._id)}
+          className="text-[#7F56D9] underline underline-offset-2 text-[14px] leading-6 font-normal cursor-pointer"
         >
           View full details
-        </Link>
+        </div>
       </div>
       <Divider />
       <div className="my-4 space-y-3">
@@ -293,7 +319,14 @@ export function BidDetails({
 
         {isEmpty(selectedProjectSavedBid) ? (
           <CustomButton
-            onClick={() => saveUserBidMutation.mutate({ projectId: bid?._id })}
+            onClick={() => {
+              saveUserBidMutation.mutate({ projectId: bid?._id })
+              setTimeout(() => {
+                if (bidClickHandler) {
+                  bidClickHandler();
+                }
+              }, 500);
+            }}
             text="Add to my Bidding Projects"
             className="!bg-white !text-[#7138DF]"
           />
@@ -311,7 +344,7 @@ export function BidDetails({
 
         <CreateRFI
           isProjectOwner={false}
-          onSuccess={() => {}}
+          onSuccess={() => { }}
           projectId={bid._id}
         />
       </div>

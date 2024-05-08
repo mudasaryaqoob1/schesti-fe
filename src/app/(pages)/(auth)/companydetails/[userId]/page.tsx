@@ -63,14 +63,6 @@ const CompanyDetails = () => {
     if (!isObjectId(userId) && !isEmpty(userId)) {
       // setIsLoading(true);
       dispatch(verifyUserEmail(userId));
-      //   .unwrap()
-      //   .then(() => {
-      //     setIsLoading(false);
-      //   })
-      //   .catch((err: any) => {
-      //     setIsLoading(false);
-      //     console.log('verification err', err);
-      //   });
     }
   }, [userId]);
 

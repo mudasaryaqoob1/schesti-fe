@@ -97,6 +97,7 @@ export function CreateMeeting({ showModal, setShowModal, onSuccess }: Props) {
     setShowModal();
     formik.resetForm();
   }
+
   return (
     <ModalComponent
       width="50%"
@@ -113,8 +114,7 @@ export function CreateMeeting({ showModal, setShowModal, onSuccess }: Props) {
           />
           <CloseOutlined
             className="cursor-pointer"
-            width={24}
-            height={24}
+            style={{ width : '24px' , height : '24px'}}
             onClick={handleCloseModal}
           />
         </div>
@@ -175,10 +175,10 @@ export function CreateMeeting({ showModal, setShowModal, onSuccess }: Props) {
                     (timezone as ITimezoneOption).value
                   )
                   : undefined,
-                onChange(date) {
+                onChange(date, dateString) {
                   formik.setFieldValue(
                     'startDate',
-                    date?.tz((timezone as ITimezoneOption).value)
+                    dayjs(dateString as string).tz((timezone as ITimezoneOption).value).format('YYYY-MM-DDTHH:mm:ss')
                   );
                 },
                 onBlur: formik.handleBlur,
@@ -187,6 +187,13 @@ export function CreateMeeting({ showModal, setShowModal, onSuccess }: Props) {
                     ? 'error'
                     : undefined,
                 use12Hours: true,
+                onOk(date) {
+                  formik.setFieldValue(
+                    'startDate',
+                    dayjs(date).tz((timezone as ITimezoneOption).value).format('YYYY-MM-DDTHH:mm:ss')
+                  );
+                },
+                changeOnBlur: true,
                 disabledDate: (curr) =>
                   disabledDate(curr, (timezone as ITimezoneOption).value) as boolean,
                 // showSecond: false,

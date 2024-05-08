@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 
 // module imports
 import { IPartner } from '@/app/interfaces/companyInterfaces/companyClient.interface';
+import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
 import { senaryHeading } from '@/globals/tailwindvariables';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import MinDesc from '@/app/component/description/minDesc';
@@ -143,7 +144,13 @@ const fetchPartnerDetail = useCallback(async () => {
           validationSchema={newPartnerSchema}
           onSubmit={submitHandler}
         >
-          {({ handleSubmit }) => {
+          {({ handleSubmit,
+            setFieldValue,
+            values,
+            setFieldTouched,
+            touched,
+            errors
+           }) => {
             return (
               <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
                 <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-4 gap-4">
@@ -161,12 +168,15 @@ const fetchPartnerDetail = useCallback(async () => {
                     name="lastName"
                     placeholder="Last Name"
                   />
-                  <FormControl
-                    control="input"
+                  <PhoneNumberInputWithLable
                     label="Phone Number"
-                    type="text"
-                    name="phone"
-                    placeholder="Phone number"
+                    onChange={(val: string) => setFieldValue('phone', val)}
+                    value={values.phone}
+                    onBlur={() => setFieldTouched('phone', true)}
+                    hasError={touched.phone && Boolean(errors.phone)}
+                    errorMessage={
+                      touched.phone && errors.phone ? errors.phone : ''
+                    }
                   />
                   <FormControl
                     control="input"
