@@ -50,7 +50,7 @@ export function PostProjectDetails({ formik, children }: Props) {
                 formik.touched.projectType && Boolean(formik.errors.projectType)
               }
               errorMessage={
-                formik.touched.projectType && formik.errors.projectType
+                formik.errors.projectType
                   ? (formik.errors.projectType as string)
                   : ''
               }
@@ -79,8 +79,7 @@ export function PostProjectDetails({ formik, children }: Props) {
                 Boolean(formik.errors.projectBuildingUse)
               }
               errorMessage={
-                formik.touched.projectBuildingUse &&
-                  formik.errors.projectBuildingUse
+                formik.errors.projectBuildingUse
                   ? (formik.errors.projectBuildingUse as string)
                   : ''
               }
@@ -132,7 +131,6 @@ export function PostProjectDetails({ formik, children }: Props) {
               Boolean(formik.errors.estimatedStartDate)
             }
             errorMessage={
-
               formik.errors.estimatedStartDate
                 ? formik.errors.estimatedStartDate
                 : ''
@@ -184,7 +182,6 @@ export function PostProjectDetails({ formik, children }: Props) {
               Boolean(formik.errors.estimatedCompletionDate)
             }
             errorMessage={
-
               formik.errors.estimatedCompletionDate
                 ? formik.errors.estimatedCompletionDate
                 : ''
@@ -225,10 +222,10 @@ export function PostProjectDetails({ formik, children }: Props) {
               prefix: '$',
             }}
             hasError={
-              formik.touched.projectValue && Boolean(formik.errors.projectValue)
+              Boolean(formik.errors.projectValue)
             }
             errorMessage={
-              formik.errors.projectValue
+              formik.touched.projectValue && formik.errors.projectValue
                 ? formik.errors.projectValue
                 : ''
             }
@@ -330,8 +327,8 @@ export function PostProjectDetails({ formik, children }: Props) {
               Boolean(formik.errors.specialInstructions)
             }
             errorMessage={
-              formik.touched.specialInstructions &&
-                formik.errors.specialInstructions
+
+              formik.errors.specialInstructions
                 ? formik.errors.specialInstructions
                 : ''
             }
