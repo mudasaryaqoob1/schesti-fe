@@ -79,10 +79,10 @@ const Trades = () => {
     <>
       <AuthNavbar />
       <div className="h-[calc(100vh-100px)] mt-2 grid place-items-center">
-        <div className="w-full max-w-xl bg-snowWhite">
-          <h2 className={twMerge(`${tertiaryHeading} mb-4`)}>Trades</h2>
+        <div className="w-full max-w-xl ">
+          <h2 className={twMerge(`${tertiaryHeading} mb-2`)}>Trades</h2>
           <div className="w-full h-1 bg-mistyWhite"></div>
-          <div className="mt-6 bg-snowWhite shadow-tertiaryMystery p-10">
+          <div className="mt-6 bg-white rounded-lg shadow-tertiaryMystery p-10">
             <PrimaryHeading
               title="Select Trades"
               className="text-center mb-12"
@@ -109,12 +109,11 @@ const Trades = () => {
                       <h6 className="text-gray-700">
                         {data.heading}{' '}
                         <span
-                          className={`text-gray-500 ms-3 ${
-                            selectedTabs[data.heading] &&
+                          className={`text-gray-500 ms-3 ${selectedTabs[data.heading] &&
                             selectedTabs[data.heading].length > 0
-                              ? ''
-                              : 'hidden'
-                          }`}
+                            ? ''
+                            : 'hidden'
+                            }`}
                         >
                           {selectedTabs[data.heading] &&
                             selectedTabs[data.heading].length}{' '}
@@ -123,9 +122,8 @@ const Trades = () => {
                       </h6>
                       <svg
                         data-accordion-icon
-                        className={`w-4 h-4 transform ${
-                          activeCollapse === index ? 'rotate-0' : '-rotate-180'
-                        }`}
+                        className={`w-4 h-4 transform ${activeCollapse === index ? 'rotate-0' : '-rotate-180'
+                          }`}
                         viewBox="0 0 20 20"
                         fill="none"
                       >
@@ -141,26 +139,24 @@ const Trades = () => {
                   </h2>
                   <div
                     id={`accordion-flush-body-${index}`}
-                    className={`${
-                      activeCollapse === index ? 'block' : 'hidden'
-                    }`}
+                    className={`${activeCollapse === index ? 'block' : 'hidden'
+                      }`}
                     aria-labelledby={`accordion-flush-heading-${index}`}
                   >
                     <div className="flex flex-wrap">
                       {data.tabs.map((tab, tabIndex) => (
                         <div
                           key={tabIndex}
-                          className={`border rounded-full p-3 mr-2 mb-2 flex text-gray-500 items-center cursor-pointer ${
-                            selectedTabs[data.heading] &&
+                          className={`border rounded-full p-3 mr-2 mb-2 flex text-gray-500 items-center cursor-pointer ${selectedTabs[data.heading] &&
                             selectedTabs[data.heading].includes(tab.name)
-                              ? 'foundation-primary-400'
-                              : ''
-                          }`}
+                            ? 'foundation-primary-400'
+                            : ''
+                            }`}
                           onClick={() => toggleTab(data.heading, tab.name)}
                         >
                           <span>{tab.name}</span>
                           {selectedTabs[data.heading] &&
-                          selectedTabs[data.heading].includes(tab.name) ? (
+                            selectedTabs[data.heading].includes(tab.name) ? (
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               className="w-4 h-4 ml-1 text-red-500"
