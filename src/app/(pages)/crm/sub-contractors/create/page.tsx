@@ -130,7 +130,9 @@ const CreateSubcontractor = () => {
                   />
                   <PhoneNumberInputWithLable
                     label="Phone Number"
+                    //@ts-ignore
                     onChange={(val: string) => setFieldValue('phone', val)}
+                    //@ts-ignore
                     value={values.phone}
                     onBlur={() => setFieldTouched('phone', true)}
                     hasError={touched.phone && Boolean(errors.phone)}

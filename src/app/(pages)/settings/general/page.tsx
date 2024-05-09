@@ -105,6 +105,11 @@ const GeneralSetting = () => {
         })
       );
 
+      let userObject : any = {...userData , avatar : avatarUrl}
+  
+      setUserData(userObject)
+
+
       return avatarUrl;
     } catch (error) {
       console.error('Error uploading documents:', error);
@@ -129,6 +134,8 @@ const GeneralSetting = () => {
             onSubmit={submitHandler}
           >
             {({ handleSubmit, errors, setFieldValue, values }) => {
+              console.log(errors , 'errors');
+              
               return (
                 <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
                   <div

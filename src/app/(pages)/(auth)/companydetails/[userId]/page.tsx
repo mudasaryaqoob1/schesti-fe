@@ -137,7 +137,6 @@ const CompanyDetails = () => {
           >
             Setup Company profile
           </h2>
-          {/* <div className="w-full h-1 bg-mistyWhite"></div> */}
           <div className="mt-6 bg-snowWhite shadow-tertiaryMystery p-10 rounded-md">
             <PrimaryHeading
               title={primaryHeadingTitle}
@@ -252,15 +251,6 @@ const CompanyDetails = () => {
                                 onChange={(e: any) => {
                                   const file = e.target.files[0];
                                   if (file) {
-                                    // Check file size (max size: 800x400px)
-                                    // const maxFileSize = 800 * 400; // 800x400px
-                                    // if (file.size > maxFileSize) {
-                                    //   setCompanyLogoErr(
-                                    //     'Image size should be less than 800x400 pixels'
-                                    //   );
-                                    //   e.target.value = ''; // Clear the file input to allow re-selection
-                                    //   return;
-                                    // }
                                     setCompanyLogo(file);
                                     setCompanyLogoErr('');
                                   }
@@ -271,11 +261,28 @@ const CompanyDetails = () => {
                               />
                               {companyLogo && (
                                 <>
+                                <div className='flex items-center mb-1'>
                                   <p className="mb-2 text-sm text-gray-500 dark:text-gray-400 max-w-64 text-ellipsis overflow-hidden ...">
                                     <span className="font-semibold text-purple-600">
                                       {companyLogo?.name}
                                     </span>
                                   </p>
+                                  <button onClick={() => setCompanyLogo(null)} className="ml-2 text-red-500 pointer hover:text-red-700">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path
+            fillRule="evenodd"
+            d="M10 2a1 1 0 0 1 1 1v1h4a1 1 0 0 1 0 2h-.489l-.863 12.07A2 2 0 0 1 12.65 20H7.35a2 2 0 0 1-1.998-1.929L4.49 6H3a1 1 0 0 1 0-2h4V3a1 1 0 0 1 1-1z"
+            clipRule="evenodd"
+          />
+        </svg>
+      </button>
+      </div>
+                                  <img src={URL.createObjectURL(companyLogo)} alt="Company Logo" className="w-16 h-16" />
                                 </>
                               )}
                             </label>
