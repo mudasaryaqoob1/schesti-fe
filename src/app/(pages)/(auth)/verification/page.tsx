@@ -134,7 +134,7 @@ const RegisterVerification = () => {
   return (
     <>
       <AuthNavbar />
-      <div className="h-[calc(100vh-100px)] mt-2 grid place-items-center">
+      <div className="h-[calc(100vh-100px)] mt-4 grid place-items-center">
         <div className="w-full max-w-xl">
           <h2
             className={twMerge(
@@ -143,7 +143,7 @@ const RegisterVerification = () => {
           >
             Verification
           </h2>
-          <div className="mt-6 bg-snowWhite shadow-tertiaryMystery p-10 rounded-lg">
+          <div className="mt-6 bg-white shadow-tertiaryMystery p-10 rounded-lg">
             <PrimaryHeading title="Verification" className="text-center mb-4" />
             <p className="px-2 text-center text-[#344054] font-normal leading-6">
               Upload all the documents to get schesti verification badge. That
