@@ -385,9 +385,12 @@ export function PostDesignTeam({ formik, children }: Props) {
 
           <PhoneNumberInputWithLable
             label="Phone Number"
+            //@ts-ignore
             onChange={(val) =>
+              //@ts-ignore
               designTeamFormik.setFieldValue('phoneNumber', val)
             }
+            //@ts-ignore
             value={designTeamFormik.values.phoneNumber}
             onBlur={() => designTeamFormik.setFieldTouched('phoneNumber', true)}
             defaultCountry='US'
