@@ -31,7 +31,8 @@ import {
 } from '@/app/utils/validationSchemas';
 import PhoneNumberInput from '@/app/component/phoneNumberInput';
 import { isObjectId } from '@/app/utils/utils';
-
+import { SelectComponent } from '@/app/component/customSelect/Select.component';
+import { Country, State, City } from 'country-state-city';
 const { CONTRACTOR, SUBCONTRACTOR, OWNER } = USER_ROLES_ENUM;
 
 const initialValues: IRegisterCompany = {
@@ -40,6 +41,9 @@ const initialValues: IRegisterCompany = {
   employee: 1,
   phoneNumber: null,
   companyLogo: '',
+  city: '',
+  state: '',
+  country: 'US',
 };
 
 const CompanyDetails = () => {
@@ -49,6 +53,10 @@ const CompanyDetails = () => {
 
   const auth = useSelector((state: RootState) => state.auth);
   const { user: userData } = auth;
+  const [country, setCountry] = useState<string>('US');
+  const [state, setState] = useState<string>('');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  const [city, setCity] = useState<string>('');
 
   const [isLoading, setIsLoading] = useState(false);
   const [companyLogo, setCompanyLogo] = useState<any>('');
@@ -155,7 +163,22 @@ const CompanyDetails = () => {
               validationSchema={getValidationSchema}
               onSubmit={submitHandler}
             >
-              {(formik: any) => {
+              {(formik) => {
+                const countries = Country.getAllCountries().map((country) => ({
+                  label: country.name,
+                  value: country.isoCode,
+                }));
+                const states = State.getAllStates()
+                  .filter(
+                    (state) =>
+                      state.countryCode === country ||
+                      formik.values.country === state.countryCode
+                  )
+                  .map((state) => ({ label: state.name, value: state.isoCode }));
+                const cities = City.getCitiesOfState(
+                  country,
+                  state || formik.values.state
+                ).map((city) => ({ label: city.name, value: city.name }));
                 return (
                   <Form
                     name="basic"
@@ -174,6 +197,7 @@ const CompanyDetails = () => {
                             placeholder="Enter Company Address"
                           />
                         )}
+
                       {selectedUserRole != OWNER && (
                         <FormControl
                           control="input"
@@ -190,6 +214,93 @@ const CompanyDetails = () => {
                           setPhoneNumber={setPhoneNumber}
                         />
                       </div>
+                      {selectedUserRole === OWNER || selectedUserRole === CONTRACTOR || selectedUserRole === SUBCONTRACTOR ? (
+                        <>
+                          <div className='flex items-center space-x-1 justify-between'>
+                            <div className="flex-1">
+                              <SelectComponent
+                                label='Country'
+                                name='country'
+                                placeholder='Select Country'
+                                field={{
+                                  options: countries,
+                                  value: formik.values.country,
+                                  onChange(value) {
+                                    setCountry(value);
+                                    formik.setFieldValue('country', value);
+                                    formik.setFieldValue('state', '');
+                                    formik.setFieldValue('city', '');
+                                    setState('');
+                                    setCity('');
+                                  },
+                                  onClear() {
+                                    formik.setFieldValue('country', '');
+                                    formik.setFieldValue('state', '');
+                                    formik.setFieldValue('city', '');
+                                    setCountry('');
+                                    setState('');
+                                    setCity('');
+                                  },
+                                }}
+                              />
+                            </div>
+
+                            <div className="flex-1">
+                              <SelectComponent
+                                label="State"
+                                name="state"
+                                placeholder="State"
+                                field={{
+                                  options: states,
+                                  value: formik.values.state,
+                                  showSearch: true,
+                                  onChange(value) {
+                                    setState(value);
+                                    formik.setFieldValue('state', value);
+                                    formik.setFieldValue('city', '');
+                                    setCity('');
+                                  },
+                                  onBlur: formik.handleBlur,
+                                  onClear() {
+                                    formik.setFieldValue('state', '');
+                                    formik.setFieldValue('city', '');
+                                    setState('');
+                                    setCity('');
+                                  },
+                                }}
+                                errorMessage={formik.errors.state}
+                                hasError={Boolean(formik.errors.state)}
+                              />
+                            </div>
+                          </div>
+                          <SelectComponent
+                            label="City"
+                            name="city"
+                            placeholder="City"
+                            field={{
+                              options: cities,
+                              showSearch: true,
+                              value: formik.values.city || city,
+                              onChange: (value) => {
+                                setCity(value);
+                                formik.setFieldValue('city', value);
+                              },
+                              onBlur: formik.handleBlur,
+                              allowClear: true,
+                              onClear() {
+                                formik.setFieldValue('city', '');
+                                setCity('');
+                              },
+                            }}
+                            errorMessage={
+                              formik.touched.city && formik.errors.city
+                                ? formik.errors.city
+                                : ''
+                            }
+                            hasError={formik.touched.city && Boolean(formik.errors.city)}
+                          />
+                        </>
+                      ) : null}
                       {selectedUserRole == OWNER && (
                         <FormControl
                           control="input"
@@ -199,6 +310,9 @@ const CompanyDetails = () => {
                           placeholder="Enter Organization Name"
                         />
                       )}
+
+
+
                       {selectedUserRole == CONTRACTOR && (
                         <FormControl
                           control="input"
