@@ -32,7 +32,6 @@ const RegisterVerification = () => {
   const [fileName, setFileName] = useState('');
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadInterval, setUploadInterval] = useState<any>(null);
-  const [einNumber, setEinNumber] = useState<any>(null);
   const [license, setLicense] = useState<any>(null);
   const [preQualification, setPreQualification] = useState<any>(null);
   const [secretaryOfState, setSecretaryOfState] = useState<any>(null);
@@ -44,13 +43,7 @@ const RegisterVerification = () => {
     const data: any = { userId: userData?.user?._id };
 
     try {
-      if (einNumber) {
-        const url = await new AwsS3(
-          einNumber,
-          'verification/einNumber'
-        ).getS3URL();
-        data.einNumber = url;
-      }
+
       if (license) {
         const url = await new AwsS3(license, 'verification/license').getS3URL();
         data.license = url;
@@ -96,8 +89,6 @@ const RegisterVerification = () => {
       // setFileName(file.name);
       if (keyName == 'license') {
         setLicense(file);
-      } else if (keyName == 'einNumber') {
-        setEinNumber(file);
       } else if (keyName == 'secretaryOfState') {
         setSecretaryOfState(file);
       } else if (keyName == 'preQualification') {
@@ -128,7 +119,7 @@ const RegisterVerification = () => {
   // };
 
   const isAllowToSubmit = () => {
-    return !einNumber && !license && !preQualification && !secretaryOfState;
+    return !license && !preQualification && !secretaryOfState;
   };
 
   return (
@@ -151,70 +142,7 @@ const RegisterVerification = () => {
             </p>
             <Form name="basic" autoComplete="off">
               <div className="flex flex-col gap-3">
-                <label
-                  htmlFor="myInput"
-                  className="mt-3 border-b-2 border=[#E7E7E7] pb-2"
-                >
-                  EIN Number
-                </label>
-                <div className="flex items-center">
-                  <label
-                    htmlFor="einNumber-file"
-                    className="flex flex-col items-start justify-start w-full border-2 border-gray-300 border-solid rounded-lg cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-                  >
-                    <div className="flex items-center justify-start p-2 w-full">
-                      <svg
-                        className="w-6 h-6 text-gray-500 dark:text-gray-400 mr-3"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 20 16"
-                      >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                        />
-                      </svg>
-                      <div>
-                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                          <span className="font-semibold text-purple-600">
-                            Click to upload
-                          </span>{' '}
-                          or drag and drop
-                        </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
-                          SVG, PNG, JPG or GIF (max. 800x400px)
-                        </p>
-                        {einNumber && (
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
-                            {einNumber?.name}
-                          </p>
-                        )}
-                      </div>
-                      {einNumber && (
-                        <div className="ml-auto">
-                          <button
-                            disabled={isLoading}
-                            className="text-red-500 pointer"
-                            onClick={() => setEinNumber(null)}
-                          >
-                            <DeleteOutlined className="text-red-500 text-2xl" />
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                    <input
-                      id="einNumber-file"
-                      name="einNumber"
-                      type="file"
-                      style={{ opacity: '0' }}
-                      onChange={(e) => handleFileChange(e, 'einNumber')}
-                    />
-                  </label>
-                </div>
+
                 <label
                   htmlFor="myInput"
                   className="border-b-2 border=[#E7E7E7] pb-2"

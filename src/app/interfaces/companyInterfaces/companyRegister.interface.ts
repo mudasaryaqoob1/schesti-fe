@@ -2,7 +2,7 @@ export interface IRegisterCompany {
   companyName: string;
   industry: string;
   employee?: number;
-  phoneNumber: number | null;
+  phone: string;
   userId?: string | string[];
   companyLogo?: string | null;
   country: string,

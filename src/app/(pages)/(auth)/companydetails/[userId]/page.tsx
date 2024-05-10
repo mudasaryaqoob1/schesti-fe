@@ -29,17 +29,17 @@ import {
   OwnerSchema,
   SubContractorSchema,
 } from '@/app/utils/validationSchemas';
-import PhoneNumberInput from '@/app/component/phoneNumberInput';
 import { isObjectId } from '@/app/utils/utils';
 import { SelectComponent } from '@/app/component/customSelect/Select.component';
 import { Country, State, City } from 'country-state-city';
+import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
 const { CONTRACTOR, SUBCONTRACTOR, OWNER } = USER_ROLES_ENUM;
 
 const initialValues: IRegisterCompany = {
   companyName: '',
   industry: '',
   employee: undefined,
-  phoneNumber: null,
+  phone: '',
   companyLogo: '',
   city: '',
   state: '',
@@ -61,7 +61,6 @@ const CompanyDetails = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [companyLogo, setCompanyLogo] = useState<any>('');
   const [selectedUserRole, setSelectedUserRole] = useState<any>(null);
-  const [phoneNumber, setPhoneNumber] = useState<any>('');
   // const [phoneNumberErr, setPhoneNumberErr] = useState<string>('');
   const [companyLogoErr, setCompanyLogoErr] = useState<string>('');
 
@@ -100,18 +99,16 @@ const CompanyDetails = () => {
     }
 
     let result: any = await dispatch(
-      addCompanyDetail({ ...values, userId: userId, phoneNumber: phoneNumber })
+      addCompanyDetail({ ...values, userId: userId })
     );
 
     if (result.payload.statusCode == 200) {
       setIsLoading(false);
       localStorage.setItem('schestiToken', result.payload.token);
-      if (userData?.user?.userRole === OWNER) {
+      if (userData?.user?.userRole === OWNER || userData?.user?.userRole === CONTRACTOR) {
         router.push('/plans');
       } else if (userData?.user?.userRole === SUBCONTRACTOR) {
         router.push('/trades');
-      } else if (userData?.user?.userRole === CONTRACTOR) {
-        router.push('/verification');
       }
     } else {
       setIsLoading(false);
@@ -208,10 +205,13 @@ const CompanyDetails = () => {
 
 
                       <div>
-                        <span>Phone Number</span>
-                        <PhoneNumberInput
-                          phoneNumber={phoneNumber}
-                          setPhoneNumber={setPhoneNumber}
+                        <PhoneNumberInputWithLable
+                          label='Phone Number'
+                          onChange={(value) => {
+                            formik.setFieldValue('phone', value);
+                          }}
+                          value={formik.values.phone}
+                          onBlur={() => formik.setFieldTouched('phone', true)}
                         />
                       </div>
                       {selectedUserRole === OWNER || selectedUserRole === CONTRACTOR || selectedUserRole === SUBCONTRACTOR ? (

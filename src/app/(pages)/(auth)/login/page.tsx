@@ -49,16 +49,16 @@ const Login = () => {
   const [userDetail, setUserDetail] = useState<any>([])
   let userRoles = [
     {
-      role : USER_ROLES_ENUM.OWNER , 
-      desc : 'It is a long established fact that a reader will be distracted by the readable content of'
+      role: USER_ROLES_ENUM.OWNER,
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of'
     },
     {
-      role : USER_ROLES_ENUM.CONTRACTOR , 
-      desc : 'It is a long established fact that a reader will be distracted by the readable content of'
+      role: USER_ROLES_ENUM.CONTRACTOR,
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of'
     },
     {
-      role : USER_ROLES_ENUM.SUBCONTRACTOR , 
-      desc : 'It is a long established fact that a reader will be distracted by the readable content of'
+      role: USER_ROLES_ENUM.SUBCONTRACTOR,
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of'
     }
   ]
 
@@ -87,7 +87,14 @@ const Login = () => {
       }
     } else {
       setLoading(false);
-      toast.error(result.payload.message);
+      // if statusCode === 400 and email is not verified then redirect to checkmail page
+      const emailVerificationMessage = 'Verify from your email';
+      if (result.payload.statusCode === 400 && result.payload.message.includes(emailVerificationMessage)) {
+        router.push(`/checkmail?email=${email}`);
+        return;
+      } else {
+        toast.error(result.payload.message);
+      }
     }
   };
 
@@ -123,13 +130,13 @@ const Login = () => {
     },
   })
 
-  const userRoleSelectionHandler = async (role : string) => {
+  const userRoleSelectionHandler = async (role: string) => {
     setLoading(true)
-    let result: any = await dispatch(loginWithGoogle({...userDetail , userRole: role }));
+    let result: any = await dispatch(loginWithGoogle({ ...userDetail, userRole: role }));
     setUserRoleModal(false)
     setLoading(false)
     if (result.payload.statusCode == 200) {
-      localStorage.setItem('schestiToken', result.payload.token); 
+      localStorage.setItem('schestiToken', result.payload.token);
       // router.push(`/clients`);
       router.push(`/dashboard`);
     } else if (result.payload.statusCode == 400) {
