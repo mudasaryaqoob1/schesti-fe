@@ -38,7 +38,7 @@ const { CONTRACTOR, SUBCONTRACTOR, OWNER } = USER_ROLES_ENUM;
 const initialValues: IRegisterCompany = {
   companyName: '',
   industry: '',
-  employee: 1,
+  employee: undefined,
   phoneNumber: null,
   companyLogo: '',
   city: '',
@@ -83,10 +83,11 @@ const CompanyDetails = () => {
   }, [userId]);
 
   const submitHandler = async (values: IRegisterCompany) => {
-    if (!companyLogo && userData?.user?.userRole === CONTRACTOR) {
-      setCompanyLogoErr('Logo is required');
-      return;
-    }
+    // Commenting the Logo Validation as it is not required
+    // if (!companyLogo && userData?.user?.userRole === CONTRACTOR) {
+    //   setCompanyLogoErr('Logo is required');
+    //   return;
+    // }
     setIsLoading(true);
 
     if (companyLogo && userData?.user?.userRole === CONTRACTOR) {
@@ -252,8 +253,9 @@ const CompanyDetails = () => {
                                 placeholder="State"
                                 field={{
                                   options: states,
-                                  value: formik.values.state,
+                                  value: formik.values.state ? formik.values.state : undefined,
                                   showSearch: true,
+                                  placeholder: "State",
                                   onChange(value) {
                                     setState(value);
                                     formik.setFieldValue('state', value);
@@ -268,8 +270,8 @@ const CompanyDetails = () => {
                                     setCity('');
                                   },
                                 }}
-                                errorMessage={formik.errors.state}
-                                hasError={Boolean(formik.errors.state)}
+                                errorMessage={formik.touched.state && formik.errors.state ? formik.errors.state : ''}
+                                hasError={formik.touched.state && Boolean(formik.errors.state)}
                               />
                             </div>
                           </div>
@@ -280,7 +282,8 @@ const CompanyDetails = () => {
                             field={{
                               options: cities,
                               showSearch: true,
-                              value: formik.values.city || city,
+                              value: formik.values.city ? formik.values.city : undefined,
+                              placeholder: "City",
                               onChange: (value) => {
                                 setCity(value);
                                 formik.setFieldValue('city', value);
