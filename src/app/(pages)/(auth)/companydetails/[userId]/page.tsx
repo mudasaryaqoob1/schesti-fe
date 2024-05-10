@@ -188,17 +188,6 @@ const CompanyDetails = () => {
                   // validateMessages={formik.handleSubmit}
                   >
                     <div className="flex flex-col gap-4">
-                      {(selectedUserRole == SUBCONTRACTOR ||
-                        selectedUserRole == OWNER) && (
-                          <FormControl
-                            control="input"
-                            label="Address"
-                            type="text"
-                            name="address"
-                            placeholder="Enter Company Address"
-                          />
-                        )}
-
                       {selectedUserRole != OWNER && (
                         <FormControl
                           control="input"
@@ -208,6 +197,16 @@ const CompanyDetails = () => {
                           placeholder="Enter Company Name"
                         />
                       )}
+
+                      <FormControl
+                        control="input"
+                        label="Address"
+                        type="text"
+                        name="address"
+                        placeholder="Enter Company Address"
+                      />
+
+
                       <div>
                         <span>Phone Number</span>
                         <PhoneNumberInput

@@ -10,6 +10,7 @@ import { quinaryHeading } from '@/globals/tailwindvariables';
 import CustomButton from '@/app/component/customButton/button';
 import { authService } from '@/app/services/auth.service';
 import { toast } from 'react-toastify';
+import { AxiosError } from 'axios';
 // import { useRouter } from 'next/navigation';
 
 const CheckYourEmail = () => {
@@ -37,18 +38,36 @@ const CheckYourEmail = () => {
 
   // }
 
+
+
   const resendEmailHandler = async () => {
     setIsLoading(true);
-    const result = await authService.httpResendCreateAccountEmail({
-      email: emailQueryParameter,
-    });
+    //this is the format of emailQueryParameter fahada094+3@gmail.com
+    // but + is optional. currently when parsing the email with +, the plus is replaced by space
+    /**
+ * Parses the email query parameter by replacing any whitespace with '+'.
+ * @param {string} emailQueryParameter - The email query parameter to be parsed.
+ * @returns {string} - The parsed email.
+ */
 
-    if (result.statusCode == 200) {
+    let parsedEmail = emailQueryParameter.replace(/\s/g, '+');
+
+    try {
+      const result = await authService.httpResendCreateAccountEmail({
+        email: parsedEmail,
+      });
+
+      if (result.statusCode == 200) {
+        toast.success(result.message);
+      }
+    } catch (error) {
+      let err = error as AxiosError<{ message: string }>
+
+      let errMessage = err.response?.data.message || 'Error while sending email';
+      toast.error(errMessage);
+    } finally {
       setIsLoading(false);
-      toast.success(result.message);
-    } else {
-      setIsLoading(false);
-      toast.error(result.message);
+
     }
   };
 
