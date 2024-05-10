@@ -65,7 +65,7 @@ const Trades = () => {
       dispatch(addSelectedTrades(payload))
         .unwrap()
         .then(() => {
-          router.push('/plans');
+          router.push('/verification');
           setIsLoading(false);
         })
         .catch((err: any) => {

@@ -1,5 +1,6 @@
 import { USER_ROLES_ENUM } from '@/app/constants/constant';
 import { IUserInterface } from '../interfaces/user.interface';
+import _ from 'lodash';
 
 const ContractorPages = {
     CompanyDetails: "/companydetails", // will have a user id,
@@ -20,6 +21,7 @@ const OwnerPages = {
 
 
 export function navigateUserWhileAuth(user: IUserInterface) {
+    console.log(user.userRole);
     if (user.userRole === USER_ROLES_ENUM.CONTRACTOR) {
         return navigateContractor(user);
     }
@@ -33,9 +35,10 @@ export function navigateUserWhileAuth(user: IUserInterface) {
 }
 
 function navigateContractor(user: IUserInterface) {
-    const haveCompanyDetails = user.companyName && user.address && user.industry && user.phone && user.country && user.state && user.city;
+    const haveCompanyDetails = Boolean(user.companyName) && Boolean(user.address) && Boolean(user.industry) && Boolean(user.phone) && Boolean(user.country) && Boolean(user.state) && Boolean(user.city) && Boolean(user.employee);
+    console.log("haveCompanyDetails", haveCompanyDetails);
     if (!haveCompanyDetails) {
-        return ContractorPages.CompanyDetails;
+        return `${ContractorPages.CompanyDetails}/${user._id}`;
     }
     const havePlan = user.planId;
     if (!havePlan) {
@@ -45,20 +48,23 @@ function navigateContractor(user: IUserInterface) {
 }
 
 function navigateSubContractor(user: IUserInterface) {
-    const haveCompanyDetails = user.companyName && user.address && user.industry && user.phone && user.country && user.state && user.city;
+    const haveCompanyDetails = Boolean(user.companyName) && Boolean(user.address) && Boolean(user.industry) && Boolean(user.phone) && Boolean(user.country) && Boolean(user.state) && Boolean(user.city) && Boolean(user.employee);
+
+    const havePlan = Boolean(user.planId);
+    const haveTrades = _.isObject(user.selectedTrades);
+
     if (!haveCompanyDetails) {
-        return SubContractorPages.CompanyDetails;
+        console.log("Subcontractor", haveCompanyDetails);
+        return `${ContractorPages.CompanyDetails}/${user._id}`;
     }
-    const haveTrades = user.selectedTrades;
+
     if (!haveTrades) {
-        return SubContractorPages.Plans;
+        console.log("Subcontractor", haveTrades);
+        return SubContractorPages.Trades;
     }
-    const haveVerification = user.verificationsData?.license && user.verificationsData?.preQualification && user.verificationsData?.secretaryOfState;
-    if (!haveVerification) {
-        return SubContractorPages.Verification;
-    }
-    const havePlan = user.planId;
+
     if (!havePlan) {
+        console.log("Subcontractor", havePlan);
         return SubContractorPages.Plans;
     }
     return null;
@@ -67,11 +73,11 @@ function navigateSubContractor(user: IUserInterface) {
 
 function navigateOwner(user: IUserInterface) {
 
-    const haveCompanyDetails = user.companyName && user.address && user.industry && user.phone && user.country && user.state && user.city;
+    const haveCompanyDetails = Boolean(user.organizationName) && Boolean(user.address) && Boolean(user.phone) && Boolean(user.country) && Boolean(user.state) && Boolean(user.city)
     if (!haveCompanyDetails) {
-        return OwnerPages.CompanyDetails;
+        return `${ContractorPages.CompanyDetails}/${user._id}`;
     }
-    const havePlan = user.planId;
+    const havePlan = Boolean(user.planId);
     if (!havePlan) {
         return OwnerPages.Plans;
     }

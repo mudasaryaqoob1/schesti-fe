@@ -98,6 +98,7 @@ const CompanyDetails = () => {
       }
     }
 
+
     let result: any = await dispatch(
       addCompanyDetail({ ...values, userId: userId })
     );
@@ -315,7 +316,7 @@ const CompanyDetails = () => {
 
 
 
-                      {selectedUserRole == CONTRACTOR && (
+                      {selectedUserRole == CONTRACTOR || selectedUserRole === SUBCONTRACTOR && (
                         <FormControl
                           control="input"
                           label="Industry"

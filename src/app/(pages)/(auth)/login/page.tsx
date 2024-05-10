@@ -23,6 +23,7 @@ import PrimaryHeading from '@/app/component/headings/primary';
 import Description from '@/app/component/description';
 import { USER_ROLES_ENUM } from '@/app/constants/constant';
 import UserRoleModal from '../userRolesModal'
+import { navigateUserWhileAuth } from '@/app/utils/auth.utils';
 
 const initialValues: ILogInInterface = {
   email: '',
@@ -77,13 +78,16 @@ const Login = () => {
         const session = result.payload?.token;
         localStorage.setItem('schestiToken', session);
         router.push('/dashboard');
-      } else if (
-        result.payload.data.user.roles.includes('Company') &&
-        !result.payload.data.user?.isPaymentConfirm
-      ) {
-        router.push('/plans');
+        return;
+
+      }
+      const responseLink = navigateUserWhileAuth(result.payload.data.user);
+
+      if (responseLink) {
+        router.push(responseLink);
+        return;
       } else {
-        toast.warning('you are not allowed to login');
+        toast.warning("You are not allowed to login. ")
       }
     } else {
       setLoading(false);

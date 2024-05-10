@@ -15,7 +15,7 @@ export type IUserInterface = IUpdateCompanyDetail & {
     isPaymentConfirm: boolean;
     createdAt: string;
     updatedAt: string;
-    address: any;
+    address: string;
     companyLogo: string;
     companyName: string;
     employee: string;

@@ -4,7 +4,7 @@ import Description from '@/app/component/description';
 import PrimaryHeading from '@/app/component/headings/primary';
 import AuthNavbar from '@/app/(pages)/(auth)/authNavbar';
 import Image from 'next/image';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
 import { quinaryHeading } from '@/globals/tailwindvariables';
 import CustomButton from '@/app/component/customButton/button';
@@ -15,7 +15,6 @@ import { Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 // import { useRouter } from 'next/navigation';
 import * as Yup from 'yup';
-import { navigateUserWhileAuth } from '@/app/utils/auth.utils';
 
 const EmailSchema = Yup.string().email().required("Email is required");
 
@@ -25,9 +24,9 @@ const CheckYourEmail = () => {
   const emailQueryParameter = searchParams.get('email');
   const [isLoading, setIsLoading] = useState(false);
   const [isFetchingUserData, setIsFetchingUserData] = useState(false);
+  const router = useRouter();
 
 
-  console.log(emailQueryParameter);
   // useEffect(() => {
   //   verifyUserEmail();
   // }, [])
@@ -56,10 +55,7 @@ const CheckYourEmail = () => {
 
   let parsedEmail = emailQueryParameter ? emailQueryParameter.replace(/\s/g, '+') : "";
 
-  console.log({
-    parsedEmail,
-    emailQueryParameter
-  });
+
   const resendEmailHandler = async () => {
     setIsLoading(true);
 
@@ -99,11 +95,16 @@ const CheckYourEmail = () => {
       }
       // call the api to get the user details using email;
       const result = await authService.httpGetUserDetailsByEmail(parsedEmail);
-      console.log('result', result);
       if (result.statusCode === 200 && result.data) {
         const user = result.data.user;
-        const response = navigateUserWhileAuth(user);
-        console.log("Navigate Response", response);
+        if (user.isEmailVerified) {
+          router.push("/login");
+          return;
+        } else {
+          toast.error('Email not verified');
+        }
+
+
       }
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
