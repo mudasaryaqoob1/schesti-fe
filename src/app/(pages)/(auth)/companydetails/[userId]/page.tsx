@@ -333,7 +333,7 @@ const CompanyDetails = () => {
                               label="Total Employee"
                               type="number"
                               name="employee"
-                              placeholder="Employee"
+                              placeholder="Total Employee"
                               min={1}
                             />
                             <label htmlFor="myInput">Logo/ Picture</label>
