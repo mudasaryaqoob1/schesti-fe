@@ -220,3 +220,11 @@ a {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+/* TakeOff table transparent */
+.transparent-table .ant-table-content {
+  background-color: transparent !important;
+}
+.table-row-transparent {
+  background-color: transparent;
+}

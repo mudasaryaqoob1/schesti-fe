@@ -5,8 +5,6 @@ import Image from 'next/image';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import SecondaryHeading from '@/app/component/headings/Secondary';
 import Description from '@/app/component/description';
-// import ModalComponent from '@/app/component/modal';
-// import ScaleModal from '../components/scale';
 import { UploadFileContext } from '../context';
 import {
   UploadFileContextProps,
@@ -17,21 +15,16 @@ import { toast } from 'react-toastify';
 import { LoadingOutlined } from '@ant-design/icons';
 import ModalComponent from '@/app/component/modal';
 import SelectPageModal from '../components/selectPageModal';
+import InitialUpload from '../components/upload/InitialUpload';
+import CreateInfo from '../components/upload/CreateInfo';
 
 const Upload = () => {
-  // const [selectedIcon, setSelectedIcon] = useState('');
-  // const [showModal, setShowModal] = useState(false);
   const router = useRouter();
-
-  // const handleClick = (item: string) => {
-  //   setSelectedIcon(item);
-  //   setShowModal(true);
-  // };
-
   const { handleSrc, uploadFileData } = useContext(UploadFileContext) as UploadFileContextProps;
   const [loading, setloading] = useState<boolean>(false)
+  const [step, setstep] = useState(0)
   const [showSelectModal, setshowSelectModal] = useState<boolean>(false)
-  const breakLoopRef = useRef<boolean>(false); // Mutable ref for breaking the loop
+  const breakLoopRef = useRef<boolean>(false);
   const pdfjs = useCallback(async () => {
     const pdfjs = await import('pdfjs-dist');
     await import('pdfjs-dist/build/pdf.worker.min.mjs');
@@ -82,7 +75,7 @@ const Upload = () => {
               height: viewport.height,
               width: viewport.width,
             });
-            if (!breakLoopRef.current) { // Check breakLoopRef instead of state
+            if (!breakLoopRef.current) {
               handleSrc({
                 src: canvas.toDataURL('image/png') || '',
                 height: viewport.height,
@@ -90,11 +83,7 @@ const Upload = () => {
               }, true);
             }
           }
-
-          // handleSrc(pdfPagesData);
-          // router.push('/takeoff/scale');
           setloading(false)
-          // setshowSelectModal(true)
         };
         reader.readAsArrayBuffer(file);
       }
@@ -108,7 +97,8 @@ const Upload = () => {
   return (
     <>
       <section className="md:px-16 px-8 pb-4">
-        <div className="flex gap-4 items-center mt-6">
+        {step == 0 ? <InitialUpload setstep={setstep} /> : step == 1 ? <CreateInfo /> : <></>}
+        {/* <div className="flex gap-4 items-center mt-6">
           <Image src={'/home.svg'} alt="home icon" width={20} height={20} />
           <Image
             src={'/chevron-right.svg'}
@@ -129,67 +119,6 @@ const Upload = () => {
             className="font-semibold text-lavenderPurple cursor-pointer underline"
           />
         </div>
-
-        {/* search project */}
-        {/* <div className="bg-white flex justify-between items-center mt-6 ">
-          <div
-            className="rounded-lg border border-Gainsboro bg-silverGray  h-[51px] 
-                        flex 
-                        items-center
-                            px-3"
-          >
-            <input
-              type="search"
-              name=""
-              id=""
-              placeholder="Enter project name"
-              className="w-full h-full
-          bg-transparent outline-none"
-            />
-          </div>
-          <div className="flex flex-row gap-3">
-            <div>
-              <WhiteButton
-                text="Generate with AI"
-                className="!text-goldenrodYellow !border-goldenrodYellow"
-
-                //   onClick={() => router.push('/createclient')}
-              />
-            </div>
-            <div>
-              <Button
-                text="Generate Report"
-                iconwidth={20}
-                iconheight={20}
-                //   onClick={() => router.push('/createclient')}
-              />
-            </div>
-          </div>
-        </div> */}
-
-        {/* <div
-          className={`h-12 w-full mt-6 flex flex-row items-center justify-center gap-8  py-[5.5px] ${bg_style}`}
-        >
-          <div
-            className="flex flex-col items-center"
-            onClick={() => handleClick('scale')}
-          >
-            <Image
-              style={{ color: 'red' }}
-              src={'/scale.svg'}
-              alt="createicon"
-              width={19.97}
-              height={11.31}
-            />
-            <label
-              className={`text-xs ${
-                selectedIcon === 'scale' ? 'text-[#6F6AF8]' : 'text-[#767676]'
-              } `}
-            >
-              Scale
-            </label>
-          </div>
-        </div> */}
         <div
           className={`grid place-items-center shadow-sceneryShadow rounded-lg mt-4 ${bg_style} h-[700px] `}
         >
@@ -222,15 +151,6 @@ const Upload = () => {
             </label>
           </div>
         </div>
-        {/* <ModalComponent open={showModal} setOpen={setShowModal}>
-          <ScaleModal
-            setModalOpen={setShowModal}
-            scaleData={function (data: any): void {
-              console.log(data);
-              throw new Error('Function not implemented.');
-            }}
-          />
-        </ModalComponent> */}
         <ModalComponent open={showSelectModal} setOpen={() => { }}>
           <SelectPageModal
             numOfPages={uploadFileData.length}
@@ -244,7 +164,7 @@ const Upload = () => {
               setloading(false)
             }}
           />
-        </ModalComponent>
+        </ModalComponent> */}
       </section>
     </>
   );

@@ -151,7 +151,7 @@ const Records = () => {
           icon="plus.svg"
           iconwidth={20}
           iconheight={20}
-          onClick={() => router.push('/takeoff/upload')}
+          onClick={() => router.push('/take-off/upload')}
         />
       </div>
       <Table handleEditClick={handleEditClick} />
