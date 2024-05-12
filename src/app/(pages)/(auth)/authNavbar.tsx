@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 const AuthNavbar = () => {
   const router = useRouter();
   return (
-    <div className="flex items-center shadow-[0px_0px_16px_0px_#e3e3e3] px-12 py-7">
+    <div className="flex items-center bg-white shadow-[0px_0px_16px_0px_#e3e3e3] px-12 py-4">
       <div className="w-full">
         <Image
           onClick={() => router.push('/')}
