@@ -14,7 +14,7 @@ const ScaleNavigation: React.FC<Props> = ({ tool, setTool, setShowModal }) => {
   return (
     <div
       className={twMerge(
-        `h-12 w-full mt-6 flex flex-row items-center justify-center gap-8  py-[5.5px] ${bg_style} rounded-lg`
+        `h-auto w-30 py-5 px-1 flex flex-col justify-center items-center gap-8  ${bg_style} rounded-lg !fixed right-0`
       )}
     >
       {SCALE_NAVIGATION.map(
@@ -22,7 +22,7 @@ const ScaleNavigation: React.FC<Props> = ({ tool, setTool, setShowModal }) => {
           return (
             <div
               key={src}
-              className="flex flex-col items-center cursor-pointer"
+              className="flex flex-col items-center cursor-pointer p-2"
               onClick={() => {
                 setShowModal(true);
                 setTool({

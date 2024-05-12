@@ -11,6 +11,7 @@ import InitialUpload from './components/upload/InitialUpload';
 import CreateInfo from './components/upload/CreateInfo';
 import TakeOffNew from './components/scale/TakeOffNew';
 import { selectTakeoffSummaries, selectTakeoffSummariesLoading } from '@/redux/takeoffSummaries/takeoffSummaries.Selector';
+// import TakeOffNewPage from './scale/TakeOffNewPage';
 // import { selectTakeoffSummaries } from '@/redux/takeoffSummaries/takeoffSummaries.Selector';
 const TakeOff = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -34,6 +35,7 @@ const TakeOff = () => {
       {/* <InitialUpload /> */}
       {/* <CreateInfo /> */}
       {/* <TakeOffNew /> */}
+      {/* <TakeOffNewPage /> */}
     </section>
   );
 };

@@ -183,6 +183,7 @@ const TakeOffNew = () => {
                 {/* Take Off New */}
                 <div className='h-[100%] grow rounded-2xl shadow-secondaryTwist border relative' >
                     <div className='absolute top-[25px] left-[-13px] cursor-pointer border-[2px] rounded-full flex justify-center items-center p-1 text-gray-600 bg-white' onClick={() => { setleftOpened(ps => !ps) }}>{leftOpened ? <LeftOutlined /> : <RightOutlined />}</div>
+                    
                 </div>
             </div>
         </>

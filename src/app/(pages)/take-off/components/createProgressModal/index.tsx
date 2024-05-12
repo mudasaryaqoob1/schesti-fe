@@ -25,6 +25,7 @@ interface Props {
 }
 
 const CreateProgressModal = ({ setModalOpen, pages, files, isLoading, processFiles, fullData }: Props) => {
+  const [fLoading, setfLoading] = useState<boolean>(false)
   const getLoading = () => {
     let trueArr = [];
     for(let i = 0; i<fullData?.files;i++){
@@ -42,6 +43,11 @@ const CreateProgressModal = ({ setModalOpen, pages, files, isLoading, processFil
       return true
     }
   }
+  console.log(getLoading(), " ===> Get loading");
+  useEffect(()=>{
+    setfLoading(getLoading)
+  },[fullData])
+  
   return (
     <div className="py-2.5 px-6 bg-white border border-solid border-elboneyGray rounded-[4px] z-50">
       <section className="w-full">
@@ -56,14 +62,14 @@ const CreateProgressModal = ({ setModalOpen, pages, files, isLoading, processFil
               className="text-coolGray"
             /> */}
           </div>
-          <Image
+          {/* <Image
             src={'/crossblack.svg'}
             alt="close icon"
             width={24}
             height={24}
             className="cursor-pointer"
             onClick={() => setModalOpen(false)}
-          />
+          /> */}
         </div>
         <div
           className="p-5 flex flex-col rounded-lg border border-silverGray shadow-secondaryShadow2 bg-white"
@@ -76,14 +82,18 @@ const CreateProgressModal = ({ setModalOpen, pages, files, isLoading, processFil
           <div className='flex flex-col gap-y-10 w-full p-5'>
             {
               files && Array.isArray(files) && files?.length > 0 && files?.map((item: any, index: number) => {
+                const successProgress = fullData?.pages?.filter((i:any)=>{return (i?.file?.name == item?.name && i?.success == true)})
+                const failedProgress = fullData?.pages?.filter((i:any)=>{return (i?.file?.name == item?.name && i?.success == false)})
+                const totalProgress = fullData?.pages?.filter((i:any)=>{return i?.file?.name == item?.name})
+
                 return <div className='flex gap-2 flex-col'>
                   <div className='flex gap-2'>
-                    <p className='whitespace-nowrap'>Png.svg sdfjlkd.ge.</p>
-                    <Progress percent={72} />
+                    <p className='whitespace-nowrap'>{item?.name?.slice(0,12) ?? ''}</p>
+                    <Progress percent={(totalProgress && Array.isArray(totalProgress)? totalProgress?.length : 0)} />
                   </div>
                   <div className='flex gap-3'>
-                    <Progress size={'small'} type='circle' percent={30} />
-                    <Progress size={'small'} type='circle' percent={70} status='exception' />
+                    <Progress size={'small'} type='circle' percent={(successProgress && Array.isArray(successProgress)? successProgress?.length : 0)} />
+                    <Progress size={'small'} type='circle' percent={(failedProgress && Array.isArray(failedProgress)? failedProgress?.length : 0)} status='exception' />
                   </div>
                 </div>
               })
@@ -95,11 +105,12 @@ const CreateProgressModal = ({ setModalOpen, pages, files, isLoading, processFil
                 className=" !border-celestialGray !shadow-scenarySubdued2 !text-graphiteGray !bg-snowWhite"
                 text="Cancel"
                 onClick={() => { setModalOpen(false) }}//router.back()
+                isLoading={isLoading}
               />
             </div>}
             <div>
               <CustomButton
-                isLoading={isLoading && getLoading()}
+                isLoading={isLoading}
                 text="Start Process"
                 onClick={()=>{if(processFiles){processFiles()}}}
               />

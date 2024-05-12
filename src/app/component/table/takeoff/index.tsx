@@ -102,10 +102,10 @@ const Index: React.FC<ITableProps> = ({handleEditClick}:ITableProps) => {
         scope: { toString: () => any };
         createdAt: string;
       }) => ({
-        key: item._id, // Assume each item has a unique id
-        name: item.name,
-        scope: item.scope.toString(), // Ensure scope is a string
-        createdAt: moment(item.createdAt).format('YYYY-MM-DD'),
+        key: item?._id, // Assume each item? has a unique id
+        name: item?.name,
+        scope: item?.scope?.toString(), // Ensure scope is a string
+        createdAt: moment(item?.createdAt).format('YYYY-MM-DD'),
         action: (
           <span className="flex flex-col space-y-2">
             <button
@@ -117,14 +117,14 @@ const Index: React.FC<ITableProps> = ({handleEditClick}:ITableProps) => {
             </button>
             <button
               id="downloadPdfBtn"
-              onClick={() => downloadPdfFromS3(item.url)}
+              onClick={() => downloadPdfFromS3(item?.url)}
               className="cursor-pointer"
             >
               Download PDF
             </button>
             <button
               id="deletePdfBtn"
-              onClick={() => dispatch(deleteSummaries(item._id))}
+              onClick={() => dispatch(deleteSummaries(item?._id))}
               className="cursor-pointer"
             >
               Delete

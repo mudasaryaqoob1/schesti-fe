@@ -19,6 +19,9 @@ import { toast } from 'react-toastify'
 import CreateProgressModal from '../createProgressModal'
 import { PDFDocumentProxy } from 'pdfjs-dist'
 import AwsS3 from '@/app/utils/S3Intergration'
+import axios from 'axios'
+import { takeoffSummaryService } from '@/app/services/takeoffSummary.service'
+import { useRouter } from 'next/navigation'
 const columns: ColumnsType<any> = [
     {
         title: 'Project Name',
@@ -49,6 +52,7 @@ const formattedData = [{ name: 'Ellen', scope: "Project Manager", createdAt: '02
 ]
 
 const CreateInfo = () => {
+    const router = useRouter()
 
     const [clientModal, setclientModal] = useState<boolean>(false)
     const [allPages, setallPages] = useState<any>([])
@@ -64,8 +68,8 @@ const CreateInfo = () => {
     const [progressModalOpen, setprogressModalOpen] = useState(false)
     console.log(selectecClient, selectedFiles);
     const [fullData, setfullData] = useState({
-        files:[],
-        pages:[],
+        files: [],
+        pages: [],
     })
 
 
@@ -144,7 +148,11 @@ const CreateInfo = () => {
             [e.target.id]: e.target?.value
         }))
     }
+    const handleUpdatePages = (pageIndex: any, s3Url: any, fileIndex: any, success: any) => {
+        setfullData((ps: any) => ({ ...ps, pages: [...ps.pages, { pageNum: pageIndex + 1, name: `${pageIndex + 1} page`, bucketUrl: s3Url, success: success, file: { name: selectedFiles[fileIndex]?.name ?? fileIndex, index: fileIndex } }] }))
+    }
     console.log(projectData, " projectData");
+    console.log(fullData, " ===> Full Data")
 
     const startTakeOf = () => {
         if (!projectData?.name || !projectData?.deadline || !projectData?.status || !projectData?.createdate || !projectData?.number || !selectecClient || !selectecClient?._id) {
@@ -182,11 +190,11 @@ const CreateInfo = () => {
                 height: viewport.height,
                 width: viewport.width,
             }
-            const s3Url = await new AwsS3(obj.src,'documents/takeoff-reports/').uploadS3URL()
-            setfullData((ps:any)=>({...ps,pages:[...ps.pages,{pageNum:pageIndex+1, name:`${pageIndex+1} page`, bucketUrl: s3Url, success:true,file:{name:selectedFiles[fileIndex]?.name ?? fileIndex, index: fileIndex}}]}))
+            const s3Url = await new AwsS3(obj.src, 'documents/takeoff-reports/').uploadS3URL()
+            handleUpdatePages(pageIndex, s3Url, fileIndex, true)
         } catch (error) {
             console.log(error, " ===> Error insdie process single page");
-            setfullData((ps:any)=>({...ps,pages:[...ps.pages,{pageNum:pageIndex+1, name:`${pageIndex+1} page`, success:false,file:{name:selectedFiles[fileIndex]?.name ?? fileIndex, index: fileIndex}}]}))
+            handleUpdatePages(pageIndex, "", fileIndex, false)
         }
     }
     const processSingleFile = async (i: any) => {
@@ -200,7 +208,7 @@ const CreateInfo = () => {
                 reader.onload = async (event: any) => {
                     const data = new Uint8Array(event.target.result);
                     const pdf: PDFDocumentProxy = await PDFJS.getDocument(data).promise;
-                    setfullData((ps:any)=>({...ps,files:[...ps.files,{name:curFile?.name ?? i, index: i, totalPages:pdf?.numPages ?? 5}]}))
+                    setfullData((ps: any) => ({ ...ps, files: [...ps.files, { name: curFile?.name ?? i, index: i, totalPages: pdf?.numPages ?? 5 }] }))
                     for (let index = 0; index < pdf.numPages; index++) {
                         processSinglePage(index, pdf, i)
                     }
@@ -213,7 +221,7 @@ const CreateInfo = () => {
     }
 
     const [isLoading, setisLoading] = useState<boolean>(false)
-    const startProcess = async() => {
+    const startProcess = async () => {
         setisLoading(true)
         if (Array.isArray(selectedFiles) && selectedFiles?.length > 0) {
             try {
@@ -225,6 +233,26 @@ const CreateInfo = () => {
                 console.log(error, " Error startProcess");
                 setisLoading(false)
             }
+        }
+    }
+
+    const processRequest = async() => {
+        try {
+            setisLoading(true)
+            const formData = new FormData()
+            formData.append('projectData', JSON.stringify(projectData))
+            formData.append('selectecClient', JSON.stringify(selectecClient))
+            // Append each file from the array to the FormData object
+            for (let i = 0; i < selectedFiles?.length; i++) {
+                formData.append('pdfFiles', selectedFiles[i]);
+            }
+            const data = await takeoffSummaryService.httpCreateTakeOffNew(formData)
+            console.log(data)
+            setisLoading(false)
+            router.push('/take-off')
+        } catch (error) {
+            console.log(error);
+            setisLoading(false)
         }
     }
 
@@ -488,7 +516,7 @@ const CreateInfo = () => {
                         </div>
                         <div className='grow p-3' >
                             <label className='relative' htmlFor="file-selector">
-                                <input type="file" multiple id='file-selector' className='hidden absolute top-0 left-0' style={{ display: 'none' }} onChange={(e: any) => {
+                                <input type="file" accept = "application/pdf" multiple id='file-selector' className='hidden absolute top-0 left-0' style={{ display: 'none' }} onChange={(e: any) => {
                                     console.log(e.target.result, " ==> event.target.result")
                                     if (e.target.files?.length > 0) {
                                         const arr = Object.keys(e.target?.files)?.map((it: any, ind: number) => {
@@ -527,7 +555,7 @@ const CreateInfo = () => {
                         setModalOpen={setprogressModalOpen}
                         files={selectedFiles}
                         pages={allPages}
-                        processFiles={startProcess}
+                        processFiles={processRequest}//{startProcess}
                         fullData={fullData}
                         isLoading={isLoading}
                     />
