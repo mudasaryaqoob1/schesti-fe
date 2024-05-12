@@ -29,7 +29,7 @@ const Congratulations = () => {
     <section className="h-[100vh] grid place-items-center rounded-lg">
       <div
         className={`flex flex-col items-center shadow-quaternaryDrama w-[460px] 
-       rounded-lg px-7 relative`}
+       rounded-lg px-7 relative bg-white`}
       >
         <div
           className="rounded-s absolute top-3 right-3 block cursor-pointer

@@ -29,17 +29,21 @@ import {
   OwnerSchema,
   SubContractorSchema,
 } from '@/app/utils/validationSchemas';
-import PhoneNumberInput from '@/app/component/phoneNumberInput';
 import { isObjectId } from '@/app/utils/utils';
-
+import { SelectComponent } from '@/app/component/customSelect/Select.component';
+import { Country, State, City } from 'country-state-city';
+import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
 const { CONTRACTOR, SUBCONTRACTOR, OWNER } = USER_ROLES_ENUM;
 
 const initialValues: IRegisterCompany = {
   companyName: '',
   industry: '',
-  employee: 1,
-  phoneNumber: null,
+  employee: undefined,
+  phone: '',
   companyLogo: '',
+  city: '',
+  state: '',
+  country: 'US',
 };
 
 const CompanyDetails = () => {
@@ -49,16 +53,19 @@ const CompanyDetails = () => {
 
   const auth = useSelector((state: RootState) => state.auth);
   const { user: userData } = auth;
+  const [country, setCountry] = useState<string>('US');
+  const [state, setState] = useState<string>('');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  const [city, setCity] = useState<string>('');
 
   const [isLoading, setIsLoading] = useState(false);
   const [companyLogo, setCompanyLogo] = useState<any>('');
   const [selectedUserRole, setSelectedUserRole] = useState<any>(null);
-  const [phoneNumber, setPhoneNumber] = useState<any>('');
   // const [phoneNumberErr, setPhoneNumberErr] = useState<string>('');
   const [companyLogoErr, setCompanyLogoErr] = useState<string>('');
 
-  console.log(userData , 'userDatauserData');
-  
+  console.log(userData, 'userDatauserData');
+
   useEffect(() => {
     if (!isObjectId(userId) && !isEmpty(userId)) {
       // setIsLoading(true);
@@ -75,10 +82,11 @@ const CompanyDetails = () => {
   }, [userId]);
 
   const submitHandler = async (values: IRegisterCompany) => {
-    if (!companyLogo && userData?.user?.userRole === CONTRACTOR) {
-      setCompanyLogoErr('Logo is required');
-      return;
-    }
+    // Commenting the Logo Validation as it is not required
+    // if (!companyLogo && userData?.user?.userRole === CONTRACTOR) {
+    //   setCompanyLogoErr('Logo is required');
+    //   return;
+    // }
     setIsLoading(true);
 
     if (companyLogo && userData?.user?.userRole === CONTRACTOR) {
@@ -90,19 +98,18 @@ const CompanyDetails = () => {
       }
     }
 
+
     let result: any = await dispatch(
-      addCompanyDetail({ ...values, userId: userId, phoneNumber: phoneNumber })
+      addCompanyDetail({ ...values, userId: userId })
     );
 
     if (result.payload.statusCode == 200) {
       setIsLoading(false);
       localStorage.setItem('schestiToken', result.payload.token);
-      if (userData?.user?.userRole === OWNER) {
+      if (userData?.user?.userRole === OWNER || userData?.user?.userRole === CONTRACTOR) {
         router.push('/plans');
       } else if (userData?.user?.userRole === SUBCONTRACTOR) {
         router.push('/trades');
-      } else if (userData?.user?.userRole === CONTRACTOR) {
-        router.push('/verification');
       }
     } else {
       setIsLoading(false);
@@ -136,7 +143,7 @@ const CompanyDetails = () => {
   return (
     <>
       <AuthNavbar />
-      <div className="h-[calc(100vh-100px)] mt-2 grid place-items-center">
+      <div className="h-[calc(100vh-100px)] mt-4 grid place-items-center">
         <div className="w-full max-w-xl">
           <h2
             className={twMerge(
@@ -145,7 +152,7 @@ const CompanyDetails = () => {
           >
             Setup Company profile
           </h2>
-          <div className="mt-6 bg-snowWhite shadow-tertiaryMystery p-10 rounded-md">
+          <div className="mt-6 bg-white shadow-tertiaryMystery p-10 rounded-lg">
             <PrimaryHeading
               title={primaryHeadingTitle}
               className="text-center mb-12"
@@ -155,25 +162,30 @@ const CompanyDetails = () => {
               validationSchema={getValidationSchema}
               onSubmit={submitHandler}
             >
-              {(formik: any) => {
+              {(formik) => {
+                const countries = Country.getAllCountries().map((country) => ({
+                  label: country.name,
+                  value: country.isoCode,
+                }));
+                const states = State.getAllStates()
+                  .filter(
+                    (state) =>
+                      state.countryCode === country ||
+                      formik.values.country === state.countryCode
+                  )
+                  .map((state) => ({ label: state.name, value: state.isoCode }));
+                const cities = City.getCitiesOfState(
+                  country,
+                  state || formik.values.state
+                ).map((city) => ({ label: city.name, value: city.name }));
                 return (
                   <Form
                     name="basic"
                     onFinish={formik.handleSubmit}
                     autoComplete="off"
-                    // validateMessages={formik.handleSubmit}
+                  // validateMessages={formik.handleSubmit}
                   >
                     <div className="flex flex-col gap-4">
-                      {(selectedUserRole == SUBCONTRACTOR ||
-                        selectedUserRole == OWNER) && (
-                        <FormControl
-                          control="input"
-                          label="Address"
-                          type="text"
-                          name="address"
-                          placeholder="Enter Company Address"
-                        />
-                      )}
                       {selectedUserRole != OWNER && (
                         <FormControl
                           control="input"
@@ -183,13 +195,115 @@ const CompanyDetails = () => {
                           placeholder="Enter Company Name"
                         />
                       )}
+
+                      <FormControl
+                        control="input"
+                        label="Address"
+                        type="text"
+                        name="address"
+                        placeholder="Enter Company Address"
+                      />
+
+
                       <div>
-                        <span>Phone Number</span>
-                        <PhoneNumberInput
-                          phoneNumber={phoneNumber}
-                          setPhoneNumber={setPhoneNumber}
+                        <PhoneNumberInputWithLable
+                          label='Phone Number'
+                          onChange={(value) => {
+                            formik.setFieldValue('phone', value);
+                          }}
+                          value={formik.values.phone}
+                          onBlur={() => formik.setFieldTouched('phone', true)}
                         />
                       </div>
+                      {selectedUserRole === OWNER || selectedUserRole === CONTRACTOR || selectedUserRole === SUBCONTRACTOR ? (
+                        <>
+                          <div className='flex items-center space-x-1 justify-between'>
+                            <div className="flex-1">
+                              <SelectComponent
+                                label='Country'
+                                name='country'
+                                placeholder='Select Country'
+                                field={{
+                                  options: countries,
+                                  value: formik.values.country,
+                                  onChange(value) {
+                                    setCountry(value);
+                                    formik.setFieldValue('country', value);
+                                    formik.setFieldValue('state', '');
+                                    formik.setFieldValue('city', '');
+                                    setState('');
+                                    setCity('');
+                                  },
+                                  onClear() {
+                                    formik.setFieldValue('country', '');
+                                    formik.setFieldValue('state', '');
+                                    formik.setFieldValue('city', '');
+                                    setCountry('');
+                                    setState('');
+                                    setCity('');
+                                  },
+                                }}
+                              />
+                            </div>
+
+                            <div className="flex-1">
+                              <SelectComponent
+                                label="State"
+                                name="state"
+                                placeholder="State"
+                                field={{
+                                  options: states,
+                                  value: formik.values.state ? formik.values.state : undefined,
+                                  showSearch: true,
+                                  placeholder: "State",
+                                  onChange(value) {
+                                    setState(value);
+                                    formik.setFieldValue('state', value);
+                                    formik.setFieldValue('city', '');
+                                    setCity('');
+                                  },
+                                  onBlur: formik.handleBlur,
+                                  onClear() {
+                                    formik.setFieldValue('state', '');
+                                    formik.setFieldValue('city', '');
+                                    setState('');
+                                    setCity('');
+                                  },
+                                }}
+                                errorMessage={formik.touched.state && formik.errors.state ? formik.errors.state : ''}
+                                hasError={formik.touched.state && Boolean(formik.errors.state)}
+                              />
+                            </div>
+                          </div>
+                          <SelectComponent
+                            label="City"
+                            name="city"
+                            placeholder="City"
+                            field={{
+                              options: cities,
+                              showSearch: true,
+                              value: formik.values.city ? formik.values.city : undefined,
+                              placeholder: "City",
+                              onChange: (value) => {
+                                setCity(value);
+                                formik.setFieldValue('city', value);
+                              },
+                              onBlur: formik.handleBlur,
+                              allowClear: true,
+                              onClear() {
+                                formik.setFieldValue('city', '');
+                                setCity('');
+                              },
+                            }}
+                            errorMessage={
+                              formik.touched.city && formik.errors.city
+                                ? formik.errors.city
+                                : ''
+                            }
+                            hasError={formik.touched.city && Boolean(formik.errors.city)}
+                          />
+                        </>
+                      ) : null}
                       {selectedUserRole == OWNER && (
                         <FormControl
                           control="input"
@@ -199,7 +313,10 @@ const CompanyDetails = () => {
                           placeholder="Enter Organization Name"
                         />
                       )}
-                      {selectedUserRole == CONTRACTOR && (
+
+
+
+                      {selectedUserRole == CONTRACTOR || selectedUserRole === SUBCONTRACTOR && (
                         <FormControl
                           control="input"
                           label="Industry"
@@ -210,96 +327,96 @@ const CompanyDetails = () => {
                       )}
                       {(selectedUserRole == CONTRACTOR ||
                         selectedUserRole == SUBCONTRACTOR) && (
-                        <>
-                          <FormControl
-                            control="input"
-                            label="Total Employee"
-                            type="number"
-                            name="employee"
-                            placeholder="Employee"
-                            min={1}
-                          />
-                          <label htmlFor="myInput">Logo/ Picture</label>
-                          <div className="flex items-center">
-                            <label
-                              htmlFor="dropzone-file"
-                              className="flex flex-col items-center justify-center w-22 h-22 border-2 border-solid rounded-lg cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-                            >
-                              <div className="flex flex-col items-center justify-center p-5">
-                                <svg
-                                  className="w-6 h-6 mb-3 text-gray-500 dark:text-gray-400"
-                                  aria-hidden="true"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 20 16"
-                                >
-                                  <path
-                                    stroke="currentColor"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                                  />
-                                </svg>
-                                {!companyLogo && (
+                          <>
+                            <FormControl
+                              control="input"
+                              label="Total Employee"
+                              type="number"
+                              name="employee"
+                              placeholder="Total Employee"
+                              min={1}
+                            />
+                            <label htmlFor="myInput">Logo/ Picture</label>
+                            <div className="flex items-center">
+                              <label
+                                htmlFor="dropzone-file"
+                                className="flex flex-col items-center justify-center w-22 h-22 border-2 border-solid rounded-lg cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                              >
+                                <div className="flex flex-col items-center justify-center p-5">
+                                  <svg
+                                    className="w-6 h-6 mb-3 text-gray-500 dark:text-gray-400"
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 20 16"
+                                  >
+                                    <path
+                                      stroke="currentColor"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                                    />
+                                  </svg>
+                                  {!companyLogo && (
+                                    <>
+                                      <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                        <span className="font-semibold text-purple-600">
+                                          Click to upload
+                                        </span>
+                                      </p>
+                                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                                        PNG, JPG (max. 800x400px)
+                                      </p>
+                                    </>
+                                  )}
+                                </div>
+                                <input
+                                  id="dropzone-file"
+                                  onChange={(e: any) => {
+                                    const file = e.target.files[0];
+                                    if (file) {
+                                      setCompanyLogo(file);
+                                      setCompanyLogoErr('');
+                                    }
+                                  }}
+                                  type="file"
+                                  style={{ opacity: '0' }}
+                                  accept="image/*"
+                                />
+                                {companyLogo && (
                                   <>
-                                    <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                      <span className="font-semibold text-purple-600">
-                                        Click to upload
-                                      </span>
-                                    </p>
-                                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                                      PNG, JPG (max. 800x400px)
-                                    </p>
+                                    <div className='flex items-center mb-1'>
+                                      <p className="mb-2 text-sm text-gray-500 dark:text-gray-400 max-w-64 text-ellipsis overflow-hidden ...">
+                                        <span className="font-semibold text-purple-600">
+                                          {companyLogo?.name}
+                                        </span>
+                                      </p>
+                                      <button onClick={() => setCompanyLogo(null)} className="ml-2 text-red-500 pointer hover:text-red-700">
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          className="h-5 w-5"
+                                          viewBox="0 0 20 20"
+                                          fill="currentColor"
+                                        >
+                                          <path
+                                            fillRule="evenodd"
+                                            d="M10 2a1 1 0 0 1 1 1v1h4a1 1 0 0 1 0 2h-.489l-.863 12.07A2 2 0 0 1 12.65 20H7.35a2 2 0 0 1-1.998-1.929L4.49 6H3a1 1 0 0 1 0-2h4V3a1 1 0 0 1 1-1z"
+                                            clipRule="evenodd"
+                                          />
+                                        </svg>
+                                      </button>
+                                    </div>
+                                    <img src={URL.createObjectURL(companyLogo)} alt="Company Logo" className="w-16 h-16" />
                                   </>
                                 )}
-                              </div>
-                              <input
-                                id="dropzone-file"
-                                onChange={(e: any) => {
-                                  const file = e.target.files[0];
-                                  if (file) {
-                                    setCompanyLogo(file);
-                                    setCompanyLogoErr('');
-                                  }
-                                }}
-                                type="file"
-                                style={{ opacity: '0' }}
-                                accept="image/*"
-                              />
-                              {companyLogo && (
-                                <>
-                                <div className='flex items-center mb-1'>
-                                  <p className="mb-2 text-sm text-gray-500 dark:text-gray-400 max-w-64 text-ellipsis overflow-hidden ...">
-                                    <span className="font-semibold text-purple-600">
-                                      {companyLogo?.name}
-                                    </span>
-                                  </p>
-                                  <button onClick={() => setCompanyLogo(null)} className="ml-2 text-red-500 pointer hover:text-red-700">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fillRule="evenodd"
-            d="M10 2a1 1 0 0 1 1 1v1h4a1 1 0 0 1 0 2h-.489l-.863 12.07A2 2 0 0 1 12.65 20H7.35a2 2 0 0 1-1.998-1.929L4.49 6H3a1 1 0 0 1 0-2h4V3a1 1 0 0 1 1-1z"
-            clipRule="evenodd"
-          />
-        </svg>
-      </button>
-      </div>
-                                  <img src={URL.createObjectURL(companyLogo)} alt="Company Logo" className="w-16 h-16" />
-                                </>
-                              )}
-                            </label>
-                          </div>
-                          {!isEmpty(companyLogoErr) && (
-                            <Errormsg>{companyLogoErr}</Errormsg>
-                          )}
-                        </>
-                      )}
+                              </label>
+                            </div>
+                            {!isEmpty(companyLogoErr) && (
+                              <Errormsg>{companyLogoErr}</Errormsg>
+                            )}
+                          </>
+                        )}
                     </div>
                     <Button
                       isLoading={isLoading}

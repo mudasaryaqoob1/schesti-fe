@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import initialAuthState from './auth.initialState';
 import {
   login,
@@ -19,6 +19,9 @@ export const authSlice = createSlice({
     logout: () => {
       return initialAuthState;
     },
+    setUserAction: (state, action: PayloadAction<{ user: any }>) => {
+      state.user = action.payload;
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(login.pending, (state) => {
@@ -147,5 +150,5 @@ export const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, setUserAction } = authSlice.actions;
 export default authSlice.reducer;
