@@ -56,6 +56,9 @@ interface Props {
   setscaleLine?: any;
   setModalOpen?: any;
   selectedCategory?: any;
+  updateMeasurements?:any;
+  draw:DrawInterface | any;
+  setDraw:any;
 }
 
 const Draw: React.FC<Props> = ({
@@ -74,7 +77,10 @@ const Draw: React.FC<Props> = ({
   setdrawScale,
   setModalOpen,
   setscaleLine,
-  selectedCategory
+  selectedCategory,
+  updateMeasurements,
+  draw,
+  setDraw
 }) => {
   const { selected, subSelected = null } = selectedTool;
   const {
@@ -94,26 +100,21 @@ const Draw: React.FC<Props> = ({
   console.log(drawHistory, isEdit, editData, " ===> drawHistory");
   const { reportData } = useContext(ReportDataContext)
 
-  const [draw, setDraw] = useState<DrawInterface | any>({
-    line: [],
-    area: [],
-    volume: [],
-    count: [],
-    dynamic: [],
-    scale: [],
-    perimeter: []
-  });
-  console.log(draw, 'drawdrawdrawdrawdrawdrawdrawdrawdrawdraw')
-  useEffect(() => {
-    if (drawHistory && drawHistory[`${pageNumber}`]) {//isEdit
-      console.log("Edit flow run");
+  // useEffect(()=>{
+  //   console.log(draw, 'drawdrawdrawdrawdrawdrawdrawdrawdrawdraw')
+  //   updateMeasurements(draw)
+  // },[draw])
+  // useEffect(() => {
+  //   if (drawHistory && drawHistory[`${pageNumber}`]) {//isEdit
+  //     console.log("Edit flow run");
 
-      setDraw({
-        //@ts-ignore
-        line: [], area: [], volume: [], count: [], dynamic: [], perimeter: [], ...drawHistory[`${pageNumber}`]
-      })
-    }
-  }, [drawHistory, isEdit, editData])
+  //     setDraw({
+  //       //@ts-ignore
+  //       line: [], area: [], volume: [], count: [], dynamic: [], perimeter: [], ...drawHistory[`${pageNumber}`]
+  //     })
+  //   }
+  // }, [drawHistory, isEdit, editData])
+
 
 
   const [polyLine, setPolyLine] = useState<LineInterface>(defaultPolyLineState);
@@ -747,10 +748,10 @@ const Draw: React.FC<Props> = ({
           })}
 
           {/* Drawing Line */}
-          {draw.line.map(({ textUnit, ...rest }: any, index: number) => {
+          {draw?.line?.map(({ textUnit, ...rest }: any, index: number) => {
             const id = `line-${index}`;
-            const lineDistance = calcLineDistance(rest.points, scale, true);
-            const lineMidPoint = calculateMidpoint(rest.points);
+            const lineDistance = calcLineDistance(rest?.points, scale, true);
+            const lineMidPoint = calculateMidpoint(rest?.points);
 
             return (
               <Group
@@ -766,7 +767,7 @@ const Draw: React.FC<Props> = ({
                   {...rest}
                   lineCap="round"
                   dash={selectedShape === id ? [10, 10] : []}
-                  stroke={selectedShape === id ? 'maroon' : rest.stroke}
+                  stroke={selectedShape === id ? 'maroon' : rest?.stroke}
                   pointerAtEnding={true}
                   pointerAtBeginning={true}
                 />
@@ -781,7 +782,7 @@ const Draw: React.FC<Props> = ({
           })}
 
           {/* Drawing Dynamic Fill */}
-          {draw.dynamic.map(({ ...rest }: any, index: number) => {
+          {draw?.dynamic?.map(({ ...rest }: any, index: number) => {
             const id = `dynamic-${index}`;
 
             return (
@@ -796,20 +797,20 @@ const Draw: React.FC<Props> = ({
                 <Line
                   {...rest}
                   dash={selectedShape === id ? [10, 10] : []}
-                  lineCap={selectedShape === id ? 'square' : rest.lineCap}
-                  stroke={selectedShape === id ? 'maroon' : rest.stroke}
+                  lineCap={selectedShape === id ? 'square' : rest?.lineCap}
+                  stroke={selectedShape === id ? 'maroon' : rest?.stroke}
                 />
               </Group>
             );
           })}
           {/* Drawing Perimeter Fill */}
-          {draw.perimeter.map(({ ...rest }: any, index: number) => {
+          {draw?.perimeter?.map(({ ...rest }: any, index: number) => {
             const id = `perimeter-${index}`;
 
             // const lineDistance = calcPerimeterDistance(rest.points, scale, true);
             // const lineMidPoint = calculateMidpoint(rest.points);
-            const lineDistance = rest?.points?.length > 4 ? calculatePolygonPerimeter(rest.points, scale) : calcLineDistance(rest.points, scale, true);
-            const lineMidPoint = rest?.points?.length > 4 ? calculatePolygonCenter(rest.points) : calculateMidpoint(rest.points);
+            const lineDistance = rest?.points?.length > 4 ? calculatePolygonPerimeter(rest?.points, scale) : calcLineDistance(rest?.points, scale, true);
+            const lineMidPoint = rest?.points?.length > 4 ? calculatePolygonCenter(rest?.points) : calculateMidpoint(rest?.points);
 
             return (
               <Group
@@ -840,7 +841,7 @@ const Draw: React.FC<Props> = ({
           {!!dynamicPolyLine.points.length && <Line {...dynamicPolyLine} />}
 
           {/* Drawing Area */}
-          {draw.area.map(({ textUnit, ...rest }: any, index: number) => {
+          {draw?.area?.map(({ textUnit, ...rest }: any, index: number) => {
             const polygonCoordinates = rest.points;
             const center = calculatePolygonCenter(polygonCoordinates);
             const area = calculatePolygonArea(polygonCoordinates, scale);
@@ -862,7 +863,7 @@ const Draw: React.FC<Props> = ({
                   id={id}
                   closed={true}
                   dash={selectedShape === id ? [10, 10] : []}
-                  stroke={selectedShape === id ? 'maroon' : rest.stroke}
+                  stroke={selectedShape === id ? 'maroon' : rest?.stroke}
                   onMouseDown={(e) => {
                     e.cancelBubble = true;
                     setSelectedShape(e.currentTarget.attrs?.id || '');
@@ -883,8 +884,8 @@ const Draw: React.FC<Props> = ({
           {!!polyLine.points.length && <Line {...polyLine} />}
 
           {/* Drawing Volume */}
-          {draw.volume.map(({ depth, textUnit, ...rest }: any, index: number) => {
-            const polygonCoordinates = rest.points;
+          {draw?.volume?.map(({ depth, textUnit, ...rest }: any, index: number) => {
+            const polygonCoordinates = rest?.points;
             const center = calculatePolygonCenter(polygonCoordinates);
             const volume = calculatePolygonVolume(
               polygonCoordinates,
@@ -908,7 +909,7 @@ const Draw: React.FC<Props> = ({
                   closed={true}
                   id={id}
                   dash={selectedShape === id ? [10, 10] : []}
-                  stroke={selectedShape === id ? 'maroon' : rest.stroke}
+                  stroke={selectedShape === id ? 'maroon' : rest?.stroke}
                   onMouseDown={(e) => {
                     e.cancelBubble = true;
                     setSelectedShape(e.currentTarget.attrs?.id || '');
@@ -959,7 +960,7 @@ const Draw: React.FC<Props> = ({
             )}
 
           {/* Drawing Count */}
-          {draw.count.map(({ ...rest }, index: number) => {
+          {draw?.count?.map(({ ...rest }, index: number) => {
             const id = `count-${index}`;
 
             return (

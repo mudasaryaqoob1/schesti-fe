@@ -33,7 +33,7 @@ import { takeoffSummaryService } from '@/app/services/takeoffSummary.service';
 
 
 const groupDataForFileTable = (input: any[]) => {
-  const groupedData = input.reduce((result: any, currentItem: any) => {
+  const groupedData = input?.reduce((result: any, currentItem: any) => {
     const {
       id,
       name,
@@ -49,14 +49,14 @@ const groupDataForFileTable = (input: any[]) => {
     } = currentItem;
 
     // Check if there's already an entry with the same projectName and pageLabel
-    const existingEntry = result.find(
+    const existingEntry = result?.find(
       (entry: any) =>
         // entry.projectName === projectName && entry.pageLabel === pageLabel
         entry.file?.name === file?.name
     );
 
     if (existingEntry) {
-      existingEntry.children.push({
+      existingEntry?.children?.push({
         id,
         name,
         bucketUrl,
@@ -71,7 +71,7 @@ const groupDataForFileTable = (input: any[]) => {
       });
     } else {
       result.push({
-        key: result.length + 1, // Assuming keys start from 1
+        key: result?.length + 1, // Assuming keys start from 1
         id,
         name: file,
         isParent: true,
@@ -118,7 +118,18 @@ export interface PageScale {
 
 const TakeOffNewPage = () => {
   /////////////New TakeOff States///////////////////////
+  // const [draw, setDraw] = useState<DrawInterface | any>({
+  //   line: [],
+  //   area: [],
+  //   volume: [],
+  //   count: [],
+  //   dynamic: [],
+  //   scale: [],
+  //   perimeter: []
+  // });
+  const [draw, setDraw] = useState<any>({});
   const [takeOff, settakeOff] = useState<any>({})
+  const [pdMeasurements, setpdMeasurements] = useState(null)
   const [selectedTakeOffTab, setselectedTakeOffTab] = useState<'overview' | 'page'>('overview')
   const [selectedPage, setselectedPage] = useState<any>({})
   const [selectedPagesList, setselectedPagesList] = useState([])
@@ -144,6 +155,9 @@ const TakeOffNewPage = () => {
   const [scaleLine, setscaleLine] = useState<any>({})
   const [measurements, setMeasurements] =
     useState<Measurements>(defaultMeasurements);
+
+  console.log(measurements, " measurements changed")
+  console.log(groupDataForFileTable(takeOff?.pages), takeOff?.pages, " ===> New Data to map")
 
 
   const columns: ColumnsType<any> = [
@@ -216,12 +230,51 @@ const TakeOffNewPage = () => {
     handleScaleData(newData);
   }, []);
   useEffect(() => { console.log(measurements, " ===> measurements") }, [measurements])
+  const hadleNewDrawing = () => {
+    try {
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const file = {
     src: "https://schesti-dev.s3.eu-north-1.amazonaws.com/2024/documents/takeoff-reports/4264282fef9d5a5191b025fd29daeb59",
     height: 842.04,
     width: 595.56
   }
+
+  const updateMeasurements = async (newMeasurements: any) => {
+    try {
+      let updatedMeasurmentsR: any = takeOff?.measurements ? { ...takeOff?.measurements } : {};
+      updatedMeasurmentsR[`${selectedPage?.pageId}`] = newMeasurements
+      const newupdatedMeasurements: any = await takeoffSummaryService.httpUpdateTakeoffSummary({
+        id: takeOff?._id,
+        //@ts-ignore
+        data: { measurements: updatedMeasurmentsR }
+      })
+      console.log(newupdatedMeasurements, " ==> newupdatedMeasurements")
+      settakeOff(newupdatedMeasurements?.data)
+      // if(selectedPage?.pageId){
+
+      // }
+    } catch (error) {
+      console.log(error, " ===> Error Occured while measuring")
+    }
+  }
+
+  useEffect(()=>{
+    console.log(draw, 'drawdrawdrawdrawdrawdrawdrawdrawdrawdraw')
+    updateMeasurements(draw)
+  },[draw])
+
+  useEffect(()=>{
+    if(selectedPage && takeOff?.measurements && takeOff?.measurements[`${selectedPage?.pageId}`]){
+      if(draw != takeOff?.measurements[`${selectedPage?.pageId}`]){
+        setDraw(takeOff?.measurements[`${selectedPage?.pageId}`])
+      }
+    }
+  },[selectedPage])
 
   const OldTakeOffFullPage = () => {
     return <>
@@ -361,6 +414,8 @@ const TakeOffNewPage = () => {
               setscaleLine={setscaleLine}
               setModalOpen={setShowModal}
               selectedCategory={selectedCategory}
+              draw={draw}
+              setDraw={setDraw}
             />}
             {
               selectedTakeOffTab == 'overview'
@@ -539,7 +594,7 @@ const TakeOffNewPage = () => {
                 // dataSource={groupDataForFileTable(pages)}
                 dataSource={groupDataForFileTable(takeOff?.pages)}
                 className='grow bg-transparent transparent-table'
-                scroll={{ y: 580, scrollToFirstRowOnChange: true }}
+                scroll={{ y: 580 }}
                 pagination={false}
                 showHeader={false}
                 bordered
@@ -691,6 +746,9 @@ const TakeOffNewPage = () => {
                       setscaleLine={setscaleLine}
                       setModalOpen={setShowModal}
                       selectedCategory={selectedCategory}
+                      updateMeasurements={updateMeasurements}
+                      draw={draw}
+                      setDraw={setDraw}
                     />}
                     {
                       selectedTakeOffTab == 'overview'
