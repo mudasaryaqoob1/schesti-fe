@@ -23,7 +23,7 @@ import PrimaryHeading from '@/app/component/headings/primary';
 import Description from '@/app/component/description';
 import { USER_ROLES_ENUM } from '@/app/constants/constant';
 import UserRoleModal from '../userRolesModal'
-import { navigateUserWhileAuth } from '@/app/utils/auth.utils';
+import { CheckOtherRoles, navigateUserWhileAuth } from '@/app/utils/auth.utils';
 
 const initialValues: ILogInInterface = {
   email: '',
@@ -71,7 +71,7 @@ const Login = () => {
     if (result.payload.statusCode == 200) {
       setLoading(false);
       if (
-        result.payload.data.user.roles.includes('Company') &&
+        CheckOtherRoles(result.payload.data?.user.roles) &&
         result.payload.data.user?.isPaymentConfirm
       ) {
         console.log(result.payload, 'result.payload');

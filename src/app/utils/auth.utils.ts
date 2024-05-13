@@ -1,6 +1,7 @@
 import { USER_ROLES_ENUM } from '@/app/constants/constant';
 import { IUserInterface } from '../interfaces/user.interface';
 import _ from 'lodash';
+import { userRoles } from '../enums/role.enums';
 
 const ContractorPages = {
     CompanyDetails: "/companydetails", // will have a user id,
@@ -82,4 +83,13 @@ function navigateOwner(user: IUserInterface) {
         return OwnerPages.Plans;
     }
     return null;
+}
+
+
+
+
+export function CheckOtherRoles(authUserRole: string[]) {
+    // check if the authUserRole is in userRoles using lodash
+    const roles = Object.values(userRoles)
+    return _.intersection(authUserRole, roles).length > 0;
 }
