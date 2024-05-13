@@ -209,8 +209,10 @@ const CompanyDetails = () => {
                         <PhoneNumberInputWithLable
                           label='Phone Number'
                           onChange={(value) => {
+                             //@ts-ignore
                             formik.setFieldValue('phone', value);
                           }}
+                          //@ts-ignore
                           value={formik.values.phone}
                           onBlur={() => formik.setFieldTouched('phone', true)}
                         />
