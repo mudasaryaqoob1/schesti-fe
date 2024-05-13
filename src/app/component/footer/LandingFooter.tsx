@@ -78,7 +78,7 @@ export default function LandingFooter() {
               className={`text-white cursor-pointer text-lg pb-1 font-medium`}
               onClick={() => router.push('/contact')}
             >
-              Contact Us
+              Request a demo
             </a>
           </div>
 
@@ -196,7 +196,7 @@ export default function LandingFooter() {
             className={`text-white cursor-pointer text-lg pb-1 font-normal`}
             onClick={() => router.push('/contact')}
           >
-            Contact Us
+            Request a demo
           </a>
         </div>
       </div>

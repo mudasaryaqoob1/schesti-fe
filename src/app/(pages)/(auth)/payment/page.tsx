@@ -65,12 +65,12 @@ const Payment = () => {
   return (
     <>
       <NavBar />
-      <section className="bg-[#ffffff] px-16 p-9">
+      <section className=" px-16 p-9">
         <div className="">
           <h2 className={secondaryHeading}>Payment Summary</h2>
           <div className="w-full h-0.5 bg-mistyWhite mt-4 mb-10"></div>
           <div className="flex gap-10">
-            <div className="flex flex-col gap-5 shadow-md rounded-s max-w-lg w-full p-6">
+            <div className="flex bg-white rounded-lg flex-col gap-5 shadow-md rounded-s max-w-lg w-full p-6">
               <div>
                 <TertiaryHeading title="Subscribe to" />
                 <SecondaryHeading
@@ -135,9 +135,9 @@ const Payment = () => {
                   />
                 </div>
               </div>
-              <div className="flex flex-col">
+              <div className="flex flex-col ">
                 <div
-                  className="h-52 grid place-items-center w-full shadow-md  my-6 gap-10  rounded-s cursor-pointer"
+                  className="h-52 grid place-items-center w-full shadow-md  my-6 gap-10  bg-white rounded-lg cursor-pointer"
                   onClick={stripePaymentHandler}
                 >
                   <Image

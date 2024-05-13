@@ -78,7 +78,7 @@ const SinglePlan = (props: Props) => {
 
   return (
     <div
-      className={`p-8 rounded-[20px] items-center flex flex-col justify-between shadow-secondaryShadow gap-5`}
+      className={`p-8 rounded-[20px] bg-white items-center flex flex-col justify-between shadow-secondaryShadow gap-5`}
     >
       <div className=" flex flex-col gap-8 items-start w-full">
         <h2 className={`${tertiaryHeading} text-graphiteGray`}>{planName}</h2>
