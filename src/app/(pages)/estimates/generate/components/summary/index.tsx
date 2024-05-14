@@ -68,7 +68,7 @@ const Summary = ({ setPrevNext }: Props) => {
   const [estimatesRecords, setEstimatesRecords] = useState([]);
   const [totalMaterialBaseCost, setTotalMaterialBaseCost] = useState(0);
 
-  const [materialPercentage, setMaterialPercentage] = useState<number | string>(
+  const [materialPercentage, setMaterialPercentage] = useState<number>(
     5
   );
   const [overHeadProfitPercentage, setOverHeadProfitPercentage] = useState<
@@ -135,20 +135,28 @@ const Summary = ({ setPrevNext }: Props) => {
     percentage = Number(percentage);
     return (percentage * value) / 100;
   };
-
+  
   const generateBidHandler = async () => {
     setIsLoading(true);
     let obj = {
       totalBidDetail: {
-        materialTax: totalMaterialBaseCost,
-        overheadAndProfit: (
-          calculatePercentqge(subTotalcostRecord, overHeadProfitPercentage) +
-          calculatePercentqge(totalMaterialBaseCost, materialPercentage)
+        materialTax: calculatePercentqge(totalMaterialBaseCost, materialPercentage),
+        overheadAndProfit: calculatePercentqge(
+          subTotalcostRecord +
+            calculatePercentqge(
+              totalMaterialBaseCost,
+              materialPercentage
+            ),
+          overHeadProfitPercentage
         ).toFixed(2),
-        bondFee: (
-          calculatePercentqge(subTotalcostRecord, bondFeePercentage) +
-          calculatePercentqge(totalMaterialBaseCost, materialPercentage) +
-          calculatePercentqge(subTotalcostRecord, overHeadProfitPercentage)
+        bondFee: calculatePercentqge(
+          subTotalcostRecord +
+            totalMaterialBaseCost +
+            calculatePercentqge(
+              subTotalcostRecord,
+              overHeadProfitPercentage
+            ),
+          bondFeePercentage
         ).toFixed(2),
       },
       totalCost: totalCostRecord,
@@ -452,7 +460,7 @@ const Summary = ({ setPrevNext }: Props) => {
                 placeholder="Enter Material Tax"
                 field={{
                   value: materialPercentage.toString(),
-                  onChange: (e) => setMaterialPercentage(e.target.value),
+                  onChange: (e) => setMaterialPercentage(Number(e.target.value)),
                 }}
               />
             </div>
@@ -464,13 +472,13 @@ const Summary = ({ setPrevNext }: Props) => {
               <MinDesc
                 title={`$${formatNumberWithCommas(
                   calculatePercentqge(
-                    subTotalcostRecord,
+                    subTotalcostRecord +
+                      calculatePercentqge(
+                        totalMaterialBaseCost,
+                        materialPercentage
+                      ),
                     overHeadProfitPercentage
-                  ) +
-                    calculatePercentqge(
-                      totalMaterialBaseCost,
-                      materialPercentage
-                    )
+                  )
                 )}`}
                 className="text-darkgrayish"
               />
@@ -491,15 +499,15 @@ const Summary = ({ setPrevNext }: Props) => {
               <MinDesc title="Bond Fee %" className="text-darkgrayish" />
               <MinDesc
                 title={`$${formatNumberWithCommas(
-                  calculatePercentqge(subTotalcostRecord, bondFeePercentage) +
-                    calculatePercentqge(
-                      totalMaterialBaseCost,
-                      materialPercentage
-                    ) +
-                    calculatePercentqge(
-                      subTotalcostRecord,
-                      overHeadProfitPercentage
-                    )
+                  calculatePercentqge(
+                    subTotalcostRecord +
+                      totalMaterialBaseCost +
+                      calculatePercentqge(
+                        subTotalcostRecord,
+                        overHeadProfitPercentage
+                      ),
+                    bondFeePercentage
+                  )
                 )}`}
                 className="text-darkgrayish"
               />
@@ -530,23 +538,11 @@ const Summary = ({ setPrevNext }: Props) => {
                     totalMaterialBaseCost,
                     materialPercentage
                   ) +
-                  (calculatePercentqge(
+                  calculatePercentqge(
                     subTotalcostRecord,
                     overHeadProfitPercentage
                   ) +
-                    calculatePercentqge(
-                      totalMaterialBaseCost,
-                      materialPercentage
-                    )) +
-                  (calculatePercentqge(subTotalcostRecord, bondFeePercentage) +
-                    calculatePercentqge(
-                      totalMaterialBaseCost,
-                      materialPercentage
-                    ) +
-                    calculatePercentqge(
-                      subTotalcostRecord,
-                      overHeadProfitPercentage
-                    ))
+                  calculatePercentqge(subTotalcostRecord, bondFeePercentage) 
               )}`}
               className="font-semibold"
             />
