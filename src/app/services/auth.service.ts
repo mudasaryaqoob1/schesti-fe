@@ -17,6 +17,7 @@ import {
   IPaymentProps,
   IPaypalPaymentProps,
 } from '../interfaces/authInterfaces/payment.interface';
+import { IUserInterface } from '../interfaces/user.interface';
 
 class AuthService extends HttpService {
   private readonly prefix: string = 'api/auth';
@@ -126,5 +127,10 @@ class AuthService extends HttpService {
       data: any;
     }>
   > => this.post(`${this.prefix}/capture-order`, { orderID: orderID });
+
+  httpGetUserDetailsByEmail = (email: string): Promise<IResponseInterface<{
+    user: IUserInterface
+  }>> => this.get(`${this.prefix}/get-details-by-email/${email}`);
+
 }
 export const authService = new AuthService();

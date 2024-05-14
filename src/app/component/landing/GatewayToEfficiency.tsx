@@ -35,7 +35,7 @@ export function GatewayToEfficiency() {
 
               {pathname !== '/contact' ? (
                 <CustomButton
-                  text="Contact Us"
+                  text="Request a demo"
                   className="!rounded-full !w-48 !bg-transparent  !text-white"
                   onClick={() => router.push('/contact')}
                 />
