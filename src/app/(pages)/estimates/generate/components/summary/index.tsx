@@ -464,13 +464,13 @@ const Summary = ({ setPrevNext }: Props) => {
               <MinDesc
                 title={`$${formatNumberWithCommas(
                   calculatePercentqge(
-                    subTotalcostRecord,
+                    subTotalcostRecord +
+                      calculatePercentqge(
+                        totalMaterialBaseCost,
+                        materialPercentage
+                      ),
                     overHeadProfitPercentage
-                  ) +
-                    calculatePercentqge(
-                      totalMaterialBaseCost,
-                      materialPercentage
-                    )
+                  )
                 )}`}
                 className="text-darkgrayish"
               />
@@ -491,15 +491,15 @@ const Summary = ({ setPrevNext }: Props) => {
               <MinDesc title="Bond Fee %" className="text-darkgrayish" />
               <MinDesc
                 title={`$${formatNumberWithCommas(
-                  calculatePercentqge(subTotalcostRecord, bondFeePercentage) +
-                    calculatePercentqge(
-                      totalMaterialBaseCost,
-                      materialPercentage
-                    ) +
-                    calculatePercentqge(
-                      subTotalcostRecord,
-                      overHeadProfitPercentage
-                    )
+                  calculatePercentqge(
+                    subTotalcostRecord +
+                      totalMaterialBaseCost +
+                      calculatePercentqge(
+                        subTotalcostRecord,
+                        overHeadProfitPercentage
+                      ),
+                    bondFeePercentage
+                  )
                 )}`}
                 className="text-darkgrayish"
               />
@@ -530,23 +530,11 @@ const Summary = ({ setPrevNext }: Props) => {
                     totalMaterialBaseCost,
                     materialPercentage
                   ) +
-                  (calculatePercentqge(
+                  calculatePercentqge(
                     subTotalcostRecord,
                     overHeadProfitPercentage
                   ) +
-                    calculatePercentqge(
-                      totalMaterialBaseCost,
-                      materialPercentage
-                    )) +
-                  (calculatePercentqge(subTotalcostRecord, bondFeePercentage) +
-                    calculatePercentqge(
-                      totalMaterialBaseCost,
-                      materialPercentage
-                    ) +
-                    calculatePercentqge(
-                      subTotalcostRecord,
-                      overHeadProfitPercentage
-                    ))
+                  calculatePercentqge(subTotalcostRecord, bondFeePercentage) 
               )}`}
               className="font-semibold"
             />
