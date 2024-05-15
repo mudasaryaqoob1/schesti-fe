@@ -98,7 +98,6 @@ const CompanyDetails = () => {
       }
     }
 
-
     let result: any = await dispatch(
       addCompanyDetail({ ...values, userId: userId })
     );
@@ -209,7 +208,7 @@ const CompanyDetails = () => {
                         <PhoneNumberInputWithLable
                           label='Phone Number'
                           onChange={(value) => {
-                             //@ts-ignore
+                            //@ts-ignore
                             formik.setFieldValue('phone', value);
                           }}
                           //@ts-ignore
@@ -318,7 +317,7 @@ const CompanyDetails = () => {
 
 
 
-                      {selectedUserRole == CONTRACTOR || selectedUserRole === SUBCONTRACTOR && (
+                      {selectedUserRole === CONTRACTOR || selectedUserRole === SUBCONTRACTOR ? (
                         <FormControl
                           control="input"
                           label="Industry"
@@ -326,7 +325,7 @@ const CompanyDetails = () => {
                           name="industry"
                           placeholder="Enter industry Name"
                         />
-                      )}
+                      ) : null}
                       {(selectedUserRole == CONTRACTOR ||
                         selectedUserRole == SUBCONTRACTOR) && (
                           <>
