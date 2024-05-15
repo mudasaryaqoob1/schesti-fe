@@ -8,8 +8,6 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Providers } from './(pages)/providers';
 
 const inter = Inter({ subsets: ['latin'] });
-
-
 export const metadata: Metadata = {
   title: 'Schesti',
   description: 'Schesti App',
