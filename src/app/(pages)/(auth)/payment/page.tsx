@@ -19,6 +19,7 @@ import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { useSelector } from 'react-redux';
 import { HttpService } from '@/app/services/base.service';
+import PaypalIntegration from './paypalIntegration';
 
 const Payment = () => {
   const router = useRouter();
@@ -147,18 +148,18 @@ const Payment = () => {
                     height={80}
                   />
                 </div>
-                {/* <div className="h-52 grid place-items-center w-full shadow-md   rounded-s">
+                <div className="h-52 grid place-items-center bg-white w-full shadow-md   rounded-s">
                   {selectedPLan ? (
-                    <PaypalInteration selectedPlan={selectedPLan} />
-                  ) : null} */}
+                    <PaypalIntegration selectedPlan={selectedPLan} />
+                  ) : null}
 
-                {/* <Image
-                src={'/paypal.svg'}
-                alt={'paypal icon'}
-                width={190}
-                height={80}
-              /> */}
-                {/* </div> */}
+                  {/* <Image
+                    src={'/paypal.svg'}
+                    alt={'paypal icon'}
+                    width={190}
+                    height={80}
+                  /> */}
+                </div>
               </div>
             </div>
           </div>
