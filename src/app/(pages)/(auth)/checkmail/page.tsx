@@ -108,7 +108,7 @@ const CheckYourEmail = () => {
       }
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
-      toast.error(err.response?.data.message || 'Unable to continue');
+      toast.error(err.response?.data.message);
     } finally {
       setIsFetchingUserData(false);
     }
