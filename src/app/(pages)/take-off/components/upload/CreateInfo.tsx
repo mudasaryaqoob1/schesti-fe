@@ -17,7 +17,7 @@ import ClientModal from '../createClientModal';
 import { UploadFileData } from '../../context/EditContext'
 import { toast } from 'react-toastify'
 import CreateProgressModal from '../createProgressModal'
-import { PDFDocumentProxy } from 'pdfjs-dist'
+import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist'
 import AwsS3 from '@/app/utils/S3Intergration'
 import axios from 'axios'
 import { takeoffSummaryService } from '@/app/services/takeoffSummary.service'
@@ -148,8 +148,8 @@ const CreateInfo = () => {
             [e.target.id]: e.target?.value
         }))
     }
-    const handleUpdatePages = (pageIndex: any, s3Url: any, fileIndex: any, success: any) => {
-        setfullData((ps: any) => ({ ...ps, pages: [...ps.pages, { pageNum: pageIndex + 1, name: `${pageIndex + 1} page`, bucketUrl: s3Url, success: success, file: { name: selectedFiles[fileIndex]?.name ?? fileIndex, index: fileIndex } }] }))
+    const handleUpdatePages = (pageIndex: any, s3Url: any, fileIndex: any, success: any, width:any, height:any, fileId:any) => {
+        setfullData((ps: any) => ({ ...ps, pages: [...ps.pages, { pageNum: pageIndex + 1, pageId: `${new Date().getTime()}`, fileId:fileId, width, height, name: `${pageIndex + 1} page`, src: s3Url, success: success, file: { name: selectedFiles[fileIndex]?.name ?? fileIndex, index: fileIndex } }] }))
     }
     console.log(projectData, " projectData");
     console.log(fullData, " ===> Full Data")
@@ -170,9 +170,9 @@ const CreateInfo = () => {
         console.log(projectData, selectecClient, selectedFiles)
         setprogressModalOpen(true)
     }
-    const processSinglePage = async (pageIndex: any, pdf: PDFDocumentProxy, fileIndex: any) => {
+    const processSinglePage = async (pageIndex: any, pdf: PDFDocumentProxy, fileIndex: any, fileId:any) => {
         try {
-            const page = await pdf.getPage(pageIndex + 1);
+            const page:PDFPageProxy = await pdf.getPage(pageIndex + 1);
             console.log(page, typeof (page), " ===> pages while uplaoding")
             const scale = 1;
             const viewport = page.getViewport({ scale });
@@ -191,15 +191,17 @@ const CreateInfo = () => {
                 width: viewport.width,
             }
             const s3Url = await new AwsS3(obj.src, 'documents/takeoff-reports/').uploadS3URL()
-            handleUpdatePages(pageIndex, s3Url, fileIndex, true)
+            handleUpdatePages(pageIndex, s3Url, fileIndex, true, viewport?.width, viewport?.height, fileId)
+            page.cleanup()
         } catch (error) {
             console.log(error, " ===> Error insdie process single page");
-            handleUpdatePages(pageIndex, "", fileIndex, false)
+            handleUpdatePages(pageIndex, "", fileIndex, false, 0, 0, fileId)
         }
     }
     const processSingleFile = async (i: any) => {
         try {
             const curFile = selectedFiles[i]
+            const fileId = `${new Date()?.getTime()}`
             console.log(curFile, " ===> Current File Running");
             if (curFile) {
                 const PDFJS = await pdfjs();
@@ -208,9 +210,9 @@ const CreateInfo = () => {
                 reader.onload = async (event: any) => {
                     const data = new Uint8Array(event.target.result);
                     const pdf: PDFDocumentProxy = await PDFJS.getDocument(data).promise;
-                    setfullData((ps: any) => ({ ...ps, files: [...ps.files, { name: curFile?.name ?? i, index: i, totalPages: pdf?.numPages ?? 5 }] }))
+                    setfullData((ps: any) => ({ ...ps, files: [...ps.files, { name: curFile?.name ?? i, fileId, index: i, totalPages: pdf?.numPages ?? 5 }] }))
                     for (let index = 0; index < pdf.numPages; index++) {
-                        processSinglePage(index, pdf, i)
+                        await processSinglePage(index, pdf, i, fileId)
                     }
                 }
                 reader.readAsArrayBuffer(curFile);
@@ -226,9 +228,9 @@ const CreateInfo = () => {
         if (Array.isArray(selectedFiles) && selectedFiles?.length > 0) {
             try {
                 for (let i = 0; i < selectedFiles?.length; i++) {
-                    processSingleFile(i)
-                    setisLoading(false)
+                    await processSingleFile(i)
                 }
+                // setisLoading(false)
             } catch (error) {
                 console.log(error, " Error startProcess");
                 setisLoading(false)
@@ -252,6 +254,21 @@ const CreateInfo = () => {
             router.push('/take-off')
         } catch (error) {
             console.log(error);
+            setisLoading(false)
+        }
+    }
+    const [isApiCalling, setisApiCalling] = useState(false)
+    const makeApiCall = async() => {
+        try {
+            setisApiCalling(true)
+            setisLoading(true)
+            const data = await takeoffSummaryService.httpCreateTakeOffNew({projectData,selectecClient,fullData})
+            console.log(data, " ===> Data after creation");
+            router.push('/take-off')
+            setisApiCalling(false)
+        } catch (error) {
+            setisApiCalling(false)
+            console.log(error, " ===> Error while making api call")
             setisLoading(false)
         }
     }
@@ -555,9 +572,12 @@ const CreateInfo = () => {
                         setModalOpen={setprogressModalOpen}
                         files={selectedFiles}
                         pages={allPages}
-                        processFiles={processRequest}//{startProcess}
+                        processFiles={startProcess}//{processRequest}
                         fullData={fullData}
                         isLoading={isLoading}
+                        setisLoading={setisLoading}
+                        makeApiCall={makeApiCall}
+                        isApiCalling={isApiCalling}
                     />
                 </ModalComponent>
             </div>

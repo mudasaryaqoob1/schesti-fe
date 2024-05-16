@@ -20,34 +20,64 @@ interface Props {
   files?: any,
   pages?: any,
   isLoading?: boolean
-  processFiles?:any
-  fullData?:any
+  processFiles?: any
+  fullData?: any
+  setisLoading?: any
+  makeApiCall?: any
+  isApiCalling?:any;
 }
 
-const CreateProgressModal = ({ setModalOpen, pages, files, isLoading, processFiles, fullData }: Props) => {
+const CreateProgressModal = ({ setModalOpen, pages, files, isLoading, processFiles, fullData, setisLoading, makeApiCall, isApiCalling }: Props) => {
   const [fLoading, setfLoading] = useState<boolean>(false)
+  const [isCancelAble, setisCancelAble] = useState<boolean>(true)
+  const [shouldContinue, setshouldContinue] = useState<boolean>(false)
   const getLoading = () => {
     let trueArr = [];
-    for(let i = 0; i<fullData?.files;i++){
+    for (let i = 0; i < fullData?.files?.length; i++) {
       const totalPages = fullData?.files[i]?.totalPages;
-      const filteredArr = fullData?.pages?.filter((i:any)=>{return i?.file?.name == fullData?.files[i]?.name})
-      if(filteredArr?.length == totalPages){
+      const filteredArr = fullData?.pages?.filter((it: any) => { return it?.fileId == fullData?.files[i]?.fileId })
+      console.log(filteredArr?.length, totalPages, fullData, " true array ilteredArr?.length == totalPages Full Data")
+      if (filteredArr?.length == totalPages) {
         trueArr.push(true)
-      }else{
+      } else {
         trueArr.push(false)
       }
     }
-    if(trueArr?.every((i:any)=>{return i == true})){
-      return false
-    }else{
+    console.log(trueArr, " true array Full Data")
+    if (trueArr?.length > 0 && trueArr?.every((i: any) => { return i == true })) {
+      console.log(fullData, " ===> here is fullData Object fully loaded")
+      // setisLoading(false)
+      // setshouldContinue(true)
+      if(!isApiCalling){
+        setTimeout(()=>{},500)
+      }
+      return false;
+    } else {
       return true
     }
   }
-  console.log(getLoading(), " ===> Get loading");
-  useEffect(()=>{
-    setfLoading(getLoading)
-  },[fullData])
-  
+  // console.log(getLoading(), " ===> Get loading true array Full Data");
+  useEffect(() => {
+    // setfLoading(getLoading)
+    // getLoading()
+    if(Array.isArray(fullData?.pages) && fullData?.pages?.length>0){
+      if(fullData?.files?.every((i:any)=>{
+        return i?.totalPages == fullData?.pages?.filter((pg:any)=>(i?.fileId == pg?.fileId))?.length
+      })){
+        setisLoading(false)
+        setshouldContinue(true)
+      }
+    }
+  }, [fullData])
+
+  // useEffect(()=>{
+  //   if(shouldContinue == true){
+  //     makeApiCall()
+  //   }
+  // },[shouldContinue])
+
+
+
   return (
     <div className="py-2.5 px-6 bg-white border border-solid border-elboneyGray rounded-[4px] z-50">
       <section className="w-full">
@@ -81,26 +111,26 @@ const CreateProgressModal = ({ setModalOpen, pages, files, isLoading, processFil
           <p>This is one time process and might take few minutes. Kindly don't close or reload tabs to continue.</p>
           <div className='flex flex-col gap-y-10 w-full p-5'>
             {
-              files && Array.isArray(files) && files?.length > 0 && files?.map((item: any, index: number) => {
-                const successProgress = fullData?.pages?.filter((i:any)=>{return (i?.file?.name == item?.name && i?.success == true)})
-                const failedProgress = fullData?.pages?.filter((i:any)=>{return (i?.file?.name == item?.name && i?.success == false)})
-                const totalProgress = fullData?.pages?.filter((i:any)=>{return i?.file?.name == item?.name})
+              fullData?.files && Array.isArray(fullData?.files) && fullData?.files?.length > 0 && fullData?.files?.map((item: any, index: number) => {
+                const successProgress = fullData?.pages?.filter((i: any) => { return (i?.fileId == item?.fileId && i?.success == true) })
+                const failedProgress = fullData?.pages?.filter((i: any) => { return (i?.fileId == item?.fileId && i?.success == false) })
+                const totalProgress = fullData?.pages?.filter((i: any) => { return i?.fileId == item?.fileId })
 
                 return <div className='flex gap-2 flex-col'>
                   <div className='flex gap-2'>
-                    <p className='whitespace-nowrap'>{item?.name?.slice(0,12) ?? ''}</p>
-                    <Progress percent={(totalProgress && Array.isArray(totalProgress)? totalProgress?.length : 0)} />
+                    <p className='whitespace-nowrap'>{item?.name?.slice(0, 12) ?? ''}</p>
+                    <Progress percent={(totalProgress && Array.isArray(totalProgress) ? Math.ceil((totalProgress?.length/item?.totalPages)*100) : 0)} />
                   </div>
                   <div className='flex gap-3'>
-                    <Progress size={'small'} type='circle' percent={(successProgress && Array.isArray(successProgress)? successProgress?.length : 0)} />
-                    <Progress size={'small'} type='circle' percent={(failedProgress && Array.isArray(failedProgress)? failedProgress?.length : 0)} status='exception' />
+                    <Progress size={'small'} type='circle' percent={(successProgress && Array.isArray(successProgress) ? Math.ceil((successProgress?.length/item?.totalPages)*100) : 0)} />
+                    <Progress size={'small'} type='circle' percent={(failedProgress && Array.isArray(failedProgress) ? Math.ceil((failedProgress?.length/item?.totalPages)*100) : 0)} status='exception' />
                   </div>
                 </div>
               })
             }
           </div>
           <div className="self-end flex justify-end items-center gap-5 md:mt-4 my-3">
-            {!isLoading && <div>
+            {isCancelAble && <div>
               <CustomButton
                 className=" !border-celestialGray !shadow-scenarySubdued2 !text-graphiteGray !bg-snowWhite"
                 text="Cancel"
@@ -110,9 +140,17 @@ const CreateProgressModal = ({ setModalOpen, pages, files, isLoading, processFil
             </div>}
             <div>
               <CustomButton
-                isLoading={isLoading}
-                text="Start Process"
-                onClick={()=>{if(processFiles){processFiles()}}}
+                isLoading={isLoading}//isLoading
+                text={shouldContinue ? "Continue" : "Start Process"}
+                onClick={() => {
+                  if (shouldContinue == true) {
+                    makeApiCall()
+                  } else {
+                    if (processFiles) {
+                      processFiles(); setisCancelAble(false);
+                    }
+                  }
+                }}
               />
             </div>
           </div>

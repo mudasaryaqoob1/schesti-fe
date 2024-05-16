@@ -3,7 +3,7 @@ import { useState, useContext, useEffect } from 'react';
 import ModalComponent from '@/app/component/modal';
 import ScaleModal from '../components/scale';
 import ModalsWrapper from './components/ModalWrapper';
-import { ColorPicker, InputNumber, Select } from 'antd';
+import { Avatar, ColorPicker, InputNumber, Select, Spin } from 'antd';
 import { EditContext, ReportDataContext, ScaleContext, UploadFileContext } from '../context';
 import { UploadFileContextProps } from '../context/UploadFileContext';
 import {
@@ -25,11 +25,12 @@ import { selectUser } from '@/redux/authSlices/auth.selector';
 ////////////////////////New Take OffData///////////////////////////////////
 import CustomButton from '@/app/component/customButton/button'
 import { bg_style } from '@/globals/tailwindvariables'
-import { CloudUploadOutlined, DownOutlined, FileOutlined, FilePdfOutlined, FolderOutlined, LeftOutlined, MenuUnfoldOutlined, MoreOutlined, RightOutlined, SearchOutlined } from '@ant-design/icons'
+import { CloudUploadOutlined, DownOutlined, FileOutlined, FilePdfOutlined, FolderOutlined, LeftOutlined, MenuUnfoldOutlined, MoreOutlined, RightOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons'
 import React from 'react'
 import { Button, Divider, Input, Table, TableColumnsType, Tree, TreeDataNode } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import { takeoffSummaryService } from '@/app/services/takeoffSummary.service';
+import { EditableText } from '@/app/component/EditableText';
 
 
 const groupDataForFileTable = (input: any[]) => {
@@ -45,7 +46,8 @@ const groupDataForFileTable = (input: any[]) => {
       height,
       src,
       pageId,
-      pageNumber
+      pageNumber,
+      fileId
     } = currentItem;
 
     // Check if there's already an entry with the same projectName and pageLabel
@@ -73,7 +75,7 @@ const groupDataForFileTable = (input: any[]) => {
       result.push({
         key: result?.length + 1, // Assuming keys start from 1
         id,
-        name: file,
+        name: file?.name,
         isParent: true,
         bucketUrl,
         file,
@@ -102,6 +104,71 @@ const groupDataForFileTable = (input: any[]) => {
 
   return groupedData;
 };
+
+const getSingleMeasurements = (draw: any, pageId: any) => {
+  let singleArr: any = [];
+  let returningArr: any = [];
+  if (Object?.keys(draw)?.length > 0) {
+    Object.keys(draw)?.map((key: string, index: number) => {
+      if (Array.isArray(draw[`${key}`]) && draw[`${key}`]?.length > 0) {
+        singleArr = [...singleArr, ...draw[`${key}`]?.map((i: any) => ({ ...i, type: key,pageId }))]
+      }
+      return "";
+    })
+    console.log(singleArr, pageId, " =====> measurementsTableData measurementsTableData")
+    if (singleArr?.length > 0) {
+      //Reduce code for category
+      returningArr = singleArr?.reduce((result: any, currentItem: any) => {
+        const { category, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type } = currentItem
+        // Check if there's already an entry with the same projectName and pageLabel
+        const existingEntry = result?.find((entry: any) => entry.category === category);
+        if (existingEntry) { existingEntry?.children?.push({ category, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, pageId, type }) }
+        else {
+          result?.push({
+            isParent: true, category, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, pageId, type,
+            children: [{ isParent: false, category, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, pageId, type, user }]
+          })
+        }
+        return result
+      }, [])
+    }
+  }
+  return singleArr
+}
+const measurementsTableData = (takeOff: any) => {
+  let returningArr: any = [];
+  if (takeOff?.measurements && Object.keys(takeOff?.measurements) && Object.keys(takeOff?.measurements)?.length > 0) {
+    Object.keys(takeOff?.measurements)?.map((key: any, ind: any) => {
+      console.log(ind, takeOff?.measurements[key], " =====> measurementsTableData measurementsTableData gotArr")
+      if (takeOff?.measurements[`${key}`]) {
+        const gotArr = getSingleMeasurements(takeOff?.measurements[`${key}`], key)
+        console.log(gotArr, takeOff?.measurements[`${key}`], " =====> measurementsTableData measurementsTableData gotArr")
+        if (Array.isArray(gotArr)) {
+          returningArr = [...returningArr, ...gotArr]
+        }
+      }
+      return ""
+    })
+  }
+  console.log(returningArr, " =====> measurementsTableData measurementsTableData")
+  if (returningArr?.length > 0) {
+    //Reduce code for category
+    returningArr = returningArr?.reduce((result: any, currentItem: any) => {
+      const { category, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId } = currentItem
+      // Check if there's already an entry with the same projectName and pageLabel
+      const existingEntry = result?.find((entry: any) => entry.category === category);
+      if (existingEntry) { existingEntry?.children?.push({ key: dateTime, category, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId }) }
+      else {
+        result?.push({
+          key: dateTime, isParent: true, category, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type,pageId,
+          children: [{ key: dateTime, isParent: false, category, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type,pageId }]
+        })
+      }
+      return result
+    }, [])
+  }
+  return returningArr
+}
 
 const { DirectoryTree, TreeNode } = Tree;
 ////////////////////////New Take OffData///////////////////////////////////
@@ -134,7 +201,7 @@ const TakeOffNewPage = () => {
   const [selectedPage, setselectedPage] = useState<any>({})
   const [selectedPagesList, setselectedPagesList] = useState([])
   /////////////New TakeOff States///////////////////////
-  const [leftOpened, setleftOpened] = useState<boolean>(false)
+  const [leftOpened, setleftOpened] = useState<boolean>(true)
   const urlSearch: any = new URLSearchParams(window.location.search)
   console.log(window.location, urlSearch, urlSearch.get('edit_id'), " Edit Data Edit Data");
   const router = useRouter();
@@ -153,14 +220,58 @@ const TakeOffNewPage = () => {
   const [depth, setDepth] = useState<number>(0);
   const [drawScale, setdrawScale] = useState<boolean>(false)
   const [scaleLine, setscaleLine] = useState<any>({})
+  const [sideTabs, setsideTabs] = useState<"Plans" | "TakeOff" | "WBS">("TakeOff")
   const [measurements, setMeasurements] =
     useState<Measurements>(defaultMeasurements);
 
   console.log(measurements, " measurements changed")
   console.log(groupDataForFileTable(takeOff?.pages), takeOff?.pages, " ===> New Data to map")
+  useEffect(() => {
+    if (takeOff?.measurements) {
+      console.log(measurementsTableData(takeOff), " =====> measurementsTableData measurementsTableData")
+    }
+  }, [takeOff])
+
+  const [tableLoading, settableLoading] = useState<any>(false)
+  const updateTableChangeInTakeOff = async (pageId: string, type: any, dateTime: any, keyToUpdate: string, valueToUpdate: any) => {
+    console.log(pageId, type, dateTime, keyToUpdate, valueToUpdate,'Update Run')
+    if (pageId && type && dateTime && keyToUpdate) {
+      try {
+        let tempTakeOff = takeOff
+        let slpg = tempTakeOff?.measurements[pageId]
+        if (slpg) {
+          settableLoading(true)
+          slpg = {
+            ...slpg,
+            [type]: slpg[type]?.map((it: any) => {
+              if (new Date(it.dateTime).valueOf() === new Date(dateTime).valueOf()) {
+                return { ...it, [keyToUpdate]: valueToUpdate };
+              } else {
+                return it
+              };
+            })
+          }
+          tempTakeOff.measurements[pageId] = slpg
+          // console.log(tempTakeOff)
+          const newupdatedMeasurements: any = await takeoffSummaryService.httpUpdateTakeoffSummary({
+            id: takeOff?._id,
+            //@ts-ignore
+            data: { measurements: tempTakeOff.measurements }
+          })
+          console.log(newupdatedMeasurements, " ==> newupdatedMeasurements")
+          settakeOff(newupdatedMeasurements?.data)
+          settableLoading(false)
+          setDraw(newupdatedMeasurements?.data?.measurements[`${selectedPage?.pageId}`])
+        }
+      } catch (error) {
+        settableLoading(false)
+        console.log(error, " ===> Error while updating table data")
+      }
+    }
+  }
 
 
-  const columns: ColumnsType<any> = [
+  const plansColumn: ColumnsType<any> = [
     {
       title: 'Name',
       dataIndex: 'name',
@@ -178,6 +289,53 @@ const TakeOffNewPage = () => {
           className="flex items-center h-full cursor-pointer">
           {record?.isParent == true ? <FolderOutlined className="mr-2" /> : <FileOutlined className="mr-2" />}
           {text}
+        </div>
+      ),
+    },
+  ];
+
+  const measurementsColumn: ColumnsType<any> = [
+    {
+      title: 'Project Name',
+      dataIndex: 'category',
+      key: 'dateTime',
+      render: (text, record) => (
+        <div
+          className="flex items-center h-full cursor-pointer">
+          {record?.isParent ? text : <span className='flex items-center gap-1'><ColorPicker onChangeComplete={(val)=>{updateTableChangeInTakeOff(record?.pageId,record?.type,record?.dateTime,'stroke',val.toHexString())}} className='!w-[2px] !h-[2px] border-none' value={record?.stroke} /> <EditableText initialText={record?.projectName} smallText={record?.projectName?.slice(0, 6) + "..."} onPressEnter={(value) => {updateTableChangeInTakeOff(record?.pageId,record?.type,record?.dateTime,'projectName',value)}} toolTip={takeOff?.pages?.find((pg:any)=>(pg?.pageId == record?.pageId))?.name+`(${takeOff?.pages?.find((pg:any)=>(pg?.pageId == record?.pageId))?.file?.name})`} /></span>}
+        </div>
+      ),
+    },
+    {
+      title: 'Project Name',
+      dataIndex: 'category',
+      // key: 'category',
+      render: (text, record) => (
+        <div
+          className="flex items-center h-full cursor-pointer">
+          {record?.isParent ? <></> : <span className='flex items-center gap-1'><Avatar icon={<UserOutlined />} /> <span data-tooltip="Kamran Sadiq" >Kamr...</span></span>}
+        </div>
+      ),
+    },
+    {
+      title: 'Project Name',
+      dataIndex: 'category',
+      // key: 'category',
+      render: (text, record) => (
+        <div
+          className="flex items-center h-full cursor-pointer">
+          {record?.isParent ? <></> : <span className='flex items-center gap-1'>{record?.dateTime}</span>}
+        </div>
+      ),
+    },
+    {
+      title: 'Project Name',
+      dataIndex: 'category',
+      // key: 'category',
+      render: (text, record) => (
+        <div
+          className="flex items-center h-full cursor-pointer">
+          {record?.isParent ? <></> : <span className='flex items-center gap-1'><MoreOutlined/></span>}
         </div>
       ),
     },
@@ -263,18 +421,21 @@ const TakeOffNewPage = () => {
     }
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log(draw, 'drawdrawdrawdrawdrawdrawdrawdrawdrawdraw')
     updateMeasurements(draw)
-  },[draw])
+  }, [draw])
 
-  useEffect(()=>{
-    if(selectedPage && takeOff?.measurements && takeOff?.measurements[`${selectedPage?.pageId}`]){
-      if(draw != takeOff?.measurements[`${selectedPage?.pageId}`]){
+  useEffect(() => {
+    if (selectedPage && takeOff?.measurements && takeOff?.measurements[`${selectedPage?.pageId}`]) {
+      console.log(selectedPage, takeOff?.measurements[`${selectedPage?.pageId}`], selectedPage?.pageId, takeOff?.measurements, " ===> Selected Page in UseEffect")
+      if (draw != takeOff?.measurements[`${selectedPage?.pageId}`]) {
         setDraw(takeOff?.measurements[`${selectedPage?.pageId}`])
       }
+    } else {
+      setDraw({})
     }
-  },[selectedPage])
+  }, [selectedPage])
 
   const OldTakeOffFullPage = () => {
     return <>
@@ -537,6 +698,22 @@ const TakeOffNewPage = () => {
     </>
   }
 
+  const [tableColumns, settableColumns] = useState<any>([])
+  const [tableData, settableData] = useState<any>([])
+  useEffect(() => {
+    console.log(measurementsTableData(takeOff ?? {}), " ===> Data to view")
+    if (sideTabs == 'Plans') {
+      settableColumns(plansColumn)
+      settableData(groupDataForFileTable(takeOff?.pages))
+    } else if (sideTabs == 'TakeOff') {
+      settableColumns(measurementsColumn)
+      settableData(measurementsTableData(takeOff ?? {}))
+    } else if (sideTabs == 'WBS') {
+      settableColumns(measurementsColumn)
+      settableData(measurementsTableData(takeOff ?? {}))
+    }
+  }, [sideTabs, takeOff])
+
   return (
     <>
       <section className="md:px-16 px-8 pb-4">
@@ -564,9 +741,9 @@ const TakeOffNewPage = () => {
               {/* upper */}
               <div className='h-[75%] flex flex-col justify-evenly'>
                 <div className='flex gap-x-2'>
-                  <Button className='bg-[#7138DF] text-white font-semibold' >Plans</Button>
-                  <Button>Takeoff</Button>
-                  <Button>WBS / Category</Button>
+                  <Button onClick={() => { setsideTabs('Plans') }} className={sideTabs == 'Plans' ? 'bg-[#7138DF] text-white font-semibold' : ''} >Plans</Button>
+                  <Button onClick={() => { setsideTabs('TakeOff') }} className={sideTabs == 'TakeOff' ? 'bg-[#7138DF] text-white font-semibold' : ''}>Takeoff</Button>
+                  <Button onClick={() => { setsideTabs('WBS') }} className={sideTabs == 'WBS' ? 'bg-[#7138DF] text-white font-semibold' : ''}>WBS / Category</Button>
                 </div>
                 <div className='flex gap-x-2 w-[95%]'>
                   <Input className='grow' placeholder='Search' prefix={<SearchOutlined />} />
@@ -578,21 +755,22 @@ const TakeOffNewPage = () => {
                 <div className='grow flex gap-x-4 items-center' >
                   <MenuUnfoldOutlined className='text-[#7138DF] text-[20px]' />
                   <span className='font-inter font-[200] text-gray-800'>Plan & Documents</span>
+                  {tableLoading && <Spin />}
                 </div>
                 <MoreOutlined className='cursor-pointer text-[20px]' size={90} />
               </div>
             </div>
             {/* sideBar Main */}
-            <div className='grow flex !border-black'>
+            {sideTabs == 'Plans' && <div className='grow flex !border-black'>
               <Table
-                columns={columns}
+                columns={tableColumns}
                 expandable={{
                   // expandedRowRender: (record) => <p style={{ margin: 0 }}>{record.description}</p>,
                   rowExpandable: (record) => record?.isParent == true,
                   // expandIcon:(record:any) => <DownOutlined />
                 }}
                 // dataSource={groupDataForFileTable(pages)}
-                dataSource={groupDataForFileTable(takeOff?.pages)}
+                dataSource={tableData}
                 className='grow bg-transparent transparent-table'
                 scroll={{ y: 580 }}
                 pagination={false}
@@ -602,10 +780,50 @@ const TakeOffNewPage = () => {
                 rowClassName={'table-row-transparent'}
                 rootClassName='table-row-transparent'
               />
-            </div>
+            </div>}
+            {sideTabs == 'TakeOff' && <div className='grow flex !border-black'>
+              <Table
+                columns={tableColumns}
+                expandable={{
+                  // expandedRowRender: (record) => <p style={{ margin: 0 }}>{record.description}</p>,
+                  rowExpandable: (record) => record?.isParent == true,
+                  // expandIcon:(record:any) => <DownOutlined />
+                }}
+                // dataSource={groupDataForFileTable(pages)}
+                dataSource={tableData}
+                className='grow bg-transparent transparent-table'
+                scroll={{ y: 580 }}
+                pagination={false}
+                showHeader={false}
+                bordered
+                style={{ backgroundColor: 'transparent' }}
+                rowClassName={'table-row-transparent'}
+                rootClassName='table-row-transparent'
+              />
+            </div>}
+            {sideTabs == 'WBS' && <div className='grow flex !border-black'>
+              <Table
+                columns={tableColumns}
+                expandable={{
+                  // expandedRowRender: (record) => <p style={{ margin: 0 }}>{record.description}</p>,
+                  rowExpandable: (record) => record?.isParent == true,
+                  // expandIcon:(record:any) => <DownOutlined />
+                }}
+                // dataSource={groupDataForFileTable(pages)}
+                dataSource={tableData}
+                className='grow bg-transparent transparent-table'
+                scroll={{ y: 580 }}
+                pagination={false}
+                showHeader={false}
+                bordered
+                style={{ backgroundColor: 'transparent' }}
+                rowClassName={'table-row-transparent'}
+                rootClassName='table-row-transparent'
+              />
+            </div>}
           </div>}
           {/* Take Off New */}
-          <div className='h-[100%] grow rounded-2xl shadow-secondaryTwist border relative' >
+          <div className='h-[100%] w-[73%] grow rounded-2xl shadow-secondaryTwist border relative' >
             <div className='z-50 absolute top-[25px] left-[-13px] cursor-pointer border-[2px] rounded-full flex justify-center items-center p-1 text-gray-600 bg-white' onClick={() => { setleftOpened(ps => !ps) }}>{leftOpened ? <LeftOutlined /> : <RightOutlined />}</div>
             {/* Old Take Off Full Page */}
             {/* <OldTakeOffFullPage /> */}
@@ -687,7 +905,7 @@ const TakeOffNewPage = () => {
                       measurements={measurements}
                     />
                   </div>}
-                  <div className="h-fit rounded-lg overflow-y-auto">
+                  <div className="h-fit max-h-[100%] rounded-lg overflow-auto">
                     {/* {uploadFileData.map((file, index) => (
               <Draw
                 key={`draw-${index}`}
@@ -758,7 +976,7 @@ const TakeOffNewPage = () => {
                           {
                             takeOff && takeOff?.pages && Array.isArray(takeOff?.pages) && takeOff?.pages?.map((page: any, index: number) => {
                               return <>
-                                <div key={index} className='relative cursor-pointer border rounded-2xl'
+                                <div key={page?.pageId} className='relative cursor-pointer border rounded-2xl'
                                   onClick={() => {
                                     setselectedTakeOffTab('page')
                                     if (!selectedPagesList?.find((i: any) => (i?.pageId == page?.pageId))) {
@@ -769,6 +987,9 @@ const TakeOffNewPage = () => {
                                   }}
                                 >
                                   <Image className='rounded-t-2xl' src={page?.src} width={250} height={300} alt='' />
+                                  <div className='rounded-t-2xl absolute top-0 left-0 w-[100%] h-[100%] bg-slate-300 flex justify-center items-center bg-opacity-30' >
+                                    <Spin />
+                                  </div>
                                   <div className='py-5 px-3' >{page?.name?.slice(0, 30) ?? 'Unkonw'}</div>
                                 </div>
                               </>

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { KonvaEventObject } from 'konva/lib/Node';
 import moment from 'moment';
 import {
@@ -56,9 +56,9 @@ interface Props {
   setscaleLine?: any;
   setModalOpen?: any;
   selectedCategory?: any;
-  updateMeasurements?:any;
-  draw:DrawInterface | any;
-  setDraw:any;
+  updateMeasurements?: any;
+  draw: DrawInterface | any;
+  setDraw: any;
 }
 
 const Draw: React.FC<Props> = ({
@@ -238,10 +238,10 @@ const Draw: React.FC<Props> = ({
         strokeWidth: border,
         textUnit: unit,
         dateTime: moment().toDate(),
-        projectName:'Length Measurement',
+        projectName: 'Length Measurement',
         category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement'
       };
-      setDraw((prev: any) => ({ ...prev, line: [...prev.line, newLine] }));
+      setDraw((prev: any) => ({ ...prev, line: [...(prev?.line ? prev?.line : []), newLine] }));
 
       updateDrawHistory(pageNumber.toString(), 'line', newLine);
 
@@ -305,7 +305,7 @@ const Draw: React.FC<Props> = ({
                   ...prev,
                   textUnit: unit,
                   dateTime: moment().toDate(),
-                  projectName:'Area Measurement',
+                  projectName: 'Area Measurement',
                   category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Area Measurement'
                 };
 
@@ -313,7 +313,7 @@ const Draw: React.FC<Props> = ({
 
                 return {
                   ...prevDraw,
-                  area: [...prevDraw.area, areaConfig],
+                  area: [...(prevDraw?.area ? prevDraw?.area : []), areaConfig],
                 };
               } else {
                 const volume = calculatePolygonVolume(
@@ -340,7 +340,7 @@ const Draw: React.FC<Props> = ({
                   depth,
                   textUnit: unit,
                   dateTime: moment().toDate(),
-                  projectName:'Volume Measurement',
+                  projectName: 'Volume Measurement',
                   category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Volume Measurement',
                 };
 
@@ -352,7 +352,7 @@ const Draw: React.FC<Props> = ({
 
                 return {
                   ...prevDraw,
-                  volume: [...prevDraw.volume, volumeConfig],
+                  volume: [...(prevDraw?.volume ? prevDraw?.volume : []), volumeConfig],
                 };
               }
             });
@@ -370,13 +370,13 @@ const Draw: React.FC<Props> = ({
         x: position?.x - 2,
         y: position.y - 15,
         dateTime: moment().toDate(),
-        projectName:'Count Measurement',
+        projectName: 'Count Measurement',
         category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Count Measurement',
       };
 
       setDraw((prev: any) => {
-        handleChangeMeasurements({ count: [...prev.count, newCount].length });
-        return { ...prev, count: [...prev.count, newCount] };
+        handleChangeMeasurements({ count: [...(prev?.count ? prev?.count : []), newCount].length });
+        return { ...prev, count: [...(prev?.count ? prev?.count : []), newCount] };
       });
 
       updateDrawHistory(pageNumber.toString(), 'count', newCount);
@@ -520,9 +520,15 @@ const Draw: React.FC<Props> = ({
     compHeight: uploadFileData.height || 600,
     compWidth: uploadFileData.width || 600,
   });
+  const stageParentRef = useRef<any>(null); 
+  const parentWdith = null//(stageParentRef.current?.getBoundingClientRect() && stageParentRef.current?.getBoundingClientRect()?.width) ? stageParentRef.current?.getBoundingClientRect()?.width : null;
+  const parentHeight = null//(stageParentRef.current?.getBoundingClientRect() && stageParentRef.current?.getBoundingClientRect()?.height) ? stageParentRef.current?.getBoundingClientRect()?.height : null;
+  console.log(parentWdith,parentHeight, " width and height of parent")
   return (
     <div
-      className={`outline-none relative bg-grey-900 my-3`}
+      ref={stageParentRef}
+      id='sage-parent'
+      className={`outline-none relative bg-grey-900 my-3 overflow-auto`}
       tabIndex={1}
       onKeyDown={(e) => {
         if (e.key === 'Escape') {
@@ -538,14 +544,14 @@ const Draw: React.FC<Props> = ({
             setDraw((prevDraw: any) => ({
               ...prevDraw,
               dynamic: [
-                ...prevDraw.dynamic,
+                ...(prevDraw?.dynamic ? prevDraw?.dynamic : []),
                 {
                   ...dynamicPolyLine,
                   strokeWidth: 10,
                   stroke: color,
                   lineCap: 'round',
-                  id: `dynamic-${draw.dynamic.length + 1}`,
-                  projectName:'Dynamic Measurement',
+                  id: `dynamic-${(draw?.dynamic?.length ?? 0) + 1}`,
+                  projectName: 'Dynamic Measurement',
                   category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Dynamic Measurement',
                 },
               ],
@@ -555,33 +561,33 @@ const Draw: React.FC<Props> = ({
               strokeWidth: 10,
               stroke: color,
               lineCap: 'round',
-              id: `dynamic-${draw.dynamic.length + 1}`,
-              projectName:'Dynamic Measurement',
+              id: `dynamic-${(draw?.dynamic?.length ?? 0) + 1}`,
+              projectName: 'Dynamic Measurement',
               category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Dynamic Measurement',
             });
           } else if (selected == 'perimeter') {
             setDraw((prevDraw: any) => ({
               ...prevDraw,
               perimeter: [
-                ...prevDraw.perimeter,
+                ...(prevDraw?.perimeter ? prevDraw?.perimeter : []),
                 {
                   ...dynamicPolyLine,
                   // strokeWidth: 10,
                   stroke: color,
                   lineCap: 'round',
-                  id: `perimeter-${draw.perimeter.length + 1}`,
-                  projectName:'Perimeter Measurement',
+                  id: `perimeter-${(draw?.perimeter?.length ?? 0) + 1}`,
+                  projectName: 'Perimeter Measurement',
                   category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Perimeter Measurement',
                 },
               ],
             }));
-            updateDrawHistory(pageNumber.toString(), 'perimeter',{
+            updateDrawHistory(pageNumber.toString(), 'perimeter', {
               ...dynamicPolyLine,
               // strokeWidth: 10,
               stroke: color,
               lineCap: 'round',
-              id: `perimeter-${draw.perimeter.length + 1}`,
-              projectName:'Perimeter Measurement',
+              id: `perimeter-${(draw?.perimeter?.length ?? 0) + 1}`,
+              projectName: 'Perimeter Measurement',
               category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Perimeter Measurement',
             })
           }
@@ -616,7 +622,7 @@ const Draw: React.FC<Props> = ({
         }
       }}
     >
-      <div className=" flex justify-center space-x-4 absolute   bottom-0 left-[48%] z-50 ">
+      <div className=" flex justify-center space-x-4 absolute bottom-0 left-[48%] z-50 ">
         <div
           className="cursor-pointer bg-white h-fit w-fit rounded-3xl"
           onClick={handleZoomIn}
@@ -693,14 +699,14 @@ const Draw: React.FC<Props> = ({
         </div>
       </div>
       <Stage
-        width={uploadFileData.width || 600}
-        height={uploadFileData.height || 600}
+        width={parentWdith || uploadFileData.width || 600}
+        height={parentHeight || uploadFileData.height || 600}
         onWheel={handleWheel}
         scaleX={stageScale}
         scaleY={stageScale}
         x={stageX}
         y={stageY}
-        className={`flex justify-center cursor-pointer bg-slate-600/10 ${['area','volume','dynamic','length','perimeter'].includes(selected) ? '!cursor-crosshair' : ''}`}
+        className={`flex justify-center cursor-pointer bg-grey-900 ${['area', 'volume', 'dynamic', 'length', 'perimeter'].includes(selected) ? '!cursor-crosshair' : ''}`}
       >
         <Layer
           onMouseDown={handleMouseDown}
