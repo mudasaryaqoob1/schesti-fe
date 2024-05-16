@@ -34,7 +34,6 @@ export function PostBasicInformation({ children, formik }: Props) {
   ).map((city) => ({ label: city.name, value: city.name }));
 
 
-  console.log("Errors", formik.errors);
 
   return (
     <div className=" bg-white shadow-[0_4px_30px_0px_#2E2D740D] rounded-xl border p-4">
@@ -167,8 +166,8 @@ export function PostBasicInformation({ children, formik }: Props) {
                 setCity('');
               },
             }}
-            errorMessage={formik.errors.state}
-            hasError={Boolean(formik.errors.state)}
+            errorMessage={formik.touched.state && formik.errors.state ? formik.errors.state : ''}
+            hasError={formik.touched.state && Boolean(formik.errors.state)}
           />
           <SelectComponent
             label="City"

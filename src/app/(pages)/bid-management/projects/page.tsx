@@ -85,7 +85,7 @@ function Page() {
       title: 'Estimated Start Date',
       render(value) {
         // write the format pattern
-        return moment(value).format('YYYY-MM-DD');
+        return value ? moment(value).format('YYYY-MM-DD') : null;
       },
     },
     {

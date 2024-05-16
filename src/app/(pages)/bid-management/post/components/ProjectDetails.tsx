@@ -51,7 +51,7 @@ export function PostProjectDetails({ formik, children }: Props) {
                 formik.touched.projectType && Boolean(formik.errors.projectType)
               }
               errorMessage={
-                formik.errors.projectType
+                formik.touched.projectType && formik.errors.projectType
                   ? (formik.errors.projectType as string)
                   : ''
               }
@@ -81,7 +81,7 @@ export function PostProjectDetails({ formik, children }: Props) {
                 Boolean(formik.errors.projectBuildingUse)
               }
               errorMessage={
-                formik.errors.projectBuildingUse
+                formik.touched.projectBuildingUse && formik.errors.projectBuildingUse
                   ? (formik.errors.projectBuildingUse as string)
                   : ''
               }
@@ -102,7 +102,7 @@ export function PostProjectDetails({ formik, children }: Props) {
           }}
           hasError={formik.touched.stage && Boolean(formik.errors.stage)}
           errorMessage={
-            formik.errors.stage
+            formik.touched.stage && formik.errors.stage
               ? formik.errors.stage
               : ''
           }
@@ -133,7 +133,7 @@ export function PostProjectDetails({ formik, children }: Props) {
               Boolean(formik.errors.estimatedStartDate)
             }
             errorMessage={
-              formik.errors.estimatedStartDate
+              formik.touched.estimatedStartDate && formik.errors.estimatedStartDate
                 ? formik.errors.estimatedStartDate
                 : ''
             }
@@ -155,7 +155,7 @@ export function PostProjectDetails({ formik, children }: Props) {
               formik.touched.bidDueDate && Boolean(formik.errors.bidDueDate)
             }
             errorMessage={
-              formik.errors.bidDueDate
+              formik.touched.bidDueDate && formik.errors.bidDueDate
                 ? formik.errors.bidDueDate
                 : ''
             }
@@ -184,7 +184,7 @@ export function PostProjectDetails({ formik, children }: Props) {
               Boolean(formik.errors.estimatedCompletionDate)
             }
             errorMessage={
-              formik.errors.estimatedCompletionDate
+              formik.touched.estimatedCompletionDate && formik.errors.estimatedCompletionDate
                 ? formik.errors.estimatedCompletionDate
                 : ''
             }
@@ -205,7 +205,7 @@ export function PostProjectDetails({ formik, children }: Props) {
               Boolean(formik.errors.squareFootage)
             }
             errorMessage={
-              formik.errors.squareFootage
+              formik.touched.squareFootage && formik.errors.squareFootage
                 ? formik.errors.squareFootage
                 : ''
             }
@@ -284,7 +284,7 @@ export function PostProjectDetails({ formik, children }: Props) {
             }
             errorMessage={
 
-              formik.errors.estimatedDuration
+              formik.touched.estimatedDuration && formik.errors.estimatedDuration
                 ? formik.errors.estimatedDuration
                 : ''
             }
@@ -307,7 +307,7 @@ export function PostProjectDetails({ formik, children }: Props) {
               formik.touched.description && Boolean(formik.errors.description)
             }
             errorMessage={
-              formik.errors.description
+              formik.touched.description && formik.touched.description && formik.errors.description
                 ? formik.errors.description
                 : ''
             }
@@ -330,7 +330,7 @@ export function PostProjectDetails({ formik, children }: Props) {
             }
             errorMessage={
 
-              formik.errors.specialInstructions
+              formik.touched.specialInstructions && formik.errors.specialInstructions
                 ? formik.errors.specialInstructions
                 : ''
             }
