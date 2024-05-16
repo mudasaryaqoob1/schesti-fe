@@ -6,7 +6,7 @@ import WhiteButton from '@/app/component/customButton/white';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { useQuery } from 'react-query';
 import { bidManagementService } from '@/app/services/bid-management.service';
-import { Skeleton, Spin } from 'antd';
+import { Skeleton, Spin, type UploadFile } from 'antd';
 import momentTimezone from 'moment-timezone';
 import { getTimezoneFromCountryAndState } from '@/app/utils/date.utils';
 import { useDispatch, useSelector } from 'react-redux';
@@ -26,6 +26,7 @@ import { useRouter } from 'next/navigation';
 import ModalComponent from '@/app/component/modal';
 import AwsS3 from '@/app/utils/S3Intergration';
 import { isEmpty } from 'lodash';
+import { ShowFileComponent } from '@/app/(pages)/bid-management/components/ShowFile.component';
 
 type Props = {
   id: string;
@@ -38,7 +39,7 @@ export function ProjectIntro({ id }: Props) {
   const [description, setDescription] = useState('');
   const [filters] = useState({ page: 1, limit: 10 });
   const [isFileUploading, setIsFileUploading] = useState(false);
-  const [files, setFiles] = useState<any>([]);
+  const [files, setFiles] = useState<UploadFile[]>([]);
 
   const router = useRouter();
 
@@ -107,7 +108,7 @@ export function ProjectIntro({ id }: Props) {
     console.log('files', file);
     try {
       const projectFiles = [];
-      for (let i=0; i< files?.length; i++) {
+      for (let i = 0; i < files?.length; i++) {
         const url = await new AwsS3(files[i]?.originFileObj, 'documents/bids/').getS3URL();
         const fileData = {
           url,
@@ -118,14 +119,14 @@ export function ProjectIntro({ id }: Props) {
         projectFiles.push(fileData);
       }
       const payload = {
-        title, 
+        title,
         description,
         projectFiles,
       }
       const result = await bidManagementService.httpUpdateProjectDocumentsById(id, payload);
       console.log('result', result);
 
-      if(!isEmpty(result.data?.project)) {
+      if (!isEmpty(result.data?.project)) {
         setFiles([]);
         setShowUpdateModal(false);
         toast.success('Files updated successfully');
@@ -137,6 +138,8 @@ export function ProjectIntro({ id }: Props) {
       setIsFileUploading(false);
     } finally {
       setIsFileUploading(false);
+      setTitle('');
+      setDescription('');
     }
   }
 
@@ -263,7 +266,7 @@ export function ProjectIntro({ id }: Props) {
                   />
 
                   <div>
-                    <Dragger
+                    {files.length === 0 ? <Dragger
                       name={'file'}
                       accept="image/*,gif,application/pdf"
                       onChange={(info) => {
@@ -276,6 +279,7 @@ export function ProjectIntro({ id }: Props) {
                         borderStyle: 'dashed',
                         borderWidth: 6,
                       }}
+                      itemRender={() => null}
                     >
                       <p className="ant-upload-drag-icon">
                         <Image
@@ -291,9 +295,25 @@ export function ProjectIntro({ id }: Props) {
                       <p className="text-[12px] leading-3 text-[#98A2B3]">
                         PNG, GIF, JPG, Max size: 2MB
                       </p>
-                    </Dragger>
+                    </Dragger> : null}
+                    {files.length > 0 ? <div className='grid grid-cols-2 gap-2 h-60 overflow-y-auto'>
+                      {files.map(file => {
+                        return <ShowFileComponent
+                          file={{
+                            extension: file.originFileObj?.type || '',
+                            name: file.name,
+                            type: file.type || '',
+                            url: URL.createObjectURL(file.originFileObj!)
+                          }}
+                          onDelete={() => {
+                            setFiles(files.filter(f => f.uid !== file.uid));
+                          }}
+                          key={file.uid}
+                        />
+                      })}
+                    </div> : null}
                   </div>
-                  <CustomButton text='Update' disabled={isEmpty(title) || isEmpty(description) || isFileUploading} onClick={handleUpdate} />
+                  <CustomButton text='Update' isLoading={isFileUploading} disabled={isEmpty(title) || isEmpty(description) || isFileUploading} onClick={handleUpdate} />
                 </div>
               </Popups>
             </div>
