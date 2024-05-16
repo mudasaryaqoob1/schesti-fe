@@ -29,6 +29,7 @@ const styles = StyleSheet.create({
     secondaryInfo: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: "space-evenly",
         marginTop: 4,
     },
     secondaryText: {
@@ -43,6 +44,10 @@ const styles = StyleSheet.create({
         lineHeight: 1.25,
         fontWeight: 'normal',
     },
+    flex: {
+        display: "flex",
+        flexDirection: "row",
+    }
 });
 
 type Props = {
@@ -70,24 +75,31 @@ function ProjectActivityAndStatusPDF({ activities }: Props) {
             {activities.length > 0 && activities.map((activity) => {
                 const activityUser = activity.user;
                 return <View key={activity._id} style={styles.container}>
-                    <Image src={GREEN_TRACKING_ICON} style={{ height: 23, width: 23 }} />
+                    <Image src={GREEN_TRACKING_ICON} style={{ height: 18, width: 18 }} />
                     <View style={styles.activityInfo}>
                         <Text style={styles.companyName}>
                             {typeof activityUser !== 'string' ? activityUser.companyName : ""}
                         </Text>
                         <View style={styles.secondaryInfo}>
-                            <Image src={NAVIGATION_ICON} style={{ height: 15, width: 15, marginHorizontal: 3 }} />
-                            <Text style={styles.secondaryText}>
-                                {typeof activityUser !== 'string' ? activityUser.address : ""}
-                            </Text>
-                            <Image src={MAIL_ICON} style={{ height: 15, width: 15, marginHorizontal: 3 }} />
-                            <Text style={styles.secondaryText}>
-                                {typeof activityUser !== 'string' ? activityUser.email : ""}
-                            </Text>
-                            <Image src={CALL_ICON} style={{ height: 15, width: 15, marginHorizontal: 3 }} />
-                            <Text style={styles.secondaryText}>
-                                {typeof activityUser !== 'string' ? String(activityUser.phone) : ""}
-                            </Text>
+                            <View style={styles.flex}>
+                                <Image src={NAVIGATION_ICON} style={{ height: 11, width: 11, marginHorizontal: 7 }} />
+                                <Text style={styles.secondaryText}>
+                                    {typeof activityUser !== 'string' ? activityUser.address : ""}
+                                </Text>
+                            </View>
+                            <View style={styles.flex}>
+
+                                <Image src={MAIL_ICON} style={{ height: 11, width: 11, marginHorizontal: 7 }} />
+                                <Text style={styles.secondaryText}>
+                                    {typeof activityUser !== 'string' ? activityUser.email : ""}
+                                </Text>
+                            </View>
+                            <View style={styles.flex}>
+                                <Image src={CALL_ICON} style={{ height: 11, width: 11, marginHorizontal: 7 }} />
+                                <Text style={styles.secondaryText}>
+                                    {typeof activityUser !== 'string' ? String(activityUser.phone) : ""}
+                                </Text>
+                            </View>
                         </View>
                     </View>
                     <Text style={styles.date}>
