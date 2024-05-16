@@ -31,10 +31,11 @@ type Props = {
 };
 
 const DesignTeamMemberSchema = Yup.object().shape({
-  name: Yup.string().required('Name is required'),
-  role: Yup.string().required('Role is required'),
-  companyName: Yup.string().required('Company Name is required'),
-  location: Yup.string().required('Location is required'),
+  // matches should have a regex that contains at least one letter
+  name: Yup.string().matches(/[a-zA-Z]/, { message: "Atleast 1 character is required" }).required('Name is required'),
+  role: Yup.string().matches(/[a-zA-Z]/, { message: "Atleast 1 character is required" }).required('Role is required'),
+  companyName: Yup.string().matches(/[a-zA-Z]/, { message: "Atleast 1 character is required" }).required('Company Name is required'),
+  location: Yup.string().matches(/[a-zA-Z]/, { message: "Atleast 1 character is required" }).required('Location is required'),
   phoneNumber: Yup.string()
     .min(11, 'Phone Number must be at least 11 digits')
     .max(14, 'Phone Number must be between 11 and 14 digits')
