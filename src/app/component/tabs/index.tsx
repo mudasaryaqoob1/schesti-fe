@@ -85,7 +85,7 @@ const Tabs = () => {
   }
 
   return (
-    <div className="md:flex block justify-between bg-[#F0E9FD] items-center px-16 xl:h-[67px] shadow-quinaryGentle">
+    <div className="md:flex block justify-between bg-white sticky top-0 !z-10 items-center px-16 xl:h-[67px] shadow-quinaryGentle">
       <ul
         className="list-none flex flex-wrap xl:gap-8 gap-3 text-sm font-medium text-center
             text-gray-500 dark:text-gray-400 justify-center mb-0"
