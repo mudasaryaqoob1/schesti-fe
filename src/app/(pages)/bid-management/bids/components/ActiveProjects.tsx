@@ -61,7 +61,6 @@ export function ActiveProjects({ search }: Props) {
             return (bidProject.projectId as IBidManagement).projectName.toLowerCase().includes(search.toLowerCase()) || (bidProject.projectId as IBidManagement).description.toLowerCase().includes(search.toLowerCase());
 
           }).map((bidProject: any) => {
-            console.log({ bidProject });
             return <BidIntro
               key={bidProject._id}
               bid={bidProject as unknown as IBidManagement}

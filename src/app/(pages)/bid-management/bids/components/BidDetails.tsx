@@ -7,6 +7,9 @@ import type { ColumnsType } from 'antd/es/table';
 import moment from 'moment';
 import { isEmpty, size } from 'lodash';
 import { useState } from 'react';
+import { IProjectBidding } from '@/app/interfaces/bid-management/bid-management.interface';
+import { Excel } from 'antd-table-saveas-excel';
+import Link from 'next/link';
 
 type Props = {
   bid: any;
@@ -68,6 +71,20 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
     }
   };
 
+  const handleDownloadScope = (selectedBid: IProjectBidding) => {
+    const excel = new Excel();
+    excel
+      .addSheet(bid.projectId?.projectName)
+      .addColumns(columns as any)
+      .addDataSource(selectedBid.projectScopes, {
+        str2Percent: true,
+      })
+      .saveAs(
+        `${bid.projectId?.projectName
+        }-${Date.now()}.xlsx`
+      );
+  };
+
   return (
     <div className="col-span-4 mt-3">
       <div>
@@ -125,6 +142,13 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
             className="font-semibold text-[#475467] text-xs leading-4"
           />
         </div>
+
+        <Link
+          href={`/bid-management/details/${bid.projectId?._id}`}
+          className="text-[#7F56D9] hover:text-[#7F56D9] underline underline-offset-2 mt-4 text-[14px] leading-6 font-normal cursor-pointer"
+        >
+          View full details
+        </Link>
       </div>
 
       <Divider />
@@ -180,11 +204,16 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
           />
         </div>
       )}
-      <div className="px-4 mt-3">
+      <div className="px-4 mt-3 space-y-3">
         <CustomButton
           disabled={isDownloadingAll || isEmpty(selectedBidProjectDetails.file)}
           onClick={downloadFile}
           text="Download All Files"
+        />
+
+        <CustomButton
+          onClick={() => handleDownloadScope(selectedBidProjectDetails)}
+          text="Download Scopes"
         />
       </div>
     </div>

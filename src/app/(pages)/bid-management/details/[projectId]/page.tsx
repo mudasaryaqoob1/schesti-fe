@@ -18,7 +18,7 @@ import { useQuery } from 'react-query';
 import moment from 'moment';
 
 const SUMMARY = 'Summary';
-const DESIGN_TEAM = 'Design TeamF';
+const DESIGN_TEAM = 'Design Team';
 const BIDDING_TEAM = 'Bidding Team';
 const DOCUMENTS = 'Documents';
 const RFI_CENTER = 'RFI Center';
@@ -35,8 +35,8 @@ function OwnerProjectDetailsPage() {
   });
 
 
-  console.log("params",params, setPaginationSettings);
-  
+  console.log("params", params, setPaginationSettings);
+
   const [activeTab, setActiveTab] = useState(SUMMARY);
 
   const fetchProjectDetails = async () => {
