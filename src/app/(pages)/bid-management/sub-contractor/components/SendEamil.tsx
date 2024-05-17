@@ -16,6 +16,7 @@ import CustomButton from '@/app/component/customButton/button';
 import { useClickAway } from 'ahooks/es';
 import ModalComponent from '@/app/component/modal';
 import { ISendEmail } from '@/app/interfaces/sendEmail/sendEmail.interface';
+import { ShowFileComponent } from '../../components/ShowFile.component';
 
 const ValidationSchema = Yup.object().shape({
   to: Yup.string().required('To Email is required'),
@@ -219,7 +220,7 @@ export function SendEmailModal({ to }: Props) {
                   />
                 </div>
                 <div>
-                  <Spin className="flex flex-start" spinning={isFileUploading}>
+                  {!sendEmailFormik.values.file ? <Spin className="flex flex-start" spinning={isFileUploading}>
                     <Dragger
                       className="flex flex-start"
                       name={'file'}
@@ -250,10 +251,17 @@ export function SendEmailModal({ to }: Props) {
                         Select a file or drag and drop
                       </p>
                     </Dragger>
-                    {sendEmailFormik.values.file ? (
-                      <p>{sendEmailFormik.values.file.name}</p>
-                    ) : null}
-                  </Spin>
+                  </Spin> : <ShowFileComponent
+                    file={{
+                      name: sendEmailFormik.values.file.name,
+                      extension: sendEmailFormik.values.file.type,
+                      type: sendEmailFormik.values.file.type,
+                      url: URL.createObjectURL(sendEmailFormik.values.file),
+                    }}
+                    onDelete={() => {
+                      sendEmailFormik.setFieldValue('file', undefined);
+                    }}
+                  />}
                 </div>
 
                 <CustomButton
