@@ -40,7 +40,7 @@ export function BiddingProjectDetails({
     //@ts-ignore
     mutationKey: 'saveUserBid',
     mutationFn: async (values: RemoveUserBidProps) => {
-      return bidManagementService.httpPostProjectAsBidder(values.biddingId);
+      return bidManagementService.httpRemoveUserProjectBid(values.biddingId);
     },
     onSuccess(res: any) {
       console.log('res', res);
@@ -69,14 +69,14 @@ export function BiddingProjectDetails({
     setIsLoading(true);
     try {
       const { data }: any = await bidManagementService.httpPostProjectAsBidder(bid?.projectId?._id);
-      if(data) {
+      if (data) {
         toast.success('Project Posted successfully');
         setIsLoading(false);
       }
-    } catch(err: any) {
+    } catch (err: any) {
       setIsLoading(false);
       toast.error(err.response?.data?.message || 'Error: could not post project');
-      console.log('could not post project as bidder', );
+      console.log('could not post project as bidder',);
     }
   }
 
@@ -187,13 +187,13 @@ export function BiddingProjectDetails({
       {
         bid.projectId?.user && bid.projectId?.user.roles.includes('Admin') && (
           <div className="mt-4 space-y-2">
-          <CustomButton
-            text="Post this project as a bidder"
-            onClick={handlePostProjectAsBidder}
-            disabled={isLoading}
-            className={'!bg-[#F9F5FF] !text-[#7138DF]'}
-          />
-        </div>
+            <CustomButton
+              text="Post this project as a bidder"
+              onClick={handlePostProjectAsBidder}
+              disabled={isLoading}
+              className={'!bg-[#F9F5FF] !text-[#7138DF]'}
+            />
+          </div>
         )
       }
       <div className="mt-4 space-y-2">
