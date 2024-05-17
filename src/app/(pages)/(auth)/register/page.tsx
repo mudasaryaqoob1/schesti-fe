@@ -22,8 +22,12 @@ import { AppDispatch } from '@/redux/store';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { USER_ROLES_ENUM } from '@/app/constants/constant';
+import UserRoleModal from '../userRolesModal'
+// import { authService } from '@/app/services/auth.service';
 
-const { CONTRACTOR, SUBCONTRACTOR, OWNER } = USER_ROLES_ENUM;
+
+
+const { CONTRACTOR } = USER_ROLES_ENUM;
 
 const initialValues: ISignUpInterface = {
   name: '',
@@ -50,30 +54,55 @@ const RegisterSchema: any = Yup.object({
     .oneOf([Yup.ref('password')], 'Passwords must match'),
 });
 
+
+
 const Register = () => {
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [userRoleModal, setUserRoleModal] = useState(false)
+  const [userRegisterModal, setUserRegisterModal] = useState(false)
+  const [userDetail, setUserDetail] = useState<any>([])
+  let userRoles = [
+    {
+      role : USER_ROLES_ENUM.OWNER , 
+      desc : 'It is a long established fact that a reader will be distracted by the readable content of'
+    },
+    {
+      role : USER_ROLES_ENUM.CONTRACTOR , 
+      desc : 'It is a long established fact that a reader will be distracted by the readable content of'
+    },
+    {
+      role : USER_ROLES_ENUM.SUBCONTRACTOR , 
+      desc : 'It is a long established fact that a reader will be distracted by the readable content of'
+    }
+  ]
 
-  const [role, setRole] = useState(CONTRACTOR);
-  const handleRoleChange = (value: string) => {
-    setRole(value);
-  };
+  // const [role, setRole] = useState(CONTRACTOR);
+  // const handleRoleChange = (value: string) => {
+  //   setRole(value);
+  // };
 
   const submitHandler = async (values: ISignUpInterface) => {
-    const payload = { ...values, userRole: role };
+    setUserRegisterModal(true)
+        setUserDetail(values)
+  };
+
+  const userRegisterHandler = async (role  : string) => {
+    const payload = { ...userDetail, userRole: role };
     setIsLoading(true);
+    setUserRegisterModal(false)
     let result: any = await dispatch(signup(payload));
 
     if (result.payload.status == 201) {
       setIsLoading(false);
-      router.push(`/checkmail?email=${values.email}`);
+      router.push(`/checkmail?email=${userDetail.email}`);
     } else {
       setIsLoading(false);
       toast.error(result.payload.message);
     }
-  };
+  }
 
   const googleAuthenticationHandler: any = useGoogleLogin({
     onSuccess: async (respose: any) => {
@@ -92,17 +121,15 @@ const Register = () => {
           name: googleAuthResponse.data.name,
           avatar: googleAuthResponse.data.picture,
           providerId: googleAuthResponse.data.sub,
-          userRole: role,
         };
 
-        let result: any = await dispatch(loginWithGoogle(responseObj));
+        // const result = await authService.httpUserVerification({
+        //   email: googleAuthResponse.data.email,
+        // });
 
-        if (result.payload.statusCode == 200) {
-          localStorage.setItem('schestiToken', result.payload.token);
-          router.push('/dashboard');
-        } else if (result.payload.statusCode == 400) {
-          router.push(`/companydetails/${result.payload.data.user._id}`);
-        }
+
+        setUserRoleModal(true)
+        setUserDetail(responseObj)
       } catch (error) {
         console.log('Login Failed', error);
       }
@@ -112,6 +139,20 @@ const Register = () => {
     },
   });
 
+
+  const userRoleSelectionHandler = async (role : string) => {
+    setIsLoading(true)
+    setUserRoleModal(false)
+    let result: any = await dispatch(loginWithGoogle({...userDetail , userRole: role }));
+    setIsLoading(false)
+    if (result.payload.statusCode == 200) {
+      localStorage.setItem('schestiToken', result.payload.token); 
+      // router.push(`/clients`);
+      router.push(`/dashboard`);
+    } else if (result.payload.statusCode == 400) {
+      router.push(`/companydetails/${result.payload.data.user._id}`);
+    }
+  }
   return (
     <WelcomeWrapper>
       <Image
@@ -134,7 +175,7 @@ const Register = () => {
             className="my-2 text-center text-slateGray"
             title=" Sign up to your account"
           />
-          <div className="flex items-center bg-silverGray justify-between space-x-4 bg-gray-200 rounded-md p-2 mt-6 mb-3">
+          {/* <div className="flex items-center bg-silverGray justify-between space-x-4 bg-gray-200 rounded-md p-2 mt-6 mb-3">
             <button
               className={`toggle-btn block p-2 text-center rounded-md cursor-pointer ${
                 role === CONTRACTOR
@@ -165,7 +206,7 @@ const Register = () => {
             >
               Owner
             </button>
-          </div>
+          </div> */}
 
           <Formik
             initialValues={initialValues}
@@ -257,6 +298,8 @@ const Register = () => {
           </Formik>
         </div>
       </section>
+      <UserRoleModal viewUserRoleModal={userRoleModal} setViewUserRoleModal={setUserRoleModal} userRoles={userRoles} userRoleSelectionHandler={userRoleSelectionHandler} />
+      <UserRoleModal viewUserRoleModal={userRegisterModal} setViewUserRoleModal={setUserRegisterModal} userRoles={userRoles} userRoleSelectionHandler={userRegisterHandler} />
     </WelcomeWrapper>
   );
 };

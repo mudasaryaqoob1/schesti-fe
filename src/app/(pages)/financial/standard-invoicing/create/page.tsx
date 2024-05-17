@@ -373,9 +373,11 @@ const CreateInvoice = () => {
 
                   <PhoneNumberInputWithLable
                     label="Phone Number"
+                    //@ts-ignore
                     onChange={(val: string) =>
                       setFieldValue('subContractorPhoneNumber', val)
                     }
+                    //@ts-ignore
                     value={values.subContractorPhoneNumber}
                     onBlur={() =>
                       setFieldTouched('subContractorPhoneNumber', true)

@@ -24,6 +24,7 @@ import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateC
 import { withAuth } from '@/app/hoc/withAuth';
 import { USCurrencyFormat } from '@/app/utils/format';
 import { HttpService } from '@/app/services/base.service';
+// import ClientPDF from '../components/clientPDF';
 
 const ViewEstimateDetail = () => {
   const { estimateId } = useParams();
@@ -94,8 +95,6 @@ const ViewEstimateDetail = () => {
     }
   }, [estimateId]);
 
-  console.log(estimateDetailsSummary, 'estimateDetailsSummary', pdfData);
-
   return (
     <div className="p-12">
       <div className="flex justify-between items-center">
@@ -123,6 +122,26 @@ const ViewEstimateDetail = () => {
               />
             )}
           </PDFDownloadLink>
+
+          {/* <PDFDownloadLink
+            document={
+              <ClientPDF
+                estimateDetail={estimateDetailsSummary}
+                subcostRecord={estimateDetailsSummary?.totalCost}
+                pdfData={pdfData}
+              />
+            }
+            fileName="estimate-document.pdf"
+          >
+            {({ loading }) => (
+              <CustomButton
+                isLoading={loading}
+                loadingText="Downloading"
+                text="Download PDF"
+                className="!w-full"
+              />
+            )}
+          </PDFDownloadLink> */}
 
           {/* <PDFViewer>
             <EstimatePDF

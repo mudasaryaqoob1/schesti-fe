@@ -9,6 +9,7 @@ import { IUser } from '../interfaces/companyEmployeeInterfaces/user.interface';
 import { ILogInInterface } from '@/app/interfaces/authInterfaces/login.interface';
 import { ILoginWithGoogle } from '@/app/interfaces/authInterfaces/loginWithGoogle.interface';
 import { ISignUpInterface } from '@/app/interfaces/authInterfaces/signup.interface';
+import { IUserVerification } from '@/app/interfaces/authInterfaces/userVerfication.interface';
 import { IRegisterCompany } from '../interfaces/companyInterfaces/companyRegister.interface';
 import { IForgotPasswordInterface } from '../interfaces/authInterfaces/forgotPassword.interface';
 import { IResetPasswordInterface } from '../interfaces/authInterfaces/resetPassword.interface';
@@ -16,6 +17,7 @@ import {
   IPaymentProps,
   IPaypalPaymentProps,
 } from '../interfaces/authInterfaces/payment.interface';
+import { IUserInterface } from '../interfaces/user.interface';
 
 class AuthService extends HttpService {
   private readonly prefix: string = 'api/auth';
@@ -39,6 +41,9 @@ class AuthService extends HttpService {
   ): Promise<IResponseInterface<any>> =>
     this.post(`${this.prefix}/resend-create-account-email`, data);
 
+  httpVerifyUserByEmail = (data: any): Promise<IResponseInterface<any>> =>
+    this.post(`${this.prefix}/get-details-by-email`, data);
+
   addCompanyDetailHandler = (
     data: IRegisterCompany
   ): Promise<
@@ -53,6 +58,8 @@ class AuthService extends HttpService {
 
   signupHandler = (data: ISignUpInterface): Promise<IResponseInterface<any>> =>
     this.post(`${this.prefix}/signup`, data);
+  httpUserVerification = (data: IUserVerification): Promise<IResponseInterface<any>> =>
+    this.post(`${this.prefix}/user-verification`, data);
 
   loginHandler = (
     data: ILogInInterface
@@ -120,5 +127,9 @@ class AuthService extends HttpService {
 
   verifyUserEmail = (token: string): Promise<IResponseInterface<any>> =>
     this.get(`${this.prefix}/verify-user-email/${token}`);
+
+  httpGetUserDetailsByEmail = (email: string): Promise<IResponseInterface<{
+    user: IUserInterface
+  }>> => this.get(`${this.prefix}/get-details-by-email/${email}`);
 }
 export const authService = new AuthService();

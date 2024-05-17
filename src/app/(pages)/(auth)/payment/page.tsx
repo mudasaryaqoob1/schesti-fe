@@ -19,6 +19,7 @@ import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { useSelector } from 'react-redux';
 import { HttpService } from '@/app/services/base.service';
+import PaypalIntegration from './paypalIntegration';
 
 const Payment = () => {
   const router = useRouter();
@@ -65,12 +66,12 @@ const Payment = () => {
   return (
     <>
       <NavBar />
-      <section className="px-16 p-9">
+      <section className=" px-16 p-9">
         <div className="">
           <h2 className={secondaryHeading}>Payment Summary</h2>
           <div className="w-full h-0.5 bg-mistyWhite mt-4 mb-10"></div>
           <div className="flex gap-10">
-            <div className="flex flex-col gap-5 shadow-md rounded-s max-w-lg w-full p-6">
+            <div className="flex bg-white rounded-lg flex-col gap-5 shadow-md rounded-s max-w-lg w-full p-6">
               <div>
                 <TertiaryHeading title="Subscribe to" />
                 <SecondaryHeading
@@ -135,9 +136,9 @@ const Payment = () => {
                   />
                 </div>
               </div>
-              <div className="flex flex-col">
+              <div className="flex flex-col ">
                 <div
-                  className="h-52 grid place-items-center w-full shadow-md  my-6 gap-10  rounded-s cursor-pointer"
+                  className="h-52 grid place-items-center w-full shadow-md  my-6 gap-10  bg-white rounded-lg cursor-pointer"
                   onClick={stripePaymentHandler}
                 >
                   <Image
@@ -147,18 +148,18 @@ const Payment = () => {
                     height={80}
                   />
                 </div>
-                {/* <div className="h-52 grid place-items-center w-full shadow-md   rounded-s">
+                <div className="h-52 grid place-items-center bg-white w-full shadow-md   rounded-s">
                   {selectedPLan ? (
-                    <PaypalInteration selectedPlan={selectedPLan} />
-                  ) : null} */}
+                    <PaypalIntegration selectedPlan={selectedPLan} />
+                  ) : null}
 
-                {/* <Image
-                src={'/paypal.svg'}
-                alt={'paypal icon'}
-                width={190}
-                height={80}
-              /> */}
-                {/* </div> */}
+                  {/* <Image
+                    src={'/paypal.svg'}
+                    alt={'paypal icon'}
+                    width={190}
+                    height={80}
+                  /> */}
+                </div>
               </div>
             </div>
           </div>

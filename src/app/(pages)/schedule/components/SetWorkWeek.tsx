@@ -48,8 +48,9 @@ export function SetWorkWeek({
         <TertiaryHeading title="Set Workweek" className="text-graphiteGray" />
         <CloseOutlined
           className="cursor-pointer"
-          width={24}
-          height={24}
+          // width={24}
+          // height={24}
+          style={{width : '24px' , height : '24px'}}
           onClick={onClose}
         />
       </div>

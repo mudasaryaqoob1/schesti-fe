@@ -78,7 +78,7 @@ export default function LandingFooter() {
               className={`text-white cursor-pointer text-lg pb-1 font-medium`}
               onClick={() => router.push('/contact')}
             >
-              Contact Us
+              Request a demo
             </a>
           </div>
 
@@ -94,9 +94,8 @@ export default function LandingFooter() {
 
             <div className="flex justify-center py-2 ">
               <div
-                className={`flex items-center border rounded-full bg-white px-4 py-1 shadow-md ${
-                  formik.errors.email ? 'border-red-500' : ''
-                }`}
+                className={`flex items-center border rounded-full bg-white px-4 py-1 shadow-md ${formik.errors.email ? 'border-red-500' : ''
+                  }`}
               >
                 <input
                   className={`flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none  disabled:cursor-not-allowed disabled:opacity-50 flex-1 border-none
@@ -126,7 +125,9 @@ export default function LandingFooter() {
             <p className="text-white text-[14px] font-normal leading-[18.23px]">
               Terms & Conditions
             </p>
-            <p className="text-white text-[14px] font-normal leading-[18.23px]">
+            <p className="text-white hover:underline hover:underline-offset-2 cursor-pointer text-[14px] font-normal leading-[18.23px]" onClick={() => {
+              router.push('/privacy');
+            }}>
               Privacy Policy
             </p>
           </div>
@@ -196,7 +197,7 @@ export default function LandingFooter() {
             className={`text-white cursor-pointer text-lg pb-1 font-normal`}
             onClick={() => router.push('/contact')}
           >
-            Contact Us
+            Request a demo
           </a>
         </div>
       </div>
@@ -211,9 +212,8 @@ export default function LandingFooter() {
 
         <div className="flex justify-center py-1 ">
           <div
-            className={`flex items-center border rounded-full bg-white px-4 py-1 shadow-md ${
-              formik.errors.email ? 'border-red-500' : ''
-            }`}
+            className={`flex items-center border rounded-full bg-white px-4 py-1 shadow-md ${formik.errors.email ? 'border-red-500' : ''
+              }`}
           >
             <input
               className={`flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none  disabled:cursor-not-allowed disabled:opacity-50 flex-1 border-none
