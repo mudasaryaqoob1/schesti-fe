@@ -29,6 +29,7 @@ import {
 import { ScaleData } from '../page';
 import useWheelZoom from './useWheelZoom';
 import { useDraw } from '@/app/hooks';
+import { Spin } from 'antd';
 
 const defaultCurrentLineState = { startingPoint: null, endingPoint: null };
 const defaultPolyLineState: LineInterface = {
@@ -131,12 +132,17 @@ const Draw: React.FC<Props> = ({
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [circle, setCircle] = useState<CircleInterface[]>([]);
   console.log(selected, drawScale, " ===> selected and draw scal");
+  const [imgLoading, setimgLoading] = useState<boolean>(true)
 
 
   const myImage = new Image();
   myImage.src =
     uploadFileData.src ||
     'https://wcs.smartdraw.com/floor-plan/img/house-design-example.png?bn=15100111902';
+
+  myImage.onload = () => {
+    setimgLoading(false)
+  }
 
   const counterImage = new Image();
   counterImage.src = '/count-draw.png';
@@ -520,10 +526,10 @@ const Draw: React.FC<Props> = ({
     compHeight: uploadFileData.height || 600,
     compWidth: uploadFileData.width || 600,
   });
-  const stageParentRef = useRef<any>(null); 
+  const stageParentRef = useRef<any>(null);
   const parentWdith = null//(stageParentRef.current?.getBoundingClientRect() && stageParentRef.current?.getBoundingClientRect()?.width) ? stageParentRef.current?.getBoundingClientRect()?.width : null;
   const parentHeight = null//(stageParentRef.current?.getBoundingClientRect() && stageParentRef.current?.getBoundingClientRect()?.height) ? stageParentRef.current?.getBoundingClientRect()?.height : null;
-  console.log(parentWdith,parentHeight, " width and height of parent")
+  console.log(parentWdith, parentHeight, " width and height of parent")
   return (
     <div
       ref={stageParentRef}
@@ -698,6 +704,12 @@ const Draw: React.FC<Props> = ({
           </svg>
         </div>
       </div>
+      {/* Image Loading */}
+      {imgLoading &&
+        <div className='rounded-t-2xl absolute top-0 left-0 w-[100%] h-[100%] bg-slate-200 flex justify-center items-center bg-opacity-30 z-40' >
+          <Spin size='large' />
+        </div>
+      }
       <Stage
         width={parentWdith || uploadFileData.width || 600}
         height={parentHeight || uploadFileData.height || 600}
@@ -718,6 +730,7 @@ const Draw: React.FC<Props> = ({
             width={uploadFileData.width || 600}
             height={uploadFileData.height || 600}
           />
+
 
           {/* Scale Drawing Line */}
           {draw?.scale && Array.isArray(draw?.scale) && draw?.scale?.map(({ textUnit, ...rest }: any, index: number) => {

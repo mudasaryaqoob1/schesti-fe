@@ -3,7 +3,7 @@ import { useState, useContext, useEffect } from 'react';
 import ModalComponent from '@/app/component/modal';
 import ScaleModal from '../components/scale';
 import ModalsWrapper from './components/ModalWrapper';
-import { Avatar, ColorPicker, InputNumber, Select, Spin } from 'antd';
+import { Avatar, ColorPicker, Dropdown, InputNumber, Menu, Select, Spin } from 'antd';
 import { EditContext, ReportDataContext, ScaleContext, UploadFileContext } from '../context';
 import { UploadFileContextProps } from '../context/UploadFileContext';
 import {
@@ -25,12 +25,13 @@ import { selectUser } from '@/redux/authSlices/auth.selector';
 ////////////////////////New Take OffData///////////////////////////////////
 import CustomButton from '@/app/component/customButton/button'
 import { bg_style } from '@/globals/tailwindvariables'
-import { CloudUploadOutlined, DownOutlined, FileOutlined, FilePdfOutlined, FolderOutlined, LeftOutlined, MenuUnfoldOutlined, MoreOutlined, RightOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons'
+import { CloudUploadOutlined, CopyOutlined, DeleteColumnOutlined, DeleteOutlined, DownOutlined, EditOutlined, FileOutlined, FilePdfOutlined, FolderOutlined, LeftOutlined, MenuUnfoldOutlined, MoreOutlined, RightOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons'
 import React from 'react'
 import { Button, Divider, Input, Table, TableColumnsType, Tree, TreeDataNode } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import { takeoffSummaryService } from '@/app/services/takeoffSummary.service';
 import { EditableText } from '@/app/component/EditableText';
+import ReportModal from '../components/ReportModal';
 
 
 const groupDataForFileTable = (input: any[]) => {
@@ -111,7 +112,7 @@ const getSingleMeasurements = (draw: any, pageId: any) => {
   if (Object?.keys(draw)?.length > 0) {
     Object.keys(draw)?.map((key: string, index: number) => {
       if (Array.isArray(draw[`${key}`]) && draw[`${key}`]?.length > 0) {
-        singleArr = [...singleArr, ...draw[`${key}`]?.map((i: any) => ({ ...i, type: key,pageId }))]
+        singleArr = [...singleArr, ...draw[`${key}`]?.map((i: any) => ({ ...i, type: key, pageId }))]
       }
       return "";
     })
@@ -160,8 +161,8 @@ const measurementsTableData = (takeOff: any) => {
       if (existingEntry) { existingEntry?.children?.push({ key: dateTime, category, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId }) }
       else {
         result?.push({
-          key: dateTime, isParent: true, category, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type,pageId,
-          children: [{ key: dateTime, isParent: false, category, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type,pageId }]
+          key: dateTime, isParent: true, category, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId,
+          children: [{ key: dateTime, isParent: false, category, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId }]
         })
       }
       return result
@@ -234,8 +235,8 @@ const TakeOffNewPage = () => {
 
   const [tableLoading, settableLoading] = useState<any>(false)
   const updateTableChangeInTakeOff = async (pageId: string, type: any, dateTime: any, keyToUpdate: string, valueToUpdate: any) => {
-    console.log(pageId, type, dateTime, keyToUpdate, valueToUpdate,'Update Run')
-    if (pageId && type && dateTime && keyToUpdate) {
+    console.log(pageId, type, dateTime, keyToUpdate, valueToUpdate, 'Update Run')
+    if (pageId && type && dateTime && keyToUpdate && valueToUpdate) {
       try {
         let tempTakeOff = takeOff
         let slpg = tempTakeOff?.measurements[pageId]
@@ -270,6 +271,98 @@ const TakeOffNewPage = () => {
     }
   }
 
+  const deleteTableChangeInTakeOff = async (pageId: string, type: any, dateTime: any) => {
+    // console.log(pageId, type, dateTime, keyToUpdate, valueToUpdate,'delete Run')
+    if (pageId && type && dateTime) {
+      try {
+        let tempTakeOff = takeOff
+        let slpg = tempTakeOff?.measurements[pageId]
+        if (slpg) {
+          settableLoading(true)
+          slpg = {
+            ...slpg,
+            // [type]: slpg[type]?.map((it: any) => {
+            //   if (new Date(it.dateTime).valueOf() === new Date(dateTime).valueOf()) {
+            //     return { ...it, [keyToUpdate]: valueToUpdate };
+            //   } else {
+            //     return it
+            //   };
+            // })
+            [type]: slpg[type]?.filter((it: any) => {
+              return new Date(it.dateTime).valueOf() != new Date(dateTime).valueOf()
+              // if (new Date(it.dateTime).valueOf() === new Date(dateTime).valueOf()) {
+              //   return { ...it, [keyToUpdate]: valueToUpdate };
+              // } else {
+              //   return it
+              // };
+            })
+          }
+          tempTakeOff.measurements[pageId] = slpg
+          // console.log(tempTakeOff)
+          const newupdatedMeasurements: any = await takeoffSummaryService.httpUpdateTakeoffSummary({
+            id: takeOff?._id,
+            //@ts-ignore
+            data: { measurements: tempTakeOff.measurements }
+          })
+          console.log(newupdatedMeasurements, " ==> newupdatedMeasurements")
+          settakeOff(newupdatedMeasurements?.data)
+          settableLoading(false)
+          setDraw(newupdatedMeasurements?.data?.measurements[`${selectedPage?.pageId}`])
+        }
+      } catch (error) {
+        settableLoading(false)
+        console.log(error, " ===> Error while updating table data")
+      }
+    }
+  }
+  const handleMenuClick = async(key: any, item: any) => {
+    const takeOffTemp = takeOff
+    const page = takeOffTemp?.pages?.find((i:any)=>(i?.pageId == item?.pageId))
+    const pageInd = takeOffTemp?.pages?.findIndex((i:any)=>(i?.pageId == item?.pageId))
+    console.log(item, key, page, pageInd, " ===> clicked dropdown item")
+    let pages = takeOffTemp?.pages
+    if(page){
+      if(key == 'duplicate'){
+        const duplicatedPage = {...page,pageId:`${new Date().getTime()}`,name:page?.name+" (COPY)"}
+        pages?.splice(pageInd+1,0,duplicatedPage)
+      }else if(key == 'delete'){
+        pages = pages?.filter((i:any)=>(i?.pageId != item?.pageId))
+      }
+      try {
+        settableLoading(true)
+        const newupdatedMeasurements: any = await takeoffSummaryService.httpUpdateTakeoffSummary({
+          id: takeOff?._id,
+          //@ts-ignore
+          data: { pages }
+        })
+        console.log(newupdatedMeasurements, " ==> newupdatedMeasurements")
+        settakeOff(newupdatedMeasurements?.data)
+        settableLoading(false)
+      } catch (error) {
+        settableLoading(false)
+        console.log(error, " ===> Error while updatind")
+      }
+    }
+  }
+
+  const menu = (item: any, isParent=false) => (
+    <Menu
+      onClick={({ key }) => handleMenuClick(key, item)}
+      items={[
+        {
+          label: 'Duplicate',
+          key: 'duplicate',
+          icon: <CopyOutlined />,
+        },
+        {
+          label: 'Delete',
+          key: 'delete',
+          icon: <DeleteOutlined />,
+          danger: true,
+        },
+      ]}
+    />
+  );
 
   const plansColumn: ColumnsType<any> = [
     {
@@ -286,9 +379,50 @@ const TakeOffNewPage = () => {
             }
           }
         }}
-          className="flex items-center h-full cursor-pointer">
+          className="flex items-center h-full cursor-pointer justify-between">
+          <div>
           {record?.isParent == true ? <FolderOutlined className="mr-2" /> : <FileOutlined className="mr-2" />}
           {text}
+          </div>
+          {record?.isParent != true && <Dropdown overlay={menu(record)} trigger={['click']}>
+            <MoreOutlined className='cursor-pointer text-[20px]' />
+          </Dropdown>}
+        </div>
+      ),
+    },
+  ];
+
+  const categoryColumns: ColumnsType<any> = [
+    {
+      title: 'Project Name',
+      dataIndex: 'category',
+      key: 'dateTime',
+      render: (text, record) => (
+        <div
+          className="flex items-center h-full cursor-pointer">
+          {record?.isParent ? text : <span className='flex items-center gap-1'><ColorPicker onChangeComplete={(val) => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'stroke', val.toHexString()) }} className='!w-[2px] !h-[2px] border-none' value={record?.stroke} /> <EditableText initialText={record?.projectName} smallText={record?.projectName?.slice(0, 6) + "..."} onPressEnter={(value) => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'projectName', value) }} toolTip={takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.name + `(${takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.file?.name})`} /></span>}
+        </div>
+      ),
+    },
+    {
+      title: 'Category',
+      dataIndex: 'category',
+      key: 'dateTime',
+      render: (text, record) => (
+        <div
+          className="flex items-center h-full cursor-pointer">
+          {record?.isParent ? <></> : <span className='flex items-center gap-1'><EditableText initialText={text} smallText={text?.slice(0, 6) + "..."} onPressEnter={(value) => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'category', value) }} toolTip={takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.name + `(${takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.file?.name})`} /></span>}
+        </div>
+      ),
+    },
+    {
+      title: 'Project Name',
+      dataIndex: 'category',
+      // key: 'category',
+      render: (text, record) => (
+        <div
+          className="flex items-center h-full cursor-pointer">
+          {record?.isParent ? <></> : <span className='flex items-center gap-1'><DeleteOutlined onClick={() => { deleteTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime) }} /></span>}
         </div>
       ),
     },
@@ -302,7 +436,7 @@ const TakeOffNewPage = () => {
       render: (text, record) => (
         <div
           className="flex items-center h-full cursor-pointer">
-          {record?.isParent ? text : <span className='flex items-center gap-1'><ColorPicker onChangeComplete={(val)=>{updateTableChangeInTakeOff(record?.pageId,record?.type,record?.dateTime,'stroke',val.toHexString())}} className='!w-[2px] !h-[2px] border-none' value={record?.stroke} /> <EditableText initialText={record?.projectName} smallText={record?.projectName?.slice(0, 6) + "..."} onPressEnter={(value) => {updateTableChangeInTakeOff(record?.pageId,record?.type,record?.dateTime,'projectName',value)}} toolTip={takeOff?.pages?.find((pg:any)=>(pg?.pageId == record?.pageId))?.name+`(${takeOff?.pages?.find((pg:any)=>(pg?.pageId == record?.pageId))?.file?.name})`} /></span>}
+          {record?.isParent ? text : <span className='flex items-center gap-1'><ColorPicker onChangeComplete={(val) => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'stroke', val.toHexString()) }} className='!w-[2px] !h-[2px] border-none' value={record?.stroke} /> <EditableText initialText={record?.projectName} smallText={record?.projectName?.slice(0, 6) + "..."} onPressEnter={(value) => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'projectName', value) }} toolTip={takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.name + `(${takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.file?.name})`} /></span>}
         </div>
       ),
     },
@@ -335,7 +469,7 @@ const TakeOffNewPage = () => {
       render: (text, record) => (
         <div
           className="flex items-center h-full cursor-pointer">
-          {record?.isParent ? <></> : <span className='flex items-center gap-1'><MoreOutlined/></span>}
+          {record?.isParent ? <></> : <span className='flex items-center gap-1'><MoreOutlined /></span>}
         </div>
       ),
     },
@@ -714,6 +848,17 @@ const TakeOffNewPage = () => {
     }
   }, [sideTabs, takeOff])
 
+  /////Image Loadings//////////////
+  const [loadedImages, setLoadedImages] = useState<any>([]);
+
+  const handleImageLoad = (index: any) => {
+    setLoadedImages((prevLoadedImages: any) => [...prevLoadedImages, index]);
+  };
+
+  const isImgLoading = (index: any) => !loadedImages.includes(index);
+
+  const [reportModal, setreportModal] = useState<boolean>(false)
+
   return (
     <>
       <section className="md:px-16 px-8 pb-4">
@@ -725,7 +870,7 @@ const TakeOffNewPage = () => {
             // icon="plus.svg"
             iconwidth={20}
             iconheight={20}
-            onClick={() => { }}
+            onClick={() => { setreportModal(true) }}
           />
         </div>
 
@@ -803,7 +948,7 @@ const TakeOffNewPage = () => {
             </div>}
             {sideTabs == 'WBS' && <div className='grow flex !border-black'>
               <Table
-                columns={tableColumns}
+                columns={categoryColumns}
                 expandable={{
                   // expandedRowRender: (record) => <p style={{ margin: 0 }}>{record.description}</p>,
                   rowExpandable: (record) => record?.isParent == true,
@@ -886,9 +1031,21 @@ const TakeOffNewPage = () => {
                           }}
                           key={index} icon={<FilePdfOutlined />} >{pg?.name ? pg?.name?.slice(0, 15) : ''}
                           <span className='cursor-pointer ml-5'
-                            onClick={() => {
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              console.log('filtered crossed here')
                               const filtered = selectedPagesList?.filter((i: any) => (i?.pageId != pg?.pageId))
                               setselectedPagesList(filtered)
+                              if (selectedPage?.pageId == pg?.pageId) {
+                                console.log('filtered crossed here inside selected page condition')
+                                setselectedPage({})
+                                setselectedTakeOffTab('overview')
+                              }
+                              if (!filtered?.length) {
+                                console.log('filtered crossed here in side empty selected list')
+                                setselectedTakeOffTab('overview')
+                                setselectedPage({})
+                              }
                             }}
                           >x</span>
                         </Button>
@@ -986,10 +1143,10 @@ const TakeOffNewPage = () => {
                                     setselectedPage(page)
                                   }}
                                 >
-                                  <Image className='rounded-t-2xl' src={page?.src} width={250} height={300} alt='' />
-                                  <div className='rounded-t-2xl absolute top-0 left-0 w-[100%] h-[100%] bg-slate-300 flex justify-center items-center bg-opacity-30' >
+                                  <Image className='rounded-t-2xl' src={page?.src} width={250} height={300} alt='' onLoad={() => handleImageLoad(index)} />
+                                  {isImgLoading(index) && <div className='rounded-t-2xl absolute top-0 left-0 w-[100%] h-[100%] bg-slate-300 flex justify-center items-center bg-opacity-30' >
                                     <Spin />
-                                  </div>
+                                  </div>}
                                   <div className='py-5 px-3' >{page?.name?.slice(0, 30) ?? 'Unkonw'}</div>
                                 </div>
                               </>
@@ -1076,6 +1233,13 @@ const TakeOffNewPage = () => {
                     />
                   </ModalComponent>
                 )}
+                <ModalComponent open={reportModal} setOpen={setreportModal} width='100vw'>
+                  <ReportModal
+                    setModalOpen={setreportModal}
+                    takeOff={takeOff}
+                    modalOpen={reportModal}
+                  />
+                </ModalComponent>
                 {/* {showModal && ( */}
                 {/* <ModalComponent open={showSelectModal} setOpen={()=>{}}>
               <SelectPageModal
