@@ -142,6 +142,9 @@ export function BidDetails({
     router.push(`/bid-management/details/${bidId}`);
   }
 
+
+  const bidUser = bid?.user;
+
   return (
     <div>
       {bidSubmittedDetails && !isDetailsLoading && (
@@ -188,7 +191,9 @@ export function BidDetails({
           >
             <TwitterIcon size={30} round />
           </TwitterShareButton>
-          <SendEmailModal />
+          <SendEmailModal
+            to={typeof bidUser !== 'string' ? bidUser.email : ''}
+          />
         </div>
       </div>
 

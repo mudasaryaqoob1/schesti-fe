@@ -24,7 +24,11 @@ const ValidationSchema = Yup.object().shape({
   description: Yup.string().optional(),
   file: Yup.mixed(),
 });
-export function SendEmailModal() {
+
+type Props = {
+  to: string;
+}
+export function SendEmailModal({ to }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [showRfiModal, setShowRfiModal] = useState(false);
   useClickAway(() => {
@@ -38,9 +42,9 @@ export function SendEmailModal() {
 
   const sendEmailFormik = useFormik<Omit<ISendEmail, 'projectId'>>({
     initialValues: {
-      to:'',
-      cc:'',
-      subject:'',
+      to,
+      cc: '',
+      subject: '',
       description: '',
       file: undefined,
     },
@@ -71,7 +75,7 @@ export function SendEmailModal() {
   });
 
   async function handleFileUpload(file: RcFile) {
-      sendEmailFormik.setFieldValue('file', file);
+    sendEmailFormik.setFieldValue('file', file);
   }
   return (
     <div
@@ -125,8 +129,6 @@ export function SendEmailModal() {
                       inputStyle="!mt-0 !rounded-tr !rounded-br !rounded-tl-none !rounded-bl-none"
                       field={{
                         value: sendEmailFormik.values.to,
-                        onChange: sendEmailFormik.handleChange,
-                        onBlur: sendEmailFormik.handleBlur,
                       }}
                       hasError={
                         sendEmailFormik.touched.to && Boolean(sendEmailFormik.errors.to)
