@@ -16,7 +16,7 @@ type Props = {
 export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
   const [isDownloadingAll, setIsDownloadingAll] = useState(false);
 
-  const columns: ColumnsType<{}> = [
+  const columns: ColumnsType<{ _id: string, quantity: number, price: number }> = [
     {
       key: 'description',
       title: 'Description',
@@ -30,17 +30,17 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
     {
       key: 'unitPrice',
       title: 'Unit Price',
-      dataIndex: 'unitPrice',
+      dataIndex: 'price',
       render(value) {
-        return USCurrencyFormat.format(value);
+        return value ? USCurrencyFormat.format(value) : null;
       },
     },
     {
       key: 'total',
       title: 'Total',
       dataIndex: 'total',
-      render(value) {
-        return USCurrencyFormat.format(value);
+      render(value, record) {
+        return USCurrencyFormat.format(record.quantity * record.price);
       },
     },
   ];
@@ -76,12 +76,12 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
           className="font-normal text-[#475467] text-xs leading-4"
         />
         <div className="flex mt-1 items-center space-x-3">
-          <Image
+          {bid.user?.companyLogo ? <Image
             src={bid.user?.companyLogo}
             width={18}
             height={18}
             alt="trade icon"
-          />
+          /> : null}
           <SenaryHeading
             title={bid.projectId?.projectName}
             className="font-medium text-[#001556] text-base leading-6"

@@ -61,6 +61,7 @@ function SubContractorBidsPage() {
           <Tabs
             onChange={(key) => {
               setActiveTab(key);
+              setSearch('');
             }}
             activeKey={activeTab}
             items={[ACTIVE, UPCOMING, ARCHIVED].map((tab) => ({
@@ -105,13 +106,15 @@ function SubContractorBidsPage() {
                   </div>
 
                   {activeTab === ACTIVE ? (
-                    <ActiveProjects />
+                    <ActiveProjects search={search} />
                   ) : activeTab === UPCOMING ? (
                     <UpComingProjects
                       search={search}
                     />
                   ) : (
-                    <ArchivedProjects />
+                    <ArchivedProjects
+                      search={search}
+                    />
                   )}
                 </div>
               ),

@@ -6,8 +6,10 @@ import { useQuery } from 'react-query';
 import { bidManagementService } from '@/app/services/bid-management.service';
 import { proposalService } from '@/app/services/proposal.service';
 
-
-export function ActiveProjects() {
+type Props = {
+  search: string;
+}
+export function ActiveProjects({ search }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedBid, setSelectedBid] = useState<IBidManagement | null>(null);
   const [selectedBidProjectDetails, setSelectedBidProjectDetails] = useState<any>(null);
@@ -30,11 +32,11 @@ export function ActiveProjects() {
       setSelectedBid(bidProject as unknown as IBidManagement);
 
       const { data }: any = await proposalService.httpGetProposalDetailsByProjectId(bidProject.projectId?._id);
-      if(data) {
+      if (data) {
         setIsLoading(false);
         setSelectedBidProjectDetails(data?.bidDetails);
       }
-    } catch(err){
+    } catch (err) {
       setIsLoading(false);
       console.log('could not get project proposal details', err);
     }
@@ -43,22 +45,31 @@ export function ActiveProjects() {
   const savedBids = useQuery(['saved-bids'], fetchSavedBids);
 
   const savedUserBids: any =
-  savedBids.data && savedBids.data.data
-    ? savedBids.data.data?.savedBids
-    : [];
+    savedBids.data && savedBids.data.data
+      ? savedBids.data.data?.savedBids
+      : [];
 
 
   return (
     <div>
       <div className={`grid grid-cols-12 gap-4`}>
         <div className={`${selectedBid ? 'col-span-8' : 'col-span-12'}`}>
-          {savedUserBids.map((bidProject: any) =>
-            <BidIntro
+          {savedUserBids.filter((bidProject: any) => {
+            if (!search) {
+              return true;
+            }
+            return (bidProject.projectId as IBidManagement).projectName.toLowerCase().includes(search.toLowerCase()) || (bidProject.projectId as IBidManagement).description.toLowerCase().includes(search.toLowerCase());
+
+          }).map((bidProject: any) => {
+            console.log({ bidProject });
+            return <BidIntro
               key={bidProject._id}
               bid={bidProject as unknown as IBidManagement}
               onClick={() => getProjectProposalDetails(bidProject)}
               isSelected={selectedBid?._id === bidProject._id}
             />
+          }
+
           )}
         </div>
         {isLoading ? <h1>Loading...</h1> : !isLoading && selectedBid && selectedBidProjectDetails ? (
