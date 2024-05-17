@@ -118,6 +118,7 @@ function BidManagementSubContractorPage() {
       filters.page * filters.limit
     );
 
+
   // const dataToExport = currentExploreProjects.filter((project) => {
   //   if (search === '') {
   //     return project;
@@ -322,7 +323,7 @@ function BidManagementSubContractorPage() {
               current={filters.page}
               pageSize={filters.limit}
               total={paginationInfo.totalRecords}
-              onChange={(page) => setInvitedfilters(prevFilters => ({ ...prevFilters, page }))}
+              onChange={(page) => setFilters(prevFilters => ({ ...prevFilters, page }))}
             />
           </div>
         )}

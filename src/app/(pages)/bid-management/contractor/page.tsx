@@ -319,7 +319,7 @@ function ContractorScreen() {
               current={filters.page}
               pageSize={filters.limit}
               total={paginationInfo.totalRecords}
-              onChange={(page) => setInvitedfilters(prevFilters => ({ ...prevFilters, page }))}
+              onChange={(page) => setFilters(prevFilters => ({ ...prevFilters, page }))}
             />
           </div>
         )}
