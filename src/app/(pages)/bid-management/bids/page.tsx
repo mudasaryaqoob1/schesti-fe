@@ -19,6 +19,7 @@ const ARCHIVED = 'Archived';
 
 function SubContractorBidsPage() {
   const [activeTab, setActiveTab] = useState(ACTIVE);
+  const [search, setSearch] = useState('');
 
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 ">
@@ -67,9 +68,8 @@ function SubContractorBidsPage() {
               label: (
                 <QuaternaryHeading
                   title={tab}
-                  className={`${
-                    activeTab === tab ? 'text-RoyalPurple' : 'text-black'
-                  }`}
+                  className={`${activeTab === tab ? 'text-RoyalPurple' : 'text-black'
+                    }`}
                 />
               ),
               tabKey: tab,
@@ -88,6 +88,10 @@ function SubContractorBidsPage() {
                           placeholder="Search"
                           name="search"
                           prefix={<SearchOutlined />}
+                          field={{
+                            value: search,
+                            onChange: (e) => setSearch(e.target.value),
+                          }}
                         />
                       </div>
                       {activeTab === UPCOMING ? (
@@ -103,7 +107,9 @@ function SubContractorBidsPage() {
                   {activeTab === ACTIVE ? (
                     <ActiveProjects />
                   ) : activeTab === UPCOMING ? (
-                    <UpComingProjects />
+                    <UpComingProjects
+                      search={search}
+                    />
                   ) : (
                     <ArchivedProjects />
                   )}

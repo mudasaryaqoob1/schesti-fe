@@ -5,8 +5,10 @@ import { useQuery } from 'react-query';
 import { bidManagementService } from '@/app/services/bid-management.service';
 import { BiddingProjectDetails } from './BiddingProjectDetails';
 
-
-export function UpComingProjects() {
+type Props = {
+  search: string;
+}
+export function UpComingProjects({ search }: Props) {
 
   const [selectedBid, setSelectedBid] = useState<IBidManagement | null>(null);
 
@@ -26,15 +28,18 @@ export function UpComingProjects() {
     savedBids.refetch();
   };
   const savedUserBids: any =
-  savedBids.data && savedBids.data.data
-    ? savedBids.data.data?.savedBids
-    : [];
+    savedBids.data && savedBids.data.data
+      ? savedBids.data.data?.savedBids
+      : [];
 
   return (
     <div>
       <div className={`grid grid-cols-12 gap-4`}>
         <div className={`${selectedBid ? 'col-span-8' : 'col-span-12'}`}>
-          {savedUserBids.map((bidProject: any) => {
+          {savedUserBids.filter((userBid: any) => {
+            if (!search) return true;
+            return (userBid?.projectId as IBidManagement).projectName.toLowerCase().includes(search.toLowerCase()) || (userBid?.projectId as IBidManagement).description.toLowerCase().includes(search.toLowerCase());
+          }).map((bidProject: any) => {
             return (
               <BidIntro
                 key={bidProject._id}
