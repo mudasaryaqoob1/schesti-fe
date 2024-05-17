@@ -110,7 +110,7 @@ function BidManagementSubContractorPage() {
       }
       return (
         project.projectName.toLowerCase().includes(search.toLowerCase()) ||
-        project.description.toLowerCase().includes(search.toLowerCase())
+        project.description?.toLowerCase().includes(search.toLowerCase())
       );
     })
     .slice(
