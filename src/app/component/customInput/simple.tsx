@@ -45,10 +45,8 @@ const SimpleInput = (props: any) => {
               onChange={(e) => setFieldValue(name, +e.target.value)}
               className={twMerge(
                 clsx(
-                  `border ${hasError ? 'border-red-500' : 'border-gray-400'} ${
-                    disabled ? 'disable_custom_class !text-black' : ''
-                  } !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 !mt-1.5 ${
-                    inputStyle && inputStyle
+                  `border ${hasError ? 'border-red-500' : 'border-gray-200'} ${disabled ? 'disable_custom_class !text-black' : ''
+                  } !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 !mt-1.5 ${inputStyle && inputStyle
                   }`
                 )
               )}
