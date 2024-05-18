@@ -248,7 +248,7 @@ const Register = () => {
                       label="Confirm password"
                       type="password"
                       name="confirmPassword"
-                      placeholder="confirm Password"
+                      placeholder="Confirm Password"
                     />
                   </div>
 

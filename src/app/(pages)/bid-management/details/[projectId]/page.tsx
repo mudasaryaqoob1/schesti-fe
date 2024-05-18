@@ -12,10 +12,11 @@ import { ProjectDesignTeam } from '../components/ProjectDesignTeam';
 import { ProjectDocuments } from '../components/ProjectDocuments';
 import { ProjectRFICenter } from '../components/ProjectRFICenter';
 import { ProjectBiddingTeam } from '../components/ProjectBiddingTeam';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { bidManagementService } from '@/app/services/bid-management.service';
 import { useQuery } from 'react-query';
 import moment from 'moment';
+import { Routes } from '@/app/utils/plans.utils';
 
 const SUMMARY = 'Summary';
 const DESIGN_TEAM = 'Design Team';
@@ -26,6 +27,9 @@ const RFI_CENTER = 'RFI Center';
 function OwnerProjectDetailsPage() {
   const params: any = useParams();
   const { projectId } = params;
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const isSubmitted = searchParams.get("isSubmitted");
   const [paginationSettings, setPaginationSettings] = useState<{
     page: number;
     limit: number;
@@ -91,9 +95,13 @@ function OwnerProjectDetailsPage() {
             </div>
           </div>
 
-          <div className="flex items-center space-x-3 flex-1 justify-end">
-            <CustomButton text="Submit a bid" className="!w-40" />
-          </div>
+          {!isSubmitted ? <div className="flex items-center space-x-3 flex-1 justify-end">
+            <CustomButton text="Submit a bid" className="!w-40"
+              onClick={() => {
+                router.push(`${Routes['Bid Management'].Submit}/${projectId}`)
+              }}
+            />
+          </div> : null}
         </div>
 
         {/* Tabs */}

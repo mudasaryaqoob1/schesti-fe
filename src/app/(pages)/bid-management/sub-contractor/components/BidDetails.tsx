@@ -137,9 +137,9 @@ export function BidDetails({
     } catch (error) { /* empty */ }
   }
 
-  const handleProposalDetails = async (bidId: string) => {
+  const handleProposalDetails = async (bidId: string, isViewProposalBtn = false) => {
     await createProjectActivity(bidId);
-    router.push(`/bid-management/details/${bidId}`);
+    router.push(`/bid-management/details/${bidId}?${isViewProposalBtn ? 'isSubmitted=true' : ''}`);
   }
 
 
@@ -154,7 +154,7 @@ export function BidDetails({
             className="text-[#475467] text-[14px] leading-6 font-normal mt-2"
           />
           <div
-            onClick={() => handleProposalDetails(bid?._id)}
+            onClick={() => handleProposalDetails(bid?._id, true)}
             className="text-[#27AE60] underline underline-offset-2 mb-2 text-[14px] leading-6 font-normal cursor-pointer"
           >
             View Proposal
@@ -208,7 +208,7 @@ export function BidDetails({
           className="text-[#475467] text-[14px] leading-6 font-normal mt-2"
         />
         <div
-          onClick={() => handleProposalDetails(bid?._id)}
+          onClick={() => handleProposalDetails(bid?._id, bidSubmittedDetails ? true : false)}
           className="text-[#7F56D9] underline underline-offset-2 text-[14px] leading-6 font-normal cursor-pointer"
         >
           View full details
@@ -299,28 +299,31 @@ export function BidDetails({
       </div>
       <Divider className="my-2" />
       <div className="flex items-center py-[5px] px-[11px] space-x-2 cursor-pointer">
-        <Image
-          alt="cloud icon"
-          src={'/uploadcloud.svg'}
-          width={16}
-          height={16}
-        />
+
         {size(bid?.projectFiles) > 0 && (
-          <SenaryHeading
-            onClick={() => downloadAllFiles(bid.projectFiles)}
-            title="Download all files"
-            className="text-[#7138DF] text-xs leading-4 font-semibold underline underline-offset-2"
-          />
+          <>
+            <Image
+              alt="cloud icon"
+              src={'/uploadcloud.svg'}
+              width={16}
+              height={16}
+            />
+            <SenaryHeading
+              onClick={() => downloadAllFiles(bid.projectFiles)}
+              title="Download all files"
+              className="text-[#7138DF] text-xs leading-4 font-semibold underline underline-offset-2"
+            />
+          </>
         )}
       </div>
 
       <div className="mt-4 space-y-2">
-        <CustomButton
+        {!bidSubmittedDetails ? <CustomButton
           text="Send Bid"
           onClick={() => {
             router.push(`${Routes['Bid Management'].Submit}/${bid._id}`);
           }}
-        />
+        /> : null}
 
         {isEmpty(selectedProjectSavedBid) ? (
           <CustomButton
