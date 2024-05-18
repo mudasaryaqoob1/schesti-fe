@@ -99,6 +99,10 @@ export function PostProjectDetails({ formik, children }: Props) {
             value: formik.values.stage,
             onChange: (value) => formik.setFieldValue('stage', value),
             onBlur: formik.handleBlur,
+            allowClear: true,
+            onClear() {
+              formik.setFieldValue('stage', '');
+            },
           }}
           hasError={formik.touched.stage && Boolean(formik.errors.stage)}
           errorMessage={
@@ -224,7 +228,7 @@ export function PostProjectDetails({ formik, children }: Props) {
               prefix: '$',
             }}
             hasError={
-              Boolean(formik.errors.projectValue)
+              formik.touched.projectValue && Boolean(formik.errors.projectValue)
             }
             errorMessage={
               formik.touched.projectValue && formik.errors.projectValue
