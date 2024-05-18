@@ -138,7 +138,7 @@ const CheckYourEmail = () => {
           />
           <Description
             className="mt-1  text-center text-slateGray"
-            title={`We’ve sent a verification email to ${emailQueryParameter}`}
+            title={`We’ve sent a verification email to ${parsedEmail && parsedEmail.length > 0 ? parsedEmail : ''}`}
           />
 
           <Description
@@ -152,7 +152,7 @@ const CheckYourEmail = () => {
             className="font-popin text-doveGrayer font-normal
            leading-[26px] text-center my-1"
             title={`If you have trouble finding your email, check your spam folder for
-                an email from ${emailQueryParameter}`}
+                an email from ${parsedEmail && parsedEmail.length > 0 ? parsedEmail : ''}`}
           />
           <div
             className={twMerge(`${quinaryHeading} font-popin  font-normal

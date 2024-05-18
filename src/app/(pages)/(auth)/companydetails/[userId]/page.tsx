@@ -155,6 +155,7 @@ const CompanyDetails = () => {
               onSubmit={submitHandler}
             >
               {(formik) => {
+
                 const countries = Country.getAllCountries().map((country) => ({
                   label: country.name,
                   value: country.isoCode,
@@ -201,12 +202,12 @@ const CompanyDetails = () => {
                         <PhoneNumberInputWithLable
                           label='Phone Number'
                           onChange={(value) => {
-                             //@ts-ignore
                             formik.setFieldValue('phone', value);
                           }}
-                          //@ts-ignore
                           value={formik.values.phone}
                           onBlur={() => formik.setFieldTouched('phone', true)}
+                          hasError={formik.touched.phone && Boolean(formik.errors.phone)}
+                          errorMessage={formik.touched.phone && formik.errors.phone ? formik.errors.phone : ''}
                         />
                       </div>
                       {selectedUserRole === OWNER || selectedUserRole === CONTRACTOR || selectedUserRole === SUBCONTRACTOR ? (
