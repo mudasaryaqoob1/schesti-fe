@@ -355,7 +355,7 @@ function CreatePost() {
           cancelBtn={{
             text: 'View Project',
             onClick() {
-              router.push(`${Routes['Bid Management'].Posted_Projects}`);
+              router.push(`${Routes['Bid Management'].Posted_Projects}/view/${postProjectState.project?._id}`);
               dispatch(resetPostProjectAction());
             },
           }}
