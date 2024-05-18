@@ -44,8 +44,8 @@ const RegisterSchema: any = Yup.object({
     .email('Email should be valid'),
   password: Yup.string()
     .matches(
-      new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/),
-      'The password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one digit.'
+      new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[a-zA-Z\d\W_]{8,}$/),
+      'The password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one special character and one digit.'
     )
     .min(6, 'Minimum six character is required')
     .required('Password is required!'),
@@ -66,16 +66,16 @@ const Register = () => {
   const [userDetail, setUserDetail] = useState<any>([])
   let userRoles = [
     {
-      role : USER_ROLES_ENUM.OWNER , 
-      desc : 'It is a long established fact that a reader will be distracted by the readable content of'
+      role: USER_ROLES_ENUM.OWNER,
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of'
     },
     {
-      role : USER_ROLES_ENUM.CONTRACTOR , 
-      desc : 'It is a long established fact that a reader will be distracted by the readable content of'
+      role: USER_ROLES_ENUM.CONTRACTOR,
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of'
     },
     {
-      role : USER_ROLES_ENUM.SUBCONTRACTOR , 
-      desc : 'It is a long established fact that a reader will be distracted by the readable content of'
+      role: USER_ROLES_ENUM.SUBCONTRACTOR,
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of'
     }
   ]
 
@@ -86,10 +86,10 @@ const Register = () => {
 
   const submitHandler = async (values: ISignUpInterface) => {
     setUserRegisterModal(true)
-        setUserDetail(values)
+    setUserDetail(values)
   };
 
-  const userRegisterHandler = async (role  : string) => {
+  const userRegisterHandler = async (role: string) => {
     const payload = { ...userDetail, userRole: role };
     setIsLoading(true);
     setUserRegisterModal(false)
@@ -140,13 +140,13 @@ const Register = () => {
   });
 
 
-  const userRoleSelectionHandler = async (role : string) => {
+  const userRoleSelectionHandler = async (role: string) => {
     setIsLoading(true)
     setUserRoleModal(false)
-    let result: any = await dispatch(loginWithGoogle({...userDetail , userRole: role }));
+    let result: any = await dispatch(loginWithGoogle({ ...userDetail, userRole: role }));
     setIsLoading(false)
     if (result.payload.statusCode == 200) {
-      localStorage.setItem('schestiToken', result.payload.token); 
+      localStorage.setItem('schestiToken', result.payload.token);
       // router.push(`/clients`);
       router.push(`/dashboard`);
     } else if (result.payload.statusCode == 400) {
