@@ -120,12 +120,13 @@ export function PostProjectTrades({ formik, children }: Props) {
               className: '!w-44',
               dropdownStyle: { width: 300 },
               options: tradeCategoryFilters,
-              defaultValue: selectedCategory,
               allowClear: true,
+              value: selectedCategory.length ? selectedCategory : undefined,
               showSearch: true,
               onChange(value) {
                 setSelectedCategory(value);
               },
+              size: "middle"
             }}
           />
         </div>
