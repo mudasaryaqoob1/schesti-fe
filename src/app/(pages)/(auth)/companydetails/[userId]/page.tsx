@@ -312,7 +312,7 @@ const CompanyDetails = () => {
 
 
 
-                      {selectedUserRole == CONTRACTOR || selectedUserRole === SUBCONTRACTOR && (
+                      {selectedUserRole == CONTRACTOR || selectedUserRole == SUBCONTRACTOR ? (
                         <FormControl
                           control="input"
                           label="Industry"
@@ -320,7 +320,7 @@ const CompanyDetails = () => {
                           name="industry"
                           placeholder="Enter industry Name"
                         />
-                      )}
+                      ) : null}
                       {(selectedUserRole == CONTRACTOR ||
                         selectedUserRole == SUBCONTRACTOR) && (
                           <>

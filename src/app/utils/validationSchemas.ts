@@ -1,5 +1,6 @@
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import * as Yup from 'yup';
+import { ShouldHaveAtLeastCharacterRegex } from './regex.util';
 
 
 Yup.addMethod(Yup.string, "phone", function (message: string) {
@@ -16,11 +17,11 @@ Yup.addMethod(Yup.string, "phone", function (message: string) {
 })
 
 export const ContractorSchema: any = Yup.object({
-  companyName: Yup.string().required('Company Name is required'),
-  industry: Yup.string().required('Industry is required'),
+  companyName: Yup.string().matches(ShouldHaveAtLeastCharacterRegex, { message: "At least one letter is required." }).required('Company Name is required'),
+  industry: Yup.string().matches(ShouldHaveAtLeastCharacterRegex, { message: "At least one letter is required." }).required('Industry is required'),
   employee: Yup.number().positive("Must have 1 Employee").required('No Of Employees are required'),
   // phoneNumber: Yup.string().optional(),
-  address: Yup.string().optional(),
+  address: Yup.string().matches(ShouldHaveAtLeastCharacterRegex, { message: "At least one letter is required." }).optional(),
   country: Yup.string().required('Country is required'),
   state: Yup.string().required('State is required'),
   city: Yup.string().required('City is required'),
@@ -30,11 +31,11 @@ export const ContractorSchema: any = Yup.object({
 });
 
 export const SubContractorSchema: any = Yup.object({
-  companyName: Yup.string().required('Company Name is required'),
+  companyName: Yup.string().matches(ShouldHaveAtLeastCharacterRegex, { message: "At least one letter is required." }).required('Company Name is required'),
   employee: Yup.number().positive("Must have 1 Employee").required('No Of Employees are required'),
   // phoneNumber: Yup.string().optional(),
-  industry: Yup.string().optional(),
-  address: Yup.string().optional(),
+  industry: Yup.string().matches(ShouldHaveAtLeastCharacterRegex, { message: "At least one letter is required." }).optional(),
+  address: Yup.string().matches(ShouldHaveAtLeastCharacterRegex, { message: "At least one letter is required." }).optional(),
   country: Yup.string().required('Country is required'),
   state: Yup.string().required('State is required'),
   city: Yup.string().required('City is required'),
@@ -45,8 +46,8 @@ export const SubContractorSchema: any = Yup.object({
 
 export const OwnerSchema: any = Yup.object({
   // phoneNumber: Yup.string().optional(),
-  address: Yup.string().required('Address is required'),
-  organizationName: Yup.string().required('Organization Name is required'),
+  address: Yup.string().matches(ShouldHaveAtLeastCharacterRegex, { message: "At least one letter is required." }).required('Address is required'),
+  organizationName: Yup.string().matches(ShouldHaveAtLeastCharacterRegex, { message: "At least one letter is required." }).required('Organization Name is required'),
   // @ts-ignore
   phone: Yup.string().phone("Invalid Phone Number").required('Phone Number is required'),
   companyName: Yup.string().optional(),
