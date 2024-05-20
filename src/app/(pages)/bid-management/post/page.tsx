@@ -48,7 +48,7 @@ const BasicInformationSchema = Yup.object().shape({
   country: Yup.string().required('Country is required'),
   projectName: Yup.string().matches(ShouldHaveAtLeastCharacterRegex, { message: "Project name cannot be empty" }).required('Project Name is required'),
   state: Yup.string().required('State is required'),
-  zipCode: Yup.string().matches(ShouldHaveAtLeastCharacterRegex, { message: "Zip code cannot be empty" }).required('Zip Code is required'),
+  zipCode: Yup.string().required('Zip Code is required'),
   status: Yup.string().required('Status is required'),
 });
 
