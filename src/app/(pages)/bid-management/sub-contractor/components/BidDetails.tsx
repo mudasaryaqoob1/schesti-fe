@@ -144,7 +144,9 @@ export function BidDetails({
 
 
   const bidUser = bid?.user;
-
+  console.log({
+    bidUser
+  });
   return (
     <div>
       {bidSubmittedDetails && !isDetailsLoading && (

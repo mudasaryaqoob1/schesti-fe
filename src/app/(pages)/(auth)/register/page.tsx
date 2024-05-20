@@ -38,7 +38,7 @@ const initialValues: ISignUpInterface = {
 };
 
 const RegisterSchema: any = Yup.object({
-  name: Yup.string().required('Name is required'),
+  name: Yup.string().max(30, "Name must have atleast 30 characters").required('Name is required'),
   email: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
@@ -48,7 +48,7 @@ const RegisterSchema: any = Yup.object({
       'The password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one special character and one digit.'
     )
     .min(6, 'Minimum six character is required')
-    .max(20, 'Maximum 20 character is allowed')
+    .max(15, 'Maximum 15 character is allowed')
     .required('Password is required!'),
   confirmPassword: Yup.string()
     .required('Confirm Password is required!')
