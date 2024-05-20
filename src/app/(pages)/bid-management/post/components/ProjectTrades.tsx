@@ -129,7 +129,7 @@ export function PostProjectTrades({ formik, children }: Props) {
               dropdownStyle: { width: 300 },
               options: tradeCategoryFilters,
               allowClear: true,
-              value: selectedCategory.length ? selectedCategory : undefined,
+              value: selectedCategory?.length ? selectedCategory : undefined,
               showSearch: true,
               onChange(value) {
                 setSelectedCategory(value);
