@@ -1,5 +1,6 @@
 'use client';
 import CustomButton from '@/app/component/customButton/button';
+import WhiteButton from '@/app/component/customButton/white';
 import { InputComponent } from '@/app/component/customInput/Input';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { withAuth } from '@/app/hoc/withAuth';
@@ -24,9 +25,8 @@ import moment from 'moment';
 import Image from 'next/image';
 import { useState } from 'react';
 import { DeletePopup } from '../post/components/DeletePopup';
-import dynamic from 'next/dynamic';
 import { USCurrencyFormat } from '@/app/utils/format';
-const ExportAll = dynamic(() => import("./components/ExportAll"), { ssr: false });
+import { Excel } from 'antd-table-saveas-excel';
 
 const RES_PER_PAGE = 10;
 
@@ -141,7 +141,7 @@ function Page() {
             color="#ECF2FF"
             style={{ color: '#026AA2' }}
           >
-            Expired
+            Archived
           </Tag>
         );
       },
@@ -242,6 +242,60 @@ function Page() {
     );
   }) ?? [];
 
+
+  const handleDownloadProjectsCSV = (data: IBidManagement[]) => {
+    const excel = new Excel();
+    console.log(data);
+    excel
+      .addSheet(`Projects`)
+      .addColumns([
+        {
+          dataIndex: 'projectName',
+          title: 'Project Name',
+        },
+        {
+          dataIndex: "estimatedStartDate",
+          title: "Estimated Start Date",
+          render(value) {
+            return value ? moment(value).format('YYYY-MM-DD') : null;
+          },
+        },
+        {
+          title: 'Location',
+          dataIndex: 'country',
+          render(_value, record) {
+            return `${record.city}, ${Country.getCountryByCode(record.country)?.name}`;
+          },
+        },
+        {
+          dataIndex: "stage",
+          title: "Stage",
+        },
+        {
+          dataIndex: "projectValue",
+          title: "Budget",
+          render(value, record,) {
+            if (record.projectValue) {
+              return USCurrencyFormat.format(record.projectValue);
+            }
+            return null;
+          },
+        },
+        {
+          dataIndex: "status",
+          title: "Status",
+          render(value: string) {
+            return value.toUpperCase();
+          }
+        }
+
+      ])
+      .addDataSource(data)
+      .saveAs(
+        `projects-${Date.now()}.xlsx`
+      );
+  };
+
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl bg-white shadow-xl px-8 py-9">
       <div className="flex justify-between items-center">
@@ -276,7 +330,14 @@ function Page() {
             />
           </div>
           <div className='flex items-center space-x-2'>
-            <ExportAll bids={filteredData} />
+            <WhiteButton
+              text={'Export'}
+              icon="/uploadcloud.svg"
+              iconheight={20}
+              className="!w-32"
+              iconwidth={20}
+              onClick={() => handleDownloadProjectsCSV(projects)}
+            />
             <CustomButton
               icon="/plus.svg"
               className="!w-48"
