@@ -313,6 +313,11 @@ function BidManagementSubContractorPage() {
                 selectedProjectSavedBid={selectedProjectSavedBid}
                 setSelectedProjectSavedBid={setSelectedProjectSavedBid}
                 bidClickHandler={() => bidClickHandler(selectedBid)}
+                onBidRemove={() => {
+                  if (selectedBid) {
+                    setSelectedBid(null);
+                  }
+                }}
               />
             </div>
           ) : null}

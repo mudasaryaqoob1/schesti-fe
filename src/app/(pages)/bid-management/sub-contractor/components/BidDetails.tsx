@@ -30,6 +30,7 @@ type Props = {
   selectedProjectSavedBid?: any;
   setSelectedProjectSavedBid?: any;
   bidClickHandler?: any;
+  onBidRemove?: () => void;
 };
 type RemoveUserBidProps = {
   biddingId: string;
@@ -44,6 +45,7 @@ export function BidDetails({
   bidClickHandler,
   selectedProjectSavedBid,
   setSelectedProjectSavedBid,
+  onBidRemove
 }: Props) {
   const router = useRouter();
 
@@ -144,11 +146,23 @@ export function BidDetails({
 
 
   const bidUser = bid?.user;
-  console.log({
-    bidUser
-  });
+
   return (
     <div>
+      <div className='flex justify-end mb-1'>
+        <Image
+          alt='close icon'
+          src={'/closeicon.svg'}
+          width={16}
+          height={16}
+          onClick={() => {
+            if (onBidRemove) {
+              onBidRemove();
+            }
+          }}
+          className='cursor-pointer'
+        />
+      </div>
       {bidSubmittedDetails && !isDetailsLoading && (
         <div className="flex rounded p-2 flex-col bg-[#F5F6FA]">
           <SenaryHeading
