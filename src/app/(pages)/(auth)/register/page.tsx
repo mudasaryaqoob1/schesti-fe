@@ -6,7 +6,6 @@ import * as Yup from 'yup';
 import { Form } from 'antd';
 import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
-import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 
@@ -24,6 +23,7 @@ import axios from 'axios';
 import { USER_ROLES_ENUM } from '@/app/constants/constant';
 import UserRoleModal from '../userRolesModal'
 import { ShouldHaveAtLeastCharacterRegex } from '@/app/utils/regex.util';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 // import { authService } from '@/app/services/auth.service';
 
 
@@ -59,7 +59,7 @@ const RegisterSchema: any = Yup.object({
 
 
 const Register = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const dispatch = useDispatch<AppDispatch>();
 
   const [isLoading, setIsLoading] = useState(false);

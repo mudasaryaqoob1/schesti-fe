@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Formik } from 'formik';
 import { Form } from 'antd';
 import FormControl from '@/app/component/formControl';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -34,6 +34,7 @@ import { SelectComponent } from '@/app/component/customSelect/Select.component';
 import { Country, State, City } from 'country-state-city';
 import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
 import { ShowFileComponent } from '@/app/(pages)/bid-management/components/ShowFile.component';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 const { CONTRACTOR, SUBCONTRACTOR, OWNER } = USER_ROLES_ENUM;
 
 const initialValues: IRegisterCompany = {
@@ -48,7 +49,7 @@ const initialValues: IRegisterCompany = {
 };
 
 const CompanyDetails = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const dispatch = useDispatch<AppDispatch>();
   const { userId } = useParams<any>();
 

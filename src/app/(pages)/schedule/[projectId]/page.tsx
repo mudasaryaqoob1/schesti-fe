@@ -2,7 +2,7 @@
 import { useLayoutEffect, useState, useEffect, useCallback } from 'react';
 import { ConfigProvider, Tabs, Tag } from 'antd';
 import { useSelector } from 'react-redux';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 
 import SecondaryHeading from '@/app/component/headings/Secondary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
@@ -19,12 +19,13 @@ import { scheduleService } from '@/app/services/schedule.service';
 import { IProject } from '@/app/interfaces/schedule/project.schedule.interface';
 import moment from 'moment';
 import { toast } from 'react-toastify';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const SCHEDULE_KEY = 'Schedule';
 const GANTT_KEY = 'Gantt';
 
 export default function SchedulePage() {
-  const router = useRouter();
+  const router = useRouterHook();
   const { projectId } = useParams();
 
   const token = useSelector(selectToken);
@@ -195,9 +196,8 @@ export default function SchedulePage() {
                 />
 
                 <QuinaryHeading
-                  title={`${String(scheduleProjectDetail?.duration || '-')} ${
-                    scheduleProjectDetail?.durationType || '-'
-                  }`}
+                  title={`${String(scheduleProjectDetail?.duration || '-')} ${scheduleProjectDetail?.durationType || '-'
+                    }`}
                   className="text-[#475467] font-semibold"
                 />
               </div>

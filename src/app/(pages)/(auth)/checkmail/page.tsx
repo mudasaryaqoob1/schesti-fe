@@ -4,7 +4,7 @@ import Description from '@/app/component/description';
 import PrimaryHeading from '@/app/component/headings/primary';
 import AuthNavbar from '@/app/(pages)/(auth)/authNavbar';
 import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
 import { quinaryHeading } from '@/globals/tailwindvariables';
 import CustomButton from '@/app/component/customButton/button';
@@ -15,16 +15,16 @@ import { Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 // import { useRouter } from 'next/navigation';
 import * as Yup from 'yup';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const EmailSchema = Yup.string().email().required("Email is required");
 
 const CheckYourEmail = () => {
-  // const router = useRouter();
   const searchParams = useSearchParams();
   const emailQueryParameter = searchParams.get('email');
   const [isLoading, setIsLoading] = useState(false);
   const [isFetchingUserData, setIsFetchingUserData] = useState(false);
-  const router = useRouter();
+  const router = useRouterHook();
 
 
   // useEffect(() => {

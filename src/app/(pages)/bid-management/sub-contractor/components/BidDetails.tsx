@@ -16,13 +16,13 @@ import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { useMutation } from 'react-query';
 import { bidManagementService } from '@/app/services/bid-management.service';
-import { useRouter } from 'next/navigation';
 import { CreateRFI } from './CreateRFI';
 import { isEmpty, size } from 'lodash';
 import { SendEmailModal } from './SendEamil';
 import { downloadFile } from '@/app/utils/downloadFile';
 import { proposalService } from '@/app/services/proposal.service';
 import { WhatsappIcon, WhatsappShareButton, FacebookIcon, FacebookShareButton, TwitterIcon, TwitterShareButton } from 'react-share';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 
 type Props = {
@@ -47,7 +47,7 @@ export function BidDetails({
   setSelectedProjectSavedBid,
   onBidRemove
 }: Props) {
-  const router = useRouter();
+  const router = useRouterHook();
 
   const [isDetailsLoading, setIsDetailsLoading] = useState(false);
   const [bidSubmittedDetails, setBidSubmittedDetails] = useState(null);

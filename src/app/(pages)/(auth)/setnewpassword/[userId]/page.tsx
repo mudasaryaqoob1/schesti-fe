@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Button from '@/app/component/customButton/button';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, } from 'next/navigation';
 import Image from 'next/image';
 import { useDispatch } from 'react-redux';
 
@@ -16,6 +16,7 @@ import Description from '@/app/component/description';
 import { IResetPasswordInterface } from '@/app/interfaces/authInterfaces/resetPassword.interface';
 import { resetPasswordHandler } from '@/redux/authSlices/auth.thunk';
 import { toast } from 'react-toastify';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const initialValues: IResetPasswordInterface = {
   password: '',
@@ -36,7 +37,7 @@ const newPasswordSchema: any = Yup.object({
 });
 const SetNewPassword = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
+  const router = useRouterHook();
   const { userId } = useParams();
 
   const [isLoading, setIsLoading] = useState(false);

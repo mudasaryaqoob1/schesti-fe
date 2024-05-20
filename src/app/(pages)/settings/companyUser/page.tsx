@@ -5,7 +5,6 @@ import { useDispatch } from 'react-redux';
 import { Dropdown, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { MenuProps } from 'antd';
-import { useRouter } from 'next/navigation';
 import { AppDispatch } from '@/redux/store';
 import moment from 'moment';
 
@@ -18,6 +17,7 @@ import { deleteUser, fetchUsers } from '@/redux/userSlice/user.thunk';
 import VerticleBar from '@/app/(pages)//settings/verticleBar';
 import { setCurrentUser } from '@/redux/userSlice/user.slice';
 import { withAuth } from '@/app/hoc/withAuth';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 interface DataType {
   firstName: string;
@@ -45,7 +45,7 @@ const items: MenuProps['items'] = [
 
 const Index = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
+  const router = useRouterHook();
   const [search, setSearch] = useState('');
 
   const [userData, setUserData] = useState([]);
@@ -150,14 +150,14 @@ const Index = () => {
   const filteredUserData =
     userData.length > 0
       ? userData.filter((user: { name: string; email: string }) => {
-          if (!search) {
-            return user;
-          }
-          return (
-            user.name.toLowerCase().includes(search.toLowerCase()) ||
-            user.email.toLowerCase().includes(search.toLowerCase())
-          );
-        })
+        if (!search) {
+          return user;
+        }
+        return (
+          user.name.toLowerCase().includes(search.toLowerCase()) ||
+          user.email.toLowerCase().includes(search.toLowerCase())
+        );
+      })
       : [];
 
   return (

@@ -12,7 +12,7 @@ import { ProjectDesignTeam } from '../components/ProjectDesignTeam';
 import { ProjectDocuments } from '../components/ProjectDocuments';
 import { ProjectRFICenter } from '../components/ProjectRFICenter';
 import { ProjectBiddingTeam } from '../components/ProjectBiddingTeam';
-import { useParams, useRouter, } from 'next/navigation';
+import { useParams, } from 'next/navigation';
 import { bidManagementService } from '@/app/services/bid-management.service';
 import { useQuery } from 'react-query';
 import moment from 'moment';
@@ -20,6 +20,7 @@ import { Routes } from '@/app/utils/plans.utils';
 import { isEmpty } from 'lodash';
 import { proposalService } from '@/app/services/proposal.service';
 import { LoadingOutlined } from '@ant-design/icons';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const SUMMARY = 'Summary';
 const DESIGN_TEAM = 'Design Team';
@@ -30,7 +31,7 @@ const RFI_CENTER = 'RFI Center';
 function OwnerProjectDetailsPage() {
   const params: any = useParams();
   const { projectId } = params;
-  const router = useRouter();
+  const router = useRouterHook();
   const [bidSubmittedDetails, setBidSubmittedDetails] = useState(null);
   const [isDetailsLoading, setIsDetailsLoading] = useState(false);
 

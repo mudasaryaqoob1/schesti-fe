@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { Switch } from 'antd';
 
@@ -19,9 +18,10 @@ import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { useSelector } from 'react-redux';
 import { HttpService } from '@/app/services/base.service';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const Payment = () => {
-  const router = useRouter();
+  const router = useRouterHook();
 
   const token = useSelector(selectToken);
 

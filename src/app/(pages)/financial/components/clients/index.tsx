@@ -3,6 +3,7 @@ import WhiteButton from '@/app/component/customButton/white';
 import { InputComponent } from '@/app/component/customInput/Input';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import ModalComponent from '@/app/component/modal';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { IClientInvoice } from '@/app/interfaces/client-invoice.interface';
 import { Routes } from '@/app/utils/plans.utils';
 import {
@@ -19,7 +20,6 @@ import { Dropdown, Table, type MenuProps, Modal } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { useFormik } from 'formik';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
@@ -29,7 +29,7 @@ const ValidationSchema = Yup.object({
 });
 
 export function Clients() {
-  const router = useRouter();
+  const router = useRouterHook();
   const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
   const clientInvoices = useSelector(
@@ -129,7 +129,7 @@ export function Clients() {
                   onOk() {
                     dispatch(deleteClientInvoiceRequest(record._id));
                   },
-                  onCancel() {},
+                  onCancel() { },
                 });
               } else if (key === 'view') {
                 router.push(
@@ -155,14 +155,14 @@ export function Clients() {
   const filteredClientInvoices =
     clientInvoices.length > 0
       ? clientInvoices.filter((invoice: any) => {
-          if (!search) {
-            return invoice;
-          }
-          return (
-            invoice.invoiceName === search ||
-            invoice!.toOwner.toLowerCase().includes(search.toLowerCase())
-          );
-        })
+        if (!search) {
+          return invoice;
+        }
+        return (
+          invoice.invoiceName === search ||
+          invoice!.toOwner.toLowerCase().includes(search.toLowerCase())
+        );
+      })
       : [];
 
   return (
@@ -209,7 +209,7 @@ export function Clients() {
                 />
                 <CloseOutlined
                   className="cursor-pointer"
-                  style={{ fontSize: '24px' , height : '24px' }}
+                  style={{ fontSize: '24px', height: '24px' }}
                   onClick={() => setShowModal(false)}
                 />
               </div>

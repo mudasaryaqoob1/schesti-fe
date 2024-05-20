@@ -10,47 +10,47 @@ import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { bidManagementService } from '@/app/services/bid-management.service';
-import { useRouter } from 'next/navigation';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 type Props = {
   bid: any;
   setSelectedBid: any;
-  refetchSavedBids: ()=>void;
+  refetchSavedBids: () => void;
 };
-type RemoveUserBidProps =  {
+type RemoveUserBidProps = {
   biddingId: string;
 }
 export function BidDetails({ bid, setSelectedBid, refetchSavedBids }: Props) {
 
-  const router = useRouter();
+  const router = useRouterHook();
 
   const removeUserBidMutation = useMutation<
-  IResponseInterface<{ biddingId: RemoveUserBidProps }>,
-  AxiosError<{ message: string }>,
-  RemoveUserBidProps
->({
-  //@ts-ignore
-  mutationKey: 'saveUserBid',
-  mutationFn: async (values: RemoveUserBidProps) => {
-    return bidManagementService.httpRemoveUserProjectBid(values.biddingId);
-  },
-  onSuccess(res: any) {
-    console.log('res', res);
-    if (res.data && res.data) {
-      toast.success('Bid removed Successfully');
-      setSelectedBid(null);
-      refetchSavedBids();
-      // Dispatch any necessary actions after successful mutation
-    }
-  },
-  onError(error: any) {
-    console.log('error', error);
-    if (error.response?.data?.message) {
-      toast.error(error.response?.data.message);
-      // router.push(`/bid-management/sub-contractor/bids`);
-    }
-  },
-});
+    IResponseInterface<{ biddingId: RemoveUserBidProps }>,
+    AxiosError<{ message: string }>,
+    RemoveUserBidProps
+  >({
+    //@ts-ignore
+    mutationKey: 'saveUserBid',
+    mutationFn: async (values: RemoveUserBidProps) => {
+      return bidManagementService.httpRemoveUserProjectBid(values.biddingId);
+    },
+    onSuccess(res: any) {
+      console.log('res', res);
+      if (res.data && res.data) {
+        toast.success('Bid removed Successfully');
+        setSelectedBid(null);
+        refetchSavedBids();
+        // Dispatch any necessary actions after successful mutation
+      }
+    },
+    onError(error: any) {
+      console.log('error', error);
+      if (error.response?.data?.message) {
+        toast.error(error.response?.data.message);
+        // router.push(`/bid-management/sub-contractor/bids`);
+      }
+    },
+  });
 
   return (
     <div>
@@ -146,7 +146,7 @@ export function BidDetails({ bid, setSelectedBid, refetchSavedBids }: Props) {
 
       <div className="mt-4 space-y-2">
         <CustomButton
-          onClick={() => removeUserBidMutation.mutate({biddingId: bid._id})}
+          onClick={() => removeUserBidMutation.mutate({ biddingId: bid._id })}
           text="Remove from my bidding projects"
           className="!text-[red] !bg-transparent !border-[red] !text-base !leading-7 "
         />

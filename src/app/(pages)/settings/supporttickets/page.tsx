@@ -4,7 +4,6 @@ import React, { useCallback, useEffect } from 'react';
 
 // module imports
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import moment from 'moment';
 import { Dropdown, Skeleton } from 'antd';
 import type { MenuProps } from 'antd';
@@ -27,9 +26,10 @@ import { ISupportTicket } from '@/app/interfaces/supportTicket.interface';
 import SettingSidebar from '../verticleBar';
 import NoData from './components/NoData';
 import { withAuth } from '@/app/hoc/withAuth';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const SupportTickets = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const dispatch = useDispatch<AppDispatch>();
 
   const supportTicketsData = useSelector(selectSupportTickets);

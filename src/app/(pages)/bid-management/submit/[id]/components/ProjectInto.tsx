@@ -1,18 +1,19 @@
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import TertiaryHeading from '@/app/component/headings/tertiary';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
 import { USCurrencyFormat } from '@/app/utils/format';
 import { Avatar } from 'antd';
 import { Country } from 'country-state-city';
 import moment from 'moment';
-import { useRouter } from 'next/navigation';
+
 
 type Props = {
   bid: IBidManagement | null;
 };
 
 export function ProjectIntro({ bid }: Props) {
-  const router = useRouter();
+  const router = useRouterHook();
 
   if (!bid) {
     return null;

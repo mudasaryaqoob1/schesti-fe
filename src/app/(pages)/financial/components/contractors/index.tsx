@@ -1,7 +1,6 @@
 'use client';
 import type { ColumnsType } from 'antd/es/table';
 import { Dropdown, Table, type MenuProps, Tag, Drawer, Modal } from 'antd';
-import { useRouter } from 'next/navigation';
 import { ExclamationCircleFilled, SearchOutlined } from '@ant-design/icons';
 
 import CustomButton from '@/app/component/customButton/button';
@@ -22,9 +21,10 @@ import { usePDF } from '@react-pdf/renderer';
 import { Routes } from '@/app/utils/plans.utils';
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
 import NewClientPdf from '../../standard-invoicing/view/[id]/newClientPdf';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 export function Contractors() {
-  const router = useRouter();
+  const router = useRouterHook();
   const dispatch = useDispatch<AppDispatch>();
   const subcontractersInvoices = useSelector(
     (state: RootState) => state.invoices.data
@@ -92,7 +92,7 @@ export function Contractors() {
         async onOk() {
           await dispatch(deleteContractorInvoiceRequest(record._id));
         },
-        onCancel() {},
+        onCancel() { },
       });
     } else if (key === 'view') {
       router.push(
@@ -196,11 +196,11 @@ export function Contractors() {
 
   const filteredData = subcontractersInvoices
     ? subcontractersInvoices.filter((invoice) => {
-        if (search === '') {
-          return invoice;
-        }
-        return invoice.projectName.toLowerCase().includes(search.toLowerCase());
-      })
+      if (search === '') {
+        return invoice;
+      }
+      return invoice.projectName.toLowerCase().includes(search.toLowerCase());
+    })
     : [];
   return (
     <div className="w-full mb-4">

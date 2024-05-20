@@ -8,7 +8,7 @@ import { fetchMeetings } from '@/redux/meeting/meeting.thunk';
 import { AppDispatch, RootState } from '@/redux/store';
 import { JaaSMeeting } from '@jitsi/react-sdk';
 import { Skeleton } from 'antd';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, } from 'next/navigation';
 import { useCallback, useEffect, useLayoutEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
@@ -18,10 +18,11 @@ import ModalComponent from '@/app/component/modal';
 import { LinkMessage } from './LinkMessage';
 import moment from 'moment';
 import Description from '@/app/component/description';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 export default function JoinMeeting() {
   const { link: roomName } = useParams();
-  const router = useRouter();
+  const router = useRouterHook();
   const token = useSelector(selectToken);
   const meetings = useSelector(selectMeetings);
   const meetingLoading = useSelector(
@@ -86,7 +87,7 @@ export default function JoinMeeting() {
           isMeetingNotStarted(meeting) ? (
             <ModalComponent
               open={!isMeetingActive(meeting)}
-              setOpen={() => {}}
+              setOpen={() => { }}
               title="Meeting link is not active"
               width="40%"
             >

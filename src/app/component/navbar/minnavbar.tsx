@@ -8,11 +8,11 @@ import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import CustomButton from '../customButton/button';
 import { logout } from '@/redux/authSlices/authSlice';
-import { useRouter } from 'next/navigation';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const Navbar = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const router = useRouter();
+  const router = useRouterHook();
   const logoutHandler = () => {
     dispatch(logout());
     localStorage.removeItem('schestiToken');

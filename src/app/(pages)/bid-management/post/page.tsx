@@ -29,11 +29,11 @@ import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import type { RcFile, UploadFile } from 'antd/es/upload';
-import { useRouter } from 'next/navigation';
 import { Routes } from '@/app/utils/plans.utils';
 import { useState } from 'react';
 import { PostProjectCongratulations } from './components/PostProjectCongratulations';
 import { ShouldHaveAtLeastCharacterRegex } from '@/app/utils/regex.util';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 // import { DeletePopup } from './components/DeletePopup';
 // import { PostProjectCongratulations } from './components/PostProjectCongratuslations';
@@ -215,7 +215,7 @@ export type PostProjectFileProps = (RcFile | UploadFile) & {
 function CreatePost() {
   const [showCongratulation, setShowCongratulation] = useState(false);
   const postProjectState = useSelector((state: RootState) => state.postProject);
-  const router = useRouter();
+  const router = useRouterHook();
   const [shouldContinue, setShouldContinue] = useState(true);
 
   const dispatch = useDispatch<AppDispatch>();

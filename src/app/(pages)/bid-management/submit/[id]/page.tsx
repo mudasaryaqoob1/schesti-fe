@@ -25,11 +25,12 @@ import { useMutation, useQuery } from 'react-query';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { AxiosError } from 'axios';
 import { proposalService } from '@/app/services/proposal.service';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, } from 'next/navigation';
 import { bidManagementService } from '@/app/services/bid-management.service';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
 import { ProjectIntro } from './components/ProjectInto';
 import { ShowFileComponent } from '../../components/ShowFile.component';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 type ProjectScope = {
   description: string;
@@ -102,7 +103,7 @@ function ContractorSubmitBidPage() {
   const [project, setProject] = useState<IBidManagement | null>(null);
   const lastInputRef = useRef<HTMLInputElement>(null);
   const params = useParams<{ id: string }>();
-  const router = useRouter();
+  const router = useRouterHook();
   const query = useQuery(
     ['getOwnerProjectById', params.id],
     () => {

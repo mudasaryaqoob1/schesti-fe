@@ -1,7 +1,6 @@
 'use client';
 
 import { quaternaryHeading } from '@/globals/tailwindvariables';
-import { useRouter } from 'next/navigation';
 import { Dropdown, Space } from 'antd';
 // import type { MenuProps } from 'antd';
 import clsx from 'clsx';
@@ -30,6 +29,7 @@ import {
   RootState,
 } from '@/redux/store';
 import { resetPostProjectAction } from '@/redux/post-project/post-project.slice';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 // import { setUserPricingPlan } from '@/redux/pricingPlanSlice/pricingPlanSlice';
 // const items: MenuProps['items'] = [
 //   {
@@ -45,7 +45,7 @@ import { resetPostProjectAction } from '@/redux/post-project/post-project.slice'
 
 const Tabs = () => {
   const pathname = usePathname();
-  const router = useRouter();
+  const router = useRouterHook();
   const token = useSelector(selectToken);
   const dispatch = useDispatch<AppDispatch>();
 

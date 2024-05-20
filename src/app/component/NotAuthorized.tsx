@@ -1,10 +1,11 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+
 import { useEffect } from 'react';
+import { useRouterHook } from '../hooks/useRouterHook';
 
 export function NotAuthorized() {
-  const router = useRouter();
+  const router = useRouterHook();
 
   useEffect(() => {
     router.push('/login');

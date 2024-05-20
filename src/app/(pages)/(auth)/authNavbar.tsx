@@ -1,9 +1,10 @@
 import React from 'react';
 import Image from 'next/image';
 // import CustomButton from '@/app/component/customButton/button';
-import { useRouter } from 'next/navigation';
+
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 const AuthNavbar = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   return (
     <div className="flex items-center bg-white shadow-[0px_0px_16px_0px_#e3e3e3] px-12 py-4">
       <div className="w-full">

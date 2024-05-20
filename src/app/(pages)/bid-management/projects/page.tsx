@@ -7,7 +7,6 @@ import { withAuth } from '@/app/hoc/withAuth';
 import { SearchOutlined } from '@ant-design/icons';
 import { Pagination, Dropdown, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { useRouter } from 'next/navigation';
 import { Routes } from '@/app/utils/plans.utils';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
@@ -27,11 +26,12 @@ import { useState } from 'react';
 import { DeletePopup } from '../post/components/DeletePopup';
 import { USCurrencyFormat } from '@/app/utils/format';
 import { Excel } from 'antd-table-saveas-excel';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const RES_PER_PAGE = 10;
 
 function Page() {
-  const router = useRouter();
+  const router = useRouterHook();
   const dispatch = useDispatch<AppDispatch>();
   const [selectedProject, setSelectedProject] = useState<IBidManagement | null>(
     null

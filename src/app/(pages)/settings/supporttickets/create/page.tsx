@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { Formik, Form } from 'formik';
 import Image from 'next/image';
 import * as Yup from 'yup';
-import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 
 // module imports
@@ -27,6 +26,7 @@ import AwsS3 from '@/app/utils/S3Intergration';
 import CustomNavbar from '@/app/component/customNavbar';
 import { withAuth } from '@/app/hoc/withAuth';
 import { FileView } from '@/app/component/file-view/FileView';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const validationSchema = Yup.object({
   title: Yup.string().required('Title is required!'),
@@ -41,7 +41,7 @@ const initialValues: ISupportTicket = {
 
 
 const CreateTicket = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const [isLoading, setIsLoading] = useState(false);
   const [avatarLoading, setavatarLoading] = useState(false);
 

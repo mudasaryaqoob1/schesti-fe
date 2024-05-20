@@ -8,13 +8,13 @@ import { AxiosError } from 'axios';
 import { Country } from 'country-state-city';
 import moment from 'moment';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useMutation } from 'react-query';
 import { toast } from 'react-toastify';
 import Link from 'next/link';
 import { downloadFile } from '@/app/utils/downloadFile';
 import { size } from 'lodash';
 import { useState } from 'react';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 type Props = {
   bid: any;
@@ -29,7 +29,7 @@ export function BiddingProjectDetails({
   refetchSavedBids,
   setSelectedBid,
 }: Props) {
-  const router = useRouter();
+  const router = useRouterHook();
   const [isLoading, setIsLoading] = useState(false);
 
   const removeUserBidMutation = useMutation<

@@ -1,6 +1,5 @@
 'use client';
 import { useEffect, useCallback, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Dropdown, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { MenuProps } from 'antd';
@@ -26,6 +25,7 @@ import ModalComponent from '@/app/component/modal';
 import { toast } from 'react-toastify';
 import { withAuth } from '@/app/hoc/withAuth';
 import { Routes } from '@/app/utils/plans.utils';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 interface DataType {
   firstName: string;
@@ -58,7 +58,7 @@ const items: MenuProps['items'] = [
 ];
 
 const PartnerTable = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const dispatch = useDispatch<AppDispatch>();
 
   const partnersData: IPartner[] | null = useSelector(selectPartners);
@@ -83,7 +83,7 @@ const PartnerTable = () => {
       router.push(`/financial/aia-invoicing`);
     } else if (key === 'createSchedule') {
       router.push(`/schedule`);
-    } else  if (key == 'deletePartner') {
+    } else if (key == 'deletePartner') {
       setselectedPartner(partner);
       setShowDeleteModal(true);
     } else if (key == 'editPartnerDetail') {
@@ -94,7 +94,7 @@ const PartnerTable = () => {
   };
 
 
-  
+
   const columns: ColumnsType<DataType> = [
     {
       title: 'Partner Name',
@@ -155,15 +155,15 @@ const PartnerTable = () => {
   ];
   const filteredPartners = partnersData
     ? partnersData.filter((partner) => {
-        if (!search) {
-          return partner;
-        }
-        return (
-          partner.firstName.toLowerCase().includes(search.toLowerCase()) ||
-          partner.lastName.toLowerCase().includes(search.toLowerCase()) ||
-          partner.email?.includes(search)
-        );
-      })
+      if (!search) {
+        return partner;
+      }
+      return (
+        partner.firstName.toLowerCase().includes(search.toLowerCase()) ||
+        partner.lastName.toLowerCase().includes(search.toLowerCase()) ||
+        partner.email?.includes(search)
+      );
+    })
     : [];
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
