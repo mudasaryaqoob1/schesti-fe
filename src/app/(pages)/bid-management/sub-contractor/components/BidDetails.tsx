@@ -139,9 +139,9 @@ export function BidDetails({
     } catch (error) { /* empty */ }
   }
 
-  const handleProposalDetails = async (bidId: string, isViewProposalBtn = false) => {
+  const handleProposalDetails = async (bidId: string) => {
     await createProjectActivity(bidId);
-    router.push(`/bid-management/details/${bidId}?${isViewProposalBtn ? 'isSubmitted=true' : ''}`);
+    router.push(`/bid-management/details/${bidId}`);
   }
 
 
@@ -170,7 +170,7 @@ export function BidDetails({
             className="text-[#475467] text-[14px] leading-6 font-normal mt-2"
           />
           <div
-            onClick={() => handleProposalDetails(bid?._id, true)}
+            onClick={() => handleProposalDetails(bid?._id)}
             className="text-[#27AE60] underline underline-offset-2 mb-2 text-[14px] leading-6 font-normal cursor-pointer"
           >
             View Proposal
@@ -224,7 +224,7 @@ export function BidDetails({
           className="text-[#475467] text-[14px] leading-6 font-normal mt-2"
         />
         <div
-          onClick={() => handleProposalDetails(bid?._id, bidSubmittedDetails ? true : false)}
+          onClick={() => handleProposalDetails(bid?._id)}
           className="text-[#7F56D9] underline underline-offset-2 text-[14px] leading-6 font-normal cursor-pointer"
         >
           View full details
