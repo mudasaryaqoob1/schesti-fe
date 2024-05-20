@@ -19,6 +19,7 @@ export function PostProjectTrades({ formik, children }: Props) {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedAll, setSelectAll] = useState(false);
   const { trades, tradeCategoryFilters, tradesQuery } = useTrades();
+  const [checkedParent, setCheckedParent] = useState<string[]>([]);
 
   function pickOnlyIds(trades: ITrade[]) {
     return trades.map((trade) => trade._id);
@@ -27,23 +28,30 @@ export function PostProjectTrades({ formik, children }: Props) {
   function selectAllTradesAndCategories(trades: ITrade[]) {
     const newTrades = pickOnlyIds(trades);
     formik.setFieldValue('selectedTrades', newTrades);
+    setCheckedParent(tradeCategoryFilters.map((trade) => trade.value));
   }
 
   function deSelectAllTradesAndCategories() {
     formik.setFieldValue('selectedTrades', []);
+    setCheckedParent([]);
   }
 
-  // function selectSubCategories(parentId:string){
-  //     const selectedTrades = trades.filter(trade => trade.tradeCategoryId._id === parentId);
-  //     const ids = pickOnlyIds(selectedTrades);
-  //     formik.setFieldValue('selectedTrades', ids);
-  // }
+  function selectSubCategories(parentId: string) {
+    const selectedTrades = trades.filter(trade => trade.tradeCategoryId._id === parentId);
+    const ids = pickOnlyIds(selectedTrades);
+    formik.setFieldValue('selectedTrades', [...formik.values.selectedTrades, ...ids]);
+    setCheckedParent([...checkedParent, parentId]);
+  }
 
-  // function deSelectSubCategories(parentId:string){
-  //     const selectedTrades = trades.filter(trade => trade.tradeCategoryId._id !== parentId);
-  //     const ids = pickOnlyIds(selectedTrades);
-  //     formik.setFieldValue('selectedTrades', ids);
-  // }
+  function deSelectSubCategories(parentId: string) {
+    const selectedTrades = trades.filter(trade => trade.tradeCategoryId._id !== parentId);
+    const ids = pickOnlyIds(selectedTrades);
+    // remove ids from formik.values.selectedTrades
+    formik.setFieldValue('selectedTrades', formik.values.selectedTrades.filter(trade => {
+      return typeof trade === 'string' ? ids.includes(trade) : ids.includes(trade._id);
+    }));
+    setCheckedParent(checkedParent.filter(parent => parent !== parentId));
+  }
 
   function toggleCategory(tradeCategoryId: string) {
     const selectedTrades = formik.values.selectedTrades;
@@ -148,21 +156,23 @@ export function PostProjectTrades({ formik, children }: Props) {
                     title={trade.label}
                     className="text-[16px] leading-[30px] text-[#344054] font-medium"
                   />
-                  {/* <Checkbox
-                            key={trade.value}
-                                onChange={e => {
-                                    if (e.target.checked) {
-                                        selectSubCategories(trade.value);
-                                    } else {
-                                        deSelectSubCategories(trade.value);
-                                    }
-                                }}
-                            >
-                                <QuinaryHeading
-                                    title='All Categories'
-                                    className='text-[#98A2B3]'
-                                />
-                            </Checkbox> */}
+                  <Checkbox
+                    key={trade.value}
+                    onChange={() => {
+                      if (checkedParent.includes(trade.value)) {
+                        deSelectSubCategories(trade.value);
+                      } else {
+                        selectSubCategories(trade.value);
+                      }
+                    }}
+                    checked={checkedParent.includes(trade.value)}
+
+                  >
+                    <QuinaryHeading
+                      title='All Categories'
+                      className='text-[#98A2B3]'
+                    />
+                  </Checkbox>
                 </div>
                 <Divider className="mt-1" />
 
