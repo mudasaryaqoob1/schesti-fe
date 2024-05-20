@@ -131,6 +131,9 @@ export function PostProjectDetails({ formik, children }: Props) {
                 }
               },
               onBlur: formik.handleBlur,
+              disabledDate: (current) => {
+                return dayjs(current).isBefore(dayjs().subtract(1, 'day'));
+              }
             }}
             hasError={
               formik.touched.estimatedStartDate &&
@@ -154,6 +157,9 @@ export function PostProjectDetails({ formik, children }: Props) {
                 formik.setFieldValue('bidDueDate', dateString);
               },
               onBlur: formik.handleBlur,
+              disabledDate: (current) => {
+                return dayjs(current).isBefore(dayjs().subtract(1, 'day'));
+              }
             }}
             hasError={
               formik.touched.bidDueDate && Boolean(formik.errors.bidDueDate)
