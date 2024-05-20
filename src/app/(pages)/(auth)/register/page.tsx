@@ -23,6 +23,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { USER_ROLES_ENUM } from '@/app/constants/constant';
 import UserRoleModal from '../userRolesModal'
+import { ShouldHaveAtLeastCharacterRegex } from '@/app/utils/regex.util';
 // import { authService } from '@/app/services/auth.service';
 
 
@@ -38,7 +39,7 @@ const initialValues: ISignUpInterface = {
 };
 
 const RegisterSchema: any = Yup.object({
-  name: Yup.string().max(30, "Name must have atleast 30 characters").required('Name is required'),
+  name: Yup.string().matches(ShouldHaveAtLeastCharacterRegex, { "message": "Name should have atleast 1 character" }).max(30, "Name must have atleast 30 characters").required('Name is required'),
   email: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
