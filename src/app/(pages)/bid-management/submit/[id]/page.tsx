@@ -64,7 +64,15 @@ const ValidationSchema = Yup.object().shape({
     .min(1, 'Minimum $1 is required')
     .required('Price is required'),
   projectDuration: Yup.number().required('Duration is required'),
-  additionalDetails: Yup.string().required('Additional details is required'),
+  additionalDetails: Yup.string()
+    .test({
+      test: (value) => {
+        if (!value) return true; // Allow empty values, adjust if necessary
+        const wordCount = value.trim().split(/\s+/).length;
+        return wordCount <= 300;
+      },
+      message: 'Additional details should not exceed 300 words',
+    }).required('Additional details is required'),
   priceExpiryDuration: Yup.number().required(
     'Price expiry duration is required'
   ),
@@ -98,7 +106,7 @@ function ContractorSubmitBidPage() {
   const query = useQuery(
     ['getOwnerProjectById', params.id],
     () => {
-      return bidManagementService.httpGetOwnerProjectById(params.id , {page : 1 , limit : 10});
+      return bidManagementService.httpGetOwnerProjectById(params.id, { page: 1, limit: 10 });
     },
     {
       onSuccess(data) {
