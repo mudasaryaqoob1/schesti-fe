@@ -3,12 +3,13 @@ import React, { useState } from 'react';
 import Button from '@/app/component/customButton/button';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { Form } from 'antd';
+import { Checkbox, Form } from 'antd';
 import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
 import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
+import Link from 'next/link';
 
 // module imports
 import FormControl from '@/app/component/formControl';
@@ -50,6 +51,7 @@ const RegisterSchema: any = Yup.object({
   confirmPassword: Yup.string()
     .required('Confirm Password is required!')
     .oneOf([Yup.ref('password')], 'Passwords must match'),
+  isTermsAccepted: Yup.boolean().oneOf([true], 'You must accept the terms and conditions')
 });
 
 const Register = () => {
@@ -63,17 +65,17 @@ const Register = () => {
   let userRoles = [
     {
       role: USER_ROLES_ENUM.OWNER,
-      desc: 'It is a long established fact that a reader will be distracted by the readable content of',
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of'
     },
     {
       role: USER_ROLES_ENUM.CONTRACTOR,
-      desc: 'It is a long established fact that a reader will be distracted by the readable content of',
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of'
     },
     {
       role: USER_ROLES_ENUM.SUBCONTRACTOR,
-      desc: 'It is a long established fact that a reader will be distracted by the readable content of',
-    },
-  ];
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of'
+    }
+  ]
 
   // const [role, setRole] = useState(CONTRACTOR);
   // const handleRoleChange = (value: string) => {
@@ -220,11 +222,11 @@ const Register = () => {
           </div> */}
 
           <Formik
-            initialValues={initialValues}
+            initialValues={{ ...initialValues, isTermsAccepted: false }}
             validationSchema={RegisterSchema}
             onSubmit={submitHandler}
           >
-            {(formik: any) => {
+            {(formik) => {
               return (
                 <Form
                   name="basic"
@@ -260,6 +262,15 @@ const Register = () => {
                       name="confirmPassword"
                       placeholder="confirm Password"
                     />
+
+                    <Checkbox name='isTermsAccepted' checked={formik.values.isTermsAccepted} onChange={formik.handleChange} className='text-xs'>
+                      By clicking Register, you agree to our <Link href={"/terms-conditions"} target='_blank' className='text-blue-500 font-normal underline underline-offset-2 hover:text-blue-500 hover:underline'>
+                        Terms & Conditions
+                      </Link>. You may receive Email Notifications from us and can opt out any time.
+                    </Checkbox>
+                    {formik.errors.isTermsAccepted && formik.touched.isTermsAccepted ? <p className='mt-1 text-red-500'>
+                      {formik.errors.isTermsAccepted}
+                    </p> : null}
                   </div>
 
                   <Button
