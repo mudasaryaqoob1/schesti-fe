@@ -152,7 +152,7 @@ export function BidDetails({
 
 
   const projectOwner = bid.userDetails?.length > 0 ? bid.userDetails[0] : '';
-  const isAuthUserBidSubmitter = Array.isArray(bidSubmittedDetails) && bidSubmittedDetails.length > 0 ? bidSubmittedDetails.some((bid) => bid.user === authUser.user?._id) : false;
+  const isAuthUserBidSubmitter = bidSubmittedDetails.length > 0 && bidSubmittedDetails.some((bid) => bid.user === authUser?.user?._id);
 
 
   return (
