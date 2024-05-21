@@ -96,7 +96,7 @@ export interface IBidManagementResponse {
     totalRecords: number;
     perPage: number;
   };
-  records: IBidManagement[];
+  records: (IBidManagement & { userDetails: IUserInterface[] })[];
 }
 
 

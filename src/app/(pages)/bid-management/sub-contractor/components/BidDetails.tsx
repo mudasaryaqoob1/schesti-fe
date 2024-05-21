@@ -23,10 +23,11 @@ import { downloadFile } from '@/app/utils/downloadFile';
 import { proposalService } from '@/app/services/proposal.service';
 import { WhatsappIcon, WhatsappShareButton, FacebookIcon, FacebookShareButton, TwitterIcon, TwitterShareButton } from 'react-share';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { IUserInterface } from '@/app/interfaces/user.interface';
 
 
 type Props = {
-  bid: IBidManagement;
+  bid: (IBidManagement & { userDetails: IUserInterface[] });
   selectedProjectSavedBid?: any;
   setSelectedProjectSavedBid?: any;
   bidClickHandler?: any;
@@ -145,7 +146,8 @@ export function BidDetails({
   }
 
 
-  const bidUser = bid?.user;
+  const projectOwner = bid.userDetails?.length > 0 ? bid.userDetails[0] : '';
+
 
   return (
     <div>
@@ -208,7 +210,7 @@ export function BidDetails({
             <TwitterIcon size={30} round />
           </TwitterShareButton>
           <SendEmailModal
-            to={typeof bidUser !== 'string' ? bidUser.email : ''}
+            to={typeof projectOwner !== 'string' ? projectOwner.email : ''}
           />
         </div>
       </div>

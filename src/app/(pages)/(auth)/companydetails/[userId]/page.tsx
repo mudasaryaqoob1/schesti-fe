@@ -92,7 +92,6 @@ const CompanyDetails = () => {
       }
     }
 
-
     let result: any = await dispatch(
       addCompanyDetail({ ...values, userId: userId })
     );
@@ -314,17 +313,20 @@ const CompanyDetails = () => {
 
 
 
-                      {selectedUserRole == CONTRACTOR || selectedUserRole == SUBCONTRACTOR ? (
-                        <FormControl
-                          control="input"
-                          label="Industry"
-                          type="select"
-                          name="industry"
-                          placeholder="Enter industry Name"
-                        />
-                      ) : null}
-                      {(selectedUserRole == CONTRACTOR ||
-                        selectedUserRole == SUBCONTRACTOR) && (
+                      {
+                        selectedUserRole == CONTRACTOR || selectedUserRole == SUBCONTRACTOR ? (
+                          <FormControl
+                            control="input"
+                            label="Industry"
+                            type="select"
+                            name="industry"
+                            placeholder="Enter industry Name"
+                          />
+                        ) : null
+                      }
+                      {
+                        (selectedUserRole == CONTRACTOR ||
+                          selectedUserRole == SUBCONTRACTOR) && (
                           <>
                             <FormControl
                               control="input"
@@ -402,22 +404,23 @@ const CompanyDetails = () => {
                               <Errormsg>{companyLogoErr}</Errormsg>
                             )}
                           </>
-                        )}
-                    </div>
+                        )
+                      }
+                    </div >
                     <Button
                       isLoading={isLoading}
                       text="Submit"
                       className="w-full my-3"
                       type="submit"
                     />
-                  </Form>
+                  </Form >
                 );
               }}
-            </Formik>
-          </div>
+            </Formik >
+          </div >
           <Progessbar progress={'25%'} step={1} className="my-3" />
-        </div>
-      </div>
+        </div >
+      </div >
     </>
   );
 };
