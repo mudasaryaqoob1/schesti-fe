@@ -339,7 +339,7 @@ const CompanyDetails = () => {
                             <label htmlFor="myInput">Logo/ Picture</label>
                             <div className="flex items-center">
 
-                              {companyLogo ? <div className='w-[200px]'>
+                              {companyLogo ? <div className='w-fit'>
                                 <ShowFileComponent
                                   file={{
                                     extension: companyLogo?.type,

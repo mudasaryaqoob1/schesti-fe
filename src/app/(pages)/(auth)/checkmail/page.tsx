@@ -103,11 +103,10 @@ const CheckYourEmail = () => {
         } else {
           toast.error('Email not verified');
         }
-
-
       }
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
+      console.log(err);
       toast.error(err.response?.data.message);
     } finally {
       setIsFetchingUserData(false);

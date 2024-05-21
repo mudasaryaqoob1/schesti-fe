@@ -11,7 +11,7 @@ export function ProjectDesignTeam(props: IProps) {
 
   const columns = [
     {
-      title: 'Name dsfer',
+      title: 'Name',
       dataIndex: 'name',
       key: 'name',
     },
