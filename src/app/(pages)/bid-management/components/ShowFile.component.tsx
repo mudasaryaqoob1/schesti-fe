@@ -17,7 +17,7 @@ export function ShowFileComponent({ file, onDelete, shouldFit = true }: Props) {
                     alt="file"
                 />
                 <p className="text-[#667085] text-[14px] leading-6">
-                    {file.name}
+                    {file.name.slice(0, 15)}.{file.name.split('.').pop()}
                 </p>
             </div>
             <Image
