@@ -16,6 +16,7 @@ import { Pagination, Skeleton } from 'antd';
 import { BidFilters } from './components/Filters';
 import _, { size } from 'lodash';
 import { isArrayString } from '@/app/utils/typescript.utils';
+import { IUserInterface } from '@/app/interfaces/user.interface';
 
 // const PDFDownloadLink = dynamic(
 //   () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
@@ -31,7 +32,7 @@ const ITEMS_PER_PAGE = 5;
 
 function BidManagementSubContractorPage() {
 
-  const [selectedBid, setSelectedBid] = useState<IBidManagement | null>(null);
+  const [selectedBid, setSelectedBid] = useState<(IBidManagement & { userDetails: IUserInterface[] }) | null>(null);
   const [search, setSearch] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [selectedProjectSavedBid, setSelectedProjectSavedBid] = useState<any>(null);
