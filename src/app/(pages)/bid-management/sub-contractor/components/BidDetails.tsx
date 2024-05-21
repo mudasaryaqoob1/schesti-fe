@@ -4,6 +4,7 @@ import SenaryHeading from '@/app/component/headings/senaryHeading';
 import {
   IBidManagement,
   ISaveUserBid,
+  ISubmittedProjectBid,
 } from '@/app/interfaces/bid-management/bid-management.interface';
 import { USCurrencyFormat } from '@/app/utils/format';
 import { Routes } from '@/app/utils/plans.utils';
@@ -24,6 +25,8 @@ import { proposalService } from '@/app/services/proposal.service';
 import { WhatsappIcon, WhatsappShareButton, FacebookIcon, FacebookShareButton, TwitterIcon, TwitterShareButton } from 'react-share';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { IUserInterface } from '@/app/interfaces/user.interface';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 
 type Props = {
@@ -51,7 +54,8 @@ export function BidDetails({
   const router = useRouterHook();
 
   const [isDetailsLoading, setIsDetailsLoading] = useState(false);
-  const [bidSubmittedDetails, setBidSubmittedDetails] = useState(null);
+  const [bidSubmittedDetails, setBidSubmittedDetails] = useState<ISubmittedProjectBid[]>([]);
+  const authUser = useSelector((state: RootState) => state.auth.user as { user?: IUserInterface });
 
   const saveUserBidMutation = useMutation<
     IResponseInterface<{ projectId: ISaveUserBid }>,
@@ -111,7 +115,7 @@ export function BidDetails({
 
   const getProjectProposalDetails = async (bidProjectId: any) => {
     setIsDetailsLoading(true);
-    setBidSubmittedDetails(null);
+    setBidSubmittedDetails([]);
     try {
       const { data }: any =
         await proposalService.httpGetProposalDetailsByProjectId(bidProjectId);
@@ -131,6 +135,7 @@ export function BidDetails({
     });
   };
 
+
   const createProjectActivity = async (projectId: string) => {
     try {
       const data = { projectId: projectId };
@@ -147,6 +152,7 @@ export function BidDetails({
 
 
   const projectOwner = bid.userDetails?.length > 0 ? bid.userDetails[0] : '';
+  const isAuthUserBidSubmitter = Array.isArray(bidSubmittedDetails) && bidSubmittedDetails.length > 0 ? bidSubmittedDetails.some((bid) => bid.user === authUser.user?._id) : false;
 
 
   return (
@@ -165,7 +171,7 @@ export function BidDetails({
           className='cursor-pointer'
         />
       </div>
-      {bidSubmittedDetails && !isDetailsLoading && (
+      {isAuthUserBidSubmitter && !isDetailsLoading && (
         <div className="flex rounded p-2 flex-col bg-[#F5F6FA]">
           <SenaryHeading
             title={'You have already submitted a proposal'}
@@ -336,7 +342,7 @@ export function BidDetails({
       </div>
 
       <div className="mt-4 space-y-2">
-        {!bidSubmittedDetails ? <CustomButton
+        {!isAuthUserBidSubmitter ? <CustomButton
           text="Send Bid"
           onClick={() => {
             router.push(`${Routes['Bid Management'].Submit}/${bid._id}`);

@@ -177,3 +177,21 @@ export interface IProjectBiddingResponse {
     proposalCount: number;
   }[]
 }
+
+
+export interface ISubmittedProjectBid {
+  file: IBidDocument
+  _id: string
+  user: string | IUserInterface;
+  projectId: string | IBidManagement;
+  bidTrades: string[]
+  price: number
+  projectDuration: number
+  projectDurationType: string
+  additionalDetails: string
+  priceExpiryDuration: number
+  increaseInPercentage: number
+  projectScopes: IBidProjectScope[]
+  createdAt: string
+  updatedAt: string
+}

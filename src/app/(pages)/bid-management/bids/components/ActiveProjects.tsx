@@ -44,6 +44,10 @@ export function ActiveProjects({ search }: Props) {
 
   const savedBids = useQuery(['saved-bids'], fetchSavedBids);
 
+  console.log({
+    savedBids
+  });
+
   const savedUserBids: any =
     savedBids.data && savedBids.data.data
       ? savedBids.data.data?.savedBids
