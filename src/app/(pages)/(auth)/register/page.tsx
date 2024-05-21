@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Button from '@/app/component/customButton/button';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { Form } from 'antd';
+import { Checkbox, Form } from 'antd';
 import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
 import { useRouter } from 'next/navigation';
@@ -23,6 +23,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { USER_ROLES_ENUM } from '@/app/constants/constant';
 import UserRoleModal from '../userRolesModal'
+import Link from 'next/link';
 // import { authService } from '@/app/services/auth.service';
 
 
@@ -52,6 +53,7 @@ const RegisterSchema: any = Yup.object({
   confirmPassword: Yup.string()
     .required('Confirm Password is required!')
     .oneOf([Yup.ref('password')], 'Passwords must match'),
+  isTermsAccepted: Yup.boolean().oneOf([true], 'You must accept the terms and conditions')
 });
 
 
@@ -66,16 +68,16 @@ const Register = () => {
   const [userDetail, setUserDetail] = useState<any>([])
   let userRoles = [
     {
-      role : USER_ROLES_ENUM.OWNER , 
-      desc : 'It is a long established fact that a reader will be distracted by the readable content of'
+      role: USER_ROLES_ENUM.OWNER,
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of'
     },
     {
-      role : USER_ROLES_ENUM.CONTRACTOR , 
-      desc : 'It is a long established fact that a reader will be distracted by the readable content of'
+      role: USER_ROLES_ENUM.CONTRACTOR,
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of'
     },
     {
-      role : USER_ROLES_ENUM.SUBCONTRACTOR , 
-      desc : 'It is a long established fact that a reader will be distracted by the readable content of'
+      role: USER_ROLES_ENUM.SUBCONTRACTOR,
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of'
     }
   ]
 
@@ -86,10 +88,10 @@ const Register = () => {
 
   const submitHandler = async (values: ISignUpInterface) => {
     setUserRegisterModal(true)
-        setUserDetail(values)
+    setUserDetail(values)
   };
 
-  const userRegisterHandler = async (role  : string) => {
+  const userRegisterHandler = async (role: string) => {
     const payload = { ...userDetail, userRole: role };
     setIsLoading(true);
     setUserRegisterModal(false)
@@ -140,13 +142,13 @@ const Register = () => {
   });
 
 
-  const userRoleSelectionHandler = async (role : string) => {
+  const userRoleSelectionHandler = async (role: string) => {
     setIsLoading(true)
     setUserRoleModal(false)
-    let result: any = await dispatch(loginWithGoogle({...userDetail , userRole: role }));
+    let result: any = await dispatch(loginWithGoogle({ ...userDetail, userRole: role }));
     setIsLoading(false)
     if (result.payload.statusCode == 200) {
-      localStorage.setItem('schestiToken', result.payload.token); 
+      localStorage.setItem('schestiToken', result.payload.token);
       // router.push(`/clients`);
       router.push(`/dashboard`);
     } else if (result.payload.statusCode == 400) {
@@ -209,11 +211,11 @@ const Register = () => {
           </div> */}
 
           <Formik
-            initialValues={initialValues}
+            initialValues={{ ...initialValues, isTermsAccepted: false }}
             validationSchema={RegisterSchema}
             onSubmit={submitHandler}
           >
-            {(formik: any) => {
+            {(formik) => {
               return (
                 <Form
                   name="basic"
@@ -249,6 +251,15 @@ const Register = () => {
                       name="confirmPassword"
                       placeholder="confirm Password"
                     />
+
+                    <Checkbox name='isTermsAccepted' checked={formik.values.isTermsAccepted} onChange={formik.handleChange} className='text-xs'>
+                      By clicking Register, you agree to our <Link href={"/terms-conditions"} target='_blank' className='text-blue-500 font-normal underline underline-offset-2 hover:text-blue-500 hover:underline'>
+                        Terms & Conditions
+                      </Link>. You may receive Email Notifications from us and can opt out any time.
+                    </Checkbox>
+                    {formik.errors.isTermsAccepted && formik.touched.isTermsAccepted ? <p className='mt-1 text-red-500'>
+                      {formik.errors.isTermsAccepted}
+                    </p> : null}
                   </div>
 
                   <Button
