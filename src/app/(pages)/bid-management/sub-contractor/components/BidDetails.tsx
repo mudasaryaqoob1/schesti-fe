@@ -151,9 +151,11 @@ export function BidDetails({
   }
 
 
-  const projectOwner = bid.userDetails?.length > 0 ? bid.userDetails[0] : '';
+  const projectOwner = bid.userDetails && bid.userDetails?.length > 0 && bid.userDetails[0].email;
+  const projectCreator = typeof bid.user !== 'string' && bid.user.email;
   const isAuthUserBidSubmitter = bidSubmittedDetails.length > 0 && bidSubmittedDetails.some((bid) => bid.user === authUser?.user?._id);
 
+  console.log(bid.projectName, bid.userDetails);
 
   return (
     <div>
@@ -216,7 +218,7 @@ export function BidDetails({
             <TwitterIcon size={30} round />
           </TwitterShareButton>
           <SendEmailModal
-            to={typeof projectOwner !== 'string' ? projectOwner.email : ''}
+            to={projectCreator || projectOwner || ''}
           />
         </div>
       </div>

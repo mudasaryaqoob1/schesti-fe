@@ -73,6 +73,7 @@ export function SendEmailModal({ to }: Props) {
       }
     },
     validationSchema: ValidationSchema,
+    enableReinitialize: true,
   });
 
   async function handleFileUpload(file: RcFile) {
