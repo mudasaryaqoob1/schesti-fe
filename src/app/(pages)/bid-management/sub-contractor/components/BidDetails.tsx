@@ -151,11 +151,13 @@ export function BidDetails({
   }
 
 
+
+  // either projectOwner or projectCreator will be available and will be used by EmailSendModal component
   const projectOwner = bid.userDetails && bid.userDetails?.length > 0 && bid.userDetails[0].email;
   const projectCreator = typeof bid.user !== 'string' && bid.user.email;
   const isAuthUserBidSubmitter = bidSubmittedDetails.length > 0 && bidSubmittedDetails.some((bid) => bid.user === authUser?.user?._id);
 
-  console.log(bid.projectName, bid.userDetails);
+
 
   return (
     <div>
