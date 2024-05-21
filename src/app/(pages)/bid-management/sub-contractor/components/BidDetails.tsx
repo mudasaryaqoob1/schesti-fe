@@ -349,7 +349,7 @@ export function BidDetails({
           }}
         /> : null}
 
-        {isEmpty(selectedProjectSavedBid) ? (
+        {isAuthUserBidSubmitter ? null : isEmpty(selectedProjectSavedBid) ? (
           <CustomButton
             onClick={() => {
               saveUserBidMutation.mutate({ projectId: bid?._id })
