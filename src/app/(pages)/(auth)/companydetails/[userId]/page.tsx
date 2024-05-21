@@ -223,6 +223,7 @@ const CompanyDetails = () => {
                                 field={{
                                   options: countries,
                                   value: formik.values.country,
+                                  showSearch: true,
                                   onChange(value) {
                                     setCountry(value);
                                     formik.setFieldValue('country', value);
