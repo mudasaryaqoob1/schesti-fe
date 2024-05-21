@@ -1,12 +1,12 @@
 'use client';
 import { useResponseHook } from '@/app/hooks/useResponsive.hook';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { newsletterService } from '@/app/services/newsletter.service';
 import { Divider } from 'antd';
 import type { AxiosError } from 'axios';
 import { useFormik } from 'formik';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 
@@ -15,7 +15,7 @@ const SaveNewsLetterSchema = Yup.object().shape({
 });
 
 export default function LandingFooter() {
-  const router = useRouter();
+  const router = useRouterHook();
   const responsive = useResponseHook();
 
   const formik = useFormik({

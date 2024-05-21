@@ -4,6 +4,7 @@ import SenaryHeading from '@/app/component/headings/senaryHeading';
 import {
   IBidManagement,
   ISaveUserBid,
+  ISubmittedProjectBid,
 } from '@/app/interfaces/bid-management/bid-management.interface';
 import { USCurrencyFormat } from '@/app/utils/format';
 import { Routes } from '@/app/utils/plans.utils';
@@ -16,20 +17,24 @@ import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { useMutation } from 'react-query';
 import { bidManagementService } from '@/app/services/bid-management.service';
-import { useRouter } from 'next/navigation';
 import { CreateRFI } from './CreateRFI';
 import { isEmpty, size } from 'lodash';
 import { SendEmailModal } from './SendEamil';
 import { downloadFile } from '@/app/utils/downloadFile';
 import { proposalService } from '@/app/services/proposal.service';
 import { WhatsappIcon, WhatsappShareButton, FacebookIcon, FacebookShareButton, TwitterIcon, TwitterShareButton } from 'react-share';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { IUserInterface } from '@/app/interfaces/user.interface';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 
 type Props = {
-  bid: IBidManagement;
+  bid: (IBidManagement & { userDetails: IUserInterface[] });
   selectedProjectSavedBid?: any;
   setSelectedProjectSavedBid?: any;
   bidClickHandler?: any;
+  onBidRemove?: () => void;
 };
 type RemoveUserBidProps = {
   biddingId: string;
@@ -44,11 +49,13 @@ export function BidDetails({
   bidClickHandler,
   selectedProjectSavedBid,
   setSelectedProjectSavedBid,
+  onBidRemove
 }: Props) {
-  const router = useRouter();
+  const router = useRouterHook();
 
   const [isDetailsLoading, setIsDetailsLoading] = useState(false);
-  const [bidSubmittedDetails, setBidSubmittedDetails] = useState(null);
+  const [bidSubmittedDetails, setBidSubmittedDetails] = useState<ISubmittedProjectBid[]>([]);
+  const authUser = useSelector((state: RootState) => state.auth.user as { user?: IUserInterface });
 
   const saveUserBidMutation = useMutation<
     IResponseInterface<{ projectId: ISaveUserBid }>,
@@ -108,7 +115,7 @@ export function BidDetails({
 
   const getProjectProposalDetails = async (bidProjectId: any) => {
     setIsDetailsLoading(true);
-    setBidSubmittedDetails(null);
+    setBidSubmittedDetails([]);
     try {
       const { data }: any =
         await proposalService.httpGetProposalDetailsByProjectId(bidProjectId);
@@ -128,6 +135,7 @@ export function BidDetails({
     });
   };
 
+
   const createProjectActivity = async (projectId: string) => {
     try {
       const data = { projectId: projectId };
@@ -143,11 +151,31 @@ export function BidDetails({
   }
 
 
-  const bidUser = bid?.user;
+
+  // either projectOwner or projectCreator will be available and will be used by EmailSendModal component
+  const projectOwner = bid.userDetails && bid.userDetails?.length > 0 && bid.userDetails[0].email;
+  const projectCreator = typeof bid.user !== 'string' && bid.user.email;
+  const isAuthUserBidSubmitter = bidSubmittedDetails.length > 0 && bidSubmittedDetails.some((bid) => bid.user === authUser?.user?._id);
+
+
 
   return (
     <div>
-      {bidSubmittedDetails && !isDetailsLoading && (
+      <div className='flex justify-end mb-1'>
+        <Image
+          alt='close icon'
+          src={'/closeicon.svg'}
+          width={16}
+          height={16}
+          onClick={() => {
+            if (onBidRemove) {
+              onBidRemove();
+            }
+          }}
+          className='cursor-pointer'
+        />
+      </div>
+      {isAuthUserBidSubmitter && !isDetailsLoading && (
         <div className="flex rounded p-2 flex-col bg-[#F5F6FA]">
           <SenaryHeading
             title={'You have already submitted a proposal'}
@@ -192,7 +220,7 @@ export function BidDetails({
             <TwitterIcon size={30} round />
           </TwitterShareButton>
           <SendEmailModal
-            to={typeof bidUser !== 'string' ? bidUser.email : ''}
+            to={projectCreator || projectOwner || ''}
           />
         </div>
       </div>
@@ -299,30 +327,33 @@ export function BidDetails({
       </div>
       <Divider className="my-2" />
       <div className="flex items-center py-[5px] px-[11px] space-x-2 cursor-pointer">
-        <Image
-          alt="cloud icon"
-          src={'/uploadcloud.svg'}
-          width={16}
-          height={16}
-        />
+
         {size(bid?.projectFiles) > 0 && (
-          <SenaryHeading
-            onClick={() => downloadAllFiles(bid.projectFiles)}
-            title="Download all files"
-            className="text-[#7138DF] text-xs leading-4 font-semibold underline underline-offset-2"
-          />
+          <>
+            <Image
+              alt="cloud icon"
+              src={'/uploadcloud.svg'}
+              width={16}
+              height={16}
+            />
+            <SenaryHeading
+              onClick={() => downloadAllFiles(bid.projectFiles)}
+              title="Download all files"
+              className="text-[#7138DF] text-xs leading-4 font-semibold underline underline-offset-2"
+            />
+          </>
         )}
       </div>
 
       <div className="mt-4 space-y-2">
-        <CustomButton
+        {!isAuthUserBidSubmitter ? <CustomButton
           text="Send Bid"
           onClick={() => {
             router.push(`${Routes['Bid Management'].Submit}/${bid._id}`);
           }}
-        />
+        /> : null}
 
-        {isEmpty(selectedProjectSavedBid) ? (
+        {isAuthUserBidSubmitter ? null : isEmpty(selectedProjectSavedBid) ? (
           <CustomButton
             onClick={() => {
               saveUserBidMutation.mutate({ projectId: bid?._id })

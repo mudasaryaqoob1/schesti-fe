@@ -15,9 +15,9 @@ import {
 import Image from 'next/image';
 import { ScaleNavigation, DrawTable, Draw } from './components';
 import { ScaleDataContextProps } from '../context/ScaleContext';
-import { useRouter } from 'next/navigation';
 import Button from '@/app/component/customButton/button';
 import { ReportDataContextProps } from '../context/ReportDataContext';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 export interface ScaleData {
   xScale: string;
@@ -30,7 +30,7 @@ export interface PageScale {
 }
 
 const Scale = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const [tool, setTool] = useState<ScaleInterface>({ selected: 'scale' });
   const [showModal, setShowModal] = useState(false);
   const [border, setBorder] = useState<number>(4);

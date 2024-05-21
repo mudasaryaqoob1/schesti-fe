@@ -1,16 +1,20 @@
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import TertiaryHeading from '@/app/component/headings/tertiary';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
 import { USCurrencyFormat } from '@/app/utils/format';
 import { Avatar } from 'antd';
 import { Country } from 'country-state-city';
 import moment from 'moment';
 
+
 type Props = {
   bid: IBidManagement | null;
 };
 
 export function ProjectIntro({ bid }: Props) {
+  const router = useRouterHook();
+
   if (!bid) {
     return null;
   }
@@ -38,7 +42,11 @@ export function ProjectIntro({ bid }: Props) {
               title={bid.description}
               className="text-[#475467] text-[14px] leading-6 font-normal"
             />
-            <p className="text-[#7F56D9] underline underline-offset-2 mt-4 text-[14px] leading-6 font-normal cursor-pointer">
+            <p className="text-[#7F56D9] underline underline-offset-2 mt-4 text-[14px] leading-6 font-normal cursor-pointer"
+              onClick={() => {
+                router.push(`/bid-management/details/${bid._id}`);
+              }}
+            >
               View full details
             </p>
           </div>

@@ -6,7 +6,6 @@ import * as Yup from 'yup';
 import { Checkbox, Form } from 'antd';
 import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
-import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 
@@ -24,6 +23,8 @@ import axios from 'axios';
 import { USER_ROLES_ENUM } from '@/app/constants/constant';
 import UserRoleModal from '../userRolesModal'
 import Link from 'next/link';
+import { ShouldHaveAtLeastCharacterRegex } from '@/app/utils/regex.util';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 // import { authService } from '@/app/services/auth.service';
 
 
@@ -39,16 +40,17 @@ const initialValues: ISignUpInterface = {
 };
 
 const RegisterSchema: any = Yup.object({
-  name: Yup.string().required('Name is required'),
+  name: Yup.string().matches(ShouldHaveAtLeastCharacterRegex, { "message": "Name should have atleast 1 character" }).max(30, "Name must have atleast 30 characters").required('Name is required'),
   email: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
   password: Yup.string()
     .matches(
-      new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/),
-      'The password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one digit.'
+      new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[a-zA-Z\d\W_]{8,}$/),
+      'The password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one special character and one digit.'
     )
     .min(6, 'Minimum six character is required')
+    .max(15, 'Maximum 15 character is allowed')
     .required('Password is required!'),
   confirmPassword: Yup.string()
     .required('Confirm Password is required!')
@@ -59,7 +61,7 @@ const RegisterSchema: any = Yup.object({
 
 
 const Register = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const dispatch = useDispatch<AppDispatch>();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -249,7 +251,7 @@ const Register = () => {
                       label="Confirm password"
                       type="password"
                       name="confirmPassword"
-                      placeholder="confirm Password"
+                      placeholder="Confirm Password"
                     />
 
                     <Checkbox name='isTermsAccepted' checked={formik.values.isTermsAccepted} onChange={formik.handleChange} className='text-xs'>

@@ -11,12 +11,13 @@ import { IPricingPlan } from '../interfaces/pricing-plan.interface';
 import { AxiosError } from 'axios';
 import { pricingPlanService } from '../services/pricingPlan.service';
 import { setUserPricingPlan } from '@/redux/pricingPlanSlice/pricingPlanSlice';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, } from 'next/navigation';
 import { IUser } from '../interfaces/companyEmployeeInterfaces/user.interface';
 import { NoDataComponent } from '../component/noData/NoDataComponent';
 import { Skeleton } from 'antd';
 import _ from 'lodash';
 import { OtherRoutes } from '../utils/plans.utils';
+import { useRouterHook } from '../hooks/useRouterHook';
 
 export const withAuth = (
   WrappedComponent: React.FunctionComponent,
@@ -28,7 +29,7 @@ export const withAuth = (
       (state: RootState) => state.pricingPlan.userPlan
     );
     const dispatch = useDispatch<AppDispatch>();
-    const router = useRouter();
+    const router = useRouterHook();
     const pathname = usePathname();
     const user = useSelector(
       (state: RootState) => state.auth.user as { user?: IUser }

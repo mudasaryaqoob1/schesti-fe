@@ -16,6 +16,7 @@ import { Pagination, Skeleton } from 'antd';
 import { BidFilters } from '../sub-contractor/components/Filters';
 import _, { size } from 'lodash';
 import { isArrayString } from '@/app/utils/typescript.utils';
+import { IUserInterface } from '@/app/interfaces/user.interface';
 
 // const PDFDownloadLink = dynamic(
 //   () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
@@ -31,7 +32,7 @@ const ITEMS_PER_PAGE = 5;
 
 function ContractorScreen() {
 
-  const [selectedBid, setSelectedBid] = useState<IBidManagement | null>(null);
+  const [selectedBid, setSelectedBid] = useState<(IBidManagement & { userDetails: IUserInterface[] }) | null>(null);
   const [search, setSearch] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [selectedProjectSavedBid, setSelectedProjectSavedBid] = useState<any>(null);
@@ -309,6 +310,11 @@ function ContractorScreen() {
                 selectedProjectSavedBid={selectedProjectSavedBid}
                 setSelectedProjectSavedBid={setSelectedProjectSavedBid}
                 bidClickHandler={() => bidClickHandler(selectedBid)}
+                onBidRemove={() => {
+                  if (selectedBid) {
+                    setSelectedBid(null);
+                  }
+                }}
               />
             </div>
           ) : null}
@@ -319,7 +325,7 @@ function ContractorScreen() {
               current={filters.page}
               pageSize={filters.limit}
               total={paginationInfo.totalRecords}
-              onChange={(page) => setInvitedfilters(prevFilters => ({ ...prevFilters, page }))}
+              onChange={(page) => setFilters(prevFilters => ({ ...prevFilters, page }))}
             />
           </div>
         )}

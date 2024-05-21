@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useCallback, useLayoutEffect } from 'react';
 import { Spin } from 'antd';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, } from 'next/navigation';
 import { useSelector } from 'react-redux';
 
 import { estimateRequestService } from '@/app/services/estimates.service';
@@ -13,9 +13,10 @@ import {
 import { toast } from 'react-toastify';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const EstimateSchedule = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const { estimateId } = useParams();
 
   const token = useSelector(selectToken);

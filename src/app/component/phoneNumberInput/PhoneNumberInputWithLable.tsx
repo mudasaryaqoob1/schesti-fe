@@ -20,8 +20,8 @@ export function PhoneNumberInputWithLable({
         {props.label}
       </label>
       <PhoneInput
-        className={`custom-phone-input ant-input css-dev-only-do-not-override-2rgkd4 border !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 !mt-1.5 css-dev-only-do-not-override-2rgkd4
-            space-x-2 ${props.hasError ? 'border-red-500' : 'border-gray-300'}`}
+        className={`custom-phone-input ant-input css-dev-only-do-not-override-2rgkd4 border border-gray-300 hover:border-blue-500 !w-full !rounded-lg focus:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 !px-3.5 !py-2.5 !mt-1.5 css-dev-only-do-not-override-2rgkd4
+            space-x-2 ${props.hasError ? 'border-red-500' : ''}`}
         international
         defaultCountry="US"
         countryCallingCodeEditable={false}

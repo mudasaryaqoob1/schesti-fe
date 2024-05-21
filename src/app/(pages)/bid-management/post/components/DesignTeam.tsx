@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import { DeletePopup } from './DeletePopup';
+import { isValidPhoneNumber } from 'react-phone-number-input';
 
 type Props = {
   children?: React.ReactNode;
@@ -32,13 +33,19 @@ type Props = {
 
 const DesignTeamMemberSchema = Yup.object().shape({
   // matches should have a regex that contains at least one letter
-  name: Yup.string().matches(/[a-zA-Z]/, { message: "Atleast 1 character is required" }).required('Name is required'),
-  role: Yup.string().matches(/[a-zA-Z]/, { message: "Atleast 1 character is required" }).required('Role is required'),
-  companyName: Yup.string().matches(/[a-zA-Z]/, { message: "Atleast 1 character is required" }).required('Company Name is required'),
-  location: Yup.string().matches(/[a-zA-Z]/, { message: "Atleast 1 character is required" }).required('Location is required'),
+  name: Yup.string().matches(/[a-zA-Z]/, { message: "Atleast 1 character is required" }).max(30, "Name must have max 30 characters").required('Name is required'),
+  role: Yup.string().matches(/[a-zA-Z]/, { message: "Atleast 1 character is required" }).max(20, "Role must have 20 characters").required('Role is required'),
+  companyName: Yup.string().matches(/[a-zA-Z]/, { message: "Atleast 1 character is required" }).max(50, "Company name must have 50 characters.").required('Company Name is required'),
+  location: Yup.string().matches(/[a-zA-Z]/, { message: "Atleast 1 character is required" }).max(30, "Location must have 30 characters.").required('Location is required'),
   phoneNumber: Yup.string()
-    .min(11, 'Phone Number must be at least 11 digits')
-    .max(14, 'Phone Number must be between 11 and 14 digits')
+    .test({
+      test: (value) => {
+        if (value) {
+          return isValidPhoneNumber(value);
+        }
+      },
+      message: 'Invalid phone number',
+    })
     .required('Phone Number is required'),
   email: Yup.string().email('Invalid email').required('Email is required'),
 });

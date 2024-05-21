@@ -4,18 +4,23 @@ import Description from '@/app/component/description';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { withAuth } from '@/app/hoc/withAuth';
-import { ConfigProvider, Tabs } from 'antd';
+import { ConfigProvider, Spin, Tabs } from 'antd';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ProjectSummary } from '../components/ProjectSummary';
 import { ProjectDesignTeam } from '../components/ProjectDesignTeam';
 import { ProjectDocuments } from '../components/ProjectDocuments';
 import { ProjectRFICenter } from '../components/ProjectRFICenter';
 import { ProjectBiddingTeam } from '../components/ProjectBiddingTeam';
-import { useParams } from 'next/navigation';
+import { useParams, } from 'next/navigation';
 import { bidManagementService } from '@/app/services/bid-management.service';
 import { useQuery } from 'react-query';
 import moment from 'moment';
+import { Routes } from '@/app/utils/plans.utils';
+import { isEmpty } from 'lodash';
+import { proposalService } from '@/app/services/proposal.service';
+import { LoadingOutlined } from '@ant-design/icons';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const SUMMARY = 'Summary';
 const DESIGN_TEAM = 'Design Team';
@@ -26,6 +31,10 @@ const RFI_CENTER = 'RFI Center';
 function OwnerProjectDetailsPage() {
   const params: any = useParams();
   const { projectId } = params;
+  const router = useRouterHook();
+  const [bidSubmittedDetails, setBidSubmittedDetails] = useState(null);
+  const [isDetailsLoading, setIsDetailsLoading] = useState(false);
+
   const [paginationSettings, setPaginationSettings] = useState<{
     page: number;
     limit: number;
@@ -43,6 +52,30 @@ function OwnerProjectDetailsPage() {
     return bidManagementService.httpGetOwnerProjectById(projectId, paginationSettings);
   };
   const { data, isLoading } = useQuery(['project-details'], fetchProjectDetails);
+
+  useEffect(() => {
+    if (!isEmpty(data?.data?.project)) {
+      const bid = data?.data?.project;
+      getProjectProposalDetails(bid?._id);
+    }
+  }, [data?.data?.project]);
+
+  const getProjectProposalDetails = async (bidProjectId: any) => {
+    setIsDetailsLoading(true);
+    setBidSubmittedDetails(null);
+    try {
+      const { data }: any =
+        await proposalService.httpGetProposalDetailsByProjectId(bidProjectId);
+      if (data && data.bidDetails) {
+        setIsDetailsLoading(false);
+        setBidSubmittedDetails(data?.bidDetails);
+      }
+    } catch (err) {
+      setIsDetailsLoading(false);
+      console.log('could not get project proposal details', err);
+    }
+  };
+
 
   if (isLoading) return <h6>Loading...</h6>
   let projectData: any = {};
@@ -91,9 +124,15 @@ function OwnerProjectDetailsPage() {
             </div>
           </div>
 
-          <div className="flex items-center space-x-3 flex-1 justify-end">
-            <CustomButton text="Submit a bid" className="!w-40" />
-          </div>
+          <Spin spinning={isDetailsLoading} indicator={<LoadingOutlined spin />}>
+            {!isDetailsLoading && !bidSubmittedDetails ? <div className="flex items-center space-x-3 flex-1 justify-end">
+              <CustomButton text="Submit a bid" className="!w-40"
+                onClick={() => {
+                  router.push(`${Routes['Bid Management'].Submit}/${projectId}`)
+                }}
+              />
+            </div> : null}
+          </Spin>
         </div>
 
         {/* Tabs */}

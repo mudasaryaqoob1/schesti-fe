@@ -99,6 +99,10 @@ export function PostProjectDetails({ formik, children }: Props) {
             value: formik.values.stage,
             onChange: (value) => formik.setFieldValue('stage', value),
             onBlur: formik.handleBlur,
+            allowClear: true,
+            onClear() {
+              formik.setFieldValue('stage', '');
+            },
           }}
           hasError={formik.touched.stage && Boolean(formik.errors.stage)}
           errorMessage={
@@ -127,6 +131,9 @@ export function PostProjectDetails({ formik, children }: Props) {
                 }
               },
               onBlur: formik.handleBlur,
+              disabledDate: (current) => {
+                return dayjs(current).isBefore(dayjs().subtract(1, 'day'));
+              }
             }}
             hasError={
               formik.touched.estimatedStartDate &&
@@ -150,6 +157,9 @@ export function PostProjectDetails({ formik, children }: Props) {
                 formik.setFieldValue('bidDueDate', dateString);
               },
               onBlur: formik.handleBlur,
+              disabledDate: (current) => {
+                return dayjs(current).isBefore(dayjs().subtract(1, 'day'));
+              }
             }}
             hasError={
               formik.touched.bidDueDate && Boolean(formik.errors.bidDueDate)
@@ -224,7 +234,7 @@ export function PostProjectDetails({ formik, children }: Props) {
               prefix: '$',
             }}
             hasError={
-              Boolean(formik.errors.projectValue)
+              formik.touched.projectValue && Boolean(formik.errors.projectValue)
             }
             errorMessage={
               formik.touched.projectValue && formik.errors.projectValue

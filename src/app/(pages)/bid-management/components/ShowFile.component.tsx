@@ -4,9 +4,10 @@ import Image from "next/image";
 type Props = {
     file: IBidDocument;
     onDelete(): void;
+    shouldFit?: boolean;
 }
-export function ShowFileComponent({ file, onDelete }: Props) {
-    return <div className="border my-2 rounded w-fit">
+export function ShowFileComponent({ file, onDelete, shouldFit = true }: Props) {
+    return <div className={`border my-2 rounded ${shouldFit ? "w-fit" : ""}`}>
         <div className="bg-[#F4EBFF] flex items-center justify-between px-2 py-1 ">
             <div className="flex items-center space-x-3">
                 <Image
@@ -16,7 +17,7 @@ export function ShowFileComponent({ file, onDelete }: Props) {
                     alt="file"
                 />
                 <p className="text-[#667085] text-[14px] leading-6">
-                    {file.name}
+                    {file.name.slice(0, 15)}.{file.name.split('.').pop()}
                 </p>
             </div>
             <Image
@@ -25,7 +26,11 @@ export function ShowFileComponent({ file, onDelete }: Props) {
                 height={16}
                 alt="close"
                 className="cursor-pointer"
-                onClick={onDelete}
+                onClick={e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onDelete()
+                }}
             />
         </div>
         <div className="p-2 mx-auto w-auto h-[190px] xl:w-[230px] relative">

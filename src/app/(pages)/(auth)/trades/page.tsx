@@ -10,12 +10,12 @@ import TradeData from '@/app/constants/TradesData.json';
 import Button from '@/app/component/customButton/button';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { useRouter } from 'next/navigation';
 import { addSelectedTrades } from '@/redux/authSlices/auth.thunk';
 import { isEmpty } from 'lodash';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const Trades = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const dispatch: any = useDispatch();
 
   const auth = useSelector((state: RootState) => state.auth);

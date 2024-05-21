@@ -29,23 +29,24 @@ import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import type { RcFile, UploadFile } from 'antd/es/upload';
-import { useRouter } from 'next/navigation';
 import { Routes } from '@/app/utils/plans.utils';
 import { useState } from 'react';
 import { PostProjectCongratulations } from './components/PostProjectCongratulations';
+import { ShouldHaveAtLeastCharacterRegex } from '@/app/utils/regex.util';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 // import { DeletePopup } from './components/DeletePopup';
 // import { PostProjectCongratulations } from './components/PostProjectCongratuslations';
 
 const BasicInformationSchema = Yup.object().shape({
-  address: Yup.string().required('Address is required'),
+  address: Yup.string().matches(ShouldHaveAtLeastCharacterRegex, { message: "Address cannot be empty" }).required('Address is required'),
   city: Yup.string().required('City is required'),
   constructionTypes: Yup.array()
     .of(Yup.string().required())
     .min(1, 'Construction Type is required')
     .required('Construction Type is required'),
   country: Yup.string().required('Country is required'),
-  projectName: Yup.string().required('Project Name is required'),
+  projectName: Yup.string().matches(ShouldHaveAtLeastCharacterRegex, { message: "Project name cannot be empty" }).required('Project Name is required'),
   state: Yup.string().required('State is required'),
   zipCode: Yup.string().required('Zip Code is required'),
   status: Yup.string().required('Status is required'),
@@ -66,7 +67,15 @@ const ProjectDetailsSchema = Yup.object().shape({
   durationType: Yup.mixed()
     .oneOf(['days', 'weeks', 'months', 'years'])
     .required('Duration Type is required'),
-  description: Yup.string().min(1).required('Description is required'),
+  description: Yup.string().min(1)
+    .test({
+      test: (value) => {
+        if (!value) return true; // Allow empty values, adjust if necessary
+        const wordCount = value.trim().split(/\s+/).length;
+        return wordCount <= 300;
+      },
+      message: 'Description should not exceed 300 words',
+    }).required('Description is required'),
   specialInstructions: Yup.string(),
   bidDueDate: Yup.string().min(1).required('Bid Due Date is required'),
   estimatedCompletionDate: Yup.string().required(
@@ -206,7 +215,7 @@ export type PostProjectFileProps = (RcFile | UploadFile) & {
 function CreatePost() {
   const [showCongratulation, setShowCongratulation] = useState(false);
   const postProjectState = useSelector((state: RootState) => state.postProject);
-  const router = useRouter();
+  const router = useRouterHook();
   const [shouldContinue, setShouldContinue] = useState(true);
 
   const dispatch = useDispatch<AppDispatch>();
@@ -355,7 +364,7 @@ function CreatePost() {
           cancelBtn={{
             text: 'View Project',
             onClick() {
-              router.push(`${Routes['Bid Management'].Posted_Projects}`);
+              router.push(`${Routes['Bid Management'].Posted_Projects}/view/${postProjectState.project?._id}`);
               dispatch(resetPostProjectAction());
             },
           }}

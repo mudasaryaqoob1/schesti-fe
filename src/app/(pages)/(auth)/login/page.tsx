@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
-import { useRouter } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
 import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
@@ -24,6 +23,7 @@ import Description from '@/app/component/description';
 import { USER_ROLES_ENUM } from '@/app/constants/constant';
 import UserRoleModal from '../userRolesModal'
 import { CheckOtherRoles, navigateUserWhileAuth } from '@/app/utils/auth.utils';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const initialValues: ILogInInterface = {
   email: '',
@@ -42,7 +42,7 @@ const LoginSchema = Yup.object({
 });
 
 const Login = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const dispatch = useDispatch<AppDispatch>();
 
   const [loading, setLoading] = useState(false);

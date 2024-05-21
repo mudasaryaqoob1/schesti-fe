@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { twMerge } from 'tailwind-merge';
 import Image from 'next/image';
-import { useRouter, useParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { Form, Formik } from 'formik';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
@@ -26,6 +26,7 @@ import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/Phon
 import { byteConverter } from '@/app/utils/byteConverter';
 import AwsS3 from '@/app/utils/S3Intergration';
 import { withAuth } from '@/app/hoc/withAuth';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const clientInfoSchema: any = Yup.object().shape({
   clientName: Yup.string().required('Client Name is required!'),
@@ -59,7 +60,7 @@ const initialValues: IEstimateRequest = {
 };
 
 const EditEstimateRequest = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const params = useParams();
   const { id } = params;
 
@@ -314,7 +315,7 @@ const EditEstimateRequest = () => {
         enableReinitialize
         onSubmit={submitHandler}
       >
-        {({   handleSubmit,
+        {({ handleSubmit,
           setFieldValue,
           values,
           setFieldTouched,
@@ -371,7 +372,7 @@ const EditEstimateRequest = () => {
                       name="email"
                       placeholder="Enter Email"
                     />
-                   <PhoneNumberInputWithLable
+                    <PhoneNumberInputWithLable
                       label="Phone Number"
                       //@ts-ignore
                       onChange={(val: string) => setFieldValue('phone', val)}

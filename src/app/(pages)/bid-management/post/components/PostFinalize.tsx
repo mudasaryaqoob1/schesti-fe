@@ -21,6 +21,7 @@ import { EventOnlineForm } from './event/EventOnline';
 import { EventOnSiteForm } from './event/OnSite';
 import { EventSiteWalkThroughForm } from './event/EventSiteWalkthrough';
 import { RfiDeadline } from './event/RFIDeadline';
+import Paragraph from 'antd/es/typography/Paragraph';
 
 type Props = {
   children?: React.ReactNode;
@@ -267,9 +268,13 @@ export function PostFinalize({ formik, children }: Props) {
                 title="Project Description"
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
-              <p className="text-[#344054] text-[14px] leading-6 font-medium ">
+              <Paragraph ellipsis={{
+                expandable: true,
+                rows: 2,
+                symbol: 'Read more',
+              }} className="text-[#344054] text-[14px] leading-6 font-medium">
                 {values.description}
-              </p>
+              </Paragraph>
             </div>
             <div className="space-y-2">
               <SenaryHeading

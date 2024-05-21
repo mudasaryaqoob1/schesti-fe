@@ -11,7 +11,6 @@ import { Formik, Form } from 'formik';
 import { Dropdown, type MenuProps, Table, Tag, Select, Input } from 'antd';
 import { type ColumnsType } from 'antd/es/table';
 import { useSelector } from 'react-redux';
-import { useRouter } from 'next/navigation';
 import { CloseOutlined, SearchOutlined } from '@ant-design/icons';
 import * as Yup from 'yup';
 import './style.css';
@@ -30,6 +29,7 @@ import { IProject } from '@/app/interfaces/schedule/project.schedule.interface';
 import { ISchedule } from '@/app/interfaces/schedule/schedule.type';
 import FormControl from '@/app/component/formControl';
 import { scheduleService } from '@/app/services/schedule.service';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const initialValues: IProject = {
   projectName: '',
@@ -83,7 +83,7 @@ const createProjectSchema = Yup.object({
 });
 
 const Schedule = () => {
-  const router = useRouter();
+  const router = useRouterHook();
 
   const token = useSelector(selectToken);
   useLayoutEffect(() => {
@@ -280,7 +280,7 @@ const Schedule = () => {
             />
             <CloseOutlined
               className="cursor-pointer"
-              style={{ width : '24px' , height : '24px'}}
+              style={{ width: '24px', height: '24px' }}
               onClick={() => setCreateProjectModal(false)}
             />
           </div>

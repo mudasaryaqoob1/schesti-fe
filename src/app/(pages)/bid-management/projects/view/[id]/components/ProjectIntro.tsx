@@ -22,11 +22,11 @@ import Image from 'next/image';
 import Dragger from 'antd/es/upload/Dragger';
 import { postProjectActions, setFormStepAction, setPostProjectAction } from '@/redux/post-project/post-project.slice';
 import { Routes } from '@/app/utils/plans.utils';
-import { useRouter } from 'next/navigation';
 import ModalComponent from '@/app/component/modal';
 import AwsS3 from '@/app/utils/S3Intergration';
 import { isEmpty } from 'lodash';
 import { ShowFileComponent } from '@/app/(pages)/bid-management/components/ShowFile.component';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 type Props = {
   id: string;
@@ -41,7 +41,7 @@ export function ProjectIntro({ id }: Props) {
   const [isFileUploading, setIsFileUploading] = useState(false);
   const [files, setFiles] = useState<UploadFile[]>([]);
 
-  const router = useRouter();
+  const router = useRouterHook();
 
   const dispatch = useDispatch<AppDispatch>();
   const bid = useSelector(

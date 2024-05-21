@@ -3,7 +3,7 @@ import { MutableRefObject, useLayoutEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { ConfigProvider, Tabs } from 'antd';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { HttpService } from '@/app/services/base.service';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import TertiaryHeading from '@/app/component/headings/tertiary';
@@ -23,12 +23,13 @@ import { ClientInvoiceFooter } from '../components/ClientInvoiceFooter';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
 import { withAuth } from '@/app/hoc/withAuth';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const G703_KEY = 'G703';
 const G702_KEY = 'G702';
 function CreateClientInvoicePage() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-  const router = useRouter();
+  const router = useRouterHook();
 
   const auth = useSelector((state: RootState) => state.auth);
   const user = auth.user?.user as IUpdateCompanyDetail | undefined;

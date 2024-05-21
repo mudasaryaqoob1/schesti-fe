@@ -2,8 +2,8 @@
 import CustomButton from '@/app/component/customButton/button';
 import Description from '@/app/component/description';
 import SecondaryHeading from '@/app/component/headings/Secondary';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 
 type Props = {
   btnText: string;
@@ -19,7 +19,7 @@ const NoData = ({
   description = 'This is description',
   isButton = true
 }: Props) => {
-  const router = useRouter();
+  const router = useRouterHook();
   return (
     <section className="mt-6 mx-4 rounded-xl h-[calc(100vh-200px)] grid items-center border border-solid border-silverGray shadow-secondaryTwist !bg-white">
       <div className="grid place-items-center">
@@ -43,13 +43,13 @@ const NoData = ({
           {
             isButton ? (
               <CustomButton
-              className="mt-7"
-              text={btnText}
-              onClick={() => router.push(link)}
-            />
+                className="mt-7"
+                text={btnText}
+                onClick={() => router.push(link)}
+              />
             ) : null
           }
-         
+
         </div>
       </div>
     </section>
