@@ -186,7 +186,7 @@ export function PostProjectDetails({ formik, children }: Props) {
                 if (formik.values.estimatedStartDate) {
                   return current < dayjs(formik.values.estimatedStartDate);
                 }
-                return false;
+                return dayjs(current).isBefore(dayjs().subtract(1, 'day'));
               }
             }}
             hasError={
