@@ -281,9 +281,13 @@ export function PostFinalize({ formik, children }: Props) {
                 title="Special Instructions"
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
-              <p className="text-[#344054] text-[14px] leading-6 font-medium ">
+              <Paragraph ellipsis={{
+                expandable: true,
+                rows: 2,
+                symbol: 'Read more',
+              }} className="text-[#344054] text-[14px] leading-6 font-medium">
                 {values.specialInstructions}
-              </p>
+              </Paragraph>
             </div>
           </div>
         </fieldset>

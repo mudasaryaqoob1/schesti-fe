@@ -19,7 +19,7 @@ import { bidManagementOwnerActions } from '@/redux/bid-management/owner.slice';
 
 const SUMMARY = 'Summary';
 const BIDS = 'Bids';
-const DESIGN_TEAM = 'Design Team';
+const DESIGN_TEAM = 'Project Team';
 const ACTIVITY_AND_STATUS_TRACKING = 'Activity & Status Tracking';
 const DOCUMENTS = 'Documents';
 const RFI_CENTER = 'RFI Center';

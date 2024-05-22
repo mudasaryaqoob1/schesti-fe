@@ -23,7 +23,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const SUMMARY = 'Summary';
-const DESIGN_TEAM = 'Design Team';
+const DESIGN_TEAM = 'Project Team';
 const BIDDING_TEAM = 'Bidding Team';
 const DOCUMENTS = 'Documents';
 const RFI_CENTER = 'RFI Center';
