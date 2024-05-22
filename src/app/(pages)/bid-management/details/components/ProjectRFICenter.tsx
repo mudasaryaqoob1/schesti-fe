@@ -29,28 +29,29 @@ export function ProjectRFICenter({ projectId }: Props) {
 
   useEffect(() => {
     setSearch('');
+    const fetchRFIs = () => {
+      if (projectId) {
+        setIsFetching(true);
+        rfiService
+          .httpGetAllProjectRFIs(projectId)
+          .then((res) => {
+            if (res.data) {
+              setRfis(res.data.rfis);
+            }
+          })
+          .catch((err) => {
+            const error = err as AxiosError<{ message: string }>;
+            toast.error(error.response?.data.message || 'An error occurred');
+          })
+          .finally(() => {
+            setIsFetching(false);
+          });
+      }
+    };
     fetchRFIs();
   }, [projectId]);
 
-  const fetchRFIs = () => {
-    if (projectId) {
-      setIsFetching(true);
-      rfiService
-        .httpGetAllProjectRFIs(projectId)
-        .then((res) => {
-          if (res.data) {
-            setRfis(res.data.rfis);
-          }
-        })
-        .catch((err) => {
-          const error = err as AxiosError<{ message: string }>;
-          toast.error(error.response?.data.message || 'An error occurred');
-        })
-        .finally(() => {
-          setIsFetching(false);
-        });
-    }
-  };
+
 
   if (isFetching) {
     return <Skeleton />;
@@ -111,7 +112,8 @@ export function ProjectRFICenter({ projectId }: Props) {
         .map((rfi) => {
           const user = rfi.user;
 
-          return (
+          // if rfi is private and rfi user is not the current user, then return null
+          return (rfi.type === 'private' && ((typeof user === 'string' ? user !== authUser.user?._id : user._id !== authUser.user?._id))) ? null : (
             <div
               key={rfi._id}
               className="px-2 bg-white rounded-lg shadow mt-4 space-y-2"
@@ -131,10 +133,10 @@ export function ProjectRFICenter({ projectId }: Props) {
                   <div className="flex justify-between">
                     <TertiaryHeading
                       title={`${typeof user !== 'string'
-                          ? user.companyName ||
-                          user.organizationName ||
-                          user.name
-                          : ''
+                        ? user.companyName ||
+                        user.organizationName ||
+                        user.name
+                        : ''
                         } | ${moment(rfi.createdAt).format(
                           'MMM DD, YYYY, hh:mm A'
                         )}`}
@@ -158,7 +160,7 @@ export function ProjectRFICenter({ projectId }: Props) {
                           />
                         </p>
                       ) : null}
-                      {typeof rfi.user !== 'string' &&
+                      {rfi.user && typeof rfi.user !== 'string' &&
                         rfi.user._id === authUser.user?._id ? (
                         <UpdateRFI
                           onSuccess={(_rfi) => {
@@ -228,10 +230,10 @@ export function ProjectRFICenter({ projectId }: Props) {
                     <div className="flex justify-between">
                       <TertiaryHeading
                         title={`${typeof reply.user !== 'string'
-                            ? reply.user.companyName ||
-                            reply.user.organizationName ||
-                            reply.user.name
-                            : ''
+                          ? reply.user.companyName ||
+                          reply.user.organizationName ||
+                          reply.user.name
+                          : ''
                           } | ${moment(reply.createdAt).format(
                             'MMM DD, YYYY, hh:mm A'
                           )}`}
