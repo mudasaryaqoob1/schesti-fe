@@ -67,7 +67,7 @@ export function ProjectDocuments(props: IProps) {
               <div className="flex items-center space-x-3">
                 <Image src={'/file-05.svg'} width={16} height={16} alt="file" />
                 <p className="text-[#667085] text-[14px] leading-6">
-                  {file.name}
+                  {file.name.slice(0, 15)}.{file.type.split('/')[1]}
                 </p>
               </div>
               <Image
