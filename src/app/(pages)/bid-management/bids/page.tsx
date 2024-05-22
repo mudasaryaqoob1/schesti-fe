@@ -106,14 +106,16 @@ function SubContractorBidsPage() {
                   </div>
 
                   {activeTab === ACTIVE ? (
-                    <ActiveProjects search={search} />
+                    <ActiveProjects search={search} tab={activeTab} />
                   ) : activeTab === UPCOMING ? (
                     <UpComingProjects
                       search={search}
+                      tab={activeTab}
                     />
                   ) : (
                     <ArchivedProjects
                       search={search}
+                      tab={activeTab}
                     />
                   )}
                 </div>

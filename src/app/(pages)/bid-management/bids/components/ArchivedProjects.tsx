@@ -8,8 +8,9 @@ import { proposalService } from '@/app/services/proposal.service';
 
 type Props = {
   search: string;
+  tab: string;
 }
-export function ArchivedProjects({ search }: Props) {
+export function ArchivedProjects({ search, tab }: Props) {
 
   const [selectedBid, setSelectedBid] = useState<IBidManagement | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -18,7 +19,7 @@ export function ArchivedProjects({ search }: Props) {
   let currentPage = 1
   const params = {
     page: currentPage,
-    status: 'archived',
+    status: tab.toLowerCase(),
     limit: 10
   }
 
@@ -42,7 +43,7 @@ export function ArchivedProjects({ search }: Props) {
     return bidManagementService.httpGetUserSavedBids(params);
   };
 
-  const savedBids = useQuery(['saved-bids'], fetchSavedBids);
+  const savedBids = useQuery(['saved-bids', tab], fetchSavedBids);
 
   const savedUserBids: any =
     savedBids.data && savedBids.data.data
