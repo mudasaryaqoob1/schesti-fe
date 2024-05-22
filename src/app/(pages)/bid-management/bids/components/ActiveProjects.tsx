@@ -8,8 +8,9 @@ import { proposalService } from '@/app/services/proposal.service';
 
 type Props = {
   search: string;
+  tab: string;
 }
-export function ActiveProjects({ search }: Props) {
+export function ActiveProjects({ search, tab }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedBid, setSelectedBid] = useState<IBidManagement | null>(null);
   const [selectedBidProjectDetails, setSelectedBidProjectDetails] = useState<any>(null);
@@ -18,7 +19,7 @@ export function ActiveProjects({ search }: Props) {
 
   const params = {
     page: currentPage,
-    status: 'active',
+    status: tab.toLowerCase(),
     limit: 10
   }
   const fetchSavedBids = async () => {
@@ -42,7 +43,7 @@ export function ActiveProjects({ search }: Props) {
     }
   }
 
-  const savedBids = useQuery(['saved-bids'], fetchSavedBids);
+  const savedBids = useQuery(['saved-bids', tab], fetchSavedBids);
 
   console.log({
     savedBids

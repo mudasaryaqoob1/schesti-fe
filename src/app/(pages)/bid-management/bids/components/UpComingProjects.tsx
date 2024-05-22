@@ -7,8 +7,9 @@ import { BiddingProjectDetails } from './BiddingProjectDetails';
 
 type Props = {
   search: string;
+  tab: string;
 }
-export function UpComingProjects({ search }: Props) {
+export function UpComingProjects({ search, tab }: Props) {
 
   const [selectedBid, setSelectedBid] = useState<IBidManagement | null>(null);
 
@@ -16,14 +17,14 @@ export function UpComingProjects({ search }: Props) {
 
   const params = {
     page: currentPage,
-    status: 'upcoming',
+    status: tab.toLowerCase(),
     limit: 10
   }
   const fetchSavedBids = async () => {
     return bidManagementService.httpGetUserSavedBids(params);
   };
 
-  const savedBids = useQuery(['saved-bids'], fetchSavedBids);
+  const savedBids = useQuery(['saved-bids', tab], fetchSavedBids);
   const refetchSavedBids = () => {
     savedBids.refetch();
   };
