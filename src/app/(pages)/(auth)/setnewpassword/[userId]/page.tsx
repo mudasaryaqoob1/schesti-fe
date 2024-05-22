@@ -25,12 +25,12 @@ const initialValues: IResetPasswordInterface = {
 
 const newPasswordSchema: any = Yup.object({
   password: Yup.string()
+    .required("Password is required")
     .matches(
-      new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/),
-      'The password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one digit.'
-    )
-    .min(6, 'Minimum six character is required')
-    .required('Password is required!'),
+      // eslint-disable-next-line no-useless-escape
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+      "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
+    ),
   confirmPassword: Yup.string()
     .required('Please retype your password.')
     .oneOf([Yup.ref('password')], 'Your passwords do not match.'),

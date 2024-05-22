@@ -24,6 +24,7 @@ import { USER_ROLES_ENUM } from '@/app/constants/constant';
 import UserRoleModal from '../userRolesModal'
 import { CheckOtherRoles, navigateUserWhileAuth } from '@/app/utils/auth.utils';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { authService } from '@/app/services/auth.service';
 
 const initialValues: ILogInInterface = {
   email: '',
@@ -113,8 +114,6 @@ const Login = () => {
             },
           }
         );
-        setUserRoleModal(true)
-
 
         let responseObj = {
           email: googleAuthResponse.data.email,
@@ -123,8 +122,28 @@ const Login = () => {
           providerId: googleAuthResponse.data.sub,
         };
 
-        setUserDetail(responseObj)
+        const result: any = await authService.httpSocialAuthUserVerification({
+          email: googleAuthResponse.data.email,
+        });
 
+        if (result.statusCode == 200) {
+          localStorage.setItem('schestiToken', result.token);
+          router.push(`/dashboard`);
+        } else if (
+          result.statusCode == 400 &&
+          result.message === 'Verify from your email and complete your profile'
+        ) {
+          router.push(`/companydetails/${result.data.user._id}`);
+        } else if (
+          result.statusCode == 400 &&
+          result.message === "Payment method doesn't exist"
+        ) {
+          localStorage.setItem('schestiToken', result.token);
+          router.push('/plans');
+        } else {
+          setUserRoleModal(true);
+          setUserDetail(responseObj);
+        }
       } catch (error) {
         console.log('Login Failed', error);
       }
@@ -132,7 +151,7 @@ const Login = () => {
     onError: (error: any) => {
       console.log('Login Failed', error);
     },
-  })
+  });
 
   const userRoleSelectionHandler = async (role: string) => {
     setLoading(true)

@@ -5,13 +5,13 @@ import { Dispatch, SetStateAction } from 'react';
 import ModalComponent from '@/app/component/modal';
 
 
-interface roleObject{
-  role : string,
-  desc : string
+interface roleObject {
+  role: string,
+  desc: string
 }
 interface IProps {
   viewUserRoleModal: boolean;
-  userRoles : roleObject[];
+  userRoles: roleObject[];
   setViewUserRoleModal: Dispatch<SetStateAction<boolean>>;
   userRoleSelectionHandler: Function;
 }
@@ -59,7 +59,7 @@ const UserRolesModel = ({
                 >
                   <div className="grid grid-cols-6 gap-4">
                     <Image
-                      src={'/auth_user_profile.png'}
+                      src={'/role.png'}
                       alt="documentIcon icon"
                       width={80}
                       height={80}

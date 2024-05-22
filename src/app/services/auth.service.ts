@@ -81,6 +81,18 @@ class AuthService extends HttpService {
     }>
   > => this.post(`${this.prefix}/auth-with-google`, data);
 
+
+  httpSocialAuthUserVerification = (
+    data: {email : string}
+  ): Promise<
+    IResponseInterface<{
+      token: string;
+      user: IUser;
+      message: string;
+      statusCode: number;
+    }>
+  > => this.post(`${this.prefix}/verify-social-auth-user`, data);
+
   httpStripeCheckout = (
     data: IPaymentProps
   ): Promise<

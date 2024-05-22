@@ -8,6 +8,7 @@ import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
+import Link from 'next/link';
 
 // module imports
 import FormControl from '@/app/component/formControl';
@@ -22,10 +23,9 @@ import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { USER_ROLES_ENUM } from '@/app/constants/constant';
 import UserRoleModal from '../userRolesModal'
-import Link from 'next/link';
 import { ShouldHaveAtLeastCharacterRegex } from '@/app/utils/regex.util';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
-// import { authService } from '@/app/services/auth.service';
+import { authService } from '@/app/services/auth.service';
 
 
 
@@ -45,29 +45,26 @@ const RegisterSchema: any = Yup.object({
     .required('Email is required!')
     .email('Email should be valid'),
   password: Yup.string()
+    .required('Password is required')
     .matches(
-      new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[a-zA-Z\d\W_]{8,}$/),
-      'The password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one special character and one digit.'
-    )
-    .min(6, 'Minimum six character is required')
-    .max(15, 'Maximum 15 character is allowed')
-    .required('Password is required!'),
+      // eslint-disable-next-line no-useless-escape
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+      'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character'
+    ),
   confirmPassword: Yup.string()
     .required('Confirm Password is required!')
     .oneOf([Yup.ref('password')], 'Passwords must match'),
   isTermsAccepted: Yup.boolean().oneOf([true], 'You must accept the terms and conditions')
 });
 
-
-
 const Register = () => {
   const router = useRouterHook();
   const dispatch = useDispatch<AppDispatch>();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [userRoleModal, setUserRoleModal] = useState(false)
-  const [userRegisterModal, setUserRegisterModal] = useState(false)
-  const [userDetail, setUserDetail] = useState<any>([])
+  const [userRoleModal, setUserRoleModal] = useState(false);
+  const [userRegisterModal, setUserRegisterModal] = useState(false);
+  const [userDetail, setUserDetail] = useState<any>([]);
   let userRoles = [
     {
       role: USER_ROLES_ENUM.OWNER,
@@ -89,14 +86,14 @@ const Register = () => {
   // };
 
   const submitHandler = async (values: ISignUpInterface) => {
-    setUserRegisterModal(true)
-    setUserDetail(values)
+    setUserRegisterModal(true);
+    setUserDetail(values);
   };
 
   const userRegisterHandler = async (role: string) => {
     const payload = { ...userDetail, userRole: role };
     setIsLoading(true);
-    setUserRegisterModal(false)
+    setUserRegisterModal(false);
     let result: any = await dispatch(signup(payload));
 
     if (result.payload.status == 201) {
@@ -106,7 +103,7 @@ const Register = () => {
       setIsLoading(false);
       toast.error(result.payload.message);
     }
-  }
+  };
 
   const googleAuthenticationHandler: any = useGoogleLogin({
     onSuccess: async (respose: any) => {
@@ -127,13 +124,28 @@ const Register = () => {
           providerId: googleAuthResponse.data.sub,
         };
 
-        // const result = await authService.httpUserVerification({
-        //   email: googleAuthResponse.data.email,
-        // });
+        const result: any = await authService.httpSocialAuthUserVerification({
+          email: googleAuthResponse.data.email,
+        });
 
-
-        setUserRoleModal(true)
-        setUserDetail(responseObj)
+        if (result.statusCode == 200) {
+          localStorage.setItem('schestiToken', result.token);
+          router.push(`/dashboard`);
+        } else if (
+          result.statusCode == 400 &&
+          result.message === 'Verify from your email and complete your profile'
+        ) {
+          router.push(`/companydetails/${result.data.user._id}`);
+        } else if (
+          result.statusCode == 400 &&
+          result.message === "Payment method doesn't exist"
+        ) {
+          localStorage.setItem('schestiToken', result.token);
+          router.push('/plans');
+        } else {
+          setUserRoleModal(true);
+          setUserDetail(responseObj);
+        }
       } catch (error) {
         console.log('Login Failed', error);
       }
@@ -143,20 +155,20 @@ const Register = () => {
     },
   });
 
-
   const userRoleSelectionHandler = async (role: string) => {
-    setIsLoading(true)
-    setUserRoleModal(false)
-    let result: any = await dispatch(loginWithGoogle({ ...userDetail, userRole: role }));
-    setIsLoading(false)
+    setIsLoading(true);
+    setUserRoleModal(false);
+    let result: any = await dispatch(
+      loginWithGoogle({ ...userDetail, userRole: role })
+    );
+    setIsLoading(false);
     if (result.payload.statusCode == 200) {
       localStorage.setItem('schestiToken', result.payload.token);
-      // router.push(`/clients`);
       router.push(`/dashboard`);
     } else if (result.payload.statusCode == 400) {
       router.push(`/companydetails/${result.payload.data.user._id}`);
     }
-  }
+  };
   return (
     <WelcomeWrapper>
       <Image
@@ -311,8 +323,18 @@ const Register = () => {
           </Formik>
         </div>
       </section>
-      <UserRoleModal viewUserRoleModal={userRoleModal} setViewUserRoleModal={setUserRoleModal} userRoles={userRoles} userRoleSelectionHandler={userRoleSelectionHandler} />
-      <UserRoleModal viewUserRoleModal={userRegisterModal} setViewUserRoleModal={setUserRegisterModal} userRoles={userRoles} userRoleSelectionHandler={userRegisterHandler} />
+      <UserRoleModal
+        viewUserRoleModal={userRoleModal}
+        setViewUserRoleModal={setUserRoleModal}
+        userRoles={userRoles}
+        userRoleSelectionHandler={userRoleSelectionHandler}
+      />
+      <UserRoleModal
+        viewUserRoleModal={userRegisterModal}
+        setViewUserRoleModal={setUserRegisterModal}
+        userRoles={userRoles}
+        userRoleSelectionHandler={userRegisterHandler}
+      />
     </WelcomeWrapper>
   );
 };
