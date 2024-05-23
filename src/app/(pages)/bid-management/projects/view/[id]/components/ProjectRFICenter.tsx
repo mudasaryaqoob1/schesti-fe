@@ -133,6 +133,7 @@ export function ProjectRFICenter({ projectId }: Props) {
                     }}
                     projectId={rfi.projectId}
                     messageId={rfi._id}
+                    isDisabledPublic={rfi.type === 'private'}
                   />
                   {typeof rfi.user !== 'string' && rfi.user._id === authUser.user?._id ? <UpdateRFI onSuccess={(_rfi) => {
                     const updatedRfis = [...rfis].map(rfiItem => {
