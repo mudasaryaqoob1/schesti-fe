@@ -107,12 +107,6 @@ const Tabs = () => {
         </li>
         {planFeatureOptions.map((feature, index) => {
           if (feature.options) {
-            if (
-              process.env.NEXT_PUBLIC_IS_MVP_1 === 'true' &&
-              feature.title.includes('Bid')
-            ) {
-              return '';
-            }
             return (
               <li key={index}>
                 <Dropdown
