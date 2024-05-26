@@ -8,8 +8,8 @@ import { SearchOutlined } from '@ant-design/icons';
 import { Pagination, Dropdown, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { Routes } from '@/app/utils/plans.utils';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@/redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/redux/store';
 import {
   postProjectActions,
   resetPostProjectAction,
@@ -27,6 +27,7 @@ import { DeletePopup } from '../post/components/DeletePopup';
 import { USCurrencyFormat } from '@/app/utils/format';
 import { Excel } from 'antd-table-saveas-excel';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { IUserInterface } from '@/app/interfaces/user.interface';
 
 const RES_PER_PAGE = 10;
 
@@ -36,6 +37,8 @@ function Page() {
   const [selectedProject, setSelectedProject] = useState<IBidManagement | null>(
     null
   );
+
+  const authUser = useSelector((state: RootState) => state.auth.user as { user?: IUserInterface });
 
   const [showProjectDeleteModal, setShowProjectDeleteModal] =
     useState<boolean>(false);
@@ -179,6 +182,7 @@ function Page() {
               {
                 key: 'edit',
                 label: <p>Edit</p>,
+                disabled: typeof record.user === 'string' ? authUser?.user?._id !== record.user : authUser.user?._id !== record.user._id,
               },
               {
                 key: 'view',
