@@ -21,7 +21,7 @@ import { login, loginWithGoogle } from '@/redux/authSlices/auth.thunk';
 import PrimaryHeading from '@/app/component/headings/primary';
 import Description from '@/app/component/description';
 import { USER_ROLES_ENUM } from '@/app/constants/constant';
-import UserRoleModal from '../userRolesModal'
+import UserRoleModal from '../userRolesModal';
 import { CheckOtherRoles, navigateUserWhileAuth } from '@/app/utils/auth.utils';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { authService } from '@/app/services/auth.service';
@@ -47,22 +47,22 @@ const Login = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const [loading, setLoading] = useState(false);
-  const [userRoleModal, setUserRoleModal] = useState(false)
-  const [userDetail, setUserDetail] = useState<any>([])
+  const [userRoleModal, setUserRoleModal] = useState(false);
+  const [userDetail, setUserDetail] = useState<any>([]);
   let userRoles = [
     {
       role: USER_ROLES_ENUM.OWNER,
-      desc: 'It is a long established fact that a reader will be distracted by the readable content of'
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of',
     },
     {
       role: USER_ROLES_ENUM.CONTRACTOR,
-      desc: 'It is a long established fact that a reader will be distracted by the readable content of'
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of',
     },
     {
       role: USER_ROLES_ENUM.SUBCONTRACTOR,
-      desc: 'It is a long established fact that a reader will be distracted by the readable content of'
-    }
-  ]
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of',
+    },
+  ];
 
   const submitHandler = async ({ email, password }: ILogInInterface) => {
     setLoading(true);
@@ -75,12 +75,10 @@ const Login = () => {
         CheckOtherRoles(result.payload.data?.user.roles) &&
         result.payload.data.user?.isPaymentConfirm
       ) {
-        console.log(result.payload, 'result.payload');
         const session = result.payload?.token;
         localStorage.setItem('schestiToken', session);
         router.push('/dashboard');
         return;
-
       }
       const responseLink = navigateUserWhileAuth(result.payload.data.user);
 
@@ -88,13 +86,16 @@ const Login = () => {
         router.push(responseLink);
         return;
       } else {
-        toast.warning("You are not allowed to login. ")
+        toast.warning('You are not allowed to login. ');
       }
     } else {
       setLoading(false);
       // if statusCode === 400 and email is not verified then redirect to checkmail page
       const emailVerificationMessage = 'Verify from your email';
-      if (result.payload.statusCode === 400 && result.payload.message.includes(emailVerificationMessage)) {
+      if (
+        result.payload.statusCode === 400 &&
+        result.payload.message.includes(emailVerificationMessage)
+      ) {
         router.push(`/checkmail?email=${email}`);
         return;
       } else {
@@ -122,23 +123,30 @@ const Login = () => {
           providerId: googleAuthResponse.data.sub,
         };
 
-        const result: any = await authService.httpSocialAuthUserVerification({
-          email: googleAuthResponse.data.email,
-        });
-
-        if (result.statusCode == 200) {
+        const checkUserExist: any =
+          await authService.httpSocialAuthUserVerification({
+            email: googleAuthResponse.data.email,
+          });
+        if (checkUserExist.statusCode == 200) {
+          let result: any = await dispatch(
+            loginWithGoogle({
+              ...responseObj,
+              userRole: checkUserExist?.data?.user?.userRole,
+            })
+          );
           localStorage.setItem('schestiToken', result.token);
           router.push(`/dashboard`);
         } else if (
-          result.statusCode == 400 &&
-          result.message === 'Verify from your email and complete your profile'
+          checkUserExist.statusCode == 400 &&
+          checkUserExist.message ===
+            'Verify from your email and complete your profile'
         ) {
-          router.push(`/companydetails/${result.data.user._id}`);
+          router.push(`/companydetails/${checkUserExist.data.user._id}`);
         } else if (
-          result.statusCode == 400 &&
-          result.message === "Payment method doesn't exist"
+          checkUserExist.statusCode == 400 &&
+          checkUserExist.message === "Payment method doesn't exist"
         ) {
-          localStorage.setItem('schestiToken', result.token);
+          localStorage.setItem('schestiToken', checkUserExist.token);
           router.push('/plans');
         } else {
           setUserRoleModal(true);
@@ -154,10 +162,12 @@ const Login = () => {
   });
 
   const userRoleSelectionHandler = async (role: string) => {
-    setLoading(true)
-    let result: any = await dispatch(loginWithGoogle({ ...userDetail, userRole: role }));
-    setUserRoleModal(false)
-    setLoading(false)
+    setLoading(true);
+    let result: any = await dispatch(
+      loginWithGoogle({ ...userDetail, userRole: role })
+    );
+    setUserRoleModal(false);
+    setLoading(false);
     if (result.payload.statusCode == 200) {
       localStorage.setItem('schestiToken', result.payload.token);
       // router.push(`/clients`);
@@ -165,7 +175,7 @@ const Login = () => {
     } else if (result.payload.statusCode == 400) {
       router.push(`/companydetails/${result.payload.data.user._id}`);
     }
-  }
+  };
 
   return (
     <WelcomeWrapper>
@@ -283,7 +293,12 @@ const Login = () => {
           </div>
         </section>
       </React.Fragment>
-      <UserRoleModal viewUserRoleModal={userRoleModal} setViewUserRoleModal={setUserRoleModal} userRoles={userRoles} userRoleSelectionHandler={userRoleSelectionHandler} />
+      <UserRoleModal
+        viewUserRoleModal={userRoleModal}
+        setViewUserRoleModal={setUserRoleModal}
+        userRoles={userRoles}
+        userRoleSelectionHandler={userRoleSelectionHandler}
+      />
     </WelcomeWrapper>
   );
 };

@@ -28,7 +28,7 @@ export function RequestForPost() {
             <CustomButton
               text="Request for post"
               className="!rounded-full !w-48 mt-[48px] !text-[#8449EB]"
-              onClick={() => router.push('/contact')}
+              onClick={() => router.push('/request-a-demo')}
             />
           </div>
           <div className="hidden xl:block">

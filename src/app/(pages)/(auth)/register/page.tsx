@@ -124,23 +124,30 @@ const Register = () => {
           providerId: googleAuthResponse.data.sub,
         };
 
-        const result: any = await authService.httpSocialAuthUserVerification({
-          email: googleAuthResponse.data.email,
-        });
-
-        if (result.statusCode == 200) {
+        const checkUserExist: any =
+          await authService.httpSocialAuthUserVerification({
+            email: googleAuthResponse.data.email,
+          });
+        if (checkUserExist.statusCode == 200) {
+          let result: any = await dispatch(
+            loginWithGoogle({
+              ...responseObj,
+              userRole: checkUserExist?.data?.user?.userRole,
+            })
+          );
           localStorage.setItem('schestiToken', result.token);
           router.push(`/dashboard`);
         } else if (
-          result.statusCode == 400 &&
-          result.message === 'Verify from your email and complete your profile'
+          checkUserExist.statusCode == 400 &&
+          checkUserExist.message ===
+            'Verify from your email and complete your profile'
         ) {
-          router.push(`/companydetails/${result.data.user._id}`);
+          router.push(`/companydetails/${checkUserExist.data.user._id}`);
         } else if (
-          result.statusCode == 400 &&
-          result.message === "Payment method doesn't exist"
+          checkUserExist.statusCode == 400 &&
+          checkUserExist.message === "Payment method doesn't exist"
         ) {
-          localStorage.setItem('schestiToken', result.token);
+          localStorage.setItem('schestiToken', checkUserExist.token);
           router.push('/plans');
         } else {
           setUserRoleModal(true);
