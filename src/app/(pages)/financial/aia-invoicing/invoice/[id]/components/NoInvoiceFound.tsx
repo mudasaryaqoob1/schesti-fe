@@ -1,11 +1,11 @@
 import CustomButton from '@/app/component/customButton/button';
 import Description from '@/app/component/description';
 import SecondaryHeading from '@/app/component/headings/Secondary';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { Image } from 'antd';
-import { useRouter } from 'next/navigation';
 
 export function NoInvoiceFound() {
-  const router = useRouter();
+  const router = useRouterHook();
 
   return (
     <section className="mt-6 mx-4 grid items-center h-[70vh]">

@@ -1,14 +1,15 @@
 'use client';
 import { useResponseHook } from '@/app/hooks/useResponsive.hook';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { MenuOutlined } from '@ant-design/icons';
 import { Dropdown } from 'antd';
 import Image from 'next/image';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, } from 'next/navigation';
 
 export function LandingNavbar() {
   const responsive = useResponseHook();
   const pathname = usePathname();
-  const router = useRouter();
+  const router = useRouterHook();
 
   if (responsive.lg) {
     return (
@@ -25,17 +26,15 @@ export function LandingNavbar() {
             />
             <div className="mt-1 space-x-8">
               <a
-                className={`text-white cursor-pointer text-lg pb-1 font-medium ${
-                  pathname === '/' ? ' border-b-2 border-[#ffc107]' : ''
-                }`}
+                className={`text-white cursor-pointer text-lg pb-1 font-medium ${pathname === '/' ? ' border-b-2 border-[#ffc107]' : ''
+                  }`}
                 onClick={() => router.push('/')}
               >
                 Home
               </a>
               <a
-                className={`text-white cursor-pointer text-lg pb-1 font-medium ${
-                  pathname === '/pricing' ? ' border-b-2 border-[#ffc107]' : ''
-                }`}
+                className={`text-white cursor-pointer text-lg pb-1 font-medium ${pathname === '/pricing' ? ' border-b-2 border-[#ffc107]' : ''
+                  }`}
                 onClick={() => router.push('/pricing')}
               >
                 Pricing
@@ -85,9 +84,8 @@ export function LandingNavbar() {
                   key: 'home',
                   label: (
                     <p
-                      className={`font-semibold py-2 px-4    hover:text-gray-600 ${
-                        pathname === '/' ? ' border-b-2 border-[#ffc107]' : ''
-                      }`}
+                      className={`font-semibold py-2 px-4    hover:text-gray-600 ${pathname === '/' ? ' border-b-2 border-[#ffc107]' : ''
+                        }`}
                       onClick={() => router.push('/')}
                     >
                       Home
@@ -98,11 +96,10 @@ export function LandingNavbar() {
                   key: 'pricing',
                   label: (
                     <p
-                      className={`font-semibold py-2 px-4    hover:text-gray-600 ${
-                        pathname === '/pricing'
+                      className={`font-semibold py-2 px-4    hover:text-gray-600 ${pathname === '/pricing'
                           ? ' border-b-2 border-[#ffc107]'
                           : ''
-                      }`}
+                        }`}
                       onClick={() => router.push('/pricing')}
                     >
                       Pricing
@@ -118,7 +115,7 @@ export function LandingNavbar() {
                           ? ' border-b-2 border-[#ffc107]'
                           : ''
                       }`}
-                      onClick={() => router.push('/corequest-a-demontact')}
+                      onClick={() => router.push('/request-a-demo')}
                     >
                       Request a demo
                     </p>

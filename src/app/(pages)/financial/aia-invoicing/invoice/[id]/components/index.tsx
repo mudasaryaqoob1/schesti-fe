@@ -31,7 +31,6 @@ const G703_KEY = 'G703';
 const G702_KEY = 'G702';
 
 export function PhaseComponent({ parentInvoice }: Props) {
-  // const router = useRouter();
   const auth = useSelector((state: RootState) => state.auth);
   const user = auth.user?.user as IUpdateCompanyDetail | undefined;
 

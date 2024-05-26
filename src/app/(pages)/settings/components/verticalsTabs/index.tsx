@@ -1,9 +1,10 @@
 'use client';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { bg_style, senaryHeading } from '@/globals/tailwindvariables';
-import { useRouter, usePathname, useParams } from 'next/navigation';
+import { usePathname, useParams } from 'next/navigation';
 
 const Index = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const pathname = usePathname();
   const { id } = useParams();
   const active =
@@ -39,9 +40,8 @@ const Index = () => {
         {tabs.map((tab) => (
           <p
             key={tab.id}
-            className={`py-3 px-3 !text-sm cursor-pointer transition-colors ${senaryHeading} ${
-              tab.route.includes(pathname) ? active : ''
-            } `}
+            className={`py-3 px-3 !text-sm cursor-pointer transition-colors ${senaryHeading} ${tab.route.includes(pathname) ? active : ''
+              } `}
             onClick={() => router.push(tab.route[0])}
           >
             {tab.name}

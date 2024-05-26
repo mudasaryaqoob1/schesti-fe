@@ -17,7 +17,7 @@ import { fetchPricingPlan } from '@/redux/pricingPlanSlice/pricingPlan.thunk';
 import SinglePlan from '../(pages)/settings/plans/oldSubscriptions/components/plan/plan';
 import { GatewayToEfficiency } from '../component/landing/GatewayToEfficiency';
 import { RequestForPost } from '../component/landing/RequestForPost';
-import { useRouter } from 'next/navigation';
+import { useRouterHook } from '../hooks/useRouterHook';
 
 export default function PricingPage() {
   const { token } = theme.useToken();
@@ -33,7 +33,7 @@ export default function PricingPage() {
     [] as IPricingPlan[]
   );
   const [isDuration, setIsDuration] = useState('monthly');
-  const router = useRouter();
+  const router = useRouterHook();
   const plansData = useSelector(selectPricingPlans);
   const isLoading = useSelector(selectPricingPlansLoading);
   const isError = useSelector(selectPricingPlansError);

@@ -6,7 +6,6 @@ import * as Yup from 'yup';
 import { Checkbox, Form } from 'antd';
 import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
-import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import Link from 'next/link';
@@ -23,8 +22,12 @@ import { AppDispatch } from '@/redux/store';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { USER_ROLES_ENUM } from '@/app/constants/constant';
-import UserRoleModal from '../userRolesModal';
+import UserRoleModal from '../userRolesModal'
+import { ShouldHaveAtLeastCharacterRegex } from '@/app/utils/regex.util';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { authService } from '@/app/services/auth.service';
+
+
 
 const { CONTRACTOR } = USER_ROLES_ENUM;
 
@@ -37,7 +40,7 @@ const initialValues: ISignUpInterface = {
 };
 
 const RegisterSchema: any = Yup.object({
-  name: Yup.string().required('Name is required'),
+  name: Yup.string().matches(ShouldHaveAtLeastCharacterRegex, { "message": "Name should have atleast 1 character" }).max(30, "Name must have atleast 30 characters").required('Name is required'),
   email: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
@@ -55,7 +58,7 @@ const RegisterSchema: any = Yup.object({
 });
 
 const Register = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const dispatch = useDispatch<AppDispatch>();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -267,7 +270,7 @@ const Register = () => {
                       label="Confirm password"
                       type="password"
                       name="confirmPassword"
-                      placeholder="confirm Password"
+                      placeholder="Confirm Password"
                     />
 
                     <Checkbox name='isTermsAccepted' checked={formik.values.isTermsAccepted} onChange={formik.handleChange} className='text-xs'>

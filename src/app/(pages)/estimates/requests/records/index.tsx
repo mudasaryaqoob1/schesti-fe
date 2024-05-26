@@ -3,7 +3,6 @@ import type { ColumnsType } from 'antd/es/table';
 import { Dropdown, Table } from 'antd';
 import type { MenuProps } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { useRouter } from 'next/navigation';
 import { AppDispatch } from '@/redux/store';
 import {
   selectEstimateRequests,
@@ -21,6 +20,7 @@ import { IEstimateRequest } from '@/app/interfaces/estimateRequests/estimateRequ
 import ModalComponent from '@/app/component/modal';
 import { DeleteContent } from '@/app/component/delete/DeleteContent';
 import NoDataComponent from '@/app/component/noData';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 interface DataType {
   key: React.Key;
@@ -34,7 +34,7 @@ interface DataType {
 }
 
 const EstimateRequestTable: React.FC = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const dispatch = useDispatch<AppDispatch>();
 
   const [selectedEstimate, setSelecteEstimate] = useState<
@@ -202,9 +202,9 @@ const EstimateRequestTable: React.FC = () => {
     },
   ];
 
-  console.log(estimateRequestsData , 'estimateRequestsData');
-  
-  
+  console.log(estimateRequestsData, 'estimateRequestsData');
+
+
   return (
     <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid border-silverGray shadow-secondaryTwist">
       {selectedEstimate ? (
@@ -246,14 +246,14 @@ const EstimateRequestTable: React.FC = () => {
             <NoDataComponent title='No Data Found' description='Please create estimate request first to create an estimate' btnText='Create Estimate Request' isButton={true} link='/estimates/requests/create' />
           ) : (
             <Table
-            loading={estimateRequestsLoading}
-            columns={columns}
-            dataSource={estimateRequestsData}
-            pagination={{ position: ['bottomCenter'] }}
-          />
+              loading={estimateRequestsLoading}
+              columns={columns}
+              dataSource={estimateRequestsData}
+              pagination={{ position: ['bottomCenter'] }}
+            />
           )
         }
-       
+
       </div>
     </section>
   );

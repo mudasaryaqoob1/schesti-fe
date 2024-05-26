@@ -4,7 +4,6 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Form } from 'antd';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 // module imports
 import { AppDispatch } from '@/redux/store';
@@ -16,6 +15,7 @@ import PrimaryHeading from '@/app/component/headings/primary';
 import { IForgotPasswordInterface } from '@/app/interfaces/authInterfaces/forgotPassword.interface';
 import { forgotPasswordHandler } from '@/redux/authSlices/auth.thunk';
 import { toast } from 'react-toastify';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const initialValues: IForgotPasswordInterface = {
   email: '',
@@ -26,7 +26,7 @@ const ForgotPasswordSchema: any = Yup.object({
 });
 
 const ForgetPassword = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const dispatch = useDispatch<AppDispatch>();
 
   const [isLoading, setIsLoading] = useState(false);

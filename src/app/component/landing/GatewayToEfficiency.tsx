@@ -1,10 +1,11 @@
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, } from 'next/navigation';
 import CustomButton from '../customButton/white';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 export function GatewayToEfficiency() {
-  const router = useRouter();
+  const router = useRouterHook();
   const pathname = usePathname();
 
   return (

@@ -1,10 +1,10 @@
 'use client';
 import { Image } from 'antd';
 import CustomButton from '../customButton/white';
-import { useRouter } from 'next/navigation';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 export function RequestForPost() {
-  const router = useRouter();
+  const router = useRouterHook();
 
   return (
     <div className="mt-20 bg-[#344054]">

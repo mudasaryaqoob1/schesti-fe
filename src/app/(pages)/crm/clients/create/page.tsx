@@ -2,7 +2,6 @@
 import { useLayoutEffect, useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -24,6 +23,7 @@ import { userService } from '@/app/services/user.service';
 import { PhoneNumberRegex } from '@/app/utils/regex.util';
 import { withAuth } from '@/app/hoc/withAuth';
 import { Routes } from '@/app/utils/plans.utils';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const newClientSchema = Yup.object({
   firstName: Yup.string()
@@ -57,7 +57,7 @@ const initialValues: IClient = {
 };
 
 const CreateClient = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const token = useSelector(selectToken);
 
   useLayoutEffect(() => {

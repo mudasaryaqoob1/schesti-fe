@@ -5,7 +5,6 @@ import * as Yup from 'yup';
 import Image from 'next/image';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { useRouter } from 'next/navigation';
 
 // module imports
 import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
@@ -18,6 +17,7 @@ import { bg_style } from '@/globals/tailwindvariables';
 import FormControl from '@/app/component/formControl';
 import VerticleBar from '@/app/(pages)/settings/verticleBar';
 import { userService } from '@/app/services/user.service';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const defaultOptions = [
   { value: userRoles.COMPANY, label: userRoles.COMPANY },
@@ -28,13 +28,13 @@ const defaultOptions = [
 ];
 
 const AddNewUser = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const { user } = useSelector((state: any) => state.user);
 
 
   const [isLoading, setisLoading] = useState(false);
 
- 
+
 
   const newClientSchema: any = Yup.object({
     firstName: Yup.string().required('First name is required!'),

@@ -10,10 +10,10 @@ import { quinaryHeading } from '@/globals/tailwindvariables';
 import CustomButton from '@/app/component/customButton/button';
 import { authService } from '@/app/services/auth.service';
 import { toast } from 'react-toastify';
-import { useRouter } from 'next/navigation';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const EmailVerified = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const searchParams = useSearchParams();
   const emailQueryParameter = searchParams.get('email');
 

@@ -59,7 +59,7 @@ export function DateInputComponent({
       />
       {/* //   )} */}
       {/* // </Field> */}
-      {hasError && (
+      {errorMessage && (
         <p className="text-red-500 text-xs mt-1.5">{errorMessage}</p>
       )}
     </div>

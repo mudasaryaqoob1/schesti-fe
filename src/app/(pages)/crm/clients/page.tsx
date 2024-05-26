@@ -1,6 +1,5 @@
 'use client';
 import { useEffect, useCallback, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Dropdown, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { MenuProps } from 'antd';
@@ -26,6 +25,7 @@ import { DeleteContent } from '@/app/component/delete/DeleteContent';
 import ModalComponent from '@/app/component/modal';
 import { withAuth } from '@/app/hoc/withAuth';
 import { Routes } from '@/app/utils/plans.utils';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 interface DataType {
   firstName: string;
@@ -72,7 +72,7 @@ const inActiveClientMenuItems: MenuProps['items'] = [
 ];
 
 const ClientTable = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const dispatch = useDispatch<AppDispatch>();
 
   const clientsData: IClient[] | null = useSelector(selectClients);
@@ -144,8 +144,8 @@ const ClientTable = () => {
           );
         } else {
           return (<p className="bg-lime-100 w-max text-[#b91c1c] bg-[#e7c3c3] px-2 py-1 rounded-full">
-          In Active
-        </p>)
+            In Active
+          </p>)
         }
       },
     },
@@ -221,31 +221,31 @@ const ClientTable = () => {
       },
     },
   ];
-  
+
   const filteredClients = clientsData
     ? clientsData.filter((client) => {
-        if (!search) {
-          return {
-            ...client
-          };
-        }
-        return (
-          client.firstName.toLowerCase().includes(search.toLowerCase()) ||
-          client.lastName.toLowerCase().includes(search.toLowerCase()) ||
-          client.companyName.toLowerCase().includes(search.toLowerCase()) ||
-          client.email?.includes(search) || 
-          client.phone?.includes(search) || 
-          client.address?.includes(search)
-        );
-      }).map((clientRecord) => {
-        return{
-          ...clientRecord,
-          firstName : `${clientRecord.firstName} ${clientRecord.lastName}`,
-        }
-      })
+      if (!search) {
+        return {
+          ...client
+        };
+      }
+      return (
+        client.firstName.toLowerCase().includes(search.toLowerCase()) ||
+        client.lastName.toLowerCase().includes(search.toLowerCase()) ||
+        client.companyName.toLowerCase().includes(search.toLowerCase()) ||
+        client.email?.includes(search) ||
+        client.phone?.includes(search) ||
+        client.address?.includes(search)
+      );
+    }).map((clientRecord) => {
+      return {
+        ...clientRecord,
+        firstName: `${clientRecord.firstName} ${clientRecord.lastName}`,
+      }
+    })
     : [];
 
-    
+
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       {selectedClient && showDeleteModal ? (
@@ -260,7 +260,7 @@ const ClientTable = () => {
                 await dispatch(
                   deleteCompanyClient(selectedClient._id as string)
                 );
-               
+
               }
               setShowDeleteModal(false);
             }}
@@ -290,7 +290,7 @@ const ClientTable = () => {
             </div>
             <Button
               text="Add New client"
-              className="!w-48 "
+              className="!w-48"
               icon="/plus.svg"
               iconwidth={20}
               iconheight={20}
