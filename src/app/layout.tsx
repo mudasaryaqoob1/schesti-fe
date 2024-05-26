@@ -18,7 +18,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  console.log('logs for deployment');
   
   return (
     <html lang="en">
