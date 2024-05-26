@@ -110,7 +110,7 @@ export default function PrivacyPage() {
                     />
                     <Description
                         title={SIDE_LINKS[10]}
-                        description={`Opt-Out Users may always “opt-out” of having their information used for most purposes. For example, users who no longer wish to receive our newsletter and promotional communications may opt-out of receiving those communications by contacting us at www.Schesti.com/contact. Notifications for Registered Users Registered users of the Services may receive regular communications from us regarding bid requests we have received, or directly from our users. We may use any contact information we have for Service Providers to provide such communications. 
+                        description={`Opt-Out Users may always “opt-out” of having their information used for most purposes. For example, users who no longer wish to receive our newsletter and promotional communications may opt-out of receiving those communications by contacting us at www.Schesti.com/request-a-demo. Notifications for Registered Users Registered users of the Services may receive regular communications from us regarding bid requests we have received, or directly from our users. We may use any contact information we have for Service Providers to provide such communications. 
                         Registered users can update and maintain their Personal Information through the Services. Changes made are immediately reflected throughout our system.
                         Promotional Communications We send all new members an e-mail to verify usernames and passwords. Existing users will occasionally receive information on our services, products and special deals as well. We offer all users the opportunity to opt-out of these communications. 
                         
@@ -129,13 +129,13 @@ export default function PrivacyPage() {
                     />
                     <Description
                         title={SIDE_LINKS[13]}
-                        description="If you are entitled to specific rights regarding your personal information under applicable state law, please contact us at www.Schesti.com/contact."
+                        description="If you are entitled to specific rights regarding your personal information under applicable state law, please contact us at www.Schesti.com/request-a-demo."
                     />
                     <Description
                         title={SIDE_LINKS[14]}
                     >
                         <p className="text-[#333E4F] text-base leading-7 font-normal">
-                            Users should inform us at <a href="/contact" className="text-[#7138DF] font-semibold">www.Schesti.com/contact</a> if their Personal Information changes or if they no longer wish to use our services. For any questions, concerns, or suggestions regarding this Privacy Policy, please contact us at <a href="/contact" className="text-[#7138DF] font-semibold">www.Schesti.com/contact</a>.
+                            Users should inform us at <a href="/request-a-demo" className="text-[#7138DF] font-semibold">www.Schesti.com/request-a-demo</a> if their Personal Information changes or if they no longer wish to use our services. For any questions, concerns, or suggestions regarding this Privacy Policy, please contact us at <a href="/request-a-demo" className="text-[#7138DF] font-semibold">www.Schesti.com/request-a-demo</a>.
                         </p>
                     </Description>
                 </div>

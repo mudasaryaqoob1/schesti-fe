@@ -33,11 +33,11 @@ export function GatewayToEfficiency() {
                 onClick={() => router.push('/register')}
               />
 
-              {pathname !== '/contact' ? (
+              {pathname !== '/request-a-demo' ? (
                 <CustomButton
                   text="Request a demo"
                   className="!rounded-full !w-48 !bg-transparent  !text-white"
-                  onClick={() => router.push('/contact')}
+                  onClick={() => router.push('/request-a-demo')}
                 />
               ) : null}
             </div>
