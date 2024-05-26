@@ -6,6 +6,7 @@ import { Divider } from 'antd';
 import type { AxiosError } from 'axios';
 import { useFormik } from 'formik';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
@@ -56,7 +57,7 @@ export default function LandingFooter() {
               </p>
 
               <p className={`text-white  text-lg pb-1 font-medium`}>
-                info@shesti.com
+              info@schesti.com
               </p>
             </div>
           </div>
@@ -76,7 +77,7 @@ export default function LandingFooter() {
             </a>
             <a
               className={`text-white cursor-pointer text-lg pb-1 font-medium`}
-              onClick={() => router.push('/contact')}
+              onClick={() => router.push('/request-a-demo')}
             >
               Request a demo
             </a>
@@ -122,14 +123,12 @@ export default function LandingFooter() {
         <Divider className="border-gray-400" />
         <div className="flex items-center justify-between">
           <div className="flex space-x-4">
-            <p className="text-white text-[14px] font-normal leading-[18.23px]">
+            <Link href="/terms-conditions" className="text-white hover:underline hover:underline-offset-2 text-[14px] font-normal leading-[18.23px]">
               Terms & Conditions
-            </p>
-            <p className="text-white hover:underline hover:underline-offset-2 cursor-pointer text-[14px] font-normal leading-[18.23px]" onClick={() => {
-              router.push('/privacy');
-            }}>
+            </Link>
+            <Link href="/privacy" className="text-white hover:underline hover:underline-offset-2 cursor-pointer text-[14px] font-normal leading-[18.23px]">
               Privacy Policy
-            </p>
+            </Link>
           </div>
           <div>
             <p className="text-white text-[14px] font-normal leading-[18.23px]">
@@ -195,7 +194,7 @@ export default function LandingFooter() {
           </a>
           <a
             className={`text-white cursor-pointer text-lg pb-1 font-normal`}
-            onClick={() => router.push('/contact')}
+            onClick={() => router.push('/request-a-demo')}
           >
             Request a demo
           </a>
@@ -245,7 +244,7 @@ export default function LandingFooter() {
         </p>
 
         <p className={`text-white  text-lg pb-1 font-medium`}>
-          info@shesti.com
+        info@schesti.com
         </p>
       </div>
 

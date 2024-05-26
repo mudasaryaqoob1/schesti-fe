@@ -20,6 +20,8 @@ export function LandingNavbar() {
               width={90}
               height={90}
               alt="Schesti"
+              onClick={() => router.push('/')}
+              className='cursor-pointer'
             />
             <div className="mt-1 space-x-8">
               <a
@@ -43,7 +45,7 @@ export function LandingNavbar() {
           <div className="flex space-x-4">
             <button
               className="inline-flex items-center justify-center whitespace-nowrap text-sm ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 cursor-pointer hover:bg-primary/90 h-10 bg-transparent text-white font-semibold py-2 px-4 rounded-full border border-white hover:border-gray-300 hover:text-gray-300"
-              onClick={() => router.push('/contact')}
+              onClick={() => router.push('/request-a-demo')}
             >
               Request a demo
             </button>
@@ -112,11 +114,11 @@ export function LandingNavbar() {
                   label: (
                     <p
                       className={`font-semibold py-2 px-4   hover:text-gray-600 ${
-                        pathname === '/contact'
+                        pathname === '/request-a-demo'
                           ? ' border-b-2 border-[#ffc107]'
                           : ''
                       }`}
-                      onClick={() => router.push('/contact')}
+                      onClick={() => router.push('/corequest-a-demontact')}
                     >
                       Request a demo
                     </p>

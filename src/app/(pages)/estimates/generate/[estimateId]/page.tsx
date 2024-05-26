@@ -7,7 +7,7 @@ import React, {
 } from 'react';
 import { useParams } from 'next/navigation';
 import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
+// import { RootState } from '@/redux/store';
 import Description from '@/app/component/description';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
@@ -16,15 +16,15 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 import MinDesc from '@/app/component/description/minDesc';
 import EstimatesTable from '../components/estimatesTable';
-import EstimatePDF from './estimatePDF';
+// import EstimatePDF from './estimatePDF';
 import CustomButton from '@/app/component/customButton/button';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import { estimateRequestService } from '@/app/services/estimates.service';
-import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
+// import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
 import { withAuth } from '@/app/hoc/withAuth';
 import { USCurrencyFormat } from '@/app/utils/format';
 import { HttpService } from '@/app/services/base.service';
-// import ClientPDF from '../components/clientPDF';
+import ClientPDF from '../components/clientPDF';
 
 const ViewEstimateDetail = () => {
   const { estimateId } = useParams();
@@ -37,8 +37,8 @@ const ViewEstimateDetail = () => {
     }
   }, [token]);
 
-  const auth = useSelector((state: RootState) => state.auth);
-  const user = auth.user?.user as IUpdateCompanyDetail | undefined;
+  // const auth = useSelector((state: RootState) => state.auth);
+  // const user = auth.user?.user as IUpdateCompanyDetail | undefined;
 
   const [pdfData, setPdfData] = useState<Object[]>([]);
   const [estimateDetailsSummary, setEstimateDetailsSummary] = useState<any>();
@@ -103,7 +103,7 @@ const ViewEstimateDetail = () => {
           className="text-graphiteGray font-semibold"
         />
         <div className="flex gap-3 items-center">
-          <PDFDownloadLink
+          {/* <PDFDownloadLink
             document={
               <EstimatePDF
                 estimateDetail={estimateDetailsSummary}
@@ -121,9 +121,9 @@ const ViewEstimateDetail = () => {
                 className="!w-full"
               />
             )}
-          </PDFDownloadLink>
+          </PDFDownloadLink> */}
 
-          {/* <PDFDownloadLink
+          <PDFDownloadLink
             document={
               <ClientPDF
                 estimateDetail={estimateDetailsSummary}
@@ -141,7 +141,7 @@ const ViewEstimateDetail = () => {
                 className="!w-full"
               />
             )}
-          </PDFDownloadLink> */}
+          </PDFDownloadLink>
 
           {/* <PDFViewer>
             <EstimatePDF
