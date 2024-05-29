@@ -122,7 +122,10 @@ const ViewEstimateDetail = () => {
 
 
     const scopeItems = _.flatMap(estimatesRecord, (estimate: any) => {
-      return estimate?.scopeItems
+      return estimate?.scopeItems.map((item: any) => ({
+        ...item,
+        category: estimate.title
+      }))
     });
 
     let estimateData = formatDataFromAntdColumns(estimateTableColumns, scopeItems).map((row: any) => {
