@@ -162,6 +162,7 @@ const confirmColumns: any = [
   },
 ];
 
+export const estimateTableColumns = confirmColumns;
 interface IProps {
   category: string;
   subCategory: string;
