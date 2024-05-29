@@ -117,7 +117,7 @@ const ViewEstimateDetail = () => {
     ];
 
     // Estimate Row
-    const estimateHeader = ["Description", "Qty", "Wastage", "Qty with wastage", "Total Labour Hours", "Per Hours Labor Rate", 'Total Labor Cost', 'Unit Material Cost', 'Total Material Cost', 'Total Equipment Cost', "Total Cost"];
+    const estimateHeader = ["Title", "Description", "Qty", "Wastage", "Qty with wastage", "Total Labour Hours", "Per Hours Labor Rate", 'Total Labor Cost', 'Unit Material Cost', 'Total Material Cost', 'Total Equipment Cost', "Total Cost"];
 
 
 
@@ -127,6 +127,7 @@ const ViewEstimateDetail = () => {
 
     let estimateData = formatDataFromAntdColumns(estimateTableColumns, scopeItems).map((row: any) => {
       return [
+        row.category,
         row.description,
         row.qty,
         row.wastage,

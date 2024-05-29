@@ -38,6 +38,14 @@ const calculateTotalCost = (record: DataType) => {
 const confirmColumns: any = [
   {
     title: 'Description',
+    dataIndex: 'category',
+    key: 'category',
+    fixed: 'left',
+    width: 200,
+    hidden: true,
+  },
+  {
+    title: 'Description',
     dataIndex: 'description',
     key: 'description',
     fixed: 'left',
