@@ -155,7 +155,14 @@ const ViewEstimateDetail = () => {
       estimateDetailsSummary?.totalBidDetail?.materialTax,
     ]
 
-    setCsvData([clientInformationHeader, clientInformationData, projectHeader, projectData, estimateHeader, ...estimateData, summaryHeader, summaryData]);
+    setCsvData([
+      clientInformationHeader, clientInformationData,
+      [],
+      projectHeader, projectData,
+      [],
+      estimateHeader, ...estimateData,
+      [],
+      summaryHeader, summaryData]);
   }
   console.log({
     estimateDetailsSummary,
@@ -176,6 +183,7 @@ const ViewEstimateDetail = () => {
             data={csvData}
             className="!w-full"
             asyncOnClick={true}
+            filename={`estimate-${Date.now()}.csv`}
             onClick={(_e, done) => {
               downloadCSV()
               done()
