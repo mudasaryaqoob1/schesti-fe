@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import { Table } from 'antd';
+import { Button, Dropdown, Menu, Table } from 'antd';
 import type { ColumnsType, TableProps } from 'antd/es/table';
 import { AppDispatch } from '@/redux/store';
 import { selectTakeoffSummaries } from '@/redux/takeoffSummaries/takeoffSummaries.Selector';
@@ -9,8 +9,10 @@ import {
 } from '@/redux/takeoffSummaries/takeoffSummaries.thunk';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
-import { NextRouter, useRouter } from 'next/router';
+import { NextRouter } from 'next/router';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import { EllipsisOutlined, MoreOutlined } from '@ant-design/icons';
+import { useRouter } from 'next/navigation';
 // Import your API service
 
 interface DataType {
@@ -25,115 +27,114 @@ const columns: ColumnsType<DataType> = [
   {
     title: 'Project Name',
     dataIndex: 'name',
-    // filters: [
-    //   {
-    //     text: 'London',
-    //     value: 'London',
-    //   },
-    //   {
-    //     text: 'New York',
-    //     value: 'New York',
-    //   },
-    // ],
-    // onFilter: (value: string, record) => record.address.indexOf(value) === 0,
   },
   {
     title: 'Total scope of work',
     dataIndex: 'scope',
-    // filters: [
-    //   {
-    //     text: 'London',
-    //     value: 'London',
-    //   },
-    //   {
-    //     text: 'New York',
-    //     value: 'New York',
-    //   },
-    // ],
-    // onFilter: (value: string, record) => record.address.indexOf(value) === 0,
   },
   {
     title: 'Measurements Date',
     dataIndex: 'createdAt',
-    // filters: [
-    //   {
-    //     text: 'London',
-    //     value: 'London',
-    //   },
-    //   {
-    //     text: 'New York',
-    //     value: 'New York',
-    //   },
-    // ],
-    // onFilter: (value: string, record) => record.address.indexOf(value) === 0,
+  },
+  {
+    title: 'Deadline',
+    dataIndex: 'deadline',
   },
   {
     title: 'Action',
     dataIndex: 'action',
-    // filters: [
-    //   {
-    //     text: 'London',
-    //     value: 'London',
-    //   },
-    //   {
-    //     text: 'New York',
-    //     value: 'New York',
-    //   },
-    // ],
-    // onFilter: (value: string, record) => record.address.indexOf(value) === 0,
   },
 ];
-export interface ITableProps {handleEditClick:(item:any)=>void}
-const Index: React.FC<ITableProps> = ({handleEditClick}:ITableProps) => {
-  // const router = useRouter()
+export interface ITableProps { handleEditClick: (item: any) => void, search: any; }
+const Index: React.FC<ITableProps> = ({ handleEditClick, search }: ITableProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const summaries = useSelector(selectTakeoffSummaries);
+  const handleMenuClick = (e: any, record?: any) => {
+    if (e.key === 'edit') {
+      // Handle edit action
+      console.log('Edit action', record);
+      handleEditClick(record)
+    } else if (e.key === 'delete') {
+      // Handle delete action
+      console.log('Delete action', record);
+      dispatch(deleteSummaries(record?._id))
+    }
+  };
+
+  const menu = (it: any) => (
+    <Menu className='w-[180px]' onClick={(e: any) => { handleMenuClick(e, it) }}>
+      <Menu.Item key="edit">
+        Edit
+      </Menu.Item>
+      <Menu.Item key="view_estimate">
+        View Estimate
+      </Menu.Item>
+      <Menu.Item key="download">
+        Download
+      </Menu.Item>
+      <Menu.Item key="email">
+        Email
+      </Menu.Item>
+      <Menu.Item key="delete">
+        Delete
+      </Menu.Item>
+    </Menu>
+  );
 
   useEffect(() => {
     dispatch(fetchTakeoffSummaries({ page: 1, limit: 10 }));
   }, []); // Empty dependency array means this effect runs once on mount
 
   const formattedData = useMemo(() => {
-    return summaries?.map(
+    let sum = (search && search?.length > 0)
+      ? summaries?.filter((i: any) => (i.name?.toLowerCase()?.includes(search?.toLowerCase())))
+      : summaries
+    return sum?.map(
       (item: {
         _id: any;
         name: any;
         url: string;
         scope: { toString: () => any };
         createdAt: string;
+        deadline: any;
+        pages?: any;
       }) => ({
         key: item?._id, // Assume each item? has a unique id
         name: item?.name,
-        scope: item?.scope?.toString(), // Ensure scope is a string
-        createdAt: moment(item?.createdAt).format('YYYY-MM-DD'),
+        scope: item?.pages?.length?.toString(), // Ensure scope is a string
+        createdAt: moment(item?.createdAt).format('DD MMM YYYY, HH:mm'),
+        deadline: moment(item?.deadline).format('DD MMM YYYY'),
         action: (
-          <span className="flex flex-col space-y-2">
-            <button
-              id="editBtn"
-              onClick={() =>{handleEditClick(item)}}
-              className="cursor-pointer"
-            >
-              Edit
-            </button>
-            <button
-              id="downloadPdfBtn"
-              onClick={() => downloadPdfFromS3(item?.url)}
-              className="cursor-pointer"
-            >
-              Download PDF
-            </button>
-            <button
-              id="deletePdfBtn"
-              onClick={() => dispatch(deleteSummaries(item?._id))}
-              className="cursor-pointer"
-            >
-              Delete
-            </button>
-          </span>
+          // <span className="flex flex-col space-y-2">
+          //   <button
+          //     id="editBtn"
+          //     onClick={() =>{handleEditClick(item)}}
+          //     className="cursor-pointer"
+          //   >
+          //     Edit
+          //   </button>
+          //   <button
+          //     id="downloadPdfBtn"
+          //     onClick={() => downloadPdfFromS3(item?.url)}
+          //     className="cursor-pointer"
+          //   >
+          //     Download PDF
+          //   </button>
+          //   <button
+          //     id="deletePdfBtn"
+          //     onClick={() => dispatch(deleteSummaries(item?._id))}
+          //     className="cursor-pointer"
+          //   >
+          //     Delete
+          //   </button>
+          // </span>
+          <Dropdown className='flex items-center justify-center' overlay={menu(item)} trigger={['click']}>
+            <Button type="text" icon={<MoreOutlined className='!text-2xl !font-[800]' />} />
+          </Dropdown>
         ),
       })
     );
-  }, [summaries]);
+  }, [summaries, search]);
 
   const onChange: TableProps<DataType>['onChange'] = (
     pagination,
@@ -146,7 +147,7 @@ const Index: React.FC<ITableProps> = ({handleEditClick}:ITableProps) => {
 
   return (
     <div className="mt-4">
-      <Table columns={columns} dataSource={formattedData} onChange={onChange} />
+      <Table pagination={{ pageSize: 8 }} columns={columns} dataSource={formattedData} onChange={onChange} />
     </div>
   );
 };

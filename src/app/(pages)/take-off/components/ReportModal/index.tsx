@@ -78,14 +78,16 @@ const ReportModal = ({ setModalOpen, takeOff, modalOpen }: Props) => {
     console.log(reportData, " ===> Take offs reportData")
     return reportData
   }
-  getPageData()
+  // getPageData()
   useEffect(() => {
     setreportData(getPageData() ?? [])
     setuploadFileData(takeOff?.pages ?? [])
   }, [takeOff])
 
   useEffect(() => {
+    console.log(reportData, uploadFileData," ===> loading of capture ")
     if (Array.isArray(reportData) && reportData?.length > 0 && Array.isArray(uploadFileData) && uploadFileData?.length > 0) {
+      setloading(true)
       console.log(uploadFileData, reportData, " ===> Data of pages and reports")
       const loadImage = (src: string) => {
         return new Promise<HTMLImageElement>((resolve, reject) => {
@@ -275,7 +277,7 @@ const ReportModal = ({ setModalOpen, takeOff, modalOpen }: Props) => {
           setloading(false)
         } catch (error) {
           setloading(false)
-          console.log(error, 'error while capturing')
+          console.log(error, 'error while capturing loading of capture')
         }
       };
 

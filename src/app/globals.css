@@ -238,6 +238,7 @@ a {
   position: absolute;
   content: attr(data-tooltip);
   border: 1px solid black;
-  background: #eee;
+  background: #ffffff;
   padding: .25em;
+  z-index: 1000;
 }

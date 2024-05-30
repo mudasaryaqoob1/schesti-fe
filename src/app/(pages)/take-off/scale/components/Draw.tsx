@@ -30,6 +30,8 @@ import { ScaleData } from '../page';
 import useWheelZoom from './useWheelZoom';
 import { useDraw } from '@/app/hooks';
 import { Spin } from 'antd';
+import { useSelector } from 'react-redux';
+import { selectUser } from '@/redux/authSlices/auth.selector';
 
 const defaultCurrentLineState = { startingPoint: null, endingPoint: null };
 const defaultPolyLineState: LineInterface = {
@@ -60,6 +62,14 @@ interface Props {
   updateMeasurements?: any;
   draw: DrawInterface | any;
   setDraw: any;
+  stageScale:any;
+  stageX:any;
+  stageY:any;
+  handleWheel:any;
+  handleZoomIn:any;
+  handleZoomOut:any;
+  textColor?:any;
+  fillColor?:any;
 }
 
 const Draw: React.FC<Props> = ({
@@ -81,8 +91,18 @@ const Draw: React.FC<Props> = ({
   selectedCategory,
   updateMeasurements,
   draw,
-  setDraw
+  setDraw,
+  stageScale,
+  stageX,
+  stageY,
+  handleWheel,
+  handleZoomIn,
+  handleZoomOut,
+  textColor,
+  fillColor
 }) => {
+  const { user } = useSelector(selectUser)
+  console.log(user, " current working user")
   const { selected, subSelected = null } = selectedTool;
   const {
     calcLineDistance,
@@ -213,6 +233,7 @@ const Draw: React.FC<Props> = ({
         strokeWidth: border,
         textUnit: unit,
         dateTime: moment().toDate(),
+        user
       };
       setDraw((prev: any) => ({ ...prev, scale: [newLine] }));//[...prev.scale, newLine]
 
@@ -245,7 +266,9 @@ const Draw: React.FC<Props> = ({
         textUnit: unit,
         dateTime: moment().toDate(),
         projectName: 'Length Measurement',
-        category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement'
+        category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
+        user,
+        textColor:textColor
       };
       setDraw((prev: any) => ({ ...prev, line: [...(prev?.line ? prev?.line : []), newLine] }));
 
@@ -312,7 +335,10 @@ const Draw: React.FC<Props> = ({
                   textUnit: unit,
                   dateTime: moment().toDate(),
                   projectName: 'Area Measurement',
-                  category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Area Measurement'
+                  category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Area Measurement',
+                  user,
+                  textColor:textColor,
+                  fillColor:fillColor
                 };
 
                 updateDrawHistory(pageNumber.toString(), 'area', areaConfig);
@@ -348,6 +374,9 @@ const Draw: React.FC<Props> = ({
                   dateTime: moment().toDate(),
                   projectName: 'Volume Measurement',
                   category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Volume Measurement',
+                  user,
+                  textColor,
+                  fillColor:fillColor
                 };
 
                 updateDrawHistory(
@@ -378,6 +407,7 @@ const Draw: React.FC<Props> = ({
         dateTime: moment().toDate(),
         projectName: 'Count Measurement',
         category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Count Measurement',
+        user
       };
 
       setDraw((prev: any) => {
@@ -515,17 +545,17 @@ const Draw: React.FC<Props> = ({
     console.log(draw, drawHistory, " ===>reportdata", reportData, " ===> Draw state");
   }, [draw])
 
-  const {
-    stageScale,
-    stageX,
-    stageY,
-    handleWheel,
-    handleZoomIn,
-    handleZoomOut,
-  } = useWheelZoom({
-    compHeight: uploadFileData.height || 600,
-    compWidth: uploadFileData.width || 600,
-  });
+  // const {
+  //   stageScale,
+  //   stageX,
+  //   stageY,
+  //   handleWheel,
+  //   handleZoomIn,
+  //   handleZoomOut,
+  // } = useWheelZoom({
+  //   compHeight: uploadFileData.height || 600,
+  //   compWidth: uploadFileData.width || 600,
+  // });
   const stageParentRef = useRef<any>(null);
   const parentWdith = null//(stageParentRef.current?.getBoundingClientRect() && stageParentRef.current?.getBoundingClientRect()?.width) ? stageParentRef.current?.getBoundingClientRect()?.width : null;
   const parentHeight = null//(stageParentRef.current?.getBoundingClientRect() && stageParentRef.current?.getBoundingClientRect()?.height) ? stageParentRef.current?.getBoundingClientRect()?.height : null;
@@ -559,6 +589,8 @@ const Draw: React.FC<Props> = ({
                   id: `dynamic-${(draw?.dynamic?.length ?? 0) + 1}`,
                   projectName: 'Dynamic Measurement',
                   category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Dynamic Measurement',
+                  user,
+                  textColor
                 },
               ],
             }));
@@ -584,6 +616,8 @@ const Draw: React.FC<Props> = ({
                   id: `perimeter-${(draw?.perimeter?.length ?? 0) + 1}`,
                   projectName: 'Perimeter Measurement',
                   category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Perimeter Measurement',
+                  user,
+                  textColor
                 },
               ],
             }));
@@ -794,7 +828,7 @@ const Draw: React.FC<Props> = ({
                   {...lineMidPoint}
                   fontSize={textUnit}
                   text={lineDistance.toString()}
-                  fill="red"
+                  fill={rest?.textColor ?? "red"}
                 />
               </Group>
             );
@@ -852,7 +886,7 @@ const Draw: React.FC<Props> = ({
                   {...lineMidPoint}
                   fontSize={rest?.textUnit}
                   text={lineDistance.toString()}
-                  fill="red"
+                  fill={rest?.textColor ?? "red"}
                 />
               </Group>
             );
@@ -887,14 +921,14 @@ const Draw: React.FC<Props> = ({
                     e.cancelBubble = true;
                     setSelectedShape(e.currentTarget.attrs?.id || '');
                   }}
-                  fill="rgba(255, 0, 0, 0.2)"
+                  fill={rest?.fillColor ?? "rgba(255, 0, 0, 0.2)"}
                 />
                 <KonvaText
                   {...center}
                   fontSize={textUnit}
                   text={text}
                   offsetX={30}
-                  fill="red"
+                  fill={rest?.textColor ?? "red"}
                 />
               </Group>
             );
@@ -933,14 +967,14 @@ const Draw: React.FC<Props> = ({
                     e.cancelBubble = true;
                     setSelectedShape(e.currentTarget.attrs?.id || '');
                   }}
-                  fill="rgba(255, 255, 0, 0.2)"
+                  fill={rest?.fillColor ?? "rgba(255, 255, 0, 0.2)"}
                 />
                 <KonvaText
                   {...center}
                   fontSize={textUnit}
                   text={text}
                   offsetX={30}
-                  fill="red"
+                  fill={rest?.textColor ?? "red"}
                 />
               </Group>
             );

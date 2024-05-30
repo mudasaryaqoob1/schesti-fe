@@ -42,7 +42,7 @@ const Report = () => {
             width={16}
             height={16}
           />
-          <SenaryHeading title="Takeoff" className="font-base text-slateGray" />
+          <SenaryHeading title="Takeoff" className="!font-semibold font-base text-slateGray" />
           <Image
             src={'/chevron-right.svg'}
             alt="chevron-right icon"
@@ -52,23 +52,24 @@ const Report = () => {
 
           <SenaryHeading
             title="Report"
-            className="font-semibold text-lavenderPurple cursor-pointer underline"
+            className="font-semibold text-lavenderPurpleReplica cursor-pointer"
           />
         </div>
 
         {/* search project */}
-        <div className="bg-white flex justify-between items-end mt-6">
+        <div className="flex justify-between items-end mt-6">
           <div className="flex items-end space-x-4">
-            <div className="rounded-lg border border-Gainsboro bg-silverGray h-[51px] flex items-center px-3">
-              <input
+            <div className="rounded-lg h-[51px] flex items-center px-3">
+              {/* <input
                 type="name"
                 value={name}
                 placeholder="Enter project name"
                 className="w-[350px] h-full bg-transparent outline-none"
                 onChange={(e) => setName(e.target.value)}
-              />
+              /> */}
+              <h2>{"Project Name Showing here"}</h2>
             </div>
-            <div>
+            {/* <div>
               <Button
                 text="Generate Report"
                 onClick={() => generatePDF('capture')}
@@ -87,10 +88,10 @@ const Report = () => {
                 className='!bg-slate-400 !border-transparent'
                 disabled
               />
-            </div>}
+            </div>} */}
           </div>
           <div>
-            <Button
+            {/* <Button
               text="Save"
               disabled={saveLoader || save > 0}
               isLoading={saveLoader}
@@ -99,7 +100,13 @@ const Report = () => {
                 setSave(1);
               }}
               className="disabled:opacity-50 !py-2"
-            />
+            /> */}
+            <div>
+              <Button
+                text="Generate Report"
+                onClick={() => generatePDF('capture')}
+              />
+            </div>
           </div>
         </div>
       </section>

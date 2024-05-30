@@ -121,7 +121,7 @@ const ScaleModal = ({ setModalOpen, setSelectedClient, selectecClient }: Props) 
             title="Select Client"
           />
           <div className="relative inline-block text-left">
-            <div>
+            {/* <div>
               <button
                 type="button"
                 className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-100"
@@ -155,7 +155,18 @@ const ScaleModal = ({ setModalOpen, setSelectedClient, selectecClient }: Props) 
                   {!getLoading && !(clients?.length > 0) && <a href="#" className="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabIndex={-1} id="options-menu-item-1">No Record Found</a>}
                 </div>
               </div>
-            )}
+            )} */}
+            <Formik onSubmit={()=>{}} initialValues={{client:""}}>
+              <FormControl
+                control="select"
+                label="Select Client"
+                type="text"
+                name="client"
+                placeholder="Select Client"
+                handleChange={(val: any) => { console.log(JSON.parse(val)); setSelectedClient(JSON.parse(val));setModalOpen(false) }}
+                options={clients?.length > 0 ? clients?.map((i:any)=>({...i,label:i?.firstName ?? i?.email,value:JSON.stringify(i)})) : []}
+              />
+            </Formik>
           </div>
 
         </div>

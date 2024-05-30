@@ -14,6 +14,9 @@ export interface CountInterface extends CoordinatesInterface {
   dateTime: Date;
   projectName?:any;
   category?:any;
+  user?:any;
+  textColor?:any;
+  mId?:any;
 }
 
 export interface LineInterface {
@@ -25,6 +28,9 @@ export interface LineInterface {
   dateTime?: Date;
   projectName?:any;
   category?:any;
+  user?:any;
+  textColor?:any;
+  mId?:any;
 }
 
 export interface CircleInterface extends CoordinatesInterface {
@@ -41,6 +47,10 @@ export interface PolygonConfigInterface {
   dateTime: Date;
   projectName?:any;
   category?:any;
+  user?:any;
+  textColor?:any;
+  fillColor?:any;
+  mId?:any;
 }
 
 export interface DrawInterface {
@@ -78,6 +88,9 @@ export type ScaleLabel =
   | 'area'
   | 'dynamic'
   | 'perimeter'
+  | 'Zoom In'
+  | 'Zoom Out'
+  | 'Room Color'
 
 export type DynamicScale = 'fill' | 'create' | 'clear';
 
@@ -152,6 +165,30 @@ export const SCALE_NAVIGATION: ScaleNavigation[] = [
     width: 15,
     height: 14,
   },
+  // {
+  //   label: 'Zoom In',
+  //   src: '/dynamic.svg',
+  //   selectedSrc: '/selectedDynamic.svg',
+  //   alt: 'createicon',
+  //   width: 15,
+  //   height: 14,
+  // },
+  // {
+  //   label: 'Zoom Out',
+  //   src: '/dynamic.svg',
+  //   selectedSrc: '/selectedDynamic.svg',
+  //   alt: 'createicon',
+  //   width: 15,
+  //   height: 14,
+  // },
+  // {
+  //   label: 'Room Color',
+  //   src: '/dynamic.svg',
+  //   selectedSrc: '/selectedDynamic.svg',
+  //   alt: 'createicon',
+  //   width: 15,
+  //   height: 14,
+  // },
 ];
 
 export const Units = [11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72];

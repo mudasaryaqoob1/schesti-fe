@@ -10,7 +10,7 @@ export const Routes = {
     Partners: '/crm/partners',
   },
   'Quantity-Takeoff': {
-    Manual: '/takeoff',
+    Manual: '/take-off',
     'AI-Takeoff': '#',
   },
   Estimates: {
@@ -57,6 +57,7 @@ export const planFeatureOptions = [
   {
     title: 'Bid Management',
     label: 'Bid Management',
+    icon:'2.svg',
     options: [
       { label: 'Owner', value: Routes['Bid Management'].Owner },
       { label: 'Contractor', value: Routes['Bid Management'].Contractor },
@@ -70,6 +71,7 @@ export const planFeatureOptions = [
   {
     title: 'CRM',
     label: 'CRM',
+    icon:'3.svg',
     options: [
       { label: 'Clients', value: Routes.CRM.Clients },
       { label: 'Sub Contractors', value: Routes.CRM['Sub-Contractors'] },
@@ -80,6 +82,7 @@ export const planFeatureOptions = [
   {
     title: 'Quantity Takeoff',
     label: 'Quantity Takeoff',
+    icon:'4.svg',
     options: [
       { label: 'Manual', value: Routes['Quantity-Takeoff'].Manual },
       { label: 'AI Takeoff', value: Routes['Quantity-Takeoff']['AI-Takeoff'] },
@@ -89,6 +92,7 @@ export const planFeatureOptions = [
   {
     title: 'Estimates',
     label: 'Estimates',
+    icon:'5.svg',
     options: [
       {
         label: 'Estimates Requests',
@@ -101,6 +105,7 @@ export const planFeatureOptions = [
   {
     title: 'Financial',
     label: 'Financial',
+    icon:'6.svg',
     options: [
       {
         label: 'Standard Invoicing',
@@ -113,16 +118,19 @@ export const planFeatureOptions = [
 
   {
     label: 'Schedule',
+    icon:'7.svg',
     value: Routes.Schedule,
   },
 
   {
     label: 'Meetings',
+    icon:'8.svg',
     value: Routes.Meetings,
   },
 
   {
     label: 'Networking',
+    icon:'9.svg',
     value: Routes.Networking,
   },
 ];

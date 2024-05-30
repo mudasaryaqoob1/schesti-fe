@@ -62,7 +62,8 @@ const ScaleModal = ({ setModalOpen, numOfPages, page, drawScale, setdrawScale, s
   const dispatch = useDispatch<AppDispatch>();
   const allPresets = useSelector(selectTakeoffPreset);
 
-  const [mergedPresets, setMergedPresets] = useState<any[]>([]);
+  // const [mergedPresets, setMergedPresets] = useState<any[]>([]);
+  const [mergedPresets, setMergedPresets] = useState<any[]>(byDefaultPrest);
 
   const [valueX, setValueX] = useState('preset');
   const [valueY, setValueY] = useState('preset');
@@ -198,11 +199,11 @@ const ScaleModal = ({ setModalOpen, numOfPages, page, drawScale, setdrawScale, s
     setOptionsValue(`1-${numOfPages}`);
   }, []);
 
-  useEffect(() => {
-    if (allPresets) {
-      setMergedPresets([...allPresets, ...byDefaultPrest]);
-    }
-  }, [allPresets]);
+  // useEffect(() => {
+  //   if (allPresets) {
+  //     setMergedPresets([...allPresets, ...byDefaultPrest]);
+  //   }
+  // }, [allPresets]);
 
   const handleOptionChange = (e: ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
@@ -292,7 +293,7 @@ const ScaleModal = ({ setModalOpen, numOfPages, page, drawScale, setdrawScale, s
     handleScaleData({ ...scaleData, ...newData });
     setModalOpen(false);
   };
-
+  
   return (
     <div className="py-2.5 px-6 bg-white border border-solid border-elboneyGray rounded-[4px] z-50">
       <section className="w-full">
