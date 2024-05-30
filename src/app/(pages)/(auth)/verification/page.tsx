@@ -3,7 +3,6 @@
 'use client';
 import React, { ChangeEvent, useState } from 'react';
 import { Form } from 'antd';
-import { useRouter } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
 
 // module imports
@@ -19,9 +18,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addVerificationDetails } from '@/redux/authSlices/auth.thunk';
 import AwsS3 from '@/app/utils/S3Intergration';
 import { RootState } from '@/redux/store';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const RegisterVerification = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const dispatch: any = useDispatch();
 
   const auth = useSelector((state: RootState) => state.auth);

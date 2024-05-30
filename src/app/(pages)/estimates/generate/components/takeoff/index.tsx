@@ -18,7 +18,7 @@ import { generateEstimateDetailAction } from '@/redux/estimate/estimateRequest.s
 import { bg_style, senaryHeading } from '@/globals/tailwindvariables';
 import { estimateRequestService } from '@/app/services/estimates.service';
 import { byteConverter } from '@/app/utils/byteConverter';
-import { useRouter } from 'next/navigation';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 interface Props {
   setPrevNext: Dispatch<SetStateAction<number>>;
@@ -29,7 +29,7 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
   const dispatch = useDispatch();
   const searchParams = useSearchParams();
   const estimateId: null | string = searchParams.get('estimateId');
-  const router = useRouter();
+  const router = useRouterHook();
 
   const [showEstimateDetails, setShowEstimateDetails] = useState(true);
   const [showTakeoffDocs, setShowTakeoffDocs] = useState(true);
@@ -94,9 +94,8 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
           </div>
         </div>
         <div
-          className={`mt-4 md:grid-cols-4 md:grid-rows-2 gap-y-6 ${
-            showEstimateDetails ? 'grid' : 'hidden'
-          }`}
+          className={`mt-4 md:grid-cols-4 md:grid-rows-2 gap-y-6 ${showEstimateDetails ? 'grid' : 'hidden'
+            }`}
         >
           <div>
             <MinDesc

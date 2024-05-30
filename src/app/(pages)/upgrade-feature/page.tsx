@@ -17,7 +17,7 @@ const NoDataPage = ({
   title = 'Upgrade Plan',
   description = 'You can access this page after upgrade your plan feature',
 }: any) => {
-  // const router = useRouter();
+
   return (
     <section className="mt-6 mx-4 rounded-xl h-[calc(100vh-200px)] grid items-center border border-solid border-silverGray shadow-secondaryTwist">
       <div className="grid place-items-center">

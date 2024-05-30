@@ -1,11 +1,11 @@
 import React from 'react';
-import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 
 // module imports
 import { authService } from '@/app/services/auth.service';
 import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 interface IInitialOotions {
   clientId: any;
@@ -22,7 +22,7 @@ type Props = {
   selectedPlan: IPricingPlan;
 };
 const PaypalIntegration = ({ selectedPlan }: Props) => {
-  const router = useRouter();
+  const router = useRouterHook();
 
   const createOrder = async () => {
     const response: any = await authService.httpPaypalCreateOrder({

@@ -15,12 +15,12 @@ import {
 import Image from 'next/image';
 import { ScaleNavigation, DrawTable, Draw } from './components';
 import { ScaleDataContextProps } from '../context/ScaleContext';
-import { useRouter } from 'next/navigation';
 import Button from '@/app/component/customButton/button';
 import { ReportDataContextProps } from '../context/ReportDataContext';
 import SelectPageModal from '../components/selectPageModal';
 import { useSelector } from 'react-redux';
 import { selectUser } from '@/redux/authSlices/auth.selector';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 export interface ScaleData {
   xScale: string;
@@ -35,12 +35,12 @@ export interface PageScale {
 const Scale = () => {
   const urlSearch: any = new URLSearchParams(window.location.search)
   console.log(window.location, urlSearch, urlSearch.get('edit_id'), " Edit Data Edit Data");
-  const router = useRouter();
   ////categories
   const [allCategories, setallCategories] = useState<any>([])
   const [selectedCategory, setselectedCategory] = useState<any>("")
   const [inputtxt, setinputtxt] = useState<any>("")
   ////
+  const router = useRouterHook();
   const [tool, setTool] = useState<ScaleInterface>({ selected: 'scale' });
   const [showModal, setShowModal] = useState(false);
   const [border, setBorder] = useState<number>(4);

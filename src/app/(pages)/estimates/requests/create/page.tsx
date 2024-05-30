@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import * as Yup from 'yup';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
 import { toast } from 'react-toastify';
 import { Form, Formik } from 'formik';
@@ -29,6 +28,7 @@ import { AppDispatch } from '@/redux/store';
 import { fetchUsers } from '@/redux/userSlice/user.thunk';
 import { fetchCompanyClients } from '@/redux/company/company.thunk';
 import { byteConverter } from '@/app/utils/byteConverter';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const clientInfoSchema: any = Yup.object({
   clientName: Yup.string().required('Client is required!'),
@@ -65,7 +65,7 @@ const clientInfoSchema: any = Yup.object({
 });
 
 const CreateEstimateRequest = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const dispatch = useDispatch<AppDispatch>();
   const searchParams = useSearchParams();
 
@@ -300,25 +300,25 @@ const CreateEstimateRequest = () => {
   const addSalePersonAction = () => {
     return (
       <CustomWhiteButton
-      text="Add Sale Person"
-      className="!w-auto !py-1 !px-2 !text-[12px]"
-      icon="/plusblack.svg"
-      iconwidth={10}
-      iconheight={10}
-      onClick={() => router.push('/settings/companyUser/addCompanyUser')}
-    />
+        text="Add Sale Person"
+        className="!w-auto !py-1 !px-2 !text-[12px]"
+        icon="/plusblack.svg"
+        iconwidth={10}
+        iconheight={10}
+        onClick={() => router.push('/settings/companyUser/addCompanyUser')}
+      />
     )
   }
   const addEstimatorAction = () => {
     return (
       <CustomWhiteButton
-      text="Add Estimator"
-      className="!w-auto !py-1 !px-2 !text-[12px]"
-      icon="/plusblack.svg"
-      iconwidth={10}
-      iconheight={10}
-      onClick={() => router.push('/settings/companyUser/addCompanyUser')}
-    />
+        text="Add Estimator"
+        className="!w-auto !py-1 !px-2 !text-[12px]"
+        icon="/plusblack.svg"
+        iconwidth={10}
+        iconheight={10}
+        onClick={() => router.push('/settings/companyUser/addCompanyUser')}
+      />
     )
   }
   return (

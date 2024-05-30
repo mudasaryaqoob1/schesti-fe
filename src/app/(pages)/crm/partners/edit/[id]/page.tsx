@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { useRouter, useParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -24,6 +24,7 @@ import { userService } from '@/app/services/user.service';
 import { PhoneNumberRegex } from '@/app/utils/regex.util';
 import { withAuth } from '@/app/hoc/withAuth';
 import { Routes } from '@/app/utils/plans.utils';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const newPartnerSchema = Yup.object({
   firstName: Yup.string().required('First name is required!'),
@@ -51,7 +52,7 @@ const initialValues: IPartner = {
 };
 
 const EditPartner = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const params = useParams();
   const token = useSelector(selectToken);
 
@@ -75,15 +76,15 @@ const EditPartner = () => {
   })
 
 
-const fetchPartnerDetail = useCallback(async () => {
-  const partnerDetail = await userService.httpFindCompanyPartnerDetail(id)
-  setPartnerDetail(partnerDetail?.data?.partner)
-},[])
+  const fetchPartnerDetail = useCallback(async () => {
+    const partnerDetail = await userService.httpFindCompanyPartnerDetail(id)
+    setPartnerDetail(partnerDetail?.data?.partner)
+  }, [])
 
 
   useEffect(() => {
     fetchPartnerDetail()
-  },[])
+  }, [])
 
   const submitHandler = async (values: IPartner) => {
     setIsLoading(true);
@@ -116,7 +117,9 @@ const fetchPartnerDetail = useCallback(async () => {
           width={16}
           height={16}
         />
-        <p className={`${senaryHeading} font-base text-slateGray`}>My Partners</p>
+        <p className={`${senaryHeading} font-base text-slateGray`}>
+          My Partners
+        </p>
         <Image
           src={'/chevron-right.svg'}
           alt="chevron-right icon"
@@ -148,7 +151,7 @@ const fetchPartnerDetail = useCallback(async () => {
             setFieldTouched,
             touched,
             errors
-           }) => {
+          }) => {
             return (
               <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
                 <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-4 gap-4">

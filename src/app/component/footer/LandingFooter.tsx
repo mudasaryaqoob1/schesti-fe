@@ -1,12 +1,13 @@
 'use client';
 import { useResponseHook } from '@/app/hooks/useResponsive.hook';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { newsletterService } from '@/app/services/newsletter.service';
 import { Divider } from 'antd';
 import type { AxiosError } from 'axios';
 import { useFormik } from 'formik';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 
@@ -15,7 +16,7 @@ const SaveNewsLetterSchema = Yup.object().shape({
 });
 
 export default function LandingFooter() {
-  const router = useRouter();
+  const router = useRouterHook();
   const responsive = useResponseHook();
 
   const formik = useFormik({
@@ -56,7 +57,7 @@ export default function LandingFooter() {
               </p>
 
               <p className={`text-white  text-lg pb-1 font-medium`}>
-                info@shesti.com
+              info@schesti.com
               </p>
             </div>
           </div>
@@ -76,7 +77,7 @@ export default function LandingFooter() {
             </a>
             <a
               className={`text-white cursor-pointer text-lg pb-1 font-medium`}
-              onClick={() => router.push('/contact')}
+              onClick={() => router.push('/request-a-demo')}
             >
               Request a demo
             </a>
@@ -122,14 +123,12 @@ export default function LandingFooter() {
         <Divider className="border-gray-400" />
         <div className="flex items-center justify-between">
           <div className="flex space-x-4">
-            <p className="text-white text-[14px] font-normal leading-[18.23px]">
+            <Link href="/terms-conditions" className="text-white hover:underline hover:underline-offset-2 text-[14px] font-normal leading-[18.23px]">
               Terms & Conditions
-            </p>
-            <p className="text-white hover:underline hover:underline-offset-2 cursor-pointer text-[14px] font-normal leading-[18.23px]" onClick={() => {
-              router.push('/privacy');
-            }}>
+            </Link>
+            <Link href="/privacy" className="text-white hover:underline hover:underline-offset-2 cursor-pointer text-[14px] font-normal leading-[18.23px]">
               Privacy Policy
-            </p>
+            </Link>
           </div>
           <div>
             <p className="text-white text-[14px] font-normal leading-[18.23px]">
@@ -195,7 +194,7 @@ export default function LandingFooter() {
           </a>
           <a
             className={`text-white cursor-pointer text-lg pb-1 font-normal`}
-            onClick={() => router.push('/contact')}
+            onClick={() => router.push('/request-a-demo')}
           >
             Request a demo
           </a>
@@ -245,7 +244,7 @@ export default function LandingFooter() {
         </p>
 
         <p className={`text-white  text-lg pb-1 font-medium`}>
-          info@shesti.com
+        info@schesti.com
         </p>
       </div>
 

@@ -1,9 +1,10 @@
 'use client';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { usePathname } from 'next/navigation';
 import React, { useEffect } from 'react';
 
 const NotLoggedIn = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const paths = usePathname();
 
   useEffect(() => {

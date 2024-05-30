@@ -14,6 +14,7 @@ import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { materialService } from '@/app/services/material.service';
 import { AxiosError } from 'axios';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
+import Link from 'next/link'
 
 interface Iprops {
   materialModal: boolean;
@@ -214,7 +215,10 @@ const ImportMaterialModal = ({
                   <p className="ant-upload-hint">
                     Browse to upload or drag it here
                   </p>
+                  
                 </Dragger>
+                <p className='text-[#344054] text-[18px] my-4' >Upload sheet format <span className='font-bold border-b-2 border-gray-950 cursor-pointer' ><Link className='text-[#344054]' href="https://schesti-dev.s3.eu-north-1.amazonaws.com/2024/documents/supporttickets/043f4644a8decf305edfb088b34a8fdd-material.xlsx" target="_blank" >Download</Link></span></p>
+                <p className='text-[#98A2B3]' >Kindly create a seprate sheet on the basse of category and its sub category </p>
                 <CustomButton
                   text="Import"
                   type="submit"

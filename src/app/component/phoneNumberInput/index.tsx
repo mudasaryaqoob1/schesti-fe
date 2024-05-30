@@ -9,7 +9,7 @@ const PhoneNumberInput = (props: any) => {
   // Example: "+12133734253".
   return (
     <PhoneInput
-      className="custom-phone-input ant-input css-dev-only-do-not-override-2rgkd4 border !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 !mt-1.5 css-dev-only-do-not-override-2rgkd4"
+      className="custom-phone-input ant-input border-gray-400 css-dev-only-do-not-override-2rgkd4 border !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 !mt-1.5 css-dev-only-do-not-override-2rgkd4"
       international
       defaultCountry="US"
       value={phoneNumber}

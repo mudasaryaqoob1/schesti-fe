@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { useRouter, useParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -29,6 +29,7 @@ import { withAuth } from '@/app/hoc/withAuth';
 import { byteConverter } from '@/app/utils/byteConverter';
 import AwsS3 from '@/app/utils/S3Intergration';
 import { FileView } from '@/app/component/file-view/FileView';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const validationSchema = Yup.object({
   title: Yup.string().required('Title is required!'),
@@ -41,7 +42,7 @@ const initialValues = {
 };
 
 const EditSupportTicket = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const params = useParams();
   const supportTicketsData = useSelector(selectSupportTickets);
 

@@ -20,10 +20,12 @@ import TimezoneSelect, {
   type ITimezone,
   type ITimezoneOption,
 } from 'react-timezone-select';
+import { IMeeting } from '@/app/interfaces/meeting.type';
 
 type Props = {
   showModal: boolean;
   setShowModal(): void;
+  onSuccess?: (_meeting: IMeeting) => void;
 };
 
 const CreateMeetingSchema = Yup.object().shape({
@@ -35,7 +37,7 @@ const CreateMeetingSchema = Yup.object().shape({
   startDate: Yup.date().required('Start Time is required'),
 });
 // let timezones = Intl.supportedValuesOf('timeZone');
-export function CreateMeeting({ showModal, setShowModal }: Props) {
+export function CreateMeeting({ showModal, setShowModal, onSuccess }: Props) {
   const [isScheduling, setIsScheduling] = useState(false);
   const [timezone, setTimezone] = useState<ITimezone>(
     Intl.DateTimeFormat().resolvedOptions().timeZone
@@ -69,6 +71,9 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
         .then((response) => {
           if (response.data) {
             dispatch(addNewMeetingAction(response.data.meeting));
+            if (onSuccess) {
+              onSuccess(response.data.meeting);
+            }
           }
           setIsScheduling(false);
           setShowModal();
@@ -109,9 +114,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
           />
           <CloseOutlined
             className="cursor-pointer"
-            // width={24}
-            // height={24}
-            style={{width : '24px' , height : '24px'}}
+            style={{ width: '24px', height: '24px' }}
             onClick={handleCloseModal}
           />
         </div>
@@ -133,7 +136,7 @@ export function CreateMeeting({ showModal, setShowModal }: Props) {
             />
             <SelectComponent
               label="Invite"
-              placeholder="Client Email Address"
+              placeholder="Email Address"
               name="email"
               hasError={formik.touched.email && Boolean(formik.errors.email)}
               errorMessage={

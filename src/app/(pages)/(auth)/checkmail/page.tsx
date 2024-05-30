@@ -4,7 +4,7 @@ import Description from '@/app/component/description';
 import PrimaryHeading from '@/app/component/headings/primary';
 import AuthNavbar from '@/app/(pages)/(auth)/authNavbar';
 import Image from 'next/image';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
 import { quinaryHeading } from '@/globals/tailwindvariables';
 import CustomButton from '@/app/component/customButton/button';
@@ -15,16 +15,16 @@ import { Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 // import { useRouter } from 'next/navigation';
 import * as Yup from 'yup';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const EmailSchema = Yup.string().email().required("Email is required");
 
 const CheckYourEmail = () => {
-  // const router = useRouter();
   const searchParams = useSearchParams();
   const emailQueryParameter = searchParams.get('email');
   const [isLoading, setIsLoading] = useState(false);
   const [isFetchingUserData, setIsFetchingUserData] = useState(false);
-  const router = useRouter();
+  const router = useRouterHook();
 
 
   // useEffect(() => {
@@ -103,12 +103,11 @@ const CheckYourEmail = () => {
         } else {
           toast.error('Email not verified');
         }
-
-
       }
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
-      toast.error(err.response?.data.message || 'Unable to continue');
+      console.log(err);
+      toast.error(err.response?.data.message);
     } finally {
       setIsFetchingUserData(false);
     }
@@ -138,7 +137,7 @@ const CheckYourEmail = () => {
           />
           <Description
             className="mt-1  text-center text-slateGray"
-            title={`We’ve sent a verification email to ${emailQueryParameter}`}
+            title={`We’ve sent a verification email to ${parsedEmail && parsedEmail.length > 0 ? parsedEmail : ''}`}
           />
 
           <Description
@@ -152,7 +151,7 @@ const CheckYourEmail = () => {
             className="font-popin text-doveGrayer font-normal
            leading-[26px] text-center my-1"
             title={`If you have trouble finding your email, check your spam folder for
-                an email from ${emailQueryParameter}`}
+                an email from ${parsedEmail && parsedEmail.length > 0 ? parsedEmail : ''}`}
           />
           <div
             className={twMerge(`${quinaryHeading} font-popin  font-normal

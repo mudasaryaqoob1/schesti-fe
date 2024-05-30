@@ -18,7 +18,7 @@ type PropsBtn = {
   className?: string;
   isLoading?: Boolean | any;
   onClick?: voidFc | any;
-  icon?: string;
+  icon?: React.ReactNode | string;
   disabled?: boolean;
   iconwidth?: number;
   iconheight?: number;
@@ -48,14 +48,17 @@ const CustomButton = ({
       )}
       onClick={onClick}
     >
-      {icon && (
+      {icon && typeof icon === 'string' ? (
         <Image
           src={icon}
           alt="btn icon"
           width={iconwidth}
           height={iconheight}
         />
+      ) : (
+        <span>{icon}</span>
       )}
+
       {isLoading ? <ButtonLoading /> : text}
     </button>
   );

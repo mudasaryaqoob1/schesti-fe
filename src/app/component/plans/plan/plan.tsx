@@ -1,5 +1,6 @@
 'use client';
 import Button from '@/app/component/customButton/button';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
 import { authService } from '@/app/services/auth.service';
@@ -13,7 +14,6 @@ import { getLoggedInUserDetails } from '@/redux/authSlices/auth.thunk';
 import { AppDispatch } from '@/redux/store';
 import { AxiosError } from 'axios';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { Fragment } from 'react';
 import { useMutation } from 'react-query';
 import { useDispatch } from 'react-redux';
@@ -25,7 +25,7 @@ type Props = {
 } & IPricingPlan;
 
 const SinglePlan = (props: Props) => {
-  const router = useRouter();
+  const router = useRouterHook();
   const dispatch = useDispatch<AppDispatch>();
 
   const { planName, price, planDescription, features, duration, _id } = props;

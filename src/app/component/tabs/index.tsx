@@ -1,7 +1,8 @@
 'use client';
 
-import { quaternaryHeading, newAppBar } from '@/globals/tailwindvariables';
+import { newAppBar } from '@/globals/tailwindvariables';
 import { useRouter } from 'next/navigation';
+import { quaternaryHeading } from '@/globals/tailwindvariables';
 import { Dropdown, Space } from 'antd';
 // import type { MenuProps } from 'antd';
 import clsx from 'clsx';
@@ -12,6 +13,7 @@ import { DownOutlined, RightOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { planFeatureOptions } from '@/app/utils/plans.utils';
 import {
+  useDispatch,
   // useDispatch,
   useSelector,
 } from 'react-redux';
@@ -24,10 +26,13 @@ import { HttpService } from '@/app/services/base.service';
 // import { AxiosError } from 'axios';
 // import { pricingPlanService } from '@/app/services/pricingPlan.service';
 import {
+  AppDispatch,
   // AppDispatch,
   RootState,
 } from '@/redux/store';
 import Image from 'next/image';
+import { resetPostProjectAction } from '@/redux/post-project/post-project.slice';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 // import { setUserPricingPlan } from '@/redux/pricingPlanSlice/pricingPlanSlice';
 // const items: MenuProps['items'] = [
 //   {
@@ -108,8 +113,10 @@ const NavImage = ({ type, color, w, h }: any) => {
 
 const Tabs = ({ ishov }: { ishov?: boolean }) => {
   const pathname = usePathname();
-  const router = useRouter();
+  const router = useRouterHook();
   const token = useSelector(selectToken);
+  const dispatch = useDispatch<AppDispatch>();
+
   // const dispatch = useDispatch<AppDispatch>();
   const userPlan = useSelector(
     (state: RootState) => state.pricingPlan.userPlan
@@ -138,6 +145,12 @@ const Tabs = ({ ishov }: { ishov?: boolean }) => {
   // });
 
   const userPlanFeatures = userPlan ? userPlan.features.split(',') : [];
+
+  function resetPostProjectState(canCall: boolean) {
+    if (canCall) {
+      dispatch(resetPostProjectAction());
+    }
+  }
 
   return (
     <div className="flex flex-col top-0 !z-10 items-center h-full shadow-quinaryGentle">
@@ -169,12 +182,6 @@ const Tabs = ({ ishov }: { ishov?: boolean }) => {
         </li>
         {planFeatureOptions.map((feature, index) => {
           if (feature.options) {
-            if (
-              process.env.NEXT_PUBLIC_IS_MVP_1 === 'true' &&
-              feature.title.includes('Bid')
-            ) {
-              return '';
-            }
             return (
               <li key={index}>
                 <Dropdown
@@ -182,8 +189,18 @@ const Tabs = ({ ishov }: { ishov?: boolean }) => {
                     items: feature.options.map((option, index) => {
                       return {
                         key: index,
-                        label: <Link href={option.value}>{option.label}</Link>
-                        ,
+                        label: "children" in option ? option.label : (
+                          <Link href={option.value} onClick={() => {
+                            resetPostProjectState(Boolean(option.isAction))
+                          }}>{option.label}</Link>
+                        ),
+                        children: "children" in option ? option.children?.map(item => {
+                          return {
+                            key: item.value,
+                            label: <Link href={item.value}>{item.label}</Link>,
+                            value: item.value
+                          }
+                        }) : undefined,
                       };
                     }),
                     selectable: true,

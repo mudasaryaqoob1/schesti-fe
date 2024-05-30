@@ -20,7 +20,6 @@ import { twMerge } from 'tailwind-merge';
 // }
 
 const MySubscription = () => {
-  // const router = useRouter();
 
   const [userData, setUserData] = useState<any>({});
   const [subscription, setSubscription] =
@@ -66,9 +65,8 @@ const MySubscription = () => {
             </div>
             <div className="flex justify-end w-full">
               {remainingDays ? (
-                <p className="font-semibold text-[14px]  text-[#EC2224]">{`Expires in ${remainingDays} day${
-                  remainingDays !== 1 ? 's' : ''
-                }`}</p>
+                <p className="font-semibold text-[14px]  text-[#EC2224]">{`Expires in ${remainingDays} day${remainingDays !== 1 ? 's' : ''
+                  }`}</p>
               ) : null}
             </div>
 

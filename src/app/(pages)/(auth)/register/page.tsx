@@ -3,12 +3,12 @@ import React, { useState } from 'react';
 import Button from '@/app/component/customButton/button';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { Form } from 'antd';
+import { Checkbox, Form } from 'antd';
 import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
-import { useRouter } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
+import Link from 'next/link';
 
 // module imports
 import FormControl from '@/app/component/formControl';
@@ -23,7 +23,9 @@ import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { USER_ROLES_ENUM } from '@/app/constants/constant';
 import UserRoleModal from '../userRolesModal'
-// import { authService } from '@/app/services/auth.service';
+import { ShouldHaveAtLeastCharacterRegex } from '@/app/utils/regex.util';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { authService } from '@/app/services/auth.service';
 
 
 
@@ -38,44 +40,43 @@ const initialValues: ISignUpInterface = {
 };
 
 const RegisterSchema: any = Yup.object({
-  name: Yup.string().required('Name is required'),
+  name: Yup.string().matches(ShouldHaveAtLeastCharacterRegex, { "message": "Name should have atleast 1 character" }).max(30, "Name must have atleast 30 characters").required('Name is required'),
   email: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
   password: Yup.string()
+    .required('Password is required')
     .matches(
-      new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/),
-      'The password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, and one digit.'
-    )
-    .min(6, 'Minimum six character is required')
-    .required('Password is required!'),
+      // eslint-disable-next-line no-useless-escape
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
+      'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character'
+    ),
   confirmPassword: Yup.string()
     .required('Confirm Password is required!')
     .oneOf([Yup.ref('password')], 'Passwords must match'),
+  isTermsAccepted: Yup.boolean().oneOf([true], 'You must accept the terms and conditions')
 });
 
-
-
 const Register = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const dispatch = useDispatch<AppDispatch>();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [userRoleModal, setUserRoleModal] = useState(false)
-  const [userRegisterModal, setUserRegisterModal] = useState(false)
-  const [userDetail, setUserDetail] = useState<any>([])
+  const [userRoleModal, setUserRoleModal] = useState(false);
+  const [userRegisterModal, setUserRegisterModal] = useState(false);
+  const [userDetail, setUserDetail] = useState<any>([]);
   let userRoles = [
     {
-      role : USER_ROLES_ENUM.OWNER , 
-      desc : 'It is a long established fact that a reader will be distracted by the readable content of'
+      role: USER_ROLES_ENUM.OWNER,
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of'
     },
     {
-      role : USER_ROLES_ENUM.CONTRACTOR , 
-      desc : 'It is a long established fact that a reader will be distracted by the readable content of'
+      role: USER_ROLES_ENUM.CONTRACTOR,
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of'
     },
     {
-      role : USER_ROLES_ENUM.SUBCONTRACTOR , 
-      desc : 'It is a long established fact that a reader will be distracted by the readable content of'
+      role: USER_ROLES_ENUM.SUBCONTRACTOR,
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of'
     }
   ]
 
@@ -85,14 +86,14 @@ const Register = () => {
   // };
 
   const submitHandler = async (values: ISignUpInterface) => {
-    setUserRegisterModal(true)
-        setUserDetail(values)
+    setUserRegisterModal(true);
+    setUserDetail(values);
   };
 
-  const userRegisterHandler = async (role  : string) => {
+  const userRegisterHandler = async (role: string) => {
     const payload = { ...userDetail, userRole: role };
     setIsLoading(true);
-    setUserRegisterModal(false)
+    setUserRegisterModal(false);
     let result: any = await dispatch(signup(payload));
 
     if (result.payload.status == 201) {
@@ -102,7 +103,7 @@ const Register = () => {
       setIsLoading(false);
       toast.error(result.payload.message);
     }
-  }
+  };
 
   const googleAuthenticationHandler: any = useGoogleLogin({
     onSuccess: async (respose: any) => {
@@ -123,13 +124,35 @@ const Register = () => {
           providerId: googleAuthResponse.data.sub,
         };
 
-        // const result = await authService.httpUserVerification({
-        //   email: googleAuthResponse.data.email,
-        // });
-
-
-        setUserRoleModal(true)
-        setUserDetail(responseObj)
+        const checkUserExist: any =
+          await authService.httpSocialAuthUserVerification({
+            email: googleAuthResponse.data.email,
+          });
+        if (checkUserExist.statusCode == 200) {
+          let result: any = await dispatch(
+            loginWithGoogle({
+              ...responseObj,
+              userRole: checkUserExist?.data?.user?.userRole,
+            })
+          );
+          localStorage.setItem('schestiToken', result.token);
+          router.push(`/dashboard`);
+        } else if (
+          checkUserExist.statusCode == 400 &&
+          checkUserExist.message ===
+            'Verify from your email and complete your profile'
+        ) {
+          router.push(`/companydetails/${checkUserExist.data.user._id}`);
+        } else if (
+          checkUserExist.statusCode == 400 &&
+          checkUserExist.message === "Payment method doesn't exist"
+        ) {
+          localStorage.setItem('schestiToken', checkUserExist.token);
+          router.push('/plans');
+        } else {
+          setUserRoleModal(true);
+          setUserDetail(responseObj);
+        }
       } catch (error) {
         console.log('Login Failed', error);
       }
@@ -139,20 +162,20 @@ const Register = () => {
     },
   });
 
-
-  const userRoleSelectionHandler = async (role : string) => {
-    setIsLoading(true)
-    setUserRoleModal(false)
-    let result: any = await dispatch(loginWithGoogle({...userDetail , userRole: role }));
-    setIsLoading(false)
+  const userRoleSelectionHandler = async (role: string) => {
+    setIsLoading(true);
+    setUserRoleModal(false);
+    let result: any = await dispatch(
+      loginWithGoogle({ ...userDetail, userRole: role })
+    );
+    setIsLoading(false);
     if (result.payload.statusCode == 200) {
-      localStorage.setItem('schestiToken', result.payload.token); 
-      // router.push(`/clients`);
+      localStorage.setItem('schestiToken', result.payload.token);
       router.push(`/dashboard`);
     } else if (result.payload.statusCode == 400) {
       router.push(`/companydetails/${result.payload.data.user._id}`);
     }
-  }
+  };
   return (
     <WelcomeWrapper>
       <Image
@@ -209,11 +232,11 @@ const Register = () => {
           </div> */}
 
           <Formik
-            initialValues={initialValues}
+            initialValues={{ ...initialValues, isTermsAccepted: false }}
             validationSchema={RegisterSchema}
             onSubmit={submitHandler}
           >
-            {(formik: any) => {
+            {(formik) => {
               return (
                 <Form
                   name="basic"
@@ -247,8 +270,17 @@ const Register = () => {
                       label="Confirm password"
                       type="password"
                       name="confirmPassword"
-                      placeholder="confirm Password"
+                      placeholder="Confirm Password"
                     />
+
+                    <Checkbox name='isTermsAccepted' checked={formik.values.isTermsAccepted} onChange={formik.handleChange} className='text-xs'>
+                      By clicking Register, you agree to our <Link href={"/terms-conditions"} target='_blank' className='text-blue-500 font-normal underline underline-offset-2 hover:text-blue-500 hover:underline'>
+                        Terms & Conditions
+                      </Link>. You may receive Email Notifications from us and can opt out any time.
+                    </Checkbox>
+                    {formik.errors.isTermsAccepted && formik.touched.isTermsAccepted ? <p className='mt-1 text-red-500'>
+                      {formik.errors.isTermsAccepted}
+                    </p> : null}
                   </div>
 
                   <Button
@@ -298,8 +330,18 @@ const Register = () => {
           </Formik>
         </div>
       </section>
-      <UserRoleModal viewUserRoleModal={userRoleModal} setViewUserRoleModal={setUserRoleModal} userRoles={userRoles} userRoleSelectionHandler={userRoleSelectionHandler} />
-      <UserRoleModal viewUserRoleModal={userRegisterModal} setViewUserRoleModal={setUserRegisterModal} userRoles={userRoles} userRoleSelectionHandler={userRegisterHandler} />
+      <UserRoleModal
+        viewUserRoleModal={userRoleModal}
+        setViewUserRoleModal={setUserRoleModal}
+        userRoles={userRoles}
+        userRoleSelectionHandler={userRoleSelectionHandler}
+      />
+      <UserRoleModal
+        viewUserRoleModal={userRegisterModal}
+        setViewUserRoleModal={setUserRegisterModal}
+        userRoles={userRoles}
+        userRoleSelectionHandler={userRegisterHandler}
+      />
     </WelcomeWrapper>
   );
 };

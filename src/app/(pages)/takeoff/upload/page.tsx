@@ -17,11 +17,12 @@ import { toast } from 'react-toastify';
 import { LoadingOutlined } from '@ant-design/icons';
 import ModalComponent from '@/app/component/modal';
 import SelectPageModal from '../components/selectPageModal';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const Upload = () => {
   // const [selectedIcon, setSelectedIcon] = useState('');
   // const [showModal, setShowModal] = useState(false);
-  const router = useRouter();
+  const router = useRouterHook();
 
   // const handleClick = (item: string) => {
   //   setSelectedIcon(item);

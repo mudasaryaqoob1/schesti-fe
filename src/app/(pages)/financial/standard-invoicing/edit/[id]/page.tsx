@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import dayjs from 'dayjs';
-import { useRouter, useParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Button from '@/app/component/customButton/white';
 import ColoredButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
@@ -22,6 +22,7 @@ import { IInvoice } from '@/app/interfaces/invoices.interface';
 import { Routes } from '@/app/utils/plans.utils';
 import { withAuth } from '@/app/hoc/withAuth';
 import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const SubcontractorSchema = Yup.object({
   companyRep: Yup.string().required('Company Rep is required!'),
@@ -79,7 +80,7 @@ type InvoiceDetail = {
   action?: string;
 };
 const EditSubcontractorInvoice = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const [details, setDetails] = useState<InvoiceDetail[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [isEditDetail, setIsEditDetail] = useState(false);
@@ -344,7 +345,7 @@ const EditSubcontractorInvoice = () => {
                     }
                     errorMessage={
                       touched.subContractorPhoneNumber &&
-                      errors.subContractorPhoneNumber
+                        errors.subContractorPhoneNumber
                         ? errors.subContractorPhoneNumber
                         : ''
                     }

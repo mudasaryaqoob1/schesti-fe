@@ -5,12 +5,13 @@ import Button from '@/app/component/customButton/button';
 import SecondaryHeading from '@/app/component/headings/Secondary';
 import WelcomeWrapper from '@/app/component/welcomeLayout';
 import { quaternaryHeading } from '@/globals/tailwindvariables';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { authService } from '@/app/services/auth.service';
 import { toast } from 'react-toastify';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const Resendcode = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const searchParams = useSearchParams();
   const emailQueryParameter = searchParams.get('email');
 
@@ -56,8 +57,7 @@ const Resendcode = () => {
          
         `}
           >
-            If you havent received an email in 5 minutes, check your spam. check
-            your spam or resend
+            If you havent received an email in 5 minutes, check your spam or resend.
           </p>
           <Button
             isLoading={isLoading}

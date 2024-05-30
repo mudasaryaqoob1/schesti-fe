@@ -11,12 +11,13 @@ import { IPricingPlan } from '../interfaces/pricing-plan.interface';
 import { AxiosError } from 'axios';
 import { pricingPlanService } from '../services/pricingPlan.service';
 import { setUserPricingPlan } from '@/redux/pricingPlanSlice/pricingPlanSlice';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, } from 'next/navigation';
 import { IUser } from '../interfaces/companyEmployeeInterfaces/user.interface';
 import { NoDataComponent } from '../component/noData/NoDataComponent';
 import { Skeleton } from 'antd';
 import _ from 'lodash';
 import { OtherRoutes } from '../utils/plans.utils';
+import { useRouterHook } from '../hooks/useRouterHook';
 
 export const withAuth = (
   WrappedComponent: React.FunctionComponent,
@@ -28,7 +29,7 @@ export const withAuth = (
       (state: RootState) => state.pricingPlan.userPlan
     );
     const dispatch = useDispatch<AppDispatch>();
-    const router = useRouter();
+    const router = useRouterHook();
     const pathname = usePathname();
     const user = useSelector(
       (state: RootState) => state.auth.user as { user?: IUser }
@@ -68,6 +69,7 @@ export const withAuth = (
       return <Skeleton />;
     }
     const canAccessThePage = canAccessRoute(pathname, userPlanFeatures);
+    // const canAccessThePage = true;
     console.log({ canAccessThePage, pathname });
     // if the required roles is empty; and there is already and a user with the plan
     if (canAccessThePage && !requiredRoles.length) {
@@ -82,8 +84,8 @@ export const withAuth = (
     if (canAccessThePage && !hasRoles) {
       return (
         <NoDataComponent
-          title="Upgrade Your Plan"
-          description="You can access the page after upgrade featured plan"
+          title="Access Denied"
+          description="You don't have access to this page."
         />
       );
     }

@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { useRouter, useParams } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import { toast } from 'react-toastify';
 
@@ -23,6 +23,7 @@ import {
 import { AxiosError } from 'axios';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { Routes } from '@/app/utils/plans.utils';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const editSubcontractorSchema = Yup.object({
   companyRep: Yup.string().required('Company Rep is required!'),
@@ -47,7 +48,7 @@ const initialValues: ISubcontract = {
 };
 
 const EditSubcontractor = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const params = useParams();
 
   const { id } = params;

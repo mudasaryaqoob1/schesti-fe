@@ -1,7 +1,6 @@
 'use client';
 import { useEffect, useCallback, useState } from 'react';
 import Head from 'next/head';
-import { useRouter } from 'next/navigation';
 import { Dropdown, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { MenuProps } from 'antd';
@@ -29,6 +28,7 @@ import ModalComponent from '@/app/component/modal';
 import { DeleteContent } from '@/app/component/delete/DeleteContent';
 import { Routes } from '@/app/utils/plans.utils';
 import { withAuth } from '@/app/hoc/withAuth';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 export interface DataType {
   company: string;
@@ -41,7 +41,7 @@ export interface DataType {
 }
 
 const items: MenuProps['items'] = [
- 
+
   {
     key: 'createNewInvoice',
     label: <p>Create Invoice</p>,
@@ -61,7 +61,7 @@ const items: MenuProps['items'] = [
 ];
 
 const SubcontractTable = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const dispatch = useDispatch<AppDispatch>();
 
   const subcontractersData = useSelector(selectSubcontracters);
@@ -69,9 +69,9 @@ const SubcontractTable = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedSubcontractor, setSelectedSubcontractor] =
     useState<ISubcontractor | null>(null);
-    const [search, setSearch] = useState('');
+  const [search, setSearch] = useState('');
 
- 
+
 
   const fetchSubcontactors = useCallback(async () => {
     await dispatch(fetchCompanySubcontractors({ page: 1, limit: 10 }));
@@ -94,7 +94,7 @@ const SubcontractTable = () => {
     } else if (key == 'deleteSubcontractor') {
       setSelectedSubcontractor(subcontractor as ISubcontractor);
       setShowDeleteModal(true);
-    } 
+    }
 
 
   };
@@ -165,19 +165,19 @@ const SubcontractTable = () => {
 
   const filteredSubcontractor = subcontractersData
     ? subcontractersData.filter((client) => {
-        if (!search) {
-          return {
-            ...client
-          };
-        }
-        return (
-          client.name.toLowerCase().includes(search.toLowerCase()) ||
-          client.companyRep.toLowerCase().includes(search.toLowerCase()) ||
-          client.email?.includes(search) || 
-          client.phone?.includes(search) || 
-          client.address?.includes(search)
-        );
-      })
+      if (!search) {
+        return {
+          ...client
+        };
+      }
+      return (
+        client.name.toLowerCase().includes(search.toLowerCase()) ||
+        client.companyRep.toLowerCase().includes(search.toLowerCase()) ||
+        client.email?.includes(search) ||
+        client.phone?.includes(search) ||
+        client.address?.includes(search)
+      );
+    })
     : [];
 
   return (

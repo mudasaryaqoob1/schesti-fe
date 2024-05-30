@@ -1,6 +1,5 @@
 'use client';
 import Button from '@/app/component/customButton/button';
-import { useRouter } from 'next/navigation';
 import Table from '@/app/component/table/takeoff';
 // import Pagination from '../../../../component/pagination';
 // import { takeoffRecords, takeoffRecordsHeadings } from '../../data';
@@ -9,6 +8,7 @@ import { bg_style } from '@/globals/tailwindvariables';
 import { useCallback, useContext } from 'react';
 import UploadFileContext, { UploadFileContextProps, UploadFileData } from '../../context/UploadFileContext';
 import { DrawHistoryContext, EditContext } from '../../context';
+import { useRouter } from 'next/navigation';
 
 const Records = () => {
   const { handleSrc } = useContext(UploadFileContext) as UploadFileContextProps;
@@ -154,7 +154,7 @@ const Records = () => {
           onClick={() => router.push('/takeoff/upload')}
         />
       </div>
-      <Table handleEditClick={handleEditClick} />
+      {/* <Table handleEditClick={handleEditClick} /> */}
       {/* <Pagination /> */}
     </div>
   );

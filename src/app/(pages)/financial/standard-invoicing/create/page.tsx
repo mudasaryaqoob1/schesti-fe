@@ -3,7 +3,6 @@ import { useState, useCallback, useEffect } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { toast } from 'react-toastify';
-import { useRouter } from 'next/navigation';
 import { ConfigProvider, Divider } from 'antd';
 import Table, { type ColumnType } from 'antd/es/table';
 import { useSearchParams } from 'next/navigation';
@@ -31,6 +30,7 @@ import { withAuth } from '@/app/hoc/withAuth';
 import { USCurrencyFormat } from '@/app/utils/format';
 import { fetchCompanySubcontractors } from '@/redux/company/company.thunk';
 import { ISubcontract } from '@/app/interfaces/companyEmployeeInterfaces/subcontractor.interface';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const subcontractorSchema = Yup.object({
   companyRep: Yup.string().required('Company Rep is required!'),
@@ -94,7 +94,7 @@ type InvoiceDetail = {
 };
 
 const CreateInvoice = () => {
-  const router = useRouter();
+  const router = useRouterHook();
   const searchParams = useSearchParams();
   const dispatch = useDispatch<AppDispatch>();
 

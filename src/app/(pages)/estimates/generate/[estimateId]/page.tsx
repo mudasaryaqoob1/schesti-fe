@@ -3,46 +3,40 @@ import React, {
   useState,
   useEffect,
   useCallback,
-  useLayoutEffect,
 } from 'react';
 import { useParams } from 'next/navigation';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
+// import { RootState } from '@/redux/store';
 import Description from '@/app/component/description';
-import { selectToken } from '@/redux/authSlices/auth.selector';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 import MinDesc from '@/app/component/description/minDesc';
-import EstimatesTable from '../components/estimatesTable';
-import EstimatePDF from './estimatePDF';
+import EstimatesTable, { estimateTableColumns } from '../components/estimatesTable';
+// import EstimatePDF from './estimatePDF';
 import CustomButton from '@/app/component/customButton/button';
+import WhiteButton from '@/app/component/customButton/white';
 import { PDFDownloadLink } from '@react-pdf/renderer';
 import { estimateRequestService } from '@/app/services/estimates.service';
-import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
+// import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
 import { withAuth } from '@/app/hoc/withAuth';
 import { USCurrencyFormat } from '@/app/utils/format';
-import { HttpService } from '@/app/services/base.service';
-// import ClientPDF from '../components/clientPDF';
+import ClientPDF from '../components/clientPDF';
+import { CSVLink } from "react-csv";
+import { toast } from 'react-toastify';
+import _ from 'lodash';
+import { formatDataFromAntdColumns } from './utils';
 
 const ViewEstimateDetail = () => {
   const { estimateId } = useParams();
 
-  const token = useSelector(selectToken);
-
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
-
-  const auth = useSelector((state: RootState) => state.auth);
-  const user = auth.user?.user as IUpdateCompanyDetail | undefined;
+  // const auth = useSelector((state: RootState) => state.auth);
+  // const user = auth.user?.user as IUpdateCompanyDetail | undefined;
 
   const [pdfData, setPdfData] = useState<Object[]>([]);
   const [estimateDetailsSummary, setEstimateDetailsSummary] = useState<any>();
   const [estimatesRecord, setEstimatesRecord] = useState([]);
+  const [csvData, setCsvData] = useState<string[][]>([]);
 
   const fetchEstimateDetail = useCallback(async () => {
     const result =
@@ -95,6 +89,89 @@ const ViewEstimateDetail = () => {
     }
   }, [estimateId]);
 
+
+  function downloadCSV() {
+    //  if no estimate details || estimates record return
+    if (!estimateDetailsSummary || !estimatesRecord.length) {
+      toast.error("No data to download");
+      return;
+    }
+    // Client Information Row
+
+    const clientInformationHeader = ["Client Name", "Company Name", "Phone Number", "Email"];
+    const clientInformationData = [
+      estimateDetailsSummary?.estimateRequestIdDetail?.clientName!,
+      estimateDetailsSummary?.estimateRequestIdDetail?.companyName!,
+      estimateDetailsSummary?.estimateRequestIdDetail?.phone!,
+      estimateDetailsSummary?.estimateRequestIdDetail?.email!,
+    ];
+
+    // Project Information Row
+    const projectHeader = ["Project Name", "Lead Source", "Project Value", "Email", "Project Information"];
+    const projectData = [
+      estimateDetailsSummary?.estimateRequestIdDetail?.projectName!,
+      estimateDetailsSummary?.estimateRequestIdDetail?.leadSource!,
+      estimateDetailsSummary?.estimateRequestIdDetail?.projectValue!,
+      estimateDetailsSummary?.estimateRequestIdDetail?.email!,
+      estimateDetailsSummary?.estimateRequestIdDetail?.projectInformation!,
+    ];
+
+    // Estimate Row
+    const estimateHeader = ["Title", "Description", "Qty", "Wastage", "Qty with wastage", "Total Labour Hours", "Per Hours Labor Rate", 'Total Labor Cost', 'Unit Material Cost', 'Total Material Cost', 'Total Equipment Cost', "Total Cost"];
+
+
+
+    const scopeItems = _.flatMap(estimatesRecord, (estimate: any) => {
+      return estimate?.scopeItems
+    });
+
+    let estimateData = formatDataFromAntdColumns(estimateTableColumns, scopeItems).map((row: any) => {
+      return [
+        row.category,
+        row.description,
+        row.qty,
+        row.wastage,
+        row.qtyWithWastage,
+        row.totalLabourHours,
+        row.perHourLaborRate,
+        row.totalLaborCost,
+        row.unitMaterialCost,
+        row.totalMaterialCost,
+        row.totalEquipmentCost,
+        row.totalCost
+      ]
+    });
+    console.log({ estimateData });
+
+    // Summary Row
+    const summaryHeader = ["Sub Total Cost", "Material Tax %", "Overhead & Profit %", "Bond Fee %", "Total Cost"];
+    const summaryData = [
+      estimateDetailsSummary?.totalCost,
+      estimateDetailsSummary?.totalBidDetail?.materialTax,
+      estimateDetailsSummary?.totalBidDetail?.overheadAndProfit,
+      estimateDetailsSummary?.totalBidDetail?.bondFee,
+      estimateDetailsSummary?.totalCost +
+      estimateDetailsSummary?.totalBidDetail?.bondFee +
+      estimateDetailsSummary?.totalBidDetail?.overheadAndProfit +
+      estimateDetailsSummary?.totalBidDetail?.materialTax,
+    ]
+
+    setCsvData([
+      clientInformationHeader, clientInformationData,
+      [],
+      projectHeader, projectData,
+      [],
+      estimateHeader, ...estimateData,
+      [],
+      summaryHeader, summaryData]);
+  }
+  console.log({
+    estimateDetailsSummary,
+    estimatesRecord,
+
+  });
+
+
   return (
     <div className="p-12">
       <div className="flex justify-between items-center">
@@ -103,7 +180,23 @@ const ViewEstimateDetail = () => {
           className="text-graphiteGray font-semibold"
         />
         <div className="flex gap-3 items-center">
-          <PDFDownloadLink
+          <CSVLink
+            data={csvData}
+            className="!w-full"
+            asyncOnClick={true}
+            filename={`estimate-${Date.now()}.csv`}
+            onClick={(_e, done) => {
+              downloadCSV()
+              done()
+            }}
+
+          >
+            <WhiteButton
+              text='Download CSV'
+            />
+          </CSVLink>
+
+          {/* <PDFDownloadLink
             document={
               <EstimatePDF
                 estimateDetail={estimateDetailsSummary}
@@ -121,9 +214,9 @@ const ViewEstimateDetail = () => {
                 className="!w-full"
               />
             )}
-          </PDFDownloadLink>
+          </PDFDownloadLink> */}
 
-          {/* <PDFDownloadLink
+          <PDFDownloadLink
             document={
               <ClientPDF
                 estimateDetail={estimateDetailsSummary}
@@ -138,10 +231,10 @@ const ViewEstimateDetail = () => {
                 isLoading={loading}
                 loadingText="Downloading"
                 text="Download PDF"
-                className="!w-full"
+                className="!w-40"
               />
             )}
-          </PDFDownloadLink> */}
+          </PDFDownloadLink>
 
           {/* <PDFViewer>
             <EstimatePDF
@@ -275,28 +368,28 @@ const ViewEstimateDetail = () => {
       <div>
         {estimatesRecord?.length
           ? estimatesRecord.map((estimate: any) => (
-              <div key={estimate.title} className={`${bg_style} p-5 mt-3`}>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <QuaternaryHeading
-                      title={estimate.title}
-                      className="font-semibold"
-                    />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <QuaternaryHeading
-                      title={`Total Cost: ${USCurrencyFormat.format(
-                        estimate.totalCostForTitle
-                      )}`}
-                      className="font-semibold"
-                    />
-                  </div>
+            <div key={estimate.title} className={`${bg_style} p-5 mt-3`}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <QuaternaryHeading
+                    title={estimate.title}
+                    className="font-semibold"
+                  />
                 </div>
-                <div className="estimateTable_container">
-                  <EstimatesTable estimates={estimate.scopeItems} />
+                <div className="flex items-center gap-2">
+                  <QuaternaryHeading
+                    title={`Total Cost: ${USCurrencyFormat.format(
+                      estimate.totalCostForTitle
+                    )}`}
+                    className="font-semibold"
+                  />
                 </div>
               </div>
-            ))
+              <div className="estimateTable_container">
+                <EstimatesTable estimates={estimate.scopeItems} />
+              </div>
+            </div>
+          ))
           : null}
       </div>
 
@@ -346,9 +439,9 @@ const ViewEstimateDetail = () => {
           className="font-semibold"
           title={`${USCurrencyFormat.format(
             estimateDetailsSummary?.totalCost +
-              estimateDetailsSummary?.totalBidDetail?.bondFee +
-              estimateDetailsSummary?.totalBidDetail?.overheadAndProfit +
-              estimateDetailsSummary?.totalBidDetail?.materialTax
+            estimateDetailsSummary?.totalBidDetail?.bondFee +
+            estimateDetailsSummary?.totalBidDetail?.overheadAndProfit +
+            estimateDetailsSummary?.totalBidDetail?.materialTax
           )}`}
         />
       </div>

@@ -1,8 +1,7 @@
 'use client';
-import {  useState } from 'react';
+import { useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { toast } from 'react-toastify';
 
@@ -20,6 +19,7 @@ import { subcontractorService } from '@/app/services/subcontractor.service';
 import { ISubcontract } from '../../../../interfaces/companyEmployeeInterfaces/subcontractor.interface';
 import { Routes } from '@/app/utils/plans.utils';
 import { withAuth } from '@/app/hoc/withAuth';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const newSubcontractorSchema = Yup.object({
   companyRep: Yup.string().required('Company Rep is required!'),
@@ -44,9 +44,9 @@ const initialValues: ISubcontract = {
 };
 
 const CreateSubcontractor = () => {
-  const router = useRouter();
+  const router = useRouterHook();
 
-  
+
 
   const [isLoading, setIsLoading] = useState(false);
 
