@@ -11,7 +11,8 @@ import React, { useCallback, useEffect, useState } from 'react'
 import FormControl from '@/app/component/formControl';
 import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable'
 import { Avatar, Button, Progress, Select, Table } from 'antd'
-import { ColumnsType } from 'antd/es/table'
+//@ts-ignore
+import type { ColumnsType } from 'antd/es/table'
 import ModalComponent from '@/app/component/modal'
 import ClientModal from '../createClientModal';
 import { UploadFileData } from '../../context/EditContext'
@@ -623,7 +624,7 @@ const CreateInfo = () => {
                                 {
                                     fullData?.files && Array.isArray(fullData?.files) && fullData?.files?.length > 0 && fullData?.files?.map((it: any, ind: number) => {
                                         const totalProgress = fullData?.pages?.filter((i: any) => { return i?.fileId == it?.fileId })
-                                        return <li className='inline-flex gap-3 items-center justify-center'>
+                                        return <li key={ind} className='inline-flex gap-3 items-center justify-center'>
                                             <img src={'/fileCSV.png'} alt='' width={35} height={35} />
                                             <span data-tooltip={`${it?.name}`} className='whitespace-nowrap text-gray-500'>{`${it?.name?.slice(0, 4)}`}</span>
                                             <Progress percent={(totalProgress && Array.isArray(totalProgress) ? Math.ceil((totalProgress?.length / it?.totalPages) * 100) : 0)} strokeColor={'#007AB6'} />

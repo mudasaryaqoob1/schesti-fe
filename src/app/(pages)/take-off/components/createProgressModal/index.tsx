@@ -108,7 +108,7 @@ const CreateProgressModal = ({ setModalOpen, pages, files, isLoading, processFil
             className="text-graphiteGray mb-4 "
             title="Processing Files"
           />
-          <p>This is one time process and might take few minutes. Kindly don't close or reload tabs to continue.</p>
+          <p>{"This is one time process and might take few minutes. Kindly don't close or reload tabs to continue."}</p>
           <div className='flex flex-col gap-y-10 w-full p-5'>
             {
               fullData?.files && Array.isArray(fullData?.files) && fullData?.files?.length > 0 && fullData?.files?.map((item: any, index: number) => {
@@ -116,7 +116,7 @@ const CreateProgressModal = ({ setModalOpen, pages, files, isLoading, processFil
                 const failedProgress = fullData?.pages?.filter((i: any) => { return (i?.fileId == item?.fileId && i?.success == false) })
                 const totalProgress = fullData?.pages?.filter((i: any) => { return i?.fileId == item?.fileId })
 
-                return <div className='flex gap-2 flex-col'>
+                return <div key={index} className='flex gap-2 flex-col'>
                   <div className='flex gap-2'>
                     <p className='whitespace-nowrap'>{item?.name?.slice(0, 12) ?? ''}</p>
                     <Progress percent={(totalProgress && Array.isArray(totalProgress) ? Math.ceil((totalProgress?.length/item?.totalPages)*100) : 0)} />

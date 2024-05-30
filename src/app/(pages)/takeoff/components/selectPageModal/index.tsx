@@ -80,9 +80,9 @@ const SelectPageModal = ({ setModalOpen, numOfPages, page, uploadFileData, handl
           </div>
           <div className='flex justify-center flex-wrap gap-6 max-h-[400px] overflow-y-auto no-scrollbar' >
             {
-              uploadFileData && Array.isArray(uploadFileData) && uploadFileData?.map((i: any) => {
+              uploadFileData && Array.isArray(uploadFileData) && uploadFileData?.map((i: any,ind:number) => {
                 const isIncluded = selectedPages?.find((it: any) => it == i) ? true : false
-                return <div onClick={() => { handleAddRemove(i) }} className={`border relative w-56 h-72 rounded-xl cursor-pointer ${isIncluded ? 'border-[#7138df]' : 'border-gray-400'}`} >
+                return <div key={ind} onClick={() => { handleAddRemove(i) }} className={`border relative w-56 h-72 rounded-xl cursor-pointer ${isIncluded ? 'border-[#7138df]' : 'border-gray-400'}`} >
                   <img src={i?.src} className='w-full h-full rounded-xl' alt='img' />
                   <span className={`w-3 h-3 rounded-xl absolute top-3 right-3 cursor-pointer border ${isIncluded ? 'bg-[#7138df] border-[#7138df]' : 'bg-transparent border-gray-400'}`} >.</span>
                 </div>

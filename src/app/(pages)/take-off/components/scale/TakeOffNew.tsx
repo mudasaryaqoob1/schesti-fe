@@ -2,15 +2,15 @@ import CustomButton from '@/app/component/customButton/button'
 import { bg_style } from '@/globals/tailwindvariables'
 import { CloudUploadOutlined, DownOutlined, FileOutlined, FolderOutlined, LeftOutlined, MenuUnfoldOutlined, MoreOutlined, RightOutlined, SearchOutlined } from '@ant-design/icons'
 import React, { useState } from 'react'
-import { Button, Divider, Input, Table, TableColumnsType, Tree, TreeDataNode } from 'antd'
-import { ColumnsType } from 'antd/es/table'
+import { Button, Divider, Input, Table, Tree } from 'antd'
+// import { ColumnsType } from 'antd/es/table'
 
-const columns: ColumnsType<any> = [
+const columns: any = [
     {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      render: (text, record) => (
+      render: (text:any, record:any) => (
         <div className="flex items-center h-full">
           {record.isParent == true ? <FolderOutlined className="mr-2" /> : <FileOutlined className="mr-2" />}
           {text}

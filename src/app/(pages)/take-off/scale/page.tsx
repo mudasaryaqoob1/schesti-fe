@@ -27,8 +27,9 @@ import CustomButton from '@/app/component/customButton/button'
 import { bg_style } from '@/globals/tailwindvariables'
 import { CloudUploadOutlined, CopyOutlined, DeleteColumnOutlined, DeleteOutlined, DownOutlined, EditOutlined, FileOutlined, FilePdfOutlined, FolderOutlined, LeftOutlined, MenuUnfoldOutlined, MoreOutlined, RightOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons'
 import React from 'react'
-import { Button, Divider, Input, Table, TableColumnsType, Tree, TreeDataNode } from 'antd'
-import { ColumnsType } from 'antd/es/table'
+import { Button, Divider, Input, Table, Tree } from 'antd'
+//@ts-ignore
+import type { ColumnsType } from 'antd/es/table'
 import { takeoffSummaryService } from '@/app/services/takeoffSummary.service';
 import { EditableText } from '@/app/component/EditableText';
 import ReportModal from '../components/ReportModal';
@@ -390,7 +391,7 @@ const TakeOffNewPage = () => {
             ...slpg,
             [type]: slpg[type]?.map((it: any) => {
               if (new Date(it.dateTime).valueOf() === new Date(dateTime).valueOf()) {
-                return { ...it, [keyToUpdate]: valueToUpdate };
+                return { ...it, [keyToUpdate]: valueToUpdate }
               } else {
                 return it
               };
@@ -1159,7 +1160,7 @@ const TakeOffNewPage = () => {
                                 {
                                   fullData?.files && Array.isArray(fullData?.files) && fullData?.files?.length > 0 && fullData?.files?.map((it: any, ind: number) => {
                                     const totalProgress = fullData?.pages?.filter((i: any) => { return i?.fileId == it?.fileId })
-                                    return <li className='inline-flex gap-3 items-center justify-center'>
+                                    return <li key={ind} className='inline-flex gap-3 items-center justify-center'>
                                       <img src={'/fileCSV.png'} alt='' width={35} height={35} />
                                       <span data-tooltip={`${it?.name}`} className='whitespace-nowrap text-gray-500'>{`${it?.name?.slice(0, 4)}`}</span>
                                       <Progress percent={(totalProgress && Array.isArray(totalProgress) ? Math.ceil((totalProgress?.length / it?.totalPages) * 100) : 0)} strokeColor={'#007AB6'} />

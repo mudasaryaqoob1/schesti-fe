@@ -148,7 +148,7 @@ const ScaleModal = ({ setModalOpen, setSelectedClient, selectecClient }: Props) 
                 <div className="py-1">
                   {
                     clients && Array.isArray(clients) && clients?.length > 0 && clients?.map((it: any, ind: number) => {
-                      return <a onClick={()=>{setSelectedClient(it);setModalOpen(false)}} className="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabIndex={-1} id="options-menu-item-0">{it?.firstName ?? it?.email}</a>
+                      return <a key={ind} onClick={()=>{setSelectedClient(it);setModalOpen(false)}} className="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabIndex={-1} id="options-menu-item-0">{it?.firstName ?? it?.email}</a>
                     })
                   }
                   {getLoading && <a href="#" className="text-gray-700 block px-4 py-2 text-sm" role="menuitem" tabIndex={-1} id="options-menu-item-1">Loading...</a>}

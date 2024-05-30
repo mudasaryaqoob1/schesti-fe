@@ -157,7 +157,7 @@ const Scale = () => {
             {
               allCategories?.map((it:any,ind:number)=>{
                 const isSelected = it == selectedCategory
-                return <div className={`cursor-pointer p-1 rounded text-white ${isSelected ? '!bg-RoyalPurple' : 'bg-slate-400'}`} 
+                return <div key={ind} className={`cursor-pointer p-1 rounded text-white ${isSelected ? '!bg-RoyalPurple' : 'bg-slate-400'}`} 
                 onClick={()=>{
                   if(isSelected){
                     setselectedCategory("")
