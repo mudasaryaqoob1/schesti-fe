@@ -342,9 +342,9 @@ function CreatePost() {
     initialValues: {
       ...(postProjectState.project as IBidManagement),
       preBiddingMeeting: {
-        ...(postProjectState.project as IBidManagement)?.preBiddingMeeting,
         isChecked: (postProjectState.project as IBidManagement)?.preBiddingMeeting?.isChecked || false,
-        type: (postProjectState.project as IBidManagement)?.preBiddingMeeting?.type || 'Onsite',
+        type: (postProjectState.project as IBidManagement)?.preBiddingMeeting?.type || 'Online',
+        ...(postProjectState.project as IBidManagement)?.preBiddingMeeting,
       },
       siteWalkthrough: {
         ...(postProjectState.project as IBidManagement)?.siteWalkthrough,

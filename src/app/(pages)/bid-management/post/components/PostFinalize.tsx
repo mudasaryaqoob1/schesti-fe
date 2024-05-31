@@ -29,7 +29,6 @@ type Props = {
 };
 
 export function PostFinalize({ formik, children }: Props) {
-  console.log(formik.errors);
   const { values } = formik;
   const [userData, setUserData] = useState<{ label: string; value: string }[]>(
     []
@@ -333,9 +332,11 @@ export function PostFinalize({ formik, children }: Props) {
               </div>
 
               {formik.values.preBiddingMeeting?.isChecked ? <div>
-                <Radio.Group value={formik.values.preBiddingMeeting?.type} onChange={e => {
-                  formik.setFieldValue('preBiddingMeeting.type', e.target.value);
-                }}>
+                <Radio.Group value={formik.values.preBiddingMeeting?.type}
+                  onChange={e => {
+                    formik.setFieldValue('preBiddingMeeting.type', e.target.value);
+                  }}
+                >
                   <Radio value={'Onsite'}>Onsite</Radio>
                   <Radio value={'Online'}>Online</Radio>
                 </Radio.Group>
