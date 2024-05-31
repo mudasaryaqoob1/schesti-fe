@@ -547,8 +547,7 @@ export function PostFinalize({ formik, children }: Props) {
 
             <Checkbox disabled>
               <SenaryHeading
-                title="My In-Network members (Sends only to those with matching trades and regions)
-                        ( 2603 ) In-Network  | View chevron_right"
+                title="My In-Network members (Sends only to those with matching trades and regions)"
                 className="text-[#667085] font-normal leading-7 text-[14px] !w-fit"
               />
             </Checkbox>
