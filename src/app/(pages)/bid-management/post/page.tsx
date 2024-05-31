@@ -191,16 +191,49 @@ const FinalizeProjectSchema = Yup.object().shape({
   }),
   siteWalkthrough: Yup.object().shape({
     isChecked: Yup.boolean(),
-    location: Yup.string(),
-    date: Yup.string(),
-    time: Yup.string(),
-    instruction: Yup.string(),
+    location: Yup.string().when('isChecked', {
+      is: true,
+      then: () => Yup.string().required('Location is required'),
+      otherwise: () => Yup.string().notRequired()
+    }),
+    date: Yup.string().when('isChecked', {
+      is: true,
+      then: () => Yup.string().required('Date is required'),
+      otherwise: () => Yup.string().notRequired()
+    })
+    ,
+    time: Yup.string().when('isChecked', {
+      is: true,
+      then: () => Yup.string().required('Time is required'),
+      otherwise: () => Yup.string().notRequired()
+    })
+    ,
+    instruction: Yup.string().when('isChecked', {
+      is: true,
+      then: () => Yup.string().test({
+        test: (value) => {
+          if (!value) return true; // Allow empty values, adjust if necessary
+          const wordCount = value.trim().split(/\s+/).length;
+          return wordCount <= 50;
+        },
+        message: 'Additional details should not exceed 50 words',
+      }).required('Instruction is required'),
+      otherwise: () => Yup.string().notRequired()
+    }),
     isMandatory: Yup.boolean()
   }),
   rfiDeadline: Yup.object().shape({
     isChecked: Yup.boolean(),
-    date: Yup.string(),
-    time: Yup.string()
+    date: Yup.string().when('isChecked', {
+      is: true,
+      then: () => Yup.string().required('Date is required'),
+      otherwise: () => Yup.string().notRequired()
+    }),
+    time: Yup.string().when('isChecked', {
+      is: true,
+      then: () => Yup.string().required('Time is required'),
+      otherwise: () => Yup.string().notRequired()
+    }),
   })
 });
 
