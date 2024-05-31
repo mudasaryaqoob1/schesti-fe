@@ -137,7 +137,7 @@ export function ProjectSummary(props: IProps) {
                 title="Stage"
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
-              <p className="text-[#344054] text-[14px] leading-6 font-medium ">
+              <p className="text-[14px] leading-6 font-normal py-[7px] px-3 bg-[#ECFDF3] rounded-md w-fit text-[#027A48]">
                 {projectData.stage}
               </p>
             </div>
