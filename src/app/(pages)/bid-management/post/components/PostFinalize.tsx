@@ -276,7 +276,7 @@ export function PostFinalize({ formik, children }: Props) {
                 {values.description}
               </Paragraph>
             </div>
-            <div className="space-y-2">
+            {values.specialInstructions.length ? <div className="space-y-2">
               <SenaryHeading
                 title="Special Instructions"
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
@@ -288,7 +288,7 @@ export function PostFinalize({ formik, children }: Props) {
               }} className="text-[#344054] text-[14px] leading-6 font-medium">
                 {values.specialInstructions}
               </Paragraph>
-            </div>
+            </div> : null}
           </div>
         </fieldset>
       </div>
