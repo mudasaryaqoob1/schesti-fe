@@ -81,7 +81,7 @@ const ProjectDetailsSchema = Yup.object().shape({
   estimatedCompletionDate: Yup.string().required(
     'Estimated Completion Date is required'
   ),
-  squareFootage: Yup.string().min(1).required('Square Footage is required'),
+  squareFootage: Yup.string().min(1).optional(),
   projectValue: Yup.number().min(1).required('Project Value is required'),
 });
 
