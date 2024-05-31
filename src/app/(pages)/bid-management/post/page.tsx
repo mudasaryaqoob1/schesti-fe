@@ -299,6 +299,7 @@ function CreatePost() {
     onSuccess(res) {
       if (res.data && res.data.updatedProject) {
         if (postProjectState.formStep === 5) {
+          dispatch(setPostProjectAction(res.data.updatedProject));
           setShowCongratulation(true);
         } else {
           dispatch(setPostProjectAction(res.data.updatedProject));
@@ -398,7 +399,7 @@ function CreatePost() {
           className="font-semibold text-lavenderPurple cursor-pointer underline"
         />
       </div>
-      {showCongratulation ? (
+      {/* {showCongratulation ? (
         <PostProjectCongratulations
           cancelBtn={{
             text: 'View Project',
@@ -420,7 +421,7 @@ function CreatePost() {
           text="Your project has been posted successfully"
           title="Congratulations!"
         />
-      ) : null}
+      ) : null} */}
       {/* <DeletePopup /> */}
       <div className="grid grid-cols-12 gap-6 mt-5">
         <div className="col-span-3 bg-white shadow-[0_4px_30px_0px_#2E2D740D] border rounded-xl p-4 h-fit">
