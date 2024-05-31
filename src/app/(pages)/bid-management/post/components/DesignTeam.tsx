@@ -37,17 +37,17 @@ const DesignTeamMemberSchema = Yup.object().shape({
   role: Yup.string().matches(/[a-zA-Z]/, { message: "Atleast 1 character is required" }).max(20, "Role must have 20 characters").required('Role is required'),
   companyName: Yup.string().matches(/[a-zA-Z]/, { message: "Atleast 1 character is required" }).max(50, "Company name must have 50 characters.").required('Company Name is required'),
   location: Yup.string().matches(/[a-zA-Z]/, { message: "Atleast 1 character is required" }).max(30, "Location must have 30 characters.").required('Location is required'),
-  phoneNumber: Yup.string()
+  phoneNumber: Yup.string().optional()
     .test({
       test: (value) => {
         if (value) {
           return isValidPhoneNumber(value);
         }
+        return true;
       },
       message: 'Invalid phone number',
-    })
-    .required('Phone Number is required'),
-  email: Yup.string().email('Invalid email').required('Email is required'),
+    }),
+  email: Yup.string().email('Invalid email'),
 });
 
 export function PostDesignTeam({ formik, children }: Props) {
