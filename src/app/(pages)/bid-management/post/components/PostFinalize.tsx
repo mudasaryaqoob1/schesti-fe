@@ -29,6 +29,7 @@ type Props = {
 };
 
 export function PostFinalize({ formik, children }: Props) {
+  console.log(formik.errors);
   const { values } = formik;
   const [userData, setUserData] = useState<{ label: string; value: string }[]>(
     []
