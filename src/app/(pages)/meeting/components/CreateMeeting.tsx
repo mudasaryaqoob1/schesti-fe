@@ -21,38 +21,45 @@ import TimezoneSelect, {
   type ITimezoneOption,
 } from 'react-timezone-select';
 import { IMeeting } from '@/app/interfaces/meeting.type';
+import { ShouldHaveAtLeastCharacterRegex } from '@/app/utils/regex.util';
 
 type Props = {
   showModal: boolean;
   setShowModal(): void;
   onSuccess?: (_meeting: IMeeting) => void;
+  isInviteOptional?: boolean;
 };
 
-const CreateMeetingSchema = Yup.object().shape({
-  topic: Yup.string().required('Topic is required'),
-  email: Yup.array()
-    .min(1)
-    .of(Yup.string().email('is invalid email\n').required('Email is required'))
-    .required('Email is required'),
-  startDate: Yup.date().required('Start Time is required'),
-});
+
 // let timezones = Intl.supportedValuesOf('timeZone');
-export function CreateMeeting({ showModal, setShowModal, onSuccess }: Props) {
+export function CreateMeeting({ showModal, setShowModal, onSuccess, isInviteOptional = false }: Props) {
   const [isScheduling, setIsScheduling] = useState(false);
   const [timezone, setTimezone] = useState<ITimezone>(
     Intl.DateTimeFormat().resolvedOptions().timeZone
   );
   const dispatch = useDispatch<AppDispatch>();
 
+  const CreateMeetingSchema = Yup.object().shape({
+    topic: Yup.string().matches(ShouldHaveAtLeastCharacterRegex, "Topic should have atleast 1 character.").required('Topic is required'),
+    email: isInviteOptional ? Yup.array().of(Yup.string().email('is invalid\n'))
+      : Yup.array()
+        .min(1)
+        .of(Yup.string().email('is invalid email\n').required('Email is required'))
+        .required('Email is required'),
+    startDate: Yup.date().required('Start Time is required'),
+  });
+
+
   const formik = useFormik({
     initialValues: {
       topic: '',
-      email: undefined,
+      email: [],
       startDate: dayjs()
         .tz((timezone as ITimezoneOption).value)
         .format('YYYY-MM-DDTHH:mm:ss'),
     },
     validationSchema: CreateMeetingSchema,
+    enableReinitialize: false,
     onSubmit(values) {
       setIsScheduling(true);
       let roomName = `Schesti-${Math.random() * 1000}`;
@@ -126,13 +133,13 @@ export function CreateMeeting({ showModal, setShowModal, onSuccess }: Props) {
               type="text"
               placeholder="Title"
               name="topic"
-              hasError={formik.touched.topic && !!formik.errors.topic}
+              hasError={formik.touched.topic && Boolean(formik.errors.topic)}
               field={{
                 value: formik.values.topic,
                 onChange: formik.handleChange,
                 onBlur: formik.handleBlur,
               }}
-              errorMessage={formik.errors.topic}
+              errorMessage={formik.touched.topic && formik.errors.topic ? formik.errors.topic : undefined}
             />
             <SelectComponent
               label="Invite"
@@ -149,7 +156,7 @@ export function CreateMeeting({ showModal, setShowModal, onSuccess }: Props) {
                         `'${formik.values.email![idx]}' ${item}`
                     )
                     .toString()
-                  : formik.errors.email
+                  : formik.errors.email as string
               }
               field={{
                 mode: 'tags',

@@ -45,6 +45,7 @@ export function EventOnlineForm({ formik }: Props) {
                 onSuccess={_meeting => {
                     formik.setFieldValue('preBiddingMeeting.meeting', _meeting);
                 }}
+                isInviteOptional
             />
         </div>
     }
