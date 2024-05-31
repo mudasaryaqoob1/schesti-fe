@@ -280,7 +280,7 @@ function CreatePost() {
       }
       : {
         projectName: '',
-        country: 'PK',
+        country: 'US',
         city: '',
         zipCode: '',
         state: '',
