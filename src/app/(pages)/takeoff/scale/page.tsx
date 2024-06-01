@@ -17,9 +17,9 @@ import { ScaleNavigation, DrawTable, Draw } from './components';
 import { ScaleDataContextProps } from '../context/ScaleContext';
 import Button from '@/app/component/customButton/button';
 import { ReportDataContextProps } from '../context/ReportDataContext';
-import SelectPageModal from '../components/selectPageModal';
-import { useSelector } from 'react-redux';
-import { selectUser } from '@/redux/authSlices/auth.selector';
+// import SelectPageModal from '../components/selectPageModal';
+// import { useSelector } from 'react-redux';
+// import { selectUser } from '@/redux/authSlices/auth.selector';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 export interface ScaleData {

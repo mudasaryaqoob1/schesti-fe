@@ -13,8 +13,8 @@ import { selectTakeoffSummaries } from '@/redux/takeoffSummaries/takeoffSummarie
 const Report = () => {
   const summaries = useSelector(selectTakeoffSummaries);
   const [name, setName] = useState('');
-  const [save, setSave] = useState(0);
-  const [saveLoader, setSaveLoader] = useState(false);
+  const [save] = useState(0);
+  // const [saveLoader, setSaveLoader] = useState(false);
   const [clientModal, setclientModal] = useState<boolean>(false)
   const [selectecClient, setselectecClient] = useState<any>({})
 
@@ -114,7 +114,7 @@ const Report = () => {
         name={name}
         save={save}
         onSaveSuccess={() => {
-          setSaveLoader(false);
+          // setSaveLoader(false);
         }}
         selectedClient={selectecClient}
       />

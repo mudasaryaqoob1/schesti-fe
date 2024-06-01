@@ -6,25 +6,25 @@ import Table from '@/app/component/table/takeoff';
 // import { takeoffRecords, takeoffRecordsHeadings } from '../../data';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
-import { useCallback, useContext, useState } from 'react';
-import UploadFileContext, { UploadFileContextProps, UploadFileData } from '../../context/UploadFileContext';
-import { DrawHistoryContext, EditContext } from '../../context';
+import { useState } from 'react';
+// import UploadFileContext, { UploadFileContextProps } from '../../context/UploadFileContext';
+// import { DrawHistoryContext, EditContext } from '../../context';
 import { Input } from 'antd';
-import Icon from '@ant-design/icons/lib/components/Icon';
+// import Icon from '@ant-design/icons/lib/components/Icon';
 import { SearchOutlined } from '@ant-design/icons';
-const { Search } = Input;
+// const { Search } = Input;
 
 const Records = () => {
-  const { handleSrc } = useContext(UploadFileContext) as UploadFileContextProps;
-  const { setInitialEditDrawHistory } = useContext(DrawHistoryContext)
-  const { editData, handleEdit } = useContext(EditContext)
+  // const { handleSrc } = useContext(UploadFileContext) as UploadFileContextProps;
+  // const { setInitialEditDrawHistory } = useContext(DrawHistoryContext)
+  // const { editData, handleEdit } = useContext(EditContext)
   const router = useRouter();
-  const pdfjs = useCallback(async () => {
-    const pdfjs = await import('pdfjs-dist');
-    await import('pdfjs-dist/build/pdf.worker.min.mjs');
+  // const pdfjs = useCallback(async () => {
+  //   const pdfjs = await import('pdfjs-dist');
+  //   await import('pdfjs-dist/build/pdf.worker.min.mjs');
 
-    return pdfjs;
-  }, []);
+  //   return pdfjs;
+  // }, []);
 
   // const handleEditClick = async (item: any) => {
   //   try {

@@ -10,7 +10,7 @@ import {
   Text as KonvaText,
   Arrow,
   Circle,
-  Rect,
+  // Rect,
 } from 'react-konva';
 import { UploadFileData } from '../../context/UploadFileContext';
 import { DrawHistoryContext, ReportDataContext } from '../../context';
@@ -27,7 +27,7 @@ import {
   defaultMeasurements,
 } from '../../types';
 import { ScaleData } from '../page';
-import useWheelZoom from './useWheelZoom';
+// import useWheelZoom from './useWheelZoom';
 import { useDraw } from '@/app/hooks';
 import { Spin } from 'antd';
 import { useSelector } from 'react-redux';
@@ -91,7 +91,7 @@ const Draw: React.FC<Props> = ({
   setscaleLine,
   selectedCategory,
   selectedSubCategory,
-  updateMeasurements,
+  // updateMeasurements,
   draw,
   setDraw,
   stageScale,
@@ -115,7 +115,7 @@ const Draw: React.FC<Props> = ({
     calculatePolygonVolume,
     calculateAngle,
     pointInCircle,
-    calcPerimeterDistance
+    // calcPerimeterDistance
   } = useDraw();
   const { deleteDrawHistory, updateDrawHistory, drawHistory } = useContext(
     DrawHistoryContext
@@ -280,7 +280,7 @@ const Draw: React.FC<Props> = ({
         textColor: textColor,
         text:lineDistance?.toString()
       };
-      setDraw((prev: any) => ({ ...prev, line: [...(prev?.line ? prev?.line : []), newLine] }));
+      setDraw((prev: any) => ({ ...prev, line: [...(prev?.line ? prev.line : []), newLine] }));
 
       updateDrawHistory(pageNumber.toString(), 'line', newLine);
 
@@ -359,7 +359,7 @@ const Draw: React.FC<Props> = ({
 
                 return {
                   ...prevDraw,
-                  area: [...(prevDraw?.area ? prevDraw?.area : []), areaConfig],
+                  area: [...(prevDraw?.area ? prevDraw.area : []), areaConfig],
                 };
               } else {
                 const volume = calculatePolygonVolume(
@@ -404,7 +404,7 @@ const Draw: React.FC<Props> = ({
 
                 return {
                   ...prevDraw,
-                  volume: [...(prevDraw?.volume ? prevDraw?.volume : []), volumeConfig],
+                  volume: [...(prevDraw?.volume ? prevDraw.volume : []), volumeConfig],
                 };
               }
             });
@@ -429,8 +429,8 @@ const Draw: React.FC<Props> = ({
       };
 
       setDraw((prev: any) => {
-        handleChangeMeasurements({ count: [...(prev?.count ? prev?.count : []), newCount].length });
-        return { ...prev, count: [...(prev?.count ? prev?.count : []), newCount] };
+        handleChangeMeasurements({ count: [...(prev?.count ? prev.count : []), newCount].length });
+        return { ...prev, count: [...(prev?.count ? prev.count : []), newCount] };
       });
 
       updateDrawHistory(pageNumber.toString(), 'count', newCount);
@@ -598,7 +598,7 @@ const Draw: React.FC<Props> = ({
             setDraw((prevDraw: any) => ({
               ...prevDraw,
               dynamic: [
-                ...(prevDraw?.dynamic ? prevDraw?.dynamic : []),
+                ...(prevDraw?.dynamic ? prevDraw.dynamic : []),
                 {
                   ...dynamicPolyLine,
                   strokeWidth: 10,
@@ -628,7 +628,7 @@ const Draw: React.FC<Props> = ({
             setDraw((prevDraw: any) => ({
               ...prevDraw,
               perimeter: [
-                ...(prevDraw?.perimeter ? prevDraw?.perimeter : []),
+                ...(prevDraw?.perimeter ? prevDraw.perimeter : []),
                 {
                   ...dynamicPolyLine,
                   // strokeWidth: 10,
@@ -793,7 +793,7 @@ const Draw: React.FC<Props> = ({
           {/* Scale Drawing Line */}
           {draw?.scale && Array.isArray(draw?.scale) && draw?.scale?.map(({ textUnit, ...rest }: any, index: number) => {
             const id = `line-${index}`;
-            const lineDistance = calcLineDistance(rest.points, scale, true);
+            // const lineDistance = calcLineDistance(rest.points, scale, true);
             const lineMidPoint = calculateMidpoint(rest.points);
 
             return (
@@ -814,12 +814,13 @@ const Draw: React.FC<Props> = ({
                   pointerAtEnding={true}
                   pointerAtBeginning={true}
                 />
-                {/* <KonvaText
+                <KonvaText
                   {...lineMidPoint}
                   fontSize={textUnit}
-                  text={lineDistance.toString()}
+                  text={""}
+                  // text={lineDistance.toString()}
                   fill="red"
-                /> */}
+                />
               </Group>
             );
           })}

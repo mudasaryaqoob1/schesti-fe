@@ -1,8 +1,7 @@
 'use client';
-import Button from '@/app/component/customButton/button';
 import Image from 'next/image';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import { ChangeEvent, useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import FormControl from '@/app/component/formControl';
@@ -51,12 +50,12 @@ const initialValues: IClient = {
   secondAddress: '',
 };
 
-const ScaleModal = ({ setModalOpen, setSelectedClient, selectecClient }: Props) => {
+const ScaleModal = ({ setModalOpen, setSelectedClient }: Props) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [clients, setclients] = useState<any>([])
-  const [getLoading, setgetLoading] = useState<boolean>(false)
-  const [isOpen, setIsOpen] = useState<boolean>(false)
+  // const [getLoading, setgetLoading] = useState<boolean>(false)
+  // const [isOpen, setIsOpen] = useState<boolean>(false)
 
   const submitHandler = async (values: IClient) => {
     setIsLoading(true);
@@ -78,14 +77,14 @@ const ScaleModal = ({ setModalOpen, setSelectedClient, selectecClient }: Props) 
   };
 
   const getClients = () => {
-    setgetLoading(true)
+    // setgetLoading(true)
     userService.httpGetAllCompanyClients().then((res) => {
       console.log(res?.data?.clients, " get clients");
       setclients(res?.data?.clients)
-      setgetLoading(false)
+      // setgetLoading(false)
     }).catch((err: any) => {
       console.log(err, ' err while getting clients')
-      setgetLoading(false)
+      // setgetLoading(false)
     })
   };
   useEffect(() => { getClients() }, [])

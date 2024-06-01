@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import Navbar from '../component/navbar/minnavbar';
 import Tabs from '../component/tabs';
 import { usePathname } from 'next/navigation';
-import SmallTabs from '../component/tabs/SmallTabs';
 
 type Props = {
   children: React.ReactNode;

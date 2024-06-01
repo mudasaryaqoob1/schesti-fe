@@ -1,5 +1,5 @@
 import { Input, Select } from 'antd';
-import React, { useMemo } from 'react';
+import React from 'react';
 import NextImage from 'next/image';
 //@ts-ignore
 // import { debounce } from '@/app/constants/constant';
@@ -8,7 +8,7 @@ interface Props {
   setSearchProjectName: (data: string) => void;
 }
 
-const TableHeader: React.FC<Props> = ({ setSearchProjectName }) => {
+const TableHeader: React.FC<Props> = () => {
   // const check = useMemo(() => debounce(300), []);
 
   return (

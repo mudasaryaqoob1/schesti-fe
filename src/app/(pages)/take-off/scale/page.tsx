@@ -4,7 +4,7 @@ import ModalComponent from '@/app/component/modal';
 import ScaleModal from '../components/scale';
 import ModalsWrapper from './components/ModalWrapper';
 import { Avatar, ColorPicker, Dropdown, InputNumber, Menu, Progress, Select, Space, Spin } from 'antd';
-import { EditContext, ReportDataContext, ScaleContext, UploadFileContext } from '../context';
+import { EditContext, ScaleContext, UploadFileContext } from '../context';
 import { UploadFileContextProps } from '../context/UploadFileContext';
 import {
   Measurements,
@@ -13,34 +13,34 @@ import {
   defaultMeasurements,
 } from '../types';
 import Image from 'next/image';
-import { ScaleNavigation, DrawTable, Draw } from './components';
+import { ScaleNavigation, Draw } from './components';
 import { ScaleDataContextProps } from '../context/ScaleContext';
 import { useRouter, useSearchParams } from 'next/navigation';
-import CusotmButton from '@/app/component/customButton/button';
-import { ReportDataContextProps } from '../context/ReportDataContext';
-import SelectPageModal from '../components/selectPageModal';
-import { useSelector } from 'react-redux';
-import { selectUser } from '@/redux/authSlices/auth.selector';
+// import CusotmButton from '@/app/component/customButton/button';
+// import { ReportDataContextProps } from '../context/ReportDataContext';
+// import SelectPageModal from '../components/selectPageModal';
+// import { useSelector } from 'react-redux';
+// import { selectUser } from '@/redux/authSlices/auth.selector';
 
 ////////////////////////New Take OffData///////////////////////////////////
 import CustomButton from '@/app/component/customButton/button'
 import { bg_style } from '@/globals/tailwindvariables'
-import { CloudUploadOutlined, CopyOutlined, DeleteColumnOutlined, DeleteOutlined, DownOutlined, EditOutlined, FileOutlined, FilePdfOutlined, FolderOutlined, LeftOutlined, MenuUnfoldOutlined, MoreOutlined, PlusOutlined, RightOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons'
+import { CloudUploadOutlined, CopyOutlined, DeleteOutlined, FileOutlined, FilePdfOutlined, FolderOutlined, LeftOutlined, MenuUnfoldOutlined, MoreOutlined, PlusOutlined, RightOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons'
 import React from 'react'
-import { Button, Divider, Input, Table, Tree } from 'antd'
+import { Button, Divider, Input, Table } from 'antd'
 //@ts-ignore
 import type { ColumnsType } from 'antd/es/table'
 import { takeoffSummaryService } from '@/app/services/takeoffSummary.service';
 import { EditableText } from '@/app/component/EditableText';
 import ReportModal from '../components/ReportModal';
-import TertiaryHeading from '@/app/component/headings/tertiary';
+// import TertiaryHeading from '@/app/component/headings/tertiary';
 import CreateProgressModal from '../components/createProgressModal';
-import { UploadFileData } from '../context/EditContext';
+// import { UploadFileData } from '../context/EditContext';
 import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import AwsS3 from '@/app/utils/S3Intergration';
 import { toast } from 'react-toastify';
-import { AnyArn } from 'aws-sdk/clients/groundstation';
-import { AnyCnameRecord } from 'dns';
+// import { AnyArn } from 'aws-sdk/clients/groundstation';
+// import { AnyCnameRecord } from 'dns';
 import useWheelZoom from './components/useWheelZoom';
 
 
@@ -58,7 +58,7 @@ const groupDataForFileTable = (input: any[]) => {
       src,
       pageId,
       pageNumber,
-      fileId
+      // fileId
     } = currentItem;
 
     // Check if there's already an entry with the same projectName and pageLabel
@@ -118,11 +118,11 @@ const groupDataForFileTable = (input: any[]) => {
 
 const getSingleMeasurements = (draw: any, pageId: any) => {
   let singleArr: any = [];
-  let returningArr: any = [];
+  // let returningArr: any = [];
   if (Object?.keys(draw)?.length > 0) {
-    Object.keys(draw)?.map((key: string, index: number) => {
+    Object.keys(draw)?.map((key: string) => {
       if (Array.isArray(draw[`${key}`]) && draw[`${key}`]?.length > 0) {
-        singleArr = [...singleArr, ...draw[`${key}`]?.map((i: any) => ({ ...i, type: key, pageId }))]
+        singleArr = [...singleArr, ...draw[`${key}`].map((i: any) => ({ ...i, type: key, pageId }))]
       }
       return "";
     })
@@ -249,7 +249,7 @@ const measurementsTableData = (takeOff: any, search?:string) => {
   return returningArr
 }
 
-const { DirectoryTree, TreeNode } = Tree;
+// const { DirectoryTree, TreeNode } = Tree;
 ////////////////////////New Take OffData///////////////////////////////////
 
 export interface ScaleData {
@@ -279,7 +279,7 @@ const TakeOffNewPage = () => {
     files: [],
     pages: [],
   })
-  const [allPages, setallPages] = useState<any>([])
+  const [allPages] = useState<any>([])
   const [isApiCalling, setisApiCalling] = useState(false)
   const [isLoading, setisLoading] = useState<boolean>(false)
 
@@ -322,7 +322,7 @@ const TakeOffNewPage = () => {
       console.log(curFile, " ===> Current File Running");
       if (curFile) {
         const PDFJS = await pdfjs();
-        const pdfPagesData: UploadFileData[] = [];
+        // const pdfPagesData: UploadFileData[] = [];
         const reader = new FileReader();
         reader.onload = async (event: any) => {
           const data = new Uint8Array(event.target.result);
@@ -361,7 +361,7 @@ const TakeOffNewPage = () => {
       const newupdatedMeasurements: any = await takeoffSummaryService.httpUpdateTakeoffSummary({
         id: takeOff?._id,
         //@ts-ignore
-        data: { pages: [...takeOff?.pages, ...fullData?.pages], files: [...takeOff?.files, ...fullData?.files] }
+        data: { pages: [...(Array.isArray(takeOff?.pages) ? takeOff.pages : []), ...(Array.isArray(fullData?.pages) ? fullData.pages : [])], files: [...(Array.isArray(takeOff?.files) ? takeOff.files : []), ...(Array.isArray(fullData?.files) ? fullData.files : [])] }
       })
       console.log(newupdatedMeasurements, " ==> newupdatedMeasurements")
       settakeOff(newupdatedMeasurements?.data)
@@ -410,7 +410,7 @@ const TakeOffNewPage = () => {
   // });
   const [draw, setDraw] = useState<any>({});
   const [takeOff, settakeOff] = useState<any>({})
-  const [pdMeasurements, setpdMeasurements] = useState(null)
+  // const [pdMeasurements, setpdMeasurements] = useState(null)
   const [selectedTakeOffTab, setselectedTakeOffTab] = useState<'overview' | 'page' | 'file'>('overview')
   const [selectedPage, setselectedPage] = useState<any>({})
   const [selectedPagesList, setselectedPagesList] = useState([])
@@ -422,9 +422,9 @@ const TakeOffNewPage = () => {
   const params = useSearchParams()
   const edit_id = params.get('edit_id')
   ////categories
-  const [allCategories, setallCategories] = useState<any>([])
-  const [selectedCategory, setselectedCategory] = useState<any>("")
-  const [inputtxt, setinputtxt] = useState<any>("")
+  // const [allCategories, setallCategories] = useState<any>([])
+  // const [selectedCategory, setselectedCategory] = useState<any>("")
+  // const [inputtxt, setinputtxt] = useState<any>("")
   ////
   const [tool, setTool] = useState<ScaleInterface>({ selected: 'scale' });
   const [showModal, setShowModal] = useState(false);
@@ -462,7 +462,7 @@ const TakeOffNewPage = () => {
                 return { ...it, [keyToUpdate]: valueToUpdate }
               } else {
                 return it
-              };
+              }
             })
           }
           tempTakeOff.measurements[pageId] = slpg
@@ -541,7 +541,7 @@ const TakeOffNewPage = () => {
       } else if (key == 'delete') {
         pages = pages?.filter((i: any) => (i?.pageId != item?.pageId))
       } else if (key == 'rename') {
-        pages = pages?.map((i: any, ind: number) => {
+        pages = pages?.map((i: any) => {
           if (i?.pageId == item?.pageId) {
             return { ...i, name: newName }
           } else {
@@ -566,7 +566,7 @@ const TakeOffNewPage = () => {
     }
   }
 
-  const menu = (item: any, isParent = false) => (
+  const menu = (item: any) => (
     <Menu
       onClick={({ key }) => handleMenuClick(key, item)}
       items={[
@@ -764,9 +764,9 @@ const TakeOffNewPage = () => {
     UploadFileContext
   ) as UploadFileContextProps;
 
-  const { reportData } = useContext(
-    ReportDataContext
-  ) as ReportDataContextProps;
+  // const { reportData } = useContext(
+  //   ReportDataContext
+  // ) as ReportDataContextProps;
   const { editData } = useContext(EditContext)
 
   const getTakeOffDetails = async (id: string) => {
@@ -803,13 +803,13 @@ const TakeOffNewPage = () => {
     handleScaleData(newData);
   }, []);
   useEffect(() => { console.log(measurements, " ===> measurements") }, [measurements])
-  const hadleNewDrawing = () => {
-    try {
+  // const hadleNewDrawing = () => {
+  //   try {
 
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  //   } catch (error) {
+  //     console.log(error)
+  //   }
+  // }
 
   const file = {
     src: "https://schesti-dev.s3.eu-north-1.amazonaws.com/2024/documents/takeoff-reports/4264282fef9d5a5191b025fd29daeb59",
@@ -1365,7 +1365,7 @@ const TakeOffNewPage = () => {
                                 <input type="file" accept="application/pdf" multiple id='file-selector' className='hidden absolute top-0 left-0' style={{ display: 'none' }} onChange={(e: any) => {
                                   console.log(e.target.result, " ==> event.target.result")
                                   if (e.target.files?.length > 0) {
-                                    const arr = Object.keys(e.target?.files)?.map((it: any, ind: number) => {
+                                    const arr = Object.keys(e.target?.files)?.map((it: any) => {
                                       if (Number.isInteger(Number(it))) {
                                         return e?.target?.files[it]
                                       }

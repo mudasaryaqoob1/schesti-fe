@@ -1,8 +1,8 @@
 import CustomButton from '@/app/component/customButton/button'
 import { bg_style } from '@/globals/tailwindvariables'
-import { CloudUploadOutlined, DownOutlined, FileOutlined, FolderOutlined, LeftOutlined, MenuUnfoldOutlined, MoreOutlined, RightOutlined, SearchOutlined } from '@ant-design/icons'
+import { CloudUploadOutlined, FileOutlined, FolderOutlined, LeftOutlined, MenuUnfoldOutlined, MoreOutlined, RightOutlined, SearchOutlined } from '@ant-design/icons'
 import React, { useState } from 'react'
-import { Button, Divider, Input, Table, Tree } from 'antd'
+import { Button, Input, Table } from 'antd'
 // import { ColumnsType } from 'antd/es/table'
 
 const columns: any = [
@@ -19,36 +19,36 @@ const columns: any = [
     },
   ];
 
-const data: any[] = [
-    {
-        key: 1,
-        name: 'John Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-        description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.',
-    },
-    {
-        key: 2,
-        name: 'Jim Green',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-        description: 'My name is Jim Green, I am 42 years old, living in London No. 1 Lake Park.',
-    },
-    {
-        key: 3,
-        name: 'Not Expandable',
-        age: 29,
-        address: 'Jiangsu No. 1 Lake Park',
-        description: 'This not expandable',
-    },
-    {
-        key: 4,
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sydney No. 1 Lake Park',
-        description: 'My name is Joe Black, I am 32 years old, living in Sydney No. 1 Lake Park.',
-    },
-];
+// const data: any[] = [
+//     {
+//         key: 1,
+//         name: 'John Brown',
+//         age: 32,
+//         address: 'New York No. 1 Lake Park',
+//         description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.',
+//     },
+//     {
+//         key: 2,
+//         name: 'Jim Green',
+//         age: 42,
+//         address: 'London No. 1 Lake Park',
+//         description: 'My name is Jim Green, I am 42 years old, living in London No. 1 Lake Park.',
+//     },
+//     {
+//         key: 3,
+//         name: 'Not Expandable',
+//         age: 29,
+//         address: 'Jiangsu No. 1 Lake Park',
+//         description: 'This not expandable',
+//     },
+//     {
+//         key: 4,
+//         name: 'Joe Black',
+//         age: 32,
+//         address: 'Sydney No. 1 Lake Park',
+//         description: 'My name is Joe Black, I am 32 years old, living in Sydney No. 1 Lake Park.',
+//     },
+// ];
 const pages = [{ id: 787, name: 'firstpage', bucketUrl: "", file: { id: 45, name: 'Filename' }, page: 1, status: 'Complete' }, { id: 787, name: 'firstpage', bucketUrl: "", file: { id: 45, name: 'Filename' }, page: 1, status: 'Complete' }, { id: 787, name: 'firstpage', bucketUrl: "", file: { id: 45, name: 'Filename' }, page: 1, status: 'Complete' }, { id: 787, name: 'firstpage', bucketUrl: "", file: { id: 45, name: 'Filename' }, page: 1, status: 'Complete' }, { id: 787, name: 'firstpage', bucketUrl: "", file: { id: 45, name: 'Filename' }, page: 1, status: 'Complete' },
 { id: 787, name: 'firstpage', bucketUrl: "", file: { id: 45, name: 'Filename' }, page: 1, status: 'Complete' }, { id: 787, name: 'firstpage', bucketUrl: "", file: { id: 45, name: 'Filename' }, page: 1, status: 'Complete' }, { id: 787, name: 'firstpage', bucketUrl: "", file: { id: 45, name: 'Filename' }, page: 1, status: 'Complete' }, { id: 787, name: 'firstpage', bucketUrl: "", file: { id: 45, name: 'Filename' }, page: 1, status: 'Complete' }, { id: 787, name: 'firstpage', bucketUrl: "", file: { id: 45, name: 'Filename' }, page: 1, status: 'Complete' },
 { id: 787, name: 'firstpage', bucketUrl: "", file: { id: 45, name: 'secondfile.pdf' }, page: 1, status: 'Complete' }, { id: 787, name: 'firstpage', bucketUrl: "", file: { id: 45, name: 'Filename' }, page: 1, status: 'Complete' }, { id: 787, name: 'firstpage', bucketUrl: "", file: { id: 45, name: 'Filename' }, page: 1, status: 'Complete' }, { id: 787, name: 'firstpage', bucketUrl: "", file: { id: 45, name: 'Filename' }, page: 1, status: 'Complete' }, { id: 787, name: 'firstpage', bucketUrl: "", file: { id: 45, name: 'Filename' }, page: 1, status: 'Complete' },
@@ -111,7 +111,7 @@ const groupDataForFileTable = (input: any[]) => {
     return groupedData;
 };
 
-const { DirectoryTree, TreeNode } = Tree;
+// const { DirectoryTree, TreeNode } = Tree;
 const TakeOffNew = () => {
     const [leftOpened, setleftOpened] = useState<boolean>(false)
     return (

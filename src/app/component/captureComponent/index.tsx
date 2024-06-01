@@ -1,23 +1,23 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Stage, Layer } from 'react-konva';
 import Konva from 'konva';
 
-import UploadFileContext, {
-  UploadFileContextProps,
-} from '@/app/(pages)/takeoff/context/UploadFileContext';
+// import UploadFileContext, {
+//   UploadFileContextProps,
+// } from '@/app/(pages)/takeoff/context/UploadFileContext';
 import ReportCard from '../reportCard';
 
-import { DrawHistoryContext, ReportDataContext } from '@/app/(pages)/takeoff/context';
+// import { DrawHistoryContext } from '@/app/(pages)/takeoff/context';
 import {
-  ReportDataContextProps,
+  // ReportDataContextProps,
   ReportDataInterface,
 } from '@/app/(pages)/takeoff/context/ReportDataContext';
 
-import uploadToS3 from './uploadToS3';
+// import uploadToS3 from './uploadToS3';
 
-import { AppDispatch } from '@/redux/store';
-import { useDispatch } from 'react-redux';
-import { createTakeoffSummary, updateTakeoffSummary } from '@/redux/takeoffSummaries/takeoffSummaries.thunk';
+// import { AppDispatch } from '@/redux/store';
+// import { useDispatch } from 'react-redux';
+// import { createTakeoffSummary, updateTakeoffSummary } from '@/redux/takeoffSummaries/takeoffSummaries.thunk';
 import { useDraw } from '@/app/hooks';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { takeoffSummaryService } from '@/app/services/takeoffSummary.service';
@@ -46,10 +46,10 @@ const groupByType = (items: dataInterface[]): dataInterface[][] => {
   return Object.values(grouped);
 };
 const CaptureComponent = ({
-  name,
+  // name,
   save,
-  onSaveSuccess,
-  selectedClient,
+  // onSaveSuccess,
+  // selectedClient,
 }: {
   name: string;
   save: number;
@@ -64,8 +64,8 @@ const CaptureComponent = ({
 
   const stageRef = useRef<Konva.Stage>(null);
   const [data, setData] = useState<dataInterface[]>([]);
-  const [isSaving, setIsSaving] = useState<boolean>(false);
-  const dispatch = useDispatch<AppDispatch>();
+  const [isSaving] = useState<boolean>(false);
+  // const dispatch = useDispatch<AppDispatch>();
   const { calculateMidpoint, calculatePolygonCenter } = useDraw();
   // const { uploadFileData } = useContext(
   //   UploadFileContext
@@ -74,7 +74,7 @@ const CaptureComponent = ({
   // const { reportData } = useContext(
   //   ReportDataContext
   // ) as ReportDataContextProps;
-  const { drawHistory } = useContext(DrawHistoryContext)
+  // const { drawHistory } = useContext(DrawHistoryContext)
   const [reportData, setreportData] = useState<any>([])
   const [uploadFileData, setuploadFileData] = useState<any>([])
 
@@ -109,12 +109,12 @@ const CaptureComponent = ({
   const getPageData = () => {
     let reportData: any = [];
     if (takeOff?.measurements && Object.keys(takeOff?.measurements) && Object.keys(takeOff?.measurements)?.length > 0) {
-      Object.keys(takeOff?.measurements)?.map((key: any, index: any) => {
+      Object.keys(takeOff?.measurements)?.map((key: any) => {
         if (takeOff?.measurements[key] && Object.keys(takeOff?.measurements[key]) && Object.keys(takeOff?.measurements[key])?.length > 0) {
-          Object.keys(takeOff?.measurements[key])?.map((type: any, ind: number) => {
+          Object.keys(takeOff?.measurements[key])?.map((type: any) => {
             reportData = [...reportData, ...((takeOff?.measurements[key][type] && Array.isArray(takeOff?.measurements[key][type]) && takeOff?.measurements[key][type]?.length > 0)
               ?
-              takeOff?.measurements[key][type]?.map((arrit: any) => {
+              takeOff.measurements[key][type].map((arrit: any) => {
                 return {
                   ...arrit, pageId: key, type, pageData: takeOff?.pages?.find((pg: any) => (pg?.pageId == key)),
                   pageLabel: takeOff?.pages?.find((pg: any) => (pg?.pageId == key))?.pageNum, color: arrit?.stroke, config: arrit
@@ -298,9 +298,9 @@ const CaptureComponent = ({
       const captureShapes = async () => {
         setloading(true)
         try {
-          for(let j = 0; j<uploadFileData?.length; j++){
+          // for(let j = 0; j<uploadFileData?.length; j++){
             
-          }
+          // }
           // const background = await loadImage(uploadFileData[1]?.src || ''); // Update based on actual data structure
           const promises = reportData.map(async (item) => {
             const page = uploadFileData?.find((pg: any) => (pg?.pageId == item?.pageId))

@@ -57,7 +57,7 @@ interface Props {
   scaleLine?:any;
 }
 
-const ScaleModal = ({ setModalOpen, numOfPages, page, drawScale, setdrawScale, scaleLine }: Props) => {
+const ScaleModal = ({ setModalOpen, numOfPages, page, setdrawScale, scaleLine }: Props) => {
   const { calcLineDistance } = useDraw()
   const dispatch = useDispatch<AppDispatch>();
   const allPresets = useSelector(selectTakeoffPreset);
@@ -162,7 +162,7 @@ const ScaleModal = ({ setModalOpen, numOfPages, page, drawScale, setdrawScale, s
         yScale: `1in=1in`,
         precision: '1',
       }, false);
-      const [feet,inch] = stringOfDistance?.toString()?.split('-')
+      const [feet,inch] = stringOfDistance.toString().split('-')
       console.log(stringOfDistance, Number(feet?.trim()?.replace(`'`,'')), Number(inch?.trim()?.replace(`"`,'')), " ===> String of data");
       const numfeet =  Number(feet?.trim()?.replace(`'`,'')); const numInch =  Number(inch?.trim()?.replace(`"`,''))
       const valueToUse = (numfeet*12)+numInch

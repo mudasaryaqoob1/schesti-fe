@@ -10,7 +10,7 @@ import {
   Text as KonvaText,
   Arrow,
   Circle,
-  Rect,
+  // Rect,
 } from 'react-konva';
 import { UploadFileData } from '../../context/UploadFileContext';
 import { DrawHistoryContext, ReportDataContext } from '../../context';
@@ -86,7 +86,7 @@ const Draw: React.FC<Props> = ({
     calculatePolygonVolume,
     calculateAngle,
     pointInCircle,
-    calcPerimeterDistance
+    // calcPerimeterDistance
   } = useDraw();
   const { deleteDrawHistory, updateDrawHistory, drawHistory } = useContext(
     DrawHistoryContext
@@ -713,10 +713,10 @@ const Draw: React.FC<Props> = ({
           />
 
           {/* Scale Drawing Line */}
-          {draw?.scale && Array.isArray(draw?.scale) && draw?.scale?.map(({ textUnit, ...rest }: any, index: number) => {
+          {draw?.scale && Array.isArray(draw?.scale) && draw?.scale?.map(({ ...rest }: any, index: number) => {
             const id = `line-${index}`;
-            const lineDistance = calcLineDistance(rest.points, scale, true);
-            const lineMidPoint = calculateMidpoint(rest.points);
+            // const lineDistance = calcLineDistance(rest.points, scale, true);
+            // const lineMidPoint = calculateMidpoint(rest.points);
 
             return (
               <Group

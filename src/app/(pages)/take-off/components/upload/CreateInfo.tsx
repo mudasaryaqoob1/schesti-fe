@@ -1,46 +1,46 @@
 import CustomButton from '@/app/component/customButton/button'
-import Description from '@/app/component/description'
-import SecondaryHeading from '@/app/component/headings/Secondary'
+// import Description from '@/app/component/description'
+// import SecondaryHeading from '@/app/component/headings/Secondary'
 import SenaryHeading from '@/app/component/headings/senaryHeading'
 import TertiaryHeading from '@/app/component/headings/tertiary'
 import { bg_style } from '@/globals/tailwindvariables'
-import { DeleteOutlined, FilePdfOutlined, LoadingOutlined, MoreOutlined, PlusOutlined, UploadOutlined, UserOutlined } from '@ant-design/icons'
+import { DeleteOutlined, PlusOutlined, UserOutlined } from '@ant-design/icons'
 import { Form, Formik } from 'formik'
 import Image from 'next/image'
 import React, { useCallback, useEffect, useState } from 'react'
 import FormControl from '@/app/component/formControl';
-import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable'
+// import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable'
 import { Avatar, Button, Progress, Select, Table } from 'antd'
 //@ts-ignore
 import type { ColumnsType } from 'antd/es/table'
 import ModalComponent from '@/app/component/modal'
 import ClientModal from '../createClientModal';
-import { UploadFileData } from '../../context/EditContext'
+// import { UploadFileData } from '../../context/EditContext'
 import { toast } from 'react-toastify'
 import CreateProgressModal from '../createProgressModal'
 import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist'
 import AwsS3 from '@/app/utils/S3Intergration'
-import axios from 'axios'
+// import axios from 'axios'
 import { takeoffSummaryService } from '@/app/services/takeoffSummary.service'
 import { useRouter } from 'next/navigation'
 import { userService } from '@/app/services/user.service'
 import CreateUserModal from '../createUserModal'
 import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface'
 
-const formattedData = [{ name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' },
-{ name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' },
-{ name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' },
-{ name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' },
-{ name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' },
-{ name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Markus', scope: "Project Manager", createdAt: '02/06/2024' },
-]
+// const formattedData = [{ name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' },
+// { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' },
+// { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' },
+// { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' },
+// { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' },
+// { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Markus', scope: "Project Manager", createdAt: '02/06/2024' },
+// ]
 
 const CreateInfo = () => {
     const router = useRouter()
 
     const [assignedUser, setassignedUser] = useState<any>([])
     const [clientModal, setclientModal] = useState<boolean>(false)
-    const [allPages, setallPages] = useState<any>([])
+    const [allPages] = useState<any>([])
     const [projectData, setprojectData] = useState({
         name: "",
         number: "",
@@ -80,7 +80,7 @@ const CreateInfo = () => {
             title: '',
             dataIndex: 'action',
             width: 50,
-            render: (val, record, index) => {
+            render: (val, record) => {
                 return <div className='cursor-pointer' onClick={() => { setselectedAssignedUsers((ps: any) => (ps?.filter((i: any) => (i != record)))) }}><DeleteOutlined className='' /></div>
             }
         },
@@ -107,67 +107,67 @@ const CreateInfo = () => {
     }
     useEffect(() => { getAssignedUsers() }, [])
 
-    const handleFileChange = async (event: any) => {
-        try {
-            const file = event.target.files[0];
-            console.log(file, " file full");
-            //   breakLoopRef.current = false
+    // const handleFileChange = async (event: any) => {
+    //     try {
+    //         const file = event.target.files[0];
+    //         console.log(file, " file full");
+    //         //   breakLoopRef.current = false
 
-            if (file) {
-                // setloading(true)
-                // handleSrc([])
-                // setshowSelectModal(true)
-                const PDFJS = await pdfjs();
-                const pdfPagesData: UploadFileData[] = [];
-                const reader = new FileReader();
-                reader.onload = async (event: any) => {
-                    const data = new Uint8Array(event.target.result);
-                    const pdf = await PDFJS.getDocument(data).promise;
+    //         if (file) {
+    //             // setloading(true)
+    //             // handleSrc([])
+    //             // setshowSelectModal(true)
+    //             const PDFJS = await pdfjs();
+    //             const pdfPagesData: UploadFileData[] = [];
+    //             const reader = new FileReader();
+    //             reader.onload = async (event: any) => {
+    //                 const data = new Uint8Array(event.target.result);
+    //                 const pdf = await PDFJS.getDocument(data).promise;
 
-                    for (let index = 0; index < pdf.numPages; index++) {
-                        console.log(index, " ===> for loop indexing running");
-                        // if (breakLoopRef.current) { // Check breakLoopRef instead of state
-                        //   console.log('Task interrupted! for loop indexing running');
-                        //   break;
-                        // }
+    //                 for (let index = 0; index < pdf.numPages; index++) {
+    //                     console.log(index, " ===> for loop indexing running");
+    //                     // if (breakLoopRef.current) { // Check breakLoopRef instead of state
+    //                     //   console.log('Task interrupted! for loop indexing running');
+    //                     //   break;
+    //                     // }
 
-                        const page = await pdf.getPage(index + 1);
-                        console.log(page, typeof (page), " ===> pages while uplaoding")
-                        const scale = 1;
-                        const viewport = page.getViewport({ scale });
-                        const canvas = document.createElement('canvas');
-                        const context = canvas.getContext('2d');
-                        canvas.width = viewport.width;
-                        canvas.height = viewport.height;
-                        const renderContext: any = {
-                            canvasContext: context,
-                            viewport: viewport,
-                        };
-                        await page.render(renderContext).promise;
+    //                     const page = await pdf.getPage(index + 1);
+    //                     console.log(page, typeof (page), " ===> pages while uplaoding")
+    //                     const scale = 1;
+    //                     const viewport = page.getViewport({ scale });
+    //                     const canvas = document.createElement('canvas');
+    //                     const context = canvas.getContext('2d');
+    //                     canvas.width = viewport.width;
+    //                     canvas.height = viewport.height;
+    //                     const renderContext: any = {
+    //                         canvasContext: context,
+    //                         viewport: viewport,
+    //                     };
+    //                     await page.render(renderContext).promise;
 
-                        pdfPagesData.push({
-                            src: canvas.toDataURL('image/png') || '',
-                            height: viewport.height,
-                            width: viewport.width,
-                        });
-                        // if (!breakLoopRef.current) {
-                        //   handleSrc({
-                        //     src: canvas.toDataURL('image/png') || '',
-                        //     height: viewport.height,
-                        //     width: viewport.width,
-                        //   }, true);
-                        // }
-                    }
-                    //   setloading(false)
-                };
-                reader.readAsArrayBuffer(file);
-            }
-        } catch (error) {
-            console.log(error, " ===> Error while reading file")
-            //   setloading(false)
-            //   toast.error('Error while reading file')
-        }
-    };
+    //                     pdfPagesData.push({
+    //                         src: canvas.toDataURL('image/png') || '',
+    //                         height: viewport.height,
+    //                         width: viewport.width,
+    //                     });
+    //                     // if (!breakLoopRef.current) {
+    //                     //   handleSrc({
+    //                     //     src: canvas.toDataURL('image/png') || '',
+    //                     //     height: viewport.height,
+    //                     //     width: viewport.width,
+    //                     //   }, true);
+    //                     // }
+    //                 }
+    //                 //   setloading(false)
+    //             };
+    //             reader.readAsArrayBuffer(file);
+    //         }
+    //     } catch (error) {
+    //         console.log(error, " ===> Error while reading file")
+    //         //   setloading(false)
+    //         //   toast.error('Error while reading file')
+    //     }
+    // };
     const handleChange = (e: any) => {
         console.log("onchange", e.target);
         setprojectData((ps: any) => ({
@@ -246,7 +246,7 @@ const CreateInfo = () => {
             console.log(curFile, " ===> Current File Running");
             if (curFile) {
                 const PDFJS = await pdfjs();
-                const pdfPagesData: UploadFileData[] = [];
+                // const pdfPagesData: UploadFileData[] = [];
                 const reader = new FileReader();
                 reader.onload = async (event: any) => {
                     const data = new Uint8Array(event.target.result);
@@ -279,25 +279,25 @@ const CreateInfo = () => {
         }
     }
 
-    const processRequest = async () => {
-        try {
-            setisLoading(true)
-            const formData = new FormData()
-            formData.append('projectData', JSON.stringify(projectData))
-            formData.append('selectecClient', JSON.stringify(selectecClient))
-            // Append each file from the array to the FormData object
-            for (let i = 0; i < selectedFiles?.length; i++) {
-                formData.append('pdfFiles', selectedFiles[i]);
-            }
-            const data = await takeoffSummaryService.httpCreateTakeOffNew(formData)
-            console.log(data)
-            setisLoading(false)
-            router.push('/take-off')
-        } catch (error) {
-            console.log(error);
-            setisLoading(false)
-        }
-    }
+    // const processRequest = async () => {
+    //     try {
+    //         setisLoading(true)
+    //         const formData = new FormData()
+    //         formData.append('projectData', JSON.stringify(projectData))
+    //         formData.append('selectecClient', JSON.stringify(selectecClient))
+    //         // Append each file from the array to the FormData object
+    //         for (let i = 0; i < selectedFiles?.length; i++) {
+    //             formData.append('pdfFiles', selectedFiles[i]);
+    //         }
+    //         const data = await takeoffSummaryService.httpCreateTakeOffNew(formData)
+    //         console.log(data)
+    //         setisLoading(false)
+    //         router.push('/take-off')
+    //     } catch (error) {
+    //         console.log(error);
+    //         setisLoading(false)
+    //     }
+    // }
     const [isApiCalling, setisApiCalling] = useState(false)
     const [selectedAssignedUsers, setselectedAssignedUsers] = useState<any>([])
     const makeApiCall = async () => {
@@ -339,10 +339,10 @@ const CreateInfo = () => {
     //   }, [fullData])
 
     const [userModal, setuserModal] = useState<boolean>(false)
-    const addUserHandler = async (values: IUser, { resetForm }: any) => {
+    const addUserHandler = async (values: IUser) => {
         try {
             setisLoading(true)
-            const createUserRes = await userService.httpAddNewEmployee({ ...values, roles: [values.roles] })
+            await userService.httpAddNewEmployee({ ...values, roles: [values.roles] })
             await getAssignedUsers()
             setisLoading(false)
             setuserModal(false)
@@ -410,11 +410,11 @@ const CreateInfo = () => {
                         >
                             {({
                                 handleSubmit,
-                                setFieldValue,
-                                values,
-                                setFieldTouched,
-                                touched,
-                                errors,
+                                // setFieldValue,
+                                // values,
+                                // setFieldTouched,
+                                // touched,
+                                // errors,
                             }) => {
                                 return (
                                     <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
@@ -493,11 +493,11 @@ const CreateInfo = () => {
                         >
                             {({
                                 handleSubmit,
-                                setFieldValue,
-                                values,
-                                setFieldTouched,
-                                touched,
-                                errors,
+                                // setFieldValue,
+                                // values,
+                                // setFieldTouched,
+                                // touched,
+                                // errors,
                             }) => {
                                 return (
                                     <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
@@ -638,7 +638,7 @@ const CreateInfo = () => {
                                 <input type="file" accept="application/pdf" multiple id='file-selector' className='hidden absolute top-0 left-0' style={{ display: 'none' }} onChange={(e: any) => {
                                     console.log(e.target.result, " ==> event.target.result")
                                     if (e.target.files?.length > 0) {
-                                        const arr = Object.keys(e.target?.files)?.map((it: any, ind: number) => {
+                                        const arr = Object.keys(e.target?.files)?.map((it: any) => {
                                             if (Number.isInteger(Number(it))) {
                                                 return e?.target?.files[it]
                                             }

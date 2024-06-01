@@ -1,98 +1,98 @@
 'use client';
-import { useCallback, useContext, useRef, useState } from 'react';
-import { bg_style } from '@/globals/tailwindvariables';
-import Image from 'next/image';
-import SenaryHeading from '@/app/component/headings/senaryHeading';
-import SecondaryHeading from '@/app/component/headings/Secondary';
-import Description from '@/app/component/description';
-import { UploadFileContext } from '../context';
-import {
-  UploadFileContextProps,
-  UploadFileData,
-} from '../context/UploadFileContext';
-import { useRouter } from 'next/navigation';
-import { toast } from 'react-toastify';
-import { LoadingOutlined } from '@ant-design/icons';
-import ModalComponent from '@/app/component/modal';
-import SelectPageModal from '../components/selectPageModal';
+import { useState } from 'react';
+// import { bg_style } from '@/globals/tailwindvariables';
+// import Image from 'next/image';
+// import SenaryHeading from '@/app/component/headings/senaryHeading';
+// import SecondaryHeading from '@/app/component/headings/Secondary';
+// import Description from '@/app/component/description';
+// import { UploadFileContext } from '../context';
+// import {
+//   UploadFileContextProps,
+//   // UploadFileData,
+// } from '../context/UploadFileContext';
+// import { useRouter } from 'next/navigation';
+// import { toast } from 'react-toastify';
+// import { LoadingOutlined } from '@ant-design/icons';
+// import ModalComponent from '@/app/component/modal';
+// import SelectPageModal from '../components/selectPageModal';
 import InitialUpload from '../components/upload/InitialUpload';
 import CreateInfo from '../components/upload/CreateInfo';
 
 const Upload = () => {
-  const router = useRouter();
-  const { handleSrc, uploadFileData } = useContext(UploadFileContext) as UploadFileContextProps;
-  const [loading, setloading] = useState<boolean>(false)
+  // const router = useRouter();
+  // const { handleSrc, uploadFileData } = useContext(UploadFileContext) as UploadFileContextProps;
+  // const [loading, setloading] = useState<boolean>(false)
   const [step, setstep] = useState(0)
-  const [showSelectModal, setshowSelectModal] = useState<boolean>(false)
-  const breakLoopRef = useRef<boolean>(false);
-  const pdfjs = useCallback(async () => {
-    const pdfjs = await import('pdfjs-dist');
-    await import('pdfjs-dist/build/pdf.worker.min.mjs');
+  // const [showSelectModal, setshowSelectModal] = useState<boolean>(false)
+  // const breakLoopRef = useRef<boolean>(false);
+  // const pdfjs = useCallback(async () => {
+  //   const pdfjs = await import('pdfjs-dist');
+  //   await import('pdfjs-dist/build/pdf.worker.min.mjs');
 
-    return pdfjs;
-  }, []);
+  //   return pdfjs;
+  // }, []);
 
-  const handleFileChange = async (event: any) => {
-    try {
-      const file = event.target.files[0];
-      console.log(file, " file full");
-      breakLoopRef.current = false
+  // const handleFileChange = async (event: any) => {
+  //   try {
+  //     const file = event.target.files[0];
+  //     console.log(file, " file full");
+  //     breakLoopRef.current = false
 
-      if (file) {
-        setloading(true)
-        handleSrc([])
-        setshowSelectModal(true)
-        const PDFJS = await pdfjs();
-        const pdfPagesData: UploadFileData[] = [];
-        const reader = new FileReader();
-        reader.onload = async (event: any) => {
-          const data = new Uint8Array(event.target.result);
-          const pdf = await PDFJS.getDocument(data).promise;
+  //     if (file) {
+  //       setloading(true)
+  //       handleSrc([])
+  //       setshowSelectModal(true)
+  //       const PDFJS = await pdfjs();
+  //       const pdfPagesData: UploadFileData[] = [];
+  //       const reader = new FileReader();
+  //       reader.onload = async (event: any) => {
+  //         const data = new Uint8Array(event.target.result);
+  //         const pdf = await PDFJS.getDocument(data).promise;
 
-          for (let index = 0; index < pdf.numPages; index++) {
-            console.log(index, " ===> for loop indexing running");
-            if (breakLoopRef.current) { // Check breakLoopRef instead of state
-              console.log('Task interrupted! for loop indexing running');
-              break;
-            }
+  //         for (let index = 0; index < pdf.numPages; index++) {
+  //           console.log(index, " ===> for loop indexing running");
+  //           if (breakLoopRef.current) { // Check breakLoopRef instead of state
+  //             console.log('Task interrupted! for loop indexing running');
+  //             break;
+  //           }
 
-            const page = await pdf.getPage(index + 1);
-            console.log(page, typeof (page), " ===> pages while uplaoding")
-            const scale = 1;
-            const viewport = page.getViewport({ scale });
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
-            const renderContext: any = {
-              canvasContext: context,
-              viewport: viewport,
-            };
-            await page.render(renderContext).promise;
+  //           const page = await pdf.getPage(index + 1);
+  //           console.log(page, typeof (page), " ===> pages while uplaoding")
+  //           const scale = 1;
+  //           const viewport = page.getViewport({ scale });
+  //           const canvas = document.createElement('canvas');
+  //           const context = canvas.getContext('2d');
+  //           canvas.width = viewport.width;
+  //           canvas.height = viewport.height;
+  //           const renderContext: any = {
+  //             canvasContext: context,
+  //             viewport: viewport,
+  //           };
+  //           await page.render(renderContext).promise;
 
-            pdfPagesData.push({
-              src: canvas.toDataURL('image/png') || '',
-              height: viewport.height,
-              width: viewport.width,
-            });
-            if (!breakLoopRef.current) {
-              handleSrc({
-                src: canvas.toDataURL('image/png') || '',
-                height: viewport.height,
-                width: viewport.width,
-              }, true);
-            }
-          }
-          setloading(false)
-        };
-        reader.readAsArrayBuffer(file);
-      }
-    } catch (error) {
-      console.log(error, " ===> Error while reading file")
-      setloading(false)
-      toast.error('Error while reading file')
-    }
-  };
+  //           pdfPagesData.push({
+  //             src: canvas.toDataURL('image/png') || '',
+  //             height: viewport.height,
+  //             width: viewport.width,
+  //           });
+  //           if (!breakLoopRef.current) {
+  //             handleSrc({
+  //               src: canvas.toDataURL('image/png') || '',
+  //               height: viewport.height,
+  //               width: viewport.width,
+  //             }, true);
+  //           }
+  //         }
+  //         setloading(false)
+  //       };
+  //       reader.readAsArrayBuffer(file);
+  //     }
+  //   } catch (error) {
+  //     console.log(error, " ===> Error while reading file")
+  //     setloading(false)
+  //     toast.error('Error while reading file')
+  //   }
+  // };
 
   return (
     <>

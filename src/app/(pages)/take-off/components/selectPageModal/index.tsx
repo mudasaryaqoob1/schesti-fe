@@ -1,10 +1,10 @@
 'use client';
 import Button from '@/app/component/customButton/button';
-import WhiteButton from '@/app/component/customButton/white';
+// import WhiteButton from '@/app/component/customButton/white';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import { AppDispatch } from '@/redux/store';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectTakeoffPreset } from '@/redux/takeoff/takeoff.Selector';
+// import { AppDispatch } from '@/redux/store';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { selectTakeoffPreset } from '@/redux/takeoff/takeoff.Selector';
 import { useState } from 'react';
 
 interface Props {
@@ -18,9 +18,9 @@ interface Props {
   handleReselect?:any
 }
 
-const SelectPageModal = ({ setModalOpen, numOfPages, page, uploadFileData, handleSrc, router,loadingPre,handleReselect }: Props) => {
-  const dispatch = useDispatch<AppDispatch>();
-  const allPresets = useSelector(selectTakeoffPreset);
+const SelectPageModal = ({ setModalOpen, uploadFileData, handleSrc, router,loadingPre,handleReselect }: Props) => {
+  // const dispatch = useDispatch<AppDispatch>();
+  // const allPresets = useSelector(selectTakeoffPreset);
   const [selectedPages, setselectedPages] = useState<any>([])
   const [loading, setloading] = useState(false)
 

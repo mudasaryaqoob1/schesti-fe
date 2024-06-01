@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { ColorPicker, ConfigProvider, Table } from 'antd';
 import {
   DrawHistoryContext,
@@ -44,7 +44,7 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
           Object.entries(pageData).forEach(([drawName, drawData]) => {
             if (drawData.length) {
               const tablePayload = drawData.map((data: any) => {
-                const { projectName, comment } =
+                const { projectName } =
                   getProjectAndCommentNameForTable(
                     drawName as keyof DrawInterface,
                     data.points,

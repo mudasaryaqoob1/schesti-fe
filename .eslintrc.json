@@ -5,12 +5,9 @@
     "React": "readonly"
   },
   "rules": {
-    "no-unused-vars": ["warn", { "args": "none", "ignoreRestSiblings": true }],
-    "@typescript-eslint/no-unused-vars": ["warn", { "args": "none", "ignoreRestSiblings": true }],
+    "no-unused-vars": [1, { "args": "after-used", "argsIgnorePattern": "^_" }],
+    "@typescript-eslint/no-unused-vars": ["error"],
     "import/no-unresolved": "error",
-    "import/named": "error",
-    "no-empty": "off", // Turn off no-empty rule
-    "no-unsafe-optional-chaining": "off", // Turn off unsafe optional chaining rule
-    "no-extra-semi": "off" // Disable no-extra-semi rule
+    "import/named": "error"
   }
 }

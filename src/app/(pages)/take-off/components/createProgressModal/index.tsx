@@ -1,18 +1,15 @@
 'use client';
-import Button from '@/app/component/customButton/button';
-import Image from 'next/image';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import { ChangeEvent, useContext, useEffect, useState } from 'react';
-import * as Yup from 'yup';
+import { useEffect, useState } from 'react';
 import TertiaryHeading from '@/app/component/headings/tertiary';
-import FormControl from '@/app/component/formControl';
-import { Formik, Form } from 'formik';
-import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
+// import FormControl from '@/app/component/formControl';
+// import { Formik, Form } from 'formik';
+// import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
 import CustomButton from '@/app/component/customButton/button';
-import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
-import { PhoneNumberRegex } from '@/app/utils/regex.util';
-import { userService } from '@/app/services/user.service';
-import { toast } from 'react-toastify';
+// import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
+// import { PhoneNumberRegex } from '@/app/utils/regex.util';
+// import { userService } from '@/app/services/user.service';
+// import { toast } from 'react-toastify';
 import { Progress } from 'antd';
 
 interface Props {
@@ -27,35 +24,35 @@ interface Props {
   isApiCalling?:any;
 }
 
-const CreateProgressModal = ({ setModalOpen, pages, files, isLoading, processFiles, fullData, setisLoading, makeApiCall, isApiCalling }: Props) => {
-  const [fLoading, setfLoading] = useState<boolean>(false)
+const CreateProgressModal = ({ setModalOpen, isLoading, processFiles, fullData, setisLoading, makeApiCall }: Props) => {
+  // const [fLoading, setfLoading] = useState<boolean>(false)
   const [isCancelAble, setisCancelAble] = useState<boolean>(true)
   const [shouldContinue, setshouldContinue] = useState<boolean>(false)
-  const getLoading = () => {
-    let trueArr = [];
-    for (let i = 0; i < fullData?.files?.length; i++) {
-      const totalPages = fullData?.files[i]?.totalPages;
-      const filteredArr = fullData?.pages?.filter((it: any) => { return it?.fileId == fullData?.files[i]?.fileId })
-      console.log(filteredArr?.length, totalPages, fullData, " true array ilteredArr?.length == totalPages Full Data")
-      if (filteredArr?.length == totalPages) {
-        trueArr.push(true)
-      } else {
-        trueArr.push(false)
-      }
-    }
-    console.log(trueArr, " true array Full Data")
-    if (trueArr?.length > 0 && trueArr?.every((i: any) => { return i == true })) {
-      console.log(fullData, " ===> here is fullData Object fully loaded")
-      // setisLoading(false)
-      // setshouldContinue(true)
-      if(!isApiCalling){
-        setTimeout(()=>{},500)
-      }
-      return false;
-    } else {
-      return true
-    }
-  }
+  // const getLoading = () => {
+  //   let trueArr = [];
+  //   for (let i = 0; i < fullData?.files?.length; i++) {
+  //     const totalPages = fullData?.files[i]?.totalPages;
+  //     const filteredArr = fullData?.pages?.filter((it: any) => { return it?.fileId == fullData?.files[i]?.fileId })
+  //     console.log(filteredArr?.length, totalPages, fullData, " true array ilteredArr?.length == totalPages Full Data")
+  //     if (filteredArr?.length == totalPages) {
+  //       trueArr.push(true)
+  //     } else {
+  //       trueArr.push(false)
+  //     }
+  //   }
+  //   console.log(trueArr, " true array Full Data")
+  //   if (trueArr?.length > 0 && trueArr?.every((i: any) => { return i == true })) {
+  //     console.log(fullData, " ===> here is fullData Object fully loaded")
+  //     // setisLoading(false)
+  //     // setshouldContinue(true)
+  //     if(!isApiCalling){
+  //       setTimeout(()=>{},500)
+  //     }
+  //     return false;
+  //   } else {
+  //     return true
+  //   }
+  // }
   // console.log(getLoading(), " ===> Get loading true array Full Data");
   useEffect(() => {
     // setfLoading(getLoading)

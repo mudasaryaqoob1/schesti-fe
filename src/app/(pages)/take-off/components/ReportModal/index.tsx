@@ -2,7 +2,7 @@
 import Button from '@/app/component/customButton/button';
 // import Image from 'next/image';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import { ChangeEvent, useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Konva from 'konva';
 import { dataInterface } from '@/app/component/captureComponent';
 import { useDraw } from '@/app/hooks';
@@ -12,25 +12,25 @@ import { Spin } from 'antd';
 import generatePDF from '@/app/component/captureComponent/generatePdf';
 
 
-const groupByType = (items: dataInterface[]): dataInterface[][] => {
-  console.log(items, ' ===> Data interface');
+// const groupByType = (items: dataInterface[]): dataInterface[][] => {
+//   console.log(items, ' ===> Data interface');
 
-  const grouped = items.reduce(
-    (acc, item) => {
-      // Initialize the array for this type if it doesn't already exist
-      if (!acc[item.details.projectName]) {
-        acc[item.details.projectName] = [];
-      }
-      // Push the current item into the appropriate group
-      acc[item.details.projectName].push(item);
-      return acc;
-    },
-    {} as Record<string, dataInterface[]>
-  );
+//   const grouped = items.reduce(
+//     (acc, item) => {
+//       // Initialize the array for this type if it doesn't already exist
+//       if (!acc[item.details.projectName]) {
+//         acc[item.details.projectName] = [];
+//       }
+//       // Push the current item into the appropriate group
+//       acc[item.details.projectName].push(item);
+//       return acc;
+//     },
+//     {} as Record<string, dataInterface[]>
+//   );
 
-  // Extract and return just the array of groups
-  return Object.values(grouped);
-};
+//   // Extract and return just the array of groups
+//   return Object.values(grouped);
+// };
 const groupByCategory = (items: dataInterface[]): dataInterface[][] => {
   console.log(items, ' ===> Data interface');
 
@@ -57,14 +57,14 @@ interface Props {
   modalOpen?:any;
 }
 
-const ReportModal = ({ setModalOpen, takeOff, modalOpen }: Props) => {
+const ReportModal = ({ setModalOpen, takeOff }: Props) => {
 
   const stageRef = useRef<Konva.Stage>(null);
   const [data, setData] = useState<dataInterface[]>([]);
   const [reportData, setreportData] = useState<any>([])
   const [uploadFileData, setuploadFileData] = useState<any>([])
   const { calculateMidpoint, calculatePolygonCenter } = useDraw();
-  const [isSaving, setIsSaving] = useState<boolean>(false);
+  // const [isSaving, setIsSaving] = useState<boolean>(false);
   const [loading, setloading] = useState<boolean>(true)
 
 
@@ -77,12 +77,12 @@ const ReportModal = ({ setModalOpen, takeOff, modalOpen }: Props) => {
   const getPageData = () => {
     let reportData: any = [];
     if (takeOff?.measurements && Object.keys(takeOff?.measurements) && Object.keys(takeOff?.measurements)?.length > 0) {
-      Object.keys(takeOff?.measurements)?.map((key: any, index: any) => {
+      Object.keys(takeOff?.measurements)?.map((key: any) => {
         if (takeOff?.measurements[key] && Object.keys(takeOff?.measurements[key]) && Object.keys(takeOff?.measurements[key])?.length > 0) {
-          Object.keys(takeOff?.measurements[key])?.map((type: any, ind: number) => {
+          Object.keys(takeOff?.measurements[key])?.map((type: any) => {
             reportData = [...reportData, ...((takeOff?.measurements[key][type] && Array.isArray(takeOff?.measurements[key][type]) && takeOff?.measurements[key][type]?.length > 0)
               ?
-              takeOff?.measurements[key][type]?.map((arrit: any) => {
+              takeOff.measurements[key][type].map((arrit: any) => {
                 return {
                   ...arrit, pageId: key, type, pageData: takeOff?.pages?.find((pg: any) => (pg?.pageId == key)),
                   pageLabel: takeOff?.pages?.find((pg: any) => (pg?.pageId == key))?.pageNum, color: arrit?.stroke, config: arrit
@@ -267,9 +267,9 @@ const ReportModal = ({ setModalOpen, takeOff, modalOpen }: Props) => {
       const captureShapes = async () => {
         setloading(true)
         try {
-          for(let j = 0; j<uploadFileData?.length; j++){
+          // for(let j = 0; j<uploadFileData?.length; j++){
             
-          }
+          // }
           // const background = await loadImage(uploadFileData[1]?.src || ''); // Update based on actual data structure
           const promises = reportData.map(async (item) => {
             const page = uploadFileData?.find((pg: any) => (pg?.pageId == item?.pageId))
@@ -371,7 +371,7 @@ const ReportModal = ({ setModalOpen, takeOff, modalOpen }: Props) => {
               ))}
             </div>
             <div className="flex justify-center items-center my-4">
-              {isSaving ? (
+              {/* {isSaving ? (
                 <div role="status">
                   <svg
                     aria-hidden="true"
@@ -393,7 +393,7 @@ const ReportModal = ({ setModalOpen, takeOff, modalOpen }: Props) => {
                 </div>
               ) : (
                 ''
-              )}
+              )} */}
             </div>
           </div>
         </div>

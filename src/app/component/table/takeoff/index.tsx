@@ -9,10 +9,10 @@ import {
 } from '@/redux/takeoffSummaries/takeoffSummaries.thunk';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
-import { NextRouter } from 'next/router';
-import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import { EllipsisOutlined, MoreOutlined } from '@ant-design/icons';
-import { useRouter } from 'next/navigation';
+// import { NextRouter } from 'next/router';
+// import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
+import { MoreOutlined } from '@ant-design/icons';
+// import { useRouter } from 'next/navigation';
 // Import your API service
 
 interface DataType {
@@ -154,29 +154,29 @@ const Index: React.FC<ITableProps> = ({ handleEditClick, search }: ITableProps) 
 
 export default Index;
 
-function downloadPdfFromS3(pdfBlobUrl: string, fileName = 'downloaded.pdf') {
-  console.warn('pdfBlobUrl', pdfBlobUrl);
+// function downloadPdfFromS3(pdfBlobUrl: string, fileName = 'downloaded.pdf') {
+//   console.warn('pdfBlobUrl', pdfBlobUrl);
 
-  // Fetch the PDF blob using the Fetch API
-  fetch(pdfBlobUrl)
-    .then((response) => {
-      if (response.ok) return response.blob();
-      throw new Error('Network response was not ok.');
-    })
-    .then((blob) => {
-      // Create a local URL for the blob
-      const blobUrl = window.URL.createObjectURL(blob);
+//   // Fetch the PDF blob using the Fetch API
+//   fetch(pdfBlobUrl)
+//     .then((response) => {
+//       if (response.ok) return response.blob();
+//       throw new Error('Network response was not ok.');
+//     })
+//     .then((blob) => {
+//       // Create a local URL for the blob
+//       const blobUrl = window.URL.createObjectURL(blob);
 
-      // Create a temporary link element and trigger the download
-      const link = document.createElement('a');
-      link.href = blobUrl;
-      link.setAttribute('download', fileName);
-      document.body.appendChild(link);
-      link.click();
+//       // Create a temporary link element and trigger the download
+//       const link = document.createElement('a');
+//       link.href = blobUrl;
+//       link.setAttribute('download', fileName);
+//       document.body.appendChild(link);
+//       link.click();
 
-      // Clean up by removing the temporary link element and revoking the blob URL
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(blobUrl);
-    })
-    .catch((error) => console.error('Error downloading the PDF:', error));
-}
+//       // Clean up by removing the temporary link element and revoking the blob URL
+//       document.body.removeChild(link);
+//       window.URL.revokeObjectURL(blobUrl);
+//     })
+//     .catch((error) => console.error('Error downloading the PDF:', error));
+// }

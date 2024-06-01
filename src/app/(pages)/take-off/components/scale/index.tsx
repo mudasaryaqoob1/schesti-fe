@@ -8,8 +8,8 @@ import type { RadioChangeEvent } from 'antd';
 import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { fetchTakeoffPreset } from '@/redux/takeoff/takeoff.thunk';
 import { AppDispatch } from '@/redux/store';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectTakeoffPreset } from '@/redux/takeoff/takeoff.Selector';
+import { useDispatch } from 'react-redux';
+// import { selectTakeoffPreset } from '@/redux/takeoff/takeoff.Selector';
 import { takeoffPresetService } from '@/app/services/takeoff.service';
 import { addNewTakeoffPresetData } from '@/redux/takeoff/takeoff.slice';
 import { ScaleContext } from '../../context';
@@ -57,13 +57,13 @@ interface Props {
   scaleLine?:any;
 }
 
-const ScaleModal = ({ setModalOpen, numOfPages, page, drawScale, setdrawScale, scaleLine }: Props) => {
+const ScaleModal = ({ setModalOpen, numOfPages, page, setdrawScale, scaleLine }: Props) => {
   const { calcLineDistance } = useDraw()
   const dispatch = useDispatch<AppDispatch>();
-  const allPresets = useSelector(selectTakeoffPreset);
+  // const allPresets = useSelector(selectTakeoffPreset);
 
   // const [mergedPresets, setMergedPresets] = useState<any[]>([]);
-  const [mergedPresets, setMergedPresets] = useState<any[]>(byDefaultPrest);
+  const [mergedPresets] = useState<any[]>(byDefaultPrest);
 
   const [valueX, setValueX] = useState('preset');
   const [valueY, setValueY] = useState('preset');
@@ -163,7 +163,7 @@ const ScaleModal = ({ setModalOpen, numOfPages, page, drawScale, setdrawScale, s
         yScale: `1in=1in`,
         precision: '1',
       }, false);
-      const [feet,inch] = stringOfDistance?.toString()?.split('-')
+      const [feet,inch] = stringOfDistance.toString().split('-')
       console.log(stringOfDistance, Number(feet?.trim()?.replace(`'`,'')), Number(inch?.trim()?.replace(`"`,'')), " ===> String of data");
       const numfeet =  Number(feet?.trim()?.replace(`'`,'')); const numInch =  Number(inch?.trim()?.replace(`"`,''))
       const valueToUse = (numfeet*12)+numInch

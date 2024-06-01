@@ -1,15 +1,15 @@
 'use client';
 
 import { newAppBar } from '@/globals/tailwindvariables';
-import { useRouter } from 'next/navigation';
-import { quaternaryHeading } from '@/globals/tailwindvariables';
+// import { useRouter } from 'next/navigation';
+// import { quaternaryHeading } from '@/globals/tailwindvariables';
 import { Dropdown, Space } from 'antd';
 // import type { MenuProps } from 'antd';
 import clsx from 'clsx';
 import { usePathname } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
 import tabsStyle from './tabs.module.css';
-import { DownOutlined, RightOutlined } from '@ant-design/icons';
+import { RightOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { planFeatureOptions } from '@/app/utils/plans.utils';
 import {
@@ -30,7 +30,7 @@ import {
   // AppDispatch,
   RootState,
 } from '@/redux/store';
-import Image from 'next/image';
+// import Image from 'next/image';
 import { resetPostProjectAction } from '@/redux/post-project/post-project.slice';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 // import { setUserPricingPlan } from '@/redux/pricingPlanSlice/pricingPlanSlice';
