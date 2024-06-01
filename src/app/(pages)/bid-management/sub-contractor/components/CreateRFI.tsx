@@ -18,6 +18,7 @@ import CustomButton from '@/app/component/customButton/button';
 import { useClickAway } from 'ahooks/es';
 import ModalComponent from '@/app/component/modal';
 import { ShowFileComponent } from '../../components/ShowFile.component';
+import { createProjectActivity } from '../../utils';
 
 type Props = {
   projectId: string;
@@ -59,6 +60,7 @@ export function CreateRFI({ onSuccess, projectId, isProjectOwner, isProjectDetai
         if (res.data) {
           toast.success('RFI created successfully');
           onSuccess(res.data.createdRFI);
+          await createProjectActivity(projectId, 'sent rfi');
         }
       } catch (error) {
         const err = error as AxiosError<{ message: string }>;
