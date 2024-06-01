@@ -140,11 +140,16 @@ export function BidDetails({
 
 
   const handleProposalDetails = async (bidId: string) => {
-    await createProjectActivity(bidId, 'clicked');
+    await createProjectActivity(bidId, 'viewed details');
     router.push(`/bid-management/details/${bidId}`);
   }
 
 
+  // social media share click handler 
+  async function handleSocialMediaClick(projectId: string, socialMediaType: "whatsapp" | "facebook" | "twitter") {
+    // create project activity for social media share
+    await createProjectActivity(projectId, `shared on ${socialMediaType}`);
+  }
 
   // either projectOwner or projectCreator will be available and will be used by EmailSendModal component
   const projectOwner = bid.userDetails && bid.userDetails?.length > 0 && bid.userDetails[0].email;
@@ -200,21 +205,37 @@ export function BidDetails({
           <WhatsappShareButton
             url={`${window.location.protocol}//${window.location.hostname}/bid-management/details/${bid?._id}`}
             separator=":: "
+            onClick={() => {
+              if (bid?._id) {
+                handleSocialMediaClick(bid?._id, 'whatsapp');
+              }
+            }}
           >
             <WhatsappIcon size={30} round />
           </WhatsappShareButton>
           <FacebookShareButton
             url={`${window.location.protocol}//${window.location.hostname}/bid-management/details/${bid?._id}`}
+            onClick={() => {
+              if (bid?._id) {
+                handleSocialMediaClick(bid?._id, 'facebook');
+              }
+            }}
           >
             <FacebookIcon size={30} round />
           </FacebookShareButton>
           <TwitterShareButton
             url={`${window.location.protocol}//${window.location.hostname}/bid-management/details/${bid?._id}`}
+            onClick={() => {
+              if (bid?._id) {
+                handleSocialMediaClick(bid?._id, 'twitter');
+              }
+            }}
           >
             <TwitterIcon size={30} round />
           </TwitterShareButton>
           <SendEmailModal
             to={projectCreator || projectOwner || ''}
+            projectId={bid ? bid._id : ""}
           />
         </div>
       </div>
