@@ -17,6 +17,7 @@ import { BidFilters } from '../sub-contractor/components/Filters';
 import _, { size } from 'lodash';
 import { isArrayString } from '@/app/utils/typescript.utils';
 import { IUserInterface } from '@/app/interfaces/user.interface';
+import { createProjectActivity } from '../utils';
 
 // const PDFDownloadLink = dynamic(
 //   () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
@@ -136,6 +137,9 @@ function ContractorScreen() {
       const { data } = await bidManagementService.httpGetProjectSavedBids(
         selectedBid._id
       );
+
+      await createProjectActivity(selectedBid._id, 'clicked');
+
       console.log('data', data);
       if (data) {
         setSelectedProjectSavedBid(data?.projectBid);
