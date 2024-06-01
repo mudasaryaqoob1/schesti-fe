@@ -27,6 +27,7 @@ import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { IUserInterface } from '@/app/interfaces/user.interface';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import { createProjectActivity } from '../../utils';
 
 
 type Props = {
@@ -136,17 +137,10 @@ export function BidDetails({
   };
 
 
-  const createProjectActivity = async (projectId: string) => {
-    try {
-      const data = { projectId: projectId };
-      const res = await bidManagementService.httpCreateProjectActivity(data);
-      console.log({ activities: res });
 
-    } catch (error) { /* empty */ }
-  }
 
   const handleProposalDetails = async (bidId: string) => {
-    await createProjectActivity(bidId);
+    await createProjectActivity(bidId, 'clicked');
     router.push(`/bid-management/details/${bidId}`);
   }
 
