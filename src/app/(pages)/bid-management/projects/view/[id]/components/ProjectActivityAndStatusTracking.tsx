@@ -54,6 +54,13 @@ export function ProjectAcitivityAndStatusTracking({ projectId }: Props) {
     return <Skeleton />
   }
 
+  let userActivities = activities.filter(activity => {
+    if (authUser.user) {
+      return typeof activity.user === 'string' ? activity.user !== authUser.user?._id : activity.user._id !== authUser.user._id;
+    }
+    return true;
+  })
+
   return (
     <div className=" mt-6 mb-4 md:ms-[69px] md:me-[59px] mx-4  p-5 bg-white rounded-lg border shadow-lg">
       <div className="flex items-center justify-between">
@@ -63,7 +70,7 @@ export function ProjectAcitivityAndStatusTracking({ projectId }: Props) {
         />
         <div className="flex items-center space-x-3">
           <div className="pt-2">
-            <ExportProjectActivityAndStatus activities={activities} />
+            <ExportProjectActivityAndStatus activities={userActivities} />
           </div>
           <div className="w-96">
             <InputComponent
@@ -77,12 +84,7 @@ export function ProjectAcitivityAndStatusTracking({ projectId }: Props) {
       </div>
 
       <div className="mt-6">
-        {activities.length > 0 ? activities.filter(activity => {
-          if (authUser.user) {
-            return typeof activity.user === 'string' ? activity.user !== authUser.user?._id : activity.user._id !== authUser.user._id;
-          }
-          return true;
-        }).map(activity => {
+        {userActivities.length > 0 ? userActivities.map(activity => {
           const activityUser = activity.user;
 
           return <div key={activity._id} className="flex py-3 px-1 mt-2 space-x-3 border-b border-[#EAECF0] items-center justify-between">
