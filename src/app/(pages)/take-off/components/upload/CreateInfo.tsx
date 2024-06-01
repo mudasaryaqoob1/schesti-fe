@@ -444,7 +444,14 @@ const CreateInfo = () => {
                                                 name="status"
                                                 placeholder="Select Status"
                                                 handleChange={(val: any) => { console.log(val); setprojectData((ps: any) => ({ ...ps, status: val })) }}
-                                                options={[{ label: "First", value: "First" }, { label: "Second", value: "Second" }]}
+                                                options={[
+                                                    { label: "Not Set", value: "First" },
+                                                    { label: "Completed", value: "Completed" },
+                                                    { label: "Awaiting Approval", value: "Awaiting Approval" },
+                                                    { label: "Awaiting Additional Information", value: "Awaiting Additional Information" },
+                                                    { label: "Project Declined", value: "Project Declined" },
+                                                    { label: "Project Requires Approval", value: "Project Requires Approval" },
+                                                ]}
                                             />
                                             <FormControl
                                                 control="simpleInput"
