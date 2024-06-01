@@ -15,6 +15,7 @@ import { downloadFile } from '@/app/utils/downloadFile';
 import { size } from 'lodash';
 import { useState } from 'react';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { createProjectActivity } from '../../utils';
 
 type Props = {
   bid: any;
@@ -42,11 +43,14 @@ export function BiddingProjectDetails({
     mutationFn: async (values: RemoveUserBidProps) => {
       return bidManagementService.httpRemoveUserProjectBid(values.biddingId);
     },
-    onSuccess(res: any) {
+    async onSuccess(res: any) {
       console.log('res', res);
       if (res.data && res.data) {
         toast.success('Bid removed Successfully');
         setSelectedBid(null);
+        if (bid?.projectId?._id) {
+          await createProjectActivity(bid?.projectId?._id, 'removed favourite');
+        }
         refetchSavedBids();
       }
     },
@@ -59,6 +63,7 @@ export function BiddingProjectDetails({
   });
 
   const downloadAllFiles = async (files: any[]) => {
+
     files.forEach(async (file: any) => {
       await downloadFile(file.url, file.name);
     });
@@ -71,6 +76,7 @@ export function BiddingProjectDetails({
       const { data }: any = await bidManagementService.httpPostProjectAsBidder(bid?.projectId?._id);
       if (data) {
         toast.success('Project Posted successfully');
+        await createProjectActivity(bid?.projectId?._id, 'repost project');
         setIsLoading(false);
       }
     } catch (err: any) {
@@ -198,9 +204,10 @@ export function BiddingProjectDetails({
       }
       <div className="mt-4 space-y-2">
         <CustomButton
-          onClick={() =>
-            router.push(`/bid-management/details/${bid.projectId?._id}`)
-          }
+          onClick={async () => {
+            await createProjectActivity(bid?.projectId?._id, 'viewed details');
+            router.push(`/bid-management/details/${bid.projectId?._id}`);
+          }}
           text="View Details"
           className="!bg-[#EAECF0] !text-[#667085] !border-[#EAECF0] !text-base !leading-7 "
         />

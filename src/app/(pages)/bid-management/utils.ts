@@ -23,6 +23,8 @@ export function formatProjectActivityStatus(status: IBidActivity['status']) {
     switch (status) {
         case 'clicked':
             return 'Clicked';
+        case 'repost project':
+            return 'Project Reposted';
         case 'favourite':
             return 'Favourite';
         case 'removed favourite':
