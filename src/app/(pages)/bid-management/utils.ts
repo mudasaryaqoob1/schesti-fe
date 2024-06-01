@@ -25,6 +25,8 @@ export function formatProjectActivityStatus(status: IBidActivity['status']) {
             return 'Clicked';
         case 'favourite':
             return 'Favourite';
+        case 'removed favourite':
+            return 'Removed Favourite';
         case 'proposal submitted':
             return 'Proposal Submitted';
         case 'sent email':

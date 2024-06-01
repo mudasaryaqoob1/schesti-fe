@@ -68,10 +68,15 @@ export function BidDetails({
     mutationFn: (values: SaveUserBidProps) => {
       return bidManagementService.httpSaveUserProjectBid(values);
     },
-    onSuccess(res: any) {
+    async onSuccess(res: any) {
       console.log('res', res);
       if (res.data && res.data.savedUserBid) {
         toast.success('Bid Saved Successfully');
+      }
+
+      if (bid) {
+        await createProjectActivity(bid._id, 'favourite');
+
       }
     },
     onError(error: any) {
@@ -93,11 +98,14 @@ export function BidDetails({
     mutationFn: async (values: RemoveUserBidProps) => {
       return bidManagementService.httpRemoveUserProjectBid(values.biddingId);
     },
-    onSuccess(res: any) {
+    async onSuccess(res: any) {
       console.log('res', res);
       if (res.data && res.data) {
         toast.success('Bid removed Successfully');
         setSelectedProjectSavedBid(null);
+        if (bid) {
+          await createProjectActivity(bid._id, 'removed favourite');
+        }
       }
     },
     onError(error: any) {

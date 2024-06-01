@@ -141,7 +141,7 @@ export interface IBidActivity {
   _id: string;
   user: string | IUserInterface;
   projectId: string | IBidManagement;
-  status: "clicked" | "proposal submitted" | "favourite" | "viewed details" | "sent rfi" | "sent email" | "shared on whatsapp" | "shared on facebook" | "shared on twitter";
+  status: "clicked" | "proposal submitted" | "favourite" | "removed favourite" | "viewed details" | "sent rfi" | "sent email" | "shared on whatsapp" | "shared on facebook" | "shared on twitter";
   createdAt: string;
   updatedAt: string;
 }
