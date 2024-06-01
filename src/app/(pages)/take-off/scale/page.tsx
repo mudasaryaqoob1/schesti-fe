@@ -3,7 +3,7 @@ import { useState, useContext, useEffect, useCallback } from 'react';
 import ModalComponent from '@/app/component/modal';
 import ScaleModal from '../components/scale';
 import ModalsWrapper from './components/ModalWrapper';
-import { Avatar, ColorPicker, Dropdown, InputNumber, Menu, Progress, Select, Spin } from 'antd';
+import { Avatar, ColorPicker, Dropdown, InputNumber, Menu, Progress, Select, Space, Spin } from 'antd';
 import { EditContext, ReportDataContext, ScaleContext, UploadFileContext } from '../context';
 import { UploadFileContextProps } from '../context/UploadFileContext';
 import {
@@ -25,7 +25,7 @@ import { selectUser } from '@/redux/authSlices/auth.selector';
 ////////////////////////New Take OffData///////////////////////////////////
 import CustomButton from '@/app/component/customButton/button'
 import { bg_style } from '@/globals/tailwindvariables'
-import { CloudUploadOutlined, CopyOutlined, DeleteColumnOutlined, DeleteOutlined, DownOutlined, EditOutlined, FileOutlined, FilePdfOutlined, FolderOutlined, LeftOutlined, MenuUnfoldOutlined, MoreOutlined, RightOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons'
+import { CloudUploadOutlined, CopyOutlined, DeleteColumnOutlined, DeleteOutlined, DownOutlined, EditOutlined, FileOutlined, FilePdfOutlined, FolderOutlined, LeftOutlined, MenuUnfoldOutlined, MoreOutlined, PlusOutlined, RightOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons'
 import React from 'react'
 import { Button, Divider, Input, Table, Tree } from 'antd'
 //@ts-ignore
@@ -127,26 +127,26 @@ const getSingleMeasurements = (draw: any, pageId: any) => {
       return "";
     })
     console.log(singleArr, pageId, " =====> measurementsTableData measurementsTableData")
-    if (singleArr?.length > 0) {
-      //Reduce code for category
-      returningArr = singleArr?.reduce((result: any, currentItem: any) => {
-        const { category, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type } = currentItem
-        // Check if there's already an entry with the same projectName and pageLabel
-        const existingEntry = result?.find((entry: any) => entry.category === category);
-        if (existingEntry) { existingEntry?.children?.push({ category, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, pageId, type }) }
-        else {
-          result?.push({
-            isParent: true, category, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, pageId, type,
-            children: [{ isParent: false, category, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, pageId, type, user }]
-          })
-        }
-        return result
-      }, [])
-    }
+    // if (singleArr?.length > 0) {
+    //   //Reduce code for category
+    //   returningArr = singleArr?.reduce((result: any, currentItem: any) => {
+    //     const { category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type } = currentItem
+    //     // Check if there's already an entry with the same projectName and pageLabel
+    //     const existingEntry = result?.find((entry: any) => entry.category === category);
+    //     if (existingEntry) { existingEntry?.children?.push({ category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, pageId, type }) }
+    //     else {
+    //       result?.push({
+    //         isParent: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, pageId, type,
+    //         children: [{ isParent: false, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, pageId, type, user }]
+    //       })
+    //     }
+    //     return result
+    //   }, [])
+    // }
   }
   return singleArr
 }
-const measurementsTableData = (takeOff: any) => {
+const measurementsTableData1 = (takeOff: any, search?:string) => {
   let returningArr: any = [];
   if (takeOff?.measurements && Object.keys(takeOff?.measurements) && Object.keys(takeOff?.measurements)?.length > 0) {
     Object.keys(takeOff?.measurements)?.map((key: any, ind: any) => {
@@ -161,23 +161,91 @@ const measurementsTableData = (takeOff: any) => {
       return ""
     })
   }
+  if(search && search?.length > 0){
+    returningArr = returningArr?.filter((i:any)=>{return (i?.projectName?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()) || i?.category?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()) || i?.subcategory?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()))})
+  }
   console.log(returningArr, " =====> measurementsTableData measurementsTableData")
   if (returningArr?.length > 0) {
     //Reduce code for category
     returningArr = returningArr?.reduce((result: any, currentItem: any) => {
-      const { category, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId } = currentItem
+      const { category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId,text } = currentItem
       // Check if there's already an entry with the same projectName and pageLabel
       const existingEntry = result?.find((entry: any) => entry.category === category);
-      if (existingEntry) { existingEntry?.children?.push({ key: dateTime, category, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId }) }
+      if (existingEntry) { existingEntry?.children?.push({ key: dateTime, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId,text }) }
       else {
         result?.push({
-          key: dateTime, isParent: true, category, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId,
-          children: [{ key: dateTime, isParent: false, category, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId }]
+          key: dateTime, isParent: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId,text,
+          children: [{ key: dateTime, isParent: false, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId,text }]
         })
       }
       return result
     }, [])
   }
+  return returningArr
+}
+const measurementsTableData = (takeOff: any, search?:string) => {
+  let returningArr: any = [];
+  if (takeOff?.measurements && Object.keys(takeOff?.measurements) && Object.keys(takeOff?.measurements)?.length > 0) {
+    Object.keys(takeOff?.measurements)?.map((key: any, ind: any) => {
+      console.log(ind, takeOff?.measurements[key], " =====> measurementsTableData measurementsTableData gotArr")
+      if (takeOff?.measurements[`${key}`]) {
+        const gotArr = getSingleMeasurements(takeOff?.measurements[`${key}`], key)
+        console.log(gotArr, takeOff?.measurements[`${key}`], " =====> measurementsTableData measurementsTableData gotArr")
+        if (Array.isArray(gotArr)) {
+          returningArr = [...returningArr, ...gotArr]
+        }
+      }
+      return ""
+    })
+  }
+  if(search && search?.length > 0){
+    returningArr = returningArr?.filter((i:any)=>{return (i?.projectName?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()) || i?.category?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()) || i?.subcategory?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()))})
+  }
+  console.log(returningArr, " =====> measurementsTableData measurementsTableData")
+  if (returningArr?.length > 0) {
+    //Reduce code for category
+    returningArr = returningArr?.reduce((result: any, currentItem: any) => {
+      const { category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId,text } = currentItem
+      // Check if there's already an entry with the same projectName and pageLabel
+      const existingEntry = result?.find((entry: any) => entry.category === category);
+      if (existingEntry) {
+        const existingEntrySubCategory = existingEntry?.children?.find((entry: any) => entry?.subcategory === subcategory);
+        const existingEntrySubCategoryIndex = existingEntry?.children?.findIndex((entry: any) => entry?.subcategory === subcategory);
+        if (existingEntrySubCategory && subcategory && existingEntrySubCategoryIndex != -1) {
+          existingEntrySubCategory['isSubParent'] = true
+          if (Array.isArray(existingEntry?.children[existingEntrySubCategoryIndex]?.children)) {
+            existingEntry?.children[existingEntrySubCategoryIndex]?.children?.push({ key: dateTime, isChild: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId,text })
+          } else {
+            existingEntry.children[existingEntrySubCategoryIndex].children = [{ key: dateTime, isChild: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId,text }]
+          }
+          console.log(returningArr, subcategory, result, " =====> measurementsTableData measurementsTableData the final obj given code runs here")
+        } else {
+          existingEntry?.children?.push(
+            subcategory ?
+              {
+                key: dateTime, isSubParent: true, isParent: false, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId,text,
+                children: [{ key: dateTime, isParent: false, isChild: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId,text }]
+              }
+              :
+              { key: dateTime, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId,text })
+        }
+      }
+      else {
+        result?.push({
+          key: dateTime, isParent: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId,text,
+          children: subcategory ?
+            [{
+              key: dateTime, isSubParent: true, isParent: false, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId,text,
+              children: [{ key: dateTime, isParent: false, isChild: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId,text }]
+            }]
+            :
+            [{ key: dateTime, isParent: false, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId,text }]
+        })
+      }
+      return result
+    }, [])
+  }
+  console.log(returningArr, " =====> measurementsTableData measurementsTableData the final obj1")
   return returningArr
 }
 
@@ -554,19 +622,43 @@ const TakeOffNewPage = () => {
       render: (text, record) => (
         <div
           className="flex items-center h-full cursor-pointer">
-          {record?.isParent ? text : <span className='flex items-center gap-1'><EditableText initialText={record?.projectName} smallText={record?.projectName?.slice(0, 10) + "..."} onPressEnter={(value) => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'projectName', value) }} toolTip={takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.name + `(${takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.file?.name})`} /></span>}
+          {record?.isParent ? text : record?.isSubParent ? record?.subcategory : <span className='flex items-center gap-1'><EditableText initialText={record?.projectName} smallText={record?.projectName?.slice(0, 10) + "..."} onPressEnter={(value) => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'projectName', value) }} toolTip={takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.name + `(${takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.file?.name})`} /></span>}
         </div>
       ),
     },
+    // {
+    //   title: 'Category',
+    //   dataIndex: 'category',
+    //   width: 150,
+    //   className: '!pr-0',
+    //   render: (text, record) => (
+    //     <div
+    //       className="flex items-center h-full cursor-pointer">
+    //       {(record?.isParent || record?.isSubParent) ? <></> : <span className='flex items-center gap-1'><EditableText initialText={text} smallText={text?.slice(0, 15) + "..."} onPressEnter={(value) => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'category', value) }} toolTip={takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.name + `(${takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.file?.name})`} /></span>}
+    //     </div>
+    //   ),
+    // },
+    // {
+    //   title: 'SubCategory',
+    //   dataIndex: 'subcategory',
+    //   width: 150,
+    //   className: '!pr-0',
+    //   render: (text, record) => (
+    //     <div
+    //       className="flex items-center h-full cursor-pointer">
+    //       {(record?.isParent || record?.isSubParent) ? <></> : <span className='flex items-center gap-1'><EditableText initialText={text} smallText={text?.slice(0, 15) + "..."} onPressEnter={(value) => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'subcategory', value) }} toolTip={takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.name + `(${takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.file?.name})`} /></span>}
+    //     </div>
+    //   ),
+    // },
     {
-      title: 'Category',
-      dataIndex: 'category',
+      title: 'ID',
+      dataIndex: 'subcategory',
       width: 150,
       className: '!pr-0',
       render: (text, record) => (
         <div
           className="flex items-center h-full cursor-pointer">
-          {record?.isParent ? <></> : <span className='flex items-center gap-1'><EditableText initialText={text} smallText={text?.slice(0, 15) + "..."} onPressEnter={(value) => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'category', value) }} toolTip={takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.name + `(${takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.file?.name})`} /></span>}
+          {(record?.isParent || record?.isSubParent) ? <></> : <span className='flex items-center gap-1'>{`${new Date(record?.dateTime)?.getTime()}`?.slice(-6)}</span>}
         </div>
       ),
     },
@@ -578,7 +670,7 @@ const TakeOffNewPage = () => {
       render: (text, record) => (
         <div
           className="flex items-center h-full cursor-pointer">
-          {record?.isParent ? <></> : <span className='flex items-center gap-1'><DeleteOutlined onClick={() => { deleteTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime) }} /></span>}
+          {(record?.isParent || record?.isSubParent) ? <></> : <span className='flex items-center gap-1'><DeleteOutlined onClick={() => { deleteTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime) }} /></span>}
         </div>
       ),
     },
@@ -595,6 +687,30 @@ const TakeOffNewPage = () => {
         <div
           className="flex items-center h-full cursor-pointer">
           {record?.isParent ? text : <span className='flex items-center gap-1'><ColorPicker onChangeComplete={(val) => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'stroke', val.toHexString()) }} className='!w-[2px] !h-[2px] border-none' value={record?.stroke} /> <EditableText initialText={record?.projectName} smallText={record?.projectName?.slice(0, 12) + "..."} onPressEnter={(value) => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'projectName', value) }} toolTip={takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.name + `(${takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.file?.name})`} /></span>}
+        </div>
+      ),
+    },
+    {
+      title: 'Sheet Number',
+      dataIndex: 'pageLabel',
+      width: 70,
+      className: '!pr-0',
+      render: (text, record) => (
+        <div
+          className="flex items-center h-full cursor-pointer">
+          {record?.isParent ? <></> : <span className='flex items-center gap-1'>{takeOff?.pages?.find((pp:any)=>pp?.pageId == record?.pageId)?.pageNum ?? ''}</span>}
+        </div>
+      ),
+    },
+    {
+      title: 'Measurement',
+      dataIndex: 'text',
+      width: 120,
+      className: '!pr-0',
+      render: (text, record) => (
+        <div
+          className="flex items-center h-full cursor-pointer">
+          {record?.isParent ? <></> : <span className=''>{text ?? record?.text ?? ''}</span>}
         </div>
       ),
     },
@@ -736,21 +852,26 @@ const TakeOffNewPage = () => {
     }
   }, [selectedPage])
 
+  const [sideSearch, setsideSearch] = useState<string>("")
   const [tableColumns, settableColumns] = useState<any>([])
   const [tableData, settableData] = useState<any>([])
   useEffect(() => {
     console.log(measurementsTableData(takeOff ?? {}), " ===> Data to view")
     if (sideTabs == 'Plans') {
       settableColumns(plansColumn)
-      settableData(groupDataForFileTable(takeOff?.pages))
+      if(sideSearch && sideSearch?.length>0){
+        groupDataForFileTable(takeOff?.pages?.filter((i:any)=>(i?.name?.toLocaleLowerCase()?.includes(sideSearch?.toLocaleLowerCase()))))
+      }else{
+        settableData(groupDataForFileTable(takeOff?.pages))
+      }
     } else if (sideTabs == 'TakeOff') {
       settableColumns(measurementsColumn)
-      settableData(measurementsTableData(takeOff ?? {}))
+      settableData(measurementsTableData1(takeOff ?? {},sideSearch))
     } else if (sideTabs == 'WBS') {
       settableColumns(categoryColumns)
-      settableData(measurementsTableData(takeOff ?? {}))
+      settableData(measurementsTableData(takeOff ?? {},sideSearch))
     }
-  }, [sideTabs, takeOff])
+  }, [sideTabs, takeOff, sideSearch])
 
   /////Image Loadings//////////////
   const [loadedImages, setLoadedImages] = useState<any>([]);
@@ -777,9 +898,23 @@ const TakeOffNewPage = () => {
   const [textColor, settextColor] = useState("red")
   // const handleZoomIn = ()=>{}
   // const handleZoomOut = () => {}
-  const handleRoomColorChange = (rgbaString: string) => { 
+  const handleRoomColorChange = (rgbaString: string) => {
     setfillColor(rgbaString)
   }
+
+
+  // WBS States And Functions
+  const [categoryList, setcategoryList] = useState<any>([])
+  const [categoryText, setcategoryText] = useState<any>("")
+  const [selectedCate, setselectedCate] = useState<any>(null)
+  useEffect(() => { setisWBS(false) }, [sideTabs])
+
+  const [subcategoryList, setsubcategoryList] = useState<any>([])
+  const [subcategoryText, setsubcategoryText] = useState<any>("")
+  const [selectedSubCate, setselectedSubCate] = useState<any>(null)
+
+  const [isWBS, setisWBS] = useState<any>(false)
+  // WBS States And Functions
 
   return (
     <>
@@ -792,11 +927,11 @@ const TakeOffNewPage = () => {
             // icon="plus.svg"
             iconwidth={20}
             iconheight={20}
-            // onClick={() => { setreportModal(true) }}
-            onClick={() => {
-              //@ts-ignore
-              (urlSearch && urlSearch.get('edit_id') && urlSearch.get('edit_id')?.length > 0) ? router.push(`/take-off/report?edit_id=${urlSearch.get('edit_id')}&scale=${JSON?.stringify(scaleData[1] ?? {xScale: `1in=1in`,yScale: `1in=1in`,precision: '1',})}`) : router.push('/take-off/report')
-            }}
+            onClick={() => { setreportModal(true) }}
+            // onClick={() => {
+            //   //@ts-ignore
+            //   (urlSearch && urlSearch.get('edit_id') && urlSearch.get('edit_id')?.length > 0) ? router.push(`/take-off/report?edit_id=${urlSearch.get('edit_id')}&scale=${JSON?.stringify(scaleData[1] ?? { xScale: `1in=1in`, yScale: `1in=1in`, precision: '1', })}`) : router.push('/take-off/report')
+            // }}
           />
         </div>
 
@@ -817,7 +952,7 @@ const TakeOffNewPage = () => {
                   <Button onClick={() => { setsideTabs('WBS') }} className={sideTabs == 'WBS' ? 'bg-lavenderPurpleReplica text-white font-semibold' : ''}>WBS / Category</Button>
                 </div>
                 <div className='flex gap-x-2 w-[95%]'>
-                  <Input className='grow' placeholder='Search' prefix={<SearchOutlined />} />
+                  <Input className='grow' placeholder='Search' onChange={(e)=>{setsideSearch(e.target.value)}} prefix={<SearchOutlined />} />
                   <Button onClick={() => { setselectedTakeOffTab('file') }} className='bg-lavenderPurpleReplica text-white font-semibold' icon={<CloudUploadOutlined className='text-[16px]' />} >Upload</Button>
                 </div>
               </div>
@@ -825,10 +960,65 @@ const TakeOffNewPage = () => {
               <div className='h-[25%] flex justify-between gap-x-3 items-center'>
                 <div className='grow flex gap-x-4 items-center' >
                   <MenuUnfoldOutlined className='text-lavenderPurpleReplica text-[20px]' />
-                  <span className='font-inter font-[200] text-gray-800'>{sideTabs == 'Plans' ? 'Plan & Documents' : sideTabs == 'TakeOff' ? 'TakeOff' : sideTabs == 'WBS' ? 'WBS / Category' : ''}</span>
+                  <span className='font-inter font-[200] text-gray-800'>{sideTabs == 'Plans' ? 'Plan & Documents' : sideTabs == 'TakeOff' ? 'TakeOff' : sideTabs == 'WBS' ? 'WBS' : ''}</span>
                   {tableLoading && <Spin />}
                 </div>
                 {/* <MoreOutlined className='cursor-pointer text-[20px]' size={90} /> */}
+                {sideTabs == 'WBS' && !isWBS && <Button onClick={() => { setisWBS(true) }} className='bg-white !px-2 border-lavenderPurpleReplica text-lavenderPurpleReplica font-semibold' icon={<PlusOutlined className='text-[16px]' />} >Add WBS</Button>}
+                {sideTabs == 'WBS' && isWBS && <div className='flex flex-col gap-y-1'>
+                  <Select
+                    className='!w-52 !mb-1'
+                    style={{ width: 300 }}
+                    placeholder="Select Category"
+                    onSelect={(value: any) => { if (selectedCate === value) { setselectedCate(null) } else { setselectedCate(value) } }}
+                    value={selectedCate}
+                    dropdownRender={(menu) => (
+                      <>
+                        {menu}
+                        <Divider style={{ margin: '8px 0' }} />
+                        <Space style={{ padding: '0 8px 4px' }}>
+                          <Input
+                            placeholder="Please enter item"
+                            // ref={inputRef}
+                            value={categoryText}
+                            onChange={(e: any) => { setcategoryText(e?.target?.value) }}
+                            onKeyDown={(e) => e.stopPropagation()}
+                          />
+                          <Button type="text" icon={<PlusOutlined />} onClick={() => { setcategoryList((ps: any) => ([...ps, categoryText])); setcategoryText('') }}>
+                            Add
+                          </Button>
+                        </Space>
+                      </>
+                    )}
+                    options={categoryList.map((item: any) => ({ label: item, value: item }))}
+                  />
+                  <Select
+                    className='!w-52 !mb-1'
+                    style={{ width: 300 }}
+                    placeholder="Select SubCategory"
+                    onSelect={(value: any) => { if (selectedSubCate === value) { setselectedSubCate(null) } else { setselectedSubCate(value) } }}
+                    value={selectedSubCate}
+                    dropdownRender={(menu) => (
+                      <>
+                        {menu}
+                        <Divider style={{ margin: '8px 0' }} />
+                        <Space style={{ padding: '0 8px 4px' }}>
+                          <Input
+                            placeholder="Please enter item"
+                            // ref={inputRef}
+                            value={subcategoryText}
+                            onChange={(e: any) => { setsubcategoryText(e?.target?.value) }}
+                            onKeyDown={(e) => e.stopPropagation()}
+                          />
+                          <Button type="text" icon={<PlusOutlined />} onClick={() => { setsubcategoryList((ps: any) => ([...ps, subcategoryText])); setsubcategoryText('') }}>
+                            Add
+                          </Button>
+                        </Space>
+                      </>
+                    )}
+                    options={subcategoryList.map((item: any) => ({ label: item, value: item }))}
+                  />
+                </div>}
               </div>
             </div>
             {/* sideBar Main */}
@@ -999,7 +1189,8 @@ const TakeOffNewPage = () => {
                       setdrawScale={setdrawScale}
                       setscaleLine={setscaleLine}
                       setModalOpen={setShowModal}
-                      selectedCategory={selectedCategory}
+                      selectedCategory={selectedCate}
+                      selectedSubCategory={selectedSubCate}
                       updateMeasurements={updateMeasurements}
                       draw={draw}
                       setDraw={setDraw}
@@ -1011,7 +1202,7 @@ const TakeOffNewPage = () => {
                       handleZoomOut={handleZoomOut}
                       textColor={textColor}
                       fillColor={fillColor}
-                      />}
+                    />}
                     {
                       selectedTakeOffTab == 'overview'
                       &&

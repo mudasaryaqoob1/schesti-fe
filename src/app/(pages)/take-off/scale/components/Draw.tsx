@@ -59,17 +59,18 @@ interface Props {
   setscaleLine?: any;
   setModalOpen?: any;
   selectedCategory?: any;
+  selectedSubCategory?: any;
   updateMeasurements?: any;
   draw: DrawInterface | any;
   setDraw: any;
-  stageScale:any;
-  stageX:any;
-  stageY:any;
-  handleWheel:any;
-  handleZoomIn:any;
-  handleZoomOut:any;
-  textColor?:any;
-  fillColor?:any;
+  stageScale: any;
+  stageX: any;
+  stageY: any;
+  handleWheel: any;
+  handleZoomIn: any;
+  handleZoomOut: any;
+  textColor?: any;
+  fillColor?: any;
 }
 
 const Draw: React.FC<Props> = ({
@@ -89,6 +90,7 @@ const Draw: React.FC<Props> = ({
   setModalOpen,
   setscaleLine,
   selectedCategory,
+  selectedSubCategory,
   updateMeasurements,
   draw,
   setDraw,
@@ -254,6 +256,12 @@ const Draw: React.FC<Props> = ({
     if (selected === 'length' && currentLine.startingPoint) {
       const { startingPoint } = currentLine;
 
+      const lineDistance = calcLineDistance([
+        startingPoint?.x,
+        startingPoint?.y,
+        position?.x,
+        position?.y,
+      ] as number[], scale, true);
       const newLine: LineInterface = {
         points: [
           startingPoint?.x,
@@ -266,9 +274,11 @@ const Draw: React.FC<Props> = ({
         textUnit: unit,
         dateTime: moment().toDate(),
         projectName: 'Length Measurement',
-        category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
+        category: selectedCategory ?? 'Length Measurement',//(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
+        subcategory: selectedSubCategory,
         user,
-        textColor:textColor
+        textColor: textColor,
+        text:lineDistance?.toString()
       };
       setDraw((prev: any) => ({ ...prev, line: [...(prev?.line ? prev?.line : []), newLine] }));
 
@@ -330,15 +340,19 @@ const Draw: React.FC<Props> = ({
                   }),
                 });
 
+                const text = `${area?.toFixed(4) || ''}sq`;
+
                 const areaConfig: PolygonConfigInterface = {
                   ...prev,
                   textUnit: unit,
                   dateTime: moment().toDate(),
                   projectName: 'Area Measurement',
-                  category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Area Measurement',
+                  category: selectedCategory ?? 'Area Measurement',//(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
+                  subcategory: selectedSubCategory,
                   user,
-                  textColor:textColor,
-                  fillColor:fillColor
+                  textColor: textColor,
+                  fillColor: fillColor,
+                  text
                 };
 
                 updateDrawHistory(pageNumber.toString(), 'area', areaConfig);
@@ -366,6 +380,7 @@ const Draw: React.FC<Props> = ({
                     ]),
                   }),
                 });
+                const text = `${volume?.toFixed(2) || ''} cubic`;
 
                 const volumeConfig: PolygonConfigInterface = {
                   ...prev,
@@ -373,10 +388,12 @@ const Draw: React.FC<Props> = ({
                   textUnit: unit,
                   dateTime: moment().toDate(),
                   projectName: 'Volume Measurement',
-                  category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Volume Measurement',
+                  category: selectedCategory ?? 'Volume Measurement',//(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
+                  subcategory: selectedSubCategory,
                   user,
                   textColor,
-                  fillColor:fillColor
+                  fillColor: fillColor,
+                  text
                 };
 
                 updateDrawHistory(
@@ -406,7 +423,8 @@ const Draw: React.FC<Props> = ({
         y: position.y - 15,
         dateTime: moment().toDate(),
         projectName: 'Count Measurement',
-        category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Count Measurement',
+        category: selectedCategory ?? 'Count Measurement',//(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
+        subcategory: selectedSubCategory,
         user
       };
 
@@ -557,8 +575,8 @@ const Draw: React.FC<Props> = ({
   //   compWidth: uploadFileData.width || 600,
   // });
   const stageParentRef = useRef<any>(null);
-  const parentWdith = null//(stageParentRef.current?.getBoundingClientRect() && stageParentRef.current?.getBoundingClientRect()?.width) ? stageParentRef.current?.getBoundingClientRect()?.width : null;
-  const parentHeight = null//(stageParentRef.current?.getBoundingClientRect() && stageParentRef.current?.getBoundingClientRect()?.height) ? stageParentRef.current?.getBoundingClientRect()?.height : null;
+  const parentWdith = (stageParentRef.current?.getBoundingClientRect() && stageParentRef.current?.getBoundingClientRect()?.width) ? stageParentRef.current?.getBoundingClientRect()?.width : null;
+  const parentHeight = (stageParentRef.current?.getBoundingClientRect() && stageParentRef.current?.getBoundingClientRect()?.height) ? stageParentRef.current?.getBoundingClientRect()?.height : null;
   console.log(parentWdith, parentHeight, " width and height of parent")
   return (
     <div
@@ -588,7 +606,8 @@ const Draw: React.FC<Props> = ({
                   lineCap: 'round',
                   id: `dynamic-${(draw?.dynamic?.length ?? 0) + 1}`,
                   projectName: 'Dynamic Measurement',
-                  category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Dynamic Measurement',
+                  category: selectedCategory ?? 'Dynamic Measurement',//(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
+                  subcategory: selectedSubCategory,
                   user,
                   textColor
                 },
@@ -601,9 +620,11 @@ const Draw: React.FC<Props> = ({
               lineCap: 'round',
               id: `dynamic-${(draw?.dynamic?.length ?? 0) + 1}`,
               projectName: 'Dynamic Measurement',
-              category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Dynamic Measurement',
+              category: selectedCategory ?? 'Dynamic Measurement',//(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
+              subcategory: selectedSubCategory,
             });
           } else if (selected == 'perimeter') {
+            const lineDistance = dynamicPolyLine?.points?.length > 4 ? calculatePolygonPerimeter(dynamicPolyLine?.points, scale) : calcLineDistance(dynamicPolyLine?.points, scale, true);
             setDraw((prevDraw: any) => ({
               ...prevDraw,
               perimeter: [
@@ -615,9 +636,11 @@ const Draw: React.FC<Props> = ({
                   lineCap: 'round',
                   id: `perimeter-${(draw?.perimeter?.length ?? 0) + 1}`,
                   projectName: 'Perimeter Measurement',
-                  category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Perimeter Measurement',
+                  category: selectedCategory ?? 'Perimeter Measurement',//(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
+                  subcategory: selectedSubCategory,
                   user,
-                  textColor
+                  textColor,
+                  text:lineDistance.toString()
                 },
               ],
             }));
@@ -628,7 +651,8 @@ const Draw: React.FC<Props> = ({
               lineCap: 'round',
               id: `perimeter-${(draw?.perimeter?.length ?? 0) + 1}`,
               projectName: 'Perimeter Measurement',
-              category: (selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Perimeter Measurement',
+              category: selectedCategory ?? 'Perimeter Measurement',//(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
+              subcategory: selectedSubCategory,
             })
           }
 

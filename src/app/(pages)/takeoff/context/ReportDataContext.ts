@@ -11,12 +11,17 @@ export interface ReportDataInterface {
   comment: string | number;
   author: string;
   date: Date;
+  dateTime?:any;
   status: string;
   color: string;
   layer: string;
   space: string;
   type: string;
   config: LineInterface | PolygonConfigInterface | CountInterface;
+  category?:any;
+  subcategory?:any;
+  user?:any;
+  text?:any;
 }
 
 export interface ReportDataContextProps {

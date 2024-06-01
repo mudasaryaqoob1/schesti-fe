@@ -31,6 +31,25 @@ const groupByType = (items: dataInterface[]): dataInterface[][] => {
   // Extract and return just the array of groups
   return Object.values(grouped);
 };
+const groupByCategory = (items: dataInterface[]): dataInterface[][] => {
+  console.log(items, ' ===> Data interface');
+
+  const grouped = items.reduce(
+    (acc, item) => {
+      // Initialize the array for this type if it doesn't already exist
+      if (!acc[item.details.category]) {
+        acc[item.details.category] = [];
+      }
+      // Push the current item into the appropriate group
+      acc[item.details.category].push(item);
+      return acc;
+    },
+    {} as Record<string, dataInterface[]>
+  );
+
+  // Extract and return just the array of groups
+  return Object.values(grouped);
+};
 
 interface Props {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -94,9 +113,9 @@ const ReportModal = ({ setModalOpen, takeOff, modalOpen }: Props) => {
           //@ts-ignore
           const img = new Image();
           img.crossOrigin = 'anonymous'
-          img.src = src;
+          img.src = `${src}?cacheBust=${new Date().getTime()}`;
           img.onload = () => resolve(img);
-          img.onerror = (e: any) => reject(e);
+          img.onerror = (e: any) => {console.log(e," ==> Page image loading of capture");reject(e)};
         });
       };
 
@@ -172,6 +191,7 @@ const ReportModal = ({ setModalOpen, takeOff, modalOpen }: Props) => {
                   strokeWidth,
                   lineCap,
                   closed: shapeType === 'area' || shapeType === 'volume', // Close path for areas and volumes
+                  fill:shape?.fillColor
                 });
                 layer.add(line);
                 console.warn(shape, 'sssss');
@@ -207,7 +227,7 @@ const ReportModal = ({ setModalOpen, takeOff, modalOpen }: Props) => {
                   text: shape.text,
                   fontSize: Math.floor(textSize) * 10 + 25,
                   fontFamily: 'Calibri',
-                  fill: 'red',
+                  fill: shape?.textColor??'red',
                 });
                 layer.add(text);
               }
@@ -253,16 +273,16 @@ const ReportModal = ({ setModalOpen, takeOff, modalOpen }: Props) => {
           // const background = await loadImage(uploadFileData[1]?.src || ''); // Update based on actual data structure
           const promises = reportData.map(async (item) => {
             const page = uploadFileData?.find((pg: any) => (pg?.pageId == item?.pageId))
-            console.log(page, " ===> Data of pages and reports for Page")
+            console.log(page, " ===> Data of pages and reports for Page loading of capture")
             let background: any = {}
             if (page) {
               background = await loadImage(page?.src || '')
             } else {
               background = await loadImage(uploadFileData[0]?.src || '')
             }
-            console.log(background, " ===> Data of pages and reports for Page")
+            console.log(background, " ===> Data of pages and reports for Page bottom loading of capture")
             const url = await captureShape(
-              { ...item.config, text: item.comment, name: item.projectName },
+              { ...item.config, text: item.text, name: item.projectName },
               background,
               item.type
             );
@@ -295,6 +315,7 @@ const ReportModal = ({ setModalOpen, takeOff, modalOpen }: Props) => {
       setreportData([])
     }
   },[])
+  console.log(data, ' ===> data to capture')
 
   return (
     <div className="py-2.5 px-6 bg-white border border-solid border-elboneyGray rounded-[4px] z-50 w-[90vw] h-[90vh] flex flex-col">
@@ -338,11 +359,12 @@ const ReportModal = ({ setModalOpen, takeOff, modalOpen }: Props) => {
             <Layer />
           </Stage>
           <div>
-            <div className="grid grid-cols-2 gap-4 m-12 " id="capture">
-              {groupByType(data).map((entity, index) => (
+            <div className="grid grid-cols-1 gap-4 m-12 " id="capture">
+              {/* {groupByType(data).map((entity, index) => ( */}
+              {groupByCategory(data).map((entity, index) => (
                 <div
                   key={index}
-                  className="w-full flex flex-col border-[1px] border-gray-300 rounded-2xl justify-between p-4"
+                  className="w-full flex flex-col border rounded-2xl justify-between"
                 >
                   <ReportCard entity={entity} />
                 </div>

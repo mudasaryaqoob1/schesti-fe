@@ -14,6 +14,7 @@ export interface CountInterface extends CoordinatesInterface {
   dateTime: Date;
   projectName?:any;
   category?:any;
+  subcategory?:any;
   user?:any;
   textColor?:any;
   mId?:any;
@@ -28,9 +29,11 @@ export interface LineInterface {
   dateTime?: Date;
   projectName?:any;
   category?:any;
+  subcategory?:any;
   user?:any;
   textColor?:any;
   mId?:any;
+  text?:any;
 }
 
 export interface CircleInterface extends CoordinatesInterface {
@@ -47,10 +50,12 @@ export interface PolygonConfigInterface {
   dateTime: Date;
   projectName?:any;
   category?:any;
+  subcategory?:any;
   user?:any;
   textColor?:any;
   fillColor?:any;
   mId?:any;
+  text?:any;
 }
 
 export interface DrawInterface {
