@@ -1,3 +1,4 @@
+import { MeetingCard } from '@/app/(pages)/meeting/components/MeetingCard';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { useTrades } from '@/app/hooks/useTrades';
@@ -275,6 +276,121 @@ export function ProjectSummary() {
             </div>
           })}
         </fieldset>
+
+        {bid ? <fieldset className="border-[2px] mt-[21px] space-y-4 p-4  rounded-lg border-dashed border-[#aeafb8] relative">
+          <legend className="text-[#667085] text-[14px] leading-6 absolute -top-4 z-10 bg-white w-fit px-2">
+            Event
+          </legend>
+
+          {bid.preBiddingMeeting && bid.preBiddingMeeting.isChecked ? <div>
+            <div className='flex items-center space-x-2 mb-1'>
+              <SenaryHeading
+                title={"Pre-Bid Meeting"}
+                className="text-[14px] leading-[22px] text-[#344054] font-normal"
+              />
+
+              {bid.preBiddingMeeting.isMandatory ? <SenaryHeading
+                title={"(Mandatory)"}
+                className="text-[14px] leading-[22px] text-[#F32051] font-normal"
+              /> : null}
+            </div>
+
+            {bid.preBiddingMeeting.type === 'Onsite' ? <div className='flex flex-col'>
+              <SenaryHeading
+                title={`${bid.preBiddingMeeting.location ? bid.preBiddingMeeting.location : ''}`}
+                className="text-[14px] leading-[22px] text-[#3A4856] font-semibold"
+              />
+
+              <div className='flex items-center space-x-2'>
+                <SenaryHeading
+                  // 12 March, 2024 format
+                  title={`${moment(bid.preBiddingMeeting.date).format('DD MMMM, YYYY')}`}
+                  className="text-xs leading-[22px] text-[#929FB1] font-normal"
+                />
+                <SenaryHeading
+                  title={`${bid.preBiddingMeeting.time}`}
+                  className="text-xs leading-[22px] text-[#929FB1] font-normal"
+                />
+              </div>
+              <SenaryHeading
+                title={`${bid.preBiddingMeeting.instruction}`}
+                className="text-xs leading-[22px] text-[#3A4856] font-normal"
+              />
+            </div> : typeof bid.preBiddingMeeting.meeting === 'string' ? null : <MeetingCard
+              item={bid.preBiddingMeeting.meeting!}
+            />}
+
+            <div className='border-b border-[#DFDFDF] my-2'></div>
+          </div> : null}
+
+          {bid.siteWalkthrough && bid.siteWalkthrough.isChecked ? <div>
+            <div className='flex items-center space-x-2 mb-1'>
+              <SenaryHeading
+                title={"Site Walkthrough"}
+                className="text-[14px] leading-[22px] text-[#344054] font-normal"
+              />
+
+              {bid.siteWalkthrough.isMandatory ? <SenaryHeading
+                title={"(Mandatory)"}
+                className="text-[14px] leading-[22px] text-[#F32051] font-normal"
+              /> : null}
+            </div>
+
+            <div className='flex flex-col'>
+              <SenaryHeading
+                title={`${bid.siteWalkthrough.location ? bid.siteWalkthrough.location : ''}`}
+                className="text-[14px] leading-[22px] text-[#3A4856] font-semibold"
+              />
+
+              <div className='flex items-center space-x-2'>
+                <SenaryHeading
+                  // 12 March, 2024 format
+                  title={`${moment(bid.siteWalkthrough.date).format('DD MMMM, YYYY')}`}
+                  className="text-xs leading-[22px] text-[#929FB1] font-normal"
+                />
+                <SenaryHeading
+                  title={`${bid.siteWalkthrough.time}`}
+                  className="text-xs leading-[22px] text-[#929FB1] font-normal"
+                />
+              </div>
+              <SenaryHeading
+                title={`${bid.siteWalkthrough.instruction}`}
+                className="text-xs leading-[22px] text-[#3A4856] font-normal"
+              />
+            </div>
+
+            <div className='border-b border-[#DFDFDF] my-2'></div>
+          </div> : null}
+
+          {bid.rfiDeadline && bid.rfiDeadline.isChecked ? <div>
+            <div className='flex items-center space-x-2 mb-1'>
+              <SenaryHeading
+                title={"RFI Deadline "}
+                className="text-[14px] leading-[22px] text-[#344054] font-normal"
+              />
+            </div>
+
+            <div className='flex flex-col'>
+
+              <div className='flex items-center space-x-2'>
+                <SenaryHeading
+                  // 12 March, 2024 format
+                  title={`${moment(bid.rfiDeadline.date).format('DD MMMM, YYYY')}`}
+                  className="text-xs leading-[22px] text-[#929FB1] font-normal"
+                />
+                <SenaryHeading
+                  title={`${bid.rfiDeadline.time}`}
+                  className="text-xs leading-[22px] text-[#929FB1] font-normal"
+                />
+              </div>
+            </div>
+
+          </div> : null}
+
+        </fieldset> : null}
+
+
+
       </div>
     </div>
   );
