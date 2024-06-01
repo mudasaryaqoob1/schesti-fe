@@ -318,6 +318,7 @@ export function ProjectSummary() {
               />
             </div> : typeof bid.preBiddingMeeting.meeting === 'string' ? null : <MeetingCard
               item={bid.preBiddingMeeting.meeting!}
+              shouldShowJoin
             />}
 
             <div className='border-b border-[#DFDFDF] my-2'></div>
