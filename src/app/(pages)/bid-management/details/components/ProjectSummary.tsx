@@ -212,7 +212,7 @@ export function ProjectSummary(props: IProps) {
                 {projectData.description}
               </p>
             </div>
-            <div className="space-y-2">
+            {projectData.specialInstructions.length ? <div className="space-y-2">
               <SenaryHeading
                 title="Special Instructions"
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
@@ -220,7 +220,7 @@ export function ProjectSummary(props: IProps) {
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
                 {projectData.specialInstructions}
               </p>
-            </div>
+            </div> : null}
           </div>
         </fieldset>
       </div>

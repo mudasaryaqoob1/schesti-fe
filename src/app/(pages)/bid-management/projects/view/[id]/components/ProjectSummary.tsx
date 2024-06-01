@@ -240,15 +240,15 @@ export function ProjectSummary() {
                 {bid ? bid.description : ''}
               </p>
             </div>
-            <div className="space-y-2">
+            {bid && bid.specialInstructions.length ? <div className="space-y-2">
               <SenaryHeading
                 title="Special Instructions"
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {bid ? bid.specialInstructions : ''}
+                {bid.specialInstructions}
               </p>
-            </div>
+            </div> : null}
           </div>
         </fieldset>
 
