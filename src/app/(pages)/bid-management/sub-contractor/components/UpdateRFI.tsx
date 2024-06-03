@@ -123,7 +123,7 @@ export function UpdateRFI({ onSuccess, projectId, rfiData }: Props) {
         setOpen={setShowRfiModal}
         destroyOnClose
       >
-        (
+
         <div
           onClick={(e) => {
             e.stopPropagation();
@@ -222,7 +222,6 @@ export function UpdateRFI({ onSuccess, projectId, rfiData }: Props) {
             </Spin>
           </Popups>
         </div>
-        )
       </ModalComponent>
     </div>
   );

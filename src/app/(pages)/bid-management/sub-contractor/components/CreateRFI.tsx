@@ -115,7 +115,7 @@ export function CreateRFI({ onSuccess, projectId, isProjectOwner, isProjectDetai
         setOpen={setShowRfiModal}
         destroyOnClose
       >
-        (
+
         <div
           onClick={(e) => {
             e.stopPropagation();
@@ -215,7 +215,7 @@ export function CreateRFI({ onSuccess, projectId, isProjectOwner, isProjectDetai
             </Spin>
           </Popups>
         </div>
-        )
+
       </ModalComponent>
     </div>
   );

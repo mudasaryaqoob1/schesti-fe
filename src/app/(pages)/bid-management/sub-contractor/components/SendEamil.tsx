@@ -108,7 +108,7 @@ export function SendEmailModal({ to, projectId }: Props) {
         setOpen={setShowRfiModal}
         destroyOnClose
       >
-        (
+
         <div
           onClick={(e) => {
             e.stopPropagation();
@@ -281,7 +281,7 @@ export function SendEmailModal({ to, projectId }: Props) {
             </Spin>
           </Popups>
         </div>
-        )
+
       </ModalComponent>
     </div>
   );
