@@ -159,18 +159,21 @@ export function BiddingProjectDetails({
       </div>
       <Divider />
       <div className="flex items-center py-[5px] px-[11px] space-x-2 cursor-pointer">
-        <Image
-          alt="cloud icon"
-          src={'/uploadcloud.svg'}
-          width={16}
-          height={16}
-        />
+
         {size(bid?.projectId?.projectFiles) > 0 && (
-          <SenaryHeading
-            onClick={() => downloadAllFiles(bid?.projectId?.projectFiles)}
-            title="Download all files"
-            className="text-[#7138DF] text-xs leading-4 font-semibold underline underline-offset-2"
-          />
+          <>
+            <Image
+              alt="cloud icon"
+              src={'/uploadcloud.svg'}
+              width={16}
+              height={16}
+            />
+            <SenaryHeading
+              onClick={() => downloadAllFiles(bid?.projectId?.projectFiles)}
+              title="Download all files"
+              className="text-[#7138DF] text-xs leading-4 font-semibold underline underline-offset-2"
+            />
+          </>
         )}
       </div>
 
