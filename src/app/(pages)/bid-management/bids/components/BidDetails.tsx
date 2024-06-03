@@ -5,19 +5,27 @@ import Image from 'next/image';
 import { Divider, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import moment from 'moment';
-import { isEmpty, size } from 'lodash';
+import { size } from 'lodash';
 import { useState } from 'react';
-import { IProjectBidding } from '@/app/interfaces/bid-management/bid-management.interface';
+import { ISubmittedProjectBid } from '@/app/interfaces/bid-management/bid-management.interface';
 import { Excel } from 'antd-table-saveas-excel';
 import Link from 'next/link';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import { IUserInterface } from '@/app/interfaces/user.interface';
+import { Bid_How_Long_Price_Increase } from '../../utils';
 
 type Props = {
   bid: any;
-  selectedBidProjectDetails: any;
+  selectedBidProjectDetails: ISubmittedProjectBid[];
 };
 
 export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
   const [isDownloadingAll, setIsDownloadingAll] = useState(false);
+  const authUser = useSelector((state: RootState) => state.auth.user as { user?: IUserInterface });
+  const selectedBidProjectDetail = selectedBidProjectDetails.find((detail) => {
+    return typeof authUser.user === 'string' ? detail.user === authUser.user : detail.user === authUser.user?._id;
+  });
 
   const columns: ColumnsType<{ _id: string, quantity: number, price: number }> = [
     {
@@ -63,15 +71,13 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
       })
   }
 
-  const downloadFile = () => {
-    if (!isEmpty(selectedBidProjectDetails.file)) {
-      setIsDownloadingAll(true);
-      download(selectedBidProjectDetails.file.url, selectedBidProjectDetails.file.name);
-      setIsDownloadingAll(false);
-    }
+  const downloadFile = (detail: ISubmittedProjectBid) => {
+    setIsDownloadingAll(true);
+    download(detail.file.url, detail.file.name);
+    setIsDownloadingAll(false);
   };
 
-  const handleDownloadScope = (selectedBid: IProjectBidding) => {
+  const handleDownloadScope = (selectedBid: ISubmittedProjectBid) => {
     const excel = new Excel();
     excel
       .addSheet(bid.projectId?.projectName)
@@ -84,6 +90,7 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
         }-${Date.now()}.xlsx`
       );
   };
+
 
   return (
     <div className="col-span-4 mt-3">
@@ -125,7 +132,7 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
           />
 
           <SenaryHeading
-            title={selectedBidProjectDetails?.projectDuration}
+            title={selectedBidProjectDetail ? `${selectedBidProjectDetail.projectDuration} ${selectedBidProjectDetail.projectDurationType.toUpperCase()}` : ''}
             className="font-semibold text-[#475467] text-xs leading-4"
           />
         </div>
@@ -135,12 +142,12 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
             className="font-normal text-[#475467] text-xs leading-4"
           />
 
-          <SenaryHeading
-            title={`${moment(selectedBidProjectDetails.createdAt).format(
+          {selectedBidProjectDetail ? <SenaryHeading
+            title={`${moment(selectedBidProjectDetail.createdAt).format(
               'DD MMM YYYY, hh:mm'
             )}`}
             className="font-semibold text-[#475467] text-xs leading-4"
-          />
+          /> : null}
         </div>
 
         <Link
@@ -154,20 +161,22 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
       <Divider />
       <div className="mt-3">
         <SenaryHeading
-          title={selectedBidProjectDetails?.additionalDetails}
+          title={selectedBidProjectDetail ? selectedBidProjectDetail.additionalDetails : ' '}
           className="font-normal text-[#475467] text-sm leading-6"
         />
       </div>
 
       <Divider />
-      <div className="mt-2 flex items-center justify-between">
+      <div className="mt-2 flex flex-col space-y-2 justify-between">
         <div className="flex items-center space-x-2">
           <SenaryHeading
             title="How long this price will stay?"
             className="font-normal text-[#667085] text-xs leading-4"
           />
           <SenaryHeading
-            title={selectedBidProjectDetails?.projectDuration}
+            title={selectedBidProjectDetail ? Bid_How_Long_Price_Increase.find(bidprice => {
+              return selectedBidProjectDetail.priceExpiryDuration === bidprice.value;
+            })!.label : ''}
             className="font-semibold text-[#101828] text-xs leading-4"
           />
         </div>
@@ -177,23 +186,24 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
             className="font-normal text-[#667085] text-xs leading-4"
           />
           <SenaryHeading
-            title={`${selectedBidProjectDetails?.increaseInPercentage} %`}
+            title={`${selectedBidProjectDetail?.increaseInPercentage} %`}
             className="font-semibold text-[#101828] text-xs leading-4"
           />
         </div>
       </div>
       <Divider />
-      {size(selectedBidProjectDetails?.projectScopes) > 0 && (
+      {size(selectedBidProjectDetail?.projectScopes) > 0 && (
         <div className="mt-2 space-y-3">
           <SenaryHeading
             title="Project Scope"
             className="font-semibold text-[#101828] text-xs leading-4"
           />
 
-          <Table
+          {selectedBidProjectDetail ? <Table
+            // @ts-ignore
             columns={columns}
-            dataSource={selectedBidProjectDetails?.projectScopes?.map(
-              (el: any) => ({
+            dataSource={selectedBidProjectDetail.projectScopes.map(
+              (el) => ({
                 description: el.description,
                 quantity: el.quantity,
                 price: el.price,
@@ -201,21 +211,21 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
             )}
             pagination={false}
             bordered
-          />
+          /> : null}
         </div>
       )}
-      <div className="px-4 mt-3 space-y-3">
-        <CustomButton
-          disabled={isDownloadingAll || isEmpty(selectedBidProjectDetails.file)}
-          onClick={downloadFile}
+      {selectedBidProjectDetail ? <div className="px-4 mt-3 space-y-3">
+        {selectedBidProjectDetail.file.url ? <CustomButton
+          onClick={() => downloadFile(selectedBidProjectDetail)}
+          isLoading={isDownloadingAll}
           text="Download All Files"
-        />
+        /> : null}
 
-        <CustomButton
-          onClick={() => handleDownloadScope(selectedBidProjectDetails)}
+        {selectedBidProjectDetail.projectScopes.length ? <CustomButton
+          onClick={() => handleDownloadScope(selectedBidProjectDetail)}
           text="Download Scopes"
-        />
-      </div>
+        /> : null}
+      </div> : null}
     </div>
   );
 }
