@@ -25,6 +25,7 @@ type Props = {
     messageId: string;
     onSuccess: (_rfi: IRFI) => void;
     isDisabledPublic: boolean;
+    isDisabledPrivate?: boolean;
 }
 
 const ValidationSchema = Yup.object().shape({
@@ -32,7 +33,7 @@ const ValidationSchema = Yup.object().shape({
     type: Yup.string().required('Type is required'),
     file: Yup.mixed(),
 });
-export function RFIReply({ onSuccess, projectId, messageId, isDisabledPublic }: Props) {
+export function RFIReply({ onSuccess, projectId, messageId, isDisabledPublic, isDisabledPrivate = false }: Props) {
 
     const ref = useRef<HTMLDivElement>(null);
     const [showRfiModal, setShowRfiModal] = useState(false);
@@ -163,7 +164,7 @@ export function RFIReply({ onSuccess, projectId, messageId, isDisabledPublic }: 
                                     value={rfiFormik.values.type}
                                     name='type'
                                 >
-                                    <Radio value={'private'}>Private</Radio>
+                                    <Radio disabled={isDisabledPrivate} value={'private'}>Private</Radio>
                                     <Radio disabled={isDisabledPublic} value={'public'}>Public</Radio>
                                 </Radio.Group>
                             </div>
