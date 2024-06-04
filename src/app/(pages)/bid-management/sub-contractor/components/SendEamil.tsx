@@ -60,6 +60,7 @@ export function SendEmailModal({ to, projectId }: Props) {
         formData.append('cc', values.cc ?? '');
         formData.append('description', values.description ?? '');
         formData.append('subject', values.subject);
+        formData.append('projectId', projectId);
         formData.append('file', values.file);
         const res = await bidManagementService.httpSendEmail(formData);
         // if project id is available then create project activity
