@@ -162,18 +162,16 @@ const ViewEstimateDetail = () => {
     setCsvData([
       clientInformationHeader, clientInformationData,
       [],
+      [],
       projectHeader, projectData,
+      [],
       [],
       estimateHeader, ...estimateData,
       [],
-      summaryHeader, summaryData]);
+      [],
+      summaryHeader, summaryData
+    ]);
   }
-  console.log({
-    estimateDetailsSummary,
-    estimatesRecord,
-
-  });
-
 
   return (
     <div className="p-12">
@@ -192,7 +190,6 @@ const ViewEstimateDetail = () => {
               downloadCSV()
               done()
             }}
-
           >
             <WhiteButton
               text='Download CSV'
