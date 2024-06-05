@@ -1,11 +1,12 @@
 import { StyleSheet, View } from '@react-pdf/renderer';
 import { PdfHeading, PdfText } from './Heading';
+import { USCurrencyFormat } from '@/app/utils/format';
 
 type Props = {
   items: {
     description: string;
     quantity: string;
-    totalPrice: string;
+    total: string;
   }[];
   totalAmount: number;
 };
@@ -40,7 +41,7 @@ const styles = StyleSheet.create({
     padding: '4px 4px',
   },
   headingCell: {
-    textAlign: 'center',
+    textAlign: 'left',
     fontWeight: 'bold',
     flex: 1,
   },
@@ -48,7 +49,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     width: '100%',
     flex: 1,
-    textAlign: 'center',
+    textAlign: 'left',
+    marginLeft: 4,
   },
   descriptionCell: {
     fontWeight: 'bold',
@@ -66,7 +68,7 @@ const styles = StyleSheet.create({
 });
 export const PdfTable: React.FC<Props> = ({ items, totalAmount }) => {
   return (
-    <View style={{ flexDirection: 'column' }}>
+    <View>
       <View style={styles.container}>
         <View style={styles.table}>
           <View style={styles.tableHeader}>
@@ -92,7 +94,7 @@ export const PdfTable: React.FC<Props> = ({ items, totalAmount }) => {
                     style={styles.descriptionCell}
                   />
                   <PdfText text={item.quantity} style={styles.bodyCell} />
-                  <PdfText text={item.totalPrice} style={styles.bodyCell} />
+                  <PdfText text={USCurrencyFormat.format(Number(item.total))} style={styles.bodyCell} />
                 </View>
               );
             })}
