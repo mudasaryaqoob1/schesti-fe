@@ -1,11 +1,12 @@
 import { StyleSheet, View } from '@react-pdf/renderer';
 import { PdfHeading, PdfText } from './Heading';
-import { USCurrencyFormat } from '@/app/utils/format';
+import { USCurrencyFormat } from '@/app/utils/format'
 
 type Props = {
   items: {
     description: string;
     quantity: string;
+    // totalPrice: string;
     total: string;
   }[];
   totalAmount: number;
@@ -85,8 +86,6 @@ export const PdfTable: React.FC<Props> = ({ items, totalAmount }) => {
         <View style={styles.table}>
           {items?.length &&
             items?.map((item, index) => {
-              console.log(items, 'itemsitemsitemsitems');
-
               return (
                 <View key={index} style={styles.bodyRow}>
                   <PdfText
