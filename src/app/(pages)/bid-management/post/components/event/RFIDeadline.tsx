@@ -11,20 +11,28 @@ export function RfiDeadline({ formik }: { formik: FormikProps<IBidManagement> })
             <div>
                 <DateInputComponent
                     label=''
-                    name=''
+                    name='rfiDeadline.date'
                     placeholder='Select Date'
                     fieldProps={{
                         value: formik.values.rfiDeadline && formik.values.rfiDeadline.date ? dayjs(formik.values.rfiDeadline.date) : undefined,
                         onChange: (date, dateString) => {
                             formik.setFieldValue('rfiDeadline.date', dateString as string)
-                        }
+                        }, onBlur: formik.handleBlur
                     }}
+                    hasError={
+                        // @ts-ignore
+                        formik.touched.rfiDeadline?.date && Boolean(formik.errors.rfiDeadline?.date)
+                    }
+                    errorMessage={
+                        // @ts-ignore
+                        formik.errors.rfiDeadline?.date
+                    }
                 />
             </div>
             <div>
                 <TimeInputComponent
                     label=''
-                    name=''
+                    name='rfiDeadline.time'
                     placeholder='Select Time'
                     fieldProps={{
                         use12Hours: true,
@@ -34,7 +42,16 @@ export function RfiDeadline({ formik }: { formik: FormikProps<IBidManagement> })
                             formik.setFieldValue('rfiDeadline.time', timeString as string)
                         },
                         showNow: false,
+                        onBlur: formik.handleBlur
                     }}
+                    hasError={
+                        // @ts-ignore
+                        formik.touched.rfiDeadline?.time && Boolean(formik.errors.rfiDeadline?.time)
+                    }
+                    errorMessage={
+                        // @ts-ignore
+                        formik.errors.rfiDeadline?.time
+                    }
                 />
             </div>
 

@@ -26,34 +26,52 @@ export function EventSiteWalkThroughForm({ formik }: Props) {
                 <InputComponent
                     placeholder='Enter Location'
                     label=''
-                    name='location'
+                    name='siteWalkthrough.location'
                     type='text'
                     field={{
                         suffix: <Image src='/navigation-icon.svg' width={20} height={20} alt='location' />,
                         value: formik.values?.siteWalkthrough?.location,
-                        onChange: e => formik.setFieldValue('siteWalkthrough.location', e.target.value)
+                        onChange: e => formik.setFieldValue('siteWalkthrough.location', e.target.value),
+                        onBlur: formik.handleBlur
                     }}
+                    hasError={
+                        // @ts-ignore
+                        formik.touched.siteWalkthrough?.location && Boolean(formik.errors.siteWalkthrough?.location)
+                    }
+                    errorMessage={
+                        // @ts-ignore
+                        formik.errors.siteWalkthrough?.location
+                    }
                 />
             </div>
 
             <div>
                 <DateInputComponent
                     label=''
-                    name=''
+                    name='siteWalkthrough.date'
                     placeholder='Select Date'
                     fieldProps={{
                         format: 'MM/DD/YYYY',
                         value: formik.values.siteWalkthrough && formik.values.siteWalkthrough.date ? dayjs(formik.values.siteWalkthrough.date) : undefined,
                         onChange: (date, dateString) => {
                             formik.setFieldValue('siteWalkthrough.date', dateString as string)
-                        }
+                        },
+                        onBlur: formik.handleBlur
                     }}
+                    hasError={
+                        // @ts-ignore
+                        formik.touched.siteWalkthrough?.date && Boolean(formik.errors.siteWalkthrough?.date)
+                    }
+                    errorMessage={
+                        // @ts-ignore
+                        formik.errors.siteWalkthrough?.date
+                    }
                 />
             </div>
             <div>
                 <TimeInputComponent
                     label=''
-                    name=''
+                    name='siteWalkthrough.time'
                     placeholder='Select Time'
                     fieldProps={{
                         use12Hours: true,
@@ -63,19 +81,37 @@ export function EventSiteWalkThroughForm({ formik }: Props) {
                             formik.setFieldValue('siteWalkthrough.time', timeString as string)
                         },
                         showNow: false,
+                        onBlur: formik.handleBlur
                     }}
+                    hasError={
+                        // @ts-ignore
+                        formik.touched.siteWalkthrough?.time && Boolean(formik.errors.siteWalkthrough?.time)
+                    }
+                    errorMessage={
+                        // @ts-ignore
+                        formik.errors.siteWalkthrough?.time
+                    }
                 />
             </div>
 
         </div>
         <TextAreaComponent
             label=''
-            name='instruction'
+            name='siteWalkthrough.instruction'
             placeholder='Meeting Instructions'
             field={{
                 value: formik.values.siteWalkthrough?.instruction,
-                onChange: e => formik.setFieldValue('siteWalkthrough.instruction', e.target.value)
+                onChange: e => formik.setFieldValue('siteWalkthrough.instruction', e.target.value),
+                onBlur: formik.handleBlur
             }}
+            hasError={
+                // @ts-ignore
+                formik.touched.siteWalkthrough?.instruction && Boolean(formik.errors.siteWalkthrough?.instruction)
+            }
+            errorMessage={
+                // @ts-ignore
+                formik.errors.siteWalkthrough?.instruction
+            }
         />
     </div>
 }

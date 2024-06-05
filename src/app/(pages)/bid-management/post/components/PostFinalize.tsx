@@ -197,7 +197,7 @@ export function PostFinalize({ formik, children }: Props) {
                 title="Stage"
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
-              <p className="text-[#344054] text-[14px] leading-6 font-medium ">
+              <p className="text-[14px] leading-6 font-normal py-[7px] px-3 bg-[#ECFDF3] rounded-md w-fit text-[#027A48]">
                 {values.stage}
               </p>
             </div>
@@ -276,7 +276,7 @@ export function PostFinalize({ formik, children }: Props) {
                 {values.description}
               </Paragraph>
             </div>
-            <div className="space-y-2">
+            {values.specialInstructions.length ? <div className="space-y-2">
               <SenaryHeading
                 title="Special Instructions"
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
@@ -288,7 +288,7 @@ export function PostFinalize({ formik, children }: Props) {
               }} className="text-[#344054] text-[14px] leading-6 font-medium">
                 {values.specialInstructions}
               </Paragraph>
-            </div>
+            </div> : null}
           </div>
         </fieldset>
       </div>
@@ -332,9 +332,11 @@ export function PostFinalize({ formik, children }: Props) {
               </div>
 
               {formik.values.preBiddingMeeting?.isChecked ? <div>
-                <Radio.Group value={formik.values.preBiddingMeeting?.type} onChange={e => {
-                  formik.setFieldValue('preBiddingMeeting.type', e.target.value);
-                }}>
+                <Radio.Group value={formik.values.preBiddingMeeting?.type}
+                  onChange={e => {
+                    formik.setFieldValue('preBiddingMeeting.type', e.target.value);
+                  }}
+                >
                   <Radio value={'Onsite'}>Onsite</Radio>
                   <Radio value={'Online'}>Online</Radio>
                 </Radio.Group>
@@ -545,8 +547,7 @@ export function PostFinalize({ formik, children }: Props) {
 
             <Checkbox disabled>
               <SenaryHeading
-                title="My In-Network members (Sends only to those with matching trades and regions)
-                        ( 2603 ) In-Network  | View chevron_right"
+                title="My In-Network members (Sends only to those with matching trades and regions)"
                 className="text-[#667085] font-normal leading-7 text-[14px] !w-fit"
               />
             </Checkbox>

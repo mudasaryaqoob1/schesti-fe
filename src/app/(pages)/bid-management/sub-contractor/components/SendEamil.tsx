@@ -17,6 +17,7 @@ import { useClickAway } from 'ahooks/es';
 import ModalComponent from '@/app/component/modal';
 import { ISendEmail } from '@/app/interfaces/sendEmail/sendEmail.interface';
 import { ShowFileComponent } from '../../components/ShowFile.component';
+import { createProjectActivity } from '../../utils';
 
 const ValidationSchema = Yup.object().shape({
   to: Yup.string().required('To Email is required'),
@@ -28,8 +29,10 @@ const ValidationSchema = Yup.object().shape({
 
 type Props = {
   to: string;
+  projectId: string;
 }
-export function SendEmailModal({ to }: Props) {
+export function SendEmailModal({ to, projectId }: Props) {
+
   const ref = useRef<HTMLDivElement>(null);
   const [showRfiModal, setShowRfiModal] = useState(false);
   useClickAway(() => {
@@ -57,8 +60,13 @@ export function SendEmailModal({ to }: Props) {
         formData.append('cc', values.cc ?? '');
         formData.append('description', values.description ?? '');
         formData.append('subject', values.subject);
+        formData.append('projectId', projectId);
         formData.append('file', values.file);
         const res = await bidManagementService.httpSendEmail(formData);
+        // if project id is available then create project activity
+        if (projectId.length > 0) {
+          await createProjectActivity(projectId, 'sent email');
+        }
         console.log('res.data', res.data)
         if (res) {
           toast.success('Email sent successfully');
@@ -101,7 +109,7 @@ export function SendEmailModal({ to }: Props) {
         setOpen={setShowRfiModal}
         destroyOnClose
       >
-        (
+
         <div
           onClick={(e) => {
             e.stopPropagation();
@@ -274,7 +282,7 @@ export function SendEmailModal({ to }: Props) {
             </Spin>
           </Popups>
         </div>
-        )
+
       </ModalComponent>
     </div>
   );

@@ -81,7 +81,7 @@ const ProjectDetailsSchema = Yup.object().shape({
   estimatedCompletionDate: Yup.string().required(
     'Estimated Completion Date is required'
   ),
-  squareFootage: Yup.string().min(1).required('Square Footage is required'),
+  squareFootage: Yup.string().min(1).optional(),
   projectValue: Yup.number().min(1).required('Project Value is required'),
 });
 
@@ -111,18 +111,57 @@ const FilesSchema = Yup.object().shape({
 
 const onsiteMeetingSchema = Yup.object().shape({
   isChecked: Yup.boolean(),
-  type: Yup.string(),
-  location: Yup.string(),
-  date: Yup.string(),
-  time: Yup.string(),
-  instruction: Yup.string(),
+  type: Yup.string().when('isChecked', {
+    is: true,
+    then: () => Yup.string().required('Type is required'),
+    otherwise: () => Yup.string().notRequired()
+  }),
+  location: Yup.string().when('isChecked', {
+    is: true,
+    then: () => Yup.string().required('Location is required'),
+    otherwise: () => Yup.string().notRequired()
+  }),
+  date: Yup.string().when('isChecked', {
+    is: true,
+    then: () => Yup.string().required('Date is required'),
+    otherwise: () => Yup.string().notRequired()
+  })
+  ,
+  time: Yup.string().when('isChecked', {
+    is: true,
+    then: () => Yup.string().required('Time is required'),
+    otherwise: () => Yup.string().notRequired()
+  })
+  ,
+  instruction: Yup.string().when('isChecked', {
+    is: true,
+    then: () => Yup.string().test({
+      test: (value) => {
+        if (!value) return true; // Allow empty values, adjust if necessary
+        const wordCount = value.trim().split(/\s+/).length;
+        return wordCount <= 50;
+      },
+      message: 'Additional details should not exceed 50 words',
+    }).required('Instruction is required'),
+    otherwise: () => Yup.string().notRequired()
+  }),
   isMandatory: Yup.boolean()
 });
 
 const onlineMeetingSchema = Yup.object().shape({
   isChecked: Yup.boolean(),
-  type: Yup.string(),
-  meeting: Yup.mixed(),
+  // if isChecked is true then type is required
+  type: Yup.string().when('isChecked', {
+    is: true,
+    then: () => Yup.string().required('Type is required'),
+    otherwise: () => Yup.string().notRequired()
+  }),
+
+  meeting: Yup.mixed().when('isChecked', {
+    is: true,
+    then: () => Yup.mixed().required('Meeting is required'),
+    otherwise: () => Yup.mixed().notRequired()
+  }),
   isMandatory: Yup.boolean()
 });
 
@@ -152,16 +191,49 @@ const FinalizeProjectSchema = Yup.object().shape({
   }),
   siteWalkthrough: Yup.object().shape({
     isChecked: Yup.boolean(),
-    location: Yup.string(),
-    date: Yup.string(),
-    time: Yup.string(),
-    instruction: Yup.string(),
+    location: Yup.string().when('isChecked', {
+      is: true,
+      then: () => Yup.string().required('Location is required'),
+      otherwise: () => Yup.string().notRequired()
+    }),
+    date: Yup.string().when('isChecked', {
+      is: true,
+      then: () => Yup.string().required('Date is required'),
+      otherwise: () => Yup.string().notRequired()
+    })
+    ,
+    time: Yup.string().when('isChecked', {
+      is: true,
+      then: () => Yup.string().required('Time is required'),
+      otherwise: () => Yup.string().notRequired()
+    })
+    ,
+    instruction: Yup.string().when('isChecked', {
+      is: true,
+      then: () => Yup.string().test({
+        test: (value) => {
+          if (!value) return true; // Allow empty values, adjust if necessary
+          const wordCount = value.trim().split(/\s+/).length;
+          return wordCount <= 50;
+        },
+        message: 'Additional details should not exceed 50 words',
+      }).required('Instruction is required'),
+      otherwise: () => Yup.string().notRequired()
+    }),
     isMandatory: Yup.boolean()
   }),
   rfiDeadline: Yup.object().shape({
     isChecked: Yup.boolean(),
-    date: Yup.string(),
-    time: Yup.string()
+    date: Yup.string().when('isChecked', {
+      is: true,
+      then: () => Yup.string().required('Date is required'),
+      otherwise: () => Yup.string().notRequired()
+    }),
+    time: Yup.string().when('isChecked', {
+      is: true,
+      then: () => Yup.string().required('Time is required'),
+      otherwise: () => Yup.string().notRequired()
+    }),
   })
 });
 
@@ -260,6 +332,7 @@ function CreatePost() {
     onSuccess(res) {
       if (res.data && res.data.updatedProject) {
         if (postProjectState.formStep === 5) {
+          dispatch(setPostProjectAction(res.data.updatedProject));
           setShowCongratulation(true);
         } else {
           dispatch(setPostProjectAction(res.data.updatedProject));
@@ -280,7 +353,7 @@ function CreatePost() {
       }
       : {
         projectName: '',
-        country: 'PK',
+        country: 'US',
         city: '',
         zipCode: '',
         state: '',
@@ -303,9 +376,9 @@ function CreatePost() {
     initialValues: {
       ...(postProjectState.project as IBidManagement),
       preBiddingMeeting: {
-        ...(postProjectState.project as IBidManagement)?.preBiddingMeeting,
         isChecked: (postProjectState.project as IBidManagement)?.preBiddingMeeting?.isChecked || false,
-        type: (postProjectState.project as IBidManagement)?.preBiddingMeeting?.type || 'Onsite',
+        type: (postProjectState.project as IBidManagement)?.preBiddingMeeting?.type || 'Online',
+        ...(postProjectState.project as IBidManagement)?.preBiddingMeeting,
       },
       siteWalkthrough: {
         ...(postProjectState.project as IBidManagement)?.siteWalkthrough,

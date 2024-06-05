@@ -10,10 +10,11 @@ import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 import moment from 'moment';
 import { CreateRFI } from '@/app/(pages)/bid-management/sub-contractor/components/CreateRFI';
 import { UpdateRFI } from '@/app/(pages)/bid-management/sub-contractor/components/UpdateRFI';
+import { RFIReply } from '../../projects/view/[id]/components/RFIReply';
+import { IUserInterface } from '@/app/interfaces/user.interface';
 
 type Props = {
   projectId: string;
@@ -24,7 +25,7 @@ export function ProjectRFICenter({ projectId }: Props) {
   const [isFetching, setIsFetching] = useState(false);
   const [search, setSearch] = useState('');
   const authUser = useSelector(
-    (state: RootState) => state.auth.user as { user?: IUser }
+    (state: RootState) => state.auth.user as { user?: IUserInterface }
   );
 
   useEffect(() => {
@@ -160,6 +161,16 @@ export function ProjectRFICenter({ projectId }: Props) {
                           />
                         </p>
                       ) : null}
+                      {authUser.user && (authUser.user.userRole === 'owner' || authUser.user.userRole === 'contractor') ? <RFIReply
+                        key={rfi._id}
+                        onSuccess={(rfi) => {
+                          setRfis([rfi, ...rfis]);
+                        }}
+                        projectId={rfi.projectId}
+                        messageId={rfi._id}
+                        isDisabledPublic={rfi.type === 'private'}
+                        isDisabledPrivate={rfi.type === 'public'}
+                      /> : null}
                       {rfi.user && typeof rfi.user !== 'string' &&
                         rfi.user._id === authUser.user?._id ? (
                         <UpdateRFI

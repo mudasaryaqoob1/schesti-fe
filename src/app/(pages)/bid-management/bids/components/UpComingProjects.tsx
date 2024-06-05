@@ -4,6 +4,7 @@ import { BidIntro } from '../../sub-contractor/components/BidIntro';
 import { useQuery } from 'react-query';
 import { bidManagementService } from '@/app/services/bid-management.service';
 import { BiddingProjectDetails } from './BiddingProjectDetails';
+import { createProjectActivity } from '../../utils';
 
 type Props = {
   search: string;
@@ -45,8 +46,10 @@ export function UpComingProjects({ search, tab }: Props) {
               <BidIntro
                 key={bidProject._id}
                 bid={bidProject as unknown as IBidManagement}
-                onClick={() =>
-                  setSelectedBid(bidProject as unknown as IBidManagement)
+                onClick={async () => {
+                  setSelectedBid(bidProject as unknown as IBidManagement);
+                  await createProjectActivity(bidProject._id, 'clicked');
+                }
                 }
                 isSelected={selectedBid?._id === bidProject._id}
               />

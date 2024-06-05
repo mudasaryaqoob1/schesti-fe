@@ -2,11 +2,14 @@ import { StyleSheet, View } from '@react-pdf/renderer';
 import { InfoContainer } from './Info';
 import { PdfTable } from './Table';
 import { PdfApproval } from './Approval';
+import { PdfScopeOfWork } from './ScopeOfWork';
 
 const styles = StyleSheet.create({
   content: {
     margin: 10,
+    marginLeft: 30,
     paddingTop: 10,
+    height: "90%"
   },
 });
 
@@ -56,13 +59,24 @@ export function PageContent({ estimateDetail, subcostRecord, pdfData }: any) {
         </View>
       </View>
 
-      {/* Table */}
-      <PdfTable items={pdfData} totalAmount={subcostRecord} />
-      {/* END Table */}
+      <PdfScopeOfWork
+        scope="The estimate details the items, their quantities, prices, and the tasks required to complete the project. All necessary work and materials are outlined clearly in this document."
+      />
 
-      {/*  Approval */}
-      <PdfApproval />
-      {/* END Approval */}
+      <View style={{
+        flex: 1,
+        display: "flex",
+        justifyContent: "space-between"
+      }}>
+
+        {/* Table */}
+        <PdfTable items={pdfData} totalAmount={subcostRecord} />
+        {/* END Table */}
+
+        {/*  Approval */}
+        <PdfApproval />
+        {/* END Approval */}
+      </View>
     </View>
   );
 }

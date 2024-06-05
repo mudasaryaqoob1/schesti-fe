@@ -31,6 +31,7 @@ import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.i
 import { ProjectIntro } from './components/ProjectInto';
 import { ShowFileComponent } from '../../components/ShowFile.component';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { createProjectActivity } from '../../utils';
 
 type ProjectScope = {
   description: string;
@@ -134,10 +135,11 @@ function ContractorSubmitBidPage() {
         projectId: params.id,
       });
     },
-    onSuccess(data) {
+    async onSuccess(data) {
       toast.success(data.message);
       router.back();
       formik.resetForm();
+      await createProjectActivity(params.id, 'proposal submitted');
     },
     onError(error) {
       toast.error(error.response?.data.message || 'Unable to submit proposal');

@@ -28,7 +28,7 @@ export function EventOnlineForm({ formik }: Props) {
             </div> : formik.values.preBiddingMeeting?.meeting ? <MeetingCard
                 item={formik.values.preBiddingMeeting.meeting}
                 shouldShowJoin={false}
-            /> : <div
+            /> : <><div
                 onClick={() => setShowModal(true)}
                 className="w-[190px] flex items-center py-2 px-[14px] rounded-lg cursor-pointer border border-[#F9F5FF] bg-[#F9F5FF]">
                 <Image
@@ -38,13 +38,18 @@ export function EventOnlineForm({ formik }: Props) {
                     height={16}
                 />
                 <span className="text-[#7138DF] text-[14px] leading-5 font-semibold  ml-2">{"Schedule a meeting"}</span>
-            </div>}
+            </div>
+                {/* @ts-ignore */}
+                {formik.errors.preBiddingMeeting?.meeting ? <div className="text-red-500 text-xs">*{formik.errors.preBiddingMeeting?.meeting}</div> : null}
+            </>
+            }
             <CreateMeeting
                 setShowModal={() => setShowModal(false)}
                 showModal={showModal}
                 onSuccess={_meeting => {
                     formik.setFieldValue('preBiddingMeeting.meeting', _meeting);
                 }}
+                isInviteOptional
             />
         </div>
     }

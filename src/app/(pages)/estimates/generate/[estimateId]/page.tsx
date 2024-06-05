@@ -16,7 +16,7 @@ import EstimatesTable, { estimateTableColumns } from '../components/estimatesTab
 // import EstimatePDF from './estimatePDF';
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
-import { PDFDownloadLink } from '@react-pdf/renderer';
+import { PDFDownloadLink, } from '@react-pdf/renderer';
 import { estimateRequestService } from '@/app/services/estimates.service';
 // import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
 import { withAuth } from '@/app/hoc/withAuth';
@@ -122,7 +122,10 @@ const ViewEstimateDetail = () => {
 
 
     const scopeItems = _.flatMap(estimatesRecord, (estimate: any) => {
-      return estimate?.scopeItems
+      return estimate?.scopeItems.map((item: any) => ({
+        ...item,
+        category: estimate.title
+      }))
     });
 
     let estimateData = formatDataFromAntdColumns(estimateTableColumns, scopeItems).map((row: any) => {
@@ -159,18 +162,16 @@ const ViewEstimateDetail = () => {
     setCsvData([
       clientInformationHeader, clientInformationData,
       [],
+      [],
       projectHeader, projectData,
+      [],
       [],
       estimateHeader, ...estimateData,
       [],
-      summaryHeader, summaryData]);
+      [],
+      summaryHeader, summaryData
+    ]);
   }
-  console.log({
-    estimateDetailsSummary,
-    estimatesRecord,
-
-  });
-
 
   return (
     <div className="p-12">
@@ -189,7 +190,6 @@ const ViewEstimateDetail = () => {
               downloadCSV()
               done()
             }}
-
           >
             <WhiteButton
               text='Download CSV'

@@ -9,6 +9,10 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import dynamic from 'next/dynamic';
+import { formatProjectActivityStatus } from '@/app/(pages)/bid-management/utils';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
+import { IUserInterface } from '@/app/interfaces/user.interface';
 const ExportProjectActivityAndStatus = dynamic(
   () => import('../../../components/ExportProjectActivityAndStatusTracking')
 );
@@ -21,6 +25,7 @@ type Props = {
 export function ProjectAcitivityAndStatusTracking({ projectId }: Props) {
   const [activities, setActivities] = useState<IBidActivity[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const authUser = useSelector((state: RootState) => state.auth.user as { user?: IUserInterface });
 
   useEffect(() => {
     getProjectActivities();
@@ -49,6 +54,13 @@ export function ProjectAcitivityAndStatusTracking({ projectId }: Props) {
     return <Skeleton />
   }
 
+  let userActivities = activities.filter(activity => {
+    if (authUser.user) {
+      return typeof activity.user === 'string' ? activity.user !== authUser.user?._id : activity.user._id !== authUser.user._id;
+    }
+    return true;
+  })
+
   return (
     <div className=" mt-6 mb-4 md:ms-[69px] md:me-[59px] mx-4  p-5 bg-white rounded-lg border shadow-lg">
       <div className="flex items-center justify-between">
@@ -58,7 +70,7 @@ export function ProjectAcitivityAndStatusTracking({ projectId }: Props) {
         />
         <div className="flex items-center space-x-3">
           <div className="pt-2">
-            <ExportProjectActivityAndStatus activities={activities} />
+            <ExportProjectActivityAndStatus activities={userActivities} />
           </div>
           <div className="w-96">
             <InputComponent
@@ -72,7 +84,7 @@ export function ProjectAcitivityAndStatusTracking({ projectId }: Props) {
       </div>
 
       <div className="mt-6">
-        {activities.length > 0 ? activities.map(activity => {
+        {userActivities.length > 0 ? userActivities.map(activity => {
           const activityUser = activity.user;
 
           return <div key={activity._id} className="flex py-3 px-1 mt-2 space-x-3 border-b border-[#EAECF0] items-center justify-between">
@@ -83,10 +95,16 @@ export function ProjectAcitivityAndStatusTracking({ projectId }: Props) {
               alt="green tracking icon"
             />
             <div className="flex-1 space-y-2">
-              <TertiaryHeading
-                title={typeof activityUser !== 'string' ? activityUser.companyName : ""}
-                className="font-semibold text-[#344054] text-[14px] leading-5"
-              />
+              <div className='flex items-center space-x-3'>
+                <TertiaryHeading
+                  title={typeof activityUser !== 'string' ? activityUser.companyName : ""}
+                  className="font-semibold text-[#344054] text-[14px] leading-5"
+                />
+                <TertiaryHeading
+                  title={`(${formatProjectActivityStatus(activity.status)})`}
+                  className="font-semibold text-[#344054] text-[14px] leading-5"
+                />
+              </div>
 
               <div className="flex items-center space-x-4">
                 <Image

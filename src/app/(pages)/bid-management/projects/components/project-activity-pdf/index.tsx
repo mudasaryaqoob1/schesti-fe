@@ -3,6 +3,7 @@ import { IBidActivity } from "@/app/interfaces/bid-management/bid-management.int
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import moment from "moment";
 import { CALL_ICON, GREEN_TRACKING_ICON, MAIL_ICON, NAVIGATION_ICON } from "./icons";
+import { formatProjectActivityStatus } from "../../../utils";
 
 
 const styles = StyleSheet.create({
@@ -77,9 +78,14 @@ function ProjectActivityAndStatusPDF({ activities }: Props) {
                 return <View key={activity._id} style={styles.container}>
                     <Image src={GREEN_TRACKING_ICON} style={{ height: 18, width: 18 }} />
                     <View style={styles.activityInfo}>
-                        <Text style={styles.companyName}>
-                            {typeof activityUser !== 'string' ? activityUser.companyName : ""}
-                        </Text>
+                        <View style={styles.flex}>
+                            <Text style={styles.companyName}>
+                                {typeof activityUser !== 'string' ? activityUser.companyName : ""}
+                            </Text>
+                            <Text style={[styles.companyName, { marginLeft: 5 }]}>
+                                ({formatProjectActivityStatus(activity.status)})
+                            </Text>
+                        </View>
                         <View style={styles.secondaryInfo}>
                             <View style={styles.flex}>
                                 <Image src={NAVIGATION_ICON} style={{ height: 11, width: 11, marginHorizontal: 7 }} />

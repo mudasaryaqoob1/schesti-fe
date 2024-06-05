@@ -12,7 +12,7 @@ type Props = {
 };
 
 export function PostBasicInformation({ children, formik }: Props) {
-  const [country, setCountry] = useState<string>('PK');
+  const [country, setCountry] = useState<string>(formik.values.country);
   const [state, setState] = useState<string>('');
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   const [city, setCity] = useState<string>('');

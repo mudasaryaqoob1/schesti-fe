@@ -10,7 +10,7 @@ export type IUserInterface = IUpdateCompanyDetail & {
     providerType: string;
     name: string;
     roles: string[];
-    userRole: string;
+    userRole: "owner" | "contractor" | "subcontractor";
     brandingColor: string;
     isPaymentConfirm: boolean;
     createdAt: string;

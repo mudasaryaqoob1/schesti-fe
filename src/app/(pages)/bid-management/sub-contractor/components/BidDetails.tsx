@@ -27,6 +27,7 @@ import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { IUserInterface } from '@/app/interfaces/user.interface';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
+import { createProjectActivity } from '../../utils';
 
 
 type Props = {
@@ -67,10 +68,15 @@ export function BidDetails({
     mutationFn: (values: SaveUserBidProps) => {
       return bidManagementService.httpSaveUserProjectBid(values);
     },
-    onSuccess(res: any) {
+    async onSuccess(res: any) {
       console.log('res', res);
       if (res.data && res.data.savedUserBid) {
         toast.success('Bid Saved Successfully');
+      }
+
+      if (bid) {
+        await createProjectActivity(bid._id, 'favourite');
+
       }
     },
     onError(error: any) {
@@ -92,11 +98,14 @@ export function BidDetails({
     mutationFn: async (values: RemoveUserBidProps) => {
       return bidManagementService.httpRemoveUserProjectBid(values.biddingId);
     },
-    onSuccess(res: any) {
+    async onSuccess(res: any) {
       console.log('res', res);
       if (res.data && res.data) {
         toast.success('Bid removed Successfully');
         setSelectedProjectSavedBid(null);
+        if (bid) {
+          await createProjectActivity(bid._id, 'removed favourite');
+        }
       }
     },
     onError(error: any) {
@@ -136,21 +145,19 @@ export function BidDetails({
   };
 
 
-  const createProjectActivity = async (projectId: string) => {
-    try {
-      const data = { projectId: projectId };
-      const res = await bidManagementService.httpCreateProjectActivity(data);
-      console.log({ activities: res });
 
-    } catch (error) { /* empty */ }
-  }
 
   const handleProposalDetails = async (bidId: string) => {
-    await createProjectActivity(bidId);
+    await createProjectActivity(bidId, 'viewed details');
     router.push(`/bid-management/details/${bidId}`);
   }
 
 
+  // social media share click handler 
+  async function handleSocialMediaClick(projectId: string, socialMediaType: "whatsapp" | "facebook" | "twitter") {
+    // create project activity for social media share
+    await createProjectActivity(projectId, `shared on ${socialMediaType}`);
+  }
 
   // either projectOwner or projectCreator will be available and will be used by EmailSendModal component
   const projectOwner = bid.userDetails && bid.userDetails?.length > 0 && bid.userDetails[0].email;
@@ -206,21 +213,37 @@ export function BidDetails({
           <WhatsappShareButton
             url={`${window.location.protocol}//${window.location.hostname}/bid-management/details/${bid?._id}`}
             separator=":: "
+            onClick={() => {
+              if (bid?._id) {
+                handleSocialMediaClick(bid?._id, 'whatsapp');
+              }
+            }}
           >
             <WhatsappIcon size={30} round />
           </WhatsappShareButton>
           <FacebookShareButton
             url={`${window.location.protocol}//${window.location.hostname}/bid-management/details/${bid?._id}`}
+            onClick={() => {
+              if (bid?._id) {
+                handleSocialMediaClick(bid?._id, 'facebook');
+              }
+            }}
           >
             <FacebookIcon size={30} round />
           </FacebookShareButton>
           <TwitterShareButton
             url={`${window.location.protocol}//${window.location.hostname}/bid-management/details/${bid?._id}`}
+            onClick={() => {
+              if (bid?._id) {
+                handleSocialMediaClick(bid?._id, 'twitter');
+              }
+            }}
           >
             <TwitterIcon size={30} round />
           </TwitterShareButton>
           <SendEmailModal
             to={projectCreator || projectOwner || ''}
+            projectId={bid ? bid._id : ""}
           />
         </div>
       </div>

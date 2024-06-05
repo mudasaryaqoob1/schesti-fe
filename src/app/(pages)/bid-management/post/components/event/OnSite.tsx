@@ -11,6 +11,7 @@ type Props = {
     formik: FormikProps<IBidManagement>;
 }
 export function EventOnSiteForm({ formik }: Props) {
+
     if (formik.values.preBiddingMeeting?.isChecked && formik.values.preBiddingMeeting?.type === 'Onsite') {
 
         return <div className='space-y-2 mt-3'>
@@ -20,34 +21,53 @@ export function EventOnSiteForm({ formik }: Props) {
                     <InputComponent
                         placeholder='Enter Location'
                         label=''
-                        name='location'
+                        name='preBiddingMeeting.location'
                         type='text'
                         field={{
                             suffix: <Image src='/navigation-icon.svg' width={20} height={20} alt='location' />,
                             value: formik.values?.preBiddingMeeting?.location,
-                            onChange: e => formik.setFieldValue('preBiddingMeeting.location', e.target.value)
+                            onChange: e => formik.setFieldValue('preBiddingMeeting.location', e.target.value),
+                            onBlur: formik.handleBlur
                         }}
+
+                        hasError={
+                            // @ts-ignore
+                            formik.touched.preBiddingMeeting?.location && Boolean(formik.errors.preBiddingMeeting?.location)
+                        }
+                        errorMessage={
+                            // @ts-ignore
+                            formik.errors.preBiddingMeeting?.location
+                        }
                     />
                 </div>
 
                 <div>
                     <DateInputComponent
                         label=''
-                        name=''
+                        name='preBiddingMeeting.date'
                         placeholder='Select Date'
                         fieldProps={{
                             format: 'MM/DD/YYYY',
                             value: formik.values.preBiddingMeeting && formik.values.preBiddingMeeting.date ? dayjs(formik.values.preBiddingMeeting.date) : undefined,
                             onChange: (date, dateString) => {
                                 formik.setFieldValue('preBiddingMeeting.date', dateString as string)
-                            }
+                            },
+                            onBlur: formik.handleBlur
                         }}
+                        hasError={
+                            // @ts-ignore
+                            formik.touched.preBiddingMeeting?.date && Boolean(formik.errors.preBiddingMeeting?.date)
+                        }
+                        errorMessage={
+                            // @ts-ignore
+                            formik.errors.preBiddingMeeting?.date
+                        }
                     />
                 </div>
                 <div>
                     <TimeInputComponent
                         label=''
-                        name=''
+                        name='preBiddingMeeting.time'
                         placeholder='Select Time'
                         fieldProps={{
                             use12Hours: true,
@@ -57,19 +77,37 @@ export function EventOnSiteForm({ formik }: Props) {
                                 formik.setFieldValue('preBiddingMeeting.time', timeString as string)
                             },
                             showNow: false,
+                            onBlur: formik.handleBlur
                         }}
+                        hasError={
+                            // @ts-ignore
+                            formik.touched.preBiddingMeeting?.time && Boolean(formik.errors.preBiddingMeeting?.time)
+                        }
+                        errorMessage={
+                            // @ts-ignore
+                            formik.errors.preBiddingMeeting?.time
+                        }
                     />
                 </div>
 
             </div>
             <TextAreaComponent
                 label=''
-                name='instruction'
+                name='preBiddingMeeting.instruction'
                 placeholder='Meeting Instructions'
                 field={{
                     value: formik.values.preBiddingMeeting?.instruction,
-                    onChange: e => formik.setFieldValue('preBiddingMeeting.instruction', e.target.value)
+                    onChange: e => formik.setFieldValue('preBiddingMeeting.instruction', e.target.value),
+                    onBlur: formik.handleBlur
                 }}
+                hasError={
+                    // @ts-ignore
+                    formik.touched.preBiddingMeeting?.instruction && Boolean(formik.errors.preBiddingMeeting?.instruction)
+                }
+                errorMessage={
+                    // @ts-ignore
+                    formik.errors.preBiddingMeeting?.instruction
+                }
             />
         </div>
     }

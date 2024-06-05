@@ -1,3 +1,4 @@
+import { MeetingCard } from '@/app/(pages)/meeting/components/MeetingCard';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
@@ -137,7 +138,7 @@ export function ProjectSummary(props: IProps) {
                 title="Stage"
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
-              <p className="text-[#344054] text-[14px] leading-6 font-medium ">
+              <p className="text-[14px] leading-6 font-normal py-[7px] px-3 bg-[#ECFDF3] rounded-md w-fit text-[#027A48]">
                 {projectData.stage}
               </p>
             </div>
@@ -212,7 +213,7 @@ export function ProjectSummary(props: IProps) {
                 {projectData.description}
               </p>
             </div>
-            <div className="space-y-2">
+            {projectData.specialInstructions.length ? <div className="space-y-2">
               <SenaryHeading
                 title="Special Instructions"
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
@@ -220,9 +221,122 @@ export function ProjectSummary(props: IProps) {
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
                 {projectData.specialInstructions}
               </p>
-            </div>
+            </div> : null}
           </div>
         </fieldset>
+
+        {projectData ? <fieldset className="border-[2px] mt-[21px] space-y-4 p-4  rounded-lg border-dashed border-[#aeafb8] relative">
+          <legend className="text-[#667085] text-[14px] leading-6 absolute -top-4 z-10 bg-white w-fit px-2">
+            Event
+          </legend>
+
+          {projectData.preBiddingMeeting && projectData.preBiddingMeeting.isChecked ? <div>
+            <div className='flex items-center space-x-2 mb-1'>
+              <SenaryHeading
+                title={"Pre-Bid Meeting"}
+                className="text-[14px] leading-[22px] text-[#344054] font-normal"
+              />
+
+              {projectData.preBiddingMeeting.isMandatory ? <SenaryHeading
+                title={"(Mandatory)"}
+                className="text-[14px] leading-[22px] text-[#F32051] font-normal"
+              /> : null}
+            </div>
+
+            {projectData.preBiddingMeeting.type === 'Onsite' ? <div className='flex flex-col'>
+              <SenaryHeading
+                title={`${projectData.preBiddingMeeting.location ? projectData.preBiddingMeeting.location : ''}`}
+                className="text-[14px] leading-[22px] text-[#3A4856] font-semibold"
+              />
+
+              <div className='flex items-center space-x-2'>
+                <SenaryHeading
+                  // 12 March, 2024 format
+                  title={`${moment(projectData.preBiddingMeeting.date).format('DD MMMM, YYYY')}`}
+                  className="text-xs leading-[22px] text-[#929FB1] font-normal"
+                />
+                <SenaryHeading
+                  title={`${projectData.preBiddingMeeting.time}`}
+                  className="text-xs leading-[22px] text-[#929FB1] font-normal"
+                />
+              </div>
+              <SenaryHeading
+                title={`${projectData.preBiddingMeeting.instruction}`}
+                className="text-xs leading-[22px] text-[#3A4856] font-normal"
+              />
+            </div> : typeof projectData.preBiddingMeeting.meeting === 'string' ? null : <MeetingCard
+              item={projectData.preBiddingMeeting.meeting!}
+              shouldShowJoin
+            />}
+
+            <div className='border-b border-[#DFDFDF] my-2'></div>
+          </div> : null}
+
+          {projectData.siteWalkthrough && projectData.siteWalkthrough.isChecked ? <div>
+            <div className='flex items-center space-x-2 mb-1'>
+              <SenaryHeading
+                title={"Site Walkthrough"}
+                className="text-[14px] leading-[22px] text-[#344054] font-normal"
+              />
+
+              {projectData.siteWalkthrough.isMandatory ? <SenaryHeading
+                title={"(Mandatory)"}
+                className="text-[14px] leading-[22px] text-[#F32051] font-normal"
+              /> : null}
+            </div>
+
+            <div className='flex flex-col'>
+              <SenaryHeading
+                title={`${projectData.siteWalkthrough.location ? projectData.siteWalkthrough.location : ''}`}
+                className="text-[14px] leading-[22px] text-[#3A4856] font-semibold"
+              />
+
+              <div className='flex items-center space-x-2'>
+                <SenaryHeading
+                  // 12 March, 2024 format
+                  title={`${moment(projectData.siteWalkthrough.date).format('DD MMMM, YYYY')}`}
+                  className="text-xs leading-[22px] text-[#929FB1] font-normal"
+                />
+                <SenaryHeading
+                  title={`${projectData.siteWalkthrough.time}`}
+                  className="text-xs leading-[22px] text-[#929FB1] font-normal"
+                />
+              </div>
+              <SenaryHeading
+                title={`${projectData.siteWalkthrough.instruction}`}
+                className="text-xs leading-[22px] text-[#3A4856] font-normal"
+              />
+            </div>
+
+            <div className='border-b border-[#DFDFDF] my-2'></div>
+          </div> : null}
+
+          {projectData.rfiDeadline && projectData.rfiDeadline.isChecked ? <div>
+            <div className='flex items-center space-x-2 mb-1'>
+              <SenaryHeading
+                title={"RFI Deadline "}
+                className="text-[14px] leading-[22px] text-[#344054] font-normal"
+              />
+            </div>
+
+            <div className='flex flex-col'>
+
+              <div className='flex items-center space-x-2'>
+                <SenaryHeading
+                  // 12 March, 2024 format
+                  title={`${moment(projectData.rfiDeadline.date).format('DD MMMM, YYYY')}`}
+                  className="text-xs leading-[22px] text-[#929FB1] font-normal"
+                />
+                <SenaryHeading
+                  title={`${projectData.rfiDeadline.time}`}
+                  className="text-xs leading-[22px] text-[#929FB1] font-normal"
+                />
+              </div>
+            </div>
+
+          </div> : null}
+
+        </fieldset> : null}
       </div>
     </div>
   );

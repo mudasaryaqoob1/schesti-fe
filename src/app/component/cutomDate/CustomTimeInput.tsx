@@ -59,9 +59,9 @@ export function TimeInputComponent({
             />
             {/* //   )} */}
             {/* // </Field> */}
-            {hasError && (
+            {errorMessage.length ? (
                 <p className="text-red-500 text-xs mt-1.5">{errorMessage}</p>
-            )}
+            ) : null}
         </div>
     );
 }

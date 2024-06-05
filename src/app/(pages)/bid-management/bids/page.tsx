@@ -11,7 +11,7 @@ import { useState } from 'react';
 import { ActiveProjects } from './components/ActiveProjects';
 import { UpComingProjects } from './components/UpComingProjects';
 import { ArchivedProjects } from './components/ArchivedProjects';
-import { SelectComponent } from '@/app/component/customSelect/Select.component';
+// import { SelectComponent } from '@/app/component/customSelect/Select.component';
 
 const ACTIVE = 'Active';
 const UPCOMING = 'Upcoming';
@@ -95,13 +95,13 @@ function SubContractorBidsPage() {
                           }}
                         />
                       </div>
-                      {activeTab === UPCOMING ? (
+                      {/* {activeTab === UPCOMING ? (
                         <SelectComponent
                           label=""
                           placeholder="Status"
                           name="status"
                         />
-                      ) : null}
+                      ) : null} */}
                     </div>
                   </div>
 
