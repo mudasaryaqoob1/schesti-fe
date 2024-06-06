@@ -6,10 +6,11 @@ import ProjectActivityAndStatusPDF from './project-activity-pdf';
 
 type Props = {
     activities: IBidActivity[];
+    projectName: string;
 }
-export default function ExportProjectActivityAndStatus({ activities }: Props) {
+export default function ExportProjectActivityAndStatus({ activities, projectName }: Props) {
     return <PDFDownloadLink
-        document={<ProjectActivityAndStatusPDF activities={activities} />}
+        document={<ProjectActivityAndStatusPDF activities={activities} projectName={projectName} />}
         fileName={`project-activities-${Date.now()}.pdf`}
     >
         {({ loading }) => (

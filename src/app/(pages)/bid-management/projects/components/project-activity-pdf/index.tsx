@@ -9,7 +9,7 @@ import { formatProjectActivityStatus } from "../../../utils";
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        paddingLeft: 30,
+        paddingHorizontal: 15,
         marginTop: 8,
         borderBottomWidth: 1,
         borderBottomColor: '#EAECF0',
@@ -29,15 +29,13 @@ const styles = StyleSheet.create({
     },
     secondaryInfo: {
         flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: "space-evenly",
+        alignItems: 'flex-start',
         marginTop: 4,
     },
     secondaryText: {
         color: '#667085',
         fontSize: 14,
         lineHeight: 1.25,
-        marginLeft: 5,
     },
     date: {
         color: '#667085',
@@ -48,15 +46,23 @@ const styles = StyleSheet.create({
     flex: {
         display: "flex",
         flexDirection: "row",
+        alignItems: "center",
+    },
+    companyInfoFlex: {
+        display: "flex",
+        flexDirection: "row",
+        alignItems: "flex-start",
+        justifyContent: "space-between",
     }
 });
 
 type Props = {
     activities: IBidActivity[];
+    projectName: string;
 }
 
 
-function ProjectActivityAndStatusPDF({ activities }: Props) {
+function ProjectActivityAndStatusPDF({ activities, projectName }: Props) {
 
     return <Document>
         <Page size={'A4'}>
@@ -73,44 +79,59 @@ function ProjectActivityAndStatusPDF({ activities }: Props) {
                 Activity and Status Tracking
             </Text>
 
+            <Text
+                style={{
+                    fontSize: 16,
+                    color: "#344054",
+                    fontWeight: "semibold",
+                    marginVertical: 8,
+                    paddingLeft: 30
+                }}
+            >
+                {projectName}
+            </Text>
+
             {activities.length > 0 && activities.map((activity) => {
                 const activityUser = activity.user;
                 return <View key={activity._id} style={styles.container}>
                     <Image src={GREEN_TRACKING_ICON} style={{ height: 18, width: 18 }} />
                     <View style={styles.activityInfo}>
-                        <View style={styles.flex}>
-                            <Text style={styles.companyName}>
-                                {typeof activityUser !== 'string' ? activityUser.companyName : ""}
-                            </Text>
-                            <Text style={[styles.companyName, { marginLeft: 5 }]}>
-                                ({formatProjectActivityStatus(activity.status)})
+                        <View style={styles.companyInfoFlex}>
+
+                            <View style={styles.flex}>
+                                <Text style={styles.companyName}>
+                                    {typeof activityUser !== 'string' ? activityUser.companyName : ""}
+                                </Text>
+                                <Text style={[styles.companyName, { marginLeft: 5 }]}>
+                                    ({formatProjectActivityStatus(activity.status)})
+                                </Text>
+                            </View>
+                            <Text style={styles.date}>
+                                {moment(activity.createdAt).format('DD MMMM, h:mm A')}
                             </Text>
                         </View>
                         <View style={styles.secondaryInfo}>
                             <View style={styles.flex}>
-                                <Image src={NAVIGATION_ICON} style={{ height: 11, width: 11, marginHorizontal: 7 }} />
+                                <Image src={NAVIGATION_ICON} style={{ height: 11, width: 11, marginRight: 7 }} />
                                 <Text style={styles.secondaryText}>
                                     {typeof activityUser !== 'string' ? activityUser.address : ""}
                                 </Text>
                             </View>
-                            <View style={styles.flex}>
-
-                                <Image src={MAIL_ICON} style={{ height: 11, width: 11, marginHorizontal: 7 }} />
+                            <View style={[styles.flex, { marginLeft: 14 }]}>
+                                <Image src={MAIL_ICON} style={{ height: 11, width: 11, marginRight: 7 }} />
                                 <Text style={styles.secondaryText}>
                                     {typeof activityUser !== 'string' ? activityUser.email : ""}
                                 </Text>
                             </View>
-                            <View style={styles.flex}>
-                                <Image src={CALL_ICON} style={{ height: 11, width: 11, marginHorizontal: 7 }} />
+                            <View style={[styles.flex, { marginLeft: 14 }]}>
+                                <Image src={CALL_ICON} style={{ height: 11, width: 11, marginRight: 7 }} />
                                 <Text style={styles.secondaryText}>
                                     {typeof activityUser !== 'string' ? String(activityUser.phone) : ""}
                                 </Text>
                             </View>
                         </View>
                     </View>
-                    <Text style={styles.date}>
-                        {moment(activity.createdAt).format('DD MMMM, h:mm A')}
-                    </Text>
+
                 </View>
             })}
 

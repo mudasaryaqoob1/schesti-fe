@@ -26,7 +26,9 @@ export function ProjectAcitivityAndStatusTracking({ projectId }: Props) {
   const [activities, setActivities] = useState<IBidActivity[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const authUser = useSelector((state: RootState) => state.auth.user as { user?: IUserInterface });
-
+  const bid = useSelector(
+    (state: RootState) => state.bidManagementOwner.project
+  );
   useEffect(() => {
     getProjectActivities();
 
@@ -70,7 +72,9 @@ export function ProjectAcitivityAndStatusTracking({ projectId }: Props) {
         />
         <div className="flex items-center space-x-3">
           <div className="pt-2">
-            <ExportProjectActivityAndStatus activities={userActivities} />
+            <ExportProjectActivityAndStatus activities={userActivities}
+              projectName={bid?.projectName || ""}
+            />
           </div>
           <div className="w-96">
             <InputComponent
