@@ -72,9 +72,9 @@ export function ProjectAcitivityAndStatusTracking({ projectId }: Props) {
         />
         <div className="flex items-center space-x-3">
           <div className="pt-2">
-            <ExportProjectActivityAndStatus activities={userActivities}
+            {userActivities.length > 0 ? <ExportProjectActivityAndStatus activities={userActivities}
               projectName={bid?.projectName || ""}
-            />
+            /> : null}
           </div>
           <div className="w-96">
             <InputComponent

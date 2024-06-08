@@ -12,6 +12,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         marginTop: 8,
         borderBottomWidth: 1,
+        paddingBottom: 10,
         borderBottomColor: '#EAECF0',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -24,7 +25,7 @@ const styles = StyleSheet.create({
     companyName: {
         fontWeight: 'bold',
         color: '#344054',
-        fontSize: 14,
+        fontSize: 11,
         lineHeight: 1.25,
     },
     secondaryInfo: {
@@ -34,12 +35,12 @@ const styles = StyleSheet.create({
     },
     secondaryText: {
         color: '#667085',
-        fontSize: 14,
+        fontSize: 10,
         lineHeight: 1.25,
     },
     date: {
         color: '#667085',
-        fontSize: 14,
+        fontSize: 11,
         lineHeight: 1.25,
         fontWeight: 'normal',
     },
@@ -69,9 +70,9 @@ function ProjectActivityAndStatusPDF({ activities, projectName }: Props) {
             <PdfHeader brandingColor="#6F6AF8" />
             <Text
                 style={{
-                    fontSize: 20,
-                    color: "#344054",
-                    fontWeight: "semibold",
+                    fontSize: 12,
+                    color: "#667085",
+                    fontWeight: "normal",
                     marginTop: 8,
                     paddingLeft: 30
                 }}
@@ -81,7 +82,7 @@ function ProjectActivityAndStatusPDF({ activities, projectName }: Props) {
 
             <Text
                 style={{
-                    fontSize: 16,
+                    fontSize: 18,
                     color: "#344054",
                     fontWeight: "semibold",
                     marginVertical: 8,
@@ -112,19 +113,19 @@ function ProjectActivityAndStatusPDF({ activities, projectName }: Props) {
                         </View>
                         <View style={styles.secondaryInfo}>
                             <View style={styles.flex}>
-                                <Image src={NAVIGATION_ICON} style={{ height: 11, width: 11, marginRight: 7 }} />
+                                <Image src={NAVIGATION_ICON} style={{ height: 12, width: 12, marginRight: 7 }} />
                                 <Text style={styles.secondaryText}>
                                     {typeof activityUser !== 'string' ? activityUser.address : ""}
                                 </Text>
                             </View>
                             <View style={[styles.flex, { marginLeft: 14 }]}>
-                                <Image src={MAIL_ICON} style={{ height: 11, width: 11, marginRight: 7 }} />
+                                <Image src={MAIL_ICON} style={{ height: 12, width: 14, marginRight: 7 }} />
                                 <Text style={styles.secondaryText}>
                                     {typeof activityUser !== 'string' ? activityUser.email : ""}
                                 </Text>
                             </View>
                             <View style={[styles.flex, { marginLeft: 14 }]}>
-                                <Image src={CALL_ICON} style={{ height: 11, width: 11, marginRight: 7 }} />
+                                <Image src={CALL_ICON} style={{ height: 12, width: 12, marginRight: 7 }} />
                                 <Text style={styles.secondaryText}>
                                     {typeof activityUser !== 'string' ? String(activityUser.phone) : ""}
                                 </Text>
