@@ -22,7 +22,7 @@ export const createProjectActivity = async (projectId: string, status: IBidActiv
 export function formatProjectActivityStatus(status: IBidActivity['status']) {
     switch (status) {
         case 'clicked':
-            return 'Clicked';
+            return 'Viewed';
         case 'repost project':
             return 'Project Reposted';
         case 'favourite':
