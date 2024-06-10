@@ -12,7 +12,7 @@ import { ProjectDesignTeam } from '../components/ProjectDesignTeam';
 import { ProjectDocuments } from '../components/ProjectDocuments';
 import { ProjectRFICenter } from '../components/ProjectRFICenter';
 import { ProjectBiddingTeam } from '../components/ProjectBiddingTeam';
-import { useParams, } from 'next/navigation';
+import { useParams, useSearchParams, } from 'next/navigation';
 import { bidManagementService } from '@/app/services/bid-management.service';
 import { useQuery } from 'react-query';
 import moment from 'moment';
@@ -34,7 +34,9 @@ function OwnerProjectDetailsPage() {
   const router = useRouterHook();
   const [bidSubmittedDetails, setBidSubmittedDetails] = useState(null);
   const [isDetailsLoading, setIsDetailsLoading] = useState(false);
+  const searchParams = useSearchParams();
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   const [paginationSettings, setPaginationSettings] = useState<{
     page: number;
     limit: number;
@@ -42,11 +44,8 @@ function OwnerProjectDetailsPage() {
     page: 1,
     limit: 3
   });
-
-
-  console.log("params", params, setPaginationSettings);
-
   const [activeTab, setActiveTab] = useState(SUMMARY);
+
 
   const fetchProjectDetails = async () => {
     return bidManagementService.httpGetOwnerProjectById(projectId, paginationSettings);
@@ -59,6 +58,18 @@ function OwnerProjectDetailsPage() {
       getProjectProposalDetails(bid?._id);
     }
   }, [data?.data?.project]);
+
+  useEffect(() => {
+    // check if tab is present in the url
+    const tab = searchParams.get('tab');
+    // set the active tab based on the tab in the url
+    if (tab && tab === DOCUMENTS) {
+      // set the active tab to documents
+      setActiveTab(DOCUMENTS);
+    }
+
+  }, [searchParams])
+
 
   const getProjectProposalDetails = async (bidProjectId: any) => {
     setIsDetailsLoading(true);
