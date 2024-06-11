@@ -29,7 +29,7 @@ export function EventSiteWalkThroughForm({ formik }: Props) {
                     name='siteWalkthrough.location'
                     type='text'
                     field={{
-                        suffix: <Image src='/navigation-icon.svg' width={20} height={20} alt='location' />,
+                        suffix: <Image src='/navigation-black.svg' width={20} height={20} alt='location' />,
                         value: formik.values?.siteWalkthrough?.location,
                         onChange: e => formik.setFieldValue('siteWalkthrough.location', e.target.value),
                         onBlur: formik.handleBlur

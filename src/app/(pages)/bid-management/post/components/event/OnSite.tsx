@@ -24,7 +24,7 @@ export function EventOnSiteForm({ formik }: Props) {
                         name='preBiddingMeeting.location'
                         type='text'
                         field={{
-                            suffix: <Image src='/navigation-icon.svg' width={20} height={20} alt='location' />,
+                            suffix: <Image src='/navigation-black.svg' width={20} height={20} alt='location' />,
                             value: formik.values?.preBiddingMeeting?.location,
                             onChange: e => formik.setFieldValue('preBiddingMeeting.location', e.target.value),
                             onBlur: formik.handleBlur

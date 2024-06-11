@@ -299,7 +299,7 @@ export function PostFinalize({ formik, children }: Props) {
             components: {
               Switch: {
                 colorPrimary: "#007AB6",
-                colorPrimaryHover: "#E1E0FF"
+                colorPrimaryHover: "#E6F2F8"
               },
               Radio: {
                 colorPrimary: "#007AB6"
