@@ -215,7 +215,7 @@ export function PostFinalize({ formik, children }: Props) {
                   {values.projectType.map((pt) => (
                     <p
                       key={pt}
-                      className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
+                      className="px-[12px] rounded py-[7px] bg-[#E6F2F8] text-[#475467] text-[14px] leading-4"
                     >
                       {pt}
                     </p>
@@ -228,11 +228,11 @@ export function PostFinalize({ formik, children }: Props) {
                   className="text-[14px] leading-6 text-[#98A2B3] font-normal"
                 />
 
-                <div className="grid grid-cols-4 gap-3 justify-center items-center">
+                <div className="grid grid-cols-3 gap-3 justify-center items-center">
                   {values.projectBuildingUse.map((building) => (
                     <div
                       key={building}
-                      className="px-[12px] break-words rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
+                      className="px-[12px] break-words rounded py-[7px] bg-[#E6F2F8] text-[#475467] text-[14px] leading-4"
                     >
                       {building}
                     </div>
@@ -252,7 +252,7 @@ export function PostFinalize({ formik, children }: Props) {
                   {values.constructionTypes.map((ct) => (
                     <p
                       key={ct}
-                      className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
+                      className="px-[12px] rounded py-[7px] bg-[#E6F2F8] text-[#475467] text-[14px] leading-4"
                     >
                       {ct}
                     </p>
@@ -298,15 +298,15 @@ export function PostFinalize({ formik, children }: Props) {
           theme={{
             components: {
               Switch: {
-                colorPrimary: "#6F6AF8",
+                colorPrimary: "#007AB6",
                 colorPrimaryHover: "#E1E0FF"
               },
               Radio: {
-                colorPrimary: "#6F6AF8"
+                colorPrimary: "#007AB6"
               },
               Checkbox: {
-                colorPrimary: "#6F6AF8",
-                colorPrimaryHover: "#6F6AF8",
+                colorPrimary: "#007AB6",
+                colorPrimaryHover: "#007AB6",
               },
             }
           }}
@@ -403,7 +403,7 @@ export function PostFinalize({ formik, children }: Props) {
 
         <div className="flex items-center space-x-4 mt-5">
           <button
-            className={`justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border ${formik.values.platformType === 'Public' ? 'border-[#7138DF] bg-[#F2F4F7]' : 'border-[#E4E4E4] bg-white'} cursor-pointer disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 flex items-center space-x-2 rounded-lg   p-5`}
+            className={`justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border ${formik.values.platformType === 'Public' ? 'border-[#007AB6] bg-[#E6F2F8]' : 'border-[#E4E4E4] bg-white'} cursor-pointer disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 flex items-center space-x-2 rounded-lg   p-5`}
             onClick={() => {
               formik.setFieldValue('platformType', 'Public');
               formik.setFieldValue('isMatchingWithTrades', true);
@@ -419,7 +419,7 @@ export function PostFinalize({ formik, children }: Props) {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="text-[#8449EB]"
+              className="text-[#007AB6]"
             >
               <circle cx="12" cy="12" r="10"></circle>
               <line x1="2" y1="12" x2="22" y2="12"></line>
@@ -447,7 +447,7 @@ export function PostFinalize({ formik, children }: Props) {
           </button>
 
           <button
-            className={`justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border ${formik.values.platformType === 'Private' ? 'border-[#7138DF] bg-[#F2F4F7]' : 'border-[#E4E4E4] bg-white'}  cursor-pointer disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 flex items-center space-x-2 rounded-lg  p-5`}
+            className={`justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 border ${formik.values.platformType === 'Private' ? 'border-[#007AB6] bg-[#E6F2F8]' : 'border-[#E4E4E4] bg-white'}  cursor-pointer disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 flex items-center space-x-2 rounded-lg  p-5`}
             onClick={() => {
               formik.setFieldValue('platformType', 'Private');
 
@@ -634,7 +634,7 @@ export function PostFinalize({ formik, children }: Props) {
               </Dragger>
 
               <a
-                className="text-[#7F56D9] text-[14px] leading-5"
+                className="text-[#007AB6] text-[14px] leading-5"
                 // downloadable
                 href="/email-template.xlsx"
                 download="email-template.xlsx"
