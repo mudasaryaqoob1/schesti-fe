@@ -410,7 +410,7 @@ function ContractorSubmitBidPage() {
 
         <Description
           title="Submit Bid"
-          className="font-semibold text-lavenderPurple cursor-pointer underline"
+          className="font-semibold text-schestiPrimary cursor-pointer underline"
         />
       </div>
 
@@ -643,7 +643,7 @@ function ContractorSubmitBidPage() {
             className="flex w-fit items-center space-x-2 cursor-pointer "
             onClick={openProjectScope}
           >
-            <p className="text-[#7138DF] text-[18px] leading-8 font-medium underline underline-offset-2 ">
+            <p className="text-schestiPrimary text-[18px] leading-8 font-medium underline underline-offset-2 ">
               Add Project Scope
             </p>
             {showProjectScope ? <Image

@@ -42,7 +42,7 @@ export function ProjectIntro({ bid }: Props) {
               title={bid.description}
               className="text-[#475467] text-[14px] leading-6 font-normal"
             />
-            <p className="text-[#7F56D9] underline underline-offset-2 mt-4 text-[14px] leading-6 font-normal cursor-pointer"
+            <p className="text-schestiPrimary underline underline-offset-2 mt-4 text-[14px] leading-6 font-normal cursor-pointer"
               onClick={() => {
                 router.push(`/bid-management/details/${bid._id}`);
               }}
@@ -53,10 +53,10 @@ export function ProjectIntro({ bid }: Props) {
         </div>
         <div className="col-span-4">
           <div className="flex justify-end items-center space-x-3">
-            <div className="rounded-full bg-[#E9EBF8] py-[5px] px-[11px]">
+            <div className="rounded-full bg-schestiLightPrimary py-[5px] px-[11px]">
               <SenaryHeading
                 title={bid.stage}
-                className="text-[#7138DF] text-xs leading-4 font-semibold"
+                className="text-schestiPrimary text-xs leading-4 font-semibold"
               />
             </div>
           </div>
@@ -93,7 +93,7 @@ export function ProjectIntro({ bid }: Props) {
                 className="text-[#475467] text-base leading-6 font-semibold"
               />
 
-              <div className="bg-[#FCFAFF] mt-2 rounded-md  p-3 border border-[#EBEAEC]">
+              <div className="bg-schestiLightPrimary mt-2 rounded-md  p-3 border border-[#EBEAEC]">
                 <div className="flex items-center justify-between">
                   <div className="flex mt-1 space-x-2">
                     <Avatar
@@ -114,7 +114,7 @@ export function ProjectIntro({ bid }: Props) {
                   <div className="">
                     <SenaryHeading
                       title="Representative"
-                      className="text-[#7F56D9] underline underline-offset-2 text-[14px] leading-6 font-normal"
+                      className="text-schestiPrimary underline underline-offset-2 text-[14px] leading-6 font-normal"
                     />
                     <SenaryHeading
                       title={bid.user.name}
