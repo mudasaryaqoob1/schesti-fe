@@ -173,7 +173,7 @@ function BidManagementSubContractorPage() {
 
         <Description
           title="Find a project"
-          className="font-semibold text-lavenderPurple cursor-pointer underline"
+          className="font-semibold text-schestiPrimary cursor-pointer underline"
         />
       </div>
 
