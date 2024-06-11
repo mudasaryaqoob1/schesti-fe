@@ -112,7 +112,7 @@ export function ProjectAcitivityAndStatusTracking({ projectId }: Props) {
 
               <div className="flex items-center space-x-4">
                 <Image
-                  src={'/navigation-icon.svg'}
+                  src={'/navigation-cyan.svg'}
                   height={20}
                   width={20}
                   alt="navigation icon"
@@ -123,7 +123,7 @@ export function ProjectAcitivityAndStatusTracking({ projectId }: Props) {
                 />
 
                 <Image
-                  src={'/mail-icon.svg'}
+                  src={'/mail-cyan.svg'}
                   height={20}
                   width={20}
                   alt="mail icon"
@@ -134,7 +134,7 @@ export function ProjectAcitivityAndStatusTracking({ projectId }: Props) {
                 />
 
                 <Image
-                  src={'/call-icon.svg'}
+                  src={'/call-cyan.svg'}
                   height={20}
                   width={20}
                   alt="mail icon"

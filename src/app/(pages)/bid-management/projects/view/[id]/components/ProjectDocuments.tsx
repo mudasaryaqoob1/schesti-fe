@@ -161,7 +161,7 @@ export function ProjectDocuments({ id }: Props) {
         {bid
           ? bid.projectFiles.map((file, i) => (
             <div key={i} className="border rounded">
-              <div className="bg-[#F4EBFF] flex items-center justify-between px-2 py-1 ">
+              <div className="bg-schestiLightPrimary flex items-center justify-between px-2 py-1 ">
                 <div className="flex items-center space-x-3">
                   <Image
                     src={'/file-05.svg'}

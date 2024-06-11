@@ -8,7 +8,7 @@ type Props = {
 }
 export function Popups({ onClose, title, children }: Props) {
     return <div className="w-[500px] cursor-default space-y-3 bg-white border pb-3 rounded-lg">
-        <div className="bg-[#F9F5FF] py-5 px-6  flex justify-between items-center">
+        <div className="bg-schestiLightPrimary py-5 px-6  flex justify-between items-center">
             <SenaryHeading
                 title={title}
                 className="text-[#344054] text-[18px] leading-7 font-bold"
