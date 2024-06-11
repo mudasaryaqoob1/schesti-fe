@@ -136,7 +136,7 @@ export function ProjectUploadFiles({ formik, children, setShouldContinue }: Prop
             {formik.values.projectFiles.map((file, index) => {
               return (
                 <div key={file.url} className="border rounded">
-                  <div className="bg-[#F4EBFF] flex items-center justify-between px-2 py-1 ">
+                  <div className="bg-[#E6F2F8] flex items-center justify-between px-2 py-1 ">
                     <div className="flex items-center space-x-3">
                       <Image
                         src={'/file-05.svg'}
