@@ -64,20 +64,29 @@ function Page() {
       title: 'Project',
       width: 300,
       render(value, record) {
+        const isNewProject = moment(record.createdAt).isSame(moment(), 'day');
+        console.log('isNewProject', isNewProject);
         return (
           <div className="flex items-center justify-between">
             <div className="text-[#181D25] text-base font-semibold leading-6">
               {record.projectName}
             </div>
-            {record.platformType && record.platformType === 'Private' ?
-              <Image
-                src={'/lock-icon.svg'}
-                alt='lock icon'
-                width={15}
-                height={15}
-                loading='lazy'
-              />
-              : null}
+            <div className=' flex space-x-3 items-center'>
+              {isNewProject ? <div className='w-fit h-[22px] py-0.5 px-2 rounded-full bg-[#36B37E] text-center font-medium text-sm leading-4 text-white'>
+                New
+              </div> : null}
+
+              {record.platformType && record.platformType === 'Private' ?
+                <Image
+                  src={'/lock-icon.svg'}
+                  alt='lock icon'
+                  width={15}
+                  height={15}
+                  loading='lazy'
+                />
+                : null}
+
+            </div>
           </div>
         );
       },
