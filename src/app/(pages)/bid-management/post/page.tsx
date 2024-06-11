@@ -464,8 +464,8 @@ function CreatePost() {
                 Steps: {
                   dotSize: 18,
                   dotCurrentSize: 18,
-                  colorPrimary: '#6941C6',
-                  colorText: '#6941C6',
+                  colorPrimary: '#007AB6',
+                  colorText: '#007AB6',
                   fontWeightStrong: 600,
                   fontSize: 16,
                   lineHeight: 16,

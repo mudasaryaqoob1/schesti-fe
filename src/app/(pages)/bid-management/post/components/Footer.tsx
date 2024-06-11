@@ -33,7 +33,7 @@ export function PostProjectFooter({ cancelButton, submitButton, info }: Props) {
             <div className="space-y-1">
               <TertiaryHeading
                 title={info.title}
-                className="text-[14px] leading-[14px] !text-[#6941C6] !font-normal"
+                className="text-[14px] leading-[14px] !text-[#007AB6] !font-normal"
               />
               <TertiaryHeading
                 title={info.description}
