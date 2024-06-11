@@ -105,7 +105,17 @@ function OwnerProjectDetailsPage() {
           height={16}
         />
         <Description
-          title="Posted Project"
+          title="Bid Management"
+          className="font-base text-slateGray"
+        />
+        <Image
+          src={'/chevron-right.svg'}
+          alt="chevron-right icon"
+          width={16}
+          height={16}
+        />
+        <Description
+          title="Find Project"
           className="font-base text-slateGray"
         />
         <Image
@@ -116,8 +126,8 @@ function OwnerProjectDetailsPage() {
         />
 
         <Description
-          title="Overview"
-          className="font-semibold text-lavenderPurple cursor-pointer underline"
+          title="Project Details"
+          className="font-semibold text-schestiPrimary cursor-pointer underline"
         />
       </div>
 
@@ -175,7 +185,7 @@ function OwnerProjectDetailsPage() {
                 label: (
                   <QuaternaryHeading
                     title={tab}
-                    className={`!w-full ${activeTab === tab ? 'text-RoyalPurple' : 'text-black'
+                    className={`!w-full ${activeTab === tab ? 'text-schestiPrimary' : 'text-black'
                       }`}
                   />
                 ),

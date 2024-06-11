@@ -63,7 +63,7 @@ export function ProjectDocuments(props: IProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-5 gap-4 mt-5">
         {projectData.projectFiles?.map((file, i) => (
           <div key={i} className="border rounded">
-            <div className="bg-[#F4EBFF] flex items-center justify-between px-2 py-1 ">
+            <div className="bg-schestiLightPrimary flex items-center justify-between px-2 py-1 ">
               <div className="flex items-center space-x-3">
                 <Image src={'/file-05.svg'} width={16} height={16} alt="file" />
                 <p className="text-[#667085] text-[14px] leading-6">

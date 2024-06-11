@@ -429,7 +429,7 @@ function CreatePost() {
 
         <Description
           title="Post Project"
-          className="font-semibold text-lavenderPurple cursor-pointer underline"
+          className="font-semibold text-schestiPrimary cursor-pointer underline"
         />
       </div>
       {showCongratulation ? (

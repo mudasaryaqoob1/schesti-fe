@@ -156,7 +156,7 @@ export function ProjectSummary(props: IProps) {
                   {projectData.projectType?.map((pt) => (
                     <p
                       key={pt}
-                      className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
+                      className="px-[12px] rounded py-[7px] bg-schestiLightPrimary text-[#475467] text-[14px] leading-4"
                     >
                       {pt}
                     </p>
@@ -169,11 +169,11 @@ export function ProjectSummary(props: IProps) {
                   className="text-[14px] leading-6 text-[#98A2B3] font-normal"
                 />
 
-                <div className="flex items-center space-x-3">
+                <div className="justify-center grid gap-3 grid-cols-3 items-center">
                   {projectData.projectBuildingUse.map((building) => (
                     <p
                       key={building}
-                      className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
+                      className="px-[12px] rounded py-[7px] bg-schestiLightPrimary text-[#475467] text-[14px] leading-4"
                     >
                       {building}
                     </p>
@@ -193,7 +193,7 @@ export function ProjectSummary(props: IProps) {
                   {projectData.constructionTypes.map((ct) => (
                     <p
                       key={ct}
-                      className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
+                      className="px-[12px] rounded py-[7px] bg-schestiLightPrimary text-[#475467] text-[14px] leading-4"
                     >
                       {ct}
                     </p>
