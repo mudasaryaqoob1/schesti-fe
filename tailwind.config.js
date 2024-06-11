@@ -70,6 +70,12 @@ export default {
         lightenGreyish: '#949494',
         wedgeWood: '#5A7184',
         vividRed: '#EC2224',
+
+        // Schesti Color Palette
+        schestiPrimary: "#007AB6",
+        schestiLightPrimary: "#E6F2F8",
+        schestiSuccess: "#36B37E",
+        schestiLightSuccess: "#ECFDF3",
       },
       boxShadow: {
         // Soft Glow for Primary Element
