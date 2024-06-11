@@ -112,6 +112,14 @@ function Page() {
       key: 'stage',
       dataIndex: 'stage',
       title: 'Stage',
+      render(value) {
+        if (!value) {
+          return null
+        }
+        return <div className='w-fit py-[7px] px-3 rounded-md bg-schestiLightPrimary text-schestiPrimary font-normal text-base leading-4'>
+          {value}
+        </div>
+      },
     },
     {
       key: 'projectValue',
@@ -140,8 +148,8 @@ function Page() {
           return (
             <Tag
               className="rounded-full"
-              color="#F8F9FC"
-              style={{ color: '#363F72' }}
+              color="#F0F9FF"
+              style={{ color: '#007AB6' }}
             >
               Draft
             </Tag>
@@ -150,8 +158,8 @@ function Page() {
         return (
           <Tag
             className="rounded-full"
-            color="#ECF2FF"
-            style={{ color: '#026AA2' }}
+            color="#F2F4F7"
+            style={{ color: '#344054' }}
           >
             Archived
           </Tag>
