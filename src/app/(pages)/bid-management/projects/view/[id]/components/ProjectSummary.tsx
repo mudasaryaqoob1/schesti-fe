@@ -179,7 +179,7 @@ export function ProjectSummary() {
                     ? bid.projectType.map((pt) => (
                       <p
                         key={pt}
-                        className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
+                        className="px-[12px] rounded py-[7px] bg-schestiLightPrimary text-[#475467] text-[14px] leading-4"
                       >
                         {pt}
                       </p>
@@ -193,12 +193,12 @@ export function ProjectSummary() {
                   className="text-[14px] leading-6 text-[#98A2B3] font-normal"
                 />
 
-                <div className="flex items-center space-x-3">
+                <div className="grid justify-center grid-cols-3 gap-3 items-center space-x-3">
                   {bid
                     ? bid.projectBuildingUse.map((building) => (
                       <p
                         key={building}
-                        className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
+                        className="px-[12px] rounded py-[7px] bg-schestiLightPrimary text-[#475467] text-[14px] leading-4"
                       >
                         {building}
                       </p>
@@ -220,7 +220,7 @@ export function ProjectSummary() {
                     ? bid.constructionTypes.map((ct) => (
                       <p
                         key={ct}
-                        className="px-[12px] rounded py-[7px] bg-[#F2F4F7] text-[#475467] text-[14px] leading-4"
+                        className="px-[12px] rounded py-[7px] bg-schestiLightPrimary text-[#475467] text-[14px] leading-4"
                       >
                         {ct}
                       </p>
@@ -268,7 +268,7 @@ export function ProjectSummary() {
               </div>
               <div className='flex items-center mt-2 gap-4'>
                 {filterTradesByParent(parent.value, projectTrades).map(trade => {
-                  return <p key={trade._id} className='py-2 text-center px-[13px] bg-[#F2F4F7] rounded-full text-[#667085] text-[14px] leading-[14px] font-normal'>
+                  return <p key={trade._id} className='py-2 text-center px-[13px] bg-schestiLightPrimary rounded-full text-[#667085] text-[14px] leading-[14px] font-normal'>
                     {trade.name}
                   </p>
                 })}

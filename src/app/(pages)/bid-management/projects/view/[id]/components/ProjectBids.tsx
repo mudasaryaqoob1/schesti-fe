@@ -146,7 +146,7 @@ export function ProjectBids({ projectId }: Props) {
               const bidUser = bid.user;
 
               return <div key={bid._id}
-                className={`mt-3 h-fit rounded-lg ${selectedBid?._id === bid._id ? '!bg-[#e5def0]' : '!bg-[#FCFAFF]'} bg-white shadow-lg hover:bg-[#e5def0] border border-[#E8E3EF] p-4 cursor-pointer`}
+                className={`mt-3 h-fit rounded-lg ${selectedBid?._id === bid._id ? '!bg-[#F2F4F7]' : '!bg-white'} bg-white shadow-lg hover:bg-[#e5def0] border border-[#E8E3EF] p-4 cursor-pointer`}
                 onClick={() => {
                   if (selectedBid && selectedBid._id === bid._id) {
                     setSelectedBid(null)
@@ -173,7 +173,7 @@ export function ProjectBids({ projectId }: Props) {
                       title="Trade:"
                       className="font-normal text-[#667085] text-xs leading-6"
                     />
-                    <p className="bg-[#E9EBF8] py-[5px] px-[11px] text-xs leading-4 text-[#7138DF] rounded-full">
+                    <p className="bg-schestiLightPrimary py-[5px] px-[11px] text-xs leading-4 text-schestiPrimary rounded-full">
                       {typeof bidUser !== 'string' ? bidUser.industry : ""}
                     </p>
                   </div>
@@ -350,7 +350,7 @@ export function ProjectBids({ projectId }: Props) {
             </div>
 
             {selectedBid.file?.url ? <div className="px-4 space-y-2 mt-3">
-              <a href={selectedBid.file.url} target='_blank' download={selectedBid.file.url} className='rounded-[8px] flex justify-center border border-solid border-lavenderPurple bg-lavenderPurple text-white leading-6 font-semibold py-3 px-5  cursor-pointer shadow-scenarySubdued h-auto text-sm w-full'
+              <a href={selectedBid.file.url} target='_blank' download={selectedBid.file.url} className='rounded-[8px] flex justify-center border border-solid border-schestiPrimary bg-schestiPrimary text-white leading-6 font-semibold py-3 px-5  cursor-pointer shadow-scenarySubdued h-auto text-sm w-full'
               >
                 Download File
               </a>
