@@ -26,7 +26,6 @@ const Payment = () => {
 
   const token = useSelector(selectToken);
 
-  console.log(token, 'tokentokentoken');
 
   useLayoutEffect(() => {
     if (token) {
