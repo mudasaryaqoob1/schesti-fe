@@ -1,4 +1,6 @@
+import { useHover } from "ahooks";
 import Image from "next/image";
+import { useRef } from "react";
 
 type IconName = "bid" | "crm" | "estimate" | "financial" | "home" | "meeting" | "networking" | "quantity" | "schedule" | "setting" | "social";
 
@@ -87,8 +89,14 @@ function HoverItem({
     },
     isActive?: boolean,
 }) {
+
+    const ref = useRef<HTMLDivElement>(null);
+    const isHover = useHover(ref);
+
+    const ChevronIconSrc = isHover ? "/chevron-right-cyan.svg" : "/chevron-right-white.svg";
+
     if (isActive) {
-        return <div className="flex items-center justify-between py-2 px-4 bg-white rounded-md">
+        return <div className="flex cursor-pointer items-center justify-between  py-[14px] px-4 bg-white rounded-md">
             <div className="flex items-center space-x-2">
                 <Image
                     src={hoveredIcon.src}
@@ -101,7 +109,7 @@ function HoverItem({
             </div>
             {nestedItems && nestedItems.length ?
                 <Image
-                    src={"/chevron-right-cyan.svg"}
+                    src={ChevronIconSrc}
                     alt={"right"}
                     width={24}
                     height={24}
@@ -109,8 +117,17 @@ function HoverItem({
         </div>
     }
 
-    return <div className="flex items-center justify-between py-[14px] px-4">
-        <div className="flex items-center space-x-2">
+    return <div ref={ref} className={`flex items-center cursor-pointer justify-between  py-[14px] px-4 ${isHover ? "bg-white rounded-md" : ""}`}>
+        {isHover ? <div className="flex items-center space-x-2">
+            <Image
+                src={hoveredIcon.src}
+                alt={"Nav Item"}
+                width={hoveredIcon.width}
+                height={hoveredIcon.height}
+            />
+
+            <p className={"text-[14px] font-medium text-schestiPrimary leading-5"}>{title}</p>
+        </div> : <div className="flex items-center space-x-2">
             <Image
                 src={unhoveredIcon.src}
                 alt={"Nav Item"}
@@ -119,10 +136,10 @@ function HoverItem({
             />
 
             <p className={"text-[14px] font-medium text-white leading-5"}>{title}</p>
-        </div>
+        </div>}
         {nestedItems && nestedItems.length ?
             <Image
-                src={"/chevron-right-white.svg"}
+                src={ChevronIconSrc}
                 alt={"right"}
                 width={24}
                 height={24}
