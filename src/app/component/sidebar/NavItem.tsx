@@ -114,7 +114,7 @@ function HoverItem({
         }
 
 
-    }} ref={ref} className={`py-[14px] cursor-pointer relative px-4 ${(isHover || isActive) ? "bg-white rounded-md" : ""}`}>
+    }} ref={ref} className={`py-[14px] cursor-pointer mx-2 relative px-4 ${(isHover || isActive) ? "bg-white rounded-md" : ""}`}>
         {options ? <Dropdown
             menu={{
                 items: options?.map((option, index) => {

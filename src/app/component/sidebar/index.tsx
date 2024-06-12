@@ -16,7 +16,7 @@ const ICON_HEIGHT = 20;
 
 export const AppSidebar = forwardRef<HTMLDivElement, Props>((props, ref) => {
     const { isHovering } = props;
-    return <div ref={ref} className={`fixed h-full bg-schestiPrimary ${isHovering ? HOVERED_WIDTH : UNHOVERED_WIDTH}`}>
+    return <div ref={ref} className={`fixed h-full bg-schestiPrimary transition-all duration-300 ease-in-out ${isHovering ? HOVERED_WIDTH : UNHOVERED_WIDTH}`}>
 
         {/* Logo */}
         <div className="flex justify-center mt-4">

@@ -42,7 +42,7 @@ const CustomNavbar = ({ children }: Props) => {
         ref={ref}
         isHovering={isHovering}
       />
-      <div className={`flex-1 ${isHovering ? HOVERED_MARGIN_LEFT : UNHOVERED_MARGIN_LEFT}`}>
+      <div className={`flex-1 transition-all duration-300 ease-in-out ${isHovering ? HOVERED_MARGIN_LEFT : UNHOVERED_MARGIN_LEFT}`}>
         {!unProtectedRoutes.includes(pathname.split('/')[1]) && (
           <>
             <Navbar />
