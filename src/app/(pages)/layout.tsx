@@ -2,13 +2,17 @@
 
 import React, { useRef } from 'react';
 import Navbar from '../component/navbar/minnavbar';
-import Tabs from '../component/tabs';
+// import Tabs from '../component/tabs';
 import { usePathname } from 'next/navigation';
 import { AppSidebar } from '../component/sidebar';
 import { useHover } from 'ahooks';
 type Props = {
   children: React.ReactNode;
 };
+
+const HOVERED_MARGIN_LEFT = "ml-[240px]";
+const UNHOVERED_MARGIN_LEFT = "ml-[80px]";
+
 const CustomNavbar = ({ children }: Props) => {
   const pathname = usePathname();
 
@@ -38,11 +42,11 @@ const CustomNavbar = ({ children }: Props) => {
         ref={ref}
         isHovering={isHovering}
       />
-      <div className='flex-1 ml-[80px]'>
+      <div className={`flex-1 ${isHovering ? HOVERED_MARGIN_LEFT : UNHOVERED_MARGIN_LEFT}`}>
         {!unProtectedRoutes.includes(pathname.split('/')[1]) && (
           <>
             <Navbar />
-            <Tabs />
+            {/* <Tabs /> */}
           </>
         )}
         {children}
