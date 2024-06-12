@@ -2,6 +2,7 @@ import Image from "next/image";
 import { forwardRef } from "react";
 import { NavItem } from "./NavItem";
 import { Divider } from "antd";
+import { planFeatureOptions } from "@/app/utils/plans.utils";
 
 type Props = {
     isHovering: boolean;
@@ -30,131 +31,44 @@ export const AppSidebar = forwardRef<HTMLDivElement, Props>((props, ref) => {
 
         <div className="mt-6 flex flex-col space-y-3">
             <NavItem
-                isParentHovered={isHovering}
-                title="Dashboard"
-                href="/dashboard"
                 icon={{
-                    name: "home",
                     height: ICON_HEIGHT,
-                    width: ICON_WIDTH
+                    width: ICON_WIDTH,
+                    name: "home"
                 }}
-                isActive
+                iconName=""
+                isParentHovered={isHovering}
+                label="Dashboard"
+                value="/dashboard"
             />
 
-            <NavItem
-                isParentHovered={isHovering}
-                title="Bid Management"
-                href="/bid-management"
-                icon={{
-                    name: "bid",
-                    height: ICON_HEIGHT,
-                    width: ICON_WIDTH
-                }}
-                nestedItems={[
-                    { title: "Find Project", href: "" },
-                    { title: "Bidding Projects", href: "" },
-                    { title: "Posted Projects", href: "" },
-                    { title: "Post a project", href: "" },
-                ]}
-            />
+            {planFeatureOptions.map(feature => {
 
-            <NavItem
-                isParentHovered={isHovering}
-                title="CRM"
-                href="/bid-management"
-                icon={{
-                    name: "crm",
-                    height: ICON_HEIGHT,
-                    width: ICON_WIDTH
-                }}
-            />
-
-            <NavItem
-                isParentHovered={isHovering}
-                title="Quantity Takeoff"
-                href="/bid-management"
-                icon={{
-                    name: "quantity",
-                    height: ICON_HEIGHT,
-                    width: ICON_WIDTH
-                }}
-            />
-
-            <NavItem
-                isParentHovered={isHovering}
-                title="Estimate"
-                href="/bid-management"
-                icon={{
-                    name: "estimate",
-                    height: ICON_HEIGHT,
-                    width: ICON_WIDTH
-                }}
-            />
-
-            <NavItem
-                isParentHovered={isHovering}
-                title="Schedule"
-                href="/bid-management"
-                icon={{
-                    name: "schedule",
-                    height: ICON_HEIGHT,
-                    width: ICON_WIDTH
-                }}
-            />
-
-            <NavItem
-                isParentHovered={isHovering}
-                title="Finance"
-                href="/bid-management"
-                icon={{
-                    name: "financial",
-                    height: ICON_HEIGHT,
-                    width: ICON_WIDTH
-                }}
-            />
-            <NavItem
-                isParentHovered={isHovering}
-                title="Meeting"
-                href="/bid-management"
-                icon={{
-                    name: "meeting",
-                    height: ICON_HEIGHT,
-                    width: ICON_WIDTH
-                }}
-            />
-            <NavItem
-                isParentHovered={isHovering}
-                title="Networking"
-                href="/bid-management"
-                icon={{
-                    name: "networking",
-                    height: ICON_HEIGHT,
-                    width: ICON_WIDTH
-                }}
-            />
-
-            <NavItem
-                isParentHovered={isHovering}
-                title="Social Media"
-                href="/bid-management"
-                icon={{
-                    name: "social",
-                    height: ICON_HEIGHT,
-                    width: ICON_WIDTH
-                }}
-            />
+                return <NavItem
+                    key={feature.title}
+                    isParentHovered={isHovering}
+                    isActive={false}
+                    icon={{
+                        name: feature.iconName as any,
+                        height: ICON_HEIGHT,
+                        width: ICON_WIDTH
+                    }}
+                    {...feature}
+                />
+            })}
 
 
             <Divider className="border-white" />
             <NavItem
                 isParentHovered={isHovering}
-                title="Settings"
-                href="/bid-management"
+                label="Settings"
+                value="/settings/general"
                 icon={{
                     name: "setting",
                     height: ICON_HEIGHT,
                     width: ICON_WIDTH
                 }}
+                iconName=""
             />
         </div>
 

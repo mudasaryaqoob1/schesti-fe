@@ -60,6 +60,7 @@ export const Plans: { [key: string]: string } = {
 export const planFeatureOptions = [
   {
     label: 'Bid Management',
+    iconName: "bid",
 
     title: 'Bid Management',
     options: [
@@ -90,6 +91,7 @@ export const planFeatureOptions = [
 
   {
     title: 'CRM',
+    iconName: "crm",
     label: 'CRM',
     options: [
       { label: 'Clients', value: Routes.CRM.Clients },
@@ -100,6 +102,7 @@ export const planFeatureOptions = [
 
   {
     title: 'Quantity Takeoff',
+    iconName: "quantity",
     label: 'Quantity Takeoff',
     options: [
       { label: 'Manual', value: Routes['Quantity-Takeoff'].Manual },
@@ -109,6 +112,7 @@ export const planFeatureOptions = [
 
   {
     title: 'Estimates',
+    iconName: "estimate",
     label: 'Estimates',
     options: [
       {
@@ -121,6 +125,7 @@ export const planFeatureOptions = [
 
   {
     title: 'Financial',
+    iconName: "financial",
     label: 'Financial',
     options: [
       {
@@ -134,20 +139,25 @@ export const planFeatureOptions = [
 
   {
     label: 'Schedule',
+    iconName: "schedule",
     value: Routes.Schedule,
   },
 
   {
     label: 'Meetings',
+    iconName: "meeting",
     value: Routes.Meetings,
   },
 
   {
     label: 'Networking',
+    iconName: "networking",
     value: Routes.Networking,
   },
 ];
 
+
+export type IPlanFeature = typeof planFeatureOptions[number];
 
 
 export function getPlanFeatureKeyByValue(
