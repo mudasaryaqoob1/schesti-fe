@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 export const Routes = {
   'Bid Management': {
     Owner: '/bid-management/owner',
@@ -46,7 +48,7 @@ export const OtherRoutes = {
 };
 
 
-export const Plans: { [key: string]: string } = {
+export const Plans = {
   'Bid Management': "/bid-management",
   "CRM": '/crm',
   "Quantity-Takeoff": '/takeoff',
@@ -55,7 +57,7 @@ export const Plans: { [key: string]: string } = {
   "Schedule": "/schedule",
   "Meetings": "/meeting",
   "Networking": "/networking",
-};
+} as const;
 
 export const planFeatureOptions = [
   {
@@ -164,10 +166,6 @@ export function getPlanFeatureKeyByValue(
   value: string,
   options = Plans
 ) {
-  for (const key in options) {
-    if (options[key] === value) {
-      return key;
-    }
-  }
-  return '';
+  const key = _.findKey(options, (val) => val === value);
+  return key ? key : '';
 }
