@@ -95,9 +95,6 @@ function HoverItem({
     const isHover = useHover(ref);
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouterHook();
-    // const userPlan = useSelector(
-    //   (state: RootState) => state.pricingPlan.userPlan
-    // );
 
     const ChevronIconSrc = (isHover || isActive) ? "/chevron-right-cyan.svg" : "/chevron-right-white.svg";
     const IconSrc = (isHover || isActive) ? hoveredIcon.src : unhoveredIcon.src;
@@ -189,7 +186,7 @@ function UnHoverItem({ isActive, unhoveredIcon, hoveredIcon }: {
         height: number,
     },
 }) {
-    return <div className={`flex justify-center rounded-md py-2 px-4 ${isActive ? "bg-white" : ""}`}>
+    return <div className={`flex justify-center rounded-md mx-2 py-2 px-4 ${isActive ? "bg-white" : ""}`}>
         <div>
             {isActive ? <Image
                 alt="Nav Item"

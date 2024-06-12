@@ -3,7 +3,7 @@ import { forwardRef } from "react";
 import { NavItem } from "./NavItem";
 import { Divider } from "antd";
 import { planFeatureOptions } from "@/app/utils/plans.utils";
-
+import { usePathname } from "next/navigation";
 type Props = {
     isHovering: boolean;
 }
@@ -16,6 +16,8 @@ const ICON_HEIGHT = 20;
 
 export const AppSidebar = forwardRef<HTMLDivElement, Props>((props, ref) => {
     const { isHovering } = props;
+    const pathname = usePathname();
+
     return <div ref={ref} className={`fixed h-full bg-schestiPrimary transition-all duration-300 ease-in-out ${isHovering ? HOVERED_WIDTH : UNHOVERED_WIDTH}`}>
 
         {/* Logo */}
@@ -40,6 +42,7 @@ export const AppSidebar = forwardRef<HTMLDivElement, Props>((props, ref) => {
                 isParentHovered={isHovering}
                 label="Dashboard"
                 value="/dashboard"
+                isActive={pathname.includes("dashboard")}
             />
 
             {planFeatureOptions.map(feature => {
@@ -47,7 +50,11 @@ export const AppSidebar = forwardRef<HTMLDivElement, Props>((props, ref) => {
                 return <NavItem
                     key={feature.title}
                     isParentHovered={isHovering}
-                    isActive={false}
+                    isActive={
+                        feature.value ? pathname.includes(feature.value) : Boolean(feature.options?.find((option) =>
+                            option.children?.find(child => child.value.includes(pathname)) || option.value.includes(pathname)
+                        ))
+                    }
                     icon={{
                         name: feature.iconName as any,
                         height: ICON_HEIGHT,
@@ -69,6 +76,7 @@ export const AppSidebar = forwardRef<HTMLDivElement, Props>((props, ref) => {
                     width: ICON_WIDTH
                 }}
                 iconName=""
+                isActive={pathname.includes("settings")}
             />
         </div>
 
