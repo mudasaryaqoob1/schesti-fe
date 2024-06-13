@@ -1,11 +1,10 @@
 'use client';
 
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import Navbar from '../component/navbar/minnavbar';
 // import Tabs from '../component/tabs';
 import { usePathname } from 'next/navigation';
 import { AppSidebar } from '../component/sidebar';
-import { useHover } from 'ahooks';
 type Props = {
   children: React.ReactNode;
 };
@@ -15,10 +14,11 @@ const UNHOVERED_MARGIN_LEFT = "ml-[80px]";
 
 const CustomNavbar = ({ children }: Props) => {
   const pathname = usePathname();
+  const [collapsed, setCollapsed] = useState(false);
 
-  const ref = useRef<HTMLDivElement>(null);
-  const isHovering = useHover(ref);
-
+  const toggleCollapsed = () => {
+    setCollapsed(!collapsed);
+  };
 
   const unProtectedRoutes = [
     'checkmail',
@@ -36,19 +36,22 @@ const CustomNavbar = ({ children }: Props) => {
     'trades',
     'verification'
   ];
+
+  const isUnProtectedRoute = unProtectedRoutes.includes(pathname.split('/')[1]);
+
   return (
-    <div className='flex h-screen'>
-      <AppSidebar
-        ref={ref}
-        isHovering={isHovering}
-      />
-      <div className={`flex-1 transition-all duration-300 ease-in-out ${isHovering ? HOVERED_MARGIN_LEFT : UNHOVERED_MARGIN_LEFT}`}>
-        {!unProtectedRoutes.includes(pathname.split('/')[1]) && (
-          <>
-            <Navbar />
-            {/* <Tabs /> */}
-          </>
-        )}
+    <div className='flex h-screen relative'>
+      {!isUnProtectedRoute && (
+        <>
+          <AppSidebar
+            isOpened={collapsed}
+            toggleCollapsed={toggleCollapsed}
+          />
+          {/* <Tabs /> */}
+        </>
+      )}
+      <div className={`flex-1 transition-all duration-300 ease-in-out ${isUnProtectedRoute ? "ml-0" : collapsed ? HOVERED_MARGIN_LEFT : UNHOVERED_MARGIN_LEFT}`}>
+        {!isUnProtectedRoute ? <Navbar /> : null}
         {children}
       </div>
     </div>

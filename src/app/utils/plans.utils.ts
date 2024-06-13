@@ -1,4 +1,12 @@
 import _ from "lodash";
+import { BidIcon } from "../svgs/component-icons/BidIcon";
+import { CRMIcon } from "../svgs/component-icons/CrmIcon";
+import { QuantityIcon } from "../svgs/component-icons/QuantityIcon";
+import { EstimateIcon } from "../svgs/component-icons/EstimateIcon";
+import { FinancialIcon } from "../svgs/component-icons/FinancialIcon";
+import { ScheduleIcon } from "../svgs/component-icons/ScheduleIcon";
+import { MeetingIcon } from "../svgs/component-icons/MeetingIcon";
+import { NetworkingIcon } from "../svgs/component-icons/NetworkIcon";
 
 export const Routes = {
   'Bid Management': {
@@ -62,7 +70,7 @@ export const Plans = {
 export const planFeatureOptions = [
   {
     label: 'Bid Management',
-    iconName: "bid",
+    Icon: BidIcon,
 
     title: 'Bid Management',
     options: [
@@ -93,7 +101,7 @@ export const planFeatureOptions = [
 
   {
     title: 'CRM',
-    iconName: "crm",
+    Icon: CRMIcon,
     label: 'CRM',
     options: [
       { label: 'Clients', value: Routes.CRM.Clients },
@@ -104,7 +112,7 @@ export const planFeatureOptions = [
 
   {
     title: 'Quantity Takeoff',
-    iconName: "quantity",
+    Icon: QuantityIcon,
     label: 'Quantity Takeoff',
     options: [
       { label: 'Manual', value: Routes['Quantity-Takeoff'].Manual },
@@ -114,7 +122,7 @@ export const planFeatureOptions = [
 
   {
     title: 'Estimates',
-    iconName: "estimate",
+    Icon: EstimateIcon,
     label: 'Estimates',
     options: [
       {
@@ -127,7 +135,7 @@ export const planFeatureOptions = [
 
   {
     title: 'Financial',
-    iconName: "financial",
+    Icon: FinancialIcon,
     label: 'Financial',
     options: [
       {
@@ -141,19 +149,19 @@ export const planFeatureOptions = [
 
   {
     label: 'Schedule',
-    iconName: "schedule",
+    Icon: ScheduleIcon,
     value: Routes.Schedule,
   },
 
   {
     label: 'Meetings',
-    iconName: "meeting",
+    Icon: MeetingIcon,
     value: Routes.Meetings,
   },
 
   {
     label: 'Networking',
-    iconName: "networking",
+    Icon: NetworkingIcon,
     value: Routes.Networking,
   },
 ];
