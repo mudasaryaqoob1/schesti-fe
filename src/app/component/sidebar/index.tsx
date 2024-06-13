@@ -2,7 +2,6 @@ import Image from "next/image";
 import { ConfigProvider, Menu, type MenuProps, } from "antd";
 
 import { planFeatureOptions } from "@/app/utils/plans.utils";
-import { usePathname } from "next/navigation";
 import { HomeOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { SettingIcon } from "@/app/svgs/component-icons/SettingIcon";
 import { useRouterHook } from "@/app/hooks/useRouterHook";
@@ -20,7 +19,7 @@ const UNHOVERED_WIDTH = "w-[80px]";
 
 export const AppSidebar = (props: Props) => {
     const { isOpened, toggleCollapsed } = props;
-    const pathname = usePathname();
+
     const router = useRouterHook();
 
     const menuItems: MenuProps['items'] = [
@@ -39,10 +38,16 @@ export const AppSidebar = (props: Props) => {
                     label: feature.label,
                     key: feature.label,
                     icon: <feature.Icon />,
+
                     children: feature.options?.map(option => {
                         return {
                             label: option.label,
                             key: option.value,
+                            onClick() {
+                                if (option.value) {
+                                    router.push(option.value);
+                                }
+                            },
                             children: "children" in option ? option.children?.map(item => {
                                 return {
                                     key: item.value,
