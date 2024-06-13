@@ -5,6 +5,9 @@ import { planFeatureOptions } from "@/app/utils/plans.utils";
 import { HomeOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { SettingIcon } from "@/app/svgs/component-icons/SettingIcon";
 import { useRouterHook } from "@/app/hooks/useRouterHook";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { resetPostProjectAction } from "@/redux/post-project/post-project.slice";
 
 type Props = {
     isOpened: boolean;
@@ -19,9 +22,14 @@ const UNHOVERED_WIDTH = "w-[80px]";
 
 export const AppSidebar = (props: Props) => {
     const { isOpened, toggleCollapsed } = props;
+    const dispatch = useDispatch<AppDispatch>();
 
     const router = useRouterHook();
-
+    function resetPostProjectState(canCall: boolean) {
+        if (canCall) {
+            dispatch(resetPostProjectAction());
+        }
+    }
     const menuItems: MenuProps['items'] = [
 
         {
@@ -47,6 +55,7 @@ export const AppSidebar = (props: Props) => {
                                 if (option.value) {
                                     router.push(option.value);
                                 }
+                                resetPostProjectState(Boolean(option.isAction))
                             },
                             children: "children" in option ? option.children?.map(item => {
                                 return {
