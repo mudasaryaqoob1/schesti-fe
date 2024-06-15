@@ -32,7 +32,7 @@ function OwnerProjectDetailsPage() {
   const params: any = useParams();
   const { projectId } = params;
   const router = useRouterHook();
-  const [bidSubmittedDetails, setBidSubmittedDetails] = useState(null);
+  const [bidSubmittedDetails, setBidSubmittedDetails] = useState<Array<any> | null>(null);
   const [isDetailsLoading, setIsDetailsLoading] = useState(false);
   const searchParams = useSearchParams();
 
@@ -146,7 +146,7 @@ function OwnerProjectDetailsPage() {
           </div>
 
           <Spin spinning={isDetailsLoading} indicator={<LoadingOutlined spin />}>
-            {!isDetailsLoading && !bidSubmittedDetails ? <div className="flex items-center space-x-3 flex-1 justify-end">
+            {bidSubmittedDetails && !bidSubmittedDetails.length ? <div className="flex items-center space-x-3 flex-1 justify-end">
               <CustomButton text="Submit a bid" className="!w-40"
                 onClick={() => {
                   router.push(`${Routes['Bid Management'].Submit}/${projectId}`)
