@@ -1,10 +1,10 @@
 import React from 'react';
-import { dataInterface } from '../captureComponent';
+// import { dataInterface } from '../captureComponent';
 import Image from 'next/image';
 // import Image from 'next/image';
 
 interface Props {
-  entity: dataInterface[];
+  entity: any[];
 }
 
 const ReportCard: React.FC<Props> = ({ entity }) => {
