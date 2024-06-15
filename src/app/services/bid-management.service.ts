@@ -53,7 +53,10 @@ class BidManagementService extends HttpService {
     }>
   > => this.get(`${this.prefix}/invited-projects?page=${params.page}&limit=${params.limit}`);
 
-  httpDeclineProjectInvitation = (projectId: string): Promise<IResponseInterface<{}>> => this.put(`${this.prefix}/decline-project-invitation`, {
+  httpDeclineProjectInvitation = (projectId: string): Promise<IResponseInterface<{
+    project: IBidManagement,
+    userSavedBid: ISaveUserBid
+  }>> => this.put(`${this.prefix}/decline-project-invitation`, {
     projectId
   });
 

@@ -37,6 +37,10 @@ type Props = {
   bidClickHandler?: any;
   onBidRemove?: () => void;
   isInvitation?: boolean;
+  onSuccessfullyDecline?: (_data: {
+    project: IBidManagement,
+    savedUserBid: ISaveUserBid
+  }) => void;
 };
 type RemoveUserBidProps = {
   biddingId: string;
@@ -52,6 +56,7 @@ export function BidDetails({
   selectedProjectSavedBid,
   setSelectedProjectSavedBid,
   onBidRemove,
+  onSuccessfullyDecline,
   isInvitation = false
 }: Props) {
   const router = useRouterHook();
@@ -146,7 +151,12 @@ export function BidDetails({
     setIsDeclining(true);
     try {
       const response = await bidManagementService.httpDeclineProjectInvitation(projectId);
-      console.log("Declining", response);
+      if (response.data) {
+        toast.success('Invitation declined successfully');
+        if (onSuccessfullyDecline) {
+          onSuccessfullyDecline({ project: bid, savedUserBid: selectedProjectSavedBid });
+        }
+      }
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
       const msg = err.response?.data.message;

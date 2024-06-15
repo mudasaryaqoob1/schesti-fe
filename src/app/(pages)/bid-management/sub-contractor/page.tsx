@@ -323,6 +323,10 @@ function BidManagementSubContractorPage() {
                   }
                 }}
                 isInvitation={authUser && authUser.user && selectedBid.invitedMembers.includes(authUser.user.email)}
+                onSuccessfullyDecline={() => {
+                  invitedUserProjectsQuery.refetch();
+                  setSelectedBid(null);
+                }}
               />
             </div>
           ) : null}
