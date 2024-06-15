@@ -18,6 +18,8 @@ import _, { size } from 'lodash';
 import { isArrayString } from '@/app/utils/typescript.utils';
 import { IUserInterface } from '@/app/interfaces/user.interface';
 import { createProjectActivity } from '../utils';
+import { RootState } from '@/redux/store';
+import { useSelector } from 'react-redux';
 
 // const PDFDownloadLink = dynamic(
 //   () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
@@ -32,6 +34,7 @@ import { createProjectActivity } from '../utils';
 const ITEMS_PER_PAGE = 5;
 
 function ContractorScreen() {
+  const authUser = useSelector((state: RootState) => state.auth.user as { user?: IUserInterface });
 
   const [selectedBid, setSelectedBid] = useState<(IBidManagement & { userDetails: IUserInterface[] }) | null>(null);
   const [search, setSearch] = useState('');
@@ -319,6 +322,8 @@ function ContractorScreen() {
                     setSelectedBid(null);
                   }
                 }}
+
+                isInvitation={authUser && authUser.user && selectedBid.invitedMembers.includes(authUser.user.email)}
               />
             </div>
           ) : null}

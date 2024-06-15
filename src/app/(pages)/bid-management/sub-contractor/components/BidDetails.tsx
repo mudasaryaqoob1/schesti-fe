@@ -36,6 +36,7 @@ type Props = {
   setSelectedProjectSavedBid?: any;
   bidClickHandler?: any;
   onBidRemove?: () => void;
+  isInvitation?: boolean;
 };
 type RemoveUserBidProps = {
   biddingId: string;
@@ -50,7 +51,8 @@ export function BidDetails({
   bidClickHandler,
   selectedProjectSavedBid,
   setSelectedProjectSavedBid,
-  onBidRemove
+  onBidRemove,
+  isInvitation = false
 }: Props) {
   const router = useRouterHook();
 
@@ -406,6 +408,11 @@ export function BidDetails({
           onSuccess={() => { }}
           projectId={bid._id}
         />
+
+        {isInvitation ? <CustomButton
+          text='Decline'
+          className='!bg-white !border-[#F32051] text-[#F32051]'
+        /> : null}
       </div>
     </div>
   );
