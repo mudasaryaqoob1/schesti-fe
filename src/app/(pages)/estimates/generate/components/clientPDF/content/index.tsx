@@ -74,7 +74,7 @@ export function PageContent({ estimateDetail, subcostRecord, pdfData }: any) {
         {/* END Table */}
 
         {/*  Approval */}
-        <PdfApproval />
+        <PdfApproval companyName={estimateDetail?.estimateRequestIdDetail?.companyName} />
         {/* END Approval */}
       </View>
     </View>
