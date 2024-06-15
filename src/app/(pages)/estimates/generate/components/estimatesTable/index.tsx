@@ -101,7 +101,7 @@ const confirmColumns: any = [
     align: 'center',
     width: 120,
     render: (value: number) => {
-      return `$${value}`;
+      return `${value}`;
     },
   },
   {

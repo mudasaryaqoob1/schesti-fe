@@ -815,7 +815,7 @@ const Scope = ({ setPrevNext }: Props) => {
         let quantity = parseFloat(record.qty);
         let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
         let result = quantityWithWastage * unitLabourHour;
-        return `$${formatNumberWithCommas(result)}`;
+        return `${formatNumberWithCommas(result)}`;
       },
     },
     {
@@ -824,7 +824,7 @@ const Scope = ({ setPrevNext }: Props) => {
       align: 'center',
       width: 120,
       render: (value: number) => {
-        return `$${value}`;
+        return `${value}`;
       },
     },
     {

@@ -30,11 +30,11 @@ const styles = StyleSheet.create({
   },
 });
 
-export function PdfApproval() {
+export function PdfApproval({companyName} : {companyName : string}) {
   return (
     <View>
       <Signature title="Client Approval" />
-      <Signature title="Company (company name should be automatic) Approval" />
+      <Signature title={`${companyName} Approval` } />
     </View>
   );
 }
