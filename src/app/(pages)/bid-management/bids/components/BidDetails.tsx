@@ -152,7 +152,7 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
 
         <Link
           href={`/bid-management/details/${bid.projectId?._id}`}
-          className="text-[#7F56D9] hover:text-[#7F56D9] underline underline-offset-2 mt-4 text-[14px] leading-6 font-normal cursor-pointer"
+          className="text-schestiPrimary hover:text-schestiPrimary underline underline-offset-2 mt-4 text-[14px] leading-6 font-normal cursor-pointer"
         >
           View full details
         </Link>

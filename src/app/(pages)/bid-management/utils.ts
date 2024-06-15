@@ -1,6 +1,11 @@
 import { IBidActivity } from "@/app/interfaces/bid-management/bid-management.interface";
 import { bidManagementService } from "@/app/services/bid-management.service";
+import { AxiosError } from "axios";
 import _ from "lodash";
+
+
+type OnSuccess = (_data: any) => void;
+type OnError = (_error: string) => void;
 
 export const Bid_How_Long_Price_Increase = [
     { label: 'Less than 1 month', value: 1 },
@@ -19,10 +24,28 @@ export const createProjectActivity = async (projectId: string, status: IBidActiv
 }
 
 
+export async function addProjectToFavourite(projectId: string, OnSuccess: OnSuccess, OnError: OnError) {
+    try {
+        const { data } = await bidManagementService.httpSaveUserProjectBid(
+            {
+                projectId
+            }
+        );
+        await createProjectActivity(projectId, 'clicked');
+        if (data) {
+            OnSuccess(data);
+        }
+    } catch (err) {
+        const errMessage = (err as AxiosError<{ message: string }>).response?.data.message;
+        OnError(errMessage ? errMessage : 'Error while add project to favourite.');
+        console.error('Error fetching project saved bids:', err);
+    }
+}
+
 export function formatProjectActivityStatus(status: IBidActivity['status']) {
     switch (status) {
         case 'clicked':
-            return 'Clicked';
+            return 'Viewed';
         case 'repost project':
             return 'Project Reposted';
         case 'favourite':

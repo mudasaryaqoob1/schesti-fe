@@ -204,10 +204,10 @@ export function BidDetails({
           className="text-[#475467] text-sm leading-4 font-normal"
         />
         <div className="flex items-center space-x-2">
-          <div className="rounded-full bg-[#E9EBF8] py-[5px] px-[11px]">
+          <div className="rounded-full bg-schestiLightPrimary py-[5px] px-[11px]">
             <SenaryHeading
               title={bid.stage}
-              className="text-[#7138DF] font-normal text-xs leading-4"
+              className="text-schestiPrimary font-normal text-xs leading-4"
             />
           </div>
           <WhatsappShareButton
@@ -260,7 +260,7 @@ export function BidDetails({
         />
         <div
           onClick={() => handleProposalDetails(bid?._id)}
-          className="text-[#7F56D9] underline underline-offset-2 text-[14px] leading-6 font-normal cursor-pointer"
+          className="text-schestiPrimary underline underline-offset-2 text-[14px] leading-6 font-normal cursor-pointer"
         >
           View full details
         </div>
@@ -307,7 +307,7 @@ export function BidDetails({
           className="text-[#475467] text-base leading-6 font-semibold"
         />
         {typeof bid.user !== 'string' ? (
-          <div className="bg-[#FCFAFF] mt-3 rounded-md  p-3 border border-[#EBEAEC]">
+          <div className="bg-schestiLightPrimary mt-3 rounded-md  p-3 border border-[#EBEAEC]">
             <div className="flex justify-between">
               <div className="flex mt-1 space-x-2">
                 <Avatar
@@ -326,7 +326,7 @@ export function BidDetails({
               <div className="">
                 <SenaryHeading
                   title={bid.user.userRole}
-                  className="text-[#7F56D9] underline underline-offset-2 text-[14px] leading-6 font-normal"
+                  className="text-schestiPrimary underline underline-offset-2 text-[14px] leading-6 font-normal"
                 />
                 <SenaryHeading
                   title={bid.user.name}
@@ -362,7 +362,7 @@ export function BidDetails({
             <SenaryHeading
               onClick={() => downloadAllFiles(bid.projectFiles)}
               title="Download all files"
-              className="text-[#7138DF] text-xs leading-4 font-semibold underline underline-offset-2"
+              className="text-schestiPrimary text-xs leading-4 font-semibold underline underline-offset-2"
             />
           </>
         )}
@@ -387,7 +387,7 @@ export function BidDetails({
               }, 500);
             }}
             text="Add to my Bidding Projects"
-            className="!bg-white !text-[#7138DF]"
+            className="!bg-white !text-schestiPrimary"
           />
         ) : (
           <CustomButton

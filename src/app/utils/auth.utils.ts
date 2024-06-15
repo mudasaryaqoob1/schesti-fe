@@ -1,7 +1,8 @@
 import { USER_ROLES_ENUM } from '@/app/constants/constant';
-import { IUserInterface } from '../interfaces/user.interface';
+import { IUserInterface, IUserPermissionPagePath } from '../interfaces/user.interface';
 import _ from 'lodash';
 import { userRoles } from '../enums/role.enums';
+import { Plans } from './plans.utils';
 
 const ContractorPages = {
     CompanyDetails: "/companydetails", // will have a user id,
@@ -93,3 +94,9 @@ export function CheckOtherRoles(authUserRole: string[]) {
     const roles = Object.values(userRoles)
     return _.intersection(authUserRole, roles).length > 0;
 }
+
+export function convertUserPermissionPagePathToLabel(pagePath: IUserPermissionPagePath) {
+    const key = _.findKey(Plans, (value) => value === pagePath);
+    return key;
+}
+

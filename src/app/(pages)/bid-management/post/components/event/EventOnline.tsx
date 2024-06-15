@@ -17,27 +17,27 @@ export function EventOnlineForm({ formik }: Props) {
 
         return <div className='space-y-2 mt-3'>
             {typeof formik.values.preBiddingMeeting?.meeting === 'string' ? <div
-                className="w-[190px] flex items-center py-2 px-[14px] rounded-lg cursor-pointer border border-[#F9F5FF] bg-[#F9F5FF]">
+                className="w-[190px] flex items-center py-2 px-[14px] rounded-lg cursor-pointer border border-schestiLightPrimary bg-schestiLightPrimary">
                 <Image
-                    src={'/calendar-purple.svg'}
+                    src={'/calender-cyan.svg'}
                     alt="calendar"
                     width={15}
                     height={16}
                 />
-                <span className="text-[#7138DF] text-[14px] leading-5 font-semibold  ml-2">{"Meeting is scheduled"}</span>
+                <span className="text-schestiPrimary text-[14px] leading-5 font-semibold  ml-2">{"Meeting is scheduled"}</span>
             </div> : formik.values.preBiddingMeeting?.meeting ? <MeetingCard
                 item={formik.values.preBiddingMeeting.meeting}
                 shouldShowJoin={false}
             /> : <><div
                 onClick={() => setShowModal(true)}
-                className="w-[190px] flex items-center py-2 px-[14px] rounded-lg cursor-pointer border border-[#F9F5FF] bg-[#F9F5FF]">
+                className="w-[190px] flex items-center py-2 px-[14px] rounded-lg cursor-pointer border border-schestiLightPrimary bg-schestiLightPrimary">
                 <Image
-                    src={'/calendar-purple.svg'}
+                    src={'/calender-cyan.svg'}
                     alt="calendar"
                     width={15}
                     height={16}
                 />
-                <span className="text-[#7138DF] text-[14px] leading-5 font-semibold  ml-2">{"Schedule a meeting"}</span>
+                <span className="text-schestiPrimary text-[14px] leading-5 font-semibold  ml-2">{"Schedule a meeting"}</span>
             </div>
                 {/* @ts-ignore */}
                 {formik.errors.preBiddingMeeting?.meeting ? <div className="text-red-500 text-xs">*{formik.errors.preBiddingMeeting?.meeting}</div> : null}

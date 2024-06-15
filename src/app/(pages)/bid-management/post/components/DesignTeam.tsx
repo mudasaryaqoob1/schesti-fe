@@ -305,6 +305,9 @@ export function PostDesignTeam({ formik, children }: Props) {
             onClick={onClose}
           />
         }
+        headerStyle={{
+          backgroundColor: "#E6F2F8"
+        }}
       >
         <div className="space-y-3">
           <InputComponent

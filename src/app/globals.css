@@ -139,7 +139,7 @@ a {
   table
   thead.ant-table-thead
   .ant-table-cell {
-  background-color: #f9f5ff !important;
+  background-color: #F2F4F7 !important;
 }
 
 .ant-carousel .slick-dots li button {
@@ -250,4 +250,15 @@ a {
 .custom-pagination .ant-pagination-item-link {
   text-align: center;
   padding: 0px 10px 0px 10px !important;
+}
+
+
+.ant-menu-submenu.ant-menu-submenu-vertical.ant-menu-submenu-open{
+  background-color: white;
+  color: #007AB6;
+}
+
+.ant-menu-submenu.ant-menu-submenu-vertical.ant-menu-submenu-open .ant-menu-submenu-title{
+  color: #007AB6;
+  background-color: white;
 }

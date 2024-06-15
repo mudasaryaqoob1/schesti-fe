@@ -97,7 +97,7 @@ export function BiddingProjectDetails({
           <div className="rounded-full bg-[#E9EBF8] py-[5px] px-[11px]">
             <SenaryHeading
               title={bid?.projectId.stage}
-              className="text-[#7138DF] font-normal text-xs leading-4"
+              className="text-schestiPrimary font-normal text-xs leading-4"
             />
           </div>
         </div>
@@ -115,7 +115,7 @@ export function BiddingProjectDetails({
         />
         <Link
           href={`/bid-management/details/${bid.projectId?._id}`}
-          className="text-[#7F56D9] underline underline-offset-2 mt-4 text-[14px] leading-6 font-normal cursor-pointer"
+          className="text-schestiPrimary underline underline-offset-2 mt-4 text-[14px] leading-6 font-normal cursor-pointer"
         >
           View full details
         </Link>
@@ -171,7 +171,7 @@ export function BiddingProjectDetails({
             <SenaryHeading
               onClick={() => downloadAllFiles(bid?.projectId?.projectFiles)}
               title="Download all files"
-              className="text-[#7138DF] text-xs leading-4 font-semibold underline underline-offset-2"
+              className="text-schestiPrimary text-xs leading-4 font-semibold underline underline-offset-2"
             />
           </>
         )}
@@ -190,7 +190,7 @@ export function BiddingProjectDetails({
             router.push(`/bid-management/submit/${bid.projectId?._id}`)
           }
           text="Send Bid"
-          className="!bg-[#7F56D9] !text-[#ffffff] !border-[#EAECF0] !text-base !leading-7 "
+          className="!bg-schestiPrimary !text-[#ffffff] !border-[#EAECF0] !text-base !leading-7 "
         />
       </div>
       {
@@ -200,7 +200,7 @@ export function BiddingProjectDetails({
               text="Post this project as a bidder"
               onClick={handlePostProjectAsBidder}
               disabled={isLoading}
-              className={'!bg-[#F9F5FF] !text-[#7138DF]'}
+              className={'!bg-[#F9F5FF] !text-schestiPrimary'}
             />
           </div>
         )

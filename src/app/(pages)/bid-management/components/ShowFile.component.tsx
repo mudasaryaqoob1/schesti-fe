@@ -8,7 +8,7 @@ type Props = {
 }
 export function ShowFileComponent({ file, onDelete, shouldFit = true }: Props) {
     return <div className={`border my-2 rounded ${shouldFit ? "w-fit" : ""}`}>
-        <div className="bg-[#F4EBFF] flex items-center justify-between px-2 py-1 ">
+        <div className="bg-schestiLightPrimary flex items-center justify-between px-2 py-1 ">
             <div className="flex items-center space-x-3">
                 <Image
                     src={'/file-05.svg'}

@@ -1,3 +1,13 @@
+import _ from "lodash";
+import { BidIcon } from "../svgs/component-icons/BidIcon";
+import { CRMIcon } from "../svgs/component-icons/CrmIcon";
+import { QuantityIcon } from "../svgs/component-icons/QuantityIcon";
+import { EstimateIcon } from "../svgs/component-icons/EstimateIcon";
+import { FinancialIcon } from "../svgs/component-icons/FinancialIcon";
+import { ScheduleIcon } from "../svgs/component-icons/ScheduleIcon";
+import { MeetingIcon } from "../svgs/component-icons/MeetingIcon";
+import { NetworkingIcon } from "../svgs/component-icons/NetworkIcon";
+
 export const Routes = {
   'Bid Management': {
     Owner: '/bid-management/owner',
@@ -46,7 +56,7 @@ export const OtherRoutes = {
 };
 
 
-export const Plans: { [key: string]: string } = {
+export const Plans = {
   'Bid Management': "/bid-management",
   "CRM": '/crm',
   "Quantity-Takeoff": '/takeoff',
@@ -55,11 +65,12 @@ export const Plans: { [key: string]: string } = {
   "Schedule": "/schedule",
   "Meetings": "/meeting",
   "Networking": "/networking",
-};
+} as const;
 
 export const planFeatureOptions = [
   {
     label: 'Bid Management',
+    Icon: BidIcon,
 
     title: 'Bid Management',
     options: [
@@ -90,6 +101,7 @@ export const planFeatureOptions = [
 
   {
     title: 'CRM',
+    Icon: CRMIcon,
     label: 'CRM',
     options: [
       { label: 'Clients', value: Routes.CRM.Clients },
@@ -100,6 +112,7 @@ export const planFeatureOptions = [
 
   {
     title: 'Quantity Takeoff',
+    Icon: QuantityIcon,
     label: 'Quantity Takeoff',
     options: [
       { label: 'Manual', value: Routes['Quantity-Takeoff'].Manual },
@@ -109,6 +122,7 @@ export const planFeatureOptions = [
 
   {
     title: 'Estimates',
+    Icon: EstimateIcon,
     label: 'Estimates',
     options: [
       {
@@ -121,6 +135,7 @@ export const planFeatureOptions = [
 
   {
     title: 'Financial',
+    Icon: FinancialIcon,
     label: 'Financial',
     options: [
       {
@@ -134,30 +149,31 @@ export const planFeatureOptions = [
 
   {
     label: 'Schedule',
+    Icon: ScheduleIcon,
     value: Routes.Schedule,
   },
 
   {
     label: 'Meetings',
+    Icon: MeetingIcon,
     value: Routes.Meetings,
   },
 
   {
     label: 'Networking',
+    Icon: NetworkingIcon,
     value: Routes.Networking,
   },
 ];
 
+
+export type IPlanFeature = typeof planFeatureOptions[number];
 
 
 export function getPlanFeatureKeyByValue(
   value: string,
   options = Plans
 ) {
-  for (const key in options) {
-    if (options[key] === value) {
-      return key;
-    }
-  }
-  return '';
+  const key = _.findKey(options, (val) => val === value);
+  return key ? key : '';
 }

@@ -26,7 +26,9 @@ export function ProjectAcitivityAndStatusTracking({ projectId }: Props) {
   const [activities, setActivities] = useState<IBidActivity[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const authUser = useSelector((state: RootState) => state.auth.user as { user?: IUserInterface });
-
+  const bid = useSelector(
+    (state: RootState) => state.bidManagementOwner.project
+  );
   useEffect(() => {
     getProjectActivities();
 
@@ -70,7 +72,9 @@ export function ProjectAcitivityAndStatusTracking({ projectId }: Props) {
         />
         <div className="flex items-center space-x-3">
           <div className="pt-2">
-            <ExportProjectActivityAndStatus activities={userActivities} />
+            {userActivities.length > 0 ? <ExportProjectActivityAndStatus activities={userActivities}
+              projectName={bid?.projectName || ""}
+            /> : null}
           </div>
           <div className="w-96">
             <InputComponent
@@ -108,7 +112,7 @@ export function ProjectAcitivityAndStatusTracking({ projectId }: Props) {
 
               <div className="flex items-center space-x-4">
                 <Image
-                  src={'/navigation-icon.svg'}
+                  src={'/navigation-cyan.svg'}
                   height={20}
                   width={20}
                   alt="navigation icon"
@@ -119,7 +123,7 @@ export function ProjectAcitivityAndStatusTracking({ projectId }: Props) {
                 />
 
                 <Image
-                  src={'/mail-icon.svg'}
+                  src={'/mail-cyan.svg'}
                   height={20}
                   width={20}
                   alt="mail icon"
@@ -130,7 +134,7 @@ export function ProjectAcitivityAndStatusTracking({ projectId }: Props) {
                 />
 
                 <Image
-                  src={'/call-icon.svg'}
+                  src={'/call-cyan.svg'}
                   height={20}
                   width={20}
                   alt="mail icon"

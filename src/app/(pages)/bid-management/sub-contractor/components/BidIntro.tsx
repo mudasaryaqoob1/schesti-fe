@@ -13,7 +13,7 @@ type Props = {
 export function BidIntro({ bid, onClick, isSelected }: Props) {
   return (
     <div
-      className={`mt-3 rounded-lg ${isSelected ? 'bg-[#e5def0]' : 'bg-[#FCFAFF]'}  border border-[#E8E3EF] p-4 cursor-pointer`}
+      className={`mt-3 rounded-lg ${isSelected ? 'bg-[#e0e3e6]' : 'bg-[#F2F4F7]'}  border border-[#E8E3EF] p-4 cursor-pointer`}
       onClick={onClick}
     >
       <div className="flex items-center space-x-3">
@@ -70,12 +70,12 @@ export function BidIntro({ bid, onClick, isSelected }: Props) {
             />
           </div>
 
-          <div className="rounded-full bg-[#E9EBF8] py-[5px] px-[11px]">
+          {bid.stage ? <div className="rounded-full bg-schestiLightPrimary py-[5px] px-[11px]">
             <SenaryHeading
               title={bid.stage}
-              className="text-[#7138DF] font-normal text-xs leading-4"
+              className="text-schestiPrimary font-normal text-xs leading-4"
             />
-          </div>
+          </div> : null}
         </div>
         <Image
           src={'/forward-arrow.svg'}

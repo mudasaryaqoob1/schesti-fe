@@ -429,7 +429,7 @@ function CreatePost() {
 
         <Description
           title="Post Project"
-          className="font-semibold text-lavenderPurple cursor-pointer underline"
+          className="font-semibold text-schestiPrimary cursor-pointer underline"
         />
       </div>
       {showCongratulation ? (
@@ -464,8 +464,8 @@ function CreatePost() {
                 Steps: {
                   dotSize: 18,
                   dotCurrentSize: 18,
-                  colorPrimary: '#6941C6',
-                  colorText: '#6941C6',
+                  colorPrimary: '#007AB6',
+                  colorText: '#007AB6',
                   fontWeightStrong: 600,
                   fontSize: 16,
                   lineHeight: 16,

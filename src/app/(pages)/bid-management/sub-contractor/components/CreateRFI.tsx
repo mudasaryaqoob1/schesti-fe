@@ -107,7 +107,7 @@ export function CreateRFI({ onSuccess, projectId, isProjectOwner, isProjectDetai
       ) : (
         <CustomButton
           text="Send an RFI"
-          className={`${isProjectDetailsPage ? '' : '!bg-[#F9F5FF] !text-[#7138DF]'}`}
+          className={`${isProjectDetailsPage ? '' : '!bg-schestiLightPrimary !text-schestiPrimary'}`}
         />
       )}
       <ModalComponent

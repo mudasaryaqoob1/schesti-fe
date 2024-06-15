@@ -44,7 +44,7 @@ function SubContractorBidsPage() {
 
         <Description
           title="Bidding Projects"
-          className="font-semibold text-lavenderPurple cursor-pointer underline"
+          className="font-semibold text-schestiPrimary cursor-pointer underline"
         />
       </div>
 
@@ -53,7 +53,7 @@ function SubContractorBidsPage() {
           theme={{
             components: {
               Tabs: {
-                inkBarColor: '#8449EB',
+                inkBarColor: '#007AB6',
               },
             },
           }}
@@ -69,7 +69,7 @@ function SubContractorBidsPage() {
               label: (
                 <QuaternaryHeading
                   title={tab}
-                  className={`${activeTab === tab ? 'text-RoyalPurple' : 'text-black'
+                  className={`${activeTab === tab ? 'text-schestiPrimary' : 'text-black'
                     }`}
                 />
               ),

@@ -11,12 +11,11 @@
 module.exports = {
   reactStrictMode: false,
   webpack: (config) => {
+    // Add rule for SVG files
     config.module.rules.push({
       test: /\.svg$/,
-      use: ['@svgr/webpack'],
+      use: ['@svgr/webpack', 'url-loader'],
     });
-
-    config.externals.push({ canvas: 'commonjs canvas' });
 
     return config;
   },
