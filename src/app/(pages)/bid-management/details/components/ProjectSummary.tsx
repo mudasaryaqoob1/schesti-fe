@@ -15,7 +15,7 @@ export function ProjectSummary(props: IProps) {
   const { projectData } = props;
 
   return (
-    <div className=" mt-6 mb-4 md:ms-[69px] md:me-[59px] mx-4  p-5 bg-white rounded-lg border shadow-lg">
+    <div className=" mt-6 mb-4 mx-4  p-5 bg-white rounded-lg border shadow-lg">
       <div>
         <TertiaryHeading
           title="Overview"

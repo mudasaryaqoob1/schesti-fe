@@ -22,7 +22,7 @@ function SubContractorBidsPage() {
   const [search, setSearch] = useState('');
 
   return (
-    <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 ">
+    <section className="mt-6 mb-[39px] mx-4 ">
       <div className="flex gap-4 items-center">
         <Image src={'/home.svg'} alt="home icon" width={20} height={20} />
         <Image
