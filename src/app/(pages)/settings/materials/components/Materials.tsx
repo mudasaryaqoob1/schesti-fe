@@ -81,6 +81,7 @@ const Materials = () => {
 
     if (statusCode === 200) {
       setSelectedRowId('');
+      fetchMaterialsData()
       updateMaterialData(data);
     }
   };
