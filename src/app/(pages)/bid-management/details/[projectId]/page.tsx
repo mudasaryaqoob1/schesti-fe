@@ -32,7 +32,7 @@ function OwnerProjectDetailsPage() {
   const params: any = useParams();
   const { projectId } = params;
   const router = useRouterHook();
-  const [bidSubmittedDetails, setBidSubmittedDetails] = useState(null);
+  const [bidSubmittedDetails, setBidSubmittedDetails] = useState<Array<any> | null>(null);
   const [isDetailsLoading, setIsDetailsLoading] = useState(false);
   const searchParams = useSearchParams();
 
@@ -96,7 +96,7 @@ function OwnerProjectDetailsPage() {
 
   return (
     <section className="">
-      <div className="flex gap-4 items-center mt-6 mb-4 md:ms-[69px] md:me-[59px] mx-4 ">
+      <div className="flex gap-4 items-center mt-6 mb-4 mx-4 ">
         <Image src={'/home.svg'} alt="home icon" width={20} height={20} />
         <Image
           src={'/chevron-right.svg'}
@@ -146,7 +146,7 @@ function OwnerProjectDetailsPage() {
           </div>
 
           <Spin spinning={isDetailsLoading} indicator={<LoadingOutlined spin />}>
-            {!isDetailsLoading && !bidSubmittedDetails ? <div className="flex items-center space-x-3 flex-1 justify-end">
+            {bidSubmittedDetails && !bidSubmittedDetails.length ? <div className="flex items-center space-x-3 flex-1 justify-end">
               <CustomButton text="Submit a bid" className="!w-40"
                 onClick={() => {
                   router.push(`${Routes['Bid Management'].Submit}/${projectId}`)

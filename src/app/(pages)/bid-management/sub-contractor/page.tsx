@@ -16,8 +16,10 @@ import { Pagination, Skeleton } from 'antd';
 import { BidFilters } from './components/Filters';
 import _, { size } from 'lodash';
 import { isArrayString } from '@/app/utils/typescript.utils';
-import { IUserInterface } from '@/app/interfaces/user.interface';
+import type { IUserInterface } from '@/app/interfaces/user.interface';
 import { createProjectActivity } from '../utils';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 // const PDFDownloadLink = dynamic(
 //   () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
@@ -32,7 +34,7 @@ import { createProjectActivity } from '../utils';
 const ITEMS_PER_PAGE = 5;
 
 function BidManagementSubContractorPage() {
-
+  const authUser = useSelector((state: RootState) => state.auth.user as { user?: IUserInterface });
   const [selectedBid, setSelectedBid] = useState<(IBidManagement & { userDetails: IUserInterface[] }) | null>(null);
   const [search, setSearch] = useState('');
   const [showFilters, setShowFilters] = useState(false);
@@ -151,7 +153,7 @@ function BidManagementSubContractorPage() {
 
 
   return (
-    <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 ">
+    <section className="mt-6 mb-[39px] mx-4">
       <div className="flex gap-4 items-center">
         <Image src={'/home.svg'} alt="home icon" width={20} height={20} />
         <Image
@@ -319,6 +321,11 @@ function BidManagementSubContractorPage() {
                   if (selectedBid) {
                     setSelectedBid(null);
                   }
+                }}
+                isInvitation={authUser && authUser.user && selectedBid.invitedMembers.includes(authUser.user.email)}
+                onSuccessfullyDecline={() => {
+                  invitedUserProjectsQuery.refetch();
+                  setSelectedBid(null);
                 }}
               />
             </div>

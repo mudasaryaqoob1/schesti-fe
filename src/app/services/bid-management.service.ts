@@ -53,6 +53,13 @@ class BidManagementService extends HttpService {
     }>
   > => this.get(`${this.prefix}/invited-projects?page=${params.page}&limit=${params.limit}`);
 
+  httpDeclineProjectInvitation = (projectId: string): Promise<IResponseInterface<{
+    project: IBidManagement,
+    userSavedBid: ISaveUserBid
+  }>> => this.put(`${this.prefix}/decline-project-invitation`, {
+    projectId
+  });
+
   httpUpdateBidPostProject = (
     projectId: string,
     data: Partial<IBidManagement>
@@ -90,8 +97,8 @@ class BidManagementService extends HttpService {
 
   httpGetOwnerProjects = (params: any): Promise<
     IResponseInterface<{
-      paginationInfo: any; records: IBidManagement[] 
-}>
+      paginationInfo: any; records: IBidManagement[]
+    }>
   > => this.get(`${this.prefix}/get-all?projectValue=${params.projectValue}&trades=${params.trades?.toString()}&page=${params.page}&limit=${params.limit}`);
 
   httpGetOwnerProjectsWithoutFilters = (): Promise<

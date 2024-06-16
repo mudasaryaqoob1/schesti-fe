@@ -36,6 +36,11 @@ type Props = {
   setSelectedProjectSavedBid?: any;
   bidClickHandler?: any;
   onBidRemove?: () => void;
+  isInvitation?: boolean;
+  onSuccessfullyDecline?: (_data: {
+    project: IBidManagement,
+    savedUserBid: ISaveUserBid
+  }) => void;
 };
 type RemoveUserBidProps = {
   biddingId: string;
@@ -50,10 +55,12 @@ export function BidDetails({
   bidClickHandler,
   selectedProjectSavedBid,
   setSelectedProjectSavedBid,
-  onBidRemove
+  onBidRemove,
+  onSuccessfullyDecline,
+  isInvitation = false
 }: Props) {
   const router = useRouterHook();
-
+  const [isDeclining, setIsDeclining] = useState(false);
   const [isDetailsLoading, setIsDetailsLoading] = useState(false);
   const [bidSubmittedDetails, setBidSubmittedDetails] = useState<ISubmittedProjectBid[]>([]);
   const authUser = useSelector((state: RootState) => state.auth.user as { user?: IUserInterface });
@@ -137,6 +144,29 @@ export function BidDetails({
       console.log('could not get project proposal details', err);
     }
   };
+
+  async function handleDeclineInvitation(projectId: string) {
+    // create project activity for invitation decline
+    // createProjectActivity(projectId, 'declined invitation');
+    setIsDeclining(true);
+    try {
+      const response = await bidManagementService.httpDeclineProjectInvitation(projectId);
+      if (response.data) {
+        toast.success('Invitation declined successfully');
+        if (onSuccessfullyDecline) {
+          onSuccessfullyDecline({ project: bid, savedUserBid: selectedProjectSavedBid });
+        }
+      }
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      const msg = err.response?.data.message;
+      if (msg) {
+        toast.error(msg);
+      }
+    } finally {
+      setIsDeclining(false);
+    }
+  }
 
   const downloadAllFiles = async (files: any[]) => {
     files.forEach(async (file: any) => {
@@ -406,6 +436,17 @@ export function BidDetails({
           onSuccess={() => { }}
           projectId={bid._id}
         />
+
+        {isInvitation ? <CustomButton
+          text='Decline'
+          className='!bg-white !border-[#F32051] text-[#F32051]'
+          isLoading={isDeclining}
+          onClick={() => {
+            if (bid && bid._id) {
+              handleDeclineInvitation(bid._id);
+            }
+          }}
+        /> : null}
       </div>
     </div>
   );

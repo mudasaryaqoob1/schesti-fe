@@ -37,7 +37,7 @@ function OwnerProjectDetailsPage() {
 
   return (
     <section className="">
-      <div className="flex gap-4 items-center mt-6 mb-4 md:ms-[69px] md:me-[59px] mx-4 ">
+      <div className="flex gap-4 items-center mt-6 mb-4  mx-4 ">
         <Image src={'/home.svg'} alt="home icon" width={20} height={20} />
         <Image
           src={'/chevron-right.svg'}
