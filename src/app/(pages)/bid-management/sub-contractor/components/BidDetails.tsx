@@ -32,14 +32,14 @@ import { createProjectActivity } from '../../utils';
 
 type Props = {
   bid: (IBidManagement & { userDetails: IUserInterface[] });
-  selectedProjectSavedBid?: any;
+  selectedProjectSavedBid?: ISaveUserBid;
   setSelectedProjectSavedBid?: any;
   bidClickHandler?: any;
   onBidRemove?: () => void;
   isInvitation?: boolean;
   onSuccessfullyDecline?: (_data: {
     project: IBidManagement,
-    savedUserBid: ISaveUserBid
+    savedUserBid?: ISaveUserBid
   }) => void;
 };
 type RemoveUserBidProps = {
@@ -195,6 +195,8 @@ export function BidDetails({
   const isAuthUserBidSubmitter = bidSubmittedDetails.length > 0 && bidSubmittedDetails.some((bid) => bid.user === authUser?.user?._id);
 
 
+  // if selectedProjectSavedBid has archiveType then no need to show the user action button
+  const isSelectedProjectSavedBidHasArchiveType = selectedProjectSavedBid && selectedProjectSavedBid.archiveType && selectedProjectSavedBid.archiveType.length > 0;
 
   return (
     <div>
@@ -419,7 +421,7 @@ export function BidDetails({
             text="Add to my Bidding Projects"
             className="!bg-white !text-schestiPrimary"
           />
-        ) : (
+        ) : !isSelectedProjectSavedBidHasArchiveType ? (
           <CustomButton
             onClick={() =>
               removeUserBidMutation.mutate({
@@ -429,7 +431,7 @@ export function BidDetails({
             text="Remove from my bidding projects"
             className="!text-[red] !bg-transparent !border-[red] !text-base !leading-7 "
           />
-        )}
+        ) : null}
 
         <CreateRFI
           isProjectOwner={false}
