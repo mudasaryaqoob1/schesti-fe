@@ -116,7 +116,7 @@ export interface IBidManagementProjectTeamMember {
 
 export interface ISaveUserBid {
   user: string;
-  projectId: string;
+  projectId: string | IBidManagement;
   status: "archived" | "upcoming" | "active";
   companyName: string;
   isFavourite: boolean;

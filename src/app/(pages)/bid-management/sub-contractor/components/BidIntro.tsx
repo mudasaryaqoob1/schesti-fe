@@ -1,16 +1,19 @@
 import SenaryHeading from '@/app/component/headings/senaryHeading';
-import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
+import { ISaveUserBid } from '@/app/interfaces/bid-management/bid-management.interface';
 import { USCurrencyFormat } from '@/app/utils/format';
 import { Country } from 'country-state-city';
 import moment from 'moment';
 import Image from 'next/image';
 
 type Props = {
-  bid: IBidManagement | any;
+  bid: ISaveUserBid;
   onClick?: () => void;
   isSelected?: boolean;
 };
 export function BidIntro({ bid, onClick, isSelected }: Props) {
+
+  const isArchiveDate = bid.archiveType && bid.archiveType.length > 0;
+
   return (
     <div
       className={`mt-3 rounded-lg ${isSelected ? 'bg-[#e0e3e6]' : 'bg-[#F2F4F7]'}  border border-[#E8E3EF] p-4 cursor-pointer`}
@@ -19,7 +22,7 @@ export function BidIntro({ bid, onClick, isSelected }: Props) {
       <div className="flex items-center space-x-3">
         <Image src={'/trade.svg'} width={18} height={18} alt="trade icon" />
         <SenaryHeading
-          title={bid?.projectId?.projectName}
+          title={typeof bid.projectId === 'string' ? "" : bid.projectId.projectName}
           className="font-medium text-[#001556] text-base leading-6"
         />
       </div>
@@ -43,10 +46,21 @@ export function BidIntro({ bid, onClick, isSelected }: Props) {
             />
 
             <SenaryHeading
-              title={moment(bid.bidDueDate).format('DD MMM YYYY, hh:mm')}
+              title={moment(typeof bid.projectId === 'string' ? "" : bid.projectId.createdAt).format('DD MMM YYYY, hh:mm')}
               className="text-[#475467] font-semibold text-xs leading-4"
             />
           </div>
+          {isArchiveDate ? <div className="space-y-2">
+            <SenaryHeading
+              title="Archive Date:"
+              className="text-[#475467] font-normal text-xs leading-4"
+            />
+
+            <SenaryHeading
+              title={moment(typeof bid.projectId === 'string' ? "" : bid.updatedAt).format('DD MMM YYYY, hh:mm')}
+              className="text-[#475467] font-semibold text-xs leading-4"
+            />
+          </div> : null}
           <div className="space-y-2">
             <SenaryHeading
               title="Location:"
@@ -54,7 +68,7 @@ export function BidIntro({ bid, onClick, isSelected }: Props) {
             />
 
             <SenaryHeading
-              title={`${bid.projectId?.city}, ${Country.getCountryByCode(bid.projectId?.country)?.name}`}
+              title={`${typeof bid.projectId === 'string' ? "" : bid.projectId.city}, ${Country.getCountryByCode(typeof bid.projectId === 'string' ? "" : bid.projectId.country)?.name}`}
               className="text-[#475467] font-semibold text-xs leading-4"
             />
           </div>
@@ -65,14 +79,14 @@ export function BidIntro({ bid, onClick, isSelected }: Props) {
             />
 
             <SenaryHeading
-              title={USCurrencyFormat.format(bid?.projectId?.projectValue as number)}
+              title={USCurrencyFormat.format(typeof bid.projectId === 'string' ? 0 : bid.projectId.projectValue as number)}
               className="text-[#475467] font-semibold text-xs leading-4"
             />
           </div>
 
-          {bid.stage ? <div className="rounded-full bg-schestiLightPrimary py-[5px] px-[11px]">
+          {typeof bid.projectId === 'string' ? "" : bid.projectId.stage ? <div className="rounded-full bg-schestiLightPrimary py-[5px] px-[11px]">
             <SenaryHeading
-              title={bid.stage}
+              title={typeof bid.projectId === 'string' ? "" : bid.projectId.stage}
               className="text-schestiPrimary font-normal text-xs leading-4"
             />
           </div> : null}
