@@ -57,25 +57,30 @@ export function ArchivedProjects({ search, tab }: Props) {
       : [];
 
 
+  function handleClickTab(tab: ArchiveType) {
+    setActiveTab(tab);
+    setSelectedBid(null);
+  }
+
   return (
     <div>
       <div className='my-2 flex items-center gap-2.5'>
         <Segment
           isActive={activeTab === 'active'}
           text='Previously Active'
-          onClick={() => setActiveTab('active')}
+          onClick={() => handleClickTab('active')}
         />
 
         <Segment
           isActive={activeTab === 'upcoming'}
           text='Previously Upcoming'
-          onClick={() => setActiveTab('upcoming')}
+          onClick={() => handleClickTab('upcoming')}
         />
 
         <Segment
           isActive={activeTab === 'invited'}
           text='Previously Invited'
-          onClick={() => setActiveTab('invited')}
+          onClick={() => handleClickTab('invited')}
         />
       </div>
 
