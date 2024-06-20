@@ -1,10 +1,11 @@
-import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
+import { IBidManagement, ISaveUserBid } from '@/app/interfaces/bid-management/bid-management.interface';
 import { useState } from 'react';
 import { BidIntro } from '../../sub-contractor/components/BidIntro';
 import { BidDetails } from './BidDetails';
 import { bidManagementService } from '@/app/services/bid-management.service';
 import { useQuery } from 'react-query';
 import { proposalService } from '@/app/services/proposal.service';
+import { BiddingProjectDetails } from './BiddingProjectDetails';
 
 type Props = {
   search: string;
@@ -14,7 +15,7 @@ type Props = {
 type ArchiveType = "active" | "invited" | "upcoming"
 export function ArchivedProjects({ search, tab }: Props) {
 
-  const [selectedBid, setSelectedBid] = useState<IBidManagement | null>(null);
+  const [selectedBid, setSelectedBid] = useState<ISaveUserBid | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedBidProjectDetails, setSelectedBidProjectDetails] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<ArchiveType>('active');
@@ -26,11 +27,13 @@ export function ArchivedProjects({ search, tab }: Props) {
     limit: 10
   }
 
+  const isArchiveProposalType = selectedBid?.archiveType === 'active';
+
   const getProjectProposalDetails = async (bidProject: any) => {
     setIsLoading(true);
     setSelectedBidProjectDetails(null);
     try {
-      setSelectedBid(bidProject as unknown as IBidManagement);
+      setSelectedBid(bidProject);
 
       const { data }: any = await proposalService.httpGetProposalDetailsByProjectId(bidProject.projectId?._id);
       if (data) {
@@ -48,7 +51,7 @@ export function ArchivedProjects({ search, tab }: Props) {
 
   const savedBids = useQuery(['saved-bids', tab], fetchSavedBids);
 
-  const savedUserBids: any =
+  const savedUserBids =
     savedBids.data && savedBids.data.data
       ? savedBids.data.data?.savedBids
       : [];
@@ -83,6 +86,8 @@ export function ArchivedProjects({ search, tab }: Props) {
               return true;
             }
             return (bidProject.projectId as IBidManagement).projectName.toLowerCase().includes(search.toLowerCase()) || (bidProject.projectId as IBidManagement).description.toLowerCase().includes(search.toLowerCase());
+          }).filter(savedBid => {
+            return savedBid.archiveType === activeTab
           }).map((bidProject: any) => {
             return <BidIntro
               key={bidProject._id}
@@ -95,7 +100,11 @@ export function ArchivedProjects({ search, tab }: Props) {
         </div>
         {isLoading ? <h1>Loading...</h1> : !isLoading && selectedBid && selectedBidProjectDetails ? (
           <div className="col-span-4 py-[24px] px-[17px] rounded-lg mt-3 border border-[#E9E9EA]">
-            <BidDetails bid={selectedBid} selectedBidProjectDetails={selectedBidProjectDetails} />
+            {isArchiveProposalType ? <BidDetails bid={selectedBid} selectedBidProjectDetails={selectedBidProjectDetails} /> : <BiddingProjectDetails
+              bid={selectedBid}
+              refetchSavedBids={() => { }}
+              setSelectedBid={setSelectedBid}
+            />}
           </div>
         ) : null}
       </div>

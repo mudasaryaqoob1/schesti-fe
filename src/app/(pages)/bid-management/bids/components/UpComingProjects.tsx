@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
+import { IBidManagement, ISaveUserBid } from '@/app/interfaces/bid-management/bid-management.interface';
 import { BidIntro } from '../../sub-contractor/components/BidIntro';
 import { useQuery } from 'react-query';
 import { bidManagementService } from '@/app/services/bid-management.service';
@@ -12,7 +12,7 @@ type Props = {
 }
 export function UpComingProjects({ search, tab }: Props) {
 
-  const [selectedBid, setSelectedBid] = useState<IBidManagement | null>(null);
+  const [selectedBid, setSelectedBid] = useState<ISaveUserBid | null>(null);
 
   let currentPage = 1
 
@@ -45,9 +45,9 @@ export function UpComingProjects({ search, tab }: Props) {
             return (
               <BidIntro
                 key={bidProject._id}
-                bid={bidProject as unknown as IBidManagement}
+                bid={bidProject}
                 onClick={async () => {
-                  setSelectedBid(bidProject as unknown as IBidManagement);
+                  setSelectedBid(bidProject);
                   await createProjectActivity(bidProject._id, 'clicked');
                 }
                 }
@@ -58,7 +58,7 @@ export function UpComingProjects({ search, tab }: Props) {
         </div>
         {selectedBid ? (
           <div className="col-span-4 py-[24px] px-[17px] rounded-lg mt-3 border border-[#E9E9EA]">
-            <BiddingProjectDetails refetchSavedBids={refetchSavedBids} setSelectedBid={setSelectedBid} bid={selectedBid as unknown as IBidManagement} />
+            <BiddingProjectDetails refetchSavedBids={refetchSavedBids} setSelectedBid={setSelectedBid} bid={selectedBid} />
           </div>
         ) : null}
       </div>
