@@ -8,6 +8,7 @@ import { useRouterHook } from "@/app/hooks/useRouterHook";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { resetPostProjectAction } from "@/redux/post-project/post-project.slice";
+import { usePathname } from "next/navigation";
 
 type Props = {
     isOpened: boolean;
@@ -23,7 +24,7 @@ const UNHOVERED_WIDTH = "w-[80px]";
 export const AppSidebar = (props: Props) => {
     const { isOpened, toggleCollapsed } = props;
     const dispatch = useDispatch<AppDispatch>();
-
+    const pathname = usePathname();
     const router = useRouterHook();
     function resetPostProjectState(canCall: boolean) {
         if (canCall) {
@@ -155,6 +156,7 @@ export const AppSidebar = (props: Props) => {
                     mode="vertical"
                     items={menuItems}
                     triggerSubMenuAction="click"
+                    selectedKeys={[pathname]}
                 />
 
             </ConfigProvider>

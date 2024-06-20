@@ -14,7 +14,7 @@ import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { materialService } from '@/app/services/material.service';
 import { AxiosError } from 'axios';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
-import Link from 'next/link'
+import Link from 'next/link';
 
 interface Iprops {
   materialModal: boolean;
@@ -156,9 +156,7 @@ const ImportMaterialModal = ({
           onSubmit={importMaterialHandler}
           innerRef={formikRef}
         >
-          {({ handleSubmit, values, setFieldValue, errors }) => {
-            console.log(errors, 'errorserrorserrors');
-
+          {({ handleSubmit, values, setFieldValue }) => {
             return (
               <Form
                 name="basic"
@@ -187,8 +185,8 @@ const ImportMaterialModal = ({
                   placeholder="Select Subcategory"
                 />
                 <Dragger
-                  accept="application/csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-                  action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
+                  accept="application/csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                  // action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
                   name="file"
                   onChange={(info) => {
                     console.log(info, 'infoinfoinfoinfo');
@@ -215,10 +213,23 @@ const ImportMaterialModal = ({
                   <p className="ant-upload-hint">
                     Browse to upload or drag it here
                   </p>
-                  
                 </Dragger>
-                <p className='text-[#344054] text-[18px] my-4' >Upload sheet format <span className='font-bold border-b-2 border-gray-950 cursor-pointer' ><Link className='text-[#344054]' href="https://schesti-dev.s3.eu-north-1.amazonaws.com/2024/documents/supporttickets/043f4644a8decf305edfb088b34a8fdd-material.xlsx" target="_blank" >Download</Link></span></p>
-                <p className='text-[#98A2B3]' >Kindly create a seprate sheet on the basse of category and its sub category </p>
+                <p className="text-[#344054] text-[18px] my-4">
+                  Upload sheet format{' '}
+                  <span className="font-bold border-b-2 border-gray-950 cursor-pointer">
+                    <Link
+                      className="text-[#344054]"
+                      href="https://schesti-dev.s3.eu-north-1.amazonaws.com/2024/documents/setting/244aa73031ba9b6baae559e223598842-material.xlsx"
+                      target="_blank"
+                    >
+                      Download
+                    </Link>
+                  </span>
+                </p>
+                <p className="text-[#98A2B3]">
+                  Kindly create a seprate sheet on the basse of category and its
+                  sub category{' '}
+                </p>
                 <CustomButton
                   text="Import"
                   type="submit"

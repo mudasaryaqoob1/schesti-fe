@@ -824,7 +824,7 @@ const Scope = ({ setPrevNext }: Props) => {
       align: 'center',
       width: 120,
       render: (value: number) => {
-        return `${value}`;
+        return `$${value}`;
       },
     },
     {
@@ -1127,6 +1127,7 @@ const Scope = ({ setPrevNext }: Props) => {
                     placeholder="Enter Labor Rate"
                     min={0}
                     step="0.001"
+                    prefix="$"
                   />
                   <FormControl
                     control="input"
@@ -1138,6 +1139,7 @@ const Scope = ({ setPrevNext }: Props) => {
                     placeholder="Write Unit Material Cost"
                     min={0}
                     step="0.001"
+                    prefix="$"
                   />
                   <FormControl
                     control="input"
@@ -1149,6 +1151,7 @@ const Scope = ({ setPrevNext }: Props) => {
                     placeholder="Write Unit Equipment Cost"
                     min={0}
                     step="0.001"
+                    prefix="$"
                   />
                   {editItem || editConfirmItem ? (
                     <CustomWhiteButton
