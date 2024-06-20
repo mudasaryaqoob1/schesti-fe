@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { resetPostProjectAction } from "@/redux/post-project/post-project.slice";
 import { usePathname } from "next/navigation";
+import { Key } from "react";
 
 type Props = {
     isOpened: boolean;
@@ -18,7 +19,21 @@ type Props = {
 const HOVERED_WIDTH = "w-[240px]";
 const UNHOVERED_WIDTH = "w-[80px]";
 
+function collectKeys(items: MenuProps['items']) {
+    let keys: Key[] = [];
+    if (items && items.length) {
+        items.forEach(item => {
+            if (item?.key) {
+                keys.push(item.key);
+            }
+            if (item && "children" in item) {
+                keys = keys.concat(collectKeys(item.children));
+            }
+        });
+    }
 
+    return keys;
+}
 
 
 export const AppSidebar = (props: Props) => {
@@ -98,6 +113,10 @@ export const AppSidebar = (props: Props) => {
         },
     ];
 
+    // set activeKey if menuItems key includes in pathname
+    const allKeys = collectKeys(menuItems);
+    const activeKey = allKeys.find((key) => pathname.includes(key.toString()));
+
     return <div className={`fixed h-full bg-schestiPrimary transition-all duration-300 ease-in-out ${isOpened ? HOVERED_WIDTH : UNHOVERED_WIDTH}`}>
 
 
@@ -156,7 +175,7 @@ export const AppSidebar = (props: Props) => {
                     mode="vertical"
                     items={menuItems}
                     triggerSubMenuAction="click"
-                    selectedKeys={[pathname]}
+                    selectedKeys={[activeKey ? activeKey.toString() : ""]}
                 />
 
             </ConfigProvider>
