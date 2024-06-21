@@ -66,6 +66,8 @@ export function formatProjectActivityStatus(status: IBidActivity['status']) {
             return 'Shared on WhatsApp';
         case 'viewed details':
             return 'Viewed Details';
+        case 'decline':
+            return "Declined Invitation";
         default:
             return _.capitalize(status);
     }

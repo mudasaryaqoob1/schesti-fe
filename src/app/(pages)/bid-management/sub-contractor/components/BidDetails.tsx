@@ -153,6 +153,7 @@ export function BidDetails({
       const response = await bidManagementService.httpDeclineProjectInvitation(projectId);
       if (response.data) {
         toast.success('Invitation declined successfully');
+        createProjectActivity(projectId, "decline");
         if (onSuccessfullyDecline) {
           onSuccessfullyDecline({ project: bid, savedUserBid: selectedProjectSavedBid });
           setSelectedProjectSavedBid(response.data.userSavedBid);
