@@ -58,7 +58,7 @@ function OwnerProjectDetailsPage() {
 
         <Description
           title="Overview"
-          className="font-semibold text-lavenderPurple cursor-pointer underline"
+          className="font-semibold text-schestiPrimary cursor-pointer underline"
         />
       </div>
 
