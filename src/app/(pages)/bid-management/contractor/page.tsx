@@ -142,8 +142,6 @@ function ContractorScreen() {
       );
 
       await createProjectActivity(selectedBid._id, 'clicked');
-
-      console.log('data', data);
       if (data) {
         setSelectedProjectSavedBid(data?.projectBid);
       }
@@ -151,6 +149,7 @@ function ContractorScreen() {
       console.error('Error fetching project saved bids:', err);
     }
   };
+
 
   return (
     <section className="mt-6 mx-4 ">

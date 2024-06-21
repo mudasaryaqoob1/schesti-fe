@@ -155,6 +155,7 @@ export function BidDetails({
         toast.success('Invitation declined successfully');
         if (onSuccessfullyDecline) {
           onSuccessfullyDecline({ project: bid, savedUserBid: selectedProjectSavedBid });
+          setSelectedProjectSavedBid(response.data.userSavedBid);
         }
       }
     } catch (error) {
@@ -439,7 +440,7 @@ export function BidDetails({
           projectId={bid._id}
         />
 
-        {isInvitation ? <CustomButton
+        {(isInvitation && !(selectedProjectSavedBid && selectedProjectSavedBid.status === 'active')) ? <CustomButton
           text='Decline'
           className='!bg-white !border-[#F32051] text-[#F32051]'
           isLoading={isDeclining}
