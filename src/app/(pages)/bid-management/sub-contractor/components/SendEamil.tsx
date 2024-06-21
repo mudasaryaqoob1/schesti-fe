@@ -98,10 +98,10 @@ export function SendEmailModal({ to, projectId }: Props) {
       }}
     >
       <Image
-        alt="mail-black icon"
-        src={'/mail-black.svg'}
-        width={16}
-        height={16}
+        alt="mail-red icon"
+        src={'/mail-red.svg'}
+        width={30}
+        height={30}
         className="cursor-pointer"
       />
       <ModalComponent
