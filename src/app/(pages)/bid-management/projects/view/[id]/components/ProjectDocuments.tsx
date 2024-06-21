@@ -186,6 +186,9 @@ export function ProjectDocuments({ id }: Props) {
                         {
                           key: 'view',
                           label: 'View',
+                          onClick: () => {
+                            window.open(file.url, '_blank');
+                          }
                         },
                         {
                           key: 'download',
