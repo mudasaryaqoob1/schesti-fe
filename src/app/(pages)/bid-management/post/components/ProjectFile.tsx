@@ -126,7 +126,7 @@ export function ProjectUploadFiles({ formik, children, setShouldContinue }: Prop
             Drop your image here, or browse
           </p>
           <p className="text-[12px] leading-3 text-[#98A2B3]">
-            PNG, GIF, JPG, Max size: 2MB
+            PNG, GIF, JPG, PDF, TXT, XLS, XLSX, PPT, PPTX
           </p>
         </Dragger>
 
