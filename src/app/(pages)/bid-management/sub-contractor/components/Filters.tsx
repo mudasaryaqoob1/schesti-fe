@@ -49,7 +49,7 @@ export function BidFilters({ onApply, onCancel, isVisible }: Props) {
          bg-white w-[400px] right-12 z-10 opacity-0 top-14 border rounded-md transition-all ease-in-out
           duration-300 ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full'}`}
     >
-      <div className="p-3 bg-[#F9F5FF] flex items-center justify-between">
+      <div className="p-3 bg-schestiLightPrimary flex items-center justify-between">
         <SenaryHeading
           title="Filters"
           className="text-[#101828] font-semibold text-[20px] leading-7"
