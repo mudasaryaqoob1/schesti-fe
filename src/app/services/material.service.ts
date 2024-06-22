@@ -21,7 +21,7 @@ class MaterialService extends HttpService {
     subCategoryId: string
   ): Promise<IResponseInterface> =>
     this.get(
-      `${this.prefix}/getMetarialwithCategory/${categoryId}/${subCategoryId}`
+      `${this.prefix}/getMetarialwithCategory/${categoryId}?subCategoryId=${subCategoryId}`
     );
 
   httpFetchMaterialUnits = (): Promise<
