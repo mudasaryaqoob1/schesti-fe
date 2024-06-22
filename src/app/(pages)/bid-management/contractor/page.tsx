@@ -101,10 +101,7 @@ function ContractorScreen() {
       ? invitedUserProjectsQuery.data.data?.records
       : [];
 
-  const currentInvitedProjects = invitedProjects.slice(
-    (invitedfilters.page - 1) * invitedfilters.limit,
-    invitedfilters.page * invitedfilters.limit
-  );
+  const currentInvitedProjects = invitedProjects
 
   const currentExploreProjects = projects
     .filter((project) => {
@@ -117,10 +114,7 @@ function ContractorScreen() {
         project.description?.toLowerCase().includes(search.toLowerCase())
       );
     })
-    .slice(
-      (filters.page - 1) * filters.limit,
-      filters.page * filters.limit
-    );
+
 
   // const dataToExport = currentExploreProjects.filter((project) => {
   //   if (search === '') {
@@ -257,7 +251,7 @@ function ContractorScreen() {
                 })
               )}
 
-              {size(invitedProjects) >= 5 && (
+              {(size(invitedProjects) >= 5 || invitedfilters.page !== 1) && (
                 <div className="mt-1 flex justify-center">
                   <Pagination
                     current={invitedfilters.page}
@@ -331,7 +325,7 @@ function ContractorScreen() {
             </div>
           ) : null}
         </div>
-        {size(projects) >= 5 && (
+        {(size(projects) >= 5 || filters.page !== 1) && (
           <div className="mt-1 flex justify-center">
             <Pagination
               current={filters.page}
