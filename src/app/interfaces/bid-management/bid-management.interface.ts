@@ -116,7 +116,7 @@ export interface IBidManagementProjectTeamMember {
 
 export interface ISaveUserBid {
   user: string;
-  projectId: string;
+  projectId: string | IBidManagement;
   status: "archived" | "upcoming" | "active";
   companyName: string;
   isFavourite: boolean;
@@ -143,7 +143,7 @@ export interface IBidActivity {
   _id: string;
   user: string | IUserInterface;
   projectId: string | IBidManagement;
-  status: "clicked" | "proposal submitted" | "favourite" | "removed favourite" | "viewed details" | "sent rfi" | "sent email" | "shared on whatsapp" | "shared on facebook" | "shared on twitter" | "repost project";
+  status: "clicked" | "proposal submitted" | "favourite" | "removed favourite" | "viewed details" | "sent rfi" | "sent email" | "shared on whatsapp" | "shared on facebook" | "shared on twitter" | "repost project" | "decline";
   createdAt: string;
   updatedAt: string;
 }

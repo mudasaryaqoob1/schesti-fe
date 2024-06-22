@@ -28,6 +28,7 @@ import { USCurrencyFormat } from '@/app/utils/format';
 import { Excel } from 'antd-table-saveas-excel';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { IUserInterface } from '@/app/interfaces/user.interface';
+import Link from 'next/link';
 
 const RES_PER_PAGE = 10;
 
@@ -68,9 +69,9 @@ function Page() {
         console.log('isNewProject', isNewProject);
         return (
           <div className="flex items-center justify-between">
-            <div className="text-[#181D25] text-base font-semibold leading-6">
+            <Link href={`${Routes['Bid Management'].Posted_Projects}/view/${record._id}`} className="text-[#181D25] hover:text-schestiPrimary hover:underline hover:underline-offset-2 text-base font-semibold leading-6">
               {record.projectName}
-            </div>
+            </Link>
             <div className=' flex space-x-3 items-center'>
               {isNewProject ? <div className='w-fit h-[22px] py-0.5 px-2 rounded-full bg-[#36B37E] text-center font-medium text-sm leading-4 text-white'>
                 New

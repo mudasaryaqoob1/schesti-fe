@@ -133,7 +133,7 @@ class BidManagementService extends HttpService {
   }>> => this.put(`${this.prefix}/update-status`, { status, projectId });
 
   httpGetUserSavedBids = (params: IGetSavedUserBid): Promise<
-    IResponseInterface<{ savedBids: ISaveUserBid }>
+    IResponseInterface<{ savedBids: ISaveUserBid[] }>
   > => this.get(`${this.prefix}/get-user-bids?page=${params.page}&limit=${params.limit}&status=${params.status}`);
 
   httpGetProjectSavedBids = (projectId: string) => this.get(`${this.prefix}/get-saved-bid-details/${projectId}`);
