@@ -14,6 +14,9 @@ import { useSearchParams } from 'next/navigation';
 import { toast } from 'react-toastify';
 import '../scopeStyle.css';
 import { useSelector, useDispatch } from 'react-redux';
+import CreatableSelect from 'react-select/creatable';
+import { twMerge } from 'tailwind-merge';
+import clsx from 'clsx';
 
 import ModalComponent from '@/app/component/modal';
 import CustomWhiteButton from '@/app/component/customButton/white';
@@ -21,7 +24,7 @@ import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import FormControl from '@/app/component/formControl';
 import { categoriesService } from '@/app/services/categories.service';
-// import { materialService } from '@/app/services/material.service';
+import { materialService } from '@/app/services/material.service';
 import { bg_style } from '@/globals/tailwindvariables';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { estimateRequestService } from '@/app/services/estimates.service';
@@ -30,13 +33,14 @@ import { selectGeneratedEstimateDetail } from '@/redux/estimate/estimateRequestS
 import { PositiveNumberRegex } from '@/app/utils/regex.util';
 import { byteConverter } from '@/app/utils/byteConverter';
 // import { IUnits } from '@/app/interfaces/settings/material-settings.interface';
-import EstimatesUnits from '@/app/constants/estimatesUnits.json'
+import EstimatesUnits from '@/app/constants/estimatesUnits.json';
 import { formatNumberWithCommas } from '@/app/utils/helper';
+
 
 type InitialValuesType = {
   category: string;
   subCategory: string;
-  description: string;
+  description: any;
   unit: string;
   qty: string;
   wastage: string;
@@ -50,7 +54,7 @@ type InitialValuesType = {
 const validationSchema = Yup.object({
   category: Yup.string().required('Category is required!'),
   // subCategory: Yup.string().required('SubCategory is required'),
-  description: Yup.string().required('Description is required!'),
+  description: Yup.object().required('Description is required!'),
   unit: Yup.string().required('Unit is required!'),
   qty: Yup.string()
     .matches(PositiveNumberRegex, 'qty must be a positive number')
@@ -75,6 +79,23 @@ const validationSchema = Yup.object({
     // .matches(PositiveNumberRegex, 'Unit equipments must be a positive number')
     .required('Unit equipments is required!'),
 });
+const descriptionInputStyle: any = {
+  control: (styles: any) => ({
+    ...styles,
+    backgroundColor: 'white',
+    border: '1px solid border-gray-200',
+    boxShadow: 'none',
+    borderColor: 'none',
+  }),
+
+  input: (styles: any) => ({ ...styles, outline: 'none' }),
+  placeholder: (styles: any) => ({ ...styles  , color : "#98A2B3" , fontSize: "14px"}),
+  menu: (styles : any) => ({
+    ...styles,
+    zIndex : 3
+  }),
+};
+
 
 interface Props {
   setPrevNext: Dispatch<SetStateAction<number>>;
@@ -123,7 +144,7 @@ const Scope = ({ setPrevNext }: Props) => {
   const [subCategories, setSubCategories] = useState<Object[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedSubCategory, setSelectedSubCategory] = useState('');
-  // const [estimateDescriptions, setEstimateDescriptions] = useState([]);
+  const [estimateDescriptions, setEstimateDescriptions] = useState<any>([]);
   // const [selecteddescription, setsSelecteddescription] = useState('');
   const [editItem, setEditItem] = useState(false);
   const [editConfirmItem, setEditConfirmItem] = useState(false);
@@ -200,56 +221,56 @@ const Scope = ({ setPrevNext }: Props) => {
       ...result.data.estimateDetail.takeOffReports,
     ]);
   }, []);
-  // const fetchMeterialDetail = useCallback(
-  //   async (categoryId: string, subCategory: string) => {
-  //     materialService
-  //       .httpGetMeterialWithCategoryId(categoryId, subCategory)
-  //       .then((result) => {
-  //         let uniqueDescriptionsSet = new Set();
-  //         let uniqueUnitsSet = new Set();
-  //         let fetchedDescriptions = result.data
-  //           .map((material: DataType) => {
-  //             const description = material.description;
+  const fetchMeterialDetail = useCallback(
+    async (categoryId: string, subCategory: string) => {
+      materialService
+        .httpGetMeterialWithCategoryId(categoryId, subCategory)
+        .then((result) => {
+          let uniqueDescriptionsSet = new Set();
+          // let uniqueUnitsSet = new Set();
+          let fetchedDescriptions = result.data
+            .map((material: DataType) => {
+              const description = material.description;
 
-  //             if (!uniqueDescriptionsSet.has(description)) {
-  //               uniqueDescriptionsSet.add(description);
-  //               return {
-  //                 ...material,
-  //                 label: description,
-  //                 value: description,
-  //               };
-  //             } else {
-  //               return null;
-  //             }
-  //           })
-  //           .filter((description: any) => description !== null);
+              if (!uniqueDescriptionsSet.has(description)) {
+                uniqueDescriptionsSet.add(description);
+                return {
+                  // ...material,
+                  label: description,
+                  value: description,
+                };
+              } else {
+                return null;
+              }
+            })
+            .filter((description: any) => description !== null);
 
-  //         let fetchedUnits = result.data
-  //           .map((material: DataType) => {
-  //             const unit = material.unit;
+          // let fetchedUnits = result.data
+          //   .map((material: DataType) => {
+          //     const unit = material.unit;
 
-  //             if (!uniqueUnitsSet.has(unit)) {
-  //               uniqueUnitsSet.add(unit);
-  //               return {
-  //                 ...material,
-  //                 label: unit,
-  //                 value: unit,
-  //               };
-  //             } else {
-  //               return null;
-  //             }
-  //           })
-  //           .filter((unit: any) => unit !== null);
+          //     if (!uniqueUnitsSet.has(unit)) {
+          //       uniqueUnitsSet.add(unit);
+          //       return {
+          //         ...material,
+          //         label: unit,
+          //         value: unit,
+          //       };
+          //     } else {
+          //       return null;
+          //     }
+          //   })
+          //   .filter((unit: any) => unit !== null);
 
-  //         setEstimateDescriptions(fetchedDescriptions);
-  //         setEstiamteUnits(fetchedUnits);
-  //       })
-  //       .catch((error) => {
-  //         console.log(error, 'error in fetch meterials');
-  //       });
-  //   },
-  //   []
-  // );
+          setEstimateDescriptions(fetchedDescriptions);
+          // setEstiamteUnits(fetchedUnits);
+        })
+        .catch((error) => {
+          console.log(error, 'error in fetch meterials');
+        });
+    },
+    []
+  );
 
   useEffect(() => {
     fetchCategories();
@@ -259,12 +280,13 @@ const Scope = ({ setPrevNext }: Props) => {
   useEffect(() => {
     if (selectedCategory) {
       fetchSubCategories();
+      fetchMeterialDetail(selectedCategory, selectedSubCategory);
     }
   }, [selectedCategory]);
 
   useEffect(() => {
     if (selectedCategory && selectedSubCategory) {
-      // fetchMeterialDetail(selectedCategory, selectedSubCategory);
+      fetchMeterialDetail(selectedCategory, selectedSubCategory);
       const subCategoryPrice: any = subCategories.find(
         (cat: any) => cat.value === selectedSubCategory
       );
@@ -320,6 +342,8 @@ const Scope = ({ setPrevNext }: Props) => {
     estimateTableItemValues: InitialValuesType,
     actions: any
   ) => {
+    estimateTableItemValues['description'] = estimateTableItemValues.description.value
+    
     let generateRandomNumber = Math.floor(Math.random() * 103440 + 1);
 
     const selectedCategoryName: any = categories.find(
@@ -986,6 +1010,7 @@ const Scope = ({ setPrevNext }: Props) => {
     }
   };
 
+  
   return (
     <div>
       <div className="flex justify-between items-center mb-3">
@@ -1024,7 +1049,7 @@ const Scope = ({ setPrevNext }: Props) => {
         validationSchema={validationSchema}
         onSubmit={submitHandler}
       >
-        {({ handleSubmit, values }) => {
+        {({ handleSubmit, values, setFieldValue , errors }) => {
           return (
             <>
               <Form
@@ -1063,7 +1088,7 @@ const Scope = ({ setPrevNext }: Props) => {
                 <div className="bg-graylighty h-px w-full my-5"></div>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-x-2 ">
                   <div className="md:col-start-1 md:col-end-3">
-                    <FormControl
+                    {/* <FormControl
                       control="input"
                       inputStyle="!py-2"
                       labelStyle="font-normal"
@@ -1073,6 +1098,41 @@ const Scope = ({ setPrevNext }: Props) => {
                       placeholder="Write Description"
                       mt="mt-0"
                       // setCustomState={setsSelecteddescription}
+                    /> */}
+                    <label
+                      className={twMerge(
+                        clsx(
+                          'text-graphiteGray text-sm font-medium leading-6 capitalize'
+                        )
+                      )}
+                    >
+                      Description
+                    </label>
+                    <CreatableSelect
+                      isClearable
+                      placeholder="Select Description"
+                      onChange={(newValue) =>
+                        setFieldValue('description', newValue)
+                      }
+                      onCreateOption={(newDescriptionValue) => {
+                        let newDescription = {
+                          label: newDescriptionValue,
+                          value: newDescriptionValue,
+                        };
+                        setFieldValue('description', newDescription);
+                        setEstimateDescriptions((prev: any) => [
+                          ...prev,
+                          newDescription,
+                        ]);
+                      }}
+                      options={estimateDescriptions}
+                      value={values.description}
+                      styles={descriptionInputStyle}
+                      className={twMerge(
+                        clsx(
+                          `${errors.description ? 'border !border-red-500' : ''} !w-full !rounded-md focus:border-blue-500 !mt-1.5 `
+                        )
+                      )}
                     />
                   </div>
                   <FormControl
