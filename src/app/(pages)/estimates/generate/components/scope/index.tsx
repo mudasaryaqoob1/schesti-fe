@@ -36,7 +36,6 @@ import { byteConverter } from '@/app/utils/byteConverter';
 import EstimatesUnits from '@/app/constants/estimatesUnits.json';
 import { formatNumberWithCommas } from '@/app/utils/helper';
 
-
 type InitialValuesType = {
   category: string;
   subCategory: string;
@@ -89,13 +88,16 @@ const descriptionInputStyle: any = {
   }),
 
   input: (styles: any) => ({ ...styles, outline: 'none' }),
-  placeholder: (styles: any) => ({ ...styles  , color : "#98A2B3" , fontSize: "14px"}),
-  menu: (styles : any) => ({
+  placeholder: (styles: any) => ({
     ...styles,
-    zIndex : 3
+    color: '#98A2B3',
+    fontSize: '14px',
+  }),
+  menu: (styles: any) => ({
+    ...styles,
+    zIndex: 3,
   }),
 };
-
 
 interface Props {
   setPrevNext: Dispatch<SetStateAction<number>>;
@@ -342,8 +344,9 @@ const Scope = ({ setPrevNext }: Props) => {
     estimateTableItemValues: InitialValuesType,
     actions: any
   ) => {
-    estimateTableItemValues['description'] = estimateTableItemValues.description.value
-    
+    estimateTableItemValues['description'] =
+      estimateTableItemValues.description.value;
+
     let generateRandomNumber = Math.floor(Math.random() * 103440 + 1);
 
     const selectedCategoryName: any = categories.find(
@@ -1010,7 +1013,6 @@ const Scope = ({ setPrevNext }: Props) => {
     }
   };
 
-  
   return (
     <div>
       <div className="flex justify-between items-center mb-3">
@@ -1049,7 +1051,7 @@ const Scope = ({ setPrevNext }: Props) => {
         validationSchema={validationSchema}
         onSubmit={submitHandler}
       >
-        {({ handleSubmit, values, setFieldValue , errors }) => {
+        {({ handleSubmit, values, setFieldValue, errors }) => {
           return (
             <>
               <Form

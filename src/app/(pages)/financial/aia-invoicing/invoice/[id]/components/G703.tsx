@@ -165,9 +165,9 @@ export function G703Component({
                 onChange={(_d, dateString) =>
                   handleState('applicationDate', dateString as string)
                 }
-              //@ts-ignore
-              //@ts-nocheck
-              // disabledDate={disabledDate}
+                //@ts-ignore
+                //@ts-nocheck
+                // disabledDate={disabledDate}
               />
               {showAddAndDelete ? (
                 <p className="text-gray-400">Application Date is required.</p>
@@ -188,9 +188,9 @@ export function G703Component({
                 onChange={(_d, dateString) =>
                   handleState('periodTo', dateString as string)
                 }
-              //@ts-ignore
-              //@ts-nocheck
-              // disabledDate={disabledDate}
+                //@ts-ignore
+                //@ts-nocheck
+                // disabledDate={disabledDate}
               />
               {showAddAndDelete ? (
                 <p className="text-gray-400">Period To is required.</p>

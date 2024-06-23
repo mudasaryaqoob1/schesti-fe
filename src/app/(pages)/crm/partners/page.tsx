@@ -38,7 +38,6 @@ interface DataType {
 }
 
 const items: MenuProps['items'] = [
-
   {
     key: 'createNewInvoice',
     label: <p>Create Invoice</p>,
@@ -76,7 +75,6 @@ const PartnerTable = () => {
   }, []);
 
   const handleDropdownItemClick = async (key: string, partner: any) => {
-
     if (key === 'createEstimateRequest') {
       router.push(`/estimates/requests/create`);
     } else if (key === 'createNewInvoice') {
@@ -89,11 +87,7 @@ const PartnerTable = () => {
     } else if (key == 'editPartnerDetail') {
       router.push(`${Routes.CRM.Partners}/edit/${partner._id}`);
     }
-
-
   };
-
-
 
   const columns: ColumnsType<DataType> = [
     {
@@ -155,15 +149,15 @@ const PartnerTable = () => {
   ];
   const filteredPartners = partnersData
     ? partnersData.filter((partner) => {
-      if (!search) {
-        return partner;
-      }
-      return (
-        partner.firstName.toLowerCase().includes(search.toLowerCase()) ||
-        partner.lastName.toLowerCase().includes(search.toLowerCase()) ||
-        partner.email?.includes(search)
-      );
-    })
+        if (!search) {
+          return partner;
+        }
+        return (
+          partner.firstName.toLowerCase().includes(search.toLowerCase()) ||
+          partner.lastName.toLowerCase().includes(search.toLowerCase()) ||
+          partner.email?.includes(search)
+        );
+      })
     : [];
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">

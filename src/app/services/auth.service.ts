@@ -58,7 +58,9 @@ class AuthService extends HttpService {
 
   signupHandler = (data: ISignUpInterface): Promise<IResponseInterface<any>> =>
     this.post(`${this.prefix}/signup`, data);
-  httpUserVerification = (data: IUserVerification): Promise<IResponseInterface<any>> =>
+  httpUserVerification = (
+    data: IUserVerification
+  ): Promise<IResponseInterface<any>> =>
     this.post(`${this.prefix}/user-verification`, data);
 
   verifyUserEmail = (token: string): Promise<IResponseInterface<any>> =>
@@ -81,10 +83,9 @@ class AuthService extends HttpService {
     }>
   > => this.post(`${this.prefix}/auth-with-google`, data);
 
-
-  httpSocialAuthUserVerification = (
-    data: {email : string}
-  ): Promise<
+  httpSocialAuthUserVerification = (data: {
+    email: string;
+  }): Promise<
     IResponseInterface<{
       token: string;
       user: IUser;
@@ -140,9 +141,12 @@ class AuthService extends HttpService {
     }>
   > => this.post(`${this.prefix}/capture-order`, { orderID: orderID });
 
-  httpGetUserDetailsByEmail = (email: string): Promise<IResponseInterface<{
-    user: IUserInterface
-  }>> => this.get(`${this.prefix}/get-details-by-email/${email}`);
-
+  httpGetUserDetailsByEmail = (
+    email: string
+  ): Promise<
+    IResponseInterface<{
+      user: IUserInterface;
+    }>
+  > => this.get(`${this.prefix}/get-details-by-email/${email}`);
 }
 export const authService = new AuthService();

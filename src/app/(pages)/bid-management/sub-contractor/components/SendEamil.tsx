@@ -30,9 +30,8 @@ const ValidationSchema = Yup.object().shape({
 type Props = {
   to: string;
   projectId: string;
-}
+};
 export function SendEmailModal({ to, projectId }: Props) {
-
   const ref = useRef<HTMLDivElement>(null);
   const [showRfiModal, setShowRfiModal] = useState(false);
   useClickAway(() => {
@@ -67,7 +66,7 @@ export function SendEmailModal({ to, projectId }: Props) {
         if (projectId.length > 0) {
           await createProjectActivity(projectId, 'sent email');
         }
-        console.log('res.data', res.data)
+        console.log('res.data', res.data);
         if (res) {
           toast.success('Email sent successfully');
         }
@@ -109,7 +108,6 @@ export function SendEmailModal({ to, projectId }: Props) {
         setOpen={setShowRfiModal}
         destroyOnClose
       >
-
         <div
           onClick={(e) => {
             e.stopPropagation();
@@ -141,7 +139,8 @@ export function SendEmailModal({ to, projectId }: Props) {
                         value: sendEmailFormik.values.to,
                       }}
                       hasError={
-                        sendEmailFormik.touched.to && Boolean(sendEmailFormik.errors.to)
+                        sendEmailFormik.touched.to &&
+                        Boolean(sendEmailFormik.errors.to)
                       }
                       errorMessage={
                         sendEmailFormik.touched.to && sendEmailFormik.errors.to
@@ -170,10 +169,12 @@ export function SendEmailModal({ to, projectId }: Props) {
                           onBlur: sendEmailFormik.handleBlur,
                         }}
                         hasError={
-                          sendEmailFormik.touched.cc && Boolean(sendEmailFormik.errors.cc)
+                          sendEmailFormik.touched.cc &&
+                          Boolean(sendEmailFormik.errors.cc)
                         }
                         errorMessage={
-                          sendEmailFormik.touched.cc && sendEmailFormik.errors.cc
+                          sendEmailFormik.touched.cc &&
+                          sendEmailFormik.errors.cc
                             ? sendEmailFormik.errors.cc
                             : ''
                         }
@@ -199,10 +200,12 @@ export function SendEmailModal({ to, projectId }: Props) {
                           onBlur: sendEmailFormik.handleBlur,
                         }}
                         hasError={
-                          sendEmailFormik.touched.subject && Boolean(sendEmailFormik.errors.subject)
+                          sendEmailFormik.touched.subject &&
+                          Boolean(sendEmailFormik.errors.subject)
                         }
                         errorMessage={
-                          sendEmailFormik.touched.subject && sendEmailFormik.errors.subject
+                          sendEmailFormik.touched.subject &&
+                          sendEmailFormik.errors.subject
                             ? sendEmailFormik.errors.subject
                             : ''
                         }
@@ -229,48 +232,55 @@ export function SendEmailModal({ to, projectId }: Props) {
                   />
                 </div>
                 <div>
-                  {!sendEmailFormik.values.file ? <Spin className="flex flex-start" spinning={isFileUploading}>
-                    <Dragger
+                  {!sendEmailFormik.values.file ? (
+                    <Spin
                       className="flex flex-start"
-                      name={'file'}
-                      accept="image/*,gif,application/pdf"
-                      beforeUpload={(file) => {
-                        handleFileUpload(file);
-                        return false;
-                      }}
-                      style={{
-                        borderStyle: 'dashed',
-                        borderWidth: 2,
-                        display: 'flex',
-                        justifyContent: 'start',
-                      }}
-                      itemRender={() => {
-                        return null;
-                      }}
+                      spinning={isFileUploading}
                     >
-                      <p className="ant-upload-drag-icon">
-                        <Image
-                          src={'/uploadcloud.svg'}
-                          width={40}
-                          height={40}
-                          alt="upload"
-                        />
-                      </p>
-                      <p className="text-[12px] py-2 pl-4 leading-3 text-[#98A2B3]">
-                        Select a file or drag and drop
-                      </p>
-                    </Dragger>
-                  </Spin> : <ShowFileComponent
-                    file={{
-                      name: sendEmailFormik.values.file.name,
-                      extension: sendEmailFormik.values.file.type,
-                      type: sendEmailFormik.values.file.type,
-                      url: URL.createObjectURL(sendEmailFormik.values.file),
-                    }}
-                    onDelete={() => {
-                      sendEmailFormik.setFieldValue('file', undefined);
-                    }}
-                  />}
+                      <Dragger
+                        className="flex flex-start"
+                        name={'file'}
+                        accept="image/*,gif,application/pdf"
+                        beforeUpload={(file) => {
+                          handleFileUpload(file);
+                          return false;
+                        }}
+                        style={{
+                          borderStyle: 'dashed',
+                          borderWidth: 2,
+                          display: 'flex',
+                          justifyContent: 'start',
+                        }}
+                        itemRender={() => {
+                          return null;
+                        }}
+                      >
+                        <p className="ant-upload-drag-icon">
+                          <Image
+                            src={'/uploadcloud.svg'}
+                            width={40}
+                            height={40}
+                            alt="upload"
+                          />
+                        </p>
+                        <p className="text-[12px] py-2 pl-4 leading-3 text-[#98A2B3]">
+                          Select a file or drag and drop
+                        </p>
+                      </Dragger>
+                    </Spin>
+                  ) : (
+                    <ShowFileComponent
+                      file={{
+                        name: sendEmailFormik.values.file.name,
+                        extension: sendEmailFormik.values.file.type,
+                        type: sendEmailFormik.values.file.type,
+                        url: URL.createObjectURL(sendEmailFormik.values.file),
+                      }}
+                      onDelete={() => {
+                        sendEmailFormik.setFieldValue('file', undefined);
+                      }}
+                    />
+                  )}
                 </div>
 
                 <CustomButton
@@ -282,7 +292,6 @@ export function SendEmailModal({ to, projectId }: Props) {
             </Spin>
           </Popups>
         </div>
-
       </ModalComponent>
     </div>
   );

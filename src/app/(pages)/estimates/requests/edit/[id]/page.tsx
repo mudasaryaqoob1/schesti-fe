@@ -315,12 +315,14 @@ const EditEstimateRequest = () => {
         enableReinitialize
         onSubmit={submitHandler}
       >
-        {({ handleSubmit,
+        {({
+          handleSubmit,
           setFieldValue,
           values,
           setFieldTouched,
           touched,
-          errors }) => {
+          errors,
+        }) => {
           return (
             <>
               <ModalComponent

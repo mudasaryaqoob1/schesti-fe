@@ -25,7 +25,6 @@ const ExistingClient = ({ setModalOpen, onSelectClient }: Props) => {
   const [search, setSearch] = useState('');
   const [selectedClientId, setSelectedClientId] = useState('');
 
-
   const filteredData = clientsData
     ? (clientsData as IClient[]).filter((client) => {
         if (!search) {

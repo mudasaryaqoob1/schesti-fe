@@ -132,7 +132,7 @@ export function CategoryModal({
           />
           <CloseOutlined
             className="cursor-pointer"
-            style={{ width : '24px' , height : '24px'}}
+            style={{ width: '24px', height: '24px' }}
             onClick={() => setCategoryModal(false)}
           />
         </div>

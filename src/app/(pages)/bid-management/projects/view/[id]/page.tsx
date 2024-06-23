@@ -96,8 +96,9 @@ function OwnerProjectDetailsPage() {
                 label: (
                   <QuaternaryHeading
                     title={tab}
-                    className={`!w-full ${activeTab === tab ? 'text-schestiPrimary' : 'text-black'
-                      }`}
+                    className={`!w-full ${
+                      activeTab === tab ? 'text-schestiPrimary' : 'text-black'
+                    }`}
                   />
                 ),
                 tabKey: tab,
@@ -108,15 +109,15 @@ function OwnerProjectDetailsPage() {
       </div>
 
       {activeTab === SUMMARY ? <ProjectSummary /> : null}
-      {activeTab === BIDS ? <ProjectBids
-        projectId={params.id}
-      /> : null}
+      {activeTab === BIDS ? <ProjectBids projectId={params.id} /> : null}
       {activeTab === DESIGN_TEAM ? <ProjectDesignTeam /> : null}
       {activeTab === ACTIVITY_AND_STATUS_TRACKING ? (
         <ProjectAcitivityAndStatusTracking projectId={params.id} />
       ) : null}
       {activeTab === DOCUMENTS ? <ProjectDocuments id={params.id} /> : null}
-      {activeTab === RFI_CENTER ? <ProjectRFICenter projectId={params.id} /> : null}
+      {activeTab === RFI_CENTER ? (
+        <ProjectRFICenter projectId={params.id} />
+      ) : null}
     </section>
   );
 }

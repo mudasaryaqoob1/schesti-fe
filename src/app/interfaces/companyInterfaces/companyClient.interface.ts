@@ -1,5 +1,5 @@
 export interface IClient {
-  _id?:string;
+  _id?: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -10,7 +10,7 @@ export interface IClient {
 }
 
 export interface ICreateClient {
-  _id?:string;
+  _id?: string;
   firstName: string;
   lastName: string;
   email?: string;
@@ -19,7 +19,6 @@ export interface ICreateClient {
   address: string;
   secondAddress: string;
 }
-
 
 export interface IPartner {
   firstName: string;
@@ -31,16 +30,15 @@ export interface IPartner {
   secondAddress: string;
 }
 
-
 export interface IDashboardStats {
-  totalGeneratedEstimates : number
-  totalSchedules : number
-  totalClients : number
-  totalInvoices : number
-  totalMeetings : number
-  totalTakeoff : number,
-  invoicesDetail : {type : string , value : string}[],
-  monthlyTakeOffTotalRecords : Number []
-  monthlyScheduleTotalRecords : Number []
-  monthlyEstimateTotalRecords : Number []
+  totalGeneratedEstimates: number;
+  totalSchedules: number;
+  totalClients: number;
+  totalInvoices: number;
+  totalMeetings: number;
+  totalTakeoff: number;
+  invoicesDetail: { type: string; value: string }[];
+  monthlyTakeOffTotalRecords: Number[];
+  monthlyScheduleTotalRecords: Number[];
+  monthlyEstimateTotalRecords: Number[];
 }

@@ -36,14 +36,26 @@ export const options = {
   },
 };
 
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July' , 'August' , 'September' , 'October' , 'November' , 'December'];
+const labels = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
 
 type Props = {
   fetchDashboardState: IDashboardStats | undefined;
 };
 
 function StatisticsReport({ fetchDashboardState }: Props) {
-
   const data = {
     labels,
     datasets: [
@@ -68,7 +80,7 @@ function StatisticsReport({ fetchDashboardState }: Props) {
     ],
   };
 
-  return <Line options={options} data={data}  />;
+  return <Line options={options} data={data} />;
 }
 
 export default StatisticsReport;

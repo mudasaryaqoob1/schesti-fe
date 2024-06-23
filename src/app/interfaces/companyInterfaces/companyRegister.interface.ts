@@ -5,7 +5,7 @@ export interface IRegisterCompany {
   phone: string;
   userId?: string | string[];
   companyLogo?: string | null;
-  country: string,
-  city: string,
-  state: string,
+  country: string;
+  city: string;
+  state: string;
 }

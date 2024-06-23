@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Button from '@/app/component/customButton/button';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { useParams, } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import { useDispatch } from 'react-redux';
 
@@ -25,11 +25,11 @@ const initialValues: IResetPasswordInterface = {
 
 const newPasswordSchema: any = Yup.object({
   password: Yup.string()
-    .required("Password is required")
+    .required('Password is required')
     .matches(
       // eslint-disable-next-line no-useless-escape
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-      "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
+      'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character'
     ),
   confirmPassword: Yup.string()
     .required('Please retype your password.')

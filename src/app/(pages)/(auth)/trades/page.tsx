@@ -109,11 +109,12 @@ const Trades = () => {
                       <h6 className="text-gray-700">
                         {data.heading}{' '}
                         <span
-                          className={`text-gray-500 ms-3 ${selectedTabs[data.heading] &&
+                          className={`text-gray-500 ms-3 ${
+                            selectedTabs[data.heading] &&
                             selectedTabs[data.heading].length > 0
-                            ? ''
-                            : 'hidden'
-                            }`}
+                              ? ''
+                              : 'hidden'
+                          }`}
                         >
                           {selectedTabs[data.heading] &&
                             selectedTabs[data.heading].length}{' '}
@@ -122,8 +123,9 @@ const Trades = () => {
                       </h6>
                       <svg
                         data-accordion-icon
-                        className={`w-4 h-4 transform ${activeCollapse === index ? 'rotate-0' : '-rotate-180'
-                          }`}
+                        className={`w-4 h-4 transform ${
+                          activeCollapse === index ? 'rotate-0' : '-rotate-180'
+                        }`}
                         viewBox="0 0 20 20"
                         fill="none"
                       >
@@ -139,24 +141,26 @@ const Trades = () => {
                   </h2>
                   <div
                     id={`accordion-flush-body-${index}`}
-                    className={`${activeCollapse === index ? 'block' : 'hidden'
-                      }`}
+                    className={`${
+                      activeCollapse === index ? 'block' : 'hidden'
+                    }`}
                     aria-labelledby={`accordion-flush-heading-${index}`}
                   >
                     <div className="flex flex-wrap">
                       {data.tabs.map((tab, tabIndex) => (
                         <div
                           key={tabIndex}
-                          className={`border rounded-full p-3 mr-2 mb-2 flex text-gray-500 items-center cursor-pointer ${selectedTabs[data.heading] &&
+                          className={`border rounded-full p-3 mr-2 mb-2 flex text-gray-500 items-center cursor-pointer ${
+                            selectedTabs[data.heading] &&
                             selectedTabs[data.heading].includes(tab.name)
-                            ? 'foundation-primary-400'
-                            : ''
-                            }`}
+                              ? 'foundation-primary-400'
+                              : ''
+                          }`}
                           onClick={() => toggleTab(data.heading, tab.name)}
                         >
                           <span>{tab.name}</span>
                           {selectedTabs[data.heading] &&
-                            selectedTabs[data.heading].includes(tab.name) ? (
+                          selectedTabs[data.heading].includes(tab.name) ? (
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               className="w-4 h-4 ml-1 text-red-500"

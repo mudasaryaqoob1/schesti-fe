@@ -13,7 +13,10 @@ export function ProjectDetails({ fetchDashboardState }: Props) {
           <span className="w-3 h-3 bg-midnightBlue2" />
           <SenaryHeading title="Takeoff Project" />
         </div>
-        <SenaryHeading title={`${fetchDashboardState?.totalTakeoff}`} className="font-medium" />
+        <SenaryHeading
+          title={`${fetchDashboardState?.totalTakeoff}`}
+          className="font-medium"
+        />
       </div>
       <div className="flex justify-between">
         <div className="flex gap-3 items-center">
@@ -45,7 +48,10 @@ export function ProjectDetails({ fetchDashboardState }: Props) {
 
           <SenaryHeading title="Scheduled Project" />
         </div>
-        <SenaryHeading title={`${fetchDashboardState?.totalSchedules}`} className="font-medium" />
+        <SenaryHeading
+          title={`${fetchDashboardState?.totalSchedules}`}
+          className="font-medium"
+        />
       </div>
       <div className="flex justify-between">
         <div className="flex items-center gap-3">

@@ -34,12 +34,17 @@ import { useSelector } from 'react-redux';
 const ITEMS_PER_PAGE = 5;
 
 function ContractorScreen() {
-  const authUser = useSelector((state: RootState) => state.auth.user as { user?: IUserInterface });
+  const authUser = useSelector(
+    (state: RootState) => state.auth.user as { user?: IUserInterface }
+  );
 
-  const [selectedBid, setSelectedBid] = useState<(IBidManagement & { userDetails: IUserInterface[] }) | null>(null);
+  const [selectedBid, setSelectedBid] = useState<
+    (IBidManagement & { userDetails: IUserInterface[] }) | null
+  >(null);
   const [search, setSearch] = useState('');
   const [showFilters, setShowFilters] = useState(false);
-  const [selectedProjectSavedBid, setSelectedProjectSavedBid] = useState<any>(null);
+  const [selectedProjectSavedBid, setSelectedProjectSavedBid] =
+    useState<any>(null);
   const [filters, setFilters] = useState<{
     trades: string[];
     projectValue: number;
@@ -49,7 +54,7 @@ function ContractorScreen() {
     trades: [],
     projectValue: 0,
     page: 1,
-    limit: ITEMS_PER_PAGE
+    limit: ITEMS_PER_PAGE,
   });
 
   const [invitedfilters, setInvitedfilters] = useState<{
@@ -61,7 +66,7 @@ function ContractorScreen() {
     trades: [],
     projectValue: 0,
     page: 1,
-    limit: ITEMS_PER_PAGE
+    limit: ITEMS_PER_PAGE,
   });
 
   function toggleFilters() {
@@ -79,42 +84,53 @@ function ContractorScreen() {
     return bidManagementService.httpGetBidProjectInvitedUsers(invitedfilters);
   };
 
-  const projectsQuery = useQuery(['bid-projects', filters.page, filters.limit, filters.projectValue, filters.trades], fetchProjects);
-  const invitedUserProjectsQuery = useQuery(['invited-user-projects', invitedfilters.page, invitedfilters.limit], fetchInvitedProjects);
+  const projectsQuery = useQuery(
+    [
+      'bid-projects',
+      filters.page,
+      filters.limit,
+      filters.projectValue,
+      filters.trades,
+    ],
+    fetchProjects
+  );
+  const invitedUserProjectsQuery = useQuery(
+    ['invited-user-projects', invitedfilters.page, invitedfilters.limit],
+    fetchInvitedProjects
+  );
 
   const projects =
     projectsQuery?.data && projectsQuery?.data?.data
       ? projectsQuery.data.data.records
       : [];
 
-  const paginationInfo = projectsQuery.data && projectsQuery.data.data
-    ? projectsQuery.data.data.paginationInfo
-    : { currentPage: 0, pages: 0, totalRecords: 0, perPage: 0 };
+  const paginationInfo =
+    projectsQuery.data && projectsQuery.data.data
+      ? projectsQuery.data.data.paginationInfo
+      : { currentPage: 0, pages: 0, totalRecords: 0, perPage: 0 };
 
-  const invitedPaginationInfo = invitedUserProjectsQuery.data && invitedUserProjectsQuery.data.data
-    ? invitedUserProjectsQuery.data.data.paginationInfo
-    : { currentPage: 0, pages: 0, totalRecords: 0, perPage: 0 };
-
+  const invitedPaginationInfo =
+    invitedUserProjectsQuery.data && invitedUserProjectsQuery.data.data
+      ? invitedUserProjectsQuery.data.data.paginationInfo
+      : { currentPage: 0, pages: 0, totalRecords: 0, perPage: 0 };
 
   const invitedProjects =
     invitedUserProjectsQuery.data && invitedUserProjectsQuery.data.data
       ? invitedUserProjectsQuery.data.data?.records
       : [];
 
-  const currentInvitedProjects = invitedProjects
+  const currentInvitedProjects = invitedProjects;
 
-  const currentExploreProjects = projects
-    .filter((project) => {
-      if (!search) {
-        return project;
-      }
+  const currentExploreProjects = projects.filter((project) => {
+    if (!search) {
+      return project;
+    }
 
-      return (
-        project.projectName.toLowerCase().includes(search.toLowerCase()) ||
-        project.description?.toLowerCase().includes(search.toLowerCase())
-      );
-    })
-
+    return (
+      project.projectName.toLowerCase().includes(search.toLowerCase()) ||
+      project.description?.toLowerCase().includes(search.toLowerCase())
+    );
+  });
 
   // const dataToExport = currentExploreProjects.filter((project) => {
   //   if (search === '') {
@@ -143,7 +159,6 @@ function ContractorScreen() {
       console.error('Error fetching project saved bids:', err);
     }
   };
-
 
   return (
     <section className="mt-6 mx-4 ">
@@ -257,7 +272,12 @@ function ContractorScreen() {
                     current={invitedfilters.page}
                     pageSize={invitedfilters.limit}
                     total={invitedPaginationInfo.totalRecords}
-                    onChange={(page) => setInvitedfilters(prevFilters => ({ ...prevFilters, page }))}
+                    onChange={(page) =>
+                      setInvitedfilters((prevFilters) => ({
+                        ...prevFilters,
+                        page,
+                      }))
+                    }
                   />
                 </div>
               )}
@@ -315,8 +335,11 @@ function ContractorScreen() {
                     setSelectedBid(null);
                   }
                 }}
-
-                isInvitation={authUser && authUser.user && selectedBid.invitedMembers.includes(authUser.user.email)}
+                isInvitation={
+                  authUser &&
+                  authUser.user &&
+                  selectedBid.invitedMembers.includes(authUser.user.email)
+                }
                 onSuccessfullyDecline={() => {
                   invitedUserProjectsQuery.refetch();
                   setSelectedBid(null);
@@ -331,7 +354,9 @@ function ContractorScreen() {
               current={filters.page}
               pageSize={filters.limit}
               total={paginationInfo.totalRecords}
-              onChange={(page) => setFilters(prevFilters => ({ ...prevFilters, page }))}
+              onChange={(page) =>
+                setFilters((prevFilters) => ({ ...prevFilters, page }))
+              }
             />
           </div>
         )}

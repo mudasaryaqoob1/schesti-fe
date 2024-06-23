@@ -25,7 +25,7 @@ import { useMutation, useQuery } from 'react-query';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { AxiosError } from 'axios';
 import { proposalService } from '@/app/services/proposal.service';
-import { useParams, } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { bidManagementService } from '@/app/services/bid-management.service';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
 import { ProjectIntro } from './components/ProjectInto';
@@ -74,7 +74,8 @@ const ValidationSchema = Yup.object().shape({
         return wordCount <= 300;
       },
       message: 'Additional details should not exceed 300 words',
-    }).required('Additional details is required'),
+    })
+    .required('Additional details is required'),
   priceExpiryDuration: Yup.number().required(
     'Price expiry duration is required'
   ),
@@ -90,7 +91,9 @@ const ValidationSchema = Yup.object().shape({
   }),
   projectScopes: Yup.array().of(
     Yup.object().shape({
-      description: Yup.string().max(100, "Description must be of 100 characters.").required('Description is required'),
+      description: Yup.string()
+        .max(100, 'Description must be of 100 characters.')
+        .required('Description is required'),
       quantity: Yup.number().required('Quantity is required'),
       price: Yup.number().required('Unit price is required'),
     })
@@ -108,7 +111,10 @@ function ContractorSubmitBidPage() {
   const query = useQuery(
     ['getOwnerProjectById', params.id],
     () => {
-      return bidManagementService.httpGetOwnerProjectById(params.id, { page: 1, limit: 10 });
+      return bidManagementService.httpGetOwnerProjectById(params.id, {
+        page: 1,
+        limit: 10,
+      });
     },
     {
       onSuccess(data) {
@@ -122,7 +128,6 @@ function ContractorSubmitBidPage() {
       },
     }
   );
-
 
   const mutation = useMutation<
     IResponseInterface<{ submittedProposal: any }>,
@@ -169,7 +174,6 @@ function ContractorSubmitBidPage() {
     },
     validationSchema: ValidationSchema,
   });
-
 
   useEffect(() => {
     if (lastInputRef.current) {
@@ -221,26 +225,38 @@ function ContractorSubmitBidPage() {
       dataIndex: 'description',
       title: 'Description',
       render(value, _record, index) {
-        const error = typeof formik.errors.projectScopes !== 'string' && formik.errors.projectScopes && (formik.errors.projectScopes[index] as FormikErrors<ProjectScope>)?.description;
+        const error =
+          typeof formik.errors.projectScopes !== 'string' &&
+          formik.errors.projectScopes &&
+          (formik.errors.projectScopes[index] as FormikErrors<ProjectScope>)
+            ?.description;
         // @ts-ignore
-        const isTouched = formik.touched.projectScopes && (formik.touched.projectScopes as FormikTouched<ProjectScope>).description && (formik.touched.projectScopes)?.description[index];
+        const isTouched =
+          formik.touched.projectScopes &&
+          (formik.touched.projectScopes as FormikTouched<ProjectScope>)
+            .description &&
+          formik.touched.projectScopes?.description[index];
         return (
-          <div className='space-y-1'>
+          <div className="space-y-1">
             <input
-              className={`border ${isTouched && error ? "border-red-500" : ""}  p-2 rounded-md focus:outline-none w-full h-full bg-transparent`}
+              className={`border ${isTouched && error ? 'border-red-500' : ''}  p-2 rounded-md focus:outline-none w-full h-full bg-transparent`}
               type="text"
-              ref={index === formik.values.projectScopes.length - 1 ? lastInputRef : null}
+              ref={
+                index === formik.values.projectScopes.length - 1
+                  ? lastInputRef
+                  : null
+              }
               value={value}
-              placeholder='Type Description'
+              placeholder="Type Description"
               onChange={(e) => {
                 updateScope(index, 'description', e.target.value);
               }}
               onBlur={formik.handleBlur}
               name={`projectScopes.description[${index}]`}
             />
-            {isTouched && error ? <p className='text-xs text-red-500'>
-              {error}
-            </p> : null}
+            {isTouched && error ? (
+              <p className="text-xs text-red-500">{error}</p>
+            ) : null}
           </div>
         );
       },
@@ -250,15 +266,23 @@ function ContractorSubmitBidPage() {
       dataIndex: 'quantity',
       title: 'Quantity',
       render(value, _record, index) {
-        const error = typeof formik.errors.projectScopes !== 'string' && formik.errors.projectScopes && (formik.errors.projectScopes[index] as FormikErrors<ProjectScope>)?.quantity;
+        const error =
+          typeof formik.errors.projectScopes !== 'string' &&
+          formik.errors.projectScopes &&
+          (formik.errors.projectScopes[index] as FormikErrors<ProjectScope>)
+            ?.quantity;
         // @ts-ignore
-        const isTouched = formik.touched.projectScopes && (formik.touched.projectScopes as FormikTouched<ProjectScope>).quantity && (formik.touched.projectScopes)?.quantity[index];
+        const isTouched =
+          formik.touched.projectScopes &&
+          (formik.touched.projectScopes as FormikTouched<ProjectScope>)
+            .quantity &&
+          formik.touched.projectScopes?.quantity[index];
         return (
-          <div className='space-y-1'>
+          <div className="space-y-1">
             <input
-              className={`border ${isTouched && error ? "border-red-500" : ""} p-2 rounded-md  focus:outline-none w-full h-full bg-transparent`}
+              className={`border ${isTouched && error ? 'border-red-500' : ''} p-2 rounded-md  focus:outline-none w-full h-full bg-transparent`}
               type="number"
-              placeholder='Type Quantity'
+              placeholder="Type Quantity"
               value={value}
               onChange={(e) => {
                 updateScope(index, 'quantity', Number(e.target.value));
@@ -266,7 +290,9 @@ function ContractorSubmitBidPage() {
               onBlur={formik.handleBlur}
               name={`projectScopes.quantity[${index}]`}
             />
-            {isTouched && error ? <p className='text-xs text-red-500'>{error}</p> : null}
+            {isTouched && error ? (
+              <p className="text-xs text-red-500">{error}</p>
+            ) : null}
           </div>
         );
       },
@@ -276,24 +302,33 @@ function ContractorSubmitBidPage() {
       dataIndex: 'price',
       title: 'Unit Price',
       render: (value, _record, index) => {
-        const error = typeof formik.errors.projectScopes !== 'string' && formik.errors.projectScopes && (formik.errors.projectScopes[index] as FormikErrors<ProjectScope>)?.price;
+        const error =
+          typeof formik.errors.projectScopes !== 'string' &&
+          formik.errors.projectScopes &&
+          (formik.errors.projectScopes[index] as FormikErrors<ProjectScope>)
+            ?.price;
         // @ts-ignore
-        const isTouched = formik.touched.projectScopes && (formik.touched.projectScopes as FormikTouched<ProjectScope>).price && (formik.touched.projectScopes)?.price[index];
+        const isTouched =
+          formik.touched.projectScopes &&
+          (formik.touched.projectScopes as FormikTouched<ProjectScope>).price &&
+          formik.touched.projectScopes?.price[index];
 
         return (
           <div className="space-y-1">
             <input
-              className={`border ${isTouched && error ? "border-red-500" : ""} p-2 rounded-md focus:outline-none w-full h-full bg-transparent`}
+              className={`border ${isTouched && error ? 'border-red-500' : ''} p-2 rounded-md focus:outline-none w-full h-full bg-transparent`}
               type="number"
               value={value}
-              placeholder='$0.00'
+              placeholder="$0.00"
               onChange={(e) => {
                 updateScope(index, 'price', Number(e.target.value));
               }}
               onBlur={formik.handleBlur}
               name={`projectScopes.price[${index}]`}
             />
-            {isTouched && error ? <p className='text-xs text-red-500'>{error}</p> : null}
+            {isTouched && error ? (
+              <p className="text-xs text-red-500">{error}</p>
+            ) : null}
           </div>
         );
       },
@@ -436,14 +471,20 @@ function ContractorSubmitBidPage() {
               },
               onBlur: formik.handleBlur,
             }}
-            hasError={formik.touched.bidTrades && Boolean(formik.errors.bidTrades)}
-            errorMessage={formik.touched.bidTrades && formik.errors.bidTrades ? formik.errors.bidTrades.toString() : ""}
+            hasError={
+              formik.touched.bidTrades && Boolean(formik.errors.bidTrades)
+            }
+            errorMessage={
+              formik.touched.bidTrades && formik.errors.bidTrades
+                ? formik.errors.bidTrades.toString()
+                : ''
+            }
           />
           <div className="flex items-center space-x-2">
             <div className="flex-1">
               <InputComponent
                 label="Price"
-                placeholder='Enter Price'
+                placeholder="Enter Price"
                 name="price"
                 type="number"
                 field={{
@@ -455,7 +496,11 @@ function ContractorSubmitBidPage() {
                   onBlur: formik.handleBlur,
                 }}
                 hasError={formik.touched.price && Boolean(formik.errors.price)}
-                errorMessage={formik.touched.price && formik.errors.price ? formik.errors.price : ""}
+                errorMessage={
+                  formik.touched.price && formik.errors.price
+                    ? formik.errors.price
+                    : ''
+                }
               />
             </div>
 
@@ -504,8 +549,16 @@ function ContractorSubmitBidPage() {
                     />
                   ),
                 }}
-                hasError={formik.touched.projectDuration && Boolean(formik.errors.projectDuration)}
-                errorMessage={formik.touched.projectDuration && formik.errors.projectDuration ? formik.errors.projectDuration : ""}
+                hasError={
+                  formik.touched.projectDuration &&
+                  Boolean(formik.errors.projectDuration)
+                }
+                errorMessage={
+                  formik.touched.projectDuration &&
+                  formik.errors.projectDuration
+                    ? formik.errors.projectDuration
+                    : ''
+                }
               />
             </div>
           </div>
@@ -513,7 +566,7 @@ function ContractorSubmitBidPage() {
           <TextAreaComponent
             label="Additional Details"
             name="additionalDetails"
-            placeholder='Write details here...'
+            placeholder="Write details here..."
             field={{
               rows: 10,
               value: formik.values.additionalDetails,
@@ -522,8 +575,16 @@ function ContractorSubmitBidPage() {
               },
               onBlur: formik.handleBlur,
             }}
-            hasError={formik.touched.additionalDetails && Boolean(formik.errors.additionalDetails)}
-            errorMessage={formik.touched.additionalDetails && formik.errors.additionalDetails ? formik.errors.additionalDetails : ""}
+            hasError={
+              formik.touched.additionalDetails &&
+              Boolean(formik.errors.additionalDetails)
+            }
+            errorMessage={
+              formik.touched.additionalDetails &&
+              formik.errors.additionalDetails
+                ? formik.errors.additionalDetails
+                : ''
+            }
           />
         </div>
 
@@ -553,8 +614,16 @@ function ContractorSubmitBidPage() {
                   },
                   onBlur: formik.handleBlur,
                 }}
-                hasError={formik.touched.priceExpiryDuration && Boolean(formik.errors.priceExpiryDuration)}
-                errorMessage={formik.touched.priceExpiryDuration && formik.errors.priceExpiryDuration ? formik.errors.priceExpiryDuration : ""}
+                hasError={
+                  formik.touched.priceExpiryDuration &&
+                  Boolean(formik.errors.priceExpiryDuration)
+                }
+                errorMessage={
+                  formik.touched.priceExpiryDuration &&
+                  formik.errors.priceExpiryDuration
+                    ? formik.errors.priceExpiryDuration
+                    : ''
+                }
               />
             </div>
             <div className="flex-1">
@@ -575,52 +644,62 @@ function ContractorSubmitBidPage() {
                   onBlur: formik.handleBlur,
                   type: 'number',
                 }}
-                hasError={formik.touched.increaseInPercentage && Boolean(formik.errors.increaseInPercentage)}
-                errorMessage={formik.touched.increaseInPercentage && formik.errors.increaseInPercentage ? formik.errors.increaseInPercentage : ""}
+                hasError={
+                  formik.touched.increaseInPercentage &&
+                  Boolean(formik.errors.increaseInPercentage)
+                }
+                errorMessage={
+                  formik.touched.increaseInPercentage &&
+                  formik.errors.increaseInPercentage
+                    ? formik.errors.increaseInPercentage
+                    : ''
+                }
               />
             </div>
           </div>
-          {!formik.values.file.url ? <div className="grid grid-cols-12">
-            <div className="col-span-5">
-              <Dragger
-                name={'file'}
-                accept="image/*,gif,application/pdf"
-                multiple={false}
-                style={{
-                  borderStyle: 'dashed',
-                  borderWidth: 6,
-                  borderColor: '#CDD2E1',
-                }}
-                beforeUpload={(file) => {
-                  const isLessThan2MB = file.size < 2 * 1024 * 1024;
-                  if (!isLessThan2MB) {
-                    toast.error('File size should be less than 2MB');
+          {!formik.values.file.url ? (
+            <div className="grid grid-cols-12">
+              <div className="col-span-5">
+                <Dragger
+                  name={'file'}
+                  accept="image/*,gif,application/pdf"
+                  multiple={false}
+                  style={{
+                    borderStyle: 'dashed',
+                    borderWidth: 6,
+                    borderColor: '#CDD2E1',
+                  }}
+                  beforeUpload={(file) => {
+                    const isLessThan2MB = file.size < 2 * 1024 * 1024;
+                    if (!isLessThan2MB) {
+                      toast.error('File size should be less than 2MB');
+                      return false;
+                    }
+                    handleFileUpload(file);
                     return false;
-                  }
-                  handleFileUpload(file);
-                  return false;
-                }}
-                itemRender={() => {
-                  return null;
-                }}
-              >
-                <p className="ant-upload-drag-icon">
-                  <Image
-                    src={'/uploadcloud.svg'}
-                    width={50}
-                    height={50}
-                    alt="upload"
-                  />
-                </p>
-                <p className="text-[12px] py-2 leading-3 text-[#98A2B3]">
-                  Drop your image here, or browse
-                </p>
-                <p className="text-[12px] leading-3 text-[#98A2B3]">
-                  PNG, GIF, JPG, Max size: 2MB
-                </p>
-              </Dragger>
+                  }}
+                  itemRender={() => {
+                    return null;
+                  }}
+                >
+                  <p className="ant-upload-drag-icon">
+                    <Image
+                      src={'/uploadcloud.svg'}
+                      width={50}
+                      height={50}
+                      alt="upload"
+                    />
+                  </p>
+                  <p className="text-[12px] py-2 leading-3 text-[#98A2B3]">
+                    Drop your image here, or browse
+                  </p>
+                  <p className="text-[12px] leading-3 text-[#98A2B3]">
+                    PNG, GIF, JPG, Max size: 2MB
+                  </p>
+                </Dragger>
+              </div>
             </div>
-          </div> : null}
+          ) : null}
           {formik.values.file.url ? (
             <ShowFileComponent
               file={formik.values.file}
@@ -637,8 +716,7 @@ function ContractorSubmitBidPage() {
             <Spin />
           ) : null}
 
-
-          <Divider className='!my-5' />
+          <Divider className="!my-5" />
           <div
             className="flex w-fit items-center space-x-2 cursor-pointer "
             onClick={openProjectScope}
@@ -646,18 +724,20 @@ function ContractorSubmitBidPage() {
             <p className="text-schestiPrimary text-[18px] leading-8 font-medium underline underline-offset-2 ">
               Add Project Scope
             </p>
-            {showProjectScope ? <Image
-              src={'/x-circle.svg'}
-              width={24}
-              height={23}
-              alt="forward arrow icon"
-              className="cursor-pointer"
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                setShowProjectScope(false);
-              }}
-            /> : null}
+            {showProjectScope ? (
+              <Image
+                src={'/x-circle.svg'}
+                width={24}
+                height={23}
+                alt="forward arrow icon"
+                className="cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  setShowProjectScope(false);
+                }}
+              />
+            ) : null}
           </div>
 
           {showProjectScope ? (
@@ -673,9 +753,10 @@ function ContractorSubmitBidPage() {
                         className="text-[#98A2B3] text-[14px] leading-5 font-normal cursor-pointer"
                         onClick={() => {
                           // check if the last scope has all the fields filled
-                          const lastScope = formik.values.projectScopes[
-                            formik.values.projectScopes.length - 1
-                          ];
+                          const lastScope =
+                            formik.values.projectScopes[
+                              formik.values.projectScopes.length - 1
+                            ];
                           if (!lastScope) {
                             addNewScope();
                             return;
@@ -703,9 +784,13 @@ function ContractorSubmitBidPage() {
       </div>
 
       <div className="my-3 flex justify-end space-x-3">
-        <WhiteButton text="Cancel" className="!w-36" onClick={() => {
-          router.back();
-        }} />
+        <WhiteButton
+          text="Cancel"
+          className="!w-36"
+          onClick={() => {
+            router.back();
+          }}
+        />
         <CustomButton
           text="Place Bid"
           className="!w-36"

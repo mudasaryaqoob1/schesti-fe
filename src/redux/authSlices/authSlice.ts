@@ -21,7 +21,7 @@ export const authSlice = createSlice({
     },
     setUserAction: (state, action: PayloadAction<{ user: any }>) => {
       state.user = action.payload;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(login.pending, (state) => {

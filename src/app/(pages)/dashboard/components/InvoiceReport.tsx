@@ -81,10 +81,6 @@ const MONTHS = [
 export default function InvoiceReport({ fetchDashboardState }: Props) {
   const [selectedMonth, setSelectedMonth] = useState('Month');
 
-  
-
- 
-
   const config: ColumnConfig = {
     data: fetchDashboardState?.invoicesDetail.length
       ? fetchDashboardState?.invoicesDetail

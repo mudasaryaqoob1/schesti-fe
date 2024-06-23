@@ -94,8 +94,9 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
           </div>
         </div>
         <div
-          className={`mt-4 md:grid-cols-4 md:grid-rows-2 gap-y-6 ${showEstimateDetails ? 'grid' : 'hidden'
-            }`}
+          className={`mt-4 md:grid-cols-4 md:grid-rows-2 gap-y-6 ${
+            showEstimateDetails ? 'grid' : 'hidden'
+          }`}
         >
           <div>
             <MinDesc

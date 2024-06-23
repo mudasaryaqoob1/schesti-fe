@@ -18,8 +18,8 @@ export function ProjectSummary() {
 
   const projectTrades = bid
     ? _.filter(tradesQuery.data?.data?.trades, (trade) =>
-      (bid.selectedTrades as unknown as string).includes(trade._id)
-    )
+        (bid.selectedTrades as unknown as string).includes(trade._id)
+      )
     : [];
 
   function filterTradesByParent(id: string, trades: ITrade[]) {
@@ -109,8 +109,8 @@ export function ProjectSummary() {
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
                 {bid
                   ? moment(bid.estimatedCompletionDate).format(
-                    'DD MMMM, YYYY hh:mm'
-                  )
+                      'DD MMMM, YYYY hh:mm'
+                    )
                   : ''}
               </p>
             </div>
@@ -160,9 +160,11 @@ export function ProjectSummary() {
                 title="Stage"
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
-              {bid ? <p className="text-[14px] leading-6 font-normal py-[7px] px-3 bg-[#ECFDF3] rounded-md w-fit text-[#027A48]">
-                {bid.stage}
-              </p> : null}
+              {bid ? (
+                <p className="text-[14px] leading-6 font-normal py-[7px] px-3 bg-[#ECFDF3] rounded-md w-fit text-[#027A48]">
+                  {bid.stage}
+                </p>
+              ) : null}
             </div>
           </div>
 
@@ -177,13 +179,13 @@ export function ProjectSummary() {
                 <div className="flex items-center space-x-3">
                   {bid
                     ? bid.projectType.map((pt) => (
-                      <p
-                        key={pt}
-                        className="px-[12px] rounded py-[7px] bg-schestiLightPrimary text-[#475467] text-[14px] leading-4"
-                      >
-                        {pt}
-                      </p>
-                    ))
+                        <p
+                          key={pt}
+                          className="px-[12px] rounded py-[7px] bg-schestiLightPrimary text-[#475467] text-[14px] leading-4"
+                        >
+                          {pt}
+                        </p>
+                      ))
                     : ''}
                 </div>
               </div>
@@ -196,13 +198,13 @@ export function ProjectSummary() {
                 <div className="grid justify-center grid-cols-3 gap-3 items-center space-x-3">
                   {bid
                     ? bid.projectBuildingUse.map((building) => (
-                      <p
-                        key={building}
-                        className="px-[12px] rounded py-[7px] bg-schestiLightPrimary text-[#475467] text-[14px] leading-4"
-                      >
-                        {building}
-                      </p>
-                    ))
+                        <p
+                          key={building}
+                          className="px-[12px] rounded py-[7px] bg-schestiLightPrimary text-[#475467] text-[14px] leading-4"
+                        >
+                          {building}
+                        </p>
+                      ))
                     : ''}
                 </div>
               </div>
@@ -218,13 +220,13 @@ export function ProjectSummary() {
                 <div className="flex items-center space-x-3">
                   {bid
                     ? bid.constructionTypes.map((ct) => (
-                      <p
-                        key={ct}
-                        className="px-[12px] rounded py-[7px] bg-schestiLightPrimary text-[#475467] text-[14px] leading-4"
-                      >
-                        {ct}
-                      </p>
-                    ))
+                        <p
+                          key={ct}
+                          className="px-[12px] rounded py-[7px] bg-schestiLightPrimary text-[#475467] text-[14px] leading-4"
+                        >
+                          {ct}
+                        </p>
+                      ))
                     : ''}
                 </div>
               </div>
@@ -241,15 +243,17 @@ export function ProjectSummary() {
                 {bid ? bid.description : ''}
               </p>
             </div>
-            {bid && bid.specialInstructions.length ? <div className="space-y-2">
-              <SenaryHeading
-                title="Special Instructions"
-                className="text-[14px] leading-6 text-[#98A2B3] font-normal"
-              />
-              <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {bid.specialInstructions}
-              </p>
-            </div> : null}
+            {bid && bid.specialInstructions.length ? (
+              <div className="space-y-2">
+                <SenaryHeading
+                  title="Special Instructions"
+                  className="text-[14px] leading-6 text-[#98A2B3] font-normal"
+                />
+                <p className="text-[#344054] text-[14px] leading-6 font-medium ">
+                  {bid.specialInstructions}
+                </p>
+              </div>
+            ) : null}
           </div>
         </fieldset>
 
@@ -258,140 +262,159 @@ export function ProjectSummary() {
             Trades
           </legend>
 
-          {tradeCategoryFilters.map(parent => {
-            return <div key={parent.value} className='my-2'>
-              <div className='border-b border-[#DFDFDF]'>
-                <SenaryHeading
-                  title={parent.label}
-                  className="text-xs leading-[30px] text-[#344054] font-normal"
-                />
+          {tradeCategoryFilters.map((parent) => {
+            return (
+              <div key={parent.value} className="my-2">
+                <div className="border-b border-[#DFDFDF]">
+                  <SenaryHeading
+                    title={parent.label}
+                    className="text-xs leading-[30px] text-[#344054] font-normal"
+                  />
+                </div>
+                <div className="flex items-center mt-2 gap-4">
+                  {filterTradesByParent(parent.value, projectTrades).map(
+                    (trade) => {
+                      return (
+                        <p
+                          key={trade._id}
+                          className="py-2 text-center px-[13px] bg-schestiLightPrimary rounded-full text-[#667085] text-[14px] leading-[14px] font-normal"
+                        >
+                          {trade.name}
+                        </p>
+                      );
+                    }
+                  )}
+                </div>
               </div>
-              <div className='flex items-center mt-2 gap-4'>
-                {filterTradesByParent(parent.value, projectTrades).map(trade => {
-                  return <p key={trade._id} className='py-2 text-center px-[13px] bg-schestiLightPrimary rounded-full text-[#667085] text-[14px] leading-[14px] font-normal'>
-                    {trade.name}
-                  </p>
-                })}
-              </div>
-            </div>
+            );
           })}
         </fieldset>
 
-        {bid ? <fieldset className="border-[2px] mt-[21px] space-y-4 p-4  rounded-lg border-dashed border-[#aeafb8] relative">
-          <legend className="text-[#667085] text-[14px] leading-6 absolute -top-4 z-10 bg-white w-fit px-2">
-            Event
-          </legend>
+        {bid ? (
+          <fieldset className="border-[2px] mt-[21px] space-y-4 p-4  rounded-lg border-dashed border-[#aeafb8] relative">
+            <legend className="text-[#667085] text-[14px] leading-6 absolute -top-4 z-10 bg-white w-fit px-2">
+              Event
+            </legend>
 
-          {bid.preBiddingMeeting && bid.preBiddingMeeting.isChecked ? <div>
-            <div className='flex items-center space-x-2 mb-1'>
-              <SenaryHeading
-                title={"Pre-Bid Meeting"}
-                className="text-[14px] leading-[22px] text-[#344054] font-normal"
-              />
+            {bid.preBiddingMeeting && bid.preBiddingMeeting.isChecked ? (
+              <div>
+                <div className="flex items-center space-x-2 mb-1">
+                  <SenaryHeading
+                    title={'Pre-Bid Meeting'}
+                    className="text-[14px] leading-[22px] text-[#344054] font-normal"
+                  />
 
-              {bid.preBiddingMeeting.isMandatory ? <SenaryHeading
-                title={"(Mandatory)"}
-                className="text-[14px] leading-[22px] text-[#F32051] font-normal"
-              /> : null}
-            </div>
+                  {bid.preBiddingMeeting.isMandatory ? (
+                    <SenaryHeading
+                      title={'(Mandatory)'}
+                      className="text-[14px] leading-[22px] text-[#F32051] font-normal"
+                    />
+                  ) : null}
+                </div>
 
-            {bid.preBiddingMeeting.type === 'Onsite' ? <div className='flex flex-col'>
-              <SenaryHeading
-                title={`${bid.preBiddingMeeting.location ? bid.preBiddingMeeting.location : ''}`}
-                className="text-[14px] leading-[22px] text-[#3A4856] font-semibold"
-              />
+                {bid.preBiddingMeeting.type === 'Onsite' ? (
+                  <div className="flex flex-col">
+                    <SenaryHeading
+                      title={`${bid.preBiddingMeeting.location ? bid.preBiddingMeeting.location : ''}`}
+                      className="text-[14px] leading-[22px] text-[#3A4856] font-semibold"
+                    />
 
-              <div className='flex items-center space-x-2'>
-                <SenaryHeading
-                  // 12 March, 2024 format
-                  title={`${moment(bid.preBiddingMeeting.date).format('DD MMMM, YYYY')}`}
-                  className="text-xs leading-[22px] text-[#929FB1] font-normal"
-                />
-                <SenaryHeading
-                  title={`${bid.preBiddingMeeting.time}`}
-                  className="text-xs leading-[22px] text-[#929FB1] font-normal"
-                />
+                    <div className="flex items-center space-x-2">
+                      <SenaryHeading
+                        // 12 March, 2024 format
+                        title={`${moment(bid.preBiddingMeeting.date).format('DD MMMM, YYYY')}`}
+                        className="text-xs leading-[22px] text-[#929FB1] font-normal"
+                      />
+                      <SenaryHeading
+                        title={`${bid.preBiddingMeeting.time}`}
+                        className="text-xs leading-[22px] text-[#929FB1] font-normal"
+                      />
+                    </div>
+                    <SenaryHeading
+                      title={`${bid.preBiddingMeeting.instruction}`}
+                      className="text-xs leading-[22px] text-[#3A4856] font-normal"
+                    />
+                  </div>
+                ) : typeof bid.preBiddingMeeting.meeting === 'string' ? null : (
+                  <MeetingCard
+                    item={bid.preBiddingMeeting.meeting!}
+                    shouldShowJoin
+                  />
+                )}
+
+                <div className="border-b border-[#DFDFDF] my-2"></div>
               </div>
-              <SenaryHeading
-                title={`${bid.preBiddingMeeting.instruction}`}
-                className="text-xs leading-[22px] text-[#3A4856] font-normal"
-              />
-            </div> : typeof bid.preBiddingMeeting.meeting === 'string' ? null : <MeetingCard
-              item={bid.preBiddingMeeting.meeting!}
-              shouldShowJoin
-            />}
+            ) : null}
 
-            <div className='border-b border-[#DFDFDF] my-2'></div>
-          </div> : null}
+            {bid.siteWalkthrough && bid.siteWalkthrough.isChecked ? (
+              <div>
+                <div className="flex items-center space-x-2 mb-1">
+                  <SenaryHeading
+                    title={'Site Walkthrough'}
+                    className="text-[14px] leading-[22px] text-[#344054] font-normal"
+                  />
 
-          {bid.siteWalkthrough && bid.siteWalkthrough.isChecked ? <div>
-            <div className='flex items-center space-x-2 mb-1'>
-              <SenaryHeading
-                title={"Site Walkthrough"}
-                className="text-[14px] leading-[22px] text-[#344054] font-normal"
-              />
+                  {bid.siteWalkthrough.isMandatory ? (
+                    <SenaryHeading
+                      title={'(Mandatory)'}
+                      className="text-[14px] leading-[22px] text-[#F32051] font-normal"
+                    />
+                  ) : null}
+                </div>
 
-              {bid.siteWalkthrough.isMandatory ? <SenaryHeading
-                title={"(Mandatory)"}
-                className="text-[14px] leading-[22px] text-[#F32051] font-normal"
-              /> : null}
-            </div>
+                <div className="flex flex-col">
+                  <SenaryHeading
+                    title={`${bid.siteWalkthrough.location ? bid.siteWalkthrough.location : ''}`}
+                    className="text-[14px] leading-[22px] text-[#3A4856] font-semibold"
+                  />
 
-            <div className='flex flex-col'>
-              <SenaryHeading
-                title={`${bid.siteWalkthrough.location ? bid.siteWalkthrough.location : ''}`}
-                className="text-[14px] leading-[22px] text-[#3A4856] font-semibold"
-              />
+                  <div className="flex items-center space-x-2">
+                    <SenaryHeading
+                      // 12 March, 2024 format
+                      title={`${moment(bid.siteWalkthrough.date).format('DD MMMM, YYYY')}`}
+                      className="text-xs leading-[22px] text-[#929FB1] font-normal"
+                    />
+                    <SenaryHeading
+                      title={`${bid.siteWalkthrough.time}`}
+                      className="text-xs leading-[22px] text-[#929FB1] font-normal"
+                    />
+                  </div>
+                  <SenaryHeading
+                    title={`${bid.siteWalkthrough.instruction}`}
+                    className="text-xs leading-[22px] text-[#3A4856] font-normal"
+                  />
+                </div>
 
-              <div className='flex items-center space-x-2'>
-                <SenaryHeading
-                  // 12 March, 2024 format
-                  title={`${moment(bid.siteWalkthrough.date).format('DD MMMM, YYYY')}`}
-                  className="text-xs leading-[22px] text-[#929FB1] font-normal"
-                />
-                <SenaryHeading
-                  title={`${bid.siteWalkthrough.time}`}
-                  className="text-xs leading-[22px] text-[#929FB1] font-normal"
-                />
+                <div className="border-b border-[#DFDFDF] my-2"></div>
               </div>
-              <SenaryHeading
-                title={`${bid.siteWalkthrough.instruction}`}
-                className="text-xs leading-[22px] text-[#3A4856] font-normal"
-              />
-            </div>
+            ) : null}
 
-            <div className='border-b border-[#DFDFDF] my-2'></div>
-          </div> : null}
+            {bid.rfiDeadline && bid.rfiDeadline.isChecked ? (
+              <div>
+                <div className="flex items-center space-x-2 mb-1">
+                  <SenaryHeading
+                    title={'RFI Deadline '}
+                    className="text-[14px] leading-[22px] text-[#344054] font-normal"
+                  />
+                </div>
 
-          {bid.rfiDeadline && bid.rfiDeadline.isChecked ? <div>
-            <div className='flex items-center space-x-2 mb-1'>
-              <SenaryHeading
-                title={"RFI Deadline "}
-                className="text-[14px] leading-[22px] text-[#344054] font-normal"
-              />
-            </div>
-
-            <div className='flex flex-col'>
-
-              <div className='flex items-center space-x-2'>
-                <SenaryHeading
-                  // 12 March, 2024 format
-                  title={`${moment(bid.rfiDeadline.date).format('DD MMMM, YYYY')}`}
-                  className="text-xs leading-[22px] text-[#929FB1] font-normal"
-                />
-                <SenaryHeading
-                  title={`${bid.rfiDeadline.time}`}
-                  className="text-xs leading-[22px] text-[#929FB1] font-normal"
-                />
+                <div className="flex flex-col">
+                  <div className="flex items-center space-x-2">
+                    <SenaryHeading
+                      // 12 March, 2024 format
+                      title={`${moment(bid.rfiDeadline.date).format('DD MMMM, YYYY')}`}
+                      className="text-xs leading-[22px] text-[#929FB1] font-normal"
+                    />
+                    <SenaryHeading
+                      title={`${bid.rfiDeadline.time}`}
+                      className="text-xs leading-[22px] text-[#929FB1] font-normal"
+                    />
+                  </div>
+                </div>
               </div>
-            </div>
-
-          </div> : null}
-
-        </fieldset> : null}
-
-
-
+            ) : null}
+          </fieldset>
+        ) : null}
       </div>
     </div>
   );

@@ -160,85 +160,86 @@ export function ProjectDocuments({ id }: Props) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-5 gap-4 mt-5">
         {bid
           ? bid.projectFiles.map((file, i) => (
-            <div key={i} className="border rounded">
-              <div className="bg-schestiLightPrimary flex items-center justify-between px-2 py-1 ">
-                <div className="flex items-center space-x-3">
-                  <Image
-                    src={'/file-05.svg'}
-                    width={16}
-                    height={16}
-                    alt="file"
-                  />
-                  <p className="text-[#667085] text-[14px] leading-6">
-                    {file?.name?.slice(0, 10)}.{file.extension}
-                  </p>
-                </div>
-                {loading ? (
-                  <Spin
-                    indicator={
-                      <LoadingOutlined style={{ fontSize: 24 }} spin />
-                    }
-                  />
-                ) : (
-                  <Dropdown
-                    menu={{
-                      items: [
-                        {
-                          key: 'view',
-                          label: 'View',
-                          onClick: () => {
-                            window.open(file.url, '_blank');
-                          }
-                        },
-                        {
-                          key: 'download',
-                          label: 'Download',
-                          onClick: () => downloadFile(file.url, file.name),
-                        },
-                        {
-                          key: 'delete',
-                          label: 'Delete',
-                          onClick: () => removeFile(file),
-                        },
-                      ],
-                    }}
-                  >
+              <div key={i} className="border rounded">
+                <div className="bg-schestiLightPrimary flex items-center justify-between px-2 py-1 ">
+                  <div className="flex items-center space-x-3">
                     <Image
-                      src={'/menuIcon.svg'}
+                      src={'/file-05.svg'}
                       width={16}
                       height={16}
-                      alt="close"
-                      className="cursor-pointer"
+                      alt="file"
                     />
-                  </Dropdown>
-                )}
-              </div>
-              <div className="p-2 pb-8">
-                {file && file.type?.includes('image') ? (
-                  <div className="w-auto h-[190px] xl:w-[230px] mx-auto relative">
-                    <Image alt="image" src={file.url} fill />
+                    <p className="text-[#667085] text-[14px] leading-6">
+                      {file?.name?.slice(0, 10)}.{file.extension}
+                    </p>
                   </div>
-                ) : file.type.includes('pdf') ? (
-                  <div className="relative mt-10 w-[100px] h-[100px] mx-auto">
-                    <Image
-                      alt="pdf"
-                      src={'/pdf.svg'}
-                      layout="fill"
-                      objectFit="cover"
+                  {loading ? (
+                    <Spin
+                      indicator={
+                        <LoadingOutlined style={{ fontSize: 24 }} spin />
+                      }
                     />
-                  </div>
-                ) : <div className="relative mt-10 w-[100px] h-[100px] mx-auto">
-                  <Image
-                    alt="file"
-                    src={'/file-05.svg'}
-                    layout="fill"
-                    objectFit="cover"
-                  />
+                  ) : (
+                    <Dropdown
+                      menu={{
+                        items: [
+                          {
+                            key: 'view',
+                            label: 'View',
+                            onClick: () => {
+                              window.open(file.url, '_blank');
+                            },
+                          },
+                          {
+                            key: 'download',
+                            label: 'Download',
+                            onClick: () => downloadFile(file.url, file.name),
+                          },
+                          {
+                            key: 'delete',
+                            label: 'Delete',
+                            onClick: () => removeFile(file),
+                          },
+                        ],
+                      }}
+                    >
+                      <Image
+                        src={'/menuIcon.svg'}
+                        width={16}
+                        height={16}
+                        alt="close"
+                        className="cursor-pointer"
+                      />
+                    </Dropdown>
+                  )}
                 </div>
-                }
+                <div className="p-2 pb-8">
+                  {file && file.type?.includes('image') ? (
+                    <div className="w-auto h-[190px] xl:w-[230px] mx-auto relative">
+                      <Image alt="image" src={file.url} fill />
+                    </div>
+                  ) : file.type.includes('pdf') ? (
+                    <div className="relative mt-10 w-[100px] h-[100px] mx-auto">
+                      <Image
+                        alt="pdf"
+                        src={'/pdf.svg'}
+                        layout="fill"
+                        objectFit="cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="relative mt-10 w-[100px] h-[100px] mx-auto">
+                      <Image
+                        alt="file"
+                        src={'/file-05.svg'}
+                        layout="fill"
+                        objectFit="cover"
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          ))
+            ))
           : null}
       </div>
     </div>

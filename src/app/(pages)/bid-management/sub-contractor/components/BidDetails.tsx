@@ -22,24 +22,30 @@ import { isEmpty, size } from 'lodash';
 import { SendEmailModal } from './SendEamil';
 import { downloadFile } from '@/app/utils/downloadFile';
 import { proposalService } from '@/app/services/proposal.service';
-import { WhatsappIcon, WhatsappShareButton, FacebookIcon, FacebookShareButton, TwitterIcon, TwitterShareButton } from 'react-share';
+import {
+  WhatsappIcon,
+  WhatsappShareButton,
+  FacebookIcon,
+  FacebookShareButton,
+  TwitterIcon,
+  TwitterShareButton,
+} from 'react-share';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { IUserInterface } from '@/app/interfaces/user.interface';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { createProjectActivity } from '../../utils';
 
-
 type Props = {
-  bid: (IBidManagement & { userDetails: IUserInterface[] });
+  bid: IBidManagement & { userDetails: IUserInterface[] };
   selectedProjectSavedBid?: ISaveUserBid;
   setSelectedProjectSavedBid?: any;
   bidClickHandler?: any;
   onBidRemove?: () => void;
   isInvitation?: boolean;
   onSuccessfullyDecline?: (_data: {
-    project: IBidManagement,
-    savedUserBid?: ISaveUserBid
+    project: IBidManagement;
+    savedUserBid?: ISaveUserBid;
   }) => void;
 };
 type RemoveUserBidProps = {
@@ -57,13 +63,17 @@ export function BidDetails({
   setSelectedProjectSavedBid,
   onBidRemove,
   onSuccessfullyDecline,
-  isInvitation = false
+  isInvitation = false,
 }: Props) {
   const router = useRouterHook();
   const [isDeclining, setIsDeclining] = useState(false);
   const [isDetailsLoading, setIsDetailsLoading] = useState(false);
-  const [bidSubmittedDetails, setBidSubmittedDetails] = useState<ISubmittedProjectBid[]>([]);
-  const authUser = useSelector((state: RootState) => state.auth.user as { user?: IUserInterface });
+  const [bidSubmittedDetails, setBidSubmittedDetails] = useState<
+    ISubmittedProjectBid[]
+  >([]);
+  const authUser = useSelector(
+    (state: RootState) => state.auth.user as { user?: IUserInterface }
+  );
 
   const saveUserBidMutation = useMutation<
     IResponseInterface<{ projectId: ISaveUserBid }>,
@@ -83,7 +93,6 @@ export function BidDetails({
 
       if (bid) {
         await createProjectActivity(bid._id, 'favourite');
-
       }
     },
     onError(error: any) {
@@ -150,12 +159,16 @@ export function BidDetails({
     // createProjectActivity(projectId, 'declined invitation');
     setIsDeclining(true);
     try {
-      const response = await bidManagementService.httpDeclineProjectInvitation(projectId);
+      const response =
+        await bidManagementService.httpDeclineProjectInvitation(projectId);
       if (response.data) {
         toast.success('Invitation declined successfully');
-        createProjectActivity(projectId, "decline");
+        createProjectActivity(projectId, 'decline');
         if (onSuccessfullyDecline) {
-          onSuccessfullyDecline({ project: bid, savedUserBid: selectedProjectSavedBid });
+          onSuccessfullyDecline({
+            project: bid,
+            savedUserBid: selectedProjectSavedBid,
+          });
           setSelectedProjectSavedBid(response.data.userSavedBid);
         }
       }
@@ -176,35 +189,39 @@ export function BidDetails({
     });
   };
 
-
-
-
   const handleProposalDetails = async (bidId: string) => {
     await createProjectActivity(bidId, 'viewed details');
     router.push(`/bid-management/details/${bidId}`);
-  }
+  };
 
-
-  // social media share click handler 
-  async function handleSocialMediaClick(projectId: string, socialMediaType: "whatsapp" | "facebook" | "twitter") {
+  // social media share click handler
+  async function handleSocialMediaClick(
+    projectId: string,
+    socialMediaType: 'whatsapp' | 'facebook' | 'twitter'
+  ) {
     // create project activity for social media share
     await createProjectActivity(projectId, `shared on ${socialMediaType}`);
   }
 
   // either projectOwner or projectCreator will be available and will be used by EmailSendModal component
-  const projectOwner = bid.userDetails && bid.userDetails?.length > 0 && bid.userDetails[0].email;
+  const projectOwner =
+    bid.userDetails && bid.userDetails?.length > 0 && bid.userDetails[0].email;
   const projectCreator = typeof bid.user !== 'string' && bid.user.email;
-  const isAuthUserBidSubmitter = bidSubmittedDetails.length > 0 && bidSubmittedDetails.some((bid) => bid.user === authUser?.user?._id);
-
+  const isAuthUserBidSubmitter =
+    bidSubmittedDetails.length > 0 &&
+    bidSubmittedDetails.some((bid) => bid.user === authUser?.user?._id);
 
   // if selectedProjectSavedBid has archiveType then no need to show the user action button
-  const isSelectedProjectSavedBidHasArchiveType = selectedProjectSavedBid && selectedProjectSavedBid.archiveType && selectedProjectSavedBid.archiveType.length > 0;
+  const isSelectedProjectSavedBidHasArchiveType =
+    selectedProjectSavedBid &&
+    selectedProjectSavedBid.archiveType &&
+    selectedProjectSavedBid.archiveType.length > 0;
 
   return (
     <div>
-      <div className='flex justify-end mb-1'>
+      <div className="flex justify-end mb-1">
         <Image
-          alt='close icon'
+          alt="close icon"
           src={'/closeicon.svg'}
           width={16}
           height={16}
@@ -213,7 +230,7 @@ export function BidDetails({
               onBidRemove();
             }
           }}
-          className='cursor-pointer'
+          className="cursor-pointer"
         />
       </div>
       {isAuthUserBidSubmitter && !isDetailsLoading && (
@@ -277,7 +294,7 @@ export function BidDetails({
           </TwitterShareButton>
           <SendEmailModal
             to={projectCreator || projectOwner || ''}
-            projectId={bid ? bid._id : ""}
+            projectId={bid ? bid._id : ''}
           />
         </div>
       </div>
@@ -307,8 +324,9 @@ export function BidDetails({
             className="text-[#475467] text-sm leading-4 font-normal"
           />
           <SenaryHeading
-            title={`${bid.city}, ${Country.getCountryByCode(bid.country)
-              ?.name}`}
+            title={`${bid.city}, ${
+              Country.getCountryByCode(bid.country)?.name
+            }`}
             className="text-[#475467] text-sm leading-4 font-semibold"
           />
         </div>
@@ -384,7 +402,6 @@ export function BidDetails({
       </div>
       <Divider className="my-2" />
       <div className="flex items-center py-[5px] px-[11px] space-x-2 cursor-pointer">
-
         {size(bid?.projectFiles) > 0 && (
           <>
             <Image
@@ -403,17 +420,19 @@ export function BidDetails({
       </div>
 
       <div className="mt-4 space-y-2">
-        {!isAuthUserBidSubmitter ? <CustomButton
-          text="Send Bid"
-          onClick={() => {
-            router.push(`${Routes['Bid Management'].Submit}/${bid._id}`);
-          }}
-        /> : null}
+        {!isAuthUserBidSubmitter ? (
+          <CustomButton
+            text="Send Bid"
+            onClick={() => {
+              router.push(`${Routes['Bid Management'].Submit}/${bid._id}`);
+            }}
+          />
+        ) : null}
 
         {isAuthUserBidSubmitter ? null : isEmpty(selectedProjectSavedBid) ? (
           <CustomButton
             onClick={() => {
-              saveUserBidMutation.mutate({ projectId: bid?._id })
+              saveUserBidMutation.mutate({ projectId: bid?._id });
               setTimeout(() => {
                 if (bidClickHandler) {
                   bidClickHandler();
@@ -437,20 +456,25 @@ export function BidDetails({
 
         <CreateRFI
           isProjectOwner={false}
-          onSuccess={() => { }}
+          onSuccess={() => {}}
           projectId={bid._id}
         />
 
-        {(isInvitation && !(selectedProjectSavedBid && selectedProjectSavedBid.status === 'active')) ? <CustomButton
-          text='Decline'
-          className='!bg-white !border-[#F32051] text-[#F32051]'
-          isLoading={isDeclining}
-          onClick={() => {
-            if (bid && bid._id) {
-              handleDeclineInvitation(bid._id);
-            }
-          }}
-        /> : null}
+        {isInvitation &&
+        !(
+          selectedProjectSavedBid && selectedProjectSavedBid.status === 'active'
+        ) ? (
+          <CustomButton
+            text="Decline"
+            className="!bg-white !border-[#F32051] text-[#F32051]"
+            isLoading={isDeclining}
+            onClick={() => {
+              if (bid && bid._id) {
+                handleDeclineInvitation(bid._id);
+              }
+            }}
+          />
+        ) : null}
       </div>
     </div>
   );

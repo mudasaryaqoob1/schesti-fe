@@ -1,3 +1,3 @@
 export interface IUserVerification {
-    email : string
-  }
+  email: string;
+}

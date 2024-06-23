@@ -9,7 +9,6 @@ import { AppDispatch } from '@/redux/store';
 import CustomButton from '../customButton/button';
 import { logout } from '@/redux/authSlices/authSlice';
 
-
 const Navbar = () => {
   const dispatch = useDispatch<AppDispatch>();
 
@@ -20,7 +19,6 @@ const Navbar = () => {
   };
   return (
     <nav className="py-3 px-16 md:h-[60px] md:flex flex-col shadow-lg  md:flex-row items-center justify-end w-full bg-white">
-
       <div className="flex flex-col md:flex-row gap-6 justify-between items-center">
         <div className="flex items-center gap-1">
           <Link href={'/upgradeplans'} className="md:my-0 my-2">
@@ -58,7 +56,10 @@ const Navbar = () => {
             width={40}
             height={40}
           />
-          <p className="text-schestiPrimary cursor-pointer" onClick={logoutHandler}>
+          <p
+            className="text-schestiPrimary cursor-pointer"
+            onClick={logoutHandler}
+          >
             Logout
           </p>
         </div>

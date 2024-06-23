@@ -20,7 +20,11 @@ import { InputComponent } from '@/app/component/customInput/Input';
 import { TextAreaComponent } from '@/app/component/textarea';
 import Image from 'next/image';
 import Dragger from 'antd/es/upload/Dragger';
-import { postProjectActions, setFormStepAction, setPostProjectAction } from '@/redux/post-project/post-project.slice';
+import {
+  postProjectActions,
+  setFormStepAction,
+  setPostProjectAction,
+} from '@/redux/post-project/post-project.slice';
 import { Routes } from '@/app/utils/plans.utils';
 import ModalComponent from '@/app/component/modal';
 import AwsS3 from '@/app/utils/S3Intergration';
@@ -72,32 +76,34 @@ export function ProjectIntro({ id }: Props) {
     return <Skeleton />;
   }
 
-
   function updateBidStatus(status: string) {
     // Call the API to update the bid status
     setIsLoading(true);
-    bidManagementService.httpUpdateProjectStatus(id, status)
-      .then(response => {
+    bidManagementService
+      .httpUpdateProjectStatus(id, status)
+      .then((response) => {
         // Handle the successful response
         toast.success('Bid status updated successfully');
         // Update the bid status in the Redux store
         if (response.data && bid) {
-          dispatch(bidManagementOwnerActions.setProjectAction({
-            ...bid,
-            status: response.data.updatedBid.status
-          }));
+          dispatch(
+            bidManagementOwnerActions.setProjectAction({
+              ...bid,
+              status: response.data.updatedBid.status,
+            })
+          );
           toggleStatusModal();
         }
       })
-      .catch(error => {
+      .catch((error) => {
         // Handle the error response
         const err = error as AxiosError<{ message: string }>;
         toast.error(err.response?.data.message);
-      }).finally(() => {
+      })
+      .finally(() => {
         setIsLoading(false);
       });
   }
-
 
   function toggleStatusModal() {
     setShowStatusModal(!showStatusModal);
@@ -109,7 +115,10 @@ export function ProjectIntro({ id }: Props) {
     try {
       const projectFiles = [];
       for (let i = 0; i < files?.length; i++) {
-        const url = await new AwsS3(files[i]?.originFileObj, 'documents/bids/').getS3URL();
+        const url = await new AwsS3(
+          files[i]?.originFileObj,
+          'documents/bids/'
+        ).getS3URL();
         const fileData = {
           url,
           extension: files[i].name.split('.').pop() || '',
@@ -122,8 +131,11 @@ export function ProjectIntro({ id }: Props) {
         title,
         description,
         projectFiles,
-      }
-      const result = await bidManagementService.httpUpdateProjectDocumentsById(id, payload);
+      };
+      const result = await bidManagementService.httpUpdateProjectDocumentsById(
+        id,
+        payload
+      );
       console.log('result', result);
 
       if (!isEmpty(result.data?.project)) {
@@ -169,34 +181,42 @@ export function ProjectIntro({ id }: Props) {
             className="text-[#1D2939] font-normal text-[14px] leading-4"
           />
 
-          <div className="flex relative cursor-pointer items-center border border-[#DC6803] py-1 pr-[10px] pl-3 rounded-full space-x-2"
-            onClick={toggleStatusModal}>
+          <div
+            className="flex relative cursor-pointer items-center border border-[#DC6803] py-1 pr-[10px] pl-3 rounded-full space-x-2"
+            onClick={toggleStatusModal}
+          >
             <SenaryHeading
               title={bid ? bid.status : ''}
               className="text-[#B54708] capitalize text-[14px] font-medium leading-6"
             />
-            {
-              isLoading ? <Spin indicator={<LoadingOutlined />} size='small' />
-                :
-                <DownOutlined className="text-xs text-[#B54708]" />
-            }
-            {showStatusModal ? <div className='space-y-1 py-1 cursor-default w-64 border rounded-lg shadow-md right-5 bg-white z-10 top-9 absolute'
-              onClick={e => {
-                e.preventDefault();
-                e.stopPropagation();
-              }}
-            >
-              {['active', 'archived',].map(status => {
-                return <p key={status} className={`text-[#344054] hover:bg-gray-50 px-2 py-1 cursor-pointer rounded-lg  font-normal capitalize text-medium leading-6 ${bid && bid.status === status ? "bg-gray-100" : ""}`}
-                  onClick={() => {
-                    updateBidStatus(status);
-                  }}
-                >
-                  {status}
-                </p>
-              })}
-
-            </div> : null}
+            {isLoading ? (
+              <Spin indicator={<LoadingOutlined />} size="small" />
+            ) : (
+              <DownOutlined className="text-xs text-[#B54708]" />
+            )}
+            {showStatusModal ? (
+              <div
+                className="space-y-1 py-1 cursor-default w-64 border rounded-lg shadow-md right-5 bg-white z-10 top-9 absolute"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+              >
+                {['active', 'archived'].map((status) => {
+                  return (
+                    <p
+                      key={status}
+                      className={`text-[#344054] hover:bg-gray-50 px-2 py-1 cursor-pointer rounded-lg  font-normal capitalize text-medium leading-6 ${bid && bid.status === status ? 'bg-gray-100' : ''}`}
+                      onClick={() => {
+                        updateBidStatus(status);
+                      }}
+                    >
+                      {status}
+                    </p>
+                  );
+                })}
+              </div>
+            ) : null}
           </div>
         </div>
         <WhiteButton
@@ -215,7 +235,7 @@ export function ProjectIntro({ id }: Props) {
           }}
         />
 
-        <div className='w-fit'>
+        <div className="w-fit">
           <CustomButton
             text="Update"
             className="!w-32"
@@ -233,18 +253,18 @@ export function ProjectIntro({ id }: Props) {
           >
             <div>
               <Popups
-                title='Update'
+                title="Update"
                 onClose={() => {
                   setShowUpdateModal(false);
                   setFiles([]);
                 }}
               >
-                <div className='space-y-3'>
+                <div className="space-y-3">
                   <InputComponent
-                    label='Title'
-                    name='title'
-                    placeholder='Enter title'
-                    type='text'
+                    label="Title"
+                    name="title"
+                    placeholder="Enter title"
+                    type="text"
                     field={{
                       value: title,
                       onChange(e) {
@@ -254,66 +274,81 @@ export function ProjectIntro({ id }: Props) {
                   />
 
                   <TextAreaComponent
-                    label='Description'
-                    name='description'
+                    label="Description"
+                    name="description"
                     field={{
                       rows: 7,
                       value: description,
                       onChange(e) {
                         setDescription(e.target.value);
-                      }
+                      },
                     }}
                   />
 
                   <div>
-                    {files.length === 0 ? <Dragger
-                      name={'file'}
-                      accept="image/*,gif,application/pdf"
-                      onChange={(info) => {
-                        console.log('info', info);
-                        setFiles(info.fileList);
-                      }}
-                      fileList={files}
-                      multiple={true}
-                      style={{
-                        borderStyle: 'dashed',
-                        borderWidth: 6,
-                      }}
-                      itemRender={() => null}
-                    >
-                      <p className="ant-upload-drag-icon">
-                        <Image
-                          src={'/uploadcloud.svg'}
-                          width={50}
-                          height={50}
-                          alt="upload"
-                        />
-                      </p>
-                      <p className="text-[12px] py-2 leading-3 text-[#98A2B3]">
-                        Drop your image here, or browse
-                      </p>
-                      <p className="text-[12px] leading-3 text-[#98A2B3]">
-                        PNG, GIF, JPG, Max size: 2MB
-                      </p>
-                    </Dragger> : null}
-                    {files.length > 0 ? <div className='grid grid-cols-2 gap-2 h-60 overflow-y-auto'>
-                      {files.map(file => {
-                        return <ShowFileComponent
-                          file={{
-                            extension: file.originFileObj?.type || '',
-                            name: file.name,
-                            type: file.type || '',
-                            url: URL.createObjectURL(file.originFileObj!)
-                          }}
-                          onDelete={() => {
-                            setFiles(files.filter(f => f.uid !== file.uid));
-                          }}
-                          key={file.uid}
-                        />
-                      })}
-                    </div> : null}
+                    {files.length === 0 ? (
+                      <Dragger
+                        name={'file'}
+                        accept="image/*,gif,application/pdf"
+                        onChange={(info) => {
+                          console.log('info', info);
+                          setFiles(info.fileList);
+                        }}
+                        fileList={files}
+                        multiple={true}
+                        style={{
+                          borderStyle: 'dashed',
+                          borderWidth: 6,
+                        }}
+                        itemRender={() => null}
+                      >
+                        <p className="ant-upload-drag-icon">
+                          <Image
+                            src={'/uploadcloud.svg'}
+                            width={50}
+                            height={50}
+                            alt="upload"
+                          />
+                        </p>
+                        <p className="text-[12px] py-2 leading-3 text-[#98A2B3]">
+                          Drop your image here, or browse
+                        </p>
+                        <p className="text-[12px] leading-3 text-[#98A2B3]">
+                          PNG, GIF, JPG, Max size: 2MB
+                        </p>
+                      </Dragger>
+                    ) : null}
+                    {files.length > 0 ? (
+                      <div className="grid grid-cols-2 gap-2 h-60 overflow-y-auto">
+                        {files.map((file) => {
+                          return (
+                            <ShowFileComponent
+                              file={{
+                                extension: file.originFileObj?.type || '',
+                                name: file.name,
+                                type: file.type || '',
+                                url: URL.createObjectURL(file.originFileObj!),
+                              }}
+                              onDelete={() => {
+                                setFiles(
+                                  files.filter((f) => f.uid !== file.uid)
+                                );
+                              }}
+                              key={file.uid}
+                            />
+                          );
+                        })}
+                      </div>
+                    ) : null}
                   </div>
-                  <CustomButton text='Update' isLoading={isFileUploading} disabled={isEmpty(title) || isEmpty(description) || isFileUploading} onClick={handleUpdate} />
+                  <CustomButton
+                    text="Update"
+                    isLoading={isFileUploading}
+                    disabled={
+                      isEmpty(title) || isEmpty(description) || isFileUploading
+                    }
+                    onClick={handleUpdate}
+                  />
                 </div>
               </Popups>
             </div>

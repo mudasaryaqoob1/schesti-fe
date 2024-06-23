@@ -12,8 +12,6 @@ import { useRouterHook } from './hooks/useRouterHook';
 
 type Key = 'estimating' | 'invoice' | 'meeting' | 'client' | 'subcontractor';
 
-
-
 // eslint-disable-next-line no-unused-vars
 const featuresData: {
   [_k in Key]: { title: string; description: string; image: string };
@@ -176,42 +174,47 @@ export default function Home() {
           <div className="grid grid-cols-1 grid-rows-2 xl:grid-rows-1 xl:grid-cols-5  justify-items-center xl:gap-4 pt-[37px] pb-[57px] gap-6">
             <CustomButton
               text="Estimating"
-              className={`!rounded-full !bg-transparent  ${tab === 'estimating'
+              className={`!rounded-full !bg-transparent  ${
+                tab === 'estimating'
                   ? '!text-[#8449EB] !border-[#8449EB]'
                   : '!text-[#718096] !border-[#718096]'
-                }`}
+              }`}
               onClick={() => setTab('estimating')}
             />
             <CustomButton
               text="Invoice"
-              className={`!rounded-full !bg-transparent  ${tab === 'invoice'
+              className={`!rounded-full !bg-transparent  ${
+                tab === 'invoice'
                   ? '!text-[#8449EB] !border-[#8449EB]'
                   : '!text-[#718096] !border-[#718096]'
-                }`}
+              }`}
               onClick={() => setTab('invoice')}
             />
             <CustomButton
               text="Subcontractor"
-              className={`!rounded-full !bg-transparent  ${tab === 'subcontractor'
+              className={`!rounded-full !bg-transparent  ${
+                tab === 'subcontractor'
                   ? '!text-[#8449EB] !border-[#8449EB]'
                   : '!text-[#718096] !border-[#718096]'
-                }`}
+              }`}
               onClick={() => setTab('subcontractor')}
             />
             <CustomButton
               text="Client"
-              className={`!rounded-full !bg-transparent  ${tab === 'client'
+              className={`!rounded-full !bg-transparent  ${
+                tab === 'client'
                   ? '!text-[#8449EB] !border-[#8449EB]'
                   : '!text-[#718096] !border-[#718096]'
-                }`}
+              }`}
               onClick={() => setTab('client')}
             />
             <CustomButton
               text="Meeting"
-              className={`!rounded-full !bg-transparent  ${tab === 'meeting'
+              className={`!rounded-full !bg-transparent  ${
+                tab === 'meeting'
                   ? '!text-[#8449EB] !border-[#8449EB]'
                   : '!text-[#718096] !border-[#718096]'
-                }`}
+              }`}
               onClick={() => setTab('meeting')}
             />
           </div>

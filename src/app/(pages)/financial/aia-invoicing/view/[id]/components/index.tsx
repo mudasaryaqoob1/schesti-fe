@@ -29,7 +29,6 @@ const G703_KEY = 'G703';
 const G702_KEY = 'G702';
 
 export function PhaseComponent({ parentInvoice }: Props) {
-
   const auth = useSelector((state: RootState) => state.auth);
   const user = auth.user?.user as IUpdateCompanyDetail | undefined;
 
@@ -269,8 +268,9 @@ export function PhaseComponent({ parentInvoice }: Props) {
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className={`${tab === type ? 'text-RoyalPurple' : 'text-black'
-                      }`}
+                    className={`${
+                      tab === type ? 'text-RoyalPurple' : 'text-black'
+                    }`}
                   />
                 ),
                 tabKey: type,
@@ -330,7 +330,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
       <div
         ref={ref as MutableRefObject<HTMLDivElement>}
         className="space-y-5 w-full absolute z -left-[2500px] border p-6"
-      // className="space-y-5 w-full border p-6"
+        // className="space-y-5 w-full border p-6"
       >
         <ClientInvoiceHeader />
         <div className="flex justify-end w-full">
