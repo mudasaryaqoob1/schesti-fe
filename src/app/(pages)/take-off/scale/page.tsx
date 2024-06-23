@@ -1,9 +1,9 @@
 'use client';
-import { useState, useContext, useEffect, useCallback } from 'react';
+import { useState, useContext, useEffect, useCallback, useRef } from 'react';
 import ModalComponent from '@/app/component/modal';
 import ScaleModal from '../components/scale';
 import ModalsWrapper from './components/ModalWrapper';
-import { Avatar, ColorPicker, Dropdown, InputNumber, Menu, Progress, Select, Space, Spin } from 'antd';
+import { Avatar, Checkbox, ColorPicker, Dropdown, InputNumber, Menu, Progress, Select, Space, Spin } from 'antd';
 import { EditContext, ScaleContext, UploadFileContext } from '../context';
 import { UploadFileContextProps } from '../context/UploadFileContext';
 import {
@@ -25,7 +25,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 ////////////////////////New Take OffData///////////////////////////////////
 import CustomButton from '@/app/component/customButton/button'
 import { bg_style } from '@/globals/tailwindvariables'
-import { CloudUploadOutlined, CopyOutlined, DeleteOutlined, FileOutlined, FilePdfOutlined, FolderOutlined, LeftOutlined, MenuUnfoldOutlined, MoreOutlined, PlusOutlined, RightOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons'
+import { CloudUploadOutlined, CopyOutlined, DeleteOutlined, EditOutlined, FileOutlined, FilePdfOutlined, FolderOutlined, LeftOutlined, MenuUnfoldOutlined, MinusOutlined, MoreOutlined, PlusOutlined, RightOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons'
 import React from 'react'
 import { Button, Divider, Input, Table } from 'antd'
 //@ts-ignore
@@ -42,6 +42,7 @@ import { toast } from 'react-toastify';
 // import { AnyArn } from 'aws-sdk/clients/groundstation';
 // import { AnyCnameRecord } from 'dns';
 import useWheelZoom from './components/useWheelZoom';
+import Draggable from 'react-draggable';
 
 
 const groupDataForFileTable = (input: any[]) => {
@@ -146,7 +147,7 @@ const getSingleMeasurements = (draw: any, pageId: any) => {
   }
   return singleArr
 }
-const measurementsTableData1 = (takeOff: any, search?:string) => {
+const measurementsTableData1 = (takeOff: any, search?: string) => {
   let returningArr: any = [];
   if (takeOff?.measurements && Object.keys(takeOff?.measurements) && Object.keys(takeOff?.measurements)?.length > 0) {
     Object.keys(takeOff?.measurements)?.map((key: any, ind: any) => {
@@ -161,21 +162,21 @@ const measurementsTableData1 = (takeOff: any, search?:string) => {
       return ""
     })
   }
-  if(search && search?.length > 0){
-    returningArr = returningArr?.filter((i:any)=>{return (i?.projectName?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()) || i?.category?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()) || i?.subcategory?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()))})
+  if (search && search?.length > 0) {
+    returningArr = returningArr?.filter((i: any) => { return (i?.projectName?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()) || i?.category?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()) || i?.subcategory?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase())) })
   }
   console.log(returningArr, " =====> measurementsTableData measurementsTableData")
   if (returningArr?.length > 0) {
     //Reduce code for category
     returningArr = returningArr?.reduce((result: any, currentItem: any) => {
-      const { category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId,text } = currentItem
+      const { category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text } = currentItem
       // Check if there's already an entry with the same projectName and pageLabel
       const existingEntry = result?.find((entry: any) => entry.category === category);
-      if (existingEntry) { existingEntry?.children?.push({ key: dateTime, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId,text }) }
+      if (existingEntry) { existingEntry?.children?.push({ key: dateTime, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId, text }) }
       else {
         result?.push({
-          key: dateTime, isParent: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId,text,
-          children: [{ key: dateTime, isParent: false, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId,text }]
+          key: dateTime, isParent: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text,
+          children: [{ key: dateTime, isParent: false, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text }]
         })
       }
       return result
@@ -183,7 +184,7 @@ const measurementsTableData1 = (takeOff: any, search?:string) => {
   }
   return returningArr
 }
-const measurementsTableData = (takeOff: any, search?:string) => {
+const measurementsTableData = (takeOff: any, search?: string) => {
   let returningArr: any = [];
   if (takeOff?.measurements && Object.keys(takeOff?.measurements) && Object.keys(takeOff?.measurements)?.length > 0) {
     Object.keys(takeOff?.measurements)?.map((key: any, ind: any) => {
@@ -198,14 +199,14 @@ const measurementsTableData = (takeOff: any, search?:string) => {
       return ""
     })
   }
-  if(search && search?.length > 0){
-    returningArr = returningArr?.filter((i:any)=>{return (i?.projectName?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()) || i?.category?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()) || i?.subcategory?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()))})
+  if (search && search?.length > 0) {
+    returningArr = returningArr?.filter((i: any) => { return (i?.projectName?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()) || i?.category?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()) || i?.subcategory?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase())) })
   }
   console.log(returningArr, " =====> measurementsTableData measurementsTableData")
   if (returningArr?.length > 0) {
     //Reduce code for category
     returningArr = returningArr?.reduce((result: any, currentItem: any) => {
-      const { category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId,text } = currentItem
+      const { category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text } = currentItem
       // Check if there's already an entry with the same projectName and pageLabel
       const existingEntry = result?.find((entry: any) => entry.category === category);
       if (existingEntry) {
@@ -214,32 +215,32 @@ const measurementsTableData = (takeOff: any, search?:string) => {
         if (existingEntrySubCategory && subcategory && existingEntrySubCategoryIndex != -1) {
           existingEntrySubCategory['isSubParent'] = true
           if (Array.isArray(existingEntry?.children[existingEntrySubCategoryIndex]?.children)) {
-            existingEntry?.children[existingEntrySubCategoryIndex]?.children?.push({ key: dateTime, isChild: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId,text })
+            existingEntry?.children[existingEntrySubCategoryIndex]?.children?.push({ key: dateTime, isChild: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId, text })
           } else {
-            existingEntry.children[existingEntrySubCategoryIndex].children = [{ key: dateTime, isChild: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId,text }]
+            existingEntry.children[existingEntrySubCategoryIndex].children = [{ key: dateTime, isChild: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId, text }]
           }
           console.log(returningArr, subcategory, result, " =====> measurementsTableData measurementsTableData the final obj given code runs here")
         } else {
           existingEntry?.children?.push(
             subcategory ?
               {
-                key: dateTime, isSubParent: true, isParent: false, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId,text,
-                children: [{ key: dateTime, isParent: false, isChild: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId,text }]
+                key: dateTime, isSubParent: true, isParent: false, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text,
+                children: [{ key: dateTime, isParent: false, isChild: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text }]
               }
               :
-              { key: dateTime, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId,text })
+              { key: dateTime, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId, text })
         }
       }
       else {
         result?.push({
-          key: dateTime, isParent: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId,text,
+          key: dateTime, isParent: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text,
           children: subcategory ?
             [{
-              key: dateTime, isSubParent: true, isParent: false, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId,text,
-              children: [{ key: dateTime, isParent: false, isChild: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId,text }]
+              key: dateTime, isSubParent: true, isParent: false, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text,
+              children: [{ key: dateTime, isParent: false, isChild: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text }]
             }]
             :
-            [{ key: dateTime, isParent: false, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId,text }]
+            [{ key: dateTime, isParent: false, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text }]
         })
       }
       return result
@@ -291,7 +292,7 @@ const TakeOffNewPage = () => {
     try {
       const page: PDFPageProxy = await pdf.getPage(pageIndex + 1);
       console.log(page, typeof (page), " ===> pages while uplaoding")
-      const scale = 1;
+      const scale = 4;
       const viewport = page.getViewport({ scale });
       const canvas = document.createElement('canvas');
       const context = canvas.getContext('2d');
@@ -427,6 +428,8 @@ const TakeOffNewPage = () => {
   // const [inputtxt, setinputtxt] = useState<any>("")
   ////
   const [tool, setTool] = useState<ScaleInterface>({ selected: 'scale' });
+  const [countType, setcountType] = useState<string>("")
+  useEffect(() => { if (tool.selected != 'count') { setcountType('') } }, [tool])
   const [showModal, setShowModal] = useState(false);
   const [border, setBorder] = useState<number>(4);
   const [color, setColor] = useState<string>('#1677ff');
@@ -622,7 +625,13 @@ const TakeOffNewPage = () => {
       render: (text, record) => (
         <div
           className="flex items-center h-full cursor-pointer">
-          {record?.isParent ? text : record?.isSubParent ? record?.subcategory : <span className='flex items-center gap-1'><EditableText initialText={record?.projectName} smallText={record?.projectName?.slice(0, 10) + "..."} onPressEnter={(value) => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'projectName', value) }} toolTip={takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.name + `(${takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.file?.name})`} /></span>}
+          {record?.isParent ? <span className='font-extrabold'>{text}<Checkbox checked={selectedCate == text} onChange={(e) => {
+            if (e.target.checked) { setselectedCate(text); }
+            else { setselectedCate(null); setselectedSubCate(null) }
+          }} /></span> : record?.isSubParent ? <span className='font-extrabold'>{record?.subcategory}<Checkbox checked={selectedSubCate == record?.subcategory} onChange={(e) => {
+            if (e.target.checked) { setselectedCate(text); setselectedSubCate(record?.subcategory) }
+            else { setselectedCate(null); setselectedSubCate(null) }
+          }} /></span> : <span className='flex items-center gap-1'><EditableText initialText={record?.projectName} smallText={record?.projectName?.slice(0, 10) + "..."} onPressEnter={(value) => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'projectName', value) }} toolTip={takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.name + `(${takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.file?.name})`} /></span>}
         </div>
       ),
     },
@@ -666,11 +675,23 @@ const TakeOffNewPage = () => {
       title: '',
       dataIndex: 'category',
       // key: 'category',
-      width: 50,
+      width: 70,
       render: (text, record) => (
         <div
           className="flex items-center h-full cursor-pointer">
-          {(record?.isParent || record?.isSubParent) ? <></> : <span className='flex items-center gap-1'><DeleteOutlined onClick={() => { deleteTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime) }} /></span>}
+          {(record?.isParent || record?.isSubParent) ? <></> : <span className='flex items-center gap-1'>
+            <Menu items={[
+              {
+                key: 'category', icon: <EditOutlined className='text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 rounded-full p-1' />,
+                children: [
+                  { key: 'category', label: 'category', children: [...categoryList.map((i: any) => ({ key: i, label: i, onClick: () => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'category', i) } }))] },
+                  { key: 'sub-category', label: 'sub-category', children: [...subcategoryList.map((i: any) => ({ key: i, label: i, onClick: () => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'subcategory', i) } }))] },
+                ]
+              },
+            ]} />
+
+            <DeleteOutlined className='text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 rounded-full p-1' onClick={() => { deleteTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime) }} />
+          </span>}
         </div>
       ),
     },
@@ -686,7 +707,20 @@ const TakeOffNewPage = () => {
       render: (text, record) => (
         <div
           className="flex items-center h-full cursor-pointer">
-          {record?.isParent ? text : <span className='flex items-center gap-1'><ColorPicker onChangeComplete={(val) => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'stroke', val.toHexString()) }} className='!w-[2px] !h-[2px] border-none' value={record?.stroke} /> <EditableText initialText={record?.projectName} smallText={record?.projectName?.slice(0, 12) + "..."} onPressEnter={(value) => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'projectName', value) }} toolTip={takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.name + `(${takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.file?.name})`} /></span>}
+          {record?.isParent ? text : <span
+            className='flex items-center gap-1'
+            onClick={() => {
+              const pg = takeOff?.pages?.find((pgs: any) => (pgs?.pageId == record?.pageId))
+              if (pg) {
+                setselectedPage(pg);
+                setselectedTakeOffTab('page');
+                if (!selectedPagesList?.find((i: any) => (i?.pageId == pg?.pageId))) {
+                  //@ts-ignore
+                  setselectedPagesList((ps: any) => ([...ps, pg]))
+                }
+              }
+            }}
+          ><ColorPicker onChangeComplete={(val) => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'stroke', val.toHexString()) }} className='!w-[2px] !h-[2px] border-none' value={record?.stroke} /> <EditableText initialText={record?.projectName} smallText={record?.projectName?.slice(0, 12) + "..."} onPressEnter={(value) => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'projectName', value) }} toolTip={takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.name + `(${takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.file?.name})`} /></span>}
         </div>
       ),
     },
@@ -698,7 +732,7 @@ const TakeOffNewPage = () => {
       render: (text, record) => (
         <div
           className="flex items-center h-full cursor-pointer">
-          {record?.isParent ? <></> : <span className='flex items-center gap-1'>{takeOff?.pages?.find((pp:any)=>pp?.pageId == record?.pageId)?.pageNum ?? ''}</span>}
+          {record?.isParent ? <></> : <span className='flex items-center gap-1'>{takeOff?.pages?.find((pp: any) => pp?.pageId == record?.pageId)?.pageNum ?? ''}</span>}
         </div>
       ),
     },
@@ -750,7 +784,7 @@ const TakeOffNewPage = () => {
         // </div>
         <div
           className="flex items-center h-full cursor-pointer">
-          {record?.isParent ? <></> : <span className='flex items-center gap-1'><DeleteOutlined onClick={() => { deleteTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime) }} /></span>}
+          {record?.isParent ? <></> : <span className='flex items-center gap-1'><DeleteOutlined className='text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 rounded-full p-1' onClick={() => { deleteTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime) }} /></span>}
         </div>
       ),
     },
@@ -855,23 +889,36 @@ const TakeOffNewPage = () => {
   const [sideSearch, setsideSearch] = useState<string>("")
   const [tableColumns, settableColumns] = useState<any>([])
   const [tableData, settableData] = useState<any>([])
+
+  // WBS States And Functions
+  const [categoryList, setcategoryList] = useState<any>([])
+  const [categoryText, setcategoryText] = useState<any>("")
+  const [selectedCate, setselectedCate] = useState<any>(null)
+  useEffect(() => { setisWBS(false) }, [sideTabs])
+
+  const [subcategoryList, setsubcategoryList] = useState<any>([])
+  const [subcategoryText, setsubcategoryText] = useState<any>("")
+  const [selectedSubCate, setselectedSubCate] = useState<any>(null)
+
+  const [isWBS, setisWBS] = useState<any>(false)
+  // WBS States And Functions
   useEffect(() => {
     console.log(measurementsTableData(takeOff ?? {}), " ===> Data to view")
     if (sideTabs == 'Plans') {
       settableColumns(plansColumn)
-      if(sideSearch && sideSearch?.length>0){
-        groupDataForFileTable(takeOff?.pages?.filter((i:any)=>(i?.name?.toLocaleLowerCase()?.includes(sideSearch?.toLocaleLowerCase()))))
-      }else{
+      if (sideSearch && sideSearch?.length > 0) {
+        groupDataForFileTable(takeOff?.pages?.filter((i: any) => (i?.name?.toLocaleLowerCase()?.includes(sideSearch?.toLocaleLowerCase()))))
+      } else {
         settableData(groupDataForFileTable(takeOff?.pages))
       }
     } else if (sideTabs == 'TakeOff') {
       settableColumns(measurementsColumn)
-      settableData(measurementsTableData1(takeOff ?? {},sideSearch))
+      settableData(measurementsTableData1(takeOff ?? {}, sideSearch))
     } else if (sideTabs == 'WBS') {
       settableColumns(categoryColumns)
-      settableData(measurementsTableData(takeOff ?? {},sideSearch))
+      settableData(measurementsTableData(takeOff ?? {}, sideSearch))
     }
-  }, [sideTabs, takeOff, sideSearch])
+  }, [sideTabs, takeOff, sideSearch, categoryList, subcategoryList, selectedCate, selectedSubCate])
 
   /////Image Loadings//////////////
   const [loadedImages, setLoadedImages] = useState<any>([]);
@@ -903,18 +950,7 @@ const TakeOffNewPage = () => {
   }
 
 
-  // WBS States And Functions
-  const [categoryList, setcategoryList] = useState<any>([])
-  const [categoryText, setcategoryText] = useState<any>("")
-  const [selectedCate, setselectedCate] = useState<any>(null)
-  useEffect(() => { setisWBS(false) }, [sideTabs])
 
-  const [subcategoryList, setsubcategoryList] = useState<any>([])
-  const [subcategoryText, setsubcategoryText] = useState<any>("")
-  const [selectedSubCate, setselectedSubCate] = useState<any>(null)
-
-  const [isWBS, setisWBS] = useState<any>(false)
-  // WBS States And Functions
 
   return (
     <>
@@ -928,10 +964,10 @@ const TakeOffNewPage = () => {
             iconwidth={20}
             iconheight={20}
             onClick={() => { setreportModal(true) }}
-            // onClick={() => {
-            //   //@ts-ignore
-            //   (urlSearch && urlSearch.get('edit_id') && urlSearch.get('edit_id')?.length > 0) ? router.push(`/take-off/report?edit_id=${urlSearch.get('edit_id')}&scale=${JSON?.stringify(scaleData[1] ?? { xScale: `1in=1in`, yScale: `1in=1in`, precision: '1', })}`) : router.push('/take-off/report')
-            // }}
+          // onClick={() => {
+          //   //@ts-ignore
+          //   (urlSearch && urlSearch.get('edit_id') && urlSearch.get('edit_id')?.length > 0) ? router.push(`/take-off/report?edit_id=${urlSearch.get('edit_id')}&scale=${JSON?.stringify(scaleData[1] ?? { xScale: `1in=1in`, yScale: `1in=1in`, precision: '1', })}`) : router.push('/take-off/report')
+          // }}
           />
         </div>
 
@@ -952,7 +988,7 @@ const TakeOffNewPage = () => {
                   <Button onClick={() => { setsideTabs('WBS') }} className={sideTabs == 'WBS' ? 'bg-lavenderPurpleReplica text-white font-semibold' : ''}>WBS / Category</Button>
                 </div>
                 <div className='flex gap-x-2 w-[95%]'>
-                  <Input className='grow' placeholder='Search' onChange={(e)=>{setsideSearch(e.target.value)}} prefix={<SearchOutlined />} />
+                  <Input className='grow' placeholder='Search' onChange={(e) => { setsideSearch(e.target.value) }} prefix={<SearchOutlined />} />
                   <Button onClick={() => { setselectedTakeOffTab('file') }} className='bg-lavenderPurpleReplica text-white font-semibold' icon={<CloudUploadOutlined className='text-[16px]' />} >Upload</Button>
                 </div>
               </div>
@@ -1116,10 +1152,12 @@ const TakeOffNewPage = () => {
                   handleZoomOut={handleZoomOut}
                   handleRoomColorChange={handleRoomColorChange}
                   fillColor={fillColor}
+                  countType={countType}
+                  setcountType={setcountType}
                 />}
 
                 <div className="py-6 h-[709px] relative">
-                  <div className='absolute top-10 left-10 flex gap-x-3 p-3 z-40' >
+                  <div className='absolute top-10 left-16 flex gap-x-3 p-3 z-40' >
                     <Button onClick={() => { setselectedTakeOffTab('overview') }} icon={<MenuUnfoldOutlined />} className={selectedTakeOffTab == 'overview' ? 'bg-lavenderPurpleReplica text-white font-semibold' : ''} >Overview</Button>
                     {
                       selectedPagesList && selectedPagesList?.length > 0 && selectedPagesList?.map((pg: any, index: number) => {
@@ -1154,6 +1192,10 @@ const TakeOffNewPage = () => {
                     {/* <div>Overview</div>
             <div>First Page</div> */}
                   </div>
+                  {selectedTakeOffTab == 'page' && <div className='absolute top-10 right-[50px] flex z-40 border rounded-lg bg-slate-50' >
+                    <span onClick={handleZoomIn} className='border-r py-3 px-5 cursor-pointer' ><PlusOutlined className='font-extrabold' /></span>
+                    <span onClick={handleZoomOut} className='py-3 px-5 cursor-pointer'><MinusOutlined /></span>
+                  </div>}
                   {selectedTakeOffTab == 'page' && <div className={`absolute bottom-0 z-40 ${showModal ? 'block' : 'hidden'}`}>
                     <ModalsWrapper
                       tool={tool}
@@ -1202,6 +1244,7 @@ const TakeOffNewPage = () => {
                       handleZoomOut={handleZoomOut}
                       textColor={textColor}
                       fillColor={fillColor}
+                      countType={countType}
                     />}
                     {
                       selectedTakeOffTab == 'overview'
@@ -1395,57 +1438,61 @@ const TakeOffNewPage = () => {
                   </div>
                   {/* <DrawTable /> */}
                   {/* Second Bar to do it At Bottom */}
-                  {selectedTakeOffTab == 'page' && <div className="bg-[#F2F2F2] h-[52px] flex flex-row items-center justify-center mb-10 px-4 gap-6 rounded-lg">
-                    <div className="flex flex-row gap-2 items-center">
-                      <label>Totals:</label>
-                      <Select value="Length ----" />
-                    </div>
-                    <div className="flex flex-row gap-2 items-center">
-                      <label>Units:</label>
-                      <Select
-                        className="w-[64px]"
-                        value={unit}
-                        onChange={(value) => setUnit(value)}
-                      >
-                        {Units.map((item) => (
-                          <Select.Option value={item} key={item}>
-                            {item}
-                          </Select.Option>
-                        ))}
-                      </Select>
-                    </div>
-                    <div className="flex flex-row gap-2 items-center">
-                      <label>Border:</label>
-                      <InputNumber
-                        min={1}
-                        max={76}
-                        value={border}
-                        onChange={(value) => value && setBorder(value)}
-                      />
-                    </div>
-                    <div className="flex flex-row gap-2 items-center">
-                      <label>Color:</label>
-                      <ColorPicker
-                        value={color}
-                        onChange={(color) => setColor(color.toHexString())}
-                      />
-                    </div>
-                    <div className="flex flex-row gap-2 items-center">
-                      <label>Text:</label>
-                      <ColorPicker
-                        value={textColor}
-                        onChangeComplete={(color) => settextColor(color.toHexString())}
-                      />
-                    </div>
-                    {tool.selected === 'volume' && (
-                      <InputNumber
-                        type="number"
-                        min={1}
-                        placeholder="Depth"
-                        onChange={(value) => value && setDepth(value)}
-                      />
-                    )}
-                    {/* <input placeholder='Add Custom Category' className='p-1' type='text' value={inputtxt} onChange={(e: any) => { setinputtxt(e.target.value) }} />
+                  {selectedTakeOffTab == 'page'
+                    &&
+                    <Draggable>
+                      <div
+                        className="bg-[#F2F2F2] h-[52px] flex flex-row items-center justify-center mb-10 px-4 gap-6 rounded-lg border">
+                        <div className="flex flex-row gap-2 items-center">
+                          <label>Totals:</label>
+                          <Select value="Length ----" />
+                        </div>
+                        <div className="flex flex-row gap-2 items-center">
+                          <label>Units:</label>
+                          <Select
+                            className="w-[64px]"
+                            value={unit}
+                            onChange={(value) => setUnit(value)}
+                          >
+                            {Units.map((item) => (
+                              <Select.Option value={item} key={item}>
+                                {item}
+                              </Select.Option>
+                            ))}
+                          </Select>
+                        </div>
+                        <div className="flex flex-row gap-2 items-center">
+                          <label>Border:</label>
+                          <InputNumber
+                            min={1}
+                            max={76}
+                            value={border}
+                            onChange={(value) => value && setBorder(value)}
+                          />
+                        </div>
+                        <div className="flex flex-row gap-2 items-center">
+                          <label>Color:</label>
+                          <ColorPicker
+                            value={color}
+                            onChange={(color) => setColor(color.toHexString())}
+                          />
+                        </div>
+                        <div className="flex flex-row gap-2 items-center">
+                          <label>Text:</label>
+                          <ColorPicker
+                            value={textColor}
+                            onChangeComplete={(color) => settextColor(color.toHexString())}
+                          />
+                        </div>
+                        {tool.selected === 'volume' && (
+                          <InputNumber
+                            type="number"
+                            min={1}
+                            placeholder="Depth"
+                            onChange={(value) => value && setDepth(value)}
+                          />
+                        )}
+                        {/* <input placeholder='Add Custom Category' className='p-1' type='text' value={inputtxt} onChange={(e: any) => { setinputtxt(e.target.value) }} />
             <button className='bg-RoyalPurple cursor-pointer text-white p-1 rounded font-bold' onClick={() => { if (inputtxt?.length > 0) { setallCategories((ps: any) => ([...ps, inputtxt])); setselectedCategory(inputtxt); setinputtxt(""); } }} >Add</button>
             {
               allCategories?.map((it: any, ind: number) => {
@@ -1462,7 +1509,9 @@ const TakeOffNewPage = () => {
                 </div>
               })
             } */}
-                  </div>}
+                      </div>
+                    </Draggable>
+                  }
 
                 </div>
                 {tool.selected === 'scale' && (

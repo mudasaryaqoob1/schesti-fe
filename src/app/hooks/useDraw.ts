@@ -53,7 +53,7 @@ const useDraw = () => {
     } else return value;
   };
 
-  const calculatePolygonArea = (
+  const calculatePolygonArea1 = (
     coordinates: number[],
     { xScale, yScale }: ScaleData
   ): number => {
@@ -81,8 +81,87 @@ const useDraw = () => {
       j = i;
     }
 
+    console.log(xScale, yScale, xScaleMultiplier, yScaleMultiplier, +Math.abs(area / 2).toFixed(2), " ===> Area Calculation values to log")
     return +Math.abs(area / 2).toFixed(2);
   };
+
+  const calculatePolygonArea = (
+    coordinates: number[],
+    { xScale, yScale }: ScaleData
+  ): number => {
+    if (coordinates.length % 2 !== 0 || coordinates.length < 6) {
+      throw new Error(
+        'Invalid coordinates array length. It should contain at least 3 pairs of coordinates (x, y).'
+      );
+    }
+    const convertedCoordinates = coordinates.map(
+      (coordinate) => coordinate / pixelToInchScale
+    );
+    const xScaleMultiplier = getScaleMultiplier(xScale);
+    const yScaleMultiplier = getScaleMultiplier(yScale);
+
+    // Calculate the area using the shoelace formula
+    let area = 0;
+    const n = convertedCoordinates.length / 2;
+    let j = n - 1;
+    for (let i = 0; i < n; i++) {
+      const xi = convertedCoordinates[i * 2] * 1;
+      const yi = convertedCoordinates[i * 2 + 1] * 1;
+      const xj = convertedCoordinates[j * 2] * 1;
+      const yj = convertedCoordinates[j * 2 + 1] * 1;
+      area += (xi + xj) * (yj - yi);
+      j = i;
+    }
+
+    area = +Math.abs(area / 2)//.toFixed(2);
+    area = area/144
+    console.log(xScale, yScale, xScaleMultiplier, yScaleMultiplier, +Math.abs(area / 2).toFixed(2), " ===> Area Calculation values to log")
+    return area * (xScaleMultiplier * xScaleMultiplier)
+  };
+
+  // const calculatePolygonArea = (
+  //   coordinates: number[],
+  //   { xScale, yScale }: ScaleData
+  // ): number => {
+  //   if (coordinates.length % 2 !== 0 || coordinates.length < 6) {
+  //     throw new Error(
+  //       'Invalid coordinates array length. It should contain at least 3 pairs of coordinates (x, y).'
+  //     );
+  //   }
+  //   const convertedCoordinates = coordinates.map(
+  //     (coordinate) => coordinate / pixelToInchScale
+  //   );
+  //   const xScaleMultiplier = getScaleMultiplier(xScale);
+  //   const yScaleMultiplier = getScaleMultiplier(yScale);
+
+  //   // Function to calculate the area of a polygon using the Shoelace formula
+  //   const calculatePolygonAreaInPixels = (points: number[]) => {
+  //     let area = 0;
+  //     const numPoints = points.length / 2;
+
+  //     for (let i = 0; i < numPoints; i++) {
+  //       const x1 = points[2 * i];
+  //       const y1 = points[2 * i + 1];
+  //       const x2 = points[2 * ((i + 1) % numPoints)];
+  //       const y2 = points[2 * ((i + 1) % numPoints) + 1];
+  //       area += x1 * y2 - y1 * x2;
+  //     }
+
+  //     return Math.abs(area) / 2;
+  //   };
+
+  //   // Calculate area in square pixels
+  //   const areaInPixels = calculatePolygonAreaInPixels(coordinates);
+
+  //   // Convert area from square pixels to square inches
+  //   const areaInInches = areaInPixels / (pixelToInchScale * pixelToInchScale);
+
+  //   // Convert area from square inches to square feet
+  //   const areaInFeet = areaInInches / (xScaleMultiplier * xScaleMultiplier);
+  //   console.log(areaInPixels, areaInInches, areaInFeet, xScaleMultiplier, pixelToInchScale," ===> Area Calculation values to log")
+
+  //   return areaInInches;
+  // };
 
   // const calculatePolygonArea = (
   //   coordinates: number[],
@@ -221,15 +300,20 @@ const useDraw = () => {
     { precision, xScale, yScale }: ScaleData,
     format = false
   ) => {
-    console.log(precision, coordinates,xScale,yScale, " ===> Data of scale")
     const [x1, y1, x2, y2] = coordinates;
     const xScaleMultiplier = getScaleMultiplier(xScale);
     const yScaleMultiplier = getScaleMultiplier(yScale);
 
-    const distance = Math.sqrt(
-      Math.pow(convertPxIntoInches(x2 - x1) * xScaleMultiplier, 2) +
-        Math.pow(convertPxIntoInches(y2 - y1) * yScaleMultiplier, 2)
+    // const distance = Math.sqrt(
+    //   Math.pow(convertPxIntoInches(x2 - x1) * xScaleMultiplier, 2) +
+    //   Math.pow(convertPxIntoInches(y2 - y1) * yScaleMultiplier, 2)
+    // );
+    let distance = Math.sqrt(
+      Math.pow(x2 - x1, 2) +
+      Math.pow(y2 - y1, 2)
     );
+    distance = convertPxIntoInches(distance) * xScaleMultiplier
+    console.log(precision, coordinates, xScale, yScale, xScaleMultiplier, " ===> Data of scale inside caluculate")
 
     if (format) {
       return convertToFeetAndInches(distance, precision);
@@ -242,14 +326,14 @@ const useDraw = () => {
     { precision, xScale, yScale }: ScaleData,
     format = false
   ) => {
-    console.log(precision, coordinates,xScale,yScale, " ===> Data of scale perimeter")
+    console.log(precision, coordinates, xScale, yScale, " ===> Data of scale perimeter")
     const [x1, y1, x2, y2] = coordinates;
     const xScaleMultiplier = getScaleMultiplier(xScale);
     const yScaleMultiplier = getScaleMultiplier(yScale);
 
     const distance = Math.sqrt(
       Math.pow(convertPxIntoInches(x2 - x1) * xScaleMultiplier, 2) +
-        Math.pow(convertPxIntoInches(y2 - y1) * yScaleMultiplier, 2)
+      Math.pow(convertPxIntoInches(y2 - y1) * yScaleMultiplier, 2)
     );
 
     if (format) {
@@ -544,7 +628,7 @@ const useDraw = () => {
       const existingEntry = result.find(
         (entry: any) =>
           // entry.projectName === projectName && entry.pageLabel === pageLabel
-        entry.category === category && entry.pageLabel === pageLabel
+          entry.category === category && entry.pageLabel === pageLabel
       );
 
       if (existingEntry) {

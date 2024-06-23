@@ -18,6 +18,7 @@ export interface CountInterface extends CoordinatesInterface {
   user?:any;
   textColor?:any;
   mId?:any;
+  countType?:string;
 }
 
 export interface LineInterface {

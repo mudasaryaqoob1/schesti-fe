@@ -71,6 +71,7 @@ interface Props {
   handleZoomOut: any;
   textColor?: any;
   fillColor?: any;
+  countType?:string;
 }
 
 const Draw: React.FC<Props> = ({
@@ -101,7 +102,8 @@ const Draw: React.FC<Props> = ({
   handleZoomIn,
   handleZoomOut,
   textColor,
-  fillColor
+  fillColor,
+  countType
 }) => {
   const { user } = useSelector(selectUser)
   console.log(user, " current working user")
@@ -168,6 +170,15 @@ const Draw: React.FC<Props> = ({
 
   const counterImage = new Image();
   counterImage.src = '/count-draw.png';
+  const getCounterImage = (type:string) => {
+    const retimg = new Image();
+    if(type == 'tick') retimg.src = '/count-draw.png';
+    if(type == 'branch') retimg.src = '/count-branch.png';
+    if(type == 'cross') retimg.src = '/count-cross.png';
+    if(type == 'home') retimg.src = '/count-home.png';
+    if(type == 'info') retimg.src = '/count-info.png';
+    return retimg
+  }
 
   useEffect(() => {
     setCurrentLine(defaultCurrentLineState);
@@ -187,6 +198,7 @@ const Draw: React.FC<Props> = ({
   }, [selected]);
 
   const handleMouseDown = (e: KonvaEventObject<MouseEvent>) => {
+    if(ctrlPressed) return
     if (endLiveEditing) return;
     setSelectedShape('');
 
@@ -425,7 +437,8 @@ const Draw: React.FC<Props> = ({
         projectName: 'Count Measurement',
         category: selectedCategory ?? 'Count Measurement',//(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
         subcategory: selectedSubCategory,
-        user
+        user,
+        countType:countType ?? '',
       };
 
       setDraw((prev: any) => {
@@ -578,6 +591,30 @@ const Draw: React.FC<Props> = ({
   const parentWdith = (stageParentRef.current?.getBoundingClientRect() && stageParentRef.current?.getBoundingClientRect()?.width) ? stageParentRef.current?.getBoundingClientRect()?.width : null;
   const parentHeight = (stageParentRef.current?.getBoundingClientRect() && stageParentRef.current?.getBoundingClientRect()?.height) ? stageParentRef.current?.getBoundingClientRect()?.height : null;
   console.log(parentWdith, parentHeight, " width and height of parent")
+  const [ctrlPressed, setCtrlPressed] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (event:any) => {
+      if (event.ctrlKey) {
+        setCtrlPressed(true);
+      }
+    };
+
+    const handleKeyUp = (event:any) => {
+      if (!event.ctrlKey) {
+        setCtrlPressed(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, []);
   return (
     <div
       ref={stageParentRef}
@@ -776,6 +813,7 @@ const Draw: React.FC<Props> = ({
         scaleY={stageScale}
         x={stageX}
         y={stageY}
+        draggable={ctrlPressed}
         className={`flex justify-center cursor-pointer bg-grey-900 ${['area', 'volume', 'dynamic', 'length', 'perimeter'].includes(selected) ? '!cursor-crosshair' : ''}`}
       >
         <Layer
@@ -1045,7 +1083,8 @@ const Draw: React.FC<Props> = ({
               <KonvaImage
                 id={`count-${index}`}
                 key={`count-${index}`}
-                image={counterImage}
+                image={getCounterImage(rest?.countType ?? 'tick')}
+                // image={counterImage}
                 fill={selectedShape === id ? 'gray' : ''}
                 width={20}
                 height={20}

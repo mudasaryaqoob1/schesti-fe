@@ -66,7 +66,7 @@ const Upload = () => {
 
             const page = await pdf.getPage(index + 1);
             console.log(page, typeof (page), " ===> pages while uplaoding")
-            const scale = 1;
+            const scale = 4;
             const viewport = page.getViewport({ scale });
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');

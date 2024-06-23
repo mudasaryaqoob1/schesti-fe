@@ -37,6 +37,7 @@ const TakeOffLayout: React.FC<any> = ({
   const handleEdit = (value: any[]) => seteditData(value);
 
   const handleScaleData = (value: ScaleDataContextInterface) => {
+    console.log(value, " ===> Area Calculation values to log handleScaleData function")
     setScaleData(value);
   };
 

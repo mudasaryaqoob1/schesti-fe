@@ -237,9 +237,10 @@ const ScaleModal = ({ setModalOpen, numOfPages, page, setdrawScale, scaleLine }:
       if (optionsValue?.includes('-')) {
         const range = optionsValue?.split('-').map(Number);
         const [start, end] = range;
-        for (let i = start; i <= end; i++) {
-          newData[i] = { xScale: scale, yScale: scale, precision: precision };
-        }
+        // for (let i = start; i <= end; i++) {
+        //   newData[i] = { xScale: scale, yScale: scale, precision: precision };
+        // }
+        newData['1'] = { xScale: scale, yScale: scale, precision: precision };
       } else if (optionsValue?.includes(',')) {
         const numbers = optionsValue?.split(',').map(Number);
         numbers.forEach((num) => {
@@ -687,11 +688,11 @@ const ScaleModal = ({ setModalOpen, numOfPages, page, setdrawScale, scaleLine }:
             </Select>
           </div>
         </div>
-        <Button
+        {valueX == 'custom' && <Button
           text="Scale from draw"
           onClick={() => { setModalOpen(false); setdrawScale(true) }}
           className="!py-1.5"
-        />
+        />}
       </section>
       <div className="flex justify-end gap-4 mt-5 mb-2">
         <div>
