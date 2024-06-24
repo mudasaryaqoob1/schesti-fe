@@ -25,7 +25,7 @@ export function BidFilters({ onApply, onCancel, isVisible }: Props) {
     trades: [],
     projectValue: 0,
     page: 1,
-    limit: 10
+    limit: 10,
   });
 
   if (!isVisible) return null;

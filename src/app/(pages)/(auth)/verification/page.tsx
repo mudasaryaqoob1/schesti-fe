@@ -43,7 +43,6 @@ const RegisterVerification = () => {
     const data: any = { userId: userData?.user?._id };
 
     try {
-
       if (license) {
         const url = await new AwsS3(license, 'verification/license').getS3URL();
         data.license = url;
@@ -142,7 +141,6 @@ const RegisterVerification = () => {
             </p>
             <Form name="basic" autoComplete="off">
               <div className="flex flex-col gap-3">
-
                 <label
                   htmlFor="myInput"
                   className="border-b-2 border=[#E7E7E7] pb-2"

@@ -19,7 +19,6 @@ type Props = {
 };
 
 export function PostProjectDetails({ formik, children }: Props) {
-
   return (
     <div className=" bg-white shadow-[0_4px_30px_0px_#2E2D740D] rounded-xl border p-4">
       <TertiaryHeading
@@ -81,7 +80,8 @@ export function PostProjectDetails({ formik, children }: Props) {
                 Boolean(formik.errors.projectBuildingUse)
               }
               errorMessage={
-                formik.touched.projectBuildingUse && formik.errors.projectBuildingUse
+                formik.touched.projectBuildingUse &&
+                formik.errors.projectBuildingUse
                   ? (formik.errors.projectBuildingUse as string)
                   : ''
               }
@@ -125,22 +125,30 @@ export function PostProjectDetails({ formik, children }: Props) {
 
                 //  set estimatedCompletionDate to estimatedStartDate +1 if it's value is less than estimatedStartDate
                 if (formik.values.estimatedCompletionDate) {
-                  if (dayjs(formik.values.estimatedCompletionDate).isBefore(dayjs(dateString))) {
-                    formik.setFieldValue('estimatedCompletionDate', dayjs(dateString).add(1, 'day').format('YYYY-MM-DD'));
+                  if (
+                    dayjs(formik.values.estimatedCompletionDate).isBefore(
+                      dayjs(dateString)
+                    )
+                  ) {
+                    formik.setFieldValue(
+                      'estimatedCompletionDate',
+                      dayjs(dateString).add(1, 'day').format('YYYY-MM-DD')
+                    );
                   }
                 }
               },
               onBlur: formik.handleBlur,
               disabledDate: (current) => {
                 return dayjs(current).isBefore(dayjs().subtract(1, 'day'));
-              }
+              },
             }}
             hasError={
               formik.touched.estimatedStartDate &&
               Boolean(formik.errors.estimatedStartDate)
             }
             errorMessage={
-              formik.touched.estimatedStartDate && formik.errors.estimatedStartDate
+              formik.touched.estimatedStartDate &&
+              formik.errors.estimatedStartDate
                 ? formik.errors.estimatedStartDate
                 : ''
             }
@@ -159,7 +167,7 @@ export function PostProjectDetails({ formik, children }: Props) {
               onBlur: formik.handleBlur,
               disabledDate: (current) => {
                 return dayjs(current).isBefore(dayjs().subtract(1, 'day'));
-              }
+              },
             }}
             hasError={
               formik.touched.bidDueDate && Boolean(formik.errors.bidDueDate)
@@ -187,14 +195,15 @@ export function PostProjectDetails({ formik, children }: Props) {
                   return current < dayjs(formik.values.estimatedStartDate);
                 }
                 return dayjs(current).isBefore(dayjs().subtract(1, 'day'));
-              }
+              },
             }}
             hasError={
               formik.touched.estimatedCompletionDate &&
               Boolean(formik.errors.estimatedCompletionDate)
             }
             errorMessage={
-              formik.touched.estimatedCompletionDate && formik.errors.estimatedCompletionDate
+              formik.touched.estimatedCompletionDate &&
+              formik.errors.estimatedCompletionDate
                 ? formik.errors.estimatedCompletionDate
                 : ''
             }
@@ -293,8 +302,8 @@ export function PostProjectDetails({ formik, children }: Props) {
               Boolean(formik.errors.estimatedDuration)
             }
             errorMessage={
-
-              formik.touched.estimatedDuration && formik.errors.estimatedDuration
+              formik.touched.estimatedDuration &&
+              formik.errors.estimatedDuration
                 ? formik.errors.estimatedDuration
                 : ''
             }
@@ -317,7 +326,9 @@ export function PostProjectDetails({ formik, children }: Props) {
               formik.touched.description && Boolean(formik.errors.description)
             }
             errorMessage={
-              formik.touched.description && formik.touched.description && formik.errors.description
+              formik.touched.description &&
+              formik.touched.description &&
+              formik.errors.description
                 ? formik.errors.description
                 : ''
             }
@@ -339,8 +350,8 @@ export function PostProjectDetails({ formik, children }: Props) {
               Boolean(formik.errors.specialInstructions)
             }
             errorMessage={
-
-              formik.touched.specialInstructions && formik.errors.specialInstructions
+              formik.touched.specialInstructions &&
+              formik.errors.specialInstructions
                 ? formik.errors.specialInstructions
                 : ''
             }

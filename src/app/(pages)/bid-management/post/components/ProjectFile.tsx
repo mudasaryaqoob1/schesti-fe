@@ -15,7 +15,11 @@ type Props = {
   formik: FormikProps<IBidManagement>;
   setShouldContinue: React.Dispatch<React.SetStateAction<boolean>>;
 };
-export function ProjectUploadFiles({ formik, children, setShouldContinue }: Props) {
+export function ProjectUploadFiles({
+  formik,
+  children,
+  setShouldContinue,
+}: Props) {
   const [files, setFiles] = useState<UploadFile[]>([]);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -44,7 +48,10 @@ export function ProjectUploadFiles({ formik, children, setShouldContinue }: Prop
     setShouldContinue(false);
     try {
       const filesData = files.map(async (file) => {
-        const url = await new AwsS3(file, 'documents/post-project/').getS3URLWithProgress(progress => {
+        const url = await new AwsS3(
+          file,
+          'documents/post-project/'
+        ).getS3URLWithProgress((progress) => {
           // calculate progress upto 100%
           const percent = Math.round((progress.loaded / progress.total) * 100);
           setProgress(percent);
@@ -84,7 +91,7 @@ export function ProjectUploadFiles({ formik, children, setShouldContinue }: Prop
         title="Upload File"
         className="text-[20px] leading-[30px]"
       />
-      {progress > 0 ? <Progress percent={progress} type='line' /> : null}
+      {progress > 0 ? <Progress percent={progress} type="line" /> : null}
       <div className="mt-4">
         <Dragger
           name={'file'}

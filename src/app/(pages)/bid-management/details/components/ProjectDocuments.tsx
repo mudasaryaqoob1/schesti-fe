@@ -6,7 +6,7 @@ import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.i
 import { size } from 'lodash';
 
 interface IProps {
-  projectData: IBidManagement
+  projectData: IBidManagement;
 }
 
 export function ProjectDocuments(props: IProps) {
@@ -15,8 +15,8 @@ export function ProjectDocuments(props: IProps) {
 
   function downloadFile(url: string, name: string) {
     fetch(url)
-      .then(response => response.blob())
-      .then(blob => {
+      .then((response) => response.blob())
+      .then((blob) => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.style.display = 'none';
@@ -25,15 +25,15 @@ export function ProjectDocuments(props: IProps) {
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
-      })
+      });
   }
 
   function downloadAll() {
     if (size(projectData.projectFiles) > 0) {
-      setIsDownloadingAll(true)
-      projectData.projectFiles.forEach(file => {
+      setIsDownloadingAll(true);
+      projectData.projectFiles.forEach((file) => {
         downloadFile(file.url, file.name);
-      })
+      });
       setIsDownloadingAll(false);
     }
   }
@@ -78,9 +78,12 @@ export function ProjectDocuments(props: IProps) {
                 className="cursor-pointer"
               />
             </div>
-            <div onClick={() => downloadFile(file.url, file.name)} className="p-2 pb-8">
+            <div
+              onClick={() => downloadFile(file.url, file.name)}
+              className="p-2 pb-8"
+            >
               {file.type.includes('image') ? (
-                <div className='w-auto h-[190px] xl:w-[230px] mx-auto relative'>
+                <div className="w-auto h-[190px] xl:w-[230px] mx-auto relative">
                   <Image alt="image" src={file.url} fill />
                 </div>
               ) : (

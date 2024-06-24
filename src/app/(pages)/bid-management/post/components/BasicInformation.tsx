@@ -33,8 +33,6 @@ export function PostBasicInformation({ children, formik }: Props) {
     state || formik.values.state
   ).map((city) => ({ label: city.name, value: city.name }));
 
-
-
   return (
     <div className=" bg-white shadow-[0_4px_30px_0px_#2E2D740D] rounded-xl border p-4">
       <TertiaryHeading
@@ -166,7 +164,11 @@ export function PostBasicInformation({ children, formik }: Props) {
                 setCity('');
               },
             }}
-            errorMessage={formik.touched.state && formik.errors.state ? formik.errors.state : ''}
+            errorMessage={
+              formik.touched.state && formik.errors.state
+                ? formik.errors.state
+                : ''
+            }
             hasError={formik.touched.state && Boolean(formik.errors.state)}
           />
           <SelectComponent
@@ -226,8 +228,15 @@ export function PostBasicInformation({ children, formik }: Props) {
             },
             onBlur: formik.handleBlur,
           }}
-          hasError={formik.touched.constructionTypes && Boolean(formik.errors.constructionTypes)}
-          errorMessage={formik.touched.constructionTypes && formik.errors.constructionTypes ? formik.errors.constructionTypes.toString() : ''}
+          hasError={
+            formik.touched.constructionTypes &&
+            Boolean(formik.errors.constructionTypes)
+          }
+          errorMessage={
+            formik.touched.constructionTypes && formik.errors.constructionTypes
+              ? formik.errors.constructionTypes.toString()
+              : ''
+          }
         />
       </div>
       {children}

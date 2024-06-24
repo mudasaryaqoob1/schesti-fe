@@ -19,9 +19,8 @@ type Props = {
 };
 type RemoveUserBidProps = {
   biddingId: string;
-}
+};
 export function BidDetails({ bid, setSelectedBid, refetchSavedBids }: Props) {
-
   const router = useRouterHook();
 
   const removeUserBidMutation = useMutation<
@@ -159,7 +158,11 @@ export function BidDetails({ bid, setSelectedBid, refetchSavedBids }: Props) {
       </div>
       <div className="mt-4 space-y-2">
         <CustomButton
-          onClick={() => router.push(`/bid-management/contractor/details/${bid.projectId?._id}`)}
+          onClick={() =>
+            router.push(
+              `/bid-management/contractor/details/${bid.projectId?._id}`
+            )
+          }
           text="View Details"
           className="!bg-[#EAECF0] !text-[#667085] !border-[#EAECF0] !text-base !leading-7 "
         />

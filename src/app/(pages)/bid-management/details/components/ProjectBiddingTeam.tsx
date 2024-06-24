@@ -5,20 +5,24 @@ import { bidManagementService } from '@/app/services/bid-management.service';
 import { useQuery } from 'react-query';
 
 interface IProps {
-  projectData: IBidManagement | any
+  projectData: IBidManagement | any;
 }
 
 export function ProjectBiddingTeam(props: IProps) {
   const { projectData } = props;
 
   const fetchBiddingTeam = async () => {
-    return bidManagementService.httpGetProjectBiddingTeamByProjectId(projectData._id);
+    return bidManagementService.httpGetProjectBiddingTeamByProjectId(
+      projectData._id
+    );
   };
 
-  const { data, isLoading }: any = useQuery(['project-bidding-team'], fetchBiddingTeam);
+  const { data, isLoading }: any = useQuery(
+    ['project-bidding-team'],
+    fetchBiddingTeam
+  );
 
-  if(isLoading) return <h5>Loading...</h5>
-
+  if (isLoading) return <h5>Loading...</h5>;
 
   const columns = [
     {
@@ -68,10 +72,11 @@ export function ProjectBiddingTeam(props: IProps) {
           dataSource={data?.data?.biddingTeam.map((item: any) => ({
             name: item.user?.name,
             role: item.user?.userRole,
-            companyName: item.user?.companyName || item.user?.organizationName || "",
-            location: item.user?.address || "",
-            phoneNumber: item.user?.phone || "",
-            email: item.user?.email
+            companyName:
+              item.user?.companyName || item.user?.organizationName || '',
+            location: item.user?.address || '',
+            phoneNumber: item.user?.phone || '',
+            email: item.user?.email,
           }))}
         />
       </div>

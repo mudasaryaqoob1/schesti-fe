@@ -64,7 +64,6 @@ export function BiddingProjectDetails({
   });
 
   const downloadAllFiles = async (files: any[]) => {
-
     files.forEach(async (file: any) => {
       await downloadFile(file.url, file.name);
     });
@@ -74,19 +73,25 @@ export function BiddingProjectDetails({
     console.log('ddksk');
     setIsLoading(true);
     try {
-      const { data }: any = await bidManagementService.httpPostProjectAsBidder(typeof bid.projectId === 'string' ? "" : bid.projectId._id);
+      const { data }: any = await bidManagementService.httpPostProjectAsBidder(
+        typeof bid.projectId === 'string' ? '' : bid.projectId._id
+      );
       if (data) {
         toast.success('Project Posted successfully');
-        await createProjectActivity(typeof bid.projectId === 'string' ? "" : bid.projectId._id, 'repost project');
+        await createProjectActivity(
+          typeof bid.projectId === 'string' ? '' : bid.projectId._id,
+          'repost project'
+        );
         setIsLoading(false);
       }
     } catch (err: any) {
       setIsLoading(false);
-      toast.error(err.response?.data?.message || 'Error: could not post project');
-      console.log('could not post project as bidder',);
+      toast.error(
+        err.response?.data?.message || 'Error: could not post project'
+      );
+      console.log('could not post project as bidder');
     }
-  }
-
+  };
 
   const isArchive = bid.status === 'archived';
 
@@ -94,13 +99,15 @@ export function BiddingProjectDetails({
     <div>
       <div className="flex items-center justify-between">
         <SenaryHeading
-          title={`Posted: ${moment(typeof bid.projectId === 'string' ? " " : bid?.projectId.createdAt).format('DD MMM YYYY, hh:mm')}`}
+          title={`Posted: ${moment(typeof bid.projectId === 'string' ? ' ' : bid?.projectId.createdAt).format('DD MMM YYYY, hh:mm')}`}
           className="text-[#475467] text-sm leading-4 font-normal"
         />
         <div className="flex items-center space-x-2">
           <div className="rounded-full bg-[#E9EBF8] py-[5px] px-[11px]">
             <SenaryHeading
-              title={typeof bid.projectId === 'string' ? " " : bid.projectId.stage}
+              title={
+                typeof bid.projectId === 'string' ? ' ' : bid.projectId.stage
+              }
               className="text-schestiPrimary font-normal text-xs leading-4"
             />
           </div>
@@ -109,16 +116,20 @@ export function BiddingProjectDetails({
 
       <div className="mt-[14px]">
         <SenaryHeading
-          title={typeof bid.projectId === 'string' ? " " : bid.projectId?.projectName}
+          title={
+            typeof bid.projectId === 'string' ? ' ' : bid.projectId?.projectName
+          }
           className="text-[#475467] text-base leading-6 font-semibold"
         />
 
         <SenaryHeading
-          title={typeof bid.projectId === 'string' ? " " : bid.projectId?.description}
+          title={
+            typeof bid.projectId === 'string' ? ' ' : bid.projectId?.description
+          }
           className="text-[#475467] text-[14px] leading-6 font-normal mt-2"
         />
         <Link
-          href={`/bid-management/details/${typeof bid.projectId === 'string' ? " " : bid.projectId._id}`}
+          href={`/bid-management/details/${typeof bid.projectId === 'string' ? ' ' : bid.projectId._id}`}
           className="text-schestiPrimary underline underline-offset-2 mt-4 text-[14px] leading-6 font-normal cursor-pointer"
         >
           View full details
@@ -134,7 +145,7 @@ export function BiddingProjectDetails({
             className="text-[#475467] text-sm leading-4 font-normal"
           />
           <SenaryHeading
-            title={`${typeof bid.projectId === 'string' ? " " : bid.projectId.city}, ${Country.getCountryByCode(typeof bid.projectId === 'string' ? " " : bid.projectId.country)?.name}`}
+            title={`${typeof bid.projectId === 'string' ? ' ' : bid.projectId.city}, ${Country.getCountryByCode(typeof bid.projectId === 'string' ? ' ' : bid.projectId.country)?.name}`}
             className="text-[#475467] text-sm leading-4 font-semibold"
           />
         </div>
@@ -156,15 +167,18 @@ export function BiddingProjectDetails({
             className="text-[#475467] text-sm leading-4 font-normal"
           />
           <SenaryHeading
-            title={`${moment(typeof bid.projectId === 'string' ? " " : bid.projectId.bidDueDate).format('DD MMM YYYY, hh:mm')}`}
+            title={`${moment(typeof bid.projectId === 'string' ? ' ' : bid.projectId.bidDueDate).format('DD MMM YYYY, hh:mm')}`}
             className="text-[#475467] text-sm leading-4 font-semibold"
           />
         </div>
       </div>
       <Divider />
       <div className="flex items-center py-[5px] px-[11px] space-x-2 cursor-pointer">
-
-        {size(typeof bid.projectId === 'string' ? 0 : bid.projectId.projectFiles as any) > 0 && (
+        {size(
+          typeof bid.projectId === 'string'
+            ? 0
+            : (bid.projectId.projectFiles as any)
+        ) > 0 && (
           <>
             <Image
               alt="cloud icon"
@@ -173,7 +187,13 @@ export function BiddingProjectDetails({
               height={16}
             />
             <SenaryHeading
-              onClick={() => downloadAllFiles(typeof bid.projectId === 'string' ? [] : bid.projectId.projectFiles)}
+              onClick={() =>
+                downloadAllFiles(
+                  typeof bid.projectId === 'string'
+                    ? []
+                    : bid.projectId.projectFiles
+                )
+              }
               title="Download all files"
               className="text-schestiPrimary text-xs leading-4 font-semibold underline underline-offset-2"
             />
@@ -181,48 +201,57 @@ export function BiddingProjectDetails({
         )}
       </div>
 
-      {!isArchive ? <div>
-
-
-        <div className="mt-4 space-y-2">
-          <CustomButton
-            onClick={() => removeUserBidMutation.mutate({ biddingId: bid._id })}
-            text="Remove from my bidding projects"
-            className="!text-[red] !bg-transparent !border-[red] !text-base !leading-7 "
-          />
+      {!isArchive ? (
+        <div>
+          <div className="mt-4 space-y-2">
+            <CustomButton
+              onClick={() =>
+                removeUserBidMutation.mutate({ biddingId: bid._id })
+              }
+              text="Remove from my bidding projects"
+              className="!text-[red] !bg-transparent !border-[red] !text-base !leading-7 "
+            />
+          </div>
+          <div className="mt-4 space-y-2">
+            <CustomButton
+              onClick={() =>
+                router.push(
+                  `/bid-management/submit/${typeof bid.projectId === 'string' ? '' : bid.projectId._id}`
+                )
+              }
+              text="Send Bid"
+              className="!bg-schestiPrimary !text-[#ffffff] !border-[#EAECF0] !text-base !leading-7 "
+            />
+          </div>
+          {typeof bid.projectId !== 'string' &&
+            bid.projectId?.user &&
+            (bid.projectId?.user as any).roles.includes('Admin') && (
+              <div className="mt-4 space-y-2">
+                <CustomButton
+                  text="Post this project as a bidder"
+                  onClick={handlePostProjectAsBidder}
+                  disabled={isLoading}
+                  className={'!bg-[#F9F5FF] !text-schestiPrimary'}
+                />
+              </div>
+            )}
+          <div className="mt-4 space-y-2">
+            <CustomButton
+              onClick={async () => {
+                await createProjectActivity(
+                  typeof bid.projectId === 'string' ? '' : bid.projectId._id,
+                  'viewed details'
+                );
+                router.push(
+                  `/bid-management/details/${typeof bid.projectId === 'string' ? '' : bid.projectId._id}`
+                );
+              }}
+              text="View Details"
+              className="!bg-[#EAECF0] !text-[#667085] !border-[#EAECF0] !text-base !leading-7 "
+            />
+          </div>
         </div>
-        <div className="mt-4 space-y-2">
-          <CustomButton
-            onClick={() =>
-              router.push(`/bid-management/submit/${typeof bid.projectId === 'string' ? "" : bid.projectId._id}`)
-            }
-            text="Send Bid"
-            className="!bg-schestiPrimary !text-[#ffffff] !border-[#EAECF0] !text-base !leading-7 "
-          />
-        </div>
-        {
-          typeof bid.projectId !== 'string' && bid.projectId?.user && (bid.projectId?.user as any).roles.includes('Admin') && (
-            <div className="mt-4 space-y-2">
-              <CustomButton
-                text="Post this project as a bidder"
-                onClick={handlePostProjectAsBidder}
-                disabled={isLoading}
-                className={'!bg-[#F9F5FF] !text-schestiPrimary'}
-              />
-            </div>
-          )
-        }
-        <div className="mt-4 space-y-2">
-          <CustomButton
-            onClick={async () => {
-              await createProjectActivity(typeof bid.projectId === 'string' ? "" : bid.projectId._id, 'viewed details');
-              router.push(`/bid-management/details/${typeof bid.projectId === 'string' ? "" : bid.projectId._id}`);
-            }}
-            text="View Details"
-            className="!bg-[#EAECF0] !text-[#667085] !border-[#EAECF0] !text-base !leading-7 "
-          />
-        </div>
-      </div> : null}
+      ) : null}
     </div>
   );
 }

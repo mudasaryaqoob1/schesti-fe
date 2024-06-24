@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useCallback, useLayoutEffect } from 'react';
 import { Spin } from 'antd';
-import { useParams, } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useSelector } from 'react-redux';
 
 import { estimateRequestService } from '@/app/services/estimates.service';

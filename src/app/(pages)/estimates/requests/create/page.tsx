@@ -82,7 +82,6 @@ const CreateEstimateRequest = () => {
   const [otherDocuments, setOtherDocuments] = useState<any>([]);
   const [selectedClientDetail, setSelectedClientDetail] = useState<IClient>();
 
-
   const initialValues: IEstimateRequest = {
     clientName: selectedClientDetail ? selectedClientDetail.firstName : '',
     companyName: selectedClientDetail ? selectedClientDetail.lastName : '',
@@ -307,8 +306,8 @@ const CreateEstimateRequest = () => {
         iconheight={10}
         onClick={() => router.push('/settings/companyUser/addCompanyUser')}
       />
-    )
-  }
+    );
+  };
   const addEstimatorAction = () => {
     return (
       <CustomWhiteButton
@@ -319,8 +318,8 @@ const CreateEstimateRequest = () => {
         iconheight={10}
         onClick={() => router.push('/settings/companyUser/addCompanyUser')}
       />
-    )
-  }
+    );
+  };
   return (
     <section className="my-5 px-16 ">
       <div className="flex justify-between flex-wrap items-center md:flex-nowrap">

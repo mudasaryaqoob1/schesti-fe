@@ -17,8 +17,6 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
     (state: RootState) => state.meetings.loading
   );
 
-
-
   if (meetingsLoading) {
     return <Skeleton active className="mt-6" />;
   }
@@ -37,12 +35,7 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
         <NoMeetings onClick={onOpenModal} />
       ) : (
         meetings.map((item) => {
-          return (
-            <MeetingCard
-              item={item}
-              key={item._id}
-            />
-          );
+          return <MeetingCard item={item} key={item._id} />;
         })
       )}
     </div>

@@ -196,8 +196,9 @@ export default function SchedulePage() {
                 />
 
                 <QuinaryHeading
-                  title={`${String(scheduleProjectDetail?.duration || '-')} ${scheduleProjectDetail?.durationType || '-'
-                    }`}
+                  title={`${String(scheduleProjectDetail?.duration || '-')} ${
+                    scheduleProjectDetail?.durationType || '-'
+                  }`}
                   className="text-[#475467] font-semibold"
                 />
               </div>

@@ -17,7 +17,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import * as Yup from 'yup';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 
-const EmailSchema = Yup.string().email().required("Email is required");
+const EmailSchema = Yup.string().email().required('Email is required');
 
 const CheckYourEmail = () => {
   const searchParams = useSearchParams();
@@ -25,7 +25,6 @@ const CheckYourEmail = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isFetchingUserData, setIsFetchingUserData] = useState(false);
   const router = useRouterHook();
-
 
   // useEffect(() => {
   //   verifyUserEmail();
@@ -48,17 +47,17 @@ const CheckYourEmail = () => {
   //this is the format of emailQueryParameter fahada094+3@gmail.com
   // but + is optional. currently when parsing the email with +, the plus is replaced by space
   /**
-* Parses the email query parameter by replacing any whitespace with '+'.
-* @param {string} emailQueryParameter - The email query parameter to be parsed.
-* @returns {string} - The parsed email.
-*/
+   * Parses the email query parameter by replacing any whitespace with '+'.
+   * @param {string} emailQueryParameter - The email query parameter to be parsed.
+   * @returns {string} - The parsed email.
+   */
 
-  let parsedEmail = emailQueryParameter ? emailQueryParameter.replace(/\s/g, '+') : "";
-
+  let parsedEmail = emailQueryParameter
+    ? emailQueryParameter.replace(/\s/g, '+')
+    : '';
 
   const resendEmailHandler = async () => {
     setIsLoading(true);
-
 
     try {
       const isEmail = await EmailSchema.isValid(parsedEmail);
@@ -74,13 +73,13 @@ const CheckYourEmail = () => {
         toast.success(result.message);
       }
     } catch (error) {
-      let err = error as AxiosError<{ message: string }>
+      let err = error as AxiosError<{ message: string }>;
 
-      let errMessage = err.response?.data.message || 'Error while sending email';
+      let errMessage =
+        err.response?.data.message || 'Error while sending email';
       toast.error(errMessage);
     } finally {
       setIsLoading(false);
-
     }
   };
 
@@ -98,7 +97,7 @@ const CheckYourEmail = () => {
       if (result.statusCode === 200 && result.data) {
         const user = result.data.user;
         if (user.isEmailVerified) {
-          router.push("/login");
+          router.push('/login');
           return;
         } else {
           toast.error('Email not verified');
@@ -113,9 +112,8 @@ const CheckYourEmail = () => {
     }
   }
 
-
   return (
-    <Spin spinning={isLoading} indicator={<LoadingOutlined spin />} >
+    <Spin spinning={isLoading} indicator={<LoadingOutlined spin />}>
       <AuthNavbar />
       <div className="h-[calc(100vh-100px)] grid place-items-center rounded-s">
         <div
@@ -158,9 +156,11 @@ const CheckYourEmail = () => {
            leading-[24px] text-doveGrayer text-center mt-8
            `)}
           >
-            Didn’t receive an email?{' '} <span
+            Didn’t receive an email?{' '}
+            <span
               onClick={resendEmailHandler}
-              className='cursor-pointer text-[#003366] underline underline-offset-2 leading-5 text-base font-medium'>
+              className="cursor-pointer text-[#003366] underline underline-offset-2 leading-5 text-base font-medium"
+            >
               Resend
             </span>
           </div>

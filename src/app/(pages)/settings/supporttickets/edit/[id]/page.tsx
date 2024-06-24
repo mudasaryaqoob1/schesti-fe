@@ -19,7 +19,10 @@ import { twMerge } from 'tailwind-merge';
 // redux module
 
 // supportTicket service
-import { ISupportTicket, ITicketFile } from '@/app/interfaces/supportTicket.interface';
+import {
+  ISupportTicket,
+  ITicketFile,
+} from '@/app/interfaces/supportTicket.interface';
 import { supportTicketService } from '@/app/services/supportTicket.service';
 
 import Description from '@/app/component/description';
@@ -65,7 +68,7 @@ const EditSupportTicket = () => {
     let updateSupportTicketBody = {
       title,
       description,
-      file
+      file,
     };
     setIsLoading(true);
     let result = await supportTicketService.httpUpdateSupportTicket(
@@ -84,7 +87,6 @@ const EditSupportTicket = () => {
   const avatarUploadHandler = async (e: any) => {
     setavatarLoading(true);
     let fileObj: ITicketFile | undefined = undefined;
-
 
     if (byteConverter(e.target.files[0].size, 'MB').size > 5) {
       toast.warning('Cannot upload image more then 5 mb of size');
@@ -126,7 +128,6 @@ const EditSupportTicket = () => {
             width={498}
             height={628}
           />
-
         </div>
         <section className="w-full  col-span-8">
           <div className="flex gap-1 items-center">
@@ -157,10 +158,10 @@ const EditSupportTicket = () => {
                 initialValues={
                   supportTicketData
                     ? {
-                      title: supportTicketData.title,
-                      description: supportTicketData.description,
-                      file: supportTicketData.file,
-                    }
+                        title: supportTicketData.title,
+                        description: supportTicketData.description,
+                        file: supportTicketData.file,
+                      }
                     : initialValues
                 }
                 validationSchema={validationSchema}
@@ -227,64 +228,68 @@ const EditSupportTicket = () => {
                         />
                       </div> */}
                       {/* Upload Image Div */}
-                      {values.file ? <FileView
-                        name={values.file.name}
-                        extension={values.file.fileType.split("/")[1]}
-                        url={values.file.url}
-                        text='View'
-                        actionIcon={{
-                          icon: '/trash.svg',
-                          width: 16,
-                          height: 16,
-                          onClick: () => {
-                            setFieldValue('file', undefined);
-                          },
-                        }}
-                      /> : <div className={`${bg_style} p-5 mt-4 `}>
-                        <div
-                          className={`px-6 py-4 flex flex-col items-center gap-3 ${bg_style}`}
-                        >
-                          <input type="text" id="upload" className="hidden" />
-                          <div className="bg-lightGrayish rounded-[28px] border border-solid border-red flex justify-center items-center p-2.5">
-                            <Image
-                              src={'/uploadcloud.svg'}
-                              alt="upload icon"
-                              width={20}
-                              height={20}
-                            />
-                          </div>
-                          {avatarLoading ? <p>Uploading...</p> : null}
-                          <div className="flex gap-2">
-                            <label
-                              htmlFor="uploadCompanyLogo"
-                              className={twMerge(
-                                `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
-                              )}
-                            >
-                              Upload Logo
-                            </label>
-                            <input
-                              type="file"
-                              name="uploadLogo"
-                              id="uploadCompanyLogo"
-                              className="hidden"
-                              onChange={async (e) => {
-                                setFieldValue(
-                                  'file',
-                                  await avatarUploadHandler(e)
-                                );
-                              }}
-                            />
+                      {values.file ? (
+                        <FileView
+                          name={values.file.name}
+                          extension={values.file.fileType.split('/')[1]}
+                          url={values.file.url}
+                          text="View"
+                          actionIcon={{
+                            icon: '/trash.svg',
+                            width: 16,
+                            height: 16,
+                            onClick: () => {
+                              setFieldValue('file', undefined);
+                            },
+                          }}
+                        />
+                      ) : (
+                        <div className={`${bg_style} p-5 mt-4 `}>
+                          <div
+                            className={`px-6 py-4 flex flex-col items-center gap-3 ${bg_style}`}
+                          >
+                            <input type="text" id="upload" className="hidden" />
+                            <div className="bg-lightGrayish rounded-[28px] border border-solid border-red flex justify-center items-center p-2.5">
+                              <Image
+                                src={'/uploadcloud.svg'}
+                                alt="upload icon"
+                                width={20}
+                                height={20}
+                              />
+                            </div>
+                            {avatarLoading ? <p>Uploading...</p> : null}
+                            <div className="flex gap-2">
+                              <label
+                                htmlFor="uploadCompanyLogo"
+                                className={twMerge(
+                                  `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
+                                )}
+                              >
+                                Upload Logo
+                              </label>
+                              <input
+                                type="file"
+                                name="uploadLogo"
+                                id="uploadCompanyLogo"
+                                className="hidden"
+                                onChange={async (e) => {
+                                  setFieldValue(
+                                    'file',
+                                    await avatarUploadHandler(e)
+                                  );
+                                }}
+                              />
+                              <p className={`text-steelGray ${minHeading}`}>
+                                or drag and drop
+                              </p>
+                            </div>
+
                             <p className={`text-steelGray ${minHeading}`}>
-                              or drag and drop
+                              SVG, PNG, JPG or GIF (max. 800x400px)
                             </p>
                           </div>
-
-                          <p className={`text-steelGray ${minHeading}`}>
-                            SVG, PNG, JPG or GIF (max. 800x400px)
-                          </p>
                         </div>
-                      </div>}
+                      )}
                       <div className="flex justify-end gap-2 mt-6">
                         <span>
                           <CustomButton

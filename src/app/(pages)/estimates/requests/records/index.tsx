@@ -204,7 +204,6 @@ const EstimateRequestTable: React.FC = () => {
 
   console.log(estimateRequestsData, 'estimateRequestsData');
 
-
   return (
     <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid border-silverGray shadow-secondaryTwist">
       {selectedEstimate ? (
@@ -241,19 +240,22 @@ const EstimateRequestTable: React.FC = () => {
         />
       </div>
       <div className="mt-4">
-        {
-          estimateRequestsData.length === 0 ? (
-            <NoDataComponent title='No Data Found' description='Please create estimate request first to create an estimate' btnText='Create Estimate Request' isButton={true} link='/estimates/requests/create' />
-          ) : (
-            <Table
-              loading={estimateRequestsLoading}
-              columns={columns}
-              dataSource={estimateRequestsData}
-              pagination={{ position: ['bottomCenter'] }}
-            />
-          )
-        }
-
+        {estimateRequestsData.length === 0 ? (
+          <NoDataComponent
+            title="No Data Found"
+            description="Please create estimate request first to create an estimate"
+            btnText="Create Estimate Request"
+            isButton={true}
+            link="/estimates/requests/create"
+          />
+        ) : (
+          <Table
+            loading={estimateRequestsLoading}
+            columns={columns}
+            dataSource={estimateRequestsData}
+            pagination={{ position: ['bottomCenter'] }}
+          />
+        )}
       </div>
     </section>
   );

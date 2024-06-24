@@ -43,9 +43,8 @@ export function PostFinalize({ formik, children }: Props) {
         .filter((u: any) => !u.roles.includes('Subcontractor'))
         .map((user: any) => {
           return {
-
             label: `${user.firstName} ${user.lastName}`,
-            value: user.email
+            value: user.email,
           };
         })
     );
@@ -72,7 +71,6 @@ export function PostFinalize({ formik, children }: Props) {
       formik.setFieldValue('invitedMembers', invitedMembers);
     },
   });
-
 
   return (
     <div className="space-y-6">
@@ -268,27 +266,35 @@ export function PostFinalize({ formik, children }: Props) {
                 title="Project Description"
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
-              <Paragraph ellipsis={{
-                expandable: true,
-                rows: 2,
-                symbol: 'Read more',
-              }} className="text-[#344054] text-[14px] leading-6 font-medium">
+              <Paragraph
+                ellipsis={{
+                  expandable: true,
+                  rows: 2,
+                  symbol: 'Read more',
+                }}
+                className="text-[#344054] text-[14px] leading-6 font-medium"
+              >
                 {values.description}
               </Paragraph>
             </div>
-            {values.specialInstructions.length ? <div className="space-y-2">
-              <SenaryHeading
-                title="Special Instructions"
-                className="text-[14px] leading-6 text-[#98A2B3] font-normal"
-              />
-              <Paragraph ellipsis={{
-                expandable: true,
-                rows: 2,
-                symbol: 'Read more',
-              }} className="text-[#344054] text-[14px] leading-6 font-medium">
-                {values.specialInstructions}
-              </Paragraph>
-            </div> : null}
+            {values.specialInstructions.length ? (
+              <div className="space-y-2">
+                <SenaryHeading
+                  title="Special Instructions"
+                  className="text-[14px] leading-6 text-[#98A2B3] font-normal"
+                />
+                <Paragraph
+                  ellipsis={{
+                    expandable: true,
+                    rows: 2,
+                    symbol: 'Read more',
+                  }}
+                  className="text-[#344054] text-[14px] leading-6 font-medium"
+                >
+                  {values.specialInstructions}
+                </Paragraph>
+              </div>
+            ) : null}
           </div>
         </fieldset>
       </div>
@@ -298,17 +304,17 @@ export function PostFinalize({ formik, children }: Props) {
           theme={{
             components: {
               Switch: {
-                colorPrimary: "#007AB6",
-                colorPrimaryHover: "#E6F2F8"
+                colorPrimary: '#007AB6',
+                colorPrimaryHover: '#E6F2F8',
               },
               Radio: {
-                colorPrimary: "#007AB6"
+                colorPrimary: '#007AB6',
               },
               Checkbox: {
-                colorPrimary: "#007AB6",
-                colorPrimaryHover: "#007AB6",
+                colorPrimary: '#007AB6',
+                colorPrimaryHover: '#007AB6',
               },
-            }
+            },
           }}
         >
           <TertiaryHeading
@@ -316,82 +322,97 @@ export function PostFinalize({ formik, children }: Props) {
             className="text-[20px] leading-[30px]"
           />
 
-          <div className='mt-5'>
-            <div className='flex items-center space-x-10 '>
-
+          <div className="mt-5">
+            <div className="flex items-center space-x-10 ">
               <div className="flex items-center space-x-5">
-                <Switch checkedChildren="ON" unCheckedChildren="OFF" checked={formik.values.preBiddingMeeting?.isChecked}
-                  onChange={val => {
+                <Switch
+                  checkedChildren="ON"
+                  unCheckedChildren="OFF"
+                  checked={formik.values.preBiddingMeeting?.isChecked}
+                  onChange={(val) => {
                     formik.setFieldValue('preBiddingMeeting.isChecked', val);
                   }}
                 />
                 <TertiaryHeading
-                  title='Required Pre-bid Meeting'
-                  className='text-[#344054] text-[16px] leading-7 font-normal'
+                  title="Required Pre-bid Meeting"
+                  className="text-[#344054] text-[16px] leading-7 font-normal"
                 />
               </div>
 
-              {formik.values.preBiddingMeeting?.isChecked ? <div>
-                <Radio.Group value={formik.values.preBiddingMeeting?.type}
-                  onChange={e => {
-                    formik.setFieldValue('preBiddingMeeting.type', e.target.value);
+              {formik.values.preBiddingMeeting?.isChecked ? (
+                <div>
+                  <Radio.Group
+                    value={formik.values.preBiddingMeeting?.type}
+                    onChange={(e) => {
+                      formik.setFieldValue(
+                        'preBiddingMeeting.type',
+                        e.target.value
+                      );
+                    }}
+                  >
+                    <Radio value={'Onsite'}>Onsite</Radio>
+                    <Radio value={'Online'}>Online</Radio>
+                  </Radio.Group>
+                </div>
+              ) : null}
+            </div>
+            {formik.values.preBiddingMeeting?.isChecked ? (
+              <div className="my-2">
+                <Checkbox
+                  checked={formik.values.preBiddingMeeting?.isMandatory}
+                  onChange={(e) => {
+                    formik.setFieldValue(
+                      'preBiddingMeeting.isMandatory',
+                      e.target.checked
+                    );
                   }}
                 >
-                  <Radio value={'Onsite'}>Onsite</Radio>
-                  <Radio value={'Online'}>Online</Radio>
-                </Radio.Group>
-              </div> : null
-              }
-            </div>
-            {formik.values.preBiddingMeeting?.isChecked ? <div className='my-2'>
-              <Checkbox
-                checked={formik.values.preBiddingMeeting?.isMandatory}
-                onChange={e => {
-                  formik.setFieldValue('preBiddingMeeting.isMandatory', e.target.checked)
-                }}>
-                {"It's a mandatory meeting"}
-              </Checkbox>
-            </div> : null}
-            <EventOnSiteForm
-              formik={formik}
-            />
+                  {"It's a mandatory meeting"}
+                </Checkbox>
+              </div>
+            ) : null}
+            <EventOnSiteForm formik={formik} />
 
-            <EventOnlineForm
-              formik={formik}
-            />
+            <EventOnlineForm formik={formik} />
           </div>
 
           <div className="mt-5">
             <div className="flex items-center space-x-5">
-              <Switch checkedChildren="ON" unCheckedChildren="OFF" checked={formik.values.siteWalkthrough?.isChecked}
-                onChange={val => formik.setFieldValue("siteWalkthrough.isChecked", val)}
+              <Switch
+                checkedChildren="ON"
+                unCheckedChildren="OFF"
+                checked={formik.values.siteWalkthrough?.isChecked}
+                onChange={(val) =>
+                  formik.setFieldValue('siteWalkthrough.isChecked', val)
+                }
               />
               <TertiaryHeading
-                title='Site Walkthrough'
-                className='text-[#344054] text-[16px] leading-7 font-normal'
+                title="Site Walkthrough"
+                className="text-[#344054] text-[16px] leading-7 font-normal"
               />
             </div>
 
-            <EventSiteWalkThroughForm
-              formik={formik}
-            />
+            <EventSiteWalkThroughForm formik={formik} />
           </div>
 
           <div className="mt-5">
             <div className="flex items-center space-x-5">
-              <Switch checkedChildren="ON" unCheckedChildren="OFF"
+              <Switch
+                checkedChildren="ON"
+                unCheckedChildren="OFF"
                 checked={formik.values.rfiDeadline?.isChecked}
-                onChange={val => formik.setFieldValue("rfiDeadline.isChecked", val)}
+                onChange={(val) =>
+                  formik.setFieldValue('rfiDeadline.isChecked', val)
+                }
               />
               <TertiaryHeading
-                title='RFI Deadline'
-                className='text-[#344054] text-[16px] leading-7 font-normal'
+                title="RFI Deadline"
+                className="text-[#344054] text-[16px] leading-7 font-normal"
               />
             </div>
 
             <RfiDeadline formik={formik} />
           </div>
-
         </ConfigProvider>
       </div>
 
@@ -506,7 +527,7 @@ export function PostFinalize({ formik, children }: Props) {
               onBlur: formik.handleBlur,
               status:
                 formik.touched.selectedTeamMembers &&
-                  Boolean(formik.errors.selectedTeamMembers)
+                Boolean(formik.errors.selectedTeamMembers)
                   ? 'error'
                   : undefined,
             }}
@@ -516,14 +537,14 @@ export function PostFinalize({ formik, children }: Props) {
             }
             errorMessage={
               formik.touched.selectedTeamMembers &&
-                Boolean(formik.errors.selectedTeamMembers) &&
-                Array.isArray(formik.errors.selectedTeamMembers)
+              Boolean(formik.errors.selectedTeamMembers) &&
+              Array.isArray(formik.errors.selectedTeamMembers)
                 ? formik.errors.selectedTeamMembers
-                  .map(
-                    (item: string, idx) =>
-                      `'${formik.values.selectedTeamMembers![idx]}' ${item}`
-                  )
-                  .toString()
+                    .map(
+                      (item: string, idx) =>
+                        `'${formik.values.selectedTeamMembers![idx]}' ${item}`
+                    )
+                    .toString()
                 : (formik.errors.selectedTeamMembers as string)
             }
           />
@@ -532,26 +553,30 @@ export function PostFinalize({ formik, children }: Props) {
         <Divider className="border-dashed border-t-2" />
 
         <div className="grid grid-cols-2 gap-6 mt-2">
-          {formik.values.platformType === 'Public' ? <div className="space-y-2">
-            <Checkbox
-              checked={formik.values.isMatchingWithTrades}
-            // onChange={(e) => {
-            //   formik.setFieldValue('isMatchingWithTrades', e.target.checked);
-            // }}
-            >
-              <SenaryHeading
-                title="Schesti members with matching trades and region"
-                className="text-[#344054] font-normal leading-7 text-[14px]"
-              />
-            </Checkbox>
+          {formik.values.platformType === 'Public' ? (
+            <div className="space-y-2">
+              <Checkbox
+                checked={formik.values.isMatchingWithTrades}
+                // onChange={(e) => {
+                //   formik.setFieldValue('isMatchingWithTrades', e.target.checked);
+                // }}
+              >
+                <SenaryHeading
+                  title="Schesti members with matching trades and region"
+                  className="text-[#344054] font-normal leading-7 text-[14px]"
+                />
+              </Checkbox>
 
-            <Checkbox disabled>
-              <SenaryHeading
-                title="My In-Network members (Sends only to those with matching trades and regions)"
-                className="text-[#667085] font-normal leading-7 text-[14px] !w-fit"
-              />
-            </Checkbox>
-          </div> : <div></div>}
+              <Checkbox disabled>
+                <SenaryHeading
+                  title="My In-Network members (Sends only to those with matching trades and regions)"
+                  className="text-[#667085] font-normal leading-7 text-[14px] !w-fit"
+                />
+              </Checkbox>
+            </div>
+          ) : (
+            <div></div>
+          )}
 
           <div className="space-y-2">
             <SenaryHeading
@@ -571,12 +596,12 @@ export function PostFinalize({ formik, children }: Props) {
                 onBlur: formik.handleBlur,
                 status:
                   formik.touched.invitedMembers &&
-                    Boolean(formik.errors.invitedMembers)
+                  Boolean(formik.errors.invitedMembers)
                     ? 'error'
                     : undefined,
                 dropdownStyle: {
-                  display: "none"
-                }
+                  display: 'none',
+                },
               }}
               hasError={
                 formik.touched.invitedMembers &&
@@ -584,14 +609,14 @@ export function PostFinalize({ formik, children }: Props) {
               }
               errorMessage={
                 formik.touched.invitedMembers &&
-                  Boolean(formik.errors.invitedMembers) &&
-                  Array.isArray(formik.errors.invitedMembers)
+                Boolean(formik.errors.invitedMembers) &&
+                Array.isArray(formik.errors.invitedMembers)
                   ? formik.errors.invitedMembers
-                    .map(
-                      (item: string, idx) =>
-                        `'${formik.values.invitedMembers![idx]}' ${item}`
-                    )
-                    .toString()
+                      .map(
+                        (item: string, idx) =>
+                          `'${formik.values.invitedMembers![idx]}' ${item}`
+                      )
+                      .toString()
                   : (formik.errors.invitedMembers as string)
               }
             />

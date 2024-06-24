@@ -22,44 +22,49 @@ type Props = {
 
 export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
   const [isDownloadingAll, setIsDownloadingAll] = useState(false);
-  const authUser = useSelector((state: RootState) => state.auth.user as { user?: IUserInterface });
+  const authUser = useSelector(
+    (state: RootState) => state.auth.user as { user?: IUserInterface }
+  );
   const selectedBidProjectDetail = selectedBidProjectDetails.find((detail) => {
-    return typeof authUser.user === 'string' ? detail.user === authUser.user : detail.user === authUser.user?._id;
+    return typeof authUser.user === 'string'
+      ? detail.user === authUser.user
+      : detail.user === authUser.user?._id;
   });
 
-  const columns: ColumnsType<{ _id: string, quantity: number, price: number }> = [
-    {
-      key: 'description',
-      title: 'Description',
-      dataIndex: 'description',
-    },
-    {
-      key: 'quantity',
-      title: 'Quantity',
-      dataIndex: 'quantity',
-    },
-    {
-      key: 'unitPrice',
-      title: 'Unit Price',
-      dataIndex: 'price',
-      render(value) {
-        return value ? USCurrencyFormat.format(value) : null;
+  const columns: ColumnsType<{ _id: string; quantity: number; price: number }> =
+    [
+      {
+        key: 'description',
+        title: 'Description',
+        dataIndex: 'description',
       },
-    },
-    {
-      key: 'total',
-      title: 'Total',
-      dataIndex: 'total',
-      render(value, record) {
-        return USCurrencyFormat.format(record.quantity * record.price);
+      {
+        key: 'quantity',
+        title: 'Quantity',
+        dataIndex: 'quantity',
       },
-    },
-  ];
+      {
+        key: 'unitPrice',
+        title: 'Unit Price',
+        dataIndex: 'price',
+        render(value) {
+          return value ? USCurrencyFormat.format(value) : null;
+        },
+      },
+      {
+        key: 'total',
+        title: 'Total',
+        dataIndex: 'total',
+        render(value, record) {
+          return USCurrencyFormat.format(record.quantity * record.price);
+        },
+      },
+    ];
 
   const download = (url: string, name: string) => {
     fetch(url)
-      .then(response => response.blob())
-      .then(blob => {
+      .then((response) => response.blob())
+      .then((blob) => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.style.display = 'none';
@@ -68,8 +73,8 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
-      })
-  }
+      });
+  };
 
   const downloadFile = (detail: ISubmittedProjectBid) => {
     setIsDownloadingAll(true);
@@ -85,12 +90,8 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
       .addDataSource(selectedBid.projectScopes, {
         str2Percent: true,
       })
-      .saveAs(
-        `${bid.projectId?.projectName
-        }-${Date.now()}.xlsx`
-      );
+      .saveAs(`${bid.projectId?.projectName}-${Date.now()}.xlsx`);
   };
-
 
   return (
     <div className="col-span-4 mt-3">
@@ -100,12 +101,14 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
           className="font-normal text-[#475467] text-xs leading-4"
         />
         <div className="flex mt-1 items-center space-x-3">
-          {bid.user?.companyLogo ? <Image
-            src={bid.user?.companyLogo}
-            width={18}
-            height={18}
-            alt="trade icon"
-          /> : null}
+          {bid.user?.companyLogo ? (
+            <Image
+              src={bid.user?.companyLogo}
+              width={18}
+              height={18}
+              alt="trade icon"
+            />
+          ) : null}
           <SenaryHeading
             title={bid.projectId?.projectName}
             className="font-medium text-[#001556] text-base leading-6"
@@ -132,7 +135,11 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
           />
 
           <SenaryHeading
-            title={selectedBidProjectDetail ? `${selectedBidProjectDetail.projectDuration} ${selectedBidProjectDetail.projectDurationType.toUpperCase()}` : ''}
+            title={
+              selectedBidProjectDetail
+                ? `${selectedBidProjectDetail.projectDuration} ${selectedBidProjectDetail.projectDurationType.toUpperCase()}`
+                : ''
+            }
             className="font-semibold text-[#475467] text-xs leading-4"
           />
         </div>
@@ -142,12 +149,14 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
             className="font-normal text-[#475467] text-xs leading-4"
           />
 
-          {selectedBidProjectDetail ? <SenaryHeading
-            title={`${moment(selectedBidProjectDetail.createdAt).format(
-              'DD MMM YYYY, hh:mm'
-            )}`}
-            className="font-semibold text-[#475467] text-xs leading-4"
-          /> : null}
+          {selectedBidProjectDetail ? (
+            <SenaryHeading
+              title={`${moment(selectedBidProjectDetail.createdAt).format(
+                'DD MMM YYYY, hh:mm'
+              )}`}
+              className="font-semibold text-[#475467] text-xs leading-4"
+            />
+          ) : null}
         </div>
 
         <Link
@@ -161,7 +170,11 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
       <Divider />
       <div className="mt-3">
         <SenaryHeading
-          title={selectedBidProjectDetail ? selectedBidProjectDetail.additionalDetails : ' '}
+          title={
+            selectedBidProjectDetail
+              ? selectedBidProjectDetail.additionalDetails
+              : ' '
+          }
           className="font-normal text-[#475467] text-sm leading-6"
         />
       </div>
@@ -174,9 +187,16 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
             className="font-normal text-[#667085] text-xs leading-4"
           />
           <SenaryHeading
-            title={selectedBidProjectDetail ? Bid_How_Long_Price_Increase.find(bidprice => {
-              return selectedBidProjectDetail.priceExpiryDuration === bidprice.value;
-            })!.label : ''}
+            title={
+              selectedBidProjectDetail
+                ? Bid_How_Long_Price_Increase.find((bidprice) => {
+                    return (
+                      selectedBidProjectDetail.priceExpiryDuration ===
+                      bidprice.value
+                    );
+                  })!.label
+                : ''
+            }
             className="font-semibold text-[#101828] text-xs leading-4"
           />
         </div>
@@ -199,33 +219,39 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
             className="font-semibold text-[#101828] text-xs leading-4"
           />
 
-          {selectedBidProjectDetail ? <Table
-            // @ts-ignore
-            columns={columns}
-            dataSource={selectedBidProjectDetail.projectScopes.map(
-              (el) => ({
+          {selectedBidProjectDetail ? (
+            <Table
+              // @ts-ignore
+              columns={columns}
+              dataSource={selectedBidProjectDetail.projectScopes.map((el) => ({
                 description: el.description,
                 quantity: el.quantity,
                 price: el.price,
-              })
-            )}
-            pagination={false}
-            bordered
-          /> : null}
+              }))}
+              pagination={false}
+              bordered
+            />
+          ) : null}
         </div>
       )}
-      {selectedBidProjectDetail ? <div className="px-4 mt-3 space-y-3">
-        {selectedBidProjectDetail.file.url ? <CustomButton
-          onClick={() => downloadFile(selectedBidProjectDetail)}
-          isLoading={isDownloadingAll}
-          text="Download All Files"
-        /> : null}
+      {selectedBidProjectDetail ? (
+        <div className="px-4 mt-3 space-y-3">
+          {selectedBidProjectDetail.file.url ? (
+            <CustomButton
+              onClick={() => downloadFile(selectedBidProjectDetail)}
+              isLoading={isDownloadingAll}
+              text="Download All Files"
+            />
+          ) : null}
 
-        {selectedBidProjectDetail.projectScopes.length ? <CustomButton
-          onClick={() => handleDownloadScope(selectedBidProjectDetail)}
-          text="Download Scopes"
-        /> : null}
-      </div> : null}
+          {selectedBidProjectDetail.projectScopes.length ? (
+            <CustomButton
+              onClick={() => handleDownloadScope(selectedBidProjectDetail)}
+              text="Download Scopes"
+            />
+          ) : null}
+        </div>
+      ) : null}
     </div>
   );
 }

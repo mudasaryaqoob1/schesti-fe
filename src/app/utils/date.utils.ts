@@ -11,7 +11,7 @@ dayjs.extend(timezone);
 
 export { dayjs };
 export const disabledDate = (current: DayjsType, timezone = 'Asia/Karachi') => {
-  if(current){
+  if (current) {
     return current.isBefore(dayjs().tz(timezone).startOf('day'), 'day');
   }
 };

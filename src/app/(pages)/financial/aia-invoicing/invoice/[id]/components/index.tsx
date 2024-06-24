@@ -314,8 +314,9 @@ export function PhaseComponent({ parentInvoice }: Props) {
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className={`${tab === type ? 'text-RoyalPurple' : 'text-black'
-                      }`}
+                    className={`${
+                      tab === type ? 'text-RoyalPurple' : 'text-black'
+                    }`}
                   />
                 ),
                 tabKey: type,
@@ -359,19 +360,23 @@ export function PhaseComponent({ parentInvoice }: Props) {
                         text="Previous"
                         className="!w-40"
                       />
-                      {showDownload ? <CustomButton
-                        loadingText="Downloading..."
-                        isLoading={isDownloading}
-                        text={'Download PDF'}
-                        onClick={() => downloadPdf()}
-                        className="!w-48"
-                      /> : <CustomButton
-                        text="Create new Phase"
-                        className="!w-48"
-                        onClick={() => {
-                          handleSubmit(g7State);
-                        }}
-                      />}
+                      {showDownload ? (
+                        <CustomButton
+                          loadingText="Downloading..."
+                          isLoading={isDownloading}
+                          text={'Download PDF'}
+                          onClick={() => downloadPdf()}
+                          className="!w-48"
+                        />
+                      ) : (
+                        <CustomButton
+                          text="Create new Phase"
+                          className="!w-48"
+                          onClick={() => {
+                            handleSubmit(g7State);
+                          }}
+                        />
+                      )}
                     </G702Component>
                   ),
               };
@@ -382,7 +387,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
       <div
         ref={ref as MutableRefObject<HTMLDivElement>}
         className="space-y-5 w-full absolute z -left-[2500px] border p-6"
-      // className="space-y-5 w-full  border p-6"
+        // className="space-y-5 w-full  border p-6"
       >
         <ClientInvoiceHeader />
         <div className="flex justify-end w-full">

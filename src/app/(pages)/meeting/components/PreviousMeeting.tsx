@@ -15,7 +15,13 @@ export function PreviousMeetings({ meetings }: Props) {
     return current.isAfter(endMeeting);
   });
   return meetings.length === 0 ? (
-    <NoDataComponent link='' title='You did not have any previous meeting' description='There are no meeting.' btnText='' isButton={false} />
+    <NoDataComponent
+      link=""
+      title="You did not have any previous meeting"
+      description="There are no meeting."
+      btnText=""
+      isButton={false}
+    />
   ) : (
     meetings.map((item, index) => {
       return (

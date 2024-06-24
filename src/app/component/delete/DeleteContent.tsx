@@ -26,7 +26,7 @@ export function DeleteContent({
         <TertiaryHeading title={title} className="text-graphiteGray" />
         <CloseOutlined
           className="cursor-pointer"
-          style={{ width : '24px' , height : '24px'}}
+          style={{ width: '24px', height: '24px' }}
           onClick={onClose}
         />
       </div>

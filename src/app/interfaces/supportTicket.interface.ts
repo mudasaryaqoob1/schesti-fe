@@ -3,7 +3,7 @@ export type ITicketFile = {
   fileType: string;
   url: string;
   size: number;
-}
+};
 
 export interface ISupportTicket {
   _id?: string;
@@ -12,7 +12,7 @@ export interface ISupportTicket {
   description: string;
   createdAt?: string;
   updatedAt?: string;
-  file?: ITicketFile
+  file?: ITicketFile;
 }
 
 export type ITicketMessage = {

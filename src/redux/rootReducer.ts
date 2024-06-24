@@ -55,7 +55,7 @@ const persistConfig = {
 const rootReducer = combineReducers<RootState>({
   auth: authReducer,
   companyClient: companyClientReducer,
-  companyPartnerReducer : companyPartnerReducer,
+  companyPartnerReducer: companyPartnerReducer,
   companySubContractor: subContractorReducer,
   estimates: estimateRequestSlice,
   supportTickets: supportTicketsSlice,
@@ -73,6 +73,6 @@ const rootReducer = combineReducers<RootState>({
   meetings: meetingReducer,
   postProject: postProjectReducer,
   bidsProject: bidsProjectReducer,
-  bidManagementOwner: bidManagementOwnerReducer
+  bidManagementOwner: bidManagementOwnerReducer,
 });
 export default persistReducer(persistConfig, rootReducer);

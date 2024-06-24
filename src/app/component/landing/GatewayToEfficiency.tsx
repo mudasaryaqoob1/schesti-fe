@@ -1,6 +1,6 @@
 'use client';
 
-import { usePathname, } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import CustomButton from '../customButton/white';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 

@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Formik } from 'formik';
 import { Form } from 'antd';
 import FormControl from '@/app/component/formControl';
-import { useParams, } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { twMerge } from 'tailwind-merge';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -99,7 +99,10 @@ const CompanyDetails = () => {
     if (result.payload.statusCode == 200) {
       setIsLoading(false);
       localStorage.setItem('schestiToken', result.payload.token);
-      if (userData?.user?.userRole === OWNER || userData?.user?.userRole === CONTRACTOR) {
+      if (
+        userData?.user?.userRole === OWNER ||
+        userData?.user?.userRole === CONTRACTOR
+      ) {
         router.push('/plans');
       } else if (userData?.user?.userRole === SUBCONTRACTOR) {
         router.push('/trades');
@@ -156,7 +159,6 @@ const CompanyDetails = () => {
               onSubmit={submitHandler}
             >
               {(formik) => {
-
                 const countries = Country.getAllCountries().map((country) => ({
                   label: country.name,
                   value: country.isoCode,
@@ -167,7 +169,10 @@ const CompanyDetails = () => {
                       state.countryCode === country ||
                       formik.values.country === state.countryCode
                   )
-                  .map((state) => ({ label: state.name, value: state.isoCode }));
+                  .map((state) => ({
+                    label: state.name,
+                    value: state.isoCode,
+                  }));
                 const cities = City.getCitiesOfState(
                   country,
                   state || formik.values.state
@@ -177,7 +182,7 @@ const CompanyDetails = () => {
                     name="basic"
                     onFinish={formik.handleSubmit}
                     autoComplete="off"
-                  // validateMessages={formik.handleSubmit}
+                    // validateMessages={formik.handleSubmit}
                   >
                     <div className="flex flex-col gap-4">
                       {selectedUserRole != OWNER && (
@@ -198,10 +203,9 @@ const CompanyDetails = () => {
                         placeholder="Enter Company Address"
                       />
 
-
                       <div>
                         <PhoneNumberInputWithLable
-                          label='Phone Number'
+                          label="Phone Number"
                           onChange={(value) => {
                             // @ts-ignore
                             formik.setFieldValue('phone', value);
@@ -209,18 +213,26 @@ const CompanyDetails = () => {
                           // @ts-ignore
                           value={formik.values.phone}
                           onBlur={() => formik.setFieldTouched('phone', true)}
-                          hasError={formik.touched.phone && Boolean(formik.errors.phone)}
-                          errorMessage={formik.touched.phone && formik.errors.phone ? formik.errors.phone : ''}
+                          hasError={
+                            formik.touched.phone && Boolean(formik.errors.phone)
+                          }
+                          errorMessage={
+                            formik.touched.phone && formik.errors.phone
+                              ? formik.errors.phone
+                              : ''
+                          }
                         />
                       </div>
-                      {selectedUserRole === OWNER || selectedUserRole === CONTRACTOR || selectedUserRole === SUBCONTRACTOR ? (
+                      {selectedUserRole === OWNER ||
+                      selectedUserRole === CONTRACTOR ||
+                      selectedUserRole === SUBCONTRACTOR ? (
                         <>
-                          <div className='flex items-center space-x-1 justify-between'>
+                          <div className="flex items-center space-x-1 justify-between">
                             <div className="flex-1">
                               <SelectComponent
-                                label='Country'
-                                name='country'
-                                placeholder='Select Country'
+                                label="Country"
+                                name="country"
+                                placeholder="Select Country"
                                 field={{
                                   options: countries,
                                   value: formik.values.country,
@@ -252,9 +264,11 @@ const CompanyDetails = () => {
                                 placeholder="State"
                                 field={{
                                   options: states,
-                                  value: formik.values.state ? formik.values.state : undefined,
+                                  value: formik.values.state
+                                    ? formik.values.state
+                                    : undefined,
                                   showSearch: true,
-                                  placeholder: "State",
+                                  placeholder: 'State',
                                   onChange(value) {
                                     setState(value);
                                     formik.setFieldValue('state', value);
@@ -269,8 +283,15 @@ const CompanyDetails = () => {
                                     setCity('');
                                   },
                                 }}
-                                errorMessage={formik.touched.state && formik.errors.state ? formik.errors.state : ''}
-                                hasError={formik.touched.state && Boolean(formik.errors.state)}
+                                errorMessage={
+                                  formik.touched.state && formik.errors.state
+                                    ? formik.errors.state
+                                    : ''
+                                }
+                                hasError={
+                                  formik.touched.state &&
+                                  Boolean(formik.errors.state)
+                                }
                               />
                             </div>
                           </div>
@@ -281,8 +302,10 @@ const CompanyDetails = () => {
                             field={{
                               options: cities,
                               showSearch: true,
-                              value: formik.values.city ? formik.values.city : undefined,
-                              placeholder: "City",
+                              value: formik.values.city
+                                ? formik.values.city
+                                : undefined,
+                              placeholder: 'City',
                               onChange: (value) => {
                                 setCity(value);
                                 formik.setFieldValue('city', value);
@@ -299,7 +322,9 @@ const CompanyDetails = () => {
                                 ? formik.errors.city
                                 : ''
                             }
-                            hasError={formik.touched.city && Boolean(formik.errors.city)}
+                            hasError={
+                              formik.touched.city && Boolean(formik.errors.city)
+                            }
                           />
                         </>
                       ) : null}
@@ -313,35 +338,31 @@ const CompanyDetails = () => {
                         />
                       )}
 
-
-
-                      {
-                        selectedUserRole == CONTRACTOR || selectedUserRole == SUBCONTRACTOR ? (
+                      {selectedUserRole == CONTRACTOR ||
+                      selectedUserRole == SUBCONTRACTOR ? (
+                        <FormControl
+                          control="input"
+                          label="Industry"
+                          type="select"
+                          name="industry"
+                          placeholder="Enter industry Name"
+                        />
+                      ) : null}
+                      {(selectedUserRole == CONTRACTOR ||
+                        selectedUserRole == SUBCONTRACTOR) && (
+                        <>
                           <FormControl
                             control="input"
-                            label="Industry"
-                            type="select"
-                            name="industry"
-                            placeholder="Enter industry Name"
+                            label="Total Employee"
+                            type="number"
+                            name="employee"
+                            placeholder="Total Employee"
+                            min={1}
                           />
-                        ) : null
-                      }
-                      {
-                        (selectedUserRole == CONTRACTOR ||
-                          selectedUserRole == SUBCONTRACTOR) && (
-                          <>
-                            <FormControl
-                              control="input"
-                              label="Total Employee"
-                              type="number"
-                              name="employee"
-                              placeholder="Total Employee"
-                              min={1}
-                            />
-                            <label htmlFor="myInput">Logo/ Picture</label>
-                            <div className="flex items-center">
-
-                              {companyLogo ? <div className='w-fit'>
+                          <label htmlFor="myInput">Logo/ Picture</label>
+                          <div className="flex items-center">
+                            {companyLogo ? (
+                              <div className="w-fit">
                                 <ShowFileComponent
                                   file={{
                                     extension: companyLogo?.type,
@@ -353,76 +374,76 @@ const CompanyDetails = () => {
                                   shouldFit={false}
                                 />
                               </div>
-                                : <label
-                                  htmlFor="dropzone-file"
-                                  className="flex flex-col items-center justify-center w-22 h-22 border-2 border-solid rounded-lg cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-                                >
-                                  <div className="flex flex-col items-center justify-center p-5">
-                                    <svg
-                                      className="w-6 h-6 mb-3 text-gray-500 dark:text-gray-400"
-                                      aria-hidden="true"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      fill="none"
-                                      viewBox="0 0 20 16"
-                                    >
-                                      <path
-                                        stroke="currentColor"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                                      />
-                                    </svg>
-                                    {!companyLogo && (
-                                      <>
-                                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                          <span className="font-semibold text-purple-600">
-                                            Click to upload
-                                          </span>
-                                        </p>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">
-                                          PNG, JPG (max. 800x400px)
-                                        </p>
-                                      </>
-                                    )}
-                                  </div>
-                                  <input
-                                    id="dropzone-file"
-                                    onChange={(e: any) => {
-                                      const file = e.target.files[0];
-                                      if (file) {
-                                        setCompanyLogo(file);
-                                        setCompanyLogoErr('');
-                                      }
-                                    }}
-                                    type="file"
-                                    style={{ opacity: '0' }}
-                                    accept="image/*"
-                                  />
-                                </label>}
-
-                            </div>
-                            {!isEmpty(companyLogoErr) && (
-                              <Errormsg>{companyLogoErr}</Errormsg>
+                            ) : (
+                              <label
+                                htmlFor="dropzone-file"
+                                className="flex flex-col items-center justify-center w-22 h-22 border-2 border-solid rounded-lg cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                              >
+                                <div className="flex flex-col items-center justify-center p-5">
+                                  <svg
+                                    className="w-6 h-6 mb-3 text-gray-500 dark:text-gray-400"
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 20 16"
+                                  >
+                                    <path
+                                      stroke="currentColor"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                                    />
+                                  </svg>
+                                  {!companyLogo && (
+                                    <>
+                                      <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                        <span className="font-semibold text-purple-600">
+                                          Click to upload
+                                        </span>
+                                      </p>
+                                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                                        PNG, JPG (max. 800x400px)
+                                      </p>
+                                    </>
+                                  )}
+                                </div>
+                                <input
+                                  id="dropzone-file"
+                                  onChange={(e: any) => {
+                                    const file = e.target.files[0];
+                                    if (file) {
+                                      setCompanyLogo(file);
+                                      setCompanyLogoErr('');
+                                    }
+                                  }}
+                                  type="file"
+                                  style={{ opacity: '0' }}
+                                  accept="image/*"
+                                />
+                              </label>
                             )}
-                          </>
-                        )
-                      }
-                    </div >
+                          </div>
+                          {!isEmpty(companyLogoErr) && (
+                            <Errormsg>{companyLogoErr}</Errormsg>
+                          )}
+                        </>
+                      )}
+                    </div>
                     <Button
                       isLoading={isLoading}
                       text="Submit"
                       className="w-full my-3"
                       type="submit"
                     />
-                  </Form >
+                  </Form>
                 );
               }}
-            </Formik >
-          </div >
+            </Formik>
+          </div>
           <Progessbar progress={'25%'} step={1} className="my-3" />
-        </div >
-      </div >
+        </div>
+      </div>
     </>
   );
 };

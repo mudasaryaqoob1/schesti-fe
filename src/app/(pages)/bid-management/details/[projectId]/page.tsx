@@ -12,7 +12,7 @@ import { ProjectDesignTeam } from '../components/ProjectDesignTeam';
 import { ProjectDocuments } from '../components/ProjectDocuments';
 import { ProjectRFICenter } from '../components/ProjectRFICenter';
 import { ProjectBiddingTeam } from '../components/ProjectBiddingTeam';
-import { useParams, useSearchParams, } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { bidManagementService } from '@/app/services/bid-management.service';
 import { useQuery } from 'react-query';
 import moment from 'moment';
@@ -32,7 +32,8 @@ function OwnerProjectDetailsPage() {
   const params: any = useParams();
   const { projectId } = params;
   const router = useRouterHook();
-  const [bidSubmittedDetails, setBidSubmittedDetails] = useState<Array<any> | null>(null);
+  const [bidSubmittedDetails, setBidSubmittedDetails] =
+    useState<Array<any> | null>(null);
   const [isDetailsLoading, setIsDetailsLoading] = useState(false);
   const searchParams = useSearchParams();
 
@@ -42,15 +43,20 @@ function OwnerProjectDetailsPage() {
     limit: number;
   }>({
     page: 1,
-    limit: 3
+    limit: 3,
   });
   const [activeTab, setActiveTab] = useState(SUMMARY);
 
-
   const fetchProjectDetails = async () => {
-    return bidManagementService.httpGetOwnerProjectById(projectId, paginationSettings);
+    return bidManagementService.httpGetOwnerProjectById(
+      projectId,
+      paginationSettings
+    );
   };
-  const { data, isLoading } = useQuery(['project-details'], fetchProjectDetails);
+  const { data, isLoading } = useQuery(
+    ['project-details'],
+    fetchProjectDetails
+  );
 
   useEffect(() => {
     if (!isEmpty(data?.data?.project)) {
@@ -67,9 +73,7 @@ function OwnerProjectDetailsPage() {
       // set the active tab to documents
       setActiveTab(DOCUMENTS);
     }
-
-  }, [searchParams])
-
+  }, [searchParams]);
 
   const getProjectProposalDetails = async (bidProjectId: any) => {
     setIsDetailsLoading(true);
@@ -87,8 +91,7 @@ function OwnerProjectDetailsPage() {
     }
   };
 
-
-  if (isLoading) return <h6>Loading...</h6>
+  if (isLoading) return <h6>Loading...</h6>;
   let projectData: any = {};
   if (data && data.data) {
     projectData = data.data?.project;
@@ -140,19 +143,36 @@ function OwnerProjectDetailsPage() {
               className="text-[#1D2939] text-2xl font-semibold leading-9"
             />
             <div className="flex space-x-4 items-center text-[#667085] text-base leading-6 font-normal">
-              <SenaryHeading title={moment(projectData?.createdAt).format('DD MMM YYYY, hh:mm')} />
-              <SenaryHeading title={moment(projectData?.bidDueDate).format('DD MMM YYYY, hh:mm')} />
+              <SenaryHeading
+                title={moment(projectData?.createdAt).format(
+                  'DD MMM YYYY, hh:mm'
+                )}
+              />
+              <SenaryHeading
+                title={moment(projectData?.bidDueDate).format(
+                  'DD MMM YYYY, hh:mm'
+                )}
+              />
             </div>
           </div>
 
-          <Spin spinning={isDetailsLoading} indicator={<LoadingOutlined spin />}>
-            {bidSubmittedDetails && !bidSubmittedDetails.length ? <div className="flex items-center space-x-3 flex-1 justify-end">
-              <CustomButton text="Submit a bid" className="!w-40"
-                onClick={() => {
-                  router.push(`${Routes['Bid Management'].Submit}/${projectId}`)
-                }}
-              />
-            </div> : null}
+          <Spin
+            spinning={isDetailsLoading}
+            indicator={<LoadingOutlined spin />}
+          >
+            {bidSubmittedDetails && !bidSubmittedDetails.length ? (
+              <div className="flex items-center space-x-3 flex-1 justify-end">
+                <CustomButton
+                  text="Submit a bid"
+                  className="!w-40"
+                  onClick={() => {
+                    router.push(
+                      `${Routes['Bid Management'].Submit}/${projectId}`
+                    );
+                  }}
+                />
+              </div>
+            ) : null}
           </Spin>
         </div>
 
@@ -185,8 +205,9 @@ function OwnerProjectDetailsPage() {
                 label: (
                   <QuaternaryHeading
                     title={tab}
-                    className={`!w-full ${activeTab === tab ? 'text-schestiPrimary' : 'text-black'
-                      }`}
+                    className={`!w-full ${
+                      activeTab === tab ? 'text-schestiPrimary' : 'text-black'
+                    }`}
                   />
                 ),
                 tabKey: tab,
@@ -196,12 +217,22 @@ function OwnerProjectDetailsPage() {
         </div>
       </div>
 
-      {activeTab === SUMMARY ? <ProjectSummary projectData={projectData} /> : null}
-      {activeTab === DESIGN_TEAM ? <ProjectDesignTeam projectData={projectData} /> : null}
-      {activeTab === BIDDING_TEAM ? <ProjectBiddingTeam projectData={projectData} /> : null}
+      {activeTab === SUMMARY ? (
+        <ProjectSummary projectData={projectData} />
+      ) : null}
+      {activeTab === DESIGN_TEAM ? (
+        <ProjectDesignTeam projectData={projectData} />
+      ) : null}
+      {activeTab === BIDDING_TEAM ? (
+        <ProjectBiddingTeam projectData={projectData} />
+      ) : null}
 
-      {activeTab === DOCUMENTS ? <ProjectDocuments projectData={projectData} /> : null}
-      {activeTab === RFI_CENTER ? <ProjectRFICenter projectId={projectId} /> : null}
+      {activeTab === DOCUMENTS ? (
+        <ProjectDocuments projectData={projectData} />
+      ) : null}
+      {activeTab === RFI_CENTER ? (
+        <ProjectRFICenter projectId={projectId} />
+      ) : null}
     </section>
   );
 }

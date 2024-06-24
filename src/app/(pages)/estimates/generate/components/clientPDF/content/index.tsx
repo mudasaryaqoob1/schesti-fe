@@ -9,7 +9,7 @@ const styles = StyleSheet.create({
     margin: 10,
     marginLeft: 30,
     paddingTop: 10,
-    height: "90%"
+    height: '90%',
   },
 });
 
@@ -59,22 +59,23 @@ export function PageContent({ estimateDetail, subcostRecord, pdfData }: any) {
         </View>
       </View>
 
-      <PdfScopeOfWork
-        scope="The estimate details the items, their quantities, prices, and the tasks required to complete the project. All necessary work and materials are outlined clearly in this document."
-      />
+      <PdfScopeOfWork scope="The estimate details the items, their quantities, prices, and the tasks required to complete the project. All necessary work and materials are outlined clearly in this document." />
 
-      <View style={{
-        flex: 1,
-        display: "flex",
-        justifyContent: "space-between"
-      }}>
-
+      <View
+        style={{
+          flex: 1,
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+      >
         {/* Table */}
         <PdfTable items={pdfData} totalAmount={subcostRecord} />
         {/* END Table */}
 
         {/*  Approval */}
-        <PdfApproval companyName={estimateDetail?.estimateRequestIdDetail?.companyName} />
+        <PdfApproval
+          companyName={estimateDetail?.estimateRequestIdDetail?.companyName}
+        />
         {/* END Approval */}
       </View>
     </View>

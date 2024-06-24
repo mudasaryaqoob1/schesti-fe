@@ -102,10 +102,14 @@ const ClientTable = () => {
     } else if (key == 'editClientDetail') {
       router.push(`${Routes.CRM.Clients}/edit/${client._id}`);
     } else if (key == 'activeClient') {
-      await dispatch(changeCompanyClientStatus({ clientId: client._id, status: true }));
+      await dispatch(
+        changeCompanyClientStatus({ clientId: client._id, status: true })
+      );
       fetchClientCall();
     } else if (key === 'inActiveClient') {
-      await dispatch(changeCompanyClientStatus({ clientId: client._id, status: false }));
+      await dispatch(
+        changeCompanyClientStatus({ clientId: client._id, status: false })
+      );
       fetchClientCall();
     }
   };
@@ -143,9 +147,11 @@ const ClientTable = () => {
             </p>
           );
         } else {
-          return (<p className="bg-lime-100 w-max text-[#b91c1c] bg-[#e7c3c3] px-2 py-1 rounded-full">
-            In Active
-          </p>)
+          return (
+            <p className="bg-lime-100 w-max text-[#b91c1c] bg-[#e7c3c3] px-2 py-1 rounded-full">
+              In Active
+            </p>
+          );
         }
       },
     },
@@ -223,28 +229,29 @@ const ClientTable = () => {
   ];
 
   const filteredClients = clientsData
-    ? clientsData.filter((client) => {
-      if (!search) {
-        return {
-          ...client
-        };
-      }
-      return (
-        client.firstName.toLowerCase().includes(search.toLowerCase()) ||
-        client.lastName.toLowerCase().includes(search.toLowerCase()) ||
-        client.companyName.toLowerCase().includes(search.toLowerCase()) ||
-        client.email?.includes(search) ||
-        client.phone?.includes(search) ||
-        client.address?.includes(search)
-      );
-    }).map((clientRecord) => {
-      return {
-        ...clientRecord,
-        firstName: `${clientRecord.firstName} ${clientRecord.lastName}`,
-      }
-    })
+    ? clientsData
+        .filter((client) => {
+          if (!search) {
+            return {
+              ...client,
+            };
+          }
+          return (
+            client.firstName.toLowerCase().includes(search.toLowerCase()) ||
+            client.lastName.toLowerCase().includes(search.toLowerCase()) ||
+            client.companyName.toLowerCase().includes(search.toLowerCase()) ||
+            client.email?.includes(search) ||
+            client.phone?.includes(search) ||
+            client.address?.includes(search)
+          );
+        })
+        .map((clientRecord) => {
+          return {
+            ...clientRecord,
+            firstName: `${clientRecord.firstName} ${clientRecord.lastName}`,
+          };
+        })
     : [];
-
 
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
@@ -260,7 +267,6 @@ const ClientTable = () => {
                 await dispatch(
                   deleteCompanyClient(selectedClient._id as string)
                 );
-
               }
               setShowDeleteModal(false);
             }}

@@ -7,7 +7,6 @@ import { Avatar } from 'antd';
 import { Country } from 'country-state-city';
 import moment from 'moment';
 
-
 type Props = {
   bid: IBidManagement | null;
 };
@@ -42,7 +41,8 @@ export function ProjectIntro({ bid }: Props) {
               title={bid.description}
               className="text-[#475467] text-[14px] leading-6 font-normal"
             />
-            <p className="text-schestiPrimary underline underline-offset-2 mt-4 text-[14px] leading-6 font-normal cursor-pointer"
+            <p
+              className="text-schestiPrimary underline underline-offset-2 mt-4 text-[14px] leading-6 font-normal cursor-pointer"
               onClick={() => {
                 router.push(`/bid-management/details/${bid._id}`);
               }}

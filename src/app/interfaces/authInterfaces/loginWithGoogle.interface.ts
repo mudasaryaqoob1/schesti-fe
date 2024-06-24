@@ -3,5 +3,5 @@ export interface ILoginWithGoogle {
   name: string;
   avatar: string;
   providerId: string;
-  userRole?: string
+  userRole?: string;
 }

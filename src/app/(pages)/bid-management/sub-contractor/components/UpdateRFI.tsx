@@ -31,7 +31,6 @@ const ValidationSchema = Yup.object().shape({
   file: Yup.mixed(),
 });
 export function UpdateRFI({ onSuccess, projectId, rfiData }: Props) {
-
   const ref = useRef<HTMLDivElement>(null);
   const [showRfiModal, setShowRfiModal] = useState(false);
   useClickAway(() => {
@@ -42,13 +41,13 @@ export function UpdateRFI({ onSuccess, projectId, rfiData }: Props) {
 
   const toggleRfiModal = () => {
     setShowRfiModal(!showRfiModal);
-  }
+  };
 
   const rfiFormik = useFormik<Omit<UpdateRFIData, 'projectId'>>({
     initialValues: {
       description: rfiData.description,
       type: rfiData.type,
-      responseTo: rfiData.responseTo ? rfiData.responseTo as string : "",
+      responseTo: rfiData.responseTo ? (rfiData.responseTo as string) : '',
       file: rfiData.file,
     },
     async onSubmit(values, helpers) {
@@ -57,14 +56,13 @@ export function UpdateRFI({ onSuccess, projectId, rfiData }: Props) {
         const res = await rfiService.httpUpdateRFI({
           ...values,
           projectId,
-          rfiId: rfiData._id
+          rfiId: rfiData._id,
         });
         if (res.data) {
           toast.success('RFI updated successfully');
           onSuccess(res.data.updatedRFI);
         }
       } catch (error) {
-
         const err = error as AxiosError<{ message: string }>;
         if (err.response?.data) {
           toast.error(err.response?.data.message || 'An error occurred');
@@ -77,7 +75,6 @@ export function UpdateRFI({ onSuccess, projectId, rfiData }: Props) {
     },
     validationSchema: ValidationSchema,
   });
-
 
   async function handleFileUpload(file: RcFile) {
     setIsFileUploading(true);
@@ -123,7 +120,6 @@ export function UpdateRFI({ onSuccess, projectId, rfiData }: Props) {
         setOpen={setShowRfiModal}
         destroyOnClose
       >
-
         <div
           onClick={(e) => {
             e.stopPropagation();
@@ -172,36 +168,38 @@ export function UpdateRFI({ onSuccess, projectId, rfiData }: Props) {
 
                 <div>
                   <Spin spinning={isFileUploading}>
-                    {!rfiFormik.values.file ? <Dragger
-                      name={'file'}
-                      accept="image/*,gif,application/pdf"
-                      beforeUpload={(file) => {
-                        handleFileUpload(file);
-                        return false;
-                      }}
-                      style={{
-                        borderStyle: 'dashed',
-                        borderWidth: 6,
-                      }}
-                      itemRender={() => {
-                        return null;
-                      }}
-                    >
-                      <p className="ant-upload-drag-icon">
-                        <Image
-                          src={'/uploadcloud.svg'}
-                          width={50}
-                          height={50}
-                          alt="upload"
-                        />
-                      </p>
-                      <p className="text-[12px] py-2 leading-3 text-[#98A2B3]">
-                        Drop your image here, or browse
-                      </p>
-                      <p className="text-[12px] leading-3 text-[#98A2B3]">
-                        PNG, GIF, JPG, Max size: 2MB
-                      </p>
-                    </Dragger> : null}
+                    {!rfiFormik.values.file ? (
+                      <Dragger
+                        name={'file'}
+                        accept="image/*,gif,application/pdf"
+                        beforeUpload={(file) => {
+                          handleFileUpload(file);
+                          return false;
+                        }}
+                        style={{
+                          borderStyle: 'dashed',
+                          borderWidth: 6,
+                        }}
+                        itemRender={() => {
+                          return null;
+                        }}
+                      >
+                        <p className="ant-upload-drag-icon">
+                          <Image
+                            src={'/uploadcloud.svg'}
+                            width={50}
+                            height={50}
+                            alt="upload"
+                          />
+                        </p>
+                        <p className="text-[12px] py-2 leading-3 text-[#98A2B3]">
+                          Drop your image here, or browse
+                        </p>
+                        <p className="text-[12px] leading-3 text-[#98A2B3]">
+                          PNG, GIF, JPG, Max size: 2MB
+                        </p>
+                      </Dragger>
+                    ) : null}
                     {rfiFormik.values.file ? (
                       <ShowFileComponent
                         file={rfiFormik.values.file}

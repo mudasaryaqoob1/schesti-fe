@@ -69,8 +69,9 @@ function SubContractorBidsPage() {
               label: (
                 <QuaternaryHeading
                   title={tab}
-                  className={`${activeTab === tab ? 'text-schestiPrimary' : 'text-black'
-                    }`}
+                  className={`${
+                    activeTab === tab ? 'text-schestiPrimary' : 'text-black'
+                  }`}
                 />
               ),
               tabKey: tab,
@@ -108,15 +109,9 @@ function SubContractorBidsPage() {
                   {activeTab === ACTIVE ? (
                     <ActiveProjects search={search} tab={activeTab} />
                   ) : activeTab === UPCOMING ? (
-                    <UpComingProjects
-                      search={search}
-                      tab={activeTab}
-                    />
+                    <UpComingProjects search={search} tab={activeTab} />
                   ) : (
-                    <ArchivedProjects
-                      search={search}
-                      tab={activeTab}
-                    />
+                    <ArchivedProjects search={search} tab={activeTab} />
                   )}
                 </div>
               ),

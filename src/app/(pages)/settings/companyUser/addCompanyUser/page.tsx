@@ -31,10 +31,7 @@ const AddNewUser = () => {
   const router = useRouterHook();
   const { user } = useSelector((state: any) => state.user);
 
-
   const [isLoading, setisLoading] = useState(false);
-
-
 
   const newClientSchema: any = Yup.object({
     firstName: Yup.string().required('First name is required!'),

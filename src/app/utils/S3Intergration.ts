@@ -26,8 +26,9 @@ class AwsS3 {
     const params: S3.PutObjectRequest = {
       Body: this.fileUpload,
       Bucket: process.env.NEXT_PUBLIC_BUCKET!,
-      Key: `${new Date().getFullYear()}/${this.path}${imageName}-${this.fileUpload.name
-        }`,
+      Key: `${new Date().getFullYear()}/${this.path}${imageName}-${
+        this.fileUpload.name
+      }`,
       ContentType: this.fileUpload.type,
       ACL: 'public-read',
     };
@@ -35,20 +36,23 @@ class AwsS3 {
     return uploadResult.Location;
   };
 
-  getS3URLWithProgress = async (listener: (_progress: S3.ManagedUpload.Progress) => void) => {
+  getS3URLWithProgress = async (
+    listener: (_progress: S3.ManagedUpload.Progress) => void
+  ) => {
     const randomBytes = promisify(crypto.randomBytes);
     const rawBytes = await randomBytes(16);
     const imageName = rawBytes.toString('hex');
     const params: S3.PutObjectRequest = {
       Body: this.fileUpload,
       Bucket: process.env.NEXT_PUBLIC_BUCKET!,
-      Key: `${new Date().getFullYear()}/${this.path}${imageName}-${this.fileUpload.name
-        }`,
+      Key: `${new Date().getFullYear()}/${this.path}${imageName}-${
+        this.fileUpload.name
+      }`,
       ContentType: this.fileUpload.type,
       ACL: 'public-read',
     };
     const managedUpload = this.s3.upload(params);
-    managedUpload.on('httpUploadProgress', listener)
+    managedUpload.on('httpUploadProgress', listener);
 
     const uploadResult: any = await managedUpload.promise();
     return uploadResult.Location;

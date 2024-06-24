@@ -282,8 +282,9 @@ function CreateClientInvoicePage() {
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className={`${tab === type ? 'text-RoyalPurple' : 'text-black'
-                      }`}
+                    className={`${
+                      tab === type ? 'text-RoyalPurple' : 'text-black'
+                    }`}
                   />
                 ),
                 tabKey: type,
@@ -315,18 +316,23 @@ function CreateClientInvoicePage() {
                         text="Previous"
                         className="!w-40"
                       />
-                      {showDownload ? <CustomButton
-                        text={isDownloading ? 'Downloading...' : 'Download PDF'}
-                        onClick={() => downloadPdf()}
-                        className="!w-48"
-                      /> : <CustomButton
-                        text="Create"
-                        className="!w-48"
-                        onClick={() => {
-                          handleSubmit(g7State);
-                        }}
-                      />
-                      }
+                      {showDownload ? (
+                        <CustomButton
+                          text={
+                            isDownloading ? 'Downloading...' : 'Download PDF'
+                          }
+                          onClick={() => downloadPdf()}
+                          className="!w-48"
+                        />
+                      ) : (
+                        <CustomButton
+                          text="Create"
+                          className="!w-48"
+                          onClick={() => {
+                            handleSubmit(g7State);
+                          }}
+                        />
+                      )}
                     </G702Component>
                   ),
               };
@@ -337,7 +343,7 @@ function CreateClientInvoicePage() {
       <div
         ref={ref as MutableRefObject<HTMLDivElement>}
         className="space-y-5 w-full absolute -left-[2500px] border p-6"
-      // className="space-y-5 w-full border p-6"
+        // className="space-y-5 w-full border p-6"
       >
         <ClientInvoiceHeader />
         <div className="flex justify-end w-full">
@@ -398,6 +404,5 @@ function CreateClientInvoicePage() {
     </section>
   );
 }
-
 
 export default withAuth(CreateClientInvoicePage);

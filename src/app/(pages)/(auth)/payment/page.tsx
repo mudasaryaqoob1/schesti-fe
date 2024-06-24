@@ -26,7 +26,6 @@ const Payment = () => {
 
   const token = useSelector(selectToken);
 
-
   useLayoutEffect(() => {
     if (token) {
       HttpService.setToken(token);

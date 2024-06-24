@@ -39,14 +39,22 @@ import { useRouterHook } from '@/app/hooks/useRouterHook';
 // import { PostProjectCongratulations } from './components/PostProjectCongratuslations';
 
 const BasicInformationSchema = Yup.object().shape({
-  address: Yup.string().matches(ShouldHaveAtLeastCharacterRegex, { message: "Address cannot be empty" }).required('Address is required'),
+  address: Yup.string()
+    .matches(ShouldHaveAtLeastCharacterRegex, {
+      message: 'Address cannot be empty',
+    })
+    .required('Address is required'),
   city: Yup.string().required('City is required'),
   constructionTypes: Yup.array()
     .of(Yup.string().required())
     .min(1, 'Construction Type is required')
     .required('Construction Type is required'),
   country: Yup.string().required('Country is required'),
-  projectName: Yup.string().matches(ShouldHaveAtLeastCharacterRegex, { message: "Project name cannot be empty" }).required('Project Name is required'),
+  projectName: Yup.string()
+    .matches(ShouldHaveAtLeastCharacterRegex, {
+      message: 'Project name cannot be empty',
+    })
+    .required('Project Name is required'),
   state: Yup.string().required('State is required'),
   zipCode: Yup.string().required('Zip Code is required'),
   status: Yup.string().required('Status is required'),
@@ -54,12 +62,12 @@ const BasicInformationSchema = Yup.object().shape({
 
 const ProjectDetailsSchema = Yup.object().shape({
   projectType: Yup.array()
-    .of(Yup.string().required("Project Type is required"),)
-    .min(1, "At least one Project Type is required")
+    .of(Yup.string().required('Project Type is required'))
+    .min(1, 'At least one Project Type is required')
     .required('Project Type is required'),
   projectBuildingUse: Yup.array()
-    .of(Yup.string().required("Project Building Use is required"))
-    .min(1, "At least one Project Building Use is required")
+    .of(Yup.string().required('Project Building Use is required'))
+    .min(1, 'At least one Project Building Use is required')
     .required('Project Building Use is required'),
   stage: Yup.string().min(1).required('Stage is required'),
   estimatedStartDate: Yup.string().required('Estimated Start Date is required'),
@@ -67,7 +75,8 @@ const ProjectDetailsSchema = Yup.object().shape({
   durationType: Yup.mixed()
     .oneOf(['days', 'weeks', 'months', 'years'])
     .required('Duration Type is required'),
-  description: Yup.string().min(1)
+  description: Yup.string()
+    .min(1)
     .test({
       test: (value) => {
         if (!value) return true; // Allow empty values, adjust if necessary
@@ -75,7 +84,8 @@ const ProjectDetailsSchema = Yup.object().shape({
         return wordCount <= 300;
       },
       message: 'Description should not exceed 300 words',
-    }).required('Description is required'),
+    })
+    .required('Description is required'),
   specialInstructions: Yup.string(),
   bidDueDate: Yup.string().min(1).required('Bid Due Date is required'),
   estimatedCompletionDate: Yup.string().required(
@@ -86,27 +96,22 @@ const ProjectDetailsSchema = Yup.object().shape({
 });
 
 const DesignTeamSchema = Yup.object().shape({
-  teamMembers: Yup.array()
-    .of(Yup.string())
+  teamMembers: Yup.array().of(Yup.string()),
 });
 
 const TradesSchema = Yup.object().shape({
-  selectedTrades: Yup.array()
-    .of(Yup.string())
-
+  selectedTrades: Yup.array().of(Yup.string()),
 });
 
 const FilesSchema = Yup.object().shape({
-  projectFiles: Yup.array()
-    .of(
-      Yup.object().shape({
-        url: Yup.string().required('Url is required'),
-        extension: Yup.string().required('Extension is required'),
-        type: Yup.string().required('Type is required'),
-        name: Yup.string().required('Name is required'),
-      })
-    )
-
+  projectFiles: Yup.array().of(
+    Yup.object().shape({
+      url: Yup.string().required('Url is required'),
+      extension: Yup.string().required('Extension is required'),
+      type: Yup.string().required('Type is required'),
+      name: Yup.string().required('Name is required'),
+    })
+  ),
 });
 
 const onsiteMeetingSchema = Yup.object().shape({
@@ -114,38 +119,39 @@ const onsiteMeetingSchema = Yup.object().shape({
   type: Yup.string().when('isChecked', {
     is: true,
     then: () => Yup.string().required('Type is required'),
-    otherwise: () => Yup.string().notRequired()
+    otherwise: () => Yup.string().notRequired(),
   }),
   location: Yup.string().when('isChecked', {
     is: true,
     then: () => Yup.string().required('Location is required'),
-    otherwise: () => Yup.string().notRequired()
+    otherwise: () => Yup.string().notRequired(),
   }),
   date: Yup.string().when('isChecked', {
     is: true,
     then: () => Yup.string().required('Date is required'),
-    otherwise: () => Yup.string().notRequired()
-  })
-  ,
+    otherwise: () => Yup.string().notRequired(),
+  }),
   time: Yup.string().when('isChecked', {
     is: true,
     then: () => Yup.string().required('Time is required'),
-    otherwise: () => Yup.string().notRequired()
-  })
-  ,
+    otherwise: () => Yup.string().notRequired(),
+  }),
   instruction: Yup.string().when('isChecked', {
     is: true,
-    then: () => Yup.string().test({
-      test: (value) => {
-        if (!value) return true; // Allow empty values, adjust if necessary
-        const wordCount = value.trim().split(/\s+/).length;
-        return wordCount <= 50;
-      },
-      message: 'Additional details should not exceed 50 words',
-    }).required('Instruction is required'),
-    otherwise: () => Yup.string().notRequired()
+    then: () =>
+      Yup.string()
+        .test({
+          test: (value) => {
+            if (!value) return true; // Allow empty values, adjust if necessary
+            const wordCount = value.trim().split(/\s+/).length;
+            return wordCount <= 50;
+          },
+          message: 'Additional details should not exceed 50 words',
+        })
+        .required('Instruction is required'),
+    otherwise: () => Yup.string().notRequired(),
   }),
-  isMandatory: Yup.boolean()
+  isMandatory: Yup.boolean(),
 });
 
 const onlineMeetingSchema = Yup.object().shape({
@@ -154,15 +160,15 @@ const onlineMeetingSchema = Yup.object().shape({
   type: Yup.string().when('isChecked', {
     is: true,
     then: () => Yup.string().required('Type is required'),
-    otherwise: () => Yup.string().notRequired()
+    otherwise: () => Yup.string().notRequired(),
   }),
 
   meeting: Yup.mixed().when('isChecked', {
     is: true,
     then: () => Yup.mixed().required('Meeting is required'),
-    otherwise: () => Yup.mixed().notRequired()
+    otherwise: () => Yup.mixed().notRequired(),
   }),
-  isMandatory: Yup.boolean()
+  isMandatory: Yup.boolean(),
 });
 
 const FinalizeProjectSchema = Yup.object().shape({
@@ -183,7 +189,7 @@ const FinalizeProjectSchema = Yup.object().shape({
   ),
   selectedTeamMembers: Yup.array().of(Yup.string()),
   platformType: Yup.string().required('Platform Type is required'),
-  preBiddingMeeting: Yup.lazy(value => {
+  preBiddingMeeting: Yup.lazy((value) => {
     if (!value || !value.isChecked) return Yup.mixed().notRequired();
     if (value.type === 'Onsite') return onsiteMeetingSchema;
     if (value.type === 'Online') return onlineMeetingSchema;
@@ -194,55 +200,58 @@ const FinalizeProjectSchema = Yup.object().shape({
     location: Yup.string().when('isChecked', {
       is: true,
       then: () => Yup.string().required('Location is required'),
-      otherwise: () => Yup.string().notRequired()
+      otherwise: () => Yup.string().notRequired(),
     }),
     date: Yup.string().when('isChecked', {
       is: true,
       then: () => Yup.string().required('Date is required'),
-      otherwise: () => Yup.string().notRequired()
-    })
-    ,
+      otherwise: () => Yup.string().notRequired(),
+    }),
     time: Yup.string().when('isChecked', {
       is: true,
       then: () => Yup.string().required('Time is required'),
-      otherwise: () => Yup.string().notRequired()
-    })
-    ,
+      otherwise: () => Yup.string().notRequired(),
+    }),
     instruction: Yup.string().when('isChecked', {
       is: true,
-      then: () => Yup.string().test({
-        test: (value) => {
-          if (!value) return true; // Allow empty values, adjust if necessary
-          const wordCount = value.trim().split(/\s+/).length;
-          return wordCount <= 50;
-        },
-        message: 'Additional details should not exceed 50 words',
-      }).required('Instruction is required'),
-      otherwise: () => Yup.string().notRequired()
+      then: () =>
+        Yup.string()
+          .test({
+            test: (value) => {
+              if (!value) return true; // Allow empty values, adjust if necessary
+              const wordCount = value.trim().split(/\s+/).length;
+              return wordCount <= 50;
+            },
+            message: 'Additional details should not exceed 50 words',
+          })
+          .required('Instruction is required'),
+      otherwise: () => Yup.string().notRequired(),
     }),
-    isMandatory: Yup.boolean()
+    isMandatory: Yup.boolean(),
   }),
   rfiDeadline: Yup.object().shape({
     isChecked: Yup.boolean(),
     date: Yup.string().when('isChecked', {
       is: true,
       then: () => Yup.string().required('Date is required'),
-      otherwise: () => Yup.string().notRequired()
+      otherwise: () => Yup.string().notRequired(),
     }),
     time: Yup.string().when('isChecked', {
       is: true,
       then: () => Yup.string().required('Time is required'),
-      otherwise: () => Yup.string().notRequired()
+      otherwise: () => Yup.string().notRequired(),
     }),
-  })
+  }),
 });
-
 
 function StaticTime({ minutes = 1 }: { minutes?: number }) {
   return (
     <div className="flex items-center space-x-2">
       <Image src={'/clock.svg'} height={10} width={10} alt="clock" />
-      <Description title={`${minutes} Minute${minutes > 1 ? "s" : ""}`} className="text-[#98A2B3] text-xs" />
+      <Description
+        title={`${minutes} Minute${minutes > 1 ? 's' : ''}`}
+        className="text-[#98A2B3] text-xs"
+      />
     </div>
   );
 }
@@ -349,18 +358,18 @@ function CreatePost() {
   const basicInformationFormik = useFormik({
     initialValues: postProjectState.project
       ? {
-        ...postProjectState.project,
-      }
+          ...postProjectState.project,
+        }
       : {
-        projectName: '',
-        country: 'US',
-        city: '',
-        zipCode: '',
-        state: '',
-        constructionTypes: [] as string[],
-        address: '',
-        status: 'draft' as CreateOwnerPostProjectType['status'],
-      },
+          projectName: '',
+          country: 'US',
+          city: '',
+          zipCode: '',
+          state: '',
+          constructionTypes: [] as string[],
+          address: '',
+          status: 'draft' as CreateOwnerPostProjectType['status'],
+        },
     onSubmit(values) {
       if (postProjectState.project) {
         updateProjectMutation.mutate(values);
@@ -376,19 +385,29 @@ function CreatePost() {
     initialValues: {
       ...(postProjectState.project as IBidManagement),
       preBiddingMeeting: {
-        isChecked: (postProjectState.project as IBidManagement)?.preBiddingMeeting?.isChecked || false,
-        type: (postProjectState.project as IBidManagement)?.preBiddingMeeting?.type || 'Online',
+        isChecked:
+          (postProjectState.project as IBidManagement)?.preBiddingMeeting
+            ?.isChecked || false,
+        type:
+          (postProjectState.project as IBidManagement)?.preBiddingMeeting
+            ?.type || 'Online',
         ...(postProjectState.project as IBidManagement)?.preBiddingMeeting,
       },
       siteWalkthrough: {
         ...(postProjectState.project as IBidManagement)?.siteWalkthrough,
-        isChecked: (postProjectState.project as IBidManagement)?.siteWalkthrough?.isChecked || false,
+        isChecked:
+          (postProjectState.project as IBidManagement)?.siteWalkthrough
+            ?.isChecked || false,
       },
       rfiDeadline: {
         ...(postProjectState.project as IBidManagement)?.rfiDeadline,
-        isChecked: (postProjectState.project as IBidManagement)?.rfiDeadline?.isChecked || false,
+        isChecked:
+          (postProjectState.project as IBidManagement)?.rfiDeadline
+            ?.isChecked || false,
       },
-      isMatchingWithTrades: (postProjectState.project as IBidManagement)?.isMatchingWithTrades || true,
+      isMatchingWithTrades:
+        (postProjectState.project as IBidManagement)?.isMatchingWithTrades ||
+        true,
     },
     onSubmit(values) {
       updateProjectMutation.mutate(values);
@@ -407,7 +426,6 @@ function CreatePost() {
                 : undefined,
     enableReinitialize: true,
   });
-
 
   return (
     <section className="mt-6 mb-[39px] mx-4 rounded-xl ">
@@ -439,7 +457,9 @@ function CreatePost() {
             onClick() {
               const id = postProjectState.project?._id;
               if (id) {
-                router.push(`${Routes['Bid Management'].Posted_Projects}/view/${id}`);
+                router.push(
+                  `${Routes['Bid Management'].Posted_Projects}/view/${id}`
+                );
                 dispatch(resetPostProjectAction());
               }
             },
@@ -573,7 +593,8 @@ function CreatePost() {
               />
             </PostProjectTrades>
           ) : postProjectState.formStep === 4 ? (
-            <ProjectUploadFiles formik={mainFormik}
+            <ProjectUploadFiles
+              formik={mainFormik}
               setShouldContinue={setShouldContinue}
             >
               <PostProjectFooter
@@ -624,9 +645,12 @@ function CreatePost() {
 
                     mainFormik.handleSubmit();
                   },
-                  text: mainFormik.values.status === 'active' ? "Update Project" : updateProjectMutation.isLoading
-                    ? 'Posting'
-                    : 'Post Project',
+                  text:
+                    mainFormik.values.status === 'active'
+                      ? 'Update Project'
+                      : updateProjectMutation.isLoading
+                        ? 'Posting'
+                        : 'Post Project',
                   loading: updateProjectMutation.isLoading,
                 }}
                 info={{
