@@ -45,8 +45,6 @@ export default function NewCompanyRolePage() {
     }
 
 
-    console.log({ errors: formik.errors });
-
     return <VerticleBar>
         <div className="w-full">
             <div className="flex w-full justify-between items-center">
