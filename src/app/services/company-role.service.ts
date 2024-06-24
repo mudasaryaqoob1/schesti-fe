@@ -1,0 +1,20 @@
+import { IResponseInterface } from "../interfaces/api-response.interface";
+import { ISettingCompanyRole } from "../interfaces/settings/comapny-role-settings.interface";
+import { HttpService } from "./base.service";
+
+class CompanyRoleService extends HttpService {
+    private readonly prefix: string = 'api/settings/company-role';
+
+    httpGetAllCompanyRoles = (): Promise<IResponseInterface<ISettingCompanyRole[]>> => this.get(this.prefix);
+
+    httpGetCompanyRoleById = (id: string): Promise<IResponseInterface<ISettingCompanyRole>> => this.get(`${this.prefix}/${id}`);
+
+    httpCreateCompanyRole = (data: {
+        name: string;
+        permissions: string[];
+    }): Promise<IResponseInterface<ISettingCompanyRole>> => this.post(this.prefix, data);
+}
+
+const companyRoleService = new CompanyRoleService();
+
+export default companyRoleService;
