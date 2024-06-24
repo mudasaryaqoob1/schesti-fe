@@ -6,8 +6,39 @@ import TertiaryHeading from "@/app/component/headings/tertiary";
 import { InputComponent } from "@/app/component/customInput/Input";
 import { Plans, } from "@/app/utils/plans.utils";
 import { Checkbox } from "antd";
+import * as Yup from 'yup';
+import { useFormik } from "formik";
 
-export default function NewCompanyRole() {
+const CompanyRoleSchema = Yup.object().shape({
+    name: Yup.string().required('Role Name is required!'),
+    permissions: Yup.array().of(Yup.string()).required('Permissions is required!'),
+});
+
+export default function NewCompanyRolePage() {
+
+    const formik = useFormik({
+        initialValues: {
+            name: '',
+            permissions: [] as string[],
+        },
+        onSubmit(values) {
+
+            console.log(values)
+        },
+        validationSchema: CompanyRoleSchema,
+        enableReinitialize: true
+    })
+
+    function handleRemovePermission(value: string) {
+
+        formik.setFieldValue('permissions', formik.values.permissions.filter((permission) => permission !== value))
+    }
+
+    function handleAddPermission(value: string) {
+        formik.setFieldValue('permissions', [...formik.values.permissions, value])
+    }
+
+    console.log(formik.values);
     return <VerticleBar>
         <div className="w-full">
             <div className="flex w-full justify-between items-center">
@@ -34,6 +65,13 @@ export default function NewCompanyRole() {
                             name="name"
                             placeholder="Enter Role Name"
                             type="text"
+                            field={{
+                                onChange: formik.handleChange,
+                                onBlur: formik.handleBlur,
+                                value: formik.values.name
+                            }}
+                            hasError={formik.touched.name && Boolean(formik.errors.name)}
+                            errorMessage={formik.touched.name && formik.errors.name ? formik.errors.name : ''}
                         />
                     </div>
                     <div className="col-span-2 pt-5">
@@ -49,7 +87,20 @@ export default function NewCompanyRole() {
 
                     <div className="grid mt-3 grid-cols-3 gap-3">
                         {Object.keys(Plans).map((planKey) => {
-                            return <Checkbox className="text-schestiPrimaryBlack font-normal" key={planKey}>
+                            const value = Plans[planKey as keyof typeof Plans];
+                            const isChecked = formik.values.permissions.includes(value)
+                            return <Checkbox
+                                key={planKey}
+                                checked={isChecked}
+                                className="text-schestiPrimaryBlack font-normal"
+                                onChange={() => {
+                                    if (isChecked) {
+                                        handleRemovePermission(value);
+                                    } else {
+                                        handleAddPermission(value);
+                                    }
+                                }}
+                            >
                                 {planKey}
                             </Checkbox>
                         })}
