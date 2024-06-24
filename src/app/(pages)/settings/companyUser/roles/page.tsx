@@ -4,7 +4,7 @@ import CustomButton from "@/app/component/customButton/button";
 import VerticleBar from "../../verticleBar";
 import TertiaryHeading from "@/app/component/headings/tertiary";
 import { InputComponent } from "@/app/component/customInput/Input";
-import { planFeatureOptions } from "@/app/utils/plans.utils";
+import { Plans, } from "@/app/utils/plans.utils";
 import { Checkbox } from "antd";
 
 export default function NewCompanyRole() {
@@ -48,9 +48,9 @@ export default function NewCompanyRole() {
                     <p className="text-[14px] text-schestiLightBlack leading-5">Select permission/access for this role</p>
 
                     <div className="grid mt-3 grid-cols-3 gap-3">
-                        {planFeatureOptions.map(plan => {
-                            return <Checkbox className="text-schestiPrimaryBlack font-normal" key={plan.label}>
-                                {plan.label}
+                        {Object.keys(Plans).map((planKey) => {
+                            return <Checkbox className="text-schestiPrimaryBlack font-normal" key={planKey}>
+                                {planKey}
                             </Checkbox>
                         })}
                     </div>
