@@ -4,6 +4,9 @@ import { AppProgressBar as ProgressBar } from 'next-nprogress-bar';
 import { ConfigProvider } from 'antd';
 const queryClient = new QueryClient();
 
+const PRIMARY_COLOR = '#007AB6';
+const SECONDARY_COLOR = '#E6F2F8';
+
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
@@ -11,8 +14,19 @@ export function Providers({ children }: { children: React.ReactNode }) {
         theme={{
           components: {
             Tabs: {
-              inkBarColor: '#007AB6',
-            }
+              inkBarColor: PRIMARY_COLOR,
+            },
+            Switch: {
+              colorPrimary: PRIMARY_COLOR,
+              colorPrimaryHover: SECONDARY_COLOR
+            },
+            Radio: {
+              colorPrimary: PRIMARY_COLOR
+            },
+            Checkbox: {
+              colorPrimary: PRIMARY_COLOR,
+              colorPrimaryHover: PRIMARY_COLOR,
+            },
           }
         }}
       >

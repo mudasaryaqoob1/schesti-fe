@@ -2,7 +2,7 @@ import { SelectComponent } from '@/app/component/customSelect/Select.component';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
-import { Checkbox, ConfigProvider, Divider, Radio, Spin, Switch } from 'antd';
+import { Checkbox, Divider, Radio, Spin, Switch } from 'antd';
 import Dragger from 'antd/es/upload/Dragger';
 import type { FormikProps } from 'formik';
 import moment from 'moment';
@@ -294,105 +294,88 @@ export function PostFinalize({ formik, children }: Props) {
       </div>
 
       <div className=" bg-white shadow-[0_4px_30px_0px_#2E2D740D] rounded-xl border p-4">
-        <ConfigProvider
-          theme={{
-            components: {
-              Switch: {
-                colorPrimary: "#007AB6",
-                colorPrimaryHover: "#E6F2F8"
-              },
-              Radio: {
-                colorPrimary: "#007AB6"
-              },
-              Checkbox: {
-                colorPrimary: "#007AB6",
-                colorPrimaryHover: "#007AB6",
-              },
+
+        <TertiaryHeading
+          title="Add Event"
+          className="text-[20px] leading-[30px]"
+        />
+
+        <div className='mt-5'>
+          <div className='flex items-center space-x-10 '>
+
+            <div className="flex items-center space-x-5">
+              <Switch checkedChildren="ON" unCheckedChildren="OFF" checked={formik.values.preBiddingMeeting?.isChecked}
+                onChange={val => {
+                  formik.setFieldValue('preBiddingMeeting.isChecked', val);
+                }}
+              />
+              <TertiaryHeading
+                title='Required Pre-bid Meeting'
+                className='text-[#344054] text-[16px] leading-7 font-normal'
+              />
+            </div>
+
+            {formik.values.preBiddingMeeting?.isChecked ? <div>
+              <Radio.Group value={formik.values.preBiddingMeeting?.type}
+                onChange={e => {
+                  formik.setFieldValue('preBiddingMeeting.type', e.target.value);
+                }}
+              >
+                <Radio value={'Onsite'}>Onsite</Radio>
+                <Radio value={'Online'}>Online</Radio>
+              </Radio.Group>
+            </div> : null
             }
-          }}
-        >
-          <TertiaryHeading
-            title="Add Event"
-            className="text-[20px] leading-[30px]"
+          </div>
+          {formik.values.preBiddingMeeting?.isChecked ? <div className='my-2'>
+            <Checkbox
+              checked={formik.values.preBiddingMeeting?.isMandatory}
+              onChange={e => {
+                formik.setFieldValue('preBiddingMeeting.isMandatory', e.target.checked)
+              }}>
+              {"It's a mandatory meeting"}
+            </Checkbox>
+          </div> : null}
+          <EventOnSiteForm
+            formik={formik}
           />
 
-          <div className='mt-5'>
-            <div className='flex items-center space-x-10 '>
+          <EventOnlineForm
+            formik={formik}
+          />
+        </div>
 
-              <div className="flex items-center space-x-5">
-                <Switch checkedChildren="ON" unCheckedChildren="OFF" checked={formik.values.preBiddingMeeting?.isChecked}
-                  onChange={val => {
-                    formik.setFieldValue('preBiddingMeeting.isChecked', val);
-                  }}
-                />
-                <TertiaryHeading
-                  title='Required Pre-bid Meeting'
-                  className='text-[#344054] text-[16px] leading-7 font-normal'
-                />
-              </div>
-
-              {formik.values.preBiddingMeeting?.isChecked ? <div>
-                <Radio.Group value={formik.values.preBiddingMeeting?.type}
-                  onChange={e => {
-                    formik.setFieldValue('preBiddingMeeting.type', e.target.value);
-                  }}
-                >
-                  <Radio value={'Onsite'}>Onsite</Radio>
-                  <Radio value={'Online'}>Online</Radio>
-                </Radio.Group>
-              </div> : null
-              }
-            </div>
-            {formik.values.preBiddingMeeting?.isChecked ? <div className='my-2'>
-              <Checkbox
-                checked={formik.values.preBiddingMeeting?.isMandatory}
-                onChange={e => {
-                  formik.setFieldValue('preBiddingMeeting.isMandatory', e.target.checked)
-                }}>
-                {"It's a mandatory meeting"}
-              </Checkbox>
-            </div> : null}
-            <EventOnSiteForm
-              formik={formik}
+        <div className="mt-5">
+          <div className="flex items-center space-x-5">
+            <Switch checkedChildren="ON" unCheckedChildren="OFF" checked={formik.values.siteWalkthrough?.isChecked}
+              onChange={val => formik.setFieldValue("siteWalkthrough.isChecked", val)}
             />
-
-            <EventOnlineForm
-              formik={formik}
+            <TertiaryHeading
+              title='Site Walkthrough'
+              className='text-[#344054] text-[16px] leading-7 font-normal'
             />
           </div>
 
-          <div className="mt-5">
-            <div className="flex items-center space-x-5">
-              <Switch checkedChildren="ON" unCheckedChildren="OFF" checked={formik.values.siteWalkthrough?.isChecked}
-                onChange={val => formik.setFieldValue("siteWalkthrough.isChecked", val)}
-              />
-              <TertiaryHeading
-                title='Site Walkthrough'
-                className='text-[#344054] text-[16px] leading-7 font-normal'
-              />
-            </div>
+          <EventSiteWalkThroughForm
+            formik={formik}
+          />
+        </div>
 
-            <EventSiteWalkThroughForm
-              formik={formik}
+        <div className="mt-5">
+          <div className="flex items-center space-x-5">
+            <Switch checkedChildren="ON" unCheckedChildren="OFF"
+              checked={formik.values.rfiDeadline?.isChecked}
+              onChange={val => formik.setFieldValue("rfiDeadline.isChecked", val)}
+            />
+            <TertiaryHeading
+              title='RFI Deadline'
+              className='text-[#344054] text-[16px] leading-7 font-normal'
             />
           </div>
 
-          <div className="mt-5">
-            <div className="flex items-center space-x-5">
-              <Switch checkedChildren="ON" unCheckedChildren="OFF"
-                checked={formik.values.rfiDeadline?.isChecked}
-                onChange={val => formik.setFieldValue("rfiDeadline.isChecked", val)}
-              />
-              <TertiaryHeading
-                title='RFI Deadline'
-                className='text-[#344054] text-[16px] leading-7 font-normal'
-              />
-            </div>
+          <RfiDeadline formik={formik} />
+        </div>
 
-            <RfiDeadline formik={formik} />
-          </div>
-
-        </ConfigProvider>
       </div>
 
       <div className=" bg-white shadow-[0_4px_30px_0px_#2E2D740D] rounded-xl border p-4">

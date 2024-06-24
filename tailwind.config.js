@@ -76,7 +76,10 @@ export default {
         schestiLightPrimary: "#E6F2F8",
         schestiSuccess: "#36B37E",
         schestiLightSuccess: "#ECFDF3",
-        schestiWarning:"#FFC107"
+        schestiWarning:"#FFC107",
+        schestiPrimaryBlack:"#475467",
+        schestiLightBlack:"#667085",
+        schestiLightGray:"#EAECF0",
       },
       boxShadow: {
         // Soft Glow for Primary Element
