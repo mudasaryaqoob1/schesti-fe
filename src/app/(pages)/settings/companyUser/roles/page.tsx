@@ -14,6 +14,9 @@ import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import companyRoleService from "@/app/services/company-role.service";
 import { useRouterHook } from "@/app/hooks/useRouterHook";
+import { useSearchParams } from "next/navigation";
+import { ISettingCompanyRole } from "@/app/interfaces/settings/comapny-role-settings.interface";
+import { useState } from "react";
 
 const CompanyRoleSchema = Yup.object().shape({
     name: Yup.string().required('Role Name is required!'),
@@ -21,11 +24,15 @@ const CompanyRoleSchema = Yup.object().shape({
 });
 
 export default function NewCompanyRolePage() {
+    const [companyRole, setCompanyRole] = useState<ISettingCompanyRole | null>(null);
     const userPlan = useSelector(
         (state: RootState) => state.pricingPlan.userPlan
     );
     const userPlanFeatures = userPlan ? userPlan.features.split(',') : [];
     const router = useRouterHook();
+    const searchParams = useSearchParams();
+    const roleId = searchParams.get('roleId');
+
     const formik = useFormik({
         initialValues: {
             name: '',
@@ -60,10 +67,11 @@ export default function NewCompanyRolePage() {
     return <VerticleBar>
         <div className="w-full">
             <div className="flex w-full justify-between items-center">
-                <div>
+                {companyRole ? <div>
                     <TertiaryHeading title="Contractor" className="text-schestiPrimaryBlack text-2xl font-semibold" />
                     <p className="text-schestiLightBlack font-normal text-[14px] leading-6 ">Manage your company roles</p>
-                </div>
+                </div> : <div>
+                </div>}
 
                 <CustomButton
                     text="Create new role"
@@ -96,11 +104,11 @@ export default function NewCompanyRolePage() {
                             errorMessage={formik.touched.name && formik.errors.name ? formik.errors.name : ''}
                         />
                     </div>
-                    <div className="col-span-2 pt-5">
+                    {companyRole ? <div className="col-span-2 pt-5">
                         <p className="text-schestiPrimaryBlack font-medium text-[14px] leading-6">
                             Created At: <span className="text-schestiLightBlack">2023/10/06</span>
                         </p>
-                    </div>
+                    </div> : null}
                 </div>
 
 
