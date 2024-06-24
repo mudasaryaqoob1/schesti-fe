@@ -4,12 +4,16 @@ import CustomButton from "@/app/component/customButton/button";
 import VerticleBar from "../../verticleBar";
 import TertiaryHeading from "@/app/component/headings/tertiary";
 import { InputComponent } from "@/app/component/customInput/Input";
-import { Plans, } from "@/app/utils/plans.utils";
+import { OtherRoutes, Plans, } from "@/app/utils/plans.utils";
 import { Checkbox, Tooltip } from "antd";
 import * as Yup from 'yup';
 import { useFormik } from "formik";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { AxiosError } from "axios";
+import { toast } from "react-toastify";
+import companyRoleService from "@/app/services/company-role.service";
+import { useRouterHook } from "@/app/hooks/useRouterHook";
 
 const CompanyRoleSchema = Yup.object().shape({
     name: Yup.string().required('Role Name is required!'),
@@ -21,15 +25,23 @@ export default function NewCompanyRolePage() {
         (state: RootState) => state.pricingPlan.userPlan
     );
     const userPlanFeatures = userPlan ? userPlan.features.split(',') : [];
-
+    const router = useRouterHook();
     const formik = useFormik({
         initialValues: {
             name: '',
             permissions: [] as string[],
         },
-        onSubmit(values) {
-
-            console.log(values)
+        async onSubmit(values) {
+            try {
+                const response = await companyRoleService.httpCreateCompanyRole(values);
+                if (response.data) {
+                    toast.success("Role created successfully");
+                    router.push(OtherRoutes.Settings["User Managements"]);
+                }
+            } catch (error) {
+                const err = error as AxiosError<{ message: string }>;
+                toast.error(err.response?.data?.message || "An error occurred");
+            }
         },
         validationSchema: CompanyRoleSchema,
         enableReinitialize: true
