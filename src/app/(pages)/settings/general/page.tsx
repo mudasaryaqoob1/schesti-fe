@@ -18,7 +18,7 @@ import {
   senaryHeading,
 } from '@/globals/tailwindvariables';
 import Button from '@/app/component/customButton/button';
-import SettingSideBar from '@/app/(pages)/settings/verticleBar';
+import SettingSideBar from '../verticleBar';
 import { userService } from '@/app/services/user.service';
 import { byteConverter } from '@/app/utils/byteConverter';
 import { AppDispatch } from '@/redux/store';
@@ -105,8 +105,8 @@ const GeneralSetting = () => {
         })
       );
 
-      let userObject : any = {...userData , avatar : avatarUrl}
-  
+      let userObject: any = { ...userData, avatar: avatarUrl }
+
       setUserData(userObject)
 
 
@@ -134,8 +134,8 @@ const GeneralSetting = () => {
             onSubmit={submitHandler}
           >
             {({ handleSubmit, errors, setFieldValue, values }) => {
-              console.log(errors , 'errors');
-              
+              console.log(errors, 'errors');
+
               return (
                 <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
                   <div
@@ -197,9 +197,8 @@ const GeneralSetting = () => {
                   {/* Upload Image Div */}
                   <div className={`${bg_style} grid grid-cols-12 p-5 mt-4 `}>
                     <div
-                      className={`px-6 py-4 col-span-8 flex flex-col items-center gap-3 ${
-                        errors.avatar ? 'border-red-600' : ''
-                      }  ${bg_style}`}
+                      className={`px-6 py-4 col-span-8 flex flex-col items-center gap-3 ${errors.avatar ? 'border-red-600' : ''
+                        }  ${bg_style}`}
                     >
                       {userData.avatar ? (
                         <Image
