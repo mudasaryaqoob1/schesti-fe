@@ -345,7 +345,7 @@ const EditSubcontractorInvoice = () => {
                     }
                     errorMessage={
                       touched.subContractorPhoneNumber &&
-                        errors.subContractorPhoneNumber
+                      errors.subContractorPhoneNumber
                         ? errors.subContractorPhoneNumber
                         : ''
                     }

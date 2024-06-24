@@ -57,7 +57,7 @@ export default function LandingFooter() {
               </p>
 
               <p className={`text-white  text-lg pb-1 font-medium`}>
-              info@schesti.com
+                info@schesti.com
               </p>
             </div>
           </div>
@@ -95,8 +95,9 @@ export default function LandingFooter() {
 
             <div className="flex justify-center py-2 ">
               <div
-                className={`flex items-center border rounded-full bg-white px-4 py-1 shadow-md ${formik.errors.email ? 'border-red-500' : ''
-                  }`}
+                className={`flex items-center border rounded-full bg-white px-4 py-1 shadow-md ${
+                  formik.errors.email ? 'border-red-500' : ''
+                }`}
               >
                 <input
                   className={`flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none  disabled:cursor-not-allowed disabled:opacity-50 flex-1 border-none
@@ -123,10 +124,16 @@ export default function LandingFooter() {
         <Divider className="border-gray-400" />
         <div className="flex items-center justify-between">
           <div className="flex space-x-4">
-            <Link href="/terms-conditions" className="text-white hover:underline hover:underline-offset-2 text-[14px] font-normal leading-[18.23px]">
+            <Link
+              href="/terms-conditions"
+              className="text-white hover:underline hover:underline-offset-2 text-[14px] font-normal leading-[18.23px]"
+            >
               Terms & Conditions
             </Link>
-            <Link href="/privacy" className="text-white hover:underline hover:underline-offset-2 cursor-pointer text-[14px] font-normal leading-[18.23px]">
+            <Link
+              href="/privacy"
+              className="text-white hover:underline hover:underline-offset-2 cursor-pointer text-[14px] font-normal leading-[18.23px]"
+            >
               Privacy Policy
             </Link>
           </div>
@@ -211,8 +218,9 @@ export default function LandingFooter() {
 
         <div className="flex justify-center py-1 ">
           <div
-            className={`flex items-center border rounded-full bg-white px-4 py-1 shadow-md ${formik.errors.email ? 'border-red-500' : ''
-              }`}
+            className={`flex items-center border rounded-full bg-white px-4 py-1 shadow-md ${
+              formik.errors.email ? 'border-red-500' : ''
+            }`}
           >
             <input
               className={`flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none  disabled:cursor-not-allowed disabled:opacity-50 flex-1 border-none
@@ -244,7 +252,7 @@ export default function LandingFooter() {
         </p>
 
         <p className={`text-white  text-lg pb-1 font-medium`}>
-        info@schesti.com
+          info@schesti.com
         </p>
       </div>
 

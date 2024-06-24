@@ -7,5 +7,5 @@ export interface IUpdateCompanyDetail {
   website: string;
   avatar: string;
   brandingColor: string;
-  companyName?:string
+  companyName?: string;
 }

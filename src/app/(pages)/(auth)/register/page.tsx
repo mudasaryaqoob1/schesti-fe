@@ -22,12 +22,10 @@ import { AppDispatch } from '@/redux/store';
 import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 import { USER_ROLES_ENUM } from '@/app/constants/constant';
-import UserRoleModal from '../userRolesModal'
+import UserRoleModal from '../userRolesModal';
 import { ShouldHaveAtLeastCharacterRegex } from '@/app/utils/regex.util';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { authService } from '@/app/services/auth.service';
-
-
 
 const { CONTRACTOR } = USER_ROLES_ENUM;
 
@@ -40,7 +38,12 @@ const initialValues: ISignUpInterface = {
 };
 
 const RegisterSchema: any = Yup.object({
-  name: Yup.string().matches(ShouldHaveAtLeastCharacterRegex, { "message": "Name should have atleast 1 character" }).max(30, "Name must have atleast 30 characters").required('Name is required'),
+  name: Yup.string()
+    .matches(ShouldHaveAtLeastCharacterRegex, {
+      message: 'Name should have atleast 1 character',
+    })
+    .max(30, 'Name must have atleast 30 characters')
+    .required('Name is required'),
   email: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
@@ -54,7 +57,10 @@ const RegisterSchema: any = Yup.object({
   confirmPassword: Yup.string()
     .required('Confirm Password is required!')
     .oneOf([Yup.ref('password')], 'Passwords must match'),
-  isTermsAccepted: Yup.boolean().oneOf([true], 'You must accept the terms and conditions')
+  isTermsAccepted: Yup.boolean().oneOf(
+    [true],
+    'You must accept the terms and conditions'
+  ),
 });
 
 const Register = () => {
@@ -68,17 +74,17 @@ const Register = () => {
   let userRoles = [
     {
       role: USER_ROLES_ENUM.OWNER,
-      desc: 'It is a long established fact that a reader will be distracted by the readable content of'
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of',
     },
     {
       role: USER_ROLES_ENUM.CONTRACTOR,
-      desc: 'It is a long established fact that a reader will be distracted by the readable content of'
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of',
     },
     {
       role: USER_ROLES_ENUM.SUBCONTRACTOR,
-      desc: 'It is a long established fact that a reader will be distracted by the readable content of'
-    }
-  ]
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of',
+    },
+  ];
 
   // const [role, setRole] = useState(CONTRACTOR);
   // const handleRoleChange = (value: string) => {
@@ -273,14 +279,29 @@ const Register = () => {
                       placeholder="Confirm Password"
                     />
 
-                    <Checkbox name='isTermsAccepted' checked={formik.values.isTermsAccepted} onChange={formik.handleChange} className='text-xs'>
-                      By clicking Register, you agree to our <Link href={"/terms-conditions"} target='_blank' className='text-blue-500 font-normal underline underline-offset-2 hover:text-blue-500 hover:underline'>
+                    <Checkbox
+                      name="isTermsAccepted"
+                      checked={formik.values.isTermsAccepted}
+                      onChange={formik.handleChange}
+                      className="text-xs"
+                    >
+                      By clicking Register, you agree to our{' '}
+                      <Link
+                        href={'/terms-conditions'}
+                        target="_blank"
+                        className="text-blue-500 font-normal underline underline-offset-2 hover:text-blue-500 hover:underline"
+                      >
                         Terms & Conditions
-                      </Link>. You may receive Email Notifications from us and can opt out any time.
+                      </Link>
+                      . You may receive Email Notifications from us and can opt
+                      out any time.
                     </Checkbox>
-                    {formik.errors.isTermsAccepted && formik.touched.isTermsAccepted ? <p className='mt-1 text-red-500'>
-                      {formik.errors.isTermsAccepted}
-                    </p> : null}
+                    {formik.errors.isTermsAccepted &&
+                    formik.touched.isTermsAccepted ? (
+                      <p className="mt-1 text-red-500">
+                        {formik.errors.isTermsAccepted}
+                      </p>
+                    ) : null}
                   </div>
 
                   <Button

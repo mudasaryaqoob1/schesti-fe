@@ -5,5 +5,3 @@ export interface ISignUpInterface {
   password: string;
   confirmPassword?: string;
 }
-
-

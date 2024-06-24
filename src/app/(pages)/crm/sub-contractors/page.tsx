@@ -41,7 +41,6 @@ export interface DataType {
 }
 
 const items: MenuProps['items'] = [
-
   {
     key: 'createNewInvoice',
     label: <p>Create Invoice</p>,
@@ -71,8 +70,6 @@ const SubcontractTable = () => {
     useState<ISubcontractor | null>(null);
   const [search, setSearch] = useState('');
 
-
-
   const fetchSubcontactors = useCallback(async () => {
     await dispatch(fetchCompanySubcontractors({ page: 1, limit: 10 }));
   }, []);
@@ -82,11 +79,12 @@ const SubcontractTable = () => {
   }, [fetchSubcontactors]);
 
   const handleDropdownItemClick = async (key: string, subcontractor: any) => {
-
     if (key === 'createEstimateRequest') {
       router.push(`/estimates/requests/create`);
     } else if (key === 'createNewInvoice') {
-      router.push(`/financial/standard-invoicing/create?subcontractorId=${subcontractor._id}`);
+      router.push(
+        `/financial/standard-invoicing/create?subcontractorId=${subcontractor._id}`
+      );
     } else if (key === 'createSchedule') {
       router.push(`/schedule`);
     } else if (key == 'editSubcontractor') {
@@ -95,8 +93,6 @@ const SubcontractTable = () => {
       setSelectedSubcontractor(subcontractor as ISubcontractor);
       setShowDeleteModal(true);
     }
-
-
   };
 
   const columns: ColumnsType<ISubcontractor> = [
@@ -165,19 +161,19 @@ const SubcontractTable = () => {
 
   const filteredSubcontractor = subcontractersData
     ? subcontractersData.filter((client) => {
-      if (!search) {
-        return {
-          ...client
-        };
-      }
-      return (
-        client.name.toLowerCase().includes(search.toLowerCase()) ||
-        client.companyRep.toLowerCase().includes(search.toLowerCase()) ||
-        client.email?.includes(search) ||
-        client.phone?.includes(search) ||
-        client.address?.includes(search)
-      );
-    })
+        if (!search) {
+          return {
+            ...client,
+          };
+        }
+        return (
+          client.name.toLowerCase().includes(search.toLowerCase()) ||
+          client.companyRep.toLowerCase().includes(search.toLowerCase()) ||
+          client.email?.includes(search) ||
+          client.phone?.includes(search) ||
+          client.address?.includes(search)
+        );
+      })
     : [];
 
   return (
@@ -203,7 +199,10 @@ const SubcontractTable = () => {
       ) : null}
       <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
         <div className="flex justify-between items-center mb-4">
-          <TertiaryHeading title="Subcontractors List" className="text-graphiteGray" />
+          <TertiaryHeading
+            title="Subcontractors List"
+            className="text-graphiteGray"
+          />
           <div className=" flex space-x-3">
             <div className="w-96">
               <InputComponent

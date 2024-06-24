@@ -4,10 +4,9 @@ import { Dispatch, SetStateAction } from 'react';
 
 import ModalComponent from '@/app/component/modal';
 
-
 interface roleObject {
-  role: string,
-  desc: string
+  role: string;
+  desc: string;
 }
 interface IProps {
   viewUserRoleModal: boolean;
@@ -22,7 +21,6 @@ const UserRolesModel = ({
   userRoleSelectionHandler,
   userRoles,
 }: IProps) => {
-
   return (
     <div>
       <ModalComponent

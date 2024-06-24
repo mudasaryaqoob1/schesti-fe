@@ -68,9 +68,7 @@ const Summary = ({ setPrevNext }: Props) => {
   const [estimatesRecords, setEstimatesRecords] = useState([]);
   const [totalMaterialBaseCost, setTotalMaterialBaseCost] = useState(0);
 
-  const [materialPercentage, setMaterialPercentage] = useState<number>(
-    5
-  );
+  const [materialPercentage, setMaterialPercentage] = useState<number>(5);
   const [overHeadProfitPercentage, setOverHeadProfitPercentage] = useState<
     number | string
   >(5);
@@ -140,22 +138,19 @@ const Summary = ({ setPrevNext }: Props) => {
     setIsLoading(true);
     let obj = {
       totalBidDetail: {
-        materialTax: calculatePercentqge(totalMaterialBaseCost, materialPercentage),
+        materialTax: calculatePercentqge(
+          totalMaterialBaseCost,
+          materialPercentage
+        ),
         overheadAndProfit: calculatePercentqge(
           subTotalcostRecord +
-          calculatePercentqge(
-            totalMaterialBaseCost,
-            materialPercentage
-          ),
+            calculatePercentqge(totalMaterialBaseCost, materialPercentage),
           overHeadProfitPercentage
         ).toFixed(2),
         bondFee: calculatePercentqge(
           subTotalcostRecord +
-          totalMaterialBaseCost +
-          calculatePercentqge(
-            subTotalcostRecord,
-            overHeadProfitPercentage
-          ),
+            totalMaterialBaseCost +
+            calculatePercentqge(subTotalcostRecord, overHeadProfitPercentage),
           bondFeePercentage
         ).toFixed(2),
       },
@@ -374,51 +369,51 @@ const Summary = ({ setPrevNext }: Props) => {
         <div>
           {estimatesRecords?.length
             ? estimatesRecords.map((estimate: any) => (
-              <div key={estimate.title} className={`${bg_style} p-5 mt-3`}>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <QuaternaryHeading
-                      title={estimate.categoryName}
-                      className="font-semibold"
-                    />
-                    <QuaternaryHeading
-                      title={estimate.subCategoryName}
-                      className="!font=[#344054] font-light"
-                    />
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <p className="text-[#344054] text-[18px]">
-                      Sub-contractor Cost:
-                    </p>
-                    <div className="flex items-center border-b-2 focus:border-purple-500 rounded">
-                      <p className="text-gray-700">$</p>
-                      <input
-                        placeholder="000"
-                        min="0"
-                        className="appearance-none w-full py-2 text-gray-700 leading-tight focus:outline-none "
-                        type="number"
-                        value={subcontractorCosts[estimate.title] || ''}
-                        onChange={(e) =>
-                          handleSubcontractorCostChange(
-                            estimate.title,
-                            e.target.value
-                          )
-                        }
+                <div key={estimate.title} className={`${bg_style} p-5 mt-3`}>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <QuaternaryHeading
+                        title={estimate.categoryName}
+                        className="font-semibold"
+                      />
+                      <QuaternaryHeading
+                        title={estimate.subCategoryName}
+                        className="!font=[#344054] font-light"
                       />
                     </div>
-                    <QuaternaryHeading
-                      title={`Total Cost: $${formatNumberWithCommas(
-                        estimate.totalCostForTitle
-                      )}`}
-                      className="font-semibold"
-                    />
+                    <div className="flex items-center gap-3">
+                      <p className="text-[#344054] text-[18px]">
+                        Sub-contractor Cost:
+                      </p>
+                      <div className="flex items-center border-b-2 focus:border-purple-500 rounded">
+                        <p className="text-gray-700">$</p>
+                        <input
+                          placeholder="000"
+                          min="0"
+                          className="appearance-none w-full py-2 text-gray-700 leading-tight focus:outline-none "
+                          type="number"
+                          value={subcontractorCosts[estimate.title] || ''}
+                          onChange={(e) =>
+                            handleSubcontractorCostChange(
+                              estimate.title,
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
+                      <QuaternaryHeading
+                        title={`Total Cost: $${formatNumberWithCommas(
+                          estimate.totalCostForTitle
+                        )}`}
+                        className="font-semibold"
+                      />
+                    </div>
+                  </div>
+                  <div className="estimateTable_container">
+                    <EstimatesTable estimates={estimate.scopeItems} />
                   </div>
                 </div>
-                <div className="estimateTable_container">
-                  <EstimatesTable estimates={estimate.scopeItems} />
-                </div>
-              </div>
-            ))
+              ))
             : null}
         </div>
 
@@ -446,7 +441,7 @@ const Summary = ({ setPrevNext }: Props) => {
             <div className="grid grid-cols-3 items-center">
               <MinDesc title="Material Tax %" className="text-darkgrayish" />
               <MinDesc
-                title={`${formatNumberWithCommas(
+                title={`$${formatNumberWithCommas(
                   calculatePercentqge(totalMaterialBaseCost, materialPercentage)
                 )}`}
                 className="text-darkgrayish"
@@ -460,7 +455,8 @@ const Summary = ({ setPrevNext }: Props) => {
                 placeholder="Enter Material Tax"
                 field={{
                   value: materialPercentage.toString(),
-                  onChange: (e) => setMaterialPercentage(Number(e.target.value)),
+                  onChange: (e) =>
+                    setMaterialPercentage(Number(e.target.value)),
                 }}
               />
             </div>
@@ -473,10 +469,10 @@ const Summary = ({ setPrevNext }: Props) => {
                 title={`$${formatNumberWithCommas(
                   calculatePercentqge(
                     subTotalcostRecord +
-                    calculatePercentqge(
-                      totalMaterialBaseCost,
-                      materialPercentage
-                    ),
+                      calculatePercentqge(
+                        totalMaterialBaseCost,
+                        materialPercentage
+                      ),
                     overHeadProfitPercentage
                   )
                 )}`}
@@ -501,11 +497,11 @@ const Summary = ({ setPrevNext }: Props) => {
                 title={`$${formatNumberWithCommas(
                   calculatePercentqge(
                     subTotalcostRecord +
-                    totalMaterialBaseCost +
-                    calculatePercentqge(
-                      subTotalcostRecord,
-                      overHeadProfitPercentage
-                    ),
+                      totalMaterialBaseCost +
+                      calculatePercentqge(
+                        subTotalcostRecord,
+                        overHeadProfitPercentage
+                      ),
                     bondFeePercentage
                   )
                 )}`}
@@ -534,15 +530,15 @@ const Summary = ({ setPrevNext }: Props) => {
             <Description
               title={`$${formatNumberWithCommas(
                 totalCostRecord +
-                calculatePercentqge(
-                  totalMaterialBaseCost,
-                  materialPercentage
-                ) +
-                calculatePercentqge(
-                  subTotalcostRecord,
-                  overHeadProfitPercentage
-                ) +
-                calculatePercentqge(subTotalcostRecord, bondFeePercentage)
+                  calculatePercentqge(
+                    totalMaterialBaseCost,
+                    materialPercentage
+                  ) +
+                  calculatePercentqge(
+                    subTotalcostRecord,
+                    overHeadProfitPercentage
+                  ) +
+                  calculatePercentqge(subTotalcostRecord, bondFeePercentage)
               )}`}
               className="font-semibold"
             />

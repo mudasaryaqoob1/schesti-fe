@@ -3,7 +3,7 @@ import { Table } from 'antd';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
 
 interface IProps {
-  projectData: IBidManagement
+  projectData: IBidManagement;
 }
 
 export function ProjectDesignTeam(props: IProps) {

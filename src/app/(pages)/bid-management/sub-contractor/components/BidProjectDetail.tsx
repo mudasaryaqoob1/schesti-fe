@@ -12,7 +12,6 @@ type Props = {
   selectedBid: any;
 };
 export function BidProjectDetail({ bid, onClick, isSelected }: Props) {
-
   return (
     <div
       className={`mt-3 rounded-lg ${isSelected ? 'bg-[#e0e3e6]' : 'bg-[#F2F4F7]'}  border border-[#E8E3EF] p-4 cursor-pointer`}

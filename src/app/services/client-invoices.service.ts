@@ -13,7 +13,10 @@ class ClientInvoiceService extends HttpService {
   ): Promise<IResponseInterface<{ invoice: IClientInvoice }>> =>
     this.post(`${this.prefix}/createInvoice`, data);
 
-  httpGetParentInvoiceById = (id: string): Promise<IResponseInterface<{ invoice: IClientInvoice }>> => this.get(`${this.prefix}/invoice/${id}`);
+  httpGetParentInvoiceById = (
+    id: string
+  ): Promise<IResponseInterface<{ invoice: IClientInvoice }>> =>
+    this.get(`${this.prefix}/invoice/${id}`);
 
   httpCreateNewInvoicePhase = (
     id: string,

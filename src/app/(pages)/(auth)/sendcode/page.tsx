@@ -57,7 +57,8 @@ const Resendcode = () => {
          
         `}
           >
-            If you havent received an email in 5 minutes, check your spam or resend.
+            If you havent received an email in 5 minutes, check your spam or
+            resend.
           </p>
           <Button
             isLoading={isLoading}

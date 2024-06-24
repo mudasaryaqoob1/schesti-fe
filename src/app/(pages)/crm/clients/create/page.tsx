@@ -107,9 +107,7 @@ const CreateClient = () => {
           className={`${senaryHeading} font-semibold text-lavenderPurple cursor-pointer underline`}
         />
       </div>
-      <div
-        className="p-5 flex flex-col rounded-lg border border-silverGray shadow-secondaryShadow2 bg-white"
-      >
+      <div className="p-5 flex flex-col rounded-lg border border-silverGray shadow-secondaryShadow2 bg-white">
         <TertiaryHeading
           className="text-graphiteGray mb-4 "
           title="Add New Client"
@@ -147,7 +145,9 @@ const CreateClient = () => {
                   <PhoneNumberInputWithLable
                     label="Phone Number"
                     //@ts-ignore
-                    onChange={(val: string) => setFieldValue('phone', val as string)}
+                    onChange={(val: string) =>
+                      setFieldValue('phone', val as string)
+                    }
                     //@ts-ignore
                     value={values.phone}
                     onBlur={() => setFieldTouched('phone', true)}

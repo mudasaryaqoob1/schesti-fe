@@ -14,17 +14,21 @@ import { Skeleton } from 'antd';
 function ClientInvoicePage() {
   const [loading, setLoading] = useState(false);
   const params = useParams<{ id: string }>();
-  const [parentInvoice, setParentInvoice] = useState<IClientInvoice | null>(null);
+  const [parentInvoice, setParentInvoice] = useState<IClientInvoice | null>(
+    null
+  );
 
   useEffect(() => {
     getParentInvoice();
-  }, [params.id])
+  }, [params.id]);
 
   async function getParentInvoice() {
     if (params.id) {
       setLoading(true);
       try {
-        const response = await clientInvoiceService.httpGetParentInvoiceById(params.id);
+        const response = await clientInvoiceService.httpGetParentInvoiceById(
+          params.id
+        );
         if (response.data) {
           setParentInvoice(response.data.invoice);
         }

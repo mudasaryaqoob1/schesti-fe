@@ -126,11 +126,9 @@ const CreateInvoice = () => {
 
       setSelectedSubcontractorDetail({
         subContractorAddress: selectedSubcontractor.address,
-        subContractorCompanyName:
-          selectedSubcontractor.name,
+        subContractorCompanyName: selectedSubcontractor.name,
         subContractorEmail: selectedSubcontractor.email,
-        subContractorPhoneNumber:
-          selectedSubcontractor.phone,
+        subContractorPhoneNumber: selectedSubcontractor.phone,
         companyRep: selectedSubcontractor.companyRep,
       });
     }
@@ -189,7 +187,6 @@ const CreateInvoice = () => {
     );
   }
 
-
   const calculatePercentqge = (
     value: number | string,
     percentage: number | string
@@ -213,18 +210,9 @@ const CreateInvoice = () => {
       ...values,
       invoiceItems: updatedDetails,
       totalPayable: calculateTotalPayable(
-        calculatePercentqge(
-          calculateSubTotal(),
-          values['taxes']
-        ),
-        calculatePercentqge(
-          calculateSubTotal(),
-          values['profitAndOverhead']
-        ),
-        calculatePercentqge(
-          calculateSubTotal(),
-          values['discount']
-        )
+        calculatePercentqge(calculateSubTotal(), values['taxes']),
+        calculatePercentqge(calculateSubTotal(), values['profitAndOverhead']),
+        calculatePercentqge(calculateSubTotal(), values['discount'])
       ),
     };
 
@@ -299,7 +287,11 @@ const CreateInvoice = () => {
   return (
     <section className="mx-16 my-2">
       <Formik
-        initialValues={selectedSubcontractorDetail ? { ...initialValues, ...selectedSubcontractorDetail } : initialValues}
+        initialValues={
+          selectedSubcontractorDetail
+            ? { ...initialValues, ...selectedSubcontractorDetail }
+            : initialValues
+        }
         validationSchema={subcontractorSchema}
         onSubmit={submitHandler}
         enableReinitialize={true}
@@ -388,7 +380,7 @@ const CreateInvoice = () => {
                     }
                     errorMessage={
                       touched.subContractorPhoneNumber &&
-                        errors.subContractorPhoneNumber
+                      errors.subContractorPhoneNumber
                         ? errors.subContractorPhoneNumber
                         : ''
                     }

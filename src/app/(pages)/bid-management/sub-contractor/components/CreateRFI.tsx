@@ -32,7 +32,12 @@ const ValidationSchema = Yup.object().shape({
   type: Yup.string().required('Type is required'),
   file: Yup.mixed(),
 });
-export function CreateRFI({ onSuccess, projectId, isProjectOwner, isProjectDetailsPage }: Props) {
+export function CreateRFI({
+  onSuccess,
+  projectId,
+  isProjectOwner,
+  isProjectDetailsPage,
+}: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [showRfiModal, setShowRfiModal] = useState(false);
   useClickAway(() => {
@@ -115,7 +120,6 @@ export function CreateRFI({ onSuccess, projectId, isProjectOwner, isProjectDetai
         setOpen={setShowRfiModal}
         destroyOnClose
       >
-
         <div
           onClick={(e) => {
             e.stopPropagation();
@@ -164,42 +168,43 @@ export function CreateRFI({ onSuccess, projectId, isProjectOwner, isProjectDetai
 
                 <div>
                   <Spin spinning={isFileUploading}>
-                    {!rfiFormik.values.file ? <Dragger
-                      name={'file'}
-                      accept="image/*,gif,application/pdf"
-                      beforeUpload={(file) => {
-                        handleFileUpload(file);
-                        return false;
-                      }}
-                      style={{
-                        borderStyle: 'dashed',
-                        borderWidth: 6,
-                      }}
-                      itemRender={() => {
-                        return null;
-                      }}
-                    >
-                      <p className="ant-upload-drag-icon">
-                        <Image
-                          src={'/uploadcloud.svg'}
-                          width={50}
-                          height={50}
-                          alt="upload"
-                        />
-                      </p>
-                      <p className="text-[12px] py-2 leading-3 text-[#98A2B3]">
-                        Drop your image here, or browse
-                      </p>
-                      <p className="text-[12px] leading-3 text-[#98A2B3]">
-                        PNG, GIF, JPG, Max size: 2MB
-                      </p>
-                    </Dragger> : null}
+                    {!rfiFormik.values.file ? (
+                      <Dragger
+                        name={'file'}
+                        accept="image/*,gif,application/pdf"
+                        beforeUpload={(file) => {
+                          handleFileUpload(file);
+                          return false;
+                        }}
+                        style={{
+                          borderStyle: 'dashed',
+                          borderWidth: 6,
+                        }}
+                        itemRender={() => {
+                          return null;
+                        }}
+                      >
+                        <p className="ant-upload-drag-icon">
+                          <Image
+                            src={'/uploadcloud.svg'}
+                            width={50}
+                            height={50}
+                            alt="upload"
+                          />
+                        </p>
+                        <p className="text-[12px] py-2 leading-3 text-[#98A2B3]">
+                          Drop your image here, or browse
+                        </p>
+                        <p className="text-[12px] leading-3 text-[#98A2B3]">
+                          PNG, GIF, JPG, Max size: 2MB
+                        </p>
+                      </Dragger>
+                    ) : null}
                     {rfiFormik.values.file ? (
                       <ShowFileComponent
                         file={rfiFormik.values.file}
                         onDelete={() => {
                           rfiFormik.setFieldValue('file', undefined);
-
                         }}
                       />
                     ) : null}
@@ -215,7 +220,6 @@ export function CreateRFI({ onSuccess, projectId, isProjectOwner, isProjectDetai
             </Spin>
           </Popups>
         </div>
-
       </ModalComponent>
     </div>
   );

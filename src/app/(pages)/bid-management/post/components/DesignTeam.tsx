@@ -33,11 +33,24 @@ type Props = {
 
 const DesignTeamMemberSchema = Yup.object().shape({
   // matches should have a regex that contains at least one letter
-  name: Yup.string().matches(/[a-zA-Z]/, { message: "Atleast 1 character is required" }).max(30, "Name must have max 30 characters").required('Name is required'),
-  role: Yup.string().matches(/[a-zA-Z]/, { message: "Atleast 1 character is required" }).max(20, "Role must have 20 characters").required('Role is required'),
-  companyName: Yup.string().matches(/[a-zA-Z]/, { message: "Atleast 1 character is required" }).max(50, "Company name must have 50 characters.").required('Company Name is required'),
-  location: Yup.string().matches(/[a-zA-Z]/, { message: "Atleast 1 character is required" }).max(30, "Location must have 30 characters.").required('Location is required'),
-  phoneNumber: Yup.string().optional()
+  name: Yup.string()
+    .matches(/[a-zA-Z]/, { message: 'Atleast 1 character is required' })
+    .max(30, 'Name must have max 30 characters')
+    .required('Name is required'),
+  role: Yup.string()
+    .matches(/[a-zA-Z]/, { message: 'Atleast 1 character is required' })
+    .max(20, 'Role must have 20 characters')
+    .required('Role is required'),
+  companyName: Yup.string()
+    .matches(/[a-zA-Z]/, { message: 'Atleast 1 character is required' })
+    .max(50, 'Company name must have 50 characters.')
+    .required('Company Name is required'),
+  location: Yup.string()
+    .matches(/[a-zA-Z]/, { message: 'Atleast 1 character is required' })
+    .max(30, 'Location must have 30 characters.')
+    .required('Location is required'),
+  phoneNumber: Yup.string()
+    .optional()
     .test({
       test: (value) => {
         if (value) {
@@ -169,13 +182,13 @@ export function PostDesignTeam({ formik, children }: Props) {
     initialValues: selectedTeamMember
       ? { ...selectedTeamMember }
       : {
-        name: '',
-        role: '',
-        companyName: '',
-        location: '',
-        phoneNumber: '',
-        email: '',
-      },
+          name: '',
+          role: '',
+          companyName: '',
+          location: '',
+          phoneNumber: '',
+          email: '',
+        },
     validationSchema: DesignTeamMemberSchema,
     onSubmit: (values) => {
       if (!selectedTeamMember) {
@@ -306,7 +319,7 @@ export function PostDesignTeam({ formik, children }: Props) {
           />
         }
         headerStyle={{
-          backgroundColor: "#E6F2F8"
+          backgroundColor: '#E6F2F8',
         }}
       >
         <div className="space-y-3">
@@ -366,7 +379,7 @@ export function PostDesignTeam({ formik, children }: Props) {
             }
             errorMessage={
               designTeamFormik.touched.companyName &&
-                designTeamFormik.errors.companyName
+              designTeamFormik.errors.companyName
                 ? designTeamFormik.errors.companyName
                 : ''
             }
@@ -388,7 +401,7 @@ export function PostDesignTeam({ formik, children }: Props) {
             }
             errorMessage={
               designTeamFormik.touched.location &&
-                designTeamFormik.errors.location
+              designTeamFormik.errors.location
                 ? designTeamFormik.errors.location
                 : ''
             }
@@ -404,14 +417,14 @@ export function PostDesignTeam({ formik, children }: Props) {
             //@ts-ignore
             value={designTeamFormik.values.phoneNumber}
             onBlur={() => designTeamFormik.setFieldTouched('phoneNumber', true)}
-            defaultCountry='US'
+            defaultCountry="US"
             hasError={
               designTeamFormik.touched.phoneNumber &&
               Boolean(designTeamFormik.errors.phoneNumber)
             }
             errorMessage={
               designTeamFormik.touched.phoneNumber &&
-                designTeamFormik.errors.phoneNumber
+              designTeamFormik.errors.phoneNumber
                 ? designTeamFormik.errors.phoneNumber
                 : ''
             }

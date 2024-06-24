@@ -15,12 +15,14 @@ const COLORS = ['#001556', '#7F56D9', '#36B37E', '#EF9F28', '#B58905'];
 type Props = {
   fetchDashboardState: IDashboardStats | undefined;
 };
-export default function ProjectsReport({
-  fetchDashboardState
-}: Props) {
-
-
-  const VALUES = [fetchDashboardState?.totalTakeoff, fetchDashboardState?.totalGeneratedEstimates, fetchDashboardState?.totalInvoices, fetchDashboardState?.totalSchedules, fetchDashboardState?.totalMeetings];
+export default function ProjectsReport({ fetchDashboardState }: Props) {
+  const VALUES = [
+    fetchDashboardState?.totalTakeoff,
+    fetchDashboardState?.totalGeneratedEstimates,
+    fetchDashboardState?.totalInvoices,
+    fetchDashboardState?.totalSchedules,
+    fetchDashboardState?.totalMeetings,
+  ];
 
   return (
     <Doughnut

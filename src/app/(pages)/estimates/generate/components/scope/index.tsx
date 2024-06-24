@@ -15,6 +15,7 @@ import { toast } from 'react-toastify';
 import '../scopeStyle.css';
 import { useSelector, useDispatch } from 'react-redux';
 import CreatableSelect from 'react-select/creatable';
+import { components } from 'react-select';
 import { twMerge } from 'tailwind-merge';
 import clsx from 'clsx';
 
@@ -35,7 +36,6 @@ import { byteConverter } from '@/app/utils/byteConverter';
 // import { IUnits } from '@/app/interfaces/settings/material-settings.interface';
 import EstimatesUnits from '@/app/constants/estimatesUnits.json';
 import { formatNumberWithCommas } from '@/app/utils/helper';
-
 
 type InitialValuesType = {
   category: string;
@@ -89,13 +89,16 @@ const descriptionInputStyle: any = {
   }),
 
   input: (styles: any) => ({ ...styles, outline: 'none' }),
-  placeholder: (styles: any) => ({ ...styles  , color : "#98A2B3" , fontSize: "14px"}),
-  menu: (styles : any) => ({
+  placeholder: (styles: any) => ({
     ...styles,
-    zIndex : 3
+    color: '#98A2B3',
+    fontSize: '14px',
+  }),
+  menu: (styles: any) => ({
+    ...styles,
+    zIndex: 3,
   }),
 };
-
 
 interface Props {
   setPrevNext: Dispatch<SetStateAction<number>>;
@@ -129,6 +132,24 @@ const initialValues: InitialValuesType = {
   unitMaterialCost: '',
   unitEquipments: '',
 };
+const { DropdownIndicator } = components;
+export const CustomDropdownIndicator = (props: any) => {
+  // const {
+  //   selectProps: { menuIsOpen }
+  // } = props;
+  return (
+    <DropdownIndicator {...props}>
+      <Image
+        src={'/search.svg'}
+        alt="search icon "
+        width={16}
+        height={16}
+        className="cursor-pointer"
+      />
+    </DropdownIndicator>
+  );
+};
+
 const Scope = ({ setPrevNext }: Props) => {
   const searchParams = useSearchParams();
   const dispatch = useDispatch();
@@ -342,8 +363,9 @@ const Scope = ({ setPrevNext }: Props) => {
     estimateTableItemValues: InitialValuesType,
     actions: any
   ) => {
-    estimateTableItemValues['description'] = estimateTableItemValues.description.value
-    
+    estimateTableItemValues['description'] =
+      estimateTableItemValues.description.value;
+
     let generateRandomNumber = Math.floor(Math.random() * 103440 + 1);
 
     const selectedCategoryName: any = categories.find(
@@ -661,6 +683,9 @@ const Scope = ({ setPrevNext }: Props) => {
       dataIndex: 'wastage',
       align: 'center',
       width: 90,
+      render: (value: number) => {
+        return `$${value}`;
+      },
     },
     {
       title: 'Qty with wastage',
@@ -815,6 +840,9 @@ const Scope = ({ setPrevNext }: Props) => {
       dataIndex: 'wastage',
       align: 'center',
       width: 90,
+      render: (value: number) => {
+        return `${value}%`;
+      },
     },
     {
       title: 'Qty with wastage',
@@ -1010,6 +1038,7 @@ const Scope = ({ setPrevNext }: Props) => {
     }
   };
 
+  console.log(SingleEstimateData , 'SingleEstimateData');
   
   return (
     <div>
@@ -1049,7 +1078,9 @@ const Scope = ({ setPrevNext }: Props) => {
         validationSchema={validationSchema}
         onSubmit={submitHandler}
       >
-        {({ handleSubmit, values, setFieldValue , errors }) => {
+        {({ handleSubmit, values, setFieldValue, errors }) => {
+          console.log(values , 'valuesvaluesvalues');
+          
           return (
             <>
               <Form
@@ -1110,7 +1141,10 @@ const Scope = ({ setPrevNext }: Props) => {
                     </label>
                     <CreatableSelect
                       isClearable
-                      placeholder="Select Description"
+                      placeholder="Search Description"
+                      components={{
+                        DropdownIndicator: CustomDropdownIndicator,
+                      }}
                       onChange={(newValue) =>
                         setFieldValue('description', newValue)
                       }
@@ -1125,6 +1159,7 @@ const Scope = ({ setPrevNext }: Props) => {
                           newDescription,
                         ]);
                       }}
+                      isSearchable
                       options={estimateDescriptions}
                       value={values.description}
                       styles={descriptionInputStyle}

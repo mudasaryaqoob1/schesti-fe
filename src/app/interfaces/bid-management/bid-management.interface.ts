@@ -2,7 +2,6 @@ import { IMeeting } from '../meeting.type';
 import { ITrade } from '../trade.interface';
 import { IUserInterface } from '../user.interface';
 
-
 export interface IBidDocument {
   url: string;
   extension: string;
@@ -10,10 +9,9 @@ export interface IBidDocument {
   name: string;
 }
 
-
 interface IPreBiddingMeetingOnSite {
   isChecked?: boolean;
-  type: "Onsite",
+  type: 'Onsite';
   location?: string;
   date?: string;
   time?: string;
@@ -23,7 +21,7 @@ interface IPreBiddingMeetingOnSite {
 
 interface IPreBiddingMeetingOnline {
   isChecked?: boolean;
-  type: "Online",
+  type: 'Online';
   meeting?: IMeeting | string;
   isMandatory?: boolean;
 }
@@ -99,8 +97,6 @@ export interface IBidManagementResponse {
   records: (IBidManagement & { userDetails: IUserInterface[] })[];
 }
 
-
-
 export interface IBidManagementProjectTeamMember {
   user: string;
   name: string;
@@ -117,11 +113,11 @@ export interface IBidManagementProjectTeamMember {
 export interface ISaveUserBid {
   user: string;
   projectId: string | IBidManagement;
-  status: "archived" | "upcoming" | "active";
+  status: 'archived' | 'upcoming' | 'active';
   companyName: string;
   isFavourite: boolean;
   archivedBy: string | IUserInterface;
-  archiveType?: "upcoming" | "invited" | "active";
+  archiveType?: 'upcoming' | 'invited' | 'active';
   _id: string;
   createdAt: string;
   updatedAt: string;
@@ -129,7 +125,7 @@ export interface ISaveUserBid {
 
 export interface IUpdateUserBid {
   projectId: string;
-  isFavourite?: boolean
+  isFavourite?: boolean;
   status?: string;
 }
 
@@ -143,57 +139,68 @@ export interface IBidActivity {
   _id: string;
   user: string | IUserInterface;
   projectId: string | IBidManagement;
-  status: "clicked" | "proposal submitted" | "favourite" | "removed favourite" | "viewed details" | "sent rfi" | "sent email" | "shared on whatsapp" | "shared on facebook" | "shared on twitter" | "repost project" | "decline";
+  status:
+    | 'clicked'
+    | 'proposal submitted'
+    | 'favourite'
+    | 'removed favourite'
+    | 'viewed details'
+    | 'sent rfi'
+    | 'sent email'
+    | 'shared on whatsapp'
+    | 'shared on facebook'
+    | 'shared on twitter'
+    | 'repost project'
+    | 'decline';
   createdAt: string;
   updatedAt: string;
 }
 
 export interface IBidProjectScope {
-  description: string
-  quantity: string
-  price: string
-  _id: string
+  description: string;
+  quantity: string;
+  price: string;
+  _id: string;
 }
 
 export interface IProjectBidding {
-  file?: IBidDocument
-  _id: string
+  file?: IBidDocument;
+  _id: string;
   user: IUserInterface | string;
-  projectId: IBidManagement
-  bidTrades: string[]
-  price: number
-  projectDuration: number
-  projectDurationType: string
-  additionalDetails: string
-  priceExpiryDuration: number
-  increaseInPercentage: number
-  projectScopes: IBidProjectScope[]
-  createdAt: string
-  updatedAt: string
-  __v: number
+  projectId: IBidManagement;
+  bidTrades: string[];
+  price: number;
+  projectDuration: number;
+  projectDurationType: string;
+  additionalDetails: string;
+  priceExpiryDuration: number;
+  increaseInPercentage: number;
+  projectScopes: IBidProjectScope[];
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 }
 export interface IProjectBiddingResponse {
-  projectBiddings: IProjectBidding[]
+  projectBiddings: IProjectBidding[];
   tradeCounts: {
     trade: string;
     proposalCount: number;
-  }[]
+  }[];
 }
 
-
 export interface ISubmittedProjectBid {
-  file: IBidDocument
-  _id: string
+  file: IBidDocument;
+  _id: string;
   user: string | IUserInterface;
   projectId: string | IBidManagement;
-  bidTrades: string[]
-  price: number
-  projectDuration: number
-  projectDurationType: string
-  additionalDetails: string
-  priceExpiryDuration: number
-  increaseInPercentage: number
-  projectScopes: IBidProjectScope[]
-  createdAt: string
-  updatedAt: string
+  bidTrades: string[];
+  price: number;
+  projectDuration: number;
+  projectDurationType: string;
+  additionalDetails: string;
+  priceExpiryDuration: number;
+  increaseInPercentage: number;
+  projectScopes: IBidProjectScope[];
+  createdAt: string;
+  updatedAt: string;
 }

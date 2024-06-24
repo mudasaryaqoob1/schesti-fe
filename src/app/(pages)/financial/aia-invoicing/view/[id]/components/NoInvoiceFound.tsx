@@ -4,7 +4,6 @@ import SecondaryHeading from '@/app/component/headings/Secondary';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { Image } from 'antd';
 
-
 export function NoInvoiceFound() {
   const router = useRouterHook();
 

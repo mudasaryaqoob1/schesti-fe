@@ -9,8 +9,8 @@ type Props = {
   children: React.ReactNode;
 };
 
-const HOVERED_MARGIN_LEFT = "ml-[240px]";
-const UNHOVERED_MARGIN_LEFT = "ml-[80px]";
+const HOVERED_MARGIN_LEFT = 'ml-[240px]';
+const UNHOVERED_MARGIN_LEFT = 'ml-[80px]';
 
 const CustomNavbar = ({ children }: Props) => {
   const pathname = usePathname();
@@ -34,23 +34,22 @@ const CustomNavbar = ({ children }: Props) => {
     'setnewpassword',
     'settings',
     'trades',
-    'verification'
+    'verification',
   ];
 
   const isUnProtectedRoute = unProtectedRoutes.includes(pathname.split('/')[1]);
 
   return (
-    <div className='flex h-screen relative'>
+    <div className="flex h-screen relative">
       {!isUnProtectedRoute && (
         <>
-          <AppSidebar
-            isOpened={collapsed}
-            toggleCollapsed={toggleCollapsed}
-          />
+          <AppSidebar isOpened={collapsed} toggleCollapsed={toggleCollapsed} />
           {/* <Tabs /> */}
         </>
       )}
-      <div className={`flex-1 transition-all duration-300 ease-in-out ${isUnProtectedRoute ? "ml-0" : collapsed ? HOVERED_MARGIN_LEFT : UNHOVERED_MARGIN_LEFT}`}>
+      <div
+        className={`flex-1 transition-all duration-300 ease-in-out ${isUnProtectedRoute ? 'ml-0' : collapsed ? HOVERED_MARGIN_LEFT : UNHOVERED_MARGIN_LEFT}`}
+      >
         {!isUnProtectedRoute ? <Navbar /> : null}
         {children}
       </div>

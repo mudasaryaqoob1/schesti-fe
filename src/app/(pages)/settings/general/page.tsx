@@ -105,10 +105,9 @@ const GeneralSetting = () => {
         })
       );
 
-      let userObject: any = { ...userData, avatar: avatarUrl }
+      let userObject: any = { ...userData, avatar: avatarUrl };
 
-      setUserData(userObject)
-
+      setUserData(userObject);
 
       return avatarUrl;
     } catch (error) {

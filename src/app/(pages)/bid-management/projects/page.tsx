@@ -39,7 +39,9 @@ function Page() {
     null
   );
 
-  const authUser = useSelector((state: RootState) => state.auth.user as { user?: IUserInterface });
+  const authUser = useSelector(
+    (state: RootState) => state.auth.user as { user?: IUserInterface }
+  );
 
   const [showProjectDeleteModal, setShowProjectDeleteModal] =
     useState<boolean>(false);
@@ -50,13 +52,16 @@ function Page() {
     limit: number;
   }>({
     page: 1,
-    limit: RES_PER_PAGE
+    limit: RES_PER_PAGE,
   });
 
   const fetchProjectDetails = async () => {
     return bidManagementService.httpGetMyProjects(postedProject);
   };
-  const projectsQuery = useQuery(['projects', postedProject.page, postedProject.limit], fetchProjectDetails);
+  const projectsQuery = useQuery(
+    ['projects', postedProject.page, postedProject.limit],
+    fetchProjectDetails
+  );
 
   const columns: ColumnsType<IBidManagement> = [
     {
@@ -69,24 +74,28 @@ function Page() {
         console.log('isNewProject', isNewProject);
         return (
           <div className="flex items-center justify-between">
-            <Link href={`${Routes['Bid Management'].Posted_Projects}/view/${record._id}`} className="text-[#181D25] hover:text-schestiPrimary hover:underline hover:underline-offset-2 text-base font-semibold leading-6">
+            <Link
+              href={`${Routes['Bid Management'].Posted_Projects}/view/${record._id}`}
+              className="text-[#181D25] hover:text-schestiPrimary hover:underline hover:underline-offset-2 text-base font-semibold leading-6"
+            >
               {record.projectName}
             </Link>
-            <div className=' flex space-x-3 items-center'>
-              {isNewProject ? <div className='w-fit h-[22px] py-0.5 px-2 rounded-full bg-[#36B37E] text-center font-medium text-sm leading-4 text-white'>
-                New
-              </div> : null}
+            <div className=" flex space-x-3 items-center">
+              {isNewProject ? (
+                <div className="w-fit h-[22px] py-0.5 px-2 rounded-full bg-[#36B37E] text-center font-medium text-sm leading-4 text-white">
+                  New
+                </div>
+              ) : null}
 
-              {record.platformType && record.platformType === 'Private' ?
+              {record.platformType && record.platformType === 'Private' ? (
                 <Image
                   src={'/lock-icon.svg'}
-                  alt='lock icon'
+                  alt="lock icon"
                   width={15}
                   height={15}
-                  loading='lazy'
+                  loading="lazy"
                 />
-                : null}
-
+              ) : null}
             </div>
           </div>
         );
@@ -115,18 +124,20 @@ function Page() {
       title: 'Stage',
       render(value) {
         if (!value) {
-          return null
+          return null;
         }
-        return <div className='w-fit py-[7px] px-3 rounded-md bg-schestiLightPrimary text-schestiPrimary font-normal text-base leading-4'>
-          {value}
-        </div>
+        return (
+          <div className="w-fit py-[7px] px-3 rounded-md bg-schestiLightPrimary text-schestiPrimary font-normal text-base leading-4">
+            {value}
+          </div>
+        );
       },
     },
     {
       key: 'projectValue',
       dataIndex: 'projectValue',
       title: 'Budget',
-      render(value, record,) {
+      render(value, record) {
         if (record.projectValue) {
           return USCurrencyFormat.format(record.projectValue);
         }
@@ -200,7 +211,10 @@ function Page() {
               {
                 key: 'edit',
                 label: <p>Edit</p>,
-                disabled: typeof record.user === 'string' ? authUser?.user?._id !== record.user : authUser.user?._id !== record.user._id,
+                disabled:
+                  typeof record.user === 'string'
+                    ? authUser?.user?._id !== record.user
+                    : authUser.user?._id !== record.user._id,
               },
               {
                 key: 'view',
@@ -250,20 +264,21 @@ function Page() {
       ? projectsQuery.data.data?.records
       : [];
 
-  const paginationInfo = projectsQuery.data && projectsQuery.data.data
-    ? projectsQuery.data.data.paginationInfo
-    : { currentPage: 0, pages: 0, totalRecords: 0, perPage: 0 };
+  const paginationInfo =
+    projectsQuery.data && projectsQuery.data.data
+      ? projectsQuery.data.data.paginationInfo
+      : { currentPage: 0, pages: 0, totalRecords: 0, perPage: 0 };
 
-  const filteredData = projects?.filter((project: { projectName: string; city: string; }) => {
-    if (search === '') {
-      return project;
-    }
-    return (
-      project.projectName.toLowerCase().includes(search.toLowerCase()) ||
-      project.city.toLowerCase().includes(search.toLowerCase())
-    );
-  }) ?? [];
-
+  const filteredData =
+    projects?.filter((project: { projectName: string; city: string }) => {
+      if (search === '') {
+        return project;
+      }
+      return (
+        project.projectName.toLowerCase().includes(search.toLowerCase()) ||
+        project.city.toLowerCase().includes(search.toLowerCase())
+      );
+    }) ?? [];
 
   const handleDownloadProjectsCSV = (data: IBidManagement[]) => {
     const excel = new Excel();
@@ -276,8 +291,8 @@ function Page() {
           title: 'Project Name',
         },
         {
-          dataIndex: "estimatedStartDate",
-          title: "Estimated Start Date",
+          dataIndex: 'estimatedStartDate',
+          title: 'Estimated Start Date',
           render(value) {
             return value ? moment(value).format('YYYY-MM-DD') : null;
           },
@@ -290,13 +305,13 @@ function Page() {
           },
         },
         {
-          dataIndex: "stage",
-          title: "Stage",
+          dataIndex: 'stage',
+          title: 'Stage',
         },
         {
-          dataIndex: "projectValue",
-          title: "Budget",
-          render(value, record,) {
+          dataIndex: 'projectValue',
+          title: 'Budget',
+          render(value, record) {
             if (record.projectValue) {
               return USCurrencyFormat.format(record.projectValue);
             }
@@ -304,18 +319,15 @@ function Page() {
           },
         },
         {
-          dataIndex: "status",
-          title: "Status",
+          dataIndex: 'status',
+          title: 'Status',
           render(value: string) {
             return value.toUpperCase();
-          }
-        }
-
+          },
+        },
       ])
       .addDataSource(data)
-      .saveAs(
-        `projects-${Date.now()}.xlsx`
-      );
+      .saveAs(`projects-${Date.now()}.xlsx`);
   };
 
   return (
@@ -329,7 +341,7 @@ function Page() {
           <DeletePopup
             closeModal={() => setShowProjectDeleteModal(false)}
             message="Are you sure you want to delete this project?"
-            onConfirm={() => { }}
+            onConfirm={() => {}}
             open={showProjectDeleteModal}
             title="Delete Project"
             isLoading={false}
@@ -342,16 +354,16 @@ function Page() {
               type="text"
               placeholder="Search"
               name="search"
-              prefix={<SearchOutlined className='text-lg' />}
+              prefix={<SearchOutlined className="text-lg" />}
               field={{
                 type: 'text',
-                className: "!py-3",
+                className: '!py-3',
                 value: search,
                 onChange: (e) => setSearch(e.target.value),
               }}
             />
           </div>
-          <div className='flex items-center space-x-2'>
+          <div className="flex items-center space-x-2">
             <WhiteButton
               text={'Export'}
               icon="/uploadcloud.svg"
@@ -388,9 +400,13 @@ function Page() {
         <Pagination
           current={postedProject.page}
           pageSize={postedProject.limit}
-          total={typeof paginationInfo === 'object' ? paginationInfo.totalRecords || 0 : 0}
+          total={
+            typeof paginationInfo === 'object'
+              ? paginationInfo.totalRecords || 0
+              : 0
+          }
           onChange={(page) => {
-            setpostedProject(prevFilters => ({ ...prevFilters, page: page }));
+            setpostedProject((prevFilters) => ({ ...prevFilters, page: page }));
           }}
         />
       </div>

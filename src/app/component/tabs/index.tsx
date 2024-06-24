@@ -114,18 +114,31 @@ const Tabs = () => {
                     items: feature.options.map((option, index) => {
                       return {
                         key: index,
-                        label: "children" in option ? option.label : (
-                          <Link href={option.value} onClick={() => {
-                            resetPostProjectState(Boolean(option.isAction))
-                          }}>{option.label}</Link>
-                        ),
-                        children: "children" in option ? option.children?.map(item => {
-                          return {
-                            key: item.value,
-                            label: <Link href={item.value}>{item.label}</Link>,
-                            value: item.value
-                          }
-                        }) : undefined,
+                        label:
+                          'children' in option ? (
+                            option.label
+                          ) : (
+                            <Link
+                              href={option.value}
+                              onClick={() => {
+                                resetPostProjectState(Boolean(option.isAction));
+                              }}
+                            >
+                              {option.label}
+                            </Link>
+                          ),
+                        children:
+                          'children' in option
+                            ? option.children?.map((item) => {
+                                return {
+                                  key: item.value,
+                                  label: (
+                                    <Link href={item.value}>{item.label}</Link>
+                                  ),
+                                  value: item.value,
+                                };
+                              })
+                            : undefined,
                       };
                     }),
                     selectable: true,
@@ -138,8 +151,11 @@ const Tabs = () => {
                         flex items-stretch justify-center py-2 
                          cursor-pointer
                         `,
-                        feature.options.find((option) =>
-                          option.children?.find(child => child.value.includes(pathname)) || option.value.includes(pathname)
+                        feature.options.find(
+                          (option) =>
+                            option.children?.find((child) =>
+                              child.value.includes(pathname)
+                            ) || option.value.includes(pathname)
                         ) && tabsStyle.active
                       )
                     )}

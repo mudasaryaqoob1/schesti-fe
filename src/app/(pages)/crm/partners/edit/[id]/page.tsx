@@ -73,18 +73,16 @@ const EditPartner = () => {
     companyName: '',
     address: '',
     secondAddress: '',
-  })
-
+  });
 
   const fetchPartnerDetail = useCallback(async () => {
-    const partnerDetail = await userService.httpFindCompanyPartnerDetail(id)
-    setPartnerDetail(partnerDetail?.data?.partner)
-  }, [])
-
+    const partnerDetail = await userService.httpFindCompanyPartnerDetail(id);
+    setPartnerDetail(partnerDetail?.data?.partner);
+  }, []);
 
   useEffect(() => {
-    fetchPartnerDetail()
-  }, [])
+    fetchPartnerDetail();
+  }, []);
 
   const submitHandler = async (values: IPartner) => {
     setIsLoading(true);
@@ -105,7 +103,6 @@ const EditPartner = () => {
       toast.error(result.message);
     }
   };
-
 
   return (
     <section className="mx-16">
@@ -132,9 +129,7 @@ const EditPartner = () => {
           className={`${senaryHeading} font-semibold text-lavenderPurple cursor-pointer underline`}
         />
       </div>
-      <div
-        className="p-5 flex flex-col rounded-lg border border-silverGray shadow-secondaryShadow2 bg-white"
-      >
+      <div className="p-5 flex flex-col rounded-lg border border-silverGray shadow-secondaryShadow2 bg-white">
         <TertiaryHeading
           className="text-graphiteGray mb-4 "
           title="Add New Partner"
@@ -145,12 +140,13 @@ const EditPartner = () => {
           validationSchema={newPartnerSchema}
           onSubmit={submitHandler}
         >
-          {({ handleSubmit,
+          {({
+            handleSubmit,
             setFieldValue,
             values,
             setFieldTouched,
             touched,
-            errors
+            errors,
           }) => {
             return (
               <Form name="basic" onSubmit={handleSubmit} autoComplete="off">

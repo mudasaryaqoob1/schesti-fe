@@ -37,10 +37,12 @@ const EstimateRequestTable: React.FC = () => {
           _id: estimate?._id,
           projectName: estimate?.estimateRequestIdDetail?.projectName,
           clientName: estimate?.estimateRequestIdDetail?.clientName,
-          salePerson: `${estimate?.estimateRequestIdDetail?.salePerson?.firstName ?? ''
-            } ${estimate?.estimateRequestIdDetail?.salePerson?.lastName ?? ''}`,
-          estimator: `${estimate?.estimateRequestIdDetail?.estimator?.firstName ?? ''
-            } ${estimate?.estimateRequestIdDetail?.estimator?.lastName ?? ''}`,
+          salePerson: `${
+            estimate?.estimateRequestIdDetail?.salePerson?.firstName ?? ''
+          } ${estimate?.estimateRequestIdDetail?.salePerson?.lastName ?? ''}`,
+          estimator: `${
+            estimate?.estimateRequestIdDetail?.estimator?.firstName ?? ''
+          } ${estimate?.estimateRequestIdDetail?.estimator?.lastName ?? ''}`,
           totalCost: estimate?.totalCost,
           estimateRequestIdDetail: estimate.estimateRequestIdDetail?._id,
         };
@@ -84,9 +86,8 @@ const EstimateRequestTable: React.FC = () => {
       }
     } else if (key == 'createSchedule') {
       // router.push(`/schedule/estimate/${estimate._id}`);
-    }
-    else if (key == 'createInvoice') {
-      router.push(`/financial/aia-invoicing`)
+    } else if (key == 'createInvoice') {
+      router.push(`/financial/aia-invoicing`);
     }
   };
 
@@ -147,28 +148,32 @@ const EstimateRequestTable: React.FC = () => {
 
   return (
     <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid border-silverGray shadow-secondaryTwist">
-      {
-        generatedEstimates && generatedEstimates.length === 0 ? (
-          <NoDataComponent title='No Data Found' description='Please create estimate request first to create an estimate' btnText='Create Estimate Request' isButton={true} link='/estimates/requests/create' />
-        ) : (
-          <>
-            <div className="flex justify-between items-center">
-              <TertiaryHeading
-                title="Submitted Estimate"
-                className="text-graphiteGray"
-              />
-            </div>
-            <div className="mt-4">
-              <Table
-                loading={loading}
-                columns={columns}
-                dataSource={generatedEstimates || []}
-                pagination={{ position: ['bottomCenter'] }}
-              />
-            </div>
-          </>
-        )
-      }
+      {generatedEstimates && generatedEstimates.length === 0 ? (
+        <NoDataComponent
+          title="No Data Found"
+          description="Please create estimate request first to create an estimate"
+          btnText="Create Estimate Request"
+          isButton={true}
+          link="/estimates/requests/create"
+        />
+      ) : (
+        <>
+          <div className="flex justify-between items-center">
+            <TertiaryHeading
+              title="Submitted Estimate"
+              className="text-graphiteGray"
+            />
+          </div>
+          <div className="mt-4">
+            <Table
+              loading={loading}
+              columns={columns}
+              dataSource={generatedEstimates || []}
+              pagination={{ position: ['bottomCenter'] }}
+            />
+          </div>
+        </>
+      )}
 
       {/**) : (
         <NoData

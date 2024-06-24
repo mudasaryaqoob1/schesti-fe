@@ -37,20 +37,32 @@ export function PostProjectTrades({ formik, children }: Props) {
   }
 
   function selectSubCategories(parentId: string) {
-    const selectedTrades = trades.filter(trade => trade.tradeCategoryId._id === parentId);
+    const selectedTrades = trades.filter(
+      (trade) => trade.tradeCategoryId._id === parentId
+    );
     const ids = pickOnlyIds(selectedTrades);
-    formik.setFieldValue('selectedTrades', [...formik.values.selectedTrades, ...ids]);
+    formik.setFieldValue('selectedTrades', [
+      ...formik.values.selectedTrades,
+      ...ids,
+    ]);
     setCheckedParent([...checkedParent, parentId]);
   }
 
   function deSelectSubCategories(parentId: string) {
-    const selectedTrades = trades.filter(trade => trade.tradeCategoryId._id !== parentId);
+    const selectedTrades = trades.filter(
+      (trade) => trade.tradeCategoryId._id !== parentId
+    );
     const ids = pickOnlyIds(selectedTrades);
     // remove ids from formik.values.selectedTrades
-    formik.setFieldValue('selectedTrades', formik.values.selectedTrades.filter(trade => {
-      return typeof trade === 'string' ? ids.includes(trade) : ids.includes(trade._id);
-    }));
-    setCheckedParent(checkedParent.filter(parent => parent !== parentId));
+    formik.setFieldValue(
+      'selectedTrades',
+      formik.values.selectedTrades.filter((trade) => {
+        return typeof trade === 'string'
+          ? ids.includes(trade)
+          : ids.includes(trade._id);
+      })
+    );
+    setCheckedParent(checkedParent.filter((parent) => parent !== parentId));
   }
 
   function toggleCategory(tradeCategoryId: string) {
@@ -134,7 +146,7 @@ export function PostProjectTrades({ formik, children }: Props) {
               onChange(value) {
                 setSelectedCategory(value);
               },
-              size: "middle"
+              size: 'middle',
             }}
           />
         </div>
@@ -166,11 +178,10 @@ export function PostProjectTrades({ formik, children }: Props) {
                       }
                     }}
                     checked={checkedParent.includes(trade.value)}
-
                   >
                     <QuinaryHeading
-                      title='All Categories'
-                      className='text-[#98A2B3]'
+                      title="All Categories"
+                      className="text-[#98A2B3]"
                     />
                   </Checkbox>
                 </div>

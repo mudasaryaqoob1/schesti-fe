@@ -33,7 +33,9 @@ const SupportTicketDetails = () => {
   const supportTicketData = useSelector(selectSupportTickets);
 
   // const [isLoading, setIsLoading] = useState(true);
-  const [supportDetailDetail, setSupportDetailDetail] = useState<Partial<ISupportTicket>>({});
+  const [supportDetailDetail, setSupportDetailDetail] = useState<
+    Partial<ISupportTicket>
+  >({});
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<ITicketMessage[]>([]);
   const [messageLoading, setMessageLoading] = useState(false);
@@ -100,7 +102,7 @@ const SupportTicketDetails = () => {
         isFile: true,
         fileUrl: url,
         fileName: file.name,
-        fileSize: file.size
+        fileSize: file.size,
       });
       setMessage('');
       setMessageLoading(false);
@@ -168,13 +170,14 @@ const SupportTicketDetails = () => {
                 className="text-steelGray"
                 title={`${supportDetailDetail?.description}`}
               />
-              {supportDetailDetail?.file && <FileView
-                extension={supportDetailDetail.file.fileType.split('/')[1]}
-                name={supportDetailDetail.file.name}
-                url={supportDetailDetail.file.url}
-                text='View'
-
-              />}
+              {supportDetailDetail?.file && (
+                <FileView
+                  extension={supportDetailDetail.file.fileType.split('/')[1]}
+                  name={supportDetailDetail.file.name}
+                  url={supportDetailDetail.file.url}
+                  text="View"
+                />
+              )}
             </div>
           </div>
           <div className="shadow-primaryGlow rounded-2xl p-5 md:col-span-2">
@@ -184,15 +187,12 @@ const SupportTicketDetails = () => {
                   {messages.map((message) => {
                     if (message.sender == 'user') {
                       return message.isFile ? (
-                        <div
-                          key={message._id}
-                          className="self-end"
-                        >
+                        <div key={message._id} className="self-end">
                           <FileView
                             extension={message.fileExtension.split('/')[1]}
                             name={message.fileName}
                             url={message.fileUrl}
-                            text='View'
+                            text="View"
                           />
                         </div>
                       ) : (
@@ -205,15 +205,12 @@ const SupportTicketDetails = () => {
                       );
                     } else {
                       return message.isFile ? (
-                        <div
-                          key={message._id}
-                          className="self-start mb-1"
-                        >
+                        <div key={message._id} className="self-start mb-1">
                           <FileView
                             extension={message.fileExtension.split('/')[1]}
                             name={message.fileName}
                             url={message.fileUrl}
-                            text='View'
+                            text="View"
                           />
                         </div>
                       ) : (

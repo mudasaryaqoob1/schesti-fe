@@ -14,10 +14,12 @@ export const bidsManagementSlice = createSlice({
     });
 
     builder.addCase(
-        fetchInvitedProjects.fulfilled,
+      fetchInvitedProjects.fulfilled,
       (
         state,
-        action: PayloadAction<IResponseInterface<{ invoices: IClientInvoice[] }>>
+        action: PayloadAction<
+          IResponseInterface<{ invoices: IClientInvoice[] }>
+        >
       ) => {
         state.loading = false;
         state.message = action.payload.message;
@@ -35,11 +37,9 @@ export const bidsManagementSlice = createSlice({
       state.loading = true;
     });
 
-    builder.addCase(fetchExploringProjects.fulfilled,
-      (
-        state,
-        action: PayloadAction<IResponseInterface>
-      ) => {
+    builder.addCase(
+      fetchExploringProjects.fulfilled,
+      (state, action: PayloadAction<IResponseInterface>) => {
         state.loading = false;
         state.message = action.payload.message;
         state.statusCode = action.payload.statusCode;

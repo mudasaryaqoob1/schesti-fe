@@ -2,7 +2,8 @@ import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../store';
 
 export const selectComapnyClient = (state: RootState) => state.companyClient;
-export const selectComapnyPartner = (state: RootState) => state.companyPartnerReducer;
+export const selectComapnyPartner = (state: RootState) =>
+  state.companyPartnerReducer;
 export const selectComapnySubcontractor = (state: RootState) =>
   state.companySubContractor;
 
@@ -20,7 +21,6 @@ export const selectPartnerLoading = createSelector(
   [selectComapnyPartner],
   (companyPartner) => companyPartner.loading
 );
-
 
 export const selectPartners = createSelector(
   [selectComapnyPartner],
