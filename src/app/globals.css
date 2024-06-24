@@ -133,6 +133,9 @@ a {
   width: 44px !important;
   height: 36px !important;
 }
+.ant-table .ant-table-container .ant-table-content table {
+  table-layout: auto !important;
+}
 .ant-table
   .ant-table-container
   .ant-table-content
@@ -254,6 +257,8 @@ a {
   text-align: center;
   padding: 0px 10px 0px 10px !important;
 }
+
+/* Antd Side Bar CSS */
 .ant-menu-submenu.ant-menu-submenu-vertical.ant-menu-submenu-selected
   .ant-menu-submenu-title {
   color: #007ab6;

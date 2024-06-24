@@ -437,7 +437,7 @@ const ViewEstimateDetail = () => {
         <div className="flex items-center justify-between">
           <MinDesc title="Material Tax %" className="text-darkgrayish" />
           <Description
-            title={`${USCurrencyFormat.format(
+            title={`$${USCurrencyFormat.format(
               estimateDetailsSummary?.totalBidDetail?.materialTax
             )}`}
             className="font-medium"
