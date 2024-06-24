@@ -5,16 +5,22 @@ import VerticleBar from "../../verticleBar";
 import TertiaryHeading from "@/app/component/headings/tertiary";
 import { InputComponent } from "@/app/component/customInput/Input";
 import { Plans, } from "@/app/utils/plans.utils";
-import { Checkbox } from "antd";
+import { Checkbox, Tooltip } from "antd";
 import * as Yup from 'yup';
 import { useFormik } from "formik";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const CompanyRoleSchema = Yup.object().shape({
     name: Yup.string().required('Role Name is required!'),
-    permissions: Yup.array().of(Yup.string()).required('Permissions is required!'),
+    permissions: Yup.array().of(Yup.string()).min(1, "Permissions field must have at least 1 items").required('Permissions is required!'),
 });
 
 export default function NewCompanyRolePage() {
+    const userPlan = useSelector(
+        (state: RootState) => state.pricingPlan.userPlan
+    );
+    const userPlanFeatures = userPlan ? userPlan.features.split(',') : [];
 
     const formik = useFormik({
         initialValues: {
@@ -38,7 +44,9 @@ export default function NewCompanyRolePage() {
         formik.setFieldValue('permissions', [...formik.values.permissions, value])
     }
 
-    console.log(formik.values);
+
+    console.log({ errors: formik.errors });
+
     return <VerticleBar>
         <div className="w-full">
             <div className="flex w-full justify-between items-center">
@@ -53,6 +61,10 @@ export default function NewCompanyRolePage() {
                     iconwidth={20}
                     iconheight={20}
                     className="!w-fit"
+                    onClick={() => {
+                        formik.setFieldTouched("permissions", true, true);
+                        formik.handleSubmit()
+                    }}
                 />
             </div>
 
@@ -82,30 +94,35 @@ export default function NewCompanyRolePage() {
                 </div>
 
 
-                <div className="p-5 mt-6 border border-schestiLightGray rounded-md">
+                <div className={`p-5 mt-6 border ${formik.touched.permissions && formik.errors.permissions?.length ? ' border-red-500' : 'border-schestiLightGray '} rounded-md mb-1`}>
                     <p className="text-[14px] text-schestiLightBlack leading-5">Select permission/access for this role</p>
 
                     <div className="grid mt-3 grid-cols-3 gap-3">
                         {Object.keys(Plans).map((planKey) => {
                             const value = Plans[planKey as keyof typeof Plans];
+                            const disableCheckbox = !userPlanFeatures.includes(value);
                             const isChecked = formik.values.permissions.includes(value)
-                            return <Checkbox
-                                key={planKey}
-                                checked={isChecked}
-                                className="text-schestiPrimaryBlack font-normal"
-                                onChange={() => {
-                                    if (isChecked) {
-                                        handleRemovePermission(value);
-                                    } else {
-                                        handleAddPermission(value);
-                                    }
-                                }}
-                            >
-                                {planKey}
-                            </Checkbox>
+                            return <Tooltip className="w-fit" key={value} placement="bottom" title={disableCheckbox ? "This permission is not available in your plan" : ""}>
+                                <Checkbox
+                                    key={planKey}
+                                    checked={isChecked}
+                                    disabled={disableCheckbox}
+                                    className="text-schestiPrimaryBlack font-normal"
+                                    onChange={() => {
+                                        if (isChecked) {
+                                            handleRemovePermission(value);
+                                        } else {
+                                            handleAddPermission(value);
+                                        }
+                                    }}
+                                >
+                                    {planKey}
+                                </Checkbox>
+                            </Tooltip>
                         })}
                     </div>
                 </div>
+                {formik.touched.permissions && formik.errors.permissions?.length ? <p className="text-red-500 text-[12px]">{formik.errors.permissions}</p> : null}
 
             </div>
         </div>
