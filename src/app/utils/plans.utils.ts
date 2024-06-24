@@ -50,6 +50,7 @@ export const OtherRoutes = {
     Materials: '/settings/materials',
     Target: '/settings/target',
     'Support Tickets': '/settings/supporttickets',
+    Company_Roles: '/settings/companyUser/roles',
   },
   Upgrades: '/upgradeplans',
   Dashboard: '/dashboard',

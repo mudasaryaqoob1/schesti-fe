@@ -6,6 +6,7 @@ import { Tabs } from 'antd';
 import VerticleBar from '../verticleBar';
 import { CompanyUsers } from './components/CompanyUsers';
 import TertiaryHeading from '@/app/component/headings/tertiary';
+import { CompanyRoles } from './components/CompanyRoles';
 
 const USERS_TAB = "Users";
 const ROLES_TAB = "Roles";
@@ -34,6 +35,7 @@ const Index = () => {
             onChange={(key) => setActiveTabKey(key)}
           />
           {activeTabKey === 'Users' ? <CompanyUsers /> : null}
+          {activeTabKey === 'Roles' ? <CompanyRoles /> : null}
         </div>
       </div>
     </VerticleBar>
