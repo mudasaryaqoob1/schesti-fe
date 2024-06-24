@@ -1,5 +1,6 @@
 'use client';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { OtherRoutes } from '@/app/utils/plans.utils';
 import { bg_style, senaryHeading } from '@/globals/tailwindvariables';
 import { usePathname, useParams } from 'next/navigation';
 
@@ -12,7 +13,7 @@ const Index = () => {
   const tabs = [
     { id: 1, name: 'General Settings', route: ['/settings/general'] },
     { id: 2, name: 'Plans', route: ['/settings/plans'] },
-    { id: 2, name: 'Category Setup', route: ['/settings/CategorySetup'] },
+    { id: 2, name: 'Category Setup', route: ['/settings/CategorySetup', OtherRoutes.Settings.Company_Roles] },
     {
       id: 3,
       name: 'User Managements',
