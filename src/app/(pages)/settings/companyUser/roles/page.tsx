@@ -20,7 +20,7 @@ import { useEffect, useState } from "react";
 import moment from "moment";
 
 const CompanyRoleSchema = Yup.object().shape({
-    name: Yup.string().required('Role Name is required!'),
+    name: Yup.string().matches(/[a-zA-Z]/, { message: 'Atleast 1 character is required' }).required('Role Name is required!'),
     permissions: Yup.array().of(Yup.string()).min(1, "Permissions field must have at least 1 items").required('Permissions is required!'),
 });
 
