@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { Tabs } from 'antd';
 
@@ -10,6 +10,7 @@ import { CompanyRoles } from './components/CompanyRoles';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { getCompanyRolesThunk } from '@/redux/company-roles/company-roles.thunk';
+import { useLocalStorageState } from 'ahooks';
 
 const USERS_TAB = "Users";
 const ROLES_TAB = "Roles";
@@ -17,7 +18,12 @@ const ROLES_TAB = "Roles";
 
 const Index = () => {
 
-  const [activeTabKey, setActiveTabKey] = useState(USERS_TAB);
+  const [activeTabKey, setActiveTabKey] = useLocalStorageState<string | undefined>(
+    'company-role-tab',
+    {
+      defaultValue: USERS_TAB,
+    },
+  );
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
@@ -39,7 +45,9 @@ const Index = () => {
                 key: tab
               }
             })}
-            onChange={(key) => setActiveTabKey(key)}
+            onChange={(key) => {
+              setActiveTabKey(key);
+            }}
           />
           {activeTabKey === 'Users' ? <CompanyUsers /> : null}
           {activeTabKey === 'Roles' ? <CompanyRoles /> : null}
