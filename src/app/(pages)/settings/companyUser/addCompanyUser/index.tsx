@@ -12,11 +12,8 @@ import { bg_style } from '@/globals/tailwindvariables';
 import FormControl from '@/app/component/formControl';
 import { userService } from '@/app/services/user.service';
 import { IUserInterface } from '@/app/interfaces/user.interface';
-
-
-const defaultOptions = [
-
-];
+import { useSelector } from 'react-redux';
+import { RootState } from '@/redux/store';
 
 type Props = {
   onCancel: () => void;
@@ -31,6 +28,7 @@ const AddNewUser = ({
 }: Props) => {
 
   const [isLoading, setisLoading] = useState(false);
+  const companyRolesState = useSelector((state: RootState) => state.companyRoles);
 
   const newClientSchema: any = Yup.object({
     firstName: Yup.string().required('First name is required!'),
@@ -45,8 +43,16 @@ const AddNewUser = ({
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
     email: user?.email || '',
-    roles: [''],
+    roles: user?.roles[0] || '' as any,
   };
+
+  const roleOptions = companyRolesState.data.map(role => {
+    return {
+      label: role.name,
+      value: role._id
+    }
+  })
+
   const submitHandler = async (values: Partial<IUserInterface>, { resetForm }: any) => {
     setisLoading(true);
     if (user) {
@@ -123,7 +129,7 @@ const AddNewUser = ({
                 control="select"
                 label="Role"
                 name="roles"
-                options={defaultOptions}
+                options={roleOptions}
                 placeholder="Select User Role"
               />
               <FormControl
