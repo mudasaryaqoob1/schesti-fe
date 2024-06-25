@@ -77,7 +77,7 @@ const SelectComp = (props: any) => {
                   )
                 )}
                 id={name}
-                value={field.value}
+                value={field.value ? field.value : undefined}
                 showSearch
                 optionFilterProp="children"
                 filterOption={filterOption}

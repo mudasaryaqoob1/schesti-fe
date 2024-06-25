@@ -43,7 +43,7 @@ const AddNewUser = ({
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
     email: user?.email || '',
-    roles: user?.roles[0] || '' as any,
+    roles: (user && (typeof user.roles[0] === 'string' ? user.roles[0] : user.roles[0]._id)) || '' as any,
   };
 
   const roleOptions = companyRolesState.data.map(role => {

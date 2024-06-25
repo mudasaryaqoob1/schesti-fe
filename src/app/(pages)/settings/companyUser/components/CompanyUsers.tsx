@@ -93,14 +93,19 @@ export function CompanyUsers() {
             title: 'Roles',
             dataIndex: 'roles',
             render: (text, records): any => {
-                return records.roles.map((role: any) => (
-                    <p
-                        key={role}
-                        className="w-max text-[#027A48] bg-[#ECFDF3] px-2 py-1 rounded-full"
-                    >
-                        {role}
-                    </p>
-                ));
+                return records.roles.map((role) => {
+                    if (typeof role === 'string') {
+                        return null;
+                    }
+                    return (
+                        <p
+                            key={role._id}
+                            className="w-max text-[#027A48] bg-[#ECFDF3] px-2 py-1 rounded-full"
+                        >
+                            {role.name}
+                        </p>
+                    )
+                });
             },
         },
         {
