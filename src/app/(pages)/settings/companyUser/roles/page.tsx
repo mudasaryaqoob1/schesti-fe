@@ -48,20 +48,43 @@ export default function NewCompanyRolePage() {
             permissions: [] as string[],
         },
         async onSubmit(values) {
-            try {
-                const response = await companyRoleService.httpCreateCompanyRole(values);
-                if (response.data) {
-                    toast.success("Role created successfully");
-                    router.push(OtherRoutes.Settings["User Managements"]);
-                }
-            } catch (error) {
-                const err = error as AxiosError<{ message: string }>;
-                toast.error(err.response?.data?.message || "An error occurred");
+            if (companyRole) {
+                await updateRole(companyRole._id, values);
+            } else {
+                await createNewRole(values);
             }
         },
         validationSchema: CompanyRoleSchema,
         enableReinitialize: true
     })
+
+    async function createNewRole(values: { name: string, permissions: string[] }) {
+        try {
+            const response = await companyRoleService.httpCreateCompanyRole(values);
+            if (response.data) {
+                toast.success("Role created successfully");
+                router.push(OtherRoutes.Settings["User Managements"]);
+            }
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+            toast.error(err.response?.data?.message || "An error occurred");
+        }
+    }
+
+    async function updateRole(id: string, values: { name: string, permissions: string[] }) {
+        try {
+            const response = await companyRoleService.httpUpdateCompanyRoleById(id, values);
+            if (response.data) {
+                toast.success("Role Updated successfully");
+                router.push(OtherRoutes.Settings["User Managements"]);
+            }
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+            toast.error(err.response?.data?.message || "An error occurred");
+        }
+    }
+
+
 
     function handleRemovePermission(value: string) {
 

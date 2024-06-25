@@ -13,6 +13,11 @@ class CompanyRoleService extends HttpService {
         name: string;
         permissions: string[];
     }): Promise<IResponseInterface<ISettingCompanyRole>> => this.post(this.prefix, data);
+
+    httpUpdateCompanyRoleById = (id: string, data: {
+        name: string;
+        permissions: string[];
+    }): Promise<IResponseInterface<ISettingCompanyRole>> => this.put(`${this.prefix}/${id}`, data);
 }
 
 const companyRoleService = new CompanyRoleService();
