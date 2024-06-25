@@ -27,6 +27,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
               colorPrimary: PRIMARY_COLOR,
               colorPrimaryHover: PRIMARY_COLOR,
             },
+            Collapse: {
+              headerBg: "#F9F9F9",
+              colorBorder: "#EAECF0",
+            }
           }
         }}
       >
