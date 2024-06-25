@@ -5,7 +5,7 @@ import VerticleBar from "../../verticleBar";
 import TertiaryHeading from "@/app/component/headings/tertiary";
 import { InputComponent } from "@/app/component/customInput/Input";
 import { OtherRoutes, Plans, } from "@/app/utils/plans.utils";
-import { Checkbox, Tooltip } from "antd";
+import { Checkbox, Skeleton, Tooltip } from "antd";
 import * as Yup from 'yup';
 import { useFormik } from "formik";
 import { useSelector } from "react-redux";
@@ -16,7 +16,8 @@ import companyRoleService from "@/app/services/company-role.service";
 import { useRouterHook } from "@/app/hooks/useRouterHook";
 import { useSearchParams } from "next/navigation";
 import { ISettingCompanyRole } from "@/app/interfaces/settings/comapny-role-settings.interface";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import moment from "moment";
 
 const CompanyRoleSchema = Yup.object().shape({
     name: Yup.string().required('Role Name is required!'),
@@ -25,6 +26,7 @@ const CompanyRoleSchema = Yup.object().shape({
 
 export default function NewCompanyRolePage() {
     const [companyRole, setCompanyRole] = useState<ISettingCompanyRole | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
     const userPlan = useSelector(
         (state: RootState) => state.pricingPlan.userPlan
     );
@@ -32,6 +34,13 @@ export default function NewCompanyRolePage() {
     const router = useRouterHook();
     const searchParams = useSearchParams();
     const roleId = searchParams.get('roleId');
+
+    useEffect(() => {
+        if (roleId) {
+            getCompanyRoleById(roleId);
+
+        }
+    }, [roleId])
 
     const formik = useFormik({
         initialValues: {
@@ -63,18 +72,39 @@ export default function NewCompanyRolePage() {
         formik.setFieldValue('permissions', [...formik.values.permissions, value])
     }
 
+    async function getCompanyRoleById(roleId: string) {
+        setIsLoading(true);
+        try {
+            const response = await companyRoleService.httpGetCompanyRoleById(roleId);
+            if (response.data) {
+                formik.setValues(response.data);
+                setCompanyRole(response.data);
+            }
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+            console.error(err.response?.data?.message || "An error occurred");
+        } finally {
+            setIsLoading(false);
+        }
+    }
 
     return <VerticleBar>
         <div className="w-full">
             <div className="flex w-full justify-between items-center">
-                {companyRole ? <div>
-                    <TertiaryHeading title="Contractor" className="text-schestiPrimaryBlack text-2xl font-semibold" />
+                <div>
+                    <TertiaryHeading title={companyRole ? "Edit Role" : "Create New Role"} className="text-schestiPrimaryBlack text-2xl font-semibold" />
                     <p className="text-schestiLightBlack font-normal text-[14px] leading-6 ">Manage your company roles</p>
-                </div> : <div>
-                </div>}
+                </div>
 
-                <CustomButton
-                    text="Create new role"
+                {companyRole ? <CustomButton
+                    text={"Update"}
+                    className="!w-fit"
+                    onClick={() => {
+                        formik.setFieldTouched("permissions", true, true);
+                        formik.handleSubmit()
+                    }}
+                /> : <CustomButton
+                    text={"Create new role"}
                     icon="/plus.svg"
                     iconwidth={20}
                     iconheight={20}
@@ -83,10 +113,13 @@ export default function NewCompanyRolePage() {
                         formik.setFieldTouched("permissions", true, true);
                         formik.handleSubmit()
                     }}
-                />
+                />}
             </div>
 
-            <div className="bg-snowWhite rounded-2xl mt-4 shadow-instentWhite py-5 px-6">
+            {isLoading ? <div className="grid grid-cols-2 gap-4">
+                <Skeleton active />
+                <Skeleton active />
+            </div> : <div className="bg-snowWhite rounded-2xl mt-4 shadow-instentWhite py-5 px-6">
 
                 <div className="grid grid-cols-12 gap-2 items-center">
                     <div className="col-span-4">
@@ -104,9 +137,9 @@ export default function NewCompanyRolePage() {
                             errorMessage={formik.touched.name && formik.errors.name ? formik.errors.name : ''}
                         />
                     </div>
-                    {companyRole ? <div className="col-span-2 pt-5">
+                    {companyRole ? <div className="col-span-5 pt-5">
                         <p className="text-schestiPrimaryBlack font-medium text-[14px] leading-6">
-                            Created At: <span className="text-schestiLightBlack">2023/10/06</span>
+                            Created At: <span className="text-schestiLightBlack">{moment(companyRole.createdAt).format("DD MMM YYYY hh:mm A")}</span>
                         </p>
                     </div> : null}
                 </div>
@@ -142,7 +175,7 @@ export default function NewCompanyRolePage() {
                 </div>
                 {formik.touched.permissions && formik.errors.permissions?.length ? <p className="text-red-500 text-[12px]">{formik.errors.permissions}</p> : null}
 
-            </div>
+            </div>}
         </div>
     </VerticleBar>
 
