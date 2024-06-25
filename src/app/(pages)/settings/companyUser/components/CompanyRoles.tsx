@@ -67,6 +67,7 @@ export function CompanyRoles() {
                                     return <Checkbox
                                         key={planKey}
                                         checked={isChecked}
+                                        disabled={!isChecked}
                                         className="text-schestiPrimaryBlack font-normal"
                                     >
                                         {planKey}
