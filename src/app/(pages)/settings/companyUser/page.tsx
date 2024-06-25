@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Tabs } from 'antd';
 
@@ -7,6 +7,9 @@ import VerticleBar from '../verticleBar';
 import { CompanyUsers } from './components/CompanyUsers';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { CompanyRoles } from './components/CompanyRoles';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/redux/store';
+import { getCompanyRolesThunk } from '@/redux/company-roles/company-roles.thunk';
 
 const USERS_TAB = "Users";
 const ROLES_TAB = "Roles";
@@ -15,7 +18,11 @@ const ROLES_TAB = "Roles";
 const Index = () => {
 
   const [activeTabKey, setActiveTabKey] = useState(USERS_TAB);
+  const dispatch = useDispatch<AppDispatch>();
 
+  useEffect(() => {
+    dispatch(getCompanyRolesThunk({}));
+  }, []);
 
   return (
     <VerticleBar>
