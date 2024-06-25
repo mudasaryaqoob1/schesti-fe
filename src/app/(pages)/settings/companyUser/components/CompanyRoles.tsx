@@ -78,7 +78,11 @@ export function CompanyRoles() {
                                     items: [
                                         {
                                             key: "edit",
-                                            label: <p>Edit</p>
+                                            label: <p>Edit</p>,
+                                            onClick: ({ domEvent }) => {
+                                                domEvent.stopPropagation();
+                                                router.push(`${OtherRoutes.Settings.Company_Roles}?roleId=${role._id}`)
+                                            }
                                         },
                                         {
                                             key: "delete",
