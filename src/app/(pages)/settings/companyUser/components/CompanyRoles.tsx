@@ -2,7 +2,7 @@ import Button from '@/app/component/customButton/button';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { OtherRoutes, Plans } from '@/app/utils/plans.utils';
 import { RootState } from '@/redux/store';
-import { Checkbox, Collapse, Skeleton } from 'antd';
+import { Checkbox, Collapse, Dropdown, Skeleton } from 'antd';
 import Image from 'next/image';
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -55,23 +55,56 @@ export function CompanyRoles() {
                 <Skeleton active />
                 <Skeleton active />
             </div> : companyRolesState.data.map(role => {
-                return <Collapse key={role._id} collapsible='header' items={[
-                    {
-                        key: role._id, label: role.name, children: <div className="grid mt-3 grid-cols-3 gap-3">
-                            {Object.keys(Plans).map((planKey) => {
-                                const value = Plans[planKey as keyof typeof Plans];
-                                const isChecked = role.permissions.includes(value);
-                                return <Checkbox
-                                    key={planKey}
-                                    checked={isChecked}
-                                    className="text-schestiPrimaryBlack font-normal"
-                                >
-                                    {planKey}
-                                </Checkbox>
-                            })}
-                        </div>
-                    }
-                ]}
+                return <Collapse key={role._id} collapsible='header'
+                    items={[
+                        {
+                            key: role._id,
+                            label: <p className='text-schestiPrimaryBlack font-medium text-[18px] leading-5 mt-1'>{role.name}</p>,
+                            children: <div className="grid mt-3 grid-cols-3 gap-3">
+                                {Object.keys(Plans).map((planKey) => {
+                                    const value = Plans[planKey as keyof typeof Plans];
+                                    const isChecked = role.permissions.includes(value);
+                                    return <Checkbox
+                                        key={planKey}
+                                        checked={isChecked}
+                                        className="text-schestiPrimaryBlack font-normal"
+                                    >
+                                        {planKey}
+                                    </Checkbox>
+                                })}
+                            </div>,
+                            extra: <Dropdown
+                                menu={{
+                                    items: [
+                                        {
+                                            key: "edit",
+                                            label: <p>Edit</p>
+                                        },
+                                        {
+                                            key: "delete",
+                                            label: <p>Delete</p>
+                                        }
+                                    ]
+                                }}
+                            >
+                                <Image
+                                    src={'/menuIcon.svg'}
+                                    width={16}
+                                    height={16}
+                                    className="cursor-pointer"
+                                    alt='menu icon'
+                                />
+                            </Dropdown>
+                        }
+                    ]}
+                    expandIconPosition='right'
+                    expandIcon={() => <Image
+                        src={'/chevron-up.svg'}
+                        width={20}
+                        height={20}
+                        className="cursor-pointer"
+                        alt='menu icon'
+                    />}
 
                 />
             })}
