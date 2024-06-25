@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import { toast } from 'react-toastify';
 
 // module imports
-import { userRoles } from '@/app/enums/role.enums';
+
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import { bg_style } from '@/globals/tailwindvariables';
@@ -15,11 +15,7 @@ import { IUserInterface } from '@/app/interfaces/user.interface';
 
 
 const defaultOptions = [
-  { value: userRoles.COMPANY, label: userRoles.COMPANY },
-  { value: userRoles.ACCOUNTS_MANAGER, label: userRoles.ACCOUNTS_MANAGER },
-  { value: userRoles.ESTIMATOR, label: userRoles.ESTIMATOR },
-  { value: userRoles.PROJECT_MANAGER, label: userRoles.PROJECT_MANAGER },
-  { value: userRoles.SALES_MANAGER, label: userRoles.SALES_MANAGER },
+
 ];
 
 type Props = {

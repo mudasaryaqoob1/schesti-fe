@@ -1,11 +1,8 @@
-import { USER_ROLES_ENUM } from '@/app/constants/constant';
 import {
   IUserInterface,
-  IUserPermissionPagePath,
 } from '../interfaces/user.interface';
 import _ from 'lodash';
-import { userRoles } from '../enums/role.enums';
-import { Plans } from './plans.utils';
+import { USER_ROLES } from '../enums/role.enums';
 
 const ContractorPages = {
   CompanyDetails: '/companydetails', // will have a user id,
@@ -26,13 +23,13 @@ const OwnerPages = {
 
 export function navigateUserWhileAuth(user: IUserInterface) {
   console.log(user.userRole);
-  if (user.userRole === USER_ROLES_ENUM.CONTRACTOR) {
+  if (user.userRole === USER_ROLES.CONTRACTOR) {
     return navigateContractor(user);
   }
-  if (user.userRole === USER_ROLES_ENUM.SUBCONTRACTOR) {
+  if (user.userRole === USER_ROLES.SUBCONTRACTOR) {
     return navigateSubContractor(user);
   }
-  if (user.userRole === USER_ROLES_ENUM.OWNER) {
+  if (user.userRole === USER_ROLES.OWNER) {
     return navigateOwner(user);
   }
   return null;
@@ -108,15 +105,9 @@ function navigateOwner(user: IUserInterface) {
   return null;
 }
 
-export function CheckOtherRoles(authUserRole: string[]) {
+export function CheckOtherRoles(authUserRole: string) {
   // check if the authUserRole is in userRoles using lodash
-  const roles = Object.values(userRoles);
-  return _.intersection(authUserRole, roles).length > 0;
+  const roles = Object.values(USER_ROLES);
+  return roles.includes(authUserRole);
 }
 
-export function convertUserPermissionPagePathToLabel(
-  pagePath: IUserPermissionPagePath
-) {
-  const key = _.findKey(Plans, (value) => value === pagePath);
-  return key;
-}

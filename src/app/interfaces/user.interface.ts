@@ -1,12 +1,5 @@
-import { Plans } from '../utils/plans.utils';
 import { IUpdateCompanyDetail } from './companyInterfaces/updateCompany.interface';
 
-export type IUserPermissionPagePath = (typeof Plans)[keyof typeof Plans];
-
-export type IUserPermission = {
-  path: IUserPermissionPagePath;
-  hasAccess: boolean;
-};
 
 export type IUserInterface = IUpdateCompanyDetail & {
   _id: string;
@@ -23,8 +16,6 @@ export type IUserInterface = IUpdateCompanyDetail & {
   userRole: 'owner' | 'contractor' | 'subcontractor' | string;
   brandingColor: string;
   isPaymentConfirm: boolean;
-  // if this is empty array, it means the user has access to all pages
-  permissions: IUserPermission[];
   createdAt: string;
   updatedAt: string;
   address: string;

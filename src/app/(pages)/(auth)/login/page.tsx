@@ -72,7 +72,7 @@ const Login = () => {
     if (result.payload.statusCode == 200) {
       setLoading(false);
       if (
-        CheckOtherRoles(result.payload.data?.user.roles) &&
+        CheckOtherRoles(result.payload.data?.user.userRole) &&
         result.payload.data.user?.isPaymentConfirm
       ) {
         const session = result.payload?.token;
@@ -139,7 +139,7 @@ const Login = () => {
         } else if (
           checkUserExist.statusCode == 400 &&
           checkUserExist.message ===
-            'Verify from your email and complete your profile'
+          'Verify from your email and complete your profile'
         ) {
           router.push(`/companydetails/${checkUserExist.data.user._id}`);
         } else if (
