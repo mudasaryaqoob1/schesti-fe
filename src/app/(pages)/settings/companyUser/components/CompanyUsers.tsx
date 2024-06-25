@@ -11,21 +11,12 @@ import ModalComponent from '@/app/component/modal';
 import Button from '@/app/component/customButton/button';
 import { deleteUser, fetchUsers } from '@/redux/userSlice/user.thunk';
 import { setCurrentUser } from '@/redux/userSlice/user.slice';
-import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { useCallback, useEffect, useState } from 'react';
 import AddNewUser from '../addCompanyUser';
+import { IUserInterface } from '@/app/interfaces/user.interface';
 
-interface DataType {
-    firstName: string;
-    companyName: string;
-    name?: string;
-    invitationDate?: string;
-    email: number;
-    phone: string;
-    address: string;
-    status: string;
-    action: string;
-    roles: string[];
+interface DataType extends IUserInterface {
+
 }
 
 const items: MenuProps['items'] = [
@@ -40,9 +31,8 @@ const items: MenuProps['items'] = [
 ];
 export function CompanyUsers() {
     const dispatch = useDispatch<AppDispatch>();
-    const router = useRouterHook();
     const [search, setSearch] = useState('');
-    const [userData, setUserData] = useState([]);
+    const [userData, setUserData] = useState<IUserInterface[]>([]);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState<any | null>(null);
 
@@ -55,16 +45,16 @@ export function CompanyUsers() {
 
         setUserData(
             result.payload?.data?.employees
-                .filter((u: any) => !u.roles.includes('Subcontractor'))
-                .map((user: any) => {
-                    return {
-                        key: user._id,
-                        name: `${user.firstName} ${user.lastName}`,
-                        email: user.email,
-                        roles: user.roles,
-                        invitationDate: moment(user.createdAt).format('ll'),
-                    };
-                })
+            // .filter((u: any) => !u.roles.includes('Subcontractor'))
+            // .map((user: any) => {
+            //     return {
+            //         _id: user._id,
+            //         name: `${user.firstName} ${user.lastName}`,
+            //         email: user.email,
+            //         roles: user.roles,
+            //         invitationDate: moment(user.createdAt).format('ll'),
+            //     };
+            // })
         );
     }, []);
 
@@ -79,8 +69,8 @@ export function CompanyUsers() {
 
     const handleDropdownItemClick = async (key: string, user: any) => {
         if (key === 'edit') {
-            router.push('/settings/companyUser/addCompanyUser/');
-            dispatch(setCurrentUser(user));
+            setShowInviteUserModal(true);
+            setSelectedUser(user);
         } else if (key === 'delete') {
             setShowDeleteModal(true)
             setSelectedUser(user);
@@ -90,7 +80,9 @@ export function CompanyUsers() {
     const columns: ColumnsType<DataType> = [
         {
             title: 'Name',
-            dataIndex: 'name',
+            render(_value, record) {
+                return (record.firstName && record.lastName) ? `${record.firstName} ${record.lastName}` : record.name;
+            },
         },
 
         {
@@ -113,7 +105,10 @@ export function CompanyUsers() {
         },
         {
             title: 'Invitation Date',
-            dataIndex: 'invitationDate',
+            dataIndex: 'createdAt',
+            render(value) {
+                return moment(value).format('ll');
+            },
         },
 
         {
@@ -182,7 +177,25 @@ export function CompanyUsers() {
             <AddNewUser
                 onCancel={() => {
                     setShowInviteUserModal(false);
+                    setSelectedUser(null);
                 }}
+                onSuccess={user => {
+                    setShowInviteUserModal(false);
+                    if (selectedUser) {
+                        // update the user
+                        setUserData(
+                            userData.map((u) => {
+                                if (u._id === selectedUser._id) {
+                                    return user;
+                                }
+                                return u;
+                            })
+                        )
+                    } else {
+                        setUserData([user, ...userData,])
+                    }
+                }}
+                user={selectedUser}
             />
         </ModalComponent>
 

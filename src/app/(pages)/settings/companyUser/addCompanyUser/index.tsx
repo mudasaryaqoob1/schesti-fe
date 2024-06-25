@@ -2,18 +2,17 @@
 import { useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 // module imports
-import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 import { userRoles } from '@/app/enums/role.enums';
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import { bg_style } from '@/globals/tailwindvariables';
 import FormControl from '@/app/component/formControl';
 import { userService } from '@/app/services/user.service';
-import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { IUserInterface } from '@/app/interfaces/user.interface';
+
 
 const defaultOptions = [
   { value: userRoles.COMPANY, label: userRoles.COMPANY },
@@ -25,14 +24,15 @@ const defaultOptions = [
 
 type Props = {
   onCancel: () => void;
-
+  onSuccess: (_user: IUserInterface) => void;
+  user: IUserInterface | null
 }
 
 const AddNewUser = ({
+  user,
+  onSuccess,
   onCancel
 }: Props) => {
-  const router = useRouterHook();
-  const { user } = useSelector((state: any) => state.user);
 
   const [isLoading, setisLoading] = useState(false);
 
@@ -45,25 +45,23 @@ const AddNewUser = ({
     roles: Yup.string().required('Role required'),
   });
 
-  const [firstName, lastName] = user ? user.name.split(' ') : [];
-
-  const initialValues: IUser = {
-    firstName: firstName || '',
-    lastName: lastName || '',
+  const initialValues: Partial<IUserInterface> = {
+    firstName: user?.firstName || '',
+    lastName: user?.lastName || '',
     email: user?.email || '',
-    roles: user?.roles?.[0] || '',
-    brandingColor: user?.brandingColor || '',
+    roles: [''],
   };
-  const submitHandler = async (values: IUser, { resetForm }: any) => {
+  const submitHandler = async (values: Partial<IUserInterface>, { resetForm }: any) => {
     setisLoading(true);
     if (user) {
       userService
-        .httpUpdateEmployee({ ...values, roles: [values.roles] }, user.key)
-        .then((response: any) => {
+        .httpUpdateEmployee({ ...values, roles: [values.roles] }, user._id)
+        .then((response) => {
           setisLoading(false);
           if (response.statusCode == 201) {
+            onSuccess(response.data.user);
             resetForm();
-            router.push('/settings/companyUser');
+            onCancel();
           } else {
             toast.error(response.message);
           }
@@ -75,11 +73,12 @@ const AddNewUser = ({
     } else {
       userService
         .httpAddNewEmployee({ ...values, roles: [values.roles] })
-        .then((response: any) => {
+        .then((response) => {
           setisLoading(false);
           if (response.statusCode == 201) {
+            onSuccess(response.data.user);
             resetForm();
-            router.push('/settings/companyUser');
+            onCancel();
           } else {
             toast.error(response.message);
           }
@@ -96,6 +95,7 @@ const AddNewUser = ({
       initialValues={initialValues}
       validationSchema={newClientSchema}
       onSubmit={submitHandler}
+      enableReinitialize
     >
       {({ handleSubmit, errors, values }) => {
         console.log(errors, 'error', values);

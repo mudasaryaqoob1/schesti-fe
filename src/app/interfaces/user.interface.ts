@@ -17,6 +17,8 @@ export type IUserInterface = IUpdateCompanyDetail & {
   providerId: string;
   providerType: string;
   name: string;
+  firstName?: string;
+  lastName?: string;
   roles: string[];
   userRole: 'owner' | 'contractor' | 'subcontractor' | string;
   brandingColor: string;
