@@ -103,6 +103,7 @@ export function CompanyRoles() {
                     key={role._id}
                     collapsible='header'
                     className='my-3'
+                    defaultActiveKey={[role._id]}
                     items={[
                         {
                             key: role._id,
