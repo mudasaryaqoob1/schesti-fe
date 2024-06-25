@@ -13,6 +13,7 @@ import { deleteUser, fetchUsers } from '@/redux/userSlice/user.thunk';
 import { setCurrentUser } from '@/redux/userSlice/user.slice';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { useCallback, useEffect, useState } from 'react';
+import AddNewUser from '../addCompanyUser';
 
 interface DataType {
     firstName: string;
@@ -44,6 +45,10 @@ export function CompanyUsers() {
     const [userData, setUserData] = useState([]);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState<any | null>(null);
+
+    // Invite User
+    const [showInviteUserModal, setShowInviteUserModal] = useState(false);
+
 
     const fetchCompanyEmployeeHandler = useCallback(async () => {
         let result: any = await dispatch(fetchUsers({ limit: 9, page: 1 }));
@@ -168,6 +173,19 @@ export function CompanyUsers() {
                 onClose={() => setShowDeleteModal(false)}
             />
         </ModalComponent>
+
+        <ModalComponent
+            open={showInviteUserModal}
+            setOpen={setShowInviteUserModal}
+            title='Add User'
+        >
+            <AddNewUser
+                onCancel={() => {
+                    setShowInviteUserModal(false);
+                }}
+            />
+        </ModalComponent>
+
         <div className="flex justify-between items-center mb-3">
             <div
                 className="rounded-lg border border-Gainsboro
@@ -199,7 +217,7 @@ export function CompanyUsers() {
                 iconheight={20}
                 onClick={() => {
                     dispatch(setCurrentUser(null));
-                    router.push('/settings/companyUser/addCompanyUser');
+                    setShowInviteUserModal(true);
                 }}
             />
         </div>
