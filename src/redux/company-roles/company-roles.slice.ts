@@ -1,11 +1,17 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { type PayloadAction, createSlice } from "@reduxjs/toolkit";
 import companyRolesInitialState from "./company-roles.initialState";
 import { getCompanyRolesThunk } from "./company-roles.thunk";
 
 export const companyRoleSlice = createSlice({
     name: "companyRoles",
     initialState: companyRolesInitialState,
-    reducers: {},
+    reducers: {
+        removeCompanyRoleAction: (state, action: PayloadAction<{
+            _id: string
+        }>) => {
+            state.data = state.data.filter(role => role._id !== action.payload._id)
+        }
+    },
     extraReducers(builder) {
         builder.addCase(getCompanyRolesThunk.pending, state => {
             state.loading = true
@@ -28,6 +34,6 @@ export const companyRoleSlice = createSlice({
     },
 });
 
-// export const {} = companyRoleSlice.actions;
+export const { removeCompanyRoleAction } = companyRoleSlice.actions;
 
 export default companyRoleSlice.reducer;

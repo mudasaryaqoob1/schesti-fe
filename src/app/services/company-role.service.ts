@@ -18,6 +18,8 @@ class CompanyRoleService extends HttpService {
         name: string;
         permissions: string[];
     }): Promise<IResponseInterface<ISettingCompanyRole>> => this.put(`${this.prefix}/${id}`, data);
+
+    httpDeleteCompanyRoleById = (id: string): Promise<IResponseInterface<ISettingCompanyRole>> => this.delete(`${this.prefix}/${id}`);
 }
 
 const companyRoleService = new CompanyRoleService();
