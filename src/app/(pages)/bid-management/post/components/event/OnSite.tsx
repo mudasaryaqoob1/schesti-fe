@@ -44,7 +44,7 @@ export function EventOnSiteForm({ formik }: Props) {
               hasError={
                 // @ts-ignore
                 formik.touched.preBiddingMeeting?.location &&
-                Boolean(formik.errors.preBiddingMeeting?.location)
+                Boolean((formik.errors.preBiddingMeeting as any)?.location)
               }
               errorMessage={
                 // @ts-ignore
@@ -62,7 +62,7 @@ export function EventOnSiteForm({ formik }: Props) {
                 format: 'MM/DD/YYYY',
                 value:
                   formik.values.preBiddingMeeting &&
-                  formik.values.preBiddingMeeting.date
+                    formik.values.preBiddingMeeting.date
                     ? dayjs(formik.values.preBiddingMeeting.date)
                     : undefined,
                 onChange: (date, dateString) => {
@@ -76,7 +76,7 @@ export function EventOnSiteForm({ formik }: Props) {
               hasError={
                 // @ts-ignore
                 formik.touched.preBiddingMeeting?.date &&
-                Boolean(formik.errors.preBiddingMeeting?.date)
+                Boolean((formik.errors.preBiddingMeeting as any)?.date)
               }
               errorMessage={
                 // @ts-ignore
@@ -94,7 +94,7 @@ export function EventOnSiteForm({ formik }: Props) {
                 format: 'h:mm a',
                 value:
                   formik.values.preBiddingMeeting &&
-                  formik.values.preBiddingMeeting.time
+                    formik.values.preBiddingMeeting.time
                     ? dayjs(formik.values.preBiddingMeeting.time, 'h:mm a')
                     : undefined,
                 onChange: (time, timeString) => {
@@ -109,7 +109,7 @@ export function EventOnSiteForm({ formik }: Props) {
               hasError={
                 // @ts-ignore
                 formik.touched.preBiddingMeeting?.time &&
-                Boolean(formik.errors.preBiddingMeeting?.time)
+                Boolean((formik.errors.preBiddingMeeting as any)?.time)
               }
               errorMessage={
                 // @ts-ignore
@@ -134,7 +134,7 @@ export function EventOnSiteForm({ formik }: Props) {
           hasError={
             // @ts-ignore
             formik.touched.preBiddingMeeting?.instruction &&
-            Boolean(formik.errors.preBiddingMeeting?.instruction)
+            Boolean((formik.errors.preBiddingMeeting as any)?.instruction)
           }
           errorMessage={
             // @ts-ignore

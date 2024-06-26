@@ -53,7 +53,7 @@ export function EventSiteWalkThroughForm({ formik }: Props) {
             hasError={
               // @ts-ignore
               formik.touched.siteWalkthrough?.location &&
-              Boolean(formik.errors.siteWalkthrough?.location)
+              Boolean((formik.errors.siteWalkthrough as any)?.location)
             }
             errorMessage={
               // @ts-ignore
@@ -71,7 +71,7 @@ export function EventSiteWalkThroughForm({ formik }: Props) {
               format: 'MM/DD/YYYY',
               value:
                 formik.values.siteWalkthrough &&
-                formik.values.siteWalkthrough.date
+                  formik.values.siteWalkthrough.date
                   ? dayjs(formik.values.siteWalkthrough.date)
                   : undefined,
               onChange: (date, dateString) => {
@@ -85,7 +85,7 @@ export function EventSiteWalkThroughForm({ formik }: Props) {
             hasError={
               // @ts-ignore
               formik.touched.siteWalkthrough?.date &&
-              Boolean(formik.errors.siteWalkthrough?.date)
+              Boolean((formik.errors.siteWalkthrough as any)?.date)
             }
             errorMessage={
               // @ts-ignore
@@ -103,7 +103,7 @@ export function EventSiteWalkThroughForm({ formik }: Props) {
               format: 'h:mm a',
               value:
                 formik.values.siteWalkthrough &&
-                formik.values.siteWalkthrough.time
+                  formik.values.siteWalkthrough.time
                   ? dayjs(formik.values.siteWalkthrough.time, 'h:mm a')
                   : undefined,
               onChange: (time, timeString) => {
@@ -118,7 +118,7 @@ export function EventSiteWalkThroughForm({ formik }: Props) {
             hasError={
               // @ts-ignore
               formik.touched.siteWalkthrough?.time &&
-              Boolean(formik.errors.siteWalkthrough?.time)
+              Boolean((formik.errors.siteWalkthrough as any)?.time)
             }
             errorMessage={
               // @ts-ignore
@@ -140,7 +140,7 @@ export function EventSiteWalkThroughForm({ formik }: Props) {
         hasError={
           // @ts-ignore
           formik.touched.siteWalkthrough?.instruction &&
-          Boolean(formik.errors.siteWalkthrough?.instruction)
+          Boolean((formik.errors.siteWalkthrough as any)?.instruction)
         }
         errorMessage={
           // @ts-ignore

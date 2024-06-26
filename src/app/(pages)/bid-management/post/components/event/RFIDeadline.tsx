@@ -31,7 +31,7 @@ export function RfiDeadline({
             hasError={
               // @ts-ignore
               formik.touched.rfiDeadline?.date &&
-              Boolean(formik.errors.rfiDeadline?.date)
+              Boolean((formik.errors.rfiDeadline as any)?.date)
             }
             errorMessage={
               // @ts-ignore
@@ -60,7 +60,7 @@ export function RfiDeadline({
             hasError={
               // @ts-ignore
               formik.touched.rfiDeadline?.time &&
-              Boolean(formik.errors.rfiDeadline?.time)
+              Boolean((formik.errors.rfiDeadline as any)?.time)
             }
             errorMessage={
               // @ts-ignore
