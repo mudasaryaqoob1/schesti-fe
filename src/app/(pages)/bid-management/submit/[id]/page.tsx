@@ -235,6 +235,7 @@ function ContractorSubmitBidPage() {
           formik.touched.projectScopes &&
           (formik.touched.projectScopes as FormikTouched<ProjectScope>)
             .description &&
+          // @ts-ignore
           formik.touched.projectScopes?.description[index];
         return (
           <div className="space-y-1">
@@ -276,6 +277,7 @@ function ContractorSubmitBidPage() {
           formik.touched.projectScopes &&
           (formik.touched.projectScopes as FormikTouched<ProjectScope>)
             .quantity &&
+          // @ts-ignore 
           formik.touched.projectScopes?.quantity[index];
         return (
           <div className="space-y-1">
@@ -311,6 +313,7 @@ function ContractorSubmitBidPage() {
         const isTouched =
           formik.touched.projectScopes &&
           (formik.touched.projectScopes as FormikTouched<ProjectScope>).price &&
+          // @ts-ignore
           formik.touched.projectScopes?.price[index];
 
         return (
@@ -555,7 +558,7 @@ function ContractorSubmitBidPage() {
                 }
                 errorMessage={
                   formik.touched.projectDuration &&
-                  formik.errors.projectDuration
+                    formik.errors.projectDuration
                     ? formik.errors.projectDuration
                     : ''
                 }
@@ -581,7 +584,7 @@ function ContractorSubmitBidPage() {
             }
             errorMessage={
               formik.touched.additionalDetails &&
-              formik.errors.additionalDetails
+                formik.errors.additionalDetails
                 ? formik.errors.additionalDetails
                 : ''
             }
@@ -620,7 +623,7 @@ function ContractorSubmitBidPage() {
                 }
                 errorMessage={
                   formik.touched.priceExpiryDuration &&
-                  formik.errors.priceExpiryDuration
+                    formik.errors.priceExpiryDuration
                     ? formik.errors.priceExpiryDuration
                     : ''
                 }
@@ -650,7 +653,7 @@ function ContractorSubmitBidPage() {
                 }
                 errorMessage={
                   formik.touched.increaseInPercentage &&
-                  formik.errors.increaseInPercentage
+                    formik.errors.increaseInPercentage
                     ? formik.errors.increaseInPercentage
                     : ''
                 }
@@ -755,7 +758,7 @@ function ContractorSubmitBidPage() {
                           // check if the last scope has all the fields filled
                           const lastScope =
                             formik.values.projectScopes[
-                              formik.values.projectScopes.length - 1
+                            formik.values.projectScopes.length - 1
                             ];
                           if (!lastScope) {
                             addNewScope();

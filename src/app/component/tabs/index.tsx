@@ -130,14 +130,14 @@ const Tabs = () => {
                         children:
                           'children' in option
                             ? option.children?.map((item) => {
-                                return {
-                                  key: item.value,
-                                  label: (
-                                    <Link href={item.value}>{item.label}</Link>
-                                  ),
-                                  value: item.value,
-                                };
-                              })
+                              return {
+                                key: item.value,
+                                label: (
+                                  <Link href={item.value}>{item.label}</Link>
+                                ),
+                                value: item.value,
+                              };
+                            })
                             : undefined,
                       };
                     }),
@@ -155,7 +155,7 @@ const Tabs = () => {
                           (option) =>
                             option.children?.find((child) =>
                               child.value.includes(pathname)
-                            ) || option.value.includes(pathname)
+                            ) || option.value?.includes(pathname)
                         ) && tabsStyle.active
                       )
                     )}

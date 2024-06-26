@@ -78,7 +78,7 @@ export function ActiveProjects({ search, tab }: Props) {
               return (
                 <BidIntro
                   key={bidProject._id}
-                  bid={bidProject as unknown as IBidManagement}
+                  bid={bidProject}
                   onClick={() => getProjectProposalDetails(bidProject)}
                   isSelected={selectedBid?._id === bidProject._id}
                 />

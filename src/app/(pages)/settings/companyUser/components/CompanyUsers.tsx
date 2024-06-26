@@ -109,7 +109,7 @@ export function CompanyUsers() {
             title: 'Roles',
             dataIndex: 'roles',
             render: (text, records): any => {
-                return records.roles.map((role) => {
+                return records.roles ? records.roles.map((role) => {
                     if (typeof role === 'string') {
                         return null;
                     }
@@ -121,7 +121,7 @@ export function CompanyUsers() {
                             {role.name}
                         </p>
                     )
-                });
+                }) : [];
             },
         },
         {
