@@ -81,8 +81,18 @@ export const withAuth = (
     }
 
     const hasRoles = _.every(requiredRoles, (role) => userRole.toLowerCase() === role.toLowerCase());
+
     if (canAccessThePage && hasRoles) {
       return <WrappedComponent {...props} />;
+    }
+
+    if (!canAccessThePage && isEmployee && hasRoles) {
+      return (
+        <NoDataComponent
+          title="Access Denied"
+          description="You don't have access to this page."
+        />
+      );
     }
 
     if (canAccessThePage && !hasRoles) {
