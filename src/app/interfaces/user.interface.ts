@@ -13,7 +13,7 @@ export type IUserInterface = IUpdateCompanyDetail & {
   name: string;
   firstName?: string;
   lastName?: string;
-  roles: string[] | ISettingCompanyRole[];
+  roles?: string[] | ISettingCompanyRole[];
   userRole: 'owner' | 'contractor' | 'subcontractor' | string;
   brandingColor: string;
   isPaymentConfirm: boolean;

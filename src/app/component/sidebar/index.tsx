@@ -65,7 +65,7 @@ export const AppSidebar = (props: Props) => {
 
     const isCompanyEmployee = authenticatedUser?.user && authenticatedUser.user.associatedCompany;
     // employee links to show on sidebar
-    const companyEmployeePermissions = (authenticatedUser?.user && authenticatedUser.user.associatedCompany) ? authenticatedUser.user.roles.map(role => typeof role !== 'string' ? role.permissions : "").flat() : [];
+    const companyEmployeePermissions = (authenticatedUser?.user && authenticatedUser.user.associatedCompany && authenticatedUser.user.roles) ? authenticatedUser.user.roles.map(role => typeof role !== 'string' ? role.permissions : "").flat() : [];
 
 
     let menuItems: MenuProps['items'] = [

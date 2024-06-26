@@ -61,7 +61,7 @@ export const withAuth = (
 
     const userRole = user?.user?.userRole ? user?.user?.userRole : '';
 
-    let employeeRoles: string[] = (user && user.user) ? user.user.roles.map(role => typeof role !== 'string' ? role.permissions : '').flat() : [];
+    let employeeRoles: string[] = (user && user.user && user.user.roles) ? user.user.roles.map(role => typeof role !== 'string' ? role.permissions : '').flat() : [];
 
     const userPlanFeatures = userPlan
       ? userPlan.features.split(',')
