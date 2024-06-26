@@ -177,3 +177,22 @@ export function getPlanFeatureKeyByValue(value: string, options = Plans) {
   const key = _.findKey(options, (val) => val === value);
   return key ? key : '';
 }
+
+type RoutesType = typeof Routes;
+export function getRouteFromPermission(permission: string) {
+  for (const category in Routes) {
+    if (typeof Routes[category as keyof RoutesType] === 'object') {
+      const subRoutes = Routes[category as keyof RoutesType] as Record<string, string>;
+      for (const subRoute in subRoutes) {
+        if (subRoutes[subRoute].includes(permission)) {
+          return subRoutes[subRoute];
+        }
+      }
+    } else {
+      if (Routes[category as keyof RoutesType].toString().includes(permission)) {
+        return Routes[category as keyof RoutesType];
+      }
+    }
+  }
+  return undefined;
+}

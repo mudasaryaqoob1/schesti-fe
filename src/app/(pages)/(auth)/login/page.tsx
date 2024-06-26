@@ -25,6 +25,8 @@ import UserRoleModal from '../userRolesModal';
 import { CheckOtherRoles, navigateUserWhileAuth } from '@/app/utils/auth.utils';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { authService } from '@/app/services/auth.service';
+import { IUserInterface } from '@/app/interfaces/user.interface';
+import { getRouteFromPermission } from '@/app/utils/plans.utils';
 
 const initialValues: ILogInInterface = {
   email: '',
@@ -77,7 +79,24 @@ const Login = () => {
       ) {
         const session = result.payload?.token;
         localStorage.setItem('schestiToken', session);
-        router.push('/dashboard');
+        let authUser = result.payload.data?.user as IUserInterface;
+        if (authUser.associatedCompany) {
+          // employee logging in
+          const permissions = authUser.roles ? authUser.roles.map((item) => typeof item !== 'string' ? item.permissions : []).flat() : [];
+          if (permissions.length > 0) {
+            const permission = permissions[0];
+            const route = getRouteFromPermission(permission);
+            if (route) {
+              router.push(route.toString());
+              return;
+            }
+          } else {
+            router.push('/dashboard');
+          }
+
+        } else {
+          router.push('/dashboard');
+        }
         return;
       }
       const responseLink = navigateUserWhileAuth(result.payload.data.user);

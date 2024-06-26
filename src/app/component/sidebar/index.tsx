@@ -153,11 +153,6 @@ export const AppSidebar = (props: Props) => {
 
     const activeKey = allKeys.find((key) => pathname.includes(key.toString()));
 
-    // if user not authenticated then don't show sidebar
-    if (!authenticatedUser) {
-        return null;
-    }
-
     return <div className={`fixed h-full bg-schestiPrimary transition-all duration-300 ease-in-out ${isOpened ? HOVERED_WIDTH : UNHOVERED_WIDTH}`}>
 
 
@@ -214,7 +209,8 @@ export const AppSidebar = (props: Props) => {
                 <Menu
                     inlineCollapsed={!isOpened}
                     mode="vertical"
-                    items={menuItems}
+                    // if user not authenticated then don't show sidebar
+                    items={!authenticatedUser ? [] : menuItems}
                     triggerSubMenuAction="click"
                     selectedKeys={[activeKey ? activeKey.toString() : ""]}
                 />
