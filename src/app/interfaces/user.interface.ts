@@ -38,4 +38,5 @@ export type IUserInterface = IUpdateCompanyDetail & {
   state?: string;
   city?: string;
   selectedTrades?: any;
+  associatedCompany?: IUserInterface | string;
 };

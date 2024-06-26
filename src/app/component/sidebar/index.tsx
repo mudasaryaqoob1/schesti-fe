@@ -5,11 +5,12 @@ import { planFeatureOptions } from "@/app/utils/plans.utils";
 import { HomeOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { SettingIcon } from "@/app/svgs/component-icons/SettingIcon";
 import { useRouterHook } from "@/app/hooks/useRouterHook";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "@/redux/store";
 import { resetPostProjectAction } from "@/redux/post-project/post-project.slice";
 import { usePathname } from "next/navigation";
 import { Key } from "react";
+import { IUserInterface } from "@/app/interfaces/user.interface";
 
 type Props = {
     isOpened: boolean;
@@ -35,18 +36,39 @@ function collectKeys(items: MenuProps['items']) {
     return keys;
 }
 
+function filterMenuItemsByPermissions(items: MenuProps['items'], permissions: string[]): MenuProps['items'] {
+    return permissions.map(permission => {
+        const item = items!.find(item => {
+            if (item && "key" in item && (item.key?.toString().includes(permission))) {
+                return item;
+            }
+        });
+
+        return item ? item : {
+            key: permission,
+            label: undefined,
+        };
+    })
+}
 
 export const AppSidebar = (props: Props) => {
     const { isOpened, toggleCollapsed } = props;
     const dispatch = useDispatch<AppDispatch>();
     const pathname = usePathname();
     const router = useRouterHook();
+    const authenticatedUser = useSelector((state: RootState) => state.auth.user as { user?: IUserInterface });
     function resetPostProjectState(canCall: boolean) {
         if (canCall) {
             dispatch(resetPostProjectAction());
         }
     }
-    const menuItems: MenuProps['items'] = [
+
+    const isCompanyEmployee = authenticatedUser?.user && authenticatedUser.user.associatedCompany;
+    // employee links to show on sidebar
+    const companyEmployeePermissions = (authenticatedUser?.user && authenticatedUser.user.associatedCompany) ? authenticatedUser.user.roles.map(role => typeof role !== 'string' ? role.permissions : "").flat() : [];
+
+
+    let menuItems: MenuProps['items'] = [
 
         {
             label: 'Dashboard',
@@ -60,7 +82,7 @@ export const AppSidebar = (props: Props) => {
             if (feature.options) {
                 return {
                     label: feature.label,
-                    key: feature.label,
+                    key: feature.value ? feature.value : feature.label,
                     icon: <feature.Icon />,
 
                     children: feature.options?.map(option => {
@@ -71,7 +93,9 @@ export const AppSidebar = (props: Props) => {
                                 if (option.value) {
                                     router.push(option.value);
                                 }
-                                resetPostProjectState(Boolean(option.isAction))
+                                if ("isAction"! in option) {
+                                    resetPostProjectState(Boolean(option.isAction))
+                                }
                             },
                             children: "children" in option ? option.children?.map(item => {
                                 return {
@@ -113,8 +137,21 @@ export const AppSidebar = (props: Props) => {
         },
     ];
 
+    console.log({ menuItems });
+    if (isCompanyEmployee) {
+        // company employee links to show on sidebar
+        // exclude menu if the key is not in menuItems
+
+
+        menuItems = filterMenuItemsByPermissions(menuItems, companyEmployeePermissions)?.filter(item => item && "label" in item && item.label !== undefined);
+    }
+
+    console.log({ menuItems });
+
+
     // set activeKey if menuItems key includes in pathname
     const allKeys = collectKeys(menuItems);
+
     const activeKey = allKeys.find((key) => pathname.includes(key.toString()));
 
     return <div className={`fixed h-full bg-schestiPrimary transition-all duration-300 ease-in-out ${isOpened ? HOVERED_WIDTH : UNHOVERED_WIDTH}`}>

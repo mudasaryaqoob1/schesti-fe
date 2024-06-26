@@ -71,12 +71,11 @@ export const planFeatureOptions = [
   {
     label: 'Bid Management',
     Icon: BidIcon,
-
+    value: '/bid-management',
     title: 'Bid Management',
     options: [
       {
         label: 'Find Project',
-        value: '',
         children: [
           { label: 'Contractor', value: Routes['Bid Management'].Contractor },
           {
@@ -105,6 +104,7 @@ export const planFeatureOptions = [
     title: 'CRM',
     Icon: CRMIcon,
     label: 'CRM',
+    value: "/crm",
     options: [
       { label: 'Clients', value: Routes.CRM.Clients },
       { label: 'Sub Contractors', value: Routes.CRM['Sub-Contractors'] },
@@ -116,6 +116,7 @@ export const planFeatureOptions = [
     title: 'Quantity Takeoff',
     Icon: QuantityIcon,
     label: 'Quantity Takeoff',
+    value: "/takeoff",
     options: [
       { label: 'Manual', value: Routes['Quantity-Takeoff'].Manual },
       { label: 'AI Takeoff', value: Routes['Quantity-Takeoff']['AI-Takeoff'] },
@@ -126,6 +127,7 @@ export const planFeatureOptions = [
     title: 'Estimates',
     Icon: EstimateIcon,
     label: 'Estimates',
+    value: "/estimates",
     options: [
       {
         label: 'Estimates Requests',
@@ -139,6 +141,7 @@ export const planFeatureOptions = [
     title: 'Financial',
     Icon: FinancialIcon,
     label: 'Financial',
+    value: "/financial",
     options: [
       {
         label: 'Standard Invoicing',
