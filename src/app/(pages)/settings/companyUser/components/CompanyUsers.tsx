@@ -9,11 +9,13 @@ import moment from 'moment';
 import { DeleteContent } from '@/app/component/delete/DeleteContent';
 import ModalComponent from '@/app/component/modal';
 import Button from '@/app/component/customButton/button';
-import { deleteUser, fetchUsers } from '@/redux/userSlice/user.thunk';
+import { fetchUsers } from '@/redux/userSlice/user.thunk';
 import { setCurrentUser } from '@/redux/userSlice/user.slice';
 import { useCallback, useEffect, useState } from 'react';
 import AddNewUser from '../addCompanyUser';
 import { IUserInterface } from '@/app/interfaces/user.interface';
+import { userService } from '@/app/services/user.service';
+import { toast } from 'react-toastify';
 
 interface DataType extends IUserInterface {
 
@@ -34,7 +36,8 @@ export function CompanyUsers() {
     const [search, setSearch] = useState('');
     const [userData, setUserData] = useState<IUserInterface[]>([]);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [selectedUser, setSelectedUser] = useState<any | null>(null);
+    const [selectedUser, setSelectedUser] = useState<IUserInterface | null>(null);
+    const [isDeletingUser, setIsDeletingUser] = useState(false);
 
     // Invite User
     const [showInviteUserModal, setShowInviteUserModal] = useState(false);
@@ -58,10 +61,23 @@ export function CompanyUsers() {
         );
     }, []);
 
-    const deleteCompanyEmployeeHandler = useCallback(async (id: string) => {
-        await dispatch(deleteUser(id));
-        fetchCompanyEmployeeHandler();
-    }, []);
+    const deleteCompanyEmployeeHandler = async (id: string) => {
+        setIsDeletingUser(true);
+        try {
+            const response = await userService.httpDeleteUser(id);
+            if (response.data) {
+                setUserData(
+                    userData.filter((user) => user._id !== response.data?._id)
+                )
+                toast.success('user deleted successfully');
+            }
+        } catch (error: any) {
+            toast.error(error.response?.data ||
+                'An error occurred while fetching the feed records')
+        } finally {
+            setIsDeletingUser(false);
+        }
+    }
 
     useEffect(() => {
         fetchCompanyEmployeeHandler();
@@ -165,12 +181,13 @@ export function CompanyUsers() {
         >
             <DeleteContent
                 onClick={async () => {
-                    if ('key' in selectedUser!) {
-                        deleteCompanyEmployeeHandler(selectedUser.key);
+                    if (selectedUser) {
+                        await deleteCompanyEmployeeHandler(selectedUser._id);
                     }
                     setShowDeleteModal(false);
                 }}
                 onClose={() => setShowDeleteModal(false)}
+                isLoading={isDeletingUser}
             />
         </ModalComponent>
 

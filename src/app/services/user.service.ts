@@ -8,6 +8,7 @@ import {
 } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { String } from 'aws-sdk/clients/acm';
+import { IUserInterface } from '../interfaces/user.interface';
 // import { IUpdateCompanyDetail } from '../interfaces/companyInterfaces/updateCompany.interface';
 
 class UserService extends HttpService {
@@ -79,7 +80,7 @@ class UserService extends HttpService {
       { status: clientDetail.status }
     );
 
-  httpDeleteUser = (userId: string): Promise<IResponseInterface> =>
+  httpDeleteUser = (userId: string): Promise<IResponseInterface<IUserInterface>> =>
     this.delete(`${this.userPrefix}/delete/${userId}`);
 
   httpAddNewClient = (data: IClient): Promise<IResponseInterface<any>> =>
