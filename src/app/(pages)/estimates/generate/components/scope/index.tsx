@@ -634,7 +634,10 @@ const Scope = ({ setPrevNext }: Props) => {
     setEditItem(true);
   };
   const editConfirmEstimateRecordHandler = (record: any) => {
-    setSingleEstimateData(record);
+    setSingleEstimateData({
+      ...record,
+      description: { value: record.description, label: record.description },
+    });
     // setSelectedCategory(record.category);
     // setSelectedSubCategory(record.subCategory);
     // setEditItem(false);
@@ -1038,8 +1041,6 @@ const Scope = ({ setPrevNext }: Props) => {
     }
   };
 
-  console.log(SingleEstimateData , 'SingleEstimateData');
-  
   return (
     <div>
       <div className="flex justify-between items-center mb-3">
@@ -1079,8 +1080,8 @@ const Scope = ({ setPrevNext }: Props) => {
         onSubmit={submitHandler}
       >
         {({ handleSubmit, values, setFieldValue, errors }) => {
-          console.log(values , 'valuesvaluesvalues');
-          
+          console.log(values, 'valuesvaluesvalues');
+
           return (
             <>
               <Form
