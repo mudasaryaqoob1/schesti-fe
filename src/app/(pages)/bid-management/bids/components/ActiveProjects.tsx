@@ -1,4 +1,4 @@
-import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
+import { IBidManagement , ISaveUserBid} from '@/app/interfaces/bid-management/bid-management.interface';
 import { BidIntro } from '../../sub-contractor/components/BidIntro';
 import { useState } from 'react';
 import { BidDetails } from './BidDetails';
@@ -78,7 +78,7 @@ export function ActiveProjects({ search, tab }: Props) {
               return (
                 <BidIntro
                   key={bidProject._id}
-                  bid={bidProject as unknown as IBidManagement}
+                  bid={bidProject as unknown as ISaveUserBid}
                   onClick={() => getProjectProposalDetails(bidProject)}
                   isSelected={selectedBid?._id === bidProject._id}
                 />
