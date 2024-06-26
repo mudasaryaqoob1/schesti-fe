@@ -137,7 +137,7 @@ export const AppSidebar = (props: Props) => {
         },
     ];
 
-    console.log({ menuItems });
+
     if (isCompanyEmployee) {
         // company employee links to show on sidebar
         // exclude menu if the key is not in menuItems
@@ -146,13 +146,17 @@ export const AppSidebar = (props: Props) => {
         menuItems = filterMenuItemsByPermissions(menuItems, companyEmployeePermissions)?.filter(item => item && "label" in item && item.label !== undefined);
     }
 
-    console.log({ menuItems });
 
 
     // set activeKey if menuItems key includes in pathname
     const allKeys = collectKeys(menuItems);
 
     const activeKey = allKeys.find((key) => pathname.includes(key.toString()));
+
+    // if user not authenticated then don't show sidebar
+    if (!authenticatedUser) {
+        return null;
+    }
 
     return <div className={`fixed h-full bg-schestiPrimary transition-all duration-300 ease-in-out ${isOpened ? HOVERED_WIDTH : UNHOVERED_WIDTH}`}>
 
