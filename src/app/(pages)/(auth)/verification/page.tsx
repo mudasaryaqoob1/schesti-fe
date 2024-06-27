@@ -19,6 +19,7 @@ import { addVerificationDetails } from '@/redux/authSlices/auth.thunk';
 import AwsS3 from '@/app/utils/S3Intergration';
 import { RootState } from '@/redux/store';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import Image from 'next/image';
 
 const RegisterVerification = () => {
   const router = useRouterHook();
@@ -128,7 +129,7 @@ const RegisterVerification = () => {
         <div className="w-full max-w-xl">
           <h2
             className={twMerge(
-              `${tertiaryHeading} border-b-2 border=[#E7E7E7]`
+              `${tertiaryHeading} border-b-2 border-[#E7E7E7]`
             )}
           >
             Verification
@@ -139,60 +140,51 @@ const RegisterVerification = () => {
               Upload all the documents to get schesti verification badge. That
               will help to get more project
             </p>
-            <Form name="basic" autoComplete="off">
+            <Form name="basic" className='mt-4' autoComplete="off">
               <div className="flex flex-col gap-3">
                 <label
                   htmlFor="myInput"
-                  className="border-b-2 border=[#E7E7E7] pb-2"
+                  className="border-b-2 text-schestiLightBlack border-[#E7E7E7] pb-2"
                 >
                   Secretary of State
                 </label>
                 <div className="flex items-center">
                   <label
                     htmlFor="secretaryOfState-file"
-                    className="flex flex-col items-start justify-start w-full border-2 border-gray-300 border-solid rounded-lg cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                    className="flex flex-col items-start justify-start w-full border border-[#EAECF0] border-solid rounded-lg cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
                   >
                     <div className="flex items-center justify-start p-2 w-full">
-                      <svg
-                        className="w-6 h-6 text-gray-500 dark:text-gray-400 mr-3"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 20 16"
-                      >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                      <div className="flex items-center space-x-2">
+                        <Image
+                          src={'/uploadcloud.svg'}
+                          alt="upload"
+                          width={20}
+                          height={20}
                         />
-                      </svg>
-                      <div>
-                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                          <span className="font-semibold text-purple-600">
-                            Click to upload
-                          </span>{' '}
-                          or drag and drop
-                        </p>
-                        <p className="text-xs text-gray-500 dark:text-gray-400">
-                          SVG, PNG, JPG or GIF (max. 800x400px)
-                        </p>
-                        {secretaryOfState && (
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
-                            {secretaryOfState?.name}
+                        <div>
+                          <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                            <span className="font-semibold text-schestiPrimary">
+                              Click to upload
+                            </span>{' '}
+                            or drag and drop
                           </p>
-                        )}
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            SVG, PNG, JPG or GIF (max. 800x400px)
+                          </p>
+                          {secretaryOfState && (
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                              {secretaryOfState?.name}
+                            </p>
+                          )}
+                        </div>
                       </div>
                       {secretaryOfState && (
                         <div className="ml-auto">
-                          <button
-                            disabled={isLoading}
-                            className="text-red-500 pointer"
-                            onClick={() => setSecretaryOfState(null)}
-                          >
-                            <DeleteOutlined className="text-red-500 text-2xl" />
-                          </button>
+                          <DeleteOutlined disabled={isLoading} className="text-red-500 text-2xl" onClick={(e) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                            setSecretaryOfState(null);
+                          }} />
                         </div>
                       )}
                     </div>
@@ -200,64 +192,59 @@ const RegisterVerification = () => {
                       id="secretaryOfState-file"
                       name="secretaryOfState"
                       type="file"
-                      style={{ opacity: '0' }}
+                      className='!hidden'
                       onChange={(e) => handleFileChange(e, 'secretaryOfState')}
                     />
                   </label>
                 </div>
                 <label
                   htmlFor="myInput"
-                  className="border-b-2 border=[#E7E7E7] pb-2"
+                  className="border-b-2 text-schestiLightBlack border-[#E7E7E7] pb-2"
                 >
                   License if needed
                 </label>
                 <div className="flex items-center">
                   <label
                     htmlFor="license-file"
-                    className="flex flex-col items-start justify-start w-full border-2 border-gray-300 border-solid rounded-lg cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                    className="flex flex-col items-start justify-start w-full border border-[#EAECF0] border-solid rounded-lg cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
                   >
                     <div className="flex items-center justify-start p-2 w-full">
-                      <svg
-                        className="w-6 h-6 text-gray-500 dark:text-gray-400 mr-3"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 20 16"
-                      >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                      <div className="flex items-center space-x-2 flex-1">
+                        <Image
+                          src={'/uploadcloud.svg'}
+                          alt="upload"
+                          width={20}
+                          height={20}
                         />
-                      </svg>
-                      <div className="flex items-center justify-between w-full">
-                        <div>
-                          <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                            <span className="font-semibold text-purple-600">
-                              Click to upload
-                            </span>{' '}
-                            or drag and drop {fileName}
-                          </p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
-                            SVG, PNG, JPG or GIF (max. 800x400px)
-                          </p>
-                          {license && (
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                              {license?.name}
+                        <div className="flex items-center justify-between w-full">
+                          <div>
+                            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                              <span className="font-semibold text-schestiPrimary">
+                                Click to upload
+                              </span>{' '}
+                              or drag and drop {fileName}
                             </p>
-                          )}
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                              SVG, PNG, JPG or GIF (max. 800x400px)
+                            </p>
+                            {license && (
+                              <p className="text-xs text-gray-500 dark:text-gray-400">
+                                {license?.name}
+                              </p>
+                            )}
+                          </div>
                         </div>
                         {license && (
                           <div className="ml-auto">
-                            <button
+                            <DeleteOutlined
                               disabled={isLoading}
-                              className="text-red-500 pointer"
-                              onClick={() => setLicense(null)}
-                            >
-                              <DeleteOutlined className="text-red-500 text-2xl" />
-                            </button>
+                              className="text-red-500 text-2xl"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                setLicense(null);
+                              }}
+                            />
                           </div>
                         )}
                       </div>
@@ -266,7 +253,7 @@ const RegisterVerification = () => {
                       id="license-file"
                       type="file"
                       name="license"
-                      style={{ opacity: '0' }}
+                      className='!hidden'
                       onChange={(e) => handleFileChange(e, 'license')}
                     />
                   </label>
@@ -274,57 +261,51 @@ const RegisterVerification = () => {
 
                 <label
                   htmlFor="myInput"
-                  className="border-b-2 border=[#E7E7E7] pb-2"
+                  className="border-b-2 text-schestiLightBlack border-[#E7E7E7] pb-2"
                 >
                   Prequalification
                 </label>
                 <div className="flex items-center">
                   <label
                     htmlFor="preQualification-file"
-                    className="flex flex-col items-start justify-start w-full border-2 border-gray-300 border-solid rounded-lg cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                    className="flex flex-col items-start justify-start w-full border border-[#EAECF0] border-solid rounded-lg cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
                   >
                     <div className="flex items-center justify-start p-2 w-full">
-                      <svg
-                        className="w-6 h-6 text-gray-500 dark:text-gray-400 mr-3"
-                        aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 20 16"
-                      >
-                        <path
-                          stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                      <div className="flex flex-1 space-x-2 items-center">
+                        <Image
+                          src={'/uploadcloud.svg'}
+                          alt="upload"
+                          width={20}
+                          height={20}
                         />
-                      </svg>
-                      <div className="flex items-center justify-between w-full">
-                        <div>
-                          <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                            <span className="font-semibold text-purple-600">
-                              Click to upload
-                            </span>{' '}
-                            or drag and drop {fileName}
-                          </p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
-                            SVG, PNG, JPG or GIF (max. 800x400px)
-                          </p>
-                          {preQualification && (
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                              {preQualification?.name}
+                        <div className="flex items-center justify-between w-full">
+                          <div>
+                            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                              <span className="font-semibold text-schestiPrimary">
+                                Click to upload
+                              </span>{' '}
+                              or drag and drop {fileName}
                             </p>
-                          )}
+                            <p className="text-xs text-gray-500 dark:text-gray-400">
+                              SVG, PNG, JPG or GIF (max. 800x400px)
+                            </p>
+                            {preQualification && (
+                              <p className="text-xs text-gray-500 dark:text-gray-400">
+                                {preQualification?.name}
+                              </p>
+                            )}
+                          </div>
                         </div>
                         {preQualification && (
                           <div className="ml-auto">
-                            <button
+                            <DeleteOutlined className="text-red-500 text-2xl"
                               disabled={isLoading}
-                              className="text-red-500 pointer"
-                              onClick={() => setPreQualification(null)}
-                            >
-                              <DeleteOutlined className="text-red-500 text-2xl" />
-                            </button>
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                                setPreQualification(null)
+                              }}
+                            />
                           </div>
                         )}
                       </div>
@@ -333,7 +314,7 @@ const RegisterVerification = () => {
                       id="preQualification-file"
                       type="file"
                       name="preQualification"
-                      style={{ opacity: '0' }}
+                      className='!hidden'
                       onChange={(e) => handleFileChange(e, 'preQualification')}
                     />
                   </label>
