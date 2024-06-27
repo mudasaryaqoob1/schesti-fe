@@ -2,10 +2,12 @@ import Welcome from '@/app/(pages)/(auth)/welcome';
 import Image from 'next/image';
 
 type Props = {
+  title?: string;
+  description?: string;
   children: React.ReactNode;
 };
 
-const WelcomeWrapper = ({ children }: Props) => {
+const WelcomeWrapper = ({ children, description, title }: Props) => {
   return (
     <div className="h-[100vh] bg-white relative grid grid-cols-1 md:grid-cols-2 overflow-y-auto">
       <div className="px-14 py-7">{children}</div>
@@ -42,7 +44,10 @@ const WelcomeWrapper = ({ children }: Props) => {
           height={800}
           className='absolute -top-4 -right-16'
         />
-        <Welcome />
+        <Welcome
+          description={description}
+          title={title}
+        />
       </div>
     </div>
   );
