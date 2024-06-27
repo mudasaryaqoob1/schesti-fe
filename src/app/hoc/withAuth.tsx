@@ -61,7 +61,7 @@ export const withAuth = (
 
     const userRole = user?.user?.userRole ? user?.user?.userRole : '';
 
-    let employeeRoles: string[] = (user && user.user && user.user.roles) ? user.user.roles.map(role => typeof role !== 'string' ? role.permissions : '').flat() : [];
+    let employeePermissions: string[] = (user && user.user && user.user.roles) ? user.user.roles.map(role => typeof role !== 'string' ? role.permissions : '').flat() : [];
 
     const userPlanFeatures = userPlan
       ? userPlan.features.split(',')
@@ -73,7 +73,9 @@ export const withAuth = (
     }
 
     const isEmployee = user?.user?.associatedCompany;
-    const canAccessThePage = isEmployee ? canAccessRoute(pathname, employeeRoles.concat(userPlanFeatures), true) : canAccessRoute(pathname, userPlanFeatures);
+    const employeeAccessFeatures = _.intersection(userPlanFeatures, employeePermissions);
+
+    const canAccessThePage = isEmployee ? canAccessRoute(pathname, employeeAccessFeatures, true) : canAccessRoute(pathname, userPlanFeatures);
     // const canAccessThePage = true;
     // if the required roles is empty; and there is already and a user with the plan
     if (canAccessThePage && !requiredRoles.length) {
