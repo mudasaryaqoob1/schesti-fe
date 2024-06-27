@@ -104,7 +104,7 @@ const SinglePlan = (props: Props) => {
             <Fragment key={index}>
               <div className="self-start flex gap-2 items-center">
                 <Image
-                  src={'/tickpurle.svg'}
+                  src={'/tickcyan.svg'}
                   width={20}
                   height={20}
                   className="rounded-md"
