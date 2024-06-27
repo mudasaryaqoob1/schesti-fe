@@ -10,12 +10,11 @@ import { NetworkingIcon } from '../svgs/component-icons/NetworkIcon';
 
 export const Routes = {
   'Bid Management': {
-    Owner: '/bid-management/owner',
+    Posted_Projects: '/bid-management/projects',
     Contractor: '/bid-management/contractor',
     'Sub-Contractor': '/bid-management/sub-contractor',
     Submit: '/bid-management/submit',
     Bidding_Projects: '/bid-management/bids',
-    Posted_Projects: '/bid-management/projects',
     Post_A_Project: '/bid-management/post',
   },
   CRM: {
@@ -32,9 +31,9 @@ export const Routes = {
     'Estimates-List': '/estimates/generate',
   },
   Financial: {
+    'Financial-Tools': '/financial/tools',
     'Standard-Invoicing': '/financial/standard-invoicing',
     'AIA-Invoicing': '/financial/aia-invoicing',
-    'Financial-Tools': '/financial/tools',
   },
   Schedule: '/schedule',
   Meetings: '/meeting',
