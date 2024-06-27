@@ -10,7 +10,7 @@ import Button from '@/app/component/customButton/button';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { addSelectedTrades } from '@/redux/authSlices/auth.thunk';
-import { isEmpty } from 'lodash';
+import _, { isEmpty } from 'lodash';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { useTrades } from '@/app/hooks/useTrades';
 import { Skeleton } from 'antd';
@@ -68,6 +68,12 @@ const Trades = () => {
       setSelectedTrades([...selectedTrades, tradeCategoryId]);
     }
   }
+
+  function getSelectedTradesByParent(parentId: string) {
+    const tradesByParent = trades.filter((trade) => trade.tradeCategoryId._id === parentId).map(t => t._id);
+    return _.intersection(tradesByParent, selectedTrades);
+  }
+
   return (
     <>
       <AuthNavbar />
@@ -99,12 +105,14 @@ const Trades = () => {
                       aria-controls={`accordion-flush-body-${index}`}
                       onClick={() => toggleCollapse(index)}
                     >
-                      <h6 className="text-gray-700">
+                      <h6 className={`text-gray-700 ${activeCollapse === index ? "font-semibold" : " font-normal"}`}>
                         {parent.label}
                         <span
-                          className={`text-gray-500 ms-3`}
+                          className={`text-gray-500 ms-3 font-normal`}
                         >
-
+                          {getSelectedTradesByParent(parent.value).length > 0
+                            ? `${getSelectedTradesByParent(parent.value).length} selected`
+                            : ''}
                         </span>
                       </h6>
                       <Image
