@@ -26,9 +26,9 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
     (state: RootState) => state.auth.user as { user?: IUserInterface }
   );
   const selectedBidProjectDetail = selectedBidProjectDetails.find((detail) => {
-    return typeof authUser.user === 'string'
-      ? detail.user === authUser.user
-      : detail.user === authUser.user?._id;
+    return typeof authUser?.user === 'string'
+      ? detail.user === authUser?.user
+      : detail.user === authUser?.user?._id;
   });
 
   const columns: ColumnsType<{ _id: string; quantity: number; price: number }> =
@@ -190,11 +190,11 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
             title={
               selectedBidProjectDetail
                 ? Bid_How_Long_Price_Increase.find((bidprice) => {
-                    return (
-                      selectedBidProjectDetail.priceExpiryDuration ===
-                      bidprice.value
-                    );
-                  })!.label
+                  return (
+                    selectedBidProjectDetail.priceExpiryDuration ===
+                    bidprice.value
+                  );
+                })!.label
                 : ''
             }
             className="font-semibold text-[#101828] text-xs leading-4"
