@@ -30,8 +30,6 @@ const Trades = () => {
   const { tradeCategoryFilters, tradesQuery, trades } = useTrades();
 
 
-  console.log('tradeCategoryFilters', tradeCategoryFilters,);
-
   const toggleCollapse = (index: number) => {
     if (activeCollapse === index) {
       setActiveCollapse(null);
@@ -125,7 +123,7 @@ const Trades = () => {
                   </h2>
                   <div
                     id={`accordion-flush-body-${index}`}
-                    className={`${activeCollapse === index ? 'block space-x-2 space-y-2' : 'hidden'
+                    className={`${activeCollapse === index ? 'block space-x-2 space-y-2 ' : 'hidden'
                       }`}
                     aria-labelledby={`accordion-flush-heading-${index} `}
                   >
