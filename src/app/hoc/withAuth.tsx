@@ -73,7 +73,7 @@ export const withAuth = (
     }
 
     const isEmployee = user?.user?.associatedCompany;
-    const canAccessThePage = isEmployee ? canAccessRoute(pathname, employeeRoles, true) : canAccessRoute(pathname, userPlanFeatures);
+    const canAccessThePage = isEmployee ? canAccessRoute(pathname, employeeRoles.concat(userPlanFeatures), true) : canAccessRoute(pathname, userPlanFeatures);
     // const canAccessThePage = true;
     // if the required roles is empty; and there is already and a user with the plan
     if (canAccessThePage && !requiredRoles.length) {
