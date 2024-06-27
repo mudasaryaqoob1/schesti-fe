@@ -6,13 +6,16 @@ import { twMerge } from 'tailwind-merge';
 import AuthNavbar from '@/app/(pages)/(auth)/authNavbar';
 import { tertiaryHeading } from '@/globals/tailwindvariables';
 import PrimaryHeading from '@/app/component/headings/primary';
-import TradeData from '@/app/constants/TradesData.json';
 import Button from '@/app/component/customButton/button';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { addSelectedTrades } from '@/redux/authSlices/auth.thunk';
 import { isEmpty } from 'lodash';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { useTrades } from '@/app/hooks/useTrades';
+import { Skeleton } from 'antd';
+import Image from 'next/image';
+import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
 
 const Trades = () => {
   const router = useRouterHook();
@@ -23,44 +26,28 @@ const Trades = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [activeCollapse, setActiveCollapse] = useState<number | null>(null);
-  const [selectedTabs, setSelectedTabs] = useState<Record<string, string[]>>(
-    {}
-  );
+  const [selectedTrades, setSelectedTrades] = useState<string[]>([]);
+  const { tradeCategoryFilters, tradesQuery, trades } = useTrades();
+
+
+  console.log('tradeCategoryFilters', tradeCategoryFilters,);
 
   const toggleCollapse = (index: number) => {
-    setActiveCollapse((prevActiveCollapse) =>
-      prevActiveCollapse === index ? null : index
-    );
+    if (activeCollapse === index) {
+      setActiveCollapse(null);
+    } else {
+      setActiveCollapse(index);
+    }
   };
-
-  const toggleTab = (heading: string, tabName: string) => {
-    setSelectedTabs((prevSelectedTabs) => {
-      const updatedTabs = { ...prevSelectedTabs };
-      if (updatedTabs[heading]) {
-        if (updatedTabs[heading].includes(tabName)) {
-          updatedTabs[heading] = updatedTabs[heading].filter(
-            (tab) => tab !== tabName
-          );
-        } else {
-          updatedTabs[heading] = [...updatedTabs[heading], tabName];
-        }
-      } else {
-        updatedTabs[heading] = [tabName];
-      }
-      return updatedTabs;
-    });
-  };
-
-  console.log('selectedTabs', selectedTabs);
 
   const submitHandler = () => {
     setIsLoading(true);
-    if (isEmpty(selectedTabs)) {
+    if (isEmpty(selectedTrades)) {
       router.push('/plans');
     } else {
       const payload = {
         userId: userData?.user?._id,
-        selectedTrades: selectedTabs,
+        selectedTrades,
       };
       dispatch(addSelectedTrades(payload))
         .unwrap()
@@ -74,7 +61,13 @@ const Trades = () => {
         });
     }
   };
-
+  function toggleCategory(tradeCategoryId: string) {
+    if (selectedTrades.includes(tradeCategoryId)) {
+      setSelectedTrades(selectedTrades.filter((item) => item !== tradeCategoryId));
+    } else {
+      setSelectedTrades([...selectedTrades, tradeCategoryId]);
+    }
+  }
   return (
     <>
       <AuthNavbar />
@@ -93,8 +86,8 @@ const Trades = () => {
               data-active-classes="bg-white text-gray-900 dark:text-white"
               data-inactive-classes="text-gray-500 dark:text-gray-400"
             >
-              {TradeData.map((data, index) => (
-                <div key={index}>
+              {tradesQuery.isLoading ? <Skeleton /> : tradeCategoryFilters.map((parent, index) => {
+                return <div key={index}>
                   <h2 id={`accordion-flush-heading-${index}`} className="mb-2">
                     <button
                       type="button"
@@ -107,97 +100,51 @@ const Trades = () => {
                       onClick={() => toggleCollapse(index)}
                     >
                       <h6 className="text-gray-700">
-                        {data.heading}{' '}
+                        {parent.label}
                         <span
-                          className={`text-gray-500 ms-3 ${
-                            selectedTabs[data.heading] &&
-                            selectedTabs[data.heading].length > 0
-                              ? ''
-                              : 'hidden'
-                          }`}
+                          className={`text-gray-500 ms-3`}
                         >
-                          {selectedTabs[data.heading] &&
-                            selectedTabs[data.heading].length}{' '}
-                          selected
+
                         </span>
                       </h6>
-                      <svg
-                        data-accordion-icon
-                        className={`w-4 h-4 transform ${
-                          activeCollapse === index ? 'rotate-0' : '-rotate-180'
-                        }`}
-                        viewBox="0 0 20 20"
-                        fill="none"
-                      >
-                        <path
-                          d="M6 8l4 4 4-4"
-                          stroke="gray"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
+                      <Image
+                        src={'/chevron-up.svg'}
+                        width={20}
+                        height={20}
+                        alt="chevron-up"
+                      />
                     </button>
                   </h2>
                   <div
                     id={`accordion-flush-body-${index}`}
-                    className={`${
-                      activeCollapse === index ? 'block' : 'hidden'
-                    }`}
-                    aria-labelledby={`accordion-flush-heading-${index}`}
+                    className={`${activeCollapse === index ? 'block space-x-2 space-y-2' : 'hidden'
+                      }`}
+                    aria-labelledby={`accordion-flush-heading-${index} `}
                   >
-                    <div className="flex flex-wrap">
-                      {data.tabs.map((tab, tabIndex) => (
-                        <div
-                          key={tabIndex}
-                          className={`border rounded-full p-3 mr-2 mb-2 flex text-gray-500 items-center cursor-pointer ${
-                            selectedTabs[data.heading] &&
-                            selectedTabs[data.heading].includes(tab.name)
-                              ? 'foundation-primary-400'
-                              : ''
-                          }`}
-                          onClick={() => toggleTab(data.heading, tab.name)}
+                    {trades.filter(trade => trade.tradeCategoryId._id === parent.value).map(child => {
+                      return selectedTrades.includes(child._id) ? (
+                        <button
+                          key={child._id}
+                          className="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 border rounded-full px-4 py-1 text-sm font-medium hover:text-gray-700 hover:bg-white cursor-pointer bg-[#E6F2F8] text-[#667085] "
+                          onClick={() => toggleCategory(child._id)}
                         >
-                          <span>{tab.name}</span>
-                          {selectedTabs[data.heading] &&
-                          selectedTabs[data.heading].includes(tab.name) ? (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="w-4 h-4 ml-1 text-red-500"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="gray"
-                              onClick={() => toggleTab(data.heading, tab.name)}
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M6 18L18 6M6 6l12 12"
-                              />
-                            </svg>
-                          ) : (
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="w-4 h-4 ml-1 text-green-500"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="gray"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                              />
-                            </svg>
-                          )}
-                        </div>
-                      ))}
-                    </div>
+                          {child.name}
+                          <CloseOutlined className="ml-2 font-bold text-lg" />
+                        </button>
+                      ) : (
+                        <button
+                          key={child._id}
+                          className="inline-flex items-center justify-center whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/90 h-10 bg-white border rounded-full px-4 py-1 text-sm font-medium text-gray-700 cursor-pointer hover:bg-[#E6F2F8] hover:text-[#667085] "
+                          onClick={() => toggleCategory(child._id)}
+                        >
+                          {child.name}
+                          <PlusOutlined className="ml-2 font-bold text-lg" />
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
-              ))}
+              })}
             </div>
           </div>
           <Button
