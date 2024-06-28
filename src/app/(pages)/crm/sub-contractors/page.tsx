@@ -29,6 +29,7 @@ import { DeleteContent } from '@/app/component/delete/DeleteContent';
 import { Routes } from '@/app/utils/plans.utils';
 import { withAuth } from '@/app/hoc/withAuth';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import WhiteButton from '@/app/component/customButton/white';
 
 export interface DataType {
   company: string;
@@ -161,19 +162,19 @@ const SubcontractTable = () => {
 
   const filteredSubcontractor = subcontractersData
     ? subcontractersData.filter((client) => {
-        if (!search) {
-          return {
-            ...client,
-          };
-        }
-        return (
-          client.name.toLowerCase().includes(search.toLowerCase()) ||
-          client.companyRep.toLowerCase().includes(search.toLowerCase()) ||
-          client.email?.includes(search) ||
-          client.phone?.includes(search) ||
-          client.address?.includes(search)
-        );
-      })
+      if (!search) {
+        return {
+          ...client,
+        };
+      }
+      return (
+        client.name.toLowerCase().includes(search.toLowerCase()) ||
+        client.companyRep.toLowerCase().includes(search.toLowerCase()) ||
+        client.email?.includes(search) ||
+        client.phone?.includes(search) ||
+        client.address?.includes(search)
+      );
+    })
     : [];
 
   return (
@@ -220,6 +221,20 @@ const SubcontractTable = () => {
                 }}
               />
             </div>
+            <WhiteButton
+              text='Export'
+              className='!w-fit'
+              icon='/download-icon.svg'
+              iconwidth={20}
+              iconheight={20}
+            />
+            <WhiteButton
+              text='Import'
+              className='!w-fit'
+              icon='/uploadcloud.svg'
+              iconwidth={20}
+              iconheight={20}
+            />
             <Button
               text="Add New Subcontractor"
               className="!w-auto "
