@@ -13,7 +13,7 @@ const WelcomeWrapper = ({ children, description, title }: Props) => {
       <div className="px-14 py-7">{children}</div>
       <div
         className="items-center relative  bg-schestiLightPrimary
-       hidden md:flex h-full overflow-x-hidden"
+       hidden md:flex h-full overflow-x-hidden overflow-y-hidden"
       >
         <Image
           src={'/ellipse.png'}
