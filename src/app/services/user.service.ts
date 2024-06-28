@@ -71,6 +71,8 @@ class UserService extends HttpService {
     },
   })
 
+  httpInsertManyClients = (data: IClient[]): Promise<IResponseInterface<IClient[]>> => this.post(`${this.companyPrefix}/addMultipleClients`, data);
+
   httpGetAllCompanyClients = (): Promise<
     IResponseInterface<{ clients: IClient[] }>
   > => this.get(`${this.companyPrefix}/allClients`);

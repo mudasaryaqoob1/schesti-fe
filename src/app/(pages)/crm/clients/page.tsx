@@ -31,6 +31,7 @@ import { Excel } from 'antd-table-saveas-excel';
 import { userService } from '@/app/services/user.service';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
+import { insertManyClientsAction } from '@/redux/company/clientSlice/companyClient.slice';
 
 interface DataType {
   firstName: string;
@@ -100,7 +101,7 @@ const ClientTable = () => {
   const inputFileRef = useRef<HTMLInputElement | null>(null);
   const [isUploadingFile, setIsUploadingFile] = useState(false);
   const [parseData, setParseData] = useState<IClient[]>([]);
-
+  const [isUploadingManyClients, setIsUploadingManyClients] = useState(false);
 
   const fetchClientCall = useCallback(async () => {
     await dispatch(fetchCompanyClients({ page: 1, limit: 10 }));
@@ -332,6 +333,24 @@ const ClientTable = () => {
     }
   }
 
+
+  async function insertManyClients(data: IClient[]) {
+    setIsUploadingManyClients(true);
+    try {
+      const response = await userService.httpInsertManyClients(data);
+      if (response.data) {
+        dispatch(insertManyClientsAction(response.data));
+        toast.success('Clients inserted successfully');
+        setParseData([]);
+      }
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>
+      toast.error(err.response?.data.message || 'An error occurred');
+    } finally {
+      setIsUploadingManyClients(false);
+    }
+  }
+
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       {selectedClient && showDeleteModal ? (
@@ -362,7 +381,7 @@ const ClientTable = () => {
         width='70%'
       >
         <div className='bg-white p-5 rounded-md'>
-          <div className='my-2 text-schestiPrimary font-semibold text-[16px] leading-5'>
+          <div className='my-2 mb-6 text-schestiPrimary font-semibold text-[16px] leading-5'>
             CSV Preview
           </div>
           <Table
@@ -380,6 +399,8 @@ const ClientTable = () => {
             <Button
               text='Import Data'
               className='!w-fit'
+              onClick={() => insertManyClients(parseData)}
+              isLoading={isUploadingManyClients}
             />
           </div>
         </div>
