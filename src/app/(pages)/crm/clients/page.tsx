@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useCallback, useState, useRef } from 'react';
+import { useEffect, useCallback, useState, useRef, ChangeEventHandler } from 'react';
 import { Dropdown, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { MenuProps } from 'antd';
@@ -28,6 +28,9 @@ import { withAuth } from '@/app/hoc/withAuth';
 import { Routes } from '@/app/utils/plans.utils';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { Excel } from 'antd-table-saveas-excel';
+import { userService } from '@/app/services/user.service';
+import { AxiosError } from 'axios';
+import { toast } from 'react-toastify';
 
 interface DataType {
   firstName: string;
@@ -95,6 +98,10 @@ const ClientTable = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedClient, setSelectedClient] = useState<IClient | null>(null);
   const inputFileRef = useRef<HTMLInputElement | null>(null);
+  const [isUploadingFile, setIsUploadingFile] = useState(false);
+  const [parseData, setParseData] = useState<IClient[]>([]);
+
+
   const fetchClientCall = useCallback(async () => {
     await dispatch(fetchCompanyClients({ page: 1, limit: 10 }));
   }, []);
@@ -302,6 +309,29 @@ const ClientTable = () => {
       .saveAs(`crm-clients-${Date.now()}.xlsx`);
   }
 
+
+  const uploadAndParseClientData: ChangeEventHandler<HTMLInputElement> = async (e) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      setIsUploadingFile(true);
+      try {
+        const file = files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+        const response = await userService.httpUploadCrmClientsCsvAndParse(formData);
+        if (response.data) {
+          toast.success('File parsed successfully');
+          setParseData(response.data);
+        }
+      } catch (error) {
+        const err = error as AxiosError<{ message: string }>;
+        toast.error(err.response?.data.message || 'An error occurred')
+      } finally {
+        setIsUploadingFile(false);
+      }
+    }
+  }
+
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       {selectedClient && showDeleteModal ? (
@@ -323,6 +353,37 @@ const ClientTable = () => {
           />
         </ModalComponent>
       ) : null}
+
+      {parseData.length ? <ModalComponent
+        open={parseData.length > 0}
+        setOpen={() => {
+
+        }}
+        width='70%'
+      >
+        <div className='bg-white p-5 rounded-md'>
+          <div className='my-2 text-schestiPrimary font-semibold text-[16px] leading-5'>
+            CSV Preview
+          </div>
+          <Table
+            dataSource={parseData}
+            columns={(columns.slice(0, columns.length - 2)) as ColumnsType<IClient>}
+            pagination={{ position: ['bottomCenter'] }}
+          />
+
+          <div className='flex justify-end space-x-3'>
+            <WhiteButton
+              text='Cancel'
+              onClick={() => setParseData([])}
+              className='!w-fit'
+            />
+            <Button
+              text='Import Data'
+              className='!w-fit'
+            />
+          </div>
+        </div>
+      </ModalComponent> : null}
       <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
         <div className="flex justify-between items-center mb-4">
           <TertiaryHeading title="Client List" className="text-graphiteGray" />
@@ -367,8 +428,17 @@ const ClientTable = () => {
                 onClick={() => {
                   inputFileRef.current?.click();
                 }}
+                isLoading={isUploadingFile}
+                loadingText='Uploading...'
               />
-              <input ref={inputFileRef} type="file" name="" id="importClients" className='hidden' />
+              <input ref={inputFileRef}
+                accept='.csv, .xlsx'
+                type="file"
+                name=""
+                id="importClients"
+                className='hidden'
+                onChange={uploadAndParseClientData}
+              />
             </div>
             <Button
               text="Add New client"

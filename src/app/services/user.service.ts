@@ -64,6 +64,13 @@ class UserService extends HttpService {
   ): Promise<IResponseInterface> =>
     this.get(`${this.companyPrefix}/allClients?page=${page}&limit=${limit}`);
 
+
+  httpUploadCrmClientsCsvAndParse = (data: FormData): Promise<IResponseInterface<IClient[]>> => this.post(`${this.companyPrefix}/parse-data`, data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
+
   httpGetAllCompanyClients = (): Promise<
     IResponseInterface<{ clients: IClient[] }>
   > => this.get(`${this.companyPrefix}/allClients`);
