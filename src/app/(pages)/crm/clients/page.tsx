@@ -27,6 +27,7 @@ import ModalComponent from '@/app/component/modal';
 import { withAuth } from '@/app/hoc/withAuth';
 import { Routes } from '@/app/utils/plans.utils';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { Excel } from 'antd-table-saveas-excel';
 
 interface DataType {
   firstName: string;
@@ -266,6 +267,41 @@ const ClientTable = () => {
       })
     : [];
 
+
+  function downloadClientsCSV(data: IClient[]) {
+    const excel = new Excel();
+    excel
+      .addSheet('Clients')
+      .addColumns([
+        {
+          dataIndex: "firstName",
+          title: "First Name",
+        },
+        {
+          dataIndex: "lastName",
+          title: "Last Name",
+        },
+        {
+          dataIndex: "companyName",
+          title: "Company Name"
+        },
+        {
+          dataIndex: "phone",
+          title: "Phone Number"
+        },
+        {
+          dataIndex: "address",
+          title: "Address"
+        },
+        {
+          dataIndex: "secondAddress",
+          title: "Second Address"
+        }
+      ])
+      .addDataSource(data)
+      .saveAs(`crm-clients-${Date.now()}.xlsx`);
+  }
+
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       {selectedClient && showDeleteModal ? (
@@ -313,6 +349,11 @@ const ClientTable = () => {
               icon='/download-icon.svg'
               iconwidth={20}
               iconheight={20}
+              onClick={() => {
+                if (clientsData) {
+                  downloadClientsCSV(clientsData)
+                }
+              }}
             />
             <WhiteButton
               text='Import'
