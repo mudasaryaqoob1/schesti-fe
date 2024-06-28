@@ -18,7 +18,7 @@ import {
   senaryHeading,
 } from '@/globals/tailwindvariables';
 import Button from '@/app/component/customButton/button';
-import SettingSideBar from '@/app/(pages)/settings/verticleBar';
+import SettingSideBar from '../verticleBar';
 import { userService } from '@/app/services/user.service';
 import { byteConverter } from '@/app/utils/byteConverter';
 import { AppDispatch } from '@/redux/store';

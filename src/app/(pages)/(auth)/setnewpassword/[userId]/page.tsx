@@ -17,6 +17,7 @@ import { IResetPasswordInterface } from '@/app/interfaces/authInterfaces/resetPa
 import { resetPasswordHandler } from '@/redux/authSlices/auth.thunk';
 import { toast } from 'react-toastify';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import Link from 'next/link';
 
 const initialValues: IResetPasswordInterface = {
   password: '',
@@ -66,7 +67,7 @@ const SetNewPassword = () => {
         height={30}
         onClick={() => router.push('/')}
       />
-      <div className="h-full grid place-items-center">
+      <div className="h-full grid  place-items-center">
         <div className="w-full max-w-md">
           <PrimaryHeading
             className="text-center"
@@ -106,8 +107,16 @@ const SetNewPassword = () => {
                     isLoading={isLoading}
                     type="submit"
                     text="Set Password"
-                    className=" mt-8"
+                    className=" mt-8 mb-3"
                   />
+                  <div className="flex justify-center">
+                    <Link
+                      href={'/login'}
+                      className="!pt-3 mx-auto text-schestiLightBlack font-normal text-[14px] leading-4 text-center"
+                    >
+                      Back to login
+                    </Link>
+                  </div>
                 </Form>
               );
             }}

@@ -119,7 +119,7 @@ export function ProjectRFICenter({ projectId }: Props) {
           // if rfi is private and rfi user is not the current user, then return null
           return rfi.type === 'private' &&
             (typeof user === 'string'
-              ? user !== authUser.user?._id
+              ? user !== authUser?.user?._id
               : user._id !== authUser.user?._id) ? null : (
             <div
               key={rfi._id}

@@ -54,9 +54,9 @@ export function formatProjectActivityStatus(status: IBidActivity['status']) {
     case 'repost project':
       return 'Project Reposted';
     case 'favourite':
-      return 'Favourite';
+      return 'Favoured';
     case 'removed favourite':
-      return 'Removed Favourite';
+      return 'Removed Favoured';
     case 'proposal submitted':
       return 'Proposal Submitted';
     case 'sent email':

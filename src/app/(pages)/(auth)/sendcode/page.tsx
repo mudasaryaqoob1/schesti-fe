@@ -9,6 +9,7 @@ import { useSearchParams } from 'next/navigation';
 import { authService } from '@/app/services/auth.service';
 import { toast } from 'react-toastify';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import Link from 'next/link';
 
 const Resendcode = () => {
   const router = useRouterHook();
@@ -33,7 +34,7 @@ const Resendcode = () => {
   };
 
   return (
-    <WelcomeWrapper>
+    <WelcomeWrapper title="Reset Your Password">
       <Image
         className="cursor-pointer"
         src={'/logo.svg'}
@@ -48,8 +49,7 @@ const Resendcode = () => {
 
           <SecondaryHeading
             title={`If ${emailQueryParameter} matches an email we have on file, then we've sent you an
-              email containing further instructions for resetting your password.   
-          !`}
+              email containing further instructions for resetting your password.`}
             className="my-3"
           />
           <p
@@ -68,11 +68,18 @@ const Resendcode = () => {
             onClick={resendEmailHandler}
           />
           <p
-            className="text-goldenrodYellow font-semibold text-center mt-3 underline cursor-pointer"
+            className="text-goldenrodYellow font-semibold text-center my-3 underline underline-offset-2 cursor-pointer"
             onClick={() => router.push('/forgetpassword')}
           >
             Use a different email
           </p>
+
+          <Link
+            href={'/login'}
+            className="text-schestiLightBlack font-normal text-[14px] leading-4 text-center"
+          >
+            Back to login
+          </Link>
         </div>
       </section>
     </WelcomeWrapper>

@@ -10,12 +10,11 @@ import { NetworkingIcon } from '../svgs/component-icons/NetworkIcon';
 
 export const Routes = {
   'Bid Management': {
-    Owner: '/bid-management/owner',
+    Posted_Projects: '/bid-management/projects',
     Contractor: '/bid-management/contractor',
     'Sub-Contractor': '/bid-management/sub-contractor',
     Submit: '/bid-management/submit',
     Bidding_Projects: '/bid-management/bids',
-    Posted_Projects: '/bid-management/projects',
     Post_A_Project: '/bid-management/post',
   },
   CRM: {
@@ -32,9 +31,9 @@ export const Routes = {
     'Estimates-List': '/estimates/generate',
   },
   Financial: {
+    'Financial-Tools': '/financial/tools',
     'Standard-Invoicing': '/financial/standard-invoicing',
     'AIA-Invoicing': '/financial/aia-invoicing',
-    'Financial-Tools': '/financial/tools',
   },
   Schedule: '/schedule',
   Meetings: '/meeting',
@@ -50,6 +49,7 @@ export const OtherRoutes = {
     Materials: '/settings/materials',
     Target: '/settings/target',
     'Support Tickets': '/settings/supporttickets',
+    Company_Roles: '/settings/companyUser/roles',
   },
   Upgrades: '/upgradeplans',
   Dashboard: '/dashboard',
@@ -70,12 +70,11 @@ export const planFeatureOptions = [
   {
     label: 'Bid Management',
     Icon: BidIcon,
-
+    value: '/bid-management',
     title: 'Bid Management',
     options: [
       {
         label: 'Find Project',
-        value: '',
         children: [
           { label: 'Contractor', value: Routes['Bid Management'].Contractor },
           {
@@ -104,6 +103,7 @@ export const planFeatureOptions = [
     title: 'CRM',
     Icon: CRMIcon,
     label: 'CRM',
+    value: '/crm',
     options: [
       { label: 'Clients', value: Routes.CRM.Clients },
       { label: 'Sub Contractors', value: Routes.CRM['Sub-Contractors'] },
@@ -115,6 +115,7 @@ export const planFeatureOptions = [
     title: 'Quantity Takeoff',
     Icon: QuantityIcon,
     label: 'Quantity Takeoff',
+    value: '/takeoff',
     options: [
       { label: 'Manual', value: Routes['Quantity-Takeoff'].Manual },
       { label: 'AI Takeoff', value: Routes['Quantity-Takeoff']['AI-Takeoff'] },
@@ -125,6 +126,7 @@ export const planFeatureOptions = [
     title: 'Estimates',
     Icon: EstimateIcon,
     label: 'Estimates',
+    value: '/estimates',
     options: [
       {
         label: 'Estimates Requests',
@@ -138,6 +140,7 @@ export const planFeatureOptions = [
     title: 'Financial',
     Icon: FinancialIcon,
     label: 'Financial',
+    value: '/financial',
     options: [
       {
         label: 'Standard Invoicing',
@@ -172,4 +175,28 @@ export type IPlanFeature = (typeof planFeatureOptions)[number];
 export function getPlanFeatureKeyByValue(value: string, options = Plans) {
   const key = _.findKey(options, (val) => val === value);
   return key ? key : '';
+}
+
+type RoutesType = typeof Routes;
+export function getRouteFromPermission(permission: string) {
+  for (const category in Routes) {
+    if (typeof Routes[category as keyof RoutesType] === 'object') {
+      const subRoutes = Routes[category as keyof RoutesType] as Record<
+        string,
+        string
+      >;
+      for (const subRoute in subRoutes) {
+        if (subRoutes[subRoute].includes(permission)) {
+          return subRoutes[subRoute];
+        }
+      }
+    } else {
+      if (
+        Routes[category as keyof RoutesType].toString().includes(permission)
+      ) {
+        return Routes[category as keyof RoutesType];
+      }
+    }
+  }
+  return undefined;
 }

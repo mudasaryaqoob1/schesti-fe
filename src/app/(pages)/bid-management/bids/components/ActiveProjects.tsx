@@ -1,4 +1,7 @@
-import { IBidManagement , ISaveUserBid} from '@/app/interfaces/bid-management/bid-management.interface';
+import {
+  IBidManagement,
+  ISaveUserBid,
+} from '@/app/interfaces/bid-management/bid-management.interface';
 import { BidIntro } from '../../sub-contractor/components/BidIntro';
 import { useState } from 'react';
 import { BidDetails } from './BidDetails';

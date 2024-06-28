@@ -10,11 +10,13 @@ type Props = {
   description?: string;
   okText?: string;
   cancelText?: string;
+  isLoading?: boolean;
 };
 
 export function DeleteContent({
   onClick,
   onClose,
+  isLoading,
   title = 'Are you sure to delete?',
   description = 'Are you sure you want to delete this entry?',
   okText = 'Delete',
@@ -22,7 +24,7 @@ export function DeleteContent({
 }: Props) {
   return (
     <div className="bg-white border border-solid border-elboneyGray rounded-[4px] z-50">
-      <div className="flex px-6 py-2.5 justify-between bg-[#F5F4FF]">
+      <div className="flex px-6 py-2.5 justify-between bg-schestiLightPrimary">
         <TertiaryHeading title={title} className="text-graphiteGray" />
         <CloseOutlined
           className="cursor-pointer"
@@ -43,6 +45,7 @@ export function DeleteContent({
           type="submit"
           onClick={onClick}
           className="!bg-[#F03A3A] !border-[#F03A3A]"
+          isLoading={isLoading}
         />
       </div>
     </div>

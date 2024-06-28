@@ -12,12 +12,12 @@ import { AxiosError } from 'axios';
 import { pricingPlanService } from '../services/pricingPlan.service';
 import { setUserPricingPlan } from '@/redux/pricingPlanSlice/pricingPlanSlice';
 import { usePathname } from 'next/navigation';
-import { IUser } from '../interfaces/companyEmployeeInterfaces/user.interface';
 import { NoDataComponent } from '../component/noData/NoDataComponent';
 import { Skeleton } from 'antd';
 import _ from 'lodash';
 import { OtherRoutes } from '../utils/plans.utils';
 import { useRouterHook } from '../hooks/useRouterHook';
+import { IUserInterface } from '../interfaces/user.interface';
 
 export const withAuth = (
   WrappedComponent: React.FunctionComponent,
@@ -32,7 +32,7 @@ export const withAuth = (
     const router = useRouterHook();
     const pathname = usePathname();
     const user = useSelector(
-      (state: RootState) => state.auth.user as { user?: IUser }
+      (state: RootState) => state.auth.user as { user?: IUserInterface }
     );
     requiredRoles =
       requiredRoles.length > 0 ? _.map(requiredRoles, _.capitalize) : [];
@@ -59,7 +59,15 @@ export const withAuth = (
       },
     });
 
-    const userRoles: string[] = user?.user?.roles || [];
+    const userRole = user?.user?.userRole ? user?.user?.userRole : '';
+
+    let employeePermissions: string[] =
+      user && user.user && user.user.roles
+        ? user.user.roles
+            .map((role) => (typeof role !== 'string' ? role.permissions : ''))
+            .flat()
+        : [];
+
     const userPlanFeatures = userPlan
       ? userPlan.features.split(',')
       : ([] as string[]);
@@ -68,17 +76,38 @@ export const withAuth = (
     if (query.isLoading) {
       return <Skeleton />;
     }
-    const canAccessThePage = canAccessRoute(pathname, userPlanFeatures);
+
+    const isEmployee = user?.user?.associatedCompany;
+    const employeeAccessFeatures = _.intersection(
+      userPlanFeatures,
+      employeePermissions
+    );
+
+    const canAccessThePage = isEmployee
+      ? canAccessRoute(pathname, employeeAccessFeatures, true)
+      : canAccessRoute(pathname, userPlanFeatures);
     // const canAccessThePage = true;
-    console.log({ canAccessThePage, pathname });
     // if the required roles is empty; and there is already and a user with the plan
     if (canAccessThePage && !requiredRoles.length) {
       return <WrappedComponent {...props} />;
     }
 
-    const hasRoles = _.every(requiredRoles, (role) => userRoles.includes(role));
+    const hasRoles = _.every(
+      requiredRoles,
+      (role) => userRole.toLowerCase() === role.toLowerCase()
+    );
+
     if (canAccessThePage && hasRoles) {
       return <WrappedComponent {...props} />;
+    }
+
+    if (!canAccessThePage && isEmployee && hasRoles) {
+      return (
+        <NoDataComponent
+          title="Access Denied"
+          description="You don't have access to this page."
+        />
+      );
     }
 
     if (canAccessThePage && !hasRoles) {
@@ -100,13 +129,19 @@ export const withAuth = (
 
   return WrappedComponentWithAuth;
 };
-function getAllRoutes(routes = OtherRoutes): string[] {
+function getAllRoutes(routes: { [key: string]: any } = OtherRoutes): string[] {
   return Object.values(routes).flatMap((route) =>
     typeof route === 'string' ? [route] : Object.values(route)
   );
 }
-function canAccessRoute(pathname: string, userFeatures: string[]) {
-  const allRoutes = getAllRoutes().concat(userFeatures);
+function canAccessRoute(
+  pathname: string,
+  userFeatures: string[],
+  isEmployee: boolean = false
+) {
+  const allRoutes = getAllRoutes(isEmployee ? {} : OtherRoutes).concat(
+    userFeatures
+  );
   const result = allRoutes.some((route) => pathname.includes(route));
   return result;
 }

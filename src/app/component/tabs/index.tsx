@@ -155,7 +155,7 @@ const Tabs = () => {
                           (option) =>
                             option.children?.find((child) =>
                               child.value.includes(pathname)
-                            ) || option.value.includes(pathname)
+                            ) || option.value?.includes(pathname)
                         ) && tabsStyle.active
                       )
                     )}

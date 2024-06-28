@@ -44,7 +44,7 @@ export function EventOnSiteForm({ formik }: Props) {
               hasError={
                 // @ts-ignore
                 formik.touched.preBiddingMeeting?.location &&
-                Boolean(formik.errors.preBiddingMeeting?.location)
+                Boolean((formik.errors.preBiddingMeeting as any)?.location)
               }
               errorMessage={
                 // @ts-ignore
@@ -76,7 +76,7 @@ export function EventOnSiteForm({ formik }: Props) {
               hasError={
                 // @ts-ignore
                 formik.touched.preBiddingMeeting?.date &&
-                Boolean(formik.errors.preBiddingMeeting?.date)
+                Boolean((formik.errors.preBiddingMeeting as any)?.date)
               }
               errorMessage={
                 // @ts-ignore
@@ -109,7 +109,7 @@ export function EventOnSiteForm({ formik }: Props) {
               hasError={
                 // @ts-ignore
                 formik.touched.preBiddingMeeting?.time &&
-                Boolean(formik.errors.preBiddingMeeting?.time)
+                Boolean((formik.errors.preBiddingMeeting as any)?.time)
               }
               errorMessage={
                 // @ts-ignore
@@ -134,7 +134,7 @@ export function EventOnSiteForm({ formik }: Props) {
           hasError={
             // @ts-ignore
             formik.touched.preBiddingMeeting?.instruction &&
-            Boolean(formik.errors.preBiddingMeeting?.instruction)
+            Boolean((formik.errors.preBiddingMeeting as any)?.instruction)
           }
           errorMessage={
             // @ts-ignore

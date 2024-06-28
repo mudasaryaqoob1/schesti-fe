@@ -1,7 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { Formik, Field, Form, ErrorMessage } from 'formik';
+import { Formik, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 import { twMerge } from 'tailwind-merge';
@@ -25,6 +25,9 @@ import UserRoleModal from '../userRolesModal';
 import { CheckOtherRoles, navigateUserWhileAuth } from '@/app/utils/auth.utils';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { authService } from '@/app/services/auth.service';
+import { IUserInterface } from '@/app/interfaces/user.interface';
+import { getRouteFromPermission } from '@/app/utils/plans.utils';
+import { Checkbox, ConfigProvider } from 'antd';
 
 const initialValues: ILogInInterface = {
   email: '',
@@ -72,12 +75,34 @@ const Login = () => {
     if (result.payload.statusCode == 200) {
       setLoading(false);
       if (
-        CheckOtherRoles(result.payload.data?.user.roles) &&
+        CheckOtherRoles(result.payload.data?.user.userRole) &&
         result.payload.data.user?.isPaymentConfirm
       ) {
         const session = result.payload?.token;
         localStorage.setItem('schestiToken', session);
-        router.push('/dashboard');
+        let authUser = result.payload.data?.user as IUserInterface;
+        if (authUser.associatedCompany) {
+          // employee logging in
+          const permissions = authUser.roles
+            ? authUser.roles
+                .map((item) =>
+                  typeof item !== 'string' ? item.permissions : []
+                )
+                .flat()
+            : [];
+          if (permissions.length > 0) {
+            const permission = permissions[0];
+            const route = getRouteFromPermission(permission);
+            if (route) {
+              router.push(route.toString());
+              return;
+            }
+          } else {
+            router.push('/dashboard');
+          }
+        } else {
+          router.push('/dashboard');
+        }
         return;
       }
       const responseLink = navigateUserWhileAuth(result.payload.data.user);
@@ -199,7 +224,7 @@ const Login = () => {
               validationSchema={LoginSchema}
               onSubmit={submitHandler}
             >
-              {({ handleSubmit }) => (
+              {({ handleSubmit, handleChange, values }) => (
                 <Form name="basic" autoComplete="off" onSubmit={handleSubmit}>
                   <div className="flex flex-col gap-3 mt-16">
                     <FormControl
@@ -221,12 +246,33 @@ const Login = () => {
                   {/* Remember me checkbox */}
                   <div className="flex justify-between items-center mt-4">
                     <div className="">
-                      <div className="flex gap-2 items-center">
+                      <ConfigProvider
+                        theme={{
+                          components: {
+                            Checkbox: {
+                              colorPrimary: '#FFC107',
+                              colorPrimaryHover: '#FFC107',
+                              colorBorder: '#FFC107',
+                            },
+                          },
+                        }}
+                      >
+                        <Checkbox
+                          className={`${quinaryHeading}}`}
+                          name="remember"
+                          id="remember"
+                          onChange={handleChange}
+                          value={values.remember}
+                        >
+                          Remember me
+                        </Checkbox>
+                      </ConfigProvider>
+                      {/* <div className="flex gap-2 items-center">
                         <Field type="checkbox" name="remember" id="remember" />
                         <label htmlFor="remember" className={quinaryHeading}>
                           Remember me
                         </label>
-                      </div>
+                      </div> */}
                       <ErrorMessage
                         name="remember"
                         component="div"

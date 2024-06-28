@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Button from '@/app/component/customButton/button';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { Checkbox, Form } from 'antd';
+import { Checkbox, ConfigProvider, Form } from 'antd';
 import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
 import { useDispatch } from 'react-redux';
@@ -278,24 +278,35 @@ const Register = () => {
                       name="confirmPassword"
                       placeholder="Confirm Password"
                     />
-
-                    <Checkbox
-                      name="isTermsAccepted"
-                      checked={formik.values.isTermsAccepted}
-                      onChange={formik.handleChange}
-                      className="text-xs"
+                    <ConfigProvider
+                      theme={{
+                        components: {
+                          Checkbox: {
+                            colorPrimary: '#FFC107',
+                            colorPrimaryHover: '#FFC107',
+                            colorBorder: '#FFC107',
+                          },
+                        },
+                      }}
                     >
-                      By clicking Register, you agree to our{' '}
-                      <Link
-                        href={'/terms-conditions'}
-                        target="_blank"
-                        className="text-blue-500 font-normal underline underline-offset-2 hover:text-blue-500 hover:underline"
+                      <Checkbox
+                        name="isTermsAccepted"
+                        checked={formik.values.isTermsAccepted}
+                        onChange={formik.handleChange}
+                        className="text-xs"
                       >
-                        Terms & Conditions
-                      </Link>
-                      . You may receive Email Notifications from us and can opt
-                      out any time.
-                    </Checkbox>
+                        By clicking Register, you agree to our{' '}
+                        <Link
+                          href={'/terms-conditions'}
+                          target="_blank"
+                          className="text-blue-500 font-normal underline underline-offset-2 hover:text-blue-500 hover:underline"
+                        >
+                          Terms & Conditions
+                        </Link>
+                        . You may receive Email Notifications from us and can
+                        opt out any time.
+                      </Checkbox>
+                    </ConfigProvider>
                     {formik.errors.isTermsAccepted &&
                     formik.touched.isTermsAccepted ? (
                       <p className="mt-1 text-red-500">

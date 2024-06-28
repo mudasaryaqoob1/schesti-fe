@@ -235,6 +235,7 @@ function ContractorSubmitBidPage() {
           formik.touched.projectScopes &&
           (formik.touched.projectScopes as FormikTouched<ProjectScope>)
             .description &&
+          // @ts-ignore
           formik.touched.projectScopes?.description[index];
         return (
           <div className="space-y-1">
@@ -276,6 +277,7 @@ function ContractorSubmitBidPage() {
           formik.touched.projectScopes &&
           (formik.touched.projectScopes as FormikTouched<ProjectScope>)
             .quantity &&
+          // @ts-ignore
           formik.touched.projectScopes?.quantity[index];
         return (
           <div className="space-y-1">
@@ -311,6 +313,7 @@ function ContractorSubmitBidPage() {
         const isTouched =
           formik.touched.projectScopes &&
           (formik.touched.projectScopes as FormikTouched<ProjectScope>).price &&
+          // @ts-ignore
           formik.touched.projectScopes?.price[index];
 
         return (

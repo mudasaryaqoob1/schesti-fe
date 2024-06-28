@@ -42,8 +42,8 @@ export const ContractorSchema: any = Yup.object({
   state: Yup.string().required('State is required'),
   city: Yup.string().required('City is required'),
   organizationName: Yup.string().optional(),
-  // @ts-ignore
   phone: Yup.string()
+    // @ts-ignore
     .phone('Invalid Phone Number')
     .required('Phone Number is required'),
 });
@@ -72,8 +72,8 @@ export const SubContractorSchema: any = Yup.object({
   state: Yup.string().required('State is required'),
   city: Yup.string().required('City is required'),
   organizationName: Yup.string().optional(),
-  // @ts-ignore
   phone: Yup.string()
+    // @ts-ignore
     .phone('Invalid Phone Number')
     .required('Phone Number is required'),
 });
@@ -90,8 +90,8 @@ export const OwnerSchema: any = Yup.object({
       message: 'At least one letter is required.',
     })
     .required('Organization Name is required'),
-  // @ts-ignore
   phone: Yup.string()
+    // @ts-ignore
     .phone('Invalid Phone Number')
     .required('Phone Number is required'),
   companyName: Yup.string().optional(),

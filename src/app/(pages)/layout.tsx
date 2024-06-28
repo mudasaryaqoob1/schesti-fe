@@ -14,7 +14,7 @@ const UNHOVERED_MARGIN_LEFT = 'ml-[80px]';
 
 const CustomNavbar = ({ children }: Props) => {
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);

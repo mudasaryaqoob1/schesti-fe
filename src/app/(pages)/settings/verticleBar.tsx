@@ -6,11 +6,12 @@ interface Props {
 }
 
 import CustomNavbar from '@/app/component/customNavbar';
-import withAuth from '@/app/hoc/with_auth';
+import { withAuth } from '@/app/hoc/withAuth';
+
 const SettingSidebar = ({ children }: Props) => {
   return (
     <CustomNavbar>
-      <section className="md:px-16 px-8 pt-6 flex gap-2 items-start relative bg-white">
+      <section className="px-8 pt-6 flex gap-2 items-start relative ">
         <VerticalsTabs />
         {children}
       </section>

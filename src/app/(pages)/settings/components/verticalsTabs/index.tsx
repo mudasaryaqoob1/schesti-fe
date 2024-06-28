@@ -1,5 +1,6 @@
 'use client';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { OtherRoutes } from '@/app/utils/plans.utils';
 import { bg_style, senaryHeading } from '@/globals/tailwindvariables';
 import { usePathname, useParams } from 'next/navigation';
 
@@ -8,7 +9,7 @@ const Index = () => {
   const pathname = usePathname();
   const { id } = useParams();
   const active =
-    'bg-cosmicGray  text-rotalPurple w-full rounded-[6px] font-semibold';
+    'bg-schestiLightPrimary  text-schestiPrimary w-full rounded-[6px] font-semibold';
   const tabs = [
     { id: 1, name: 'General Settings', route: ['/settings/general'] },
     { id: 2, name: 'Plans', route: ['/settings/plans'] },
@@ -16,7 +17,11 @@ const Index = () => {
     {
       id: 3,
       name: 'User Managements',
-      route: ['/settings/companyUser', '/settings/companyUser/addCompanyUser'],
+      route: [
+        '/settings/companyUser',
+        '/settings/companyUser/addCompanyUser',
+        OtherRoutes.Settings.Company_Roles,
+      ],
     },
     { id: 4, name: 'Materials', route: ['/settings/materials'] },
     { id: 5, name: 'Target', route: ['/settings/target'] },

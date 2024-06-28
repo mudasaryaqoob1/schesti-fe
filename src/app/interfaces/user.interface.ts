@@ -1,12 +1,5 @@
-import { Plans } from '../utils/plans.utils';
 import { IUpdateCompanyDetail } from './companyInterfaces/updateCompany.interface';
-
-export type IUserPermissionPagePath = (typeof Plans)[keyof typeof Plans];
-
-export type IUserPermission = {
-  path: IUserPermissionPagePath;
-  hasAccess: boolean;
-};
+import { ISettingCompanyRole } from './settings/comapny-role-settings.interface';
 
 export type IUserInterface = IUpdateCompanyDetail & {
   _id: string;
@@ -17,12 +10,12 @@ export type IUserInterface = IUpdateCompanyDetail & {
   providerId: string;
   providerType: string;
   name: string;
-  roles: string[];
+  firstName?: string;
+  lastName?: string;
+  roles?: string[] | ISettingCompanyRole[];
   userRole: 'owner' | 'contractor' | 'subcontractor' | string;
   brandingColor: string;
   isPaymentConfirm: boolean;
-  // if this is empty array, it means the user has access to all pages
-  permissions: IUserPermission[];
   createdAt: string;
   updatedAt: string;
   address: string;
@@ -44,4 +37,5 @@ export type IUserInterface = IUpdateCompanyDetail & {
   state?: string;
   city?: string;
   selectedTrades?: any;
+  associatedCompany?: IUserInterface | string;
 };

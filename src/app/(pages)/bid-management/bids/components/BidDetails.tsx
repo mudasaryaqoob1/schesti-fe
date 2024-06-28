@@ -26,9 +26,9 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
     (state: RootState) => state.auth.user as { user?: IUserInterface }
   );
   const selectedBidProjectDetail = selectedBidProjectDetails.find((detail) => {
-    return typeof authUser.user === 'string'
-      ? detail.user === authUser.user
-      : detail.user === authUser.user?._id;
+    return typeof authUser?.user === 'string'
+      ? detail.user === authUser?.user
+      : detail.user === authUser?.user?._id;
   });
 
   const columns: ColumnsType<{ _id: string; quantity: number; price: number }> =
