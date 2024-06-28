@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useCallback, useState } from 'react';
-import { Dropdown, Table } from 'antd';
+import { Dropdown, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { MenuProps } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
@@ -143,15 +143,15 @@ const ClientTable = () => {
       render: (_, value) => {
         if (value.status) {
           return (
-            <p className="bg-lime-100 w-max text-[#027A48] bg-[#ECFDF3] px-2 py-1 rounded-full">
+            <Tag className="rounded-full" color="green">
               Active
-            </p>
+            </Tag>
           );
         } else {
           return (
-            <p className="bg-lime-100 w-max text-[#b91c1c] bg-[#e7c3c3] px-2 py-1 rounded-full">
+            <Tag className="rounded-full" color="red">
               In Active
-            </p>
+            </Tag>
           );
         }
       },
