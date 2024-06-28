@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback, useState, useRef } from 'react';
 import { Dropdown, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { MenuProps } from 'antd';
@@ -94,7 +94,7 @@ const ClientTable = () => {
   const [search, setSearch] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedClient, setSelectedClient] = useState<IClient | null>(null);
-
+  const inputFileRef = useRef<HTMLInputElement | null>(null);
   const fetchClientCall = useCallback(async () => {
     await dispatch(fetchCompanyClients({ page: 1, limit: 10 }));
   }, []);
@@ -326,7 +326,7 @@ const ClientTable = () => {
       <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
         <div className="flex justify-between items-center mb-4">
           <TertiaryHeading title="Client List" className="text-graphiteGray" />
-          <div className=" flex space-x-3">
+          <div className=" flex items-center space-x-3">
             <div className="w-96">
               <InputComponent
                 label=""
@@ -343,25 +343,33 @@ const ClientTable = () => {
                 }}
               />
             </div>
-            <WhiteButton
-              text='Export'
-              className='!w-fit'
-              icon='/download-icon.svg'
-              iconwidth={20}
-              iconheight={20}
-              onClick={() => {
-                if (clientsData) {
-                  downloadClientsCSV(clientsData)
-                }
-              }}
-            />
-            <WhiteButton
-              text='Import'
-              className='!w-fit'
-              icon='/uploadcloud.svg'
-              iconwidth={20}
-              iconheight={20}
-            />
+            <div>
+              <WhiteButton
+                text='Export'
+                className='!w-fit'
+                icon='/download-icon.svg'
+                iconwidth={20}
+                iconheight={20}
+                onClick={() => {
+                  if (clientsData) {
+                    downloadClientsCSV(clientsData)
+                  }
+                }}
+              />
+            </div>
+            <div>
+              <WhiteButton
+                text='Import'
+                className='!w-fit'
+                icon='/uploadcloud.svg'
+                iconwidth={20}
+                iconheight={20}
+                onClick={() => {
+                  inputFileRef.current?.click();
+                }}
+              />
+              <input ref={inputFileRef} type="file" name="" id="importClients" className='hidden' />
+            </div>
             <Button
               text="Add New client"
               className="!w-48"
