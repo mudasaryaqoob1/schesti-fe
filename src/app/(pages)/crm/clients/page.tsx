@@ -12,6 +12,7 @@ import { selectClientsLoading } from '@/redux/company/companySelector';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 import Button from '@/app/component/customButton/button';
+import WhiteButton from '@/app/component/customButton/white';
 import {
   deleteCompanyClient,
   fetchCompanyClients,
@@ -230,27 +231,27 @@ const ClientTable = () => {
 
   const filteredClients = clientsData
     ? clientsData
-        .filter((client) => {
-          if (!search) {
-            return {
-              ...client,
-            };
-          }
-          return (
-            client.firstName.toLowerCase().includes(search.toLowerCase()) ||
-            client.lastName.toLowerCase().includes(search.toLowerCase()) ||
-            client.companyName.toLowerCase().includes(search.toLowerCase()) ||
-            client.email?.includes(search) ||
-            client.phone?.includes(search) ||
-            client.address?.includes(search)
-          );
-        })
-        .map((clientRecord) => {
+      .filter((client) => {
+        if (!search) {
           return {
-            ...clientRecord,
-            firstName: `${clientRecord.firstName} ${clientRecord.lastName}`,
+            ...client,
           };
-        })
+        }
+        return (
+          client.firstName.toLowerCase().includes(search.toLowerCase()) ||
+          client.lastName.toLowerCase().includes(search.toLowerCase()) ||
+          client.companyName.toLowerCase().includes(search.toLowerCase()) ||
+          client.email?.includes(search) ||
+          client.phone?.includes(search) ||
+          client.address?.includes(search)
+        );
+      })
+      .map((clientRecord) => {
+        return {
+          ...clientRecord,
+          firstName: `${clientRecord.firstName} ${clientRecord.lastName}`,
+        };
+      })
     : [];
 
   return (
@@ -294,6 +295,20 @@ const ClientTable = () => {
                 }}
               />
             </div>
+            <WhiteButton
+              text='Export'
+              className='!w-fit'
+              icon='/download-icon.svg'
+              iconwidth={20}
+              iconheight={20}
+            />
+            <WhiteButton
+              text='Import'
+              className='!w-fit'
+              icon='/uploadcloud.svg'
+              iconwidth={20}
+              iconheight={20}
+            />
             <Button
               text="Add New client"
               className="!w-48"
