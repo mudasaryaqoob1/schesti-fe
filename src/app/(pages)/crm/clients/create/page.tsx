@@ -104,7 +104,7 @@ const CreateClient = () => {
 
         <MinDesc
           title="Add New Client"
-          className={`${senaryHeading} font-semibold text-lavenderPurple cursor-pointer underline`}
+          className={`${senaryHeading} font-semibold text-schestiPrimary cursor-pointer underline`}
         />
       </div>
       <div className="p-5 flex flex-col rounded-lg border border-silverGray shadow-secondaryShadow2 bg-white">
@@ -199,7 +199,7 @@ const CreateClient = () => {
                     <CustomButton
                       isLoading={isLoading}
                       type="submit"
-                      text="Save"
+                      text="Save and Continue"
                     />
                   </div>
                 </div>
