@@ -72,15 +72,15 @@ export default {
         vividRed: '#EC2224',
 
         // Schesti Color Palette
-        schestiPrimary: "#007AB6",
-        schestiLightPrimary: "#E6F2F8",
-        schestiSuccess: "#36B37E",
-        schestiLightSuccess: "#ECFDF3",
-        schestiWarning:"#FFC107",
-        schestiPrimaryBlack:"#475467",
-        schestiLightBlack:"#667085",
-        schestiLightGray:"#EAECF0",
-        schestiPrimaryBG:"#F8F8F8"
+        schestiPrimary: '#007AB6',
+        schestiLightPrimary: '#E6F2F8',
+        schestiSuccess: '#36B37E',
+        schestiLightSuccess: '#ECFDF3',
+        schestiWarning: '#FFC107',
+        schestiPrimaryBlack: '#475467',
+        schestiLightBlack: '#667085',
+        schestiLightGray: '#EAECF0',
+        schestiPrimaryBG: '#F8F8F8',
       },
       boxShadow: {
         // Soft Glow for Primary Element

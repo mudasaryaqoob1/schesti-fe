@@ -83,7 +83,13 @@ const Login = () => {
         let authUser = result.payload.data?.user as IUserInterface;
         if (authUser.associatedCompany) {
           // employee logging in
-          const permissions = authUser.roles ? authUser.roles.map((item) => typeof item !== 'string' ? item.permissions : []).flat() : [];
+          const permissions = authUser.roles
+            ? authUser.roles
+                .map((item) =>
+                  typeof item !== 'string' ? item.permissions : []
+                )
+                .flat()
+            : [];
           if (permissions.length > 0) {
             const permission = permissions[0];
             const route = getRouteFromPermission(permission);
@@ -94,7 +100,6 @@ const Login = () => {
           } else {
             router.push('/dashboard');
           }
-
         } else {
           router.push('/dashboard');
         }
@@ -159,7 +164,7 @@ const Login = () => {
         } else if (
           checkUserExist.statusCode == 400 &&
           checkUserExist.message ===
-          'Verify from your email and complete your profile'
+            'Verify from your email and complete your profile'
         ) {
           router.push(`/companydetails/${checkUserExist.data.user._id}`);
         } else if (
@@ -219,7 +224,7 @@ const Login = () => {
               validationSchema={LoginSchema}
               onSubmit={submitHandler}
             >
-              {({ handleSubmit, handleChange, values, }) => (
+              {({ handleSubmit, handleChange, values }) => (
                 <Form name="basic" autoComplete="off" onSubmit={handleSubmit}>
                   <div className="flex flex-col gap-3 mt-16">
                     <FormControl
@@ -241,16 +246,24 @@ const Login = () => {
                   {/* Remember me checkbox */}
                   <div className="flex justify-between items-center mt-4">
                     <div className="">
-                      <ConfigProvider theme={{
-                        components: {
-                          Checkbox: {
-                            colorPrimary: '#FFC107',
-                            colorPrimaryHover: '#FFC107',
-                            colorBorder: "#FFC107"
-                          }
-                        }
-                      }}>
-                        <Checkbox className={`${quinaryHeading}}`} name='remember' id="remember" onChange={handleChange} value={values.remember}>
+                      <ConfigProvider
+                        theme={{
+                          components: {
+                            Checkbox: {
+                              colorPrimary: '#FFC107',
+                              colorPrimaryHover: '#FFC107',
+                              colorBorder: '#FFC107',
+                            },
+                          },
+                        }}
+                      >
+                        <Checkbox
+                          className={`${quinaryHeading}}`}
+                          name="remember"
+                          id="remember"
+                          onChange={handleChange}
+                          value={values.remember}
+                        >
                           Remember me
                         </Checkbox>
                       </ConfigProvider>

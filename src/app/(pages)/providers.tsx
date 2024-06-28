@@ -18,20 +18,20 @@ export function Providers({ children }: { children: React.ReactNode }) {
             },
             Switch: {
               colorPrimary: PRIMARY_COLOR,
-              colorPrimaryHover: SECONDARY_COLOR
+              colorPrimaryHover: SECONDARY_COLOR,
             },
             Radio: {
-              colorPrimary: PRIMARY_COLOR
+              colorPrimary: PRIMARY_COLOR,
             },
             Checkbox: {
               colorPrimary: PRIMARY_COLOR,
               colorPrimaryHover: PRIMARY_COLOR,
             },
             Collapse: {
-              headerBg: "#F9F9F9",
-              colorBorder: "#EAECF0",
-            }
-          }
+              headerBg: '#F9F9F9',
+              colorBorder: '#EAECF0',
+            },
+          },
         }}
       >
         {children}

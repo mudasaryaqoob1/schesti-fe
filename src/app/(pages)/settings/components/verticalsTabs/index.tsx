@@ -17,7 +17,11 @@ const Index = () => {
     {
       id: 3,
       name: 'User Managements',
-      route: ['/settings/companyUser', '/settings/companyUser/addCompanyUser', OtherRoutes.Settings.Company_Roles],
+      route: [
+        '/settings/companyUser',
+        '/settings/companyUser/addCompanyUser',
+        OtherRoutes.Settings.Company_Roles,
+      ],
     },
     { id: 4, name: 'Materials', route: ['/settings/materials'] },
     { id: 5, name: 'Target', route: ['/settings/target'] },

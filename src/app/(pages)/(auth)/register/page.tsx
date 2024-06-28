@@ -146,7 +146,7 @@ const Register = () => {
         } else if (
           checkUserExist.statusCode == 400 &&
           checkUserExist.message ===
-          'Verify from your email and complete your profile'
+            'Verify from your email and complete your profile'
         ) {
           router.push(`/companydetails/${checkUserExist.data.user._id}`);
         } else if (
@@ -278,15 +278,17 @@ const Register = () => {
                       name="confirmPassword"
                       placeholder="Confirm Password"
                     />
-                    <ConfigProvider theme={{
-                      components: {
-                        Checkbox: {
-                          colorPrimary: '#FFC107',
-                          colorPrimaryHover: '#FFC107',
-                          colorBorder: "#FFC107"
-                        }
-                      }
-                    }}>
+                    <ConfigProvider
+                      theme={{
+                        components: {
+                          Checkbox: {
+                            colorPrimary: '#FFC107',
+                            colorPrimaryHover: '#FFC107',
+                            colorBorder: '#FFC107',
+                          },
+                        },
+                      }}
+                    >
                       <Checkbox
                         name="isTermsAccepted"
                         checked={formik.values.isTermsAccepted}
@@ -301,12 +303,12 @@ const Register = () => {
                         >
                           Terms & Conditions
                         </Link>
-                        . You may receive Email Notifications from us and can opt
-                        out any time.
+                        . You may receive Email Notifications from us and can
+                        opt out any time.
                       </Checkbox>
                     </ConfigProvider>
                     {formik.errors.isTermsAccepted &&
-                      formik.touched.isTermsAccepted ? (
+                    formik.touched.isTermsAccepted ? (
                       <p className="mt-1 text-red-500">
                         {formik.errors.isTermsAccepted}
                       </p>

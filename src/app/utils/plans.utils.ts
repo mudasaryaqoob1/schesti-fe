@@ -103,7 +103,7 @@ export const planFeatureOptions = [
     title: 'CRM',
     Icon: CRMIcon,
     label: 'CRM',
-    value: "/crm",
+    value: '/crm',
     options: [
       { label: 'Clients', value: Routes.CRM.Clients },
       { label: 'Sub Contractors', value: Routes.CRM['Sub-Contractors'] },
@@ -115,7 +115,7 @@ export const planFeatureOptions = [
     title: 'Quantity Takeoff',
     Icon: QuantityIcon,
     label: 'Quantity Takeoff',
-    value: "/takeoff",
+    value: '/takeoff',
     options: [
       { label: 'Manual', value: Routes['Quantity-Takeoff'].Manual },
       { label: 'AI Takeoff', value: Routes['Quantity-Takeoff']['AI-Takeoff'] },
@@ -126,7 +126,7 @@ export const planFeatureOptions = [
     title: 'Estimates',
     Icon: EstimateIcon,
     label: 'Estimates',
-    value: "/estimates",
+    value: '/estimates',
     options: [
       {
         label: 'Estimates Requests',
@@ -140,7 +140,7 @@ export const planFeatureOptions = [
     title: 'Financial',
     Icon: FinancialIcon,
     label: 'Financial',
-    value: "/financial",
+    value: '/financial',
     options: [
       {
         label: 'Standard Invoicing',
@@ -181,14 +181,19 @@ type RoutesType = typeof Routes;
 export function getRouteFromPermission(permission: string) {
   for (const category in Routes) {
     if (typeof Routes[category as keyof RoutesType] === 'object') {
-      const subRoutes = Routes[category as keyof RoutesType] as Record<string, string>;
+      const subRoutes = Routes[category as keyof RoutesType] as Record<
+        string,
+        string
+      >;
       for (const subRoute in subRoutes) {
         if (subRoutes[subRoute].includes(permission)) {
           return subRoutes[subRoute];
         }
       }
     } else {
-      if (Routes[category as keyof RoutesType].toString().includes(permission)) {
+      if (
+        Routes[category as keyof RoutesType].toString().includes(permission)
+      ) {
         return Routes[category as keyof RoutesType];
       }
     }

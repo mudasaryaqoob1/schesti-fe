@@ -71,7 +71,7 @@ export function EventSiteWalkThroughForm({ formik }: Props) {
               format: 'MM/DD/YYYY',
               value:
                 formik.values.siteWalkthrough &&
-                  formik.values.siteWalkthrough.date
+                formik.values.siteWalkthrough.date
                   ? dayjs(formik.values.siteWalkthrough.date)
                   : undefined,
               onChange: (date, dateString) => {
@@ -103,7 +103,7 @@ export function EventSiteWalkThroughForm({ formik }: Props) {
               format: 'h:mm a',
               value:
                 formik.values.siteWalkthrough &&
-                  formik.values.siteWalkthrough.time
+                formik.values.siteWalkthrough.time
                   ? dayjs(formik.values.siteWalkthrough.time, 'h:mm a')
                   : undefined,
               onChange: (time, timeString) => {

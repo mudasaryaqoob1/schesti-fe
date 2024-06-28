@@ -140,7 +140,7 @@ const RegisterVerification = () => {
               Upload all the documents to get schesti verification badge. That
               will help to get more project
             </p>
-            <Form name="basic" className='mt-4' autoComplete="off">
+            <Form name="basic" className="mt-4" autoComplete="off">
               <div className="flex flex-col gap-3">
                 <label
                   htmlFor="myInput"
@@ -180,11 +180,15 @@ const RegisterVerification = () => {
                       </div>
                       {secretaryOfState && (
                         <div className="ml-auto">
-                          <DeleteOutlined disabled={isLoading} className="text-red-500 text-2xl" onClick={(e) => {
-                            e.stopPropagation();
-                            e.preventDefault();
-                            setSecretaryOfState(null);
-                          }} />
+                          <DeleteOutlined
+                            disabled={isLoading}
+                            className="text-red-500 text-2xl"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              e.preventDefault();
+                              setSecretaryOfState(null);
+                            }}
+                          />
                         </div>
                       )}
                     </div>
@@ -192,7 +196,7 @@ const RegisterVerification = () => {
                       id="secretaryOfState-file"
                       name="secretaryOfState"
                       type="file"
-                      className='!hidden'
+                      className="!hidden"
                       onChange={(e) => handleFileChange(e, 'secretaryOfState')}
                     />
                   </label>
@@ -253,7 +257,7 @@ const RegisterVerification = () => {
                       id="license-file"
                       type="file"
                       name="license"
-                      className='!hidden'
+                      className="!hidden"
                       onChange={(e) => handleFileChange(e, 'license')}
                     />
                   </label>
@@ -298,12 +302,13 @@ const RegisterVerification = () => {
                         </div>
                         {preQualification && (
                           <div className="ml-auto">
-                            <DeleteOutlined className="text-red-500 text-2xl"
+                            <DeleteOutlined
+                              className="text-red-500 text-2xl"
                               disabled={isLoading}
                               onClick={(e) => {
                                 e.stopPropagation();
                                 e.preventDefault();
-                                setPreQualification(null)
+                                setPreQualification(null);
                               }}
                             />
                           </div>
@@ -314,7 +319,7 @@ const RegisterVerification = () => {
                       id="preQualification-file"
                       type="file"
                       name="preQualification"
-                      className='!hidden'
+                      className="!hidden"
                       onChange={(e) => handleFileChange(e, 'preQualification')}
                     />
                   </label>

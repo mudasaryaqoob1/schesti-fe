@@ -18,17 +18,14 @@ import { RootState } from '@/redux/store';
 type Props = {
   onCancel: () => void;
   onSuccess: (_user: IUserInterface) => void;
-  user: IUserInterface | null
-}
+  user: IUserInterface | null;
+};
 
-const AddNewUser = ({
-  user,
-  onSuccess,
-  onCancel
-}: Props) => {
-
+const AddNewUser = ({ user, onSuccess, onCancel }: Props) => {
   const [isLoading, setisLoading] = useState(false);
-  const companyRolesState = useSelector((state: RootState) => state.companyRoles);
+  const companyRolesState = useSelector(
+    (state: RootState) => state.companyRoles
+  );
 
   const newClientSchema: any = Yup.object({
     firstName: Yup.string().required('First name is required!'),
@@ -43,17 +40,26 @@ const AddNewUser = ({
     firstName: user?.firstName || '',
     lastName: user?.lastName || '',
     email: user?.email || '',
-    roles: (user && user.roles && (typeof user.roles[0] === 'string' ? user.roles[0] : user.roles[0]._id)) || '' as any,
+    roles:
+      (user &&
+        user.roles &&
+        (typeof user.roles[0] === 'string'
+          ? user.roles[0]
+          : user.roles[0]._id)) ||
+      ('' as any),
   };
 
-  const roleOptions = companyRolesState.data.map(role => {
+  const roleOptions = companyRolesState.data.map((role) => {
     return {
       label: role.name,
-      value: role._id
-    }
-  })
+      value: role._id,
+    };
+  });
 
-  const submitHandler = async (values: Partial<IUserInterface>, { resetForm }: any) => {
+  const submitHandler = async (
+    values: Partial<IUserInterface>,
+    { resetForm }: any
+  ) => {
     setisLoading(true);
     if (user) {
       userService
@@ -92,7 +98,6 @@ const AddNewUser = ({
     }
   };
   return (
-
     <Formik
       initialValues={initialValues}
       validationSchema={newClientSchema}
@@ -109,7 +114,13 @@ const AddNewUser = ({
             autoComplete="off"
             className={`${bg_style} p-5`}
           >
-            <p className={"text-schestiPrimaryBlack text-[18px] font-medium mb-3"}>Add User</p>
+            <p
+              className={
+                'text-schestiPrimaryBlack text-[18px] font-medium mb-3'
+              }
+            >
+              Add User
+            </p>
             <div className="grid grid-cols-1 gap-4 ">
               <FormControl
                 control="input"

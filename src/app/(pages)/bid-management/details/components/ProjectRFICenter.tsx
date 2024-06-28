@@ -139,14 +139,15 @@ export function ProjectRFICenter({ projectId }: Props) {
                 <div className="py-4 flex-1 px-4 space-y-2">
                   <div className="flex justify-between">
                     <TertiaryHeading
-                      title={`${typeof user !== 'string'
+                      title={`${
+                        typeof user !== 'string'
                           ? user.companyName ||
-                          user.organizationName ||
-                          user.name
+                            user.organizationName ||
+                            user.name
                           : ''
-                        } | ${moment(rfi.createdAt).format(
-                          'MMM DD, YYYY, hh:mm A'
-                        )}`}
+                      } | ${moment(rfi.createdAt).format(
+                        'MMM DD, YYYY, hh:mm A'
+                      )}`}
                       className="text-[14px] leading-5 font-normal text-[#98A2B3]"
                     />
                     <div className="flex items-center space-x-4">
@@ -162,14 +163,14 @@ export function ProjectRFICenter({ projectId }: Props) {
                         <p className="py-[5px] rounded-full px-[11px] bg-[#E9EBF8] text-[#7138DF] text-xs leading-4">
                           <CreateRFI
                             isProjectOwner={true}
-                            onSuccess={() => { }}
+                            onSuccess={() => {}}
                             projectId={projectId}
                           />
                         </p>
                       ) : null}
                       {authUser.user &&
-                        (authUser.user.userRole === 'owner' ||
-                          authUser.user.userRole === 'contractor') ? (
+                      (authUser.user.userRole === 'owner' ||
+                        authUser.user.userRole === 'contractor') ? (
                         <RFIReply
                           key={rfi._id}
                           onSuccess={(rfi) => {
@@ -182,8 +183,8 @@ export function ProjectRFICenter({ projectId }: Props) {
                         />
                       ) : null}
                       {rfi.user &&
-                        typeof rfi.user !== 'string' &&
-                        rfi.user._id === authUser.user?._id ? (
+                      typeof rfi.user !== 'string' &&
+                      rfi.user._id === authUser.user?._id ? (
                         <UpdateRFI
                           onSuccess={(_rfi) => {
                             const updatedRfis = [...rfis].map((rfiItem) => {
@@ -218,8 +219,9 @@ export function ProjectRFICenter({ projectId }: Props) {
 
                       <div className="space-y-1">
                         <TertiaryHeading
-                          title={`${rfi.file.name.slice(0, 12)}.${rfi.file.extension
-                            }`}
+                          title={`${rfi.file.name.slice(0, 12)}.${
+                            rfi.file.extension
+                          }`}
                           className="text-[14px] font-normal leading-5"
                         />
 
@@ -251,14 +253,15 @@ export function ProjectRFICenter({ projectId }: Props) {
                   <div className="py-4 flex-1 px-4 space-y-2">
                     <div className="flex justify-between">
                       <TertiaryHeading
-                        title={`${typeof reply.user !== 'string'
+                        title={`${
+                          typeof reply.user !== 'string'
                             ? reply.user.companyName ||
-                            reply.user.organizationName ||
-                            reply.user.name
+                              reply.user.organizationName ||
+                              reply.user.name
                             : ''
-                          } | ${moment(reply.createdAt).format(
-                            'MMM DD, YYYY, hh:mm A'
-                          )}`}
+                        } | ${moment(reply.createdAt).format(
+                          'MMM DD, YYYY, hh:mm A'
+                        )}`}
                         className="text-[14px] leading-5 font-normal text-[#98A2B3]"
                       />
                       <div className="flex items-center space-x-4">
@@ -269,7 +272,7 @@ export function ProjectRFICenter({ projectId }: Props) {
                         ) : null}
 
                         {typeof reply.user !== 'string' &&
-                          reply.user._id === authUser.user?._id ? (
+                        reply.user._id === authUser.user?._id ? (
                           <UpdateRFI
                             onSuccess={(_rfi) => {
                               const updatedRfis = [...rfis].map((rfiItem) => {
@@ -304,8 +307,9 @@ export function ProjectRFICenter({ projectId }: Props) {
 
                         <div className="space-y-1">
                           <TertiaryHeading
-                            title={`${reply.file.name.slice(0, 12)}.${reply.file.extension
-                              }`}
+                            title={`${reply.file.name.slice(0, 12)}.${
+                              reply.file.extension
+                            }`}
                             className="text-[14px] font-normal leading-5"
                           />
 

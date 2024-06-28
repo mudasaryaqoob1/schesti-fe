@@ -62,7 +62,7 @@ export function EventOnSiteForm({ formik }: Props) {
                 format: 'MM/DD/YYYY',
                 value:
                   formik.values.preBiddingMeeting &&
-                    formik.values.preBiddingMeeting.date
+                  formik.values.preBiddingMeeting.date
                     ? dayjs(formik.values.preBiddingMeeting.date)
                     : undefined,
                 onChange: (date, dateString) => {
@@ -94,7 +94,7 @@ export function EventOnSiteForm({ formik }: Props) {
                 format: 'h:mm a',
                 value:
                   formik.values.preBiddingMeeting &&
-                    formik.values.preBiddingMeeting.time
+                  formik.values.preBiddingMeeting.time
                     ? dayjs(formik.values.preBiddingMeeting.time, 'h:mm a')
                     : undefined,
                 onChange: (time, timeString) => {

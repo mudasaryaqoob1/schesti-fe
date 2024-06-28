@@ -300,88 +300,102 @@ export function PostFinalize({ formik, children }: Props) {
       </div>
 
       <div className=" bg-white shadow-[0_4px_30px_0px_#2E2D740D] rounded-xl border p-4">
-
         <TertiaryHeading
           title="Add Event"
           className="text-[20px] leading-[30px]"
         />
 
-        <div className='mt-5'>
-          <div className='flex items-center space-x-10 '>
-
+        <div className="mt-5">
+          <div className="flex items-center space-x-10 ">
             <div className="flex items-center space-x-5">
-              <Switch checkedChildren="ON" unCheckedChildren="OFF" checked={formik.values.preBiddingMeeting?.isChecked}
-                onChange={val => {
+              <Switch
+                checkedChildren="ON"
+                unCheckedChildren="OFF"
+                checked={formik.values.preBiddingMeeting?.isChecked}
+                onChange={(val) => {
                   formik.setFieldValue('preBiddingMeeting.isChecked', val);
                 }}
               />
               <TertiaryHeading
-                title='Required Pre-bid Meeting'
-                className='text-[#344054] text-[16px] leading-7 font-normal'
+                title="Required Pre-bid Meeting"
+                className="text-[#344054] text-[16px] leading-7 font-normal"
               />
             </div>
 
-            {formik.values.preBiddingMeeting?.isChecked ? <div>
-              <Radio.Group value={formik.values.preBiddingMeeting?.type}
-                onChange={e => {
-                  formik.setFieldValue('preBiddingMeeting.type', e.target.value);
+            {formik.values.preBiddingMeeting?.isChecked ? (
+              <div>
+                <Radio.Group
+                  value={formik.values.preBiddingMeeting?.type}
+                  onChange={(e) => {
+                    formik.setFieldValue(
+                      'preBiddingMeeting.type',
+                      e.target.value
+                    );
+                  }}
+                >
+                  <Radio value={'Onsite'}>Onsite</Radio>
+                  <Radio value={'Online'}>Online</Radio>
+                </Radio.Group>
+              </div>
+            ) : null}
+          </div>
+          {formik.values.preBiddingMeeting?.isChecked ? (
+            <div className="my-2">
+              <Checkbox
+                checked={formik.values.preBiddingMeeting?.isMandatory}
+                onChange={(e) => {
+                  formik.setFieldValue(
+                    'preBiddingMeeting.isMandatory',
+                    e.target.checked
+                  );
                 }}
               >
-                <Radio value={'Onsite'}>Onsite</Radio>
-                <Radio value={'Online'}>Online</Radio>
-              </Radio.Group>
-            </div> : null
-            }
-          </div>
-          {formik.values.preBiddingMeeting?.isChecked ? <div className='my-2'>
-            <Checkbox
-              checked={formik.values.preBiddingMeeting?.isMandatory}
-              onChange={e => {
-                formik.setFieldValue('preBiddingMeeting.isMandatory', e.target.checked)
-              }}>
-              {"It's a mandatory meeting"}
-            </Checkbox>
-          </div> : null}
-          <EventOnSiteForm
-            formik={formik}
-          />
+                {"It's a mandatory meeting"}
+              </Checkbox>
+            </div>
+          ) : null}
+          <EventOnSiteForm formik={formik} />
 
-          <EventOnlineForm
-            formik={formik}
-          />
+          <EventOnlineForm formik={formik} />
         </div>
 
         <div className="mt-5">
           <div className="flex items-center space-x-5">
-            <Switch checkedChildren="ON" unCheckedChildren="OFF" checked={formik.values.siteWalkthrough?.isChecked}
-              onChange={val => formik.setFieldValue("siteWalkthrough.isChecked", val)}
+            <Switch
+              checkedChildren="ON"
+              unCheckedChildren="OFF"
+              checked={formik.values.siteWalkthrough?.isChecked}
+              onChange={(val) =>
+                formik.setFieldValue('siteWalkthrough.isChecked', val)
+              }
             />
             <TertiaryHeading
-              title='Site Walkthrough'
-              className='text-[#344054] text-[16px] leading-7 font-normal'
+              title="Site Walkthrough"
+              className="text-[#344054] text-[16px] leading-7 font-normal"
             />
           </div>
 
-          <EventSiteWalkThroughForm
-            formik={formik}
-          />
+          <EventSiteWalkThroughForm formik={formik} />
         </div>
 
         <div className="mt-5">
           <div className="flex items-center space-x-5">
-            <Switch checkedChildren="ON" unCheckedChildren="OFF"
+            <Switch
+              checkedChildren="ON"
+              unCheckedChildren="OFF"
               checked={formik.values.rfiDeadline?.isChecked}
-              onChange={val => formik.setFieldValue("rfiDeadline.isChecked", val)}
+              onChange={(val) =>
+                formik.setFieldValue('rfiDeadline.isChecked', val)
+              }
             />
             <TertiaryHeading
-              title='RFI Deadline'
-              className='text-[#344054] text-[16px] leading-7 font-normal'
+              title="RFI Deadline"
+              className="text-[#344054] text-[16px] leading-7 font-normal"
             />
           </div>
 
           <RfiDeadline formik={formik} />
         </div>
-
       </div>
 
       <div className=" bg-white shadow-[0_4px_30px_0px_#2E2D740D] rounded-xl border p-4">
@@ -495,7 +509,7 @@ export function PostFinalize({ formik, children }: Props) {
               onBlur: formik.handleBlur,
               status:
                 formik.touched.selectedTeamMembers &&
-                  Boolean(formik.errors.selectedTeamMembers)
+                Boolean(formik.errors.selectedTeamMembers)
                   ? 'error'
                   : undefined,
             }}
@@ -505,14 +519,14 @@ export function PostFinalize({ formik, children }: Props) {
             }
             errorMessage={
               formik.touched.selectedTeamMembers &&
-                Boolean(formik.errors.selectedTeamMembers) &&
-                Array.isArray(formik.errors.selectedTeamMembers)
+              Boolean(formik.errors.selectedTeamMembers) &&
+              Array.isArray(formik.errors.selectedTeamMembers)
                 ? formik.errors.selectedTeamMembers
-                  .map(
-                    (item: string, idx) =>
-                      `'${formik.values.selectedTeamMembers![idx]}' ${item}`
-                  )
-                  .toString()
+                    .map(
+                      (item: string, idx) =>
+                        `'${formik.values.selectedTeamMembers![idx]}' ${item}`
+                    )
+                    .toString()
                 : (formik.errors.selectedTeamMembers as string)
             }
           />
@@ -525,9 +539,9 @@ export function PostFinalize({ formik, children }: Props) {
             <div className="space-y-2">
               <Checkbox
                 checked={formik.values.isMatchingWithTrades}
-              // onChange={(e) => {
-              //   formik.setFieldValue('isMatchingWithTrades', e.target.checked);
-              // }}
+                // onChange={(e) => {
+                //   formik.setFieldValue('isMatchingWithTrades', e.target.checked);
+                // }}
               >
                 <SenaryHeading
                   title="Schesti members with matching trades and region"
@@ -564,7 +578,7 @@ export function PostFinalize({ formik, children }: Props) {
                 onBlur: formik.handleBlur,
                 status:
                   formik.touched.invitedMembers &&
-                    Boolean(formik.errors.invitedMembers)
+                  Boolean(formik.errors.invitedMembers)
                     ? 'error'
                     : undefined,
                 dropdownStyle: {
@@ -577,14 +591,14 @@ export function PostFinalize({ formik, children }: Props) {
               }
               errorMessage={
                 formik.touched.invitedMembers &&
-                  Boolean(formik.errors.invitedMembers) &&
-                  Array.isArray(formik.errors.invitedMembers)
+                Boolean(formik.errors.invitedMembers) &&
+                Array.isArray(formik.errors.invitedMembers)
                   ? formik.errors.invitedMembers
-                    .map(
-                      (item: string, idx) =>
-                        `'${formik.values.invitedMembers![idx]}' ${item}`
-                    )
-                    .toString()
+                      .map(
+                        (item: string, idx) =>
+                          `'${formik.values.invitedMembers![idx]}' ${item}`
+                      )
+                      .toString()
                   : (formik.errors.invitedMembers as string)
               }
             />

@@ -130,14 +130,14 @@ const Tabs = () => {
                         children:
                           'children' in option
                             ? option.children?.map((item) => {
-                              return {
-                                key: item.value,
-                                label: (
-                                  <Link href={item.value}>{item.label}</Link>
-                                ),
-                                value: item.value,
-                              };
-                            })
+                                return {
+                                  key: item.value,
+                                  label: (
+                                    <Link href={item.value}>{item.label}</Link>
+                                  ),
+                                  value: item.value,
+                                };
+                              })
                             : undefined,
                       };
                     }),

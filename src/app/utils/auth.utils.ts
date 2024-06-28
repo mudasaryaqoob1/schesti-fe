@@ -1,6 +1,4 @@
-import {
-  IUserInterface,
-} from '../interfaces/user.interface';
+import { IUserInterface } from '../interfaces/user.interface';
 import _ from 'lodash';
 import { USER_ROLES } from '../enums/role.enums';
 
@@ -110,4 +108,3 @@ export function CheckOtherRoles(authUserRole: string) {
   const roles = Object.values(USER_ROLES);
   return roles.includes(authUserRole);
 }
-

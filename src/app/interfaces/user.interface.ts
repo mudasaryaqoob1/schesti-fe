@@ -1,7 +1,6 @@
 import { IUpdateCompanyDetail } from './companyInterfaces/updateCompany.interface';
 import { ISettingCompanyRole } from './settings/comapny-role-settings.interface';
 
-
 export type IUserInterface = IUpdateCompanyDetail & {
   _id: string;
   email: string;

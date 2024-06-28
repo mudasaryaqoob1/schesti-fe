@@ -80,7 +80,9 @@ class UserService extends HttpService {
       { status: clientDetail.status }
     );
 
-  httpDeleteUser = (userId: string): Promise<IResponseInterface<IUserInterface>> =>
+  httpDeleteUser = (
+    userId: string
+  ): Promise<IResponseInterface<IUserInterface>> =>
     this.delete(`${this.userPrefix}/delete/${userId}`);
 
   httpAddNewClient = (data: IClient): Promise<IResponseInterface<any>> =>

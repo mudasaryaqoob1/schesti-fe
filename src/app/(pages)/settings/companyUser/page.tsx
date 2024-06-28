@@ -12,18 +12,15 @@ import { AppDispatch } from '@/redux/store';
 import { getCompanyRolesThunk } from '@/redux/company-roles/company-roles.thunk';
 import { useLocalStorageState } from 'ahooks';
 
-const USERS_TAB = "Users";
-const ROLES_TAB = "Roles";
-
+const USERS_TAB = 'Users';
+const ROLES_TAB = 'Roles';
 
 const Index = () => {
-
-  const [activeTabKey, setActiveTabKey] = useLocalStorageState<string | undefined>(
-    'company-role-tab',
-    {
-      defaultValue: USERS_TAB,
-    },
-  );
+  const [activeTabKey, setActiveTabKey] = useLocalStorageState<
+    string | undefined
+  >('company-role-tab', {
+    defaultValue: USERS_TAB,
+  });
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
@@ -35,15 +32,20 @@ const Index = () => {
       <div className="w-full">
         <TertiaryHeading title="User Managements" />
 
-
         <div className="bg-snowWhite rounded-2xl mt-4 shadow-instentWhite py-5 px-6">
           <Tabs
             activeKey={activeTabKey}
-            items={[USERS_TAB, ROLES_TAB].map(tab => {
+            items={[USERS_TAB, ROLES_TAB].map((tab) => {
               return {
-                label: <p className={`text-base font-normal ${activeTabKey === tab ? 'text-schestiPrimary font-semibold ' : 'text-graphiteGray'}`}>{tab}</p>,
-                key: tab
-              }
+                label: (
+                  <p
+                    className={`text-base font-normal ${activeTabKey === tab ? 'text-schestiPrimary font-semibold ' : 'text-graphiteGray'}`}
+                  >
+                    {tab}
+                  </p>
+                ),
+                key: tab,
+              };
             })}
             onChange={(key) => {
               setActiveTabKey(key);

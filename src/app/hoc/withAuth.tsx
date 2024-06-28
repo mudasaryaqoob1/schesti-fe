@@ -61,7 +61,12 @@ export const withAuth = (
 
     const userRole = user?.user?.userRole ? user?.user?.userRole : '';
 
-    let employeePermissions: string[] = (user && user.user && user.user.roles) ? user.user.roles.map(role => typeof role !== 'string' ? role.permissions : '').flat() : [];
+    let employeePermissions: string[] =
+      user && user.user && user.user.roles
+        ? user.user.roles
+            .map((role) => (typeof role !== 'string' ? role.permissions : ''))
+            .flat()
+        : [];
 
     const userPlanFeatures = userPlan
       ? userPlan.features.split(',')
@@ -73,16 +78,24 @@ export const withAuth = (
     }
 
     const isEmployee = user?.user?.associatedCompany;
-    const employeeAccessFeatures = _.intersection(userPlanFeatures, employeePermissions);
+    const employeeAccessFeatures = _.intersection(
+      userPlanFeatures,
+      employeePermissions
+    );
 
-    const canAccessThePage = isEmployee ? canAccessRoute(pathname, employeeAccessFeatures, true) : canAccessRoute(pathname, userPlanFeatures);
+    const canAccessThePage = isEmployee
+      ? canAccessRoute(pathname, employeeAccessFeatures, true)
+      : canAccessRoute(pathname, userPlanFeatures);
     // const canAccessThePage = true;
     // if the required roles is empty; and there is already and a user with the plan
     if (canAccessThePage && !requiredRoles.length) {
       return <WrappedComponent {...props} />;
     }
 
-    const hasRoles = _.every(requiredRoles, (role) => userRole.toLowerCase() === role.toLowerCase());
+    const hasRoles = _.every(
+      requiredRoles,
+      (role) => userRole.toLowerCase() === role.toLowerCase()
+    );
 
     if (canAccessThePage && hasRoles) {
       return <WrappedComponent {...props} />;
@@ -121,8 +134,14 @@ function getAllRoutes(routes: { [key: string]: any } = OtherRoutes): string[] {
     typeof route === 'string' ? [route] : Object.values(route)
   );
 }
-function canAccessRoute(pathname: string, userFeatures: string[], isEmployee: boolean = false) {
-  const allRoutes = getAllRoutes(isEmployee ? {} : OtherRoutes).concat(userFeatures);
+function canAccessRoute(
+  pathname: string,
+  userFeatures: string[],
+  isEmployee: boolean = false
+) {
+  const allRoutes = getAllRoutes(isEmployee ? {} : OtherRoutes).concat(
+    userFeatures
+  );
   const result = allRoutes.some((route) => pathname.includes(route));
   return result;
 }

@@ -109,20 +109,19 @@ const SetNewPassword = () => {
                     text="Set Password"
                     className=" mt-8 mb-3"
                   />
-                  <div className='flex justify-center'>
-                    <Link href={'/login'} className='!pt-3 mx-auto text-schestiLightBlack font-normal text-[14px] leading-4 text-center'>
+                  <div className="flex justify-center">
+                    <Link
+                      href={'/login'}
+                      className="!pt-3 mx-auto text-schestiLightBlack font-normal text-[14px] leading-4 text-center"
+                    >
                       Back to login
                     </Link>
                   </div>
-
                 </Form>
               );
             }}
           </Formik>
-
         </div>
-
-
       </div>
     </WelcomeWrapper>
   );

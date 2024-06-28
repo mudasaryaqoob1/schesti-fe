@@ -190,11 +190,11 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
             title={
               selectedBidProjectDetail
                 ? Bid_How_Long_Price_Increase.find((bidprice) => {
-                  return (
-                    selectedBidProjectDetail.priceExpiryDuration ===
-                    bidprice.value
-                  );
-                })!.label
+                    return (
+                      selectedBidProjectDetail.priceExpiryDuration ===
+                      bidprice.value
+                    );
+                  })!.label
                 : ''
             }
             className="font-semibold text-[#101828] text-xs leading-4"

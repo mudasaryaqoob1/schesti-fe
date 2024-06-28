@@ -34,7 +34,7 @@ const Resendcode = () => {
   };
 
   return (
-    <WelcomeWrapper title='Reset Your Password'>
+    <WelcomeWrapper title="Reset Your Password">
       <Image
         className="cursor-pointer"
         src={'/logo.svg'}
@@ -74,7 +74,10 @@ const Resendcode = () => {
             Use a different email
           </p>
 
-          <Link href={'/login'} className='text-schestiLightBlack font-normal text-[14px] leading-4 text-center'>
+          <Link
+            href={'/login'}
+            className="text-schestiLightBlack font-normal text-[14px] leading-4 text-center"
+          >
             Back to login
           </Link>
         </div>
