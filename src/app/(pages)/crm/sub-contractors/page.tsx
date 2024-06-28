@@ -30,6 +30,7 @@ import { Routes } from '@/app/utils/plans.utils';
 import { withAuth } from '@/app/hoc/withAuth';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import WhiteButton from '@/app/component/customButton/white';
+import { Excel } from 'antd-table-saveas-excel';
 
 export interface DataType {
   company: string;
@@ -177,6 +178,38 @@ const SubcontractTable = () => {
     })
     : [];
 
+  function downloadSubcontractorCSV(data: ISubcontractor[]) {
+    const excel = new Excel();
+    console.log(data);
+
+    excel
+      .addSheet('Subcontractors')
+      .addColumns([
+        {
+          dataIndex: "companyRep",
+          title: "Company Rep",
+        },
+        {
+          dataIndex: "name",
+          title: "Company",
+        },
+        {
+          dataIndex: "email",
+          title: "Email Address"
+        },
+        {
+          dataIndex: "phone",
+          title: "Phone Number"
+        },
+        {
+          dataIndex: "address",
+          title: "Address"
+        },
+      ])
+      .addDataSource(data)
+      .saveAs(`crm-subcontractors-${Date.now()}.xlsx`);
+  }
+
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       <Head>
@@ -227,6 +260,11 @@ const SubcontractTable = () => {
               icon='/download-icon.svg'
               iconwidth={20}
               iconheight={20}
+              onClick={() => {
+                if (subcontractersData) {
+                  downloadSubcontractorCSV(subcontractersData);
+                }
+              }}
             />
             <WhiteButton
               text='Import'
