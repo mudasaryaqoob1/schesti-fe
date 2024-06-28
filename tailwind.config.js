@@ -80,6 +80,7 @@ export default {
         schestiPrimaryBlack:"#475467",
         schestiLightBlack:"#667085",
         schestiLightGray:"#EAECF0",
+        schestiPrimaryBG:"#F8F8F8"
       },
       boxShadow: {
         // Soft Glow for Primary Element
