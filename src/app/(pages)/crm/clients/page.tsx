@@ -56,6 +56,18 @@ const activeClientMenuItems: MenuProps['items'] = [
     label: <p>Edit Client Details</p>,
   },
   {
+    key: 'createContract',
+    label: <p>Create Contract</p>,
+  },
+  {
+    key: 'createNewTakeoff',
+    label: <p>Create New Takeoff</p>,
+  },
+  {
+    key: 'email',
+    label: <p>Email</p>,
+  },
+  {
     key: 'deleteClient',
     label: <p>Delete</p>,
   },
