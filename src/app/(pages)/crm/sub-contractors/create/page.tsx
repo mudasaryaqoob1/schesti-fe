@@ -175,7 +175,7 @@ const CreateSubcontractor = () => {
                     <CustomButton
                       isLoading={isLoading}
                       type="submit"
-                      text="Save"
+                      text="Save and Continue"
                     />
                   </div>
                 </div>
