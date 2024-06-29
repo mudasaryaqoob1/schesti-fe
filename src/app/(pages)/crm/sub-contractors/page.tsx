@@ -1,7 +1,7 @@
 'use client';
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback, useState, useRef, ChangeEventHandler } from 'react';
 import Head from 'next/head';
-import { Dropdown, Table } from 'antd';
+import { Dropdown, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { MenuProps } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
@@ -31,6 +31,9 @@ import { withAuth } from '@/app/hoc/withAuth';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import WhiteButton from '@/app/component/customButton/white';
 import { Excel } from 'antd-table-saveas-excel';
+import { subcontractorService } from '@/app/services/subcontractor.service';
+import { AxiosError } from 'axios';
+import { insertManySubcontractorsAction } from '@/redux/company/subcontractorSlice/companySubcontractor.slice';
 
 export interface DataType {
   company: string;
@@ -71,6 +74,11 @@ const SubcontractTable = () => {
   const [selectedSubcontractor, setSelectedSubcontractor] =
     useState<ISubcontractor | null>(null);
   const [search, setSearch] = useState('');
+  const inputFileRef = useRef<HTMLInputElement | null>(null);
+  const [isUploadingFile, setIsUploadingFile] = useState(false);
+  const [parseData, setParseData] = useState<ISubcontractor[]>([]);
+  const [isUploadingManySubcontractors, setIsUploadingManySubcontractors] = useState(false);
+
 
   const fetchSubcontactors = useCallback(async () => {
     await dispatch(fetchCompanySubcontractors({ page: 1, limit: 10 }));
@@ -119,15 +127,13 @@ const SubcontractTable = () => {
       title: 'Address',
       dataIndex: 'address',
     },
-    // {
-    //   title: 'Status',
-    //   dataIndex: 'status',
-    //   render: () => (
-    //     <a className="text-[#027A48] bg-[#ECFDF3] px-2 py-1 rounded-full">
-    //       Active
-    //     </a>
-    //   ),
-    // },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      render: () => (
+        <Tag className='rounded-full' color="green">Active</Tag>
+      ),
+    },
     {
       title: 'Action',
       dataIndex: 'action',
@@ -210,6 +216,46 @@ const SubcontractTable = () => {
       .saveAs(`crm-subcontractors-${Date.now()}.xlsx`);
   }
 
+
+  const uploadAndParseClientData: ChangeEventHandler<HTMLInputElement> = async (e) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      setIsUploadingFile(true);
+      try {
+        const file = files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+        const response = await subcontractorService.httpUploadCrmSubcontractorCsvAndParse(formData);
+        if (response.data) {
+          toast.success('File parsed successfully');
+          setParseData(response.data);
+        }
+      } catch (error) {
+        const err = error as AxiosError<{ message: string }>;
+        toast.error(err.response?.data.message || 'An error occurred')
+      } finally {
+        setIsUploadingFile(false);
+      }
+    }
+  }
+  async function insertManySubcontractors(data: ISubcontractor[]) {
+    setIsUploadingManySubcontractors(true);
+    try {
+      const response = await subcontractorService.httpInsertManySubcontractors(data);
+      if (response.data) {
+        dispatch(insertManySubcontractorsAction(response.data));
+        toast.success('Clients inserted successfully');
+        setParseData([]);
+      }
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>
+      toast.error(err.response?.data.message || 'An error occurred');
+    } finally {
+      setIsUploadingManySubcontractors(false);
+    }
+  }
+
+
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       <Head>
@@ -231,6 +277,42 @@ const SubcontractTable = () => {
           />
         </ModalComponent>
       ) : null}
+
+
+      {parseData.length ? <ModalComponent
+        open={parseData.length > 0}
+        setOpen={() => {
+
+        }}
+        width='70%'
+      >
+        <div className='bg-white p-5 rounded-md'>
+          <div className='my-2 mb-6 text-schestiPrimary font-semibold text-[16px] leading-5'>
+            CSV Preview
+          </div>
+          <Table
+            dataSource={parseData}
+            columns={(columns.slice(0, columns.length - 2)) as ColumnsType<ISubcontractor>}
+            pagination={{ position: ['bottomCenter'] }}
+          />
+
+          <div className='flex justify-end space-x-3'>
+            <WhiteButton
+              text='Cancel'
+              onClick={() => setParseData([])}
+              className='!w-fit'
+            />
+            <Button
+              text='Import Data'
+              className='!w-fit'
+              onClick={() => insertManySubcontractors(parseData)}
+              isLoading={isUploadingManySubcontractors}
+            />
+          </div>
+        </div>
+      </ModalComponent> : null}
+
+
       <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
         <div className="flex justify-between items-center mb-4">
           <TertiaryHeading
@@ -266,13 +348,28 @@ const SubcontractTable = () => {
                 }
               }}
             />
-            <WhiteButton
-              text='Import'
-              className='!w-fit'
-              icon='/uploadcloud.svg'
-              iconwidth={20}
-              iconheight={20}
-            />
+            <div>
+              <WhiteButton
+                text='Import'
+                className='!w-fit'
+                icon='/uploadcloud.svg'
+                iconwidth={20}
+                iconheight={20}
+                onClick={() => {
+                  inputFileRef.current?.click();
+                }}
+                isLoading={isUploadingFile}
+                loadingText='Uploading...'
+              />
+              <input ref={inputFileRef}
+                accept='.csv, .xlsx'
+                type="file"
+                name=""
+                id="importClients"
+                className='hidden'
+                onChange={uploadAndParseClientData}
+              />
+            </div>
             <Button
               text="Add New Subcontractor"
               className="!w-auto "

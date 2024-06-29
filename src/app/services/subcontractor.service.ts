@@ -19,6 +19,15 @@ class SubcontractorsService extends HttpService {
   ): Promise<IResponseInterface> =>
     this.get(`${this.prefix}/getAllSubcontractors?page=${page}&limit=${limit}`);
 
+
+  httpUploadCrmSubcontractorCsvAndParse = (data: FormData) => this.post(`${this.prefix}/parse-data`, data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
+
+  httpInsertManySubcontractors = (data: ISubcontract[]): Promise<IResponseInterface<ISubcontractor[]>> => this.post(`${this.prefix}/insertMany`, data);
+
   httpUpdateSubontractor = (
     data: ISubcontract,
     clientId: string | string[]

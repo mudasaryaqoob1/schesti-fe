@@ -1,14 +1,24 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import initialCompanySubcontractorState from './companySubcontractor.initialState';
 import {
   fetchCompanySubcontractors,
   deleteSubcontractor,
 } from '../company.thunk';
+import { ISubcontractor } from '@/app/interfaces/companyInterfaces/subcontractor.interface';
 
 export const subcontractorSlice = createSlice({
   name: 'subcontractor',
   initialState: initialCompanySubcontractorState,
-  reducers: {},
+  reducers: {
+    insertManySubcontractorsAction: (state, action: PayloadAction<ISubcontractor[]>) => {
+      if (state.data) {
+        state.data = [...action.payload, ...state.data,];
+      } else {
+        state.data = [...action.payload];
+      }
+
+    }
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchCompanySubcontractors.pending, (state) => {
       state.loading = true;
@@ -40,8 +50,8 @@ export const subcontractorSlice = createSlice({
       state.loading = false;
       state.data = state.data
         ? state.data.filter(
-            (item: any) => item?._id !== action.payload.data.client._id
-          )
+          (item: any) => item?._id !== action.payload.data.client._id
+        )
         : null;
     });
 
@@ -51,5 +61,7 @@ export const subcontractorSlice = createSlice({
     });
   },
 });
+
+export const { insertManySubcontractorsAction } = subcontractorSlice.actions;
 
 export default subcontractorSlice.reducer;
