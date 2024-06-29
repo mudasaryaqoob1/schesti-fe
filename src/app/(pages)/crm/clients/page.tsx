@@ -32,6 +32,7 @@ import { userService } from '@/app/services/user.service';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { insertManyClientsAction } from '@/redux/company/clientSlice/companyClient.slice';
+import { PreviewCSVImportFileModal } from '../components/PreviewCSVImportFileModal';
 
 interface DataType {
   firstName: string;
@@ -373,38 +374,17 @@ const ClientTable = () => {
         </ModalComponent>
       ) : null}
 
-      {parseData.length ? <ModalComponent
-        open={parseData.length > 0}
-        setOpen={() => {
+      <PreviewCSVImportFileModal
+        columns={columns as any}
+        data={parseData}
+        onClose={() => setParseData([])}
+        onConfirm={() => insertManyClients(parseData)}
+        setData={setParseData}
+        isLoading={isUploadingManyClients}
+        title='Import Clients'
 
-        }}
-        width='70%'
-      >
-        <div className='bg-white p-5 rounded-md'>
-          <div className='my-2 mb-6 text-schestiPrimary font-semibold text-[16px] leading-5'>
-            CSV Preview
-          </div>
-          <Table
-            dataSource={parseData}
-            columns={(columns.slice(0, columns.length - 2)) as ColumnsType<IClient>}
-            pagination={{ position: ['bottomCenter'] }}
-          />
+      />
 
-          <div className='flex justify-end space-x-3'>
-            <WhiteButton
-              text='Cancel'
-              onClick={() => setParseData([])}
-              className='!w-fit'
-            />
-            <Button
-              text='Import Data'
-              className='!w-fit'
-              onClick={() => insertManyClients(parseData)}
-              isLoading={isUploadingManyClients}
-            />
-          </div>
-        </div>
-      </ModalComponent> : null}
       <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
         <div className="flex justify-between items-center mb-4">
           <TertiaryHeading title="Client List" className="text-graphiteGray" />

@@ -7,7 +7,7 @@ import type { MenuProps } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { toast } from 'react-toastify';
-import { DeleteOutlined, SearchOutlined } from '@ant-design/icons';
+import { SearchOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 
 // module imports
@@ -34,6 +34,7 @@ import { Excel } from 'antd-table-saveas-excel';
 import { subcontractorService } from '@/app/services/subcontractor.service';
 import { AxiosError } from 'axios';
 import { insertManySubcontractorsAction } from '@/redux/company/subcontractorSlice/companySubcontractor.slice';
+import { PreviewCSVImportFileModal } from '../components/PreviewCSVImportFileModal';
 
 export interface DataType {
   company: string;
@@ -284,48 +285,15 @@ const SubcontractTable = () => {
       ) : null}
 
 
-      {parseData.length ? <ModalComponent
-        open={parseData.length > 0}
-        setOpen={() => {
-
-        }}
-        width='70%'
-      >
-        <div className='bg-white p-5 rounded-md'>
-          <div className='my-2 mb-6 text-schestiPrimary font-semibold text-[16px] leading-5'>
-            CSV Preview
-          </div>
-          <Table
-            dataSource={parseData}
-            columns={([...columns.slice(0, columns.length - 2), {
-              title: 'Action',
-              render(record,) {
-                return <DeleteOutlined
-                  className='text-red-400 cursor-pointer text-base'
-                  onClick={() => {
-                    setParseData(parseData.filter((item) => item.email !== record.email));
-                  }}
-                />
-              },
-            }]) as ColumnsType<ISubcontractor>}
-            pagination={{ position: ['bottomCenter'] }}
-          />
-
-          <div className='flex justify-end space-x-3'>
-            <WhiteButton
-              text='Cancel'
-              onClick={() => setParseData([])}
-              className='!w-fit'
-            />
-            <Button
-              text='Import Data'
-              className='!w-fit'
-              onClick={() => insertManySubcontractors(parseData)}
-              isLoading={isUploadingManySubcontractors}
-            />
-          </div>
-        </div>
-      </ModalComponent> : null}
+      <PreviewCSVImportFileModal
+        columns={columns}
+        data={parseData}
+        onClose={() => setParseData([])}
+        onConfirm={() => insertManySubcontractors(parseData)}
+        setData={setParseData}
+        isLoading={isUploadingManySubcontractors}
+        title='Import Subcontractors'
+      />
 
 
       <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
