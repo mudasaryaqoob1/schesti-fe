@@ -12,6 +12,7 @@ import { selectClientsLoading } from '@/redux/company/companySelector';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 import Button from '@/app/component/customButton/button';
+import WhiteButton from '@/app/component/customButton/white';
 import {
   deleteCompanyPartner,
   fetchCompanyPartner,
@@ -26,6 +27,7 @@ import { toast } from 'react-toastify';
 import { withAuth } from '@/app/hoc/withAuth';
 import { Routes } from '@/app/utils/plans.utils';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { Excel } from 'antd-table-saveas-excel';
 
 interface DataType {
   firstName: string;
@@ -149,16 +151,27 @@ const PartnerTable = () => {
   ];
   const filteredPartners = partnersData
     ? partnersData.filter((partner) => {
-        if (!search) {
-          return partner;
-        }
-        return (
-          partner.firstName.toLowerCase().includes(search.toLowerCase()) ||
-          partner.lastName.toLowerCase().includes(search.toLowerCase()) ||
-          partner.email?.includes(search)
-        );
-      })
+      if (!search) {
+        return partner;
+      }
+      return (
+        partner.firstName.toLowerCase().includes(search.toLowerCase()) ||
+        partner.lastName.toLowerCase().includes(search.toLowerCase()) ||
+        partner.email?.includes(search)
+      );
+    })
     : [];
+
+
+  function downloadCSV(data: IPartner[]) {
+    const excel = new Excel();
+    excel
+      .addSheet('Partners')
+      .addColumns((columns as any).slice(0, 5))
+      .addDataSource(data)
+      .saveAs(`crm-partners-${Date.now()}.xlsx`);
+  }
+
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       {selectedPartner && showDeleteModal ? (
@@ -184,7 +197,7 @@ const PartnerTable = () => {
       <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
         <div className="flex justify-between items-center mb-4">
           <TertiaryHeading title="Partner List" className="text-graphiteGray" />
-          <div className=" flex space-x-3">
+          <div className=" flex items-center space-x-3">
             <div className="w-96">
               <InputComponent
                 label=""
@@ -199,6 +212,38 @@ const PartnerTable = () => {
                     setSearch(e.target.value);
                   },
                 }}
+              />
+            </div>
+            <div>
+              <WhiteButton
+                text='Export'
+                className='!w-fit'
+                icon='/download-icon.svg'
+                iconwidth={20}
+                iconheight={20}
+                onClick={() => {
+                  if (partnersData) {
+                    downloadCSV(partnersData)
+                  }
+                }}
+              />
+            </div>
+            <div>
+              <WhiteButton
+                text='Import'
+                className='!w-fit'
+                icon='/uploadcloud.svg'
+                iconwidth={20}
+                iconheight={20}
+
+              />
+              <input
+                accept='.csv, .xlsx'
+                type="file"
+                name=""
+                id="importClients"
+                className='hidden'
+
               />
             </div>
             <Button
