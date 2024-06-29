@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useCallback, useState, useRef, ChangeEventHandler } from 'react';
-import { Dropdown, Table } from 'antd';
+import { Dropdown, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { MenuProps } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
@@ -124,15 +124,12 @@ const PartnerTable = () => {
       title: 'Address',
       dataIndex: 'address',
     },
-    // {
-    //   title: 'Status',
-    //   dataIndex: 'status',
-    //   render: () => (
-    //     <p className="bg-lime-100 w-max text-[#027A48] bg-[#ECFDF3] px-2 py-1 rounded-full">
-    //       Active
-    //     </p>
-    //   ),
-    // },
+    {
+      title: 'Status',
+      render: () => (
+        <Tag className='rounded-full' color="green">Active</Tag>
+      ),
+    },
     {
       title: 'Action',
       dataIndex: 'action',
