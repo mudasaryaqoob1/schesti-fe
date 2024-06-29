@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback, useState, useRef, ChangeEventHandler } from 'react';
 import { Dropdown, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { MenuProps } from 'antd';
@@ -28,6 +28,9 @@ import { withAuth } from '@/app/hoc/withAuth';
 import { Routes } from '@/app/utils/plans.utils';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { Excel } from 'antd-table-saveas-excel';
+import { AxiosError } from 'axios';
+import { userService } from '@/app/services/user.service';
+import { PreviewCSVImportFileModal } from '../components/PreviewCSVImportFileModal';
 
 interface DataType {
   firstName: string;
@@ -67,6 +70,13 @@ const PartnerTable = () => {
   const [search, setSearch] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedPartner, setselectedPartner] = useState<IPartner | null>(null);
+
+
+  const inputFileRef = useRef<HTMLInputElement | null>(null);
+  const [isUploadingFile, setIsUploadingFile] = useState(false);
+  const [parseData, setParseData] = useState<Required<IPartner>[]>([]);
+  const [isUploadingMany, setIsUploadingMany] = useState(false);
+
 
   const fetchCompanyPartnerHandler = useCallback(async () => {
     await dispatch(fetchCompanyPartner({ page: 1, limit: 10 }));
@@ -172,6 +182,29 @@ const PartnerTable = () => {
       .saveAs(`crm-partners-${Date.now()}.xlsx`);
   }
 
+
+  const uploadAndParseClientData: ChangeEventHandler<HTMLInputElement> = async (e) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      setIsUploadingFile(true);
+      try {
+        const file = files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+        const response = await userService.httpUploadCrmPartnersCsvAndParse(formData);
+        if (response.data) {
+          toast.success('File parsed successfully');
+          setParseData(response.data);
+        }
+      } catch (error) {
+        const err = error as AxiosError<{ message: string }>;
+        toast.error(err.response?.data.message || 'An error occurred')
+      } finally {
+        setIsUploadingFile(false);
+      }
+    }
+  }
+
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       {selectedPartner && showDeleteModal ? (
@@ -194,6 +227,17 @@ const PartnerTable = () => {
           />
         </ModalComponent>
       ) : null}
+
+      <PreviewCSVImportFileModal
+        columns={columns as any}
+        data={parseData}
+        onClose={() => setParseData([])}
+        onConfirm={() => { }}
+        setData={setParseData}
+        isLoading={isUploadingMany}
+        title='Import Partners'
+      />
+
       <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
         <div className="flex justify-between items-center mb-4">
           <TertiaryHeading title="Partner List" className="text-graphiteGray" />
@@ -235,15 +279,22 @@ const PartnerTable = () => {
                 icon='/uploadcloud.svg'
                 iconwidth={20}
                 iconheight={20}
-
+                onClick={() => {
+                  if (inputFileRef.current) {
+                    inputFileRef.current.click();
+                  }
+                }}
+                isLoading={isUploadingFile}
+                loadingText='Uploading...'
               />
               <input
+                ref={inputFileRef}
                 accept='.csv, .xlsx'
                 type="file"
                 name=""
                 id="importClients"
                 className='hidden'
-
+                onChange={uploadAndParseClientData}
               />
             </div>
             <Button
