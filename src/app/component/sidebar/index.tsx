@@ -170,9 +170,8 @@ export const AppSidebar = (props: Props) => {
   // set activeKey if menuItems key includes in pathname
   const allKeys = collectKeys(menuItems);
   const activeKeys = allKeys.map(key => key.toString()).filter((key) => {
-    return key.toString().includes(pathname);
+    return pathname.includes(key.toString());
   });
-
 
   return (
     <div
