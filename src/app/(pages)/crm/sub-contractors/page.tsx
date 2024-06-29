@@ -7,7 +7,7 @@ import type { MenuProps } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/redux/store';
 import { toast } from 'react-toastify';
-import { SearchOutlined } from '@ant-design/icons';
+import { DeleteOutlined, SearchOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 
 // module imports
@@ -297,7 +297,17 @@ const SubcontractTable = () => {
           </div>
           <Table
             dataSource={parseData}
-            columns={(columns.slice(0, columns.length - 2)) as ColumnsType<ISubcontractor>}
+            columns={([...columns.slice(0, columns.length - 2), {
+              title: 'Action',
+              render(record,) {
+                return <DeleteOutlined
+                  className='text-red-400 cursor-pointer text-base'
+                  onClick={() => {
+                    setParseData(parseData.filter((item) => item.email !== record.email));
+                  }}
+                />
+              },
+            }]) as ColumnsType<ISubcontractor>}
             pagination={{ position: ['bottomCenter'] }}
           />
 
