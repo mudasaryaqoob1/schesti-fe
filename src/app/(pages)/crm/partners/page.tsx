@@ -186,6 +186,7 @@ const PartnerTable = () => {
 
   const uploadAndParseClientData: ChangeEventHandler<HTMLInputElement> = async (e) => {
     const files = e.target.files;
+    setParseData([]);
     if (files && files.length > 0) {
       setIsUploadingFile(true);
       try {
