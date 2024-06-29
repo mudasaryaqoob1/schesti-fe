@@ -21,6 +21,9 @@ export const Routes = {
     Clients: '/crm/clients',
     'Sub-Contractors': '/crm/sub-contractors',
     Partners: '/crm/partners',
+    'Contractors': '/crm/contractors',
+    'Architects': '/crm/architects',
+    'Vendors': '/crm/vendors',
   },
   'Quantity-Takeoff': {
     Manual: '/takeoff',
@@ -108,6 +111,9 @@ export const planFeatureOptions = [
       { label: 'Clients', value: Routes.CRM.Clients },
       { label: 'Sub Contractors', value: Routes.CRM['Sub-Contractors'] },
       { label: 'Partners', value: Routes.CRM.Partners },
+      { label: 'Contractors', value: Routes.CRM.Contractors },
+      { label: 'Architects', value: Routes.CRM.Architects },
+      { label: 'Vendors', value: Routes.CRM.Vendors },
     ],
   },
 
