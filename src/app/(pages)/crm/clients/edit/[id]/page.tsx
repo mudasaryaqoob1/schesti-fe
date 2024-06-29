@@ -134,7 +134,7 @@ const EditClient = () => {
 
         <MinDesc
           title="Add New Client"
-          className={`${senaryHeading} font-semibold text-lavenderPurple cursor-pointer underline`}
+          className={`${senaryHeading} font-semibold text-schestiPrimary cursor-pointer underline`}
         />
       </div>
       <div
