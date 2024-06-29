@@ -126,7 +126,7 @@ const EditPartner = () => {
 
         <MinDesc
           title="Add New Partner"
-          className={`${senaryHeading} font-semibold text-lavenderPurple cursor-pointer underline`}
+          className={`${senaryHeading} font-semibold text-schestiPrimary cursor-pointer underline`}
         />
       </div>
       <div className="p-5 flex flex-col rounded-lg border border-silverGray shadow-secondaryShadow2 bg-white">
