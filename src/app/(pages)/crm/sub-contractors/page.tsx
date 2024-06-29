@@ -241,12 +241,17 @@ const SubcontractTable = () => {
   async function insertManySubcontractors(data: ISubcontractor[]) {
     setIsUploadingManySubcontractors(true);
     try {
-      const response = await subcontractorService.httpInsertManySubcontractors(data);
-      if (response.data) {
-        dispatch(insertManySubcontractorsAction(response.data));
-        toast.success('Clients inserted successfully');
-        setParseData([]);
+      for (const subcontractor of data) {
+        const response = await subcontractorService.httpAddNewSubcontractor(subcontractor);
+        if (response.data && response.data.user) {
+          toast.success(`${subcontractor.name} added successfully`);
+          dispatch(insertManySubcontractorsAction([response.data.user]));
+          setParseData(
+            parseData.filter((subcontractor) => subcontractor.email !== response.data!.user.email)
+          );
+        }
       }
+      setParseData([]);
     } catch (error) {
       const err = error as AxiosError<{ message: string }>
       toast.error(err.response?.data.message || 'An error occurred');
@@ -319,7 +324,7 @@ const SubcontractTable = () => {
             title="Subcontractors List"
             className="text-graphiteGray"
           />
-          <div className=" flex space-x-3">
+          <div className=" flex items-center space-x-3">
             <div className="w-96">
               <InputComponent
                 label=""
@@ -336,18 +341,20 @@ const SubcontractTable = () => {
                 }}
               />
             </div>
-            <WhiteButton
-              text='Export'
-              className='!w-fit'
-              icon='/download-icon.svg'
-              iconwidth={20}
-              iconheight={20}
-              onClick={() => {
-                if (subcontractersData) {
-                  downloadSubcontractorCSV(subcontractersData);
-                }
-              }}
-            />
+            <div>
+              <WhiteButton
+                text='Export'
+                className='!w-fit'
+                icon='/download-icon.svg'
+                iconwidth={20}
+                iconheight={20}
+                onClick={() => {
+                  if (subcontractersData) {
+                    downloadSubcontractorCSV(subcontractersData);
+                  }
+                }}
+              />
+            </div>
             <div>
               <WhiteButton
                 text='Import'
@@ -356,7 +363,9 @@ const SubcontractTable = () => {
                 iconwidth={20}
                 iconheight={20}
                 onClick={() => {
-                  inputFileRef.current?.click();
+                  if (inputFileRef.current) {
+                    inputFileRef.current.click();
+                  }
                 }}
                 isLoading={isUploadingFile}
                 loadingText='Uploading...'

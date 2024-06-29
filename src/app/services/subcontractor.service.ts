@@ -1,7 +1,6 @@
 // Importing base class
 import { HttpService } from '@/app/services/base.service';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
-import { IToken } from '@/app/interfaces/authInterfaces/token.interface';
 import { ISubcontract } from '../interfaces/companyEmployeeInterfaces/subcontractor.interface';
 import { ISubcontractor } from '../interfaces/companyInterfaces/subcontractor.interface';
 
@@ -10,7 +9,7 @@ class SubcontractorsService extends HttpService {
 
   httpAddNewSubcontractor = (
     data: ISubcontract
-  ): Promise<IResponseInterface<{ token: IToken }>> =>
+  ): Promise<IResponseInterface<{ user: ISubcontractor }>> =>
     this.post(`${this.prefix}/addNewSubcontractor`, data);
 
   httpGetAllSubcontractors = (
@@ -25,8 +24,6 @@ class SubcontractorsService extends HttpService {
       'Content-Type': 'multipart/form-data',
     },
   })
-
-  httpInsertManySubcontractors = (data: ISubcontract[]): Promise<IResponseInterface<ISubcontractor[]>> => this.post(`${this.prefix}/insertMany`, data);
 
   httpUpdateSubontractor = (
     data: ISubcontract,
