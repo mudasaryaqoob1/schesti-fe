@@ -116,7 +116,7 @@ class UserService extends HttpService {
   ): Promise<IResponseInterface> =>
     this.get(`${this.partnerPrefix}/allPartners?page=${page}&limit=${limit}`);
 
-  httpAddNewPartner = (data: IPartner): Promise<IResponseInterface<any>> =>
+  httpAddNewPartner = (data: IPartner): Promise<IResponseInterface<{ client: IPartner }>> =>
     this.post(`${this.partnerPrefix}/newPartner`, data);
 
   httpUpdatePartner = (

@@ -31,6 +31,7 @@ import { Excel } from 'antd-table-saveas-excel';
 import { AxiosError } from 'axios';
 import { userService } from '@/app/services/user.service';
 import { PreviewCSVImportFileModal } from '../components/PreviewCSVImportFileModal';
+import { insertManyPartnersAction } from '@/redux/company/partnerSlice/companyPartner.slice';
 
 interface DataType {
   firstName: string;
@@ -205,6 +206,29 @@ const PartnerTable = () => {
     }
   }
 
+
+  async function insertManyPartners(data: IPartner[]) {
+    setIsUploadingMany(true);
+    try {
+      for (const item of data) {
+        const response = await userService.httpAddNewPartner(item);
+        if (response.data && response.data.client) {
+          toast.success(`${item.email} added successfully`);
+          dispatch(insertManyPartnersAction([response.data.client]));
+          setParseData(
+            parseData.filter((item) => item.email !== response.data!.client.email)
+          );
+        }
+      }
+      setParseData([]);
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>
+      toast.error(err.response?.data.message || 'An error occurred');
+    } finally {
+      setIsUploadingMany(false);
+    }
+  }
+
   return (
     <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
       {selectedPartner && showDeleteModal ? (
@@ -232,7 +256,7 @@ const PartnerTable = () => {
         columns={columns as any}
         data={parseData}
         onClose={() => setParseData([])}
-        onConfirm={() => { }}
+        onConfirm={() => insertManyPartners(parseData)}
         setData={setParseData}
         isLoading={isUploadingMany}
         title='Import Partners'
