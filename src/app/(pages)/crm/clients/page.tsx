@@ -338,12 +338,17 @@ const ClientTable = () => {
   async function insertManyClients(data: IClient[]) {
     setIsUploadingManyClients(true);
     try {
-      const response = await userService.httpInsertManyClients(data);
-      if (response.data) {
-        dispatch(insertManyClientsAction(response.data));
-        toast.success('Clients inserted successfully');
-        setParseData([]);
+      for (const item of data) {
+        const response = await userService.httpAddNewClient(item);
+        if (response.data && response.data.client) {
+          toast.success(`${item.email} added successfully`);
+          dispatch(insertManyClientsAction([response.data.client]));
+          setParseData(
+            parseData.filter((item) => item.email !== response.data!.client.email)
+          );
+        }
       }
+      setParseData([]);
     } catch (error) {
       const err = error as AxiosError<{ message: string }>
       toast.error(err.response?.data.message || 'An error occurred');
