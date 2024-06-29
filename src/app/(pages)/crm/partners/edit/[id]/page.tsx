@@ -105,7 +105,7 @@ const EditPartner = () => {
   };
 
   return (
-    <section className="mx-16">
+    <section className="mx-4">
       <div className="flex gap-4 items-center my-6">
         <Image src={'/home.svg'} alt="home icon" width={20} height={20} />
         <Image
@@ -221,7 +221,7 @@ const EditPartner = () => {
                     <CustomButton
                       isLoading={isLoading}
                       type="submit"
-                      text="Update and Save"
+                      text="Update and Continue"
                     />
                   </div>
                 </div>

@@ -232,7 +232,7 @@ const EditClient = () => {
                     <CustomButton
                       isLoading={isLoading}
                       type="submit"
-                      text="Update and Save"
+                      text="Update and Continue"
                     />
                   </div>
                 </div>
