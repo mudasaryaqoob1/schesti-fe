@@ -54,9 +54,9 @@ function filterMenuItemsByPermissions(
     return item
       ? item
       : {
-          key: permission,
-          label: undefined,
-        };
+        key: permission,
+        label: undefined,
+      };
   });
 }
 
@@ -79,11 +79,11 @@ export const AppSidebar = (props: Props) => {
   // employee links to show on sidebar
   const companyEmployeePermissions =
     authenticatedUser?.user &&
-    authenticatedUser.user.associatedCompany &&
-    authenticatedUser.user.roles
+      authenticatedUser.user.associatedCompany &&
+      authenticatedUser.user.roles
       ? authenticatedUser.user.roles
-          .map((role) => (typeof role !== 'string' ? role.permissions : ''))
-          .flat()
+        .map((role) => (typeof role !== 'string' ? role.permissions : ''))
+        .flat()
       : [];
 
   let menuItems: MenuProps['items'] = [
@@ -117,14 +117,14 @@ export const AppSidebar = (props: Props) => {
               children:
                 'children' in option
                   ? option.children?.map((item) => {
-                      return {
-                        key: item.value,
-                        label: item.label,
-                        onClick() {
-                          router.push(item.value);
-                        },
-                      };
-                    })
+                    return {
+                      key: item.value,
+                      label: item.label,
+                      onClick() {
+                        router.push(item.value);
+                      },
+                    };
+                  })
                   : undefined,
             };
           }),
@@ -169,8 +169,10 @@ export const AppSidebar = (props: Props) => {
 
   // set activeKey if menuItems key includes in pathname
   const allKeys = collectKeys(menuItems);
+  const activeKeys = allKeys.map(key => key.toString()).filter((key) => {
+    return key.toString().includes(pathname);
+  });
 
-  const activeKey = allKeys.find((key) => pathname.includes(key.toString()));
 
   return (
     <div
@@ -230,7 +232,7 @@ export const AppSidebar = (props: Props) => {
             // if user not authenticated then don't show sidebar
             items={!authenticatedUser ? [] : menuItems}
             triggerSubMenuAction="click"
-            selectedKeys={[activeKey ? activeKey.toString() : '']}
+            selectedKeys={activeKeys}
           />
         </ConfigProvider>
       </div>
