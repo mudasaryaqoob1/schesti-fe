@@ -128,6 +128,12 @@ class UserService extends HttpService {
   httpDeletePartner = (partnerId: string): Promise<IResponseInterface> =>
     this.post(`${this.partnerPrefix}/deletePartner/${partnerId}`);
 
+  httpUploadCrmPartnersCsvAndParse = (data: FormData): Promise<IResponseInterface<IClient[]>> => this.post(`${this.partnerPrefix}/parse-data`, data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
+
   httpFindCompanyPartnerDetail = (
     id: string
   ): Promise<IResponseInterface<{ partner: IPartner }>> =>
