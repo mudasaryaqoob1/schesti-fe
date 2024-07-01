@@ -1,6 +1,6 @@
 import { IUserInterface } from "../user.interface"
 
-type ICrmModule = 'clients' | "partners" | "subcontractors" | "vendors" | "architects" | "contractors";
+export type CrmModuleType = 'clients' | "partners" | "subcontractors" | "vendors" | "architects" | "contractors";
 
 type ICrmBase = {
     firstName: string
@@ -10,7 +10,7 @@ type ICrmBase = {
     phone: string
     status: boolean
     address: string;
-    module: ICrmModule;
+    module: CrmModuleType;
     secondAddress: string
     associatedCompany: string | IUserInterface;
     _id: string
@@ -18,10 +18,11 @@ type ICrmBase = {
     updatedAt: string;
 }
 
-type ICrmSubcontractorModule = {
+export type ICrmSubcontractorModule = {
     companyRep: string;
     trades: string[];
-} & ICrmBase;
+    type: "subcontractors";
+} & Omit<ICrmBase, "firstName" | "lastName">;
 
 
-export type ICrmItem = ICrmBase | ICrmSubcontractorModule
+export type ICrmItem = ICrmBase;

@@ -46,7 +46,7 @@ function VendorsPage() {
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
-        dispatch(getCrmItemsThunk({}));
+        dispatch(getCrmItemsThunk({ module: "vendors" }));
     }, [])
 
 

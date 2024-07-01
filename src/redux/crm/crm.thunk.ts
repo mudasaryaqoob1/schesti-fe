@@ -1,11 +1,16 @@
+import { CrmModuleType } from "@/app/interfaces/crm/crm.interface";
 import crmService from "@/app/services/crm/vendor.service";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
+type QueryParams = {
+    module: CrmModuleType;
+}
+
 export const getCrmItemsThunk = createAsyncThunk(
     'crm/items',
-    async (a: {}, { rejectWithValue }: any) => {
+    async (query: QueryParams, { rejectWithValue }: any) => {
         try {
-            const response = await crmService.httpGetItems();
+            const response = await crmService.httpGetItems(query);
             return response;
         } catch (error: any) {
             return rejectWithValue(
