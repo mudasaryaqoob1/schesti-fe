@@ -13,6 +13,10 @@ import { Routes } from "@/app/utils/plans.utils";
 import * as Yup from 'yup';
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { useFormik } from "formik";
+import { AxiosError } from "axios";
+import { toast } from "react-toastify";
+import crmVendorService from "@/app/services/crm/vendor.service";
+import { useState } from "react";
 
 const ValidationSchema = Yup.object().shape({
     firstName: Yup.string().required('First name is required'),
@@ -34,6 +38,7 @@ const ValidationSchema = Yup.object().shape({
 
 function CreateVendorPage() {
     const router = useRouterHook();
+    const [isCreating, setIsCreating] = useState(false);
 
     const formik = useFormik({
         initialValues: {
@@ -45,8 +50,20 @@ function CreateVendorPage() {
             address: '',
             secondAddress: ''
         },
-        onSubmit(values) {
-            console.log(values);
+        async onSubmit(values) {
+            setIsCreating(true);
+            try {
+                const response = await crmVendorService.httpCreateVendor(values);
+                if (response.data) {
+                    toast.success("Vendor created successfully");
+                    router.push(Routes.CRM.Vendors);
+                }
+            } catch (error) {
+                const err = error as AxiosError<{ message: string }>;
+                toast.error(err.response?.data.message || "Unable to create vendor");
+            } finally {
+                setIsCreating(false);
+            }
         },
         validationSchema: ValidationSchema
     })
@@ -204,6 +221,8 @@ function CreateVendorPage() {
                             text="Save and Continue"
                             className="!w-fit"
                             type="submit"
+                            loadingText="Saving..."
+                            isLoading={isCreating}
                         />
                     </div>
                 </form>
