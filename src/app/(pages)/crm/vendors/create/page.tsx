@@ -53,7 +53,10 @@ function CreateVendorPage() {
         async onSubmit(values) {
             setIsCreating(true);
             try {
-                const response = await crmService.httpCreate(values);
+                const response = await crmService.httpCreate({
+                    ...values,
+                    module: "vendors"
+                });
                 if (response.data) {
                     toast.success("Vendor created successfully");
                     router.push(Routes.CRM.Vendors);

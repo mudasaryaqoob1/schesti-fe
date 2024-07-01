@@ -3,7 +3,7 @@ import { HttpService } from "../base.service";
 import { CrmModuleType, ICrmItem } from "@/app/interfaces/crm/crm.interface";
 
 
-type CreateVendorType = {
+type CreateCrmItemType = {
     firstName: string;
     lastName: string;
     email: string;
@@ -11,6 +11,7 @@ type CreateVendorType = {
     companyName: string;
     phone: string;
     secondAddress?: string;
+    module: CrmModuleType;
 };
 
 type QueryParams = {
@@ -18,9 +19,9 @@ type QueryParams = {
 }
 
 class CrmService extends HttpService {
-    private endPoint = 'api/crm/vendors';
+    private endPoint = 'api/crm';
 
-    httpCreate = (data: CreateVendorType): Promise<IResponseInterface<ICrmItem>> => this.post(this.endPoint, data);
+    httpCreate = (data: CreateCrmItemType): Promise<IResponseInterface<ICrmItem>> => this.post(this.endPoint, data);
 
     httpGetItems = (query: QueryParams): Promise<IResponseInterface<ICrmItem[]>> => this.get(`${this.endPoint}/all?module=${query.module}`);
 
