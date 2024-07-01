@@ -5,15 +5,151 @@ import { InputComponent } from "@/app/component/customInput/Input";
 import TertiaryHeading from "@/app/component/headings/tertiary";
 import { withAuth } from "@/app/hoc/withAuth";
 import { useRouterHook } from "@/app/hooks/useRouterHook";
+import { ICrmVendor } from "@/app/interfaces/crm/vendor.interface";
 import { Routes } from "@/app/utils/plans.utils";
 import { bg_style } from "@/globals/tailwindvariables";
+import { getCrmVendorsThunk } from "@/redux/crm-vendors/crmVendors.thunk";
+import { AppDispatch, RootState } from "@/redux/store";
 import { SearchOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { Dropdown, Table, Tag, type MenuProps } from "antd";
+import type { ColumnsType } from "antd/es/table";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
+
+const activeClientMenuItems: MenuProps['items'] = [
+    {
+        key: 'edit',
+        label: <p>Edit Vendor Details</p>,
+    },
+    {
+        key: 'delete',
+        label: <p>Delete</p>,
+    },
+    {
+        key: 'inActiveVendor',
+        label: <p>In Active</p>,
+    },
+];
+
+const inActiveClientMenuItems: MenuProps['items'] = [
+    {
+        key: 'activeVendor',
+        label: <p>Active</p>,
+    },
+];
 function VendorsPage() {
     const [search, setSearch] = useState('');
     const router = useRouterHook();
+    const vendorState = useSelector((state: RootState) => state.crmVendor);
+    const dispatch = useDispatch<AppDispatch>();
 
+    useEffect(() => {
+        dispatch(getCrmVendorsThunk({}));
+    }, [])
+
+
+    const columns: ColumnsType<ICrmVendor> = [
+        {
+            title: 'Vendor Name',
+            render: (_, record) => {
+                return `${record.firstName} ${record.lastName}`;
+            }
+        },
+        {
+            title: 'Company',
+            dataIndex: 'companyName',
+            ellipsis: true,
+        },
+        {
+            title: 'Email',
+            dataIndex: 'email',
+        },
+        {
+            title: 'Phone number',
+            dataIndex: 'phone',
+        },
+        {
+            title: 'Address',
+            dataIndex: 'address',
+        },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            render: (_, record) => {
+                if (record.status) {
+                    return (
+                        <Tag className="rounded-full" color="green">
+                            Active
+                        </Tag>
+                    );
+                } else {
+                    return (
+                        <Tag className="rounded-full" color="red">
+                            In Active
+                        </Tag>
+                    );
+                }
+            },
+        },
+        {
+            title: 'Action',
+            dataIndex: 'action',
+            align: 'center',
+            key: 'action',
+            render: (text, record: any) => {
+                if (record?.status) {
+                    return (
+                        <Dropdown
+                            menu={{
+                                items: activeClientMenuItems,
+                            }}
+                            placement="bottomRight"
+                        >
+                            <Image
+                                src={'/menuIcon.svg'}
+                                alt="logo white icon"
+                                width={20}
+                                height={20}
+                                className="active:scale-105 cursor-pointer"
+                            />
+                        </Dropdown>
+                    );
+                } else {
+                    return (
+                        <Dropdown
+                            menu={{
+                                items: inActiveClientMenuItems,
+                            }}
+                            placement="bottomRight"
+                        >
+                            <Image
+                                src={'/menuIcon.svg'}
+                                alt="logo white icon"
+                                width={20}
+                                height={20}
+                                className="active:scale-105 cursor-pointer"
+                            />
+                        </Dropdown>
+                    );
+                }
+            },
+        },
+    ];
+
+    const filteredData = vendorState.data.filter((vendor) => {
+        if (!search) {
+            return true;
+        }
+
+        return vendor.firstName.toLowerCase().includes(search.toLowerCase()) ||
+            vendor.lastName.toLowerCase().includes(search.toLowerCase()) ||
+            vendor.companyName.toLowerCase().includes(search.toLowerCase()) ||
+            vendor.email?.includes(search) ||
+            vendor.phone?.includes(search) ||
+            vendor.address?.includes(search)
+    })
 
     return <section className="mt-6 mb-[39px]  mx-4 rounded-xl ">
         <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
@@ -80,7 +216,12 @@ function VendorsPage() {
                     />
                 </div>
             </div>
-
+            <Table
+                loading={vendorState.loading}
+                columns={columns}
+                dataSource={filteredData}
+                pagination={{ position: ['bottomCenter'] }}
+            />
         </div>
     </section>
 }
