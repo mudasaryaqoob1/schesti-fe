@@ -50,6 +50,13 @@ function VendorsPage() {
     }, [])
 
 
+    function handleMenuItemClick(key: string, record: ICrmVendor) {
+        if (key === 'edit') {
+            router.push(`/crm/vendors/edit/${record._id}`);
+        }
+    }
+
+
     const columns: ColumnsType<ICrmVendor> = [
         {
             title: 'Vendor Name',
@@ -98,12 +105,15 @@ function VendorsPage() {
             dataIndex: 'action',
             align: 'center',
             key: 'action',
-            render: (text, record: any) => {
-                if (record?.status) {
+            render: (text, record) => {
+                if (record.status) {
                     return (
                         <Dropdown
                             menu={{
                                 items: activeClientMenuItems,
+                                onClick({ key }) {
+                                    handleMenuItemClick(key, record);
+                                }
                             }}
                             placement="bottomRight"
                         >
