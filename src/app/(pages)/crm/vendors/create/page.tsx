@@ -10,9 +10,46 @@ import CustomButton from "@/app/component/customButton/button";
 import WhiteButton from "@/app/component/customButton/white";
 import { useRouterHook } from "@/app/hooks/useRouterHook";
 import { Routes } from "@/app/utils/plans.utils";
+import * as Yup from 'yup';
+import { isValidPhoneNumber } from "react-phone-number-input";
+import { useFormik } from "formik";
+
+const ValidationSchema = Yup.object().shape({
+    firstName: Yup.string().required('First name is required'),
+    lastName: Yup.string().required('Last name is required'),
+    email: Yup.string().required('Email is required').email('Email should be valid'),
+    phone: Yup.string().test({
+        test: (value) => {
+            if (value) {
+                return isValidPhoneNumber(value);
+            }
+            return true;
+        },
+        message: 'Invalid phone number',
+    }).required('Phone number is required'),
+    companyName: Yup.string().required('Company Name is required'),
+    address: Yup.string().required('Address is required'),
+    secondAddress: Yup.string()
+})
 
 function CreateVendorPage() {
     const router = useRouterHook();
+
+    const formik = useFormik({
+        initialValues: {
+            firstName: '',
+            lastName: '',
+            email: '',
+            phone: '',
+            companyName: '',
+            address: '',
+            secondAddress: ''
+        },
+        onSubmit(values) {
+            console.log(values);
+        },
+        validationSchema: ValidationSchema
+    })
 
     return (
         <section className="mx-4">
@@ -44,13 +81,20 @@ function CreateVendorPage() {
                     title="Add New Vendor"
                 />
 
-                <form className="space-y-3">
+                <form onSubmit={formik.handleSubmit} className="space-y-3">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <InputComponent
                             label="First Name"
                             name="firstName"
                             type="text"
                             placeholder="Enter First Name"
+                            errorMessage={formik.touched.firstName && formik.errors.firstName ? formik.errors.firstName : ''}
+                            hasError={formik.touched.firstName && Boolean(formik.errors.firstName)}
+                            field={{
+                                value: formik.values.firstName,
+                                onChange: formik.handleChange,
+                                onBlur: formik.handleBlur
+                            }}
                         />
 
                         <InputComponent
@@ -58,12 +102,36 @@ function CreateVendorPage() {
                             name="lastName"
                             type="text"
                             placeholder="Enter Last Name"
+                            errorMessage={formik.touched.lastName && formik.errors.lastName ? formik.errors.lastName : ''}
+                            hasError={formik.touched.lastName && Boolean(formik.errors.lastName)}
+                            field={{
+                                value: formik.values.lastName,
+                                onChange: formik.handleChange,
+                                onBlur: formik.handleBlur
+                            }}
                         />
                     </div>
 
                     <PhoneNumberInputWithLable
                         label="Phone Number"
-                        onChange={(value: any) => console.log(value)}
+                        onChange={(val) =>
+                            //@ts-ignore
+                            formik.setFieldValue('phone', val)
+                        }
+                        //@ts-ignore
+                        value={formik.values.phone}
+                        onBlur={() => formik.setFieldTouched('phone', true)}
+                        defaultCountry="US"
+                        hasError={
+                            formik.touched.phone &&
+                            Boolean(formik.errors.phone)
+                        }
+                        errorMessage={
+                            formik.touched.phone &&
+                                formik.errors.phone
+                                ? formik.errors.phone
+                                : ''
+                        }
                     />
 
                     <InputComponent
@@ -71,6 +139,13 @@ function CreateVendorPage() {
                         name="email"
                         type="email"
                         placeholder="Enter Email"
+                        errorMessage={formik.touched.email && formik.errors.email ? formik.errors.email : ''}
+                        hasError={formik.touched.email && Boolean(formik.errors.email)}
+                        field={{
+                            value: formik.values.email,
+                            onChange: formik.handleChange,
+                            onBlur: formik.handleBlur
+                        }}
                     />
 
                     <InputComponent
@@ -78,6 +153,13 @@ function CreateVendorPage() {
                         name="companyName"
                         type="text"
                         placeholder="Enter Company Name"
+                        errorMessage={formik.touched.companyName && formik.errors.companyName ? formik.errors.companyName : ''}
+                        hasError={formik.touched.companyName && Boolean(formik.errors.companyName)}
+                        field={{
+                            value: formik.values.companyName,
+                            onChange: formik.handleChange,
+                            onBlur: formik.handleBlur
+                        }}
                     />
 
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -86,6 +168,13 @@ function CreateVendorPage() {
                             name="address"
                             type="text"
                             placeholder="Enter Address"
+                            errorMessage={formik.touched.address && formik.errors.address ? formik.errors.address : ''}
+                            hasError={formik.touched.address && Boolean(formik.errors.address)}
+                            field={{
+                                value: formik.values.address,
+                                onChange: formik.handleChange,
+                                onBlur: formik.handleBlur
+                            }}
                         />
 
                         <InputComponent
@@ -93,6 +182,13 @@ function CreateVendorPage() {
                             name="secondAddress"
                             type="text"
                             placeholder="Enter Second Address"
+                            errorMessage={formik.touched.secondAddress && formik.errors.secondAddress ? formik.errors.secondAddress : ''}
+                            hasError={formik.touched.secondAddress && Boolean(formik.errors.secondAddress)}
+                            field={{
+                                value: formik.values.secondAddress,
+                                onChange: formik.handleChange,
+                                onBlur: formik.handleBlur
+                            }}
                         />
                     </div>
 
@@ -107,6 +203,7 @@ function CreateVendorPage() {
                         <CustomButton
                             text="Save and Continue"
                             className="!w-fit"
+                            type="submit"
                         />
                     </div>
                 </form>
