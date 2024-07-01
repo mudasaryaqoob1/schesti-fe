@@ -13,17 +13,17 @@ type CreateVendorType = {
     secondAddress?: string;
 };
 
-class CrmVendorService extends HttpService {
+class CrmService extends HttpService {
     private endPoint = 'api/crm/vendors';
 
-    httpCreateVendor = (data: CreateVendorType): Promise<IResponseInterface<ICrmVendor>> => this.post(this.endPoint, data);
+    httpCreate = (data: CreateVendorType): Promise<IResponseInterface<ICrmVendor>> => this.post(this.endPoint, data);
 
-    httpGetVendors = (): Promise<IResponseInterface<ICrmVendor[]>> => this.get(`${this.endPoint}/all`);
+    httpGetItems = (): Promise<IResponseInterface<ICrmVendor[]>> => this.get(`${this.endPoint}/all`);
 
-    httpGetVendorById = (id: string): Promise<IResponseInterface<ICrmVendor>> => this.get(`${this.endPoint}/${id}`);
+    httpGetItemById = (id: string): Promise<IResponseInterface<ICrmVendor>> => this.get(`${this.endPoint}/${id}`);
 
 }
 
-const crmVendorService = new CrmVendorService();
+const crmService = new CrmService();
 
-export default crmVendorService;
+export default crmService;

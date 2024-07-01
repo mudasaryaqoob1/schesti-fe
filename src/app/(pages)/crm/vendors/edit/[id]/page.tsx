@@ -15,8 +15,12 @@ import { isValidPhoneNumber } from "react-phone-number-input";
 import { useFormik } from "formik";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
-import crmVendorService from "@/app/services/crm/vendor.service";
-import { useState } from "react";
+import crmService from "@/app/services/crm/vendor.service";
+import { useEffect, useState } from "react";
+import { ICrmVendor } from "@/app/interfaces/crm/vendor.interface";
+import { useParams } from "next/navigation";
+import { Skeleton } from "antd";
+import { NoDataComponent } from "@/app/component/noData/NoDataComponent";
 
 const ValidationSchema = Yup.object().shape({
     firstName: Yup.string().required('First name is required'),
@@ -38,7 +42,33 @@ const ValidationSchema = Yup.object().shape({
 
 function CreateVendorPage() {
     const router = useRouterHook();
-    const [isCreating, setIsCreating] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [vendor, setVendor] = useState<ICrmVendor | null>(null);
+    const [isFetchingVendor, setIsFetchingVendor] = useState(false);
+
+    const params = useParams<{ id: string }>();
+
+    useEffect(() => {
+        findVendorById(params.id);
+    }, [params.id]);
+
+    async function findVendorById(id: string) {
+        if (id) {
+            setIsFetchingVendor(true);
+            try {
+                const response = await crmService.httpGetItemById(id);
+                if (response.data) {
+                    setVendor(response.data);
+                }
+            } catch (error) {
+                const err = error as AxiosError<{ message: string }>;
+                toast.error(err.response?.data.message || "Unable to fetch vendor");
+            } finally {
+                setIsFetchingVendor(false);
+            }
+        }
+    }
+
 
     const formik = useFormik({
         initialValues: {
@@ -51,9 +81,9 @@ function CreateVendorPage() {
             secondAddress: ''
         },
         async onSubmit(values) {
-            setIsCreating(true);
+            setIsLoading(true);
             try {
-                const response = await crmVendorService.httpCreateVendor(values);
+                const response = await crmService.httpCreate(values);
                 if (response.data) {
                     toast.success("Vendor created successfully");
                     router.push(Routes.CRM.Vendors);
@@ -62,11 +92,26 @@ function CreateVendorPage() {
                 const err = error as AxiosError<{ message: string }>;
                 toast.error(err.response?.data.message || "Unable to create vendor");
             } finally {
-                setIsCreating(false);
+                setIsLoading(false);
             }
         },
         validationSchema: ValidationSchema
-    })
+    });
+
+    if (isFetchingVendor) {
+        return <div className="grid grid-cols-2 gap-2 grid-rows-2">
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+            <Skeleton />
+        </div>
+    }
+
+    if (!isFetchingVendor && !vendor) {
+        return <NoDataComponent
+
+        />
+    }
 
     return (
         <section className="mx-4">
@@ -95,7 +140,7 @@ function CreateVendorPage() {
             <div className="p-5 flex flex-col rounded-lg border border-silverGray shadow-secondaryShadow2 bg-white">
                 <TertiaryHeading
                     className="text-graphiteGray mb-4 "
-                    title="Add New Vendor"
+                    title="Edit Vendor"
                 />
 
                 <form onSubmit={formik.handleSubmit} className="space-y-3">
@@ -222,7 +267,7 @@ function CreateVendorPage() {
                             className="!w-fit"
                             type="submit"
                             loadingText="Saving..."
-                            isLoading={isCreating}
+                            isLoading={isLoading}
                         />
                     </div>
                 </form>

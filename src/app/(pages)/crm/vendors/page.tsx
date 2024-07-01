@@ -8,7 +8,7 @@ import { useRouterHook } from "@/app/hooks/useRouterHook";
 import { ICrmVendor } from "@/app/interfaces/crm/vendor.interface";
 import { Routes } from "@/app/utils/plans.utils";
 import { bg_style } from "@/globals/tailwindvariables";
-import { getCrmVendorsThunk } from "@/redux/crm-vendors/crmVendors.thunk";
+import { getCrmItemsThunk } from "@/redux/crm/crm.thunk";
 import { AppDispatch, RootState } from "@/redux/store";
 import { SearchOutlined } from "@ant-design/icons";
 import { Dropdown, Table, Tag, type MenuProps } from "antd";
@@ -42,11 +42,11 @@ const inActiveClientMenuItems: MenuProps['items'] = [
 function VendorsPage() {
     const [search, setSearch] = useState('');
     const router = useRouterHook();
-    const vendorState = useSelector((state: RootState) => state.crmVendor);
+    const vendorState = useSelector((state: RootState) => state.crm);
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
-        dispatch(getCrmVendorsThunk({}));
+        dispatch(getCrmItemsThunk({}));
     }, [])
 
 

@@ -15,7 +15,7 @@ import { isValidPhoneNumber } from "react-phone-number-input";
 import { useFormik } from "formik";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
-import crmVendorService from "@/app/services/crm/vendor.service";
+import crmService from "@/app/services/crm/vendor.service";
 import { useState } from "react";
 
 const ValidationSchema = Yup.object().shape({
@@ -53,7 +53,7 @@ function CreateVendorPage() {
         async onSubmit(values) {
             setIsCreating(true);
             try {
-                const response = await crmVendorService.httpCreateVendor(values);
+                const response = await crmService.httpCreate(values);
                 if (response.data) {
                     toast.success("Vendor created successfully");
                     router.push(Routes.CRM.Vendors);

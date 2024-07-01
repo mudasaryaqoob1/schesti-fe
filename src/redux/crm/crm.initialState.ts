@@ -6,7 +6,7 @@ type State = {
     data: ICrmVendor[];
 }
 
-export const crmVendorInitialState: State = {
+export const crmInitialState: State = {
     loading: false,
     error: undefined,
     data: [],
