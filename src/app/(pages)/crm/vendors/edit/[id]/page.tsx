@@ -87,7 +87,7 @@ function CreateVendorPage() {
                 />
 
                 <MinDesc
-                    title="Add New Vendor"
+                    title="Edit Vendor"
                     className={`${senaryHeading} font-semibold text-schestiPrimary cursor-pointer underline`}
                 />
             </div>

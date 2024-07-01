@@ -125,7 +125,7 @@ const EditPartner = () => {
         />
 
         <MinDesc
-          title="Add New Partner"
+          title="Edit Partner"
           className={`${senaryHeading} font-semibold text-schestiPrimary cursor-pointer underline`}
         />
       </div>

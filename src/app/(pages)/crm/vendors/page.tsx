@@ -52,7 +52,7 @@ function VendorsPage() {
 
     function handleMenuItemClick(key: string, record: ICrmVendor) {
         if (key === 'edit') {
-            router.push(`/crm/vendors/edit/${record._id}`);
+            router.push(`${Routes.CRM.Vendors}/edit/${record._id}`);
         }
     }
 
