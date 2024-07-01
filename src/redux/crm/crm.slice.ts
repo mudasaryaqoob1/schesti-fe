@@ -1,11 +1,15 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { type PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { crmInitialState } from "./crm.initialState";
 import { getCrmItemsThunk } from "./crm.thunk";
 
 export const crmVendorSlice = createSlice({
     initialState: crmInitialState,
     name: "crm",
-    reducers: {},
+    reducers: {
+        removeCrmItemAction: (state, action: PayloadAction<string>) => {
+            state.data = state.data.filter((item) => item._id !== action.payload);
+        }
+    },
     extraReducers(builder) {
         builder.addCase(getCrmItemsThunk.pending, (state) => {
             state.loading = true;
@@ -26,5 +30,5 @@ export const crmVendorSlice = createSlice({
     },
 
 });
-
+export const { removeCrmItemAction } = crmVendorSlice.actions;
 export default crmVendorSlice.reducer;

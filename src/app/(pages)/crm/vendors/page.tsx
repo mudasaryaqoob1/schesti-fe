@@ -2,20 +2,26 @@
 import CustomButton from "@/app/component/customButton/button";
 import WhiteButton from "@/app/component/customButton/white";
 import { InputComponent } from "@/app/component/customInput/Input";
+import { DeleteContent } from "@/app/component/delete/DeleteContent";
 import TertiaryHeading from "@/app/component/headings/tertiary";
+import ModalComponent from "@/app/component/modal";
 import { withAuth } from "@/app/hoc/withAuth";
 import { useRouterHook } from "@/app/hooks/useRouterHook";
 import { ICrmItem } from "@/app/interfaces/crm/crm.interface";
+import crmService from "@/app/services/crm/vendor.service";
 import { Routes } from "@/app/utils/plans.utils";
 import { bg_style } from "@/globals/tailwindvariables";
+import { removeCrmItemAction } from "@/redux/crm/crm.slice";
 import { getCrmItemsThunk } from "@/redux/crm/crm.thunk";
 import { AppDispatch, RootState } from "@/redux/store";
 import { SearchOutlined } from "@ant-design/icons";
 import { Dropdown, Table, Tag, type MenuProps } from "antd";
 import type { ColumnsType } from "antd/es/table";
+import { AxiosError } from "axios";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 
 const activeClientMenuItems: MenuProps['items'] = [
@@ -44,6 +50,9 @@ function VendorsPage() {
     const router = useRouterHook();
     const vendorState = useSelector((state: RootState) => state.crm);
     const dispatch = useDispatch<AppDispatch>();
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [selectedVendor, setSelectedVendor] = useState<ICrmItem | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         dispatch(getCrmItemsThunk({ module: "vendors" }));
@@ -53,6 +62,10 @@ function VendorsPage() {
     function handleMenuItemClick(key: string, record: ICrmItem) {
         if (key === 'edit') {
             router.push(`${Routes.CRM.Vendors}/edit/${record._id}`);
+        }
+        if (key === 'delete') {
+            setSelectedVendor(record);
+            setShowDeleteModal(true);
         }
     }
 
@@ -161,7 +174,42 @@ function VendorsPage() {
             vendor.address?.includes(search)
     })
 
+
+    async function deleteVendorById(id: string) {
+        setIsDeleting(true);
+        try {
+            const response = await crmService.httpfindByIdAndDelete(id);
+            if (response.data) {
+                toast.success('Vendor deleted successfully');
+                dispatch(removeCrmItemAction(response.data._id));
+                setShowDeleteModal(false);
+                setSelectedVendor(null);
+            }
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+            toast.error(err.response?.data?.message || err.message);
+
+        } finally {
+            setIsDeleting(false);
+        }
+    }
+
     return <section className="mt-6 mb-[39px]  mx-4 rounded-xl ">
+
+        {selectedVendor && showDeleteModal ? (
+            <ModalComponent
+                open={showDeleteModal}
+                setOpen={setShowDeleteModal}
+                width="30%"
+            >
+                <DeleteContent
+                    onClick={() => deleteVendorById(selectedVendor._id)}
+                    onClose={() => setShowDeleteModal(false)}
+                    isLoading={isDeleting}
+                />
+            </ModalComponent>
+        ) : null}
+
         <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
             <div className="flex justify-between items-center mb-4">
                 <TertiaryHeading title="Vendors List" className="text-graphiteGray" />
