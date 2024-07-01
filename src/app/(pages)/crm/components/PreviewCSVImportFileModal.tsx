@@ -11,6 +11,7 @@ type ItemType = {
 
 type Props<T extends ItemType> = {
     data: T[];
+    duplicates?: T[];
     onClose: () => void;
     onConfirm: () => void;
     isLoading?: boolean;
@@ -25,8 +26,14 @@ export function PreviewCSVImportFileModal<T extends ItemType>({
     isLoading,
     columns,
     setData,
-    title = "CSV Preview"
+    title = "CSV Preview",
+    duplicates = [],
 }: Props<T>) {
+
+    function isDuplicate(record: T) {
+        return duplicates.some((item) => item.email === record.email);
+    }
+
     return data.length ? <ModalComponent
         open={data.length > 0}
         setOpen={() => {
@@ -52,6 +59,7 @@ export function PreviewCSVImportFileModal<T extends ItemType>({
                     },
                 }])}
                 pagination={{ position: ['bottomCenter'] }}
+                rowClassName={record => isDuplicate(record) ? 'bg-red-100' : ''}
             />
 
             <div className='flex justify-end space-x-3'>

@@ -18,6 +18,8 @@ type ICrmBase = {
     updatedAt: string;
 }
 
+export type CommonCrmType = Omit<ICrmBase, "_id" | "createdAt" | "updatedAt" | "module" | "associatedCompany">
+
 export type ICrmSubcontractorModule = {
     companyRep: string;
     trades: string[];

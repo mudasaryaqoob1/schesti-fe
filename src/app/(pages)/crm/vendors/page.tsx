@@ -7,11 +7,11 @@ import TertiaryHeading from "@/app/component/headings/tertiary";
 import ModalComponent from "@/app/component/modal";
 import { withAuth } from "@/app/hoc/withAuth";
 import { useRouterHook } from "@/app/hooks/useRouterHook";
-import { ICrmItem } from "@/app/interfaces/crm/crm.interface";
+import { CommonCrmType, ICrmItem } from "@/app/interfaces/crm/crm.interface";
 import crmService from "@/app/services/crm/crm.service";
 import { Routes } from "@/app/utils/plans.utils";
 import { bg_style } from "@/globals/tailwindvariables";
-import { removeCrmItemAction } from "@/redux/crm/crm.slice";
+import { insertManyCrmItemAction, removeCrmItemAction } from "@/redux/crm/crm.slice";
 import { getCrmItemsThunk } from "@/redux/crm/crm.thunk";
 import { AppDispatch, RootState } from "@/redux/store";
 import { SearchOutlined } from "@ant-design/icons";
@@ -23,6 +23,7 @@ import { ChangeEventHandler, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { PreviewCSVImportFileModal } from "../components/PreviewCSVImportFileModal";
+import _ from "lodash";
 
 
 const activeClientMenuItems: MenuProps['items'] = [
@@ -56,8 +57,9 @@ function VendorsPage() {
     const [isDeleting, setIsDeleting] = useState(false);
     const inputFileRef = useRef<HTMLInputElement | null>(null);
     const [isUploadingFile, setIsUploadingFile] = useState(false);
-    const [parseData, setParseData] = useState<ICrmItem[]>([]);
-
+    const [parseData, setParseData] = useState<CommonCrmType[]>([]);
+    const [duplicates, setDuplicates] = useState<CommonCrmType[]>([]);
+    const [isSavingMany, setIsSavingMany] = useState(false);
 
     useEffect(() => {
         dispatch(getCrmItemsThunk({ module: "vendors" }));
@@ -221,6 +223,32 @@ function VendorsPage() {
         }
     }
 
+    async function saveManyVendors(data: CommonCrmType[]) {
+        setIsSavingMany(true);
+        try {
+            const response = await crmService.httpCreateMany(data, "vendors");
+            if (response.data) {
+                if (response.data.duplicates.length) {
+                    toast.success('Duplicate vendors found');
+                    setDuplicates(response.data.duplicates);
+                }
+                if (response.data.items.length) {
+                    dispatch(insertManyCrmItemAction(response.data.items));
+                    const remainingParsedData = _.differenceBy(parseData, response.data.items, 'email');
+                    setParseData(remainingParsedData);
+                }
+            }
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>
+            console.log(err.response?.data);
+            if (err.response?.data) {
+                toast.error(err.response?.data.message || 'An error occurred')
+            }
+        } finally {
+            setIsSavingMany(false);
+        }
+    }
+
     return <section className="mt-6 mb-[39px]  mx-4 rounded-xl ">
 
         {selectedVendor && showDeleteModal ? (
@@ -240,13 +268,17 @@ function VendorsPage() {
         <PreviewCSVImportFileModal
             columns={columns as any}
             data={parseData}
-            onClose={() => setParseData([])}
+            onClose={() => {
+                setParseData([]);
+                setDuplicates([]);
+            }}
             onConfirm={() => {
-
+                saveManyVendors(parseData);
             }}
             setData={setParseData}
-            isLoading={false}
+            isLoading={isSavingMany}
             title='Import Vendors'
+            duplicates={duplicates}
         />
 
         <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
