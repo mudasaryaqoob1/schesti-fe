@@ -2,12 +2,12 @@ import { ICrmVendor } from "@/app/interfaces/crm/vendor.interface";
 
 type State = {
     loading: boolean;
-    error: string;
+    error?: string;
     data: ICrmVendor[];
 }
 
 export const crmVendorInitialState: State = {
     loading: false,
-    error: '',
+    error: undefined,
     data: [],
 }
