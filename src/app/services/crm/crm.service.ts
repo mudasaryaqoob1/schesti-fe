@@ -23,6 +23,11 @@ class CrmService extends HttpService {
 
     httpCreate = (data: CreateCrmItemType): Promise<IResponseInterface<ICrmItem>> => this.post(this.endPoint, data);
 
+    httpCreateMany = (data: CreateCrmItemType[]): Promise<IResponseInterface<{
+        duplicates: Omit<CreateCrmItemType, "module">[];
+        items: ICrmItem[]
+    }>> => this.post(this.endPoint, data);
+
     httpGetItems = (query: QueryParams): Promise<IResponseInterface<ICrmItem[]>> => this.get(`${this.endPoint}/all?module=${query.module}`);
 
     httpGetItemById = (id: string): Promise<IResponseInterface<ICrmItem>> => this.get(`${this.endPoint}/${id}`);
@@ -31,7 +36,7 @@ class CrmService extends HttpService {
 
     httpfindByIdAndDelete = (id: string): Promise<IResponseInterface<ICrmItem>> => this.put(`${this.endPoint}/${id}`);
 
-    httpParseCsvFile = (formData: FormData): Promise<IResponseInterface<ICrmItem[]>> => this.post(`${this.endPoint}/parse-csv`, formData);
+    httpParseCsvFile = (formData: FormData, module: CrmModuleType): Promise<IResponseInterface<ICrmItem[]>> => this.post(`${this.endPoint}/parse-csv?module=${module}`, formData);
 
 }
 

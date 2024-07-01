@@ -19,9 +19,10 @@ import { Dropdown, Table, Tag, type MenuProps } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { AxiosError } from "axios";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { ChangeEventHandler, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { PreviewCSVImportFileModal } from "../components/PreviewCSVImportFileModal";
 
 
 const activeClientMenuItems: MenuProps['items'] = [
@@ -53,6 +54,10 @@ function VendorsPage() {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedVendor, setSelectedVendor] = useState<ICrmItem | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const inputFileRef = useRef<HTMLInputElement | null>(null);
+    const [isUploadingFile, setIsUploadingFile] = useState(false);
+    const [parseData, setParseData] = useState<ICrmItem[]>([]);
+
 
     useEffect(() => {
         dispatch(getCrmItemsThunk({ module: "vendors" }));
@@ -161,7 +166,7 @@ function VendorsPage() {
         },
     ];
 
-    const filteredData = vendorState.data.filter((vendor) => {
+    const filteredData = vendorState.data.filter((vendor: ICrmItem) => {
         if (!search) {
             return true;
         }
@@ -194,6 +199,28 @@ function VendorsPage() {
         }
     }
 
+    const uploadAndParseCSVData: ChangeEventHandler<HTMLInputElement> = async (e) => {
+        const files = e.target.files;
+        if (files && files.length > 0) {
+            setIsUploadingFile(true);
+            try {
+                const file = files[0];
+                const formData = new FormData();
+                formData.append('file', file);
+                const response = await crmService.httpParseCsvFile(formData, "vendors");
+                if (response.data) {
+                    toast.success('File parsed successfully');
+                    setParseData(response.data);
+                }
+            } catch (error) {
+                const err = error as AxiosError<{ message: string }>;
+                toast.error(err.response?.data.message || 'An error occurred')
+            } finally {
+                setIsUploadingFile(false);
+            }
+        }
+    }
+
     return <section className="mt-6 mb-[39px]  mx-4 rounded-xl ">
 
         {selectedVendor && showDeleteModal ? (
@@ -209,6 +236,18 @@ function VendorsPage() {
                 />
             </ModalComponent>
         ) : null}
+
+        <PreviewCSVImportFileModal
+            columns={columns as any}
+            data={parseData}
+            onClose={() => setParseData([])}
+            onConfirm={() => {
+
+            }}
+            setData={setParseData}
+            isLoading={false}
+            title='Import Vendors'
+        />
 
         <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
             <div className="flex justify-between items-center mb-4">
@@ -246,15 +285,22 @@ function VendorsPage() {
                             icon='/uploadcloud.svg'
                             iconwidth={20}
                             iconheight={20}
-
+                            isLoading={isUploadingFile}
+                            onClick={() => {
+                                if (inputFileRef.current) {
+                                    inputFileRef.current.click();
+                                }
+                            }}
                             loadingText='Uploading...'
                         />
                         <input
+                            ref={inputFileRef}
                             accept='.csv, .xlsx'
                             type="file"
                             name=""
                             id="importClients"
                             className='hidden'
+                            onChange={uploadAndParseCSVData}
                         />
                     </div>
 
