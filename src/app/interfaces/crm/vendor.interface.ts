@@ -1,3 +1,5 @@
+import { IUserInterface } from "../user.interface"
+
 export interface ICrmVendor {
     firstName: string
     lastName: string
@@ -7,7 +9,8 @@ export interface ICrmVendor {
     status: boolean
     address: string
     secondAddress: string
+    associatedCompany: string | IUserInterface;
     _id: string
     createdAt: string;
-    updated: string;
+    updatedAt: string;
 }
