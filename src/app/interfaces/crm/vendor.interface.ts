@@ -8,4 +8,6 @@ export interface ICrmVendor {
     address: string
     secondAddress: string
     _id: string
+    createdAt: string;
+    updated: string;
 }
