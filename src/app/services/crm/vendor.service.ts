@@ -18,6 +18,8 @@ class CrmVendorService extends HttpService {
 
     httpCreateVendor = (data: CreateVendorType): Promise<IResponseInterface<ICrmVendor>> => this.post(this.endPoint, data);
 
+    httpGetVendors = (): Promise<IResponseInterface<ICrmVendor[]>> => this.get(`${this.endPoint}/all`);
+
 }
 
 const crmVendorService = new CrmVendorService();
