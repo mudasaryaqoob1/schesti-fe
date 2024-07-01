@@ -18,7 +18,7 @@ function VendorsPage() {
     return <section className="mt-6 mb-[39px]  mx-4 rounded-xl ">
         <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
             <div className="flex justify-between items-center mb-4">
-                <TertiaryHeading title="Client List" className="text-graphiteGray" />
+                <TertiaryHeading title="Vendors List" className="text-graphiteGray" />
                 <div className=" flex items-center space-x-3">
                     <div className="w-96">
                         <InputComponent
