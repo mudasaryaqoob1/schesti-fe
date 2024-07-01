@@ -8,8 +8,11 @@ import { InputComponent } from "@/app/component/customInput/Input";
 import { PhoneNumberInputWithLable } from "@/app/component/phoneNumberInput/PhoneNumberInputWithLable";
 import CustomButton from "@/app/component/customButton/button";
 import WhiteButton from "@/app/component/customButton/white";
+import { useRouterHook } from "@/app/hooks/useRouterHook";
+import { Routes } from "@/app/utils/plans.utils";
 
 function CreateVendorPage() {
+    const router = useRouterHook();
 
     return (
         <section className="mx-4">
@@ -97,6 +100,9 @@ function CreateVendorPage() {
                         <WhiteButton
                             text="Cancel"
                             className="!w-fit"
+                            onClick={() => {
+                                router.push(Routes.CRM.Vendors);
+                            }}
                         />
                         <CustomButton
                             text="Save and Continue"
