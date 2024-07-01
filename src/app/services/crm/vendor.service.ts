@@ -27,6 +27,8 @@ class CrmService extends HttpService {
 
     httpGetItemById = (id: string): Promise<IResponseInterface<ICrmItem>> => this.get(`${this.endPoint}/${id}`);
 
+    httpfindByIdAndUpdate = (id: string, data: CreateCrmItemType): Promise<IResponseInterface<ICrmItem>> => this.put(`${this.endPoint}/${id}`, data);
+
 }
 
 const crmService = new CrmService();

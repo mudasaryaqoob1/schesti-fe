@@ -71,7 +71,7 @@ function CreateVendorPage() {
 
 
     const formik = useFormik({
-        initialValues: {
+        initialValues: vendor ? { ...vendor } : {
             firstName: '',
             lastName: '',
             email: '',
@@ -81,21 +81,24 @@ function CreateVendorPage() {
             secondAddress: ''
         },
         async onSubmit(values) {
-            setIsLoading(true);
-            try {
-                const response = await crmService.httpCreate(values);
-                if (response.data) {
-                    toast.success("Vendor created successfully");
-                    router.push(Routes.CRM.Vendors);
+            if (vendor) {
+                setIsLoading(true);
+                try {
+                    const response = await crmService.httpfindByIdAndUpdate(vendor._id, { ...values, module: "vendors" });
+                    if (response.data) {
+                        toast.success("Vendor updated successfully");
+                        router.push(Routes.CRM.Vendors);
+                    }
+                } catch (error) {
+                    const err = error as AxiosError<{ message: string }>;
+                    toast.error(err.response?.data.message || "Unable to update vendor");
+                } finally {
+                    setIsLoading(false);
                 }
-            } catch (error) {
-                const err = error as AxiosError<{ message: string }>;
-                toast.error(err.response?.data.message || "Unable to create vendor");
-            } finally {
-                setIsLoading(false);
             }
         },
-        validationSchema: ValidationSchema
+        validationSchema: ValidationSchema,
+        enableReinitialize: true
     });
 
     if (isFetchingVendor) {
@@ -263,7 +266,7 @@ function CreateVendorPage() {
                             }}
                         />
                         <CustomButton
-                            text="Save and Continue"
+                            text="Update and Continue"
                             className="!w-fit"
                             type="submit"
                             loadingText="Saving..."
