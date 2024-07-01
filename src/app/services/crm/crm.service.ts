@@ -31,6 +31,8 @@ class CrmService extends HttpService {
 
     httpfindByIdAndDelete = (id: string): Promise<IResponseInterface<ICrmItem>> => this.put(`${this.endPoint}/${id}`);
 
+    httpParseCsvFile = (formData: FormData): Promise<IResponseInterface<ICrmItem[]>> => this.post(`${this.endPoint}/parse-csv`, formData);
+
 }
 
 const crmService = new CrmService();

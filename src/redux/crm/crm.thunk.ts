@@ -1,5 +1,5 @@
 import { CrmModuleType } from "@/app/interfaces/crm/crm.interface";
-import crmService from "@/app/services/crm/vendor.service";
+import crmService from "@/app/services/crm/crm.service";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 type QueryParams = {

@@ -15,7 +15,7 @@ import { isValidPhoneNumber } from "react-phone-number-input";
 import { useFormik } from "formik";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
-import crmService from "@/app/services/crm/vendor.service";
+import crmService from "@/app/services/crm/crm.service";
 import { useEffect, useState } from "react";
 import { ICrmItem } from "@/app/interfaces/crm/crm.interface";
 import { useParams } from "next/navigation";

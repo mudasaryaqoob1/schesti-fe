@@ -8,7 +8,7 @@ import ModalComponent from "@/app/component/modal";
 import { withAuth } from "@/app/hoc/withAuth";
 import { useRouterHook } from "@/app/hooks/useRouterHook";
 import { ICrmItem } from "@/app/interfaces/crm/crm.interface";
-import crmService from "@/app/services/crm/vendor.service";
+import crmService from "@/app/services/crm/crm.service";
 import { Routes } from "@/app/utils/plans.utils";
 import { bg_style } from "@/globals/tailwindvariables";
 import { removeCrmItemAction } from "@/redux/crm/crm.slice";
