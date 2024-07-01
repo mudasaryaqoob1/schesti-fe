@@ -5,7 +5,7 @@ import { InputComponent } from "@/app/component/customInput/Input";
 import TertiaryHeading from "@/app/component/headings/tertiary";
 import { withAuth } from "@/app/hoc/withAuth";
 import { useRouterHook } from "@/app/hooks/useRouterHook";
-import { ICrmVendor } from "@/app/interfaces/crm/vendor.interface";
+import { ICrmItem } from "@/app/interfaces/crm/crm.interface";
 import { Routes } from "@/app/utils/plans.utils";
 import { bg_style } from "@/globals/tailwindvariables";
 import { getCrmItemsThunk } from "@/redux/crm/crm.thunk";
@@ -50,14 +50,14 @@ function VendorsPage() {
     }, [])
 
 
-    function handleMenuItemClick(key: string, record: ICrmVendor) {
+    function handleMenuItemClick(key: string, record: ICrmItem) {
         if (key === 'edit') {
             router.push(`${Routes.CRM.Vendors}/edit/${record._id}`);
         }
     }
 
 
-    const columns: ColumnsType<ICrmVendor> = [
+    const columns: ColumnsType<ICrmItem> = [
         {
             title: 'Vendor Name',
             render: (_, record) => {

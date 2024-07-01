@@ -1,6 +1,6 @@
 import { IResponseInterface } from "@/app/interfaces/api-response.interface";
 import { HttpService } from "../base.service";
-import { ICrmVendor } from "@/app/interfaces/crm/vendor.interface";
+import { ICrmItem } from "@/app/interfaces/crm/crm.interface";
 
 
 type CreateVendorType = {
@@ -16,11 +16,11 @@ type CreateVendorType = {
 class CrmService extends HttpService {
     private endPoint = 'api/crm/vendors';
 
-    httpCreate = (data: CreateVendorType): Promise<IResponseInterface<ICrmVendor>> => this.post(this.endPoint, data);
+    httpCreate = (data: CreateVendorType): Promise<IResponseInterface<ICrmItem>> => this.post(this.endPoint, data);
 
-    httpGetItems = (): Promise<IResponseInterface<ICrmVendor[]>> => this.get(`${this.endPoint}/all`);
+    httpGetItems = (): Promise<IResponseInterface<ICrmItem[]>> => this.get(`${this.endPoint}/all`);
 
-    httpGetItemById = (id: string): Promise<IResponseInterface<ICrmVendor>> => this.get(`${this.endPoint}/${id}`);
+    httpGetItemById = (id: string): Promise<IResponseInterface<ICrmItem>> => this.get(`${this.endPoint}/${id}`);
 
 }
 

@@ -17,7 +17,7 @@ import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import crmService from "@/app/services/crm/vendor.service";
 import { useEffect, useState } from "react";
-import { ICrmVendor } from "@/app/interfaces/crm/vendor.interface";
+import { ICrmItem } from "@/app/interfaces/crm/crm.interface";
 import { useParams } from "next/navigation";
 import { Skeleton } from "antd";
 import { NoDataComponent } from "@/app/component/noData/NoDataComponent";
@@ -43,7 +43,7 @@ const ValidationSchema = Yup.object().shape({
 function CreateVendorPage() {
     const router = useRouterHook();
     const [isLoading, setIsLoading] = useState(false);
-    const [vendor, setVendor] = useState<ICrmVendor | null>(null);
+    const [vendor, setVendor] = useState<ICrmItem | null>(null);
     const [isFetchingVendor, setIsFetchingVendor] = useState(false);
 
     const params = useParams<{ id: string }>();
