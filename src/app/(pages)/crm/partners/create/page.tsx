@@ -1,9 +1,8 @@
 'use client';
-import { useLayoutEffect, useState } from 'react';
+import { useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import Image from 'next/image';
-import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 // module imports
@@ -14,9 +13,6 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import MinDesc from '@/app/component/description/minDesc';
 import CustomButton from '@/app/component/customButton/button';
 import FormControl from '@/app/component/formControl';
-// redux module
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
 
 // partner service
 import { userService } from '@/app/services/user.service';
@@ -58,13 +54,6 @@ const initialValues: IPartner = {
 
 const CreatePartner = () => {
   const router = useRouterHook();
-  const token = useSelector(selectToken);
-
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
 
   const [isLoading, setIsLoading] = useState(false);
 

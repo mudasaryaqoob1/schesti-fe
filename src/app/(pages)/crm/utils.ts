@@ -46,7 +46,7 @@ export async function saveManyCrmItems(
         const response = await crmService.httpCreateMany(data, module);
         if (response.data) {
             if (response.data.duplicates.length) {
-                toast.success('Duplicate vendors found');
+                toast.success(`Duplicate ${module} found`);
                 setDuplicates(response.data.duplicates);
             }
             if (response.data.items.length) {
