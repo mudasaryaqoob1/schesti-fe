@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { PreviewCSVImportFileModal } from "../components/PreviewCSVImportFileModal";
 import _ from "lodash";
+import { Excel } from "antd-table-saveas-excel";
 
 
 const activeClientMenuItems: MenuProps['items'] = [
@@ -249,6 +250,15 @@ function VendorsPage() {
         }
     }
 
+    function downloadCSV(data: ICrmItem[]) {
+        const excel = new Excel();
+        excel
+            .addSheet('Vendors')
+            .addColumns(columns.slice(0, columns.length - 2) as any)
+            .addDataSource(data)
+            .saveAs(`crm-vendors-${Date.now()}.xlsx`);
+    }
+
     return <section className="mt-6 mb-[39px]  mx-4 rounded-xl ">
 
         {selectedVendor && showDeleteModal ? (
@@ -308,6 +318,7 @@ function VendorsPage() {
                             icon='/download-icon.svg'
                             iconwidth={20}
                             iconheight={20}
+                            onClick={() => downloadCSV(vendorState.data)}
                         />
                     </div>
                     <div>
