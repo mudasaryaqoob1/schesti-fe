@@ -169,11 +169,13 @@ function VendorsPage() {
         },
     ];
 
-    const filteredData = vendorState.data.filter((vendor: ICrmItem) => {
+    const filteredData = vendorState.data.filter((vendor) => {
         if (!search) {
             return true;
         }
-
+        if (vendor.module === 'subcontractors') {
+            return true;
+        }
         return vendor.firstName.toLowerCase().includes(search.toLowerCase()) ||
             vendor.lastName.toLowerCase().includes(search.toLowerCase()) ||
             vendor.companyName.toLowerCase().includes(search.toLowerCase()) ||
@@ -318,7 +320,7 @@ function VendorsPage() {
                             icon='/download-icon.svg'
                             iconwidth={20}
                             iconheight={20}
-                            onClick={() => downloadCSV(vendorState.data)}
+                            onClick={() => downloadCSV(vendorState.data as ICrmItem[])}
                         />
                     </div>
                     <div>
@@ -366,7 +368,7 @@ function VendorsPage() {
             <Table
                 loading={vendorState.loading}
                 columns={columns}
-                dataSource={filteredData}
+                dataSource={filteredData as ICrmItem[]}
                 pagination={{ position: ['bottomCenter'] }}
             />
         </div>
