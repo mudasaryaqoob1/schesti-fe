@@ -11,7 +11,7 @@ type CreateCrmItemType = {
     companyName: string;
     phone: string;
     secondAddress?: string;
-    module: CrmModuleType;
+    module: Omit<CrmModuleType, "subcontractors">;
 };
 
 type CreateCrmSubcontractorType = Omit<ICrmSubcontractorModule, "_id" | "createdAt" | "updatedAt" | "associatedCompany">

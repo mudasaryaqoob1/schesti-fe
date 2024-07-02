@@ -12,14 +12,12 @@ import MinDesc from '@/app/component/description/minDesc';
 import CustomButton from '@/app/component/customButton/button';
 import FormControl from '@/app/component/formControl';
 import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
-// redux module
 
-// subcontractorServic service
-import { subcontractorService } from '@/app/services/subcontractor.service';
-import { ISubcontract } from '../../../../interfaces/companyEmployeeInterfaces/subcontractor.interface';
 import { Routes } from '@/app/utils/plans.utils';
 import { withAuth } from '@/app/hoc/withAuth';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import crmService from '@/app/services/crm/crm.service';
+import { AxiosError } from 'axios';
 
 const newSubcontractorSchema = Yup.object({
   companyRep: Yup.string().required('Company Rep is required!'),
@@ -34,12 +32,13 @@ const newSubcontractorSchema = Yup.object({
   address: Yup.string().required('Address is required!'),
   address2: Yup.string(),
 });
-const initialValues: ISubcontract = {
+const initialValues = {
   companyRep: '',
   name: '',
   email: '',
   phone: '',
   address: '',
+  companyName: '',
   secondAddress: '',
 };
 
@@ -48,19 +47,26 @@ const CreateSubcontractor = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const submitHandler = async (values: ISubcontract) => {
-    subcontractorService
-      .httpAddNewSubcontractor(values)
-      .then((response: any) => {
-        if (response.statusCode == 201) {
-          setIsLoading(false);
-          router.push(`${Routes.CRM['Sub-Contractors']}`);
-        }
-      })
-      .catch(({ response }: any) => {
-        setIsLoading(false);
-        toast.error(response.data.message);
+  const submitHandler = async (values: typeof initialValues) => {
+    setIsLoading(true);
+
+    try {
+      const response = await crmService.httpCreate({
+        ...values,
+        trades: [],
+        status: true,
+        module: "subcontractors"
       });
+      if (response.data) {
+        toast.success("Client created successfully");
+        router.push(Routes.CRM.Clients);
+      }
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      toast.error(err.response?.data.message || "Unable to create client");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
