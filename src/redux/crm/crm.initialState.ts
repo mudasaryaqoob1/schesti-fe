@@ -4,10 +4,12 @@ type State = {
     loading: boolean;
     error?: string;
     data: CrmType[];
+    isUpdatingStatus: boolean;
 }
 
 export const crmInitialState: State = {
     loading: false,
     error: undefined,
     data: [],
+    isUpdatingStatus: false
 }

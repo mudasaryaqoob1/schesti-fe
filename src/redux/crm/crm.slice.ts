@@ -1,6 +1,6 @@
 import { type PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { crmInitialState } from "./crm.initialState";
-import { getCrmItemsThunk } from "./crm.thunk";
+import { getCrmItemsThunk, updateCrmItemStatusThunk } from "./crm.thunk";
 import { CrmType } from "@/app/interfaces/crm/crm.interface";
 
 export const crmVendorSlice = createSlice({
@@ -31,6 +31,24 @@ export const crmVendorSlice = createSlice({
             state.data = action.payload.data;
             state.error = undefined;
         });
+
+        builder.addCase(updateCrmItemStatusThunk.pending, (state) => {
+            state.isUpdatingStatus = true;
+        });
+
+        builder.addCase(updateCrmItemStatusThunk.rejected, (state) => {
+            state.isUpdatingStatus = false;
+        })
+
+        builder.addCase(updateCrmItemStatusThunk.fulfilled, (state, action) => {
+            state.isUpdatingStatus = false;
+            state.data = state.data.map((item) => {
+                if (action.payload.data && item._id === action.payload.data._id) {
+                    return action.payload.data;
+                }
+                return item;
+            });
+        })
 
     },
 

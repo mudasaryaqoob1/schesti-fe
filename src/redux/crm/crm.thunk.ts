@@ -19,3 +19,19 @@ export const getCrmItemsThunk = createAsyncThunk(
         }
     }
 );
+
+export const updateCrmItemStatusThunk = createAsyncThunk(
+    'crm/updateStatus',
+    async (data: { id: string; status: boolean }, { rejectWithValue }) => {
+        try {
+            const response = await crmService.httpfindByIdAndUpdateStatus(data.id, {
+                status: data.status
+            });
+            return response;
+        } catch (error: any) {
+            return rejectWithValue(
+                error.response?.data.message || 'An error occurred while updating the status'
+            );
+        }
+    }
+)

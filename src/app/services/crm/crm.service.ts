@@ -38,6 +38,10 @@ class CrmService extends HttpService {
 
     httpfindByIdAndUpdate = (id: string, data: CreateCrmItem): Promise<IResponseInterface<CrmType>> => this.put(`${this.endPoint}/${id}`, data);
 
+    httpfindByIdAndUpdateStatus = (id: string, data: {
+        status: boolean
+    }): Promise<IResponseInterface<CrmType>> => this.put(`${this.endPoint}/status/${id}`, data);
+
     httpfindByIdAndDelete = (id: string): Promise<IResponseInterface<CrmType>> => this.put(`${this.endPoint}/${id}`);
 
     httpParseCsvFile = (formData: FormData, module: CrmModuleType): Promise<IResponseInterface<(CommonCrmType | CrmSubcontractorParsedType)[]>> => this.post(`${this.endPoint}/parse-csv?module=${module}`, formData);
