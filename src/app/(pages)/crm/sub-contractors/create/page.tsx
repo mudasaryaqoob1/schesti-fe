@@ -38,7 +38,6 @@ const initialValues = {
   email: '',
   phone: '',
   address: '',
-  companyName: '',
   secondAddress: '',
 };
 
