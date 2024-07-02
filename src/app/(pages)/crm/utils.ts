@@ -1,4 +1,4 @@
-import { CommonCrmType, CrmModuleType, CrmType } from "@/app/interfaces/crm/crm.interface";
+import { CommonCrmType, CrmModuleType, CrmSubcontractorParsedType, CrmType } from "@/app/interfaces/crm/crm.interface";
 import crmService from "@/app/services/crm/crm.service";
 import { Excel } from "antd-table-saveas-excel";
 import type { ColumnsType } from "antd/es/table";
@@ -6,10 +6,11 @@ import { AxiosError } from "axios";
 import React, { ChangeEventHandler } from "react";
 import { toast } from "react-toastify";
 
-export const uploadAndParseCSVData = (
+type ParseData = CommonCrmType | CrmSubcontractorParsedType;
+export const uploadAndParseCSVData = <T = ParseData>(
     setIsLoading: React.Dispatch<React.SetStateAction<boolean>>,
     module: CrmModuleType,
-    setParseData: React.Dispatch<React.SetStateAction<CommonCrmType[]>>,
+    setParseData: React.Dispatch<React.SetStateAction<T[]>>,
 
 ): ChangeEventHandler<HTMLInputElement> => async (e) => {
     const files = e.target.files;
@@ -22,7 +23,7 @@ export const uploadAndParseCSVData = (
             const response = await crmService.httpParseCsvFile(formData, module);
             if (response.data) {
                 toast.success('File parsed successfully');
-                setParseData(response.data);
+                setParseData(response.data as T[]);
             }
         } catch (error) {
             const err = error as AxiosError<{ message: string }>;
@@ -33,21 +34,21 @@ export const uploadAndParseCSVData = (
     }
 }
 
-export async function saveManyCrmItems(
-    data: CommonCrmType[],
+export async function saveManyCrmItems<ParsedType extends ParseData = ParseData>(
+    data: ParsedType[],
     setIsSavingMany: React.Dispatch<React.SetStateAction<boolean>>,
     module: CrmModuleType,
-    setDuplicates: React.Dispatch<React.SetStateAction<CommonCrmType[]>>,
+    setDuplicates: React.Dispatch<React.SetStateAction<ParsedType[]>>,
     onSuccessInsert: (_items: CrmType[]) => void,
 
 ) {
     setIsSavingMany(true);
     try {
-        const response = await crmService.httpCreateMany(data, module);
+        const response = await crmService.httpCreateMany(data as ParsedType[], module);
         if (response.data) {
             if (response.data.duplicates.length) {
                 toast.success(`Duplicate ${module} found`);
-                setDuplicates(response.data.duplicates);
+                setDuplicates(response.data.duplicates as ParsedType[]);
             }
             if (response.data.items.length) {
                 onSuccessInsert(response.data.items);

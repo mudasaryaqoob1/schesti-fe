@@ -1,6 +1,6 @@
 import { IResponseInterface } from "@/app/interfaces/api-response.interface";
 import { HttpService } from "../base.service";
-import { CommonCrmType, CrmModuleType, CrmType, ICrmSubcontractorModule } from "@/app/interfaces/crm/crm.interface";
+import { CommonCrmType, CrmModuleType, CrmSubcontractorParsedType, CrmType, ICrmSubcontractorModule } from "@/app/interfaces/crm/crm.interface";
 
 
 type CreateCrmItemType = {
@@ -27,8 +27,8 @@ class CrmService extends HttpService {
 
     httpCreate = (data: CreateCrmItem): Promise<IResponseInterface<CrmType>> => this.post(this.endPoint, data);
 
-    httpCreateMany = (data: CommonCrmType[], module: CrmModuleType): Promise<IResponseInterface<{
-        duplicates: CommonCrmType[];
+    httpCreateMany = (data: (CommonCrmType | CrmSubcontractorParsedType)[], module: CrmModuleType): Promise<IResponseInterface<{
+        duplicates: (CommonCrmType | CrmSubcontractorParsedType)[];
         items: CrmType[]
     }>> => this.post(`${this.endPoint}/createMany?module=${module}`, data);
 
@@ -40,7 +40,7 @@ class CrmService extends HttpService {
 
     httpfindByIdAndDelete = (id: string): Promise<IResponseInterface<CrmType>> => this.put(`${this.endPoint}/${id}`);
 
-    httpParseCsvFile = (formData: FormData, module: CrmModuleType): Promise<IResponseInterface<CommonCrmType[]>> => this.post(`${this.endPoint}/parse-csv?module=${module}`, formData);
+    httpParseCsvFile = (formData: FormData, module: CrmModuleType): Promise<IResponseInterface<(CommonCrmType | CrmSubcontractorParsedType)[]>> => this.post(`${this.endPoint}/parse-csv?module=${module}`, formData);
 
 }
 

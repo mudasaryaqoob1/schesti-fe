@@ -1,40 +1,33 @@
 'use client';
-import { useEffect, useCallback, useState, useRef, ChangeEventHandler } from 'react';
+import { useEffect, useState, useRef, } from 'react';
 import Head from 'next/head';
 import { Dropdown, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { MenuProps } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch } from '@/redux/store';
+import { AppDispatch, RootState } from '@/redux/store';
 import { toast } from 'react-toastify';
 import { SearchOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 
 // module imports
-import {
-  selectSubcontracters,
-  selectSubcontractLoading,
-} from '@/redux/company/companySelector';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 import Button from '@/app/component/customButton/button';
 import { InputComponent } from '@/app/component/customInput/Input';
-import {
-  deleteSubcontractor,
-  fetchCompanySubcontractors,
-} from '@/redux/company/company.thunk';
-import { ISubcontractor } from '@/app/interfaces/companyInterfaces/subcontractor.interface';
+
 import ModalComponent from '@/app/component/modal';
 import { DeleteContent } from '@/app/component/delete/DeleteContent';
 import { Routes } from '@/app/utils/plans.utils';
 import { withAuth } from '@/app/hoc/withAuth';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import WhiteButton from '@/app/component/customButton/white';
-import { Excel } from 'antd-table-saveas-excel';
-import { subcontractorService } from '@/app/services/subcontractor.service';
-import { AxiosError } from 'axios';
-import { insertManySubcontractorsAction } from '@/redux/company/subcontractorSlice/companySubcontractor.slice';
 import { PreviewCSVImportFileModal } from '../components/PreviewCSVImportFileModal';
+import { CrmSubcontractorParsedType, CrmType, ICrmSubcontractorModule } from '@/app/interfaces/crm/crm.interface';
+import { getCrmItemsThunk } from '@/redux/crm/crm.thunk';
+import { insertManyCrmItemAction, removeCrmItemAction } from '@/redux/crm/crm.slice';
+import { deleteCrmItemById, downloadCrmItemsAsCSV, saveManyCrmItems, uploadAndParseCSVData } from '../utils';
+import _ from 'lodash';
 
 export interface DataType {
   company: string;
@@ -69,25 +62,21 @@ const SubcontractTable = () => {
   const router = useRouterHook();
   const dispatch = useDispatch<AppDispatch>();
 
-  const subcontractersData = useSelector(selectSubcontracters);
-  const subcontractersLoading = useSelector(selectSubcontractLoading);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedSubcontractor, setSelectedSubcontractor] =
-    useState<ISubcontractor | null>(null);
+  const state = useSelector((state: RootState) => state.crm);
   const [search, setSearch] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<ICrmSubcontractorModule | null>(null);
   const inputFileRef = useRef<HTMLInputElement | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [isUploadingFile, setIsUploadingFile] = useState(false);
-  const [parseData, setParseData] = useState<ISubcontractor[]>([]);
-  const [isUploadingManySubcontractors, setIsUploadingManySubcontractors] = useState(false);
+  const [parseData, setParseData] = useState<CrmSubcontractorParsedType[]>([]);
+  const [duplicates, setDuplicates] = useState<CrmSubcontractorParsedType[]>([]);
+  const [isSavingMany, setIsSavingMany] = useState(false);
 
-
-  const fetchSubcontactors = useCallback(async () => {
-    await dispatch(fetchCompanySubcontractors({ page: 1, limit: 10 }));
-  }, []);
 
   useEffect(() => {
-    fetchSubcontactors();
-  }, [fetchSubcontactors]);
+    dispatch(getCrmItemsThunk({ module: "subcontractors" }));
+  }, [])
 
   const handleDropdownItemClick = async (key: string, subcontractor: any) => {
     if (key === 'createEstimateRequest') {
@@ -101,12 +90,12 @@ const SubcontractTable = () => {
     } else if (key == 'editSubcontractor') {
       router.push(`${Routes.CRM['Sub-Contractors']}/edit/${subcontractor._id}`);
     } else if (key == 'deleteSubcontractor') {
-      setSelectedSubcontractor(subcontractor as ISubcontractor);
+      setSelectedItem(subcontractor);
       setShowDeleteModal(true);
     }
   };
 
-  const columns: ColumnsType<ISubcontractor> = [
+  const columns: ColumnsType<ICrmSubcontractorModule> = [
     {
       title: 'Company Rep',
       dataIndex: 'companyRep',
@@ -131,9 +120,12 @@ const SubcontractTable = () => {
     {
       title: 'Status',
       dataIndex: 'status',
-      render: () => (
-        <Tag className='rounded-full' color="green">Active</Tag>
-      ),
+      render: (value: boolean) => {
+        if (value) {
+          return <Tag className='rounded-full' color="green">Active</Tag>
+        }
+        return <Tag className='rounded-full' color="red">In Active</Tag>
+      }
     },
     {
       title: 'Action',
@@ -165,101 +157,22 @@ const SubcontractTable = () => {
 
   function handleCloseModal() {
     setShowDeleteModal(false);
-    setSelectedSubcontractor(null);
+    setSelectedItem(null);
   }
 
-  const filteredSubcontractor = subcontractersData
-    ? subcontractersData.filter((client) => {
-      if (!search) {
-        return {
-          ...client,
-        };
-      }
-      return (
-        client.name.toLowerCase().includes(search.toLowerCase()) ||
-        client.companyRep.toLowerCase().includes(search.toLowerCase()) ||
-        client.email?.includes(search) ||
-        client.phone?.includes(search) ||
-        client.address?.includes(search)
-      );
-    })
-    : [];
-
-  function downloadSubcontractorCSV(data: ISubcontractor[]) {
-    const excel = new Excel();
-    console.log(data);
-
-    excel
-      .addSheet('Subcontractors')
-      .addColumns([
-        {
-          dataIndex: "companyRep",
-          title: "Company Rep",
-        },
-        {
-          dataIndex: "name",
-          title: "Company",
-        },
-        {
-          dataIndex: "email",
-          title: "Email Address"
-        },
-        {
-          dataIndex: "phone",
-          title: "Phone Number"
-        },
-        {
-          dataIndex: "address",
-          title: "Address"
-        },
-      ])
-      .addDataSource(data)
-      .saveAs(`crm-subcontractors-${Date.now()}.xlsx`);
-  }
-
-
-  const uploadAndParseClientData: ChangeEventHandler<HTMLInputElement> = async (e) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      setIsUploadingFile(true);
-      try {
-        const file = files[0];
-        const formData = new FormData();
-        formData.append('file', file);
-        const response = await subcontractorService.httpUploadCrmSubcontractorCsvAndParse(formData);
-        if (response.data) {
-          toast.success('File parsed successfully');
-          setParseData(response.data);
-        }
-      } catch (error) {
-        const err = error as AxiosError<{ message: string }>;
-        toast.error(err.response?.data.message || 'An error occurred')
-      } finally {
-        setIsUploadingFile(false);
-      }
+  const filteredSubcontractor = state.data.filter(item => {
+    if (!search) {
+      return true;
     }
-  }
-  async function insertManySubcontractors(data: ISubcontractor[]) {
-    setIsUploadingManySubcontractors(true);
-    try {
-      for (const subcontractor of data) {
-        const response = await subcontractorService.httpAddNewSubcontractor(subcontractor);
-        if (response.data && response.data.user) {
-          toast.success(`${subcontractor.name} added successfully`);
-          dispatch(insertManySubcontractorsAction([response.data.user]));
-          setParseData(
-            parseData.filter((subcontractor) => subcontractor.email !== response.data!.user.email)
-          );
-        }
-      }
-      setParseData([]);
-    } catch (error) {
-      const err = error as AxiosError<{ message: string }>
-      toast.error(err.response?.data.message || 'An error occurred');
-    } finally {
-      setIsUploadingManySubcontractors(false);
+    if (item.module === 'subcontractors') {
+      return item.name.toLowerCase().includes(search.toLowerCase()) ||
+        item.companyRep?.includes(search) ||
+        item.email?.includes(search) ||
+        item.phone?.includes(search) ||
+        item.address?.includes(search);
     }
-  }
+    return true;
+  })
 
 
   return (
@@ -267,18 +180,20 @@ const SubcontractTable = () => {
       <Head>
         <title>Schesti - Subcontractor</title>
       </Head>
-      {selectedSubcontractor && showDeleteModal ? (
+      {selectedItem && showDeleteModal ? (
         <ModalComponent
           open={showDeleteModal}
           setOpen={handleCloseModal}
           width="30%"
         >
           <DeleteContent
-            onClick={async () => {
-              await dispatch(deleteSubcontractor(selectedSubcontractor._id));
+            onClick={() => deleteCrmItemById(selectedItem._id, setIsDeleting, item => {
               toast.success('Subcontractor deleted successfully');
-              handleCloseModal();
-            }}
+              dispatch(removeCrmItemAction(item._id));
+              setShowDeleteModal(false);
+              setSelectedItem(null);
+            })}
+            isLoading={isDeleting}
             onClose={handleCloseModal}
           />
         </ModalComponent>
@@ -286,12 +201,25 @@ const SubcontractTable = () => {
 
 
       <PreviewCSVImportFileModal
-        columns={columns}
+        columns={columns as any}
         data={parseData}
         onClose={() => setParseData([])}
-        onConfirm={() => insertManySubcontractors(parseData)}
+        onConfirm={() => {
+          saveManyCrmItems(
+            parseData,
+            setIsSavingMany,
+            "subcontractors",
+            setDuplicates,
+            items => {
+              dispatch(insertManyCrmItemAction(items));
+              const remainingParsedData = _.differenceBy(parseData, items, 'email');
+              setParseData(remainingParsedData);
+            }
+          )
+        }}
+        duplicates={duplicates}
         setData={setParseData}
-        isLoading={isUploadingManySubcontractors}
+        isLoading={isSavingMany}
         title='Import Subcontractors'
       />
 
@@ -327,9 +255,7 @@ const SubcontractTable = () => {
                 iconwidth={20}
                 iconheight={20}
                 onClick={() => {
-                  if (subcontractersData) {
-                    downloadSubcontractorCSV(subcontractersData);
-                  }
+                  downloadCrmItemsAsCSV(state.data, columns as ColumnsType<CrmType>, "subcontractors")
                 }}
               />
             </div>
@@ -354,7 +280,8 @@ const SubcontractTable = () => {
                 name=""
                 id="importClients"
                 className='hidden'
-                onChange={uploadAndParseClientData}
+                onChange={uploadAndParseCSVData(setIsUploadingFile, "subcontractors", setParseData as React.Dispatch<React.SetStateAction<CrmSubcontractorParsedType[]>>)}
+
               />
             </div>
             <Button
@@ -370,8 +297,8 @@ const SubcontractTable = () => {
           </div>
         </div>
         <Table
-          loading={subcontractersLoading}
-          columns={columns}
+          loading={state.loading}
+          columns={columns as any}
           dataSource={filteredSubcontractor}
           pagination={{ position: ['bottomCenter'] }}
         />
