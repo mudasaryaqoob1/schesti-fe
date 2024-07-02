@@ -24,7 +24,7 @@ import { useRouterHook } from '@/app/hooks/useRouterHook';
 import WhiteButton from '@/app/component/customButton/white';
 import { PreviewCSVImportFileModal } from '../components/PreviewCSVImportFileModal';
 import { CrmSubcontractorParsedType, CrmType, ICrmSubcontractorModule } from '@/app/interfaces/crm/crm.interface';
-import { getCrmItemsThunk } from '@/redux/crm/crm.thunk';
+import { getCrmItemsThunk, updateCrmItemStatusThunk } from '@/redux/crm/crm.thunk';
 import { insertManyCrmItemAction, removeCrmItemAction } from '@/redux/crm/crm.slice';
 import { deleteCrmItemById, downloadCrmItemsAsCSV, saveManyCrmItems, uploadAndParseCSVData } from '../utils';
 import _ from 'lodash';
@@ -56,7 +56,18 @@ const items: MenuProps['items'] = [
     key: 'deleteSubcontractor',
     label: <p>Delete</p>,
   },
+  {
+    key: 'inactive',
+    label: <p>In Active</p>,
+  },
 ];
+
+const inactiveMenuItems: MenuProps['items'] = [
+  {
+    key: "active",
+    label: <p>Active</p>,
+  }
+]
 
 const SubcontractTable = () => {
   const router = useRouterHook();
@@ -92,6 +103,16 @@ const SubcontractTable = () => {
     } else if (key == 'deleteSubcontractor') {
       setSelectedItem(subcontractor);
       setShowDeleteModal(true);
+    } else if (key === 'active') {
+      dispatch(updateCrmItemStatusThunk({
+        id: subcontractor._id,
+        status: true
+      }))
+    } else if (key === 'inactive') {
+      dispatch(updateCrmItemStatusThunk({
+        id: subcontractor._id,
+        status: false
+      }))
     }
   };
 
@@ -135,7 +156,7 @@ const SubcontractTable = () => {
       render: (text, record) => (
         <Dropdown
           menu={{
-            items,
+            items: record.status ? items : inactiveMenuItems,
             onClick: (event) => {
               const { key } = event;
               handleDropdownItemClick(key, record);
