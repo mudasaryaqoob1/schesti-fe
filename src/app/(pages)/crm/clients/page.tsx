@@ -20,7 +20,7 @@ import { withAuth } from '@/app/hoc/withAuth';
 import { Routes } from '@/app/utils/plans.utils';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { PreviewCSVImportFileModal } from '../components/PreviewCSVImportFileModal';
-import { getCrmItemsThunk } from '@/redux/crm/crm.thunk';
+import { getCrmItemsThunk, updateCrmItemStatusThunk } from '@/redux/crm/crm.thunk';
 import { CommonCrmType, CrmType, ICrmItem } from '@/app/interfaces/crm/crm.interface';
 import { deleteCrmItemById, downloadCrmItemsAsCSV, saveManyCrmItems, uploadAndParseCSVData } from '../utils';
 import { insertManyCrmItemAction, removeCrmItemAction } from '@/redux/crm/crm.slice';
@@ -105,6 +105,18 @@ const ClientTable = () => {
       setShowDeleteModal(true);
     } else if (key == 'editClientDetail') {
       router.push(`${Routes.CRM.Clients}/edit/${client._id}`);
+    }
+    else if (key === 'inActiveClient') {
+      dispatch(updateCrmItemStatusThunk({
+        id: client._id,
+        status: false
+      }))
+    }
+    else if (key === 'activeClient') {
+      dispatch(updateCrmItemStatusThunk({
+        id: client._id,
+        status: true
+      }))
     }
   };
 
@@ -330,7 +342,7 @@ const ClientTable = () => {
           </div>
         </div>
         <Table
-          loading={state.loading}
+          loading={state.loading || state.isUpdatingStatus}
           columns={columns as ColumnsType<CrmType>}
           dataSource={filteredClients}
           pagination={{ position: ['bottomCenter'] }}
