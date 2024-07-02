@@ -25,6 +25,7 @@ import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { CrmType, ICrmItem } from '@/app/interfaces/crm/crm.interface';
 import { NoDataComponent } from '@/app/component/noData/NoDataComponent';
 import crmService from '@/app/services/crm/crm.service';
+import { findCrmItemById } from '../../../utils';
 
 const newClientSchema = Yup.object({
   firstName: Yup.string().required('First name is required!'),
@@ -63,25 +64,12 @@ const EditClient = () => {
 
 
   useEffect(() => {
-    findClientById(id);
+    findCrmItemById(id, setIsFetching, item => {
+      setItem(item);
+    });
   }, [id]);
 
-  async function findClientById(id: string) {
-    if (id) {
-      setIsFetching(true);
-      try {
-        const response = await crmService.httpGetItemById(id);
-        if (response.data) {
-          setItem(response.data);
-        }
-      } catch (error) {
-        const err = error as AxiosError<{ message: string }>;
-        toast.error(err.response?.data.message || "Unable to fetch client");
-      } finally {
-        setIsFetching(false);
-      }
-    }
-  }
+
 
   const submitHandler = async (values: ICrmItem) => {
     if (item) {

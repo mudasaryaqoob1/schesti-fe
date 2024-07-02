@@ -92,3 +92,24 @@ export async function deleteCrmItemById(id: string,
         setIsDeleting(false);
     }
 }
+
+export async function findCrmItemById(
+    id: string,
+    setIsFetching: React.Dispatch<React.SetStateAction<boolean>>,
+    onSuccess: (_item: CrmType) => void,
+) {
+    if (id) {
+        setIsFetching(true);
+        try {
+            const response = await crmService.httpGetItemById(id);
+            if (response.data) {
+                onSuccess(response.data);
+            }
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+            toast.error(err.response?.data.message || "Unable to fetch client");
+        } finally {
+            setIsFetching(false);
+        }
+    }
+}

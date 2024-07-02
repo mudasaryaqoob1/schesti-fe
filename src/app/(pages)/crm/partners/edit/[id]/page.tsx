@@ -1,10 +1,9 @@
 'use client';
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
-import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 // module imports
@@ -15,16 +14,18 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import MinDesc from '@/app/component/description/minDesc';
 import CustomButton from '@/app/component/customButton/button';
 import FormControl from '@/app/component/formControl';
-// redux module
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
 
 // partner service
-import { userService } from '@/app/services/user.service';
 import { PhoneNumberRegex } from '@/app/utils/regex.util';
 import { withAuth } from '@/app/hoc/withAuth';
 import { Routes } from '@/app/utils/plans.utils';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { CrmType, ICrmItem } from '@/app/interfaces/crm/crm.interface';
+import { findCrmItemById } from '../../../utils';
+import crmService from '@/app/services/crm/crm.service';
+import { AxiosError } from 'axios';
+import { Skeleton } from 'antd';
+import { NoDataComponent } from '@/app/component/noData/NoDataComponent';
 
 const newPartnerSchema = Yup.object({
   firstName: Yup.string().required('First name is required!'),
@@ -54,55 +55,52 @@ const initialValues: IPartner = {
 const EditPartner = () => {
   const router = useRouterHook();
   const params = useParams();
-  const token = useSelector(selectToken);
 
   const { id } = params as { id: string };
-
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
-
+  const [item, setItem] = useState<CrmType | null>(null);
+  const [isFetching, setIsFetching] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [partnerDetail, setPartnerDetail] = useState<IPartner | undefined>({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    companyName: '',
-    address: '',
-    secondAddress: '',
-  });
 
-  const fetchPartnerDetail = useCallback(async () => {
-    const partnerDetail = await userService.httpFindCompanyPartnerDetail(id);
-    setPartnerDetail(partnerDetail?.data?.partner);
-  }, []);
 
   useEffect(() => {
-    fetchPartnerDetail();
-  }, []);
+    findCrmItemById(id, setIsFetching, item => {
+      setItem(item);
+    });
+  }, [id]);
 
-  const submitHandler = async (values: IPartner) => {
-    setIsLoading(true);
-    let updatePartnerBody = {
-      firstName: values.firstName,
-      lastName: values.lastName,
-      phone: values.phone,
-      companyName: values.companyName,
-      address: values.address,
-      secondAddress: values.secondAddress,
-    };
-    let result = await userService.httpUpdatePartner(updatePartnerBody, id);
-    if (result.statusCode == 200) {
-      setIsLoading(false);
-      router.push(Routes.CRM.Partners);
-    } else {
-      setIsLoading(false);
-      toast.error(result.message);
+
+  const submitHandler = async (values: IPartner & { email: string }) => {
+    if (item) {
+      setIsLoading(true);
+      try {
+        const response = await crmService.httpfindByIdAndUpdate(item._id, { ...values, module: "partners" });
+        if (response.data) {
+          toast.success("Parnter updated successfully");
+          router.push(Routes.CRM.Partners);
+        }
+      } catch (error) {
+        const err = error as AxiosError<{ message: string }>;
+        toast.error(err.response?.data.message || "Unable to update partner");
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
+  if (isFetching) {
+    return <div className="grid grid-cols-2 gap-2 grid-rows-2">
+      <Skeleton />
+      <Skeleton />
+      <Skeleton />
+      <Skeleton />
+    </div>
+  }
+
+
+  if (!isFetching && !item) {
+    return <NoDataComponent
+
+    />
+  }
 
   return (
     <section className="mx-4">
@@ -135,7 +133,7 @@ const EditPartner = () => {
           title="Add New Partner"
         />
         <Formik
-          initialValues={partnerDetail ? partnerDetail : initialValues}
+          initialValues={item ? (item as ICrmItem) : initialValues as ICrmItem}
           enableReinitialize={true}
           validationSchema={newPartnerSchema}
           onSubmit={submitHandler}
