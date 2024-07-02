@@ -27,7 +27,7 @@ import { NoDataComponent } from '@/app/component/noData/NoDataComponent';
 import crmService from '@/app/services/crm/crm.service';
 import { findCrmItemById } from '../../../utils';
 
-const newClientSchema = Yup.object({
+const ValidationSchema = Yup.object({
   firstName: Yup.string().required('First name is required!'),
   lastName: Yup.string().required('Last name is required!'),
   email: Yup.string()
@@ -52,7 +52,7 @@ const initialValues: Partial<ICrmItem> = {
   secondAddress: '',
 };
 
-const EditClient = () => {
+const EditArchitect = () => {
   const router = useRouterHook();
   const params = useParams();
   const [item, setItem] = useState<CrmType | null>(null);
@@ -75,14 +75,14 @@ const EditClient = () => {
     if (item) {
       setIsLoading(true);
       try {
-        const response = await crmService.httpfindByIdAndUpdate(item._id, { ...values, module: "clients" });
+        const response = await crmService.httpfindByIdAndUpdate(item._id, { ...values, module: "architects" });
         if (response.data) {
-          toast.success("Client updated successfully");
-          router.push(Routes.CRM.Clients);
+          toast.success("Architect updated successfully");
+          router.push(Routes.CRM.Architects);
         }
       } catch (error) {
         const err = error as AxiosError<{ message: string }>;
-        toast.error(err.response?.data.message || "Unable to update client");
+        toast.error(err.response?.data.message || "Unable to update architect");
       } finally {
         setIsLoading(false);
       }
@@ -115,7 +115,7 @@ const EditClient = () => {
           width={16}
           height={16}
         />
-        <p className={`${senaryHeading} font-base text-slateGray`}>My Client</p>
+        <p className={`${senaryHeading} font-base text-slateGray`}>My Architect</p>
         <Image
           src={'/chevron-right.svg'}
           alt="chevron-right icon"
@@ -124,7 +124,7 @@ const EditClient = () => {
         />
 
         <MinDesc
-          title="Edit Client"
+          title="Edit Architect"
           className={`${senaryHeading} font-semibold text-schestiPrimary cursor-pointer underline`}
         />
       </div>
@@ -134,12 +134,12 @@ const EditClient = () => {
       >
         <TertiaryHeading
           className="text-graphiteGray mb-4 "
-          title="Edit Client"
+          title="Edit Architect"
         />
         <Formik
           initialValues={item ? (item as ICrmItem) : initialValues as ICrmItem}
           enableReinitialize={true}
-          validationSchema={newClientSchema}
+          validationSchema={ValidationSchema}
           onSubmit={submitHandler}
         >
           {({
@@ -236,4 +236,4 @@ const EditClient = () => {
   );
 };
 
-export default withAuth(EditClient);
+export default withAuth(EditArchitect);
