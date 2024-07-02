@@ -11,7 +11,7 @@ import { CommonCrmType, CrmType, ICrmItem } from "@/app/interfaces/crm/crm.inter
 import { Routes } from "@/app/utils/plans.utils";
 import { bg_style } from "@/globals/tailwindvariables";
 import { insertManyCrmItemAction, removeCrmItemAction } from "@/redux/crm/crm.slice";
-import { getCrmItemsThunk } from "@/redux/crm/crm.thunk";
+import { getCrmItemsThunk, updateCrmItemStatusThunk } from "@/redux/crm/crm.thunk";
 import { AppDispatch, RootState } from "@/redux/store";
 import { SearchOutlined } from "@ant-design/icons";
 import { Dropdown, Table, Tag, type MenuProps } from "antd";
@@ -25,7 +25,7 @@ import _ from "lodash";
 import { deleteCrmItemById, downloadCrmItemsAsCSV, saveManyCrmItems, uploadAndParseCSVData } from "../utils";
 
 
-const activeClientMenuItems: MenuProps['items'] = [
+const items: MenuProps['items'] = [
     {
         key: 'edit',
         label: <p>Edit Vendor Details</p>,
@@ -35,14 +35,14 @@ const activeClientMenuItems: MenuProps['items'] = [
         label: <p>Delete</p>,
     },
     {
-        key: 'inActiveVendor',
+        key: 'inactive',
         label: <p>In Active</p>,
     },
 ];
 
-const inActiveClientMenuItems: MenuProps['items'] = [
+const inactiveItems: MenuProps['items'] = [
     {
-        key: 'activeVendor',
+        key: 'active',
         label: <p>Active</p>,
     },
 ];
@@ -69,9 +69,21 @@ function VendorsPage() {
         if (key === 'edit') {
             router.push(`${Routes.CRM.Vendors}/edit/${record._id}`);
         }
-        if (key === 'delete') {
+        else if (key === 'delete') {
             setSelectedVendor(record);
             setShowDeleteModal(true);
+        }
+        else if (key === 'inactive') {
+            dispatch(updateCrmItemStatusThunk({
+                id: record._id,
+                status: false
+            }))
+        }
+        else if (key === 'active') {
+            dispatch(updateCrmItemStatusThunk({
+                id: record._id,
+                status: true
+            }))
         }
     }
 
@@ -125,44 +137,26 @@ function VendorsPage() {
             align: 'center',
             key: 'action',
             render: (text, record) => {
-                if (record.status) {
-                    return (
-                        <Dropdown
-                            menu={{
-                                items: activeClientMenuItems,
-                                onClick({ key }) {
-                                    handleMenuItemClick(key, record);
-                                }
-                            }}
-                            placement="bottomRight"
-                        >
-                            <Image
-                                src={'/menuIcon.svg'}
-                                alt="logo white icon"
-                                width={20}
-                                height={20}
-                                className="active:scale-105 cursor-pointer"
-                            />
-                        </Dropdown>
-                    );
-                } else {
-                    return (
-                        <Dropdown
-                            menu={{
-                                items: inActiveClientMenuItems,
-                            }}
-                            placement="bottomRight"
-                        >
-                            <Image
-                                src={'/menuIcon.svg'}
-                                alt="logo white icon"
-                                width={20}
-                                height={20}
-                                className="active:scale-105 cursor-pointer"
-                            />
-                        </Dropdown>
-                    );
-                }
+                return (
+                    <Dropdown
+                        menu={{
+                            items: record.status ? items : inactiveItems,
+                            onClick({ key }) {
+                                handleMenuItemClick(key, record);
+                            }
+                        }}
+                        placement="bottomRight"
+                    >
+                        <Image
+                            src={'/menuIcon.svg'}
+                            alt="logo white icon"
+                            width={20}
+                            height={20}
+                            className="active:scale-105 cursor-pointer"
+                        />
+                    </Dropdown>
+                );
+
             },
         },
     ];
