@@ -58,12 +58,12 @@ const CreateSubcontractor = () => {
         module: "subcontractors"
       });
       if (response.data) {
-        toast.success("Client created successfully");
-        router.push(Routes.CRM.Clients);
+        toast.success("Subcontractor created successfully");
+        router.push(Routes.CRM['Sub-Contractors']);
       }
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
-      toast.error(err.response?.data.message || "Unable to create client");
+      toast.error(err.response?.data.message || "Unable to create subcontractor");
     } finally {
       setIsLoading(false);
     }
