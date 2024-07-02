@@ -1,9 +1,8 @@
 'use client';
-import { useLayoutEffect, useState } from 'react';
+import { useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import Image from 'next/image';
-import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 // module imports
@@ -14,16 +13,12 @@ import MinDesc from '@/app/component/description/minDesc';
 import CustomButton from '@/app/component/customButton/button';
 import FormControl from '@/app/component/formControl';
 import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
-// redux module
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
-
-// client service
-import { userService } from '@/app/services/user.service';
 import { PhoneNumberRegex } from '@/app/utils/regex.util';
 import { withAuth } from '@/app/hoc/withAuth';
 import { Routes } from '@/app/utils/plans.utils';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { AxiosError } from 'axios';
+import crmService from '@/app/services/crm/crm.service';
 
 const newClientSchema = Yup.object({
   firstName: Yup.string()
@@ -58,30 +53,28 @@ const initialValues: IClient = {
 
 const CreateClient = () => {
   const router = useRouterHook();
-  const token = useSelector(selectToken);
-
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
 
   const [isLoading, setIsLoading] = useState(false);
 
   const submitHandler = async (values: IClient) => {
     setIsLoading(true);
-    userService
-      .httpAddNewClient({ ...values, phone: `${values.phone}` })
-      .then((response: any) => {
-        if (response.statusCode == 201) {
-          setIsLoading(false);
-          router.push(Routes.CRM.Clients);
-        }
-      })
-      .catch(({ response }: any) => {
-        setIsLoading(false);
-        toast.error(response.data.message);
+
+    try {
+      const response = await crmService.httpCreate({
+        ...values,
+        module: "clients"
       });
+      if (response.data) {
+        toast.success("Client created successfully");
+        router.push(Routes.CRM.Clients);
+      }
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      toast.error(err.response?.data.message || "Unable to create client");
+    } finally {
+      setIsLoading(false);
+    }
+
   };
 
   return (
