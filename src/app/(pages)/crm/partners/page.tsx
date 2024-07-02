@@ -1,37 +1,32 @@
 'use client';
-import { useEffect, useCallback, useState, useRef, ChangeEventHandler } from 'react';
+import { useEffect, useState, useRef, } from 'react';
 import { Dropdown, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { MenuProps } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 
 // module imports
-import { AppDispatch } from '@/redux/store';
-import { selectPartners } from '@/redux/company/companySelector';
-import { selectClientsLoading } from '@/redux/company/companySelector';
+import { AppDispatch, RootState } from '@/redux/store';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 import Button from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
-import {
-  deleteCompanyPartner,
-  fetchCompanyPartner,
-} from '@/redux/company/company.thunk';
 import Image from 'next/image';
 import { SearchOutlined } from '@ant-design/icons';
 import { InputComponent } from '@/app/component/customInput/Input';
-import { IPartner } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 import { DeleteContent } from '@/app/component/delete/DeleteContent';
 import ModalComponent from '@/app/component/modal';
 import { toast } from 'react-toastify';
 import { withAuth } from '@/app/hoc/withAuth';
 import { Routes } from '@/app/utils/plans.utils';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
-import { Excel } from 'antd-table-saveas-excel';
-import { AxiosError } from 'axios';
-import { userService } from '@/app/services/user.service';
 import { PreviewCSVImportFileModal } from '../components/PreviewCSVImportFileModal';
-import { insertManyPartnersAction } from '@/redux/company/partnerSlice/companyPartner.slice';
+
+import { CommonCrmType, CrmType, ICrmItem } from '@/app/interfaces/crm/crm.interface';
+import { getCrmItemsThunk } from '@/redux/crm/crm.thunk';
+import { deleteCrmItemById, downloadCrmItemsAsCSV, saveManyCrmItems, uploadAndParseCSVData } from '../utils';
+import { insertManyCrmItemAction, removeCrmItemAction } from '@/redux/crm/crm.slice';
+import _ from 'lodash';
 
 interface DataType {
   firstName: string;
@@ -66,26 +61,23 @@ const PartnerTable = () => {
   const router = useRouterHook();
   const dispatch = useDispatch<AppDispatch>();
 
-  const partnersData: IPartner[] | null = useSelector(selectPartners);
-  const partnerLoading = useSelector(selectClientsLoading);
+  const state = useSelector((state: RootState) => state.crm);
   const [search, setSearch] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedPartner, setselectedPartner] = useState<IPartner | null>(null);
-
-
+  const [selectedItem, setSelectedItem] = useState<ICrmItem | null>(null);
   const inputFileRef = useRef<HTMLInputElement | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [isUploadingFile, setIsUploadingFile] = useState(false);
-  const [parseData, setParseData] = useState<Required<IPartner>[]>([]);
-  const [isUploadingMany, setIsUploadingMany] = useState(false);
+  const [parseData, setParseData] = useState<CommonCrmType[]>([]);
+  const [duplicates, setDuplicates] = useState<CommonCrmType[]>([]);
+  const [isSavingMany, setIsSavingMany] = useState(false);
 
-
-  const fetchCompanyPartnerHandler = useCallback(async () => {
-    await dispatch(fetchCompanyPartner({ page: 1, limit: 10 }));
-  }, []);
 
   useEffect(() => {
-    fetchCompanyPartnerHandler();
-  }, []);
+    dispatch(getCrmItemsThunk({ module: "partners" }));
+  }, [])
+
+
 
   const handleDropdownItemClick = async (key: string, partner: any) => {
     if (key === 'createEstimateRequest') {
@@ -95,7 +87,7 @@ const PartnerTable = () => {
     } else if (key === 'createSchedule') {
       router.push(`/schedule`);
     } else if (key == 'deletePartner') {
-      setselectedPartner(partner);
+      setSelectedItem(partner);
       setShowDeleteModal(true);
     } else if (key == 'editPartnerDetail') {
       router.push(`${Routes.CRM.Partners}/edit/${partner._id}`);
@@ -157,94 +149,39 @@ const PartnerTable = () => {
       ),
     },
   ];
-  const filteredPartners = partnersData
-    ? partnersData.filter((partner) => {
-      if (!search) {
-        return partner;
-      }
-      return (
-        partner.firstName.toLowerCase().includes(search.toLowerCase()) ||
-        partner.lastName.toLowerCase().includes(search.toLowerCase()) ||
-        partner.email?.includes(search)
-      );
-    })
-    : [];
-
-
-  function downloadCSV(data: IPartner[]) {
-    const excel = new Excel();
-    excel
-      .addSheet('Partners')
-      .addColumns((columns as any).slice(0, 5))
-      .addDataSource(data)
-      .saveAs(`crm-partners-${Date.now()}.xlsx`);
-  }
-
-
-  const uploadAndParseClientData: ChangeEventHandler<HTMLInputElement> = async (e) => {
-    const files = e.target.files;
-    setParseData([]);
-    if (files && files.length > 0) {
-      setIsUploadingFile(true);
-      try {
-        const file = files[0];
-        const formData = new FormData();
-        formData.append('file', file);
-        const response = await userService.httpUploadCrmPartnersCsvAndParse(formData);
-        if (response.data) {
-          toast.success('File parsed successfully');
-          setParseData(response.data);
-        }
-      } catch (error) {
-        const err = error as AxiosError<{ message: string }>;
-        toast.error(err.response?.data.message || 'An error occurred')
-      } finally {
-        setIsUploadingFile(false);
-      }
+  const filteredData = state.data.filter(item => {
+    if (!search) {
+      return true;
     }
-  }
-
-
-  async function insertManyPartners(data: IPartner[]) {
-    setIsUploadingMany(true);
-    try {
-      for (const item of data) {
-        const response = await userService.httpAddNewPartner(item);
-        if (response.data && response.data.client) {
-          toast.success(`${item.email} added successfully`);
-          dispatch(insertManyPartnersAction([response.data.client]));
-          setParseData(
-            parseData.filter((item) => item.email !== response.data!.client.email)
-          );
-        }
-      }
-      setParseData([]);
-    } catch (error) {
-      const err = error as AxiosError<{ message: string }>
-      toast.error(err.response?.data.message || 'An error occurred');
-    } finally {
-      setIsUploadingMany(false);
+    if (item.module === 'subcontractors') {
+      return true;
     }
-  }
+    return item.firstName.toLowerCase().includes(search.toLowerCase()) ||
+      item.lastName.toLowerCase().includes(search.toLowerCase()) ||
+      item.companyName.toLowerCase().includes(search.toLowerCase()) ||
+      item.email?.includes(search) ||
+      item.phone?.includes(search) ||
+      item.address?.includes(search)
+  })
+
+
 
   return (
     <section className="mt-6 mb-[39px] mx-4 rounded-xl ">
-      {selectedPartner && showDeleteModal ? (
+      {selectedItem && showDeleteModal ? (
         <ModalComponent
           open={showDeleteModal}
           setOpen={setShowDeleteModal}
           width="30%"
         >
           <DeleteContent
-            onClick={async () => {
-              if ('_id' in selectedPartner) {
-                await dispatch(
-                  deleteCompanyPartner(selectedPartner._id as string)
-                );
-                toast.success('Partner deleted successfully');
-              }
+            onClick={() => deleteCrmItemById(selectedItem._id, setIsDeleting, item => {
+              toast.success('Partner deleted successfully');
+              dispatch(removeCrmItemAction(item._id));
               setShowDeleteModal(false);
-            }}
+              setSelectedItem(null);
+            })}
+            isLoading={isDeleting}
             onClose={() => setShowDeleteModal(false)}
           />
         </ModalComponent>
@@ -254,9 +191,22 @@ const PartnerTable = () => {
         columns={columns as any}
         data={parseData}
         onClose={() => setParseData([])}
-        onConfirm={() => insertManyPartners(parseData)}
+        onConfirm={() => {
+          saveManyCrmItems(
+            parseData,
+            setIsSavingMany,
+            "partners",
+            setDuplicates,
+            items => {
+              dispatch(insertManyCrmItemAction(items));
+              const remainingParsedData = _.differenceBy(parseData, items, 'email');
+              setParseData(remainingParsedData);
+            }
+          )
+        }}
+        duplicates={duplicates}
         setData={setParseData}
-        isLoading={isUploadingMany}
+        isLoading={isSavingMany}
         title='Import Partners'
       />
 
@@ -288,9 +238,7 @@ const PartnerTable = () => {
                 iconwidth={20}
                 iconheight={20}
                 onClick={() => {
-                  if (partnersData) {
-                    downloadCSV(partnersData)
-                  }
+                  downloadCrmItemsAsCSV(state.data, columns as ColumnsType<CrmType>, "partners")
                 }}
               />
             </div>
@@ -314,9 +262,10 @@ const PartnerTable = () => {
                 accept='.csv, .xlsx'
                 type="file"
                 name=""
-                id="importClients"
+                id="importFile"
                 className='hidden'
-                onChange={uploadAndParseClientData}
+                onChange={uploadAndParseCSVData(setIsUploadingFile, "partners", setParseData)}
+
               />
             </div>
             <Button
@@ -330,9 +279,9 @@ const PartnerTable = () => {
           </div>
         </div>
         <Table
-          loading={partnerLoading}
-          columns={columns as ColumnsType<IPartner>}
-          dataSource={filteredPartners}
+          loading={state.loading}
+          columns={columns as ColumnsType<CrmType>}
+          dataSource={filteredData}
           pagination={{ position: ['bottomCenter'] }}
         />
       </div>
