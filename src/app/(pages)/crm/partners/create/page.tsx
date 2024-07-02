@@ -15,11 +15,12 @@ import CustomButton from '@/app/component/customButton/button';
 import FormControl from '@/app/component/formControl';
 
 // partner service
-import { userService } from '@/app/services/user.service';
 import { PhoneNumberRegex } from '@/app/utils/regex.util';
 import { withAuth } from '@/app/hoc/withAuth';
 import { Routes } from '@/app/utils/plans.utils';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import crmService from '@/app/services/crm/crm.service';
+import { AxiosError } from 'axios';
 
 const newPartnerSchema = Yup.object({
   firstName: Yup.string()
@@ -42,7 +43,7 @@ const newPartnerSchema = Yup.object({
   address: Yup.string().required('Address is required!'),
   secondAddress: Yup.string(),
 });
-const initialValues: IPartner = {
+const initialValues = {
   firstName: '',
   lastName: '',
   email: '',
@@ -57,20 +58,23 @@ const CreatePartner = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const submitHandler = async (values: IPartner) => {
+  const submitHandler = async (values: IPartner & { email: string }) => {
     setIsLoading(true);
-    userService
-      .httpAddNewPartner(values)
-      .then((response: any) => {
-        if (response.statusCode == 201) {
-          setIsLoading(false);
-          router.push(Routes.CRM.Partners);
-        }
-      })
-      .catch(({ response }: any) => {
-        setIsLoading(false);
-        toast.error(response.data.message);
+    try {
+      const response = await crmService.httpCreate({
+        ...values,
+        module: "partners"
       });
+      if (response.data) {
+        toast.success("Partner created successfully");
+        router.push(Routes.CRM.Partners);
+      }
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      toast.error(err.response?.data.message || "Unable to create partner");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
