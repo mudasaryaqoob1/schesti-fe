@@ -1,9 +1,9 @@
-import { ICrmItem } from "@/app/interfaces/crm/crm.interface";
+import { CrmType } from "@/app/interfaces/crm/crm.interface";
 
 type State = {
     loading: boolean;
     error?: string;
-    data: ICrmItem[];
+    data: CrmType[];
 }
 
 export const crmInitialState: State = {

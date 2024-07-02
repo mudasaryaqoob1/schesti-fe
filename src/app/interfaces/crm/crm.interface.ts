@@ -2,9 +2,8 @@ import { IUserInterface } from "../user.interface"
 
 export type CrmModuleType = 'clients' | "partners" | "subcontractors" | "vendors" | "architects" | "contractors";
 
+
 type ICrmBase = {
-    firstName: string
-    lastName: string
     companyName: string
     email: string
     phone: string
@@ -23,8 +22,14 @@ export type CommonCrmType = Omit<ICrmBase, "_id" | "createdAt" | "updatedAt" | "
 export type ICrmSubcontractorModule = {
     companyRep: string;
     trades: string[];
-    type: "subcontractors";
-} & Omit<ICrmBase, "firstName" | "lastName">;
+    module: "subcontractors";
+} & ICrmBase;
 
 
-export type ICrmItem = ICrmBase;
+export type ICrmItem = ICrmBase & {
+    firstName: string;
+    lastName: string;
+    module: "clients" | "partners" | "vendors" | "architects" | "contractors";
+};
+
+export type CrmType = ICrmItem | ICrmSubcontractorModule;
