@@ -1,6 +1,6 @@
 import { IResponseInterface } from "@/app/interfaces/api-response.interface";
 import { HttpService } from "../base.service";
-import { CommonCrmType, CrmModuleType, ICrmItem } from "@/app/interfaces/crm/crm.interface";
+import { CommonCrmType, CrmModuleType, CrmType } from "@/app/interfaces/crm/crm.interface";
 
 
 type CreateCrmItemType = {
@@ -21,20 +21,20 @@ type QueryParams = {
 class CrmService extends HttpService {
     private endPoint = 'api/crm';
 
-    httpCreate = (data: CreateCrmItemType): Promise<IResponseInterface<ICrmItem>> => this.post(this.endPoint, data);
+    httpCreate = (data: CreateCrmItemType): Promise<IResponseInterface<CrmType>> => this.post(this.endPoint, data);
 
     httpCreateMany = (data: CommonCrmType[], module: CrmModuleType): Promise<IResponseInterface<{
         duplicates: CommonCrmType[];
-        items: ICrmItem[]
+        items: CrmType[]
     }>> => this.post(`${this.endPoint}/createMany?module=${module}`, data);
 
-    httpGetItems = (query: QueryParams): Promise<IResponseInterface<ICrmItem[]>> => this.get(`${this.endPoint}/all?module=${query.module}`);
+    httpGetItems = (query: QueryParams): Promise<IResponseInterface<CrmType[]>> => this.get(`${this.endPoint}/all?module=${query.module}`);
 
-    httpGetItemById = (id: string): Promise<IResponseInterface<ICrmItem>> => this.get(`${this.endPoint}/${id}`);
+    httpGetItemById = (id: string): Promise<IResponseInterface<CrmType>> => this.get(`${this.endPoint}/${id}`);
 
-    httpfindByIdAndUpdate = (id: string, data: CreateCrmItemType): Promise<IResponseInterface<ICrmItem>> => this.put(`${this.endPoint}/${id}`, data);
+    httpfindByIdAndUpdate = (id: string, data: CreateCrmItemType): Promise<IResponseInterface<CrmType>> => this.put(`${this.endPoint}/${id}`, data);
 
-    httpfindByIdAndDelete = (id: string): Promise<IResponseInterface<ICrmItem>> => this.put(`${this.endPoint}/${id}`);
+    httpfindByIdAndDelete = (id: string): Promise<IResponseInterface<CrmType>> => this.put(`${this.endPoint}/${id}`);
 
     httpParseCsvFile = (formData: FormData, module: CrmModuleType): Promise<IResponseInterface<CommonCrmType[]>> => this.post(`${this.endPoint}/parse-csv?module=${module}`, formData);
 

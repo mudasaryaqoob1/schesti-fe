@@ -58,7 +58,7 @@ function CreateVendorPage() {
             try {
                 const response = await crmService.httpGetItemById(id);
                 if (response.data) {
-                    setVendor(response.data);
+                    setVendor(response.data as ICrmItem);
                 }
             } catch (error) {
                 const err = error as AxiosError<{ message: string }>;

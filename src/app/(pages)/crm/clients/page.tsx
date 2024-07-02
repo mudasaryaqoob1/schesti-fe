@@ -1,48 +1,31 @@
 'use client';
-import { useEffect, useCallback, useState, useRef, ChangeEventHandler } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Dropdown, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { MenuProps } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 
 // module imports
-import { AppDispatch } from '@/redux/store';
-import { selectClients } from '@/redux/company/companySelector';
-import { selectClientsLoading } from '@/redux/company/companySelector';
+import { AppDispatch, RootState } from '@/redux/store';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { bg_style } from '@/globals/tailwindvariables';
 import Button from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
-import {
-  deleteCompanyClient,
-  fetchCompanyClients,
-  changeCompanyClientStatus,
-} from '@/redux/company/company.thunk';
 import Image from 'next/image';
 import { SearchOutlined } from '@ant-design/icons';
 import { InputComponent } from '@/app/component/customInput/Input';
-import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 import { DeleteContent } from '@/app/component/delete/DeleteContent';
 import ModalComponent from '@/app/component/modal';
 import { withAuth } from '@/app/hoc/withAuth';
 import { Routes } from '@/app/utils/plans.utils';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
-import { Excel } from 'antd-table-saveas-excel';
-import { userService } from '@/app/services/user.service';
-import { AxiosError } from 'axios';
-import { toast } from 'react-toastify';
-import { insertManyClientsAction } from '@/redux/company/clientSlice/companyClient.slice';
 import { PreviewCSVImportFileModal } from '../components/PreviewCSVImportFileModal';
-
-interface DataType {
-  firstName: string;
-  companyName: string;
-  email: number;
-  phone: string;
-  address: string;
-  status: string;
-  action: string;
-}
+import { getCrmItemsThunk } from '@/redux/crm/crm.thunk';
+import { CommonCrmType, CrmType, ICrmItem } from '@/app/interfaces/crm/crm.interface';
+import { deleteCrmItemById, downloadCrmItemsAsCSV, saveManyCrmItems, uploadAndParseCSVData } from '../utils';
+import { insertManyCrmItemAction, removeCrmItemAction } from '@/redux/crm/crm.slice';
+import _ from 'lodash';
+import { toast } from 'react-toastify';
 
 const activeClientMenuItems: MenuProps['items'] = [
   {
@@ -94,23 +77,21 @@ const ClientTable = () => {
   const router = useRouterHook();
   const dispatch = useDispatch<AppDispatch>();
 
-  const clientsData: IClient[] | null = useSelector(selectClients);
-  const companyClientsLoading = useSelector(selectClientsLoading);
+  const state = useSelector((state: RootState) => state.crm);
   const [search, setSearch] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedClient, setSelectedClient] = useState<IClient | null>(null);
+  const [selectedItem, setSelectedItem] = useState<ICrmItem | null>(null);
   const inputFileRef = useRef<HTMLInputElement | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [isUploadingFile, setIsUploadingFile] = useState(false);
-  const [parseData, setParseData] = useState<IClient[]>([]);
-  const [isUploadingManyClients, setIsUploadingManyClients] = useState(false);
+  const [parseData, setParseData] = useState<CommonCrmType[]>([]);
+  const [duplicates, setDuplicates] = useState<CommonCrmType[]>([]);
+  const [isSavingMany, setIsSavingMany] = useState(false);
 
-  const fetchClientCall = useCallback(async () => {
-    await dispatch(fetchCompanyClients({ page: 1, limit: 10 }));
-  }, []);
 
   useEffect(() => {
-    fetchClientCall();
-  }, []);
+    dispatch(getCrmItemsThunk({ module: "clients" }));
+  }, [])
 
   const handleDropdownItemClick = async (key: string, client: any) => {
     if (key === 'createEstimateRequest') {
@@ -120,24 +101,14 @@ const ClientTable = () => {
     } else if (key === 'createSchedule') {
       router.push(`/schedule`);
     } else if (key == 'deleteClient') {
-      setSelectedClient(client);
+      setSelectedItem(client);
       setShowDeleteModal(true);
     } else if (key == 'editClientDetail') {
       router.push(`${Routes.CRM.Clients}/edit/${client._id}`);
-    } else if (key == 'activeClient') {
-      await dispatch(
-        changeCompanyClientStatus({ clientId: client._id, status: true })
-      );
-      fetchClientCall();
-    } else if (key === 'inActiveClient') {
-      await dispatch(
-        changeCompanyClientStatus({ clientId: client._id, status: false })
-      );
-      fetchClientCall();
     }
   };
 
-  const columns: ColumnsType<DataType> = [
+  const columns: ColumnsType<ICrmItem> = [
     {
       title: 'Client Name',
       dataIndex: 'firstName',
@@ -183,26 +154,6 @@ const ClientTable = () => {
       dataIndex: 'action',
       align: 'center',
       key: 'action',
-      // render: (text, record) => (
-      //   <Dropdown
-      //     menu={{
-      //       items,
-      //       onClick: (event) => {
-      //         const { key } = event;
-      //         handleDropdownItemClick(key, record);
-      //       },
-      //     }}
-      //     placement="bottomRight"
-      //   >
-      //     <Image
-      //       src={'/menuIcon.svg'}
-      //       alt="logo white icon"
-      //       width={20}
-      //       height={20}
-      //       className="active:scale-105 cursor-pointer"
-      //     />
-      //   </Dropdown>
-      // ),
       render: (text, record: any) => {
         if (record?.status) {
           return (
@@ -251,129 +202,40 @@ const ClientTable = () => {
     },
   ];
 
-  const filteredClients = clientsData
-    ? clientsData
-      .filter((client) => {
-        if (!search) {
-          return {
-            ...client,
-          };
-        }
-        return (
-          client.firstName.toLowerCase().includes(search.toLowerCase()) ||
-          client.lastName.toLowerCase().includes(search.toLowerCase()) ||
-          client.companyName.toLowerCase().includes(search.toLowerCase()) ||
-          client.email?.includes(search) ||
-          client.phone?.includes(search) ||
-          client.address?.includes(search)
-        );
-      })
-      .map((clientRecord) => {
-        return {
-          ...clientRecord,
-          firstName: `${clientRecord.firstName} ${clientRecord.lastName}`,
-        };
-      })
-    : [];
-
-
-  function downloadClientsCSV(data: IClient[]) {
-    const excel = new Excel();
-    excel
-      .addSheet('Clients')
-      .addColumns([
-        {
-          dataIndex: "firstName",
-          title: "First Name",
-        },
-        {
-          dataIndex: "lastName",
-          title: "Last Name",
-        },
-        {
-          dataIndex: "companyName",
-          title: "Company Name"
-        },
-        {
-          dataIndex: "phone",
-          title: "Phone Number"
-        },
-        {
-          dataIndex: "address",
-          title: "Address"
-        },
-        {
-          dataIndex: "secondAddress",
-          title: "Second Address"
-        }
-      ])
-      .addDataSource(data)
-      .saveAs(`crm-clients-${Date.now()}.xlsx`);
-  }
-
-
-  const uploadAndParseClientData: ChangeEventHandler<HTMLInputElement> = async (e) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      setIsUploadingFile(true);
-      try {
-        const file = files[0];
-        const formData = new FormData();
-        formData.append('file', file);
-        const response = await userService.httpUploadCrmClientsCsvAndParse(formData);
-        if (response.data) {
-          toast.success('File parsed successfully');
-          setParseData(response.data);
-        }
-      } catch (error) {
-        const err = error as AxiosError<{ message: string }>;
-        toast.error(err.response?.data.message || 'An error occurred')
-      } finally {
-        setIsUploadingFile(false);
-      }
+  const filteredClients = state.data.filter(item => {
+    if (!search) {
+      return true;
     }
-  }
-
-
-  async function insertManyClients(data: IClient[]) {
-    setIsUploadingManyClients(true);
-    try {
-      for (const item of data) {
-        const response = await userService.httpAddNewClient(item);
-        if (response.data && response.data.client) {
-          toast.success(`${item.email} added successfully`);
-          dispatch(insertManyClientsAction([response.data.client]));
-          setParseData(
-            parseData.filter((item) => item.email !== response.data!.client.email)
-          );
-        }
-      }
-      setParseData([]);
-    } catch (error) {
-      const err = error as AxiosError<{ message: string }>
-      toast.error(err.response?.data.message || 'An error occurred');
-    } finally {
-      setIsUploadingManyClients(false);
+    if (item.module === 'subcontractors') {
+      return true;
     }
-  }
+    return item.firstName.toLowerCase().includes(search.toLowerCase()) ||
+      item.lastName.toLowerCase().includes(search.toLowerCase()) ||
+      item.companyName.toLowerCase().includes(search.toLowerCase()) ||
+      item.email?.includes(search) ||
+      item.phone?.includes(search) ||
+      item.address?.includes(search)
+  })
+
+
+
 
   return (
     <section className="mt-6 mb-[39px]  mx-4 rounded-xl ">
-      {selectedClient && showDeleteModal ? (
+      {selectedItem && showDeleteModal ? (
         <ModalComponent
           open={showDeleteModal}
           setOpen={setShowDeleteModal}
           width="30%"
         >
           <DeleteContent
-            onClick={async () => {
-              if ('_id' in selectedClient) {
-                await dispatch(
-                  deleteCompanyClient(selectedClient._id as string)
-                );
-              }
+            onClick={() => deleteCrmItemById(selectedItem._id, setIsDeleting, item => {
+              toast.success('Client deleted successfully');
+              dispatch(removeCrmItemAction(item._id));
               setShowDeleteModal(false);
-            }}
+              setSelectedItem(null);
+            })}
+            isLoading={isDeleting}
             onClose={() => setShowDeleteModal(false)}
           />
         </ModalComponent>
@@ -383,9 +245,22 @@ const ClientTable = () => {
         columns={columns as any}
         data={parseData}
         onClose={() => setParseData([])}
-        onConfirm={() => insertManyClients(parseData)}
+        onConfirm={() => {
+          saveManyCrmItems(
+            parseData,
+            setIsSavingMany,
+            "clients",
+            setDuplicates,
+            items => {
+              dispatch(insertManyCrmItemAction(items));
+              const remainingParsedData = _.differenceBy(parseData, items, 'email');
+              setParseData(remainingParsedData);
+            }
+          )
+        }}
+        duplicates={duplicates}
         setData={setParseData}
-        isLoading={isUploadingManyClients}
+        isLoading={isSavingMany}
         title='Import Clients'
 
       />
@@ -418,9 +293,7 @@ const ClientTable = () => {
                 iconwidth={20}
                 iconheight={20}
                 onClick={() => {
-                  if (clientsData) {
-                    downloadClientsCSV(clientsData)
-                  }
+                  downloadCrmItemsAsCSV(state.data, columns as ColumnsType<CrmType>, "clients")
                 }}
               />
             </div>
@@ -443,7 +316,7 @@ const ClientTable = () => {
                 name=""
                 id="importClients"
                 className='hidden'
-                onChange={uploadAndParseClientData}
+                onChange={uploadAndParseCSVData(setIsUploadingFile, "clients", setParseData)}
               />
             </div>
             <Button
@@ -457,8 +330,8 @@ const ClientTable = () => {
           </div>
         </div>
         <Table
-          loading={companyClientsLoading}
-          columns={columns as ColumnsType<IClient>}
+          loading={state.loading}
+          columns={columns as ColumnsType<CrmType>}
           dataSource={filteredClients}
           pagination={{ position: ['bottomCenter'] }}
         />

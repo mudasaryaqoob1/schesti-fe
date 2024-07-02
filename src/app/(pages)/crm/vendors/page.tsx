@@ -7,8 +7,7 @@ import TertiaryHeading from "@/app/component/headings/tertiary";
 import ModalComponent from "@/app/component/modal";
 import { withAuth } from "@/app/hoc/withAuth";
 import { useRouterHook } from "@/app/hooks/useRouterHook";
-import { CommonCrmType, ICrmItem } from "@/app/interfaces/crm/crm.interface";
-import crmService from "@/app/services/crm/crm.service";
+import { CommonCrmType, CrmType, ICrmItem } from "@/app/interfaces/crm/crm.interface";
 import { Routes } from "@/app/utils/plans.utils";
 import { bg_style } from "@/globals/tailwindvariables";
 import { insertManyCrmItemAction, removeCrmItemAction } from "@/redux/crm/crm.slice";
@@ -17,14 +16,13 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { SearchOutlined } from "@ant-design/icons";
 import { Dropdown, Table, Tag, type MenuProps } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { AxiosError } from "axios";
 import Image from "next/image";
-import { ChangeEventHandler, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { PreviewCSVImportFileModal } from "../components/PreviewCSVImportFileModal";
 import _ from "lodash";
-import { Excel } from "antd-table-saveas-excel";
+import { deleteCrmItemById, downloadCrmItemsAsCSV, saveManyCrmItems, uploadAndParseCSVData } from "../utils";
 
 
 const activeClientMenuItems: MenuProps['items'] = [
@@ -185,81 +183,8 @@ function VendorsPage() {
     })
 
 
-    async function deleteVendorById(id: string) {
-        setIsDeleting(true);
-        try {
-            const response = await crmService.httpfindByIdAndDelete(id);
-            if (response.data) {
-                toast.success('Vendor deleted successfully');
-                dispatch(removeCrmItemAction(response.data._id));
-                setShowDeleteModal(false);
-                setSelectedVendor(null);
-            }
-        } catch (error) {
-            const err = error as AxiosError<{ message: string }>;
-            toast.error(err.response?.data?.message || err.message);
 
-        } finally {
-            setIsDeleting(false);
-        }
-    }
 
-    const uploadAndParseCSVData: ChangeEventHandler<HTMLInputElement> = async (e) => {
-        const files = e.target.files;
-        if (files && files.length > 0) {
-            setIsUploadingFile(true);
-            try {
-                const file = files[0];
-                const formData = new FormData();
-                formData.append('file', file);
-                const response = await crmService.httpParseCsvFile(formData, "vendors");
-                if (response.data) {
-                    toast.success('File parsed successfully');
-                    setParseData(response.data);
-                }
-            } catch (error) {
-                const err = error as AxiosError<{ message: string }>;
-                toast.error(err.response?.data.message || 'An error occurred')
-            } finally {
-                setIsUploadingFile(false);
-            }
-        }
-    }
-
-    async function saveManyVendors(data: CommonCrmType[]) {
-        setIsSavingMany(true);
-        try {
-            const response = await crmService.httpCreateMany(data, "vendors");
-            if (response.data) {
-                if (response.data.duplicates.length) {
-                    toast.success('Duplicate vendors found');
-                    setDuplicates(response.data.duplicates);
-                }
-                if (response.data.items.length) {
-                    dispatch(insertManyCrmItemAction(response.data.items));
-                    const remainingParsedData = _.differenceBy(parseData, response.data.items, 'email');
-                    setParseData(remainingParsedData);
-                }
-            }
-        } catch (error) {
-            const err = error as AxiosError<{ message: string }>
-            console.log(err.response?.data);
-            if (err.response?.data) {
-                toast.error(err.response?.data.message || 'An error occurred')
-            }
-        } finally {
-            setIsSavingMany(false);
-        }
-    }
-
-    function downloadCSV(data: ICrmItem[]) {
-        const excel = new Excel();
-        excel
-            .addSheet('Vendors')
-            .addColumns(columns.slice(0, columns.length - 2) as any)
-            .addDataSource(data)
-            .saveAs(`crm-vendors-${Date.now()}.xlsx`);
-    }
 
     return <section className="mt-6 mb-[39px]  mx-4 rounded-xl ">
 
@@ -270,7 +195,12 @@ function VendorsPage() {
                 width="30%"
             >
                 <DeleteContent
-                    onClick={() => deleteVendorById(selectedVendor._id)}
+                    onClick={() => deleteCrmItemById(selectedVendor._id, setIsDeleting, item => {
+                        toast.success('Vendor deleted successfully');
+                        dispatch(removeCrmItemAction(item._id));
+                        setShowDeleteModal(false);
+                        setSelectedVendor(null);
+                    })}
                     onClose={() => setShowDeleteModal(false)}
                     isLoading={isDeleting}
                 />
@@ -285,7 +215,11 @@ function VendorsPage() {
                 setDuplicates([]);
             }}
             onConfirm={() => {
-                saveManyVendors(parseData);
+                saveManyCrmItems(parseData, setIsSavingMany, "vendors", setDuplicates, items => {
+                    dispatch(insertManyCrmItemAction(items));
+                    const remainingParsedData = _.differenceBy(parseData, items, 'email');
+                    setParseData(remainingParsedData);
+                });
             }}
             setData={setParseData}
             isLoading={isSavingMany}
@@ -320,7 +254,7 @@ function VendorsPage() {
                             icon='/download-icon.svg'
                             iconwidth={20}
                             iconheight={20}
-                            onClick={() => downloadCSV(vendorState.data as ICrmItem[])}
+                            onClick={() => downloadCrmItemsAsCSV(vendorState.data, columns as ColumnsType<CrmType>, "vendors")}
                         />
                     </div>
                     <div>
@@ -345,7 +279,7 @@ function VendorsPage() {
                             name=""
                             id="importClients"
                             className='hidden'
-                            onChange={uploadAndParseCSVData}
+                            onChange={uploadAndParseCSVData(setIsUploadingFile, "vendors", setParseData)}
                         />
                     </div>
 

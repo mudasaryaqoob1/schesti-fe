@@ -1,7 +1,7 @@
 import { type PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { crmInitialState } from "./crm.initialState";
 import { getCrmItemsThunk } from "./crm.thunk";
-import { ICrmItem } from "@/app/interfaces/crm/crm.interface";
+import { CrmType } from "@/app/interfaces/crm/crm.interface";
 
 export const crmVendorSlice = createSlice({
     initialState: crmInitialState,
@@ -11,7 +11,7 @@ export const crmVendorSlice = createSlice({
             state.data = state.data.filter((item) => item._id !== action.payload);
         },
 
-        insertManyCrmItemAction: (state, action: PayloadAction<ICrmItem[]>) => {
+        insertManyCrmItemAction: (state, action: PayloadAction<CrmType[]>) => {
             state.data = [...action.payload, ...state.data];
         }
     },
