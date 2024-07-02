@@ -23,20 +23,11 @@ import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { PreviewCSVImportFileModal } from '../components/PreviewCSVImportFileModal';
 
 import { CommonCrmType, CrmType, ICrmItem } from '@/app/interfaces/crm/crm.interface';
-import { getCrmItemsThunk } from '@/redux/crm/crm.thunk';
+import { getCrmItemsThunk, updateCrmItemStatusThunk } from '@/redux/crm/crm.thunk';
 import { deleteCrmItemById, downloadCrmItemsAsCSV, saveManyCrmItems, uploadAndParseCSVData } from '../utils';
 import { insertManyCrmItemAction, removeCrmItemAction } from '@/redux/crm/crm.slice';
 import _ from 'lodash';
 
-interface DataType {
-  firstName: string;
-  companyName: string;
-  email: number;
-  phone: string;
-  address: string;
-  // status: string;
-  action: string;
-}
 
 const items: MenuProps['items'] = [
   {
@@ -55,7 +46,18 @@ const items: MenuProps['items'] = [
     key: 'deletePartner',
     label: <p>Delete</p>,
   },
+  {
+    key: 'inactive',
+    label: <p>In Active</p>,
+  },
 ];
+
+const inactiveMenuItems: MenuProps['items'] = [
+  {
+    key: "active",
+    label: <p>Active</p>
+  }
+]
 
 const PartnerTable = () => {
   const router = useRouterHook();
@@ -89,12 +91,26 @@ const PartnerTable = () => {
     } else if (key == 'deletePartner') {
       setSelectedItem(partner);
       setShowDeleteModal(true);
-    } else if (key == 'editPartnerDetail') {
+    }
+    else if (key == 'editPartnerDetail') {
       router.push(`${Routes.CRM.Partners}/edit/${partner._id}`);
+    }
+
+    else if (key == 'inactive') {
+      dispatch(updateCrmItemStatusThunk({
+        id: partner._id,
+        status: false
+      }))
+    }
+    else if (key == 'active') {
+      dispatch(updateCrmItemStatusThunk({
+        id: partner._id,
+        status: true
+      }))
     }
   };
 
-  const columns: ColumnsType<DataType> = [
+  const columns: ColumnsType<ICrmItem> = [
     {
       title: 'Partner Name',
       dataIndex: 'firstName',
@@ -118,9 +134,16 @@ const PartnerTable = () => {
     },
     {
       title: 'Status',
-      render: () => (
-        <Tag className='rounded-full' color="green">Active</Tag>
-      ),
+      dataIndex: "status",
+      render: (value) => {
+        if (!value) {
+
+          return <Tag className='rounded-full' color="red">In Active</Tag>
+        }
+        return (
+          <Tag className='rounded-full' color="green">Active</Tag>
+        )
+      },
     },
     {
       title: 'Action',
@@ -130,7 +153,7 @@ const PartnerTable = () => {
       render: (text, record) => (
         <Dropdown
           menu={{
-            items,
+            items: record.status ? items : inactiveMenuItems,
             onClick: (event) => {
               const { key } = event;
               handleDropdownItemClick(key, record);
