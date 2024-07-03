@@ -277,12 +277,12 @@ function VendorsPage() {
                         />
                     </div>
 
-                    <div>
+                    {/* <div>
                         <WhiteButton
                             text="Invite"
                             className="!border-schestiPrimary !text-schestiPrimary"
                         />
-                    </div>
+                    </div> */}
                     <CustomButton
                         text="Add New Vendor"
                         className="!w-48"
