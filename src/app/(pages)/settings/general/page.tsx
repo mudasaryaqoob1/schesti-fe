@@ -4,7 +4,7 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
-import { ColorPicker, Skeleton, Image as AntdImage } from 'antd';
+import { ColorPicker, Skeleton, } from 'antd';
 import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
 
