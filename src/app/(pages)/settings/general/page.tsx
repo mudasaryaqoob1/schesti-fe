@@ -4,7 +4,7 @@ import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
-import { ColorPicker, Skeleton } from 'antd';
+import { ColorPicker, Skeleton, Image as AntdImage } from 'antd';
 import Image from 'next/image';
 import { twMerge } from 'tailwind-merge';
 
@@ -196,9 +196,8 @@ const GeneralSetting = () => {
                   {/* Upload Image Div */}
                   <div className={`${bg_style} grid grid-cols-12 p-5 mt-4 `}>
                     <div
-                      className={`px-6 py-4 col-span-8 flex flex-col items-center gap-3 ${
-                        errors.avatar ? 'border-red-600' : ''
-                      }  ${bg_style}`}
+                      className={`px-6 py-4 col-span-8 flex flex-col items-center gap-3 ${errors.avatar ? 'border-red-600' : ''
+                        }  ${bg_style}`}
                     >
                       {userData.avatar ? (
                         <Image
@@ -206,6 +205,7 @@ const GeneralSetting = () => {
                           width={100}
                           height={100}
                           alt="Avatar"
+                          className='object-contain'
                         />
                       ) : null}
                       <input type="text" id="upload" className="hidden" />
