@@ -32,7 +32,7 @@ const UserRolesModel = ({
           className="bg-white !rounded-t-xl"
           style={{ borderRadius: '12px' }}
         >
-          <div className="flex justify-between p-4 bg-[#F5F4FF] rounded-t-xl">
+          <div className="flex justify-between p-4 bg-schestiLightPrimary rounded-t-xl">
             <p className="text=[#344054] font-semibold text=[18px]">
               {' '}
               Select User’s{' '}
@@ -57,7 +57,7 @@ const UserRolesModel = ({
                 >
                   <div className="grid grid-cols-6 gap-4">
                     <Image
-                      src={'/role.png'}
+                      src={'/user.png'}
                       alt="documentIcon icon"
                       width={80}
                       height={80}
