@@ -23,7 +23,7 @@ import { toast } from "react-toastify";
 import { PreviewCSVImportFileModal } from "../components/PreviewCSVImportFileModal";
 import _ from "lodash";
 import { deleteCrmItemById, downloadCrmItemsAsCSV, saveManyCrmItems, uploadAndParseCSVData } from "../utils";
-import { SelectComponent } from "@/app/component/customSelect/Select.component";
+import { CrmStatusFilter } from "../components/CrmStatusFilter";
 
 
 const items: MenuProps['items'] = [
@@ -50,7 +50,7 @@ const inactiveItems: MenuProps['items'] = [
 function VendorsPage() {
     const [search, setSearch] = useState('');
     const router = useRouterHook();
-    const [status, setStatus] = useState<undefined | boolean>(undefined);
+    const [status, setStatus] = useState<string>('');
     const vendorState = useSelector((state: RootState) => state.crm);
     const dispatch = useDispatch<AppDispatch>();
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -176,6 +176,11 @@ function VendorsPage() {
             vendor.email?.includes(search) ||
             vendor.phone?.includes(search) ||
             vendor.address?.includes(search)
+    }).filter(item => {
+        if (!status) {
+            return true;
+        }
+        return status === 'active' ? item.status === true : item.status === false;
     })
 
 
@@ -244,20 +249,9 @@ function VendorsPage() {
                             }}
                         />
                     </div>
-                    <SelectComponent
-                        label=''
-                        name='status'
-                        placeholder='Status'
-                        field={{
-                            value: status,
-                            onChange: (value: number) => {
-                                setStatus(Boolean(value));
-                            },
-                            options: [
-                                { label: "Active", value: 1 },
-                                { label: "In Active", value: 0 },
-                            ],
-                        }}
+                    <CrmStatusFilter
+                        status={status}
+                        setStatus={setStatus}
                     />
                     <div>
                         <WhiteButton
