@@ -54,7 +54,7 @@ const MySubscription = ({ onUpgradeClick }: Props) => {
                 {userData?.planName}
               </h2>
               <div className="flex items-center w-full">
-                <span className="tracking-[-0.72px] font-semibold text-[42px] leading-[46px] !text-goldenrodYellow">
+                <span className="tracking-[-0.72px] font-semibold text-[42px] leading-[46px] !text-schestiWarning">
                   ${userData?.price}
                 </span>
                 <p className={`${minHeading} text-lightdark  font-normal`}>
@@ -73,7 +73,7 @@ const MySubscription = ({ onUpgradeClick }: Props) => {
                   style={{
                     width: `${calculateProgressBarPercentage(31, remainingDays)}%`
                   }}
-                  className="h-3 absolute rounded-lg z-10 bg-goldenrodYellow" />
+                  className="h-3 absolute rounded-lg z-10 bg-schestiWarning" />
                 <div className="h-3 w-full absolute rounded-lg bg-slate-200" />
               </div>
 
