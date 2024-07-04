@@ -27,6 +27,7 @@ import { getCrmItemsThunk, updateCrmItemStatusThunk } from '@/redux/crm/crm.thun
 import { deleteCrmItemById, downloadCrmItemsAsCSV, saveManyCrmItems, uploadAndParseCSVData } from '../utils';
 import { insertManyCrmItemAction, removeCrmItemAction } from '@/redux/crm/crm.slice';
 import _ from 'lodash';
+import { SelectComponent } from '@/app/component/customSelect/Select.component';
 
 
 const items: MenuProps['items'] = [
@@ -65,6 +66,7 @@ const PartnerTable = () => {
 
   const state = useSelector((state: RootState) => state.crm);
   const [search, setSearch] = useState('');
+  const [status, setStatus] = useState<undefined | boolean>(undefined);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<ICrmItem | null>(null);
   const inputFileRef = useRef<HTMLInputElement | null>(null);
@@ -250,13 +252,29 @@ const PartnerTable = () => {
                   onChange: (e: any) => {
                     setSearch(e.target.value);
                   },
+                  className: "!py-2"
                 }}
               />
             </div>
+            <SelectComponent
+              label=''
+              name='status'
+              placeholder='Status'
+              field={{
+                value: status,
+                onChange: (value: number) => {
+                  setStatus(Boolean(value));
+                },
+                options: [
+                  { label: "Active", value: 1 },
+                  { label: "In Active", value: 0 },
+                ],
+              }}
+            />
             <div>
               <WhiteButton
                 text='Export'
-                className='!w-fit'
+                className='!w-fit !py-2.5'
                 icon='/download-icon.svg'
                 iconwidth={20}
                 iconheight={20}
@@ -268,7 +286,7 @@ const PartnerTable = () => {
             <div>
               <WhiteButton
                 text='Import'
-                className='!w-fit'
+                className='!w-fit !py-2.5'
                 icon='/uploadcloud.svg'
                 iconwidth={20}
                 iconheight={20}
@@ -293,7 +311,7 @@ const PartnerTable = () => {
             </div>
             <Button
               text="Add New Partner"
-              className="!w-48 "
+              className="!w-fit !py-2.5"
               icon="/plus.svg"
               iconwidth={20}
               iconheight={20}

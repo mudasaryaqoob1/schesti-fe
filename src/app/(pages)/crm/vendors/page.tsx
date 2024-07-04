@@ -23,6 +23,7 @@ import { toast } from "react-toastify";
 import { PreviewCSVImportFileModal } from "../components/PreviewCSVImportFileModal";
 import _ from "lodash";
 import { deleteCrmItemById, downloadCrmItemsAsCSV, saveManyCrmItems, uploadAndParseCSVData } from "../utils";
+import { SelectComponent } from "@/app/component/customSelect/Select.component";
 
 
 const items: MenuProps['items'] = [
@@ -49,6 +50,7 @@ const inactiveItems: MenuProps['items'] = [
 function VendorsPage() {
     const [search, setSearch] = useState('');
     const router = useRouterHook();
+    const [status, setStatus] = useState<undefined | boolean>(undefined);
     const vendorState = useSelector((state: RootState) => state.crm);
     const dispatch = useDispatch<AppDispatch>();
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -165,7 +167,7 @@ function VendorsPage() {
         if (!search) {
             return true;
         }
-        if (vendor.module === 'subcontractors') {
+        if (vendor.module === 'subcontractors' || vendor.module === 'partners') {
             return true;
         }
         return vendor.firstName.toLowerCase().includes(search.toLowerCase()) ||
@@ -238,13 +240,29 @@ function VendorsPage() {
                                 onChange: (e: any) => {
                                     setSearch(e.target.value);
                                 },
+                                className: "!py-2"
                             }}
                         />
                     </div>
+                    <SelectComponent
+                        label=''
+                        name='status'
+                        placeholder='Status'
+                        field={{
+                            value: status,
+                            onChange: (value: number) => {
+                                setStatus(Boolean(value));
+                            },
+                            options: [
+                                { label: "Active", value: 1 },
+                                { label: "In Active", value: 0 },
+                            ],
+                        }}
+                    />
                     <div>
                         <WhiteButton
                             text='Export'
-                            className='!w-fit'
+                            className='!w-fit !py-2.5'
                             icon='/download-icon.svg'
                             iconwidth={20}
                             iconheight={20}
@@ -254,7 +272,7 @@ function VendorsPage() {
                     <div>
                         <WhiteButton
                             text='Import'
-                            className='!w-fit'
+                            className='!w-fit !py-2.5'
                             icon='/uploadcloud.svg'
                             iconwidth={20}
                             iconheight={20}
@@ -285,7 +303,7 @@ function VendorsPage() {
                     </div> */}
                     <CustomButton
                         text="Add New Vendor"
-                        className="!w-48"
+                        className="!w-fit !py-2.5"
                         icon="/plus.svg"
                         iconwidth={20}
                         iconheight={20}

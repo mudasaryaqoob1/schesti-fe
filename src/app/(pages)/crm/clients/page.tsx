@@ -26,6 +26,7 @@ import { deleteCrmItemById, downloadCrmItemsAsCSV, saveManyCrmItems, uploadAndPa
 import { insertManyCrmItemAction, removeCrmItemAction } from '@/redux/crm/crm.slice';
 import _ from 'lodash';
 import { toast } from 'react-toastify';
+import { SelectComponent } from '@/app/component/customSelect/Select.component';
 
 const activeClientMenuItems: MenuProps['items'] = [
   {
@@ -79,6 +80,7 @@ const ClientTable = () => {
 
   const state = useSelector((state: RootState) => state.crm);
   const [search, setSearch] = useState('');
+  const [status, setStatus] = useState<undefined | boolean>(undefined);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<ICrmItem | null>(null);
   const inputFileRef = useRef<HTMLInputElement | null>(null);
@@ -218,7 +220,7 @@ const ClientTable = () => {
     if (!search) {
       return true;
     }
-    if (item.module === 'subcontractors') {
+    if (item.module === 'subcontractors' || item.module === 'partners') {
       return true;
     }
     return item.firstName.toLowerCase().includes(search.toLowerCase()) ||
@@ -280,7 +282,7 @@ const ClientTable = () => {
       <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
         <div className="flex justify-between items-center mb-4">
           <TertiaryHeading title="Client List" className="text-graphiteGray" />
-          <div className=" flex items-center space-x-3">
+          <div className=" flex items-end space-x-3">
             <div className="w-96">
               <InputComponent
                 label=""
@@ -294,13 +296,29 @@ const ClientTable = () => {
                   onChange: (e: any) => {
                     setSearch(e.target.value);
                   },
+                  className: "!py-2"
                 }}
               />
             </div>
+            <SelectComponent
+              label=''
+              name='status'
+              placeholder='Status'
+              field={{
+                value: status,
+                onChange: (value: number) => {
+                  setStatus(Boolean(value));
+                },
+                options: [
+                  { label: "Active", value: 1 },
+                  { label: "In Active", value: 0 },
+                ],
+              }}
+            />
             <div>
               <WhiteButton
                 text='Export'
-                className='!w-fit'
+                className='!w-fit !py-2.5'
                 icon='/download-icon.svg'
                 iconwidth={20}
                 iconheight={20}
@@ -312,7 +330,7 @@ const ClientTable = () => {
             <div>
               <WhiteButton
                 text='Import'
-                className='!w-fit'
+                className='!w-fit !py-2.5'
                 icon='/uploadcloud.svg'
                 iconwidth={20}
                 iconheight={20}
@@ -333,7 +351,7 @@ const ClientTable = () => {
             </div>
             <Button
               text="Add New client"
-              className="!w-48"
+              className="!w-fit !py-2.5"
               icon="/plus.svg"
               iconwidth={20}
               iconheight={20}
