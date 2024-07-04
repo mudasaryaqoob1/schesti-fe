@@ -36,11 +36,11 @@ const SettingPlans = () => {
               key: type,
               label: type === mySubscriptionPlan ? <p className="text-schestiPrimary">{type}</p> : <p className="text-schestiPrimaryBlack">{type}</p>,
               tabKey: type,
-              children: mySubscriptionPlan ? (
+              children: mySubscriptionPlan === My_Subscription_Tab ? (
                 <MySubscription />
-              ) : (
+              ) : mySubscriptionPlan === Plans_Tab ? (
                 <Plans user={user ? user.user : undefined} />
-              ),
+              ) : null,
             };
           })}
         />
