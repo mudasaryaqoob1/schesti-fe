@@ -14,6 +14,7 @@ import { withAuth } from '@/app/hoc/withAuth';
 
 const My_Subscription_Tab = "My Subscription";
 const Plans_Tab = "Plans";
+const Transaction_History = "Transaction History";
 
 const SettingPlans = () => {
   const [activeTab, setActiveTab] = useState<string>("My Subscription");
@@ -32,7 +33,7 @@ const SettingPlans = () => {
           onChange={(value) => {
             setActiveTab(value);
           }}
-          items={[My_Subscription_Tab, Plans_Tab].map((type) => {
+          items={[My_Subscription_Tab, Plans_Tab, Transaction_History].map((type) => {
             return {
               key: type,
               label: type === activeTab ? <p className="text-schestiPrimary">{type}</p> : <p className="text-schestiPrimaryBlack">{type}</p>,
