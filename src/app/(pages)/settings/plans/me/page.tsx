@@ -19,7 +19,11 @@ import { twMerge } from 'tailwind-merge';
 //   isYearly: boolean;
 // }
 
-const MySubscription = () => {
+type Props = {
+  onUpgradeClick?: () => void;
+}
+
+const MySubscription = ({ onUpgradeClick }: Props) => {
   const [userData, setUserData] = useState<any>({});
   const [subscription, setSubscription] =
     useState<IStripeBaseSubscription | null>(null);
@@ -110,12 +114,12 @@ const MySubscription = () => {
           </div>
 
           <div className='flex justify-end w-full'>
-            <div className='flex space-x-2 mt-5 cursor-pointer'>
-              <p>Upgrade Now</p>
+            <div onClick={onUpgradeClick} className='flex space-x-2 items-center mt-5 cursor-pointer'>
+              <p className="text-schestiPrimaryBlack font-semibold  text-base leading-6">Upgrade Now</p>
               <Image
-                src={"/arrow-right.svg"}
-                width={20}
-                height={20}
+                src={"/top-right-arrow.svg"}
+                width={16}
+                height={16}
                 alt="arrow right"
               />
             </div>

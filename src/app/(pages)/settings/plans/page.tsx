@@ -16,7 +16,7 @@ const My_Subscription_Tab = "My Subscription";
 const Plans_Tab = "Plans";
 
 const SettingPlans = () => {
-  const [mySubscriptionPlan, setMySubscriptionPlan] = useState<string>("My Subscription");
+  const [activeTab, setActiveTab] = useState<string>("My Subscription");
   const user = useSelector(
     (state: RootState) => state.auth.user as { user?: IUser }
   );
@@ -28,17 +28,20 @@ const SettingPlans = () => {
         <Tabs
           defaultActiveKey="My Subscriptions"
           destroyInactiveTabPane
+          activeKey={activeTab}
           onChange={(value) => {
-            setMySubscriptionPlan(value);
+            setActiveTab(value);
           }}
           items={[My_Subscription_Tab, Plans_Tab].map((type) => {
             return {
               key: type,
-              label: type === mySubscriptionPlan ? <p className="text-schestiPrimary">{type}</p> : <p className="text-schestiPrimaryBlack">{type}</p>,
+              label: type === activeTab ? <p className="text-schestiPrimary">{type}</p> : <p className="text-schestiPrimaryBlack">{type}</p>,
               tabKey: type,
-              children: mySubscriptionPlan === My_Subscription_Tab ? (
-                <MySubscription />
-              ) : mySubscriptionPlan === Plans_Tab ? (
+              children: activeTab === My_Subscription_Tab ? (
+                <MySubscription onUpgradeClick={() => {
+                  setActiveTab(Plans_Tab);
+                }} />
+              ) : activeTab === Plans_Tab ? (
                 <Plans user={user ? user.user : undefined} />
               ) : null,
             };
