@@ -11,26 +11,30 @@ import { RootState } from '@/redux/store';
 import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 import { withAuth } from '@/app/hoc/withAuth';
 
+
+const My_Subscription_Tab = "My Subscription";
+const Plans_Tab = "Plans";
+
 const SettingPlans = () => {
-  const [mySubscriptionPlan, setMySubscriptionPlan] = useState(true);
+  const [mySubscriptionPlan, setMySubscriptionPlan] = useState<string>("My Subscription");
   const user = useSelector(
     (state: RootState) => state.auth.user as { user?: IUser }
   );
 
   return (
     <SettingSidebar>
-      <div className="w-full mb-4">
+      <div className="w-full mx-4 mb-4">
         <TertiaryHeading title="Plans" className="text-graphiteGray" />
         <Tabs
           defaultActiveKey="My Subscriptions"
           destroyInactiveTabPane
           onChange={(value) => {
-            setMySubscriptionPlan(value === 'My Subscription' ? true : false);
+            setMySubscriptionPlan(value);
           }}
-          items={['My Subscription', 'Plans'].map((type) => {
+          items={[My_Subscription_Tab, Plans_Tab].map((type) => {
             return {
               key: type,
-              label: type,
+              label: type === mySubscriptionPlan ? <p className="text-schestiPrimary">{type}</p> : <p className="text-schestiPrimaryBlack">{type}</p>,
               tabKey: type,
               children: mySubscriptionPlan ? (
                 <MySubscription />
