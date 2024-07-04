@@ -136,8 +136,8 @@ const MySubscription = ({ onUpgradeClick }: Props) => {
                 <p className="text-schestiPrimaryBlack font-semibold  text-base leading-6">Upgrade Now</p>
                 <Image
                   src={"/top-right-arrow.svg"}
-                  width={16}
-                  height={16}
+                  width={12}
+                  height={12}
                   alt="arrow right"
                 />
               </div>
