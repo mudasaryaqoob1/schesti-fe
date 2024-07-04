@@ -3,6 +3,7 @@
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { IStripeBaseSubscription } from '@/app/interfaces/stripe.interface';
 import { userService } from '@/app/services/user.service';
+import { calculateProgressBarPercentage } from '@/app/utils/utils';
 // import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
 import {
   tertiaryHeading,
@@ -41,7 +42,7 @@ const MySubscription = ({ onUpgradeClick }: Props) => {
 
   const remainingDays = subscription
     ? moment.unix(subscription.current_period_end).diff(moment(), 'days')
-    : null;
+    : 0;
   return (
     <>
       <TertiaryHeading title="My Subscriptions" className="text-graphiteGray" />
@@ -68,9 +69,14 @@ const MySubscription = ({ onUpgradeClick }: Props) => {
 
             <div className="w-full">
               <div className="relative w-full">
-                <div className="h-3 w-1/2 absolute rounded-lg z-10 bg-goldenrodYellow" />
+                <div
+                  style={{
+                    width: `${calculateProgressBarPercentage(31, remainingDays)}%`
+                  }}
+                  className="h-3 absolute rounded-lg z-10 bg-goldenrodYellow" />
                 <div className="h-3 w-full absolute rounded-lg bg-slate-200" />
               </div>
+
               <div className="flex mt-5 justify-end w-full">
                 {remainingDays ? (
                   <p className="font-semibold text-[14px]  text-[#EC2224]">{`Expires in ${remainingDays} day${remainingDays !== 1 ? 's' : ''
