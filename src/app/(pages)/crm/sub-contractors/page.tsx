@@ -118,13 +118,14 @@ const SubcontractTable = () => {
 
   const columns: ColumnsType<ICrmSubcontractorModule> = [
     {
+      title: 'Company',
+      dataIndex: 'name',
+    },
+
+    {
       title: 'Company Rep',
       dataIndex: 'companyRep',
       ellipsis: true,
-    },
-    {
-      title: 'Company',
-      dataIndex: 'name',
     },
     {
       title: 'Email',

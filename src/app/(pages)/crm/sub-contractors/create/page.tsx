@@ -119,18 +119,20 @@ const CreateSubcontractor = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-3 gap-4">
                   <FormControl
                     control="input"
-                    label="Company Rep"
-                    type="text"
-                    name="companyRep"
-                    placeholder="Company Rep"
-                  />
-                  <FormControl
-                    control="input"
                     label="Company Name"
                     type="text"
                     name="name"
                     placeholder="Company Name"
                   />
+
+                  <FormControl
+                    control="input"
+                    label="Company Rep"
+                    type="text"
+                    name="companyRep"
+                    placeholder="Company Rep"
+                  />
+
                   <PhoneNumberInputWithLable
                     label="Phone Number"
                     //@ts-ignore

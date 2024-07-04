@@ -1,6 +1,6 @@
 import { IResponseInterface } from "@/app/interfaces/api-response.interface";
 import { HttpService } from "../base.service";
-import { CommonCrmType, CrmModuleType, CrmSubcontractorParsedType, CrmType, ICrmSubcontractorModule } from "@/app/interfaces/crm/crm.interface";
+import { CommonCrmType, CrmModuleType, CrmSubcontractorParsedType, CrmType, ICrmPartnerModule, ICrmSubcontractorModule } from "@/app/interfaces/crm/crm.interface";
 
 
 type CreateCrmItemType = {
@@ -15,12 +15,13 @@ type CreateCrmItemType = {
 };
 
 type CreateCrmSubcontractorType = Omit<ICrmSubcontractorModule, "_id" | "createdAt" | "updatedAt" | "associatedCompany">
+type CreateCrmPartnerType = Omit<ICrmPartnerModule, "_id" | "createdAt" | "updatedAt" | "associatedCompany">;
 
 type QueryParams = {
     module: CrmModuleType
 }
 
-type CreateCrmItem = CreateCrmSubcontractorType | CreateCrmItemType;
+type CreateCrmItem = CreateCrmSubcontractorType | CreateCrmItemType | CreateCrmPartnerType;
 
 class CrmService extends HttpService {
     private endPoint = 'api/crm';

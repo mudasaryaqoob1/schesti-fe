@@ -22,7 +22,7 @@ import { Routes } from '@/app/utils/plans.utils';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { PreviewCSVImportFileModal } from '../components/PreviewCSVImportFileModal';
 
-import { CommonCrmType, CrmType, ICrmItem } from '@/app/interfaces/crm/crm.interface';
+import { CrmPartnerParsedType, CrmType, ICrmItem, ICrmPartnerModule } from '@/app/interfaces/crm/crm.interface';
 import { getCrmItemsThunk, updateCrmItemStatusThunk } from '@/redux/crm/crm.thunk';
 import { deleteCrmItemById, downloadCrmItemsAsCSV, saveManyCrmItems, uploadAndParseCSVData } from '../utils';
 import { insertManyCrmItemAction, removeCrmItemAction } from '@/redux/crm/crm.slice';
@@ -70,8 +70,8 @@ const PartnerTable = () => {
   const inputFileRef = useRef<HTMLInputElement | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUploadingFile, setIsUploadingFile] = useState(false);
-  const [parseData, setParseData] = useState<CommonCrmType[]>([]);
-  const [duplicates, setDuplicates] = useState<CommonCrmType[]>([]);
+  const [parseData, setParseData] = useState<CrmPartnerParsedType[]>([]);
+  const [duplicates, setDuplicates] = useState<CrmPartnerParsedType[]>([]);
   const [isSavingMany, setIsSavingMany] = useState(false);
 
 
@@ -110,16 +110,17 @@ const PartnerTable = () => {
     }
   };
 
-  const columns: ColumnsType<ICrmItem> = [
-    {
-      title: 'Partner Name',
-      dataIndex: 'firstName',
-    },
+  const columns: ColumnsType<ICrmPartnerModule> = [
     {
       title: 'Company',
-      dataIndex: 'companyName',
+      dataIndex: 'name',
       ellipsis: true,
     },
+    {
+      title: 'Company Rep',
+      dataIndex: 'companyRep',
+    },
+
     {
       title: 'Email',
       dataIndex: 'email',
@@ -176,15 +177,14 @@ const PartnerTable = () => {
     if (!search) {
       return true;
     }
-    if (item.module === 'subcontractors') {
-      return true;
+    if (item.module === 'partners') {
+      return item.name.toLowerCase().includes(search.toLowerCase()) ||
+        item.companyRep?.includes(search) ||
+        item.email?.includes(search) ||
+        item.phone?.includes(search) ||
+        item.address?.includes(search);
     }
-    return item.firstName.toLowerCase().includes(search.toLowerCase()) ||
-      item.lastName.toLowerCase().includes(search.toLowerCase()) ||
-      item.companyName.toLowerCase().includes(search.toLowerCase()) ||
-      item.email?.includes(search) ||
-      item.phone?.includes(search) ||
-      item.address?.includes(search)
+    return true;
   })
 
 

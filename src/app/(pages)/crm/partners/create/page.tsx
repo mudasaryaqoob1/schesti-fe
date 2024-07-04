@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { toast } from 'react-toastify';
 
 // module imports
-import { IPartner } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
 import { senaryHeading } from '@/globals/tailwindvariables';
 import TertiaryHeading from '@/app/component/headings/tertiary';
@@ -15,7 +14,6 @@ import CustomButton from '@/app/component/customButton/button';
 import FormControl from '@/app/component/formControl';
 
 // partner service
-import { PhoneNumberRegex } from '@/app/utils/regex.util';
 import { withAuth } from '@/app/hoc/withAuth';
 import { Routes } from '@/app/utils/plans.utils';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
@@ -23,32 +21,23 @@ import crmService from '@/app/services/crm/crm.service';
 import { AxiosError } from 'axios';
 
 const newPartnerSchema = Yup.object({
-  firstName: Yup.string()
-    .min(2, 'First name must be at least 2 characters')
-    .max(15, 'First name must be less than 15 characters')
-    .required('First name is required!'),
-  lastName: Yup.string()
-    .min(2, 'Last name must be at least 2 characters')
-    .max(15, 'Last name must be less than 15 characters')
-    .required('Last name is required!'),
+  companyRep: Yup.string().required('Company Rep is required!'),
   email: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
   phone: Yup.string()
-    .matches(PhoneNumberRegex, 'Phone number must contain numbers')
     .min(7, 'Phone number must be at least 7 characters')
     .max(12, 'Phone number must be at most 12 characters')
     .required('Phone number is required'),
-  companyName: Yup.string().required('Company Name is required!'),
+  name: Yup.string().required('Company Name is required!'),
   address: Yup.string().required('Address is required!'),
-  secondAddress: Yup.string(),
+  address2: Yup.string(),
 });
 const initialValues = {
-  firstName: '',
-  lastName: '',
+  companyRep: '',
+  name: '',
   email: '',
   phone: '',
-  companyName: '',
   address: '',
   secondAddress: '',
 };
@@ -58,11 +47,12 @@ const CreatePartner = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const submitHandler = async (values: IPartner & { email: string }) => {
+  const submitHandler = async (values: typeof initialValues) => {
     setIsLoading(true);
     try {
       const response = await crmService.httpCreate({
         ...values,
+        status: true,
         module: "partners"
       });
       if (response.data) {
@@ -128,18 +118,20 @@ const CreatePartner = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-4 gap-4">
                   <FormControl
                     control="input"
-                    label="First Name"
+                    label="Company Name"
                     type="text"
-                    name="firstName"
-                    placeholder="First Name"
+                    name="name"
+                    placeholder="Company Name"
                   />
+
                   <FormControl
                     control="input"
-                    label="Last Name"
+                    label="Company Rep"
                     type="text"
-                    name="lastName"
-                    placeholder="Last Name"
+                    name="companyRep"
+                    placeholder="Company Rep"
                   />
+
                   <PhoneNumberInputWithLable
                     label="Phone Number"
                     //@ts-ignore
@@ -159,15 +151,6 @@ const CreatePartner = () => {
                     name="email"
                     placeholder="Email Address"
                   />
-                  <div className="md:col-span-full">
-                    <FormControl
-                      control="input"
-                      label="Company Name"
-                      type="text"
-                      name="companyName"
-                      placeholder="Enter Company Name"
-                    />
-                  </div>
                   <FormControl
                     control="input"
                     label="Address"

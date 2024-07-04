@@ -27,13 +27,20 @@ export type ICrmSubcontractorModule = {
 
 export type CrmSubcontractorParsedType = Omit<ICrmSubcontractorModule, "module" | "_id" | "createdAt" | "updatedAt" | "associatedCompany">;
 
+export type ICrmPartnerModule = {
+    module: "partners";
+    companyRep: string;
+    name: string;
+} & ICrmBase;
+
+export type CrmPartnerParsedType = Omit<ICrmPartnerModule, "module" | "_id" | "createdAt" | "updatedAt" | "associatedCompany">;
 
 export type ICrmItem = ICrmBase & {
     firstName: string;
     lastName: string;
     companyName: string;
-    module: "clients" | "partners" | "vendors" | "architects" | "contractors";
+    module: "clients" | "vendors" | "architects" | "contractors";
 };
 
 
-export type CrmType = ICrmItem | ICrmSubcontractorModule;
+export type CrmType = ICrmItem | ICrmSubcontractorModule | ICrmPartnerModule;
