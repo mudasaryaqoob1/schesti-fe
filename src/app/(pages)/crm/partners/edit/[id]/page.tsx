@@ -125,7 +125,7 @@ const EditPartner = () => {
       <div className="p-5 flex flex-col rounded-lg border border-silverGray shadow-secondaryShadow2 bg-white">
         <TertiaryHeading
           className="text-graphiteGray mb-4 "
-          title="Add New Partner"
+          title="Edit Partner"
         />
         <Formik
           initialValues={item ? (item as CrmType) : initialValues as CrmType}
