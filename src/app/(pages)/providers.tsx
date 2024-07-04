@@ -15,6 +15,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
           components: {
             Tabs: {
               inkBarColor: PRIMARY_COLOR,
+              colorBorderSecondary: '#EAECF0',
+              lineWidth: 2
             },
             Switch: {
               colorPrimary: PRIMARY_COLOR,
