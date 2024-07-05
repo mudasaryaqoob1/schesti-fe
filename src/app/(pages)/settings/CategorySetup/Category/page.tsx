@@ -11,7 +11,7 @@ import { categoriesService } from '@/app/services/categories.service';
 import { voidFc } from '@/app/utils/types';
 import CategoryTable from './Table';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch } from '@/redux/store';
+import { AppDispatch, RootState } from '@/redux/store';
 import {
   addNewCategoryData,
   setCategoryData,
@@ -28,19 +28,22 @@ export interface DataType {
 
 export type CategoryInitTypes = {
   name: string;
+  categoryId: string;
 };
 const validationSchema = Yup.object({
   name: Yup.string().required('Category Name is required!'),
+  categoryId: Yup.string().required('DIV is required!'),
 });
 
 const AddCategory = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { categoryData } = useSelector(
-    (state: any) => state.companySetupCategory
+    (state: RootState) => state.companySetupCategory
   );
 
   const initialValues: CategoryInitTypes = {
     name: categoryData?.name || '',
+    categoryId: categoryData?.categoryId || ''
   };
 
   const submitHandler = async (
@@ -49,7 +52,7 @@ const AddCategory = () => {
   ) => {
     if (categoryData) {
       const { statusCode, data } = await categoriesService.httpUpdateCategory(
-        categoryData._id,
+        categoryData._id!,
         values
       );
       if (statusCode === 200) {
@@ -87,13 +90,23 @@ const AddCategory = () => {
                 autoComplete="off"
                 className="mt-2"
               >
-                <FormikController
-                  control="input"
-                  label="Catgory Name"
-                  type="text"
-                  name="name"
-                  placeholder="Enter Name"
-                />
+                <div className=" grid grid-cols-2 gap-2">
+                  <FormikController
+                    control="input"
+                    label="Div"
+                    type="text"
+                    name="categoryId"
+                    placeholder="Enter DIV"
+                  />
+                  <FormikController
+                    control="input"
+                    label="Catgory Name"
+                    type="text"
+                    name="name"
+                    placeholder="Enter Name"
+                  />
+                </div>
+
                 <div className="flex justify-end mt-5 gap-3">
                   <CustomButton
                     type="submit"
