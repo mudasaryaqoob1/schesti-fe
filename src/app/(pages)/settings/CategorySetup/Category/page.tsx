@@ -1,9 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { bg_style } from '@/globals/tailwindvariables';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import CustomButton from '@/app/component/customButton/button';
+import WhiteButton from '@/app/component/customButton/white';
 import * as Yup from 'yup';
 import FormikController from '@/app/component/formControl';
 import { Form, Formik } from 'formik';
@@ -36,6 +37,9 @@ const validationSchema = Yup.object({
 });
 
 const AddCategory = () => {
+
+  const [showForm, setShowForm] = useState(false);
+
   const dispatch = useDispatch<AppDispatch>();
   const { categoryData } = useSelector(
     (state: RootState) => state.companySetupCategory
@@ -107,31 +111,58 @@ const AddCategory = () => {
                   />
                 </div>
 
-                <div className="flex justify-end mt-5 gap-3">
-                  <CustomButton
-                    type="submit"
-                    text={categoryData ? 'Update Category' : 'Add Category'}
-                    className="!w-auto "
-                    iconwidth={20}
-                    iconheight={20}
+                <div className='flex justify-between mt-5 items-center'>
+                  <WhiteButton
+                    text='Cancel'
+                    className='!w-fit'
                   />
-                  {categoryData && (
+                  <div className="flex items-center gap-3">
                     <CustomButton
-                      type="button"
-                      text="Cancel"
-                      onClick={() => dispatch(setCategoryData(null))}
-                      className="!w-auto !bg-red-500 border-none"
+                      type="submit"
+                      text={categoryData ? 'Update Category' : 'Add Category'}
+                      className="!w-auto "
                       iconwidth={20}
                       iconheight={20}
                     />
-                  )}
+                    {categoryData && (
+                      <CustomButton
+                        type="button"
+                        text="Cancel"
+                        onClick={() => dispatch(setCategoryData(null))}
+                        className="!w-auto !bg-red-500 border-none"
+                        iconwidth={20}
+                        iconheight={20}
+                      />
+                    )}
+                  </div>
                 </div>
               </Form>
             );
           }}
         </Formik>
       </div>
-      <CategoryTable />
+
+      <div className={`${bg_style} border border-solid border-silverGray mt-4 p-5`}>
+        <div className='flex justify-between items-center'>
+          <TertiaryHeading title="Category" className="text-graphiteGray" />
+
+          {!showForm ? <div className='flex gap-2 items-center'>
+            <WhiteButton
+              text='Upload File'
+              icon='/uploadcloud.svg'
+              iconwidth={20}
+              iconheight={20}
+              className='!w-fit'
+            />
+            <CustomButton
+              text='Add Category'
+              className='!w-fit'
+            />
+          </div> : null}
+        </div>
+        <CategoryTable
+        />
+      </div>
     </>
   );
 };

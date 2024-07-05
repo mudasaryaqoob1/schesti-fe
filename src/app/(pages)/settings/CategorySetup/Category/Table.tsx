@@ -1,5 +1,3 @@
-import TertiaryHeading from '@/app/component/headings/tertiary';
-import { bg_style } from '@/globals/tailwindvariables';
 import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
 import { Table } from 'antd';
@@ -85,9 +83,9 @@ const CategoryTable = () => {
 
   return (
     <div
-      className={`${bg_style} border border-solid border-silverGray mt-4 p-5`}
+
     >
-      <TertiaryHeading title="Added Categories" className="text-graphiteGray" />
+
       <Table
         loading={companySetupLoading}
         columns={columns}
