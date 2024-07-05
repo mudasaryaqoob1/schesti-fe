@@ -15,6 +15,7 @@ import {
   companySetupCategoriesLoading,
 } from '@/redux/company/companySelector';
 import { setCategoryData } from '@/redux/company/settingSlices/categories/category.slice';
+import { ICategory } from '@/app/interfaces/companyInterfaces/setting.interface';
 
 export interface DataType {
   categoryId: string;
@@ -38,7 +39,7 @@ const CategoryTable = () => {
     fetchCategoriesHandler();
   }, []);
 
-  const columns: ColumnsType<DataType> = [
+  const columns: ColumnsType<ICategory> = [
     {
       title: 'Category  ID',
       dataIndex: 'categoryId',
@@ -53,7 +54,7 @@ const CategoryTable = () => {
       dataIndex: 'action',
       align: 'center',
       key: 'action',
-      render: (_, categoryData: DataType) => (
+      render: (_, categoryData) => (
         <div className="flex gap-2 justify-center">
           <Image
             src="/edit-2.svg"
@@ -91,7 +92,7 @@ const CategoryTable = () => {
         loading={companySetupLoading}
         columns={columns}
         className="mt-4"
-        dataSource={selectCompanySetupData}
+        dataSource={selectCompanySetupData ? selectCompanySetupData : []}
         pagination={{ position: ['bottomCenter'] }}
       />
     </div>
