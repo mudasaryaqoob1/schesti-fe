@@ -47,7 +47,7 @@ const CategoryTable = ({
 
   const columns: ColumnsType<ICategory> = [
     {
-      title: 'Category  ID',
+      title: 'Category #',
       dataIndex: 'categoryId',
     },
     {
