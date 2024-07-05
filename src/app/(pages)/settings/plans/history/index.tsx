@@ -48,16 +48,16 @@ export function SubscriptionHistory() {
         },
         {
             title: "Period Start",
-            dataIndex: "paymentDate",
+            dataIndex: "periodStart",
             render(value) {
-                return moment(value).format('ll')
+                return moment(new Date(value)).format('DD MMM YYYY')
             },
         },
         {
             title: "Period End",
-            dataIndex: "paymentExpire",
+            dataIndex: "periodEnd",
             render(value) {
-                return moment(value).format('ll')
+                return moment(new Date(value)).format('DD MMM YYYY')
             },
         },
         {
