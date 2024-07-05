@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 import { Tabs } from 'antd';
 import { useDispatch } from 'react-redux';
 
@@ -19,8 +19,12 @@ export interface DataType {
   _id: string;
   action: string;
 }
+const CATEGORY_TAB = "Category";
+const SUBCATEGORY_TAB = "Sub Category";
 
 const CategoriesTable = () => {
+  const [activeTab, setActiveTab] = useState(CATEGORY_TAB);
+
   const dispatch = useDispatch<AppDispatch>();
 
   const fetchSettingTargetsHandler = useCallback(async () => {
@@ -36,14 +40,15 @@ const CategoriesTable = () => {
       <section className={`${bg_style} p-5 w-full`}>
         <TertiaryHeading title="Category Setup" className="text-graphiteGray" />
         <Tabs
-          defaultActiveKey="0"
           className="mt-2"
           destroyInactiveTabPane
-          items={['Category', 'Sub Category'].map((name, id) => {
+          activeKey={activeTab}
+          onChange={key => setActiveTab(key)}
+          items={[CATEGORY_TAB, SUBCATEGORY_TAB].map((name) => {
             return {
-              key: id.toString(),
-              label: name,
-              children: id ? <AddSubcategory /> : <AddCategory />,
+              key: name,
+              label: activeTab === name ? <p className="text-schestiPrimary">{name}</p> : <p className='text-schestiPrimaryBlack'>{name}</p>,
+              children: activeTab === CATEGORY_TAB ? <AddCategory /> : activeTab === SUBCATEGORY_TAB ? <AddSubcategory /> : null,
             };
           })}
         />
