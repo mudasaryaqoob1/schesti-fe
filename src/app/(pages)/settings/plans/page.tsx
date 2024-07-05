@@ -10,21 +10,22 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 import { withAuth } from '@/app/hoc/withAuth';
+import { SubscriptionHistory } from './history';
 
 
 const My_Subscription_Tab = "My Subscription";
 const Plans_Tab = "Plans";
-const Transaction_History = "Transaction History";
+const Subscription_History_Tab = "Subscription History";
 
 const SettingPlans = () => {
-  const [activeTab, setActiveTab] = useState<string>("My Subscription");
+  const [activeTab, setActiveTab] = useState<string>(My_Subscription_Tab);
   const user = useSelector(
     (state: RootState) => state.auth.user as { user?: IUser }
   );
 
   return (
     <SettingSidebar>
-      <div className="w-full mx-4 mb-4">
+      <div className="w-full mx-4 p-4 rounded-md mb-4 bg-white">
         <TertiaryHeading title="Plans" className="text-graphiteGray" />
         <Tabs
           defaultActiveKey="My Subscriptions"
@@ -33,7 +34,7 @@ const SettingPlans = () => {
           onChange={(value) => {
             setActiveTab(value);
           }}
-          items={[My_Subscription_Tab, Plans_Tab, Transaction_History].map((type) => {
+          items={[My_Subscription_Tab, Plans_Tab, Subscription_History_Tab].map((type) => {
             return {
               key: type,
               label: type === activeTab ? <p className="text-schestiPrimary">{type}</p> : <p className="text-schestiPrimaryBlack">{type}</p>,
@@ -44,7 +45,7 @@ const SettingPlans = () => {
                 }} />
               ) : activeTab === Plans_Tab ? (
                 <Plans user={user ? user.user : undefined} />
-              ) : null,
+              ) : activeTab === Subscription_History_Tab ? <SubscriptionHistory /> : null,
             };
           })}
         />

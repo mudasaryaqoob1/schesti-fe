@@ -33,6 +33,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
               headerBg: '#F9F9F9',
               colorBorder: '#EAECF0',
             },
+            Table: {
+              headerColor: "#475467"
+            }
           },
         }}
       >
