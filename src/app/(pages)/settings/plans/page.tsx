@@ -5,7 +5,7 @@ import SettingSidebar from '../verticleBar';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { Tabs } from 'antd';
 import MySubscription from './me/page';
-import Plans from './oldSubscriptions';
+import Plans from './plans';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
