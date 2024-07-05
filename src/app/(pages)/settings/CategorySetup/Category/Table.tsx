@@ -23,7 +23,15 @@ export interface DataType {
   action: string;
 }
 
-const CategoryTable = () => {
+type Props = {
+  onEdit: () => void;
+  onDelete: () => void;
+}
+
+const CategoryTable = ({
+  onDelete,
+  onEdit
+}: Props) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const selectCompanySetupData = useSelector(companySetupCategoriesData);
@@ -61,6 +69,7 @@ const CategoryTable = () => {
             height={20}
             alt="edit"
             onClick={() => {
+              onEdit();
               dispatch(setCategoryData(categoryData));
               console.log({ categoryData }, 'category data in edit');
             }}
@@ -72,6 +81,7 @@ const CategoryTable = () => {
             height={20}
             alt="delete"
             onClick={() => {
+              onDelete();
               console.log(categoryData, 'category data in edit delete');
               dispatch(deleteCategory(categoryData._id!));
             }}

@@ -73,11 +73,12 @@ const AddCategory = () => {
         resetForm();
       }
     }
+    setShowForm(false);
   };
 
   return (
     <>
-      <div className={`${bg_style} p-5 w-full`}>
+      {showForm ? <div className={`${bg_style} p-5 w-full`}>
         <TertiaryHeading title="Category" className="text-graphiteGray" />
         <Formik
           initialValues={initialValues}
@@ -115,6 +116,9 @@ const AddCategory = () => {
                   <WhiteButton
                     text='Cancel'
                     className='!w-fit'
+                    onClick={() => {
+                      setShowForm(false);
+                    }}
                   />
                   <div className="flex items-center gap-3">
                     <CustomButton
@@ -128,7 +132,10 @@ const AddCategory = () => {
                       <CustomButton
                         type="button"
                         text="Cancel"
-                        onClick={() => dispatch(setCategoryData(null))}
+                        onClick={() => {
+                          dispatch(setCategoryData(null));
+                          setShowForm(false);
+                        }}
                         className="!w-auto !bg-red-500 border-none"
                         iconwidth={20}
                         iconheight={20}
@@ -140,11 +147,11 @@ const AddCategory = () => {
             );
           }}
         </Formik>
-      </div>
+      </div> : null}
 
       <div className={`${bg_style} border border-solid border-silverGray mt-4 p-5`}>
         <div className='flex justify-between items-center'>
-          <TertiaryHeading title="Category" className="text-graphiteGray" />
+          <TertiaryHeading title={showForm ? "Added Category" : "Category"} className="text-graphiteGray" />
 
           {!showForm ? <div className='flex gap-2 items-center'>
             <WhiteButton
@@ -157,10 +164,20 @@ const AddCategory = () => {
             <CustomButton
               text='Add Category'
               className='!w-fit'
+              onClick={() => {
+                setShowForm(true)
+              }}
             />
           </div> : null}
         </div>
         <CategoryTable
+          onEdit={() => {
+            setShowForm(true);
+          }}
+
+          onDelete={() => {
+
+          }}
         />
       </div>
     </>
