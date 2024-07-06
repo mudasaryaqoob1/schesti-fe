@@ -24,7 +24,7 @@ import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
 import { ISettingCategoryParsedType } from '@/app/interfaces/settings/categories-settings.interface';
 import ModalComponent from '@/app/component/modal';
-import { Table } from 'antd';
+import { Alert, Table } from 'antd';
 import Image from 'next/image';
 
 export interface DataType {
@@ -46,6 +46,7 @@ const validationSchema = Yup.object({
 const AddCategory = () => {
 
   const [showForm, setShowForm] = useState(false);
+  const [error, setError] = useState('');
 
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -105,7 +106,8 @@ const AddCategory = () => {
         }
       } catch (error) {
         const err = error as AxiosError<{ message: string }>;
-        toast.error(err.response?.data.message);
+        const errMsg = err.response?.data.message || 'An error occurred';
+        setError(errMsg);
       } finally {
         setIsUploading(false);
         if (inputFileRef.current) {
@@ -131,7 +133,8 @@ const AddCategory = () => {
       }
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
-      toast.error(err.response?.data.message);
+      const errMsg = err.response?.data.message || 'An error occurred';
+      toast.error(errMsg)
     } finally {
       setIsInsertingMany(false);
     }
@@ -262,6 +265,18 @@ const AddCategory = () => {
           </div>
         </div>
       </ModalComponent>
+
+
+      {error.length ? <Alert
+        type='error'
+        closable
+        onClose={() => {
+          setError("");
+        }}
+        message={"CSV Parse Error "}
+        description={error}
+        className='my-3'
+      /> : null}
 
       <div className={`${bg_style} border border-solid border-silverGray mt-4 p-5`}>
         <div className='flex justify-between items-center'>
