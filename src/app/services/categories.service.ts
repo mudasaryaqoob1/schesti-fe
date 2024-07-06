@@ -5,6 +5,7 @@ import { IToken } from '@/app/interfaces/authInterfaces/token.interface';
 import { CategoryInitTypes } from '@/app/(pages)/settings/CategorySetup/Category/page';
 import { SubcategoryInitValues } from '@/app/(pages)/settings/CategorySetup/Subcategory/page';
 import { ISettingCategoryParsedType } from '../interfaces/settings/categories-settings.interface';
+import { ICategory } from '../interfaces/companyInterfaces/setting.interface';
 
 class CategoriesService extends HttpService {
   private readonly prefix: string = 'api/setting/categories';
@@ -59,5 +60,7 @@ class CategoriesService extends HttpService {
         'Content-Type': 'multipart/form-data',
       },
     });
+
+  httpInsertManyCategories = (data: ISettingCategoryParsedType[]): Promise<IResponseInterface<ICategory[]>> => this.post(`${this.prefix}/many-categories`, data)
 }
 export const categoriesService = new CategoriesService();

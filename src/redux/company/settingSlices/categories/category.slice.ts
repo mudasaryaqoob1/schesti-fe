@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { initialCompanySetupCategoryState } from '../setting.initialState';
 import { deleteCategory, fetchCategories } from '../companySetup.thunk';
 import { ICategory } from '@/app/interfaces/companyInterfaces/setting.interface';
@@ -8,13 +8,13 @@ export const categorySlice = createSlice({
   initialState: initialCompanySetupCategoryState,
   reducers: {
     addNewCategoryData: (state, { payload }) => {
-      state.data = [...state.data, payload];
+      state.data = [...state.data!, payload];
     },
     setCategoryData: (state, { payload }) => {
       state.categoryData = payload;
     },
     updateCategoryData: (state, { payload }) => {
-      state.data = state.data.map((categoryData: ICategory) => {
+      state.data = state.data!.map((categoryData: ICategory) => {
         if (categoryData._id === payload._id) {
           return payload;
         } else {
@@ -22,6 +22,10 @@ export const categorySlice = createSlice({
         }
       });
     },
+
+    insertManyCategoriesAction: (state, action: PayloadAction<ICategory[]>) => {
+      state.data = [...action.payload, ...state.data!,];
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(fetchCategories.pending, (state) => {
@@ -47,7 +51,7 @@ export const categorySlice = createSlice({
     builder.addCase(deleteCategory.fulfilled, (state, action) => {
       console.log(action.payload, 'delete success');
       state.loading = false;
-      state.data = state.data.filter(
+      state.data = state.data!.filter(
         (item: any) => item?._id !== action.payload.data._id
       );
     });
@@ -58,6 +62,6 @@ export const categorySlice = createSlice({
     });
   },
 });
-export const { addNewCategoryData, setCategoryData, updateCategoryData } =
+export const { addNewCategoryData, setCategoryData, updateCategoryData, insertManyCategoriesAction } =
   categorySlice.actions;
 export default categorySlice.reducer;

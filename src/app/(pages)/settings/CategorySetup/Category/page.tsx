@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/redux/store';
 import {
   addNewCategoryData,
+  insertManyCategoriesAction,
   setCategoryData,
   updateCategoryData,
 } from '@/redux/company/settingSlices/categories/category.slice';
@@ -50,6 +51,7 @@ const AddCategory = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
   const [parsedData, setParsedData] = useState<ISettingCategoryParsedType[]>([]);
+  const [isInsertingMany, setIsInsertingMany] = useState(false);
 
   const dispatch = useDispatch<AppDispatch>();
   const { categoryData } = useSelector(
@@ -89,7 +91,8 @@ const AddCategory = () => {
 
 
   const uploadCsvFileAndParse: React.ChangeEventHandler<HTMLInputElement> = async (e) => {
-    if (e.target.files && e.target.files.length > 0) {
+
+    if (e.target.files) {
       setIsUploading(true);
       try {
         const file = e.target.files[0];
@@ -105,6 +108,9 @@ const AddCategory = () => {
         toast.error(err.response?.data.message);
       } finally {
         setIsUploading(false);
+        if (inputFileRef.current) {
+          inputFileRef.current.value = '';
+        }
       }
     }
   }
@@ -113,6 +119,24 @@ const AddCategory = () => {
     const sliceData = parsedData.slice(0, idx).concat(parsedData.slice(idx + 1));
     setParsedData(sliceData);
   }
+
+
+  async function insertManyCategories(data: ISettingCategoryParsedType[]) {
+    setIsInsertingMany(true);
+    try {
+      const response = await categoriesService.httpInsertManyCategories(data);
+      if (response.data) {
+        dispatch(insertManyCategoriesAction(response.data));
+        setShowPreviewModal(false);
+      }
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      toast.error(err.response?.data.message);
+    } finally {
+      setIsInsertingMany(false);
+    }
+  }
+
 
   return (
     <>
@@ -231,7 +255,9 @@ const AddCategory = () => {
             <CustomButton
               text='Import Data'
               className='!w-fit'
-
+              isLoading={isInsertingMany}
+              loadingText='Importing...'
+              onClick={() => insertManyCategories(parsedData)}
             />
           </div>
         </div>
