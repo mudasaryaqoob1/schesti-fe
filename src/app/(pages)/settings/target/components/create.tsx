@@ -149,7 +149,7 @@ const CreateTaget = ({
                   errorMessage={errors.month}
                   hasError={touched.month && !!errors.month}
                   field={{
-                    value: values.month,
+                    value: values.month ? values.month : undefined,
                     onChange: (e) => {
                       setFieldValue('month', e);
                     },
