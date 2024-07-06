@@ -4,7 +4,7 @@ import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { IToken } from '@/app/interfaces/authInterfaces/token.interface';
 import { CategoryInitTypes } from '@/app/(pages)/settings/CategorySetup/Category/page';
 import { SubcategoryInitValues } from '@/app/(pages)/settings/CategorySetup/Subcategory/page';
-import { ISettingCategoryParsedType } from '../interfaces/settings/categories-settings.interface';
+import { ISettingCategoryParsedType, ISettingSubCategoryParsedType } from '../interfaces/settings/categories-settings.interface';
 import { ICategory } from '../interfaces/companyInterfaces/setting.interface';
 
 class CategoriesService extends HttpService {
@@ -56,6 +56,15 @@ class CategoriesService extends HttpService {
     data: FormData
   ): Promise<IResponseInterface<ISettingCategoryParsedType[]>> =>
     this.post(`${this.prefix}/parse-csv`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
+  httpParseSubCategoriesCSV = (
+    data: FormData
+  ): Promise<IResponseInterface<ISettingSubCategoryParsedType[]>> =>
+    this.post(`${this.prefix}/parse-subcategories-csv`, data, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },

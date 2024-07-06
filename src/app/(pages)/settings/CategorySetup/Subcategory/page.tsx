@@ -28,6 +28,7 @@ import {
   setSubcategoryData,
 } from '@/redux/company/settingSlices/categories/subcategory.slice';
 import { withAuth } from '@/app/hoc/withAuth';
+import { UploadSubCategoriesModal } from './UploadSubCategoriesModal';
 
 export type SubcategoryInitValues = {
   name: string;
@@ -50,6 +51,7 @@ const validationSchema = Yup.object({
 
 const AddSubcategory = () => {
   const [showForm, setShowForm] = useState(false);
+  const [showUploadModal, setShowUploadModal] = useState(false);
 
   const dispatch = useDispatch<AppDispatch>();
   const { subcategoryData } = useSelector(
@@ -65,6 +67,7 @@ const AddSubcategory = () => {
   const categoriesReduxDataLoading = useSelector(
     companySetupSubcategoriesLoading
   );
+
 
   const fetchSubcategoriesHandler = useCallback(async () => {
     await dispatch(fetchSubCategories({ page: 1, limit: 10 }));
@@ -203,6 +206,12 @@ const AddSubcategory = () => {
       </div> : null}
 
 
+      <UploadSubCategoriesModal
+        open={showUploadModal}
+        setOpen={setShowUploadModal}
+        categories={categoriesReduxData ? categoriesReduxData : []}
+      />
+
       <div className={`${bg_style} border border-solid border-silverGray mt-4 space-y-2 p-5`}>
 
         <div className='flex justify-between items-center'>
@@ -215,6 +224,9 @@ const AddSubcategory = () => {
               iconheight={20}
               className='!w-fit'
               loadingText='Uploading...'
+              onClick={() => {
+                setShowUploadModal(true)
+              }}
             />
 
             <input

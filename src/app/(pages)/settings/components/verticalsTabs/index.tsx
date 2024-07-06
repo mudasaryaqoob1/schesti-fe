@@ -42,12 +42,11 @@ const Index = () => {
       className={`${bg_style} md:min-w-[222px] p-3 sticky top-0 left-0 right-0`}
     >
       <div className="flex flex-col gap-2">
-        {tabs.map((tab) => (
+        {tabs.map((tab, index) => (
           <p
-            key={tab.id}
-            className={`py-3 px-3 !text-sm cursor-pointer transition-colors ${senaryHeading} ${
-              tab.route.includes(pathname) ? active : ''
-            } `}
+            key={tab.id + index}
+            className={`py-3 px-3 !text-sm cursor-pointer transition-colors ${senaryHeading} ${tab.route.includes(pathname) ? active : ''
+              } `}
             onClick={() => router.push(tab.route[0])}
           >
             {tab.name}
