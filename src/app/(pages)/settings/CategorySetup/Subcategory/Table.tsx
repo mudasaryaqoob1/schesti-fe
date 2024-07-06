@@ -122,7 +122,7 @@ const SubCategoryTable = ({
           return (
             <div className="flex gap-2 justify-center">
               <Image
-                src="/edit.svg"
+                src="/edit-2.svg"
                 className="cursor-pointer"
                 width={20}
                 height={20}
@@ -133,7 +133,7 @@ const SubCategoryTable = ({
                 }}
               />
               <Image
-                src="/trash.svg"
+                src="/trash-2.svg"
                 className="cursor-pointer"
                 width={20}
                 height={20}

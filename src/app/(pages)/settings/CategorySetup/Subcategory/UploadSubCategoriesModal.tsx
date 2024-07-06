@@ -6,12 +6,15 @@ import { ICategory } from "@/app/interfaces/companyInterfaces/setting.interface"
 import { ISettingSubCategoryParsedType } from "@/app/interfaces/settings/categories-settings.interface";
 import { categoriesService } from "@/app/services/categories.service";
 import { USCurrencyFormat } from "@/app/utils/format";
+import { fetchSubCategories } from "@/redux/company/settingSlices/companySetup.thunk";
+import { AppDispatch } from "@/redux/store";
 import { LoadingOutlined } from "@ant-design/icons";
 import { Alert, Spin, Table, Upload } from "antd";
 import type { RcFile } from "antd/es/upload";
 import { AxiosError } from "axios";
 import Image from "next/image";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 
 type Props = {
@@ -26,6 +29,8 @@ export function UploadSubCategoriesModal({ open, setOpen, categories }: Props) {
     const [isUploading, setIsUploading] = useState(false);
     const [error, setError] = useState("");
     const [parsedData, setParsedData] = useState<ISettingSubCategoryParsedType[]>([]);
+    const [isInsertingMany, setIsInsertingMany] = useState(false);
+    const dispatch = useDispatch<AppDispatch>();
 
     const categoryOptions = categories.map(category => {
         return {
@@ -53,6 +58,26 @@ export function UploadSubCategoriesModal({ open, setOpen, categories }: Props) {
             setError(errMessage);
         } finally {
             setIsUploading(false);
+        }
+    }
+
+    async function insertManySubCategories(category: ICategory, data: ISettingSubCategoryParsedType[]) {
+        setIsInsertingMany(true);
+        try {
+            const response = await categoriesService.httpInsertManySubCategories(data.map(item => ({
+                ...item,
+                category: category._id!
+            })));
+            if (response.data) {
+                await dispatch(fetchSubCategories({ page: 1, limit: 10 }));
+                setSelectedCategory(undefined);
+                setOpen(false);
+            }
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+            toast.error(err.response?.data.message);
+        } finally {
+            setIsInsertingMany(false);
         }
     }
 
@@ -159,6 +184,12 @@ export function UploadSubCategoriesModal({ open, setOpen, categories }: Props) {
                             text='Import Data'
                             className='!w-fit'
                             loadingText='Importing...'
+                            isLoading={isInsertingMany}
+                            onClick={() => {
+                                if (selectedCategory) {
+                                    insertManySubCategories(selectedCategory, parsedData);
+                                }
+                            }}
                         />
                     </div>
 
