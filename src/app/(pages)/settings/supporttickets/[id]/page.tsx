@@ -139,7 +139,7 @@ const SupportTicketDetails = () => {
 
             <MinDescription
               title="Ticket details"
-              className={`${senaryHeading} font-semibold text-lavenderPurple cursor-pointer underline`}
+              className={`${senaryHeading} font-semibold text-schestiPrimary cursor-pointer underline`}
             />
           </div>
           <p className="bg-lightblue rounded-xl px-2">
@@ -162,7 +162,7 @@ const SupportTicketDetails = () => {
                 title={`${supportDetailDetail.title}`}
                 className="text-base font-medium"
               />
-              <p className="text-xs text-slateGray font-normal flex gap-1">
+              <p className="text-xs items-center text-slateGray font-normal flex gap-1">
                 <Image src="/calendar.svg" alt="date" width={12} height={12} />
                 Date: {moment(supportDetailDetail.createdAt).format('ll')}
               </p>

@@ -142,7 +142,7 @@ const EditSupportTicket = () => {
               width={16}
               height={16}
             />
-            <Description title="Update Ticket" className="text-RoyalPurple" />
+            <Description title="Update Ticket" className="text-schestiPrimary" />
           </div>
           <div className="mt-6 ">
             {/* <div>
@@ -158,10 +158,10 @@ const EditSupportTicket = () => {
                 initialValues={
                   supportTicketData
                     ? {
-                        title: supportTicketData.title,
-                        description: supportTicketData.description,
-                        file: supportTicketData.file,
-                      }
+                      title: supportTicketData.title,
+                      description: supportTicketData.description,
+                      file: supportTicketData.file,
+                    }
                     : initialValues
                 }
                 validationSchema={validationSchema}
@@ -203,7 +203,7 @@ const EditSupportTicket = () => {
                           <div>
                             <p
                               className={twMerge(
-                                `${senaryHeading} text-RoyalPurple font-semibold`
+                                `${senaryHeading} text-schestiPrimary font-semibold`
                               )}
                             >
                               Doc
@@ -262,7 +262,7 @@ const EditSupportTicket = () => {
                               <label
                                 htmlFor="uploadCompanyLogo"
                                 className={twMerge(
-                                  `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
+                                  `${senaryHeading} text-schestiPrimary font-semibold cursor-pointer`
                                 )}
                               >
                                 Upload Logo
@@ -304,7 +304,6 @@ const EditSupportTicket = () => {
                           <CustomButton
                             text="Update Ticket"
                             type="submit"
-                            className="!bg-mediumSlateBlue"
                             isLoading={isLoading}
                           />
                         </span>

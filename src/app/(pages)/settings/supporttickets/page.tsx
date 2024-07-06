@@ -46,15 +46,15 @@ const SupportTickets = () => {
   const items: MenuProps['items'] = [
     {
       key: 'edit',
-      label: <a href="#">Edit</a>,
+      label: <p>Edit</p>,
     },
     {
       key: 'delete',
-      label: <a href="#">Delete</a>,
+      label: <p>Delete</p>,
     },
     {
       key: 'details',
-      label: <a href="#">Details</a>,
+      label: <p>Details</p>,
     },
   ];
 
