@@ -8,7 +8,6 @@ import { useSelector } from 'react-redux';
 // module imports
 import Description from '@/app/component/description';
 import QuinaryHeading from '@/app/component/headings/quinary';
-import MinDescription from '@/app/component/description/minDesc';
 import { senaryHeading } from '@/globals/tailwindvariables';
 import CustomButton from '@/app/component/customButton/button';
 import { supportTicketService } from '@/app/services/supportTicket.service';
@@ -137,7 +136,7 @@ const SupportTicketDetails = () => {
               height={16}
             />
 
-            <MinDescription
+            <Description
               title="Ticket details"
               className={`${senaryHeading} font-semibold text-schestiPrimary cursor-pointer underline`}
             />
