@@ -4,6 +4,7 @@ import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { IToken } from '@/app/interfaces/authInterfaces/token.interface';
 import { CategoryInitTypes } from '@/app/(pages)/settings/CategorySetup/Category/page';
 import { SubcategoryInitValues } from '@/app/(pages)/settings/CategorySetup/Subcategory/page';
+import { ISettingCategoryParsedType } from '../interfaces/settings/categories-settings.interface';
 
 class CategoriesService extends HttpService {
   private readonly prefix: string = 'api/setting/categories';
@@ -49,5 +50,14 @@ class CategoriesService extends HttpService {
 
   httpDeleteSubcategory = (category: string): Promise<IResponseInterface> =>
     this.delete(`${this.prefix}/subcategory/delete/${category}`);
+
+  httpParseCategoriesCSV = (
+    data: FormData
+  ): Promise<IResponseInterface<ISettingCategoryParsedType[]>> =>
+    this.post(`${this.prefix}/parse-csv`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
 }
 export const categoriesService = new CategoriesService();

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { bg_style } from '@/globals/tailwindvariables';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import CustomButton from '@/app/component/customButton/button';
@@ -19,6 +19,12 @@ import {
   updateCategoryData,
 } from '@/redux/company/settingSlices/categories/category.slice';
 import { withAuth } from '@/app/hoc/withAuth';
+import { toast } from 'react-toastify';
+import { AxiosError } from 'axios';
+import { ISettingCategoryParsedType } from '@/app/interfaces/settings/categories-settings.interface';
+import ModalComponent from '@/app/component/modal';
+import { Table } from 'antd';
+import Image from 'next/image';
 
 export interface DataType {
   categoryId: string;
@@ -39,6 +45,11 @@ const validationSchema = Yup.object({
 const AddCategory = () => {
 
   const [showForm, setShowForm] = useState(false);
+
+  const inputFileRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [parsedData, setParsedData] = useState<ISettingCategoryParsedType[]>([]);
 
   const dispatch = useDispatch<AppDispatch>();
   const { categoryData } = useSelector(
@@ -75,6 +86,33 @@ const AddCategory = () => {
     }
     setShowForm(false);
   };
+
+
+  const uploadCsvFileAndParse: React.ChangeEventHandler<HTMLInputElement> = async (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setIsUploading(true);
+      try {
+        const file = e.target.files[0];
+        const formData = new FormData();
+        formData.append('file', file);
+        const response = await categoriesService.httpParseCategoriesCSV(formData);
+        if (response.data) {
+          setParsedData(response.data);
+          setShowPreviewModal(true);
+        }
+      } catch (error) {
+        const err = error as AxiosError<{ message: string }>;
+        toast.error(err.response?.data.message);
+      } finally {
+        setIsUploading(false);
+      }
+    }
+  }
+
+  function removeItemFromParsedData(idx: number) {
+    const sliceData = parsedData.slice(0, idx).concat(parsedData.slice(idx + 1));
+    setParsedData(sliceData);
+  }
 
   return (
     <>
@@ -149,6 +187,56 @@ const AddCategory = () => {
         </Formik>
       </div> : null}
 
+      <ModalComponent
+        open={showPreviewModal}
+        setOpen={() => {
+
+        }}
+        width='70%'
+      >
+        <div className='bg-white p-5 rounded-md'>
+          <div className='my-2 mb-6 text-schestiPrimary font-semibold text-[16px] leading-5'>
+            Preview CSV
+          </div>
+
+          <Table
+            columns={[
+              { title: "Category #", dataIndex: "categoryId" },
+              { title: "Category Name", dataIndex: "name" },
+              {
+                title: "Action",
+                render(value, record, index) {
+                  return <Image
+                    src="/trash-2.svg"
+                    className="cursor-pointer"
+                    width={20}
+                    height={20}
+                    alt="delete"
+                    onClick={() => {
+                      removeItemFromParsedData(index);
+                    }}
+                  />
+                },
+              }
+            ]}
+            dataSource={parsedData}
+          />
+
+          <div className='flex justify-end space-x-3'>
+            <WhiteButton
+              text='Cancel'
+              onClick={() => setShowPreviewModal(false)}
+              className='!w-fit'
+            />
+            <CustomButton
+              text='Import Data'
+              className='!w-fit'
+
+            />
+          </div>
+        </div>
+      </ModalComponent>
+
       <div className={`${bg_style} border border-solid border-silverGray mt-4 p-5`}>
         <div className='flex justify-between items-center'>
           <TertiaryHeading title={showForm ? "Added Category" : "Category"} className="text-graphiteGray" />
@@ -160,6 +248,22 @@ const AddCategory = () => {
               iconwidth={20}
               iconheight={20}
               className='!w-fit'
+              onClick={() => {
+                if (inputFileRef.current) {
+                  inputFileRef.current.click();
+                }
+              }}
+              isLoading={isUploading}
+              loadingText='Uploading...'
+            />
+
+            <input
+              ref={inputFileRef}
+              type="file"
+              name=""
+              id=""
+              className='hidden'
+              onChange={uploadCsvFileAndParse}
             />
             <CustomButton
               text='Add Category'
