@@ -28,7 +28,15 @@ interface DataType {
   children?: DataType[];
 }
 
-const SubCategoryTable: React.FC = () => {
+type Props = {
+  onEdit: () => void;
+  onDelete: () => void;
+}
+
+const SubCategoryTable = ({
+  onEdit,
+  onDelete
+}: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const token = useSelector(selectToken);
 
@@ -120,6 +128,7 @@ const SubCategoryTable: React.FC = () => {
                 height={20}
                 alt="edit"
                 onClick={() => {
+                  onEdit();
                   dispatch(setSubcategoryData(subCategoriesData));
                 }}
               />
@@ -130,6 +139,7 @@ const SubCategoryTable: React.FC = () => {
                 height={20}
                 alt="delete"
                 onClick={async () => {
+                  onDelete();
                   const { statusCode } =
                     await categoriesService.httpDeleteSubcategory(
                       subCategoriesData._id!

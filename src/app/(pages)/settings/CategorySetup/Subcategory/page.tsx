@@ -232,7 +232,15 @@ const AddSubcategory = () => {
             />
           </div> : null}
         </div>
-        <SubCategoryTable />
+        <SubCategoryTable
+          onEdit={() => {
+            setShowForm(true);
+          }}
+
+          onDelete={() => {
+
+          }}
+        />
       </div>
     </>
   );
