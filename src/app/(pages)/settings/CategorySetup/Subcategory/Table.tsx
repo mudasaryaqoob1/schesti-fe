@@ -7,8 +7,6 @@ import React, {
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import Image from 'next/image';
-import { bg_style } from '@/globals/tailwindvariables';
-import TertiaryHeading from '@/app/component/headings/tertiary';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { AppDispatch } from '@/redux/store';
@@ -150,9 +148,7 @@ const SubCategoryTable: React.FC = () => {
 
   return (
     <div
-      className={`${bg_style} border border-solid border-silverGray mt-4 p-5`}
     >
-      <TertiaryHeading title="Sub Categories" className="text-graphiteGray" />
       <Table
         loading={subcategoriesReduxDataLoading}
         columns={columns}
