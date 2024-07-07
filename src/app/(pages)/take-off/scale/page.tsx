@@ -6,13 +6,15 @@ import ModalsWrapper from './components/ModalWrapper';
 import { Avatar, Checkbox, ColorPicker, Dropdown, InputNumber, Menu, Progress, Select, Space, Spin } from 'antd';
 import { EditContext, ScaleContext, UploadFileContext } from '../context';
 import { UploadFileContextProps } from '../context/UploadFileContext';
+import Konva from 'konva';
+import jsPDF from 'jspdf';
 import {
   Measurements,
   ScaleInterface,
   Units,
   defaultMeasurements,
 } from '../types';
-import Image from 'next/image';
+import NextImage from 'next/image';
 import { ScaleNavigation, Draw } from './components';
 import { ScaleDataContextProps } from '../context/ScaleContext';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -20,7 +22,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 // import { ReportDataContextProps } from '../context/ReportDataContext';
 // import SelectPageModal from '../components/selectPageModal';
 // import { useSelector } from 'react-redux';
-// import { selectUser } from '@/redux/authSlices/auth.selector';
+import { selectUser } from '@/redux/authSlices/auth.selector';
 
 ////////////////////////New Take OffData///////////////////////////////////
 import CustomButton from '@/app/component/customButton/button'
@@ -43,6 +45,9 @@ import { toast } from 'react-toastify';
 // import { AnyCnameRecord } from 'dns';
 import useWheelZoom from './components/useWheelZoom';
 import Draggable from 'react-draggable';
+import { twMerge } from 'tailwind-merge';
+import { useSelector } from 'react-redux';
+import { useDraw } from '@/app/hooks';
 
 
 const groupDataForFileTable = (input: any[]) => {
@@ -292,7 +297,7 @@ const TakeOffNewPage = () => {
     try {
       const page: PDFPageProxy = await pdf.getPage(pageIndex + 1);
       console.log(page, typeof (page), " ===> pages while uplaoding")
-      const scale = 4;
+      const scale = 1;
       const viewport = page.getViewport({ scale });
       const canvas = document.createElement('canvas');
       const context = canvas.getContext('2d');
@@ -531,7 +536,7 @@ const TakeOffNewPage = () => {
       }
     }
   }
-  const handleMenuClick = async (key: any, item: any, newName: string = '') => {
+  const handleMenuClick = async (key: any, item: any, newName: string = '', comment?: any) => {
     const takeOffTemp = takeOff
     const page = takeOffTemp?.pages?.find((i: any) => (i?.pageId == item?.pageId))
     const pageInd = takeOffTemp?.pages?.findIndex((i: any) => (i?.pageId == item?.pageId))
@@ -547,6 +552,14 @@ const TakeOffNewPage = () => {
         pages = pages?.map((i: any) => {
           if (i?.pageId == item?.pageId) {
             return { ...i, name: newName }
+          } else {
+            return i
+          }
+        })
+      } else if (key == 'comment') {
+        pages = pages?.map((i: any) => {
+          if (i?.pageId == item?.pageId) {
+            return { ...i, comments: [...((item?.comments && Array.isArray(item?.comments)) ? item?.comments : []), comment] }
           } else {
             return i
           }
@@ -625,13 +638,23 @@ const TakeOffNewPage = () => {
       render: (text, record) => (
         <div
           className="flex items-center h-full cursor-pointer">
-          {record?.isParent ? <span className='font-extrabold'>{text}<Checkbox checked={selectedCate == text} onChange={(e) => {
+          {record?.isParent ? <span className='font-extrabold'>{text}
+            {
+              selectedCate == text ? <MinusOutlined className='border-2 rounded-full ml-2' onClick={() => { setselectedCate(null); setselectedSubCate(null) }} /> : <PlusOutlined className='border-2 rounded-full ml-2' onClick={() => { setselectedCate(text); }} />
+            }
+            {/* <Checkbox checked={selectedCate == text} onChange={(e) => {
             if (e.target.checked) { setselectedCate(text); }
             else { setselectedCate(null); setselectedSubCate(null) }
-          }} /></span> : record?.isSubParent ? <span className='font-extrabold'>{record?.subcategory}<Checkbox checked={selectedSubCate == record?.subcategory} onChange={(e) => {
+          }} /> */}
+          </span> : record?.isSubParent ? <span className='font-extrabold'>{record?.subcategory}
+            {
+              selectedSubCate == record?.subcategory ? <MinusOutlined className='border-2 rounded-full ml-2' onClick={() => { setselectedCate(null); setselectedSubCate(null) }} /> : <PlusOutlined className='border-2 rounded-full ml-2' onClick={() => { setselectedCate(text); setselectedSubCate(record?.subcategory); }} />
+            }
+            {/* <Checkbox checked={selectedSubCate == record?.subcategory} onChange={(e) => {
             if (e.target.checked) { setselectedCate(text); setselectedSubCate(record?.subcategory) }
             else { setselectedCate(null); setselectedSubCate(null) }
-          }} /></span> : <span className='flex items-center gap-1'><EditableText initialText={record?.projectName} smallText={record?.projectName?.slice(0, 10) + "..."} onPressEnter={(value) => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'projectName', value) }} toolTip={takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.name + `(${takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.file?.name})`} /></span>}
+          }} /> */}
+          </span> : <span className='flex items-center gap-1'><EditableText initialText={record?.projectName} smallText={record?.projectName?.slice(0, 10) + "..."} onPressEnter={(value) => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'projectName', value) }} toolTip={takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.name + `(${takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.file?.name})`} /></span>}
         </div>
       ),
     },
@@ -889,6 +912,7 @@ const TakeOffNewPage = () => {
   const [sideSearch, setsideSearch] = useState<string>("")
   const [tableColumns, settableColumns] = useState<any>([])
   const [tableData, settableData] = useState<any>([])
+  const [scalUnits, setscalUnits] = useState<'feet' | 'meter'>('feet')
 
   // WBS States And Functions
   const [categoryList, setcategoryList] = useState<any>([])
@@ -951,6 +975,425 @@ const TakeOffNewPage = () => {
 
 
 
+  const { user } = useSelector(selectUser)
+  const handleAddComment = (comment: string) => {
+    if (comment && selectedPage) {
+      const cm = { comment, user }
+      handleMenuClick('comment', selectedPage, '', cm)
+      setselectedPage((ps: any) => ({ ...ps, comments: [...((ps?.comments && Array.isArray(ps?.comments)) ? ps?.comments : []), cm] }))
+    }
+  }
+
+  //Download Markup functions
+  const getPageData = () => {
+    let reportData: any = [];
+    if (takeOff?.measurements && Object.keys(takeOff?.measurements) && Object.keys(takeOff?.measurements)?.length > 0) {
+      Object.keys(takeOff?.measurements)?.map((key: any) => {
+        if (takeOff?.measurements[key] && Object.keys(takeOff?.measurements[key]) && Object.keys(takeOff?.measurements[key])?.length > 0) {
+          Object.keys(takeOff?.measurements[key])?.map((type: any) => {
+            reportData = [...reportData, ...((takeOff?.measurements[key][type] && Array.isArray(takeOff?.measurements[key][type]) && takeOff?.measurements[key][type]?.length > 0)
+              ?
+              takeOff.measurements[key][type].map((arrit: any) => {
+                return {
+                  ...arrit, pageId: key, type, pageData: takeOff?.pages?.find((pg: any) => (pg?.pageId == key)),
+                  pageLabel: takeOff?.pages?.find((pg: any) => (pg?.pageId == key))?.pageNum, color: arrit?.stroke, config: arrit
+                }
+              })
+              :
+              [])]
+          })
+        }
+      })
+    }
+    console.log(reportData, " ===> Take offs reportData")
+    return reportData
+  }
+  //@ts-ignore
+  const counterImage = new Image();
+  counterImage.src = '/count-draw.png';
+  const { calculateMidpoint, calculatePolygonCenter } = useDraw();
+  // const captureShape = async (
+  //   shape: any,
+  //   background: HTMLImageElement,
+  //   shapeType: string
+  // ) => {
+  //   // Create a temporary container for off-screen stage
+  //   const container = document.createElement('div');
+  //   container.style.display = 'none'; // Hide the container
+  //   document.body.appendChild(container); // This is required for Konva.Stage initialization
+
+  //   return new Promise<string | any>((resolve) => {
+  //     // Initialize a temporary stage with the container
+  //     const tempStage = new Konva.Stage({
+  //       container: container,
+  //       width: background.width,
+  //       height: background.height,
+  //     });
+
+  //     const layer = new Konva.Layer();
+  //     tempStage.add(layer);
+
+  //     // Add the background image to the layer
+  //     const bgImage = new Konva.Image({
+  //       image: background,
+  //       width: background.width,
+  //       height: background.height,
+  //     });
+  //     layer.add(bgImage);
+
+  //     let minX: number, minY: number, maxX: number, maxY: number;
+
+  //     // Initialize variables to ensure they cover the shape with margins later
+  //     minX = minY = Number.MAX_SAFE_INTEGER;
+  //     maxX = maxY = 0;
+
+  //     // Determine the type of shape and render accordingly
+  //     switch (shapeType) {
+  //       case 'count': {
+  //         // Example for a circle shape
+  //         const { x, y, radius = 20 } = shape;
+  //         const circle = new Konva.Image({
+  //           image: counterImage,
+  //           width: 20,
+  //           height: 20,
+  //           x,
+  //           y,
+  //           radius,
+  //         });
+  //         layer.add(circle);
+
+  //         // Adjust bounds for the circle, considering the radius and a margin
+  //         minX = x - radius - 20;
+  //         minY = y - radius - 20;
+  //         maxX = x + radius + 20;
+  //         maxY = y + radius + 20;
+  //         break;
+  //       }
+
+  //       case 'line':
+  //       case 'perimeter':
+  //       case 'dynamic':
+  //       case 'area':
+  //       case 'volume':
+  //         {
+  //           // Example for a line or polygon shape
+  //           const { points, stroke, strokeWidth, lineCap } = shape;
+  //           const line = new Konva.Line({
+  //             points,
+  //             stroke,
+  //             strokeWidth,
+  //             lineCap,
+  //             closed: shapeType === 'area' || shapeType === 'volume', // Close path for areas and volumes
+  //             fill: shape?.fillColor
+  //           });
+  //           layer.add(line);
+  //           console.warn(shape, 'sssss');
+  //           let xText = 0,
+  //             yText = 0;
+  //           if (
+  //             shapeType === 'area' ||
+  //             shapeType === 'volume' ||
+  //             shapeType === 'dynamic'
+  //           ) {
+  //             const { x, y } = calculatePolygonCenter(points);
+  //             xText = x - 20;
+  //             yText = y - 20;
+  //           } else {
+  //             const { x, y } = calculateMidpoint(points);
+  //             xText = x - 20;
+  //             yText = y - 20;
+  //           }
+
+  //           // Calculate bounds for lines and polygons, include margin
+  //           const xs = points.filter((_: any, i: number) => i % 2 === 0);
+  //           const ys = points.filter((_: any, i: number) => i % 2 !== 0);
+  //           minX = Math.min(...xs) - 20;
+  //           minY = Math.min(...ys) - 20;
+  //           maxX = Math.max(...xs) + 20;
+  //           maxY = Math.max(...ys) + 20;
+  //           const textSize = ((maxX - minX) * (maxY - minY)) / 100000;
+
+  //           console.warn(textSize);
+  //           const text = new Konva.Text({
+  //             x: xText,
+  //             y: yText,
+  //             text: shape.text,
+  //             fontSize: Math.floor(textSize) * 10 + 25,
+  //             fontFamily: 'Calibri',
+  //             fill: shape?.textColor ?? 'red',
+  //           });
+  //           layer.add(text);
+  //         }
+  //         break;
+
+  //       default:
+  //         console.error('Unknown shape type:', shapeType);
+  //         return;
+  //     }
+
+  //     layer.draw(); // Force drawing the layer to render shapes
+
+  //     // Use toImage to capture the specified region
+  //     tempStage.toImage({
+  //       // x: minX,
+  //       // y: minY,sss
+  //       // width: maxX - minX,
+  //       // height: maxY - minY,
+  //       x: 0,
+  //       y: 0,
+  //       width: background.width,
+  //       height: background.height,
+  //       callback: (img) => {
+  //         resolve(img)
+  //         // Create a canvas to get the cropped image data
+  //         // console.log(img, " ===> Image got from tempStage")
+  //         // const canvas = document.createElement('canvas');
+  //         // // canvas.width = maxX - minX;
+  //         // // canvas.height = maxY - minY;
+  //         // canvas.width = background.width;
+  //         // canvas.height = background.height;
+  //         // const ctx = canvas.getContext('2d');
+  //         // if (ctx) {
+  //         //   ctx.drawImage(img, 0, 0)//, canvas.width, canvas.height);
+  //         //   const dataURL = canvas.toDataURL();
+  //         //   resolve(dataURL); // Resolve the promise with the cropped image data URL
+  //         // }
+  //         // // Cleanup: remove the temporary container from the document
+  //         // document.body.removeChild(container);
+  //       },
+  //     });
+  //   });
+  // };
+  const captureShape = async (
+    shapeArr: any[],
+    background: HTMLImageElement,
+    // shapeType: string
+  ) => {
+    // Create a temporary container for off-screen stage
+    const container = document.createElement('div');
+    container.style.display = 'none'; // Hide the container
+    document.body.appendChild(container); // This is required for Konva.Stage initialization
+
+    return new Promise<string | any>((resolve) => {
+      // Initialize a temporary stage with the container
+      const tempStage = new Konva.Stage({
+        container: container,
+        width: background.width,
+        height: background.height,
+      });
+
+      const layer = new Konva.Layer();
+      tempStage.add(layer);
+
+      // Add the background image to the layer
+      const bgImage = new Konva.Image({
+        image: background,
+        width: background.width,
+        height: background.height,
+      });
+      layer.add(bgImage);
+
+      let minX: number, minY: number, maxX: number, maxY: number;
+
+      // Initialize variables to ensure they cover the shape with margins later
+      minX = minY = Number.MAX_SAFE_INTEGER;
+      maxX = maxY = 0;
+
+      for (let i = 0; i < shapeArr?.length; i++) {
+        const {type:shapeType,...shape} = shapeArr[i]
+        // Determine the type of shape and render accordingly
+        switch (shapeType) {
+          case 'count': {
+            // Example for a circle shape
+            const { x, y, radius = 20 } = shape;
+            const circle = new Konva.Image({
+              image: counterImage,
+              width: 20,
+              height: 20,
+              x,
+              y,
+              radius,
+            });
+            layer.add(circle);
+
+            // Adjust bounds for the circle, considering the radius and a margin
+            minX = x - radius - 20;
+            minY = y - radius - 20;
+            maxX = x + radius + 20;
+            maxY = y + radius + 20;
+            break;
+          }
+
+          case 'line':
+          case 'perimeter':
+          case 'dynamic':
+          case 'area':
+          case 'volume':
+            {
+              // Example for a line or polygon shape
+              const { points, stroke, strokeWidth, lineCap } = shape;
+              const line = new Konva.Line({
+                points,
+                stroke,
+                strokeWidth,
+                lineCap,
+                closed: shapeType === 'area' || shapeType === 'volume', // Close path for areas and volumes
+                fill: shape?.fillColor
+              });
+              layer.add(line);
+              console.warn(shape, 'sssss');
+              let xText = 0,
+                yText = 0;
+              if (
+                shapeType === 'area' ||
+                shapeType === 'volume' ||
+                shapeType === 'dynamic'
+              ) {
+                const { x, y } = calculatePolygonCenter(points);
+                xText = x - 20;
+                yText = y - 20;
+              } else {
+                const { x, y } = calculateMidpoint(points);
+                xText = x - 20;
+                yText = y - 20;
+              }
+
+              // Calculate bounds for lines and polygons, include margin
+              const xs = points.filter((_: any, i: number) => i % 2 === 0);
+              const ys = points.filter((_: any, i: number) => i % 2 !== 0);
+              minX = Math.min(...xs) - 20;
+              minY = Math.min(...ys) - 20;
+              maxX = Math.max(...xs) + 20;
+              maxY = Math.max(...ys) + 20;
+              const textSize = ((maxX - minX) * (maxY - minY)) / 100000;
+
+              console.warn(textSize);
+              const text = new Konva.Text({
+                x: xText,
+                y: yText,
+                text: shape.text,
+                fontSize: Math.floor(textSize) * 10 + 25,
+                fontFamily: 'Calibri',
+                fill: shape?.textColor ?? 'red',
+              });
+              layer.add(text);
+            }
+            break;
+
+          default:
+            console.error('Unknown shape type:', shapeType);
+            return;
+        }
+      }
+
+
+      layer.draw(); // Force drawing the layer to render shapes
+
+      // Use toImage to capture the specified region
+      tempStage.toImage({
+        // x: minX,
+        // y: minY,sss
+        // width: maxX - minX,
+        // height: maxY - minY,
+        x: 0,
+        y: 0,
+        width: background.width,
+        height: background.height,
+        callback: (img) => {
+          resolve(img)
+          // Create a canvas to get the cropped image data
+          // console.log(img, " ===> Image got from tempStage")
+          // const canvas = document.createElement('canvas');
+          // // canvas.width = maxX - minX;
+          // // canvas.height = maxY - minY;
+          // canvas.width = background.width;
+          // canvas.height = background.height;
+          // const ctx = canvas.getContext('2d');
+          // if (ctx) {
+          //   ctx.drawImage(img, 0, 0)//, canvas.width, canvas.height);
+          //   const dataURL = canvas.toDataURL();
+          //   resolve(dataURL); // Resolve the promise with the cropped image data URL
+          // }
+          // // Cleanup: remove the temporary container from the document
+          // document.body.removeChild(container);
+        },
+      });
+    });
+  };
+  const loadImage = (src: string) => {
+    return new Promise<HTMLImageElement>((resolve, reject) => {
+      //@ts-ignore
+      const img = new Image();
+      img.crossOrigin = 'anonymous'
+      img.src = `${src}?cacheBust=${new Date().getTime()}`;
+      img.onload = () => resolve(img);
+      img.onerror = (e: any) => { console.log(e, " ==> Page image loading of capture"); reject(e) };
+    });
+  };
+  const imagesToPdf = (images: any) => {
+    try {
+      const pdf = new jsPDF();
+
+      images.forEach((imgData: any, index: number) => {
+        if (index !== 0) {
+          pdf.addPage();
+        }
+        pdf.addImage(imgData.src, 'JPEG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
+        // console.log(imgData?.width, imgData?.height, " ===> file page with its measurments final images error images to pdf function width height")
+        // pdf.addImage(imgData?.src, 'JPEG', 0, 0, imgData?.width, imgData?.height);
+      });
+
+      pdf.save('output.pdf');
+    } catch (error) {
+      console.log(error, " ===> file page with its measurments final images error images to pdf function")
+    }
+  };
+  const [markuploading, setmarkuploading] = useState(false)
+  const downloadMarkup = async (file: any) => {
+    if (!file?.fileId) return
+    try {
+      const allpgs = takeOff?.pages?.filter((i: any) => i?.fileId == file?.fileId)
+      const arrMsr = getPageData() // converting measurements to array
+      if (!Array.isArray(arrMsr) || !(arrMsr.length > 0)) {
+        return
+      }
+      console.log(file, takeOff, allpgs, getPageData(), " ===> file")
+      let imgArr: any[] = []
+      if (allpgs && Array.isArray(allpgs) && allpgs?.length > 0) {
+        setmarkuploading(true)
+        await Promise.all(
+          allpgs?.slice(0,6)?.map(async (it: any) => {
+            const curPgMsr = arrMsr.filter((i: any) => (i?.pageId == it?.pageId))
+            console.log(it, curPgMsr, " ===> file page with its measurments")
+            const background = await loadImage(it?.src)
+            if (curPgMsr && Array.isArray(curPgMsr) && curPgMsr?.length > 0) {
+              const img = await captureShape([...curPgMsr?.map(i=>({...i?.config, text:i?.text, name:i?.projectName, type:i?.type}))], background)
+              imgArr.push(img)
+              // await Promise.all(
+              //   curPgMsr.map(async (curMsr: any) => {
+              //     try {
+              //       const img = await captureShape({ ...curMsr.config, text: curMsr.text, name: curMsr.projectName }, background, curMsr?.type ?? 'line')
+              //       console.log(img, " ===> file page with its measurments final images img ")
+              //       imgArr.push({ src: img, width: background.width, height: background.height })
+              //     } catch (error) {
+              //       console.log(error, " ===> file page with its measurments final images error ")
+              //     }
+              //   })
+              // )
+            }else{
+              imgArr?.push(background)
+            }
+          })
+        )
+        console.log(imgArr, " ===> file page with its measurments final images")
+        imagesToPdf(imgArr)
+        setmarkuploading(false)
+      }
+    } catch (error) {
+      setmarkuploading(false)
+      console.log(error)
+    }
+  }
 
   return (
     <>
@@ -968,6 +1411,15 @@ const TakeOffNewPage = () => {
           //   //@ts-ignore
           //   (urlSearch && urlSearch.get('edit_id') && urlSearch.get('edit_id')?.length > 0) ? router.push(`/take-off/report?edit_id=${urlSearch.get('edit_id')}&scale=${JSON?.stringify(scaleData[1] ?? { xScale: `1in=1in`, yScale: `1in=1in`, precision: '1', })}`) : router.push('/take-off/report')
           // }}
+          />
+          <CustomButton
+            text="Download Markup"
+            className="!w-auto shadow-md"
+            // icon="plus.svg"
+            iconwidth={20}
+            iconheight={20}
+            isLoading={markuploading}
+            onClick={() => { downloadMarkup((takeOff?.files && Array.isArray(takeOff?.files) && takeOff?.files?.length > 1) ? takeOff?.files[1] : {}) }}
           />
         </div>
 
@@ -1154,6 +1606,8 @@ const TakeOffNewPage = () => {
                   fillColor={fillColor}
                   countType={countType}
                   setcountType={setcountType}
+                  selectedPage={selectedPage}
+                  handleAddComment={handleAddComment}
                 />}
 
                 <div className="py-6 h-[709px] relative">
@@ -1194,7 +1648,10 @@ const TakeOffNewPage = () => {
                   </div>
                   {selectedTakeOffTab == 'page' && <div className='absolute top-10 right-[50px] flex z-40 border rounded-lg bg-slate-50' >
                     <span onClick={handleZoomIn} className='border-r py-3 px-5 cursor-pointer' ><PlusOutlined className='font-extrabold' /></span>
-                    <span onClick={handleZoomOut} className='py-3 px-5 cursor-pointer'><MinusOutlined /></span>
+                    <span onClick={handleZoomOut} className='py-3 px-5 cursor-pointer border-r'><MinusOutlined /></span>
+                    <span className='py-0 px-2 flex items-center cursor-pointer'>
+                      <Select value={scalUnits} options={[{ value: 'feet', label: <span>Feets</span> }, { value: 'meter', label: <span>Meters</span> }]} onSelect={setscalUnits} />
+                    </span>
                   </div>}
                   {selectedTakeOffTab == 'page' && <div className={`absolute bottom-0 z-40 ${showModal ? 'block' : 'hidden'}`}>
                     <ModalsWrapper
@@ -1245,6 +1702,7 @@ const TakeOffNewPage = () => {
                       textColor={textColor}
                       fillColor={fillColor}
                       countType={countType}
+                      scaleUnits={scalUnits}
                     />}
                     {
                       selectedTakeOffTab == 'overview'
@@ -1264,7 +1722,7 @@ const TakeOffNewPage = () => {
                                     setselectedPage(page)
                                   }}
                                 >
-                                  <Image className='rounded-t-2xl' src={page?.src} width={250} height={300} alt='' onLoad={() => handleImageLoad(index)} />
+                                  <NextImage className='rounded-t-2xl' src={page?.src} width={250} height={300} alt='' onLoad={() => handleImageLoad(index)} />
                                   {isImgLoading(index) && <div className='rounded-t-2xl absolute top-0 left-0 w-[100%] h-[100%] bg-slate-300 flex justify-center items-center bg-opacity-30' >
                                     <Spin />
                                   </div>}
@@ -1483,6 +1941,21 @@ const TakeOffNewPage = () => {
                             value={textColor}
                             onChangeComplete={(color) => settextColor(color.toHexString())}
                           />
+                        </div>
+                        <div
+                          className="flex flex-row gap-2 items-center"
+                        // onClick={}
+                        >
+                          <label>Fill:</label>
+                          {/* <NextImage src={'/selectedScale.svg'} alt={'zoomicon'} width={19.97} height={11.31} /> */}
+                          <ColorPicker value={fillColor ?? '#ffffff'} onChangeComplete={(value) => { handleRoomColorChange(value?.toRgbString()) }} />
+                          {/* <span
+                            className={twMerge(
+                              `text-xs capitalize`
+                            )}
+                          >
+                            {"Room Color"}
+                          </span> */}
                         </div>
                         {tool.selected === 'volume' && (
                           <InputNumber

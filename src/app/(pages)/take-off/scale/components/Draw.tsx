@@ -71,7 +71,8 @@ interface Props {
   handleZoomOut: any;
   textColor?: any;
   fillColor?: any;
-  countType?:string;
+  countType?: string;
+  scaleUnits?:string;
 }
 
 const Draw: React.FC<Props> = ({
@@ -103,7 +104,8 @@ const Draw: React.FC<Props> = ({
   handleZoomOut,
   textColor,
   fillColor,
-  countType
+  countType,
+  scaleUnits = 'feet'
 }) => {
   const { user } = useSelector(selectUser)
   console.log(user, " current working user")
@@ -170,13 +172,13 @@ const Draw: React.FC<Props> = ({
 
   const counterImage = new Image();
   counterImage.src = '/count-draw.png';
-  const getCounterImage = (type:string) => {
+  const getCounterImage = (type: string) => {
     const retimg = new Image();
-    if(type == 'tick') retimg.src = '/count-draw.png';
-    if(type == 'branch') retimg.src = '/count-branch.png';
-    if(type == 'cross') retimg.src = '/count-cross.png';
-    if(type == 'home') retimg.src = '/count-home.png';
-    if(type == 'info') retimg.src = '/count-info.png';
+    if (type == 'tick') retimg.src = '/count-draw.png';
+    if (type == 'branch') retimg.src = '/count-branch.png';
+    if (type == 'cross') retimg.src = '/count-cross.png';
+    if (type == 'home') retimg.src = '/count-home.png';
+    if (type == 'info') retimg.src = '/count-info.png';
     return retimg
   }
 
@@ -198,7 +200,7 @@ const Draw: React.FC<Props> = ({
   }, [selected]);
 
   const handleMouseDown = (e: KonvaEventObject<MouseEvent>) => {
-    if(ctrlPressed) return
+    if (ctrlPressed) return
     if (endLiveEditing) return;
     setSelectedShape('');
 
@@ -221,6 +223,7 @@ const Draw: React.FC<Props> = ({
 
     if (
       selected === 'length' ||
+      selected === 'rectangle' ||
       selected === 'area' ||
       selected === 'volume' ||
       (selected === 'scale' && drawScale == true) ||
@@ -290,11 +293,57 @@ const Draw: React.FC<Props> = ({
         subcategory: selectedSubCategory,
         user,
         textColor: textColor,
-        text:lineDistance?.toString()
+        text: lineDistance?.toString()
       };
       setDraw((prev: any) => ({ ...prev, line: [...(prev?.line ? prev.line : []), newLine] }));
 
       updateDrawHistory(pageNumber.toString(), 'line', newLine);
+
+      setCurrentLine(defaultCurrentLineState);
+      handleChangeMeasurements(defaultMeasurements);
+    }
+
+    if (selected === 'rectangle' && currentLine.startingPoint) {
+      const { startingPoint } = currentLine;
+
+      const points = [
+        startingPoint?.x,
+        startingPoint?.y,
+        //custom points to make rectangular
+        position?.x,
+        startingPoint?.y,
+        //custom points to make rectangular
+        position?.x,
+        position?.y,
+        //custom points to make rectangular
+        //custom points to make rectangular
+        startingPoint?.x,
+        position?.y
+      ] as number[]
+      const area = calculatePolygonArea(points, scale);
+      const text = `${area?.toFixed(4) || ''}sq`;
+      const areaConfig: PolygonConfigInterface = {
+        points,
+        stroke: color,
+        strokeWidth: border,
+        textUnit: unit,
+        dateTime: moment().toDate(),
+        projectName: 'Area Measurement',
+        category: selectedCategory ?? 'Area Measurement',//(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
+        subcategory: selectedSubCategory,
+        user,
+        textColor: textColor,
+        fillColor: fillColor,
+        text
+      };
+      setDraw((prevDraw: any) => {
+        return {
+          ...prevDraw,
+          area: [...(prevDraw?.area ? prevDraw.area : []), areaConfig],
+        };
+      });
+
+      updateDrawHistory(pageNumber.toString(), 'area', areaConfig);
 
       setCurrentLine(defaultCurrentLineState);
       handleChangeMeasurements(defaultMeasurements);
@@ -438,7 +487,7 @@ const Draw: React.FC<Props> = ({
         category: selectedCategory ?? 'Count Measurement',//(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
         subcategory: selectedSubCategory,
         user,
-        countType:countType ?? '',
+        countType: countType ?? '',
       };
 
       setDraw((prev: any) => {
@@ -594,13 +643,13 @@ const Draw: React.FC<Props> = ({
   const [ctrlPressed, setCtrlPressed] = useState(false);
 
   useEffect(() => {
-    const handleKeyDown = (event:any) => {
+    const handleKeyDown = (event: any) => {
       if (event.ctrlKey) {
         setCtrlPressed(true);
       }
     };
 
-    const handleKeyUp = (event:any) => {
+    const handleKeyUp = (event: any) => {
       if (!event.ctrlKey) {
         setCtrlPressed(false);
       }
@@ -677,7 +726,7 @@ const Draw: React.FC<Props> = ({
                   subcategory: selectedSubCategory,
                   user,
                   textColor,
-                  text:lineDistance.toString()
+                  text: lineDistance.toString()
                 },
               ],
             }));
@@ -866,7 +915,8 @@ const Draw: React.FC<Props> = ({
           {/* Drawing Line */}
           {draw?.line?.map(({ textUnit, ...rest }: any, index: number) => {
             const id = `line-${index}`;
-            const lineDistance = calcLineDistance(rest?.points, scale, true);
+            const lineDistance = scaleUnits == 'feet' ? calcLineDistance(rest?.points, scale, true) : `${Number(Number(calcLineDistance(rest?.points, scale, false)) * 0.0254).toFixed(3)} meter`;
+            const distanceInInches = calcLineDistance(rest?.points, scale, false)
             const lineMidPoint = calculateMidpoint(rest?.points);
 
             return (
@@ -962,7 +1012,7 @@ const Draw: React.FC<Props> = ({
             const center = calculatePolygonCenter(polygonCoordinates);
             const area = calculatePolygonArea(polygonCoordinates, scale);
 
-            const text = `${area?.toFixed(4) || ''}sq`;
+            const text = scaleUnits == 'feet' ? `${area?.toFixed(4) || ''}ft²` : `${Number(area * 0.092903).toFixed(3)}m²`;
             const id = `area-${index}`;
 
             return (
@@ -1043,9 +1093,36 @@ const Draw: React.FC<Props> = ({
             );
           })}
 
+          {/* Runtime rectangle drawing */}
           {currentLine.startingPoint &&
             currentLine.endingPoint &&
-            selected !== 'count' &&
+            selected == 'rectangle' &&
+            (
+              <Line
+                points={[
+                  currentLine.startingPoint.x,
+                  currentLine.startingPoint.y,
+
+                  currentLine.endingPoint.x,
+                  currentLine.startingPoint.y,
+
+                  currentLine.endingPoint.x,
+                  currentLine.endingPoint.y,
+
+                  currentLine.startingPoint.x,
+                  currentLine.endingPoint.y,
+
+                  currentLine.startingPoint.x,
+                  currentLine.startingPoint.y,
+                ]}
+                stroke={color}
+                strokeWidth={border}
+              />
+            )}
+          {/* line rectangle drawing */}
+          {currentLine.startingPoint &&
+            currentLine.endingPoint &&
+            selected !== 'count' && selected !== 'rectangle' &&
             !(selected == 'scale' && drawScale != true) &&
             (
               <Line

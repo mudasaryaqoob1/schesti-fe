@@ -4,7 +4,8 @@ import { twMerge } from 'tailwind-merge';
 import { bg_style } from '@/globals/tailwindvariables';
 import { SCALE_NAVIGATION, ScaleInterface } from '../../types';
 import { ZoomInOutlined, ZoomOutOutlined } from '@ant-design/icons';
-import { ColorPicker } from 'antd';
+import { ColorPicker, Popover, Input, Button} from 'antd';
+const { TextArea } = Input;
 
 interface Props {
   tool: ScaleInterface;
@@ -14,8 +15,10 @@ interface Props {
   handleZoomOut?: any;
   handleRoomColorChange?: any;
   fillColor?: string;
-  countType?:string;
-  setcountType?:any;
+  countType?: string;
+  setcountType?: any;
+  selectedPage?: any;
+  handleAddComment?:any;
 }
 
 const countIcon = (width: number, height: number, color: string, type: string) => {
@@ -40,8 +43,11 @@ const countIcon = (width: number, height: number, color: string, type: string) =
   return obj[`${type ?? 'branch'}`]
 }
 
-const ScaleNavigation: React.FC<Props> = ({ tool, setTool, setShowModal, handleZoomIn, handleZoomOut, handleRoomColorChange, fillColor, setcountType, countType }) => {
+const ScaleNavigation: React.FC<Props> = ({ tool, setTool, setShowModal, handleZoomIn, handleZoomOut, handleRoomColorChange, fillColor, setcountType, countType, selectedPage, handleAddComment }) => {
+  console.log(selectedPage, " ===> selectedPage")
   const [cddOpen, setcddOpen] = useState<boolean>(false)
+  const [copen, setcOpen] = useState(false);
+  const [comment, setcomment] = useState("")
   return (
     <div
       className={twMerge(
@@ -74,7 +80,7 @@ const ScaleNavigation: React.FC<Props> = ({ tool, setTool, setShowModal, handleZ
               )}
               <span
                 className={twMerge(
-                  `text-xs capitalize ${tool.selected === label ? 'text-[#6F6AF8]' : ''
+                  `text-xs capitalize ${tool.selected === label ? 'text-lavenderPurpleReplica' : ''
                   }`
                 )}
               >
@@ -86,7 +92,7 @@ const ScaleNavigation: React.FC<Props> = ({ tool, setTool, setShowModal, handleZ
       )}
 
       {/* Zoom In */}
-      <div
+      {/* <div
         className="flex flex-col items-center cursor-pointer p-2"
         onClick={handleZoomIn}
       >
@@ -98,7 +104,7 @@ const ScaleNavigation: React.FC<Props> = ({ tool, setTool, setShowModal, handleZ
         >
           {"Zoom In"}
         </span>
-      </div>
+      </div> */}
       {/* Count and drop down */}
       <div
         className="flex flex-col items-center cursor-pointer p-2"
@@ -129,7 +135,7 @@ const ScaleNavigation: React.FC<Props> = ({ tool, setTool, setShowModal, handleZ
       </div>
 
       {/* Zoom Out */}
-      <div
+      {/* <div
         className="flex flex-col items-center cursor-pointer p-2"
         onClick={handleZoomOut}
       >
@@ -141,14 +147,12 @@ const ScaleNavigation: React.FC<Props> = ({ tool, setTool, setShowModal, handleZ
         >
           {"Zoom Out"}
         </span>
-      </div>
+      </div> */}
 
       {/* Room Color */}
-      <div
+      {/* <div
         className="flex flex-col items-center cursor-pointer p-2"
-      // onClick={}
       >
-        {/* <NextImage src={'/selectedScale.svg'} alt={'zoomicon'} width={19.97} height={11.31} /> */}
         <ColorPicker value={fillColor ?? '#ffffff'} onChangeComplete={(value) => { handleRoomColorChange(value?.toRgbString()) }} />
         <span
           className={twMerge(
@@ -157,7 +161,42 @@ const ScaleNavigation: React.FC<Props> = ({ tool, setTool, setShowModal, handleZ
         >
           {"Room Color"}
         </span>
-      </div>
+      </div> */}
+
+      {/* Comments Section Here */}
+
+      <Popover
+        content={
+          <div className=''>
+            {
+              selectedPage?.comments && Array.isArray(selectedPage?.comments) && selectedPage?.comments?.map((i:any,ind:number)=>{
+                return <div key={ind}><span className='font-semibold' >{i?.user?.name ?? i?.user?.email} : </span>{i?.comment}</div>
+              })
+            }
+            <TextArea size='large' onChange={(e)=>{setcomment(e.target.value)}} value={comment} />
+            <span className='w-full flex justify-end px-1'><Button onClick={()=>{handleAddComment(comment); setcomment(''); setcOpen(false)}} size='middle' className='bg-lavenderPurpleReplica cursor-pointer mt-2 font-semibold !text-[12px] !text-white hover:!text-lavenderPurpleReplica'>Add</Button></span>
+          </div>
+        }
+        title="Comments"
+        placement='left'
+        trigger="click"
+        open={copen}
+        onOpenChange={(val: boolean) => { setcOpen(val) }}
+      >
+        <div
+          className="flex flex-col items-center cursor-pointer p-2"
+        >
+          <ZoomOutOutlined width={19.97} height={11.31} />
+          <span
+            className={twMerge(
+              `text-xs capitalize`
+            )}
+          >
+            {"Comments"}
+          </span>
+        </div>
+      </Popover>
+
 
     </div>
   );
