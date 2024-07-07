@@ -3,8 +3,8 @@ import NextImage from 'next/image';
 import { twMerge } from 'tailwind-merge';
 import { bg_style } from '@/globals/tailwindvariables';
 import { SCALE_NAVIGATION, ScaleInterface } from '../../types';
-import { ZoomInOutlined, ZoomOutOutlined } from '@ant-design/icons';
-import { ColorPicker, Popover, Input, Button} from 'antd';
+import { ZoomOutOutlined } from '@ant-design/icons';
+import { Popover, Input, Button} from 'antd';
 const { TextArea } = Input;
 
 interface Props {
@@ -43,7 +43,7 @@ const countIcon = (width: number, height: number, color: string, type: string) =
   return obj[`${type ?? 'branch'}`]
 }
 
-const ScaleNavigation: React.FC<Props> = ({ tool, setTool, setShowModal, handleZoomIn, handleZoomOut, handleRoomColorChange, fillColor, setcountType, countType, selectedPage, handleAddComment }) => {
+const ScaleNavigation: React.FC<Props> = ({ tool, setTool, setShowModal, setcountType, countType, selectedPage, handleAddComment }) => {
   console.log(selectedPage, " ===> selectedPage")
   const [cddOpen, setcddOpen] = useState<boolean>(false)
   const [copen, setcOpen] = useState(false);
@@ -121,7 +121,7 @@ const ScaleNavigation: React.FC<Props> = ({ tool, setTool, setShowModal, handleZ
         </span>
         {cddOpen && <div className='bg-white shadow-lg absolute right-24 flex flex-col rounded-lg p-1' >
           {/* <ZoomOutOutlined width={19.97} height={11.31} /> */}
-          {['tick', 'cross', 'branch', 'home', 'info'].map((type: string, ind: number) => {
+          {['tick', 'cross', 'branch', 'home', 'info'].map((type: string) => {
             return <span onClick={(e) => {
               e.stopPropagation()
               setcountType(type)

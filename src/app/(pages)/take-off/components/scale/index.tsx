@@ -237,6 +237,7 @@ const ScaleModal = ({ setModalOpen, numOfPages, page, setdrawScale, scaleLine }:
       if (optionsValue?.includes('-')) {
         const range = optionsValue?.split('-').map(Number);
         const [start, end] = range;
+        console.log(start,end)
         // for (let i = start; i <= end; i++) {
         //   newData[i] = { xScale: scale, yScale: scale, precision: precision };
         // }

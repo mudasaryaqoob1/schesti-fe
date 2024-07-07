@@ -1,9 +1,9 @@
 'use client';
-import { useState, useContext, useEffect, useCallback, useRef } from 'react';
+import { useState, useContext, useEffect, useCallback } from 'react';
 import ModalComponent from '@/app/component/modal';
 import ScaleModal from '../components/scale';
 import ModalsWrapper from './components/ModalWrapper';
-import { Avatar, Checkbox, ColorPicker, Dropdown, InputNumber, Menu, Progress, Select, Space, Spin } from 'antd';
+import { Avatar, ColorPicker, Dropdown, InputNumber, Menu, Progress, Select, Space, Spin } from 'antd';
 import { EditContext, ScaleContext, UploadFileContext } from '../context';
 import { UploadFileContextProps } from '../context/UploadFileContext';
 import Konva from 'konva';
@@ -45,7 +45,7 @@ import { toast } from 'react-toastify';
 // import { AnyCnameRecord } from 'dns';
 import useWheelZoom from './components/useWheelZoom';
 import Draggable from 'react-draggable';
-import { twMerge } from 'tailwind-merge';
+// import { twMerge } from 'tailwind-merge';
 import { useSelector } from 'react-redux';
 import { useDraw } from '@/app/hooks';
 
@@ -559,7 +559,7 @@ const TakeOffNewPage = () => {
       } else if (key == 'comment') {
         pages = pages?.map((i: any) => {
           if (i?.pageId == item?.pageId) {
-            return { ...i, comments: [...((item?.comments && Array.isArray(item?.comments)) ? item?.comments : []), comment] }
+            return { ...i, comments: [...((item?.comments && Array.isArray(item?.comments)) ? item.comments : []), comment] }
           } else {
             return i
           }
@@ -980,7 +980,7 @@ const TakeOffNewPage = () => {
     if (comment && selectedPage) {
       const cm = { comment, user }
       handleMenuClick('comment', selectedPage, '', cm)
-      setselectedPage((ps: any) => ({ ...ps, comments: [...((ps?.comments && Array.isArray(ps?.comments)) ? ps?.comments : []), cm] }))
+      setselectedPage((ps: any) => ({ ...ps, comments: [...((ps?.comments && Array.isArray(ps?.comments)) ? ps.comments : []), cm] }))
     }
   }
 
@@ -1367,7 +1367,7 @@ const TakeOffNewPage = () => {
             console.log(it, curPgMsr, " ===> file page with its measurments")
             const background = await loadImage(it?.src)
             if (curPgMsr && Array.isArray(curPgMsr) && curPgMsr?.length > 0) {
-              const img = await captureShape([...curPgMsr?.map(i=>({...i?.config, text:i?.text, name:i?.projectName, type:i?.type}))], background)
+              const img = await captureShape([...curPgMsr?.map(i=>({...i.config, text:i.text, name:i.projectName, type:i.type}))], background)
               imgArr.push(img)
               // await Promise.all(
               //   curPgMsr.map(async (curMsr: any) => {

@@ -53,37 +53,37 @@ const useDraw = () => {
     } else return value;
   };
 
-  const calculatePolygonArea1 = (
-    coordinates: number[],
-    { xScale, yScale }: ScaleData
-  ): number => {
-    if (coordinates.length % 2 !== 0 || coordinates.length < 6) {
-      throw new Error(
-        'Invalid coordinates array length. It should contain at least 3 pairs of coordinates (x, y).'
-      );
-    }
-    const convertedCoordinates = coordinates.map(
-      (coordinate) => coordinate / pixelToInchScale
-    );
-    const xScaleMultiplier = getScaleMultiplier(xScale);
-    const yScaleMultiplier = getScaleMultiplier(yScale);
+  // const calculatePolygonArea1 = (
+  //   coordinates: number[],
+  //   { xScale, yScale }: ScaleData
+  // ): number => {
+  //   if (coordinates.length % 2 !== 0 || coordinates.length < 6) {
+  //     throw new Error(
+  //       'Invalid coordinates array length. It should contain at least 3 pairs of coordinates (x, y).'
+  //     );
+  //   }
+  //   const convertedCoordinates = coordinates.map(
+  //     (coordinate) => coordinate / pixelToInchScale
+  //   );
+  //   const xScaleMultiplier = getScaleMultiplier(xScale);
+  //   const yScaleMultiplier = getScaleMultiplier(yScale);
 
-    // Calculate the area using the shoelace formula
-    let area = 0;
-    const n = convertedCoordinates.length / 2;
-    let j = n - 1;
-    for (let i = 0; i < n; i++) {
-      const xi = convertedCoordinates[i * 2] * xScaleMultiplier;
-      const yi = convertedCoordinates[i * 2 + 1] * yScaleMultiplier;
-      const xj = convertedCoordinates[j * 2] * xScaleMultiplier;
-      const yj = convertedCoordinates[j * 2 + 1] * yScaleMultiplier;
-      area += (xi + xj) * (yj - yi);
-      j = i;
-    }
+  //   // Calculate the area using the shoelace formula
+  //   let area = 0;
+  //   const n = convertedCoordinates.length / 2;
+  //   let j = n - 1;
+  //   for (let i = 0; i < n; i++) {
+  //     const xi = convertedCoordinates[i * 2] * xScaleMultiplier;
+  //     const yi = convertedCoordinates[i * 2 + 1] * yScaleMultiplier;
+  //     const xj = convertedCoordinates[j * 2] * xScaleMultiplier;
+  //     const yj = convertedCoordinates[j * 2 + 1] * yScaleMultiplier;
+  //     area += (xi + xj) * (yj - yi);
+  //     j = i;
+  //   }
 
-    console.log(xScale, yScale, xScaleMultiplier, yScaleMultiplier, +Math.abs(area / 2).toFixed(2), " ===> Area Calculation values to log")
-    return +Math.abs(area / 2).toFixed(2);
-  };
+  //   console.log(xScale, yScale, xScaleMultiplier, yScaleMultiplier, +Math.abs(area / 2).toFixed(2), " ===> Area Calculation values to log")
+  //   return +Math.abs(area / 2).toFixed(2);
+  // };
 
   const calculatePolygonArea = (
     coordinates: number[],
@@ -302,7 +302,7 @@ const useDraw = () => {
   ) => {
     const [x1, y1, x2, y2] = coordinates;
     const xScaleMultiplier = getScaleMultiplier(xScale);
-    const yScaleMultiplier = getScaleMultiplier(yScale);
+    // const yScaleMultiplier = getScaleMultiplier(yScale);
 
     // const distance = Math.sqrt(
     //   Math.pow(convertPxIntoInches(x2 - x1) * xScaleMultiplier, 2) +

@@ -916,7 +916,7 @@ const Draw: React.FC<Props> = ({
           {draw?.line?.map(({ textUnit, ...rest }: any, index: number) => {
             const id = `line-${index}`;
             const lineDistance = scaleUnits == 'feet' ? calcLineDistance(rest?.points, scale, true) : `${Number(Number(calcLineDistance(rest?.points, scale, false)) * 0.0254).toFixed(3)} meter`;
-            const distanceInInches = calcLineDistance(rest?.points, scale, false)
+            // const distanceInInches = calcLineDistance(rest?.points, scale, false)
             const lineMidPoint = calculateMidpoint(rest?.points);
 
             return (
