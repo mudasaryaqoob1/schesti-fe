@@ -121,8 +121,8 @@ const ScaleNavigation: React.FC<Props> = ({ tool, setTool, setShowModal, setcoun
         </span>
         {cddOpen && <div className='bg-white shadow-lg absolute right-24 flex flex-col rounded-lg p-1' >
           {/* <ZoomOutOutlined width={19.97} height={11.31} /> */}
-          {['tick', 'cross', 'branch', 'home', 'info'].map((type: string) => {
-            return <span onClick={(e) => {
+          {['tick', 'cross', 'branch', 'home', 'info'].map((type: string, index:number) => {
+            return <span key={index} onClick={(e) => {
               e.stopPropagation()
               setcountType(type)
               setShowModal(true);

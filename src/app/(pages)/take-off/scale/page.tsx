@@ -1367,7 +1367,7 @@ const TakeOffNewPage = () => {
             console.log(it, curPgMsr, " ===> file page with its measurments")
             const background = await loadImage(it?.src)
             if (curPgMsr && Array.isArray(curPgMsr) && curPgMsr?.length > 0) {
-              const img = await captureShape([...curPgMsr?.map(i=>({...i.config, text:i.text, name:i.projectName, type:i.type}))], background)
+              const img = await captureShape([...curPgMsr.map(i=>({...i?.config, text:i?.text, name:i?.projectName, type:i?.type}))], background)
               imgArr.push(img)
               // await Promise.all(
               //   curPgMsr.map(async (curMsr: any) => {
