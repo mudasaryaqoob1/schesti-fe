@@ -3,7 +3,7 @@ import { useState, useContext, useEffect, useCallback } from 'react';
 import ModalComponent from '@/app/component/modal';
 import ScaleModal from '../components/scale';
 import ModalsWrapper from './components/ModalWrapper';
-import { Avatar, ColorPicker, Dropdown, InputNumber, Menu, Progress, Select, Space, Spin } from 'antd';
+import { Avatar, ColorPicker, Dropdown, InputNumber, Menu, Popover, Progress, Select, Space, Spin } from 'antd';
 import { EditContext, ScaleContext, UploadFileContext } from '../context';
 import { UploadFileContextProps } from '../context/UploadFileContext';
 import Konva from 'konva';
@@ -27,7 +27,7 @@ import { selectUser } from '@/redux/authSlices/auth.selector';
 ////////////////////////New Take OffData///////////////////////////////////
 import CustomButton from '@/app/component/customButton/button'
 import { bg_style } from '@/globals/tailwindvariables'
-import { CloudUploadOutlined, CopyOutlined, DeleteOutlined, EditOutlined, FileOutlined, FilePdfOutlined, FolderOutlined, LeftOutlined, MenuUnfoldOutlined, MinusOutlined, MoreOutlined, PlusOutlined, RightOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons'
+import { CloudUploadOutlined, CopyOutlined, DeleteOutlined, DownOutlined, EditOutlined, FileOutlined, FilePdfOutlined, FolderOutlined, LeftOutlined, MenuUnfoldOutlined, MinusOutlined, MoreOutlined, PlusOutlined, RightOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons'
 import React from 'react'
 import { Button, Divider, Input, Table } from 'antd'
 //@ts-ignore
@@ -1200,7 +1200,7 @@ const TakeOffNewPage = () => {
       maxX = maxY = 0;
 
       for (let i = 0; i < shapeArr?.length; i++) {
-        const {type:shapeType,...shape} = shapeArr[i]
+        const { type: shapeType, ...shape } = shapeArr[i]
         // Determine the type of shape and render accordingly
         switch (shapeType) {
           case 'count': {
@@ -1362,12 +1362,12 @@ const TakeOffNewPage = () => {
       if (allpgs && Array.isArray(allpgs) && allpgs?.length > 0) {
         setmarkuploading(true)
         await Promise.all(
-          allpgs?.slice(0,6)?.map(async (it: any) => {
+          allpgs?.slice(0, 6)?.map(async (it: any) => {
             const curPgMsr = arrMsr.filter((i: any) => (i?.pageId == it?.pageId))
             console.log(it, curPgMsr, " ===> file page with its measurments")
             const background = await loadImage(it?.src)
             if (curPgMsr && Array.isArray(curPgMsr) && curPgMsr?.length > 0) {
-              const img = await captureShape([...curPgMsr.map(i=>({...i?.config, text:i?.text, name:i?.projectName, type:i?.type}))], background)
+              const img = await captureShape([...curPgMsr.map(i => ({ ...i?.config, text: i?.text, name: i?.projectName, type: i?.type }))], background)
               imgArr.push(img)
               // await Promise.all(
               //   curPgMsr.map(async (curMsr: any) => {
@@ -1380,13 +1380,13 @@ const TakeOffNewPage = () => {
               //     }
               //   })
               // )
-            }else{
+            } else {
               imgArr?.push(background)
             }
           })
         )
         console.log(imgArr, " ===> file page with its measurments final images")
-        imagesToPdf(imgArr)
+        imagesToPdf(imgArr?.reverse())
         setmarkuploading(false)
       }
     } catch (error) {
@@ -1400,27 +1400,45 @@ const TakeOffNewPage = () => {
       <section className="px-8 pb-4 mt-5">
         <div className='flex justify-between'>
           <h2>{takeOff?.name ?? ""}</h2>
-          <CustomButton
-            text="Generate Report"
-            className="!w-auto shadow-md"
-            // icon="plus.svg"
-            iconwidth={20}
-            iconheight={20}
-            onClick={() => { setreportModal(true) }}
-          // onClick={() => {
-          //   //@ts-ignore
-          //   (urlSearch && urlSearch.get('edit_id') && urlSearch.get('edit_id')?.length > 0) ? router.push(`/take-off/report?edit_id=${urlSearch.get('edit_id')}&scale=${JSON?.stringify(scaleData[1] ?? { xScale: `1in=1in`, yScale: `1in=1in`, precision: '1', })}`) : router.push('/take-off/report')
-          // }}
-          />
-          <CustomButton
-            text="Download Markup"
-            className="!w-auto shadow-md"
-            // icon="plus.svg"
-            iconwidth={20}
-            iconheight={20}
-            isLoading={markuploading}
-            onClick={() => { downloadMarkup((takeOff?.files && Array.isArray(takeOff?.files) && takeOff?.files?.length > 1) ? takeOff?.files[1] : {}) }}
-          />
+          <div className='flex gap-x-2' >
+            <CustomButton
+              text="Generate Report"
+              className="!w-auto shadow-md"
+              // icon="plus.svg"
+              iconwidth={20}
+              iconheight={20}
+              onClick={() => { setreportModal(true) }}
+            // onClick={() => {
+            //   //@ts-ignore
+            //   (urlSearch && urlSearch.get('edit_id') && urlSearch.get('edit_id')?.length > 0) ? router.push(`/take-off/report?edit_id=${urlSearch.get('edit_id')}&scale=${JSON?.stringify(scaleData[1] ?? { xScale: `1in=1in`, yScale: `1in=1in`, precision: '1', })}`) : router.push('/take-off/report')
+            // }}
+            />
+            <Popover
+            title={'Select File'}
+            content={
+              <div>
+                {takeOff?.files && Array.isArray(takeOff?.files) && takeOff?.files?.length > 0 && takeOff.files.map((it:any,index:number)=>{
+                  return <div key={index} className='cursor-pointer hover:bg-lavenderPurpleReplica hover:text-white p-1 rounded' 
+                  onClick={()=>{downloadMarkup(it)}}
+                  >{it?.name?.slice(0,30)}</div>
+                })}
+              </div>
+            }
+            placement='bottom'
+            trigger='click'
+            >
+              <CustomButton
+                text="Download Markup"
+                className="!w-auto shadow-md"
+                // icon="plus.svg"
+                iconwidth={20}
+                iconheight={20}
+                isLoading={markuploading}
+                icon={<DownOutlined />}
+                // onClick={() => { downloadMarkup((takeOff?.files && Array.isArray(takeOff?.files) && takeOff?.files?.length > 0) ? takeOff?.files[0] : {}) }}
+              />
+            </Popover>
+          </div>
         </div>
 
 
