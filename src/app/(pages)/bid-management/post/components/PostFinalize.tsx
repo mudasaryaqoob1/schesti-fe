@@ -639,7 +639,7 @@ export function PostFinalize({ formik, children }: Props) {
               </Dragger>
 
               <a
-                className="text-[#007AB6] text-[14px] leading-5"
+                className="text-schestiPrimary underline  underline-offset-2 text-[14px] leading-5"
                 // downloadable
                 href="/email-template.xlsx"
                 download="email-template.xlsx"
