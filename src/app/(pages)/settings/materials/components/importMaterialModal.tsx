@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import * as Yup from 'yup';
 import { Form, Formik, type FormikProps } from 'formik';
-import { message, Upload } from 'antd';
+import { Upload } from 'antd';
 import { toast } from 'react-toastify';
 import Image from 'next/image';
 
@@ -31,12 +31,12 @@ const initialValues: InitialValuesTypes = {
 type InitialValuesTypes = {
   category: string;
   subCategory: string;
-  file: Object;
+  file: object;
 };
 const validationSchema = Yup.object({
   category: Yup.string().required('!'),
   subCategory: Yup.string().required('!'),
-  file: Yup.object().required('!'),
+  file: Yup.mixed().required('!'),
 });
 
 const ImportMaterialModal = ({
@@ -99,7 +99,7 @@ const ImportMaterialModal = ({
       const formData = new FormData();
       formData.append('category', values.category);
       formData.append('subCategory', values.subCategory);
-      formData.append('file', file.originFileObj);
+      formData.append('file', file);
       const { statusCode } =
         await materialService.httpUploadMaterialsData(formData);
       if (statusCode === 201) {
@@ -156,7 +156,8 @@ const ImportMaterialModal = ({
           onSubmit={importMaterialHandler}
           innerRef={formikRef}
         >
-          {({ handleSubmit, values, setFieldValue }) => {
+          {({ handleSubmit, values, setFieldValue, errors }) => {
+            console.log({ errors, values });
             return (
               <Form
                 name="basic"
@@ -188,16 +189,17 @@ const ImportMaterialModal = ({
                   accept="application/csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                   // action="https://run.mocky.io/v3/435e224c-44fb-4773-9faf-380c5e6a2188"
                   name="file"
+                  beforeUpload={() => false}
                   onChange={(info) => {
                     console.log(info, 'infoinfoinfoinfo');
 
-                    if (status === 'done') {
-                      message.success(
-                        `${info.file.name} file uploaded successfully.`
-                      );
-                    } else if (status === 'error') {
-                      message.error(`${info.file.name} file upload failed.`);
-                    }
+                    // if (status === 'done') {
+                    //   message.success(
+                    //     `${info.file.name} file uploaded successfully.`
+                    //   );
+                    // } else if (status === 'error') {
+                    //   message.error(`${info.file.name} file upload failed.`);
+                    // }
                     setFieldValue('file', info.file);
                   }}
                 >
