@@ -71,7 +71,6 @@ function Page() {
       width: 300,
       render(value, record) {
         const isNewProject = moment(record.createdAt).isSame(moment(), 'day');
-        console.log('isNewProject', isNewProject);
         return (
           <div className="flex items-center justify-between">
             <Link
