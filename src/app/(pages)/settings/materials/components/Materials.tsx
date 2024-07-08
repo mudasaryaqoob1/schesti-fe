@@ -112,7 +112,6 @@ const Materials = () => {
       value: item._id.subcategoryId
     }
   }), "value");
-  console.log({ meterialDataWithCategories });
 
   return (
     <>
