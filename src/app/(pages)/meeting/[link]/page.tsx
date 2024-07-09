@@ -1,17 +1,10 @@
 'use client';
 import CustomButton from '@/app/component/customButton/button';
 import { IMeeting } from '@/app/interfaces/meeting.type';
-import { HttpService } from '@/app/services/base.service';
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { selectMeetings } from '@/redux/meeting/meeting.slice';
-import { fetchMeetings } from '@/redux/meeting/meeting.thunk';
-import { AppDispatch, RootState } from '@/redux/store';
 import { JaaSMeeting } from '@jitsi/react-sdk';
 import { Skeleton } from 'antd';
 import { useParams } from 'next/navigation';
-import { useCallback, useEffect, useLayoutEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 import { MeetingMessage } from './Message';
 import { isMeetingActive, isMeetingNotStarted } from './utils';
 import ModalComponent from '@/app/component/modal';
@@ -19,35 +12,44 @@ import { LinkMessage } from './LinkMessage';
 import moment from 'moment';
 import Description from '@/app/component/description';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { withAuth } from '@/app/hoc/withAuth';
+import { meetingService } from '@/app/services/meeting.service';
+import { AxiosError } from 'axios';
+import { toast } from 'react-toastify';
 
-export default function JoinMeeting() {
+function JoinMeeting() {
   const { link: roomName } = useParams();
   const router = useRouterHook();
-  const token = useSelector(selectToken);
-  const meetings = useSelector(selectMeetings);
-  const meetingLoading = useSelector(
-    (state: RootState) => state.meetings.loading
-  );
-  const dispatch = useDispatch<AppDispatch>();
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
+  const [meeting, setMeeting] = useState<null | IMeeting>(null)
+  const [loading, setIsLoading] = useState(false);
 
-  const fetchMeetingsCB = useCallback(async () => {
-    await dispatch(fetchMeetings({}));
-  }, [dispatch]);
+
+
+  const fetchMeetingByRoomname = async () => {
+    if (roomName) {
+      setIsLoading(true);
+      try {
+        const response = await meetingService.httpGetMeetingByRoomName(roomName as string);
+        if (response.data && response.data.meeting) {
+          setMeeting(response.data.meeting);
+        }
+      } catch (error) {
+        const err = error as AxiosError<{ message: string }>;
+        toast.error(err.response?.data.message || "Error while fetching meeting");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  }
 
   useEffect(() => {
-    fetchMeetingsCB();
+    fetchMeetingByRoomname();
   }, []);
 
-  if (meetingLoading) {
+  if (loading) {
     return <Skeleton active className="m-6" />;
   }
 
-  const meeting = meetings.find((m: IMeeting) => m.roomName === roomName);
 
   if (!meeting) {
     return (
@@ -87,7 +89,7 @@ export default function JoinMeeting() {
           isMeetingNotStarted(meeting) ? (
             <ModalComponent
               open={!isMeetingActive(meeting)}
-              setOpen={() => {}}
+              setOpen={() => { }}
               title="Meeting link is not active"
               width="40%"
             >
@@ -126,3 +128,5 @@ export default function JoinMeeting() {
     </div>
   );
 }
+
+export default withAuth(JoinMeeting)
