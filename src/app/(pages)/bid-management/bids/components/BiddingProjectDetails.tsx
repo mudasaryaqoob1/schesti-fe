@@ -231,7 +231,7 @@ export function BiddingProjectDetails({
                   text="Post this project as a bidder"
                   onClick={handlePostProjectAsBidder}
                   disabled={isLoading}
-                  className={'!bg-[#F9F5FF] !text-schestiPrimary'}
+                  className={'!bg-schestiLightPrimary !text-schestiPrimary'}
                 />
               </div>
             )}
