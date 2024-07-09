@@ -104,9 +104,7 @@ const AddNewUser = ({ user, onSuccess, onCancel }: Props) => {
       onSubmit={submitHandler}
       enableReinitialize
     >
-      {({ handleSubmit, errors, values }) => {
-        console.log(errors, 'error', values);
-
+      {({ handleSubmit }) => {
         return (
           <Form
             name="basic"

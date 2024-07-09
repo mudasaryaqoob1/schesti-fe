@@ -6,18 +6,18 @@ import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import Errormsg from '../errorMessage';
 
-const defaultOptions = [
-  { value: 'option 1', label: 'Option 1' },
-  { value: 'option 2', label: 'Option 2' },
-  { value: 'option 3', label: 'Option 3' },
-];
+// const defaultOptions = [
+//   { value: 'option 1', label: 'Option 1' },
+//   { value: 'option 2', label: 'Option 2' },
+//   { value: 'option 3', label: 'Option 3' },
+// ];
 
 const SelectComp = (props: any) => {
   const {
     name,
     label,
     labelStyle,
-    options = defaultOptions,
+    options = [],
     selectStyle,
     className,
     labelButton,

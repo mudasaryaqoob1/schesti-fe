@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import type { ColumnsType } from 'antd/es/table';
-import { Dropdown, Table } from 'antd';
-import type { MenuProps } from 'antd';
-// import NoData from '@/app/component/noData';
-import TertiaryHeading from '@/app/component/headings/tertiary';
 import Image from 'next/image';
-import { estimateRequestService } from '@/app/services/estimates.service';
+import type { MenuProps } from 'antd';
+import { Dropdown, Table, Drawer } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
 import NoDataComponent from '@/app/component/noData';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import ChangeStatus from '../components/changeStatus';
+import TertiaryHeading from '@/app/component/headings/tertiary';
+import { estimateRequestService } from '@/app/services/estimates.service';
 
 interface DataType {
   key: React.Key;
@@ -16,14 +16,44 @@ interface DataType {
   salePerson: string;
   estimator: string;
   totalCost: string;
+  status: string;
   action: string;
 }
+
+const items: MenuProps['items'] = [
+  {
+    key: 'viewDetail',
+    label: 'View Estimate',
+  },
+  {
+    key: 'createSchedule',
+    label: 'Create Schedule',
+  },
+  {
+    key: 'createInvoice',
+    label: 'Create Invoice',
+  },
+  {
+    key: 'email',
+    label: 'Email',
+  },
+  {
+    key: 'changeStatus',
+    label: 'Change Status',
+  },
+  {
+    key: 'deleteEstimate',
+    label: <p>Delete</p>,
+  },
+];
 
 const EstimateRequestTable: React.FC = () => {
   const router = useRouterHook();
   const [loading, setLoading] = useState(true);
 
   const [generatedEstimates, setGeneratedEstimates] = useState<[] | null>(null);
+  const [changeStatusDrawer, setChangeStatusDrawer] = useState(false);
+  const [estimateDetail, setEstimateDetail] = useState();
 
   const fetchGeneratedEstiamtesHandler = useCallback(async () => {
     setLoading(true);
@@ -34,7 +64,7 @@ const EstimateRequestTable: React.FC = () => {
     let updatedGeneratedEstimate = result?.data?.generatedEstimates.map(
       (estimate: any) => {
         return {
-          _id: estimate?._id,
+          ...estimate,
           projectName: estimate?.estimateRequestIdDetail?.projectName,
           clientName: estimate?.estimateRequestIdDetail?.clientName,
           salePerson: `${
@@ -43,7 +73,6 @@ const EstimateRequestTable: React.FC = () => {
           estimator: `${
             estimate?.estimateRequestIdDetail?.estimator?.firstName ?? ''
           } ${estimate?.estimateRequestIdDetail?.estimator?.lastName ?? ''}`,
-          totalCost: estimate?.totalCost,
           estimateRequestIdDetail: estimate.estimateRequestIdDetail?._id,
         };
       }
@@ -56,26 +85,9 @@ const EstimateRequestTable: React.FC = () => {
     fetchGeneratedEstiamtesHandler();
   }, []);
 
-  const items: MenuProps['items'] = [
-    {
-      key: 'viewDetail',
-      label: 'View Estimate',
-    },
-    {
-      key: 'createSchedule',
-      label: 'Create Schedule',
-    },
-    {
-      key: 'createInvoice',
-      label: 'Create Invoice',
-    },
-    {
-      key: 'deleteEstimate',
-      label: <p>Delete</p>,
-    },
-  ];
-
   const handleDropdownItemClick = async (key: string, estimate: any) => {
+    setEstimateDetail(estimate);
+
     if (key == 'viewDetail') {
       router.push(`/estimates/generate/${estimate._id}`);
     } else if (key == 'deleteEstimate') {
@@ -88,6 +100,9 @@ const EstimateRequestTable: React.FC = () => {
       // router.push(`/schedule/estimate/${estimate._id}`);
     } else if (key == 'createInvoice') {
       router.push(`/financial/aia-invoicing`);
+    } else if (key == 'changeStatus') {
+      setEstimateDetail(estimate);
+      setChangeStatusDrawer(true);
     }
   };
 
@@ -114,10 +129,15 @@ const EstimateRequestTable: React.FC = () => {
       title: 'Total Cost',
       dataIndex: 'totalCost',
     },
-    // {
-    //   title: 'Status',
-    //   dataIndex: 'status',
-    // },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      render: (text, record) => (
+        <span className="capitalize text-emeraldGreen bg-schestiLightSuccess px-2 py-1 rounded-full">
+          {record.status}
+        </span>
+      ),
+    },
     {
       title: 'Action',
       dataIndex: 'action',
@@ -175,14 +195,29 @@ const EstimateRequestTable: React.FC = () => {
         </>
       )}
 
-      {/**) : (
-        <NoData
-          btnText="Add Request"
-          title="Create Estimate Request"
-          description="There is not any record yet . To get started, Create an estimate request by clicking the button below and sharing details about your project."
-          link="/estimates/requests/create"
+      <Drawer
+        open={changeStatusDrawer}
+        onClose={() => setChangeStatusDrawer(false)}
+        closable={false}
+        title="Edit"
+        extra={
+          <Image
+            src="/closeicon.svg"
+            alt="close"
+            width={20}
+            height={20}
+            className="cursor-pointer"
+            onClick={() => setChangeStatusDrawer(false)}
+          />
+        }
+        width={400}
+      >
+        <ChangeStatus
+          fetchEstimates={fetchGeneratedEstiamtesHandler}
+          setChangeStatusDrawer={setChangeStatusDrawer}
+          estimateDetail={estimateDetail}
         />
-      )} */}
+      </Drawer>
     </section>
   );
 };

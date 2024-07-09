@@ -2,33 +2,37 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import * as Yup from 'yup';
 import Image from 'next/image';
-import { twMerge } from 'tailwind-merge';
-import { toast } from 'react-toastify';
 import { Form, Formik } from 'formik';
+import { toast } from 'react-toastify';
+import { twMerge } from 'tailwind-merge';
 import { useDispatch } from 'react-redux';
-import { useSearchParams } from 'next/navigation';
-import { Upload, type UploadProps } from 'antd';
 import { withAuth } from '@/app/hoc/withAuth';
+import { Upload, type UploadProps } from 'antd';
+import { useSearchParams } from 'next/navigation';
 // module imports
 
-import CustomButton from '@/app/component/customButton/button';
-import { minHeading, senaryHeading } from '@/globals/tailwindvariables';
-import TertiaryHeading from '@/app/component/headings/tertiary';
-import QuaternaryHeading from '@/app/component/headings/quaternary';
-import CustomWhiteButton from '@/app/component/customButton/white';
+import { AppDispatch } from '@/redux/store';
+import AwsS3 from '@/app/utils/S3Intergration';
+import ExistingClient from '../existingClient';
 import ModalComponent from '@/app/component/modal';
 import FormControl from '@/app/component/formControl';
-import { IEstimateRequest } from '@/app/interfaces/estimateRequests/estimateRequests.interface';
-import ExistingClient from '../existingClient';
-import { estimateRequestService } from '@/app/services/estimates.service';
-import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
-import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
-import AwsS3 from '@/app/utils/S3Intergration';
-import { AppDispatch } from '@/redux/store';
 import { fetchUsers } from '@/redux/userSlice/user.thunk';
-import { fetchCompanyClients } from '@/redux/company/company.thunk';
 import { byteConverter } from '@/app/utils/byteConverter';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import CustomButton from '@/app/component/customButton/button';
+import TertiaryHeading from '@/app/component/headings/tertiary';
+import { IUserInterface } from '@/app/interfaces/user.interface';
+import CustomWhiteButton from '@/app/component/customButton/white';
+import { fetchCompanyClients } from '@/redux/company/company.thunk';
+import QuaternaryHeading from '@/app/component/headings/quaternary';
+import { minHeading, senaryHeading } from '@/globals/tailwindvariables';
+import { estimateRequestService } from '@/app/services/estimates.service';
+import AddNewUser from '@/app/(pages)/settings/companyUser/addCompanyUser';
+import { getCompanyRolesThunk } from '@/redux/company-roles/company-roles.thunk';
+import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
+import { IUser } from '@/app/interfaces/estimateRequests/estimateAssignedUser.interface';
+import { IEstimateRequest } from '@/app/interfaces/estimateRequests/estimateRequests.interface';
+import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
 
 const clientInfoSchema: any = Yup.object({
   clientName: Yup.string().required('Client is required!'),
@@ -74,12 +78,14 @@ const CreateEstimateRequest = () => {
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [salePersonsOption, setSalePersonsOption] = useState([]);
-  const [estimatorsOption, setEstimatorsOption] = useState([]);
+  // const [salePersonsOption, setSalePersonsOption] = useState([]);
+  // const [estimatorsOption, setEstimatorsOption] = useState([]);
+  const [userData, setUserData] = useState<IUserInterface[]>([]);
   const [uploadDocumentsError, setuploadDocumentsError] = useState('');
   const [drawingsDocuments, setDrawingsDocuments] = useState<any>([]);
   const [takeOffReports, setTakeOffReports] = useState<any>([]);
   const [otherDocuments, setOtherDocuments] = useState<any>([]);
+  const [createUserModal, setCreateUserModal] = useState(false);
   const [selectedClientDetail, setSelectedClientDetail] = useState<IClient>();
 
   const initialValues: IEstimateRequest = {
@@ -95,29 +101,32 @@ const CreateEstimateRequest = () => {
     estimator: '',
   };
 
-  const fetchUsersHandler = useCallback(async () => {
-    let result: any = await dispatch(
-      fetchUsers({ limit: 9, page: 1, queryRoles: 'Estimator,Sales Manager' })
-    );
-    const estimatorData = result.payload.data?.employees
-      .filter((user: any) => user.roles.includes('Estimator'))
-      .map((option: any) => {
-        return {
-          label: `${option.firstName} ${option.lastName}`,
-          value: `${option._id}`,
-        };
-      });
-    setEstimatorsOption(estimatorData);
-    const saleManagers = result.payload.data?.employees
-      .filter((user: any) => user.roles.includes('Sales Manager'))
-      .map((option: any) => {
-        return {
-          label: `${option.firstName} ${option.lastName}`,
-          value: `${option._id}`,
-        };
-      });
-    setSalePersonsOption(saleManagers);
-  }, []);
+  // const fetchUsersHandler = useCallback(async () => {
+  //   let result: any = await dispatch(
+  //     fetchUsers({ limit: 9, page: 1, queryRoles: 'Estimator,Sales Manager' })
+  //   );
+
+  //   console.log(result.payload.data, 'result.payload.data');
+
+  //   const estimatorData = result.payload.data?.employees
+  //     .filter((user: any) => user.roles.includes('Estimator'))
+  //     .map((option: any) => {
+  //       return {
+  //         label: `${option.firstName} ${option.lastName}`,
+  //         value: `${option._id}`,
+  //       };
+  //     });
+  //   setEstimatorsOption(estimatorData);
+  //   const saleManagers = result.payload.data?.employees
+  //     .filter((user: any) => user.roles.includes('Sales Manager'))
+  //     .map((option: any) => {
+  //       return {
+  //         label: `${option.firstName} ${option.lastName}`,
+  //         value: `${option._id}`,
+  //       };
+  //     });
+  //   setSalePersonsOption(saleManagers);
+  // }, []);
 
   const fetchClients = useCallback(async () => {
     let { payload }: any = await dispatch(
@@ -132,10 +141,23 @@ const CreateEstimateRequest = () => {
     }
   }, []);
 
-  useEffect(() => {
-    fetchUsersHandler();
-    fetchClients();
+  const fetchCompanyEmployeeHandler = useCallback(async () => {
+    let result: any = await dispatch(fetchUsers({ limit: 9, page: 1 }));
+    const mappedUsers = result.payload?.data?.employees.map((user: IUser) => ({
+      value: `${user._id}`,
+      label: `${user.firstName} ${user.lastName} --- ${user.roles[0].name}`,
+    }));
+    setUserData(mappedUsers);
   }, []);
+
+  useEffect(() => {
+    // fetchUsersHandler();
+    fetchClients();
+    dispatch(getCompanyRolesThunk({}));
+    fetchCompanyEmployeeHandler();
+  }, []);
+
+  console.log(userData, 'userDatauserDatauserData');
 
   const submitHandler = async (values: IEstimateRequest) => {
     if (drawingsDocuments.length == 0) {
@@ -304,7 +326,7 @@ const CreateEstimateRequest = () => {
         icon="/plusblack.svg"
         iconwidth={10}
         iconheight={10}
-        onClick={() => router.push('/settings/companyUser/addCompanyUser')}
+        onClick={() => setCreateUserModal(true)}
       />
     );
   };
@@ -316,7 +338,7 @@ const CreateEstimateRequest = () => {
         icon="/plusblack.svg"
         iconwidth={10}
         iconheight={10}
-        onClick={() => router.push('/settings/companyUser/addCompanyUser')}
+        onClick={() => setCreateUserModal(true)}
       />
     );
   };
@@ -469,7 +491,7 @@ const CreateEstimateRequest = () => {
                       label="Sale Person"
                       name="salePerson"
                       placeholder="Select Sale person"
-                      options={salePersonsOption}
+                      options={userData}
                       labelButton={true}
                       labelAction={addSalePersonAction}
                     />
@@ -478,7 +500,7 @@ const CreateEstimateRequest = () => {
                       label="Estimator"
                       name="estimator"
                       placeholder="Select project manager"
-                      options={estimatorsOption}
+                      options={userData}
                       labelButton={true}
                       labelAction={addEstimatorAction}
                     />
@@ -561,7 +583,7 @@ const CreateEstimateRequest = () => {
                                 <div className="flex gap-2">
                                   <p
                                     className={twMerge(
-                                      `${senaryHeading} !text-[14px] text-RoyalPurple font-semibold cursor-pointer`
+                                      `${senaryHeading} !text-[14px] text-schestiPrimary  font-semibold cursor-pointer`
                                     )}
                                   >
                                     Click to Upload
@@ -653,7 +675,7 @@ const CreateEstimateRequest = () => {
                                 <div className="flex gap-2">
                                   <p
                                     className={twMerge(
-                                      `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
+                                      `${senaryHeading} !text-[14px] text-schestiPrimary  font-semibold cursor-pointer`
                                     )}
                                   >
                                     Click to Upload
@@ -746,7 +768,7 @@ const CreateEstimateRequest = () => {
                                 <div className="flex gap-2">
                                   <p
                                     className={twMerge(
-                                      `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
+                                      `${senaryHeading} !text-[14px] text-schestiPrimary  font-semibold cursor-pointer`
                                     )}
                                   >
                                     Click to Upload
@@ -774,7 +796,7 @@ const CreateEstimateRequest = () => {
                         If don’t have takeoff report
                       </p>
                       <div
-                        className={`p-4 flex items-center h-auto flex-col gap-2 border-2 border-[#B692F6] pb-4 rounded-lg cursor-pointer`}
+                        className={`p-4 flex items-center h-auto flex-col gap-2 border-2 bg-schestiLightPrimary pb-4 rounded-lg cursor-pointer`}
                       >
                         <div
                           className={`px-6 py-4 flex flex-col items-center gap-3 `}
@@ -825,6 +847,22 @@ const CreateEstimateRequest = () => {
           );
         }}
       </Formik>
+      <ModalComponent
+        open={createUserModal}
+        setOpen={setCreateUserModal}
+        title="Add User"
+      >
+        <AddNewUser
+          onCancel={() => {
+            setCreateUserModal(false);
+          }}
+          onSuccess={(user) => {
+            setCreateUserModal(false);
+            console.log(user, 'useruseruseruseruser');
+          }}
+          user={null}
+        />
+      </ModalComponent>
     </section>
   );
 };
