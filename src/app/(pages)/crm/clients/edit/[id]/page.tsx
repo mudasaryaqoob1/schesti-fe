@@ -1,34 +1,31 @@
 'use client';
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
-import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 // module imports
-import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 import { senaryHeading } from '@/globals/tailwindvariables';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import MinDesc from '@/app/component/description/minDesc';
 import CustomButton from '@/app/component/customButton/button';
 import FormControl from '@/app/component/formControl';
 import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
-// redux module
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
+
 
 // client service
-import { userService } from '@/app/services/user.service';
 import { PhoneNumberRegex } from '@/app/utils/regex.util';
-import { useQuery } from 'react-query';
 import { Skeleton } from 'antd';
-import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { AxiosError } from 'axios';
 import { withAuth } from '@/app/hoc/withAuth';
 import { Routes } from '@/app/utils/plans.utils';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { CrmType, ICrmItem } from '@/app/interfaces/crm/crm.interface';
+import { NoDataComponent } from '@/app/component/noData/NoDataComponent';
+import crmService from '@/app/services/crm/crm.service';
+import { findCrmItemById } from '../../../utils';
 
 const newClientSchema = Yup.object({
   firstName: Yup.string().required('First name is required!'),
@@ -45,7 +42,7 @@ const newClientSchema = Yup.object({
   address: Yup.string().required('Address is required!'),
   address2: Yup.string(),
 });
-const initialValues: IClient = {
+const initialValues: Partial<ICrmItem> = {
   firstName: '',
   lastName: '',
   email: '',
@@ -58,64 +55,58 @@ const initialValues: IClient = {
 const EditClient = () => {
   const router = useRouterHook();
   const params = useParams();
-  const token = useSelector(selectToken);
+  const [item, setItem] = useState<CrmType | null>(null);
+  const [isFetching, setIsFetching] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { id } = params as { id: string };
 
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
 
-  const [isLoading, setIsLoading] = useState(false);
 
-  const clientQuery = useQuery<
-    IResponseInterface<{ client: IClient }> | null,
-    AxiosError<{ message: string }>
-  >(
-    ['get-company-client', id],
-    () => {
-      if (!id) {
-        return null;
+  useEffect(() => {
+    findCrmItemById(id, setIsFetching, item => {
+      setItem(item);
+    });
+  }, [id]);
+
+
+
+  const submitHandler = async (values: ICrmItem) => {
+    if (item) {
+      setIsLoading(true);
+      try {
+        const response = await crmService.httpfindByIdAndUpdate(item._id, { ...values, module: "clients" });
+        if (response.data) {
+          toast.success("Client updated successfully");
+          router.push(Routes.CRM.Clients);
+        }
+      } catch (error) {
+        const err = error as AxiosError<{ message: string }>;
+        toast.error(err.response?.data.message || "Unable to update client");
+      } finally {
+        setIsLoading(false);
       }
-      return userService.httpFindCompanyClient(id);
-    },
-    {
-      onError(err) {
-        toast.error(err.response?.data.message);
-      },
-    }
-  );
-
-  const submitHandler = async (values: IClient) => {
-    setIsLoading(true);
-    let updateClientBody: any = {
-      firstName: values.firstName,
-      lastName: values.lastName,
-      phone: `${values.phone}`,
-      companyName: values.companyName,
-      address: values.address,
-      secondAddress: values.secondAddress,
-    };
-    let result = await userService.httpUpdateClient(updateClientBody, id);
-    if (result.statusCode == 200) {
-      setIsLoading(false);
-      router.push(Routes.CRM.Clients);
-    } else {
-      setIsLoading(false);
-      toast.error(result.message);
     }
   };
 
-  if (clientQuery.isLoading) {
-    return <Skeleton />;
+  if (isFetching) {
+    return <div className="grid grid-cols-2 gap-2 grid-rows-2">
+      <Skeleton />
+      <Skeleton />
+      <Skeleton />
+      <Skeleton />
+    </div>
   }
 
-  const clientData = clientQuery.data?.data?.client;
+
+  if (!isFetching && !item) {
+    return <NoDataComponent
+
+    />
+  }
 
   return (
-    <section className="mx-16">
+    <section className="mx-4">
       <div className="flex gap-4 items-center my-6">
         <Image src={'/home.svg'} alt="home icon" width={20} height={20} />
         <Image
@@ -133,8 +124,8 @@ const EditClient = () => {
         />
 
         <MinDesc
-          title="Add New Client"
-          className={`${senaryHeading} font-semibold text-lavenderPurple cursor-pointer underline`}
+          title="Edit Client"
+          className={`${senaryHeading} font-semibold text-schestiPrimary cursor-pointer underline`}
         />
       </div>
       <div
@@ -143,10 +134,10 @@ const EditClient = () => {
       >
         <TertiaryHeading
           className="text-graphiteGray mb-4 "
-          title="Add New Client"
+          title="Edit Client"
         />
         <Formik
-          initialValues={clientData ? clientData : initialValues}
+          initialValues={item ? (item as ICrmItem) : initialValues as ICrmItem}
           enableReinitialize={true}
           validationSchema={newClientSchema}
           onSubmit={submitHandler}
@@ -232,7 +223,7 @@ const EditClient = () => {
                     <CustomButton
                       isLoading={isLoading}
                       type="submit"
-                      text="Update and Save"
+                      text="Update and Continue"
                     />
                   </div>
                 </div>

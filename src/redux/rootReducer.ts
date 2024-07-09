@@ -24,6 +24,7 @@ import postProjectReducer from './post-project/post-project.slice';
 import bidsProjectReducer from './bids-management/bids.slice';
 import bidManagementOwnerReducer from './bid-management/owner.slice';
 import companyRolesReducer from './company-roles/company-roles.slice';
+import crmReducer from './crm/crm.slice';
 
 export type RootState = {
   auth: typeof authReducer;
@@ -47,6 +48,7 @@ export type RootState = {
   bidsProject: typeof bidsProjectReducer;
   bidManagementOwner: typeof bidManagementOwnerReducer;
   companyRoles: typeof companyRolesReducer;
+  crm: typeof crmReducer;
 };
 const persistConfig = {
   key: 'root',
@@ -77,5 +79,6 @@ const rootReducer = combineReducers<RootState>({
   bidsProject: bidsProjectReducer,
   bidManagementOwner: bidManagementOwnerReducer,
   companyRoles: companyRolesReducer,
+  crm: crmReducer,
 });
 export default persistReducer(persistConfig, rootReducer);

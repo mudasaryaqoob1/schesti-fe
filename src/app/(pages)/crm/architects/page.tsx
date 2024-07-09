@@ -28,7 +28,7 @@ import _ from 'lodash';
 import { toast } from 'react-toastify';
 import { CrmStatusFilter } from '../components/CrmStatusFilter';
 
-const activeClientMenuItems: MenuProps['items'] = [
+const activeMenuItems: MenuProps['items'] = [
   {
     key: 'createEstimateRequest',
     label: <p>Create Estimate Request</p>,
@@ -42,8 +42,8 @@ const activeClientMenuItems: MenuProps['items'] = [
     label: <p>Create Schedule</p>,
   },
   {
-    key: 'editClientDetail',
-    label: <p>Edit Client Details</p>,
+    key: 'edit',
+    label: <p>Edit Details</p>,
   },
   {
     key: 'createContract',
@@ -58,23 +58,23 @@ const activeClientMenuItems: MenuProps['items'] = [
     label: <p>Email</p>,
   },
   {
-    key: 'deleteClient',
+    key: 'delete',
     label: <p>Delete</p>,
   },
   {
-    key: 'inActiveClient',
+    key: 'inactive',
     label: <p>In Active</p>,
   },
 ];
 
-const inActiveClientMenuItems: MenuProps['items'] = [
+const inactiveMenuItems: MenuProps['items'] = [
   {
-    key: 'activeClient',
+    key: 'active',
     label: <p>Active</p>,
   },
 ];
 
-const ClientTable = () => {
+const ArchitectPage = () => {
   const router = useRouterHook();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -92,31 +92,31 @@ const ClientTable = () => {
 
 
   useEffect(() => {
-    dispatch(getCrmItemsThunk({ module: "clients" }));
+    dispatch(getCrmItemsThunk({ module: "architects" }));
   }, [])
 
-  const handleDropdownItemClick = async (key: string, client: any) => {
+  const handleDropdownItemClick = async (key: string, architect: any) => {
     if (key === 'createEstimateRequest') {
-      router.push(`/estimates/requests/create?clientId=${client._id}`);
+      router.push(`/estimates/requests/create?clientId=${architect._id}`);
     } else if (key === 'createNewInvoice') {
       router.push(`/financial/aia-invoicing`);
     } else if (key === 'createSchedule') {
       router.push(`/schedule`);
-    } else if (key == 'deleteClient') {
-      setSelectedItem(client);
+    } else if (key == 'delete') {
+      setSelectedItem(architect);
       setShowDeleteModal(true);
-    } else if (key == 'editClientDetail') {
-      router.push(`${Routes.CRM.Clients}/edit/${client._id}`);
+    } else if (key == 'edit') {
+      router.push(`${Routes.CRM.Architects}/edit/${architect._id}`);
     }
-    else if (key === 'inActiveClient') {
+    else if (key === 'inactive') {
       dispatch(updateCrmItemStatusThunk({
-        id: client._id,
+        id: architect._id,
         status: false
       }))
     }
-    else if (key === 'activeClient') {
+    else if (key === 'active') {
       dispatch(updateCrmItemStatusThunk({
-        id: client._id,
+        id: architect._id,
         status: true
       }))
     }
@@ -124,7 +124,7 @@ const ClientTable = () => {
 
   const columns: ColumnsType<ICrmItem> = [
     {
-      title: 'Client Name',
+      title: 'Architect Name',
       dataIndex: 'firstName',
     },
     {
@@ -173,7 +173,7 @@ const ClientTable = () => {
           return (
             <Dropdown
               menu={{
-                items: activeClientMenuItems,
+                items: activeMenuItems,
                 onClick: (event) => {
                   const { key } = event;
                   handleDropdownItemClick(key, record);
@@ -194,7 +194,7 @@ const ClientTable = () => {
           return (
             <Dropdown
               menu={{
-                items: inActiveClientMenuItems,
+                items: inactiveMenuItems,
                 onClick: (event) => {
                   const { key } = event;
                   handleDropdownItemClick(key, record);
@@ -216,7 +216,7 @@ const ClientTable = () => {
     },
   ];
 
-  const filteredClients = state.data.filter(item => {
+  const filteredData = state.data.filter(item => {
     if (!search) {
       return true;
     }
@@ -249,7 +249,7 @@ const ClientTable = () => {
         >
           <DeleteContent
             onClick={() => deleteCrmItemById(selectedItem._id, setIsDeleting, item => {
-              toast.success('Client deleted successfully');
+              toast.success('Architect deleted successfully');
               dispatch(removeCrmItemAction(item._id));
               setShowDeleteModal(false);
               setSelectedItem(null);
@@ -268,7 +268,7 @@ const ClientTable = () => {
           saveManyCrmItems(
             parseData,
             setIsSavingMany,
-            "clients",
+            "architects",
             setDuplicates,
             items => {
               dispatch(insertManyCrmItemAction(items));
@@ -280,14 +280,14 @@ const ClientTable = () => {
         duplicates={duplicates}
         setData={setParseData}
         isLoading={isSavingMany}
-        title='Import Clients'
+        title='Import Architects'
 
       />
 
       <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
         <div className="flex justify-between items-center mb-4">
-          <TertiaryHeading title="Client List" className="text-graphiteGray" />
-          <div className=" flex items-end space-x-3">
+          <TertiaryHeading title="Architect List" className="text-graphiteGray" />
+          <div className=" flex items-center space-x-3">
             <div className="w-96">
               <InputComponent
                 label=""
@@ -317,7 +317,7 @@ const ClientTable = () => {
                 iconwidth={20}
                 iconheight={20}
                 onClick={() => {
-                  downloadCrmItemsAsCSV(state.data, columns as ColumnsType<CrmType>, "clients")
+                  downloadCrmItemsAsCSV(state.data, columns as ColumnsType<CrmType>, "architects")
                 }}
               />
             </div>
@@ -338,25 +338,25 @@ const ClientTable = () => {
                 accept='.csv, .xlsx'
                 type="file"
                 name=""
-                id="importClients"
+                id="file"
                 className='hidden'
-                onChange={uploadAndParseCSVData(setIsUploadingFile, "clients", setParseData)}
+                onChange={uploadAndParseCSVData(setIsUploadingFile, "architects", setParseData)}
               />
             </div>
             <Button
-              text="Add New client"
+              text="Add New Architect"
               className="!w-fit !py-2.5"
               icon="/plus.svg"
               iconwidth={20}
               iconheight={20}
-              onClick={() => router.push(`${Routes.CRM.Clients}/create`)}
+              onClick={() => router.push(`${Routes.CRM.Architects}/create`)}
             />
           </div>
         </div>
         <Table
           loading={state.loading || state.isUpdatingStatus}
           columns={columns as ColumnsType<CrmType>}
-          dataSource={filteredClients}
+          dataSource={filteredData}
           pagination={{ position: ['bottomCenter'] }}
         />
       </div>
@@ -364,4 +364,4 @@ const ClientTable = () => {
   );
 };
 
-export default withAuth(ClientTable);
+export default withAuth(ArchitectPage);

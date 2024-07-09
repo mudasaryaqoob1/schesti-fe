@@ -14,16 +14,14 @@ import CustomButton from '@/app/component/customButton/button';
 import FormControl from '@/app/component/formControl';
 import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
 
-// subcontractorService service
-import { subcontractorService } from '@/app/services/subcontractor.service';
-import {
-  ISubcontract,
-  ISubcontractor,
-} from '@/app/interfaces/companyInterfaces/subcontractor.interface';
 import { AxiosError } from 'axios';
-import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { Routes } from '@/app/utils/plans.utils';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { ICrmSubcontractorModule } from '@/app/interfaces/crm/crm.interface';
+import { findCrmItemById } from '../../../utils';
+import crmService from '@/app/services/crm/crm.service';
+import { Skeleton } from 'antd';
+import { NoDataComponent } from '@/app/component/noData/NoDataComponent';
 
 const editSubcontractorSchema = Yup.object({
   companyRep: Yup.string().required('Company Rep is required!'),
@@ -38,7 +36,7 @@ const editSubcontractorSchema = Yup.object({
   address: Yup.string().required('Address is required!'),
   address2: Yup.string(),
 });
-const initialValues: ISubcontract = {
+const initialValues = {
   companyRep: '',
   name: '',
   email: '',
@@ -49,55 +47,53 @@ const initialValues: ISubcontract = {
 
 const EditSubcontractor = () => {
   const router = useRouterHook();
-  const params = useParams();
+  const params = useParams<{ id: string }>();
 
   const { id } = params;
-
+  const [item, setItem] = useState<ICrmSubcontractorModule | null>(null);
+  const [isFetching, setIsFetching] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [subcontractorData, setSubcontractorData] =
-    useState<ISubcontractor | null>(null);
 
   useEffect(() => {
-    if (id) {
-      subcontractorService
-        .httpFindSubcontractorById(id as string)
-        .then((res) => {
-          if (res.statusCode === 200) {
-            setSubcontractorData(res.data!.subcontractor);
-          }
-        })
-        .catch(({ response }: AxiosError<IResponseInterface>) => {
-          toast.error(response?.data.message);
-        });
-    }
+    findCrmItemById(id, setIsFetching, item => {
+      setItem(item as ICrmSubcontractorModule);
+    });
   }, [id]);
 
-  const submitHandler = async (values: ISubcontract) => {
-    setIsLoading(true);
-    let updateContractorBody = {
-      companyRep: values.companyRep,
-      name: values.name,
-      email: values.email,
-      phone: values.phone,
-      address: values.address,
-      secondAddress: values.secondAddress,
-    };
-    setIsLoading(true);
-    let result = await subcontractorService.httpUpdateSubontractor(
-      updateContractorBody,
-      id
-    );
-    if (result.statusCode == 200) {
-      setIsLoading(false);
-      router.push(`${Routes.CRM['Sub-Contractors']}`);
-    } else {
-      setIsLoading(false);
-      toast.error(result.message);
+  const submitHandler = async (values: ICrmSubcontractorModule) => {
+    if (item) {
+      setIsLoading(true);
+      try {
+        const response = await crmService.httpfindByIdAndUpdate(item._id, { ...values, module: "subcontractors" });
+        if (response.data) {
+          toast.success("Subcontractor updated successfully");
+          router.push(Routes.CRM['Sub-Contractors']);
+        }
+      } catch (error) {
+        const err = error as AxiosError<{ message: string }>;
+        toast.error(err.response?.data.message || "Unable to update subcontractor");
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
+  if (isFetching) {
+    return <div className="grid grid-cols-2 gap-2 grid-rows-2">
+      <Skeleton />
+      <Skeleton />
+      <Skeleton />
+      <Skeleton />
+    </div>
+  }
 
+
+  if (!isFetching && !item) {
+    return <NoDataComponent
+
+    />
+  }
   return (
-    <section className="mx-16">
+    <section className="mx-4">
       <div className="flex gap-4 items-center my-6">
         <Image src={'/home.svg'} alt="home icon" width={20} height={20} />
         <Image
@@ -118,7 +114,7 @@ const EditSubcontractor = () => {
 
         <MinDesc
           title="Edit Subcontractor"
-          className={`${senaryHeading} font-semibold text-lavenderPurple cursor-pointer underline`}
+          className={`${senaryHeading} font-semibold text-schestiPrimary cursor-pointer underline`}
         />
       </div>
       <div
@@ -130,7 +126,7 @@ const EditSubcontractor = () => {
           title="Edit Subcontractor"
         />
         <Formik
-          initialValues={subcontractorData ? subcontractorData : initialValues}
+          initialValues={item ? item : initialValues as ICrmSubcontractorModule}
           enableReinitialize={true}
           validationSchema={editSubcontractorSchema}
           onSubmit={submitHandler}
@@ -148,18 +144,20 @@ const EditSubcontractor = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-4 gap-4">
                   <FormControl
                     control="input"
-                    label="Company Rep"
-                    type="text"
-                    name="companyRep"
-                    placeholder="Company Rep"
-                  />
-                  <FormControl
-                    control="input"
                     label="Company Name"
                     type="text"
                     name="name"
                     placeholder="Company Name"
                   />
+
+                  <FormControl
+                    control="input"
+                    label="Company Rep"
+                    type="text"
+                    name="companyRep"
+                    placeholder="Company Rep"
+                  />
+
                   <PhoneNumberInputWithLable
                     label="Phone Number"
                     //@ts-ignore
@@ -210,7 +208,7 @@ const EditSubcontractor = () => {
                     <CustomButton
                       isLoading={isLoading}
                       type="submit"
-                      text="Update and Save"
+                      text="Update and Continue"
                     />
                   </div>
                 </div>

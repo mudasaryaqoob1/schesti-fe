@@ -1,7 +1,6 @@
 // Importing base class
 import { HttpService } from '@/app/services/base.service';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
-import { IToken } from '@/app/interfaces/authInterfaces/token.interface';
 import { ISubcontract } from '../interfaces/companyEmployeeInterfaces/subcontractor.interface';
 import { ISubcontractor } from '../interfaces/companyInterfaces/subcontractor.interface';
 
@@ -10,7 +9,7 @@ class SubcontractorsService extends HttpService {
 
   httpAddNewSubcontractor = (
     data: ISubcontract
-  ): Promise<IResponseInterface<{ token: IToken }>> =>
+  ): Promise<IResponseInterface<{ user: ISubcontractor }>> =>
     this.post(`${this.prefix}/addNewSubcontractor`, data);
 
   httpGetAllSubcontractors = (
@@ -18,6 +17,13 @@ class SubcontractorsService extends HttpService {
     limit: number = 9
   ): Promise<IResponseInterface> =>
     this.get(`${this.prefix}/getAllSubcontractors?page=${page}&limit=${limit}`);
+
+
+  httpUploadCrmSubcontractorCsvAndParse = (data: FormData) => this.post(`${this.prefix}/parse-data`, data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
 
   httpUpdateSubontractor = (
     data: ISubcontract,

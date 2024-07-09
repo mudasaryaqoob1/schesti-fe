@@ -1,52 +1,48 @@
 'use client';
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
-import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 // module imports
-import { IPartner } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
 import { senaryHeading } from '@/globals/tailwindvariables';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import MinDesc from '@/app/component/description/minDesc';
 import CustomButton from '@/app/component/customButton/button';
 import FormControl from '@/app/component/formControl';
-// redux module
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import { HttpService } from '@/app/services/base.service';
 
 // partner service
-import { userService } from '@/app/services/user.service';
-import { PhoneNumberRegex } from '@/app/utils/regex.util';
 import { withAuth } from '@/app/hoc/withAuth';
 import { Routes } from '@/app/utils/plans.utils';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { CrmType, } from '@/app/interfaces/crm/crm.interface';
+import { findCrmItemById } from '../../../utils';
+import crmService from '@/app/services/crm/crm.service';
+import { AxiosError } from 'axios';
+import { Skeleton } from 'antd';
+import { NoDataComponent } from '@/app/component/noData/NoDataComponent';
 
 const newPartnerSchema = Yup.object({
-  firstName: Yup.string().required('First name is required!'),
-  lastName: Yup.string().required('Last name is required!'),
+  companyRep: Yup.string().required('Company Rep is required!'),
   email: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
   phone: Yup.string()
-    .matches(PhoneNumberRegex, 'Phone number must contain numbers')
     .min(7, 'Phone number must be at least 7 characters')
     .max(12, 'Phone number must be at most 12 characters')
     .required('Phone number is required'),
-  companyName: Yup.string().required('Company Name is required!'),
+  name: Yup.string().required('Company Name is required!'),
   address: Yup.string().required('Address is required!'),
   address2: Yup.string(),
 });
-const initialValues: IPartner = {
-  firstName: '',
-  lastName: '',
+const initialValues = {
+  companyRep: '',
+  name: '',
   email: '',
   phone: '',
-  companyName: '',
   address: '',
   secondAddress: '',
 };
@@ -54,58 +50,55 @@ const initialValues: IPartner = {
 const EditPartner = () => {
   const router = useRouterHook();
   const params = useParams();
-  const token = useSelector(selectToken);
 
   const { id } = params as { id: string };
-
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-    }
-  }, [token]);
-
+  const [item, setItem] = useState<CrmType | null>(null);
+  const [isFetching, setIsFetching] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [partnerDetail, setPartnerDetail] = useState<IPartner | undefined>({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    companyName: '',
-    address: '',
-    secondAddress: '',
-  });
 
-  const fetchPartnerDetail = useCallback(async () => {
-    const partnerDetail = await userService.httpFindCompanyPartnerDetail(id);
-    setPartnerDetail(partnerDetail?.data?.partner);
-  }, []);
 
   useEffect(() => {
-    fetchPartnerDetail();
-  }, []);
+    findCrmItemById(id, setIsFetching, item => {
+      setItem(item);
+    });
+  }, [id]);
 
-  const submitHandler = async (values: IPartner) => {
-    setIsLoading(true);
-    let updatePartnerBody = {
-      firstName: values.firstName,
-      lastName: values.lastName,
-      phone: values.phone,
-      companyName: values.companyName,
-      address: values.address,
-      secondAddress: values.secondAddress,
-    };
-    let result = await userService.httpUpdatePartner(updatePartnerBody, id);
-    if (result.statusCode == 200) {
-      setIsLoading(false);
-      router.push(Routes.CRM.Partners);
-    } else {
-      setIsLoading(false);
-      toast.error(result.message);
+
+  const submitHandler = async (values: CrmType) => {
+    if (item) {
+      setIsLoading(true);
+      try {
+        const response = await crmService.httpfindByIdAndUpdate(item._id, { ...values, module: "partners" });
+        if (response.data) {
+          toast.success("Parnter updated successfully");
+          router.push(Routes.CRM.Partners);
+        }
+      } catch (error) {
+        const err = error as AxiosError<{ message: string }>;
+        toast.error(err.response?.data.message || "Unable to update partner");
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
+  if (isFetching) {
+    return <div className="grid grid-cols-2 gap-2 grid-rows-2">
+      <Skeleton />
+      <Skeleton />
+      <Skeleton />
+      <Skeleton />
+    </div>
+  }
+
+
+  if (!isFetching && !item) {
+    return <NoDataComponent
+
+    />
+  }
 
   return (
-    <section className="mx-16">
+    <section className="mx-4">
       <div className="flex gap-4 items-center my-6">
         <Image src={'/home.svg'} alt="home icon" width={20} height={20} />
         <Image
@@ -125,17 +118,17 @@ const EditPartner = () => {
         />
 
         <MinDesc
-          title="Add New Partner"
-          className={`${senaryHeading} font-semibold text-lavenderPurple cursor-pointer underline`}
+          title="Edit Partner"
+          className={`${senaryHeading} font-semibold text-schestiPrimary cursor-pointer underline`}
         />
       </div>
       <div className="p-5 flex flex-col rounded-lg border border-silverGray shadow-secondaryShadow2 bg-white">
         <TertiaryHeading
           className="text-graphiteGray mb-4 "
-          title="Add New Partner"
+          title="Edit Partner"
         />
         <Formik
-          initialValues={partnerDetail ? partnerDetail : initialValues}
+          initialValues={item ? (item as CrmType) : initialValues as CrmType}
           enableReinitialize={true}
           validationSchema={newPartnerSchema}
           onSubmit={submitHandler}
@@ -153,18 +146,20 @@ const EditPartner = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-4 gap-4">
                   <FormControl
                     control="input"
-                    label="First Name"
+                    label="Company Name"
                     type="text"
-                    name="firstName"
-                    placeholder="First Name"
+                    name="name"
+                    placeholder="Company Name"
                   />
+
                   <FormControl
                     control="input"
-                    label="Last Name"
+                    label="Company Rep"
                     type="text"
-                    name="lastName"
-                    placeholder="Last Name"
+                    name="companyRep"
+                    placeholder="Company Rep"
                   />
+
                   <PhoneNumberInputWithLable
                     label="Phone Number"
                     //@ts-ignore
@@ -185,15 +180,7 @@ const EditPartner = () => {
                     placeholder="Email Address"
                     readOnly={true}
                   />
-                  <div className="md:col-span-full">
-                    <FormControl
-                      control="input"
-                      label="Company Name"
-                      type="text"
-                      name="companyName"
-                      placeholder="Enter Company Name"
-                    />
-                  </div>
+
                   <FormControl
                     control="input"
                     label="Address"
@@ -221,7 +208,7 @@ const EditPartner = () => {
                     <CustomButton
                       isLoading={isLoading}
                       type="submit"
-                      text="Update and Save"
+                      text="Update and Continue"
                     />
                   </div>
                 </div>

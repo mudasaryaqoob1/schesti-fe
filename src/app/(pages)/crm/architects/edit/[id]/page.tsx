@@ -1,7 +1,8 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
+import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import { toast } from 'react-toastify';
 
@@ -13,60 +14,96 @@ import CustomButton from '@/app/component/customButton/button';
 import FormControl from '@/app/component/formControl';
 import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
 
-import { Routes } from '@/app/utils/plans.utils';
-import { withAuth } from '@/app/hoc/withAuth';
-import { useRouterHook } from '@/app/hooks/useRouterHook';
-import crmService from '@/app/services/crm/crm.service';
-import { AxiosError } from 'axios';
 
-const newSubcontractorSchema = Yup.object({
-  companyRep: Yup.string().required('Company Rep is required!'),
+// client service
+import { PhoneNumberRegex } from '@/app/utils/regex.util';
+import { Skeleton } from 'antd';
+import { AxiosError } from 'axios';
+import { withAuth } from '@/app/hoc/withAuth';
+import { Routes } from '@/app/utils/plans.utils';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { CrmType, ICrmItem } from '@/app/interfaces/crm/crm.interface';
+import { NoDataComponent } from '@/app/component/noData/NoDataComponent';
+import crmService from '@/app/services/crm/crm.service';
+import { findCrmItemById } from '../../../utils';
+
+const ValidationSchema = Yup.object({
+  firstName: Yup.string().required('First name is required!'),
+  lastName: Yup.string().required('Last name is required!'),
   email: Yup.string()
     .required('Email is required!')
     .email('Email should be valid'),
   phone: Yup.string()
+    .matches(PhoneNumberRegex, 'Phone number must contain numbers')
     .min(7, 'Phone number must be at least 7 characters')
     .max(12, 'Phone number must be at most 12 characters')
     .required('Phone number is required'),
-  name: Yup.string().required('Company Name is required!'),
+  companyName: Yup.string().required('Company Name is required!'),
   address: Yup.string().required('Address is required!'),
   address2: Yup.string(),
 });
-const initialValues = {
-  companyRep: '',
-  name: '',
+const initialValues: Partial<ICrmItem> = {
+  firstName: '',
+  lastName: '',
   email: '',
   phone: '',
+  companyName: '',
   address: '',
   secondAddress: '',
 };
 
-const CreateSubcontractor = () => {
+const EditArchitect = () => {
   const router = useRouterHook();
-
+  const params = useParams();
+  const [item, setItem] = useState<CrmType | null>(null);
+  const [isFetching, setIsFetching] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const submitHandler = async (values: typeof initialValues) => {
-    setIsLoading(true);
+  const { id } = params as { id: string };
 
-    try {
-      const response = await crmService.httpCreate({
-        ...values,
-        trades: [],
-        status: true,
-        module: "subcontractors"
-      });
-      if (response.data) {
-        toast.success("Subcontractor created successfully");
-        router.push(Routes.CRM['Sub-Contractors']);
+
+
+  useEffect(() => {
+    findCrmItemById(id, setIsFetching, item => {
+      setItem(item);
+    });
+  }, [id]);
+
+
+
+  const submitHandler = async (values: ICrmItem) => {
+    if (item) {
+      setIsLoading(true);
+      try {
+        const response = await crmService.httpfindByIdAndUpdate(item._id, { ...values, module: "architects" });
+        if (response.data) {
+          toast.success("Architect updated successfully");
+          router.push(Routes.CRM.Architects);
+        }
+      } catch (error) {
+        const err = error as AxiosError<{ message: string }>;
+        toast.error(err.response?.data.message || "Unable to update architect");
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      const err = error as AxiosError<{ message: string }>;
-      toast.error(err.response?.data.message || "Unable to create subcontractor");
-    } finally {
-      setIsLoading(false);
     }
   };
+
+  if (isFetching) {
+    return <div className="grid grid-cols-2 gap-2 grid-rows-2">
+      <Skeleton />
+      <Skeleton />
+      <Skeleton />
+      <Skeleton />
+    </div>
+  }
+
+
+  if (!isFetching && !item) {
+    return <NoDataComponent
+
+    />
+  }
 
   return (
     <section className="mx-4">
@@ -78,9 +115,7 @@ const CreateSubcontractor = () => {
           width={16}
           height={16}
         />
-        <p className={`${senaryHeading} font-base text-slateGray`}>
-          My Subcontractor
-        </p>
+        <p className={`${senaryHeading} font-base text-slateGray`}>My Architect</p>
         <Image
           src={'/chevron-right.svg'}
           alt="chevron-right icon"
@@ -89,7 +124,7 @@ const CreateSubcontractor = () => {
         />
 
         <MinDesc
-          title="New Subcontractor"
+          title="Edit Architect"
           className={`${senaryHeading} font-semibold text-schestiPrimary cursor-pointer underline`}
         />
       </div>
@@ -99,11 +134,12 @@ const CreateSubcontractor = () => {
       >
         <TertiaryHeading
           className="text-graphiteGray mb-4 "
-          title="Add New Subcontractor"
+          title="Edit Architect"
         />
         <Formik
-          initialValues={initialValues}
-          validationSchema={newSubcontractorSchema}
+          initialValues={item ? (item as ICrmItem) : initialValues as ICrmItem}
+          enableReinitialize={true}
+          validationSchema={ValidationSchema}
           onSubmit={submitHandler}
         >
           {({
@@ -116,23 +152,21 @@ const CreateSubcontractor = () => {
           }) => {
             return (
               <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
-                <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-4 gap-4">
                   <FormControl
                     control="input"
-                    label="Company Name"
+                    label="First Name"
                     type="text"
-                    name="name"
-                    placeholder="Company Name"
+                    name="firstName"
+                    placeholder="First Name"
                   />
-
                   <FormControl
                     control="input"
-                    label="Company Rep"
+                    label="Last Name"
                     type="text"
-                    name="companyRep"
-                    placeholder="Company Rep"
+                    name="lastName"
+                    placeholder="Last Name"
                   />
-
                   <PhoneNumberInputWithLable
                     label="Phone Number"
                     //@ts-ignore
@@ -151,8 +185,17 @@ const CreateSubcontractor = () => {
                     type="email"
                     name="email"
                     placeholder="Email Address"
+                    readOnly={true}
                   />
-
+                  <div className="md:col-span-full">
+                    <FormControl
+                      control="input"
+                      label="Company Name"
+                      type="text"
+                      name="companyName"
+                      placeholder="Enter Company Name"
+                    />
+                  </div>
                   <FormControl
                     control="input"
                     label="Address"
@@ -164,7 +207,7 @@ const CreateSubcontractor = () => {
                     control="input"
                     label="Address 2"
                     type="text"
-                    name="address2"
+                    name="secondAddress"
                     placeholder="Address 2"
                   />
                 </div>
@@ -173,16 +216,14 @@ const CreateSubcontractor = () => {
                     <CustomButton
                       className=" !border-celestialGray !shadow-scenarySubdued2 !text-graphiteGray !bg-snowWhite"
                       text="Cancel"
-                      onClick={() =>
-                        router.push(`${Routes.CRM['Sub-Contractors']}`)
-                      }
+                      onClick={() => router.back()}
                     />
                   </div>
                   <div>
                     <CustomButton
                       isLoading={isLoading}
                       type="submit"
-                      text="Save and Continue"
+                      text="Update and Continue"
                     />
                   </div>
                 </div>
@@ -195,4 +236,4 @@ const CreateSubcontractor = () => {
   );
 };
 
-export default withAuth(CreateSubcontractor);
+export default withAuth(EditArchitect);

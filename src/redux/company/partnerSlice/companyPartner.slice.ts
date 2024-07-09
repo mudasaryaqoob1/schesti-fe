@@ -1,11 +1,18 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import initialState from './companyPartner.initialState';
 import { fetchCompanyPartner, deleteCompanyPartner } from '../company.thunk';
+import { IPartner } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 
 export const partnerSlice = createSlice({
   name: 'partners',
   initialState: initialState,
-  reducers: {},
+  reducers: {
+    insertManyPartnersAction: (state, action: PayloadAction<IPartner[]>) => {
+      if (state.data) {
+        state.data = [...action.payload, ...state.data];
+      }
+    }
+  },
   extraReducers: (builder) => {
     builder.addCase(fetchCompanyPartner.pending, (state) => {
       state.loading = true;
@@ -41,5 +48,7 @@ export const partnerSlice = createSlice({
     });
   },
 });
+
+export const { insertManyPartnersAction } = partnerSlice.actions;
 
 export default partnerSlice.reducer;
