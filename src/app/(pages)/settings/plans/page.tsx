@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import SettingSidebar from '../verticleBar';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { Tabs } from 'antd';
-import MySubscription from './me/page';
+import MySubscription from './me';
 import Plans from './plans';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
