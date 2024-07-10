@@ -38,6 +38,11 @@ class EstimateRequestsService extends HttpService {
     data: any
   ): Promise<IResponseInterface<{ token: IToken; _id?: string }>> =>
     this.post(`${this.prefix}/addNewGenerateEstimate`, data);
+  httpUpdateGeneratedEstimate = (
+    data: any,
+    generatedEstimateId : string | null
+  ): Promise<IResponseInterface<{ token: IToken; _id?: string }>> =>
+    this.post(`${this.prefix}/updateGeneratedEstimateDetail/${generatedEstimateId}`, data);
 
   httpGetAllGeneratedEstimates = (
     page: number,
@@ -62,7 +67,7 @@ class EstimateRequestsService extends HttpService {
     this.post(`${this.prefix}/changeGeneratedEstimateStatus/${estimateId}` , data);
 
   httpGetGeneratedEstimateDetail = (
-    estimateId: string | string[]
+    estimateId: string | string[] | null
   ): Promise<IResponseInterface> =>
     this.get(`${this.prefix}/getGeneratedEstimateDetail/${estimateId}`);
 

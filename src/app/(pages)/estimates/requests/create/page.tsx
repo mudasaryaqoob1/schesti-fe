@@ -77,9 +77,6 @@ const CreateEstimateRequest = () => {
 
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  // const [salePersonsOption, setSalePersonsOption] = useState([]);
-  // const [estimatorsOption, setEstimatorsOption] = useState([]);
   const [userData, setUserData] = useState<IUserInterface[]>([]);
   const [uploadDocumentsError, setuploadDocumentsError] = useState('');
   const [drawingsDocuments, setDrawingsDocuments] = useState<any>([]);
@@ -101,32 +98,7 @@ const CreateEstimateRequest = () => {
     estimator: '',
   };
 
-  // const fetchUsersHandler = useCallback(async () => {
-  //   let result: any = await dispatch(
-  //     fetchUsers({ limit: 9, page: 1, queryRoles: 'Estimator,Sales Manager' })
-  //   );
 
-  //   console.log(result.payload.data, 'result.payload.data');
-
-  //   const estimatorData = result.payload.data?.employees
-  //     .filter((user: any) => user.roles.includes('Estimator'))
-  //     .map((option: any) => {
-  //       return {
-  //         label: `${option.firstName} ${option.lastName}`,
-  //         value: `${option._id}`,
-  //       };
-  //     });
-  //   setEstimatorsOption(estimatorData);
-  //   const saleManagers = result.payload.data?.employees
-  //     .filter((user: any) => user.roles.includes('Sales Manager'))
-  //     .map((option: any) => {
-  //       return {
-  //         label: `${option.firstName} ${option.lastName}`,
-  //         value: `${option._id}`,
-  //       };
-  //     });
-  //   setSalePersonsOption(saleManagers);
-  // }, []);
 
   const fetchClients = useCallback(async () => {
     let { payload }: any = await dispatch(
@@ -145,19 +117,16 @@ const CreateEstimateRequest = () => {
     let result: any = await dispatch(fetchUsers({ limit: 9, page: 1 }));
     const mappedUsers = result.payload?.data?.employees.map((user: IUser) => ({
       value: `${user._id}`,
-      label: `${user.firstName} ${user.lastName} --- ${user.roles[0].name}`,
+      label: `${user.firstName} ${user.lastName} - ${user.roles[0].name}`,
     }));
     setUserData(mappedUsers);
   }, []);
 
   useEffect(() => {
-    // fetchUsersHandler();
     fetchClients();
     dispatch(getCompanyRolesThunk({}));
     fetchCompanyEmployeeHandler();
   }, []);
-
-  console.log(userData, 'userDatauserDatauserData');
 
   const submitHandler = async (values: IEstimateRequest) => {
     if (drawingsDocuments.length == 0) {

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
-import { Dropdown, Table } from 'antd';
 import type { MenuProps } from 'antd';
+import { Dropdown, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { SearchOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
@@ -22,6 +22,7 @@ import NoDataComponent from '@/app/component/noData';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import WhiteButton from '@/app/component/customButton/white';
 import CustomButton from '@/app/component/customButton/button';
+import { downloadCrmItemsAsCSV } from '@/app/(pages)/crm/utils';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { InputComponent } from '@/app/component/customInput/Input';
 import { DeleteContent } from '@/app/component/delete/DeleteContent';
@@ -274,7 +275,9 @@ const EstimateRequestTable: React.FC = () => {
               icon="/download-icon.svg"
               iconwidth={20}
               iconheight={20}
-              onClick={() => null}
+              onClick={() => {
+                downloadCrmItemsAsCSV(estimateRequestsData, columns as any, "clients")
+              }}
             />
           </div>
 

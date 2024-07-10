@@ -3,10 +3,15 @@ import Image from 'next/image';
 import type { MenuProps } from 'antd';
 import { Dropdown, Table, Drawer } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import { SearchOutlined } from '@ant-design/icons';
 import NoDataComponent from '@/app/component/noData';
-import { useRouterHook } from '@/app/hooks/useRouterHook';
 import ChangeStatus from '../components/changeStatus';
+import { USCurrencyFormat } from '@/app/utils/format';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
+import WhiteButton from '@/app/component/customButton/white';
 import TertiaryHeading from '@/app/component/headings/tertiary';
+import { downloadCrmItemsAsCSV } from '@/app/(pages)/crm/utils';
+import { InputComponent } from '@/app/component/customInput/Input';
 import { estimateRequestService } from '@/app/services/estimates.service';
 
 interface DataType {
@@ -26,6 +31,10 @@ const items: MenuProps['items'] = [
     label: 'View Estimate',
   },
   {
+    key: 'edit',
+    label: 'Edit Estimate',
+  },
+  {
     key: 'createSchedule',
     label: 'Create Schedule',
   },
@@ -33,10 +42,10 @@ const items: MenuProps['items'] = [
     key: 'createInvoice',
     label: 'Create Invoice',
   },
-  {
-    key: 'email',
-    label: 'Email',
-  },
+  // {
+  //   key: 'email',
+  //   label: 'Email',
+  // },
   {
     key: 'changeStatus',
     label: 'Change Status',
@@ -49,11 +58,12 @@ const items: MenuProps['items'] = [
 
 const EstimateRequestTable: React.FC = () => {
   const router = useRouterHook();
-  const [loading, setLoading] = useState(true);
 
-  const [generatedEstimates, setGeneratedEstimates] = useState<[] | null>(null);
-  const [changeStatusDrawer, setChangeStatusDrawer] = useState(false);
+  const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(true);
   const [estimateDetail, setEstimateDetail] = useState();
+  const [generatedEstimates, setGeneratedEstimates] = useState<[]>([]);
+  const [changeStatusDrawer, setChangeStatusDrawer] = useState(false);
 
   const fetchGeneratedEstiamtesHandler = useCallback(async () => {
     setLoading(true);
@@ -103,6 +113,10 @@ const EstimateRequestTable: React.FC = () => {
     } else if (key == 'changeStatus') {
       setEstimateDetail(estimate);
       setChangeStatusDrawer(true);
+    } else if (key == 'edit') {
+      router.push(
+        `/estimates/generate/edit/?generatedEstimateId=${estimate._id}`
+      );
     }
   };
 
@@ -128,12 +142,15 @@ const EstimateRequestTable: React.FC = () => {
     {
       title: 'Total Cost',
       dataIndex: 'totalCost',
+      render: (text, record : any) => (
+        <span>{USCurrencyFormat.format(record.totalCost)}</span>
+      ),
     },
     {
       title: 'Status',
       dataIndex: 'status',
       render: (text, record) => (
-        <span className="capitalize text-emeraldGreen bg-schestiLightSuccess px-2 py-1 rounded-full">
+        <span className={`capitalize ${record.status === "lost" ? 'text-red-600 bg-red-100' : record.status === "proposed" ? " text-blue-600 bg-blue-100" :  "text-emeraldGreen bg-schestiLightSuccess"}  px-2 py-1 rounded-full`}>
           {record.status}
         </span>
       ),
@@ -166,8 +183,21 @@ const EstimateRequestTable: React.FC = () => {
     },
   ];
 
+  console.log(generatedEstimates, 'generatedEstimates');
+
+  const filterEstimateRequest = generatedEstimates.filter((item: any) => {
+    if (!search) {
+      return true;
+    }
+    return (
+      item.clientName.toLowerCase().includes(search.toLowerCase()) ||
+      item.estimator.toLowerCase().includes(search.toLowerCase()) ||
+      item.projectName.toLowerCase().includes(search.toLowerCase()) ||
+      item.salePerson?.includes(search)
+    );
+  });
   return (
-    <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid border-silverGray shadow-secondaryTwist">
+    <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid bg-white border-silverGray shadow-secondaryTwist">
       {generatedEstimates && generatedEstimates.length === 0 ? (
         <NoDataComponent
           title="No Data Found"
@@ -183,12 +213,47 @@ const EstimateRequestTable: React.FC = () => {
               title="Submitted Estimate"
               className="text-graphiteGray"
             />
+            <div className=" flex items-end space-x-3">
+              <div className="w-96">
+                <InputComponent
+                  label=""
+                  type="text"
+                  placeholder="Search"
+                  name="search"
+                  prefix={<SearchOutlined />}
+                  field={{
+                    type: 'text',
+                    value: search,
+                    onChange: (e: any) => {
+                      setSearch(e.target.value);
+                    },
+                    className: '!py-2',
+                  }}
+                />
+              </div>
+              <div>
+                <WhiteButton
+                  text="Export"
+                  className="!w-fit !py-2.5"
+                  icon="/download-icon.svg"
+                  iconwidth={20}
+                  iconheight={20}
+                  onClick={() => {
+                    downloadCrmItemsAsCSV(
+                      generatedEstimates,
+                      columns as any,
+                      'clients'
+                    );
+                  }}
+                />
+              </div>
+            </div>
           </div>
           <div className="mt-4">
             <Table
               loading={loading}
               columns={columns}
-              dataSource={generatedEstimates || []}
+              dataSource={filterEstimateRequest || []}
               pagination={{ position: ['bottomCenter'] }}
             />
           </div>
