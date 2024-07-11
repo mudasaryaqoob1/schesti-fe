@@ -1,8 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import type { ColumnsType } from 'antd/es/table';
+import Image from 'next/image';
 import { Dropdown, Table } from 'antd';
 import type { MenuProps } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import { SearchOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
+
+// module imports
 import { AppDispatch } from '@/redux/store';
 import {
   selectEstimateRequests,
@@ -13,14 +17,15 @@ import {
   fetchEstimateRequests,
   changeEstimateStatus,
 } from '@/redux/company/company.thunk';
-import CustomButton from '@/app/component/customButton/button';
-import TertiaryHeading from '@/app/component/headings/tertiary';
-import Image from 'next/image';
-import { IEstimateRequest } from '@/app/interfaces/estimateRequests/estimateRequests.interface';
 import ModalComponent from '@/app/component/modal';
-import { DeleteContent } from '@/app/component/delete/DeleteContent';
 import NoDataComponent from '@/app/component/noData';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import WhiteButton from '@/app/component/customButton/white';
+import CustomButton from '@/app/component/customButton/button';
+import TertiaryHeading from '@/app/component/headings/tertiary';
+import { InputComponent } from '@/app/component/customInput/Input';
+import { DeleteContent } from '@/app/component/delete/DeleteContent';
+import { IEstimateRequest } from '@/app/interfaces/estimateRequests/estimateRequests.interface';
 
 interface DataType {
   key: React.Key;
@@ -37,12 +42,14 @@ const EstimateRequestTable: React.FC = () => {
   const router = useRouterHook();
   const dispatch = useDispatch<AppDispatch>();
 
+  const estimateRequestsData = useSelector(selectEstimateRequests);
+  const estimateRequestsLoading = useSelector(selectEstimateRequestsLoading);
+
+  const [search, setSearch] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedEstimate, setSelecteEstimate] = useState<
     (IEstimateRequest & { _id: string }) | null
   >(null);
-  const estimateRequestsLoading = useSelector(selectEstimateRequestsLoading);
-  const estimateRequestsData = useSelector(selectEstimateRequests);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const fetachEstimateRequest = useCallback(async () => {
     await dispatch(fetchEstimateRequests({ page: 1, limit: 10 }));
@@ -202,10 +209,21 @@ const EstimateRequestTable: React.FC = () => {
     },
   ];
 
-  console.log(estimateRequestsData, 'estimateRequestsData');
+  const filterEstimateRequest = estimateRequestsData.filter((item: any) => {
+    if (!search) {
+      return true;
+    }
+    return (
+      item.clientName.toLowerCase().includes(search.toLowerCase()) ||
+      item.companyName.toLowerCase().includes(search.toLowerCase()) ||
+      item.email.toLowerCase().includes(search.toLowerCase()) ||
+      item.phone?.includes(search) ||
+      item.projectName?.includes(search)
+    );
+  });
 
   return (
-    <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid border-silverGray shadow-secondaryTwist">
+    <section className="mt-6 mx-4 p-5 !bg-white rounded-xl grid items-center border border-solid border-silverGray shadow-secondaryTwist">
       {selectedEstimate ? (
         <ModalComponent
           open={showDeleteModal}
@@ -227,19 +245,50 @@ const EstimateRequestTable: React.FC = () => {
       ) : null}
       <div className="flex justify-between items-center">
         <TertiaryHeading
-          title="My Estimate request"
+          title="My Estimate Request"
           className="text-graphiteGray"
         />
-        <CustomButton
-          text="Start New Estimate "
-          className="!w-auto "
-          icon="/plus.svg"
-          iconwidth={20}
-          iconheight={20}
-          onClick={() => router.push('/estimates/requests/create')}
-        />
+        <div className=" flex items-end space-x-3">
+          <div className="w-96">
+            <InputComponent
+              label=""
+              type="text"
+              placeholder="Search"
+              name="search"
+              prefix={<SearchOutlined />}
+              field={{
+                type: 'text',
+                value: search,
+                onChange: (e: any) => {
+                  setSearch(e.target.value);
+                },
+                className: '!py-2',
+              }}
+            />
+          </div>
+          {/* <CrmStatusFilter status={status} setStatus={setStatus} /> */}
+          <div>
+            <WhiteButton
+              text="Export"
+              className="!w-fit !py-2.5"
+              icon="/download-icon.svg"
+              iconwidth={20}
+              iconheight={20}
+              onClick={() => null}
+            />
+          </div>
+
+          <CustomButton
+            text="Start New Estimate "
+            className="!w-fit !py-2.5"
+            icon="/plus.svg"
+            iconwidth={20}
+            iconheight={20}
+            onClick={() => router.push('/estimates/requests/create')}
+          />
+        </div>
       </div>
-      <div className="mt-4">
+      <div className="">
         {estimateRequestsData.length === 0 ? (
           <NoDataComponent
             title="No Data Found"
@@ -249,12 +298,14 @@ const EstimateRequestTable: React.FC = () => {
             link="/estimates/requests/create"
           />
         ) : (
-          <Table
-            loading={estimateRequestsLoading}
-            columns={columns}
-            dataSource={estimateRequestsData}
-            pagination={{ position: ['bottomCenter'] }}
-          />
+          <div className="mt-4">
+            <Table
+              loading={estimateRequestsLoading}
+              columns={columns}
+              dataSource={filterEstimateRequest}
+              pagination={{ position: ['bottomCenter'] }}
+            />
+          </div>
         )}
       </div>
     </section>

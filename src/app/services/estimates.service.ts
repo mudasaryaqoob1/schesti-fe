@@ -55,6 +55,11 @@ class EstimateRequestsService extends HttpService {
     estimateId: string
   ): Promise<IResponseInterface> =>
     this.post(`${this.prefix}/deleteGeneratedEstimate/${estimateId}`);
+  httpChangeGeneratedEstimateStatus = (
+    estimateId: string,
+    data : {status : string , reason : string}
+  ): Promise<IResponseInterface> =>
+    this.post(`${this.prefix}/changeGeneratedEstimateStatus/${estimateId}` , data);
 
   httpGetGeneratedEstimateDetail = (
     estimateId: string | string[]
