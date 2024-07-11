@@ -117,7 +117,7 @@ const CreateEstimateRequest = () => {
     let result: any = await dispatch(fetchUsers({ limit: 9, page: 1 }));
     const mappedUsers = result.payload?.data?.employees.map((user: IUser) => ({
       value: `${user._id}`,
-      label: `${user.firstName} ${user.lastName} - ${user.roles[0].name}`,
+      label: `${user.firstName} ${user.lastName} - ${user?.roles[0]?.name}`,
     }));
     setUserData(mappedUsers);
   }, []);
