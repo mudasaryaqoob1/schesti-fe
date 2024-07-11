@@ -179,26 +179,26 @@ export function BiddingProjectDetails({
             ? 0
             : (bid.projectId.projectFiles as any)
         ) > 0 && (
-          <>
-            <Image
-              alt="cloud icon"
-              src={'/uploadcloud.svg'}
-              width={16}
-              height={16}
-            />
-            <SenaryHeading
-              onClick={() =>
-                downloadAllFiles(
-                  typeof bid.projectId === 'string'
-                    ? []
-                    : bid.projectId.projectFiles
-                )
-              }
-              title="Download all files"
-              className="text-schestiPrimary text-xs leading-4 font-semibold underline underline-offset-2"
-            />
-          </>
-        )}
+            <>
+              <Image
+                alt="cloud icon"
+                src={'/uploadcloud.svg'}
+                width={16}
+                height={16}
+              />
+              <SenaryHeading
+                onClick={() =>
+                  downloadAllFiles(
+                    typeof bid.projectId === 'string'
+                      ? []
+                      : bid.projectId.projectFiles
+                  )
+                }
+                title="Download all files"
+                className="text-schestiPrimary text-xs leading-4 font-semibold underline underline-offset-2"
+              />
+            </>
+          )}
       </div>
 
       {!isArchive ? (
@@ -225,13 +225,13 @@ export function BiddingProjectDetails({
           </div>
           {typeof bid.projectId !== 'string' &&
             bid.projectId?.user &&
-            (bid.projectId?.user as any).roles.includes('Admin') && (
+            (bid.projectId?.user as any).userRole.includes('admin') && (
               <div className="mt-4 space-y-2">
                 <CustomButton
                   text="Post this project as a bidder"
                   onClick={handlePostProjectAsBidder}
                   disabled={isLoading}
-                  className={'!bg-[#F9F5FF] !text-schestiPrimary'}
+                  className={'!bg-schestiLightPrimary !text-schestiPrimary'}
                 />
               </div>
             )}

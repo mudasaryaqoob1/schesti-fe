@@ -23,6 +23,8 @@ import ImportMaterialModal from './importMaterialModal';
 import NoData from './NoData';
 import CustomButton from '@/app/component/customButton/button';
 import { IMaterialSetting } from '@/app/interfaces/settings/material-settings.interface';
+import { SelectComponent } from '@/app/component/customSelect/Select.component';
+import _ from 'lodash';
 
 type InitialValuesTypes = {
   unitLabourHour: string;
@@ -40,6 +42,8 @@ const Materials = () => {
   const [search, setSearch] = useState('');
   const [materialModal, setMaterialModal] = useState(false);
   const [selectedRowId, setSelectedRowId] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('');
+  const [collapsed, setCollapsed] = useState('');
   const [meterialDataWithCategories, setMeterialDataWithCategories] = useState<
     IMaterialSetting[]
   >([]);
@@ -48,6 +52,8 @@ const Materials = () => {
     let result: any = await dispatch(fetchMaterials({ page: 1, limit: 10 }));
     if (result.payload.data.length) {
       setMeterialDataWithCategories(result.payload.data);
+      setCollapsed(result.payload.data[0]._id ? result.payload.data[0]._id.subcategoryId : '');
+
     }
   }, []);
 
@@ -87,13 +93,26 @@ const Materials = () => {
   };
   const filteredData = meterialDataWithCategories.filter((item) => {
     if (!search) {
-      return item;
+      return true;
     }
     return (
       item._id.categoryName.toLowerCase().includes(search.toLowerCase()) ||
       item._id.subcategoryName.toLowerCase().includes(search.toLowerCase())
     );
+  }).filter(item => {
+    if (!categoryFilter) {
+      return true;
+    }
+    return item._id.subcategoryId === categoryFilter;
   });
+
+  const dropdownOptions = _.uniqBy(meterialDataWithCategories.map(item => {
+    return {
+      label: `${item._id.categoryName} - ${item._id.subcategoryName}`,
+      value: item._id.subcategoryId
+    }
+  }), "value");
+
   return (
     <>
       <Formik
@@ -135,6 +154,25 @@ const Materials = () => {
                           className="cursor-pointer"
                         />
                       </div>
+                      <SelectComponent
+                        label=''
+                        placeholder='Category'
+                        name='category'
+                        field={{
+                          value: categoryFilter ? categoryFilter : undefined,
+                          options: dropdownOptions,
+                          onChange(val) {
+                            setCategoryFilter(val);
+                          },
+                          allowClear: true,
+                          onClear() {
+                            setCategoryFilter('');
+                          },
+                          dropdownStyle: {
+                            width: 300
+                          }
+                        }}
+                      />
                       <CustomButton
                         type="button"
                         text="Import Materials"
@@ -147,7 +185,7 @@ const Materials = () => {
                     </div>
                   </div>
                   <div>
-                    <div className="grid grid-cols-8 sm:grid-cols-8 md:grid-cols-8 lg:grid-cols-8 xl:grid-cols-8 overflow-x-auto !bg-[#F9F5FF] p-3 rounded-lg gap-4 mt-7 bg-opacity-10">
+                    <div className="grid grid-cols-8 sm:grid-cols-8 md:grid-cols-8 lg:grid-cols-8 xl:grid-cols-8 overflow-x-auto !bg-schestiLightGray p-3 rounded-lg gap-4 mt-7 bg-opacity-10">
                       <Description title="Description" className="col-span-2" />
                       <Description title="Unit" className="col-span-1" />
                       <Description
@@ -177,7 +215,7 @@ const Materials = () => {
                           ({ _id: category, materialsData }, i: number) => {
                             return (
                               <div key={i}>
-                                <div className="flex items-center gap-3 mt-4">
+                                <div className="flex items-center gap-3 mt-4 border-b pb-2">
                                   <QuaternaryHeading
                                     title={category.categoryName}
                                     className="font-bold capitalize"
@@ -192,10 +230,18 @@ const Materials = () => {
                                       alt="icon"
                                       width={16}
                                       height={16}
+                                      className="cursor-pointer"
+                                      onClick={() => {
+                                        if (collapsed === category.subcategoryId) {
+                                          setCollapsed('');
+                                        } else {
+                                          setCollapsed(category.subcategoryId);
+                                        }
+                                      }}
                                     />
                                   </div>
                                 </div>
-                                {materialsData?.map(
+                                {collapsed === category.subcategoryId && materialsData?.map(
                                   ({
                                     _id,
                                     description,
@@ -205,7 +251,7 @@ const Materials = () => {
                                     unitEquipments,
                                   }: any) => (
                                     <div key={_id} className="mt-3">
-                                      <div className="grid grid-cols-8 gap-2 border border-b-graphiteGray border-transparent p-3 mt-3 border-opacity-20 bg-opacity-10">
+                                      <div className="grid grid-cols-8 gap-2 border border-b-graphiteGray border-transparent p-3 mt-3 border-opacity-20 bg-opacity-10 items-center">
                                         <Description
                                           title={description}
                                           className="col-span-2"
@@ -272,7 +318,7 @@ const Materials = () => {
                                                 src={
                                                   _id === selectedRowId
                                                     ? '/hand-drawn-tick.svg'
-                                                    : '/edit.svg'
+                                                    : '/edit-05.svg'
                                                 }
                                                 className="cursor-pointer w-8 h-5"
                                                 width={20}
@@ -297,7 +343,7 @@ const Materials = () => {
                                                 }}
                                               />
                                               <Image
-                                                src="/trash.svg"
+                                                src="/trash-2.svg"
                                                 className="cursor-pointer w-8"
                                                 width={20}
                                                 height={20}

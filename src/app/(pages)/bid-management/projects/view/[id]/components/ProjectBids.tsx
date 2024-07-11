@@ -7,7 +7,7 @@ import type {
 } from '@/app/interfaces/bid-management/bid-management.interface';
 import { bidManagementService } from '@/app/services/bid-management.service';
 import { USCurrencyFormat } from '@/app/utils/format';
-import { Divider, Skeleton, Table } from 'antd';
+import { Divider, Skeleton, Table, Tooltip } from 'antd';
 import { Excel } from 'antd-table-saveas-excel';
 import type { ColumnsType } from 'antd/es/table';
 import { AxiosError } from 'axios';
@@ -122,25 +122,24 @@ export function ProjectBids({ projectId }: Props) {
             // get same trades
 
             return (
-              <div
-                key={index}
-                className="flex space-x-2 items-center rounded-lg border-[#EAECF0] border bg-[#F9FAFB] py-3 px-4"
-              >
-                <div className="flex  items-center space-x-1">
+              <Tooltip key={index} title={tradeCount.trade}>
+                <div key={index} className="flex space-x-2 items-center rounded-lg border-[#EAECF0] border bg-[#F9FAFB] py-3 px-4">
+                  <div className="flex  items-center space-x-1">
+                    <SenaryHeading
+                      title={`${tradeCount.trade.slice(0, 10)}...`}
+                      className="text-[#667085] text-[14px] font-normal leading-6"
+                    />
+                    <SenaryHeading
+                      title=""
+                      className="text-[#667085] text-2xl font-semibold leading-8"
+                    />
+                  </div>
                   <SenaryHeading
-                    title={`${tradeCount.trade.slice(0, 10)}...`}
-                    className="text-[#667085] text-[14px] font-normal leading-6"
-                  />
-                  <SenaryHeading
-                    title=""
-                    className="text-[#667085] text-2xl font-semibold leading-8"
+                    title={`${tradeCount.proposalCount} Bids`}
+                    className="text-[#667085] text-base font-normal leading-6"
                   />
                 </div>
-                <SenaryHeading
-                  title={`${tradeCount.proposalCount} Bids`}
-                  className="text-[#667085] text-base font-normal leading-6"
-                />
-              </div>
+              </Tooltip>
             );
           })}
         </div>

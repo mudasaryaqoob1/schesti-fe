@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Form, Formik } from 'formik';
 
 import { bg_style } from '@/globals/tailwindvariables';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import CustomButton from '@/app/component/customButton/button';
+import WhiteButton from '@/app/component/customButton/white';
 import * as Yup from 'yup';
 import FormControl from '@/app/component/formControl';
 import SubCategoryTable from './Table';
@@ -27,6 +28,7 @@ import {
   setSubcategoryData,
 } from '@/redux/company/settingSlices/categories/subcategory.slice';
 import { withAuth } from '@/app/hoc/withAuth';
+import { UploadSubCategoriesModal } from './UploadSubCategoriesModal';
 
 export type SubcategoryInitValues = {
   name: string;
@@ -48,6 +50,9 @@ const validationSchema = Yup.object({
 });
 
 const AddSubcategory = () => {
+  const [showForm, setShowForm] = useState(false);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+
   const dispatch = useDispatch<AppDispatch>();
   const { subcategoryData } = useSelector(
     (state: any) => state.companySetupSubcategory
@@ -62,6 +67,7 @@ const AddSubcategory = () => {
   const categoriesReduxDataLoading = useSelector(
     companySetupSubcategoriesLoading
   );
+
 
   const fetchSubcategoriesHandler = useCallback(async () => {
     await dispatch(fetchSubCategories({ page: 1, limit: 10 }));
@@ -102,19 +108,20 @@ const AddSubcategory = () => {
         dispatch(refetchSubCategories());
         resetForm();
       }
+      setShowForm(false);
     }
   };
 
   const options = categoriesReduxData
     ? categoriesReduxData.map(({ name, _id }: ICategory) => ({
-        label: name,
-        value: _id,
-      }))
+      label: name,
+      value: _id,
+    }))
     : [];
 
   return (
     <>
-      <div className={`${bg_style} p-5`}>
+      {showForm ? <div className={`${bg_style} p-5`}>
         <TertiaryHeading title="Sub-Category" className="text-graphiteGray" />
         <Formik
           initialValues={initialValues}
@@ -159,33 +166,94 @@ const AddSubcategory = () => {
                     prefix="$"
                   />
                 </div>
-                <div className="flex justify-end mt-5 gap-3">
-                  <CustomButton
-                    text={
-                      subcategoryData ? 'Update Subcategory' : 'Add Subcategory'
-                    }
-                    type="submit"
-                    className="!w-auto "
-                    iconwidth={20}
-                    iconheight={20}
+                <div className='flex justify-between mt-5 items-center'>
+                  <WhiteButton
+                    text='Cancel'
+                    className='!w-fit'
+                    onClick={() => {
+                      setShowForm(false);
+                    }}
                   />
-                  {subcategoryData && (
+                  <div className="flex items-center gap-3">
                     <CustomButton
-                      type="button"
-                      text="Cancel"
-                      onClick={() => dispatch(setSubcategoryData(null))}
-                      className="!w-auto !bg-red-500 border-none"
+                      text={
+                        subcategoryData ? 'Update Subcategory' : 'Add Subcategory'
+                      }
+                      type="submit"
+                      className="!w-auto "
                       iconwidth={20}
                       iconheight={20}
                     />
-                  )}
+                    {subcategoryData && (
+                      <CustomButton
+                        type="button"
+                        text="Cancel"
+                        onClick={() => {
+                          dispatch(setSubcategoryData(null))
+                          setShowForm(false);
+                        }}
+                        className="!w-auto !bg-red-500 border-none"
+                        iconwidth={20}
+                        iconheight={20}
+                      />
+                    )}
+                  </div>
                 </div>
               </Form>
             );
           }}
         </Formik>
+      </div> : null}
+
+
+      <UploadSubCategoriesModal
+        open={showUploadModal}
+        setOpen={setShowUploadModal}
+        categories={categoriesReduxData ? categoriesReduxData : []}
+      />
+
+      <div className={`${bg_style} border border-solid border-silverGray mt-4 space-y-2 p-5`}>
+
+        <div className='flex justify-between items-center'>
+          <TertiaryHeading title={"Sub Categories"} className="text-graphiteGray" />
+          {!showForm ? <div className='flex gap-2 items-center'>
+            <WhiteButton
+              text='Upload File'
+              icon='/uploadcloud.svg'
+              iconwidth={20}
+              iconheight={20}
+              className='!w-fit'
+              loadingText='Uploading...'
+              onClick={() => {
+                setShowUploadModal(true)
+              }}
+            />
+
+            <input
+              type="file"
+              name=""
+              id=""
+              className='hidden'
+            />
+            <CustomButton
+              text='Add Subcategory'
+              className='!w-fit'
+              onClick={() => {
+                setShowForm(true)
+              }}
+            />
+          </div> : null}
+        </div>
+        <SubCategoryTable
+          onEdit={() => {
+            setShowForm(true);
+          }}
+
+          onDelete={() => {
+
+          }}
+        />
       </div>
-      <SubCategoryTable />
     </>
   );
 };

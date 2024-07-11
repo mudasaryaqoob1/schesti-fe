@@ -24,6 +24,9 @@ import EditTaget from './components/edit';
 import Image from 'next/image';
 import { ISettingTarget } from '@/app/interfaces/companyInterfaces/setting.interface';
 import { withAuth } from '@/app/hoc/withAuth';
+import { InputComponent } from '@/app/component/customInput/Input';
+import { SearchOutlined } from '@ant-design/icons';
+import { USCurrencyFormat } from '@/app/utils/format';
 
 export interface DataType {
   price: string;
@@ -36,6 +39,7 @@ const TargetsTable = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [search, setSearch] = useState('');
   const [selectedTarget, setSelectedTarget] = useState<
     undefined | Omit<ISettingTarget, 'year'>
   >();
@@ -60,7 +64,7 @@ const TargetsTable = () => {
       dataIndex: 'price',
       ellipsis: true,
       render(value) {
-        return `$${value}`;
+        return USCurrencyFormat.format(Number(value));
       },
     },
 
@@ -95,6 +99,13 @@ const TargetsTable = () => {
     },
   ];
 
+  const filteredData = settingTargetsData.filter(target => {
+    if (!search) {
+      return true;
+    }
+    return target.month.toLowerCase().includes(search.toLowerCase()) || target.price.toString().toLowerCase().includes(search.toLowerCase())
+  })
+
   return (
     <SettingSidebar>
       <ModalComponent
@@ -122,7 +133,7 @@ const TargetsTable = () => {
           settingTargetsData={settingTargetsData}
         />
       </ModalComponent>
-      <section>
+      <section className='w-full'>
         <div className="flex justify-between items-center">
           <TertiaryHeading title="Set Target" className="text-graphiteGray" />
           <Button
@@ -135,12 +146,26 @@ const TargetsTable = () => {
           />
         </div>
         <div
-          className={`${bg_style} border border-solid border-silverGray mt-4`}
+          className={`${bg_style} bg-white p-5 space-y-3 border border-solid border-silverGray mt-4`}
         >
+          <div className="w-96">
+            <InputComponent
+              label=''
+              name='search'
+              type='text'
+              placeholder='Search'
+              prefix={<SearchOutlined className='text-schestiLightBlack text-lg' />}
+              field={{
+                onChange: e => setSearch(e.target.value),
+                value: search,
+                allowClear: true,
+              }}
+            />
+          </div>
           <Table
             loading={settingTargetsLoading}
-            columns={columns}
-            dataSource={settingTargetsData}
+            columns={columns as any}
+            dataSource={filteredData}
             pagination={{ position: ['bottomCenter'] }}
           />
         </div>

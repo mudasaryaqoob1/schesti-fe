@@ -71,7 +71,6 @@ function Page() {
       width: 300,
       render(value, record) {
         const isNewProject = moment(record.createdAt).isSame(moment(), 'day');
-        console.log('isNewProject', isNewProject);
         return (
           <div className="flex items-center justify-between">
             <Link
@@ -220,10 +219,6 @@ function Page() {
                 key: 'view',
                 label: <p>View</p>,
               },
-              {
-                key: 'delete',
-                label: <p>Delete</p>,
-              },
             ],
             onClick: ({ key }) => {
               if (key === 'edit') {
@@ -341,7 +336,7 @@ function Page() {
           <DeletePopup
             closeModal={() => setShowProjectDeleteModal(false)}
             message="Are you sure you want to delete this project?"
-            onConfirm={() => {}}
+            onConfirm={() => { }}
             open={showProjectDeleteModal}
             title="Delete Project"
             isLoading={false}

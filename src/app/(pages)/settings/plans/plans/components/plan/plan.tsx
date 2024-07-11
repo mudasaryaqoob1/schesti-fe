@@ -55,8 +55,8 @@ const SinglePlan = (props: Props) => {
   const BTN =
     user && user.planId ? (
       <Button
-        text={user?.planId === _id ? 'Current Plan' : 'Upgrade'}
-        className="text-white self-stretch w-full"
+        text={user?.planId === _id ? 'Subscribed' : 'Upgrade'}
+        className={`text-white ${user?.planId === _id ? "!bg-schestiLightPrimary !text-schestiPrimaryBlack !border-schestiLightPrimary" : ""} self-stretch w-full`}
         onClick={() => {
           if (_id && props.user?.planId !== _id) {
             stripeUpgradeMutation.mutate(_id);
@@ -76,7 +76,7 @@ const SinglePlan = (props: Props) => {
 
   return (
     <div
-      className={`p-8 rounded-[20px] items-center flex flex-col justify-between shadow-secondaryShadow gap-5`}
+      className={`p-8 rounded-[20px] items-center flex flex-col justify-between bg-white shadow-secondaryShadow gap-5`}
     >
       <div className=" flex flex-col gap-8 items-start w-full">
         <h2 className={`${tertiaryHeading} text-graphiteGray`}>{planName}</h2>
@@ -102,7 +102,7 @@ const SinglePlan = (props: Props) => {
             <Fragment key={index}>
               <div className="self-start flex gap-2 items-center">
                 <Image
-                  src={'/tickpurle.svg'}
+                  src={'/tickcyan.svg'}
                   width={20}
                   height={20}
                   className="rounded-md"

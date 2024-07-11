@@ -116,7 +116,7 @@ function ProjectActivityAndStatusPDF({ activities, projectName }: Props) {
                     <View style={styles.flex}>
                       <Text style={styles.companyName}>
                         {typeof activityUser !== 'string'
-                          ? activityUser.companyName
+                          ? (activityUser.companyName || activityUser.organizationName)
                           : ''}
                       </Text>
                       <Text style={[styles.companyName, { marginLeft: 5 }]}>
