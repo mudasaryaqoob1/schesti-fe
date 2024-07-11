@@ -5,7 +5,7 @@ interface ToggleBtnProps {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   planType: string;
 }
-const Index: FC<ToggleBtnProps> = ({ planType, onChange }) => {
+const ToggleBtn: FC<ToggleBtnProps> = ({ planType, onChange }) => {
   console.log(planType, 'planTypeplanType');
 
   return (
@@ -22,17 +22,15 @@ const Index: FC<ToggleBtnProps> = ({ planType, onChange }) => {
           checked={planType === 'Individual' ? true : false}
         />
         <span
-          className={`px-4 py-2 rounded-lg ${
-            planType === 'Individual' ? 'bg-schestiPrimary text-white' : ''
-          } bg-schestiLightPrimary flex-1 text-center h-full grid place-items-center ${quaternaryHeading} font-medium 
+          className={`px-4 py-2 rounded-lg ${planType === 'Individual' ? 'bg-schestiPrimary text-white' : ''
+            } bg-schestiLightPrimary flex-1 text-center h-full grid place-items-center ${quaternaryHeading} font-medium 
         `}
         >
           Individual Plan
         </span>
         <span
-          className={`px-4 py-2 rounded-lg ${
-            planType === 'Enterprise' ? 'bg-schestiPrimary text-white' : ''
-          } bg-schestiLightPrimary flex-1 text-center h-full grid place-items-center ${quaternaryHeading} font-medium 
+          className={`px-4 py-2 rounded-lg ${planType === 'Enterprise' ? 'bg-schestiPrimary text-white' : ''
+            } bg-schestiLightPrimary flex-1 text-center h-full grid place-items-center ${quaternaryHeading} font-medium 
 `}
         >
           Enterprise Plan
@@ -42,4 +40,4 @@ const Index: FC<ToggleBtnProps> = ({ planType, onChange }) => {
   );
 };
 
-export default Index;
+export default ToggleBtn;

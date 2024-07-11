@@ -220,6 +220,9 @@ function VendorsPage() {
                     dispatch(insertManyCrmItemAction(items));
                     const remainingParsedData = _.differenceBy(parseData, items, 'email');
                     setParseData(remainingParsedData);
+                    if (inputFileRef.current) {
+                        inputFileRef.current.value = '';
+                    }
                 });
             }}
             setData={setParseData}

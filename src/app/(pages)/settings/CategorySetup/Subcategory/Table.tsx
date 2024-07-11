@@ -7,8 +7,6 @@ import React, {
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import Image from 'next/image';
-import { bg_style } from '@/globals/tailwindvariables';
-import TertiaryHeading from '@/app/component/headings/tertiary';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { AppDispatch } from '@/redux/store';
@@ -30,7 +28,15 @@ interface DataType {
   children?: DataType[];
 }
 
-const SubCategoryTable: React.FC = () => {
+type Props = {
+  onEdit: () => void;
+  onDelete: () => void;
+}
+
+const SubCategoryTable = ({
+  onEdit,
+  onDelete
+}: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const token = useSelector(selectToken);
 
@@ -116,22 +122,24 @@ const SubCategoryTable: React.FC = () => {
           return (
             <div className="flex gap-2 justify-center">
               <Image
-                src="/edit.svg"
+                src="/edit-2.svg"
                 className="cursor-pointer"
                 width={20}
                 height={20}
                 alt="edit"
                 onClick={() => {
+                  onEdit();
                   dispatch(setSubcategoryData(subCategoriesData));
                 }}
               />
               <Image
-                src="/trash.svg"
+                src="/trash-2.svg"
                 className="cursor-pointer"
                 width={20}
                 height={20}
                 alt="delete"
                 onClick={async () => {
+                  onDelete();
                   const { statusCode } =
                     await categoriesService.httpDeleteSubcategory(
                       subCategoriesData._id!
@@ -150,9 +158,7 @@ const SubCategoryTable: React.FC = () => {
 
   return (
     <div
-      className={`${bg_style} border border-solid border-silverGray mt-4 p-5`}
     >
-      <TertiaryHeading title="Sub Categories" className="text-graphiteGray" />
       <Table
         loading={subcategoriesReduxDataLoading}
         columns={columns}

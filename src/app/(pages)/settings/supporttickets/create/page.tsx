@@ -124,7 +124,7 @@ const CreateTicket = () => {
             />
             <Description
               title="Create New Ticket"
-              className="text-RoyalPurple"
+              className="text-schestiPrimary"
             />
           </div>
           <div className="mt-6">
@@ -192,7 +192,7 @@ const CreateTicket = () => {
                               <label
                                 htmlFor="uploadCompanyLogo"
                                 className={twMerge(
-                                  `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
+                                  `${senaryHeading} text-schestiPrimary font-semibold cursor-pointer`
                                 )}
                               >
                                 Upload Logo
@@ -236,7 +236,6 @@ const CreateTicket = () => {
                         <CustomButton
                           text="Create New Ticket"
                           type="submit"
-                          className="!bg-mediumSlateBlue"
                           isLoading={isLoading}
                         />
                       </span>

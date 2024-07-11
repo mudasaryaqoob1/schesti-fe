@@ -224,7 +224,7 @@ const GeneralSetting = () => {
                           <label
                             htmlFor="uploadCompanyLogo"
                             className={twMerge(
-                              `${senaryHeading} text-RoyalPurple font-semibold cursor-pointer`
+                              `${senaryHeading} text-schestiPrimary font-semibold cursor-pointer`
                             )}
                           >
                             Upload Logo

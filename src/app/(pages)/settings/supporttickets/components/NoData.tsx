@@ -13,7 +13,7 @@ const NoData = ({ onClick }: Iprops) => {
     <section className="mt-6 mx-4 grid items-center h-[70vh]">
       <div className="grid place-items-center">
         <div className="max-w-[500px] flex flex-col items-center p-4 gap-y-8">
-          <div className="bg-lightGray p-12 rounded-full">
+          <div className="bg-schestiLightPrimary p-12 rounded-full">
             <Image
               src={'/estimateempty.svg'}
               alt="create request icon"

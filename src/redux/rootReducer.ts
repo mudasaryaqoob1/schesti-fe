@@ -34,7 +34,7 @@ export type RootState = {
   estimates: any;
   supportTickets: any;
   takeoff: any;
-  settingTargets: any;
+  settingTargets: typeof settingTargetsSlice;
   user: any;
   pricingPlan: typeof pricingPlanReducer;
   companySetupCategory: typeof companySetupCategoryReducer;

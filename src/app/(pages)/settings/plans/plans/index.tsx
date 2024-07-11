@@ -1,6 +1,6 @@
 'use client';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
-import ToggleBtn from './components/toggleBtn';
+// import ToggleBtn from './components/toggleBtn';
 
 import SinglePlan from './components/plan/plan';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,8 +13,9 @@ import { Skeleton } from 'antd';
 import { AppDispatch } from '@/redux/store';
 import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
 import { fetchPricingPlan } from '@/redux/pricingPlanSlice/pricingPlan.thunk';
-import SwitchBtn from './components/switchbtn';
 import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
+import ToggleBtn from '@/app/component/plans/toggleBtn';
+import SwitchBtn from '@/app/component/plans/switchbtn';
 
 type Props = {
   user?: IUser;

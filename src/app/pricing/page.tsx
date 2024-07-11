@@ -1,7 +1,7 @@
 'use client';
 import { LandingNavbar } from '../component/navbar/LandingNavbar';
-import ToggleBtn from '@/app/(pages)/settings/plans/oldSubscriptions/components/toggleBtn';
-import SwitchBtn from '@/app/(pages)/settings/plans/oldSubscriptions/components/switchbtn';
+import ToggleBtn from '@/app/(pages)/settings/plans/plans/components/toggleBtn';
+import SwitchBtn from '@/app/(pages)/settings/plans/plans/components/switchbtn';
 import LandingFooter from '../component/footer/LandingFooter';
 import { Collapse, ConfigProvider, Skeleton, theme } from 'antd';
 import { ChangeEvent, useCallback, useEffect, useState } from 'react';
@@ -14,7 +14,7 @@ import {
   selectPricingPlansLoading,
 } from '@/redux/pricingPlanSlice/pricingPlan.selector';
 import { fetchPricingPlan } from '@/redux/pricingPlanSlice/pricingPlan.thunk';
-import SinglePlan from '../(pages)/settings/plans/oldSubscriptions/components/plan/plan';
+import SinglePlan from '../(pages)/settings/plans/plans/components/plan/plan';
 import { GatewayToEfficiency } from '../component/landing/GatewayToEfficiency';
 import { RequestForPost } from '../component/landing/RequestForPost';
 import { useRouterHook } from '../hooks/useRouterHook';

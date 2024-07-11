@@ -1,5 +1,3 @@
-import TertiaryHeading from '@/app/component/headings/tertiary';
-import { bg_style } from '@/globals/tailwindvariables';
 import Image from 'next/image';
 import { useDispatch, useSelector } from 'react-redux';
 import { Table } from 'antd';
@@ -15,6 +13,7 @@ import {
   companySetupCategoriesLoading,
 } from '@/redux/company/companySelector';
 import { setCategoryData } from '@/redux/company/settingSlices/categories/category.slice';
+import { ICategory } from '@/app/interfaces/companyInterfaces/setting.interface';
 
 export interface DataType {
   categoryId: string;
@@ -24,7 +23,15 @@ export interface DataType {
   action: string;
 }
 
-const CategoryTable = () => {
+type Props = {
+  onEdit: () => void;
+  onDelete: () => void;
+}
+
+const CategoryTable = ({
+  onDelete,
+  onEdit
+}: Props) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const selectCompanySetupData = useSelector(companySetupCategoriesData);
@@ -38,9 +45,9 @@ const CategoryTable = () => {
     fetchCategoriesHandler();
   }, []);
 
-  const columns: ColumnsType<DataType> = [
+  const columns: ColumnsType<ICategory> = [
     {
-      title: 'Category  ID',
+      title: 'Category #',
       dataIndex: 'categoryId',
     },
     {
@@ -53,7 +60,7 @@ const CategoryTable = () => {
       dataIndex: 'action',
       align: 'center',
       key: 'action',
-      render: (_, categoryData: DataType) => (
+      render: (_, categoryData) => (
         <div className="flex gap-2 justify-center">
           <Image
             src="/edit-2.svg"
@@ -62,6 +69,7 @@ const CategoryTable = () => {
             height={20}
             alt="edit"
             onClick={() => {
+              onEdit();
               dispatch(setCategoryData(categoryData));
               console.log({ categoryData }, 'category data in edit');
             }}
@@ -73,6 +81,7 @@ const CategoryTable = () => {
             height={20}
             alt="delete"
             onClick={() => {
+              onDelete();
               console.log(categoryData, 'category data in edit delete');
               dispatch(deleteCategory(categoryData._id!));
             }}
@@ -84,14 +93,14 @@ const CategoryTable = () => {
 
   return (
     <div
-      className={`${bg_style} border border-solid border-silverGray mt-4 p-5`}
+
     >
-      <TertiaryHeading title="Added Categories" className="text-graphiteGray" />
+
       <Table
         loading={companySetupLoading}
         columns={columns}
         className="mt-4"
-        dataSource={selectCompanySetupData}
+        dataSource={selectCompanySetupData ? selectCompanySetupData : []}
         pagination={{ position: ['bottomCenter'] }}
       />
     </div>
