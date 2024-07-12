@@ -6,50 +6,37 @@ import {
   useEffect,
   useCallback,
 } from 'react';
-import * as Yup from 'yup';
-import { Table } from 'antd';
-import { Formik, Form } from 'formik';
-import Image from 'next/image';
-import { useSearchParams } from 'next/navigation';
-import { toast } from 'react-toastify';
-import '../scopeStyle.css';
-import { useSelector, useDispatch } from 'react-redux';
-import CreatableSelect from 'react-select/creatable';
-import { components } from 'react-select';
-import { twMerge } from 'tailwind-merge';
 import clsx from 'clsx';
-
+import * as Yup from 'yup';
+import '../scopeStyle.css';
+import { Table } from 'antd';
+import Image from 'next/image';
+import { Formik, Form } from 'formik';
+import { toast } from 'react-toastify';
+import { twMerge } from 'tailwind-merge';
+import { components } from 'react-select';
+import CreatableSelect from 'react-select/creatable';
+import { useSelector, useDispatch } from 'react-redux';
+//  module imports
 import ModalComponent from '@/app/component/modal';
-import CustomWhiteButton from '@/app/component/customButton/white';
+import FormControl from '@/app/component/formControl';
+import { bg_style } from '@/globals/tailwindvariables';
+import { byteConverter } from '@/app/utils/byteConverter';
+import { formatNumberWithCommas } from '@/app/utils/helper';
+import { PositiveNumberRegex } from '@/app/utils/regex.util';
 import CustomButton from '@/app/component/customButton/button';
 import TertiaryHeading from '@/app/component/headings/tertiary';
-import FormControl from '@/app/component/formControl';
-import { categoriesService } from '@/app/services/categories.service';
+import EstimatesUnits from '@/app/constants/estimatesUnits.json';
 import { materialService } from '@/app/services/material.service';
-import { bg_style } from '@/globals/tailwindvariables';
+import CustomWhiteButton from '@/app/component/customButton/white';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import { estimateRequestService } from '@/app/services/estimates.service';
+import { categoriesService } from '@/app/services/categories.service';
 import { generateEstimateDetailAction } from '@/redux/estimate/estimateRequest.slice';
 import { selectGeneratedEstimateDetail } from '@/redux/estimate/estimateRequestSelector';
-import { PositiveNumberRegex } from '@/app/utils/regex.util';
-import { byteConverter } from '@/app/utils/byteConverter';
-// import { IUnits } from '@/app/interfaces/settings/material-settings.interface';
-import EstimatesUnits from '@/app/constants/estimatesUnits.json';
-import { formatNumberWithCommas } from '@/app/utils/helper';
-
-type InitialValuesType = {
-  category: string;
-  subCategory: string;
-  description: any;
-  unit: string;
-  qty: string;
-  wastage: string;
-  unitLabourHour: string;
-  perHourLaborRate: string;
-  unitMaterialCost: string;
-  unitEquipments: string;
-  index?: string;
-};
+import {
+  IinitialValues,
+  IEstimateScopeInitialValue,
+} from '@/app/interfaces/estimateRequests/estimateScopeInitialValue.interface';
 
 const validationSchema = Yup.object({
   category: Yup.string().required('Category is required!'),
@@ -100,27 +87,11 @@ const descriptionInputStyle: any = {
   }),
 };
 
-interface Props {
+interface IProps {
   setPrevNext: Dispatch<SetStateAction<number>>;
 }
 
-interface DataType {
-  category?: string;
-  subCategory?: string;
-  description: string;
-  unit: string;
-  qty: string;
-  wastage: string;
-  unitLabourHour: string;
-  perHourLaborRate: string;
-  unitMaterialCost: string;
-  unitEquipments: string;
-  tableKey: string;
-  tableItemKey: string;
-  Action: string;
-}
-
-const initialValues: InitialValuesType = {
+const initialValues: IinitialValues = {
   category: '',
   subCategory: '',
   description: '',
@@ -134,9 +105,6 @@ const initialValues: InitialValuesType = {
 };
 const { DropdownIndicator } = components;
 export const CustomDropdownIndicator = (props: any) => {
-  // const {
-  //   selectProps: { menuIsOpen }
-  // } = props;
   return (
     <DropdownIndicator {...props}>
       <Image
@@ -150,13 +118,10 @@ export const CustomDropdownIndicator = (props: any) => {
   );
 };
 
-const Scope = ({ setPrevNext }: Props) => {
-  const searchParams = useSearchParams();
+const Scope = ({ setPrevNext }: IProps) => {
   const dispatch = useDispatch();
 
   const { generateEstimateDetail } = useSelector(selectGeneratedEstimateDetail);
-
-  const estimateIdQueryParameter = searchParams.get('estimateId');
 
   const [estimateDetail, setEstimateDetail] = useState<any>({});
   const [planDocuments, setPlanDocuments] = useState<Object[]>([]);
@@ -169,6 +134,7 @@ const Scope = ({ setPrevNext }: Props) => {
   // const [selecteddescription, setsSelecteddescription] = useState('');
   const [editItem, setEditItem] = useState(false);
   const [editConfirmItem, setEditConfirmItem] = useState(false);
+  // const [estiamteUnits, setEstiamteUnits] = useState<IUnits[] | undefined>([]);
   const [confirmEstimates, setConfirmEstimates] = useState<
     {
       title: string;
@@ -230,17 +196,7 @@ const Scope = ({ setPrevNext }: Props) => {
   //   const unitsMaterials = await materialService.httpFetchMaterialUnits();
   //   setEstiamteUnits(unitsMaterials.data?.fetchedUnits);
   // }, []);
-  const fetchEstimateDetail = useCallback(async () => {
-    let result = await estimateRequestService.httpGetEstimateDetail(
-      estimateIdQueryParameter
-    );
-    setEstimateDetail(result.data.estimateDetail);
-    setPlanDocuments([
-      ...result.data.estimateDetail.drawingsDocuments,
-      ...result.data.estimateDetail.otherDocuments,
-      ...result.data.estimateDetail.takeOffReports,
-    ]);
-  }, []);
+
   const fetchMeterialDetail = useCallback(
     async (categoryId: string, subCategory: string) => {
       materialService
@@ -249,7 +205,7 @@ const Scope = ({ setPrevNext }: Props) => {
           let uniqueDescriptionsSet = new Set();
           // let uniqueUnitsSet = new Set();
           let fetchedDescriptions = result.data
-            .map((material: DataType) => {
+            .map((material: IEstimateScopeInitialValue) => {
               const description = material.description;
 
               if (!uniqueDescriptionsSet.has(description)) {
@@ -266,7 +222,7 @@ const Scope = ({ setPrevNext }: Props) => {
             .filter((description: any) => description !== null);
 
           // let fetchedUnits = result.data
-          //   .map((material: DataType) => {
+          //   .map((material: IEstimateScopeInitialValue) => {
           //     const unit = material.unit;
 
           //     if (!uniqueUnitsSet.has(unit)) {
@@ -294,7 +250,7 @@ const Scope = ({ setPrevNext }: Props) => {
 
   useEffect(() => {
     fetchCategories();
-    fetchEstimateDetail();
+    // fetchEstimateDetail();
     // fetchMaterialUnits();
   }, []);
   useEffect(() => {
@@ -356,10 +312,16 @@ const Scope = ({ setPrevNext }: Props) => {
     if (generateEstimateDetail?.estimateScope?.length) {
       setConfirmEstimates(generateEstimateDetail?.estimateScope);
     }
+    setEstimateDetail(generateEstimateDetail.estimateRequestIdDetail);
+    setPlanDocuments([
+      ...generateEstimateDetail.estimateRequestIdDetail.drawingsDocuments,
+      ...generateEstimateDetail.estimateRequestIdDetail.otherDocuments,
+      ...generateEstimateDetail.estimateRequestIdDetail.takeOffReports,
+    ]);
   }, [generateEstimateDetail]);
 
   const submitHandler = (
-    estimateTableItemValues: InitialValuesType,
+    estimateTableItemValues: IinitialValues,
     actions: any
   ) => {
     estimateTableItemValues['description'] =
@@ -644,7 +606,7 @@ const Scope = ({ setPrevNext }: Props) => {
     // fetchMeterialDetail(record.category, record.subCategory);
   };
 
-  const calculateTotalCost = (record: DataType) => {
+  const calculateTotalCost = (record: IEstimateScopeInitialValue) => {
     let perHourLaborRate = parseFloat(record.perHourLaborRate);
     let unitLabourHour = parseFloat(record.unitLabourHour);
     let quantity = parseFloat(record.qty);
@@ -694,7 +656,7 @@ const Scope = ({ setPrevNext }: Props) => {
       dataIndex: 'qtyWithWastage',
       align: 'center',
       width: 100,
-      render: (text: string, record: DataType) => {
+      render: (text: string, record: IEstimateScopeInitialValue) => {
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
         let result = quantity * (1 + wastagePercentage / 100);
@@ -706,7 +668,7 @@ const Scope = ({ setPrevNext }: Props) => {
       dataIndex: 'totalLabourHours',
       align: 'center',
       width: 120,
-      render: (text: string, record: DataType) => {
+      render: (text: string, record: IEstimateScopeInitialValue) => {
         let unitLabourHour = parseFloat(record.unitLabourHour);
         let wastagePercentage = parseFloat(record.wastage);
         let quantity = parseFloat(record.qty);
@@ -729,7 +691,7 @@ const Scope = ({ setPrevNext }: Props) => {
       dataIndex: 'totalLaborCost',
       align: 'center',
       width: 120,
-      render: (text: string, record: DataType) => {
+      render: (text: string, record: IEstimateScopeInitialValue) => {
         let unitLabourHour = parseFloat(record.unitLabourHour);
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
@@ -754,7 +716,7 @@ const Scope = ({ setPrevNext }: Props) => {
       dataIndex: 'totalMaterialCost',
       align: 'center',
       width: 120,
-      render: (text: string, record: DataType) => {
+      render: (text: string, record: IEstimateScopeInitialValue) => {
         let unitMaterialCost = parseFloat(record.unitMaterialCost);
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
@@ -768,7 +730,7 @@ const Scope = ({ setPrevNext }: Props) => {
       dataIndex: 'totalEquipmentCost',
       align: 'center',
       width: 140,
-      render: (text: string, record: DataType) => {
+      render: (text: string, record: IEstimateScopeInitialValue) => {
         let unitEquipments = parseFloat(record.unitEquipments);
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
@@ -782,7 +744,7 @@ const Scope = ({ setPrevNext }: Props) => {
       dataIndex: 'totalCost',
       align: 'center',
       width: 150,
-      render: (text: string, record: DataType) => {
+      render: (text: string, record: IEstimateScopeInitialValue) => {
         let result = calculateTotalCost(record);
         return `$${formatNumberWithCommas(result)}`;
       },
@@ -795,7 +757,7 @@ const Scope = ({ setPrevNext }: Props) => {
       key: 'action',
       fixed: 'right',
       width: 100,
-      render: (text: string, record: DataType) => (
+      render: (text: string, record: IEstimateScopeInitialValue) => (
         <div className="flex gap-2 justify-center">
           <Image
             src="/edit.svg"
@@ -851,7 +813,7 @@ const Scope = ({ setPrevNext }: Props) => {
       dataIndex: 'qtyWithWastage',
       align: 'center',
       width: 100,
-      render: (text: string, record: DataType) => {
+      render: (text: string, record: IEstimateScopeInitialValue) => {
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
         let result = quantity * (1 + wastagePercentage / 100);
@@ -863,7 +825,7 @@ const Scope = ({ setPrevNext }: Props) => {
       dataIndex: 'totalLabourHours',
       align: 'center',
       width: 120,
-      render: (text: string, record: DataType) => {
+      render: (text: string, record: IEstimateScopeInitialValue) => {
         let unitLabourHour = parseFloat(record.unitLabourHour);
         let wastagePercentage = parseFloat(record.wastage);
         let quantity = parseFloat(record.qty);
@@ -886,7 +848,7 @@ const Scope = ({ setPrevNext }: Props) => {
       dataIndex: 'totalLaborCost',
       align: 'center',
       width: 120,
-      render: (text: string, record: DataType) => {
+      render: (text: string, record: IEstimateScopeInitialValue) => {
         let unitLabourHour = parseFloat(record.unitLabourHour);
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
@@ -911,7 +873,7 @@ const Scope = ({ setPrevNext }: Props) => {
       dataIndex: 'totalMaterialCost',
       align: 'center',
       width: 120,
-      render: (text: string, record: DataType) => {
+      render: (text: string, record: IEstimateScopeInitialValue) => {
         let unitMaterialCost = parseFloat(record.unitMaterialCost);
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
@@ -925,7 +887,7 @@ const Scope = ({ setPrevNext }: Props) => {
       dataIndex: 'totalEquipmentCost',
       align: 'center',
       width: 140,
-      render: (text: string, record: DataType) => {
+      render: (text: string, record: IEstimateScopeInitialValue) => {
         let unitEquipments = parseFloat(record.unitEquipments);
         let quantity = parseFloat(record.qty);
         let wastagePercentage = parseFloat(record.wastage);
@@ -939,7 +901,7 @@ const Scope = ({ setPrevNext }: Props) => {
       dataIndex: 'totalCost',
       align: 'center',
       width: 150,
-      render: (text: string, record: DataType) => {
+      render: (text: string, record: IEstimateScopeInitialValue) => {
         let result = calculateTotalCost(record);
         return `$${formatNumberWithCommas(result)}`;
       },
@@ -952,7 +914,7 @@ const Scope = ({ setPrevNext }: Props) => {
       key: 'action',
       fixed: 'right',
       width: 100,
-      render: (text: string, record: DataType) => (
+      render: (text: string, record: IEstimateScopeInitialValue) => (
         <div className="flex gap-2 justify-center">
           <Image
             src="/edit.svg"
@@ -1040,8 +1002,6 @@ const Scope = ({ setPrevNext }: Props) => {
     }
   };
 
-  console.log(estimateDescriptions, 'estimateDescriptions');
-
   return (
     <div>
       <div className="flex justify-between items-center mb-3">
@@ -1081,8 +1041,6 @@ const Scope = ({ setPrevNext }: Props) => {
         onSubmit={submitHandler}
       >
         {({ handleSubmit, values, setFieldValue, errors }) => {
-          console.log(values, 'valuesvaluesvalues');
-
           return (
             <>
               <Form
@@ -1284,7 +1242,9 @@ const Scope = ({ setPrevNext }: Props) => {
                         className="mt-2"
                         loading={false}
                         columns={columns}
-                        dataSource={estimateData.scopeItems as DataType[]}
+                        dataSource={
+                          estimateData.scopeItems as IEstimateScopeInitialValue[]
+                        }
                         pagination={false}
                         scroll={{ x: 1000 }}
                       />
@@ -1333,7 +1293,9 @@ const Scope = ({ setPrevNext }: Props) => {
                             className="mt-2"
                             loading={false}
                             columns={confirmColumns}
-                            dataSource={estimate.scopeItems as DataType[]}
+                            dataSource={
+                              estimate.scopeItems as IEstimateScopeInitialValue[]
+                            }
                             pagination={false}
                             scroll={{ x: 1000 }}
                           />

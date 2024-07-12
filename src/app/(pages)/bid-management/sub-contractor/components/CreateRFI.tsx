@@ -108,7 +108,7 @@ export function CreateRFI({
       }}
     >
       {isProjectOwner ? (
-        <span className='text-schestiPrimary'>New</span>
+        <span className="text-schestiPrimary">New</span>
       ) : (
         <CustomButton
           text="Send an RFI"

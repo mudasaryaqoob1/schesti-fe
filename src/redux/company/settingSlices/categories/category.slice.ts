@@ -24,8 +24,8 @@ export const categorySlice = createSlice({
     },
 
     insertManyCategoriesAction: (state, action: PayloadAction<ICategory[]>) => {
-      state.data = [...action.payload, ...state.data!,];
-    }
+      state.data = [...action.payload, ...state.data!];
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchCategories.pending, (state) => {
@@ -62,6 +62,10 @@ export const categorySlice = createSlice({
     });
   },
 });
-export const { addNewCategoryData, setCategoryData, updateCategoryData, insertManyCategoriesAction } =
-  categorySlice.actions;
+export const {
+  addNewCategoryData,
+  setCategoryData,
+  updateCategoryData,
+  insertManyCategoriesAction,
+} = categorySlice.actions;
 export default categorySlice.reducer;

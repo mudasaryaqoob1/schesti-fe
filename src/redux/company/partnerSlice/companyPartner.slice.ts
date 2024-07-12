@@ -11,7 +11,7 @@ export const partnerSlice = createSlice({
       if (state.data) {
         state.data = [...action.payload, ...state.data];
       }
-    }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchCompanyPartner.pending, (state) => {

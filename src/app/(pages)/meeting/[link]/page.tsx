@@ -20,27 +20,29 @@ import { toast } from 'react-toastify';
 function JoinMeeting() {
   const { link: roomName } = useParams();
   const router = useRouterHook();
-  const [meeting, setMeeting] = useState<null | IMeeting>(null)
+  const [meeting, setMeeting] = useState<null | IMeeting>(null);
   const [loading, setIsLoading] = useState(false);
-
-
 
   const fetchMeetingByRoomname = async () => {
     if (roomName) {
       setIsLoading(true);
       try {
-        const response = await meetingService.httpGetMeetingByRoomName(roomName as string);
+        const response = await meetingService.httpGetMeetingByRoomName(
+          roomName as string
+        );
         if (response.data && response.data.meeting) {
           setMeeting(response.data.meeting);
         }
       } catch (error) {
         const err = error as AxiosError<{ message: string }>;
-        toast.error(err.response?.data.message || "Error while fetching meeting");
+        toast.error(
+          err.response?.data.message || 'Error while fetching meeting'
+        );
       } finally {
         setIsLoading(false);
       }
     }
-  }
+  };
 
   useEffect(() => {
     fetchMeetingByRoomname();
@@ -49,7 +51,6 @@ function JoinMeeting() {
   if (loading) {
     return <Skeleton active className="m-6" />;
   }
-
 
   if (!meeting) {
     return (
@@ -89,7 +90,7 @@ function JoinMeeting() {
           isMeetingNotStarted(meeting) ? (
             <ModalComponent
               open={!isMeetingActive(meeting)}
-              setOpen={() => { }}
+              setOpen={() => {}}
               title="Meeting link is not active"
               width="40%"
             >
@@ -129,4 +130,4 @@ function JoinMeeting() {
   );
 }
 
-export default withAuth(JoinMeeting)
+export default withAuth(JoinMeeting);

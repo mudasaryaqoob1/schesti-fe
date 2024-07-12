@@ -45,8 +45,9 @@ const Index = () => {
         {tabs.map((tab, index) => (
           <p
             key={tab.id + index}
-            className={`py-3 px-3 !text-sm cursor-pointer transition-colors ${senaryHeading} ${tab.route.includes(pathname) ? active : ''
-              } `}
+            className={`py-3 px-3 !text-sm cursor-pointer transition-colors ${senaryHeading} ${
+              tab.route.includes(pathname) ? active : ''
+            } `}
             onClick={() => router.push(tab.route[0])}
           >
             {tab.name}

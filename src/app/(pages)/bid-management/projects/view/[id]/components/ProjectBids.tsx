@@ -123,7 +123,10 @@ export function ProjectBids({ projectId }: Props) {
 
             return (
               <Tooltip key={index} title={tradeCount.trade}>
-                <div key={index} className="flex space-x-2 items-center rounded-lg border-[#EAECF0] border bg-[#F9FAFB] py-3 px-4">
+                <div
+                  key={index}
+                  className="flex space-x-2 items-center rounded-lg border-[#EAECF0] border bg-[#F9FAFB] py-3 px-4"
+                >
                   <div className="flex  items-center space-x-1">
                     <SenaryHeading
                       title={`${tradeCount.trade.slice(0, 10)}...`}

@@ -56,7 +56,7 @@ const SinglePlan = (props: Props) => {
     user && user.planId ? (
       <Button
         text={user?.planId === _id ? 'Subscribed' : 'Upgrade'}
-        className={`text-white ${user?.planId === _id ? "!bg-schestiLightPrimary !text-schestiPrimaryBlack !border-schestiLightPrimary" : ""} self-stretch w-full`}
+        className={`text-white ${user?.planId === _id ? '!bg-schestiLightPrimary !text-schestiPrimaryBlack !border-schestiLightPrimary' : ''} self-stretch w-full`}
         onClick={() => {
           if (_id && props.user?.planId !== _id) {
             stripeUpgradeMutation.mutate(_id);

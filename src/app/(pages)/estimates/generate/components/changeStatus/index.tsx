@@ -24,7 +24,6 @@ const ChangeStatus = ({
     reason: '',
   });
 
-
   const submitHandler = async () => {
     setFormError('');
     if (!estimateStatus) {
@@ -32,7 +31,10 @@ const ChangeStatus = ({
     } else if (lostReason.status == 'lost' && lostReason.reason == '') {
       setFormError('Reason is required');
     } else {
-      let dataObj = { status: estimateStatus, reason: lostReason.status };
+      let dataObj = {
+        status: estimateStatus === 'lost' ? lostReason.status : estimateStatus,
+        reason: lostReason.status,
+      };
       let deleteEstimateResult =
         await estimateRequestService.httpChangeGeneratedEstimateStatus(
           estimateDetail._id,

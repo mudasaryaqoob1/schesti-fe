@@ -1,4 +1,4 @@
-import { IClient } from "@/app/interfaces/companyInterfaces/companyClient.interface";
+import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 
 interface IClients {
   loading: boolean;

@@ -62,19 +62,18 @@ const CreateClient = () => {
     try {
       const response = await crmService.httpCreate({
         ...values,
-        module: "clients"
+        module: 'clients',
       });
       if (response.data) {
-        toast.success("Client created successfully");
+        toast.success('Client created successfully');
         router.push(Routes.CRM.Clients);
       }
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
-      toast.error(err.response?.data.message || "Unable to create client");
+      toast.error(err.response?.data.message || 'Unable to create client');
     } finally {
       setIsLoading(false);
     }
-
   };
 
   return (

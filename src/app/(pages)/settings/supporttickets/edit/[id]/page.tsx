@@ -142,7 +142,10 @@ const EditSupportTicket = () => {
               width={16}
               height={16}
             />
-            <Description title="Update Ticket" className="text-schestiPrimary" />
+            <Description
+              title="Update Ticket"
+              className="text-schestiPrimary"
+            />
           </div>
           <div className="mt-6 ">
             {/* <div>
@@ -158,10 +161,10 @@ const EditSupportTicket = () => {
                 initialValues={
                   supportTicketData
                     ? {
-                      title: supportTicketData.title,
-                      description: supportTicketData.description,
-                      file: supportTicketData.file,
-                    }
+                        title: supportTicketData.title,
+                        description: supportTicketData.description,
+                        file: supportTicketData.file,
+                      }
                     : initialValues
                 }
                 validationSchema={validationSchema}

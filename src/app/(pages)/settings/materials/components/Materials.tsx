@@ -52,8 +52,11 @@ const Materials = () => {
     let result: any = await dispatch(fetchMaterials({ page: 1, limit: 10 }));
     if (result.payload.data.length) {
       setMeterialDataWithCategories(result.payload.data);
-      setCollapsed(result.payload.data[0]._id ? result.payload.data[0]._id.subcategoryId : '');
-
+      setCollapsed(
+        result.payload.data[0]._id
+          ? result.payload.data[0]._id.subcategoryId
+          : ''
+      );
     }
   }, []);
 
@@ -91,27 +94,32 @@ const Materials = () => {
       updateMaterialData(data);
     }
   };
-  const filteredData = meterialDataWithCategories.filter((item) => {
-    if (!search) {
-      return true;
-    }
-    return (
-      item._id.categoryName.toLowerCase().includes(search.toLowerCase()) ||
-      item._id.subcategoryName.toLowerCase().includes(search.toLowerCase())
-    );
-  }).filter(item => {
-    if (!categoryFilter) {
-      return true;
-    }
-    return item._id.subcategoryId === categoryFilter;
-  });
+  const filteredData = meterialDataWithCategories
+    .filter((item) => {
+      if (!search) {
+        return true;
+      }
+      return (
+        item._id.categoryName.toLowerCase().includes(search.toLowerCase()) ||
+        item._id.subcategoryName.toLowerCase().includes(search.toLowerCase())
+      );
+    })
+    .filter((item) => {
+      if (!categoryFilter) {
+        return true;
+      }
+      return item._id.subcategoryId === categoryFilter;
+    });
 
-  const dropdownOptions = _.uniqBy(meterialDataWithCategories.map(item => {
-    return {
-      label: `${item._id.categoryName} - ${item._id.subcategoryName}`,
-      value: item._id.subcategoryId
-    }
-  }), "value");
+  const dropdownOptions = _.uniqBy(
+    meterialDataWithCategories.map((item) => {
+      return {
+        label: `${item._id.categoryName} - ${item._id.subcategoryName}`,
+        value: item._id.subcategoryId,
+      };
+    }),
+    'value'
+  );
 
   return (
     <>
@@ -155,9 +163,9 @@ const Materials = () => {
                         />
                       </div>
                       <SelectComponent
-                        label=''
-                        placeholder='Category'
-                        name='category'
+                        label=""
+                        placeholder="Category"
+                        name="category"
                         field={{
                           value: categoryFilter ? categoryFilter : undefined,
                           options: dropdownOptions,
@@ -169,8 +177,8 @@ const Materials = () => {
                             setCategoryFilter('');
                           },
                           dropdownStyle: {
-                            width: 300
-                          }
+                            width: 300,
+                          },
                         }}
                       />
                       <CustomButton
@@ -232,7 +240,9 @@ const Materials = () => {
                                       height={16}
                                       className="cursor-pointer"
                                       onClick={() => {
-                                        if (collapsed === category.subcategoryId) {
+                                        if (
+                                          collapsed === category.subcategoryId
+                                        ) {
                                           setCollapsed('');
                                         } else {
                                           setCollapsed(category.subcategoryId);
@@ -241,131 +251,132 @@ const Materials = () => {
                                     />
                                   </div>
                                 </div>
-                                {collapsed === category.subcategoryId && materialsData?.map(
-                                  ({
-                                    _id,
-                                    description,
-                                    unit,
-                                    unitLabourHour,
-                                    unitMaterialCost,
-                                    unitEquipments,
-                                  }: any) => (
-                                    <div key={_id} className="mt-3">
-                                      <div className="grid grid-cols-8 gap-2 border border-b-graphiteGray border-transparent p-3 mt-3 border-opacity-20 bg-opacity-10 items-center">
-                                        <Description
-                                          title={description}
-                                          className="col-span-2"
-                                        />
-                                        <Description
-                                          title={unit}
-                                          className="col-span-1"
-                                        />
-                                        <div className="col-span-1">
-                                          <FormControl
-                                            control="simpleInput"
-                                            type="text"
-                                            value={
-                                              _id === selectedRowId
-                                                ? values.unitLabourHour
-                                                : unitLabourHour
-                                            }
-                                            disabled={_id !== selectedRowId}
-                                            placeholder="Labour Hour"
-                                            name="unitLabourHour"
+                                {collapsed === category.subcategoryId &&
+                                  materialsData?.map(
+                                    ({
+                                      _id,
+                                      description,
+                                      unit,
+                                      unitLabourHour,
+                                      unitMaterialCost,
+                                      unitEquipments,
+                                    }: any) => (
+                                      <div key={_id} className="mt-3">
+                                        <div className="grid grid-cols-8 gap-2 border border-b-graphiteGray border-transparent p-3 mt-3 border-opacity-20 bg-opacity-10 items-center">
+                                          <Description
+                                            title={description}
+                                            className="col-span-2"
                                           />
-                                        </div>
-                                        <div className="col-span-1">
-                                          <FormControl
-                                            control="simpleInput"
-                                            type="text"
-                                            value={
-                                              _id === selectedRowId
-                                                ? values.unitMaterialCost
-                                                : unitMaterialCost
-                                            }
-                                            disabled={_id !== selectedRowId}
-                                            placeholder="Material Cost"
-                                            name="unitMaterialCost"
-                                            prefix="$"
+                                          <Description
+                                            title={unit}
+                                            className="col-span-1"
                                           />
-                                        </div>
-                                        <div className="col-span-1 flex gap-2">
-                                          <FormControl
-                                            control="simpleInput"
-                                            type="text"
-                                            value={
-                                              _id === selectedRowId
-                                                ? values.unitEquipments
-                                                : unitEquipments
-                                            }
-                                            disabled={_id !== selectedRowId}
-                                            placeholder="Unit Equipment"
-                                            name="unitEquipments"
-                                            prefix="$"
-                                          />
-                                        </div>
-                                        <div className="col-span-1 flex justify-center items-center">
-                                          {_id === selectedRowId ? (
-                                            <button
-                                              className="bg-transparent cursor-pointer text-[#7138DF] border-[1px] border-[#7138DF] text-[16px] rounded p-1"
-                                              type="submit"
-                                            >
-                                              Update
-                                            </button>
-                                          ) : (
-                                            <>
-                                              <Image
-                                                src={
-                                                  _id === selectedRowId
-                                                    ? '/hand-drawn-tick.svg'
-                                                    : '/edit-05.svg'
-                                                }
-                                                className="cursor-pointer w-8 h-5"
-                                                width={20}
-                                                height={20}
-                                                alt="edit"
-                                                onClick={() => {
-                                                  if (_id !== selectedRowId) {
-                                                    setFieldValue(
-                                                      'unitMaterialCost',
-                                                      unitMaterialCost
-                                                    );
-                                                    setFieldValue(
-                                                      'unitLabourHour',
-                                                      unitLabourHour
-                                                    );
-                                                    setFieldValue(
-                                                      'unitEquipments',
-                                                      unitEquipments
-                                                    );
-                                                    setSelectedRowId(_id);
+                                          <div className="col-span-1">
+                                            <FormControl
+                                              control="simpleInput"
+                                              type="text"
+                                              value={
+                                                _id === selectedRowId
+                                                  ? values.unitLabourHour
+                                                  : unitLabourHour
+                                              }
+                                              disabled={_id !== selectedRowId}
+                                              placeholder="Labour Hour"
+                                              name="unitLabourHour"
+                                            />
+                                          </div>
+                                          <div className="col-span-1">
+                                            <FormControl
+                                              control="simpleInput"
+                                              type="text"
+                                              value={
+                                                _id === selectedRowId
+                                                  ? values.unitMaterialCost
+                                                  : unitMaterialCost
+                                              }
+                                              disabled={_id !== selectedRowId}
+                                              placeholder="Material Cost"
+                                              name="unitMaterialCost"
+                                              prefix="$"
+                                            />
+                                          </div>
+                                          <div className="col-span-1 flex gap-2">
+                                            <FormControl
+                                              control="simpleInput"
+                                              type="text"
+                                              value={
+                                                _id === selectedRowId
+                                                  ? values.unitEquipments
+                                                  : unitEquipments
+                                              }
+                                              disabled={_id !== selectedRowId}
+                                              placeholder="Unit Equipment"
+                                              name="unitEquipments"
+                                              prefix="$"
+                                            />
+                                          </div>
+                                          <div className="col-span-1 flex justify-center items-center">
+                                            {_id === selectedRowId ? (
+                                              <button
+                                                className="bg-transparent cursor-pointer text-[#7138DF] border-[1px] border-[#7138DF] text-[16px] rounded p-1"
+                                                type="submit"
+                                              >
+                                                Update
+                                              </button>
+                                            ) : (
+                                              <>
+                                                <Image
+                                                  src={
+                                                    _id === selectedRowId
+                                                      ? '/hand-drawn-tick.svg'
+                                                      : '/edit-05.svg'
                                                   }
-                                                }}
-                                              />
-                                              <Image
-                                                src="/trash-2.svg"
-                                                className="cursor-pointer w-8"
-                                                width={20}
-                                                height={20}
-                                                alt="delete"
-                                                onClick={async () => {
-                                                  const { statusCode } =
-                                                    await materialService.httpDeleteMaterial(
-                                                      _id
-                                                    );
-                                                  if (statusCode === 200) {
-                                                    fetchMaterialsData();
-                                                    // dispatch(deleteMaterialData(data));
-                                                  }
-                                                }}
-                                              />
-                                            </>
-                                          )}
+                                                  className="cursor-pointer w-8 h-5"
+                                                  width={20}
+                                                  height={20}
+                                                  alt="edit"
+                                                  onClick={() => {
+                                                    if (_id !== selectedRowId) {
+                                                      setFieldValue(
+                                                        'unitMaterialCost',
+                                                        unitMaterialCost
+                                                      );
+                                                      setFieldValue(
+                                                        'unitLabourHour',
+                                                        unitLabourHour
+                                                      );
+                                                      setFieldValue(
+                                                        'unitEquipments',
+                                                        unitEquipments
+                                                      );
+                                                      setSelectedRowId(_id);
+                                                    }
+                                                  }}
+                                                />
+                                                <Image
+                                                  src="/trash-2.svg"
+                                                  className="cursor-pointer w-8"
+                                                  width={20}
+                                                  height={20}
+                                                  alt="delete"
+                                                  onClick={async () => {
+                                                    const { statusCode } =
+                                                      await materialService.httpDeleteMaterial(
+                                                        _id
+                                                      );
+                                                    if (statusCode === 200) {
+                                                      fetchMaterialsData();
+                                                      // dispatch(deleteMaterialData(data));
+                                                    }
+                                                  }}
+                                                />
+                                              </>
+                                            )}
+                                          </div>
                                         </div>
                                       </div>
-                                    </div>
-                                  )
-                                )}
+                                    )
+                                  )}
                               </div>
                             );
                           }

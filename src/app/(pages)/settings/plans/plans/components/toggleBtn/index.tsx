@@ -22,15 +22,17 @@ const Index: FC<ToggleBtnProps> = ({ planType, onChange }) => {
           checked={planType === 'Individual' ? true : false}
         />
         <span
-          className={`px-4 py-2 rounded-full ${planType === 'Individual' ? 'bg-schestiPrimary text-white' : ''
-            } bg-schestiLightPrimary flex-1 text-center h-full grid place-items-center ${quaternaryHeading} font-medium 
+          className={`px-4 py-2 rounded-full ${
+            planType === 'Individual' ? 'bg-schestiPrimary text-white' : ''
+          } bg-schestiLightPrimary flex-1 text-center h-full grid place-items-center ${quaternaryHeading} font-medium 
         `}
         >
           Individual Plan
         </span>
         <span
-          className={`px-4 py-2 rounded-full ${planType === 'Enterprise' ? 'bg-schestiPrimary text-white' : ''
-            } bg-schestiLightPrimary flex-1 text-center h-full grid place-items-center ${quaternaryHeading} font-medium 
+          className={`px-4 py-2 rounded-full ${
+            planType === 'Enterprise' ? 'bg-schestiPrimary text-white' : ''
+          } bg-schestiLightPrimary flex-1 text-center h-full grid place-items-center ${quaternaryHeading} font-medium 
 `}
         >
           Enterprise Plan

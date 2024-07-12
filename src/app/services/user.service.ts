@@ -64,12 +64,14 @@ class UserService extends HttpService {
   ): Promise<IResponseInterface> =>
     this.get(`${this.companyPrefix}/allClients?page=${page}&limit=${limit}`);
 
-
-  httpUploadCrmClientsCsvAndParse = (data: FormData): Promise<IResponseInterface<IClient[]>> => this.post(`${this.companyPrefix}/parse-data`, data, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  })
+  httpUploadCrmClientsCsvAndParse = (
+    data: FormData
+  ): Promise<IResponseInterface<IClient[]>> =>
+    this.post(`${this.companyPrefix}/parse-data`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
 
   httpGetAllCompanyClients = (): Promise<
     IResponseInterface<{ clients: IClient[] }>
@@ -114,7 +116,9 @@ class UserService extends HttpService {
   ): Promise<IResponseInterface> =>
     this.get(`${this.partnerPrefix}/allPartners?page=${page}&limit=${limit}`);
 
-  httpAddNewPartner = (data: IPartner): Promise<IResponseInterface<{ client: IPartner }>> =>
+  httpAddNewPartner = (
+    data: IPartner
+  ): Promise<IResponseInterface<{ client: IPartner }>> =>
     this.post(`${this.partnerPrefix}/newPartner`, data);
 
   httpUpdatePartner = (
@@ -126,11 +130,14 @@ class UserService extends HttpService {
   httpDeletePartner = (partnerId: string): Promise<IResponseInterface> =>
     this.post(`${this.partnerPrefix}/deletePartner/${partnerId}`);
 
-  httpUploadCrmPartnersCsvAndParse = (data: FormData): Promise<IResponseInterface<IClient[]>> => this.post(`${this.partnerPrefix}/parse-data`, data, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  })
+  httpUploadCrmPartnersCsvAndParse = (
+    data: FormData
+  ): Promise<IResponseInterface<IClient[]>> =>
+    this.post(`${this.partnerPrefix}/parse-data`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
 
   httpFindCompanyPartnerDetail = (
     id: string

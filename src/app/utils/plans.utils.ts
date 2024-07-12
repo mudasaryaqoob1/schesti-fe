@@ -21,9 +21,9 @@ export const Routes = {
     Clients: '/crm/clients',
     'Sub-Contractors': '/crm/sub-contractors',
     Partners: '/crm/partners',
-    'Contractors': '/crm/contractors',
-    'Architects': '/crm/architects',
-    'Vendors': '/crm/vendors',
+    Contractors: '/crm/contractors',
+    Architects: '/crm/architects',
+    Vendors: '/crm/vendors',
   },
   'Quantity-Takeoff': {
     Manual: '/takeoff',

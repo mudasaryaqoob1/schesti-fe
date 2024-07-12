@@ -26,12 +26,9 @@ export interface DataType {
 type Props = {
   onEdit: () => void;
   onDelete: () => void;
-}
+};
 
-const CategoryTable = ({
-  onDelete,
-  onEdit
-}: Props) => {
+const CategoryTable = ({ onDelete, onEdit }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const selectCompanySetupData = useSelector(companySetupCategoriesData);
@@ -92,10 +89,7 @@ const CategoryTable = ({
   ];
 
   return (
-    <div
-
-    >
-
+    <div>
       <Table
         loading={companySetupLoading}
         columns={columns}

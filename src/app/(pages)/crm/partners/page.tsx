@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, useRef, } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Dropdown, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import type { MenuProps } from 'antd';
@@ -22,14 +22,29 @@ import { Routes } from '@/app/utils/plans.utils';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { PreviewCSVImportFileModal } from '../components/PreviewCSVImportFileModal';
 
-import { CrmPartnerParsedType, CrmType, ICrmItem, ICrmPartnerModule } from '@/app/interfaces/crm/crm.interface';
-import { getCrmItemsThunk, updateCrmItemStatusThunk } from '@/redux/crm/crm.thunk';
-import { deleteCrmItemById, downloadCrmItemsAsCSV, saveManyCrmItems, uploadAndParseCSVData } from '../utils';
-import { insertManyCrmItemAction, removeCrmItemAction } from '@/redux/crm/crm.slice';
+import {
+  CrmPartnerParsedType,
+  CrmType,
+  ICrmItem,
+  ICrmPartnerModule,
+} from '@/app/interfaces/crm/crm.interface';
+import {
+  getCrmItemsThunk,
+  updateCrmItemStatusThunk,
+} from '@/redux/crm/crm.thunk';
+import {
+  deleteCrmItemById,
+  downloadCrmItemsAsCSV,
+  saveManyCrmItems,
+  uploadAndParseCSVData,
+} from '../utils';
+import {
+  insertManyCrmItemAction,
+  removeCrmItemAction,
+} from '@/redux/crm/crm.slice';
 import _ from 'lodash';
 
 import { CrmStatusFilter } from '../components/CrmStatusFilter';
-
 
 const items: MenuProps['items'] = [
   {
@@ -56,10 +71,10 @@ const items: MenuProps['items'] = [
 
 const inactiveMenuItems: MenuProps['items'] = [
   {
-    key: "active",
-    label: <p>Active</p>
-  }
-]
+    key: 'active',
+    label: <p>Active</p>,
+  },
+];
 
 const PartnerTable = () => {
   const router = useRouterHook();
@@ -77,12 +92,9 @@ const PartnerTable = () => {
   const [duplicates, setDuplicates] = useState<CrmPartnerParsedType[]>([]);
   const [isSavingMany, setIsSavingMany] = useState(false);
 
-
   useEffect(() => {
-    dispatch(getCrmItemsThunk({ module: "partners" }));
-  }, [])
-
-
+    dispatch(getCrmItemsThunk({ module: 'partners' }));
+  }, []);
 
   const handleDropdownItemClick = async (key: string, partner: any) => {
     if (key === 'createEstimateRequest') {
@@ -94,22 +106,22 @@ const PartnerTable = () => {
     } else if (key == 'deletePartner') {
       setSelectedItem(partner);
       setShowDeleteModal(true);
-    }
-    else if (key == 'editPartnerDetail') {
+    } else if (key == 'editPartnerDetail') {
       router.push(`${Routes.CRM.Partners}/edit/${partner._id}`);
-    }
-
-    else if (key == 'inactive') {
-      dispatch(updateCrmItemStatusThunk({
-        id: partner._id,
-        status: false
-      }))
-    }
-    else if (key == 'active') {
-      dispatch(updateCrmItemStatusThunk({
-        id: partner._id,
-        status: true
-      }))
+    } else if (key == 'inactive') {
+      dispatch(
+        updateCrmItemStatusThunk({
+          id: partner._id,
+          status: false,
+        })
+      );
+    } else if (key == 'active') {
+      dispatch(
+        updateCrmItemStatusThunk({
+          id: partner._id,
+          status: true,
+        })
+      );
     }
   };
 
@@ -138,15 +150,20 @@ const PartnerTable = () => {
     },
     {
       title: 'Status',
-      dataIndex: "status",
+      dataIndex: 'status',
       render: (value) => {
         if (!value) {
-
-          return <Tag className='rounded-full' color="red">In Active</Tag>
+          return (
+            <Tag className="rounded-full" color="red">
+              In Active
+            </Tag>
+          );
         }
         return (
-          <Tag className='rounded-full' color="green">Active</Tag>
-        )
+          <Tag className="rounded-full" color="green">
+            Active
+          </Tag>
+        );
       },
     },
     {
@@ -176,26 +193,28 @@ const PartnerTable = () => {
       ),
     },
   ];
-  const filteredData = state.data.filter(item => {
-    if (!search) {
+  const filteredData = state.data
+    .filter((item) => {
+      if (!search) {
+        return true;
+      }
+      if (item.module === 'partners') {
+        return (
+          item.name.toLowerCase().includes(search.toLowerCase()) ||
+          item.companyRep?.includes(search) ||
+          item.email?.includes(search) ||
+          item.phone?.includes(search) ||
+          item.address?.includes(search)
+        );
+      }
       return true;
-    }
-    if (item.module === 'partners') {
-      return item.name.toLowerCase().includes(search.toLowerCase()) ||
-        item.companyRep?.includes(search) ||
-        item.email?.includes(search) ||
-        item.phone?.includes(search) ||
-        item.address?.includes(search);
-    }
-    return true;
-  }).filter(item => {
-    if (!status) {
-      return true;
-    }
-    return status === 'active' ? item.status === true : item.status === false;
-  })
-
-
+    })
+    .filter((item) => {
+      if (!status) {
+        return true;
+      }
+      return status === 'active' ? item.status === true : item.status === false;
+    });
 
   return (
     <section className="mt-6 mb-[39px] mx-4 rounded-xl ">
@@ -206,12 +225,14 @@ const PartnerTable = () => {
           width="30%"
         >
           <DeleteContent
-            onClick={() => deleteCrmItemById(selectedItem._id, setIsDeleting, item => {
-              toast.success('Partner deleted successfully');
-              dispatch(removeCrmItemAction(item._id));
-              setShowDeleteModal(false);
-              setSelectedItem(null);
-            })}
+            onClick={() =>
+              deleteCrmItemById(selectedItem._id, setIsDeleting, (item) => {
+                toast.success('Partner deleted successfully');
+                dispatch(removeCrmItemAction(item._id));
+                setShowDeleteModal(false);
+                setSelectedItem(null);
+              })
+            }
             isLoading={isDeleting}
             onClose={() => setShowDeleteModal(false)}
           />
@@ -226,22 +247,26 @@ const PartnerTable = () => {
           saveManyCrmItems(
             parseData,
             setIsSavingMany,
-            "partners",
+            'partners',
             setDuplicates,
-            items => {
+            (items) => {
               dispatch(insertManyCrmItemAction(items));
-              const remainingParsedData = _.differenceBy(parseData, items, 'email');
+              const remainingParsedData = _.differenceBy(
+                parseData,
+                items,
+                'email'
+              );
               setParseData(remainingParsedData);
               if (inputFileRef.current) {
                 inputFileRef.current.value = '';
               }
             }
-          )
+          );
         }}
         duplicates={duplicates}
         setData={setParseData}
         isLoading={isSavingMany}
-        title='Import Partners'
+        title="Import Partners"
       />
 
       <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
@@ -261,31 +286,32 @@ const PartnerTable = () => {
                   onChange: (e: any) => {
                     setSearch(e.target.value);
                   },
-                  className: "!py-2"
+                  className: '!py-2',
                 }}
               />
             </div>
-            <CrmStatusFilter
-              status={status}
-              setStatus={setStatus}
-            />
+            <CrmStatusFilter status={status} setStatus={setStatus} />
             <div>
               <WhiteButton
-                text='Export'
-                className='!w-fit !py-2.5'
-                icon='/download-icon.svg'
+                text="Export"
+                className="!w-fit !py-2.5"
+                icon="/download-icon.svg"
                 iconwidth={20}
                 iconheight={20}
                 onClick={() => {
-                  downloadCrmItemsAsCSV(state.data, columns as ColumnsType<CrmType>, "partners")
+                  downloadCrmItemsAsCSV(
+                    state.data,
+                    columns as ColumnsType<CrmType>,
+                    'partners'
+                  );
                 }}
               />
             </div>
             <div>
               <WhiteButton
-                text='Import'
-                className='!w-fit !py-2.5'
-                icon='/uploadcloud.svg'
+                text="Import"
+                className="!w-fit !py-2.5"
+                icon="/uploadcloud.svg"
                 iconwidth={20}
                 iconheight={20}
                 onClick={() => {
@@ -294,17 +320,20 @@ const PartnerTable = () => {
                   }
                 }}
                 isLoading={isUploadingFile}
-                loadingText='Uploading...'
+                loadingText="Uploading..."
               />
               <input
                 ref={inputFileRef}
-                accept='.csv, .xlsx'
+                accept=".csv, .xlsx"
                 type="file"
                 name=""
                 id="importFile"
-                className='hidden'
-                onChange={uploadAndParseCSVData(setIsUploadingFile, "partners", setParseData)}
-
+                className="hidden"
+                onChange={uploadAndParseCSVData(
+                  setIsUploadingFile,
+                  'partners',
+                  setParseData
+                )}
               />
             </div>
             <Button

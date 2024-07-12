@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState, useRef, } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Head from 'next/head';
 import { Dropdown, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -23,10 +23,25 @@ import { withAuth } from '@/app/hoc/withAuth';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import WhiteButton from '@/app/component/customButton/white';
 import { PreviewCSVImportFileModal } from '../components/PreviewCSVImportFileModal';
-import { CrmSubcontractorParsedType, CrmType, ICrmSubcontractorModule } from '@/app/interfaces/crm/crm.interface';
-import { getCrmItemsThunk, updateCrmItemStatusThunk } from '@/redux/crm/crm.thunk';
-import { insertManyCrmItemAction, removeCrmItemAction } from '@/redux/crm/crm.slice';
-import { deleteCrmItemById, downloadCrmItemsAsCSV, saveManyCrmItems, uploadAndParseCSVData } from '../utils';
+import {
+  CrmSubcontractorParsedType,
+  CrmType,
+  ICrmSubcontractorModule,
+} from '@/app/interfaces/crm/crm.interface';
+import {
+  getCrmItemsThunk,
+  updateCrmItemStatusThunk,
+} from '@/redux/crm/crm.thunk';
+import {
+  insertManyCrmItemAction,
+  removeCrmItemAction,
+} from '@/redux/crm/crm.slice';
+import {
+  deleteCrmItemById,
+  downloadCrmItemsAsCSV,
+  saveManyCrmItems,
+  uploadAndParseCSVData,
+} from '../utils';
 import _ from 'lodash';
 import { CrmStatusFilter } from '../components/CrmStatusFilter';
 
@@ -65,10 +80,10 @@ const items: MenuProps['items'] = [
 
 const inactiveMenuItems: MenuProps['items'] = [
   {
-    key: "active",
+    key: 'active',
     label: <p>Active</p>,
-  }
-]
+  },
+];
 
 const SubcontractTable = () => {
   const router = useRouterHook();
@@ -78,18 +93,20 @@ const SubcontractTable = () => {
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<string>('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<ICrmSubcontractorModule | null>(null);
+  const [selectedItem, setSelectedItem] =
+    useState<ICrmSubcontractorModule | null>(null);
   const inputFileRef = useRef<HTMLInputElement | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUploadingFile, setIsUploadingFile] = useState(false);
   const [parseData, setParseData] = useState<CrmSubcontractorParsedType[]>([]);
-  const [duplicates, setDuplicates] = useState<CrmSubcontractorParsedType[]>([]);
+  const [duplicates, setDuplicates] = useState<CrmSubcontractorParsedType[]>(
+    []
+  );
   const [isSavingMany, setIsSavingMany] = useState(false);
 
-
   useEffect(() => {
-    dispatch(getCrmItemsThunk({ module: "subcontractors" }));
-  }, [])
+    dispatch(getCrmItemsThunk({ module: 'subcontractors' }));
+  }, []);
 
   const handleDropdownItemClick = async (key: string, subcontractor: any) => {
     if (key === 'createEstimateRequest') {
@@ -106,15 +123,19 @@ const SubcontractTable = () => {
       setSelectedItem(subcontractor);
       setShowDeleteModal(true);
     } else if (key === 'active') {
-      dispatch(updateCrmItemStatusThunk({
-        id: subcontractor._id,
-        status: true
-      }))
+      dispatch(
+        updateCrmItemStatusThunk({
+          id: subcontractor._id,
+          status: true,
+        })
+      );
     } else if (key === 'inactive') {
-      dispatch(updateCrmItemStatusThunk({
-        id: subcontractor._id,
-        status: false
-      }))
+      dispatch(
+        updateCrmItemStatusThunk({
+          id: subcontractor._id,
+          status: false,
+        })
+      );
     }
   };
 
@@ -146,10 +167,18 @@ const SubcontractTable = () => {
       dataIndex: 'status',
       render: (value: boolean) => {
         if (value) {
-          return <Tag className='rounded-full' color="green">Active</Tag>
+          return (
+            <Tag className="rounded-full" color="green">
+              Active
+            </Tag>
+          );
         }
-        return <Tag className='rounded-full' color="red">In Active</Tag>
-      }
+        return (
+          <Tag className="rounded-full" color="red">
+            In Active
+          </Tag>
+        );
+      },
     },
     {
       title: 'Action',
@@ -184,25 +213,28 @@ const SubcontractTable = () => {
     setSelectedItem(null);
   }
 
-  const filteredSubcontractor = state.data.filter(item => {
-    if (!search) {
+  const filteredSubcontractor = state.data
+    .filter((item) => {
+      if (!search) {
+        return true;
+      }
+      if (item.module === 'subcontractors') {
+        return (
+          item.name.toLowerCase().includes(search.toLowerCase()) ||
+          item.companyRep?.includes(search) ||
+          item.email?.includes(search) ||
+          item.phone?.includes(search) ||
+          item.address?.includes(search)
+        );
+      }
       return true;
-    }
-    if (item.module === 'subcontractors') {
-      return item.name.toLowerCase().includes(search.toLowerCase()) ||
-        item.companyRep?.includes(search) ||
-        item.email?.includes(search) ||
-        item.phone?.includes(search) ||
-        item.address?.includes(search);
-    }
-    return true;
-  }).filter(item => {
-    if (!status) {
-      return true;
-    }
-    return status === 'active' ? item.status === true : item.status === false;
-  })
-
+    })
+    .filter((item) => {
+      if (!status) {
+        return true;
+      }
+      return status === 'active' ? item.status === true : item.status === false;
+    });
 
   return (
     <section className="mt-6 mb-[39px] mx-4 rounded-xl ">
@@ -216,18 +248,19 @@ const SubcontractTable = () => {
           width="30%"
         >
           <DeleteContent
-            onClick={() => deleteCrmItemById(selectedItem._id, setIsDeleting, item => {
-              toast.success('Subcontractor deleted successfully');
-              dispatch(removeCrmItemAction(item._id));
-              setShowDeleteModal(false);
-              setSelectedItem(null);
-            })}
+            onClick={() =>
+              deleteCrmItemById(selectedItem._id, setIsDeleting, (item) => {
+                toast.success('Subcontractor deleted successfully');
+                dispatch(removeCrmItemAction(item._id));
+                setShowDeleteModal(false);
+                setSelectedItem(null);
+              })
+            }
             isLoading={isDeleting}
             onClose={handleCloseModal}
           />
         </ModalComponent>
       ) : null}
-
 
       <PreviewCSVImportFileModal
         columns={columns as any}
@@ -237,24 +270,27 @@ const SubcontractTable = () => {
           saveManyCrmItems(
             parseData,
             setIsSavingMany,
-            "subcontractors",
+            'subcontractors',
             setDuplicates,
-            items => {
+            (items) => {
               dispatch(insertManyCrmItemAction(items));
-              const remainingParsedData = _.differenceBy(parseData, items, 'email');
+              const remainingParsedData = _.differenceBy(
+                parseData,
+                items,
+                'email'
+              );
               setParseData(remainingParsedData);
               if (inputFileRef.current) {
                 inputFileRef.current.value = '';
               }
             }
-          )
+          );
         }}
         duplicates={duplicates}
         setData={setParseData}
         isLoading={isSavingMany}
-        title='Import Subcontractors'
+        title="Import Subcontractors"
       />
-
 
       <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
         <div className="flex justify-between items-center mb-4">
@@ -276,31 +312,32 @@ const SubcontractTable = () => {
                   onChange: (e: any) => {
                     setSearch(e.target.value);
                   },
-                  className: "!py-2"
+                  className: '!py-2',
                 }}
               />
             </div>
-            <CrmStatusFilter
-              status={status}
-              setStatus={setStatus}
-            />
+            <CrmStatusFilter status={status} setStatus={setStatus} />
             <div>
               <WhiteButton
-                text='Export'
-                className='!w-fit !py-2.5'
-                icon='/download-icon.svg'
+                text="Export"
+                className="!w-fit !py-2.5"
+                icon="/download-icon.svg"
                 iconwidth={20}
                 iconheight={20}
                 onClick={() => {
-                  downloadCrmItemsAsCSV(state.data, columns as ColumnsType<CrmType>, "subcontractors")
+                  downloadCrmItemsAsCSV(
+                    state.data,
+                    columns as ColumnsType<CrmType>,
+                    'subcontractors'
+                  );
                 }}
               />
             </div>
             <div>
               <WhiteButton
-                text='Import'
-                className='!w-fit !py-2.5'
-                icon='/uploadcloud.svg'
+                text="Import"
+                className="!w-fit !py-2.5"
+                icon="/uploadcloud.svg"
                 iconwidth={20}
                 iconheight={20}
                 onClick={() => {
@@ -309,16 +346,22 @@ const SubcontractTable = () => {
                   }
                 }}
                 isLoading={isUploadingFile}
-                loadingText='Uploading...'
+                loadingText="Uploading..."
               />
-              <input ref={inputFileRef}
-                accept='.csv, .xlsx'
+              <input
+                ref={inputFileRef}
+                accept=".csv, .xlsx"
                 type="file"
                 name=""
                 id="importClients"
-                className='hidden'
-                onChange={uploadAndParseCSVData(setIsUploadingFile, "subcontractors", setParseData as React.Dispatch<React.SetStateAction<CrmSubcontractorParsedType[]>>)}
-
+                className="hidden"
+                onChange={uploadAndParseCSVData(
+                  setIsUploadingFile,
+                  'subcontractors',
+                  setParseData as React.Dispatch<
+                    React.SetStateAction<CrmSubcontractorParsedType[]>
+                  >
+                )}
               />
             </div>
             <Button
