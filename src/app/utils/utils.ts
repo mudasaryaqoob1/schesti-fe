@@ -3,10 +3,12 @@ export const isObjectId = (id: string) => {
   return /^[0-9a-fA-F]{24}$/.test(id);
 };
 
-
-export function calculateProgressBarPercentage(totalDays: number, daysLeft: number) {
+export function calculateProgressBarPercentage(
+  totalDays: number,
+  daysLeft: number
+) {
   if (daysLeft < 0) {
-    throw new Error("Days left cannot be negative");
+    throw new Error('Days left cannot be negative');
   }
 
   const daysPassed = totalDays - daysLeft;

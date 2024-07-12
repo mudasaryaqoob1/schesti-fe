@@ -20,10 +20,25 @@ import { withAuth } from '@/app/hoc/withAuth';
 import { Routes } from '@/app/utils/plans.utils';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { PreviewCSVImportFileModal } from '../components/PreviewCSVImportFileModal';
-import { getCrmItemsThunk, updateCrmItemStatusThunk } from '@/redux/crm/crm.thunk';
-import { CommonCrmType, CrmType, ICrmItem } from '@/app/interfaces/crm/crm.interface';
-import { deleteCrmItemById, downloadCrmItemsAsCSV, saveManyCrmItems, uploadAndParseCSVData } from '../utils';
-import { insertManyCrmItemAction, removeCrmItemAction } from '@/redux/crm/crm.slice';
+import {
+  getCrmItemsThunk,
+  updateCrmItemStatusThunk,
+} from '@/redux/crm/crm.thunk';
+import {
+  CommonCrmType,
+  CrmType,
+  ICrmItem,
+} from '@/app/interfaces/crm/crm.interface';
+import {
+  deleteCrmItemById,
+  downloadCrmItemsAsCSV,
+  saveManyCrmItems,
+  uploadAndParseCSVData,
+} from '../utils';
+import {
+  insertManyCrmItemAction,
+  removeCrmItemAction,
+} from '@/redux/crm/crm.slice';
 import _ from 'lodash';
 import { toast } from 'react-toastify';
 import { CrmStatusFilter } from '../components/CrmStatusFilter';
@@ -90,10 +105,9 @@ const ArchitectPage = () => {
   const [duplicates, setDuplicates] = useState<CommonCrmType[]>([]);
   const [isSavingMany, setIsSavingMany] = useState(false);
 
-
   useEffect(() => {
-    dispatch(getCrmItemsThunk({ module: "architects" }));
-  }, [])
+    dispatch(getCrmItemsThunk({ module: 'architects' }));
+  }, []);
 
   const handleDropdownItemClick = async (key: string, architect: any) => {
     if (key === 'createEstimateRequest') {
@@ -107,18 +121,20 @@ const ArchitectPage = () => {
       setShowDeleteModal(true);
     } else if (key == 'edit') {
       router.push(`${Routes.CRM.Architects}/edit/${architect._id}`);
-    }
-    else if (key === 'inactive') {
-      dispatch(updateCrmItemStatusThunk({
-        id: architect._id,
-        status: false
-      }))
-    }
-    else if (key === 'active') {
-      dispatch(updateCrmItemStatusThunk({
-        id: architect._id,
-        status: true
-      }))
+    } else if (key === 'inactive') {
+      dispatch(
+        updateCrmItemStatusThunk({
+          id: architect._id,
+          status: false,
+        })
+      );
+    } else if (key === 'active') {
+      dispatch(
+        updateCrmItemStatusThunk({
+          id: architect._id,
+          status: true,
+        })
+      );
     }
   };
 
@@ -216,28 +232,29 @@ const ArchitectPage = () => {
     },
   ];
 
-  const filteredData = state.data.filter(item => {
-    if (!search) {
-      return true;
-    }
-    if (item.module === 'subcontractors' || item.module === 'partners') {
-      return true;
-    }
-    return item.firstName.toLowerCase().includes(search.toLowerCase()) ||
-      item.lastName.toLowerCase().includes(search.toLowerCase()) ||
-      item.companyName.toLowerCase().includes(search.toLowerCase()) ||
-      item.email?.includes(search) ||
-      item.phone?.includes(search) ||
-      item.address?.includes(search)
-  }).filter(item => {
-    if (!status) {
-      return true;
-    }
-    return status === 'active' ? item.status === true : item.status === false;
-  })
-
-
-
+  const filteredData = state.data
+    .filter((item) => {
+      if (!search) {
+        return true;
+      }
+      if (item.module === 'subcontractors' || item.module === 'partners') {
+        return true;
+      }
+      return (
+        item.firstName.toLowerCase().includes(search.toLowerCase()) ||
+        item.lastName.toLowerCase().includes(search.toLowerCase()) ||
+        item.companyName.toLowerCase().includes(search.toLowerCase()) ||
+        item.email?.includes(search) ||
+        item.phone?.includes(search) ||
+        item.address?.includes(search)
+      );
+    })
+    .filter((item) => {
+      if (!status) {
+        return true;
+      }
+      return status === 'active' ? item.status === true : item.status === false;
+    });
 
   return (
     <section className="mt-6 mb-[39px]  mx-4 rounded-xl ">
@@ -248,12 +265,14 @@ const ArchitectPage = () => {
           width="30%"
         >
           <DeleteContent
-            onClick={() => deleteCrmItemById(selectedItem._id, setIsDeleting, item => {
-              toast.success('Architect deleted successfully');
-              dispatch(removeCrmItemAction(item._id));
-              setShowDeleteModal(false);
-              setSelectedItem(null);
-            })}
+            onClick={() =>
+              deleteCrmItemById(selectedItem._id, setIsDeleting, (item) => {
+                toast.success('Architect deleted successfully');
+                dispatch(removeCrmItemAction(item._id));
+                setShowDeleteModal(false);
+                setSelectedItem(null);
+              })
+            }
             isLoading={isDeleting}
             onClose={() => setShowDeleteModal(false)}
           />
@@ -268,28 +287,34 @@ const ArchitectPage = () => {
           saveManyCrmItems(
             parseData,
             setIsSavingMany,
-            "architects",
+            'architects',
             setDuplicates,
-            items => {
+            (items) => {
               dispatch(insertManyCrmItemAction(items));
-              const remainingParsedData = _.differenceBy(parseData, items, 'email');
+              const remainingParsedData = _.differenceBy(
+                parseData,
+                items,
+                'email'
+              );
               setParseData(remainingParsedData);
               if (inputFileRef.current) {
                 inputFileRef.current.value = '';
               }
             }
-          )
+          );
         }}
         duplicates={duplicates}
         setData={setParseData}
         isLoading={isSavingMany}
-        title='Import Architects'
-
+        title="Import Architects"
       />
 
       <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
         <div className="flex justify-between items-center mb-4">
-          <TertiaryHeading title="Architect List" className="text-graphiteGray" />
+          <TertiaryHeading
+            title="Architect List"
+            className="text-graphiteGray"
+          />
           <div className=" flex items-center space-x-3">
             <div className="w-96">
               <InputComponent
@@ -304,46 +329,52 @@ const ArchitectPage = () => {
                   onChange: (e: any) => {
                     setSearch(e.target.value);
                   },
-                  className: "!py-2"
+                  className: '!py-2',
                 }}
               />
             </div>
-            <CrmStatusFilter
-              status={status}
-              setStatus={setStatus}
-            />
+            <CrmStatusFilter status={status} setStatus={setStatus} />
             <div>
               <WhiteButton
-                text='Export'
-                className='!w-fit !py-2.5'
-                icon='/download-icon.svg'
+                text="Export"
+                className="!w-fit !py-2.5"
+                icon="/download-icon.svg"
                 iconwidth={20}
                 iconheight={20}
                 onClick={() => {
-                  downloadCrmItemsAsCSV(state.data, columns as ColumnsType<CrmType>, "architects")
+                  downloadCrmItemsAsCSV(
+                    state.data,
+                    columns as ColumnsType<CrmType>,
+                    'architects'
+                  );
                 }}
               />
             </div>
             <div>
               <WhiteButton
-                text='Import'
-                className='!w-fit !py-2.5'
-                icon='/uploadcloud.svg'
+                text="Import"
+                className="!w-fit !py-2.5"
+                icon="/uploadcloud.svg"
                 iconwidth={20}
                 iconheight={20}
                 onClick={() => {
                   inputFileRef.current?.click();
                 }}
                 isLoading={isUploadingFile}
-                loadingText='Uploading...'
+                loadingText="Uploading..."
               />
-              <input ref={inputFileRef}
-                accept='.csv, .xlsx'
+              <input
+                ref={inputFileRef}
+                accept=".csv, .xlsx"
                 type="file"
                 name=""
                 id="file"
-                className='hidden'
-                onChange={uploadAndParseCSVData(setIsUploadingFile, "architects", setParseData)}
+                className="hidden"
+                onChange={uploadAndParseCSVData(
+                  setIsUploadingFile,
+                  'architects',
+                  setParseData
+                )}
               />
             </div>
             <Button

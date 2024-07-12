@@ -98,8 +98,6 @@ const CreateEstimateRequest = () => {
     estimator: '',
   };
 
-
-
   const fetchClients = useCallback(async () => {
     let { payload }: any = await dispatch(
       fetchCompanyClients({ page: 1, limit: 10 })

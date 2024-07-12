@@ -9,7 +9,7 @@ export const companySlice = createSlice({
   reducers: {
     insertManyClientsAction: (state, action: PayloadAction<IClient[]>) => {
       state.data = [...action.payload, ...state.data];
-    }
+    },
   },
   extraReducers: (builder) => {
     // fetch all clients

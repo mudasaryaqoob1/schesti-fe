@@ -276,7 +276,11 @@ const EstimateRequestTable: React.FC = () => {
               iconwidth={20}
               iconheight={20}
               onClick={() => {
-                downloadCrmItemsAsCSV(estimateRequestsData, columns as any, "clients")
+                downloadCrmItemsAsCSV(
+                  estimateRequestsData,
+                  columns as any,
+                  'clients'
+                );
               }}
             />
           </div>

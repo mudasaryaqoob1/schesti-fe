@@ -336,7 +336,7 @@ function Page() {
           <DeletePopup
             closeModal={() => setShowProjectDeleteModal(false)}
             message="Are you sure you want to delete this project?"
-            onConfirm={() => { }}
+            onConfirm={() => {}}
             open={showProjectDeleteModal}
             title="Delete Project"
             isLoading={false}

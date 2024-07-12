@@ -62,19 +62,18 @@ const CreateArchitect = () => {
     try {
       const response = await crmService.httpCreate({
         ...values,
-        module: "architects"
+        module: 'architects',
       });
       if (response.data) {
-        toast.success("Architect created successfully");
+        toast.success('Architect created successfully');
         router.push(Routes.CRM.Architects);
       }
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
-      toast.error(err.response?.data.message || "Unable to create architect");
+      toast.error(err.response?.data.message || 'Unable to create architect');
     } finally {
       setIsLoading(false);
     }
-
   };
 
   return (
@@ -87,7 +86,9 @@ const CreateArchitect = () => {
           width={16}
           height={16}
         />
-        <p className={`${senaryHeading} font-base text-slateGray`}>My Architect</p>
+        <p className={`${senaryHeading} font-base text-slateGray`}>
+          My Architect
+        </p>
         <Image
           src={'/chevron-right.svg'}
           alt="chevron-right icon"

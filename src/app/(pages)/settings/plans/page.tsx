@@ -12,10 +12,9 @@ import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface
 import { withAuth } from '@/app/hoc/withAuth';
 import { SubscriptionHistory } from './history';
 
-
-const My_Subscription_Tab = "My Subscription";
-const Plans_Tab = "Plans";
-const Subscription_History_Tab = "Subscription History";
+const My_Subscription_Tab = 'My Subscription';
+const Plans_Tab = 'Plans';
+const Subscription_History_Tab = 'Subscription History';
 
 const SettingPlans = () => {
   const [activeTab, setActiveTab] = useState<string>(My_Subscription_Tab);
@@ -34,20 +33,32 @@ const SettingPlans = () => {
           onChange={(value) => {
             setActiveTab(value);
           }}
-          items={[My_Subscription_Tab, Plans_Tab, Subscription_History_Tab].map((type) => {
-            return {
-              key: type,
-              label: type === activeTab ? <p className="text-schestiPrimary">{type}</p> : <p className="text-schestiPrimaryBlack">{type}</p>,
-              tabKey: type,
-              children: activeTab === My_Subscription_Tab ? (
-                <MySubscription onUpgradeClick={() => {
-                  setActiveTab(Plans_Tab);
-                }} />
-              ) : activeTab === Plans_Tab ? (
-                <Plans user={user ? user.user : undefined} />
-              ) : activeTab === Subscription_History_Tab ? <SubscriptionHistory /> : null,
-            };
-          })}
+          items={[My_Subscription_Tab, Plans_Tab, Subscription_History_Tab].map(
+            (type) => {
+              return {
+                key: type,
+                label:
+                  type === activeTab ? (
+                    <p className="text-schestiPrimary">{type}</p>
+                  ) : (
+                    <p className="text-schestiPrimaryBlack">{type}</p>
+                  ),
+                tabKey: type,
+                children:
+                  activeTab === My_Subscription_Tab ? (
+                    <MySubscription
+                      onUpgradeClick={() => {
+                        setActiveTab(Plans_Tab);
+                      }}
+                    />
+                  ) : activeTab === Plans_Tab ? (
+                    <Plans user={user ? user.user : undefined} />
+                  ) : activeTab === Subscription_History_Tab ? (
+                    <SubscriptionHistory />
+                  ) : null,
+              };
+            }
+          )}
         />
       </div>
     </SettingSidebar>

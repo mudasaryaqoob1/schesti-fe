@@ -41,8 +41,8 @@ const TakeOff = ({ setPrevNext, pevNext }: Props) => {
     const result =
       await estimateRequestService.httpGetGeneratedEstimateDetail(
         generatedEstimateId
-      )
-      
+      );
+
     setEstimateRequestDetail({
       ...result.data.generatedEstimates,
       ...result.data.generatedEstimates.estimateRequestIdDetail,

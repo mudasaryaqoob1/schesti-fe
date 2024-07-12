@@ -1,9 +1,9 @@
 export interface ISettingCategoryParsedType {
-    categoryId: string;
-    name: string
+  categoryId: string;
+  name: string;
 }
 
 export interface ISettingSubCategoryParsedType {
-    name: string;
-    price: string;
+  name: string;
+  price: string;
 }

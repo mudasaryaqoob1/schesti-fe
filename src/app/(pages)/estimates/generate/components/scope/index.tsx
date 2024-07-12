@@ -1040,9 +1040,8 @@ const Scope = ({ setPrevNext }: Props) => {
     }
   };
 
+  console.log(estimateDescriptions, 'estimateDescriptions');
 
-  console.log(estimateDescriptions , 'estimateDescriptions');
-  
   return (
     <div>
       <div className="flex justify-between items-center mb-3">
@@ -1148,14 +1147,22 @@ const Scope = ({ setPrevNext }: Props) => {
                       components={{
                         DropdownIndicator: CustomDropdownIndicator,
                       }}
-                      onChange={(newValue) =>{
-                        setFieldValue('description', newValue)
-                        setFieldValue('unit', newValue?.unit)
-                        setFieldValue('unitLabourHour', newValue?.unitLabourHour)
-                        setFieldValue('unitMaterialCost', newValue?.unitMaterialCost)
-                        setFieldValue('unitEquipments', newValue?.unitEquipments)
-                      }
-                      }
+                      onChange={(newValue) => {
+                        setFieldValue('description', newValue);
+                        setFieldValue('unit', newValue?.unit);
+                        setFieldValue(
+                          'unitLabourHour',
+                          newValue?.unitLabourHour
+                        );
+                        setFieldValue(
+                          'unitMaterialCost',
+                          newValue?.unitMaterialCost
+                        );
+                        setFieldValue(
+                          'unitEquipments',
+                          newValue?.unitEquipments
+                        );
+                      }}
                       onCreateOption={(newDescriptionValue) => {
                         let newDescription = {
                           label: newDescriptionValue,

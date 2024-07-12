@@ -18,7 +18,7 @@ import FormControl from '@/app/component/formControl';
 import { withAuth } from '@/app/hoc/withAuth';
 import { Routes } from '@/app/utils/plans.utils';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
-import { CrmType, } from '@/app/interfaces/crm/crm.interface';
+import { CrmType } from '@/app/interfaces/crm/crm.interface';
 import { findCrmItemById } from '../../../utils';
 import crmService from '@/app/services/crm/crm.service';
 import { AxiosError } from 'axios';
@@ -56,45 +56,45 @@ const EditPartner = () => {
   const [isFetching, setIsFetching] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-
   useEffect(() => {
-    findCrmItemById(id, setIsFetching, item => {
+    findCrmItemById(id, setIsFetching, (item) => {
       setItem(item);
     });
   }, [id]);
-
 
   const submitHandler = async (values: CrmType) => {
     if (item) {
       setIsLoading(true);
       try {
-        const response = await crmService.httpfindByIdAndUpdate(item._id, { ...values, module: "partners" });
+        const response = await crmService.httpfindByIdAndUpdate(item._id, {
+          ...values,
+          module: 'partners',
+        });
         if (response.data) {
-          toast.success("Parnter updated successfully");
+          toast.success('Parnter updated successfully');
           router.push(Routes.CRM.Partners);
         }
       } catch (error) {
         const err = error as AxiosError<{ message: string }>;
-        toast.error(err.response?.data.message || "Unable to update partner");
+        toast.error(err.response?.data.message || 'Unable to update partner');
       } finally {
         setIsLoading(false);
       }
     }
   };
   if (isFetching) {
-    return <div className="grid grid-cols-2 gap-2 grid-rows-2">
-      <Skeleton />
-      <Skeleton />
-      <Skeleton />
-      <Skeleton />
-    </div>
+    return (
+      <div className="grid grid-cols-2 gap-2 grid-rows-2">
+        <Skeleton />
+        <Skeleton />
+        <Skeleton />
+        <Skeleton />
+      </div>
+    );
   }
 
-
   if (!isFetching && !item) {
-    return <NoDataComponent
-
-    />
+    return <NoDataComponent />;
   }
 
   return (
@@ -128,7 +128,7 @@ const EditPartner = () => {
           title="Edit Partner"
         />
         <Formik
-          initialValues={item ? (item as CrmType) : initialValues as CrmType}
+          initialValues={item ? (item as CrmType) : (initialValues as CrmType)}
           enableReinitialize={true}
           validationSchema={newPartnerSchema}
           onSubmit={submitHandler}

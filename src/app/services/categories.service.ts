@@ -4,8 +4,14 @@ import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { IToken } from '@/app/interfaces/authInterfaces/token.interface';
 import { CategoryInitTypes } from '@/app/(pages)/settings/CategorySetup/Category/page';
 import { SubcategoryInitValues } from '@/app/(pages)/settings/CategorySetup/Subcategory/page';
-import { ISettingCategoryParsedType, ISettingSubCategoryParsedType } from '../interfaces/settings/categories-settings.interface';
-import { ICategory, ISubcategory } from '../interfaces/companyInterfaces/setting.interface';
+import {
+  ISettingCategoryParsedType,
+  ISettingSubCategoryParsedType,
+} from '../interfaces/settings/categories-settings.interface';
+import {
+  ICategory,
+  ISubcategory,
+} from '../interfaces/companyInterfaces/setting.interface';
 
 class CategoriesService extends HttpService {
   private readonly prefix: string = 'api/setting/categories';
@@ -70,8 +76,14 @@ class CategoriesService extends HttpService {
       },
     });
 
-  httpInsertManyCategories = (data: ISettingCategoryParsedType[]): Promise<IResponseInterface<ICategory[]>> => this.post(`${this.prefix}/many-categories`, data)
+  httpInsertManyCategories = (
+    data: ISettingCategoryParsedType[]
+  ): Promise<IResponseInterface<ICategory[]>> =>
+    this.post(`${this.prefix}/many-categories`, data);
 
-  httpInsertManySubCategories = (data: (ISettingSubCategoryParsedType & { category: string })[]): Promise<IResponseInterface<ISubcategory[]>> => this.post(`${this.prefix}/many-sub-categories`, data)
+  httpInsertManySubCategories = (
+    data: (ISettingSubCategoryParsedType & { category: string })[]
+  ): Promise<IResponseInterface<ISubcategory[]>> =>
+    this.post(`${this.prefix}/many-sub-categories`, data);
 }
 export const categoriesService = new CategoriesService();

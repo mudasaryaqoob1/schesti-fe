@@ -10,14 +10,16 @@ export const subcontractorSlice = createSlice({
   name: 'subcontractor',
   initialState: initialCompanySubcontractorState,
   reducers: {
-    insertManySubcontractorsAction: (state, action: PayloadAction<ISubcontractor[]>) => {
+    insertManySubcontractorsAction: (
+      state,
+      action: PayloadAction<ISubcontractor[]>
+    ) => {
       if (state.data) {
-        state.data = [...action.payload, ...state.data,];
+        state.data = [...action.payload, ...state.data];
       } else {
         state.data = [...action.payload];
       }
-
-    }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchCompanySubcontractors.pending, (state) => {
@@ -50,8 +52,8 @@ export const subcontractorSlice = createSlice({
       state.loading = false;
       state.data = state.data
         ? state.data.filter(
-          (item: any) => item?._id !== action.payload.data.client._id
-        )
+            (item: any) => item?._id !== action.payload.data.client._id
+          )
         : null;
     });
 

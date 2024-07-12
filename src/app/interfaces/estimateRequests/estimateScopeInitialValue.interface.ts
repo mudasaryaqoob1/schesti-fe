@@ -14,7 +14,6 @@ export interface IEstimateScopeInitialValue {
   Action: string;
 }
 
-
 export interface IinitialValues {
   category: string;
   subCategory: string;
@@ -30,7 +29,7 @@ export interface IinitialValues {
 }
 
 export interface IEstiamteBasicInfo {
-  _id? :string;
+  _id?: string;
   clientName: string;
   companyName: string;
   phone: string;

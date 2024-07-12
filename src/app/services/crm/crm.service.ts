@@ -1,52 +1,88 @@
-import { IResponseInterface } from "@/app/interfaces/api-response.interface";
-import { HttpService } from "../base.service";
-import { CommonCrmType, CrmModuleType, CrmSubcontractorParsedType, CrmType, ICrmPartnerModule, ICrmSubcontractorModule } from "@/app/interfaces/crm/crm.interface";
-
+import { IResponseInterface } from '@/app/interfaces/api-response.interface';
+import { HttpService } from '../base.service';
+import {
+  CommonCrmType,
+  CrmModuleType,
+  CrmSubcontractorParsedType,
+  CrmType,
+  ICrmPartnerModule,
+  ICrmSubcontractorModule,
+} from '@/app/interfaces/crm/crm.interface';
 
 type CreateCrmItemType = {
-    firstName: string;
-    lastName: string;
-    email: string;
-    address: string;
-    companyName: string;
-    phone: string;
-    secondAddress?: string;
-    module: "clients" | "partners" | "vendors" | "architects" | "contractors";
+  firstName: string;
+  lastName: string;
+  email: string;
+  address: string;
+  companyName: string;
+  phone: string;
+  secondAddress?: string;
+  module: 'clients' | 'partners' | 'vendors' | 'architects' | 'contractors';
 };
 
-type CreateCrmSubcontractorType = Omit<ICrmSubcontractorModule, "_id" | "createdAt" | "updatedAt" | "associatedCompany">
-type CreateCrmPartnerType = Omit<ICrmPartnerModule, "_id" | "createdAt" | "updatedAt" | "associatedCompany">;
+type CreateCrmSubcontractorType = Omit<
+  ICrmSubcontractorModule,
+  '_id' | 'createdAt' | 'updatedAt' | 'associatedCompany'
+>;
+type CreateCrmPartnerType = Omit<
+  ICrmPartnerModule,
+  '_id' | 'createdAt' | 'updatedAt' | 'associatedCompany'
+>;
 
 type QueryParams = {
-    module: CrmModuleType
-}
+  module: CrmModuleType;
+};
 
-type CreateCrmItem = CreateCrmSubcontractorType | CreateCrmItemType | CreateCrmPartnerType;
+type CreateCrmItem =
+  | CreateCrmSubcontractorType
+  | CreateCrmItemType
+  | CreateCrmPartnerType;
 
 class CrmService extends HttpService {
-    private endPoint = 'api/crm';
+  private endPoint = 'api/crm';
 
-    httpCreate = (data: CreateCrmItem): Promise<IResponseInterface<CrmType>> => this.post(this.endPoint, data);
+  httpCreate = (data: CreateCrmItem): Promise<IResponseInterface<CrmType>> =>
+    this.post(this.endPoint, data);
 
-    httpCreateMany = (data: (CommonCrmType | CrmSubcontractorParsedType)[], module: CrmModuleType): Promise<IResponseInterface<{
-        duplicates: (CommonCrmType | CrmSubcontractorParsedType)[];
-        items: CrmType[]
-    }>> => this.post(`${this.endPoint}/createMany?module=${module}`, data);
+  httpCreateMany = (
+    data: (CommonCrmType | CrmSubcontractorParsedType)[],
+    module: CrmModuleType
+  ): Promise<
+    IResponseInterface<{
+      duplicates: (CommonCrmType | CrmSubcontractorParsedType)[];
+      items: CrmType[];
+    }>
+  > => this.post(`${this.endPoint}/createMany?module=${module}`, data);
 
-    httpGetItems = (query: QueryParams): Promise<IResponseInterface<CrmType[]>> => this.get(`${this.endPoint}/all?module=${query.module}`);
+  httpGetItems = (query: QueryParams): Promise<IResponseInterface<CrmType[]>> =>
+    this.get(`${this.endPoint}/all?module=${query.module}`);
 
-    httpGetItemById = (id: string): Promise<IResponseInterface<CrmType>> => this.get(`${this.endPoint}/${id}`);
+  httpGetItemById = (id: string): Promise<IResponseInterface<CrmType>> =>
+    this.get(`${this.endPoint}/${id}`);
 
-    httpfindByIdAndUpdate = (id: string, data: CreateCrmItem): Promise<IResponseInterface<CrmType>> => this.put(`${this.endPoint}/${id}`, data);
+  httpfindByIdAndUpdate = (
+    id: string,
+    data: CreateCrmItem
+  ): Promise<IResponseInterface<CrmType>> =>
+    this.put(`${this.endPoint}/${id}`, data);
 
-    httpfindByIdAndUpdateStatus = (id: string, data: {
-        status: boolean
-    }): Promise<IResponseInterface<CrmType>> => this.put(`${this.endPoint}/status/${id}`, data);
+  httpfindByIdAndUpdateStatus = (
+    id: string,
+    data: {
+      status: boolean;
+    }
+  ): Promise<IResponseInterface<CrmType>> =>
+    this.put(`${this.endPoint}/status/${id}`, data);
 
-    httpfindByIdAndDelete = (id: string): Promise<IResponseInterface<CrmType>> => this.delete(`${this.endPoint}/${id}`);
+  httpfindByIdAndDelete = (id: string): Promise<IResponseInterface<CrmType>> =>
+    this.delete(`${this.endPoint}/${id}`);
 
-    httpParseCsvFile = (formData: FormData, module: CrmModuleType): Promise<IResponseInterface<(CommonCrmType | CrmSubcontractorParsedType)[]>> => this.post(`${this.endPoint}/parse-csv?module=${module}`, formData);
-
+  httpParseCsvFile = (
+    formData: FormData,
+    module: CrmModuleType
+  ): Promise<
+    IResponseInterface<(CommonCrmType | CrmSubcontractorParsedType)[]>
+  > => this.post(`${this.endPoint}/parse-csv?module=${module}`, formData);
 }
 
 const crmService = new CrmService();

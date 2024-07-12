@@ -140,7 +140,7 @@ const Summary = ({ setPrevNext }: Props) => {
     };
 
     console.log(obj);
-    
+
     dispatch(generateEstimateDetailAction(obj));
 
     let result = await estimateRequestService.httpUpdateGeneratedEstimate(

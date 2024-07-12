@@ -14,7 +14,6 @@ import CustomButton from '@/app/component/customButton/button';
 import FormControl from '@/app/component/formControl';
 import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
 
-
 // client service
 import { PhoneNumberRegex } from '@/app/utils/regex.util';
 import { Skeleton } from 'antd';
@@ -61,28 +60,27 @@ const EditArchitect = () => {
 
   const { id } = params as { id: string };
 
-
-
   useEffect(() => {
-    findCrmItemById(id, setIsFetching, item => {
+    findCrmItemById(id, setIsFetching, (item) => {
       setItem(item);
     });
   }, [id]);
-
-
 
   const submitHandler = async (values: ICrmItem) => {
     if (item) {
       setIsLoading(true);
       try {
-        const response = await crmService.httpfindByIdAndUpdate(item._id, { ...values, module: "architects" });
+        const response = await crmService.httpfindByIdAndUpdate(item._id, {
+          ...values,
+          module: 'architects',
+        });
         if (response.data) {
-          toast.success("Architect updated successfully");
+          toast.success('Architect updated successfully');
           router.push(Routes.CRM.Architects);
         }
       } catch (error) {
         const err = error as AxiosError<{ message: string }>;
-        toast.error(err.response?.data.message || "Unable to update architect");
+        toast.error(err.response?.data.message || 'Unable to update architect');
       } finally {
         setIsLoading(false);
       }
@@ -90,19 +88,18 @@ const EditArchitect = () => {
   };
 
   if (isFetching) {
-    return <div className="grid grid-cols-2 gap-2 grid-rows-2">
-      <Skeleton />
-      <Skeleton />
-      <Skeleton />
-      <Skeleton />
-    </div>
+    return (
+      <div className="grid grid-cols-2 gap-2 grid-rows-2">
+        <Skeleton />
+        <Skeleton />
+        <Skeleton />
+        <Skeleton />
+      </div>
+    );
   }
 
-
   if (!isFetching && !item) {
-    return <NoDataComponent
-
-    />
+    return <NoDataComponent />;
   }
 
   return (
@@ -115,7 +112,9 @@ const EditArchitect = () => {
           width={16}
           height={16}
         />
-        <p className={`${senaryHeading} font-base text-slateGray`}>My Architect</p>
+        <p className={`${senaryHeading} font-base text-slateGray`}>
+          My Architect
+        </p>
         <Image
           src={'/chevron-right.svg'}
           alt="chevron-right icon"
@@ -137,7 +136,9 @@ const EditArchitect = () => {
           title="Edit Architect"
         />
         <Formik
-          initialValues={item ? (item as ICrmItem) : initialValues as ICrmItem}
+          initialValues={
+            item ? (item as ICrmItem) : (initialValues as ICrmItem)
+          }
           enableReinitialize={true}
           validationSchema={ValidationSchema}
           onSubmit={submitHandler}

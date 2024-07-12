@@ -312,7 +312,7 @@ const Scope = ({ setPrevNext }: IProps) => {
     if (generateEstimateDetail?.estimateScope?.length) {
       setConfirmEstimates(generateEstimateDetail?.estimateScope);
     }
-    setEstimateDetail(generateEstimateDetail.estimateRequestIdDetail)
+    setEstimateDetail(generateEstimateDetail.estimateRequestIdDetail);
     setPlanDocuments([
       ...generateEstimateDetail.estimateRequestIdDetail.drawingsDocuments,
       ...generateEstimateDetail.estimateRequestIdDetail.otherDocuments,
@@ -1002,7 +1002,6 @@ const Scope = ({ setPrevNext }: IProps) => {
     }
   };
 
-  
   return (
     <div>
       <div className="flex justify-between items-center mb-3">
@@ -1106,14 +1105,22 @@ const Scope = ({ setPrevNext }: IProps) => {
                       components={{
                         DropdownIndicator: CustomDropdownIndicator,
                       }}
-                      onChange={(newValue) =>{
-                        setFieldValue('description', newValue)
-                        setFieldValue('unit', newValue?.unit)
-                        setFieldValue('unitLabourHour', newValue?.unitLabourHour)
-                        setFieldValue('unitMaterialCost', newValue?.unitMaterialCost)
-                        setFieldValue('unitEquipments', newValue?.unitEquipments)
-                      }
-                      }
+                      onChange={(newValue) => {
+                        setFieldValue('description', newValue);
+                        setFieldValue('unit', newValue?.unit);
+                        setFieldValue(
+                          'unitLabourHour',
+                          newValue?.unitLabourHour
+                        );
+                        setFieldValue(
+                          'unitMaterialCost',
+                          newValue?.unitMaterialCost
+                        );
+                        setFieldValue(
+                          'unitEquipments',
+                          newValue?.unitEquipments
+                        );
+                      }}
                       onCreateOption={(newDescriptionValue) => {
                         let newDescription = {
                           label: newDescriptionValue,

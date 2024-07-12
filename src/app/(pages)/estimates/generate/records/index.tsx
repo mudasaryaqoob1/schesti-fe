@@ -142,7 +142,7 @@ const EstimateRequestTable: React.FC = () => {
     {
       title: 'Total Cost',
       dataIndex: 'totalCost',
-      render: (text, record : any) => (
+      render: (text, record: any) => (
         <span>{USCurrencyFormat.format(record.totalCost)}</span>
       ),
     },
@@ -150,7 +150,9 @@ const EstimateRequestTable: React.FC = () => {
       title: 'Status',
       dataIndex: 'status',
       render: (text, record) => (
-        <span className={`capitalize ${record.status === "lost" ? 'text-red-600 bg-red-100' : record.status === "proposed" ? " text-blue-600 bg-blue-100" :  "text-emeraldGreen bg-schestiLightSuccess"}  px-2 py-1 rounded-full`}>
+        <span
+          className={`capitalize ${record.status === 'lost' ? 'text-red-600 bg-red-100' : record.status === 'proposed' ? ' text-blue-600 bg-blue-100' : 'text-emeraldGreen bg-schestiLightSuccess'}  px-2 py-1 rounded-full`}
+        >
           {record.status}
         </span>
       ),

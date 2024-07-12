@@ -1,7 +1,10 @@
 import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { initialCompanySetupSubcategoryState } from '../setting.initialState';
 import { deleteSubCategory, fetchSubCategories } from '../companySetup.thunk';
-import { ICategory, ISubcategory } from '@/app/interfaces/companyInterfaces/setting.interface';
+import {
+  ICategory,
+  ISubcategory,
+} from '@/app/interfaces/companyInterfaces/setting.interface';
 
 export const subcategorySlice = createSlice({
   name: 'setting/companySetup/subcategory',
@@ -27,9 +30,12 @@ export const subcategorySlice = createSlice({
       });
     },
 
-    insertManySubcategoriesAction: (state, action: PayloadAction<ISubcategory[]>) => {
+    insertManySubcategoriesAction: (
+      state,
+      action: PayloadAction<ISubcategory[]>
+    ) => {
       state.data = [...action.payload, ...state.data];
-    }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchSubCategories.pending, (state) => {
@@ -70,6 +76,6 @@ export const {
   addNewSubcategoryData,
   refetchSubCategories,
   setSubcategoryData,
-  insertManySubcategoriesAction
+  insertManySubcategoriesAction,
 } = subcategorySlice.actions;
 export default subcategorySlice.reducer;

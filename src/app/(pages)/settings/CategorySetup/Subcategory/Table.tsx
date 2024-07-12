@@ -31,12 +31,9 @@ interface DataType {
 type Props = {
   onEdit: () => void;
   onDelete: () => void;
-}
+};
 
-const SubCategoryTable = ({
-  onEdit,
-  onDelete
-}: Props) => {
+const SubCategoryTable = ({ onEdit, onDelete }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const token = useSelector(selectToken);
 
@@ -157,8 +154,7 @@ const SubCategoryTable = ({
   ];
 
   return (
-    <div
-    >
+    <div>
       <Table
         loading={subcategoriesReduxDataLoading}
         columns={columns}

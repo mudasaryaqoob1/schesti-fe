@@ -1,8 +1,8 @@
 export interface ISubscriptionHistory {
-    transactionId: string;
-    planName: string;
-    type: string;
-    periodStart: number;
-    periodEnd: number;
-    amount: number;
+  transactionId: string;
+  planName: string;
+  type: string;
+  periodStart: number;
+  periodEnd: number;
+  amount: number;
 }
