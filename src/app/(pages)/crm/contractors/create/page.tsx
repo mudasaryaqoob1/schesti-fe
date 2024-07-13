@@ -156,11 +156,17 @@ function CreateContractPage() {
 
 
                 <div className="border p-3 rounded-md">
-                    <p
-                        className="text-graphiteGray text-sm font-medium leading-6 capitalize"
-                    >
-                        Receiver Information
-                    </p>
+                    <div className="flex items-center justify-between">
+                        <p
+                            className="text-graphiteGray text-sm font-medium leading-6 capitalize"
+                        >
+                            Receiver Information
+                        </p>
+                        <CustomButton
+                            text="Select"
+                            className="!bg-schestiLightPrimary !text-schestiPrimary !py-2 !w-fit !border-schestiLightPrimary"
+                        />
+                    </div>
                     <div className="mt-1 grid grid-cols-2 gap-2">
                         <InputComponent
                             label="Receiver Name"
