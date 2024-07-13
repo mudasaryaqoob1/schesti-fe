@@ -7,11 +7,53 @@ import SenaryHeading from "@/app/component/headings/senaryHeading"
 import { PhoneNumberInputWithLable } from "@/app/component/phoneNumberInput/PhoneNumberInputWithLable";
 import { TextAreaComponent } from "@/app/component/textarea";
 import { withAuth } from "@/app/hoc/withAuth"
-import { Upload } from "antd";
+import { CrmType } from "@/app/interfaces/crm/crm.interface";
+import { IUserInterface } from "@/app/interfaces/user.interface";
+import { RootState } from "@/redux/store";
+import { Spin, Upload } from "antd";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import type { Value as PhoneNumberValue } from 'react-phone-number-input'
+import crmService from "@/app/services/crm/crm.service";
+import { AxiosError } from "axios";
+import { LoadingOutlined } from "@ant-design/icons";
 
 function CreateContractPage() {
+    const [crmItem, setCrmItem] = useState<CrmType | null>(null);
+    const [isFetchingItem, setIsFetchingItem] = useState(false);
+    const searchParams = useSearchParams();
+    const authUser = useSelector((state: RootState) => state.auth.user as { user?: IUserInterface });
+
+
+    useEffect(() => {
+        const id = searchParams.get('id');
+        if (id) {
+            getCrmItemById(id);
+        }
+    }, [searchParams])
+
+    async function getCrmItemById(id: string) {
+        setIsFetchingItem(true);
+        try {
+            const response = await crmService.httpGetItemById(id);
+            if (response.data) {
+                setCrmItem(response.data);
+            }
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+            if (err.response?.data) {
+                toast.error("Unable to get the item");
+            }
+        } finally {
+            setIsFetchingItem(false);
+        }
+    }
+
+
+
     return <section className="mt-6 !pb-[39px]  mx-4 ">
         <div className="flex items-center justify-between">
             <SenaryHeading
@@ -124,23 +166,33 @@ function CreateContractPage() {
                             name="senderName"
                             placeholder="Sender Name"
                             type="text"
+                            field={{
+                                value: authUser?.user?.name
+                            }}
                         />
                         <InputComponent
                             label="Company Name"
                             name="companyName"
                             placeholder="Company Name"
                             type="text"
+                            field={{
+                                value: authUser?.user?.companyName || authUser?.user?.organizationName
+                            }}
                         />
 
                         <PhoneNumberInputWithLable
                             label="Phone Number"
                             onChange={() => { }}
+                            value={`+${authUser?.user?.phone}` as PhoneNumberValue}
                         />
                         <InputComponent
                             label="Email"
                             name="email"
                             placeholder="Email"
                             type="email"
+                            field={{
+                                value: authUser?.user?.email
+                            }}
                         />
 
                         <div className="col-span-2">
@@ -149,6 +201,9 @@ function CreateContractPage() {
                                 name="address"
                                 placeholder="Address"
                                 type="text"
+                                field={{
+                                    value: authUser?.user?.address
+                                }}
                             />
                         </div>
                     </div>
@@ -167,40 +222,55 @@ function CreateContractPage() {
                             className="!bg-schestiLightPrimary !text-schestiPrimary !py-2 !w-fit !border-schestiLightPrimary"
                         />
                     </div>
-                    <div className="mt-1 grid grid-cols-2 gap-2">
-                        <InputComponent
-                            label="Receiver Name"
-                            placeholder="Receiver Name"
-                            name="receiverName"
-                            type="text"
-                        />
-                        <InputComponent
-                            label="Company Name"
-                            name="companyName"
-                            placeholder="Company Name"
-                            type="text"
-                        />
-
-                        <PhoneNumberInputWithLable
-                            label="Phone Number"
-                            onChange={() => { }}
-                        />
-                        <InputComponent
-                            label="Email"
-                            placeholder="Email"
-                            name="email"
-                            type="email"
-                        />
-
-                        <div className="col-span-2">
+                    <Spin spinning={isFetchingItem} indicator={<LoadingOutlined spin />}>
+                        <div className="mt-1 grid grid-cols-2 gap-2">
                             <InputComponent
-                                label="Address"
-                                placeholder="Address"
-                                name="address"
+                                label="Receiver Name"
+                                placeholder="Receiver Name"
+                                name="receiverName"
                                 type="text"
+                                field={{
+                                    value: crmItem ? (crmItem?.module === 'partners' || crmItem?.module === 'subcontractors') ? crmItem?.companyRep : crmItem?.firstName + " " + crmItem?.lastName : undefined
+                                }}
                             />
+                            <InputComponent
+                                label="Company Name"
+                                name="companyName"
+                                placeholder="Company Name"
+                                type="text"
+                                field={{
+                                    value: (crmItem?.module === 'subcontractors' || crmItem?.module === 'partners') ? crmItem?.name : crmItem?.companyName
+                                }}
+                            />
+
+                            <PhoneNumberInputWithLable
+                                label="Phone Number"
+                                onChange={() => { }}
+                                value={crmItem ? `+${crmItem?.phone}` as PhoneNumberValue : undefined}
+                            />
+                            <InputComponent
+                                label="Email"
+                                placeholder="Email"
+                                name="email"
+                                type="email"
+                                field={{
+                                    value: crmItem?.email
+                                }}
+                            />
+
+                            <div className="col-span-2">
+                                <InputComponent
+                                    label="Address"
+                                    placeholder="Address"
+                                    name="address"
+                                    type="text"
+                                    field={{
+                                        value: crmItem?.address
+                                    }}
+                                />
+                            </div>
                         </div>
-                    </div>
+                    </Spin>
                 </div>
             </div>
 
