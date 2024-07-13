@@ -4,7 +4,6 @@ import WhiteButton from "@/app/component/customButton/white";
 import { InputComponent } from "@/app/component/customInput/Input";
 import { DateInputComponent } from "@/app/component/cutomDate/CustomDateInput";
 import SenaryHeading from "@/app/component/headings/senaryHeading"
-import { PhoneNumberInputWithLable } from "@/app/component/phoneNumberInput/PhoneNumberInputWithLable";
 import { TextAreaComponent } from "@/app/component/textarea";
 import { withAuth } from "@/app/hoc/withAuth"
 import { CrmType } from "@/app/interfaces/crm/crm.interface";
@@ -16,16 +15,18 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import type { Value as PhoneNumberValue } from 'react-phone-number-input'
 import crmService from "@/app/services/crm/crm.service";
 import { AxiosError } from "axios";
 import { LoadingOutlined } from "@ant-design/icons";
+import ModalComponent from "@/app/component/modal";
+import { ListCrmItems } from "../components/ListCrmItems";
 
 function CreateContractPage() {
     const [crmItem, setCrmItem] = useState<CrmType | null>(null);
     const [isFetchingItem, setIsFetchingItem] = useState(false);
     const searchParams = useSearchParams();
     const authUser = useSelector((state: RootState) => state.auth.user as { user?: IUserInterface });
+    const [showList, setShowList] = useState(false);
 
 
     useEffect(() => {
@@ -72,6 +73,13 @@ function CreateContractPage() {
                 />
             </div>
         </div>
+
+        <ModalComponent open={showList} setOpen={setShowList}>
+            <ListCrmItems onClose={() => setShowList(false)} title="Select Item" onItemClick={(item) => {
+                setCrmItem(item);
+                setShowList(false);
+            }} />
+        </ModalComponent>
 
 
         <div className="p-5 bg-white rounded-md mt-5 space-y-3">
@@ -180,10 +188,13 @@ function CreateContractPage() {
                             }}
                         />
 
-                        <PhoneNumberInputWithLable
+                        <InputComponent
                             label="Phone Number"
-                            onChange={() => { }}
-                            value={`+${authUser?.user?.phone}` as PhoneNumberValue}
+                            name="phone"
+                            type="text"
+                            field={{
+                                value: authUser?.user?.phone
+                            }}
                         />
                         <InputComponent
                             label="Email"
@@ -220,6 +231,9 @@ function CreateContractPage() {
                         <CustomButton
                             text="Select"
                             className="!bg-schestiLightPrimary !text-schestiPrimary !py-2 !w-fit !border-schestiLightPrimary"
+                            onClick={() => {
+                                setShowList(true)
+                            }}
                         />
                     </div>
                     <Spin spinning={isFetchingItem} indicator={<LoadingOutlined spin />}>
@@ -243,10 +257,14 @@ function CreateContractPage() {
                                 }}
                             />
 
-                            <PhoneNumberInputWithLable
+                            <InputComponent
                                 label="Phone Number"
-                                onChange={() => { }}
-                                value={crmItem ? `+${crmItem?.phone}` as PhoneNumberValue : undefined}
+                                placeholder="Phone Number"
+                                name="phone"
+                                type="text"
+                                field={{
+                                    value: crmItem?.phone
+                                }}
                             />
                             <InputComponent
                                 label="Email"

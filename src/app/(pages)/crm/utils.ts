@@ -114,3 +114,22 @@ export async function findCrmItemById(
         }
     }
 }
+
+export function formatCrmModuleType(module: CrmModuleType) {
+    switch(module){
+        case 'clients':
+            return 'Client';
+        case 'vendors':
+            return 'Vendor';
+        case 'architects':
+            return 'Architect';
+        case 'contractors':
+            return 'Contractor';
+        case 'partners':
+            return 'Partner';
+        case 'subcontractors':
+            return 'Subcontractor';
+        default:
+            return 'Client';
+    }
+}
