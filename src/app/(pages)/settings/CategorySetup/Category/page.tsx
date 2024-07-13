@@ -163,10 +163,10 @@ const AddCategory = () => {
                 <div className=" grid grid-cols-2 gap-2">
                   <FormikController
                     control="input"
-                    label="Div"
+                    label="ID"
                     type="text"
                     name="categoryId"
-                    placeholder="Enter DIV"
+                    placeholder="Enter ID"
                   />
                   <FormikController
                     control="input"

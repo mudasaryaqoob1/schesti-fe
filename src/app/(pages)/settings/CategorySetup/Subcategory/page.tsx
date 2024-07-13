@@ -159,10 +159,10 @@ const AddSubcategory = () => {
                   />
                   <FormControl
                     control="input"
-                    label="Price"
+                    label="Labour Per Hour"
                     type="number"
                     name="price"
-                    placeholder="Enter Price"
+                    placeholder="Enter Labour Per Hour"
                     prefix="$"
                   />
                 </div>

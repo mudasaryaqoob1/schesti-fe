@@ -102,7 +102,7 @@ const SubCategoryTable = ({
       key: 'subCategory',
     },
     {
-      title: 'Price',
+      title: 'Labour Per Hour',
       dataIndex: 'price',
       key: 'price',
       render(value) {

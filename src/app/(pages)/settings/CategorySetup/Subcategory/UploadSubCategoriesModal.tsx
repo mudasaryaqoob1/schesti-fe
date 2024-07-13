@@ -143,7 +143,7 @@ export function UploadSubCategoriesModal({ open, setOpen, categories }: Props) {
                         columns={[
                             { title: "Sub Category Name", dataIndex: "name" },
                             {
-                                title: "Price",
+                                title: "Labour Per Hour",
                                 dataIndex: "price",
                                 render(value) {
                                     return USCurrencyFormat.format(Number(value));
