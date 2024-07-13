@@ -20,6 +20,21 @@ import { AxiosError } from "axios";
 import { LoadingOutlined } from "@ant-design/icons";
 import ModalComponent from "@/app/component/modal";
 import { ListCrmItems } from "../components/ListCrmItems";
+import { useFormik } from "formik";
+import dayjs from "dayjs";
+import { ShowFileComponent } from "@/app/(pages)/bid-management/components/ShowFile.component";
+import * as Yup from "yup";
+
+const ValidationSchema = Yup.object().shape({
+    title: Yup.string().required('Title is required'),
+    startDate: Yup.date().required('Start Date is required'),
+    endDate: Yup.date().required('End Date is required'),
+    description: Yup.string().required('Description is required'),
+    projectName: Yup.string().required('Project Name is required'),
+    projectNumber: Yup.string().required('Project Number is required'),
+    file: Yup.mixed().required('File is required'),
+})
+
 
 function CreateContractPage() {
     const [crmItem, setCrmItem] = useState<CrmType | null>(null);
@@ -27,6 +42,22 @@ function CreateContractPage() {
     const searchParams = useSearchParams();
     const authUser = useSelector((state: RootState) => state.auth.user as { user?: IUserInterface });
     const [showList, setShowList] = useState(false);
+
+    const formik = useFormik({
+        initialValues: {
+            title: '',
+            startDate: new Date().toISOString(),
+            endDate: '',
+            description: '',
+            projectName: '',
+            projectNumber: '',
+            file: undefined,
+        },
+        onSubmit(values,) {
+            console.log(values);
+        },
+        validationSchema: ValidationSchema
+    });
 
 
     useEffect(() => {
@@ -70,6 +101,10 @@ function CreateContractPage() {
                 <CustomButton
                     text="Save"
                     className="!w-fit"
+                    onClick={() => {
+                        formik.setFieldTouched('file', true);
+                        formik.submitForm()
+                    }}
                 />
             </div>
         </div>
@@ -90,7 +125,6 @@ function CreateContractPage() {
                 <Upload.Dragger
                     name={'file'}
                     // accept=".csv, .xls, .xlsx"
-                    // fileList={[]}
                     beforeUpload={(_file, FileList) => {
                         for (const file of FileList) {
                             const isLessThan500MB = file.size < 500 * 1024 * 1024; // 500MB in bytes
@@ -99,18 +133,20 @@ function CreateContractPage() {
                                 return false;
                             }
                         }
-
+                        formik.setFieldValue('file', _file);
                         return false;
                     }}
                     style={{
                         borderStyle: 'dashed',
                         borderWidth: 2,
                         marginTop: 12,
-                        backgroundColor: "transparent"
+                        backgroundColor: "transparent",
+                        borderColor: formik.errors.file ? "red" : "#E2E8F0",
                     }}
-                // itemRender={() => {
-                //     return null;
-                // }}
+                    itemRender={() => {
+
+                        return null;
+                    }}
                 >
                     <p className="ant-upload-drag-icon">
                         <Image
@@ -133,24 +169,61 @@ function CreateContractPage() {
                         className="!w-fit !px-6 !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
                     />
                 </Upload.Dragger>
+                {formik.values.file ? <ShowFileComponent
+                    file={{
+                        extension: (formik.values.file as any)?.type,
+                        name: (formik.values.file as any)?.name,
+                        type: (formik.values.file as any)?.type,
+                        url: formik.values.file ? URL.createObjectURL(formik.values.file as any) : '',
+                    }}
+                    onDelete={() => formik.setFieldValue('file', undefined)}
+                    shouldFit
+                /> : undefined}
             </div>
 
             <InputComponent
                 label="Contract Title"
                 placeholder="Contract Title"
-                name="contractTitle"
+                name="title"
                 type="text"
+                field={{
+                    value: formik.values.title,
+                    onChange: formik.handleChange,
+                    onBlur: formik.handleBlur
+                }}
+                hasError={formik.touched.title && Boolean(formik.errors.title)}
+                errorMessage={formik.touched.title && formik.errors.title ? formik.errors.title : ''}
             />
 
             <div className="grid grid-cols-2 gap-3">
                 <DateInputComponent
                     label="Start Date"
                     name="startDate"
+                    fieldProps={{
+                        value: formik.values.startDate ? dayjs(formik.values.startDate) : undefined,
+                        onChange: (_, dateString) => {
+                            formik.setFieldValue('startDate', dateString);
+                        },
+                        onBlur: formik.handleBlur,
+                        name: 'startDate',
+                    }}
+                    hasError={formik.touched.startDate && Boolean(formik.errors.startDate)}
+                    errorMessage={formik.touched.startDate && formik.errors.startDate ? formik.errors.startDate : ''}
                 />
 
                 <DateInputComponent
                     label="End Date"
-                    name="startDate"
+                    name="endDate"
+                    fieldProps={{
+                        value: formik.values.endDate ? dayjs(formik.values.endDate) : undefined,
+                        onChange: (_, dateString) => {
+                            formik.setFieldValue('endDate', dateString);
+                        },
+                        onBlur: formik.handleBlur,
+                        name: 'endDate',
+                    }}
+                    hasError={formik.touched.endDate && Boolean(formik.errors.endDate)}
+                    errorMessage={formik.touched.endDate && formik.errors.endDate ? formik.errors.endDate : ''}
                 />
             </div>
 
@@ -158,6 +231,13 @@ function CreateContractPage() {
                 label="Description"
                 name="description"
                 placeholder="Enter description"
+                field={{
+                    value: formik.values.description,
+                    onChange: formik.handleChange,
+                    onBlur: formik.handleBlur
+                }}
+                hasError={formik.touched.description && Boolean(formik.errors.description)}
+                errorMessage={formik.touched.description && formik.errors.description ? formik.errors.description : ''}
             />
 
             <div className="grid grid-cols-2 gap-3">
@@ -302,13 +382,27 @@ function CreateContractPage() {
                 placeholder="Project Name"
                 name="projectName"
                 type="text"
+                field={{
+                    value: formik.values.projectName,
+                    onChange: formik.handleChange,
+                    onBlur: formik.handleBlur
+                }}
+                hasError={formik.touched.projectName && Boolean(formik.errors.projectName)}
+                errorMessage={formik.touched.projectName && formik.errors.projectName ? formik.errors.projectName : ''}
             />
 
             <InputComponent
                 label="Project Number"
                 placeholder="Project Number"
-                name="projectName"
+                name="projectNumber"
                 type="number"
+                field={{
+                    value: formik.values.projectNumber,
+                    onChange: formik.handleChange,
+                    onBlur: formik.handleBlur
+                }}
+                hasError={formik.touched.projectNumber && Boolean(formik.errors.projectNumber)}
+                errorMessage={formik.touched.projectNumber && formik.errors.projectNumber ? formik.errors.projectNumber : ''}
             />
         </div>
 
