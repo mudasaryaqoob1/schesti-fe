@@ -32,7 +32,7 @@ const Navbar = () => {
           </Link>
           <Link href={'/settings/supporttickets'}>
             <Image
-              src={'/supportChatIcon.svg'}
+              src={'/supportChatIcon1.svg'}
               alt="logo white icon"
               width={40}
               height={40}

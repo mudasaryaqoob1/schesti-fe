@@ -16,6 +16,7 @@ module.exports = {
       test: /\.svg$/,
       use: ['@svgr/webpack', 'url-loader'],
     });
+    config.externals.push({ canvas: 'commonjs canvas' });
 
     return config;
   },
