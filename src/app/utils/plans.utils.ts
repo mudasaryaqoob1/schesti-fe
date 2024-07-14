@@ -40,7 +40,7 @@ export const Routes = {
   },
   Schedule: '/schedule',
   Meetings: '/meeting',
-  Networking: '#',
+  Networking: '/networking',
 };
 
 export const OtherRoutes = {
