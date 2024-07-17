@@ -22,7 +22,7 @@ const SearchFilters = () => {
     }
 
     return (
-        <section className="w-full col-span-2 mb-4 shadow rounded-xl p-6 bg-white">
+        <section className="w-full mb-4 shadow rounded-xl p-6 bg-white">
             <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
