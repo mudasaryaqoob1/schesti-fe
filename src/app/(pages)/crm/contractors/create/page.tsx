@@ -24,6 +24,8 @@ import { useFormik } from "formik";
 import dayjs from "dayjs";
 import { ShowFileComponent } from "@/app/(pages)/bid-management/components/ShowFile.component";
 import * as Yup from "yup";
+import { useRouterHook } from "@/app/hooks/useRouterHook";
+import { Routes } from "@/app/utils/plans.utils";
 
 const ValidationSchema = Yup.object().shape({
     title: Yup.string().required('Title is required'),
@@ -42,6 +44,7 @@ function CreateContractPage() {
     const searchParams = useSearchParams();
     const authUser = useSelector((state: RootState) => state.auth.user as { user?: IUserInterface });
     const [showList, setShowList] = useState(false);
+    const router = useRouterHook();
 
     const formik = useFormik({
         initialValues: {
@@ -55,6 +58,7 @@ function CreateContractPage() {
         },
         onSubmit(values,) {
             console.log(values);
+            router.push(`${Routes.CRM.Contractors}/edit-contract`);
         },
         validationSchema: ValidationSchema
     });

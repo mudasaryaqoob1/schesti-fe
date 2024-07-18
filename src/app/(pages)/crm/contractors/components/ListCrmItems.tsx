@@ -57,7 +57,7 @@ export function ListCrmItems({ title, onClose, onItemClick }: Props) {
         </div> : items.map(item => {
             return <div key={item._id} className="p-3 my-1 border-b hover:bg-schestiPrimaryBG cursor-pointer hover:rounded-md" onClick={() => onItemClick(item)}>
                 <div className="flex font-semibold text-schestiPrimaryBlack text-xs items-center space-x-3">
-                    <p className=""> <span className="text-schestiLightBlack">Name: </span> {item.module === 'subcontractors' || item.module === 'partners' ? item.companyRep : `${item.firstName} ${item.lastName}`}</p>
+                    <p className=""> <span className="text-schestiLightBlack">Name: </span> {item.module === 'subcontractors' || item.module === 'partners' ? item.companyRep : `${item.firstName} ${item.lastName || ""}`}</p>
                     <p><span className="text-schestiLightBlack">Company: </span> {item.module === 'subcontractors' || item.module === 'partners' ? item.name : item.companyName}</p>
                 </div>
                 <div className="font-semibold text-schestiPrimaryBlack text-xs">
