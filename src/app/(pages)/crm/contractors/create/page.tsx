@@ -77,7 +77,7 @@ function CreateContractPage() {
                     })
                     if (response.data) {
                         toast.success("Contract created successfully")
-                        router.push(`${Routes.CRM.Contractors}/edit-contract`);
+                        router.push(`${Routes.CRM.Contractors}/edit-contract?contractId=${response.data._id}`);
                     }
                 } catch (error) {
                     toast.error("Unable to create contract")
