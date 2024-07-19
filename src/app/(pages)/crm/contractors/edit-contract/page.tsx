@@ -74,26 +74,35 @@ function EditContractDocumentPage() {
 
     }
 
-    console.log({ tools });
+    function getXAndY(offset: { x: number, y: number }) {
+
+        const containerRect = containerRef.current!.getBoundingClientRect();
+        const scrollTop = containerRef.current!.scrollTop;
+        const scrollLeft = containerRef.current!.scrollLeft;
+
+        const x = offset.x - containerRect.left + scrollLeft;
+        const y = offset.y - containerRect.top + scrollTop;
+        return { x, y };
+    }
+
     return <div className="mt-6 space-y-2 !pb-[39px]  mx-4 ">
 
-        <div className="flex gap-6 justify-between">
-            <div>
+        <div className="flex gap-6 ">
+            <div className="w-[950px]">
                 <DroppableArea onDrop={function (item, offset) {
-
-                    if (item.type) {
-                        const containerRect = containerRef.current!.getBoundingClientRect();
-                        const scrollTop = containerRef.current!.scrollTop;
-                        const scrollLeft = containerRef.current!.scrollLeft;
-
-                        const x = offset.x - containerRect.left + scrollLeft;
-                        const y = offset.y - containerRect.top + scrollTop;
+                    if ("type" in item) {
+                        const { x, y } = getXAndY(offset);
                         setTools((prev) => [...prev, { tool: item.type, position: { x, y }, id: Math.random().toString(36).slice(0, 9) }])
                     } else {
-                        console.log("On Drop", item, offset);
+                        setTools((prev) => {
+                            return prev.map((tool) => {
+                                const { x, y } = getXAndY(offset);
+                                return tool.id === item.id ? { ...tool, position: { x, y } } : tool
+                            })
+                        });
                     }
                 }}>
-                    <div id="container" ref={containerRef} className="rounded-md relative h-[calc(100vh-150px)] w-fit overflow-y-scroll">
+                    <div id="container" ref={containerRef} className="rounded-md relative h-[calc(100vh-150px)] overflow-y-scroll">
                         {tools.map((item) => {
                             return <DraggableItem type={item.tool} key={item.id} data={item} onDrop={(item, position) => {
                                 console.log("Dropped");

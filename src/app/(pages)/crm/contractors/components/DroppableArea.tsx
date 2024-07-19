@@ -4,7 +4,7 @@ import { useDrop } from 'react-dnd';
 import { StandardToolType } from '../types';
 
 type Props = {
-    onDrop: (_item: { type: StandardToolType, tool?: StandardToolType }, _offset: any) => void;
+    onDrop: (_item: { type: StandardToolType } | { tool: StandardToolType, position: { x: number, y: number }, id: string }, _offset: { x: number, y: number }) => void;
     children: React.ReactNode;
 };
 
@@ -13,17 +13,20 @@ const DroppableArea = ({ onDrop, children }: Props) => {
         accept: 'TOOL',
         drop: (item: { type: StandardToolType, tool?: StandardToolType, [key: string]: any }, monitor) => {
             if (item.tool) {
-                const delta = monitor.getDifferenceFromInitialOffset();
+                const delta = monitor.getClientOffset();
+
                 if (!delta) return;
 
-                const newPosition = {
-                    x: item.position.x + delta.x,
-                    y: item.position.y + delta.y,
-                };
-                onDrop(item, newPosition);
+                // const newPosition = {
+                //     x: item.position.x + delta.x,
+                //     y: item.position.y + delta.y,
+                // };
+                onDrop(item, delta);
             } else {
-
                 const offset = monitor.getClientOffset();
+                if (!offset) {
+                    return;
+                }
                 onDrop(item, offset);
             }
         },
