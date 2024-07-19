@@ -9,19 +9,16 @@ import SenaryHeading from "@/app/component/headings/senaryHeading";
 import CustomButton from "@/app/component/customButton/button";
 import DraggableTool from "../components/DraggableTool";
 import DroppableArea from "../components/DroppableArea";
-import { StandardToolType } from "../types";
 import DraggableItem from "../components/DraggableItem";
+import { ToolState } from "../types";
+import { StandardToolItem } from "../components/standard-tools-items";
 
-type ToolState = {
-    tool: StandardToolType,
-    position: { x: number, y: number },
-    id: string
-}
+
 
 function EditContractDocumentPage() {
     const [pdfFile,] = useState("/agreement.pdf");
     // const [activePage, setActivePage] = useState<null | number>(1)
-    // const canvasRefs = useRef<HTMLCanvasElement[]>([]);
+    const canvasRefs = useRef<HTMLCanvasElement[]>([]);
     const [tools, setTools] = useState<ToolState[]>([]);
     const { PDFJs } = usePDFJS(async () => { });
     const containerRef = useRef<HTMLDivElement>(null);
@@ -63,10 +60,11 @@ function EditContractDocumentPage() {
                     canvasContext: context!,
                     viewport: viewport,
                 };
-                // canvasRefs.current.push(canvas);
+                canvasRefs.current.push(canvas);
+
                 await page.render(renderContext).promise;
 
-                if (containerRef.current) {
+                if (containerRef.current && !!canvasRefs.current.find(canv => canv.getAttribute("id") === `${index}`)) {
                     containerRef.current.appendChild(canvas);
                 }
             }
@@ -109,7 +107,7 @@ function EditContractDocumentPage() {
                                 setTools(prev => prev.map(i => i.id === item.id ? { ...i, position } : i))
                             }}>
 
-                                {item.tool}
+                                <StandardToolItem mode="edit-fields" item={item} key={item.id} />
                             </DraggableItem>
                         })}
                     </div>
