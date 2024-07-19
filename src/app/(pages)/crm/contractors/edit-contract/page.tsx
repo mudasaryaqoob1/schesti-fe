@@ -102,10 +102,7 @@ function EditContractDocumentPage() {
                 }}>
                     <div id="container" ref={containerRef} className="rounded-md relative h-[calc(100vh-150px)] overflow-y-scroll">
                         {tools.map((item) => {
-                            return <DraggableItem type={item.tool} key={item.id} data={item} onDrop={(item, position) => {
-                                console.log("Dropped");
-                                setTools(prev => prev.map(i => i.id === item.id ? { ...i, position } : i))
-                            }}>
+                            return <DraggableItem type={item.tool} key={item.id} data={item} mode="edit-fields">
 
                                 <StandardToolItem mode="edit-fields" item={item} key={item.id} />
                             </DraggableItem>
