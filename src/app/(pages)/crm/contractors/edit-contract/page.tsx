@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import { ContractPdf } from "../components/ContractPdf";
 import CustomButton from "@/app/component/customButton/button";
 import WhiteButton from "@/app/component/customButton/white";
+import SenaryHeading from "@/app/component/headings/senaryHeading";
 
 
 
@@ -67,15 +68,21 @@ function EditContractDocumentPage() {
 
     return (
         <div className="mt-6 space-y-2 !pb-[39px]  mx-4 ">
-            <div className="my-4 flex justify-end space-x-3 items-center">
-                <WhiteButton
-                    text="Cancel"
-                    className="!w-fit"
+            <div className="my-4 flex justify-between space-x-3 items-center">
+                <SenaryHeading
+                    title={contract.projectName}
+                    className="text-xl text-schestiPrimaryBlack font-semibold leading-7"
                 />
-                <CustomButton
-                    text="Send Contract"
-                    className="!w-fit"
-                />
+                <div className="flex space-x-3 items-center">
+                    <WhiteButton
+                        text="Cancel"
+                        className="!w-fit"
+                    />
+                    <CustomButton
+                        text="Send Contract"
+                        className="!w-fit"
+                    />
+                </div>
             </div>
             <ContractPdf
                 mode="edit-fields"
