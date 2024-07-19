@@ -14,6 +14,7 @@ import { ContractPdf } from "../components/ContractPdf";
 import CustomButton from "@/app/component/customButton/button";
 import WhiteButton from "@/app/component/customButton/white";
 import SenaryHeading from "@/app/component/headings/senaryHeading";
+import { ToolState } from "../types";
 
 
 
@@ -21,6 +22,7 @@ function EditContractDocumentPage() {
     const [contract, setContract] = useState<ICrmContract | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const searchParams = useSearchParams();
+    const [tools, setTools] = useState<ToolState[]>([]);
 
     useEffect(() => {
         const id = searchParams.get('contractId');
@@ -36,6 +38,7 @@ function EditContractDocumentPage() {
             const response = await crmContractService.httpFindContractById(id);
             if (response.data) {
                 setContract(response.data);
+                setTools(response.data.tools);
             }
         } catch (error) {
             const err = error as AxiosError<{ message: string }>;
@@ -88,6 +91,8 @@ function EditContractDocumentPage() {
                 mode="edit-fields"
                 contract={contract}
                 pdfFile={contract.file.url}
+                tools={tools}
+                setTools={setTools}
             />
         </div>
     )

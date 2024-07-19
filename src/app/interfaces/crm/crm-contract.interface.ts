@@ -1,3 +1,4 @@
+import { ToolState } from "@/app/(pages)/crm/contractors/types";
 import { FileInterface } from "../file.interface";
 import { IUserInterface } from "../user.interface";
 import { CrmType } from "./crm.interface";
@@ -21,13 +22,5 @@ export interface ICrmContract{
     receiver: string | CrmType;
     projectName: string;
     projectNo: string;
-    tools: {
-        id:string;
-        tool:string;
-        position:{
-            x:number;
-            y:number;
-        };
-        value?:string | FileInterface;
-    }[]
+    tools: ToolState[]
 }

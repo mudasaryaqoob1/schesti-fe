@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, } from "react";
 import { PdfContractMode, ToolState } from "../types";
 import { usePDFJS } from "@/app/hooks/usePdf";
 import DroppableArea from "./DroppableArea";
@@ -13,12 +13,13 @@ type Props = {
     mode: PdfContractMode;
     pdfFile: string;
     contract: ICrmContract;
+    tools: ToolState[];
+    setTools: React.Dispatch<React.SetStateAction<ToolState[]>>
 }
 
-export function ContractPdf({ mode, pdfFile }: Props) {
+export function ContractPdf({ mode, pdfFile, tools, setTools }: Props) {
     // const [activePage, setActivePage] = useState<null | number>(1)
     // const canvasRefs = useRef<HTMLCanvasElement[]>([]);
-    const [tools, setTools] = useState<ToolState[]>([]);
     const { PDFJs } = usePDFJS(async () => { });
     const containerRef = useRef<HTMLDivElement>(null);
 
