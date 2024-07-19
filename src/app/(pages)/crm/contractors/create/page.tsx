@@ -48,6 +48,7 @@ function CreateContractPage() {
     const authUser = useSelector((state: RootState) => state.auth.user as { user?: IUserInterface });
     const [showList, setShowList] = useState(false);
     const router = useRouterHook();
+    const [isLoading, setIsLoading] = useState(false);
 
     const formik = useFormik({
         initialValues: {
@@ -61,6 +62,7 @@ function CreateContractPage() {
         },
         async onSubmit(values,) {
             if (crmItem) {
+                setIsLoading(true);
                 try {
                     const url = await new AwsS3(values.file, 'documents/crm/').getS3URL();
                     const valFile = values.file as RcFile;
@@ -81,6 +83,8 @@ function CreateContractPage() {
                     }
                 } catch (error) {
                     toast.error("Unable to create contract")
+                } finally {
+                    setIsLoading(false);
                 }
 
             }
@@ -134,6 +138,8 @@ function CreateContractPage() {
                         formik.setFieldTouched('file', true);
                         formik.submitForm()
                     }}
+                    isLoading={isLoading}
+                    loadingText="Saving..."
                 />
             </div>
         </div>
