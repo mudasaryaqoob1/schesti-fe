@@ -32,7 +32,7 @@ class AwsS3 {
       ContentType: this.fileUpload.type,
       ACL: 'public-read',
     };
-    const uploadResult: any = await this.s3.upload(params).promise();
+    const uploadResult = await this.s3.upload(params).promise();
     return uploadResult.Location;
   };
 

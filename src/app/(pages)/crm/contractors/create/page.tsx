@@ -26,6 +26,9 @@ import { ShowFileComponent } from "@/app/(pages)/bid-management/components/ShowF
 import * as Yup from "yup";
 import { useRouterHook } from "@/app/hooks/useRouterHook";
 import { Routes } from "@/app/utils/plans.utils";
+import crmContractService from "@/app/services/crm/crm-contract.service";
+import AwsS3 from "@/app/utils/S3Intergration";
+import type { RcFile } from "antd/es/upload";
 
 const ValidationSchema = Yup.object().shape({
     title: Yup.string().required('Title is required'),
@@ -33,7 +36,7 @@ const ValidationSchema = Yup.object().shape({
     endDate: Yup.date().required('End Date is required'),
     description: Yup.string().required('Description is required'),
     projectName: Yup.string().required('Project Name is required'),
-    projectNumber: Yup.string().required('Project Number is required'),
+    projectNo: Yup.string().required('Project Number is required'),
     file: Yup.mixed().required('File is required'),
 })
 
@@ -53,12 +56,34 @@ function CreateContractPage() {
             endDate: '',
             description: '',
             projectName: '',
-            projectNumber: '',
-            file: undefined,
+            projectNo: '',
+            file: undefined as RcFile | undefined,
         },
-        onSubmit(values,) {
-            console.log(values);
-            router.push(`${Routes.CRM.Contractors}/edit-contract`);
+        async onSubmit(values,) {
+            if (crmItem) {
+                try {
+                    const url = await new AwsS3(values.file, 'documents/crm/').getS3URL();
+                    const valFile = values.file as RcFile;
+                    const response = await crmContractService.httpCreateContract({
+                        ...values,
+                        receiver: crmItem._id,
+                        status: "draft",
+                        file: {
+                            extension: valFile.name.split('.').pop() || '',
+                            name: valFile.name,
+                            type: valFile.type,
+                            url
+                        }
+                    })
+                    if (response.data) {
+                        toast.success("Contract created successfully")
+                        router.push(`${Routes.CRM.Contractors}/edit-contract`);
+                    }
+                } catch (error) {
+                    toast.error("Unable to create contract")
+                }
+
+            }
         },
         validationSchema: ValidationSchema
     });
@@ -398,15 +423,15 @@ function CreateContractPage() {
             <InputComponent
                 label="Project Number"
                 placeholder="Project Number"
-                name="projectNumber"
+                name="projectNo"
                 type="number"
                 field={{
-                    value: formik.values.projectNumber,
+                    value: formik.values.projectNo,
                     onChange: formik.handleChange,
                     onBlur: formik.handleBlur
                 }}
-                hasError={formik.touched.projectNumber && Boolean(formik.errors.projectNumber)}
-                errorMessage={formik.touched.projectNumber && formik.errors.projectNumber ? formik.errors.projectNumber : ''}
+                hasError={formik.touched.projectNo && Boolean(formik.errors.projectNo)}
+                errorMessage={formik.touched.projectNo && formik.errors.projectNo ? formik.errors.projectNo : ''}
             />
         </div>
 

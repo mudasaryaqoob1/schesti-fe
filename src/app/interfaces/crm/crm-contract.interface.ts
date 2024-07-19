@@ -10,8 +10,8 @@ export interface ICrmContract{
     updatedAt:string;
     title: string;
     description: string;
-    startDate: Date;
-    endDate: Date;
+    startDate: string;
+    endDate: string;
     status: CrmContractStatusType;
     file:FileInterface,
 
