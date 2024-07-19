@@ -1,6 +1,5 @@
 import React from 'react';
 import { useDrag, } from 'react-dnd';
-import { PdfContractMode } from '../types';
 
 type Position = {
   x: number;
@@ -11,10 +10,9 @@ type Props<T extends { position: Position }> = {
   data: T;
   children: React.ReactNode;
   type: string;
-  mode: PdfContractMode
 }
 
-const DraggableItem = <T extends { position: Position },>({ data, children, mode }: Props<T>) => {
+const DraggableItem = <T extends { position: Position },>({ data, children, }: Props<T>) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'TOOL',
     item: data,
@@ -34,7 +32,7 @@ const DraggableItem = <T extends { position: Position },>({ data, children, mode
         position: 'absolute',
         left: data.position.x,
         top: data.position.y,
-        cursor: mode === 'edit-fields' ? 'move' : 'pointer',
+        cursor: 'move',
         padding: 0,
         margin: 0,
         backgroundColor: "transparent"

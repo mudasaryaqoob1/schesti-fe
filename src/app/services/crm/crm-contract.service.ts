@@ -6,7 +6,9 @@ type CreateContractData = Omit<ICrmContract, "_id" | "createdAt" | "updatedAt" |
 class CrmContractService extends HttpService {
     private endPoint = 'api/crm/contract';
 
-    httpCreateContract = (data:CreateContractData):Promise<IResponseInterface<ICrmContract>> => this.post(this.endPoint, data)
+    httpCreateContract = (data:CreateContractData):Promise<IResponseInterface<ICrmContract>> => this.post(this.endPoint, data);
+
+    httpFindContractById = (id:string):Promise<IResponseInterface<ICrmContract>> => this.get(`${this.endPoint}/${id}`);
 }
 
 export default new CrmContractService();

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ToolState } from "../types";
+import { PdfContractMode, ToolState } from "../types";
 import { usePDFJS } from "@/app/hooks/usePdf";
 import DroppableArea from "./DroppableArea";
 import DraggableItem from "./DraggableItem";
@@ -7,11 +7,17 @@ import { StandardToolItem } from "./standard-tools-items";
 import SenaryHeading from "@/app/component/headings/senaryHeading";
 import DraggableTool from "./DraggableTool";
 import CustomButton from "@/app/component/customButton/button";
+import { ICrmContract } from "@/app/interfaces/crm/crm-contract.interface";
 
-export function ContractPdf() {
-    const [pdfFile,] = useState("/agreement.pdf");
+type Props = {
+    mode: PdfContractMode;
+    pdfFile: string;
+    contract: ICrmContract;
+}
+
+export function ContractPdf({ mode, pdfFile }: Props) {
     // const [activePage, setActivePage] = useState<null | number>(1)
-    const canvasRefs = useRef<HTMLCanvasElement[]>([]);
+    // const canvasRefs = useRef<HTMLCanvasElement[]>([]);
     const [tools, setTools] = useState<ToolState[]>([]);
     const { PDFJs } = usePDFJS(async () => { });
     const containerRef = useRef<HTMLDivElement>(null);
@@ -53,11 +59,11 @@ export function ContractPdf() {
                     canvasContext: context!,
                     viewport: viewport,
                 };
-                canvasRefs.current.push(canvas);
+                // canvasRefs.current.push(canvas);
 
                 await page.render(renderContext).promise;
 
-                if (containerRef.current && !!canvasRefs.current.find(canv => canv.getAttribute("id") === `${index}`)) {
+                if (containerRef.current) {
                     containerRef.current.appendChild(canvas);
                 }
             }
@@ -76,7 +82,7 @@ export function ContractPdf() {
         return { x, y };
     }
 
-    return <div className="mt-6 space-y-2 !pb-[39px]  mx-4 ">
+    return <div>
 
         <div className="flex gap-6 ">
             <div className="w-[950px]">
@@ -95,15 +101,15 @@ export function ContractPdf() {
                 }}>
                     <div id="container" ref={containerRef} className="rounded-md relative h-[calc(100vh-150px)] overflow-y-scroll">
                         {tools.map((item) => {
-                            return <DraggableItem type={item.tool} key={item.id} data={item} mode="edit-fields">
+                            return mode === 'add-values' ? <StandardToolItem mode={mode} item={item} key={item.id} /> : <DraggableItem type={item.tool} key={item.id} data={item}>
 
-                                <StandardToolItem mode="edit-fields" item={item} key={item.id} />
+                                <StandardToolItem mode={mode} item={item} key={item.id} />
                             </DraggableItem>
                         })}
                     </div>
                 </DroppableArea>
             </div>
-            <div className="flex flex-col space-y-3 rounded-md bg-white h-fit p-4 ">
+            {mode === 'edit-fields' ? <div className="flex flex-col space-y-3 rounded-md bg-white h-fit p-4 ">
                 <SenaryHeading
                     title="Standard Tools"
                     className="text-xl  font-semibold"
@@ -150,7 +156,7 @@ export function ContractPdf() {
                         iconheight={16}
                     />
                 </DraggableTool>
-            </div>
+            </div> : null}
         </div>
         {/* <div ref={containerRef} className="border border-black"></div> */}
     </div>

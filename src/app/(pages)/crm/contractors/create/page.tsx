@@ -70,6 +70,7 @@ function CreateContractPage() {
                         ...values,
                         receiver: crmItem._id,
                         status: "draft",
+                        projectNo: `${values.projectNo}`,
                         file: {
                             extension: valFile.name.split('.').pop() || '',
                             name: valFile.name,
