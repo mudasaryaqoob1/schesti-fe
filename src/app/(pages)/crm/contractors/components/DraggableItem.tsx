@@ -35,6 +35,9 @@ const DraggableItem = <T extends { position: Position },>({ data, children, mode
         left: data.position.x,
         top: data.position.y,
         cursor: mode === 'edit-fields' ? 'move' : 'pointer',
+        padding: 0,
+        margin: 0,
+        backgroundColor: "transparent"
       }}
     >
       {children}

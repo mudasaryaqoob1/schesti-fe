@@ -24,7 +24,7 @@ function Item({ item, mode }: ItemProps) {
             return;
         }
         console.log("Item Clicked");
-    }} className="p-3 rounded-lg border-schestiPrimary border-2 relative font-semibold text-schestiPrimary flex items-center space-x-2 border-dashed bg-schestiLightPrimary">
+    }} className="p-3 rounded-lg border-schestiPrimary border-2 h-fit relative font-semibold text-schestiPrimary flex items-center space-x-2 border-dashed bg-schestiLightPrimary m-0">
         <Image src={`/${item.tool}.svg`} width={16} height={16} alt={`${item.tool}`} />
         <p className="capitalize">{item.tool}</p>
 
