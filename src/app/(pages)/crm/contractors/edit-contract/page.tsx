@@ -15,6 +15,7 @@ import CustomButton from "@/app/component/customButton/button";
 import WhiteButton from "@/app/component/customButton/white";
 import SenaryHeading from "@/app/component/headings/senaryHeading";
 import { ToolState } from "../types";
+import { useRouterHook } from "@/app/hooks/useRouterHook";
 
 
 
@@ -23,6 +24,8 @@ function EditContractDocumentPage() {
     const [isLoading, setIsLoading] = useState(false);
     const searchParams = useSearchParams();
     const [tools, setTools] = useState<ToolState[]>([]);
+    const [isSending, setIsSending] = useState(false);
+    const router = useRouterHook();
 
     useEffect(() => {
         const id = searchParams.get('contractId');
@@ -69,6 +72,27 @@ function EditContractDocumentPage() {
         />
     }
 
+
+    async function sendContract(id: string, tools: ToolState[]) {
+        setIsSending(true);
+
+        try {
+            const response = await crmContractService.httpSendContract(id, tools);
+            if (response.data) {
+                toast.success("Contract sent successfully");
+                // router.push(`${Routes.CRM.Clients}`);
+
+            }
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+            if (err.response?.data) {
+                toast.error("Unable to send the contract");
+            }
+        } finally {
+            setIsSending(false);
+        }
+    }
+
     return (
         <div className="mt-6 space-y-2 !pb-[39px]  mx-4 ">
             <div className="my-4 flex justify-between space-x-3 items-center">
@@ -84,6 +108,8 @@ function EditContractDocumentPage() {
                     <CustomButton
                         text="Send Contract"
                         className="!w-fit"
+                        onClick={() => sendContract(contract._id, tools)}
+                        isLoading={isSending}
                     />
                 </div>
             </div>

@@ -83,6 +83,10 @@ export function ContractPdf({ mode, pdfFile, tools, setTools }: Props) {
         return { x, y };
     }
 
+    function handleRemoveTool(id: string) {
+        setTools((prev) => prev.filter((tool) => tool.id !== id));
+    }
+
     return <div>
 
         <div className="flex gap-6 ">
@@ -102,9 +106,9 @@ export function ContractPdf({ mode, pdfFile, tools, setTools }: Props) {
                 }}>
                     <div id="container" ref={containerRef} className="rounded-md relative h-[calc(100vh-150px)] overflow-y-scroll">
                         {tools.map((item) => {
-                            return mode === 'add-values' ? <StandardToolItem mode={mode} item={item} key={item.id} /> : <DraggableItem type={item.tool} key={item.id} data={item}>
+                            return mode === 'add-values' ? <StandardToolItem onDelete={() => handleRemoveTool(item.id)} mode={mode} item={item} key={item.id} /> : <DraggableItem type={item.tool} key={item.id} data={item}>
 
-                                <StandardToolItem mode={mode} item={item} key={item.id} />
+                                <StandardToolItem mode={mode} item={item} key={item.id} onDelete={() => handleRemoveTool(item.id)} />
                             </DraggableItem>
                         })}
                     </div>
