@@ -8,6 +8,7 @@ import { ICrmContract } from "@/app/interfaces/crm/crm-contract.interface";
 import { CrmType } from "@/app/interfaces/crm/crm.interface";
 import { FileInterface } from "@/app/interfaces/file.interface";
 import crmContractService from "@/app/services/crm/crm-contract.service";
+import { downloadFile } from "@/app/utils/downloadFile";
 import { SearchOutlined } from "@ant-design/icons";
 import { Dropdown, Tag, type MenuProps } from "antd";
 import type { ColumnsType } from "antd/es/table";
@@ -136,6 +137,8 @@ function ContractsPage() {
                             src={'/download-icon.svg'}
                             width={20}
                             height={20}
+                            className="cursor-pointer"
+                            onClick={() => downloadFile(file.url, file.name)}
                         />
                     </div>
                 </div>
