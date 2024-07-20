@@ -9,6 +9,25 @@ type Props = {
 }
 export function StandardToolItem({ item, mode, onDelete, onClick }: Props) {
 
+    if (mode === 'add-values') {
+        return <div style={{
+            position: 'absolute',
+            left: item.position.x,
+            top: item.position.y,
+            cursor: 'pointer',
+            padding: 0,
+            margin: 0,
+            backgroundColor: "transparent"
+        }}>
+
+            <Item
+                item={item}
+                mode={mode}
+                onClick={onClick}
+                onDelete={onDelete}
+            />
+        </div>
+    }
     return <Item
         item={item}
         mode={mode}

@@ -68,7 +68,7 @@ function EditContractDocumentPage() {
             title="Contract not found"
             description="The contract you are looking for does not exist"
             btnText="Back"
-            link={`${Routes.CRM.Clients}`}
+            link={`${Routes.CRM.Contractors}`}
         />
     }
 

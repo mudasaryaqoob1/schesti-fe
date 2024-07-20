@@ -37,7 +37,7 @@ const CustomNavbar = ({ children }: Props) => {
     'verification',
   ];
 
-  const isUnProtectedRoute = unProtectedRoutes.includes(pathname.split('/')[1]);
+  const isUnProtectedRoute = pathname === "/crm/contractors/sign" || unProtectedRoutes.includes(pathname.split('/')[1]);
 
   return (
     <div className="flex h-screen relative">
