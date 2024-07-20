@@ -80,7 +80,7 @@ function EditContractDocumentPage() {
             const response = await crmContractService.httpSendContract(id, tools);
             if (response.data) {
                 toast.success("Contract sent successfully");
-                // router.push(`${Routes.CRM.Clients}`);
+                router.push(`${Routes.CRM.Contractors}`);
 
             }
         } catch (error) {

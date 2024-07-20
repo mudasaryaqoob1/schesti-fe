@@ -1,0 +1,252 @@
+'use client';
+import CustomButton from "@/app/component/customButton/button";
+import { InputComponent } from "@/app/component/customInput/Input";
+import { SelectComponent } from "@/app/component/customSelect/Select.component";
+import SenaryHeading from "@/app/component/headings/senaryHeading";
+import { withAuth } from "@/app/hoc/withAuth";
+import { ICrmContract } from "@/app/interfaces/crm/crm-contract.interface";
+import { CrmType } from "@/app/interfaces/crm/crm.interface";
+import { FileInterface } from "@/app/interfaces/file.interface";
+import crmContractService from "@/app/services/crm/crm-contract.service";
+import { SearchOutlined } from "@ant-design/icons";
+import { Dropdown, Tag, type MenuProps } from "antd";
+import type { ColumnsType } from "antd/es/table";
+import Table from "antd/es/table";
+import { AxiosError } from "axios";
+import moment from "moment";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+
+const menuItems: MenuProps['items'] = [
+    {
+        key: 'createEstimateRequest',
+        label: <p>Create Estimate Request</p>,
+    },
+    {
+        key: 'createNewInvoice',
+        label: <p>Create Invoice</p>,
+    },
+    {
+        key: 'createSchedule',
+        label: <p>Create Schedule</p>,
+    },
+    {
+        key: 'editClientDetail',
+        label: <p>Edit Client Details</p>,
+    },
+    {
+        key: 'createContract',
+        label: <p>Create Contract</p>,
+    },
+    {
+        key: 'createNewTakeoff',
+        label: <p>Create New Takeoff</p>,
+    },
+    {
+        key: 'email',
+        label: <p>Email</p>,
+    },
+    {
+        key: 'deleteClient',
+        label: <p>Delete</p>,
+    },
+    {
+        key: 'inActiveClient',
+        label: <p>In Active</p>,
+    },
+];
+function ContractsPage() {
+    const [data, setData] = useState<ICrmContract[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+
+
+    useEffect(() => {
+        getCompanyContracts();
+    }, []);
+
+    async function getCompanyContracts() {
+        setIsLoading(true);
+        try {
+            const response = await crmContractService.httpGetCompanyContracts();
+            if (response.data) {
+                setData(response.data);
+            }
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+            console.log(err.response?.data);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+
+    const columns: ColumnsType<ICrmContract> = [
+        {
+            title: "Contract Title",
+            dataIndex: "title"
+        },
+        {
+            title: "Receiver Name",
+            dataIndex: "receiver",
+            render: (receiver: CrmType) => {
+                if (receiver.module === 'subcontractors' || receiver.module === 'partners') {
+                    return receiver.companyRep
+                }
+                return `${receiver.firstName} ${receiver.lastName || ""}`
+            }
+        },
+        {
+            title: "Start Date",
+            dataIndex: "startDate",
+            render: (date) => {
+                return moment(date).format("YYYY-MM-DD")
+            }
+        },
+        {
+            title: "End Date",
+            dataIndex: "endDate",
+            render: (date) => {
+                return moment(date).format("YYYY-MM-DD")
+            }
+        },
+        {
+            title: "Contract File",
+            dataIndex: "file",
+            render: (file: FileInterface) => {
+                return <div className="flex space-x-5 items-center">
+                    <div className="flex items-center space-x-2">
+                        <div className="p-1 rounded-md bg-schestiLightPrimary">
+                            <Image
+                                alt="file"
+                                src={"/file-cyan.svg"}
+                                width={20}
+                                height={20}
+                            />
+                        </div>
+
+                        <SenaryHeading
+                            title={file.name}
+                            className="text-[14px] text-schestiPrimaryBlack"
+                        />
+                    </div>
+
+                    <div className="p-1">
+                        <Image
+                            alt="download"
+                            src={'/download-icon.svg'}
+                            width={20}
+                            height={20}
+                        />
+                    </div>
+                </div>
+            }
+        },
+        {
+            title: "Status",
+            dataIndex: "status",
+            render(value, record,) {
+                if (record.status === 'draft') {
+                    return (
+                        <Tag className="rounded-full" color="#026AA2">
+                            Draft
+                        </Tag>
+                    );
+                } else if (record.status === 'pending') {
+                    return (
+                        <Tag className="rounded-full" color="#175CD3">
+                            Pending
+                        </Tag>
+                    );
+                } else if (record.status === 'archive') {
+                    return (
+                        <Tag className="rounded-full" color="#344054">
+                            Archived
+                        </Tag>
+                    );
+                } else {
+                    return (
+                        <Tag className="rounded-full" color="#027A48">
+                            Signed
+                        </Tag>
+                    );
+                }
+            },
+        },
+        {
+            title: "Action",
+            dataIndex: "action",
+            render() {
+                return <Dropdown
+                    menu={{
+                        items: menuItems,
+                    }}
+                    placement="bottomRight"
+                >
+                    <Image
+                        src={'/menuIcon.svg'}
+                        alt="logo white icon"
+                        width={20}
+                        height={20}
+                        className="active:scale-105 cursor-pointer"
+                    />
+                </Dropdown>
+            },
+        }
+    ]
+
+    return <div className="mt-6 p-5 !pb-[39px]  mx-4 bg-white rounded-md">
+
+        <div className="flex justify-between items-center">
+            <SenaryHeading
+                title="Contracts"
+                className="text-xl text-schestiPrimaryBlack font-semibold leading-7"
+            />
+            <div className="flex items-center space-x-3">
+                <div className="w-96">
+                    <InputComponent
+                        label=""
+                        name=""
+                        type="text"
+                        placeholder="Search"
+                        prefix={<SearchOutlined />}
+                    />
+                </div>
+                <SelectComponent
+                    label=''
+                    name='status'
+                    placeholder='Status'
+                    field={{
+
+                        options: [
+                            { label: "Active", value: "active" },
+                            { label: "In Active", value: "inactive" },
+                        ],
+                        className: "!w-auto",
+                        allowClear: true,
+
+                    }}
+                />
+
+                <CustomButton
+                    text="Create New Contract"
+                    className="!w-fit !py-2.5"
+                    icon="/plus.svg"
+                    iconwidth={20}
+                    iconheight={20}
+                />
+            </div>
+        </div>
+
+
+        <div className="mt-5">
+            <Table
+                columns={columns}
+                dataSource={data}
+                loading={isLoading}
+            />
+        </div>
+
+    </div>
+}
+
+export default withAuth(ContractsPage)
