@@ -212,8 +212,6 @@ const ViewEstimateDetail = () => {
     ]);
   }
 
-
-
   const generatePdfBlob = async () => {
     const blob = await pdf(
       <ClientPDF
@@ -226,7 +224,7 @@ const ViewEstimateDetail = () => {
     return blob;
   };
 
-  const estimateEmailSendHandler = async (bodyObject: any) => {
+  const estimateEmailSendHandler = async (bodyObject: FormData) => {
     let generatedBlobl = await generatePdfBlob();
 
     const url = await new AwsS3(
@@ -234,17 +232,11 @@ const ViewEstimateDetail = () => {
       'documents/estimates/'
     ).getS3URL();
 
-    let payloadObj = {
-      ...bodyObject,
-      estimateUrl: url,
-    };
-
-
-    bodyObject.append("estimateUrl", url)
+    bodyObject.set('estimateUrl', url);
 
     try {
       const response =
-        await estimateRequestService.httpEstimateEmailSender(payloadObj);
+        await estimateRequestService.httpEstimateEmailSender(bodyObject);
 
       if (response.statusCode == 200) {
         setEmailModal(false);
