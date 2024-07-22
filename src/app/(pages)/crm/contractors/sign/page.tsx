@@ -75,7 +75,7 @@ export default function SignPdfContract() {
             />
         </div>
         <div className="p-4 m-4 bg-white rounded-md ">
-            <ContractInfo />
+            <ContractInfo contract={contract} />
 
             <div className="mt-5 w-fit mx-auto">
                 <ContractPdf

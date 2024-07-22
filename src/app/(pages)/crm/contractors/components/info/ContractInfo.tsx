@@ -1,11 +1,38 @@
 import SenaryHeading from "@/app/component/headings/senaryHeading";
+import { ICrmContract } from "@/app/interfaces/crm/crm-contract.interface";
+import moment from "moment";
 import Image from "next/image";
 
-export function ContractInfo() {
+type Props = {
+    contract: ICrmContract
+}
+
+export function ContractInfo({ contract }: Props) {
+
+
+    function getReceiverName(receiver: ICrmContract['receiver']) {
+        if (typeof receiver !== 'string') {
+            if (receiver.module === 'subcontractors' || receiver.module === 'partners') {
+                return receiver.companyRep
+            }
+            return `${receiver.firstName} ${receiver.lastName || ""}`
+        }
+        return ""
+    }
+
+    function getReceiverCompany(receiver: ICrmContract['receiver']) {
+        if (typeof receiver !== 'string') {
+            if (receiver.module === 'subcontractors' || receiver.module === 'partners') {
+                return receiver.name
+            }
+            return receiver.companyName
+        }
+        return ""
+    }
 
     return <div>
         <SenaryHeading
-            title="Contract for Markets property"
+            title={contract.title}
             className="text-schestiPrimaryBlack font-bold text-xl leading-7"
         />
 
@@ -18,7 +45,7 @@ export function ContractInfo() {
                 />
 
                 <SenaryHeading
-                    title="Schesti"
+                    title={contract.projectName}
                     className="text-schestiPrimaryBlack font-normal text-base"
                 />
             </div>
@@ -30,7 +57,7 @@ export function ContractInfo() {
                 />
 
                 <SenaryHeading
-                    title="123456"
+                    title={contract.projectNo}
                     className="text-schestiPrimaryBlack font-normal text-base"
                 />
             </div>
@@ -42,7 +69,7 @@ export function ContractInfo() {
                 />
 
                 <SenaryHeading
-                    title="01/01/2020"
+                    title={moment(contract.startDate).format('DD/MM/YYYY')}
                     className="text-schestiPrimaryBlack font-normal text-base"
                 />
             </div>
@@ -54,7 +81,7 @@ export function ContractInfo() {
                 />
 
                 <SenaryHeading
-                    title="01/01/2020"
+                    title={moment(contract.endDate).format('DD/MM/YYYY')}
                     className="text-schestiPrimaryBlack font-normal text-base"
                 />
             </div>
@@ -68,7 +95,7 @@ export function ContractInfo() {
             />
 
             <SenaryHeading
-                title="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nunc vel tincidunt ultricies, nisl nunc aliquam nisl, eget aliquam nisl nisl sit amet nunc."
+                title={contract.description}
                 className="text-schestiPrimaryBlack font-normal text-base"
             />
         </div>
@@ -82,11 +109,11 @@ export function ContractInfo() {
                     />
                     <div>
                         <SenaryHeading
-                            title={`Olivia Smith`}
+                            title={typeof contract.user != 'string' ? `${contract.user.name}` : ""}
                             className="text-schestiPrimaryBlack font-normal text-base"
                         />
                         <SenaryHeading
-                            title={`Mohammad Construction LLC`}
+                            title={typeof contract.user != 'string' ? `${contract.user.companyName || contract.user.organizationName}` : ""}
                             className="text-schestiPrimaryBlack font-normal text-base"
                         />
                     </div>
@@ -99,7 +126,7 @@ export function ContractInfo() {
                             height={20}
                         />
                         <SenaryHeading
-                            title={`(123) 456-7890`}
+                            title={typeof contract.user != 'string' ? `${contract.user.phone}` : ""}
                             className="text-schestiPrimaryBlack font-normal text-base"
                         />
                     </div>
@@ -112,7 +139,7 @@ export function ContractInfo() {
                             height={20}
                         />
                         <SenaryHeading
-                            title={`wL9z6@example.com`}
+                            title={typeof contract.user != 'string' ? `${contract.user.email}` : ""}
                             className="text-schestiPrimaryBlack font-normal text-base"
                         />
                     </div>
@@ -125,7 +152,7 @@ export function ContractInfo() {
                             height={20}
                         />
                         <SenaryHeading
-                            title={`123 Main Street, Anytown, USA`}
+                            title={typeof contract.user != 'string' ? `${contract.user.address}` : ""}
                             className="text-schestiPrimaryBlack font-normal text-base"
                         />
                     </div>
@@ -139,11 +166,11 @@ export function ContractInfo() {
                     />
                     <div>
                         <SenaryHeading
-                            title={`Olivia Smith`}
+                            title={typeof contract.receiver != 'string' ? `${getReceiverName(contract.receiver)}` : ""}
                             className="text-schestiPrimaryBlack font-normal text-base"
                         />
                         <SenaryHeading
-                            title={`Mohammad Construction LLC`}
+                            title={typeof contract.receiver != 'string' ? `${getReceiverCompany(contract.receiver)}` : ""}
                             className="text-schestiPrimaryBlack font-normal text-base"
                         />
                     </div>
@@ -156,7 +183,7 @@ export function ContractInfo() {
                             height={20}
                         />
                         <SenaryHeading
-                            title={`(123) 456-7890`}
+                            title={typeof contract.receiver != 'string' ? `${contract.receiver.phone}` : ""}
                             className="text-schestiPrimaryBlack font-normal text-base"
                         />
                     </div>
@@ -169,7 +196,7 @@ export function ContractInfo() {
                             height={20}
                         />
                         <SenaryHeading
-                            title={`wL9z6@example.com`}
+                            title={typeof contract.receiver != 'string' ? `${contract.receiver.email}` : ""}
                             className="text-schestiPrimaryBlack font-normal text-base"
                         />
                     </div>
@@ -182,7 +209,7 @@ export function ContractInfo() {
                             height={20}
                         />
                         <SenaryHeading
-                            title={`123 Main Street, Anytown, USA`}
+                            title={typeof contract.receiver != 'string' ? `${contract.receiver.address}` : ""}
                             className="text-schestiPrimaryBlack font-normal text-base"
                         />
                     </div>
