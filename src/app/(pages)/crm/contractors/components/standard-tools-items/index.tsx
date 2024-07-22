@@ -1,13 +1,25 @@
 import Image from "next/image";
 import { PdfContractMode, ToolState } from "../../types";
+import ModalComponent from "@/app/component/modal";
+import { Popups } from "@/app/(pages)/bid-management/components/Popups";
+import { DateInputComponent } from "@/app/component/cutomDate/CustomDateInput";
+import dayjs from "dayjs";
+import { InputComponent } from "@/app/component/customInput/Input";
+import { Upload } from "antd";
+import CustomButton from "@/app/component/customButton/button";
+import { toast } from "react-toastify";
 
 type Props = {
     item: ToolState;
     mode: PdfContractMode;
     onDelete?: () => void;
     onClick?: () => void;
+    onClose?: () => void;
+    selectedTool: ToolState | null;
+    onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
 }
-export function StandardToolItem({ item, mode, onDelete, onClick }: Props) {
+export function StandardToolItem({ item, mode, onDelete, onClick, onClose, selectedTool, onChange }: Props) {
+
 
     if (mode === 'add-values') {
         return <div style={{
@@ -19,7 +31,19 @@ export function StandardToolItem({ item, mode, onDelete, onClick }: Props) {
             margin: 0,
             backgroundColor: "transparent"
         }}>
-
+            {selectedTool ? <ModalComponent
+                open={true}
+                setOpen={() => { }}
+                width="300px"
+            >
+                <Popups title="Add Standard Tools" onClose={onClose ? onClose : () => { }}>
+                    <StandardToolInput
+                        item={selectedTool}
+                        onChange={onChange}
+                    />
+                </Popups>
+            </ModalComponent>
+                : null}
             <Item
                 item={item}
                 mode={mode}
@@ -31,8 +55,6 @@ export function StandardToolItem({ item, mode, onDelete, onClick }: Props) {
     return <Item
         item={item}
         mode={mode}
-        onClick={onClick}
-        onDelete={onDelete}
     />
 }
 
@@ -52,11 +74,137 @@ function Item({ item, mode, onClick, onDelete }: ItemProps) {
         onClick?.();
     }} className="p-3 rounded-lg border-schestiPrimary border-2 h-fit relative font-semibold text-schestiPrimary flex items-center space-x-2 border-dashed bg-schestiLightPrimary m-0">
         <Image src={`/${item.tool}.svg`} width={16} height={16} alt={`${item.tool}`} />
-        <p className="capitalize">{item.tool}</p>
+
+        <RenderStandardInputValue item={item} mode={mode} />
 
         {mode === 'edit-fields' && <Image onClick={(e) => {
             e.stopPropagation();
             onDelete?.();
         }} src={'/close.svg'} className="cursor-pointer p-0.5 absolute -top-2 bg-schestiPrimary rounded-full -right-1" width={16} height={16} alt="delete" />}
     </div>
+}
+
+
+
+type InputProps = {
+    item: ToolState;
+    onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
+}
+
+function StandardToolInput({ item, onChange }: InputProps) {
+
+    if (item.tool === 'date') {
+        return <DateInputComponent
+            label="Date"
+            name="date"
+            fieldProps={{
+                value: item.value ? dayjs(item.value as string) : undefined,
+                onChange(_date, dateString) {
+                    if (onChange) {
+                        onChange({ ...item, value: dateString as string })
+                    }
+                },
+            }}
+        />
+    }
+    else if (item.tool === 'initials') {
+        return <InputComponent
+            label="Initials"
+            name="initials"
+            type="text"
+            placeholder="Initials"
+            field={{
+                value: item.value as string,
+                onChange(e) {
+                    e.stopPropagation();
+                    if (onChange) {
+                        onChange({ ...item, value: e.target.value }, false)
+                    }
+                }
+            }}
+        />
+    } else if (item.tool === 'stamp') {
+        return <Upload.Dragger
+            name={'file'}
+            // accept=".csv, .xls, .xlsx"
+            beforeUpload={(_file, FileList) => {
+                for (const file of FileList) {
+                    const isLessThan500MB = file.size < 500 * 1024 * 1024; // 500MB in bytes
+                    if (!isLessThan500MB) {
+                        toast.error('File size should be less than 500MB');
+                        return false;
+                    }
+                }
+                if (onChange) {
+
+                    onChange({
+                        ...item, value: {
+                            extension: _file.name.split('.').pop() || '',
+                            name: _file.name,
+                            type: _file.type,
+                            url: URL.createObjectURL(_file)
+                        }
+                    })
+                }
+                return false;
+            }}
+            style={{
+                borderStyle: 'dashed',
+                borderWidth: 2,
+                marginTop: 12,
+                backgroundColor: "transparent",
+                borderColor: "#E2E8F0",
+            }}
+            itemRender={() => {
+
+                return null;
+            }}
+        >
+            <p className="ant-upload-drag-icon">
+                <Image
+                    src={'/uploadcloudcyan.svg'}
+                    width={50}
+                    height={50}
+                    alt="upload"
+                />
+            </p>
+            <p className="text-[18px] font-semibold py-2 leading-5 text-[#2C3641]">
+                Drop your files here, or browse
+            </p>
+
+            <p className="text-sm font-normal text-center py-2 leading-5 text-[#2C3641]">
+                or
+            </p>
+
+            <CustomButton
+                text="Select File"
+                className="!w-fit !px-6 !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
+            />
+        </Upload.Dragger>
+    }
+
+    return item.tool
+}
+
+
+function RenderStandardInputValue({ item, mode }: { item: ToolState, mode: PdfContractMode }) {
+    if (mode === 'add-values') {
+        if (item.value) {
+            if (typeof item.value === 'string') {
+                return <p className="capitalize">{item.value}</p>
+            } else {
+                return <Image
+                    alt="stamp"
+                    src={item.value.url}
+                    width={20}
+                    height={20}
+                />
+            }
+        } else {
+            return <p className="capitalize">{item.tool}</p>
+        }
+    } else {
+        return <p className="capitalize">{item.tool}</p>
+    }
+
 }

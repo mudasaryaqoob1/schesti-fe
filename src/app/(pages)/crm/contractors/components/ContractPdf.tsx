@@ -1,4 +1,4 @@
-import { useEffect, useRef, } from "react";
+import { useEffect, useRef, useState, } from "react";
 import { PdfContractMode, ToolState } from "../types";
 import { usePDFJS } from "@/app/hooks/usePdf";
 import DroppableArea from "./DroppableArea";
@@ -22,6 +22,7 @@ export function ContractPdf({ mode, pdfFile, tools, setTools }: Props) {
     // const canvasRefs = useRef<HTMLCanvasElement[]>([]);
     const { PDFJs } = usePDFJS(async () => { });
     const containerRef = useRef<HTMLDivElement>(null);
+    const [selectedTool, setSelectedTool] = useState<ToolState | null>(null);
 
     // const callback = useMemoizedFn((entry) => {
     //     if (entry.isIntersecting) {
@@ -87,6 +88,31 @@ export function ContractPdf({ mode, pdfFile, tools, setTools }: Props) {
         setTools((prev) => prev.filter((tool) => tool.id !== id));
     }
 
+    function handleItemClick(item: ToolState) {
+
+        if (mode === 'add-values') {
+            setSelectedTool(item);
+        }
+    }
+
+    function handleCloseModal() {
+        setSelectedTool(null);
+    }
+
+    function handleValueChange(item: ToolState, shouldClose: boolean = true) {
+        if (shouldClose) {
+            setSelectedTool(null);
+        } else {
+            setSelectedTool(item);
+        }
+        setTools((prev) => {
+            return prev.map((tool) => {
+                return tool.id === item.id ? item : tool
+            })
+        });
+    }
+
+
     return <div>
 
         <div className="flex gap-6 ">
@@ -106,9 +132,14 @@ export function ContractPdf({ mode, pdfFile, tools, setTools }: Props) {
                 }}>
                     <div id="container" ref={containerRef} className="rounded-md relative h-[calc(100vh-150px)] overflow-y-scroll">
                         {tools.map((item) => {
-                            return mode === 'add-values' ? <StandardToolItem onDelete={() => handleRemoveTool(item.id)} mode={mode} item={item} key={item.id} /> : <DraggableItem type={item.tool} key={item.id} data={item}>
+                            return mode === 'add-values' ? <StandardToolItem
+                                onClick={() => handleItemClick(item)}
+                                onClose={handleCloseModal}
+                                selectedTool={selectedTool}
+                                onChange={handleValueChange}
+                                onDelete={() => handleRemoveTool(item.id)} mode={mode} item={item} key={item.id} /> : <DraggableItem type={item.tool} key={item.id} data={item}>
 
-                                <StandardToolItem mode={mode} item={item} key={item.id} onDelete={() => handleRemoveTool(item.id)} />
+                                <StandardToolItem selectedTool={null} mode={mode} item={item} key={item.id} onDelete={() => handleRemoveTool(item.id)} />
                             </DraggableItem>
                         })}
                     </div>

@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import { Routes } from "@/app/utils/plans.utils";
 import NoData from "@/app/component/noData";
 import { Skeleton } from "antd";
+import CustomButton from "@/app/component/customButton/button";
 
 export default function SignPdfContract() {
     const [contract, setContract] = useState<ICrmContract | null>(null);
@@ -72,6 +73,12 @@ export default function SignPdfContract() {
                 alt="logo"
                 height={40}
                 width={100}
+            />
+        </div>
+        <div className="my-4 flex mx-5 justify-end">
+            <CustomButton
+                text="Send Back"
+                className="!w-fit"
             />
         </div>
         <div className="p-4 m-4 bg-white rounded-md ">
