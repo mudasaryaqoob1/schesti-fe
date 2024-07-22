@@ -10,6 +10,7 @@ import CustomButton from "@/app/component/customButton/button";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import { ChooseFont, ChooseFontType, SignatureFonts } from "@/app/component/fonts";
+import AwsS3 from "@/app/utils/S3Intergration";
 
 type Props = {
     item: ToolState;
@@ -119,7 +120,7 @@ function StandardToolInput({ item, onChange }: InputProps) {
         return <Upload.Dragger
             name={'file'}
             accept=".png, .jpeg, .jpg,"
-            beforeUpload={(_file, FileList) => {
+            beforeUpload={async (_file, FileList) => {
                 for (const file of FileList) {
                     const isLessThan500MB = file.size < 500 * 1024 * 1024; // 500MB in bytes
                     if (!isLessThan500MB) {
@@ -128,13 +129,13 @@ function StandardToolInput({ item, onChange }: InputProps) {
                     }
                 }
                 if (onChange) {
-
+                    const url = await new AwsS3(_file).getS3URL();
                     onChange({
-                        ...item, value: {
+                        ...item, tool: "stamp", value: {
                             extension: _file.name.split('.').pop() || '',
                             name: _file.name,
                             type: _file.type,
-                            url: URL.createObjectURL(_file)
+                            url: url
                         }
                     })
                 }
@@ -184,7 +185,7 @@ function StandardToolInput({ item, onChange }: InputProps) {
                     children: activeTab === 'upload' ? <Upload.Dragger
                         name={'file'}
                         accept=".png, .jpeg, .jpg,"
-                        beforeUpload={(_file, FileList) => {
+                        beforeUpload={async (_file, FileList) => {
                             for (const file of FileList) {
                                 const isLessThan500MB = file.size < 500 * 1024 * 1024; // 500MB in bytes
                                 if (!isLessThan500MB) {
@@ -194,12 +195,13 @@ function StandardToolInput({ item, onChange }: InputProps) {
                             }
                             if (onChange) {
 
+                                const url = await new AwsS3(_file).getS3URL();
                                 onChange({
-                                    ...item, value: {
+                                    ...item, tool: "stamp", value: {
                                         extension: _file.name.split('.').pop() || '',
                                         name: _file.name,
                                         type: _file.type,
-                                        url: URL.createObjectURL(_file)
+                                        url: url
                                     }
                                 })
                             }
@@ -246,7 +248,7 @@ function StandardToolInput({ item, onChange }: InputProps) {
         />
     }
 
-    return item.tool
+    return ""
 }
 
 
@@ -317,7 +319,9 @@ function TypeSignature({ onChange, item }: TypeSignatureProps) {
                 text="Add Signature"
                 className="!w-fit !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
                 onClick={() => onChange && onChange({
-                    ...item, value: {
+                    ...item,
+                    tool: "signature",
+                    value: {
                         font,
                         value,
                     }
@@ -354,7 +358,7 @@ function GetInitialToolValue({ item, onChange }: {
                 text="Add Initials"
                 className="!w-fit !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
                 onClick={() => onChange && onChange({
-                    ...item, value
+                    ...item, tool: "initials", value: value
                 })}
             />
         </div>

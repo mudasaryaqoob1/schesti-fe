@@ -19,13 +19,14 @@ export default function SignPdfContract() {
     const [isLoading, setIsLoading] = useState(false);
     const searchParams = useSearchParams();
     const [tools, setTools] = useState<ToolState[]>([]);
+    const id = searchParams.get('id');
+    const [isSaving, setIsSaving] = useState(false);
     useEffect(() => {
-        const id = searchParams.get('id');
         // const receiver = searchParams.get('receiver');
         if (id) {
             getContract(id);
         }
-    }, [searchParams])
+    }, [id])
 
     async function getContract(id: string) {
         setIsLoading(true);
@@ -65,6 +66,26 @@ export default function SignPdfContract() {
         />
     }
 
+    async function signContract() {
+        if (id) {
+            console.log(id);
+            setIsSaving(true);
+            try {
+                const response = await crmContractService.httpSignContract(id, tools);
+                if (response.data) {
+                    toast.success("Contract signed successfully");
+                }
+            } catch (error) {
+                const err = error as AxiosError<{ message: string }>;
+                if (err.response?.data) {
+                    toast.error(err.response?.data.message);
+                }
+            } finally {
+                setIsSaving(false);
+            }
+        }
+    }
+
 
     return <div>
         <div className="bg-white p-4 shadow-secondaryShadow">
@@ -79,6 +100,8 @@ export default function SignPdfContract() {
             <CustomButton
                 text="Send Back"
                 className="!w-fit"
+                onClick={signContract}
+                isLoading={isSaving}
             />
         </div>
         <div className="p-4 m-4 bg-white rounded-md ">
