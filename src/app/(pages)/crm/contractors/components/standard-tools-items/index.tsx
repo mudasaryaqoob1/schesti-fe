@@ -9,6 +9,7 @@ import { Tabs, Upload } from "antd";
 import CustomButton from "@/app/component/customButton/button";
 import { toast } from "react-toastify";
 import { useState } from "react";
+import { ChooseFont, ChooseFontType, SignatureFonts } from "@/app/component/fonts";
 
 type Props = {
     item: ToolState;
@@ -110,20 +111,9 @@ function StandardToolInput({ item, onChange }: InputProps) {
         />
     }
     else if (item.tool === 'initials') {
-        return <InputComponent
-            label="Initials"
-            name="initials"
-            type="text"
-            placeholder="Initials"
-            field={{
-                value: item.value as string,
-                onChange(e) {
-                    e.stopPropagation();
-                    if (onChange) {
-                        onChange({ ...item, value: e.target.value }, false)
-                    }
-                }
-            }}
+        return <GetInitialToolValue
+            item={item}
+            onChange={onChange}
         />
     } else if (item.tool === 'stamp') {
         return <Upload.Dragger
@@ -247,7 +237,10 @@ function StandardToolInput({ item, onChange }: InputProps) {
                             text="Select File"
                             className="!w-fit !px-6 !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
                         />
-                    </Upload.Dragger> : type
+                    </Upload.Dragger> : activeTab === 'type' ? <TypeSignature
+                        item={item}
+                        onChange={onChange}
+                    /> : null
                 }
             })}
         />
@@ -262,12 +255,17 @@ function RenderStandardInputValue({ item, mode }: { item: ToolState, mode: PdfCo
         if (item.value) {
             if (typeof item.value === 'string') {
                 return <p className="capitalize">{item.value}</p>
-            } else {
+            } else if ("url" in item.value) {
                 return <Image
                     alt="stamp"
                     src={item.value.url}
                     width={20}
                     height={20}
+                />
+            } else {
+                return <ChooseFont
+                    text={item.value.value}
+                    chooseFont={item.value.font}
                 />
             }
         } else {
@@ -276,5 +274,90 @@ function RenderStandardInputValue({ item, mode }: { item: ToolState, mode: PdfCo
     } else {
         return <p className="capitalize">{item.tool}</p>
     }
+
+}
+
+
+type TypeSignatureProps = {
+    onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
+    item: ToolState;
+}
+
+function TypeSignature({ onChange, item }: TypeSignatureProps) {
+    const [font, setFont] = useState<ChooseFontType>("satisfyFont");
+    const [value, setValue] = useState(((item.value as any)?.value) || "");
+
+    return <div>
+        <InputComponent
+            label="Type Signature"
+            name="typeSignature"
+            placeholder="Type Signature"
+            type="text"
+            field={{
+                value: value ? value : undefined,
+                onChange: (e) => {
+                    setValue(e.target.value);
+                }
+            }}
+        />
+
+        <div className="grid grid-cols-4 gap-4 mt-4 justify-center">
+            {Object.keys(SignatureFonts).map((signatureFont) => {
+                return <div key={signatureFont} onClick={() => setFont(signatureFont as ChooseFontType)} className={`border rounded-md text-2xl leading-8 flex items-center mx-auto text-center cursor-pointer p-4 ${font === signatureFont ? 'border-schestiPrimary text-schestiPrimary' : ""}`}>
+                    <ChooseFont
+                        text={value ? value : "John Doe"}
+                        chooseFont={signatureFont as ChooseFontType}
+                    />
+                </div>
+            })}
+        </div>
+
+        <div className="flex justify-end">
+            <CustomButton
+                text="Add Signature"
+                className="!w-fit !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
+                onClick={() => onChange && onChange({
+                    ...item, value: {
+                        font,
+                        value,
+                    }
+                })}
+            />
+        </div>
+    </div>
+}
+
+
+
+function GetInitialToolValue({ item, onChange }: {
+
+    onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
+    item: ToolState;
+}) {
+    const [value, setValue] = useState((typeof item.value === 'string' || typeof item.value === 'undefined' ? item.value : ""));
+    return <div className="space-y-3">
+        <InputComponent
+            label="Initials"
+            name="initials"
+            type="text"
+            placeholder="Initials"
+            field={{
+                value: value,
+                onChange(e) {
+                    setValue(e.target.value);
+                }
+            }}
+        />
+
+        <div className="flex justify-end">
+            <CustomButton
+                text="Add Initials"
+                className="!w-fit !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
+                onClick={() => onChange && onChange({
+                    ...item, value
+                })}
+            />
+        </div>
+    </div>
 
 }
