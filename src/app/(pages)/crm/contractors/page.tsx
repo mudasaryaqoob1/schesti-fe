@@ -4,11 +4,13 @@ import { InputComponent } from "@/app/component/customInput/Input";
 import { SelectComponent } from "@/app/component/customSelect/Select.component";
 import SenaryHeading from "@/app/component/headings/senaryHeading";
 import { withAuth } from "@/app/hoc/withAuth";
+import { useRouterHook } from "@/app/hooks/useRouterHook";
 import { ICrmContract } from "@/app/interfaces/crm/crm-contract.interface";
 import { CrmType } from "@/app/interfaces/crm/crm.interface";
 import { FileInterface } from "@/app/interfaces/file.interface";
 import crmContractService from "@/app/services/crm/crm-contract.service";
 import { downloadFile } from "@/app/utils/downloadFile";
+import { Routes } from "@/app/utils/plans.utils";
 import { SearchOutlined } from "@ant-design/icons";
 import { Dropdown, Tag, type MenuProps } from "antd";
 import type { ColumnsType } from "antd/es/table";
@@ -20,46 +22,27 @@ import { useEffect, useState } from "react";
 
 const menuItems: MenuProps['items'] = [
     {
-        key: 'createEstimateRequest',
-        label: <p>Create Estimate Request</p>,
-    },
-    {
-        key: 'createNewInvoice',
-        label: <p>Create Invoice</p>,
-    },
-    {
-        key: 'createSchedule',
-        label: <p>Create Schedule</p>,
-    },
-    {
-        key: 'editClientDetail',
-        label: <p>Edit Client Details</p>,
-    },
-    {
-        key: 'createContract',
-        label: <p>Create Contract</p>,
-    },
-    {
-        key: 'createNewTakeoff',
-        label: <p>Create New Takeoff</p>,
+        key: 'viewContract',
+        label: <p>View Contract</p>,
     },
     {
         key: 'email',
         label: <p>Email</p>,
     },
     {
-        key: 'deleteClient',
-        label: <p>Delete</p>,
+        key: 'download',
+        label: <p>Download</p>,
     },
     {
-        key: 'inActiveClient',
-        label: <p>In Active</p>,
+        key: 'delete',
+        label: <p>Delete</p>,
     },
+
 ];
 function ContractsPage() {
     const [data, setData] = useState<ICrmContract[]>([]);
     const [isLoading, setIsLoading] = useState(false);
-
+    const router = useRouterHook();
 
     useEffect(() => {
         getCompanyContracts();
@@ -178,10 +161,15 @@ function ContractsPage() {
         {
             title: "Action",
             dataIndex: "action",
-            render() {
+            render(_value, record) {
                 return <Dropdown
                     menu={{
                         items: menuItems,
+                        onClick({ key }) {
+                            if (key === 'viewContract') {
+                                router.push(`${Routes.CRM.Contractors}/view?id=${record._id}`);
+                            }
+                        }
                     }}
                     placement="bottomRight"
                 >
