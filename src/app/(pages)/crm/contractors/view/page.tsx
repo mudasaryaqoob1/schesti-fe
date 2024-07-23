@@ -1,7 +1,7 @@
 'use client'
 import SenaryHeading from "@/app/component/headings/senaryHeading"
 import { withAuth } from "@/app/hoc/withAuth"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { ToolState } from "../types";
 import { useSearchParams } from "next/navigation";
 import { ICrmContract } from "@/app/interfaces/crm/crm-contract.interface";
@@ -13,6 +13,7 @@ import NoData from "@/app/component/noData";
 import { Routes } from "@/app/utils/plans.utils";
 import { ContractInfo } from "../components/info/ContractInfo";
 import { ContractPdf } from "../components/ContractPdf";
+import CustomButton from "@/app/component/customButton/button";
 
 function ViewContract() {
     const [activeTab, setActiveTab] = useState("sender");
@@ -21,6 +22,11 @@ function ViewContract() {
     const [tools, setTools] = useState<ToolState[]>([]);
     const id = searchParams.get('id');
     const [contract, setContract] = useState<ICrmContract | null>(null);
+    const download = searchParams.get("download")
+    const [isDownloading, setIsDownloading] = useState(false);
+    const contractPdfRef = useRef<{
+        handleAction: () => void
+    } | null>(null)
 
     useEffect(() => {
         // const receiver = searchParams.get('receiver');
@@ -67,6 +73,12 @@ function ViewContract() {
         />
     }
 
+    function handleDownload() {
+        setIsDownloading(true);
+        contractPdfRef.current?.handleAction();
+        setIsDownloading(false);
+    }
+
 
     return <div className="mt-4 space-y-3 p-5 !pb-[39px]  mx-4 ">
         <SenaryHeading
@@ -86,6 +98,13 @@ function ViewContract() {
                 </p>
             </div>
 
+            {download && download === 'true' ? <CustomButton
+                text="Download"
+                className="!w-fit"
+                onClick={handleDownload}
+                isLoading={isDownloading}
+            /> : null}
+
         </div>
 
         <div className="p-4 m-4 bg-white rounded-md ">
@@ -93,6 +112,7 @@ function ViewContract() {
 
             <div className="mt-5 w-fit mx-auto">
                 <ContractPdf
+                    ref={contractPdfRef}
                     contract={contract}
                     mode={activeTab === 'sender' ? "view-fields" : "view-values"}
                     pdfFile={contract.file.url}

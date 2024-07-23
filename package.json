@@ -38,6 +38,7 @@
     "country-state-city": "^3.2.1",
     "dayjs": "^1.11.10",
     "formik": "^2.4.5",
+    "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
     "konva": "^9.3.6",
     "lodash": "^4.17.21",

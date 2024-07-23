@@ -168,6 +168,8 @@ function ContractsPage() {
                         onClick({ key }) {
                             if (key === 'viewContract') {
                                 router.push(`${Routes.CRM.Contractors}/view?id=${record._id}`);
+                            } else if (key === 'download') {
+                                router.push(`${Routes.CRM.Contractors}/view?id=${record._id}&download=true`);
                             }
                         }
                     }}

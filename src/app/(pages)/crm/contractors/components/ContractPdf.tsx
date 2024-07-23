@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState, } from "react";
 import { PdfContractMode, ToolState } from "../types";
 import { usePDFJS } from "@/app/hooks/usePdf";
 import DroppableArea from "./DroppableArea";
@@ -8,6 +8,8 @@ import SenaryHeading from "@/app/component/headings/senaryHeading";
 import DraggableTool from "./DraggableTool";
 import CustomButton from "@/app/component/customButton/button";
 import { ICrmContract } from "@/app/interfaces/crm/crm-contract.interface";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 type Props = {
     mode: PdfContractMode;
@@ -17,11 +19,12 @@ type Props = {
     setTools: React.Dispatch<React.SetStateAction<ToolState[]>>
 }
 
-export function ContractPdf({ mode, pdfFile, tools, setTools }: Props) {
+export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(({ mode, pdfFile, tools, setTools, }, ref) => {
     // const [activePage, setActivePage] = useState<null | number>(1)
     // const canvasRefs = useRef<HTMLCanvasElement[]>([]);
     const { PDFJs } = usePDFJS(async () => { });
     const containerRef = useRef<HTMLDivElement>(null);
+    const pdfContainerRef = useRef<HTMLDivElement>(null);
     const [selectedTool, setSelectedTool] = useState<ToolState | null>(null);
 
     // const callback = useMemoizedFn((entry) => {
@@ -34,6 +37,10 @@ export function ContractPdf({ mode, pdfFile, tools, setTools }: Props) {
     //     callback: callback,
     //     root: () => containerRef.current,
     // })
+
+    useImperativeHandle(ref, () => ({
+        handleAction: () => handleDownload()
+    }))
 
     useEffect(() => {
         loadPdf();
@@ -114,11 +121,38 @@ export function ContractPdf({ mode, pdfFile, tools, setTools }: Props) {
         }
     }
 
+    function handleDownload() {
+
+        const container = containerRef.current!;
+        container.style.height = 'auto'; // Temporarily expand the container
+
+        html2canvas(container, { useCORS: true }).then((canvas) => {
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const imgWidth = pdf.internal.pageSize.getWidth();
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+            let positionY = 0;
+            const pageHeight = pdf.internal.pageSize.height;
+
+            while (positionY < imgHeight) {
+                pdf.addImage(imgData, 'PNG', 0, -positionY, imgWidth, imgHeight);
+                positionY += pageHeight;
+                if (positionY < imgHeight) {
+                    pdf.addPage();
+                }
+            }
+            pdf.save('scrollable-div.pdf');
+
+            // Restore the original height
+            container.style.height = ''; // Remove inline style to revert to original
+        });
+    }
+
 
     return <div>
-
         <div className="flex gap-6 ">
-            <div className="w-[950px]">
+            <div className="w-[950px]" ref={pdfContainerRef}>
                 <DroppableArea onDrop={function (item, offset) {
                     if ("type" in item) {
                         const { x, y } = getXAndY(offset);
@@ -205,4 +239,6 @@ export function ContractPdf({ mode, pdfFile, tools, setTools }: Props) {
         </div>
         {/* <div ref={containerRef} className="border border-black"></div> */}
     </div>
-}
+})
+
+ContractPdf.displayName = 'ContractPdf';
