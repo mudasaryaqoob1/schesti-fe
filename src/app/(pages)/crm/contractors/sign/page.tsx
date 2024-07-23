@@ -68,7 +68,12 @@ export default function SignPdfContract() {
 
     async function signContract() {
         if (id) {
-            console.log(id);
+            console.log(tools);
+            const isValid = tools.every(tool => tool.value);
+            if (!isValid) {
+                toast.error("Please fill all the fields");
+                return;
+            }
             setIsSaving(true);
             try {
                 const response = await crmContractService.httpSignContract(id, tools);

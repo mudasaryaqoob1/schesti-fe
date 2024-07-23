@@ -197,7 +197,7 @@ function RenderStandardInputValue({ item, mode }: { item: ToolState, mode: PdfCo
                     width={20}
                     height={20}
                 />
-            } else {
+            } else if (item.tool === 'signature' && "font" in item.value) {
                 return <ChooseFont
                     text={item.value.value}
                     chooseFont={item.value.font}
@@ -222,7 +222,7 @@ function TypeSignature({ onChange, item }: TypeSignatureProps) {
     const [font, setFont] = useState<ChooseFontType>("satisfyFont");
     const [value, setValue] = useState(((item.value as any)?.value) || "");
 
-    return <div>
+    return <div className="h-[400px]">
         <InputComponent
             label="Type Signature"
             name="typeSignature"
@@ -236,7 +236,7 @@ function TypeSignature({ onChange, item }: TypeSignatureProps) {
             }}
         />
 
-        <div className="grid grid-cols-4 gap-4 mt-4 justify-center">
+        <div className="grid grid-cols-4 gap-4 mt-4 justify-center overflow-y-auto">
             {Object.keys(SignatureFonts).map((signatureFont) => {
                 return <div key={signatureFont} onClick={() => setFont(signatureFont as ChooseFontType)} className={`border rounded-md text-2xl leading-8 flex items-center mx-auto text-center cursor-pointer p-4 ${font === signatureFont ? 'border-schestiPrimary text-schestiPrimary' : ""}`}>
                     <ChooseFont
@@ -247,7 +247,7 @@ function TypeSignature({ onChange, item }: TypeSignatureProps) {
             })}
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex justify-end  items-center">
             <CustomButton
                 text="Add Signature"
                 className="!w-fit !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
@@ -333,7 +333,7 @@ function GetSignatureValue({ item, onChange }: {
 
                         const url = await new AwsS3(_file).getS3URL();
                         onChange({
-                            ...item, tool: "stamp", value: {
+                            ...item, tool: "signature", value: {
                                 extension: _file.name.split('.').pop() || '',
                                 name: _file.name,
                                 type: _file.type,
