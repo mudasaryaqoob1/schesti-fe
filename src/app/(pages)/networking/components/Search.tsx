@@ -21,8 +21,8 @@ const Search = () => {
                 </select>
             </div>
 
-            <div className='col-span-1'>
-                <button className='cursor-pointer p-3 rounded-lg border border-schestiPrimary text-schestiPrimary bg-transparent font-semibold '>Search </button>
+            <div className='col-span-1 w-full'>
+                <button className='cursor-pointer p-3 rounded-lg border border-schestiPrimary text-schestiPrimary bg-transparent font-semibold w-full'>Search </button>
             </div>
         </div>
     )

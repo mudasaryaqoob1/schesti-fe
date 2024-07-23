@@ -1,24 +1,57 @@
-import clsx from 'clsx'
+import React, { useState } from 'react'
 import Image from 'next/image'
-import React from 'react'
-import { twMerge } from 'tailwind-merge'
+import axios from 'axios'
+import { baseUrl } from '@/app/services/base.service'
+import { networkingUrl } from '@/app/utils/apiUrls'
+import { useDispatch } from 'react-redux'
+import { SetMyNetwork, SetSchestiNetwork } from '@/redux/network/network.slice'
 
-const MyNetwork = () => {
+const SingleUserCard = ({ _id, name, userRole, avatar = null, myNetwork = false }: any) => {
+
+    const [isLoading, setIsLoading] = useState(false);
+    const dispatch = useDispatch();
+
+    const addFriend = async () => {
+        try {
+            setIsLoading(true);
+            await axios.put(baseUrl + networkingUrl + `addFriend/${_id}`);
+            setIsLoading(false);
+            dispatch(SetSchestiNetwork());
+        } catch (error) {
+            setIsLoading(false);
+            console.log(error, 'error...')
+        }
+    }
+
+    const removeFriend = async () => {
+        try {
+            setIsLoading(true);
+            await axios.put(baseUrl + networkingUrl + `removeFriend/${_id}`);
+            dispatch(SetMyNetwork());
+            setIsLoading(false);
+        } catch (error) {
+            setIsLoading(false);
+            console.log(error, 'error...')
+        }
+    }
+
     return (
-        <div className="w-full col-span-2 items-center mb-4 shadow rounded-xl p-2 bg-white relative">
+        <div className="w-full col-span-1 items-center mb-4 shadow rounded-xl p-2 bg-white relative">
             <div className='flex gap-1.5 items-center absolute right-2 top-2'>
                 <Image src='/mail-03.svg' alt='role' width={13} height={16} />
-                <Image src='/plus-primary.svg' className='bg-schestiLightPrimary rounded-[23px] p-1' alt='role' width={14} height={14} />
+                <button disabled={isLoading}>
+                    <Image onClick={myNetwork ? removeFriend : addFriend} src='/plus-primary.svg' className='bg-schestiLightPrimary rounded-[23px] p-1' alt='role' width={14} height={14} />
+                </button>
             </div>
 
             <div className="flex gap-2 profile-section">
                 <div className='relative'>
-                    <Image src='/role.png' alt='role' width={36} height={36} />
-                    <Image src='/role.png' className='absolute bottom-1 border border-white -right-1' alt='verified' width={10} height={10} />
+                    <Image src={avatar ?? '/profileAvatar.png'} alt='role' className='rounded-full' width={36} height={36} />
+                    <Image src='/verified.svg' className='absolute bottom-1 border border-white -right-1' alt='verified' width={10} height={10} />
                 </div>
                 <div className=''>
-                    <p className='text-ebonyClay font-semibold text-sm'>Khafizova E.</p>
-                    <p className='text-schestiPrimary mt-1 text-[8px] bg-schestiLightPrimary rounded-[163px] py-0.5 px-2'>Contractor</p>
+                    <p className='text-ebonyClay font-semibold text-sm'>{name}</p>
+                    <p className='text-schestiPrimary mt-1 text-[8px] bg-schestiLightPrimary rounded-[163px] py-0.5 px-2'>{userRole}</p>
                 </div>
             </div>
 
@@ -74,4 +107,4 @@ const MyNetwork = () => {
     )
 }
 
-export default MyNetwork
+export default SingleUserCard
