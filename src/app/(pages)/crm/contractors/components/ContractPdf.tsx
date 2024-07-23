@@ -137,15 +137,22 @@ export function ContractPdf({ mode, pdfFile, tools, setTools }: Props) {
                                 onClose={handleCloseModal}
                                 selectedTool={selectedTool}
                                 onChange={handleValueChange}
-                                onDelete={() => handleRemoveTool(item.id)} mode={mode} item={item} key={item.id} /> : <DraggableItem type={item.tool} key={item.id} data={item}>
+                                onDelete={() => handleRemoveTool(item.id)} mode={mode} item={item} key={item.id} />
+                                : (mode === 'view-fields' || mode === 'view-values') ? <StandardToolItem
+                                    onClick={() => { }}
+                                    onClose={() => { }}
+                                    selectedTool={selectedTool}
+                                    onChange={() => { }}
+                                    onDelete={() => { }} mode={mode} item={item} key={item.id} />
+                                    : <DraggableItem type={item.tool} key={item.id} data={item}>
 
-                                <StandardToolItem selectedTool={null} mode={mode} item={item} key={item.id} onDelete={() => handleRemoveTool(item.id)} />
-                            </DraggableItem>
+                                        <StandardToolItem selectedTool={null} mode={mode} item={item} key={item.id} onDelete={() => handleRemoveTool(item.id)} />
+                                    </DraggableItem>
                         })}
                     </div>
                 </DroppableArea>
             </div>
-            {mode === 'edit-fields' ? <div className="flex flex-col space-y-3 rounded-md bg-white h-fit p-4 ">
+            {(mode === 'edit-fields') ? <div className="flex flex-col space-y-3 rounded-md bg-white h-fit p-4 ">
                 <SenaryHeading
                     title="Standard Tools"
                     className="text-xl  font-semibold"

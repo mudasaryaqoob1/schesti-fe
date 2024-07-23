@@ -31,4 +31,4 @@ export type ToolState = {
     id: string;
 } & (SignatureState | InitialsState | StampState | DateState);
 
-export type PdfContractMode = "add-values" | "edit-fields";
+export type PdfContractMode = "add-values" | "edit-fields" | "view-fields" | "view-values";
