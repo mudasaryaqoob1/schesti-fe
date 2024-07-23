@@ -38,6 +38,7 @@ export function StandardToolItem({ item, mode, onDelete, onClick, onClose, selec
                 open={true}
                 setOpen={() => { }}
                 width="300px"
+                key={selectedTool.tool}
             >
                 <Popups title="Add Standard Tools" onClose={onClose ? onClose : () => { }}>
                     <StandardToolInput
@@ -95,7 +96,6 @@ type InputProps = {
 }
 
 function StandardToolInput({ item, onChange }: InputProps) {
-    const [activeTab, setActiveTab] = useState("type");
 
     if (item.tool === 'date') {
         return <DateInputComponent
@@ -175,76 +175,9 @@ function StandardToolInput({ item, onChange }: InputProps) {
             />
         </Upload.Dragger>
     } else if (item.tool === 'signature') {
-        return <Tabs
-            activeKey={activeTab}
-            onChange={setActiveTab}
-            items={['type', 'upload'].map(type => {
-                return {
-                    key: type,
-                    label: type === activeTab ? <p className="capitalize text-base text-schestiPrimary">{type}</p> : <p className="capitalize text-base">{type}</p>,
-                    children: activeTab === 'upload' ? <Upload.Dragger
-                        name={'file'}
-                        accept=".png, .jpeg, .jpg,"
-                        beforeUpload={async (_file, FileList) => {
-                            for (const file of FileList) {
-                                const isLessThan500MB = file.size < 500 * 1024 * 1024; // 500MB in bytes
-                                if (!isLessThan500MB) {
-                                    toast.error('File size should be less than 500MB');
-                                    return false;
-                                }
-                            }
-                            if (onChange) {
-
-                                const url = await new AwsS3(_file).getS3URL();
-                                onChange({
-                                    ...item, tool: "stamp", value: {
-                                        extension: _file.name.split('.').pop() || '',
-                                        name: _file.name,
-                                        type: _file.type,
-                                        url: url
-                                    }
-                                })
-                            }
-                            return false;
-                        }}
-                        style={{
-                            borderStyle: 'dashed',
-                            borderWidth: 2,
-                            marginTop: 12,
-                            backgroundColor: "transparent",
-                            borderColor: "#E2E8F0",
-                        }}
-                        itemRender={() => {
-
-                            return null;
-                        }}
-                    >
-                        <p className="ant-upload-drag-icon">
-                            <Image
-                                src={'/uploadcloudcyan.svg'}
-                                width={50}
-                                height={50}
-                                alt="upload"
-                            />
-                        </p>
-                        <p className="text-[18px] font-semibold py-2 leading-5 text-[#2C3641]">
-                            Drop your files here, or browse
-                        </p>
-
-                        <p className="text-sm font-normal text-center py-2 leading-5 text-[#2C3641]">
-                            or
-                        </p>
-
-                        <CustomButton
-                            text="Select File"
-                            className="!w-fit !px-6 !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
-                        />
-                    </Upload.Dragger> : activeTab === 'type' ? <TypeSignature
-                        item={item}
-                        onChange={onChange}
-                    /> : null
-                }
-            })}
+        return <GetSignatureValue
+            item={item}
+            onChange={onChange}
         />
     }
 
@@ -364,4 +297,88 @@ function GetInitialToolValue({ item, onChange }: {
         </div>
     </div>
 
+}
+
+function GetSignatureValue({ item, onChange }: {
+
+    onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
+    item: ToolState;
+}) {
+    const [activeTab, setActiveTab] = useState("type");
+
+    return <div>
+        <Tabs
+            activeKey={activeTab}
+            onChange={setActiveTab}
+            items={['type', 'upload'].map(type => {
+                return {
+                    key: type,
+                    label: type === activeTab ? <p className="capitalize text-base text-schestiPrimary">{type}</p> : <p className="capitalize text-base">{type}</p>,
+                }
+            })}
+        />
+        {activeTab === 'upload' ? <div className="h-[400px]">
+            <Upload.Dragger
+                name={'file'}
+                accept=".png, .jpeg, .jpg,"
+                beforeUpload={async (_file, FileList) => {
+                    for (const file of FileList) {
+                        const isLessThan500MB = file.size < 500 * 1024 * 1024; // 500MB in bytes
+                        if (!isLessThan500MB) {
+                            toast.error('File size should be less than 500MB');
+                            return false;
+                        }
+                    }
+                    if (onChange) {
+
+                        const url = await new AwsS3(_file).getS3URL();
+                        onChange({
+                            ...item, tool: "stamp", value: {
+                                extension: _file.name.split('.').pop() || '',
+                                name: _file.name,
+                                type: _file.type,
+                                url: url
+                            }
+                        })
+                    }
+                    return false;
+                }}
+                style={{
+                    borderStyle: 'dashed',
+                    borderWidth: 2,
+                    marginTop: 12,
+                    backgroundColor: "transparent",
+                    borderColor: "#E2E8F0",
+                }}
+                itemRender={() => {
+
+                    return null;
+                }}
+            >
+                <p className="ant-upload-drag-icon">
+                    <Image
+                        src={'/uploadcloudcyan.svg'}
+                        width={50}
+                        height={50}
+                        alt="upload"
+                    />
+                </p>
+                <p className="text-[18px] font-semibold py-2 leading-5 text-[#2C3641]">
+                    Drop your files here, or browse
+                </p>
+
+                <p className="text-sm font-normal text-center py-2 leading-5 text-[#2C3641]">
+                    or
+                </p>
+
+                <CustomButton
+                    text="Select File"
+                    className="!w-fit !px-6 !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
+                />
+            </Upload.Dragger>
+        </div> : activeTab === 'type' ? <TypeSignature
+            item={item}
+            onChange={onChange}
+        /> : null}
+    </div>
 }
