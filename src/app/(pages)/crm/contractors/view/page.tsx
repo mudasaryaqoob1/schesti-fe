@@ -67,6 +67,7 @@ function ViewContract() {
         />
     }
 
+
     return <div className="mt-4 space-y-3 p-5 !pb-[39px]  mx-4 ">
         <SenaryHeading
             title="Contract Information"

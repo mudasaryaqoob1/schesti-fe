@@ -100,16 +100,18 @@ export function ContractPdf({ mode, pdfFile, tools, setTools }: Props) {
     }
 
     function handleValueChange(item: ToolState, shouldClose: boolean = true) {
-        if (shouldClose) {
-            setSelectedTool(null);
-        } else {
-            setSelectedTool(item);
+        if (mode === 'add-values') {
+            if (shouldClose) {
+                setSelectedTool(null);
+            } else {
+                setSelectedTool(item);
+            }
+            setTools((prev) => {
+                return prev.map((tool) => {
+                    return tool.id === item.id ? item : tool
+                })
+            });
         }
-        setTools((prev) => {
-            return prev.map((tool) => {
-                return tool.id === item.id ? item : tool
-            })
-        });
     }
 
 

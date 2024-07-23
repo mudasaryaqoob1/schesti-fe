@@ -55,6 +55,20 @@ export function StandardToolItem({ item, mode, onDelete, onClick, onClose, selec
                 onDelete={onDelete}
             />
         </div>
+    } else if (mode === 'view-fields' || mode === 'view-values') {
+        return <div style={{
+            position: 'absolute',
+            left: item.position.x,
+            top: item.position.y,
+            padding: 0,
+            margin: 0,
+            backgroundColor: "transparent"
+        }}>
+            <Item
+                item={item}
+                mode={mode}
+            />
+        </div>
     }
     return <Item
         item={item}
@@ -186,7 +200,7 @@ function StandardToolInput({ item, onChange }: InputProps) {
 
 
 function RenderStandardInputValue({ item, mode }: { item: ToolState, mode: PdfContractMode }) {
-    if (mode === 'add-values') {
+    if (mode === 'add-values' || mode === 'view-values') {
         if (item.value) {
             if (typeof item.value === 'string') {
                 return <p className="capitalize">{item.value}</p>
