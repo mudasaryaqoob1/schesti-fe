@@ -9,6 +9,7 @@ export default {
     extend: {
       colors: {
         // Shades of Purple
+        lavenderPurpleReplica: '#007AB6',
         lavenderPurple: '#7F56D9',
         RoyalPurple: '#7138DF',
         rotalPurple: '#6941C6',

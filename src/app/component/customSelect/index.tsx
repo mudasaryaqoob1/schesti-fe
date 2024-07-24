@@ -24,6 +24,7 @@ const SelectComp = (props: any) => {
     labelAction,
     placeholder,
     isLoading,
+    handleChange
   } = props;
 
   const OptionsArr = options?.map(
@@ -85,6 +86,9 @@ const SelectComp = (props: any) => {
                 placeholder={placeholder}
                 onChange={(val) => {
                   setFieldValue(name, val);
+                  if(handleChange){
+                    handleChange(val)
+                  }
                 }}
               >
                 {OptionsArr}

@@ -1,14 +1,18 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
+
 import type { MenuProps } from 'antd';
+
 import { Dropdown, Table, Drawer } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { SearchOutlined } from '@ant-design/icons';
+
 import NoDataComponent from '@/app/component/noData';
-import ChangeStatus from '../components/changeStatus';
 import { USCurrencyFormat } from '@/app/utils/format';
+import ChangeStatus from '../components/changeStatus';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import WhiteButton from '@/app/component/customButton/white';
+
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { downloadCrmItemsAsCSV } from '@/app/(pages)/crm/utils';
 import { InputComponent } from '@/app/component/customInput/Input';
@@ -61,7 +65,8 @@ const EstimateRequestTable: React.FC = () => {
 
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
-  const [estimateDetail, setEstimateDetail] = useState();
+  
+  const [estimateDetail, setEstimateDetail] = useState<any>({});
   const [generatedEstimates, setGeneratedEstimates] = useState<[]>([]);
   const [changeStatusDrawer, setChangeStatusDrawer] = useState(false);
 
@@ -77,6 +82,7 @@ const EstimateRequestTable: React.FC = () => {
           ...estimate,
           projectName: estimate?.estimateRequestIdDetail?.projectName,
           clientName: estimate?.estimateRequestIdDetail?.clientName,
+          clientEmail: estimate?.estimateRequestIdDetail?.email,
           salePerson: `${
             estimate?.estimateRequestIdDetail?.salePerson?.firstName ?? ''
           } ${estimate?.estimateRequestIdDetail?.salePerson?.lastName ?? ''}`,
@@ -117,7 +123,7 @@ const EstimateRequestTable: React.FC = () => {
       router.push(
         `/estimates/generate/edit/?generatedEstimateId=${estimate._id}`
       );
-    }
+    } 
   };
 
   const columns: ColumnsType<DataType> = [
@@ -185,8 +191,6 @@ const EstimateRequestTable: React.FC = () => {
     },
   ];
 
-  console.log(generatedEstimates, 'generatedEstimates');
-
   const filterEstimateRequest = generatedEstimates.filter((item: any) => {
     if (!search) {
       return true;
@@ -198,6 +202,9 @@ const EstimateRequestTable: React.FC = () => {
       item.salePerson?.includes(search)
     );
   });
+
+
+
   return (
     <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid bg-white border-silverGray shadow-secondaryTwist">
       {generatedEstimates && generatedEstimates.length === 0 ? (
@@ -285,6 +292,8 @@ const EstimateRequestTable: React.FC = () => {
           estimateDetail={estimateDetail}
         />
       </Drawer>
+
+      
     </section>
   );
 };

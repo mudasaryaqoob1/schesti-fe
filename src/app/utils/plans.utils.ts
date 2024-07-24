@@ -26,7 +26,7 @@ export const Routes = {
     Vendors: '/crm/vendors',
   },
   'Quantity-Takeoff': {
-    Manual: '/takeoff',
+    Manual: '/take-off',
     'AI-Takeoff': '#',
   },
   Estimates: {

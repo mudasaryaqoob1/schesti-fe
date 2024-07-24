@@ -4,11 +4,11 @@ import { PdfHeader } from './Header';
 import { PdfFooter } from './Footer';
 import { PageContent } from './content';
 
-const ClientPDF = ({ estimateDetail, subcostRecord, pdfData }: any) => {
+const ClientPDF = ({ estimateDetail, subcostRecord, pdfData, user }: any) => {
   return (
     <Document>
       <Page size={'A4'}>
-        <PdfHeader />
+        <PdfHeader brandingColor={user.brandingColor} logo={user.avatar} />
         <PageContent
           estimateDetail={estimateDetail}
           subcostRecord={subcostRecord}

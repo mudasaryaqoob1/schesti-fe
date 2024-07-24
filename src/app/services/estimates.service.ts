@@ -84,5 +84,8 @@ class EstimateRequestsService extends HttpService {
     this.put(`${this.prefix}/changeEstimateStatus/${estimateId}`, {
       status: bodyObject.status,
     });
+
+  httpEstimateEmailSender = (data: any): Promise<any> =>
+    this.post(`${this.prefix}/sendEmail`, data);
 }
 export const estimateRequestService = new EstimateRequestsService();
