@@ -1,27 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import Search from '../Search'
 import InvitedCard from './SingleCard'
-import axios from 'axios';
-import { baseUrl, schestiAuthToken } from '@/app/services/base.service';
-import { networkingUrl } from '@/app/utils/apiUrls'
 import { Spin } from 'antd';
 import NoData from '../NoData';
 import { useSelector } from 'react-redux';
+import { networkingService } from '@/app/services/networking.service';
 
 const InvitedClients = () => {
     const { invited } = useSelector((state: any) => state.network);
 
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<unknown>('');
-    const [invitedUsers, setinvitedUsers] = useState({ user: { invited: [] } });
+    const [invitedUsers, setinvitedUsers] = useState({ invited: [] });
 
     const getInvitedUsers = async () => {
-        const { data: users } = await axios(baseUrl + networkingUrl + 'getInvitedClients', {
-            headers: {
-                Authorization: schestiAuthToken()
-            }
-        });
-        setinvitedUsers(users.data);
+        const { data } = await networkingService.httpGetInvitedClients();
+        console.log(data, 'data of schesti users...');
+        setinvitedUsers(data.user);
 
     }
     useEffect(() => {
@@ -41,10 +36,10 @@ const InvitedClients = () => {
         <div>
             <Search />
             {
-                isLoading ? <Spin /> : invitedUsers.user.invited.length ? (
+                isLoading ? <Spin /> : invitedUsers.invited.length ? (
                     <div className="grid grid-cols-3 gap-4">
                         {
-                            invitedUsers.user.invited.map((userData: any) => (
+                            invitedUsers.invited.map((userData: any) => (
                                 <div className="col-span-1">
                                     <InvitedCard {...userData} />
                                 </div>

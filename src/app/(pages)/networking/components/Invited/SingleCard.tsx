@@ -1,11 +1,9 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
 import moment from 'moment'
-import axios from 'axios'
-import { baseUrl } from '@/app/services/base.service'
-import { networkingUrl } from '@/app/utils/apiUrls'
 import { useDispatch } from 'react-redux'
 import { SetInvitedClient } from '@/redux/network/network.slice'
+import { networkingService } from '@/app/services/networking.service'
 
 type Props = {
     invitedOn: string, invitedEmail: string
@@ -17,7 +15,7 @@ const InvitedCard = ({ invitedOn, invitedEmail }: Props) => {
     const removeInvitedClient = async () => {
         try {
             setIsLoading(true);
-            await axios.put(baseUrl + networkingUrl + `removeInvitedClient/${invitedEmail}`);
+            await networkingService.httpRemoveInvitedClient(invitedEmail);
             setIsLoading(false);
             dispatch(SetInvitedClient());
         } catch (error) {

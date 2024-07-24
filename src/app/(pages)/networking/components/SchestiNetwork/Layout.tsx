@@ -2,11 +2,9 @@ import React, { useEffect, useState } from 'react'
 import Search from '../Search'
 import { Spin } from 'antd'
 import SingleUserCard from '../SingleUserCard'
-import axios from 'axios'
-import { baseUrl } from '@/app/services/base.service'
-import { networkingUrl } from '@/app/utils/apiUrls'
 import NoData from '../NoData'
 import { useSelector } from 'react-redux'
+import { networkingService } from '@/app/services/networking.service'
 
 type Props = {
     userRole: string
@@ -17,11 +15,12 @@ const Layout = ({ userRole }: Props) => {
 
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<unknown>('');
-    const [schestiUsers, setSchestiUsers] = useState({ users: [] });
+    const [schestiUsers, setSchestiUsers] = useState([]);
 
     const getSchestiUsers = async () => {
-        const { data: users } = await axios(baseUrl + networkingUrl + 'getSchestiUsers' + `?userRole=${userRole}`);
-        setSchestiUsers(users.data);
+
+        const { data } = await networkingService.httpGetSchestiUsers(userRole);
+        setSchestiUsers(data.users);
 
     }
     useEffect(() => {
@@ -41,10 +40,10 @@ const Layout = ({ userRole }: Props) => {
         <div>
             <Search />
             {
-                isLoading ? <Spin /> : schestiUsers.users.length ? (
+                isLoading ? <Spin /> : schestiUsers.length ? (
                     <div className="grid grid-cols-3 gap-4">
                         {
-                            schestiUsers.users.map((userData: any) => (
+                            schestiUsers.map((userData: any) => (
                                 <SingleUserCard {...userData} />
                             ))
                         }
