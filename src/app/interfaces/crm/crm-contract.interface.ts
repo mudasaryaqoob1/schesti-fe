@@ -20,5 +20,6 @@ export interface ICrmContract{
     receiver: string | CrmType;
     projectName: string;
     projectNo: string;
-    tools: ToolState[]
+    senderTools: ToolState[]
+    receiverTools: ToolState[]
 }

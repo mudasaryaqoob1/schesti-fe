@@ -42,7 +42,7 @@ function ViewContract() {
             const response = await crmContractService.httpFindContractById(id);
             if (response.data) {
                 setContract(response.data);
-                setTools(response.data.tools);
+                setTools(response.data.senderTools);
             }
         } catch (error) {
             const err = error as AxiosError<{ message: string }>;

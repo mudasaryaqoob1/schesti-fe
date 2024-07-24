@@ -38,6 +38,7 @@ const ValidationSchema = Yup.object().shape({
     projectName: Yup.string().required('Project Name is required'),
     projectNo: Yup.string().required('Project Number is required'),
     file: Yup.mixed().required('File is required'),
+    receiver: Yup.string().required('Receiver is required'),
 })
 
 
@@ -59,6 +60,7 @@ function CreateContractPage() {
             projectName: '',
             projectNo: '',
             file: undefined as RcFile | undefined,
+            receiver: null as string | null,
         },
         async onSubmit(values,) {
             if (crmItem) {
@@ -107,6 +109,7 @@ function CreateContractPage() {
             const response = await crmService.httpGetItemById(id);
             if (response.data) {
                 setCrmItem(response.data);
+                formik.setFieldValue('receiver', response.data._id);
             }
         } catch (error) {
             const err = error as AxiosError<{ message: string }>;
@@ -148,6 +151,7 @@ function CreateContractPage() {
         <ModalComponent open={showList} setOpen={setShowList}>
             <ListCrmItems onClose={() => setShowList(false)} title="Select Item" onItemClick={(item) => {
                 setCrmItem(item);
+                formik.setFieldValue('receiver', item._id);
                 setShowList(false);
             }} />
         </ModalComponent>
@@ -337,13 +341,22 @@ function CreateContractPage() {
                 </div>
 
 
-                <div className="border p-3 rounded-md">
+                <div className={`border flex flex-col p-3 rounded-md ${formik.errors.receiver ? 'border-red-500' : ''}`}>
                     <div className="flex items-center justify-between">
                         <p
                             className="text-graphiteGray text-sm font-medium leading-6 capitalize"
                         >
                             Receiver Information
                         </p>
+                        {crmItem ? <CustomButton
+                            text="Select"
+                            className="!bg-schestiLightPrimary !text-schestiPrimary !py-2 !w-fit !border-schestiLightPrimary"
+                            onClick={() => {
+                                setShowList(true)
+                            }}
+                        /> : null}
+                    </div>
+                    {!crmItem ? <div className="h-full flex items-center justify-center">
                         <CustomButton
                             text="Select"
                             className="!bg-schestiLightPrimary !text-schestiPrimary !py-2 !w-fit !border-schestiLightPrimary"
@@ -351,9 +364,9 @@ function CreateContractPage() {
                                 setShowList(true)
                             }}
                         />
-                    </div>
+                    </div> : null}
                     <Spin spinning={isFetchingItem} indicator={<LoadingOutlined spin />}>
-                        <div className="mt-1 grid grid-cols-2 gap-2">
+                        {crmItem ? <div className="mt-1 grid grid-cols-2 gap-2">
                             <InputComponent
                                 label="Receiver Name"
                                 placeholder="Receiver Name"
@@ -403,7 +416,7 @@ function CreateContractPage() {
                                     }}
                                 />
                             </div>
-                        </div>
+                        </div> : null}
                     </Spin>
                 </div>
             </div>
@@ -431,7 +444,7 @@ function CreateContractPage() {
                 label="Project Number"
                 placeholder="Project Number"
                 name="projectNo"
-                type="number"
+                type="text"
                 field={{
                     value: formik.values.projectNo,
                     onChange: formik.handleChange,

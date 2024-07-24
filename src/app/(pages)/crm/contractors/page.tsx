@@ -226,6 +226,7 @@ function ContractsPage() {
                     icon="/plus.svg"
                     iconwidth={20}
                     iconheight={20}
+                    onClick={() => router.push(`${Routes.CRM.Contractors}/create`)}
                 />
             </div>
         </div>
