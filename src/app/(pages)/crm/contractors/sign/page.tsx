@@ -140,7 +140,7 @@ export default function SignPdfContract() {
             <div className="mt-5 w-fit mx-auto">
                 <ContractPdf
                     contract={contract}
-                    mode={activeTab === 'receiver' ? "add-values" : "view-fields"}
+                    mode={activeTab === 'receiver' ? "add-values" : "view-values"}
                     pdfFile={contract.file.url}
                     setTools={setTools}
                     tools={tools}

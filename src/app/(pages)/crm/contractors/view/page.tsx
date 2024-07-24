@@ -14,6 +14,7 @@ import { Routes } from "@/app/utils/plans.utils";
 import { ContractInfo } from "../components/info/ContractInfo";
 import { ContractPdf } from "../components/ContractPdf";
 import CustomButton from "@/app/component/customButton/button";
+import WhiteButton from "@/app/component/customButton/white";
 
 function ViewContract() {
     const [activeTab, setActiveTab] = useState("sender");
@@ -22,8 +23,9 @@ function ViewContract() {
     const [tools, setTools] = useState<ToolState[]>([]);
     const id = searchParams.get('id');
     const [contract, setContract] = useState<ICrmContract | null>(null);
-    const download = searchParams.get("download")
+    // const download = searchParams.get("download")
     const [isDownloading, setIsDownloading] = useState(false);
+    const [isUpdatingTools, setIsUpdatingTools] = useState(false);
     const contractPdfRef = useRef<{
         handleAction: () => void
     } | null>(null)
@@ -79,32 +81,82 @@ function ViewContract() {
         setIsDownloading(false);
     }
 
+    function handleTabChange(tab: string) {
+        if (contract) {
+            setActiveTab(tab);
+            if (tab === 'receiver') {
+                setTools(contract.receiverTools);
+            } else {
+                setTools(contract.senderTools);
+            }
+        }
+    }
+
+    async function handleUpdateTools(id: string, tools: ToolState[]) {
+        setIsUpdatingTools(true);
+        try {
+            const isValid = tools.every(tool => tool.value);
+            if (!isValid) {
+                toast.error("Please fill all the fields");
+                return;
+            }
+            const response = await crmContractService.httpSenderUpdateTools(id as string, tools);
+            toast.success("Contract updated successfully");
+
+            if (response.data) {
+                setContract(response.data);
+                setTools(response.data.senderTools);
+            }
+
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+            if (err.response?.data) {
+                toast.error(err.response.data.message);
+            }
+        } finally {
+            setIsUpdatingTools(false);
+        }
+    }
+
 
     return <div className="mt-4 space-y-3 p-5 !pb-[39px]  mx-4 ">
-        <SenaryHeading
-            title="Contract Information"
-            className="!text-[24px] text-schestiPrimaryBlack leading-6 font-semibold"
-        />
+        <div className="flex justify-between items-center">
+            <SenaryHeading
+                title="Contract Information"
+                className="!text-[24px] text-schestiPrimaryBlack leading-6 font-semibold"
+            />
+            {activeTab === 'sender' ? <CustomButton
+                text="Update Tools"
+                className="!w-fit"
+                onClick={() => handleUpdateTools(contract._id, tools)}
+                isLoading={isUpdatingTools}
+            /> : null}
+        </div>
 
         <div className="flex justify-between items-center">
 
             <div className="px-2 flex py-2 bg-white rounded-md">
-                <p className={`py-2 px-3 ${activeTab === 'sender' ? "font-semibold bg-schestiPrimary text-white" : "font-normal"}  cursor-pointer rounded-md `} onClick={() => setActiveTab('sender')}>
+                <p className={`py-2 px-3 ${activeTab === 'sender' ? "font-semibold bg-schestiPrimary text-white" : "font-normal"}  cursor-pointer rounded-md `} onClick={() => handleTabChange('sender')}>
                     Sender
                 </p>
 
-                <p className={`py-2 px-3 ${activeTab === 'receiver' ? "font-semibold bg-schestiPrimary text-white" : "font-normal"}  cursor-pointer rounded-md `} onClick={() => setActiveTab('receiver')}>
+                <p className={`py-2 px-3 ${activeTab === 'receiver' ? "font-semibold bg-schestiPrimary text-white" : "font-normal"}  cursor-pointer rounded-md `} onClick={() => handleTabChange('receiver')}>
                     Receiver
                 </p>
             </div>
 
-            {download && download === 'true' ? <CustomButton
+            {/* {download && download === 'true' ? <WhiteButton
                 text="Download"
                 className="!w-fit"
                 onClick={handleDownload}
                 isLoading={isDownloading}
-            /> : null}
-
+            /> : null} */}
+            <WhiteButton
+                text="Download"
+                className="!w-fit"
+                onClick={handleDownload}
+                isLoading={isDownloading}
+            />
         </div>
 
         <div className="p-4 m-4 bg-white rounded-md ">
@@ -114,7 +166,7 @@ function ViewContract() {
                 <ContractPdf
                     ref={contractPdfRef}
                     contract={contract}
-                    mode={activeTab === 'sender' ? "view-fields" : "view-values"}
+                    mode={activeTab === 'sender' ? "add-values" : "view-values"}
                     pdfFile={contract.file.url}
                     setTools={setTools}
                     tools={tools}
