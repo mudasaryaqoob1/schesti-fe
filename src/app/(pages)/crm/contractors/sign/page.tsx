@@ -21,6 +21,8 @@ export default function SignPdfContract() {
     const [tools, setTools] = useState<ToolState[]>([]);
     const id = searchParams.get('id');
     const [isSaving, setIsSaving] = useState(false);
+    const [activeTab, setActiveTab] = useState("receiver");
+
     useEffect(() => {
         // const receiver = searchParams.get('receiver');
         if (id) {
@@ -35,7 +37,7 @@ export default function SignPdfContract() {
             const response = await crmContractService.httpFindContractById(id);
             if (response.data) {
                 setContract(response.data);
-                setTools(response.data.senderTools);
+                setTools(response.data.receiverTools);
             }
         } catch (error) {
             const err = error as AxiosError<{ message: string }>;
@@ -79,6 +81,7 @@ export default function SignPdfContract() {
                 const response = await crmContractService.httpSignContract(id, tools);
                 if (response.data) {
                     toast.success("Contract signed successfully");
+                    setContract(response.data);
                 }
             } catch (error) {
                 const err = error as AxiosError<{ message: string }>;
@@ -87,6 +90,17 @@ export default function SignPdfContract() {
                 }
             } finally {
                 setIsSaving(false);
+            }
+        }
+    }
+
+    function handleTabChange(tab: string) {
+        if (contract) {
+            setActiveTab(tab);
+            if (tab === 'receiver') {
+                setTools(contract.receiverTools);
+            } else {
+                setTools(contract.senderTools);
             }
         }
     }
@@ -101,13 +115,24 @@ export default function SignPdfContract() {
                 width={100}
             />
         </div>
-        <div className="my-4 flex mx-5 justify-end">
-            <CustomButton
-                text="Send Back"
-                className="!w-fit"
-                onClick={signContract}
-                isLoading={isSaving}
-            />
+        <div className="my-4 flex mx-5 justify-between">
+            <div className="px-2 flex py-2 bg-white rounded-md">
+                <p className={`py-2 px-3 ${activeTab === 'sender' ? "font-semibold bg-schestiPrimary text-white" : "font-normal"}  cursor-pointer rounded-md `} onClick={() => handleTabChange('sender')}>
+                    Sender
+                </p>
+
+                <p className={`py-2 px-3 ${activeTab === 'receiver' ? "font-semibold bg-schestiPrimary text-white" : "font-normal"}  cursor-pointer rounded-md `} onClick={() => handleTabChange('receiver')}>
+                    Receiver
+                </p>
+            </div>
+            {contract.receiverTools.every(tool => tool.value) ? null :
+                <CustomButton
+                    text="Send Back"
+                    className="!w-fit"
+                    onClick={signContract}
+                    isLoading={isSaving}
+                />
+            }
         </div>
         <div className="p-4 m-4 bg-white rounded-md ">
             <ContractInfo contract={contract} />
@@ -115,7 +140,7 @@ export default function SignPdfContract() {
             <div className="mt-5 w-fit mx-auto">
                 <ContractPdf
                     contract={contract}
-                    mode="add-values"
+                    mode={activeTab === 'receiver' ? "add-values" : "view-fields"}
                     pdfFile={contract.file.url}
                     setTools={setTools}
                     tools={tools}
