@@ -5,12 +5,13 @@ import { Popups } from "@/app/(pages)/bid-management/components/Popups";
 import { DateInputComponent } from "@/app/component/cutomDate/CustomDateInput";
 import dayjs from "dayjs";
 import { InputComponent } from "@/app/component/customInput/Input";
-import { Tabs, Upload } from "antd";
+import { Spin, Tabs, Upload } from "antd";
 import CustomButton from "@/app/component/customButton/button";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import { ChooseFont, ChooseFontType, SignatureFonts } from "@/app/component/fonts";
 import AwsS3 from "@/app/utils/S3Intergration";
+import { LoadingOutlined } from "@ant-design/icons";
 
 type Props = {
     item: ToolState;
@@ -52,7 +53,6 @@ export function StandardToolItem({ item, mode, onDelete, onClick, onClose, selec
                 item={item}
                 mode={mode}
                 onClick={onClick}
-                onDelete={onDelete}
             />
         </div>
     } else if (mode === 'view-fields' || mode === 'view-values') {
@@ -70,10 +70,16 @@ export function StandardToolItem({ item, mode, onDelete, onClick, onClose, selec
             />
         </div>
     }
-    return <Item
-        item={item}
-        mode={mode}
-    />
+
+    else if (mode === 'edit-fields') {
+
+        return <Item
+            item={item}
+            mode={mode}
+            onDelete={onDelete}
+        />
+    }
+    return null;
 }
 
 type ItemProps = {
@@ -96,8 +102,9 @@ function Item({ item, mode, onClick, onDelete }: ItemProps) {
         <RenderStandardInputValue item={item} mode={mode} />
 
         {mode === 'edit-fields' && <Image onClick={(e) => {
-            e.stopPropagation();
             onDelete?.();
+            e.stopPropagation();
+            console.log("Delete");
         }} src={'/close.svg'} className="cursor-pointer p-0.5 absolute -top-2 bg-schestiPrimary rounded-full -right-1" width={16} height={16} alt="delete" />}
     </div>
 }
@@ -110,6 +117,7 @@ type InputProps = {
 }
 
 function StandardToolInput({ item, onChange }: InputProps) {
+    const [isUploadingStamp, setIsUploadingStamp] = useState(false);
 
     if (item.tool === 'date') {
         return <DateInputComponent
@@ -131,63 +139,68 @@ function StandardToolInput({ item, onChange }: InputProps) {
             onChange={onChange}
         />
     } else if (item.tool === 'stamp') {
-        return <Upload.Dragger
-            name={'file'}
-            accept=".png, .jpeg, .jpg,"
-            beforeUpload={async (_file, FileList) => {
-                for (const file of FileList) {
-                    const isLessThan500MB = file.size < 500 * 1024 * 1024; // 500MB in bytes
-                    if (!isLessThan500MB) {
-                        toast.error('File size should be less than 500MB');
-                        return false;
-                    }
-                }
-                if (onChange) {
-                    const url = await new AwsS3(_file).getS3URL();
-                    onChange({
-                        ...item, tool: "stamp", value: {
-                            extension: _file.name.split('.').pop() || '',
-                            name: _file.name,
-                            type: _file.type,
-                            url: url
+        return <Spin spinning={isUploadingStamp} indicator={<LoadingOutlined spin />}>
+            <Upload.Dragger
+                name={'file'}
+                accept=".png, .jpeg, .jpg,"
+                beforeUpload={async (_file, FileList) => {
+                    for (const file of FileList) {
+                        const isLessThan500MB = file.size < 500 * 1024 * 1024; // 500MB in bytes
+                        if (!isLessThan500MB) {
+                            toast.error('File size should be less than 500MB');
+                            return false;
                         }
-                    })
-                }
-                return false;
-            }}
-            style={{
-                borderStyle: 'dashed',
-                borderWidth: 2,
-                marginTop: 12,
-                backgroundColor: "transparent",
-                borderColor: "#E2E8F0",
-            }}
-            itemRender={() => {
+                    }
+                    if (onChange) {
+                        setIsUploadingStamp(true);
+                        const url = await new AwsS3(_file).getS3URL();
+                        onChange({
+                            ...item, tool: "stamp", value: {
+                                extension: _file.name.split('.').pop() || '',
+                                name: _file.name,
+                                type: _file.type,
+                                url: url
+                            }
+                        })
 
-                return null;
-            }}
-        >
-            <p className="ant-upload-drag-icon">
-                <Image
-                    src={'/uploadcloudcyan.svg'}
-                    width={50}
-                    height={50}
-                    alt="upload"
+                        setIsUploadingStamp(false);
+                    }
+                    return false;
+                }}
+                style={{
+                    borderStyle: 'dashed',
+                    borderWidth: 2,
+                    marginTop: 12,
+                    backgroundColor: "transparent",
+                    borderColor: "#E2E8F0",
+                }}
+                itemRender={() => {
+
+                    return null;
+                }}
+            >
+                <p className="ant-upload-drag-icon">
+                    <Image
+                        src={'/uploadcloudcyan.svg'}
+                        width={50}
+                        height={50}
+                        alt="upload"
+                    />
+                </p>
+                <p className="text-[18px] font-semibold py-2 leading-5 text-[#2C3641]">
+                    Drop your files here, or browse
+                </p>
+
+                <p className="text-sm font-normal text-center py-2 leading-5 text-[#2C3641]">
+                    or
+                </p>
+
+                <CustomButton
+                    text="Select File"
+                    className="!w-fit !px-6 !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
                 />
-            </p>
-            <p className="text-[18px] font-semibold py-2 leading-5 text-[#2C3641]">
-                Drop your files here, or browse
-            </p>
-
-            <p className="text-sm font-normal text-center py-2 leading-5 text-[#2C3641]">
-                or
-            </p>
-
-            <CustomButton
-                text="Select File"
-                className="!w-fit !px-6 !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
-            />
-        </Upload.Dragger>
+            </Upload.Dragger>
+        </Spin>
     } else if (item.tool === 'signature') {
         return <GetSignatureValue
             item={item}
@@ -265,14 +278,18 @@ function TypeSignature({ onChange, item }: TypeSignatureProps) {
             <CustomButton
                 text="Add Signature"
                 className="!w-fit !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
-                onClick={() => onChange && onChange({
-                    ...item,
-                    tool: "signature",
-                    value: {
-                        font,
-                        value,
+                onClick={() => {
+                    if (value && onChange) {
+                        onChange({
+                            ...item,
+                            tool: "signature",
+                            value: {
+                                font,
+                                value,
+                            }
+                        })
                     }
-                })}
+                }}
             />
         </div>
     </div>
@@ -319,6 +336,7 @@ function GetSignatureValue({ item, onChange }: {
     item: ToolState;
 }) {
     const [activeTab, setActiveTab] = useState("type");
+    const [isUploadingSignature, setIsUploadingSignature] = useState(false);
 
     return <div>
         <Tabs
@@ -332,64 +350,67 @@ function GetSignatureValue({ item, onChange }: {
             })}
         />
         {activeTab === 'upload' ? <div className="h-[400px]">
-            <Upload.Dragger
-                name={'file'}
-                accept=".png, .jpeg, .jpg,"
-                beforeUpload={async (_file, FileList) => {
-                    for (const file of FileList) {
-                        const isLessThan500MB = file.size < 500 * 1024 * 1024; // 500MB in bytes
-                        if (!isLessThan500MB) {
-                            toast.error('File size should be less than 500MB');
-                            return false;
-                        }
-                    }
-                    if (onChange) {
-
-                        const url = await new AwsS3(_file).getS3URL();
-                        onChange({
-                            ...item, tool: "signature", value: {
-                                extension: _file.name.split('.').pop() || '',
-                                name: _file.name,
-                                type: _file.type,
-                                url: url
+            <Spin spinning={isUploadingSignature} indicator={<LoadingOutlined spin />}>
+                <Upload.Dragger
+                    name={'file'}
+                    accept=".png, .jpeg, .jpg,"
+                    beforeUpload={async (_file, FileList) => {
+                        for (const file of FileList) {
+                            const isLessThan500MB = file.size < 500 * 1024 * 1024; // 500MB in bytes
+                            if (!isLessThan500MB) {
+                                toast.error('File size should be less than 500MB');
+                                return false;
                             }
-                        })
-                    }
-                    return false;
-                }}
-                style={{
-                    borderStyle: 'dashed',
-                    borderWidth: 2,
-                    marginTop: 12,
-                    backgroundColor: "transparent",
-                    borderColor: "#E2E8F0",
-                }}
-                itemRender={() => {
+                        }
+                        if (onChange) {
+                            setIsUploadingSignature(true);
+                            const url = await new AwsS3(_file).getS3URL();
+                            onChange({
+                                ...item, tool: "signature", value: {
+                                    extension: _file.name.split('.').pop() || '',
+                                    name: _file.name,
+                                    type: _file.type,
+                                    url: url
+                                }
+                            })
+                            setIsUploadingSignature(false);
+                        }
+                        return false;
+                    }}
+                    style={{
+                        borderStyle: 'dashed',
+                        borderWidth: 2,
+                        marginTop: 12,
+                        backgroundColor: "transparent",
+                        borderColor: "#E2E8F0",
+                    }}
+                    itemRender={() => {
 
-                    return null;
-                }}
-            >
-                <p className="ant-upload-drag-icon">
-                    <Image
-                        src={'/uploadcloudcyan.svg'}
-                        width={50}
-                        height={50}
-                        alt="upload"
+                        return null;
+                    }}
+                >
+                    <p className="ant-upload-drag-icon">
+                        <Image
+                            src={'/uploadcloudcyan.svg'}
+                            width={50}
+                            height={50}
+                            alt="upload"
+                        />
+                    </p>
+                    <p className="text-[18px] font-semibold py-2 leading-5 text-[#2C3641]">
+                        Drop your files here, or browse
+                    </p>
+
+                    <p className="text-sm font-normal text-center py-2 leading-5 text-[#2C3641]">
+                        or
+                    </p>
+
+                    <CustomButton
+                        text="Select File"
+                        className="!w-fit !px-6 !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
                     />
-                </p>
-                <p className="text-[18px] font-semibold py-2 leading-5 text-[#2C3641]">
-                    Drop your files here, or browse
-                </p>
-
-                <p className="text-sm font-normal text-center py-2 leading-5 text-[#2C3641]">
-                    or
-                </p>
-
-                <CustomButton
-                    text="Select File"
-                    className="!w-fit !px-6 !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
-                />
-            </Upload.Dragger>
+                </Upload.Dragger>
+            </Spin>
         </div> : activeTab === 'type' ? <TypeSignature
             item={item}
             onChange={onChange}

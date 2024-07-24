@@ -16,6 +16,7 @@ import WhiteButton from "@/app/component/customButton/white";
 import SenaryHeading from "@/app/component/headings/senaryHeading";
 import { ToolState } from "../types";
 import { useRouterHook } from "@/app/hooks/useRouterHook";
+import _ from "lodash";
 
 
 
@@ -77,6 +78,14 @@ function EditContractDocumentPage() {
         setIsSending(true);
 
         try {
+
+            if (contract) {
+                const senderToolsIds = contract.senderTools.map(tool => tool.id);
+                const receiverToolsIds = contract.receiverTools.map(tool => tool.id);
+                const commonIds = _.intersection(senderToolsIds, receiverToolsIds);
+                tools = tools.filter(tool => !commonIds.includes(tool.id));
+            }
+
             const response = await crmContractService.httpSendContract(id, tools);
             if (response.data) {
                 toast.success("Contract sent successfully");

@@ -10,6 +10,7 @@ import CustomButton from "@/app/component/customButton/button";
 import { ICrmContract } from "@/app/interfaces/crm/crm-contract.interface";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import { toast } from "react-toastify";
 
 type Props = {
     mode: PdfContractMode;
@@ -19,7 +20,7 @@ type Props = {
     setTools: React.Dispatch<React.SetStateAction<ToolState[]>>
 }
 
-export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(({ mode, pdfFile, tools, setTools, }, ref) => {
+export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(({ mode, pdfFile, tools, setTools, contract }, ref) => {
     // const [activePage, setActivePage] = useState<null | number>(1)
     // const canvasRefs = useRef<HTMLCanvasElement[]>([]);
     const { PDFJs } = usePDFJS(async () => { });
@@ -91,8 +92,14 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(({ mo
         return { x, y };
     }
 
-    function handleRemoveTool(id: string) {
-        setTools((prev) => prev.filter((tool) => tool.id !== id));
+    function handleRemoveTool(item: ToolState) {
+        const isItemInContract = contract.receiverTools.some((tool) => tool.id === item.id) || contract.senderTools.some((tool) => tool.id === item.id);
+        if (isItemInContract) {
+            toast.error('You can not remove already saved');
+        } else {
+
+            setTools((prev) => prev.filter((tool) => tool.id !== item.id));
+        }
     }
 
     function handleItemClick(item: ToolState) {
@@ -156,7 +163,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(({ mo
                 <DroppableArea onDrop={function (item, offset) {
                     if ("type" in item) {
                         const { x, y } = getXAndY(offset);
-                        setTools((prev) => [...prev, { tool: item.type, position: { x, y }, id: Math.random().toString(36).slice(0, 9) }])
+                        setTools((prev) => [...prev, { tool: item.type, position: { x, y }, id: Math.random().toString(36).slice(0, 20) }])
                     } else {
                         setTools((prev) => {
                             return prev.map((tool) => {
@@ -173,17 +180,18 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(({ mo
                                 onClose={handleCloseModal}
                                 selectedTool={selectedTool}
                                 onChange={handleValueChange}
-                                onDelete={() => handleRemoveTool(item.id)} mode={mode} item={item} key={item.id} />
-                                : (mode === 'view-fields' || mode === 'view-values') ? <StandardToolItem
+
+                                mode={mode} item={item} key={item.id} />
+                                : mode === 'edit-fields' ? <DraggableItem type={item.tool} key={item.id} data={item}>
+
+                                    <StandardToolItem selectedTool={null} mode={mode} item={item} key={item.id} onDelete={() => handleRemoveTool(item)} />
+                                </DraggableItem> : (mode === 'view-fields' || mode === 'view-values') ? <StandardToolItem
                                     onClick={() => { }}
                                     onClose={() => { }}
                                     selectedTool={selectedTool}
                                     onChange={() => { }}
-                                    onDelete={() => { }} mode={mode} item={item} key={item.id} />
-                                    : <DraggableItem type={item.tool} key={item.id} data={item}>
-
-                                        <StandardToolItem selectedTool={null} mode={mode} item={item} key={item.id} onDelete={() => handleRemoveTool(item.id)} />
-                                    </DraggableItem>
+                                    mode={mode} item={item} key={item.id} />
+                                    : null
                         })}
                     </div>
                 </DroppableArea>

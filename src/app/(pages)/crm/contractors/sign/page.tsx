@@ -18,7 +18,8 @@ export default function SignPdfContract() {
     const [contract, setContract] = useState<ICrmContract | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const searchParams = useSearchParams();
-    const [tools, setTools] = useState<ToolState[]>([]);
+    const [receiverTools, setReceiverTools] = useState<ToolState[]>([]);
+    const [senderTools, setSenderTools] = useState<ToolState[]>([]);
     const id = searchParams.get('id');
     const [isSaving, setIsSaving] = useState(false);
     const [activeTab, setActiveTab] = useState("receiver");
@@ -37,7 +38,8 @@ export default function SignPdfContract() {
             const response = await crmContractService.httpFindContractById(id);
             if (response.data) {
                 setContract(response.data);
-                setTools(response.data.receiverTools);
+                setReceiverTools(response.data.receiverTools);
+                setSenderTools(response.data.senderTools);
             }
         } catch (error) {
             const err = error as AxiosError<{ message: string }>;
@@ -70,18 +72,20 @@ export default function SignPdfContract() {
 
     async function signContract() {
         if (id) {
-            console.log(tools);
-            const isValid = tools.every(tool => tool.value);
+            console.log(receiverTools);
+            const isValid = receiverTools.every(tool => tool.value);
             if (!isValid) {
                 toast.error("Please fill all the fields");
                 return;
             }
             setIsSaving(true);
             try {
-                const response = await crmContractService.httpSignContract(id, tools);
+                const response = await crmContractService.httpSignContract(id, receiverTools);
                 if (response.data) {
                     toast.success("Contract signed successfully");
                     setContract(response.data);
+                    setReceiverTools(response.data.receiverTools);
+                    setSenderTools(response.data.senderTools);
                 }
             } catch (error) {
                 const err = error as AxiosError<{ message: string }>;
@@ -97,11 +101,6 @@ export default function SignPdfContract() {
     function handleTabChange(tab: string) {
         if (contract) {
             setActiveTab(tab);
-            if (tab === 'receiver') {
-                setTools(contract.receiverTools);
-            } else {
-                setTools(contract.senderTools);
-            }
         }
     }
 
@@ -142,8 +141,8 @@ export default function SignPdfContract() {
                     contract={contract}
                     mode={activeTab === 'receiver' ? "add-values" : "view-values"}
                     pdfFile={contract.file.url}
-                    setTools={setTools}
-                    tools={tools}
+                    setTools={activeTab === 'receiver' ? setReceiverTools : setSenderTools}
+                    tools={activeTab === 'receiver' ? receiverTools : senderTools}
                 />
             </div>
         </div>
