@@ -43,6 +43,7 @@ function ContractsPage() {
     const [data, setData] = useState<ICrmContract[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouterHook();
+    const [search, setSearch] = useState('');
 
     useEffect(() => {
         getCompanyContracts();
@@ -187,6 +188,11 @@ function ContractsPage() {
         }
     ]
 
+    const filteredData = data.filter((item) => {
+        if (!search) return true;
+        return item.title.toLowerCase().includes(search.toLowerCase());
+    });
+
     return <div className="mt-6 p-5 !pb-[39px]  mx-4 bg-white rounded-md">
 
         <div className="flex justify-between items-center">
@@ -202,6 +208,13 @@ function ContractsPage() {
                         type="text"
                         placeholder="Search"
                         prefix={<SearchOutlined />}
+                        field={{
+                            value: search ? search : undefined,
+                            onChange: (e) => {
+                                setSearch(e.target.value);
+                            },
+                            allowClear: true,
+                        }}
                     />
                 </div>
                 <SelectComponent
@@ -235,7 +248,7 @@ function ContractsPage() {
         <div className="mt-5">
             <Table
                 columns={columns}
-                dataSource={data}
+                dataSource={filteredData}
                 loading={isLoading}
             />
         </div>
