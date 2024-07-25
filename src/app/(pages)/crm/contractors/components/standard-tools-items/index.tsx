@@ -97,7 +97,7 @@ function Item({ item, mode, onClick, onDelete }: ItemProps) {
         }
 
         onClick?.();
-    }} className="p-3 rounded-lg border-schestiPrimary border-2 h-fit relative font-semibold text-schestiPrimary flex items-center space-x-2 border-dashed bg-schestiLightPrimary m-0">
+    }} className={`p-3 rounded-lg border-schestiPrimary border-2 h-fit relative font-semibold ${item.value ? "text-schestiPrimaryBlack" : "text-schestiPrimary"} flex items-center space-x-2 border-dashed bg-schestiLightPrimary m-0`}>
         <Image src={`/${item.tool}.svg`} width={16} height={16} alt={`${item.tool}`} />
 
         <RenderStandardInputValue item={item} mode={mode} />

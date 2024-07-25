@@ -125,10 +125,15 @@ export async function findCrmItemById(
     } finally {
       setIsFetching(false);
     }
+  }
 }
 
-export function formatCrmModuleType(module: CrmModuleType) {
-    switch(module){
+export function formatCrmModuleType(module: CrmModuleType | undefined): string {
+    if (!module) {
+        throw new Error('Invalid crm module type');
+    }
+
+    switch(module) {
         case 'clients':
             return 'Client';
         case 'vendors':
@@ -142,6 +147,6 @@ export function formatCrmModuleType(module: CrmModuleType) {
         case 'subcontractors':
             return 'Subcontractor';
         default:
-            return 'Client';
+            throw new Error('Invalid crm module type');
     }
 }

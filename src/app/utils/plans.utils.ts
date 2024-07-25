@@ -24,6 +24,8 @@ export const Routes = {
     Contractors: '/crm/contractors',
     Architects: '/crm/architects',
     Vendors: '/crm/vendors',
+    Daily_Work: '/crm/daily-work',
+
   },
   'Quantity-Takeoff': {
     Manual: '/take-off',
@@ -114,6 +116,7 @@ export const planFeatureOptions = [
       { label: 'Contractors', value: Routes.CRM.Contractors },
       { label: 'Architects', value: Routes.CRM.Architects },
       { label: 'Vendors', value: Routes.CRM.Vendors },
+      { label: 'Daily Work', value: Routes.CRM.Daily_Work },
     ],
   },
 
