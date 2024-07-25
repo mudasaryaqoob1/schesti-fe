@@ -29,7 +29,7 @@ export function PdfHeader({ brandingColor, logo }: Props) {
         src={logo ? logo : defaultLogo}
         style={{
           width: 50,
-          height: 26,
+          height: 36,
           paddingVertical: 5,
         }}
       />
