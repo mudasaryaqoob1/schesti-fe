@@ -417,7 +417,6 @@ export function UploadSubCategoriesModal({ open, setOpen, categories }: Props) {
           </Spin>
         )}
       </div>
-    </div>
     </ModalComponent >
   );
 }

@@ -235,12 +235,13 @@ const AddCategory = () => {
                       )}
                     </div>
                   </div>
+                </div>
               </Form>
             );
           }}
         </Formik>
       </div>
-      ) : null}
+        : null}
 
       <ModalComponent open={showPreviewModal} setOpen={() => { }} width="70%">
         <div className="bg-white p-5 rounded-md">

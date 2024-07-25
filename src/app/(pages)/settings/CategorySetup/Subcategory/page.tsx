@@ -234,12 +234,13 @@ const AddSubcategory = () => {
                       )}
                     </div>
                   </div>
+                </div>
               </Form>
             );
           }}
         </Formik>
       </div>
-      ) : null}
+        : null}
 
       <UploadSubCategoriesModal
         open={showUploadModal}
