@@ -292,3 +292,7 @@ a {
   color: #007ab6;
   background-color: #ffffff;
 }
+
+.ant-modal-mask {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+}

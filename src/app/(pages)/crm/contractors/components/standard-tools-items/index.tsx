@@ -40,6 +40,7 @@ export function StandardToolItem({ item, mode, onDelete, onClick, onClose, selec
                 setOpen={() => { }}
                 width="300px"
                 key={selectedTool.tool}
+                className={"!bg-transparent"}
             >
                 <Popups title="Add Standard Tools" onClose={onClose ? onClose : () => { }}>
                     <StandardToolInput

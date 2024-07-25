@@ -6,7 +6,7 @@ interface Props {
   title?: string;
   width?: string;
   destroyOnClose?: boolean;
-  className?:any;
+  className?: any;
 }
 const ModalComponent = ({
   setOpen,
