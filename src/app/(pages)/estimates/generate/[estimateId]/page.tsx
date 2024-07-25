@@ -1,40 +1,47 @@
 'use client';
 import React, { useState, useEffect, useCallback } from 'react';
+import _ from 'lodash';
+import { AxiosError } from 'axios';
+import { CSVLink } from 'react-csv';
+import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
 import { useParams } from 'next/navigation';
-// import { RootState } from '@/redux/store';
+// import { RootState } from '@/redux/rootReducer';
+import { PDFDownloadLink, pdf } from '@react-pdf/renderer';
+
+import { withAuth } from '@/app/hoc/withAuth';
+import AwsS3 from '@/app/utils/S3Intergration';
+import ClientPDF from '../components/clientPDF';
+import ModalComponent from '@/app/component/modal';
+import { formatDataFromAntdColumns } from './utils';
 import Description from '@/app/component/description';
-import QuaternaryHeading from '@/app/component/headings/quaternary';
-import QuinaryHeading from '@/app/component/headings/quinary';
-import TertiaryHeading from '@/app/component/headings/tertiary';
+import { USCurrencyFormat } from '@/app/utils/format';
 import { bg_style } from '@/globals/tailwindvariables';
 import MinDesc from '@/app/component/description/minDesc';
+import WhiteButton from '@/app/component/customButton/white';
+import QuinaryHeading from '@/app/component/headings/quinary';
+import CustomButton from '@/app/component/customButton/button';
+import EmailTemplate from '@/app/component/customEmailTemplete';
+import TertiaryHeading from '@/app/component/headings/tertiary';
+import QuaternaryHeading from '@/app/component/headings/quaternary';
+import { estimateRequestService } from '@/app/services/estimates.service';
 import EstimatesTable, {
   estimateTableColumns,
 } from '../components/estimatesTable';
+import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
 // import EstimatePDF from './estimatePDF';
-import CustomButton from '@/app/component/customButton/button';
-import WhiteButton from '@/app/component/customButton/white';
-import { PDFDownloadLink } from '@react-pdf/renderer';
-import { estimateRequestService } from '@/app/services/estimates.service';
-// import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
-import { withAuth } from '@/app/hoc/withAuth';
-import { USCurrencyFormat } from '@/app/utils/format';
-import ClientPDF from '../components/clientPDF';
-import { CSVLink } from 'react-csv';
-import { toast } from 'react-toastify';
-import _ from 'lodash';
-import { formatDataFromAntdColumns } from './utils';
 
 const ViewEstimateDetail = () => {
   const { estimateId } = useParams();
 
-  // const auth = useSelector((state: RootState) => state.auth);
-  // const user = auth.user?.user as IUpdateCompanyDetail | undefined;
+  const auth = useSelector((state: any) => state.auth);
+  const user = auth.user?.user as IUpdateCompanyDetail | undefined;
 
+  const [emailModal, setEmailModal] = useState(false);
   const [pdfData, setPdfData] = useState<Object[]>([]);
-  const [estimateDetailsSummary, setEstimateDetailsSummary] = useState<any>();
-  const [estimatesRecord, setEstimatesRecord] = useState([]);
   const [csvData, setCsvData] = useState<string[][]>([]);
+  const [estimatesRecord, setEstimatesRecord] = useState([]);
+  const [estimateDetailsSummary, setEstimateDetailsSummary] = useState<any>();
 
   const fetchEstimateDetail = useCallback(async () => {
     const result =
@@ -205,6 +212,42 @@ const ViewEstimateDetail = () => {
     ]);
   }
 
+  const generatePdfBlob = async () => {
+    const blob = await pdf(
+      <ClientPDF
+        estimateDetail={estimateDetailsSummary}
+        subcostRecord={estimateDetailsSummary?.totalCost}
+        pdfData={pdfData}
+        user={user}
+      />
+    ).toBlob();
+    return blob;
+  };
+
+  const estimateEmailSendHandler = async (bodyObject: FormData) => {
+    let generatedBlobl = await generatePdfBlob();
+
+    const url = await new AwsS3(
+      generatedBlobl,
+      'documents/estimates/'
+    ).getS3URL();
+
+    bodyObject.set('estimateUrl', url);
+
+    try {
+      const response =
+        await estimateRequestService.httpEstimateEmailSender(bodyObject);
+
+      if (response.statusCode == 200) {
+        setEmailModal(false);
+        toast.success('Email sent successfully');
+      }
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      toast.error(err.response?.data.message || 'An error occurred');
+    }
+  };
+
   return (
     <div className="p-12">
       <div className="flex justify-between items-center">
@@ -213,6 +256,11 @@ const ViewEstimateDetail = () => {
           className="text-graphiteGray font-semibold"
         />
         <div className="flex gap-3 items-center">
+          <WhiteButton
+            text="Send Email"
+            className="w-full"
+            onClick={() => setEmailModal(true)}
+          />
           <CSVLink
             data={csvData}
             className="!w-full"
@@ -223,7 +271,7 @@ const ViewEstimateDetail = () => {
               done();
             }}
           >
-            <WhiteButton text="Download CSV" />
+            <WhiteButton text="Download CSV" className="w-full" />
           </CSVLink>
 
           {/* <PDFDownloadLink
@@ -252,6 +300,7 @@ const ViewEstimateDetail = () => {
                 estimateDetail={estimateDetailsSummary}
                 subcostRecord={estimateDetailsSummary?.totalCost}
                 pdfData={pdfData}
+                user={user}
               />
             }
             fileName="estimate-document.pdf"
@@ -267,10 +316,11 @@ const ViewEstimateDetail = () => {
           </PDFDownloadLink>
 
           {/* <PDFViewer>
-            <EstimatePDF
-              estimateDetail={estimateDetailsSummary}
-              pdfData={pdfData}
-              user={user}
+            <ClientPDF
+               estimateDetail={estimateDetailsSummary}
+               subcostRecord={estimateDetailsSummary?.totalCost}
+               pdfData={pdfData}
+               user={user}
             />
           </PDFViewer> */}
         </div>
@@ -475,6 +525,14 @@ const ViewEstimateDetail = () => {
           )}`}
         />
       </div>
+      <ModalComponent setOpen={setEmailModal} open={emailModal}>
+        <EmailTemplate
+          to={estimateDetailsSummary?.estimateRequestIdDetail?.email}
+          setEmailModal={setEmailModal}
+          submitHandler={estimateEmailSendHandler}
+          isFileUploadShow={false}
+        />
+      </ModalComponent>
     </div>
   );
 };

@@ -25,11 +25,11 @@ const styles = StyleSheet.create({
     borderSpacing: 0,
   },
   tableHeader: {
-    backgroundColor: '#f9f5ff',
-    border: '1px solid #f9f5ff',
+    backgroundColor: '#E6F2F8',
+    border: '1px solid #E6F2F8',
   },
   tableRow: {
-    borderBottom: '1px solid #f9f5ff',
+    borderBottom: '1px solid #E6F2F8',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',

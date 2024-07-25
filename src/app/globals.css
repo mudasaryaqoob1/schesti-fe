@@ -229,6 +229,34 @@ a {
   font-weight: 500;
   line-height: 24px;
 }
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* TakeOff table transparent */
+.transparent-table .ant-table-content {
+  background-color: transparent !important;
+}
+.table-row-transparent {
+  background-color: transparent;
+}
+
+[data-tooltip]:hover::after {
+  display: block;
+  position: absolute;
+  content: attr(data-tooltip);
+  border: 1px solid black;
+  background: #ffffff;
+  padding: .25em;
+  z-index: 1000;
+}
 
 /* Pagination css */
 

@@ -1,6 +1,6 @@
 import { StyleSheet, View } from '@react-pdf/renderer';
 
-export const BG_COLOR = '#6f42c1';
+export const BG_COLOR = '#007AB6';
 type Props = {
   brandingColor?: string;
 };

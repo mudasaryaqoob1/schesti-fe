@@ -68,7 +68,6 @@ const AddSubcategory = () => {
     companySetupSubcategoriesLoading
   );
 
-
   const fetchSubcategoriesHandler = useCallback(async () => {
     await dispatch(fetchSubCategories({ page: 1, limit: 10 }));
   }, []);
@@ -184,27 +183,63 @@ const AddSubcategory = () => {
                       iconwidth={20}
                       iconheight={20}
                     />
-                    {subcategoryData && (
+                    <FormControl
+                      control="input"
+                      label="Sub-Category"
+                      type="text"
+                      name="name"
+                      placeholder="Enter Sub-Category"
+                    />
+                    <FormControl
+                      control="input"
+                      label="Price"
+                      type="number"
+                      name="price"
+                      placeholder="Enter Price"
+                      prefix="$"
+                    />
+                  </div>
+                  <div className="flex justify-between mt-5 items-center">
+                    <WhiteButton
+                      text="Cancel"
+                      className="!w-fit"
+                      onClick={() => {
+                        setShowForm(false);
+                      }}
+                    />
+                    <div className="flex items-center gap-3">
                       <CustomButton
-                        type="button"
-                        text="Cancel"
-                        onClick={() => {
-                          dispatch(setSubcategoryData(null))
-                          setShowForm(false);
-                        }}
-                        className="!w-auto !bg-red-500 border-none"
+                        text={
+                          subcategoryData
+                            ? 'Update Subcategory'
+                            : 'Add Subcategory'
+                        }
+                        type="submit"
+                        className="!w-auto "
                         iconwidth={20}
                         iconheight={20}
                       />
-                    )}
+                      {subcategoryData && (
+                        <CustomButton
+                          type="button"
+                          text="Cancel"
+                          onClick={() => {
+                            dispatch(setSubcategoryData(null));
+                            setShowForm(false);
+                          }}
+                          className="!w-auto !bg-red-500 border-none"
+                          iconwidth={20}
+                          iconheight={20}
+                        />
+                      )}
+                    </div>
                   </div>
-                </div>
               </Form>
             );
           }}
         </Formik>
-      </div> : null}
-
+      </div>
+      ) : null}
 
       <UploadSubCategoriesModal
         open={showUploadModal}
@@ -212,46 +247,44 @@ const AddSubcategory = () => {
         categories={categoriesReduxData ? categoriesReduxData : []}
       />
 
-      <div className={`${bg_style} border border-solid border-silverGray mt-4 space-y-2 p-5`}>
+      <div
+        className={`${bg_style} border border-solid border-silverGray mt-4 space-y-2 p-5`}
+      >
+        <div className="flex justify-between items-center">
+          <TertiaryHeading
+            title={'Sub Categories'}
+            className="text-graphiteGray"
+          />
+          {!showForm ? (
+            <div className="flex gap-2 items-center">
+              <WhiteButton
+                text="Upload File"
+                icon="/uploadcloud.svg"
+                iconwidth={20}
+                iconheight={20}
+                className="!w-fit"
+                loadingText="Uploading..."
+                onClick={() => {
+                  setShowUploadModal(true);
+                }}
+              />
 
-        <div className='flex justify-between items-center'>
-          <TertiaryHeading title={"Sub Categories"} className="text-graphiteGray" />
-          {!showForm ? <div className='flex gap-2 items-center'>
-            <WhiteButton
-              text='Upload File'
-              icon='/uploadcloud.svg'
-              iconwidth={20}
-              iconheight={20}
-              className='!w-fit'
-              loadingText='Uploading...'
-              onClick={() => {
-                setShowUploadModal(true)
-              }}
-            />
-
-            <input
-              type="file"
-              name=""
-              id=""
-              className='hidden'
-            />
-            <CustomButton
-              text='Add Subcategory'
-              className='!w-fit'
-              onClick={() => {
-                setShowForm(true)
-              }}
-            />
-          </div> : null}
+              <input type="file" name="" id="" className="hidden" />
+              <CustomButton
+                text="Add Subcategory"
+                className="!w-fit"
+                onClick={() => {
+                  setShowForm(true);
+                }}
+              />
+            </div>
+          ) : null}
         </div>
         <SubCategoryTable
           onEdit={() => {
             setShowForm(true);
           }}
-
-          onDelete={() => {
-
-          }}
+          onDelete={() => { }}
         />
       </div>
     </>

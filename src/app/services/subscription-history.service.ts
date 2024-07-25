@@ -1,13 +1,14 @@
-import { IResponseInterface } from "../interfaces/api-response.interface";
-import { ISubscriptionHistory } from "../interfaces/subscription-history.interface";
-import { HttpService } from "./base.service";
+import { IResponseInterface } from '../interfaces/api-response.interface';
+import { ISubscriptionHistory } from '../interfaces/subscription-history.interface';
+import { HttpService } from './base.service';
 
 class SubscriptionHistoryService extends HttpService {
+  private readonly prefix = 'api/subcription';
 
-    private readonly prefix = "api/subcription";
-
-    httpGetAllSubscriptionHistory = (): Promise<IResponseInterface<ISubscriptionHistory[]>> => this.get(`${this.prefix}/my-history`);
+  httpGetAllSubscriptionHistory = (): Promise<
+    IResponseInterface<ISubscriptionHistory[]>
+  > => this.get(`${this.prefix}/my-history`);
 }
 
 const subscriptionHistoryService = new SubscriptionHistoryService();
-export default subscriptionHistoryService
+export default subscriptionHistoryService;

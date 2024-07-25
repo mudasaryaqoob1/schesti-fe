@@ -55,7 +55,7 @@ const EditSubcontractor = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    findCrmItemById(id, setIsFetching, item => {
+    findCrmItemById(id, setIsFetching, (item) => {
       setItem(item as ICrmSubcontractorModule);
     });
   }, [id]);
@@ -64,33 +64,37 @@ const EditSubcontractor = () => {
     if (item) {
       setIsLoading(true);
       try {
-        const response = await crmService.httpfindByIdAndUpdate(item._id, { ...values, module: "subcontractors" });
+        const response = await crmService.httpfindByIdAndUpdate(item._id, {
+          ...values,
+          module: 'subcontractors',
+        });
         if (response.data) {
-          toast.success("Subcontractor updated successfully");
+          toast.success('Subcontractor updated successfully');
           router.push(Routes.CRM['Sub-Contractors']);
         }
       } catch (error) {
         const err = error as AxiosError<{ message: string }>;
-        toast.error(err.response?.data.message || "Unable to update subcontractor");
+        toast.error(
+          err.response?.data.message || 'Unable to update subcontractor'
+        );
       } finally {
         setIsLoading(false);
       }
     }
   };
   if (isFetching) {
-    return <div className="grid grid-cols-2 gap-2 grid-rows-2">
-      <Skeleton />
-      <Skeleton />
-      <Skeleton />
-      <Skeleton />
-    </div>
+    return (
+      <div className="grid grid-cols-2 gap-2 grid-rows-2">
+        <Skeleton />
+        <Skeleton />
+        <Skeleton />
+        <Skeleton />
+      </div>
+    );
   }
 
-
   if (!isFetching && !item) {
-    return <NoDataComponent
-
-    />
+    return <NoDataComponent />;
   }
   return (
     <section className="mx-4">
@@ -126,7 +130,9 @@ const EditSubcontractor = () => {
           title="Edit Subcontractor"
         />
         <Formik
-          initialValues={item ? item : initialValues as ICrmSubcontractorModule}
+          initialValues={
+            item ? item : (initialValues as ICrmSubcontractorModule)
+          }
           enableReinitialize={true}
           validationSchema={editSubcontractorSchema}
           onSubmit={submitHandler}

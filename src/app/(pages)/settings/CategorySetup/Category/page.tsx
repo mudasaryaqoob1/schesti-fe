@@ -44,14 +44,15 @@ const validationSchema = Yup.object({
 });
 
 const AddCategory = () => {
-
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState('');
 
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [showPreviewModal, setShowPreviewModal] = useState(false);
-  const [parsedData, setParsedData] = useState<ISettingCategoryParsedType[]>([]);
+  const [parsedData, setParsedData] = useState<ISettingCategoryParsedType[]>(
+    []
+  );
   const [isInsertingMany, setIsInsertingMany] = useState(false);
 
   const dispatch = useDispatch<AppDispatch>();
@@ -61,7 +62,7 @@ const AddCategory = () => {
 
   const initialValues: CategoryInitTypes = {
     name: categoryData?.name || '',
-    categoryId: categoryData?.categoryId || ''
+    categoryId: categoryData?.categoryId || '',
   };
 
   const submitHandler = async (
@@ -90,16 +91,17 @@ const AddCategory = () => {
     setShowForm(false);
   };
 
-
-  const uploadCsvFileAndParse: React.ChangeEventHandler<HTMLInputElement> = async (e) => {
-
+  const uploadCsvFileAndParse: React.ChangeEventHandler<
+    HTMLInputElement
+  > = async (e) => {
     if (e.target.files) {
       setIsUploading(true);
       try {
         const file = e.target.files[0];
         const formData = new FormData();
         formData.append('file', file);
-        const response = await categoriesService.httpParseCategoriesCSV(formData);
+        const response =
+          await categoriesService.httpParseCategoriesCSV(formData);
         if (response.data) {
           setParsedData(response.data);
           setShowPreviewModal(true);
@@ -115,13 +117,14 @@ const AddCategory = () => {
         }
       }
     }
-  }
+  };
 
   function removeItemFromParsedData(idx: number) {
-    const sliceData = parsedData.slice(0, idx).concat(parsedData.slice(idx + 1));
+    const sliceData = parsedData
+      .slice(0, idx)
+      .concat(parsedData.slice(idx + 1));
     setParsedData(sliceData);
   }
-
 
   async function insertManyCategories(data: ISettingCategoryParsedType[]) {
     setIsInsertingMany(true);
@@ -134,12 +137,11 @@ const AddCategory = () => {
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
       const errMsg = err.response?.data.message || 'An error occurred';
-      toast.error(errMsg)
+      toast.error(errMsg);
     } finally {
       setIsInsertingMany(false);
     }
   }
-
 
   return (
     <>
@@ -193,136 +195,163 @@ const AddCategory = () => {
                       iconwidth={20}
                       iconheight={20}
                     />
-                    {categoryData && (
+                    <FormikController
+                      control="input"
+                      label="Catgory Name"
+                      type="text"
+                      name="name"
+                      placeholder="Enter Name"
+                    />
+                  </div>
+
+                  <div className="flex justify-between mt-5 items-center">
+                    <WhiteButton
+                      text="Cancel"
+                      className="!w-fit"
+                      onClick={() => {
+                        setShowForm(false);
+                      }}
+                    />
+                    <div className="flex items-center gap-3">
                       <CustomButton
-                        type="button"
-                        text="Cancel"
-                        onClick={() => {
-                          dispatch(setCategoryData(null));
-                          setShowForm(false);
-                        }}
-                        className="!w-auto !bg-red-500 border-none"
+                        type="submit"
+                        text={categoryData ? 'Update Category' : 'Add Category'}
+                        className="!w-auto "
                         iconwidth={20}
                         iconheight={20}
                       />
-                    )}
+                      {categoryData && (
+                        <CustomButton
+                          type="button"
+                          text="Cancel"
+                          onClick={() => {
+                            dispatch(setCategoryData(null));
+                            setShowForm(false);
+                          }}
+                          className="!w-auto !bg-red-500 border-none"
+                          iconwidth={20}
+                          iconheight={20}
+                        />
+                      )}
+                    </div>
                   </div>
-                </div>
               </Form>
             );
           }}
         </Formik>
-      </div> : null}
+      </div>
+      ) : null}
 
-      <ModalComponent
-        open={showPreviewModal}
-        setOpen={() => {
-
-        }}
-        width='70%'
-      >
-        <div className='bg-white p-5 rounded-md'>
-          <div className='my-2 mb-6 text-schestiPrimary font-semibold text-[16px] leading-5'>
+      <ModalComponent open={showPreviewModal} setOpen={() => { }} width="70%">
+        <div className="bg-white p-5 rounded-md">
+          <div className="my-2 mb-6 text-schestiPrimary font-semibold text-[16px] leading-5">
             Preview CSV
           </div>
 
           <Table
             columns={[
-              { title: "Category #", dataIndex: "categoryId" },
-              { title: "Category Name", dataIndex: "name" },
+              { title: 'Category #', dataIndex: 'categoryId' },
+              { title: 'Category Name', dataIndex: 'name' },
               {
-                title: "Action",
+                title: 'Action',
                 render(value, record, index) {
-                  return <Image
-                    src="/trash-2.svg"
-                    className="cursor-pointer"
-                    width={20}
-                    height={20}
-                    alt="delete"
-                    onClick={() => {
-                      removeItemFromParsedData(index);
-                    }}
-                  />
+                  return (
+                    <Image
+                      src="/trash-2.svg"
+                      className="cursor-pointer"
+                      width={20}
+                      height={20}
+                      alt="delete"
+                      onClick={() => {
+                        removeItemFromParsedData(index);
+                      }}
+                    />
+                  );
                 },
-              }
+              },
             ]}
             dataSource={parsedData}
           />
 
-          <div className='flex justify-end space-x-3'>
+          <div className="flex justify-end space-x-3">
             <WhiteButton
-              text='Cancel'
+              text="Cancel"
               onClick={() => setShowPreviewModal(false)}
-              className='!w-fit'
+              className="!w-fit"
             />
             <CustomButton
-              text='Import Data'
-              className='!w-fit'
+              text="Import Data"
+              className="!w-fit"
               isLoading={isInsertingMany}
-              loadingText='Importing...'
+              loadingText="Importing..."
               onClick={() => insertManyCategories(parsedData)}
             />
           </div>
         </div>
       </ModalComponent>
 
+      {error.length ? (
+        <Alert
+          type="error"
+          closable
+          onClose={() => {
+            setError('');
+          }}
+          message={'CSV Parse Error '}
+          description={error}
+          className="my-3"
+        />
+      ) : null}
 
-      {error.length ? <Alert
-        type='error'
-        closable
-        onClose={() => {
-          setError("");
-        }}
-        message={"CSV Parse Error "}
-        description={error}
-        className='my-3'
-      /> : null}
+      <div
+        className={`${bg_style} border border-solid border-silverGray mt-4 p-5`}
+      >
+        <div className="flex justify-between items-center">
+          <TertiaryHeading
+            title={showForm ? 'Added Category' : 'Category'}
+            className="text-graphiteGray"
+          />
 
-      <div className={`${bg_style} border border-solid border-silverGray mt-4 p-5`}>
-        <div className='flex justify-between items-center'>
-          <TertiaryHeading title={showForm ? "Added Category" : "Category"} className="text-graphiteGray" />
+          {!showForm ? (
+            <div className="flex gap-2 items-center">
+              <WhiteButton
+                text="Upload File"
+                icon="/uploadcloud.svg"
+                iconwidth={20}
+                iconheight={20}
+                className="!w-fit"
+                onClick={() => {
+                  if (inputFileRef.current) {
+                    inputFileRef.current.click();
+                  }
+                }}
+                isLoading={isUploading}
+                loadingText="Uploading..."
+              />
 
-          {!showForm ? <div className='flex gap-2 items-center'>
-            <WhiteButton
-              text='Upload File'
-              icon='/uploadcloud.svg'
-              iconwidth={20}
-              iconheight={20}
-              className='!w-fit'
-              onClick={() => {
-                if (inputFileRef.current) {
-                  inputFileRef.current.click();
-                }
-              }}
-              isLoading={isUploading}
-              loadingText='Uploading...'
-            />
-
-            <input
-              ref={inputFileRef}
-              type="file"
-              name=""
-              id=""
-              className='hidden'
-              onChange={uploadCsvFileAndParse}
-            />
-            <CustomButton
-              text='Add Category'
-              className='!w-fit'
-              onClick={() => {
-                setShowForm(true)
-              }}
-            />
-          </div> : null}
+              <input
+                ref={inputFileRef}
+                type="file"
+                name=""
+                id=""
+                className="hidden"
+                onChange={uploadCsvFileAndParse}
+              />
+              <CustomButton
+                text="Add Category"
+                className="!w-fit"
+                onClick={() => {
+                  setShowForm(true);
+                }}
+              />
+            </div>
+          ) : null}
         </div>
         <CategoryTable
           onEdit={() => {
             setShowForm(true);
           }}
-
-          onDelete={() => {
-
-          }}
+          onDelete={() => { }}
         />
       </div>
     </>

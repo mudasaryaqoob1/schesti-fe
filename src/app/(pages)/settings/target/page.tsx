@@ -99,12 +99,15 @@ const TargetsTable = () => {
     },
   ];
 
-  const filteredData = settingTargetsData.filter(target => {
+  const filteredData = settingTargetsData.filter((target) => {
     if (!search) {
       return true;
     }
-    return target.month.toLowerCase().includes(search.toLowerCase()) || target.price.toString().toLowerCase().includes(search.toLowerCase())
-  })
+    return (
+      target.month.toLowerCase().includes(search.toLowerCase()) ||
+      target.price.toString().toLowerCase().includes(search.toLowerCase())
+    );
+  });
 
   return (
     <SettingSidebar>
@@ -133,7 +136,7 @@ const TargetsTable = () => {
           settingTargetsData={settingTargetsData}
         />
       </ModalComponent>
-      <section className='w-full'>
+      <section className="w-full">
         <div className="flex justify-between items-center">
           <TertiaryHeading title="Set Target" className="text-graphiteGray" />
           <Button
@@ -150,13 +153,15 @@ const TargetsTable = () => {
         >
           <div className="w-96">
             <InputComponent
-              label=''
-              name='search'
-              type='text'
-              placeholder='Search'
-              prefix={<SearchOutlined className='text-schestiLightBlack text-lg' />}
+              label=""
+              name="search"
+              type="text"
+              placeholder="Search"
+              prefix={
+                <SearchOutlined className="text-schestiLightBlack text-lg" />
+              }
               field={{
-                onChange: e => setSearch(e.target.value),
+                onChange: (e) => setSearch(e.target.value),
                 value: search,
                 allowClear: true,
               }}

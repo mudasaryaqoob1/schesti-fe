@@ -43,7 +43,7 @@ const Generated = () => {
               Steps: {
                 dotSize: 18,
                 dotCurrentSize: 18,
-                colorPrimary: '#6941C6',
+                colorPrimary: '#007AB6',
               },
             },
           }}

@@ -1,13 +1,22 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import type { ColumnsType } from 'antd/es/table';
-import { Dropdown, Table } from 'antd';
-import type { MenuProps } from 'antd';
-// import NoData from '@/app/component/noData';
-import TertiaryHeading from '@/app/component/headings/tertiary';
 import Image from 'next/image';
-import { estimateRequestService } from '@/app/services/estimates.service';
+
+import type { MenuProps } from 'antd';
+
+import { Dropdown, Table, Drawer } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import { SearchOutlined } from '@ant-design/icons';
+
 import NoDataComponent from '@/app/component/noData';
+import { USCurrencyFormat } from '@/app/utils/format';
+import ChangeStatus from '../components/changeStatus';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import WhiteButton from '@/app/component/customButton/white';
+
+import TertiaryHeading from '@/app/component/headings/tertiary';
+import { downloadCrmItemsAsCSV } from '@/app/(pages)/crm/utils';
+import { InputComponent } from '@/app/component/customInput/Input';
+import { estimateRequestService } from '@/app/services/estimates.service';
 
 interface DataType {
   key: React.Key;
@@ -16,14 +25,50 @@ interface DataType {
   salePerson: string;
   estimator: string;
   totalCost: string;
+  status: string;
   action: string;
 }
 
+const items: MenuProps['items'] = [
+  {
+    key: 'viewDetail',
+    label: 'View Estimate',
+  },
+  {
+    key: 'edit',
+    label: 'Edit Estimate',
+  },
+  {
+    key: 'createSchedule',
+    label: 'Create Schedule',
+  },
+  {
+    key: 'createInvoice',
+    label: 'Create Invoice',
+  },
+  // {
+  //   key: 'email',
+  //   label: 'Email',
+  // },
+  {
+    key: 'changeStatus',
+    label: 'Change Status',
+  },
+  {
+    key: 'deleteEstimate',
+    label: <p>Delete</p>,
+  },
+];
+
 const EstimateRequestTable: React.FC = () => {
   const router = useRouterHook();
-  const [loading, setLoading] = useState(true);
 
-  const [generatedEstimates, setGeneratedEstimates] = useState<[] | null>(null);
+  const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(true);
+  
+  const [estimateDetail, setEstimateDetail] = useState<any>({});
+  const [generatedEstimates, setGeneratedEstimates] = useState<[]>([]);
+  const [changeStatusDrawer, setChangeStatusDrawer] = useState(false);
 
   const fetchGeneratedEstiamtesHandler = useCallback(async () => {
     setLoading(true);
@@ -34,16 +79,16 @@ const EstimateRequestTable: React.FC = () => {
     let updatedGeneratedEstimate = result?.data?.generatedEstimates.map(
       (estimate: any) => {
         return {
-          _id: estimate?._id,
+          ...estimate,
           projectName: estimate?.estimateRequestIdDetail?.projectName,
           clientName: estimate?.estimateRequestIdDetail?.clientName,
+          clientEmail: estimate?.estimateRequestIdDetail?.email,
           salePerson: `${
             estimate?.estimateRequestIdDetail?.salePerson?.firstName ?? ''
           } ${estimate?.estimateRequestIdDetail?.salePerson?.lastName ?? ''}`,
           estimator: `${
             estimate?.estimateRequestIdDetail?.estimator?.firstName ?? ''
           } ${estimate?.estimateRequestIdDetail?.estimator?.lastName ?? ''}`,
-          totalCost: estimate?.totalCost,
           estimateRequestIdDetail: estimate.estimateRequestIdDetail?._id,
         };
       }
@@ -56,26 +101,9 @@ const EstimateRequestTable: React.FC = () => {
     fetchGeneratedEstiamtesHandler();
   }, []);
 
-  const items: MenuProps['items'] = [
-    {
-      key: 'viewDetail',
-      label: 'View Estimate',
-    },
-    {
-      key: 'createSchedule',
-      label: 'Create Schedule',
-    },
-    {
-      key: 'createInvoice',
-      label: 'Create Invoice',
-    },
-    {
-      key: 'deleteEstimate',
-      label: <p>Delete</p>,
-    },
-  ];
-
   const handleDropdownItemClick = async (key: string, estimate: any) => {
+    setEstimateDetail(estimate);
+
     if (key == 'viewDetail') {
       router.push(`/estimates/generate/${estimate._id}`);
     } else if (key == 'deleteEstimate') {
@@ -88,7 +116,14 @@ const EstimateRequestTable: React.FC = () => {
       // router.push(`/schedule/estimate/${estimate._id}`);
     } else if (key == 'createInvoice') {
       router.push(`/financial/aia-invoicing`);
-    }
+    } else if (key == 'changeStatus') {
+      setEstimateDetail(estimate);
+      setChangeStatusDrawer(true);
+    } else if (key == 'edit') {
+      router.push(
+        `/estimates/generate/edit/?generatedEstimateId=${estimate._id}`
+      );
+    } 
   };
 
   const columns: ColumnsType<DataType> = [
@@ -113,11 +148,21 @@ const EstimateRequestTable: React.FC = () => {
     {
       title: 'Total Cost',
       dataIndex: 'totalCost',
+      render: (text, record: any) => (
+        <span>{USCurrencyFormat.format(record.totalCost)}</span>
+      ),
     },
-    // {
-    //   title: 'Status',
-    //   dataIndex: 'status',
-    // },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      render: (text, record) => (
+        <span
+          className={`capitalize ${record.status === 'lost' ? 'text-red-600 bg-red-100' : record.status === 'proposed' ? ' text-blue-600 bg-blue-100' : 'text-emeraldGreen bg-schestiLightSuccess'}  px-2 py-1 rounded-full`}
+        >
+          {record.status}
+        </span>
+      ),
+    },
     {
       title: 'Action',
       dataIndex: 'action',
@@ -146,8 +191,22 @@ const EstimateRequestTable: React.FC = () => {
     },
   ];
 
+  const filterEstimateRequest = generatedEstimates.filter((item: any) => {
+    if (!search) {
+      return true;
+    }
+    return (
+      item.clientName.toLowerCase().includes(search.toLowerCase()) ||
+      item.estimator.toLowerCase().includes(search.toLowerCase()) ||
+      item.projectName.toLowerCase().includes(search.toLowerCase()) ||
+      item.salePerson?.includes(search)
+    );
+  });
+
+
+
   return (
-    <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid border-silverGray shadow-secondaryTwist">
+    <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid bg-white border-silverGray shadow-secondaryTwist">
       {generatedEstimates && generatedEstimates.length === 0 ? (
         <NoDataComponent
           title="No Data Found"
@@ -163,26 +222,78 @@ const EstimateRequestTable: React.FC = () => {
               title="Submitted Estimate"
               className="text-graphiteGray"
             />
+            <div className=" flex items-end space-x-3">
+              <div className="w-96">
+                <InputComponent
+                  label=""
+                  type="text"
+                  placeholder="Search"
+                  name="search"
+                  prefix={<SearchOutlined />}
+                  field={{
+                    type: 'text',
+                    value: search,
+                    onChange: (e: any) => {
+                      setSearch(e.target.value);
+                    },
+                    className: '!py-2',
+                  }}
+                />
+              </div>
+              <div>
+                <WhiteButton
+                  text="Export"
+                  className="!w-fit !py-2.5"
+                  icon="/download-icon.svg"
+                  iconwidth={20}
+                  iconheight={20}
+                  onClick={() => {
+                    downloadCrmItemsAsCSV(
+                      generatedEstimates,
+                      columns as any,
+                      'clients'
+                    );
+                  }}
+                />
+              </div>
+            </div>
           </div>
           <div className="mt-4">
             <Table
               loading={loading}
               columns={columns}
-              dataSource={generatedEstimates || []}
+              dataSource={filterEstimateRequest || []}
               pagination={{ position: ['bottomCenter'] }}
             />
           </div>
         </>
       )}
 
-      {/**) : (
-        <NoData
-          btnText="Add Request"
-          title="Create Estimate Request"
-          description="There is not any record yet . To get started, Create an estimate request by clicking the button below and sharing details about your project."
-          link="/estimates/requests/create"
+      <Drawer
+        open={changeStatusDrawer}
+        onClose={() => setChangeStatusDrawer(false)}
+        closable={false}
+        title="Edit"
+        extra={
+          <Image
+            src="/closeicon.svg"
+            alt="close"
+            width={20}
+            height={20}
+            className="cursor-pointer"
+            onClick={() => setChangeStatusDrawer(false)}
+          />
+        }
+        width={400}
+      >
+        <ChangeStatus
+          fetchEstimates={fetchGeneratedEstiamtesHandler}
+          setChangeStatusDrawer={setChangeStatusDrawer}
+          estimateDetail={estimateDetail}
         />
-      )} */}
+      </Drawer>
+
+      
     </section>
   );
 };

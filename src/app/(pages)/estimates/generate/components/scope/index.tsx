@@ -169,7 +169,6 @@ const Scope = ({ setPrevNext }: Props) => {
   // const [selecteddescription, setsSelecteddescription] = useState('');
   const [editItem, setEditItem] = useState(false);
   const [editConfirmItem, setEditConfirmItem] = useState(false);
-  // const [estiamteUnits, setEstiamteUnits] = useState<IUnits[] | undefined>([]);
   const [confirmEstimates, setConfirmEstimates] = useState<
     {
       title: string;
@@ -256,7 +255,7 @@ const Scope = ({ setPrevNext }: Props) => {
               if (!uniqueDescriptionsSet.has(description)) {
                 uniqueDescriptionsSet.add(description);
                 return {
-                  // ...material,
+                  ...material,
                   label: description,
                   value: description,
                 };
@@ -1041,6 +1040,8 @@ const Scope = ({ setPrevNext }: Props) => {
     }
   };
 
+  console.log(estimateDescriptions, 'estimateDescriptions');
+
   return (
     <div>
       <div className="flex justify-between items-center mb-3">
@@ -1146,9 +1147,22 @@ const Scope = ({ setPrevNext }: Props) => {
                       components={{
                         DropdownIndicator: CustomDropdownIndicator,
                       }}
-                      onChange={(newValue) =>
-                        setFieldValue('description', newValue)
-                      }
+                      onChange={(newValue) => {
+                        setFieldValue('description', newValue);
+                        setFieldValue('unit', newValue?.unit);
+                        setFieldValue(
+                          'unitLabourHour',
+                          newValue?.unitLabourHour
+                        );
+                        setFieldValue(
+                          'unitMaterialCost',
+                          newValue?.unitMaterialCost
+                        );
+                        setFieldValue(
+                          'unitEquipments',
+                          newValue?.unitEquipments
+                        );
+                      }}
                       onCreateOption={(newDescriptionValue) => {
                         let newDescription = {
                           label: newDescriptionValue,

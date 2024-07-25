@@ -18,7 +18,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
             Tabs: {
               inkBarColor: PRIMARY_COLOR,
               colorBorderSecondary: '#EAECF0',
-              lineWidth: 2
+              lineWidth: 2,
             },
             Switch: {
               colorPrimary: PRIMARY_COLOR,
@@ -36,8 +36,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
               colorBorder: '#EAECF0',
             },
             Table: {
-              headerColor: "#475467"
-            }
+              headerColor: '#475467',
+            },
           },
         }}
       >

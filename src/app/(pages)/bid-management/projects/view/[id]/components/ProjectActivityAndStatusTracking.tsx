@@ -96,93 +96,94 @@ export function ProjectAcitivityAndStatusTracking({ projectId }: Props) {
       <div className="mt-6">
         {userActivities.length > 0
           ? userActivities.map((activity) => {
-            const activityUser = activity.user;
+              const activityUser = activity.user;
 
-            return (
-              <div
-                key={activity._id}
-                className="flex py-3 px-1 mt-2 space-x-3 border-b border-[#EAECF0] items-center justify-between"
-              >
-                <Image
-                  src={'/green-tracking.svg'}
-                  height={23}
-                  width={23}
-                  alt="green tracking icon"
-                />
-                <div className="flex-1 space-y-2">
-                  <div className="flex items-center space-x-3">
-                    <TertiaryHeading
-                      title={
-                        typeof activityUser !== 'string'
-                          ? (activityUser.companyName || activityUser.organizationName)
-                          : ''
-                      }
-                      className="font-semibold text-[#344054] text-[14px] leading-5"
-                    />
-                    <TertiaryHeading
-                      title={`(${formatProjectActivityStatus(activity.status)})`}
-                      className="font-semibold text-[#344054] text-[14px] leading-5"
-                    />
-                  </div>
-
-                  <div className="flex items-center space-x-4">
-                    <Image
-                      src={'/navigation-cyan.svg'}
-                      height={20}
-                      width={20}
-                      alt="navigation icon"
-                    />
-                    <TertiaryHeading
-                      title={
-                        typeof activityUser !== 'string'
-                          ? activityUser.address
-                          : ''
-                      }
-                      className="text-[#667085] text-[14px] leading-5 font-normal"
-                    />
-
-                    <Image
-                      src={'/mail-cyan.svg'}
-                      height={20}
-                      width={20}
-                      alt="mail icon"
-                    />
-                    <TertiaryHeading
-                      title={
-                        typeof activityUser !== 'string'
-                          ? activityUser.email
-                          : ''
-                      }
-                      className="text-[#667085] text-[14px] leading-5 font-normal"
-                    />
-
-                    <Image
-                      src={'/call-cyan.svg'}
-                      height={20}
-                      width={20}
-                      alt="mail icon"
-                    />
-                    <TertiaryHeading
-                      title={
-                        typeof activityUser !== 'string'
-                          ? String(activityUser.phone)
-                          : ''
-                      }
-                      className="text-[#667085] text-[14px] leading-5 font-normal"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <TertiaryHeading
-                    title={moment(activity.createdAt).format(
-                      'DD MMMM, h:mm A'
-                    )}
-                    className="text-[#667085] text-[14px] leading-5 font-normal"
+              return (
+                <div
+                  key={activity._id}
+                  className="flex py-3 px-1 mt-2 space-x-3 border-b border-[#EAECF0] items-center justify-between"
+                >
+                  <Image
+                    src={'/green-tracking.svg'}
+                    height={23}
+                    width={23}
+                    alt="green tracking icon"
                   />
+                  <div className="flex-1 space-y-2">
+                    <div className="flex items-center space-x-3">
+                      <TertiaryHeading
+                        title={
+                          typeof activityUser !== 'string'
+                            ? activityUser.companyName ||
+                              activityUser.organizationName
+                            : ''
+                        }
+                        className="font-semibold text-[#344054] text-[14px] leading-5"
+                      />
+                      <TertiaryHeading
+                        title={`(${formatProjectActivityStatus(activity.status)})`}
+                        className="font-semibold text-[#344054] text-[14px] leading-5"
+                      />
+                    </div>
+
+                    <div className="flex items-center space-x-4">
+                      <Image
+                        src={'/navigation-cyan.svg'}
+                        height={20}
+                        width={20}
+                        alt="navigation icon"
+                      />
+                      <TertiaryHeading
+                        title={
+                          typeof activityUser !== 'string'
+                            ? activityUser.address
+                            : ''
+                        }
+                        className="text-[#667085] text-[14px] leading-5 font-normal"
+                      />
+
+                      <Image
+                        src={'/mail-cyan.svg'}
+                        height={20}
+                        width={20}
+                        alt="mail icon"
+                      />
+                      <TertiaryHeading
+                        title={
+                          typeof activityUser !== 'string'
+                            ? activityUser.email
+                            : ''
+                        }
+                        className="text-[#667085] text-[14px] leading-5 font-normal"
+                      />
+
+                      <Image
+                        src={'/call-cyan.svg'}
+                        height={20}
+                        width={20}
+                        alt="mail icon"
+                      />
+                      <TertiaryHeading
+                        title={
+                          typeof activityUser !== 'string'
+                            ? String(activityUser.phone)
+                            : ''
+                        }
+                        className="text-[#667085] text-[14px] leading-5 font-normal"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <TertiaryHeading
+                      title={moment(activity.createdAt).format(
+                        'DD MMMM, h:mm A'
+                      )}
+                      className="text-[#667085] text-[14px] leading-5 font-normal"
+                    />
+                  </div>
                 </div>
-              </div>
-            );
-          })
+              );
+            })
           : null}
       </div>
     </div>

@@ -7,26 +7,31 @@ import Image from 'next/image';
 import { useParams } from 'next/navigation';
 import { Form, Formik } from 'formik';
 import { toast } from 'react-toastify';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
-import CustomButton from '@/app/component/customButton/button';
-import { minHeading, senaryHeading } from '@/globals/tailwindvariables';
-import TertiaryHeading from '@/app/component/headings/tertiary';
-import QuaternaryHeading from '@/app/component/headings/quaternary';
-import CustomWhiteButton from '@/app/component/customButton/white';
+// module imports
+import { AppDispatch } from '@/redux/store';
+import { withAuth } from '@/app/hoc/withAuth';
+import AwsS3 from '@/app/utils/S3Intergration';
+import ExistingClient from '../../existingClient';
 import ModalComponent from '@/app/component/modal';
 import FormControl from '@/app/component/formControl';
+import { fetchUsers } from '@/redux/userSlice/user.thunk';
+import { byteConverter } from '@/app/utils/byteConverter';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
+import CustomButton from '@/app/component/customButton/button';
+import TertiaryHeading from '@/app/component/headings/tertiary';
+import { IUserInterface } from '@/app/interfaces/user.interface';
+import CustomWhiteButton from '@/app/component/customButton/white';
+import QuaternaryHeading from '@/app/component/headings/quaternary';
+import { minHeading, senaryHeading } from '@/globals/tailwindvariables';
 import { estimateRequestService } from '@/app/services/estimates.service';
-import { userService } from '@/app/services/user.service';
+import { getCompanyRolesThunk } from '@/redux/company-roles/company-roles.thunk';
 import { selectEstimateRequests } from '@/redux/estimate/estimateRequestSelector';
-import ExistingClient from '../../existingClient';
 import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
+import { IUser } from '@/app/interfaces/estimateRequests/estimateAssignedUser.interface';
 import { IEstimateRequest } from '@/app/interfaces/estimateRequests/estimateRequests.interface';
 import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
-import { byteConverter } from '@/app/utils/byteConverter';
-import AwsS3 from '@/app/utils/S3Intergration';
-import { withAuth } from '@/app/hoc/withAuth';
-import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const clientInfoSchema: any = Yup.object().shape({
   clientName: Yup.string().required('Client Name is required!'),
@@ -60,16 +65,16 @@ const initialValues: IEstimateRequest = {
 };
 
 const EditEstimateRequest = () => {
-  const router = useRouterHook();
   const params = useParams();
-  const { id } = params;
+  const router = useRouterHook();
+  const dispatch = useDispatch<AppDispatch>();
 
+  const { id } = params;
   const estimateRequestsData = useSelector(selectEstimateRequests);
 
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [salePersonsOption, setSalePersonsOption] = useState([]);
-  const [estimatorsOption, setEstimatorsOption] = useState([]);
+  const [userData, setUserData] = useState<IUserInterface[]>([]);
   const [estimateRequestData, setEstimateRequestData] = useState(null);
   const [uploadDocumentsError, setuploadDocumentsError] = useState('');
   const [drawingsDocuments, setDrawingsDocuments] = useState<any>([]);
@@ -93,36 +98,18 @@ const EditEstimateRequest = () => {
     }
   }, [id]);
 
-  useEffect(() => {
-    fetchUsersHandler();
+  const fetchCompanyEmployeeHandler = useCallback(async () => {
+    let result: any = await dispatch(fetchUsers({ limit: 9, page: 1 }));
+    const mappedUsers = result.payload?.data?.employees.map((user: IUser) => ({
+      value: `${user._id}`,
+      label: `${user.firstName} ${user.lastName} --- ${user.roles[0].name}`,
+    }));
+    setUserData(mappedUsers);
   }, []);
 
-  const fetchUsersHandler = useCallback(async () => {
-    let result: any = await userService.httpGetUsers(
-      1,
-      9,
-      'Estimator,Sales Manager'
-    );
-
-    const estimatorData = result.data?.employees
-      .filter((user: any) => user.roles.includes('Estimator'))
-      .map((option: any) => {
-        return {
-          label: `${option.firstName} ${option.lastName}`,
-          value: `${option._id}`,
-        };
-      });
-
-    setEstimatorsOption(estimatorData);
-    const saleManagers = result.data?.employees
-      .filter((user: any) => user.roles.includes('Sales Manager'))
-      .map((option: any) => {
-        return {
-          label: `${option.firstName} ${option.lastName}`,
-          value: `${option._id}`,
-        };
-      });
-    setSalePersonsOption(saleManagers);
+  useEffect(() => {
+    dispatch(getCompanyRolesThunk({}));
+    fetchCompanyEmployeeHandler();
   }, []);
 
   const submitHandler = async (values: IEstimateRequest) => {
@@ -292,8 +279,6 @@ const EditEstimateRequest = () => {
     );
   };
 
-  console.log(estimateRequestData, 'estimateRequestDataestimateRequestData');
-
   return (
     <section className="my-5 px-16">
       <div className="flex justify-between flex-wrap items-center md:flex-nowrap">
@@ -437,14 +422,14 @@ const EditEstimateRequest = () => {
                       label="Sale Person"
                       name="salePerson"
                       placeholder="Enter sale person"
-                      options={salePersonsOption}
+                      options={userData}
                     />
                     <FormControl
                       control="select"
                       label="Estimator"
                       name="estimator"
                       placeholder="Select project manager"
-                      options={estimatorsOption}
+                      options={userData}
                     />
                   </div>
                 </div>

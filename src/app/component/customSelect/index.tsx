@@ -6,24 +6,25 @@ import clsx from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import Errormsg from '../errorMessage';
 
-const defaultOptions = [
-  { value: 'option 1', label: 'Option 1' },
-  { value: 'option 2', label: 'Option 2' },
-  { value: 'option 3', label: 'Option 3' },
-];
+// const defaultOptions = [
+//   { value: 'option 1', label: 'Option 1' },
+//   { value: 'option 2', label: 'Option 2' },
+//   { value: 'option 3', label: 'Option 3' },
+// ];
 
 const SelectComp = (props: any) => {
   const {
     name,
     label,
     labelStyle,
-    options = defaultOptions,
+    options = [],
     selectStyle,
     className,
     labelButton,
     labelAction,
     placeholder,
     isLoading,
+    handleChange
   } = props;
 
   const OptionsArr = options?.map(
@@ -85,6 +86,9 @@ const SelectComp = (props: any) => {
                 placeholder={placeholder}
                 onChange={(val) => {
                   setFieldValue(name, val);
+                  if(handleChange){
+                    handleChange(val)
+                  }
                 }}
               >
                 {OptionsArr}

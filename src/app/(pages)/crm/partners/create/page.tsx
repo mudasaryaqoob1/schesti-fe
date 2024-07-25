@@ -53,15 +53,15 @@ const CreatePartner = () => {
       const response = await crmService.httpCreate({
         ...values,
         status: true,
-        module: "partners"
+        module: 'partners',
       });
       if (response.data) {
-        toast.success("Partner created successfully");
+        toast.success('Partner created successfully');
         router.push(Routes.CRM.Partners);
       }
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
-      toast.error(err.response?.data.message || "Unable to create partner");
+      toast.error(err.response?.data.message || 'Unable to create partner');
     } finally {
       setIsLoading(false);
     }

@@ -20,10 +20,25 @@ import { withAuth } from '@/app/hoc/withAuth';
 import { Routes } from '@/app/utils/plans.utils';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { PreviewCSVImportFileModal } from '../components/PreviewCSVImportFileModal';
-import { getCrmItemsThunk, updateCrmItemStatusThunk } from '@/redux/crm/crm.thunk';
-import { CommonCrmType, CrmType, ICrmItem } from '@/app/interfaces/crm/crm.interface';
-import { deleteCrmItemById, downloadCrmItemsAsCSV, saveManyCrmItems, uploadAndParseCSVData } from '../utils';
-import { insertManyCrmItemAction, removeCrmItemAction } from '@/redux/crm/crm.slice';
+import {
+  getCrmItemsThunk,
+  updateCrmItemStatusThunk,
+} from '@/redux/crm/crm.thunk';
+import {
+  CommonCrmType,
+  CrmType,
+  ICrmItem,
+} from '@/app/interfaces/crm/crm.interface';
+import {
+  deleteCrmItemById,
+  downloadCrmItemsAsCSV,
+  saveManyCrmItems,
+  uploadAndParseCSVData,
+} from '../utils';
+import {
+  insertManyCrmItemAction,
+  removeCrmItemAction,
+} from '@/redux/crm/crm.slice';
 import _ from 'lodash';
 import { toast } from 'react-toastify';
 import { CrmStatusFilter } from '../components/CrmStatusFilter';
@@ -90,10 +105,9 @@ const ClientTable = () => {
   const [duplicates, setDuplicates] = useState<CommonCrmType[]>([]);
   const [isSavingMany, setIsSavingMany] = useState(false);
 
-
   useEffect(() => {
-    dispatch(getCrmItemsThunk({ module: "clients" }));
-  }, [])
+    dispatch(getCrmItemsThunk({ module: 'clients' }));
+  }, []);
 
   const handleDropdownItemClick = async (key: string, client: any) => {
     if (key === 'createEstimateRequest') {
@@ -219,28 +233,29 @@ const ClientTable = () => {
     },
   ];
 
-  const filteredClients = state.data.filter(item => {
-    if (!search) {
-      return true;
-    }
-    if (item.module === 'subcontractors' || item.module === 'partners') {
-      return true;
-    }
-    return item.firstName.toLowerCase().includes(search.toLowerCase()) ||
-      item.lastName.toLowerCase().includes(search.toLowerCase()) ||
-      item.companyName.toLowerCase().includes(search.toLowerCase()) ||
-      item.email?.includes(search) ||
-      item.phone?.includes(search) ||
-      item.address?.includes(search)
-  }).filter(item => {
-    if (!status) {
-      return true;
-    }
-    return status === 'active' ? item.status === true : item.status === false;
-  })
-
-
-
+  const filteredClients = state.data
+    .filter((item) => {
+      if (!search) {
+        return true;
+      }
+      if (item.module === 'subcontractors' || item.module === 'partners') {
+        return true;
+      }
+      return (
+        item.firstName.toLowerCase().includes(search.toLowerCase()) ||
+        item.lastName.toLowerCase().includes(search.toLowerCase()) ||
+        item.companyName.toLowerCase().includes(search.toLowerCase()) ||
+        item.email?.includes(search) ||
+        item.phone?.includes(search) ||
+        item.address?.includes(search)
+      );
+    })
+    .filter((item) => {
+      if (!status) {
+        return true;
+      }
+      return status === 'active' ? item.status === true : item.status === false;
+    });
 
   return (
     <section className="mt-6 mb-[39px]  mx-4 rounded-xl ">
@@ -251,12 +266,14 @@ const ClientTable = () => {
           width="30%"
         >
           <DeleteContent
-            onClick={() => deleteCrmItemById(selectedItem._id, setIsDeleting, item => {
-              toast.success('Client deleted successfully');
-              dispatch(removeCrmItemAction(item._id));
-              setShowDeleteModal(false);
-              setSelectedItem(null);
-            })}
+            onClick={() =>
+              deleteCrmItemById(selectedItem._id, setIsDeleting, (item) => {
+                toast.success('Client deleted successfully');
+                dispatch(removeCrmItemAction(item._id));
+                setShowDeleteModal(false);
+                setSelectedItem(null);
+              })
+            }
             isLoading={isDeleting}
             onClose={() => setShowDeleteModal(false)}
           />
@@ -271,23 +288,26 @@ const ClientTable = () => {
           saveManyCrmItems(
             parseData,
             setIsSavingMany,
-            "clients",
+            'clients',
             setDuplicates,
-            items => {
+            (items) => {
               dispatch(insertManyCrmItemAction(items));
-              const remainingParsedData = _.differenceBy(parseData, items, 'email');
+              const remainingParsedData = _.differenceBy(
+                parseData,
+                items,
+                'email'
+              );
               setParseData(remainingParsedData);
               if (inputFileRef.current) {
                 inputFileRef.current.value = '';
               }
             }
-          )
+          );
         }}
         duplicates={duplicates}
         setData={setParseData}
         isLoading={isSavingMany}
-        title='Import Clients'
-
+        title="Import Clients"
       />
 
       <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
@@ -307,46 +327,52 @@ const ClientTable = () => {
                   onChange: (e: any) => {
                     setSearch(e.target.value);
                   },
-                  className: "!py-2"
+                  className: '!py-2',
                 }}
               />
             </div>
-            <CrmStatusFilter
-              status={status}
-              setStatus={setStatus}
-            />
+            <CrmStatusFilter status={status} setStatus={setStatus} />
             <div>
               <WhiteButton
-                text='Export'
-                className='!w-fit !py-2.5'
-                icon='/download-icon.svg'
+                text="Export"
+                className="!w-fit !py-2.5"
+                icon="/download-icon.svg"
                 iconwidth={20}
                 iconheight={20}
                 onClick={() => {
-                  downloadCrmItemsAsCSV(state.data, columns as ColumnsType<CrmType>, "clients")
+                  downloadCrmItemsAsCSV(
+                    state.data,
+                    columns as ColumnsType<CrmType>,
+                    'clients'
+                  );
                 }}
               />
             </div>
             <div>
               <WhiteButton
-                text='Import'
-                className='!w-fit !py-2.5'
-                icon='/uploadcloud.svg'
+                text="Import"
+                className="!w-fit !py-2.5"
+                icon="/uploadcloud.svg"
                 iconwidth={20}
                 iconheight={20}
                 onClick={() => {
                   inputFileRef.current?.click();
                 }}
                 isLoading={isUploadingFile}
-                loadingText='Uploading...'
+                loadingText="Uploading..."
               />
-              <input ref={inputFileRef}
-                accept='.csv, .xlsx'
+              <input
+                ref={inputFileRef}
+                accept=".csv, .xlsx"
                 type="file"
                 name=""
                 id="importClients"
-                className='hidden'
-                onChange={uploadAndParseCSVData(setIsUploadingFile, "clients", setParseData)}
+                className="hidden"
+                onChange={uploadAndParseCSVData(
+                  setIsUploadingFile,
+                  'clients',
+                  setParseData
+                )}
               />
             </div>
             <Button
