@@ -9,7 +9,8 @@ import { PhoneNumberInputWithLable } from "@/app/component/phoneNumberInput/Phon
 import { TextAreaComponent } from "@/app/component/textarea";
 import { withAuth } from "@/app/hoc/withAuth";
 import { SearchOutlined } from "@ant-design/icons";
-import { Drawer } from "antd";
+import { Drawer, Table } from "antd";
+import type { ColumnsType } from "antd/es/table";
 import Image from "next/image";
 import { useRef, useState } from "react";
 
@@ -26,6 +27,31 @@ function DailyWorkPage() {
     const onClose = () => {
         setOpen(false);
     };
+
+    const columns: ColumnsType<{}> = [
+        {
+            title: 'Priority',
+        },
+        {
+            title: 'Work Needed',
+        },
+        {
+            title: 'Phone Number',
+        },
+        {
+            title: 'Email',
+        },
+        {
+            title: 'Note',
+        },
+        {
+            title: 'Status',
+        },
+        {
+            title: 'Action',
+        },
+    ]
+
     return (
         <section className="mt-6 mb-[39px] bg-white p-5  mx-4 rounded-xl ">
             <div className="flex justify-between items-center mb-3">
@@ -125,6 +151,23 @@ function DailyWorkPage() {
                 </div>
             </div>
 
+            <div className="mt-5 flex items-center justify-between">
+                <div></div>
+                <div className="flex items-center space-x-3">
+
+                    <WhiteButton
+                        text="Manage Priority"
+                        className="!w-fit !py-2.5"
+                    />
+
+                    <WhiteButton
+                        text="Manage Status"
+                        className="!w-fit !py-2.5"
+                        loadingText="Uploading..."
+                    />
+                </div>
+            </div>
+
             <Drawer
                 title="Add New Member"
                 placement="right"
@@ -198,6 +241,12 @@ function DailyWorkPage() {
                 </div>
             </Drawer>
 
+            <div className="mt-5">
+                <Table
+                    columns={columns}
+
+                />
+            </div>
         </section>
     );
 }
