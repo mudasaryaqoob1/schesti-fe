@@ -9,6 +9,8 @@ class CrmContractService extends HttpService {
     httpCreateContract = (data:CreateContractData):Promise<IResponseInterface<ICrmContract>> => this.post(this.endPoint, data);
 
     httpFindContractById = (id:string):Promise<IResponseInterface<ICrmContract>> => this.get(`${this.endPoint}/${id}`);
+    
+    httpDeleteContractById = (id:string):Promise<IResponseInterface<ICrmContract>> => this.delete(`${this.endPoint}/${id}`);
 
     httpSendContract = (id:string, tools:ICrmContract['senderTools']):Promise<IResponseInterface<ICrmContract>> => this.post(`${this.endPoint}/send/${id}`, { tools });
     
