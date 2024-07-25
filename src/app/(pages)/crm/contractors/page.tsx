@@ -44,6 +44,7 @@ function ContractsPage() {
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouterHook();
     const [search, setSearch] = useState('');
+    const [status, setStatus] = useState('');
 
     useEffect(() => {
         getCompanyContracts();
@@ -191,6 +192,9 @@ function ContractsPage() {
     const filteredData = data.filter((item) => {
         if (!search) return true;
         return item.title.toLowerCase().includes(search.toLowerCase());
+    }).filter((item) => {
+        if (!status) return true;
+        return item.status === status
     });
 
     return <div className="mt-6 p-5 !pb-[39px]  mx-4 bg-white rounded-md">
@@ -222,14 +226,19 @@ function ContractsPage() {
                     name='status'
                     placeholder='Status'
                     field={{
-
+                        value: status ? status : undefined,
                         options: [
-                            { label: "Active", value: "active" },
-                            { label: "In Active", value: "inactive" },
+                            { label: "Pending", value: "pending" },
+                            { label: "Signed", value: "signed" },
                         ],
                         className: "!w-auto",
                         allowClear: true,
-
+                        onChange: (value) => {
+                            setStatus(value);
+                        },
+                        onClear() {
+                            setStatus('');
+                        },
                     }}
                 />
 
