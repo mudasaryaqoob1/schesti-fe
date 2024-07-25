@@ -530,6 +530,7 @@ const ViewEstimateDetail = () => {
           to={estimateDetailsSummary?.estimateRequestIdDetail?.email}
           setEmailModal={setEmailModal}
           submitHandler={estimateEmailSendHandler}
+          isFileUploadShow={false}
         />
       </ModalComponent>
     </div>
