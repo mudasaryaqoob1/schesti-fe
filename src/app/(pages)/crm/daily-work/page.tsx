@@ -3,16 +3,29 @@ import CustomButton from "@/app/component/customButton/button";
 import WhiteButton from "@/app/component/customButton/white";
 import { InputComponent } from "@/app/component/customInput/Input";
 import { SelectComponent } from "@/app/component/customSelect/Select.component";
+import { DateInputComponent } from "@/app/component/cutomDate/CustomDateInput";
 import TertiaryHeading from "@/app/component/headings/tertiary";
+import { PhoneNumberInputWithLable } from "@/app/component/phoneNumberInput/PhoneNumberInputWithLable";
+import { TextAreaComponent } from "@/app/component/textarea";
 import { withAuth } from "@/app/hoc/withAuth";
 import { SearchOutlined } from "@ant-design/icons";
+import { Drawer } from "antd";
+import Image from "next/image";
 import { useRef, useState } from "react";
 
 function DailyWorkPage() {
     const [search, setSearch] = useState('');
     const [status, setStatus] = useState('All');
     const inputFileRef = useRef<HTMLInputElement | null>(null);
+    const [open, setOpen] = useState(false);
 
+    const showDrawer = () => {
+        setOpen(true);
+    };
+
+    const onClose = () => {
+        setOpen(false);
+    };
     return (
         <section className="mt-6 mb-[39px] bg-white p-5  mx-4 rounded-xl ">
             <div className="flex justify-between items-center mb-3">
@@ -107,10 +120,83 @@ function DailyWorkPage() {
                         icon="/plus.svg"
                         iconwidth={20}
                         iconheight={20}
-
+                        onClick={showDrawer}
                     />
                 </div>
             </div>
+
+            <Drawer
+                title="Add New Member"
+                placement="right"
+                open={open}
+
+                width={600}
+                closable={false}
+                extra={
+                    <Image
+                        src="/closeicon.svg"
+                        alt="close"
+                        width={20}
+                        height={20}
+                        className="cursor-pointer"
+                        onClick={onClose}
+                    />
+                }
+                headerStyle={{
+                    backgroundColor: '#E6F2F8',
+                }}
+            >
+                <div className="space-y-3">
+                    <InputComponent
+                        label="Needed"
+                        name="name"
+                        placeholder="Enter Work Needed"
+                        type="text"
+                        field={{
+                        }}
+                    />
+                    <PhoneNumberInputWithLable
+                        label="Phone Number"
+                        //@ts-ignore
+                        onChange={(val) => {
+                            //@ts-ignore
+                        }}
+                        defaultCountry="US"
+
+                    />
+                    <InputComponent
+                        label="Email"
+                        name="email"
+                        type="email"
+                        placeholder="Enter Email"
+                    />
+
+                    <DateInputComponent
+                        label="Deadline"
+                        name="deadline"
+
+                    />
+
+                    <TextAreaComponent
+                        label="Note"
+                        placeholder="Enter Note"
+                        name="note"
+                        field={{
+                            rows: 10
+                        }}
+                    />
+
+
+                    <div className="flex items-center justify-between">
+                        <WhiteButton text="Cancel" className="!w-40" />
+                        <CustomButton
+                            text={'Save'}
+                            className="!w-40"
+                            loadingText="Saving..."
+                        />
+                    </div>
+                </div>
+            </Drawer>
 
         </section>
     );
