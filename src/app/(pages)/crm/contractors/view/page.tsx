@@ -125,7 +125,7 @@ function ViewContract() {
                 title="Contract Information"
                 className="!text-[24px] text-schestiPrimaryBlack leading-6 font-semibold"
             />
-            {(activeTab === 'sender' && !contract.receiverTools.every(tool => tool.value)) ? <CustomButton
+            {(activeTab === 'sender' && !contract.senderTools.every(tool => tool.value)) ? <CustomButton
                 text="Update Tools"
                 className="!w-fit"
                 onClick={() => handleUpdateTools(contract._id, tools)}
