@@ -1,22 +1,35 @@
 import React, { useEffect, useState } from 'react'
-import Search from '../Search'
+import Search from './Search'
 import InvitedCard from './SingleCard'
-import { Spin } from 'antd';
+import { Pagination, Spin } from 'antd';
 import NoData from '../NoData';
 import { useSelector } from 'react-redux';
 import { networkingService } from '@/app/services/networking.service';
+import { InvitedSearchTypes } from './Search';
 
 const InvitedClients = () => {
-    const { invited } = useSelector((state: any) => state.network);
 
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<unknown>('');
     const [invitedUsers, setinvitedUsers] = useState({ invited: [] });
+    const [searchText, setSearchText] = useState('');
+    const [filters, setFilters] = useState({
+        page: 1,
+        limit: 10,
+        totalPages: 0,
+        totalRecords: 0
+    });
 
+    const { invited } = useSelector((state: any) => state.network);
     const getInvitedUsers = async () => {
-        const { data } = await networkingService.httpGetInvitedClients();
-        console.log(data, 'data of schesti users...');
-        setinvitedUsers(data.user);
+        const { data } = await networkingService.httpGetInvitedClients({ searchText, page: filters.page - 1, limit: filters.limit });
+        const {
+            user,
+            totalPages,
+            totalRecords,
+        } = data;
+        setFilters({ ...filters, totalRecords, totalPages })
+        setinvitedUsers(user);
 
     }
     useEffect(() => {
@@ -28,13 +41,13 @@ const InvitedClients = () => {
             setIsLoading(false);
             setError(error);
         }
-    }, [invited])
-
-    console.log(invitedUsers, 'invited users...', error);
+    }, [invited, searchText, filters.page])
 
     return (
         <div>
-            <Search />
+            <Search searchValuesHandler={({ searchText }: InvitedSearchTypes) => {
+                setSearchText(searchText);
+            }} />
             {
                 isLoading ? <Spin /> : invitedUsers.invited.length ? (
                     <div className="grid grid-cols-3 gap-4">
@@ -50,7 +63,22 @@ const InvitedClients = () => {
                     <NoData />
                 )
             }
-
+            {/* {
+                filters.totalPages > 0 && (
+                    <div className="mt-1 flex justify-center">
+                        <Pagination
+                            current={filters.page}
+                            pageSize={filters.limit}
+                            showPrevNextJumpers={false}
+                            total={filters.totalRecords}
+                            onChange={(page) => {
+                                setFilters({ ...filters, page })
+                            }
+                            }
+                        />
+                    </div>
+                )
+            } */}
         </div>
     )
 }

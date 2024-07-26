@@ -11,6 +11,8 @@ import CustomEmailTemplate from '@/app/component/customEmailTemplete';
 import { networkingService } from '@/app/services/networking.service';
 import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { SetInvitedClient, SetSchestiNetwork } from '@/redux/network/network.slice';
 
 const networkInfo = [
     {
@@ -27,6 +29,10 @@ const networkInfo = [
     }
 ];
 
+export type NetworkSearchTypes = {
+    searchText: string;
+    locationText: string;
+}
 
 
 const Networking = () => {
@@ -35,6 +41,7 @@ const Networking = () => {
 
     const Networks = [SchestiNetwork, MyNetwork, Invited];
     const NetworkComponent = Networks[currentNetwork];
+    const dispatch = useDispatch();
 
     const networkEmailInviteHandler = async (bodyObject: FormData) => {
         const toEmail = bodyObject.get('to');
@@ -48,6 +55,7 @@ const Networking = () => {
 
                 if (response.statusCode == 200) {
                     setShowEmailModal(false);
+                    dispatch(SetInvitedClient());
                     toast.success('Email sent successfully');
                 }
             }
@@ -72,7 +80,7 @@ const Networking = () => {
                         }
 
                     </div>
-                    <button onClick={() => setShowEmailModal(true)} className='text-schestiPrimary bg-schestiLightPrimary border border-schestiLightPrimary rounded-md font-semibold py-2 px-4 cursor-pointer'>+ Invite</button>
+                    <button onClick={() => setShowEmailModal(true)} className='text-schestiPrimary flex items-center gap-2 bg-schestiLightPrimary border border-schestiLightPrimary rounded-md font-semibold py-2 px-4 cursor-pointer'> <span className='text-xl'>+</span> Invite</button>
 
                 </div>
                 <NetworkComponent />

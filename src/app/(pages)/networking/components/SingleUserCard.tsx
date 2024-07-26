@@ -46,8 +46,8 @@ const SingleUserCard = ({ _id, name, userRole, avatar = null, myNetwork = false,
                 await networkingService.httpNetworkingEmailSender(bodyObject);
 
             if (response.statusCode == 200) {
-                setEmailModal(false);
                 toast.success('Email sent successfully');
+                setEmailModal(false);
             }
         } catch (error) {
             const err = error as AxiosError<{ message: string }>;
@@ -57,66 +57,53 @@ const SingleUserCard = ({ _id, name, userRole, avatar = null, myNetwork = false,
 
 
     return (
-        <div className="w-full col-span-1 items-center mb-4 shadow rounded-xl p-2 bg-white relative">
-            <div className='flex gap-1.5 items-center absolute right-2 top-2'>
-                <Image src='/mail-03.svg' onClick={() => setEmailModal(true)} alt='role' width={13} height={16} />
+        <div className="w-full col-span-1 items-center mb-4 shadow rounded-xl p-4 bg-white relative">
+            <div className='flex gap-1.5 items-center absolute right-4 top-4'>
+                <Image src='/mail-03.svg' className='cursor-pointer' onClick={() => setEmailModal(true)} alt='role' width={16} height={16} />
                 <button onClick={myNetwork ? removeFriend : addFriend} disabled={isLoading} className='bg-schestiLightPrimary cursor-pointer flex justify-center items-center rounded-full p-1'>
                     <Image src={myNetwork ? '/minus.svg' : '/plus-primary.svg'} alt='role' style={{ width: '12px', height: '12px' }} width={0} height={0} />
                 </button>
             </div>
 
-            <div className="flex gap-2 profile-section">
+            <div className="flex items-start gap-2 profile-section">
                 <div className='relative'>
                     <Image src={avatar ?? '/profileAvatar.png'} alt='role' className='rounded-full' width={36} height={36} />
-                    <Image src='/verified.svg' className='absolute bottom-[14px] border border-white -right-1' alt='verified' width={10} height={10} />
+                    <Image src='/verified.svg' className='absolute bottom-1 border border-white -right-1' alt='verified' width={12} height={12} />
                 </div>
                 <div>
-                    <p className='text-ebonyClay font-semibold text-sm'>{name}</p>
+                    <p className='text-ebonyClay font-semibold text-sm w-[80%]'>{name}</p>
                     <p className='text-schestiPrimary mt-1 text-[8px] bg-schestiLightPrimary rounded-[163px] py-0.5 px-2'>{userRole}</p>
                 </div>
             </div>
 
             <div className="contact-detail-section mt-2">
-                <div className="flex items-center mt-0.5 gap-1.5">
+                {/* <div className="flex items-center mt-0.5 gap-1.5">
                     <Image src='/user-01.svg' alt='role' width={12} height={12} />
                     <p className='text-ebonyClay text-xs'>Kashif Markes</p>
-                </div>
+                </div> */}
                 <div className="flex items-center mt-0.5 gap-1.5">
                     <Image src='/phone-call-01.svg' alt='role' width={12} height={12} />
-                    <p className='text-ebonyClay text-xs'>{phone || 'N/A'}</p>
+                    <p className='text-ebonyClay text-xs'>{phone ?? '...'}</p>
                 </div>
                 <div className="flex items-center mt-0.5 gap-1.5">
                     <Image src='/mail-03.svg' className='cursor-pointer' alt='role' width={12} height={12} />
                     <p className='text-ebonyClay text-xs'>{email}</p>
                 </div>
-                {
-                    employee && (
-                        <div className="flex items-center mt-0.5 gap-1.5">
-                            <Image src='/users-01.svg' alt='role' width={12} height={12} />
-                            <p className='text-xs text-goldenrodYellow border-b border-goldenrodYellow'>{employee} team members</p>
-                        </div>
-                    )
-                }
+                <div className="flex items-center mt-0.5 gap-1.5">
+                    <Image src='/users-01.svg' alt='role' width={12} height={12} />
+                    <p className='text-xs text-goldenrodYellow border-b border-goldenrodYellow'> {employee ? `${employee} team members` : '...'}</p>
+                </div>
             </div>
 
             <div className="address-section">
-                {
-                    companyName && (
-                        <div className='mt-2'>
-                            <p className='text-monsoon text-xs'>Company</p>
-                            <p className='text-xs text-abyssalBlack font-medium mt-0.5'>{companyName}</p>
-                        </div>
-                    )
-
-                }
-                {
-                    address && (
-                        <div className='mt-2'>
-                            <p className='text-monsoon text-xs'>Address</p>
-                            <p className='text-xs text-abyssalBlack font-medium mt-0.5'>{address}</p>
-                        </div>
-                    )
-                }
+                <div className='mt-2'>
+                    <p className='text-monsoon text-xs'>Company</p>
+                    <p className='text-xs text-abyssalBlack font-medium mt-0.5'>{companyName ?? '...'}</p>
+                </div>
+                <div className='mt-2'>
+                    <p className='text-monsoon text-xs'>Address</p>
+                    <p className='text-xs text-abyssalBlack font-medium mt-0.5'>{address ?? '...'}</p>
+                </div>
             </div>
 
             {
@@ -136,15 +123,15 @@ const SingleUserCard = ({ _id, name, userRole, avatar = null, myNetwork = false,
             }
 
 
-            <div className="send-reminder-section flex justify-between mt-3">
+            {/* <div className="send-reminder-section flex justify-between mt-3">
                 <p className='text-monsoon text-xs'>Send Reminder</p>
                 <button className='text-[10px] cursor-pointer py-1 px-2 rounded-[163px] bg-schestiPrimary text-white'>Send Reminder <span>
                     <Image src='alarm-clock-check.svg' alt='alarm-clock' width={10} height={10} />
                 </span></button>
-            </div>
+            </div> */}
 
 
-            <p className='text-sm text-ebonyClay mt-1'> Lorem ipsum is a placeholder text commonly used to demonstrate the visual</p>
+            {/* <p className='text-sm text-ebonyClay mt-1'> Lorem ipsum is a placeholder text commonly used to demonstrate the visual</p> */}
 
             <ModalComponent setOpen={setEmailModal} open={emailModal}>
                 <CustomEmailTemplate

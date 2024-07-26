@@ -8,26 +8,47 @@ class NetworkingService extends HttpService {
   private readonly prefix: string = 'api/networking';
 
   httpGetSchestiUsers = (
-    userRole: string,
-    page: number = 0,
-    limit: number = 9
+    { userRole,
+      searchText,
+      locationText,
+      page = 0,
+      limit = 9 }: {
+        userRole: string,
+        searchText: string,
+        locationText: string,
+        page?: number,
+        limit?: number
+      }
   ): Promise<IResponseInterface> =>
-    this.get(`${this.prefix}/getSchestiUsers?userRole=${userRole}&page=${page}&limit=${limit}`);
+    this.get(`${this.prefix}/getSchestiUsers?userRole=${userRole}&searchText=${searchText}&locationText=${locationText}&page=${page}&limit=${limit}`);
 
   httpGetMyNetworkUsers = (
-    userRole: string,
-    page: number = 0,
-    limit: number = 9
+    { userRole,
+      searchText,
+      locationText,
+      page = 0,
+      limit = 9 }: {
+        userRole: string,
+        searchText: string,
+        locationText: string,
+        page?: number,
+        limit?: number
+      }
   ): Promise<IResponseInterface> =>
     this.get(
-      `${this.prefix}/getMyNetworkUsers?userRole=${userRole}&page=${page}&limit=${limit}`
+      `${this.prefix}/getMyNetworkUsers?userRole=${userRole}&searchText=${searchText}&locationText=${locationText}&page=${page}&limit=${limit}`
     );
   httpGetInvitedClients = (
-    page: number = 0,
-    limit: number = 9
+    { searchText,
+      page = 0,
+      limit = 9 }: {
+        searchText: string,
+        page?: number,
+        limit?: number
+      }
   ): Promise<IResponseInterface> =>
     this.get(
-      `${this.prefix}/getInvitedClients?page=${page}&limit=${limit}`
+      `${this.prefix}/getInvitedClients?searchText=${searchText}&page=${page}&limit=${limit}`
     );
 
   httpAddFriend = (id: string): Promise<IResponseInterface> =>
