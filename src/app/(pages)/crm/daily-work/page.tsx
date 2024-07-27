@@ -3,16 +3,35 @@ import CustomButton from "@/app/component/customButton/button";
 import WhiteButton from "@/app/component/customButton/white";
 import { InputComponent } from "@/app/component/customInput/Input";
 import { SelectComponent } from "@/app/component/customSelect/Select.component";
-import { DateInputComponent } from "@/app/component/cutomDate/CustomDateInput";
 import TertiaryHeading from "@/app/component/headings/tertiary";
-import { PhoneNumberInputWithLable } from "@/app/component/phoneNumberInput/PhoneNumberInputWithLable";
-import { TextAreaComponent } from "@/app/component/textarea";
 import { withAuth } from "@/app/hoc/withAuth";
 import { SearchOutlined } from "@ant-design/icons";
-import { Drawer, Table } from "antd";
+import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import Image from "next/image";
 import { useRef, useState } from "react";
+import { DailyWorkForm } from "./components/DailyWorkForm";
+import * as Yup from 'yup';
+import { isValidPhoneNumber } from "react-phone-number-input";
+import { useFormik } from "formik";
+import { ICrmDailyWorkCreate } from "@/app/services/crm/crm-daily-work.service";
+
+const ValidationSchema = Yup.object().shape({
+
+    email: Yup.string().email('Invalid email').required('Email is required'),
+    phone: Yup.string().test({
+        test: (value) => {
+            if (value) {
+                return isValidPhoneNumber(value);
+            }
+            return true;
+        },
+        message: 'Invalid phone number',
+    }).required('Phone number is required'),
+    work: Yup.string().required('Work Needed is required'),
+    deadline: Yup.string().required('Deadline is required'),
+    note: Yup.string().max(10, 'Note must have max 10 characters').required('Note is required'),
+
+})
 
 function DailyWorkPage() {
     const [search, setSearch] = useState('');
@@ -20,6 +39,21 @@ function DailyWorkPage() {
     const inputFileRef = useRef<HTMLInputElement | null>(null);
     const [open, setOpen] = useState(false);
 
+
+    const formik = useFormik<ICrmDailyWorkCreate>({
+        initialValues: {
+            email: '',
+            phone: '',
+            work: '',
+            deadline: '',
+            note: '',
+        },
+        validationSchema: ValidationSchema,
+        onSubmit: (values) => {
+            console.log(values);
+        },
+        enableReinitialize: true
+    })
     const showDrawer = () => {
         setOpen(true);
     };
@@ -50,10 +84,17 @@ function DailyWorkPage() {
         {
             title: 'Action',
         },
-    ]
+    ];
+
+
 
     return (
         <section className="mt-6 mb-[39px] bg-white p-5  mx-4 rounded-xl ">
+            <DailyWorkForm
+                formik={formik}
+                onClose={onClose}
+                open={open}
+            />
             <div className="flex justify-between items-center mb-3">
                 <TertiaryHeading className={'mt-1 mb-2'} title="Daily Work Needed" />
 
@@ -168,78 +209,7 @@ function DailyWorkPage() {
                 </div>
             </div>
 
-            <Drawer
-                title="Add New Member"
-                placement="right"
-                open={open}
 
-                width={600}
-                closable={false}
-                extra={
-                    <Image
-                        src="/closeicon.svg"
-                        alt="close"
-                        width={20}
-                        height={20}
-                        className="cursor-pointer"
-                        onClick={onClose}
-                    />
-                }
-                headerStyle={{
-                    backgroundColor: '#E6F2F8',
-                }}
-            >
-                <div className="space-y-3">
-                    <InputComponent
-                        label="Needed"
-                        name="name"
-                        placeholder="Enter Work Needed"
-                        type="text"
-                        field={{
-                        }}
-                    />
-                    <PhoneNumberInputWithLable
-                        label="Phone Number"
-                        //@ts-ignore
-                        onChange={(val) => {
-                            //@ts-ignore
-                        }}
-                        defaultCountry="US"
-
-                    />
-                    <InputComponent
-                        label="Email"
-                        name="email"
-                        type="email"
-                        placeholder="Enter Email"
-                    />
-
-                    <DateInputComponent
-                        label="Deadline"
-                        name="deadline"
-
-                    />
-
-                    <TextAreaComponent
-                        label="Note"
-                        placeholder="Enter Note"
-                        name="note"
-                        field={{
-                            rows: 10
-                        }}
-                    />
-
-
-                    <div className="flex items-center justify-between">
-                        <WhiteButton text="Cancel" className="!w-40" />
-                        <CustomButton
-                            text={'Save'}
-                            className="!w-40"
-                            loadingText="Saving..."
-                        />
-                    </div>
-                </div>
-            </Drawer>
 
             <div className="mt-5">
                 <Table
