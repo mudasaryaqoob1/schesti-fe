@@ -6,7 +6,7 @@ import { SelectComponent } from "@/app/component/customSelect/Select.component";
 import TertiaryHeading from "@/app/component/headings/tertiary";
 import { withAuth } from "@/app/hoc/withAuth";
 import { SearchOutlined } from "@ant-design/icons";
-import { Table } from "antd";
+import { Dropdown, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useEffect, useRef, useState } from "react";
 import { DailyWorkForm } from "./components/DailyWorkForm";
@@ -18,6 +18,7 @@ import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { DailyWorkDatePicker } from "./components/DailyWorkDatePicker";
 import { ICrmDailyWork } from "@/app/interfaces/crm/crm-daily-work.interface";
+import Image from "next/image";
 
 const ValidationSchema = Yup.object().shape({
 
@@ -134,6 +135,24 @@ function DailyWorkPage() {
         },
         {
             title: 'Action',
+            render() {
+                return <Dropdown
+                    menu={{
+                        items: [
+                            { key: "edit", label: "Edit" },
+                            { key: "delete", label: "Delete" },
+                        ]
+                    }}
+                >
+                    <Image
+                        src="/menuIcon.svg"
+                        alt="logo white icon"
+                        width={20}
+                        height={20}
+                        className="cursor-pointer"
+                    />
+                </Dropdown>
+            },
         },
     ];
 
