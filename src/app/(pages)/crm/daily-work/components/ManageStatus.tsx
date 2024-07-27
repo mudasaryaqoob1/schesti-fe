@@ -14,7 +14,7 @@ import crmDailyWorkService from "@/app/services/crm/crm-daily-work.service";
 import { DisplayDailyWorkStatus } from "./DisplayStatus";
 import Image from "next/image";
 import { ChooseColor } from "./ChooseColor";
-import { Tooltip } from "antd";
+import { Spin, Tooltip } from "antd";
 import { DeleteOutlined } from "@ant-design/icons";
 
 type Props = {
@@ -103,11 +103,13 @@ export function ManageStatus({ statuses, onCreate, isFetching }: Props) {
                                 <DisplayDailyWorkStatus item={status} />
 
                                 <Tooltip title={<div>
-                                    <ChooseColor />
-                                    <div className="border-t text-red-500 space-x-2 text-base cursor-pointer py-3 flex items-center border-gray-200">
-                                        <DeleteOutlined className="text-xl" />
-                                        <span>Delete</span>
-                                    </div>
+                                    <ChooseColor itemColor={status.color} />
+                                    <Spin spinning={false}>
+                                        <div className="border-t text-red-500 space-x-2 text-base cursor-pointer py-3 flex items-center border-gray-200">
+                                            <DeleteOutlined className="text-xl" />
+                                            <span>Delete</span>
+                                        </div>
+                                    </Spin>
                                 </div>} placement="bottom" color="#fff">
                                     <Image
                                         src="/menuIcon.svg"
