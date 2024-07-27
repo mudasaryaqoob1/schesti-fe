@@ -8,7 +8,7 @@ import { withAuth } from "@/app/hoc/withAuth";
 import { SearchOutlined } from "@ant-design/icons";
 import { Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DailyWorkForm } from "./components/DailyWorkForm";
 import * as Yup from 'yup';
 import { isValidPhoneNumber } from "react-phone-number-input";
@@ -17,6 +17,7 @@ import crmDailyWorkService, { ICrmDailyWorkCreate } from "@/app/services/crm/crm
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { DailyWorkDatePicker } from "./components/DailyWorkDatePicker";
+import { ICrmDailyWork } from "@/app/interfaces/crm/crm-daily-work.interface";
 
 const ValidationSchema = Yup.object().shape({
 
@@ -43,8 +44,13 @@ function DailyWorkPage() {
     const [open, setOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [currentDate, setCurrentDate] = useState(new Date().toISOString());
+    const [isLoading, setIsLoading] = useState(false);
+    const [data, setData] = useState<ICrmDailyWork[]>([]);
 
 
+    useEffect(() => {
+        getDailyWork(currentDate);
+    }, [currentDate])
 
     const formik = useFormik<ICrmDailyWorkCreate>({
         initialValues: {
@@ -60,6 +66,21 @@ function DailyWorkPage() {
         },
         enableReinitialize: true
     });
+
+    function getDailyWork(date: string) {
+        setIsLoading(true);
+        crmDailyWorkService
+            .httpGetDailyWorkByDate(date)
+            .then((response) => {
+                if (response.data) {
+                    setData(response.data);
+                }
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    }
+
 
     async function createDailyWorkLead(values: ICrmDailyWorkCreate) {
         setIsSubmitting(true);
@@ -86,24 +107,30 @@ function DailyWorkPage() {
         setOpen(false);
     };
 
-    const columns: ColumnsType<{}> = [
+    const columns: ColumnsType<ICrmDailyWork> = [
         {
             title: 'Priority',
+            dataIndex: "priorty"
         },
         {
             title: 'Work Needed',
+            dataIndex: 'work',
         },
         {
             title: 'Phone Number',
+            dataIndex: 'phone',
         },
         {
             title: 'Email',
+            dataIndex: 'email',
         },
         {
             title: 'Note',
+            dataIndex: 'note',
         },
         {
             title: 'Status',
+            dataIndex: 'status',
         },
         {
             title: 'Action',
@@ -246,7 +273,8 @@ function DailyWorkPage() {
             <div className="mt-5">
                 <Table
                     columns={columns}
-
+                    dataSource={data}
+                    loading={isLoading}
                 />
             </div>
         </section>

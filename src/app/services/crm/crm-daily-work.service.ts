@@ -14,7 +14,9 @@ export type ICrmDailyWorkCreate = {
 class CrmDailyWorkService extends HttpService {
     private prefix = 'api/crm/daily-work';
 
-    httpCreateDailyWork = (data: ICrmDailyWorkCreate):Promise<IResponseInterface<ICrmDailyWork>> => this.post(`${this.prefix}/create`, data)
+    httpCreateDailyWork = (data: ICrmDailyWorkCreate):Promise<IResponseInterface<ICrmDailyWork>> => this.post(`${this.prefix}/create`, data);
+
+    httpGetDailyWorkByDate = (date: string):Promise<IResponseInterface<ICrmDailyWork[]>> => this.get(`${this.prefix}/leads/${date}`);
 }
 
 export default new CrmDailyWorkService()
