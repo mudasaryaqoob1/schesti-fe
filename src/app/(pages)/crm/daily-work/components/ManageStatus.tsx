@@ -21,6 +21,7 @@ type Props = {
     statuses: IDailyWorkStatus[];
     onCreate: (_status: IDailyWorkStatus) => void;
     isFetching: boolean;
+    onUpdate: (_status: IDailyWorkStatus) => void;
 }
 
 const ValidationSchema = Yup.object().shape({
@@ -28,21 +29,25 @@ const ValidationSchema = Yup.object().shape({
 });
 
 
-export function ManageStatus({ statuses, onCreate, isFetching }: Props) {
+export function ManageStatus({ statuses, onCreate, isFetching, onUpdate }: Props) {
     const [showModal, setShowModal] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const formik = useFormik<{
         name: string;
-        color: string
+        color?: string
+        _id?: string
     }>({
         initialValues: {
             name: '',
-            color: dailyWorkColors[dailyWorkColors.length - 1]
         },
         validationSchema: ValidationSchema,
         onSubmit: (values) => {
-            createStatus(values)
+            if (values._id) {
+                updateStatus({ ...values } as any);
+            } else {
+                createStatus({ ...values, color: dailyWorkColors[dailyWorkColors.length - 1] });
+            }
         },
         enableReinitialize: true
     });
@@ -58,6 +63,28 @@ export function ManageStatus({ statuses, onCreate, isFetching }: Props) {
                 toast.success('Status created successfully');
                 formik.resetForm();
                 onCreate(response.data)
+            }
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+            toast.error(err.response?.data.message || 'An error occurred');
+        } finally {
+            setIsSubmitting(false);
+        }
+    }
+
+    async function updateStatus(values: {
+        name: string;
+        color: string;
+        _id: string
+    }) {
+        setIsSubmitting(true);
+        try {
+            const response = await crmDailyWorkService.httpUpdateDailyWorkStatus(values);
+            if (response.data) {
+                toast.success('Status updated successfully');
+                onUpdate(response.data)
+                formik.resetForm();
+                setShowModal(false);
             }
         } catch (error) {
             const err = error as AxiosError<{ message: string }>;
@@ -100,7 +127,13 @@ export function ManageStatus({ statuses, onCreate, isFetching }: Props) {
 
                                 return <div
                                     key={index}
-                                    className="flex  relative items-center px-3 justify-between border-b border-[#E5E7EB] py-3">
+                                    className="flex hover:bg-gray-50 cursor-pointer relative items-center px-3 justify-between border-b border-[#E5E7EB] py-3"
+                                    onClick={() => {
+                                        formik.setFieldValue('name', status.name);
+                                        formik.setFieldError('name', '');
+                                        formik.setFieldValue('_id', status._id);
+                                    }}
+                                >
 
                                     <DisplayDailyWorkStatus item={status} />
 
@@ -108,6 +141,7 @@ export function ManageStatus({ statuses, onCreate, isFetching }: Props) {
                                         <ChooseColor onSelectColor={(color) => {
                                             formik.setFieldValue('color', color);
                                             formik.setFieldValue('name', status.name);
+                                            formik.setFieldValue('_id', status._id);
                                         }} itemColor={status.color} />
                                         <Spin spinning={false}>
                                             <div className="border-t text-red-500 space-x-2 text-base cursor-pointer py-3 flex items-center border-gray-200">

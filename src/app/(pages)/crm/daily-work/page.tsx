@@ -317,6 +317,9 @@ function DailyWorkPage() {
                             setStatuses([status, ...statuses,])
                         }}
                         isFetching={isStatusLoading}
+                        onUpdate={status => {
+                            setStatuses(statuses.map(_status => _status._id === status._id ? status : _status))
+                        }}
                     />
                 </div>
             </div>
