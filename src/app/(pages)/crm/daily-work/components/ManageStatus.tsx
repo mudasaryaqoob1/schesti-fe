@@ -14,7 +14,8 @@ import crmDailyWorkService from "@/app/services/crm/crm-daily-work.service";
 
 type Props = {
     statuses: IDailyWorkStatus[];
-    onCreate: (_status: IDailyWorkStatus) => void
+    onCreate: (_status: IDailyWorkStatus) => void;
+    isFetching: boolean;
 }
 
 const ValidationSchema = Yup.object().shape({
@@ -22,7 +23,7 @@ const ValidationSchema = Yup.object().shape({
 });
 
 
-export function ManageStatus({ statuses, onCreate }: Props) {
+export function ManageStatus({ statuses, onCreate, isFetching }: Props) {
     const [showModal, setShowModal] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -60,14 +61,19 @@ export function ManageStatus({ statuses, onCreate }: Props) {
         }
     }
 
+    function handleOnClose() {
+        setShowModal(false);
+        formik.resetForm();
+    }
 
     return <>
         <ModalComponent
-            open={showModal}
-            setOpen={setShowModal}
+            open={!isFetching && showModal}
+            setOpen={handleOnClose}
             width="600px"
+            destroyOnClose
         >
-            <Popups title="Manage Status" onClose={() => setShowModal(false)}>
+            <Popups title="Manage Status" onClose={handleOnClose}>
                 <div className="space-y-3">
                     <InputComponent
                         label="Status"
@@ -93,7 +99,7 @@ export function ManageStatus({ statuses, onCreate }: Props) {
                             </div>
                         })}
                     </div>
-                    <div className="flex justify-end ">
+                    {formik.values.name ? <div className="flex justify-end ">
                         <CustomButton
                             text="Save"
                             className="!w-fit"
@@ -101,7 +107,7 @@ export function ManageStatus({ statuses, onCreate }: Props) {
                             isLoading={isSubmitting}
                             loadingText="Saving..."
                         />
-                    </div>
+                    </div> : null}
                 </div>
             </Popups>
         </ModalComponent>
@@ -109,6 +115,8 @@ export function ManageStatus({ statuses, onCreate }: Props) {
             text="Manage Status"
             className="!w-fit !py-2.5"
             onClick={() => setShowModal(!showModal)}
+            isLoading={isFetching}
+            loadingText="Loading..."
         />
     </>
 }

@@ -50,10 +50,12 @@ function DailyWorkPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [data, setData] = useState<ICrmDailyWork[]>([]);
     const [statuses, setStatuses] = useState<IDailyWorkStatus[]>([]);
+    const [isStatusLoading, setIsStatusLoading] = useState(false);
 
 
     useEffect(() => {
         getDailyWork(currentDate);
+        getDailyWorkStatus();
     }, [currentDate])
 
     const formik = useFormik<ICrmDailyWorkCreate>({
@@ -101,6 +103,20 @@ function DailyWorkPage() {
             setIsSubmitting(false);
         }
 
+    }
+
+    async function getDailyWorkStatus() {
+        setIsStatusLoading(true);
+        crmDailyWorkService
+            .httpGetAllDailyWorkStatus()
+            .then((response) => {
+                if (response.data) {
+                    setStatuses(response.data);
+                }
+            })
+            .finally(() => {
+                setIsStatusLoading(false);
+            });
     }
 
     const showDrawer = () => {
@@ -300,6 +316,7 @@ function DailyWorkPage() {
                         onCreate={status => {
                             setStatuses([status, ...statuses,])
                         }}
+                        isFetching={isStatusLoading}
                     />
                 </div>
             </div>

@@ -25,7 +25,7 @@ class CrmDailyWorkService extends HttpService {
 
     httpCreateDailyWorkStatus = (data:CreateDailyWorkStatus):Promise<IResponseInterface<IDailyWorkStatus>> => this.post(`${this.prefix}/status`, data);
 
-    httpGetAllDailyWorkStatus = ():Promise<IResponseInterface<IDailyWorkStatus[]>> => this.get(`${this.prefix}/status`);
+    httpGetAllDailyWorkStatus = ():Promise<IResponseInterface<IDailyWorkStatus[]>> => this.get(`${this.prefix}/status/all`);
 }
 
 export default new CrmDailyWorkService()
