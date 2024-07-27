@@ -16,6 +16,7 @@ import { useFormik } from "formik";
 import crmDailyWorkService, { ICrmDailyWorkCreate } from "@/app/services/crm/crm-daily-work.service";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
+import { DailyWorkDatePicker } from "./components/DailyWorkDatePicker";
 
 const ValidationSchema = Yup.object().shape({
 
@@ -41,6 +42,7 @@ function DailyWorkPage() {
     const inputFileRef = useRef<HTMLInputElement | null>(null);
     const [open, setOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [currentDate, setCurrentDate] = useState(new Date().toISOString());
 
 
 
@@ -217,7 +219,13 @@ function DailyWorkPage() {
             </div>
 
             <div className="mt-5 flex items-center justify-between">
-                <div></div>
+
+                <DailyWorkDatePicker
+
+                    value={currentDate}
+                    onChange={setCurrentDate}
+                />
+
                 <div className="flex items-center space-x-3">
 
                     <WhiteButton
