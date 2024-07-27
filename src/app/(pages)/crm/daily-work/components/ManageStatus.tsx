@@ -15,7 +15,7 @@ import { DisplayDailyWorkStatus } from "./DisplayStatus";
 import Image from "next/image";
 import { ChooseColor } from "./ChooseColor";
 import { Spin, Tooltip } from "antd";
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, LoadingOutlined } from "@ant-design/icons";
 
 type Props = {
     statuses: IDailyWorkStatus[];
@@ -44,6 +44,7 @@ export function ManageStatus({ statuses, onCreate, isFetching }: Props) {
         onSubmit: (values) => {
             createStatus(values)
         },
+        enableReinitialize: true
     });
 
     async function createStatus(values: {
@@ -79,61 +80,64 @@ export function ManageStatus({ statuses, onCreate, isFetching }: Props) {
             destroyOnClose
         >
             <Popups title="Manage Status" onClose={handleOnClose}>
-                <div className="space-y-3">
-                    <InputComponent
-                        label="Status"
-                        name="name"
-                        type="text"
-                        placeholder="Enter Status"
-                        field={{
-                            value: formik.values.name,
-                            onChange: formik.handleChange,
-                            onBlur: formik.handleBlur,
-                        }}
-                        hasError={formik.touched.name && Boolean(formik.errors.name)}
-                        errorMessage={formik.touched.name && formik.errors.name ? formik.errors.name : ''}
-                    />
-                    <div className="max-h-[300px] overflow-y-auto">
-                        {statuses.length === 0 ? <p className="text-center font-semibold text-base">No Status</p> : statuses.map((status, index) => {
-
-                            return <div
-                                key={index}
-                                className="flex  relative items-center px-3 justify-between border-b border-[#E5E7EB] py-3">
-
-                                <DisplayDailyWorkStatus item={status} />
-
-                                <Tooltip title={<div>
-                                    <ChooseColor itemColor={status.color} />
-                                    <Spin spinning={false}>
-                                        <div className="border-t text-red-500 space-x-2 text-base cursor-pointer py-3 flex items-center border-gray-200">
-                                            <DeleteOutlined className="text-xl" />
-                                            <span>Delete</span>
-                                        </div>
-                                    </Spin>
-                                </div>} placement="bottom" color="#fff">
-                                    <Image
-                                        src="/menuIcon.svg"
-                                        alt="logo white icon"
-                                        width={20}
-                                        height={20}
-                                        className="cursor-pointer"
-                                    />
-
-                                </Tooltip>
-
-                            </div>
-                        })}
-                    </div>
-                    {formik.values.name ? <div className="flex justify-end ">
-                        <CustomButton
-                            text="Save"
-                            className="!w-fit"
-                            onClick={formik.handleSubmit}
-                            isLoading={isSubmitting}
-                            loadingText="Saving..."
+                <Spin spinning={isSubmitting} indicator={<LoadingOutlined spin />}>
+                    <div className="space-y-3">
+                        <InputComponent
+                            label="Status"
+                            name="name"
+                            type="text"
+                            placeholder="Enter Status"
+                            field={{
+                                value: formik.values.name,
+                                onChange: formik.handleChange,
+                                onBlur: formik.handleBlur,
+                            }}
+                            hasError={formik.touched.name && Boolean(formik.errors.name)}
+                            errorMessage={formik.touched.name && formik.errors.name ? formik.errors.name : ''}
                         />
-                    </div> : null}
-                </div>
+                        <div className="max-h-[300px] overflow-y-auto">
+                            {statuses.length === 0 ? <p className="text-center font-semibold text-base">No Status</p> : statuses.map((status, index) => {
+
+                                return <div
+                                    key={index}
+                                    className="flex  relative items-center px-3 justify-between border-b border-[#E5E7EB] py-3">
+
+                                    <DisplayDailyWorkStatus item={status} />
+
+                                    <Tooltip title={<div>
+                                        <ChooseColor onSelectColor={(color) => {
+                                            formik.setFieldValue('color', color);
+                                            formik.setFieldValue('name', status.name);
+                                        }} itemColor={status.color} />
+                                        <Spin spinning={false}>
+                                            <div className="border-t text-red-500 space-x-2 text-base cursor-pointer py-3 flex items-center border-gray-200">
+                                                <DeleteOutlined className="text-xl" />
+                                                <span>Delete</span>
+                                            </div>
+                                        </Spin>
+                                    </div>} placement="bottom" color="#fff">
+                                        <Image
+                                            src="/menuIcon.svg"
+                                            alt="logo white icon"
+                                            width={20}
+                                            height={20}
+                                            className="cursor-pointer"
+                                        />
+
+                                    </Tooltip>
+
+                                </div>
+                            })}
+                        </div>
+                        {formik.values.name ? <div className="flex justify-end ">
+                            <CustomButton
+                                text="Save"
+                                className="!w-fit"
+                                onClick={formik.handleSubmit}
+                            />
+                        </div> : null}
+                    </div>
+                </Spin>
             </Popups>
         </ModalComponent>
         <WhiteButton
