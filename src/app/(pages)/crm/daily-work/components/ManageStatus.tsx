@@ -12,6 +12,7 @@ import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import crmDailyWorkService from "@/app/services/crm/crm-daily-work.service";
 import { DisplayDailyWorkStatus } from "./DisplayStatus";
+import Image from "next/image";
 
 type Props = {
     statuses: IDailyWorkStatus[];
@@ -94,9 +95,17 @@ export function ManageStatus({ statuses, onCreate, isFetching }: Props) {
 
                             return <div
                                 key={index}
-                                className="flex items-center justify-between border-b border-[#E5E7EB] py-3">
+                                className="flex items-center px-3 justify-between border-b border-[#E5E7EB] py-3">
 
                                 <DisplayDailyWorkStatus item={status} />
+
+                                <Image
+                                    src="/menuIcon.svg"
+                                    alt="logo white icon"
+                                    width={20}
+                                    height={20}
+                                    className="cursor-pointer"
+                                />
                             </div>
                         })}
                     </div>
