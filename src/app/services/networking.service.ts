@@ -12,15 +12,15 @@ class NetworkingService extends HttpService {
       searchText,
       locationText,
       page = 0,
-      limit = 9 }: {
+      limit = 9, selectedTrades, selectedStates }: {
         userRole: string,
         searchText: string,
         locationText: string,
         page?: number,
-        limit?: number
+        limit?: number, selectedTrades: string, selectedStates: string
       }
   ): Promise<IResponseInterface> =>
-    this.get(`${this.prefix}/getSchestiUsers?userRole=${userRole}&searchText=${searchText}&locationText=${locationText}&page=${page}&limit=${limit}`);
+    this.get(`${this.prefix}/getSchestiUsers?userRole=${userRole}&searchText=${searchText}&locationText=${locationText}&page=${page}&limit=${limit}&selectedTrades=${selectedTrades}&selectedStates=${selectedStates}`);
 
   httpGetMyNetworkUsers = (
     { userRole,

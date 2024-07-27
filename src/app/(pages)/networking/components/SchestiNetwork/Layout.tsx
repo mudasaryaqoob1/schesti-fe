@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import Search from '../Search'
-import { Pagination, Spin } from 'antd'
+import { Pagination } from 'antd'
 import SingleUserCard from '../SingleUserCard'
 import NoData from '../NoData'
 import { useSelector } from 'react-redux'
 import { networkingService } from '@/app/services/networking.service'
 import { NetworkSearchTypes } from '../../page'
+import Loader from '@/app/component/loader'
+const lodash = require('lodash');
 
 type Props = {
     userRole: string
@@ -19,6 +21,10 @@ const Layout = ({ userRole }: Props) => {
     const [searchText, setSearchText] = useState('');
     const [locationText, setLocationText] = useState('');
     const { schestiNetwork } = useSelector((state: any) => state.network);
+    const { selectedStates, selectedTrades }: {
+        selectedStates: string[],
+        selectedTrades: string[]
+    } = useSelector((state: any) => state.network);
     const [filters, setFilters] = useState({
         page: 1,
         limit: 10,
@@ -27,7 +33,7 @@ const Layout = ({ userRole }: Props) => {
     });
 
     const getSchestiUsers = async () => {
-        const { data } = await networkingService.httpGetSchestiUsers({ userRole, page: filters.page - 1, limit: filters.limit, searchText, locationText });
+        const { data } = await networkingService.httpGetSchestiUsers({ userRole, page: filters.page - 1, limit: filters.limit, searchText, locationText, selectedTrades: selectedTrades.join(','), selectedStates: selectedStates.join(',') });
         const {
             users,
             totalPages,
@@ -37,15 +43,22 @@ const Layout = ({ userRole }: Props) => {
         setFilters({ ...filters, totalRecords, totalPages })
     }
     useEffect(() => {
-        try {
-            setIsLoading(true);
-            getSchestiUsers();
-            setIsLoading(false);
-        } catch (error) {
-            setIsLoading(false);
-            setError(error);
-        }
-    }, [userRole, schestiNetwork, searchText, locationText, filters.page])
+
+        let debounce_fun = lodash.debounce(function () {
+            try {
+
+                setIsLoading(true);
+                getSchestiUsers();
+                setIsLoading(false);
+            } catch (error) {
+                setIsLoading(false);
+                setError(error);
+            }
+        }, 500);
+        debounce_fun();
+
+    }, [userRole, schestiNetwork, searchText, locationText, filters.page, selectedStates, selectedTrades]);
+
 
     return (
         <div>
@@ -54,7 +67,7 @@ const Layout = ({ userRole }: Props) => {
                 setLocationText(locationText)
             }} />
             {
-                isLoading ? <Spin /> : schestiUsers.length > 0 ? (
+                isLoading ? <Loader /> : schestiUsers.length > 0 ? (
                     <div className="grid grid-cols-3 gap-4">
                         {
                             schestiUsers.map((userData: any) => (

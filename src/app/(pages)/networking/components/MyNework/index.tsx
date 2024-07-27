@@ -26,12 +26,8 @@ const items: TabsProps['items'] = [
 
 const MyNetwork = () => {
 
-    const onChange = (key: string) => {
-        console.log(key);
-    };
-
     return (
-        <Tabs defaultActiveKey="1" destroyInactiveTabPane className='text-slateGray text-sm' items={items} onChange={onChange} />
+        <Tabs defaultActiveKey="1" destroyInactiveTabPane className='text-slateGray text-sm' items={items} />
     )
 }
 

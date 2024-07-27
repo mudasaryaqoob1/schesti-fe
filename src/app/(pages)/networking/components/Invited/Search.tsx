@@ -36,10 +36,9 @@ const Search = ({ searchValuesHandler }: { searchValuesHandler: (values: Invited
                 errors
             }) => {
                 const { searchText } = values;
-                console.log(values, 'values..', errors);
                 return (
                     <Form onSubmit={handleSubmit}>
-                        <div className="w-full grid justify-between grid-cols-8 gap-3 items-center mb-4 shadow rounded-xl p-4 bg-white">
+                        <div className="w-full grid justify-between grid-cols-8 gap-3 items-center mt-3.5 shadow rounded-xl p-4 bg-white">
                             <div className="flex items-center col-span-2 gap-1 border-r border-lightSteelGray h-full">
                                 <Image src='/search.svg' alt='search' width={16} height={16} />
                                 <input name='searchText' type="text" value={searchText} onBlur={handleBlur} onChange={handleChange} placeholder='Search' className='focus:border-none px-3 w-full placeholder:text-osloGrey text-osloGrey outline-none' />

@@ -5,7 +5,7 @@ type Props = {
 }
 const NoData = ({ title = 'No Data Available' }: Props) => {
     return (
-        <p className='font-medium text-center w-full'>{title}</p>
+        <p className='font-medium text-center w-full mt-3.5'>{title}</p>
     )
 }
 

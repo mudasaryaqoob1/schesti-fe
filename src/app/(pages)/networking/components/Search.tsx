@@ -3,6 +3,8 @@ import React from 'react'
 import { NetworkSearchTypes } from '../page'
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
+import { useDispatch } from 'react-redux';
+import { setSelectedStates, setSelectedTrades } from '@/redux/network/network.slice';
 
 const initialValues = {
     searchText: '',
@@ -16,9 +18,14 @@ const validationSchema = Yup.object({
 
 
 const Search = ({ searchValuesHandler }: { searchValuesHandler: (values: NetworkSearchTypes) => void }) => {
+    const dispatch = useDispatch();
 
     // submit handler
     const submitHandler = async (values: NetworkSearchTypes) => {
+        if (values.locationText) {
+            dispatch(setSelectedTrades([]));
+            dispatch(setSelectedStates([]))
+        }
         searchValuesHandler(values);
     }
 
@@ -32,10 +39,8 @@ const Search = ({ searchValuesHandler }: { searchValuesHandler: (values: Network
                 handleBlur,
                 handleChange,
                 values, handleSubmit,
-                errors
             }) => {
                 const { searchText, locationText } = values;
-                console.log(values, 'values..', errors);
                 return (
                     <Form onSubmit={handleSubmit}>
                         <div className="w-full grid justify-between grid-cols-8 gap-3 items-center mb-4 shadow rounded-xl p-4 bg-white">

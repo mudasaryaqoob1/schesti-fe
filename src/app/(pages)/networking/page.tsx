@@ -11,8 +11,8 @@ import CustomEmailTemplate from '@/app/component/customEmailTemplete';
 import { networkingService } from '@/app/services/networking.service';
 import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
-import { useDispatch, useSelector } from 'react-redux';
-import { SetInvitedClient, SetSchestiNetwork } from '@/redux/network/network.slice';
+import { useDispatch } from 'react-redux';
+import { SetInvitedClient } from '@/redux/network/network.slice';
 
 const networkInfo = [
     {
@@ -70,9 +70,9 @@ const Networking = () => {
             <div className="col-span-2 w-full">
                 <SearchFilters />
             </div>
-            <div className='col-span-4'>
+            <div className='col-span-4 mt-3.5'>
                 <div className='flex gap-3 justify-between items-center'>
-                    <div className="w-full flex gap-3 col-span-2 items-center max-w-[370px] mb-4 shadow rounded-xl p-2 bg-white">
+                    <div className="w-full flex gap-3 col-span-2 items-center max-w-[370px] shadow rounded-xl p-2 bg-white">
                         {
                             networkInfo.map(({ title }, i) => (
                                 <button key={i} onClick={() => setCurrentNetwork(i)} className={twMerge(clsx('text-sm cursor-pointer bg-transparent text-graphiteGray py-2 px-3 rounded-md', i === currentNetwork && 'bg-schestiPrimary text-white font-semibold'))}>{title}</button>

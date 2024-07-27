@@ -28,12 +28,8 @@ const items: TabsProps['items'] = [
 
 const SchestiNetwork = () => {
 
-    const onChange = (key: string) => {
-        console.log(key);
-    };
-
     return (
-        <Tabs defaultActiveKey="1" destroyInactiveTabPane className='text-slateGray text-sm' items={items} onChange={onChange} />
+        <Tabs defaultActiveKey="1" destroyInactiveTabPane className='text-slateGray text-sm' items={items} />
     )
 }
 

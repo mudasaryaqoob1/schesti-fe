@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import Search from '../Search'
-import { Pagination, Spin } from 'antd'
+import { Pagination } from 'antd'
 import SingleUserCard from '../SingleUserCard'
 import NoData from '../NoData'
 import { useSelector } from 'react-redux'
 import { networkingService } from '@/app/services/networking.service'
 import { NetworkSearchTypes } from '../../page'
+import Loader from '@/app/component/loader'
+const lodash = require('lodash');
 
 type Props = {
     userRole: string
@@ -24,6 +26,10 @@ const Layout = ({ userRole }: Props) => {
         totalPages: 0,
         totalRecords: 0
     });
+    const { selectedStates, selectedTrades }: {
+        selectedStates: string[],
+        selectedTrades: string[]
+    } = useSelector((state: any) => state.network);
 
     const getMyNetworkUsers = async () => {
         const { data } = await networkingService.httpGetMyNetworkUsers({ userRole, searchText, locationText, page: filters.page - 1, limit: filters.limit });
@@ -36,15 +42,20 @@ const Layout = ({ userRole }: Props) => {
         setMyNetworkUsers(user);
     }
     useEffect(() => {
-        try {
-            setIsLoading(true);
-            getMyNetworkUsers();
-            setIsLoading(false);
-        } catch (error) {
-            setIsLoading(false);
-            setError(error);
-        }
-    }, [userRole, myNetwork, searchText, locationText, filters.page])
+        let debounce_fun = lodash.debounce(function () {
+            try {
+                setIsLoading(true);
+                getMyNetworkUsers();
+                setIsLoading(false);
+            } catch (error) {
+                setIsLoading(false);
+                setError(error);
+            }
+
+        }, 500);
+        debounce_fun();
+
+    }, [userRole, myNetwork, searchText, locationText, filters.page, selectedStates, selectedTrades])
 
     return (
         <div>
@@ -53,7 +64,7 @@ const Layout = ({ userRole }: Props) => {
                 setLocationText(locationText)
             }} />
             {
-                isLoading ? <Spin /> : myNetworkUsers.connections.length ? (
+                isLoading ? <Loader /> : myNetworkUsers.connections.length ? (
                     <div className="grid grid-cols-3 gap-4">
                         {
                             myNetworkUsers.connections.map((userData: any) => (

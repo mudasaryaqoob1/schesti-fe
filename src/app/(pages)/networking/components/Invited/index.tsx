@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import Search from './Search'
 import InvitedCard from './SingleCard'
-import { Pagination, Spin } from 'antd';
 import NoData from '../NoData';
 import { useSelector } from 'react-redux';
 import { networkingService } from '@/app/services/networking.service';
 import { InvitedSearchTypes } from './Search';
+import Loader from '@/app/component/loader';
 
 const InvitedClients = () => {
 
@@ -49,8 +49,8 @@ const InvitedClients = () => {
                 setSearchText(searchText);
             }} />
             {
-                isLoading ? <Spin /> : invitedUsers.invited.length ? (
-                    <div className="grid grid-cols-3 gap-4">
+                isLoading ? <Loader /> : invitedUsers.invited.length ? (
+                    <div className="grid grid-cols-3 gap-4 mt-3.5">
                         {
                             invitedUsers.invited.map((userData: any) => (
                                 <div className="col-span-1">

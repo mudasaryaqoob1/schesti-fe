@@ -1,18 +1,19 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
 import { AxiosError } from 'axios'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { SetMyNetwork, SetSchestiNetwork } from '@/redux/network/network.slice'
 import ModalComponent from '@/app/component/modal'
 import CustomEmailTemplate from '@/app/component/customEmailTemplete'
 import { networkingService } from '@/app/services/networking.service'
 import { toast } from 'react-toastify'
 
-const SingleUserCard = ({ _id, name, userRole, avatar = null, myNetwork = false, phone, email, companyName = null, address, employee, selectedTrades = null }: any) => {
+const SingleUserCard = ({ _id, name, userRole, avatar = null, myNetwork = false, phone, email, companyName = null, address, employee }: any) => {
 
     const [isLoading, setIsLoading] = useState(false);
     const [emailModal, setEmailModal] = useState(false);
     const dispatch = useDispatch();
+    const { selectedTrades } = useSelector((state: any) => state.network);
 
     const addFriend = async () => {
         try {
