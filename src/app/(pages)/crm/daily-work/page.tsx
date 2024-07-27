@@ -297,6 +297,9 @@ function DailyWorkPage() {
 
                     <ManageStatus
                         statuses={statuses}
+                        onCreate={status => {
+                            setStatuses([status, ...statuses,])
+                        }}
                     />
                 </div>
             </div>

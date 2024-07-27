@@ -1,5 +1,5 @@
 export const dailyWorkColors = [
-    "#FFFFFF",
+    // "#FFFFFF",
     "#F93E6A",
     "#03A01C",
     "#F68500",
@@ -21,3 +21,7 @@ export const dailyWorkColors = [
     "#B0D6E8",
     "#007AB6"
 ]
+
+export function chooseRandomColor() {
+    return dailyWorkColors[Math.floor(Math.random() * dailyWorkColors.length)]
+}

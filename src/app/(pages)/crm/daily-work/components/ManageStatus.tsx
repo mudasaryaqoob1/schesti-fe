@@ -5,13 +5,61 @@ import { InputComponent } from "@/app/component/customInput/Input";
 import ModalComponent from "@/app/component/modal";
 import { IDailyWorkStatus } from "@/app/interfaces/crm/crm-daily-work.interface";
 import { useState } from "react";
+import * as Yup from 'yup'
+import { chooseRandomColor } from "../utils";
+import { useFormik } from "formik";
+import { AxiosError } from "axios";
+import { toast } from "react-toastify";
+import crmDailyWorkService from "@/app/services/crm/crm-daily-work.service";
 
 type Props = {
     statuses: IDailyWorkStatus[];
-
+    onCreate: (_status: IDailyWorkStatus) => void
 }
-export function ManageStatus({ statuses }: Props) {
+
+const ValidationSchema = Yup.object().shape({
+    name: Yup.string().required('Status Name is required!'),
+});
+
+
+export function ManageStatus({ statuses, onCreate }: Props) {
     const [showModal, setShowModal] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const formik = useFormik<{
+        name: string;
+        color: string
+    }>({
+        initialValues: {
+            name: '',
+            color: chooseRandomColor()
+        },
+        validationSchema: ValidationSchema,
+        onSubmit: (values) => {
+            createStatus(values)
+        },
+    });
+
+    async function createStatus(values: {
+        name: string;
+        color: string
+    }) {
+        setIsSubmitting(true);
+        try {
+            const response = await crmDailyWorkService.httpCreateDailyWorkStatus(values);
+            if (response.data) {
+                toast.success('Status created successfully');
+                formik.resetForm();
+                onCreate(response.data)
+            }
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+            toast.error(err.response?.data.message || 'An error occurred');
+        } finally {
+            setIsSubmitting(false);
+        }
+    }
+
 
     return <>
         <ModalComponent
@@ -23,9 +71,16 @@ export function ManageStatus({ statuses }: Props) {
                 <div className="space-y-3">
                     <InputComponent
                         label="Status"
-                        name="status"
+                        name="name"
                         type="text"
                         placeholder="Enter Status"
+                        field={{
+                            value: formik.values.name,
+                            onChange: formik.handleChange,
+                            onBlur: formik.handleBlur,
+                        }}
+                        hasError={formik.touched.name && Boolean(formik.errors.name)}
+                        errorMessage={formik.touched.name && formik.errors.name ? formik.errors.name : ''}
                     />
                     <div className="max-h-[300px] overflow-y-auto">
                         {statuses.length === 0 ? <p className="text-center font-semibold text-base">No Status</p> : statuses.map((status, index) => {
@@ -42,6 +97,9 @@ export function ManageStatus({ statuses }: Props) {
                         <CustomButton
                             text="Save"
                             className="!w-fit"
+                            onClick={formik.handleSubmit}
+                            isLoading={isSubmitting}
+                            loadingText="Saving..."
                         />
                     </div>
                 </div>
