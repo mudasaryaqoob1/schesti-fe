@@ -9,9 +9,9 @@ type BaseDailyWorkItem = {
     user: string | IUserInterface;
 }
 
-type IDailyWorkStatus = BaseDailyWorkItem;
+export type IDailyWorkStatus = BaseDailyWorkItem;
 
-type IDailyWorkPriorty = BaseDailyWorkItem;
+export type IDailyWorkPriorty = BaseDailyWorkItem;
 
 export interface ICrmDailyWork {
     work: string;

@@ -17,9 +17,10 @@ import crmDailyWorkService, { ICrmDailyWorkCreate } from "@/app/services/crm/crm
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { DailyWorkDatePicker } from "./components/DailyWorkDatePicker";
-import { ICrmDailyWork } from "@/app/interfaces/crm/crm-daily-work.interface";
+import { ICrmDailyWork, IDailyWorkStatus } from "@/app/interfaces/crm/crm-daily-work.interface";
 import Image from "next/image";
 import { InputWithoutBorder } from "@/app/component/customInput/InputWithoutBorder";
+import { ManageStatus } from "./components/ManageStatus";
 
 const ValidationSchema = Yup.object().shape({
 
@@ -48,6 +49,7 @@ function DailyWorkPage() {
     const [currentDate, setCurrentDate] = useState(new Date().toISOString());
     const [isLoading, setIsLoading] = useState(false);
     const [data, setData] = useState<ICrmDailyWork[]>([]);
+    const [statuses, setStatuses] = useState<IDailyWorkStatus[]>([]);
 
 
     useEffect(() => {
@@ -141,6 +143,7 @@ function DailyWorkPage() {
                     </span>
                 </div>;
             },
+            width: 200
         },
         {
             title: 'Status',
@@ -292,10 +295,8 @@ function DailyWorkPage() {
                         className="!w-fit !py-2.5"
                     />
 
-                    <WhiteButton
-                        text="Manage Status"
-                        className="!w-fit !py-2.5"
-                        loadingText="Uploading..."
+                    <ManageStatus
+                        statuses={statuses}
                     />
                 </div>
             </div>
