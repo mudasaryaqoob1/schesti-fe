@@ -19,7 +19,8 @@ export const dailyWorkColors = [
     '#1D2939',
     "#003752",
     "#B0D6E8",
-    "#007AB6"
+    "#007AB6",
+    "#31A172",
 ]
 
 export function chooseRandomColor() {

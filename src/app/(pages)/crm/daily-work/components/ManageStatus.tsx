@@ -6,11 +6,12 @@ import ModalComponent from "@/app/component/modal";
 import { IDailyWorkStatus } from "@/app/interfaces/crm/crm-daily-work.interface";
 import { useState } from "react";
 import * as Yup from 'yup'
-import { chooseRandomColor } from "../utils";
+import { dailyWorkColors } from "../utils";
 import { useFormik } from "formik";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import crmDailyWorkService from "@/app/services/crm/crm-daily-work.service";
+import { DisplayDailyWorkStatus } from "./DisplayStatus";
 
 type Props = {
     statuses: IDailyWorkStatus[];
@@ -33,7 +34,7 @@ export function ManageStatus({ statuses, onCreate, isFetching }: Props) {
     }>({
         initialValues: {
             name: '',
-            color: chooseRandomColor()
+            color: dailyWorkColors[dailyWorkColors.length - 1]
         },
         validationSchema: ValidationSchema,
         onSubmit: (values) => {
@@ -95,7 +96,7 @@ export function ManageStatus({ statuses, onCreate, isFetching }: Props) {
                                 key={index}
                                 className="flex items-center justify-between border-b border-[#E5E7EB] py-3">
 
-                                <p>{status.color}</p>
+                                <DisplayDailyWorkStatus item={status} />
                             </div>
                         })}
                     </div>
