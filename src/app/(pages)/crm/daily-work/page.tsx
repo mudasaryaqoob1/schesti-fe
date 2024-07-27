@@ -13,7 +13,9 @@ import { DailyWorkForm } from "./components/DailyWorkForm";
 import * as Yup from 'yup';
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { useFormik } from "formik";
-import { ICrmDailyWorkCreate } from "@/app/services/crm/crm-daily-work.service";
+import crmDailyWorkService, { ICrmDailyWorkCreate } from "@/app/services/crm/crm-daily-work.service";
+import { AxiosError } from "axios";
+import { toast } from "react-toastify";
 
 const ValidationSchema = Yup.object().shape({
 
@@ -38,6 +40,8 @@ function DailyWorkPage() {
     const [status, setStatus] = useState('All');
     const inputFileRef = useRef<HTMLInputElement | null>(null);
     const [open, setOpen] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
 
 
     const formik = useFormik<ICrmDailyWorkCreate>({
@@ -50,10 +54,28 @@ function DailyWorkPage() {
         },
         validationSchema: ValidationSchema,
         onSubmit: (values) => {
-            console.log(values);
+            createDailyWorkLead(values);
         },
         enableReinitialize: true
-    })
+    });
+
+    async function createDailyWorkLead(values: ICrmDailyWorkCreate) {
+        setIsSubmitting(true);
+        try {
+            const response = await crmDailyWorkService.httpCreateDailyWork(values);
+            if (response.data) {
+                toast.success('Daily work created successfully');
+                setOpen(false);
+            }
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+            toast.error(err.response?.data.message || 'An error occurred');
+        } finally {
+            setIsSubmitting(false);
+        }
+
+    }
+
     const showDrawer = () => {
         setOpen(true);
     };
@@ -94,6 +116,8 @@ function DailyWorkPage() {
                 formik={formik}
                 onClose={onClose}
                 open={open}
+                isSubmitting={isSubmitting}
+                onSubmit={formik.handleSubmit}
             />
             <div className="flex justify-between items-center mb-3">
                 <TertiaryHeading className={'mt-1 mb-2'} title="Daily Work Needed" />
