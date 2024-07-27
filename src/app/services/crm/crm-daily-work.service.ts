@@ -1,6 +1,6 @@
 import { IResponseInterface } from "@/app/interfaces/api-response.interface";
 import { HttpService } from "../base.service";
-import { ICrmDailyWork } from "@/app/interfaces/crm/crm-daily-work.interface";
+import { ICrmDailyWork, IDailyWorkStatus } from "@/app/interfaces/crm/crm-daily-work.interface";
 
 
 export type ICrmDailyWorkCreate = {
@@ -11,12 +11,21 @@ export type ICrmDailyWorkCreate = {
     phone: string;
 }
 
+type CreateDailyWorkStatus = {
+    name: string;
+    color: string;
+}
+
 class CrmDailyWorkService extends HttpService {
     private prefix = 'api/crm/daily-work';
 
     httpCreateDailyWork = (data: ICrmDailyWorkCreate):Promise<IResponseInterface<ICrmDailyWork>> => this.post(`${this.prefix}/create`, data);
 
     httpGetDailyWorkByDate = (date: string):Promise<IResponseInterface<ICrmDailyWork[]>> => this.get(`${this.prefix}/leads/${date}`);
+
+    httpCreateDailyWorkStatus = (data:CreateDailyWorkStatus):Promise<IResponseInterface<CreateDailyWorkStatus>> => this.post(`${this.prefix}/status`, data);
+
+    httpGetAllDailyWorkStatus = ():Promise<IResponseInterface<IDailyWorkStatus[]>> => this.get(`${this.prefix}/status`);
 }
 
 export default new CrmDailyWorkService()
