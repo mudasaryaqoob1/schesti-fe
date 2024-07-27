@@ -13,6 +13,9 @@ import { toast } from "react-toastify";
 import crmDailyWorkService from "@/app/services/crm/crm-daily-work.service";
 import { DisplayDailyWorkStatus } from "./DisplayStatus";
 import Image from "next/image";
+import { ChooseColor } from "./ChooseColor";
+import { Tooltip } from "antd";
+import { DeleteOutlined } from "@ant-design/icons";
 
 type Props = {
     statuses: IDailyWorkStatus[];
@@ -95,17 +98,27 @@ export function ManageStatus({ statuses, onCreate, isFetching }: Props) {
 
                             return <div
                                 key={index}
-                                className="flex items-center px-3 justify-between border-b border-[#E5E7EB] py-3">
+                                className="flex  relative items-center px-3 justify-between border-b border-[#E5E7EB] py-3">
 
                                 <DisplayDailyWorkStatus item={status} />
 
-                                <Image
-                                    src="/menuIcon.svg"
-                                    alt="logo white icon"
-                                    width={20}
-                                    height={20}
-                                    className="cursor-pointer"
-                                />
+                                <Tooltip title={<div>
+                                    <ChooseColor />
+                                    <div className="border-t text-red-500 space-x-2 text-base cursor-pointer py-3 flex items-center border-gray-200">
+                                        <DeleteOutlined className="text-xl" />
+                                        <span>Delete</span>
+                                    </div>
+                                </div>} placement="bottom" color="#fff">
+                                    <Image
+                                        src="/menuIcon.svg"
+                                        alt="logo white icon"
+                                        width={20}
+                                        height={20}
+                                        className="cursor-pointer"
+                                    />
+
+                                </Tooltip>
+
                             </div>
                         })}
                     </div>
