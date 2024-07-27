@@ -19,6 +19,7 @@ import { toast } from "react-toastify";
 import { DailyWorkDatePicker } from "./components/DailyWorkDatePicker";
 import { ICrmDailyWork } from "@/app/interfaces/crm/crm-daily-work.interface";
 import Image from "next/image";
+import { InputWithoutBorder } from "@/app/component/customInput/InputWithoutBorder";
 
 const ValidationSchema = Yup.object().shape({
 
@@ -128,6 +129,18 @@ function DailyWorkPage() {
         {
             title: 'Note',
             dataIndex: 'note',
+            render(value: string) {
+                return <div className="flex items-center space-x-4 justify-between">
+                    <InputWithoutBorder
+                        value={value}
+
+                    />
+
+                    <span className="text-schestiPrimaryBlack">
+                        {value.length}/10
+                    </span>
+                </div>;
+            },
         },
         {
             title: 'Status',
