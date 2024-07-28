@@ -34,6 +34,7 @@ const ValidationSchema = Yup.object().shape({
 });
 
 const CustomEmailTemplate = ({
+  cc, invite,
   to,
   setEmailModal,
   submitHandler,
