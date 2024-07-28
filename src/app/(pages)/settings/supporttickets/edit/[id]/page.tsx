@@ -176,7 +176,7 @@ const EditSupportTicket = () => {
                     <Form
                       name="basic"
                       onSubmit={handleSubmit}
-                      className="flex flex-col gap-5 px-5 py-6 shadow-primaryGlow rounded-2xl"
+                      className="flex flex-col gap-5 bg-white px-5 py-6 shadow-primaryGlow rounded-2xl"
                     >
                       <FormControl
                         control="input"

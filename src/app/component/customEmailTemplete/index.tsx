@@ -22,6 +22,7 @@ type IProps = {
   invite?: boolean;
   setEmailModal: Function;
   submitHandler: Function;
+  isFileUploadShow: Boolean;
 };
 
 const ValidationSchema = Yup.object().shape({
@@ -32,7 +33,12 @@ const ValidationSchema = Yup.object().shape({
   file: Yup.mixed(),
 });
 
-const CustomEmailTemplate = ({ to, setEmailModal, invite = false, submitHandler, cc = true }: IProps) => {
+const CustomEmailTemplate = ({
+  to,
+  setEmailModal,
+  submitHandler,
+  isFileUploadShow,
+}: IProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFileUploading] = useState(false);
 
@@ -195,54 +201,56 @@ const CustomEmailTemplate = ({ to, setEmailModal, invite = false, submitHandler,
             errorMessage={sendEmailFormik.errors.description}
           />
         </div>
-        <div>
-          {!sendEmailFormik.values.file ? (
-            <Spin className="flex flex-start" spinning={isFileUploading}>
-              <Dragger
-                className="flex flex-start"
-                name={'file'}
-                accept="image/*,gif,application/pdf"
-                beforeUpload={(file) => {
-                  handleFileUpload(file);
-                  return false;
+        {isFileUploadShow ? (
+          <div>
+            {!sendEmailFormik.values.file ? (
+              <Spin className="flex flex-start" spinning={isFileUploading}>
+                <Dragger
+                  className="flex flex-start"
+                  name={'file'}
+                  accept="image/*,gif,application/pdf"
+                  beforeUpload={(file) => {
+                    handleFileUpload(file);
+                    return false;
+                  }}
+                  style={{
+                    borderStyle: 'dashed',
+                    borderWidth: 2,
+                    display: 'flex',
+                    justifyContent: 'start',
+                  }}
+                  itemRender={() => {
+                    return null;
+                  }}
+                >
+                  <p className="ant-upload-drag-icon">
+                    <Image
+                      src={'/uploadcloud.svg'}
+                      width={40}
+                      height={40}
+                      alt="upload"
+                    />
+                  </p>
+                  <p className="text-[12px] py-2 pl-4 leading-3 text-[#98A2B3]">
+                    Select a file or drag and drop
+                  </p>
+                </Dragger>
+              </Spin>
+            ) : (
+              <ShowFileComponent
+                file={{
+                  name: sendEmailFormik.values.file.name,
+                  extension: sendEmailFormik.values.file.type,
+                  type: sendEmailFormik.values.file.type,
+                  url: URL.createObjectURL(sendEmailFormik.values.file),
                 }}
-                style={{
-                  borderStyle: 'dashed',
-                  borderWidth: 2,
-                  display: 'flex',
-                  justifyContent: 'start',
+                onDelete={() => {
+                  sendEmailFormik.setFieldValue('file', undefined);
                 }}
-                itemRender={() => {
-                  return null;
-                }}
-              >
-                <p className="ant-upload-drag-icon">
-                  <Image
-                    src={'/uploadcloud.svg'}
-                    width={40}
-                    height={40}
-                    alt="upload"
-                  />
-                </p>
-                <p className="text-[12px] py-2 pl-4 leading-3 text-[#98A2B3]">
-                  Select a file or drag and drop
-                </p>
-              </Dragger>
-            </Spin>
-          ) : (
-            <ShowFileComponent
-              file={{
-                name: sendEmailFormik.values.file.name,
-                extension: sendEmailFormik.values.file.type,
-                type: sendEmailFormik.values.file.type,
-                url: URL.createObjectURL(sendEmailFormik.values.file),
-              }}
-              onDelete={() => {
-                sendEmailFormik.setFieldValue('file', undefined);
-              }}
-            />
-          )}
-        </div>
+              />
+            )}
+          </div>
+        ) : null}
 
         <CustomButton
           text="Send"

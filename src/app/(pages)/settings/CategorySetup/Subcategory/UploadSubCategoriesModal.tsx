@@ -100,11 +100,10 @@ export function UploadSubCategoriesModal({ open, setOpen, categories }: Props) {
       setOpen={setOpen}
       width={parsedData.length ? '70%' : '40%'}
     >
+
       <div className="bg-white rounded-md p-5 gap-3">
         <div className="flex justify-between items-center">
-          <p className="text-base font-semibold text-schestiPrimaryBlack ">
-            Upload Sub Category
-          </p>
+          <p className="text-base font-semibold text-schestiPrimaryBlack ">Upload Sub Category</p>
           <Image
             alt="close"
             src={'/closeicon.svg'}
@@ -115,17 +114,15 @@ export function UploadSubCategoriesModal({ open, setOpen, categories }: Props) {
           />
         </div>
 
-        {error.length ? (
-          <Alert
-            type="error"
-            message="CSV Parse Error"
-            description={error}
-            closable
-            onClose={() => {
-              setError('');
-            }}
-          />
-        ) : null}
+        {error.length ? <Alert
+          type="error"
+          message="CSV Parse Error"
+          description={error}
+          closable
+          onClose={() => {
+            setError("");
+          }}
+        /> : null}
 
         <div className="py-3 gap-2 space-y-2">
           <SelectComponent
@@ -138,8 +135,8 @@ export function UploadSubCategoriesModal({ open, setOpen, categories }: Props) {
               showSearch: true,
               value: selectedCategory?._id,
               onChange(value) {
-                const item = categories.find((category) => {
-                  return category._id === value;
+                const item = categories.find(category => {
+                  return category._id === value
                 });
                 if (item) {
                   setSelectedCategory(item);
@@ -152,120 +149,274 @@ export function UploadSubCategoriesModal({ open, setOpen, categories }: Props) {
             }}
           />
 
-          {parsedData.length ? (
-            <div>
-              <Table
-                dataSource={parsedData}
-                columns={[
-                  { title: 'Sub Category Name', dataIndex: 'name' },
-                  {
-                    title: 'Price',
-                    dataIndex: 'price',
-                    render(value) {
-                      return USCurrencyFormat.format(Number(value));
-                    },
+
+          {parsedData.length ? <div>
+
+            <Table
+              dataSource={parsedData}
+              columns={[
+                { title: "Sub Category Name", dataIndex: "name" },
+                {
+                  title: "Labour Per Hour",
+                  dataIndex: "price",
+                  render(value) {
+                    return USCurrencyFormat.format(Number(value));
                   },
-                  {
-                    title: 'Action',
-                    render: (_value, _record, index) => {
-                      return (
-                        <Image
-                          alt="trash"
-                          src={'/trash-2.svg'}
-                          width={20}
-                          height={20}
-                          className="cursor-pointer"
-                          onClick={() => {
-                            const slice = parsedData.slice(0, index);
-                            const rest = parsedData.slice(index + 1);
-                            setParsedData([...slice, ...rest]);
-                          }}
-                        />
-                      );
-                    },
-                  },
-                ]}
-                pagination={{
-                  position: ['bottomCenter'],
+                },
+                {
+                  title: "Action",
+                  render: (_value, _record, index) => {
+                    return <Image
+                      alt="trash"
+                      src={"/trash-2.svg"}
+                      width={20}
+                      height={20}
+                      className="cursor-pointer"
+                      onClick={() => {
+                        const slice = parsedData.slice(0, index);
+                        const rest = parsedData.slice(index + 1);
+                        setParsedData([...slice, ...rest]);
+                      }}
+                    />
+                  }
+                }
+              ]}
+
+              pagination={{
+                position: ['bottomCenter']
+              }}
+            />
+
+
+            <div className='flex justify-end space-x-3'>
+              <WhiteButton
+                text='Cancel'
+                onClick={() => setParsedData([])}
+                className='!w-fit'
+              />
+              <CustomButton
+                text='Import Data'
+                className='!w-fit'
+                loadingText='Importing...'
+                isLoading={isInsertingMany}
+                onClick={() => {
+                  if (selectedCategory) {
+                    insertManySubCategories(selectedCategory, parsedData);
+                  }
                 }}
               />
-
-              <div className="flex justify-end space-x-3">
-                <WhiteButton
-                  text="Cancel"
-                  onClick={() => setParsedData([])}
-                  className="!w-fit"
-                />
-                <CustomButton
-                  text="Import Data"
-                  className="!w-fit"
-                  loadingText="Importing..."
-                  isLoading={isInsertingMany}
-                  onClick={() => {
-                    if (selectedCategory) {
-                      insertManySubCategories(selectedCategory, parsedData);
-                    }
-                  }}
-                />
-              </div>
             </div>
-          ) : (
-            <Spin spinning={isUploading} indicator={<LoadingOutlined spin />}>
-              <Upload.Dragger
-                name={'file'}
-                accept=".csv, .xls, .xlsx"
-                fileList={[]}
-                disabled={!selectedCategory}
-                beforeUpload={(_file, FileList) => {
-                  for (const file of FileList) {
-                    const isLessThan500MB = file.size < 500 * 1024 * 1024; // 500MB in bytes
-                    if (!isLessThan500MB) {
-                      toast.error('File size should be less than 500MB');
-                      return false;
-                    }
+
+          </div> : <Spin
+            spinning={isUploading}
+            indicator={<LoadingOutlined spin />}
+          >
+            <Upload.Dragger
+              name={'file'}
+              accept=".csv, .xls, .xlsx"
+              fileList={[]}
+              disabled={!selectedCategory}
+              beforeUpload={(_file, FileList) => {
+                for (const file of FileList) {
+                  const isLessThan500MB = file.size < 500 * 1024 * 1024; // 500MB in bytes
+                  if (!isLessThan500MB) {
+                    toast.error('File size should be less than 500MB');
+                    return false;
                   }
-                  if (selectedCategory) {
-                    handleUpload(_file);
-                  }
+                }
+                if (selectedCategory) {
+                  handleUpload(_file);
+                }
 
-                  return false;
-                }}
-                style={{
-                  borderStyle: 'dashed',
-                  borderWidth: 2,
-                  marginTop: 12,
-                  backgroundColor: 'transparent',
-                }}
-                itemRender={() => {
-                  return null;
-                }}
-              >
-                <p className="ant-upload-drag-icon">
-                  <Image
-                    src={'/uploadcloudcyan.svg'}
-                    width={50}
-                    height={50}
-                    alt="upload"
-                  />
-                </p>
-                <p className="text-[18px] font-semibold py-2 leading-5 text-[#2C3641]">
-                  Drop your files here, or browse
-                </p>
-
-                <p className="text-sm font-normal text-center py-2 leading-5 text-[#2C3641]">
-                  or
-                </p>
-
-                <CustomButton
-                  disabled={!selectedCategory}
-                  text="Select File"
-                  className="!w-fit !px-6 !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
+                return false;
+              }}
+              style={{
+                borderStyle: 'dashed',
+                borderWidth: 2,
+                marginTop: 12,
+                backgroundColor: "transparent"
+              }}
+              itemRender={() => {
+                return null;
+              }}
+            >
+              <p className="ant-upload-drag-icon">
+                <Image
+                  src={'/uploadcloudcyan.svg'}
+                  width={50}
+                  height={50}
+                  alt="upload"
                 />
-              </Upload.Dragger>
-            </Spin>
-          )}
+              </p>
+              <p className="text-[18px] font-semibold py-2 leading-5 text-[#2C3641]">
+                Drop your files here, or browse
+              </p>
+
+              <p className="text-sm font-normal text-center py-2 leading-5 text-[#2C3641]">
+                or
+              </p>
+
+              <CustomButton
+                disabled={!selectedCategory}
+                text="Select File"
+                className="!w-fit !px-6 !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
+              />
+            </Upload.Dragger>
+          </Spin>}
+
         </div>
       </div>
-    </ModalComponent>
+
+      {error.length ? (
+        <Alert
+          type="error"
+          message="CSV Parse Error"
+          description={error}
+          closable
+          onClose={() => {
+            setError('');
+          }}
+        />
+      ) : null}
+
+      <div className="py-3 gap-2 space-y-2">
+        <SelectComponent
+          label="Category"
+          name=""
+          placeholder="Chooose Category"
+          labelStyle="!font-medium"
+          field={{
+            options: categoryOptions,
+            showSearch: true,
+            value: selectedCategory?._id,
+            onChange(value) {
+              const item = categories.find((category) => {
+                return category._id === value;
+              });
+              if (item) {
+                setSelectedCategory(item);
+              }
+            },
+            allowClear: true,
+            onClear() {
+              setSelectedCategory(undefined);
+            },
+          }}
+        />
+
+        {parsedData.length ? (
+          <div>
+            <Table
+              dataSource={parsedData}
+              columns={[
+                { title: 'Sub Category Name', dataIndex: 'name' },
+                {
+                  title: 'Price',
+                  dataIndex: 'price',
+                  render(value) {
+                    return USCurrencyFormat.format(Number(value));
+                  },
+                },
+                {
+                  title: 'Action',
+                  render: (_value, _record, index) => {
+                    return (
+                      <Image
+                        alt="trash"
+                        src={'/trash-2.svg'}
+                        width={20}
+                        height={20}
+                        className="cursor-pointer"
+                        onClick={() => {
+                          const slice = parsedData.slice(0, index);
+                          const rest = parsedData.slice(index + 1);
+                          setParsedData([...slice, ...rest]);
+                        }}
+                      />
+                    );
+                  },
+                },
+              ]}
+              pagination={{
+                position: ['bottomCenter'],
+              }}
+            />
+
+            <div className="flex justify-end space-x-3">
+              <WhiteButton
+                text="Cancel"
+                onClick={() => setParsedData([])}
+                className="!w-fit"
+              />
+              <CustomButton
+                text="Import Data"
+                className="!w-fit"
+                loadingText="Importing..."
+                isLoading={isInsertingMany}
+                onClick={() => {
+                  if (selectedCategory) {
+                    insertManySubCategories(selectedCategory, parsedData);
+                  }
+                }}
+              />
+            </div>
+          </div>
+        ) : (
+          <Spin spinning={isUploading} indicator={<LoadingOutlined spin />}>
+            <Upload.Dragger
+              name={'file'}
+              accept=".csv, .xls, .xlsx"
+              fileList={[]}
+              disabled={!selectedCategory}
+              beforeUpload={(_file, FileList) => {
+                for (const file of FileList) {
+                  const isLessThan500MB = file.size < 500 * 1024 * 1024; // 500MB in bytes
+                  if (!isLessThan500MB) {
+                    toast.error('File size should be less than 500MB');
+                    return false;
+                  }
+                }
+                if (selectedCategory) {
+                  handleUpload(_file);
+                }
+
+                return false;
+              }}
+              style={{
+                borderStyle: 'dashed',
+                borderWidth: 2,
+                marginTop: 12,
+                backgroundColor: 'transparent',
+              }}
+              itemRender={() => {
+                return null;
+              }}
+            >
+              <p className="ant-upload-drag-icon">
+                <Image
+                  src={'/uploadcloudcyan.svg'}
+                  width={50}
+                  height={50}
+                  alt="upload"
+                />
+              </p>
+              <p className="text-[18px] font-semibold py-2 leading-5 text-[#2C3641]">
+                Drop your files here, or browse
+              </p>
+
+              <p className="text-sm font-normal text-center py-2 leading-5 text-[#2C3641]">
+                or
+              </p>
+
+              <CustomButton
+                disabled={!selectedCategory}
+                text="Select File"
+                className="!w-fit !px-6 !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
+              />
+            </Upload.Dragger>
+          </Spin>
+        )}
+      </div>
+    </ModalComponent >
   );
 }

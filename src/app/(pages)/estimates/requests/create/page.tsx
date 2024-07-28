@@ -823,9 +823,9 @@ const CreateEstimateRequest = () => {
           onCancel={() => {
             setCreateUserModal(false);
           }}
-          onSuccess={(user) => {
+          onSuccess={() => {
             setCreateUserModal(false);
-            console.log(user, 'useruseruseruseruser');
+            fetchCompanyEmployeeHandler();
           }}
           user={null}
         />

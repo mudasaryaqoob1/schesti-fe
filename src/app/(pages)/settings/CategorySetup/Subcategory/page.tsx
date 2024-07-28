@@ -113,42 +113,75 @@ const AddSubcategory = () => {
 
   const options = categoriesReduxData
     ? categoriesReduxData.map(({ name, _id }: ICategory) => ({
-        label: name,
-        value: _id,
-      }))
+      label: name,
+      value: _id,
+    }))
     : [];
 
   return (
     <>
-      {showForm ? (
-        <div className={`${bg_style} p-5`}>
-          <TertiaryHeading title="Sub-Category" className="text-graphiteGray" />
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={submitHandler}
-            enableReinitialize
-          >
-            {({ handleSubmit, values }) => {
-              console.log({ values });
-              return (
-                <Form
-                  name="basic"
-                  onSubmit={handleSubmit}
-                  autoComplete="off"
-                  className="mt-2"
-                >
-                  <div className="grid grid-cols-3 gap-2 items-center">
-                    <FormControl
-                      control="select"
-                      label="Category Name"
-                      type="text"
-                      disabled={subcategoryData}
-                      options={options}
-                      searchable={true}
-                      isLoading={categoriesReduxDataLoading}
-                      name="category"
-                      placeholder="Search Category Name"
+      {showForm ? <div className={`${bg_style} p-5`}>
+        <TertiaryHeading title="Sub-Category" className="text-graphiteGray" />
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={submitHandler}
+          enableReinitialize
+        >
+          {({ handleSubmit, values }) => {
+            console.log({ values });
+            return (
+              <Form
+                name="basic"
+                onSubmit={handleSubmit}
+                autoComplete="off"
+                className="mt-2"
+              >
+                <div className="grid grid-cols-3 gap-2 items-center">
+                  <FormControl
+                    control="select"
+                    label="Category Name"
+                    type="text"
+                    disabled={subcategoryData}
+                    options={options}
+                    searchable={true}
+                    isLoading={categoriesReduxDataLoading}
+                    name="category"
+                    placeholder="Search Category Name"
+                  />
+                  <FormControl
+                    control="input"
+                    label="Sub-Category"
+                    type="text"
+                    name="name"
+                    placeholder="Enter Sub-Category"
+                  />
+                  <FormControl
+                    control="input"
+                    label="Labour Per Hour"
+                    type="number"
+                    name="price"
+                    placeholder="Enter Labour Per Hour"
+                    prefix="$"
+                  />
+                </div>
+                <div className='flex justify-between mt-5 items-center'>
+                  <WhiteButton
+                    text='Cancel'
+                    className='!w-fit'
+                    onClick={() => {
+                      setShowForm(false);
+                    }}
+                  />
+                  <div className="flex items-center gap-3">
+                    <CustomButton
+                      text={
+                        subcategoryData ? 'Update Subcategory' : 'Add Subcategory'
+                      }
+                      type="submit"
+                      className="!w-auto "
+                      iconwidth={20}
+                      iconheight={20}
                     />
                     <FormControl
                       control="input"
@@ -201,12 +234,13 @@ const AddSubcategory = () => {
                       )}
                     </div>
                   </div>
-                </Form>
-              );
-            }}
-          </Formik>
-        </div>
-      ) : null}
+                </div>
+              </Form>
+            );
+          }}
+        </Formik>
+      </div>
+        : null}
 
       <UploadSubCategoriesModal
         open={showUploadModal}
@@ -251,7 +285,7 @@ const AddSubcategory = () => {
           onEdit={() => {
             setShowForm(true);
           }}
-          onDelete={() => {}}
+          onDelete={() => { }}
         />
       </div>
     </>
