@@ -185,19 +185,36 @@ function DailyWorkPage() {
     };
 
 
-    const handleSave = (key: string, value: string, record: ICrmDailyWork) => {
+    const handleSave = async (key: string, value: string, record: ICrmDailyWork) => {
+        setIsPriorityCellEditing(false);
+        setIsStatusCellEditing(false);
+        setIsLoading(true);
         console.log({ key, value, record });
+        try {
+            const response = await crmDailyWorkService.httpUpdatedailyLead(record._id, { ...record, [key]: value });
+            if (response.data) {
+                toast.success('Daily work updated successfully');
+
+                setData(data.map(item => item._id === record._id ? response.data! : item));
+            }
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+            toast.error(err.response?.data.message || 'An error occurred');
+        } finally {
+            setIsLoading(false);
+        }
     }
 
 
     const columns: ColumnsType<ICrmDailyWork> = [
         {
             title: 'Priority',
-            dataIndex: "priorty",
-            render() {
-                return <div className="h-full w-full">
-
-                </div>
+            dataIndex: "priority",
+            render(_val, record) {
+                if (!record.priority || typeof record.priority === "string") {
+                    return null;
+                }
+                return <DisplayPriority item={record.priority} />
             },
             onCell: (record, rowIndex) => {
                 return {
@@ -248,13 +265,11 @@ function DailyWorkPage() {
         {
             title: 'Status',
             dataIndex: 'status',
-            render(value, record, index) {
-                return <div onClick={e => {
-                    e.stopPropagation();
-                    console.log("Status Clicked");
-                }}>
-
-                </div>
+            render(_val, record) {
+                if (!record.status || typeof record.status === "string") {
+                    return null;
+                }
+                return <DisplayDailyWorkStatus item={record.status} />
             },
             onCell: (record, rowIndex) => {
                 return {
@@ -497,13 +512,12 @@ function EditableCell(props: EditableCellProps) {
         <td {...restProps} ref={cellRef}>
             {editing ? (
                 <div onClick={(e) => e.stopPropagation()} className="relative capitalize">
-                    Choose {inputType}
-                    <div className="absolute bg-white border rounded-md w-[200px] top-4 p-3 z-10 space-y-2">
+                    <span className="font-medium">Choose {inputType}</span>
+                    <div className="absolute bg-white border rounded-md w-[200px] top-6 p-3 z-10 space-y-2">
                         {inputType === 'priority' ? (
                             props.priorities.map((priority: IDailyWorkPriorty) => (
                                 <DisplayPriority onClick={(e) => {
                                     e.stopPropagation();
-                                    console.log("Clicked...");
                                     handleSave("priority", priority._id, record);
                                 }} key={priority._id} item={priority} />
                             ))

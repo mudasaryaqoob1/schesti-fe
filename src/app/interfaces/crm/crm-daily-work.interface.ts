@@ -20,7 +20,7 @@ export interface ICrmDailyWork {
     phone:string;
     email:string;
     note:string;
-    priorty?: string | IDailyWorkPriorty;
+    priority?: string | IDailyWorkPriorty;
     user: string | IUserInterface;
     _id: string;
     createdAt: string;
