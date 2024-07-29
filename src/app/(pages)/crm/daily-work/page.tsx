@@ -248,7 +248,9 @@ function DailyWorkPage() {
                 if (!record.priority || typeof record.priority === "string") {
                     return null;
                 }
-                return <DisplayPriority item={record.priority} />
+                return <div className="w-fit">
+                    <DisplayPriority item={record.priority} />
+                </div>
             },
             onCell: (record, rowIndex) => {
                 return {
