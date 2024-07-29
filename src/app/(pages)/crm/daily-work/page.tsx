@@ -199,7 +199,6 @@ function DailyWorkPage() {
         setIsStatusCellEditing(false);
         setIsNoteCellEditing(false);
         setIsLoading(true);
-        console.log({ key, value, record });
         try {
             const response = await crmDailyWorkService.httpUpdatedailyLead(record._id, { ...record, [key]: value });
             if (response.data) {
