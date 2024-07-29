@@ -3,7 +3,7 @@ import CustomButton from "@/app/component/customButton/button";
 import WhiteButton from "@/app/component/customButton/white";
 import { InputComponent } from "@/app/component/customInput/Input";
 import ModalComponent from "@/app/component/modal";
-import { IDailyWorkStatus } from "@/app/interfaces/crm/crm-daily-work.interface";
+import { IDailyWorkPriorty } from "@/app/interfaces/crm/crm-daily-work.interface";
 import { useState } from "react";
 import * as Yup from 'yup'
 import { dailyWorkColors } from "../utils";
@@ -18,11 +18,11 @@ import { Spin, Tooltip } from "antd";
 import { DeleteOutlined, LoadingOutlined } from "@ant-design/icons";
 
 type Props = {
-    statuses: IDailyWorkStatus[];
-    onCreate: (_status: IDailyWorkStatus) => void;
+    priorities: IDailyWorkPriorty[];
+    onCreate: (_status: IDailyWorkPriorty) => void;
     isFetching: boolean;
-    onUpdate: (_status: IDailyWorkStatus) => void;
-    onDelete: (_status: IDailyWorkStatus) => void;
+    onUpdate: (_status: IDailyWorkPriorty) => void;
+    onDelete: (_status: IDailyWorkPriorty) => void;
 }
 
 const ValidationSchema = Yup.object().shape({
@@ -30,7 +30,7 @@ const ValidationSchema = Yup.object().shape({
 });
 
 
-export function ManagePriority({ statuses, onCreate, isFetching, onUpdate, onDelete }: Props) {
+export function ManagePriority({ priorities, onCreate, isFetching, onUpdate, onDelete }: Props) {
     const [showModal, setShowModal] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -143,7 +143,7 @@ export function ManagePriority({ statuses, onCreate, isFetching, onUpdate, onDel
                             errorMessage={formik.touched.name && formik.errors.name ? formik.errors.name : ''}
                         />
                         <div className="max-h-[300px] overflow-y-auto">
-                            {statuses.length === 0 ? <p className="text-center font-semibold text-base">No Status</p> : statuses.map((status, index) => {
+                            {priorities.length === 0 ? <p className="text-center font-semibold text-base">No Status</p> : priorities.map((status, index) => {
 
                                 return <div
                                     key={index}

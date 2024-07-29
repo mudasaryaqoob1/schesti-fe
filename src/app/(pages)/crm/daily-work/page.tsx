@@ -17,7 +17,7 @@ import crmDailyWorkService, { ICrmDailyWorkCreate } from "@/app/services/crm/crm
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { DailyWorkDatePicker } from "./components/DailyWorkDatePicker";
-import { ICrmDailyWork, IDailyWorkStatus } from "@/app/interfaces/crm/crm-daily-work.interface";
+import { ICrmDailyWork, IDailyWorkPriorty, IDailyWorkStatus } from "@/app/interfaces/crm/crm-daily-work.interface";
 import Image from "next/image";
 import { InputWithoutBorder } from "@/app/component/customInput/InputWithoutBorder";
 import { ManageStatus } from "./components/ManageStatus";
@@ -52,12 +52,17 @@ function DailyWorkPage() {
     const [data, setData] = useState<ICrmDailyWork[]>([]);
     const [statuses, setStatuses] = useState<IDailyWorkStatus[]>([]);
     const [isStatusLoading, setIsStatusLoading] = useState(false);
-
+    const [priorities, setPriorities] = useState<IDailyWorkPriorty[]>([]);
+    const [isPriorityLoading, setIsPriorityLoading] = useState(false);
 
     useEffect(() => {
         getDailyWork(currentDate);
-        getDailyWorkStatus();
     }, [currentDate])
+
+    useEffect(() => {
+        getDailyWorkStatus();
+        getDailyWorkPriorities();
+    }, [])
 
     const formik = useFormik<ICrmDailyWorkCreate>({
         initialValues: {
@@ -89,6 +94,8 @@ function DailyWorkPage() {
     }
 
 
+
+
     async function createDailyWorkLead(values: ICrmDailyWorkCreate) {
         setIsSubmitting(true);
         try {
@@ -117,6 +124,20 @@ function DailyWorkPage() {
             })
             .finally(() => {
                 setIsStatusLoading(false);
+            });
+    }
+
+    async function getDailyWorkPriorities() {
+        setIsPriorityLoading(true);
+        crmDailyWorkService
+            .httpGetAllDailyWorkPriority()
+            .then((response) => {
+                if (response.data) {
+                    setPriorities(response.data);
+                }
+            })
+            .finally(() => {
+                setIsPriorityLoading(false);
             });
     }
 
@@ -308,11 +329,11 @@ function DailyWorkPage() {
                 <div className="flex items-center space-x-3">
 
                     <ManagePriority
-                        statuses={statuses}
+                        priorities={priorities}
                         onCreate={status => {
                             setStatuses([status, ...statuses,])
                         }}
-                        isFetching={isStatusLoading}
+                        isFetching={isPriorityLoading}
                         onUpdate={status => {
                             setStatuses(statuses.map(_status => _status._id === status._id ? status : _status))
                         }}

@@ -42,6 +42,12 @@ class CrmDailyWorkService extends HttpService {
     httpGetAllDailyWorkPriority = ():Promise<IResponseInterface<IDailyWorkPriorty[]>> => this.get(`${this.prefix}/priority/all`);
 
     httpCreateDailyWorkPriority = (data:CreateDailyWorkPriority):Promise<IResponseInterface<IDailyWorkPriorty>> => this.post(`${this.prefix}/priority`, data);
+
+    httpUpdateDailyWorkPriority = (data:CreateDailyWorkPriority & {
+        _id: string
+    }):Promise<IResponseInterface<IDailyWorkPriorty>> => this.put(`${this.prefix}/priority`, data);
+
+    httpDeleteDailyWorkPriority = (_id: string):Promise<IResponseInterface<IDailyWorkPriorty>> => this.delete(`${this.prefix}/priority/${_id}`);
 }
 
 export default new CrmDailyWorkService()
