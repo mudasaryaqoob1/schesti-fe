@@ -22,6 +22,8 @@ import Image from "next/image";
 import { InputWithoutBorder } from "@/app/component/customInput/InputWithoutBorder";
 import { ManageStatus } from "./components/ManageStatus";
 import { ManagePriority } from "./components/ManagePriority";
+import { DisplayPriority } from "./components/DisplayPriority";
+import { DisplayDailyWorkStatus } from "./components/DisplayStatus";
 
 const ValidationSchema = Yup.object().shape({
 
@@ -55,6 +57,14 @@ function DailyWorkPage() {
     const [priorities, setPriorities] = useState<IDailyWorkPriorty[]>([]);
     const [isPriorityLoading, setIsPriorityLoading] = useState(false);
 
+    const [isPriorityCellEditing, setIsPriorityCellEditing] = useState(false);
+    const [isStatusCellEditing, setIsStatusCellEditing] = useState(false);
+
+    // eslint-disable-next-line no-undef
+    const priorityCellRef = useRef<HTMLTableDataCellElement | null>(null);
+    // eslint-disable-next-line no-undef
+    const statusCellRef = useRef<HTMLTableDataCellElement | null>(null);
+
     useEffect(() => {
         getDailyWork(currentDate);
     }, [currentDate])
@@ -63,6 +73,30 @@ function DailyWorkPage() {
         getDailyWorkStatus();
         getDailyWorkPriorities();
     }, [])
+
+    useEffect(() => {
+        const handleClickOutside = (event: any) => {
+            if (
+                priorityCellRef.current &&
+                !priorityCellRef.current.contains(event.target)
+            ) {
+                setIsPriorityCellEditing(false);
+            }
+            if (
+                statusCellRef.current &&
+                !statusCellRef.current.contains(event.target)
+            ) {
+                setIsStatusCellEditing(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isPriorityCellEditing, isStatusCellEditing]);
+
 
     const formik = useFormik<ICrmDailyWorkCreate>({
         initialValues: {
@@ -150,10 +184,37 @@ function DailyWorkPage() {
         setOpen(false);
     };
 
+
+    const handleSave = (key: string, value: string, record: ICrmDailyWork) => {
+        console.log({ key, value, record });
+    }
+
+
     const columns: ColumnsType<ICrmDailyWork> = [
         {
             title: 'Priority',
-            dataIndex: "priorty"
+            dataIndex: "priorty",
+            render() {
+                return <div className="h-full w-full">
+
+                </div>
+            },
+            onCell: (record, rowIndex) => {
+                return {
+                    inputType: "priority",
+                    onClick: (e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        setIsPriorityCellEditing(true);
+                    },
+                    editing: isPriorityCellEditing,
+                    priorities: priorities,
+                    handleSave,
+                    record,
+                    rowIndex,
+                    cellRef: priorityCellRef
+                }
+            }
         },
         {
             title: 'Work Needed',
@@ -187,6 +248,30 @@ function DailyWorkPage() {
         {
             title: 'Status',
             dataIndex: 'status',
+            render(value, record, index) {
+                return <div onClick={e => {
+                    e.stopPropagation();
+                    console.log("Status Clicked");
+                }}>
+
+                </div>
+            },
+            onCell: (record, rowIndex) => {
+                return {
+                    inputType: "status",
+                    onClick: (e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        setIsStatusCellEditing(true);
+                    },
+                    editing: isStatusCellEditing,
+                    statuses: statuses,
+                    handleSave,
+                    record,
+                    rowIndex,
+                    cellRef: statusCellRef
+                }
+            }
         },
         {
             title: 'Action',
@@ -369,6 +454,11 @@ function DailyWorkPage() {
                     dataSource={data}
                     loading={isLoading}
                     bordered
+                    components={{
+                        body: {
+                            cell: EditableCell
+                        }
+                    }}
                 />
             </div>
         </section>
@@ -376,3 +466,60 @@ function DailyWorkPage() {
 }
 
 export default withAuth(DailyWorkPage)
+
+type EditableCellProps = {
+    editing: boolean;
+    dataIndex: any;
+    title: any;
+    inputType: 'status' | 'priority';
+    record: any;
+    rowIndex: any;
+    statuses: IDailyWorkStatus[];
+    priorities: IDailyWorkPriorty[];
+    children: React.ReactNode;
+    handleSave: (...args: any) => void;
+    // eslint-disable-next-line no-undef
+    cellRef: React.RefObject<HTMLTableDataCellElement>;
+    [key: string]: any;
+}
+function EditableCell(props: EditableCellProps) {
+
+    const {
+        editing,
+        inputType,
+        children,
+        handleSave,
+        record,
+        cellRef,
+        ...restProps
+    } = props;
+    return (
+        <td {...restProps} ref={cellRef}>
+            {editing ? (
+                <div onClick={(e) => e.stopPropagation()} className="relative capitalize">
+                    Choose {inputType}
+                    <div className="absolute bg-white border rounded-md w-[200px] top-4 p-3 z-10 space-y-2">
+                        {inputType === 'priority' ? (
+                            props.priorities.map((priority: IDailyWorkPriorty) => (
+                                <DisplayPriority onClick={(e) => {
+                                    e.stopPropagation();
+                                    console.log("Clicked...");
+                                    handleSave("priority", priority._id, record);
+                                }} key={priority._id} item={priority} />
+                            ))
+                        ) : (
+                            props.statuses.map((status: IDailyWorkStatus) => (
+                                <DisplayDailyWorkStatus onClick={e => {
+                                    e.stopPropagation();
+                                    handleSave("status", status._id, record);
+                                }} key={status._id} item={status} />
+                            ))
+                        )}
+                    </div>
+                </div>
+            ) : (
+                children
+            )}
+        </td>
+    );
+}
