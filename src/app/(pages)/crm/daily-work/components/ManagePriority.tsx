@@ -11,11 +11,11 @@ import { useFormik } from "formik";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import crmDailyWorkService from "@/app/services/crm/crm-daily-work.service";
-import { DisplayDailyWorkStatus } from "./DisplayStatus";
 import Image from "next/image";
 import { ChooseColor } from "./ChooseColor";
 import { Spin, Tooltip } from "antd";
 import { DeleteOutlined, LoadingOutlined } from "@ant-design/icons";
+import { DisplayPriority } from "./DisplayPriority";
 
 type Props = {
     priorities: IDailyWorkPriorty[];
@@ -155,7 +155,7 @@ export function ManagePriority({ priorities, onCreate, isFetching, onUpdate, onD
                                     }}
                                 >
 
-                                    <DisplayDailyWorkStatus item={priority} />
+                                    <DisplayPriority item={priority} />
 
                                     <Tooltip overlayStyle={{
                                         minWidth: '280px'
