@@ -1,6 +1,6 @@
 import { IResponseInterface } from "@/app/interfaces/api-response.interface";
 import { HttpService } from "../base.service";
-import { ICrmDailyWork, IDailyWorkStatus } from "@/app/interfaces/crm/crm-daily-work.interface";
+import { ICrmDailyWork, IDailyWorkPriorty, IDailyWorkStatus } from "@/app/interfaces/crm/crm-daily-work.interface";
 
 
 export type ICrmDailyWorkCreate = {
@@ -12,6 +12,11 @@ export type ICrmDailyWorkCreate = {
 }
 
 type CreateDailyWorkStatus = {
+    name: string;
+    color: string;
+}
+
+type CreateDailyWorkPriority = {
     name: string;
     color: string;
 }
@@ -32,6 +37,11 @@ class CrmDailyWorkService extends HttpService {
     }):Promise<IResponseInterface<IDailyWorkStatus>> => this.put(`${this.prefix}/status`, data);
 
     httpDeleteDailyWorkStatus = (_id: string):Promise<IResponseInterface<IDailyWorkStatus>> => this.delete(`${this.prefix}/status/${_id}`);
+
+    // Priority
+    httpGetAllDailyWorkPriority = ():Promise<IResponseInterface<IDailyWorkPriorty[]>> => this.get(`${this.prefix}/priority/all`);
+
+    httpCreateDailyWorkPriority = (data:CreateDailyWorkPriority):Promise<IResponseInterface<IDailyWorkPriorty>> => this.post(`${this.prefix}/priority`, data);
 }
 
 export default new CrmDailyWorkService()
