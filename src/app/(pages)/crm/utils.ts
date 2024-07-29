@@ -126,7 +126,7 @@ export async function findCrmItemById(
       setIsFetching(false);
     }
 }
-
+}
 export function formatCrmModuleType(module: CrmModuleType) {
     switch(module){
         case 'clients':

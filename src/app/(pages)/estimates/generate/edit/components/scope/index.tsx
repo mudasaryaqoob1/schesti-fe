@@ -15,6 +15,7 @@ import { Formik, Form } from 'formik';
 import { toast } from 'react-toastify';
 import { twMerge } from 'tailwind-merge';
 import { components } from 'react-select';
+import { useSearchParams } from 'next/navigation';
 import CreatableSelect from 'react-select/creatable';
 import { useSelector, useDispatch } from 'react-redux';
 //  module imports
@@ -30,13 +31,16 @@ import EstimatesUnits from '@/app/constants/estimatesUnits.json';
 import { materialService } from '@/app/services/material.service';
 import CustomWhiteButton from '@/app/component/customButton/white';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
+import { DeleteContent } from '@/app/component/delete/DeleteContent';
 import { categoriesService } from '@/app/services/categories.service';
 import { generateEstimateDetailAction } from '@/redux/estimate/estimateRequest.slice';
+import { estimateRequestService } from '@/app/services/estimates.service';
 import { selectGeneratedEstimateDetail } from '@/redux/estimate/estimateRequestSelector';
 import {
   IinitialValues,
   IEstimateScopeInitialValue,
 } from '@/app/interfaces/estimateRequests/estimateScopeInitialValue.interface';
+import { AxiosError } from 'axios';
 
 const validationSchema = Yup.object({
   category: Yup.string().required('Category is required!'),
@@ -120,19 +124,29 @@ export const CustomDropdownIndicator = (props: any) => {
 
 const Scope = ({ setPrevNext }: IProps) => {
   const dispatch = useDispatch();
+  const searchParams = useSearchParams();
+
+  const generatedEstimateId: null | string = searchParams.get(
+    'generatedEstimateId'
+  );
 
   const { generateEstimateDetail } = useSelector(selectGeneratedEstimateDetail);
 
-  const [estimateDetail, setEstimateDetail] = useState<any>({});
-  const [planDocuments, setPlanDocuments] = useState<Object[]>([]);
-  const [viewPlansModel, setViewPlansModel] = useState(false);
   const [categories, setCategories] = useState([]);
-  const [subCategories, setSubCategories] = useState<Object[]>([]);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [viewPlansModel, setViewPlansModel] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [estimateDetail, setEstimateDetail] = useState<any>({});
+  const [deletedItemIDs, setDeletedItemIDs] = useState({
+    scopeId: '',
+    scopeItemId: '',
+  });
+  const [planDocuments, setPlanDocuments] = useState<Object[]>([]);
+  const [subCategories, setSubCategories] = useState<Object[]>([]);
   const [selectedSubCategory, setSelectedSubCategory] = useState('');
   const [estimateDescriptions, setEstimateDescriptions] = useState<any>([]);
   // const [selecteddescription, setsSelecteddescription] = useState('');
-  const [editItem, setEditItem] = useState(false);
   const [editConfirmItem, setEditConfirmItem] = useState(false);
   // const [estiamteUnits, setEstiamteUnits] = useState<IUnits[] | undefined>([]);
   const [confirmEstimates, setConfirmEstimates] = useState<
@@ -143,12 +157,6 @@ const Scope = ({ setPrevNext }: IProps) => {
       scopeItems: Object[];
     }[]
   >([]);
-  const [estimateData, setEstimateData] = useState<{
-    title: string;
-    categoryName: string;
-    subCategoryName: string;
-    scopeItems: Object[];
-  }>({ title: '', categoryName: '', subCategoryName: '', scopeItems: [] });
   const [SingleEstimateData, setSingleEstimateData] = useState<any>({
     category: '',
     subCategory: '',
@@ -412,198 +420,33 @@ const Scope = ({ setPrevNext }: IProps) => {
       actions.resetForm({ values: initialValues });
     }
   };
-  // const submitHandlerlast = (
-  //   estimateTableItemValues: InitialValuesType,
-  //   actions: any
-  // ) => {
-  //   console.log(estimateTableItemValues, 'estimateTableItemValues');
 
-  //   let generateRandomNumber = Math.floor(Math.random() * 103440 + 1);
-  //   let selectedCategory = '';
-  //   const selectedCategoryName: any = categories.find(
-  //     (cat: any) => cat.value === estimateTableItemValues.category
-  //   );
-
-  //   const selctedSubCategoryName: any = subCategories.find(
-  //     (cat: any) => cat.value === estimateTableItemValues.subCategory
-  //   );
-
-  //   if (
-  //     categories.find(
-  //       (cat: any) => cat.value === estimateTableItemValues.category
-  //     ) &&
-  //     subCategories.find(
-  //       (cat: any) => cat.value === estimateTableItemValues.subCategory
-  //     )
-  //   ) {
-  //     selectedCategory = `${selectedCategoryName.label} ${selctedSubCategoryName.label}`;
-  //   } else {
-  //     selectedCategory = `${estimateTableItemValues?.category} ${estimateTableItemValues?.subCategory}`;
-  //   }
-  //   if (
-  //     estimateData.scopeItems.length &&
-  //     estimateData.title !== selectedCategory &&
-  //     !editItem &&
-  //     !editConfirmItem
-  //   ) {
-  //     toast.warn('Please add Div first to create new one');
-  //   } else {
-  //     if (editItem && !editConfirmItem) {
-  //       const updateEstimateArray: any = estimateData.scopeItems.map(
-  //         (dataItem: any) =>
-  //           dataItem.index === estimateTableItemValues.index
-  //             ? estimateTableItemValues
-  //             : dataItem
-  //       );
-
-  //       setEstimateData({
-  //         ...estimateData,
-  //         categoryName: selectedCategoryName.label,
-  //         subCategoryName: selctedSubCategoryName.label,
-  //         scopeItems: updateEstimateArray,
-  //       });
-  //       setEditItem(false);
-  //       // setEstimateDescriptions([]);
-  //       setSingleEstimateData({
-  //         ...SingleEstimateData,
-  //         description: '',
-  //         unit: '',
-  //         qty: '',
-  //         wastage: '5',
-  //         unitLabourHour: '',
-  //         // perHourLaborRate: '',
-  //         unitMaterialCost: '',
-  //         unitEquipments: '',
-  //       });
-  //       // actions.resetForm({ values: initialValues });
-  //     } else if (!editItem && editConfirmItem) {
-  //       const updateConfirmEstimateArray: any = confirmEstimates.map(
-  //         (item: any) => {
-  //           return {
-  //             ...item,
-  //             totalCostRecord: calculateTotalCost(item),
-  //             scopeItems: item.scopeItems.map((dataItem: any) =>
-  //               dataItem.index === estimateTableItemValues.index
-  //                 ? estimateTableItemValues
-  //                 : dataItem
-  //             ),
-  //           };
-  //         }
-  //       );
-
-  //       setConfirmEstimates(updateConfirmEstimateArray);
-  //       setEditConfirmItem(false);
-  //       // setEstiamteUnits([]);
-  //       // setEstimateDescriptions([]);
-  //       setSelectedSubCategory('');
-  //       setSelectedCategory('');
-  //       setSingleEstimateData({
-  //         category: '',
-  //         subCategory: '',
-  //         description: '',
-  //         unit: '',
-  //         qty: '',
-  //         wastage: '5',
-  //         unitLabourHour: '',
-  //         perHourLaborRate: '',
-  //         unitMaterialCost: '',
-  //         unitEquipments: '',
-  //       });
-  //       actions.resetForm({ values: initialValues });
-  //     } else {
-  //       setEstimateData((prevData) => ({
-  //         ...prevData,
-  //         title: selectedCategory,
-  //         categoryName: selectedCategoryName?.label
-  //           ? selectedCategoryName?.label
-  //           : estimateTableItemValues?.category,
-  //         subCategoryName: selctedSubCategoryName?.label
-  //           ? selctedSubCategoryName?.label
-  //           : estimateTableItemValues.subCategory,
-  //         scopeItems: [
-  //           ...prevData.scopeItems,
-  //           { ...estimateTableItemValues, index: generateRandomNumber },
-  //         ],
-  //       }));
-  //       // setEstimateDescriptions([]);
-  //       setSingleEstimateData({
-  //         ...SingleEstimateData,
-  //         // category: '',
-  //         // subCategory: '',
-  //         description: '',
-  //         unit: '',
-  //         qty: '',
-  //         wastage: '5',
-  //         unitLabourHour: '',
-  //         // perHourLaborRate: '',
-  //         unitMaterialCost: '',
-  //         unitEquipments: '',
-  //       });
-  //     }
-  //   }
-  //   actions.resetForm({ values: initialValues });
-  // };
-
-  const deleteEstimateRecordHandler = (record: any) => {
-    if (
-      estimateData.scopeItems.some(
-        (dataItem: any) => dataItem.description === record.description
-      )
-    ) {
-      setEstimateData({
-        ...estimateData,
-        scopeItems: estimateData.scopeItems.filter(
-          (dataItem) => JSON.stringify(dataItem) !== JSON.stringify(record)
-        ),
-      });
-    }
-  };
   const deleteConfirmEstimateRecordHandler = (record: any) => {
-    const selctedCatoryName: any = categories.find(
-      (cat: any) => cat.value === record.category
-    );
-    const selctedSubCategoryName: any = subCategories.find(
-      (cat: any) => cat.value === record.subCategory
+    setShowDeleteModal(true);
+
+    const estimatedScopeItem: any = confirmEstimates.find((item) =>
+      item.scopeItems.some((scopeItem: any) => scopeItem._id === record._id)
     );
 
-    let selectedCategory = `${
-      selctedCatoryName?.label ? selctedCatoryName?.label : record?.category
-    } ${
-      selctedSubCategoryName?.label
-        ? selctedSubCategoryName?.label
-        : record.subCategory
-    }`;
-
-    const newArray: any = confirmEstimates.map((item) => {
-      if (item && item.title === selectedCategory) {
-        return {
-          ...item,
-          scopeItems: item.scopeItems.filter(
-            (dataItem: any) => dataItem.index !== record.index
-          ),
-        };
-      } else {
-        return item;
-      }
+    setDeletedItemIDs({
+      scopeId: estimatedScopeItem._id,
+      scopeItemId: record._id,
     });
-    setConfirmEstimates(
-      newArray.filter((item: any) => item && item.scopeItems.length > 0)
-    );
   };
-  const editEstimateRecordHandler = (record: any) => {
-    setSingleEstimateData(record);
-    setEditItem(true);
-  };
+  // const editEstimateRecordHandler = (record: any) => {
+  //   setSingleEstimateData(record);
+  //   setEditItem(true);
+  // };
   const editConfirmEstimateRecordHandler = (record: any) => {
     setSingleEstimateData({
       ...record,
       description: { value: record.description, label: record.description },
     });
-    // setSelectedCategory(record.category);
-    // setSelectedSubCategory(record.subCategory);
+    setSelectedCategory(record.category);
+    setSelectedSubCategory(record.subCategory);
     // setEditItem(false);
     setEditConfirmItem(true);
-    // fetchMeterialDetail(record.category, record.subCategory);
+    fetchMeterialDetail(record.category, record.subCategory);
   };
 
   const calculateTotalCost = (record: IEstimateScopeInitialValue) => {
@@ -622,163 +465,6 @@ const Scope = ({ setPrevNext }: IProps) => {
     return result;
   };
 
-  const columns: any = [
-    {
-      title: 'Description',
-      dataIndex: 'description',
-      key: 'description',
-      fixed: 'left',
-      width: 200,
-    },
-    {
-      title: 'Unit',
-      dataIndex: 'unit',
-      align: 'center',
-      width: 80,
-    },
-    {
-      title: 'Qty',
-      dataIndex: 'qty',
-      align: 'center',
-      width: 80,
-    },
-    {
-      title: 'Wastage',
-      dataIndex: 'wastage',
-      align: 'center',
-      width: 90,
-      render: (value: number) => {
-        return `$${value}`;
-      },
-    },
-    {
-      title: 'Qty with wastage',
-      dataIndex: 'qtyWithWastage',
-      align: 'center',
-      width: 100,
-      render: (text: string, record: IEstimateScopeInitialValue) => {
-        let quantity = parseFloat(record.qty);
-        let wastagePercentage = parseFloat(record.wastage);
-        let result = quantity * (1 + wastagePercentage / 100);
-        return formatNumberWithCommas(result);
-      },
-    },
-    {
-      title: 'Total Labour Hours',
-      dataIndex: 'totalLabourHours',
-      align: 'center',
-      width: 120,
-      render: (text: string, record: IEstimateScopeInitialValue) => {
-        let unitLabourHour = parseFloat(record.unitLabourHour);
-        let wastagePercentage = parseFloat(record.wastage);
-        let quantity = parseFloat(record.qty);
-        let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
-        let result = quantityWithWastage * unitLabourHour;
-        return formatNumberWithCommas(result);
-      },
-    },
-    {
-      title: 'Per Hours Labor Rate',
-      dataIndex: 'perHourLaborRate',
-      align: 'center',
-      width: 120,
-      render: (value: number) => {
-        return `$${value}`;
-      },
-    },
-    {
-      title: 'Total Labor Cost',
-      dataIndex: 'totalLaborCost',
-      align: 'center',
-      width: 120,
-      render: (text: string, record: IEstimateScopeInitialValue) => {
-        let unitLabourHour = parseFloat(record.unitLabourHour);
-        let quantity = parseFloat(record.qty);
-        let wastagePercentage = parseFloat(record.wastage);
-        let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
-        let perHourLaborRate = parseFloat(record.perHourLaborRate);
-        let totalLabourHours = quantityWithWastage * unitLabourHour;
-        let result = totalLabourHours * perHourLaborRate;
-        return `$${formatNumberWithCommas(result)}`;
-      },
-    },
-    {
-      title: 'Unit Material Cost',
-      dataIndex: 'unitMaterialCost',
-      align: 'center',
-      width: 120,
-      render: (value: number) => {
-        return `$${value}`;
-      },
-    },
-    {
-      title: 'Total Material Cost $',
-      dataIndex: 'totalMaterialCost',
-      align: 'center',
-      width: 120,
-      render: (text: string, record: IEstimateScopeInitialValue) => {
-        let unitMaterialCost = parseFloat(record.unitMaterialCost);
-        let quantity = parseFloat(record.qty);
-        let wastagePercentage = parseFloat(record.wastage);
-        let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
-        let result = unitMaterialCost * quantityWithWastage;
-        return `$${formatNumberWithCommas(result)}`;
-      },
-    },
-    {
-      title: 'Total Equipment Cost',
-      dataIndex: 'totalEquipmentCost',
-      align: 'center',
-      width: 140,
-      render: (text: string, record: IEstimateScopeInitialValue) => {
-        let unitEquipments = parseFloat(record.unitEquipments);
-        let quantity = parseFloat(record.qty);
-        let wastagePercentage = parseFloat(record.wastage);
-        let quantityWithWastage = quantity * (1 + wastagePercentage / 100);
-        let result = unitEquipments * quantityWithWastage;
-        return `$${formatNumberWithCommas(result)}`;
-      },
-    },
-    {
-      title: 'Total Cost',
-      dataIndex: 'totalCost',
-      align: 'center',
-      width: 150,
-      render: (text: string, record: IEstimateScopeInitialValue) => {
-        let result = calculateTotalCost(record);
-        return `$${formatNumberWithCommas(result)}`;
-      },
-    },
-
-    {
-      title: 'Action',
-      dataIndex: 'action',
-      align: 'center',
-      key: 'action',
-      fixed: 'right',
-      width: 100,
-      render: (text: string, record: IEstimateScopeInitialValue) => (
-        <div className="flex gap-2 justify-center">
-          <Image
-            src="/edit.svg"
-            className="cursor-pointer"
-            width={20}
-            height={20}
-            alt="edit"
-            onClick={() => editEstimateRecordHandler(record)}
-          />
-          <Image
-            src="/trash.svg"
-            className="cursor-pointer"
-            width={20}
-            height={20}
-            alt="delete"
-            onClick={() => deleteEstimateRecordHandler(record)}
-          />
-        </div>
-      ),
-    },
-  ];
   const confirmColumns: any = [
     {
       title: 'Description',
@@ -956,12 +642,7 @@ const Scope = ({ setPrevNext }: IProps) => {
       unitMaterialCost: '',
       unitEquipments: '',
     });
-    setEstimateData({
-      title: '',
-      categoryName: '',
-      subCategoryName: '',
-      scopeItems: [],
-    });
+
     const index = confirmEstimates.findIndex(
       (item) => item.title === dataSource.title
     );
@@ -999,6 +680,37 @@ const Scope = ({ setPrevNext }: IProps) => {
             generateEstimateDetail.estimateRequestIdDetail,
         })
       );
+    }
+  };
+
+  const deleteEstimateHandler = async () => {
+    setIsDeleting(true);
+    const newArray: any = confirmEstimates.map((item) => {
+      return {
+        ...item,
+        scopeItems: item.scopeItems.filter(
+          (dataItem: any) => dataItem._id !== deletedItemIDs.scopeItemId
+        ),
+      };
+    });
+    setConfirmEstimates(
+      newArray.filter((item: any) => item && item.scopeItems.length > 0)
+    );
+
+    try {
+      await estimateRequestService.deleteGeneratedEstimateItem(
+        generatedEstimateId,
+        deletedItemIDs.scopeId,
+        deletedItemIDs.scopeItemId
+      );
+      setIsDeleting(false);
+      setShowDeleteModal(false);
+    } catch (error) {
+      let err = error as AxiosError<{ message: string }>;
+      let errMessage = err.response?.data.message || 'Error happing';
+      setIsDeleting(false);
+      setShowDeleteModal(false);
+      toast.error(errMessage);
     }
   };
 
@@ -1221,53 +933,34 @@ const Scope = ({ setPrevNext }: IProps) => {
                     step="0.001"
                     prefix="$"
                   />
-                  {editItem || editConfirmItem ? (
-                    <CustomWhiteButton
-                      type="submit"
-                      text="Update Item"
-                      className="self-end md:w-auto w-full md:my-0 mt-4 !bg-goldenrodYellow !p-2.5 !text-white"
-                    />
-                  ) : (
-                    <CustomWhiteButton
-                      type="submit"
-                      text="Add Item"
-                      className="self-end md:w-auto w-full md:my-0 mt-4 !bg-goldenrodYellow !p-2.5 !text-white"
-                    />
-                  )}
+                   {editConfirmItem ? (
+                  <CustomWhiteButton
+                    type="submit"
+                    text="Update Item"
+                    className="self-end md:w-auto w-full md:my-0 mt-4 !bg-goldenrodYellow !p-2.5 !text-white"
+                  />
+                ) : (
+                  <CustomWhiteButton
+                    type="submit"
+                    text="Add Item"
+                    className="self-end md:w-auto w-full md:my-0 mt-4 !bg-goldenrodYellow !p-2.5 !text-white"
+                  />
+                )}
                 </div>
-                {estimateData?.scopeItems.length ? (
-                  <>
-                    <div className="estimateTable_container">
-                      <Table
-                        className="mt-2"
-                        loading={false}
-                        columns={columns}
-                        dataSource={
-                          estimateData.scopeItems as IEstimateScopeInitialValue[]
-                        }
-                        pagination={false}
-                        scroll={{ x: 1000 }}
-                      />
-                    </div>
+                {/* {editConfirmItem ? (
+                  <div className="flex justify-end space-x-4 mt-5">
+                    <CustomWhiteButton
+                      text="Cancel"
+                      className="!w-32"
+                      type="button"
+                      onClick={() => {
+                        setEditConfirmItem(false), setSingleEstimateData({});
+                      }}
+                    />
+                  </div>
+                ) : null} */}
 
-                    <div className="flex justify-end space-x-4 mt-5">
-                      <CustomWhiteButton
-                        text="Cancel"
-                        className="!w-32"
-                        type="button"
-                      />
-                      <CustomButton
-                        text="+ Add Div"
-                        className="!w-32"
-                        type="button"
-                        disabled={estimateData.scopeItems.length === 0}
-                        onClick={() => {
-                          confirmEstimateHandler(estimateData);
-                        }}
-                      />
-                    </div>
-                  </>
-                ) : null}
+               
               </Form>
               <div>
                 {confirmEstimates.length
@@ -1361,6 +1054,17 @@ const Scope = ({ setPrevNext }: IProps) => {
             </div>
           </div>
         </div>
+      </ModalComponent>
+      <ModalComponent
+        open={showDeleteModal}
+        setOpen={setShowDeleteModal}
+        width="30%"
+      >
+        <DeleteContent
+          onClick={deleteEstimateHandler}
+          isLoading={isDeleting}
+          onClose={() => setShowDeleteModal(false)}
+        />
       </ModalComponent>
     </div>
   );
