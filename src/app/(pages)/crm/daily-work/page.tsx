@@ -330,16 +330,18 @@ function DailyWorkPage() {
 
                     <ManagePriority
                         priorities={priorities}
-                        onCreate={status => {
-                            setStatuses([status, ...statuses,])
+                        onCreate={priority => {
+                            setPriorities([priority, ...priorities,])
                         }}
                         isFetching={isPriorityLoading}
-                        onUpdate={status => {
-                            setStatuses(statuses.map(_status => _status._id === status._id ? status : _status))
+                        onUpdate={priority => {
+                            setPriorities(priorities.map(_priority => _priority._id === priority._id ? priority : _priority))
                         }}
-                        onDelete={status => {
-                            setStatuses(statuses.filter(_status => _status._id !== status._id))
-                        }}
+                        onDelete={
+                            priority => {
+                                setPriorities(priorities.filter(_priority => _priority._id !== priority._id))
+                            }
+                        }
                     />
 
                     <ManageStatus

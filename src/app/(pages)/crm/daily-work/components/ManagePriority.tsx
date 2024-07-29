@@ -19,14 +19,14 @@ import { DeleteOutlined, LoadingOutlined } from "@ant-design/icons";
 
 type Props = {
     priorities: IDailyWorkPriorty[];
-    onCreate: (_status: IDailyWorkPriorty) => void;
+    onCreate: (_priority: IDailyWorkPriorty) => void;
     isFetching: boolean;
-    onUpdate: (_status: IDailyWorkPriorty) => void;
-    onDelete: (_status: IDailyWorkPriorty) => void;
+    onUpdate: (_priority: IDailyWorkPriorty) => void;
+    onDelete: (_priority: IDailyWorkPriorty) => void;
 }
 
 const ValidationSchema = Yup.object().shape({
-    name: Yup.string().required('Status Name is required!'),
+    name: Yup.string().required('Priority Name is required!'),
 });
 
 
@@ -45,23 +45,23 @@ export function ManagePriority({ priorities, onCreate, isFetching, onUpdate, onD
         validationSchema: ValidationSchema,
         onSubmit: (values) => {
             if (values._id) {
-                updateStatus({ ...values } as any);
+                updatePriority({ ...values } as any);
             } else {
-                createStatus({ ...values, color: dailyWorkColors[dailyWorkColors.length - 1] });
+                createPriority({ ...values, color: dailyWorkColors[dailyWorkColors.length - 1] });
             }
         },
         enableReinitialize: true
     });
 
-    async function createStatus(values: {
+    async function createPriority(values: {
         name: string;
         color: string
     }) {
         setIsSubmitting(true);
         try {
-            const response = await crmDailyWorkService.httpCreateDailyWorkStatus(values);
+            const response = await crmDailyWorkService.httpCreateDailyWorkPriority(values);
             if (response.data) {
-                toast.success('Status created successfully');
+                toast.success('Priority created successfully');
                 formik.resetForm();
                 onCreate(response.data)
             }
@@ -73,16 +73,16 @@ export function ManagePriority({ priorities, onCreate, isFetching, onUpdate, onD
         }
     }
 
-    async function updateStatus(values: {
+    async function updatePriority(values: {
         name: string;
         color: string;
         _id: string
     }) {
         setIsSubmitting(true);
         try {
-            const response = await crmDailyWorkService.httpUpdateDailyWorkStatus(values);
+            const response = await crmDailyWorkService.httpUpdateDailyWorkPriority(values);
             if (response.data) {
-                toast.success('Status updated successfully');
+                toast.success('Priority updated successfully');
                 onUpdate(response.data)
                 formik.resetForm();
                 setShowModal(false);
@@ -100,13 +100,13 @@ export function ManagePriority({ priorities, onCreate, isFetching, onUpdate, onD
         formik.resetForm();
     }
 
-    function deleteStatusById(id: string) {
+    function deletePriorityById(id: string) {
         setIsSubmitting(true);
         crmDailyWorkService
-            .httpDeleteDailyWorkStatus(id)
+            .httpDeleteDailyWorkPriority(id)
             .then((response) => {
                 if (response.data) {
-                    toast.success('Status deleted successfully');
+                    toast.success('Priority deleted successfully');
                     onDelete(response.data)
                 }
             })
@@ -126,14 +126,14 @@ export function ManagePriority({ priorities, onCreate, isFetching, onUpdate, onD
             width="600px"
             destroyOnClose
         >
-            <Popups title="Manage Status" onClose={handleOnClose}>
+            <Popups title="Manage Priority" onClose={handleOnClose}>
                 <Spin spinning={isSubmitting} indicator={<LoadingOutlined spin />}>
                     <div className="space-y-3">
                         <InputComponent
-                            label="Status"
+                            label="Priority"
                             name="name"
                             type="text"
-                            placeholder="Enter Status"
+                            placeholder="Enter Priority"
                             field={{
                                 value: formik.values.name,
                                 onChange: formik.handleChange,
@@ -143,32 +143,32 @@ export function ManagePriority({ priorities, onCreate, isFetching, onUpdate, onD
                             errorMessage={formik.touched.name && formik.errors.name ? formik.errors.name : ''}
                         />
                         <div className="max-h-[300px] overflow-y-auto">
-                            {priorities.length === 0 ? <p className="text-center font-semibold text-base">No Status</p> : priorities.map((status, index) => {
+                            {priorities.length === 0 ? <p className="text-center font-semibold text-base">No Priority</p> : priorities.map((priority, index) => {
 
                                 return <div
                                     key={index}
                                     className="flex hover:bg-gray-50 cursor-pointer relative items-center px-3 justify-between border-b border-[#E5E7EB] py-3"
                                     onClick={() => {
-                                        formik.setFieldValue('name', status.name);
+                                        formik.setFieldValue('name', priority.name);
                                         formik.setFieldError('name', '');
-                                        formik.setFieldValue('_id', status._id);
+                                        formik.setFieldValue('_id', priority._id);
                                     }}
                                 >
 
-                                    <DisplayDailyWorkStatus item={status} />
+                                    <DisplayDailyWorkStatus item={priority} />
 
                                     <Tooltip overlayStyle={{
                                         minWidth: '280px'
                                     }} title={<div>
                                         <ChooseColor onSelectColor={(color) => {
                                             formik.setFieldValue('color', color);
-                                            formik.setFieldValue('name', status.name);
-                                            formik.setFieldValue('_id', status._id);
-                                        }} itemColor={status.color} />
+                                            formik.setFieldValue('name', priority.name);
+                                            formik.setFieldValue('_id', priority._id);
+                                        }} itemColor={priority.color} />
                                         <Spin spinning={false}>
                                             <div onClick={e => {
                                                 e.stopPropagation();
-                                                deleteStatusById(status._id);
+                                                deletePriorityById(priority._id);
                                             }} className="border-t text-red-500 space-x-2 text-base cursor-pointer py-3 flex items-center border-gray-200">
                                                 <DeleteOutlined className="text-xl" />
                                                 <span>Delete</span>
