@@ -637,11 +637,11 @@ const Scope = ({ setPrevNext }: Props) => {
       ...record,
       description: { value: record.description, label: record.description },
     });
-    // setSelectedCategory(record.category);
-    // setSelectedSubCategory(record.subCategory);
+    setSelectedCategory(record.category);
+    setSelectedSubCategory(record.subCategory);
     // setEditItem(false);
     setEditConfirmItem(true);
-    // fetchMeterialDetail(record.category, record.subCategory);
+    fetchMeterialDetail(record.category, record.subCategory);
   };
 
   const calculateTotalCost = (record: DataType) => {
@@ -1040,8 +1040,6 @@ const Scope = ({ setPrevNext }: Props) => {
     }
   };
 
-  console.log(estimateDescriptions, 'estimateDescriptions');
-
   return (
     <div>
       <div className="flex justify-between items-center mb-3">
@@ -1081,8 +1079,6 @@ const Scope = ({ setPrevNext }: Props) => {
         onSubmit={submitHandler}
       >
         {({ handleSubmit, values, setFieldValue, errors }) => {
-          console.log(values, 'valuesvaluesvalues');
-
           return (
             <>
               <Form
