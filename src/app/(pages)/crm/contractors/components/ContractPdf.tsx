@@ -149,7 +149,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(({ mo
                     pdf.addPage();
                 }
             }
-            pdf.save('scrollable-div.pdf');
+            pdf.save(`${contract.title}.pdf`);
 
             // Restore the original height
             container.style.height = ''; // Remove inline style to revert to original

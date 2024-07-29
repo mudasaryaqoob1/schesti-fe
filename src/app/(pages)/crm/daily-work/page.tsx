@@ -24,6 +24,8 @@ import { ManageStatus } from "./components/ManageStatus";
 import { ManagePriority } from "./components/ManagePriority";
 import { DisplayPriority } from "./components/DisplayPriority";
 import { DisplayDailyWorkStatus } from "./components/DisplayStatus";
+import ModalComponent from "@/app/component/modal";
+import { DeleteContent } from "@/app/component/delete/DeleteContent";
 
 const ValidationSchema = Yup.object().shape({
 
@@ -60,6 +62,9 @@ function DailyWorkPage() {
     const [isPriorityCellEditing, setIsPriorityCellEditing] = useState(false);
     const [isStatusCellEditing, setIsStatusCellEditing] = useState(false);
     const [isNoteCellEditing, setIsNoteCellEditing] = useState(false);
+
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [selectedLead, setSelectedLead] = useState<ICrmDailyWork | null>(null);
 
 
     // eslint-disable-next-line no-undef
@@ -356,6 +361,9 @@ function DailyWorkPage() {
                                     work: record.work,
                                     _id: record._id,
                                 });
+                            } else if (e.key === "delete") {
+                                setShowDeleteModal(true);
+                                setSelectedLead(record);
                             }
                         },
                     }}
@@ -383,6 +391,21 @@ function DailyWorkPage() {
                 isSubmitting={isSubmitting}
                 onSubmit={formik.handleSubmit}
             />
+
+            {selectedLead && showDeleteModal ? <ModalComponent
+                open={showDeleteModal}
+                setOpen={setShowDeleteModal}
+                width="30%"
+            >
+                <DeleteContent
+                    onClick={() => {
+
+                    }}
+                    isLoading={false}
+                    onClose={() => setShowDeleteModal(false)}
+                />
+            </ModalComponent> : null}
+
             <div className="flex justify-between items-center mb-3">
                 <TertiaryHeading className={'mt-1 mb-2'} title="Daily Work Needed" />
 

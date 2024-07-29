@@ -33,11 +33,11 @@ type CreateDailyWorkPriority = {
 class CrmDailyWorkService extends HttpService {
     private prefix = 'api/crm/daily-work';
 
-    httpCreateDailyWork = (data: ICrmDailyWorkCreate):Promise<IResponseInterface<ICrmDailyWork>> => this.post(`${this.prefix}/create`, data);
+    httpCreateDailyWork = (data: ICrmDailyWorkCreate):Promise<IResponseInterface<ICrmDailyWork>> => this.post(`${this.prefix}/lead/create`, data);
 
     httpGetDailyWorkByDate = (date: string):Promise<IResponseInterface<ICrmDailyWork[]>> => this.get(`${this.prefix}/leads/${date}`);
 
-    httpUpdatedailyLead = (id:string,data:Partial<Omit<ICrmDailyWork, "_id">>):Promise<IResponseInterface<ICrmDailyWork>> => this.put(`${this.prefix}/${id}`, data);
+    httpUpdatedailyLead = (id:string,data:Partial<Omit<ICrmDailyWork, "_id">>):Promise<IResponseInterface<ICrmDailyWork>> => this.put(`${this.prefix}/lead/${id}`, data);
 
     // Status
     httpCreateDailyWorkStatus = (data:CreateDailyWorkStatus):Promise<IResponseInterface<IDailyWorkStatus>> => this.post(`${this.prefix}/status`, data);
