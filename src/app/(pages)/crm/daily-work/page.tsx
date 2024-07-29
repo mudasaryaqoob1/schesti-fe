@@ -21,6 +21,7 @@ import { ICrmDailyWork, IDailyWorkStatus } from "@/app/interfaces/crm/crm-daily-
 import Image from "next/image";
 import { InputWithoutBorder } from "@/app/component/customInput/InputWithoutBorder";
 import { ManageStatus } from "./components/ManageStatus";
+import { ManagePriority } from "./components/ManagePriority";
 
 const ValidationSchema = Yup.object().shape({
 
@@ -306,9 +307,18 @@ function DailyWorkPage() {
 
                 <div className="flex items-center space-x-3">
 
-                    <WhiteButton
-                        text="Manage Priority"
-                        className="!w-fit !py-2.5"
+                    <ManagePriority
+                        statuses={statuses}
+                        onCreate={status => {
+                            setStatuses([status, ...statuses,])
+                        }}
+                        isFetching={isStatusLoading}
+                        onUpdate={status => {
+                            setStatuses(statuses.map(_status => _status._id === status._id ? status : _status))
+                        }}
+                        onDelete={status => {
+                            setStatuses(statuses.filter(_status => _status._id !== status._id))
+                        }}
                     />
 
                     <ManageStatus
