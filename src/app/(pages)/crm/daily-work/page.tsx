@@ -13,7 +13,7 @@ import { DailyWorkForm } from "./components/DailyWorkForm";
 import * as Yup from 'yup';
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { useFormik } from "formik";
-import crmDailyWorkService, { ICrmDailyWorkCreate } from "@/app/services/crm/crm-daily-work.service";
+import crmDailyWorkService, { ICrmDailyWorkCreate, ICrmDailyWorkUpdate } from "@/app/services/crm/crm-daily-work.service";
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { DailyWorkDatePicker } from "./components/DailyWorkDatePicker";
@@ -61,6 +61,7 @@ function DailyWorkPage() {
     const [isStatusCellEditing, setIsStatusCellEditing] = useState(false);
     const [isNoteCellEditing, setIsNoteCellEditing] = useState(false);
 
+
     // eslint-disable-next-line no-undef
     const priorityCellRef = useRef<HTMLTableDataCellElement | null>(null);
     // eslint-disable-next-line no-undef
@@ -107,7 +108,7 @@ function DailyWorkPage() {
     }, [isPriorityCellEditing, isStatusCellEditing, isNoteCellEditing]);
 
 
-    const formik = useFormik<ICrmDailyWorkCreate>({
+    const formik = useFormik<ICrmDailyWorkCreate | ICrmDailyWorkUpdate>({
         initialValues: {
             email: '',
             phone: '',
@@ -117,7 +118,31 @@ function DailyWorkPage() {
         },
         validationSchema: ValidationSchema,
         onSubmit: (values) => {
-            createDailyWorkLead(values);
+
+            if ("_id" in values) {
+                setIsSubmitting(true);
+                crmDailyWorkService.httpUpdatedailyLead(values._id, values).then((response) => {
+                    if (response.data) {
+                        toast.success('Daily work updated successfully');
+                        setData(
+                            data.map((item) => {
+                                if (item._id === response.data!._id) {
+                                    return response.data!;
+                                }
+                                return item;
+                            })
+                        )
+                        onClose();
+                    }
+                }).catch(error => {
+                    const err = error as AxiosError<{ message: string }>;
+                    toast.error(err.response?.data.message || 'An error occurred');
+                }).finally(() => {
+                    setIsSubmitting(false);
+                })
+            } else {
+                createDailyWorkLead(values);
+            }
         },
         enableReinitialize: true
     });
@@ -311,13 +336,26 @@ function DailyWorkPage() {
         },
         {
             title: 'Action',
-            render() {
+            render(_val, record) {
                 return <Dropdown
                     menu={{
                         items: [
                             { key: "edit", label: "Edit" },
                             { key: "delete", label: "Delete" },
-                        ]
+                        ],
+                        onClick: (e) => {
+                            if (e.key === "edit") {
+                                showDrawer();
+                                formik.setValues({
+                                    deadline: record.deadline.toString(),
+                                    email: record.email,
+                                    note: record.note,
+                                    phone: record.phone,
+                                    work: record.work,
+                                    _id: record._id,
+                                });
+                            }
+                        },
                     }}
                 >
                     <Image

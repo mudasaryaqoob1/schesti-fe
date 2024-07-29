@@ -16,7 +16,7 @@ export type IDailyWorkPriorty = BaseDailyWorkItem;
 export interface ICrmDailyWork {
     work: string;
     status?: string | IDailyWorkStatus;
-    deadline: Date;
+    deadline: string;
     phone:string;
     email:string;
     note:string;

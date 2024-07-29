@@ -20,7 +20,7 @@ type Props = {
 }
 export function DailyWorkForm({ onClose, open, formik, onSubmit, isSubmitting }: Props) {
     return <Drawer
-        title="Add New Member"
+        title="Daily Work Lead"
         placement="right"
         open={open}
 

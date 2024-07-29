@@ -11,6 +11,15 @@ export type ICrmDailyWorkCreate = {
     phone: string;
 }
 
+export type ICrmDailyWorkUpdate = {
+    _id: string;
+    work: string;
+    deadline: string;
+    note: string;
+    email: string;
+    phone: string;
+}
+
 type CreateDailyWorkStatus = {
     name: string;
     color: string;
