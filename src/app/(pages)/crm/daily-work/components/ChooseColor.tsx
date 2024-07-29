@@ -9,7 +9,7 @@ export function ChooseColor({
     onSelectColor
 }: Props) {
 
-    return <div className="grid grid-cols-4 gap-3 bg-white h-full py-3 px-2">
+    return <div className="grid grid-cols-4 gap-3 bg-white w-full h-full py-3 px-2">
         {dailyWorkColors.map((color) => {
             const isActive = color === itemColor;
             return <div key={color} style={{

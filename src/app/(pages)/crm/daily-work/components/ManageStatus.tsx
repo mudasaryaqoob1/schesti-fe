@@ -157,7 +157,9 @@ export function ManageStatus({ statuses, onCreate, isFetching, onUpdate, onDelet
 
                                     <DisplayDailyWorkStatus item={status} />
 
-                                    <Tooltip title={<div>
+                                    <Tooltip overlayStyle={{
+                                        minWidth: '280px'
+                                    }} title={<div>
                                         <ChooseColor onSelectColor={(color) => {
                                             formik.setFieldValue('color', color);
                                             formik.setFieldValue('name', status.name);
