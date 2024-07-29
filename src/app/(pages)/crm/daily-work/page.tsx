@@ -102,6 +102,7 @@ function DailyWorkPage() {
             const response = await crmDailyWorkService.httpCreateDailyWork(values);
             if (response.data) {
                 toast.success('Daily work created successfully');
+                setData([response.data, ...data,]);
                 setOpen(false);
             }
         } catch (error) {
@@ -367,6 +368,7 @@ function DailyWorkPage() {
                     columns={columns}
                     dataSource={data}
                     loading={isLoading}
+                    bordered
                 />
             </div>
         </section>
