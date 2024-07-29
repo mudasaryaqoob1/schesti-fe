@@ -59,11 +59,14 @@ function DailyWorkPage() {
 
     const [isPriorityCellEditing, setIsPriorityCellEditing] = useState(false);
     const [isStatusCellEditing, setIsStatusCellEditing] = useState(false);
+    const [isNoteCellEditing, setIsNoteCellEditing] = useState(false);
 
     // eslint-disable-next-line no-undef
     const priorityCellRef = useRef<HTMLTableDataCellElement | null>(null);
     // eslint-disable-next-line no-undef
     const statusCellRef = useRef<HTMLTableDataCellElement | null>(null);
+    // eslint-disable-next-line no-undef
+    const noteCellRef = useRef<HTMLTableDataCellElement | null>(null);
 
     useEffect(() => {
         getDailyWork(currentDate);
@@ -88,6 +91,12 @@ function DailyWorkPage() {
             ) {
                 setIsStatusCellEditing(false);
             }
+            if (
+                noteCellRef.current &&
+                !noteCellRef.current.contains(event.target)
+            ) {
+                setIsNoteCellEditing(false);
+            }
         };
 
         document.addEventListener('mousedown', handleClickOutside);
@@ -95,7 +104,7 @@ function DailyWorkPage() {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [isPriorityCellEditing, isStatusCellEditing]);
+    }, [isPriorityCellEditing, isStatusCellEditing, isNoteCellEditing]);
 
 
     const formik = useFormik<ICrmDailyWorkCreate>({
@@ -188,6 +197,7 @@ function DailyWorkPage() {
     const handleSave = async (key: string, value: string, record: ICrmDailyWork) => {
         setIsPriorityCellEditing(false);
         setIsStatusCellEditing(false);
+        setIsNoteCellEditing(false);
         setIsLoading(true);
         console.log({ key, value, record });
         try {
@@ -250,17 +260,29 @@ function DailyWorkPage() {
             dataIndex: 'note',
             render(value: string) {
                 return <div className="flex items-center space-x-4 justify-between">
-                    <InputWithoutBorder
-                        value={value}
-
-                    />
+                    {value}
 
                     <span className="text-schestiPrimaryBlack">
                         {value.length}/10
                     </span>
                 </div>;
             },
-            width: 200
+            width: 200,
+            onCell: (record, rowIndex) => {
+                return {
+                    inputType: "note",
+                    onClick: (e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        setIsNoteCellEditing(true);
+                    },
+                    editing: isNoteCellEditing,
+                    handleSave,
+                    record,
+                    rowIndex,
+                    cellRef: noteCellRef
+                }
+            }
         },
         {
             title: 'Status',
@@ -486,13 +508,13 @@ type EditableCellProps = {
     editing: boolean;
     dataIndex: any;
     title: any;
-    inputType: 'status' | 'priority';
+    inputType: 'status' | 'priority' | 'note';
     record: any;
     rowIndex: any;
     statuses: IDailyWorkStatus[];
     priorities: IDailyWorkPriorty[];
     children: React.ReactNode;
-    handleSave: (...args: any) => void;
+    handleSave: (..._args: any) => void;
     // eslint-disable-next-line no-undef
     cellRef: React.RefObject<HTMLTableDataCellElement>;
     [key: string]: any;
@@ -508,9 +530,21 @@ function EditableCell(props: EditableCellProps) {
         cellRef,
         ...restProps
     } = props;
+
+    const [note, setNote] = useState(record?.note || '');
+    useEffect(() => {
+        if (editing && inputType === 'note') {
+            cellRef.current?.querySelector('input')?.focus();
+        }
+    }, [editing, inputType, cellRef])
+
+
+
+
+
     return (
         <td {...restProps} ref={cellRef}>
-            {editing ? (
+            {editing && (inputType === 'priority' || inputType === 'status') ? (
                 <div onClick={(e) => e.stopPropagation()} className="relative capitalize">
                     <span className="font-medium">Choose {inputType}</span>
                     <div className="absolute bg-white border rounded-md w-[200px] top-6 p-3 z-10 space-y-2">
@@ -521,16 +555,32 @@ function EditableCell(props: EditableCellProps) {
                                     handleSave("priority", priority._id, record);
                                 }} key={priority._id} item={priority} />
                             ))
-                        ) : (
+                        ) : inputType === 'status' ? (
                             props.statuses.map((status: IDailyWorkStatus) => (
                                 <DisplayDailyWorkStatus onClick={e => {
                                     e.stopPropagation();
                                     handleSave("status", status._id, record);
                                 }} key={status._id} item={status} />
                             ))
-                        )}
+                        ) : null}
                     </div>
                 </div>
+            ) : editing && inputType === 'note' ? (
+                <InputWithoutBorder
+                    value={note}
+                    onChange={e => setNote(e.target.value)}
+                    placeholder="Enter note"
+                    onBlur={(e) => {
+                        e.stopPropagation();
+                        handleSave("note", note, record)
+                    }}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                            e.stopPropagation();
+                            handleSave("note", note, record)
+                        }
+                    }}
+                />
             ) : (
                 children
             )}
