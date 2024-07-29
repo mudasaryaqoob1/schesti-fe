@@ -22,6 +22,7 @@ type Props = {
     onCreate: (_status: IDailyWorkStatus) => void;
     isFetching: boolean;
     onUpdate: (_status: IDailyWorkStatus) => void;
+    onDelete: (_status: IDailyWorkStatus) => void;
 }
 
 const ValidationSchema = Yup.object().shape({
@@ -29,7 +30,7 @@ const ValidationSchema = Yup.object().shape({
 });
 
 
-export function ManageStatus({ statuses, onCreate, isFetching, onUpdate }: Props) {
+export function ManageStatus({ statuses, onCreate, isFetching, onUpdate, onDelete }: Props) {
     const [showModal, setShowModal] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -99,6 +100,25 @@ export function ManageStatus({ statuses, onCreate, isFetching, onUpdate }: Props
         formik.resetForm();
     }
 
+    function deleteStatusById(id: string) {
+        setIsSubmitting(true);
+        crmDailyWorkService
+            .httpDeleteDailyWorkStatus(id)
+            .then((response) => {
+                if (response.data) {
+                    toast.success('Status deleted successfully');
+                    onDelete(response.data)
+                }
+            })
+            .catch((error) => {
+                const err = error as AxiosError<{ message: string }>;
+                toast.error(err.response?.data.message || 'An error occurred');
+            })
+            .finally(() => {
+                setIsSubmitting(false);
+            });
+    }
+
     return <>
         <ModalComponent
             open={!isFetching && showModal}
@@ -144,7 +164,10 @@ export function ManageStatus({ statuses, onCreate, isFetching, onUpdate }: Props
                                             formik.setFieldValue('_id', status._id);
                                         }} itemColor={status.color} />
                                         <Spin spinning={false}>
-                                            <div className="border-t text-red-500 space-x-2 text-base cursor-pointer py-3 flex items-center border-gray-200">
+                                            <div onClick={e => {
+                                                e.stopPropagation();
+                                                deleteStatusById(status._id);
+                                            }} className="border-t text-red-500 space-x-2 text-base cursor-pointer py-3 flex items-center border-gray-200">
                                                 <DeleteOutlined className="text-xl" />
                                                 <span>Delete</span>
                                             </div>

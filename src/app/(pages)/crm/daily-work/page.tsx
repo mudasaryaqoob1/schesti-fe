@@ -320,6 +320,9 @@ function DailyWorkPage() {
                         onUpdate={status => {
                             setStatuses(statuses.map(_status => _status._id === status._id ? status : _status))
                         }}
+                        onDelete={status => {
+                            setStatuses(statuses.filter(_status => _status._id !== status._id))
+                        }}
                     />
                 </div>
             </div>
