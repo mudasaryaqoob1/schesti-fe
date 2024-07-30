@@ -113,10 +113,17 @@ const useDraw = () => {
       j = i;
     }
 
-    area = +Math.abs(area / 2)//.toFixed(2);
-    area = area/144
-    console.log(xScale, yScale, xScaleMultiplier, yScaleMultiplier, +Math.abs(area / 2).toFixed(2), " ===> Area Calculation values to log")
-    return area * (xScaleMultiplier * xScaleMultiplier)
+    area = +Math.abs(area / 2); //.toFixed(2);
+    area = area / 144;
+    console.log(
+      xScale,
+      yScale,
+      xScaleMultiplier,
+      yScaleMultiplier,
+      +Math.abs(area / 2).toFixed(2),
+      ' ===> Area Calculation values to log'
+    );
+    return area * (xScaleMultiplier * xScaleMultiplier);
   };
 
   // const calculatePolygonArea = (
@@ -308,12 +315,16 @@ const useDraw = () => {
     //   Math.pow(convertPxIntoInches(x2 - x1) * xScaleMultiplier, 2) +
     //   Math.pow(convertPxIntoInches(y2 - y1) * yScaleMultiplier, 2)
     // );
-    let distance = Math.sqrt(
-      Math.pow(x2 - x1, 2) +
-      Math.pow(y2 - y1, 2)
+    let distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+    distance = convertPxIntoInches(distance) * xScaleMultiplier;
+    console.log(
+      precision,
+      coordinates,
+      xScale,
+      yScale,
+      xScaleMultiplier,
+      ' ===> Data of scale inside caluculate'
     );
-    distance = convertPxIntoInches(distance) * xScaleMultiplier
-    console.log(precision, coordinates, xScale, yScale, xScaleMultiplier, " ===> Data of scale inside caluculate")
 
     if (format) {
       return convertToFeetAndInches(distance, precision);
@@ -326,14 +337,20 @@ const useDraw = () => {
     { precision, xScale, yScale }: ScaleData,
     format = false
   ) => {
-    console.log(precision, coordinates, xScale, yScale, " ===> Data of scale perimeter")
+    console.log(
+      precision,
+      coordinates,
+      xScale,
+      yScale,
+      ' ===> Data of scale perimeter'
+    );
     const [x1, y1, x2, y2] = coordinates;
     const xScaleMultiplier = getScaleMultiplier(xScale);
     const yScaleMultiplier = getScaleMultiplier(yScale);
 
     const distance = Math.sqrt(
       Math.pow(convertPxIntoInches(x2 - x1) * xScaleMultiplier, 2) +
-      Math.pow(convertPxIntoInches(y2 - y1) * yScaleMultiplier, 2)
+        Math.pow(convertPxIntoInches(y2 - y1) * yScaleMultiplier, 2)
     );
 
     if (format) {
@@ -440,7 +457,10 @@ const useDraw = () => {
     else if (key === 'count')
       return { projectName: 'Count Measurement', comment: '' };
     else if (key === 'perimeter')
-      return { projectName: 'Perimeter Measurement', comment: points?.length ? calcLineDistance(points, scale, true) : 0, };
+      return {
+        projectName: 'Perimeter Measurement',
+        comment: points?.length ? calcLineDistance(points, scale, true) : 0,
+      };
     else return { projectName: 'Dynamic Measurement', comment: '' };
   };
 
@@ -621,7 +641,7 @@ const useDraw = () => {
         layer,
         space,
         type,
-        category
+        category,
       } = currentItem;
 
       // Check if there's already an entry with the same projectName and pageLabel
@@ -643,7 +663,7 @@ const useDraw = () => {
           layer,
           space,
           type,
-          category
+          category,
         });
       } else {
         result.push({
@@ -663,7 +683,7 @@ const useDraw = () => {
               layer,
               space,
               type,
-              category
+              category,
             },
           ],
         });

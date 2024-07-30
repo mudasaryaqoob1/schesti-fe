@@ -10,7 +10,10 @@ import NoTakeOff from './components/records/NoTakeOff';
 // import InitialUpload from './components/upload/InitialUpload';
 // import CreateInfo from './components/upload/CreateInfo';
 // import TakeOffNew from './components/scale/TakeOffNew';
-import { selectTakeoffSummaries, selectTakeoffSummariesLoading } from '@/redux/takeoffSummaries/takeoffSummaries.Selector';
+import {
+  selectTakeoffSummaries,
+  selectTakeoffSummariesLoading,
+} from '@/redux/takeoffSummaries/takeoffSummaries.Selector';
 // import TakeOffNewPage from './scale/TakeOffNewPage';
 // import { selectTakeoffSummaries } from '@/redux/takeoffSummaries/takeoffSummaries.Selector';
 const TakeOff = () => {
@@ -22,15 +25,20 @@ const TakeOff = () => {
   }, []); // Empty dependency array means this effect runs once on mount
   const summaries = useSelector(selectTakeoffSummaries);
   const loading = useSelector(selectTakeoffSummariesLoading);
-  console.log(summaries, " Summeries");
-  
+  console.log(summaries, ' Summeries');
 
   return (
     <section className="md:px-16 px-10 pt-6 pb-2">
       {/* {summaries?.length > 0 ? <Records /> : <></>} */}
       {
         //@ts-ignore
-      !loading && (!summaries || !Array.isArray(summaries) || !summaries?.length>0) ? <NoTakeOff /> : <Records />}
+        !loading &&
+        (!summaries || !Array.isArray(summaries) || !summaries?.length > 0) ? (
+          <NoTakeOff />
+        ) : (
+          <Records />
+        )
+      }
       {/* <NoTakeOff /> */}
       {/* <InitialUpload /> */}
       {/* <CreateInfo /> */}

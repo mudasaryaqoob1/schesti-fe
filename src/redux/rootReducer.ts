@@ -50,7 +50,7 @@ export type RootState = {
   bidManagementOwner: typeof bidManagementOwnerReducer;
   companyRoles: typeof companyRolesReducer;
   crm: typeof crmReducer;
-  network: typeof networkSlice
+  network: typeof networkSlice;
 };
 const persistConfig = {
   key: 'root',
@@ -82,6 +82,6 @@ const rootReducer = combineReducers<RootState>({
   bidManagementOwner: bidManagementOwnerReducer,
   companyRoles: companyRolesReducer,
   crm: crmReducer,
-  network: networkSlice
+  network: networkSlice,
 });
 export default persistReducer(persistConfig, rootReducer);

@@ -8,7 +8,7 @@ interface Props {
 }
 
 const ReportCard: React.FC<Props> = ({ entity }) => {
-  console.log(entity, " ===> Entity Inside Sindle record card")
+  console.log(entity, ' ===> Entity Inside Sindle record card');
   return (
     <div>
       <div className="pb-4 font-semibold ">

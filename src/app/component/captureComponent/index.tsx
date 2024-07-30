@@ -58,7 +58,7 @@ const CaptureComponent = ({
   // itemsToCapture: DrawHistoryContextInterface;
   // onCapture: (url: string, key: number) => void;
 }) => {
-  const router = useRouter()
+  const router = useRouter();
   const counterImage = new Image();
   counterImage.src = '/count-draw.png';
 
@@ -75,76 +75,103 @@ const CaptureComponent = ({
   //   ReportDataContext
   // ) as ReportDataContextProps;
   // const { drawHistory } = useContext(DrawHistoryContext)
-  const [reportData, setreportData] = useState<any>([])
-  const [uploadFileData, setuploadFileData] = useState<any>([])
+  const [reportData, setreportData] = useState<any>([]);
+  const [uploadFileData, setuploadFileData] = useState<any>([]);
 
   console.log('reportData', reportData, uploadFileData);
 
-  const [takeOff, settakeOff] = useState<any>({})
-  const [loading, setloading] = useState<boolean>(true)
-  const params = useSearchParams()
-  const edit_id = params.get('edit_id')
+  const [takeOff, settakeOff] = useState<any>({});
+  const [loading, setloading] = useState<boolean>(true);
+  const params = useSearchParams();
+  const edit_id = params.get('edit_id');
   const getTakeOffDetails = async (id: string) => {
     try {
-      const data = await takeoffSummaryService.httpGetSignleTakeOffSummary(id)
-      console.log(data, " ===> Data coming for single record of summaruy")
-      settakeOff(data?.data)
+      const data = await takeoffSummaryService.httpGetSignleTakeOffSummary(id);
+      console.log(data, ' ===> Data coming for single record of summaruy');
+      settakeOff(data?.data);
     } catch (error) {
-      console.log(error, "error");
-      router.push('/take-off')
+      console.log(error, 'error');
+      router.push('/take-off');
     }
-  }
-
+  };
 
   useEffect(() => {
     if (edit_id && edit_id?.length > 0) {
-      getTakeOffDetails(edit_id)
+      getTakeOffDetails(edit_id);
     } else {
-      router.push('/take-off')
+      router.push('/take-off');
     }
-  }, [edit_id])
+  }, [edit_id]);
 
-
-  console.log(takeOff, " ====> Take offs")
+  console.log(takeOff, ' ====> Take offs');
   const getPageData = () => {
     let reportData: any = [];
-    if (takeOff?.measurements && Object.keys(takeOff?.measurements) && Object.keys(takeOff?.measurements)?.length > 0) {
+    if (
+      takeOff?.measurements &&
+      Object.keys(takeOff?.measurements) &&
+      Object.keys(takeOff?.measurements)?.length > 0
+    ) {
       Object.keys(takeOff?.measurements)?.map((key: any) => {
-        if (takeOff?.measurements[key] && Object.keys(takeOff?.measurements[key]) && Object.keys(takeOff?.measurements[key])?.length > 0) {
+        if (
+          takeOff?.measurements[key] &&
+          Object.keys(takeOff?.measurements[key]) &&
+          Object.keys(takeOff?.measurements[key])?.length > 0
+        ) {
           Object.keys(takeOff?.measurements[key])?.map((type: any) => {
-            reportData = [...reportData, ...((takeOff?.measurements[key][type] && Array.isArray(takeOff?.measurements[key][type]) && takeOff?.measurements[key][type]?.length > 0)
-              ?
-              takeOff.measurements[key][type].map((arrit: any) => {
-                return {
-                  ...arrit, pageId: key, type, pageData: takeOff?.pages?.find((pg: any) => (pg?.pageId == key)),
-                  pageLabel: takeOff?.pages?.find((pg: any) => (pg?.pageId == key))?.pageNum, color: arrit?.stroke, config: arrit
-                }
-              })
-              :
-              [])]
-          })
+            reportData = [
+              ...reportData,
+              ...(takeOff?.measurements[key][type] &&
+              Array.isArray(takeOff?.measurements[key][type]) &&
+              takeOff?.measurements[key][type]?.length > 0
+                ? takeOff.measurements[key][type].map((arrit: any) => {
+                    return {
+                      ...arrit,
+                      pageId: key,
+                      type,
+                      pageData: takeOff?.pages?.find(
+                        (pg: any) => pg?.pageId == key
+                      ),
+                      pageLabel: takeOff?.pages?.find(
+                        (pg: any) => pg?.pageId == key
+                      )?.pageNum,
+                      color: arrit?.stroke,
+                      config: arrit,
+                    };
+                  })
+                : []),
+            ];
+          });
         }
-      })
+      });
     }
-    console.log(reportData, " ===> Take offs reportData")
-    return reportData
-  }
+    console.log(reportData, ' ===> Take offs reportData');
+    return reportData;
+  };
   // getPageData()
   useEffect(() => {
-    setreportData(getPageData() ?? [])
-    setuploadFileData(takeOff?.pages ?? [])
-  }, [takeOff])
+    setreportData(getPageData() ?? []);
+    setuploadFileData(takeOff?.pages ?? []);
+  }, [takeOff]);
 
   useEffect(() => {
-    console.log(reportData, uploadFileData," ===> loading of capture ")
-    if (Array.isArray(reportData) && reportData?.length > 0 && Array.isArray(uploadFileData) && uploadFileData?.length > 0) {
-      setloading(true)
-      console.log(uploadFileData, reportData, " ===> Data of pages and reports")
+    console.log(reportData, uploadFileData, ' ===> loading of capture ');
+    if (
+      Array.isArray(reportData) &&
+      reportData?.length > 0 &&
+      Array.isArray(uploadFileData) &&
+      uploadFileData?.length > 0
+    ) {
+      setloading(true);
+      console.log(
+        uploadFileData,
+        reportData,
+        ' ===> Data of pages and reports'
+      );
       const loadImage = (src: string) => {
         return new Promise<HTMLImageElement>((resolve, reject) => {
           //@ts-ignore
           const img = new Image();
-          img.crossOrigin = 'anonymous'
+          img.crossOrigin = 'anonymous';
           img.src = src;
           img.onload = () => resolve(img);
           img.onerror = (e: any) => reject(e);
@@ -296,22 +323,24 @@ const CaptureComponent = ({
       };
 
       const captureShapes = async () => {
-        setloading(true)
+        setloading(true);
         try {
           // for(let j = 0; j<uploadFileData?.length; j++){
-            
+
           // }
           // const background = await loadImage(uploadFileData[1]?.src || ''); // Update based on actual data structure
           const promises = reportData.map(async (item) => {
-            const page = uploadFileData?.find((pg: any) => (pg?.pageId == item?.pageId))
-            console.log(page, " ===> Data of pages and reports for Page")
-            let background: any = {}
+            const page = uploadFileData?.find(
+              (pg: any) => pg?.pageId == item?.pageId
+            );
+            console.log(page, ' ===> Data of pages and reports for Page');
+            let background: any = {};
             if (page) {
-              background = await loadImage(page?.src || '')
+              background = await loadImage(page?.src || '');
             } else {
-              background = await loadImage(uploadFileData[0]?.src || '')
+              background = await loadImage(uploadFileData[0]?.src || '');
             }
-            console.log(background, " ===> Data of pages and reports for Page")
+            console.log(background, ' ===> Data of pages and reports for Page');
             const url = await captureShape(
               { ...item.config, text: item.comment, name: item.projectName },
               background,
@@ -325,27 +354,29 @@ const CaptureComponent = ({
 
           const newData = await Promise.all(promises);
           setData(newData);
-          setloading(false)
+          setloading(false);
         } catch (error) {
-          setloading(false)
-          console.log(error, 'error while capturing loading of capture')
+          setloading(false);
+          console.log(error, 'error while capturing loading of capture');
         }
       };
 
       if (reportData.length) captureShapes();
-    }else{
-      setData([])
-      setloading(false)
+    } else {
+      setData([]);
+      setloading(false);
     }
-  }, [reportData, uploadFileData])
-  useEffect(()=>{console.log(loading, " ===> loading of capture")},[loading])
-  useEffect(()=>{
-    return ()=>{
-      setData([])
-      setuploadFileData([])
-      setreportData([])
-    }
-  },[])
+  }, [reportData, uploadFileData]);
+  useEffect(() => {
+    console.log(loading, ' ===> loading of capture');
+  }, [loading]);
+  useEffect(() => {
+    return () => {
+      setData([]);
+      setuploadFileData([]);
+      setreportData([]);
+    };
+  }, []);
 
   const saveData = () => {
     // if (data.length > 0) {

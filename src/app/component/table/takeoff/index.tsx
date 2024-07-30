@@ -45,39 +45,40 @@ const columns: ColumnsType<DataType> = [
     dataIndex: 'action',
   },
 ];
-export interface ITableProps { handleEditClick: (item: any) => void, search: any; }
-const Index: React.FC<ITableProps> = ({ handleEditClick, search }: ITableProps) => {
+export interface ITableProps {
+  handleEditClick: (item: any) => void;
+  search: any;
+}
+const Index: React.FC<ITableProps> = ({
+  handleEditClick,
+  search,
+}: ITableProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const summaries = useSelector(selectTakeoffSummaries);
   const handleMenuClick = (e: any, record?: any) => {
     if (e.key === 'edit') {
       // Handle edit action
       console.log('Edit action', record);
-      handleEditClick(record)
+      handleEditClick(record);
     } else if (e.key === 'delete') {
       // Handle delete action
       console.log('Delete action', record);
-      dispatch(deleteSummaries(record?._id))
+      dispatch(deleteSummaries(record?._id));
     }
   };
 
   const menu = (it: any) => (
-    <Menu className='w-[180px]' onClick={(e: any) => { handleMenuClick(e, it) }}>
-      <Menu.Item key="edit">
-        Edit
-      </Menu.Item>
-      <Menu.Item key="view_estimate">
-        View Estimate
-      </Menu.Item>
-      <Menu.Item key="download">
-        Download
-      </Menu.Item>
-      <Menu.Item key="email">
-        Email
-      </Menu.Item>
-      <Menu.Item key="delete">
-        Delete
-      </Menu.Item>
+    <Menu
+      className="w-[180px]"
+      onClick={(e: any) => {
+        handleMenuClick(e, it);
+      }}
+    >
+      <Menu.Item key="edit">Edit</Menu.Item>
+      <Menu.Item key="view_estimate">View Estimate</Menu.Item>
+      <Menu.Item key="download">Download</Menu.Item>
+      <Menu.Item key="email">Email</Menu.Item>
+      <Menu.Item key="delete">Delete</Menu.Item>
     </Menu>
   );
 
@@ -86,9 +87,12 @@ const Index: React.FC<ITableProps> = ({ handleEditClick, search }: ITableProps) 
   }, []); // Empty dependency array means this effect runs once on mount
 
   const formattedData = useMemo(() => {
-    let sum = (search && search?.length > 0)
-      ? summaries?.filter((i: any) => (i.name?.toLowerCase()?.includes(search?.toLowerCase())))
-      : summaries
+    let sum =
+      search && search?.length > 0
+        ? summaries?.filter((i: any) =>
+            i.name?.toLowerCase()?.includes(search?.toLowerCase())
+          )
+        : summaries;
     return sum?.map(
       (item: {
         _id: any;
@@ -128,8 +132,15 @@ const Index: React.FC<ITableProps> = ({ handleEditClick, search }: ITableProps) 
           //     Delete
           //   </button>
           // </span>
-          <Dropdown className='flex items-center justify-center' overlay={menu(item)} trigger={['click']}>
-            <Button type="text" icon={<MoreOutlined className='!text-2xl !font-[800]' />} />
+          <Dropdown
+            className="flex items-center justify-center"
+            overlay={menu(item)}
+            trigger={['click']}
+          >
+            <Button
+              type="text"
+              icon={<MoreOutlined className="!text-2xl !font-[800]" />}
+            />
           </Dropdown>
         ),
       })
@@ -147,7 +158,12 @@ const Index: React.FC<ITableProps> = ({ handleEditClick, search }: ITableProps) 
 
   return (
     <div className="mt-4">
-      <Table pagination={{ pageSize: 8 }} columns={columns} dataSource={formattedData} onChange={onChange} />
+      <Table
+        pagination={{ pageSize: 8 }}
+        columns={columns}
+        dataSource={formattedData}
+        onChange={onChange}
+      />
     </div>
   );
 };

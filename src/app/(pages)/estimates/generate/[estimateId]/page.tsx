@@ -26,9 +26,8 @@ import EmailTemplate from '@/app/component/customEmailTemplete';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { estimateRequestService } from '@/app/services/estimates.service';
-import EstimatesTable, {
-  // estimateTableColumns,
-} from '../components/estimatesTable';
+import EstimatesTable from // estimateTableColumns,
+'../components/estimatesTable';
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
 // import EstimatePDF from './estimatePDF';
 
@@ -302,7 +301,11 @@ const ViewEstimateDetail = () => {
             <WhiteButton text="Download CSV" className="w-full" />
             </CSVLink> */}
 
-            <WhiteButton text="Download Comapny PDF" className="w-full" onClick={handleDownload} />
+          <WhiteButton
+            text="Download Comapny PDF"
+            className="w-full"
+            onClick={handleDownload}
+          />
           {/* <PDFDownloadLink
             document={
               <EstimatePDF
@@ -355,7 +358,7 @@ const ViewEstimateDetail = () => {
         </div>
       </div>
 
-      <div className='p-12' ref={pdfContainerRef}>
+      <div className="p-12" ref={pdfContainerRef}>
         <div className={`${bg_style} p-5 mt-4`}>
           <div className="flex justify-between items-center">
             <QuaternaryHeading

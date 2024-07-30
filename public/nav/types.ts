@@ -12,13 +12,13 @@ export interface CoordinatesInterface {
 
 export interface CountInterface extends CoordinatesInterface {
   dateTime: Date;
-  projectName?:any;
-  category?:any;
-  subcategory?:any;
-  user?:any;
-  textColor?:any;
-  mId?:any;
-  countType?:string;
+  projectName?: any;
+  category?: any;
+  subcategory?: any;
+  user?: any;
+  textColor?: any;
+  mId?: any;
+  countType?: string;
 }
 
 export interface LineInterface {
@@ -28,13 +28,13 @@ export interface LineInterface {
   lineCap?: LineCap;
   textUnit: number;
   dateTime?: Date;
-  projectName?:any;
-  category?:any;
-  subcategory?:any;
-  user?:any;
-  textColor?:any;
-  mId?:any;
-  text?:any;
+  projectName?: any;
+  category?: any;
+  subcategory?: any;
+  user?: any;
+  textColor?: any;
+  mId?: any;
+  text?: any;
 }
 
 export interface CircleInterface extends CoordinatesInterface {
@@ -49,14 +49,14 @@ export interface PolygonConfigInterface {
   depth?: number;
   textUnit: number;
   dateTime: Date;
-  projectName?:any;
-  category?:any;
-  subcategory?:any;
-  user?:any;
-  textColor?:any;
-  fillColor?:any;
-  mId?:any;
-  text?:any;
+  projectName?: any;
+  category?: any;
+  subcategory?: any;
+  user?: any;
+  textColor?: any;
+  fillColor?: any;
+  mId?: any;
+  text?: any;
 }
 
 export interface DrawInterface {
@@ -65,7 +65,7 @@ export interface DrawInterface {
   volume: PolygonConfigInterface[];
   dynamic: LineInterface[];
   count: CountInterface[];
-  perimeter?:any;
+  perimeter?: any;
 }
 
 export interface Measurements {
@@ -97,7 +97,7 @@ export type ScaleLabel =
   | 'perimeter'
   | 'Zoom In'
   | 'Zoom Out'
-  | 'Room Color'
+  | 'Room Color';
 
 export type DynamicScale = 'fill' | 'create' | 'clear';
 

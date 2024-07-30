@@ -147,21 +147,23 @@ const Records = () => {
 
   const handleEditClick = (item: any) => {
     router.push(`/take-off/scale?edit_id=${item?._id}`);
-  }
-  const [search, setsearch] = useState<any>("")
+  };
+  const [search, setsearch] = useState<any>('');
 
   return (
     <div className={`${bg_style} p-5`}>
       <div className="flex justify-between items-center mb-3">
         <TertiaryHeading title="Takeoff Project list" />
-        <div className='flex items-center justify-center gap-x-4' >
+        <div className="flex items-center justify-center gap-x-4">
           <Input
             placeholder="Search"
-            prefix={<SearchOutlined style={{ color: 'rgba(0,0,0,.45)' }}/>}
-            size='large'
-            style={{width:300}}
-            className='!shadow-sm'
-            onChange={(e)=>{setsearch(e?.target?.value)}}
+            prefix={<SearchOutlined style={{ color: 'rgba(0,0,0,.45)' }} />}
+            size="large"
+            style={{ width: 300 }}
+            className="!shadow-sm"
+            onChange={(e) => {
+              setsearch(e?.target?.value);
+            }}
           />
           <Button
             text="Start New Takeoff"

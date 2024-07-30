@@ -6,7 +6,7 @@ interface Props {
   title?: string;
   width?: string;
   destroyOnClose?: boolean;
-  className?:any;
+  className?: any;
 }
 const ModalComponent = ({
   setOpen,
@@ -14,7 +14,7 @@ const ModalComponent = ({
   children,
   width = '600px',
   destroyOnClose = false,
-  className
+  className,
 }: Props) => {
   const handleCancel = () => {
     setOpen(false);

@@ -15,7 +15,7 @@ export function InfoContainer({
   description: string;
 }) {
   return (
-    <View style={[ styles.gridItem]}>
+    <View style={[styles.gridItem]}>
       <PdfHeading text={title} />
       <PdfText text={description} />
     </View>
