@@ -7,46 +7,52 @@ import { IEstimateRequest } from '@/app/interfaces/estimateRequests/estimateRequ
 class NetworkingService extends HttpService {
   private readonly prefix: string = 'api/networking';
 
-  httpGetSchestiUsers = (
-    { userRole,
-      searchText,
-      locationText,
-      page = 0,
-      limit = 9, selectedTrades, selectedStates }: {
-        userRole: string,
-        searchText: string,
-        locationText: string,
-        page?: number,
-        limit?: number, selectedTrades: string, selectedStates: string
-      }
-  ): Promise<IResponseInterface> =>
-    this.get(`${this.prefix}/getSchestiUsers?userRole=${userRole}&searchText=${searchText}&locationText=${locationText}&page=${page}&limit=${limit}&selectedTrades=${selectedTrades}&selectedStates=${selectedStates}`);
+  httpGetSchestiUsers = ({
+    userRole,
+    searchText,
+    locationText,
+    page = 0,
+    limit = 9,
+    selectedTrades,
+    selectedStates,
+  }: {
+    userRole: string;
+    searchText: string;
+    locationText: string;
+    page?: number;
+    limit?: number;
+    selectedTrades: string;
+    selectedStates: string;
+  }): Promise<IResponseInterface> =>
+    this.get(
+      `${this.prefix}/getSchestiUsers?userRole=${userRole}&searchText=${searchText}&locationText=${locationText}&page=${page}&limit=${limit}&selectedTrades=${selectedTrades}&selectedStates=${selectedStates}`
+    );
 
-  httpGetMyNetworkUsers = (
-    { userRole,
-      searchText,
-      locationText,
-      page = 0,
-      limit = 9 }: {
-        userRole: string,
-        searchText: string,
-        locationText: string,
-        page?: number,
-        limit?: number
-      }
-  ): Promise<IResponseInterface> =>
+  httpGetMyNetworkUsers = ({
+    userRole,
+    searchText,
+    locationText,
+    page = 0,
+    limit = 9,
+  }: {
+    userRole: string;
+    searchText: string;
+    locationText: string;
+    page?: number;
+    limit?: number;
+  }): Promise<IResponseInterface> =>
     this.get(
       `${this.prefix}/getMyNetworkUsers?userRole=${userRole}&searchText=${searchText}&locationText=${locationText}&page=${page}&limit=${limit}`
     );
-  httpGetInvitedClients = (
-    { searchText,
-      page = 0,
-      limit = 9 }: {
-        searchText: string,
-        page?: number,
-        limit?: number
-      }
-  ): Promise<IResponseInterface> =>
+  httpGetInvitedClients = ({
+    searchText,
+    page = 0,
+    limit = 9,
+  }: {
+    searchText: string;
+    page?: number;
+    limit?: number;
+  }): Promise<IResponseInterface> =>
     this.get(
       `${this.prefix}/getInvitedClients?searchText=${searchText}&page=${page}&limit=${limit}`
     );

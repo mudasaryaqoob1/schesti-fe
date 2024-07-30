@@ -11,7 +11,6 @@ import ReportCard from '@/app/component/reportCard';
 import { Spin } from 'antd';
 import generatePDF from '@/app/component/captureComponent/generatePdf';
 
-
 // const groupByType = (items: dataInterface[]): dataInterface[][] => {
 //   console.log(items, ' ===> Data interface');
 
@@ -54,68 +53,97 @@ const groupByCategory = (items: dataInterface[]): dataInterface[][] => {
 interface Props {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   takeOff?: any;
-  modalOpen?:any;
+  modalOpen?: any;
 }
 
 const ReportModal = ({ setModalOpen, takeOff }: Props) => {
-
   const stageRef = useRef<Konva.Stage>(null);
   const [data, setData] = useState<dataInterface[]>([]);
-  const [reportData, setreportData] = useState<any>([])
-  const [uploadFileData, setuploadFileData] = useState<any>([])
+  const [reportData, setreportData] = useState<any>([]);
+  const [uploadFileData, setuploadFileData] = useState<any>([]);
   const { calculateMidpoint, calculatePolygonCenter } = useDraw();
   // const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [loading, setloading] = useState<boolean>(true)
-
+  const [loading, setloading] = useState<boolean>(true);
 
   //@ts-ignore
   const counterImage = new Image();
   counterImage.src = '/count-draw.png';
 
-
-  console.log(takeOff, " ====> Take offs")
+  console.log(takeOff, ' ====> Take offs');
   const getPageData = () => {
     let reportData: any = [];
-    if (takeOff?.measurements && Object.keys(takeOff?.measurements) && Object.keys(takeOff?.measurements)?.length > 0) {
+    if (
+      takeOff?.measurements &&
+      Object.keys(takeOff?.measurements) &&
+      Object.keys(takeOff?.measurements)?.length > 0
+    ) {
       Object.keys(takeOff?.measurements)?.map((key: any) => {
-        if (takeOff?.measurements[key] && Object.keys(takeOff?.measurements[key]) && Object.keys(takeOff?.measurements[key])?.length > 0) {
+        if (
+          takeOff?.measurements[key] &&
+          Object.keys(takeOff?.measurements[key]) &&
+          Object.keys(takeOff?.measurements[key])?.length > 0
+        ) {
           Object.keys(takeOff?.measurements[key])?.map((type: any) => {
-            reportData = [...reportData, ...((takeOff?.measurements[key][type] && Array.isArray(takeOff?.measurements[key][type]) && takeOff?.measurements[key][type]?.length > 0)
-              ?
-              takeOff.measurements[key][type].map((arrit: any) => {
-                return {
-                  ...arrit, pageId: key, type, pageData: takeOff?.pages?.find((pg: any) => (pg?.pageId == key)),
-                  pageLabel: takeOff?.pages?.find((pg: any) => (pg?.pageId == key))?.pageNum, color: arrit?.stroke, config: arrit
-                }
-              })
-              :
-              [])]
-          })
+            reportData = [
+              ...reportData,
+              ...(takeOff?.measurements[key][type] &&
+              Array.isArray(takeOff?.measurements[key][type]) &&
+              takeOff?.measurements[key][type]?.length > 0
+                ? takeOff.measurements[key][type].map((arrit: any) => {
+                    return {
+                      ...arrit,
+                      pageId: key,
+                      type,
+                      pageData: takeOff?.pages?.find(
+                        (pg: any) => pg?.pageId == key
+                      ),
+                      pageLabel: takeOff?.pages?.find(
+                        (pg: any) => pg?.pageId == key
+                      )?.pageNum,
+                      color: arrit?.stroke,
+                      config: arrit,
+                    };
+                  })
+                : []),
+            ];
+          });
         }
-      })
+      });
     }
-    console.log(reportData, " ===> Take offs reportData")
-    return reportData
-  }
+    console.log(reportData, ' ===> Take offs reportData');
+    return reportData;
+  };
   // getPageData()
   useEffect(() => {
-    setreportData(getPageData() ?? [])
-    setuploadFileData(takeOff?.pages ?? [])
-  }, [takeOff])
+    setreportData(getPageData() ?? []);
+    setuploadFileData(takeOff?.pages ?? []);
+  }, [takeOff]);
 
   useEffect(() => {
-    console.log(reportData, uploadFileData," ===> loading of capture ")
-    if (Array.isArray(reportData) && reportData?.length > 0 && Array.isArray(uploadFileData) && uploadFileData?.length > 0) {
-      setloading(true)
-      console.log(uploadFileData, reportData, " ===> Data of pages and reports")
+    console.log(reportData, uploadFileData, ' ===> loading of capture ');
+    if (
+      Array.isArray(reportData) &&
+      reportData?.length > 0 &&
+      Array.isArray(uploadFileData) &&
+      uploadFileData?.length > 0
+    ) {
+      setloading(true);
+      console.log(
+        uploadFileData,
+        reportData,
+        ' ===> Data of pages and reports'
+      );
       const loadImage = (src: string) => {
         return new Promise<HTMLImageElement>((resolve, reject) => {
           //@ts-ignore
           const img = new Image();
-          img.crossOrigin = 'anonymous'
+          img.crossOrigin = 'anonymous';
           img.src = `${src}?cacheBust=${new Date().getTime()}`;
           img.onload = () => resolve(img);
-          img.onerror = (e: any) => {console.log(e," ==> Page image loading of capture");reject(e)};
+          img.onerror = (e: any) => {
+            console.log(e, ' ==> Page image loading of capture');
+            reject(e);
+          };
         });
       };
 
@@ -191,7 +219,7 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
                   strokeWidth,
                   lineCap,
                   closed: shapeType === 'area' || shapeType === 'volume', // Close path for areas and volumes
-                  fill:shape?.fillColor
+                  fill: shape?.fillColor,
                 });
                 layer.add(line);
                 console.warn(shape, 'sssss');
@@ -227,7 +255,7 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
                   text: shape.text,
                   fontSize: Math.floor(textSize) * 10 + 25,
                   fontFamily: 'Calibri',
-                  fill: shape?.textColor??'red',
+                  fill: shape?.textColor ?? 'red',
                 });
                 layer.add(text);
               }
@@ -265,22 +293,30 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
       };
 
       const captureShapes = async () => {
-        setloading(true)
+        setloading(true);
         try {
           // for(let j = 0; j<uploadFileData?.length; j++){
-            
+
           // }
           // const background = await loadImage(uploadFileData[1]?.src || ''); // Update based on actual data structure
           const promises = reportData.map(async (item) => {
-            const page = uploadFileData?.find((pg: any) => (pg?.pageId == item?.pageId))
-            console.log(page, " ===> Data of pages and reports for Page loading of capture")
-            let background: any = {}
+            const page = uploadFileData?.find(
+              (pg: any) => pg?.pageId == item?.pageId
+            );
+            console.log(
+              page,
+              ' ===> Data of pages and reports for Page loading of capture'
+            );
+            let background: any = {};
             if (page) {
-              background = await loadImage(page?.src || '')
+              background = await loadImage(page?.src || '');
             } else {
-              background = await loadImage(uploadFileData[0]?.src || '')
+              background = await loadImage(uploadFileData[0]?.src || '');
             }
-            console.log(background, " ===> Data of pages and reports for Page bottom loading of capture")
+            console.log(
+              background,
+              ' ===> Data of pages and reports for Page bottom loading of capture'
+            );
             const url = await captureShape(
               { ...item.config, text: item.text, name: item.projectName },
               background,
@@ -294,28 +330,30 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
 
           const newData = await Promise.all(promises);
           setData(newData);
-          setloading(false)
+          setloading(false);
         } catch (error) {
-          setloading(false)
-          console.log(error, 'error while capturing loading of capture')
+          setloading(false);
+          console.log(error, 'error while capturing loading of capture');
         }
       };
 
       if (reportData.length) captureShapes();
-    }else{
-      setData([])
-      setloading(false)
+    } else {
+      setData([]);
+      setloading(false);
     }
-  }, [reportData, uploadFileData])
-  useEffect(()=>{console.log(loading, " ===> loading of capture")},[loading])
-  useEffect(()=>{
-    return ()=>{
-      setData([])
-      setuploadFileData([])
-      setreportData([])
-    }
-  },[])
-  console.log(data, ' ===> data to capture')
+  }, [reportData, uploadFileData]);
+  useEffect(() => {
+    console.log(loading, ' ===> loading of capture');
+  }, [loading]);
+  useEffect(() => {
+    return () => {
+      setData([]);
+      setuploadFileData([]);
+      setreportData([]);
+    };
+  }, []);
+  console.log(data, ' ===> data to capture');
 
   return (
     <div className="py-2.5 px-6 bg-white border border-solid border-elboneyGray rounded-[4px] z-50 w-[90vw] h-[90vh] flex flex-col">
@@ -342,14 +380,14 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
           /> */}
         </div>
       </section>
-      <section className='w-full grow overflow-y-auto'>
+      <section className="w-full grow overflow-y-auto">
         <div>
           {/* Report Generation Loading */}
-          {loading &&
-            <div className='rounded-t-2xl absolute top-0 left-0 w-[100%] h-[100%] bg-slate-200 flex justify-center items-center bg-opacity-30 z-50' >
-              <Spin size='large' />
+          {loading && (
+            <div className="rounded-t-2xl absolute top-0 left-0 w-[100%] h-[100%] bg-slate-200 flex justify-center items-center bg-opacity-30 z-50">
+              <Spin size="large" />
             </div>
-          }
+          )}
           <Stage
             ref={stageRef}
             width={800}

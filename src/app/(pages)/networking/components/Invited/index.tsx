@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import Search from './Search'
-import InvitedCard from './SingleCard'
+import React, { useEffect, useState } from 'react';
+import Search from './Search';
+import InvitedCard from './SingleCard';
 import NoData from '../NoData';
 import { useSelector } from 'react-redux';
 import { networkingService } from '@/app/services/networking.service';
@@ -8,62 +8,60 @@ import { InvitedSearchTypes } from './Search';
 import Loader from '@/app/component/loader';
 
 const InvitedClients = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<unknown>('');
+  const [invitedUsers, setinvitedUsers] = useState({ invited: [] });
+  const [searchText, setSearchText] = useState('');
+  const [filters, setFilters] = useState({
+    page: 1,
+    limit: 10,
+    totalPages: 0,
+    totalRecords: 0,
+  });
 
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<unknown>('');
-    const [invitedUsers, setinvitedUsers] = useState({ invited: [] });
-    const [searchText, setSearchText] = useState('');
-    const [filters, setFilters] = useState({
-        page: 1,
-        limit: 10,
-        totalPages: 0,
-        totalRecords: 0
+  const { invited } = useSelector((state: any) => state.network);
+  const getInvitedUsers = async () => {
+    const { data } = await networkingService.httpGetInvitedClients({
+      searchText,
+      page: filters.page - 1,
+      limit: filters.limit,
     });
-
-    const { invited } = useSelector((state: any) => state.network);
-    const getInvitedUsers = async () => {
-        const { data } = await networkingService.httpGetInvitedClients({ searchText, page: filters.page - 1, limit: filters.limit });
-        const {
-            user,
-            totalPages,
-            totalRecords,
-        } = data;
-        setFilters({ ...filters, totalRecords, totalPages })
-        setinvitedUsers(user);
-
+    const { user, totalPages, totalRecords } = data;
+    setFilters({ ...filters, totalRecords, totalPages });
+    setinvitedUsers(user);
+  };
+  useEffect(() => {
+    try {
+      setIsLoading(true);
+      getInvitedUsers();
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      setError(error);
     }
-    useEffect(() => {
-        try {
-            setIsLoading(true);
-            getInvitedUsers();
-            setIsLoading(false);
-        } catch (error) {
-            setIsLoading(false);
-            setError(error);
-        }
-    }, [invited, searchText, filters.page])
+  }, [invited, searchText, filters.page]);
 
-    return (
-        <div>
-            <Search searchValuesHandler={({ searchText }: InvitedSearchTypes) => {
-                setSearchText(searchText);
-            }} />
-            {
-                isLoading ? <Loader /> : invitedUsers.invited.length ? (
-                    <div className="grid grid-cols-3 gap-4 mt-3.5">
-                        {
-                            invitedUsers.invited.map((userData: any) => (
-                                <div className="col-span-1">
-                                    <InvitedCard {...userData} />
-                                </div>
-                            ))
-                        }
-                    </div>
-                ) : (
-                    <NoData />
-                )
-            }
-            {/* {
+  return (
+    <div>
+      <Search
+        searchValuesHandler={({ searchText }: InvitedSearchTypes) => {
+          setSearchText(searchText);
+        }}
+      />
+      {isLoading ? (
+        <Loader />
+      ) : invitedUsers.invited.length ? (
+        <div className="grid grid-cols-3 gap-4 mt-3.5">
+          {invitedUsers.invited.map((userData: any) => (
+            <div className="col-span-1">
+              <InvitedCard {...userData} />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <NoData />
+      )}
+      {/* {
                 filters.totalPages > 0 && (
                     <div className="mt-1 flex justify-center">
                         <Pagination
@@ -79,8 +77,8 @@ const InvitedClients = () => {
                     </div>
                 )
             } */}
-        </div>
-    )
-}
+    </div>
+  );
+};
 
-export default InvitedClients
+export default InvitedClients;

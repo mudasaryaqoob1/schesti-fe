@@ -41,9 +41,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           },
         }}
       >
-        <DndProvider backend={HTML5Backend}>
-          {children}
-        </DndProvider>
+        <DndProvider backend={HTML5Backend}>{children}</DndProvider>
       </ConfigProvider>
       <ProgressBar
         height="4px"

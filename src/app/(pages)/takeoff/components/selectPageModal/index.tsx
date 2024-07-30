@@ -14,39 +14,46 @@ interface Props {
   uploadFileData?: any;
   handleSrc?: any;
   router?: any;
-  loadingPre?:any
-  handleReselect?:any
+  loadingPre?: any;
+  handleReselect?: any;
 }
 
-const SelectPageModal = ({ setModalOpen, uploadFileData, handleSrc, router,loadingPre,handleReselect }: Props) => {
+const SelectPageModal = ({
+  setModalOpen,
+  uploadFileData,
+  handleSrc,
+  router,
+  loadingPre,
+  handleReselect,
+}: Props) => {
   // const dispatch = useDispatch<AppDispatch>();
   // const allPresets = useSelector(selectTakeoffPreset);
-  const [selectedPages, setselectedPages] = useState<any>([])
-  const [loading, setloading] = useState(false)
+  const [selectedPages, setselectedPages] = useState<any>([]);
+  const [loading, setloading] = useState(false);
 
   const handleAddRemove = (item: any) => {
-    const itemExists = selectedPages?.find((i: any) => i == item)
+    const itemExists = selectedPages?.find((i: any) => i == item);
     if (itemExists) {
-      const filtered = selectedPages?.filter((i: any) => i != item)
-      setselectedPages(filtered)
+      const filtered = selectedPages?.filter((i: any) => i != item);
+      setselectedPages(filtered);
     } else {
-      setselectedPages((ps: any) => ([...ps, item]))
+      setselectedPages((ps: any) => [...ps, item]);
     }
-  }
+  };
 
-  console.log(selectedPages, " ===> selectedPages");
+  console.log(selectedPages, ' ===> selectedPages');
 
   const handleCalibrate = () => {
     try {
-      handleReselect()
-      setloading(true)
-      handleSrc(selectedPages)
+      handleReselect();
+      setloading(true);
+      handleSrc(selectedPages);
       // setModalOpen(false)
       router.push('/takeoff/scale');
     } catch (error) {
-      console.log(error, " error while adding");
-      setloading(false)
-      handleReselect()
+      console.log(error, ' error while adding');
+      setloading(false);
+      handleReselect();
     }
   };
 
@@ -56,7 +63,7 @@ const SelectPageModal = ({ setModalOpen, uploadFileData, handleSrc, router,loadi
         <div className="flex justify-between items-center border-b-Gainsboro ">
           <div>
             <QuaternaryHeading
-              title={`Select Pages ${loadingPre == true ? (uploadFileData?.length+' pages loaded') : ''}`}
+              title={`Select Pages ${loadingPre == true ? uploadFileData?.length + ' pages loaded' : ''}`}
               className="text-graphiteGray font-bold"
             />
             {/* <QuinaryHeading
@@ -73,24 +80,60 @@ const SelectPageModal = ({ setModalOpen, uploadFileData, handleSrc, router,loadi
             onClick={() => setModalOpen(false)}
           /> */}
         </div>
-        <div className='py-6' >
-          <div className='mb-4 px-5 flex gap-x-4 justify-end' >
-            <span className='underline cursor-pointer text-[#7138df]' onClick={() => { setselectedPages(uploadFileData) }} >select all</span>
-            <span className='underline cursor-pointer text-[#7138df]' onClick={() => { setselectedPages([]) }} >clear</span>
+        <div className="py-6">
+          <div className="mb-4 px-5 flex gap-x-4 justify-end">
+            <span
+              className="underline cursor-pointer text-[#7138df]"
+              onClick={() => {
+                setselectedPages(uploadFileData);
+              }}
+            >
+              select all
+            </span>
+            <span
+              className="underline cursor-pointer text-[#7138df]"
+              onClick={() => {
+                setselectedPages([]);
+              }}
+            >
+              clear
+            </span>
           </div>
-          <div className='flex justify-center flex-wrap gap-6 max-h-[400px] overflow-y-auto no-scrollbar' >
-            {
-              uploadFileData && Array.isArray(uploadFileData) && uploadFileData?.map((i: any,ind:number) => {
-                const isIncluded = selectedPages?.find((it: any) => it == i) ? true : false
-                return <div key={ind} onClick={() => { handleAddRemove(i) }} className={`border relative w-56 h-72 rounded-xl cursor-pointer ${isIncluded ? 'border-[#7138df]' : 'border-gray-400'}`} >
-                  <img src={i?.src} className='w-full h-full rounded-xl' alt='img' />
-                  <span className={`w-3 h-3 rounded-xl absolute top-3 right-3 cursor-pointer border ${isIncluded ? 'bg-[#7138df] border-[#7138df]' : 'bg-transparent border-gray-400'}`} >.</span>
-                </div>
-              })
-            }
-            {loadingPre && <div className={`border-[2px] relative w-56 h-72 rounded-xl cursor-pointer`} >
-              Loading...
-            </div>}
+          <div className="flex justify-center flex-wrap gap-6 max-h-[400px] overflow-y-auto no-scrollbar">
+            {uploadFileData &&
+              Array.isArray(uploadFileData) &&
+              uploadFileData?.map((i: any, ind: number) => {
+                const isIncluded = selectedPages?.find((it: any) => it == i)
+                  ? true
+                  : false;
+                return (
+                  <div
+                    key={ind}
+                    onClick={() => {
+                      handleAddRemove(i);
+                    }}
+                    className={`border relative w-56 h-72 rounded-xl cursor-pointer ${isIncluded ? 'border-[#7138df]' : 'border-gray-400'}`}
+                  >
+                    <img
+                      src={i?.src}
+                      className="w-full h-full rounded-xl"
+                      alt="img"
+                    />
+                    <span
+                      className={`w-3 h-3 rounded-xl absolute top-3 right-3 cursor-pointer border ${isIncluded ? 'bg-[#7138df] border-[#7138df]' : 'bg-transparent border-gray-400'}`}
+                    >
+                      .
+                    </span>
+                  </div>
+                );
+              })}
+            {loadingPre && (
+              <div
+                className={`border-[2px] relative w-56 h-72 rounded-xl cursor-pointer`}
+              >
+                Loading...
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -99,7 +142,13 @@ const SelectPageModal = ({ setModalOpen, uploadFileData, handleSrc, router,loadi
           <Button
             text="Change File"
             className="!bg-snowWhite !text-abyssalBlack !py-1.5 "
-            onClick={() => {setselectedPages([]);setModalOpen(false); if(handleReselect){handleReselect()}}}
+            onClick={() => {
+              setselectedPages([]);
+              setModalOpen(false);
+              if (handleReselect) {
+                handleReselect();
+              }
+            }}
           />
         </div>
         <div>

@@ -28,13 +28,17 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
   const { drawHistory } = useContext(
     DrawHistoryContext
   ) as DrawHistoryContextProps;
-  const { reportData, handleReportData, updateProjectNameInReportData, updateProjectColorInReportData, updateCategoryInReportData } =
-    useContext(ReportDataContext) as ReportDataContextProps;
+  const {
+    reportData,
+    handleReportData,
+    updateProjectNameInReportData,
+    updateProjectColorInReportData,
+    updateCategoryInReportData,
+  } = useContext(ReportDataContext) as ReportDataContextProps;
 
-  console.log(drawHistory, reportData, " newDrawHistory");
-  const userData = useSelector(selectUser)
-  console.log(userData, " userData");
-    
+  console.log(drawHistory, reportData, ' newDrawHistory');
+  const userData = useSelector(selectUser);
+  console.log(userData, ' userData');
 
   useEffect(() => {
     if (drawHistory) {
@@ -44,23 +48,23 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
           Object.entries(pageData).forEach(([drawName, drawData]) => {
             if (drawData.length) {
               const tablePayload = drawData.map((data: any) => {
-                const { projectName } =
-                  getProjectAndCommentNameForTable(
-                    drawName as keyof DrawInterface,
-                    data.points,
-                    data.depth || 0,
-                    scaleData
-                      ? scaleData[pageNumber.toString()]
-                      : { xScale: `1in=1in`, yScale: `1in=1in`, precision: '1' }
-                  );
+                const { projectName } = getProjectAndCommentNameForTable(
+                  drawName as keyof DrawInterface,
+                  data.points,
+                  data.depth || 0,
+                  scaleData
+                    ? scaleData[pageNumber.toString()]
+                    : { xScale: `1in=1in`, yScale: `1in=1in`, precision: '1' }
+                );
 
                 return {
                   // projectName,//previouse usage
-                  projectName: data?.projectName ?? projectName,//new usage
-                  category: data?.category ?? projectName,//new usage
+                  projectName: data?.projectName ?? projectName, //new usage
+                  category: data?.category ?? projectName, //new usage
                   pageLabel: pageNumber,
-                  comment : drawName,
-                  author: userData?.user?.name ?? userData?.user?.name ?? 'User',
+                  comment: drawName,
+                  author:
+                    userData?.user?.name ?? userData?.user?.name ?? 'User',
                   date: data.dateTime,
                   status: '---',
                   color: data.stroke,
@@ -93,9 +97,8 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
   //     projectName.includes(searchProjectName)
   //   );
   // }, [reportData, drawHistory, groupDataForTable, searchProjectName]);
-  const dataSource = groupDataForTable(reportData)
+  const dataSource = groupDataForTable(reportData);
   console.log(dataSource, ' ===> ===> Report Data DataSource for table');
-  
 
   return (
     <ConfigProvider theme={{ components: { Table: { headerBg: '#F9F5FF' } } }}>
@@ -116,7 +119,7 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
                   initialText={value}
                   onPressEnter={(text) => {
                     const { date, pageLabel, type } = record;
-                    updateProjectNameInReportData(date, pageLabel, text,type);
+                    updateProjectNameInReportData(date, pageLabel, text, type);
                   }}
                 />
               );
@@ -142,7 +145,7 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
                   initialText={value}
                   onPressEnter={(text) => {
                     const { date, pageLabel, type } = record;
-                    updateCategoryInReportData(date, pageLabel, text,type);
+                    updateCategoryInReportData(date, pageLabel, text, type);
                   }}
                 />
               );
@@ -182,11 +185,16 @@ const DrawHistoryTable: React.FC<Props> = ({ searchProjectName }) => {
                 <div>{value}</div>
               ) : (
                 <ColorPicker
-                value={value}
-                onChange={(color) => {
-                  const { date, pageLabel,type } = record;
-                  updateProjectColorInReportData(date, pageLabel, color.toHexString(),type)
-                }}
+                  value={value}
+                  onChange={(color) => {
+                    const { date, pageLabel, type } = record;
+                    updateProjectColorInReportData(
+                      date,
+                      pageLabel,
+                      color.toHexString(),
+                      type
+                    );
+                  }}
                 />
                 // <EditableText
                 //   initialText={value}

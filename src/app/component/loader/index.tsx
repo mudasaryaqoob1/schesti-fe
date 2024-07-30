@@ -1,12 +1,12 @@
-import { Spin } from 'antd'
-import React from 'react'
+import { Spin } from 'antd';
+import React from 'react';
 
 const Loader = () => {
-    return (
-        <div className='flex justify-center mt-3'>
-            <Spin />
-        </div>
-    )
-}
+  return (
+    <div className="flex justify-center mt-3">
+      <Spin />
+    </div>
+  );
+};
 
-export default Loader
+export default Loader;

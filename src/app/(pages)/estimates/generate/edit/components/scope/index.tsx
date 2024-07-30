@@ -933,19 +933,19 @@ const Scope = ({ setPrevNext }: IProps) => {
                     step="0.001"
                     prefix="$"
                   />
-                   {editConfirmItem ? (
-                  <CustomWhiteButton
-                    type="submit"
-                    text="Update Item"
-                    className="self-end md:w-auto w-full md:my-0 mt-4 !bg-goldenrodYellow !p-2.5 !text-white"
-                  />
-                ) : (
-                  <CustomWhiteButton
-                    type="submit"
-                    text="Add Item"
-                    className="self-end md:w-auto w-full md:my-0 mt-4 !bg-goldenrodYellow !p-2.5 !text-white"
-                  />
-                )}
+                  {editConfirmItem ? (
+                    <CustomWhiteButton
+                      type="submit"
+                      text="Update Item"
+                      className="self-end md:w-auto w-full md:my-0 mt-4 !bg-goldenrodYellow !p-2.5 !text-white"
+                    />
+                  ) : (
+                    <CustomWhiteButton
+                      type="submit"
+                      text="Add Item"
+                      className="self-end md:w-auto w-full md:my-0 mt-4 !bg-goldenrodYellow !p-2.5 !text-white"
+                    />
+                  )}
                 </div>
                 {/* {editConfirmItem ? (
                   <div className="flex justify-end space-x-4 mt-5">
@@ -959,8 +959,6 @@ const Scope = ({ setPrevNext }: IProps) => {
                     />
                   </div>
                 ) : null} */}
-
-               
               </Form>
               <div>
                 {confirmEstimates.length

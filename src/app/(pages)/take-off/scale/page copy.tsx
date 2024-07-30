@@ -41,7 +41,6 @@
 // import { AnyArn } from 'aws-sdk/clients/groundstation';
 // import { AnyCnameRecord } from 'dns';
 
-
 // const groupDataForFileTable = (input: any[]) => {
 //   const groupedData = input?.reduce((result: any, currentItem: any) => {
 //     const {
@@ -282,7 +281,6 @@
 //       }
 //     }
 //   }
-
 
 //   const makeApiCall = async () => {
 //     try {
@@ -621,7 +619,6 @@
 //     },
 //   ];
 
-
 //   const { scaleData, handleScaleData } = useContext(
 //     ScaleContext
 //   ) as ScaleDataContextProps;
@@ -645,7 +642,6 @@
 //     }
 //   }
 
-
 //   useEffect(() => {
 //     if (edit_id && edit_id?.length > 0) {
 //       getTakeOffDetails(edit_id)
@@ -653,8 +649,6 @@
 //       router.push('/take-off')
 //     }
 //   }, [edit_id])
-
-
 
 //   useEffect(() => {
 //     const newData: any = {};
@@ -1019,7 +1013,6 @@
 //             onClick={() => { setreportModal(true) }}
 //           />
 //         </div>
-
 
 //         {/* grid place-items-center shadow-sceneryShadow  */}
 //         <div

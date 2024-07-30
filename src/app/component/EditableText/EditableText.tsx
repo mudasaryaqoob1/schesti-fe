@@ -6,13 +6,13 @@ const EditableText = ({
   onPressEnter,
   smallText,
   toolTip,
-  className
+  className,
 }: {
   initialText: string;
   onPressEnter: (value: string) => void;
-  smallText?:any
-  toolTip?:any
-  className?:any
+  smallText?: any;
+  toolTip?: any;
+  className?: any;
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [text, setText] = useState(initialText);
@@ -30,7 +30,14 @@ const EditableText = ({
   };
 
   return (
-    <div className={className ?? ''} data-tooltip={toolTip} onDoubleClick={handleDoubleClick} onClick={(e)=>{e.stopPropagation()}}>
+    <div
+      className={className ?? ''}
+      data-tooltip={toolTip}
+      onDoubleClick={handleDoubleClick}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
+    >
       {isEditing ? (
         <input
           onKeyDown={(e: any) => {

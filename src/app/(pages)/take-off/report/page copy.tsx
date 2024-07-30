@@ -15,21 +15,21 @@ const Report = () => {
   const [name, setName] = useState('');
   const [save, setSave] = useState(0);
   const [saveLoader, setSaveLoader] = useState(false);
-  const [clientModal, setclientModal] = useState<boolean>(false)
-  const [selectecClient, setselectecClient] = useState<any>({})
+  const [clientModal, setclientModal] = useState<boolean>(false);
+  const [selectecClient, setselectecClient] = useState<any>({});
 
   useEffect(() => {
-    const urlSearch = new URLSearchParams(window.location.search)
+    const urlSearch = new URLSearchParams(window.location.search);
     const id = urlSearch.get('edit_id');
     if (id) {
-      const current = summaries?.find((i: any) => i?._id == id)
-      console.log(current, " Selected Takeoff summary")
+      const current = summaries?.find((i: any) => i?._id == id);
+      console.log(current, ' Selected Takeoff summary');
       if (current) {
-        setName(current?.name ?? '')
-        setselectecClient(current?.client ?? {})
+        setName(current?.name ?? '');
+        setselectecClient(current?.client ?? {});
       }
     }
-  }, [summaries])
+  }, [summaries]);
 
   return (
     <>
@@ -75,19 +75,20 @@ const Report = () => {
               />
             </div>
             <div>
-              <Button
-                text="Add Client"
-                onClick={() => setclientModal(true)}
-              />
+              <Button text="Add Client" onClick={() => setclientModal(true)} />
             </div>
-            {(selectecClient?.firstName || selectecClient?.email || selectecClient?.companyName) && <div>
-              <Button
-                text={`Client: ${selectecClient?.firstName ?? selectecClient?.email ?? selectecClient?.companyName ?? 'N/A'}`}
-                // onClick={() => setclientModal(true)}
-                className='!bg-slate-400 !border-transparent'
-                disabled
-              />
-            </div>}
+            {(selectecClient?.firstName ||
+              selectecClient?.email ||
+              selectecClient?.companyName) && (
+              <div>
+                <Button
+                  text={`Client: ${selectecClient?.firstName ?? selectecClient?.email ?? selectecClient?.companyName ?? 'N/A'}`}
+                  // onClick={() => setclientModal(true)}
+                  className="!bg-slate-400 !border-transparent"
+                  disabled
+                />
+              </div>
+            )}
           </div>
           <div>
             <Button

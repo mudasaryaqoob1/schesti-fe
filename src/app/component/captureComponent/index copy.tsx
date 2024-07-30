@@ -7,7 +7,10 @@ import UploadFileContext, {
 } from '@/app/(pages)/takeoff/context/UploadFileContext';
 import ReportCard from '../reportCard';
 
-import { DrawHistoryContext, ReportDataContext } from '@/app/(pages)/takeoff/context';
+import {
+  DrawHistoryContext,
+  ReportDataContext,
+} from '@/app/(pages)/takeoff/context';
 import {
   ReportDataContextProps,
   ReportDataInterface,
@@ -17,7 +20,10 @@ import uploadToS3 from './uploadToS3';
 
 import { AppDispatch } from '@/redux/store';
 import { useDispatch } from 'react-redux';
-import { createTakeoffSummary, updateTakeoffSummary } from '@/redux/takeoffSummaries/takeoffSummaries.thunk';
+import {
+  createTakeoffSummary,
+  updateTakeoffSummary,
+} from '@/redux/takeoffSummaries/takeoffSummaries.thunk';
 import { useDraw } from '@/app/hooks';
 import { useRouter } from 'next/navigation';
 
@@ -57,7 +63,7 @@ const CaptureComponent = ({
   // itemsToCapture: DrawHistoryContextInterface;
   // onCapture: (url: string, key: number) => void;
 }) => {
-  const router = useRouter()
+  const router = useRouter();
   const counterImage = new Image();
   counterImage.src = '/count-draw.png';
 
@@ -73,7 +79,7 @@ const CaptureComponent = ({
   const { reportData } = useContext(
     ReportDataContext
   ) as ReportDataContextProps;
-  const { drawHistory } = useContext(DrawHistoryContext)
+  const { drawHistory } = useContext(DrawHistoryContext);
 
   console.log('reportData', reportData, uploadFileData);
 
@@ -251,19 +257,28 @@ const CaptureComponent = ({
 
     if (reportData.length) captureShapes();
   }, [reportData, uploadFileData]);
-  const urlSearch = new URLSearchParams(window.location.search)
-  console.log(window.location, urlSearch, urlSearch.get('edit_id'), " Edit Data Edit Data");
+  const urlSearch = new URLSearchParams(window.location.search);
+  console.log(
+    window.location,
+    urlSearch,
+    urlSearch.get('edit_id'),
+    ' Edit Data Edit Data'
+  );
 
   const saveData = () => {
     if (data.length > 0) {
       setIsSaving(true);
       setTimeout(() => {
         uploadToS3('capture', uploadFileData).then((result: any) => {
-          console.log(result, "result measurements");
-          let clientD = {}
-          if (selectedClient?._id) clientD = { client: selectedClient?._id }
+          console.log(result, 'result measurements');
+          let clientD = {};
+          if (selectedClient?._id) clientD = { client: selectedClient?._id };
           //@ts-ignore
-          if (urlSearch && urlSearch.get('edit_id') && urlSearch.get('edit_id')?.length > 0) {
+          if (
+            urlSearch &&
+            urlSearch.get('edit_id') &&
+            urlSearch.get('edit_id')?.length > 0
+          ) {
             dispatch(
               updateTakeoffSummary({
                 id: urlSearch.get('edit_id'),
@@ -274,8 +289,8 @@ const CaptureComponent = ({
                   url: result?.url,
                   // pages: result?.pages,
                   measurements: drawHistory,
-                  ...clientD
-                }
+                  ...clientD,
+                },
               })
             );
           } else {
@@ -287,13 +302,13 @@ const CaptureComponent = ({
                 url: result?.url,
                 pages: result?.pages,
                 measurements: drawHistory,
-                ...clientD
+                ...clientD,
               })
             );
           }
           setIsSaving(false);
           onSaveSuccess();
-          router.push('/takeoff')
+          router.push('/takeoff');
         });
       }, 2000);
     }

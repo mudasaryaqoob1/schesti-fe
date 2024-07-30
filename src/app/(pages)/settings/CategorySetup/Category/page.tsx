@@ -145,55 +145,31 @@ const AddCategory = () => {
 
   return (
     <>
-      {showForm ? <div className={`${bg_style} p-5 w-full`}>
-        <TertiaryHeading title="Category" className="text-graphiteGray" />
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          enableReinitialize
-          onSubmit={submitHandler}
-        >
-          {({ handleSubmit, errors }) => {
-            console.log({ errors });
-            return (
-              <Form
-                name="basic"
-                onSubmit={handleSubmit}
-                autoComplete="off"
-                className="mt-2"
-              >
-                <div className=" grid grid-cols-2 gap-2">
-                  <FormikController
-                    control="input"
-                    label="ID"
-                    type="text"
-                    name="categoryId"
-                    placeholder="Enter ID"
-                  />
-                  <FormikController
-                    control="input"
-                    label="Catgory Name"
-                    type="text"
-                    name="name"
-                    placeholder="Enter Name"
-                  />
-                </div>
-
-                <div className='flex justify-between mt-5 items-center'>
-                  <WhiteButton
-                    text='Cancel'
-                    className='!w-fit'
-                    onClick={() => {
-                      setShowForm(false);
-                    }}
-                  />
-                  <div className="flex items-center gap-3">
-                    <CustomButton
-                      type="submit"
-                      text={categoryData ? 'Update Category' : 'Add Category'}
-                      className="!w-auto "
-                      iconwidth={20}
-                      iconheight={20}
+      {showForm ? (
+        <div className={`${bg_style} p-5 w-full`}>
+          <TertiaryHeading title="Category" className="text-graphiteGray" />
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            enableReinitialize
+            onSubmit={submitHandler}
+          >
+            {({ handleSubmit, errors }) => {
+              console.log({ errors });
+              return (
+                <Form
+                  name="basic"
+                  onSubmit={handleSubmit}
+                  autoComplete="off"
+                  className="mt-2"
+                >
+                  <div className=" grid grid-cols-2 gap-2">
+                    <FormikController
+                      control="input"
+                      label="ID"
+                      type="text"
+                      name="categoryId"
+                      placeholder="Enter ID"
                     />
                     <FormikController
                       control="input"
@@ -220,30 +196,57 @@ const AddCategory = () => {
                         iconwidth={20}
                         iconheight={20}
                       />
-                      {categoryData && (
+                      <FormikController
+                        control="input"
+                        label="Catgory Name"
+                        type="text"
+                        name="name"
+                        placeholder="Enter Name"
+                      />
+                    </div>
+
+                    <div className="flex justify-between mt-5 items-center">
+                      <WhiteButton
+                        text="Cancel"
+                        className="!w-fit"
+                        onClick={() => {
+                          setShowForm(false);
+                        }}
+                      />
+                      <div className="flex items-center gap-3">
                         <CustomButton
-                          type="button"
-                          text="Cancel"
-                          onClick={() => {
-                            dispatch(setCategoryData(null));
-                            setShowForm(false);
-                          }}
-                          className="!w-auto !bg-red-500 border-none"
+                          type="submit"
+                          text={
+                            categoryData ? 'Update Category' : 'Add Category'
+                          }
+                          className="!w-auto "
                           iconwidth={20}
                           iconheight={20}
                         />
-                      )}
+                        {categoryData && (
+                          <CustomButton
+                            type="button"
+                            text="Cancel"
+                            onClick={() => {
+                              dispatch(setCategoryData(null));
+                              setShowForm(false);
+                            }}
+                            className="!w-auto !bg-red-500 border-none"
+                            iconwidth={20}
+                            iconheight={20}
+                          />
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Form>
-            );
-          }}
-        </Formik>
-      </div>
-        : null}
+                </Form>
+              );
+            }}
+          </Formik>
+        </div>
+      ) : null}
 
-      <ModalComponent open={showPreviewModal} setOpen={() => { }} width="70%">
+      <ModalComponent open={showPreviewModal} setOpen={() => {}} width="70%">
         <div className="bg-white p-5 rounded-md">
           <div className="my-2 mb-6 text-schestiPrimary font-semibold text-[16px] leading-5">
             Preview CSV
@@ -352,7 +355,7 @@ const AddCategory = () => {
           onEdit={() => {
             setShowForm(true);
           }}
-          onDelete={() => { }}
+          onDelete={() => {}}
         />
       </div>
     </>

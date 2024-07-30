@@ -9,8 +9,8 @@ export const serverUrl = Config;
 // get login token handler
 
 export const schestiAuthToken = () => {
-  return `Bearer ${localStorage.getItem('schestiToken')}` || ''
-}
+  return `Bearer ${localStorage.getItem('schestiToken')}` || '';
+};
 
 export class HttpService {
   CancelToken: any;

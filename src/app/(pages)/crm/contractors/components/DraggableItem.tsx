@@ -1,18 +1,21 @@
 import React from 'react';
-import { useDrag, } from 'react-dnd';
+import { useDrag } from 'react-dnd';
 
 type Position = {
   x: number;
   y: number;
-}
+};
 
 type Props<T extends { position: Position }> = {
   data: T;
   children: React.ReactNode;
   type: string;
-}
+};
 
-const DraggableItem = <T extends { position: Position },>({ data, children, }: Props<T>) => {
+const DraggableItem = <T extends { position: Position }>({
+  data,
+  children,
+}: Props<T>) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'TOOL',
     item: data,
@@ -20,7 +23,6 @@ const DraggableItem = <T extends { position: Position },>({ data, children, }: P
       isDragging: !!monitor.isDragging(),
     }),
   }));
-
 
   return (
     <div
@@ -35,7 +37,7 @@ const DraggableItem = <T extends { position: Position },>({ data, children, }: P
         cursor: 'move',
         padding: 0,
         margin: 0,
-        backgroundColor: "transparent"
+        backgroundColor: 'transparent',
       }}
     >
       {children}
