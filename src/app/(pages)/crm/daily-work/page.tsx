@@ -47,7 +47,9 @@ const ValidationSchema = Yup.object().shape({
 
 function DailyWorkPage() {
     const [search, setSearch] = useState('');
-    const [status, setStatus] = useState('All');
+    const [statusFilter, setStatusFilter] = useState('');
+    const [priorityFilter, setPriorityFilter] = useState('');
+
     const inputFileRef = useRef<HTMLInputElement | null>(null);
     const [open, setOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -398,6 +400,26 @@ function DailyWorkPage() {
         },
     ];
 
+    const filteredData = data.filter((item) => {
+        if (!search) {
+            return true;
+        }
+        return (
+            item.work.toLowerCase().includes(search.toLowerCase()) ||
+            item.email.toLowerCase().includes(search.toLowerCase()) ||
+            item.phone.toLowerCase().includes(search.toLowerCase())
+        );
+    }).filter((item) => {
+        if (!statusFilter) {
+            return true;
+        }
+        return typeof item.status === 'string' ? item.status === statusFilter : item.status?._id === statusFilter;
+    }).filter((item) => {
+        if (!priorityFilter) {
+            return true;
+        }
+        return typeof item.priority === 'string' ? item.priority === priorityFilter : item.priority?._id === priorityFilter;
+    });
 
 
     return (
@@ -451,7 +473,23 @@ function DailyWorkPage() {
                         name=""
                         placeholder="Priority"
                         field={{
-                            options: []
+                            options: priorities.map((item) => {
+                                return {
+                                    label: item.name,
+                                    value: item._id,
+                                }
+                            }),
+                            value: priorityFilter ? priorityFilter : undefined,
+                            onChange(value) {
+                                setPriorityFilter(value);
+                            },
+                            allowClear: true,
+                            onClear() {
+                                setPriorityFilter('');
+                            },
+                            dropdownStyle: {
+                                width: "200px",
+                            }
                         }}
                     />
                     <SelectComponent
@@ -459,19 +497,23 @@ function DailyWorkPage() {
                         name=""
                         placeholder="Status"
                         field={{
-                            value: status ? status : undefined,
-                            options: [
-                                { label: 'Active', value: 'active' },
-                                { label: 'In Active', value: 'inactive' },
-                                { label: 'All', value: 'all' },
-                            ],
+                            value: statusFilter ? statusFilter : undefined,
+                            options: statuses.map((item) => {
+                                return {
+                                    label: item.name,
+                                    value: item._id,
+                                }
+                            }),
                             onChange: (value) => {
-                                setStatus(value);
+                                setStatusFilter(value);
                             },
                             allowClear: true,
                             onClear() {
-                                setStatus('');
+                                setStatusFilter('');
                             },
+                            dropdownStyle: {
+                                width: "200px",
+                            }
                         }}
                     />
 
@@ -568,13 +610,16 @@ function DailyWorkPage() {
             <div className="mt-5">
                 <Table
                     columns={columns}
-                    dataSource={data}
+                    dataSource={filteredData}
                     loading={isLoading}
                     bordered
                     components={{
                         body: {
                             cell: EditableCell
                         }
+                    }}
+                    pagination={{
+                        position: ['bottomCenter'],
                     }}
                 />
             </div>
