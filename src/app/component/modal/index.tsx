@@ -14,7 +14,7 @@ const ModalComponent = ({
   children,
   width = '600px',
   destroyOnClose = false,
-  className
+  className,
 }: Props) => {
   const handleCancel = () => {
     setOpen(false);

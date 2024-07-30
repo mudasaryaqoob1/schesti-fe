@@ -64,9 +64,6 @@
 //   ) as ReportDataContextProps;
 //   const { editData } = useContext(EditContext)
 
-  
-
-
 //   if (!uploadFileData.length) router.push('/takeoff/upload');
 
 //   useEffect(() => {
@@ -157,7 +154,7 @@
 //             {
 //               allCategories?.map((it:any,ind:number)=>{
 //                 const isSelected = it == selectedCategory
-//                 return <div key={ind} className={`cursor-pointer p-1 rounded text-white ${isSelected ? '!bg-RoyalPurple' : 'bg-slate-400'}`} 
+//                 return <div key={ind} className={`cursor-pointer p-1 rounded text-white ${isSelected ? '!bg-RoyalPurple' : 'bg-slate-400'}`}
 //                 onClick={()=>{
 //                   if(isSelected){
 //                     setselectedCategory("")

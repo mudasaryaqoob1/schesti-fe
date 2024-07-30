@@ -121,21 +121,22 @@ const ClientTable = () => {
       setShowDeleteModal(true);
     } else if (key == 'editClientDetail') {
       router.push(`${Routes.CRM.Clients}/edit/${client._id}`);
-    }
-    else if (key === 'createContract') {
+    } else if (key === 'createContract') {
       router.push(`${Routes.CRM.Contractors}/create?id=${client._id}`);
-    }
-    else if (key === 'inActiveClient') {
-      dispatch(updateCrmItemStatusThunk({
-        id: client._id,
-        status: false
-      }))
-    }
-    else if (key === 'activeClient') {
-      dispatch(updateCrmItemStatusThunk({
-        id: client._id,
-        status: true
-      }))
+    } else if (key === 'inActiveClient') {
+      dispatch(
+        updateCrmItemStatusThunk({
+          id: client._id,
+          status: false,
+        })
+      );
+    } else if (key === 'activeClient') {
+      dispatch(
+        updateCrmItemStatusThunk({
+          id: client._id,
+          status: true,
+        })
+      );
     }
   };
 

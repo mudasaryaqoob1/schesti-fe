@@ -72,7 +72,7 @@ interface Props {
   textColor?: any;
   fillColor?: any;
   countType?: string;
-  scaleUnits?:string;
+  scaleUnits?: string;
 }
 
 const Draw: React.FC<Props> = ({
@@ -105,10 +105,10 @@ const Draw: React.FC<Props> = ({
   textColor,
   fillColor,
   countType,
-  scaleUnits = 'feet'
+  scaleUnits = 'feet',
 }) => {
-  const { user } = useSelector(selectUser)
-  console.log(user, " current working user")
+  const { user } = useSelector(selectUser);
+  console.log(user, ' current working user');
   const { selected, subSelected = null } = selectedTool;
   const {
     calcLineDistance,
@@ -124,8 +124,8 @@ const Draw: React.FC<Props> = ({
   const { deleteDrawHistory, updateDrawHistory, drawHistory } = useContext(
     DrawHistoryContext
   ) as DrawHistoryContextProps;
-  console.log(drawHistory, isEdit, editData, " ===> drawHistory");
-  const { reportData } = useContext(ReportDataContext)
+  console.log(drawHistory, isEdit, editData, ' ===> drawHistory');
+  const { reportData } = useContext(ReportDataContext);
 
   // useEffect(()=>{
   //   console.log(draw, 'drawdrawdrawdrawdrawdrawdrawdrawdrawdraw')
@@ -142,8 +142,6 @@ const Draw: React.FC<Props> = ({
   //   }
   // }, [drawHistory, isEdit, editData])
 
-
-
   const [polyLine, setPolyLine] = useState<LineInterface>(defaultPolyLineState);
   const [dynamicPolyLine, setDynamicPolyLine] =
     useState<LineInterface>(defaultPolyLineState);
@@ -157,9 +155,8 @@ const Draw: React.FC<Props> = ({
   const [selectedShape, setSelectedShape] = useState('');
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [circle, setCircle] = useState<CircleInterface[]>([]);
-  console.log(selected, drawScale, " ===> selected and draw scal");
-  const [imgLoading, setimgLoading] = useState<boolean>(true)
-
+  console.log(selected, drawScale, ' ===> selected and draw scal');
+  const [imgLoading, setimgLoading] = useState<boolean>(true);
 
   const myImage = new Image();
   myImage.src =
@@ -167,8 +164,8 @@ const Draw: React.FC<Props> = ({
     'https://wcs.smartdraw.com/floor-plan/img/house-design-example.png?bn=15100111902';
 
   myImage.onload = () => {
-    setimgLoading(false)
-  }
+    setimgLoading(false);
+  };
 
   const counterImage = new Image();
   counterImage.src = '/count-draw.png';
@@ -179,8 +176,8 @@ const Draw: React.FC<Props> = ({
     if (type == 'cross') retimg.src = '/count-cross.png';
     if (type == 'home') retimg.src = '/count-home.png';
     if (type == 'info') retimg.src = '/count-info.png';
-    return retimg
-  }
+    return retimg;
+  };
 
   useEffect(() => {
     setCurrentLine(defaultCurrentLineState);
@@ -200,7 +197,7 @@ const Draw: React.FC<Props> = ({
   }, [selected]);
 
   const handleMouseDown = (e: KonvaEventObject<MouseEvent>) => {
-    if (ctrlPressed) return
+    if (ctrlPressed) return;
     if (endLiveEditing) return;
     setSelectedShape('');
 
@@ -236,7 +233,11 @@ const Draw: React.FC<Props> = ({
     }
 
     // draw scal handling
-    if (selected === 'scale' && drawScale == true && currentLine.startingPoint) {
+    if (
+      selected === 'scale' &&
+      drawScale == true &&
+      currentLine.startingPoint
+    ) {
       const { startingPoint } = currentLine;
 
       const newLine: LineInterface = {
@@ -250,9 +251,9 @@ const Draw: React.FC<Props> = ({
         strokeWidth: border,
         textUnit: unit,
         dateTime: moment().toDate(),
-        user
+        user,
       };
-      setDraw((prev: any) => ({ ...prev, scale: [newLine] }));//[...prev.scale, newLine]
+      setDraw((prev: any) => ({ ...prev, scale: [newLine] })); //[...prev.scale, newLine]
 
       // updateDrawHistory(pageNumber.toString(), 'line', newLine);
 
@@ -271,12 +272,16 @@ const Draw: React.FC<Props> = ({
     if (selected === 'length' && currentLine.startingPoint) {
       const { startingPoint } = currentLine;
 
-      const lineDistance = calcLineDistance([
-        startingPoint?.x,
-        startingPoint?.y,
-        position?.x,
-        position?.y,
-      ] as number[], scale, true);
+      const lineDistance = calcLineDistance(
+        [
+          startingPoint?.x,
+          startingPoint?.y,
+          position?.x,
+          position?.y,
+        ] as number[],
+        scale,
+        true
+      );
       const newLine: LineInterface = {
         points: [
           startingPoint?.x,
@@ -289,13 +294,16 @@ const Draw: React.FC<Props> = ({
         textUnit: unit,
         dateTime: moment().toDate(),
         projectName: 'Length Measurement',
-        category: selectedCategory ?? 'Length Measurement',//(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
+        category: selectedCategory ?? 'Length Measurement', //(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
         subcategory: selectedSubCategory,
         user,
         textColor: textColor,
-        text: lineDistance?.toString()
+        text: lineDistance?.toString(),
       };
-      setDraw((prev: any) => ({ ...prev, line: [...(prev?.line ? prev.line : []), newLine] }));
+      setDraw((prev: any) => ({
+        ...prev,
+        line: [...(prev?.line ? prev.line : []), newLine],
+      }));
 
       updateDrawHistory(pageNumber.toString(), 'line', newLine);
 
@@ -318,8 +326,8 @@ const Draw: React.FC<Props> = ({
         //custom points to make rectangular
         //custom points to make rectangular
         startingPoint?.x,
-        position?.y
-      ] as number[]
+        position?.y,
+      ] as number[];
       const area = calculatePolygonArea(points, scale);
       const text = `${area?.toFixed(4) || ''}sq`;
       const areaConfig: PolygonConfigInterface = {
@@ -329,12 +337,12 @@ const Draw: React.FC<Props> = ({
         textUnit: unit,
         dateTime: moment().toDate(),
         projectName: 'Area Measurement',
-        category: selectedCategory ?? 'Area Measurement',//(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
+        category: selectedCategory ?? 'Area Measurement', //(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
         subcategory: selectedSubCategory,
         user,
         textColor: textColor,
         fillColor: fillColor,
-        text
+        text,
       };
       setDraw((prevDraw: any) => {
         return {
@@ -408,12 +416,12 @@ const Draw: React.FC<Props> = ({
                   textUnit: unit,
                   dateTime: moment().toDate(),
                   projectName: 'Area Measurement',
-                  category: selectedCategory ?? 'Area Measurement',//(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
+                  category: selectedCategory ?? 'Area Measurement', //(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
                   subcategory: selectedSubCategory,
                   user,
                   textColor: textColor,
                   fillColor: fillColor,
-                  text
+                  text,
                 };
 
                 updateDrawHistory(pageNumber.toString(), 'area', areaConfig);
@@ -449,12 +457,12 @@ const Draw: React.FC<Props> = ({
                   textUnit: unit,
                   dateTime: moment().toDate(),
                   projectName: 'Volume Measurement',
-                  category: selectedCategory ?? 'Volume Measurement',//(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
+                  category: selectedCategory ?? 'Volume Measurement', //(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
                   subcategory: selectedSubCategory,
                   user,
                   textColor,
                   fillColor: fillColor,
-                  text
+                  text,
                 };
 
                 updateDrawHistory(
@@ -465,7 +473,10 @@ const Draw: React.FC<Props> = ({
 
                 return {
                   ...prevDraw,
-                  volume: [...(prevDraw?.volume ? prevDraw.volume : []), volumeConfig],
+                  volume: [
+                    ...(prevDraw?.volume ? prevDraw.volume : []),
+                    volumeConfig,
+                  ],
                 };
               }
             });
@@ -484,15 +495,20 @@ const Draw: React.FC<Props> = ({
         y: position.y - 15,
         dateTime: moment().toDate(),
         projectName: 'Count Measurement',
-        category: selectedCategory ?? 'Count Measurement',//(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
+        category: selectedCategory ?? 'Count Measurement', //(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
         subcategory: selectedSubCategory,
         user,
         countType: countType ?? '',
       };
 
       setDraw((prev: any) => {
-        handleChangeMeasurements({ count: [...(prev?.count ? prev.count : []), newCount].length });
-        return { ...prev, count: [...(prev?.count ? prev.count : []), newCount] };
+        handleChangeMeasurements({
+          count: [...(prev?.count ? prev.count : []), newCount].length,
+        });
+        return {
+          ...prev,
+          count: [...(prev?.count ? prev.count : []), newCount],
+        };
       });
 
       updateDrawHistory(pageNumber.toString(), 'count', newCount);
@@ -522,7 +538,13 @@ const Draw: React.FC<Props> = ({
     if (endLiveEditing) return;
     const stage = e.target.getStage();
     const position = getRelativePointerPosition(stage);
-    console.log(selected, drawScale, currentLine, subSelected, " ===> on mouse move data");
+    console.log(
+      selected,
+      drawScale,
+      currentLine,
+      subSelected,
+      ' ===> on mouse move data'
+    );
 
     if (subSelected === 'fill') {
       if (isMouseDown) {
@@ -562,8 +584,7 @@ const Draw: React.FC<Props> = ({
         scale,
         true
       ) as string;
-      console.log(parameter, " ===> Parameters");
-
+      console.log(parameter, ' ===> Parameters');
 
       handleChangeMeasurements({
         angle,
@@ -571,32 +592,32 @@ const Draw: React.FC<Props> = ({
         // ...((selected === 'scale' && drawScale == true) && { parameter }),
         ...(completingLine.endingPoint
           ? {
-            parameter: calculatePolygonPerimeter(
-              [
-                ...polyLine.points,
-                completingLine.endingPoint.x,
-                completingLine.endingPoint.y,
-              ],
-              scale
-            ),
-            area: calculatePolygonArea(
-              [
-                ...polyLine.points,
-                completingLine.endingPoint.x,
-                completingLine.endingPoint.y,
-              ],
-              scale
-            ),
-            volume: calculatePolygonVolume(
-              [
-                ...polyLine.points,
-                completingLine.endingPoint.x,
-                completingLine.endingPoint.y,
-              ],
-              depth,
-              scale
-            ),
-          }
+              parameter: calculatePolygonPerimeter(
+                [
+                  ...polyLine.points,
+                  completingLine.endingPoint.x,
+                  completingLine.endingPoint.y,
+                ],
+                scale
+              ),
+              area: calculatePolygonArea(
+                [
+                  ...polyLine.points,
+                  completingLine.endingPoint.x,
+                  completingLine.endingPoint.y,
+                ],
+                scale
+              ),
+              volume: calculatePolygonVolume(
+                [
+                  ...polyLine.points,
+                  completingLine.endingPoint.x,
+                  completingLine.endingPoint.y,
+                ],
+                depth,
+                scale
+              ),
+            }
           : 0),
       });
     }
@@ -619,11 +640,17 @@ const Draw: React.FC<Props> = ({
     // }
   };
   useEffect(() => {
-    setDraw((ps: any) => ({ ...ps, scale: [] }))
-  }, [selected])
+    setDraw((ps: any) => ({ ...ps, scale: [] }));
+  }, [selected]);
   useEffect(() => {
-    console.log(draw, drawHistory, " ===>reportdata", reportData, " ===> Draw state");
-  }, [draw])
+    console.log(
+      draw,
+      drawHistory,
+      ' ===>reportdata',
+      reportData,
+      ' ===> Draw state'
+    );
+  }, [draw]);
 
   // const {
   //   stageScale,
@@ -637,9 +664,17 @@ const Draw: React.FC<Props> = ({
   //   compWidth: uploadFileData.width || 600,
   // });
   const stageParentRef = useRef<any>(null);
-  const parentWdith = (stageParentRef.current?.getBoundingClientRect() && stageParentRef.current?.getBoundingClientRect()?.width) ? stageParentRef.current?.getBoundingClientRect()?.width : null;
-  const parentHeight = (stageParentRef.current?.getBoundingClientRect() && stageParentRef.current?.getBoundingClientRect()?.height) ? stageParentRef.current?.getBoundingClientRect()?.height : null;
-  console.log(parentWdith, parentHeight, " width and height of parent")
+  const parentWdith =
+    stageParentRef.current?.getBoundingClientRect() &&
+    stageParentRef.current?.getBoundingClientRect()?.width
+      ? stageParentRef.current?.getBoundingClientRect()?.width
+      : null;
+  const parentHeight =
+    stageParentRef.current?.getBoundingClientRect() &&
+    stageParentRef.current?.getBoundingClientRect()?.height
+      ? stageParentRef.current?.getBoundingClientRect()?.height
+      : null;
+  console.log(parentWdith, parentHeight, ' width and height of parent');
   const [ctrlPressed, setCtrlPressed] = useState(false);
 
   useEffect(() => {
@@ -667,7 +702,7 @@ const Draw: React.FC<Props> = ({
   return (
     <div
       ref={stageParentRef}
-      id='sage-parent'
+      id="sage-parent"
       className={`outline-none relative bg-grey-900 my-3 overflow-auto`}
       tabIndex={1}
       onKeyDown={(e) => {
@@ -692,10 +727,10 @@ const Draw: React.FC<Props> = ({
                   lineCap: 'round',
                   id: `dynamic-${(draw?.dynamic?.length ?? 0) + 1}`,
                   projectName: 'Dynamic Measurement',
-                  category: selectedCategory ?? 'Dynamic Measurement',//(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
+                  category: selectedCategory ?? 'Dynamic Measurement', //(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
                   subcategory: selectedSubCategory,
                   user,
-                  textColor
+                  textColor,
                 },
               ],
             }));
@@ -706,11 +741,14 @@ const Draw: React.FC<Props> = ({
               lineCap: 'round',
               id: `dynamic-${(draw?.dynamic?.length ?? 0) + 1}`,
               projectName: 'Dynamic Measurement',
-              category: selectedCategory ?? 'Dynamic Measurement',//(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
+              category: selectedCategory ?? 'Dynamic Measurement', //(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
               subcategory: selectedSubCategory,
             });
           } else if (selected == 'perimeter') {
-            const lineDistance = dynamicPolyLine?.points?.length > 4 ? calculatePolygonPerimeter(dynamicPolyLine?.points, scale) : calcLineDistance(dynamicPolyLine?.points, scale, true);
+            const lineDistance =
+              dynamicPolyLine?.points?.length > 4
+                ? calculatePolygonPerimeter(dynamicPolyLine?.points, scale)
+                : calcLineDistance(dynamicPolyLine?.points, scale, true);
             setDraw((prevDraw: any) => ({
               ...prevDraw,
               perimeter: [
@@ -722,11 +760,11 @@ const Draw: React.FC<Props> = ({
                   lineCap: 'round',
                   id: `perimeter-${(draw?.perimeter?.length ?? 0) + 1}`,
                   projectName: 'Perimeter Measurement',
-                  category: selectedCategory ?? 'Perimeter Measurement',//(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
+                  category: selectedCategory ?? 'Perimeter Measurement', //(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
                   subcategory: selectedSubCategory,
                   user,
                   textColor,
-                  text: lineDistance.toString()
+                  text: lineDistance.toString(),
                 },
               ],
             }));
@@ -737,9 +775,9 @@ const Draw: React.FC<Props> = ({
               lineCap: 'round',
               id: `perimeter-${(draw?.perimeter?.length ?? 0) + 1}`,
               projectName: 'Perimeter Measurement',
-              category: selectedCategory ?? 'Perimeter Measurement',//(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
+              category: selectedCategory ?? 'Perimeter Measurement', //(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
               subcategory: selectedSubCategory,
-            })
+            });
           }
 
           setDynamicPolyLine(defaultPolyLineState);
@@ -849,11 +887,11 @@ const Draw: React.FC<Props> = ({
         </div>
       </div>
       {/* Image Loading */}
-      {imgLoading &&
-        <div className='rounded-t-2xl absolute top-0 left-0 w-[100%] h-[100%] bg-slate-200 flex justify-center items-center bg-opacity-30 z-40' >
-          <Spin size='large' />
+      {imgLoading && (
+        <div className="rounded-t-2xl absolute top-0 left-0 w-[100%] h-[100%] bg-slate-200 flex justify-center items-center bg-opacity-30 z-40">
+          <Spin size="large" />
         </div>
-      }
+      )}
       <Stage
         width={parentWdith || uploadFileData.width || 600}
         height={parentHeight || uploadFileData.height || 600}
@@ -876,46 +914,50 @@ const Draw: React.FC<Props> = ({
             height={uploadFileData.height || 600}
           />
 
-
           {/* Scale Drawing Line */}
-          {draw?.scale && Array.isArray(draw?.scale) && draw?.scale?.map(({ textUnit, ...rest }: any, index: number) => {
-            const id = `line-${index}`;
-            // const lineDistance = calcLineDistance(rest.points, scale, true);
-            const lineMidPoint = calculateMidpoint(rest.points);
+          {draw?.scale &&
+            Array.isArray(draw?.scale) &&
+            draw?.scale?.map(({ textUnit, ...rest }: any, index: number) => {
+              const id = `line-${index}`;
+              // const lineDistance = calcLineDistance(rest.points, scale, true);
+              const lineMidPoint = calculateMidpoint(rest.points);
 
-            return (
-              <Group
-                id={id}
-                key={id}
-                onMouseDown={(e) => {
-                  e.cancelBubble = true;
-                  setSelectedShape(e.currentTarget.attrs?.id || '');
-                }}
-              >
-                <Arrow
-                  key={index}
-                  {...rest}
-                  lineCap="round"
-                  dash={selectedShape === id ? [10, 10] : []}
-                  stroke={selectedShape === id ? 'maroon' : rest.stroke}
-                  pointerAtEnding={true}
-                  pointerAtBeginning={true}
-                />
-                <KonvaText
-                  {...lineMidPoint}
-                  fontSize={textUnit}
-                  text={""}
-                  // text={lineDistance.toString()}
-                  fill="red"
-                />
-              </Group>
-            );
-          })}
+              return (
+                <Group
+                  id={id}
+                  key={id}
+                  onMouseDown={(e) => {
+                    e.cancelBubble = true;
+                    setSelectedShape(e.currentTarget.attrs?.id || '');
+                  }}
+                >
+                  <Arrow
+                    key={index}
+                    {...rest}
+                    lineCap="round"
+                    dash={selectedShape === id ? [10, 10] : []}
+                    stroke={selectedShape === id ? 'maroon' : rest.stroke}
+                    pointerAtEnding={true}
+                    pointerAtBeginning={true}
+                  />
+                  <KonvaText
+                    {...lineMidPoint}
+                    fontSize={textUnit}
+                    text={''}
+                    // text={lineDistance.toString()}
+                    fill="red"
+                  />
+                </Group>
+              );
+            })}
 
           {/* Drawing Line */}
           {draw?.line?.map(({ textUnit, ...rest }: any, index: number) => {
             const id = `line-${index}`;
-            const lineDistance = scaleUnits == 'feet' ? calcLineDistance(rest?.points, scale, true) : `${Number(Number(calcLineDistance(rest?.points, scale, false)) * 0.0254).toFixed(3)} meter`;
+            const lineDistance =
+              scaleUnits == 'feet'
+                ? calcLineDistance(rest?.points, scale, true)
+                : `${Number(Number(calcLineDistance(rest?.points, scale, false)) * 0.0254).toFixed(3)} meter`;
             // const distanceInInches = calcLineDistance(rest?.points, scale, false)
             const lineMidPoint = calculateMidpoint(rest?.points);
 
@@ -941,7 +983,7 @@ const Draw: React.FC<Props> = ({
                   {...lineMidPoint}
                   fontSize={textUnit}
                   text={lineDistance.toString()}
-                  fill={rest?.textColor ?? "red"}
+                  fill={rest?.textColor ?? 'red'}
                 />
               </Group>
             );
@@ -975,8 +1017,14 @@ const Draw: React.FC<Props> = ({
 
             // const lineDistance = calcPerimeterDistance(rest.points, scale, true);
             // const lineMidPoint = calculateMidpoint(rest.points);
-            const lineDistance = rest?.points?.length > 4 ? calculatePolygonPerimeter(rest?.points, scale) : calcLineDistance(rest?.points, scale, true);
-            const lineMidPoint = rest?.points?.length > 4 ? calculatePolygonCenter(rest?.points) : calculateMidpoint(rest?.points);
+            const lineDistance =
+              rest?.points?.length > 4
+                ? calculatePolygonPerimeter(rest?.points, scale)
+                : calcLineDistance(rest?.points, scale, true);
+            const lineMidPoint =
+              rest?.points?.length > 4
+                ? calculatePolygonCenter(rest?.points)
+                : calculateMidpoint(rest?.points);
 
             return (
               <Group
@@ -999,7 +1047,7 @@ const Draw: React.FC<Props> = ({
                   {...lineMidPoint}
                   fontSize={rest?.textUnit}
                   text={lineDistance.toString()}
-                  fill={rest?.textColor ?? "red"}
+                  fill={rest?.textColor ?? 'red'}
                 />
               </Group>
             );
@@ -1012,7 +1060,10 @@ const Draw: React.FC<Props> = ({
             const center = calculatePolygonCenter(polygonCoordinates);
             const area = calculatePolygonArea(polygonCoordinates, scale);
 
-            const text = scaleUnits == 'feet' ? `${area?.toFixed(4) || ''}ft²` : `${Number(area * 0.092903).toFixed(3)}m²`;
+            const text =
+              scaleUnits == 'feet'
+                ? `${area?.toFixed(4) || ''}ft²`
+                : `${Number(area * 0.092903).toFixed(3)}m²`;
             const id = `area-${index}`;
 
             return (
@@ -1034,14 +1085,14 @@ const Draw: React.FC<Props> = ({
                     e.cancelBubble = true;
                     setSelectedShape(e.currentTarget.attrs?.id || '');
                   }}
-                  fill={rest?.fillColor ?? "rgba(255, 0, 0, 0.2)"}
+                  fill={rest?.fillColor ?? 'rgba(255, 0, 0, 0.2)'}
                 />
                 <KonvaText
                   {...center}
                   fontSize={textUnit}
                   text={text}
                   offsetX={30}
-                  fill={rest?.textColor ?? "red"}
+                  fill={rest?.textColor ?? 'red'}
                 />
               </Group>
             );
@@ -1050,54 +1101,55 @@ const Draw: React.FC<Props> = ({
           {!!polyLine.points.length && <Line {...polyLine} />}
 
           {/* Drawing Volume */}
-          {draw?.volume?.map(({ depth, textUnit, ...rest }: any, index: number) => {
-            const polygonCoordinates = rest?.points;
-            const center = calculatePolygonCenter(polygonCoordinates);
-            const volume = calculatePolygonVolume(
-              polygonCoordinates,
-              depth || 0,
-              scale
-            );
-            const text = `${volume?.toFixed(2) || ''} cubic`;
-            const id = `volume-${index}`;
+          {draw?.volume?.map(
+            ({ depth, textUnit, ...rest }: any, index: number) => {
+              const polygonCoordinates = rest?.points;
+              const center = calculatePolygonCenter(polygonCoordinates);
+              const volume = calculatePolygonVolume(
+                polygonCoordinates,
+                depth || 0,
+                scale
+              );
+              const text = `${volume?.toFixed(2) || ''} cubic`;
+              const id = `volume-${index}`;
 
-            return (
-              <Group
-                id={id}
-                key={id}
-                onMouseDown={(e) => {
-                  e.cancelBubble = true;
-                  setSelectedShape(e.currentTarget.attrs?.id || '');
-                }}
-              >
-                <Line
-                  {...rest}
-                  closed={true}
+              return (
+                <Group
                   id={id}
-                  dash={selectedShape === id ? [10, 10] : []}
-                  stroke={selectedShape === id ? 'maroon' : rest?.stroke}
+                  key={id}
                   onMouseDown={(e) => {
                     e.cancelBubble = true;
                     setSelectedShape(e.currentTarget.attrs?.id || '');
                   }}
-                  fill={rest?.fillColor ?? "rgba(255, 255, 0, 0.2)"}
-                />
-                <KonvaText
-                  {...center}
-                  fontSize={textUnit}
-                  text={text}
-                  offsetX={30}
-                  fill={rest?.textColor ?? "red"}
-                />
-              </Group>
-            );
-          })}
+                >
+                  <Line
+                    {...rest}
+                    closed={true}
+                    id={id}
+                    dash={selectedShape === id ? [10, 10] : []}
+                    stroke={selectedShape === id ? 'maroon' : rest?.stroke}
+                    onMouseDown={(e) => {
+                      e.cancelBubble = true;
+                      setSelectedShape(e.currentTarget.attrs?.id || '');
+                    }}
+                    fill={rest?.fillColor ?? 'rgba(255, 255, 0, 0.2)'}
+                  />
+                  <KonvaText
+                    {...center}
+                    fontSize={textUnit}
+                    text={text}
+                    offsetX={30}
+                    fill={rest?.textColor ?? 'red'}
+                  />
+                </Group>
+              );
+            }
+          )}
 
           {/* Runtime rectangle drawing */}
           {currentLine.startingPoint &&
             currentLine.endingPoint &&
-            selected == 'rectangle' &&
-            (
+            selected == 'rectangle' && (
               <Line
                 points={[
                   currentLine.startingPoint.x,
@@ -1122,9 +1174,9 @@ const Draw: React.FC<Props> = ({
           {/* line rectangle drawing */}
           {currentLine.startingPoint &&
             currentLine.endingPoint &&
-            selected !== 'count' && selected !== 'rectangle' &&
-            !(selected == 'scale' && drawScale != true) &&
-            (
+            selected !== 'count' &&
+            selected !== 'rectangle' &&
+            !(selected == 'scale' && drawScale != true) && (
               <Line
                 points={[
                   currentLine.startingPoint.x,
@@ -1181,7 +1233,6 @@ const Draw: React.FC<Props> = ({
           ))}
 
           {/* Draw for scaling */}
-
         </Layer>
       </Stage>
     </div>

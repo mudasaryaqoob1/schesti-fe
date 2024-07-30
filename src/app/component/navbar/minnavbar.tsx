@@ -11,9 +11,11 @@ import { logout } from '@/redux/authSlices/authSlice';
 
 const Navbar = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const userPlan = useSelector((state: RootState) => state.pricingPlan.userPlan);
+  const userPlan = useSelector(
+    (state: RootState) => state.pricingPlan.userPlan
+  );
 
-  const planFeatures = userPlan ? userPlan.features.split(",") : [];
+  const planFeatures = userPlan ? userPlan.features.split(',') : [];
 
   const logoutHandler = () => {
     dispatch(logout());
@@ -24,15 +26,17 @@ const Navbar = () => {
     <nav className="py-3 px-16 md:h-[60px] md:flex flex-col shadow-lg  md:flex-row items-center justify-end w-full bg-white">
       <div className="flex flex-col md:flex-row gap-6 justify-between items-center">
         <div className="flex items-center gap-1">
-          {planFeatures.length >= 7 ? null : <Link href={'/upgradeplans'} className="md:my-0 my-2">
-            <CustomButton
-              className="!py-2.5 !px-6 h-10 !bg-transparent border !border-schestiWarning !text-schestiWarning shadow-scenarySubdued"
-              icon="/zap-yellow.svg"
-              iconwidth={20}
-              iconheight={20}
-              text="Upgrade Plan"
-            />
-          </Link>}
+          {planFeatures.length >= 7 ? null : (
+            <Link href={'/upgradeplans'} className="md:my-0 my-2">
+              <CustomButton
+                className="!py-2.5 !px-6 h-10 !bg-transparent border !border-schestiWarning !text-schestiWarning shadow-scenarySubdued"
+                icon="/zap-yellow.svg"
+                iconwidth={20}
+                iconheight={20}
+                text="Upgrade Plan"
+              />
+            </Link>
+          )}
           <Link href={'/settings/supporttickets'}>
             <Image
               src={'/supportChatIcon1.svg'}

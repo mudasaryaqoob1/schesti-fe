@@ -1,179 +1,193 @@
-'use client'
-import SenaryHeading from "@/app/component/headings/senaryHeading"
-import { withAuth } from "@/app/hoc/withAuth"
-import { useEffect, useRef, useState } from "react"
-import { ToolState } from "../types";
-import { useSearchParams } from "next/navigation";
-import { ICrmContract } from "@/app/interfaces/crm/crm-contract.interface";
-import crmContractService from "@/app/services/crm/crm-contract.service";
-import { AxiosError } from "axios";
-import { toast } from "react-toastify";
-import { Skeleton } from "antd";
-import NoData from "@/app/component/noData";
-import { Routes } from "@/app/utils/plans.utils";
-import { ContractInfo } from "../components/info/ContractInfo";
-import { ContractPdf } from "../components/ContractPdf";
-import CustomButton from "@/app/component/customButton/button";
-import WhiteButton from "@/app/component/customButton/white";
+'use client';
+import SenaryHeading from '@/app/component/headings/senaryHeading';
+import { withAuth } from '@/app/hoc/withAuth';
+import { useEffect, useRef, useState } from 'react';
+import { ToolState } from '../types';
+import { useSearchParams } from 'next/navigation';
+import { ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
+import crmContractService from '@/app/services/crm/crm-contract.service';
+import { AxiosError } from 'axios';
+import { toast } from 'react-toastify';
+import { Skeleton } from 'antd';
+import NoData from '@/app/component/noData';
+import { Routes } from '@/app/utils/plans.utils';
+import { ContractInfo } from '../components/info/ContractInfo';
+import { ContractPdf } from '../components/ContractPdf';
+import CustomButton from '@/app/component/customButton/button';
+import WhiteButton from '@/app/component/customButton/white';
 
 function ViewContract() {
-    const [activeTab, setActiveTab] = useState("sender");
-    const [isLoading, setIsLoading] = useState(false);
-    const searchParams = useSearchParams();
-    const [tools, setTools] = useState<ToolState[]>([]);
-    const id = searchParams.get('id');
-    const [contract, setContract] = useState<ICrmContract | null>(null);
-    // const download = searchParams.get("download")
-    const [isDownloading, setIsDownloading] = useState(false);
-    const [isUpdatingTools, setIsUpdatingTools] = useState(false);
-    const contractPdfRef = useRef<{
-        handleAction: () => void
-    } | null>(null)
+  const [activeTab, setActiveTab] = useState('sender');
+  const [isLoading, setIsLoading] = useState(false);
+  const searchParams = useSearchParams();
+  const [tools, setTools] = useState<ToolState[]>([]);
+  const id = searchParams.get('id');
+  const [contract, setContract] = useState<ICrmContract | null>(null);
+  // const download = searchParams.get("download")
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [isUpdatingTools, setIsUpdatingTools] = useState(false);
+  const contractPdfRef = useRef<{
+    handleAction: () => void;
+  } | null>(null);
 
-    useEffect(() => {
-        // const receiver = searchParams.get('receiver');
-        if (id) {
-            getContract(id);
-        }
-    }, [id])
-
-    async function getContract(id: string) {
-        setIsLoading(true);
-
-        try {
-            const response = await crmContractService.httpFindContractById(id);
-            if (response.data) {
-                setContract(response.data);
-                setTools(response.data.senderTools);
-            }
-        } catch (error) {
-            const err = error as AxiosError<{ message: string }>;
-            if (err.response?.data) {
-                toast.error("Unable to get the item");
-            }
-        } finally {
-            setIsLoading(false);
-        }
-
+  useEffect(() => {
+    // const receiver = searchParams.get('receiver');
+    if (id) {
+      getContract(id);
     }
+  }, [id]);
 
-    if (isLoading) {
-        return <div className="grid grid-cols-2 gap-4">
-            <Skeleton />
-            <Skeleton />
-            <Skeleton />
-            <Skeleton />
-        </div>
+  async function getContract(id: string) {
+    setIsLoading(true);
+
+    try {
+      const response = await crmContractService.httpFindContractById(id);
+      if (response.data) {
+        setContract(response.data);
+        setTools(response.data.senderTools);
+      }
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      if (err.response?.data) {
+        toast.error('Unable to get the item');
+      }
+    } finally {
+      setIsLoading(false);
     }
+  }
 
-    if (!contract) {
-        return <NoData
-            title="Contract not found"
-            description="The contract you are looking for does not exist"
-            btnText="Back"
-            link={`${Routes.CRM.Contractors}`}
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-2 gap-4">
+        <Skeleton />
+        <Skeleton />
+        <Skeleton />
+        <Skeleton />
+      </div>
+    );
+  }
+
+  if (!contract) {
+    return (
+      <NoData
+        title="Contract not found"
+        description="The contract you are looking for does not exist"
+        btnText="Back"
+        link={`${Routes.CRM.Contractors}`}
+      />
+    );
+  }
+
+  function handleDownload() {
+    setIsDownloading(true);
+    contractPdfRef.current?.handleAction();
+    setIsDownloading(false);
+  }
+
+  function handleTabChange(tab: string) {
+    if (contract) {
+      setActiveTab(tab);
+      if (tab === 'receiver') {
+        setTools(contract.receiverTools);
+      } else {
+        setTools(contract.senderTools);
+      }
+    }
+  }
+
+  async function handleUpdateTools(id: string, tools: ToolState[]) {
+    setIsUpdatingTools(true);
+    try {
+      const isValid = tools.every((tool) => tool.value);
+      if (!isValid) {
+        toast.error('Please fill all the fields');
+        return;
+      }
+      const response = await crmContractService.httpSenderUpdateTools(
+        id as string,
+        tools
+      );
+      toast.success('Contract updated successfully');
+
+      if (response.data) {
+        setContract(response.data);
+        setTools(response.data.senderTools);
+      }
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      if (err.response?.data) {
+        toast.error(err.response.data.message);
+      }
+    } finally {
+      setIsUpdatingTools(false);
+    }
+  }
+
+  return (
+    <div className="mt-4 space-y-3 p-5 !pb-[39px]  mx-4 ">
+      <div className="flex justify-between items-center">
+        <SenaryHeading
+          title="Contract Information"
+          className="!text-[24px] text-schestiPrimaryBlack leading-6 font-semibold"
         />
-    }
+        {activeTab === 'sender' &&
+        !contract.senderTools.every((tool) => tool.value) ? (
+          <CustomButton
+            text="Update Tools"
+            className="!w-fit"
+            onClick={() => handleUpdateTools(contract._id, tools)}
+            isLoading={isUpdatingTools}
+          />
+        ) : null}
+      </div>
 
-    function handleDownload() {
-        setIsDownloading(true);
-        contractPdfRef.current?.handleAction();
-        setIsDownloading(false);
-    }
+      <div className="flex justify-between items-center">
+        <div className="px-2 flex py-2 bg-white rounded-md">
+          <p
+            className={`py-2 px-3 ${activeTab === 'sender' ? 'font-semibold bg-schestiPrimary text-white' : 'font-normal'}  cursor-pointer rounded-md `}
+            onClick={() => handleTabChange('sender')}
+          >
+            Sender
+          </p>
 
-    function handleTabChange(tab: string) {
-        if (contract) {
-            setActiveTab(tab);
-            if (tab === 'receiver') {
-                setTools(contract.receiverTools);
-            } else {
-                setTools(contract.senderTools);
-            }
-        }
-    }
-
-    async function handleUpdateTools(id: string, tools: ToolState[]) {
-        setIsUpdatingTools(true);
-        try {
-            const isValid = tools.every(tool => tool.value);
-            if (!isValid) {
-                toast.error("Please fill all the fields");
-                return;
-            }
-            const response = await crmContractService.httpSenderUpdateTools(id as string, tools);
-            toast.success("Contract updated successfully");
-
-            if (response.data) {
-                setContract(response.data);
-                setTools(response.data.senderTools);
-            }
-
-        } catch (error) {
-            const err = error as AxiosError<{ message: string }>;
-            if (err.response?.data) {
-                toast.error(err.response.data.message);
-            }
-        } finally {
-            setIsUpdatingTools(false);
-        }
-    }
-
-
-    return <div className="mt-4 space-y-3 p-5 !pb-[39px]  mx-4 ">
-        <div className="flex justify-between items-center">
-            <SenaryHeading
-                title="Contract Information"
-                className="!text-[24px] text-schestiPrimaryBlack leading-6 font-semibold"
-            />
-            {(activeTab === 'sender' && !contract.senderTools.every(tool => tool.value)) ? <CustomButton
-                text="Update Tools"
-                className="!w-fit"
-                onClick={() => handleUpdateTools(contract._id, tools)}
-                isLoading={isUpdatingTools}
-            /> : null}
+          <p
+            className={`py-2 px-3 ${activeTab === 'receiver' ? 'font-semibold bg-schestiPrimary text-white' : 'font-normal'}  cursor-pointer rounded-md `}
+            onClick={() => handleTabChange('receiver')}
+          >
+            Receiver
+          </p>
         </div>
 
-        <div className="flex justify-between items-center">
-
-            <div className="px-2 flex py-2 bg-white rounded-md">
-                <p className={`py-2 px-3 ${activeTab === 'sender' ? "font-semibold bg-schestiPrimary text-white" : "font-normal"}  cursor-pointer rounded-md `} onClick={() => handleTabChange('sender')}>
-                    Sender
-                </p>
-
-                <p className={`py-2 px-3 ${activeTab === 'receiver' ? "font-semibold bg-schestiPrimary text-white" : "font-normal"}  cursor-pointer rounded-md `} onClick={() => handleTabChange('receiver')}>
-                    Receiver
-                </p>
-            </div>
-
-            {/* {download && download === 'true' ? <WhiteButton
+        {/* {download && download === 'true' ? <WhiteButton
                 text="Download"
                 className="!w-fit"
                 onClick={handleDownload}
                 isLoading={isDownloading}
             /> : null} */}
-            <WhiteButton
-                text="Download"
-                className="!w-fit"
-                onClick={handleDownload}
-                isLoading={isDownloading}
-            />
-        </div>
+        <WhiteButton
+          text="Download"
+          className="!w-fit"
+          onClick={handleDownload}
+          isLoading={isDownloading}
+        />
+      </div>
 
-        <div className="p-4 m-4 bg-white rounded-md ">
-            <ContractInfo contract={contract} />
+      <div className="p-4 m-4 bg-white rounded-md ">
+        <ContractInfo contract={contract} />
 
-            <div className="mt-5 w-fit mx-auto">
-                <ContractPdf
-                    ref={contractPdfRef}
-                    contract={contract}
-                    mode={activeTab === 'sender' ? "add-values" : "view-values"}
-                    pdfFile={contract.file.url}
-                    setTools={setTools}
-                    tools={tools}
-                />
-            </div>
+        <div className="mt-5 w-fit mx-auto">
+          <ContractPdf
+            ref={contractPdfRef}
+            contract={contract}
+            mode={activeTab === 'sender' ? 'add-values' : 'view-values'}
+            pdfFile={contract.file.url}
+            setTools={setTools}
+            tools={tools}
+          />
         </div>
+      </div>
     </div>
+  );
 }
 
-export default withAuth(ViewContract)
+export default withAuth(ViewContract);

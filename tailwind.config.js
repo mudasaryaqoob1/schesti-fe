@@ -71,7 +71,10 @@ export default {
         lightenGreyish: '#949494',
         wedgeWood: '#5A7184',
         vividRed: '#EC2224',
-
+        ebonyClay: '#1D2939',
+        monsoon: '#84818A',
+        rangoonGreen: '#1C1C1C',
+        osloGrey: '#848C9D',
         // Schesti Color Palette
         schestiPrimary: '#007AB6',
         schestiLightPrimary: '#E6F2F8',

@@ -25,7 +25,6 @@ export const Routes = {
     Architects: '/crm/architects',
     Vendors: '/crm/vendors',
     Daily_Work: '/crm/daily-work',
-
   },
   'Quantity-Takeoff': {
     Manual: '/take-off',
@@ -42,7 +41,7 @@ export const Routes = {
   },
   Schedule: '/schedule',
   Meetings: '/meeting',
-  Networking: '#',
+  Networking: '/networking',
 };
 
 export const OtherRoutes = {

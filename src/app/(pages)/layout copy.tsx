@@ -25,7 +25,7 @@ const CustomNavbar = ({ children }: Props) => {
     'setnewpassword',
     'settings',
     'trades',
-    'verification'
+    'verification',
   ];
   return (
     <>

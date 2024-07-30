@@ -15,21 +15,21 @@ const Report = () => {
   const [name, setName] = useState('');
   const [save] = useState(0);
   // const [saveLoader, setSaveLoader] = useState(false);
-  const [clientModal, setclientModal] = useState<boolean>(false)
-  const [selectecClient, setselectecClient] = useState<any>({})
+  const [clientModal, setclientModal] = useState<boolean>(false);
+  const [selectecClient, setselectecClient] = useState<any>({});
 
   useEffect(() => {
-    const urlSearch = new URLSearchParams(window.location.search)
+    const urlSearch = new URLSearchParams(window.location.search);
     const id = urlSearch.get('edit_id');
     if (id) {
-      const current = summaries?.find((i: any) => i?._id == id)
-      console.log(current, " Selected Takeoff summary")
+      const current = summaries?.find((i: any) => i?._id == id);
+      console.log(current, ' Selected Takeoff summary');
       if (current) {
-        setName(current?.name ?? '')
-        setselectecClient(current?.client ?? {})
+        setName(current?.name ?? '');
+        setselectecClient(current?.client ?? {});
       }
     }
-  }, [summaries])
+  }, [summaries]);
 
   return (
     <>
@@ -42,7 +42,10 @@ const Report = () => {
             width={16}
             height={16}
           />
-          <SenaryHeading title="Takeoff" className="!font-semibold font-base text-slateGray" />
+          <SenaryHeading
+            title="Takeoff"
+            className="!font-semibold font-base text-slateGray"
+          />
           <Image
             src={'/chevron-right.svg'}
             alt="chevron-right icon"
@@ -67,7 +70,7 @@ const Report = () => {
                 className="w-[350px] h-full bg-transparent outline-none"
                 onChange={(e) => setName(e.target.value)}
               /> */}
-              <h2>{"Project Name Showing here"}</h2>
+              <h2>{'Project Name Showing here'}</h2>
             </div>
             {/* <div>
               <Button

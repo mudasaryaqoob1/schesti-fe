@@ -22,7 +22,7 @@ const Upload = () => {
   // const router = useRouter();
   // const { handleSrc, uploadFileData } = useContext(UploadFileContext) as UploadFileContextProps;
   // const [loading, setloading] = useState<boolean>(false)
-  const [step, setstep] = useState(0)
+  const [step, setstep] = useState(0);
   // const [showSelectModal, setshowSelectModal] = useState<boolean>(false)
   // const breakLoopRef = useRef<boolean>(false);
   // const pdfjs = useCallback(async () => {
@@ -97,7 +97,13 @@ const Upload = () => {
   return (
     <>
       <section className="md:px-16 px-8 pb-4">
-        {step == 0 ? <InitialUpload setstep={setstep} /> : step == 1 ? <CreateInfo /> : <></>}
+        {step == 0 ? (
+          <InitialUpload setstep={setstep} />
+        ) : step == 1 ? (
+          <CreateInfo />
+        ) : (
+          <></>
+        )}
         {/* <div className="flex gap-4 items-center mt-6">
           <Image src={'/home.svg'} alt="home icon" width={20} height={20} />
           <Image

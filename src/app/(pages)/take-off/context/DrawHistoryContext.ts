@@ -9,14 +9,14 @@ export interface DrawHistoryContextProps {
   drawHistory: DrawHistoryContextInterface | null;
   deleteDrawHistory: (key: string, value: DrawInterface) => void;
   updateDrawHistory: (pageNumber: string, shape: string, value: any) => void;
-  setInitialEditDrawHistory: (value:any) => void;
+  setInitialEditDrawHistory: (value: any) => void;
 }
 
 const DrawHistoryContext = createContext<DrawHistoryContextProps>({
   drawHistory: null,
   deleteDrawHistory: () => undefined,
   updateDrawHistory: () => undefined,
-  setInitialEditDrawHistory:() => undefined
+  setInitialEditDrawHistory: () => undefined,
 });
 
 export default DrawHistoryContext;
