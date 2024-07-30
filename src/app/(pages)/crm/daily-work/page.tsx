@@ -69,9 +69,29 @@ function DailyWorkPage() {
     const [priorities, setPriorities] = useState<IDailyWorkPriorty[]>([]);
     const [isPriorityLoading, setIsPriorityLoading] = useState(false);
 
-    const [isPriorityCellEditing, setIsPriorityCellEditing] = useState(false);
-    const [isStatusCellEditing, setIsStatusCellEditing] = useState(false);
-    const [isNoteCellEditing, setIsNoteCellEditing] = useState(false);
+
+    const [priorityCellEditing, setPriorityCellEditing] = useState<{
+        isEditing: boolean,
+        record: ICrmDailyWork | null
+    }>({
+        isEditing: false,
+        record: null
+    });
+    const [statusCellEditing, setIsStatusCellEditing] = useState<{
+        isEditing: boolean,
+        record: ICrmDailyWork | null
+    }>({
+        isEditing: false,
+        record: null
+    })
+
+    const [noteCellEditing, setIsNoteCellEditing] = useState<{
+        isEditing: boolean,
+        record: ICrmDailyWork | null
+    }>({
+        isEditing: false,
+        record: null
+    })
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedLead, setSelectedLead] = useState<ICrmDailyWork | null>(null);
@@ -100,19 +120,19 @@ function DailyWorkPage() {
                 priorityCellRef.current &&
                 !priorityCellRef.current.contains(event.target)
             ) {
-                setIsPriorityCellEditing(false);
+                setPriorityCellEditing({ isEditing: false, record: null });
             }
             if (
                 statusCellRef.current &&
                 !statusCellRef.current.contains(event.target)
             ) {
-                setIsStatusCellEditing(false);
+                setIsStatusCellEditing({ isEditing: false, record: null });
             }
             if (
                 noteCellRef.current &&
                 !noteCellRef.current.contains(event.target)
             ) {
-                setIsNoteCellEditing(false);
+                setIsNoteCellEditing({ isEditing: false, record: null });
             }
         };
 
@@ -121,7 +141,7 @@ function DailyWorkPage() {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [isPriorityCellEditing, isStatusCellEditing, isNoteCellEditing]);
+    }, []);
 
 
     const formik = useFormik<ICrmDailyWorkCreate | ICrmDailyWorkUpdate>({
@@ -236,9 +256,19 @@ function DailyWorkPage() {
 
 
     const handleSave = async (key: string, value: string, record: ICrmDailyWork) => {
-        setIsPriorityCellEditing(false);
-        setIsStatusCellEditing(false);
-        setIsNoteCellEditing(false);
+        setPriorityCellEditing({
+            isEditing: false,
+            record: null
+        });
+        setIsNoteCellEditing({
+            isEditing: false,
+            record: null
+        });
+        setIsStatusCellEditing({
+            isEditing: false,
+            record: null
+        })
+
         setIsLoading(true);
         try {
             const response = await crmDailyWorkService.httpUpdatedailyLead(record._id, { ...record, [key]: value });
@@ -291,9 +321,12 @@ function DailyWorkPage() {
                     onClick: (e) => {
                         e.stopPropagation();
                         e.preventDefault();
-                        setIsPriorityCellEditing(true);
+                        setPriorityCellEditing({
+                            isEditing: true,
+                            record
+                        })
                     },
-                    editing: isPriorityCellEditing,
+                    editing: priorityCellEditing.isEditing && priorityCellEditing.record?._id === record._id,
                     priorities: priorities,
                     handleSave,
                     record,
@@ -346,9 +379,12 @@ function DailyWorkPage() {
                     onClick: (e) => {
                         e.stopPropagation();
                         e.preventDefault();
-                        setIsNoteCellEditing(true);
+                        setIsNoteCellEditing({
+                            isEditing: true,
+                            record
+                        })
                     },
-                    editing: isNoteCellEditing,
+                    editing: noteCellEditing.isEditing && noteCellEditing.record?._id === record._id,
                     handleSave,
                     record,
                     rowIndex,
@@ -371,9 +407,12 @@ function DailyWorkPage() {
                     onClick: (e) => {
                         e.stopPropagation();
                         e.preventDefault();
-                        setIsStatusCellEditing(true);
+                        setIsStatusCellEditing({
+                            isEditing: true,
+                            record
+                        })
                     },
-                    editing: isStatusCellEditing,
+                    editing: statusCellEditing.isEditing && statusCellEditing.record?._id === record._id,
                     statuses: statuses,
                     handleSave,
                     record,
@@ -811,7 +850,7 @@ function EditableCell(props: EditableCellProps) {
 
 
     return (
-        <td {...restProps} ref={cellRef}>
+        <td {...restProps} key={record?._id} ref={cellRef}>
             {editing && (inputType === 'priority' || inputType === 'status') ? (
                 <div onClick={(e) => e.stopPropagation()} className="relative capitalize">
                     <span className="font-medium">Choose {inputType}</span>
