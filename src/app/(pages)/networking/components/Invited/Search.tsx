@@ -31,7 +31,7 @@ const Search = ({
       validationSchema={validationSchema}
       onSubmit={submitHandler}
     >
-      {({ handleBlur, handleChange, values, handleSubmit, errors }) => {
+      {({ handleBlur, handleChange, values, handleSubmit }) => {
         const { searchText } = values;
         return (
           <Form onSubmit={handleSubmit}>
