@@ -113,7 +113,7 @@ export function DailyWorkForm({ onClose, open, formik, onSubmit, isSubmitting }:
 
 
             <div className="flex items-center justify-between">
-                <WhiteButton text="Cancel" className="!w-40" />
+                <WhiteButton onClick={onClose} text="Cancel" className="!w-40" />
                 <CustomButton
                     text={'Save'}
                     className="!w-40"

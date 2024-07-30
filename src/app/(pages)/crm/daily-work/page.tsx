@@ -28,6 +28,7 @@ import ModalComponent from "@/app/component/modal";
 import { DeleteContent } from "@/app/component/delete/DeleteContent";
 import { Excel } from "antd-table-saveas-excel";
 import { PreviewCSVImportFileModal } from "../components/PreviewCSVImportFileModal";
+import moment from "moment";
 
 const ValidationSchema = Yup.object().shape({
 
@@ -314,9 +315,22 @@ function DailyWorkPage() {
             dataIndex: 'email',
         },
         {
+            title: "Deadline",
+            dataIndex: "deadline",
+            render: (value) => {
+                if (!value) {
+                    return null
+                }
+                return moment(value).format("DD/MM/YYYY");
+            }
+        },
+        {
             title: 'Note',
             dataIndex: 'note',
             render(value: string) {
+                if (!value) {
+                    return null;
+                }
                 return <div className="flex items-center space-x-4 justify-between">
                     {value}
 
@@ -381,7 +395,7 @@ function DailyWorkPage() {
                             if (e.key === "edit") {
                                 showDrawer();
                                 formik.setValues({
-                                    deadline: record.deadline.toString(),
+                                    deadline: record.deadline?.toString() || "",
                                     email: record.email,
                                     note: record.note,
                                     phone: record.phone,
@@ -467,6 +481,7 @@ function DailyWorkPage() {
                 if (response.data) {
                     toast.success('File parsed successfully');
                     setParseData(response.data);
+                    inputFileRef.current!.value = '';
                 }
             } catch (error) {
                 const err = error as AxiosError<{ message: string }>;
