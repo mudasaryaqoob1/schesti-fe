@@ -15,10 +15,6 @@ type Props = {
 
 const Layout = ({ userRole }: Props) => {
   const [isLoading, setIsLoading] = useState(true);
-<<<<<<< HEAD
-  const [error, setError] = useState<unknown>('');
-=======
->>>>>>> 24aa998269d3ab1ac31b1c2b3d514e38809f6e3a
   const [schestiUsers, setSchestiUsers] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [locationText, setLocationText] = useState('');
