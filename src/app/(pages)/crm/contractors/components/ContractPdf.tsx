@@ -63,8 +63,8 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(({ mo
                 canvas.width = viewport.width;
                 canvas.id = `${index}`;
                 canvas.dataset.pageNo = index.toString();
+                const context = canvas.getContext('2d')!;
 
-                const context = canvas.getContext('2d');
                 const renderContext = {
                     canvasContext: context!,
                     viewport: viewport,
@@ -73,6 +73,17 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(({ mo
 
                 await page.render(renderContext).promise;
 
+                // Add id to the canvas
+                const textCanvas = document.createElement('canvas');
+                textCanvas.height = viewport.height;
+                textCanvas.width = viewport.width;
+                const textContext = textCanvas.getContext('2d')!;
+                textContext.font = '16px Arial';
+                textContext.fillStyle = 'black';
+                textContext.fillText(`Schesti-Contract-ID: ${contract._id}`, 30, 30);
+
+                // Overlay the text canvas on the main canvas
+                context.drawImage(textCanvas, 0, 0);
                 if (containerRef.current) {
                     containerRef.current.appendChild(canvas);
                 }
