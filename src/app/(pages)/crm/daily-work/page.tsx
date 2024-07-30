@@ -114,35 +114,6 @@ function DailyWorkPage() {
         getDailyWorkPriorities();
     }, [])
 
-    useEffect(() => {
-        const handleClickOutside = (event: any) => {
-            if (
-                priorityCellRef.current &&
-                !priorityCellRef.current.contains(event.target)
-            ) {
-                setPriorityCellEditing({ isEditing: false, record: null });
-            }
-            if (
-                statusCellRef.current &&
-                !statusCellRef.current.contains(event.target)
-            ) {
-                setIsStatusCellEditing({ isEditing: false, record: null });
-            }
-            if (
-                noteCellRef.current &&
-                !noteCellRef.current.contains(event.target)
-            ) {
-                setIsNoteCellEditing({ isEditing: false, record: null });
-            }
-        };
-
-        document.addEventListener('mousedown', handleClickOutside);
-
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
-
 
     const formik = useFormik<ICrmDailyWorkCreate | ICrmDailyWorkUpdate>({
         initialValues: {
@@ -269,6 +240,10 @@ function DailyWorkPage() {
             record: null
         })
 
+        priorityCellRef.current = null;
+        noteCellRef.current = null;
+        statusCellRef.current = null;
+
         setIsLoading(true);
         try {
             const response = await crmDailyWorkService.httpUpdatedailyLead(record._id, { ...record, [key]: value });
@@ -320,7 +295,6 @@ function DailyWorkPage() {
                     inputType: "priority",
                     onClick: (e) => {
                         e.stopPropagation();
-                        e.preventDefault();
                         setPriorityCellEditing({
                             isEditing: true,
                             record
@@ -378,7 +352,6 @@ function DailyWorkPage() {
                     inputType: "note",
                     onClick: (e) => {
                         e.stopPropagation();
-                        e.preventDefault();
                         setIsNoteCellEditing({
                             isEditing: true,
                             record
@@ -839,25 +812,25 @@ function EditableCell(props: EditableCellProps) {
     } = props;
 
     const [note, setNote] = useState(record?.note || '');
+
     useEffect(() => {
         if (editing && inputType === 'note') {
             cellRef.current?.querySelector('input')?.focus();
+            console.log(cellRef.current?.querySelector('#note'));
         }
     }, [editing, inputType, cellRef])
 
 
-
-
-
     return (
-        <td {...restProps} key={record?._id} ref={cellRef}>
+        <td {...restProps} ref={cellRef}>
             {editing && (inputType === 'priority' || inputType === 'status') ? (
-                <div onClick={(e) => e.stopPropagation()} className="relative capitalize">
+                <div className="relative capitalize">
                     <span className="font-medium">Choose {inputType}</span>
                     <div className="absolute bg-white border rounded-md w-[200px] top-6 p-3 z-10 space-y-2">
                         {inputType === 'priority' ? (
                             props.priorities.map((priority: IDailyWorkPriorty) => (
                                 <DisplayPriority onClick={(e) => {
+                                    console.log("Priority Clicked");
                                     e.stopPropagation();
                                     handleSave("priority", priority._id, record);
                                 }} key={priority._id} item={priority} />
@@ -880,13 +853,17 @@ function EditableCell(props: EditableCellProps) {
                     onBlur={(e) => {
                         e.stopPropagation();
                         handleSave("note", note, record)
+                        setNote('');
                     }}
                     onKeyDown={(e) => {
                         if (e.key === 'Enter') {
                             e.stopPropagation();
                             handleSave("note", note, record)
+                            setNote('');
                         }
                     }}
+                    id="note"
+                    className="border-schestiPrimary border px-2 flex-1 rounded-md bg-transparent focus:outline-schestiPrimary py-2 "
                 />
             ) : (
                 children
