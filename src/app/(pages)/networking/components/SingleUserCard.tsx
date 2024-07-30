@@ -185,14 +185,13 @@ const SingleUserCard = ({
                 </span></button>
             </div> */}
 
-      {/* <p className='text-sm text-ebonyClay mt-1'> Lorem ipsum is a placeholder text commonly used to demonstrate the visual</p> */}
-
       <ModalComponent setOpen={setEmailModal} open={emailModal}>
         <CustomEmailTemplate
           to={email}
           cc={false}
           setEmailModal={setEmailModal}
           submitHandler={networkEmailSendHandler}
+          isFileUploadShow={true}
         />
       </ModalComponent>
     </div>

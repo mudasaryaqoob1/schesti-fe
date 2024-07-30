@@ -15,7 +15,6 @@ type Props = {
 
 const Layout = ({ userRole }: Props) => {
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<unknown>('');
   const [schestiUsers, setSchestiUsers] = useState([]);
   const [searchText, setSearchText] = useState('');
   const [locationText, setLocationText] = useState('');
@@ -56,7 +55,6 @@ const Layout = ({ userRole }: Props) => {
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);
-        setError(error);
       }
     }, 500);
     debounce_fun();
@@ -85,8 +83,8 @@ const Layout = ({ userRole }: Props) => {
         <Loader />
       ) : schestiUsers.length > 0 ? (
         <div className="grid grid-cols-3 gap-4">
-          {schestiUsers.map((userData: any) => (
-            <SingleUserCard {...userData} />
+          {schestiUsers.map((userData: any , i : number) => (
+            <SingleUserCard key={i} {...userData} />
           ))}
         </div>
       ) : (
