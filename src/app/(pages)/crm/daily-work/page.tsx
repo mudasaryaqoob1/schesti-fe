@@ -284,7 +284,7 @@ function DailyWorkPage() {
             dataIndex: "priority",
             render(_val, record) {
                 if (!record.priority || typeof record.priority === "string") {
-                    return null;
+                    return "N/A";
                 }
                 return <div className="w-fit">
                     <DisplayPriority item={record.priority} />
@@ -300,7 +300,7 @@ function DailyWorkPage() {
                             record
                         })
                     },
-                    editing: priorityCellEditing.isEditing && priorityCellEditing.record?._id === record._id,
+                    editing: (priorityCellEditing.isEditing && priorityCellEditing.record?._id === record._id) ? true : false,
                     priorities: priorities,
                     handleSave,
                     record,
@@ -352,12 +352,12 @@ function DailyWorkPage() {
                     inputType: "note",
                     onClick: (e) => {
                         e.stopPropagation();
-                        setIsNoteCellEditing({
+                        setIsNoteCellEditing(() => ({
                             isEditing: true,
                             record
-                        })
+                        }))
                     },
-                    editing: noteCellEditing.isEditing && noteCellEditing.record?._id === record._id,
+                    editing: (noteCellEditing.isEditing && noteCellEditing.record?._id === record._id) ? true : false,
                     handleSave,
                     record,
                     rowIndex,
@@ -370,7 +370,7 @@ function DailyWorkPage() {
             dataIndex: 'status',
             render(_val, record) {
                 if (!record.status || typeof record.status === "string") {
-                    return null;
+                    return "N/A";
                 }
                 return <DisplayDailyWorkStatus item={record.status} />
             },
@@ -379,13 +379,12 @@ function DailyWorkPage() {
                     inputType: "status",
                     onClick: (e) => {
                         e.stopPropagation();
-                        e.preventDefault();
                         setIsStatusCellEditing({
                             isEditing: true,
                             record
                         })
                     },
-                    editing: statusCellEditing.isEditing && statusCellEditing.record?._id === record._id,
+                    editing: (statusCellEditing.isEditing && statusCellEditing.record?._id === record._id) ? true : false,
                     statuses: statuses,
                     handleSave,
                     record,
@@ -548,7 +547,23 @@ function DailyWorkPage() {
 
 
     return (
-        <section className="mt-6 mb-[39px] bg-white p-5  mx-4 rounded-xl ">
+        <section onClick={() => {
+            setIsNoteCellEditing({
+                isEditing: false,
+                record: null,
+            })
+
+            setIsStatusCellEditing({
+                isEditing: false,
+                record: null,
+            })
+
+            setPriorityCellEditing({
+                isEditing: false,
+                record: null
+            })
+
+        }} className="mt-6 !mb-[39px] bg-white p-5 min-h-[80%]  mx-4 rounded-xl ">
             <DailyWorkForm
                 formik={formik}
                 onClose={onClose}
@@ -800,7 +815,6 @@ type EditableCellProps = {
     [key: string]: any;
 }
 function EditableCell(props: EditableCellProps) {
-
     const {
         editing,
         inputType,
@@ -811,15 +825,17 @@ function EditableCell(props: EditableCellProps) {
         ...restProps
     } = props;
 
-    const [note, setNote] = useState(record?.note || '');
+    const [note, setNote] = useState('');
+    const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
         if (editing && inputType === 'note') {
-            cellRef.current?.querySelector('input')?.focus();
-            console.log(cellRef.current?.querySelector('#note'));
+            if (record.note) {
+                setNote(record.note);
+            }
+            inputRef.current?.focus();
         }
-    }, [editing, inputType, cellRef])
-
+    }, [editing, inputType, record?.note, cellRef]);
 
     return (
         <td {...restProps} ref={cellRef}>
@@ -848,11 +864,15 @@ function EditableCell(props: EditableCellProps) {
             ) : editing && inputType === 'note' ? (
                 <InputWithoutBorder
                     value={note}
-                    onChange={e => setNote(e.target.value)}
+                    onChange={e => {
+                        if (e.target.value.length < 10) {
+                            setNote(e.target.value);
+                        }
+                    }}
                     placeholder="Enter note"
                     onBlur={(e) => {
                         e.stopPropagation();
-                        handleSave("note", note, record)
+                        // handleSave("note", note, record)
                         setNote('');
                     }}
                     onKeyDown={(e) => {
@@ -863,6 +883,7 @@ function EditableCell(props: EditableCellProps) {
                         }
                     }}
                     id="note"
+                    ref={inputRef}
                     className="border-schestiPrimary border px-2 flex-1 rounded-md bg-transparent focus:outline-schestiPrimary py-2 "
                 />
             ) : (
