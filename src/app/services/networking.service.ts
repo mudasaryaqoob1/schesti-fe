@@ -1,8 +1,6 @@
 // Importing base class
 import { HttpService } from '@/app/services/base.service';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
-import { IToken } from '@/app/interfaces/authInterfaces/token.interface';
-import { IEstimateRequest } from '@/app/interfaces/estimateRequests/estimateRequests.interface';
 
 class NetworkingService extends HttpService {
   private readonly prefix: string = 'api/networking';

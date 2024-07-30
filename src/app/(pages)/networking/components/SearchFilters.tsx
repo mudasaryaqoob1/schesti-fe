@@ -3,10 +3,8 @@ import { SelectComponent } from '@/app/component/customSelect/Select.component';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import Image from 'next/image';
-import FormikController from '@/app/component/formControl';
-import { Country, State, City } from 'country-state-city';
+import { Country, State } from 'country-state-city';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
 import { tradeService } from '@/app/services/trade.service';
 import Errormsg from '@/app/component/errorMessage';
 import {

@@ -9,7 +9,6 @@ import Loader from '@/app/component/loader';
 
 const InvitedClients = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<unknown>('');
   const [invitedUsers, setinvitedUsers] = useState({ invited: [] });
   const [searchText, setSearchText] = useState('');
   const [filters, setFilters] = useState({
@@ -37,7 +36,6 @@ const InvitedClients = () => {
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
-      setError(error);
     }
   }, [invited, searchText, filters.page]);
 
@@ -52,8 +50,8 @@ const InvitedClients = () => {
         <Loader />
       ) : invitedUsers.invited.length ? (
         <div className="grid grid-cols-3 gap-4 mt-3.5">
-          {invitedUsers.invited.map((userData: any) => (
-            <div className="col-span-1">
+          {invitedUsers.invited.map((userData: any, i: number) => (
+            <div className="col-span-1" key={i}>
               <InvitedCard {...userData} />
             </div>
           ))}
