@@ -68,7 +68,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
           canvas.id = `${index}`;
           canvas.dataset.pageNo = index.toString();
 
-          const context = canvas.getContext('2d');
+          const context = canvas.getContext('2d')!;
           const renderContext = {
             canvasContext: context!,
             viewport: viewport,
@@ -77,6 +77,17 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
 
           await page.render(renderContext).promise;
 
+          // Add id to the canvas
+          const textCanvas = document.createElement('canvas');
+          textCanvas.height = viewport.height;
+          textCanvas.width = viewport.width;
+          const textContext = textCanvas.getContext('2d')!;
+          textContext.font = '16px Arial';
+          textContext.fillStyle = 'black';
+          textContext.fillText(`Schesti-Contract-ID: ${contract._id}`, 30, 30);
+
+          // Overlay the text canvas on the main canvas
+          context.drawImage(textCanvas, 0, 0);
           if (containerRef.current) {
             containerRef.current.appendChild(canvas);
           }
@@ -150,7 +161,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
             pdf.addPage();
           }
         }
-        pdf.save('scrollable-div.pdf');
+        pdf.save(`${contract.title}.pdf`);
 
         // Restore the original height
         container.style.height = ''; // Remove inline style to revert to original
@@ -254,7 +265,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
 
               <DraggableTool type="stamp">
                 <CustomButton
-                  text="Stamp"
+                  text="Comments"
                   className="!bg-schestiLightPrimary !border-schestiLightPrimary !text-schestiPrimaryBlack"
                   icon="/stamp.svg"
                   iconwidth={16}

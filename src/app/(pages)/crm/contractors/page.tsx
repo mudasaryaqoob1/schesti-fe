@@ -2,7 +2,9 @@
 import CustomButton from '@/app/component/customButton/button';
 import { InputComponent } from '@/app/component/customInput/Input';
 import { SelectComponent } from '@/app/component/customSelect/Select.component';
+import { DeleteContent } from '@/app/component/delete/DeleteContent';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
+import ModalComponent from '@/app/component/modal';
 import { withAuth } from '@/app/hoc/withAuth';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
@@ -19,6 +21,7 @@ import { AxiosError } from 'axios';
 import moment from 'moment';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 const menuItems: MenuProps['items'] = [
   {
@@ -41,6 +44,9 @@ const menuItems: MenuProps['items'] = [
 function ContractsPage() {
   const [data, setData] = useState<ICrmContract[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<ICrmContract | null>(null);
   const router = useRouterHook();
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
@@ -61,6 +67,26 @@ function ContractsPage() {
       console.log(err.response?.data);
     } finally {
       setIsLoading(false);
+    }
+  }
+
+  async function deleteContract(contract: ICrmContract) {
+    setIsDeleting(true);
+    try {
+      const response = await crmContractService.httpDeleteContractById(
+        contract._id
+      );
+      if (response.data) {
+        setData(data.filter((item) => item._id !== contract._id));
+        toast.success('Contract deleted successfully');
+        setShowDeleteModal(false);
+        setSelectedItem(null);
+      }
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      console.log(err.response?.data);
+    } finally {
+      setIsDeleting(false);
     }
   }
 
@@ -180,6 +206,9 @@ function ContractsPage() {
                   router.push(
                     `${Routes.CRM.Contractors}/view?id=${record._id}&download=true`
                   );
+                } else if (key === 'delete') {
+                  setShowDeleteModal(true);
+                  setSelectedItem(record);
                 }
               },
             }}
@@ -210,6 +239,21 @@ function ContractsPage() {
 
   return (
     <div className="mt-6 p-5 !pb-[39px]  mx-4 bg-white rounded-md">
+      {selectedItem && showDeleteModal ? (
+        <ModalComponent
+          open={showDeleteModal}
+          setOpen={setShowDeleteModal}
+          width="30%"
+        >
+          <DeleteContent
+            onClick={() => deleteContract(selectedItem)}
+            title="Are you sure to delete?"
+            description="Are you sure you want to delete this entry?"
+            isLoading={isDeleting}
+            onClose={() => setShowDeleteModal(false)}
+          />
+        </ModalComponent>
+      ) : null}
       <div className="flex justify-between items-center">
         <SenaryHeading
           title="Contracts"

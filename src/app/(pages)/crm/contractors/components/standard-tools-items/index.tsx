@@ -54,6 +54,7 @@ export function StandardToolItem({
             setOpen={() => {}}
             width="300px"
             key={selectedTool.tool}
+            className={'!bg-transparent'}
           >
             <Popups
               title="Add Standard Tools"
@@ -103,7 +104,7 @@ function Item({ item, mode, onClick, onDelete }: ItemProps) {
 
         onClick?.();
       }}
-      className="p-3 rounded-lg border-schestiPrimary border-2 h-fit relative font-semibold text-schestiPrimary flex items-center space-x-2 border-dashed bg-schestiLightPrimary m-0"
+      className={`p-3 rounded-lg border-schestiPrimary border-2 h-fit relative font-semibold ${item.value ? 'text-schestiPrimaryBlack' : 'text-schestiPrimary'} flex items-center space-x-2 border-dashed bg-schestiLightPrimary m-0`}
     >
       <Image
         src={`/${item.tool}.svg`}

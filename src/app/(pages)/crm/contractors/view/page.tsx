@@ -131,7 +131,7 @@ function ViewContract() {
           className="!text-[24px] text-schestiPrimaryBlack leading-6 font-semibold"
         />
         {activeTab === 'sender' &&
-        !contract.receiverTools.every((tool) => tool.value) ? (
+        !contract.senderTools.every((tool) => tool.value) ? (
           <CustomButton
             text="Update Tools"
             className="!w-fit"
