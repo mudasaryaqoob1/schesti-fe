@@ -109,8 +109,9 @@ const SmallTabs = () => {
                     items: feature.options.map((option, index) => {
                       return {
                         key: index,
-                        label: <Link href={option.value ?? '/'}>{option.label}</Link>
-                        ,
+                        label: (
+                          <Link href={option.value ?? '/'}>{option.label}</Link>
+                        ),
                       };
                     }),
                     selectable: true,
@@ -123,8 +124,9 @@ const SmallTabs = () => {
                         flex items-stretch justify-center py-2 
                          cursor-pointer
                         `,
-                        feature.options.find((option) =>
-                          (option.value && pathname.includes(option.value))
+                        feature.options.find(
+                          (option) =>
+                            option.value && pathname.includes(option.value)
                         ) && tabsStyle.active
                       )
                     )}

@@ -26,7 +26,7 @@ export interface IinitialValues {
   unitMaterialCost: string;
   unitEquipments: string;
   index?: string;
-  _id?:string
+  _id?: string;
 }
 
 export interface IEstiamteBasicInfo {

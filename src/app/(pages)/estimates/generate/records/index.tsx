@@ -65,7 +65,7 @@ const EstimateRequestTable: React.FC = () => {
 
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
-  
+
   const [estimateDetail, setEstimateDetail] = useState<any>({});
   const [generatedEstimates, setGeneratedEstimates] = useState<[]>([]);
   const [changeStatusDrawer, setChangeStatusDrawer] = useState(false);
@@ -123,7 +123,7 @@ const EstimateRequestTable: React.FC = () => {
       router.push(
         `/estimates/generate/edit/?generatedEstimateId=${estimate._id}`
       );
-    } 
+    }
   };
 
   const columns: ColumnsType<DataType> = [
@@ -202,8 +202,6 @@ const EstimateRequestTable: React.FC = () => {
       item.salePerson?.includes(search)
     );
   });
-
-
 
   return (
     <section className="mt-6 mx-4 p-5 rounded-xl grid items-center border border-solid bg-white border-silverGray shadow-secondaryTwist">
@@ -292,8 +290,6 @@ const EstimateRequestTable: React.FC = () => {
           estimateDetail={estimateDetail}
         />
       </Drawer>
-
-      
     </section>
   );
 };

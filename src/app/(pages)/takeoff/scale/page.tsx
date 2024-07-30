@@ -4,7 +4,12 @@ import ModalComponent from '@/app/component/modal';
 import ScaleModal from '../components/scale';
 import ModalsWrapper from './components/ModalWrapper';
 import { ColorPicker, InputNumber, Select } from 'antd';
-import { EditContext, ReportDataContext, ScaleContext, UploadFileContext } from '../context';
+import {
+  EditContext,
+  ReportDataContext,
+  ScaleContext,
+  UploadFileContext,
+} from '../context';
 import { UploadFileContextProps } from '../context/UploadFileContext';
 import {
   Measurements,
@@ -33,12 +38,17 @@ export interface PageScale {
 }
 
 const Scale = () => {
-  const urlSearch: any = new URLSearchParams(window.location.search)
-  console.log(window.location, urlSearch, urlSearch.get('edit_id'), " Edit Data Edit Data");
+  const urlSearch: any = new URLSearchParams(window.location.search);
+  console.log(
+    window.location,
+    urlSearch,
+    urlSearch.get('edit_id'),
+    ' Edit Data Edit Data'
+  );
   ////categories
-  const [allCategories, setallCategories] = useState<any>([])
-  const [selectedCategory, setselectedCategory] = useState<any>("")
-  const [inputtxt, setinputtxt] = useState<any>("")
+  const [allCategories, setallCategories] = useState<any>([]);
+  const [selectedCategory, setselectedCategory] = useState<any>('');
+  const [inputtxt, setinputtxt] = useState<any>('');
   ////
   const router = useRouterHook();
   const [tool, setTool] = useState<ScaleInterface>({ selected: 'scale' });
@@ -47,8 +57,8 @@ const Scale = () => {
   const [color, setColor] = useState<string>('#1677ff');
   const [unit, setUnit] = useState<number>(14);
   const [depth, setDepth] = useState<number>(0);
-  const [drawScale, setdrawScale] = useState<boolean>(false)
-  const [scaleLine, setscaleLine] = useState<any>({})
+  const [drawScale, setdrawScale] = useState<boolean>(false);
+  const [scaleLine, setscaleLine] = useState<any>({});
   const [measurements, setMeasurements] =
     useState<Measurements>(defaultMeasurements);
 
@@ -62,10 +72,7 @@ const Scale = () => {
   const { reportData } = useContext(
     ReportDataContext
   ) as ReportDataContextProps;
-  const { editData } = useContext(EditContext)
-
-  
-
+  const { editData } = useContext(EditContext);
 
   if (!uploadFileData.length) router.push('/takeoff/upload');
 
@@ -80,8 +87,10 @@ const Scale = () => {
     }
     handleScaleData(newData);
   }, []);
-  console.log(uploadFileData, " uploadFileData");
-  useEffect(()=>{console.log(measurements, " ===> measurements")},[measurements])
+  console.log(uploadFileData, ' uploadFileData');
+  useEffect(() => {
+    console.log(measurements, ' ===> measurements');
+  }, [measurements]);
 
   return (
     <>
@@ -92,7 +101,13 @@ const Scale = () => {
               className="flex flex-row gap-x-3 cursor-pointer"
               onClick={() => {
                 //@ts-ignore
-                (urlSearch && urlSearch.get('edit_id') && urlSearch.get('edit_id')?.length > 0) ? router.push(`/takeoff/report?edit_id=${urlSearch.get('edit_id')}`) : router.push('/takeoff/report')
+                urlSearch &&
+                urlSearch.get('edit_id') &&
+                urlSearch.get('edit_id')?.length > 0
+                  ? router.push(
+                      `/takeoff/report?edit_id=${urlSearch.get('edit_id')}`
+                    )
+                  : router.push('/takeoff/report');
               }}
             >
               <Button
@@ -152,23 +167,45 @@ const Scale = () => {
                 onChange={(value) => value && setDepth(value)}
               />
             )}
-            <input placeholder='Add Custom Category' className='p-1' type='text' value={inputtxt} onChange={(e:any)=>{setinputtxt(e.target.value)}} />
-            <button className='bg-RoyalPurple cursor-pointer text-white p-1 rounded font-bold' onClick={()=>{if(inputtxt?.length>0){setallCategories((ps:any)=>([...ps,inputtxt])); setselectedCategory(inputtxt); setinputtxt(""); }}} >Add</button>
-            {
-              allCategories?.map((it:any,ind:number)=>{
-                const isSelected = it == selectedCategory
-                return <div key={ind} className={`cursor-pointer p-1 rounded text-white ${isSelected ? '!bg-RoyalPurple' : 'bg-slate-400'}`} 
-                onClick={()=>{
-                  if(isSelected){
-                    setselectedCategory("")
-                  }else{
-                    setselectedCategory(it)
-                  }
-                  }} >
+            <input
+              placeholder="Add Custom Category"
+              className="p-1"
+              type="text"
+              value={inputtxt}
+              onChange={(e: any) => {
+                setinputtxt(e.target.value);
+              }}
+            />
+            <button
+              className="bg-RoyalPurple cursor-pointer text-white p-1 rounded font-bold"
+              onClick={() => {
+                if (inputtxt?.length > 0) {
+                  setallCategories((ps: any) => [...ps, inputtxt]);
+                  setselectedCategory(inputtxt);
+                  setinputtxt('');
+                }
+              }}
+            >
+              Add
+            </button>
+            {allCategories?.map((it: any, ind: number) => {
+              const isSelected = it == selectedCategory;
+              return (
+                <div
+                  key={ind}
+                  className={`cursor-pointer p-1 rounded text-white ${isSelected ? '!bg-RoyalPurple' : 'bg-slate-400'}`}
+                  onClick={() => {
+                    if (isSelected) {
+                      setselectedCategory('');
+                    } else {
+                      setselectedCategory(it);
+                    }
+                  }}
+                >
                   {it}
                 </div>
-              })
-            }
+              );
+            })}
           </div>
 
           <div className="py-6 h-[709px] relative">
@@ -221,7 +258,7 @@ const Scale = () => {
                   handleChangeMeasurements={(measurements) =>
                     setMeasurements(measurements)
                   }
-                  isEdit={(urlSearch.get('edit_id') && editData) ? true : false}
+                  isEdit={urlSearch.get('edit_id') && editData ? true : false}
                   editData={editData}
                   drawScale={drawScale}
                   setdrawScale={setdrawScale}

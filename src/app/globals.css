@@ -236,8 +236,8 @@ a {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .no-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 /* TakeOff table transparent */
@@ -254,7 +254,7 @@ a {
   content: attr(data-tooltip);
   border: 1px solid black;
   background: #ffffff;
-  padding: .25em;
+  padding: 0.25em;
   z-index: 1000;
 }
 

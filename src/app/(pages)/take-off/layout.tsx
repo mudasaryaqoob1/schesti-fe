@@ -5,7 +5,7 @@ import {
   ReportDataContext,
   ScaleContext,
   UploadFileContext,
-  EditContext
+  EditContext,
 } from './context';
 import { UploadFileData } from './context/UploadFileContext';
 import { DrawHistoryContextInterface } from './context/DrawHistoryContext';
@@ -20,24 +20,27 @@ const TakeOffLayout: React.FC<any> = ({
 }) => {
   const [reportData, setReportData] = useState<ReportDataInterface[]>([]);
   const [uploadFileData, setUploadFileData] = useState<UploadFileData[]>([]);
-  const [editData, seteditData] = useState<any>([])
+  const [editData, seteditData] = useState<any>([]);
   const [drawHistory, setDrawHistory] =
     useState<DrawHistoryContextInterface | null>(null);
   const [scaleData, setScaleData] = useState<ScaleDataContextInterface | null>(
     null
   );
 
-  const handleSrc = (value: UploadFileData[],isAppend?:boolean) => {
-    if(isAppend == true){
-      setUploadFileData((ps:any)=>([...ps,value]))
-    }else{
-      setUploadFileData(value)
+  const handleSrc = (value: UploadFileData[], isAppend?: boolean) => {
+    if (isAppend == true) {
+      setUploadFileData((ps: any) => [...ps, value]);
+    } else {
+      setUploadFileData(value);
     }
   };
   const handleEdit = (value: any[]) => seteditData(value);
 
   const handleScaleData = (value: ScaleDataContextInterface) => {
-    console.log(value, " ===> Area Calculation values to log handleScaleData function")
+    console.log(
+      value,
+      ' ===> Area Calculation values to log handleScaleData function'
+    );
     setScaleData(value);
   };
 
@@ -45,7 +48,7 @@ const TakeOffLayout: React.FC<any> = ({
     setDrawHistory((prev) => ({ ...prev, [pageNumber]: value }));
   };
 
-  const setInitialEditDrawHistory = (value:any) => setDrawHistory(value)
+  const setInitialEditDrawHistory = (value: any) => setDrawHistory(value);
 
   const updateDrawHistory = (pageNumber: string, shape: string, value: any) => {
     setDrawHistory((prev) => {
@@ -75,7 +78,7 @@ const TakeOffLayout: React.FC<any> = ({
     date: Date,
     pageNumber: string,
     newProjectName: string,
-    type?:string
+    type?: string
   ) => {
     setReportData((prev) => {
       return prev.map((item) => {
@@ -90,28 +93,29 @@ const TakeOffLayout: React.FC<any> = ({
         } else return item;
       });
     });
-    setDrawHistory((prev)=>{
+    setDrawHistory((prev) => {
       return {
         ...prev,
         //@ts-ignore
-        [pageNumber]:{...prev[pageNumber],
+        [pageNumber]: {
+          ...prev[pageNumber],
           //@ts-ignore
-          [type]:prev[pageNumber][type]?.map((item:any)=>{
+          [type]: prev[pageNumber][type]?.map((item: any) => {
             if (
-                  new Date(item.dateTime).valueOf() === new Date(date).valueOf()
-                ){
-                  return {...item,projectName:newProjectName}
-                }else return item
-          })
-        }
-      }
-    })
+              new Date(item.dateTime).valueOf() === new Date(date).valueOf()
+            ) {
+              return { ...item, projectName: newProjectName };
+            } else return item;
+          }),
+        },
+      };
+    });
   };
   const updateCategoryInReportData = (
     date: Date,
     pageNumber: string,
     newProjectName: string,
-    type?:string
+    type?: string
   ) => {
     setReportData((prev) => {
       return prev.map((item) => {
@@ -126,29 +130,30 @@ const TakeOffLayout: React.FC<any> = ({
         } else return item;
       });
     });
-    setDrawHistory((prev)=>{
+    setDrawHistory((prev) => {
       return {
         ...prev,
         //@ts-ignore
-        [pageNumber]:{...prev[pageNumber],
+        [pageNumber]: {
+          ...prev[pageNumber],
           //@ts-ignore
-          [type]:prev[pageNumber][type]?.map((item:any)=>{
+          [type]: prev[pageNumber][type]?.map((item: any) => {
             if (
-                  new Date(item.dateTime).valueOf() === new Date(date).valueOf()
-                ){
-                  return {...item,category:newProjectName}
-                }else return item
-          })
-        }
-      }
-    })
+              new Date(item.dateTime).valueOf() === new Date(date).valueOf()
+            ) {
+              return { ...item, category: newProjectName };
+            } else return item;
+          }),
+        },
+      };
+    });
   };
 
   const updateProjectColorInReportData = (
     date: Date,
     pageNumber: string,
     newProjectName: string,
-    type?:any
+    type?: any
   ) => {
     setReportData((prev) => {
       return prev.map((item) => {
@@ -163,36 +168,47 @@ const TakeOffLayout: React.FC<any> = ({
         } else return item;
       });
     });
-    setDrawHistory((prev)=>{
+    setDrawHistory((prev) => {
       return {
         ...prev,
         //@ts-ignore
-        [pageNumber]:{...prev[pageNumber],
+        [pageNumber]: {
+          ...prev[pageNumber],
           //@ts-ignore
-          [type]:prev[pageNumber][type]?.map((item:any)=>{
+          [type]: prev[pageNumber][type]?.map((item: any) => {
             if (
-                  new Date(item.dateTime).valueOf() === new Date(date).valueOf()
-                ){
-                  return {...item,stroke:newProjectName}
-                }else return item
-          })
-        }
-      }
-    })
+              new Date(item.dateTime).valueOf() === new Date(date).valueOf()
+            ) {
+              return { ...item, stroke: newProjectName };
+            } else return item;
+          }),
+        },
+      };
+    });
   };
-  console.log(reportData, " ===> Report Data", drawHistory, " ===> Draw History");
-  
+  console.log(
+    reportData,
+    ' ===> Report Data',
+    drawHistory,
+    ' ===> Draw History'
+  );
 
   return (
     <ReportDataContext.Provider
-      value={{ reportData, handleReportData, updateProjectNameInReportData, updateProjectColorInReportData, updateCategoryInReportData }}
+      value={{
+        reportData,
+        handleReportData,
+        updateProjectNameInReportData,
+        updateProjectColorInReportData,
+        updateCategoryInReportData,
+      }}
     >
       <DrawHistoryContext.Provider
         value={{
           drawHistory,
           deleteDrawHistory,
           updateDrawHistory,
-          setInitialEditDrawHistory
+          setInitialEditDrawHistory,
         }}
       >
         <EditContext.Provider value={{ editData, handleEdit }}>

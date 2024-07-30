@@ -113,75 +113,42 @@ const AddSubcategory = () => {
 
   const options = categoriesReduxData
     ? categoriesReduxData.map(({ name, _id }: ICategory) => ({
-      label: name,
-      value: _id,
-    }))
+        label: name,
+        value: _id,
+      }))
     : [];
 
   return (
     <>
-      {showForm ? <div className={`${bg_style} p-5`}>
-        <TertiaryHeading title="Sub-Category" className="text-graphiteGray" />
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={submitHandler}
-          enableReinitialize
-        >
-          {({ handleSubmit, values }) => {
-            console.log({ values });
-            return (
-              <Form
-                name="basic"
-                onSubmit={handleSubmit}
-                autoComplete="off"
-                className="mt-2"
-              >
-                <div className="grid grid-cols-3 gap-2 items-center">
-                  <FormControl
-                    control="select"
-                    label="Category Name"
-                    type="text"
-                    disabled={subcategoryData}
-                    options={options}
-                    searchable={true}
-                    isLoading={categoriesReduxDataLoading}
-                    name="category"
-                    placeholder="Search Category Name"
-                  />
-                  <FormControl
-                    control="input"
-                    label="Sub-Category"
-                    type="text"
-                    name="name"
-                    placeholder="Enter Sub-Category"
-                  />
-                  <FormControl
-                    control="input"
-                    label="Labour Per Hour"
-                    type="number"
-                    name="price"
-                    placeholder="Enter Labour Per Hour"
-                    prefix="$"
-                  />
-                </div>
-                <div className='flex justify-between mt-5 items-center'>
-                  <WhiteButton
-                    text='Cancel'
-                    className='!w-fit'
-                    onClick={() => {
-                      setShowForm(false);
-                    }}
-                  />
-                  <div className="flex items-center gap-3">
-                    <CustomButton
-                      text={
-                        subcategoryData ? 'Update Subcategory' : 'Add Subcategory'
-                      }
-                      type="submit"
-                      className="!w-auto "
-                      iconwidth={20}
-                      iconheight={20}
+      {showForm ? (
+        <div className={`${bg_style} p-5`}>
+          <TertiaryHeading title="Sub-Category" className="text-graphiteGray" />
+          <Formik
+            initialValues={initialValues}
+            validationSchema={validationSchema}
+            onSubmit={submitHandler}
+            enableReinitialize
+          >
+            {({ handleSubmit, values }) => {
+              console.log({ values });
+              return (
+                <Form
+                  name="basic"
+                  onSubmit={handleSubmit}
+                  autoComplete="off"
+                  className="mt-2"
+                >
+                  <div className="grid grid-cols-3 gap-2 items-center">
+                    <FormControl
+                      control="select"
+                      label="Category Name"
+                      type="text"
+                      disabled={subcategoryData}
+                      options={options}
+                      searchable={true}
+                      isLoading={categoriesReduxDataLoading}
+                      name="category"
+                      placeholder="Search Category Name"
                     />
                     <FormControl
                       control="input"
@@ -192,10 +159,10 @@ const AddSubcategory = () => {
                     />
                     <FormControl
                       control="input"
-                      label="Price"
+                      label="Labour Per Hour"
                       type="number"
                       name="price"
-                      placeholder="Enter Price"
+                      placeholder="Enter Labour Per Hour"
                       prefix="$"
                     />
                   </div>
@@ -219,28 +186,64 @@ const AddSubcategory = () => {
                         iconwidth={20}
                         iconheight={20}
                       />
-                      {subcategoryData && (
+                      <FormControl
+                        control="input"
+                        label="Sub-Category"
+                        type="text"
+                        name="name"
+                        placeholder="Enter Sub-Category"
+                      />
+                      <FormControl
+                        control="input"
+                        label="Price"
+                        type="number"
+                        name="price"
+                        placeholder="Enter Price"
+                        prefix="$"
+                      />
+                    </div>
+                    <div className="flex justify-between mt-5 items-center">
+                      <WhiteButton
+                        text="Cancel"
+                        className="!w-fit"
+                        onClick={() => {
+                          setShowForm(false);
+                        }}
+                      />
+                      <div className="flex items-center gap-3">
                         <CustomButton
-                          type="button"
-                          text="Cancel"
-                          onClick={() => {
-                            dispatch(setSubcategoryData(null));
-                            setShowForm(false);
-                          }}
-                          className="!w-auto !bg-red-500 border-none"
+                          text={
+                            subcategoryData
+                              ? 'Update Subcategory'
+                              : 'Add Subcategory'
+                          }
+                          type="submit"
+                          className="!w-auto "
                           iconwidth={20}
                           iconheight={20}
                         />
-                      )}
+                        {subcategoryData && (
+                          <CustomButton
+                            type="button"
+                            text="Cancel"
+                            onClick={() => {
+                              dispatch(setSubcategoryData(null));
+                              setShowForm(false);
+                            }}
+                            className="!w-auto !bg-red-500 border-none"
+                            iconwidth={20}
+                            iconheight={20}
+                          />
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Form>
-            );
-          }}
-        </Formik>
-      </div>
-        : null}
+                </Form>
+              );
+            }}
+          </Formik>
+        </div>
+      ) : null}
 
       <UploadSubCategoriesModal
         open={showUploadModal}
@@ -285,7 +288,7 @@ const AddSubcategory = () => {
           onEdit={() => {
             setShowForm(true);
           }}
-          onDelete={() => { }}
+          onDelete={() => {}}
         />
       </div>
     </>

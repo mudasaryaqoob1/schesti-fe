@@ -30,13 +30,11 @@ const defaultOptions = [
 
 interface Props {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  submitHandler?:any;
-  isLoading?:any;
+  submitHandler?: any;
+  isLoading?: any;
 }
 
-const CreateUserModal = ({ setModalOpen, submitHandler,isLoading }: Props) => {
-
-
+const CreateUserModal = ({ setModalOpen, submitHandler, isLoading }: Props) => {
   const newClientSchema: any = Yup.object({
     firstName: Yup.string().required('First name is required!'),
     lastName: Yup.string().required('Last name is required!'),
@@ -56,8 +54,8 @@ const CreateUserModal = ({ setModalOpen, submitHandler,isLoading }: Props) => {
 
   return (
     // <VerticleBar>
-      <div className="w-full bg-white rounded-lg">
-        {/* <div className="flex gap-4 items-center">
+    <div className="w-full bg-white rounded-lg">
+      {/* <div className="flex gap-4 items-center">
           <Image src={'/home.svg'} alt="home icon" width={20} height={20} />
           <Image
             src={'/chevron-right.svg'}
@@ -85,72 +83,72 @@ const CreateUserModal = ({ setModalOpen, submitHandler,isLoading }: Props) => {
             className="font-semibold text-lavenderPurple cursor-pointer underline"
           />
         </div> */}
-        <TertiaryHeading title="Add User" className="p-5 pb-0" />
-        <Formik
-          initialValues={initialValues}
-          validationSchema={newClientSchema}
-          onSubmit={submitHandler}
-        >
-          {({ handleSubmit, errors, values }) => {
-            console.log(errors, 'error', values);
+      <TertiaryHeading title="Add User" className="p-5 pb-0" />
+      <Formik
+        initialValues={initialValues}
+        validationSchema={newClientSchema}
+        onSubmit={submitHandler}
+      >
+        {({ handleSubmit, errors, values }) => {
+          console.log(errors, 'error', values);
 
-            return (
-              <Form
-                name="basic"
-                onSubmit={handleSubmit}
-                autoComplete="off"
-                className={`${bg_style} p-5`}
-              >
-                <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-2 gap-4 ">
-                  <FormControl
-                    control="input"
-                    label="First Name"
-                    type="text"
-                    name="firstName"
-                    placeholder="First Name"
+          return (
+            <Form
+              name="basic"
+              onSubmit={handleSubmit}
+              autoComplete="off"
+              className={`${bg_style} p-5`}
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 grid-rows-2 gap-4 ">
+                <FormControl
+                  control="input"
+                  label="First Name"
+                  type="text"
+                  name="firstName"
+                  placeholder="First Name"
+                />
+                <FormControl
+                  control="input"
+                  label="Last Name"
+                  type="text"
+                  name="lastName"
+                  placeholder="Last Name"
+                />
+                <FormControl
+                  control="select"
+                  label="Role"
+                  name="roles"
+                  options={defaultOptions}
+                  placeholder="Select User Role"
+                />
+                <FormControl
+                  control="input"
+                  label="email"
+                  type="email"
+                  name="email"
+                  placeholder="Email Address"
+                />
+              </div>
+              <div className="self-end flex justify-end items-center gap-5 md:mt-5 my-3">
+                <div className="flex items-center space-x-3">
+                  <WhiteButton
+                    text="Cancel"
+                    className="mx-w-30"
+                    onClick={() => setModalOpen(false)}
                   />
-                  <FormControl
-                    control="input"
-                    label="Last Name"
-                    type="text"
-                    name="lastName"
-                    placeholder="Last Name"
-                  />
-                  <FormControl
-                    control="select"
-                    label="Role"
-                    name="roles"
-                    options={defaultOptions}
-                    placeholder="Select User Role"
-                  />
-                  <FormControl
-                    control="input"
-                    label="email"
-                    type="email"
-                    name="email"
-                    placeholder="Email Address"
+                  <CustomButton
+                    isLoading={isLoading}
+                    className="mx-w-30"
+                    type="submit"
+                    text={'Add'}
                   />
                 </div>
-                <div className="self-end flex justify-end items-center gap-5 md:mt-5 my-3">
-                  <div className="flex items-center space-x-3">
-                    <WhiteButton
-                      text="Cancel"
-                      className="mx-w-30"
-                      onClick={() => setModalOpen(false)}
-                    />
-                    <CustomButton
-                      isLoading={isLoading}
-                      className="mx-w-30"
-                      type="submit"
-                      text={'Add'}
-                    />
-                  </div>
-                </div>
-              </Form>
-            );
-          }}
-        </Formik>
-      </div>
+              </div>
+            </Form>
+          );
+        }}
+      </Formik>
+    </div>
     // </VerticleBar>
   );
 };
