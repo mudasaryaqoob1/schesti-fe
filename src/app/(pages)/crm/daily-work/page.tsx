@@ -26,6 +26,7 @@ import { DisplayPriority } from "./components/DisplayPriority";
 import { DisplayDailyWorkStatus } from "./components/DisplayStatus";
 import ModalComponent from "@/app/component/modal";
 import { DeleteContent } from "@/app/component/delete/DeleteContent";
+import { Excel } from "antd-table-saveas-excel";
 
 const ValidationSchema = Yup.object().shape({
 
@@ -400,6 +401,53 @@ function DailyWorkPage() {
         },
     ];
 
+
+    function handleExport(dataset: ICrmDailyWork[]) {
+        const excel = new Excel();
+
+        excel.addSheet("Daily Work").addColumns([
+            {
+                title: "Priority",
+                dataIndex: "priority",
+                render(_text, record,) {
+                    if (typeof record.priority === "string" || !record.priority) {
+                        return null;
+                    }
+                    return record.priority.name
+                }
+            },
+
+            {
+                title: "Work Needed",
+                dataIndex: "work"
+            },
+            {
+                title: "Phone Number",
+                dataIndex: "phone"
+            },
+            {
+                title: "Email",
+                dataIndex: "email"
+            },
+            {
+                title: "Note",
+                dataIndex: "note"
+            },
+            {
+                title: "Status",
+                dataIndex: "status",
+                render(_text, record,) {
+                    if (typeof record.status === "string" || !record.status) {
+                        return null;
+                    }
+                    return record.status.name
+                }
+            },
+
+        ]).addDataSource(dataset).saveAs("Daily Work.xlsx");
+
+    }
+
     const filteredData = data.filter((item) => {
         if (!search) {
             return true;
@@ -524,6 +572,7 @@ function DailyWorkPage() {
                             icon="/download-icon.svg"
                             iconwidth={20}
                             iconheight={20}
+                            onClick={() => handleExport(data)}
                         />
                     </div>
                     <div>
