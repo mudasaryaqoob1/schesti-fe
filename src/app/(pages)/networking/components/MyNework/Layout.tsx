@@ -83,7 +83,7 @@ const Layout = ({ userRole }: Props) => {
         <Loader />
       ) : myNetworkUsers.connections.length ? (
         <div className="grid grid-cols-3 gap-4">
-          {myNetworkUsers.connections.map((userData: any , i : number) => (
+          {myNetworkUsers.connections.map((userData: any, i: number) => (
             <SingleUserCard key={i} {...userData} myNetwork />
           ))}
         </div>

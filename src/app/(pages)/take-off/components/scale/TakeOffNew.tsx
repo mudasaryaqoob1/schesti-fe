@@ -334,7 +334,7 @@ const TakeOffNew = () => {
                 </div>
                 <MoreOutlined
                   className="cursor-pointer text-[20px]"
-                  size={90}
+                  // size={90}
                 />
               </div>
             </div>

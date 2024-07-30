@@ -1,6 +1,6 @@
 import React from 'react';
 import { Tabs } from 'antd';
-import type { TabsProps} from 'antd';
+import type { TabsProps } from 'antd';
 import Layout from './Layout';
 
 const items: TabsProps['items'] = [

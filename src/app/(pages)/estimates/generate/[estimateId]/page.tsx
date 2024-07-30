@@ -26,8 +26,7 @@ import EmailTemplate from '@/app/component/customEmailTemplete';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { estimateRequestService } from '@/app/services/estimates.service';
-import EstimatesTable from // estimateTableColumns,
-'../components/estimatesTable';
+import EstimatesTable from '../components/estimatesTable'; // estimateTableColumns,
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
 // import EstimatePDF from './estimatePDF';
 
