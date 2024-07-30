@@ -65,6 +65,7 @@ function DailyWorkPage() {
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [selectedLead, setSelectedLead] = useState<ICrmDailyWork | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
 
     // eslint-disable-next-line no-undef
@@ -244,6 +245,23 @@ function DailyWorkPage() {
         }
     }
 
+    async function deleteLead(id: string) {
+        setIsDeleting(true);
+        try {
+            const response = await crmDailyWorkService.httpDeleteDailyWorkLead(id);
+            if (response.data) {
+                toast.success('Daily work deleted successfully');
+                setData(data.filter(item => item._id !== id));
+                setShowDeleteModal(false);
+            }
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+            toast.error(err.response?.data.message || 'An error occurred');
+        } finally {
+            setIsDeleting(false);
+        }
+    }
+
 
     const columns: ColumnsType<ICrmDailyWork> = [
         {
@@ -399,9 +417,9 @@ function DailyWorkPage() {
             >
                 <DeleteContent
                     onClick={() => {
-
+                        deleteLead(selectedLead._id);
                     }}
-                    isLoading={false}
+                    isLoading={isDeleting}
                     onClose={() => setShowDeleteModal(false)}
                 />
             </ModalComponent> : null}

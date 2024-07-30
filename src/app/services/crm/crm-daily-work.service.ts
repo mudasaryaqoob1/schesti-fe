@@ -39,6 +39,8 @@ class CrmDailyWorkService extends HttpService {
 
     httpUpdatedailyLead = (id:string,data:Partial<Omit<ICrmDailyWork, "_id">>):Promise<IResponseInterface<ICrmDailyWork>> => this.put(`${this.prefix}/lead/${id}`, data);
 
+    httpDeleteDailyWorkLead = (_id: string):Promise<IResponseInterface<ICrmDailyWork>> => this.delete(`${this.prefix}/lead/${_id}`);
+
     // Status
     httpCreateDailyWorkStatus = (data:CreateDailyWorkStatus):Promise<IResponseInterface<IDailyWorkStatus>> => this.post(`${this.prefix}/status`, data);
 
