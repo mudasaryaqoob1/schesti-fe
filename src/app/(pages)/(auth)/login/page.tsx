@@ -85,10 +85,10 @@ const Login = () => {
           // employee logging in
           const permissions = authUser.roles
             ? authUser.roles
-                .map((item) =>
-                  typeof item !== 'string' ? item.permissions : []
-                )
-                .flat()
+              .map((item) =>
+                typeof item !== 'string' ? item.permissions : []
+              )
+              .flat()
             : [];
           if (permissions.length > 0) {
             const permission = permissions[0];
@@ -164,7 +164,7 @@ const Login = () => {
         } else if (
           checkUserExist.statusCode == 400 &&
           checkUserExist.message ===
-            'Verify from your email and complete your profile'
+          'Verify from your email and complete your profile'
         ) {
           router.push(`/companydetails/${checkUserExist.data.user._id}`);
         } else if (

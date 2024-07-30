@@ -7,17 +7,17 @@ import { Button, Input, Table } from 'antd'
 
 const columns: any = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
-      render: (text:any, record:any) => (
-        <div className="flex items-center h-full">
-          {record.isParent == true ? <FolderOutlined className="mr-2" /> : <FileOutlined className="mr-2" />}
-          {text}
-        </div>
-      ),
+        title: 'Name',
+        dataIndex: 'name',
+        key: 'name',
+        render: (text: any, record: any) => (
+            <div className="flex items-center h-full">
+                {record.isParent == true ? <FolderOutlined className="mr-2" /> : <FileOutlined className="mr-2" />}
+                {text}
+            </div>
+        ),
     },
-  ];
+];
 
 // const data: any[] = [
 //     {
@@ -86,8 +86,8 @@ const groupDataForFileTable = (input: any[]) => {
             result.push({
                 key: result.length + 1, // Assuming keys start from 1
                 id,
-                name:file?.name,
-                isParent:true,
+                name: file?.name,
+                isParent: true,
                 bucketUrl,
                 file,
                 page,
@@ -170,11 +170,11 @@ const TakeOffNew = () => {
                             }}
                             dataSource={groupDataForFileTable(pages)}
                             className='grow bg-transparent transparent-table'
-                            scroll={{ y: 580,scrollToFirstRowOnChange:true }}
+                            scroll={{ y: 580, scrollToFirstRowOnChange: true }}
                             pagination={false}
                             showHeader={false}
                             bordered
-                            style={{backgroundColor:'transparent'}}
+                            style={{ backgroundColor: 'transparent' }}
                             rowClassName={'table-row-transparent'}
                             rootClassName='table-row-transparent'
                         />
@@ -183,7 +183,7 @@ const TakeOffNew = () => {
                 {/* Take Off New */}
                 <div className='h-[100%] grow rounded-2xl shadow-secondaryTwist border relative' >
                     <div className='absolute top-[25px] left-[-13px] cursor-pointer border-[2px] rounded-full flex justify-center items-center p-1 text-gray-600 bg-white' onClick={() => { setleftOpened(ps => !ps) }}>{leftOpened ? <LeftOutlined /> : <RightOutlined />}</div>
-                    
+
                 </div>
             </div>
         </>

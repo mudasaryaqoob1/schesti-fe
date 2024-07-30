@@ -3,6 +3,14 @@
 import axios from 'axios';
 
 const Config = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
+export const baseUrl = Config + '/api';
+export const serverUrl = Config;
+
+// get login token handler
+
+export const schestiAuthToken = () => {
+  return `Bearer ${localStorage.getItem('schestiToken')}` || ''
+}
 
 export class HttpService {
   CancelToken: any;

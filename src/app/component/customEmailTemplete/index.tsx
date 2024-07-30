@@ -18,20 +18,23 @@ import { ShowFileComponent } from '@/app/(pages)/bid-management/components/ShowF
 
 type IProps = {
   to: string;
+  cc?: boolean;
+  invite?: boolean;
   setEmailModal: Function;
   submitHandler: Function;
   isFileUploadShow: Boolean;
 };
 
 const ValidationSchema = Yup.object().shape({
-  to: Yup.string().required('To Email is required'),
-  cc: Yup.string().optional(),
+  to: Yup.string().email().required('To Email is required'),
+  cc: Yup.string().email().optional(),
   subject: Yup.string().required('Subject is required'),
   description: Yup.string().optional(),
   file: Yup.mixed(),
 });
 
 const CustomEmailTemplate = ({
+  cc, invite,
   to,
   setEmailModal,
   submitHandler,
@@ -53,6 +56,10 @@ const CustomEmailTemplate = ({
       try {
         const formData = new FormData();
         formData.append('to', values.to);
+        if (invite) {
+          formData.append('invite', '1');
+        }
+        // need to check if cc then send in api otherwise not....
         formData.append('cc', values.cc ?? '');
         formData.append('description', values.description ?? '');
         formData.append('subject', values.subject);
@@ -97,6 +104,8 @@ const CustomEmailTemplate = ({
               inputStyle="!mt-0 !rounded-tr !rounded-br !rounded-tl-none !rounded-bl-none"
               field={{
                 value: sendEmailFormik.values.to,
+                ...(!to && { onChange: sendEmailFormik.handleChange }),
+                ... (!to && { onBlur: sendEmailFormik.handleBlur })
               }}
               hasError={
                 sendEmailFormik.touched.to && Boolean(sendEmailFormik.errors.to)
@@ -109,37 +118,41 @@ const CustomEmailTemplate = ({
             />
           </span>
         </div>
+        {
+          cc && (
+            <div className="space-y-1">
+              <div className="flex text-sm w-full">
+                <span className="flex !rounded-tl !rounded-bl pt-[15px] w-[40px] justify-center bg-[#f9f5ff]">
+                  CC
+                </span>
+                <span className="w-full">
+                  <InputComponent
+                    label=""
+                    type="text"
+                    placeholder="Type an Email"
+                    name="cc"
+                    inputStyle="!mt-0 !rounded-tr !rounded-br !rounded-tl-none !rounded-bl-none"
+                    field={{
+                      value: sendEmailFormik.values.cc,
+                      onChange: sendEmailFormik.handleChange,
+                      onBlur: sendEmailFormik.handleBlur,
+                    }}
+                    hasError={
+                      sendEmailFormik.touched.cc &&
+                      Boolean(sendEmailFormik.errors.cc)
+                    }
+                    errorMessage={
+                      sendEmailFormik.touched.cc && sendEmailFormik.errors.cc
+                        ? sendEmailFormik.errors.cc
+                        : ''
+                    }
+                  />
+                </span>
+              </div>
+            </div>
+          )
+        }
 
-        <div className="space-y-1">
-          <div className="flex text-sm w-full">
-            <span className="flex !rounded-tl !rounded-bl pt-[15px] w-[40px] justify-center bg-[#f9f5ff]">
-              CC
-            </span>
-            <span className="w-full">
-              <InputComponent
-                label=""
-                type="text"
-                placeholder="Type an Email"
-                name="cc"
-                inputStyle="!mt-0 !rounded-tr !rounded-br !rounded-tl-none !rounded-bl-none"
-                field={{
-                  value: sendEmailFormik.values.cc,
-                  onChange: sendEmailFormik.handleChange,
-                  onBlur: sendEmailFormik.handleBlur,
-                }}
-                hasError={
-                  sendEmailFormik.touched.cc &&
-                  Boolean(sendEmailFormik.errors.cc)
-                }
-                errorMessage={
-                  sendEmailFormik.touched.cc && sendEmailFormik.errors.cc
-                    ? sendEmailFormik.errors.cc
-                    : ''
-                }
-              />
-            </span>
-          </div>
-        </div>
         <div className="space-y-1">
           <div className="flex text-sm w-full">
             <span className="flex !rounded-tl !rounded-bl pt-[15px] w-[85px] justify-center bg-[#f9f5ff]">
@@ -163,7 +176,7 @@ const CustomEmailTemplate = ({
                 }
                 errorMessage={
                   sendEmailFormik.touched.subject &&
-                  sendEmailFormik.errors.subject
+                    sendEmailFormik.errors.subject
                     ? sendEmailFormik.errors.subject
                     : ''
                 }
