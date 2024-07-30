@@ -129,7 +129,7 @@ export function ProjectRFICenter({ projectId }: Props) {
                 <Avatar
                   src={
                     typeof rfi.user !== 'string'
-                      ? (rfi.user.avatar ?? rfi.user.companyLogo)
+                      ? rfi.user.avatar ?? rfi.user.companyLogo
                       : ''
                   }
                   size={40}
@@ -243,7 +243,7 @@ export function ProjectRFICenter({ projectId }: Props) {
                   <Avatar
                     src={
                       typeof reply.user !== 'string'
-                        ? (reply.user.avatar ?? reply.user.companyLogo)
+                        ? reply.user.avatar ?? reply.user.companyLogo
                         : ''
                     }
                     size={40}

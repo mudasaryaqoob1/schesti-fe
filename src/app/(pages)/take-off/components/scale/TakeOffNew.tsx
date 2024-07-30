@@ -288,7 +288,7 @@ const TakeOffNew = () => {
           // icon="plus.svg"
           iconwidth={20}
           iconheight={20}
-          onClick={() => { }}
+          onClick={() => {}}
         />
       </div>
 
@@ -334,7 +334,7 @@ const TakeOffNew = () => {
                 </div>
                 <MoreOutlined
                   className="cursor-pointer text-[20px]"
-                // size={90}
+                  // size={90}
                 />
               </div>
             </div>
