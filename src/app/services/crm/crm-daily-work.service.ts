@@ -1,6 +1,6 @@
 import { IResponseInterface } from "@/app/interfaces/api-response.interface";
 import { HttpService } from "../base.service";
-import { ICrmDailyWork, IDailyWorkPriorty, IDailyWorkStatus } from "@/app/interfaces/crm/crm-daily-work.interface";
+import { ICrmDailyWork, ICrmDailyWorkParsedData, IDailyWorkPriorty, IDailyWorkStatus } from "@/app/interfaces/crm/crm-daily-work.interface";
 
 
 export type ICrmDailyWorkCreate = {
@@ -40,6 +40,10 @@ class CrmDailyWorkService extends HttpService {
     httpUpdatedailyLead = (id:string,data:Partial<Omit<ICrmDailyWork, "_id">>):Promise<IResponseInterface<ICrmDailyWork>> => this.put(`${this.prefix}/lead/${id}`, data);
 
     httpDeleteDailyWorkLead = (_id: string):Promise<IResponseInterface<ICrmDailyWork>> => this.delete(`${this.prefix}/lead/${_id}`);
+
+    httpUploadAndParseCSVFile = (data: FormData):Promise<IResponseInterface<ICrmDailyWorkParsedData[]>> => this.post(`${this.prefix}/lead/parse`, data);
+
+    httpInsertManyLeads  = (data: ICrmDailyWorkParsedData[]):Promise<IResponseInterface<ICrmDailyWork[]>> => this.post(`${this.prefix}/lead/saveMany`, data);
 
     // Status
     httpCreateDailyWorkStatus = (data:CreateDailyWorkStatus):Promise<IResponseInterface<IDailyWorkStatus>> => this.post(`${this.prefix}/status`, data);

@@ -6,7 +6,7 @@ import { SelectComponent } from "@/app/component/customSelect/Select.component";
 import TertiaryHeading from "@/app/component/headings/tertiary";
 import { withAuth } from "@/app/hoc/withAuth";
 import { SearchOutlined } from "@ant-design/icons";
-import { Dropdown, Table } from "antd";
+import { Alert, Dropdown, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { useEffect, useRef, useState } from "react";
 import { DailyWorkForm } from "./components/DailyWorkForm";
@@ -17,7 +17,7 @@ import crmDailyWorkService, { ICrmDailyWorkCreate, ICrmDailyWorkUpdate } from "@
 import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 import { DailyWorkDatePicker } from "./components/DailyWorkDatePicker";
-import { ICrmDailyWork, IDailyWorkPriorty, IDailyWorkStatus } from "@/app/interfaces/crm/crm-daily-work.interface";
+import { ICrmDailyWork, ICrmDailyWorkParsedData, IDailyWorkPriorty, IDailyWorkStatus } from "@/app/interfaces/crm/crm-daily-work.interface";
 import Image from "next/image";
 import { InputWithoutBorder } from "@/app/component/customInput/InputWithoutBorder";
 import { ManageStatus } from "./components/ManageStatus";
@@ -27,6 +27,7 @@ import { DisplayDailyWorkStatus } from "./components/DisplayStatus";
 import ModalComponent from "@/app/component/modal";
 import { DeleteContent } from "@/app/component/delete/DeleteContent";
 import { Excel } from "antd-table-saveas-excel";
+import { PreviewCSVImportFileModal } from "../components/PreviewCSVImportFileModal";
 
 const ValidationSchema = Yup.object().shape({
 
@@ -52,6 +53,11 @@ function DailyWorkPage() {
     const [priorityFilter, setPriorityFilter] = useState('');
 
     const inputFileRef = useRef<HTMLInputElement | null>(null);
+    const [parseData, setParseData] = useState<ICrmDailyWorkParsedData[]>([]);
+    const [isUploadingFile, setIsUploadingFile] = useState(false);
+    const [parseDataError, setParseDataError] = useState('');
+    const [isInsertingMany, setIsInsertingMany] = useState(false);
+
     const [open, setOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [currentDate, setCurrentDate] = useState(new Date().toISOString());
@@ -448,6 +454,50 @@ function DailyWorkPage() {
 
     }
 
+
+    const handleFileUpload: React.ChangeEventHandler<HTMLInputElement> = async (e) => {
+        const files = e.target.files;
+        if (files && files.length > 0) {
+            setIsUploadingFile(true);
+            try {
+                const file = files[0];
+                const formData = new FormData();
+                formData.append('file', file);
+                const response = await crmDailyWorkService.httpUploadAndParseCSVFile(formData);
+                if (response.data) {
+                    toast.success('File parsed successfully');
+                    setParseData(response.data);
+                }
+            } catch (error) {
+                const err = error as AxiosError<{ message: string }>;
+                setParseDataError(err.response?.data.message || 'An error occurred');
+            } finally {
+                setIsUploadingFile(false);
+            }
+        }
+    };
+
+    async function handleInsertMany(parseData: ICrmDailyWorkParsedData[]) {
+        setIsInsertingMany(true);
+        try {
+            const response = await crmDailyWorkService.httpInsertManyLeads(parseData);
+            if (response.data) {
+                toast.success('Data inserted successfully');
+                setData([
+                    ...response.data,
+                    ...data
+                ]);
+                setParseData([]);
+            }
+        } catch (error) {
+            const err = error as AxiosError<{ message: string }>;
+            toast.error(err.response?.data.message || 'An error occurred');
+        } finally {
+            setIsInsertingMany(false);
+        }
+    }
+
+
     const filteredData = data.filter((item) => {
         if (!search) {
             return true;
@@ -493,6 +543,19 @@ function DailyWorkPage() {
                     onClose={() => setShowDeleteModal(false)}
                 />
             </ModalComponent> : null}
+
+            <PreviewCSVImportFileModal
+                columns={columns as any}
+                data={parseData}
+                onClose={() => setParseData([])}
+                onConfirm={() => {
+                    handleInsertMany(parseData);
+                }}
+                duplicates={[]}
+                setData={setParseData}
+                isLoading={isInsertingMany}
+                title="Import Daily Work Leads"
+            />
 
             <div className="flex justify-between items-center mb-3">
                 <TertiaryHeading className={'mt-1 mb-2'} title="Daily Work Needed" />
@@ -583,15 +646,19 @@ function DailyWorkPage() {
                             iconwidth={20}
                             iconheight={20}
                             loadingText="Uploading..."
+                            onClick={() => {
+                                inputFileRef.current?.click();
+                            }}
+                            isLoading={isUploadingFile}
                         />
                         <input
                             ref={inputFileRef}
                             accept=".csv, .xlsx"
                             type="file"
                             name=""
-                            id="importClients"
+                            id="daily-work-import"
                             className="hidden"
-
+                            onChange={handleFileUpload}
                         />
                     </div>
 
@@ -657,6 +724,18 @@ function DailyWorkPage() {
 
 
             <div className="mt-5">
+                {parseDataError.length ? (
+                    <Alert
+                        type="error"
+                        closable
+                        onClose={() => {
+                            setParseDataError('');
+                        }}
+                        message={'CSV Parse Error '}
+                        description={parseDataError}
+                        className="my-3"
+                    />
+                ) : null}
                 <Table
                     columns={columns}
                     dataSource={filteredData}

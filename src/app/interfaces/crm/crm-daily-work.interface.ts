@@ -26,3 +26,10 @@ export interface ICrmDailyWork {
     createdAt: string;
     updatedAt: string;
 }
+
+export interface ICrmDailyWorkParsedData{
+    work: string;
+    email: string;
+    phone: string;
+    note: string;
+}
