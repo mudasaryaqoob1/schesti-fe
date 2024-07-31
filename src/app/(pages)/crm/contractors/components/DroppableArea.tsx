@@ -53,7 +53,7 @@ const DroppableArea = ({ onDrop, children }: Props) => {
 
   return (
     <div
-      ref={drop}
+      ref={drop as any}
       style={{
         minHeight: '100px',
         backgroundColor: isOver ? 'lightgreen' : 'lightgrey',
