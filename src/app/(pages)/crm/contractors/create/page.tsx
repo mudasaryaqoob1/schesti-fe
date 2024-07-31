@@ -54,6 +54,7 @@ function CreateContractPage() {
   const router = useRouterHook();
   const [isLoading, setIsLoading] = useState(false);
   const [contract, setContract] = useState<ICrmContract | null>(null);
+
   const contractId = searchParams.get('id');
   const isEdit = searchParams.get('edit');
 
@@ -78,6 +79,7 @@ function CreateContractPage() {
       receiver: '' as string,
     },
     async onSubmit(values) {
+      const isEdit = searchParams.get('edit');
       if (isEdit && isEdit === 'true' && contract) {
         setIsLoading(true);
         try {
@@ -143,7 +145,7 @@ function CreateContractPage() {
       }
     },
     validationSchema: ValidationSchema,
-    enableReinitialize: true,
+    enableReinitialize: contract ? true : false,
   });
 
   useEffect(() => {
@@ -154,11 +156,12 @@ function CreateContractPage() {
   }, [searchParams,]);
 
   useEffect(() => {
+
     if (contractId && isEdit && isEdit === 'true') {
       getContractById(contractId);
     }
 
-  }, [contractId, isEdit])
+  }, [contractId, isEdit]);
 
   async function getCrmItemById(id: string) {
     setIsFetchingItem(true);
@@ -281,20 +284,27 @@ function CreateContractPage() {
               className="!w-fit !px-6 !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
             />
           </Upload.Dragger>
-          {formik.values.file ? (
+          {formik.values.file && formik.values.file.url ? (
             <ShowFileComponent
               file={{
                 extension: (formik.values.file as any)?.type,
                 name: (formik.values.file as any)?.name,
                 type: (formik.values.file as any)?.type,
-                url: !formik.values.file.url
-                  ? URL.createObjectURL(formik.values.file as any)
-                  : formik.values.file.url,
+                url: formik.values.file.url,
               }}
               onDelete={() => formik.setFieldValue('file', undefined)}
               shouldFit
             />
-          ) : undefined}
+          ) : formik.values.file ? <ShowFileComponent
+            file={{
+              extension: (formik.values.file as any)?.type,
+              name: (formik.values.file as any)?.name,
+              type: (formik.values.file as any)?.type,
+              url: URL.createObjectURL(formik.values.file as any),
+            }}
+            onDelete={() => formik.setFieldValue('file', undefined)}
+            shouldFit
+          /> : null}
         </div>
 
         <InputComponent
