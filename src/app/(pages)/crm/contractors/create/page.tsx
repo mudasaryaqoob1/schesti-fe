@@ -199,12 +199,12 @@ function CreateContractPage() {
     <section className="mt-6 !pb-[39px]  mx-4 ">
       <div className="flex items-center justify-between">
         <SenaryHeading
-          title="Create New Contract"
+          title={contract ? "Edit Contract" : "Create New Contract"}
           className="text-schestiPrimaryBlack text-xl leading-7 font-semibold"
         />
 
         <div className="flex items-center space-x-3">
-          <WhiteButton text="Cancel" className="!w-fit" />
+          <WhiteButton onClick={() => router.push(Routes.CRM.Contractors)} text="Cancel" className="!w-fit" />
           <CustomButton
             text="Save"
             className="!w-fit"
