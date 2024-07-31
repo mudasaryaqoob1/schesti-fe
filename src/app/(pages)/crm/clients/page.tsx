@@ -122,7 +122,7 @@ const ClientTable = () => {
     } else if (key == 'editClientDetail') {
       router.push(`${Routes.CRM.Clients}/edit/${client._id}`);
     } else if (key === 'createContract') {
-      router.push(`${Routes.CRM.Contractors}/create?id=${client._id}`);
+      router.push(`${Routes.CRM.Contractors}/create?receiver=${client._id}`);
     } else if (key === 'inActiveClient') {
       dispatch(
         updateCrmItemStatusThunk({

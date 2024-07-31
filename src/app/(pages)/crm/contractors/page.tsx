@@ -25,6 +25,14 @@ import { toast } from 'react-toastify';
 
 const menuItems: MenuProps['items'] = [
   {
+    key: 'edit',
+    label: <p>Edit</p>,
+  },
+  {
+    key: 'editTools',
+    label: <p>Edit Tools</p>,
+  },
+  {
     key: 'viewContract',
     label: <p>View Contract</p>,
   },
@@ -209,6 +217,9 @@ function ContractsPage() {
                 } else if (key === 'delete') {
                   setShowDeleteModal(true);
                   setSelectedItem(record);
+                } else if (key === 'edit') {
+                  const receiverId = typeof record.receiver === 'string' ? record.receiver : record.receiver._id
+                  router.push(`${Routes.CRM.Contractors}/create/?id=${record._id}&edit=true&receiver=${receiverId}`);
                 }
               },
             }}

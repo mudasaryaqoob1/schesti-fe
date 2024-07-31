@@ -98,9 +98,9 @@ function CreateContractPage() {
   });
 
   useEffect(() => {
-    const id = searchParams.get('id');
-    if (id) {
-      getCrmItemById(id);
+    const receiverId = searchParams.get('receiver');
+    if (receiverId) {
+      getCrmItemById(receiverId);
     }
   }, [searchParams]);
 
@@ -423,7 +423,7 @@ function CreateContractPage() {
                     field={{
                       value:
                         crmItem?.module === 'subcontractors' ||
-                        crmItem?.module === 'partners'
+                          crmItem?.module === 'partners'
                           ? crmItem?.name
                           : crmItem?.companyName,
                     }}
