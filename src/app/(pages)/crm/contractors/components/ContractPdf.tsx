@@ -130,7 +130,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
       setSelectedTool(null);
     }
 
-    function handleValueChange(item: ToolState, shouldClose: boolean = true) {
+    function handleValueChange(item: ToolState, shouldClose: boolean = true,) {
       if (mode === 'add-values') {
         if (shouldClose) {
           setSelectedTool(null);
@@ -215,6 +215,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
                       mode={mode}
                       item={item}
                       key={item.id}
+                      contract={contract}
                     />
                   ) : mode === 'edit-fields' ? (
                     <DraggableItem type={item.tool} key={item.id} data={item}>
@@ -224,6 +225,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
                         item={item}
                         key={item.id}
                         onDelete={() => handleRemoveTool(item)}
+                        contract={contract}
                       />
                     </DraggableItem>
                   ) : mode === 'view-fields' || mode === 'view-values' ? (
@@ -235,6 +237,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
                       mode={mode}
                       item={item}
                       key={item.id}
+                      contract={contract}
                     />
                   ) : null;
                 })}

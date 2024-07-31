@@ -1,4 +1,4 @@
-import { Input, type InputProps } from 'antd';
+import { Input, type InputRef, type InputProps } from 'antd';
 import clsx, { ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -13,7 +13,7 @@ type Props = {
   maxLength?: number;
   inputStyle?: ClassValue;
   hasError?: boolean;
-  field?: InputProps;
+  field?: InputProps & React.RefAttributes<InputRef>;
   type: string;
   suffix?: any;
   errorMessage?: string;
@@ -41,8 +41,7 @@ export function InputComponent({
       <label
         className={twMerge(
           clsx(
-            `text-graphiteGray ${
-              label2 ? 'flex justify-between' : 'block'
+            `text-graphiteGray ${label2 ? 'flex justify-between' : 'block'
             } text-sm font-medium leading-6 capitalize`,
             labelStyle
           )
@@ -68,10 +67,8 @@ export function InputComponent({
         min="0"
         className={twMerge(
           clsx(
-            `border ${
-              hasError ? 'border-red-500' : 'border-gray-200'
-            } !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 !mt-1.5 ${
-              inputStyle && inputStyle
+            `border ${hasError ? 'border-red-500' : 'border-gray-200'
+            } !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 !mt-1.5 ${inputStyle && inputStyle
             }`
           )
         )}

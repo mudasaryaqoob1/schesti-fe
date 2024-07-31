@@ -8,7 +8,7 @@ import { InputComponent } from '@/app/component/customInput/Input';
 import { Spin, Tabs, Upload } from 'antd';
 import CustomButton from '@/app/component/customButton/button';
 import { toast } from 'react-toastify';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ChooseFont,
   ChooseFontType,
@@ -16,6 +16,7 @@ import {
 } from '@/app/component/fonts';
 import AwsS3 from '@/app/utils/S3Intergration';
 import { LoadingOutlined } from '@ant-design/icons';
+import { ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
 
 type Props = {
   item: ToolState;
@@ -24,7 +25,8 @@ type Props = {
   onClick?: () => void;
   onClose?: () => void;
   selectedTool: ToolState | null;
-  onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
+  onChange?: (_item: ToolState, _shouldClose?: boolean,) => void;
+  contract: ICrmContract;
 };
 export function StandardToolItem({
   item,
@@ -34,6 +36,7 @@ export function StandardToolItem({
   onClose,
   selectedTool,
   onChange,
+  contract
 }: Props) {
   if (mode === 'add-values') {
     return (
@@ -60,7 +63,7 @@ export function StandardToolItem({
               title="Add Standard Tools"
               onClose={onClose ? onClose : () => { }}
             >
-              <StandardToolInput item={selectedTool} onChange={onChange} />
+              <StandardToolInput contract={contract} item={selectedTool} onChange={onChange} />
             </Popups>
           </ModalComponent>
         ) : null}
@@ -136,9 +139,11 @@ function Item({ item, mode, onClick, onDelete }: ItemProps) {
 type InputProps = {
   item: ToolState;
   onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
+
+  contract: ICrmContract
 };
 
-function StandardToolInput({ item, onChange }: InputProps) {
+function StandardToolInput({ item, onChange, contract }: InputProps) {
   if (item.tool === 'date') {
     return (
       <DateInputComponent
@@ -155,7 +160,7 @@ function StandardToolInput({ item, onChange }: InputProps) {
       />
     );
   } else if (item.tool === 'initials') {
-    return <GetInitialToolValue item={item} onChange={onChange} />;
+    return <GetInitialToolValue contract={contract} item={item} onChange={onChange} />;
   } else if (item.tool === 'comment') {
     return (
       <GetCommentToolValue
@@ -261,36 +266,77 @@ function TypeSignature({ onChange, item }: TypeSignatureProps) {
   );
 }
 
+function getReceiverName(receiver: ICrmContract['receiver']) {
+  if (typeof receiver !== 'string') {
+    if (
+      receiver.module === 'subcontractors' ||
+      receiver.module === 'partners'
+    ) {
+      return receiver.companyRep;
+    }
+    return `${receiver.firstName} ${receiver.lastName || ''}`;
+  }
+  return '';
+}
 function GetInitialToolValue({
   item,
   onChange,
+  contract
 }: {
   onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
   item: ToolState;
+  contract: ICrmContract
 }) {
   const [value, setValue] = useState(
     typeof item.value === 'string' || typeof item.value === 'undefined'
       ? item.value
       : ''
   );
+  const [error, setError] = useState<string>('');
+
+  const senderInitial = typeof contract.user === 'string' ? false : contract.user.name.split(' ').map(name => name ? name[0].toUpperCase() : "").join('');
+  const receiverInitial = typeof contract.receiver === 'string' ? false : getReceiverName(contract.receiver).split(' ').map(name => name ? name[0].toUpperCase() : "").join('');
+  console.log({ senderInitial, receiverInitial, value });
+  useEffect(() => {
+    if (value) {
+      if (value.length && (value == senderInitial || value == receiverInitial)) {
+        setError('');
+      } else {
+        setError('Initials should be same as sender or receiver initials');
+      }
+    }
+  }, [receiverInitial, senderInitial, value]);
+
+
   return (
-    <div className="space-y-3">
-      <InputComponent
-        label="Initials"
-        name="initials"
-        type="text"
-        placeholder="Initials"
-        field={{
-          value: value,
-          onChange(e) {
-            setValue(e.target.value);
-          },
-        }}
-      />
+    <div className="space-y-3 h-[160px]">
+      <div>
+        <InputComponent
+          label="Initials"
+          name="initials"
+          type="text"
+          placeholder="John Doe e.g JD"
+          field={{
+            value: value,
+            onChange(e) {
+              setValue(e.target.value);
+            },
+            onBlur: () => {
+              if (!value) {
+                setError('Initials is required');
+              }
+            }
+          }}
+          hasError={Boolean(error.length)}
+          errorMessage={error}
+        />
+        <span className='text-xs text-schestiLightBlack'>Use  {senderInitial} or {receiverInitial}</span>
+      </div>
 
       <div className="flex justify-end">
         <CustomButton
           text="Add Initials"
+          disabled={Boolean(error.length)}
           className="!w-fit !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
           onClick={() =>
             onChange &&
