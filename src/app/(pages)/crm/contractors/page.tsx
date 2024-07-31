@@ -220,6 +220,8 @@ function ContractsPage() {
                 } else if (key === 'edit') {
                   const receiverId = typeof record.receiver === 'string' ? record.receiver : record.receiver._id
                   router.push(`${Routes.CRM.Contractors}/create/?id=${record._id}&edit=true&receiver=${receiverId}`);
+                } else if (key === 'editTools') {
+                  router.push(`${Routes.CRM.Contractors}/edit-contract?contractId=${record._id}`);
                 }
               },
             }}

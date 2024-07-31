@@ -108,7 +108,7 @@ function EditContractDocumentPage() {
           className="text-xl text-schestiPrimaryBlack font-semibold leading-7"
         />
         <div className="flex space-x-3 items-center">
-          <WhiteButton text="Cancel" className="!w-fit" />
+          <WhiteButton text="Cancel" className="!w-fit" onClick={() => router.back()} />
           <CustomButton
             text="Send Contract"
             className="!w-fit"
