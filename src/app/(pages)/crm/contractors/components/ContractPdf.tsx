@@ -30,7 +30,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
   ({ mode, pdfFile, tools, setTools, contract }, ref) => {
     // const [activePage, setActivePage] = useState<null | number>(1)
     // const canvasRefs = useRef<HTMLCanvasElement[]>([]);
-    const { PDFJs } = usePDFJS(async () => {});
+    const { PDFJs } = usePDFJS(async () => { });
     const containerRef = useRef<HTMLDivElement>(null);
     const pdfContainerRef = useRef<HTMLDivElement>(null);
     const [selectedTool, setSelectedTool] = useState<ToolState | null>(null);
@@ -56,41 +56,45 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
 
     async function loadPdf() {
       if (PDFJs) {
-        const pdf = await PDFJs.getDocument(pdfFile).promise;
+        try {
+          const pdf = await PDFJs.getDocument(pdfFile).promise;
 
-        for (let index = 1; index <= pdf.numPages; index++) {
-          const page = await pdf.getPage(index);
-          const viewport = page.getViewport({ scale: 1.5 });
+          for (let index = 1; index <= pdf.numPages; index++) {
+            const page = await pdf.getPage(index);
+            const viewport = page.getViewport({ scale: 1.5 });
 
-          const canvas = document.createElement('canvas');
-          canvas.height = viewport.height;
-          canvas.width = viewport.width;
-          canvas.id = `${index}`;
-          canvas.dataset.pageNo = index.toString();
+            const canvas = document.createElement('canvas');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+            canvas.id = `${index}`;
+            canvas.dataset.pageNo = index.toString();
 
-          const context = canvas.getContext('2d')!;
-          const renderContext = {
-            canvasContext: context!,
-            viewport: viewport,
-          };
-          // canvasRefs.current.push(canvas);
+            const context = canvas.getContext('2d')!;
+            const renderContext = {
+              canvasContext: context!,
+              viewport: viewport,
+            };
+            // canvasRefs.current.push(canvas);
 
-          await page.render(renderContext).promise;
+            await page.render(renderContext).promise;
 
-          // Add id to the canvas
-          const textCanvas = document.createElement('canvas');
-          textCanvas.height = viewport.height;
-          textCanvas.width = viewport.width;
-          const textContext = textCanvas.getContext('2d')!;
-          textContext.font = '16px Arial';
-          textContext.fillStyle = 'black';
-          textContext.fillText(`Schesti-Contract-ID: ${contract._id}`, 30, 30);
+            // Add id to the canvas
+            const textCanvas = document.createElement('canvas');
+            textCanvas.height = viewport.height;
+            textCanvas.width = viewport.width;
+            const textContext = textCanvas.getContext('2d')!;
+            textContext.font = '16px Arial';
+            textContext.fillStyle = 'black';
+            textContext.fillText(`Schesti-Contract-ID: ${contract._id}`, 30, 30);
 
-          // Overlay the text canvas on the main canvas
-          context.drawImage(textCanvas, 0, 0);
-          if (containerRef.current) {
-            containerRef.current.appendChild(canvas);
+            // Overlay the text canvas on the main canvas
+            context.drawImage(textCanvas, 0, 0);
+            if (containerRef.current) {
+              containerRef.current.appendChild(canvas);
+            }
           }
+        } catch (error) {
+          toast.error("Unable to load the pdf")
         }
       }
     }
@@ -224,10 +228,10 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
                     </DraggableItem>
                   ) : mode === 'view-fields' || mode === 'view-values' ? (
                     <StandardToolItem
-                      onClick={() => {}}
-                      onClose={() => {}}
+                      onClick={() => { }}
+                      onClose={() => { }}
                       selectedTool={selectedTool}
-                      onChange={() => {}}
+                      onChange={() => { }}
                       mode={mode}
                       item={item}
                       key={item.id}
