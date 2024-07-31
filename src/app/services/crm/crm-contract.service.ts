@@ -2,7 +2,7 @@ import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { HttpService } from '../base.service';
 import { ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
 
-type CreateContractData = Omit<
+export type CreateContractData = Omit<
   ICrmContract,
   | '_id'
   | 'createdAt'
@@ -13,6 +13,10 @@ type CreateContractData = Omit<
   | 'senderTools'
   | 'receiverTools'
 >;
+
+export type UpdateContractData =CreateContractData & {
+  receiver:string;
+}
 class CrmContractService extends HttpService {
   private endPoint = 'api/crm/contract';
 
@@ -20,6 +24,12 @@ class CrmContractService extends HttpService {
     data: CreateContractData
   ): Promise<IResponseInterface<ICrmContract>> =>
     this.post(this.endPoint, data);
+  
+  httpUpdateContract = (
+    id: string,
+    data: UpdateContractData
+  ): Promise<IResponseInterface<ICrmContract>> =>
+    this.put(`${this.endPoint}/${id}`, data);
 
   httpFindContractById = (
     id: string

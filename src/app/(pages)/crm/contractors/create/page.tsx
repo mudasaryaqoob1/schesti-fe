@@ -26,9 +26,11 @@ import { ShowFileComponent } from '@/app/(pages)/bid-management/components/ShowF
 import * as Yup from 'yup';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { Routes } from '@/app/utils/plans.utils';
-import crmContractService from '@/app/services/crm/crm-contract.service';
+import crmContractService, { CreateContractData, UpdateContractData } from '@/app/services/crm/crm-contract.service';
 import AwsS3 from '@/app/utils/S3Intergration';
 import type { RcFile } from 'antd/es/upload';
+import { ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
+import { FileInterface } from '@/app/interfaces/file.interface';
 
 const ValidationSchema = Yup.object().shape({
   title: Yup.string().required('Title is required'),
@@ -51,24 +53,70 @@ function CreateContractPage() {
   const [showList, setShowList] = useState(false);
   const router = useRouterHook();
   const [isLoading, setIsLoading] = useState(false);
+  const [contract, setContract] = useState<ICrmContract | null>(null);
+  const contractId = searchParams.get('id');
+  const isEdit = searchParams.get('edit');
 
-  const formik = useFormik({
-    initialValues: {
+  const formik = useFormik<Omit<CreateContractData, "status"> | Omit<UpdateContractData, "status">>({
+    initialValues: contract ? {
+      title: contract.title,
+      startDate: contract.startDate,
+      endDate: contract.endDate,
+      description: contract.description,
+      projectName: contract.projectName,
+      projectNo: contract.projectNo,
+      file: contract.file,
+      receiver: typeof contract.receiver === 'string' ? contract.receiver : contract.receiver._id,
+    } : {
       title: '',
       startDate: new Date().toISOString(),
       endDate: '',
       description: '',
       projectName: '',
       projectNo: '',
-      file: undefined as RcFile | undefined,
-      receiver: null as string | null,
+      file: undefined as any,
+      receiver: '' as string,
     },
     async onSubmit(values) {
-      if (crmItem) {
+      if (isEdit && isEdit === 'true' && contract) {
+        setIsLoading(true);
+        try {
+          let data: UpdateContractData = {
+            ...values,
+            status: contract.status,
+            receiver: values.receiver as string,
+          };
+          // if contract.file is same as data.file then not need to upload file otherwise upload
+          if (values.file !== contract.file) {
+            const url = await new AwsS3(values.file, 'documents/crm/').getS3URL();
+            data = {
+              ...data,
+              file: {
+                extension: values.file!.name.split('.').pop() || '',
+                name: values.file!.name,
+                type: values.file!.type,
+                url,
+              },
+            };
+          }
+          const response = await crmContractService.httpUpdateContract(contract._id, data);
+          if (response.data) {
+            toast.success('Contract updated successfully');
+            router.push(
+              `${Routes.CRM.Contractors}`
+            );
+          }
+        } catch (error) {
+          toast.error('Unable to update contract');
+        } finally {
+          setIsLoading(false);
+        }
+      }
+      else if (crmItem) {
         setIsLoading(true);
         try {
           const url = await new AwsS3(values.file, 'documents/crm/').getS3URL();
-          const valFile = values.file as RcFile;
+          const valFile = values.file as unknown as RcFile;
           const response = await crmContractService.httpCreateContract({
             ...values,
             receiver: crmItem._id,
@@ -79,7 +127,7 @@ function CreateContractPage() {
               name: valFile.name,
               type: valFile.type,
               url,
-            },
+            } as FileInterface,
           });
           if (response.data) {
             toast.success('Contract created successfully');
@@ -95,6 +143,7 @@ function CreateContractPage() {
       }
     },
     validationSchema: ValidationSchema,
+    enableReinitialize: true,
   });
 
   useEffect(() => {
@@ -102,7 +151,14 @@ function CreateContractPage() {
     if (receiverId) {
       getCrmItemById(receiverId);
     }
-  }, [searchParams]);
+  }, [searchParams,]);
+
+  useEffect(() => {
+    if (contractId && isEdit && isEdit === 'true') {
+      getContractById(contractId);
+    }
+
+  }, [contractId, isEdit])
 
   async function getCrmItemById(id: string) {
     setIsFetchingItem(true);
@@ -111,6 +167,23 @@ function CreateContractPage() {
       if (response.data) {
         setCrmItem(response.data);
         formik.setFieldValue('receiver', response.data._id);
+      }
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      if (err.response?.data) {
+        toast.error('Unable to get the item');
+      }
+    } finally {
+      setIsFetchingItem(false);
+    }
+  }
+
+  async function getContractById(id: string) {
+    setIsFetchingItem(true);
+    try {
+      const response = await crmContractService.httpFindContractById(id);
+      if (response.data) {
+        setContract(response.data);
       }
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
@@ -214,9 +287,9 @@ function CreateContractPage() {
                 extension: (formik.values.file as any)?.type,
                 name: (formik.values.file as any)?.name,
                 type: (formik.values.file as any)?.type,
-                url: formik.values.file
+                url: !formik.values.file.url
                   ? URL.createObjectURL(formik.values.file as any)
-                  : '',
+                  : formik.values.file.url,
               }}
               onDelete={() => formik.setFieldValue('file', undefined)}
               shouldFit
