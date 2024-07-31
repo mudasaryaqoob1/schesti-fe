@@ -267,11 +267,11 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
                 />
               </DraggableTool>
 
-              <DraggableTool type="stamp">
+              <DraggableTool type="comment">
                 <CustomButton
                   text="Comments"
                   className="!bg-schestiLightPrimary !border-schestiLightPrimary !text-schestiPrimaryBlack"
-                  icon="/stamp.svg"
+                  icon="/comment.svg"
                   iconwidth={16}
                   iconheight={16}
                 />

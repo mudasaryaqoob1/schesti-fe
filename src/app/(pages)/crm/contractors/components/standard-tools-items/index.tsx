@@ -51,14 +51,14 @@ export function StandardToolItem({
         {selectedTool ? (
           <ModalComponent
             open={true}
-            setOpen={() => {}}
+            setOpen={() => { }}
             width="300px"
             key={selectedTool.tool}
             className={'!bg-transparent'}
           >
             <Popups
               title="Add Standard Tools"
-              onClose={onClose ? onClose : () => {}}
+              onClose={onClose ? onClose : () => { }}
             >
               <StandardToolInput item={selectedTool} onChange={onChange} />
             </Popups>
@@ -139,8 +139,6 @@ type InputProps = {
 };
 
 function StandardToolInput({ item, onChange }: InputProps) {
-  const [isUploadingStamp, setIsUploadingStamp] = useState(false);
-
   if (item.tool === 'date') {
     return (
       <DateInputComponent
@@ -158,71 +156,12 @@ function StandardToolInput({ item, onChange }: InputProps) {
     );
   } else if (item.tool === 'initials') {
     return <GetInitialToolValue item={item} onChange={onChange} />;
-  } else if (item.tool === 'stamp') {
+  } else if (item.tool === 'comment') {
     return (
-      <Spin spinning={isUploadingStamp} indicator={<LoadingOutlined spin />}>
-        <Upload.Dragger
-          name={'file'}
-          accept=".png, .jpeg, .jpg,"
-          beforeUpload={async (_file, FileList) => {
-            for (const file of FileList) {
-              const isLessThan500MB = file.size < 500 * 1024 * 1024; // 500MB in bytes
-              if (!isLessThan500MB) {
-                toast.error('File size should be less than 500MB');
-                return false;
-              }
-            }
-            if (onChange) {
-              setIsUploadingStamp(true);
-              const url = await new AwsS3(_file).getS3URL();
-              onChange({
-                ...item,
-                tool: 'stamp',
-                value: {
-                  extension: _file.name.split('.').pop() || '',
-                  name: _file.name,
-                  type: _file.type,
-                  url: url,
-                },
-              });
-
-              setIsUploadingStamp(false);
-            }
-            return false;
-          }}
-          style={{
-            borderStyle: 'dashed',
-            borderWidth: 2,
-            marginTop: 12,
-            backgroundColor: 'transparent',
-            borderColor: '#E2E8F0',
-          }}
-          itemRender={() => {
-            return null;
-          }}
-        >
-          <p className="ant-upload-drag-icon">
-            <Image
-              src={'/uploadcloudcyan.svg'}
-              width={50}
-              height={50}
-              alt="upload"
-            />
-          </p>
-          <p className="text-[18px] font-semibold py-2 leading-5 text-[#2C3641]">
-            Drop your files here, or browse
-          </p>
-
-          <p className="text-sm font-normal text-center py-2 leading-5 text-[#2C3641]">
-            or
-          </p>
-
-          <CustomButton
-            text="Select File"
-            className="!w-fit !px-6 !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
-          />
-        </Upload.Dragger>
-      </Spin>
+      <GetCommentToolValue
+        item={item}
+        onChange={onChange}
+      />
     );
   } else if (item.tool === 'signature') {
     return <GetSignatureValue item={item} onChange={onChange} />;
@@ -244,7 +183,7 @@ function RenderStandardInputValue({
         return <p className="capitalize">{item.value}</p>;
       } else if ('url' in item.value) {
         return (
-          <Image alt="stamp" src={item.value.url} width={20} height={20} />
+          <Image alt="comment" src={item.value.url} width={20} height={20} />
         );
       } else if (item.tool === 'signature' && 'font' in item.value) {
         return (
@@ -358,6 +297,51 @@ function GetInitialToolValue({
             onChange({
               ...item,
               tool: 'initials',
+              value: value,
+            })
+          }
+        />
+      </div>
+    </div>
+  );
+}
+
+function GetCommentToolValue({
+  item,
+  onChange,
+}: {
+  onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
+  item: ToolState;
+}) {
+  const [value, setValue] = useState(
+    typeof item.value === 'string' || typeof item.value === 'undefined'
+      ? item.value
+      : ''
+  );
+  return (
+    <div className="space-y-3">
+      <InputComponent
+        label="Comments"
+        name="Comments"
+        type="text"
+        placeholder="Comments"
+        field={{
+          value: value,
+          onChange(e) {
+            setValue(e.target.value);
+          },
+        }}
+      />
+
+      <div className="flex justify-end">
+        <CustomButton
+          text="Add Comment"
+          className="!w-fit !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
+          onClick={() =>
+            onChange &&
+            onChange({
+              ...item,
+              tool: 'comment',
               value: value,
             })
           }
