@@ -39,7 +39,7 @@ import { PreviewCSVImportFileModal } from '../components/PreviewCSVImportFileMod
 import moment from 'moment';
 
 const ValidationSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email').required('Email is required'),
+  email: Yup.string().email('Invalid email'),
   phone: Yup.string()
     .test({
       test: (value) => {
@@ -49,13 +49,10 @@ const ValidationSchema = Yup.object().shape({
         return true;
       },
       message: 'Invalid phone number',
-    })
-    .required('Phone number is required'),
+    }),
   work: Yup.string().required('Work Needed is required'),
-  deadline: Yup.string().required('Deadline is required'),
+  deadline: Yup.string(),
   note: Yup.string()
-    .max(10, 'Note must have max 10 characters')
-    .required('Note is required'),
 });
 
 function DailyWorkPage() {
@@ -317,7 +314,7 @@ function DailyWorkPage() {
           },
           editing:
             priorityCellEditing.isEditing &&
-            priorityCellEditing.record?._id === record._id
+              priorityCellEditing.record?._id === record._id
               ? true
               : false,
           priorities: priorities,
@@ -378,7 +375,7 @@ function DailyWorkPage() {
           },
           editing:
             noteCellEditing.isEditing &&
-            noteCellEditing.record?._id === record._id
+              noteCellEditing.record?._id === record._id
               ? true
               : false,
           handleSave,
@@ -409,7 +406,7 @@ function DailyWorkPage() {
           },
           editing:
             statusCellEditing.isEditing &&
-            statusCellEditing.record?._id === record._id
+              statusCellEditing.record?._id === record._id
               ? true
               : false,
           statuses: statuses,
@@ -885,27 +882,27 @@ function EditableCell(props: EditableCellProps) {
           <div className="absolute bg-white border rounded-md w-[200px] top-6 p-3 z-10 space-y-2">
             {inputType === 'priority'
               ? props.priorities.map((priority: IDailyWorkPriorty) => (
-                  <DisplayPriority
-                    onClick={(e) => {
-                      console.log('Priority Clicked');
-                      e.stopPropagation();
-                      handleSave('priority', priority._id, record);
-                    }}
-                    key={priority._id}
-                    item={priority}
-                  />
-                ))
+                <DisplayPriority
+                  onClick={(e) => {
+                    console.log('Priority Clicked');
+                    e.stopPropagation();
+                    handleSave('priority', priority._id, record);
+                  }}
+                  key={priority._id}
+                  item={priority}
+                />
+              ))
               : inputType === 'status'
                 ? props.statuses.map((status: IDailyWorkStatus) => (
-                    <DisplayDailyWorkStatus
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSave('status', status._id, record);
-                      }}
-                      key={status._id}
-                      item={status}
-                    />
-                  ))
+                  <DisplayDailyWorkStatus
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSave('status', status._id, record);
+                    }}
+                    key={status._id}
+                    item={status}
+                  />
+                ))
                 : null}
           </div>
         </div>
