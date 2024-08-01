@@ -10,12 +10,10 @@ export type CreateContractData = Omit<
   | 'user'
   | 'companyPdf'
   | 'userPdf'
-  | 'senderTools'
-  | 'receiverTools'
 >;
 
 export type UpdateContractData =CreateContractData & {
-  receiver:string;
+
 }
 class CrmContractService extends HttpService {
   private endPoint = 'api/crm/contract';
@@ -43,19 +41,19 @@ class CrmContractService extends HttpService {
 
   httpSendContract = (
     id: string,
-    tools: ICrmContract['senderTools']
+    tools: ICrmContract['senders']
   ): Promise<IResponseInterface<ICrmContract>> =>
     this.post(`${this.endPoint}/send/${id}`, { tools });
 
   httpSignContract = (
     id: string,
-    tools: ICrmContract['senderTools']
+    tools: ICrmContract['senders']
   ): Promise<IResponseInterface<ICrmContract>> =>
     this.post(`${this.endPoint}/sign/${id}`, { tools });
 
   httpSenderUpdateTools = (
     id: string,
-    tools: ICrmContract['senderTools']
+    tools: ICrmContract['senders']
   ): Promise<IResponseInterface<ICrmContract>> =>
     this.post(`${this.endPoint}/sender-tools/${id}`, { tools });
 

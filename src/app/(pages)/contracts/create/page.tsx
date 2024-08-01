@@ -7,13 +7,10 @@ import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { TextAreaComponent } from '@/app/component/textarea';
 import { withAuth } from '@/app/hoc/withAuth';
 import { CrmType } from '@/app/interfaces/crm/crm.interface';
-import { IUserInterface } from '@/app/interfaces/user.interface';
-import { RootState } from '@/redux/store';
 import { Spin, Upload } from 'antd';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import crmService from '@/app/services/crm/crm.service';
 import { AxiosError } from 'axios';
@@ -47,9 +44,6 @@ function CreateContractPage() {
   const [crmItem, setCrmItem] = useState<CrmType | null>(null);
   const [isFetchingItem, setIsFetchingItem] = useState(false);
   const searchParams = useSearchParams();
-  const authUser = useSelector(
-    (state: RootState) => state.auth.user as { user?: IUserInterface }
-  );
   const [showList, setShowList] = useState(false);
   const router = useRouterHook();
   const [isLoading, setIsLoading] = useState(false);
@@ -67,7 +61,8 @@ function CreateContractPage() {
       projectName: contract.projectName,
       projectNo: contract.projectNo,
       file: contract.file,
-      receiver: typeof contract.receiver === 'string' ? contract.receiver : contract.receiver._id,
+      receivers: contract.receivers,
+      senders: contract.senders,
     } : {
       title: '',
       startDate: new Date().toISOString(),
@@ -76,7 +71,12 @@ function CreateContractPage() {
       projectName: '',
       projectNo: '',
       file: undefined as any,
-      receiver: '' as string,
+      receivers: [
+        { color: '', name: "", companyName: "", email: "", tools: [] },
+      ],
+      senders: [
+        { color: '', name: "", companyName: "", email: "", tools: [] },
+      ],
     },
     async onSubmit(values) {
       const isEdit = searchParams.get('edit');
@@ -86,7 +86,7 @@ function CreateContractPage() {
           let data: UpdateContractData = {
             ...values,
             status: contract.status,
-            receiver: values.receiver as string,
+
           };
           // if contract.file is same as data.file then not need to upload file otherwise upload
           if (values.file !== contract.file) {
@@ -121,7 +121,6 @@ function CreateContractPage() {
           const valFile = values.file as unknown as RcFile;
           const response = await crmContractService.httpCreateContract({
             ...values,
-            receiver: crmItem._id,
             status: 'draft',
             projectNo: `${values.projectNo}`,
             file: {
@@ -393,65 +392,63 @@ function CreateContractPage() {
         <div className="grid grid-cols-2 gap-3">
           <div className="border p-3 rounded-md">
             <p className="text-graphiteGray text-sm font-medium leading-6 capitalize">
-              Company Information
+              Sender Information
             </p>
 
-            <div className="mt-1 grid grid-cols-2 gap-2">
-              <InputComponent
-                label="Sender Name"
-                name="senderName"
-                placeholder="Sender Name"
-                type="text"
-                field={{
-                  value: authUser?.user?.name,
-                }}
-              />
-              <InputComponent
-                label="Company Name"
-                name="companyName"
-                placeholder="Company Name"
-                type="text"
-                field={{
-                  value:
-                    authUser?.user?.companyName ||
-                    authUser?.user?.organizationName,
-                }}
-              />
+            <div>
+              {formik.values.senders.map((sender, index) => (
+                <div key={index} className='space-y-2 border-b p-1'>
+                  <div className='grid grid-cols-2 gap-2'>
+                    <InputComponent
+                      label="Name"
+                      placeholder="Sender Name"
+                      name={`senders.${index}.name`}
+                      type="text"
+                      field={{
+                        value: sender.name,
+                        onChange: formik.handleChange,
+                        onBlur: formik.handleBlur,
+                      }}
+                    />
+                    <InputComponent
+                      label="Company Name"
+                      placeholder="Company Name"
+                      name={`senders.${index}.companyName`}
+                      type="text"
+                      field={{
+                        value: sender.companyName,
+                        onChange: formik.handleChange,
+                        onBlur: formik.handleBlur,
+                      }}
+                    />
+                  </div>
 
-              <InputComponent
-                label="Phone Number"
-                name="phone"
-                type="text"
-                field={{
-                  value: authUser?.user?.phone,
-                }}
-              />
-              <InputComponent
-                label="Email"
-                name="email"
-                placeholder="Email"
-                type="email"
-                field={{
-                  value: authUser?.user?.email,
-                }}
-              />
-
-              <div className="col-span-2">
-                <InputComponent
-                  label="Address"
-                  name="address"
-                  placeholder="Address"
-                  type="text"
-                  field={{
-                    value: authUser?.user?.address,
-                  }}
-                />
-              </div>
+                  <InputComponent
+                    label="Email"
+                    placeholder="Email"
+                    name={`senders.${index}.email`}
+                    type="text"
+                    field={{
+                      value: sender.email,
+                      onChange: formik.handleChange,
+                      onBlur: formik.handleBlur,
+                    }}
+                  />
+                </div>
+              ))}
             </div>
+
+            <div className='mt-3 flex justify-center'>
+              <CustomButton
+                text='Add Sender'
+                className="!bg-schestiLightPrimary !text-schestiPrimary !py-2 !w-fit !border-schestiLightPrimary"
+              />
+            </div>
+
           </div>
 
           <div
-            className={`border flex flex-col p-3 rounded-md ${formik.errors.receiver ? 'border-red-500' : ''}`}
+            className={`border flex flex-col p-3 rounded-md`}
           >
             <div className="flex items-center justify-between">
               <p className="text-graphiteGray text-sm font-medium leading-6 capitalize">
