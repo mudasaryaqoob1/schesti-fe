@@ -178,7 +178,6 @@ export function DailyWorkForm({
             value: formik.values.note,
             onChange: formik.handleChange,
             onBlur: formik.handleBlur,
-            maxLength: 10,
           }}
           hasError={formik.touched.note && Boolean(formik.errors.note)}
           errorMessage={

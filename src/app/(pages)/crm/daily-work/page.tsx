@@ -358,13 +358,8 @@ function DailyWorkPage() {
         if (!value) {
           return null;
         }
-        return (
-          <div className="flex items-center space-x-4 justify-between">
-            {value}
-
-            <span className="text-schestiPrimaryBlack">{value.length}/10</span>
-          </div>
-        );
+        const note = value.slice(0, 10)
+        return note + (note.length > 10 ? '...' : "");
       },
       width: 200,
       onCell: (record, rowIndex) => {
@@ -918,9 +913,7 @@ function EditableCell(props: EditableCellProps) {
         <InputWithoutBorder
           value={note}
           onChange={(e) => {
-            if (e.target.value.length < 10) {
-              setNote(e.target.value);
-            }
+            setNote(e.target.value);
           }}
           placeholder="Enter note"
           onBlur={(e) => {
