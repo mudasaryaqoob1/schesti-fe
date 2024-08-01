@@ -130,7 +130,7 @@ function DailyWorkPage() {
       priority: '',
     },
     validationSchema: ValidationSchema,
-    onSubmit: (values) => {
+    onSubmit: (values, helpers) => {
       if ('_id' in values) {
         setIsSubmitting(true);
         crmDailyWorkService
@@ -147,6 +147,7 @@ function DailyWorkPage() {
                 })
               );
               onClose();
+              helpers.resetForm();
             }
           })
           .catch((error) => {
@@ -185,6 +186,7 @@ function DailyWorkPage() {
         toast.success('Daily work created successfully');
         setData([response.data, ...data]);
         setOpen(false);
+        formik.resetForm();
       }
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
