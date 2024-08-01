@@ -6,14 +6,12 @@ import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { TextAreaComponent } from '@/app/component/textarea';
 import { withAuth } from '@/app/hoc/withAuth';
-import { CrmType } from '@/app/interfaces/crm/crm.interface';
-import { Spin, Upload } from 'antd';
+import { Skeleton, Upload } from 'antd';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
-import { LoadingOutlined } from '@ant-design/icons';
 import ModalComponent from '@/app/component/modal';
 import { ListCrmItems } from '../components/ListCrmItems';
 import { type FormikErrors, useFormik } from 'formik';
@@ -27,6 +25,7 @@ import AwsS3 from '@/app/utils/S3Intergration';
 import type { RcFile } from 'antd/es/upload';
 import { ContractPartyType, ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
 import { FileInterface } from '@/app/interfaces/file.interface';
+import { chooseRandomColor } from '../../crm/daily-work/utils';
 
 const ValidationSchema = Yup.object().shape({
   title: Yup.string().required('Title is required'),
@@ -57,7 +56,6 @@ const ValidationSchema = Yup.object().shape({
 });
 
 function CreateContractPage() {
-  const [crmItem, setCrmItem] = useState<CrmType | null>(null);
   const [isFetchingItem, setIsFetchingItem] = useState(false);
   const searchParams = useSearchParams();
   const [showList, setShowList] = useState(false);
@@ -88,10 +86,10 @@ function CreateContractPage() {
       projectNo: '',
       file: undefined as any,
       receivers: [
-        { color: '', name: "", companyName: "", email: "", tools: [] },
+        { color: chooseRandomColor(), name: "", companyName: "", email: "", tools: [] },
       ],
       senders: [
-        { color: '', name: "", companyName: "", email: "", tools: [] },
+        { color: chooseRandomColor(), name: "", companyName: "", email: "", tools: [] },
       ],
     },
     async onSubmit(values) {
@@ -130,7 +128,7 @@ function CreateContractPage() {
           setIsLoading(false);
         }
       }
-      else if (crmItem) {
+      else {
         setIsLoading(true);
         try {
           const url = await new AwsS3(values.file, 'documents/crm/').getS3URL();
@@ -197,14 +195,14 @@ function CreateContractPage() {
     if (key === 'senders') {
       formik.setFieldValue('senders', [
         ...formik.values.senders,
-        { color: '', name: "", companyName: "", email: "", tools: [] },
+        { color: chooseRandomColor(), name: "", companyName: "", email: "", tools: [] },
       ])
 
     } else if (key === 'receivers') {
 
       formik.setFieldValue('receivers', [
         ...formik.values.receivers,
-        { color: '', name: "", companyName: "", email: "", tools: [] },
+        { color: chooseRandomColor(), name: "", companyName: "", email: "", tools: [] },
       ])
     }
 
@@ -238,7 +236,17 @@ function CreateContractPage() {
 
   }
 
-  console.log(formik.errors.senders, formik.touched.senders);
+  if (isFetchingItem) {
+    return <div>
+      <Skeleton />
+      <Skeleton />
+      <Skeleton />
+      <Skeleton />
+      <Skeleton />
+      <Skeleton />
+    </div>
+  }
+
 
   return (
     <section className="mt-6 !pb-[39px]  mx-4 ">
@@ -268,8 +276,11 @@ function CreateContractPage() {
           onClose={() => setShowList(false)}
           title="Select Item"
           onItemClick={(item) => {
-            setCrmItem(item);
-            formik.setFieldValue('receiver', item._id);
+            formik.setFieldValue("receivers", [
+              ...formik.values.receivers,
+              { color: chooseRandomColor(), name: item.name, companyName: item.companyName, email: item.email, tools: [], },
+            ]
+            )
             setShowList(false);
           }}
         />
@@ -579,94 +590,148 @@ function CreateContractPage() {
               <p className="text-graphiteGray text-sm font-medium leading-6 capitalize">
                 Receiver Information
               </p>
-              {crmItem ? (
-                <CustomButton
-                  text="Select"
-                  className="!bg-schestiLightPrimary !text-schestiPrimary !py-2 !w-fit !border-schestiLightPrimary"
-                  onClick={() => {
-                    setShowList(true);
-                  }}
-                />
-              ) : null}
-            </div>
-            {!crmItem ? (
-              <div className="h-full flex items-center justify-center">
-                <CustomButton
-                  text="Select"
-                  className="!bg-schestiLightPrimary !text-schestiPrimary !py-2 !w-fit !border-schestiLightPrimary"
-                  onClick={() => {
-                    setShowList(true);
-                  }}
-                />
-              </div>
-            ) : null}
-            <Spin
-              spinning={isFetchingItem}
-              indicator={<LoadingOutlined spin />}
-            >
-              {crmItem ? (
-                <div className="mt-1 grid grid-cols-2 gap-2">
-                  <InputComponent
-                    label="Receiver Name"
-                    placeholder="Receiver Name"
-                    name="receiverName"
-                    type="text"
-                    field={{
-                      value: crmItem
-                        ? crmItem?.module === 'partners' ||
-                          crmItem?.module === 'subcontractors'
-                          ? crmItem?.companyRep
-                          : crmItem?.firstName + ' ' + crmItem?.lastName
-                        : undefined,
-                    }}
-                  />
-                  <InputComponent
-                    label="Company Name"
-                    name="companyName"
-                    placeholder="Company Name"
-                    type="text"
-                    field={{
-                      value:
-                        crmItem?.module === 'subcontractors' ||
-                          crmItem?.module === 'partners'
-                          ? crmItem?.name
-                          : crmItem?.companyName,
-                    }}
-                  />
 
-                  <InputComponent
-                    label="Phone Number"
-                    placeholder="Phone Number"
-                    name="phone"
-                    type="text"
-                    field={{
-                      value: crmItem?.phone,
-                    }}
-                  />
+              <CustomButton
+                text="Select"
+                className="!bg-schestiLightPrimary !text-schestiPrimary !py-2 !w-fit !border-schestiLightPrimary"
+                onClick={() => {
+                  setShowList(true);
+                }}
+              />
+
+            </div>
+            <div className='mt-2'>
+              {formik.values.receivers.map((sender, index) => (
+                <div key={index} className='space-y-2 border-b p-1'>
+                  <div className='flex justify-end'>
+                    <CustomButton
+                      text="Delete"
+                      className="!w-fit !px-4 !py-1 !bg-transparent !border-red-500 !text-red-500"
+                      onClick={() => removeSenderAndReceivers("receivers", index)}
+                    />
+                  </div>
+                  <div className='grid grid-cols-2 gap-2'>
+                    <InputComponent
+                      label="Name"
+                      placeholder="Sender Name"
+                      name={`receivers.${index}.name`}
+                      type="text"
+                      field={{
+                        value: sender.name,
+                        onChange: formik.handleChange,
+                        onBlur: formik.handleBlur,
+                      }}
+                      hasError={
+                        getSenderOrReceiverFieldErrorAndTouched(
+                          "receivers",
+                          "name",
+                          index
+                        ).touched && Boolean(getSenderOrReceiverFieldErrorAndTouched(
+                          "receivers",
+                          "name",
+                          index
+                        ).error)
+                      }
+                      errorMessage={
+                        getSenderOrReceiverFieldErrorAndTouched(
+                          "receivers",
+                          "name",
+                          index
+                        ).touched
+                          ? getSenderOrReceiverFieldErrorAndTouched(
+                            "receivers",
+                            "name",
+                            index
+                          ).error
+                          : ''
+                      }
+                    />
+                    <InputComponent
+                      label="Company Name"
+                      placeholder="Company Name"
+                      name={`receivers.${index}.companyName`}
+                      type="text"
+                      field={{
+                        value: sender.companyName,
+                        onChange: formik.handleChange,
+                        onBlur: formik.handleBlur,
+                      }}
+                      hasError={
+                        getSenderOrReceiverFieldErrorAndTouched(
+                          "receivers",
+                          "companyName",
+                          index
+                        ).touched && Boolean(getSenderOrReceiverFieldErrorAndTouched(
+                          "receivers",
+                          "companyName",
+                          index
+                        ).error)
+                      }
+                      errorMessage={
+                        getSenderOrReceiverFieldErrorAndTouched(
+                          "receivers",
+                          "companyName",
+                          index
+                        ).touched
+                          ? getSenderOrReceiverFieldErrorAndTouched(
+                            "receivers",
+                            "companyName",
+                            index
+                          ).error
+                          : ''
+                      }
+                    />
+                  </div>
+
                   <InputComponent
                     label="Email"
                     placeholder="Email"
-                    name="email"
-                    type="email"
+                    name={`receivers.${index}.email`}
+                    type="text"
                     field={{
-                      value: crmItem?.email,
+                      value: sender.email,
+                      onChange: formik.handleChange,
+                      onBlur: formik.handleBlur,
                     }}
+                    hasError={
+                      getSenderOrReceiverFieldErrorAndTouched(
+                        "receivers",
+                        "email",
+                        index
+                      ).touched && Boolean(getSenderOrReceiverFieldErrorAndTouched(
+                        "receivers",
+                        "email",
+                        index
+                      ).error)
+                    }
+                    errorMessage={
+                      getSenderOrReceiverFieldErrorAndTouched(
+                        "receivers",
+                        "email",
+                        index
+                      ).touched
+                        ? getSenderOrReceiverFieldErrorAndTouched(
+                          "receivers",
+                          "email",
+                          index
+                        ).error
+                        : ''
+                    }
                   />
-
-                  <div className="col-span-2">
-                    <InputComponent
-                      label="Address"
-                      placeholder="Address"
-                      name="address"
-                      type="text"
-                      field={{
-                        value: crmItem?.address,
-                      }}
-                    />
-                  </div>
                 </div>
-              ) : null}
-            </Spin>
+              ))}
+            </div>
+
+            <div className='mt-3 flex justify-center'>
+              <CustomButton
+                text='Add Receiver'
+                className="!bg-schestiLightPrimary !text-schestiPrimary !py-2 !w-fit !border-schestiLightPrimary"
+                onClick={() => {
+                  addSenderAndReceivers("receivers");
+                }}
+              />
+            </div>
+
           </div>
         </div>
       </div>

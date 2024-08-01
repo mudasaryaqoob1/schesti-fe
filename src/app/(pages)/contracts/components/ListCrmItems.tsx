@@ -5,11 +5,12 @@ import crmService from '@/app/services/crm/crm.service';
 import { Skeleton } from 'antd';
 import { useEffect, useState } from 'react';
 import { formatCrmModuleType } from '../../crm/utils';
+import { ContractPartyType } from '@/app/interfaces/crm/crm-contract.interface';
 
 type Props = {
   title: string;
   onClose: () => void;
-  onItemClick: (_item: CrmType) => void;
+  onItemClick: (_item: Omit<ContractPartyType, "_id" | "color" | "tools">) => void;
 };
 export function ListCrmItems({ title, onClose, onItemClick }: Props) {
   const [items, setItems] = useState<CrmType[]>([]);
@@ -28,6 +29,21 @@ export function ListCrmItems({ title, onClose, onItemClick }: Props) {
     }
     setIsLoading(false);
   }
+
+  function getItemName(item: CrmType) {
+    if (item.module === 'partners' || item.module === 'subcontractors') {
+      return `${item.companyRep}`
+    }
+    return `${item.firstName} ${item.lastName || ''}`
+  }
+
+  function getItemCompany(item: CrmType) {
+    if (item.module === 'partners' || item.module === 'subcontractors') {
+      return `${item.name}`
+    }
+    return `${item.companyName}`
+  }
+
 
   return (
     <Popups title={title} onClose={onClose}>
@@ -65,7 +81,12 @@ export function ListCrmItems({ title, onClose, onItemClick }: Props) {
             <div
               key={item._id}
               className="p-3 my-1 border-b hover:bg-schestiPrimaryBG cursor-pointer hover:rounded-md"
-              onClick={() => onItemClick(item)}
+              onClick={() => onItemClick({
+                companyName: getItemCompany(item),
+                email: item.email,
+                name: getItemName(item),
+
+              })}
             >
               <div className="flex font-semibold text-schestiPrimaryBlack text-xs items-center space-x-3">
                 <p className="">
