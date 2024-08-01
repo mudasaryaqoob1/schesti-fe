@@ -37,7 +37,24 @@ const ValidationSchema = Yup.object().shape({
   projectName: Yup.string(),
   projectNo: Yup.string(),
   file: Yup.mixed().required('File is required'),
-  receiver: Yup.string(),
+  senders: Yup.array().of(
+    Yup.object().shape({
+      name: Yup.string().required('Name is required'),
+      companyName: Yup.string().required('Company Name is required'),
+      email: Yup.string().email('Invalid email').required('Email is required'),
+      tools: Yup.array(),
+      color: Yup.string()
+    })
+  ),
+  receivers: Yup.array().of(
+    Yup.object().shape({
+      name: Yup.string().required('Name is required'),
+      companyName: Yup.string().required('Company Name is required'),
+      email: Yup.string().email('Invalid email').required('Email is required'),
+      tools: Yup.array(),
+      color: Yup.string()
+    })
+  ),
 });
 
 function CreateContractPage() {
