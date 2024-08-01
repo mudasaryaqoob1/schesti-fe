@@ -12,7 +12,6 @@ import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import crmService from '@/app/services/crm/crm.service';
 import { AxiosError } from 'axios';
 import { LoadingOutlined } from '@ant-design/icons';
 import ModalComponent from '@/app/component/modal';
@@ -164,12 +163,7 @@ function CreateContractPage() {
     enableReinitialize: contract ? true : false,
   });
 
-  useEffect(() => {
-    const receiverId = searchParams.get('receiver');
-    if (receiverId) {
-      getCrmItemById(receiverId);
-    }
-  }, [searchParams,]);
+
 
   useEffect(() => {
 
@@ -179,23 +173,7 @@ function CreateContractPage() {
 
   }, [contractId, isEdit]);
 
-  async function getCrmItemById(id: string) {
-    setIsFetchingItem(true);
-    try {
-      const response = await crmService.httpGetItemById(id);
-      if (response.data) {
-        setCrmItem(response.data);
-        formik.setFieldValue('receiver', response.data._id);
-      }
-    } catch (error) {
-      const err = error as AxiosError<{ message: string }>;
-      if (err.response?.data) {
-        toast.error('Unable to get the item');
-      }
-    } finally {
-      setIsFetchingItem(false);
-    }
-  }
+
 
   async function getContractById(id: string) {
     setIsFetchingItem(true);
@@ -213,6 +191,34 @@ function CreateContractPage() {
       setIsFetchingItem(false);
     }
   }
+
+
+  function addSenderAndReceivers(key: "senders" | "receivers",) {
+    if (key === 'senders') {
+      formik.setFieldValue('senders', [
+        ...formik.values.senders,
+        { color: '', name: "", companyName: "", email: "", tools: [] },
+      ])
+
+    } else if (key === 'receivers') {
+
+      formik.setFieldValue('receivers', [
+        ...formik.values.receivers,
+        { color: '', name: "", companyName: "", email: "", tools: [] },
+      ])
+    }
+
+  }
+
+
+  function removeSenderAndReceivers(key: "senders" | "receivers", index: number) {
+    if (key === 'senders') {
+      formik.setFieldValue('senders', formik.values.senders.slice(0, index).concat(formik.values.senders.slice(index + 1)))
+    } else if (key === 'receivers') {
+      formik.setFieldValue('receivers', formik.values.receivers.slice(0, index).concat(formik.values.receivers.slice(index + 1)))
+    }
+  }
+
 
   return (
     <section className="mt-6 !pb-[39px]  mx-4 ">
@@ -415,6 +421,13 @@ function CreateContractPage() {
             <div>
               {formik.values.senders.map((sender, index) => (
                 <div key={index} className='space-y-2 border-b p-1'>
+                  <div className='flex justify-end'>
+                    <CustomButton
+                      text="Delete"
+                      className="!w-fit !px-4 !py-1 !bg-transparent !border-red-500 !text-red-500"
+                      onClick={() => removeSenderAndReceivers("senders", index)}
+                    />
+                  </div>
                   <div className='grid grid-cols-2 gap-2'>
                     <InputComponent
                       label="Name"
@@ -459,6 +472,9 @@ function CreateContractPage() {
               <CustomButton
                 text='Add Sender'
                 className="!bg-schestiLightPrimary !text-schestiPrimary !py-2 !w-fit !border-schestiLightPrimary"
+                onClick={() => {
+                  addSenderAndReceivers("senders");
+                }}
               />
             </div>
 
