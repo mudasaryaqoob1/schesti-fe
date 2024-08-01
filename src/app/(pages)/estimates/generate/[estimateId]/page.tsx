@@ -276,7 +276,7 @@ const ViewEstimateDetail = () => {
   }
   return (
     <div className="">
-      <div className="flex justify-between items-center p-12">
+      <div className="flex justify-between items-center pt-12 px-12">
         <TertiaryHeading
           title="Scope"
           className="text-graphiteGray font-semibold"
@@ -301,7 +301,7 @@ const ViewEstimateDetail = () => {
             </CSVLink> */}
 
           <WhiteButton
-            text="Download Comapny PDF"
+            text="Comapny PDF"
             className="w-full"
             onClick={handleDownload}
           />
@@ -357,7 +357,7 @@ const ViewEstimateDetail = () => {
         </div>
       </div>
 
-      <div className="p-12" ref={pdfContainerRef}>
+      <div className="px-12" ref={pdfContainerRef}>
         <div className={`${bg_style} p-5 mt-4`}>
           <div className="flex justify-between items-center">
             <QuaternaryHeading
@@ -419,7 +419,7 @@ const ViewEstimateDetail = () => {
               className="font-bold"
             />
           </div>
-          <div className="grid grid-cols-5 grid-rows-2 mt-2 gap-y-2">
+          <div className="grid grid-cols-5 grid-rows-1 mt-2 gap-y-2">
             {/* 1 */}
             <div>
               <QuinaryHeading
