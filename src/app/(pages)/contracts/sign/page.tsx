@@ -68,7 +68,7 @@ export default function SignPdfContract() {
         title="Contract not found"
         description="The contract you are looking for does not exist"
         btnText="Back"
-        link={`${Routes.CRM.Contractors}`}
+        link={`${Routes.Contracts}`}
       />
     );
   }

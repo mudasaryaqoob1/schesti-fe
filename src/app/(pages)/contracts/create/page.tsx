@@ -105,7 +105,7 @@ function CreateContractPage() {
           if (response.data) {
             toast.success('Contract updated successfully');
             router.push(
-              `${Routes.CRM.Contractors}`
+              `${Routes.Contracts}`
             );
           }
         } catch (error) {
@@ -134,7 +134,7 @@ function CreateContractPage() {
           if (response.data) {
             toast.success('Contract created successfully');
             router.push(
-              `${Routes.CRM.Contractors}/edit-contract?contractId=${response.data._id}`
+              `${Routes.Contracts}/edit-contract?contractId=${response.data._id}`
             );
           }
         } catch (error) {
@@ -207,7 +207,7 @@ function CreateContractPage() {
         />
 
         <div className="flex items-center space-x-3">
-          <WhiteButton onClick={() => router.push(Routes.CRM.Contractors)} text="Cancel" className="!w-fit" />
+          <WhiteButton onClick={() => router.push(Routes.Contracts)} text="Cancel" className="!w-fit" />
           <CustomButton
             text="Save"
             className="!w-fit"

@@ -208,20 +208,20 @@ function ContractsPage() {
               onClick({ key }) {
                 if (key === 'viewContract') {
                   router.push(
-                    `${Routes.CRM.Contractors}/view?id=${record._id}`
+                    `${Routes.Contracts}/view?id=${record._id}`
                   );
                 } else if (key === 'download') {
                   router.push(
-                    `${Routes.CRM.Contractors}/view?id=${record._id}&download=true`
+                    `${Routes.Contracts}/view?id=${record._id}&download=true`
                   );
                 } else if (key === 'delete') {
                   setShowDeleteModal(true);
                   setSelectedItem(record);
                 } else if (key === 'edit') {
                   const receiverId = typeof record.receiver === 'string' ? record.receiver : record.receiver._id
-                  router.push(`${Routes.CRM.Contractors}/create/?id=${record._id}&edit=true&receiver=${receiverId}`);
+                  router.push(`${Routes.Contracts}/create/?id=${record._id}&edit=true&receiver=${receiverId}`);
                 } else if (key === 'editTools') {
-                  router.push(`${Routes.CRM.Contractors}/edit-contract?contractId=${record._id}`);
+                  router.push(`${Routes.Contracts}/edit-contract?contractId=${record._id}`);
                 }
               },
             }}
@@ -316,7 +316,7 @@ function ContractsPage() {
             icon="/plus.svg"
             iconwidth={20}
             iconheight={20}
-            onClick={() => router.push(`${Routes.CRM.Contractors}/create`)}
+            onClick={() => router.push(`${Routes.Contracts}/create`)}
           />
         </div>
       </div>

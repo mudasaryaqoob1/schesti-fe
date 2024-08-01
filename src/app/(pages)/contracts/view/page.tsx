@@ -73,7 +73,7 @@ function ViewContract() {
         title="Contract not found"
         description="The contract you are looking for does not exist"
         btnText="Back"
-        link={`${Routes.CRM.Contractors}`}
+        link={`${Routes.Contracts}`}
       />
     );
   }
@@ -131,7 +131,7 @@ function ViewContract() {
           className="!text-[24px] text-schestiPrimaryBlack leading-6 font-semibold"
         />
         {activeTab === 'sender' &&
-        !contract.senderTools.every((tool) => tool.value) ? (
+          !contract.senderTools.every((tool) => tool.value) ? (
           <CustomButton
             text="Update Tools"
             className="!w-fit"
