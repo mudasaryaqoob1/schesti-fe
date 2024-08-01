@@ -4,7 +4,7 @@ import { FileInterface } from '../file.interface';
 import { IUserInterface } from '../user.interface';
 
 export type CrmContractStatusType = 'pending' | 'signed' | 'draft' | 'archive';
-type ContractPartyType = {
+export type ContractPartyType = {
   companyName: string;
   email: string;
   name: string;

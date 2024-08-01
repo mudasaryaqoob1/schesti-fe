@@ -16,7 +16,7 @@ import { AxiosError } from 'axios';
 import { LoadingOutlined } from '@ant-design/icons';
 import ModalComponent from '@/app/component/modal';
 import { ListCrmItems } from '../components/ListCrmItems';
-import { useFormik } from 'formik';
+import { type FormikErrors, useFormik } from 'formik';
 import dayjs from 'dayjs';
 import { ShowFileComponent } from '@/app/(pages)/bid-management/components/ShowFile.component';
 import * as Yup from 'yup';
@@ -25,7 +25,7 @@ import { Routes } from '@/app/utils/plans.utils';
 import crmContractService, { CreateContractData, UpdateContractData } from '@/app/services/crm/crm-contract.service';
 import AwsS3 from '@/app/utils/S3Intergration';
 import type { RcFile } from 'antd/es/upload';
-import { ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
+import { ContractPartyType, ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
 import { FileInterface } from '@/app/interfaces/file.interface';
 
 const ValidationSchema = Yup.object().shape({
@@ -219,6 +219,26 @@ function CreateContractPage() {
     }
   }
 
+  function getSenderOrReceiverFieldErrorAndTouched(type: "senders" | "receivers", field: keyof Omit<ContractPartyType, "tools" | "colors">, index: number) {
+    let errors;
+    if (type === 'senders') {
+      errors = formik.errors.senders as FormikErrors<Omit<ContractPartyType, "tools" | "colors">>[] | undefined;
+      return {
+        error: errors && errors[index] && errors[index][field],
+        touched: formik.touched.senders && formik.touched.senders[index][field]
+      }
+
+    } else {
+      errors = formik.errors.receivers as FormikErrors<Omit<ContractPartyType, "tools" | "colors">>[] | undefined;
+      return {
+        error: errors && errors[index] && errors[index][field],
+        touched: formik.touched.receivers && formik.touched.receivers[index][field]
+      }
+    }
+
+  }
+
+  console.log(formik.errors.senders, formik.touched.senders);
 
   return (
     <section className="mt-6 !pb-[39px]  mx-4 ">
@@ -439,6 +459,30 @@ function CreateContractPage() {
                         onChange: formik.handleChange,
                         onBlur: formik.handleBlur,
                       }}
+                      hasError={
+                        getSenderOrReceiverFieldErrorAndTouched(
+                          "senders",
+                          "name",
+                          index
+                        ).touched && Boolean(getSenderOrReceiverFieldErrorAndTouched(
+                          "senders",
+                          "name",
+                          index
+                        ).error)
+                      }
+                      errorMessage={
+                        getSenderOrReceiverFieldErrorAndTouched(
+                          "senders",
+                          "name",
+                          index
+                        ).touched
+                          ? getSenderOrReceiverFieldErrorAndTouched(
+                            "senders",
+                            "name",
+                            index
+                          ).error
+                          : ''
+                      }
                     />
                     <InputComponent
                       label="Company Name"
@@ -450,6 +494,30 @@ function CreateContractPage() {
                         onChange: formik.handleChange,
                         onBlur: formik.handleBlur,
                       }}
+                      hasError={
+                        getSenderOrReceiverFieldErrorAndTouched(
+                          "senders",
+                          "companyName",
+                          index
+                        ).touched && Boolean(getSenderOrReceiverFieldErrorAndTouched(
+                          "senders",
+                          "companyName",
+                          index
+                        ).error)
+                      }
+                      errorMessage={
+                        getSenderOrReceiverFieldErrorAndTouched(
+                          "senders",
+                          "companyName",
+                          index
+                        ).touched
+                          ? getSenderOrReceiverFieldErrorAndTouched(
+                            "senders",
+                            "companyName",
+                            index
+                          ).error
+                          : ''
+                      }
                     />
                   </div>
 
@@ -463,6 +531,30 @@ function CreateContractPage() {
                       onChange: formik.handleChange,
                       onBlur: formik.handleBlur,
                     }}
+                    hasError={
+                      getSenderOrReceiverFieldErrorAndTouched(
+                        "senders",
+                        "email",
+                        index
+                      ).touched && Boolean(getSenderOrReceiverFieldErrorAndTouched(
+                        "senders",
+                        "email",
+                        index
+                      ).error)
+                    }
+                    errorMessage={
+                      getSenderOrReceiverFieldErrorAndTouched(
+                        "senders",
+                        "email",
+                        index
+                      ).touched
+                        ? getSenderOrReceiverFieldErrorAndTouched(
+                          "senders",
+                          "email",
+                          index
+                        ).error
+                        : ''
+                    }
                   />
                 </div>
               ))}
