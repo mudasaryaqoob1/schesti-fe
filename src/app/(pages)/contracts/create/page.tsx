@@ -36,11 +36,11 @@ const ValidationSchema = Yup.object().shape({
   title: Yup.string().required('Title is required'),
   startDate: Yup.date().required('Start Date is required'),
   endDate: Yup.date().required('End Date is required'),
-  description: Yup.string().required('Description is required'),
-  projectName: Yup.string().required('Project Name is required'),
-  projectNo: Yup.string().required('Project Number is required'),
+  description: Yup.string(),
+  projectName: Yup.string(),
+  projectNo: Yup.string(),
   file: Yup.mixed().required('File is required'),
-  receiver: Yup.string().required('Receiver is required'),
+  receiver: Yup.string(),
 });
 
 function CreateContractPage() {

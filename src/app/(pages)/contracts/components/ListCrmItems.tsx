@@ -4,7 +4,7 @@ import { CrmModuleType, CrmType } from '@/app/interfaces/crm/crm.interface';
 import crmService from '@/app/services/crm/crm.service';
 import { Skeleton } from 'antd';
 import { useEffect, useState } from 'react';
-import { formatCrmModuleType } from '../../utils';
+import { formatCrmModuleType } from '../../crm/utils';
 
 type Props = {
   title: string;
@@ -72,14 +72,14 @@ export function ListCrmItems({ title, onClose, onItemClick }: Props) {
                   {' '}
                   <span className="text-schestiLightBlack">Name: </span>{' '}
                   {item.module === 'subcontractors' ||
-                  item.module === 'partners'
+                    item.module === 'partners'
                     ? item.companyRep
                     : `${item.firstName} ${item.lastName || ''}`}
                 </p>
                 <p>
                   <span className="text-schestiLightBlack">Company: </span>{' '}
                   {item.module === 'subcontractors' ||
-                  item.module === 'partners'
+                    item.module === 'partners'
                     ? item.name
                     : item.companyName}
                 </p>
