@@ -298,7 +298,7 @@ function DailyWorkPage() {
       dataIndex: 'priority',
       render(_val, record) {
         if (!record.priority || typeof record.priority === 'string') {
-          return 'N/A';
+          return 'Choose priority';
         }
         return (
           <div className="w-fit">
@@ -389,7 +389,7 @@ function DailyWorkPage() {
       dataIndex: 'status',
       render(_val, record) {
         if (!record.status || typeof record.status === 'string') {
-          return 'N/A';
+          return 'Choose status';
         }
         return <DisplayDailyWorkStatus item={record.status} />;
       },
@@ -884,7 +884,7 @@ function EditableCell(props: EditableCellProps) {
           <span className="font-medium">Choose {inputType}</span>
           <div className="absolute bg-white border rounded-md w-[200px] top-6 p-3 z-10 space-y-2">
             {inputType === 'priority'
-              ? props.priorities.map((priority: IDailyWorkPriorty) => (
+              ? props.priorities.length === 0 ? "No Priority" : props.priorities.map((priority: IDailyWorkPriorty) => (
                 <DisplayPriority
                   onClick={(e) => {
                     console.log('Priority Clicked');
@@ -896,7 +896,7 @@ function EditableCell(props: EditableCellProps) {
                 />
               ))
               : inputType === 'status'
-                ? props.statuses.map((status: IDailyWorkStatus) => (
+                ? props.statuses.length === 0 ? "No Stauses" : props.statuses.map((status: IDailyWorkStatus) => (
                   <DisplayDailyWorkStatus
                     onClick={(e) => {
                       e.stopPropagation();
