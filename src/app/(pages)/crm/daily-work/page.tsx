@@ -126,6 +126,8 @@ function DailyWorkPage() {
       work: '',
       deadline: '',
       note: '',
+      status: '',
+      priority: '',
     },
     validationSchema: ValidationSchema,
     onSubmit: (values) => {
@@ -437,6 +439,8 @@ function DailyWorkPage() {
                     phone: record.phone,
                     work: record.work,
                     _id: record._id,
+                    priority: record.priority ? typeof record.priority === 'string' ? record.priority : record.priority._id : "",
+                    status: record.status ? typeof record.status === 'string' ? record.status : record.status._id : "",
                   });
                 } else if (e.key === 'delete') {
                   setShowDeleteModal(true);
@@ -603,6 +607,8 @@ function DailyWorkPage() {
         open={open}
         isSubmitting={isSubmitting}
         onSubmit={formik.handleSubmit}
+        priorities={priorities}
+        statuses={statuses}
       />
 
       {selectedLead && showDeleteModal ? (

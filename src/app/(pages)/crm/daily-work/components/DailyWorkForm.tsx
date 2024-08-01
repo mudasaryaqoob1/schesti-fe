@@ -9,19 +9,26 @@ import WhiteButton from '@/app/component/customButton/white';
 import type { FormikProps } from 'formik';
 import { ICrmDailyWorkCreate } from '@/app/services/crm/crm-daily-work.service';
 import dayjs from 'dayjs';
+import { IDailyWorkPriorty, IDailyWorkStatus } from '@/app/interfaces/crm/crm-daily-work.interface';
+import { SelectComponent } from '@/app/component/customSelect/Select.component';
 
 type Props = {
   open: boolean;
   onClose: () => void;
   formik: FormikProps<ICrmDailyWorkCreate>;
+  statuses: IDailyWorkStatus[];
+  priorities: IDailyWorkPriorty[];
   onSubmit?: () => void;
   isSubmitting?: boolean;
+
 };
 export function DailyWorkForm({
   onClose,
   open,
   formik,
   onSubmit,
+  priorities,
+  statuses,
   isSubmitting,
 }: Props) {
   return (
@@ -92,6 +99,52 @@ export function DailyWorkForm({
           errorMessage={
             formik.touched.email && formik.errors.email
               ? formik.errors.email
+              : ''
+          }
+        />
+
+        <SelectComponent
+          label='Status'
+          name='status'
+          placeholder='Select Status'
+          field={{
+            value: formik.values.status ? formik.values.status : undefined,
+            onChange: (val) => {
+              formik.setFieldValue('status', val);
+            },
+            onBlur: formik.handleBlur,
+            options: statuses.map((status) => ({
+              label: status.name,
+              value: status._id
+            }))
+          }}
+          hasError={formik.touched.status && Boolean(formik.errors.status)}
+          errorMessage={
+            formik.touched.status && formik.errors.status
+              ? formik.errors.status
+              : ''
+          }
+        />
+
+        <SelectComponent
+          label='Priority'
+          name='priority'
+          placeholder='Select Priority'
+          field={{
+            value: formik.values.priority ? formik.values.priority : undefined,
+            onChange: (val) => {
+              formik.setFieldValue('priority', val);
+            },
+            onBlur: formik.handleBlur,
+            options: priorities.map((priority) => ({
+              label: priority.name,
+              value: priority._id
+            }))
+          }}
+          hasError={formik.touched.priority && Boolean(formik.errors.priority)}
+          errorMessage={
+            formik.touched.priority && formik.errors.priority
+              ? formik.errors.priority
               : ''
           }
         />
