@@ -7,6 +7,7 @@ import { FinancialIcon } from '../svgs/component-icons/FinancialIcon';
 import { ScheduleIcon } from '../svgs/component-icons/ScheduleIcon';
 import { MeetingIcon } from '../svgs/component-icons/MeetingIcon';
 import { NetworkingIcon } from '../svgs/component-icons/NetworkIcon';
+import { ContractIcon } from '../svgs/component-icons/ContractsIcon';
 
 export const Routes = {
   'Bid Management': {
@@ -21,11 +22,11 @@ export const Routes = {
     Clients: '/crm/clients',
     'Sub-Contractors': '/crm/sub-contractors',
     Partners: '/crm/partners',
-    Contractors: '/crm/contractors',
     Architects: '/crm/architects',
     Vendors: '/crm/vendors',
     Daily_Work: '/crm/daily-work',
   },
+  Contracts: '/contracts',
   'Quantity-Takeoff': {
     Manual: '/take-off',
     'AI-Takeoff': '#',
@@ -57,6 +58,7 @@ export const OtherRoutes = {
   },
   Upgrades: '/upgradeplans',
   Dashboard: '/dashboard',
+  Contracts: '/contracts',
 };
 
 export const Plans = {
@@ -112,11 +114,15 @@ export const planFeatureOptions = [
       { label: 'Clients', value: Routes.CRM.Clients },
       { label: 'Sub Contractors', value: Routes.CRM['Sub-Contractors'] },
       { label: 'Partners', value: Routes.CRM.Partners },
-      { label: 'Contractors', value: Routes.CRM.Contractors },
       { label: 'Architects', value: Routes.CRM.Architects },
       { label: 'Vendors', value: Routes.CRM.Vendors },
       { label: 'Daily Work', value: Routes.CRM.Daily_Work },
     ],
+  },
+  {
+    Icon: ContractIcon,
+    label: 'Contracts',
+    value:Routes.CONTRACTS,
   },
 
   {
