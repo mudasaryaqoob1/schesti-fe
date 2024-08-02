@@ -8,7 +8,7 @@ import { InputComponent } from '@/app/component/customInput/Input';
 import { Spin, Tabs, Upload } from 'antd';
 import CustomButton from '@/app/component/customButton/button';
 import { toast } from 'react-toastify';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   ChooseFont,
   ChooseFontType,
@@ -18,6 +18,8 @@ import AwsS3 from '@/app/utils/S3Intergration';
 import { CloseOutlined, LoadingOutlined } from '@ant-design/icons';
 import { ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
 import { GetStandardToolIcon } from './GetIcon';
+import SignaturePad from 'react-signature-pad-wrapper'
+import { FileInterface } from '@/app/interfaces/file.interface';
 
 type Props = {
   item: ToolState;
@@ -60,7 +62,7 @@ export function StandardToolItem({
             setOpen={() => { }}
             width="300px"
             key={selectedTool.tool}
-            className={'!bg-transparent'}
+            className={'!bg-transparent !h-fit'}
           >
             <Popups
               title="Add Standard Tools"
@@ -414,7 +416,7 @@ function GetSignatureValue({
       <Tabs
         activeKey={activeTab}
         onChange={setActiveTab}
-        items={['type', 'upload'].map((type) => {
+        items={['type', 'write', 'upload'].map((type) => {
           return {
             key: type,
             label:
@@ -429,7 +431,7 @@ function GetSignatureValue({
         })}
       />
       {activeTab === 'upload' ? (
-        <div className="h-[400px]">
+        <div className="h-[400px] flex flex-col justify-center">
           <Spin
             spinning={isUploadingSignature}
             indicator={<LoadingOutlined spin />}
@@ -498,7 +500,87 @@ function GetSignatureValue({
         </div>
       ) : activeTab === 'type' ? (
         <TypeSignature item={item} onChange={onChange} />
+      ) : activeTab === 'write' ? (
+        <WriteSignature item={item} onChange={onChange} />
       ) : null}
     </div>
   );
+}
+
+function WriteSignature({
+  item,
+  onChange,
+}: {
+  onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
+  item: ToolState;
+}) {
+
+  const [isUploading, setIsUploading] = useState(false);
+  const ref = useRef<SignaturePad | null>(null);
+
+  function handleClear() {
+    if (ref.current) {
+      ref.current.instance.clear();
+    }
+  }
+
+  async function handleSave() {
+    if (ref.current) {
+      if (ref.current.isEmpty()) {
+        toast.error('Signature cannot be empty');
+      } else {
+        setIsUploading(true);
+        const base64 = ref.current.toDataURL();
+        try {
+          const url = await new AwsS3(base64, "signatures").getS3UrlFromBase64(base64)
+          const data: FileInterface = {
+            extension: 'png',
+            name: `signature-${Date.now()}.png`,
+            type: 'image/png',
+            url: url
+          }
+          onChange?.({
+            ...item,
+            tool: "signature",
+            value: data,
+          })
+        } catch (error) {
+          toast.error("Error while uploading the signature");
+          console.log(error);
+        } finally {
+          setIsUploading(false);
+        }
+      }
+
+    }
+  }
+
+
+  return <div className='h-[400px] space-y-2'>
+    <div className='border w-full p-2  h-[340px] border-schestiLightPrimary'>
+      <SignaturePad
+        canvasProps={{
+          className: 'w-full h-full',
+        }}
+        // @ts-ignore
+        ref={cur => {
+          ref.current = cur;
+        }}
+      />
+    </div>
+    <div className='flex justify-end space-x-3'>
+
+      <CustomButton
+        text='Clear'
+        className='!w-fit !bg-white !text-schestiPrimary !py-2 !border-schestiLightPrimary'
+        onClick={handleClear}
+      />
+      <CustomButton
+        text='Add Signature'
+        className='!w-fit !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary'
+        onClick={handleSave}
+        isLoading={isUploading}
+      />
+    </div>
+  </div>
 }
