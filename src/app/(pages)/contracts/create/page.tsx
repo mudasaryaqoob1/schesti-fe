@@ -14,7 +14,7 @@ import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
 import ModalComponent from '@/app/component/modal';
 import { ListCrmItems } from '../components/ListCrmItems';
-import { type FormikErrors, useFormik } from 'formik';
+import { type FormikErrors, useFormik, type FormikTouched } from 'formik';
 import dayjs from 'dayjs';
 import { ShowFileComponent } from '@/app/(pages)/bid-management/components/ShowFile.component';
 import * as Yup from 'yup';
@@ -35,16 +35,7 @@ const ValidationSchema = Yup.object().shape({
   projectName: Yup.string(),
   projectNo: Yup.string(),
   file: Yup.mixed().required('File is required'),
-  senders: Yup.array().of(
-    Yup.object().shape({
-      name: Yup.string().required('Name is required'),
-      companyName: Yup.string().required('Company Name is required'),
-      email: Yup.string().email('Invalid email').required('Email is required'),
-      tools: Yup.array(),
-      color: Yup.string()
-    })
-  ),
-  receivers: Yup.array().of(
+  receipts: Yup.array().of(
     Yup.object().shape({
       name: Yup.string().required('Name is required'),
       companyName: Yup.string().required('Company Name is required'),
@@ -75,8 +66,7 @@ function CreateContractPage() {
       projectName: contract.projectName,
       projectNo: contract.projectNo,
       file: contract.file,
-      receivers: contract.receivers,
-      senders: contract.senders,
+      receipts: contract.receipts,
     } : {
       title: '',
       startDate: new Date().toISOString(),
@@ -85,11 +75,9 @@ function CreateContractPage() {
       projectName: '',
       projectNo: '',
       file: undefined as any,
-      receivers: [
-        { color: chooseRandomColor(), name: "", companyName: "", email: "", tools: [] },
-      ],
-      senders: [
-        { color: chooseRandomColor(), name: "", companyName: "", email: "", tools: [] },
+      receipts: [
+        { color: chooseRandomColor(), companyName: '', email: '', name: '', tools: [], type: "sender" },
+        { color: chooseRandomColor(), companyName: '', email: '', name: '', tools: [], type: "receiver" },
       ],
     },
     async onSubmit(values) {
@@ -190,50 +178,30 @@ function CreateContractPage() {
     }
   }
 
+  console.log(formik.errors.receipts);
+  function addSenderAndReceivers(type: "sender" | "receiver",) {
 
-  function addSenderAndReceivers(key: "senders" | "receivers",) {
-    if (key === 'senders') {
-      formik.setFieldValue('senders', [
-        ...formik.values.senders,
-        { color: chooseRandomColor(), name: "", companyName: "", email: "", tools: [] },
-      ])
+    formik.setFieldValue('receipts', [
+      ...formik.values.receipts,
+      { color: chooseRandomColor(), name: "", type, companyName: "", email: "", tools: [] },
+    ])
 
-    } else if (key === 'receivers') {
-
-      formik.setFieldValue('receivers', [
-        ...formik.values.receivers,
-        { color: chooseRandomColor(), name: "", companyName: "", email: "", tools: [] },
-      ])
-    }
 
   }
 
 
-  function removeSenderAndReceivers(key: "senders" | "receivers", index: number) {
-    if (key === 'senders') {
-      formik.setFieldValue('senders', formik.values.senders.slice(0, index).concat(formik.values.senders.slice(index + 1)))
-    } else if (key === 'receivers') {
-      formik.setFieldValue('receivers', formik.values.receivers.slice(0, index).concat(formik.values.receivers.slice(index + 1)))
-    }
+  function removeSenderAndReceivers(index: number) {
+
+    formik.setFieldValue('receipts', formik.values.receipts.filter((_, i) => i !== index))
   }
 
-  function getSenderOrReceiverFieldErrorAndTouched(type: "senders" | "receivers", field: keyof Omit<ContractPartyType, "tools" | "colors">, index: number) {
-    let errors;
-    if (type === 'senders') {
-      errors = formik.errors.senders as FormikErrors<Omit<ContractPartyType, "tools" | "colors">>[] | undefined;
-      return {
-        error: errors && errors[index] && errors[index][field],
-        touched: formik.touched.senders && formik.touched.senders[index][field]
-      }
-
-    } else {
-      errors = formik.errors.receivers as FormikErrors<Omit<ContractPartyType, "tools" | "colors">>[] | undefined;
-      return {
-        error: errors && errors[index] && errors[index][field],
-        touched: formik.touched.receivers && formik.touched.receivers[index][field]
-      }
+  function getSenderOrReceiverFieldErrorAndTouched(field: keyof Omit<ContractPartyType, "tools" | "colors">, index: number) {
+    let errors = formik.errors.receipts as FormikErrors<ContractPartyType>[];
+    let touched = formik.touched.receipts as FormikTouched<ContractPartyType>[];
+    return {
+      error: errors && errors[index]?.[field],
+      touched: touched && touched[index]?.[field],
     }
-
   }
 
   if (isFetchingItem) {
@@ -276,9 +244,9 @@ function CreateContractPage() {
           onClose={() => setShowList(false)}
           title="Select Item"
           onItemClick={(item) => {
-            formik.setFieldValue("receivers", [
-              ...formik.values.receivers,
-              { color: chooseRandomColor(), name: item.name, companyName: item.companyName, email: item.email, tools: [], },
+            formik.setFieldValue("receipts", [
+              ...formik.values.receipts,
+              { color: chooseRandomColor(), type: "sender", name: item.name, companyName: item.companyName, email: item.email, tools: [], },
             ]
             )
             setShowList(false);
@@ -450,20 +418,23 @@ function CreateContractPage() {
             </p>
 
             <div>
-              {formik.values.senders.map((sender, index) => (
-                <div key={index} className='space-y-2 border-b p-1'>
+              {formik.values.receipts.map((sender, index) => {
+                if (sender.type === 'receiver') {
+                  return null;
+                }
+                return <div key={index} className='space-y-2 border-b p-1'>
                   <div className='flex justify-end'>
                     <CustomButton
                       text="Delete"
                       className="!w-fit !px-4 !py-1 !bg-transparent !border-red-500 !text-red-500"
-                      onClick={() => removeSenderAndReceivers("senders", index)}
+                      onClick={() => removeSenderAndReceivers(index)}
                     />
                   </div>
                   <div className='grid grid-cols-2 gap-2'>
                     <InputComponent
                       label="Name"
                       placeholder="Sender Name"
-                      name={`senders.${index}.name`}
+                      name={`receipts.${index}.name`}
                       type="text"
                       field={{
                         value: sender.name,
@@ -472,23 +443,19 @@ function CreateContractPage() {
                       }}
                       hasError={
                         getSenderOrReceiverFieldErrorAndTouched(
-                          "senders",
                           "name",
                           index
                         ).touched && Boolean(getSenderOrReceiverFieldErrorAndTouched(
-                          "senders",
                           "name",
                           index
                         ).error)
                       }
                       errorMessage={
                         getSenderOrReceiverFieldErrorAndTouched(
-                          "senders",
                           "name",
                           index
                         ).touched
                           ? getSenderOrReceiverFieldErrorAndTouched(
-                            "senders",
                             "name",
                             index
                           ).error
@@ -498,7 +465,7 @@ function CreateContractPage() {
                     <InputComponent
                       label="Company Name"
                       placeholder="Company Name"
-                      name={`senders.${index}.companyName`}
+                      name={`receipts.${index}.companyName`}
                       type="text"
                       field={{
                         value: sender.companyName,
@@ -507,23 +474,19 @@ function CreateContractPage() {
                       }}
                       hasError={
                         getSenderOrReceiverFieldErrorAndTouched(
-                          "senders",
                           "companyName",
                           index
                         ).touched && Boolean(getSenderOrReceiverFieldErrorAndTouched(
-                          "senders",
                           "companyName",
                           index
                         ).error)
                       }
                       errorMessage={
                         getSenderOrReceiverFieldErrorAndTouched(
-                          "senders",
                           "companyName",
                           index
                         ).touched
                           ? getSenderOrReceiverFieldErrorAndTouched(
-                            "senders",
                             "companyName",
                             index
                           ).error
@@ -535,7 +498,7 @@ function CreateContractPage() {
                   <InputComponent
                     label="Email"
                     placeholder="Email"
-                    name={`senders.${index}.email`}
+                    name={`receipts.${index}.email`}
                     type="text"
                     field={{
                       value: sender.email,
@@ -544,23 +507,19 @@ function CreateContractPage() {
                     }}
                     hasError={
                       getSenderOrReceiverFieldErrorAndTouched(
-                        "senders",
                         "email",
                         index
                       ).touched && Boolean(getSenderOrReceiverFieldErrorAndTouched(
-                        "senders",
                         "email",
                         index
                       ).error)
                     }
                     errorMessage={
                       getSenderOrReceiverFieldErrorAndTouched(
-                        "senders",
                         "email",
                         index
                       ).touched
                         ? getSenderOrReceiverFieldErrorAndTouched(
-                          "senders",
                           "email",
                           index
                         ).error
@@ -568,7 +527,7 @@ function CreateContractPage() {
                     }
                   />
                 </div>
-              ))}
+              })}
             </div>
 
             <div className='mt-3 flex justify-center'>
@@ -576,7 +535,7 @@ function CreateContractPage() {
                 text='Add Sender'
                 className="!bg-schestiLightPrimary !text-schestiPrimary !py-2 !w-fit !border-schestiLightPrimary"
                 onClick={() => {
-                  addSenderAndReceivers("senders");
+                  addSenderAndReceivers('sender');
                 }}
               />
             </div>
@@ -601,125 +560,118 @@ function CreateContractPage() {
 
             </div>
             <div className='mt-2'>
-              {formik.values.receivers.map((sender, index) => (
-                <div key={index} className='space-y-2 border-b p-1'>
-                  <div className='flex justify-end'>
-                    <CustomButton
-                      text="Delete"
-                      className="!w-fit !px-4 !py-1 !bg-transparent !border-red-500 !text-red-500"
-                      onClick={() => removeSenderAndReceivers("receivers", index)}
-                    />
-                  </div>
-                  <div className='grid grid-cols-2 gap-2'>
-                    <InputComponent
-                      label="Name"
-                      placeholder="Sender Name"
-                      name={`receivers.${index}.name`}
-                      type="text"
-                      field={{
-                        value: sender.name,
-                        onChange: formik.handleChange,
-                        onBlur: formik.handleBlur,
-                      }}
-                      hasError={
-                        getSenderOrReceiverFieldErrorAndTouched(
-                          "receivers",
-                          "name",
-                          index
-                        ).touched && Boolean(getSenderOrReceiverFieldErrorAndTouched(
-                          "receivers",
-                          "name",
-                          index
-                        ).error)
-                      }
-                      errorMessage={
-                        getSenderOrReceiverFieldErrorAndTouched(
-                          "receivers",
-                          "name",
-                          index
-                        ).touched
-                          ? getSenderOrReceiverFieldErrorAndTouched(
-                            "receivers",
+              {formik.values.receipts.map((receiver, index) => {
+                if (receiver.type === 'sender') {
+                  return null;
+                }
+                return (
+                  <div key={index} className='space-y-2 border-b p-1'>
+                    <div className='flex justify-end'>
+                      <CustomButton
+                        text="Delete"
+                        className="!w-fit !px-4 !py-1 !bg-transparent !border-red-500 !text-red-500"
+                        onClick={() => removeSenderAndReceivers(index)}
+                      />
+                    </div>
+                    <div className='grid grid-cols-2 gap-2'>
+                      <InputComponent
+                        label="Name"
+                        placeholder="Sender Name"
+                        name={`receipts.${index}.name`}
+                        type="text"
+                        field={{
+                          value: receiver.name,
+                          onChange: formik.handleChange,
+                          onBlur: formik.handleBlur,
+                        }}
+                        hasError={
+                          getSenderOrReceiverFieldErrorAndTouched(
                             "name",
                             index
-                          ).error
-                          : ''
-                      }
-                    />
+                          ).touched && Boolean(getSenderOrReceiverFieldErrorAndTouched(
+                            "name",
+                            index
+                          ).error)
+                        }
+                        errorMessage={
+                          getSenderOrReceiverFieldErrorAndTouched(
+                            "name",
+                            index
+                          ).touched
+                            ? getSenderOrReceiverFieldErrorAndTouched(
+                              "name",
+                              index
+                            ).error
+                            : ''
+                        }
+                      />
+                      <InputComponent
+                        label="Company Name"
+                        placeholder="Company Name"
+                        name={`receipts.${index}.companyName`}
+                        type="text"
+                        field={{
+                          value: receiver.companyName,
+                          onChange: formik.handleChange,
+                          onBlur: formik.handleBlur,
+                        }}
+                        hasError={
+                          getSenderOrReceiverFieldErrorAndTouched(
+                            "companyName",
+                            index
+                          ).touched && Boolean(getSenderOrReceiverFieldErrorAndTouched(
+                            "companyName",
+                            index
+                          ).error)
+                        }
+                        errorMessage={
+                          getSenderOrReceiverFieldErrorAndTouched(
+                            "companyName",
+                            index
+                          ).touched
+                            ? getSenderOrReceiverFieldErrorAndTouched(
+                              "companyName",
+                              index
+                            ).error
+                            : ''
+                        }
+                      />
+                    </div>
+
                     <InputComponent
-                      label="Company Name"
-                      placeholder="Company Name"
-                      name={`receivers.${index}.companyName`}
+                      label="Email"
+                      placeholder="Email"
+                      name={`receipts.${index}.email`}
                       type="text"
                       field={{
-                        value: sender.companyName,
+                        value: receiver.email,
                         onChange: formik.handleChange,
                         onBlur: formik.handleBlur,
                       }}
                       hasError={
                         getSenderOrReceiverFieldErrorAndTouched(
-                          "receivers",
-                          "companyName",
+                          "email",
                           index
                         ).touched && Boolean(getSenderOrReceiverFieldErrorAndTouched(
-                          "receivers",
-                          "companyName",
+                          "email",
                           index
                         ).error)
                       }
                       errorMessage={
                         getSenderOrReceiverFieldErrorAndTouched(
-                          "receivers",
-                          "companyName",
+                          "email",
                           index
                         ).touched
                           ? getSenderOrReceiverFieldErrorAndTouched(
-                            "receivers",
-                            "companyName",
+                            "email",
                             index
                           ).error
                           : ''
                       }
                     />
                   </div>
-
-                  <InputComponent
-                    label="Email"
-                    placeholder="Email"
-                    name={`receivers.${index}.email`}
-                    type="text"
-                    field={{
-                      value: sender.email,
-                      onChange: formik.handleChange,
-                      onBlur: formik.handleBlur,
-                    }}
-                    hasError={
-                      getSenderOrReceiverFieldErrorAndTouched(
-                        "receivers",
-                        "email",
-                        index
-                      ).touched && Boolean(getSenderOrReceiverFieldErrorAndTouched(
-                        "receivers",
-                        "email",
-                        index
-                      ).error)
-                    }
-                    errorMessage={
-                      getSenderOrReceiverFieldErrorAndTouched(
-                        "receivers",
-                        "email",
-                        index
-                      ).touched
-                        ? getSenderOrReceiverFieldErrorAndTouched(
-                          "receivers",
-                          "email",
-                          index
-                        ).error
-                        : ''
-                    }
-                  />
-                </div>
-              ))}
+                )
+              })}
             </div>
 
             <div className='mt-3 flex justify-center'>
@@ -727,7 +679,7 @@ function CreateContractPage() {
                 text='Add Receiver'
                 className="!bg-schestiLightPrimary !text-schestiPrimary !py-2 !w-fit !border-schestiLightPrimary"
                 onClick={() => {
-                  addSenderAndReceivers("receivers");
+                  addSenderAndReceivers("receiver");
                 }}
               />
             </div>

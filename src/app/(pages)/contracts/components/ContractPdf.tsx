@@ -24,10 +24,11 @@ type Props = {
   contract: ICrmContract;
   tools: ToolState[];
   setTools: React.Dispatch<React.SetStateAction<ToolState[]>>;
+  color?: string;
 };
 
 export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
-  ({ mode, pdfFile, tools, setTools, contract }, ref) => {
+  ({ mode, pdfFile, tools, setTools, contract, color = "#007ab6" }, ref) => {
     // const [activePage, setActivePage] = useState<null | number>(1)
     // const canvasRefs = useRef<HTMLCanvasElement[]>([]);
     const { PDFJs } = usePDFJS(async () => { });
@@ -110,14 +111,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
     }
 
     function handleRemoveTool(item: ToolState) {
-      const isItemInContract =
-        contract.receiverTools.some((tool) => tool.id === item.id) ||
-        contract.senderTools.some((tool) => tool.id === item.id);
-      if (isItemInContract) {
-        toast.error('You can not remove already saved');
-      } else {
-        setTools((prev) => prev.filter((tool) => tool.id !== item.id));
-      }
+      setTools((prev) => prev.filter((tool) => tool.id !== item.id));
     }
 
     function handleItemClick(item: ToolState) {
@@ -216,11 +210,13 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
                       item={item}
                       key={item.id}
                       contract={contract}
+                      color={color}
                     />
                   ) : mode === 'edit-fields' ? (
                     <DraggableItem type={item.tool} key={item.id} data={item}>
                       <StandardToolItem
                         selectedTool={null}
+                        color={color}
                         mode={mode}
                         item={item}
                         key={item.id}
@@ -230,6 +226,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
                     </DraggableItem>
                   ) : mode === 'view-fields' || mode === 'view-values' ? (
                     <StandardToolItem
+                      color={color}
                       onClick={() => { }}
                       onClose={() => { }}
                       selectedTool={selectedTool}

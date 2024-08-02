@@ -8,7 +8,7 @@ import { InputComponent } from '@/app/component/customInput/Input';
 import { Spin, Tabs, Upload } from 'antd';
 import CustomButton from '@/app/component/customButton/button';
 import { toast } from 'react-toastify';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   ChooseFont,
   ChooseFontType,
@@ -27,6 +27,7 @@ type Props = {
   selectedTool: ToolState | null;
   onChange?: (_item: ToolState, _shouldClose?: boolean,) => void;
   contract: ICrmContract;
+  color: string;
 };
 export function StandardToolItem({
   item,
@@ -36,7 +37,8 @@ export function StandardToolItem({
   onClose,
   selectedTool,
   onChange,
-  contract
+  contract,
+  color
 }: Props) {
   if (mode === 'add-values') {
     return (
@@ -139,11 +141,11 @@ function Item({ item, mode, onClick, onDelete }: ItemProps) {
 type InputProps = {
   item: ToolState;
   onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
-
+  color: string
   contract: ICrmContract
 };
 
-function StandardToolInput({ item, onChange, contract }: InputProps) {
+function StandardToolInput({ item, onChange, contract, color }: InputProps) {
   if (item.tool === 'date') {
     return (
       <DateInputComponent
@@ -266,22 +268,22 @@ function TypeSignature({ onChange, item }: TypeSignatureProps) {
   );
 }
 
-function getReceiverName(receiver: ICrmContract['receiver']) {
-  if (typeof receiver !== 'string') {
-    if (
-      receiver.module === 'subcontractors' ||
-      receiver.module === 'partners'
-    ) {
-      return receiver.companyRep;
-    }
-    return `${receiver.firstName} ${receiver.lastName || ''}`;
-  }
-  return '';
-}
+// function getReceiverName(receiver: ICrmContract['receiver']) {
+//   if (typeof receiver !== 'string') {
+//     if (
+//       receiver.module === 'subcontractors' ||
+//       receiver.module === 'partners'
+//     ) {
+//       return receiver.companyRep;
+//     }
+//     return `${receiver.firstName} ${receiver.lastName || ''}`;
+//   }
+//   return '';
+// }
 function GetInitialToolValue({
   item,
   onChange,
-  contract
+
 }: {
   onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
   item: ToolState;
@@ -294,18 +296,18 @@ function GetInitialToolValue({
   );
   const [error, setError] = useState<string>('');
 
-  const senderInitial = typeof contract.user === 'string' ? false : contract.user.name.split(' ').map(name => name ? name[0].toUpperCase() : "").join('');
-  const receiverInitial = typeof contract.receiver === 'string' ? false : getReceiverName(contract.receiver).split(' ').map(name => name ? name[0].toUpperCase() : "").join('');
-  console.log({ senderInitial, receiverInitial, value });
-  useEffect(() => {
-    if (value) {
-      if (value.length && (value == senderInitial || value == receiverInitial)) {
-        setError('');
-      } else {
-        setError('Initials should be same as sender or receiver initials');
-      }
-    }
-  }, [receiverInitial, senderInitial, value]);
+  // const senderInitial = typeof contract.user === 'string' ? false : contract.user.name.split(' ').map(name => name ? name[0].toUpperCase() : "").join('');
+  // const receiverInitial = typeof contract.receiver === 'string' ? false : getReceiverName(contract.receiver).split(' ').map(name => name ? name[0].toUpperCase() : "").join('');
+  // console.log({ senderInitial, receiverInitial, value });
+  // useEffect(() => {
+  //   if (value) {
+  //     if (value.length && (value == senderInitial || value == receiverInitial)) {
+  //       setError('');
+  //     } else {
+  //       setError('Initials should be same as sender or receiver initials');
+  //     }
+  //   }
+  // }, [receiverInitial, senderInitial, value]);
 
 
   return (
@@ -330,7 +332,7 @@ function GetInitialToolValue({
           hasError={Boolean(error.length)}
           errorMessage={error}
         />
-        <span className='text-xs text-schestiLightBlack'>Use  {senderInitial} or {receiverInitial}</span>
+        {/* <span className='text-xs text-schestiLightBlack'>Use  {senderInitial} or {receiverInitial}</span> */}
       </div>
 
       <div className="flex justify-end">

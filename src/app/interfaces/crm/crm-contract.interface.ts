@@ -8,6 +8,7 @@ export type ContractPartyType = {
   companyName: string;
   email: string;
   name: string;
+  type: "sender" | "receiver";
   tools: ToolState[];
   color: string;
   _id?: string;
@@ -26,6 +27,5 @@ export interface ICrmContract {
   user: string | IUserInterface;
   projectName: string;
   projectNo: string;
-  senders: ContractPartyType[];
-  receivers: ContractPartyType[];
+  receipts: ContractPartyType[];
 }
