@@ -79,12 +79,18 @@ function EditContractDocumentPage() {
     );
   }
 
-  async function sendContract(id: string,) {
+  async function sendContract(id: string, receipts: ContractPartyType[]) {
     setIsSending(true);
 
-    try {
+    const isEveryReceiptHasTools = receipts.every((receipt) => receipt.tools.length > 0);
+    if (!isEveryReceiptHasTools) {
+      toast.error('Please add tools to all receipts');
+      setIsSending(false);
+      return;
+    }
 
-      const response = await crmContractService.httpSendContract(id, []);
+    try {
+      const response = await crmContractService.httpSendContract(id, receipts);
       if (response.data) {
         toast.success('Contract sent successfully');
         router.push(`${Routes.Contracts}`);
@@ -111,7 +117,7 @@ function EditContractDocumentPage() {
           <CustomButton
             text="Send Contract"
             className="!w-fit"
-            onClick={() => sendContract(contract._id)}
+            onClick={() => sendContract(contract._id, receipts)}
             isLoading={isSending}
           />
         </div>
