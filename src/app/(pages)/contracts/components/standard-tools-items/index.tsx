@@ -15,8 +15,9 @@ import {
   SignatureFonts,
 } from '@/app/component/fonts';
 import AwsS3 from '@/app/utils/S3Intergration';
-import { LoadingOutlined } from '@ant-design/icons';
+import { CloseOutlined, LoadingOutlined } from '@ant-design/icons';
 import { ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
+import { GetStandardToolIcon } from './GetIcon';
 
 type Props = {
   item: ToolState;
@@ -69,7 +70,7 @@ export function StandardToolItem({
             </Popups>
           </ModalComponent>
         ) : null}
-        <Item item={item} mode={mode} onClick={onClick} />
+        <Item color={color} item={item} mode={mode} onClick={onClick} />
       </div>
     );
   } else if (mode === 'view-fields' || mode === 'view-values') {
@@ -84,11 +85,11 @@ export function StandardToolItem({
           backgroundColor: 'transparent',
         }}
       >
-        <Item item={item} mode={mode} />
+        <Item color={color} item={item} mode={mode} />
       </div>
     );
   } else if (mode === 'edit-fields') {
-    return <Item item={item} mode={mode} onDelete={onDelete} />;
+    return <Item color={color} item={item} mode={mode} onDelete={onDelete} />;
   }
   return null;
 }
@@ -97,9 +98,10 @@ type ItemProps = {
   item: ToolState;
   mode: PdfContractMode;
   onDelete?: () => void;
+  color: string;
   onClick?: () => void;
 };
-function Item({ item, mode, onClick, onDelete }: ItemProps) {
+function Item({ item, mode, onClick, onDelete, color }: ItemProps) {
   return (
     <div
       onClick={() => {
@@ -109,28 +111,27 @@ function Item({ item, mode, onClick, onDelete }: ItemProps) {
 
         onClick?.();
       }}
-      className={`p-3 rounded-lg border-schestiPrimary border-2 h-fit relative font-semibold ${item.value ? 'text-schestiPrimaryBlack' : 'text-schestiPrimary'} flex items-center space-x-2 border-dashed bg-schestiLightPrimary m-0`}
+      className={`p-3 rounded-lg border-2 h-fit text-sm relative font-semibold  flex items-center space-x-2 border-dashed m-0`}
+      style={{
+        borderColor: `${color}`,
+        backgroundColor: 'white',
+        color
+      }}
     >
-      <Image
-        src={`/${item.tool}.svg`}
-        width={16}
-        height={16}
-        alt={`${item.tool}`}
+      <GetStandardToolIcon
+        type={item.tool}
       />
 
       <RenderStandardInputValue item={item} mode={mode} />
 
       {mode === 'edit-fields' && (
-        <Image
+        <CloseOutlined
           onClick={(e) => {
             onDelete?.();
             e.stopPropagation();
             console.log('Delete');
           }}
-          src={'/close.svg'}
-          className="cursor-pointer p-0.5 absolute -top-2 bg-schestiPrimary rounded-full -right-1"
-          width={16}
-          height={16}
+          className="cursor-pointer p-0.5 absolute text-white -top-2 bg-black rounded-full -right-1 text-sm"
           alt="delete"
         />
       )}
@@ -141,11 +142,10 @@ function Item({ item, mode, onClick, onDelete }: ItemProps) {
 type InputProps = {
   item: ToolState;
   onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
-  color: string
   contract: ICrmContract
 };
 
-function StandardToolInput({ item, onChange, contract, color }: InputProps) {
+function StandardToolInput({ item, onChange, contract, }: InputProps) {
   if (item.tool === 'date') {
     return (
       <DateInputComponent
