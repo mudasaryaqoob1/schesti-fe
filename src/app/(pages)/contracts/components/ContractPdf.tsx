@@ -12,11 +12,13 @@ import DraggableItem from './DraggableItem';
 import { StandardToolItem } from './standard-tools-items';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import DraggableTool from './DraggableTool';
-import CustomButton from '@/app/component/customButton/button';
 import { ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { toast } from 'react-toastify';
+import { hexToRgba } from '@/app/utils/colors.utils';
+import { ToolButton } from './ToolButton';
+import { CalendarOutlined, CommentOutlined, FontSizeOutlined, SignatureOutlined } from '@ant-design/icons';
 
 type Props = {
   mode: PdfContractMode;
@@ -248,42 +250,50 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
                 className="text-xl  font-semibold"
               />
               <DraggableTool type="signature">
-                <CustomButton
+                <ToolButton
                   text="Signature"
-                  className="!bg-schestiLightPrimary !border-schestiLightPrimary !text-schestiPrimaryBlack"
-                  icon="/signature.svg"
-                  iconwidth={16}
-                  iconheight={16}
+                  Icon={<SignatureOutlined />}
+                  style={{
+                    backgroundColor: `${hexToRgba(color, 0.1)}`,
+                    border: `1px solid ${hexToRgba(color, 0.1)}`,
+                    color
+                  }}
                 />
               </DraggableTool>
 
               <DraggableTool type="initials">
-                <CustomButton
+                <ToolButton
                   text="Initials"
-                  className="!bg-schestiLightPrimary !border-schestiLightPrimary !text-schestiPrimaryBlack"
-                  icon="/initials.svg"
-                  iconwidth={16}
-                  iconheight={16}
+                  style={{
+                    backgroundColor: `${hexToRgba(color, 0.1)}`,
+                    border: `1px solid ${hexToRgba(color, 0.1)}`,
+                    color
+                  }}
+                  Icon={<FontSizeOutlined />}
                 />
               </DraggableTool>
 
               <DraggableTool type="comment">
-                <CustomButton
+                <ToolButton
                   text="Comments"
-                  className="!bg-schestiLightPrimary !border-schestiLightPrimary !text-schestiPrimaryBlack"
-                  icon="/comment.svg"
-                  iconwidth={16}
-                  iconheight={16}
+                  style={{
+                    backgroundColor: `${hexToRgba(color, 0.1)}`,
+                    border: `1px solid ${hexToRgba(color, 0.1)}`,
+                    color
+                  }}
+                  Icon={<CommentOutlined />}
                 />
               </DraggableTool>
 
               <DraggableTool type="date">
-                <CustomButton
+                <ToolButton
                   text="Date"
-                  className="!bg-schestiLightPrimary !border-schestiLightPrimary !text-schestiPrimaryBlack"
-                  icon="/date.svg"
-                  iconwidth={16}
-                  iconheight={16}
+                  style={{
+                    backgroundColor: `${hexToRgba(color, 0.1)}`,
+                    border: `1px solid ${hexToRgba(color, 0.1)}`,
+                    color
+                  }}
+                  Icon={<CalendarOutlined />}
                 />
               </DraggableTool>
             </div>
@@ -296,3 +306,5 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
 );
 
 ContractPdf.displayName = 'ContractPdf';
+
+
