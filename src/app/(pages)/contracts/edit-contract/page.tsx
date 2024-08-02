@@ -81,6 +81,19 @@ function EditContractDocumentPage() {
     );
   }
 
+  const canEdit = !contract.receipts.some(contractParty =>
+    contractParty.tools.some(tool => typeof tool.value !== 'undefined')
+  );
+
+  if (!canEdit) {
+    return <NoData
+      title="Access Denied"
+      description="You cannot edit this contract. Please create a new contract."
+      btnText='Back'
+      link={`${Routes.Contracts}`}
+    />
+  }
+
   async function sendContract(id: string, receipts: ContractPartyType[]) {
     setIsSending(true);
 
