@@ -43,6 +43,9 @@ function EditContractDocumentPage() {
       if (response.data) {
         setContract(response.data);
         setReceipts(response.data.receipts);
+        if (response.data.receipts.length) {
+          setSelectedReceipt(response.data.receipts[0]);
+        }
       }
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
@@ -132,7 +135,7 @@ function EditContractDocumentPage() {
         />
       </div>
       <ContractPdf
-        mode="edit-fields"
+        mode={"edit-fields"}
         contract={contract}
         pdfFile={contract.file.url}
         tools={tools}
