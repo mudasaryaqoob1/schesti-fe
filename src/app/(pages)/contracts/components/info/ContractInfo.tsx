@@ -1,38 +1,14 @@
 import SenaryHeading from '@/app/component/headings/senaryHeading';
-import { ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
+import { ContractPartyType, ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
 import moment from 'moment';
 import Image from 'next/image';
 
 type Props = {
   contract: ICrmContract;
+  receiver?: ContractPartyType;
 };
 
-export function ContractInfo({ contract }: Props) {
-  function getReceiverName(receiver: ICrmContract['receiver']) {
-    if (typeof receiver !== 'string') {
-      if (
-        receiver.module === 'subcontractors' ||
-        receiver.module === 'partners'
-      ) {
-        return receiver.companyRep;
-      }
-      return `${receiver.firstName} ${receiver.lastName || ''}`;
-    }
-    return '';
-  }
-
-  function getReceiverCompany(receiver: ICrmContract['receiver']) {
-    if (typeof receiver !== 'string') {
-      if (
-        receiver.module === 'subcontractors' ||
-        receiver.module === 'partners'
-      ) {
-        return receiver.name;
-      }
-      return receiver.companyName;
-    }
-    return '';
-  }
+export function ContractInfo({ contract, receiver }: Props) {
 
   return (
     <div>
@@ -176,26 +152,18 @@ export function ContractInfo({ contract }: Props) {
             </div>
           </div>
 
-          <div className="space-y-3">
+          {receiver ? <div className="space-y-3">
             <SenaryHeading
               title="Receiver Information"
               className="text-base text-schestiPrimary font-medium"
             />
             <div>
               <SenaryHeading
-                title={
-                  typeof contract.receiver != 'string'
-                    ? `${getReceiverName(contract.receiver)}`
-                    : ''
-                }
+                title={receiver.name}
                 className="text-schestiPrimaryBlack font-normal text-base"
               />
               <SenaryHeading
-                title={
-                  typeof contract.receiver != 'string'
-                    ? `${getReceiverCompany(contract.receiver)}`
-                    : ''
-                }
+                title={receiver.companyName}
                 className="text-schestiPrimaryBlack font-normal text-base"
               />
             </div>
@@ -203,11 +171,7 @@ export function ContractInfo({ contract }: Props) {
             <div className="flex items-center space-x-2">
               <Image alt="call" src={'/call.svg'} width={20} height={20} />
               <SenaryHeading
-                title={
-                  typeof contract.receiver != 'string'
-                    ? `${contract.receiver.phone}`
-                    : ''
-                }
+                title={''}
                 className="text-schestiPrimaryBlack font-normal text-base"
               />
             </div>
@@ -220,11 +184,7 @@ export function ContractInfo({ contract }: Props) {
                 height={20}
               />
               <SenaryHeading
-                title={
-                  typeof contract.receiver != 'string'
-                    ? `${contract.receiver.email}`
-                    : ''
-                }
+                title={receiver.email}
                 className="text-schestiPrimaryBlack font-normal text-base"
               />
             </div>
@@ -238,14 +198,12 @@ export function ContractInfo({ contract }: Props) {
               />
               <SenaryHeading
                 title={
-                  typeof contract.receiver != 'string'
-                    ? `${contract.receiver.address}`
-                    : ''
+                  ''
                 }
                 className="text-schestiPrimaryBlack font-normal text-base"
               />
             </div>
-          </div>
+          </div> : null}
         </div>
       </div>
     </div>
