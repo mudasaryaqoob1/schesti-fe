@@ -44,7 +44,9 @@ function EditContractDocumentPage() {
         setContract(response.data);
         setReceipts(response.data.receipts);
         if (response.data.receipts.length) {
-          setSelectedReceipt(response.data.receipts[0]);
+          const receipt = response.data.receipts[0];
+          setSelectedReceipt(receipt);
+          setTools(receipt.tools);
         }
       }
     } catch (error) {
