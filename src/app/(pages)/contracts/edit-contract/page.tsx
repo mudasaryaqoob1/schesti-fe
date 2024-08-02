@@ -126,10 +126,22 @@ function EditContractDocumentPage() {
             value: selectedReceipt ? selectedReceipt.email : undefined,
             options: receipts.map((receipt) => ({
               label: receipt.email,
+              title: `${receipt.name} - (${receipt.companyName})`,
               value: receipt.email
             })),
             onChange(val) {
-              setSelectedReceipt(receipts.find((receipt) => receipt.email === val) || null);
+              setReceipts(receipts.map(r => {
+                if (r.email === selectedReceipt?.email) {
+                  return { ...r, tools };
+                } else {
+                  return r
+                }
+              }));
+              const receipt = receipts.find((r) => r.email === val);
+              setSelectedReceipt(receipt ?? null);
+              if (receipt) {
+                setTools(receipt.tools);
+              }
             },
           }}
         />
@@ -140,6 +152,7 @@ function EditContractDocumentPage() {
         pdfFile={contract.file.url}
         tools={tools}
         setTools={setTools}
+        color={selectedReceipt?.color}
       />
     </div>
   );
