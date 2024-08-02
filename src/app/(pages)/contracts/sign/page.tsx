@@ -78,17 +78,31 @@ export default function SignPdfContract() {
     );
   }
 
-  async function signContract() {
-    if (id) {
 
+  const isAbleToSend = receipt.tools.every(tool => tool.value == undefined);
+
+  async function signContract(id: string, receipt: ContractPartyType) {
+    if (id) {
+      setIsSaving(true);
+      const canSubmit = receipt.tools.every(tool => tool.value != undefined);
+      if (!canSubmit) {
+        toast.error('All fields must have a value');
+        setIsSaving(false);
+        return;
+      }
       try {
         const response = await crmContractService.httpSignContract(
           id,
-          []
+          receipt
         );
         if (response.data) {
           toast.success('Contract signed successfully');
           setContract(response.data);
+          const updatedReceipt = response.data.receipts.find(r => r.email === receipt.email);
+          if (updatedReceipt) {
+            setReceipt(updatedReceipt);
+            setTools(updatedReceipt.tools);
+          }
         }
       } catch (error) {
         const err = error as AxiosError<{ message: string }>;
@@ -102,6 +116,8 @@ export default function SignPdfContract() {
   }
 
 
+
+
   return (
     <div>
       <div className="bg-white p-4 shadow-secondaryShadow">
@@ -109,12 +125,12 @@ export default function SignPdfContract() {
       </div>
       <div className="my-4 flex mx-5 justify-end">
 
-        <CustomButton
+        {isAbleToSend ? <CustomButton
           text="Send Back"
           className="!w-fit"
-          onClick={signContract}
+          onClick={() => signContract(contract._id, { ...receipt, tools })}
           isLoading={isSaving}
-        />
+        /> : null}
       </div>
       <div className="p-4 m-4 bg-white rounded-md ">
         <ContractInfo contract={contract} receiver={receipt} />
@@ -125,7 +141,7 @@ export default function SignPdfContract() {
             mode={'add-values'}
             pdfFile={contract.file.url}
             tools={tools}
-            setTools={() => { }}
+            setTools={setTools}
             color={receipt.color}
           />
         </div>

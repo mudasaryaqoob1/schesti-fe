@@ -47,9 +47,9 @@ class CrmContractService extends HttpService {
 
   httpSignContract = (
     id: string,
-    tools: ContractPartyType[]
+    receipt: ContractPartyType
   ): Promise<IResponseInterface<ICrmContract>> =>
-    this.post(`${this.endPoint}/sign/${id}`, { tools });
+    this.post(`${this.endPoint}/sign/${id}`, { receipt });
 
   httpSenderUpdateTools = (
     id: string,
