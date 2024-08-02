@@ -1,6 +1,6 @@
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { HttpService } from '../base.service';
-import { ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
+import { ContractPartyType, ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
 
 export type CreateContractData = Omit<
   ICrmContract,
@@ -41,19 +41,19 @@ class CrmContractService extends HttpService {
 
   httpSendContract = (
     id: string,
-    tools: ICrmContract['senders']
+    tools: ContractPartyType[]
   ): Promise<IResponseInterface<ICrmContract>> =>
     this.post(`${this.endPoint}/send/${id}`, { tools });
 
   httpSignContract = (
     id: string,
-    tools: ICrmContract['senders']
+    tools: ContractPartyType[]
   ): Promise<IResponseInterface<ICrmContract>> =>
     this.post(`${this.endPoint}/sign/${id}`, { tools });
 
   httpSenderUpdateTools = (
     id: string,
-    tools: ICrmContract['senders']
+    tools: ContractPartyType[]
   ): Promise<IResponseInterface<ICrmContract>> =>
     this.post(`${this.endPoint}/sender-tools/${id}`, { tools });
 

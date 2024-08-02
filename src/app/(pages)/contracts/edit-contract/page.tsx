@@ -16,7 +16,6 @@ import WhiteButton from '@/app/component/customButton/white';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { ToolState } from '../types';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
-import _ from 'lodash';
 
 function EditContractDocumentPage() {
   const [contract, setContract] = useState<ICrmContract | null>(null);
@@ -40,7 +39,6 @@ function EditContractDocumentPage() {
       const response = await crmContractService.httpFindContractById(id);
       if (response.data) {
         setContract(response.data);
-        setTools(response.data.senderTools);
       }
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
@@ -74,18 +72,12 @@ function EditContractDocumentPage() {
     );
   }
 
-  async function sendContract(id: string, tools: ToolState[]) {
+  async function sendContract(id: string,) {
     setIsSending(true);
 
     try {
-      if (contract) {
-        const senderToolsIds = contract.senderTools.map((tool) => tool.id);
-        const receiverToolsIds = contract.receiverTools.map((tool) => tool.id);
-        const commonIds = _.intersection(senderToolsIds, receiverToolsIds);
-        tools = tools.filter((tool) => !commonIds.includes(tool.id));
-      }
 
-      const response = await crmContractService.httpSendContract(id, tools);
+      const response = await crmContractService.httpSendContract(id, []);
       if (response.data) {
         toast.success('Contract sent successfully');
         router.push(`${Routes.Contracts}`);
@@ -112,7 +104,7 @@ function EditContractDocumentPage() {
           <CustomButton
             text="Send Contract"
             className="!w-fit"
-            onClick={() => sendContract(contract._id, tools)}
+            onClick={() => sendContract(contract._id)}
             isLoading={isSending}
           />
         </div>
