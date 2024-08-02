@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { ContractInfo } from '../components/info/ContractInfo';
 import { ContractPdf } from '../components/ContractPdf';
 import { ContractPartyType, ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ToolState } from '../types';
 import { useSearchParams } from 'next/navigation';
 import crmContractService from '@/app/services/crm/crm-contract.service';
@@ -24,6 +24,9 @@ export default function SignPdfContract() {
   const [isSaving, setIsSaving] = useState(false);
   const [tools, setTools] = useState<ToolState[]>([]);
   const [receipt, setReceipt] = useState<ContractPartyType | null>(null);
+  const contractPdfRef = useRef<{
+    handleAction: () => void;
+  } | null>(null);
 
   useEffect(() => {
     // const receiver = searchParams.get('receiver');
@@ -130,7 +133,13 @@ export default function SignPdfContract() {
           className="!w-fit"
           onClick={() => signContract(contract._id, { ...receipt, tools })}
           isLoading={isSaving}
-        /> : null}
+        /> : <CustomButton
+          text='Download'
+          className='!w-fit'
+          onClick={() => {
+            contractPdfRef.current?.handleAction();
+          }}
+        />}
       </div>
       <div className="p-4 m-4 bg-white rounded-md ">
         <ContractInfo contract={contract} receiver={receipt} />
@@ -143,6 +152,7 @@ export default function SignPdfContract() {
             tools={tools}
             setTools={setTools}
             color={receipt.color}
+            ref={contractPdfRef}
           />
         </div>
       </div>
