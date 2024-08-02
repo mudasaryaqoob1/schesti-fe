@@ -23,10 +23,8 @@ function EditContractDocumentPage() {
   const [isLoading, setIsLoading] = useState(false);
   const searchParams = useSearchParams();
   const [tools, setTools] = useState<ToolState[]>([]);
-  const [senderRecipets, setSenderRecipets] = useState<ContractPartyType[]>([]);
-  const [receiverRecipets, setReceiverRecipets] = useState<ContractPartyType[]>([]);
-  const [selectedSenderReceipt, setSelectedSenderReceipt] = useState<string>('');
-  const [selectedReceiverReceipt, setSelectedReceiverReceipt] = useState<string>('');
+  const [receipts, setReceipts] = useState<ContractPartyType[]>([]);
+  const [selectedReceipt, setSelectedReceipt] = useState<ContractPartyType | null>(null);
   const [isSending, setIsSending] = useState(false);
   const router = useRouterHook();
 
@@ -44,8 +42,7 @@ function EditContractDocumentPage() {
       const response = await crmContractService.httpFindContractById(id);
       if (response.data) {
         setContract(response.data);
-        setSenderRecipets(response.data.senders);
-        setReceiverRecipets(response.data.receivers);
+        setReceipts(response.data.receipts);
       }
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
@@ -117,37 +114,20 @@ function EditContractDocumentPage() {
         </div>
       </div>
       <div className='flex items-center space-x-2'>
-        <SelectComponent
-          label='Sender Receipts'
-          name='receipts'
-          placeholder='Select sender receipt'
-          field={{
-            value: selectedSenderReceipt ? selectedSenderReceipt : undefined,
-            options: senderRecipets.map((receipt) => ({
-              label: `${receipt.name}-${receipt.companyName}`,
-              value: receipt.email
-            })),
-            onChange: (value) => {
-              setSelectedSenderReceipt(value);
-              setSelectedReceiverReceipt('');
-            }
-          }}
-        />
 
         <SelectComponent
-          label='Receiver Receipts'
+          label='Receipts'
           name='receipts'
           placeholder='Select receiver receipt'
           field={{
-            value: selectedReceiverReceipt ? selectedReceiverReceipt : undefined,
-            options: receiverRecipets.map((receipt) => ({
-              label: `${receipt.name}-${receipt.companyName}`,
+            value: selectedReceipt ? selectedReceipt.email : undefined,
+            options: receipts.map((receipt) => ({
+              label: receipt.email,
               value: receipt.email
             })),
-            onChange: (value) => {
-              setSelectedReceiverReceipt(value);
-              setSelectedSenderReceipt('');
-            }
+            onChange(val) {
+              setSelectedReceipt(receipts.find((receipt) => receipt.email === val) || null);
+            },
           }}
         />
       </div>
