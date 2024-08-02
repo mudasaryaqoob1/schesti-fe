@@ -8,7 +8,6 @@ import ModalComponent from '@/app/component/modal';
 import { withAuth } from '@/app/hoc/withAuth';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
-import { CrmType } from '@/app/interfaces/crm/crm.interface';
 import { FileInterface } from '@/app/interfaces/file.interface';
 import crmContractService from '@/app/services/crm/crm-contract.service';
 import { downloadFile } from '@/app/utils/downloadFile';
@@ -102,19 +101,6 @@ function ContractsPage() {
     {
       title: 'Contract Title',
       dataIndex: 'title',
-    },
-    {
-      title: 'Receiver Name',
-      dataIndex: 'receiver',
-      render: (receiver: CrmType) => {
-        if (
-          receiver.module === 'subcontractors' ||
-          receiver.module === 'partners'
-        ) {
-          return receiver.companyRep;
-        }
-        return `${receiver.firstName} ${receiver.lastName || ''}`;
-      },
     },
     {
       title: 'Start Date',
@@ -218,8 +204,7 @@ function ContractsPage() {
                   setShowDeleteModal(true);
                   setSelectedItem(record);
                 } else if (key === 'edit') {
-                  const receiverId = typeof record.receiver === 'string' ? record.receiver : record.receiver._id
-                  router.push(`${Routes.Contracts}/create/?id=${record._id}&edit=true&receiver=${receiverId}`);
+                  router.push(`${Routes.Contracts}/create/?id=${record._id}&edit=true`);
                 } else if (key === 'editTools') {
                   router.push(`${Routes.Contracts}/edit-contract?contractId=${record._id}`);
                 }
