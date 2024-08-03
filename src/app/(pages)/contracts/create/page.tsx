@@ -20,10 +20,16 @@ import { ShowFileComponent } from '@/app/(pages)/bid-management/components/ShowF
 import * as Yup from 'yup';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { Routes } from '@/app/utils/plans.utils';
-import crmContractService, { CreateContractData, UpdateContractData } from '@/app/services/crm/crm-contract.service';
+import crmContractService, {
+  CreateContractData,
+  UpdateContractData,
+} from '@/app/services/crm/crm-contract.service';
 import AwsS3 from '@/app/utils/S3Intergration';
 import type { RcFile } from 'antd/es/upload';
-import { ContractPartyType, ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
+import {
+  ContractPartyType,
+  ICrmContract,
+} from '@/app/interfaces/crm/crm-contract.interface';
 import { FileInterface } from '@/app/interfaces/file.interface';
 import { chooseRandomColor } from '../../crm/daily-work/utils';
 
@@ -41,7 +47,7 @@ const ValidationSchema = Yup.object().shape({
       companyName: Yup.string().required('Company Name is required'),
       email: Yup.string().email('Invalid email').required('Email is required'),
       tools: Yup.array(),
-      color: Yup.string()
+      color: Yup.string(),
     })
   ),
 });
@@ -57,29 +63,47 @@ function CreateContractPage() {
   const contractId = searchParams.get('id');
   const isEdit = searchParams.get('edit');
 
-  const formik = useFormik<Omit<CreateContractData, "status"> | Omit<UpdateContractData, "status">>({
-    initialValues: contract ? {
-      title: contract.title,
-      startDate: contract.startDate,
-      endDate: contract.endDate,
-      description: contract.description,
-      projectName: contract.projectName,
-      projectNo: contract.projectNo,
-      file: contract.file,
-      receipts: contract.receipts,
-    } : {
-      title: '',
-      startDate: new Date().toISOString(),
-      endDate: '',
-      description: '',
-      projectName: '',
-      projectNo: '',
-      file: undefined as any,
-      receipts: [
-        { color: chooseRandomColor(), companyName: '', email: '', name: '', tools: [], type: "sender" },
-        { color: chooseRandomColor(), companyName: '', email: '', name: '', tools: [], type: "receiver" },
-      ],
-    },
+  const formik = useFormik<
+    Omit<CreateContractData, 'status'> | Omit<UpdateContractData, 'status'>
+  >({
+    initialValues: contract
+      ? {
+          title: contract.title,
+          startDate: contract.startDate,
+          endDate: contract.endDate,
+          description: contract.description,
+          projectName: contract.projectName,
+          projectNo: contract.projectNo,
+          file: contract.file,
+          receipts: contract.receipts,
+        }
+      : {
+          title: '',
+          startDate: new Date().toISOString(),
+          endDate: '',
+          description: '',
+          projectName: '',
+          projectNo: '',
+          file: undefined as any,
+          receipts: [
+            {
+              color: chooseRandomColor(),
+              companyName: '',
+              email: '',
+              name: '',
+              tools: [],
+              type: 'sender',
+            },
+            {
+              color: chooseRandomColor(),
+              companyName: '',
+              email: '',
+              name: '',
+              tools: [],
+              type: 'receiver',
+            },
+          ],
+        },
     async onSubmit(values) {
       const isEdit = searchParams.get('edit');
       if (isEdit && isEdit === 'true' && contract) {
@@ -88,11 +112,13 @@ function CreateContractPage() {
           let data: UpdateContractData = {
             ...values,
             status: contract.status,
-
           };
           // if contract.file is same as data.file then not need to upload file otherwise upload
           if (values.file !== contract.file) {
-            const url = await new AwsS3(values.file, 'documents/crm/').getS3URL();
+            const url = await new AwsS3(
+              values.file,
+              'documents/crm/'
+            ).getS3URL();
             data = {
               ...data,
               file: {
@@ -103,20 +129,20 @@ function CreateContractPage() {
               },
             };
           }
-          const response = await crmContractService.httpUpdateContract(contract._id, data);
+          const response = await crmContractService.httpUpdateContract(
+            contract._id,
+            data
+          );
           if (response.data) {
             toast.success('Contract updated successfully');
-            router.push(
-              `${Routes.Contracts}`
-            );
+            router.push(`${Routes.Contracts}`);
           }
         } catch (error) {
           toast.error('Unable to update contract');
         } finally {
           setIsLoading(false);
         }
-      }
-      else {
+      } else {
         setIsLoading(true);
         try {
           const url = await new AwsS3(values.file, 'documents/crm/').getS3URL();
@@ -149,17 +175,11 @@ function CreateContractPage() {
     enableReinitialize: contract ? true : false,
   });
 
-
-
   useEffect(() => {
-
     if (contractId && isEdit && isEdit === 'true') {
       getContractById(contractId);
     }
-
   }, [contractId, isEdit]);
-
-
 
   async function getContractById(id: string) {
     setIsFetchingItem(true);
@@ -179,53 +199,66 @@ function CreateContractPage() {
   }
 
   console.log(formik.errors.receipts);
-  function addSenderAndReceivers(type: "sender" | "receiver",) {
-
+  function addSenderAndReceivers(type: 'sender' | 'receiver') {
     formik.setFieldValue('receipts', [
       ...formik.values.receipts,
-      { color: chooseRandomColor(), name: "", type, companyName: "", email: "", tools: [] },
-    ])
-
-
+      {
+        color: chooseRandomColor(),
+        name: '',
+        type,
+        companyName: '',
+        email: '',
+        tools: [],
+      },
+    ]);
   }
-
 
   function removeSenderAndReceivers(index: number) {
-
-    formik.setFieldValue('receipts', formik.values.receipts.filter((_, i) => i !== index))
+    formik.setFieldValue(
+      'receipts',
+      formik.values.receipts.filter((_, i) => i !== index)
+    );
   }
 
-  function getSenderOrReceiverFieldErrorAndTouched(field: keyof Omit<ContractPartyType, "tools" | "colors">, index: number) {
+  function getSenderOrReceiverFieldErrorAndTouched(
+    field: keyof Omit<ContractPartyType, 'tools' | 'colors'>,
+    index: number
+  ) {
     let errors = formik.errors.receipts as FormikErrors<ContractPartyType>[];
     let touched = formik.touched.receipts as FormikTouched<ContractPartyType>[];
     return {
       error: errors && errors[index]?.[field],
       touched: touched && touched[index]?.[field],
-    }
+    };
   }
 
   if (isFetchingItem) {
-    return <div>
-      <Skeleton />
-      <Skeleton />
-      <Skeleton />
-      <Skeleton />
-      <Skeleton />
-      <Skeleton />
-    </div>
+    return (
+      <div>
+        <Skeleton />
+        <Skeleton />
+        <Skeleton />
+        <Skeleton />
+        <Skeleton />
+        <Skeleton />
+      </div>
+    );
   }
-
 
   return (
     <section className="mt-6 !pb-[39px]  mx-4 ">
       <div className="flex items-center justify-between">
         <SenaryHeading
-          title={contract ? "Edit Contract" : "Create New Contract"}
+          title={contract ? 'Edit Contract' : 'Create New Contract'}
           className="text-schestiPrimaryBlack text-xl leading-7 font-semibold"
         />
 
         <div className="flex items-center space-x-3">
-          <WhiteButton onClick={() => router.push(Routes.Contracts)} text="Cancel" className="!w-fit" />
+          <WhiteButton
+            onClick={() => router.push(Routes.Contracts)}
+            text="Cancel"
+            className="!w-fit"
+          />
           <CustomButton
             text="Save"
             className="!w-fit"
@@ -244,11 +277,17 @@ function CreateContractPage() {
           onClose={() => setShowList(false)}
           title="Select Item"
           onItemClick={(item) => {
-            formik.setFieldValue("receipts", [
+            formik.setFieldValue('receipts', [
               ...formik.values.receipts,
-              { color: chooseRandomColor(), type: "receiver", name: item.name, companyName: item.companyName, email: item.email, tools: [], },
-            ]
-            )
+              {
+                color: chooseRandomColor(),
+                type: 'receiver',
+                name: item.name,
+                companyName: item.companyName,
+                email: item.email,
+                tools: [],
+              },
+            ]);
             setShowList(false);
           }}
         />
@@ -316,16 +355,18 @@ function CreateContractPage() {
               onDelete={() => formik.setFieldValue('file', undefined)}
               shouldFit
             />
-          ) : formik.values.file ? <ShowFileComponent
-            file={{
-              extension: (formik.values.file as any)?.type,
-              name: (formik.values.file as any)?.name,
-              type: (formik.values.file as any)?.type,
-              url: URL.createObjectURL(formik.values.file as any),
-            }}
-            onDelete={() => formik.setFieldValue('file', undefined)}
-            shouldFit
-          /> : null}
+          ) : formik.values.file ? (
+            <ShowFileComponent
+              file={{
+                extension: (formik.values.file as any)?.type,
+                name: (formik.values.file as any)?.name,
+                type: (formik.values.file as any)?.type,
+                url: URL.createObjectURL(formik.values.file as any),
+              }}
+              onDelete={() => formik.setFieldValue('file', undefined)}
+              shouldFit
+            />
+          ) : null}
         </div>
 
         <InputComponent
@@ -422,129 +463,129 @@ function CreateContractPage() {
                 if (sender.type === 'receiver') {
                   return null;
                 }
-                return <div key={index} className='space-y-2 border-b p-1'>
-                  <div className='flex justify-end'>
-                    <CustomButton
-                      text="Delete"
-                      className="!w-fit !px-4 !py-1 !bg-transparent !border-red-500 !text-red-500"
-                      onClick={() => removeSenderAndReceivers(index)}
-                    />
-                  </div>
-                  <div className='grid grid-cols-2 gap-2'>
-                    <InputComponent
-                      label="Name"
-                      placeholder="Sender Name"
-                      name={`receipts.${index}.name`}
-                      type="text"
-                      field={{
-                        value: sender.name,
-                        onChange: formik.handleChange,
-                        onBlur: formik.handleBlur,
-                      }}
-                      hasError={
-                        getSenderOrReceiverFieldErrorAndTouched(
-                          "name",
-                          index
-                        ).touched && Boolean(getSenderOrReceiverFieldErrorAndTouched(
-                          "name",
-                          index
-                        ).error)
-                      }
-                      errorMessage={
-                        getSenderOrReceiverFieldErrorAndTouched(
-                          "name",
-                          index
-                        ).touched
-                          ? getSenderOrReceiverFieldErrorAndTouched(
-                            "name",
+                return (
+                  <div key={index} className="space-y-2 border-b p-1">
+                    <div className="flex justify-end">
+                      <CustomButton
+                        text="Delete"
+                        className="!w-fit !px-4 !py-1 !bg-transparent !border-red-500 !text-red-500"
+                        onClick={() => removeSenderAndReceivers(index)}
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <InputComponent
+                        label="Name"
+                        placeholder="Sender Name"
+                        name={`receipts.${index}.name`}
+                        type="text"
+                        field={{
+                          value: sender.name,
+                          onChange: formik.handleChange,
+                          onBlur: formik.handleBlur,
+                        }}
+                        hasError={
+                          getSenderOrReceiverFieldErrorAndTouched('name', index)
+                            .touched &&
+                          Boolean(
+                            getSenderOrReceiverFieldErrorAndTouched(
+                              'name',
+                              index
+                            ).error
+                          )
+                        }
+                        errorMessage={
+                          getSenderOrReceiverFieldErrorAndTouched('name', index)
+                            .touched
+                            ? getSenderOrReceiverFieldErrorAndTouched(
+                                'name',
+                                index
+                              ).error
+                            : ''
+                        }
+                      />
+                      <InputComponent
+                        label="Company Name"
+                        placeholder="Company Name"
+                        name={`receipts.${index}.companyName`}
+                        type="text"
+                        field={{
+                          value: sender.companyName,
+                          onChange: formik.handleChange,
+                          onBlur: formik.handleBlur,
+                        }}
+                        hasError={
+                          getSenderOrReceiverFieldErrorAndTouched(
+                            'companyName',
                             index
-                          ).error
-                          : ''
-                      }
-                    />
-                    <InputComponent
-                      label="Company Name"
-                      placeholder="Company Name"
-                      name={`receipts.${index}.companyName`}
-                      type="text"
-                      field={{
-                        value: sender.companyName,
-                        onChange: formik.handleChange,
-                        onBlur: formik.handleBlur,
-                      }}
-                      hasError={
-                        getSenderOrReceiverFieldErrorAndTouched(
-                          "companyName",
-                          index
-                        ).touched && Boolean(getSenderOrReceiverFieldErrorAndTouched(
-                          "companyName",
-                          index
-                        ).error)
-                      }
-                      errorMessage={
-                        getSenderOrReceiverFieldErrorAndTouched(
-                          "companyName",
-                          index
-                        ).touched
-                          ? getSenderOrReceiverFieldErrorAndTouched(
-                            "companyName",
+                          ).touched &&
+                          Boolean(
+                            getSenderOrReceiverFieldErrorAndTouched(
+                              'companyName',
+                              index
+                            ).error
+                          )
+                        }
+                        errorMessage={
+                          getSenderOrReceiverFieldErrorAndTouched(
+                            'companyName',
                             index
-                          ).error
-                          : ''
-                      }
-                    />
-                  </div>
+                          ).touched
+                            ? getSenderOrReceiverFieldErrorAndTouched(
+                                'companyName',
+                                index
+                              ).error
+                            : ''
+                        }
+                      />
+                    </div>
 
-                  <InputComponent
-                    label="Email"
-                    placeholder="Email"
-                    name={`receipts.${index}.email`}
-                    type="text"
-                    field={{
-                      value: sender.email,
-                      onChange: formik.handleChange,
-                      onBlur: formik.handleBlur,
-                    }}
-                    hasError={
-                      getSenderOrReceiverFieldErrorAndTouched(
-                        "email",
-                        index
-                      ).touched && Boolean(getSenderOrReceiverFieldErrorAndTouched(
-                        "email",
-                        index
-                      ).error)
-                    }
-                    errorMessage={
-                      getSenderOrReceiverFieldErrorAndTouched(
-                        "email",
-                        index
-                      ).touched
-                        ? getSenderOrReceiverFieldErrorAndTouched(
-                          "email",
-                          index
-                        ).error
-                        : ''
-                    }
-                  />
-                </div>
+                    <InputComponent
+                      label="Email"
+                      placeholder="Email"
+                      name={`receipts.${index}.email`}
+                      type="text"
+                      field={{
+                        value: sender.email,
+                        onChange: formik.handleChange,
+                        onBlur: formik.handleBlur,
+                      }}
+                      hasError={
+                        getSenderOrReceiverFieldErrorAndTouched('email', index)
+                          .touched &&
+                        Boolean(
+                          getSenderOrReceiverFieldErrorAndTouched(
+                            'email',
+                            index
+                          ).error
+                        )
+                      }
+                      errorMessage={
+                        getSenderOrReceiverFieldErrorAndTouched('email', index)
+                          .touched
+                          ? getSenderOrReceiverFieldErrorAndTouched(
+                              'email',
+                              index
+                            ).error
+                          : ''
+                      }
+                    />
+                  </div>
+                );
               })}
             </div>
 
-            <div className='mt-3 flex justify-center'>
+            <div className="mt-3 flex justify-center">
               <CustomButton
-                text='Add Sender'
+                text="Add Sender"
                 className="!bg-schestiLightPrimary !text-schestiPrimary !py-2 !w-fit !border-schestiLightPrimary"
                 onClick={() => {
                   addSenderAndReceivers('sender');
                 }}
               />
             </div>
-
           </div>
 
-          <div
-            className={`border flex flex-col p-3 rounded-md`}
-          >
+          <div className={`border flex flex-col p-3 rounded-md`}>
             <div className="flex items-center justify-between">
               <p className="text-graphiteGray text-sm font-medium leading-6 capitalize">
                 Receiver Information
@@ -557,23 +598,22 @@ function CreateContractPage() {
                   setShowList(true);
                 }}
               />
-
             </div>
-            <div className='mt-2'>
+            <div className="mt-2">
               {formik.values.receipts.map((receiver, index) => {
                 if (receiver.type === 'sender') {
                   return null;
                 }
                 return (
-                  <div key={index} className='space-y-2 border-b p-1'>
-                    <div className='flex justify-end'>
+                  <div key={index} className="space-y-2 border-b p-1">
+                    <div className="flex justify-end">
                       <CustomButton
                         text="Delete"
                         className="!w-fit !px-4 !py-1 !bg-transparent !border-red-500 !text-red-500"
                         onClick={() => removeSenderAndReceivers(index)}
                       />
                     </div>
-                    <div className='grid grid-cols-2 gap-2'>
+                    <div className="grid grid-cols-2 gap-2">
                       <InputComponent
                         label="Name"
                         placeholder="Sender Name"
@@ -585,23 +625,22 @@ function CreateContractPage() {
                           onBlur: formik.handleBlur,
                         }}
                         hasError={
-                          getSenderOrReceiverFieldErrorAndTouched(
-                            "name",
-                            index
-                          ).touched && Boolean(getSenderOrReceiverFieldErrorAndTouched(
-                            "name",
-                            index
-                          ).error)
-                        }
-                        errorMessage={
-                          getSenderOrReceiverFieldErrorAndTouched(
-                            "name",
-                            index
-                          ).touched
-                            ? getSenderOrReceiverFieldErrorAndTouched(
-                              "name",
+                          getSenderOrReceiverFieldErrorAndTouched('name', index)
+                            .touched &&
+                          Boolean(
+                            getSenderOrReceiverFieldErrorAndTouched(
+                              'name',
                               index
                             ).error
+                          )
+                        }
+                        errorMessage={
+                          getSenderOrReceiverFieldErrorAndTouched('name', index)
+                            .touched
+                            ? getSenderOrReceiverFieldErrorAndTouched(
+                                'name',
+                                index
+                              ).error
                             : ''
                         }
                       />
@@ -617,22 +656,25 @@ function CreateContractPage() {
                         }}
                         hasError={
                           getSenderOrReceiverFieldErrorAndTouched(
-                            "companyName",
+                            'companyName',
                             index
-                          ).touched && Boolean(getSenderOrReceiverFieldErrorAndTouched(
-                            "companyName",
-                            index
-                          ).error)
+                          ).touched &&
+                          Boolean(
+                            getSenderOrReceiverFieldErrorAndTouched(
+                              'companyName',
+                              index
+                            ).error
+                          )
                         }
                         errorMessage={
                           getSenderOrReceiverFieldErrorAndTouched(
-                            "companyName",
+                            'companyName',
                             index
                           ).touched
                             ? getSenderOrReceiverFieldErrorAndTouched(
-                              "companyName",
-                              index
-                            ).error
+                                'companyName',
+                                index
+                              ).error
                             : ''
                         }
                       />
@@ -649,41 +691,39 @@ function CreateContractPage() {
                         onBlur: formik.handleBlur,
                       }}
                       hasError={
-                        getSenderOrReceiverFieldErrorAndTouched(
-                          "email",
-                          index
-                        ).touched && Boolean(getSenderOrReceiverFieldErrorAndTouched(
-                          "email",
-                          index
-                        ).error)
-                      }
-                      errorMessage={
-                        getSenderOrReceiverFieldErrorAndTouched(
-                          "email",
-                          index
-                        ).touched
-                          ? getSenderOrReceiverFieldErrorAndTouched(
-                            "email",
+                        getSenderOrReceiverFieldErrorAndTouched('email', index)
+                          .touched &&
+                        Boolean(
+                          getSenderOrReceiverFieldErrorAndTouched(
+                            'email',
                             index
                           ).error
+                        )
+                      }
+                      errorMessage={
+                        getSenderOrReceiverFieldErrorAndTouched('email', index)
+                          .touched
+                          ? getSenderOrReceiverFieldErrorAndTouched(
+                              'email',
+                              index
+                            ).error
                           : ''
                       }
                     />
                   </div>
-                )
+                );
               })}
             </div>
 
-            <div className='mt-3 flex justify-center'>
+            <div className="mt-3 flex justify-center">
               <CustomButton
-                text='Add Receiver'
+                text="Add Receiver"
                 className="!bg-schestiLightPrimary !text-schestiPrimary !py-2 !w-fit !border-schestiLightPrimary"
                 onClick={() => {
-                  addSenderAndReceivers("receiver");
+                  addSenderAndReceivers('receiver');
                 }}
               />
             </div>
-
           </div>
         </div>
       </div>

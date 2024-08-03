@@ -18,7 +18,12 @@ import jsPDF from 'jspdf';
 import { toast } from 'react-toastify';
 import { hexToRgba } from '@/app/utils/colors.utils';
 import { ToolButton } from './ToolButton';
-import { CalendarOutlined, CommentOutlined, FontSizeOutlined, SignatureOutlined } from '@ant-design/icons';
+import {
+  CalendarOutlined,
+  CommentOutlined,
+  FontSizeOutlined,
+  SignatureOutlined,
+} from '@ant-design/icons';
 
 type Props = {
   mode: PdfContractMode;
@@ -30,10 +35,10 @@ type Props = {
 };
 
 export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
-  ({ mode, pdfFile, tools, setTools, contract, color = "#007ab6" }, ref) => {
+  ({ mode, pdfFile, tools, setTools, contract, color = '#007ab6' }, ref) => {
     // const [activePage, setActivePage] = useState<null | number>(1)
     // const canvasRefs = useRef<HTMLCanvasElement[]>([]);
-    const { PDFJs } = usePDFJS(async () => { });
+    const { PDFJs } = usePDFJS(async () => {});
     const containerRef = useRef<HTMLDivElement>(null);
     const pdfContainerRef = useRef<HTMLDivElement>(null);
     const [selectedTool, setSelectedTool] = useState<ToolState | null>(null);
@@ -88,7 +93,11 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
             const textContext = textCanvas.getContext('2d')!;
             textContext.font = '16px Arial';
             textContext.fillStyle = 'black';
-            textContext.fillText(`Schesti-Contract-ID: ${contract._id}`, 30, 30);
+            textContext.fillText(
+              `Schesti-Contract-ID: ${contract._id}`,
+              30,
+              30
+            );
 
             // Overlay the text canvas on the main canvas
             context.drawImage(textCanvas, 0, 0);
@@ -97,7 +106,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
             }
           }
         } catch (error) {
-          toast.error("Unable to load the pdf")
+          toast.error('Unable to load the pdf');
         }
       }
     }
@@ -126,7 +135,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
       setSelectedTool(null);
     }
 
-    function handleValueChange(item: ToolState, shouldClose: boolean = true,) {
+    function handleValueChange(item: ToolState, shouldClose: boolean = true) {
       if (mode === 'add-values') {
         if (shouldClose) {
           setSelectedTool(null);
@@ -229,10 +238,10 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
                   ) : mode === 'view-fields' || mode === 'view-values' ? (
                     <StandardToolItem
                       color={color}
-                      onClick={() => { }}
-                      onClose={() => { }}
+                      onClick={() => {}}
+                      onClose={() => {}}
                       selectedTool={selectedTool}
-                      onChange={() => { }}
+                      onChange={() => {}}
                       mode={mode}
                       item={item}
                       key={item.id}
@@ -256,7 +265,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
                   style={{
                     backgroundColor: `${hexToRgba(color, 0.1)}`,
                     border: `1px solid ${hexToRgba(color, 0.1)}`,
-                    color
+                    color,
                   }}
                 />
               </DraggableTool>
@@ -267,7 +276,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
                   style={{
                     backgroundColor: `${hexToRgba(color, 0.1)}`,
                     border: `1px solid ${hexToRgba(color, 0.1)}`,
-                    color
+                    color,
                   }}
                   Icon={<FontSizeOutlined />}
                 />
@@ -279,7 +288,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
                   style={{
                     backgroundColor: `${hexToRgba(color, 0.1)}`,
                     border: `1px solid ${hexToRgba(color, 0.1)}`,
-                    color
+                    color,
                   }}
                   Icon={<CommentOutlined />}
                 />
@@ -291,7 +300,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
                   style={{
                     backgroundColor: `${hexToRgba(color, 0.1)}`,
                     border: `1px solid ${hexToRgba(color, 0.1)}`,
-                    color
+                    color,
                   }}
                   Icon={<CalendarOutlined />}
                 />
@@ -306,5 +315,3 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
 );
 
 ContractPdf.displayName = 'ContractPdf';
-
-

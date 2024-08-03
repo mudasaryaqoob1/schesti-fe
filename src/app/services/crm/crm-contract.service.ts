@@ -1,20 +1,16 @@
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { HttpService } from '../base.service';
-import { ContractPartyType, ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
+import {
+  ContractPartyType,
+  ICrmContract,
+} from '@/app/interfaces/crm/crm-contract.interface';
 
 export type CreateContractData = Omit<
   ICrmContract,
-  | '_id'
-  | 'createdAt'
-  | 'updatedAt'
-  | 'user'
-  | 'companyPdf'
-  | 'userPdf'
+  '_id' | 'createdAt' | 'updatedAt' | 'user' | 'companyPdf' | 'userPdf'
 >;
 
-export type UpdateContractData =CreateContractData & {
-
-}
+export type UpdateContractData = CreateContractData & {};
 class CrmContractService extends HttpService {
   private endPoint = 'api/crm/contract';
 
@@ -22,7 +18,7 @@ class CrmContractService extends HttpService {
     data: CreateContractData
   ): Promise<IResponseInterface<ICrmContract>> =>
     this.post(this.endPoint, data);
-  
+
   httpUpdateContract = (
     id: string,
     data: UpdateContractData

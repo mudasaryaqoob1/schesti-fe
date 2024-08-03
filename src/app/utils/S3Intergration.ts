@@ -86,22 +86,27 @@ class AwsS3 {
     return uploadResult.Location;
   };
 
-  getS3UrlFromBase64 = async (base64Data:string,contentType="image/png") => {
-    const buffer = Buffer.from(base64Data.replace(/^data:image\/\w+;base64,/, ""), 'base64');
+  getS3UrlFromBase64 = async (
+    base64Data: string,
+    contentType = 'image/png'
+  ) => {
+    const buffer = Buffer.from(
+      base64Data.replace(/^data:image\/\w+;base64,/, ''),
+      'base64'
+    );
     const params: S3.PutObjectRequest = {
       Body: buffer,
       Bucket: process.env.NEXT_PUBLIC_BUCKET!,
       Key: `${new Date().getFullYear()}/${this.path}${Date.now()}`,
       ACL: 'public-read',
       ContentType: contentType,
-      ContentEncoding:"base64"
+      ContentEncoding: 'base64',
     };
     const uploadResult = await this.s3.upload(params).promise();
     return uploadResult.Location;
-  }
+  };
 
-  private base64ToBlob = (base64:string, contentType = 'image/jpeg') => {
-    
+  private base64ToBlob = (base64: string, contentType = 'image/jpeg') => {
     // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
     const [_, data] = base64.split(',');
     const byteCharacters = atob(data);
@@ -112,6 +117,5 @@ class AwsS3 {
     const byteArray = new Uint8Array(byteNumbers);
     return new Blob([byteArray], { type: contentType });
   };
-  
 }
 export default AwsS3;

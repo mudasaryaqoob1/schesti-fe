@@ -43,7 +43,7 @@ export const meetingSlice = createSlice({
     });
   },
 });
-export const { addNewMeetingAction, deleteMeetingAction,updateMeetingAction } =
+export const { addNewMeetingAction, deleteMeetingAction, updateMeetingAction } =
   meetingSlice.actions;
 export const selectMeetings = (state: RootState) => state.meetings.data;
 export default meetingSlice.reducer;

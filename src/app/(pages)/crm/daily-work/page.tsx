@@ -40,19 +40,18 @@ import moment from 'moment';
 
 const ValidationSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email'),
-  phone: Yup.string()
-    .test({
-      test: (value) => {
-        if (value) {
-          return isValidPhoneNumber(value);
-        }
-        return true;
-      },
-      message: 'Invalid phone number',
-    }),
+  phone: Yup.string().test({
+    test: (value) => {
+      if (value) {
+        return isValidPhoneNumber(value);
+      }
+      return true;
+    },
+    message: 'Invalid phone number',
+  }),
   work: Yup.string().required('Work Needed is required'),
   deadline: Yup.string(),
-  note: Yup.string()
+  note: Yup.string(),
 });
 
 function DailyWorkPage() {
@@ -318,7 +317,7 @@ function DailyWorkPage() {
           },
           editing:
             priorityCellEditing.isEditing &&
-              priorityCellEditing.record?._id === record._id
+            priorityCellEditing.record?._id === record._id
               ? true
               : false,
           priorities: priorities,
@@ -358,8 +357,8 @@ function DailyWorkPage() {
         if (!value) {
           return null;
         }
-        const note = value.slice(0, 10)
-        return note + (note.length > 10 ? '...' : "");
+        const note = value.slice(0, 10);
+        return note + (note.length > 10 ? '...' : '');
       },
       width: 200,
       onCell: (record, rowIndex) => {
@@ -374,7 +373,7 @@ function DailyWorkPage() {
           },
           editing:
             noteCellEditing.isEditing &&
-              noteCellEditing.record?._id === record._id
+            noteCellEditing.record?._id === record._id
               ? true
               : false,
           handleSave,
@@ -405,7 +404,7 @@ function DailyWorkPage() {
           },
           editing:
             statusCellEditing.isEditing &&
-              statusCellEditing.record?._id === record._id
+            statusCellEditing.record?._id === record._id
               ? true
               : false,
           statuses: statuses,
@@ -436,8 +435,16 @@ function DailyWorkPage() {
                     phone: record.phone,
                     work: record.work,
                     _id: record._id,
-                    priority: record.priority ? typeof record.priority === 'string' ? record.priority : record.priority._id : "",
-                    status: record.status ? typeof record.status === 'string' ? record.status : record.status._id : "",
+                    priority: record.priority
+                      ? typeof record.priority === 'string'
+                        ? record.priority
+                        : record.priority._id
+                      : '',
+                    status: record.status
+                      ? typeof record.status === 'string'
+                        ? record.status
+                        : record.status._id
+                      : '',
                   });
                 } else if (e.key === 'delete') {
                   setShowDeleteModal(true);
@@ -884,28 +891,32 @@ function EditableCell(props: EditableCellProps) {
           <span className="font-medium">Choose {inputType}</span>
           <div className="absolute bg-white border rounded-md w-[200px] top-6 p-3 z-10 space-y-2">
             {inputType === 'priority'
-              ? props.priorities.length === 0 ? "No Priority" : props.priorities.map((priority: IDailyWorkPriorty) => (
-                <DisplayPriority
-                  onClick={(e) => {
-                    console.log('Priority Clicked');
-                    e.stopPropagation();
-                    handleSave('priority', priority._id, record);
-                  }}
-                  key={priority._id}
-                  item={priority}
-                />
-              ))
+              ? props.priorities.length === 0
+                ? 'No Priority'
+                : props.priorities.map((priority: IDailyWorkPriorty) => (
+                    <DisplayPriority
+                      onClick={(e) => {
+                        console.log('Priority Clicked');
+                        e.stopPropagation();
+                        handleSave('priority', priority._id, record);
+                      }}
+                      key={priority._id}
+                      item={priority}
+                    />
+                  ))
               : inputType === 'status'
-                ? props.statuses.length === 0 ? "No Stauses" : props.statuses.map((status: IDailyWorkStatus) => (
-                  <DisplayDailyWorkStatus
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleSave('status', status._id, record);
-                    }}
-                    key={status._id}
-                    item={status}
-                  />
-                ))
+                ? props.statuses.length === 0
+                  ? 'No Stauses'
+                  : props.statuses.map((status: IDailyWorkStatus) => (
+                      <DisplayDailyWorkStatus
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSave('status', status._id, record);
+                        }}
+                        key={status._id}
+                        item={status}
+                      />
+                    ))
                 : null}
           </div>
         </div>

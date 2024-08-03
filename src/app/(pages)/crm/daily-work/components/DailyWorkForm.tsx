@@ -9,7 +9,10 @@ import WhiteButton from '@/app/component/customButton/white';
 import type { FormikProps } from 'formik';
 import { ICrmDailyWorkCreate } from '@/app/services/crm/crm-daily-work.service';
 import dayjs from 'dayjs';
-import { IDailyWorkPriorty, IDailyWorkStatus } from '@/app/interfaces/crm/crm-daily-work.interface';
+import {
+  IDailyWorkPriorty,
+  IDailyWorkStatus,
+} from '@/app/interfaces/crm/crm-daily-work.interface';
 import { SelectComponent } from '@/app/component/customSelect/Select.component';
 
 type Props = {
@@ -20,7 +23,6 @@ type Props = {
   priorities: IDailyWorkPriorty[];
   onSubmit?: () => void;
   isSubmitting?: boolean;
-
 };
 export function DailyWorkForm({
   onClose,
@@ -104,9 +106,9 @@ export function DailyWorkForm({
         />
 
         <SelectComponent
-          label='Status'
-          name='status'
-          placeholder='Select Status'
+          label="Status"
+          name="status"
+          placeholder="Select Status"
           field={{
             value: formik.values.status ? formik.values.status : undefined,
             onChange: (val) => {
@@ -115,8 +117,8 @@ export function DailyWorkForm({
             onBlur: formik.handleBlur,
             options: statuses.map((status) => ({
               label: status.name,
-              value: status._id
-            }))
+              value: status._id,
+            })),
           }}
           hasError={formik.touched.status && Boolean(formik.errors.status)}
           errorMessage={
@@ -127,9 +129,9 @@ export function DailyWorkForm({
         />
 
         <SelectComponent
-          label='Priority'
-          name='priority'
-          placeholder='Select Priority'
+          label="Priority"
+          name="priority"
+          placeholder="Select Priority"
           field={{
             value: formik.values.priority ? formik.values.priority : undefined,
             onChange: (val) => {
@@ -138,8 +140,8 @@ export function DailyWorkForm({
             onBlur: formik.handleBlur,
             options: priorities.map((priority) => ({
               label: priority.name,
-              value: priority._id
-            }))
+              value: priority._id,
+            })),
           }}
           hasError={formik.touched.priority && Boolean(formik.errors.priority)}
           errorMessage={

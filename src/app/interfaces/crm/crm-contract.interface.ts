@@ -1,4 +1,3 @@
-
 import { ToolState } from '@/app/(pages)/contracts/types';
 import { FileInterface } from '../file.interface';
 import { IUserInterface } from '../user.interface';
@@ -8,11 +7,11 @@ export type ContractPartyType = {
   companyName: string;
   email: string;
   name: string;
-  type: "sender" | "receiver";
+  type: 'sender' | 'receiver';
   tools: ToolState[];
   color: string;
   _id?: string;
-}
+};
 
 export interface ICrmContract {
   _id: string;

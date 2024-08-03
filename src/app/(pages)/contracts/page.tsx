@@ -193,9 +193,7 @@ function ContractsPage() {
               items: menuItems,
               onClick({ key }) {
                 if (key === 'viewContract') {
-                  router.push(
-                    `${Routes.Contracts}/view?id=${record._id}`
-                  );
+                  router.push(`${Routes.Contracts}/view?id=${record._id}`);
                 } else if (key === 'download') {
                   router.push(
                     `${Routes.Contracts}/view?id=${record._id}&download=true`
@@ -204,9 +202,13 @@ function ContractsPage() {
                   setShowDeleteModal(true);
                   setSelectedItem(record);
                 } else if (key === 'edit') {
-                  router.push(`${Routes.Contracts}/create/?id=${record._id}&edit=true`);
+                  router.push(
+                    `${Routes.Contracts}/create/?id=${record._id}&edit=true`
+                  );
                 } else if (key === 'editTools') {
-                  router.push(`${Routes.Contracts}/edit-contract?contractId=${record._id}`);
+                  router.push(
+                    `${Routes.Contracts}/edit-contract?contractId=${record._id}`
+                  );
                 }
               },
             }}

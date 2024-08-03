@@ -2,7 +2,10 @@
 'use client';
 import NoData from '@/app/component/noData';
 import { withAuth } from '@/app/hoc/withAuth';
-import { ContractPartyType, ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
+import {
+  ContractPartyType,
+  ICrmContract,
+} from '@/app/interfaces/crm/crm-contract.interface';
 import crmContractService from '@/app/services/crm/crm-contract.service';
 import { Routes } from '@/app/utils/plans.utils';
 import { Skeleton } from 'antd';
@@ -24,7 +27,8 @@ function EditContractDocumentPage() {
   const searchParams = useSearchParams();
   const [tools, setTools] = useState<ToolState[]>([]);
   const [receipts, setReceipts] = useState<ContractPartyType[]>([]);
-  const [selectedReceipt, setSelectedReceipt] = useState<ContractPartyType | null>(null);
+  const [selectedReceipt, setSelectedReceipt] =
+    useState<ContractPartyType | null>(null);
   const [isSending, setIsSending] = useState(false);
   const router = useRouterHook();
 
@@ -81,23 +85,27 @@ function EditContractDocumentPage() {
     );
   }
 
-  const canEdit = !contract.receipts.some(contractParty =>
-    contractParty.tools.some(tool => typeof tool.value !== 'undefined')
+  const canEdit = !contract.receipts.some((contractParty) =>
+    contractParty.tools.some((tool) => typeof tool.value !== 'undefined')
   );
 
   if (!canEdit) {
-    return <NoData
-      title="Access Denied"
-      description="You cannot edit this contract. Please create a new contract."
-      btnText='Back'
-      link={`${Routes.Contracts}`}
-    />
+    return (
+      <NoData
+        title="Access Denied"
+        description="You cannot edit this contract. Please create a new contract."
+        btnText="Back"
+        link={`${Routes.Contracts}`}
+      />
+    );
   }
 
   async function sendContract(id: string, receipts: ContractPartyType[]) {
     setIsSending(true);
 
-    const isEveryReceiptHasTools = receipts.every((receipt) => receipt.tools.length > 0);
+    const isEveryReceiptHasTools = receipts.every(
+      (receipt) => receipt.tools.length > 0
+    );
     if (!isEveryReceiptHasTools) {
       toast.error('Please add tools to all receipts');
       setIsSending(false);
@@ -128,7 +136,11 @@ function EditContractDocumentPage() {
           className="text-xl text-schestiPrimaryBlack font-semibold leading-7"
         />
         <div className="flex space-x-3 items-center">
-          <WhiteButton text="Cancel" className="!w-fit" onClick={() => router.back()} />
+          <WhiteButton
+            text="Cancel"
+            className="!w-fit"
+            onClick={() => router.back()}
+          />
           <CustomButton
             text="Send Contract"
             className="!w-fit"
@@ -137,27 +149,28 @@ function EditContractDocumentPage() {
           />
         </div>
       </div>
-      <div className='flex items-center space-x-2'>
-
+      <div className="flex items-center space-x-2">
         <SelectComponent
-          label='Receipts'
-          name='receipts'
-          placeholder='Select receiver receipt'
+          label="Receipts"
+          name="receipts"
+          placeholder="Select receiver receipt"
           field={{
             value: selectedReceipt ? selectedReceipt.email : undefined,
             options: receipts.map((receipt) => ({
               label: receipt.email,
               title: `${receipt.name} - (${receipt.companyName})`,
-              value: receipt.email
+              value: receipt.email,
             })),
             onChange(val) {
-              setReceipts(receipts.map(r => {
-                if (r.email === selectedReceipt?.email) {
-                  return { ...r, tools };
-                } else {
-                  return r
-                }
-              }));
+              setReceipts(
+                receipts.map((r) => {
+                  if (r.email === selectedReceipt?.email) {
+                    return { ...r, tools };
+                  } else {
+                    return r;
+                  }
+                })
+              );
               const receipt = receipts.find((r) => r.email === val);
               setSelectedReceipt(receipt ?? null);
               if (receipt) {
@@ -168,7 +181,7 @@ function EditContractDocumentPage() {
         />
       </div>
       <ContractPdf
-        mode={"edit-fields"}
+        mode={'edit-fields'}
         contract={contract}
         pdfFile={contract.file.url}
         tools={tools}

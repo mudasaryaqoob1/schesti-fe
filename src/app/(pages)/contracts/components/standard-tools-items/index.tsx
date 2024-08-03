@@ -18,7 +18,7 @@ import AwsS3 from '@/app/utils/S3Intergration';
 import { CloseOutlined, LoadingOutlined } from '@ant-design/icons';
 import { ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
 import { GetStandardToolIcon } from './GetIcon';
-import SignaturePad from 'react-signature-pad-wrapper'
+import SignaturePad from 'react-signature-pad-wrapper';
 import { FileInterface } from '@/app/interfaces/file.interface';
 
 type Props = {
@@ -28,7 +28,7 @@ type Props = {
   onClick?: () => void;
   onClose?: () => void;
   selectedTool: ToolState | null;
-  onChange?: (_item: ToolState, _shouldClose?: boolean,) => void;
+  onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
   contract: ICrmContract;
   color: string;
 };
@@ -41,7 +41,7 @@ export function StandardToolItem({
   selectedTool,
   onChange,
   contract,
-  color
+  color,
 }: Props) {
   if (mode === 'add-values') {
     return (
@@ -59,16 +59,20 @@ export function StandardToolItem({
         {selectedTool ? (
           <ModalComponent
             open={true}
-            setOpen={() => { }}
+            setOpen={() => {}}
             width="300px"
             key={selectedTool.tool}
             className={'!bg-transparent !h-fit'}
           >
             <Popups
               title="Add Standard Tools"
-              onClose={onClose ? onClose : () => { }}
+              onClose={onClose ? onClose : () => {}}
             >
-              <StandardToolInput contract={contract} item={selectedTool} onChange={onChange} />
+              <StandardToolInput
+                contract={contract}
+                item={selectedTool}
+                onChange={onChange}
+              />
             </Popups>
           </ModalComponent>
         ) : null}
@@ -117,12 +121,10 @@ function Item({ item, mode, onClick, onDelete, color }: ItemProps) {
       style={{
         borderColor: `${color}`,
         backgroundColor: 'white',
-        color
+        color,
       }}
     >
-      <GetStandardToolIcon
-        type={item.tool}
-      />
+      <GetStandardToolIcon type={item.tool} />
 
       <RenderStandardInputValue item={item} mode={mode} />
 
@@ -144,10 +146,10 @@ function Item({ item, mode, onClick, onDelete, color }: ItemProps) {
 type InputProps = {
   item: ToolState;
   onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
-  contract: ICrmContract
+  contract: ICrmContract;
 };
 
-function StandardToolInput({ item, onChange, contract, }: InputProps) {
+function StandardToolInput({ item, onChange, contract }: InputProps) {
   if (item.tool === 'date') {
     return (
       <DateInputComponent
@@ -164,14 +166,15 @@ function StandardToolInput({ item, onChange, contract, }: InputProps) {
       />
     );
   } else if (item.tool === 'initials') {
-    return <GetInitialToolValue contract={contract} item={item} onChange={onChange} />;
-  } else if (item.tool === 'comment') {
     return (
-      <GetCommentToolValue
+      <GetInitialToolValue
+        contract={contract}
         item={item}
         onChange={onChange}
       />
     );
+  } else if (item.tool === 'comment') {
+    return <GetCommentToolValue item={item} onChange={onChange} />;
   } else if (item.tool === 'signature') {
     return <GetSignatureValue item={item} onChange={onChange} />;
   }
@@ -285,11 +288,10 @@ function TypeSignature({ onChange, item }: TypeSignatureProps) {
 function GetInitialToolValue({
   item,
   onChange,
-
 }: {
   onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
   item: ToolState;
-  contract: ICrmContract
+  contract: ICrmContract;
 }) {
   const [value, setValue] = useState(
     typeof item.value === 'string' || typeof item.value === 'undefined'
@@ -311,7 +313,6 @@ function GetInitialToolValue({
   //   }
   // }, [receiverInitial, senderInitial, value]);
 
-
   return (
     <div className="space-y-3 h-[160px]">
       <div>
@@ -329,7 +330,7 @@ function GetInitialToolValue({
               if (!value) {
                 setError('Initials is required');
               }
-            }
+            },
           }}
           hasError={Boolean(error.length)}
           errorMessage={error}
@@ -514,7 +515,6 @@ function WriteSignature({
   onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
   item: ToolState;
 }) {
-
   const [isUploading, setIsUploading] = useState(false);
   const ref = useRef<SignaturePad | null>(null);
 
@@ -532,55 +532,56 @@ function WriteSignature({
         setIsUploading(true);
         const base64 = ref.current.toDataURL();
         try {
-          const url = await new AwsS3(base64, "signatures").getS3UrlFromBase64(base64)
+          const url = await new AwsS3(base64, 'signatures').getS3UrlFromBase64(
+            base64
+          );
           const data: FileInterface = {
             extension: 'png',
             name: `signature-${Date.now()}.png`,
             type: 'image/png',
-            url: url
-          }
+            url: url,
+          };
           onChange?.({
             ...item,
-            tool: "signature",
+            tool: 'signature',
             value: data,
-          })
+          });
         } catch (error) {
-          toast.error("Error while uploading the signature");
+          toast.error('Error while uploading the signature');
           console.log(error);
         } finally {
           setIsUploading(false);
         }
       }
-
     }
   }
 
-
-  return <div className='h-[400px] space-y-2'>
-    <div className='border w-full p-2  h-[340px] border-schestiLightPrimary'>
-      <SignaturePad
-        canvasProps={{
-          className: 'w-full h-full',
-        }}
-        // @ts-ignore
-        ref={cur => {
-          ref.current = cur;
-        }}
-      />
+  return (
+    <div className="h-[400px] space-y-2">
+      <div className="border w-full p-2  h-[340px] border-schestiLightPrimary">
+        <SignaturePad
+          canvasProps={{
+            className: 'w-full h-full',
+          }}
+          // @ts-ignore
+          ref={(cur) => {
+            ref.current = cur;
+          }}
+        />
+      </div>
+      <div className="flex justify-end space-x-3">
+        <CustomButton
+          text="Clear"
+          className="!w-fit !bg-white !text-schestiPrimary !py-2 !border-schestiLightPrimary"
+          onClick={handleClear}
+        />
+        <CustomButton
+          text="Add Signature"
+          className="!w-fit !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
+          onClick={handleSave}
+          isLoading={isUploading}
+        />
+      </div>
     </div>
-    <div className='flex justify-end space-x-3'>
-
-      <CustomButton
-        text='Clear'
-        className='!w-fit !bg-white !text-schestiPrimary !py-2 !border-schestiLightPrimary'
-        onClick={handleClear}
-      />
-      <CustomButton
-        text='Add Signature'
-        className='!w-fit !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary'
-        onClick={handleSave}
-        isLoading={isUploading}
-      />
-    </div>
-  </div>
+  );
 }

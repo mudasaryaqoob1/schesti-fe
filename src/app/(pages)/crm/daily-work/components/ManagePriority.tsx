@@ -185,8 +185,8 @@ export function ManagePriority({
                                     updatePriority({
                                       _id: priority._id,
                                       name: priority.name,
-                                      color
-                                    })
+                                      color,
+                                    });
                                   }}
                                   itemColor={priority.color}
                                 />

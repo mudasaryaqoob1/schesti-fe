@@ -122,7 +122,7 @@ export const planFeatureOptions = [
   {
     Icon: ContractIcon,
     label: 'Contracts',
-    value:Routes.Contracts,
+    value: Routes.Contracts,
   },
 
   {

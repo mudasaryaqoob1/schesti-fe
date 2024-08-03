@@ -76,8 +76,11 @@ const Meeting = () => {
               label: (
                 <QuaternaryHeading
                   title={type}
-                  className={`${tab === type ? 'text-schestiPrimary' : 'text-schestiPrimaryBlack'
-                    }`}
+                  className={`${
+                    tab === type
+                      ? 'text-schestiPrimary'
+                      : 'text-schestiPrimaryBlack'
+                  }`}
                 />
               ),
               tabKey: type,

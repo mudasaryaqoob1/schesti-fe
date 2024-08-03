@@ -7,7 +7,9 @@ type Props = {
 export function ChooseColor({ itemColor, onSelectColor }: Props) {
   return (
     <div>
-      <p className='text-sm font-medium text-schestiPrimaryBlack '>Choose Color</p>
+      <p className="text-sm font-medium text-schestiPrimaryBlack ">
+        Choose Color
+      </p>
       <div className="grid grid-cols-4 gap-3 bg-white w-full h-full py-3 px-2">
         {dailyWorkColors.map((color) => {
           const isActive = color === itemColor;

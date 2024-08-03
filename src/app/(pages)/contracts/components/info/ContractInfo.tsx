@@ -1,5 +1,8 @@
 import SenaryHeading from '@/app/component/headings/senaryHeading';
-import { ContractPartyType, ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
+import {
+  ContractPartyType,
+  ICrmContract,
+} from '@/app/interfaces/crm/crm-contract.interface';
 import moment from 'moment';
 import Image from 'next/image';
 
@@ -9,7 +12,6 @@ type Props = {
 };
 
 export function ContractInfo({ contract, receiver }: Props) {
-
   return (
     <div>
       <SenaryHeading
@@ -152,58 +154,58 @@ export function ContractInfo({ contract, receiver }: Props) {
             </div>
           </div>
 
-          {receiver ? <div className="space-y-3">
-            <SenaryHeading
-              title="Receiver Information"
-              className="text-base text-schestiPrimary font-medium"
-            />
-            <div>
+          {receiver ? (
+            <div className="space-y-3">
               <SenaryHeading
-                title={receiver.name}
-                className="text-schestiPrimaryBlack font-normal text-base"
+                title="Receiver Information"
+                className="text-base text-schestiPrimary font-medium"
               />
-              <SenaryHeading
-                title={receiver.companyName}
-                className="text-schestiPrimaryBlack font-normal text-base"
-              />
-            </div>
+              <div>
+                <SenaryHeading
+                  title={receiver.name}
+                  className="text-schestiPrimaryBlack font-normal text-base"
+                />
+                <SenaryHeading
+                  title={receiver.companyName}
+                  className="text-schestiPrimaryBlack font-normal text-base"
+                />
+              </div>
 
-            <div className="flex items-center space-x-2">
-              <Image alt="call" src={'/call.svg'} width={20} height={20} />
-              <SenaryHeading
-                title={''}
-                className="text-schestiPrimaryBlack font-normal text-base"
-              />
-            </div>
+              <div className="flex items-center space-x-2">
+                <Image alt="call" src={'/call.svg'} width={20} height={20} />
+                <SenaryHeading
+                  title={''}
+                  className="text-schestiPrimaryBlack font-normal text-base"
+                />
+              </div>
 
-            <div className="flex items-center space-x-2">
-              <Image
-                alt="mail"
-                src={'/mail-black.svg'}
-                width={20}
-                height={20}
-              />
-              <SenaryHeading
-                title={receiver.email}
-                className="text-schestiPrimaryBlack font-normal text-base"
-              />
-            </div>
+              <div className="flex items-center space-x-2">
+                <Image
+                  alt="mail"
+                  src={'/mail-black.svg'}
+                  width={20}
+                  height={20}
+                />
+                <SenaryHeading
+                  title={receiver.email}
+                  className="text-schestiPrimaryBlack font-normal text-base"
+                />
+              </div>
 
-            <div className="flex items-center space-x-2">
-              <Image
-                alt="location"
-                src={'/navigation-black.svg'}
-                width={20}
-                height={20}
-              />
-              <SenaryHeading
-                title={
-                  ''
-                }
-                className="text-schestiPrimaryBlack font-normal text-base"
-              />
+              <div className="flex items-center space-x-2">
+                <Image
+                  alt="location"
+                  src={'/navigation-black.svg'}
+                  width={20}
+                  height={20}
+                />
+                <SenaryHeading
+                  title={''}
+                  className="text-schestiPrimaryBlack font-normal text-base"
+                />
+              </div>
             </div>
-          </div> : null}
+          ) : null}
         </div>
       </div>
     </div>

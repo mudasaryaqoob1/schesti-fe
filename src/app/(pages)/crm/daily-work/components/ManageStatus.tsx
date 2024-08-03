@@ -185,8 +185,8 @@ export function ManageStatus({
                                     updateStatus({
                                       _id: status._id,
                                       name: status.name,
-                                      color
-                                    })
+                                      color,
+                                    });
                                   }}
                                   itemColor={status.color}
                                 />

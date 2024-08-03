@@ -2,7 +2,10 @@
 import Image from 'next/image';
 import { ContractInfo } from '../components/info/ContractInfo';
 import { ContractPdf } from '../components/ContractPdf';
-import { ContractPartyType, ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
+import {
+  ContractPartyType,
+  ICrmContract,
+} from '@/app/interfaces/crm/crm-contract.interface';
 import { useEffect, useRef, useState } from 'react';
 import { ToolState } from '../types';
 import { useSearchParams } from 'next/navigation';
@@ -43,7 +46,9 @@ export default function SignPdfContract() {
       if (response.data) {
         setContract(response.data);
         receiptEmail = parseEmailFromQuery(receiptEmail);
-        const receipt = response.data.receipts.find(r => r.email === receiptEmail);
+        const receipt = response.data.receipts.find(
+          (r) => r.email === receiptEmail
+        );
         if (receipt) {
           setReceipt(receipt);
           setTools(receipt.tools);
@@ -81,27 +86,25 @@ export default function SignPdfContract() {
     );
   }
 
-
-  const isAbleToSend = receipt.tools.every(tool => tool.value == undefined);
+  const isAbleToSend = receipt.tools.every((tool) => tool.value == undefined);
 
   async function signContract(id: string, receipt: ContractPartyType) {
     if (id) {
       setIsSaving(true);
-      const canSubmit = receipt.tools.every(tool => tool.value != undefined);
+      const canSubmit = receipt.tools.every((tool) => tool.value != undefined);
       if (!canSubmit) {
         toast.error('All fields must have a value');
         setIsSaving(false);
         return;
       }
       try {
-        const response = await crmContractService.httpSignContract(
-          id,
-          receipt
-        );
+        const response = await crmContractService.httpSignContract(id, receipt);
         if (response.data) {
           toast.success('Contract signed successfully');
           setContract(response.data);
-          const updatedReceipt = response.data.receipts.find(r => r.email === receipt.email);
+          const updatedReceipt = response.data.receipts.find(
+            (r) => r.email === receipt.email
+          );
           if (updatedReceipt) {
             setReceipt(updatedReceipt);
             setTools(updatedReceipt.tools);
@@ -118,28 +121,28 @@ export default function SignPdfContract() {
     }
   }
 
-
-
-
   return (
     <div>
       <div className="bg-white p-4 shadow-secondaryShadow">
         <Image src={'/logo.svg'} alt="logo" height={40} width={100} />
       </div>
       <div className="my-4 flex mx-5 justify-end">
-
-        {isAbleToSend ? <CustomButton
-          text="Send Back"
-          className="!w-fit"
-          onClick={() => signContract(contract._id, { ...receipt, tools })}
-          isLoading={isSaving}
-        /> : <CustomButton
-          text='Download'
-          className='!w-fit'
-          onClick={() => {
-            contractPdfRef.current?.handleAction();
-          }}
-        />}
+        {isAbleToSend ? (
+          <CustomButton
+            text="Send Back"
+            className="!w-fit"
+            onClick={() => signContract(contract._id, { ...receipt, tools })}
+            isLoading={isSaving}
+          />
+        ) : (
+          <CustomButton
+            text="Download"
+            className="!w-fit"
+            onClick={() => {
+              contractPdfRef.current?.handleAction();
+            }}
+          />
+        )}
       </div>
       <div className="p-4 m-4 bg-white rounded-md ">
         <ContractInfo contract={contract} receiver={receipt} />
@@ -147,7 +150,7 @@ export default function SignPdfContract() {
         <div className="mt-5 w-fit mx-auto">
           <ContractPdf
             contract={contract}
-            mode={!isAbleToSend ? "view-values" : 'add-values'}
+            mode={!isAbleToSend ? 'view-values' : 'add-values'}
             pdfFile={contract.file.url}
             tools={tools}
             setTools={setTools}

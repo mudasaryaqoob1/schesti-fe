@@ -4,7 +4,10 @@ import { withAuth } from '@/app/hoc/withAuth';
 import { useEffect, useRef, useState } from 'react';
 import { ToolState } from '../types';
 import { useSearchParams } from 'next/navigation';
-import { ContractPartyType, ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
+import {
+  ContractPartyType,
+  ICrmContract,
+} from '@/app/interfaces/crm/crm-contract.interface';
 import crmContractService from '@/app/services/crm/crm-contract.service';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
@@ -87,9 +90,6 @@ function ViewContract() {
     setIsDownloading(false);
   }
 
-
-
-
   return (
     <div className="mt-4 space-y-3 p-5 !pb-[39px]  mx-4 ">
       <div className="flex justify-between items-center">
@@ -100,24 +100,26 @@ function ViewContract() {
       </div>
 
       <div className="flex justify-between  items-center">
-        <div className='w-96'>
+        <div className="w-96">
           <SelectComponent
-            label='Select Receipt'
-            name='receipt'
-            placeholder='Select Receipt'
+            label="Select Receipt"
+            name="receipt"
+            placeholder="Select Receipt"
             field={{
               value: receipt ? receipt.email : undefined,
               options: contract.receipts.map((receipt) => ({
                 label: receipt.email,
-                value: receipt.email
+                value: receipt.email,
               })),
-              onChange: val => {
-                const receipt = contract.receipts.find(receipt => receipt.email === val);
+              onChange: (val) => {
+                const receipt = contract.receipts.find(
+                  (receipt) => receipt.email === val
+                );
                 setReceipt(receipt ?? null);
                 if (receipt) {
                   setTools(receipt.tools);
                 }
-              }
+              },
             }}
           />
         </div>

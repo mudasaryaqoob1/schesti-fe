@@ -19,7 +19,11 @@ type Props = {
 };
 const TIME_TO_ENABLE = 15; // minutes
 
-export function MeetingCard({ item, shouldShowJoin = true, shouldShowEdit = false }: Props) {
+export function MeetingCard({
+  item,
+  shouldShowJoin = true,
+  shouldShowEdit = false,
+}: Props) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   const [copiedText, copy] = useCopyToClipboard();
   const [showModal, setShowModal] = useState(false);
@@ -41,7 +45,6 @@ export function MeetingCard({ item, shouldShowJoin = true, shouldShowEdit = fals
   }
   return (
     <>
-
       <CreateMeeting
         showModal={showModal}
         setShowModal={() => setShowModal(false)}
@@ -78,28 +81,28 @@ export function MeetingCard({ item, shouldShowJoin = true, shouldShowEdit = fals
             className="text-[#667085]"
           />
         </div>
-        <div className='flex flex-col space-y-2'>
-          {shouldShowEdit ? <div className='self-center cursor-pointer'>
-            <Dropdown
-              menu={{
-                items: [
-                  { key: "edit", label: "Edit" },
-                ],
-                onClick: ({ key }) => {
-                  if (key === 'edit') {
-                    setShowModal(true);
-                  }
-                }
-              }}
-            >
-              <Image
-                alt='menu'
-                src={"/more-horizontal.svg"}
-                width={20}
-                height={20}
-              />
-            </Dropdown>
-          </div> : null}
+        <div className="flex flex-col space-y-2">
+          {shouldShowEdit ? (
+            <div className="self-center cursor-pointer">
+              <Dropdown
+                menu={{
+                  items: [{ key: 'edit', label: 'Edit' }],
+                  onClick: ({ key }) => {
+                    if (key === 'edit') {
+                      setShowModal(true);
+                    }
+                  },
+                }}
+              >
+                <Image
+                  alt="menu"
+                  src={'/more-horizontal.svg'}
+                  width={20}
+                  height={20}
+                />
+              </Dropdown>
+            </div>
+          ) : null}
           {!shouldShowJoin ? null : !enableJoin15MinutesLeft(item) ? (
             <WhiteButton className="!w-20" text="Join" />
           ) : (
