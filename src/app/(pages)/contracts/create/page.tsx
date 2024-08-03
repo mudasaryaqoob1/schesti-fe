@@ -246,7 +246,7 @@ function CreateContractPage() {
           onItemClick={(item) => {
             formik.setFieldValue("receipts", [
               ...formik.values.receipts,
-              { color: chooseRandomColor(), type: "sender", name: item.name, companyName: item.companyName, email: item.email, tools: [], },
+              { color: chooseRandomColor(), type: "receiver", name: item.name, companyName: item.companyName, email: item.email, tools: [], },
             ]
             )
             setShowList(false);
