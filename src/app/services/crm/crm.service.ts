@@ -5,6 +5,7 @@ import {
   CrmModuleType,
   CrmSubcontractorParsedType,
   CrmType,
+  ICrmContractorModule,
   ICrmPartnerModule,
   ICrmSubcontractorModule,
 } from '@/app/interfaces/crm/crm.interface';
@@ -29,6 +30,11 @@ type CreateCrmPartnerType = Omit<
   '_id' | 'createdAt' | 'updatedAt' | 'associatedCompany'
 >;
 
+type CreateCrmContractorType = Omit<
+ICrmContractorModule,
+  '_id' | 'createdAt' | 'updatedAt' | 'associatedCompany'
+>;
+
 type QueryParams = {
   module: CrmModuleType;
 };
@@ -36,7 +42,8 @@ type QueryParams = {
 type CreateCrmItem =
   | CreateCrmSubcontractorType
   | CreateCrmItemType
-  | CreateCrmPartnerType;
+  | CreateCrmPartnerType 
+  | CreateCrmContractorType;
 
 class CrmService extends HttpService {
   private endPoint = 'api/crm';

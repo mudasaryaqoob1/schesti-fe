@@ -43,8 +43,19 @@ export type ICrmPartnerModule = {
   name: string;
 } & ICrmBase;
 
+export type ICrmContractorModule = {
+  module: 'contractors';
+  companyRep: string;
+  name: string;
+} & ICrmBase;
+
 export type CrmPartnerParsedType = Omit<
   ICrmPartnerModule,
+  'module' | '_id' | 'createdAt' | 'updatedAt' | 'associatedCompany'
+>;
+
+export type CrmContractorParsedType = Omit<
+  ICrmContractorModule,
   'module' | '_id' | 'createdAt' | 'updatedAt' | 'associatedCompany'
 >;
 

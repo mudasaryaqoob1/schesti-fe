@@ -25,6 +25,7 @@ export const Routes = {
     Architects: '/crm/architects',
     Vendors: '/crm/vendors',
     Daily_Work: '/crm/daily-work',
+    Contractors:"/crm/contractors"
   },
   Contracts: '/contracts',
   'Quantity-Takeoff': {
