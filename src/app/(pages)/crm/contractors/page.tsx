@@ -23,10 +23,10 @@ import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { PreviewCSVImportFileModal } from '../components/PreviewCSVImportFileModal';
 
 import {
-  CrmPartnerParsedType,
+  CrmContractorParsedType,
   CrmType,
   ICrmItem,
-  ICrmPartnerModule,
+  ICrmContractorModule
 } from '@/app/interfaces/crm/crm.interface';
 import {
   getCrmItemsThunk,
@@ -48,11 +48,11 @@ import { CrmStatusFilter } from '../components/CrmStatusFilter';
 
 const items: MenuProps['items'] = [
   {
-    key: 'editPartnerDetail',
+    key: 'editDetails',
     label: <p>Edit details</p>,
   },
   {
-    key: 'deletePartner',
+    key: 'delete',
     label: <p>Delete</p>,
   },
   {
@@ -68,7 +68,7 @@ const inactiveMenuItems: MenuProps['items'] = [
   },
 ];
 
-const PartnerTable = () => {
+const ContractorsPage = () => {
   const router = useRouterHook();
   const dispatch = useDispatch<AppDispatch>();
 
@@ -80,44 +80,38 @@ const PartnerTable = () => {
   const inputFileRef = useRef<HTMLInputElement | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isUploadingFile, setIsUploadingFile] = useState(false);
-  const [parseData, setParseData] = useState<CrmPartnerParsedType[]>([]);
-  const [duplicates, setDuplicates] = useState<CrmPartnerParsedType[]>([]);
+  const [parseData, setParseData] = useState<CrmContractorParsedType[]>([]);
+  const [duplicates, setDuplicates] = useState<CrmContractorParsedType[]>([]);
   const [isSavingMany, setIsSavingMany] = useState(false);
 
   useEffect(() => {
-    dispatch(getCrmItemsThunk({ module: 'partners' }));
+    dispatch(getCrmItemsThunk({ module: 'contractors' }));
   }, []);
 
-  const handleDropdownItemClick = async (key: string, partner: any) => {
-    if (key === 'createEstimateRequest') {
-      router.push(`/estimates/requests/create`);
-    } else if (key === 'createNewInvoice') {
-      router.push(`/financial/aia-invoicing`);
-    } else if (key === 'createSchedule') {
-      router.push(`/schedule`);
-    } else if (key == 'deletePartner') {
-      setSelectedItem(partner);
+  const handleDropdownItemClick = async (key: string, item: any) => {
+    if (key == 'delete') {
+      setSelectedItem(item);
       setShowDeleteModal(true);
-    } else if (key == 'editPartnerDetail') {
-      router.push(`${Routes.CRM.Partners}/edit/${partner._id}`);
+    } else if (key == 'editDetails') {
+      router.push(`${Routes.CRM.Contractors}/edit/${item._id}`);
     } else if (key == 'inactive') {
       dispatch(
         updateCrmItemStatusThunk({
-          id: partner._id,
+          id: item._id,
           status: false,
         })
       );
     } else if (key == 'active') {
       dispatch(
         updateCrmItemStatusThunk({
-          id: partner._id,
+          id: item._id,
           status: true,
         })
       );
     }
   };
 
-  const columns: ColumnsType<ICrmPartnerModule> = [
+  const columns: ColumnsType<ICrmContractorModule> = [
     {
       title: 'Company',
       dataIndex: 'name',
@@ -190,7 +184,7 @@ const PartnerTable = () => {
       if (!search) {
         return true;
       }
-      if (item.module === 'partners') {
+      if (item.module === 'contractors') {
         return (
           item.name.toLowerCase().includes(search.toLowerCase()) ||
           item.companyRep?.includes(search) ||
@@ -219,7 +213,7 @@ const PartnerTable = () => {
           <DeleteContent
             onClick={() =>
               deleteCrmItemById(selectedItem._id, setIsDeleting, (item) => {
-                toast.success('Partner deleted successfully');
+                toast.success('Contractor deleted successfully');
                 dispatch(removeCrmItemAction(item._id));
                 setShowDeleteModal(false);
                 setSelectedItem(null);
@@ -239,7 +233,7 @@ const PartnerTable = () => {
           saveManyCrmItems(
             parseData,
             setIsSavingMany,
-            'partners',
+            'contractors',
             setDuplicates,
             (items) => {
               dispatch(insertManyCrmItemAction(items));
@@ -258,12 +252,12 @@ const PartnerTable = () => {
         duplicates={duplicates}
         setData={setParseData}
         isLoading={isSavingMany}
-        title="Import Partners"
+        title="Import Contractors"
       />
 
       <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
         <div className="flex justify-between items-center mb-4">
-          <TertiaryHeading title="Partner List" className="text-graphiteGray" />
+          <TertiaryHeading title="Contractors List" className="text-graphiteGray" />
           <div className=" flex items-center space-x-3">
             <div className="w-96">
               <InputComponent
@@ -294,7 +288,7 @@ const PartnerTable = () => {
                   downloadCrmItemsAsCSV(
                     state.data,
                     columns as ColumnsType<CrmType>,
-                    'partners'
+                    'contractors'
                   );
                 }}
               />
@@ -323,18 +317,18 @@ const PartnerTable = () => {
                 className="hidden"
                 onChange={uploadAndParseCSVData(
                   setIsUploadingFile,
-                  'partners',
+                  'contractors',
                   setParseData
                 )}
               />
             </div>
             <Button
-              text="Add New Partner"
+              text="Add New Contractor"
               className="!w-fit !py-2.5"
               icon="/plus.svg"
               iconwidth={20}
               iconheight={20}
-              onClick={() => router.push(`${Routes.CRM.Partners}/create`)}
+              onClick={() => router.push(`${Routes.CRM.Contractors}/create`)}
             />
           </div>
         </div>
@@ -349,4 +343,4 @@ const PartnerTable = () => {
   );
 };
 
-export default withAuth(PartnerTable);
+export default withAuth(ContractorsPage);

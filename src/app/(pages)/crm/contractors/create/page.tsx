@@ -13,7 +13,7 @@ import MinDesc from '@/app/component/description/minDesc';
 import CustomButton from '@/app/component/customButton/button';
 import FormControl from '@/app/component/formControl';
 
-// partner service
+// contractor service
 import { withAuth } from '@/app/hoc/withAuth';
 import { Routes } from '@/app/utils/plans.utils';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
@@ -61,7 +61,7 @@ const CreatePage = () => {
             }
         } catch (error) {
             const err = error as AxiosError<{ message: string }>;
-            toast.error(err.response?.data.message || 'Unable to create partner');
+            toast.error(err.response?.data.message || 'Unable to create contractor');
         } finally {
             setIsLoading(false);
         }
@@ -88,7 +88,7 @@ const CreatePage = () => {
                 />
 
                 <MinDesc
-                    title="Add New Partner"
+                    title="Add New Contractor"
                     className={`${senaryHeading} font-semibold text-schestiPrimary cursor-pointer underline`}
                 />
             </div>
@@ -98,7 +98,7 @@ const CreatePage = () => {
             >
                 <TertiaryHeading
                     className="text-graphiteGray mb-4 "
-                    title="Add New Partner"
+                    title="Add New Contractor"
                 />
                 <Formik
                     initialValues={initialValues}

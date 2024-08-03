@@ -115,6 +115,7 @@ export const planFeatureOptions = [
       { label: 'Clients', value: Routes.CRM.Clients },
       { label: 'Sub Contractors', value: Routes.CRM['Sub-Contractors'] },
       { label: 'Partners', value: Routes.CRM.Partners },
+      { label: 'Contractors', value: Routes.CRM.Contractors },
       { label: 'Architects', value: Routes.CRM.Architects },
       { label: 'Vendors', value: Routes.CRM.Vendors },
       { label: 'Daily Work', value: Routes.CRM.Daily_Work },
