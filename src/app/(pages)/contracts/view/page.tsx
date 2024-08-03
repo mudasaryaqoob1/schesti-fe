@@ -140,6 +140,7 @@ function ViewContract() {
             pdfFile={contract.file.url}
             setTools={setTools}
             tools={tools}
+            color={receipt?.color}
           />
         </div>
       </div>
