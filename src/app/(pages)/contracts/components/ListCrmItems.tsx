@@ -11,7 +11,7 @@ type Props = {
   title: string;
   onClose: () => void;
   onItemClick: (
-    _item: Omit<ContractPartyType, '_id' | 'color' | 'tools'>
+    _item: Omit<ContractPartyType, '_id' | 'color' | 'tools' | 'type'>
   ) => void;
 };
 export function ListCrmItems({ title, onClose, onItemClick }: Props) {
@@ -87,6 +87,7 @@ export function ListCrmItems({ title, onClose, onItemClick }: Props) {
                   companyName: getItemCompany(item),
                   email: item.email,
                   name: getItemName(item),
+
                 })
               }
             >
@@ -95,14 +96,14 @@ export function ListCrmItems({ title, onClose, onItemClick }: Props) {
                   {' '}
                   <span className="text-schestiLightBlack">Name: </span>{' '}
                   {item.module === 'subcontractors' ||
-                  item.module === 'partners'
+                    item.module === 'partners'
                     ? item.companyRep
                     : `${item.firstName} ${item.lastName || ''}`}
                 </p>
                 <p>
                   <span className="text-schestiLightBlack">Company: </span>{' '}
                   {item.module === 'subcontractors' ||
-                  item.module === 'partners'
+                    item.module === 'partners'
                     ? item.name
                     : item.companyName}
                 </p>
