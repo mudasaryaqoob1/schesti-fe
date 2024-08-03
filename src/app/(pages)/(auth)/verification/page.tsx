@@ -181,7 +181,6 @@ const RegisterVerification = () => {
                       {secretaryOfState && (
                         <div className="ml-auto">
                           <DeleteOutlined
-                            disabled={isLoading}
                             className="text-red-500 text-2xl"
                             onClick={(e) => {
                               e.stopPropagation();
@@ -241,7 +240,6 @@ const RegisterVerification = () => {
                         {license && (
                           <div className="ml-auto">
                             <DeleteOutlined
-                              disabled={isLoading}
                               className="text-red-500 text-2xl"
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -304,7 +302,6 @@ const RegisterVerification = () => {
                           <div className="ml-auto">
                             <DeleteOutlined
                               className="text-red-500 text-2xl"
-                              disabled={isLoading}
                               onClick={(e) => {
                                 e.stopPropagation();
                                 e.preventDefault();

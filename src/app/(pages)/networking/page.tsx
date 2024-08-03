@@ -102,6 +102,7 @@ const Networking = () => {
       </div>
       <ModalComponent setOpen={setShowEmailModal} open={showEmailModal}>
         <CustomEmailTemplate
+          isFileUploadShow={true}
           to=""
           cc={false}
           invite

@@ -1,0 +1,32 @@
+name: Deploy Next.js application
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+      - name: Create .env file
+        run: echo "NEXT_PUBLIC_ACC_KEY=${{ secrets.NEXT_PUBLIC_ACC_KEY }}" >> .env && echo "NEXT_PUBLIC_APP_URL=${{ secrets.NEXT_PUBLIC_APP_URL }}" >> .env && echo "NEXT_PUBLIC_BACKEND_BASE_URL=${{ secrets.NEXT_PUBLIC_BACKEND_BASE_URL }}" >> .env && echo "NEXT_PUBLIC_BUCKET=${{ secrets.NEXT_PUBLIC_BUCKET }}" >> .env && echo "NEXT_PUBLIC_BUCKET_SIGNATURE_VERSION=${{ secrets.NEXT_PUBLIC_BUCKET_SIGNATURE_VERSION }}" >> .env && echo "NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.NEXT_PUBLIC_GOOGLE_CLIENT_ID }}" >> .env && echo "NEXT_PUBLIC_JITSI_APP_ID=${{ secrets.NEXT_PUBLIC_JITSI_APP_ID }}" >> .env && echo "NEXT_PUBLIC_PAYPAL_CLIENT_ID=${{ secrets.NEXT_PUBLIC_PAYPAL_CLIENT_ID }}" >> .env && echo "NEXT_PUBLIC_REGION=${{ secrets.NEXT_PUBLIC_REGION }}" >> .env  && echo "NEXT_PUBLIC_S3_URL=${{ secrets.NEXT_PUBLIC_S3_URL }}" >> .env  && echo "NEXT_PUBLIC_SCHESTI_IMAGE_URL=${{ secrets.NEXT_PUBLIC_SCHESTI_IMAGE_URL }}" >> .env  && echo "NEXT_PUBLIC_SECRET=${{ secrets.NEXT_PUBLIC_SECRET }}" >> .env && echo "NEXT_PUBLIC_STRIPE_PUBLIC_KEY=${{ secrets.NEXT_PUBLIC_STRIPE_PUBLIC_KEY }}" >> .env
+      - name: Build docker image
+        run: docker build -t azhersaeed2020/schesti-fe .
+      - name: Login to docker hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Publish image to docker hub
+        run: docker push azhersaeed2020/schesti-fe:latest
+
+  deploy:
+    needs: build
+    runs-on: self-hosted
+    steps:
+      - name: Pull image from docker hub
+        run: docker pull azhersaeed2020/schesti-fe:latest
+      - name: Delete old container
+        run: docker rm -f schesti-fe-container
+      - name: Run docker container
+        run: docker run -d -p 3000:3000 --name schesti-fe-container azhersaeed2020/schesti-fe

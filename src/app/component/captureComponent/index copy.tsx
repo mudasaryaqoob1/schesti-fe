@@ -277,6 +277,7 @@ const CaptureComponent = ({
           if (
             urlSearch &&
             urlSearch.get('edit_id') &&
+            //@ts-ignore
             urlSearch.get('edit_id')?.length > 0
           ) {
             dispatch(

@@ -30,15 +30,13 @@ const TakeOff = () => {
   return (
     <section className="md:px-16 px-10 pt-6 pb-2">
       {/* {summaries?.length > 0 ? <Records /> : <></>} */}
-      {
-        //@ts-ignore
-        !loading &&
-        (!summaries || !Array.isArray(summaries) || !summaries?.length > 0) ? (
-          <NoTakeOff />
-        ) : (
-          <Records />
-        )
-      }
+      {!loading &&
+      //@ts-ignore
+      (!summaries || !Array.isArray(summaries) || !summaries?.length > 0) ? (
+        <NoTakeOff />
+      ) : (
+        <Records />
+      )}
       {/* <NoTakeOff /> */}
       {/* <InitialUpload /> */}
       {/* <CreateInfo /> */}
