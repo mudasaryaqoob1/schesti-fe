@@ -45,6 +45,7 @@ export function MeetingCard({ item, shouldShowJoin = true, shouldShowEdit = fals
       <CreateMeeting
         showModal={showModal}
         setShowModal={() => setShowModal(false)}
+        meeting={item}
       />
       <div className="flex justify-between shadow p-3 my-2 rounded-lg bg-white">
         <div className="space-y-1">

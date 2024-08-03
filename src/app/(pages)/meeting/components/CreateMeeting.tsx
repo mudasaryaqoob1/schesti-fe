@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 import { meetingService } from '@/app/services/meeting.service';
 import { toast } from 'react-toastify';
 import { AppDispatch } from '@/redux/store';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import WhiteButton from '@/app/component/customButton/white';
 import CustomButton from '@/app/component/customButton/button';
@@ -12,7 +12,7 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import { CloseOutlined } from '@ant-design/icons';
 import { InputComponent } from '@/app/component/customInput/Input';
 import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
-import { addNewMeetingAction } from '@/redux/meeting/meeting.slice';
+import { addNewMeetingAction, updateMeetingAction } from '@/redux/meeting/meeting.slice';
 import Description from '@/app/component/description';
 import { SelectComponent } from '@/app/component/customSelect/Select.component';
 import { dayjs, disabledDate } from '@/app/utils/date.utils';
@@ -28,6 +28,7 @@ type Props = {
   setShowModal(): void;
   onSuccess?: (_meeting: IMeeting) => void;
   isInviteOptional?: boolean;
+  meeting?: IMeeting;
 };
 
 // let timezones = Intl.supportedValuesOf('timeZone');
@@ -35,6 +36,7 @@ export function CreateMeeting({
   showModal,
   setShowModal,
   onSuccess,
+  meeting,
   isInviteOptional = false,
 }: Props) {
   const [isScheduling, setIsScheduling] = useState(false);
@@ -53,18 +55,28 @@ export function CreateMeeting({
     email: isInviteOptional
       ? Yup.array().of(Yup.string().email('is invalid\n'))
       : Yup.array()
-          .min(1)
-          .of(
-            Yup.string()
-              .email('is invalid email\n')
-              .required('Email is required')
-          )
-          .required('Email is required'),
+        .min(1)
+        .of(
+          Yup.string()
+            .email('is invalid email\n')
+            .required('Email is required')
+        )
+        .required('Email is required'),
     startDate: Yup.date().required('Start Time is required'),
   });
 
+  useEffect(() => {
+    if (meeting) {
+      setTimezone(meeting.timezone);
+    }
+  }, [meeting]);
+
   const formik = useFormik({
-    initialValues: {
+    initialValues: meeting ? {
+      topic: meeting.topic,
+      email: meeting.invitees,
+      startDate: dayjs(meeting.startDate).tz((timezone as ITimezoneOption).value).format('YYYY-MM-DDTHH:mm:ss'),
+    } : {
       topic: '',
       email: [],
       startDate: dayjs()
@@ -72,25 +84,23 @@ export function CreateMeeting({
         .format('YYYY-MM-DDTHH:mm:ss'),
     },
     validationSchema: CreateMeetingSchema,
-    enableReinitialize: false,
+    enableReinitialize: true,
     onSubmit(values) {
       setIsScheduling(true);
-      let roomName = `Schesti-${Math.random() * 1000}`;
-      meetingService
-        .httpCreateMeeting({
+      if (meeting) {
+        meetingService.httpUpdateMeeting(meeting._id, {
           startDate: dayjs(values.startDate).format('YYYY-MM-DDTHH:mm:ss'),
           endDate: dayjs(values.startDate)
             .add(40, 'minutes')
             .format('YYYY-MM-DDTHH:mm:ss'),
           invitees: values.email as unknown as string[],
-          roomName,
-          link: `${process.env.NEXT_PUBLIC_APP_URL}/meeting/${roomName}`,
-          topic: values.topic,
+          link: meeting.link,
+          roomName: meeting.roomName,
           timezone: getTimeZoneValue(timezone),
-        })
-        .then((response) => {
+          topic: values.topic
+        }).then((response) => {
           if (response.data) {
-            dispatch(addNewMeetingAction(response.data.meeting));
+            dispatch(updateMeetingAction(response.data.meeting));
             if (onSuccess) {
               onSuccess(response.data.meeting);
             }
@@ -98,11 +108,40 @@ export function CreateMeeting({
           setIsScheduling(false);
           setShowModal();
           formik.resetForm();
-        })
-        .catch(({ response }: any) => {
+        }).catch(({ response }: any) => {
           setIsScheduling(false);
           toast.error(response.data.message);
         });
+      } else {
+        let roomName = `Schesti-${Math.random() * 1000}`;
+        meetingService
+          .httpCreateMeeting({
+            startDate: dayjs(values.startDate).format('YYYY-MM-DDTHH:mm:ss'),
+            endDate: dayjs(values.startDate)
+              .add(40, 'minutes')
+              .format('YYYY-MM-DDTHH:mm:ss'),
+            invitees: values.email as unknown as string[],
+            roomName,
+            link: `${process.env.NEXT_PUBLIC_APP_URL}/meeting/${roomName}`,
+            topic: values.topic,
+            timezone: getTimeZoneValue(timezone),
+          })
+          .then((response) => {
+            if (response.data) {
+              dispatch(addNewMeetingAction(response.data.meeting));
+              if (onSuccess) {
+                onSuccess(response.data.meeting);
+              }
+            }
+            setIsScheduling(false);
+            setShowModal();
+            formik.resetForm();
+          })
+          .catch(({ response }: any) => {
+            setIsScheduling(false);
+            toast.error(response.data.message);
+          });
+      }
     },
   });
 
@@ -165,14 +204,14 @@ export function CreateMeeting({
               hasError={formik.touched.email && Boolean(formik.errors.email)}
               errorMessage={
                 formik.touched.email &&
-                Boolean(formik.errors.email) &&
-                Array.isArray(formik.errors.email)
+                  Boolean(formik.errors.email) &&
+                  Array.isArray(formik.errors.email)
                   ? formik.errors.email
-                      .map(
-                        (item: string, idx) =>
-                          `'${formik.values.email![idx]}' ${item}`
-                      )
-                      .toString()
+                    .map(
+                      (item: string, idx) =>
+                        `'${formik.values.email![idx]}' ${item}`
+                    )
+                    .toString()
                   : (formik.errors.email as string)
               }
               field={{
@@ -196,8 +235,8 @@ export function CreateMeeting({
                 showTime: { format: 'HH:mm' },
                 value: formik.values.startDate
                   ? dayjs(formik.values.startDate).tz(
-                      (timezone as ITimezoneOption).value
-                    )
+                    (timezone as ITimezoneOption).value
+                  )
                   : undefined,
                 onChange(date) {
                   formik.setFieldValue(
