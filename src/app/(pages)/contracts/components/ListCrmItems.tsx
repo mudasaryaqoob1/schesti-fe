@@ -4,12 +4,15 @@ import { CrmModuleType, CrmType } from '@/app/interfaces/crm/crm.interface';
 import crmService from '@/app/services/crm/crm.service';
 import { Skeleton } from 'antd';
 import { useEffect, useState } from 'react';
-import { formatCrmModuleType } from '../../utils';
+import { formatCrmModuleType } from '../../crm/utils';
+import { ContractPartyType } from '@/app/interfaces/crm/crm-contract.interface';
 
 type Props = {
   title: string;
   onClose: () => void;
-  onItemClick: (_item: CrmType) => void;
+  onItemClick: (
+    _item: Omit<ContractPartyType, '_id' | 'color' | 'tools' | 'type'>
+  ) => void;
 };
 export function ListCrmItems({ title, onClose, onItemClick }: Props) {
   const [items, setItems] = useState<CrmType[]>([]);
@@ -27,6 +30,20 @@ export function ListCrmItems({ title, onClose, onItemClick }: Props) {
       setItems(response.data);
     }
     setIsLoading(false);
+  }
+
+  function getItemName(item: CrmType) {
+    if (item.module === 'partners' || item.module === 'subcontractors') {
+      return `${item.companyRep}`;
+    }
+    return `${item.firstName} ${item.lastName || ''}`;
+  }
+
+  function getItemCompany(item: CrmType) {
+    if (item.module === 'partners' || item.module === 'subcontractors') {
+      return `${item.name}`;
+    }
+    return `${item.companyName}`;
   }
 
   return (
@@ -65,21 +82,28 @@ export function ListCrmItems({ title, onClose, onItemClick }: Props) {
             <div
               key={item._id}
               className="p-3 my-1 border-b hover:bg-schestiPrimaryBG cursor-pointer hover:rounded-md"
-              onClick={() => onItemClick(item)}
+              onClick={() =>
+                onItemClick({
+                  companyName: getItemCompany(item),
+                  email: item.email,
+                  name: getItemName(item),
+
+                })
+              }
             >
               <div className="flex font-semibold text-schestiPrimaryBlack text-xs items-center space-x-3">
                 <p className="">
                   {' '}
                   <span className="text-schestiLightBlack">Name: </span>{' '}
                   {item.module === 'subcontractors' ||
-                  item.module === 'partners'
+                    item.module === 'partners'
                     ? item.companyRep
                     : `${item.firstName} ${item.lastName || ''}`}
                 </p>
                 <p>
                   <span className="text-schestiLightBlack">Company: </span>{' '}
                   {item.module === 'subcontractors' ||
-                  item.module === 'partners'
+                    item.module === 'partners'
                     ? item.name
                     : item.companyName}
                 </p>

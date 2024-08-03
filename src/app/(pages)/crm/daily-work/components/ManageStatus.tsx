@@ -92,7 +92,6 @@ export function ManageStatus({
         toast.success('Status updated successfully');
         onUpdate(response.data);
         formik.resetForm();
-        setShowModal(false);
       }
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
@@ -115,6 +114,7 @@ export function ManageStatus({
         if (response.data) {
           toast.success('Status deleted successfully');
           onDelete(response.data);
+          formik.resetForm();
         }
       })
       .catch((error) => {
@@ -179,15 +179,17 @@ export function ManageStatus({
                           }}
                           title={
                             <div>
-                              <ChooseColor
-                                onSelectColor={(color) => {
-                                  formik.setFieldValue('color', color);
-                                  formik.setFieldValue('name', status.name);
-                                  formik.setFieldValue('_id', status._id);
-                                }}
-                                itemColor={status.color}
-                              />
-                              <Spin spinning={false}>
+                              <Spin spinning={isSubmitting}>
+                                <ChooseColor
+                                  onSelectColor={(color) => {
+                                    updateStatus({
+                                      _id: status._id,
+                                      name: status.name,
+                                      color,
+                                    });
+                                  }}
+                                  itemColor={status.color}
+                                />
                                 <div
                                   onClick={(e) => {
                                     e.stopPropagation();

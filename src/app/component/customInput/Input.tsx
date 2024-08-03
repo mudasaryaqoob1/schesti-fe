@@ -1,4 +1,4 @@
-import { Input, type InputProps } from 'antd';
+import { Input, type InputRef, type InputProps } from 'antd';
 import clsx, { ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -13,7 +13,7 @@ type Props = {
   maxLength?: number;
   inputStyle?: ClassValue;
   hasError?: boolean;
-  field?: InputProps;
+  field?: InputProps & React.RefAttributes<InputRef>;
   type: string;
   suffix?: any;
   errorMessage?: string;

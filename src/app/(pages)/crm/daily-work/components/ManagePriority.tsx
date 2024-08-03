@@ -92,7 +92,6 @@ export function ManagePriority({
         toast.success('Priority updated successfully');
         onUpdate(response.data);
         formik.resetForm();
-        setShowModal(false);
       }
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
@@ -115,6 +114,7 @@ export function ManagePriority({
         if (response.data) {
           toast.success('Priority deleted successfully');
           onDelete(response.data);
+          formik.resetForm();
         }
       })
       .catch((error) => {
@@ -179,15 +179,17 @@ export function ManagePriority({
                           }}
                           title={
                             <div>
-                              <ChooseColor
-                                onSelectColor={(color) => {
-                                  formik.setFieldValue('color', color);
-                                  formik.setFieldValue('name', priority.name);
-                                  formik.setFieldValue('_id', priority._id);
-                                }}
-                                itemColor={priority.color}
-                              />
-                              <Spin spinning={false}>
+                              <Spin spinning={isSubmitting}>
+                                <ChooseColor
+                                  onSelectColor={(color) => {
+                                    updatePriority({
+                                      _id: priority._id,
+                                      name: priority.name,
+                                      color,
+                                    });
+                                  }}
+                                  itemColor={priority.color}
+                                />
                                 <div
                                   onClick={(e) => {
                                     e.stopPropagation();

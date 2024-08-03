@@ -8,14 +8,18 @@ import { InputComponent } from '@/app/component/customInput/Input';
 import { Spin, Tabs, Upload } from 'antd';
 import CustomButton from '@/app/component/customButton/button';
 import { toast } from 'react-toastify';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   ChooseFont,
   ChooseFontType,
   SignatureFonts,
 } from '@/app/component/fonts';
 import AwsS3 from '@/app/utils/S3Intergration';
-import { LoadingOutlined } from '@ant-design/icons';
+import { CloseOutlined, LoadingOutlined } from '@ant-design/icons';
+import { ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
+import { GetStandardToolIcon } from './GetIcon';
+import SignaturePad from 'react-signature-pad-wrapper';
+import { FileInterface } from '@/app/interfaces/file.interface';
 
 type Props = {
   item: ToolState;
@@ -25,6 +29,8 @@ type Props = {
   onClose?: () => void;
   selectedTool: ToolState | null;
   onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
+  contract: ICrmContract;
+  color: string;
 };
 export function StandardToolItem({
   item,
@@ -34,6 +40,8 @@ export function StandardToolItem({
   onClose,
   selectedTool,
   onChange,
+  contract,
+  color,
 }: Props) {
   if (mode === 'add-values') {
     return (
@@ -54,17 +62,21 @@ export function StandardToolItem({
             setOpen={() => {}}
             width="300px"
             key={selectedTool.tool}
-            className={'!bg-transparent'}
+            className={'!bg-transparent !h-fit'}
           >
             <Popups
               title="Add Standard Tools"
               onClose={onClose ? onClose : () => {}}
             >
-              <StandardToolInput item={selectedTool} onChange={onChange} />
+              <StandardToolInput
+                contract={contract}
+                item={selectedTool}
+                onChange={onChange}
+              />
             </Popups>
           </ModalComponent>
         ) : null}
-        <Item item={item} mode={mode} onClick={onClick} />
+        <Item color={color} item={item} mode={mode} onClick={onClick} />
       </div>
     );
   } else if (mode === 'view-fields' || mode === 'view-values') {
@@ -79,11 +91,11 @@ export function StandardToolItem({
           backgroundColor: 'transparent',
         }}
       >
-        <Item item={item} mode={mode} />
+        <Item color={color} item={item} mode={mode} />
       </div>
     );
   } else if (mode === 'edit-fields') {
-    return <Item item={item} mode={mode} onDelete={onDelete} />;
+    return <Item color={color} item={item} mode={mode} onDelete={onDelete} />;
   }
   return null;
 }
@@ -92,9 +104,10 @@ type ItemProps = {
   item: ToolState;
   mode: PdfContractMode;
   onDelete?: () => void;
+  color: string;
   onClick?: () => void;
 };
-function Item({ item, mode, onClick, onDelete }: ItemProps) {
+function Item({ item, mode, onClick, onDelete, color }: ItemProps) {
   return (
     <div
       onClick={() => {
@@ -104,28 +117,25 @@ function Item({ item, mode, onClick, onDelete }: ItemProps) {
 
         onClick?.();
       }}
-      className={`p-3 rounded-lg border-schestiPrimary border-2 h-fit relative font-semibold ${item.value ? 'text-schestiPrimaryBlack' : 'text-schestiPrimary'} flex items-center space-x-2 border-dashed bg-schestiLightPrimary m-0`}
+      className={`p-3 rounded-lg border-2 h-fit text-sm relative font-semibold  flex items-center space-x-2 border-dashed m-0`}
+      style={{
+        borderColor: `${color}`,
+        backgroundColor: 'white',
+        color,
+      }}
     >
-      <Image
-        src={`/${item.tool}.svg`}
-        width={16}
-        height={16}
-        alt={`${item.tool}`}
-      />
+      <GetStandardToolIcon type={item.tool} />
 
       <RenderStandardInputValue item={item} mode={mode} />
 
       {mode === 'edit-fields' && (
-        <Image
+        <CloseOutlined
           onClick={(e) => {
             onDelete?.();
             e.stopPropagation();
             console.log('Delete');
           }}
-          src={'/close.svg'}
-          className="cursor-pointer p-0.5 absolute -top-2 bg-schestiPrimary rounded-full -right-1"
-          width={16}
-          height={16}
+          className="cursor-pointer p-0.5 absolute text-white -top-2 bg-black rounded-full -right-1 text-sm"
           alt="delete"
         />
       )}
@@ -136,11 +146,10 @@ function Item({ item, mode, onClick, onDelete }: ItemProps) {
 type InputProps = {
   item: ToolState;
   onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
+  contract: ICrmContract;
 };
 
-function StandardToolInput({ item, onChange }: InputProps) {
-  const [isUploadingStamp, setIsUploadingStamp] = useState(false);
-
+function StandardToolInput({ item, onChange, contract }: InputProps) {
   if (item.tool === 'date') {
     return (
       <DateInputComponent
@@ -157,73 +166,15 @@ function StandardToolInput({ item, onChange }: InputProps) {
       />
     );
   } else if (item.tool === 'initials') {
-    return <GetInitialToolValue item={item} onChange={onChange} />;
-  } else if (item.tool === 'stamp') {
     return (
-      <Spin spinning={isUploadingStamp} indicator={<LoadingOutlined spin />}>
-        <Upload.Dragger
-          name={'file'}
-          accept=".png, .jpeg, .jpg,"
-          beforeUpload={async (_file, FileList) => {
-            for (const file of FileList) {
-              const isLessThan500MB = file.size < 500 * 1024 * 1024; // 500MB in bytes
-              if (!isLessThan500MB) {
-                toast.error('File size should be less than 500MB');
-                return false;
-              }
-            }
-            if (onChange) {
-              setIsUploadingStamp(true);
-              const url = await new AwsS3(_file).getS3URL();
-              onChange({
-                ...item,
-                tool: 'stamp',
-                value: {
-                  extension: _file.name.split('.').pop() || '',
-                  name: _file.name,
-                  type: _file.type,
-                  url: url,
-                },
-              });
-
-              setIsUploadingStamp(false);
-            }
-            return false;
-          }}
-          style={{
-            borderStyle: 'dashed',
-            borderWidth: 2,
-            marginTop: 12,
-            backgroundColor: 'transparent',
-            borderColor: '#E2E8F0',
-          }}
-          itemRender={() => {
-            return null;
-          }}
-        >
-          <p className="ant-upload-drag-icon">
-            <Image
-              src={'/uploadcloudcyan.svg'}
-              width={50}
-              height={50}
-              alt="upload"
-            />
-          </p>
-          <p className="text-[18px] font-semibold py-2 leading-5 text-[#2C3641]">
-            Drop your files here, or browse
-          </p>
-
-          <p className="text-sm font-normal text-center py-2 leading-5 text-[#2C3641]">
-            or
-          </p>
-
-          <CustomButton
-            text="Select File"
-            className="!w-fit !px-6 !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
-          />
-        </Upload.Dragger>
-      </Spin>
+      <GetInitialToolValue
+        contract={contract}
+        item={item}
+        onChange={onChange}
+      />
     );
+  } else if (item.tool === 'comment') {
+    return <GetCommentToolValue item={item} onChange={onChange} />;
   } else if (item.tool === 'signature') {
     return <GetSignatureValue item={item} onChange={onChange} />;
   }
@@ -244,7 +195,7 @@ function RenderStandardInputValue({
         return <p className="capitalize">{item.value}</p>;
       } else if ('url' in item.value) {
         return (
-          <Image alt="stamp" src={item.value.url} width={20} height={20} />
+          <Image alt="comment" src={item.value.url} width={20} height={20} />
         );
       } else if (item.tool === 'signature' && 'font' in item.value) {
         return (
@@ -322,7 +273,91 @@ function TypeSignature({ onChange, item }: TypeSignatureProps) {
   );
 }
 
+// function getReceiverName(receiver: ICrmContract['receiver']) {
+//   if (typeof receiver !== 'string') {
+//     if (
+//       receiver.module === 'subcontractors' ||
+//       receiver.module === 'partners'
+//     ) {
+//       return receiver.companyRep;
+//     }
+//     return `${receiver.firstName} ${receiver.lastName || ''}`;
+//   }
+//   return '';
+// }
 function GetInitialToolValue({
+  item,
+  onChange,
+}: {
+  onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
+  item: ToolState;
+  contract: ICrmContract;
+}) {
+  const [value, setValue] = useState(
+    typeof item.value === 'string' || typeof item.value === 'undefined'
+      ? item.value
+      : ''
+  );
+  const [error, setError] = useState<string>('');
+
+  // const senderInitial = typeof contract.user === 'string' ? false : contract.user.name.split(' ').map(name => name ? name[0].toUpperCase() : "").join('');
+  // const receiverInitial = typeof contract.receiver === 'string' ? false : getReceiverName(contract.receiver).split(' ').map(name => name ? name[0].toUpperCase() : "").join('');
+  // console.log({ senderInitial, receiverInitial, value });
+  // useEffect(() => {
+  //   if (value) {
+  //     if (value.length && (value == senderInitial || value == receiverInitial)) {
+  //       setError('');
+  //     } else {
+  //       setError('Initials should be same as sender or receiver initials');
+  //     }
+  //   }
+  // }, [receiverInitial, senderInitial, value]);
+
+  return (
+    <div className="space-y-3 h-[160px]">
+      <div>
+        <InputComponent
+          label="Initials"
+          name="initials"
+          type="text"
+          placeholder="John Doe e.g JD"
+          field={{
+            value: value,
+            onChange(e) {
+              setValue(e.target.value);
+            },
+            onBlur: () => {
+              if (!value) {
+                setError('Initials is required');
+              }
+            },
+          }}
+          hasError={Boolean(error.length)}
+          errorMessage={error}
+        />
+        {/* <span className='text-xs text-schestiLightBlack'>Use  {senderInitial} or {receiverInitial}</span> */}
+      </div>
+
+      <div className="flex justify-end">
+        <CustomButton
+          text="Add Initials"
+          disabled={Boolean(error.length)}
+          className="!w-fit !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
+          onClick={() =>
+            onChange &&
+            onChange({
+              ...item,
+              tool: 'initials',
+              value: value,
+            })
+          }
+        />
+      </div>
+    </div>
+  );
+}
+
+function GetCommentToolValue({
   item,
   onChange,
 }: {
@@ -337,10 +372,10 @@ function GetInitialToolValue({
   return (
     <div className="space-y-3">
       <InputComponent
-        label="Initials"
-        name="initials"
+        label="Comments"
+        name="Comments"
         type="text"
-        placeholder="Initials"
+        placeholder="Comments"
         field={{
           value: value,
           onChange(e) {
@@ -351,13 +386,13 @@ function GetInitialToolValue({
 
       <div className="flex justify-end">
         <CustomButton
-          text="Add Initials"
+          text="Add Comment"
           className="!w-fit !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
           onClick={() =>
             onChange &&
             onChange({
               ...item,
-              tool: 'initials',
+              tool: 'comment',
               value: value,
             })
           }
@@ -382,7 +417,7 @@ function GetSignatureValue({
       <Tabs
         activeKey={activeTab}
         onChange={setActiveTab}
-        items={['type', 'upload'].map((type) => {
+        items={['type', 'write', 'upload'].map((type) => {
           return {
             key: type,
             label:
@@ -397,7 +432,7 @@ function GetSignatureValue({
         })}
       />
       {activeTab === 'upload' ? (
-        <div className="h-[400px]">
+        <div className="h-[400px] flex flex-col justify-center">
           <Spin
             spinning={isUploadingSignature}
             indicator={<LoadingOutlined spin />}
@@ -466,7 +501,87 @@ function GetSignatureValue({
         </div>
       ) : activeTab === 'type' ? (
         <TypeSignature item={item} onChange={onChange} />
+      ) : activeTab === 'write' ? (
+        <WriteSignature item={item} onChange={onChange} />
       ) : null}
+    </div>
+  );
+}
+
+function WriteSignature({
+  item,
+  onChange,
+}: {
+  onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
+  item: ToolState;
+}) {
+  const [isUploading, setIsUploading] = useState(false);
+  const ref = useRef<SignaturePad | null>(null);
+
+  function handleClear() {
+    if (ref.current) {
+      ref.current.instance.clear();
+    }
+  }
+
+  async function handleSave() {
+    if (ref.current) {
+      if (ref.current.isEmpty()) {
+        toast.error('Signature cannot be empty');
+      } else {
+        setIsUploading(true);
+        const base64 = ref.current.toDataURL();
+        try {
+          const url = await new AwsS3(base64, 'signatures').getS3UrlFromBase64(
+            base64
+          );
+          const data: FileInterface = {
+            extension: 'png',
+            name: `signature-${Date.now()}.png`,
+            type: 'image/png',
+            url: url,
+          };
+          onChange?.({
+            ...item,
+            tool: 'signature',
+            value: data,
+          });
+        } catch (error) {
+          toast.error('Error while uploading the signature');
+          console.log(error);
+        } finally {
+          setIsUploading(false);
+        }
+      }
+    }
+  }
+
+  return (
+    <div className="h-[400px] space-y-2">
+      <div className="border w-full p-2  h-[340px] border-schestiLightPrimary">
+        <SignaturePad
+          canvasProps={{
+            className: 'w-full h-full',
+          }}
+          // @ts-ignore
+          ref={(cur) => {
+            ref.current = cur;
+          }}
+        />
+      </div>
+      <div className="flex justify-end space-x-3">
+        <CustomButton
+          text="Clear"
+          className="!w-fit !bg-white !text-schestiPrimary !py-2 !border-schestiLightPrimary"
+          onClick={handleClear}
+        />
+        <CustomButton
+          text="Add Signature"
+          className="!w-fit !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
+          onClick={handleSave}
+          isLoading={isUploading}
+        />
+      </div>
     </div>
   );
 }

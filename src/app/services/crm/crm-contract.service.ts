@@ -1,18 +1,16 @@
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { HttpService } from '../base.service';
-import { ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
-
-type CreateContractData = Omit<
+import {
+  ContractPartyType,
   ICrmContract,
-  | '_id'
-  | 'createdAt'
-  | 'updatedAt'
-  | 'user'
-  | 'companyPdf'
-  | 'userPdf'
-  | 'senderTools'
-  | 'receiverTools'
+} from '@/app/interfaces/crm/crm-contract.interface';
+
+export type CreateContractData = Omit<
+  ICrmContract,
+  '_id' | 'createdAt' | 'updatedAt' | 'user' | 'companyPdf' | 'userPdf'
 >;
+
+export type UpdateContractData = CreateContractData & {};
 class CrmContractService extends HttpService {
   private endPoint = 'api/crm/contract';
 
@@ -20,6 +18,12 @@ class CrmContractService extends HttpService {
     data: CreateContractData
   ): Promise<IResponseInterface<ICrmContract>> =>
     this.post(this.endPoint, data);
+
+  httpUpdateContract = (
+    id: string,
+    data: UpdateContractData
+  ): Promise<IResponseInterface<ICrmContract>> =>
+    this.put(`${this.endPoint}/${id}`, data);
 
   httpFindContractById = (
     id: string
@@ -33,19 +37,19 @@ class CrmContractService extends HttpService {
 
   httpSendContract = (
     id: string,
-    tools: ICrmContract['senderTools']
+    receipts: ContractPartyType[]
   ): Promise<IResponseInterface<ICrmContract>> =>
-    this.post(`${this.endPoint}/send/${id}`, { tools });
+    this.post(`${this.endPoint}/send/${id}`, { receipts });
 
   httpSignContract = (
     id: string,
-    tools: ICrmContract['senderTools']
+    receipt: ContractPartyType
   ): Promise<IResponseInterface<ICrmContract>> =>
-    this.post(`${this.endPoint}/sign/${id}`, { tools });
+    this.post(`${this.endPoint}/sign/${id}`, { receipt });
 
   httpSenderUpdateTools = (
     id: string,
-    tools: ICrmContract['senderTools']
+    tools: ContractPartyType[]
   ): Promise<IResponseInterface<ICrmContract>> =>
     this.post(`${this.endPoint}/sender-tools/${id}`, { tools });
 

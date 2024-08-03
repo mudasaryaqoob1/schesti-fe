@@ -12,11 +12,18 @@ import DraggableItem from './DraggableItem';
 import { StandardToolItem } from './standard-tools-items';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import DraggableTool from './DraggableTool';
-import CustomButton from '@/app/component/customButton/button';
 import { ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { toast } from 'react-toastify';
+import { hexToRgba } from '@/app/utils/colors.utils';
+import { ToolButton } from './ToolButton';
+import {
+  CalendarOutlined,
+  CommentOutlined,
+  FontSizeOutlined,
+  SignatureOutlined,
+} from '@ant-design/icons';
 
 type Props = {
   mode: PdfContractMode;
@@ -24,10 +31,11 @@ type Props = {
   contract: ICrmContract;
   tools: ToolState[];
   setTools: React.Dispatch<React.SetStateAction<ToolState[]>>;
+  color?: string;
 };
 
 export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
-  ({ mode, pdfFile, tools, setTools, contract }, ref) => {
+  ({ mode, pdfFile, tools, setTools, contract, color = '#007ab6' }, ref) => {
     // const [activePage, setActivePage] = useState<null | number>(1)
     // const canvasRefs = useRef<HTMLCanvasElement[]>([]);
     const { PDFJs } = usePDFJS(async () => {});
@@ -56,41 +64,49 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
 
     async function loadPdf() {
       if (PDFJs) {
-        const pdf = await PDFJs.getDocument(pdfFile).promise;
+        try {
+          const pdf = await PDFJs.getDocument(pdfFile).promise;
 
-        for (let index = 1; index <= pdf.numPages; index++) {
-          const page = await pdf.getPage(index);
-          const viewport = page.getViewport({ scale: 1.5 });
+          for (let index = 1; index <= pdf.numPages; index++) {
+            const page = await pdf.getPage(index);
+            const viewport = page.getViewport({ scale: 1.5 });
 
-          const canvas = document.createElement('canvas');
-          canvas.height = viewport.height;
-          canvas.width = viewport.width;
-          canvas.id = `${index}`;
-          canvas.dataset.pageNo = index.toString();
+            const canvas = document.createElement('canvas');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+            canvas.id = `${index}`;
+            canvas.dataset.pageNo = index.toString();
 
-          const context = canvas.getContext('2d')!;
-          const renderContext = {
-            canvasContext: context!,
-            viewport: viewport,
-          };
-          // canvasRefs.current.push(canvas);
+            const context = canvas.getContext('2d')!;
+            const renderContext = {
+              canvasContext: context!,
+              viewport: viewport,
+            };
+            // canvasRefs.current.push(canvas);
 
-          await page.render(renderContext).promise;
+            await page.render(renderContext).promise;
 
-          // Add id to the canvas
-          const textCanvas = document.createElement('canvas');
-          textCanvas.height = viewport.height;
-          textCanvas.width = viewport.width;
-          const textContext = textCanvas.getContext('2d')!;
-          textContext.font = '16px Arial';
-          textContext.fillStyle = 'black';
-          textContext.fillText(`Schesti-Contract-ID: ${contract._id}`, 30, 30);
+            // Add id to the canvas
+            const textCanvas = document.createElement('canvas');
+            textCanvas.height = viewport.height;
+            textCanvas.width = viewport.width;
+            const textContext = textCanvas.getContext('2d')!;
+            textContext.font = '16px Arial';
+            textContext.fillStyle = 'black';
+            textContext.fillText(
+              `Schesti-Contract-ID: ${contract._id}`,
+              30,
+              30
+            );
 
-          // Overlay the text canvas on the main canvas
-          context.drawImage(textCanvas, 0, 0);
-          if (containerRef.current) {
-            containerRef.current.appendChild(canvas);
+            // Overlay the text canvas on the main canvas
+            context.drawImage(textCanvas, 0, 0);
+            if (containerRef.current) {
+              containerRef.current.appendChild(canvas);
+            }
           }
+        } catch (error) {
+          toast.error('Unable to load the pdf');
         }
       }
     }
@@ -106,14 +122,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
     }
 
     function handleRemoveTool(item: ToolState) {
-      const isItemInContract =
-        contract.receiverTools.some((tool) => tool.id === item.id) ||
-        contract.senderTools.some((tool) => tool.id === item.id);
-      if (isItemInContract) {
-        toast.error('You can not remove already saved');
-      } else {
-        setTools((prev) => prev.filter((tool) => tool.id !== item.id));
-      }
+      setTools((prev) => prev.filter((tool) => tool.id !== item.id));
     }
 
     function handleItemClick(item: ToolState) {
@@ -211,19 +220,24 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
                       mode={mode}
                       item={item}
                       key={item.id}
+                      contract={contract}
+                      color={color}
                     />
                   ) : mode === 'edit-fields' ? (
                     <DraggableItem type={item.tool} key={item.id} data={item}>
                       <StandardToolItem
                         selectedTool={null}
+                        color={color}
                         mode={mode}
                         item={item}
                         key={item.id}
                         onDelete={() => handleRemoveTool(item)}
+                        contract={contract}
                       />
                     </DraggableItem>
                   ) : mode === 'view-fields' || mode === 'view-values' ? (
                     <StandardToolItem
+                      color={color}
                       onClick={() => {}}
                       onClose={() => {}}
                       selectedTool={selectedTool}
@@ -231,6 +245,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
                       mode={mode}
                       item={item}
                       key={item.id}
+                      contract={contract}
                     />
                   ) : null;
                 })}
@@ -244,42 +259,50 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
                 className="text-xl  font-semibold"
               />
               <DraggableTool type="signature">
-                <CustomButton
+                <ToolButton
                   text="Signature"
-                  className="!bg-schestiLightPrimary !border-schestiLightPrimary !text-schestiPrimaryBlack"
-                  icon="/signature.svg"
-                  iconwidth={16}
-                  iconheight={16}
+                  Icon={<SignatureOutlined />}
+                  style={{
+                    backgroundColor: `${hexToRgba(color, 0.1)}`,
+                    border: `1px solid ${hexToRgba(color, 0.1)}`,
+                    color,
+                  }}
                 />
               </DraggableTool>
 
               <DraggableTool type="initials">
-                <CustomButton
+                <ToolButton
                   text="Initials"
-                  className="!bg-schestiLightPrimary !border-schestiLightPrimary !text-schestiPrimaryBlack"
-                  icon="/initials.svg"
-                  iconwidth={16}
-                  iconheight={16}
+                  style={{
+                    backgroundColor: `${hexToRgba(color, 0.1)}`,
+                    border: `1px solid ${hexToRgba(color, 0.1)}`,
+                    color,
+                  }}
+                  Icon={<FontSizeOutlined />}
                 />
               </DraggableTool>
 
-              <DraggableTool type="stamp">
-                <CustomButton
+              <DraggableTool type="comment">
+                <ToolButton
                   text="Comments"
-                  className="!bg-schestiLightPrimary !border-schestiLightPrimary !text-schestiPrimaryBlack"
-                  icon="/stamp.svg"
-                  iconwidth={16}
-                  iconheight={16}
+                  style={{
+                    backgroundColor: `${hexToRgba(color, 0.1)}`,
+                    border: `1px solid ${hexToRgba(color, 0.1)}`,
+                    color,
+                  }}
+                  Icon={<CommentOutlined />}
                 />
               </DraggableTool>
 
               <DraggableTool type="date">
-                <CustomButton
+                <ToolButton
                   text="Date"
-                  className="!bg-schestiLightPrimary !border-schestiLightPrimary !text-schestiPrimaryBlack"
-                  icon="/date.svg"
-                  iconwidth={16}
-                  iconheight={16}
+                  style={{
+                    backgroundColor: `${hexToRgba(color, 0.1)}`,
+                    border: `1px solid ${hexToRgba(color, 0.1)}`,
+                    color,
+                  }}
+                  Icon={<CalendarOutlined />}
                 />
               </DraggableTool>
             </div>

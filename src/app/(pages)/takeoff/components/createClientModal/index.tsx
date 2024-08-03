@@ -243,7 +243,7 @@ const ScaleModal = ({
                     <PhoneNumberInputWithLable
                       label="Phone Number"
                       onChange={(val) => setFieldValue('phone', val)}
-                      value={values.phone}
+                      value={values.phone as any}
                       onBlur={() => setFieldTouched('phone', true)}
                       hasError={touched.phone && Boolean(errors.phone)}
                       errorMessage={
