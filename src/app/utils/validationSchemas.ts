@@ -101,3 +101,20 @@ export const OwnerSchema: any = Yup.object({
   industry: Yup.string().optional(),
   employee: Yup.number().positive('Must have 1 Employee').optional(),
 });
+
+
+export const EducationalSchema = Yup.object({
+  address: Yup.string().required('Address is required'),
+  country: Yup.string().required('Country is required'),
+  state: Yup.string().required('State is required'),
+  city: Yup.string().required("City is required"),
+  phone: Yup.string()
+    // @ts-ignore
+    .phone('Invalid Phone Number')
+    .required('Phone Number is required'),
+  university: Yup.string().required('University is required'),
+  educationalDocuments: Yup.array(
+    Yup.mixed()
+  ).min(1, "Education Documents is required").required('Education Documents is required'),
+
+})

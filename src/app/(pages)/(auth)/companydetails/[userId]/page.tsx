@@ -26,6 +26,7 @@ import AwsS3 from '@/app/utils/S3Intergration';
 import { USER_ROLES_ENUM } from '@/app/constants/constant';
 import {
   ContractorSchema,
+  EducationalSchema,
   OwnerSchema,
   SubContractorSchema,
 } from '@/app/utils/validationSchemas';
@@ -46,6 +47,7 @@ const initialValues: IRegisterCompany = {
   city: '',
   state: '',
   country: 'US',
+  address: '',
 };
 
 const CompanyDetails = () => {
@@ -66,7 +68,7 @@ const CompanyDetails = () => {
   // const [phoneNumberErr, setPhoneNumberErr] = useState<string>('');
   const [companyLogoErr, setCompanyLogoErr] = useState<string>('');
 
-  console.log(userData, 'userDatauserData');
+
 
   useEffect(() => {
     if (!isObjectId(userId) && !isEmpty(userId)) {
@@ -91,6 +93,21 @@ const CompanyDetails = () => {
         console.error('Error uploading documents:', error);
       }
     }
+    if (values.educationalDocuments) {
+      const filesData = values.educationalDocuments.map(async (file) => {
+        const url = await new AwsS3(
+          file,
+          'documents/post-project/'
+        ).getS3URL();
+        return {
+          url,
+          name: file.name,
+          type: file.type,
+          extension: file.name.split('.').pop(),
+        };
+      });
+      values.educationalDocuments = await Promise.all(filesData);
+    }
 
     let result: any = await dispatch(
       addCompanyDetail({ ...values, userId: userId })
@@ -107,6 +124,8 @@ const CompanyDetails = () => {
         router.push('/trades');
       } else if (userData?.user?.userRole === CONTRACTOR || userData?.user?.userRole === USER_ROLES_ENUM.VENDOR || userData?.user?.userRole === USER_ROLES_ENUM.ARCHITECT) {
         router.push('/verification');
+      } else if ((userData?.user?.userRole === USER_ROLES_ENUM.PROFESSOR || userData?.user?.userRole === USER_ROLES_ENUM.STUDENT) && userData?.user?.isActive === 'pending') {
+        router.push('/pending');
       }
     } else {
       setIsLoading(false);
@@ -144,8 +163,10 @@ const CompanyDetails = () => {
       return OwnerSchema;
     } else if (userData?.user?.userRole == SUBCONTRACTOR) {
       return SubContractorSchema;
-    } else if (userData?.user?.userRole == CONTRACTOR) {
+    } else if (userData?.user?.userRole == CONTRACTOR || userData?.user?.userRole == USER_ROLES_ENUM.VENDOR || userData?.user?.userRole == USER_ROLES_ENUM.ARCHITECT) {
       return ContractorSchema;
+    } else if (userData?.user?.userRole == USER_ROLES_ENUM.PROFESSOR || userData?.user?.userRole == USER_ROLES_ENUM.STUDENT) {
+      return EducationalSchema;
     }
   }, [userData]);
 
@@ -198,7 +219,7 @@ const CompanyDetails = () => {
                   // validateMessages={formik.handleSubmit}
                   >
                     <div className="flex flex-col gap-4">
-                      {selectedUserRole != OWNER && (
+                      {(selectedUserRole != OWNER && userData?.user?.userRole != USER_ROLES_ENUM.PROFESSOR && userData?.user?.userRole != USER_ROLES_ENUM.STUDENT) ? (
                         <FormControl
                           control="input"
                           label="Company Name"
@@ -206,7 +227,7 @@ const CompanyDetails = () => {
                           name="companyName"
                           placeholder="Enter Company Name"
                         />
-                      )}
+                      ) : null}
 
                       <FormControl
                         control="input"
@@ -238,7 +259,8 @@ const CompanyDetails = () => {
                       </div>
                       {selectedUserRole === OWNER ||
                         selectedUserRole === CONTRACTOR ||
-                        selectedUserRole === SUBCONTRACTOR ? (
+                        selectedUserRole === SUBCONTRACTOR || selectedUserRole === USER_ROLES_ENUM.VENDOR || selectedUserRole === USER_ROLES_ENUM.ARCHITECT
+                        || selectedUserRole === USER_ROLES_ENUM.PROFESSOR || selectedUserRole === USER_ROLES_ENUM.STUDENT ? (
                         <>
                           <div className="flex items-center space-x-1 justify-between">
                             <div className="flex-1">
@@ -362,7 +384,7 @@ const CompanyDetails = () => {
                         />
                       ) : null}
                       {(selectedUserRole == CONTRACTOR ||
-                        selectedUserRole == SUBCONTRACTOR) && (
+                        selectedUserRole == SUBCONTRACTOR || selectedUserRole == USER_ROLES_ENUM.VENDOR || selectedUserRole == USER_ROLES_ENUM.ARCHITECT) && (
                           <>
                             <FormControl
                               control="input"
@@ -443,6 +465,97 @@ const CompanyDetails = () => {
                           </>
                         )}
                     </div>
+
+
+                    {
+                      selectedUserRole === USER_ROLES_ENUM.PROFESSOR || selectedUserRole === USER_ROLES_ENUM.STUDENT ? (
+                        <div className='mt-2 space-y-3 '>
+                          <FormControl
+                            control="input"
+                            label="University Name"
+                            type="text"
+                            name="university"
+                            placeholder="Enter University Name"
+                          />
+                          <div>
+                            <label htmlFor="myInput">Student/Professor University ID Card</label>
+                          </div>
+                          {formik.values.educationalDocuments && formik.values.educationalDocuments.length > 0 ? (
+                            <div className="grid grid-cols-2 gap-2">
+                              {formik.values.educationalDocuments.map((doc, index) => (
+                                <div key={index} className="w-fit">
+                                  <ShowFileComponent
+                                    file={{
+                                      extension: doc?.type || '',
+                                      name: doc?.name,
+                                      type: doc?.type,
+                                      url: "url" in doc ? doc?.url : URL.createObjectURL(doc),
+                                    }}
+                                    onDelete={() => {
+                                      if (formik.values.educationalDocuments) {
+                                        formik.setFieldValue('educationalDocuments', formik.values.educationalDocuments.filter((d, i) => i !== index));
+                                      }
+                                    }}
+                                    shouldFit={false}
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          ) : <div className='space-y-2'>
+                            <label
+                              htmlFor="dropzone-file"
+                              className={`flex  flex-col items-center justify-center w-22 h-22 border-2 border-solid rounded-lg cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 ${formik.errors.educationalDocuments ? '!border-red-500' : ''}`}
+                            >
+                              <div className="flex flex-col items-center justify-center p-5">
+                                <svg
+                                  className="w-6 h-6 mb-3 text-gray-500 dark:text-gray-400"
+                                  aria-hidden="true"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 20 16"
+                                >
+                                  <path
+                                    stroke="currentColor"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                                  />
+                                </svg>
+
+                                <>
+                                  <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                    <span className="font-semibold text-schestiPrimary">
+                                      Click to upload
+                                    </span>
+                                  </p>
+                                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                                    PNG, JPG (max. 800x400px)
+                                  </p>
+                                </>
+
+                              </div>
+                              <input
+                                id="dropzone-file"
+                                multiple
+                                onChange={(e) => {
+
+                                  const files = e.target.files;
+                                  if (files && files.length) {
+                                    formik.setFieldValue('educationalDocuments', Array.from(files));
+                                  }
+                                }}
+                                type="file"
+                                style={{ opacity: '0' }}
+                              />
+                            </label>
+                            {formik.errors.educationalDocuments ? <p className="text-red-500 text-xs">{formik.errors.educationalDocuments}</p> : null}
+                          </div>
+                          }
+
+                        </div>
+                      ) : null
+                    }
                     <Button
                       isLoading={isLoading}
                       text="Submit"
