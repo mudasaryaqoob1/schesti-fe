@@ -1,4 +1,5 @@
 import { IUpdateCompanyDetail } from './companyInterfaces/updateCompany.interface';
+import { FileInterface } from './file.interface';
 import { ISettingCompanyRole } from './settings/comapny-role-settings.interface';
 
 export type IUserInterface = IUpdateCompanyDetail & {
@@ -38,4 +39,8 @@ export type IUserInterface = IUpdateCompanyDetail & {
   city?: string;
   selectedTrades?: any;
   associatedCompany?: IUserInterface | string;
+}  & {
+  userRole:"professor" | "student";
+  university: string;
+  educationalDocuments: FileInterface[];
 };
