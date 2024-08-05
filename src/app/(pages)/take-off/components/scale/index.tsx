@@ -705,7 +705,7 @@ const ScaleModal = ({ setModalOpen, numOfPages, page, setdrawScale, scaleLine }:
         </div>
         <div>
           <Button
-            text="Calibrate"
+            text={valueX == 'custom' ? "Calibrate" : "Save"}
             onClick={handleCalibrate}
             className="!py-1.5"
           />

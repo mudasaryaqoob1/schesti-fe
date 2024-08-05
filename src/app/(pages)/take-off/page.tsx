@@ -1,5 +1,5 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useLayoutEffect } from 'react';
 // import NoData from './components/NoData';
 import Records from './components/records';
 import { AppDispatch } from '@/redux/store';
@@ -11,6 +11,8 @@ import NoTakeOff from './components/records/NoTakeOff';
 // import CreateInfo from './components/upload/CreateInfo';
 // import TakeOffNew from './components/scale/TakeOffNew';
 import { selectTakeoffSummaries, selectTakeoffSummariesLoading } from '@/redux/takeoffSummaries/takeoffSummaries.Selector';
+import { HttpService } from '@/app/services/base.service';
+import { selectToken } from '@/redux/authSlices/auth.selector';
 // import TakeOffNewPage from './scale/TakeOffNewPage';
 // import { selectTakeoffSummaries } from '@/redux/takeoffSummaries/takeoffSummaries.Selector';
 const TakeOff = () => {
@@ -23,6 +25,12 @@ const TakeOff = () => {
   const summaries = useSelector(selectTakeoffSummaries);
   const loading = useSelector(selectTakeoffSummariesLoading);
   console.log(summaries, " Summeries");
+  const token = useSelector(selectToken);
+  useLayoutEffect(() => {
+    if (token) {
+      HttpService.setToken(token);
+    }
+  }, [token]);
   
 
   return (

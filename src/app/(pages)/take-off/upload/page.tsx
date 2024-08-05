@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 // import { bg_style } from '@/globals/tailwindvariables';
 // import Image from 'next/image';
 // import SenaryHeading from '@/app/component/headings/senaryHeading';
@@ -17,6 +17,9 @@ import { useState } from 'react';
 // import SelectPageModal from '../components/selectPageModal';
 import InitialUpload from '../components/upload/InitialUpload';
 import CreateInfo from '../components/upload/CreateInfo';
+import { useSelector } from 'react-redux';
+import { selectToken } from '@/redux/authSlices/auth.selector';
+import { HttpService } from '@/app/services/base.service';
 
 const Upload = () => {
   // const router = useRouter();
@@ -93,6 +96,12 @@ const Upload = () => {
   //     toast.error('Error while reading file')
   //   }
   // };
+  const token = useSelector(selectToken);
+  useLayoutEffect(() => {
+    if (token) {
+      HttpService.setToken(token);
+    }
+  }, [token]);
 
   return (
     <>

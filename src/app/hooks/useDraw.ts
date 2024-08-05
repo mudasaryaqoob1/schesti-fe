@@ -689,6 +689,7 @@ const useDraw = () => {
     getInchesInFractionFromMixedFraction,
     groupDataForTable,
     pointInCircle,
+    getScaleMultiplier
   };
 };
 

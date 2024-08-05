@@ -7,7 +7,7 @@ import { bg_style } from '@/globals/tailwindvariables'
 import { DeleteOutlined, PlusOutlined, UserOutlined } from '@ant-design/icons'
 import { Form, Formik } from 'formik'
 import Image from 'next/image'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import FormControl from '@/app/component/formControl';
 // import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable'
 import { Avatar, Button, Progress, Select, Table } from 'antd'
@@ -215,7 +215,7 @@ const CreateInfo = () => {
         try {
             const page: PDFPageProxy = await pdf.getPage(pageIndex + 1);
             console.log(page, typeof (page), " ===> pages while uplaoding")
-            const scale = 1;
+            const scale = 4;
             const viewport = page.getViewport({ scale });
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
@@ -353,6 +353,8 @@ const CreateInfo = () => {
             toast.error(error?.response?.data?.message ?? 'Failed to add user.')
         }
     }
+    // Create a ref for the file input
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     return (
         <>
@@ -445,12 +447,12 @@ const CreateInfo = () => {
                                                 placeholder="Select Status"
                                                 handleChange={(val: any) => { console.log(val); setprojectData((ps: any) => ({ ...ps, status: val })) }}
                                                 options={[
-                                                    { label: "Not Set", value: "First" },
-                                                    { label: "Completed", value: "Completed" },
-                                                    { label: "Awaiting Approval", value: "Awaiting Approval" },
-                                                    { label: "Awaiting Additional Information", value: "Awaiting Additional Information" },
-                                                    { label: "Project Declined", value: "Project Declined" },
-                                                    { label: "Project Requires Approval", value: "Project Requires Approval" },
+                                                    { label: "Not Set", value: "Not Set" },
+                                                    { label: "Under Bidding", value: "Under Bidding" },
+                                                    { label: "Project Awarded", value: "Project Awarded" },
+                                                    { label: "ReCheck", value: "ReCheck" },
+                                                    { label: "As built", value: "As built" },
+                                                    { label: "Preliminary", value: "Preliminary" },
                                                 ]}
                                             />
                                             <FormControl
@@ -596,9 +598,9 @@ const CreateInfo = () => {
                             style={{ width: '100%' }}
                             placeholder="Select users to assing"
                             // defaultValue={['a10', 'c12']}
-                            value={selectedAssignedUsers?.map((record:any)=>({label:record?.firstName ?? record?.email,value:JSON.stringify(record)})) ?? []}
-                            onChange={(v:any)=>{setselectedAssignedUsers(v?.map((su:any)=>JSON.parse(su)))}}
-                            options={assignedUser?.map((record:any)=>({label:record?.firstName ?? record?.email,value:JSON.stringify(record)}))}
+                            value={selectedAssignedUsers?.map((record: any) => ({ label: record?.firstName ?? record?.email, value: JSON.stringify(record) })) ?? []}
+                            onChange={(v: any) => { setselectedAssignedUsers(v?.map((su: any) => JSON.parse(su))) }}
+                            options={assignedUser?.map((record: any) => ({ label: record?.firstName ?? record?.email, value: JSON.stringify(record) }))}
                         />
                     </div>
                     <div className='grow'>
@@ -642,7 +644,7 @@ const CreateInfo = () => {
                         </div>}
                         <div className='grow p-3' >
                             <label className='relative' htmlFor="file-selector">
-                                <input type="file" accept="application/pdf" multiple id='file-selector' className='hidden absolute top-0 left-0' style={{ display: 'none' }} onChange={(e: any) => {
+                                <input ref={fileInputRef} type="file" accept="application/pdf" multiple id='file-selector' className='hidden absolute top-0 left-0' style={{ display: 'none' }} onChange={(e: any) => {
                                     console.log(e.target.result, " ==> event.target.result")
                                     if (e.target.files?.length > 0) {
                                         const arr = Object.keys(e.target?.files)?.map((it: any) => {
@@ -661,6 +663,9 @@ const CreateInfo = () => {
                                         <h4 className='text-gray-700' >Drag and Drop your files here</h4>
                                         <p className='text-gray-400'>or</p>
                                         <Button
+                                            onClick={() => {
+                                                fileInputRef.current?.click()
+                                            }}
                                             className='text-lavenderPurpleReplica font-bold border border-transparent bg-lavenderPurpleReplica bg-opacity-10 hover:!border-lavenderPurpleReplica hover:!text-lavenderPurpleReplica'
                                         >Select file</Button>
                                     </div>
