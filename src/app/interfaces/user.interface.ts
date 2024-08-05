@@ -14,7 +14,7 @@ export type IUserInterface = IUpdateCompanyDetail & {
   firstName?: string;
   lastName?: string;
   roles?: string[] | ISettingCompanyRole[];
-  userRole: 'owner' | 'contractor' | 'subcontractor' | string;
+  userRole: 'owner' | 'contractor' | 'subcontractor';
   brandingColor: string;
   isPaymentConfirm: boolean;
   createdAt: string;
@@ -39,8 +39,6 @@ export type IUserInterface = IUpdateCompanyDetail & {
   city?: string;
   selectedTrades?: any;
   associatedCompany?: IUserInterface | string;
-}  & {
-  userRole:"professor" | "student";
   university: string;
   educationalDocuments: FileInterface[];
 };
