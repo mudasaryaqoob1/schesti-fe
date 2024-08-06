@@ -1,28 +1,9 @@
-FROM node:18
+FROM node:20-alpine3.18 as builder
 
-# Set the working directory
 WORKDIR /app
-
-# Copy package files
-COPY package.json ./
-COPY .npmrc ./
-
-# Install dependencies
+COPY package*.json ./
 RUN yarn
-
-# Copy the rest of the application code
-COPY . ./
-
-# Copy environment configuration
-RUN cp .env.dev .env
-
-# Build the application (if necessary)
-# RUN yarn build
-
-# Expose the application port
+COPY . .
+RUN npm run build
 EXPOSE 3000
-
-# Start the application
-CMD ["npm", "start"]
-
-
+CMD [ "npm","run","start" ]
