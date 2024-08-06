@@ -29,14 +29,17 @@ export default function PendingPage() {
                     title="Your account is pending"
                 />
                 <Description
-                    className="mt-1  text-center text-slateGray"
+                    className="mt-1  text-center w-80 mx-auto text-slateGray"
                     title={`Admin will verify your details and then approved your account`}
                 />
 
                 <Description
                     className="font-popin text-doveGrayer font-normal
            leading-[26px] text-center my-1"
-                    title={`Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content.`}
+                    title={`Admin has to approve and reject the requests with the reason.
+
+
+                        `}
                 />
                 <div
                     className={twMerge(`${quinaryHeading} font-popin  font-medium
