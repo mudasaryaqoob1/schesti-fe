@@ -7,6 +7,7 @@ import { FinancialIcon } from '../svgs/component-icons/FinancialIcon';
 import { ScheduleIcon } from '../svgs/component-icons/ScheduleIcon';
 import { MeetingIcon } from '../svgs/component-icons/MeetingIcon';
 import { NetworkingIcon } from '../svgs/component-icons/NetworkIcon';
+import { SocialIcon } from '../svgs/component-icons/SocialIcon';
 
 export const Routes = {
   'Bid Management': {
@@ -41,6 +42,8 @@ export const Routes = {
   Schedule: '/schedule',
   Meetings: '/meeting',
   Networking: '/networking',
+  SocialMedia: '/social-media',
+
 };
 
 export const OtherRoutes = {
@@ -173,6 +176,11 @@ export const planFeatureOptions = [
     label: 'Networking',
     Icon: NetworkingIcon,
     value: Routes.Networking,
+  },
+  {
+    label: 'Social Media',
+    Icon: SocialIcon,
+    value: Routes.SocialMedia,
   },
 ];
 
