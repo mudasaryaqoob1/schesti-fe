@@ -1,9 +1,22 @@
-FROM node:20-alpine3.18 as builder
+FROM node:18
 
+# set working directory
 WORKDIR /app
-COPY package*.json ./
+# install app dependencies
+COPY package.json ./
+COPY .npmrc ./
+
+# RUN apt-get update && apt-get upgrade -y
+
 RUN yarn
-COPY . .
+
+COPY . ./
+
+RUN cp .env.dev .env
+
 RUN npm run build
+
 EXPOSE 3000
-CMD [ "npm","run","start" ]
+
+# start app
+CMD ["npm", "start"]
