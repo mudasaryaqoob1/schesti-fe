@@ -1,9 +1,17 @@
-import { ToolState } from '@/app/(pages)/crm/contractors/types';
+import { ToolState } from '@/app/(pages)/contracts/types';
 import { FileInterface } from '../file.interface';
 import { IUserInterface } from '../user.interface';
-import { CrmType } from './crm.interface';
 
 export type CrmContractStatusType = 'pending' | 'signed' | 'draft' | 'archive';
+export type ContractPartyType = {
+  companyName: string;
+  email: string;
+  name: string;
+  type: 'sender' | 'receiver';
+  tools: ToolState[];
+  color: string;
+  _id?: string;
+};
 
 export interface ICrmContract {
   _id: string;
@@ -15,11 +23,8 @@ export interface ICrmContract {
   endDate: string;
   status: CrmContractStatusType;
   file: FileInterface;
-
   user: string | IUserInterface;
-  receiver: string | CrmType;
   projectName: string;
   projectNo: string;
-  senderTools: ToolState[];
-  receiverTools: ToolState[];
+  receipts: ContractPartyType[];
 }

@@ -13,6 +13,8 @@ export type ICrmDailyWorkCreate = {
   note: string;
   email: string;
   phone: string;
+  status: string;
+  priority: string;
 };
 
 export type ICrmDailyWorkUpdate = {
@@ -22,6 +24,8 @@ export type ICrmDailyWorkUpdate = {
   note: string;
   email: string;
   phone: string;
+  status: string;
+  priority: string;
 };
 
 type CreateDailyWorkStatus = {

@@ -1,7 +1,7 @@
 import { ChooseFontType } from '@/app/component/fonts';
 import { FileInterface } from '@/app/interfaces/file.interface';
 
-export type StandardToolType = 'signature' | 'initials' | 'stamp' | 'date';
+export type StandardToolType = 'signature' | 'initials' | 'comment' | 'date';
 
 type SignatureState = {
   tool: 'signature';
@@ -18,9 +18,9 @@ type InitialsState = {
   value?: string;
 };
 
-type StampState = {
-  tool: 'stamp';
-  value?: FileInterface;
+type CommentState = {
+  tool: 'comment';
+  value?: string;
 };
 
 type DateState = {
@@ -31,7 +31,7 @@ type DateState = {
 export type ToolState = {
   position: { x: number; y: number };
   id: string;
-} & (SignatureState | InitialsState | StampState | DateState);
+} & (SignatureState | InitialsState | CommentState | DateState);
 
 export type PdfContractMode =
   | 'add-values'

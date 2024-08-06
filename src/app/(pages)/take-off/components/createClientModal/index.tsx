@@ -157,7 +157,7 @@ const ScaleModal = ({ setModalOpen, setSelectedClient }: Props) => {
                 </div>
               </div>
             )} */}
-            <Formik onSubmit={() => {}} initialValues={{ client: '' }}>
+            <Formik onSubmit={() => { }} initialValues={{ client: '' }}>
               <FormControl
                 control="select"
                 label="Select Client"
@@ -172,10 +172,10 @@ const ScaleModal = ({ setModalOpen, setSelectedClient }: Props) => {
                 options={
                   clients?.length > 0
                     ? clients?.map((i: any) => ({
-                        ...i,
-                        label: i?.firstName ?? i?.email,
-                        value: JSON.stringify(i),
-                      }))
+                      ...i,
+                      label: i?.firstName ?? i?.email,
+                      value: JSON.stringify(i),
+                    }))
                     : []
                 }
               />
@@ -220,7 +220,7 @@ const ScaleModal = ({ setModalOpen, setSelectedClient }: Props) => {
                     <PhoneNumberInputWithLable
                       label="Phone Number"
                       onChange={(val) => setFieldValue('phone', val)}
-                      value={values.phone}
+                      value={values.phone as any}
                       onBlur={() => setFieldTouched('phone', true)}
                       hasError={touched.phone && Boolean(errors.phone)}
                       errorMessage={

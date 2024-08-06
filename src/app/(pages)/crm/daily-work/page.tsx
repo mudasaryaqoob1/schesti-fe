@@ -39,23 +39,19 @@ import { PreviewCSVImportFileModal } from '../components/PreviewCSVImportFileMod
 import moment from 'moment';
 
 const ValidationSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email').required('Email is required'),
-  phone: Yup.string()
-    .test({
-      test: (value) => {
-        if (value) {
-          return isValidPhoneNumber(value);
-        }
-        return true;
-      },
-      message: 'Invalid phone number',
-    })
-    .required('Phone number is required'),
+  email: Yup.string().email('Invalid email'),
+  phone: Yup.string().test({
+    test: (value) => {
+      if (value) {
+        return isValidPhoneNumber(value);
+      }
+      return true;
+    },
+    message: 'Invalid phone number',
+  }),
   work: Yup.string().required('Work Needed is required'),
-  deadline: Yup.string().required('Deadline is required'),
-  note: Yup.string()
-    .max(10, 'Note must have max 10 characters')
-    .required('Note is required'),
+  deadline: Yup.string(),
+  note: Yup.string(),
 });
 
 function DailyWorkPage() {
@@ -129,9 +125,11 @@ function DailyWorkPage() {
       work: '',
       deadline: '',
       note: '',
+      status: '',
+      priority: '',
     },
     validationSchema: ValidationSchema,
-    onSubmit: (values) => {
+    onSubmit: (values, helpers) => {
       if ('_id' in values) {
         setIsSubmitting(true);
         crmDailyWorkService
@@ -148,6 +146,7 @@ function DailyWorkPage() {
                 })
               );
               onClose();
+              helpers.resetForm();
             }
           })
           .catch((error) => {
@@ -186,6 +185,7 @@ function DailyWorkPage() {
         toast.success('Daily work created successfully');
         setData([response.data, ...data]);
         setOpen(false);
+        formik.resetForm();
       }
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
@@ -297,7 +297,7 @@ function DailyWorkPage() {
       dataIndex: 'priority',
       render(_val, record) {
         if (!record.priority || typeof record.priority === 'string') {
-          return 'N/A';
+          return 'Choose priority';
         }
         return (
           <div className="w-fit">
@@ -357,13 +357,8 @@ function DailyWorkPage() {
         if (!value) {
           return null;
         }
-        return (
-          <div className="flex items-center space-x-4 justify-between">
-            {value}
-
-            <span className="text-schestiPrimaryBlack">{value.length}/10</span>
-          </div>
-        );
+        const note = value.slice(0, 10);
+        return note + (note.length > 10 ? '...' : '');
       },
       width: 200,
       onCell: (record, rowIndex) => {
@@ -393,7 +388,7 @@ function DailyWorkPage() {
       dataIndex: 'status',
       render(_val, record) {
         if (!record.status || typeof record.status === 'string') {
-          return 'N/A';
+          return 'Choose status';
         }
         return <DisplayDailyWorkStatus item={record.status} />;
       },
@@ -440,6 +435,16 @@ function DailyWorkPage() {
                     phone: record.phone,
                     work: record.work,
                     _id: record._id,
+                    priority: record.priority
+                      ? typeof record.priority === 'string'
+                        ? record.priority
+                        : record.priority._id
+                      : '',
+                    status: record.status
+                      ? typeof record.status === 'string'
+                        ? record.status
+                        : record.status._id
+                      : '',
                   });
                 } else if (e.key === 'delete') {
                   setShowDeleteModal(true);
@@ -606,6 +611,8 @@ function DailyWorkPage() {
         open={open}
         isSubmitting={isSubmitting}
         onSubmit={formik.handleSubmit}
+        priorities={priorities}
+        statuses={statuses}
       />
 
       {selectedLead && showDeleteModal ? (
@@ -884,28 +891,32 @@ function EditableCell(props: EditableCellProps) {
           <span className="font-medium">Choose {inputType}</span>
           <div className="absolute bg-white border rounded-md w-[200px] top-6 p-3 z-10 space-y-2">
             {inputType === 'priority'
-              ? props.priorities.map((priority: IDailyWorkPriorty) => (
-                  <DisplayPriority
-                    onClick={(e) => {
-                      console.log('Priority Clicked');
-                      e.stopPropagation();
-                      handleSave('priority', priority._id, record);
-                    }}
-                    key={priority._id}
-                    item={priority}
-                  />
-                ))
-              : inputType === 'status'
-                ? props.statuses.map((status: IDailyWorkStatus) => (
-                    <DisplayDailyWorkStatus
+              ? props.priorities.length === 0
+                ? 'No Priority'
+                : props.priorities.map((priority: IDailyWorkPriorty) => (
+                    <DisplayPriority
                       onClick={(e) => {
+                        console.log('Priority Clicked');
                         e.stopPropagation();
-                        handleSave('status', status._id, record);
+                        handleSave('priority', priority._id, record);
                       }}
-                      key={status._id}
-                      item={status}
+                      key={priority._id}
+                      item={priority}
                     />
                   ))
+              : inputType === 'status'
+                ? props.statuses.length === 0
+                  ? 'No Stauses'
+                  : props.statuses.map((status: IDailyWorkStatus) => (
+                      <DisplayDailyWorkStatus
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSave('status', status._id, record);
+                        }}
+                        key={status._id}
+                        item={status}
+                      />
+                    ))
                 : null}
           </div>
         </div>
@@ -913,9 +924,7 @@ function EditableCell(props: EditableCellProps) {
         <InputWithoutBorder
           value={note}
           onChange={(e) => {
-            if (e.target.value.length < 10) {
-              setNote(e.target.value);
-            }
+            setNote(e.target.value);
           }}
           placeholder="Enter note"
           onBlur={(e) => {

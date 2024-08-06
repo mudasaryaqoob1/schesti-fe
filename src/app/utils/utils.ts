@@ -16,3 +16,7 @@ export function calculateProgressBarPercentage(
 
   return percentage;
 }
+
+export function parseEmailFromQuery(email: string | null) {
+  return email ? email.replace(/\s/g, '+') : '';
+}
