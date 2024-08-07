@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import CustomButton from '@/app/component/customButton/button'
 import { toast } from 'react-toastify';
@@ -6,15 +6,17 @@ import { socialMediaService } from '@/app/services/social-media.service';
 import filesUrlGenerator from '@/app/utils/filesUrlGenerator';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import { IMediaFile } from './';
-import { useDispatch } from 'react-redux';
-import { setFetchPosts } from '@/redux/social-media/social-media.slice';
+import { useDispatch, useSelector } from 'react-redux';
+import { setFetchPosts, setPostData } from '@/redux/social-media/social-media.slice';
+import { RootState } from '@/redux/store';
 
 const CreatePost = () => {
     const dispatch = useDispatch();
     const [isFilesUploading, setIsFilesUploading] = useState(false);
     const [files, setFiles] = useState([] as File[]);
     const [description, setDescription] = useState('');
-
+    const { postData } = useSelector((state: RootState) => state.socialMedia);
+    const [postOldUrls, setPostOldUrls] = useState<IMediaFile[]>([]);
 
     async function createPost() {
 
@@ -53,6 +55,63 @@ const CreatePost = () => {
         }
     }
 
+    async function updatePost() {
+
+        try {
+            setIsFilesUploading(true);
+            const { mediaFiles, mediaFilesLength } = await filesUrlGenerator(files);
+            if (mediaFilesLength || postOldUrls || description) {
+                const allMediaFiles: IMediaFile[] = [];
+                const payload: Partial<{
+                    mediaFiles: IMediaFile[],
+                    description: string
+                }> = {};
+
+                if (mediaFilesLength) {
+                    allMediaFiles.push(...mediaFiles);
+                }
+                if (postOldUrls.length > 0) {
+                    allMediaFiles.push(...postOldUrls);
+                }
+
+                if (mediaFilesLength > 0 || postOldUrls.length > 0) {
+                    payload['mediaFiles'] = allMediaFiles;
+                }
+
+                if (description) {
+                    payload['description'] = description;
+                }
+
+                const { message } = await socialMediaService.httpUpdatePost(
+                    postData?._id!, payload
+                );
+                toast.success(message);
+            } else {
+                toast.error('Description or image,video is required!')
+            }
+        } catch (error) {
+            console.error('Error uploading file to S3:', error);
+            toast.error(`Unable to upload Files`);
+            setIsFilesUploading(false);
+        } finally {
+            dispatch(setFetchPosts());
+            setFiles([]);
+            setIsFilesUploading(false);
+            dispatch(setPostData(null));
+            setPostOldUrls([]);
+            setDescription('');
+        }
+    }
+
+    useEffect(() => {
+        if (postData) {
+            const { description, mediaFiles } = postData;
+            setDescription(description);
+            setPostOldUrls(mediaFiles);
+        }
+    }, [postData])
+
+
     return (
         <div className='w-full mt-3.5 shadow rounded-xl p-6 bg-white'>
             <div className="flex items-center gap-2">
@@ -60,7 +119,16 @@ const CreatePost = () => {
                 <p className='font-medium text-graphiteGray text-sm'>Create Post</p>
             </div>
             <textarea value={description} onChange={({ target }) => setDescription(target.value)} rows={5} className='w-full placeholder:text-coolGray border border-mercury rounded-md mt-3 p-3' placeholder='What’s in your mind...' />
+
             <div className="media-list-section mt-3 flex flex-wrap gap-2">
+                {
+                    postOldUrls.map(({ url }, i) => (
+                        <div className='relative'>
+                            <CloseCircleOutlined onClick={() => setPostOldUrls(prev => prev.filter((_, fileIndex) => fileIndex !== i))} className='text-red-600 absolute -right-1 cursor-pointer rounded-full -top-1 bg-cloudWhite' />
+                            <Image className='rounded-md' key={i} src={url} height={100} width={100} alt={'img-' + i} />
+                        </div>
+                    ))
+                }
                 {
                     files && files.map((file, i) => (
                         <div className='relative'>
@@ -97,7 +165,7 @@ const CreatePost = () => {
                         <p className='font-medium text-xs text-schestiPrimaryBlack'>Feeling/Activity</p>
                     </label>
                 </div>
-                <CustomButton isLoading={isFilesUploading} onClick={createPost} text='Post' className='max-w-16 bg-lavenderPurpleReplica text-xs text-white' />
+                <CustomButton isLoading={isFilesUploading} onClick={() => postData ? updatePost() : createPost()} text={postData ? 'Update' : 'Create'} className='max-w-16 flex justify-center bg-lavenderPurpleReplica text-xs text-white' />
             </div>
         </div>
     )

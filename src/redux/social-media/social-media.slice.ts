@@ -1,3 +1,4 @@
+import { IMediaFile } from '@/app/(pages)/social-media/components/post';
 import { createSlice } from '@reduxjs/toolkit';
 
 interface ISocialMedia {
@@ -6,6 +7,9 @@ interface ISocialMedia {
   commmentContent: string;
   selectedPostId: string;
   commentId: string;
+  postData: {
+    _id: string, description: string, mediaFiles: IMediaFile[]
+  } | null
 }
 
 const initialState: ISocialMedia = {
@@ -13,7 +17,12 @@ const initialState: ISocialMedia = {
   fetchComments: false,
   commmentContent: '',
   selectedPostId: '',
-  commentId: ''
+  commentId: '',
+  postData: {
+    _id: '',
+    description: '',
+    mediaFiles: []
+  }
 };
 
 const socialMediaSlice = createSlice({
@@ -35,6 +44,9 @@ const socialMediaSlice = createSlice({
     setCommentId: (state, { payload }) => {
       state.commentId = payload;
     },
+    setPostData: (state, { payload }) => {
+      state.postData = payload;
+    }
   },
 });
 
@@ -43,6 +55,7 @@ export const {
   setFetchComments,
   setCommentContent,
   setSelectedPostId,
-  setCommentId
+  setCommentId,
+  setPostData
 } = socialMediaSlice.actions;
 export default socialMediaSlice.reducer;

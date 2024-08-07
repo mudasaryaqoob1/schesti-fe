@@ -11,6 +11,7 @@ export interface IPost {
     description?: string
     associatedCompany: IUserInterface
     mediaFiles: IMediaFile[]
+    reactions: string[]
     createdAt: string
     updatedAt: string
     __v: number

@@ -20,7 +20,7 @@ const SingleComment = () => {
             </div>
             <p className='mt-3 text-stormGrey'>
                 <span className='text-schestiPrimary font-semibold mr-1'>@maxblagu</span>
-                Impressive! Though it seems the drag feature could be improved. But overall it looks incredible. You’ve nailed the design and the responsiveness at various breakpoints works really well.</p>
+                Impressive! Though it seems the drag feature could be improved.</p>
         </div>
     )
 }

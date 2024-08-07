@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import SingleComment from './SingleComment'
 import { socialMediaService } from '@/app/services/social-media.service'
 import Loader from '@/app/component/loader'
@@ -16,7 +16,7 @@ export interface IComment {
     updatedAt: string
     __v: number
 }
-const Comments = ({ postId }: { postId: string }) => {
+const Comments = ({ postId, setTotalComments }: { postId: string, setTotalComments: Dispatch<SetStateAction<number>> }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [comments, setComments] = useState<IComment[]>([]);
     const { fetchComments } = useSelector((state: RootState) => state.socialMedia);
@@ -28,6 +28,7 @@ const Comments = ({ postId }: { postId: string }) => {
             setIsLoading(true);
             const { data: { postComments } } = await socialMediaService.httpGetPostComments({ id: postId });
             setComments(postComments);
+            setTotalComments(postComments.length);
             setIsLoading(false);
         } catch (error) {
             console.log(error);

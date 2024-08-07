@@ -61,9 +61,9 @@ const SingleComment = ({ _id, postId, content, updatedAt, associatedCompany }: P
 
             </div>
             <p className='mt-3 text-stormGrey'>{content}</p>
-            {/* <div className="mt-4 border-l border-mercury ps-10">
+            <div className="mt-4 border-l border-mercury ps-10">
                 <CommentReplies />
-            </div> */}
+            </div>
         </div>
     )
 }
