@@ -41,4 +41,8 @@ export type IUserInterface = IUpdateCompanyDetail & {
   associatedCompany?: IUserInterface | string;
   university: string;
   educationalDocuments: FileInterface[];
+  isVerified: boolean;
+  invitation?: {
+    date: string;
+  }
 };
