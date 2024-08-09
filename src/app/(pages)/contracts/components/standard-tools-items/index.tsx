@@ -59,14 +59,14 @@ export function StandardToolItem({
         {selectedTool ? (
           <ModalComponent
             open={true}
-            setOpen={() => {}}
+            setOpen={() => { }}
             width="300px"
             key={selectedTool.tool}
             className={'!bg-transparent !h-fit'}
           >
             <Popups
               title="Add Standard Tools"
-              onClose={onClose ? onClose : () => {}}
+              onClose={onClose ? onClose : () => { }}
             >
               <StandardToolInput
                 contract={contract}
@@ -119,12 +119,12 @@ function Item({ item, mode, onClick, onDelete, color }: ItemProps) {
       }}
       className={`p-3 rounded-lg border-2 h-fit text-sm relative font-semibold  flex items-center space-x-2 border-dashed m-0`}
       style={{
-        borderColor: `${color}`,
+        borderColor: !item.value ? `${color}` : 'transparent',
         backgroundColor: 'white',
         color,
       }}
     >
-      <GetStandardToolIcon type={item.tool} />
+      {!item.value ? <GetStandardToolIcon type={item.tool} /> : null}
 
       <RenderStandardInputValue item={item} mode={mode} />
 
