@@ -325,7 +325,7 @@ const RegisterVerification = () => {
               <Button
                 isLoading={isLoading}
                 onClick={submitHandler}
-                text="Submit"
+                text="Next"
                 className={`w-full my-3 ${isAllowToSubmit() ? 'disabled' : ''}`}
                 type="submit"
               />

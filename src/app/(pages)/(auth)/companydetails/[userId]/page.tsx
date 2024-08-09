@@ -564,7 +564,7 @@ const CompanyDetails = () => {
                     }
                     <Button
                       isLoading={isLoading}
-                      text="Submit"
+                      text="Next"
                       className="w-full my-3"
                       type="submit"
                       disabled={isLoading}
