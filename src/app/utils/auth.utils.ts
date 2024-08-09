@@ -21,7 +21,7 @@ const OwnerPages = {
 export function navigateUserWhileAuth(user: IUserInterface) {
   if (user.userRole === USER_ROLES_ENUM.PROFESSOR || user.userRole === USER_ROLES_ENUM.STUDENT) {
     return navigateEducational(user);
-  }else if (user.userRole === USER_ROLES_ENUM.CONTRACTOR || user.userRole === USER_ROLES_ENUM.SUBCONTRACTOR || user.userRole === USER_ROLES_ENUM.ARCHITECT || 
+  } else if (user.userRole === USER_ROLES_ENUM.CONTRACTOR || user.userRole === USER_ROLES_ENUM.SUBCONTRACTOR || user.userRole === USER_ROLES_ENUM.ARCHITECT ||
     user.userRole === USER_ROLES_ENUM.VENDOR
   ) {
     return navigateBusiness(user);
@@ -35,38 +35,38 @@ export function navigateUserWhileAuth(user: IUserInterface) {
 function navigateBusiness(user: IUserInterface) {
   if (user.userRole === USER_ROLES_ENUM.CONTRACTOR || user.userRole === USER_ROLES_ENUM.SUBCONTRACTOR || user.userRole === USER_ROLES_ENUM.VENDOR || user.userRole === USER_ROLES_ENUM.ARCHITECT) {
     const haveCompanyDetails =
-    Boolean(user.companyName) &&
-    Boolean(user.address) &&
-    Boolean(user.industry) &&
-    Boolean(user.phone) &&
-    Boolean(user.country) &&
-    Boolean(user.state) &&
-    Boolean(user.city) &&
-    Boolean(user.employee);
-  
-  if (!haveCompanyDetails) {
-    return `${ContractorPages.CompanyDetails}/${user._id}`;
-  }
+      Boolean(user.companyName) &&
+      Boolean(user.address) &&
+      // Boolean(user.industry) &&
+      Boolean(user.phone) &&
+      Boolean(user.country) &&
+      Boolean(user.state) &&
+      Boolean(user.city) &&
+      Boolean(user.employee);
 
-  const haveTrades   = user.selectedTrades && user.selectedTrades.length == 0;
+    if (!haveCompanyDetails) {
+      return `${ContractorPages.CompanyDetails}/${user._id}`;
+    }
 
-  if (user.userRole == USER_ROLES_ENUM.SUBCONTRACTOR && !haveTrades) {
-    return SubContractorPages.Trades
-  }
+    const haveTrades = user.selectedTrades && user.selectedTrades.length == 0;
+
+    if (user.userRole == USER_ROLES_ENUM.SUBCONTRACTOR && !haveTrades) {
+      return SubContractorPages.Trades
+    }
 
 
-  const havePlan = user.planId;
+    const havePlan = user.planId;
 
-  if (!havePlan) {
-    return ContractorPages.Plans;
-  }
+    if (!havePlan) {
+      return ContractorPages.Plans;
+    }
   }
   return null;
 }
 
 function navigateEducational(user: IUserInterface) {
   if ((user.userRole === USER_ROLES_ENUM.PROFESSOR || user.userRole === USER_ROLES_ENUM.STUDENT) && user.isActive === 'pending') {
-    return  '/pending';
+    return '/pending';
   }
   const haveDetails =
     Boolean(user.university) &&
