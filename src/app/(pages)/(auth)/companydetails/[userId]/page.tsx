@@ -29,6 +29,7 @@ import {
   EducationalSchema,
   OwnerSchema,
   SubContractorSchema,
+  VendorAndArchitectSchema,
 } from '@/app/utils/validationSchemas';
 import { isObjectId } from '@/app/utils/utils';
 import { SelectComponent } from '@/app/component/customSelect/Select.component';
@@ -163,9 +164,13 @@ const CompanyDetails = () => {
       return OwnerSchema;
     } else if (userData?.user?.userRole == SUBCONTRACTOR) {
       return SubContractorSchema;
-    } else if (userData?.user?.userRole == CONTRACTOR || userData?.user?.userRole == USER_ROLES_ENUM.VENDOR || userData?.user?.userRole == USER_ROLES_ENUM.ARCHITECT) {
+    } else if (userData?.user?.userRole == CONTRACTOR) {
       return ContractorSchema;
-    } else if (userData?.user?.userRole == USER_ROLES_ENUM.PROFESSOR || userData?.user?.userRole == USER_ROLES_ENUM.STUDENT) {
+    }
+    else if (userData?.user?.userRole == USER_ROLES_ENUM.VENDOR || userData?.user?.userRole == USER_ROLES_ENUM.ARCHITECT) {
+      return VendorAndArchitectSchema;
+    }
+    else if (userData?.user?.userRole == USER_ROLES_ENUM.PROFESSOR || userData?.user?.userRole == USER_ROLES_ENUM.STUDENT) {
       return EducationalSchema;
     }
   }, [userData]);
@@ -193,6 +198,7 @@ const CompanyDetails = () => {
               onSubmit={submitHandler}
             >
               {(formik) => {
+
                 const countries = Country.getAllCountries().map((country) => ({
                   label: country.name,
                   value: country.isoCode,
