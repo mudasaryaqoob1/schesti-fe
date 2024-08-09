@@ -5,17 +5,16 @@ export type StandardToolType = 'signature' | 'initials' | 'comment' | 'date';
 
 type SignatureState = {
   tool: 'signature';
-  value?:
-    | {
-        font: ChooseFontType;
-        value: string;
-      }
-    | FileInterface;
+  value?: {
+    font: ChooseFontType;
+    value: string;
+  }
+  | FileInterface;
 };
 
 type InitialsState = {
   tool: 'initials';
-  value?: string;
+  value?: string | FileInterface;
 };
 
 type CommentState = {
