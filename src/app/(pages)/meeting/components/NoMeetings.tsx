@@ -12,9 +12,9 @@ export function NoMeetings({ onClick }: Props) {
     <section className="mt-6 mx-4 rounded-xl h-[calc(100vh-200px)] grid items-center border border-solid border-silverGray shadow-secondaryTwist">
       <div className="grid place-items-center">
         <div className="max-w-[500px] flex flex-col items-center p-4">
-          <div className="bg-lightGray p-12 rounded-full">
+          <div className="bg-schestiLightPrimary p-12 rounded-full">
             <Image
-              src={'/purple-calendar.svg'}
+              src={'/calender-cyan.svg'}
               alt="create request icon"
               width={100}
               height={100}
