@@ -46,5 +46,7 @@ export type IUserInterface = IUpdateCompanyDetail & {
   };
   invitation?: {
     date: string;
-  }
+  };
+
+  isAutoPayment?: boolean;
 };
