@@ -1,5 +1,6 @@
 import { IUpdateCompanyDetail } from './companyInterfaces/updateCompany.interface';
 import { FileInterface } from './file.interface';
+import { IPricingPlan } from './pricing-plan.interface';
 import { ISettingCompanyRole } from './settings/comapny-role-settings.interface';
 
 export type IUserInterface = IUpdateCompanyDetail & {
@@ -45,8 +46,10 @@ export type IUserInterface = IUpdateCompanyDetail & {
     date: string
   };
   invitation?: {
-    date: string;
-  };
+    date: Date;
+    planId: string | IPricingPlan;
+    by: string | IUserInterface;
+  },
 
   isAutoPayment?: boolean;
 };

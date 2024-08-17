@@ -127,6 +127,8 @@ const CompanyDetails = () => {
         router.push('/verification');
       } else if ((userData?.user?.userRole === USER_ROLES_ENUM.PROFESSOR || userData?.user?.userRole === USER_ROLES_ENUM.STUDENT) && userData?.user?.isActive === 'pending') {
         router.push('/pending');
+      } else if ((userData?.user?.userRole === USER_ROLES_ENUM.PROFESSOR || userData?.user?.userRole === USER_ROLES_ENUM.STUDENT) && userData?.user?.isActive === 'active') {
+        router.push('/plans');
       }
     } else {
       setIsLoading(false);

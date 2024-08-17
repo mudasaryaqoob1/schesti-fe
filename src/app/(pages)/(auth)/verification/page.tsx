@@ -46,21 +46,36 @@ const RegisterVerification = () => {
     try {
       if (license) {
         const url = await new AwsS3(license, 'verification/license').getS3URL();
-        data.license = url;
+        data.license = {
+          name: license.name,
+          url,
+          type: license.type,
+          extension: license.name.split('.').pop(),
+        };
       }
       if (secretaryOfState) {
         const url = await new AwsS3(
           secretaryOfState,
           'verification/secretaryOfState'
         ).getS3URL();
-        data.secretaryOfState = url;
+        data.secretaryOfState = {
+          name: secretaryOfState.name,
+          url,
+          type: secretaryOfState.type,
+          extension: secretaryOfState.name.split('.').pop(),
+        };
       }
       if (preQualification) {
         const url = await new AwsS3(
           preQualification,
           'verification/preQualification'
         ).getS3URL();
-        data.preQualification = url;
+        data.preQualification = {
+          name: preQualification.name,
+          url,
+          type: preQualification.type,
+          extension: preQualification.name.split('.').pop(),
+        };
       }
 
       dispatch(addVerificationDetails(data))
