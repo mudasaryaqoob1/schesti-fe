@@ -16,7 +16,6 @@ export interface IPost {
     savedPosts: string[]
     createdAt: string
     updatedAt: string
-    feeling?: string
     __v: number
 }
 
@@ -28,15 +27,16 @@ export interface IMediaFile {
     _id?: string
 }
 
-const SchestiPosts = () => {
+const UserPosts = () => {
 
     const [posts, setPosts] = useState<IPost[]>([]);
     const [isLoading, setIsLoading] = useState(false);
-    const { fetchPosts } = useSelector((state: RootState) => state.socialMedia)
+    const { user } = useSelector((state: RootState) => state.auth.user);
+    const { fetchPosts } = useSelector((state: RootState) => state.socialMedia);
 
     const getPost = async () => {
         setIsLoading(true);
-        const { data } = await socialMediaService.httpGetPosts({ searchText: '' });
+        const { data } = await socialMediaService.httpGetUserPosts({ id: user._id });
         setIsLoading(false);
         setPosts(data.posts);
     }
@@ -54,11 +54,11 @@ const SchestiPosts = () => {
         <div >
             {
                 posts.map((postData) => (
-                    <SinglePost {...postData} key={postData._id} />
+                    <SinglePost {...postData} key={postData._id} showOptions={false} />
                 ))
             }
         </div>
     )
 }
 
-export default SchestiPosts
+export default UserPosts

@@ -18,6 +18,21 @@ class SocialMediaService extends HttpService {
       `${this.prefix}/getPosts?searchText=${searchText}&page=${page}&limit=${limit}`
     );
 
+  httpGetUserPosts = ({
+    id,
+    searchText = '',
+    page = 0,
+    limit = 9,
+  }: {
+    id: string,
+    searchText?: string;
+    page?: number;
+    limit?: number;
+  }): Promise<IResponseInterface> =>
+    this.get(
+      `${this.prefix}/getUserPosts/${id}?searchText=${searchText}&page=${page}&limit=${limit}`
+    );
+
   httpGetPost = ({
     id,
     page = 0,
@@ -65,17 +80,15 @@ class SocialMediaService extends HttpService {
   httpUpdatePost = (id: string, data: any): Promise<IResponseInterface> =>
     this.put(`${this.prefix}/updatePost/${id}`, data);
 
-  httpPinPost = (id: string): Promise<IResponseInterface> =>
-    this.post(`${this.prefix}/pinPost/${id}`);
-
-  httpSavePost = (id: string): Promise<IResponseInterface> =>
-    this.post(`${this.prefix}/savePost/${id}`);
-
   httpAddPostReaction = (id: string): Promise<IResponseInterface> =>
     this.put(`${this.prefix}/addPostReaction/${id}`);
 
-  httpAddPostReport = (email: string): Promise<IResponseInterface> =>
-    this.put(`${this.prefix}/addInvitedClient/${email}`);
+  httpAddPostReport = ({ id, body }: {
+    id: string, body: {
+      reason: string
+    }
+  }): Promise<IResponseInterface> =>
+    this.put(`${this.prefix}/addPostReport/${id}`, body);
 
   httpDeletePost = (id: string): Promise<IResponseInterface> =>
     this.delete(`${this.prefix}/deletePost/${id}`);
@@ -88,7 +101,6 @@ class SocialMediaService extends HttpService {
 
   httpDeletePostComment = (id: string): Promise<IResponseInterface> =>
     this.delete(`${this.prefix}/deletePostComment/${id}`);
-
 
 }
 export const socialMediaService = new SocialMediaService();

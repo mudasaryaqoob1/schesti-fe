@@ -54,7 +54,7 @@ const SingleComment = ({ _id, postId, content, updatedAt, associatedCompany }: P
                     ) : (
                         <div className="flex gap-2 cursor-pointer rounded-[3px] py-0.5 px-2 items-center bg-schestiLightPrimary">
                             <Image src='/reply.svg' width={10} height={10} alt='profile' />
-                            <p className='text-lavenderPurpleReplica font-medium text-xs'>Reply</p>
+                            <p className='text-lavenderPurpleReplica cursor-pointer font-medium text-xs'>Reply</p>
                         </div>
                     )
                 }

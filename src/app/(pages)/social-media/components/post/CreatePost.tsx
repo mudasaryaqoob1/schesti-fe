@@ -9,7 +9,14 @@ import { IMediaFile } from './';
 import { useDispatch, useSelector } from 'react-redux';
 import { setFetchPosts, setPostData } from '@/redux/social-media/social-media.slice';
 import { RootState } from '@/redux/store';
+import ModalComponent from '@/app/component/modal';
+import FeelingActivityFeature from './FeelingActivity';
 
+type IPost = {
+    mediaFiles: IMediaFile[],
+    description: string,
+    feeling: string
+}
 const CreatePost = () => {
     const dispatch = useDispatch();
     const [isFilesUploading, setIsFilesUploading] = useState(false);
@@ -17,6 +24,8 @@ const CreatePost = () => {
     const [description, setDescription] = useState('');
     const { postData } = useSelector((state: RootState) => state.socialMedia);
     const [postOldUrls, setPostOldUrls] = useState<IMediaFile[]>([]);
+    const [showFeelingActivity, setShowFeelingActivity] = useState(false);
+    const [feeling, setFeeling] = useState('');
 
     async function createPost() {
 
@@ -24,10 +33,7 @@ const CreatePost = () => {
             setIsFilesUploading(true);
             const { mediaFiles, mediaFilesLength } = await filesUrlGenerator(files);
             if (mediaFilesLength || description) {
-                const payload: Partial<{
-                    mediaFiles: IMediaFile[],
-                    description: string
-                }> = {};
+                const payload: Partial<IPost> = {};
 
                 if (mediaFiles) {
                     payload['mediaFiles'] = mediaFiles;
@@ -35,6 +41,10 @@ const CreatePost = () => {
 
                 if (description) {
                     payload['description'] = description;
+                }
+
+                if (feeling) {
+                    payload['feeling'] = feeling;
                 }
                 const { message } = await socialMediaService.httpCreatePost(
                     payload
@@ -50,6 +60,7 @@ const CreatePost = () => {
         } finally {
             dispatch(setFetchPosts());
             setFiles([]);
+            setFeeling('');
             setIsFilesUploading(false);
             setDescription('');
         }
@@ -62,10 +73,7 @@ const CreatePost = () => {
             const { mediaFiles, mediaFilesLength } = await filesUrlGenerator(files);
             if (mediaFilesLength || postOldUrls || description) {
                 const allMediaFiles: IMediaFile[] = [];
-                const payload: Partial<{
-                    mediaFiles: IMediaFile[],
-                    description: string
-                }> = {};
+                const payload: Partial<IPost> = {};
 
                 if (mediaFilesLength) {
                     allMediaFiles.push(...mediaFiles);
@@ -82,6 +90,10 @@ const CreatePost = () => {
                     payload['description'] = description;
                 }
 
+                if (feeling) {
+                    payload['feeling'] = feeling;
+                }
+
                 const { message } = await socialMediaService.httpUpdatePost(
                     postData?._id!, payload
                 );
@@ -94,12 +106,9 @@ const CreatePost = () => {
             toast.error(`Unable to upload Files`);
             setIsFilesUploading(false);
         } finally {
-            dispatch(setFetchPosts());
-            setFiles([]);
             setIsFilesUploading(false);
-            dispatch(setPostData(null));
-            setPostOldUrls([]);
-            setDescription('');
+            dispatch(setFetchPosts());
+            resetPost();
         }
     }
 
@@ -111,9 +120,20 @@ const CreatePost = () => {
         }
     }, [postData])
 
+    function resetPost() {
+        setFiles([]);
+        setDescription('');
+        setFeeling('');
+        setPostOldUrls([]);
+        dispatch(setPostData(null))
+    }
+
 
     return (
         <div className='w-full mt-3.5 shadow rounded-xl p-6 bg-white'>
+            <ModalComponent setOpen={setShowFeelingActivity} open={showFeelingActivity}>
+                <FeelingActivityFeature setIsModalOpen={setShowFeelingActivity} setFeeling={setFeeling} />
+            </ModalComponent>
             <div className="flex items-center gap-2">
                 <Image src='/profileAvatar.png' width={36} height={36} alt='profile' />
                 <p className='font-medium text-graphiteGray text-sm'>Create Post</p>
@@ -147,10 +167,7 @@ const CreatePost = () => {
             </div>
             <div className="upload-media-section flex flex-wrap justify-between items-center mt-3">
                 <div className='flex gap-4 items-center '>
-                    <label className="flex items-center cursor-pointer gap-2">
-                        <Image src='/video.svg' width={16} height={12} alt='profile' />
-                        <p className='font-medium text-xs text-schestiPrimaryBlack'>Live Video</p>
-                    </label>
+
                     <label htmlFor="photo-video" className="flex items-center cursor-pointer gap-2">
                         <Image src='/photo-video.svg' width={16} height={12} alt='profile' />
                         <p className='font-medium text-xs text-schestiPrimaryBlack'>Photo/Video</p>
@@ -160,12 +177,19 @@ const CreatePost = () => {
                             setFiles(prev => ([...prev, ...Array.from(target.files as FileList)]));
                         }
                     }} />
-                    <label className="flex items-center cursor-pointer gap-2">
+                    <label className="flex items-center cursor-pointer gap-2" onClick={() => setShowFeelingActivity(true)}>
                         <Image src='/camera-02.svg' width={16} height={12} alt='profile' />
-                        <p className='font-medium text-xs text-schestiPrimaryBlack'>Feeling/Activity</p>
+                        <p className='font-medium text-xs text-schestiPrimaryBlack'>Feeling/Activity {feeling && `is ${feeling}`}</p>
                     </label>
                 </div>
-                <CustomButton isLoading={isFilesUploading} onClick={() => postData ? updatePost() : createPost()} text={postData ? 'Update' : 'Create'} className='max-w-16 flex justify-center bg-lavenderPurpleReplica text-xs text-white' />
+                <div className='flex gap-3'>
+                    {
+                        postData && (
+                            <CustomButton isLoading={isFilesUploading} onClick={resetPost} text={'Cancel'} className='max-w-16 flex justify-center bg-vividRed text-xs text-white' />
+                        )
+                    }
+                    <CustomButton isLoading={isFilesUploading} onClick={() => postData ? updatePost() : createPost()} text={postData ? 'Update' : 'Create'} className='max-w-16 flex justify-center bg-lavenderPurpleReplica text-xs text-white' />
+                </div>
             </div>
         </div>
     )
