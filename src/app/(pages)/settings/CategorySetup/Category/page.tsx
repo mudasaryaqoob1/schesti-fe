@@ -166,10 +166,10 @@ const AddCategory = () => {
                   <div className=" grid grid-cols-2 gap-2">
                     <FormikController
                       control="input"
-                      label="Div"
+                      label="ID"
                       type="text"
                       name="categoryId"
-                      placeholder="Enter DIV"
+                      placeholder="Enter ID"
                     />
                     <FormikController
                       control="input"
@@ -196,19 +196,47 @@ const AddCategory = () => {
                         iconwidth={20}
                         iconheight={20}
                       />
-                      {categoryData && (
+                      <FormikController
+                        control="input"
+                        label="Catgory Name"
+                        type="text"
+                        name="name"
+                        placeholder="Enter Name"
+                      />
+                    </div>
+
+                    <div className="flex justify-between mt-5 items-center">
+                      <WhiteButton
+                        text="Cancel"
+                        className="!w-fit"
+                        onClick={() => {
+                          setShowForm(false);
+                        }}
+                      />
+                      <div className="flex items-center gap-3">
                         <CustomButton
-                          type="button"
-                          text="Cancel"
-                          onClick={() => {
-                            dispatch(setCategoryData(null));
-                            setShowForm(false);
-                          }}
-                          className="!w-auto !bg-red-500 border-none"
+                          type="submit"
+                          text={
+                            categoryData ? 'Update Category' : 'Add Category'
+                          }
+                          className="!w-auto "
                           iconwidth={20}
                           iconheight={20}
                         />
-                      )}
+                        {categoryData && (
+                          <CustomButton
+                            type="button"
+                            text="Cancel"
+                            onClick={() => {
+                              dispatch(setCategoryData(null));
+                              setShowForm(false);
+                            }}
+                            className="!w-auto !bg-red-500 border-none"
+                            iconwidth={20}
+                            iconheight={20}
+                          />
+                        )}
+                      </div>
                     </div>
                   </div>
                 </Form>

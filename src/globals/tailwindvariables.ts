@@ -5,8 +5,7 @@ export const tertiaryHeading =
   'text-graphiteGray font-semibold text-base leading-7';
 export const quaternaryHeading =
   'text-slateGray text-base font-normal leading-8';
-export const newAppBar =
-  'text-slateGray text-base font-normal leading-8';
+export const newAppBar = 'text-slateGray text-base font-normal leading-8';
 export const quinaryHeading = 'text-graphiteGray text-sm font-normal leading-6';
 export const senaryHeading = 'text-graphiteGray text-xs font-normal leading-5';
 export const minHeading =

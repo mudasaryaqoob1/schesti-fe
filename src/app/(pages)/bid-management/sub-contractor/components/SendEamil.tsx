@@ -66,7 +66,6 @@ export function SendEmailModal({ to, projectId }: Props) {
         if (projectId.length > 0) {
           await createProjectActivity(projectId, 'sent email');
         }
-        console.log('res.data', res.data);
         if (res) {
           toast.success('Email sent successfully');
         }

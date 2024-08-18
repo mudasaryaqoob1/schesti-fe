@@ -11,7 +11,6 @@ import ReportCard from '@/app/component/reportCard';
 import { Spin } from 'antd';
 import generatePDF from '@/app/component/captureComponent/generatePdf';
 
-
 // const groupByType = (items: dataInterface[]): dataInterface[][] => {
 //   console.log(items, ' ===> Data interface');
 
@@ -58,45 +57,62 @@ interface Props {
 }
 
 const ReportModal = ({ setModalOpen, takeOff }: Props) => {
-
   const stageRef = useRef<Konva.Stage>(null);
   const [data, setData] = useState<dataInterface[]>([]);
-  const [reportData, setreportData] = useState<any>([])
-  const [uploadFileData, setuploadFileData] = useState<any>([])
+  const [reportData, setreportData] = useState<any>([]);
+  const [uploadFileData, setuploadFileData] = useState<any>([]);
   const { calculateMidpoint, calculatePolygonCenter } = useDraw();
   // const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [loading, setloading] = useState<boolean>(true)
-
+  const [loading, setloading] = useState<boolean>(true);
 
   //@ts-ignore
   const counterImage = new Image();
   counterImage.src = '/count-draw.png';
 
-
-  console.log(takeOff, " ====> Take offs")
+  console.log(takeOff, ' ====> Take offs');
   const getPageData = () => {
     let reportData: any = [];
-    if (takeOff?.measurements && Object.keys(takeOff?.measurements) && Object.keys(takeOff?.measurements)?.length > 0) {
+    if (
+      takeOff?.measurements &&
+      Object.keys(takeOff?.measurements) &&
+      Object.keys(takeOff?.measurements)?.length > 0
+    ) {
       Object.keys(takeOff?.measurements)?.map((key: any) => {
-        if (takeOff?.measurements[key] && Object.keys(takeOff?.measurements[key]) && Object.keys(takeOff?.measurements[key])?.length > 0) {
+        if (
+          takeOff?.measurements[key] &&
+          Object.keys(takeOff?.measurements[key]) &&
+          Object.keys(takeOff?.measurements[key])?.length > 0
+        ) {
           Object.keys(takeOff?.measurements[key])?.map((type: any) => {
-            reportData = [...reportData, ...((takeOff?.measurements[key][type] && Array.isArray(takeOff?.measurements[key][type]) && takeOff?.measurements[key][type]?.length > 0)
-              ?
-              takeOff.measurements[key][type].map((arrit: any) => {
-                return {
-                  ...arrit, pageId: key, type, pageData: takeOff?.pages?.find((pg: any) => (pg?.pageId == key)),
-                  pageLabel: takeOff?.pages?.find((pg: any) => (pg?.pageId == key))?.pageNum, color: arrit?.stroke, config: arrit
-                }
-              })
-              :
-              [])]
-          })
+            reportData = [
+              ...reportData,
+              ...(takeOff?.measurements[key][type] &&
+              Array.isArray(takeOff?.measurements[key][type]) &&
+              takeOff?.measurements[key][type]?.length > 0
+                ? takeOff.measurements[key][type].map((arrit: any) => {
+                    return {
+                      ...arrit,
+                      pageId: key,
+                      type,
+                      pageData: takeOff?.pages?.find(
+                        (pg: any) => pg?.pageId == key
+                      ),
+                      pageLabel: takeOff?.pages?.find(
+                        (pg: any) => pg?.pageId == key
+                      )?.pageNum,
+                      color: arrit?.stroke,
+                      config: arrit,
+                    };
+                  })
+                : []),
+            ];
+          });
         }
-      })
+      });
     }
-    console.log(reportData, " ===> Take offs reportData")
-    return reportData
-  }
+    console.log(reportData, ' ===> Take offs reportData');
+    return reportData;
+  };
   // getPageData()
   useEffect(() => {
     setreportData(getPageData() ?? [])
@@ -114,7 +130,7 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
         return new Promise<HTMLImageElement>((resolve, reject) => {
           //@ts-ignore
           const img = new Image();
-          img.crossOrigin = 'anonymous'
+          img.crossOrigin = 'anonymous';
           img.src = `${src}?cacheBust=${new Date().getTime()}`;
           img.onload = () => resolve(img);
           img.onerror = (e: any) => { console.log(e, " ==> Page image loading of capture"); reject(e) };
@@ -267,22 +283,30 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
       };
 
       const captureShapes = async () => {
-        setloading(true)
+        setloading(true);
         try {
           // for(let j = 0; j<uploadFileData?.length; j++){
 
           // }
           // const background = await loadImage(uploadFileData[1]?.src || ''); // Update based on actual data structure
           const promises = reportData.map(async (item) => {
-            const page = uploadFileData?.find((pg: any) => (pg?.pageId == item?.pageId))
-            console.log(page, " ===> Data of pages and reports for Page loading of capture")
-            let background: any = {}
+            const page = uploadFileData?.find(
+              (pg: any) => pg?.pageId == item?.pageId
+            );
+            console.log(
+              page,
+              ' ===> Data of pages and reports for Page loading of capture'
+            );
+            let background: any = {};
             if (page) {
-              background = await loadImage(page?.src || '')
+              background = await loadImage(page?.src || '');
             } else {
-              background = await loadImage(uploadFileData[0]?.src || '')
+              background = await loadImage(uploadFileData[0]?.src || '');
             }
-            console.log(background, " ===> Data of pages and reports for Page bottom loading of capture")
+            console.log(
+              background,
+              ' ===> Data of pages and reports for Page bottom loading of capture'
+            );
             const url = await captureShape(
               { ...item.config, text: item.text, name: item.projectName },
               background,
@@ -321,10 +345,10 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
           // const newData = await Promise.all(promises);
           const newData = await processInBatches(promises, 1);
           setData(newData);
-          setloading(false)
+          setloading(false);
         } catch (error) {
-          setloading(false)
-          console.log(error, 'error while capturing loading of capture')
+          setloading(false);
+          console.log(error, 'error while capturing loading of capture');
         }
       };
 
@@ -369,7 +393,7 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
           /> */}
         </div>
       </section>
-      <section className='w-full grow overflow-y-auto'>
+      <section className="w-full grow overflow-y-auto">
         <div>
           {/* Report Generation Loading */}
           {/* {loading &&

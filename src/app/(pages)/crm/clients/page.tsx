@@ -121,6 +121,8 @@ const ClientTable = () => {
       setShowDeleteModal(true);
     } else if (key == 'editClientDetail') {
       router.push(`${Routes.CRM.Clients}/edit/${client._id}`);
+    } else if (key === 'createContract') {
+      router.push(`${Routes.Contracts}/create?receiver=${client._id}`);
     } else if (key === 'inActiveClient') {
       dispatch(
         updateCrmItemStatusThunk({

@@ -5,9 +5,6 @@ const styles = StyleSheet.create({
     width: '30%', // Adjust the width based on your layout
     marginBottom: 16,
   },
-  infoContainer: {
-    margin: '0.75rem',
-  },
 });
 
 export function InfoContainer({
@@ -18,7 +15,7 @@ export function InfoContainer({
   description: string;
 }) {
   return (
-    <View style={[styles.infoContainer, styles.gridItem]}>
+    <View style={[styles.gridItem]}>
       <PdfHeading text={title} />
       <PdfText text={description} />
     </View>

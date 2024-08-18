@@ -147,8 +147,8 @@ const SupportTicketDetails = () => {
             </span>
           </p>
         </div>
-        <div className="grid grid-cols-1 gap-y-6 sm:gap-x-6 sm:grid-cols-2 md:grid-cols-3 mt-6">
-          <div className="shadow-primaryGlow rounded-2xl p-5">
+        <div className="grid grid-cols-1  gap-y-6 sm:gap-x-6 sm:grid-cols-2 md:grid-cols-3 mt-6">
+          <div className="shadow-primaryGlow bg-white rounded-2xl p-5">
             <p className="text-xs text-slateGray font-normal">
               Orignal Request
             </p>
@@ -179,7 +179,7 @@ const SupportTicketDetails = () => {
               )}
             </div>
           </div>
-          <div className="shadow-primaryGlow rounded-2xl p-5 md:col-span-2">
+          <div className="shadow-primaryGlow  bg-white rounded-2xl p-5 md:col-span-2">
             <div className="h-auto">
               <div className="h-[66vh] overflow-y-auto scroll-smooth">
                 <div className="flex flex-col gap-y-5" ref={divRef}>

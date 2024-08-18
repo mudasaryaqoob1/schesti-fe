@@ -99,7 +99,7 @@ const SubCategoryTable = ({ onEdit, onDelete }: Props) => {
       key: 'subCategory',
     },
     {
-      title: 'Price',
+      title: 'Labour Per Hour',
       dataIndex: 'price',
       key: 'price',
       render(value) {

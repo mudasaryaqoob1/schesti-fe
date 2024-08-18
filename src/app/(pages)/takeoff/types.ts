@@ -12,8 +12,8 @@ export interface CoordinatesInterface {
 
 export interface CountInterface extends CoordinatesInterface {
   dateTime: Date;
-  projectName?:any;
-  category?:any;
+  projectName?: any;
+  category?: any;
 }
 
 export interface LineInterface {
@@ -23,8 +23,8 @@ export interface LineInterface {
   lineCap?: LineCap;
   textUnit: number;
   dateTime?: Date;
-  projectName?:any;
-  category?:any;
+  projectName?: any;
+  category?: any;
 }
 
 export interface CircleInterface extends CoordinatesInterface {
@@ -39,8 +39,8 @@ export interface PolygonConfigInterface {
   depth?: number;
   textUnit: number;
   dateTime: Date;
-  projectName?:any;
-  category?:any;
+  projectName?: any;
+  category?: any;
 }
 
 export interface DrawInterface {
@@ -49,7 +49,7 @@ export interface DrawInterface {
   volume: PolygonConfigInterface[];
   dynamic: LineInterface[];
   count: CountInterface[];
-  perimeter?:any;
+  perimeter?: any;
 }
 
 export interface Measurements {
@@ -77,7 +77,7 @@ export type ScaleLabel =
   | 'count'
   | 'area'
   | 'dynamic'
-  | 'perimeter'
+  | 'perimeter';
 
 export type DynamicScale = 'fill' | 'create' | 'clear';
 

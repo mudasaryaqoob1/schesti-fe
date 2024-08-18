@@ -83,7 +83,6 @@
 //         },
 //     ];
 
-
 //     const pdfjs = useCallback(async () => {
 //         const pdfjs = await import('pdfjs-dist');
 //         await import('pdfjs-dist/build/pdf.worker.min.mjs');
@@ -335,7 +334,6 @@
 //                     onClick={() => { startTakeOf() }}
 //                 />
 //             </div>
-
 
 //             {/* grid place-items-center shadow-sceneryShadow  */}
 //             <div

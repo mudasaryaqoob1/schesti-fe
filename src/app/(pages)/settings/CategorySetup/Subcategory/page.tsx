@@ -159,10 +159,10 @@ const AddSubcategory = () => {
                     />
                     <FormControl
                       control="input"
-                      label="Price"
+                      label="Labour Per Hour"
                       type="number"
                       name="price"
-                      placeholder="Enter Price"
+                      placeholder="Enter Labour Per Hour"
                       prefix="$"
                     />
                   </div>
@@ -186,19 +186,56 @@ const AddSubcategory = () => {
                         iconwidth={20}
                         iconheight={20}
                       />
-                      {subcategoryData && (
+                      <FormControl
+                        control="input"
+                        label="Sub-Category"
+                        type="text"
+                        name="name"
+                        placeholder="Enter Sub-Category"
+                      />
+                      <FormControl
+                        control="input"
+                        label="Price"
+                        type="number"
+                        name="price"
+                        placeholder="Enter Price"
+                        prefix="$"
+                      />
+                    </div>
+                    <div className="flex justify-between mt-5 items-center">
+                      <WhiteButton
+                        text="Cancel"
+                        className="!w-fit"
+                        onClick={() => {
+                          setShowForm(false);
+                        }}
+                      />
+                      <div className="flex items-center gap-3">
                         <CustomButton
-                          type="button"
-                          text="Cancel"
-                          onClick={() => {
-                            dispatch(setSubcategoryData(null));
-                            setShowForm(false);
-                          }}
-                          className="!w-auto !bg-red-500 border-none"
+                          text={
+                            subcategoryData
+                              ? 'Update Subcategory'
+                              : 'Add Subcategory'
+                          }
+                          type="submit"
+                          className="!w-auto "
                           iconwidth={20}
                           iconheight={20}
                         />
-                      )}
+                        {subcategoryData && (
+                          <CustomButton
+                            type="button"
+                            text="Cancel"
+                            onClick={() => {
+                              dispatch(setSubcategoryData(null));
+                              setShowForm(false);
+                            }}
+                            className="!w-auto !bg-red-500 border-none"
+                            iconwidth={20}
+                            iconheight={20}
+                          />
+                        )}
+                      </div>
                     </div>
                   </div>
                 </Form>

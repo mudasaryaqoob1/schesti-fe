@@ -84,5 +84,18 @@ class EstimateRequestsService extends HttpService {
     this.put(`${this.prefix}/changeEstimateStatus/${estimateId}`, {
       status: bodyObject.status,
     });
+
+  deleteGeneratedEstimateItem = (
+    generatedEstimateId: string | null,
+    estiamteScopeId: string | null,
+    estimateItemId: string | undefined
+  ): Promise<IResponseInterface> =>
+    this.delete(
+      `${this.prefix}/deleteGeneratedEstimateItems/${generatedEstimateId}/${estiamteScopeId}/${estimateItemId}`,
+      {}
+    );
+
+  httpEstimateEmailSender = (data: any): Promise<any> =>
+    this.post(`${this.prefix}/sendEmail`, data);
 }
 export const estimateRequestService = new EstimateRequestsService();

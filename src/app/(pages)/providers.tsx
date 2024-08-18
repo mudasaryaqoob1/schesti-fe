@@ -2,6 +2,8 @@
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { AppProgressBar as ProgressBar } from 'next-nprogress-bar';
 import { ConfigProvider } from 'antd';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 const queryClient = new QueryClient();
 
 const PRIMARY_COLOR = '#007AB6';
@@ -39,7 +41,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           },
         }}
       >
-        {children}
+        <DndProvider backend={HTML5Backend}>{children}</DndProvider>
       </ConfigProvider>
       <ProgressBar
         height="4px"

@@ -137,7 +137,7 @@ const ScaleModal = ({ setModalOpen, numOfPages, page, setdrawScale, scaleLine, h
     //   setPresetX(`1"=1"`);
     // }
 
-    setValueX("custom");
+    setValueX('custom');
   };
   const onChangeDrawY = (value: any) => {
     // if (e.target.value === 'custom') {
@@ -149,7 +149,7 @@ const ScaleModal = ({ setModalOpen, numOfPages, page, setdrawScale, scaleLine, h
     //   setPresetY(`1"=1"`);
     // }
 
-    setValueY("custom");
+    setValueY('custom');
   };
   useEffect(() => {
     if (scaleLine && scaleLine?.points) {
@@ -332,8 +332,9 @@ const ScaleModal = ({ setModalOpen, numOfPages, page, setdrawScale, scaleLine, h
             <div className="flex items-center gap-1 w-full">
               <Input
                 value={optionsValue}
-                className={`w-full ${optionError && '!border-1 !border-rose-500'
-                  }`}
+                className={`w-full ${
+                  optionError && '!border-1 !border-rose-500'
+                }`}
                 onChange={(e) => handleOptionChange(e)}
               />
               <div className="">
@@ -419,8 +420,9 @@ const ScaleModal = ({ setModalOpen, numOfPages, page, setdrawScale, scaleLine, h
               <>
                 <Input
                   value={firstValueX}
-                  className={`!w-[115px] ${firstValErrorX && '!border-1 !border-rose-500'
-                    }`}
+                  className={`!w-[115px] ${
+                    firstValErrorX && '!border-1 !border-rose-500'
+                  }`}
                   onChange={(e) => {
                     const inputValue = e.target.value;
 
@@ -450,8 +452,9 @@ const ScaleModal = ({ setModalOpen, numOfPages, page, setdrawScale, scaleLine, h
                 </Select>
                 <Input
                   value={secondValueX}
-                  className={`!w-[115px] ${secValErrorX && '!border-1 !border-rose-500'
-                    } `}
+                  className={`!w-[115px] ${
+                    secValErrorX && '!border-1 !border-rose-500'
+                  } `}
                   onChange={(e) => {
                     const inputValue = e.target.value;
 
@@ -557,8 +560,9 @@ const ScaleModal = ({ setModalOpen, numOfPages, page, setdrawScale, scaleLine, h
                   <>
                     <Input
                       value={firstValueY}
-                      className={`!w-[115px] ${firstValErrorY && '!border-1 !border-rose-500'
-                        } `}
+                      className={`!w-[115px] ${
+                        firstValErrorY && '!border-1 !border-rose-500'
+                      } `}
                       // className="!w-[115px]"
                       onChange={(e) => {
                         const inputValue = e.target.value;
@@ -589,8 +593,9 @@ const ScaleModal = ({ setModalOpen, numOfPages, page, setdrawScale, scaleLine, h
                     </Select>
                     <Input
                       value={secondValueY}
-                      className={`!w-[115px] ${secValErrorY && '!border-1 !border-rose-500'
-                        } `}
+                      className={`!w-[115px] ${
+                        secValErrorY && '!border-1 !border-rose-500'
+                      } `}
                       onChange={(e) => {
                         const inputValue = e.target.value;
 
@@ -684,23 +689,28 @@ const ScaleModal = ({ setModalOpen, numOfPages, page, setdrawScale, scaleLine, h
             >
               {secMeterX === `in'` || secMeterX === `ft'in"`
                 ? byPrecision.map((item) => (
-                  <Select.Option key={item} value={item}>
-                    {item}
-                  </Select.Option>
-                ))
+                    <Select.Option key={item} value={item}>
+                      {item}
+                    </Select.Option>
+                  ))
                 : precisions.map((item) => (
-                  <Select.Option key={item} value={item}>
-                    {item}
-                  </Select.Option>
-                ))}
+                    <Select.Option key={item} value={item}>
+                      {item}
+                    </Select.Option>
+                  ))}
             </Select>
           </div>
         </div>
-        {valueX == 'custom' && <Button
-          text="Scale from draw"
-          onClick={() => { setModalOpen(false); setdrawScale(true) }}
-          className="!py-1.5"
-        />}
+        {valueX == 'custom' && (
+          <Button
+            text="Scale from draw"
+            onClick={() => {
+              setModalOpen(false);
+              setdrawScale(true);
+            }}
+            className="!py-1.5"
+          />
+        )}
       </section>
       <div className="flex justify-end gap-4 mt-5 mb-2">
         <div>
