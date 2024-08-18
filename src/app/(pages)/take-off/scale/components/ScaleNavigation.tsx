@@ -3,9 +3,9 @@ import NextImage from 'next/image';
 import { twMerge } from 'tailwind-merge';
 import { bg_style } from '@/globals/tailwindvariables';
 import { SCALE_NAVIGATION, ScaleInterface } from '../../types';
-import { ZoomOutOutlined } from '@ant-design/icons';
-import { Popover, Input, Button } from 'antd';
-const { TextArea } = Input;
+import { CommentOutlined, RadiusSettingOutlined } from '@ant-design/icons';
+// import { Input} from 'antd';
+// const { TextArea } = Input;
 
 interface Props {
   tool: ScaleInterface;
@@ -117,23 +117,15 @@ const countIcon = (
   return obj[`${type ?? 'branch'}`];
 };
 
-const ScaleNavigation: React.FC<Props> = ({
-  tool,
-  setTool,
-  setShowModal,
-  setcountType,
-  countType,
-  selectedPage,
-  handleAddComment,
-}) => {
-  console.log(selectedPage, ' ===> selectedPage');
-  const [cddOpen, setcddOpen] = useState<boolean>(false);
-  const [copen, setcOpen] = useState(false);
-  const [comment, setcomment] = useState('');
+const ScaleNavigation: React.FC<Props> = ({ tool, setTool, setShowModal, setcountType, countType, selectedPage }) => {
+  console.log(selectedPage, " ===> selectedPage")
+  const [cddOpen, setcddOpen] = useState<boolean>(false)
+  // const [copen, setcOpen] = useState(false);
+  // const [comment, setcomment] = useState("")
   return (
     <div
       className={twMerge(
-        `h-auto w-30 py-5 px-1 flex flex-col justify-center items-center gap-4  ${bg_style} rounded-lg !fixed !z-[50] right-0 top-30`
+        `h-auto w-30 py-5 px-1 flex flex-col justify-center items-center gap-4  ${bg_style} rounded-lg !fixed !z-[50] right-0 top-30 shadow-md`
       )}
     >
       {SCALE_NAVIGATION.map(
@@ -199,37 +191,26 @@ const ScaleNavigation: React.FC<Props> = ({
       >
         {/* <ZoomOutOutlined width={19.97} height={11.31} /> */}
         {countIcon(20, 20, 'GrayText', 'tick')}
-        <span className={twMerge(`text-xs capitalize`)}>{'Count'}</span>
-        {cddOpen && (
-          <div className="bg-white shadow-lg absolute right-24 flex flex-col rounded-lg p-1">
-            {/* <ZoomOutOutlined width={19.97} height={11.31} /> */}
-            {['tick', 'cross', 'branch', 'home', 'info'].map(
-              (type: string, index: number) => {
-                return (
-                  <span
-                    key={index}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setcountType(type);
-                      setShowModal(true);
-                      setTool({
-                        selected: 'count',
-                      });
-                    }}
-                    className="p-3 cursor-pointer hover:bg-slate-200 flex items-center justify-center"
-                  >
-                    {countIcon(
-                      20,
-                      20,
-                      countType == type ? '#007AB6' : 'GrayText',
-                      type
-                    )}
-                  </span>
-                );
-              }
-            )}
-          </div>
-        )}
+        <span
+          className={twMerge(
+            `text-xs capitalize`
+          )}
+        >
+          {"Count"}
+        </span>
+        {cddOpen && <div className='bg-white shadow-lg absolute right-24 bottom-20 flex flex-col rounded-lg p-1' >
+          {/* <ZoomOutOutlined width={19.97} height={11.31} /> */}
+          {['tick', 'cross', 'branch', 'home', 'info'].map((type: string, index:number) => {
+            return <span key={index} onClick={(e) => {
+              e.stopPropagation()
+              setcountType(type)
+              setShowModal(true);
+              setTool({
+                selected: "count",
+              });
+            }} className='p-3 cursor-pointer hover:bg-slate-200 flex items-center justify-center'>{countIcon(20, 20, (countType == type ? "#007AB6" : 'GrayText'), type)}</span>
+          })}
+        </div>}
       </div>
 
       {/* Zoom Out */}
@@ -263,7 +244,7 @@ const ScaleNavigation: React.FC<Props> = ({
 
       {/* Comments Section Here */}
 
-      <Popover
+      {/* <Popover
         content={
           <div className="">
             {selectedPage?.comments &&
@@ -304,15 +285,39 @@ const ScaleNavigation: React.FC<Props> = ({
         placement="left"
         trigger="click"
         open={copen}
-        onOpenChange={(val: boolean) => {
-          setcOpen(val);
-        }}
-      >
-        <div className="flex flex-col items-center cursor-pointer p-2">
-          <ZoomOutOutlined width={19.97} height={11.31} />
-          <span className={twMerge(`text-xs capitalize`)}>{'Comments'}</span>
+        onOpenChange={(val: boolean) => { setcOpen(val) }}
+      > */}
+        <div
+          className={`flex flex-col items-center cursor-pointer p-2 ${tool.selected == 'curve' ? '!text-lavenderPurpleReplica' : ''}`}
+          onClick={()=>{setTool({selected:'curve'})}}
+        >
+          <RadiusSettingOutlined width={19.97} height={11.31} />
+          {/* <ZoomOutOutlined width={19.97} height={11.31} /> */}
+          <span
+            className={twMerge(
+              `text-xs capitalize`
+            )}
+          >
+            {"Curve"}
+          </span>
         </div>
-      </Popover>
+        <div
+          className={`flex flex-col items-center cursor-pointer p-2 ${tool.selected == 'comments' ? '!text-lavenderPurpleReplica' : ''}`}
+          onClick={()=>{setTool({selected:'comments'})}}
+        >
+          <CommentOutlined width={19.97} height={11.31} />
+          {/* <ZoomOutOutlined width={19.97} height={11.31} /> */}
+          <span
+            className={twMerge(
+              `text-xs capitalize`
+            )}
+          >
+            {"Comments"}
+          </span>
+        </div>
+      {/* </Popover> */}
+
+
     </div>
   );
 };

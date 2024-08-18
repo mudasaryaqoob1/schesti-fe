@@ -12,13 +12,14 @@ export interface CoordinatesInterface {
 
 export interface CountInterface extends CoordinatesInterface {
   dateTime: Date;
-  projectName?: any;
-  category?: any;
-  subcategory?: any;
-  user?: any;
-  textColor?: any;
-  mId?: any;
-  countType?: string;
+  projectName?:any;
+  category?:any;
+  subcategory?:any;
+  user?:any;
+  textColor?:any;
+  mId?:any;
+  countType?:string;
+  textUnit: number;
 }
 
 export interface LineInterface {
@@ -97,7 +98,9 @@ export type ScaleLabel =
   | 'perimeter'
   | 'Zoom In'
   | 'Zoom Out'
-  | 'Room Color';
+  | 'Room Color'
+  | 'comments'
+  | 'curve'
 
 export type DynamicScale = 'fill' | 'create' | 'clear';
 
@@ -141,6 +144,14 @@ export const SCALE_NAVIGATION: ScaleNavigation[] = [
     height: 11.31,
   },
   {
+    label: 'area',
+    src: '/nav/area.svg',
+    selectedSrc: '/nav/selectedArea.svg',
+    alt: 'createicon',
+    width: 18.33,
+    height: 13.72,
+  },
+  {
     label: 'volume',
     src: '/nav/volume.svg',
     selectedSrc: '/nav/selectedVolume.svg',
@@ -156,14 +167,6 @@ export const SCALE_NAVIGATION: ScaleNavigation[] = [
   //   width: 19.97,
   //   height: 11.31,
   // },
-  {
-    label: 'area',
-    src: '/nav/area.svg',
-    selectedSrc: '/nav/selectedArea.svg',
-    alt: 'createicon',
-    width: 18.33,
-    height: 13.72,
-  },
   {
     label: 'dynamic',
     src: '/nav/dynamic.svg',
@@ -206,4 +209,4 @@ export const SCALE_NAVIGATION: ScaleNavigation[] = [
   // },
 ];
 
-export const Units = [11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72];
+export const Units = [5,6,7,8,9,10,11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72];

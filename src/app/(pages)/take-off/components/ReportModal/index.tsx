@@ -115,24 +115,17 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
   };
   // getPageData()
   useEffect(() => {
-    setreportData(getPageData() ?? []);
-    setuploadFileData(takeOff?.pages ?? []);
-  }, [takeOff]);
+    setreportData(getPageData() ?? [])
+    setuploadFileData(takeOff?.pages ?? [])
+  }, [takeOff])
+  const [perText, setperText] = useState<string>("")
 
   useEffect(() => {
-    console.log(reportData, uploadFileData, ' ===> loading of capture ');
-    if (
-      Array.isArray(reportData) &&
-      reportData?.length > 0 &&
-      Array.isArray(uploadFileData) &&
-      uploadFileData?.length > 0
-    ) {
-      setloading(true);
-      console.log(
-        uploadFileData,
-        reportData,
-        ' ===> Data of pages and reports'
-      );
+    console.log(reportData, uploadFileData, " ===> loading of capture ")
+    if (Array.isArray(reportData) && reportData?.length > 0 && Array.isArray(uploadFileData) && uploadFileData?.length > 0) {
+      setloading(true)
+      setData(reportData.map((i)=>({image:'/overview.png',details:{...i}})))
+      console.log(uploadFileData, reportData, " ===> Data of pages and reports")
       const loadImage = (src: string) => {
         return new Promise<HTMLImageElement>((resolve, reject) => {
           //@ts-ignore
@@ -140,10 +133,7 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
           img.crossOrigin = 'anonymous';
           img.src = `${src}?cacheBust=${new Date().getTime()}`;
           img.onload = () => resolve(img);
-          img.onerror = (e: any) => {
-            console.log(e, ' ==> Page image loading of capture');
-            reject(e);
-          };
+          img.onerror = (e: any) => { console.log(e, " ==> Page image loading of capture"); reject(e) };
         });
       };
 
@@ -219,7 +209,7 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
                   strokeWidth,
                   lineCap,
                   closed: shapeType === 'area' || shapeType === 'volume', // Close path for areas and volumes
-                  fill: shape?.fillColor,
+                  fill: shape?.fillColor
                 });
                 layer.add(line);
                 console.warn(shape, 'sssss');
@@ -328,7 +318,32 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
             };
           });
 
-          const newData = await Promise.all(promises);
+          const processInBatches = async (promisesArray: any[], batchSize: number) => {
+            const results = [];
+
+            for (let i = 0; i < promisesArray.length; i += batchSize) {
+              setperText(`${i}/${promisesArray?.length}`)
+              // Extract a batch of promises
+              const batch = promisesArray.slice(i, i + batchSize);
+
+              // Wait for all promises in the current batch to resolve
+              const batchResults = await Promise.all(batch.map((promiseFn) => promiseFn));
+              results.push(...batchResults); // Store the results
+              setData(ps=>(ps?.map((it,ind)=>{
+                if(ind == i){
+                  return {...it,image:batchResults[0].image}
+                }else{
+                  return it
+                }
+              })))
+            }
+
+            return results;
+          }
+
+
+          // const newData = await Promise.all(promises);
+          const newData = await processInBatches(promises, 1);
           setData(newData);
           setloading(false);
         } catch (error) {
@@ -339,21 +354,19 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
 
       if (reportData.length) captureShapes();
     } else {
-      setData([]);
-      setloading(false);
+      setData([])
+      setloading(false)
     }
-  }, [reportData, uploadFileData]);
-  useEffect(() => {
-    console.log(loading, ' ===> loading of capture');
-  }, [loading]);
+  }, [reportData, uploadFileData])
+  useEffect(() => { console.log(loading, " ===> loading of capture") }, [loading])
   useEffect(() => {
     return () => {
-      setData([]);
-      setuploadFileData([]);
-      setreportData([]);
-    };
-  }, []);
-  console.log(data, ' ===> data to capture');
+      setData([])
+      setuploadFileData([])
+      setreportData([])
+    }
+  }, [])
+  console.log(data, ' ===> data to capture')
 
   return (
     <div className="py-2.5 px-6 bg-white border border-solid border-elboneyGray rounded-[4px] z-50 w-[90vw] h-[90vh] flex flex-col">
@@ -361,7 +374,7 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
         <div className="flex justify-between items-center border-b-Gainsboro ">
           <div>
             <QuaternaryHeading
-              title="Report"
+              title={`Report ${perText}`}
               className="text-graphiteGray font-bold"
             />
             {loading && <Spin />}
@@ -383,11 +396,11 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
       <section className="w-full grow overflow-y-auto">
         <div>
           {/* Report Generation Loading */}
-          {loading && (
-            <div className="rounded-t-2xl absolute top-0 left-0 w-[100%] h-[100%] bg-slate-200 flex justify-center items-center bg-opacity-30 z-50">
-              <Spin size="large" />
+          {/* {loading &&
+            <div className='rounded-t-2xl absolute top-0 left-0 w-[100%] h-[100%] bg-slate-200 flex justify-center items-center bg-opacity-30 z-50' >
+              <Spin size='large' />
             </div>
-          )}
+          } */}
           <Stage
             ref={stageRef}
             width={800}
@@ -408,6 +421,11 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
                 </div>
               ))}
             </div>
+            {loading && <div
+              className="w-full flex flex-col rounded-2xl justify-between"
+            >
+              <Spin size='large' />
+            </div>}
             <div className="flex justify-center items-center my-4">
               {/* {isSaving ? (
                 <div role="status">

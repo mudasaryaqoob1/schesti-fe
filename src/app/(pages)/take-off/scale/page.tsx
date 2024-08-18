@@ -1,20 +1,9 @@
 'use client';
-import { useState, useContext, useEffect, useCallback } from 'react';
+import { useState, useContext, useEffect, useLayoutEffect } from 'react';
 import ModalComponent from '@/app/component/modal';
 import ScaleModal from '../components/scale';
 import ModalsWrapper from './components/ModalWrapper';
-import {
-  Avatar,
-  ColorPicker,
-  Dropdown,
-  InputNumber,
-  Menu,
-  Popover,
-  Progress,
-  Select,
-  Space,
-  Spin,
-} from 'antd';
+import { Avatar, ColorPicker, Dropdown, InputNumber, Menu, Popover, Progress, Select, Space, Spin } from 'antd';
 import { EditContext, ScaleContext, UploadFileContext } from '../context';
 import { UploadFileContextProps } from '../context/UploadFileContext';
 import Konva from 'konva';
@@ -33,40 +22,23 @@ import { useRouter, useSearchParams } from 'next/navigation';
 // import { ReportDataContextProps } from '../context/ReportDataContext';
 // import SelectPageModal from '../components/selectPageModal';
 // import { useSelector } from 'react-redux';
-import { selectUser } from '@/redux/authSlices/auth.selector';
+import { selectToken, selectUser } from '@/redux/authSlices/auth.selector';
 
 ////////////////////////New Take OffData///////////////////////////////////
-import CustomButton from '@/app/component/customButton/button';
-import { bg_style } from '@/globals/tailwindvariables';
-import {
-  CloudUploadOutlined,
-  CopyOutlined,
-  DeleteOutlined,
-  DownOutlined,
-  EditOutlined,
-  FileOutlined,
-  FilePdfOutlined,
-  FolderOutlined,
-  LeftOutlined,
-  MenuUnfoldOutlined,
-  MinusOutlined,
-  MoreOutlined,
-  PlusOutlined,
-  RightOutlined,
-  SearchOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
-import React from 'react';
-import { Button, Divider, Input, Table } from 'antd';
+import CustomButton from '@/app/component/customButton/button'
+import { bg_style } from '@/globals/tailwindvariables'
+import { AppstoreOutlined, BorderLeftOutlined, CloseOutlined, CloudUploadOutlined, CopyOutlined, DeleteOutlined, DownOutlined, DragOutlined, EditOutlined, FileOutlined, FolderOutlined, LeftOutlined, MenuOutlined, MinusOutlined, MoreOutlined, PlusOutlined, RightOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons'
+import React from 'react'
+import { Button, Divider, Input, Table } from 'antd'
 //@ts-ignore
-import type { ColumnsType } from 'antd/es/table';
+import type { ColumnsType } from 'antd/es/table'
 import { takeoffSummaryService } from '@/app/services/takeoffSummary.service';
 import { EditableText } from '@/app/component/EditableText';
 import ReportModal from '../components/ReportModal';
 // import TertiaryHeading from '@/app/component/headings/tertiary';
 import CreateProgressModal from '../components/createProgressModal';
 // import { UploadFileData } from '../context/EditContext';
-import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
+// import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import AwsS3 from '@/app/utils/S3Intergration';
 import { toast } from 'react-toastify';
 // import { AnyArn } from 'aws-sdk/clients/groundstation';
@@ -76,6 +48,10 @@ import Draggable from 'react-draggable';
 // import { twMerge } from 'tailwind-merge';
 import { useSelector } from 'react-redux';
 import { useDraw } from '@/app/hooks';
+import { HttpService } from '@/app/services/base.service';
+import { Option } from 'antd/es/mentions';
+// import axios from 'axios';
+
 
 const groupDataForFileTable = (input: any[]) => {
   const groupedData = input?.reduce((result: any, currentItem: any) => {
@@ -113,7 +89,7 @@ const groupDataForFileTable = (input: any[]) => {
         height,
         src,
         pageId,
-        pageNumber,
+        pageNumber
       });
     } else {
       result.push({
@@ -137,7 +113,7 @@ const groupDataForFileTable = (input: any[]) => {
             height,
             src,
             pageId,
-            pageNumber,
+            pageNumber
           },
         ],
       });
@@ -155,18 +131,11 @@ const getSingleMeasurements = (draw: any, pageId: any) => {
   if (Object?.keys(draw)?.length > 0) {
     Object.keys(draw)?.map((key: string) => {
       if (Array.isArray(draw[`${key}`]) && draw[`${key}`]?.length > 0) {
-        singleArr = [
-          ...singleArr,
-          ...draw[`${key}`].map((i: any) => ({ ...i, type: key, pageId })),
-        ];
+        singleArr = [...singleArr, ...draw[`${key}`].map((i: any) => ({ ...i, type: key, pageId }))]
       }
-      return '';
-    });
-    console.log(
-      singleArr,
-      pageId,
-      ' =====> measurementsTableData measurementsTableData'
-    );
+      return "";
+    })
+    console.log(singleArr, pageId, " =====> measurementsTableData measurementsTableData")
     // if (singleArr?.length > 0) {
     //   //Reduce code for category
     //   returningArr = singleArr?.reduce((result: any, currentItem: any) => {
@@ -184,482 +153,127 @@ const getSingleMeasurements = (draw: any, pageId: any) => {
     //   }, [])
     // }
   }
-  return singleArr;
-};
+  return singleArr
+}
 const measurementsTableData1 = (takeOff: any, search?: string) => {
   let returningArr: any = [];
-  if (
-    takeOff?.measurements &&
-    Object.keys(takeOff?.measurements) &&
-    Object.keys(takeOff?.measurements)?.length > 0
-  ) {
+  if (takeOff?.measurements && Object.keys(takeOff?.measurements) && Object.keys(takeOff?.measurements)?.length > 0) {
     Object.keys(takeOff?.measurements)?.map((key: any, ind: any) => {
-      console.log(
-        ind,
-        takeOff?.measurements[key],
-        ' =====> measurementsTableData measurementsTableData gotArr'
-      );
+      console.log(ind, takeOff?.measurements[key], " =====> measurementsTableData measurementsTableData gotArr")
       if (takeOff?.measurements[`${key}`]) {
-        const gotArr = getSingleMeasurements(
-          takeOff?.measurements[`${key}`],
-          key
-        );
-        console.log(
-          gotArr,
-          takeOff?.measurements[`${key}`],
-          ' =====> measurementsTableData measurementsTableData gotArr'
-        );
+        const gotArr = getSingleMeasurements(takeOff?.measurements[`${key}`], key)
+        console.log(gotArr, takeOff?.measurements[`${key}`], " =====> measurementsTableData measurementsTableData gotArr")
         if (Array.isArray(gotArr)) {
-          returningArr = [...returningArr, ...gotArr];
+          returningArr = [...returningArr, ...gotArr]
         }
       }
-      return '';
-    });
+      return ""
+    })
   }
   if (search && search?.length > 0) {
-    returningArr = returningArr?.filter((i: any) => {
-      return (
-        i?.projectName
-          ?.toLocaleLowerCase()
-          ?.includes(search?.toLocaleLowerCase()) ||
-        i?.category
-          ?.toLocaleLowerCase()
-          ?.includes(search?.toLocaleLowerCase()) ||
-        i?.subcategory
-          ?.toLocaleLowerCase()
-          ?.includes(search?.toLocaleLowerCase())
-      );
-    });
+    returningArr = returningArr?.filter((i: any) => { return (i?.projectName?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()) || i?.category?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()) || i?.subcategory?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase())) })
   }
-  console.log(
-    returningArr,
-    ' =====> measurementsTableData measurementsTableData'
-  );
+  console.log(returningArr, " =====> measurementsTableData measurementsTableData")
   if (returningArr?.length > 0) {
     //Reduce code for category
     returningArr = returningArr?.reduce((result: any, currentItem: any) => {
-      const {
-        category,
-        subcategory,
-        dateTime,
-        points,
-        projectName,
-        stroke,
-        strokeWidth,
-        textUnit,
-        id,
-        lineCap,
-        depth,
-        x,
-        y,
-        user,
-        type,
-        pageId,
-        text,
-      } = currentItem;
+      const { category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text } = currentItem
       // Check if there's already an entry with the same projectName and pageLabel
-      const existingEntry = result?.find(
-        (entry: any) => entry.category === category
-      );
-      if (existingEntry) {
-        existingEntry?.children?.push({
-          key: dateTime,
-          category,
-          subcategory,
-          dateTime,
-          points,
-          projectName,
-          stroke,
-          strokeWidth,
-          textUnit,
-          id,
-          lineCap,
-          depth,
-          x,
-          y,
-          user,
-          isParent: false,
-          type,
-          pageId,
-          text,
-        });
-      } else {
+      const existingEntry = result?.find((entry: any) => entry.category === category);
+      if (existingEntry) { existingEntry?.children?.push({ key: dateTime, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId, text }) }
+      else {
         result?.push({
-          key: dateTime,
-          isParent: true,
-          category,
-          subcategory,
-          dateTime,
-          points,
-          projectName,
-          stroke,
-          strokeWidth,
-          textUnit,
-          id,
-          lineCap,
-          depth,
-          x,
-          y,
-          user,
-          type,
-          pageId,
-          text,
-          children: [
-            {
-              key: dateTime,
-              isParent: false,
-              category,
-              subcategory,
-              dateTime,
-              points,
-              projectName,
-              stroke,
-              strokeWidth,
-              textUnit,
-              id,
-              lineCap,
-              depth,
-              x,
-              y,
-              user,
-              type,
-              pageId,
-              text,
-            },
-          ],
-        });
+          key: dateTime, isParent: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text,
+          children: [{ key: dateTime, isParent: false, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text }]
+        })
       }
-      return result;
-    }, []);
+      return result
+    }, [])
   }
-  return returningArr;
-};
+  return returningArr
+}
 const measurementsTableData = (takeOff: any, search?: string) => {
   let returningArr: any = [];
-  if (
-    takeOff?.measurements &&
-    Object.keys(takeOff?.measurements) &&
-    Object.keys(takeOff?.measurements)?.length > 0
-  ) {
+  if (takeOff?.measurements && Object.keys(takeOff?.measurements) && Object.keys(takeOff?.measurements)?.length > 0) {
     Object.keys(takeOff?.measurements)?.map((key: any, ind: any) => {
-      console.log(
-        ind,
-        takeOff?.measurements[key],
-        ' =====> measurementsTableData measurementsTableData gotArr'
-      );
+      console.log(ind, takeOff?.measurements[key], " =====> measurementsTableData measurementsTableData gotArr")
       if (takeOff?.measurements[`${key}`]) {
-        const gotArr = getSingleMeasurements(
-          takeOff?.measurements[`${key}`],
-          key
-        );
-        console.log(
-          gotArr,
-          takeOff?.measurements[`${key}`],
-          ' =====> measurementsTableData measurementsTableData gotArr'
-        );
+        const gotArr = getSingleMeasurements(takeOff?.measurements[`${key}`], key)
+        console.log(gotArr, takeOff?.measurements[`${key}`], " =====> measurementsTableData measurementsTableData gotArr")
         if (Array.isArray(gotArr)) {
-          returningArr = [...returningArr, ...gotArr];
+          returningArr = [...returningArr, ...gotArr]
         }
       }
-      return '';
-    });
+      return ""
+    })
   }
   if (search && search?.length > 0) {
-    returningArr = returningArr?.filter((i: any) => {
-      return (
-        i?.projectName
-          ?.toLocaleLowerCase()
-          ?.includes(search?.toLocaleLowerCase()) ||
-        i?.category
-          ?.toLocaleLowerCase()
-          ?.includes(search?.toLocaleLowerCase()) ||
-        i?.subcategory
-          ?.toLocaleLowerCase()
-          ?.includes(search?.toLocaleLowerCase())
-      );
-    });
+    returningArr = returningArr?.filter((i: any) => { return (i?.projectName?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()) || i?.category?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()) || i?.subcategory?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase())) })
   }
-  console.log(
-    returningArr,
-    ' =====> measurementsTableData measurementsTableData'
-  );
+  let emptyCategories = []
+  if (Array.isArray(takeOff?.categories)) {
+    for (let i = 0; i < takeOff?.categories?.length; i++) {
+      const cur = takeOff?.categories[i];
+      if (!returningArr?.find((i: any) => i?.category == cur)) {
+        emptyCategories.push(cur)
+      }
+    }
+  }
+  console.log(returningArr, emptyCategories, " =====> measurementsTableData measurementsTableData first returning array object")
   if (returningArr?.length > 0) {
     //Reduce code for category
     returningArr = returningArr?.reduce((result: any, currentItem: any) => {
-      const {
-        category,
-        subcategory,
-        dateTime,
-        points,
-        projectName,
-        stroke,
-        strokeWidth,
-        textUnit,
-        id,
-        lineCap,
-        depth,
-        x,
-        y,
-        user,
-        type,
-        pageId,
-        text,
-      } = currentItem;
+      const { category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text } = currentItem
       // Check if there's already an entry with the same projectName and pageLabel
-      const existingEntry = result?.find(
-        (entry: any) => entry.category === category
-      );
+      const existingEntry = result?.find((entry: any) => entry.category === category);
       if (existingEntry) {
-        const existingEntrySubCategory = existingEntry?.children?.find(
-          (entry: any) => entry?.subcategory === subcategory
-        );
-        const existingEntrySubCategoryIndex =
-          existingEntry?.children?.findIndex(
-            (entry: any) => entry?.subcategory === subcategory
-          );
-        if (
-          existingEntrySubCategory &&
-          subcategory &&
-          existingEntrySubCategoryIndex != -1
-        ) {
-          existingEntrySubCategory['isSubParent'] = true;
-          if (
-            Array.isArray(
-              existingEntry?.children[existingEntrySubCategoryIndex]?.children
-            )
-          ) {
-            existingEntry?.children[
-              existingEntrySubCategoryIndex
-            ]?.children?.push({
-              key: dateTime,
-              isChild: true,
-              category,
-              subcategory,
-              dateTime,
-              points,
-              projectName,
-              stroke,
-              strokeWidth,
-              textUnit,
-              id,
-              lineCap,
-              depth,
-              x,
-              y,
-              user,
-              isParent: false,
-              type,
-              pageId,
-              text,
-            });
+        const existingEntrySubCategory = existingEntry?.children?.find((entry: any) => entry?.subcategory === subcategory);
+        const existingEntrySubCategoryIndex = existingEntry?.children?.findIndex((entry: any) => entry?.subcategory === subcategory);
+        if (existingEntrySubCategory && subcategory && existingEntrySubCategoryIndex != -1) {
+          existingEntrySubCategory['isSubParent'] = true
+          if (Array.isArray(existingEntry?.children[existingEntrySubCategoryIndex]?.children)) {
+            existingEntry?.children[existingEntrySubCategoryIndex]?.children?.push({ key: dateTime, isChild: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId, text })
           } else {
-            existingEntry.children[existingEntrySubCategoryIndex].children = [
-              {
-                key: dateTime,
-                isChild: true,
-                category,
-                subcategory,
-                dateTime,
-                points,
-                projectName,
-                stroke,
-                strokeWidth,
-                textUnit,
-                id,
-                lineCap,
-                depth,
-                x,
-                y,
-                user,
-                isParent: false,
-                type,
-                pageId,
-                text,
-              },
-            ];
+            existingEntry.children[existingEntrySubCategoryIndex].children = [{ key: dateTime, isChild: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId, text }]
           }
-          console.log(
-            returningArr,
-            subcategory,
-            result,
-            ' =====> measurementsTableData measurementsTableData the final obj given code runs here'
-          );
+          console.log(returningArr, subcategory, result, " =====> measurementsTableData measurementsTableData the final obj given code runs here")
         } else {
           existingEntry?.children?.push(
-            subcategory
-              ? {
-                  key: dateTime,
-                  isSubParent: true,
-                  isParent: false,
-                  category,
-                  subcategory,
-                  dateTime,
-                  points,
-                  projectName,
-                  stroke,
-                  strokeWidth,
-                  textUnit,
-                  id,
-                  lineCap,
-                  depth,
-                  x,
-                  y,
-                  user,
-                  type,
-                  pageId,
-                  text,
-                  children: [
-                    {
-                      key: dateTime,
-                      isParent: false,
-                      isChild: true,
-                      category,
-                      subcategory,
-                      dateTime,
-                      points,
-                      projectName,
-                      stroke,
-                      strokeWidth,
-                      textUnit,
-                      id,
-                      lineCap,
-                      depth,
-                      x,
-                      y,
-                      user,
-                      type,
-                      pageId,
-                      text,
-                    },
-                  ],
-                }
-              : {
-                  key: dateTime,
-                  category,
-                  subcategory,
-                  dateTime,
-                  points,
-                  projectName,
-                  stroke,
-                  strokeWidth,
-                  textUnit,
-                  id,
-                  lineCap,
-                  depth,
-                  x,
-                  y,
-                  user,
-                  isParent: false,
-                  type,
-                  pageId,
-                  text,
-                }
-          );
+            subcategory ?
+              {
+                key: dateTime, isSubParent: true, isParent: false, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text,
+                children: [{ key: dateTime, isParent: false, isChild: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text }]
+              }
+              :
+              { key: dateTime, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId, text })
         }
-      } else {
-        result?.push({
-          key: dateTime,
-          isParent: true,
-          category,
-          subcategory,
-          dateTime,
-          points,
-          projectName,
-          stroke,
-          strokeWidth,
-          textUnit,
-          id,
-          lineCap,
-          depth,
-          x,
-          y,
-          user,
-          type,
-          pageId,
-          text,
-          children: subcategory
-            ? [
-                {
-                  key: dateTime,
-                  isSubParent: true,
-                  isParent: false,
-                  category,
-                  subcategory,
-                  dateTime,
-                  points,
-                  projectName,
-                  stroke,
-                  strokeWidth,
-                  textUnit,
-                  id,
-                  lineCap,
-                  depth,
-                  x,
-                  y,
-                  user,
-                  type,
-                  pageId,
-                  text,
-                  children: [
-                    {
-                      key: dateTime,
-                      isParent: false,
-                      isChild: true,
-                      category,
-                      subcategory,
-                      dateTime,
-                      points,
-                      projectName,
-                      stroke,
-                      strokeWidth,
-                      textUnit,
-                      id,
-                      lineCap,
-                      depth,
-                      x,
-                      y,
-                      user,
-                      type,
-                      pageId,
-                      text,
-                    },
-                  ],
-                },
-              ]
-            : [
-                {
-                  key: dateTime,
-                  isParent: false,
-                  category,
-                  subcategory,
-                  dateTime,
-                  points,
-                  projectName,
-                  stroke,
-                  strokeWidth,
-                  textUnit,
-                  id,
-                  lineCap,
-                  depth,
-                  x,
-                  y,
-                  user,
-                  type,
-                  pageId,
-                  text,
-                },
-              ],
-        });
       }
-      return result;
-    }, []);
+      else {
+        result?.push({
+          key: dateTime, isParent: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text,
+          children: subcategory ?
+            [{
+              key: dateTime, isSubParent: true, isParent: false, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text,
+              children: [{ key: dateTime, isParent: false, isChild: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text }]
+            }]
+            :
+            [{ key: dateTime, isParent: false, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text }]
+        })
+      }
+      return result
+    }, [])
   }
-  console.log(
-    returningArr,
-    ' =====> measurementsTableData measurementsTableData the final obj1'
-  );
-  return returningArr;
-};
+  returningArr = [...returningArr, ...emptyCategories.map((i: any, ind: number) => (
+    {
+      category: i,
+      children: [...(Array.isArray(takeOff?.subCategories) ? [...takeOff.subCategories.map((it: any, index: number) => ({ category: i, isSubParent: true, isParent: false, key: new Date()?.toString() + ind + index, subcategory: it }))] : [])],
+      isParent: true,
+      key: new Date()?.toString() + ind,
+    }
+  ))]
+  console.log(returningArr, " =====> measurementsTableData measurementsTableData first returning array object")
+  return returningArr
+}
 
 // const { DirectoryTree, TreeNode } = Tree;
 ////////////////////////New Take OffData///////////////////////////////////
@@ -675,207 +289,327 @@ export interface PageScale {
 }
 
 const TakeOffNewPage = () => {
+
   /////////////New TakeOff Files Sates, methods and data///////////////////////
 
-  const pdfjs = useCallback(async () => {
-    const pdfjs = await import('pdfjs-dist');
-    await import('pdfjs-dist/build/pdf.worker.min.mjs');
+  // const pdfjs = useCallback(async () => {
+  //   const pdfjs = await import('pdfjs-dist');
+  //   await import('pdfjs-dist/build/pdf.worker.min.mjs');
 
-    return pdfjs;
-  }, []);
+  //   return pdfjs;
+  // }, []);
 
-  const [selectedFiles, setselectedFiles] = useState<any>([]);
-  const [progressModalOpen, setprogressModalOpen] = useState(false);
+  const token = useSelector(selectToken);
+  useLayoutEffect(() => {
+    if (token) {
+      HttpService.setToken(token);
+    }
+  }, [token]);
+
+  const [selectedFiles, setselectedFiles] = useState<any>([])
+  const [progressModalOpen, setprogressModalOpen] = useState(false)
   const [fullData, setfullData] = useState({
     files: [],
     pages: [],
-  });
-  const [allPages] = useState<any>([]);
-  const [isApiCalling, setisApiCalling] = useState(false);
-  const [isLoading, setisLoading] = useState<boolean>(false);
+  })
+  const [allPages] = useState<any>([])
+  const [isApiCalling, setisApiCalling] = useState(false)
+  const [isLoading, setisLoading] = useState<boolean>(false)
 
-  const handleUpdatePages = (
-    pageIndex: any,
-    s3Url: any,
-    fileIndex: any,
-    success: any,
-    width: any,
-    height: any,
-    fileId: any,
-    ar: any
-  ) => {
-    setfullData((ps: any) => ({
-      ...ps,
-      pages: [
-        ...ps.pages,
-        {
-          pageNum: pageIndex + 1,
-          pageId: `${new Date().getTime()}`,
-          fileId: fileId,
-          width,
-          height,
-          name: `${pageIndex + 1} page`,
-          src: s3Url,
-          success: success,
-          file: { name: ar[fileIndex]?.name ?? fileIndex, index: fileIndex },
-        },
-      ],
-    }));
-  };
+  // const handleUpdatePages = (pageIndex: any, s3Url: any, fileIndex: any, success: any, width: any, height: any, fileId: any, ar: any) => {
+  //   setfullData((ps: any) => ({ ...ps, pages: [...ps.pages, { pageNum: pageIndex + 1, pageId: `${new Date().getTime()}`, fileId: fileId, width, height, name: `${pageIndex + 1} page`, src: s3Url, success: success, file: { name: ar[fileIndex]?.name ?? fileIndex, index: fileIndex } }] }))
+  // }
 
-  const processSinglePage = async (
-    pageIndex: any,
-    pdf: PDFDocumentProxy,
-    fileIndex: any,
-    fileId: any,
-    ar: any
-  ) => {
+  // const processSinglePage = async (pageIndex: any, pdf: PDFDocumentProxy, fileIndex: any, fileId: any, ar: any) => {
+  //   try {
+  //     const page: PDFPageProxy = await pdf.getPage(pageIndex + 1);
+  //     console.log(page, typeof (page), " ===> pages while uplaoding")
+  //     const scale = 1;
+  //     const viewport = page.getViewport({ scale });
+  //     const canvas = document.createElement('canvas');
+  //     const context = canvas.getContext('2d');
+  //     canvas.width = viewport.width;
+  //     canvas.height = viewport.height;
+  //     const renderContext: any = {
+  //       canvasContext: context,
+  //       viewport: viewport,
+  //     };
+  //     await page.render(renderContext).promise;
+  //     const obj = {
+  //       src: canvas.toDataURL('image/png') || '',
+  //       height: viewport.height,
+  //       width: viewport.width,
+  //     }
+  //     const s3Url = await new AwsS3(obj.src, 'documents/takeoff-reports/').uploadS3URL()
+  //     handleUpdatePages(pageIndex, s3Url, fileIndex, true, viewport?.width, viewport?.height, fileId, ar)
+  //     page.cleanup()
+  //   } catch (error) {
+  //     console.log(error, " ===> Error insdie process single page");
+  //     handleUpdatePages(pageIndex, "", fileIndex, false, 0, 0, fileId, ar)
+  //   }
+  // }
+  // const processSingleFile = async (i: any, ar: any) => {
+  //   try {
+  //     const curFile = ar[i]
+  //     const fileId = `${new Date()?.getTime()}`
+  //     console.log(curFile, " ===> Current File Running");
+  //     if (curFile) {
+  //       const PDFJS = await pdfjs();
+  //       // const pdfPagesData: UploadFileData[] = [];
+  //       const reader = new FileReader();
+  //       reader.onload = async (event: any) => {
+  //         const data = new Uint8Array(event.target.result);
+  //         const pdf: PDFDocumentProxy = await PDFJS.getDocument(data).promise;
+  //         setfullData((ps: any) => ({ ...ps, files: [...ps.files, { name: curFile?.name ?? i, fileId, index: i, totalPages: pdf?.numPages ?? 5 }] }))
+  //         for (let index = 0; index < pdf.numPages; index++) {
+  //           await processSinglePage(index, pdf, i, fileId, ar)
+  //         }
+  //       }
+  //       reader.readAsArrayBuffer(curFile);
+  //     }
+  //   } catch (error) {
+  //     console.log(error, " Error while processing single file.");
+  //   }
+  // }
+
+  const [fileLoading, setfileLoading] = useState(false)
+  const [fileState, setfileState] = useState<{ name: string, status: 'uploading' | 'processing' | 'failed' | 'done', uploadProgress: number }[]>([])
+  console.log(fileState, " ===> log to filestate change")
+  // const processSingleFileNew = async (i: any, ar: any) => {
+  //   const curFile = ar[i]
+  //   setfileState(ps => ([...ps, { name: curFile?.name, status: 'uploading', uploadProgress: 0 }]))
+  //   try {
+  //     console.log(curFile, " ===> Current file happening here")
+
+  //     const formData = new FormData();
+  //     formData.append('pdfFiles', curFile);
+  //     formData.append('id', `${edit_id}`)
+  //     //https://api.schesti.com/api/takeoff-summary/processFiles
+  //     // const res = await takeoffSummaryService.httpProcessFiles(formData)
+
+  //     //axios.defaults!.headers!['Authorization'] = `Bearer ${token}`
+  //     await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/api/takeoff-summary/processFiles`, formData,
+  //       {
+  //         headers: {
+  //           'Authorization': `Bearer ${token}`
+  //         },
+  //         onUploadProgress: (progressEvent) => {
+  //           if (progressEvent?.total && progressEvent?.loaded) {
+  //             // Calculate the upload progress percentage
+  //             const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+  //             console.log(`Upload progress: ${progress}%`);
+  //             setfileState((ps) => {
+  //               return ps.map(i => {
+  //                 if (i.name == curFile?.name) {
+  //                   return { ...i, uploadProgress: progress }
+  //                 } else {
+  //                   return i
+  //                 }
+  //               })
+  //             })
+  //             if (progress > 99) {
+  //               setfileState((ps) => {
+  //                 return ps.map(i => {
+  //                   if (i.name == curFile?.name) {
+  //                     return { ...i, status: 'processing' }
+  //                   } else {
+  //                     return i
+  //                   }
+  //                 })
+  //               })
+  //             }
+  //           }
+  //         },
+  //       }
+  //     )
+  //     setfileState((ps) => {
+  //       return ps.map(i => {
+  //         if (i.name == curFile?.name) {
+  //           return { ...i, status: 'done' }
+  //         } else {
+  //           return i
+  //         }
+  //       })
+  //     })
+  //   } catch (error) {
+  //     console.log(error, " Error while processing single file.");
+  //     setfileState((ps) => {
+  //       return ps.map(i => {
+  //         if (i.name == curFile?.name) {
+  //           return { ...i, status: 'failed' }
+  //         } else {
+  //           return i
+  //         }
+  //       })
+  //     })
+  //   }
+  // }
+
+  const processSingleFileNew = async (i: any, ar: any) => {
+    const curFile = ar[i]
+    setfileState(ps => ([...ps, { name: curFile?.name, status: 'uploading', uploadProgress: 0 }]))
     try {
-      const page: PDFPageProxy = await pdf.getPage(pageIndex + 1);
-      console.log(page, typeof page, ' ===> pages while uplaoding');
-      const scale = 1;
-      const viewport = page.getViewport({ scale });
-      const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d');
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-      const renderContext: any = {
-        canvasContext: context,
-        viewport: viewport,
-      };
-      await page.render(renderContext).promise;
-      const obj = {
-        src: canvas.toDataURL('image/png') || '',
-        height: viewport.height,
-        width: viewport.width,
-      };
-      const s3Url = await new AwsS3(
-        obj.src,
-        'documents/takeoff-reports/'
-      ).uploadS3URL();
-      handleUpdatePages(
-        pageIndex,
-        s3Url,
-        fileIndex,
-        true,
-        viewport?.width,
-        viewport?.height,
-        fileId,
-        ar
-      );
-      page.cleanup();
-    } catch (error) {
-      console.log(error, ' ===> Error insdie process single page');
-      handleUpdatePages(pageIndex, '', fileIndex, false, 0, 0, fileId, ar);
-    }
-  };
-  const processSingleFile = async (i: any, ar: any) => {
-    try {
-      const curFile = ar[i];
-      const fileId = `${new Date()?.getTime()}`;
-      console.log(curFile, ' ===> Current File Running');
-      if (curFile) {
-        const PDFJS = await pdfjs();
-        // const pdfPagesData: UploadFileData[] = [];
-        const reader = new FileReader();
-        reader.onload = async (event: any) => {
-          const data = new Uint8Array(event.target.result);
-          const pdf: PDFDocumentProxy = await PDFJS.getDocument(data).promise;
-          setfullData((ps: any) => ({
-            ...ps,
-            files: [
-              ...ps.files,
-              {
-                name: curFile?.name ?? i,
-                fileId,
-                index: i,
-                totalPages: pdf?.numPages ?? 5,
-              },
-            ],
-          }));
-          for (let index = 0; index < pdf.numPages; index++) {
-            await processSinglePage(index, pdf, i, fileId, ar);
+      console.log(curFile, " ===> Current file happening here")
+
+
+      //https://api.schesti.com/api/takeoff-summary/processFiles
+      // const res = await takeoffSummaryService.httpProcessFiles(formData)
+
+      //axios.defaults!.headers!['Authorization'] = `Bearer ${token}`
+      const url = await new AwsS3(
+        curFile,
+        'documents/take-off/'
+      ).getS3URLWithProgress((progress) => {
+        // calculate progress upto 100%
+        const percent = Math.round((progress.loaded / progress.total) * 100);
+        setfileState((ps) => {
+          return ps.map(i => {
+            if (i.name == curFile?.name) {
+              return { ...i, uploadProgress: percent }
+            } else {
+              return i
+            }
+          })
+        })
+        if (percent > 99) {
+          setfileState((ps) => {
+            return ps.map(i => {
+              if (i.name == curFile?.name) {
+                return { ...i, status: 'processing' }
+              } else {
+                return i
+              }
+            })
+          })
+        }
+      });
+
+      const formData = new FormData();
+      formData.append('s3PdfUrl', url);
+      formData.append('id', `${edit_id}`);
+      // const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/api/takeoff-summary/processFiles`, formData,
+      //     {
+      //         headers: {
+      //             'Authorization': `Bearer ${token}`,
+      //             'Content-Type': 'multipart/form-data'
+      //         },
+      //         timeout: 3600000,
+      //         onUploadProgress: (progressEvent) => {
+      //             if (progressEvent?.total && progressEvent?.loaded) {
+      //                 // Calculate the upload progress percentage
+      //                 const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+      //                 console.log(`Upload progress: ${progress}%`);
+      //                 setfileState((ps) => {
+      //                     return ps.map(i => {
+      //                         if (i.name == curFile?.name) {
+      //                             return { ...i, uploadProgress: progress }
+      //                         } else {
+      //                             return i
+      //                         }
+      //                     })
+      //                 })
+      //                 if (progress > 99) {
+      //                     setfileState((ps) => {
+      //                         return ps.map(i => {
+      //                             if (i.name == curFile?.name) {
+      //                                 return { ...i, status: 'processing' }
+      //                             } else {
+      //                                 return i
+      //                             }
+      //                         })
+      //                     })
+      //                 }
+      //             }
+      //         },
+      //     }
+      // )
+      await takeoffSummaryService.httpProcessFiles(formData)
+      setfileState((ps) => {
+        return ps.map(i => {
+          if (i.name == curFile?.name) {
+            return { ...i, status: 'done' }
+          } else {
+            return i
           }
-        };
-        reader.readAsArrayBuffer(curFile);
-      }
+        })
+      })
     } catch (error) {
-      console.log(error, ' Error while processing single file.');
+      console.log(error, " Error while processing single file.");
+      setfileState((ps) => {
+        return ps.map(i => {
+          if (i.name == curFile?.name) {
+            return { ...i, status: 'failed' }
+          } else {
+            return i
+          }
+        })
+      })
     }
-  };
+  }
+
   const startProcess = async (ar: any) => {
-    setisLoading(true);
+    setisLoading(true)
     if (Array.isArray(ar) && ar?.length > 0) {
       try {
+        setfileLoading(true)
         for (let i = 0; i < ar?.length; i++) {
-          await processSingleFile(i, ar);
+          // await processSingleFile(i, ar)
+          await processSingleFileNew(i, ar)
         }
         // setisLoading(false)
+        setfileLoading(false)
       } catch (error) {
-        console.log(error, ' Error startProcess');
-        setisLoading(false);
+        console.log(error, " Error startProcess");
+        setisLoading(false)
+        setfileLoading(false)
       }
     }
-  };
+  }
+
+
 
   const makeApiCall = async () => {
     try {
-      setisApiCalling(true);
-      setisLoading(true);
-      const newupdatedMeasurements: any =
-        await takeoffSummaryService.httpUpdateTakeoffSummary({
-          id: takeOff?._id,
-          //@ts-ignore
-          data: {
-            pages: [
-              ...(Array.isArray(takeOff?.pages) ? takeOff.pages : []),
-              ...(Array.isArray(fullData?.pages) ? fullData.pages : []),
-            ],
-            files: [
-              ...(Array.isArray(takeOff?.files) ? takeOff.files : []),
-              ...(Array.isArray(fullData?.files) ? fullData.files : []),
-            ],
-          },
-        });
-      console.log(newupdatedMeasurements, ' ==> newupdatedMeasurements');
-      settakeOff(newupdatedMeasurements?.data);
-      setisApiCalling(false);
+      setisApiCalling(true)
+      setisLoading(true)
+      const newupdatedMeasurements: any = await takeoffSummaryService.httpUpdateTakeoffSummary({
+        id: takeOff?._id,
+        //@ts-ignore
+        data: { pages: [...(Array.isArray(takeOff?.pages) ? takeOff.pages : []), ...(Array.isArray(fullData?.pages) ? fullData.pages : [])], files: [...(Array.isArray(takeOff?.files) ? takeOff.files : []), ...(Array.isArray(fullData?.files) ? fullData.files : [])] }
+      })
+      console.log(newupdatedMeasurements, " ==> newupdatedMeasurements")
+      settakeOff(newupdatedMeasurements?.data)
+      setisApiCalling(false)
       setfullData({
         files: [],
         pages: [],
-      });
-      setselectedFiles([]);
-      setprogressModalOpen(false);
-      toast.success('Added Successfully!');
+      })
+      setselectedFiles([])
+      setprogressModalOpen(false)
+      toast.success('Added Successfully!')
     } catch (error) {
-      setisApiCalling(false);
-      console.log(error, ' ===> Error while making api call');
-      setisLoading(false);
+      setisApiCalling(false)
+      console.log(error, " ===> Error while making api call")
+      setisLoading(false)
     }
-  };
+  }
 
-  const addFileToWorkspace = () => {
-    if (Array.isArray(fullData?.pages) && fullData?.pages?.length > 0) {
-      if (
-        fullData?.files?.every((i: any) => {
-          return (
-            i?.totalPages ==
-            fullData?.pages?.filter((pg: any) => i?.fileId == pg?.fileId)
-              ?.length
-          );
-        })
-      ) {
-        // setisLoading(false)
-        //   setshouldContinue(true)
-        // toast.success('Ready to go.')
-        makeApiCall();
-      } else {
-        toast.error(`Please wait until loading files.`);
-      }
-    } else {
-      toast.error(`Please select atleast one file to continue.`);
-    }
-  };
+  // const addFileToWorkspace = () => {
+  //   if (Array.isArray(fullData?.pages) && fullData?.pages?.length > 0) {
+  //     if (fullData?.files?.every((i: any) => {
+  //       return i?.totalPages == fullData?.pages?.filter((pg: any) => (i?.fileId == pg?.fileId))?.length
+  //     })) {
+  //       // setisLoading(false)
+  //       //   setshouldContinue(true)
+  //       // toast.success('Ready to go.')
+  //       makeApiCall()
+  //     } else {
+  //       toast.error(`Please wait until loading files.`)
+  //     }
+  //   } else {
+  //     toast.error(`Please select atleast one file to continue.`)
+  //   }
+  // }
   /////////////New TakeOff States///////////////////////
 
   /////////////New TakeOff States///////////////////////
@@ -889,135 +623,132 @@ const TakeOffNewPage = () => {
   //   perimeter: []
   // });
   const [draw, setDraw] = useState<any>({});
-  const [takeOff, settakeOff] = useState<any>({});
+  const [takeOff, settakeOff] = useState<any>({})
   // const [pdMeasurements, setpdMeasurements] = useState(null)
-  const [selectedTakeOffTab, setselectedTakeOffTab] = useState<
-    'overview' | 'page' | 'file'
-  >('overview');
-  const [selectedPage, setselectedPage] = useState<any>({});
-  const [selectedPagesList, setselectedPagesList] = useState([]);
+  const [selectedTakeOffTab, setselectedTakeOffTab] = useState<'overview' | 'page' | 'file'>('overview')
+  const [selectedPage, setselectedPage] = useState<any>({})
+  const [selectedPagesList, setselectedPagesList] = useState([])
   /////////////New TakeOff States///////////////////////
-  const [leftOpened, setleftOpened] = useState<boolean>(true);
-  const urlSearch: any = new URLSearchParams(window.location.search);
-  console.log(
-    window.location,
-    urlSearch,
-    urlSearch.get('edit_id'),
-    ' Edit Data Edit Data'
-  );
+  const [leftOpened, setleftOpened] = useState<boolean>(true)
+  const urlSearch: any = new URLSearchParams(window.location.search)
+  console.log(window.location, urlSearch, urlSearch.get('edit_id'), " Edit Data Edit Data");
   const router = useRouter();
-  const params = useSearchParams();
-  const edit_id = params.get('edit_id');
+  const params = useSearchParams()
+  const edit_id = params.get('edit_id')
   ////categories
   // const [allCategories, setallCategories] = useState<any>([])
   // const [selectedCategory, setselectedCategory] = useState<any>("")
   // const [inputtxt, setinputtxt] = useState<any>("")
   ////
   const [tool, setTool] = useState<ScaleInterface>({ selected: 'scale' });
-  const [countType, setcountType] = useState<string>('');
-  useEffect(() => {
-    if (tool.selected != 'count') {
-      setcountType('');
-    }
-  }, [tool]);
+  const [countType, setcountType] = useState<string>("")
+  useEffect(() => { if (tool.selected != 'count') { setcountType('') } }, [tool])
   const [showModal, setShowModal] = useState(false);
   const [border, setBorder] = useState<number>(4);
   const [color, setColor] = useState<string>('#1677ff');
   const [unit, setUnit] = useState<number>(14);
-  const [depth, setDepth] = useState<number>(0);
-  const [drawScale, setdrawScale] = useState<boolean>(false);
-  const [scaleLine, setscaleLine] = useState<any>({});
-  const [sideTabs, setsideTabs] = useState<'Plans' | 'TakeOff' | 'WBS'>(
-    'Plans'
-  );
+  const [depth, setDepth] = useState<number>(1);
+  const [drawScale, setdrawScale] = useState<boolean>(false)
+  const [scaleLine, setscaleLine] = useState<any>({})
+  const [sideTabs, setsideTabs] = useState<"Plans" | "TakeOff" | "WBS">("Plans")
   const [measurements, setMeasurements] =
     useState<Measurements>(defaultMeasurements);
 
-  console.log(measurements, ' measurements changed');
-  console.log(
-    groupDataForFileTable(takeOff?.pages),
-    takeOff?.pages,
-    ' ===> New Data to map'
-  );
+  console.log(measurements, " measurements changed")
+  console.log(groupDataForFileTable(takeOff?.pages), takeOff?.pages, " ===> New Data to map")
   useEffect(() => {
     if (takeOff?.measurements) {
-      console.log(
-        measurementsTableData(takeOff),
-        ' =====> measurementsTableData measurementsTableData'
-      );
+      console.log(measurementsTableData(takeOff), " =====> measurementsTableData measurementsTableData")
     }
-  }, [takeOff]);
+  }, [takeOff])
 
-  const [tableLoading, settableLoading] = useState<any>(false);
-  const updateTableChangeInTakeOff = async (
-    pageId: string,
-    type: any,
-    dateTime: any,
-    keyToUpdate: string,
-    valueToUpdate: any
-  ) => {
-    console.log(
-      pageId,
-      type,
-      dateTime,
-      keyToUpdate,
-      valueToUpdate,
-      'Update Run'
-    );
+  const [tableLoading, settableLoading] = useState<any>(false)
+  const updateTableChangeInTakeOff = async (pageId: string, type: any, dateTime: any, keyToUpdate: string, valueToUpdate: any) => {
+    console.log(pageId, type, dateTime, keyToUpdate, valueToUpdate, 'Update Run')
     if (pageId && type && dateTime && keyToUpdate && valueToUpdate) {
       try {
-        let tempTakeOff = takeOff;
-        let slpg = tempTakeOff?.measurements[pageId];
+        let tempTakeOff = takeOff
+        let slpg = tempTakeOff?.measurements[pageId]
         if (slpg) {
-          settableLoading(true);
+          settableLoading(true)
           slpg = {
             ...slpg,
             [type]: slpg[type]?.map((it: any) => {
-              if (
-                new Date(it.dateTime).valueOf() === new Date(dateTime).valueOf()
-              ) {
-                return { ...it, [keyToUpdate]: valueToUpdate };
+              if (new Date(it.dateTime).valueOf() === new Date(dateTime).valueOf()) {
+                return { ...it, [keyToUpdate]: valueToUpdate }
               } else {
-                return it;
+                return it
               }
-            }),
-          };
-          tempTakeOff.measurements[pageId] = slpg;
+            })
+          }
+          tempTakeOff.measurements[pageId] = slpg
           // console.log(tempTakeOff)
-          const newupdatedMeasurements: any =
-            await takeoffSummaryService.httpUpdateTakeoffSummary({
-              id: takeOff?._id,
-              //@ts-ignore
-              data: { measurements: tempTakeOff.measurements },
-            });
-          console.log(newupdatedMeasurements, ' ==> newupdatedMeasurements');
-          settakeOff(newupdatedMeasurements?.data);
-          settableLoading(false);
-          setDraw(
-            newupdatedMeasurements?.data?.measurements[
-              `${selectedPage?.pageId}`
-            ]
-          );
+          const newupdatedMeasurements: any = await takeoffSummaryService.httpUpdateTakeoffSummary({
+            id: takeOff?._id,
+            //@ts-ignore
+            data: { measurements: tempTakeOff.measurements }
+          })
+          console.log(newupdatedMeasurements, " ==> newupdatedMeasurements")
+          settakeOff(newupdatedMeasurements?.data)
+          settableLoading(false)
+          setDraw(newupdatedMeasurements?.data?.measurements[`${selectedPage?.pageId}`])
         }
       } catch (error) {
-        settableLoading(false);
-        console.log(error, ' ===> Error while updating table data');
+        settableLoading(false)
+        console.log(error, " ===> Error while updating table data")
       }
     }
-  };
+  }
 
-  const deleteTableChangeInTakeOff = async (
-    pageId: string,
-    type: any,
-    dateTime: any
-  ) => {
+  const updateColorSizes = async (keyToUpdate: string, valueToUpdate: any) => {
+    if (!selectedPage || !selectedShape) { return }
+    const pageId = selectedPage?.pageId
+    const [type, shapeNumber] = selectedShape.split('-');
+    console.log(pageId, type, keyToUpdate, valueToUpdate, 'bottom bar Update Run')
+    if (pageId && type && shapeNumber && keyToUpdate && valueToUpdate) {
+      try {
+        let tempTakeOff = takeOff
+        let slpg = tempTakeOff?.measurements[pageId]
+        if (slpg) {
+          settableLoading(true)
+          slpg = {
+            ...slpg,
+            [type]: slpg[type]?.map((it: any, index: number) => {
+              if (index === +shapeNumber) {
+                return { ...it, [keyToUpdate]: valueToUpdate }
+              } else {
+                return it
+              }
+            })
+          }
+          tempTakeOff.measurements[pageId] = slpg
+          // console.log(tempTakeOff)
+          const newupdatedMeasurements: any = await takeoffSummaryService.httpUpdateTakeoffSummary({
+            id: takeOff?._id,
+            //@ts-ignore
+            data: { measurements: tempTakeOff.measurements }
+          })
+          console.log(newupdatedMeasurements, " ==> newupdatedMeasurements")
+          settakeOff(newupdatedMeasurements?.data)
+          settableLoading(false)
+          setDraw(newupdatedMeasurements?.data?.measurements[`${selectedPage?.pageId}`])
+        }
+      } catch (error) {
+        settableLoading(false)
+        console.log(error, " ===> Error while updating table data")
+      }
+    }
+  }
+
+
+  const deleteTableChangeInTakeOff = async (pageId: string, type: any, dateTime: any) => {
     // console.log(pageId, type, dateTime, keyToUpdate, valueToUpdate,'delete Run')
     if (pageId && type && dateTime) {
       try {
-        let tempTakeOff = takeOff;
-        let slpg = tempTakeOff?.measurements[pageId];
+        let tempTakeOff = takeOff
+        let slpg = tempTakeOff?.measurements[pageId]
         if (slpg) {
-          settableLoading(true);
+          settableLoading(true)
           slpg = {
             ...slpg,
             // [type]: slpg[type]?.map((it: any) => {
@@ -1028,106 +759,77 @@ const TakeOffNewPage = () => {
             //   };
             // })
             [type]: slpg[type]?.filter((it: any) => {
-              return (
-                new Date(it.dateTime).valueOf() != new Date(dateTime).valueOf()
-              );
+              return new Date(it.dateTime).valueOf() != new Date(dateTime).valueOf()
               // if (new Date(it.dateTime).valueOf() === new Date(dateTime).valueOf()) {
               //   return { ...it, [keyToUpdate]: valueToUpdate };
               // } else {
               //   return it
               // };
-            }),
-          };
-          tempTakeOff.measurements[pageId] = slpg;
+            })
+          }
+          tempTakeOff.measurements[pageId] = slpg
           // console.log(tempTakeOff)
-          const newupdatedMeasurements: any =
-            await takeoffSummaryService.httpUpdateTakeoffSummary({
-              id: takeOff?._id,
-              //@ts-ignore
-              data: { measurements: tempTakeOff.measurements },
-            });
-          console.log(newupdatedMeasurements, ' ==> newupdatedMeasurements');
-          settakeOff(newupdatedMeasurements?.data);
-          settableLoading(false);
-          setDraw(
-            newupdatedMeasurements?.data?.measurements[
-              `${selectedPage?.pageId}`
-            ]
-          );
+          const newupdatedMeasurements: any = await takeoffSummaryService.httpUpdateTakeoffSummary({
+            id: takeOff?._id,
+            //@ts-ignore
+            data: { measurements: tempTakeOff.measurements }
+          })
+          console.log(newupdatedMeasurements, " ==> newupdatedMeasurements")
+          settakeOff(newupdatedMeasurements?.data)
+          settableLoading(false)
+          setDraw(newupdatedMeasurements?.data?.measurements[`${selectedPage?.pageId}`])
         }
       } catch (error) {
-        settableLoading(false);
-        console.log(error, ' ===> Error while updating table data');
+        settableLoading(false)
+        console.log(error, " ===> Error while updating table data")
       }
     }
-  };
-  const handleMenuClick = async (
-    key: any,
-    item: any,
-    newName: string = '',
-    comment?: any
-  ) => {
-    const takeOffTemp = takeOff;
-    const page = takeOffTemp?.pages?.find(
-      (i: any) => i?.pageId == item?.pageId
-    );
-    const pageInd = takeOffTemp?.pages?.findIndex(
-      (i: any) => i?.pageId == item?.pageId
-    );
-    console.log(item, key, page, pageInd, ' ===> clicked dropdown item');
-    let pages = takeOffTemp?.pages;
+  }
+  const handleMenuClick = async (key: any, item: any, newName: string = '', comment?: any) => {
+    const takeOffTemp = takeOff
+    const page = takeOffTemp?.pages?.find((i: any) => (i?.pageId == item?.pageId))
+    const pageInd = takeOffTemp?.pages?.findIndex((i: any) => (i?.pageId == item?.pageId))
+    console.log(item, key, page, pageInd, " ===> clicked dropdown item")
+    let pages = takeOffTemp?.pages
     if (page) {
       if (key == 'duplicate') {
-        const duplicatedPage = {
-          ...page,
-          pageId: `${new Date().getTime()}`,
-          name: page?.name + ' (COPY)',
-        };
-        pages?.splice(pageInd + 1, 0, duplicatedPage);
+        const duplicatedPage = { ...page, pageId: `${new Date().getTime()}`, name: page?.name + " (COPY)" }
+        pages?.splice(pageInd + 1, 0, duplicatedPage)
       } else if (key == 'delete') {
-        pages = pages?.filter((i: any) => i?.pageId != item?.pageId);
+        pages = pages?.filter((i: any) => (i?.pageId != item?.pageId))
       } else if (key == 'rename') {
         pages = pages?.map((i: any) => {
           if (i?.pageId == item?.pageId) {
-            return { ...i, name: newName };
+            return { ...i, name: newName }
           } else {
-            return i;
+            return i
           }
-        });
+        })
       } else if (key == 'comment') {
         pages = pages?.map((i: any) => {
           if (i?.pageId == item?.pageId) {
-            return {
-              ...i,
-              comments: [
-                ...(item?.comments && Array.isArray(item?.comments)
-                  ? item.comments
-                  : []),
-                comment,
-              ],
-            };
+            return { ...i, comments: [...((item?.comments && Array.isArray(item?.comments)) ? item.comments : []), comment] }
           } else {
-            return i;
+            return i
           }
-        });
+        })
       }
       try {
-        settableLoading(true);
-        const newupdatedMeasurements: any =
-          await takeoffSummaryService.httpUpdateTakeoffSummary({
-            id: takeOff?._id,
-            //@ts-ignore
-            data: { pages },
-          });
-        console.log(newupdatedMeasurements, ' ==> newupdatedMeasurements');
-        settakeOff(newupdatedMeasurements?.data);
-        settableLoading(false);
+        settableLoading(true)
+        const newupdatedMeasurements: any = await takeoffSummaryService.httpUpdateTakeoffSummary({
+          id: takeOff?._id,
+          //@ts-ignore
+          data: { pages }
+        })
+        console.log(newupdatedMeasurements, " ==> newupdatedMeasurements")
+        settakeOff(newupdatedMeasurements?.data)
+        settableLoading(false)
       } catch (error) {
-        settableLoading(false);
-        console.log(error, ' ===> Error while updatind');
+        settableLoading(false)
+        console.log(error, " ===> Error while updatind")
       }
     }
-  };
+  }
 
   const menu = (item: any) => (
     <Menu
@@ -1154,54 +856,23 @@ const TakeOffNewPage = () => {
       dataIndex: 'name',
       key: 'name',
       render: (text, record) => (
-        <div
-          onClick={() => {
-            if (!record?.isParent) {
-              console.log(record, 'selected thing');
-              setselectedPage(record);
-              setselectedTakeOffTab('page');
-              if (
-                !selectedPagesList?.find(
-                  (i: any) => i?.pageId == record?.pageId
-                )
-              ) {
-                //@ts-ignore
-                setselectedPagesList((ps: any) => [...ps, record]);
-              }
+        <div onClick={() => {
+          if (!record?.isParent) {
+            console.log(record, "selected thing"); setselectedPage(record); setselectedTakeOffTab('page');
+            if (!selectedPagesList?.find((i: any) => (i?.pageId == record?.pageId))) {
+              //@ts-ignore
+              setselectedPagesList((ps: any) => ([...ps, record]))
             }
-          }}
-          className="flex items-center h-full cursor-pointer justify-between"
-        >
+          }
+        }}
+          className="flex items-center h-full cursor-pointer justify-between">
           <div>
-            {record?.isParent == true ? (
-              <FolderOutlined className="mr-2" />
-            ) : (
-              <FileOutlined className="mr-2" />
-            )}
-            {record?.isParent == true ? (
-              text
-            ) : (
-              <EditableText
-                className={'inline-block'}
-                initialText={text}
-                smallText={text?.slice(0, 30)}
-                toolTip={'double click to rename.'}
-                onPressEnter={(value) => {
-                  handleMenuClick('rename', record, value);
-                }}
-              />
-            )}
+            {record?.isParent == true ? <FolderOutlined className="mr-2" /> : <FileOutlined className="mr-2" />}
+            {record?.isParent == true ? text : <EditableText className={'inline-block'} initialText={text} smallText={text?.slice(0, 30)} toolTip={"double click to rename."} onPressEnter={(value) => { handleMenuClick('rename', record, value) }} />}
           </div>
-          {record?.isParent != true && (
-            <Dropdown overlay={menu(record)} trigger={['click']}>
-              <MoreOutlined
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-                className="cursor-pointer text-[20px]"
-              />
-            </Dropdown>
-          )}
+          {record?.isParent != true && <Dropdown overlay={menu(record)} trigger={['click']}>
+            <MoreOutlined onClick={(e) => { e.stopPropagation() }} className='cursor-pointer text-[20px]' />
+          </Dropdown>}
         </div>
       ),
     },
@@ -1211,82 +882,28 @@ const TakeOffNewPage = () => {
     {
       title: 'Name',
       dataIndex: 'category',
-      width: 150,
+      width: 60,
       className: '!pr-0',
       render: (text, record) => (
-        <div className="flex items-center h-full cursor-pointer">
-          {record?.isParent ? (
-            <span className="font-extrabold">
-              {text}
-              {selectedCate == text ? (
-                <MinusOutlined
-                  className="border-2 rounded-full ml-2"
-                  onClick={() => {
-                    setselectedCate(null);
-                    setselectedSubCate(null);
-                  }}
-                />
-              ) : (
-                <PlusOutlined
-                  className="border-2 rounded-full ml-2"
-                  onClick={() => {
-                    setselectedCate(text);
-                  }}
-                />
-              )}
-              {/* <Checkbox checked={selectedCate == text} onChange={(e) => {
+        <div
+          className={`${(record?.isParent || record?.isSubParent) ? 'text-[12px]' : ''} flex items-center h-full cursor-pointer ${(selectedCate == text && record?.isParent) ? '!bg-lavenderPurpleReplica !text-white !p-1 !rounded-md' : ''} ${(selectedSubCate == record?.subcategory && record?.isSubParent) ? '!bg-lavenderPurpleReplica !text-white !p-1 !rounded-md' : ''}`}>
+          {record?.isParent ? <span className='font-extrabold'>{text?.slice(0, 7)}
+            {
+              selectedCate == text ? <Button size='small' className='border-2 rounded-full ml-2' onClick={() => { setselectedCate(null); setselectedSubCate(null) }} >unselect</Button> : <Button size='small' className='border-2 rounded-full ml-2' onClick={() => { setselectedCate(text); }} >select</Button>
+            }
+            {/* <Checkbox checked={selectedCate == text} onChange={(e) => {
             if (e.target.checked) { setselectedCate(text); }
             else { setselectedCate(null); setselectedSubCate(null) }
           }} /> */}
-            </span>
-          ) : record?.isSubParent ? (
-            <span className="font-extrabold">
-              {record?.subcategory}
-              {selectedSubCate == record?.subcategory ? (
-                <MinusOutlined
-                  className="border-2 rounded-full ml-2"
-                  onClick={() => {
-                    setselectedCate(null);
-                    setselectedSubCate(null);
-                  }}
-                />
-              ) : (
-                <PlusOutlined
-                  className="border-2 rounded-full ml-2"
-                  onClick={() => {
-                    setselectedCate(text);
-                    setselectedSubCate(record?.subcategory);
-                  }}
-                />
-              )}
-              {/* <Checkbox checked={selectedSubCate == record?.subcategory} onChange={(e) => {
+          </span> : record?.isSubParent ? <span className='font-extrabold'>{record?.subcategory?.slice(0, 7)}
+            {
+              selectedSubCate == record?.subcategory ? <Button size='small' className='border-2 rounded-full ml-2' onClick={() => { setselectedCate(null); setselectedSubCate(null) }} >unselect</Button> : <Button size='small' className='border-2 rounded-full ml-2' onClick={() => { setselectedCate(text); setselectedSubCate(record?.subcategory); }} >select</Button>
+            }
+            {/* <Checkbox checked={selectedSubCate == record?.subcategory} onChange={(e) => {
             if (e.target.checked) { setselectedCate(text); setselectedSubCate(record?.subcategory) }
             else { setselectedCate(null); setselectedSubCate(null) }
           }} /> */}
-            </span>
-          ) : (
-            <span className="flex items-center gap-1">
-              <EditableText
-                initialText={record?.projectName}
-                smallText={record?.projectName?.slice(0, 10) + '...'}
-                onPressEnter={(value) => {
-                  updateTableChangeInTakeOff(
-                    record?.pageId,
-                    record?.type,
-                    record?.dateTime,
-                    'projectName',
-                    value
-                  );
-                }}
-                toolTip={
-                  takeOff?.pages?.find(
-                    (pg: any) => pg?.pageId == record?.pageId
-                  )?.name +
-                  `(${takeOff?.pages?.find((pg: any) => pg?.pageId == record?.pageId)?.file?.name})`
-                }
-              />
-            </span>
-          )}
+          </span> : <span className='flex items-center gap-1'><EditableText initialText={record?.projectName} smallText={record?.projectName?.slice(0, 10) + "..."} onPressEnter={(value) => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'projectName', value) }} toolTip={takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.name + `(${takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.file?.name})`} /></span>}
         </div>
       ),
     },
@@ -1317,94 +934,38 @@ const TakeOffNewPage = () => {
     {
       title: 'ID',
       dataIndex: 'subcategory',
-      width: 150,
+      width: 30,
       className: '!pr-0',
       render: (text, record) => (
-        <div className="flex items-center h-full cursor-pointer">
-          {record?.isParent || record?.isSubParent ? (
-            <></>
-          ) : (
-            <span className="flex items-center gap-1">
-              {`${new Date(record?.dateTime)?.getTime()}`?.slice(-6)}
-            </span>
-          )}
+        <div
+          className="flex items-center h-full cursor-pointer">
+          {(record?.isParent || record?.isSubParent) ? <></> : <span className='flex items-center gap-1'>{`${new Date(record?.dateTime)?.getTime()}`?.slice(-6)}</span>}
         </div>
       ),
     },
     {
       title: '',
       dataIndex: 'category',
+      className: '!px-0',
       // key: 'category',
-      width: 70,
+      width: 40,
       render: (text, record) => (
-        <div className="flex items-center h-full cursor-pointer">
-          {record?.isParent || record?.isSubParent ? (
-            <></>
-          ) : (
-            <span className="flex items-center gap-1">
-              <Menu
-                items={[
-                  {
-                    key: 'category',
-                    icon: (
-                      <EditOutlined className="text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 rounded-full p-1" />
-                    ),
-                    children: [
-                      {
-                        key: 'category',
-                        label: 'category',
-                        children: [
-                          ...categoryList.map((i: any) => ({
-                            key: i,
-                            label: i,
-                            onClick: () => {
-                              updateTableChangeInTakeOff(
-                                record?.pageId,
-                                record?.type,
-                                record?.dateTime,
-                                'category',
-                                i
-                              );
-                            },
-                          })),
-                        ],
-                      },
-                      {
-                        key: 'sub-category',
-                        label: 'sub-category',
-                        children: [
-                          ...subcategoryList.map((i: any) => ({
-                            key: i,
-                            label: i,
-                            onClick: () => {
-                              updateTableChangeInTakeOff(
-                                record?.pageId,
-                                record?.type,
-                                record?.dateTime,
-                                'subcategory',
-                                i
-                              );
-                            },
-                          })),
-                        ],
-                      },
-                    ],
-                  },
-                ]}
-              />
+        <div
+          className="flex items-center h-full cursor-pointer">
+          {(record?.isParent || record?.isSubParent) ? <></> : <span className='flex items-center gap-1'>
+            <Menu items={[
+              {
+                className: '!p-0',
+                key: 'category', expandIcon: <EditOutlined className='text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 rounded-full p-1' />,
+                children: [
+                  { key: 'category', label: 'category', children: [...[...(Array.isArray(takeOff?.categories) ? takeOff.categories : [])].map((i: any) => ({ key: i, label: i, onClick: () => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'category', i) } }))] },
+                  { key: 'sub-category', label: 'sub-category', children: [...[...(Array.isArray(takeOff?.subCategories) ? takeOff.subCategories : [])].map((i: any) => ({ key: i, label: i, onClick: () => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'subcategory', i) } }))] },
+                ]
+              },
+            ]} />
 
-              <DeleteOutlined
-                className="text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 rounded-full p-1"
-                onClick={() => {
-                  deleteTableChangeInTakeOff(
-                    record?.pageId,
-                    record?.type,
-                    record?.dateTime
-                  );
-                }}
-              />
-            </span>
-          )}
+            <DeleteOutlined className='text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 rounded-full p-1' onClick={() => { deleteTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime) }} />
+          </span>}
         </div>
       ),
     },
@@ -1418,64 +979,23 @@ const TakeOffNewPage = () => {
       width: 200,
       className: '!pr-0',
       render: (text, record) => (
-        <div className="flex items-center h-full cursor-pointer">
-          {record?.isParent ? (
-            text
-          ) : (
-            <span
-              className="flex items-center gap-1"
-              onClick={() => {
-                const pg = takeOff?.pages?.find(
-                  (pgs: any) => pgs?.pageId == record?.pageId
-                );
-                if (pg) {
-                  setselectedPage(pg);
-                  setselectedTakeOffTab('page');
-                  if (
-                    !selectedPagesList?.find(
-                      (i: any) => i?.pageId == pg?.pageId
-                    )
-                  ) {
-                    //@ts-ignore
-                    setselectedPagesList((ps: any) => [...ps, pg]);
-                  }
+        <div
+          className="flex items-center h-full cursor-pointer">
+          {record?.isParent ? text : <span
+            className='flex items-center gap-1'
+            onClick={() => {
+              openShap(record)
+              const pg = takeOff?.pages?.find((pgs: any) => (pgs?.pageId == record?.pageId))
+              if (pg) {
+                setselectedPage(pg);
+                setselectedTakeOffTab('page');
+                if (!selectedPagesList?.find((i: any) => (i?.pageId == pg?.pageId))) {
+                  //@ts-ignore
+                  setselectedPagesList((ps: any) => ([...ps, pg]))
                 }
-              }}
-            >
-              <ColorPicker
-                onChangeComplete={(val) => {
-                  updateTableChangeInTakeOff(
-                    record?.pageId,
-                    record?.type,
-                    record?.dateTime,
-                    'stroke',
-                    val.toHexString()
-                  );
-                }}
-                className="!w-[2px] !h-[2px] border-none"
-                value={record?.stroke}
-              />{' '}
-              <EditableText
-                initialText={record?.projectName}
-                smallText={record?.projectName?.slice(0, 12) + '...'}
-                onPressEnter={(value) => {
-                  updateTableChangeInTakeOff(
-                    record?.pageId,
-                    record?.type,
-                    record?.dateTime,
-                    'projectName',
-                    value
-                  );
-                }}
-                toolTip={
-                  takeOff?.pages?.find(
-                    (pg: any) => pg?.pageId == record?.pageId
-                  )?.name +
-                  `(${takeOff?.pages?.find((pg: any) => pg?.pageId == record?.pageId)?.file?.name})`
-                }
-              />
-            </span>
-          )}
+              }
+            }}
+          ><ColorPicker onChangeComplete={(val) => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'stroke', val.toHexString()) }} className='!w-[2px] !h-[2px] border-none' value={record?.stroke} /> <EditableText initialText={record?.projectName} smallText={record?.projectName?.slice(0, 12) + "..."} onPressEnter={(value) => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'projectName', value) }} toolTip={takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.name + `(${takeOff?.pages?.find((pg: any) => (pg?.pageId == record?.pageId))?.file?.name})`} /></span>}
         </div>
       ),
     },
@@ -1485,15 +1005,9 @@ const TakeOffNewPage = () => {
       width: 70,
       className: '!pr-0',
       render: (text, record) => (
-        <div className="flex items-center h-full cursor-pointer">
-          {record?.isParent ? (
-            <></>
-          ) : (
-            <span className="flex items-center gap-1">
-              {takeOff?.pages?.find((pp: any) => pp?.pageId == record?.pageId)
-                ?.pageNum ?? ''}
-            </span>
-          )}
+        <div
+          className="flex items-center h-full cursor-pointer">
+          {record?.isParent ? <></> : <span className='flex items-center gap-1'>{takeOff?.pages?.find((pp: any) => pp?.pageId == record?.pageId)?.pageNum ?? ''}</span>}
         </div>
       ),
     },
@@ -1503,12 +1017,9 @@ const TakeOffNewPage = () => {
       width: 120,
       className: '!pr-0',
       render: (text, record) => (
-        <div className="flex items-center h-full cursor-pointer">
-          {record?.isParent ? (
-            <></>
-          ) : (
-            <span className="">{text ?? record?.text ?? ''}</span>
-          )}
+        <div
+          className="flex items-center h-full cursor-pointer">
+          {record?.isParent ? <></> : <span className=''>{text ?? record?.text ?? ''}</span>}
         </div>
       ),
     },
@@ -1518,22 +1029,9 @@ const TakeOffNewPage = () => {
       width: 200,
       className: '!pr-0',
       render: (text, record) => (
-        <div className="flex items-center h-full cursor-pointer">
-          {record?.isParent ? (
-            <></>
-          ) : (
-            <span className="flex items-center gap-1">
-              {<Avatar icon={<UserOutlined />} />}
-              <span
-                data-tooltip={`${record?.user?.firstName ?? record?.user?.email}`}
-              >
-                {(record?.user?.firstName ?? record?.user?.email ?? '')?.slice(
-                  0,
-                  17
-                ) + '...'}
-              </span>
-            </span>
-          )}
+        <div
+          className="flex items-center h-full cursor-pointer">
+          {record?.isParent ? <></> : <span className='flex items-center gap-1'>{<Avatar icon={<UserOutlined />} />}<span data-tooltip={`${record?.user?.firstName ?? record?.user?.email}`} >{(record?.user?.firstName ?? record?.user?.email ?? '')?.slice(0, 17) + "..."}</span></span>}
         </div>
       ),
     },
@@ -1543,14 +1041,9 @@ const TakeOffNewPage = () => {
       width: 100,
       className: '!pr-0',
       render: (text, record) => (
-        <div className="flex items-center h-full cursor-pointer">
-          {record?.isParent ? (
-            <></>
-          ) : (
-            <span className="flex items-center gap-1">
-              {new Date(record?.dateTime)?.toLocaleDateString()}
-            </span>
-          )}
+        <div
+          className="flex items-center h-full cursor-pointer">
+          {record?.isParent ? <></> : <span className='flex items-center gap-1'>{new Date(record?.dateTime)?.toLocaleDateString()}</span>}
         </div>
       ),
     },
@@ -1564,29 +1057,16 @@ const TakeOffNewPage = () => {
         //   className="flex items-center h-full cursor-pointer">
         //   {record?.isParent ? <></> : <span className='flex items-center gap-1'><MoreOutlined /></span>}
         // </div>
-        <div className="flex items-center h-full cursor-pointer">
-          {record?.isParent ? (
-            <></>
-          ) : (
-            <span className="flex items-center gap-1">
-              <DeleteOutlined
-                className="text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 rounded-full p-1"
-                onClick={() => {
-                  deleteTableChangeInTakeOff(
-                    record?.pageId,
-                    record?.type,
-                    record?.dateTime
-                  );
-                }}
-              />
-            </span>
-          )}
+        <div
+          className="flex items-center h-full cursor-pointer">
+          {record?.isParent ? <></> : <span className='flex items-center gap-1'><DeleteOutlined className='text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 rounded-full p-1' onClick={() => { deleteTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime) }} /></span>}
         </div>
       ),
     },
   ];
 
-  const { scaleData, handleScaleData } = useContext(
+
+  const { handleScaleData } = useContext(
     ScaleContext
   ) as ScaleDataContextProps;
   const { uploadFileData } = useContext(
@@ -1596,26 +1076,29 @@ const TakeOffNewPage = () => {
   // const { reportData } = useContext(
   //   ReportDataContext
   // ) as ReportDataContextProps;
-  const { editData } = useContext(EditContext);
+  const { editData } = useContext(EditContext)
 
   const getTakeOffDetails = async (id: string) => {
     try {
-      const data = await takeoffSummaryService.httpGetSignleTakeOffSummary(id);
-      console.log(data, ' ===> Data coming for single record of summaruy');
-      settakeOff(data?.data);
+      const data = await takeoffSummaryService.httpGetSignleTakeOffSummary(id)
+      console.log(data, " ===> Data coming for single record of summaruy")
+      settakeOff(data?.data)
     } catch (error) {
-      console.log(error, 'error');
-      router.push('/take-off');
+      console.log(error, "error");
+      router.push('/take-off')
     }
-  };
+  }
+
 
   useEffect(() => {
     if (edit_id && edit_id?.length > 0) {
-      getTakeOffDetails(edit_id);
+      getTakeOffDetails(edit_id)
     } else {
-      router.push('/take-off');
+      router.push('/take-off')
     }
-  }, [edit_id]);
+  }, [edit_id])
+
+
 
   useEffect(() => {
     const newData: any = {};
@@ -1628,9 +1111,7 @@ const TakeOffNewPage = () => {
     }
     handleScaleData(newData);
   }, []);
-  useEffect(() => {
-    console.log(measurements, ' ===> measurements');
-  }, [measurements]);
+  useEffect(() => { console.log(measurements, " ===> measurements") }, [measurements])
   // const hadleNewDrawing = () => {
   //   try {
 
@@ -1640,109 +1121,132 @@ const TakeOffNewPage = () => {
   // }
 
   const file = {
-    src: 'https://schesti-dev.s3.eu-north-1.amazonaws.com/2024/documents/takeoff-reports/4264282fef9d5a5191b025fd29daeb59',
+    src: "https://schesti-dev.s3.eu-north-1.amazonaws.com/2024/documents/takeoff-reports/4264282fef9d5a5191b025fd29daeb59",
     height: 842.04,
-    width: 595.56,
-  };
+    width: 595.56
+  }
 
   const updateMeasurements = async (newMeasurements: any) => {
     try {
-      let updatedMeasurmentsR: any = takeOff?.measurements
-        ? { ...takeOff?.measurements }
-        : {};
-      updatedMeasurmentsR[`${selectedPage?.pageId}`] = newMeasurements;
-      const newupdatedMeasurements: any =
-        await takeoffSummaryService.httpUpdateTakeoffSummary({
-          id: takeOff?._id,
-          //@ts-ignore
-          data: { measurements: updatedMeasurmentsR },
-        });
-      console.log(newupdatedMeasurements, ' ==> newupdatedMeasurements');
-      settakeOff(newupdatedMeasurements?.data);
+      let updatedMeasurmentsR: any = takeOff?.measurements ? { ...takeOff?.measurements } : {};
+      updatedMeasurmentsR[`${selectedPage?.pageId}`] = newMeasurements
+      const newupdatedMeasurements: any = await takeoffSummaryService.httpUpdateTakeoffSummary({
+        id: takeOff?._id,
+        //@ts-ignore
+        data: { measurements: updatedMeasurmentsR }
+      })
+      console.log(newupdatedMeasurements, " ==> newupdatedMeasurements")
+      settakeOff(newupdatedMeasurements?.data)
       // if(selectedPage?.pageId){
 
       // }
     } catch (error) {
-      console.log(error, ' ===> Error Occured while measuring');
+      console.log(error, " ===> Error Occured while measuring")
     }
-  };
+  }
+
+  const updateCategories = async (categories: string[], subCategories: any[]) => {
+    try {
+      const newupdatedMeasurements: any = await takeoffSummaryService.httpUpdateTakeoffSummary({
+        id: takeOff?._id,
+        //@ts-ignore
+        data: { categories, subCategories }
+      })
+      console.log(newupdatedMeasurements, " ==> newupdatedMeasurements")
+      settakeOff(newupdatedMeasurements?.data)
+      // if(selectedPage?.pageId){
+
+      // }
+    } catch (error) {
+      console.log(error, " ===> Error Occured while measuring")
+    }
+  }
+
+  const handleSetScale = async (scale: { xScale: any, yScale: any, precision: any }, optionsValue: string) => {
+    try {
+      let pgs = takeOff?.pages?.slice()
+      if (optionsValue == '1') {
+        if (selectedPage) {
+          pgs = pgs.map((i: any) => {
+            if (selectedPage?.pageId == i?.pageId) {
+              return { ...i, scale }
+            } else {
+              return i
+            }
+          })
+        }
+      } else if (optionsValue == '1-0') {
+        pgs = pgs.map((i: any) => {
+          return { ...i, scale }
+        })
+      }
+      console.log(scale, optionsValue, pgs, " scale in handleset scale")
+
+      const newupdatedMeasurements: any = await takeoffSummaryService.httpUpdateTakeoffSummary({
+        id: takeOff?._id,
+        //@ts-ignore
+        data: { pages: (pgs?.length == takeOff?.pages?.length) ? pgs : takeOff?.pages }
+      })
+      console.log(newupdatedMeasurements, " ==> newupdatedMeasurements")
+      settakeOff(newupdatedMeasurements?.data)
+      if (selectedPage?.pageId && newupdatedMeasurements?.data?.pages?.find((i: any) => i?.pageId == selectedPage?.pageId)) {
+        setselectedPage(newupdatedMeasurements?.data?.pages?.find((i: any) => i?.pageId == selectedPage?.pageId))
+      }
+    } catch (error) {
+      console.log(error, " ===> Error Occured while measuring")
+    }
+  }
 
   useEffect(() => {
-    console.log(draw, 'drawdrawdrawdrawdrawdrawdrawdrawdrawdraw');
-    updateMeasurements(draw);
-  }, [draw]);
+    console.log(draw, 'drawdrawdrawdrawdrawdrawdrawdrawdrawdraw')
+    updateMeasurements(draw)
+  }, [draw])
 
   useEffect(() => {
-    if (
-      selectedPage &&
-      takeOff?.measurements &&
-      takeOff?.measurements[`${selectedPage?.pageId}`]
-    ) {
-      console.log(
-        selectedPage,
-        takeOff?.measurements[`${selectedPage?.pageId}`],
-        selectedPage?.pageId,
-        takeOff?.measurements,
-        ' ===> Selected Page in UseEffect'
-      );
+    if (selectedPage && takeOff?.measurements && takeOff?.measurements[`${selectedPage?.pageId}`]) {
+      console.log(selectedPage, takeOff?.measurements[`${selectedPage?.pageId}`], selectedPage?.pageId, takeOff?.measurements, " ===> Selected Page in UseEffect")
       if (draw != takeOff?.measurements[`${selectedPage?.pageId}`]) {
-        setDraw(takeOff?.measurements[`${selectedPage?.pageId}`]);
+        setDraw(takeOff?.measurements[`${selectedPage?.pageId}`])
       }
     } else {
-      setDraw({});
+      setDraw({})
     }
-  }, [selectedPage]);
+  }, [selectedPage])
 
-  const [sideSearch, setsideSearch] = useState<string>('');
-  const [tableColumns, settableColumns] = useState<any>([]);
-  const [tableData, settableData] = useState<any>([]);
-  const [scalUnits, setscalUnits] = useState<'feet' | 'meter'>('feet');
+  const [sideSearch, setsideSearch] = useState<string>("")
+  const [tableColumns, settableColumns] = useState<any>([])
+  const [tableData, settableData] = useState<any>([])
+  const [scalUnits, setscalUnits] = useState<'feet' | 'meter'>('feet')
 
   // WBS States And Functions
-  const [categoryList, setcategoryList] = useState<any>([]);
-  const [categoryText, setcategoryText] = useState<any>('');
-  const [selectedCate, setselectedCate] = useState<any>(null);
-  useEffect(() => {
-    setisWBS(false);
-  }, [sideTabs]);
+  const [categoryList, setcategoryList] = useState<any>([])
+  const [categoryText, setcategoryText] = useState<any>("")
+  const [selectedCate, setselectedCate] = useState<any>(null)
+  useEffect(() => { setisWBS(false) }, [sideTabs])
 
-  const [subcategoryList, setsubcategoryList] = useState<any>([]);
-  const [subcategoryText, setsubcategoryText] = useState<any>('');
-  const [selectedSubCate, setselectedSubCate] = useState<any>(null);
+  const [subcategoryList, setsubcategoryList] = useState<any>([])
+  const [subcategoryText, setsubcategoryText] = useState<any>("")
+  const [selectedSubCate, setselectedSubCate] = useState<any>(null)
 
-  const [isWBS, setisWBS] = useState<any>(false);
+  const [isWBS, setisWBS] = useState<any>(false)
   // WBS States And Functions
   useEffect(() => {
-    console.log(measurementsTableData(takeOff ?? {}), ' ===> Data to view');
+    console.log(measurementsTableData(takeOff ?? {}), " ===> Data to view")
     if (sideTabs == 'Plans') {
-      settableColumns(plansColumn);
+      settableColumns(plansColumn)
       if (sideSearch && sideSearch?.length > 0) {
-        groupDataForFileTable(
-          takeOff?.pages?.filter((i: any) =>
-            i?.name
-              ?.toLocaleLowerCase()
-              ?.includes(sideSearch?.toLocaleLowerCase())
-          )
-        );
+        groupDataForFileTable(takeOff?.pages?.filter((i: any) => (i?.name?.toLocaleLowerCase()?.includes(sideSearch?.toLocaleLowerCase()))))
       } else {
-        settableData(groupDataForFileTable(takeOff?.pages));
+        settableData(groupDataForFileTable(takeOff?.pages))
       }
     } else if (sideTabs == 'TakeOff') {
-      settableColumns(measurementsColumn);
-      settableData(measurementsTableData1(takeOff ?? {}, sideSearch));
+      settableColumns(measurementsColumn)
+      settableData(measurementsTableData1(takeOff ?? {}, sideSearch))
     } else if (sideTabs == 'WBS') {
-      settableColumns(categoryColumns);
-      settableData(measurementsTableData(takeOff ?? {}, sideSearch));
+      settableColumns(categoryColumns)
+      settableData(measurementsTableData(takeOff ?? {}, sideSearch))
     }
-  }, [
-    sideTabs,
-    takeOff,
-    sideSearch,
-    categoryList,
-    subcategoryList,
-    selectedCate,
-    selectedSubCate,
-  ]);
+  }, [sideTabs, takeOff, sideSearch, categoryList, subcategoryList, selectedCate, selectedSubCate])
 
   /////Image Loadings//////////////
   const [loadedImages, setLoadedImages] = useState<any>([]);
@@ -1753,7 +1257,7 @@ const TakeOffNewPage = () => {
 
   const isImgLoading = (index: any) => !loadedImages.includes(index);
 
-  const [reportModal, setreportModal] = useState<boolean>(false);
+  const [reportModal, setreportModal] = useState<boolean>(false)
   const {
     stageScale,
     stageX,
@@ -1764,74 +1268,50 @@ const TakeOffNewPage = () => {
   } = useWheelZoom({
     compHeight: selectedPage.height || 600,
     compWidth: selectedPage.width || 600,
-  });
-  const [fillColor, setfillColor] = useState('rgba(255, 255, 0, 0.2)');
-  const [textColor, settextColor] = useState('red');
+  })
+  const [fillColor, setfillColor] = useState("rgba(255, 255, 0, 0.2)")
+  const [textColor, settextColor] = useState("red")
   // const handleZoomIn = ()=>{}
   // const handleZoomOut = () => {}
   const handleRoomColorChange = (rgbaString: string) => {
-    setfillColor(rgbaString);
-  };
+    setfillColor(rgbaString)
+  }
 
-  const { user } = useSelector(selectUser);
+
+
+  const { user } = useSelector(selectUser)
   const handleAddComment = (comment: string) => {
     if (comment && selectedPage) {
-      const cm = { comment, user };
-      handleMenuClick('comment', selectedPage, '', cm);
-      setselectedPage((ps: any) => ({
-        ...ps,
-        comments: [
-          ...(ps?.comments && Array.isArray(ps?.comments) ? ps.comments : []),
-          cm,
-        ],
-      }));
+      const cm = { comment, user }
+      handleMenuClick('comment', selectedPage, '', cm)
+      setselectedPage((ps: any) => ({ ...ps, comments: [...((ps?.comments && Array.isArray(ps?.comments)) ? ps.comments : []), cm] }))
     }
-  };
+  }
 
   //Download Markup functions
   const getPageData = () => {
     let reportData: any = [];
-    if (
-      takeOff?.measurements &&
-      Object.keys(takeOff?.measurements) &&
-      Object.keys(takeOff?.measurements)?.length > 0
-    ) {
+    if (takeOff?.measurements && Object.keys(takeOff?.measurements) && Object.keys(takeOff?.measurements)?.length > 0) {
       Object.keys(takeOff?.measurements)?.map((key: any) => {
-        if (
-          takeOff?.measurements[key] &&
-          Object.keys(takeOff?.measurements[key]) &&
-          Object.keys(takeOff?.measurements[key])?.length > 0
-        ) {
+        if (takeOff?.measurements[key] && Object.keys(takeOff?.measurements[key]) && Object.keys(takeOff?.measurements[key])?.length > 0) {
           Object.keys(takeOff?.measurements[key])?.map((type: any) => {
-            reportData = [
-              ...reportData,
-              ...(takeOff?.measurements[key][type] &&
-              Array.isArray(takeOff?.measurements[key][type]) &&
-              takeOff?.measurements[key][type]?.length > 0
-                ? takeOff.measurements[key][type].map((arrit: any) => {
-                    return {
-                      ...arrit,
-                      pageId: key,
-                      type,
-                      pageData: takeOff?.pages?.find(
-                        (pg: any) => pg?.pageId == key
-                      ),
-                      pageLabel: takeOff?.pages?.find(
-                        (pg: any) => pg?.pageId == key
-                      )?.pageNum,
-                      color: arrit?.stroke,
-                      config: arrit,
-                    };
-                  })
-                : []),
-            ];
-          });
+            reportData = [...reportData, ...((takeOff?.measurements[key][type] && Array.isArray(takeOff?.measurements[key][type]) && takeOff?.measurements[key][type]?.length > 0)
+              ?
+              takeOff.measurements[key][type].map((arrit: any) => {
+                return {
+                  ...arrit, pageId: key, type, pageData: takeOff?.pages?.find((pg: any) => (pg?.pageId == key)),
+                  pageLabel: takeOff?.pages?.find((pg: any) => (pg?.pageId == key))?.pageNum, color: arrit?.stroke, config: arrit
+                }
+              })
+              :
+              [])]
+          })
         }
-      });
+      })
     }
-    console.log(reportData, ' ===> Take offs reportData');
-    return reportData;
-  };
+    console.log(reportData, " ===> Take offs reportData")
+    return reportData
+  }
   //@ts-ignore
   const counterImage = new Image();
   counterImage.src = '/count-draw.png';
@@ -1990,7 +1470,7 @@ const TakeOffNewPage = () => {
   // };
   const captureShape = async (
     shapeArr: any[],
-    background: HTMLImageElement
+    background: HTMLImageElement,
     // shapeType: string
   ) => {
     // Create a temporary container for off-screen stage
@@ -2024,7 +1504,7 @@ const TakeOffNewPage = () => {
       maxX = maxY = 0;
 
       for (let i = 0; i < shapeArr?.length; i++) {
-        const { type: shapeType, ...shape } = shapeArr[i];
+        const { type: shapeType, ...shape } = shapeArr[i]
         // Determine the type of shape and render accordingly
         switch (shapeType) {
           case 'count': {
@@ -2062,7 +1542,7 @@ const TakeOffNewPage = () => {
                 strokeWidth,
                 lineCap,
                 closed: shapeType === 'area' || shapeType === 'volume', // Close path for areas and volumes
-                fill: shape?.fillColor,
+                fill: shape?.fillColor
               });
               layer.add(line);
               console.warn(shape, 'sssss');
@@ -2110,6 +1590,7 @@ const TakeOffNewPage = () => {
         }
       }
 
+
       layer.draw(); // Force drawing the layer to render shapes
 
       // Use toImage to capture the specified region
@@ -2123,7 +1604,7 @@ const TakeOffNewPage = () => {
         width: background.width,
         height: background.height,
         callback: (img) => {
-          resolve(img);
+          resolve(img)
           // Create a canvas to get the cropped image data
           // console.log(img, " ===> Image got from tempStage")
           // const canvas = document.createElement('canvas');
@@ -2147,13 +1628,10 @@ const TakeOffNewPage = () => {
     return new Promise<HTMLImageElement>((resolve, reject) => {
       //@ts-ignore
       const img = new Image();
-      img.crossOrigin = 'anonymous';
+      img.crossOrigin = 'anonymous'
       img.src = `${src}?cacheBust=${new Date().getTime()}`;
       img.onload = () => resolve(img);
-      img.onerror = (e: any) => {
-        console.log(e, ' ==> Page image loading of capture');
-        reject(e);
-      };
+      img.onerror = (e: any) => { console.log(e, " ==> Page image loading of capture"); reject(e) };
     });
   };
   const imagesToPdf = (images: any) => {
@@ -2164,59 +1642,37 @@ const TakeOffNewPage = () => {
         if (index !== 0) {
           pdf.addPage();
         }
-        pdf.addImage(
-          imgData.src,
-          'JPEG',
-          0,
-          0,
-          pdf.internal.pageSize.getWidth(),
-          pdf.internal.pageSize.getHeight()
-        );
+        pdf.addImage(imgData.src, 'JPEG', 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
         // console.log(imgData?.width, imgData?.height, " ===> file page with its measurments final images error images to pdf function width height")
         // pdf.addImage(imgData?.src, 'JPEG', 0, 0, imgData?.width, imgData?.height);
       });
 
       pdf.save('output.pdf');
     } catch (error) {
-      console.log(
-        error,
-        ' ===> file page with its measurments final images error images to pdf function'
-      );
+      console.log(error, " ===> file page with its measurments final images error images to pdf function")
     }
   };
-  const [markuploading, setmarkuploading] = useState(false);
+  const [markuploading, setmarkuploading] = useState(false)
   const downloadMarkup = async (file: any) => {
-    if (!file?.fileId) return;
+    if (!file?.fileId) return
     try {
-      const allpgs = takeOff?.pages?.filter(
-        (i: any) => i?.fileId == file?.fileId
-      );
-      const arrMsr = getPageData(); // converting measurements to array
+      const allpgs = takeOff?.pages?.filter((i: any) => i?.fileId == file?.fileId)
+      const arrMsr = getPageData() // converting measurements to array
       if (!Array.isArray(arrMsr) || !(arrMsr.length > 0)) {
-        return;
+        return
       }
-      console.log(file, takeOff, allpgs, getPageData(), ' ===> file');
-      let imgArr: any[] = [];
+      console.log(file, takeOff, allpgs, getPageData(), " ===> file")
+      let imgArr: any[] = []
       if (allpgs && Array.isArray(allpgs) && allpgs?.length > 0) {
-        setmarkuploading(true);
+        setmarkuploading(true)
         await Promise.all(
           allpgs?.slice(0, 6)?.map(async (it: any) => {
-            const curPgMsr = arrMsr.filter((i: any) => i?.pageId == it?.pageId);
-            console.log(it, curPgMsr, ' ===> file page with its measurments');
-            const background = await loadImage(it?.src);
+            const curPgMsr = arrMsr.filter((i: any) => (i?.pageId == it?.pageId))
+            console.log(it, curPgMsr, " ===> file page with its measurments")
+            const background = await loadImage(it?.src)
             if (curPgMsr && Array.isArray(curPgMsr) && curPgMsr?.length > 0) {
-              const img = await captureShape(
-                [
-                  ...curPgMsr.map((i) => ({
-                    ...i?.config,
-                    text: i?.text,
-                    name: i?.projectName,
-                    type: i?.type,
-                  })),
-                ],
-                background
-              );
-              imgArr.push(img);
+              const img = await captureShape([...curPgMsr.map(i => ({ ...i?.config, text: i?.text, name: i?.projectName, type: i?.type }))], background)
+              imgArr.push(img)
               // await Promise.all(
               //   curPgMsr.map(async (curMsr: any) => {
               //     try {
@@ -2229,67 +1685,135 @@ const TakeOffNewPage = () => {
               //   })
               // )
             } else {
-              imgArr?.push(background);
+              imgArr?.push(background)
             }
           })
-        );
-        console.log(
-          imgArr,
-          ' ===> file page with its measurments final images'
-        );
-        imagesToPdf(imgArr?.reverse());
-        setmarkuploading(false);
+        )
+        console.log(imgArr, " ===> file page with its measurments final images")
+        imagesToPdf(imgArr?.reverse())
+        setmarkuploading(false)
       }
     } catch (error) {
-      setmarkuploading(false);
-      console.log(error);
+      setmarkuploading(false)
+      console.log(error)
     }
-  };
+  }
+  const [expandedKeys, setexpandedKeys] = useState({
+    files: [1],
+    takeOff: [1],
+    wbs: [1]
+  })
+  const [isDrag, setisDrag] = useState<boolean>(false)
+  const [selectedShape, setSelectedShape] = useState('');
+
+  const openShap = (record: any) => {
+    if (record && record?.pageId && takeOff && takeOff?.measurements[`${record?.pageId}`] && takeOff?.measurements[`${record?.pageId}`][`${record?.type}`] && Array.isArray(takeOff?.measurements[`${record?.pageId}`][`${record?.type}`])) {
+      const pg = takeOff?.pages?.find((i: any) => i?.pageId == record?.pageId)
+      const shape = takeOff?.measurements[`${record?.pageId}`][`${record?.type}`]?.find((i: any) => (i?.points[0] == record?.points[0] && i?.points[1] == record?.points[1]))
+      const shapeIndex = takeOff?.measurements[`${record?.pageId}`][`${record?.type}`]?.findIndex((i: any) => (i?.points[0] == record?.points[0] && i?.points[1] == record?.points[1]))
+      console.log(record, pg, shape, shapeIndex, " ===> Data of record and takeoff")
+      if (shapeIndex != -1) {
+        const text = `${record?.type}-${shapeIndex}`
+        setselectedPage(pg)
+        setSelectedShape(text)
+        setselectedTakeOffTab('page')
+      }
+
+    }
+  }
+  console.log(draw, " ===> draw")
+
+  const [iscolorpickeropen, setiscolorpickeropen] = useState(false)
+  const getWidth = (pg: any, height: number) => {
+    //w 3 h 5 nh 10
+    if (pg?.width && pg.height && height) {
+      const ratio = height / pg?.height
+      return pg?.width * ratio
+    } else {
+      return 250
+    }
+  }
+
+  console.log(selectedShape, selectedPage, " ===> selected shape here")
+
+  //drag resize handle
+  const parent = document.getElementById('drag-container');
+  const child1 = document.getElementById('left-side');
+  const child2 = document.getElementById('right-side');
+  const handle = document.getElementById('handle');
+
+  if (parent && handle && child1 && child2) {
+
+    handle.addEventListener('mousedown', function (e) {
+      e.preventDefault();
+
+      // Get the initial positions and sizes
+      const initialX = e.clientX;
+      const initialChild1Width = child1.offsetWidth;
+      // const initialChild2Width = child2.offsetWidth;
+      const parentWidth = parent.offsetWidth;
+
+      function onMouseMove(e: any) {
+        // Calculate the new width of child1
+        const deltaX = e.clientX - initialX;
+        const newChild1Width = initialChild1Width + deltaX;
+        const newChild1WidthPercent = (newChild1Width / parentWidth) * 100;
+
+        // Set the new width for child1 and adjust child2 accordingly
+        //@ts-ignore
+        child1.style.width = `${newChild1WidthPercent}%`;
+        //@ts-ignore
+        child2.style.width = `${100 - newChild1WidthPercent - 2}%`; // -2% accounts for the handle width
+      }
+
+      function onMouseUp() {
+        window.removeEventListener('mousemove', onMouseMove);
+        window.removeEventListener('mouseup', onMouseUp);
+      }
+
+      // Attach the listeners
+      window.addEventListener('mousemove', onMouseMove);
+      window.addEventListener('mouseup', onMouseUp);
+    });
+  }
+
+  const [catDDOpen, setcatDDOpen] = useState(true);
+  const [subcateDDOpen, setsubcateDDOpen] = useState(true);
+
 
   return (
     <>
       <section className="px-8 pb-4 mt-5">
-        <div className="flex justify-between">
-          <h2>{takeOff?.name ?? ''}</h2>
-          <div className="flex gap-x-2">
+        <div className='flex justify-between'>
+          <h2>{takeOff?.name ?? ""}
+            {/* - {JSON.stringify(selectedPage?.scale)} */}
+          </h2>
+          <div className='flex gap-x-2' >
             <CustomButton
               text="Generate Report"
               className="!w-auto shadow-md"
               // icon="plus.svg"
               iconwidth={20}
               iconheight={20}
-              onClick={() => {
-                setreportModal(true);
-              }}
-              // onClick={() => {
-              //   //@ts-ignore
-              //   (urlSearch && urlSearch.get('edit_id') && urlSearch.get('edit_id')?.length > 0) ? router.push(`/take-off/report?edit_id=${urlSearch.get('edit_id')}&scale=${JSON?.stringify(scaleData[1] ?? { xScale: `1in=1in`, yScale: `1in=1in`, precision: '1', })}`) : router.push('/take-off/report')
-              // }}
+              onClick={() => { setreportModal(true) }}
+            // onClick={() => {
+            //   //@ts-ignore
+            //   (urlSearch && urlSearch.get('edit_id') && urlSearch.get('edit_id')?.length > 0) ? router.push(`/take-off/report?edit_id=${urlSearch.get('edit_id')}&scale=${JSON?.stringify(scaleData[1] ?? { xScale: `1in=1in`, yScale: `1in=1in`, precision: '1', })}`) : router.push('/take-off/report')
+            // }}
             />
             <Popover
               title={'Select File'}
               content={
                 <div>
-                  {takeOff?.files &&
-                    Array.isArray(takeOff?.files) &&
-                    takeOff?.files?.length > 0 &&
-                    takeOff.files.map((it: any, index: number) => {
-                      return (
-                        <div
-                          key={index}
-                          className="cursor-pointer hover:bg-lavenderPurpleReplica hover:text-white p-1 rounded"
-                          onClick={() => {
-                            downloadMarkup(it);
-                          }}
-                        >
-                          {it?.name?.slice(0, 30)}
-                        </div>
-                      );
-                    })}
+                  {takeOff?.files && Array.isArray(takeOff?.files) && takeOff?.files?.length > 0 && takeOff.files.map((it: any, index: number) => {
+                    return <div key={index} className='cursor-pointer hover:bg-lavenderPurpleReplica hover:text-white p-1 rounded'
+                      onClick={() => { downloadMarkup(it) }}
+                    >{it?.name?.slice(0, 30)}</div>
+                  })}
                 </div>
               }
-              placement="bottom"
-              trigger="click"
+              placement='bottom'
+              trigger='click'
             >
               <CustomButton
                 text="Download Markup"
@@ -2299,287 +1823,254 @@ const TakeOffNewPage = () => {
                 iconheight={20}
                 isLoading={markuploading}
                 icon={<DownOutlined />}
-                // onClick={() => { downloadMarkup((takeOff?.files && Array.isArray(takeOff?.files) && takeOff?.files?.length > 0) ? takeOff?.files[0] : {}) }}
+              // onClick={() => { downloadMarkup((takeOff?.files && Array.isArray(takeOff?.files) && takeOff?.files?.length > 0) ? takeOff?.files[0] : {}) }}
               />
             </Popover>
           </div>
         </div>
 
+
         {/* grid place-items-center shadow-sceneryShadow  */}
         <div
-          className={`flex gap-x-5 justify-between rounded-lg my-4 shadow-none ${bg_style} h-[800px] flex flex-wrap justify-between !bg-transparent`}
+          id='drag-container' className={`flex gap-x-5 justify-between rounded-lg my-4 !shadow-none ${bg_style} h-[800px] flex flex-wrap justify-between !bg-transparent`}
         >
           {/* Left Bar */}
-          {leftOpened && (
-            <div className="w-[25%] h-[100%] rounded-2xl shadow-secondaryTwist border flex flex-col">
-              {/* sideBarHeader */}
-              <div className="w-[full] h-[25%] border-b bg-gradient-to-r from-[#8449EB]/5 to-[#6A56F6]/5 flex flex-col p-3 bg-transparent rounded-t-2xl">
-                {/* upper */}
-                <div className="h-[75%] flex flex-col justify-evenly">
-                  <div className="flex gap-x-2">
-                    <Button
-                      onClick={() => {
-                        setsideTabs('Plans');
-                      }}
-                      className={
-                        sideTabs == 'Plans'
-                          ? 'bg-lavenderPurpleReplica text-white font-semibold'
-                          : ''
-                      }
-                    >
-                      Plans
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        setsideTabs('TakeOff');
-                      }}
-                      className={
-                        sideTabs == 'TakeOff'
-                          ? 'bg-lavenderPurpleReplica text-white font-semibold'
-                          : ''
-                      }
-                    >
-                      Takeoff
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        setsideTabs('WBS');
-                      }}
-                      className={
-                        sideTabs == 'WBS'
-                          ? 'bg-lavenderPurpleReplica text-white font-semibold'
-                          : ''
-                      }
-                    >
-                      WBS / Category
-                    </Button>
-                  </div>
-                  <div className="flex gap-x-2 w-[95%]">
-                    <Input
-                      className="grow"
-                      placeholder="Search"
-                      onChange={(e) => {
-                        setsideSearch(e.target.value);
-                      }}
-                      prefix={<SearchOutlined />}
-                    />
-                    <Button
-                      onClick={() => {
-                        setselectedTakeOffTab('file');
-                      }}
-                      className="bg-lavenderPurpleReplica text-white font-semibold"
-                      icon={<CloudUploadOutlined className="text-[16px]" />}
-                    >
-                      Upload
-                    </Button>
-                  </div>
+          {leftOpened && <div id='left-side' className='w-[27%] h-[100%] relative rounded-2xl shadow-secondaryTwist border flex flex-col !bg-white' >
+            {/* sideBarHeader */}
+            <div className='!py-0 w-[full] h-[25%] border-b bg-gradient-to-r from-[#8449EB]/5 to-[#6A56F6]/5 flex flex-col px-3 bg-transparent rounded-t-2xl'>
+              {/* upper */}
+              <div className='h-[70%] flex flex-col justify-evenly'>
+                <div className='flex gap-x-2'>
+                  <Button onClick={() => { setsideTabs('Plans') }} className={`!border-none ${sideTabs == 'Plans' ? 'bg-lavenderPurpleReplica text-white font-semibold' : '!bg-gray-100'}`} >Plans</Button>
+                  <Button onClick={() => { setsideTabs('TakeOff') }} className={`!border-none ${sideTabs == 'TakeOff' ? 'bg-lavenderPurpleReplica text-white font-semibold' : '!bg-gray-100'}`}>Takeoff</Button>
+                  <Button onClick={() => { setsideTabs('WBS') }} className={`!border-none ${sideTabs == 'WBS' ? 'bg-lavenderPurpleReplica text-white font-semibold' : '!bg-gray-100'}`}>WBS / Category</Button>
                 </div>
-                {/* lower */}
-                <div className="h-[25%] flex justify-between gap-x-3 items-center">
-                  <div className="grow flex gap-x-4 items-center">
-                    <MenuUnfoldOutlined className="text-lavenderPurpleReplica text-[20px]" />
-                    <span className="font-inter font-[200] text-gray-800">
-                      {sideTabs == 'Plans'
-                        ? 'Plan & Documents'
-                        : sideTabs == 'TakeOff'
-                          ? 'TakeOff'
-                          : sideTabs == 'WBS'
-                            ? 'WBS'
-                            : ''}
-                    </span>
-                    {tableLoading && <Spin />}
-                  </div>
-                  {/* <MoreOutlined className='cursor-pointer text-[20px]' size={90} /> */}
-                  {sideTabs == 'WBS' && !isWBS && (
-                    <Button
-                      onClick={() => {
-                        setisWBS(true);
-                      }}
-                      className="bg-white !px-2 border-lavenderPurpleReplica text-lavenderPurpleReplica font-semibold"
-                      icon={<PlusOutlined className="text-[16px]" />}
-                    >
-                      Add WBS
-                    </Button>
-                  )}
-                  {sideTabs == 'WBS' && isWBS && (
-                    <div className="flex flex-col gap-y-1">
-                      <Select
-                        className="!w-52 !mb-1"
-                        style={{ width: 300 }}
-                        placeholder="Select Category"
-                        onSelect={(value: any) => {
-                          if (selectedCate === value) {
-                            setselectedCate(null);
-                          } else {
-                            setselectedCate(value);
-                          }
-                        }}
-                        value={selectedCate}
-                        dropdownRender={(menu) => (
-                          <>
-                            {menu}
-                            <Divider style={{ margin: '8px 0' }} />
-                            <Space style={{ padding: '0 8px 4px' }}>
-                              <Input
-                                placeholder="Please enter item"
-                                // ref={inputRef}
-                                value={categoryText}
-                                onChange={(e: any) => {
-                                  setcategoryText(e?.target?.value);
-                                }}
-                                onKeyDown={(e) => e.stopPropagation()}
-                              />
-                              <Button
-                                type="text"
-                                icon={<PlusOutlined />}
-                                onClick={() => {
-                                  setcategoryList((ps: any) => [
-                                    ...ps,
-                                    categoryText,
-                                  ]);
-                                  setcategoryText('');
-                                }}
-                              >
-                                Add
-                              </Button>
-                            </Space>
-                          </>
-                        )}
-                        options={categoryList.map((item: any) => ({
-                          label: item,
-                          value: item,
-                        }))}
-                      />
-                      <Select
-                        className="!w-52 !mb-1"
-                        style={{ width: 300 }}
-                        placeholder="Select SubCategory"
-                        onSelect={(value: any) => {
-                          if (selectedSubCate === value) {
-                            setselectedSubCate(null);
-                          } else {
-                            setselectedSubCate(value);
-                          }
-                        }}
-                        value={selectedSubCate}
-                        dropdownRender={(menu) => (
-                          <>
-                            {menu}
-                            <Divider style={{ margin: '8px 0' }} />
-                            <Space style={{ padding: '0 8px 4px' }}>
-                              <Input
-                                placeholder="Please enter item"
-                                // ref={inputRef}
-                                value={subcategoryText}
-                                onChange={(e: any) => {
-                                  setsubcategoryText(e?.target?.value);
-                                }}
-                                onKeyDown={(e) => e.stopPropagation()}
-                              />
-                              <Button
-                                type="text"
-                                icon={<PlusOutlined />}
-                                onClick={() => {
-                                  setsubcategoryList((ps: any) => [
-                                    ...ps,
-                                    subcategoryText,
-                                  ]);
-                                  setsubcategoryText('');
-                                }}
-                              >
-                                Add
-                              </Button>
-                            </Space>
-                          </>
-                        )}
-                        options={subcategoryList.map((item: any) => ({
-                          label: item,
-                          value: item,
-                        }))}
-                      />
-                    </div>
-                  )}
+                <div className='flex gap-x-2 w-[95%]'>
+                  <Input className='grow' placeholder='Search' onChange={(e) => { setsideSearch(e.target.value) }} prefix={<SearchOutlined />} />
+                  <Button onClick={() => { setselectedTakeOffTab('file') }} className='bg-lavenderPurpleReplica text-white font-semibold' icon={<CloudUploadOutlined className='text-[16px]' />} >Upload</Button>
                 </div>
               </div>
-              {/* sideBar Main */}
-              {sideTabs == 'Plans' && (
-                <div className="grow flex !border-black">
-                  <Table
-                    columns={tableColumns}
-                    expandable={{
-                      // expandedRowRender: (record) => <p style={{ margin: 0 }}>{record.description}</p>,
-                      rowExpandable: (record) => record?.isParent == true,
-                      // expandIcon:(record:any) => <DownOutlined />
-                    }}
-                    // dataSource={groupDataForFileTable(pages)}
-                    dataSource={tableData}
-                    className="grow bg-transparent transparent-table"
-                    scroll={{ y: 580 }}
-                    pagination={false}
-                    showHeader={false}
-                    bordered
-                    style={{ backgroundColor: 'transparent' }}
-                    rowClassName={'table-row-transparent'}
-                    rootClassName="table-row-transparent"
-                  />
+              {/* lower */}
+              <div className='h-[30%] flex justify-between gap-x-3 items-center'>
+                <div className='grow flex gap-x-4 items-center' >
+                  <MenuOutlined className='text-lavenderPurpleReplica text-[20px]' />
+                  <span className='font-inter font-[200] text-gray-800'>{sideTabs == 'Plans' ? 'Plan & Documents' : sideTabs == 'TakeOff' ? 'TakeOff' : sideTabs == 'WBS' ? 'WBS' : ''}</span>
+                  {tableLoading && <Spin />}
                 </div>
-              )}
-              {sideTabs == 'TakeOff' && (
-                <div className="grow flex !border-black">
-                  <Table
-                    columns={tableColumns}
-                    expandable={{
-                      // expandedRowRender: (record) => <p style={{ margin: 0 }}>{record.description}</p>,
-                      rowExpandable: (record) => record?.isParent == true,
-                      // expandIcon:(record:any) => <DownOutlined />
-                    }}
-                    // dataSource={groupDataForFileTable(pages)}
-                    dataSource={tableData}
-                    className="grow bg-transparent transparent-table"
-                    scroll={{ y: 580 }}
-                    pagination={false}
-                    showHeader={true}
-                    // bordered
-                    style={{ backgroundColor: 'transparent' }}
-                    rowClassName={'table-row-transparent'}
-                    rootClassName="table-row-transparent"
-                  />
-                </div>
-              )}
-              {sideTabs == 'WBS' && (
-                <div className="grow flex !border-black">
-                  <Table
-                    columns={tableColumns}
-                    expandable={{
-                      // expandedRowRender: (record) => <p style={{ margin: 0 }}>{record.description}</p>,
-                      rowExpandable: (record) => record?.isParent == true,
-                      // expandIcon:(record:any) => <DownOutlined />
-                    }}
-                    // dataSource={groupDataForFileTable(pages)}
-                    dataSource={tableData}
-                    className="grow bg-transparent transparent-table"
-                    scroll={{ y: 580 }}
-                    pagination={false}
-                    showHeader={true}
-                    // bordered
-                    style={{ backgroundColor: 'transparent' }}
-                    rowClassName={'table-row-transparent'}
-                    rootClassName="table-row-transparent"
-                  />
-                </div>
-              )}
+                {/* <MoreOutlined className='cursor-pointer text-[20px]' size={90} /> */}
+                {sideTabs == 'WBS' && !isWBS && <Button onClick={() => { setisWBS(true) }} className='bg-white !px-2 border-lavenderPurpleReplica text-lavenderPurpleReplica font-semibold' icon={<PlusOutlined className='text-[16px]' />} >Add WBS</Button>}
+                {sideTabs == 'WBS' && isWBS && <div className='flex flex-col gap-y-1'>
+                  <Select
+                    className='!w-52 !mb-1'
+                    style={{ width: 300 }}
+                    placeholder="Select Category"
+                    onSelect={(value: any) => { if (selectedCate === value) { setselectedCate(null) } else { setselectedCate(value) } }}
+                    value={selectedCate}
+                    dropdownRender={(menu) => (
+                      <>
+                        {menu}
+                        <Divider style={{ margin: '8px 0' }} />
+                        <Space style={{ padding: '0 8px 4px' }}>
+                          <Input
+                            placeholder="Please enter item"
+                            // ref={inputRef}
+                            value={categoryText}
+                            onChange={(e: any) => { setcategoryText(e?.target?.value) }}
+                            onKeyDown={(e) => e.stopPropagation()}
+                          />
+                          <Button type="text" icon={<PlusOutlined />} onClick={() => {
+                            updateCategories([...(Array.isArray(takeOff?.categories) ? takeOff.categories : []), categoryText], [...(Array.isArray(takeOff?.subCategories) ? takeOff.subCategories : [])])
+                            // setDraw((ps:any)=>({...ps,categories:[...(Array.isArray(ps?.categories) ? ps?.categories : []),categoryText]}));
+                            setcategoryList((ps: any) => ([...ps, categoryText]));
+                            setcategoryText('')
+                          }}>
+                            Add
+                          </Button>
+                        </Space>
+                      </>
+                    )}
+                  // options={[...(Array.isArray(takeOff?.categories) ? takeOff?.categories : [])].map((item: any) => ({ label: item, value: item }))}
+                  >
+                    {
+                      [...(Array.isArray(takeOff?.categories) ? takeOff.categories : [])].map((item: any, index: number) => (
+                        <Option key={index + ""} value={item}>
+                          <span>{item}</span>
+                          <span style={{ float: "right" }}>
+                            <DeleteOutlined onClick={(e) => {
+                              e.stopPropagation()
+                              updateCategories(takeOff.categories.filter((i: string) => i != item), [...(Array.isArray(takeOff?.subCategories) ? takeOff.subCategories : [])])
+                              setselectedCate(null)
+                            }} />
+                          </span>
+                        </Option>
+                      ))
+                    }
+                  </Select>
+                  <Select
+                    className='!w-52 !mb-1'
+                    style={{ width: 300 }}
+                    placeholder="Select SubCategory"
+                    onSelect={(value: any) => { if (selectedSubCate === value) { setselectedSubCate(null) } else { setselectedSubCate(value) } }}
+                    value={selectedSubCate}
+                    dropdownRender={(menu) => (
+                      <>
+                        {menu}
+                        <Divider style={{ margin: '8px 0' }} />
+                        <Space style={{ padding: '0 8px 4px' }}>
+                          <Input
+                            placeholder="Please enter item"
+                            // ref={inputRef}
+                            value={subcategoryText}
+                            onChange={(e: any) => { setsubcategoryText(e?.target?.value) }}
+                            onKeyDown={(e) => e.stopPropagation()}
+                          />
+                          <Button type="text" icon={<PlusOutlined />} onClick={() => {
+                            updateCategories([...(Array.isArray(takeOff?.categories) ? takeOff.categories : [])], [...(Array.isArray(takeOff?.subCategories) ? takeOff.subCategories : []), subcategoryText])
+                            // setDraw((ps:any)=>({...ps,subCategories:[...(Array.isArray(ps?.subCategories) ? ps?.subCategories : []),subcategoryText]}));
+                            setsubcategoryList((ps: any) => ([...ps, subcategoryText]));
+                            setsubcategoryText('')
+                          }}>
+                            Add
+                          </Button>
+                        </Space>
+                      </>
+                    )}
+                  // options={[...(Array.isArray(takeOff?.subCategories) ? takeOff?.subCategories : [])].map((item: any) => (
+                  //   { label: item, value: item }
+                  // ))}
+                  >
+                    {
+                      [...(Array.isArray(takeOff?.subCategories) ? takeOff.subCategories : [])].map((item: any, index: number) => (
+                        <Option key={index + ""} value={item}>
+                          <span>{item}</span>
+                          <span style={{ float: "right" }}>
+                            <DeleteOutlined onClick={(e) => {
+                              e.stopPropagation()
+                              updateCategories([...(Array.isArray(takeOff?.categories) ? takeOff.categories : [])], takeOff.subCategories.filter((i: string) => (i != item)))
+                              setselectedSubCate(null)
+                            }} />
+                          </span>
+                        </Option>
+                      ))
+                    }
+                  </Select>
+                </div>}
+              </div>
             </div>
-          )}
+            {/* sideBar Main */}
+            {sideTabs == 'Plans' && <div className='grow flex !border-black'>
+              <Table
+                columns={tableColumns}
+                expandable={{
+                  // expandedRowRender: (record) => <p style={{ margin: 0 }}>{record.description}</p>,
+                  rowExpandable: (record) => record?.isParent == true,
+                  // expandIcon:(record:any) => <DownOutlined />
+                }}
+                // dataSource={groupDataForFileTable(pages)}
+                dataSource={tableData}
+                className='grow bg-transparent transparent-table'
+                scroll={{ y: 580 }}
+                pagination={false}
+                showHeader={false}
+                bordered
+                style={{ backgroundColor: 'transparent' }}
+                rowClassName={'table-row-transparent'}
+                rootClassName='table-row-transparent'
+                expandedRowKeys={expandedKeys.files}
+                onExpand={(expanded, record) => {
+                  if (expanded) {
+                    setexpandedKeys(ps => ({ ...ps, files: [record.key] }))
+                  } else {
+                    setexpandedKeys(ps => ({ ...ps, files: [] }))
+                  }
+                }}
+              />
+            </div>}
+            {sideTabs == 'TakeOff' && <div className='grow flex !border-black'>
+              <Table
+                columns={tableColumns}
+                expandable={{
+                  // expandedRowRender: (record) => <p style={{ margin: 0 }}>{record.description}</p>,
+                  rowExpandable: (record) => record?.isParent == true,
+                  // expandIcon:(record:any) => <DownOutlined />
+                }}
+                // dataSource={groupDataForFileTable(pages)}
+                dataSource={tableData}
+                className='grow bg-transparent transparent-table'
+                scroll={{ y: 580 }}
+                pagination={false}
+                showHeader={true}
+                // bordered
+                style={{ backgroundColor: 'transparent' }}
+                rowClassName={'table-row-transparent'}
+                rootClassName='table-row-transparent'
+              // expandedRowKeys={expandedKeys.takeOff}
+              // onExpand={(expanded, record) => {
+              //   if (expanded) {
+              //     setexpandedKeys(ps => ({ ...ps, takeOff: [record.key] }))
+              //   } else {
+              //     setexpandedKeys(ps => ({ ...ps, takeOff: [] }))
+              //   }
+              // }}
+              />
+            </div>}
+            {sideTabs == 'WBS' && <div className='grow !border-black p-2'>
+              {/* <Table
+                columns={tableColumns}
+                expandable={{
+                  // expandedRowRender: (record) => <p style={{ margin: 0 }}>{record.description}</p>,
+                  rowExpandable: (record) => record?.isParent == true,
+                  // expandIcon:(record:any) => <DownOutlined />
+                }}
+                // dataSource={groupDataForFileTable(pages)}
+                dataSource={tableData}
+                className='grow bg-transparent transparent-table'
+                scroll={{ y: 580 }}
+                pagination={false}
+                showHeader={true}
+                // bordered
+                style={{ backgroundColor: 'transparent' }}
+                rowClassName={'table-row-transparent'}
+                rootClassName='table-row-transparent'
+              /> */}
+              <div className='flex flex-col w-full' >
+                <div className='w-full flex'>
+                  <span className='border p-3 cursor-pointer' onClick={() => { setcatDDOpen(ps => !ps) }}>{catDDOpen ? <DownOutlined style={{ strokeWidth: 30, stroke: 'black' }} /> : <RightOutlined style={{ strokeWidth: 30, stroke: 'black' }} />}</span>
+                  <div className='flex justify-start items-center border px-3 grow gap-x-2 !bg-gray-100' ><FileOutlined className='text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 p-1 rounded-full text-sm' style={{ strokeWidth: 30, stroke: '#007ab6' }} /><span className='font-bold'>Category</span></div>
+                </div>
+                <div className='flex flex-col w-full overflow-y-auto max-h-[250px]' >
+                  {
+                    catDDOpen && Array.isArray(takeOff?.categories) && takeOff?.categories?.map((i: any, ind: number) => {
+                      return <div className={`w-full border p-4 flex justify-between grow ${selectedCate == i ? 'bg-lavenderPurpleReplica bg-opacity-15' : 'hover:bg-gray-100'}`} key={ind} >
+                        <span>{i}</span>
+                        {selectedCate == i ? <Button size='small' className='border-2 rounded-full ml-2' onClick={() => { setselectedCate(null); setselectedSubCate(null) }} >unselect</Button> : <Button size='small' className='border-2 rounded-full ml-2' onClick={() => { setselectedCate(i); }} >select</Button>}
+                      </div>
+                    })
+                  }
+                </div>
+              </div>
+              <div className='flex flex-col w-full' >
+                <div className='w-full flex'>
+                  <span className='border p-3 cursor-pointer' onClick={() => { setsubcateDDOpen(ps => !ps) }}>{subcateDDOpen ? <DownOutlined style={{ strokeWidth: 30, stroke: 'black' }} /> : <RightOutlined style={{ strokeWidth: 30, stroke: 'black' }} />}</span>
+                  <div className='flex justify-start items-center border px-3 grow gap-x-2 !bg-gray-100' ><FileOutlined className='text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 p-1 rounded-full text-sm' style={{ strokeWidth: 30, stroke: '#007ab6' }} /><span className='font-bold'>Sub Category</span></div>
+                </div>
+                <div className='flex flex-col w-full overflow-y-auto max-h-[250px]' >
+                  {
+                    subcateDDOpen && Array.isArray(takeOff?.subCategories) && takeOff?.subCategories?.map((i: any, ind: number) => {
+                      return <div className={`w-full border p-4 flex justify-between grow ${selectedSubCate == i ? 'bg-lavenderPurpleReplica bg-opacity-15' : 'hover:bg-gray-100'}`} key={ind} >
+                        <span>{i}</span>
+                        {selectedCate && <>{selectedSubCate == i ? <Button size='small' className='border-2 rounded-full ml-2' onClick={() => { setselectedSubCate(null) }} >unselect</Button> : <Button size='small' className='border-2 rounded-full ml-2' onClick={() => { setselectedSubCate(i); }} >select</Button>}</>}
+                      </div>
+                    })
+                  }
+                </div>
+              </div>
+            </div>}
+            <div id='handle' className='w-1 bg-lavenderPurpleReplica bg rounded-r-2xl absolute h-full right-0 top-0 cursor-col-resize bg-opacity-0 hover:bg-opacity-100' draggable></div>
+          </div>}
           {/* Take Off New */}
-          <div className="h-[100%] w-[73%] grow rounded-2xl shadow-secondaryTwist border relative">
-            <div
-              className="z-50 absolute top-[25px] left-[-13px] cursor-pointer border-[2px] rounded-full flex justify-center items-center p-1 text-gray-600 bg-white"
-              onClick={() => {
-                setleftOpened((ps) => !ps);
-              }}
-            >
-              {leftOpened ? <LeftOutlined /> : <RightOutlined />}
-            </div>
+          <div id='right-side' className='h-[100%] w-[71%] grow rounded-2xl shadow-secondaryTwist border relative !bg-white' >
+            <div className='z-50 absolute top-[25px] left-[-13px] cursor-pointer border-[2px] rounded-full flex justify-center items-center p-1 text-gray-600 bg-white' onClick={() => { setleftOpened(ps => !ps) }}>{leftOpened ? <LeftOutlined /> : <RightOutlined />}</div>
             {/* Old Take Off Full Page */}
             {/* <OldTakeOffFullPage /> */}
             <>
@@ -2602,232 +2093,174 @@ const TakeOffNewPage = () => {
                 />
               </div>
             </div> */}
-                {selectedTakeOffTab == 'page' && (
-                  <ScaleNavigation
-                    tool={tool}
-                    setTool={setTool}
-                    setShowModal={setShowModal}
-                    handleZoomIn={handleZoomIn}
-                    handleZoomOut={handleZoomOut}
-                    handleRoomColorChange={handleRoomColorChange}
-                    fillColor={fillColor}
-                    countType={countType}
-                    setcountType={setcountType}
-                    selectedPage={selectedPage}
-                    handleAddComment={handleAddComment}
-                  />
-                )}
+                {selectedTakeOffTab == 'page' && <ScaleNavigation
+                  tool={tool}
+                  setTool={setTool}
+                  setShowModal={setShowModal}
+                  handleZoomIn={handleZoomIn}
+                  handleZoomOut={handleZoomOut}
+                  handleRoomColorChange={handleRoomColorChange}
+                  fillColor={fillColor}
+                  countType={countType}
+                  setcountType={setcountType}
+                  selectedPage={selectedPage}
+                  handleAddComment={handleAddComment}
+                />}
 
                 <div className="py-6 h-[709px] relative">
-                  <div className="absolute top-10 left-16 flex gap-x-3 p-3 z-40">
-                    <Button
-                      onClick={() => {
-                        setselectedTakeOffTab('overview');
-                      }}
-                      icon={<MenuUnfoldOutlined />}
-                      className={
-                        selectedTakeOffTab == 'overview'
-                          ? 'bg-lavenderPurpleReplica text-white font-semibold'
-                          : ''
-                      }
-                    >
-                      Overview
-                    </Button>
-                    {selectedPagesList &&
-                      selectedPagesList?.length > 0 &&
-                      selectedPagesList?.map((pg: any, index: number) => {
-                        return (
-                          <Button
-                            className={
-                              selectedTakeOffTab == 'page' &&
-                              selectedPage?.pageId == pg?.pageId
-                                ? 'bg-lavenderPurpleReplica text-white font-semibold'
-                                : ''
-                            }
-                            onClick={() => {
-                              setselectedPage(pg);
-                              setselectedTakeOffTab('page');
+                  <div className='absolute top-1 left-2 flex gap-x-3 p-3 z-40' >
+                    <Button onClick={() => { setselectedTakeOffTab('overview') }} icon={<AppstoreOutlined className='!font-[800]] !text-xl' />} size='large' className={`!border-none ${selectedTakeOffTab == 'overview' ? 'bg-lavenderPurpleReplica !bg-opacity-10 text-lavenderPurpleReplica' : '!bg-gray-100'}`} >Overview</Button>
+                    {
+                      selectedPagesList && selectedPagesList?.length > 0 && selectedPagesList?.map((pg: any, index: number) => {
+                        return <Button size='large'
+                          className={`!border-none ${(selectedTakeOffTab == 'page' && selectedPage?.pageId == pg?.pageId) ? 'bg-lavenderPurpleReplica !bg-opacity-10 text-lavenderPurpleReplica font-semibold' : '!bg-gray-100'}`}
+                          onClick={() => {
+                            setselectedPage(pg)
+                            setselectedTakeOffTab('page')
+                          }}
+                          key={index} icon={<BorderLeftOutlined className='!font-[800]] !text-xl' />} >{pg?.name ? pg?.name?.slice(0, 15) : ''}
+                          <span className='cursor-pointer ml-5 !font-light'
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              console.log('filtered crossed here')
+                              const filtered = selectedPagesList?.filter((i: any) => (i?.pageId != pg?.pageId))
+                              setselectedPagesList(filtered)
+                              if (selectedPage?.pageId == pg?.pageId) {
+                                console.log('filtered crossed here inside selected page condition')
+                                setselectedPage({})
+                                setselectedTakeOffTab('overview')
+                              }
+                              if (!filtered?.length) {
+                                console.log('filtered crossed here in side empty selected list')
+                                setselectedTakeOffTab('overview')
+                                setselectedPage({})
+                              }
                             }}
-                            key={index}
-                            icon={<FilePdfOutlined />}
-                          >
-                            {pg?.name ? pg?.name?.slice(0, 15) : ''}
-                            <span
-                              className="cursor-pointer ml-5"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                console.log('filtered crossed here');
-                                const filtered = selectedPagesList?.filter(
-                                  (i: any) => i?.pageId != pg?.pageId
-                                );
-                                setselectedPagesList(filtered);
-                                if (selectedPage?.pageId == pg?.pageId) {
-                                  console.log(
-                                    'filtered crossed here inside selected page condition'
-                                  );
-                                  setselectedPage({});
-                                  setselectedTakeOffTab('overview');
-                                }
-                                if (!filtered?.length) {
-                                  console.log(
-                                    'filtered crossed here in side empty selected list'
-                                  );
-                                  setselectedTakeOffTab('overview');
-                                  setselectedPage({});
-                                }
-                              }}
-                            >
-                              x
-                            </span>
-                          </Button>
-                        );
-                      })}
+                          ><CloseOutlined /></span>
+                        </Button>
+                      })
+                    }
                     {/* <div>Overview</div>
             <div>First Page</div> */}
                   </div>
-                  {selectedTakeOffTab == 'page' && (
-                    <div className="absolute top-10 right-[50px] flex z-40 border rounded-lg bg-slate-50">
-                      <span
-                        onClick={handleZoomIn}
-                        className="border-r py-3 px-5 cursor-pointer"
-                      >
-                        <PlusOutlined className="font-extrabold" />
-                      </span>
-                      <span
-                        onClick={handleZoomOut}
-                        className="py-3 px-5 cursor-pointer border-r"
-                      >
-                        <MinusOutlined />
-                      </span>
-                      <span className="py-0 px-2 flex items-center cursor-pointer">
-                        <Select
-                          value={scalUnits}
-                          options={[
-                            { value: 'feet', label: <span>Feets</span> },
-                            { value: 'meter', label: <span>Meters</span> },
-                          ]}
-                          onSelect={setscalUnits}
-                        />
-                      </span>
+                  {selectedTakeOffTab == 'page' && <div className='absolute top-3 right-[50px] flex z-40 rounded-lg bg-slate-50 shadow-md !border'>
+                    <span onClick={handleZoomIn} className='border-r py-3 px-5 cursor-pointer' ><PlusOutlined className='font-extrabold' /></span>
+                    <span onClick={handleZoomOut} className='py-3 px-5 cursor-pointer border-r'><MinusOutlined /></span>
+                    <span className='py-0 px-2 flex items-center cursor-pointer'>
+                      <Select value={scalUnits} options={[{ value: 'feet', label: <span>Feet</span> }, { value: 'meter', label: <span>Meter</span> }]} onSelect={setscalUnits} />
+                    </span>
+                    <span onClick={() => { setisDrag(ps => !ps) }} className={`py-3 px-5 cursor-pointer border-r rounded ${isDrag ? 'bg-blue-500' : ''}`}><DragOutlined /></span>
+                  </div>}
+                  {
+                    selectedTakeOffTab == 'page' && selectedPage &&
+                    <div className='absolute top-16 right-[50px] flex z-40 rounded-lg bg-slate-50 !border py-1 px-2'>
+                      Scale : {selectedPage?.scale?.xScale ?? `1'=1'`}
+                      <br />
+                      Precision : {selectedPage?.scale?.precision}
                     </div>
-                  )}
-                  {selectedTakeOffTab == 'page' && (
-                    <div
-                      className={`absolute bottom-0 z-40 ${showModal ? 'block' : 'hidden'}`}
-                    >
-                      <ModalsWrapper
-                        tool={tool}
-                        setTool={setTool}
-                        setModalOpen={setShowModal}
-                        measurements={measurements}
-                      />
-                    </div>
-                  )}
+                  }
+                  {selectedTakeOffTab == 'page' && <div className={`absolute bottom-0 z-40 ${showModal ? 'block' : 'hidden'}`}>
+                    <ModalsWrapper
+                      tool={tool}
+                      setTool={setTool}
+                      setModalOpen={setShowModal}
+                      measurements={measurements}
+                    />
+                  </div>}
                   <div className="h-full max-h-[100%] rounded-lg overflow-auto">
-                    {selectedTakeOffTab == 'page' && (
-                      <Draw
-                        key={`draw-${0}`}
-                        selectedTool={tool}
-                        scale={
-                          scaleData?.[`${0 + 1}`] || {
-                            xScale: `1in=1in`,
-                            yScale: `1in=1in`,
-                            precision: '1',
-                          }
+                    {selectedTakeOffTab == 'page' && <Draw
+                      key={`draw-${0}`}
+                      selectedTool={tool}
+                      scale={
+                        selectedPage?.scale || {
+                          xScale: `1in=1in`,
+                          yScale: `1in=1in`,
+                          precision: '1',
                         }
-                        depth={depth}
-                        color={color}
-                        border={border}
-                        unit={unit * 1.5}
-                        uploadFileData={
-                          selectedPage && selectedPage?.pageId
-                            ? selectedPage
-                            : file
-                        }
-                        pageNumber={0 + 1}
-                        handleScaleModal={(open) => setShowModal(open)}
-                        handleChangeMeasurements={(measurements) =>
-                          setMeasurements(measurements)
-                        }
-                        isEdit={
-                          urlSearch.get('edit_id') && editData ? true : false
-                        }
-                        editData={editData}
-                        drawScale={drawScale}
-                        setdrawScale={setdrawScale}
-                        setscaleLine={setscaleLine}
-                        setModalOpen={setShowModal}
-                        selectedCategory={selectedCate}
-                        selectedSubCategory={selectedSubCate}
-                        updateMeasurements={updateMeasurements}
-                        draw={draw}
-                        setDraw={setDraw}
-                        stageScale={stageScale}
-                        stageX={stageX}
-                        stageY={stageY}
-                        handleWheel={handleWheel}
-                        handleZoomIn={handleZoomIn}
-                        handleZoomOut={handleZoomOut}
-                        textColor={textColor}
-                        fillColor={fillColor}
-                        countType={countType}
-                        scaleUnits={scalUnits}
-                      />
-                    )}
-                    {selectedTakeOffTab == 'overview' && (
-                      <div className="w-full flex justify-center items-center p-5">
-                        <div className="grow flex flex-wrap gap-3 mt-32">
-                          {takeOff &&
-                            takeOff?.pages &&
-                            Array.isArray(takeOff?.pages) &&
-                            takeOff?.pages?.map((page: any, index: number) => {
-                              return (
-                                <>
-                                  <div
-                                    key={page?.pageId}
-                                    className="relative cursor-pointer border rounded-2xl"
-                                    onClick={() => {
-                                      setselectedTakeOffTab('page');
-                                      if (
-                                        !selectedPagesList?.find(
-                                          (i: any) => i?.pageId == page?.pageId
-                                        )
-                                      ) {
-                                        //@ts-ignore
-                                        setselectedPagesList((ps: any) => [
-                                          ...ps,
-                                          page,
-                                        ]);
-                                      }
-                                      setselectedPage(page);
-                                    }}
-                                  >
-                                    <NextImage
-                                      className="rounded-t-2xl"
-                                      src={page?.src}
-                                      width={250}
-                                      height={300}
-                                      alt=""
-                                      onLoad={() => handleImageLoad(index)}
-                                    />
-                                    {isImgLoading(index) && (
-                                      <div className="rounded-t-2xl absolute top-0 left-0 w-[100%] h-[100%] bg-slate-300 flex justify-center items-center bg-opacity-30">
-                                        <Spin />
-                                      </div>
-                                    )}
-                                    <div className="py-5 px-3">
-                                      {page?.name?.slice(0, 30) ?? 'Unkonw'}
+                      }
+                      depth={depth}
+                      color={color}
+                      border={border}
+                      unit={unit * 1.5}
+                      uploadFileData={(selectedPage && selectedPage?.pageId) ? selectedPage : file}
+                      pageNumber={0 + 1}
+                      handleScaleModal={(open) => setShowModal(open)}
+                      handleChangeMeasurements={(measurements) =>
+                        setMeasurements(measurements)
+                      }
+                      isEdit={(urlSearch.get('edit_id') && editData) ? true : false}
+                      editData={editData}
+                      drawScale={drawScale}
+                      setdrawScale={setdrawScale}
+                      setscaleLine={setscaleLine}
+                      setModalOpen={setShowModal}
+                      selectedCategory={selectedCate}
+                      selectedSubCategory={selectedSubCate}
+                      updateMeasurements={updateMeasurements}
+                      draw={draw}
+                      setDraw={setDraw}
+                      stageScale={stageScale}
+                      stageX={stageX}
+                      stageY={stageY}
+                      handleWheel={handleWheel}
+                      handleZoomIn={handleZoomIn}
+                      handleZoomOut={handleZoomOut}
+                      textColor={textColor}
+                      fillColor={fillColor}
+                      countType={countType}
+                      scaleUnits={scalUnits}
+                      isDrag={isDrag}
+                      selectedShape={selectedShape}
+                      setSelectedShape={setSelectedShape}
+                    />}
+                    {
+                      selectedTakeOffTab == 'overview'
+                      &&
+                      <div className='w-full flex justify-center items-center p-5' >
+                        <div className='grow flex flex-wrap gap-3 gap-y-5 mt-14' >
+                          {
+                            takeOff && takeOff?.pages && Array.isArray(takeOff?.pages) && takeOff?.pages?.map((page: any, index: number) => {
+                              return <>
+                                <div key={page?.pageId} className='relative cursor-pointer border rounded-2xl'
+                                  onClick={() => {
+                                    setselectedTakeOffTab('page')
+                                    if (!selectedPagesList?.find((i: any) => (i?.pageId == page?.pageId))) {
+                                      //@ts-ignore
+                                      setselectedPagesList((ps: any) => ([...ps, page]))
+                                    }
+                                    setselectedPage(page)
+                                  }}
+                                >
+                                  <NextImage className='rounded-t-2xl' src={page?.src} width={getWidth(page, 300)} height={300} alt='' onLoad={() => handleImageLoad(index)} />
+                                  {isImgLoading(index) && <div className='rounded-t-2xl absolute top-0 left-0 w-[100%] h-[100%] bg-slate-300 flex justify-center items-center bg-opacity-30' >
+                                    <Spin />
+                                  </div>}
+                                  <div className='flex justify-between items-center w-full px-3 py-5 !bg-gray-100 !rounded-b-2xl'>
+                                    <div className='font-[500] text-gray-600' >{page?.name?.slice(0, 30) ?? 'Unkonw'}</div>
+                                    <div onClick={(e) => { e.stopPropagation() }} >
+                                      <Dropdown overlay={menu(page)} trigger={['click']}>
+                                        <MoreOutlined onClick={(e) => { e.stopPropagation() }} className='cursor-pointer text-[20px]' />
+                                      </Dropdown>
                                     </div>
                                   </div>
-                                </>
-                              );
-                            })}
+                                  <div className='absolute top-[-14px] right-[-5px] rounded-full border text-xl flex items-center justify-center w-9 h-9 bg-white cursor-pointer text-gray-500'
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleMenuClick('delete', page)
+                                    }}
+                                  ><CloseOutlined /></div>
+                                </div>
+                              </>
+                            })
+                          }
                         </div>
                       </div>
-                    )}
-                    {selectedTakeOffTab == 'file' && (
-                      <div className="w-full h-full flex justify-center items-center p-5">
-                        <div className="grow flex flex-col mt-32 h-full w-full gap-y-2 justify-center items-center">
+                    }
+                    {
+                      selectedTakeOffTab == 'file'
+                      &&
+                      <div className='w-full h-full flex justify-center items-center p-5' >
+                        <div className='grow flex flex-col mt-32 h-full w-full gap-y-2 justify-center items-center' >
                           {/* <label className='relative w-[70%] h-[60%]' htmlFor="file-selector">
                             <input type="file" accept="application/pdf" multiple id='file-selector' className='hidden absolute top-0 left-0' style={{ display: 'none' }} onChange={(e: any) => {
                               console.log(e.target.result, " ==> event.target.result")
@@ -2920,123 +2353,96 @@ const TakeOffNewPage = () => {
                               </div>
                             </div>
                           </div> */}
-                          <div className="grow flex w-full">
-                            {fullData?.files &&
-                              Array.isArray(fullData?.files) &&
-                              fullData?.files?.length > 0 && (
-                                <div className="flex flex-col gap-y-7 w-[40%]">
-                                  {fullData?.files &&
-                                    Array.isArray(fullData?.files) &&
-                                    fullData?.files?.length > 0 && (
-                                      <CustomButton
-                                        text={`Add ${selectedFiles?.length} files to workspace`}
-                                        className="!w-auto"
-                                        // icon="plus.svg"
-                                        iconwidth={20}
-                                        iconheight={20}
-                                        isLoading={isApiCalling}
-                                        onClick={() => {
-                                          // setprogressModalOpen(true)
-                                          addFileToWorkspace();
-                                        }}
-                                      />
-                                    )}
-                                  {/* {selectedFiles && Array.isArray(selectedFiles) && selectedFiles?.length > 0 && <h4 className='text-gray-600'>{selectedFiles?.length} uploaded files</h4>} */}
-                                  <ul className="list-none flex flex-col gap-y-5">
-                                    {fullData?.files &&
-                                      Array.isArray(fullData?.files) &&
-                                      fullData?.files?.length > 0 &&
-                                      fullData?.files?.map(
-                                        (it: any, ind: number) => {
-                                          const totalProgress =
-                                            fullData?.pages?.filter(
-                                              (i: any) => {
-                                                return i?.fileId == it?.fileId;
-                                              }
-                                            );
-                                          return (
-                                            <li
-                                              key={ind}
-                                              className="inline-flex gap-3 items-center justify-center"
-                                            >
-                                              <img
-                                                src={'/fileCSV.png'}
-                                                alt=""
-                                                width={35}
-                                                height={35}
-                                              />
-                                              <span
-                                                data-tooltip={`${it?.name}`}
-                                                className="whitespace-nowrap text-gray-500"
-                                              >{`${it?.name?.slice(0, 4)}`}</span>
-                                              <Progress
-                                                percent={
-                                                  totalProgress &&
-                                                  Array.isArray(totalProgress)
-                                                    ? Math.ceil(
-                                                        (totalProgress?.length /
-                                                          it?.totalPages) *
-                                                          100
-                                                      )
-                                                    : 0
-                                                }
-                                                strokeColor={'#007AB6'}
-                                              />
-                                            </li>
-                                          );
-                                        }
-                                      )}
-                                  </ul>
-                                </div>
-                              )}
-                            <div className="grow p-3 !max-h-[500px]">
-                              <label
-                                className="relative"
-                                htmlFor="file-selector"
-                              >
-                                <input
-                                  type="file"
-                                  accept="application/pdf"
-                                  multiple
-                                  id="file-selector"
-                                  className="hidden absolute top-0 left-0"
-                                  style={{ display: 'none' }}
-                                  onChange={(e: any) => {
-                                    console.log(
-                                      e.target.result,
-                                      ' ==> event.target.result'
-                                    );
-                                    if (e.target.files?.length > 0) {
-                                      const arr = Object.keys(
-                                        e.target?.files
-                                      )?.map((it: any) => {
-                                        if (Number.isInteger(Number(it))) {
-                                          return e?.target?.files[it];
-                                        }
-                                      });
-                                      console.log(arr, ' array of file to pro');
-                                      setselectedFiles((ps: any) => [
-                                        ...ps,
-                                        ...arr,
-                                      ]);
-                                      startProcess(arr);
+                          <div className='grow flex w-full'>
+                            {/* {fullData?.files && Array.isArray(fullData?.files) && fullData?.files?.length > 0 && <div className='flex flex-col gap-y-7 w-[40%]'>
+                              {fullData?.files && Array.isArray(fullData?.files) && fullData?.files?.length > 0 &&
+                                <CustomButton
+                                  text={`Add ${selectedFiles?.length} files to workspace`}
+                                  className="!w-auto"
+                                  // icon="plus.svg"
+                                  iconwidth={20}
+                                  iconheight={20}
+                                  isLoading={isApiCalling}
+                                  onClick={() => {
+                                    // setprogressModalOpen(true) 
+                                    addFileToWorkspace()
+                                  }}
+                                />
+                              }
+                              {selectedFiles && Array.isArray(selectedFiles) && selectedFiles?.length > 0 && <h4 className='text-gray-600'>{selectedFiles?.length} uploaded files</h4>}
+                              <ul className='list-none flex flex-col gap-y-5'>
+                                {
+                                  fullData?.files && Array.isArray(fullData?.files) && fullData?.files?.length > 0 && fullData?.files?.map((it: any, ind: number) => {
+                                    const totalProgress = fullData?.pages?.filter((i: any) => { return i?.fileId == it?.fileId })
+                                    return <li key={ind} className='inline-flex gap-3 items-center justify-center'>
+                                      <img src={'/fileCSV.png'} alt='' width={35} height={35} />
+                                      <span data-tooltip={`${it?.name}`} className='whitespace-nowrap text-gray-500'>{`${it?.name?.slice(0, 4)}`}</span>
+                                      <Progress percent={(totalProgress && Array.isArray(totalProgress) ? Math.ceil((totalProgress?.length / it?.totalPages) * 100) : 0)} strokeColor={'#007AB6'} />
+                                    </li>
+                                  })
+                                }
+                              </ul>
+                            </div>} */}
+                            {selectedFiles && Array.isArray(selectedFiles) && selectedFiles?.length > 0 && <div className='flex flex-col gap-y-7 w-[40%]'>
+                              {selectedFiles && Array.isArray(selectedFiles) && selectedFiles?.length > 0 &&
+                                <CustomButton
+                                  text={`Add ${selectedFiles?.length} files to workspace`}
+                                  className="!w-auto"
+                                  // icon="plus.svg"
+                                  iconwidth={20}
+                                  iconheight={20}
+                                  isLoading={fileLoading}
+                                  onClick={() => {
+                                    // setprogressModalOpen(true) 
+                                    // addFileToWorkspace()
+                                    if (!fileLoading) {
+                                      if (edit_id && edit_id?.length > 0) {
+                                        getTakeOffDetails(edit_id)
+                                        setselectedFiles([])
+                                      }
                                     }
                                   }}
                                 />
-                                <div className="cursor-pointer w-[100%] h-[100%] border-[2px] border-dashed rounded-lg flex items-center justify-center">
-                                  <div className="w-[70%] h-[80%] flex flex-col items-center justify-evenly">
-                                    <img
-                                      className="w-[15%]"
-                                      src={'/uploadNew.png'}
-                                      alt=""
-                                    />
-                                    <h4 className="text-gray-700">
-                                      Drag and Drop your files here
-                                    </h4>
-                                    <p className="text-gray-400">or</p>
-                                    <Button className="text-lavenderPurpleReplica font-bold border border-transparent bg-lavenderPurpleReplica bg-opacity-10 hover:!border-lavenderPurpleReplica hover:!text-lavenderPurpleReplica">
-                                      Select file
-                                    </Button>
+                              }
+                              {/* {selectedFiles && Array.isArray(selectedFiles) && selectedFiles?.length > 0 && <h4 className='text-gray-600'>{selectedFiles?.length} uploaded files</h4>} */}
+                              <ul className='list-none flex flex-col gap-y-5'>
+                                {
+                                  selectedFiles && Array.isArray(selectedFiles) && selectedFiles?.length > 0 && selectedFiles?.map((it: any, ind: number) => {
+                                    // const totalProgress = fullData?.pages?.filter((i: any) => { return i?.fileId == it?.fileId })
+                                    return <li key={ind} className='inline-flex gap-3 items-center justify-center'>
+                                      <img src={'/fileCSV.png'} alt='' width={35} height={35} />
+                                      <span data-tooltip={`${it?.name}`} className='whitespace-nowrap text-gray-500'>{`${it?.name?.slice(0, 4)}`}</span>
+                                      {/* <Progress percent={(totalProgress && Array.isArray(totalProgress) ? Math.ceil((totalProgress?.length / it?.totalPages) * 100) : 0)} strokeColor={'#007AB6'} /> */}
+                                      {fileState.find(i => i.name == it?.name)?.status != 'failed' && <Progress percent={fileState.find(i => i.name == it?.name)?.uploadProgress ?? 1} strokeColor={'#007AB6'} />}
+                                      <span className='text-sm text-gray-500' >{`(${fileState.find(i => i.name == it?.name)?.status})`}</span>
+                                    </li>
+                                  })
+                                }
+                              </ul>
+                            </div>}
+                            <div className='grow p-3 !max-h-[500px]' >
+                              <label className='relative' htmlFor="file-selector">
+                                <input type="file" accept="application/pdf" id='file-selector' className='hidden absolute top-0 left-0' style={{ display: 'none' }} onChange={(e: any) => {
+                                  console.log(e.target.result, " ==> event.target.result")
+                                  if (e.target.files?.length > 0) {
+                                    const arr = Object.keys(e.target?.files)?.map((it: any) => {
+                                      if (Number.isInteger(Number(it))) {
+                                        return e?.target?.files[it]
+                                      }
+                                    })
+                                    console.log(arr, " array of file to pro")
+                                    setselectedFiles((ps: any) => ([...ps, ...arr]))
+                                    startProcess(arr)
+                                  }
+                                }} />
+                                <div className='cursor-pointer w-[100%] h-[100%] border-[2px] border-dashed rounded-lg flex items-center justify-center' >
+                                  <div className='w-[70%] h-[80%] flex flex-col items-center justify-evenly'>
+                                    <img className='w-[15%]' src={'/uploadNew.png'} alt="" />
+                                    <h4 className='text-gray-700' >Drag and Drop your files here</h4>
+                                    <p className='text-gray-400'>or</p>
+                                    <Button
+                                      className='text-lavenderPurpleReplica font-bold border border-transparent bg-lavenderPurpleReplica bg-opacity-10 hover:!border-lavenderPurpleReplica hover:!text-lavenderPurpleReplica'
+                                    >Select file</Button>
                                   </div>
                                 </div>
                               </label>
@@ -3044,24 +2450,31 @@ const TakeOffNewPage = () => {
                           </div>
                         </div>
                       </div>
-                    )}
+                    }
                     {/* } */}
                   </div>
                   {/* <DrawTable /> */}
                   {/* Second Bar to do it At Bottom */}
-                  {selectedTakeOffTab == 'page' && (
-                    <Draggable>
-                      <div className="bg-[#F2F2F2] h-[52px] flex flex-row items-center justify-center mb-10 px-4 gap-6 rounded-lg border">
-                        <div className="flex flex-row gap-2 items-center">
+                  {selectedTakeOffTab == 'page'
+                    &&
+                    <Draggable
+                      disabled={iscolorpickeropen}
+                    >
+                      <div
+                        className="bg-[#F2F2F2] h-[52px] flex flex-row items-center justify-center mb-10 px-4 gap-6 rounded-lg border">
+                        {/* <div className="flex flex-row gap-2 items-center">
                           <label>Totals:</label>
                           <Select value="Length ----" />
-                        </div>
+                        </div> */}
                         <div className="flex flex-row gap-2 items-center">
                           <label>Units:</label>
                           <Select
                             className="w-[64px]"
                             value={unit}
-                            onChange={(value) => setUnit(value)}
+                            onChange={(value) => {
+                              setUnit(value)
+                              updateColorSizes('textUnit', value)
+                            }}
                           >
                             {Units.map((item) => (
                               <Select.Option value={item} key={item}>
@@ -3076,7 +2489,10 @@ const TakeOffNewPage = () => {
                             min={1}
                             max={76}
                             value={border}
-                            onChange={(value) => value && setBorder(value)}
+                            onChange={(value) => {
+                              if (value) setBorder(value);
+                              updateColorSizes('strokeWidth', value)
+                            }}
                           />
                         </div>
                         <div className="flex flex-row gap-2 items-center">
@@ -3084,29 +2500,33 @@ const TakeOffNewPage = () => {
                           <ColorPicker
                             value={color}
                             onChange={(color) => setColor(color.toHexString())}
+                            onChangeComplete={(color) => {
+                              updateColorSizes('stroke', color.toHexString())
+                            }}
+                            onOpenChange={setiscolorpickeropen}
                           />
                         </div>
                         <div className="flex flex-row gap-2 items-center">
                           <label>Text:</label>
                           <ColorPicker
                             value={textColor}
-                            onChangeComplete={(color) =>
+                            onChangeComplete={(color) => {
                               settextColor(color.toHexString())
-                            }
+                              updateColorSizes('textColor', color.toHexString())
+                            }}
+                            onOpenChange={setiscolorpickeropen}
                           />
                         </div>
                         <div
                           className="flex flex-row gap-2 items-center"
-                          // onClick={}
+                        // onClick={}
                         >
                           <label>Fill:</label>
                           {/* <NextImage src={'/selectedScale.svg'} alt={'zoomicon'} width={19.97} height={11.31} /> */}
-                          <ColorPicker
-                            value={fillColor ?? '#ffffff'}
-                            onChangeComplete={(value) => {
-                              handleRoomColorChange(value?.toRgbString());
-                            }}
-                          />
+                          <ColorPicker value={fillColor ?? '#ffffff'} onChangeComplete={(value) => {
+                            handleRoomColorChange(value?.toRgbString())
+                            updateColorSizes('fillColor', value?.toRgbString())
+                          }} onOpenChange={setiscolorpickeropen} />
                           {/* <span
                             className={twMerge(
                               `text-xs capitalize`
@@ -3142,7 +2562,8 @@ const TakeOffNewPage = () => {
             } */}
                       </div>
                     </Draggable>
-                  )}
+                  }
+
                 </div>
                 {tool.selected === 'scale' && (
                   <ModalComponent open={showModal} setOpen={setShowModal}>
@@ -3152,26 +2573,23 @@ const TakeOffNewPage = () => {
                       drawScale={drawScale}
                       setdrawScale={setdrawScale}
                       scaleLine={scaleLine}
+                      handleSetScale={handleSetScale}
                     />
                   </ModalComponent>
                 )}
-                <ModalComponent
-                  open={reportModal}
-                  setOpen={setreportModal}
-                  width="100vw"
-                >
+                <ModalComponent open={reportModal} setOpen={setreportModal} width='100vw'>
                   <ReportModal
                     setModalOpen={setreportModal}
                     takeOff={takeOff}
                     modalOpen={reportModal}
                   />
                 </ModalComponent>
-                <ModalComponent open={progressModalOpen} setOpen={() => {}}>
+                <ModalComponent open={progressModalOpen} setOpen={() => { }}>
                   <CreateProgressModal
                     setModalOpen={setprogressModalOpen}
                     files={selectedFiles}
                     pages={allPages}
-                    processFiles={startProcess} //{processRequest}
+                    processFiles={startProcess}//{processRequest}
                     fullData={fullData}
                     isLoading={isLoading}
                     setisLoading={setisLoading}
