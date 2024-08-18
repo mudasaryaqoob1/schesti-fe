@@ -1,9 +1,9 @@
 'use client';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-// import _ from 'lodash';
+import _ from 'lodash';
 import jsPDF from 'jspdf';
 import { AxiosError } from 'axios';
-// import { CSVLink } from 'react-csv';
+import { CSVLink } from 'react-csv';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { useParams } from 'next/navigation';
@@ -14,7 +14,7 @@ import { withAuth } from '@/app/hoc/withAuth';
 import AwsS3 from '@/app/utils/S3Intergration';
 import ClientPDF from '../components/clientPDF';
 import ModalComponent from '@/app/component/modal';
-// import { formatDataFromAntdColumns } from './utils';
+import { formatDataFromAntdColumns } from './utils';
 import Description from '@/app/component/description';
 import { USCurrencyFormat } from '@/app/utils/format';
 import { bg_style } from '@/globals/tailwindvariables';
@@ -26,7 +26,9 @@ import EmailTemplate from '@/app/component/customEmailTemplete';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { estimateRequestService } from '@/app/services/estimates.service';
-import EstimatesTable from '../components/estimatesTable'; // estimateTableColumns,
+import EstimatesTable, {
+  estimateTableColumns,
+} from '../components/estimatesTable';
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
 // import EstimatePDF from './estimatePDF';
 
@@ -39,7 +41,7 @@ const ViewEstimateDetail = () => {
 
   const [emailModal, setEmailModal] = useState(false);
   const [pdfData, setPdfData] = useState<Object[]>([]);
-  // const [csvData, setCsvData] = useState<string[][]>([]);
+  const [csvData, setCsvData] = useState<string[][]>([]);
   const [estimatesRecord, setEstimatesRecord] = useState([]);
   const [estimateDetailsSummary, setEstimateDetailsSummary] = useState<any>();
 
@@ -94,123 +96,122 @@ const ViewEstimateDetail = () => {
     }
   }, [estimateId]);
 
-  // function downloadCSV() {
-  //   //  if no estimate details || estimates record return
-  //   if (!estimateDetailsSummary || !estimatesRecord.length) {
-  //     toast.error('No data to download');
-  //     return;
-  //   }
-  //   // Client Information Row
+  function downloadCSV() {
+    //  if no estimate details || estimates record return
+    if (!estimateDetailsSummary || !estimatesRecord.length) {
+      toast.error('No data to download');
+      return;
+    }
+    // Client Information Row
 
-  //   const clientInformationHeader = [
-  //     'Client Name',
-  //     'Company Name',
-  //     'Phone Number',
-  //     'Email',
-  //   ];
-  //   const clientInformationData = [
-  //     estimateDetailsSummary?.estimateRequestIdDetail?.clientName!,
-  //     estimateDetailsSummary?.estimateRequestIdDetail?.companyName!,
-  //     estimateDetailsSummary?.estimateRequestIdDetail?.phone!,
-  //     estimateDetailsSummary?.estimateRequestIdDetail?.email!,
-  //   ];
+    const clientInformationHeader = [
+      'Client Name',
+      'Company Name',
+      'Phone Number',
+      'Email',
+    ];
+    const clientInformationData = [
+      estimateDetailsSummary?.estimateRequestIdDetail?.clientName!,
+      estimateDetailsSummary?.estimateRequestIdDetail?.companyName!,
+      estimateDetailsSummary?.estimateRequestIdDetail?.phone!,
+      estimateDetailsSummary?.estimateRequestIdDetail?.email!,
+    ];
 
-  //   // Project Information Row
-  //   const projectHeader = [
-  //     'Project Name',
-  //     'Lead Source',
-  //     'Project Value',
-  //     'Email',
-  //     'Project Information',
-  //   ];
-  //   const projectData = [
-  //     estimateDetailsSummary?.estimateRequestIdDetail?.projectName!,
-  //     estimateDetailsSummary?.estimateRequestIdDetail?.leadSource!,
-  //     estimateDetailsSummary?.estimateRequestIdDetail?.projectValue!,
-  //     estimateDetailsSummary?.estimateRequestIdDetail?.email!,
-  //     estimateDetailsSummary?.estimateRequestIdDetail?.projectInformation!,
-  //   ];
+    // Project Information Row
+    const projectHeader = [
+      'Project Name',
+      'Lead Source',
+      'Project Value',
+      'Email',
+      'Project Information',
+    ];
+    const projectData = [
+      estimateDetailsSummary?.estimateRequestIdDetail?.projectName!,
+      estimateDetailsSummary?.estimateRequestIdDetail?.leadSource!,
+      estimateDetailsSummary?.estimateRequestIdDetail?.projectValue!,
+      estimateDetailsSummary?.estimateRequestIdDetail?.email!,
+      estimateDetailsSummary?.estimateRequestIdDetail?.projectInformation!,
+    ];
 
-  //   // Estimate Row
-  //   const estimateHeader = [
-  //     'Title',
-  //     'Description',
-  //     'Qty',
-  //     'Wastage',
-  //     'Qty with wastage',
-  //     'Total Labour Hours',
-  //     'Per Hours Labor Rate',
-  //     'Total Labor Cost',
-  //     'Unit Material Cost',
-  //     'Total Material Cost',
-  //     'Total Equipment Cost',
-  //     'Total Cost',
-  //   ];
+    // Estimate Row
+    const estimateHeader = [
+      'Title',
+      'Description',
+      'Qty',
+      'Wastage',
+      'Qty with wastage',
+      'Total Labour Hours',
+      'Per Hours Labor Rate',
+      'Total Labor Cost',
+      'Unit Material Cost',
+      'Total Material Cost',
+      'Total Equipment Cost',
+      'Total Cost',
+    ];
 
-  //   const scopeItems = _.flatMap(estimatesRecord, (estimate: any) => {
-  //     return estimate?.scopeItems.map((item: any) => ({
-  //       ...item,
-  //       category: estimate.title,
-  //     }));
-  //   });
+    const scopeItems = _.flatMap(estimatesRecord, (estimate: any) => {
+      return estimate?.scopeItems.map((item: any) => ({
+        ...item,
+        category: estimate.title,
+      }));
+    });
 
-  //   let estimateData = formatDataFromAntdColumns(
-  //     estimateTableColumns,
-  //     scopeItems
-  //   ).map((row: any) => {
-  //     return [
-  //       row.category,
-  //       row.description,
-  //       row.qty,
-  //       row.wastage,
-  //       row.qtyWithWastage,
-  //       row.totalLabourHours,
-  //       row.perHourLaborRate,
-  //       row.totalLaborCost,
-  //       row.unitMaterialCost,
-  //       row.totalMaterialCost,
-  //       row.totalEquipmentCost,
-  //       row.totalCost,
-  //     ];
-  //   });
-  //   console.log({ estimateData });
+    let estimateData = formatDataFromAntdColumns(
+      estimateTableColumns,
+      scopeItems
+    ).map((row: any) => {
+      return [
+        row.category,
+        row.description,
+        row.qty,
+        row.wastage,
+        row.qtyWithWastage,
+        row.totalLabourHours,
+        row.perHourLaborRate,
+        row.totalLaborCost,
+        row.unitMaterialCost,
+        row.totalMaterialCost,
+        row.totalEquipmentCost,
+        row.totalCost,
+      ];
+    });
 
-  //   // Summary Row
-  //   const summaryHeader = [
-  //     'Sub Total Cost',
-  //     'Material Tax %',
-  //     'Overhead & Profit %',
-  //     'Bond Fee %',
-  //     'Total Cost',
-  //   ];
-  //   const summaryData = [
-  //     estimateDetailsSummary?.totalCost,
-  //     estimateDetailsSummary?.totalBidDetail?.materialTax,
-  //     estimateDetailsSummary?.totalBidDetail?.overheadAndProfit,
-  //     estimateDetailsSummary?.totalBidDetail?.bondFee,
-  //     estimateDetailsSummary?.totalCost +
-  //       estimateDetailsSummary?.totalBidDetail?.bondFee +
-  //       estimateDetailsSummary?.totalBidDetail?.overheadAndProfit +
-  //       estimateDetailsSummary?.totalBidDetail?.materialTax,
-  //   ];
+    // Summary Row
+    const summaryHeader = [
+      'Sub Total Cost',
+      'Material Tax %',
+      'Overhead & Profit %',
+      'Bond Fee %',
+      'Total Cost',
+    ];
+    const summaryData = [
+      estimateDetailsSummary?.totalCost,
+      estimateDetailsSummary?.totalBidDetail?.materialTax,
+      estimateDetailsSummary?.totalBidDetail?.overheadAndProfit,
+      estimateDetailsSummary?.totalBidDetail?.bondFee,
+      estimateDetailsSummary?.totalCost +
+        estimateDetailsSummary?.totalBidDetail?.bondFee +
+        estimateDetailsSummary?.totalBidDetail?.overheadAndProfit +
+        estimateDetailsSummary?.totalBidDetail?.materialTax,
+    ];
 
-  //   setCsvData([
-  //     clientInformationHeader,
-  //     clientInformationData,
-  //     [],
-  //     [],
-  //     projectHeader,
-  //     projectData,
-  //     [],
-  //     [],
-  //     estimateHeader,
-  //     ...estimateData,
-  //     [],
-  //     [],
-  //     summaryHeader,
-  //     summaryData,
-  //   ]);
-  // }
+    setCsvData([
+      clientInformationHeader,
+      clientInformationData,
+      [],
+      [],
+      projectHeader,
+      projectData,
+      [],
+      [],
+      estimateHeader,
+      ...estimateData,
+      [],
+      [],
+      summaryHeader,
+      summaryData,
+    ]);
+  }
 
   const generatePdfBlob = async () => {
     const blob = await pdf(
@@ -287,7 +288,7 @@ const ViewEstimateDetail = () => {
             className="w-full"
             onClick={() => setEmailModal(true)}
           />
-          {/* <CSVLink
+          <CSVLink
             data={csvData}
             className="!w-full"
             asyncOnClick={true}
@@ -298,7 +299,7 @@ const ViewEstimateDetail = () => {
             }}
           >
             <WhiteButton text="Download CSV" className="w-full" />
-            </CSVLink> */}
+          </CSVLink>
 
           <WhiteButton
             text="Comapny PDF"
@@ -579,6 +580,7 @@ const ViewEstimateDetail = () => {
           setEmailModal={setEmailModal}
           submitHandler={estimateEmailSendHandler}
           isFileUploadShow={false}
+          cc={true}
         />
       </ModalComponent>
     </div>
