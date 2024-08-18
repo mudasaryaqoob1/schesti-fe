@@ -6,11 +6,16 @@ import { IUserInterface } from '@/app/interfaces/user.interface';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 
+export interface IUserReaction {
+    type: string;
+    associatedCompany: string
+}
 export interface IPost {
     _id: string
     description?: string
     associatedCompany: IUserInterface
     mediaFiles: IMediaFile[]
+    userReaction: IUserReaction
     reactions: string[]
     pinPosts: string[]
     savedPosts: string[]

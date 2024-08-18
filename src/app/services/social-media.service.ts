@@ -80,12 +80,13 @@ class SocialMediaService extends HttpService {
   httpUpdatePost = (id: string, data: any): Promise<IResponseInterface> =>
     this.put(`${this.prefix}/updatePost/${id}`, data);
 
-  httpAddPostReaction = (id: string): Promise<IResponseInterface> =>
-    this.put(`${this.prefix}/addPostReaction/${id}`);
+  httpAddPostReaction = ({ id, body }: { id: string, body: { type: string } }): Promise<IResponseInterface> =>
+    this.put(`${this.prefix}/addPostReaction/${id}`, body);
 
   httpAddPostReport = ({ id, body }: {
     id: string, body: {
-      reason: string
+      reason: string,
+      description: string
     }
   }): Promise<IResponseInterface> =>
     this.put(`${this.prefix}/addPostReport/${id}`, body);
@@ -98,6 +99,9 @@ class SocialMediaService extends HttpService {
 
   httpUpdatePostComment = ({ id, content }: { id: string, content: string }): Promise<IResponseInterface> =>
     this.put(`${this.prefix}/updatePostComment/${id}`, { content });
+
+  httpReplyComment = ({ id, body }: { id: string, body: { parentCommentId: string, content: string } }): Promise<IResponseInterface> =>
+    this.post(`${this.prefix}/addReplyComment/${id}`, body);
 
   httpDeletePostComment = (id: string): Promise<IResponseInterface> =>
     this.delete(`${this.prefix}/deletePostComment/${id}`);

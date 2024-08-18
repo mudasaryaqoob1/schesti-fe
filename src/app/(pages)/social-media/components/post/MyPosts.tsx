@@ -5,28 +5,25 @@ import { Skeleton } from 'antd';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { IPost } from '.';
-import { useParams } from 'next/navigation';
 
 
-const UserPosts = () => {
+const MyPosts = () => {
 
     const [posts, setPosts] = useState<IPost[]>([]);
     const [isLoading, setIsLoading] = useState(false);
-    const { id } = useParams();
+    const { user } = useSelector((state: RootState) => state.auth.user);
     const { fetchPosts } = useSelector((state: RootState) => state.socialMedia);
 
-    const getUserPosts = async () => {
+    const getPosts = async () => {
         setIsLoading(true);
-        const { data } = await socialMediaService.httpGetUserPosts({ id: id as string });
+        const { data } = await socialMediaService.httpGetUserPosts({ id: user._id });
         setIsLoading(false);
         setPosts(data.posts);
     }
 
     useEffect(() => {
-        if (id) {
-            getUserPosts();
-        }
-    }, [fetchPosts, id])
+        getPosts();
+    }, [fetchPosts])
 
 
     if (isLoading) {
@@ -45,4 +42,4 @@ const UserPosts = () => {
     )
 }
 
-export default UserPosts
+export default MyPosts

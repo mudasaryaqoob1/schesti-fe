@@ -76,7 +76,10 @@ const FeelingActivityFeature = ({ setIsModalOpen, setFeeling }: Props) => {
 
             <div className="flex justify-end mt-6 gap-3">
                 <button
-                    onClick={() => setIsModalOpen(false)}
+                    onClick={() => {
+                        setIsModalOpen(false);
+                        setFeeling('');
+                    }}
                     className="w-full bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition">
                     Cancel
                 </button>

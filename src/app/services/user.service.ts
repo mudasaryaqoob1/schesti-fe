@@ -36,8 +36,8 @@ class UserService extends HttpService {
   httpUnBlockEmployee = (id: string): Promise<IResponseInterface<any>> =>
     this.post(`${this.userPrefix}/unBlock`, id);
 
-  httpGetCompanyDetail = (): Promise<IResponseInterface> =>
-    this.get(`${this.userPrefix}/companyDetail`);
+  httpGetCompanyDetail = (id: string = ''): Promise<IResponseInterface> =>
+    this.get(`${this.userPrefix}/companyDetail`, id ? `/${id}` : '');
 
   httpGetUsers = (
     page: number,

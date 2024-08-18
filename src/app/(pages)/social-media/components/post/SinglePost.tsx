@@ -7,46 +7,42 @@ import moment from 'moment'
 import { truncate } from 'lodash'
 import { socialMediaService } from '@/app/services/social-media.service'
 import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '@/redux/store'
 import { toast } from 'react-toastify'
 import { AxiosError } from 'axios'
 import AddComment from './AddComment'
 import { Dropdown } from 'antd'
 import type { MenuProps } from 'antd';
 import { setFetchPosts, setPostData } from '@/redux/social-media/social-media.slice'
-import { useCopyToClipboard } from 'usehooks-ts'
 import WarningModal from '@/app/component/modal/Warning'
-import ReactionButton from './PostReactions'
 import PostReactions from './PostReactions'
 import ReportPost from './Report'
 import SharePost from './Share'
+import { RootState } from '@/redux/store'
+import { useRouter } from 'next/navigation'
 
 type Props = {
-    showOptions?: boolean
 } & IPost
 
 
-const SinglePost = ({ _id, description, mediaFiles, showOptions = true, feeling = '', createdAt, reactions, associatedCompany: { name = '', companyName = '', organizationName = '' } }: Props) => {
-    const [postReactions, setPostReactions] = useState<string[]>([]);
+const SinglePost = ({ _id, description, mediaFiles, feeling = '', userReaction, createdAt, reactions, associatedCompany: { _id: postOwnerId = '', name = '', companyName = '', organizationName = '' } }: Props) => {
     const [refetchPost, setRefetchPost] = useState(false);
     const [seeMore, setSeeMore] = useState(false);
     const [totalComments, setTotalComments] = useState(0);
     const [showComments, setShowComments] = useState(true);
-    const [, copy] = useCopyToClipboard();
     const fullName = name || companyName || organizationName;
     const dispatch = useDispatch();
+    const { user } = useSelector((state: RootState) => state.auth.user);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [isDeletingPost, setIsDeletingPost] = useState(false);
+    const router = useRouter();
 
-    const postMenuItems: MenuProps['items'] = showOptions ? [
+    const isPostOwner = postOwnerId === user._id;
+
+    const postMenuItems: MenuProps['items'] = [
         {
             key: 'edit',
             label: <p>Edit</p>,
         },
-        {
-            key: 'delete',
-            label: <p>Delete</p>,
-        }] : [
         {
             key: 'delete',
             label: <p>Delete</p>,
@@ -56,7 +52,6 @@ const SinglePost = ({ _id, description, mediaFiles, showOptions = true, feeling 
     const getPostHandler = async () => {
         try {
             const { data: { post } } = await socialMediaService.httpGetPost({ id: _id });
-            setPostReactions(post[0].reactions);
         } catch (error) {
             const err = error as AxiosError<{ messsage: string }>;
             toast.error(err.response?.data.messsage)
@@ -96,28 +91,32 @@ const SinglePost = ({ _id, description, mediaFiles, showOptions = true, feeling 
     return (
         <section className='w-full my-3.5 shadow relative rounded-xl p-6 bg-white'>
             <WarningModal openModal={showDeleteModal} setOpenModal={setShowDeleteModal} isLoading={isDeletingPost} deleteHandler={deletePostHandler} />
-            <Dropdown
-                menu={{
-                    items: postMenuItems,
-                    onClick: (event) => {
-                        const { key } = event;
-                        handlePostDropdownClick(key);
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                    },
-                }}
-                className='absolute right-4 text-2xl'
-                placement="bottomRight"
-            >
-                <Image
-                    src={'/menuIcon.svg'}
-                    alt="logo white icon"
-                    width={20}
-                    height={20}
-                    className="active:scale-105 cursor-pointer"
-                />
-            </Dropdown>
+            {
+                isPostOwner && (
+                    <Dropdown
+                        menu={{
+                            items: postMenuItems,
+                            onClick: (event) => {
+                                const { key } = event;
+                                handlePostDropdownClick(key);
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            },
+                        }}
+                        className='absolute right-4 text-2xl'
+                        placement="bottomRight"
+                    >
+                        <Image
+                            src={'/menuIcon.svg'}
+                            alt="logo white icon"
+                            width={20}
+                            height={20}
+                            className="active:scale-105 cursor-pointer"
+                        />
+                    </Dropdown>
+                )
+            }
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 cursor-pointer" onClick={() => router.push(`/user/${postOwnerId}`)}>
                 <Image src='/profileAvatar.png' width={36} height={36} alt='profile' />
                 <div>
                     <p className='font-bold text-xs text-graphiteGray'>{fullName} {feeling && `is feeling ${feeling}`}</p>
@@ -149,11 +148,10 @@ const SinglePost = ({ _id, description, mediaFiles, showOptions = true, feeling 
                         </div>
                     ))
                 }
-
             </div>
             <div className="post-actions-section flex justify-between mt-4 items-center">
                 <div className="flex gap-2 items-center">
-                    <PostReactions id={_id} postReactions={postReactions} reactions={reactions} setRefetchPost={setRefetchPost} totalComments={totalComments} />
+                    <PostReactions id={_id} reactions={reactions} setRefetchPost={setRefetchPost} userReaction={userReaction} />
                     <div className="flex gap-2 items-center cursor-pointer" onClick={() => setShowComments(prev => !prev)}>
                         <Image src='/comments-01.svg' width={20} height={20} alt='profile' />
                         <p className='font-medium text-xs text-schestiPrimaryBlack'>{totalComments > 0 && totalComments} Comments</p>
@@ -161,13 +159,17 @@ const SinglePost = ({ _id, description, mediaFiles, showOptions = true, feeling 
 
                 </div>
                 <div className="flex items-center gap-3">
-                    <ReportPost id={_id} setRefetchPost={setRefetchPost} />
+                    {
+                        !isPostOwner && (
+                            <ReportPost id={_id} setRefetchPost={setRefetchPost} />
+                        )
+                    }
                     <SharePost url={mediaFiles.length ? mediaFiles[0].url : process.env.NEXT_PUBLIC_APP_URL + `socialMedia/post/${_id}`} />
                 </div>
             </div>
             {
                 showComments && (
-                    <Comments postId={_id} setTotalComments={setTotalComments} />
+                    <Comments postId={_id} setTotalComments={setTotalComments} isPostOwner={isPostOwner} />
                 )
             }
             <AddComment postId={_id} />

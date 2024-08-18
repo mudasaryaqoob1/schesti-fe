@@ -7,9 +7,11 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
-const AddComment = ({ postId }: { postId: string }) => {
-    const { selectedPostId, commentId, commmentContent } = useSelector((state: RootState) => state.socialMedia);
-    const [content, setContent] = useState('');
+type Props = {
+    isEdit?: boolean, commentId?: string, replyComment?: boolean; postId: string; commentContent?: string;
+}
+const AddComment = ({ postId, isEdit, commentId, replyComment, commentContent }: Props) => {
+    const [content, setContent] = useState(commentContent);
     const dispatch = useDispatch();
 
     const addPostCommentHandler = async () => {
@@ -18,8 +20,14 @@ const AddComment = ({ postId }: { postId: string }) => {
                 toast.error('fill comment field')
                 return;
             }
-            if (commmentContent) {
-                await socialMediaService.httpUpdatePostComment({ id: commentId, content });
+            if (replyComment) {
+                await socialMediaService.httpReplyComment({ id: postId, body: { content, parentCommentId: commentId! } });
+                dispatch(setCommentContent(''));
+                dispatch(setFetchComments());
+
+            }
+            if (isEdit) {
+                await socialMediaService.httpUpdatePostComment({ id: commentId!, content });
                 dispatch(setCommentContent(''));
                 dispatch(setFetchComments());
 
@@ -32,12 +40,6 @@ const AddComment = ({ postId }: { postId: string }) => {
             console.log(error);
         }
     }
-
-    useEffect(() => {
-        if (selectedPostId === postId) {
-            setContent(commmentContent);
-        }
-    }, [commmentContent])
 
 
     return (

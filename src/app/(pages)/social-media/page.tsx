@@ -7,7 +7,7 @@ import { setPostData } from '@/redux/social-media/social-media.slice';
 import { useDispatch } from 'react-redux';
 import type { TabsProps } from 'antd';
 import { Tabs } from 'antd';
-import UserPosts from './components/post/UserPosts';
+import MyPosts from './components/post/MyPosts';
 
 const SocialMedia = () => {
     const dispatch = useDispatch();
@@ -27,7 +27,7 @@ const SocialMedia = () => {
         {
             key: '2',
             label: 'My Feeds',
-            children: <UserPosts />,
+            children: <MyPosts />,
         }
     ];
 

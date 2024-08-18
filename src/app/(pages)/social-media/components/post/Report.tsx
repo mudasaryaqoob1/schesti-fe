@@ -4,20 +4,26 @@ import { socialMediaService } from '@/app/services/social-media.service';
 import { Select } from 'antd';
 import Image from 'next/image'
 import React, { Dispatch, SetStateAction, useState } from 'react'
+import { toast } from 'react-toastify';
 
 type Props = {
     id: string;
-    setRefetchPost: Dispatch<SetStateAction<boolean>>
+    setRefetchPost: Dispatch<SetStateAction<boolean>>;
 }
 const ReportPost = ({ id, setRefetchPost }: Props) => {
     const [showReportModal, setShowReportModal] = useState(false);
-    const [reason, setReason] = useState('');
+    const [reason, setReason] = useState('spam');
+    const [description, setDescription] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     const reportPostHandler = async () => {
+        if (!reason) {
+            toast.error('Pleas select reason')
+            return
+        }
         try {
             setIsLoading(true);
-            await socialMediaService.httpAddPostReport({ id, body: { reason } });
+            await socialMediaService.httpAddPostReport({ id, body: { reason, description } });
             setRefetchPost(prev => !prev);
             setShowReportModal(false);
             setIsLoading(false);
@@ -62,26 +68,14 @@ const ReportPost = ({ id, setRefetchPost }: Props) => {
                                 style={{ width: 120 }}
                                 onChange={handleChange}
                                 options={[
-                                    { value: 'spam', label: 'Spam' },
-                                    { value: 'nudity', label: 'Nudity' },
-                                    { value: 'false_information', label: 'False information' },
-                                    { value: 'violence', label: 'Violence' }
+                                    { value: 'Spam', label: 'Spam' },
+                                    { value: 'Nudity', label: 'Nudity' },
+                                    { value: 'False information', label: 'False information' },
+                                    { value: 'Violence', label: 'Violence' }
                                 ]}
                             />
                         </div>
-                        {
-                            reason && (
-                                <div className="report-details mt-5">
-                                    <p className='text-graphiteGray font-bold capitalize'>{reason}</p>
-                                    <p className='text-graphiteGray text-xs mt-2'>If someone is in immediate danger, get help before reporting to Facebook. Don't wait.</p>
-                                    <div className="border-b border-schestiLightGray w-full " />
-
-                                    <p className='text-graphiteGray text-xs mt-2'>Lorem ipsum is a placeholder text commonly used to demonstrate the visual form.</p>
-
-                                    <p className='text-graphiteGray text-xs mt-2'>Document or a typeface without relying on meaningful content. </p>
-                                </div>
-                            )
-                        }
+                        <textarea value={description} onChange={({ target }) => setDescription(target.value)} rows={5} placeholder='Enter Details' className='w-full border rounded-md p-2 mt-3' id=""></textarea>
                         <CustomButton isLoading={isLoading} onClick={reportPostHandler} disabled={!reason} text='Submit' className='w-auto py-2 min-w-40 mt-4' />
                     </div>
                 </div>

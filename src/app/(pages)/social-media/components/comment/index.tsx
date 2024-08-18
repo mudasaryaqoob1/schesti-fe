@@ -14,9 +14,10 @@ export interface IComment {
     content: string
     createdAt: string
     updatedAt: string
+    replyComments: any
     __v: number
 }
-const Comments = ({ postId, setTotalComments }: { postId: string, setTotalComments: Dispatch<SetStateAction<number>> }) => {
+const Comments = ({ postId, setTotalComments, isPostOwner }: { postId: string, setTotalComments: Dispatch<SetStateAction<number>>, isPostOwner: boolean }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [comments, setComments] = useState<IComment[]>([]);
     const { fetchComments } = useSelector((state: RootState) => state.socialMedia);
@@ -50,7 +51,7 @@ const Comments = ({ postId, setTotalComments }: { postId: string, setTotalCommen
         <div className='mt-4 flex  gap-2 flex-col'>
             {
                 comments.map((data) => (
-                    <SingleComment key={data._id} {...data} />
+                    <SingleComment key={data._id} {...data} isPostOwner={isPostOwner} />
                 ))
             }
         </div>

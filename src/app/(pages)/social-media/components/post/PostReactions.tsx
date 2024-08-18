@@ -1,22 +1,21 @@
 import { socialMediaService } from '@/app/services/social-media.service';
 import { setFetchPosts } from '@/redux/social-media/social-media.slice';
-import { RootState } from '@/redux/store';
 import Image from 'next/image';
 import React, { Dispatch, SetStateAction, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { IUserReaction } from '.';
 
 type Props = {
-    id: string; postReactions: string[], totalComments: number, setRefetchPost: Dispatch<SetStateAction<boolean>>; reactions: string[]
+    id: string; userReaction: IUserReaction | null, setRefetchPost: Dispatch<SetStateAction<boolean>>; reactions: string[]
 }
-const PostReactions = ({ id, postReactions, totalComments, reactions, setRefetchPost }: Props) => {
+const PostReactions = ({ id, userReaction = null, reactions, setRefetchPost }: Props) => {
     const [showReactions, setShowReactions] = useState(false);
     const dispatch = useDispatch();
 
-    const { user } = useSelector((state: RootState) => state.auth)
-
-    const addPostReactionHandler = async () => {
+    const addPostReactionHandler = async ({ type = 'like', removeReaction = false }: { type?: string, removeReaction?: boolean }) => {
+        console.log({ id, body: { type, ...(removeReaction && { removeReaction: true }) } }, 'body...')
         try {
-            await socialMediaService.httpAddPostReaction(id);
+            await socialMediaService.httpAddPostReaction({ id, body: { type, ...(removeReaction && { removeReaction: true }) } });
             setRefetchPost(prev => !prev);
             dispatch(setFetchPosts());
             setShowReactions(false);
@@ -31,29 +30,31 @@ const PostReactions = ({ id, postReactions, totalComments, reactions, setRefetch
             onMouseEnter={() => setShowReactions(true)}
             onMouseLeave={() => setShowReactions(false)}
         >
-            {/* Main Content */}
             <div className="flex gap-2 items-center">
-                {postReactions.includes(user._id) && (
+                {userReaction ? (
                     <Image
-                        src='/like-blue.svg'
+                        src={userReaction.type === 'like' ? '/like-blue.svg' : '/heart-01.svg'}
                         className='cursor-pointer'
-                        onClick={addPostReactionHandler}
+                        onClick={() => addPostReactionHandler({ removeReaction: true })}
                         width={20}
                         height={20}
+                        alt={userReaction.type}
+                    />
+                ) : (
+                    <Image
+                        src='/like-plain.svg'
+                        className='cursor-pointer'
+                        onClick={() => addPostReactionHandler({})}
+                        width={22}
+                        height={22}
                         alt='like'
                     />
                 )}
-                <Image
-                    src='/heart-01.svg'
-                    className='cursor-pointer'
-                    onClick={addPostReactionHandler}
-                    width={20}
-                    height={20}
-                    alt='love'
-                />
+
                 {reactions.length > 0 && (
                     <p className='font-medium text-xs text-schestiPrimaryBlack'>
-                        {reactions.length} Like
+                        {(userReaction && 'You ') || ''}
+                        {userReaction && reactions.length > 1 && `${reactions.length - 1} Other`}
                     </p>
                 )}
             </div>
@@ -63,10 +64,9 @@ const PostReactions = ({ id, postReactions, totalComments, reactions, setRefetch
                     className="absolute left-0 -top-10 flex space-x-2.5 bg-white p-2 rounded-full shadow-lg border border-gray-200"
                     style={{ paddingTop: '10px', marginTop: '10px' }}
                 >
-                    {/* Like Icon */}
                     <button
                         className="flex flex-col items-center text-center"
-                        onClick={addPostReactionHandler}
+                        onClick={() => addPostReactionHandler({ type: 'like' })}
                     >
                         <Image
                             src='/like-blue.svg'
@@ -76,10 +76,9 @@ const PostReactions = ({ id, postReactions, totalComments, reactions, setRefetch
                             alt='like'
                         />
                     </button>
-
                     <button
                         className="flex flex-col items-center text-center"
-                        onClick={addPostReactionHandler}
+                        onClick={() => addPostReactionHandler({ type: 'love' })}
                     >
                         <Image
                             src='/heart-01.svg'
