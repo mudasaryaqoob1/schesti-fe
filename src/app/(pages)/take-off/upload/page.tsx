@@ -1,5 +1,5 @@
 'use client';
-import { useLayoutEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 // import { bg_style } from '@/globals/tailwindvariables';
 // import Image from 'next/image';
 // import SenaryHeading from '@/app/component/headings/senaryHeading';
@@ -20,6 +20,7 @@ import CreateInfo from '../components/upload/CreateInfo';
 import { useSelector } from 'react-redux';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { HttpService } from '@/app/services/base.service';
+import { useSearchParams } from 'next/navigation';
 
 const Upload = () => {
   // const router = useRouter();
@@ -102,6 +103,16 @@ const Upload = () => {
       HttpService.setToken(token);
     }
   }, [token]);
+
+  const params = useSearchParams()
+  const edit_id = params.get('edit_id')
+  useEffect(() => {
+    if (edit_id && edit_id?.length > 0) {
+      setstep(1)
+    } else {
+      setstep(0)
+    }
+  }, [edit_id])
 
   return (
     <>

@@ -139,7 +139,7 @@ const CreateUserModal = ({ setModalOpen, submitHandler,isLoading }: Props) => {
                       onClick={() => setModalOpen(false)}
                     />
                     <CustomButton
-                      isLoading={isLoading}
+                      isLoading={false}
                       className="mx-w-30"
                       type="submit"
                       text={'Add'}

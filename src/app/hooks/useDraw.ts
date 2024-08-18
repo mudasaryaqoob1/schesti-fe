@@ -45,7 +45,7 @@ export const improperPrecisionConverter: { [key: string]: number } = {
 };
 
 const useDraw = () => {
-  const pixelToInchScale = 72;
+  const pixelToInchScale = 144;
 
   const convertPxIntoInches = (value: number): number => {
     if (value > 0) {

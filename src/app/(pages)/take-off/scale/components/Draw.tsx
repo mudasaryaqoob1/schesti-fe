@@ -745,7 +745,7 @@ const Draw: React.FC<Props> = ({
   //   compHeight: uploadFileData.height || 600,
   //   compWidth: uploadFileData.width || 600,
   // });
-  const stageParentRef = useRef<any>(null);
+  const stageParentRef = useRef<HTMLDivElement>(null);
   const parentWdith = (stageParentRef.current?.getBoundingClientRect() && stageParentRef.current?.getBoundingClientRect()?.width) ? stageParentRef.current?.getBoundingClientRect()?.width : null;
   const parentHeight = (stageParentRef.current?.getBoundingClientRect() && stageParentRef.current?.getBoundingClientRect()?.height) ? stageParentRef.current?.getBoundingClientRect()?.height : null;
   console.log(parentWdith, parentHeight, " width and height of parent")
@@ -830,7 +830,7 @@ const Draw: React.FC<Props> = ({
     <div
       ref={stageParentRef}
       id='sage-parent'
-      className={`outline-none relative bg-grey-900 my-3 overflow-auto`}
+      className={`outline-none relative bg-grey-900 my-3 overflow-auto !w-full !h-full`}
       tabIndex={1}
       onKeyDown={(e) => {
         if (e.key === 'Escape') {
@@ -1017,8 +1017,10 @@ const Draw: React.FC<Props> = ({
         </div>
       }
       <Stage
-        width={parentWdith || uploadFileData.width || 600}
-        height={parentHeight || uploadFileData.height || 600}
+        // width={parentWdith || uploadFileData.width || 600}
+        // height={parentHeight || uploadFileData.height || 600}
+        width={parentWdith ?? 600}
+        height={parentHeight ?? 600}
         onWheel={handleWheel}
         scaleX={stageScale}
         scaleY={stageScale}
@@ -1026,17 +1028,18 @@ const Draw: React.FC<Props> = ({
         y={stageY}
         draggable={isDrag}
         // ref={stageRef}
-        className={`flex justify-center cursor-pointer bg-grey-900 ${['area', 'volume', 'dynamic', 'length', 'perimeter'].includes(selected) ? '!cursor-crosshair' : ''}`}
+        className={`flex justify-center cursor-pointer bg-gray-200 ${['area', 'volume', 'dynamic', 'length', 'perimeter'].includes(selected) ? '!cursor-crosshair' : ''}`}
       >
         <Layer
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
+          imageSmoothingEnabled={true}
         >
           <KonvaImage
             image={myImage}
-            width={uploadFileData.width || 600}
-            height={uploadFileData.height || 600}
+            width={uploadFileData.width || myImage.width || 600}
+            height={uploadFileData.height || myImage.height || 600}
           />
 
           {/* <EditableCurvedShape /> */}
@@ -1143,7 +1146,7 @@ const Draw: React.FC<Props> = ({
                     const dy = node.y() - initialPos.y;
 
                     // Update all points based on the total translation distance
-                    const newPoints:any[] = [];
+                    const newPoints: any[] = [];
                     for (let i = 0; i < originalPoints.length; i += 2) {
                       newPoints.push(originalPoints[i] + dx, originalPoints[i + 1] + dy);
                     }
@@ -1157,7 +1160,7 @@ const Draw: React.FC<Props> = ({
                     // Update the draw object
                     const updatedDraw = {
                       ...draw,
-                      line: draw.line.map((line:any, index:number) =>
+                      line: draw.line.map((line: any, index: number) =>
                         index === +shapeNumber ? { ...line, points: newPoints } : line
                       ),
                     };
@@ -1221,7 +1224,7 @@ const Draw: React.FC<Props> = ({
                     const dy = node.y() - initialPos.y;
 
                     // Update all points based on the total translation distance
-                    const newPoints:any[] = [];
+                    const newPoints: any[] = [];
                     for (let i = 0; i < originalPoints.length; i += 2) {
                       newPoints.push(originalPoints[i] + dx, originalPoints[i + 1] + dy);
                     }
@@ -1235,7 +1238,7 @@ const Draw: React.FC<Props> = ({
                     // Update the draw object
                     const updatedDraw = {
                       ...draw,
-                      dynamic: draw.dynamic.map((line:any, index:number) =>
+                      dynamic: draw.dynamic.map((line: any, index: number) =>
                         index === +shapeNumber ? { ...line, points: newPoints } : line
                       ),
                     };
@@ -1299,7 +1302,7 @@ const Draw: React.FC<Props> = ({
                     const dy = node.y() - initialPos.y;
 
                     // Update all points based on the total translation distance
-                    const newPoints:any[] = [];
+                    const newPoints: any[] = [];
                     for (let i = 0; i < originalPoints.length; i += 2) {
                       newPoints.push(originalPoints[i] + dx, originalPoints[i + 1] + dy);
                     }
@@ -1313,7 +1316,7 @@ const Draw: React.FC<Props> = ({
                     // Update the draw object
                     const updatedDraw = {
                       ...draw,
-                      perimeter: draw.perimeter.map((line:any, index:number) =>
+                      perimeter: draw.perimeter.map((line: any, index: number) =>
                         index === +shapeNumber ? { ...line, points: newPoints } : line
                       ),
                     };
@@ -1357,9 +1360,9 @@ const Draw: React.FC<Props> = ({
                   setSelectedShape(e.currentTarget.attrs?.id || '');
                 }}
               >
-                <EditableCurvedShape 
-                scale={scale}
-                cur={cur} draw={draw} setDraw={setDraw} id={id} scaleUnits={scaleUnits} selectedShape={selectedShape} setSelectedShape={setSelectedShape} key={id}
+                <EditableCurvedShape
+                  scale={scale}
+                  cur={cur} draw={draw} setDraw={setDraw} id={id} scaleUnits={scaleUnits} selectedShape={selectedShape} setSelectedShape={setSelectedShape} key={id}
                 />
                 {/* <Line
                   {...rest}
@@ -1438,7 +1441,7 @@ const Draw: React.FC<Props> = ({
             const center = calculatePolygonCenter(polygonCoordinates);
             const area = calculatePolygonArea(polygonCoordinates, scale);
 
-            const text = scaleUnits == 'feet' ? `${area?.toFixed(4) || ''}SF` : `${Number(area * 0.092903).toFixed(3)}SM`;
+            const text = scaleUnits == 'feet' ? `${area?.toFixed(4) || ''}SF` : `${Number(area * 0.092903).toFixed(3)}m²`;
             const id = `area-${index}`;
 
             return (
@@ -1485,7 +1488,7 @@ const Draw: React.FC<Props> = ({
                     const dy = node.y() - initialPos.y;
 
                     // Update all points based on the total translation distance
-                    const newPoints:any[] = [];
+                    const newPoints: any[] = [];
                     for (let i = 0; i < originalPoints.length; i += 2) {
                       newPoints.push(originalPoints[i] + dx, originalPoints[i + 1] + dy);
                     }
@@ -1499,7 +1502,7 @@ const Draw: React.FC<Props> = ({
                     // Update the draw object
                     const updatedDraw = {
                       ...draw,
-                      area: draw.area.map((line:any, index:number) =>
+                      area: draw.area.map((line: any, index: number) =>
                         index === +shapeNumber ? { ...line, points: newPoints } : line
                       ),
                     };
@@ -1580,7 +1583,7 @@ const Draw: React.FC<Props> = ({
                     const dy = node.y() - initialPos.y;
 
                     // Update all points based on the total translation distance
-                    const newPoints:any[] = [];
+                    const newPoints: any[] = [];
                     for (let i = 0; i < originalPoints.length; i += 2) {
                       newPoints.push(originalPoints[i] + dx, originalPoints[i + 1] + dy);
                     }
@@ -1594,7 +1597,7 @@ const Draw: React.FC<Props> = ({
                     // Update the draw object
                     const updatedDraw = {
                       ...draw,
-                      volume: draw.volume.map((line:any, index:number) =>
+                      volume: draw.volume.map((line: any, index: number) =>
                         index === +shapeNumber ? { ...line, points: newPoints } : line
                       ),
                     };
@@ -1705,8 +1708,8 @@ const Draw: React.FC<Props> = ({
                 // fill={selectedShape === id ? 'gray' : (rest?.textColor ?? 'red')}
                 // width={20}
                 // height={20}
-                scaleX={rest?.textUnit/12 ?? 1}
-                scaleY={rest?.textUnit/12 ?? 1}
+                scaleX={rest?.textUnit / 12 ?? 1}
+                scaleY={rest?.textUnit / 12 ?? 1}
                 {...rest}
                 onMouseDown={(e) => {
                   e.cancelBubble = true;

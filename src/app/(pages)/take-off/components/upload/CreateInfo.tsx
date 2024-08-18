@@ -22,10 +22,13 @@ import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist'
 import AwsS3 from '@/app/utils/S3Intergration'
 // import axios from 'axios'
 import { takeoffSummaryService } from '@/app/services/takeoffSummary.service'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { userService } from '@/app/services/user.service'
 import CreateUserModal from '../createUserModal'
 import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface'
+import axios from 'axios'
+import { useSelector } from 'react-redux'
+import { selectToken } from '@/redux/authSlices/auth.selector'
 
 // const formattedData = [{ name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' },
 // { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' },
@@ -194,28 +197,33 @@ const CreateInfo = () => {
             toast.error('At least one file is required.')
             return
         }
-        console.log(projectData, selectecClient, selectedFiles)
-        if (Array.isArray(fullData?.pages) && fullData?.pages?.length > 0) {
-            if (fullData?.files?.every((i: any) => {
-                return i?.totalPages == fullData?.pages?.filter((pg: any) => (i?.fileId == pg?.fileId))?.length
-            })) {
-                // setisLoading(false)
-                //   setshouldContinue(true)
-                toast.success('Ready to go.')
-                makeApiCall()
-            } else {
-                toast.error(`Please wait until loading files.`)
-            }
-        } else {
-            toast.error(`Please select atleast one file to continue.`)
+        if (fileLoading) {
+            toast.error('Wait unit process.')
+            return
         }
+        console.log(projectData, selectecClient, selectedFiles)
+        makeApiCall()
+        // if (Array.isArray(fullData?.pages) && fullData?.pages?.length > 0) {
+        //     if (fullData?.files?.every((i: any) => {
+        //         return i?.totalPages == fullData?.pages?.filter((pg: any) => (i?.fileId == pg?.fileId))?.length
+        //     })) {
+        //         // setisLoading(false)
+        //         //   setshouldContinue(true)
+        //         toast.success('Ready to go.')
+        //         makeApiCall()
+        //     } else {
+        //         toast.error(`Please wait until loading files.`)
+        //     }
+        // } else {
+        //     toast.error(`Please select atleast one file to continue.`)
+        // }
         // setprogressModalOpen(true)
     }
     const processSinglePage = async (pageIndex: any, pdf: PDFDocumentProxy, fileIndex: any, fileId: any, ar: any) => {
         try {
             const page: PDFPageProxy = await pdf.getPage(pageIndex + 1);
             console.log(page, typeof (page), " ===> pages while uplaoding")
-            const scale = 4;
+            const scale = 1;
             const viewport = page.getViewport({ scale });
             const canvas = document.createElement('canvas');
             const context = canvas.getContext('2d');
@@ -263,18 +271,131 @@ const CreateInfo = () => {
         }
     }
 
+    const token = useSelector(selectToken);
+    const params = useSearchParams()
+    const edit_id = params.get('edit_id')
+    const [fileLoading, setfileLoading] = useState(false)
+    const [fileState, setfileState] = useState<{ name: string, status: 'uploading' | 'processing' | 'failed' | 'done', uploadProgress: number }[]>([])
+    console.log(fileState, " ===> log to filestate change")
+
+    const processSingleFileNew = async (i: any, ar: any) => {
+        const curFile = ar[i]
+        setfileState(ps => ([...ps, { name: curFile?.name, status: 'uploading', uploadProgress: 0 }]))
+        try {
+            console.log(curFile, " ===> Current file happening here")
+
+            
+            //https://api.schesti.com/api/takeoff-summary/processFiles
+            // const res = await takeoffSummaryService.httpProcessFiles(formData)
+
+            //axios.defaults!.headers!['Authorization'] = `Bearer ${token}`
+            const url = await new AwsS3(
+                curFile,
+                'documents/take-off/'
+            ).getS3URLWithProgress((progress) => {
+                // calculate progress upto 100%
+                const percent = Math.round((progress.loaded / progress.total) * 100);
+                setfileState((ps) => {
+                    return ps.map(i => {
+                        if (i.name == curFile?.name) {
+                            return { ...i, uploadProgress: percent }
+                        } else {
+                            return i
+                        }
+                    })
+                })
+                if (percent > 99) {
+                    setfileState((ps) => {
+                        return ps.map(i => {
+                            if (i.name == curFile?.name) {
+                                return { ...i, status: 'processing' }
+                            } else {
+                                return i
+                            }
+                        })
+                    })
+                }
+            });
+
+            const formData = new FormData();
+            formData.append('s3PdfUrl', url);
+            formData.append('id', `${edit_id}`);
+            // const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/api/takeoff-summary/processFiles`, formData,
+            //     {
+            //         headers: {
+            //             'Authorization': `Bearer ${token}`,
+            //             'Content-Type': 'multipart/form-data'
+            //         },
+            //         timeout: 3600000,
+            //         onUploadProgress: (progressEvent) => {
+            //             if (progressEvent?.total && progressEvent?.loaded) {
+            //                 // Calculate the upload progress percentage
+            //                 const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            //                 console.log(`Upload progress: ${progress}%`);
+            //                 setfileState((ps) => {
+            //                     return ps.map(i => {
+            //                         if (i.name == curFile?.name) {
+            //                             return { ...i, uploadProgress: progress }
+            //                         } else {
+            //                             return i
+            //                         }
+            //                     })
+            //                 })
+            //                 if (progress > 99) {
+            //                     setfileState((ps) => {
+            //                         return ps.map(i => {
+            //                             if (i.name == curFile?.name) {
+            //                                 return { ...i, status: 'processing' }
+            //                             } else {
+            //                                 return i
+            //                             }
+            //                         })
+            //                     })
+            //                 }
+            //             }
+            //         },
+            //     }
+            // )
+            const res = await takeoffSummaryService.httpProcessFiles(formData)
+            setfileState((ps) => {
+                return ps.map(i => {
+                    if (i.name == curFile?.name) {
+                        return { ...i, status: 'done' }
+                    } else {
+                        return i
+                    }
+                })
+            })
+        } catch (error) {
+            console.log(error, " Error while processing single file.");
+            setfileState((ps) => {
+                return ps.map(i => {
+                    if (i.name == curFile?.name) {
+                        return { ...i, status: 'failed' }
+                    } else {
+                        return i
+                    }
+                })
+            })
+        }
+    }
+
     const [isLoading, setisLoading] = useState<boolean>(false)
     const startProcess = async (ar: any) => {
         setisLoading(true)
         if (Array.isArray(ar) && ar?.length > 0) {
             try {
+                setfileLoading(true)
                 for (let i = 0; i < ar?.length; i++) {
-                    await processSingleFile(i, ar)
+                    // await processSingleFile(i, ar)
+                    await processSingleFileNew(i, ar)
                 }
                 // setisLoading(false)
+                setfileLoading(false)
             } catch (error) {
                 console.log(error, " Error startProcess");
                 setisLoading(false)
+                setfileLoading(false)
             }
         }
     }
@@ -300,20 +421,40 @@ const CreateInfo = () => {
     // }
     const [isApiCalling, setisApiCalling] = useState(false)
     const [selectedAssignedUsers, setselectedAssignedUsers] = useState<any>([])
+
+
+
     const makeApiCall = async () => {
         try {
+            if (!edit_id || !(edit_id?.length > 0)) {
+                toast.error('Invalid takeoff selected.')
+                return
+            }
             setisApiCalling(true)
             setisLoading(true)
             let asUs = [];
             if (selectedAssignedUsers && Array.isArray(selectedAssignedUsers) && selectedAssignedUsers?.length > 0) {
                 asUs = selectedAssignedUsers?.map(i => i?._id)
             }
-            const data = await takeoffSummaryService.httpCreateTakeOffNew({ projectData, selectecClient, fullData, assignedUsers: asUs })
+            const { data } = await takeoffSummaryService.httpUpdateTakeoffSummary({
+                // projectData, selectecClient, fullData, assignedUsers: asUs
+                id: edit_id,
+                //@ts-ignore
+                data: {
+                    name: projectData?.name,
+                    number: projectData?.number,
+                    status: projectData?.status,
+                    createdate: projectData?.createdate,
+                    deadline: projectData?.deadline,
+                    client: selectecClient?._id,
+                    assignedUsers: asUs,
+                }
+            })
             console.log(data, " ===> Data after creation");
             //@ts-ignore
-            if (data?.createdTakeOff?._id && data?.createdTakeOff?._id?.length > 0) {
+            if (data?._id && data?._id?.length > 0) {
                 //@ts-ignore
-                router.push(`/take-off/scale?edit_id=${data?.createdTakeOff?._id}`)
+                router.push(`/take-off/scale?edit_id=${data?._id}`)
             } else {
                 router.push('/take-off')
             }
@@ -627,7 +768,7 @@ const CreateInfo = () => {
                         >Add User</Button> */}
                     </div>
                     <div className='grow flex'>
-                        {fullData?.files && Array.isArray(fullData?.files) && fullData?.files?.length > 0 && <div className='flex flex-col gap-y-7 w-[50%]'>
+                        {/* {fullData?.files && Array.isArray(fullData?.files) && fullData?.files?.length > 0 && <div className='flex flex-col gap-y-7 w-[50%]'>
                             {fullData?.files && Array.isArray(fullData?.files) && fullData?.files?.length > 0 && <h4 className='text-gray-600'>{fullData?.files?.length} uploaded files</h4>}
                             <ul className='list-none flex flex-col gap-y-5'>
                                 {
@@ -637,6 +778,24 @@ const CreateInfo = () => {
                                             <img src={'/fileCSV.png'} alt='' width={35} height={35} />
                                             <span data-tooltip={`${it?.name}`} className='whitespace-nowrap text-gray-500'>{`${it?.name?.slice(0, 4)}`}</span>
                                             <Progress percent={(totalProgress && Array.isArray(totalProgress) ? Math.ceil((totalProgress?.length / it?.totalPages) * 100) : 0)} strokeColor={'#007AB6'} />
+                                            <Progress percent={fileLoading ? 10 : 100} strokeColor={'#007AB6'} />
+                                        </li>
+                                    })
+                                }
+                            </ul>
+                        </div>} */}
+                        {selectedFiles && Array.isArray(selectedFiles) && selectedFiles?.length > 0 && <div className='flex flex-col gap-y-7 w-[50%]'>
+                            {selectedFiles && Array.isArray(selectedFiles) && selectedFiles?.length > 0 && <h4 className='text-gray-600'>{selectedFiles?.length} uploaded files</h4>}
+                            <ul className='list-none flex flex-col gap-y-5'>
+                                {
+                                    selectedFiles && Array.isArray(selectedFiles) && selectedFiles?.length > 0 && selectedFiles?.map((it: any, ind: number) => {
+                                        const totalProgress = fullData?.pages?.filter((i: any) => { return i?.fileId == it?.fileId })
+                                        return <li key={ind} className='inline-flex gap-3 items-center justify-center'>
+                                            <img src={'/fileCSV.png'} alt='' width={35} height={35} />
+                                            <span data-tooltip={`${it?.name}`} className='whitespace-nowrap text-gray-500'>{`${it?.name?.slice(0, 4)}`}</span>
+                                            {/* <Progress percent={(totalProgress && Array.isArray(totalProgress) ? Math.ceil((totalProgress?.length / it?.totalPages) * 100) : 0)} strokeColor={'#007AB6'} /> */}
+                                            {fileState.find(i => i.name == it?.name)?.status != 'failed' && <Progress percent={fileState.find(i => i.name == it?.name)?.uploadProgress ?? 1} strokeColor={'#007AB6'} />}
+                                            <span className='text-sm text-gray-500' >{`(${fileState.find(i => i.name == it?.name)?.status})`}</span>
                                         </li>
                                     })
                                 }
@@ -644,7 +803,7 @@ const CreateInfo = () => {
                         </div>}
                         <div className='grow p-3' >
                             <label className='relative' htmlFor="file-selector">
-                                <input ref={fileInputRef} type="file" accept="application/pdf" multiple id='file-selector' className='hidden absolute top-0 left-0' style={{ display: 'none' }} onChange={(e: any) => {
+                                <input ref={fileInputRef} type="file" accept="application/pdf" id='file-selector' className='hidden absolute top-0 left-0' style={{ display: 'none' }} onChange={(e: any) => {
                                     console.log(e.target.result, " ==> event.target.result")
                                     if (e.target.files?.length > 0) {
                                         const arr = Object.keys(e.target?.files)?.map((it: any) => {

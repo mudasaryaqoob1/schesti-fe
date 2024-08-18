@@ -27,7 +27,7 @@ import { selectToken, selectUser } from '@/redux/authSlices/auth.selector';
 ////////////////////////New Take OffData///////////////////////////////////
 import CustomButton from '@/app/component/customButton/button'
 import { bg_style } from '@/globals/tailwindvariables'
-import { AppstoreOutlined, BorderLeftOutlined, CloseOutlined, CloudUploadOutlined, CopyOutlined, DeleteOutlined, DownOutlined, DragOutlined, EditOutlined, FileOutlined, FolderOutlined, LeftOutlined, MenuOutlined, MinusOutlined, MoreOutlined, PlusOutlined, RightOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons'
+import { AppstoreOutlined, ArrowRightOutlined, BorderLeftOutlined, CloseOutlined, CloudUploadOutlined, CopyOutlined, DeleteOutlined, DownOutlined, DragOutlined, EditOutlined, FileOutlined, FolderOutlined, LeftOutlined, MenuOutlined, MinusOutlined, MoreOutlined, PlusOutlined, RightOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons'
 import React from 'react'
 import { Button, Divider, Input, Table } from 'antd'
 //@ts-ignore
@@ -50,6 +50,7 @@ import { useSelector } from 'react-redux';
 import { useDraw } from '@/app/hooks';
 import { HttpService } from '@/app/services/base.service';
 import { Option } from 'antd/es/mentions';
+import axios from 'axios';
 
 
 const groupDataForFileTable = (input: any[]) => {
@@ -323,7 +324,7 @@ const TakeOffNewPage = () => {
     try {
       const page: PDFPageProxy = await pdf.getPage(pageIndex + 1);
       console.log(page, typeof (page), " ===> pages while uplaoding")
-      const scale = 4;
+      const scale = 1;
       const viewport = page.getViewport({ scale });
       const canvas = document.createElement('canvas');
       const context = canvas.getContext('2d');
@@ -370,20 +371,99 @@ const TakeOffNewPage = () => {
       console.log(error, " Error while processing single file.");
     }
   }
+
+  const [fileLoading, setfileLoading] = useState(false)
+  const [fileState, setfileState] = useState<{ name: string, status: 'uploading' | 'processing' | 'failed' | 'done', uploadProgress: number }[]>([])
+  console.log(fileState, " ===> log to filestate change")
+  const processSingleFileNew = async (i: any, ar: any) => {
+    const curFile = ar[i]
+    setfileState(ps => ([...ps, { name: curFile?.name, status: 'uploading', uploadProgress: 0 }]))
+    try {
+      console.log(curFile, " ===> Current file happening here")
+
+      const formData = new FormData();
+      formData.append('pdfFiles', curFile);
+      formData.append('id', `${edit_id}`)
+      //https://api.schesti.com/api/takeoff-summary/processFiles
+      // const res = await takeoffSummaryService.httpProcessFiles(formData)
+
+      //axios.defaults!.headers!['Authorization'] = `Bearer ${token}`
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/api/takeoff-summary/processFiles`, formData,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          onUploadProgress: (progressEvent) => {
+            if (progressEvent?.total && progressEvent?.loaded) {
+              // Calculate the upload progress percentage
+              const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+              console.log(`Upload progress: ${progress}%`);
+              setfileState((ps) => {
+                return ps.map(i => {
+                  if (i.name == curFile?.name) {
+                    return { ...i, uploadProgress: progress }
+                  } else {
+                    return i
+                  }
+                })
+              })
+              if (progress > 99) {
+                setfileState((ps) => {
+                  return ps.map(i => {
+                    if (i.name == curFile?.name) {
+                      return { ...i, status: 'processing' }
+                    } else {
+                      return i
+                    }
+                  })
+                })
+              }
+            }
+          },
+        }
+      )
+      setfileState((ps) => {
+        return ps.map(i => {
+          if (i.name == curFile?.name) {
+            return { ...i, status: 'done' }
+          } else {
+            return i
+          }
+        })
+      })
+    } catch (error) {
+      console.log(error, " Error while processing single file.");
+      setfileState((ps) => {
+        return ps.map(i => {
+          if (i.name == curFile?.name) {
+            return { ...i, status: 'failed' }
+          } else {
+            return i
+          }
+        })
+      })
+    }
+  }
+
   const startProcess = async (ar: any) => {
     setisLoading(true)
     if (Array.isArray(ar) && ar?.length > 0) {
       try {
+        setfileLoading(true)
         for (let i = 0; i < ar?.length; i++) {
-          await processSingleFile(i, ar)
+          // await processSingleFile(i, ar)
+          await processSingleFileNew(i, ar)
         }
         // setisLoading(false)
+        setfileLoading(false)
       } catch (error) {
         console.log(error, " Error startProcess");
         setisLoading(false)
+        setfileLoading(false)
       }
     }
   }
+
 
 
   const makeApiCall = async () => {
@@ -517,6 +597,47 @@ const TakeOffNewPage = () => {
       }
     }
   }
+
+  const updateColorSizes = async (keyToUpdate: string, valueToUpdate: any) => {
+    if (!selectedPage || !selectedShape) { return }
+    const pageId = selectedPage?.pageId
+    const [type, shapeNumber] = selectedShape.split('-');
+    console.log(pageId, type, keyToUpdate, valueToUpdate, 'bottom bar Update Run')
+    if (pageId && type && shapeNumber && keyToUpdate && valueToUpdate) {
+      try {
+        let tempTakeOff = takeOff
+        let slpg = tempTakeOff?.measurements[pageId]
+        if (slpg) {
+          settableLoading(true)
+          slpg = {
+            ...slpg,
+            [type]: slpg[type]?.map((it: any, index: number) => {
+              if (index === +shapeNumber) {
+                return { ...it, [keyToUpdate]: valueToUpdate }
+              } else {
+                return it
+              }
+            })
+          }
+          tempTakeOff.measurements[pageId] = slpg
+          // console.log(tempTakeOff)
+          const newupdatedMeasurements: any = await takeoffSummaryService.httpUpdateTakeoffSummary({
+            id: takeOff?._id,
+            //@ts-ignore
+            data: { measurements: tempTakeOff.measurements }
+          })
+          console.log(newupdatedMeasurements, " ==> newupdatedMeasurements")
+          settakeOff(newupdatedMeasurements?.data)
+          settableLoading(false)
+          setDraw(newupdatedMeasurements?.data?.measurements[`${selectedPage?.pageId}`])
+        }
+      } catch (error) {
+        settableLoading(false)
+        console.log(error, " ===> Error while updating table data")
+      }
+    }
+  }
+
 
   const deleteTableChangeInTakeOff = async (pageId: string, type: any, dateTime: any) => {
     // console.log(pageId, type, dateTime, keyToUpdate, valueToUpdate,'delete Run')
@@ -659,12 +780,12 @@ const TakeOffNewPage = () => {
     {
       title: 'Name',
       dataIndex: 'category',
-      width: 150,
+      width: 60,
       className: '!pr-0',
       render: (text, record) => (
         <div
-          className={`flex items-center h-full cursor-pointer ${(selectedCate == text && record?.isParent) ? '!bg-lavenderPurpleReplica !text-white !p-1 !rounded-md' : ''} ${(selectedSubCate == record?.subcategory && record?.isSubParent) ? '!bg-lavenderPurpleReplica !text-white !p-1 !rounded-md' : ''}`}>
-          {record?.isParent ? <span className='font-extrabold'>{text}
+          className={`${(record?.isParent || record?.isSubParent) ? 'text-[12px]' : ''} flex items-center h-full cursor-pointer ${(selectedCate == text && record?.isParent) ? '!bg-lavenderPurpleReplica !text-white !p-1 !rounded-md' : ''} ${(selectedSubCate == record?.subcategory && record?.isSubParent) ? '!bg-lavenderPurpleReplica !text-white !p-1 !rounded-md' : ''}`}>
+          {record?.isParent ? <span className='font-extrabold'>{text?.slice(0, 7)}
             {
               selectedCate == text ? <Button size='small' className='border-2 rounded-full ml-2' onClick={() => { setselectedCate(null); setselectedSubCate(null) }} >unselect</Button> : <Button size='small' className='border-2 rounded-full ml-2' onClick={() => { setselectedCate(text); }} >select</Button>
             }
@@ -672,7 +793,7 @@ const TakeOffNewPage = () => {
             if (e.target.checked) { setselectedCate(text); }
             else { setselectedCate(null); setselectedSubCate(null) }
           }} /> */}
-          </span> : record?.isSubParent ? <span className='font-extrabold'>{record?.subcategory}
+          </span> : record?.isSubParent ? <span className='font-extrabold'>{record?.subcategory?.slice(0, 7)}
             {
               selectedSubCate == record?.subcategory ? <Button size='small' className='border-2 rounded-full ml-2' onClick={() => { setselectedCate(null); setselectedSubCate(null) }} >unselect</Button> : <Button size='small' className='border-2 rounded-full ml-2' onClick={() => { setselectedCate(text); setselectedSubCate(record?.subcategory); }} >select</Button>
             }
@@ -711,7 +832,7 @@ const TakeOffNewPage = () => {
     {
       title: 'ID',
       dataIndex: 'subcategory',
-      width: 150,
+      width: 30,
       className: '!pr-0',
       render: (text, record) => (
         <div
@@ -723,15 +844,17 @@ const TakeOffNewPage = () => {
     {
       title: '',
       dataIndex: 'category',
+      className: '!px-0',
       // key: 'category',
-      width: 70,
+      width: 40,
       render: (text, record) => (
         <div
           className="flex items-center h-full cursor-pointer">
           {(record?.isParent || record?.isSubParent) ? <></> : <span className='flex items-center gap-1'>
             <Menu items={[
               {
-                key: 'category', icon: <EditOutlined className='text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 rounded-full p-1' />,
+                className: '!p-0',
+                key: 'category', expandIcon: <EditOutlined className='text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 rounded-full p-1' />,
                 children: [
                   { key: 'category', label: 'category', children: [...[...(Array.isArray(takeOff?.categories) ? takeOff.categories : [])].map((i: any) => ({ key: i, label: i, onClick: () => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'category', i) } }))] },
                   { key: 'sub-category', label: 'sub-category', children: [...[...(Array.isArray(takeOff?.subCategories) ? takeOff.subCategories : [])].map((i: any) => ({ key: i, label: i, onClick: () => { updateTableChangeInTakeOff(record?.pageId, record?.type, record?.dateTime, 'subcategory', i) } }))] },
@@ -932,6 +1055,41 @@ const TakeOffNewPage = () => {
       // if(selectedPage?.pageId){
 
       // }
+    } catch (error) {
+      console.log(error, " ===> Error Occured while measuring")
+    }
+  }
+
+  const handleSetScale = async (scale: { xScale: any, yScale: any, precision: any }, optionsValue: string) => {
+    try {
+      let pgs = takeOff?.pages?.slice()
+      if (optionsValue == '1') {
+        if (selectedPage) {
+          pgs = pgs.map((i: any) => {
+            if (selectedPage?.pageId == i?.pageId) {
+              return { ...i, scale }
+            } else {
+              return i
+            }
+          })
+        }
+      } else if (optionsValue == '1-0') {
+        pgs = pgs.map((i: any) => {
+          return { ...i, scale }
+        })
+      }
+      console.log(scale, optionsValue, pgs, " scale in handleset scale")
+
+      const newupdatedMeasurements: any = await takeoffSummaryService.httpUpdateTakeoffSummary({
+        id: takeOff?._id,
+        //@ts-ignore
+        data: { pages: (pgs?.length == takeOff?.pages?.length) ? pgs : takeOff?.pages }
+      })
+      console.log(newupdatedMeasurements, " ==> newupdatedMeasurements")
+      settakeOff(newupdatedMeasurements?.data)
+      if (selectedPage?.pageId && newupdatedMeasurements?.data?.pages?.find((i: any) => i?.pageId == selectedPage?.pageId)) {
+        setselectedPage(newupdatedMeasurements?.data?.pages?.find((i: any) => i?.pageId == selectedPage?.pageId))
+      }
     } catch (error) {
       console.log(error, " ===> Error Occured while measuring")
     }
@@ -1473,11 +1631,61 @@ const TakeOffNewPage = () => {
       return 250
     }
   }
+
+  console.log(selectedShape, selectedPage, " ===> selected shape here")
+
+  //drag resize handle
+  const parent = document.getElementById('drag-container');
+  const child1 = document.getElementById('left-side');
+  const child2 = document.getElementById('right-side');
+  const handle = document.getElementById('handle');
+
+  if (parent && handle && child1 && child2) {
+
+    handle.addEventListener('mousedown', function (e) {
+      e.preventDefault();
+
+      // Get the initial positions and sizes
+      const initialX = e.clientX;
+      const initialChild1Width = child1.offsetWidth;
+      const initialChild2Width = child2.offsetWidth;
+      const parentWidth = parent.offsetWidth;
+
+      function onMouseMove(e: any) {
+        // Calculate the new width of child1
+        const deltaX = e.clientX - initialX;
+        const newChild1Width = initialChild1Width + deltaX;
+        const newChild1WidthPercent = (newChild1Width / parentWidth) * 100;
+
+        // Set the new width for child1 and adjust child2 accordingly
+        //@ts-ignore
+        child1.style.width = `${newChild1WidthPercent}%`;
+        //@ts-ignore
+        child2.style.width = `${100 - newChild1WidthPercent - 2}%`; // -2% accounts for the handle width
+      }
+
+      function onMouseUp() {
+        window.removeEventListener('mousemove', onMouseMove);
+        window.removeEventListener('mouseup', onMouseUp);
+      }
+
+      // Attach the listeners
+      window.addEventListener('mousemove', onMouseMove);
+      window.addEventListener('mouseup', onMouseUp);
+    });
+  }
+
+  const [catDDOpen, setcatDDOpen] = useState(true);
+  const [subcateDDOpen, setsubcateDDOpen] = useState(true);
+
+
   return (
     <>
       <section className="px-8 pb-4 mt-5">
         <div className='flex justify-between'>
-          <h2>{takeOff?.name ?? ""}</h2>
+          <h2>{takeOff?.name ?? ""}
+            {/* - {JSON.stringify(selectedPage?.scale)} */}
+          </h2>
           <div className='flex gap-x-2' >
             <CustomButton
               text="Generate Report"
@@ -1522,14 +1730,14 @@ const TakeOffNewPage = () => {
 
         {/* grid place-items-center shadow-sceneryShadow  */}
         <div
-          className={`flex gap-x-5 justify-between rounded-lg my-4 !shadow-none ${bg_style} h-[800px] flex flex-wrap justify-between !bg-transparent`}
+          id='drag-container' className={`flex gap-x-5 justify-between rounded-lg my-4 !shadow-none ${bg_style} h-[800px] flex flex-wrap justify-between !bg-transparent`}
         >
           {/* Left Bar */}
-          {leftOpened && <div className='w-[27%] h-[100%] rounded-2xl shadow-secondaryTwist border flex flex-col !bg-white' >
+          {leftOpened && <div id='left-side' className='w-[27%] h-[100%] relative rounded-2xl shadow-secondaryTwist border flex flex-col !bg-white' >
             {/* sideBarHeader */}
-            <div className='w-[full] h-[25%] border-b bg-gradient-to-r from-[#8449EB]/5 to-[#6A56F6]/5 flex flex-col p-3 bg-transparent rounded-t-2xl'>
+            <div className='!py-0 w-[full] h-[25%] border-b bg-gradient-to-r from-[#8449EB]/5 to-[#6A56F6]/5 flex flex-col px-3 bg-transparent rounded-t-2xl'>
               {/* upper */}
-              <div className='h-[75%] flex flex-col justify-evenly'>
+              <div className='h-[70%] flex flex-col justify-evenly'>
                 <div className='flex gap-x-2'>
                   <Button onClick={() => { setsideTabs('Plans') }} className={`!border-none ${sideTabs == 'Plans' ? 'bg-lavenderPurpleReplica text-white font-semibold' : '!bg-gray-100'}`} >Plans</Button>
                   <Button onClick={() => { setsideTabs('TakeOff') }} className={`!border-none ${sideTabs == 'TakeOff' ? 'bg-lavenderPurpleReplica text-white font-semibold' : '!bg-gray-100'}`}>Takeoff</Button>
@@ -1541,7 +1749,7 @@ const TakeOffNewPage = () => {
                 </div>
               </div>
               {/* lower */}
-              <div className='h-[25%] flex justify-between gap-x-3 items-center'>
+              <div className='h-[30%] flex justify-between gap-x-3 items-center'>
                 <div className='grow flex gap-x-4 items-center' >
                   <MenuOutlined className='text-lavenderPurpleReplica text-[20px]' />
                   <span className='font-inter font-[200] text-gray-800'>{sideTabs == 'Plans' ? 'Plan & Documents' : sideTabs == 'TakeOff' ? 'TakeOff' : sideTabs == 'WBS' ? 'WBS' : ''}</span>
@@ -1583,7 +1791,7 @@ const TakeOffNewPage = () => {
                   >
                     {
                       [...(Array.isArray(takeOff?.categories) ? takeOff.categories : [])].map((item: any, index: number) => (
-                        <Option key={index+""} value={item}>
+                        <Option key={index + ""} value={item}>
                           <span>{item}</span>
                           <span style={{ float: "right" }}>
                             <DeleteOutlined onClick={(e) => {
@@ -1630,8 +1838,8 @@ const TakeOffNewPage = () => {
                   // ))}
                   >
                     {
-                      [...(Array.isArray(takeOff?.subCategories) ? takeOff.subCategories : [])].map((item: any,index:number) => (
-                        <Option key={index+""} value={item}>
+                      [...(Array.isArray(takeOff?.subCategories) ? takeOff.subCategories : [])].map((item: any, index: number) => (
+                        <Option key={index + ""} value={item}>
                           <span>{item}</span>
                           <span style={{ float: "right" }}>
                             <DeleteOutlined onClick={(e) => {
@@ -1694,10 +1902,18 @@ const TakeOffNewPage = () => {
                 style={{ backgroundColor: 'transparent' }}
                 rowClassName={'table-row-transparent'}
                 rootClassName='table-row-transparent'
+              // expandedRowKeys={expandedKeys.takeOff}
+              // onExpand={(expanded, record) => {
+              //   if (expanded) {
+              //     setexpandedKeys(ps => ({ ...ps, takeOff: [record.key] }))
+              //   } else {
+              //     setexpandedKeys(ps => ({ ...ps, takeOff: [] }))
+              //   }
+              // }}
               />
             </div>}
-            {sideTabs == 'WBS' && <div className='grow flex !border-black'>
-              <Table
+            {sideTabs == 'WBS' && <div className='grow !border-black p-2'>
+              {/* <Table
                 columns={tableColumns}
                 expandable={{
                   // expandedRowRender: (record) => <p style={{ margin: 0 }}>{record.description}</p>,
@@ -1714,11 +1930,44 @@ const TakeOffNewPage = () => {
                 style={{ backgroundColor: 'transparent' }}
                 rowClassName={'table-row-transparent'}
                 rootClassName='table-row-transparent'
-              />
+              /> */}
+              <div className='flex flex-col w-full' >
+                <div className='w-full flex'>
+                  <span className='border p-3 cursor-pointer' onClick={() => { setcatDDOpen(ps => !ps) }}>{catDDOpen ? <DownOutlined style={{ strokeWidth: 30, stroke: 'black' }} /> : <RightOutlined style={{ strokeWidth: 30, stroke: 'black' }} />}</span>
+                  <div className='flex justify-start items-center border px-3 grow gap-x-2 !bg-gray-100' ><FileOutlined className='text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 p-1 rounded-full text-sm' style={{ strokeWidth: 30, stroke: '#007ab6' }} /><span className='font-bold'>Category</span></div>
+                </div>
+                <div className='flex flex-col w-full overflow-y-auto max-h-[250px]' >
+                  {
+                    catDDOpen && Array.isArray(takeOff?.categories) && takeOff?.categories?.map((i: any, ind: number) => {
+                      return <div className={`w-full border p-4 flex justify-between grow ${selectedCate == i ? 'bg-lavenderPurpleReplica bg-opacity-15' : 'hover:bg-gray-100'}`} key={ind} >
+                        <span>{i}</span>
+                        {selectedCate == i ? <Button size='small' className='border-2 rounded-full ml-2' onClick={() => { setselectedCate(null); setselectedSubCate(null) }} >unselect</Button> : <Button size='small' className='border-2 rounded-full ml-2' onClick={() => { setselectedCate(i); }} >select</Button>}
+                      </div>
+                    })
+                  }
+                </div>
+              </div>
+              <div className='flex flex-col w-full' >
+                <div className='w-full flex'>
+                  <span className='border p-3 cursor-pointer' onClick={() => { setsubcateDDOpen(ps => !ps) }}>{subcateDDOpen ? <DownOutlined style={{ strokeWidth: 30, stroke: 'black' }} /> : <RightOutlined style={{ strokeWidth: 30, stroke: 'black' }} />}</span>
+                  <div className='flex justify-start items-center border px-3 grow gap-x-2 !bg-gray-100' ><FileOutlined className='text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 p-1 rounded-full text-sm' style={{ strokeWidth: 30, stroke: '#007ab6' }} /><span className='font-bold'>Sub Category</span></div>
+                </div>
+                <div className='flex flex-col w-full overflow-y-auto max-h-[250px]' >
+                  {
+                    subcateDDOpen && Array.isArray(takeOff?.subCategories) && takeOff?.subCategories?.map((i: any, ind: number) => {
+                      return <div className={`w-full border p-4 flex justify-between grow ${selectedSubCate == i ? 'bg-lavenderPurpleReplica bg-opacity-15' : 'hover:bg-gray-100'}`} key={ind} >
+                        <span>{i}</span>
+                        {selectedCate && <>{selectedSubCate == i ? <Button size='small' className='border-2 rounded-full ml-2' onClick={() => { setselectedSubCate(null) }} >unselect</Button> : <Button size='small' className='border-2 rounded-full ml-2' onClick={() => { setselectedSubCate(i); }} >select</Button>}</>}
+                      </div>
+                    })
+                  }
+                </div>
+              </div>
             </div>}
+            <div id='handle' className='w-1 bg-lavenderPurpleReplica bg rounded-r-2xl absolute h-full right-0 top-0 cursor-col-resize bg-opacity-0 hover:bg-opacity-100' draggable></div>
           </div>}
           {/* Take Off New */}
-          <div className='h-[100%] w-[71%] grow rounded-2xl shadow-secondaryTwist border relative !bg-white' >
+          <div id='right-side' className='h-[100%] w-[71%] grow rounded-2xl shadow-secondaryTwist border relative !bg-white' >
             <div className='z-50 absolute top-[25px] left-[-13px] cursor-pointer border-[2px] rounded-full flex justify-center items-center p-1 text-gray-600 bg-white' onClick={() => { setleftOpened(ps => !ps) }}>{leftOpened ? <LeftOutlined /> : <RightOutlined />}</div>
             {/* Old Take Off Full Page */}
             {/* <OldTakeOffFullPage /> */}
@@ -1800,6 +2049,14 @@ const TakeOffNewPage = () => {
                     </span>
                     <span onClick={() => { setisDrag(ps => !ps) }} className={`py-3 px-5 cursor-pointer border-r rounded ${isDrag ? 'bg-blue-500' : ''}`}><DragOutlined /></span>
                   </div>}
+                  {
+                    selectedTakeOffTab == 'page' && selectedPage &&
+                    <div className='absolute top-16 right-[50px] flex z-40 rounded-lg bg-slate-50 !border py-1 px-2'>
+                      Scale : {selectedPage?.scale?.xScale ?? `1'=1'`}
+                      <br />
+                      Precision : {selectedPage?.scale?.precision}
+                    </div>
+                  }
                   {selectedTakeOffTab == 'page' && <div className={`absolute bottom-0 z-40 ${showModal ? 'block' : 'hidden'}`}>
                     <ModalsWrapper
                       tool={tool}
@@ -1813,7 +2070,7 @@ const TakeOffNewPage = () => {
                       key={`draw-${0}`}
                       selectedTool={tool}
                       scale={
-                        scaleData?.[`${0 + 1}`] || {
+                        selectedPage?.scale || {
                           xScale: `1in=1in`,
                           yScale: `1in=1in`,
                           precision: '1',
@@ -1995,7 +2252,7 @@ const TakeOffNewPage = () => {
                             </div>
                           </div> */}
                           <div className='grow flex w-full'>
-                            {fullData?.files && Array.isArray(fullData?.files) && fullData?.files?.length > 0 && <div className='flex flex-col gap-y-7 w-[40%]'>
+                            {/* {fullData?.files && Array.isArray(fullData?.files) && fullData?.files?.length > 0 && <div className='flex flex-col gap-y-7 w-[40%]'>
                               {fullData?.files && Array.isArray(fullData?.files) && fullData?.files?.length > 0 &&
                                 <CustomButton
                                   text={`Add ${selectedFiles?.length} files to workspace`}
@@ -2010,7 +2267,7 @@ const TakeOffNewPage = () => {
                                   }}
                                 />
                               }
-                              {/* {selectedFiles && Array.isArray(selectedFiles) && selectedFiles?.length > 0 && <h4 className='text-gray-600'>{selectedFiles?.length} uploaded files</h4>} */}
+                              {selectedFiles && Array.isArray(selectedFiles) && selectedFiles?.length > 0 && <h4 className='text-gray-600'>{selectedFiles?.length} uploaded files</h4>}
                               <ul className='list-none flex flex-col gap-y-5'>
                                 {
                                   fullData?.files && Array.isArray(fullData?.files) && fullData?.files?.length > 0 && fullData?.files?.map((it: any, ind: number) => {
@@ -2023,10 +2280,47 @@ const TakeOffNewPage = () => {
                                   })
                                 }
                               </ul>
+                            </div>} */}
+                            {selectedFiles && Array.isArray(selectedFiles) && selectedFiles?.length > 0 && <div className='flex flex-col gap-y-7 w-[40%]'>
+                              {selectedFiles && Array.isArray(selectedFiles) && selectedFiles?.length > 0 &&
+                                <CustomButton
+                                  text={`Add ${selectedFiles?.length} files to workspace`}
+                                  className="!w-auto"
+                                  // icon="plus.svg"
+                                  iconwidth={20}
+                                  iconheight={20}
+                                  isLoading={fileLoading}
+                                  onClick={() => {
+                                    // setprogressModalOpen(true) 
+                                    // addFileToWorkspace()
+                                    if (!fileLoading) {
+                                      if (edit_id && edit_id?.length > 0) {
+                                        getTakeOffDetails(edit_id)
+                                        setselectedFiles([])
+                                      }
+                                    }
+                                  }}
+                                />
+                              }
+                              {/* {selectedFiles && Array.isArray(selectedFiles) && selectedFiles?.length > 0 && <h4 className='text-gray-600'>{selectedFiles?.length} uploaded files</h4>} */}
+                              <ul className='list-none flex flex-col gap-y-5'>
+                                {
+                                  selectedFiles && Array.isArray(selectedFiles) && selectedFiles?.length > 0 && selectedFiles?.map((it: any, ind: number) => {
+                                    const totalProgress = fullData?.pages?.filter((i: any) => { return i?.fileId == it?.fileId })
+                                    return <li key={ind} className='inline-flex gap-3 items-center justify-center'>
+                                      <img src={'/fileCSV.png'} alt='' width={35} height={35} />
+                                      <span data-tooltip={`${it?.name}`} className='whitespace-nowrap text-gray-500'>{`${it?.name?.slice(0, 4)}`}</span>
+                                      {/* <Progress percent={(totalProgress && Array.isArray(totalProgress) ? Math.ceil((totalProgress?.length / it?.totalPages) * 100) : 0)} strokeColor={'#007AB6'} /> */}
+                                      {fileState.find(i => i.name == it?.name)?.status != 'failed' && <Progress percent={fileState.find(i => i.name == it?.name)?.uploadProgress ?? 1} strokeColor={'#007AB6'} />}
+                                      <span className='text-sm text-gray-500' >{`(${fileState.find(i => i.name == it?.name)?.status})`}</span>
+                                    </li>
+                                  })
+                                }
+                              </ul>
                             </div>}
                             <div className='grow p-3 !max-h-[500px]' >
                               <label className='relative' htmlFor="file-selector">
-                                <input type="file" accept="application/pdf" multiple id='file-selector' className='hidden absolute top-0 left-0' style={{ display: 'none' }} onChange={(e: any) => {
+                                <input type="file" accept="application/pdf" id='file-selector' className='hidden absolute top-0 left-0' style={{ display: 'none' }} onChange={(e: any) => {
                                   console.log(e.target.result, " ==> event.target.result")
                                   if (e.target.files?.length > 0) {
                                     const arr = Object.keys(e.target?.files)?.map((it: any) => {
@@ -2075,7 +2369,10 @@ const TakeOffNewPage = () => {
                           <Select
                             className="w-[64px]"
                             value={unit}
-                            onChange={(value) => setUnit(value)}
+                            onChange={(value) => {
+                              setUnit(value)
+                              updateColorSizes('textUnit', value)
+                            }}
                           >
                             {Units.map((item) => (
                               <Select.Option value={item} key={item}>
@@ -2090,7 +2387,10 @@ const TakeOffNewPage = () => {
                             min={1}
                             max={76}
                             value={border}
-                            onChange={(value) => value && setBorder(value)}
+                            onChange={(value) => {
+                              if (value) setBorder(value);
+                              updateColorSizes('strokeWidth', value)
+                            }}
                           />
                         </div>
                         <div className="flex flex-row gap-2 items-center">
@@ -2098,6 +2398,9 @@ const TakeOffNewPage = () => {
                           <ColorPicker
                             value={color}
                             onChange={(color) => setColor(color.toHexString())}
+                            onChangeComplete={(color) => {
+                              updateColorSizes('stroke', color.toHexString())
+                            }}
                             onOpenChange={setiscolorpickeropen}
                           />
                         </div>
@@ -2105,7 +2408,10 @@ const TakeOffNewPage = () => {
                           <label>Text:</label>
                           <ColorPicker
                             value={textColor}
-                            onChangeComplete={(color) => settextColor(color.toHexString())}
+                            onChangeComplete={(color) => {
+                              settextColor(color.toHexString())
+                              updateColorSizes('textColor', color.toHexString())
+                            }}
                             onOpenChange={setiscolorpickeropen}
                           />
                         </div>
@@ -2115,7 +2421,10 @@ const TakeOffNewPage = () => {
                         >
                           <label>Fill:</label>
                           {/* <NextImage src={'/selectedScale.svg'} alt={'zoomicon'} width={19.97} height={11.31} /> */}
-                          <ColorPicker value={fillColor ?? '#ffffff'} onChangeComplete={(value) => { handleRoomColorChange(value?.toRgbString()) }} onOpenChange={setiscolorpickeropen} />
+                          <ColorPicker value={fillColor ?? '#ffffff'} onChangeComplete={(value) => {
+                            handleRoomColorChange(value?.toRgbString())
+                            updateColorSizes('fillColor', value?.toRgbString())
+                          }} onOpenChange={setiscolorpickeropen} />
                           {/* <span
                             className={twMerge(
                               `text-xs capitalize`
@@ -2162,6 +2471,7 @@ const TakeOffNewPage = () => {
                       drawScale={drawScale}
                       setdrawScale={setdrawScale}
                       scaleLine={scaleLine}
+                      handleSetScale={handleSetScale}
                     />
                   </ModalComponent>
                 )}

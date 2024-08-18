@@ -126,7 +126,7 @@ const EditableCurvedShape: React.FC<EditableCurvedShapeProps> = ({ cur, id, scal
 
 
   const calculateArea = (points: number[], controlPoints: ControlPoint[], numSegments: number = 20): number => {
-    const pixelToInchScale = 72;
+    const pixelToInchScale = 144;
     // Approximate the curve with small line segments
     const approxPoints = approximateCurve(points, controlPoints, numSegments).map(
       (coordinate) => coordinate / pixelToInchScale
