@@ -247,6 +247,7 @@ const EditableText: React.FC<EditableTextProps> = ({
               backgroundColor: 'transparent',
               //@ts-ignore
               textAlign: textRef.current?.align() || 'left',
+              //@ts-ignore
               color: textRef.current?.fill() || 'black',
               boxSizing: 'border-box',
             }}
