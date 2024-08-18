@@ -36,6 +36,7 @@ interface Props {
 
 const CreateUserModal = ({ setModalOpen, submitHandler,isLoading }: Props) => {
 
+  console.log(isLoading)
 
   const newClientSchema: any = Yup.object({
     firstName: Yup.string().required('First name is required!'),

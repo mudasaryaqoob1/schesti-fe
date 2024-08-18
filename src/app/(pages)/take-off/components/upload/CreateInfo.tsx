@@ -7,7 +7,7 @@ import { bg_style } from '@/globals/tailwindvariables'
 import { DeleteOutlined, PlusOutlined, UserOutlined } from '@ant-design/icons'
 import { Form, Formik } from 'formik'
 import Image from 'next/image'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import FormControl from '@/app/component/formControl';
 // import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable'
 import { Avatar, Button, Progress, Select, Table } from 'antd'
@@ -18,7 +18,7 @@ import ClientModal from '../createClientModal';
 // import { UploadFileData } from '../../context/EditContext'
 import { toast } from 'react-toastify'
 import CreateProgressModal from '../createProgressModal'
-import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist'
+// import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist'
 import AwsS3 from '@/app/utils/S3Intergration'
 // import axios from 'axios'
 import { takeoffSummaryService } from '@/app/services/takeoffSummary.service'
@@ -26,9 +26,8 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { userService } from '@/app/services/user.service'
 import CreateUserModal from '../createUserModal'
 import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface'
-import axios from 'axios'
-import { useSelector } from 'react-redux'
-import { selectToken } from '@/redux/authSlices/auth.selector'
+// import { useSelector } from 'react-redux'
+// import { selectToken } from '@/redux/authSlices/auth.selector'
 
 // const formattedData = [{ name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' },
 // { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' }, { name: 'Ellen', scope: "Project Manager", createdAt: '02/06/2024' },
@@ -59,6 +58,7 @@ const CreateInfo = () => {
         files: [],
         pages: [],
     })
+    console.log(setfullData)
 
     const columns: ColumnsType<any> = [
         {
@@ -90,12 +90,12 @@ const CreateInfo = () => {
     ];
 
 
-    const pdfjs = useCallback(async () => {
-        const pdfjs = await import('pdfjs-dist');
-        await import('pdfjs-dist/build/pdf.worker.min.mjs');
+    // const pdfjs = useCallback(async () => {
+    //     const pdfjs = await import('pdfjs-dist');
+    //     await import('pdfjs-dist/build/pdf.worker.min.mjs');
 
-        return pdfjs;
-    }, []);
+    //     return pdfjs;
+    // }, []);
 
     const getAssignedUsers = async () => {
         try {
@@ -178,9 +178,9 @@ const CreateInfo = () => {
             [e.target.id]: e.target?.value
         }))
     }
-    const handleUpdatePages = (pageIndex: any, s3Url: any, fileIndex: any, success: any, width: any, height: any, fileId: any, ar: any) => {
-        setfullData((ps: any) => ({ ...ps, pages: [...ps.pages, { pageNum: pageIndex + 1, pageId: `${new Date().getTime()}`, fileId: fileId, width, height, name: `${pageIndex + 1} page`, src: s3Url, success: success, file: { name: ar[fileIndex]?.name ?? fileIndex, index: fileIndex } }] }))
-    }
+    // const handleUpdatePages = (pageIndex: any, s3Url: any, fileIndex: any, success: any, width: any, height: any, fileId: any, ar: any) => {
+    //     setfullData((ps: any) => ({ ...ps, pages: [...ps.pages, { pageNum: pageIndex + 1, pageId: `${new Date().getTime()}`, fileId: fileId, width, height, name: `${pageIndex + 1} page`, src: s3Url, success: success, file: { name: ar[fileIndex]?.name ?? fileIndex, index: fileIndex } }] }))
+    // }
     console.log(projectData, " projectData");
     console.log(fullData, " ===> Full Data")
 
@@ -219,59 +219,59 @@ const CreateInfo = () => {
         // }
         // setprogressModalOpen(true)
     }
-    const processSinglePage = async (pageIndex: any, pdf: PDFDocumentProxy, fileIndex: any, fileId: any, ar: any) => {
-        try {
-            const page: PDFPageProxy = await pdf.getPage(pageIndex + 1);
-            console.log(page, typeof (page), " ===> pages while uplaoding")
-            const scale = 1;
-            const viewport = page.getViewport({ scale });
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
-            const renderContext: any = {
-                canvasContext: context,
-                viewport: viewport,
-            };
-            await page.render(renderContext).promise;
-            const obj = {
-                src: canvas.toDataURL('image/png') || '',
-                height: viewport.height,
-                width: viewport.width,
-            }
-            const s3Url = await new AwsS3(obj.src, 'documents/takeoff-reports/').uploadS3URL()
-            handleUpdatePages(pageIndex, s3Url, fileIndex, true, viewport?.width, viewport?.height, fileId, ar)
-            page.cleanup()
-        } catch (error) {
-            console.log(error, " ===> Error insdie process single page");
-            handleUpdatePages(pageIndex, "", fileIndex, false, 0, 0, fileId, ar)
-        }
-    }
-    const processSingleFile = async (i: any, ar: any) => {
-        try {
-            const curFile = ar[i]
-            const fileId = `${new Date()?.getTime()}`
-            console.log(curFile, " ===> Current File Running");
-            if (curFile) {
-                const PDFJS = await pdfjs();
-                // const pdfPagesData: UploadFileData[] = [];
-                const reader = new FileReader();
-                reader.onload = async (event: any) => {
-                    const data = new Uint8Array(event.target.result);
-                    const pdf: PDFDocumentProxy = await PDFJS.getDocument(data).promise;
-                    setfullData((ps: any) => ({ ...ps, files: [...ps.files, { name: curFile?.name ?? i, fileId, index: i, totalPages: pdf?.numPages ?? 5 }] }))
-                    for (let index = 0; index < pdf.numPages; index++) {
-                        await processSinglePage(index, pdf, i, fileId, ar)
-                    }
-                }
-                reader.readAsArrayBuffer(curFile);
-            }
-        } catch (error) {
-            console.log(error, " Error while processing single file.");
-        }
-    }
+    // const processSinglePage = async (pageIndex: any, pdf: PDFDocumentProxy, fileIndex: any, fileId: any, ar: any) => {
+    //     try {
+    //         const page: PDFPageProxy = await pdf.getPage(pageIndex + 1);
+    //         console.log(page, typeof (page), " ===> pages while uplaoding")
+    //         const scale = 1;
+    //         const viewport = page.getViewport({ scale });
+    //         const canvas = document.createElement('canvas');
+    //         const context = canvas.getContext('2d');
+    //         canvas.width = viewport.width;
+    //         canvas.height = viewport.height;
+    //         const renderContext: any = {
+    //             canvasContext: context,
+    //             viewport: viewport,
+    //         };
+    //         await page.render(renderContext).promise;
+    //         const obj = {
+    //             src: canvas.toDataURL('image/png') || '',
+    //             height: viewport.height,
+    //             width: viewport.width,
+    //         }
+    //         const s3Url = await new AwsS3(obj.src, 'documents/takeoff-reports/').uploadS3URL()
+    //         handleUpdatePages(pageIndex, s3Url, fileIndex, true, viewport?.width, viewport?.height, fileId, ar)
+    //         page.cleanup()
+    //     } catch (error) {
+    //         console.log(error, " ===> Error insdie process single page");
+    //         handleUpdatePages(pageIndex, "", fileIndex, false, 0, 0, fileId, ar)
+    //     }
+    // }
+    // const processSingleFile = async (i: any, ar: any) => {
+    //     try {
+    //         const curFile = ar[i]
+    //         const fileId = `${new Date()?.getTime()}`
+    //         console.log(curFile, " ===> Current File Running");
+    //         if (curFile) {
+    //             const PDFJS = await pdfjs();
+    //             // const pdfPagesData: UploadFileData[] = [];
+    //             const reader = new FileReader();
+    //             reader.onload = async (event: any) => {
+    //                 const data = new Uint8Array(event.target.result);
+    //                 const pdf: PDFDocumentProxy = await PDFJS.getDocument(data).promise;
+    //                 setfullData((ps: any) => ({ ...ps, files: [...ps.files, { name: curFile?.name ?? i, fileId, index: i, totalPages: pdf?.numPages ?? 5 }] }))
+    //                 for (let index = 0; index < pdf.numPages; index++) {
+    //                     await processSinglePage(index, pdf, i, fileId, ar)
+    //                 }
+    //             }
+    //             reader.readAsArrayBuffer(curFile);
+    //         }
+    //     } catch (error) {
+    //         console.log(error, " Error while processing single file.");
+    //     }
+    // }
 
-    const token = useSelector(selectToken);
+    // const token = useSelector(selectToken);
     const params = useSearchParams()
     const edit_id = params.get('edit_id')
     const [fileLoading, setfileLoading] = useState(false)
@@ -284,7 +284,7 @@ const CreateInfo = () => {
         try {
             console.log(curFile, " ===> Current file happening here")
 
-            
+
             //https://api.schesti.com/api/takeoff-summary/processFiles
             // const res = await takeoffSummaryService.httpProcessFiles(formData)
 
@@ -356,7 +356,7 @@ const CreateInfo = () => {
             //         },
             //     }
             // )
-            const res = await takeoffSummaryService.httpProcessFiles(formData)
+            await takeoffSummaryService.httpProcessFiles(formData)
             setfileState((ps) => {
                 return ps.map(i => {
                     if (i.name == curFile?.name) {
@@ -789,7 +789,7 @@ const CreateInfo = () => {
                             <ul className='list-none flex flex-col gap-y-5'>
                                 {
                                     selectedFiles && Array.isArray(selectedFiles) && selectedFiles?.length > 0 && selectedFiles?.map((it: any, ind: number) => {
-                                        const totalProgress = fullData?.pages?.filter((i: any) => { return i?.fileId == it?.fileId })
+                                        // const totalProgress = fullData?.pages?.filter((i: any) => { return i?.fileId == it?.fileId })
                                         return <li key={ind} className='inline-flex gap-3 items-center justify-center'>
                                             <img src={'/fileCSV.png'} alt='' width={35} height={35} />
                                             <span data-tooltip={`${it?.name}`} className='whitespace-nowrap text-gray-500'>{`${it?.name?.slice(0, 4)}`}</span>

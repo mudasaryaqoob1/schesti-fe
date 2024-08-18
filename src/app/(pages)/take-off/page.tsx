@@ -15,8 +15,8 @@ import { HttpService } from '@/app/services/base.service';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 // import TakeOffNewPage from './scale/TakeOffNewPage';
 // import { selectTakeoffSummaries } from '@/redux/takeoffSummaries/takeoffSummaries.Selector';
-import AWS from 'aws-sdk'
-import { takeoffSummaryService } from '@/app/services/takeoffSummary.service';
+// import AWS from 'aws-sdk'
+// import { takeoffSummaryService } from '@/app/services/takeoffSummary.service';
 const TakeOff = () => {
   const dispatch = useDispatch<AppDispatch>();
   // const summaries = useSelector(selectTakeoffSummaries);

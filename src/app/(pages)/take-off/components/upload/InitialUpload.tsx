@@ -7,12 +7,13 @@ interface IProps {
     setstep:any;
 }
 const InitialUpload = ({setstep}:IProps) => {
+    console.log(setstep)
     const [isLoading, setisLoading] = useState<boolean>(false)
     const router = useRouter()
     const makeApiCall = async () => {
         try {
             setisLoading(true)
-            let asUs:any = [];
+            // let asUs:any = [];
             // const data = await takeoffSummaryService.httpCreateTakeOffNew({ projectData, selectecClient, fullData, assignedUsers: asUs })
             const data = await takeoffSummaryService.httpCreateTakeOffNew({  })
             console.log(data, " ===> Data after creation");

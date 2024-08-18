@@ -1,5 +1,5 @@
 'use client';
-import { useState, useContext, useEffect, useCallback, useLayoutEffect } from 'react';
+import { useState, useContext, useEffect, useLayoutEffect } from 'react';
 import ModalComponent from '@/app/component/modal';
 import ScaleModal from '../components/scale';
 import ModalsWrapper from './components/ModalWrapper';
@@ -27,7 +27,7 @@ import { selectToken, selectUser } from '@/redux/authSlices/auth.selector';
 ////////////////////////New Take OffData///////////////////////////////////
 import CustomButton from '@/app/component/customButton/button'
 import { bg_style } from '@/globals/tailwindvariables'
-import { AppstoreOutlined, ArrowRightOutlined, BorderLeftOutlined, CloseOutlined, CloudUploadOutlined, CopyOutlined, DeleteOutlined, DownOutlined, DragOutlined, EditOutlined, FileOutlined, FolderOutlined, LeftOutlined, MenuOutlined, MinusOutlined, MoreOutlined, PlusOutlined, RightOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons'
+import { AppstoreOutlined, BorderLeftOutlined, CloseOutlined, CloudUploadOutlined, CopyOutlined, DeleteOutlined, DownOutlined, DragOutlined, EditOutlined, FileOutlined, FolderOutlined, LeftOutlined, MenuOutlined, MinusOutlined, MoreOutlined, PlusOutlined, RightOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons'
 import React from 'react'
 import { Button, Divider, Input, Table } from 'antd'
 //@ts-ignore
@@ -38,7 +38,7 @@ import ReportModal from '../components/ReportModal';
 // import TertiaryHeading from '@/app/component/headings/tertiary';
 import CreateProgressModal from '../components/createProgressModal';
 // import { UploadFileData } from '../context/EditContext';
-import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
+// import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import AwsS3 from '@/app/utils/S3Intergration';
 import { toast } from 'react-toastify';
 // import { AnyArn } from 'aws-sdk/clients/groundstation';
@@ -50,7 +50,7 @@ import { useSelector } from 'react-redux';
 import { useDraw } from '@/app/hooks';
 import { HttpService } from '@/app/services/base.service';
 import { Option } from 'antd/es/mentions';
-import axios from 'axios';
+// import axios from 'axios';
 
 
 const groupDataForFileTable = (input: any[]) => {
@@ -292,12 +292,12 @@ const TakeOffNewPage = () => {
 
   /////////////New TakeOff Files Sates, methods and data///////////////////////
 
-  const pdfjs = useCallback(async () => {
-    const pdfjs = await import('pdfjs-dist');
-    await import('pdfjs-dist/build/pdf.worker.min.mjs');
+  // const pdfjs = useCallback(async () => {
+  //   const pdfjs = await import('pdfjs-dist');
+  //   await import('pdfjs-dist/build/pdf.worker.min.mjs');
 
-    return pdfjs;
-  }, []);
+  //   return pdfjs;
+  // }, []);
 
   const token = useSelector(selectToken);
   useLayoutEffect(() => {
@@ -316,112 +316,214 @@ const TakeOffNewPage = () => {
   const [isApiCalling, setisApiCalling] = useState(false)
   const [isLoading, setisLoading] = useState<boolean>(false)
 
-  const handleUpdatePages = (pageIndex: any, s3Url: any, fileIndex: any, success: any, width: any, height: any, fileId: any, ar: any) => {
-    setfullData((ps: any) => ({ ...ps, pages: [...ps.pages, { pageNum: pageIndex + 1, pageId: `${new Date().getTime()}`, fileId: fileId, width, height, name: `${pageIndex + 1} page`, src: s3Url, success: success, file: { name: ar[fileIndex]?.name ?? fileIndex, index: fileIndex } }] }))
-  }
+  // const handleUpdatePages = (pageIndex: any, s3Url: any, fileIndex: any, success: any, width: any, height: any, fileId: any, ar: any) => {
+  //   setfullData((ps: any) => ({ ...ps, pages: [...ps.pages, { pageNum: pageIndex + 1, pageId: `${new Date().getTime()}`, fileId: fileId, width, height, name: `${pageIndex + 1} page`, src: s3Url, success: success, file: { name: ar[fileIndex]?.name ?? fileIndex, index: fileIndex } }] }))
+  // }
 
-  const processSinglePage = async (pageIndex: any, pdf: PDFDocumentProxy, fileIndex: any, fileId: any, ar: any) => {
-    try {
-      const page: PDFPageProxy = await pdf.getPage(pageIndex + 1);
-      console.log(page, typeof (page), " ===> pages while uplaoding")
-      const scale = 1;
-      const viewport = page.getViewport({ scale });
-      const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d');
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-      const renderContext: any = {
-        canvasContext: context,
-        viewport: viewport,
-      };
-      await page.render(renderContext).promise;
-      const obj = {
-        src: canvas.toDataURL('image/png') || '',
-        height: viewport.height,
-        width: viewport.width,
-      }
-      const s3Url = await new AwsS3(obj.src, 'documents/takeoff-reports/').uploadS3URL()
-      handleUpdatePages(pageIndex, s3Url, fileIndex, true, viewport?.width, viewport?.height, fileId, ar)
-      page.cleanup()
-    } catch (error) {
-      console.log(error, " ===> Error insdie process single page");
-      handleUpdatePages(pageIndex, "", fileIndex, false, 0, 0, fileId, ar)
-    }
-  }
-  const processSingleFile = async (i: any, ar: any) => {
-    try {
-      const curFile = ar[i]
-      const fileId = `${new Date()?.getTime()}`
-      console.log(curFile, " ===> Current File Running");
-      if (curFile) {
-        const PDFJS = await pdfjs();
-        // const pdfPagesData: UploadFileData[] = [];
-        const reader = new FileReader();
-        reader.onload = async (event: any) => {
-          const data = new Uint8Array(event.target.result);
-          const pdf: PDFDocumentProxy = await PDFJS.getDocument(data).promise;
-          setfullData((ps: any) => ({ ...ps, files: [...ps.files, { name: curFile?.name ?? i, fileId, index: i, totalPages: pdf?.numPages ?? 5 }] }))
-          for (let index = 0; index < pdf.numPages; index++) {
-            await processSinglePage(index, pdf, i, fileId, ar)
-          }
-        }
-        reader.readAsArrayBuffer(curFile);
-      }
-    } catch (error) {
-      console.log(error, " Error while processing single file.");
-    }
-  }
+  // const processSinglePage = async (pageIndex: any, pdf: PDFDocumentProxy, fileIndex: any, fileId: any, ar: any) => {
+  //   try {
+  //     const page: PDFPageProxy = await pdf.getPage(pageIndex + 1);
+  //     console.log(page, typeof (page), " ===> pages while uplaoding")
+  //     const scale = 1;
+  //     const viewport = page.getViewport({ scale });
+  //     const canvas = document.createElement('canvas');
+  //     const context = canvas.getContext('2d');
+  //     canvas.width = viewport.width;
+  //     canvas.height = viewport.height;
+  //     const renderContext: any = {
+  //       canvasContext: context,
+  //       viewport: viewport,
+  //     };
+  //     await page.render(renderContext).promise;
+  //     const obj = {
+  //       src: canvas.toDataURL('image/png') || '',
+  //       height: viewport.height,
+  //       width: viewport.width,
+  //     }
+  //     const s3Url = await new AwsS3(obj.src, 'documents/takeoff-reports/').uploadS3URL()
+  //     handleUpdatePages(pageIndex, s3Url, fileIndex, true, viewport?.width, viewport?.height, fileId, ar)
+  //     page.cleanup()
+  //   } catch (error) {
+  //     console.log(error, " ===> Error insdie process single page");
+  //     handleUpdatePages(pageIndex, "", fileIndex, false, 0, 0, fileId, ar)
+  //   }
+  // }
+  // const processSingleFile = async (i: any, ar: any) => {
+  //   try {
+  //     const curFile = ar[i]
+  //     const fileId = `${new Date()?.getTime()}`
+  //     console.log(curFile, " ===> Current File Running");
+  //     if (curFile) {
+  //       const PDFJS = await pdfjs();
+  //       // const pdfPagesData: UploadFileData[] = [];
+  //       const reader = new FileReader();
+  //       reader.onload = async (event: any) => {
+  //         const data = new Uint8Array(event.target.result);
+  //         const pdf: PDFDocumentProxy = await PDFJS.getDocument(data).promise;
+  //         setfullData((ps: any) => ({ ...ps, files: [...ps.files, { name: curFile?.name ?? i, fileId, index: i, totalPages: pdf?.numPages ?? 5 }] }))
+  //         for (let index = 0; index < pdf.numPages; index++) {
+  //           await processSinglePage(index, pdf, i, fileId, ar)
+  //         }
+  //       }
+  //       reader.readAsArrayBuffer(curFile);
+  //     }
+  //   } catch (error) {
+  //     console.log(error, " Error while processing single file.");
+  //   }
+  // }
 
   const [fileLoading, setfileLoading] = useState(false)
   const [fileState, setfileState] = useState<{ name: string, status: 'uploading' | 'processing' | 'failed' | 'done', uploadProgress: number }[]>([])
   console.log(fileState, " ===> log to filestate change")
+  // const processSingleFileNew = async (i: any, ar: any) => {
+  //   const curFile = ar[i]
+  //   setfileState(ps => ([...ps, { name: curFile?.name, status: 'uploading', uploadProgress: 0 }]))
+  //   try {
+  //     console.log(curFile, " ===> Current file happening here")
+
+  //     const formData = new FormData();
+  //     formData.append('pdfFiles', curFile);
+  //     formData.append('id', `${edit_id}`)
+  //     //https://api.schesti.com/api/takeoff-summary/processFiles
+  //     // const res = await takeoffSummaryService.httpProcessFiles(formData)
+
+  //     //axios.defaults!.headers!['Authorization'] = `Bearer ${token}`
+  //     await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/api/takeoff-summary/processFiles`, formData,
+  //       {
+  //         headers: {
+  //           'Authorization': `Bearer ${token}`
+  //         },
+  //         onUploadProgress: (progressEvent) => {
+  //           if (progressEvent?.total && progressEvent?.loaded) {
+  //             // Calculate the upload progress percentage
+  //             const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+  //             console.log(`Upload progress: ${progress}%`);
+  //             setfileState((ps) => {
+  //               return ps.map(i => {
+  //                 if (i.name == curFile?.name) {
+  //                   return { ...i, uploadProgress: progress }
+  //                 } else {
+  //                   return i
+  //                 }
+  //               })
+  //             })
+  //             if (progress > 99) {
+  //               setfileState((ps) => {
+  //                 return ps.map(i => {
+  //                   if (i.name == curFile?.name) {
+  //                     return { ...i, status: 'processing' }
+  //                   } else {
+  //                     return i
+  //                   }
+  //                 })
+  //               })
+  //             }
+  //           }
+  //         },
+  //       }
+  //     )
+  //     setfileState((ps) => {
+  //       return ps.map(i => {
+  //         if (i.name == curFile?.name) {
+  //           return { ...i, status: 'done' }
+  //         } else {
+  //           return i
+  //         }
+  //       })
+  //     })
+  //   } catch (error) {
+  //     console.log(error, " Error while processing single file.");
+  //     setfileState((ps) => {
+  //       return ps.map(i => {
+  //         if (i.name == curFile?.name) {
+  //           return { ...i, status: 'failed' }
+  //         } else {
+  //           return i
+  //         }
+  //       })
+  //     })
+  //   }
+  // }
+
   const processSingleFileNew = async (i: any, ar: any) => {
     const curFile = ar[i]
     setfileState(ps => ([...ps, { name: curFile?.name, status: 'uploading', uploadProgress: 0 }]))
     try {
       console.log(curFile, " ===> Current file happening here")
 
-      const formData = new FormData();
-      formData.append('pdfFiles', curFile);
-      formData.append('id', `${edit_id}`)
+
       //https://api.schesti.com/api/takeoff-summary/processFiles
       // const res = await takeoffSummaryService.httpProcessFiles(formData)
 
       //axios.defaults!.headers!['Authorization'] = `Bearer ${token}`
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/api/takeoff-summary/processFiles`, formData,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          },
-          onUploadProgress: (progressEvent) => {
-            if (progressEvent?.total && progressEvent?.loaded) {
-              // Calculate the upload progress percentage
-              const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-              console.log(`Upload progress: ${progress}%`);
-              setfileState((ps) => {
-                return ps.map(i => {
-                  if (i.name == curFile?.name) {
-                    return { ...i, uploadProgress: progress }
-                  } else {
-                    return i
-                  }
-                })
-              })
-              if (progress > 99) {
-                setfileState((ps) => {
-                  return ps.map(i => {
-                    if (i.name == curFile?.name) {
-                      return { ...i, status: 'processing' }
-                    } else {
-                      return i
-                    }
-                  })
-                })
-              }
+      const url = await new AwsS3(
+        curFile,
+        'documents/take-off/'
+      ).getS3URLWithProgress((progress) => {
+        // calculate progress upto 100%
+        const percent = Math.round((progress.loaded / progress.total) * 100);
+        setfileState((ps) => {
+          return ps.map(i => {
+            if (i.name == curFile?.name) {
+              return { ...i, uploadProgress: percent }
+            } else {
+              return i
             }
-          },
+          })
+        })
+        if (percent > 99) {
+          setfileState((ps) => {
+            return ps.map(i => {
+              if (i.name == curFile?.name) {
+                return { ...i, status: 'processing' }
+              } else {
+                return i
+              }
+            })
+          })
         }
-      )
+      });
+
+      const formData = new FormData();
+      formData.append('s3PdfUrl', url);
+      formData.append('id', `${edit_id}`);
+      // const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/api/takeoff-summary/processFiles`, formData,
+      //     {
+      //         headers: {
+      //             'Authorization': `Bearer ${token}`,
+      //             'Content-Type': 'multipart/form-data'
+      //         },
+      //         timeout: 3600000,
+      //         onUploadProgress: (progressEvent) => {
+      //             if (progressEvent?.total && progressEvent?.loaded) {
+      //                 // Calculate the upload progress percentage
+      //                 const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+      //                 console.log(`Upload progress: ${progress}%`);
+      //                 setfileState((ps) => {
+      //                     return ps.map(i => {
+      //                         if (i.name == curFile?.name) {
+      //                             return { ...i, uploadProgress: progress }
+      //                         } else {
+      //                             return i
+      //                         }
+      //                     })
+      //                 })
+      //                 if (progress > 99) {
+      //                     setfileState((ps) => {
+      //                         return ps.map(i => {
+      //                             if (i.name == curFile?.name) {
+      //                                 return { ...i, status: 'processing' }
+      //                             } else {
+      //                                 return i
+      //                             }
+      //                         })
+      //                     })
+      //                 }
+      //             }
+      //         },
+      //     }
+      // )
+      await takeoffSummaryService.httpProcessFiles(formData)
       setfileState((ps) => {
         return ps.map(i => {
           if (i.name == curFile?.name) {
@@ -492,22 +594,22 @@ const TakeOffNewPage = () => {
     }
   }
 
-  const addFileToWorkspace = () => {
-    if (Array.isArray(fullData?.pages) && fullData?.pages?.length > 0) {
-      if (fullData?.files?.every((i: any) => {
-        return i?.totalPages == fullData?.pages?.filter((pg: any) => (i?.fileId == pg?.fileId))?.length
-      })) {
-        // setisLoading(false)
-        //   setshouldContinue(true)
-        // toast.success('Ready to go.')
-        makeApiCall()
-      } else {
-        toast.error(`Please wait until loading files.`)
-      }
-    } else {
-      toast.error(`Please select atleast one file to continue.`)
-    }
-  }
+  // const addFileToWorkspace = () => {
+  //   if (Array.isArray(fullData?.pages) && fullData?.pages?.length > 0) {
+  //     if (fullData?.files?.every((i: any) => {
+  //       return i?.totalPages == fullData?.pages?.filter((pg: any) => (i?.fileId == pg?.fileId))?.length
+  //     })) {
+  //       // setisLoading(false)
+  //       //   setshouldContinue(true)
+  //       // toast.success('Ready to go.')
+  //       makeApiCall()
+  //     } else {
+  //       toast.error(`Please wait until loading files.`)
+  //     }
+  //   } else {
+  //     toast.error(`Please select atleast one file to continue.`)
+  //   }
+  // }
   /////////////New TakeOff States///////////////////////
 
   /////////////New TakeOff States///////////////////////
@@ -964,7 +1066,7 @@ const TakeOffNewPage = () => {
   ];
 
 
-  const { scaleData, handleScaleData } = useContext(
+  const { handleScaleData } = useContext(
     ScaleContext
   ) as ScaleDataContextProps;
   const { uploadFileData } = useContext(
@@ -1648,7 +1750,7 @@ const TakeOffNewPage = () => {
       // Get the initial positions and sizes
       const initialX = e.clientX;
       const initialChild1Width = child1.offsetWidth;
-      const initialChild2Width = child2.offsetWidth;
+      // const initialChild2Width = child2.offsetWidth;
       const parentWidth = parent.offsetWidth;
 
       function onMouseMove(e: any) {
@@ -2306,7 +2408,7 @@ const TakeOffNewPage = () => {
                               <ul className='list-none flex flex-col gap-y-5'>
                                 {
                                   selectedFiles && Array.isArray(selectedFiles) && selectedFiles?.length > 0 && selectedFiles?.map((it: any, ind: number) => {
-                                    const totalProgress = fullData?.pages?.filter((i: any) => { return i?.fileId == it?.fileId })
+                                    // const totalProgress = fullData?.pages?.filter((i: any) => { return i?.fileId == it?.fileId })
                                     return <li key={ind} className='inline-flex gap-3 items-center justify-center'>
                                       <img src={'/fileCSV.png'} alt='' width={35} height={35} />
                                       <span data-tooltip={`${it?.name}`} className='whitespace-nowrap text-gray-500'>{`${it?.name?.slice(0, 4)}`}</span>
