@@ -52,9 +52,9 @@ const EditableText: React.FC<EditableTextProps> = ({
 }) => {
   const [text, setText] = useState<string>(initialText);
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const textRef = useRef<Konva.Text>(null);
-  const trRef = useRef<Konva.Transformer>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const textRef : any = useRef<Konva.Text>(null);
+  const trRef : any = useRef<Konva.Transformer>(null);
+  const inputRef : any = useRef<HTMLInputElement>(null);
   const { user } = useSelector(selectUser)
 
   useEffect(() => {
@@ -246,8 +246,9 @@ const EditableText: React.FC<EditableTextProps> = ({
               border: 'none',
               backgroundColor: 'transparent',
               //@ts-ignore
-              textAlign: textRef.current?.align() || 'left',
-              color: textRef.current?.fill() || 'black',
+              textAlign: textRef?.current?.align() || 'left',
+               //@ts-ignore
+              color: textRef?.current?.fill() || 'black',
               boxSizing: 'border-box',
             }}
           />
