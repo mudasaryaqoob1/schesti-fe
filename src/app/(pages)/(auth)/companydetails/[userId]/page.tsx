@@ -187,7 +187,7 @@ const CompanyDetails = () => {
               `${tertiaryHeading} border-b-2 border=[#E7E7E7]`
             )}
           >
-            Setup Company profile
+            Setup Profile
           </h2>
           <div className="mt-6 bg-white shadow-tertiaryMystery p-10 rounded-lg">
             <PrimaryHeading

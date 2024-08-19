@@ -25,7 +25,7 @@ export const Routes = {
     Architects: '/crm/architects',
     Vendors: '/crm/vendors',
     Daily_Work: '/crm/daily-work',
-    Contractors:"/crm/contractors"
+    Contractors: "/crm/contractors"
   },
   Contracts: '/contracts',
   'Quantity-Takeoff': {
@@ -56,6 +56,8 @@ export const OtherRoutes = {
     Target: '/settings/target',
     'Support Tickets': '/settings/supporttickets',
     Company_Roles: '/settings/companyUser/roles',
+    Verification: '/settings/verification',
+    Trades: '/settings/trades',
   },
   Upgrades: '/upgradeplans',
   Dashboard: '/dashboard',
