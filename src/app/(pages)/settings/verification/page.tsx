@@ -292,7 +292,7 @@ function VerificationPage() {
                         text="Next"
                         className={`w-full my-3 ${isAllowToSubmit() ? 'disabled' : ''}`}
                         type="submit"
-                        disabled={!isAllowToSubmit()}
+                        disabled={isAllowToSubmit()}
                     />
                 </Form>
             </div>
