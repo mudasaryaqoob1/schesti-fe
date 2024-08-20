@@ -11,10 +11,14 @@ import { withAuth } from '@/app/hoc/withAuth';
 const Finance = () => {
   const clientInvoiceQuery = useQuery(['client-invoices-with-children'], () => {
     return clientInvoiceService.httpGetAllInvoicesWithChildren();
+  }, {
+    refetchOnWindowFocus: false,
   });
 
   const targetsQuery = useQuery(['targets'], () => {
     return settingTargetService.httpGetAllSettingTargets(1, 20);
+  }, {
+    refetchOnWindowFocus: false,
   });
 
   return (

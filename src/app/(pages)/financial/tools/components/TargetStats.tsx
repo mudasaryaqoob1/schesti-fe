@@ -30,8 +30,8 @@ export function TargetStats({ targetsQuery, clientInvoiceQuery }: Props) {
     : [];
   const targets = targetsQuery.data
     ? targetsQuery.data.data!.filter(
-        (target) => parseInt(target.year) === selectedYear
-      )
+      (target) => parseInt(target.year) === selectedYear
+    )
     : [];
   // const completed = completedTargets(targets, invoices);
 
@@ -92,7 +92,7 @@ export function TargetStats({ targetsQuery, clientInvoiceQuery }: Props) {
         <Progress
           showInfo
           type="dashboard"
-          strokeColor={'#7F56D9'}
+          strokeColor={'#007AB6'}
           strokeWidth={12}
           size={200}
           percent={Number(percentageCompleted.toFixed(2))}

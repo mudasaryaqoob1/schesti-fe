@@ -111,12 +111,11 @@ export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
         str2Percent: true,
       })
       .saveAs(
-        `${
-          'financial-tools' +
-          '-' +
-          moment().month() +
-          '-' +
-          new Date().getTime()
+        `${'financial-tools' +
+        '-' +
+        moment().month() +
+        '-' +
+        new Date().getTime()
         }.xlsx`
       );
   };
@@ -132,7 +131,7 @@ export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
           <QuinaryHeading title="Back log" className="text-[#868686]" />
           <QuinaryHeading
             title={USCurrencyFormat.format(remainingTargets)}
-            className="text-[#7F56D9]"
+            className="text-schestiPrimary"
           />
           <Select
             placeholder="Choose Year"
