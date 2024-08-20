@@ -1533,7 +1533,7 @@ const Draw: React.FC<Props> = ({
             const center = calculatePolygonCenter(polygonCoordinates);
             const volume = calculatePolygonVolume(
               polygonCoordinates,
-              depth || 0,
+              depth || 1,
               scale
             );
             const text = `${volume?.toFixed(2) || ''} cubic`;

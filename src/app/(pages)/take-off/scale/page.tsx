@@ -27,7 +27,7 @@ import { selectToken, selectUser } from '@/redux/authSlices/auth.selector';
 ////////////////////////New Take OffData///////////////////////////////////
 import CustomButton from '@/app/component/customButton/button'
 import { bg_style } from '@/globals/tailwindvariables'
-import { AppstoreOutlined, BorderLeftOutlined, CloseOutlined, CloudUploadOutlined, CopyOutlined, DeleteOutlined, DownOutlined, DragOutlined, EditOutlined, FileOutlined, FolderOutlined, LeftOutlined, MenuOutlined, MinusOutlined, MoreOutlined, PlusOutlined, RightOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons'
+import { AppstoreOutlined, BorderLeftOutlined, CloseOutlined, CloudUploadOutlined, CopyOutlined, DeleteOutlined, DownOutlined, DragOutlined, EditOutlined, FileOutlined, FolderFilled, FolderOutlined, LeftOutlined, MenuOutlined, MinusOutlined, MoreOutlined, PlusOutlined, RightOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons'
 import React from 'react'
 import { Button, Divider, Input, Table } from 'antd'
 //@ts-ignore
@@ -67,6 +67,7 @@ const groupDataForFileTable = (input: any[]) => {
       src,
       pageId,
       pageNumber,
+      index
       // fileId
     } = currentItem;
 
@@ -89,7 +90,8 @@ const groupDataForFileTable = (input: any[]) => {
         height,
         src,
         pageId,
-        pageNumber
+        pageNumber,
+        index
       });
     } else {
       result.push({
@@ -101,6 +103,7 @@ const groupDataForFileTable = (input: any[]) => {
         file,
         page,
         status,
+        index,
         children: [
           {
             id,
@@ -113,7 +116,8 @@ const groupDataForFileTable = (input: any[]) => {
             height,
             src,
             pageId,
-            pageNumber
+            pageNumber,
+            index
           },
         ],
       });
@@ -122,7 +126,17 @@ const groupDataForFileTable = (input: any[]) => {
     return result;
   }, []);
 
-  return groupedData;
+  let rtar: any = []
+  if (Array.isArray(groupedData)) {
+    groupedData.forEach((val: any) => {
+      let cur = val
+      cur?.children?.sort((a: any, b: any) => (a?.index - b?.index))
+      rtar.push(cur)
+    })
+  }
+
+  // return groupedData;
+  return rtar;
 };
 
 const getSingleMeasurements = (draw: any, pageId: any) => {
@@ -155,125 +169,7 @@ const getSingleMeasurements = (draw: any, pageId: any) => {
   }
   return singleArr
 }
-const measurementsTableData1 = (takeOff: any, search?: string) => {
-  let returningArr: any = [];
-  if (takeOff?.measurements && Object.keys(takeOff?.measurements) && Object.keys(takeOff?.measurements)?.length > 0) {
-    Object.keys(takeOff?.measurements)?.map((key: any, ind: any) => {
-      console.log(ind, takeOff?.measurements[key], " =====> measurementsTableData measurementsTableData gotArr")
-      if (takeOff?.measurements[`${key}`]) {
-        const gotArr = getSingleMeasurements(takeOff?.measurements[`${key}`], key)
-        console.log(gotArr, takeOff?.measurements[`${key}`], " =====> measurementsTableData measurementsTableData gotArr")
-        if (Array.isArray(gotArr)) {
-          returningArr = [...returningArr, ...gotArr]
-        }
-      }
-      return ""
-    })
-  }
-  if (search && search?.length > 0) {
-    returningArr = returningArr?.filter((i: any) => { return (i?.projectName?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()) || i?.category?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()) || i?.subcategory?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase())) })
-  }
-  console.log(returningArr, " =====> measurementsTableData measurementsTableData")
-  if (returningArr?.length > 0) {
-    //Reduce code for category
-    returningArr = returningArr?.reduce((result: any, currentItem: any) => {
-      const { category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text } = currentItem
-      // Check if there's already an entry with the same projectName and pageLabel
-      const existingEntry = result?.find((entry: any) => entry.category === category);
-      if (existingEntry) { existingEntry?.children?.push({ key: dateTime, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId, text }) }
-      else {
-        result?.push({
-          key: dateTime, isParent: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text,
-          children: [{ key: dateTime, isParent: false, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text }]
-        })
-      }
-      return result
-    }, [])
-  }
-  return returningArr
-}
-const measurementsTableData = (takeOff: any, search?: string) => {
-  let returningArr: any = [];
-  if (takeOff?.measurements && Object.keys(takeOff?.measurements) && Object.keys(takeOff?.measurements)?.length > 0) {
-    Object.keys(takeOff?.measurements)?.map((key: any, ind: any) => {
-      console.log(ind, takeOff?.measurements[key], " =====> measurementsTableData measurementsTableData gotArr")
-      if (takeOff?.measurements[`${key}`]) {
-        const gotArr = getSingleMeasurements(takeOff?.measurements[`${key}`], key)
-        console.log(gotArr, takeOff?.measurements[`${key}`], " =====> measurementsTableData measurementsTableData gotArr")
-        if (Array.isArray(gotArr)) {
-          returningArr = [...returningArr, ...gotArr]
-        }
-      }
-      return ""
-    })
-  }
-  if (search && search?.length > 0) {
-    returningArr = returningArr?.filter((i: any) => { return (i?.projectName?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()) || i?.category?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()) || i?.subcategory?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase())) })
-  }
-  let emptyCategories = []
-  if (Array.isArray(takeOff?.categories)) {
-    for (let i = 0; i < takeOff?.categories?.length; i++) {
-      const cur = takeOff?.categories[i];
-      if (!returningArr?.find((i: any) => i?.category == cur)) {
-        emptyCategories.push(cur)
-      }
-    }
-  }
-  console.log(returningArr, emptyCategories, " =====> measurementsTableData measurementsTableData first returning array object")
-  if (returningArr?.length > 0) {
-    //Reduce code for category
-    returningArr = returningArr?.reduce((result: any, currentItem: any) => {
-      const { category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text } = currentItem
-      // Check if there's already an entry with the same projectName and pageLabel
-      const existingEntry = result?.find((entry: any) => entry.category === category);
-      if (existingEntry) {
-        const existingEntrySubCategory = existingEntry?.children?.find((entry: any) => entry?.subcategory === subcategory);
-        const existingEntrySubCategoryIndex = existingEntry?.children?.findIndex((entry: any) => entry?.subcategory === subcategory);
-        if (existingEntrySubCategory && subcategory && existingEntrySubCategoryIndex != -1) {
-          existingEntrySubCategory['isSubParent'] = true
-          if (Array.isArray(existingEntry?.children[existingEntrySubCategoryIndex]?.children)) {
-            existingEntry?.children[existingEntrySubCategoryIndex]?.children?.push({ key: dateTime, isChild: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId, text })
-          } else {
-            existingEntry.children[existingEntrySubCategoryIndex].children = [{ key: dateTime, isChild: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId, text }]
-          }
-          console.log(returningArr, subcategory, result, " =====> measurementsTableData measurementsTableData the final obj given code runs here")
-        } else {
-          existingEntry?.children?.push(
-            subcategory ?
-              {
-                key: dateTime, isSubParent: true, isParent: false, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text,
-                children: [{ key: dateTime, isParent: false, isChild: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text }]
-              }
-              :
-              { key: dateTime, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId, text })
-        }
-      }
-      else {
-        result?.push({
-          key: dateTime, isParent: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text,
-          children: subcategory ?
-            [{
-              key: dateTime, isSubParent: true, isParent: false, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text,
-              children: [{ key: dateTime, isParent: false, isChild: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text }]
-            }]
-            :
-            [{ key: dateTime, isParent: false, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text }]
-        })
-      }
-      return result
-    }, [])
-  }
-  returningArr = [...returningArr, ...emptyCategories.map((i: any, ind: number) => (
-    {
-      category: i,
-      children: [...(Array.isArray(takeOff?.subCategories) ? [...takeOff.subCategories.map((it: any, index: number) => ({ category: i, isSubParent: true, isParent: false, key: new Date()?.toString() + ind + index, subcategory: it }))] : [])],
-      isParent: true,
-      key: new Date()?.toString() + ind,
-    }
-  ))]
-  console.log(returningArr, " =====> measurementsTableData measurementsTableData first returning array object")
-  return returningArr
-}
+
 
 // const { DirectoryTree, TreeNode } = Tree;
 ////////////////////////New Take OffData///////////////////////////////////
@@ -858,10 +754,11 @@ const TakeOffNewPage = () => {
       render: (text, record) => (
         <div onClick={() => {
           if (!record?.isParent) {
-            console.log(record, "selected thing"); setselectedPage(record); setselectedTakeOffTab('page');
+            const pg = takeOff?.pages?.find((pgs: any) => (pgs?.pageId == record?.pageId))
+            console.log(record, "selected thing"); setselectedPage(pg); setselectedTakeOffTab('page');
             if (!selectedPagesList?.find((i: any) => (i?.pageId == record?.pageId))) {
               //@ts-ignore
-              setselectedPagesList((ps: any) => ([...ps, record]))
+              setselectedPagesList((ps: any) => ([...ps, pg]))
             }
           }
         }}
@@ -1191,6 +1088,9 @@ const TakeOffNewPage = () => {
       settakeOff(newupdatedMeasurements?.data)
       if (selectedPage?.pageId && newupdatedMeasurements?.data?.pages?.find((i: any) => i?.pageId == selectedPage?.pageId)) {
         setselectedPage(newupdatedMeasurements?.data?.pages?.find((i: any) => i?.pageId == selectedPage?.pageId))
+        setselectedPagesList((ps: any) => ps.map((pg: any) => {
+          return newupdatedMeasurements?.data?.pages?.find((i: any) => i?.pageId == pg?.pageId)
+        }))
       }
     } catch (error) {
       console.log(error, " ===> Error Occured while measuring")
@@ -1315,7 +1215,156 @@ const TakeOffNewPage = () => {
   //@ts-ignore
   const counterImage = new Image();
   counterImage.src = '/count-draw.png';
-  const { calculateMidpoint, calculatePolygonCenter } = useDraw();
+  const { calculateMidpoint, calculatePolygonCenter, calcLineDistance, calculatePolygonArea, calculatePolygonVolume, calculatePolygonPerimeter } = useDraw();
+
+  const measurementsTableData1 = (takeOff: any, search?: string) => {
+    let returningArr: any = [];
+    if (takeOff?.measurements && Object.keys(takeOff?.measurements) && Object.keys(takeOff?.measurements)?.length > 0) {
+      Object.keys(takeOff?.measurements)?.map((key: any, ind: any) => {
+        console.log(ind, takeOff?.measurements[key], " =====> measurementsTableData measurementsTableData gotArr")
+        if (takeOff?.measurements[`${key}`]) {
+          const gotArr = getSingleMeasurements(takeOff?.measurements[`${key}`], key)
+          console.log(gotArr, takeOff?.measurements[`${key}`], " =====> measurementsTableData measurementsTableData gotArr")
+          if (Array.isArray(gotArr)) {
+            returningArr = [...returningArr, ...gotArr]
+          }
+        }
+        return ""
+      })
+    }
+    if (search && search?.length > 0) {
+      returningArr = returningArr?.filter((i: any) => { return (i?.projectName?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()) || i?.category?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()) || i?.subcategory?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase())) })
+    }
+    console.log(returningArr, " =====> measurementsTableData measurementsTableData")
+    if (returningArr?.length > 0) {
+      //Reduce code for category
+      returningArr = returningArr?.reduce((result: any, currentItem: any) => {
+        const { category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId } = currentItem
+        //curpage and scaling runtime here
+        const curmpage = takeOff?.pages?.find((i: any) => i?.pageId == pageId)
+        const scale = curmpage?.scale ?? {
+          xScale: `1in=1in`,
+          yScale: `1in=1in`,
+          precision: '1',
+        }
+        const text = type == 'line' ? calcLineDistance(points, scale, true)
+          : type == 'perimeter' ? (points?.length > 4 ? calculatePolygonPerimeter(points, scale) : calcLineDistance(points, scale, true))
+            : type == 'area' ? calculatePolygonArea(points, scale)
+              : type == 'volume' ? calculatePolygonVolume(points, currentItem?.depth || 1, scale) : ""
+        // Check if there's already an entry with the same projectName and pageLabel
+        const existingEntry = result?.find((entry: any) => entry.category === category);
+        if (existingEntry) { existingEntry?.children?.push({ key: dateTime, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId, text }) }
+        else {
+          result?.push({
+            key: dateTime, isParent: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text,
+            children: [{ key: dateTime, isParent: false, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text }]
+          })
+        }
+        return result
+      }, [])
+    }
+    return returningArr
+  }
+
+  const measurementsTableData = (takeOff: any, search?: string) => {
+    let returningArr: any = [];
+    if (takeOff?.measurements && Object.keys(takeOff?.measurements) && Object.keys(takeOff?.measurements)?.length > 0) {
+      Object.keys(takeOff?.measurements)?.map((key: any, ind: any) => {
+        console.log(ind, takeOff?.measurements[key], " =====> measurementsTableData measurementsTableData gotArr")
+        if (takeOff?.measurements[`${key}`]) {
+          const gotArr = getSingleMeasurements(takeOff?.measurements[`${key}`], key)
+          console.log(gotArr, takeOff?.measurements[`${key}`], " =====> measurementsTableData measurementsTableData gotArr")
+          if (Array.isArray(gotArr)) {
+            returningArr = [...returningArr, ...gotArr]
+          }
+        }
+        return ""
+      })
+    }
+    if (search && search?.length > 0) {
+      returningArr = returningArr?.filter((i: any) => { return (i?.projectName?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()) || i?.category?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase()) || i?.subcategory?.toLocaleLowerCase()?.includes(search?.toLocaleLowerCase())) })
+    }
+    let emptyCategories = []
+    if (Array.isArray(takeOff?.categories)) {
+      for (let i = 0; i < takeOff?.categories?.length; i++) {
+        const cur = takeOff?.categories[i];
+        if (!returningArr?.find((i: any) => i?.category == cur)) {
+          emptyCategories.push(cur)
+        }
+      }
+    }
+    console.log(returningArr, emptyCategories, " =====> measurementsTableData measurementsTableData first returning array object")
+    if (returningArr?.length > 0) {
+      //Reduce code for category
+      returningArr = returningArr?.reduce((result: any, currentItem: any) => {
+        const { category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId,
+          // text 
+        } = currentItem
+
+        //curpage and scaling runtime here
+        const curmpage = takeOff?.pages?.find((i: any) => i?.pageId == pageId)
+        const scale = curmpage?.scale ?? {
+          xScale: `1in=1in`,
+          yScale: `1in=1in`,
+          precision: '1',
+        }
+        const text = type == 'line' ? calcLineDistance(points, scale, true)
+          : type == 'perimeter' ? (points?.length > 4 ? calculatePolygonPerimeter(points, scale) : calcLineDistance(points, scale, true))
+            : type == 'area' ? calculatePolygonArea(points, scale)
+              : type == 'volume' ? calculatePolygonVolume(points, currentItem?.depth || 1, scale) : ""
+
+        // Check if there's already an entry with the same projectName and pageLabel
+        const existingEntry = result?.find((entry: any) => entry.category === category);
+        if (existingEntry) {
+          const existingEntrySubCategory = existingEntry?.children?.find((entry: any) => entry?.subcategory === subcategory);
+          const existingEntrySubCategoryIndex = existingEntry?.children?.findIndex((entry: any) => entry?.subcategory === subcategory);
+          if (existingEntrySubCategory && subcategory && existingEntrySubCategoryIndex != -1) {
+            existingEntrySubCategory['isSubParent'] = true
+            if (Array.isArray(existingEntry?.children[existingEntrySubCategoryIndex]?.children)) {
+              existingEntry?.children[existingEntrySubCategoryIndex]?.children?.push({ key: dateTime, isChild: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId, text })
+            } else {
+              existingEntry.children[existingEntrySubCategoryIndex].children = [{ key: dateTime, isChild: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId, text }]
+            }
+            console.log(returningArr, subcategory, result, " =====> measurementsTableData measurementsTableData the final obj given code runs here")
+          } else {
+            existingEntry?.children?.push(
+              subcategory ?
+                {
+                  key: dateTime, isSubParent: true, isParent: false, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text,
+                  children: [{ key: dateTime, isParent: false, isChild: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text }]
+                }
+                :
+                { key: dateTime, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, isParent: false, type, pageId, text })
+          }
+        }
+        else {
+          result?.push({
+            key: dateTime, isParent: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text,
+            children: subcategory ?
+              [{
+                key: dateTime, isSubParent: true, isParent: false, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text,
+                children: [{ key: dateTime, isParent: false, isChild: true, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text }]
+              }]
+              :
+              [{ key: dateTime, isParent: false, category, subcategory, dateTime, points, projectName, stroke, strokeWidth, textUnit, id, lineCap, depth, x, y, user, type, pageId, text }]
+          })
+        }
+        return result
+      }, [])
+    }
+    returningArr = [...returningArr, ...emptyCategories.map((i: any, ind: number) => (
+      {
+        category: i,
+        children: [...(Array.isArray(takeOff?.subCategories) ? [...takeOff.subCategories.map((it: any, index: number) => ({ category: i, isSubParent: true, isParent: false, key: new Date()?.toString() + ind + index, subcategory: it }))] : [])],
+        isParent: true,
+        key: new Date()?.toString() + ind,
+      }
+    ))]
+    console.log(returningArr, " =====> measurementsTableData measurementsTableData first returning array object")
+    return returningArr
+  }
+
+
   // const captureShape = async (
   //   shape: any,
   //   background: HTMLImageElement,
@@ -1721,7 +1770,7 @@ const TakeOffNewPage = () => {
 
     }
   }
-  console.log(draw, " ===> draw")
+  console.log(draw, takeOff, " ===> draw")
 
   const [iscolorpickeropen, setiscolorpickeropen] = useState(false)
   const getWidth = (pg: any, height: number) => {
@@ -1779,6 +1828,9 @@ const TakeOffNewPage = () => {
 
   const [catDDOpen, setcatDDOpen] = useState(true);
   const [subcateDDOpen, setsubcateDDOpen] = useState(true);
+
+  const [closedFilesIndArray, setclosedFilesIndArray] = useState<number[]>([])
+  console.log(closedFilesIndArray, " closed files array")
 
 
   return (
@@ -2216,44 +2268,60 @@ const TakeOffNewPage = () => {
                     {
                       selectedTakeOffTab == 'overview'
                       &&
-                      <div className='w-full flex justify-center items-center p-5' >
-                        <div className='grow flex flex-wrap gap-3 gap-y-5 mt-14' >
-                          {
-                            takeOff && takeOff?.pages && Array.isArray(takeOff?.pages) && takeOff?.pages?.map((page: any, index: number) => {
-                              return <>
-                                <div key={page?.pageId} className='relative cursor-pointer border rounded-2xl'
-                                  onClick={() => {
-                                    setselectedTakeOffTab('page')
-                                    if (!selectedPagesList?.find((i: any) => (i?.pageId == page?.pageId))) {
-                                      //@ts-ignore
-                                      setselectedPagesList((ps: any) => ([...ps, page]))
-                                    }
-                                    setselectedPage(page)
-                                  }}
-                                >
-                                  <NextImage className='rounded-t-2xl' src={page?.src} width={getWidth(page, 300)} height={300} alt='' onLoad={() => handleImageLoad(index)} />
-                                  {isImgLoading(index) && <div className='rounded-t-2xl absolute top-0 left-0 w-[100%] h-[100%] bg-slate-300 flex justify-center items-center bg-opacity-30' >
-                                    <Spin />
-                                  </div>}
-                                  <div className='flex justify-between items-center w-full px-3 py-5 !bg-gray-100 !rounded-b-2xl'>
-                                    <div className='font-[500] text-gray-600' >{page?.name?.slice(0, 30) ?? 'Unkonw'}</div>
-                                    <div onClick={(e) => { e.stopPropagation() }} >
-                                      <Dropdown overlay={menu(page)} trigger={['click']}>
-                                        <MoreOutlined onClick={(e) => { e.stopPropagation() }} className='cursor-pointer text-[20px]' />
-                                      </Dropdown>
-                                    </div>
-                                  </div>
-                                  <div className='absolute top-[-14px] right-[-5px] rounded-full border text-xl flex items-center justify-center w-9 h-9 bg-white cursor-pointer text-gray-500'
-                                    onClick={(e) => {
-                                      e.stopPropagation();
-                                      handleMenuClick('delete', page)
-                                    }}
-                                  ><CloseOutlined /></div>
-                                </div>
-                              </>
-                            })
-                          }
-                        </div>
+                      <div className='w-full flex justify-center items-center p-5 flex-col mt-14' >
+                        {
+                          Array.isArray(takeOff?.files) && takeOff.files.map((fl: any, flind: number) => {
+                            return <div className='flex flex-col w-full mb-5' key={flind}>
+                              <div onClick={() => {
+                                if (closedFilesIndArray?.some(i => i == flind)) {
+                                  setclosedFilesIndArray(ps => ps.filter((i) => (i != flind)))
+                                } else {
+                                  setclosedFilesIndArray(ps => ([...ps, flind]))
+                                }
+                              }} className='my-5 flex cursor-pointer bg-lavenderPurpleReplica bg-opacity-10 w-max p-2 rounded-xl text-lavenderPurpleReplica items-center gap-x-2'>
+                                <FolderFilled className='text-3xl' />
+                                <span>{fl?.name?.slice(0, 40)}</span>
+                              </div>
+                              <div className='grow flex flex-wrap gap-3 gap-y-5' >
+                                {
+                                  !(closedFilesIndArray?.some((i: any) => (i == flind))) && Array.isArray(takeOff?.pages) && takeOff?.pages?.filter((i: any) => i?.fileId == fl?.fileId)?.slice()?.sort((a: any, b: any) => (a?.index - b?.index))?.map((page: any, index: number) => {
+                                    return <>
+                                      <div key={page?.pageId} className='relative cursor-pointer border rounded-2xl'
+                                        onClick={() => {
+                                          setselectedTakeOffTab('page')
+                                          if (!selectedPagesList?.find((i: any) => (i?.pageId == page?.pageId))) {
+                                            //@ts-ignore
+                                            setselectedPagesList((ps: any) => ([...ps, page]))
+                                          }
+                                          setselectedPage(page)
+                                        }}
+                                      >
+                                        <NextImage className='rounded-t-2xl' src={page?.src} width={getWidth(page, 300)} height={300} alt='' onLoad={() => handleImageLoad(index)} />
+                                        {isImgLoading(index) && <div className='rounded-t-2xl absolute top-0 left-0 w-[100%] h-[100%] bg-slate-300 flex justify-center items-center bg-opacity-30' >
+                                          <Spin />
+                                        </div>}
+                                        <div className='flex justify-between items-center w-full px-3 py-5 !bg-gray-100 !rounded-b-2xl'>
+                                          <div className='font-[500] text-gray-600' >{page?.name?.slice(0, 30) ?? 'Unkonw'}</div>
+                                          <div onClick={(e) => { e.stopPropagation() }} >
+                                            <Dropdown overlay={menu(page)} trigger={['click']}>
+                                              <MoreOutlined onClick={(e) => { e.stopPropagation() }} className='cursor-pointer text-[20px]' />
+                                            </Dropdown>
+                                          </div>
+                                        </div>
+                                        <div className='absolute top-[-14px] right-[-5px] rounded-full border text-xl flex items-center justify-center w-9 h-9 bg-white cursor-pointer text-gray-500'
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            handleMenuClick('delete', page)
+                                          }}
+                                        ><CloseOutlined /></div>
+                                      </div>
+                                    </>
+                                  })
+                                }
+                              </div>
+                            </div>
+                          })
+                        }
                       </div>
                     }
                     {
