@@ -42,7 +42,7 @@ function TradesPage() {
     // use lodash intersection to compare the two arrays
     // if the length of the intersection is greater than 0 then save button is enabled
     const canSave = useMemo(() => {
-        if (!authUser || !authUser.selectedTrades) {
+        if (!authUser || !authUser.selectedTrades || authUser.selectedTrades.length === 0) {
             return false;
         }
         return _.intersection(selectedTrades, authUser.selectedTrades).length > 0;
@@ -175,8 +175,8 @@ function TradesPage() {
             <div className="flex justify-end">
                 <CustomButton
                     text="Save"
-                    className={`!w-fit ${canSave ? 'disabled' : ''}`}
-                    disabled={canSave}
+                    className={`!w-fit ${!canSave ? 'disabled' : ''}`}
+                    disabled={!canSave}
                     isLoading={isLoading}
                     onClick={handleSave}
                 />

@@ -1,7 +1,7 @@
 'use client';
 import { withAuth } from "@/app/hoc/withAuth";
 import SettingSidebar from '../verticleBar';
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import Image from "next/image";
 import { useDispatch } from "react-redux";
 import { useUser } from "@/app/hooks/useUser";
@@ -27,10 +27,10 @@ function VerificationPage() {
         event.preventDefault();
         setIsLoading(true);
 
-        const data: any = { userId: authUser?._id };
+        const data: any = { userId: authUser?._id, ...authUser?.verificationsData };
 
         try {
-            if (license) {
+            if (license && !license?.url) {
                 const url = await new AwsS3(license, 'verification/license').getS3URL();
                 data.license = {
                     name: license.name,
@@ -39,7 +39,7 @@ function VerificationPage() {
                     extension: license.name.split('.').pop(),
                 };
             }
-            if (secretaryOfState) {
+            if (secretaryOfState && !secretaryOfState?.url) {
                 const url = await new AwsS3(
                     secretaryOfState,
                     'verification/secretaryOfState'
@@ -51,7 +51,7 @@ function VerificationPage() {
                     extension: secretaryOfState.name.split('.').pop(),
                 };
             }
-            if (preQualification) {
+            if (preQualification && !preQualification?.url) {
                 const url = await new AwsS3(
                     preQualification,
                     'verification/preQualification'
@@ -72,6 +72,8 @@ function VerificationPage() {
         } catch (err) {
             console.error('Verifications data error: ', err);
             toast.error("Something went wrong");
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -96,6 +98,16 @@ function VerificationPage() {
     const isAllowToSubmit = () => {
         return !license && !preQualification && !secretaryOfState;
     };
+
+    useEffect(() => {
+        if (authUser && authUser.verificationsData) {
+            setLicense(authUser.verificationsData.license);
+            setSecretaryOfState(authUser.verificationsData.secretaryOfState);
+            setPreQualification(authUser.verificationsData.preQualification);
+        }
+    }, [authUser]);
+
+
     return <SettingSidebar>
         <div className="w-full max-w-xl mx-auto">
             <div className="mt-6 bg-white shadow-tertiaryMystery p-10 rounded-lg">
@@ -289,7 +301,7 @@ function VerificationPage() {
                     <CustomButton
                         isLoading={isLoading}
                         onClick={submitHandler}
-                        text="Next"
+                        text="Save"
                         className={`w-full my-3 ${isAllowToSubmit() ? 'disabled' : ''}`}
                         type="submit"
                         disabled={isAllowToSubmit()}

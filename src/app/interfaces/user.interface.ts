@@ -30,15 +30,15 @@ export type IUserInterface = IUpdateCompanyDetail & {
   stripeCustomerId: string;
   subscriptionId: string;
   verificationsData?: {
-    secretaryOfState?: string;
-    license?: string;
-    preQualification?: string;
+    secretaryOfState?: FileInterface;
+    license?: FileInterface;
+    preQualification?: FileInterface;
   };
   phone?: string;
   country?: string;
   state?: string;
   city?: string;
-  selectedTrades?: any;
+  selectedTrades?: string[];
   associatedCompany?: IUserInterface | string;
   university: string;
   educationalDocuments: FileInterface[];
