@@ -165,9 +165,9 @@ export function G703Component({
                 onChange={(_d, dateString) =>
                   handleState('applicationDate', dateString as string)
                 }
-                //@ts-ignore
-                //@ts-nocheck
-                // disabledDate={disabledDate}
+              //@ts-ignore
+              //@ts-nocheck
+              // disabledDate={disabledDate}
               />
               {showAddAndDelete ? (
                 <p className="text-gray-400">Application Date is required.</p>
@@ -188,9 +188,9 @@ export function G703Component({
                 onChange={(_d, dateString) =>
                   handleState('periodTo', dateString as string)
                 }
-                //@ts-ignore
-                //@ts-nocheck
-                // disabledDate={disabledDate}
+              //@ts-ignore
+              //@ts-nocheck
+              // disabledDate={disabledDate}
               />
               {showAddAndDelete ? (
                 <p className="text-gray-400">Period To is required.</p>
@@ -456,12 +456,10 @@ export function G703Component({
                     theme={{
                       components: {
                         Button: {
-                          defaultBg: '#7F56D9',
+                          defaultBg: '#007AB6',
                           textHoverBg: '#fff',
                           colorPrimaryText: '#fff',
                           colorText: '#fff',
-                          colorPrimaryHover: '#fff',
-                          colorPrimaryActive: '#fff',
                         },
                       },
                     }}

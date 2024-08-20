@@ -281,7 +281,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
           theme={{
             components: {
               Tabs: {
-                inkBarColor: '#8449EB',
+                // inkBarColor: '#8449EB',
               },
               Input: {
                 padding: 0,
@@ -314,9 +314,8 @@ export function PhaseComponent({ parentInvoice }: Props) {
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className={`${
-                      tab === type ? 'text-RoyalPurple' : 'text-black'
-                    }`}
+                    className={`${tab === type ? 'text-schestiPrimary' : 'text-black'
+                      }`}
                   />
                 ),
                 tabKey: type,
@@ -387,7 +386,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
       <div
         ref={ref as MutableRefObject<HTMLDivElement>}
         className="space-y-5 w-full absolute z -left-[2500px] border p-6"
-        // className="space-y-5 w-full  border p-6"
+      // className="space-y-5 w-full  border p-6"
       >
         <ClientInvoiceHeader />
         <div className="flex justify-end w-full">
@@ -403,7 +402,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
           theme={{
             components: {
               Tabs: {
-                inkBarColor: '#8449EB',
+                // inkBarColor: '#8449EB',
               },
               Input: {
                 padding: 0,

@@ -8,8 +8,8 @@ const Contractors = dynamic(
 
 function StandardInvoicingPage() {
   return (
-    <section className="mt-6 mb-[39px] md:ms-[69px] md:me-[59px] mx-4 rounded-xl ">
-      <div className="w-full mb-4">
+    <section className="mt-6 mb-[39px] bg-white  mx-4 rounded-xl ">
+      <div className="w-full mb-4 p-5">
         <Contractors />
       </div>
     </section>

@@ -249,7 +249,7 @@ function CreateClientInvoicePage() {
           theme={{
             components: {
               Tabs: {
-                inkBarColor: '#8449EB',
+                // inkBarColor: '#8449EB',
               },
               Input: {
                 padding: 0,
@@ -282,9 +282,8 @@ function CreateClientInvoicePage() {
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className={`${
-                      tab === type ? 'text-RoyalPurple' : 'text-black'
-                    }`}
+                    className={`${tab === type ? 'text-schestiPrimary' : 'text-black'
+                      }`}
                   />
                 ),
                 tabKey: type,
@@ -343,7 +342,7 @@ function CreateClientInvoicePage() {
       <div
         ref={ref as MutableRefObject<HTMLDivElement>}
         className="space-y-5 w-full absolute -left-[2500px] border p-6"
-        // className="space-y-5 w-full border p-6"
+      // className="space-y-5 w-full border p-6"
       >
         <ClientInvoiceHeader />
         <div className="flex justify-end w-full">
@@ -359,7 +358,7 @@ function CreateClientInvoicePage() {
           theme={{
             components: {
               Tabs: {
-                inkBarColor: '#8449EB',
+                // inkBarColor: '#8449EB',
               },
               Input: {
                 padding: 0,
