@@ -40,6 +40,7 @@ export const Routes = {
     'Financial-Tools': '/financial/tools',
     'Standard-Invoicing': '/financial/standard-invoicing',
     'AIA-Invoicing': '/financial/aia-invoicing',
+    'Expense': '/financial/expense'
   },
   Schedule: '/schedule',
   Meetings: '/meeting',
@@ -166,6 +167,7 @@ export const planFeatureOptions = [
       },
       { label: 'AIA Invoicing', value: Routes.Financial['AIA-Invoicing'] },
       { label: 'Financial Tools', value: Routes.Financial['Financial-Tools'] },
+      { label: 'Expense', value: Routes.Financial['Expense'] },
     ],
   },
 
