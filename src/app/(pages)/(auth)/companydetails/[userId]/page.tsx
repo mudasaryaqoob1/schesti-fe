@@ -195,9 +195,10 @@ const CompanyDetails = () => {
               className="text-center mb-12"
             />
             <Formik
-              initialValues={initialValues}
+              initialValues={userData?.user ? userData?.user : initialValues}
               validationSchema={getValidationSchema}
               onSubmit={submitHandler}
+              enableReinitialize={userData?.user ? true : false}
             >
               {(formik) => {
 
