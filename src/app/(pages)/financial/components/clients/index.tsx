@@ -129,7 +129,7 @@ export function Clients() {
                   onOk() {
                     dispatch(deleteClientInvoiceRequest(record._id));
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
               } else if (key === 'view') {
                 router.push(
@@ -155,14 +155,14 @@ export function Clients() {
   const filteredClientInvoices =
     clientInvoices.length > 0
       ? clientInvoices.filter((invoice: any) => {
-        if (!search) {
-          return invoice;
-        }
-        return (
-          invoice.invoiceName === search ||
-          invoice!.toOwner.toLowerCase().includes(search.toLowerCase())
-        );
-      })
+          if (!search) {
+            return invoice;
+          }
+          return (
+            invoice.invoiceName === search ||
+            invoice!.toOwner.toLowerCase().includes(search.toLowerCase())
+          );
+        })
       : [];
 
   return (

@@ -76,7 +76,9 @@ const EditPage = () => {
         }
       } catch (error) {
         const err = error as AxiosError<{ message: string }>;
-        toast.error(err.response?.data.message || 'Unable to update contractor');
+        toast.error(
+          err.response?.data.message || 'Unable to update contractor'
+        );
       } finally {
         setIsLoading(false);
       }

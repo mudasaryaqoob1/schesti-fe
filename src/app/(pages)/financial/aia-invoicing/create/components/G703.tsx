@@ -127,9 +127,9 @@ export function G703Component({
                 onChange={(_d, dateString) =>
                   handleState('applicationDate', dateString as string)
                 }
-              //@ts-ignore
-              //@ts-nocheck
-              // disabledDate={disabledDate}
+                //@ts-ignore
+                //@ts-nocheck
+                // disabledDate={disabledDate}
               />
               {showAddAndDelete ? (
                 <p className="text-gray-400">Application Date is required.</p>
@@ -149,9 +149,9 @@ export function G703Component({
                 onChange={(_d, dateString) =>
                   handleState('periodTo', dateString as string)
                 }
-              //@ts-ignore
-              //@ts-nocheck
-              // disabledDate={disabledDate}
+                //@ts-ignore
+                //@ts-nocheck
+                // disabledDate={disabledDate}
               />
               {showAddAndDelete ? (
                 <p className="text-gray-400">Period To is required.</p>
@@ -443,8 +443,9 @@ export function G703Component({
               }
               return (
                 <DeleteOutlined
-                  className={`text-xl px-4 text-red-500 cursor-pointer ${showAddAndDelete ? '' : 'hidden'
-                    }`}
+                  className={`text-xl px-4 text-red-500 cursor-pointer ${
+                    showAddAndDelete ? '' : 'hidden'
+                  }`}
                   onClick={() => {
                     Modal.confirm({
                       title: 'Are you sure delete this task?',
@@ -456,7 +457,7 @@ export function G703Component({
                       onOk() {
                         deleteRow(index);
                       },
-                      onCancel() { },
+                      onCancel() {},
                     });
                   }}
                 />

@@ -119,7 +119,7 @@ const Trades = () => {
                             {parent.label}
                             <span className={`text-gray-500 ms-3 font-normal`}>
                               {getSelectedTradesByParent(parent.value).length >
-                                0
+                              0
                                 ? `${getSelectedTradesByParent(parent.value).length} selected`
                                 : ''}
                             </span>
@@ -134,10 +134,11 @@ const Trades = () => {
                       </h2>
                       <div
                         id={`accordion-flush-body-${index}`}
-                        className={`${activeCollapse === index
+                        className={`${
+                          activeCollapse === index
                             ? 'block space-x-2 space-y-2 '
                             : 'hidden'
-                          }`}
+                        }`}
                         aria-labelledby={`accordion-flush-heading-${index} `}
                       >
                         {trades

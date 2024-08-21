@@ -12,22 +12,24 @@ import { LoadingOutlined } from '@ant-design/icons';
 const Plans = () => {
   const pricingHook = usePricing();
   const [isLoading, setIsLoading] = useState(false);
-  const user = useUser()
+  const user = useUser();
   const router = useRouterHook();
 
   useEffect(() => {
     setIsLoading(true);
     if (user && pricingHook.data && pricingHook.data.length > 0) {
       if (user.invitation) {
-        const plan = pricingHook.data.find((item) => item._id === user.invitation?.planId);
+        const plan = pricingHook.data.find(
+          (item) => item._id === user.invitation?.planId
+        );
         if (plan) {
           pricingHook.setValueToStorage(plan);
-          router.push("/payment");
+          router.push('/payment');
         }
       }
     }
     setIsLoading(false);
-  }, [user, pricingHook.data])
+  }, [user, pricingHook.data]);
 
   return (
     <>

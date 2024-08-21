@@ -239,7 +239,11 @@ const ClientTable = () => {
       if (!search) {
         return true;
       }
-      if (item.module === 'subcontractors' || item.module === 'partners' || item.module === 'contractors') {
+      if (
+        item.module === 'subcontractors' ||
+        item.module === 'partners' ||
+        item.module === 'contractors'
+      ) {
         return true;
       }
       return (

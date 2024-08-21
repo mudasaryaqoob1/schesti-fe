@@ -33,14 +33,22 @@ export function ListCrmItems({ title, onClose, onItemClick }: Props) {
   }
 
   function getItemName(item: CrmType) {
-    if (item.module === 'partners' || item.module === 'subcontractors' || item.module === 'contractors') {
+    if (
+      item.module === 'partners' ||
+      item.module === 'subcontractors' ||
+      item.module === 'contractors'
+    ) {
       return `${item.companyRep}`;
     }
     return `${item.firstName} ${item.lastName || ''}`;
   }
 
   function getItemCompany(item: CrmType) {
-    if (item.module === 'partners' || item.module === 'subcontractors' || item.module === 'contractors') {
+    if (
+      item.module === 'partners' ||
+      item.module === 'subcontractors' ||
+      item.module === 'contractors'
+    ) {
       return `${item.name}`;
     }
     return `${item.companyName}`;
@@ -87,7 +95,6 @@ export function ListCrmItems({ title, onClose, onItemClick }: Props) {
                   companyName: getItemCompany(item),
                   email: item.email,
                   name: getItemName(item),
-
                 })
               }
             >
@@ -96,14 +103,16 @@ export function ListCrmItems({ title, onClose, onItemClick }: Props) {
                   {' '}
                   <span className="text-schestiLightBlack">Name: </span>{' '}
                   {item.module === 'subcontractors' ||
-                    item.module === 'partners' || item.module === 'contractors'
+                  item.module === 'partners' ||
+                  item.module === 'contractors'
                     ? item.companyRep
                     : `${item.firstName} ${item.lastName || ''}`}
                 </p>
                 <p>
                   <span className="text-schestiLightBlack">Company: </span>{' '}
                   {item.module === 'subcontractors' ||
-                    item.module === 'partners' || item.module === 'contractors'
+                  item.module === 'partners' ||
+                  item.module === 'contractors'
                     ? item.name
                     : item.companyName}
                 </p>

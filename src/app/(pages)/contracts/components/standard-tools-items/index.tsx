@@ -43,7 +43,7 @@ export function StandardToolItem({
   onChange,
   contract,
   color,
-  tools
+  tools,
 }: Props) {
   if (mode === 'add-values') {
     return (
@@ -61,14 +61,14 @@ export function StandardToolItem({
         {selectedTool ? (
           <ModalComponent
             open={true}
-            setOpen={() => { }}
+            setOpen={() => {}}
             width="300px"
             key={selectedTool.tool}
             className={'!bg-transparent !h-fit'}
           >
             <Popups
               title="Add Standard Tools"
-              onClose={onClose ? onClose : () => { }}
+              onClose={onClose ? onClose : () => {}}
             >
               <StandardToolInput
                 contract={contract}
@@ -150,7 +150,7 @@ type InputProps = {
   item: ToolState;
   onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
   contract: ICrmContract;
-  tools?: ToolState[]
+  tools?: ToolState[];
 };
 
 function StandardToolInput({ item, onChange, contract, tools }: InputProps) {
@@ -200,11 +200,17 @@ function RenderStandardInputValue({
         return <p className="capitalize">{item.value}</p>;
       } else if ('url' in item.value) {
         return (
-          <Image alt="comment" src={item.value.url} width={80} height={40} objectFit='contain' />
+          <Image
+            alt="comment"
+            src={item.value.url}
+            width={80}
+            height={40}
+            objectFit="contain"
+          />
         );
       } else if (item.tool === 'signature' && 'font' in item.value) {
         return (
-          <div className='text-[20px]'>
+          <div className="text-[20px]">
             <ChooseFont text={item.value.value} chooseFont={item.value.font} />
           </div>
         );
@@ -295,7 +301,7 @@ function TypeSignature({ onChange, item }: TypeSignatureProps) {
 function GetInitialToolValue({
   item,
   onChange,
-  tools
+  tools,
 }: {
   onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
   item: ToolState;
@@ -304,15 +310,28 @@ function GetInitialToolValue({
 }) {
   const [activeTab, setActiveTab] = useState('type');
 
-  const signature = tools && tools.find((tool) => tool.tool === 'signature' && typeof tool.value !== 'undefined' && "font" in tool.value);
+  const signature =
+    tools &&
+    tools.find(
+      (tool) =>
+        tool.tool === 'signature' &&
+        typeof tool.value !== 'undefined' &&
+        'font' in tool.value
+    );
   // get the first character of each word
-  const initialVal = signature && typeof signature.value != 'undefined' ? (signature.value as any)?.value.split(' ').map((word: string) => word.charAt(0)).join('') : '';
+  const initialVal =
+    signature && typeof signature.value != 'undefined'
+      ? (signature.value as any)?.value
+          .split(' ')
+          .map((word: string) => word.charAt(0))
+          .join('')
+      : '';
   console.log({ signature, tools });
   const [value, setValue] = useState(
     typeof item.value === 'string' || typeof item.value === 'undefined'
-      ? item.value : initialVal
+      ? item.value
+      : initialVal
   );
-
 
   return (
     <div>
@@ -347,7 +366,7 @@ function GetInitialToolValue({
               },
             }}
           />
-          <div className='flex justify-end'>
+          <div className="flex justify-end">
             <CustomButton
               text="Add Initials"
               className="!w-fit !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
@@ -364,7 +383,7 @@ function GetInitialToolValue({
           </div>
         </div>
       ) : activeTab === 'draw' ? (
-        <DrawSignature item={item} onChange={onChange} type='initials' />
+        <DrawSignature item={item} onChange={onChange} type="initials" />
       ) : null}
     </div>
   );
@@ -515,7 +534,7 @@ function GetSignatureValue({
       ) : activeTab === 'type' ? (
         <TypeSignature item={item} onChange={onChange} />
       ) : activeTab === 'draw' ? (
-        <DrawSignature item={item} onChange={onChange} type='signature' />
+        <DrawSignature item={item} onChange={onChange} type="signature" />
       ) : null}
     </div>
   );
@@ -524,11 +543,11 @@ function GetSignatureValue({
 function DrawSignature({
   item,
   onChange,
-  type = "signature"
+  type = 'signature',
 }: {
   onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
   item: ToolState;
-  type: "initials" | "signature"
+  type: 'initials' | 'signature';
 }) {
   const [isUploading, setIsUploading] = useState(false);
   const ref = useRef<SignaturePad | null>(null);
@@ -551,9 +570,7 @@ function DrawSignature({
         setIsUploading(true);
         const base64 = ref.current.toDataURL();
         try {
-          const url = await new AwsS3(base64, type).getS3UrlFromBase64(
-            base64
-          );
+          const url = await new AwsS3(base64, type).getS3UrlFromBase64(base64);
           const data: FileInterface = {
             extension: 'png',
             name: `${type}-${Date.now()}.png`,
@@ -595,7 +612,7 @@ function DrawSignature({
           onClick={handleClear}
         />
         <CustomButton
-          text={"Add " + (type === 'signature' ? "Signature" : "Initials")}
+          text={'Add ' + (type === 'signature' ? 'Signature' : 'Initials')}
           className="!w-fit !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
           onClick={handleSave}
           isLoading={isUploading}

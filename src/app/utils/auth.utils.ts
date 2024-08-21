@@ -19,9 +19,15 @@ const OwnerPages = {
 };
 
 export function navigateUserWhileAuth(user: IUserInterface) {
-  if (user.userRole === USER_ROLES_ENUM.PROFESSOR || user.userRole === USER_ROLES_ENUM.STUDENT) {
+  if (
+    user.userRole === USER_ROLES_ENUM.PROFESSOR ||
+    user.userRole === USER_ROLES_ENUM.STUDENT
+  ) {
     return navigateEducational(user);
-  } else if (user.userRole === USER_ROLES_ENUM.CONTRACTOR || user.userRole === USER_ROLES_ENUM.SUBCONTRACTOR || user.userRole === USER_ROLES_ENUM.ARCHITECT ||
+  } else if (
+    user.userRole === USER_ROLES_ENUM.CONTRACTOR ||
+    user.userRole === USER_ROLES_ENUM.SUBCONTRACTOR ||
+    user.userRole === USER_ROLES_ENUM.ARCHITECT ||
     user.userRole === USER_ROLES_ENUM.VENDOR
   ) {
     return navigateBusiness(user);
@@ -33,7 +39,12 @@ export function navigateUserWhileAuth(user: IUserInterface) {
 }
 
 function navigateBusiness(user: IUserInterface) {
-  if (user.userRole === USER_ROLES_ENUM.CONTRACTOR || user.userRole === USER_ROLES_ENUM.SUBCONTRACTOR || user.userRole === USER_ROLES_ENUM.VENDOR || user.userRole === USER_ROLES_ENUM.ARCHITECT) {
+  if (
+    user.userRole === USER_ROLES_ENUM.CONTRACTOR ||
+    user.userRole === USER_ROLES_ENUM.SUBCONTRACTOR ||
+    user.userRole === USER_ROLES_ENUM.VENDOR ||
+    user.userRole === USER_ROLES_ENUM.ARCHITECT
+  ) {
     const haveCompanyDetails =
       Boolean(user.companyName) &&
       Boolean(user.address) &&
@@ -51,9 +62,8 @@ function navigateBusiness(user: IUserInterface) {
     const haveTrades = user.selectedTrades && user.selectedTrades.length == 0;
 
     if (user.userRole == USER_ROLES_ENUM.SUBCONTRACTOR && !haveTrades) {
-      return SubContractorPages.Trades
+      return SubContractorPages.Trades;
     }
-
 
     const havePlan = user.planId;
 
@@ -65,7 +75,11 @@ function navigateBusiness(user: IUserInterface) {
 }
 
 function navigateEducational(user: IUserInterface) {
-  if ((user.userRole === USER_ROLES_ENUM.PROFESSOR || user.userRole === USER_ROLES_ENUM.STUDENT) && user.isActive === 'pending') {
+  if (
+    (user.userRole === USER_ROLES_ENUM.PROFESSOR ||
+      user.userRole === USER_ROLES_ENUM.STUDENT) &&
+    user.isActive === 'pending'
+  ) {
     return '/pending';
   }
   const haveDetails =

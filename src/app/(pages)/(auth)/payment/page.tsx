@@ -68,12 +68,14 @@ const Payment = () => {
       <NavBar />
       <section className=" px-16 p-9">
         <div className="">
-          <div className='space-y-2'>
-
+          <div className="space-y-2">
             <h2 className={secondaryHeading}>Payment Summary</h2>
-            <p className={"text-obsidian-black font-semibold text-sm cursor-pointer underline underline-offset-4  w-fit leading-8  "}
-
-              onClick={() => router.push('/plans')}>
+            <p
+              className={
+                'text-obsidian-black font-semibold text-sm cursor-pointer underline underline-offset-4  w-fit leading-8  '
+              }
+              onClick={() => router.push('/plans')}
+            >
               Go back
             </p>
           </div>

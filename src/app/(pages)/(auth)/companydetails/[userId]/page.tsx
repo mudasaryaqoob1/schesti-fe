@@ -97,10 +97,7 @@ const CompanyDetails = () => {
     }
     if (values.educationalDocuments) {
       const filesData = values.educationalDocuments.map(async (file) => {
-        const url = await new AwsS3(
-          file,
-          'documents/post-project/'
-        ).getS3URL();
+        const url = await new AwsS3(file, 'documents/post-project/').getS3URL();
         return {
           url,
           name: file.name,
@@ -129,19 +126,27 @@ const CompanyDetails = () => {
         }
       }
 
-
-
-      if (
-        userData?.user?.userRole === OWNER
-      ) {
+      if (userData?.user?.userRole === OWNER) {
         router.push('/plans');
       } else if (userData?.user?.userRole === SUBCONTRACTOR) {
         router.push('/trades');
-      } else if (userData?.user?.userRole === CONTRACTOR || userData?.user?.userRole === USER_ROLES_ENUM.VENDOR || userData?.user?.userRole === USER_ROLES_ENUM.ARCHITECT) {
+      } else if (
+        userData?.user?.userRole === CONTRACTOR ||
+        userData?.user?.userRole === USER_ROLES_ENUM.VENDOR ||
+        userData?.user?.userRole === USER_ROLES_ENUM.ARCHITECT
+      ) {
         router.push('/verification');
-      } else if ((userData?.user?.userRole === USER_ROLES_ENUM.PROFESSOR || userData?.user?.userRole === USER_ROLES_ENUM.STUDENT) && userData?.user?.isActive === 'pending') {
+      } else if (
+        (userData?.user?.userRole === USER_ROLES_ENUM.PROFESSOR ||
+          userData?.user?.userRole === USER_ROLES_ENUM.STUDENT) &&
+        userData?.user?.isActive === 'pending'
+      ) {
         router.push('/pending');
-      } else if ((userData?.user?.userRole === USER_ROLES_ENUM.PROFESSOR || userData?.user?.userRole === USER_ROLES_ENUM.STUDENT) && userData?.user?.isActive === 'active') {
+      } else if (
+        (userData?.user?.userRole === USER_ROLES_ENUM.PROFESSOR ||
+          userData?.user?.userRole === USER_ROLES_ENUM.STUDENT) &&
+        userData?.user?.isActive === 'active'
+      ) {
         router.push('/plans');
       }
     } else {
@@ -162,16 +167,16 @@ const CompanyDetails = () => {
       return 'Company Details';
     } else if (userData?.user?.userRole == USER_ROLES_ENUM.VENDOR) {
       setSelectedUserRole(USER_ROLES_ENUM.VENDOR);
-      return "Company Details"
+      return 'Company Details';
     } else if (userData?.user?.userRole == USER_ROLES_ENUM.ARCHITECT) {
       setSelectedUserRole(USER_ROLES_ENUM.ARCHITECT);
-      return "Company Details"
+      return 'Company Details';
     } else if (userData?.user?.userRole == USER_ROLES_ENUM.PROFESSOR) {
       setSelectedUserRole(USER_ROLES_ENUM.PROFESSOR);
-      return "Personal Information"
+      return 'Personal Information';
     } else {
       setSelectedUserRole(USER_ROLES_ENUM.STUDENT);
-      return "Personal Information"
+      return 'Personal Information';
     }
   }, [userData?.user]);
 
@@ -182,11 +187,15 @@ const CompanyDetails = () => {
       return SubContractorSchema;
     } else if (userData?.user?.userRole == CONTRACTOR) {
       return ContractorSchema;
-    }
-    else if (userData?.user?.userRole == USER_ROLES_ENUM.VENDOR || userData?.user?.userRole == USER_ROLES_ENUM.ARCHITECT) {
+    } else if (
+      userData?.user?.userRole == USER_ROLES_ENUM.VENDOR ||
+      userData?.user?.userRole == USER_ROLES_ENUM.ARCHITECT
+    ) {
       return VendorAndArchitectSchema;
-    }
-    else if (userData?.user?.userRole == USER_ROLES_ENUM.PROFESSOR || userData?.user?.userRole == USER_ROLES_ENUM.STUDENT) {
+    } else if (
+      userData?.user?.userRole == USER_ROLES_ENUM.PROFESSOR ||
+      userData?.user?.userRole == USER_ROLES_ENUM.STUDENT
+    ) {
       return EducationalSchema;
     }
   }, [userData]);
@@ -215,7 +224,6 @@ const CompanyDetails = () => {
               enableReinitialize={userData?.user ? true : false}
             >
               {(formik) => {
-
                 const countries = Country.getAllCountries().map((country) => ({
                   label: country.name,
                   value: country.isoCode,
@@ -239,10 +247,12 @@ const CompanyDetails = () => {
                     name="basic"
                     onFinish={formik.handleSubmit}
                     autoComplete="off"
-                  // validateMessages={formik.handleSubmit}
+                    // validateMessages={formik.handleSubmit}
                   >
                     <div className="flex flex-col gap-4">
-                      {(selectedUserRole != OWNER && userData?.user?.userRole != USER_ROLES_ENUM.PROFESSOR && userData?.user?.userRole != USER_ROLES_ENUM.STUDENT) ? (
+                      {selectedUserRole != OWNER &&
+                      userData?.user?.userRole != USER_ROLES_ENUM.PROFESSOR &&
+                      userData?.user?.userRole != USER_ROLES_ENUM.STUDENT ? (
                         <FormControl
                           control="input"
                           label="Company Name"
@@ -281,9 +291,12 @@ const CompanyDetails = () => {
                         />
                       </div>
                       {selectedUserRole === OWNER ||
-                        selectedUserRole === CONTRACTOR ||
-                        selectedUserRole === SUBCONTRACTOR || selectedUserRole === USER_ROLES_ENUM.VENDOR || selectedUserRole === USER_ROLES_ENUM.ARCHITECT
-                        || selectedUserRole === USER_ROLES_ENUM.PROFESSOR || selectedUserRole === USER_ROLES_ENUM.STUDENT ? (
+                      selectedUserRole === CONTRACTOR ||
+                      selectedUserRole === SUBCONTRACTOR ||
+                      selectedUserRole === USER_ROLES_ENUM.VENDOR ||
+                      selectedUserRole === USER_ROLES_ENUM.ARCHITECT ||
+                      selectedUserRole === USER_ROLES_ENUM.PROFESSOR ||
+                      selectedUserRole === USER_ROLES_ENUM.STUDENT ? (
                         <>
                           <div className="flex items-center space-x-1 justify-between">
                             <div className="flex-1">
@@ -397,7 +410,7 @@ const CompanyDetails = () => {
                       )}
 
                       {selectedUserRole == CONTRACTOR ||
-                        selectedUserRole == SUBCONTRACTOR ? (
+                      selectedUserRole == SUBCONTRACTOR ? (
                         <FormControl
                           control="input"
                           label="Industry"
@@ -407,124 +420,139 @@ const CompanyDetails = () => {
                         />
                       ) : null}
                       {(selectedUserRole == CONTRACTOR ||
-                        selectedUserRole == SUBCONTRACTOR || selectedUserRole == USER_ROLES_ENUM.VENDOR || selectedUserRole == USER_ROLES_ENUM.ARCHITECT) && (
-                          <>
-                            <FormControl
-                              control="input"
-                              label="Total Employee"
-                              type="number"
-                              name="employee"
-                              placeholder="Total Employee"
-                              min={1}
-                            />
-                            <label htmlFor="myInput">Logo/ Picture</label>
-                            <div className="flex items-center">
-                              {companyLogo ? (
-                                <div className="w-fit">
-                                  <ShowFileComponent
-                                    file={{
-                                      extension: companyLogo?.type,
-                                      name: companyLogo?.name,
-                                      type: companyLogo?.type,
-                                      url: URL.createObjectURL(companyLogo),
-                                    }}
-                                    onDelete={() => setCompanyLogo(null)}
-                                    shouldFit={false}
-                                  />
-                                </div>
-                              ) : (
-                                <label
-                                  htmlFor="dropzone-file"
-                                  className="flex flex-col items-center justify-center w-22 h-22 border-2 border-solid rounded-lg cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
-                                >
-                                  <div className="flex flex-col items-center justify-center p-5">
-                                    <svg
-                                      className="w-6 h-6 mb-3 text-gray-500 dark:text-gray-400"
-                                      aria-hidden="true"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      fill="none"
-                                      viewBox="0 0 20 16"
-                                    >
-                                      <path
-                                        stroke="currentColor"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
-                                      />
-                                    </svg>
-                                    {!companyLogo && (
-                                      <>
-                                        <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                                          <span className="font-semibold text-schestiPrimary">
-                                            Click to upload
-                                          </span>
-                                        </p>
-                                        <p className="text-xs text-gray-500 dark:text-gray-400">
-                                          PNG, JPG (max. 800x400px)
-                                        </p>
-                                      </>
-                                    )}
-                                  </div>
-                                  <input
-                                    id="dropzone-file"
-                                    onChange={(e: any) => {
-                                      const file = e.target.files[0];
-                                      if (file) {
-                                        setCompanyLogo(file);
-                                        setCompanyLogoErr('');
-                                      }
-                                    }}
-                                    type="file"
-                                    style={{ opacity: '0' }}
-                                    accept="image/*"
-                                  />
-                                </label>
-                              )}
-                            </div>
-                            {!isEmpty(companyLogoErr) && (
-                              <Errormsg>{companyLogoErr}</Errormsg>
-                            )}
-                          </>
-                        )}
-                    </div>
-
-
-                    {
-                      selectedUserRole === USER_ROLES_ENUM.PROFESSOR || selectedUserRole === USER_ROLES_ENUM.STUDENT ? (
-                        <div className='mt-2 space-y-3 '>
+                        selectedUserRole == SUBCONTRACTOR ||
+                        selectedUserRole == USER_ROLES_ENUM.VENDOR ||
+                        selectedUserRole == USER_ROLES_ENUM.ARCHITECT) && (
+                        <>
                           <FormControl
                             control="input"
-                            label="University Name"
-                            type="text"
-                            name="university"
-                            placeholder="Enter University Name"
+                            label="Total Employee"
+                            type="number"
+                            name="employee"
+                            placeholder="Total Employee"
+                            min={1}
                           />
-                          <div>
-                            <label htmlFor="myInput">Student/Professor University ID Card</label>
+                          <label htmlFor="myInput">Logo/ Picture</label>
+                          <div className="flex items-center">
+                            {companyLogo ? (
+                              <div className="w-fit">
+                                <ShowFileComponent
+                                  file={{
+                                    extension: companyLogo?.type,
+                                    name: companyLogo?.name,
+                                    type: companyLogo?.type,
+                                    url: URL.createObjectURL(companyLogo),
+                                  }}
+                                  onDelete={() => setCompanyLogo(null)}
+                                  shouldFit={false}
+                                />
+                              </div>
+                            ) : (
+                              <label
+                                htmlFor="dropzone-file"
+                                className="flex flex-col items-center justify-center w-22 h-22 border-2 border-solid rounded-lg cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                              >
+                                <div className="flex flex-col items-center justify-center p-5">
+                                  <svg
+                                    className="w-6 h-6 mb-3 text-gray-500 dark:text-gray-400"
+                                    aria-hidden="true"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 20 16"
+                                  >
+                                    <path
+                                      stroke="currentColor"
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2"
+                                      d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"
+                                    />
+                                  </svg>
+                                  {!companyLogo && (
+                                    <>
+                                      <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                                        <span className="font-semibold text-schestiPrimary">
+                                          Click to upload
+                                        </span>
+                                      </p>
+                                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                                        PNG, JPG (max. 800x400px)
+                                      </p>
+                                    </>
+                                  )}
+                                </div>
+                                <input
+                                  id="dropzone-file"
+                                  onChange={(e: any) => {
+                                    const file = e.target.files[0];
+                                    if (file) {
+                                      setCompanyLogo(file);
+                                      setCompanyLogoErr('');
+                                    }
+                                  }}
+                                  type="file"
+                                  style={{ opacity: '0' }}
+                                  accept="image/*"
+                                />
+                              </label>
+                            )}
                           </div>
-                          {formik.values.educationalDocuments && formik.values.educationalDocuments.length > 0 ? (
-                            <div className="grid grid-cols-2 gap-2">
-                              {formik.values.educationalDocuments.map((doc, index) => (
+                          {!isEmpty(companyLogoErr) && (
+                            <Errormsg>{companyLogoErr}</Errormsg>
+                          )}
+                        </>
+                      )}
+                    </div>
+
+                    {selectedUserRole === USER_ROLES_ENUM.PROFESSOR ||
+                    selectedUserRole === USER_ROLES_ENUM.STUDENT ? (
+                      <div className="mt-2 space-y-3 ">
+                        <FormControl
+                          control="input"
+                          label="University Name"
+                          type="text"
+                          name="university"
+                          placeholder="Enter University Name"
+                        />
+                        <div>
+                          <label htmlFor="myInput">
+                            Student/Professor University ID Card
+                          </label>
+                        </div>
+                        {formik.values.educationalDocuments &&
+                        formik.values.educationalDocuments.length > 0 ? (
+                          <div className="grid grid-cols-2 gap-2">
+                            {formik.values.educationalDocuments.map(
+                              (doc, index) => (
                                 <div key={index} className="w-fit">
                                   <ShowFileComponent
                                     file={{
                                       extension: doc?.type || '',
                                       name: doc?.name,
                                       type: doc?.type,
-                                      url: "url" in doc ? doc?.url : URL.createObjectURL(doc),
+                                      url:
+                                        'url' in doc
+                                          ? doc?.url
+                                          : URL.createObjectURL(doc),
                                     }}
                                     onDelete={() => {
                                       if (formik.values.educationalDocuments) {
-                                        formik.setFieldValue('educationalDocuments', formik.values.educationalDocuments.filter((d, i) => i !== index));
+                                        formik.setFieldValue(
+                                          'educationalDocuments',
+                                          formik.values.educationalDocuments.filter(
+                                            (d, i) => i !== index
+                                          )
+                                        );
                                       }
                                     }}
                                     shouldFit={false}
                                   />
                                 </div>
-                              ))}
-                            </div>
-                          ) : <div className='space-y-2'>
+                              )
+                            )}
+                          </div>
+                        ) : (
+                          <div className="space-y-2">
                             <label
                               htmlFor="dropzone-file"
                               className={`flex  flex-col items-center justify-center w-22 h-22 border-2 border-solid rounded-lg cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600 ${formik.errors.educationalDocuments ? '!border-red-500' : ''}`}
@@ -556,29 +584,32 @@ const CompanyDetails = () => {
                                     PNG, JPG (max. 800x400px)
                                   </p>
                                 </>
-
                               </div>
                               <input
                                 id="dropzone-file"
                                 multiple
                                 onChange={(e) => {
-
                                   const files = e.target.files;
                                   if (files && files.length) {
-                                    formik.setFieldValue('educationalDocuments', Array.from(files));
+                                    formik.setFieldValue(
+                                      'educationalDocuments',
+                                      Array.from(files)
+                                    );
                                   }
                                 }}
                                 type="file"
                                 style={{ opacity: '0' }}
                               />
                             </label>
-                            {formik.errors.educationalDocuments ? <p className="text-red-500 text-xs">{formik.errors.educationalDocuments}</p> : null}
+                            {formik.errors.educationalDocuments ? (
+                              <p className="text-red-500 text-xs">
+                                {formik.errors.educationalDocuments}
+                              </p>
+                            ) : null}
                           </div>
-                          }
-
-                        </div>
-                      ) : null
-                    }
+                        )}
+                      </div>
+                    ) : null}
                     <Button
                       isLoading={isLoading}
                       text="Next"

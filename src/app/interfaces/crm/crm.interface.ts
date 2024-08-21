@@ -66,4 +66,8 @@ export type ICrmItem = ICrmBase & {
   module: 'clients' | 'vendors' | 'architects';
 };
 
-export type CrmType = ICrmItem | ICrmSubcontractorModule | ICrmPartnerModule | ICrmContractorModule;
+export type CrmType =
+  | ICrmItem
+  | ICrmSubcontractorModule
+  | ICrmPartnerModule
+  | ICrmContractorModule;

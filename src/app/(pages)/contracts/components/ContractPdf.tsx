@@ -35,10 +35,10 @@ type Props = {
 };
 
 export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
-  ({ mode, pdfFile, tools, setTools, contract, color = '#007ab6', }, ref) => {
+  ({ mode, pdfFile, tools, setTools, contract, color = '#007ab6' }, ref) => {
     // const [activePage, setActivePage] = useState<null | number>(1)
     // const canvasRefs = useRef<HTMLCanvasElement[]>([]);
-    const { PDFJs } = usePDFJS(async () => { });
+    const { PDFJs } = usePDFJS(async () => {});
     const containerRef = useRef<HTMLDivElement>(null);
     const pdfContainerRef = useRef<HTMLDivElement>(null);
     const [selectedTool, setSelectedTool] = useState<ToolState | null>(null);
@@ -239,10 +239,10 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
                   ) : mode === 'view-fields' || mode === 'view-values' ? (
                     <StandardToolItem
                       color={color}
-                      onClick={() => { }}
-                      onClose={() => { }}
+                      onClick={() => {}}
+                      onClose={() => {}}
                       selectedTool={selectedTool}
-                      onChange={() => { }}
+                      onChange={() => {}}
                       mode={mode}
                       item={item}
                       key={item.id}

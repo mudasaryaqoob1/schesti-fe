@@ -111,11 +111,12 @@ export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
         str2Percent: true,
       })
       .saveAs(
-        `${'financial-tools' +
-        '-' +
-        moment().month() +
-        '-' +
-        new Date().getTime()
+        `${
+          'financial-tools' +
+          '-' +
+          moment().month() +
+          '-' +
+          new Date().getTime()
         }.xlsx`
       );
   };

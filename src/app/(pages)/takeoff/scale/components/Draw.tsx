@@ -112,13 +112,13 @@ const Draw: React.FC<Props> = ({
       setDraw({
         //@ts-ignore
         line: [],
-         //@ts-ignore
+        //@ts-ignore
         area: [],
-         //@ts-ignore
+        //@ts-ignore
         volume: [],
-         //@ts-ignore
+        //@ts-ignore
         count: [],
-         //@ts-ignore
+        //@ts-ignore
         dynamic: [],
         perimeter: [],
         ...drawHistory[`${pageNumber}`],

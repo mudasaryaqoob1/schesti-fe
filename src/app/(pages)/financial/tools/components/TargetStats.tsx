@@ -30,8 +30,8 @@ export function TargetStats({ targetsQuery, clientInvoiceQuery }: Props) {
     : [];
   const targets = targetsQuery.data
     ? targetsQuery.data.data!.filter(
-      (target) => parseInt(target.year) === selectedYear
-    )
+        (target) => parseInt(target.year) === selectedYear
+      )
     : [];
   // const completed = completedTargets(targets, invoices);
 

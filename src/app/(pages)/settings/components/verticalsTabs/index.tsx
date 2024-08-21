@@ -12,7 +12,6 @@ const Index = () => {
   const { id } = useParams();
   const authUser = useUser();
 
-
   const active =
     'bg-schestiLightPrimary  text-schestiPrimary w-full rounded-[6px] font-semibold';
   let tabs = [
@@ -45,16 +44,19 @@ const Index = () => {
   if (authUser?.userRole === USER_ROLES_ENUM.SUBCONTRACTOR) {
     tabs = [
       ...tabs,
-      { id: 7, name: "Verification", route: ["/settings/verification"] },
-      { id: 8, name: "Trades", route: ["/settings/trades"] },
-    ]
-  } else if (authUser?.userRole !== USER_ROLES_ENUM.PROFESSOR || authUser?.userRole !== USER_ROLES_ENUM.STUDENT || authUser?.userRole !== USER_ROLES_ENUM.OWNER) {
+      { id: 7, name: 'Verification', route: ['/settings/verification'] },
+      { id: 8, name: 'Trades', route: ['/settings/trades'] },
+    ];
+  } else if (
+    authUser?.userRole !== USER_ROLES_ENUM.PROFESSOR ||
+    authUser?.userRole !== USER_ROLES_ENUM.STUDENT ||
+    authUser?.userRole !== USER_ROLES_ENUM.OWNER
+  ) {
     tabs = [
       ...tabs,
-      { id: 7, name: "Verification", route: ["/settings/verification"] },
-    ]
+      { id: 7, name: 'Verification', route: ['/settings/verification'] },
+    ];
   }
-
 
   return (
     <div
@@ -64,8 +66,9 @@ const Index = () => {
         {tabs.map((tab, index) => (
           <p
             key={tab.id + index}
-            className={`py-3 px-3 !text-sm cursor-pointer transition-colors ${senaryHeading} ${tab.route.includes(pathname) ? active : ''
-              } `}
+            className={`py-3 px-3 !text-sm cursor-pointer transition-colors ${senaryHeading} ${
+              tab.route.includes(pathname) ? active : ''
+            } `}
             onClick={() => router.push(tab.route[0])}
           >
             {tab.name}

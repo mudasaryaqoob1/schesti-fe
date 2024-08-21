@@ -74,7 +74,12 @@ const Login = () => {
 
     if (result.payload.statusCode == 200) {
       setLoading(false);
-      if (CheckOtherRoles(result.payload.data?.user.userRole) && (result.payload.data.user?.userRole === USER_ROLES_ENUM.PROFESSOR || result.payload.data.user?.userRole === USER_ROLES_ENUM.STUDENT) && result.payload.data.user?.isActive === 'pending') {
+      if (
+        CheckOtherRoles(result.payload.data?.user.userRole) &&
+        (result.payload.data.user?.userRole === USER_ROLES_ENUM.PROFESSOR ||
+          result.payload.data.user?.userRole === USER_ROLES_ENUM.STUDENT) &&
+        result.payload.data.user?.isActive === 'pending'
+      ) {
         const responseLink = navigateUserWhileAuth(result.payload.data.user);
         if (responseLink) {
           router.push(responseLink);
@@ -93,10 +98,10 @@ const Login = () => {
           // employee logging in
           const permissions = authUser.roles
             ? authUser.roles
-              .map((item) =>
-                typeof item !== 'string' ? item.permissions : []
-              )
-              .flat()
+                .map((item) =>
+                  typeof item !== 'string' ? item.permissions : []
+                )
+                .flat()
             : [];
           if (permissions.length > 0) {
             const permission = permissions[0];
@@ -172,7 +177,7 @@ const Login = () => {
         } else if (
           checkUserExist.statusCode == 400 &&
           checkUserExist.message ===
-          'Verify from your email and complete your profile'
+            'Verify from your email and complete your profile'
         ) {
           router.push(`/companydetails/${checkUserExist.data.user._id}`);
         } else if (

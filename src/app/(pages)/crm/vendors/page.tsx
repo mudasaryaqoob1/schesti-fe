@@ -180,7 +180,11 @@ function VendorsPage() {
       if (!search) {
         return true;
       }
-      if (vendor.module === 'subcontractors' || vendor.module === 'partners' || vendor.module === 'contractors') {
+      if (
+        vendor.module === 'subcontractors' ||
+        vendor.module === 'partners' ||
+        vendor.module === 'contractors'
+      ) {
         return true;
       }
       return (

@@ -31,7 +31,7 @@ type CreateCrmPartnerType = Omit<
 >;
 
 type CreateCrmContractorType = Omit<
-ICrmContractorModule,
+  ICrmContractorModule,
   '_id' | 'createdAt' | 'updatedAt' | 'associatedCompany'
 >;
 
@@ -42,7 +42,7 @@ type QueryParams = {
 type CreateCrmItem =
   | CreateCrmSubcontractorType
   | CreateCrmItemType
-  | CreateCrmPartnerType 
+  | CreateCrmPartnerType
   | CreateCrmContractorType;
 
 class CrmService extends HttpService {

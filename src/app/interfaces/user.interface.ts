@@ -43,13 +43,13 @@ export type IUserInterface = IUpdateCompanyDetail & {
   university: string;
   educationalDocuments: FileInterface[];
   verification?: {
-    date: string
+    date: string;
   };
   invitation?: {
     date: Date;
     planId: string | IPricingPlan;
     by: string | IUserInterface;
-  },
+  };
 
   isAutoPayment?: boolean;
 };

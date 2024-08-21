@@ -58,13 +58,13 @@ export function CreateMeeting({
     email: isInviteOptional
       ? Yup.array().of(Yup.string().email('is invalid\n'))
       : Yup.array()
-        .min(1)
-        .of(
-          Yup.string()
-            .email('is invalid email\n')
-            .required('Email is required')
-        )
-        .required('Email is required'),
+          .min(1)
+          .of(
+            Yup.string()
+              .email('is invalid email\n')
+              .required('Email is required')
+          )
+          .required('Email is required'),
     startDate: Yup.date().required('Start Time is required'),
   });
 
@@ -77,19 +77,19 @@ export function CreateMeeting({
   const formik = useFormik({
     initialValues: meeting
       ? {
-        topic: meeting.topic,
-        email: meeting.invitees,
-        startDate: dayjs(meeting.startDate)
-          .tz((timezone as ITimezoneOption).value)
-          .format('YYYY-MM-DDTHH:mm:ss'),
-      }
+          topic: meeting.topic,
+          email: meeting.invitees,
+          startDate: dayjs(meeting.startDate)
+            .tz((timezone as ITimezoneOption).value)
+            .format('YYYY-MM-DDTHH:mm:ss'),
+        }
       : {
-        topic: '',
-        email: [],
-        startDate: dayjs()
-          .tz((timezone as ITimezoneOption).value)
-          .format('YYYY-MM-DDTHH:mm:ss'),
-      },
+          topic: '',
+          email: [],
+          startDate: dayjs()
+            .tz((timezone as ITimezoneOption).value)
+            .format('YYYY-MM-DDTHH:mm:ss'),
+        },
     validationSchema: CreateMeetingSchema,
     enableReinitialize: meeting ? true : false,
     onSubmit(values) {
@@ -214,14 +214,14 @@ export function CreateMeeting({
               hasError={formik.touched.email && Boolean(formik.errors.email)}
               errorMessage={
                 formik.touched.email &&
-                  Boolean(formik.errors.email) &&
-                  Array.isArray(formik.errors.email)
+                Boolean(formik.errors.email) &&
+                Array.isArray(formik.errors.email)
                   ? formik.errors.email
-                    .map(
-                      (item: string, idx) =>
-                        `'${formik.values.email![idx]}' ${item}`
-                    )
-                    .toString()
+                      .map(
+                        (item: string, idx) =>
+                          `'${formik.values.email![idx]}' ${item}`
+                      )
+                      .toString()
                   : (formik.errors.email as string)
               }
               field={{
@@ -245,8 +245,8 @@ export function CreateMeeting({
                 showTime: { format: 'HH:mm' },
                 value: formik.values.startDate
                   ? dayjs(formik.values.startDate).tz(
-                    (timezone as ITimezoneOption).value
-                  )
+                      (timezone as ITimezoneOption).value
+                    )
                   : undefined,
                 onChange(date) {
                   formik.setFieldValue(
