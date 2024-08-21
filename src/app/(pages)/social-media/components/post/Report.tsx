@@ -1,9 +1,11 @@
 import CustomButton from '@/app/component/customButton/button';
 import ModalComponent from '@/app/component/modal'
 import { socialMediaService } from '@/app/services/social-media.service';
+import { RootState } from '@/redux/store';
 import { Select } from 'antd';
 import Image from 'next/image'
 import React, { Dispatch, SetStateAction, useState } from 'react'
+import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 type Props = {
@@ -12,9 +14,10 @@ type Props = {
 }
 const ReportPost = ({ id, setRefetchPost }: Props) => {
     const [showReportModal, setShowReportModal] = useState(false);
-    const [reason, setReason] = useState('spam');
+    const [reason, setReason] = useState('');
     const [description, setDescription] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const { user } = useSelector((state: RootState) => state.auth.user);
 
     const reportPostHandler = async () => {
         if (!reason) {
@@ -23,7 +26,7 @@ const ReportPost = ({ id, setRefetchPost }: Props) => {
         }
         try {
             setIsLoading(true);
-            await socialMediaService.httpAddPostReport({ id, body: { reason, description } });
+            await socialMediaService.httpAddPostReport({ id, body: { reason, description, reportedBy: user._id } });
             setRefetchPost(prev => !prev);
             setShowReportModal(false);
             setIsLoading(false);

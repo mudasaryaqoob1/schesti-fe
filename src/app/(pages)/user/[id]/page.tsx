@@ -14,19 +14,19 @@ const UserProfile = () => {
     const { user } = useSelector((state: RootState) => state.auth.user);
     const [userData, setUserData] = useState<IUser | null>(null);
 
-    // const [isLoading, setIsLoading] = useState(false);
-    // const getUserDetail = useCallback(async () => {
-    //     setIsLoading(true);
-    //     const { data } = await userService.httpGetCompanyDetail(id as string);
-    //     setUserData(data.user);
-    //     setIsLoading(false);
-    // }, []);
+    const [isLoading, setIsLoading] = useState(false);
+    const getUserDetail = useCallback(async () => {
+        setIsLoading(true);
+        const { data } = await userService.httpGetCompanyInfo(id as string);
+        setUserData(data.user);
+        setIsLoading(false);
+    }, []);
 
-    // useEffect(() => {
-    //     if (id) {
-    //         getUserDetail();
-    //     }
-    // }, [id]);
+    useEffect(() => {
+        if (id) {
+            getUserDetail();
+        }
+    }, [id]);
 
 
     console.log(userData, 'userData')
@@ -35,6 +35,10 @@ const UserProfile = () => {
     }
 
     const isLoginUser = id === user._id;
+
+    if (isLoading) {
+        return <Loader />
+    }
     return (
         <section className="my-4 mx-8 px-4 gap-6">
             <h6 className='text-lg font-semibold text-graphiteGray'>User Profile</h6>

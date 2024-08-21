@@ -24,7 +24,7 @@ type Props = {
 } & IPost
 
 
-const SinglePost = ({ _id, description, mediaFiles, feeling = '', userReaction, createdAt, reactions, associatedCompany: { _id: postOwnerId = '', name = '', companyName = '', organizationName = '' } }: Props) => {
+const SinglePost = ({ _id, description, mediaFiles, feeling = '', userReaction, createdAt, reactions, associatedCompany: { _id: postOwnerId = '', userRole: postOwnerRole, name = '', companyName = '', organizationName = '' } }: Props) => {
     const [refetchPost, setRefetchPost] = useState(false);
     const [seeMore, setSeeMore] = useState(false);
     const [totalComments, setTotalComments] = useState(0);
@@ -37,6 +37,7 @@ const SinglePost = ({ _id, description, mediaFiles, feeling = '', userReaction, 
     const router = useRouter();
 
     const isPostOwner = postOwnerId === user._id;
+    const isAdmin = postOwnerRole === 'admin';
 
     const postMenuItems: MenuProps['items'] = [
         {
@@ -160,7 +161,7 @@ const SinglePost = ({ _id, description, mediaFiles, feeling = '', userReaction, 
                 </div>
                 <div className="flex items-center gap-3">
                     {
-                        !isPostOwner && (
+                        (!isPostOwner && !isAdmin) && (
                             <ReportPost id={_id} setRefetchPost={setRefetchPost} />
                         )
                     }

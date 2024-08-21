@@ -86,7 +86,8 @@ class SocialMediaService extends HttpService {
   httpAddPostReport = ({ id, body }: {
     id: string, body: {
       reason: string,
-      description: string
+      description: string;
+      reportedBy: string;
     }
   }): Promise<IResponseInterface> =>
     this.put(`${this.prefix}/addPostReport/${id}`, body);
