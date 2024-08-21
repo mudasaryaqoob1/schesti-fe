@@ -10,6 +10,7 @@ import { Stage, Layer } from 'react-konva';
 import ReportCard from '@/app/component/reportCard';
 import { Spin } from 'antd';
 import generatePDF from '@/app/component/captureComponent/generatePdf';
+import { ScaleData } from '../../scale/page';
 
 // const groupByType = (items: dataInterface[]): dataInterface[][] => {
 //   console.log(items, ' ===> Data interface');
@@ -61,7 +62,7 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
   const [data, setData] = useState<dataInterface[]>([]);
   const [reportData, setreportData] = useState<any>([]);
   const [uploadFileData, setuploadFileData] = useState<any>([]);
-  const { calculateMidpoint, calculatePolygonCenter } = useDraw();
+  const { calculateMidpoint, calculatePolygonCenter, calcLineDistance, calculatePolygonArea, calculatePolygonPerimeter,calculatePolygonVolume } = useDraw();
   // const [isSaving, setIsSaving] = useState<boolean>(false);
   const [loading, setloading] = useState<boolean>(true);
 
@@ -119,153 +120,652 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
     setuploadFileData(takeOff?.pages ?? [])
   }, [takeOff])
   const [perText, setperText] = useState<string>("")
+  
 
+  //Oldest
+  // useEffect(() => {
+  //   console.log(reportData, uploadFileData, " ===> loading of capture ")
+  //   if (Array.isArray(reportData) && reportData?.length > 0 && Array.isArray(uploadFileData) && uploadFileData?.length > 0) {
+  //     setloading(true)
+  //     setData(reportData.map((i)=>({image:'/overview.png',details:{...i}})))
+  //     console.log(uploadFileData, reportData, " ===> Data of pages and reports")
+  //     const loadImage = (src: string) => {
+  //       return new Promise<HTMLImageElement>((resolve, reject) => {
+  //         //@ts-ignore
+  //         const img = new Image();
+  //         img.crossOrigin = 'anonymous';
+  //         img.src = `${src}?cacheBust=${new Date().getTime()}`;
+  //         img.onload = () => resolve(img);
+  //         img.onerror = (e: any) => { console.log(e, " ==> Page image loading of capture"); reject(e) };
+  //       });
+  //     };
+
+  //     const captureShape = async (
+  //       shape: any,
+  //       background: HTMLImageElement,
+  //       shapeType: string
+  //     ) => {
+  //       // Create a temporary container for off-screen stage
+  //       const container = document.createElement('div');
+  //       container.style.display = 'none'; // Hide the container
+  //       document.body.appendChild(container); // This is required for Konva.Stage initialization
+
+  //       return new Promise<string>((resolve) => {
+  //         // Initialize a temporary stage with the container
+  //         const tempStage = new Konva.Stage({
+  //           container: container,
+  //           width: background.width,
+  //           height: background.height,
+  //         });
+
+  //         const layer = new Konva.Layer();
+  //         tempStage.add(layer);
+
+  //         // Add the background image to the layer
+  //         const bgImage = new Konva.Image({
+  //           image: background,
+  //           width: background.width,
+  //           height: background.height,
+  //         });
+  //         layer.add(bgImage);
+
+  //         let minX: number, minY: number, maxX: number, maxY: number;
+
+  //         // Initialize variables to ensure they cover the shape with margins later
+  //         minX = minY = Number.MAX_SAFE_INTEGER;
+  //         maxX = maxY = 0;
+
+  //         // Determine the type of shape and render accordingly
+  //         switch (shapeType) {
+  //           case 'count': {
+  //             // Example for a circle shape
+  //             const { x, y, radius = 20 } = shape;
+  //             const circle = new Konva.Image({
+  //               image: counterImage,
+  //               width: 20,
+  //               height: 20,
+  //               x,
+  //               y,
+  //               radius,
+  //             });
+  //             layer.add(circle);
+
+  //             // Adjust bounds for the circle, considering the radius and a margin
+  //             minX = x - radius - 20;
+  //             minY = y - radius - 20;
+  //             maxX = x + radius + 20;
+  //             maxY = y + radius + 20;
+  //             break;
+  //           }
+
+  //           case 'line':
+  //           case 'perimeter':
+  //           case 'dynamic':
+  //           case 'area':
+  //           case 'volume':
+  //             {
+  //               // Example for a line or polygon shape
+  //               const { points, stroke, strokeWidth, lineCap } = shape;
+  //               const line = new Konva.Line({
+  //                 points,
+  //                 stroke,
+  //                 strokeWidth,
+  //                 lineCap,
+  //                 closed: shapeType === 'area' || shapeType === 'volume', // Close path for areas and volumes
+  //                 fill: shape?.fillColor
+  //               });
+  //               layer.add(line);
+  //               console.warn(shape, 'sssss');
+  //               let xText = 0,
+  //                 yText = 0;
+  //               if (
+  //                 shapeType === 'area' ||
+  //                 shapeType === 'volume' ||
+  //                 shapeType === 'dynamic'
+  //               ) {
+  //                 const { x, y } = calculatePolygonCenter(points);
+  //                 xText = x - 20;
+  //                 yText = y - 20;
+  //               } else {
+  //                 const { x, y } = calculateMidpoint(points);
+  //                 xText = x - 20;
+  //                 yText = y - 20;
+  //               }
+
+  //               // Calculate bounds for lines and polygons, include margin
+  //               const xs = points.filter((_: any, i: number) => i % 2 === 0);
+  //               const ys = points.filter((_: any, i: number) => i % 2 !== 0);
+  //               minX = Math.min(...xs) - 20;
+  //               minY = Math.min(...ys) - 20;
+  //               maxX = Math.max(...xs) + 20;
+  //               maxY = Math.max(...ys) + 20;
+  //               const textSize = ((maxX - minX) * (maxY - minY)) / 100000;
+
+  //               console.warn(textSize);
+  //               const text = new Konva.Text({
+  //                 x: xText,
+  //                 y: yText,
+  //                 text: shape.text,
+  //                 fontSize: Math.floor(textSize) * 10 + 25,
+  //                 fontFamily: 'Calibri',
+  //                 fill: shape?.textColor ?? 'red',
+  //               });
+  //               layer.add(text);
+  //             }
+  //             break;
+
+  //           default:
+  //             console.error('Unknown shape type:', shapeType);
+  //             return;
+  //         }
+
+  //         layer.draw(); // Force drawing the layer to render shapes
+
+  //         // Use toImage to capture the specified region
+  //         tempStage.toImage({
+  //           x: minX,
+  //           y: minY,
+  //           width: maxX - minX,
+  //           height: maxY - minY,
+  //           callback: (img) => {
+  //             // Create a canvas to get the cropped image data
+  //             const canvas = document.createElement('canvas');
+  //             canvas.width = maxX - minX;
+  //             canvas.height = maxY - minY;
+  //             const ctx = canvas.getContext('2d');
+  //             if (ctx) {
+  //               ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  //               const dataURL = canvas.toDataURL();
+  //               resolve(dataURL); // Resolve the promise with the cropped image data URL
+  //             }
+  //             // Cleanup: remove the temporary container from the document
+  //             document.body.removeChild(container);
+  //           },
+  //         });
+  //       });
+  //     };
+
+  //     const captureShapes = async () => {
+  //       setloading(true);
+  //       try {
+  //         // for(let j = 0; j<uploadFileData?.length; j++){
+
+  //         // }
+  //         // const background = await loadImage(uploadFileData[1]?.src || ''); // Update based on actual data structure
+  //         const promises = reportData.map(async (item) => {
+  //           const page = uploadFileData?.find(
+  //             (pg: any) => pg?.pageId == item?.pageId
+  //           );
+  //           console.log(
+  //             page,
+  //             ' ===> Data of pages and reports for Page loading of capture'
+  //           );
+  //           let background: any = {};
+  //           if (page) {
+  //             background = await loadImage(page?.src || '');
+  //           } else {
+  //             background = await loadImage(uploadFileData[0]?.src || '');
+  //           }
+  //           console.log(
+  //             background,
+  //             ' ===> Data of pages and reports for Page bottom loading of capture'
+  //           );
+  //           const url = await captureShape(
+  //             { ...item.config, text: item.text, name: item.projectName },
+  //             background,
+  //             item.type
+  //           );
+  //           return {
+  //             image: url,
+  //             details: { ...item },
+  //           };
+  //         });
+
+  //         const processInBatches = async (promisesArray: any[], batchSize: number) => {
+  //           const results = [];
+
+  //           for (let i = 0; i < promisesArray.length; i += batchSize) {
+  //             setperText(`${i}/${promisesArray?.length}`)
+  //             // Extract a batch of promises
+  //             const batch = promisesArray.slice(i, i + batchSize);
+
+  //             // Wait for all promises in the current batch to resolve
+  //             const batchResults = await Promise.all(batch.map((promiseFn) => promiseFn));
+  //             results.push(...batchResults); // Store the results
+  //             setData(ps=>(ps?.map((it,ind)=>{
+  //               if(ind == i){
+  //                 return {...it,image:batchResults[0].image}
+  //               }else{
+  //                 return it
+  //               }
+  //             })))
+  //           }
+
+  //           return results;
+  //         }
+
+
+  //         // const newData = await Promise.all(promises);
+  //         const newData = await processInBatches(promises, 1);
+  //         setData(newData);
+  //         setloading(false);
+  //       } catch (error) {
+  //         setloading(false);
+  //         console.log(error, 'error while capturing loading of capture');
+  //       }
+  //     };
+
+  //     if (reportData.length) captureShapes();
+  //   } else {
+  //     setData([])
+  //     setloading(false)
+  //   }
+  // }, [reportData, uploadFileData])
+
+  //New working right and optimized but points fails on right place
+  // useEffect(() => {
+  //   console.log(reportData, uploadFileData, " ===> loading of capture ")
+  //   if (Array.isArray(reportData) && reportData?.length > 0 && Array.isArray(uploadFileData) && uploadFileData?.length > 0) {
+  //     setloading(true)
+  //     setData(reportData.map((i)=>({image:'/overview.png',details:{...i}})))
+  //     console.log(uploadFileData, reportData, " ===> Data of pages and reports")
+  //     const loadImage = (src: string) => {
+  //       return new Promise<HTMLImageElement>((resolve, reject) => {
+  //         //@ts-ignore
+  //         const img = new Image();
+  //         img.crossOrigin = 'anonymous';
+  //         img.src = `${src}?cacheBust=${new Date().getTime()}`;
+  //         img.onload = () => {
+  //           let wi = img.width
+  //           let hi = img.height
+  //           let nw = 500;
+  //           let nh = nw * (hi/wi)
+  //           img.width = nw;
+  //           img.height = nh;
+  //           img.id = `${wi}-${hi}-${new Date().getTime()}`
+  //           resolve(img)
+  //         };
+  //         img.onerror = (e: any) => { console.log(e, " ==> Page image loading of capture"); reject(e) };
+  //       });
+  //     };
+
+  //     const captureShape = async (
+  //       shape: any,
+  //       background: HTMLImageElement,
+  //       shapeType: string
+  //     ) => {
+  //       // Create a temporary container for off-screen stage
+  //       const container = document.createElement('div');
+  //       container.style.display = 'none'; // Hide the container
+  //       document.body.appendChild(container); // This is required for Konva.Stage initialization
+
+  //       return new Promise<string>((resolve) => {
+  //         // const [w,h] = background.id?.split('-')
+  //         // Initialize a temporary stage with the container
+  //         const tempStage = new Konva.Stage({
+  //           container: container,
+  //           width: background.width,
+  //           height: background.height,
+  //         });
+
+  //         const layer = new Konva.Layer();
+  //         tempStage.add(layer);
+
+  //         // Add the background image to the layer
+  //         const bgImage = new Konva.Image({
+  //           image: background,
+  //           width: background.width,
+  //           height: background.height,
+  //         });
+  //         layer.add(bgImage);
+
+  //         let minX: number, minY: number, maxX: number, maxY: number;
+
+  //         // Initialize variables to ensure they cover the shape with margins later
+  //         minX = minY = Number.MAX_SAFE_INTEGER;
+  //         maxX = maxY = 0;
+
+  //         // Determine the type of shape and render accordingly
+  //         switch (shapeType) {
+  //           case 'count': {
+  //             // Example for a circle shape
+  //             const { x, y, radius = 20 } = shape;
+  //             const circle = new Konva.Image({
+  //               image: counterImage,
+  //               width: 20,
+  //               height: 20,
+  //               x,
+  //               y,
+  //               radius,
+  //             });
+  //             layer.add(circle);
+
+  //             // Adjust bounds for the circle, considering the radius and a margin
+  //             minX = x - radius - 20;
+  //             minY = y - radius - 20;
+  //             maxX = x + radius + 20;
+  //             maxY = y + radius + 20;
+  //             break;
+  //           }
+
+  //           case 'line':
+  //           case 'perimeter':
+  //           case 'dynamic':
+  //           case 'area':
+  //           case 'volume':
+  //             {
+  //               // Example for a line or polygon shape
+  //               const { points, stroke, strokeWidth, lineCap } = shape;
+  //               const line = new Konva.Line({
+  //                 points,
+  //                 stroke,
+  //                 strokeWidth,
+  //                 lineCap,
+  //                 closed: shapeType === 'area' || shapeType === 'volume', // Close path for areas and volumes
+  //                 fill: shape?.fillColor
+  //               });
+  //               layer.add(line);
+  //               console.warn(shape, 'sssss');
+  //               let xText = 0,
+  //                 yText = 0;
+  //               if (
+  //                 shapeType === 'area' ||
+  //                 shapeType === 'volume' ||
+  //                 shapeType === 'dynamic'
+  //               ) {
+  //                 const { x, y } = calculatePolygonCenter(points);
+  //                 xText = x - 20;
+  //                 yText = y - 20;
+  //               } else {
+  //                 const { x, y } = calculateMidpoint(points);
+  //                 xText = x - 20;
+  //                 yText = y - 20;
+  //               }
+
+  //               // Calculate bounds for lines and polygons, include margin
+  //               const xs = points.filter((_: any, i: number) => i % 2 === 0);
+  //               const ys = points.filter((_: any, i: number) => i % 2 !== 0);
+  //               minX = Math.min(...xs) - 20;
+  //               minY = Math.min(...ys) - 20;
+  //               maxX = Math.max(...xs) + 20;
+  //               maxY = Math.max(...ys) + 20;
+  //               const textSize = ((maxX - minX) * (maxY - minY)) / 100000;
+
+  //               console.warn(textSize);
+  //               const text = new Konva.Text({
+  //                 x: xText,
+  //                 y: yText,
+  //                 text: shape.text,
+  //                 fontSize: Math.floor(textSize) * 10 + 25,
+  //                 fontFamily: 'Calibri',
+  //                 fill: shape?.textColor ?? 'red',
+  //               });
+  //               layer.add(text);
+  //             }
+  //             break;
+
+  //           default:
+  //             console.error('Unknown shape type:', shapeType);
+  //             return;
+  //         }
+
+  //         layer.draw(); // Force drawing the layer to render shapes
+
+  //         // Use toImage to capture the specified region
+  //         tempStage.toImage({
+  //           x: minX,
+  //           y: minY,
+  //           width: maxX - minX,
+  //           height: maxY - minY,
+  //           callback: (img) => {
+  //             // Create a canvas to get the cropped image data
+  //             const canvas = document.createElement('canvas');
+  //             canvas.width = maxX - minX;
+  //             canvas.height = maxY - minY;
+  //             const ctx = canvas.getContext('2d');
+  //             if (ctx) {
+  //               ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  //               const dataURL = canvas.toDataURL();
+  //               resolve(dataURL); // Resolve the promise with the cropped image data URL
+  //             }
+  //             // Cleanup: remove the temporary container from the document
+  //             document.body.removeChild(container);
+  //           },
+  //         });
+  //       });
+  //     };
+
+  //     const captureShapes = async () => {
+  //       setloading(true);
+  //       try {
+  //         // for(let j = 0; j<uploadFileData?.length; j++){
+
+  //         // }
+  //         // const background = await loadImage(uploadFileData[1]?.src || ''); // Update based on actual data structure
+  //         const promises = reportData.map(async (item) => {
+  //           const page = uploadFileData?.find(
+  //             (pg: any) => pg?.pageId == item?.pageId
+  //           );
+  //           console.log(
+  //             page,
+  //             ' ===> Data of pages and reports for Page loading of capture'
+  //           );
+  //           let background: any = {};
+  //           if (page) {
+  //             background = await loadImage(page?.src || '');
+  //           } else {
+  //             background = await loadImage(uploadFileData[0]?.src || '');
+  //           }
+  //           console.log(
+  //             background,
+  //             ' ===> Data of pages and reports for Page bottom loading of capture'
+  //           );
+  //           const url = await captureShape(
+  //             { ...item.config, text: item.text, name: item.projectName },
+  //             background,
+  //             item.type
+  //           );
+  //           return {
+  //             image: url,
+  //             details: { ...item },
+  //           };
+  //         });
+
+  //         const processInBatches = async (promisesArray: any[], batchSize: number) => {
+  //           const results = [];
+
+  //           for (let i = 0; i < promisesArray.length; i += batchSize) {
+  //             setperText(`${i}/${promisesArray?.length}`)
+  //             // Extract a batch of promises
+  //             const batch = promisesArray.slice(i, i + batchSize);
+
+  //             // Wait for all promises in the current batch to resolve
+  //             const batchResults = await Promise.all(batch.map((promiseFn) => promiseFn));
+  //             results.push(...batchResults); // Store the results
+  //             setData(ps=>(ps?.map((it,ind)=>{
+  //               if(ind == i){
+  //                 return {...it,image:batchResults[0].image}
+  //               }else{
+  //                 return it
+  //               }
+  //             })))
+  //           }
+
+  //           return results;
+  //         }
+
+
+  //         // const newData = await Promise.all(promises);
+  //         const newData = await processInBatches(promises, 1);
+  //         setData(newData);
+  //         setloading(false);
+  //       } catch (error) {
+  //         setloading(false);
+  //         console.log(error, 'error while capturing loading of capture');
+  //       }
+  //     };
+
+  //     if (reportData.length) captureShapes();
+  //   } else {
+  //     setData([])
+  //     setloading(false)
+  //   }
+  // }, [reportData, uploadFileData])
+
+
+  //GPT Try
   useEffect(() => {
-    console.log(reportData, uploadFileData, " ===> loading of capture ")
-    if (Array.isArray(reportData) && reportData?.length > 0 && Array.isArray(uploadFileData) && uploadFileData?.length > 0) {
-      setloading(true)
-      setData(reportData.map((i)=>({image:'/overview.png',details:{...i}})))
-      console.log(uploadFileData, reportData, " ===> Data of pages and reports")
+    console.log(reportData, uploadFileData, " ===> loading of capture ");
+    if (Array.isArray(reportData) && reportData.length > 0 && Array.isArray(uploadFileData) && uploadFileData.length > 0) {
+      setloading(true);
+      setData(reportData.map((i) => ({ image: '/overview.png', details: { ...i } })));
+      console.log(uploadFileData, reportData, " ===> Data of pages and reports");
+  
       const loadImage = (src: string) => {
         return new Promise<HTMLImageElement>((resolve, reject) => {
-          //@ts-ignore
           const img = new Image();
           img.crossOrigin = 'anonymous';
           img.src = `${src}?cacheBust=${new Date().getTime()}`;
-          img.onload = () => resolve(img);
-          img.onerror = (e: any) => { console.log(e, " ==> Page image loading of capture"); reject(e) };
+          img.onload = () => {
+            let wi = img.width;
+            let hi = img.height;
+            let nw = 500;
+            let nh = nw * (hi / wi);
+            img.width = nw;
+            img.height = nh;
+            // img.id = `${wi}-${hi}-${new Date().getTime()}`;
+            //@ts-ignore
+            resolve({ img, scaleX: nw / wi, scaleY: nh / hi });
+          };
+          img.onerror = (e: any) => { console.log(e, " ==> Page image loading of capture"); reject(e); };
         });
       };
-
+  
       const captureShape = async (
         shape: any,
-        background: HTMLImageElement,
-        shapeType: string
+        background: { img: HTMLImageElement, scaleX: number, scaleY: number },
+        shapeType: string,
+        scale:ScaleData
       ) => {
-        // Create a temporary container for off-screen stage
         const container = document.createElement('div');
-        container.style.display = 'none'; // Hide the container
-        document.body.appendChild(container); // This is required for Konva.Stage initialization
-
-        return new Promise<string>((resolve) => {
-          // Initialize a temporary stage with the container
+        container.style.display = 'none';
+        document.body.appendChild(container);
+  
+        return new Promise<{url:string,text:string}>((resolve) => {
           const tempStage = new Konva.Stage({
             container: container,
-            width: background.width,
-            height: background.height,
+            width: background.img.width,
+            height: background.img.height,
           });
-
+  
           const layer = new Konva.Layer();
           tempStage.add(layer);
-
-          // Add the background image to the layer
+  
           const bgImage = new Konva.Image({
-            image: background,
-            width: background.width,
-            height: background.height,
+            image: background.img,
+            width: background.img.width,
+            height: background.img.height,
           });
           layer.add(bgImage);
-
+  
           let minX: number, minY: number, maxX: number, maxY: number;
-
-          // Initialize variables to ensure they cover the shape with margins later
           minX = minY = Number.MAX_SAFE_INTEGER;
           maxX = maxY = 0;
+  
+          const scaleX = background.scaleX;
+          const scaleY = background.scaleY;
 
-          // Determine the type of shape and render accordingly
+          let curtxt:string | number = '';
+  
           switch (shapeType) {
+            case 'text': 
+              break;
             case 'count': {
-              // Example for a circle shape
               const { x, y, radius = 20 } = shape;
               const circle = new Konva.Image({
                 image: counterImage,
                 width: 20,
                 height: 20,
-                x,
-                y,
+                x: x * scaleX,
+                y: y * scaleY,
                 radius,
               });
               layer.add(circle);
-
-              // Adjust bounds for the circle, considering the radius and a margin
-              minX = x - radius - 20;
-              minY = y - radius - 20;
-              maxX = x + radius + 20;
-              maxY = y + radius + 20;
+  
+              minX = x * scaleX - radius - 20;
+              minY = y * scaleY - radius - 20;
+              maxX = x * scaleX + radius + 20;
+              maxY = y * scaleY + radius + 20;
               break;
             }
-
+  
             case 'line':
             case 'perimeter':
             case 'dynamic':
             case 'area':
-            case 'volume':
-              {
-                // Example for a line or polygon shape
-                const { points, stroke, strokeWidth, lineCap } = shape;
-                const line = new Konva.Line({
-                  points,
-                  stroke,
-                  strokeWidth,
-                  lineCap,
-                  closed: shapeType === 'area' || shapeType === 'volume', // Close path for areas and volumes
-                  fill: shape?.fillColor
-                });
-                layer.add(line);
-                console.warn(shape, 'sssss');
-                let xText = 0,
-                  yText = 0;
-                if (
-                  shapeType === 'area' ||
-                  shapeType === 'volume' ||
-                  shapeType === 'dynamic'
-                ) {
-                  const { x, y } = calculatePolygonCenter(points);
-                  xText = x - 20;
-                  yText = y - 20;
-                } else {
-                  const { x, y } = calculateMidpoint(points);
-                  xText = x - 20;
-                  yText = y - 20;
-                }
+            case 'volume': {
+              const { points, stroke, strokeWidth, lineCap } = shape;
+              const scaledPoints = points.map((point: number, index: number) => index % 2 === 0 ? point * scaleX : point * scaleY);
 
-                // Calculate bounds for lines and polygons, include margin
-                const xs = points.filter((_: any, i: number) => i % 2 === 0);
-                const ys = points.filter((_: any, i: number) => i % 2 !== 0);
-                minX = Math.min(...xs) - 20;
-                minY = Math.min(...ys) - 20;
-                maxX = Math.max(...xs) + 20;
-                maxY = Math.max(...ys) + 20;
-                const textSize = ((maxX - minX) * (maxY - minY)) / 100000;
-
-                console.warn(textSize);
-                const text = new Konva.Text({
-                  x: xText,
-                  y: yText,
-                  text: shape.text,
-                  fontSize: Math.floor(textSize) * 10 + 25,
-                  fontFamily: 'Calibri',
-                  fill: shape?.textColor ?? 'red',
-                });
-                layer.add(text);
+              curtxt = shapeType == 'line' ? calcLineDistance(points, scale, true) 
+              : shapeType == 'perimeter' ? (points?.length > 4 ? calculatePolygonPerimeter(points, scale) : calcLineDistance(points, scale, true)) 
+              : shapeType == 'area' ? calculatePolygonArea(points, scale)
+              : shapeType == 'volume' ? calculatePolygonVolume(points,shape?.depth || 1,scale) : ""
+  
+              const line = new Konva.Line({
+                points: scaledPoints,
+                stroke,
+                strokeWidth,
+                lineCap,
+                closed: shapeType === 'area' || shapeType === 'volume',
+                fill: shape?.fillColor,
+              });
+              layer.add(line);
+  
+              let xText = 0, yText = 0;
+              if (shapeType === 'area' || shapeType === 'volume' || shapeType === 'dynamic') {
+                const { x, y } = calculatePolygonCenter(scaledPoints);
+                xText = x - 20;
+                yText = y - 20;
+              } else {
+                const { x, y } = calculateMidpoint(scaledPoints);
+                xText = x - 20;
+                yText = y - 20;
               }
-              break;
-
+  
+              const xs = scaledPoints.filter((_: any, i: any) => i % 2 === 0);
+              const ys = scaledPoints.filter((_: any, i: any) => i % 2 !== 0);
+              minX = Math.min(...xs) - 20;
+              minY = Math.min(...ys) - 20;
+              maxX = Math.max(...xs) + 20;
+              maxY = Math.max(...ys) + 20;
+              const textSize = ((maxX - minX) * (maxY - minY)) / 100000;
+  
+              const text = new Konva.Text({
+                x: xText,
+                y: yText,
+                text: `${curtxt}`,//shape.text,
+                fontSize: (Math.floor(textSize) * 10 + 25),
+                fontFamily: 'Calibri',
+                fill: shape?.textColor ?? 'red',
+              });
+              layer.add(text);
+            }
+            break;
+  
             default:
               console.error('Unknown shape type:', shapeType);
               return;
           }
-
-          layer.draw(); // Force drawing the layer to render shapes
-
-          // Use toImage to capture the specified region
+  
+          layer.draw();
+  
           tempStage.toImage({
             x: minX,
             y: minY,
             width: maxX - minX,
             height: maxY - minY,
             callback: (img) => {
-              // Create a canvas to get the cropped image data
               const canvas = document.createElement('canvas');
               canvas.width = maxX - minX;
               canvas.height = maxY - minY;
@@ -273,29 +773,20 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
               if (ctx) {
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                 const dataURL = canvas.toDataURL();
-                resolve(dataURL); // Resolve the promise with the cropped image data URL
+                resolve({url:dataURL,text:`${curtxt}`});
               }
-              // Cleanup: remove the temporary container from the document
               document.body.removeChild(container);
             },
           });
         });
       };
-
+  
       const captureShapes = async () => {
         setloading(true);
         try {
-          // for(let j = 0; j<uploadFileData?.length; j++){
-
-          // }
-          // const background = await loadImage(uploadFileData[1]?.src || ''); // Update based on actual data structure
           const promises = reportData.map(async (item) => {
-            const page = uploadFileData?.find(
+            const page = uploadFileData.find(
               (pg: any) => pg?.pageId == item?.pageId
-            );
-            console.log(
-              page,
-              ' ===> Data of pages and reports for Page loading of capture'
             );
             let background: any = {};
             if (page) {
@@ -303,46 +794,37 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
             } else {
               background = await loadImage(uploadFileData[0]?.src || '');
             }
-            console.log(
-              background,
-              ' ===> Data of pages and reports for Page bottom loading of capture'
-            );
-            const url = await captureShape(
+            const scale = page?.scale ?? {
+              xScale: `1in=1in`,
+              yScale: `1in=1in`,
+              precision: '1',
+            }
+            const {url,text} = await captureShape(
               { ...item.config, text: item.text, name: item.projectName },
               background,
-              item.type
+              item.type,
+              scale
             );
             return {
               image: url,
-              details: { ...item },
+              details: { ...item,text },
             };
           });
-
+  
           const processInBatches = async (promisesArray: any[], batchSize: number) => {
             const results = [];
-
+  
             for (let i = 0; i < promisesArray.length; i += batchSize) {
               setperText(`${i}/${promisesArray?.length}`)
-              // Extract a batch of promises
               const batch = promisesArray.slice(i, i + batchSize);
-
-              // Wait for all promises in the current batch to resolve
               const batchResults = await Promise.all(batch.map((promiseFn) => promiseFn));
-              results.push(...batchResults); // Store the results
-              setData(ps=>(ps?.map((it,ind)=>{
-                if(ind == i){
-                  return {...it,image:batchResults[0].image}
-                }else{
-                  return it
-                }
-              })))
+              results.push(...batchResults);
+              setData(ps => ps.map((it, ind) => ind === i ? { details:{...it.details, text:batchResults[0]?.details?.text}, image: batchResults[0].image } : it));
             }
-
+  
             return results;
           }
-
-
-          // const newData = await Promise.all(promises);
+  
           const newData = await processInBatches(promises, 1);
           setData(newData);
           setloading(false);
@@ -351,13 +833,16 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
           console.log(error, 'error while capturing loading of capture');
         }
       };
-
+  
       if (reportData.length) captureShapes();
     } else {
-      setData([])
-      setloading(false)
+      setData([]);
+      setloading(false);
     }
-  }, [reportData, uploadFileData])
+  }, [reportData, uploadFileData]);
+  
+
+
   useEffect(() => { console.log(loading, " ===> loading of capture") }, [loading])
   useEffect(() => {
     return () => {
