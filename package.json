@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "rimraf .next & next build",
-    "start": "NODE_OPTIONS='--max-old-space-size=2048' next start",
+    "start": "next start",
     "start:local": "cp .env.testing .env && next dev",
     "start:localWindows": "copy .env.testing .env && next dev",
     "start:dev": "cp .env.dev .env && next dev",
@@ -57,6 +57,7 @@
     "react-dom": "^18",
     "react-draggable": "^4.4.6",
     "react-konva": "^18.2.10",
+    "react-konva-utils": "^1.0.6",
     "react-pagination": "^1.0.0",
     "react-phone-number-input": "^3.3.9",
     "react-query": "^3.39.3",
