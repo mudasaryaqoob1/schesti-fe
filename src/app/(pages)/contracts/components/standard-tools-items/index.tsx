@@ -31,6 +31,7 @@ type Props = {
   onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
   contract: ICrmContract;
   color: string;
+  tools?: ToolState[];
 };
 export function StandardToolItem({
   item,
@@ -42,6 +43,7 @@ export function StandardToolItem({
   onChange,
   contract,
   color,
+  tools,
 }: Props) {
   if (mode === 'add-values') {
     return (
@@ -72,6 +74,7 @@ export function StandardToolItem({
                 contract={contract}
                 item={selectedTool}
                 onChange={onChange}
+                tools={tools}
               />
             </Popups>
           </ModalComponent>
@@ -119,12 +122,12 @@ function Item({ item, mode, onClick, onDelete, color }: ItemProps) {
       }}
       className={`p-3 rounded-lg border-2 h-fit text-sm relative font-semibold  flex items-center space-x-2 border-dashed m-0`}
       style={{
-        borderColor: `${color}`,
+        borderColor: !item.value ? `${color}` : '#848c9d',
         backgroundColor: 'white',
         color,
       }}
     >
-      <GetStandardToolIcon type={item.tool} />
+      {!item.value ? <GetStandardToolIcon type={item.tool} /> : null}
 
       <RenderStandardInputValue item={item} mode={mode} />
 
@@ -147,9 +150,10 @@ type InputProps = {
   item: ToolState;
   onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
   contract: ICrmContract;
+  tools?: ToolState[];
 };
 
-function StandardToolInput({ item, onChange, contract }: InputProps) {
+function StandardToolInput({ item, onChange, contract, tools }: InputProps) {
   if (item.tool === 'date') {
     return (
       <DateInputComponent
@@ -171,6 +175,7 @@ function StandardToolInput({ item, onChange, contract }: InputProps) {
         contract={contract}
         item={item}
         onChange={onChange}
+        tools={tools}
       />
     );
   } else if (item.tool === 'comment') {
@@ -195,11 +200,19 @@ function RenderStandardInputValue({
         return <p className="capitalize">{item.value}</p>;
       } else if ('url' in item.value) {
         return (
-          <Image alt="comment" src={item.value.url} width={20} height={20} />
+          <Image
+            alt="comment"
+            src={item.value.url}
+            width={80}
+            height={40}
+            objectFit="contain"
+          />
         );
       } else if (item.tool === 'signature' && 'font' in item.value) {
         return (
-          <ChooseFont text={item.value.value} chooseFont={item.value.font} />
+          <div className="text-[20px]">
+            <ChooseFont text={item.value.value} chooseFont={item.value.font} />
+          </div>
         );
       }
     } else {
@@ -288,71 +301,90 @@ function TypeSignature({ onChange, item }: TypeSignatureProps) {
 function GetInitialToolValue({
   item,
   onChange,
+  tools,
 }: {
   onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
   item: ToolState;
   contract: ICrmContract;
+  tools?: ToolState[];
 }) {
+  const [activeTab, setActiveTab] = useState('type');
+
+  const signature =
+    tools &&
+    tools.find(
+      (tool) =>
+        tool.tool === 'signature' &&
+        typeof tool.value !== 'undefined' &&
+        'font' in tool.value
+    );
+  // get the first character of each word
+  const initialVal =
+    signature && typeof signature.value != 'undefined'
+      ? (signature.value as any)?.value
+          .split(' ')
+          .map((word: string) => word.charAt(0))
+          .join('')
+      : '';
+  console.log({ signature, tools });
   const [value, setValue] = useState(
     typeof item.value === 'string' || typeof item.value === 'undefined'
       ? item.value
-      : ''
+      : initialVal
   );
-  const [error, setError] = useState<string>('');
-
-  // const senderInitial = typeof contract.user === 'string' ? false : contract.user.name.split(' ').map(name => name ? name[0].toUpperCase() : "").join('');
-  // const receiverInitial = typeof contract.receiver === 'string' ? false : getReceiverName(contract.receiver).split(' ').map(name => name ? name[0].toUpperCase() : "").join('');
-  // console.log({ senderInitial, receiverInitial, value });
-  // useEffect(() => {
-  //   if (value) {
-  //     if (value.length && (value == senderInitial || value == receiverInitial)) {
-  //       setError('');
-  //     } else {
-  //       setError('Initials should be same as sender or receiver initials');
-  //     }
-  //   }
-  // }, [receiverInitial, senderInitial, value]);
 
   return (
-    <div className="space-y-3 h-[160px]">
-      <div>
-        <InputComponent
-          label="Initials"
-          name="initials"
-          type="text"
-          placeholder="John Doe e.g JD"
-          field={{
-            value: value,
-            onChange(e) {
-              setValue(e.target.value);
-            },
-            onBlur: () => {
-              if (!value) {
-                setError('Initials is required');
-              }
-            },
-          }}
-          hasError={Boolean(error.length)}
-          errorMessage={error}
-        />
-        {/* <span className='text-xs text-schestiLightBlack'>Use  {senderInitial} or {receiverInitial}</span> */}
-      </div>
-
-      <div className="flex justify-end">
-        <CustomButton
-          text="Add Initials"
-          disabled={Boolean(error.length)}
-          className="!w-fit !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
-          onClick={() =>
-            onChange &&
-            onChange({
-              ...item,
-              tool: 'initials',
-              value: value,
-            })
-          }
-        />
-      </div>
+    <div>
+      <Tabs
+        activeKey={activeTab}
+        onChange={setActiveTab}
+        items={['type', 'draw'].map((type) => {
+          return {
+            key: type,
+            label:
+              type === activeTab ? (
+                <p className="capitalize text-base text-schestiPrimary">
+                  {type}
+                </p>
+              ) : (
+                <p className="capitalize text-base">{type}</p>
+              ),
+          };
+        })}
+      />
+      {activeTab === 'type' ? (
+        <div className="h-[400px] flex flex-col justify-between">
+          <InputComponent
+            label="Type Initials"
+            name="typeSignature"
+            placeholder="Type Initials"
+            type="text"
+            field={{
+              value: value ? value : undefined,
+              onChange: (e) => {
+                setValue(e.target.value);
+              },
+            }}
+          />
+          <div className="flex justify-end">
+            <CustomButton
+              text="Add Initials"
+              className="!w-fit !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
+              onClick={() => {
+                if (value && onChange) {
+                  onChange({
+                    ...item,
+                    tool: 'initials',
+                    value: value,
+                  });
+                }
+              }}
+            />
+          </div>
+        </div>
+      ) : activeTab === 'draw' ? (
+        <DrawSignature item={item} onChange={onChange} type="initials" />
+      ) : null}
     </div>
   );
 }
@@ -417,7 +449,7 @@ function GetSignatureValue({
       <Tabs
         activeKey={activeTab}
         onChange={setActiveTab}
-        items={['type', 'write', 'upload'].map((type) => {
+        items={['type', 'draw', 'upload'].map((type) => {
           return {
             key: type,
             label:
@@ -501,19 +533,21 @@ function GetSignatureValue({
         </div>
       ) : activeTab === 'type' ? (
         <TypeSignature item={item} onChange={onChange} />
-      ) : activeTab === 'write' ? (
-        <WriteSignature item={item} onChange={onChange} />
+      ) : activeTab === 'draw' ? (
+        <DrawSignature item={item} onChange={onChange} type="signature" />
       ) : null}
     </div>
   );
 }
 
-function WriteSignature({
+function DrawSignature({
   item,
   onChange,
+  type = 'signature',
 }: {
   onChange?: (_item: ToolState, _shouldClose?: boolean) => void;
   item: ToolState;
+  type: 'initials' | 'signature';
 }) {
   const [isUploading, setIsUploading] = useState(false);
   const ref = useRef<SignaturePad | null>(null);
@@ -527,27 +561,29 @@ function WriteSignature({
   async function handleSave() {
     if (ref.current) {
       if (ref.current.isEmpty()) {
-        toast.error('Signature cannot be empty');
+        if (type === 'signature') {
+          toast.error('Signature cannot be empty');
+        } else if (type === 'initials') {
+          toast.error('Initials cannot be empty');
+        }
       } else {
         setIsUploading(true);
         const base64 = ref.current.toDataURL();
         try {
-          const url = await new AwsS3(base64, 'signatures').getS3UrlFromBase64(
-            base64
-          );
+          const url = await new AwsS3(base64, type).getS3UrlFromBase64(base64);
           const data: FileInterface = {
             extension: 'png',
-            name: `signature-${Date.now()}.png`,
+            name: `${type}-${Date.now()}.png`,
             type: 'image/png',
             url: url,
           };
           onChange?.({
             ...item,
-            tool: 'signature',
+            tool: type,
             value: data,
           });
         } catch (error) {
-          toast.error('Error while uploading the signature');
+          toast.error(`Error while uploading the ${type}`);
           console.log(error);
         } finally {
           setIsUploading(false);
@@ -576,7 +612,7 @@ function WriteSignature({
           onClick={handleClear}
         />
         <CustomButton
-          text="Add Signature"
+          text={'Add ' + (type === 'signature' ? 'Signature' : 'Initials')}
           className="!w-fit !bg-schestiLightPrimary !text-schestiPrimary !py-2 !border-schestiLightPrimary"
           onClick={handleSave}
           isLoading={isUploading}

@@ -237,7 +237,11 @@ const ArchitectPage = () => {
       if (!search) {
         return true;
       }
-      if (item.module === 'subcontractors' || item.module === 'partners') {
+      if (
+        item.module === 'subcontractors' ||
+        item.module === 'partners' ||
+        item.module === 'contractors'
+      ) {
         return true;
       }
       return (

@@ -456,12 +456,10 @@ export function G703Component({
                     theme={{
                       components: {
                         Button: {
-                          defaultBg: '#7F56D9',
+                          defaultBg: '#007AB6',
                           textHoverBg: '#fff',
                           colorPrimaryText: '#fff',
                           colorText: '#fff',
-                          colorPrimaryHover: '#fff',
-                          colorPrimaryActive: '#fff',
                         },
                       },
                     }}

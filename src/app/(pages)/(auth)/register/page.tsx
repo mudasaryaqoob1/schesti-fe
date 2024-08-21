@@ -84,6 +84,22 @@ const Register = () => {
       role: USER_ROLES_ENUM.SUBCONTRACTOR,
       desc: 'It is a long established fact that a reader will be distracted by the readable content of',
     },
+    {
+      role: USER_ROLES_ENUM.PROFESSOR,
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of',
+    },
+    {
+      role: USER_ROLES_ENUM.STUDENT,
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of',
+    },
+    {
+      role: USER_ROLES_ENUM.VENDOR,
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of',
+    },
+    {
+      role: USER_ROLES_ENUM.ARCHITECT,
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of',
+    },
   ];
 
   // const [role, setRole] = useState(CONTRACTOR);

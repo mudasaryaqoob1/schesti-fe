@@ -76,6 +76,19 @@ const Login = () => {
       setLoading(false);
       if (
         CheckOtherRoles(result.payload.data?.user.userRole) &&
+        (result.payload.data.user?.userRole === USER_ROLES_ENUM.PROFESSOR ||
+          result.payload.data.user?.userRole === USER_ROLES_ENUM.STUDENT) &&
+        result.payload.data.user?.isActive === 'pending'
+      ) {
+        const responseLink = navigateUserWhileAuth(result.payload.data.user);
+        if (responseLink) {
+          router.push(responseLink);
+          return;
+        } else {
+          toast.warning('You are not allowed to login. ');
+        }
+      } else if (
+        CheckOtherRoles(result.payload.data?.user.userRole) &&
         result.payload.data.user?.isPaymentConfirm
       ) {
         const session = result.payload?.token;

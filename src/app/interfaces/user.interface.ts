@@ -1,4 +1,6 @@
 import { IUpdateCompanyDetail } from './companyInterfaces/updateCompany.interface';
+import { FileInterface } from './file.interface';
+import { IPricingPlan } from './pricing-plan.interface';
 import { ISettingCompanyRole } from './settings/comapny-role-settings.interface';
 
 export type IUserInterface = IUpdateCompanyDetail & {
@@ -13,7 +15,7 @@ export type IUserInterface = IUpdateCompanyDetail & {
   firstName?: string;
   lastName?: string;
   roles?: string[] | ISettingCompanyRole[];
-  userRole: 'owner' | 'contractor' | 'subcontractor' | string;
+  userRole: 'owner' | 'contractor' | 'subcontractor';
   brandingColor: string;
   isPaymentConfirm: boolean;
   createdAt: string;
@@ -28,14 +30,26 @@ export type IUserInterface = IUpdateCompanyDetail & {
   stripeCustomerId: string;
   subscriptionId: string;
   verificationsData?: {
-    secretaryOfState?: string;
-    license?: string;
-    preQualification?: string;
+    secretaryOfState?: FileInterface;
+    license?: FileInterface;
+    preQualification?: FileInterface;
   };
   phone?: string;
   country?: string;
   state?: string;
   city?: string;
-  selectedTrades?: any;
+  selectedTrades?: string[];
   associatedCompany?: IUserInterface | string;
+  university: string;
+  educationalDocuments: FileInterface[];
+  verification?: {
+    date: string;
+  };
+  invitation?: {
+    date: Date;
+    planId: string | IPricingPlan;
+    by: string | IUserInterface;
+  };
+
+  isAutoPayment?: boolean;
 };

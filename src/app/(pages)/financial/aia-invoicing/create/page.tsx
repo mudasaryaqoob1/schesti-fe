@@ -249,7 +249,7 @@ function CreateClientInvoicePage() {
           theme={{
             components: {
               Tabs: {
-                inkBarColor: '#8449EB',
+                // inkBarColor: '#8449EB',
               },
               Input: {
                 padding: 0,
@@ -283,7 +283,7 @@ function CreateClientInvoicePage() {
                   <QuaternaryHeading
                     title={type}
                     className={`${
-                      tab === type ? 'text-RoyalPurple' : 'text-black'
+                      tab === type ? 'text-schestiPrimary' : 'text-black'
                     }`}
                   />
                 ),
@@ -359,7 +359,7 @@ function CreateClientInvoicePage() {
           theme={{
             components: {
               Tabs: {
-                inkBarColor: '#8449EB',
+                // inkBarColor: '#8449EB',
               },
               Input: {
                 padding: 0,

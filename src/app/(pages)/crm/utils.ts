@@ -80,6 +80,10 @@ export function downloadCrmItemsAsCSV(
   columns: ColumnsType<CrmType>,
   module: CrmModuleType
 ) {
+  if (!data.length) {
+    toast.error('No data found');
+    return;
+  }
   const excel = new Excel();
   excel
     .addSheet(module)

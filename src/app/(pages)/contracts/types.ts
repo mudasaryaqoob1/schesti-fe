@@ -15,7 +15,7 @@ type SignatureState = {
 
 type InitialsState = {
   tool: 'initials';
-  value?: string;
+  value?: string | FileInterface;
 };
 
 type CommentState = {

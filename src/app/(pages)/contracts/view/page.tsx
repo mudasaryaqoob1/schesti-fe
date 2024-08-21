@@ -108,7 +108,7 @@ function ViewContract() {
             field={{
               value: receipt ? receipt.email : undefined,
               options: contract.receipts.map((receipt) => ({
-                label: receipt.email,
+                label: `${receipt.name} / ${receipt.email}`,
                 value: receipt.email,
               })),
               onChange: (val) => {
