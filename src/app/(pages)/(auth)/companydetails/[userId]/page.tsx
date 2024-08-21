@@ -37,6 +37,8 @@ import { Country, State, City } from 'country-state-city';
 import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
 import { ShowFileComponent } from '@/app/(pages)/bid-management/components/ShowFile.component';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { usePricing } from '../../usePricing';
+import { IUserInterface } from '@/app/interfaces/user.interface';
 const { CONTRACTOR, SUBCONTRACTOR, OWNER } = USER_ROLES_ENUM;
 
 const initialValues: IRegisterCompany = {
@@ -68,8 +70,7 @@ const CompanyDetails = () => {
   const [selectedUserRole, setSelectedUserRole] = useState<any>(null);
   // const [phoneNumberErr, setPhoneNumberErr] = useState<string>('');
   const [companyLogoErr, setCompanyLogoErr] = useState<string>('');
-
-
+  const pricingHook = usePricing();
 
   useEffect(() => {
     if (!isObjectId(userId) && !isEmpty(userId)) {
@@ -117,6 +118,19 @@ const CompanyDetails = () => {
     if (result.payload.statusCode == 200) {
       setIsLoading(false);
       localStorage.setItem('schestiToken', result.payload.token);
+      let user: IUserInterface | undefined = userData?.user;
+
+      if (user?.invitation) {
+        const plan = pricingHook.data?.find(
+          (item) => item?._id === user?.invitation?.planId
+        );
+        if (plan) {
+          pricingHook.setValueToStorage(plan);
+        }
+      }
+
+
+
       if (
         userData?.user?.userRole === OWNER
       ) {

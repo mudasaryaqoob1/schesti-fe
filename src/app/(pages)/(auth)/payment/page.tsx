@@ -20,6 +20,7 @@ import { useSelector } from 'react-redux';
 import { HttpService } from '@/app/services/base.service';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import PaypalIntegration from './paypalIntegration';
+import { usePricing } from '../usePricing';
 
 const Payment = () => {
   const router = useRouterHook();
@@ -34,13 +35,14 @@ const Payment = () => {
 
   const [selectedPLan, setSelectedPLan] = useState<IPricingPlan>();
   const [autoRenew, setAutoRenew] = useState(true);
+  const pricingHook = usePricing();
 
   useEffect(() => {
-    let pricingPlan: any = localStorage.getItem('pricingPlan');
+    let pricingPlan = pricingHook.getValueFromStorage();
     if (!pricingPlan) {
       router.push('/plans');
     }
-    setSelectedPLan(JSON.parse(pricingPlan));
+    setSelectedPLan(pricingPlan);
   }, []);
 
   const stripePaymentHandler = async () => {
@@ -66,7 +68,15 @@ const Payment = () => {
       <NavBar />
       <section className=" px-16 p-9">
         <div className="">
-          <h2 className={secondaryHeading}>Payment Summary</h2>
+          <div className='space-y-2'>
+
+            <h2 className={secondaryHeading}>Payment Summary</h2>
+            <p className={"text-obsidian-black font-semibold text-sm cursor-pointer underline underline-offset-4  w-fit leading-8  "}
+
+              onClick={() => router.push('/plans')}>
+              Go back
+            </p>
+          </div>
           <div className="w-full h-0.5 bg-mistyWhite mt-4 mb-10"></div>
           <div className="flex gap-10">
             <div className="flex bg-white rounded-lg flex-col gap-5 shadow-md rounded-s max-w-lg w-full p-6">
