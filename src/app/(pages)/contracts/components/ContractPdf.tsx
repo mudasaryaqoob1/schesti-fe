@@ -22,8 +22,10 @@ import {
   CalendarOutlined,
   CommentOutlined,
   FontSizeOutlined,
+  LoadingOutlined,
   SignatureOutlined,
 } from '@ant-design/icons';
+import { Spin } from 'antd';
 
 type Props = {
   mode: PdfContractMode;
@@ -38,10 +40,11 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
   ({ mode, pdfFile, tools, setTools, contract, color = '#007ab6' }, ref) => {
     // const [activePage, setActivePage] = useState<null | number>(1)
     // const canvasRefs = useRef<HTMLCanvasElement[]>([]);
-    const { PDFJs } = usePDFJS(async () => {});
+    const { PDFJs } = usePDFJS(async () => { });
     const containerRef = useRef<HTMLDivElement>(null);
     const pdfContainerRef = useRef<HTMLDivElement>(null);
     const [selectedTool, setSelectedTool] = useState<ToolState | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     // const callback = useMemoizedFn((entry) => {
     //     if (entry.isIntersecting) {
@@ -64,6 +67,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
 
     async function loadPdf() {
       if (PDFJs) {
+        setIsLoading(true);
         try {
           const pdf = await PDFJs.getDocument(pdfFile).promise;
 
@@ -107,6 +111,8 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
           }
         } catch (error) {
           toast.error('Unable to load the pdf');
+        } finally {
+          setIsLoading(false);
         }
       }
     }
@@ -178,7 +184,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
     }
 
     return (
-      <div>
+      <Spin spinning={isLoading} indicator={<LoadingOutlined spin />}>
         <div className="flex gap-6 ">
           <div className="w-[950px]" ref={pdfContainerRef}>
             <DroppableArea
@@ -239,10 +245,10 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
                   ) : mode === 'view-fields' || mode === 'view-values' ? (
                     <StandardToolItem
                       color={color}
-                      onClick={() => {}}
-                      onClose={() => {}}
+                      onClick={() => { }}
+                      onClose={() => { }}
                       selectedTool={selectedTool}
-                      onChange={() => {}}
+                      onChange={() => { }}
                       mode={mode}
                       item={item}
                       key={item.id}
@@ -310,7 +316,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
           ) : null}
         </div>
         {/* <div ref={containerRef} className="border border-black"></div> */}
-      </div>
+      </Spin>
     );
   }
 );
