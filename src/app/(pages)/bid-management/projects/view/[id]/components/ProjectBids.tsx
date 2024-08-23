@@ -1,12 +1,12 @@
 import { Bid_How_Long_Price_Increase } from '@/app/(pages)/bid-management/utils';
 import CustomButton from '@/app/component/customButton/white';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
+import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 import type {
   IBidProjectScope,
   IProjectBidding,
 } from '@/app/interfaces/bid-management/bid-management.interface';
 import { bidManagementService } from '@/app/services/bid-management.service';
-import { USCurrencyFormat } from '@/app/utils/format';
 import { Divider, Skeleton, Table, Tooltip } from 'antd';
 import { Excel } from 'antd-table-saveas-excel';
 import type { ColumnsType } from 'antd/es/table';
@@ -29,7 +29,7 @@ export function ProjectBids({ projectId }: Props) {
   >([]);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedBid, setSelectedBid] = useState<null | IProjectBidding>(null);
-
+  const currency = useCurrencyFormatter();
   useEffect(() => {
     getProjectBiddings();
   }, [projectId]);
@@ -50,14 +50,14 @@ export function ProjectBids({ projectId }: Props) {
       title: 'Unit Price',
       dataIndex: 'price',
       render(value) {
-        return USCurrencyFormat.format(value);
+        return currency.format(value);
       },
     },
     {
       key: 'total',
       title: 'Total',
       render(value, record) {
-        return USCurrencyFormat.format(
+        return currency.format(
           Number(record.quantity) * Number(record.price)
         );
       },
@@ -216,7 +216,7 @@ export function ProjectBids({ projectId }: Props) {
                           />
 
                           <SenaryHeading
-                            title={USCurrencyFormat.format(bid.price)}
+                            title={currency.format(bid.price)}
                             className="text-[#475467] font-semibold text-xs leading-4"
                           />
                         </div>
@@ -291,7 +291,7 @@ export function ProjectBids({ projectId }: Props) {
                   />
 
                   <SenaryHeading
-                    title={USCurrencyFormat.format(selectedBid.price)}
+                    title={currency.format(selectedBid.price)}
                     className="font-semibold text-[#475467] text-xs leading-4"
                   />
                 </div>

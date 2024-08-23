@@ -1,6 +1,7 @@
 import SenaryHeading from '@/app/component/headings/senaryHeading';
+import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
-import { USCurrencyFormat } from '@/app/utils/format';
+
 import { Country } from 'country-state-city';
 import moment from 'moment';
 import Image from 'next/image';
@@ -12,6 +13,7 @@ type Props = {
   selectedBid: any;
 };
 export function BidProjectDetail({ bid, onClick, isSelected }: Props) {
+  const currency = useCurrencyFormatter();
   return (
     <div
       className={`mt-3 rounded-lg ${isSelected ? 'bg-[#e0e3e6]' : 'bg-[#F2F4F7]'}  border border-[#E8E3EF] p-4 cursor-pointer`}
@@ -66,7 +68,7 @@ export function BidProjectDetail({ bid, onClick, isSelected }: Props) {
             />
 
             <SenaryHeading
-              title={USCurrencyFormat.format(bid?.projectValue as number)}
+              title={currency.format(bid?.projectValue as number)}
               className="text-[#475467] font-semibold text-xs leading-4"
             />
           </div>

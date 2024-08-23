@@ -1,7 +1,7 @@
+import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
 // import { IInvoice } from '@/app/interfaces/invoices.interface';
 import { Image, StyleSheet, Text, View } from '@react-pdf/renderer';
-import { USCurrencyFormat } from '@/app/utils/format';
 // import moment from 'moment';
 
 type Props = {
@@ -58,6 +58,7 @@ const styles = StyleSheet.create({
 });
 
 export function PdfCompanyDetails({ estimateDetail, user }: Props) {
+  const currency = useCurrencyFormatter();
   return (
     <View style={styles.container}>
       <View style={styles.avatarContainer}>
@@ -139,7 +140,7 @@ export function PdfCompanyDetails({ estimateDetail, user }: Props) {
             <Text style={styles.heading}>Amount Due (USD)</Text>
             <Text
               style={styles.largeText}
-            >{`${USCurrencyFormat.format(estimateDetail?.totalCost)}`}</Text>
+            >{`${currency.format(estimateDetail?.totalCost)}`}</Text>
           </View>
         </View>
       </View>

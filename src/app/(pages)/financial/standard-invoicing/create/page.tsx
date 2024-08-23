@@ -27,10 +27,10 @@ import {
 import { DateInputComponent } from '@/app/component/cutomDate/CustomDateInput';
 import { Routes } from '@/app/utils/plans.utils';
 import { withAuth } from '@/app/hoc/withAuth';
-import { USCurrencyFormat } from '@/app/utils/format';
 import { fetchCompanySubcontractors } from '@/redux/company/company.thunk';
 import { ISubcontract } from '@/app/interfaces/companyEmployeeInterfaces/subcontractor.interface';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 
 const subcontractorSchema = Yup.object({
   companyRep: Yup.string().required('Company Rep is required!'),
@@ -97,7 +97,7 @@ const CreateInvoice = () => {
   const router = useRouterHook();
   const searchParams = useSearchParams();
   const dispatch = useDispatch<AppDispatch>();
-
+  const currency = useCurrencyFormatter();
   const paramsSubContractId = searchParams.get('subcontractorId');
 
   const [details, setDetails] = useState<InvoiceDetail[]>([]);
@@ -250,7 +250,7 @@ const CreateInvoice = () => {
       title: 'Total Price',
       dataIndex: 'totalPrice',
       render(_value, record) {
-        return `${USCurrencyFormat.format(record.quantity * record.unitCost)}`;
+        return `${currency.format(record.quantity * record.unitCost)}`;
       },
     },
     {
@@ -380,7 +380,7 @@ const CreateInvoice = () => {
                     }
                     errorMessage={
                       touched.subContractorPhoneNumber &&
-                      errors.subContractorPhoneNumber
+                        errors.subContractorPhoneNumber
                         ? errors.subContractorPhoneNumber
                         : ''
                     }
@@ -642,7 +642,7 @@ const CreateInvoice = () => {
                   <div className="flex items-center space-x-2">
                     <QuaternaryHeading title="Sub total:" />
                     <QuinaryHeading
-                      title={`${USCurrencyFormat.format(calculateSubTotal())}`}
+                      title={`${currency.format(calculateSubTotal())}`}
                       className="font-bold"
                     />
                   </div>
@@ -683,7 +683,7 @@ const CreateInvoice = () => {
                   <div className="flex items-center space-x-2">
                     <QuaternaryHeading title="Total:" />
                     <QuinaryHeading
-                      title={`${USCurrencyFormat.format(
+                      title={`${currency.format(
                         calculateTotalPayable(
                           calculatePercentqge(
                             calculateSubTotal(),

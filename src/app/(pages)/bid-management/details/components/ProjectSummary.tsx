@@ -1,9 +1,9 @@
 import { MeetingCard } from '@/app/(pages)/meeting/components/MeetingCard';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import TertiaryHeading from '@/app/component/headings/tertiary';
+import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
 import { getTimezoneFromCountryAndState } from '@/app/utils/date.utils';
-import { USCurrencyFormat } from '@/app/utils/format';
 import { Country } from 'country-state-city';
 import moment from 'moment';
 
@@ -13,6 +13,7 @@ interface IProps {
 
 export function ProjectSummary(props: IProps) {
   const { projectData } = props;
+  const currency = useCurrencyFormatter();
 
   return (
     <div className=" mt-6 mb-4 mx-4  p-5 bg-white rounded-lg border shadow-lg">
@@ -137,7 +138,7 @@ export function ProjectSummary(props: IProps) {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {USCurrencyFormat.format(projectData.projectValue)}
+                {currency.format(projectData.projectValue)}
               </p>
             </div>
             <div className="space-y-2">
@@ -241,7 +242,7 @@ export function ProjectSummary(props: IProps) {
             </legend>
 
             {projectData.preBiddingMeeting &&
-            projectData.preBiddingMeeting.isChecked ? (
+              projectData.preBiddingMeeting.isChecked ? (
               <div>
                 <div className="flex items-center space-x-2 mb-1">
                   <SenaryHeading
@@ -293,7 +294,7 @@ export function ProjectSummary(props: IProps) {
             ) : null}
 
             {projectData.siteWalkthrough &&
-            projectData.siteWalkthrough.isChecked ? (
+              projectData.siteWalkthrough.isChecked ? (
               <div>
                 <div className="flex items-center space-x-2 mb-1">
                   <SenaryHeading

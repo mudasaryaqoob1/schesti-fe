@@ -26,7 +26,7 @@ import { ISettingTarget } from '@/app/interfaces/companyInterfaces/setting.inter
 import { withAuth } from '@/app/hoc/withAuth';
 import { InputComponent } from '@/app/component/customInput/Input';
 import { SearchOutlined } from '@ant-design/icons';
-import { USCurrencyFormat } from '@/app/utils/format';
+import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 
 export interface DataType {
   price: string;
@@ -36,6 +36,7 @@ export interface DataType {
 }
 
 const TargetsTable = () => {
+  const currency = useCurrencyFormatter();
   const dispatch = useDispatch<AppDispatch>();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -64,7 +65,7 @@ const TargetsTable = () => {
       dataIndex: 'price',
       ellipsis: true,
       render(value) {
-        return USCurrencyFormat.format(Number(value));
+        return currency.format(Number(value));
       },
     },
 

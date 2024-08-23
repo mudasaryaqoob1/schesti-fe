@@ -1,9 +1,9 @@
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
+import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { IClientInvoice } from '@/app/interfaces/client-invoice.interface';
 import { ISettingTarget } from '@/app/interfaces/companyInterfaces/setting.interface';
-import { USCurrencyFormat } from '@/app/utils/format';
 import { Badge, Progress, Select, Skeleton } from 'antd';
 import _ from 'lodash';
 import { useState } from 'react';
@@ -22,6 +22,7 @@ type Props = {
 };
 export function TargetStats({ targetsQuery, clientInvoiceQuery }: Props) {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const currency = useCurrencyFormatter();
   if (targetsQuery.isLoading || clientInvoiceQuery.isLoading) {
     return <Skeleton />;
   }
@@ -30,8 +31,8 @@ export function TargetStats({ targetsQuery, clientInvoiceQuery }: Props) {
     : [];
   const targets = targetsQuery.data
     ? targetsQuery.data.data!.filter(
-        (target) => parseInt(target.year) === selectedYear
-      )
+      (target) => parseInt(target.year) === selectedYear
+    )
     : [];
   // const completed = completedTargets(targets, invoices);
 
@@ -100,11 +101,11 @@ export function TargetStats({ targetsQuery, clientInvoiceQuery }: Props) {
       </div>
       <div className="flex justify-between items-center">
         <Badge color="#0074D9" status="default" text="Completed" />
-        <SenaryHeading title={USCurrencyFormat.format(completedTargets)} />
+        <SenaryHeading title={currency.format(completedTargets)} />
       </div>
       <div className="flex justify-between items-center">
         <Badge status="warning" text="Remaining" />
-        <SenaryHeading title={USCurrencyFormat.format(remainingTargets)} />
+        <SenaryHeading title={currency.format(remainingTargets)} />
       </div>
     </div>
   );

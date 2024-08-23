@@ -4,7 +4,6 @@ import QuinaryHeading from '@/app/component/headings/quinary';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { IClientInvoice } from '@/app/interfaces/client-invoice.interface';
 import { ISettingTarget } from '@/app/interfaces/companyInterfaces/setting.interface';
-import { USCurrencyFormat } from '@/app/utils/format';
 import { Select, Skeleton } from 'antd';
 import Table, { type ColumnsType } from 'antd/es/table';
 import { UseQueryResult } from 'react-query';
@@ -13,6 +12,7 @@ import { useState } from 'react';
 import { totalReceivable } from '../utils';
 import { Excel } from 'antd-table-saveas-excel';
 import moment from 'moment';
+import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 
 type Props = {
   targetsQuery: UseQueryResult<IResponseInterface<ISettingTarget[]>, unknown>;
@@ -30,6 +30,7 @@ type Option = {
 
 export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const currency = useCurrencyFormatter();
   if (clientInvoiceQuery.isLoading || targetsQuery.isLoading) {
     return <Skeleton />;
   }
@@ -50,7 +51,7 @@ export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
       dataIndex: 'month',
       key: 'receivable',
       render(_value, record) {
-        return USCurrencyFormat.format(totalReceivable(record, invoices));
+        return currency.format(totalReceivable(record, invoices));
       },
     },
     {
@@ -58,7 +59,7 @@ export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
       key: 'target',
       dataIndex: 'price',
       render(value) {
-        return USCurrencyFormat.format(value);
+        return currency.format(value);
       },
     },
     {
@@ -111,12 +112,11 @@ export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
         str2Percent: true,
       })
       .saveAs(
-        `${
-          'financial-tools' +
-          '-' +
-          moment().month() +
-          '-' +
-          new Date().getTime()
+        `${'financial-tools' +
+        '-' +
+        moment().month() +
+        '-' +
+        new Date().getTime()
         }.xlsx`
       );
   };
@@ -131,7 +131,7 @@ export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
         <div className="flex flex-1 space-x-5 justify-end items-center">
           <QuinaryHeading title="Back log" className="text-[#868686]" />
           <QuinaryHeading
-            title={USCurrencyFormat.format(remainingTargets)}
+            title={currency.format(remainingTargets)}
             className="text-schestiPrimary"
           />
           <Select

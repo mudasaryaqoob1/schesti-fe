@@ -1,8 +1,8 @@
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import TertiaryHeading from '@/app/component/headings/tertiary';
+import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { IBidManagement } from '@/app/interfaces/bid-management/bid-management.interface';
-import { USCurrencyFormat } from '@/app/utils/format';
 import { Avatar } from 'antd';
 import { Country } from 'country-state-city';
 import moment from 'moment';
@@ -13,7 +13,7 @@ type Props = {
 
 export function ProjectIntro({ bid }: Props) {
   const router = useRouterHook();
-
+  const currency = useCurrencyFormatter();
   if (!bid) {
     return null;
   }
@@ -80,7 +80,7 @@ export function ProjectIntro({ bid }: Props) {
               />
 
               <TertiaryHeading
-                title={USCurrencyFormat.format(bid.projectValue)}
+                title={currency.format(bid.projectValue)}
                 className="text-[#101828] text-[14px] leading-4 font-semibold"
               />
             </div>

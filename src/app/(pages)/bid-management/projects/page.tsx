@@ -24,11 +24,11 @@ import moment from 'moment';
 import Image from 'next/image';
 import { useState } from 'react';
 import { DeletePopup } from '../post/components/DeletePopup';
-import { USCurrencyFormat } from '@/app/utils/format';
 import { Excel } from 'antd-table-saveas-excel';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { IUserInterface } from '@/app/interfaces/user.interface';
 import Link from 'next/link';
+import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 
 const RES_PER_PAGE = 10;
 
@@ -38,7 +38,7 @@ function Page() {
   const [selectedProject, setSelectedProject] = useState<IBidManagement | null>(
     null
   );
-
+  const currency = useCurrencyFormatter();
   const authUser = useSelector(
     (state: RootState) => state.auth.user as { user?: IUserInterface }
   );
@@ -138,7 +138,7 @@ function Page() {
       title: 'Budget',
       render(value, record) {
         if (record.projectValue) {
-          return USCurrencyFormat.format(record.projectValue);
+          return currency.format(record.projectValue);
         }
         return null;
       },
@@ -308,7 +308,7 @@ function Page() {
           title: 'Budget',
           render(value, record) {
             if (record.projectValue) {
-              return USCurrencyFormat.format(record.projectValue);
+              return currency.format(record.projectValue);
             }
             return null;
           },
@@ -336,7 +336,7 @@ function Page() {
           <DeletePopup
             closeModal={() => setShowProjectDeleteModal(false)}
             message="Are you sure you want to delete this project?"
-            onConfirm={() => {}}
+            onConfirm={() => { }}
             open={showProjectDeleteModal}
             title="Delete Project"
             isLoading={false}

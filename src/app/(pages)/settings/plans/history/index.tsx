@@ -1,6 +1,6 @@
+import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 import { ISubscriptionHistory } from '@/app/interfaces/subscription-history.interface';
 import subscriptionHistoryService from '@/app/services/subscription-history.service';
-import { USCurrencyFormat } from '@/app/utils/format';
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { AxiosError } from 'axios';
@@ -11,7 +11,7 @@ import { toast } from 'react-toastify';
 export function SubscriptionHistory() {
   const [data, setData] = useState<ISubscriptionHistory[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  const currency = useCurrencyFormatter();
   useEffect(() => {
     fetchSubscriptionHistory();
   }, []);
@@ -63,7 +63,7 @@ export function SubscriptionHistory() {
       title: 'Payable Amount',
       dataIndex: 'amount',
       render(value) {
-        return USCurrencyFormat.format(value);
+        return currency.format(value);
       },
     },
   ];
