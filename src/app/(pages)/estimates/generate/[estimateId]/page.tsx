@@ -16,7 +16,6 @@ import ClientPDF from '../components/clientPDF';
 import ModalComponent from '@/app/component/modal';
 import { formatDataFromAntdColumns } from './utils';
 import Description from '@/app/component/description';
-import { USCurrencyFormat } from '@/app/utils/format';
 import { bg_style } from '@/globals/tailwindvariables';
 import MinDesc from '@/app/component/description/minDesc';
 import WhiteButton from '@/app/component/customButton/white';
@@ -30,12 +29,13 @@ import EstimatesTable, {
   estimateTableColumns,
 } from '../components/estimatesTable';
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
+import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 // import EstimatePDF from './estimatePDF';
 
 const ViewEstimateDetail = () => {
   const { estimateId } = useParams();
   const pdfContainerRef = useRef<HTMLDivElement>(null);
-
+  const currency = useCurrencyFormatter();
   const auth = useSelector((state: any) => state.auth);
   const user = auth.user?.user as IUpdateCompanyDetail | undefined;
 
@@ -190,9 +190,9 @@ const ViewEstimateDetail = () => {
       estimateDetailsSummary?.totalBidDetail?.overheadAndProfit,
       estimateDetailsSummary?.totalBidDetail?.bondFee,
       estimateDetailsSummary?.totalCost +
-        estimateDetailsSummary?.totalBidDetail?.bondFee +
-        estimateDetailsSummary?.totalBidDetail?.overheadAndProfit +
-        estimateDetailsSummary?.totalBidDetail?.materialTax,
+      estimateDetailsSummary?.totalBidDetail?.bondFee +
+      estimateDetailsSummary?.totalBidDetail?.overheadAndProfit +
+      estimateDetailsSummary?.totalBidDetail?.materialTax,
     ];
 
     setCsvData([
@@ -496,28 +496,28 @@ const ViewEstimateDetail = () => {
         <div>
           {estimatesRecord?.length
             ? estimatesRecord.map((estimate: any) => (
-                <div key={estimate.title} className={`${bg_style} p-5 mt-3`}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <QuaternaryHeading
-                        title={estimate.title}
-                        className="font-semibold"
-                      />
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <QuaternaryHeading
-                        title={`Total Cost: ${USCurrencyFormat.format(
-                          estimate.totalCostForTitle
-                        )}`}
-                        className="font-semibold"
-                      />
-                    </div>
+              <div key={estimate.title} className={`${bg_style} p-5 mt-3`}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <QuaternaryHeading
+                      title={estimate.title}
+                      className="font-semibold"
+                    />
                   </div>
-                  <div className="estimateTable_container">
-                    <EstimatesTable estimates={estimate.scopeItems} />
+                  <div className="flex items-center gap-2">
+                    <QuaternaryHeading
+                      title={`Total Cost: ${currency.format(
+                        estimate.totalCostForTitle
+                      )}`}
+                      className="font-semibold"
+                    />
                   </div>
                 </div>
-              ))
+                <div className="estimateTable_container">
+                  <EstimatesTable estimates={estimate.scopeItems} />
+                </div>
+              </div>
+            ))
             : null}
         </div>
 
@@ -526,7 +526,7 @@ const ViewEstimateDetail = () => {
           <div className="flex items-center justify-between">
             <MinDesc title="Sub Total Cost" className="text-darkgrayish" />
             <Description
-              title={`${USCurrencyFormat.format(
+              title={`${currency.format(
                 estimateDetailsSummary?.totalCost
               )}`}
               className="font-medium"
@@ -535,7 +535,7 @@ const ViewEstimateDetail = () => {
           <div className="flex items-center justify-between">
             <MinDesc title="Material Tax %" className="text-darkgrayish" />
             <Description
-              title={`$${USCurrencyFormat.format(
+              title={`$${currency.format(
                 estimateDetailsSummary?.totalBidDetail?.materialTax
               )}`}
               className="font-medium"
@@ -544,7 +544,7 @@ const ViewEstimateDetail = () => {
           <div className="flex items-center justify-between">
             <MinDesc title="Overhead & Profit %" className="text-darkgrayish" />
             <Description
-              title={`${USCurrencyFormat.format(
+              title={`${currency.format(
                 estimateDetailsSummary?.totalBidDetail?.overheadAndProfit
               )}`}
               className="font-medium"
@@ -553,7 +553,7 @@ const ViewEstimateDetail = () => {
           <div className="flex items-center justify-between">
             <MinDesc title="Bond Fee %" className="text-darkgrayish" />
             <Description
-              title={`${USCurrencyFormat.format(
+              title={`${currency.format(
                 estimateDetailsSummary?.totalBidDetail?.bondFee
               )}`}
               className="font-medium"
@@ -565,11 +565,11 @@ const ViewEstimateDetail = () => {
           <QuaternaryHeading className="font-semibold" title="Total Cost" />
           <Description
             className="font-semibold"
-            title={`${USCurrencyFormat.format(
+            title={`${currency.format(
               estimateDetailsSummary?.totalCost +
-                estimateDetailsSummary?.totalBidDetail?.bondFee +
-                estimateDetailsSummary?.totalBidDetail?.overheadAndProfit +
-                estimateDetailsSummary?.totalBidDetail?.materialTax
+              estimateDetailsSummary?.totalBidDetail?.bondFee +
+              estimateDetailsSummary?.totalBidDetail?.overheadAndProfit +
+              estimateDetailsSummary?.totalBidDetail?.materialTax
             )}`}
           />
         </div>

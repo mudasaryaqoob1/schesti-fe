@@ -16,12 +16,12 @@ import { toast } from 'react-toastify';
 import type { RcFile } from 'antd/es/upload';
 import { useMutation } from 'react-query';
 import { bidManagementService } from '@/app/services/bid-management.service';
-import { USCurrencyFormat } from '@/app/utils/format';
 import { EventOnlineForm } from './event/EventOnline';
 import { EventOnSiteForm } from './event/OnSite';
 import { EventSiteWalkThroughForm } from './event/EventSiteWalkthrough';
 import { RfiDeadline } from './event/RFIDeadline';
 import Paragraph from 'antd/es/typography/Paragraph';
+import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 
 type Props = {
   children?: React.ReactNode;
@@ -34,7 +34,7 @@ export function PostFinalize({ formik, children }: Props) {
     []
   );
   const dispatch = useDispatch<AppDispatch>();
-
+  const currency = useCurrencyFormatter();
   const fetchCompanyEmployeeHandler = useCallback(async () => {
     let result: any = await dispatch(fetchUsers({ limit: 9, page: 1 }));
 
@@ -185,7 +185,7 @@ export function PostFinalize({ formik, children }: Props) {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {USCurrencyFormat.format(formik.values.projectValue)}
+                {currency.format(formik.values.projectValue)}
               </p>
             </div>
             <div className="space-y-2">
@@ -507,7 +507,7 @@ export function PostFinalize({ formik, children }: Props) {
               onBlur: formik.handleBlur,
               status:
                 formik.touched.selectedTeamMembers &&
-                Boolean(formik.errors.selectedTeamMembers)
+                  Boolean(formik.errors.selectedTeamMembers)
                   ? 'error'
                   : undefined,
             }}
@@ -517,14 +517,14 @@ export function PostFinalize({ formik, children }: Props) {
             }
             errorMessage={
               formik.touched.selectedTeamMembers &&
-              Boolean(formik.errors.selectedTeamMembers) &&
-              Array.isArray(formik.errors.selectedTeamMembers)
+                Boolean(formik.errors.selectedTeamMembers) &&
+                Array.isArray(formik.errors.selectedTeamMembers)
                 ? formik.errors.selectedTeamMembers
-                    .map(
-                      (item: string, idx) =>
-                        `'${formik.values.selectedTeamMembers![idx]}' ${item}`
-                    )
-                    .toString()
+                  .map(
+                    (item: string, idx) =>
+                      `'${formik.values.selectedTeamMembers![idx]}' ${item}`
+                  )
+                  .toString()
                 : (formik.errors.selectedTeamMembers as string)
             }
           />
@@ -537,9 +537,9 @@ export function PostFinalize({ formik, children }: Props) {
             <div className="space-y-2">
               <Checkbox
                 checked={formik.values.isMatchingWithTrades}
-                // onChange={(e) => {
-                //   formik.setFieldValue('isMatchingWithTrades', e.target.checked);
-                // }}
+              // onChange={(e) => {
+              //   formik.setFieldValue('isMatchingWithTrades', e.target.checked);
+              // }}
               >
                 <SenaryHeading
                   title="Schesti members with matching trades and region"
@@ -576,7 +576,7 @@ export function PostFinalize({ formik, children }: Props) {
                 onBlur: formik.handleBlur,
                 status:
                   formik.touched.invitedMembers &&
-                  Boolean(formik.errors.invitedMembers)
+                    Boolean(formik.errors.invitedMembers)
                     ? 'error'
                     : undefined,
                 dropdownStyle: {
@@ -589,14 +589,14 @@ export function PostFinalize({ formik, children }: Props) {
               }
               errorMessage={
                 formik.touched.invitedMembers &&
-                Boolean(formik.errors.invitedMembers) &&
-                Array.isArray(formik.errors.invitedMembers)
+                  Boolean(formik.errors.invitedMembers) &&
+                  Array.isArray(formik.errors.invitedMembers)
                   ? formik.errors.invitedMembers
-                      .map(
-                        (item: string, idx) =>
-                          `'${formik.values.invitedMembers![idx]}' ${item}`
-                      )
-                      .toString()
+                    .map(
+                      (item: string, idx) =>
+                        `'${formik.values.invitedMembers![idx]}' ${item}`
+                    )
+                    .toString()
                   : (formik.errors.invitedMembers as string)
               }
             />

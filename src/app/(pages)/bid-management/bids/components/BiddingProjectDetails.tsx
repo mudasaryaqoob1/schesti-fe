@@ -2,7 +2,6 @@ import CustomButton from '@/app/component/customButton/button';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
 import { bidManagementService } from '@/app/services/bid-management.service';
-import { USCurrencyFormat } from '@/app/utils/format';
 import { Divider } from 'antd';
 import { AxiosError } from 'axios';
 import { Country } from 'country-state-city';
@@ -17,6 +16,7 @@ import { useState } from 'react';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { createProjectActivity } from '../../utils';
 import { ISaveUserBid } from '@/app/interfaces/bid-management/bid-management.interface';
+import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 
 type Props = {
   bid: ISaveUserBid;
@@ -33,6 +33,7 @@ export function BiddingProjectDetails({
 }: Props) {
   const router = useRouterHook();
   const [isLoading, setIsLoading] = useState(false);
+  const currency = useCurrencyFormatter();
 
   const removeUserBidMutation = useMutation<
     IResponseInterface<{ biddingId: RemoveUserBidProps }>,
@@ -156,7 +157,7 @@ export function BiddingProjectDetails({
             className="text-[#475467] text-sm leading-4 font-normal"
           />
           <SenaryHeading
-            title={`${USCurrencyFormat.format(typeof bid.projectId === 'string' ? 0 : bid.projectId.projectValue)}`}
+            title={`${currency.format(typeof bid.projectId === 'string' ? 0 : bid.projectId.projectValue)}`}
             className="text-[#475467] text-sm leading-4 font-semibold"
           />
         </div>
@@ -179,26 +180,26 @@ export function BiddingProjectDetails({
             ? 0
             : (bid.projectId.projectFiles as any)
         ) > 0 && (
-          <>
-            <Image
-              alt="cloud icon"
-              src={'/uploadcloud.svg'}
-              width={16}
-              height={16}
-            />
-            <SenaryHeading
-              onClick={() =>
-                downloadAllFiles(
-                  typeof bid.projectId === 'string'
-                    ? []
-                    : bid.projectId.projectFiles
-                )
-              }
-              title="Download all files"
-              className="text-schestiPrimary text-xs leading-4 font-semibold underline underline-offset-2"
-            />
-          </>
-        )}
+            <>
+              <Image
+                alt="cloud icon"
+                src={'/uploadcloud.svg'}
+                width={16}
+                height={16}
+              />
+              <SenaryHeading
+                onClick={() =>
+                  downloadAllFiles(
+                    typeof bid.projectId === 'string'
+                      ? []
+                      : bid.projectId.projectFiles
+                  )
+                }
+                title="Download all files"
+                className="text-schestiPrimary text-xs leading-4 font-semibold underline underline-offset-2"
+              />
+            </>
+          )}
       </div>
 
       {!isArchive ? (
