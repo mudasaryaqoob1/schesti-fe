@@ -2,6 +2,7 @@ import { IUpdateCompanyDetail } from './companyInterfaces/updateCompany.interfac
 import { FileInterface } from './file.interface';
 import { IPricingPlan } from './pricing-plan.interface';
 import { ISettingCompanyRole } from './settings/comapny-role-settings.interface';
+import { ISubriptionHistory } from './subscription-history.interface';
 
 export type IUserInterface = IUpdateCompanyDetail & {
   _id: string;
@@ -56,5 +57,6 @@ export type IUserInterface = IUpdateCompanyDetail & {
     locale: string;
     code: string;
     symbol: string;
-  }
+  };
+  subscription?: ISubriptionHistory;
 };

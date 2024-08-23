@@ -2,22 +2,25 @@
 
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { useLayoutEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import {
+  // useDispatch,
+  useSelector
+} from 'react-redux';
 import { HttpService } from '../services/base.service';
-import { AppDispatch, RootState } from '@/redux/store';
-import { useQuery } from 'react-query';
-import { IResponseInterface } from '../interfaces/api-response.interface';
+// import { AppDispatch, } from '@/redux/store';
+// import { useQuery } from 'react-query';
+// import { IResponseInterface } from '../interfaces/api-response.interface';
 import { IPricingPlan } from '../interfaces/pricing-plan.interface';
-import { AxiosError } from 'axios';
-import { pricingPlanService } from '../services/pricingPlan.service';
-import { setUserPricingPlan } from '@/redux/pricingPlanSlice/pricingPlanSlice';
+// import { AxiosError } from 'axios';
+// import { pricingPlanService } from '../services/pricingPlan.service';
+// import { setUserPricingPlan } from '@/redux/pricingPlanSlice/pricingPlanSlice';
 import { usePathname } from 'next/navigation';
 import { NoDataComponent } from '../component/noData/NoDataComponent';
-import { Skeleton } from 'antd';
+// import { Skeleton } from 'antd';
 import _ from 'lodash';
 import { OtherRoutes } from '../utils/plans.utils';
-import { useRouterHook } from '../hooks/useRouterHook';
-import { IUserInterface } from '../interfaces/user.interface';
+// import { useRouterHook } from '../hooks/useRouterHook';
+import { useUser } from '../hooks/useUser';
 
 export const withAuth = (
   WrappedComponent: React.FunctionComponent,
@@ -25,15 +28,11 @@ export const withAuth = (
 ) => {
   const WrappedComponentWithAuth = (props: any) => {
     const token = useSelector(selectToken);
-    const userPlan = useSelector(
-      (state: RootState) => state.pricingPlan.userPlan
-    );
-    const dispatch = useDispatch<AppDispatch>();
-    const router = useRouterHook();
+    // const dispatch = useDispatch<AppDispatch>();
+    // const router = useRouterHook();
     const pathname = usePathname();
-    const user = useSelector(
-      (state: RootState) => state.auth.user as { user?: IUserInterface }
-    );
+    const user = useUser();
+    const userPlan = user && user.subscription && user.subscription.planId ? (user.subscription.planId as IPricingPlan) : '';
     requiredRoles =
       requiredRoles.length > 0 ? _.map(requiredRoles, _.capitalize) : [];
     useLayoutEffect(() => {
@@ -42,30 +41,30 @@ export const withAuth = (
       }
     }, [token]);
 
-    const query = useQuery<
-      IResponseInterface<{ plan: IPricingPlan }>,
-      AxiosError<{ message: string; statusCode: number }>
-    >(['userPricing'], () => pricingPlanService.httpGetUserPricingPlan(), {
-      onSuccess(data) {
-        if (data.data?.plan) {
-          dispatch(setUserPricingPlan(data.data.plan));
-        }
-      },
-      onError(err) {
-        console.log('User Pricing Plan Error', err.response?.data);
-        if (err.response && err.response.data.statusCode >= 400) {
-          router.push('/login');
-        }
-      },
-    });
+    // const query = useQuery<
+    //   IResponseInterface<{ plan: IPricingPlan }>,
+    //   AxiosError<{ message: string; statusCode: number }>
+    // >(['userPricing'], () => pricingPlanService.httpGetUserPricingPlan(), {
+    //   onSuccess(data) {
+    //     if (data.data?.plan) {
+    //       dispatch(setUserPricingPlan(data.data.plan));
+    //     }
+    //   },
+    //   onError(err) {
+    //     console.log('User Pricing Plan Error', err.response?.data);
+    //     if (err.response && err.response.data.statusCode >= 400) {
+    //       router.push('/login');
+    //     }
+    //   },
+    // });
 
-    const userRole = user?.user?.userRole ? user?.user?.userRole : '';
+    const userRole = user?.userRole ? user?.userRole : '';
 
     let employeePermissions: string[] =
-      user && user.user && user.user.roles
-        ? user.user.roles
-            .map((role) => (typeof role !== 'string' ? role.permissions : ''))
-            .flat()
+      user && user && user.roles
+        ? user.roles
+          .map((role) => (typeof role !== 'string' ? role.permissions : ''))
+          .flat()
         : [];
 
     const userPlanFeatures = userPlan
@@ -73,11 +72,11 @@ export const withAuth = (
       : ([] as string[]);
 
     // if the query is not loaded, show skeleton
-    if (query.isLoading) {
-      return <Skeleton />;
-    }
+    // if (query.isLoading) {
+    //   return <Skeleton />;
+    // }
 
-    const isEmployee = user?.user?.associatedCompany;
+    const isEmployee = user?.associatedCompany;
     const employeeAccessFeatures = _.intersection(
       userPlanFeatures,
       employeePermissions
