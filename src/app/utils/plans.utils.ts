@@ -59,6 +59,7 @@ export const OtherRoutes = {
     Company_Roles: '/settings/companyUser/roles',
     Verification: '/settings/verification',
     Trades: '/settings/trades',
+    Currency: "/settings/currency"
   },
   Upgrades: '/upgradeplans',
   Dashboard: '/dashboard',

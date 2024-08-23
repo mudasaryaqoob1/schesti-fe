@@ -52,4 +52,9 @@ export type IUserInterface = IUpdateCompanyDetail & {
   };
 
   isAutoPayment?: boolean;
+  currency: {
+    locale: string;
+    code: string;
+    symbol: string;
+  }
 };

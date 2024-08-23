@@ -50,7 +50,7 @@ export const fetchUsers = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
-          'An error occurred while fetching the Joined Request'
+        'An error occurred while fetching the Joined Request'
       );
     }
   }
@@ -72,7 +72,7 @@ export const fetchAdminUsers = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
-          'An error occurred while fetching the Joined Request'
+        'An error occurred while fetching the Joined Request'
       );
     }
   }
@@ -116,7 +116,7 @@ export const deleteUser = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
-          'An error occurred while fetching the feed records'
+        'An error occurred while fetching the feed records'
       );
     }
   }
@@ -132,7 +132,7 @@ export const fetchCompanyDetail = createAsyncThunk(
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data ||
-          'An error occurred while fetching the Joined Request'
+        'An error occurred while fetching the Joined Request'
       );
     }
   }

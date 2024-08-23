@@ -19,6 +19,7 @@
     "@ant-design/charts": "1.4.2",
     "@ant-design/icons": "^5.4.0",
     "@breezeos-dev/use-react-screenshot": "^2.0.2",
+    "@gaignoux/currency": "^1.1.0",
     "@jitsi/react-sdk": "^1.4.0",
     "@material-tailwind/react": "^2.1.9",
     "@paypal/react-paypal-js": "^8.1.3",
