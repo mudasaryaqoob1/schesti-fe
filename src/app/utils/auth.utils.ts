@@ -65,7 +65,7 @@ function navigateBusiness(user: IUserInterface) {
       return SubContractorPages.Trades;
     }
 
-    const havePlan = user.subscription && user.subscription.status === 'active';
+    const havePlan = user.subscription && user.subscription.status !== 'active';
 
     if (!havePlan) {
       return ContractorPages.Plans;
@@ -91,7 +91,7 @@ function navigateEducational(user: IUserInterface) {
     Boolean(user.state) &&
     Boolean(user.city);
 
-  const havePlan = user.subscription && user.subscription.status === 'active';
+  const havePlan = user.subscription && user.subscription.status !== 'active';
 
   if (!haveDetails) {
     return `${ContractorPages.CompanyDetails}/${user._id}`;
@@ -115,7 +115,7 @@ function navigateOwner(user: IUserInterface) {
   if (!haveCompanyDetails) {
     return `${ContractorPages.CompanyDetails}/${user._id}`;
   }
-  const havePlan = user.subscription && user.subscription.status === 'active';
+  const havePlan = user.subscription && user.subscription.status !== 'active';
   if (!havePlan) {
     return OwnerPages.Plans;
   }
