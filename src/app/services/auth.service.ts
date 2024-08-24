@@ -118,7 +118,7 @@ class AuthService extends HttpService {
     this.get(`${this.prefix}/stripe-invoices`);
 
   httpGetLoggedInUserDetails = (): Promise<
-    IResponseInterface<{ user: IUser }>
+    IResponseInterface<{ user: IUserInterface }>
   > => this.get(`${this.prefix}/me`);
 
   httpPaypalCreateOrder = (
