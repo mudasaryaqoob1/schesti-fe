@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
 import { IUserInterface } from '@/app/interfaces/user.interface'
 import { setCommentContent } from '@/redux/social-media/social-media.slice'
+import { IPost } from '../post'
 
 export interface IComment {
     _id: string
@@ -14,10 +15,12 @@ export interface IComment {
     content: string
     createdAt: string
     updatedAt: string
+    post: IPost
     replyComments: any
     __v: number
 }
-const Comments = ({ postId, setTotalComments, isPostOwner }: { postId: string, setTotalComments: Dispatch<SetStateAction<number>>, isPostOwner: boolean }) => {
+
+const Comments = ({ postId, setTotalComments, isPostOwner, isAdmin }: { postId: string, setTotalComments: Dispatch<SetStateAction<number>>, isPostOwner: boolean, isAdmin: boolean }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [comments, setComments] = useState<IComment[]>([]);
     const { fetchComments } = useSelector((state: RootState) => state.socialMedia);
@@ -51,7 +54,7 @@ const Comments = ({ postId, setTotalComments, isPostOwner }: { postId: string, s
         <div className='mt-4 flex  gap-2 flex-col'>
             {
                 comments.map((data) => (
-                    <SingleComment key={data._id} {...data} isPostOwner={isPostOwner} />
+                    <SingleComment key={data._id} {...data} isPostOwner={isPostOwner} isAdmin={isAdmin} />
                 ))
             }
         </div>

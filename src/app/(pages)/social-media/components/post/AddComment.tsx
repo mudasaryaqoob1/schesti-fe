@@ -1,11 +1,11 @@
 import { socialMediaService } from '@/app/services/social-media.service'
+import React, { useState } from 'react'
 import { setCommentContent, setFetchComments } from '@/redux/social-media/social-media.slice';
-import { RootState } from '@/redux/store';
 import { Form } from 'antd';
 import Image from 'next/image'
-import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
+import clsx from 'clsx';
 
 type Props = {
     isEdit?: boolean, commentId?: string, replyComment?: boolean; postId: string; commentContent?: string;
@@ -43,9 +43,9 @@ const AddComment = ({ postId, isEdit, commentId, replyComment, commentContent }:
 
 
     return (
-        <Form className='flex gap-3 mt-4 items-center' onFinish={addPostCommentHandler}>
+        <Form className={clsx('flex gap-3 mt-4 items-center', (replyComment || isEdit) && 'ms-6')} onFinish={addPostCommentHandler}>
             <Image src='/profileAvatar.png' width={36} height={36} alt='profile' />
-            <input value={content} onChange={({ target }) => setContent(target.value)} type="text" className='border p-3 border-mercury placeholder:text-coolGray text-sm w-full rounded-md' placeholder='Add a comment' />
+            <input autoFocus={true} value={content} onChange={({ target }) => setContent(target.value)} type="text" className='border p-3 border-mercury placeholder:text-coolGray text-sm w-full rounded-md' placeholder='Add a comment' />
         </Form>
     )
 }

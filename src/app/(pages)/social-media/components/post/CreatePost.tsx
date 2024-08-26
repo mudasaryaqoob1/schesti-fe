@@ -11,6 +11,7 @@ import { setFetchPosts, setPostData } from '@/redux/social-media/social-media.sl
 import { RootState } from '@/redux/store';
 import ModalComponent from '@/app/component/modal';
 import FeelingActivityFeature from './FeelingActivity';
+import { userService } from '@/app/services/user.service';
 
 type IPost = {
     mediaFiles: IMediaFile[],
@@ -28,7 +29,10 @@ const CreatePost = () => {
     const [feeling, setFeeling] = useState('');
 
     async function createPost() {
+        const { data } = await userService.httpIsBlocked();
 
+        if (data.isBlocked)
+            return toast.error('You are Blocked contact administrator')
         try {
             setIsFilesUploading(true);
             const { mediaFiles, mediaFilesLength } = await filesUrlGenerator(files);
@@ -53,9 +57,9 @@ const CreatePost = () => {
             } else {
                 toast.error('Description or image,video is required!')
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error uploading file to S3:', error);
-            toast.error(`Unable to upload Files`);
+            toast.error(error?.response?.data?.message || `Unable to upload Files`);
             setIsFilesUploading(false);
         } finally {
             dispatch(setFetchPosts());
@@ -179,7 +183,7 @@ const CreatePost = () => {
                     }} />
                     <label className="flex items-center cursor-pointer gap-2" onClick={() => setShowFeelingActivity(true)}>
                         <Image src='/camera-02.svg' width={16} height={12} alt='profile' />
-                        <p className='font-medium text-xs text-schestiPrimaryBlack'>Feeling/Activity {feeling && `is ${feeling}`}</p>
+                        <p className='font-normal text-xs text-schestiPrimaryBlack'>Feeling/Activity {feeling && `is ${feeling}`}</p>
                     </label>
                 </div>
                 <div className='flex gap-3'>

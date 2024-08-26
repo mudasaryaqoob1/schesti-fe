@@ -70,6 +70,8 @@ export default {
         lightblue: 'rgba(49, 89, 254, 0.10)',
         darkblue: '#3159FE',
         lightenGreyish: '#949494',
+        pattensBlue: '#DBF4FF',
+        paleBlueLily: '#CCECFB',
         wedgeWood: '#5A7184',
         vividRed: '#EC2224',
         ebonyClay: '#1D2939',

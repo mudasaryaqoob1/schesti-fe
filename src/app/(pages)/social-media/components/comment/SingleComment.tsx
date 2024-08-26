@@ -1,7 +1,6 @@
 import Image from 'next/image'
 import React from 'react'
 import { IComment } from '.'
-import moment from 'moment'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
 import { socialMediaService } from '@/app/services/social-media.service'
@@ -10,19 +9,22 @@ import AddComment from '../post/AddComment'
 import ReplyComent from './Reply'
 import useToggleVisibility from '@/app/hooks/useToggleVisibility'
 import { useRouter } from 'next/navigation'
+import Report from '../post/Report'
+import Profile from '../post/Profile'
 
 export type ICommentProps = {
     isPostOwner: boolean;
+    isAdmin: boolean;
 } & IComment
 
-const SingleComment = ({ _id, postId, isPostOwner, content, updatedAt, associatedCompany, replyComments }: ICommentProps) => {
+const SingleComment = ({ _id, postId, isPostOwner, content, updatedAt, associatedCompany, replyComments, isAdmin }: ICommentProps) => {
     const { user } = useSelector((state: RootState) => state.auth.user);
     const router = useRouter();
     const dispatch = useDispatch();
     const { isVisible: editVisible, toggleVisibility: toggleEditVisibility, containerRef: editContainerRef } = useToggleVisibility<HTMLDivElement>();
     const { isVisible: replyVisible, toggleVisibility: toggleReplyVisibility, containerRef: replyContainerRef } = useToggleVisibility<HTMLDivElement>();
 
-    const isCommentOnwer = user._id === associatedCompany._id;
+    const isCommentOwner = user._id === associatedCompany._id;
     const deletePostCommentHandler = async () => {
         try {
             await socialMediaService.httpDeletePostComment(_id);
@@ -33,46 +35,45 @@ const SingleComment = ({ _id, postId, isPostOwner, content, updatedAt, associate
     }
 
     return (
-        <div>
-            <div className="flex gap-3 justify-between">
-                <div className="flex items-center gap-2 cursor-pointer" onClick={() => router.push(`/user/${associatedCompany._id}`)}>
-                    <Image src='/profileAvatar.png' width={36} height={36} alt='profile' />
-                    <div>
-                        <p className='font-bold text-xs text-graphiteGray'>{associatedCompany.name}</p>
-                        <p className='mt-1.5 text-coolGray text-[10px]'>{moment(updatedAt).fromNow()}</p>
-                    </div>
-                </div>
+        <>
+            <div className="flex gap-3 justify-between mt-1">
+                <Profile name={associatedCompany.name} avatar={associatedCompany.avatar} date={updatedAt} onClick={() => router.push(`/user/${associatedCompany._id}`)} isOwner={isCommentOwner} />
                 {
-                    isCommentOnwer ? (
-                        <div className="flex gap-2">
-                            <div onClick={deletePostCommentHandler} className="flex gap-2 cursor-pointer rounded-[3px] py-0.5 px-2 items-center bg-schestiLightPrimary">
-                                <Image src='/trash-03.svg' width={10} height={10} alt='profile' />
-                                <p className='text-lavenderPurpleReplica font-semibold text-[10px]'>Delete</p>
+                    isCommentOwner ? (
+                        <div className="flex gap-2 items-center">
+                            <div onClick={deletePostCommentHandler} className="h-6 cursor-pointer rounded-[3px] px-2 bg-schestiLightPrimary">
+                                <Image src='/trash-03.svg' width={12} height={12} alt='profile' />
                             </div>
-                            <div onClick={toggleEditVisibility} className="flex gap-2 cursor-pointer rounded-[3px] py-0 px-2 items-center bg-schestiLightPrimary">
-                                <Image src='/edit-2.svg' width={10} height={10} alt='profile' />
-                                <p className='text-lavenderPurpleReplica font-semibold text-[10px]'>Edit</p>
+                            <div onClick={toggleEditVisibility} className="h-6 cursor-pointer rounded-[3px] py-0 px-2 bg-schestiLightPrimary">
+                                <Image src='/edit-2.svg' width={12} height={12} alt='profile' />
                             </div>
                         </div>
                     ) : isPostOwner ? (
-                        <div className="flex gap-2">
-                            <div onClick={deletePostCommentHandler} className="flex gap-2 cursor-pointer rounded-[3px] py-0.5 px-2 items-center bg-schestiLightPrimary">
-                                <Image src='/trash-03.svg' width={10} height={10} alt='profile' />
-                                <p className='text-lavenderPurpleReplica font-semibold text-[10px]'>Delete</p>
+                        <div className="flex gap-2 items-center">
+                            <div onClick={deletePostCommentHandler} className="h-6 cursor-pointer rounded-[3px] px-2 bg-schestiLightPrimary">
+                                <Image src='/trash-03.svg' width={12} height={12} alt='profile' />
                             </div>
-                            <div onClick={toggleReplyVisibility} className="flex gap-2 cursor-pointer rounded-[3px] py-0.5 px-2 items-center bg-schestiLightPrimary">
-                                <Image src='/reply.svg' width={10} height={10} alt='profile' />
+                            <div onClick={toggleReplyVisibility} className="flex gap-2 cursor-pointer rounded-[3px] p-2 bg-schestiLightPrimary">
+                                <Image src='/reply.svg' width={12} height={12} alt='profile' />
                                 <p className='text-lavenderPurpleReplica cursor-pointer font-semibold text-xs'>Reply</p>
                             </div>
                         </div>
 
                     ) : (
-                        <div onClick={toggleReplyVisibility} className="flex gap-2 cursor-pointer rounded-[3px] py-0.5 px-2 items-center bg-schestiLightPrimary">
-                            <Image src='/reply.svg' width={10} height={10} alt='profile' />
-                            <p className='text-lavenderPurpleReplica cursor-pointer font-semibold text-xs'>Reply</p>
+                        <div className="flex gap-2 items-center">
+                            {
+                                !isAdmin && (
+                                    <Report id={postId} refetch={() => dispatch(setFetchComments())} commentId={_id} />
+                                )
+                            }
+                            <div onClick={toggleReplyVisibility} className="flex gap-2 cursor-pointer rounded-[3px] p-2 items-center bg-schestiLightPrimary">
+                                <Image src='/reply.svg' width={12} height={12} alt='profile' />
+                                <p className='text-lavenderPurpleReplica cursor-pointer font-semibold text-xs'>Reply</p>
+                            </div>
                         </div>
                     )
                 }
+
 
             </div>
             {
@@ -90,6 +91,7 @@ const SingleComment = ({ _id, postId, isPostOwner, content, updatedAt, associate
                 )
             }
             <p className='mt-3 text-stormGrey'>{content}</p>
+
             <div className="mt-4 border-l flex flex-col gap-2 border-mercury ps-10">
                 {
                     replyComments.map((data: any) => (
@@ -97,7 +99,7 @@ const SingleComment = ({ _id, postId, isPostOwner, content, updatedAt, associate
                     ))
                 }
             </div>
-        </div>
+        </>
     )
 }
 

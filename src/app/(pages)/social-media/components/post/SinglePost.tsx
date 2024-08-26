@@ -3,7 +3,6 @@ import Image from 'next/image'
 import React, { useEffect, useState } from 'react'
 import Comments from '../comment'
 import { IPost } from '.'
-import moment from 'moment'
 import { truncate } from 'lodash'
 import { socialMediaService } from '@/app/services/social-media.service'
 import { useDispatch, useSelector } from 'react-redux'
@@ -11,44 +10,34 @@ import { toast } from 'react-toastify'
 import { AxiosError } from 'axios'
 import AddComment from './AddComment'
 import { Dropdown } from 'antd'
-import type { MenuProps } from 'antd';
 import { setFetchPosts, setPostData } from '@/redux/social-media/social-media.slice'
 import WarningModal from '@/app/component/modal/Warning'
 import PostReactions from './PostReactions'
-import ReportPost from './Report'
+import Report from './Report'
 import SharePost from './Share'
 import { RootState } from '@/redux/store'
 import { useRouter } from 'next/navigation'
+import Profile from './Profile'
+import { postOptions, myPostOptions } from './Options'
 
 type Props = {
+    myFeed?: boolean;
 } & IPost
-
-
-const SinglePost = ({ _id, description, mediaFiles, feeling = '', userReaction, createdAt, reactions, associatedCompany: { _id: postOwnerId = '', userRole: postOwnerRole, name = '', companyName = '', organizationName = '' } }: Props) => {
+const SinglePost = ({ _id, description, mediaFiles, feeling = '', userReaction, createdAt, reactions, associatedCompany: { _id: postOwnerId = '', userRole: postOwnerRole, name = '', companyName = '', organizationName = '', university = '' }, myFeed = false }: Props) => {
     const [refetchPost, setRefetchPost] = useState(false);
     const [seeMore, setSeeMore] = useState(false);
     const [totalComments, setTotalComments] = useState(0);
     const [showComments, setShowComments] = useState(true);
-    const fullName = name || companyName || organizationName;
     const dispatch = useDispatch();
     const { user } = useSelector((state: RootState) => state.auth.user);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [isDeletingPost, setIsDeletingPost] = useState(false);
+    const fullName = name || companyName || organizationName;
+    const from = companyName || university || name;
     const router = useRouter();
 
     const isPostOwner = postOwnerId === user._id;
     const isAdmin = postOwnerRole === 'admin';
-
-    const postMenuItems: MenuProps['items'] = [
-        {
-            key: 'edit',
-            label: <p>Edit</p>,
-        },
-        {
-            key: 'delete',
-            label: <p>Delete</p>,
-        }
-    ]
 
     const getPostHandler = async () => {
         try {
@@ -96,7 +85,7 @@ const SinglePost = ({ _id, description, mediaFiles, feeling = '', userReaction, 
                 isPostOwner && (
                     <Dropdown
                         menu={{
-                            items: postMenuItems,
+                            items: myFeed ? postOptions : myPostOptions,
                             onClick: (event) => {
                                 const { key } = event;
                                 handlePostDropdownClick(key);
@@ -117,13 +106,7 @@ const SinglePost = ({ _id, description, mediaFiles, feeling = '', userReaction, 
                 )
             }
 
-            <div className="flex items-center gap-2 cursor-pointer" onClick={() => router.push(`/user/${postOwnerId}`)}>
-                <Image src='/profileAvatar.png' width={36} height={36} alt='profile' />
-                <div>
-                    <p className='font-bold text-xs text-graphiteGray'>{fullName} {feeling && `is feeling ${feeling}`}</p>
-                    <p className='mt-1.5 text-coolGray text-[10px]'>{moment(createdAt).fromNow()}</p>
-                </div>
-            </div>
+            <Profile name={fullName} feeling={feeling} date={createdAt} onClick={() => router.push(`/user/${postOwnerId}`)} from={isAdmin ? '' : from} />
             {
                 description && (
                     <div className="flex description mt-3 text-steelGray text-xs">
@@ -131,7 +114,7 @@ const SinglePost = ({ _id, description, mediaFiles, feeling = '', userReaction, 
                     </div>
                 )
             }
-            <div className="images-section mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3.5">
+            <div className="images-section mt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5 gap-3.5">
                 {
                     mediaFiles.slice(0, 3).map(({ _id, url }, i) => (
                         <div className='relative h-44 w-auto col-span-1' key={_id}>
@@ -162,7 +145,7 @@ const SinglePost = ({ _id, description, mediaFiles, feeling = '', userReaction, 
                 <div className="flex items-center gap-3">
                     {
                         (!isPostOwner && !isAdmin) && (
-                            <ReportPost id={_id} setRefetchPost={setRefetchPost} />
+                            <Report id={_id} refetch={() => setRefetchPost(prev => !prev)} />
                         )
                     }
                     <SharePost url={mediaFiles.length ? mediaFiles[0].url : process.env.NEXT_PUBLIC_APP_URL + `socialMedia/post/${_id}`} />
@@ -170,7 +153,7 @@ const SinglePost = ({ _id, description, mediaFiles, feeling = '', userReaction, 
             </div>
             {
                 showComments && (
-                    <Comments postId={_id} setTotalComments={setTotalComments} isPostOwner={isPostOwner} />
+                    <Comments postId={_id} setTotalComments={setTotalComments} isPostOwner={isPostOwner} isAdmin={isAdmin} />
                 )
             }
             <AddComment postId={_id} />

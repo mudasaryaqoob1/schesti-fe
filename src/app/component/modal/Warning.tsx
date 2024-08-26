@@ -35,7 +35,7 @@ const WarningModal = ({
       destroyOnClose={destroyOnClose}
     >
       <div className="bg-white rounded-xl p-4 flex flex-col items-center py-6">
-        <div className="p-6 bg-red-200 rounded-full">
+        <div className="p-4 bg-red-200 rounded-full">
           <Image src="/trash.svg" alt="trash" width={48} height={48} />
         </div>
         <TertiaryHeading title={title} className="mt-3 text-dark" />

@@ -5,6 +5,7 @@ import { Skeleton } from 'antd';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { IPost } from '.';
+import NoData from './NoData';
 
 
 const MyPosts = () => {
@@ -32,11 +33,10 @@ const MyPosts = () => {
 
     return (
         <div >
-
             {
                 posts.length ? posts.map((postData) => (
-                    <SinglePost {...postData} key={postData._id} />
-                )) : <p className='text-md font-semibold mt-2'>No Posts Available</p>
+                    <SinglePost {...postData} key={postData._id} myFeed />
+                )) : <NoData />
             }
         </div>
     )

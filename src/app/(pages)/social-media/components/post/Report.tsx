@@ -1,33 +1,37 @@
+import React, { useState } from 'react'
 import CustomButton from '@/app/component/customButton/button';
 import ModalComponent from '@/app/component/modal'
 import { socialMediaService } from '@/app/services/social-media.service';
+import { voidFc } from '@/app/utils/types';
 import { RootState } from '@/redux/store';
 import { Select } from 'antd';
 import Image from 'next/image'
-import React, { Dispatch, SetStateAction, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 type Props = {
     id: string;
-    setRefetchPost: Dispatch<SetStateAction<boolean>>;
+    refetch: voidFc
+    commentId?: string;
+
 }
-const ReportPost = ({ id, setRefetchPost }: Props) => {
+const Report = ({ id, refetch, commentId }: Props) => {
     const [showReportModal, setShowReportModal] = useState(false);
     const [reason, setReason] = useState('');
     const [description, setDescription] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const { user } = useSelector((state: RootState) => state.auth.user);
 
-    const reportPostHandler = async () => {
+    const reportHandler = async () => {
         if (!reason) {
             toast.error('Pleas select reason')
             return
         }
         try {
             setIsLoading(true);
-            await socialMediaService.httpAddPostReport({ id, body: { reason, description, reportedBy: user._id } });
-            setRefetchPost(prev => !prev);
+            await socialMediaService.httpAddReport({ id, body: { reason, description, reportedBy: user._id, ...(commentId && { commentId }) } });
+
+            refetch();
             setShowReportModal(false);
             setIsLoading(false);
 
@@ -47,7 +51,7 @@ const ReportPost = ({ id, setRefetchPost }: Props) => {
             <ModalComponent destroyOnClose width="500px" open={showReportModal} setOpen={setShowReportModal}>
                 <div className="bg-white px-6 py-4 rounded-lg">
                     <div className="flex items-center justify-between ">
-                        <p className='text-graphiteGray font-bold'>Report </p>
+                        <p className='text-graphiteGray font-bold'>{commentId ? 'Report Comment' : 'Report Post'}</p>
 
                         <Image
                             src="/closeicon.svg"
@@ -65,7 +69,6 @@ const ReportPost = ({ id, setRefetchPost }: Props) => {
 
                         <div className='mt-3'>
                             <Select
-                                defaultValue="spam"
                                 id='report-types'
                                 className='w-full min-w-48'
                                 style={{ width: 120 }}
@@ -78,8 +81,8 @@ const ReportPost = ({ id, setRefetchPost }: Props) => {
                                 ]}
                             />
                         </div>
-                        <textarea value={description} onChange={({ target }) => setDescription(target.value)} rows={5} placeholder='Enter Details' className='w-full border rounded-md p-2 mt-3' id=""></textarea>
-                        <CustomButton isLoading={isLoading} onClick={reportPostHandler} disabled={!reason} text='Submit' className='w-auto py-2 min-w-40 mt-4' />
+                        <textarea value={description} onChange={({ target }) => setDescription(target.value)} rows={5} placeholder='Enter Details' className='w-full border rounded-md p-2 mt-3'></textarea>
+                        <CustomButton isLoading={isLoading} onClick={reportHandler} disabled={!reason} text='Submit' className='w-auto py-2 min-w-40 mt-4' />
                     </div>
                 </div>
             </ModalComponent>
@@ -88,4 +91,4 @@ const ReportPost = ({ id, setRefetchPost }: Props) => {
     )
 }
 
-export default ReportPost
+export default Report

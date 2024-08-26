@@ -1,13 +1,15 @@
+import React, { Dispatch, SetStateAction, useState } from 'react';
+import Image from 'next/image';
 import { socialMediaService } from '@/app/services/social-media.service';
 import { setFetchPosts } from '@/redux/social-media/social-media.slice';
-import Image from 'next/image';
-import React, { Dispatch, SetStateAction, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { IUserReaction } from '.';
 
 type Props = {
     id: string; userReaction: IUserReaction | null, setRefetchPost: Dispatch<SetStateAction<boolean>>; reactions: string[]
 }
+const reactionTypes: any = { like: '/like-blue.svg', love: '/heart-01.svg', clap: '/clap.svg' };
+
 const PostReactions = ({ id, userReaction = null, reactions, setRefetchPost }: Props) => {
     const [showReactions, setShowReactions] = useState(false);
     const dispatch = useDispatch();
@@ -24,6 +26,14 @@ const PostReactions = ({ id, userReaction = null, reactions, setRefetchPost }: P
         }
     }
 
+    const postReactionTypes = [{
+        img: '/like-blue.svg', type: "like"
+    }, {
+        img: '/heart-01.svg', type: "love"
+    }, {
+        img: '/clap.svg', type: "clap"
+    }];
+
     return (
         <div
             className="relative inline-block"
@@ -33,7 +43,7 @@ const PostReactions = ({ id, userReaction = null, reactions, setRefetchPost }: P
             <div className="flex gap-2 items-center">
                 {userReaction ? (
                     <Image
-                        src={userReaction.type === 'like' ? '/like-blue.svg' : '/heart-01.svg'}
+                        src={reactionTypes[userReaction.type]}
                         className='cursor-pointer'
                         onClick={() => addPostReactionHandler({ removeReaction: true })}
                         width={20}
@@ -64,30 +74,21 @@ const PostReactions = ({ id, userReaction = null, reactions, setRefetchPost }: P
                     className="absolute left-0 -top-10 flex space-x-2.5 bg-white p-2 rounded-full shadow-lg border border-gray-200"
                     style={{ paddingTop: '10px', marginTop: '10px' }}
                 >
-                    <button
-                        className="flex flex-col items-center text-center"
-                        onClick={() => addPostReactionHandler({ type: 'like' })}
-                    >
-                        <Image
-                            src='/like-blue.svg'
-                            className='cursor-pointer'
-                            width={20}
-                            height={20}
-                            alt='like'
-                        />
-                    </button>
-                    <button
-                        className="flex flex-col items-center text-center"
-                        onClick={() => addPostReactionHandler({ type: 'love' })}
-                    >
-                        <Image
-                            src='/heart-01.svg'
-                            className='cursor-pointer'
-                            width={20}
-                            height={20}
-                            alt='love'
-                        />
-                    </button>
+                    {
+                        postReactionTypes.map(({ img, type }, i) => (
+                            <button
+                                className="flex flex-col items-center text-center"
+                                onClick={() => addPostReactionHandler({ type })}
+                                key={i}
+                            >
+                                <img
+                                    src={img}
+                                    className='cursor-pointer size-5 mix-blend-multiply rounded-full'
+                                    alt={type}
+                                />
+                            </button>
+                        ))
+                    }
 
                 </div>
             )}
