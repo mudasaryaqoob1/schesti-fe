@@ -16,6 +16,9 @@ import { toast } from 'react-toastify';
 import *  as  Yup from 'yup';
 import costCodeData from '../cost-code';
 import dayjs from 'dayjs';
+import financialExpenseService, { ICreateFinancialExpense } from '@/app/services/financial/financial-expense.service';
+import { AxiosError } from 'axios';
+import { IFinancialExpense } from '@/app/interfaces/financial/financial-expense.interface';
 
 const ValidationSchema = Yup.object().shape({
   name: Yup.string().required('Name is required'),
@@ -35,12 +38,19 @@ const ValidationSchema = Yup.object().shape({
 })
 
 
-export function ExpenseForm() {
+type Props = {
+  expense?: IFinancialExpense;
+  onSuccess: (_expense: IFinancialExpense) => void;
+}
+
+export function ExpenseForm({ expense, onSuccess }: Props) {
   const [showAdditional, setShowAdditional] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   const formik = useFormik({
-    initialValues: {
+    initialValues: expense ? { ...expense } : {
       file: undefined,
       name: '',
       costCode: '',
@@ -57,9 +67,30 @@ export function ExpenseForm() {
       repeat: ""
     },
     onSubmit: async (values) => {
-      console.log(values);
+      setIsSubmitting(true);
+      try {
+        if (expense) {
+          const response = await financialExpenseService.httpUpdateExpense(values as unknown as ICreateFinancialExpense, expense._id);
+          if (response.data) {
+            toast.success('Expense updated successfully');
+            onSuccess(response.data);
+          }
+        } else {
+          const response = await financialExpenseService.httpCreateExpense(values as unknown as ICreateFinancialExpense);
+          if (response.data) {
+            toast.success('Expense created successfully');
+            onSuccess(response.data);
+          }
+        }
+      } catch (error) {
+        const err = error as AxiosError<{ message: string }>;
+        toast.error(err.response?.data.message || 'Unable to create expense');
+      } finally {
+        setIsSubmitting(false);
+      }
     },
-    validationSchema: ValidationSchema
+    validationSchema: ValidationSchema,
+    enableReinitialize: expense ? true : false
   })
 
   return (
@@ -414,7 +445,7 @@ export function ExpenseForm() {
         </> : null}
 
       </div>
-      <CustomButton text="Add New Expense" />
+      <CustomButton text={expense ? 'Update Expense' : "Add New Expense"} onClick={() => formik.handleSubmit()} isLoading={isSubmitting} />
     </div>
   );
 }
