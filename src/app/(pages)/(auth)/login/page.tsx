@@ -115,12 +115,12 @@ const Login = () => {
           }
         } else {
           const responseLink = navigateUserWhileAuth(result.payload.data.user);
-
+          console.log({ responseLink });
           if (responseLink) {
             router.push(responseLink);
             return;
           } else {
-            toast.warning('You are not allowed to login. ');
+            router.push('/dashboard');
             return;
           }
         }
