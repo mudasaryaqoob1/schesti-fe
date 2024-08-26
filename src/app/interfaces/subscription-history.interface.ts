@@ -4,7 +4,7 @@ import { IUserInterface } from "./user.interface";
 
 export type ISubriptionHistory = {
   customerId: string;
-  status: "canceled" | "expired" | "active";
+  status: "cancelled" | "expired" | "active";
   planId: string | IPricingPlan;
   user: string | IUserInterface;
   subscriptionId: string;
