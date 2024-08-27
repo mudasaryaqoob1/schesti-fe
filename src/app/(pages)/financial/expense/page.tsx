@@ -22,6 +22,7 @@ import { FileInterface } from '@/app/interfaces/file.interface';
 import Image from 'next/image';
 import { DeleteContent } from '@/app/component/delete/DeleteContent';
 import ModalComponent from '@/app/component/modal';
+import { Excel } from 'antd-table-saveas-excel';
 
 function Expense() {
   const [search, setSearch] = useState('');
@@ -231,6 +232,18 @@ function Expense() {
               icon="/download-icon.svg"
               iconwidth={20}
               iconheight={20}
+              onClick={() => {
+                if (!data.expenses.length) {
+                  toast.error("No data to export");
+                  return;
+                }
+                const excel = new Excel();
+                excel.addSheet('Expenses')
+                  // exlcude file columns  as  well
+                  .addColumns(columns.slice(0, columns.length - 2) as any)
+                  .addDataSource(data.expenses)
+                  .saveAs('Expenses.xlsx');
+              }}
             />
           </div>
           <CustomButton
