@@ -22,6 +22,7 @@ import ModalComponent from '@/app/component/modal';
 import { IFinancialAsset } from '@/app/interfaces/financial/financial-asset.interface';
 import financialAssetService from '@/app/services/financial/financial-asset.service';
 import { AssetForm } from './components/Form';
+import { Excel } from 'antd-table-saveas-excel';
 
 function AssetPage() {
     const [search, setSearch] = useState('');
@@ -231,6 +232,18 @@ function AssetPage() {
                             icon="/download-icon.svg"
                             iconwidth={20}
                             iconheight={20}
+                            onClick={() => {
+                                if (!data.assets.length) {
+                                    toast.error("No data to export");
+                                    return;
+                                }
+                                const excel = new Excel();
+                                excel.addSheet('Assets')
+                                    // exlcude file columns  as  well
+                                    .addColumns(columns.slice(0, columns.length - 2) as any)
+                                    .addDataSource(data.assets)
+                                    .saveAs('Assets.xlsx');
+                            }}
                         />
                     </div>
                     <CustomButton
