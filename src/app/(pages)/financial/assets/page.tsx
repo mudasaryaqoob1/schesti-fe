@@ -166,13 +166,13 @@ function AssetPage() {
                 width={800}
                 destroyOnClose
             >
-                <AssetForm item={selectedItem ? selectedItem : undefined} onSuccess={(item) => {
+                <AssetForm item={selectedItem ? selectedItem : undefined} onSuccess={(newItem) => {
                     if (selectedItem) {
                         setData({
                             ...data,
                             assets: data.assets.map((item) => {
                                 if (item._id === selectedItem._id) {
-                                    return item;
+                                    return newItem;
                                 }
                                 return item;
                             })
@@ -180,7 +180,7 @@ function AssetPage() {
                     } else {
                         setData({
                             ...data,
-                            assets: [item, ...data.assets]
+                            assets: [newItem, ...data.assets]
                         })
                     }
                     setShowDrawer(false);
