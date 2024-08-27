@@ -14,7 +14,7 @@ import { IFinancialExpense } from '@/app/interfaces/financial/financial-expense.
 import financialExpenseService from '@/app/services/financial/financial-expense.service';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
-import costCodeData from './cost-code';
+import costCodeData from '../cost-code';
 import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 import moment from 'moment';
 import { FileView } from '@/app/component/file-view/FileView';
