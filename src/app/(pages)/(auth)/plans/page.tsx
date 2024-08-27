@@ -7,7 +7,7 @@ import { usePricing } from '../usePricing';
 import { useEffect, useState } from 'react';
 import { useUser } from '@/app/hooks/useUser';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
-import { Spin } from 'antd';
+import { Alert, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 const Plans = () => {
   const pricingHook = usePricing();
@@ -35,6 +35,15 @@ const Plans = () => {
     <>
       <AuthBar />
       <div className="flex flex-col mx-4 md:mx-24 justify-center flex-wrap mt-12">
+        <div className='w-[500px] mx-auto'>
+          {user && user.subscription && user.subscription.status !== 'active' ?
+            <Alert
+              message="Subscription Expired"
+              description="Your subscription has been expired. Please renew your subscription to continue using our services."
+              type="error"
+              showIcon
+            /> : null}
+        </div>
         <TertiaryHeading className={'mt-1 mb-2'} title="Select Your Plan" />
         <Spin spinning={isLoading} indicator={<LoadingOutlined spin />}>
           <PaymentPlans />
