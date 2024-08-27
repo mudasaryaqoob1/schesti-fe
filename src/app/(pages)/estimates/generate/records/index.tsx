@@ -84,10 +84,12 @@ const EstimateRequestTable: React.FC = () => {
           projectName: estimate?.estimateRequestIdDetail?.projectName,
           clientName: estimate?.estimateRequestIdDetail?.clientName,
           clientEmail: estimate?.estimateRequestIdDetail?.email,
-          salePerson: `${estimate?.estimateRequestIdDetail?.salePerson?.firstName ?? ''
-            } ${estimate?.estimateRequestIdDetail?.salePerson?.lastName ?? ''}`,
-          estimator: `${estimate?.estimateRequestIdDetail?.estimator?.firstName ?? ''
-            } ${estimate?.estimateRequestIdDetail?.estimator?.lastName ?? ''}`,
+          salePerson: `${
+            estimate?.estimateRequestIdDetail?.salePerson?.firstName ?? ''
+          } ${estimate?.estimateRequestIdDetail?.salePerson?.lastName ?? ''}`,
+          estimator: `${
+            estimate?.estimateRequestIdDetail?.estimator?.firstName ?? ''
+          } ${estimate?.estimateRequestIdDetail?.estimator?.lastName ?? ''}`,
           estimateRequestIdDetail: estimate.estimateRequestIdDetail?._id,
         };
       }

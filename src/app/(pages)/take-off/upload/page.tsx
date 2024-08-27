@@ -104,15 +104,15 @@ const Upload = () => {
     }
   }, [token]);
 
-  const params = useSearchParams()
-  const edit_id = params.get('edit_id')
+  const params = useSearchParams();
+  const edit_id = params.get('edit_id');
   useEffect(() => {
     if (edit_id && edit_id?.length > 0) {
-      setstep(1)
+      setstep(1);
     } else {
-      setstep(0)
+      setstep(0);
     }
-  }, [edit_id])
+  }, [edit_id]);
 
   return (
     <>

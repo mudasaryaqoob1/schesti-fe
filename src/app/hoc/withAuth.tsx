@@ -1,13 +1,10 @@
 'use client';
 
 import { selectToken } from '@/redux/authSlices/auth.selector';
-import { useLayoutEffect, } from 'react';
-import {
-  useDispatch,
-  useSelector
-} from 'react-redux';
+import { useLayoutEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { HttpService } from '../services/base.service';
-import { AppDispatch, } from '@/redux/store';
+import { AppDispatch } from '@/redux/store';
 import { useQuery } from 'react-query';
 import { IResponseInterface } from '../interfaces/api-response.interface';
 import { IPricingPlan } from '../interfaces/pricing-plan.interface';
@@ -35,7 +32,10 @@ export const withAuth = (
     const router = useRouterHook();
     const pathname = usePathname();
     const user = useUser();
-    const userPlan = user && user.subscription && user.subscription.planId ? (user.subscription.planId as IPricingPlan) : '';
+    const userPlan =
+      user && user.subscription && user.subscription.planId
+        ? (user.subscription.planId as IPricingPlan)
+        : '';
     requiredRoles =
       requiredRoles.length > 0 ? _.map(requiredRoles, _.capitalize) : [];
     useLayoutEffect(() => {
@@ -52,9 +52,16 @@ export const withAuth = (
         if (data.data) {
           dispatch(setUserAction(data.data));
           //  Check if the user subscription is expired
-          const subscription = data.data.user.subscription as ISubriptionHistory;
-          if (subscription && subscription.status !== 'active' && (moment(subscription.currentPeriodEnd).isBefore(moment()) || (subscription.additionalPeriodEnd && moment(subscription.additionalPeriodEnd).isBefore(moment())))) {
-            router.push("/login");
+          const subscription = data.data.user
+            .subscription as ISubriptionHistory;
+          if (
+            subscription &&
+            subscription.status !== 'active' &&
+            (moment(subscription.currentPeriodEnd).isBefore(moment()) ||
+              (subscription.additionalPeriodEnd &&
+                moment(subscription.additionalPeriodEnd).isBefore(moment())))
+          ) {
+            router.push('/login');
             return null;
           }
         }
@@ -72,8 +79,8 @@ export const withAuth = (
     let employeePermissions: string[] =
       user && user && user.roles
         ? user.roles
-          .map((role) => (typeof role !== 'string' ? role.permissions : ''))
-          .flat()
+            .map((role) => (typeof role !== 'string' ? role.permissions : ''))
+            .flat()
         : [];
 
     const userPlanFeatures = userPlan
@@ -84,8 +91,6 @@ export const withAuth = (
     if (query.isLoading) {
       return <Skeleton />;
     }
-
-
 
     const isEmployee = user?.associatedCompany;
 
@@ -107,7 +112,6 @@ export const withAuth = (
       requiredRoles,
       (role) => userRole.toLowerCase() === role.toLowerCase()
     );
-
 
     if (canAccessThePage && hasRoles) {
       return <WrappedComponent {...props} />;

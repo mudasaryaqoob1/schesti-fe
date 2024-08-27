@@ -1,10 +1,9 @@
-import { IPricingPlan } from "./pricing-plan.interface";
-import { IUserInterface } from "./user.interface";
-
+import { IPricingPlan } from './pricing-plan.interface';
+import { IUserInterface } from './user.interface';
 
 export type ISubriptionHistory = {
   customerId: string;
-  status: "cancelled" | "expired" | "active";
+  status: 'cancelled' | 'expired' | 'active';
   planId: string | IPricingPlan;
   user: string | IUserInterface;
   subscriptionId: string;
@@ -16,4 +15,3 @@ export type ISubriptionHistory = {
   currentPeriodStart: Date;
   currentPeriodEnd: Date;
 };
-

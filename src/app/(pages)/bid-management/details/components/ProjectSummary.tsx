@@ -242,7 +242,7 @@ export function ProjectSummary(props: IProps) {
             </legend>
 
             {projectData.preBiddingMeeting &&
-              projectData.preBiddingMeeting.isChecked ? (
+            projectData.preBiddingMeeting.isChecked ? (
               <div>
                 <div className="flex items-center space-x-2 mb-1">
                   <SenaryHeading
@@ -294,7 +294,7 @@ export function ProjectSummary(props: IProps) {
             ) : null}
 
             {projectData.siteWalkthrough &&
-              projectData.siteWalkthrough.isChecked ? (
+            projectData.siteWalkthrough.isChecked ? (
               <div>
                 <div className="flex items-center space-x-2 mb-1">
                   <SenaryHeading

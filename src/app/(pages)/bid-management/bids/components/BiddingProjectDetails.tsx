@@ -180,26 +180,26 @@ export function BiddingProjectDetails({
             ? 0
             : (bid.projectId.projectFiles as any)
         ) > 0 && (
-            <>
-              <Image
-                alt="cloud icon"
-                src={'/uploadcloud.svg'}
-                width={16}
-                height={16}
-              />
-              <SenaryHeading
-                onClick={() =>
-                  downloadAllFiles(
-                    typeof bid.projectId === 'string'
-                      ? []
-                      : bid.projectId.projectFiles
-                  )
-                }
-                title="Download all files"
-                className="text-schestiPrimary text-xs leading-4 font-semibold underline underline-offset-2"
-              />
-            </>
-          )}
+          <>
+            <Image
+              alt="cloud icon"
+              src={'/uploadcloud.svg'}
+              width={16}
+              height={16}
+            />
+            <SenaryHeading
+              onClick={() =>
+                downloadAllFiles(
+                  typeof bid.projectId === 'string'
+                    ? []
+                    : bid.projectId.projectFiles
+                )
+              }
+              title="Download all files"
+              className="text-schestiPrimary text-xs leading-4 font-semibold underline underline-offset-2"
+            />
+          </>
+        )}
       </div>
 
       {!isArchive ? (

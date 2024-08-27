@@ -29,7 +29,7 @@ const Index = () => {
     },
     { id: 4, name: 'Materials', route: ['/settings/materials'] },
     { id: 5, name: 'Target', route: ['/settings/target'] },
-    { id: 10, name: "Currency", route: ['/settings/currency'] },
+    { id: 10, name: 'Currency', route: ['/settings/currency'] },
     {
       id: 6,
       name: 'Support Ticket',
@@ -67,8 +67,9 @@ const Index = () => {
         {tabs.map((tab, index) => (
           <p
             key={tab.id + index}
-            className={`py-3 px-3 !text-sm cursor-pointer transition-colors ${senaryHeading} ${tab.route.includes(pathname) ? active : ''
-              } `}
+            className={`py-3 px-3 !text-sm cursor-pointer transition-colors ${senaryHeading} ${
+              tab.route.includes(pathname) ? active : ''
+            } `}
             onClick={() => router.push(tab.route[0])}
           >
             {tab.name}

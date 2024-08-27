@@ -41,7 +41,7 @@ export const Routes = {
     'Standard-Invoicing': '/financial/standard-invoicing',
     'AIA-Invoicing': '/financial/aia-invoicing',
     Expense: '/financial/expense',
-    Assets: "/financial/assets",
+    Assets: '/financial/assets',
   },
   Schedule: '/schedule',
   Meetings: '/meeting',
@@ -60,7 +60,7 @@ export const OtherRoutes = {
     Company_Roles: '/settings/companyUser/roles',
     Verification: '/settings/verification',
     Trades: '/settings/trades',
-    Currency: "/settings/currency"
+    Currency: '/settings/currency',
   },
   Upgrades: '/upgradeplans',
   Dashboard: '/dashboard',

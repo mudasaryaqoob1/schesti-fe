@@ -18,7 +18,7 @@ interface EditableTextProps {
   selectedCategory?: any;
   selectedSubCategory?: any;
   ctrlPressed?: boolean;
-  handleDelete: (text: any) => void
+  handleDelete: (text: any) => void;
   onChange: (newTextProps: {
     id: string;
     text: string;
@@ -28,11 +28,11 @@ interface EditableTextProps {
     height: number;
     fontSize: number;
     rotation: number;
-    category: string | any;//(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
+    category: string | any; //(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
     subcategory: string | any;
     user: any;
-    dateTime: any,
-    projectName: string,
+    dateTime: any;
+    projectName: string;
   }) => void;
 }
 
@@ -48,14 +48,14 @@ const EditableText: React.FC<EditableTextProps> = ({
   textColor,
   selectedCategory,
   selectedSubCategory,
-  ctrlPressed
+  ctrlPressed,
 }) => {
   const [text, setText] = useState<string>(initialText);
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const textRef : any = useRef<Konva.Text>(null);
-  const trRef : any = useRef<Konva.Transformer>(null);
-  const inputRef : any = useRef<HTMLInputElement>(null);
-  const { user } = useSelector(selectUser)
+  const textRef: any = useRef<Konva.Text>(null);
+  const trRef: any = useRef<Konva.Transformer>(null);
+  const inputRef: any = useRef<HTMLInputElement>(null);
+  const { user } = useSelector(selectUser);
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
@@ -81,7 +81,7 @@ const EditableText: React.FC<EditableTextProps> = ({
 
   const handleTransformEnd = () => {
     if (textRef.current) {
-      console.log(textRef.current, " ===> current values of textRef")
+      console.log(textRef.current, ' ===> current values of textRef');
       onChange({
         id,
         text,
@@ -91,14 +91,14 @@ const EditableText: React.FC<EditableTextProps> = ({
         height: textRef.current.height() * textRef.current.scaleY(),
         fontSize: textRef.current.fontSize() * textRef.current.scaleX(),
         rotation: textRef.current.rotation(),
-        category: selectedCategory ?? 'Text Measurement',//(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
+        category: selectedCategory ?? 'Text Measurement', //(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
         subcategory: selectedSubCategory,
         user,
         dateTime: moment().toDate(),
-        projectName: 'Text Measurement'
+        projectName: 'Text Measurement',
       });
-      textRef.current.scaleX(1)
-      textRef.current.scaleY(1)
+      textRef.current.scaleX(1);
+      textRef.current.scaleY(1);
     }
   };
 
@@ -113,11 +113,11 @@ const EditableText: React.FC<EditableTextProps> = ({
         height: textRef.current.height(),
         fontSize: textRef.current.fontSize(),
         rotation: textRef.current.rotation(),
-        category: selectedCategory ?? 'Text Measurement',//(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
+        category: selectedCategory ?? 'Text Measurement', //(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
         subcategory: selectedSubCategory,
         user,
         dateTime: moment().toDate(),
-        projectName: 'Text Measurement'
+        projectName: 'Text Measurement',
       });
     }
   };
@@ -141,11 +141,11 @@ const EditableText: React.FC<EditableTextProps> = ({
       height: textRef.current?.height() || 0,
       fontSize: textRef.current?.fontSize() || 0,
       rotation: textRef.current?.rotation() || 0,
-      category: selectedCategory ?? 'Text Measurement',//(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
+      category: selectedCategory ?? 'Text Measurement', //(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
       subcategory: selectedSubCategory,
       user,
       dateTime: moment().toDate(),
-      projectName: 'Text Measurement'
+      projectName: 'Text Measurement',
     });
   };
 
@@ -209,12 +209,14 @@ const EditableText: React.FC<EditableTextProps> = ({
           // e.cancelBubble = true;
           // e.evt.stopPropagation()
           // e.evt.stopImmediatePropagation()
-          handleDelete({ id })
+          handleDelete({ id });
         }}
       />
       <Transformer
         ref={trRef}
-        onClick={e => { e.evt.stopPropagation(); }}
+        onClick={(e) => {
+          e.evt.stopPropagation();
+        }}
         anchorFill={ctrlPressed ? 'red' : ''}
         boundBoxFunc={(oldBox, newBox) => {
           if (newBox.width < 30 || newBox.height < 30) {
@@ -236,9 +238,13 @@ const EditableText: React.FC<EditableTextProps> = ({
             value={text}
             onChange={handleInputChange}
             onBlur={handleBlur}
-            placeholder='Enter Text'
+            placeholder="Enter Text"
             autoFocus
-            onKeyDown={(e) => { if (e.key === 'Enter') { handleBlur(); } }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                handleBlur();
+              }
+            }}
             style={{
               width: '100%',
               height: '100%',
