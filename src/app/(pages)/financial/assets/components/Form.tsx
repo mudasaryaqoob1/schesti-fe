@@ -16,15 +16,16 @@ import { toast } from 'react-toastify';
 import *  as  Yup from 'yup';
 import costCodeData from '../../cost-code';
 import dayjs from 'dayjs';
-import financialExpenseService, { ICreateFinancialExpense } from '@/app/services/financial/financial-expense.service';
+import financialAssetService, { ICreateFinancialAsset } from '@/app/services/financial/financial-asset.service';
 import { AxiosError } from 'axios';
-import { IFinancialExpense } from '@/app/interfaces/financial/financial-expense.interface';
+import { IFinancialAsset } from '@/app/interfaces/financial/financial-asset.interface';
+
 
 const ValidationSchema = Yup.object().shape({
   name: Yup.string().required('Name is required'),
   costCode: Yup.string().required('Cost code is required'),
-  expenseType: Yup.string().required('Expense type is required'),
-  expenseDate: Yup.string().required('Expense date is required'),
+  assetType: Yup.string().required('Asset type is required'),
+  assetDate: Yup.string().required('Asset date is required'),
   invoiceNo: Yup.string().required('Invoice number is required'),
   totalPrice: Yup.number().required('Total price is required'),
   project: Yup.string(),
@@ -39,23 +40,23 @@ const ValidationSchema = Yup.object().shape({
 
 
 type Props = {
-  expense?: IFinancialExpense;
-  onSuccess: (_expense: IFinancialExpense) => void;
+  item?: IFinancialAsset;
+  onSuccess: (_item: IFinancialAsset) => void;
 }
 
-export function ExpenseForm({ expense, onSuccess }: Props) {
+export function AssetForm({ item, onSuccess }: Props) {
   const [showAdditional, setShowAdditional] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
 
   const formik = useFormik({
-    initialValues: expense ? { ...expense } : {
+    initialValues: item ? { ...item } : {
       file: undefined,
       name: '',
       costCode: '',
-      expenseType: '',
-      expenseDate: new Date().toISOString(),
+      assetType: '',
+      assetDate: new Date().toISOString(),
       invoiceNo: '',
       totalPrice: 0,
       project: '',
@@ -69,28 +70,28 @@ export function ExpenseForm({ expense, onSuccess }: Props) {
     onSubmit: async (values) => {
       setIsSubmitting(true);
       try {
-        if (expense) {
-          const response = await financialExpenseService.httpUpdateExpense(values as unknown as ICreateFinancialExpense, expense._id);
+        if (item) {
+          const response = await financialAssetService.httpUpdateAsset(values as unknown as ICreateFinancialAsset, item._id);
           if (response.data) {
-            toast.success('Expense updated successfully');
+            toast.success('Asset updated successfully');
             onSuccess(response.data);
           }
         } else {
-          const response = await financialExpenseService.httpCreateExpense(values as unknown as ICreateFinancialExpense);
+          const response = await financialAssetService.httpCreateAsset(values as unknown as ICreateFinancialAsset);
           if (response.data) {
-            toast.success('Expense created successfully');
+            toast.success('Asset created successfully');
             onSuccess(response.data);
           }
         }
       } catch (error) {
         const err = error as AxiosError<{ message: string }>;
-        toast.error(err.response?.data.message || 'Unable to create expense');
+        toast.error(err.response?.data.message || 'Unable to create asset');
       } finally {
         setIsSubmitting(false);
       }
     },
     validationSchema: ValidationSchema,
-    enableReinitialize: expense ? true : false
+    enableReinitialize: item ? true : false
   })
 
   return (
@@ -159,7 +160,7 @@ export function ExpenseForm({ expense, onSuccess }: Props) {
       /> : null}
 
       <InputComponent
-        label="New Expense"
+        label="New Asset"
         name="name"
         type="text"
         placeholder="Enter item name"
@@ -212,7 +213,7 @@ export function ExpenseForm({ expense, onSuccess }: Props) {
 
         <div className='col-span-2'>
           <SelectComponent
-            label='Description of Expense'
+            label='Description of Asset'
             name='costCode'
             placeholder='Select description'
             field={{
@@ -232,42 +233,61 @@ export function ExpenseForm({ expense, onSuccess }: Props) {
         </div>
 
         <SelectComponent
-          label='Expense Type'
-          name='expenseType'
-          placeholder='Select expense type'
+          label='Asset Type'
+          name='assetType'
+          placeholder='Select asset type'
           field={{
             options: [
-              { label: "Labour", value: "Labour" },
-              { label: "Material", value: "Material" },
-              { label: "SubContract", value: "SubContract" },
-              { label: "General Condition", value: "General Condition" },
-              { label: "Overhead", value: "Overhead" },
+              {
+                label: "Current Assets", title: "Current Assets", options: [
+                  { label: "Current Assets", value: "Current Assets" },
+                  { label: "Cash on Bank", value: "Cash on Bank" },
+                  { label: "Contract Receivable", value: "Contract Receivable" },
+                  { label: "Startup Inventory", value: "Startup Inventory" },
+                ]
+              },
+
+              {
+                label: "Long Term Assets", title: "Long Term Assets", options: [
+                  { label: "Vehicles", value: "Vehicles" },
+                  { label: "Lands", value: "Lands" },
+                  { label: "Equipments", value: "Equipments" },
+                  { label: "Buildings", value: "Buildings" },
+
+                ]
+              },
+              {
+                label: "Depreciation", title: "Depreciation", options: [
+                  { label: "Vehicles  Accumulated Depreciation", value: "Vehicles  Accumulated Depreciation" },
+                ]
+              },
+
             ],
             onChange: (val) => {
-              formik.setFieldValue('expenseType', val);
+              formik.setFieldValue('assetType', val);
             },
-            value: formik.values.expenseType ? formik.values.expenseType : undefined,
+            value: formik.values.assetType ? formik.values.assetType : undefined,
             onBlur: formik.handleBlur
           }}
-          hasError={Boolean(formik.touched.expenseType && formik.errors.expenseType)}
-          errorMessage={formik.touched.expenseType && formik.errors.expenseType ? formik.errors.expenseType : ''}
+          hasError={Boolean(formik.touched.assetType && formik.errors.assetType)}
+          errorMessage={formik.touched.assetType && formik.errors.assetType ? formik.errors.assetType : ''}
         />
 
         <DateInputComponent
-          label='Expense Date'
-          name='expenseDate'
+          label='Date'
+          name='assetDate'
           placeholder='Enter date'
           fieldProps={{
             onChange: (date) => {
-              formik.setFieldValue('expenseDate', date.format('YYYY-MM-DD'));
+              formik.setFieldValue('assetDate', date.format('YYYY-MM-DD'));
             },
-            value: formik.values.expenseDate
-              ? dayjs(formik.values.expenseDate) : undefined,
+            value: formik.values.assetDate
+              ? dayjs(formik.values.assetDate) : undefined,
             format: 'YYYY-MM-DD',
             onBlur: formik.handleBlur,
           }}
-          hasError={Boolean(formik.touched.expenseDate && formik.errors.expenseDate)}
-          errorMessage={formik.touched.expenseDate && formik.errors.expenseDate ? formik.errors.expenseDate : ''}
+          hasError={Boolean(formik.touched.assetDate && formik.errors.assetDate)}
+          errorMessage={formik.touched.assetDate && formik.errors.assetDate ? formik.errors.assetDate : ''}
         />
 
         <InputComponent
@@ -445,7 +465,7 @@ export function ExpenseForm({ expense, onSuccess }: Props) {
         </> : null}
 
       </div>
-      <CustomButton text={expense ? 'Update Expense' : "Add New Expense"} onClick={() => formik.handleSubmit()} isLoading={isSubmitting} />
+      <CustomButton text={item ? 'Update Asset' : "Add New Asset"} onClick={() => formik.handleSubmit()} isLoading={isSubmitting} />
     </div>
   );
 }
