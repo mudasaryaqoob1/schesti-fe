@@ -153,10 +153,10 @@ const SinglePost = ({ _id, description, mediaFiles, feeling = '', userReaction, 
             </div>
             {
                 showComments && (
-                    <Comments postId={_id} setTotalComments={setTotalComments} isPostOwner={isPostOwner} isAdmin={isAdmin} />
+                    <Comments parentId={_id} postId={_id} setTotalComments={setTotalComments} isPostOwner={isPostOwner} isAdmin={isAdmin} />
                 )
             }
-            <AddComment postId={_id} />
+            <AddComment parentId={_id} />
         </section>
     )
 }

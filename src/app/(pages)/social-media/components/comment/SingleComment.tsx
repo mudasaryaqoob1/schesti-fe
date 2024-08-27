@@ -1,12 +1,11 @@
 import Image from 'next/image'
 import React from 'react'
-import { IComment } from '.'
+import Comments, { IComment } from '.'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/redux/store'
 import { socialMediaService } from '@/app/services/social-media.service'
 import { setFetchComments } from '@/redux/social-media/social-media.slice'
 import AddComment from '../post/AddComment'
-import ReplyComent from './Reply'
 import useToggleVisibility from '@/app/hooks/useToggleVisibility'
 import { useRouter } from 'next/navigation'
 import Report from '../post/Report'
@@ -15,9 +14,11 @@ import Profile from '../post/Profile'
 export type ICommentProps = {
     isPostOwner: boolean;
     isAdmin: boolean;
+    reply_to_username?: string;
+    postId: string;
 } & IComment
 
-const SingleComment = ({ _id, postId, isPostOwner, content, updatedAt, associatedCompany, replyComments, isAdmin }: ICommentProps) => {
+const SingleComment = ({ _id, parentId, isPostOwner, content, updatedAt, associatedCompany, replyCount, isAdmin, type, reply_to_username, postId }: ICommentProps) => {
     const { user } = useSelector((state: RootState) => state.auth.user);
     const router = useRouter();
     const dispatch = useDispatch();
@@ -79,26 +80,26 @@ const SingleComment = ({ _id, postId, isPostOwner, content, updatedAt, associate
             {
                 editVisible && (
                     <div ref={editContainerRef}>
-                        <AddComment postId={postId} commentId={_id} isEdit commentContent={content} />
+                        <AddComment parentId={parentId} commentId={_id} isEdit commentContent={content} />
                     </div>
                 )
             }
             {
                 replyVisible && (
                     <div ref={replyContainerRef}>
-                        <AddComment postId={postId} replyComment commentId={_id} />
+                        <AddComment parentId={_id} commentId={_id} replyComment />
                     </div>
                 )
             }
-            <p className='mt-3 text-stormGrey'>{content}</p>
-
+            <p className='mt-3 text-stormGrey'> <span className='font-semibold text-base text-schestiPrimary mr-[2px]'>{type == 'reply' && `@${reply_to_username}`}</span>{content}</p>
             <div className="mt-4 border-l flex flex-col gap-2 border-mercury ps-10">
+
                 {
-                    replyComments.map((data: any) => (
-                        <ReplyComent key={data._id} {...data} />
-                    ))
+                    replyCount > 0 && <Comments parentId={_id} isPostOwner={isPostOwner} isAdmin={isAdmin} reply_to_username={associatedCompany.name} postId={_id} />
                 }
             </div>
+
+
         </>
     )
 }

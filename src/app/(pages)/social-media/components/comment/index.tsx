@@ -10,17 +10,18 @@ import { IPost } from '../post'
 
 export interface IComment {
     _id: string
-    postId: string
+    parentId: string
     associatedCompany: IUserInterface
     content: string
     createdAt: string
     updatedAt: string
     post: IPost
-    replyComments: any
+    type: 'post' | 'reply'
+    replyCount: any
     __v: number
 }
 
-const Comments = ({ postId, setTotalComments, isPostOwner, isAdmin }: { postId: string, setTotalComments: Dispatch<SetStateAction<number>>, isPostOwner: boolean, isAdmin: boolean }) => {
+const Comments = ({ parentId, setTotalComments, isPostOwner, isAdmin, reply_to_username = "", postId }: { parentId: string, setTotalComments?: Dispatch<SetStateAction<number>>, isPostOwner: boolean, isAdmin: boolean, reply_to_username?: string, postId: string }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [comments, setComments] = useState<IComment[]>([]);
     const { fetchComments } = useSelector((state: RootState) => state.socialMedia);
@@ -30,12 +31,13 @@ const Comments = ({ postId, setTotalComments, isPostOwner, isAdmin }: { postId: 
     const getCommentsHandler = async () => {
         try {
             setIsLoading(true);
-            const { data: { postComments } } = await socialMediaService.httpGetPostComments({ id: postId });
-            setComments(postComments);
-            setTotalComments(postComments.length);
-            setIsLoading(false);
+            const { data: { postComments } } = await socialMediaService.httpGetPostComments({ id: parentId });
+            setComments(reply_to_username ? postComments.map((comment: IComment) => ({ ...comment, reply_to_username })) : postComments);
+            if (setTotalComments)
+                setTotalComments(postComments.length);
         } catch (error) {
             console.log(error);
+        } finally {
             setIsLoading(false);
         }
     }
@@ -54,7 +56,7 @@ const Comments = ({ postId, setTotalComments, isPostOwner, isAdmin }: { postId: 
         <div className='mt-4 flex  gap-2 flex-col'>
             {
                 comments.map((data) => (
-                    <SingleComment key={data._id} {...data} isPostOwner={isPostOwner} isAdmin={isAdmin} />
+                    <SingleComment key={data._id} {...data} isPostOwner={isPostOwner} isAdmin={isAdmin} postId={postId} />
                 ))
             }
         </div>

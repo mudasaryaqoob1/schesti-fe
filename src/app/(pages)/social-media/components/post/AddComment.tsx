@@ -8,9 +8,9 @@ import { toast } from 'react-toastify';
 import clsx from 'clsx';
 
 type Props = {
-    isEdit?: boolean, commentId?: string, replyComment?: boolean; postId: string; commentContent?: string;
+    isEdit?: boolean, commentId?: string, replyComment?: boolean; parentId: string; commentContent?: string;
 }
-const AddComment = ({ postId, isEdit, commentId, replyComment, commentContent }: Props) => {
+const AddComment = ({ parentId, isEdit, replyComment, commentContent }: Props) => {
     const [content, setContent] = useState(commentContent);
     const dispatch = useDispatch();
 
@@ -21,18 +21,16 @@ const AddComment = ({ postId, isEdit, commentId, replyComment, commentContent }:
                 return;
             }
             if (replyComment) {
-                await socialMediaService.httpReplyComment({ id: postId, body: { content, parentCommentId: commentId! } });
+                await socialMediaService.httpAddPostComment({ id: parentId, content, type: 'reply' });
                 dispatch(setCommentContent(''));
                 dispatch(setFetchComments());
-
-            }
-            if (isEdit) {
-                await socialMediaService.httpUpdatePostComment({ id: commentId!, content });
+            } else if (isEdit) {
+                await socialMediaService.httpUpdatePostComment({ id: parentId!, content });
                 dispatch(setCommentContent(''));
                 dispatch(setFetchComments());
 
             } else {
-                await socialMediaService.httpAddPostComment({ id: postId, content });
+                await socialMediaService.httpAddPostComment({ id: parentId, content });
                 dispatch(setFetchComments());
             }
             setContent('');

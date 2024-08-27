@@ -96,8 +96,8 @@ class SocialMediaService extends HttpService {
   httpDeletePost = (id: string): Promise<IResponseInterface> =>
     this.delete(`${this.prefix}/deletePost/${id}`);
 
-  httpAddPostComment = ({ id, content }: { id: string, content: string }): Promise<IResponseInterface> =>
-    this.post(`${this.prefix}/addPostComment/${id}`, { content });
+  httpAddPostComment = ({ id, content, type = 'post' }: { id: string, content: string, type?: string }): Promise<IResponseInterface> =>
+    this.post(`${this.prefix}/addPostComment/${id}`, { content, type });
 
   httpUpdatePostComment = ({ id, content }: { id: string, content: string }): Promise<IResponseInterface> =>
     this.put(`${this.prefix}/updatePostComment/${id}`, { content });
