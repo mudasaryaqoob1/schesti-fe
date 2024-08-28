@@ -1,6 +1,5 @@
 import CustomButton from '@/app/component/customButton/button';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
-import { USCurrencyFormat } from '@/app/utils/format';
 import Image from 'next/image';
 import { Divider, Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -14,6 +13,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { IUserInterface } from '@/app/interfaces/user.interface';
 import { Bid_How_Long_Price_Increase } from '../../utils';
+import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 
 type Props = {
   bid: any;
@@ -30,6 +30,8 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
       ? detail.user === authUser?.user
       : detail.user === authUser?.user?._id;
   });
+
+  const currency = useCurrencyFormatter();
 
   const columns: ColumnsType<{ _id: string; quantity: number; price: number }> =
     [
@@ -48,7 +50,7 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
         title: 'Unit Price',
         dataIndex: 'price',
         render(value) {
-          return value ? USCurrencyFormat.format(value) : null;
+          return value ? currency.format(value) : null;
         },
       },
       {
@@ -56,7 +58,7 @@ export function BidDetails({ bid, selectedBidProjectDetails }: Props) {
         title: 'Total',
         dataIndex: 'total',
         render(value, record) {
-          return USCurrencyFormat.format(record.quantity * record.price);
+          return currency.format(record.quantity * record.price);
         },
       },
     ];

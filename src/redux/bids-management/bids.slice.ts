@@ -2,7 +2,7 @@ import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
 import initialBidsState from './bids.initialState';
 import { fetchExploringProjects, fetchInvitedProjects } from './bids.thunk';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
-import { IClientInvoice } from '@/app/interfaces/client-invoice.interface';
+import { IAIAInvoice } from '@/app/interfaces/client-invoice.interface';
 
 export const bidsManagementSlice = createSlice({
   name: 'bids',
@@ -17,9 +17,7 @@ export const bidsManagementSlice = createSlice({
       fetchInvitedProjects.fulfilled,
       (
         state,
-        action: PayloadAction<
-          IResponseInterface<{ invoices: IClientInvoice[] }>
-        >
+        action: PayloadAction<IResponseInterface<{ invoices: IAIAInvoice[] }>>
       ) => {
         state.loading = false;
         state.message = action.payload.message;

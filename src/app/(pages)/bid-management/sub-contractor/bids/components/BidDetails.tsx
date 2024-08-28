@@ -1,6 +1,5 @@
 import CustomButton from '@/app/component/customButton/button';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
-import { USCurrencyFormat } from '@/app/utils/format';
 import { Divider } from 'antd';
 import { Country } from 'country-state-city';
 import { useMutation } from 'react-query';
@@ -11,6 +10,7 @@ import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { bidManagementService } from '@/app/services/bid-management.service';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 
 type Props = {
   bid: any;
@@ -22,7 +22,7 @@ type RemoveUserBidProps = {
 };
 export function BidDetails({ bid, setSelectedBid, refetchSavedBids }: Props) {
   const router = useRouterHook();
-
+  const currency = useCurrencyFormatter();
   const removeUserBidMutation = useMutation<
     IResponseInterface<{ biddingId: RemoveUserBidProps }>,
     AxiosError<{ message: string }>,
@@ -111,7 +111,7 @@ export function BidDetails({ bid, setSelectedBid, refetchSavedBids }: Props) {
             className="text-[#475467] text-sm leading-4 font-normal"
           />
           <SenaryHeading
-            title={`${USCurrencyFormat.format(bid?.projectId?.projectValue)}`}
+            title={`${currency.format(bid?.projectId?.projectValue)}`}
             className="text-[#475467] text-sm leading-4 font-semibold"
           />
         </div>

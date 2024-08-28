@@ -14,9 +14,14 @@ export function usePricing() {
     return JSON.parse(localStorage.getItem(KEY) as string) as IPricingPlan;
   }
 
+  function clearStorage() {
+    localStorage.removeItem(KEY);
+  }
+
   return {
     data: plansData?.pricingPlans as IPricingPlan[] | undefined,
     setValueToStorage,
     getValueFromStorage,
+    clearStorage,
   };
 }

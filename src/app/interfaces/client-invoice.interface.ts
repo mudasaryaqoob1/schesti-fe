@@ -27,7 +27,7 @@ export type G7State = {
   p5bPercentage: number;
 };
 
-export type IClientInvoice = {
+export type IAIAInvoice = {
   associatedComapny: string;
   applicationNo?: string;
   invoiceName?: string;

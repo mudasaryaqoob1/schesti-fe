@@ -5,7 +5,6 @@ import { SelectComponent } from '@/app/component/customSelect/Select.component';
 import Description from '@/app/component/description';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { withAuth } from '@/app/hoc/withAuth';
-import { USCurrencyFormat } from '@/app/utils/format';
 import { Divider, Skeleton, Spin, Table } from 'antd';
 import Image from 'next/image';
 import { bidDurationType } from '../../post/components/data';
@@ -32,6 +31,7 @@ import { ProjectIntro } from './components/ProjectInto';
 import { ShowFileComponent } from '../../components/ShowFile.component';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { createProjectActivity } from '../../utils';
+import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 
 type ProjectScope = {
   description: string;
@@ -108,6 +108,7 @@ function ContractorSubmitBidPage() {
   const lastInputRef = useRef<HTMLInputElement>(null);
   const params = useParams<{ id: string }>();
   const router = useRouterHook();
+  const currency = useCurrencyFormatter();
   const query = useQuery(
     ['getOwnerProjectById', params.id],
     () => {
@@ -340,7 +341,7 @@ function ContractorSubmitBidPage() {
       key: 'subtotal',
       title: 'Sub Total',
       render(_value, record) {
-        return USCurrencyFormat.format(record.quantity * record.price);
+        return currency.format(record.quantity * record.price);
       },
     },
     {

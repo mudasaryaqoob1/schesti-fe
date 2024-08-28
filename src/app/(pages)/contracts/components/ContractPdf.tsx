@@ -22,8 +22,10 @@ import {
   CalendarOutlined,
   CommentOutlined,
   FontSizeOutlined,
+  LoadingOutlined,
   SignatureOutlined,
 } from '@ant-design/icons';
+import { Spin } from 'antd';
 
 type Props = {
   mode: PdfContractMode;
@@ -42,6 +44,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
     const containerRef = useRef<HTMLDivElement>(null);
     const pdfContainerRef = useRef<HTMLDivElement>(null);
     const [selectedTool, setSelectedTool] = useState<ToolState | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     // const callback = useMemoizedFn((entry) => {
     //     if (entry.isIntersecting) {
@@ -64,6 +67,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
 
     async function loadPdf() {
       if (PDFJs) {
+        setIsLoading(true);
         try {
           const pdf = await PDFJs.getDocument(pdfFile).promise;
 
@@ -107,6 +111,8 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
           }
         } catch (error) {
           toast.error('Unable to load the pdf');
+        } finally {
+          setIsLoading(false);
         }
       }
     }
@@ -178,7 +184,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
     }
 
     return (
-      <div>
+      <Spin spinning={isLoading} indicator={<LoadingOutlined spin />}>
         <div className="flex gap-6 ">
           <div className="w-[950px]" ref={pdfContainerRef}>
             <DroppableArea
@@ -310,7 +316,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
           ) : null}
         </div>
         {/* <div ref={containerRef} className="border border-black"></div> */}
-      </div>
+      </Spin>
     );
   }
 );

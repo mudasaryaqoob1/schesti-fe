@@ -135,7 +135,7 @@ export function ContractInfo({ contract }: Props) {
 
           <div className="space-y-3  bg-gray-50 p-3 rounded-md">
             <SenaryHeading
-              title="Sender Information"
+              title="Receiver Information"
               className="text-base text-schestiPrimary font-medium"
             />
 

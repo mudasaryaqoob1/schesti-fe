@@ -89,7 +89,7 @@ const Login = () => {
         }
       } else if (
         CheckOtherRoles(result.payload.data?.user.userRole) &&
-        result.payload.data.user?.isPaymentConfirm
+        result.payload.data.user?.subscription
       ) {
         const session = result.payload?.token;
         localStorage.setItem('schestiToken', session);
@@ -114,18 +114,26 @@ const Login = () => {
             router.push('/dashboard');
           }
         } else {
-          router.push('/dashboard');
+          const responseLink = navigateUserWhileAuth(result.payload.data.user);
+          console.log({ responseLink });
+          if (responseLink) {
+            router.push(responseLink);
+            return;
+          } else {
+            router.push('/dashboard');
+            return;
+          }
         }
         return;
       }
-      const responseLink = navigateUserWhileAuth(result.payload.data.user);
+      // const responseLink = navigateUserWhileAuth(result.payload.data.user);
 
-      if (responseLink) {
-        router.push(responseLink);
-        return;
-      } else {
-        toast.warning('You are not allowed to login. ');
-      }
+      // if (responseLink) {
+      //   router.push(responseLink);
+      //   return;
+      // } else {
+      //   toast.warning('You are not allowed to login. ');
+      // }
     } else {
       setLoading(false);
       // if statusCode === 400 and email is not verified then redirect to checkmail page

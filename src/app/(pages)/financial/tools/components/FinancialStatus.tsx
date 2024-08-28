@@ -1,6 +1,6 @@
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
-import { IClientInvoice } from '@/app/interfaces/client-invoice.interface';
+import { IAIAInvoice } from '@/app/interfaces/client-invoice.interface';
 import { Badge, Skeleton } from 'antd';
 import moment from 'moment';
 import { UseQueryResult } from 'react-query';
@@ -9,7 +9,7 @@ import { Column } from '@ant-design/plots';
 type Props = {
   clientInvoiceQuery: UseQueryResult<
     IResponseInterface<{
-      invoices: IClientInvoice[];
+      invoices: IAIAInvoice[];
     }>,
     unknown
   >;

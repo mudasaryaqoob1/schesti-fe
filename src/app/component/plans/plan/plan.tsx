@@ -1,8 +1,8 @@
 'use client';
 import Button from '@/app/component/customButton/button';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
-import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
 import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
+import { IUserInterface } from '@/app/interfaces/user.interface';
 import { authService } from '@/app/services/auth.service';
 import { getPlanFeatureKeyByValue } from '@/app/utils/plans.utils';
 import {
@@ -21,7 +21,7 @@ import { toast } from 'react-toastify';
 import { twMerge } from 'tailwind-merge';
 
 type Props = {
-  user?: IUser;
+  user?: IUserInterface;
 } & IPricingPlan;
 
 const SinglePlan = (props: Props) => {
@@ -57,12 +57,22 @@ const SinglePlan = (props: Props) => {
   );
 
   const BTN =
-    props.user && props.user.planId ? (
+    props.user &&
+    props.user.subscription &&
+    props.user.subscription.planId &&
+    props.user.subscription.status === 'active' ? (
       <Button
-        text={props.user.planId === _id ? 'Current Plan' : 'Upgrade'}
+        text={
+          (props.user.subscription.planId as IPricingPlan)._id === _id
+            ? 'Current Plan'
+            : 'Upgrade'
+        }
         className="text-white self-stretch w-full"
         onClick={() => {
-          if (_id && props.user?.planId !== _id) {
+          if (
+            _id &&
+            (props.user?.subscription?.planId as IPricingPlan)._id !== _id
+          ) {
             stripeUpgradeMutation.mutate(_id);
           }
         }}

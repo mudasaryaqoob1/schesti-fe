@@ -12,7 +12,7 @@ import {
 import SwitchBtn from './switchbtn';
 import SinglePlan from './plan/plan';
 import ToggleBtn from './toggleBtn';
-import { AppDispatch, RootState } from '@/redux/store';
+import { AppDispatch } from '@/redux/store';
 import { HttpService } from '@/app/services/base.service';
 import { selectToken } from '@/redux/authSlices/auth.selector';
 import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
@@ -22,7 +22,7 @@ import {
   selectPricingPlansError,
   selectPricingPlansLoading,
 } from '@/redux/pricingPlanSlice/pricingPlan.selector';
-import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
+import { useUser } from '@/app/hooks/useUser';
 
 const PaymentPlans = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -44,9 +44,7 @@ const PaymentPlans = () => {
     [] as IPricingPlan[]
   );
   const [isDuration, setIsDuration] = useState('monthly');
-  const user = useSelector(
-    (state: RootState) => state.auth.user as { user?: IUser }
-  );
+  const user = useUser();
 
   useEffect(() => {
     pricingPlansHandler();
@@ -110,7 +108,7 @@ const PaymentPlans = () => {
                 <SinglePlan
                   key={index}
                   {...plan}
-                  user={user ? user.user : undefined}
+                  user={user ? user : undefined}
                 />
               );
             })}

@@ -62,7 +62,14 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
   const [data, setData] = useState<dataInterface[]>([]);
   const [reportData, setreportData] = useState<any>([]);
   const [uploadFileData, setuploadFileData] = useState<any>([]);
-  const { calculateMidpoint, calculatePolygonCenter, calcLineDistance, calculatePolygonArea, calculatePolygonPerimeter,calculatePolygonVolume } = useDraw();
+  const {
+    calculateMidpoint,
+    calculatePolygonCenter,
+    calcLineDistance,
+    calculatePolygonArea,
+    calculatePolygonPerimeter,
+    calculatePolygonVolume,
+  } = useDraw();
   // const [isSaving, setIsSaving] = useState<boolean>(false);
   const [loading, setloading] = useState<boolean>(true);
 
@@ -116,11 +123,10 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
   };
   // getPageData()
   useEffect(() => {
-    setreportData(getPageData() ?? [])
-    setuploadFileData(takeOff?.pages ?? [])
-  }, [takeOff])
-  const [perText, setperText] = useState<string>("")
-  
+    setreportData(getPageData() ?? []);
+    setuploadFileData(takeOff?.pages ?? []);
+  }, [takeOff]);
+  const [perText, setperText] = useState<string>('');
 
   //Oldest
   // useEffect(() => {
@@ -343,7 +349,6 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
 
   //           return results;
   //         }
-
 
   //         // const newData = await Promise.all(promises);
   //         const newData = await processInBatches(promises, 1);
@@ -594,7 +599,6 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
   //           return results;
   //         }
 
-
   //         // const newData = await Promise.all(promises);
   //         const newData = await processInBatches(promises, 1);
   //         setData(newData);
@@ -612,15 +616,25 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
   //   }
   // }, [reportData, uploadFileData])
 
-
   //GPT Try
   useEffect(() => {
-    console.log(reportData, uploadFileData, " ===> loading of capture ");
-    if (Array.isArray(reportData) && reportData.length > 0 && Array.isArray(uploadFileData) && uploadFileData.length > 0) {
+    console.log(reportData, uploadFileData, ' ===> loading of capture ');
+    if (
+      Array.isArray(reportData) &&
+      reportData.length > 0 &&
+      Array.isArray(uploadFileData) &&
+      uploadFileData.length > 0
+    ) {
       setloading(true);
-      setData(reportData.map((i) => ({ image: '/overview.png', details: { ...i } })));
-      console.log(uploadFileData, reportData, " ===> Data of pages and reports");
-  
+      setData(
+        reportData.map((i) => ({ image: '/overview.png', details: { ...i } }))
+      );
+      console.log(
+        uploadFileData,
+        reportData,
+        ' ===> Data of pages and reports'
+      );
+
       const loadImage = (src: string) => {
         return new Promise<HTMLImageElement>((resolve, reject) => {
           const img = new Image();
@@ -637,48 +651,51 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
             //@ts-ignore
             resolve({ img, scaleX: nw / wi, scaleY: nh / hi });
           };
-          img.onerror = (e: any) => { console.log(e, " ==> Page image loading of capture"); reject(e); };
+          img.onerror = (e: any) => {
+            console.log(e, ' ==> Page image loading of capture');
+            reject(e);
+          };
         });
       };
-  
+
       const captureShape = async (
         shape: any,
-        background: { img: HTMLImageElement, scaleX: number, scaleY: number },
+        background: { img: HTMLImageElement; scaleX: number; scaleY: number },
         shapeType: string,
-        scale:ScaleData
+        scale: ScaleData
       ) => {
         const container = document.createElement('div');
         container.style.display = 'none';
         document.body.appendChild(container);
-  
-        return new Promise<{url:string,text:string}>((resolve) => {
+
+        return new Promise<{ url: string; text: string }>((resolve) => {
           const tempStage = new Konva.Stage({
             container: container,
             width: background.img.width,
             height: background.img.height,
           });
-  
+
           const layer = new Konva.Layer();
           tempStage.add(layer);
-  
+
           const bgImage = new Konva.Image({
             image: background.img,
             width: background.img.width,
             height: background.img.height,
           });
           layer.add(bgImage);
-  
+
           let minX: number, minY: number, maxX: number, maxY: number;
           minX = minY = Number.MAX_SAFE_INTEGER;
           maxX = maxY = 0;
-  
+
           const scaleX = background.scaleX;
           const scaleY = background.scaleY;
 
-          let curtxt:string | number = '';
-  
+          let curtxt: string | number = '';
+
           switch (shapeType) {
-            case 'text': 
+            case 'text':
               break;
             case 'count': {
               const { x, y, radius = 20 } = shape;
@@ -691,75 +708,96 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
                 radius,
               });
               layer.add(circle);
-  
+
               minX = x * scaleX - radius - 20;
               minY = y * scaleY - radius - 20;
               maxX = x * scaleX + radius + 20;
               maxY = y * scaleY + radius + 20;
               break;
             }
-  
+
             case 'line':
             case 'perimeter':
             case 'dynamic':
             case 'area':
-            case 'volume': {
-              const { points, stroke, strokeWidth, lineCap } = shape;
-              const scaledPoints = points.map((point: number, index: number) => index % 2 === 0 ? point * scaleX : point * scaleY);
+            case 'volume':
+              {
+                const { points, stroke, strokeWidth, lineCap } = shape;
+                const scaledPoints = points.map(
+                  (point: number, index: number) =>
+                    index % 2 === 0 ? point * scaleX : point * scaleY
+                );
 
-              curtxt = shapeType == 'line' ? calcLineDistance(points, scale, true) 
-              : shapeType == 'perimeter' ? (points?.length > 4 ? calculatePolygonPerimeter(points, scale) : calcLineDistance(points, scale, true)) 
-              : shapeType == 'area' ? calculatePolygonArea(points, scale)
-              : shapeType == 'volume' ? calculatePolygonVolume(points,shape?.depth || 1,scale) : ""
-  
-              const line = new Konva.Line({
-                points: scaledPoints,
-                stroke,
-                strokeWidth,
-                lineCap,
-                closed: shapeType === 'area' || shapeType === 'volume',
-                fill: shape?.fillColor,
-              });
-              layer.add(line);
-  
-              let xText = 0, yText = 0;
-              if (shapeType === 'area' || shapeType === 'volume' || shapeType === 'dynamic') {
-                const { x, y } = calculatePolygonCenter(scaledPoints);
-                xText = x - 20;
-                yText = y - 20;
-              } else {
-                const { x, y } = calculateMidpoint(scaledPoints);
-                xText = x - 20;
-                yText = y - 20;
+                curtxt =
+                  shapeType == 'line'
+                    ? calcLineDistance(points, scale, true)
+                    : shapeType == 'perimeter'
+                      ? points?.length > 4
+                        ? calculatePolygonPerimeter(points, scale)
+                        : calcLineDistance(points, scale, true)
+                      : shapeType == 'area'
+                        ? calculatePolygonArea(points, scale)
+                        : shapeType == 'volume'
+                          ? calculatePolygonVolume(
+                              points,
+                              shape?.depth || 1,
+                              scale
+                            )
+                          : '';
+
+                const line = new Konva.Line({
+                  points: scaledPoints,
+                  stroke,
+                  strokeWidth,
+                  lineCap,
+                  closed: shapeType === 'area' || shapeType === 'volume',
+                  fill: shape?.fillColor,
+                });
+                layer.add(line);
+
+                let xText = 0,
+                  yText = 0;
+                if (
+                  shapeType === 'area' ||
+                  shapeType === 'volume' ||
+                  shapeType === 'dynamic'
+                ) {
+                  const { x, y } = calculatePolygonCenter(scaledPoints);
+                  xText = x - 20;
+                  yText = y - 20;
+                } else {
+                  const { x, y } = calculateMidpoint(scaledPoints);
+                  xText = x - 20;
+                  yText = y - 20;
+                }
+
+                const xs = scaledPoints.filter((_: any, i: any) => i % 2 === 0);
+                const ys = scaledPoints.filter((_: any, i: any) => i % 2 !== 0);
+                minX = Math.min(...xs) - 20;
+                minY = Math.min(...ys) - 20;
+                maxX = Math.max(...xs) + 20;
+                maxY = Math.max(...ys) + 20;
+                const textSize = ((maxX - minX) * (maxY - minY)) / 100000;
+
+                const text = new Konva.Text({
+                  x: xText,
+                  y: yText,
+                  text: `${curtxt}`, //shape.text,
+                  fontSize: Math.floor(textSize) * 10 + 25,
+                  fontFamily: 'Calibri',
+                  fill: shape?.textColor ?? 'red',
+                });
+                layer.add(text);
               }
-  
-              const xs = scaledPoints.filter((_: any, i: any) => i % 2 === 0);
-              const ys = scaledPoints.filter((_: any, i: any) => i % 2 !== 0);
-              minX = Math.min(...xs) - 20;
-              minY = Math.min(...ys) - 20;
-              maxX = Math.max(...xs) + 20;
-              maxY = Math.max(...ys) + 20;
-              const textSize = ((maxX - minX) * (maxY - minY)) / 100000;
-  
-              const text = new Konva.Text({
-                x: xText,
-                y: yText,
-                text: `${curtxt}`,//shape.text,
-                fontSize: (Math.floor(textSize) * 10 + 25),
-                fontFamily: 'Calibri',
-                fill: shape?.textColor ?? 'red',
-              });
-              layer.add(text);
-            }
-            break;
-  
+              break;
+
             default:
               console.error('Unknown shape type:', shapeType);
               return;
           }
-  
+
           layer.draw();
-  
+
           tempStage.toImage({
             x: minX,
             y: minY,
@@ -773,14 +811,14 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
               if (ctx) {
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                 const dataURL = canvas.toDataURL();
-                resolve({url:dataURL,text:`${curtxt}`});
+                resolve({ url: dataURL, text: `${curtxt}` });
               }
               document.body.removeChild(container);
             },
           });
         });
       };
-  
+
       const captureShapes = async () => {
         setloading(true);
         try {
@@ -798,8 +836,8 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
               xScale: `1in=1in`,
               yScale: `1in=1in`,
               precision: '1',
-            }
-            const {url,text} = await captureShape(
+            };
+            const { url, text } = await captureShape(
               { ...item.config, text: item.text, name: item.projectName },
               background,
               item.type,
@@ -807,24 +845,41 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
             );
             return {
               image: url,
-              details: { ...item,text },
+              details: { ...item, text },
             };
           });
-  
-          const processInBatches = async (promisesArray: any[], batchSize: number) => {
+
+          const processInBatches = async (
+            promisesArray: any[],
+            batchSize: number
+          ) => {
             const results = [];
-  
+
             for (let i = 0; i < promisesArray.length; i += batchSize) {
-              setperText(`${i}/${promisesArray?.length}`)
+              setperText(`${i}/${promisesArray?.length}`);
               const batch = promisesArray.slice(i, i + batchSize);
-              const batchResults = await Promise.all(batch.map((promiseFn) => promiseFn));
+              const batchResults = await Promise.all(
+                batch.map((promiseFn) => promiseFn)
+              );
               results.push(...batchResults);
-              setData(ps => ps.map((it, ind) => ind === i ? { details:{...it.details, text:batchResults[0]?.details?.text}, image: batchResults[0].image } : it));
+              setData((ps) =>
+                ps.map((it, ind) =>
+                  ind === i
+                    ? {
+                        details: {
+                          ...it.details,
+                          text: batchResults[0]?.details?.text,
+                        },
+                        image: batchResults[0].image,
+                      }
+                    : it
+                )
+              );
             }
-  
+
             return results;
-          }
-  
+          };
+
           const newData = await processInBatches(promises, 1);
           setData(newData);
           setloading(false);
@@ -833,25 +888,25 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
           console.log(error, 'error while capturing loading of capture');
         }
       };
-  
+
       if (reportData.length) captureShapes();
     } else {
       setData([]);
       setloading(false);
     }
   }, [reportData, uploadFileData]);
-  
 
-
-  useEffect(() => { console.log(loading, " ===> loading of capture") }, [loading])
+  useEffect(() => {
+    console.log(loading, ' ===> loading of capture');
+  }, [loading]);
   useEffect(() => {
     return () => {
-      setData([])
-      setuploadFileData([])
-      setreportData([])
-    }
-  }, [])
-  console.log(data, ' ===> data to capture')
+      setData([]);
+      setuploadFileData([]);
+      setreportData([]);
+    };
+  }, []);
+  console.log(data, ' ===> data to capture');
 
   return (
     <div className="py-2.5 px-6 bg-white border border-solid border-elboneyGray rounded-[4px] z-50 w-[90vw] h-[90vh] flex flex-col">
@@ -906,11 +961,11 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
                 </div>
               ))}
             </div>
-            {loading && <div
-              className="w-full flex flex-col rounded-2xl justify-between"
-            >
-              <Spin size='large' />
-            </div>}
+            {loading && (
+              <div className="w-full flex flex-col rounded-2xl justify-between">
+                <Spin size="large" />
+              </div>
+            )}
             <div className="flex justify-center items-center my-4">
               {/* {isSaving ? (
                 <div role="status">

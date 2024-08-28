@@ -1,10 +1,10 @@
 import { MeetingCard } from '@/app/(pages)/meeting/components/MeetingCard';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import TertiaryHeading from '@/app/component/headings/tertiary';
+import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 import { useTrades } from '@/app/hooks/useTrades';
 import { ITrade } from '@/app/interfaces/trade.interface';
 import { getTimezoneFromCountryAndState } from '@/app/utils/date.utils';
-import { USCurrencyFormat } from '@/app/utils/format';
 import { RootState } from '@/redux/store';
 import _ from 'lodash';
 import moment from 'moment';
@@ -15,7 +15,7 @@ export function ProjectSummary() {
     (state: RootState) => state.bidManagementOwner.project
   );
   const { tradesQuery, tradeCategoryFilters } = useTrades();
-
+  const currency = useCurrencyFormatter();
   const projectTrades = bid
     ? _.filter(tradesQuery.data?.data?.trades, (trade) =>
         (bid.selectedTrades as unknown as string).includes(trade._id)
@@ -152,7 +152,7 @@ export function ProjectSummary() {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {bid ? USCurrencyFormat.format(bid.projectValue) : ''}
+                {bid ? currency.format(bid.projectValue) : ''}
               </p>
             </div>
             <div className="space-y-2">

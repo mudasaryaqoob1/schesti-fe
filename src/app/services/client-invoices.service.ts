@@ -1,8 +1,5 @@
 import { IResponseInterface } from '../interfaces/api-response.interface';
-import {
-  G7State,
-  IClientInvoice,
-} from '../interfaces/client-invoice.interface';
+import { G7State, IAIAInvoice } from '../interfaces/client-invoice.interface';
 import { HttpService } from './base.service';
 
 class ClientInvoiceService extends HttpService {
@@ -10,36 +7,36 @@ class ClientInvoiceService extends HttpService {
 
   httpAddNewInvoice = (
     data: G7State
-  ): Promise<IResponseInterface<{ invoice: IClientInvoice }>> =>
+  ): Promise<IResponseInterface<{ invoice: IAIAInvoice }>> =>
     this.post(`${this.prefix}/createInvoice`, data);
 
   httpGetParentInvoiceById = (
     id: string
-  ): Promise<IResponseInterface<{ invoice: IClientInvoice }>> =>
+  ): Promise<IResponseInterface<{ invoice: IAIAInvoice }>> =>
     this.get(`${this.prefix}/invoice/${id}`);
 
   httpCreateNewInvoicePhase = (
     id: string,
     data: G7State
-  ): Promise<IResponseInterface<{ invoice: IClientInvoice }>> =>
+  ): Promise<IResponseInterface<{ invoice: IAIAInvoice }>> =>
     this.post(`${this.prefix}/createPhase/${id}`, data);
 
   httpGetAllInvoices = (): Promise<
-    IResponseInterface<{ invoices: IClientInvoice[] }>
+    IResponseInterface<{ invoices: IAIAInvoice[] }>
   > => this.get(`${this.prefix}/getInvoices`);
 
   httpGetAllInvoicesWithChildren = (): Promise<
-    IResponseInterface<{ invoices: IClientInvoice[] }>
+    IResponseInterface<{ invoices: IAIAInvoice[] }>
   > => this.get(`${this.prefix}/all`);
 
   httpGetInvoicePhases = (
     invoiceId: string
-  ): Promise<IResponseInterface<{ invoices: IClientInvoice[] }>> =>
+  ): Promise<IResponseInterface<{ invoices: IAIAInvoice[] }>> =>
     this.get(`${this.prefix}/getPhases/${invoiceId}`);
 
   httpDeleteClientInvoiceAndPhases = (
     invoiceId: string
-  ): Promise<IResponseInterface<{ invoice: IClientInvoice }>> =>
+  ): Promise<IResponseInterface<{ invoice: IAIAInvoice }>> =>
     this.delete(`${this.prefix}/${invoiceId}`);
 }
 

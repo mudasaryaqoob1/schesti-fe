@@ -146,6 +146,11 @@ class UserService extends HttpService {
 
   httpDashbaordStatics = (): Promise<IResponseInterface<IDashboardStats>> =>
     this.get(`${this.userPrefix}/dashboardStats`);
+
+  httpUpdateCurrency = (
+    data: IUserInterface['currency']
+  ): Promise<IResponseInterface<IUserInterface>> =>
+    this.put(`${this.userPrefix}/currency`, data);
 }
 
 export const userService = new UserService();

@@ -9,6 +9,7 @@ import {
   addVerificationDetails,
   addSelectedTrades,
   verifyUserEmail,
+  updateUserCurrencyThunk,
 } from './auth.thunk';
 import { isEmpty } from 'lodash';
 
@@ -144,6 +145,21 @@ export const authSlice = createSlice({
       state.message = action.payload.message;
     });
     builder.addCase(addSelectedTrades.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message;
+    });
+
+    builder.addCase(updateUserCurrencyThunk.pending, (state) => {
+      state.loading = true;
+    });
+
+    builder.addCase(updateUserCurrencyThunk.fulfilled, (state, action) => {
+      state.loading = false;
+      state.user.user = action.payload.data;
+      state.message = action.payload.message;
+    });
+
+    builder.addCase(updateUserCurrencyThunk.rejected, (state, action) => {
       state.loading = false;
       state.error = action.error.message;
     });

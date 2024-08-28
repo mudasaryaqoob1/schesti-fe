@@ -8,15 +8,13 @@ import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import { clientInvoiceService } from '@/app/services/client-invoices.service';
 import { useEffect, useState } from 'react';
-import { IClientInvoice } from '@/app/interfaces/client-invoice.interface';
+import { IAIAInvoice } from '@/app/interfaces/client-invoice.interface';
 import { Skeleton } from 'antd';
 
 function CreateNextPayableInvoicePage() {
   const [loading, setLoading] = useState(false);
   const params = useParams<{ id: string }>();
-  const [parentInvoice, setParentInvoice] = useState<IClientInvoice | null>(
-    null
-  );
+  const [parentInvoice, setParentInvoice] = useState<IAIAInvoice | null>(null);
 
   useEffect(() => {
     getParentInvoice();

@@ -4,7 +4,7 @@ import { InputComponent } from '@/app/component/customInput/Input';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import ModalComponent from '@/app/component/modal';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
-import { IClientInvoice } from '@/app/interfaces/client-invoice.interface';
+import { IAIAInvoice } from '@/app/interfaces/client-invoice.interface';
 import { Routes } from '@/app/utils/plans.utils';
 import {
   deleteClientInvoiceRequest,
@@ -76,7 +76,7 @@ export function Clients() {
       label: <p>Delete</p>,
     },
   ];
-  const columns: ColumnsType<IClientInvoice> = [
+  const columns: ColumnsType<IAIAInvoice> = [
     {
       title: 'Invoice #',
       dataIndex: 'applicationNo',
@@ -129,7 +129,7 @@ export function Clients() {
                   onOk() {
                     dispatch(deleteClientInvoiceRequest(record._id));
                   },
-                  onCancel() {},
+                  onCancel() { },
                 });
               } else if (key === 'view') {
                 router.push(
@@ -155,14 +155,14 @@ export function Clients() {
   const filteredClientInvoices =
     clientInvoices.length > 0
       ? clientInvoices.filter((invoice: any) => {
-          if (!search) {
-            return invoice;
-          }
-          return (
-            invoice.invoiceName === search ||
-            invoice!.toOwner.toLowerCase().includes(search.toLowerCase())
-          );
-        })
+        if (!search) {
+          return invoice;
+        }
+        return (
+          invoice.invoiceName === search ||
+          invoice!.toOwner.toLowerCase().includes(search.toLowerCase())
+        );
+      })
       : [];
 
   return (
@@ -258,6 +258,22 @@ export function Clients() {
         dataSource={filteredClientInvoices}
         pagination={{ position: ['bottomCenter'] }}
         bordered
+        expandable={{
+          expandedRowRender: () => (
+            <div className="py-1">
+              <Table
+                columns={[
+                  { title: 'Pay Application' },
+                  { title: 'Amount' },
+                  { title: 'Application Date' },
+                  { title: 'Payment Due' },
+                  { title: 'Period To' },
+                  { title: 'Action' },
+                ]}
+              />
+            </div>
+          ),
+        }}
       />
     </div>
   );
