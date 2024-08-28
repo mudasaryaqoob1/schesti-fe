@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import {
   G7State,
-  IClientInvoice,
+  IAIAInvoice,
 } from '@/app/interfaces/client-invoice.interface';
 import { clientInvoiceService } from '@/app/services/client-invoices.service';
 import { ConfigProvider, Tabs } from 'antd';
@@ -23,7 +23,7 @@ import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateC
 import QuinaryHeading from '@/app/component/headings/quinary';
 
 type Props = {
-  parentInvoice: IClientInvoice;
+  parentInvoice: IAIAInvoice;
 };
 const G703_KEY = 'G703';
 const G702_KEY = 'G702';
@@ -33,7 +33,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
   const user = auth.user?.user as IUpdateCompanyDetail | undefined;
 
   // selected phase will be from allPhases and will be the latest last phase
-  const [selectedPhase, setSelectedPhase] = useState<IClientInvoice | null>(
+  const [selectedPhase, setSelectedPhase] = useState<IAIAInvoice | null>(
     null
   );
   const [tab, setTab] = useState(G703_KEY);
@@ -42,7 +42,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
   const [isDownloading, setIsDownloading] = useState(false);
 
   // all phases of the parent invoice
-  const [allPhases, setAllPhases] = useState<IClientInvoice[]>([]);
+  const [allPhases, setAllPhases] = useState<IAIAInvoice[]>([]);
   const [g7State, setG7State] = useState<G7State>({
     applicationNo: '',
     invoiceName: '',
@@ -101,7 +101,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
     takeScreenshot(ref.current);
   }, [g7State]);
 
-  function updateG7StateFromPhase(phase: IClientInvoice) {
+  function updateG7StateFromPhase(phase: IAIAInvoice) {
     const data = updatePreviousApplicationColumn(phase);
     setG7State({ ...phase, data });
   }
@@ -114,7 +114,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
     });
   }
 
-  function updatePreviousApplicationColumn(_selectedPhase: IClientInvoice) {
+  function updatePreviousApplicationColumn(_selectedPhase: IAIAInvoice) {
     let previousPhaseData = JSON.parse(
       JSON.stringify(_selectedPhase.data)
     ) as Array<string[]>;
@@ -268,9 +268,8 @@ export function PhaseComponent({ parentInvoice }: Props) {
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className={`${
-                      tab === type ? 'text-schestiPrimary' : 'text-black'
-                    }`}
+                    className={`${tab === type ? 'text-schestiPrimary' : 'text-black'
+                      }`}
                   />
                 ),
                 tabKey: type,
@@ -330,7 +329,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
       <div
         ref={ref as MutableRefObject<HTMLDivElement>}
         className="space-y-5 w-full absolute z -left-[2500px] border p-6"
-        // className="space-y-5 w-full border p-6"
+      // className="space-y-5 w-full border p-6"
       >
         <ClientInvoiceHeader />
         <div className="flex justify-end w-full">

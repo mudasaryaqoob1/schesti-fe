@@ -1,10 +1,10 @@
-import { IClientInvoice } from '@/app/interfaces/client-invoice.interface';
+import { IAIAInvoice } from '@/app/interfaces/client-invoice.interface';
 import { ISettingTarget } from '@/app/interfaces/companyInterfaces/setting.interface';
 import moment from 'moment';
 
 export function completedTargets(
   targets: ISettingTarget[],
-  invoices: IClientInvoice[]
+  invoices: IAIAInvoice[]
 ) {
   const result = invoices.filter((invoice) => {
     return targets.find(
@@ -18,7 +18,7 @@ export function completedTargets(
 
 export function totalReceivable(
   target: ISettingTarget,
-  invoices: IClientInvoice[]
+  invoices: IAIAInvoice[]
 ) {
   return invoices
     .filter((invoice) => {
@@ -34,7 +34,7 @@ export function totalReceivable(
 
 export function remainingTargets(
   targets: ISettingTarget[],
-  invoices: IClientInvoice[]
+  invoices: IAIAInvoice[]
 ) {
   return targets.filter((target) => {
     return invoices.filter((invoice) => {

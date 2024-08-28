@@ -2,7 +2,7 @@ import QuaternaryHeading from '@/app/component/headings/quaternary';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
-import { IClientInvoice } from '@/app/interfaces/client-invoice.interface';
+import { IAIAInvoice } from '@/app/interfaces/client-invoice.interface';
 import { ISettingTarget } from '@/app/interfaces/companyInterfaces/setting.interface';
 import { Badge, Progress, Select, Skeleton } from 'antd';
 import _ from 'lodash';
@@ -15,7 +15,7 @@ type Props = {
   targetsQuery: UseQueryResult<IResponseInterface<ISettingTarget[]>, unknown>;
   clientInvoiceQuery: UseQueryResult<
     IResponseInterface<{
-      invoices: IClientInvoice[];
+      invoices: IAIAInvoice[];
     }>,
     unknown
   >;
@@ -31,8 +31,8 @@ export function TargetStats({ targetsQuery, clientInvoiceQuery }: Props) {
     : [];
   const targets = targetsQuery.data
     ? targetsQuery.data.data!.filter(
-        (target) => parseInt(target.year) === selectedYear
-      )
+      (target) => parseInt(target.year) === selectedYear
+    )
     : [];
   // const completed = completedTargets(targets, invoices);
 

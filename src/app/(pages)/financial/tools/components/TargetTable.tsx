@@ -2,7 +2,7 @@ import CustomButton from '@/app/component/customButton/button';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
-import { IClientInvoice } from '@/app/interfaces/client-invoice.interface';
+import { IAIAInvoice } from '@/app/interfaces/client-invoice.interface';
 import { ISettingTarget } from '@/app/interfaces/companyInterfaces/setting.interface';
 import { Select, Skeleton } from 'antd';
 import Table, { type ColumnsType } from 'antd/es/table';
@@ -18,7 +18,7 @@ type Props = {
   targetsQuery: UseQueryResult<IResponseInterface<ISettingTarget[]>, unknown>;
   clientInvoiceQuery: UseQueryResult<
     IResponseInterface<{
-      invoices: IClientInvoice[];
+      invoices: IAIAInvoice[];
     }>,
     unknown
   >;
@@ -112,12 +112,11 @@ export function TargetTable({ clientInvoiceQuery, targetsQuery }: Props) {
         str2Percent: true,
       })
       .saveAs(
-        `${
-          'financial-tools' +
-          '-' +
-          moment().month() +
-          '-' +
-          new Date().getTime()
+        `${'financial-tools' +
+        '-' +
+        moment().month() +
+        '-' +
+        new Date().getTime()
         }.xlsx`
       );
   };

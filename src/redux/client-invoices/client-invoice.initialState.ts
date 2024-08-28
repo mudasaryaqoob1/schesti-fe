@@ -1,11 +1,11 @@
-import { IClientInvoice } from '@/app/interfaces/client-invoice.interface';
+import { IAIAInvoice } from '@/app/interfaces/client-invoice.interface';
 
 export interface IClientInvoiceState {
   loading: boolean;
   error?: string | null;
   message?: string | null;
   statusCode: number | null;
-  data: IClientInvoice[];
+  data: IAIAInvoice[];
 }
 
 const initialClientInvoiceState: IClientInvoiceState = {

@@ -4,7 +4,7 @@ import { InputComponent } from '@/app/component/customInput/Input';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import ModalComponent from '@/app/component/modal';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
-import { IClientInvoice } from '@/app/interfaces/client-invoice.interface';
+import { IAIAInvoice } from '@/app/interfaces/client-invoice.interface';
 import { Routes } from '@/app/utils/plans.utils';
 import {
   deleteClientInvoiceRequest,
@@ -76,7 +76,7 @@ export function Clients() {
       label: <p>Delete</p>,
     },
   ];
-  const columns: ColumnsType<IClientInvoice> = [
+  const columns: ColumnsType<IAIAInvoice> = [
     {
       title: 'Invoice #',
       dataIndex: 'applicationNo',
