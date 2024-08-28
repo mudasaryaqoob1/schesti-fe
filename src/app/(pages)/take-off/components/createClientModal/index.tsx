@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import * as Yup from 'yup';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import FormControl from '@/app/component/formControl';
@@ -10,7 +10,6 @@ import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/Phon
 import CustomButton from '@/app/component/customButton/button';
 import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interface';
 import { PhoneNumberRegex } from '@/app/utils/regex.util';
-import { userService } from '@/app/services/user.service';
 import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
 import crmService from '@/app/services/crm/crm.service';
@@ -56,7 +55,7 @@ const initialValues: IClient = {
 
 const ScaleModal = ({ setModalOpen, setSelectedClient }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [clients, setclients] = useState<any>([]);
+  // const [clients, setclients] = useState<any>([]);
   // const [getLoading, setgetLoading] = useState<boolean>(false)
   // const [isOpen, setIsOpen] = useState<boolean>(false)
 
