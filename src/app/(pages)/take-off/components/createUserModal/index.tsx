@@ -16,17 +16,19 @@ import CustomButton from '@/app/component/customButton/button';
 // import VerticleBar from '@/app/(pages)/settings/verticleBar';
 // import Description from '@/app/component/description';
 import { bg_style } from '@/globals/tailwindvariables';
-import { userRoles } from '@/app/enums/role.enums';
+// import { userRoles } from '@/app/enums/role.enums';
 import WhiteButton from '@/app/component/customButton/white';
 import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
+import { RootState } from '@/redux/store';
+import { useSelector } from 'react-redux';
 
-const defaultOptions = [
-  { value: userRoles.COMPANY, label: userRoles.COMPANY },
-  { value: userRoles.ACCOUNTS_MANAGER, label: userRoles.ACCOUNTS_MANAGER },
-  { value: userRoles.ESTIMATOR, label: userRoles.ESTIMATOR },
-  { value: userRoles.PROJECT_MANAGER, label: userRoles.PROJECT_MANAGER },
-  { value: userRoles.SALES_MANAGER, label: userRoles.SALES_MANAGER },
-];
+// const defaultOptions = [
+//   { value: userRoles.COMPANY, label: userRoles.COMPANY },
+//   { value: userRoles.ACCOUNTS_MANAGER, label: userRoles.ACCOUNTS_MANAGER },
+//   { value: userRoles.ESTIMATOR, label: userRoles.ESTIMATOR },
+//   { value: userRoles.PROJECT_MANAGER, label: userRoles.PROJECT_MANAGER },
+//   { value: userRoles.SALES_MANAGER, label: userRoles.SALES_MANAGER },
+// ];
 
 interface Props {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -53,6 +55,16 @@ const CreateUserModal = ({ setModalOpen, submitHandler, isLoading }: Props) => {
     roles: '',
     brandingColor: '',
   };
+
+  const companyRolesState = useSelector(
+    (state: RootState) => state.companyRoles
+  );
+  const roleOptions = companyRolesState.data.map((role) => {
+    return {
+      label: role.name,
+      value: role._id,
+    };
+  });
 
   return (
     // <VerticleBar>
@@ -120,7 +132,7 @@ const CreateUserModal = ({ setModalOpen, submitHandler, isLoading }: Props) => {
                   control="select"
                   label="Role"
                   name="roles"
-                  options={defaultOptions}
+                  options={roleOptions}
                   placeholder="Select User Role"
                 />
                 <FormControl

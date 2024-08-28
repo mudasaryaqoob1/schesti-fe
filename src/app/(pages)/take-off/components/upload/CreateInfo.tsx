@@ -606,7 +606,7 @@ const CreateInfo = () => {
             title="Project information"
           />
           <div className="grow">
-            <Formik initialValues={{}} onSubmit={() => {}}>
+            <Formik initialValues={{}} onSubmit={() => { }}>
               {({
                 handleSubmit,
                 // setFieldValue,
@@ -706,7 +706,7 @@ const CreateInfo = () => {
               <Formik
                 initialValues={{}}
                 validationSchema={{}}
-                onSubmit={() => {}}
+                onSubmit={() => { }}
               >
                 {({
                   handleSubmit,
@@ -837,7 +837,7 @@ const CreateInfo = () => {
             <Table
               columns={columns}
               dataSource={selectedAssignedUsers}
-              onChange={() => {}}
+              onChange={() => { }}
               className="max-h-[100%]"
               scroll={{ y: 170 }}
             />
@@ -907,14 +907,14 @@ const CreateInfo = () => {
                             {/* <Progress percent={(totalProgress && Array.isArray(totalProgress) ? Math.ceil((totalProgress?.length / it?.totalPages) * 100) : 0)} strokeColor={'#007AB6'} /> */}
                             {fileState.find((i) => i.name == it?.name)
                               ?.status != 'failed' && (
-                              <Progress
-                                percent={
-                                  fileState.find((i) => i.name == it?.name)
-                                    ?.uploadProgress ?? 1
-                                }
-                                strokeColor={'#007AB6'}
-                              />
-                            )}
+                                <Progress
+                                  percent={
+                                    fileState.find((i) => i.name == it?.name)
+                                      ?.uploadProgress ?? 1
+                                  }
+                                  strokeColor={'#007AB6'}
+                                />
+                              )}
                             <span className="text-sm text-gray-500">{`(${fileState.find((i) => i.name == it?.name)?.status})`}</span>
                           </li>
                         );
@@ -984,7 +984,7 @@ const CreateInfo = () => {
             isLoading={isLoading}
           />
         </ModalComponent>
-        <ModalComponent open={progressModalOpen} setOpen={() => {}}>
+        <ModalComponent open={progressModalOpen} setOpen={() => { }}>
           <CreateProgressModal
             setModalOpen={setprogressModalOpen}
             files={selectedFiles}
