@@ -177,7 +177,7 @@ const Trades = () => {
           <Button
             isLoading={isLoading}
             onClick={submitHandler}
-            text="Submit"
+            text="Next"
             className={`w-full my-3 ${isLoading ? 'disabled' : ''}`}
             type="submit"
           />

@@ -182,7 +182,7 @@ const ScaleModal = ({ setModalOpen, setSelectedClient }: Props) => {
                 </div>
               </div>
             )} */}
-            <Formik onSubmit={() => { }} initialValues={{ client: '' }}>
+            <Formik onSubmit={() => {}} initialValues={{ client: '' }}>
               <FormControl
                 control="select"
                 label="Select Client"

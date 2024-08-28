@@ -3,6 +3,7 @@ import {
   ContractPartyType,
   ICrmContract,
 } from '@/app/interfaces/crm/crm-contract.interface';
+
 import moment from 'moment';
 import Image from 'next/image';
 
@@ -11,7 +12,7 @@ type Props = {
   receiver?: ContractPartyType;
 };
 
-export function ContractInfo({ contract, receiver }: Props) {
+export function ContractInfo({ contract }: Props) {
   return (
     <div>
       <SenaryHeading
@@ -81,131 +82,105 @@ export function ContractInfo({ contract, receiver }: Props) {
         />
       </div>
 
-      <div className="mt-5 p-6 bg-gray-50 rounded-md">
+      <div className="mt-5 p-6 rounded-md">
         <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-3">
+          <div className="space-y-3  bg-gray-50 p-3 rounded-md">
             <SenaryHeading
-              title="Company Information"
+              title="Sender Information"
               className="text-base text-schestiPrimary font-medium"
             />
-            <div>
-              <SenaryHeading
-                title={
-                  typeof contract.user != 'string'
-                    ? `${contract.user.name}`
-                    : ''
-                }
-                className="text-schestiPrimaryBlack font-normal text-base"
-              />
-              <SenaryHeading
-                title={
-                  typeof contract.user != 'string'
-                    ? `${contract.user.companyName || contract.user.organizationName}`
-                    : ''
-                }
-                className="text-schestiPrimaryBlack font-normal text-base"
-              />
-            </div>
 
-            <div className="flex items-center space-x-2">
-              <Image alt="call" src={'/call.svg'} width={20} height={20} />
-              <SenaryHeading
-                title={
-                  typeof contract.user != 'string'
-                    ? `${contract.user.phone}`
-                    : ''
-                }
-                className="text-schestiPrimaryBlack font-normal text-base"
-              />
-            </div>
+            {contract.receipts
+              .filter((receipt) => receipt.type === 'sender')
+              .map((receipt) => (
+                <div
+                  key={receipt._id}
+                  className="flex border-b border-gray-300 py-1 items-center justify-between"
+                >
+                  <div>
+                    <SenaryHeading
+                      title={receipt.companyName}
+                      className="text-schestiPrimaryBlack font-normal text-base"
+                    />
+                  </div>
 
-            <div className="flex items-center space-x-2">
-              <Image
-                alt="mail"
-                src={'/mail-black.svg'}
-                width={20}
-                height={20}
-              />
-              <SenaryHeading
-                title={
-                  typeof contract.user != 'string'
-                    ? `${contract.user.email}`
-                    : ''
-                }
-                className="text-schestiPrimaryBlack font-normal text-base"
-              />
-            </div>
+                  <div className="flex items-center space-x-2">
+                    <Image
+                      alt="building"
+                      src={'/building.svg'}
+                      width={20}
+                      height={20}
+                    />
+                    <SenaryHeading
+                      title={receipt.companyName}
+                      className="text-schestiPrimaryBlack font-normal text-base"
+                    />
+                  </div>
 
-            <div className="flex items-center space-x-2">
-              <Image
-                alt="location"
-                src={'/navigation-black.svg'}
-                width={20}
-                height={20}
-              />
-              <SenaryHeading
-                title={
-                  typeof contract.user != 'string'
-                    ? `${contract.user.address}`
-                    : ''
-                }
-                className="text-schestiPrimaryBlack font-normal text-base"
-              />
-            </div>
+                  <div className="flex items-center space-x-2">
+                    <Image
+                      alt="mail"
+                      src={'/mail-black.svg'}
+                      width={20}
+                      height={20}
+                    />
+                    <SenaryHeading
+                      title={receipt.email}
+                      className="text-schestiPrimaryBlack font-normal text-base"
+                    />
+                  </div>
+                </div>
+              ))}
           </div>
 
-          {receiver ? (
-            <div className="space-y-3">
-              <SenaryHeading
-                title="Receiver Information"
-                className="text-base text-schestiPrimary font-medium"
-              />
-              <div>
-                <SenaryHeading
-                  title={receiver.name}
-                  className="text-schestiPrimaryBlack font-normal text-base"
-                />
-                <SenaryHeading
-                  title={receiver.companyName}
-                  className="text-schestiPrimaryBlack font-normal text-base"
-                />
-              </div>
+          <div className="space-y-3  bg-gray-50 p-3 rounded-md">
+            <SenaryHeading
+              title="Sender Information"
+              className="text-base text-schestiPrimary font-medium"
+            />
 
-              <div className="flex items-center space-x-2">
-                <Image alt="call" src={'/call.svg'} width={20} height={20} />
-                <SenaryHeading
-                  title={''}
-                  className="text-schestiPrimaryBlack font-normal text-base"
-                />
-              </div>
+            {contract.receipts
+              .filter((receipt) => receipt.type === 'receiver')
+              .map((receipt) => (
+                <div
+                  key={receipt._id}
+                  className="flex border-b border-gray-300 py-1 items-center justify-between"
+                >
+                  <div>
+                    <SenaryHeading
+                      title={receipt.companyName}
+                      className="text-schestiPrimaryBlack font-normal text-base"
+                    />
+                  </div>
 
-              <div className="flex items-center space-x-2">
-                <Image
-                  alt="mail"
-                  src={'/mail-black.svg'}
-                  width={20}
-                  height={20}
-                />
-                <SenaryHeading
-                  title={receiver.email}
-                  className="text-schestiPrimaryBlack font-normal text-base"
-                />
-              </div>
+                  <div className="flex items-center space-x-2">
+                    <Image
+                      alt="building"
+                      src={'/building.svg'}
+                      width={20}
+                      height={20}
+                    />
+                    <SenaryHeading
+                      title={receipt.companyName}
+                      className="text-schestiPrimaryBlack font-normal text-base"
+                    />
+                  </div>
 
-              <div className="flex items-center space-x-2">
-                <Image
-                  alt="location"
-                  src={'/navigation-black.svg'}
-                  width={20}
-                  height={20}
-                />
-                <SenaryHeading
-                  title={''}
-                  className="text-schestiPrimaryBlack font-normal text-base"
-                />
-              </div>
-            </div>
-          ) : null}
+                  <div className="flex items-center space-x-2">
+                    <Image
+                      alt="mail"
+                      src={'/mail-black.svg'}
+                      width={20}
+                      height={20}
+                    />
+                    <SenaryHeading
+                      title={receipt.email}
+                      className="text-schestiPrimaryBlack font-normal text-base"
+                    />
+                  </div>
+                </div>
+              ))}
+          </div>
         </div>
       </div>
     </div>

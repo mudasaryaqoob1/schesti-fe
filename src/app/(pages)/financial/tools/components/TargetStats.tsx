@@ -92,7 +92,7 @@ export function TargetStats({ targetsQuery, clientInvoiceQuery }: Props) {
         <Progress
           showInfo
           type="dashboard"
-          strokeColor={'#7F56D9'}
+          strokeColor={'#007AB6'}
           strokeWidth={12}
           size={200}
           percent={Number(percentageCompleted.toFixed(2))}

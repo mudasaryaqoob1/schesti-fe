@@ -92,9 +92,9 @@ const TakeOffLayout: React.FC<any> = ({
     setDrawHistory((prev) => {
       return {
         ...prev,
-     
+
         [pageNumber]: {
-             //@ts-ignore
+          //@ts-ignore
           ...prev[pageNumber],
           //@ts-ignore
           [type]: prev[pageNumber][type]?.map((item: any) => {
@@ -130,9 +130,9 @@ const TakeOffLayout: React.FC<any> = ({
     setDrawHistory((prev) => {
       return {
         ...prev,
-      
+
         [pageNumber]: {
-            //@ts-ignore
+          //@ts-ignore
           ...prev[pageNumber],
           //@ts-ignore
           [type]: prev[pageNumber][type]?.map((item: any) => {
@@ -170,7 +170,7 @@ const TakeOffLayout: React.FC<any> = ({
       return {
         ...prev,
         [pageNumber]: {
-            //@ts-ignore
+          //@ts-ignore
           ...prev[pageNumber],
           //@ts-ignore
           [type]: prev[pageNumber][type]?.map((item: any) => {

@@ -1,5 +1,7 @@
 'use client';
+import { USER_ROLES_ENUM } from '@/app/constants/constant';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { useUser } from '@/app/hooks/useUser';
 import { OtherRoutes } from '@/app/utils/plans.utils';
 import { bg_style, senaryHeading } from '@/globals/tailwindvariables';
 import { usePathname, useParams } from 'next/navigation';
@@ -8,9 +10,11 @@ const Index = () => {
   const router = useRouterHook();
   const pathname = usePathname();
   const { id } = useParams();
+  const authUser = useUser();
+
   const active =
     'bg-schestiLightPrimary  text-schestiPrimary w-full rounded-[6px] font-semibold';
-  const tabs = [
+  let tabs = [
     { id: 1, name: 'General Settings', route: ['/settings/general'] },
     { id: 2, name: 'Plans', route: ['/settings/plans'] },
     { id: 2, name: 'Category Setup', route: ['/settings/CategorySetup'] },
@@ -36,6 +40,23 @@ const Index = () => {
       ],
     },
   ];
+
+  if (authUser?.userRole === USER_ROLES_ENUM.SUBCONTRACTOR) {
+    tabs = [
+      ...tabs,
+      { id: 7, name: 'Verification', route: ['/settings/verification'] },
+      { id: 8, name: 'Trades', route: ['/settings/trades'] },
+    ];
+  } else if (
+    authUser?.userRole !== USER_ROLES_ENUM.PROFESSOR ||
+    authUser?.userRole !== USER_ROLES_ENUM.STUDENT ||
+    authUser?.userRole !== USER_ROLES_ENUM.OWNER
+  ) {
+    tabs = [
+      ...tabs,
+      { id: 7, name: 'Verification', route: ['/settings/verification'] },
+    ];
+  }
 
   return (
     <div

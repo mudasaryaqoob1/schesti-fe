@@ -175,7 +175,7 @@ export function ManagePriority({
 
                         <Tooltip
                           overlayStyle={{
-                            minWidth: '280px',
+                            minWidth: '230px',
                           }}
                           title={
                             <div>

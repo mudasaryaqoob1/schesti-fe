@@ -157,7 +157,7 @@ function EditContractDocumentPage() {
           field={{
             value: selectedReceipt ? selectedReceipt.email : undefined,
             options: receipts.map((receipt) => ({
-              label: receipt.email,
+              label: `${receipt.name} / ${receipt.email}`,
               title: `${receipt.name} - (${receipt.companyName})`,
               value: receipt.email,
             })),

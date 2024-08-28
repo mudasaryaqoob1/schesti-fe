@@ -167,7 +167,7 @@ export function Clients() {
 
   return (
     <div className="w-full mb-4">
-      <div className="flex justify-between flex-wrap items-center md:flex-nowrap mb-2">
+      <div className="flex  justify-between flex-wrap items-center md:flex-nowrap mb-2">
         <TertiaryHeading title="AIA Invoicing" className="text-graphiteGray" />
         <div className="flex items-center space-x-2 flex-1 justify-end">
           <div className="w-96 ">
@@ -202,7 +202,7 @@ export function Clients() {
             width="40%"
           >
             <div className="bg-white border border-solid border-elboneyGray rounded-[4px] z-50">
-              <div className="flex px-6 py-2.5 justify-between bg-mistyWhite">
+              <div className="flex px-6 py-2.5 justify-between bg-schestiLightPrimary">
                 <TertiaryHeading
                   title="Client Invoice"
                   className="text-graphiteGray"

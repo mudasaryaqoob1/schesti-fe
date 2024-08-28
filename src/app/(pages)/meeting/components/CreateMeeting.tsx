@@ -91,7 +91,7 @@ export function CreateMeeting({
             .format('YYYY-MM-DDTHH:mm:ss'),
         },
     validationSchema: CreateMeetingSchema,
-    enableReinitialize: true,
+    enableReinitialize: meeting ? true : false,
     onSubmit(values) {
       setIsScheduling(true);
       if (meeting) {

@@ -1,6 +1,5 @@
 import { IUserInterface } from '../interfaces/user.interface';
-import _ from 'lodash';
-import { USER_ROLES } from '../enums/role.enums';
+import { USER_ROLES_ENUM } from '../constants/constant';
 
 const ContractorPages = {
   CompanyDetails: '/companydetails', // will have a user id,
@@ -20,62 +19,82 @@ const OwnerPages = {
 };
 
 export function navigateUserWhileAuth(user: IUserInterface) {
-  console.log(user.userRole);
-  if (user.userRole === USER_ROLES.CONTRACTOR) {
-    return navigateContractor(user);
+  if (
+    user.userRole === USER_ROLES_ENUM.PROFESSOR ||
+    user.userRole === USER_ROLES_ENUM.STUDENT
+  ) {
+    return navigateEducational(user);
+  } else if (
+    user.userRole === USER_ROLES_ENUM.CONTRACTOR ||
+    user.userRole === USER_ROLES_ENUM.SUBCONTRACTOR ||
+    user.userRole === USER_ROLES_ENUM.ARCHITECT ||
+    user.userRole === USER_ROLES_ENUM.VENDOR
+  ) {
+    return navigateBusiness(user);
   }
-  if (user.userRole === USER_ROLES.SUBCONTRACTOR) {
-    return navigateSubContractor(user);
-  }
-  if (user.userRole === USER_ROLES.OWNER) {
+  if (user.userRole === USER_ROLES_ENUM.OWNER) {
     return navigateOwner(user);
   }
   return null;
 }
 
-function navigateContractor(user: IUserInterface) {
-  const haveCompanyDetails =
-    Boolean(user.companyName) &&
-    Boolean(user.address) &&
-    Boolean(user.industry) &&
-    Boolean(user.phone) &&
-    Boolean(user.country) &&
-    Boolean(user.state) &&
-    Boolean(user.city) &&
-    Boolean(user.employee);
-  console.log('haveCompanyDetails', haveCompanyDetails);
-  if (!haveCompanyDetails) {
-    return `${ContractorPages.CompanyDetails}/${user._id}`;
-  }
-  const havePlan = user.planId;
-  if (!havePlan) {
-    return ContractorPages.Plans;
+function navigateBusiness(user: IUserInterface) {
+  if (
+    user.userRole === USER_ROLES_ENUM.CONTRACTOR ||
+    user.userRole === USER_ROLES_ENUM.SUBCONTRACTOR ||
+    user.userRole === USER_ROLES_ENUM.VENDOR ||
+    user.userRole === USER_ROLES_ENUM.ARCHITECT
+  ) {
+    const haveCompanyDetails =
+      Boolean(user.companyName) &&
+      Boolean(user.address) &&
+      // Boolean(user.industry) &&
+      Boolean(user.phone) &&
+      Boolean(user.country) &&
+      Boolean(user.state) &&
+      Boolean(user.city) &&
+      Boolean(user.employee);
+
+    if (!haveCompanyDetails) {
+      return `${ContractorPages.CompanyDetails}/${user._id}`;
+    }
+
+    const haveTrades = user.selectedTrades && user.selectedTrades.length == 0;
+
+    if (user.userRole == USER_ROLES_ENUM.SUBCONTRACTOR && !haveTrades) {
+      return SubContractorPages.Trades;
+    }
+
+    const havePlan = user.planId;
+
+    if (!havePlan) {
+      return ContractorPages.Plans;
+    }
   }
   return null;
 }
 
-function navigateSubContractor(user: IUserInterface) {
-  const haveCompanyDetails =
-    Boolean(user.companyName) &&
+function navigateEducational(user: IUserInterface) {
+  if (
+    (user.userRole === USER_ROLES_ENUM.PROFESSOR ||
+      user.userRole === USER_ROLES_ENUM.STUDENT) &&
+    user.isActive === 'pending'
+  ) {
+    return '/pending';
+  }
+  const haveDetails =
+    Boolean(user.university) &&
     Boolean(user.address) &&
-    Boolean(user.industry) &&
+    Boolean(user.educationalDocuments.length) &&
     Boolean(user.phone) &&
     Boolean(user.country) &&
     Boolean(user.state) &&
-    Boolean(user.city) &&
-    Boolean(user.employee);
+    Boolean(user.city);
 
   const havePlan = Boolean(user.planId);
-  const haveTrades = _.isObject(user.selectedTrades);
 
-  if (!haveCompanyDetails) {
-    console.log('Subcontractor', haveCompanyDetails);
+  if (!haveDetails) {
     return `${ContractorPages.CompanyDetails}/${user._id}`;
-  }
-
-  if (!haveTrades) {
-    console.log('Subcontractor', haveTrades);
-    return SubContractorPages.Trades;
   }
 
   if (!havePlan) {
@@ -105,6 +124,6 @@ function navigateOwner(user: IUserInterface) {
 
 export function CheckOtherRoles(authUserRole: string) {
   // check if the authUserRole is in userRoles using lodash
-  const roles = Object.values(USER_ROLES);
+  const roles = Object.values(USER_ROLES_ENUM);
   return roles.includes(authUserRole);
 }

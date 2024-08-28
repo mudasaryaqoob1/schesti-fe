@@ -222,6 +222,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
                       key={item.id}
                       contract={contract}
                       color={color}
+                      tools={tools}
                     />
                   ) : mode === 'edit-fields' ? (
                     <DraggableItem type={item.tool} key={item.id} data={item}>
