@@ -33,9 +33,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
   const user = auth.user?.user as IUpdateCompanyDetail | undefined;
 
   // selected phase will be from allPhases and will be the latest last phase
-  const [selectedPhase, setSelectedPhase] = useState<IAIAInvoice | null>(
-    null
-  );
+  const [selectedPhase, setSelectedPhase] = useState<IAIAInvoice | null>(null);
   const [tab, setTab] = useState(G703_KEY);
   const ref = useRef<HTMLDivElement>();
   const [image, takeScreenshot] = useScreenshot();
@@ -268,8 +266,9 @@ export function PhaseComponent({ parentInvoice }: Props) {
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className={`${tab === type ? 'text-schestiPrimary' : 'text-black'
-                      }`}
+                    className={`${
+                      tab === type ? 'text-schestiPrimary' : 'text-black'
+                    }`}
                   />
                 ),
                 tabKey: type,
@@ -329,7 +328,7 @@ export function PhaseComponent({ parentInvoice }: Props) {
       <div
         ref={ref as MutableRefObject<HTMLDivElement>}
         className="space-y-5 w-full absolute z -left-[2500px] border p-6"
-      // className="space-y-5 w-full border p-6"
+        // className="space-y-5 w-full border p-6"
       >
         <ClientInvoiceHeader />
         <div className="flex justify-end w-full">

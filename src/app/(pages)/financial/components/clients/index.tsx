@@ -259,21 +259,20 @@ export function Clients() {
         pagination={{ position: ['bottomCenter'] }}
         bordered
         expandable={{
-          expandedRowRender: (record) => (
-            <div className='py-1'>
+          expandedRowRender: () => (
+            <div className="py-1">
               <Table
                 columns={[
-                  { title: "Pay Application" },
-                  { title: "Amount" },
-                  { title: "Application Date" },
-                  { title: "Payment Due" },
-                  { title: "Period To" },
-                  { title: "Action" },
-
+                  { title: 'Pay Application' },
+                  { title: 'Amount' },
+                  { title: 'Application Date' },
+                  { title: 'Payment Due' },
+                  { title: 'Period To' },
+                  { title: 'Action' },
                 ]}
               />
             </div>
-          )
+          ),
         }}
       />
     </div>

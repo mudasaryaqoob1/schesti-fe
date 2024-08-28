@@ -14,9 +14,7 @@ import { Skeleton } from 'antd';
 function ClientInvoicePage() {
   const [loading, setLoading] = useState(false);
   const params = useParams<{ id: string }>();
-  const [parentInvoice, setParentInvoice] = useState<IAIAInvoice | null>(
-    null
-  );
+  const [parentInvoice, setParentInvoice] = useState<IAIAInvoice | null>(null);
 
   useEffect(() => {
     getParentInvoice();

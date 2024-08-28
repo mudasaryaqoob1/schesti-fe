@@ -1,8 +1,5 @@
 import { IResponseInterface } from '../interfaces/api-response.interface';
-import {
-  G7State,
-  IAIAInvoice,
-} from '../interfaces/client-invoice.interface';
+import { G7State, IAIAInvoice } from '../interfaces/client-invoice.interface';
 import { HttpService } from './base.service';
 
 class ClientInvoiceService extends HttpService {

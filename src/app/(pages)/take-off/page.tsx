@@ -56,15 +56,13 @@ const TakeOff = () => {
       /> */}
       {/* end of test processing */}
       {/* {summaries?.length > 0 ? <Records /> : <></>} */}
-      {
-        !loading &&
-          //@ts-ignore
-          (!summaries || !Array.isArray(summaries) || !summaries?.length > 0) ? (
-          <NoTakeOff />
-        ) : (
-          <Records />
-        )
-      }
+      {!loading &&
+      //@ts-ignore
+      (!summaries || !Array.isArray(summaries) || !summaries?.length > 0) ? (
+        <NoTakeOff />
+      ) : (
+        <Records />
+      )}
       {/* <NoTakeOff /> */}
       {/* <InitialUpload /> */}
       {/* <CreateInfo /> */}

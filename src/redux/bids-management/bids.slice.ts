@@ -17,9 +17,7 @@ export const bidsManagementSlice = createSlice({
       fetchInvitedProjects.fulfilled,
       (
         state,
-        action: PayloadAction<
-          IResponseInterface<{ invoices: IAIAInvoice[] }>
-        >
+        action: PayloadAction<IResponseInterface<{ invoices: IAIAInvoice[] }>>
       ) => {
         state.loading = false;
         state.message = action.payload.message;

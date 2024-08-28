@@ -195,12 +195,12 @@ const ScaleModal = ({ setModalOpen, setSelectedClient }: Props) => {
                 }}
                 options={
                   // clients?.length > 0
-                  (Array.isArray(state.data) && state.data?.length>0)
+                  Array.isArray(state.data) && state.data?.length > 0
                     ? state.data?.map((i: any) => ({
-                      ...i,
-                      label: i?.firstName ?? i?.email,
-                      value: JSON.stringify(i),
-                    }))
+                        ...i,
+                        label: i?.firstName ?? i?.email,
+                        value: JSON.stringify(i),
+                      }))
                     : []
                 }
               />
