@@ -69,9 +69,7 @@ export function ItemsTable({ estimateDetail, pdfData }: Props) {
         <View style={[styles.subtotalContainer, { marginTop: 5 }]}>
           <Text style={styles.text}>Material Tax</Text>
           <Text style={styles.text}>
-            {currency.format(
-              estimateDetail?.totalBidDetail?.materialTax
-            )}
+            {currency.format(estimateDetail?.totalBidDetail?.materialTax)}
           </Text>
         </View>
 
@@ -85,9 +83,7 @@ export function ItemsTable({ estimateDetail, pdfData }: Props) {
         <View style={[styles.subtotalContainer, { marginTop: 5 }]}>
           <Text style={styles.text}>Profit And Overhead</Text>
           <Text style={styles.text}>
-            {currency.format(
-              estimateDetail?.totalBidDetail?.overheadAndProfit
-            )}
+            {currency.format(estimateDetail?.totalBidDetail?.overheadAndProfit)}
           </Text>
         </View>
 
@@ -96,9 +92,9 @@ export function ItemsTable({ estimateDetail, pdfData }: Props) {
           <Text style={styles.text}>
             {currency.format(
               estimateDetail?.totalCost +
-              estimateDetail?.totalBidDetail?.materialTax +
-              estimateDetail?.totalBidDetail?.bondFee +
-              estimateDetail?.totalBidDetail?.overheadAndProfit
+                estimateDetail?.totalBidDetail?.materialTax +
+                estimateDetail?.totalBidDetail?.bondFee +
+                estimateDetail?.totalBidDetail?.overheadAndProfit
             )}
           </Text>
         </View>

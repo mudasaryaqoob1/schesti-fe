@@ -30,7 +30,8 @@ function Expense() {
   const [isloading, setIsloading] = useState(false);
   const currency = useCurrencyFormatter();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedExpense, setSelectedExpense] = useState<IFinancialExpense | null>(null);
+  const [selectedExpense, setSelectedExpense] =
+    useState<IFinancialExpense | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [data, setData] = useState<{
     count: number;
@@ -41,9 +42,8 @@ function Expense() {
   });
   const [pagination, setPagination] = useState({
     page: 1,
-    limit: 10
+    limit: 10,
   });
-
 
   useEffect(() => {
     fetchData();
@@ -51,61 +51,75 @@ function Expense() {
 
   const columns: ColumnsType<IFinancialExpense> = [
     {
-      title: 'Expense#', render(value, record, index) {
-        return index + 1
+      title: 'Expense#',
+      render(value, record, index) {
+        return index + 1;
       },
     },
-    { title: 'Expense Name', dataIndex: "name" },
-    { title: 'Project', dataIndex: "project" },
+    { title: 'Expense Name', dataIndex: 'name' },
+    { title: 'Project', dataIndex: 'project' },
     {
-      title: 'Trades/Division', dataIndex: "costCode", render(value,) {
-        return costCodeData.find((item) => item.id === value)?.division
+      title: 'Trades/Division',
+      dataIndex: 'costCode',
+      render(value) {
+        return costCodeData.find((item) => item.id === value)?.division;
       },
     },
     {
-      title: 'Description', dataIndex: "costCode", render(value) {
-        return costCodeData.find((item) => item.id === value)?.description
-      }
+      title: 'Description',
+      dataIndex: 'costCode',
+      render(value) {
+        return costCodeData.find((item) => item.id === value)?.description;
+      },
     },
     {
-      title: 'Price', dataIndex: "totalPrice", render(value) {
+      title: 'Price',
+      dataIndex: 'totalPrice',
+      render(value) {
         return currency.format(value);
-      }
+      },
     },
     {
-      title: 'Date', dataIndex: "expenseDate", render(value) {
+      title: 'Date',
+      dataIndex: 'expenseDate',
+      render(value) {
         return moment(value).format('DD-MM-YYYY');
-      }
+      },
     },
     {
-      title: 'File', dataIndex: "file", render(value?: FileInterface) {
+      title: 'File',
+      dataIndex: 'file',
+      render(value?: FileInterface) {
         if (value) {
-          return <FileView
-            {...value}
-          />
+          return <FileView {...value} />;
         }
-        return null
-      }
+        return null;
+      },
     },
     {
-      title: 'Action', render(_value, record) {
+      title: 'Action',
+      render(_value, record) {
         return (
           <Dropdown
             menu={{
               items: [
                 {
-                  label: "Edit", key: "edit", onClick: () => {
+                  label: 'Edit',
+                  key: 'edit',
+                  onClick: () => {
                     setSelectedExpense(record);
                     setShowDrawer(true);
-                  }
+                  },
                 },
                 {
-                  label: "Delete", key: "delete", onClick: () => {
+                  label: 'Delete',
+                  key: 'delete',
+                  onClick: () => {
                     setSelectedExpense(record);
                     setShowDeleteModal(true);
-                  }
+                  },
                 },
-              ]
+              ],
             }}
           >
             <Image
@@ -116,15 +130,18 @@ function Expense() {
               className="cursor-pointer"
             />
           </Dropdown>
-        )
-      }
+        );
+      },
     },
   ];
 
   async function fetchData() {
     setIsloading(true);
     try {
-      const response = await financialExpenseService.httpGetAllExpenses(pagination.page, pagination.limit);
+      const response = await financialExpenseService.httpGetAllExpenses(
+        pagination.page,
+        pagination.limit
+      );
       if (response.data) {
         setData(response.data);
       }
@@ -141,12 +158,12 @@ function Expense() {
     try {
       const response = await financialExpenseService.httpDeleteExpense(id);
       if (response.data) {
-        toast.success("Expense deleted successfully");
+        toast.success('Expense deleted successfully');
         setShowDeleteModal(false);
         setData({
           ...data,
-          expenses: data.expenses.filter((item) => item._id !== id)
-        })
+          expenses: data.expenses.filter((item) => item._id !== id),
+        });
       }
     } catch (error) {
       const err = error as AxiosError<{ message: string }>;
@@ -155,7 +172,6 @@ function Expense() {
       setIsDeleting(false);
     }
   }
-
 
   return (
     <section className="mt-6  space-y-2 mb-[39px] mx-4 rounded-xl bg-white p-5">
@@ -166,26 +182,29 @@ function Expense() {
         width={800}
         destroyOnClose
       >
-        <ExpenseForm expense={selectedExpense ? selectedExpense : undefined} onSuccess={(newExpense) => {
-          if (selectedExpense) {
-            setData({
-              ...data,
-              expenses: data.expenses.map((item) => {
-                if (item._id === selectedExpense._id) {
-                  return newExpense;
-                }
-                return item;
-              })
-            })
-          } else {
-            setData({
-              ...data,
-              expenses: [newExpense, ...data.expenses]
-            })
-          }
-          setShowDrawer(false);
-          setSelectedExpense(null);
-        }} />
+        <ExpenseForm
+          expense={selectedExpense ? selectedExpense : undefined}
+          onSuccess={(newExpense) => {
+            if (selectedExpense) {
+              setData({
+                ...data,
+                expenses: data.expenses.map((item) => {
+                  if (item._id === selectedExpense._id) {
+                    return newExpense;
+                  }
+                  return item;
+                }),
+              });
+            } else {
+              setData({
+                ...data,
+                expenses: [newExpense, ...data.expenses],
+              });
+            }
+            setShowDrawer(false);
+            setSelectedExpense(null);
+          }}
+        />
       </Drawer>
 
       {selectedExpense && showDeleteModal ? (
@@ -234,11 +253,12 @@ function Expense() {
               iconheight={20}
               onClick={() => {
                 if (!data.expenses.length) {
-                  toast.error("No data to export");
+                  toast.error('No data to export');
                   return;
                 }
                 const excel = new Excel();
-                excel.addSheet('Expenses')
+                excel
+                  .addSheet('Expenses')
                   // exlcude file columns  as  well
                   .addColumns(columns.slice(0, columns.length - 2) as any)
                   .addDataSource(data.expenses)
@@ -271,13 +291,15 @@ function Expense() {
         }}
         dataSource={data.expenses.filter((item) => {
           if (search) {
-            return item.name.toLowerCase().includes(search.toLowerCase()) || item.note.toLowerCase().includes(search.toLowerCase());
+            return (
+              item.name.toLowerCase().includes(search.toLowerCase()) ||
+              item.note.toLowerCase().includes(search.toLowerCase())
+            );
           }
           return true;
         })}
         bordered
         loading={isloading}
-
       />
     </section>
   );

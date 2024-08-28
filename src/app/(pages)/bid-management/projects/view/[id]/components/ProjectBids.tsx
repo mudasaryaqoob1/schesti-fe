@@ -57,9 +57,7 @@ export function ProjectBids({ projectId }: Props) {
       key: 'total',
       title: 'Total',
       render(value, record) {
-        return currency.format(
-          Number(record.quantity) * Number(record.price)
-        );
+        return currency.format(Number(record.quantity) * Number(record.price));
       },
     },
   ];

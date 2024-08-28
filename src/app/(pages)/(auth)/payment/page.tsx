@@ -75,8 +75,8 @@ const Payment = () => {
                 'text-obsidian-black font-semibold text-sm cursor-pointer underline underline-offset-4  w-fit leading-8  '
               }
               onClick={() => {
-                router.push('/plans')
-                pricingHook.clearStorage()
+                router.push('/plans');
+                pricingHook.clearStorage();
               }}
             >
               Go back

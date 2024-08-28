@@ -1,5 +1,5 @@
 import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
-import { ISubscriptionHistory } from '@/app/interfaces/subscription-history.interface';
+import { ISubriptionHistory } from '@/app/interfaces/subscription-history.interface';
 import subscriptionHistoryService from '@/app/services/subscription-history.service';
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
 export function SubscriptionHistory() {
-  const [data, setData] = useState<ISubscriptionHistory[]>([]);
+  const [data, setData] = useState<ISubriptionHistory[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const currency = useCurrencyFormatter();
   useEffect(() => {
@@ -32,7 +32,7 @@ export function SubscriptionHistory() {
     }
   }
 
-  const columns: ColumnsType<ISubscriptionHistory> = [
+  const columns: ColumnsType<ISubriptionHistory> = [
     {
       title: 'Transaction #',
       dataIndex: 'transactionId',

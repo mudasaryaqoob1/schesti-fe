@@ -324,8 +324,9 @@ export function BidDetails({
             className="text-[#475467] text-sm leading-4 font-normal"
           />
           <SenaryHeading
-            title={`${bid.city}, ${Country.getCountryByCode(bid.country)?.name
-              }`}
+            title={`${bid.city}, ${
+              Country.getCountryByCode(bid.country)?.name
+            }`}
             className="text-[#475467] text-sm leading-4 font-semibold"
           />
         </div>
@@ -455,14 +456,14 @@ export function BidDetails({
 
         <CreateRFI
           isProjectOwner={false}
-          onSuccess={() => { }}
+          onSuccess={() => {}}
           projectId={bid._id}
         />
 
         {isInvitation &&
-          !(
-            selectedProjectSavedBid && selectedProjectSavedBid.status === 'active'
-          ) ? (
+        !(
+          selectedProjectSavedBid && selectedProjectSavedBid.status === 'active'
+        ) ? (
           <CustomButton
             text="Decline"
             className="!bg-white !border-[#F32051] text-[#F32051]"

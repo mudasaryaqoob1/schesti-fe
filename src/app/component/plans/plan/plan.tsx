@@ -57,12 +57,22 @@ const SinglePlan = (props: Props) => {
   );
 
   const BTN =
-    props.user && (props.user.subscription && props.user.subscription.planId && (props.user.subscription.status === 'active')) ? (
+    props.user &&
+    props.user.subscription &&
+    props.user.subscription.planId &&
+    props.user.subscription.status === 'active' ? (
       <Button
-        text={(props.user.subscription.planId as IPricingPlan)._id === _id ? 'Current Plan' : 'Upgrade'}
+        text={
+          (props.user.subscription.planId as IPricingPlan)._id === _id
+            ? 'Current Plan'
+            : 'Upgrade'
+        }
         className="text-white self-stretch w-full"
         onClick={() => {
-          if (_id && (props.user?.subscription?.planId as IPricingPlan)._id !== _id) {
+          if (
+            _id &&
+            (props.user?.subscription?.planId as IPricingPlan)._id !== _id
+          ) {
             stripeUpgradeMutation.mutate(_id);
           }
         }}

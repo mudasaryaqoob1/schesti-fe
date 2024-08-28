@@ -55,11 +55,21 @@ interface Props {
   drawScale?: boolean;
   setdrawScale?: any;
   scaleLine?: any;
-  handleSetScale?:(scale:{ xScale: any, yScale: any, precision: any }, optionsValue:string) => Promise<void>
+  handleSetScale?: (
+    scale: { xScale: any; yScale: any; precision: any },
+    optionsValue: string
+  ) => Promise<void>;
 }
 
-const ScaleModal = ({ setModalOpen, numOfPages, page, setdrawScale, scaleLine, handleSetScale }: Props) => {
-  const { calcLineDistance } = useDraw()
+const ScaleModal = ({
+  setModalOpen,
+  numOfPages,
+  page,
+  setdrawScale,
+  scaleLine,
+  handleSetScale,
+}: Props) => {
+  const { calcLineDistance } = useDraw();
   const dispatch = useDispatch<AppDispatch>();
   // const allPresets = useSelector(selectTakeoffPreset);
 
@@ -100,7 +110,7 @@ const ScaleModal = ({ setModalOpen, numOfPages, page, setdrawScale, scaleLine, h
   const { handleScaleData, scaleData } = useContext(
     ScaleContext
   ) as ScaleDataContextProps;
-  console.log(scaleLine, " ===> scale line");
+  console.log(scaleLine, ' ===> scale line');
 
   const onChangeX = (e: RadioChangeEvent) => {
     if (e.target.value === 'custom') {
@@ -153,26 +163,45 @@ const ScaleModal = ({ setModalOpen, numOfPages, page, setdrawScale, scaleLine, h
   };
   useEffect(() => {
     if (scaleLine && scaleLine?.points) {
-      console.log(" Cusotm useEffect run");
-      const stringOfDistance = calcLineDistance(scaleLine?.points, {
-        xScale: `1in=1in`,
-        yScale: `1in=1in`,
-        precision: '1',
-      }, true);
-      const second = calcLineDistance(scaleLine?.points, {
-        xScale: `1in=1in`,
-        yScale: `1in=1in`,
-        precision: '1',
-      }, false);
-      const [feet, inch] = stringOfDistance.toString().split('-')
-      console.log(stringOfDistance, Number(feet?.trim()?.replace(`'`, '')), Number(inch?.trim()?.replace(`"`, '')), " ===> String of data");
-      const numfeet = Number(feet?.trim()?.replace(`'`, '')); const numInch = Number(inch?.trim()?.replace(`"`, ''))
-      const valueToUse = (numfeet * 12) + numInch
-      console.log(second, valueToUse, stringOfDistance, ' ====> Second draw distance ')
-      onChangeDrawX(second ?? 1)
-      onChangeDrawY(second ?? 1)
+      console.log(' Cusotm useEffect run');
+      const stringOfDistance = calcLineDistance(
+        scaleLine?.points,
+        {
+          xScale: `1in=1in`,
+          yScale: `1in=1in`,
+          precision: '1',
+        },
+        true
+      );
+      const second = calcLineDistance(
+        scaleLine?.points,
+        {
+          xScale: `1in=1in`,
+          yScale: `1in=1in`,
+          precision: '1',
+        },
+        false
+      );
+      const [feet, inch] = stringOfDistance.toString().split('-');
+      console.log(
+        stringOfDistance,
+        Number(feet?.trim()?.replace(`'`, '')),
+        Number(inch?.trim()?.replace(`"`, '')),
+        ' ===> String of data'
+      );
+      const numfeet = Number(feet?.trim()?.replace(`'`, ''));
+      const numInch = Number(inch?.trim()?.replace(`"`, ''));
+      const valueToUse = numfeet * 12 + numInch;
+      console.log(
+        second,
+        valueToUse,
+        stringOfDistance,
+        ' ====> Second draw distance '
+      );
+      onChangeDrawX(second ?? 1);
+      onChangeDrawY(second ?? 1);
     }
-  }, [scaleLine])
+  }, [scaleLine]);
 
   const handleAddPreset = async (
     firstValue: string,
@@ -238,7 +267,7 @@ const ScaleModal = ({ setModalOpen, numOfPages, page, setdrawScale, scaleLine, h
       if (optionsValue?.includes('-')) {
         const range = optionsValue?.split('-').map(Number);
         const [start, end] = range;
-        console.log(start, end)
+        console.log(start, end);
         // for (let i = start; i <= end; i++) {
         //   newData[i] = { xScale: scale, yScale: scale, precision: precision };
         // }
@@ -293,12 +322,17 @@ const ScaleModal = ({ setModalOpen, numOfPages, page, setdrawScale, scaleLine, h
       }
     }
 
-    console.log({ ...scaleData, ...newData }, optionsValue, newData, " ===> scale data here")
+    console.log(
+      { ...scaleData, ...newData },
+      optionsValue,
+      newData,
+      ' ===> scale data here'
+    );
 
-    if(handleSetScale){
-      handleSetScale(newData['1'],optionsValue)
+    if (handleSetScale) {
+      handleSetScale(newData['1'], optionsValue);
     }
-    
+
     handleScaleData({ ...scaleData, ...newData });
     setModalOpen(false);
   };
@@ -722,7 +756,7 @@ const ScaleModal = ({ setModalOpen, numOfPages, page, setdrawScale, scaleLine, h
         </div>
         <div>
           <Button
-            text={valueX == 'custom' ? "Calibrate" : "Save"}
+            text={valueX == 'custom' ? 'Calibrate' : 'Save'}
             onClick={handleCalibrate}
             className="!py-1.5"
           />

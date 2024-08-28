@@ -12,13 +12,13 @@ export interface CoordinatesInterface {
 
 export interface CountInterface extends CoordinatesInterface {
   dateTime: Date;
-  projectName?:any;
-  category?:any;
-  subcategory?:any;
-  user?:any;
-  textColor?:any;
-  mId?:any;
-  countType?:string;
+  projectName?: any;
+  category?: any;
+  subcategory?: any;
+  user?: any;
+  textColor?: any;
+  mId?: any;
+  countType?: string;
   textUnit: number;
 }
 
@@ -100,7 +100,7 @@ export type ScaleLabel =
   | 'Zoom Out'
   | 'Room Color'
   | 'comments'
-  | 'curve'
+  | 'curve';
 
 export type DynamicScale = 'fill' | 'create' | 'clear';
 
@@ -209,4 +209,6 @@ export const SCALE_NAVIGATION: ScaleNavigation[] = [
   // },
 ];
 
-export const Units = [5,6,7,8,9,10,11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72];
+export const Units = [
+  5, 6, 7, 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72,
+];
