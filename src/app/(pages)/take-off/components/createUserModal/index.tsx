@@ -19,6 +19,8 @@ import { bg_style } from '@/globals/tailwindvariables';
 import { userRoles } from '@/app/enums/role.enums';
 import WhiteButton from '@/app/component/customButton/white';
 import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface';
+import { RootState } from '@/redux/store';
+import { useSelector } from 'react-redux';
 
 const defaultOptions = [
   { value: userRoles.COMPANY, label: userRoles.COMPANY },
@@ -54,6 +56,16 @@ const CreateUserModal = ({ setModalOpen, submitHandler,isLoading }: Props) => {
     roles: '',
     brandingColor: '',
   };
+
+  const companyRolesState = useSelector(
+    (state: RootState) => state.companyRoles
+  );
+  const roleOptions = companyRolesState.data.map((role) => {
+    return {
+      label: role.name,
+      value: role._id,
+    };
+  });
 
   return (
     // <VerticleBar>
@@ -121,7 +133,7 @@ const CreateUserModal = ({ setModalOpen, submitHandler,isLoading }: Props) => {
                     control="select"
                     label="Role"
                     name="roles"
-                    options={defaultOptions}
+                    options={roleOptions}
                     placeholder="Select User Role"
                   />
                   <FormControl
@@ -140,7 +152,7 @@ const CreateUserModal = ({ setModalOpen, submitHandler,isLoading }: Props) => {
                       onClick={() => setModalOpen(false)}
                     />
                     <CustomButton
-                      isLoading={false}
+                      isLoading={isLoading}
                       className="mx-w-30"
                       type="submit"
                       text={'Add'}

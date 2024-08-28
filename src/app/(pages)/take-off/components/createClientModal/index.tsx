@@ -12,6 +12,10 @@ import { IClient } from '@/app/interfaces/companyInterfaces/companyClient.interf
 import { PhoneNumberRegex } from '@/app/utils/regex.util';
 import { userService } from '@/app/services/user.service';
 import { toast } from 'react-toastify';
+import { AxiosError } from 'axios';
+import crmService from '@/app/services/crm/crm.service';
+import { RootState } from '@/redux/store';
+import { useSelector } from 'react-redux';
 
 interface Props {
   setModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -56,42 +60,63 @@ const ScaleModal = ({ setModalOpen, setSelectedClient }: Props) => {
   // const [getLoading, setgetLoading] = useState<boolean>(false)
   // const [isOpen, setIsOpen] = useState<boolean>(false)
 
+  // const submitHandler = async (values: IClient) => {
+  //   setIsLoading(true);
+  //   userService
+  //     .httpAddNewClient({ ...values, phone: `${values.phone}` })
+  //     .then((response: any) => {
+  //       console.log(response, ' ===> response response create client');
+  //       if (response.statusCode == 201) {
+  //         setIsLoading(false);
+  //         // router.push(Routes.CRM.Clients);
+  //         setSelectedClient(response?.data?.client);
+  //         setModalOpen(false);
+  //       }
+  //     })
+  //     .catch(({ response }: any) => {
+  //       setIsLoading(false);
+  //       toast.error(response.data.message);
+  //     });
+  // };
   const submitHandler = async (values: IClient) => {
     setIsLoading(true);
-    userService
-      .httpAddNewClient({ ...values, phone: `${values.phone}` })
-      .then((response: any) => {
-        console.log(response, ' ===> response response create client');
-        if (response.statusCode == 201) {
-          setIsLoading(false);
-          // router.push(Routes.CRM.Clients);
-          setSelectedClient(response?.data?.client);
-          setModalOpen(false);
-        }
-      })
-      .catch(({ response }: any) => {
-        setIsLoading(false);
-        toast.error(response.data.message);
+
+    try {
+      const response = await crmService.httpCreate({
+        ...values,
+        module: 'clients',
       });
+      if (response.data) {
+        toast.success('Client created successfully');
+        setSelectedClient(response?.data);
+        setModalOpen(false);
+      }
+    } catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      toast.error(err.response?.data.message || 'Unable to create client');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const getClients = () => {
-    // setgetLoading(true)
-    userService
-      .httpGetAllCompanyClients()
-      .then((res) => {
-        console.log(res?.data?.clients, ' get clients');
-        setclients(res?.data?.clients);
-        // setgetLoading(false)
-      })
-      .catch((err: any) => {
-        console.log(err, ' err while getting clients');
-        // setgetLoading(false)
-      });
-  };
-  useEffect(() => {
-    getClients();
-  }, []);
+  // const getClients = () => {
+  //   // setgetLoading(true)
+  //   userService
+  //     .httpGetAllCompanyClients()
+  //     .then((res) => {
+  //       console.log(res?.data?.clients, ' get clients');
+  //       setclients(res?.data?.clients);
+  //       // setgetLoading(false)
+  //     })
+  //     .catch((err: any) => {
+  //       console.log(err, ' err while getting clients');
+  //       // setgetLoading(false)
+  //     });
+  // };
+  // useEffect(() => {
+  //   getClients();
+  // }, []);
+  const state = useSelector((state: RootState) => state.crm);
 
   return (
     <div className="py-2.5 px-6 bg-white border border-solid border-elboneyGray rounded-[4px] z-50">
@@ -170,8 +195,9 @@ const ScaleModal = ({ setModalOpen, setSelectedClient }: Props) => {
                   setModalOpen(false);
                 }}
                 options={
-                  clients?.length > 0
-                    ? clients?.map((i: any) => ({
+                  // clients?.length > 0
+                  (Array.isArray(state.data) && state.data?.length>0)
+                    ? state.data?.map((i: any) => ({
                       ...i,
                       label: i?.firstName ?? i?.email,
                       value: JSON.stringify(i),

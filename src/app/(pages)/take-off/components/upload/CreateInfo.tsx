@@ -26,6 +26,10 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { userService } from '@/app/services/user.service'
 import CreateUserModal from '../createUserModal'
 import { IUser } from '@/app/interfaces/companyEmployeeInterfaces/user.interface'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from '@/redux/store'
+import { getCompanyRolesThunk } from '@/redux/company-roles/company-roles.thunk'
+import { getCrmItemsThunk } from '@/redux/crm/crm.thunk'
 // import { useSelector } from 'react-redux'
 // import { selectToken } from '@/redux/authSlices/auth.selector'
 
@@ -75,7 +79,7 @@ const CreateInfo = () => {
             dataIndex: 'role',
             render: (text, record) => {
                 return <div className=''>
-                    {(record?.roles && Array.isArray(record?.roles)) ? record?.roles[0] : ''}
+                    {(record?.roles && Array.isArray(record?.roles) && record?.roles?.length>0 && record?.roles[0]?.name) ? record?.roles[0]?.name : ''}
                 </div>
             }
         },
@@ -381,6 +385,7 @@ const CreateInfo = () => {
     }
 
     const [isLoading, setisLoading] = useState<boolean>(false)
+    const [userLoading, setuserLoading] = useState<boolean>(false)
     const startProcess = async (ar: any) => {
         setisLoading(true)
         if (Array.isArray(ar) && ar?.length > 0) {
@@ -483,19 +488,28 @@ const CreateInfo = () => {
     const addUserHandler = async (values: IUser) => {
         try {
             setisLoading(true)
+            setuserLoading(true)
             await userService.httpAddNewEmployee({ ...values, roles: [values.roles] })
             await getAssignedUsers()
             setisLoading(false)
+            setuserLoading(false)
             setuserModal(false)
             toast.success('User added.')
         } catch (error: any) {
             setisLoading(false)
+            setuserLoading(false)
             console.log(error, " ===> Error Occured while creating User")
             toast.error(error?.response?.data?.message ?? 'Failed to add user.')
         }
     }
     // Create a ref for the file input
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const dispatch = useDispatch<AppDispatch>();
+
+    useEffect(() => {
+      dispatch(getCompanyRolesThunk({}));
+      dispatch(getCrmItemsThunk({ module: 'clients' }));
+    }, []);
 
     return (
         <>
@@ -846,7 +860,7 @@ const CreateInfo = () => {
                     <CreateUserModal
                         setModalOpen={setuserModal}
                         submitHandler={addUserHandler}
-                        isLoading={isLoading}
+                        isLoading={userLoading}
                     />
                 </ModalComponent>
                 <ModalComponent open={progressModalOpen} setOpen={() => { }}>
