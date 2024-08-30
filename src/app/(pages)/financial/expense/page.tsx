@@ -71,7 +71,7 @@ function Expense() {
       },
     },
     {
-      title: 'Price',
+      title: 'Cost',
       dataIndex: 'totalPrice',
       render(value) {
         return currency.format(value);
