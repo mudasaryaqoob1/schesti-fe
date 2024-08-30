@@ -21,6 +21,7 @@ import financialAssetService, {
 } from '@/app/services/financial/financial-asset.service';
 import { AxiosError } from 'axios';
 import { IFinancialAsset } from '@/app/interfaces/financial/financial-asset.interface';
+import { NumberInputComponent } from '@/app/component/customInput/NumberInput';
 
 const ValidationSchema = Yup.object().shape({
   name: Yup.string().required('Name is required'),
@@ -53,21 +54,21 @@ export function AssetForm({ item, onSuccess }: Props) {
     initialValues: item
       ? { ...item }
       : {
-          file: undefined,
-          name: '',
-          costCode: '',
-          assetType: '',
-          assetDate: new Date().toISOString(),
-          invoiceNo: '',
-          totalPrice: 0,
-          project: '',
-          note: '',
-          salesTax: 0,
-          countryTax: 0,
-          paymentMethod: '',
-          reference: '',
-          repeat: '',
-        },
+        file: undefined,
+        name: '',
+        costCode: '',
+        assetType: '',
+        assetDate: new Date().toISOString(),
+        invoiceNo: '',
+        totalPrice: 0,
+        project: '',
+        note: '',
+        salesTax: 0,
+        countryTax: 0,
+        paymentMethod: '',
+        reference: '',
+        repeat: '',
+      },
     onSubmit: async (values) => {
       setIsSubmitting(true);
       try {
@@ -109,9 +110,9 @@ export function AssetForm({ item, onSuccess }: Props) {
           multiple={true}
           beforeUpload={async (_file, FileList) => {
             for (const file of FileList) {
-              const isLessThan500MB = file.size < 500 * 1024 * 1024; // 500MB in bytes
-              if (!isLessThan500MB) {
-                toast.error('File size should be less than 500MB');
+              const isLessThan10Mb = file.size < 10 * 1024 * 1024; // 10MB in bytes
+              if (!isLessThan10Mb) {
+                toast.error('File size should be less than 10MB');
                 return false;
               }
             }
@@ -143,7 +144,7 @@ export function AssetForm({ item, onSuccess }: Props) {
           itemRender={() => {
             return null;
           }}
-          onChange={() => {}}
+          onChange={() => { }}
         >
           <p className="ant-upload-drag-icon">
             <Image
@@ -199,7 +200,9 @@ export function AssetForm({ item, onSuccess }: Props) {
               formik.setFieldValue('costCode', val);
             },
             value: formik.values.costCode ? formik.values.costCode : undefined,
+            optionFilterProp: "label",
             onBlur: formik.handleBlur,
+            showSearch: true,
           }}
           hasError={Boolean(formik.touched.costCode && formik.errors.costCode)}
           errorMessage={
@@ -215,13 +218,16 @@ export function AssetForm({ item, onSuccess }: Props) {
           placeholder="Select Trade/Division"
           field={{
             options: costCodeData.map((item) => {
-              return { label: item.division, value: item.id };
+              return { label: `${item.code}/${item.division}`, value: item.id };
             }),
             value: formik.values.costCode ? formik.values.costCode : undefined,
             onChange: (val) => {
               formik.setFieldValue('costCode', val);
             },
             onBlur: formik.handleBlur,
+            showSearch: true,
+            optionFilterProp: "label",
+            allowClear: true
           }}
           hasError={Boolean(formik.touched.costCode && formik.errors.costCode)}
           errorMessage={
@@ -237,6 +243,7 @@ export function AssetForm({ item, onSuccess }: Props) {
             name="costCode"
             placeholder="Select description"
             field={{
+              className: "mt-1.5",
               options: costCodeData.map((item) => {
                 return { label: item.description, value: item.id };
               }),
@@ -247,6 +254,9 @@ export function AssetForm({ item, onSuccess }: Props) {
                 ? formik.values.costCode
                 : undefined,
               onBlur: formik.handleBlur,
+              showSearch: true,
+              optionFilterProp: "label",
+
             }}
             hasError={Boolean(
               formik.touched.costCode && formik.errors.costCode
@@ -264,6 +274,7 @@ export function AssetForm({ item, onSuccess }: Props) {
           name="assetType"
           placeholder="Select asset type"
           field={{
+            className: "mt-1.5",
             options: [
               {
                 label: 'Current Assets',
@@ -324,6 +335,9 @@ export function AssetForm({ item, onSuccess }: Props) {
           placeholder="Enter date"
           fieldProps={{
             onChange: (date) => {
+              if (!date) {
+                return;
+              }
               formik.setFieldValue('assetDate', date.format('YYYY-MM-DD'));
             },
             value: formik.values.assetDate
@@ -364,19 +378,21 @@ export function AssetForm({ item, onSuccess }: Props) {
           }
         />
 
-        <InputComponent
+        <NumberInputComponent
           label="Total Price"
           name="totalPrice"
-          type="number"
           placeholder="Enter total price"
           field={{
-            onChange: (e) => {
-              formik.setFieldValue('totalPrice', parseInt(e.target.value));
+            onChange: (val) => {
+              if (val) {
+                formik.setFieldValue('totalPrice', Number(val));
+              }
             },
             onBlur: formik.handleBlur,
             value: formik.values.totalPrice
               ? formik.values.totalPrice
               : undefined,
+
           }}
           hasError={Boolean(
             formik.touched.totalPrice && formik.errors.totalPrice
@@ -389,20 +405,13 @@ export function AssetForm({ item, onSuccess }: Props) {
         />
       </div>
 
-      <SelectComponent
+      <InputComponent
         label="Project"
         name="project"
         placeholder="Select project"
+        type='text'
         field={{
-          options: [
-            { label: 'Project 1', value: '1' },
-            { label: 'Project 2', value: '2' },
-            { label: 'Project 3', value: '3' },
-            { label: 'Project 4', value: '4' },
-          ],
-          onChange: (val) => {
-            formik.setFieldValue('project', val);
-          },
+          onChange: formik.handleChange,
           value: formik.values.project ? formik.values.project : undefined,
           onBlur: formik.handleBlur,
         }}
@@ -504,11 +513,14 @@ export function AssetForm({ item, onSuccess }: Props) {
                 name="paymentMethod"
                 placeholder="Select payment method"
                 field={{
+                  className: "mt-1.5",
                   options: [
                     { label: 'Cash', value: 'Cash' },
-                    { label: 'Cheque', value: 'Cheque' },
+                    { label: 'Check', value: 'Check' },
                     { label: 'Credit Card', value: 'Credit Card' },
+                    { label: 'Debit Card', value: 'Debit Card' },
                     { label: 'Bank Transfer', value: 'Bank Transfer' },
+                    { label: 'Not Paid', value: 'Not Paid' },
                     { label: 'Other', value: 'Other' },
                   ],
                   onChange: (val) => {
@@ -559,11 +571,11 @@ export function AssetForm({ item, onSuccess }: Props) {
               field={{
                 options: [
                   { label: 'Weekly', value: 'Weekly' },
-                  { label: 'By Weekly', value: 'By Weekly' },
+                  { label: 'Bi Weekly', value: 'Bi Weekly' },
                   { label: 'Monthly', value: 'Monthly' },
-                  { label: 'By Month', value: 'By Month' },
-                  { label: 'Yearly', value: 'Yearly' },
-                  { label: 'By Year', value: 'By Year' },
+                  { label: 'Bi Month', value: 'Bi Month' },
+                  { label: 'Annually', value: 'Annually' },
+                  { label: 'Bi Annually', value: 'Bi Annually' },
                 ],
                 onChange: (val) => {
                   formik.setFieldValue('repeat', val);

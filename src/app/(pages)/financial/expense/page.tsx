@@ -178,7 +178,10 @@ function Expense() {
       <Drawer
         title="Expense"
         open={showDrawer}
-        onClose={() => setShowDrawer(false)}
+        onClose={() => {
+          setSelectedExpense(null);
+          setShowDrawer(false);
+        }}
         width={800}
         destroyOnClose
       >

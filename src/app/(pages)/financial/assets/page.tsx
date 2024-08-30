@@ -179,7 +179,10 @@ function AssetPage() {
       <Drawer
         title="Asset"
         open={showDrawer}
-        onClose={() => setShowDrawer(false)}
+        onClose={() => {
+          setSelectedItem(null);
+          setShowDrawer(false)
+        }}
         width={800}
         destroyOnClose
       >
