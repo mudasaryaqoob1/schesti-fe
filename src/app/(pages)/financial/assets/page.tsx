@@ -53,9 +53,7 @@ function AssetPage() {
   const columns: ColumnsType<IFinancialAsset> = [
     {
       title: 'Sr#',
-      render(value, record, index) {
-        return index + 1;
-      },
+      dataIndex: 'invoiceNo',
     },
     { title: 'Asset Name', dataIndex: 'name' },
     { title: 'Project', dataIndex: 'project' },

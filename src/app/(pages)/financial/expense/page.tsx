@@ -52,9 +52,7 @@ function Expense() {
   const columns: ColumnsType<IFinancialExpense> = [
     {
       title: 'Expense#',
-      render(value, record, index) {
-        return index + 1;
-      },
+      dataIndex: 'invoiceNo',
     },
     { title: 'Expense Name', dataIndex: 'name' },
     { title: 'Project', dataIndex: 'project' },
@@ -104,6 +102,14 @@ function Expense() {
             menu={{
               items: [
                 {
+                  label: "Collect Payment",
+                  key: 'collectPayment',
+                  onClick: () => {
+                    setSelectedExpense(record);
+                    setShowDrawer(true);
+                  },
+                },
+                {
                   label: 'Edit',
                   key: 'edit',
                   onClick: () => {
@@ -119,6 +125,7 @@ function Expense() {
                     setShowDeleteModal(true);
                   },
                 },
+
               ],
             }}
           >
