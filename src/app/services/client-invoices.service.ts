@@ -5,6 +5,15 @@ import { HttpService } from './base.service';
 class ClientInvoiceService extends HttpService {
   private readonly prefix: string = 'api/client-invoices';
 
+  httpCreateInitialInvoice = (
+    data: {
+      clientName: string;
+      architectName: string;
+      invoiceName: string;
+    }
+  ): Promise<IResponseInterface<{ invoice: IAIAInvoice }>> =>
+    this.post(`${this.prefix}/create`, data);
+
   httpAddNewInvoice = (
     data: G7State
   ): Promise<IResponseInterface<{ invoice: IAIAInvoice }>> =>

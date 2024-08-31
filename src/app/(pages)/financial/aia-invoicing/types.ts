@@ -1,0 +1,1 @@
+type AIAInvoiceFormMode = "edit" | "phase" | "view";

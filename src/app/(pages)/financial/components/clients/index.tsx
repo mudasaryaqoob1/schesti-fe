@@ -7,6 +7,7 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import ModalComponent from '@/app/component/modal';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { IAIAInvoice } from '@/app/interfaces/client-invoice.interface';
+import { clientInvoiceService } from '@/app/services/client-invoices.service';
 import { Routes } from '@/app/utils/plans.utils';
 import {
   deleteClientInvoiceRequest,
@@ -21,10 +22,12 @@ import {
 } from '@ant-design/icons';
 import { Dropdown, Table, type MenuProps, Modal } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import { AxiosError } from 'axios';
 import { useFormik } from 'formik';
 import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 
 const ValidationSchema = Yup.object({
@@ -39,6 +42,7 @@ export function Clients() {
   const dispatch = useDispatch<AppDispatch>();
   const [showClientModal, setShowClientModal] = useState(false);
   const [showArchitectModal, setShowArchitectModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const clientInvoices = useSelector(
     (state: RootState) => state.clientInvoices.data
@@ -54,10 +58,22 @@ export function Clients() {
       architectName: '',
     },
     validationSchema: ValidationSchema,
-    onSubmit(values) {
-      router.push(
-        `${Routes.Financial['AIA-Invoicing']}/create?invoiceName=${values.invoiceName}&clientName=${values.clientName}&architectName=${values.architectName}`
-      );
+    async onSubmit(values) {
+      setIsLoading(true);
+      try {
+        const response = await clientInvoiceService.httpCreateInitialInvoice(values);
+        if (response.data && response.data.invoice) {
+          router.push(
+            `${Routes.Financial['AIA-Invoicing']}/form?id=${response.data.invoice._id}&mode=create`
+          );
+        }
+        setIsLoading(false);
+      } catch (error) {
+        const err = error as AxiosError<{ message: string }>;
+        toast.error(err.response?.data.message);
+        setIsLoading(false);
+      }
+
     },
   });
 
@@ -331,7 +347,7 @@ export function Clients() {
                     className="!w-[100px]"
                     onClick={() => formik.handleSubmit()}
                     disabled={!formik.isValid}
-                    isLoading={formik.isSubmitting}
+                    isLoading={isLoading}
                   />
                 </div>
               </div>

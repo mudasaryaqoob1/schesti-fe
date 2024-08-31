@@ -27,6 +27,7 @@ import { useRouterHook } from '@/app/hooks/useRouterHook';
 
 const G703_KEY = 'G703';
 const G702_KEY = 'G702';
+const FORMS_KEY = 'Forms';
 function CreateClientInvoicePage() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   const router = useRouterHook();
@@ -276,15 +277,14 @@ function CreateClientInvoicePage() {
               setTab(key);
             }}
             activeKey={tab}
-            items={[G703_KEY, G702_KEY].map((type) => {
+            items={[G703_KEY, G702_KEY, FORMS_KEY].map((type) => {
               return {
                 key: type,
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className={`${
-                      tab === type ? 'text-schestiPrimary' : 'text-black'
-                    }`}
+                    className={`${tab === type ? 'text-schestiPrimary' : 'text-black'
+                      }`}
                   />
                 ),
                 tabKey: type,
@@ -343,7 +343,7 @@ function CreateClientInvoicePage() {
       <div
         ref={ref as MutableRefObject<HTMLDivElement>}
         className="space-y-5 w-full absolute -left-[2500px] border p-6"
-        // className="space-y-5 w-full border p-6"
+      // className="space-y-5 w-full border p-6"
       >
         <ClientInvoiceHeader />
         <div className="flex justify-end w-full">
