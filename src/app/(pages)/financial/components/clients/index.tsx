@@ -64,7 +64,7 @@ export function Clients() {
         const response = await clientInvoiceService.httpCreateInitialInvoice(values);
         if (response.data && response.data.invoice) {
           router.push(
-            `${Routes.Financial['AIA-Invoicing']}/form?id=${response.data.invoice._id}&mode=create`
+            `${Routes.Financial['AIA-Invoicing']}/form?id=${response.data.invoice._id}&mode=edit`
           );
         }
         setIsLoading(false);
