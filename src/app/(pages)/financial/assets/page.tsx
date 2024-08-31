@@ -23,10 +23,12 @@ import { IFinancialAsset } from '@/app/interfaces/financial/financial-asset.inte
 import financialAssetService from '@/app/services/financial/financial-asset.service';
 import { AssetForm } from './components/Form';
 import { Excel } from 'antd-table-saveas-excel';
+import _ from 'lodash';
 
 function AssetPage() {
   const [search, setSearch] = useState('');
   const [showDrawer, setShowDrawer] = useState(false);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
   const [isloading, setIsloading] = useState(false);
   const currency = useCurrencyFormatter();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -257,7 +259,8 @@ function AssetPage() {
               iconwidth={20}
               iconheight={20}
               onClick={() => {
-                if (!data.assets.length) {
+                const assets = _.filter(data.assets, item => selectedRowKeys.includes(item._id));
+                if (!assets.length) {
                   toast.error('No data to export');
                   return;
                 }
@@ -266,7 +269,7 @@ function AssetPage() {
                   .addSheet('Assets')
                   // exlcude file columns  as  well
                   .addColumns(columns.slice(0, columns.length - 2) as any)
-                  .addDataSource(data.assets)
+                  .addDataSource(assets)
                   .saveAs('Assets.xlsx');
               }}
             />
@@ -305,6 +308,13 @@ function AssetPage() {
         })}
         bordered
         loading={isloading}
+        rowSelection={{
+          onChange: (newSelectedRowKeys: React.Key[]) => {
+            setSelectedRowKeys(newSelectedRowKeys);
+          },
+          selectedRowKeys
+        }}
+        rowKey={(item) => item._id}
       />
     </section>
   );
