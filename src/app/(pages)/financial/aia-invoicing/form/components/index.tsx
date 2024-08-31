@@ -1,7 +1,7 @@
 import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
-import { ConfigProvider, Tabs } from 'antd';
+import { ConfigProvider, QRCode, Tabs } from 'antd';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { G703Component } from '../components/G703';
@@ -18,6 +18,7 @@ import { ClientInvoiceHeader } from '../../components/ClientInvoiceHeader';
 import { ClientInvoiceFooter } from '../../components/ClientInvoiceFooter';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
+import { AIAInvoiceFormHeader } from './Header';
 
 const G703_KEY = 'G703';
 const G702_KEY = 'G702';
@@ -229,13 +230,8 @@ export function AiaInvoicingForm({ parentInvoice }: Props) {
         }
     }
     return (
-        <section className="mx-16 my-2">
-            <div className="p-5 shadow-md rounded-lg border border-silverGray  bg-white">
-                <div className="flex space-x-3">
-                    <TertiaryHeading title="Invoice name:" className="font-medium" />
-                    <TertiaryHeading title={`${parentInvoice.invoiceName}`} />
-                </div>
-            </div>
+        <section className="mx-4 my-2">
+            <AIAInvoiceFormHeader parentInvoice={parentInvoice} />
 
             <div className="px-4 py-2 my-5 shadow-md rounded-lg border border-silverGray  bg-white">
                 <ConfigProvider
