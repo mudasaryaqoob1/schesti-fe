@@ -24,9 +24,9 @@ const G702_KEY = 'G702';
 const FORMS_KEY = 'Forms';
 
 type Props = {
-    invoice: IAIAInvoice;
+    parentInvoice: IAIAInvoice;
 }
-export function AiaInvoicingForm({ invoice }: Props) {
+export function AiaInvoicingForm({ parentInvoice }: Props) {
 
     const auth = useSelector((state: RootState) => state.auth);
     const user = auth.user?.user as IUpdateCompanyDetail | undefined;
@@ -66,8 +66,8 @@ export function AiaInvoicingForm({ invoice }: Props) {
     useEffect(() => {
         setG7State(prev => ({
             ...prev,
-            invoiceName: invoice.invoiceName,
-            _id: invoice._id,
+            invoiceName: parentInvoice.invoiceName,
+            _id: parentInvoice._id,
         }))
     }, [])
 
@@ -223,7 +223,7 @@ export function AiaInvoicingForm({ invoice }: Props) {
             doc.internal.pageSize.height = height;
             doc.addImage(image, 'JPEG', 0, 0, width, height);
             setTimeout(() => {
-                doc.save(`${invoice.invoiceName}-invoice.pdf`);
+                doc.save(`${parentInvoice.invoiceName}-invoice.pdf`);
             }, 500);
             setIsDownloading(false);
         }
@@ -233,7 +233,7 @@ export function AiaInvoicingForm({ invoice }: Props) {
             <div className="p-5 shadow-md rounded-lg border border-silverGray  bg-white">
                 <div className="flex space-x-3">
                     <TertiaryHeading title="Invoice name:" className="font-medium" />
-                    <TertiaryHeading title={`${invoice.invoiceName}`} />
+                    <TertiaryHeading title={`${parentInvoice.invoiceName}`} />
                 </div>
             </div>
 
