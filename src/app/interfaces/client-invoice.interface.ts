@@ -44,8 +44,9 @@ export type IAIAInvoice = {
   clientName: string;
   architectName: string;
 
-  lienWavierFiles: FileInterface[];
+  lienWaiverFiles: FileInterface[];
   salesFiles: FileInterface[];
   federalPaperFiles: FileInterface[];
   materialsFiles: FileInterface[];
+  otherFiles: FileInterface[];
 } & G7State;

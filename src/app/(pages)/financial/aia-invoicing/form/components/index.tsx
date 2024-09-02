@@ -19,6 +19,7 @@ import { ClientInvoiceFooter } from '../../components/ClientInvoiceFooter';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
 import { AIAInvoiceFormHeader } from './Header';
+import { AIAForms } from './Forms';
 
 const G703_KEY = 'G703';
 const G702_KEY = 'G702';
@@ -290,7 +291,7 @@ export function AiaInvoicingForm({ parentInvoice }: Props) {
                                                 className="!w-40"
                                             />
                                         </G703Component>
-                                    ) : (
+                                    ) : tab === G702_KEY ? (
                                         <G702Component
                                             state={g7State}
                                             handleState={handleG7State}
@@ -322,7 +323,8 @@ export function AiaInvoicingForm({ parentInvoice }: Props) {
                                                 />
                                             )}
                                         </G702Component>
-                                    ),
+                                    ) : tab === FORMS_KEY ?
+                                        <AIAForms /> : null,
                             };
                         })}
                     />
