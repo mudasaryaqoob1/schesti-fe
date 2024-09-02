@@ -2,10 +2,13 @@ import { ShowFileComponent } from "@/app/(pages)/bid-management/components/ShowF
 import CustomButton from "@/app/component/customButton/button";
 import PrimaryHeading from "@/app/component/headings/primary";
 import SenaryHeading from "@/app/component/headings/senaryHeading";
+import { IAIAInvoice } from "@/app/interfaces/client-invoice.interface";
+import { clientInvoiceService } from "@/app/services/client-invoices.service";
 import { fileSizeValidator, uploadFilesToS3 } from "@/app/utils/utils";
 import { LoadingOutlined } from "@ant-design/icons";
 import { Spin } from "antd";
 import Dragger from "antd/es/upload/Dragger";
+import { AxiosError } from "axios";
 import { useFormik } from "formik";
 import Image from "next/image";
 import { useState } from "react";
@@ -30,7 +33,12 @@ const ValidationSchema = Yup.object().shape({
     ),
 });
 
-export function AIAForms() {
+type Props = {
+    parentInvoice: IAIAInvoice;
+    onParentInvoiceUpdate: (_data: IAIAInvoice) => void
+}
+export function AIAForms({ onParentInvoiceUpdate, parentInvoice }: Props) {
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [isUploadig, setIsUploading] = useState({
         lienWaiver: false,
         sales: false,
@@ -41,15 +49,32 @@ export function AIAForms() {
 
     const formik = useFormik({
         initialValues: {
-            lienWaiverFiles: [],
-            salesFiles: [],
-            federalPaperFiles: [],
-            materialsFiles: [],
-            otherFiles: [],
+            lienWaiverFiles: parentInvoice.lienWaiverFiles,
+            salesFiles: parentInvoice.salesFiles,
+            federalPaperFiles: parentInvoice.federalPaperFiles,
+            materialsFiles: parentInvoice.materialsFiles,
+            otherFiles: parentInvoice.otherFiles,
         },
         validationSchema: ValidationSchema,
-        onSubmit: (values) => {
-
+        onSubmit: async (values) => {
+            const isValid = Object.values(values).some((val) => val.length > 0);
+            if (isValid) {
+                setIsSubmitting(true);
+                try {
+                    const response = await clientInvoiceService.httpUploadInvoiceDocuments(parentInvoice._id, values);
+                    if (response.data) {
+                        toast.success('Files uploaded successfully');
+                        onParentInvoiceUpdate(response.data);
+                    }
+                } catch (error) {
+                    const err = error as AxiosError<{ message: string }>;
+                    toast.error(err.response?.data.message);
+                } finally {
+                    setIsSubmitting(false);
+                }
+            } else {
+                toast.error('Please upload files');
+            }
         },
     });
 
@@ -402,6 +427,8 @@ export function AIAForms() {
             <CustomButton
                 text="Create"
                 className="!w-fit"
+                onClick={() => formik.handleSubmit()}
+                isLoading={isSubmitting}
             />
         </div>
     </div>

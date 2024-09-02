@@ -27,8 +27,9 @@ const FORMS_KEY = 'Forms';
 
 type Props = {
     parentInvoice: IAIAInvoice;
+    setParentInvoice: React.Dispatch<React.SetStateAction<IAIAInvoice | null>>;
 }
-export function AiaInvoicingForm({ parentInvoice }: Props) {
+export function AiaInvoicingForm({ parentInvoice, setParentInvoice }: Props) {
 
     const auth = useSelector((state: RootState) => state.auth);
     const user = auth.user?.user as IUpdateCompanyDetail | undefined;
@@ -324,7 +325,11 @@ export function AiaInvoicingForm({ parentInvoice }: Props) {
                                             )}
                                         </G702Component>
                                     ) : tab === FORMS_KEY ?
-                                        <AIAForms /> : null,
+                                        <AIAForms parentInvoice={parentInvoice}
+                                            onParentInvoiceUpdate={data => {
+                                                setParentInvoice(data);
+                                            }}
+                                        /> : null,
                             };
                         })}
                     />

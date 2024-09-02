@@ -55,6 +55,7 @@ function AiaInvoicingFormPage() {
 
   return <AiaInvoicingForm
     parentInvoice={parentInvoice}
+    setParentInvoice={setParentInvoice}
   />
 }
 
