@@ -30,6 +30,7 @@ import { useDispatch } from 'react-redux'
 import { AppDispatch } from '@/redux/store'
 import { getCompanyRolesThunk } from '@/redux/company-roles/company-roles.thunk'
 import { getCrmItemsThunk } from '@/redux/crm/crm.thunk'
+import { findCrmItemById } from '@/app/(pages)/crm/utils'
 // import { useSelector } from 'react-redux'
 // import { selectToken } from '@/redux/authSlices/auth.selector'
 
@@ -44,15 +45,15 @@ import { getCrmItemsThunk } from '@/redux/crm/crm.thunk'
 const CreateInfo = () => {
     const router = useRouter()
 
-    const [assignedUser, setassignedUser] = useState<any>([])
+    const [assignedUser, setassignedUser] = useState<any[]>([])
     const [clientModal, setclientModal] = useState<boolean>(false)
     const [allPages] = useState<any>([])
     const [projectData, setprojectData] = useState({
         name: "",
         number: "",
         status: "",
-        createdate: "",
-        deadline: ""
+        createdate: new Date(),
+        deadline: new Date()
     })
     const [selectecClient, setselectecClient] = useState<any>(null)
     const [selectedFiles, setselectedFiles] = useState<any>([])
@@ -79,7 +80,7 @@ const CreateInfo = () => {
             dataIndex: 'role',
             render: (text, record) => {
                 return <div className=''>
-                    {(record?.roles && Array.isArray(record?.roles) && record?.roles?.length>0 && record?.roles[0]?.name) ? record?.roles[0]?.name : ''}
+                    {(record?.roles && Array.isArray(record?.roles) && record?.roles?.length > 0 && record?.roles[0]?.name) ? record?.roles[0]?.name : ''}
                 </div>
             }
         },
@@ -282,6 +283,55 @@ const CreateInfo = () => {
     const [fileState, setfileState] = useState<{ name: string, status: 'uploading' | 'processing' | 'failed' | 'done', uploadProgress: number }[]>([])
     console.log(fileState, " ===> log to filestate change")
 
+    // const clientstate = useSelector((state: RootState) => state.crm);
+    const getTakeOffDetails = async (id: string) => {
+        try {
+            const data = await takeoffSummaryService.httpGetSignleTakeOffSummary(id);
+            console.log(data, ' ===> Data coming for single record of summaruy');
+            let takeoff = data?.data
+            let pdata = {
+                name: takeoff?.name ?? '',
+                status: takeoff?.status ?? '',
+                deadline: takeoff?.deadline ?? '',
+                createdate: takeoff?.createdate ?? '',
+                number: takeoff?.number ?? '',
+            }
+            setprojectData(pdata)
+            setselectedFiles(takeoff?.files ?? [])
+            if (takeoff.client) {
+                findCrmItemById(takeoff?.client, () => { }, (item) => {
+                    // console.log(item, ' ===> Data coming for single record of summaruy')
+                    if (item && item._id) {
+                        // setselectecClient(clientstate.data.find(i => i._id == takeoff?.client) ?? null)
+                        setselectecClient(item)
+                    }
+                });
+            }
+            const response = await userService.httpGetUsers(1, 200, "");
+            const emp = response?.data?.employees;
+            let emptoAdd = (Array.isArray(takeoff?.assignedUsers) && Array.isArray(emp) && emp.length > 0)
+                ?
+                takeoff?.assignedUsers?.map((i: string) =>
+                    emp.find(user => user?._id == i)
+                )
+                :
+                []
+            console.log(data, emptoAdd, pdata, ' ===> Data coming for single record of summaruy');
+            setselectedAssignedUsers(emptoAdd)
+
+            //   settakeOff(data?.data);
+        } catch (error) {
+            console.log(error, 'error');
+            router.push('/take-off');
+        }
+    };
+
+    useEffect(() => {
+        if (edit_id && edit_id?.length > 0) {
+            getTakeOffDetails(edit_id);
+        }
+    }, [edit_id]);
+
     const processSingleFileNew = async (i: any, ar: any) => {
         const curFile = ar[i]
         setfileState(ps => ([...ps, { name: curFile?.name, status: 'uploading', uploadProgress: 0 }]))
@@ -449,8 +499,8 @@ const CreateInfo = () => {
                     name: projectData?.name,
                     number: projectData?.number,
                     status: projectData?.status,
-                    createdate: projectData?.createdate,
-                    deadline: projectData?.deadline,
+                    createdate: projectData?.createdate ?? new Date(),
+                    deadline: projectData?.deadline ?? new Date(),
                     client: selectecClient?._id,
                     assignedUsers: asUs,
                 }
@@ -507,10 +557,10 @@ const CreateInfo = () => {
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
-      dispatch(getCompanyRolesThunk({}));
-      dispatch(getCrmItemsThunk({ module: 'clients' }));
+        dispatch(getCompanyRolesThunk({}));
+        dispatch(getCrmItemsThunk({ module: 'clients' }));
     }, []);
- 
+
     return (
         <>
             {/* <section className="md:px-16 px-8 pb-4"> */}
@@ -584,6 +634,7 @@ const CreateInfo = () => {
                                                     name="name"
                                                     placeholder="Enter Project Name"
                                                     onChange={handleChange}
+                                                    value={projectData.name}
                                                 />
                                             </div>
                                             <FormControl
@@ -593,6 +644,7 @@ const CreateInfo = () => {
                                                 name="number"
                                                 placeholder="Enter Project Number"
                                                 onChange={handleChange}
+                                                value={projectData.number}
                                             />
                                             <FormControl
                                                 control="select"
@@ -600,6 +652,7 @@ const CreateInfo = () => {
                                                 type="text"
                                                 name="status"
                                                 placeholder="Select Status"
+                                                value={projectData.status}
                                                 handleChange={(val: any) => { console.log(val); setprojectData((ps: any) => ({ ...ps, status: val })) }}
                                                 options={[
                                                     { label: "Not Set", value: "Not Set" },
@@ -616,6 +669,7 @@ const CreateInfo = () => {
                                                 type="date"
                                                 name="createdate"
                                                 placeholder="Select Start Date"
+                                                value={new Date(projectData.createdate)?.toISOString()?.split('T')[0]}
                                                 onChange={handleChange}
                                             />
                                             <FormControl
@@ -624,6 +678,7 @@ const CreateInfo = () => {
                                                 type="date"
                                                 name="deadline"
                                                 placeholder="Select Deadline"
+                                                value={new Date(projectData.deadline)?.toISOString()?.split('T')[0]}
                                                 onChange={handleChange}
                                             />
                                         </div>
@@ -808,8 +863,9 @@ const CreateInfo = () => {
                                             <img src={'/fileCSV.png'} alt='' width={35} height={35} />
                                             <span data-tooltip={`${it?.name}`} className='whitespace-nowrap text-gray-500'>{`${it?.name?.slice(0, 4)}`}</span>
                                             {/* <Progress percent={(totalProgress && Array.isArray(totalProgress) ? Math.ceil((totalProgress?.length / it?.totalPages) * 100) : 0)} strokeColor={'#007AB6'} /> */}
-                                            {fileState.find(i => i.name == it?.name)?.status != 'failed' && <Progress percent={fileState.find(i => i.name == it?.name)?.uploadProgress ?? 1} strokeColor={'#007AB6'} />}
-                                            <span className='text-sm text-gray-500' >{`(${fileState.find(i => i.name == it?.name)?.status})`}</span>
+                                            {it?.fileId && <Progress percent={100} strokeColor={'#007AB6'} />}
+                                            {(fileState.find(i => i.name == it?.name)?.status != 'failed' && !it?.fileId) && <Progress percent={fileState.find(i => i.name == it?.name)?.uploadProgress ?? 1} strokeColor={'#007AB6'} />}
+                                            {!it?.fileId && <span className='text-sm text-gray-500' >{`(${fileState.find(i => i.name == it?.name)?.status})`}</span>}
                                         </li>
                                     })
                                 }

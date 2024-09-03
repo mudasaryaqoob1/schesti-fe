@@ -80,7 +80,6 @@ interface Props {
   isDrag?: boolean;
   selectedShape?: string;
   setSelectedShape?: any;
-  handleDragEnd: (e: KonvaEventObject<DragEvent>) => void;
 }
 
 const Draw: React.FC<Props> = ({
@@ -117,10 +116,9 @@ const Draw: React.FC<Props> = ({
   isDrag,
   selectedShape,
   setSelectedShape,
-  handleDragEnd
 }) => {
   const { user } = useSelector(selectUser);
-  console.log(user, selectedShape, ' current working user and selected shape');
+  console.log(user, ' current working user');
   const { selected, subSelected = null } = selectedTool;
   const {
     calcLineDistance,
@@ -230,9 +228,7 @@ const Draw: React.FC<Props> = ({
   }, [selected]);
 
   const handleMouseDown = (e: KonvaEventObject<MouseEvent>) => {
-    if (selected == 'comments'
-      // && ctrlPressed == true
-    ) {
+    if (selected == 'comments' && ctrlPressed == true) {
       handleStageClick(e);
       return;
     }
@@ -721,32 +717,32 @@ const Draw: React.FC<Props> = ({
         // ...((selected === 'scale' && drawScale == true) && { parameter }),
         ...(completingLine.endingPoint
           ? {
-            parameter: calculatePolygonPerimeter(
-              [
-                ...polyLine.points,
-                completingLine.endingPoint.x,
-                completingLine.endingPoint.y,
-              ],
-              scale
-            ),
-            area: calculatePolygonArea(
-              [
-                ...polyLine.points,
-                completingLine.endingPoint.x,
-                completingLine.endingPoint.y,
-              ],
-              scale
-            ),
-            volume: calculatePolygonVolume(
-              [
-                ...polyLine.points,
-                completingLine.endingPoint.x,
-                completingLine.endingPoint.y,
-              ],
-              depth,
-              scale
-            ),
-          }
+              parameter: calculatePolygonPerimeter(
+                [
+                  ...polyLine.points,
+                  completingLine.endingPoint.x,
+                  completingLine.endingPoint.y,
+                ],
+                scale
+              ),
+              area: calculatePolygonArea(
+                [
+                  ...polyLine.points,
+                  completingLine.endingPoint.x,
+                  completingLine.endingPoint.y,
+                ],
+                scale
+              ),
+              volume: calculatePolygonVolume(
+                [
+                  ...polyLine.points,
+                  completingLine.endingPoint.x,
+                  completingLine.endingPoint.y,
+                ],
+                depth,
+                scale
+              ),
+            }
           : 0),
       });
     }
@@ -795,16 +791,16 @@ const Draw: React.FC<Props> = ({
   const stageParentRef = useRef<HTMLDivElement>(null);
   const parentWdith =
     stageParentRef.current?.getBoundingClientRect() &&
-      stageParentRef.current?.getBoundingClientRect()?.width
+    stageParentRef.current?.getBoundingClientRect()?.width
       ? stageParentRef.current?.getBoundingClientRect()?.width
       : null;
   const parentHeight =
     stageParentRef.current?.getBoundingClientRect() &&
-      stageParentRef.current?.getBoundingClientRect()?.height
+    stageParentRef.current?.getBoundingClientRect()?.height
       ? stageParentRef.current?.getBoundingClientRect()?.height
       : null;
+  console.log(parentWdith, parentHeight, ' width and height of parent');
   const [ctrlPressed, setCtrlPressed] = useState(false);
-  console.log(parentWdith, parentHeight, ctrlPressed, ' width and height of parent');
 
   useEffect(() => {
     const handleKeyDown = (event: any) => {
@@ -830,7 +826,7 @@ const Draw: React.FC<Props> = ({
   }, []);
 
   const [texts, setTexts] = useState<Array<any>>([]);
-  const stageRef = useRef<Konva.Stage>(null);
+  // const stageRef = useRef<Konva.Stage>(null);
 
   const handleStageClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
     // if (e.target === e.target.getStage()) {
@@ -840,7 +836,7 @@ const Draw: React.FC<Props> = ({
       const mousePos = getRelativePointerPosition(stage);
       if (mousePos) {
         const newText = {
-          id: `texts-${texts.length + 1}`,
+          id: `text_${texts.length + 1}`,
           x: mousePos.x,
           y: mousePos.y,
           initialText: 'New Text',
@@ -909,7 +905,6 @@ const Draw: React.FC<Props> = ({
           setPolyLine(defaultPolyLineState);
           setDynamicPolyLine(defaultPolyLineState);
           handleChangeMeasurements(defaultMeasurements);
-          setSelectedShape('')
         }
         if (e.key === 'Enter' && subSelected === 'create') {
           setCurrentLine(defaultCurrentLineState);
@@ -1100,21 +1095,20 @@ const Draw: React.FC<Props> = ({
         scaleY={stageScale}
         x={stageX}
         y={stageY}
-        // draggable={isDrag}
-        draggable={!currentLine.startingPoint}
-        onDragStart={() => {
-          setCurrentLine(defaultCurrentLineState);
-          setCompletingLine(defaultCurrentLineState);
-          setPolyLine(defaultPolyLineState);
-          setDynamicPolyLine(defaultPolyLineState);
-          handleChangeMeasurements(defaultMeasurements);
-        }}
-        onDragEnd={handleDragEnd}
-        ref={stageRef}
+        draggable={isDrag}
+        // draggable
+        // onDragStart={()=>{
+        //   setCurrentLine(defaultCurrentLineState);
+        //   setCompletingLine(defaultCurrentLineState);
+        //   setPolyLine(defaultPolyLineState);
+        //   setDynamicPolyLine(defaultPolyLineState);
+        //   handleChangeMeasurements(defaultMeasurements);
+        // }}
+        // ref={stageRef}
         className={`flex justify-center cursor-pointer bg-gray-200 ${['area', 'volume', 'dynamic', 'length', 'perimeter'].includes(selected) ? '!cursor-crosshair' : ''}`}
       >
         <Layer
-          onClick={handleMouseDown}
+          onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           imageSmoothingEnabled={true}
@@ -1131,7 +1125,7 @@ const Draw: React.FC<Props> = ({
           {draw?.scale &&
             Array.isArray(draw?.scale) &&
             draw?.scale?.map(({ textUnit, ...rest }: any, index: number) => {
-              const id = `scale-${index}`;
+              const id = `line-${index}`;
               // const lineDistance = calcLineDistance(rest.points, scale, true);
               const lineMidPoint = calculateMidpoint(rest.points);
 
@@ -1139,7 +1133,7 @@ const Draw: React.FC<Props> = ({
                 <Group
                   id={id}
                   key={id}
-                  onClick={(e) => {
+                  onMouseDown={(e) => {
                     e.cancelBubble = true;
                     setSelectedShape(e.currentTarget.attrs?.id || '');
                   }}
@@ -1168,40 +1162,25 @@ const Draw: React.FC<Props> = ({
           {draw?.texts &&
             Array.isArray(draw?.texts) &&
             draw?.texts?.length > 0 &&
-            draw.texts.map((text: any, index: number) => {
-              const id = `texts-${index}`;
-              return <Group
-                id={id}
-                key={id}
-                onDragStart={(e) => { e.cancelBubble = true }}
-                onDragMove={(e) => { e.cancelBubble = true }}
-                onDragEnd={(e) => { e.cancelBubble = true }}
-                onClick={(e) => {
-                  e.cancelBubble = true;
-                  // setSelectedShape(e.currentTarget.attrs?.id || '');
-                  setSelectedShape(id || '');
-                }}
-              >
-                <EditableText
-                  key={text.id}
-                  id={text.id}
-                  x={text.x}
-                  y={text.y}
-                  initialText={text.text ?? text.initialText}
-                  fontSize={text?.textUnit ?? text.fontSize}
-                  rotation={text.rotation}
-                  onChange={(newTextProps) =>
-                    handleTextChange(text.id, newTextProps)
-                  }
-                  textColor={text?.textColor ?? textColor}
-                  handleDelete={handleDelete}
-                  selectedCategory={selectedCategory}
-                  selectedSubCategory={selectedSubCategory}
-                  ctrlPressed={selectedShape === id}
-                // ctrlPressed={ctrlPressed}
-                />
-              </Group>
-            })}
+            draw.texts.map((text: any) => (
+              <EditableText
+                key={text.id}
+                id={text.id}
+                x={text.x}
+                y={text.y}
+                initialText={text.text ?? text.initialText}
+                fontSize={text.fontSize}
+                rotation={text.rotation}
+                onChange={(newTextProps) =>
+                  handleTextChange(text.id, newTextProps)
+                }
+                textColor={textColor}
+                handleDelete={handleDelete}
+                selectedCategory={selectedCategory}
+                selectedSubCategory={selectedSubCategory}
+                ctrlPressed={ctrlPressed}
+              />
+            ))}
 
           {/* Drawing Line */}
           {draw?.line?.map(({ textUnit, ...rest }: any, index: number) => {
@@ -1217,10 +1196,7 @@ const Draw: React.FC<Props> = ({
               <Group
                 id={id}
                 key={id}
-                onDragStart={(e) => { e.cancelBubble = true }}
-                onDragMove={(e) => { e.cancelBubble = true }}
-                onDragEnd={(e) => { e.cancelBubble = true }}
-                onClick={(e) => {
+                onMouseDown={(e) => {
                   e.cancelBubble = true;
                   setSelectedShape(e.currentTarget.attrs?.id || '');
                 }}
@@ -1313,10 +1289,7 @@ const Draw: React.FC<Props> = ({
               <Group
                 key={id}
                 id={id}
-                onDragStart={(e) => { e.cancelBubble = true }}
-                onDragMove={(e) => { e.cancelBubble = true }}
-                onDragEnd={(e) => { e.cancelBubble = true }}
-                onClick={(e) => {
+                onMouseDown={(e) => {
                   e.cancelBubble = true;
                   setSelectedShape(e.currentTarget.attrs?.id || '');
                 }}
@@ -1410,10 +1383,7 @@ const Draw: React.FC<Props> = ({
               <Group
                 key={id}
                 id={id}
-                onDragStart={(e) => { e.cancelBubble = true }}
-                onDragMove={(e) => { e.cancelBubble = true }}
-                onDragEnd={(e) => { e.cancelBubble = true }}
-                onClick={(e) => {
+                onMouseDown={(e) => {
                   e.cancelBubble = true;
                   setSelectedShape(e.currentTarget.attrs?.id || '');
                 }}
@@ -1515,10 +1485,7 @@ const Draw: React.FC<Props> = ({
               <Group
                 id={id}
                 key={id}
-                onDragStart={(e) => { e.cancelBubble = true }}
-                onDragMove={(e) => { e.cancelBubble = true }}
-                onDragEnd={(e) => { e.cancelBubble = true }}
-                onClick={(e) => {
+                onMouseDown={(e) => {
                   e.cancelBubble = true;
                   setSelectedShape(e.currentTarget.attrs?.id || '');
                 }}
@@ -1621,10 +1588,7 @@ const Draw: React.FC<Props> = ({
               <Group
                 id={id}
                 key={id}
-                onDragStart={(e) => { e.cancelBubble = true }}
-                onDragMove={(e) => { e.cancelBubble = true }}
-                onDragEnd={(e) => { e.cancelBubble = true }}
-                onClick={(e) => {
+                onMouseDown={(e) => {
                   e.cancelBubble = true;
                   setSelectedShape(e.currentTarget.attrs?.id || '');
                 }}
@@ -1732,10 +1696,7 @@ const Draw: React.FC<Props> = ({
                 <Group
                   id={id}
                   key={id}
-                  onDragStart={(e) => { e.cancelBubble = true }}
-                  onDragMove={(e) => { e.cancelBubble = true }}
-                  onDragEnd={(e) => { e.cancelBubble = true }}
-                  onClick={(e) => {
+                  onMouseDown={(e) => {
                     e.cancelBubble = true;
                     setSelectedShape(e.currentTarget.attrs?.id || '');
                   }}
@@ -1917,7 +1878,7 @@ const Draw: React.FC<Props> = ({
                 scaleX={rest?.textUnit / 12 ?? 1}
                 scaleY={rest?.textUnit / 12 ?? 1}
                 {...rest}
-                onClick={(e) => {
+                onMouseDown={(e) => {
                   e.cancelBubble = true;
                   setSelectedShape(e.currentTarget.attrs?.id || '');
                 }}

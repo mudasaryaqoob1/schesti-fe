@@ -47,10 +47,12 @@ const columns: ColumnsType<DataType> = [
 ];
 export interface ITableProps {
   handleEditClick: (item: any) => void;
+  handleEditDetailsClick: (item: any) => void;
   search: any;
 }
 const Index: React.FC<ITableProps> = ({
   handleEditClick,
+  handleEditDetailsClick,
   search,
 }: ITableProps) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -64,6 +66,10 @@ const Index: React.FC<ITableProps> = ({
       // Handle delete action
       console.log('Delete action', record);
       dispatch(deleteSummaries(record?._id));
+    } else if (e.key === 'edit_details') {
+      // Handle delete action
+      console.log('View Details action', record);
+      handleEditDetailsClick(record)
     }
   };
 
@@ -75,6 +81,7 @@ const Index: React.FC<ITableProps> = ({
       }}
     >
       <Menu.Item key="edit">Edit</Menu.Item>
+      <Menu.Item key="edit_details">Edit Details</Menu.Item>
       <Menu.Item key="view_estimate">View Estimate</Menu.Item>
       <Menu.Item key="download">Download</Menu.Item>
       <Menu.Item key="email">Email</Menu.Item>

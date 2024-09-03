@@ -5,6 +5,7 @@ import Konva from 'konva';
 import { selectUser } from '@/redux/authSlices/auth.selector';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
+import { KonvaEventObject } from 'konva/lib/Node';
 // import { KonvaEventObject } from 'konva/lib/Node';
 
 interface EditableTextProps {
@@ -27,6 +28,7 @@ interface EditableTextProps {
     width: number;
     height: number;
     fontSize: number;
+    textUnit: number;
     rotation: number;
     category: string | any; //(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
     subcategory: string | any;
@@ -70,8 +72,9 @@ const EditableText: React.FC<EditableTextProps> = ({
   }, [isEditing]);
 
   const handleDblClick = (e: Konva.KonvaEventObject<MouseEvent>) => {
-    e.evt.stopPropagation(); // Stop the event from bubbling up
-    e.evt.preventDefault(); // Prevent the default action
+    e.cancelBubble = true;
+    // e.evt.stopPropagation()
+    // e.evt.stopImmediatePropagation()
     if (textRef.current) {
       textRef.current.hide();
       trRef.current?.hide();
@@ -90,6 +93,7 @@ const EditableText: React.FC<EditableTextProps> = ({
         width: textRef.current.width() * textRef.current.scaleX(),
         height: textRef.current.height() * textRef.current.scaleY(),
         fontSize: textRef.current.fontSize() * textRef.current.scaleX(),
+        textUnit: textRef.current.fontSize() * textRef.current.scaleX(),
         rotation: textRef.current.rotation(),
         category: selectedCategory ?? 'Text Measurement', //(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
         subcategory: selectedSubCategory,
@@ -102,7 +106,10 @@ const EditableText: React.FC<EditableTextProps> = ({
     }
   };
 
-  const handleDragEnd = () => {
+  const handleDragEndTxt = (e: KonvaEventObject<DragEvent>) => {
+    e.cancelBubble = true;
+    // e.evt.stopPropagation()
+    // e.evt.stopImmediatePropagation()
     if (textRef.current) {
       onChange({
         id,
@@ -112,6 +119,7 @@ const EditableText: React.FC<EditableTextProps> = ({
         width: textRef.current.width(),
         height: textRef.current.height(),
         fontSize: textRef.current.fontSize(),
+        textUnit: textRef.current.fontSize(),
         rotation: textRef.current.rotation(),
         category: selectedCategory ?? 'Text Measurement', //(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
         subcategory: selectedSubCategory,
@@ -140,6 +148,7 @@ const EditableText: React.FC<EditableTextProps> = ({
       width: textRef.current?.width() || 0,
       height: textRef.current?.height() || 0,
       fontSize: textRef.current?.fontSize() || 0,
+      textUnit: textRef.current?.fontSize() || 0,
       rotation: textRef.current?.rotation() || 0,
       category: selectedCategory ?? 'Text Measurement', //(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
       subcategory: selectedSubCategory,
@@ -149,40 +158,76 @@ const EditableText: React.FC<EditableTextProps> = ({
     });
   };
 
-  const getPositionStyle = () => {
-    if (textRef.current) {
-      const stage = textRef.current.getStage();
-      if (stage) {
-        const textPosition = textRef.current.getAbsolutePosition();
-        const textPositionrect = textRef.current.getClientRect();
-        const stagePosition = stage.container();
+  // const getPositionStyle = () => {
+  //   if (textRef.current) {
+  //     const stage = textRef.current.getStage();
+  //     if (stage) {
+  //       const textPosition = textRef.current.getAbsolutePosition();
+  //       const textPositionrect = textRef.current.getClientRect();
+  //       const stagePosition = stage.container();
 
-        const top = textPosition.y + stagePosition.offsetTop;
-        const left = textPosition.x + stagePosition.offsetLeft;
+  //       const top = textPosition.y + stagePosition.offsetTop;
+  //       const left = textPosition.x + stagePosition.offsetLeft;
 
-        // Debugging logs
-        console.log('Text Position:', textPosition);
-        console.log('Stage Position:', stagePosition);
-        console.log('Computed Top:', top);
-        console.log('Computed Left:', left);
+  //       // Debugging logs
+  //       console.log('Text Position:', textPosition);
+  //       console.log('Stage Position:', stagePosition);
+  //       console.log('Computed Top:', top);
+  //       console.log('Computed Left:', left);
 
-        return {
-          position: 'absolute',
-          top: top + 'px',
-          left: left + 'px',
-          width: textPositionrect.width,
-          height: textPositionrect.height,
-        };
-      }
-    }
-    return {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      width: 100,
-      height: 30,
-    };
-  };
+  //       return {
+  //         position: 'absolute',
+  //         top: top + 'px',
+  //         left: left + 'px',
+  //         width: textPositionrect.width,
+  //         height: textPositionrect.height,
+  //       };
+  //     }
+  //   }
+  //   return {
+  //     position: 'absolute',
+  //     top: 0,
+  //     left: 0,
+  //     width: 100,
+  //     height: 30,
+  //   };
+  // };
+
+  // const getPositionStyle = () => {
+  //   if (textRef.current) {
+  //     const stage = textRef.current.getStage();
+  //     if (stage) {
+  //       const stageContainer = stage.container();
+  //       const parentElement = stageContainer.parentElement;
+  
+  //       if (parentElement) {
+  //         const parentWidth = parentElement.clientWidth;
+  //         const parentHeight = parentElement.clientHeight;
+  
+  //         return {
+  //           position: 'fixed',
+  //           top: '50%',
+  //           left: '50%',
+  //           transform: 'translate(-50%, -50%)',
+  //           width: 'auto',  // Adjust as needed for the input field's width
+  //           height: 'auto', // Adjust as needed for the input field's height
+  //           maxWidth: `${parentWidth}px`,  // Ensure it doesn't overflow the parent
+  //           maxHeight: `${parentHeight}px`, // Ensure it doesn't overflow the parent
+  //         };
+  //       }
+  //     }
+  //   }
+  
+  //   return {
+  //     position: 'fixed',
+  //     top: '50%',
+  //     left: '50%',
+  //     transform: 'translate(-50%, -50%)',
+  //     width: 'auto',
+  //     height: 'auto',
+  //   };
+  // };
+
 
   return (
     <>
@@ -194,9 +239,27 @@ const EditableText: React.FC<EditableTextProps> = ({
         x={x}
         y={y}
         draggable
+        onMouseDown={(e) => {
+          e.cancelBubble = true
+        }}
         onDblClick={handleDblClick}
+        // onClick={(e) => {
+        //   e.cancelBubble = true;
+        //   // e.evt.stopPropagation()
+        //   // e.evt.stopImmediatePropagation()
+        // }}
         onTransformEnd={handleTransformEnd}
-        onDragEnd={handleDragEnd}
+        onDragStart={(e) => {
+          e.cancelBubble = true;
+          // e.evt.stopPropagation()
+          // e.evt.stopImmediatePropagation()
+        }}
+        onDragMove={(e) => {
+          e.cancelBubble = true;
+          // e.evt.stopPropagation()
+          // e.evt.stopImmediatePropagation()
+        }}
+        onDragEnd={handleDragEndTxt}
         fill={textColor}
         rotation={rotation}
       />
@@ -205,8 +268,8 @@ const EditableText: React.FC<EditableTextProps> = ({
         y={y - 5}
         radius={5}
         fill="red"
-        onClick={() => {
-          // e.cancelBubble = true;
+        onClick={(e) => {
+          e.cancelBubble = true;
           // e.evt.stopPropagation()
           // e.evt.stopImmediatePropagation()
           handleDelete({ id });
@@ -228,7 +291,23 @@ const EditableText: React.FC<EditableTextProps> = ({
       {isEditing && (
         <Html
           divProps={{
-            style: getPositionStyle() as any,
+            // style: getPositionStyle() as any,
+            style: {
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: '600px', // Set a fixed width, or adjust based on your needs
+              height: 'auto',
+              fontSize: '16px', // Adjust font size if needed
+              zIndex: 1000, // Ensure the textarea is above other elements
+              backgroundColor: '#fff', // Background color
+              padding: '10px', // Padding for the input
+              border: '1px solid #ccc', // Border for the input
+              borderRadius: '15px', // Rounded corners for the input
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.5)', // Add a subtle shadow
+              opacity:80
+            }
           }}
         >
           {/* <span className='text-red-600 cursor-pointer' onClick={()=>{handleDelete(text)}}>X</span> */}
@@ -248,7 +327,7 @@ const EditableText: React.FC<EditableTextProps> = ({
             style={{
               width: '100%',
               height: '100%',
-              fontSize: `${fontSize}px`,
+              fontSize: `40px`,
               border: 'none',
               backgroundColor: 'transparent',
               //@ts-ignore
@@ -256,6 +335,7 @@ const EditableText: React.FC<EditableTextProps> = ({
               //@ts-ignore
               color: textRef.current?.fill() || 'black',
               boxSizing: 'border-box',
+              outline:'none'
             }}
           />
         </Html>

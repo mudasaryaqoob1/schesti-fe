@@ -1,3 +1,4 @@
+import { KonvaEventObject } from 'konva/lib/Node';
 import { useState } from 'react';
 
 interface WheelZoomProps {
@@ -20,6 +21,19 @@ const useWheelZoom = ({
   const [stageY, setStageY] = useState(initialY);
 
   const scaleBy = 1.1; // Control the zoom intensity
+
+  const setStageValues = (argX:number|null=null, argY:number|null=null, stageScale:number|null=null) => {
+    if(argX) setStageX(argX)
+    if(argY) setStageY(argY)
+    if(stageScale) setStageScale(stageScale)
+  }
+
+  const handleDragEnd = (e: KonvaEventObject<DragEvent>) => {
+    const newX = e.target.x();
+    const newY = e.target.y();
+    setStageX(newX);
+    setStageY(newY);
+  };
 
   const handleZoomIn = () => {
     const newScale = stageScale * scaleBy;
@@ -71,6 +85,8 @@ const useWheelZoom = ({
     handleWheel,
     handleZoomIn,
     handleZoomOut,
+    handleDragEnd,
+    setStageValues
   };
 };
 
