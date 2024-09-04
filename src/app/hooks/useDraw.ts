@@ -2,16 +2,16 @@ import { ScaleData } from '../(pages)/takeoff/scale/page';
 import { DrawInterface } from '../(pages)/takeoff/types';
 
 export const measurementUnits = [
+  `ft'in"`,
+  // "in'",
   'in',
+  'km',
   'cm',
   'mm',
   'ft',
-  `ft'in"`,
-  "in'",
   'yd',
   'mi',
   'm',
-  'km',
 ];
 
 export const unitConversion: { [conversion: string]: number } = {
@@ -350,7 +350,7 @@ const useDraw = () => {
 
     const distance = Math.sqrt(
       Math.pow(convertPxIntoInches(x2 - x1) * xScaleMultiplier, 2) +
-        Math.pow(convertPxIntoInches(y2 - y1) * yScaleMultiplier, 2)
+      Math.pow(convertPxIntoInches(y2 - y1) * yScaleMultiplier, 2)
     );
 
     if (format) {
@@ -601,16 +601,38 @@ const useDraw = () => {
         ? RHSValues.split('/')
         : [+RHSValues, 1];
 
+      if (RUnit == `ft'in"`) {
+        const multiplier =
+          ((+ftinmul(RHSValues).total / 12) *
+            +LD *
+            unitConversion[`in-${LUnit}`] *
+            unitConversion[`${RUnit}-in`]) /
+          (+LN * +RD);
+        console.log(LN, LD, scale, RD, RN, `in-${LUnit}`, `${RUnit}-in`, unitConversion[`in-${LUnit}`], unitConversion[`${RUnit}-in`], RHS, RUnit, LUnit, RHSValues, ftinmul(RHSValues), multiplier, RN, " ===> inside my logic spllited scale")
+
+
+        return multiplier;
+      }
+
       const multiplier =
         (+RN *
           +LD *
           unitConversion[`in-${LUnit}`] *
           unitConversion[`${RUnit}-in`]) /
         (+LN * +RD);
+      console.log(LN, LD, scale, RD, RN, `in-${LUnit}`, `${RUnit}-in`, unitConversion[`in-${LUnit}`], unitConversion[`${RUnit}-in`], RHS, RUnit, LUnit, RHSValues, multiplier, RN, " ===> inside my logic spllited scale")
+
 
       return multiplier;
     }
   };
+  const ftinmul = (value: string) => {
+    const [feet, inch] = value.split(`'`)
+    let newinc = inch.split(`"`)[0]
+    let ft = feet ? Number(feet) * 12 : 0;
+    let total = Number(ft) + (Number(newinc) ? Number(newinc) : 0)
+    return { feet, inch, ft, total }
+  }
 
   const getInchesInFractionFromMixedFraction = (value = `1 1/2"`) => {
     const isFraction = value.split('/').length > 1;

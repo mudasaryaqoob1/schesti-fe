@@ -3,7 +3,7 @@ import Button from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import Image from 'next/image';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import { Select, Radio, Input, Checkbox } from 'antd';
+import { Select, Radio, Input } from 'antd';
 import type { RadioChangeEvent } from 'antd';
 import { ChangeEvent, useContext, useEffect, useState } from 'react';
 import { fetchTakeoffPreset } from '@/redux/takeoff/takeoff.thunk';
@@ -110,7 +110,7 @@ const ScaleModal = ({
   const { handleScaleData, scaleData } = useContext(
     ScaleContext
   ) as ScaleDataContextProps;
-  console.log(scaleLine, ' ===> scale line');
+  console.log(scaleLine, setSeparateScale, ' ===> scale line');
 
   const onChangeX = (e: RadioChangeEvent) => {
     if (e.target.value === 'custom') {
@@ -422,7 +422,7 @@ const ScaleModal = ({
                 <Radio value={'custom'}>Custom</Radio>
               </Radio.Group>
             </div>
-            {valueX === 'custom' && (
+            {/* {valueX === 'custom' && (
               <div>
                 <WhiteButton
                   className="!py-1.5"
@@ -437,7 +437,7 @@ const ScaleModal = ({
                   }
                 />
               </div>
-            )}
+            )} */}
           </div>
           <div className="flex gap-4 items-center justify-end">
             {valueX === 'preset' && (
@@ -484,6 +484,7 @@ const ScaleModal = ({
                     </Select.Option>
                   ))}
                 </Select>
+                <span className='text-3xl text-gray-400' >=</span>
                 <Input
                   value={secondValueX}
                   className={`!w-[115px] ${
@@ -704,7 +705,7 @@ const ScaleModal = ({
             </>
           )}
 
-          <div className="flex space-x-2">
+          {/* <div className="flex space-x-2">
             <div
               className="cursor-pointer"
               onClick={() => setSeparateScale((prev) => !prev)}
@@ -712,7 +713,7 @@ const ScaleModal = ({
               Separate Y Scale
             </div>
             <Checkbox onChange={(e) => setSeparateScale(e.target.checked)} />
-          </div>
+          </div> */}
 
           <div className="flex gap-6 items-center">
             <label>Precision:</label>

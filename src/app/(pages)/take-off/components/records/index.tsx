@@ -148,6 +148,9 @@ const Records = () => {
   const handleEditClick = (item: any) => {
     router.push(`/take-off/scale?edit_id=${item?._id}`);
   };
+  const handleEditDetailsClick = (item: any) => {
+    router.push(`/take-off/upload?edit_id=${item?._id}`);
+  };
   const [search, setsearch] = useState<any>('');
 
   return (
@@ -181,7 +184,7 @@ const Records = () => {
           <input type="text" placeholder="Search" className="ml-2 outline-none flex-1 text-gray-600" />
         </div> */}
       </div>
-      <Table search={search} handleEditClick={handleEditClick} />
+      <Table search={search} handleEditClick={handleEditClick} handleEditDetailsClick={handleEditDetailsClick} />
       {/* <Pagination /> */}
     </div>
   );
