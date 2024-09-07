@@ -100,7 +100,8 @@ export type ScaleLabel =
   | 'Zoom Out'
   | 'Room Color'
   | 'comments'
-  | 'curve';
+  | 'curve'
+  | 'arc';
 
 export type DynamicScale = 'fill' | 'create' | 'clear';
 

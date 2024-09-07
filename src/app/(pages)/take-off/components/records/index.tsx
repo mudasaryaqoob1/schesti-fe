@@ -11,7 +11,11 @@ import { useState } from 'react';
 // import { DrawHistoryContext, EditContext } from '../../context';
 import { Input } from 'antd';
 // import Icon from '@ant-design/icons/lib/components/Icon';
-import { SearchOutlined } from '@ant-design/icons';
+import { LoadingOutlined, SearchOutlined } from '@ant-design/icons';
+import { takeoffSummaryService } from '@/app/services/takeoffSummary.service';
+import ReportModal from '../ReportModal';
+import { toast } from 'react-toastify';
+import ModalComponent from '@/app/component/modal';
 // const { Search } = Input;
 
 const Records = () => {
@@ -152,12 +156,33 @@ const Records = () => {
     router.push(`/take-off/upload?edit_id=${item?._id}`);
   };
   const [search, setsearch] = useState<any>('');
+  const [isModalOpen, setisModalOpen] = useState(false)
+  const [takeOff, settakeOff] = useState<any>({})
+  const [fetchloading, setfetchloading] = useState(false)
+  const handleDownloadClick = async (id: string) => {
+    if (!id) {
+      toast.error('Invalid selection');
+      return
+    }
+    try {
+      setfetchloading(true)
+      const data = await takeoffSummaryService.httpGetSignleTakeOffSummary(id);
+      console.log(data, ' ===> Data coming for single record of summaruy');
+      settakeOff(data?.data)
+      setfetchloading(false)
+      setisModalOpen(true)
+    } catch (error) {
+      setfetchloading(false)
+      console.log(error)
+    }
+  }
 
   return (
     <div className={`${bg_style} p-5`}>
       <div className="flex justify-between items-center mb-3">
         <TertiaryHeading title="Takeoff Project list" />
         <div className="flex items-center justify-center gap-x-4">
+          {fetchloading && <LoadingOutlined />}
           <Input
             placeholder="Search"
             prefix={<SearchOutlined style={{ color: 'rgba(0,0,0,.45)' }} />}
@@ -184,8 +209,19 @@ const Records = () => {
           <input type="text" placeholder="Search" className="ml-2 outline-none flex-1 text-gray-600" />
         </div> */}
       </div>
-      <Table search={search} handleEditClick={handleEditClick} handleEditDetailsClick={handleEditDetailsClick} />
+      <Table search={search} handleEditClick={handleEditClick} handleEditDetailsClick={handleEditDetailsClick} handleDownloadClick={handleDownloadClick} />
       {/* <Pagination /> */}
+      <ModalComponent
+        open={isModalOpen}
+        setOpen={setisModalOpen}
+        width="100vw"
+      >
+        <ReportModal
+          setModalOpen={setisModalOpen}
+          takeOff={takeOff}
+          modalOpen={isModalOpen}
+        />
+      </ModalComponent>
     </div>
   );
 };

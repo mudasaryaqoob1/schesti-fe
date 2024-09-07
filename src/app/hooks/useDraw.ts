@@ -732,6 +732,7 @@ const useDraw = () => {
     groupDataForTable,
     pointInCircle,
     getScaleMultiplier,
+    convertToFeetAndInches
   };
 };
 
