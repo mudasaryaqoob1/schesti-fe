@@ -36,6 +36,7 @@ const EditableCurvedShape: React.FC<EditableCurvedShapeProps> = ({
   const [controlPoints, setControlPoints] = useState<ControlPoint[]>([]);
   const [area, setArea] = useState<number>(0);
   const lineRef = useRef<Konva.Line>();
+  console.log(area)
   useEffect(() => {
     if (cur?.points) {
       setPoints(cur?.points);

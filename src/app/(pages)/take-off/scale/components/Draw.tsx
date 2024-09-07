@@ -1352,14 +1352,14 @@ const Draw: React.FC<Props> = ({
 
           {/* Drawing Arc */}
           {draw?.arc?.map((cur: any, index: number) => {
-            const { textUnit, ...rest } = cur
+            // const { textUnit, ...rest } = cur
             const id = `arc-${index}`;
-            const lineDistance =
-              scaleUnits == 'feet'
-                ? calcLineDistance(rest?.points, scale, true)
-                : `${Number(Number(calcLineDistance(rest?.points, scale, false)) * 0.0254).toFixed(3)} meter`;
-            // const distanceInInches = calcLineDistance(rest?.points, scale, false)
-            const lineMidPoint = calculateMidpoint(rest?.points);
+            // const lineDistance =
+            //   scaleUnits == 'feet'
+            //     ? calcLineDistance(rest?.points, scale, true)
+            //     : `${Number(Number(calcLineDistance(rest?.points, scale, false)) * 0.0254).toFixed(3)} meter`;
+            // // const distanceInInches = calcLineDistance(rest?.points, scale, false)
+            // const lineMidPoint = calculateMidpoint(rest?.points);
 
             return (
               <Group

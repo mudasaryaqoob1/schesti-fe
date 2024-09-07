@@ -723,7 +723,7 @@ const TakeOffNewPage = () => {
               if (
                 new Date(it.dateTime).valueOf() === new Date(dateTime).valueOf()
               ) {
-                return { ...it, category, subcategory : subcategory ?? null };
+                return { ...it, category, subcategory: subcategory ?? null };
               } else {
                 return it;
               }
@@ -1408,8 +1408,8 @@ const TakeOffNewPage = () => {
                 content={
                   <>
                     {
-                      Array.isArray(takeOff?.categories) && takeOff.categories.length > 0 && takeOff.categories.map((cat: string, catInd: number) => {
-                        return <div>
+                      Array.isArray(takeOff?.categories) && takeOff.categories.length > 0 && takeOff.categories.map((cat: string) => {
+                        return <div key={cat}>
                           <h3
                             onClick={() => {
                               updateTableCategory(
@@ -1422,8 +1422,9 @@ const TakeOffNewPage = () => {
                             }}
                             className={`font-bold my-1 cursor-pointer hover:bg-lavenderPurpleReplica hover:bg-opacity-15 p-1 rounded-lg px-2 ${record?.category == cat ? 'bg-lavenderPurpleReplica bg-opacity-20' : ''}`}>{cat}</h3>
                           {
-                            Array.isArray(takeOff?.subCategories) && takeOff.subCategories.filter((i: string) => i?.includes(cat)).map((subcat: string, subcatInd: number) => {
+                            Array.isArray(takeOff?.subCategories) && takeOff.subCategories.filter((i: string) => i?.includes(cat)).map((subcat: string) => {
                               return <li
+                                key={subcat}
                                 onClick={() => {
                                   updateTableCategory(
                                     record?.pageId,
@@ -2641,7 +2642,7 @@ const TakeOffNewPage = () => {
               const { points, stroke, strokeWidth, lineCap } = shape;
               let pts = shapeType == 'curve' ? getBezierPointsCurve(points, shape?.controlPoints) : shapeType == 'arc' ? getBezierPointsArc(points, shape?.controlPoints) : points
               const line = new Konva.Line({
-                points:pts,
+                points: pts,
                 stroke,
                 strokeWidth,
                 lineCap,
@@ -2657,7 +2658,7 @@ const TakeOffNewPage = () => {
                 shapeType === 'area' ||
                 shapeType === 'volume' ||
                 shapeType === 'dynamic' ||
-                shapeType === 'curve' 
+                shapeType === 'curve'
               ) {
                 const { x, y } = calculatePolygonCenter(points);
                 xText = x - 20;
@@ -3598,8 +3599,8 @@ const TakeOffNewPage = () => {
                                       [
                                         ...(Array.isArray(takeOff?.subCategories)
                                           ? takeOff.subCategories.map((sit: string) => {
-                                            if (sit?.includes(categ)) {
-                                              const [ls, lc] = sit?.split('-')
+                                            if (sit.includes(categ)) {
+                                              const [ls, lc] = sit.split('-')
                                               console.log(lc)
                                               return ls + "-" + vl
                                             } else {
@@ -3667,7 +3668,7 @@ const TakeOffNewPage = () => {
                                             ...(Array.isArray(takeOff?.subCategories)
                                               ? takeOff.subCategories.map((sit: string) => {
                                                 if (sit == subcateg) {
-                                                  const [ls, lc] = sit?.split('-')
+                                                  const [ls, lc] = sit.split('-')
                                                   console.log(ls)
                                                   return vl + "-" + lc
                                                 } else {
