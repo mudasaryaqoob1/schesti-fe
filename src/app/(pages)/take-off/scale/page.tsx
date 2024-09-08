@@ -84,6 +84,14 @@ import { HttpService } from '@/app/services/base.service';
 import { Option } from 'antd/es/mentions';
 // import axios from 'axios';
 
+interface ControlPoint {
+  x: number;
+  y: number;
+  index: number;
+  offsetX: number;
+  offsetY: number;
+}
+
 const groupDataForFileTable = (input: any[]) => {
   const groupedData = input?.reduce((result: any, currentItem: any) => {
     const {
@@ -659,6 +667,63 @@ const TakeOffNewPage = () => {
                 new Date(it.dateTime).valueOf() === new Date(dateTime).valueOf()
               ) {
                 return { ...it, [keyToUpdate]: valueToUpdate };
+              } else {
+                return it;
+              }
+            }),
+          };
+          tempTakeOff.measurements[pageId] = slpg;
+          // console.log(tempTakeOff)
+          const newupdatedMeasurements: any =
+            await takeoffSummaryService.httpUpdateTakeoffSummary({
+              id: takeOff?._id,
+              //@ts-ignore
+              data: { measurements: tempTakeOff.measurements },
+            });
+          console.log(newupdatedMeasurements, ' ==> newupdatedMeasurements');
+          settakeOff(newupdatedMeasurements?.data);
+          settableLoading(false);
+          setDraw(
+            newupdatedMeasurements?.data?.measurements[
+            `${selectedPage?.pageId}`
+            ]
+          );
+        }
+      } catch (error) {
+        settableLoading(false);
+        console.log(error, ' ===> Error while updating table data');
+      }
+    }
+  };
+
+  const updateTableCategory = async (
+    pageId: string,
+    type: any,
+    dateTime: any,
+    category: string,
+    subcategory: string | null
+  ) => {
+    console.log(
+      pageId,
+      type,
+      dateTime,
+      category,
+      subcategory,
+      'Update Run'
+    );
+    if (pageId && type && dateTime && category) {
+      try {
+        let tempTakeOff = takeOff;
+        let slpg = tempTakeOff?.measurements[pageId];
+        if (slpg) {
+          settableLoading(true);
+          slpg = {
+            ...slpg,
+            [type]: slpg[type]?.map((it: any) => {
+              if (
+                new Date(it.dateTime).valueOf() === new Date(dateTime).valueOf()
+              ) {
+                return { ...it, category, subcategory: subcategory ?? null };
               } else {
                 return it;
               }
@@ -1338,7 +1403,50 @@ const TakeOffNewPage = () => {
           {record?.isParent ? (
             <></>
           ) : (
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-2">
+              <Popover
+                content={
+                  <>
+                    {
+                      Array.isArray(takeOff?.categories) && takeOff.categories.length > 0 && takeOff.categories.map((cat: string) => {
+                        return <div key={cat}>
+                          <h3
+                            onClick={() => {
+                              updateTableCategory(
+                                record?.pageId,
+                                record?.type,
+                                record?.dateTime,
+                                cat,
+                                null
+                              )
+                            }}
+                            className={`font-bold my-1 cursor-pointer hover:bg-lavenderPurpleReplica hover:bg-opacity-15 p-1 rounded-lg px-2 ${record?.category == cat ? 'bg-lavenderPurpleReplica bg-opacity-20' : ''}`}>{cat}</h3>
+                          {
+                            Array.isArray(takeOff?.subCategories) && takeOff.subCategories.filter((i: string) => i?.includes(cat)).map((subcat: string) => {
+                              return <li
+                                key={subcat}
+                                onClick={() => {
+                                  updateTableCategory(
+                                    record?.pageId,
+                                    record?.type,
+                                    record?.dateTime,
+                                    cat,
+                                    subcat
+                                  )
+                                }}
+                                className={`list-disc my-1 cursor-pointer hover:bg-lavenderPurpleReplica hover:bg-opacity-15 p-1 px-2 rounded-lg ${record?.subcategory == subcat ? 'bg-lavenderPurpleReplica bg-opacity-20' : ''}`}>{subcat?.split('-')[0]}</li>
+                            })
+                          }
+                        </div>
+                      })
+                    }
+                  </>
+                }
+                title="Edit WBS"
+                trigger="click"
+              >
+                <EditOutlined className="text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 rounded-full p-1" />
+              </Popover>
               <DeleteOutlined
                 className="text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 rounded-full p-1"
                 onClick={() => {
@@ -1440,6 +1548,7 @@ const TakeOffNewPage = () => {
     subCategories: any[]
   ) => {
     try {
+      settableLoading(true)
       const newupdatedMeasurements: any =
         await takeoffSummaryService.httpUpdateTakeoffSummary({
           id: takeOff?._id,
@@ -1448,10 +1557,12 @@ const TakeOffNewPage = () => {
         });
       console.log(newupdatedMeasurements, ' ==> newupdatedMeasurements');
       settakeOff(newupdatedMeasurements?.data);
+      settableLoading(false)
       // if(selectedPage?.pageId){
 
       // }
     } catch (error) {
+      settableLoading(false)
       console.log(error, ' ===> Error Occured while measuring');
     }
   };
@@ -2416,6 +2527,49 @@ const TakeOffNewPage = () => {
   //     });
   //   });
   // };
+
+  const getBezierPointsCurve = (customPoints: number[], controlPoints: ControlPoint[]) => {
+    if (!(Array.isArray(controlPoints)) || !(controlPoints.length > 0)) return customPoints
+    try {
+      const bezierPoints: number[] = [];
+      for (let i = 0; i < customPoints.length; i += 2) {
+        const nextIndex = (i + 2) % customPoints.length;
+        const controlIndex = i / 2;
+        bezierPoints.push(customPoints[i], customPoints[i + 1]);
+        bezierPoints.push(
+          controlPoints[controlIndex].x + controlPoints[controlIndex].offsetX,
+          controlPoints[controlIndex].y + controlPoints[controlIndex].offsetY
+        );
+        bezierPoints.push(customPoints[nextIndex], customPoints[nextIndex + 1]);
+      }
+      console.log(bezierPoints, ' ==> bezier points in get bezier points');
+      return bezierPoints;
+    } catch (error) {
+      console.log(error);
+      return customPoints;
+    }
+  };
+
+  const getBezierPointsArc = (customPoints: number[], controlPoints: ControlPoint[]) => {
+    try {
+      const bezierPoints: number[] = [];
+      for (let i = 0; i < customPoints.length; i += 2) {
+        const nextIndex = (i + 2) % customPoints.length;
+        const controlIndex = 0//i / 2;
+        bezierPoints.push(customPoints[i], customPoints[i + 1]);
+        bezierPoints.push(
+          controlPoints[controlIndex].x + controlPoints[controlIndex].offsetX,
+          controlPoints[controlIndex].y + controlPoints[controlIndex].offsetY
+        );
+        bezierPoints.push(customPoints[nextIndex], customPoints[nextIndex + 1]);
+      }
+      console.log(bezierPoints, ' ==> bezier points in get bezier points');
+      return bezierPoints;
+    } catch (error) {
+      console.log(error);
+      return customPoints;
+    }
+  };
   const captureShape = async (
     shapeArr: any[],
     background: HTMLImageElement
@@ -2481,16 +2635,20 @@ const TakeOffNewPage = () => {
           case 'dynamic':
           case 'area':
           case 'volume':
+          case 'arc':
+          case 'curve':
             {
               // Example for a line or polygon shape
               const { points, stroke, strokeWidth, lineCap } = shape;
+              let pts = shapeType == 'curve' ? getBezierPointsCurve(points, shape?.controlPoints) : shapeType == 'arc' ? getBezierPointsArc(points, shape?.controlPoints) : points
               const line = new Konva.Line({
-                points,
+                points: pts,
                 stroke,
                 strokeWidth,
                 lineCap,
-                closed: shapeType === 'area' || shapeType === 'volume', // Close path for areas and volumes
+                closed: shapeType === 'area' || shapeType === 'volume' || shapeType == 'curve', // Close path for areas and volumes
                 fill: shape?.fillColor,
+                bezier: shapeType === 'arc' || shapeType === 'curve'
               });
               layer.add(line);
               console.warn(shape, 'sssss');
@@ -2499,7 +2657,8 @@ const TakeOffNewPage = () => {
               if (
                 shapeType === 'area' ||
                 shapeType === 'volume' ||
-                shapeType === 'dynamic'
+                shapeType === 'dynamic' ||
+                shapeType === 'curve'
               ) {
                 const { x, y } = calculatePolygonCenter(points);
                 xText = x - 20;
@@ -2584,7 +2743,7 @@ const TakeOffNewPage = () => {
       };
     });
   };
-  const imagesToPdf = (images: any, name:string = 'output.pdf') => {
+  const imagesToPdf = (images: any, name: string = 'output.pdf') => {
     try {
       const pdf = new jsPDF();
 
@@ -3079,6 +3238,7 @@ const TakeOffNewPage = () => {
                                     ]
                                   );
                                   setselectedCate(null);
+                                  setselectedSubCate(null);
                                 }}
                               />
                             </span>
@@ -3399,7 +3559,7 @@ const TakeOffNewPage = () => {
                       Array.isArray(takeOff?.categories) &&
                       takeOff?.categories?.map((categ: any, ind: number) => {
                         return (
-                          <>
+                          <div key={ind}>
                             <div className="w-full flex">
                               <span
                                 className="border p-3 cursor-pointer"
@@ -3427,9 +3587,32 @@ const TakeOffNewPage = () => {
                                     className="text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 p-1 rounded-full text-sm"
                                     style={{ strokeWidth: 30, stroke: '#007ab6' }}
                                   />
-                                  <span className="font-bold">{categ}</span>
+                                  <span className="font-bold"><EditableText key={categ} initialText={categ} onPressEnter={(vl) => {
+                                    updateCategories(
+                                      takeOff.categories.map((cit: string, cin: number) => {
+                                        if (cin == ind) {
+                                          return vl
+                                        } else {
+                                          return cit
+                                        }
+                                      }),
+                                      [
+                                        ...(Array.isArray(takeOff?.subCategories)
+                                          ? takeOff.subCategories.map((sit: string) => {
+                                            if (sit.includes(categ)) {
+                                              const [ls, lc] = sit.split('-')
+                                              console.log(lc)
+                                              return ls + "-" + vl
+                                            } else {
+                                              return sit
+                                            }
+                                          })
+                                          : []),
+                                      ]
+                                    );
+                                  }} toolTip={'Double Click to edit'} /></span>
                                 </div>
-                                <div className='flex justify-end' >
+                                <div className='flex justify-end gap-2' >
                                   {selectedCate == categ ? (
                                     <Button
                                       size="small"
@@ -3452,46 +3635,92 @@ const TakeOffNewPage = () => {
                                       select
                                     </Button>
                                   )}
+                                  <DeleteOutlined className='cursor-pointer' onClick={() => {
+                                    updateCategories(
+                                      takeOff.categories.filter(
+                                        (cit: string) => cit != categ
+                                      ),
+                                      [
+                                        ...(Array.isArray(takeOff?.subCategories)
+                                          ? takeOff.subCategories
+                                          : []),
+                                      ]
+                                    );
+                                    setselectedCate(null);
+                                    setselectedSubCate(null);
+                                  }} />
                                 </div>
                               </div>
                             </div>
                             <div className="flex flex-col w-full overflow-y-auto max-h-[250px]">
                               {catopened.some(val => val == ind) &&
                                 Array.isArray(takeOff?.subCategories) &&
-                                takeOff?.subCategories?.filter((val: any) => val?.includes(categ))?.map((subcateg: any, ind: number) => {
+                                takeOff?.subCategories?.filter((val: any) => val?.includes(categ))?.map((subcateg: any, sind: number) => {
                                   return (
                                     <div
                                       className={`w-full border p-4 flex justify-between grow ${selectedSubCate == subcateg ? 'bg-lavenderPurpleReplica bg-opacity-15' : 'hover:bg-gray-100'}`}
-                                      key={ind}
+                                      key={sind}
                                     >
-                                      <span>{subcateg?.split('-')[0]}</span>
-                                      {selectedSubCate == subcateg ? (
-                                        <Button
-                                          size="small"
-                                          className="border-2 rounded-full ml-2"
-                                          onClick={() => {
-                                            setselectedSubCate(null);
-                                          }}
-                                        >
-                                          unselect
-                                        </Button>
-                                      ) : (
-                                        <Button
-                                          size="small"
-                                          className="border-2 rounded-full ml-2"
-                                          onClick={() => {
-                                            setselectedCate(categ)
-                                            setselectedSubCate(subcateg)
-                                          }}
-                                        >
-                                          select
-                                        </Button>
-                                      )}
+                                      <span><EditableText key={subcateg} initialText={subcateg?.split('-')[0]} onPressEnter={(vl) => {
+                                        updateCategories(
+                                          [...(Array.isArray(takeOff.categories) ? takeOff.categories : [])],
+                                          [
+                                            ...(Array.isArray(takeOff?.subCategories)
+                                              ? takeOff.subCategories.map((sit: string) => {
+                                                if (sit == subcateg) {
+                                                  const [ls, lc] = sit.split('-')
+                                                  console.log(ls)
+                                                  return vl + "-" + lc
+                                                } else {
+                                                  return sit
+                                                }
+                                              })
+                                              : []),
+                                          ]
+                                        );
+                                      }} toolTip={'Double Click to edit'} /></span>
+                                      <div className='flex gap-2'>
+                                        {selectedSubCate == subcateg ? (
+                                          <Button
+                                            size="small"
+                                            className="border-2 rounded-full ml-2"
+                                            onClick={() => {
+                                              setselectedSubCate(null);
+                                            }}
+                                          >
+                                            unselect
+                                          </Button>
+                                        ) : (
+                                          <Button
+                                            size="small"
+                                            className="border-2 rounded-full ml-2"
+                                            onClick={() => {
+                                              setselectedCate(categ)
+                                              setselectedSubCate(subcateg)
+                                            }}
+                                          >
+                                            select
+                                          </Button>
+                                        )}
+                                        <DeleteOutlined className='cursor-pointer' onClick={() => {
+                                          updateCategories(
+                                            [
+                                              ...(Array.isArray(takeOff?.categories)
+                                                ? takeOff.categories
+                                                : []),
+                                            ],
+                                            takeOff.subCategories.filter(
+                                              (sit: string) => sit != subcateg
+                                            )
+                                          );
+                                          setselectedSubCate(null)
+                                        }} />
+                                      </div>
                                     </div>
                                   );
                                 })}
                             </div>
-                          </>
+                          </div>
                         )
                       })
                     }

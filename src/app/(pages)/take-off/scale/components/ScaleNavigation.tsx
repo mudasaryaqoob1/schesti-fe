@@ -3,7 +3,7 @@ import NextImage from 'next/image';
 import { twMerge } from 'tailwind-merge';
 import { bg_style } from '@/globals/tailwindvariables';
 import { SCALE_NAVIGATION, ScaleInterface } from '../../types';
-import { CommentOutlined, RadiusSettingOutlined } from '@ant-design/icons';
+import { CommentOutlined, Loading3QuartersOutlined, RadiusSettingOutlined } from '@ant-design/icons';
 // import { Input} from 'antd';
 // const { TextArea } = Input;
 
@@ -305,6 +305,18 @@ const ScaleNavigation: React.FC<Props> = ({
         open={copen}
         onOpenChange={(val: boolean) => { setcOpen(val) }}
       > */}
+      {/* ARC */}
+      <div
+        className={`flex flex-col items-center cursor-pointer p-2 ${tool.selected == 'arc' ? '!text-lavenderPurpleReplica' : ''}`}
+        onClick={() => {
+          setTool({ selected: 'arc' });
+        }}
+      >
+        <Loading3QuartersOutlined width={19.97} height={11.31} />
+        {/* <ZoomOutOutlined width={19.97} height={11.31} /> */}
+        <span className={twMerge(`text-xs capitalize`)}>{'Arc'}</span>
+      </div>
+      {/* CURVE */}
       <div
         className={`flex flex-col items-center cursor-pointer p-2 ${tool.selected == 'curve' ? '!text-lavenderPurpleReplica' : ''}`}
         onClick={() => {
@@ -315,6 +327,7 @@ const ScaleNavigation: React.FC<Props> = ({
         {/* <ZoomOutOutlined width={19.97} height={11.31} /> */}
         <span className={twMerge(`text-xs capitalize`)}>{'Curve'}</span>
       </div>
+      {/* COMMENTS */}
       <div
         className={`flex flex-col items-center cursor-pointer p-2 ${tool.selected == 'comments' ? '!text-lavenderPurpleReplica' : ''}`}
         onClick={() => {

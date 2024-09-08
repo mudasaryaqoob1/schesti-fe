@@ -36,6 +36,7 @@ import { selectUser } from '@/redux/authSlices/auth.selector';
 import Konva from 'konva';
 import EditableText from './Editabletext';
 import EditableCurvedShape from './EditableCurvedShape';
+import EditableArcShape from './EditableArcShape';
 
 const defaultCurrentLineState = { startingPoint: null, endingPoint: null };
 const defaultPolyLineState: LineInterface = {
@@ -259,6 +260,7 @@ const Draw: React.FC<Props> = ({
 
     if (
       selected === 'length' ||
+      selected === 'arc' ||
       selected === 'rectangle' ||
       selected === 'area' ||
       selected === 'curve' ||
@@ -346,6 +348,48 @@ const Draw: React.FC<Props> = ({
       }));
 
       updateDrawHistory(pageNumber.toString(), 'line', newLine);
+
+      setCurrentLine(defaultCurrentLineState);
+      handleChangeMeasurements(defaultMeasurements);
+    }
+
+    if (selected === 'arc' && currentLine.startingPoint) {
+      const { startingPoint } = currentLine;
+
+      const lineDistance = calcLineDistance(
+        [
+          startingPoint?.x,
+          startingPoint?.y,
+          position?.x,
+          position?.y,
+        ] as number[],
+        scale,
+        true
+      );
+      const newLine: LineInterface = {
+        points: [
+          startingPoint?.x,
+          startingPoint?.y,
+          position?.x,
+          position?.y,
+        ] as number[],
+        stroke: color,
+        strokeWidth: border,
+        textUnit: unit,
+        dateTime: moment().toDate(),
+        projectName: 'Arc Measurement',
+        category: selectedCategory ?? 'Arc Measurement', //(selectedCategory && selectedCategory?.length > 0) ? selectedCategory : 'Length Measurement',
+        subcategory: selectedSubCategory,
+        user,
+        textColor: textColor,
+        text: lineDistance?.toString(),
+      };
+      setDraw((prev: any) => ({
+        ...prev,  
+        arc: [...(prev?.arc ? prev.arc : []), newLine],
+      }));
+
+      updateDrawHistory(pageNumber.toString(), 'arc', newLine);
 
       setCurrentLine(defaultCurrentLineState);
       handleChangeMeasurements(defaultMeasurements);
@@ -718,6 +762,7 @@ const Draw: React.FC<Props> = ({
       handleChangeMeasurements({
         angle,
         ...(selected === 'length' && { parameter }),
+        ...(selected === 'arc' && { parameter }),
         // ...((selected === 'scale' && drawScale == true) && { parameter }),
         ...(completingLine.endingPoint
           ? {
@@ -1301,6 +1346,120 @@ const Draw: React.FC<Props> = ({
                   text={lineDistance.toString()}
                   fill={rest?.textColor ?? 'red'}
                 />
+              </Group>
+            );
+          })}
+
+          {/* Drawing Arc */}
+          {draw?.arc?.map((cur: any, index: number) => {
+            // const { textUnit, ...rest } = cur
+            const id = `arc-${index}`;
+            // const lineDistance =
+            //   scaleUnits == 'feet'
+            //     ? calcLineDistance(rest?.points, scale, true)
+            //     : `${Number(Number(calcLineDistance(rest?.points, scale, false)) * 0.0254).toFixed(3)} meter`;
+            // // const distanceInInches = calcLineDistance(rest?.points, scale, false)
+            // const lineMidPoint = calculateMidpoint(rest?.points);
+
+            return (
+              <Group
+                id={id}
+                key={id}
+                onDragStart={(e) => { e.cancelBubble = true }}
+                onDragMove={(e) => { e.cancelBubble = true }}
+                onDragEnd={(e) => { e.cancelBubble = true }}
+                onClick={(e) => {
+                  e.cancelBubble = true;
+                  setSelectedShape(e.currentTarget.attrs?.id || '');
+                }}
+              >
+                {/* <Arrow
+                  key={index}
+                  {...rest}
+                  lineCap="round"
+                  dash={selectedShape === id ? [10, 10] : []}
+                  stroke={selectedShape === id ? 'maroon' : rest?.stroke}
+                  pointerAtEnding={true}
+                  pointerAtBeginning={true}
+                  draggable
+                  onDragStart={(e) => {
+                    //Local variable storage
+                    const node = e.target as any;
+                    // Store the initial position
+                    node._initialPos = {
+                      x: node.x(),
+                      y: node.y(),
+                    };
+                  }}
+                  onDragEnd={(e) => {
+                    const [shapeName, shapeNumber] = id.split('-');
+                    console.log(shapeNumber, shapeName);
+                    const node = e.target as any;
+                    const originalPoints =
+                      draw?.arc[shapeNumber]?.points.slice(); // Copy the original points
+
+                    // Get the initial position from the drag start event
+                    const initialPos = node._initialPos || { x: 0, y: 0 };
+
+                    // Calculate the total translation (dx, dy)
+                    const dx = node.x() - initialPos.x;
+                    const dy = node.y() - initialPos.y;
+
+                    // Update all points based on the total translation distance
+                    const newPoints: any[] = [];
+                    for (let i = 0; i < originalPoints.length; i += 2) {
+                      newPoints.push(
+                        originalPoints[i] + dx,
+                        originalPoints[i + 1] + dy
+                      );
+                    }
+
+                    // Log for debugging purposes
+                    console.log(
+                      originalPoints,
+                      newPoints,
+                      dx,
+                      dy,
+                      ' ===> original and new points are here'
+                    );
+
+                    // Reset the node position to the initial position
+                    node.position(initialPos);
+
+                    // Update the draw object
+                    const updatedDraw = {
+                      ...draw,
+                      arc: draw.arc.map((arc: any, index: number) =>
+                        index === +shapeNumber
+                          ? { ...arc, points: newPoints }
+                          : arc
+                      ),
+                    };
+
+                    // Set the updated draw object to state
+                    setDraw(updatedDraw);
+
+                    // Save the current position as the last known position
+                    node._lastPos = { x: node.x(), y: node.y() };
+                  }}
+                />
+                <KonvaText
+                  {...lineMidPoint}
+                  fontSize={textUnit}
+                  text={lineDistance.toString()}
+                  fill={rest?.textColor ?? 'red'}
+                /> */}
+                <EditableArcShape
+                scale={scale}
+                cur={cur}
+                draw={draw}
+                setDraw={setDraw}
+                id={id}
+                scaleUnits={scaleUnits}
+                selectedShape={selectedShape}
+                setSelectedShape={setSelectedShape}
+                key={id}
+                 />
               </Group>
             );
           })}
