@@ -14,6 +14,11 @@ import { LongTermLiabilitiesTable } from "./components/liabilities/LongTermLiabi
 import { TotalLiabilities } from "./components/liabilities/TotalLiabilities";
 import { EquityTable } from "./components/equity/EquityTable";
 import { TotalEquity } from "./components/equity/TotalEquity";
+import { OperatingIncomeTable } from "./components/income-statement/OperatingIncomeTable";
+import { DirectExpenseTable } from "./components/income-statement/DirectExpenseTable";
+import { TotalExpense } from "./components/income-statement/TotalExpense";
+import { OverheadExpenseTable } from "./components/income-statement/OverheadExpense";
+import { TotalIndirectExpense } from "./components/income-statement/TotalndirectExpense";
 
 function FinancialStatementPage() {
     return <section className="mt-6  space-y-4 mb-[39px] mx-4 rounded-xl bg-white p-5">
@@ -116,7 +121,15 @@ function FinancialStatementPage() {
 
         {/* Income Statement */}
         <div className="p-4 border space-y-2 rounded-md">
+            <TertiaryHeading
+                title="Income Statement Jan-Jun 2023"
+            />
+            <OperatingIncomeTable />
+            <DirectExpenseTable />
+            <TotalExpense />
 
+            <OverheadExpenseTable />
+            <TotalIndirectExpense />
         </div>
 
 
