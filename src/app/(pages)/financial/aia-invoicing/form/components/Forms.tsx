@@ -148,6 +148,7 @@ export function AIAForms({ onParentInvoiceUpdate, parentInvoice }: Props) {
                             <ShowFileComponent
                                 file={file}
                                 onDelete={() => formik.setFieldValue('lienWaiverFiles', formik.values.lienWaiverFiles.filter((_, i) => i !== index))}
+                                key={file.url}
                                 shouldFit
                             />
                         ))}
@@ -216,6 +217,7 @@ export function AIAForms({ onParentInvoiceUpdate, parentInvoice }: Props) {
                                 file={file}
                                 onDelete={() => formik.setFieldValue('salesFiles', formik.values.salesFiles.filter((_, i) => i !== index))}
                                 shouldFit
+                                key={file.url}
                             />
                         ))}
                     </div>}
@@ -282,6 +284,7 @@ export function AIAForms({ onParentInvoiceUpdate, parentInvoice }: Props) {
                             file={file}
                             onDelete={() => formik.setFieldValue('federalPaperFiles', formik.values.federalPaperFiles.filter((_, i) => i !== index))}
                             shouldFit
+                            key={file.url}
                         />
                     ))}
                 </div>}
@@ -349,6 +352,7 @@ export function AIAForms({ onParentInvoiceUpdate, parentInvoice }: Props) {
                                 file={file}
                                 onDelete={() => formik.setFieldValue('materialsFiles', formik.values.materialsFiles.filter((_, i) => i !== index))}
                                 shouldFit
+                                key={file.url}
                             />
                         ))}
                     </div>}
@@ -416,6 +420,7 @@ export function AIAForms({ onParentInvoiceUpdate, parentInvoice }: Props) {
                                 file={file}
                                 onDelete={() => formik.setFieldValue('otherFiles', formik.values.otherFiles.filter((_, i) => i !== index))}
                                 shouldFit
+                                key={file.url}
                             />
                         ))}
                     </div>}
