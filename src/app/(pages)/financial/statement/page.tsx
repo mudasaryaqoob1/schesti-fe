@@ -9,6 +9,9 @@ import { CurrentAssetTable } from "./components/assets/CurrentAssetTable";
 import { LongTermAssetTable } from "./components/assets/LongTermAssets";
 import { AccumulatedDepreciationTable } from "./components/assets/AccumulatedDepreciation";
 import { AssetTotal } from "./components/assets/AssetTotal";
+import { CurrentLiabilitiesTable } from "./components/liabilities/CurrentLiabilities";
+import { LongTermLiabilitiesTable } from "./components/liabilities/LongTermLiabilities";
+import { TotalLiabilities } from "./components/liabilities/TotalLiabilities";
 
 function FinancialStatementPage() {
     return <section className="mt-6  space-y-4 mb-[39px] mx-4 rounded-xl bg-white p-5">
@@ -42,6 +45,18 @@ function FinancialStatementPage() {
             <LongTermAssetTable />
             <AccumulatedDepreciationTable />
             <AssetTotal />
+        </div>
+
+        {/* LiabILITIES */}
+
+        <div className="p-4 border space-y-2 rounded-md">
+            <TertiaryHeading
+                title="Liabilities"
+            />
+
+            <CurrentLiabilitiesTable />
+            <LongTermLiabilitiesTable />
+            <TotalLiabilities />
         </div>
     </section>
 }

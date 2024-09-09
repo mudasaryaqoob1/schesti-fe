@@ -5,22 +5,22 @@ export function AssetTotal() {
         <div className="flex justify-end border p-3 rounded space-x-10">
             <TertiaryHeading
                 title="Net Long Term Assets"
-                className="text-schestiPrimaryBlack font-medium"
+                className=" font-medium text-base"
             />
             <TertiaryHeading
                 title="$45,873.12"
-                className="text-schestiPrimaryBlack"
+                className=" text-base"
             />
         </div>
 
         <div className="flex justify-end border p-3 rounded space-x-10">
             <TertiaryHeading
                 title="Total Asset"
-                className="text-schestiPrimaryBlack"
+                className=" text-base"
             />
             <TertiaryHeading
                 title="$4000.00"
-                className="text-schestiPrimaryBlack"
+                className=" text-base"
             />
         </div>
     </div>
