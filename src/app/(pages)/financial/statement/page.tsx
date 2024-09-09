@@ -71,11 +71,13 @@ function FinancialStatementPage() {
 
         </div>
 
+        {/* Current  profit or loss */}
+
         <div className="p-4 rounded-sm bg-schestiLightGray ">
             <div className="flex space-y-3 flex-col justify-center  ml-20">
 
 
-                <div className="flex items-center  space-x-[102px]">
+                <div className="grid grid-cols-5">
                     <TertiaryHeading
                         title="Current Profit (Loss)"
                         className=" font-medium text-base"
@@ -86,7 +88,7 @@ function FinancialStatementPage() {
                     />
                 </div>
 
-                <div className="flex items-center  space-x-28">
+                <div className="grid grid-cols-5">
                     <TertiaryHeading
                         title="Total Equity/Capital"
                         className=" font-medium text-base"
@@ -97,9 +99,47 @@ function FinancialStatementPage() {
                     />
                 </div>
 
-                <div className="flex items-center  space-x-20">
+                <div className="grid grid-cols-5">
                     <TertiaryHeading
                         title="Total Liabilities & Equity"
+                        className=" font-medium text-base"
+                    />
+                    <TertiaryHeading
+                        title="$4000.12"
+                        className=" text-base"
+                    />
+                </div>
+            </div>
+        </div>
+
+
+
+        {/* Income Statement */}
+        <div className="p-4 border space-y-2 rounded-md">
+
+        </div>
+
+
+        {   /*  NET  Income  */}
+        <div className="p-4 rounded-sm bg-schestiLightGray ">
+            <div className="flex space-y-3 flex-col justify-center  ml-20">
+
+
+                <div className="grid grid-cols-5">
+                    <TertiaryHeading
+                        title="Net Income  before Tax"
+                        className=" font-medium text-base"
+                    />
+                    <TertiaryHeading
+                        title="$4000.12"
+                        className=" text-base"
+                    />
+                </div>
+
+
+                <div className="grid grid-cols-5">
+                    <TertiaryHeading
+                        title="Net Income"
                         className=" font-medium text-base"
                     />
                     <TertiaryHeading
