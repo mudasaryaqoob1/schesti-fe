@@ -70,6 +70,45 @@ function FinancialStatementPage() {
             <TotalEquity />
 
         </div>
+
+        <div className="p-4 rounded-sm bg-schestiLightGray ">
+            <div className="flex space-y-3 flex-col justify-center  ml-20">
+
+
+                <div className="flex items-center  space-x-[102px]">
+                    <TertiaryHeading
+                        title="Current Profit (Loss)"
+                        className=" font-medium text-base"
+                    />
+                    <TertiaryHeading
+                        title="$4000.12"
+                        className=" text-base"
+                    />
+                </div>
+
+                <div className="flex items-center  space-x-28">
+                    <TertiaryHeading
+                        title="Total Equity/Capital"
+                        className=" font-medium text-base"
+                    />
+                    <TertiaryHeading
+                        title="$4000.12"
+                        className=" text-base"
+                    />
+                </div>
+
+                <div className="flex items-center  space-x-20">
+                    <TertiaryHeading
+                        title="Total Liabilities & Equity"
+                        className=" font-medium text-base"
+                    />
+                    <TertiaryHeading
+                        title="$4000.12"
+                        className=" text-base"
+                    />
+                </div>
+            </div>
+        </div>
     </section>
 }
 
