@@ -232,7 +232,7 @@ export function AiaInvoicingForm({ parentInvoice, setParentInvoice }: Props) {
     return (
         <>
 
-            <div className="px-4 py-2 my-5 shadow-md rounded-lg border border-silverGray  bg-white">
+            <div className="px-4 py-2 shadow-md rounded-lg border border-silverGray  bg-white">
                 <ConfigProvider
                     theme={{
                         components: {

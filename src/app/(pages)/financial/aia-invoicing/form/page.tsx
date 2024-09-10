@@ -12,6 +12,7 @@ import { IAIAInvoice } from "@/app/interfaces/client-invoice.interface";
 import { useSearchParams } from "next/navigation";
 import { AIAInvoiceFormMode } from "../types";
 import { AIAInvoiceFormHeader } from "./components/Header";
+import { AIATabs } from "./components/AIATabs";
 
 function AiaInvoicingFormPage() {
   const [loading, setLoading] = useState(false);
@@ -55,9 +56,9 @@ function AiaInvoicingFormPage() {
     return <NoInvoiceFound />
   }
 
-  return <section className="mx-4 my-2">
+  return <section className="mx-4 my-2 space-y-2">
     <AIAInvoiceFormHeader parentInvoice={parentInvoice} />
-
+    <AIATabs />
     <AiaInvoicingForm
       parentInvoice={parentInvoice}
       setParentInvoice={setParentInvoice}
