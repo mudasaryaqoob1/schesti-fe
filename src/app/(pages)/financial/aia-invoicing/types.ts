@@ -1,1 +1,1 @@
-type AIAInvoiceFormMode = "edit" | "phase" | "view";
+export type AIAInvoiceFormMode = "edit" | "phase" | "view";

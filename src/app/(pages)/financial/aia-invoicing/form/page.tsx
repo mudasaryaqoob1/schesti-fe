@@ -10,6 +10,8 @@ import { clientInvoiceService } from "@/app/services/client-invoices.service";
 import { useEffect, useState } from "react";
 import { IAIAInvoice } from "@/app/interfaces/client-invoice.interface";
 import { useSearchParams } from "next/navigation";
+import { AIAInvoiceFormMode } from "../types";
+import { AIAInvoiceFormHeader } from "./components/Header";
 
 function AiaInvoicingFormPage() {
   const [loading, setLoading] = useState(false);
@@ -53,10 +55,14 @@ function AiaInvoicingFormPage() {
     return <NoInvoiceFound />
   }
 
-  return <AiaInvoicingForm
-    parentInvoice={parentInvoice}
-    setParentInvoice={setParentInvoice}
-  />
+  return <section className="mx-4 my-2">
+    <AIAInvoiceFormHeader parentInvoice={parentInvoice} />
+
+    <AiaInvoicingForm
+      parentInvoice={parentInvoice}
+      setParentInvoice={setParentInvoice}
+    />
+  </section>
 }
 
 export default withAuth(AiaInvoicingFormPage);
