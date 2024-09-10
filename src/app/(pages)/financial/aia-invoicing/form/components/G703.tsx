@@ -7,6 +7,7 @@ import {
   Divider,
   Input,
   Modal,
+  Select,
   Table,
 } from 'antd';
 import PrimaryHeading from '@/app/component/headings/primary';
@@ -20,12 +21,17 @@ import {
   ExclamationCircleFilled,
   PlusOutlined,
 } from '@ant-design/icons';
-import { G7State } from '@/app/interfaces/client-invoice.interface';
+import { G7State, IAIAInvoice } from '@/app/interfaces/client-invoice.interface';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
+import { AIAInvoiceFormMode } from '../../types';
+import moment from 'moment';
 // import { disabledDate } from '@/app/utils/date.utils';
 
 type Props = {
+  phases: IAIAInvoice[];
+  selectedPhase: IAIAInvoice | null;
+  setSelectedPhase: (_value: string) => void;
   state: G7State;
   // eslint-disable-next-line no-unused-vars
   handleState<K extends keyof G7State>(key: K, value: G7State[K]): void;
@@ -34,6 +40,7 @@ type Props = {
   updateCellValue(_row: number, _column: number, _value: number | string): void;
   children?: React.ReactNode;
   showAddAndDelete?: boolean;
+  mode: AIAInvoiceFormMode
 };
 
 export function G703Component({
@@ -42,6 +49,10 @@ export function G703Component({
   sumColumns,
   updateCellValue,
   children,
+  phases,
+  selectedPhase,
+  mode,
+  setSelectedPhase,
   showAddAndDelete = true,
 }: Props) {
   function getCellValue(row: string[], column: number) {
@@ -86,6 +97,25 @@ export function G703Component({
           <QuaternaryHeading title="AIA Document G703, - 1992" />
           <PrimaryHeading title="Continuation Sheet" className="font-normal" />
         </div>
+        <div>
+          {mode === 'phase' || mode === 'view' ? <Select
+            placeholder="Select Previous Phase"
+            options={phases.map((phase, index) => ({
+              label: `${index + 1}. Pay Application: ${moment(
+                phase.applicationDate
+              ).format('DD MMM-YYYY')} - ${moment(phase.periodTo).format(
+                'DD MMM-YYYY'
+              )}`,
+              value: phase._id,
+            }))}
+            value={selectedPhase?._id}
+            onChange={(value) => {
+              setSelectedPhase(value);
+            }}
+            style={{ width: 400 }}
+            size="large"
+          /> : null}
+        </div>
       </div>
       <Divider className="!mt-6 !m-0" />
 
@@ -127,9 +157,9 @@ export function G703Component({
                 onChange={(_d, dateString) =>
                   handleState('applicationDate', dateString as string)
                 }
-                //@ts-ignore
-                //@ts-nocheck
-                // disabledDate={disabledDate}
+              //@ts-ignore
+              //@ts-nocheck
+              // disabledDate={disabledDate}
               />
               {showAddAndDelete ? (
                 <p className="text-gray-400">Application Date is required.</p>
@@ -149,9 +179,9 @@ export function G703Component({
                 onChange={(_d, dateString) =>
                   handleState('periodTo', dateString as string)
                 }
-                //@ts-ignore
-                //@ts-nocheck
-                // disabledDate={disabledDate}
+              //@ts-ignore
+              //@ts-nocheck
+              // disabledDate={disabledDate}
               />
               {showAddAndDelete ? (
                 <p className="text-gray-400">Period To is required.</p>
@@ -443,9 +473,8 @@ export function G703Component({
               }
               return (
                 <DeleteOutlined
-                  className={`text-xl px-4 text-red-500 cursor-pointer ${
-                    showAddAndDelete ? '' : 'hidden'
-                  }`}
+                  className={`text-xl px-4 text-red-500 cursor-pointer ${showAddAndDelete ? '' : 'hidden'
+                    }`}
                   onClick={() => {
                     Modal.confirm({
                       title: 'Are you sure delete this task?',
@@ -457,7 +486,7 @@ export function G703Component({
                       onOk() {
                         deleteRow(index);
                       },
-                      onCancel() {},
+                      onCancel() { },
                     });
                   }}
                 />

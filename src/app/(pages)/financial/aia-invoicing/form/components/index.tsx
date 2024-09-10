@@ -18,6 +18,8 @@ import { ClientInvoiceFooter } from '../../components/ClientInvoiceFooter';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
 import { AIAForms } from './Forms';
+import { AIAInvoiceFormMode } from '../../types';
+import moment from 'moment';
 
 const G703_KEY = 'G703';
 const G702_KEY = 'G702';
@@ -26,8 +28,9 @@ const FORMS_KEY = 'Forms';
 type Props = {
     parentInvoice: IAIAInvoice;
     setParentInvoice: React.Dispatch<React.SetStateAction<IAIAInvoice | null>>;
+    mode: AIAInvoiceFormMode;
 }
-export function AiaInvoicingForm({ parentInvoice, setParentInvoice }: Props) {
+export function AiaInvoicingForm({ parentInvoice, setParentInvoice, mode }: Props) {
 
     const auth = useSelector((state: RootState) => state.auth);
     const user = auth.user?.user as IUpdateCompanyDetail | undefined;
@@ -38,6 +41,10 @@ export function AiaInvoicingForm({ parentInvoice, setParentInvoice }: Props) {
     const [showDownload, setShowDownload] = useState(false);
     const [isDownloading, setIsDownloading] = useState(false);
 
+    // all phases of the parent invoice
+    const [allPhases, setAllPhases] = useState<IAIAInvoice[]>([]);
+    // selected phase will be from allPhases and will be the latest last phase
+    const [selectedPhase, setSelectedPhase] = useState<IAIAInvoice | null>(null);
     const [g7State, setG7State] = useState<G7State>({
         applicationNo: '',
         invoiceName: '',
@@ -64,13 +71,43 @@ export function AiaInvoicingForm({ parentInvoice, setParentInvoice }: Props) {
         amountPaid: 0,
     });
 
+
+
+    useEffect(() => {
+        if (parentInvoice._id && mode === 'phase') {
+            (async function () {
+                try {
+                    // get all the phases of the invoice
+                    const response = await clientInvoiceService.httpGetInvoicePhases(
+                        parentInvoice._id
+                    );
+                    if (response.data) {
+                        // add parent phase as a previous phase
+                        const phases = [parentInvoice, ...response.data.invoices];
+                        // sort phases by date using moment
+                        phases.sort(
+                            (a, b) => moment(a.createdAt).unix() - moment(b.createdAt).unix()
+                        );
+                        const _selectedPhase = phases[phases.length - 1];
+                        setAllPhases(phases);
+                        setSelectedPhase(_selectedPhase);
+                        // copy the values;
+                        updateG7StateFromPhase({ ..._selectedPhase });
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
+            })();
+        }
+    }, [parentInvoice]);
+
     useEffect(() => {
         setG7State(prev => ({
             ...prev,
             invoiceName: parentInvoice.invoiceName,
             _id: parentInvoice._id,
         }))
-    }, [])
+    }, [parentInvoice._id, parentInvoice.invoiceName])
 
     function handleG7State<K extends keyof G7State>(
         key: K,
@@ -96,6 +133,35 @@ export function AiaInvoicingForm({ parentInvoice, setParentInvoice }: Props) {
             }
             return { ...prev, [key]: value };
         });
+    }
+
+    function updateG7StateFromPhase(phase: IAIAInvoice) {
+        const data = updatePreviousApplicationColumn(phase);
+        phase.applicationDate = '';
+        phase.periodTo = '';
+        setG7State({ ...phase, data });
+    }
+
+    function updatePreviousApplicationColumn(_selectedPhase: IAIAInvoice) {
+        let previousPhaseData = JSON.parse(
+            JSON.stringify(_selectedPhase.data)
+        ) as Array<string[]>;
+        const data = [...previousPhaseData];
+        const COLUMN_THIS_PERIOD = 4;
+        const COLUMN_PREVIOUS_APPLICATION = 3;
+
+        // loop over data
+        data.forEach((row) => {
+            const previousPhaseThisPeriodValue = Number(row[COLUMN_THIS_PERIOD]);
+            const previousPhasePreviousApplicationValue = Number(
+                row[COLUMN_PREVIOUS_APPLICATION]
+            );
+            const value =
+                previousPhaseThisPeriodValue + previousPhasePreviousApplicationValue;
+            row[COLUMN_PREVIOUS_APPLICATION] = value.toString();
+            row[COLUMN_THIS_PERIOD] = '';
+        });
+        return data;
     }
 
     function sumColumns(rows: Array<string[]>, column: number): number {
@@ -282,6 +348,18 @@ export function AiaInvoicingForm({ parentInvoice, setParentInvoice }: Props) {
                                             handleState={handleG7State}
                                             sumColumns={sumColumns}
                                             updateCellValue={updateCellValue}
+                                            mode={mode}
+                                            phases={allPhases}
+                                            selectedPhase={selectedPhase}
+                                            setSelectedPhase={(value) => {
+                                                let _selectedPhase = allPhases.find(
+                                                    (phase) => phase._id === value
+                                                );
+                                                if (_selectedPhase) {
+                                                    setSelectedPhase(_selectedPhase);
+                                                    updateG7StateFromPhase({ ..._selectedPhase });
+                                                }
+                                            }}
                                         >
                                             <CustomButton
                                                 onClick={() => setTab(G702_KEY)}
@@ -385,7 +463,18 @@ export function AiaInvoicingForm({ parentInvoice, setParentInvoice }: Props) {
                         handleState={handleG7State}
                         sumColumns={sumColumns}
                         updateCellValue={updateCellValue}
-                        showAddAndDelete={false}
+                        mode={mode}
+                        phases={allPhases}
+                        selectedPhase={selectedPhase}
+                        setSelectedPhase={(value) => {
+                            let _selectedPhase = allPhases.find(
+                                (phase) => phase._id === value
+                            );
+                            if (_selectedPhase) {
+                                setSelectedPhase(_selectedPhase);
+                                updateG7StateFromPhase({ ..._selectedPhase });
+                            }
+                        }}
                     />
                 </ConfigProvider>
                 {/* <div className="flex justify-end mr-8">

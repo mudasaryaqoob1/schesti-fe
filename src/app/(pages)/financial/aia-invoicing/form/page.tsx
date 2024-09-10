@@ -66,6 +66,7 @@ function AiaInvoicingFormPage() {
     {tab === 'current' ? <AiaInvoicingForm
       parentInvoice={parentInvoice}
       setParentInvoice={setParentInvoice}
+      mode={mode}
     /> : <AIAHistory />}
   </section>
 }
