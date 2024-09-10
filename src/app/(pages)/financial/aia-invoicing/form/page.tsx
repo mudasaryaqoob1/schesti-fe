@@ -13,6 +13,7 @@ import { useSearchParams } from "next/navigation";
 import { AIAInvoiceFormMode, AIATabsType } from "../types";
 import { AIAInvoiceFormHeader } from "./components/Header";
 import { AIATabs } from "./components/AIATabs";
+import { AIAHistory } from "./components/History";
 
 function AiaInvoicingFormPage() {
   const [loading, setLoading] = useState(false);
@@ -65,9 +66,7 @@ function AiaInvoicingFormPage() {
     {tab === 'current' ? <AiaInvoicingForm
       parentInvoice={parentInvoice}
       setParentInvoice={setParentInvoice}
-    /> : <div>
-      History
-    </div>}
+    /> : <AIAHistory />}
   </section>
 }
 

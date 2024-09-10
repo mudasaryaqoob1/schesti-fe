@@ -41,7 +41,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
             Segmented: {
               itemSelectedBg: "#007AB6",
               itemSelectedColor: "#fff",
-              padding: 10
+              padding: 10,
+              trackBg: "#fff"
             }
           },
         }}
