@@ -10,7 +10,7 @@ import { clientInvoiceService } from "@/app/services/client-invoices.service";
 import { useEffect, useState } from "react";
 import { IAIAInvoice } from "@/app/interfaces/client-invoice.interface";
 import { useSearchParams } from "next/navigation";
-import { AIAInvoiceFormMode } from "../types";
+import { AIAInvoiceFormMode, AIATabsType } from "../types";
 import { AIAInvoiceFormHeader } from "./components/Header";
 import { AIATabs } from "./components/AIATabs";
 
@@ -19,6 +19,9 @@ function AiaInvoicingFormPage() {
   const searchParams = useSearchParams();
   const [parentInvoice, setParentInvoice] = useState<IAIAInvoice | null>(null);
   const mode = searchParams.get('mode') as AIAInvoiceFormMode;
+
+  const [tab, setTab] = useState<AIATabsType>("current");
+
 
   useEffect(() => {
     const id = searchParams.get('id');
@@ -58,11 +61,13 @@ function AiaInvoicingFormPage() {
 
   return <section className="mx-4 my-2 space-y-2">
     <AIAInvoiceFormHeader parentInvoice={parentInvoice} />
-    <AIATabs />
-    <AiaInvoicingForm
+    <AIATabs tab={tab} setTab={setTab} />
+    {tab === 'current' ? <AiaInvoicingForm
       parentInvoice={parentInvoice}
       setParentInvoice={setParentInvoice}
-    />
+    /> : <div>
+      History
+    </div>}
   </section>
 }
 

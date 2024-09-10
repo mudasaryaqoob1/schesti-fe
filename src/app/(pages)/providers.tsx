@@ -38,6 +38,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
             Table: {
               headerColor: '#475467',
             },
+            Segmented: {
+              itemSelectedBg: "#007AB6",
+              itemSelectedColor: "#fff",
+              padding: 10
+            }
           },
         }}
       >
