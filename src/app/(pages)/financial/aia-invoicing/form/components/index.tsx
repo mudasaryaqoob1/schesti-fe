@@ -416,6 +416,9 @@ export function AiaInvoicingForm({
                                             handleState={handleG7State}
                                             updateRetainage={updateRetainage}
                                             sumColumns={sumColumns}
+                                            previousPhaseState={selectedPhase}
+                                            mode={mode}
+
                                         >
                                             <WhiteButton
                                                 onClick={() => {
@@ -501,6 +504,9 @@ export function AiaInvoicingForm({
                         updateRetainage={updateRetainage}
                         sumColumns={sumColumns}
                         showValidation={false}
+                        mode={mode}
+                        previousPhaseState={selectedPhase}
+
                     />
                     <ClientInvoiceFooter />
                     <G703Component
