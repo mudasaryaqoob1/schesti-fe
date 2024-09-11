@@ -96,22 +96,32 @@ export function AiaInvoicingForm({
                         setAllPhases(phases);
                         setSelectedPhase(_selectedPhase);
                         // copy the values;
-                        updateG7StateFromPhase({ ..._selectedPhase });
+                        // updateG7StateFromPhase({ ..._selectedPhase });
+
+                        const data = updatePreviousApplicationColumn(_selectedPhase);
+                        _selectedPhase.applicationDate = '';
+                        _selectedPhase.periodTo = '';
+                        setG7State({ ..._selectedPhase, data });
                     }
                 } catch (error) {
-                    console.log(error);
+                    toast.error('Something went wrong');
                 }
             })();
         }
     }, [parentInvoice, mode]);
 
     useEffect(() => {
-        setG7State((prev) => ({
-            ...prev,
-            invoiceName: parentInvoice.invoiceName,
-            _id: parentInvoice._id,
-        }));
-    }, [parentInvoice._id, parentInvoice.invoiceName]);
+        if (parentInvoice._id && mode === 'view' || mode === 'phase') {
+            return;
+        } else if (mode === 'edit') {
+            setG7State((prev) => ({
+                ...prev,
+                invoiceName: parentInvoice.invoiceName,
+                _id: parentInvoice._id,
+            }));
+        }
+
+    }, [parentInvoice._id, parentInvoice.invoiceName, mode]);
 
     function handleG7State<K extends keyof G7State>(
         key: K,
@@ -143,7 +153,7 @@ export function AiaInvoicingForm({
         const data = updatePreviousApplicationColumn(phase);
         phase.applicationDate = '';
         phase.periodTo = '';
-        setG7State({ ...phase, data });
+        setG7State(prev => ({ ...prev, ...phase, data }));
     }
 
     function updatePreviousApplicationColumn(_selectedPhase: IAIAInvoice) {
@@ -330,6 +340,8 @@ export function AiaInvoicingForm({
             setIsDownloading(false);
         }
     }
+
+    console.log(g7State);
     return (
         <>
             <div className="px-4 py-2 shadow-md rounded-lg border border-silverGray  bg-white">
