@@ -7,14 +7,14 @@ import Column from 'antd/es/table/Column';
 import SenaryHeading from '@/app/component/headings/senaryHeading';
 import {
   G7State,
-  IClientInvoice,
+  IAIAInvoice,
 } from '@/app/interfaces/client-invoice.interface';
 import dayjs from 'dayjs';
 import moment from 'moment';
 
 type Props = {
-  phases: IClientInvoice[];
-  selectedPhase: IClientInvoice | null;
+  phases: IAIAInvoice[];
+  selectedPhase: IAIAInvoice | null;
   setSelectedPhase: (_value: string) => void;
   state: G7State;
   // eslint-disable-next-line no-unused-vars

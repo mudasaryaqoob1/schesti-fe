@@ -1,11 +1,11 @@
-import { Input, type InputProps } from 'antd';
+import { Input, type InputRef, type InputProps } from 'antd';
 import clsx, { ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
 type Props = {
   label: string;
   labelStyle?: ClassValue;
-  label2?: string;
+  label2?: string | React.ReactNode;
   label2Style?: ClassValue;
   name: string;
   prefix?: React.ReactNode;
@@ -13,7 +13,7 @@ type Props = {
   maxLength?: number;
   inputStyle?: ClassValue;
   hasError?: boolean;
-  field?: InputProps;
+  field?: InputProps & React.RefAttributes<InputRef>;
   type: string;
   suffix?: any;
   errorMessage?: string;
@@ -50,12 +50,14 @@ export function InputComponent({
         htmlFor={name}
       >
         {label}{' '}
-        {label2 && (
+        {typeof label2 === 'string' ? (
           <span
             className={twMerge(clsx('text-right text-[#98A2B3]', label2Style))}
           >
             {label2}
           </span>
+        ) : (
+          label2
         )}
       </label>
 

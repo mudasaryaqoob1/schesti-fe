@@ -9,13 +9,25 @@ import { TargetTable } from './components/TargetTable';
 import { withAuth } from '@/app/hoc/withAuth';
 
 const Finance = () => {
-  const clientInvoiceQuery = useQuery(['client-invoices-with-children'], () => {
-    return clientInvoiceService.httpGetAllInvoicesWithChildren();
-  });
+  const clientInvoiceQuery = useQuery(
+    ['client-invoices-with-children'],
+    () => {
+      return clientInvoiceService.httpGetAllInvoicesWithChildren();
+    },
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
 
-  const targetsQuery = useQuery(['targets'], () => {
-    return settingTargetService.httpGetAllSettingTargets(1, 20);
-  });
+  const targetsQuery = useQuery(
+    ['targets'],
+    () => {
+      return settingTargetService.httpGetAllSettingTargets(1, 20);
+    },
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
 
   return (
     <section className="my-4  mx-8 px-4">

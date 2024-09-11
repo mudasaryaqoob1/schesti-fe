@@ -1,6 +1,6 @@
 import { StyleSheet, View } from '@react-pdf/renderer';
 import { PdfHeading, PdfText } from './Heading';
-import { USCurrencyFormat } from '@/app/utils/format';
+import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 
 type Props = {
   items: {
@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
   },
 });
 export const PdfTable: React.FC<Props> = ({ items, totalAmount }) => {
+  const currency = useCurrencyFormatter();
   return (
     <View>
       <View style={styles.container}>
@@ -94,7 +95,7 @@ export const PdfTable: React.FC<Props> = ({ items, totalAmount }) => {
                   />
                   <PdfText text={item.quantity} style={styles.bodyCell} />
                   <PdfText
-                    text={USCurrencyFormat.format(Number(item.total))}
+                    text={currency.format(Number(item.total))}
                     style={styles.bodyCell}
                   />
                 </View>

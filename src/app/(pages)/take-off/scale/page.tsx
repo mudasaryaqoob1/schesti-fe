@@ -1,5 +1,5 @@
 'use client';
-import { useState, useContext, useEffect, useCallback } from 'react';
+import { useState, useContext, useEffect, useLayoutEffect } from 'react';
 import ModalComponent from '@/app/component/modal';
 import ScaleModal from '../components/scale';
 import ModalsWrapper from './components/ModalWrapper';
@@ -33,22 +33,26 @@ import { useRouter, useSearchParams } from 'next/navigation';
 // import { ReportDataContextProps } from '../context/ReportDataContext';
 // import SelectPageModal from '../components/selectPageModal';
 // import { useSelector } from 'react-redux';
-import { selectUser } from '@/redux/authSlices/auth.selector';
+import { selectToken, selectUser } from '@/redux/authSlices/auth.selector';
 
 ////////////////////////New Take OffData///////////////////////////////////
 import CustomButton from '@/app/component/customButton/button';
 import { bg_style } from '@/globals/tailwindvariables';
 import {
+  AppstoreOutlined,
+  BorderLeftOutlined,
+  CloseOutlined,
   CloudUploadOutlined,
   CopyOutlined,
   DeleteOutlined,
   DownOutlined,
+  DragOutlined,
   EditOutlined,
   FileOutlined,
-  FilePdfOutlined,
+  FolderFilled,
   FolderOutlined,
   LeftOutlined,
-  MenuUnfoldOutlined,
+  MenuOutlined,
   MinusOutlined,
   MoreOutlined,
   PlusOutlined,
@@ -66,7 +70,7 @@ import ReportModal from '../components/ReportModal';
 // import TertiaryHeading from '@/app/component/headings/tertiary';
 import CreateProgressModal from '../components/createProgressModal';
 // import { UploadFileData } from '../context/EditContext';
-import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
+// import { PDFDocumentProxy, PDFPageProxy } from 'pdfjs-dist';
 import AwsS3 from '@/app/utils/S3Intergration';
 import { toast } from 'react-toastify';
 // import { AnyArn } from 'aws-sdk/clients/groundstation';
@@ -76,6 +80,17 @@ import Draggable from 'react-draggable';
 // import { twMerge } from 'tailwind-merge';
 import { useSelector } from 'react-redux';
 import { useDraw } from '@/app/hooks';
+import { HttpService } from '@/app/services/base.service';
+import { Option } from 'antd/es/mentions';
+// import axios from 'axios';
+
+interface ControlPoint {
+  x: number;
+  y: number;
+  index: number;
+  offsetX: number;
+  offsetY: number;
+}
 
 const groupDataForFileTable = (input: any[]) => {
   const groupedData = input?.reduce((result: any, currentItem: any) => {
@@ -91,6 +106,7 @@ const groupDataForFileTable = (input: any[]) => {
       src,
       pageId,
       pageNumber,
+      index,
       // fileId
     } = currentItem;
 
@@ -114,6 +130,7 @@ const groupDataForFileTable = (input: any[]) => {
         src,
         pageId,
         pageNumber,
+        index,
       });
     } else {
       result.push({
@@ -125,6 +142,7 @@ const groupDataForFileTable = (input: any[]) => {
         file,
         page,
         status,
+        index,
         children: [
           {
             id,
@@ -138,6 +156,7 @@ const groupDataForFileTable = (input: any[]) => {
             src,
             pageId,
             pageNumber,
+            index,
           },
         ],
       });
@@ -146,7 +165,17 @@ const groupDataForFileTable = (input: any[]) => {
     return result;
   }, []);
 
-  return groupedData;
+  let rtar: any = [];
+  if (Array.isArray(groupedData)) {
+    groupedData.forEach((val: any) => {
+      let cur = val;
+      cur?.children?.sort((a: any, b: any) => a?.index - b?.index);
+      rtar.push(cur);
+    });
+  }
+
+  // return groupedData;
+  return rtar;
 };
 
 const getSingleMeasurements = (draw: any, pageId: any) => {
@@ -186,480 +215,6 @@ const getSingleMeasurements = (draw: any, pageId: any) => {
   }
   return singleArr;
 };
-const measurementsTableData1 = (takeOff: any, search?: string) => {
-  let returningArr: any = [];
-  if (
-    takeOff?.measurements &&
-    Object.keys(takeOff?.measurements) &&
-    Object.keys(takeOff?.measurements)?.length > 0
-  ) {
-    Object.keys(takeOff?.measurements)?.map((key: any, ind: any) => {
-      console.log(
-        ind,
-        takeOff?.measurements[key],
-        ' =====> measurementsTableData measurementsTableData gotArr'
-      );
-      if (takeOff?.measurements[`${key}`]) {
-        const gotArr = getSingleMeasurements(
-          takeOff?.measurements[`${key}`],
-          key
-        );
-        console.log(
-          gotArr,
-          takeOff?.measurements[`${key}`],
-          ' =====> measurementsTableData measurementsTableData gotArr'
-        );
-        if (Array.isArray(gotArr)) {
-          returningArr = [...returningArr, ...gotArr];
-        }
-      }
-      return '';
-    });
-  }
-  if (search && search?.length > 0) {
-    returningArr = returningArr?.filter((i: any) => {
-      return (
-        i?.projectName
-          ?.toLocaleLowerCase()
-          ?.includes(search?.toLocaleLowerCase()) ||
-        i?.category
-          ?.toLocaleLowerCase()
-          ?.includes(search?.toLocaleLowerCase()) ||
-        i?.subcategory
-          ?.toLocaleLowerCase()
-          ?.includes(search?.toLocaleLowerCase())
-      );
-    });
-  }
-  console.log(
-    returningArr,
-    ' =====> measurementsTableData measurementsTableData'
-  );
-  if (returningArr?.length > 0) {
-    //Reduce code for category
-    returningArr = returningArr?.reduce((result: any, currentItem: any) => {
-      const {
-        category,
-        subcategory,
-        dateTime,
-        points,
-        projectName,
-        stroke,
-        strokeWidth,
-        textUnit,
-        id,
-        lineCap,
-        depth,
-        x,
-        y,
-        user,
-        type,
-        pageId,
-        text,
-      } = currentItem;
-      // Check if there's already an entry with the same projectName and pageLabel
-      const existingEntry = result?.find(
-        (entry: any) => entry.category === category
-      );
-      if (existingEntry) {
-        existingEntry?.children?.push({
-          key: dateTime,
-          category,
-          subcategory,
-          dateTime,
-          points,
-          projectName,
-          stroke,
-          strokeWidth,
-          textUnit,
-          id,
-          lineCap,
-          depth,
-          x,
-          y,
-          user,
-          isParent: false,
-          type,
-          pageId,
-          text,
-        });
-      } else {
-        result?.push({
-          key: dateTime,
-          isParent: true,
-          category,
-          subcategory,
-          dateTime,
-          points,
-          projectName,
-          stroke,
-          strokeWidth,
-          textUnit,
-          id,
-          lineCap,
-          depth,
-          x,
-          y,
-          user,
-          type,
-          pageId,
-          text,
-          children: [
-            {
-              key: dateTime,
-              isParent: false,
-              category,
-              subcategory,
-              dateTime,
-              points,
-              projectName,
-              stroke,
-              strokeWidth,
-              textUnit,
-              id,
-              lineCap,
-              depth,
-              x,
-              y,
-              user,
-              type,
-              pageId,
-              text,
-            },
-          ],
-        });
-      }
-      return result;
-    }, []);
-  }
-  return returningArr;
-};
-const measurementsTableData = (takeOff: any, search?: string) => {
-  let returningArr: any = [];
-  if (
-    takeOff?.measurements &&
-    Object.keys(takeOff?.measurements) &&
-    Object.keys(takeOff?.measurements)?.length > 0
-  ) {
-    Object.keys(takeOff?.measurements)?.map((key: any, ind: any) => {
-      console.log(
-        ind,
-        takeOff?.measurements[key],
-        ' =====> measurementsTableData measurementsTableData gotArr'
-      );
-      if (takeOff?.measurements[`${key}`]) {
-        const gotArr = getSingleMeasurements(
-          takeOff?.measurements[`${key}`],
-          key
-        );
-        console.log(
-          gotArr,
-          takeOff?.measurements[`${key}`],
-          ' =====> measurementsTableData measurementsTableData gotArr'
-        );
-        if (Array.isArray(gotArr)) {
-          returningArr = [...returningArr, ...gotArr];
-        }
-      }
-      return '';
-    });
-  }
-  if (search && search?.length > 0) {
-    returningArr = returningArr?.filter((i: any) => {
-      return (
-        i?.projectName
-          ?.toLocaleLowerCase()
-          ?.includes(search?.toLocaleLowerCase()) ||
-        i?.category
-          ?.toLocaleLowerCase()
-          ?.includes(search?.toLocaleLowerCase()) ||
-        i?.subcategory
-          ?.toLocaleLowerCase()
-          ?.includes(search?.toLocaleLowerCase())
-      );
-    });
-  }
-  console.log(
-    returningArr,
-    ' =====> measurementsTableData measurementsTableData'
-  );
-  if (returningArr?.length > 0) {
-    //Reduce code for category
-    returningArr = returningArr?.reduce((result: any, currentItem: any) => {
-      const {
-        category,
-        subcategory,
-        dateTime,
-        points,
-        projectName,
-        stroke,
-        strokeWidth,
-        textUnit,
-        id,
-        lineCap,
-        depth,
-        x,
-        y,
-        user,
-        type,
-        pageId,
-        text,
-      } = currentItem;
-      // Check if there's already an entry with the same projectName and pageLabel
-      const existingEntry = result?.find(
-        (entry: any) => entry.category === category
-      );
-      if (existingEntry) {
-        const existingEntrySubCategory = existingEntry?.children?.find(
-          (entry: any) => entry?.subcategory === subcategory
-        );
-        const existingEntrySubCategoryIndex =
-          existingEntry?.children?.findIndex(
-            (entry: any) => entry?.subcategory === subcategory
-          );
-        if (
-          existingEntrySubCategory &&
-          subcategory &&
-          existingEntrySubCategoryIndex != -1
-        ) {
-          existingEntrySubCategory['isSubParent'] = true;
-          if (
-            Array.isArray(
-              existingEntry?.children[existingEntrySubCategoryIndex]?.children
-            )
-          ) {
-            existingEntry?.children[
-              existingEntrySubCategoryIndex
-            ]?.children?.push({
-              key: dateTime,
-              isChild: true,
-              category,
-              subcategory,
-              dateTime,
-              points,
-              projectName,
-              stroke,
-              strokeWidth,
-              textUnit,
-              id,
-              lineCap,
-              depth,
-              x,
-              y,
-              user,
-              isParent: false,
-              type,
-              pageId,
-              text,
-            });
-          } else {
-            existingEntry.children[existingEntrySubCategoryIndex].children = [
-              {
-                key: dateTime,
-                isChild: true,
-                category,
-                subcategory,
-                dateTime,
-                points,
-                projectName,
-                stroke,
-                strokeWidth,
-                textUnit,
-                id,
-                lineCap,
-                depth,
-                x,
-                y,
-                user,
-                isParent: false,
-                type,
-                pageId,
-                text,
-              },
-            ];
-          }
-          console.log(
-            returningArr,
-            subcategory,
-            result,
-            ' =====> measurementsTableData measurementsTableData the final obj given code runs here'
-          );
-        } else {
-          existingEntry?.children?.push(
-            subcategory
-              ? {
-                  key: dateTime,
-                  isSubParent: true,
-                  isParent: false,
-                  category,
-                  subcategory,
-                  dateTime,
-                  points,
-                  projectName,
-                  stroke,
-                  strokeWidth,
-                  textUnit,
-                  id,
-                  lineCap,
-                  depth,
-                  x,
-                  y,
-                  user,
-                  type,
-                  pageId,
-                  text,
-                  children: [
-                    {
-                      key: dateTime,
-                      isParent: false,
-                      isChild: true,
-                      category,
-                      subcategory,
-                      dateTime,
-                      points,
-                      projectName,
-                      stroke,
-                      strokeWidth,
-                      textUnit,
-                      id,
-                      lineCap,
-                      depth,
-                      x,
-                      y,
-                      user,
-                      type,
-                      pageId,
-                      text,
-                    },
-                  ],
-                }
-              : {
-                  key: dateTime,
-                  category,
-                  subcategory,
-                  dateTime,
-                  points,
-                  projectName,
-                  stroke,
-                  strokeWidth,
-                  textUnit,
-                  id,
-                  lineCap,
-                  depth,
-                  x,
-                  y,
-                  user,
-                  isParent: false,
-                  type,
-                  pageId,
-                  text,
-                }
-          );
-        }
-      } else {
-        result?.push({
-          key: dateTime,
-          isParent: true,
-          category,
-          subcategory,
-          dateTime,
-          points,
-          projectName,
-          stroke,
-          strokeWidth,
-          textUnit,
-          id,
-          lineCap,
-          depth,
-          x,
-          y,
-          user,
-          type,
-          pageId,
-          text,
-          children: subcategory
-            ? [
-                {
-                  key: dateTime,
-                  isSubParent: true,
-                  isParent: false,
-                  category,
-                  subcategory,
-                  dateTime,
-                  points,
-                  projectName,
-                  stroke,
-                  strokeWidth,
-                  textUnit,
-                  id,
-                  lineCap,
-                  depth,
-                  x,
-                  y,
-                  user,
-                  type,
-                  pageId,
-                  text,
-                  children: [
-                    {
-                      key: dateTime,
-                      isParent: false,
-                      isChild: true,
-                      category,
-                      subcategory,
-                      dateTime,
-                      points,
-                      projectName,
-                      stroke,
-                      strokeWidth,
-                      textUnit,
-                      id,
-                      lineCap,
-                      depth,
-                      x,
-                      y,
-                      user,
-                      type,
-                      pageId,
-                      text,
-                    },
-                  ],
-                },
-              ]
-            : [
-                {
-                  key: dateTime,
-                  isParent: false,
-                  category,
-                  subcategory,
-                  dateTime,
-                  points,
-                  projectName,
-                  stroke,
-                  strokeWidth,
-                  textUnit,
-                  id,
-                  lineCap,
-                  depth,
-                  x,
-                  y,
-                  user,
-                  type,
-                  pageId,
-                  text,
-                },
-              ],
-        });
-      }
-      return result;
-    }, []);
-  }
-  console.log(
-    returningArr,
-    ' =====> measurementsTableData measurementsTableData the final obj1'
-  );
-  return returningArr;
-};
 
 // const { DirectoryTree, TreeNode } = Tree;
 ////////////////////////New Take OffData///////////////////////////////////
@@ -677,12 +232,19 @@ export interface PageScale {
 const TakeOffNewPage = () => {
   /////////////New TakeOff Files Sates, methods and data///////////////////////
 
-  const pdfjs = useCallback(async () => {
-    const pdfjs = await import('pdfjs-dist');
-    await import('pdfjs-dist/build/pdf.worker.min.mjs');
+  // const pdfjs = useCallback(async () => {
+  //   const pdfjs = await import('pdfjs-dist');
+  //   await import('pdfjs-dist/build/pdf.worker.min.mjs');
 
-    return pdfjs;
-  }, []);
+  //   return pdfjs;
+  // }, []);
+
+  const token = useSelector(selectToken);
+  useLayoutEffect(() => {
+    if (token) {
+      HttpService.setToken(token);
+    }
+  }, [token]);
 
   const [selectedFiles, setselectedFiles] = useState<any>([]);
   const [progressModalOpen, setprogressModalOpen] = useState(false);
@@ -694,126 +256,260 @@ const TakeOffNewPage = () => {
   const [isApiCalling, setisApiCalling] = useState(false);
   const [isLoading, setisLoading] = useState<boolean>(false);
 
-  const handleUpdatePages = (
-    pageIndex: any,
-    s3Url: any,
-    fileIndex: any,
-    success: any,
-    width: any,
-    height: any,
-    fileId: any,
-    ar: any
-  ) => {
-    setfullData((ps: any) => ({
-      ...ps,
-      pages: [
-        ...ps.pages,
-        {
-          pageNum: pageIndex + 1,
-          pageId: `${new Date().getTime()}`,
-          fileId: fileId,
-          width,
-          height,
-          name: `${pageIndex + 1} page`,
-          src: s3Url,
-          success: success,
-          file: { name: ar[fileIndex]?.name ?? fileIndex, index: fileIndex },
-        },
-      ],
-    }));
-  };
+  // const handleUpdatePages = (pageIndex: any, s3Url: any, fileIndex: any, success: any, width: any, height: any, fileId: any, ar: any) => {
+  //   setfullData((ps: any) => ({ ...ps, pages: [...ps.pages, { pageNum: pageIndex + 1, pageId: `${new Date().getTime()}`, fileId: fileId, width, height, name: `${pageIndex + 1} page`, src: s3Url, success: success, file: { name: ar[fileIndex]?.name ?? fileIndex, index: fileIndex } }] }))
+  // }
 
-  const processSinglePage = async (
-    pageIndex: any,
-    pdf: PDFDocumentProxy,
-    fileIndex: any,
-    fileId: any,
-    ar: any
-  ) => {
+  // const processSinglePage = async (pageIndex: any, pdf: PDFDocumentProxy, fileIndex: any, fileId: any, ar: any) => {
+  //   try {
+  //     const page: PDFPageProxy = await pdf.getPage(pageIndex + 1);
+  //     console.log(page, typeof (page), " ===> pages while uplaoding")
+  //     const scale = 1;
+  //     const viewport = page.getViewport({ scale });
+  //     const canvas = document.createElement('canvas');
+  //     const context = canvas.getContext('2d');
+  //     canvas.width = viewport.width;
+  //     canvas.height = viewport.height;
+  //     const renderContext: any = {
+  //       canvasContext: context,
+  //       viewport: viewport,
+  //     };
+  //     await page.render(renderContext).promise;
+  //     const obj = {
+  //       src: canvas.toDataURL('image/png') || '',
+  //       height: viewport.height,
+  //       width: viewport.width,
+  //     }
+  //     const s3Url = await new AwsS3(obj.src, 'documents/takeoff-reports/').uploadS3URL()
+  //     handleUpdatePages(pageIndex, s3Url, fileIndex, true, viewport?.width, viewport?.height, fileId, ar)
+  //     page.cleanup()
+  //   } catch (error) {
+  //     console.log(error, " ===> Error insdie process single page");
+  //     handleUpdatePages(pageIndex, "", fileIndex, false, 0, 0, fileId, ar)
+  //   }
+  // }
+  // const processSingleFile = async (i: any, ar: any) => {
+  //   try {
+  //     const curFile = ar[i]
+  //     const fileId = `${new Date()?.getTime()}`
+  //     console.log(curFile, " ===> Current File Running");
+  //     if (curFile) {
+  //       const PDFJS = await pdfjs();
+  //       // const pdfPagesData: UploadFileData[] = [];
+  //       const reader = new FileReader();
+  //       reader.onload = async (event: any) => {
+  //         const data = new Uint8Array(event.target.result);
+  //         const pdf: PDFDocumentProxy = await PDFJS.getDocument(data).promise;
+  //         setfullData((ps: any) => ({ ...ps, files: [...ps.files, { name: curFile?.name ?? i, fileId, index: i, totalPages: pdf?.numPages ?? 5 }] }))
+  //         for (let index = 0; index < pdf.numPages; index++) {
+  //           await processSinglePage(index, pdf, i, fileId, ar)
+  //         }
+  //       }
+  //       reader.readAsArrayBuffer(curFile);
+  //     }
+  //   } catch (error) {
+  //     console.log(error, " Error while processing single file.");
+  //   }
+  // }
+
+  const [fileLoading, setfileLoading] = useState(false);
+  const [fileState, setfileState] = useState<
+    {
+      name: string;
+      status: 'uploading' | 'processing' | 'failed' | 'done';
+      uploadProgress: number;
+    }[]
+  >([]);
+  console.log(fileState, ' ===> log to filestate change');
+  // const processSingleFileNew = async (i: any, ar: any) => {
+  //   const curFile = ar[i]
+  //   setfileState(ps => ([...ps, { name: curFile?.name, status: 'uploading', uploadProgress: 0 }]))
+  //   try {
+  //     console.log(curFile, " ===> Current file happening here")
+
+  //     const formData = new FormData();
+  //     formData.append('pdfFiles', curFile);
+  //     formData.append('id', `${edit_id}`)
+  //     //https://api.schesti.com/api/takeoff-summary/processFiles
+  //     // const res = await takeoffSummaryService.httpProcessFiles(formData)
+
+  //     //axios.defaults!.headers!['Authorization'] = `Bearer ${token}`
+  //     await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/api/takeoff-summary/processFiles`, formData,
+  //       {
+  //         headers: {
+  //           'Authorization': `Bearer ${token}`
+  //         },
+  //         onUploadProgress: (progressEvent) => {
+  //           if (progressEvent?.total && progressEvent?.loaded) {
+  //             // Calculate the upload progress percentage
+  //             const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+  //             console.log(`Upload progress: ${progress}%`);
+  //             setfileState((ps) => {
+  //               return ps.map(i => {
+  //                 if (i.name == curFile?.name) {
+  //                   return { ...i, uploadProgress: progress }
+  //                 } else {
+  //                   return i
+  //                 }
+  //               })
+  //             })
+  //             if (progress > 99) {
+  //               setfileState((ps) => {
+  //                 return ps.map(i => {
+  //                   if (i.name == curFile?.name) {
+  //                     return { ...i, status: 'processing' }
+  //                   } else {
+  //                     return i
+  //                   }
+  //                 })
+  //               })
+  //             }
+  //           }
+  //         },
+  //       }
+  //     )
+  //     setfileState((ps) => {
+  //       return ps.map(i => {
+  //         if (i.name == curFile?.name) {
+  //           return { ...i, status: 'done' }
+  //         } else {
+  //           return i
+  //         }
+  //       })
+  //     })
+  //   } catch (error) {
+  //     console.log(error, " Error while processing single file.");
+  //     setfileState((ps) => {
+  //       return ps.map(i => {
+  //         if (i.name == curFile?.name) {
+  //           return { ...i, status: 'failed' }
+  //         } else {
+  //           return i
+  //         }
+  //       })
+  //     })
+  //   }
+  // }
+
+  const processSingleFileNew = async (i: any, ar: any) => {
+    const curFile = ar[i];
+    setfileState((ps) => [
+      ...ps,
+      { name: curFile?.name, status: 'uploading', uploadProgress: 0 },
+    ]);
     try {
-      const page: PDFPageProxy = await pdf.getPage(pageIndex + 1);
-      console.log(page, typeof page, ' ===> pages while uplaoding');
-      const scale = 1;
-      const viewport = page.getViewport({ scale });
-      const canvas = document.createElement('canvas');
-      const context = canvas.getContext('2d');
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-      const renderContext: any = {
-        canvasContext: context,
-        viewport: viewport,
-      };
-      await page.render(renderContext).promise;
-      const obj = {
-        src: canvas.toDataURL('image/png') || '',
-        height: viewport.height,
-        width: viewport.width,
-      };
-      const s3Url = await new AwsS3(
-        obj.src,
-        'documents/takeoff-reports/'
-      ).uploadS3URL();
-      handleUpdatePages(
-        pageIndex,
-        s3Url,
-        fileIndex,
-        true,
-        viewport?.width,
-        viewport?.height,
-        fileId,
-        ar
-      );
-      page.cleanup();
-    } catch (error) {
-      console.log(error, ' ===> Error insdie process single page');
-      handleUpdatePages(pageIndex, '', fileIndex, false, 0, 0, fileId, ar);
-    }
-  };
-  const processSingleFile = async (i: any, ar: any) => {
-    try {
-      const curFile = ar[i];
-      const fileId = `${new Date()?.getTime()}`;
-      console.log(curFile, ' ===> Current File Running');
-      if (curFile) {
-        const PDFJS = await pdfjs();
-        // const pdfPagesData: UploadFileData[] = [];
-        const reader = new FileReader();
-        reader.onload = async (event: any) => {
-          const data = new Uint8Array(event.target.result);
-          const pdf: PDFDocumentProxy = await PDFJS.getDocument(data).promise;
-          setfullData((ps: any) => ({
-            ...ps,
-            files: [
-              ...ps.files,
-              {
-                name: curFile?.name ?? i,
-                fileId,
-                index: i,
-                totalPages: pdf?.numPages ?? 5,
-              },
-            ],
-          }));
-          for (let index = 0; index < pdf.numPages; index++) {
-            await processSinglePage(index, pdf, i, fileId, ar);
+      console.log(curFile, ' ===> Current file happening here');
+
+      //https://api.schesti.com/api/takeoff-summary/processFiles
+      // const res = await takeoffSummaryService.httpProcessFiles(formData)
+
+      //axios.defaults!.headers!['Authorization'] = `Bearer ${token}`
+      const url = await new AwsS3(
+        curFile,
+        'documents/take-off/'
+      ).getS3URLWithProgress((progress) => {
+        // calculate progress upto 100%
+        const percent = Math.round((progress.loaded / progress.total) * 100);
+        setfileState((ps) => {
+          return ps.map((i) => {
+            if (i.name == curFile?.name) {
+              return { ...i, uploadProgress: percent };
+            } else {
+              return i;
+            }
+          });
+        });
+        if (percent > 99) {
+          setfileState((ps) => {
+            return ps.map((i) => {
+              if (i.name == curFile?.name) {
+                return { ...i, status: 'processing' };
+              } else {
+                return i;
+              }
+            });
+          });
+        }
+      });
+
+      const formData = new FormData();
+      formData.append('s3PdfUrl', url);
+      formData.append('id', `${edit_id}`);
+      // const res = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/api/takeoff-summary/processFiles`, formData,
+      //     {
+      //         headers: {
+      //             'Authorization': `Bearer ${token}`,
+      //             'Content-Type': 'multipart/form-data'
+      //         },
+      //         timeout: 3600000,
+      //         onUploadProgress: (progressEvent) => {
+      //             if (progressEvent?.total && progressEvent?.loaded) {
+      //                 // Calculate the upload progress percentage
+      //                 const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+      //                 console.log(`Upload progress: ${progress}%`);
+      //                 setfileState((ps) => {
+      //                     return ps.map(i => {
+      //                         if (i.name == curFile?.name) {
+      //                             return { ...i, uploadProgress: progress }
+      //                         } else {
+      //                             return i
+      //                         }
+      //                     })
+      //                 })
+      //                 if (progress > 99) {
+      //                     setfileState((ps) => {
+      //                         return ps.map(i => {
+      //                             if (i.name == curFile?.name) {
+      //                                 return { ...i, status: 'processing' }
+      //                             } else {
+      //                                 return i
+      //                             }
+      //                         })
+      //                     })
+      //                 }
+      //             }
+      //         },
+      //     }
+      // )
+      await takeoffSummaryService.httpProcessFiles(formData);
+      setfileState((ps) => {
+        return ps.map((i) => {
+          if (i.name == curFile?.name) {
+            return { ...i, status: 'done' };
+          } else {
+            return i;
           }
-        };
-        reader.readAsArrayBuffer(curFile);
-      }
+        });
+      });
     } catch (error) {
       console.log(error, ' Error while processing single file.');
+      setfileState((ps) => {
+        return ps.map((i) => {
+          if (i.name == curFile?.name) {
+            return { ...i, status: 'failed' };
+          } else {
+            return i;
+          }
+        });
+      });
     }
   };
+
   const startProcess = async (ar: any) => {
     setisLoading(true);
     if (Array.isArray(ar) && ar?.length > 0) {
       try {
+        setfileLoading(true);
         for (let i = 0; i < ar?.length; i++) {
-          await processSingleFile(i, ar);
+          // await processSingleFile(i, ar)
+          await processSingleFileNew(i, ar);
         }
         // setisLoading(false)
+        setfileLoading(false);
       } catch (error) {
         console.log(error, ' Error startProcess');
         setisLoading(false);
+        setfileLoading(false);
       }
     }
   };
@@ -854,28 +550,22 @@ const TakeOffNewPage = () => {
     }
   };
 
-  const addFileToWorkspace = () => {
-    if (Array.isArray(fullData?.pages) && fullData?.pages?.length > 0) {
-      if (
-        fullData?.files?.every((i: any) => {
-          return (
-            i?.totalPages ==
-            fullData?.pages?.filter((pg: any) => i?.fileId == pg?.fileId)
-              ?.length
-          );
-        })
-      ) {
-        // setisLoading(false)
-        //   setshouldContinue(true)
-        // toast.success('Ready to go.')
-        makeApiCall();
-      } else {
-        toast.error(`Please wait until loading files.`);
-      }
-    } else {
-      toast.error(`Please select atleast one file to continue.`);
-    }
-  };
+  // const addFileToWorkspace = () => {
+  //   if (Array.isArray(fullData?.pages) && fullData?.pages?.length > 0) {
+  //     if (fullData?.files?.every((i: any) => {
+  //       return i?.totalPages == fullData?.pages?.filter((pg: any) => (i?.fileId == pg?.fileId))?.length
+  //     })) {
+  //       // setisLoading(false)
+  //       //   setshouldContinue(true)
+  //       // toast.success('Ready to go.')
+  //       makeApiCall()
+  //     } else {
+  //       toast.error(`Please wait until loading files.`)
+  //     }
+  //   } else {
+  //     toast.error(`Please select atleast one file to continue.`)
+  //   }
+  // }
   /////////////New TakeOff States///////////////////////
 
   /////////////New TakeOff States///////////////////////
@@ -924,7 +614,7 @@ const TakeOffNewPage = () => {
   const [border, setBorder] = useState<number>(4);
   const [color, setColor] = useState<string>('#1677ff');
   const [unit, setUnit] = useState<number>(14);
-  const [depth, setDepth] = useState<number>(0);
+  const [depth, setDepth] = useState<number>(1);
   const [drawScale, setdrawScale] = useState<boolean>(false);
   const [scaleLine, setscaleLine] = useState<any>({});
   const [sideTabs, setsideTabs] = useState<'Plans' | 'TakeOff' | 'WBS'>(
@@ -995,7 +685,118 @@ const TakeOffNewPage = () => {
           settableLoading(false);
           setDraw(
             newupdatedMeasurements?.data?.measurements[
-              `${selectedPage?.pageId}`
+            `${selectedPage?.pageId}`
+            ]
+          );
+        }
+      } catch (error) {
+        settableLoading(false);
+        console.log(error, ' ===> Error while updating table data');
+      }
+    }
+  };
+
+  const updateTableCategory = async (
+    pageId: string,
+    type: any,
+    dateTime: any,
+    category: string,
+    subcategory: string | null
+  ) => {
+    console.log(
+      pageId,
+      type,
+      dateTime,
+      category,
+      subcategory,
+      'Update Run'
+    );
+    if (pageId && type && dateTime && category) {
+      try {
+        let tempTakeOff = takeOff;
+        let slpg = tempTakeOff?.measurements[pageId];
+        if (slpg) {
+          settableLoading(true);
+          slpg = {
+            ...slpg,
+            [type]: slpg[type]?.map((it: any) => {
+              if (
+                new Date(it.dateTime).valueOf() === new Date(dateTime).valueOf()
+              ) {
+                return { ...it, category, subcategory: subcategory ?? null };
+              } else {
+                return it;
+              }
+            }),
+          };
+          tempTakeOff.measurements[pageId] = slpg;
+          // console.log(tempTakeOff)
+          const newupdatedMeasurements: any =
+            await takeoffSummaryService.httpUpdateTakeoffSummary({
+              id: takeOff?._id,
+              //@ts-ignore
+              data: { measurements: tempTakeOff.measurements },
+            });
+          console.log(newupdatedMeasurements, ' ==> newupdatedMeasurements');
+          settakeOff(newupdatedMeasurements?.data);
+          settableLoading(false);
+          setDraw(
+            newupdatedMeasurements?.data?.measurements[
+            `${selectedPage?.pageId}`
+            ]
+          );
+        }
+      } catch (error) {
+        settableLoading(false);
+        console.log(error, ' ===> Error while updating table data');
+      }
+    }
+  };
+
+  const updateColorSizes = async (keyToUpdate: string, valueToUpdate: any) => {
+    if (!selectedPage || !selectedShape) {
+      return;
+    }
+    const pageId = selectedPage?.pageId;
+    const [type, shapeNumber] = selectedShape.split('-');
+    console.log(
+      pageId,
+      type,
+      shapeNumber,
+      keyToUpdate,
+      valueToUpdate,
+      'bottom bar Update Run'
+    );
+    if (pageId && type && shapeNumber && keyToUpdate && valueToUpdate) {
+      try {
+        let tempTakeOff = takeOff;
+        let slpg = tempTakeOff?.measurements[pageId];
+        if (slpg) {
+          settableLoading(true);
+          slpg = {
+            ...slpg,
+            [type]: slpg[type]?.map((it: any, index: number) => {
+              if (index === +shapeNumber) {
+                return { ...it, [keyToUpdate]: valueToUpdate };
+              } else {
+                return it;
+              }
+            }),
+          };
+          tempTakeOff.measurements[pageId] = slpg;
+          // console.log(tempTakeOff)
+          const newupdatedMeasurements: any =
+            await takeoffSummaryService.httpUpdateTakeoffSummary({
+              id: takeOff?._id,
+              //@ts-ignore
+              data: { measurements: tempTakeOff.measurements },
+            });
+          console.log(newupdatedMeasurements, ' ==> newupdatedMeasurements');
+          settakeOff(newupdatedMeasurements?.data);
+          settableLoading(false);
+          setDraw(
+            newupdatedMeasurements?.data?.measurements[
+            `${selectedPage?.pageId}`
             ]
           );
         }
@@ -1051,7 +852,7 @@ const TakeOffNewPage = () => {
           settableLoading(false);
           setDraw(
             newupdatedMeasurements?.data?.measurements[
-              `${selectedPage?.pageId}`
+            `${selectedPage?.pageId}`
             ]
           );
         }
@@ -1157,8 +958,11 @@ const TakeOffNewPage = () => {
         <div
           onClick={() => {
             if (!record?.isParent) {
+              const pg = takeOff?.pages?.find(
+                (pgs: any) => pgs?.pageId == record?.pageId
+              );
               console.log(record, 'selected thing');
-              setselectedPage(record);
+              setselectedPage(pg);
               setselectedTakeOffTab('page');
               if (
                 !selectedPagesList?.find(
@@ -1166,7 +970,7 @@ const TakeOffNewPage = () => {
                 )
               ) {
                 //@ts-ignore
-                setselectedPagesList((ps: any) => [...ps, record]);
+                setselectedPagesList((ps: any) => [...ps, pg]);
               }
             }
           }}
@@ -1211,28 +1015,36 @@ const TakeOffNewPage = () => {
     {
       title: 'Name',
       dataIndex: 'category',
-      width: 150,
+      width: 60,
       className: '!pr-0',
       render: (text, record) => (
-        <div className="flex items-center h-full cursor-pointer">
+        <div
+          className={`${record?.isParent || record?.isSubParent ? 'text-[12px]' : ''} flex items-center h-full cursor-pointer ${selectedCate == text && record?.isParent ? '!bg-lavenderPurpleReplica !text-white !p-1 !rounded-md' : ''} ${selectedSubCate == record?.subcategory && record?.isSubParent ? '!bg-lavenderPurpleReplica !text-white !p-1 !rounded-md' : ''}`}
+        >
           {record?.isParent ? (
             <span className="font-extrabold">
-              {text}
+              {text?.slice(0, 7)}
               {selectedCate == text ? (
-                <MinusOutlined
+                <Button
+                  size="small"
                   className="border-2 rounded-full ml-2"
                   onClick={() => {
                     setselectedCate(null);
                     setselectedSubCate(null);
                   }}
-                />
+                >
+                  unselect
+                </Button>
               ) : (
-                <PlusOutlined
+                <Button
+                  size="small"
                   className="border-2 rounded-full ml-2"
                   onClick={() => {
                     setselectedCate(text);
                   }}
-                />
+                >
+                  select
+                </Button>
               )}
               {/* <Checkbox checked={selectedCate == text} onChange={(e) => {
             if (e.target.checked) { setselectedCate(text); }
@@ -1241,23 +1053,29 @@ const TakeOffNewPage = () => {
             </span>
           ) : record?.isSubParent ? (
             <span className="font-extrabold">
-              {record?.subcategory}
+              {record?.subcategory?.slice(0, 7)}
               {selectedSubCate == record?.subcategory ? (
-                <MinusOutlined
+                <Button
+                  size="small"
                   className="border-2 rounded-full ml-2"
                   onClick={() => {
                     setselectedCate(null);
                     setselectedSubCate(null);
                   }}
-                />
+                >
+                  unselect
+                </Button>
               ) : (
-                <PlusOutlined
+                <Button
+                  size="small"
                   className="border-2 rounded-full ml-2"
                   onClick={() => {
                     setselectedCate(text);
                     setselectedSubCate(record?.subcategory);
                   }}
-                />
+                >
+                  select
+                </Button>
               )}
               {/* <Checkbox checked={selectedSubCate == record?.subcategory} onChange={(e) => {
             if (e.target.checked) { setselectedCate(text); setselectedSubCate(record?.subcategory) }
@@ -1317,7 +1135,7 @@ const TakeOffNewPage = () => {
     {
       title: 'ID',
       dataIndex: 'subcategory',
-      width: 150,
+      width: 30,
       className: '!pr-0',
       render: (text, record) => (
         <div className="flex items-center h-full cursor-pointer">
@@ -1334,8 +1152,9 @@ const TakeOffNewPage = () => {
     {
       title: '',
       dataIndex: 'category',
+      className: '!px-0',
       // key: 'category',
-      width: 70,
+      width: 40,
       render: (text, record) => (
         <div className="flex items-center h-full cursor-pointer">
           {record?.isParent || record?.isSubParent ? (
@@ -1345,8 +1164,9 @@ const TakeOffNewPage = () => {
               <Menu
                 items={[
                   {
+                    className: '!p-0',
                     key: 'category',
-                    icon: (
+                    expandIcon: (
                       <EditOutlined className="text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 rounded-full p-1" />
                     ),
                     children: [
@@ -1354,7 +1174,11 @@ const TakeOffNewPage = () => {
                         key: 'category',
                         label: 'category',
                         children: [
-                          ...categoryList.map((i: any) => ({
+                          ...[
+                            ...(Array.isArray(takeOff?.categories)
+                              ? takeOff.categories
+                              : []),
+                          ].map((i: any) => ({
                             key: i,
                             label: i,
                             onClick: () => {
@@ -1373,7 +1197,11 @@ const TakeOffNewPage = () => {
                         key: 'sub-category',
                         label: 'sub-category',
                         children: [
-                          ...subcategoryList.map((i: any) => ({
+                          ...[
+                            ...(Array.isArray(takeOff?.subCategories)
+                              ? takeOff.subCategories
+                              : []),
+                          ].map((i: any) => ({
                             key: i,
                             label: i,
                             onClick: () => {
@@ -1425,10 +1253,17 @@ const TakeOffNewPage = () => {
             <span
               className="flex items-center gap-1"
               onClick={() => {
+                if (record?.type == 'count' || record?.type == "texts") {
+                  return
+                }
+                openShap(record);
                 const pg = takeOff?.pages?.find(
                   (pgs: any) => pgs?.pageId == record?.pageId
                 );
                 if (pg) {
+                  if (record?.points && Array.isArray(record?.points) && record?.points?.length > 1) {
+                    // setStageValues(record?.points[0]-100, record?.points[1]-100)
+                  }
                   setselectedPage(pg);
                   setselectedTakeOffTab('page');
                   if (
@@ -1448,12 +1283,12 @@ const TakeOffNewPage = () => {
                     record?.pageId,
                     record?.type,
                     record?.dateTime,
-                    'stroke',
+                    ((record?.type == 'count' || record?.type == "texts") ? "textColor" : 'stroke'),
                     val.toHexString()
                   );
                 }}
                 className="!w-[2px] !h-[2px] border-none"
-                value={record?.stroke}
+                value={record?.stroke ?? record?.textColor}
               />{' '}
               <EditableText
                 initialText={record?.projectName}
@@ -1507,7 +1342,7 @@ const TakeOffNewPage = () => {
           {record?.isParent ? (
             <></>
           ) : (
-            <span className="">{text ?? record?.text ?? ''}</span>
+            <span className="">{(text) ?? record?.text ?? ''}</span>
           )}
         </div>
       ),
@@ -1568,7 +1403,50 @@ const TakeOffNewPage = () => {
           {record?.isParent ? (
             <></>
           ) : (
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-2">
+              <Popover
+                content={
+                  <>
+                    {
+                      Array.isArray(takeOff?.categories) && takeOff.categories.length > 0 && takeOff.categories.map((cat: string) => {
+                        return <div key={cat}>
+                          <h3
+                            onClick={() => {
+                              updateTableCategory(
+                                record?.pageId,
+                                record?.type,
+                                record?.dateTime,
+                                cat,
+                                null
+                              )
+                            }}
+                            className={`font-bold my-1 cursor-pointer hover:bg-lavenderPurpleReplica hover:bg-opacity-15 p-1 rounded-lg px-2 ${record?.category == cat ? 'bg-lavenderPurpleReplica bg-opacity-20' : ''}`}>{cat}</h3>
+                          {
+                            Array.isArray(takeOff?.subCategories) && takeOff.subCategories.filter((i: string) => i?.includes(cat)).map((subcat: string) => {
+                              return <li
+                                key={subcat}
+                                onClick={() => {
+                                  updateTableCategory(
+                                    record?.pageId,
+                                    record?.type,
+                                    record?.dateTime,
+                                    cat,
+                                    subcat
+                                  )
+                                }}
+                                className={`list-disc my-1 cursor-pointer hover:bg-lavenderPurpleReplica hover:bg-opacity-15 p-1 px-2 rounded-lg ${record?.subcategory == subcat ? 'bg-lavenderPurpleReplica bg-opacity-20' : ''}`}>{subcat?.split('-')[0]}</li>
+                            })
+                          }
+                        </div>
+                      })
+                    }
+                  </>
+                }
+                title="Edit WBS"
+                trigger="click"
+              >
+                <EditOutlined className="text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 rounded-full p-1" />
+              </Popover>
               <DeleteOutlined
                 className="text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 rounded-full p-1"
                 onClick={() => {
@@ -1586,9 +1464,7 @@ const TakeOffNewPage = () => {
     },
   ];
 
-  const { scaleData, handleScaleData } = useContext(
-    ScaleContext
-  ) as ScaleDataContextProps;
+  const { handleScaleData } = useContext(ScaleContext) as ScaleDataContextProps;
   const { uploadFileData } = useContext(
     UploadFileContext
   ) as UploadFileContextProps;
@@ -1662,6 +1538,88 @@ const TakeOffNewPage = () => {
       // if(selectedPage?.pageId){
 
       // }
+    } catch (error) {
+      console.log(error, ' ===> Error Occured while measuring');
+    }
+  };
+
+  const updateCategories = async (
+    categories: string[],
+    subCategories: any[]
+  ) => {
+    try {
+      settableLoading(true)
+      const newupdatedMeasurements: any =
+        await takeoffSummaryService.httpUpdateTakeoffSummary({
+          id: takeOff?._id,
+          //@ts-ignore
+          data: { categories, subCategories },
+        });
+      console.log(newupdatedMeasurements, ' ==> newupdatedMeasurements');
+      settakeOff(newupdatedMeasurements?.data);
+      settableLoading(false)
+      // if(selectedPage?.pageId){
+
+      // }
+    } catch (error) {
+      settableLoading(false)
+      console.log(error, ' ===> Error Occured while measuring');
+    }
+  };
+
+  const handleSetScale = async (
+    scale: { xScale: any; yScale: any; precision: any },
+    optionsValue: string
+  ) => {
+    try {
+      let pgs = takeOff?.pages?.slice();
+      if (optionsValue == '1') {
+        if (selectedPage) {
+          pgs = pgs.map((i: any) => {
+            if (selectedPage?.pageId == i?.pageId) {
+              return { ...i, scale };
+            } else {
+              return i;
+            }
+          });
+        }
+        // } else if (optionsValue == '1-0') {
+      } else if (optionsValue.includes('1-')) {
+        pgs = pgs.map((i: any) => {
+          return { ...i, scale };
+        });
+      }
+      console.log(scale, optionsValue, pgs, ' scale in handleset scale');
+
+      const newupdatedMeasurements: any =
+        await takeoffSummaryService.httpUpdateTakeoffSummary({
+          id: takeOff?._id,
+          //@ts-ignore
+          data: {
+            pages: pgs?.length == takeOff?.pages?.length ? pgs : takeOff?.pages,
+          },
+        });
+      console.log(newupdatedMeasurements, ' ==> newupdatedMeasurements');
+      settakeOff(newupdatedMeasurements?.data);
+      if (
+        selectedPage?.pageId &&
+        newupdatedMeasurements?.data?.pages?.find(
+          (i: any) => i?.pageId == selectedPage?.pageId
+        )
+      ) {
+        setselectedPage(
+          newupdatedMeasurements?.data?.pages?.find(
+            (i: any) => i?.pageId == selectedPage?.pageId
+          )
+        );
+        setselectedPagesList((ps: any) =>
+          ps.map((pg: any) => {
+            return newupdatedMeasurements?.data?.pages?.find(
+              (i: any) => i?.pageId == pg?.pageId
+            );
+          })
+        );
+      }
     } catch (error) {
       console.log(error, ' ===> Error Occured while measuring');
     }
@@ -1761,6 +1719,8 @@ const TakeOffNewPage = () => {
     handleWheel,
     handleZoomIn,
     handleZoomOut,
+    handleDragEnd,
+    // setStageValues
   } = useWheelZoom({
     compHeight: selectedPage.height || 600,
     compWidth: selectedPage.width || 600,
@@ -1806,23 +1766,23 @@ const TakeOffNewPage = () => {
             reportData = [
               ...reportData,
               ...(takeOff?.measurements[key][type] &&
-              Array.isArray(takeOff?.measurements[key][type]) &&
-              takeOff?.measurements[key][type]?.length > 0
+                Array.isArray(takeOff?.measurements[key][type]) &&
+                takeOff?.measurements[key][type]?.length > 0
                 ? takeOff.measurements[key][type].map((arrit: any) => {
-                    return {
-                      ...arrit,
-                      pageId: key,
-                      type,
-                      pageData: takeOff?.pages?.find(
-                        (pg: any) => pg?.pageId == key
-                      ),
-                      pageLabel: takeOff?.pages?.find(
-                        (pg: any) => pg?.pageId == key
-                      )?.pageNum,
-                      color: arrit?.stroke,
-                      config: arrit,
-                    };
-                  })
+                  return {
+                    ...arrit,
+                    pageId: key,
+                    type,
+                    pageData: takeOff?.pages?.find(
+                      (pg: any) => pg?.pageId == key
+                    ),
+                    pageLabel: takeOff?.pages?.find(
+                      (pg: any) => pg?.pageId == key
+                    )?.pageNum,
+                    color: arrit?.stroke,
+                    config: arrit,
+                  };
+                })
                 : []),
             ];
           });
@@ -1832,10 +1792,589 @@ const TakeOffNewPage = () => {
     console.log(reportData, ' ===> Take offs reportData');
     return reportData;
   };
+  // const getNumberFromText = (tx:string) => {
+  //   if(tx && `${tx}`?.length>0){
+  //     let txtArr = `${tx}`.split('')
+  //     let retArr = '';
+  //     for(let i = 0; i<txtArr?.length; i++){
+  //       if(txtArr[i] == '.'){
+  //         retArr += txtArr[i]
+  //       }else if(!isNaN(Number(txtArr[i]))){
+  //         retArr += txtArr[i]
+  //       }
+  //     }
+  //     return Number(retArr)?.toFixed(2)
+  //   }else{
+  //     return tx
+  //   }
+  // }
   //@ts-ignore
   const counterImage = new Image();
   counterImage.src = '/count-draw.png';
-  const { calculateMidpoint, calculatePolygonCenter } = useDraw();
+  const {
+    calculateMidpoint,
+    calculatePolygonCenter,
+    calcLineDistance,
+    calculatePolygonArea,
+    calculatePolygonVolume,
+    calculatePolygonPerimeter,
+  } = useDraw();
+
+  const measurementsTableData1 = (takeOff: any, search?: string) => {
+    let returningArr: any = [];
+    if (
+      takeOff?.measurements &&
+      Object.keys(takeOff?.measurements) &&
+      Object.keys(takeOff?.measurements)?.length > 0
+    ) {
+      Object.keys(takeOff?.measurements)?.map((key: any, ind: any) => {
+        console.log(
+          ind,
+          takeOff?.measurements[key],
+          ' =====> measurementsTableData measurementsTableData gotArr'
+        );
+        if (takeOff?.measurements[`${key}`]) {
+          const gotArr = getSingleMeasurements(
+            takeOff?.measurements[`${key}`],
+            key
+          );
+          console.log(
+            gotArr,
+            takeOff?.measurements[`${key}`],
+            ' =====> measurementsTableData measurementsTableData gotArr'
+          );
+          if (Array.isArray(gotArr)) {
+            returningArr = [...returningArr, ...gotArr];
+          }
+        }
+        return '';
+      });
+    }
+    if (search && search?.length > 0) {
+      returningArr = returningArr?.filter((i: any) => {
+        return (
+          i?.projectName
+            ?.toLocaleLowerCase()
+            ?.includes(search?.toLocaleLowerCase()) ||
+          i?.category
+            ?.toLocaleLowerCase()
+            ?.includes(search?.toLocaleLowerCase()) ||
+          i?.subcategory
+            ?.toLocaleLowerCase()
+            ?.includes(search?.toLocaleLowerCase())
+        );
+      });
+    }
+    console.log(
+      returningArr,
+      ' =====> measurementsTableData measurementsTableData'
+    );
+    if (returningArr?.length > 0) {
+      //Reduce code for category
+      returningArr = returningArr?.reduce((result: any, currentItem: any) => {
+        const {
+          category,
+          subcategory,
+          dateTime,
+          points,
+          projectName,
+          stroke,
+          strokeWidth,
+          textUnit,
+          id,
+          lineCap,
+          depth,
+          x,
+          y,
+          user,
+          type,
+          pageId,
+          text: tx
+        } = currentItem;
+        //curpage and scaling runtime here
+        const curmpage = takeOff?.pages?.find((i: any) => i?.pageId == pageId);
+        const scale = curmpage?.scale ?? {
+          xScale: `1in=1in`,
+          yScale: `1in=1in`,
+          precision: '1',
+        };
+        const text =
+          type == 'line'
+            ? calcLineDistance(points, scale, true)
+            : type == 'perimeter'
+              ? points?.length > 4
+                ? calculatePolygonPerimeter(points, scale)
+                : calcLineDistance(points, scale, true)
+              : type == 'area'
+                ? calculatePolygonArea(points, scale)?.toFixed(2)
+                : type == 'volume'
+                  ? calculatePolygonVolume(
+                    points,
+                    currentItem?.depth || 1,
+                    scale
+                  )?.toFixed(2)
+                  : tx;//getNumberFromText(tx);
+        // Check if there's already an entry with the same projectName and pageLabel
+        const existingEntry = result?.find(
+          (entry: any) => entry.category === category
+        );
+        if (existingEntry) {
+          existingEntry?.children?.push({
+            key: dateTime,
+            category,
+            subcategory,
+            dateTime,
+            points,
+            projectName,
+            stroke,
+            strokeWidth,
+            textUnit,
+            id,
+            lineCap,
+            depth,
+            x,
+            y,
+            user,
+            isParent: false,
+            type,
+            pageId,
+            text,
+          });
+        } else {
+          result?.push({
+            key: dateTime,
+            isParent: true,
+            category,
+            subcategory,
+            dateTime,
+            points,
+            projectName,
+            stroke,
+            strokeWidth,
+            textUnit,
+            id,
+            lineCap,
+            depth,
+            x,
+            y,
+            user,
+            type,
+            pageId,
+            text,
+            children: [
+              {
+                key: dateTime,
+                isParent: false,
+                category,
+                subcategory,
+                dateTime,
+                points,
+                projectName,
+                stroke,
+                strokeWidth,
+                textUnit,
+                id,
+                lineCap,
+                depth,
+                x,
+                y,
+                user,
+                type,
+                pageId,
+                text,
+              },
+            ],
+          });
+        }
+        return result;
+      }, []);
+    }
+    return returningArr;
+  };
+
+  const measurementsTableData = (takeOff: any, search?: string) => {
+    let returningArr: any = [];
+    if (
+      takeOff?.measurements &&
+      Object.keys(takeOff?.measurements) &&
+      Object.keys(takeOff?.measurements)?.length > 0
+    ) {
+      Object.keys(takeOff?.measurements)?.map((key: any, ind: any) => {
+        console.log(
+          ind,
+          takeOff?.measurements[key],
+          ' =====> measurementsTableData measurementsTableData gotArr'
+        );
+        if (takeOff?.measurements[`${key}`]) {
+          const gotArr = getSingleMeasurements(
+            takeOff?.measurements[`${key}`],
+            key
+          );
+          console.log(
+            gotArr,
+            takeOff?.measurements[`${key}`],
+            ' =====> measurementsTableData measurementsTableData gotArr'
+          );
+          if (Array.isArray(gotArr)) {
+            returningArr = [...returningArr, ...gotArr];
+          }
+        }
+        return '';
+      });
+    }
+    if (search && search?.length > 0) {
+      returningArr = returningArr?.filter((i: any) => {
+        return (
+          i?.projectName
+            ?.toLocaleLowerCase()
+            ?.includes(search?.toLocaleLowerCase()) ||
+          i?.category
+            ?.toLocaleLowerCase()
+            ?.includes(search?.toLocaleLowerCase()) ||
+          i?.subcategory
+            ?.toLocaleLowerCase()
+            ?.includes(search?.toLocaleLowerCase())
+        );
+      });
+    }
+    let emptyCategories = [];
+    if (Array.isArray(takeOff?.categories)) {
+      for (let i = 0; i < takeOff?.categories?.length; i++) {
+        const cur = takeOff?.categories[i];
+        if (!returningArr?.find((i: any) => i?.category == cur)) {
+          emptyCategories.push(cur);
+        }
+      }
+    }
+    console.log(
+      returningArr,
+      emptyCategories,
+      ' =====> measurementsTableData measurementsTableData first returning array object'
+    );
+    if (returningArr?.length > 0) {
+      //Reduce code for category
+      returningArr = returningArr?.reduce((result: any, currentItem: any) => {
+        const {
+          category,
+          subcategory,
+          dateTime,
+          points,
+          projectName,
+          stroke,
+          strokeWidth,
+          textUnit,
+          id,
+          lineCap,
+          depth,
+          x,
+          y,
+          user,
+          type,
+          pageId,
+          // text
+        } = currentItem;
+
+        //curpage and scaling runtime here
+        const curmpage = takeOff?.pages?.find((i: any) => i?.pageId == pageId);
+        const scale = curmpage?.scale ?? {
+          xScale: `1in=1in`,
+          yScale: `1in=1in`,
+          precision: '1',
+        };
+        const text =
+          type == 'line'
+            ? calcLineDistance(points, scale, true)
+            : type == 'perimeter'
+              ? points?.length > 4
+                ? calculatePolygonPerimeter(points, scale)
+                : calcLineDistance(points, scale, true)
+              : type == 'area'
+                ? calculatePolygonArea(points, scale)
+                : type == 'volume'
+                  ? calculatePolygonVolume(
+                    points,
+                    currentItem?.depth || 1,
+                    scale
+                  )
+                  : '';
+
+        // Check if there's already an entry with the same projectName and pageLabel
+        const existingEntry = result?.find(
+          (entry: any) => entry.category === category
+        );
+        if (existingEntry) {
+          const existingEntrySubCategory = existingEntry?.children?.find(
+            (entry: any) => entry?.subcategory === subcategory
+          );
+          const existingEntrySubCategoryIndex =
+            existingEntry?.children?.findIndex(
+              (entry: any) => entry?.subcategory === subcategory
+            );
+          if (
+            existingEntrySubCategory &&
+            subcategory &&
+            existingEntrySubCategoryIndex != -1
+          ) {
+            existingEntrySubCategory['isSubParent'] = true;
+            if (
+              Array.isArray(
+                existingEntry?.children[existingEntrySubCategoryIndex]?.children
+              )
+            ) {
+              existingEntry?.children[
+                existingEntrySubCategoryIndex
+              ]?.children?.push({
+                key: dateTime,
+                isChild: true,
+                category,
+                subcategory,
+                dateTime,
+                points,
+                projectName,
+                stroke,
+                strokeWidth,
+                textUnit,
+                id,
+                lineCap,
+                depth,
+                x,
+                y,
+                user,
+                isParent: false,
+                type,
+                pageId,
+                text,
+              });
+            } else {
+              existingEntry.children[existingEntrySubCategoryIndex].children = [
+                {
+                  key: dateTime,
+                  isChild: true,
+                  category,
+                  subcategory,
+                  dateTime,
+                  points,
+                  projectName,
+                  stroke,
+                  strokeWidth,
+                  textUnit,
+                  id,
+                  lineCap,
+                  depth,
+                  x,
+                  y,
+                  user,
+                  isParent: false,
+                  type,
+                  pageId,
+                  text,
+                },
+              ];
+            }
+            console.log(
+              returningArr,
+              subcategory,
+              result,
+              ' =====> measurementsTableData measurementsTableData the final obj given code runs here'
+            );
+          } else {
+            existingEntry?.children?.push(
+              subcategory
+                ? {
+                  key: dateTime,
+                  isSubParent: true,
+                  isParent: false,
+                  category,
+                  subcategory,
+                  dateTime,
+                  points,
+                  projectName,
+                  stroke,
+                  strokeWidth,
+                  textUnit,
+                  id,
+                  lineCap,
+                  depth,
+                  x,
+                  y,
+                  user,
+                  type,
+                  pageId,
+                  text,
+                  children: [
+                    {
+                      key: dateTime,
+                      isParent: false,
+                      isChild: true,
+                      category,
+                      subcategory,
+                      dateTime,
+                      points,
+                      projectName,
+                      stroke,
+                      strokeWidth,
+                      textUnit,
+                      id,
+                      lineCap,
+                      depth,
+                      x,
+                      y,
+                      user,
+                      type,
+                      pageId,
+                      text,
+                    },
+                  ],
+                }
+                : {
+                  key: dateTime,
+                  category,
+                  subcategory,
+                  dateTime,
+                  points,
+                  projectName,
+                  stroke,
+                  strokeWidth,
+                  textUnit,
+                  id,
+                  lineCap,
+                  depth,
+                  x,
+                  y,
+                  user,
+                  isParent: false,
+                  type,
+                  pageId,
+                  text,
+                }
+            );
+          }
+        } else {
+          result?.push({
+            key: dateTime,
+            isParent: true,
+            category,
+            subcategory,
+            dateTime,
+            points,
+            projectName,
+            stroke,
+            strokeWidth,
+            textUnit,
+            id,
+            lineCap,
+            depth,
+            x,
+            y,
+            user,
+            type,
+            pageId,
+            text,
+            children: subcategory
+              ? [
+                {
+                  key: dateTime,
+                  isSubParent: true,
+                  isParent: false,
+                  category,
+                  subcategory,
+                  dateTime,
+                  points,
+                  projectName,
+                  stroke,
+                  strokeWidth,
+                  textUnit,
+                  id,
+                  lineCap,
+                  depth,
+                  x,
+                  y,
+                  user,
+                  type,
+                  pageId,
+                  text,
+                  children: [
+                    {
+                      key: dateTime,
+                      isParent: false,
+                      isChild: true,
+                      category,
+                      subcategory,
+                      dateTime,
+                      points,
+                      projectName,
+                      stroke,
+                      strokeWidth,
+                      textUnit,
+                      id,
+                      lineCap,
+                      depth,
+                      x,
+                      y,
+                      user,
+                      type,
+                      pageId,
+                      text,
+                    },
+                  ],
+                },
+              ]
+              : [
+                {
+                  key: dateTime,
+                  isParent: false,
+                  category,
+                  subcategory,
+                  dateTime,
+                  points,
+                  projectName,
+                  stroke,
+                  strokeWidth,
+                  textUnit,
+                  id,
+                  lineCap,
+                  depth,
+                  x,
+                  y,
+                  user,
+                  type,
+                  pageId,
+                  text,
+                },
+              ],
+          });
+        }
+        return result;
+      }, []);
+    }
+    returningArr = [
+      ...returningArr,
+      ...emptyCategories.map((i: any, ind: number) => ({
+        category: i,
+        children: [
+          ...(Array.isArray(takeOff?.subCategories)
+            ? [
+              ...takeOff.subCategories.map((it: any, index: number) => ({
+                category: i,
+                isSubParent: true,
+                isParent: false,
+                key: new Date()?.toString() + ind + index,
+                subcategory: it,
+              })),
+            ]
+            : []),
+        ],
+        isParent: true,
+        key: new Date()?.toString() + ind,
+      })),
+    ];
+    console.log(
+      returningArr,
+      ' =====> measurementsTableData measurementsTableData first returning array object'
+    );
+    return returningArr;
+  };
+
   // const captureShape = async (
   //   shape: any,
   //   background: HTMLImageElement,
@@ -1988,6 +2527,49 @@ const TakeOffNewPage = () => {
   //     });
   //   });
   // };
+
+  const getBezierPointsCurve = (customPoints: number[], controlPoints: ControlPoint[]) => {
+    if (!(Array.isArray(controlPoints)) || !(controlPoints.length > 0)) return customPoints
+    try {
+      const bezierPoints: number[] = [];
+      for (let i = 0; i < customPoints.length; i += 2) {
+        const nextIndex = (i + 2) % customPoints.length;
+        const controlIndex = i / 2;
+        bezierPoints.push(customPoints[i], customPoints[i + 1]);
+        bezierPoints.push(
+          controlPoints[controlIndex].x + controlPoints[controlIndex].offsetX,
+          controlPoints[controlIndex].y + controlPoints[controlIndex].offsetY
+        );
+        bezierPoints.push(customPoints[nextIndex], customPoints[nextIndex + 1]);
+      }
+      console.log(bezierPoints, ' ==> bezier points in get bezier points');
+      return bezierPoints;
+    } catch (error) {
+      console.log(error);
+      return customPoints;
+    }
+  };
+
+  const getBezierPointsArc = (customPoints: number[], controlPoints: ControlPoint[]) => {
+    try {
+      const bezierPoints: number[] = [];
+      for (let i = 0; i < customPoints.length; i += 2) {
+        const nextIndex = (i + 2) % customPoints.length;
+        const controlIndex = 0//i / 2;
+        bezierPoints.push(customPoints[i], customPoints[i + 1]);
+        bezierPoints.push(
+          controlPoints[controlIndex].x + controlPoints[controlIndex].offsetX,
+          controlPoints[controlIndex].y + controlPoints[controlIndex].offsetY
+        );
+        bezierPoints.push(customPoints[nextIndex], customPoints[nextIndex + 1]);
+      }
+      console.log(bezierPoints, ' ==> bezier points in get bezier points');
+      return bezierPoints;
+    } catch (error) {
+      console.log(error);
+      return customPoints;
+    }
+  };
   const captureShape = async (
     shapeArr: any[],
     background: HTMLImageElement
@@ -2053,16 +2635,20 @@ const TakeOffNewPage = () => {
           case 'dynamic':
           case 'area':
           case 'volume':
+          case 'arc':
+          case 'curve':
             {
               // Example for a line or polygon shape
               const { points, stroke, strokeWidth, lineCap } = shape;
+              let pts = shapeType == 'curve' ? getBezierPointsCurve(points, shape?.controlPoints) : shapeType == 'arc' ? getBezierPointsArc(points, shape?.controlPoints) : points
               const line = new Konva.Line({
-                points,
+                points: pts,
                 stroke,
                 strokeWidth,
                 lineCap,
-                closed: shapeType === 'area' || shapeType === 'volume', // Close path for areas and volumes
+                closed: shapeType === 'area' || shapeType === 'volume' || shapeType == 'curve', // Close path for areas and volumes
                 fill: shape?.fillColor,
+                bezier: shapeType === 'arc' || shapeType === 'curve'
               });
               layer.add(line);
               console.warn(shape, 'sssss');
@@ -2071,7 +2657,8 @@ const TakeOffNewPage = () => {
               if (
                 shapeType === 'area' ||
                 shapeType === 'volume' ||
-                shapeType === 'dynamic'
+                shapeType === 'dynamic' ||
+                shapeType === 'curve'
               ) {
                 const { x, y } = calculatePolygonCenter(points);
                 xText = x - 20;
@@ -2156,7 +2743,7 @@ const TakeOffNewPage = () => {
       };
     });
   };
-  const imagesToPdf = (images: any) => {
+  const imagesToPdf = (images: any, name: string = 'output.pdf') => {
     try {
       const pdf = new jsPDF();
 
@@ -2176,7 +2763,7 @@ const TakeOffNewPage = () => {
         // pdf.addImage(imgData?.src, 'JPEG', 0, 0, imgData?.width, imgData?.height);
       });
 
-      pdf.save('output.pdf');
+      pdf.save(name);
     } catch (error) {
       console.log(
         error,
@@ -2185,20 +2772,80 @@ const TakeOffNewPage = () => {
     }
   };
   const [markuploading, setmarkuploading] = useState(false);
-  const downloadMarkup = async (file: any) => {
-    if (!file?.fileId) return;
+  // const downloadMarkup = async (file: any) => {
+  //   if (!file?.fileId) return;
+  //   try {
+  //     const allpgs = takeOff?.pages?.filter(
+  //       (i: any) => i?.fileId == file?.fileId
+  //     );
+  //     const arrMsr = getPageData(); // converting measurements to array
+  //     if (!Array.isArray(arrMsr) || !(arrMsr.length > 0)) {
+  //       return;
+  //     }
+  //     console.log(file, takeOff, allpgs, getPageData(), ' ===> file');
+  //     let imgArr: any[] = [];
+  //     if (allpgs && Array.isArray(allpgs) && allpgs?.length > 0) {
+  //       setmarkuploading(true);
+  //       await Promise.all(
+  //         allpgs?.slice(0, 6)?.map(async (it: any) => {
+  //           const curPgMsr = arrMsr.filter((i: any) => i?.pageId == it?.pageId);
+  //           console.log(it, curPgMsr, ' ===> file page with its measurments');
+  //           const background = await loadImage(it?.src);
+  //           if (curPgMsr && Array.isArray(curPgMsr) && curPgMsr?.length > 0) {
+  //             const img = await captureShape(
+  //               [
+  //                 ...curPgMsr.map((i) => ({
+  //                   ...i?.config,
+  //                   text: i?.text,
+  //                   name: i?.projectName,
+  //                   type: i?.type,
+  //                 })),
+  //               ],
+  //               background
+  //             );
+  //             imgArr.push(img);
+  //             // await Promise.all(
+  //             //   curPgMsr.map(async (curMsr: any) => {
+  //             //     try {
+  //             //       const img = await captureShape({ ...curMsr.config, text: curMsr.text, name: curMsr.projectName }, background, curMsr?.type ?? 'line')
+  //             //       console.log(img, " ===> file page with its measurments final images img ")
+  //             //       imgArr.push({ src: img, width: background.width, height: background.height })
+  //             //     } catch (error) {
+  //             //       console.log(error, " ===> file page with its measurments final images error ")
+  //             //     }
+  //             //   })
+  //             // )
+  //           } else {
+  //             imgArr?.push(background);
+  //           }
+  //         })
+  //       );
+  //       console.log(
+  //         imgArr,
+  //         ' ===> file page with its measurments final images'
+  //       );
+  //       imagesToPdf(imgArr?.reverse());
+  //       setmarkuploading(false);
+  //     }
+  //   } catch (error) {
+  //     setmarkuploading(false);
+  //     console.log(error);
+  //   }
+  // };
+
+  const downloadMarkupByCategory = async (file: any) => {
+    if (!file) return
     try {
-      const allpgs = takeOff?.pages?.filter(
-        (i: any) => i?.fileId == file?.fileId
-      );
-      const arrMsr = getPageData(); // converting measurements to array
-      if (!Array.isArray(arrMsr) || !(arrMsr.length > 0)) {
-        return;
-      }
-      console.log(file, takeOff, allpgs, getPageData(), ' ===> file');
+      let arrMsr = getPageData(); // converting measurements to array
+      arrMsr = Array.isArray(arrMsr) ? arrMsr?.filter(i => i?.category == file) : []
+      let requiredPages = new Set<any>([]);
+      arrMsr.forEach((msr: any) => requiredPages.add(msr?.pageId))
+      const pagesArr = Array.from(requiredPages);
+      const allpgs = takeOff?.pages?.filter((i: any) => pagesArr?.some(pg => pg == i?.pageId))
+      console.log(arrMsr, file, requiredPages, allpgs, " ===> ArrMeasurements")
       let imgArr: any[] = [];
-      if (allpgs && Array.isArray(allpgs) && allpgs?.length > 0) {
-        setmarkuploading(true);
+      if (pagesArr && pagesArr.length > 0 && allpgs && Array.isArray(allpgs) && allpgs?.length > 0) {
+        setmarkuploading(true)
         await Promise.all(
           allpgs?.slice(0, 6)?.map(async (it: any) => {
             const curPgMsr = arrMsr.filter((i: any) => i?.pageId == it?.pageId);
@@ -2217,40 +2864,139 @@ const TakeOffNewPage = () => {
                 background
               );
               imgArr.push(img);
-              // await Promise.all(
-              //   curPgMsr.map(async (curMsr: any) => {
-              //     try {
-              //       const img = await captureShape({ ...curMsr.config, text: curMsr.text, name: curMsr.projectName }, background, curMsr?.type ?? 'line')
-              //       console.log(img, " ===> file page with its measurments final images img ")
-              //       imgArr.push({ src: img, width: background.width, height: background.height })
-              //     } catch (error) {
-              //       console.log(error, " ===> file page with its measurments final images error ")
-              //     }
-              //   })
-              // )
             } else {
               imgArr?.push(background);
             }
           })
         );
-        console.log(
-          imgArr,
-          ' ===> file page with its measurments final images'
-        );
-        imagesToPdf(imgArr?.reverse());
-        setmarkuploading(false);
       }
+      imagesToPdf(imgArr, `${file}.pdf`);
+      setmarkuploading(false)
     } catch (error) {
       setmarkuploading(false);
       console.log(error);
     }
   };
 
+  const [expandedKeys, setexpandedKeys] = useState({
+    files: [1],
+    takeOff: [1],
+    wbs: [1],
+  });
+  const [isDrag, setisDrag] = useState<boolean>(false);
+  const [selectedShape, setSelectedShape] = useState('');
+
+  const openShap = (record: any) => {
+    if (
+      record &&
+      record?.pageId &&
+      takeOff &&
+      takeOff?.measurements[`${record?.pageId}`] &&
+      takeOff?.measurements[`${record?.pageId}`][`${record?.type}`] &&
+      Array.isArray(
+        takeOff?.measurements[`${record?.pageId}`][`${record?.type}`]
+      )
+    ) {
+      if (record?.type == 'count' || record?.type == "texts") {
+        return
+      }
+      const pg = takeOff?.pages?.find((i: any) => i?.pageId == record?.pageId);
+      const shape = takeOff?.measurements[`${record?.pageId}`][
+        `${record?.type}`
+      ]?.find(
+        (i: any) =>
+          i?.points[0] == record?.points[0] && i?.points[1] == record?.points[1]
+      );
+      const shapeIndex = takeOff?.measurements[`${record?.pageId}`][
+        `${record?.type}`
+      ]?.findIndex(
+        (i: any) =>
+          i?.points[0] == record?.points[0] && i?.points[1] == record?.points[1]
+      );
+      console.log(
+        record,
+        pg,
+        shape,
+        shapeIndex,
+        ' ===> Data of record and takeoff'
+      );
+      if (shapeIndex != -1) {
+        const text = `${record?.type}-${shapeIndex}`;
+        setselectedPage(pg);
+        setSelectedShape(text);
+        setselectedTakeOffTab('page');
+      }
+    }
+  };
+  console.log(draw, takeOff, ' ===> draw');
+
+  const [iscolorpickeropen, setiscolorpickeropen] = useState(false);
+  const getWidth = (pg: any, height: number) => {
+    //w 3 h 5 nh 10
+    if (pg?.width && pg.height && height) {
+      const ratio = height / pg?.height;
+      return pg?.width * ratio;
+    } else {
+      return 250;
+    }
+  };
+
+  console.log(selectedShape, selectedPage, ' ===> selected shape here');
+
+  //drag resize handle
+  const parent = document.getElementById('drag-container');
+  const child1 = document.getElementById('left-side');
+  const child2 = document.getElementById('right-side');
+  const handle = document.getElementById('handle');
+
+  if (parent && handle && child1 && child2) {
+    handle.addEventListener('mousedown', function (e) {
+      e.preventDefault();
+
+      // Get the initial positions and sizes
+      const initialX = e.clientX;
+      const initialChild1Width = child1.offsetWidth;
+      // const initialChild2Width = child2.offsetWidth;
+      const parentWidth = parent.offsetWidth;
+
+      function onMouseMove(e: any) {
+        // Calculate the new width of child1
+        const deltaX = e.clientX - initialX;
+        const newChild1Width = initialChild1Width + deltaX;
+        const newChild1WidthPercent = (newChild1Width / parentWidth) * 100;
+
+        // Set the new width for child1 and adjust child2 accordingly
+        //@ts-ignore
+        child1.style.width = `${newChild1WidthPercent}%`;
+        //@ts-ignore
+        child2.style.width = `${100 - newChild1WidthPercent - 2}%`; // -2% accounts for the handle width
+      }
+
+      function onMouseUp() {
+        window.removeEventListener('mousemove', onMouseMove);
+        window.removeEventListener('mouseup', onMouseUp);
+      }
+
+      // Attach the listeners
+      window.addEventListener('mousemove', onMouseMove);
+      window.addEventListener('mouseup', onMouseUp);
+    });
+  }
+
+  // const [catDDOpen, setcatDDOpen] = useState(true);
+  const [catopened, setcatopened] = useState<number[]>([])
+
+  const [closedFilesIndArray, setclosedFilesIndArray] = useState<number[]>([]);
+  console.log(closedFilesIndArray, ' closed files array');
+
   return (
     <>
       <section className="px-8 pb-4 mt-5">
         <div className="flex justify-between">
-          <h2>{takeOff?.name ?? ''}</h2>
+          <h2>
+            {takeOff?.name ?? ''}
+            {/* - {JSON.stringify(selectedPage?.scale)} */}
+          </h2>
           <div className="flex gap-x-2">
             <CustomButton
               text="Generate Report"
@@ -2261,16 +3007,16 @@ const TakeOffNewPage = () => {
               onClick={() => {
                 setreportModal(true);
               }}
-              // onClick={() => {
-              //   //@ts-ignore
-              //   (urlSearch && urlSearch.get('edit_id') && urlSearch.get('edit_id')?.length > 0) ? router.push(`/take-off/report?edit_id=${urlSearch.get('edit_id')}&scale=${JSON?.stringify(scaleData[1] ?? { xScale: `1in=1in`, yScale: `1in=1in`, precision: '1', })}`) : router.push('/take-off/report')
-              // }}
+            // onClick={() => {
+            //   //@ts-ignore
+            //   (urlSearch && urlSearch.get('edit_id') && urlSearch.get('edit_id')?.length > 0) ? router.push(`/take-off/report?edit_id=${urlSearch.get('edit_id')}&scale=${JSON?.stringify(scaleData[1] ?? { xScale: `1in=1in`, yScale: `1in=1in`, precision: '1', })}`) : router.push('/take-off/report')
+            // }}
             />
             <Popover
               title={'Select File'}
               content={
                 <div>
-                  {takeOff?.files &&
+                  {/* {takeOff?.files &&
                     Array.isArray(takeOff?.files) &&
                     takeOff?.files?.length > 0 &&
                     takeOff.files.map((it: any, index: number) => {
@@ -2283,6 +3029,23 @@ const TakeOffNewPage = () => {
                           }}
                         >
                           {it?.name?.slice(0, 30)}
+                        </div>
+                      );
+                    })} */}
+                  {takeOff?.categories &&
+                    Array.isArray(takeOff?.categories) &&
+                    takeOff?.categories?.length > 0 &&
+                    takeOff.categories.map((it: any, index: number) => {
+                      return (
+                        <div
+                          key={index}
+                          className="cursor-pointer hover:bg-lavenderPurpleReplica hover:text-white p-1 rounded"
+                          onClick={() => {
+                            // downloadMarkup(it);
+                            downloadMarkupByCategory(it)
+                          }}
+                        >
+                          {it?.slice(0, 30)}
                         </div>
                       );
                     })}
@@ -2299,7 +3062,7 @@ const TakeOffNewPage = () => {
                 iconheight={20}
                 isLoading={markuploading}
                 icon={<DownOutlined />}
-                // onClick={() => { downloadMarkup((takeOff?.files && Array.isArray(takeOff?.files) && takeOff?.files?.length > 0) ? takeOff?.files[0] : {}) }}
+              // onClick={() => { downloadMarkup((takeOff?.files && Array.isArray(takeOff?.files) && takeOff?.files?.length > 0) ? takeOff?.files[0] : {}) }}
               />
             </Popover>
           </div>
@@ -2307,25 +3070,25 @@ const TakeOffNewPage = () => {
 
         {/* grid place-items-center shadow-sceneryShadow  */}
         <div
-          className={`flex gap-x-5 justify-between rounded-lg my-4 shadow-none ${bg_style} h-[800px] flex flex-wrap justify-between !bg-transparent`}
+          id="drag-container"
+          className={`flex gap-x-5 justify-between rounded-lg my-4 !shadow-none ${bg_style} h-[800px] flex flex-wrap justify-between !bg-transparent`}
         >
           {/* Left Bar */}
           {leftOpened && (
-            <div className="w-[25%] h-[100%] rounded-2xl shadow-secondaryTwist border flex flex-col">
+            <div
+              id="left-side"
+              className="w-[27%] h-[100%] relative rounded-2xl shadow-secondaryTwist border flex flex-col !bg-white"
+            >
               {/* sideBarHeader */}
-              <div className="w-[full] h-[25%] border-b bg-gradient-to-r from-[#8449EB]/5 to-[#6A56F6]/5 flex flex-col p-3 bg-transparent rounded-t-2xl">
+              <div className="!py-0 w-[full] h-[25%] border-b bg-gradient-to-r from-[#8449EB]/5 to-[#6A56F6]/5 flex flex-col px-3 bg-transparent rounded-t-2xl">
                 {/* upper */}
-                <div className="h-[75%] flex flex-col justify-evenly">
+                <div className="h-[70%] flex flex-col justify-evenly">
                   <div className="flex gap-x-2">
                     <Button
                       onClick={() => {
                         setsideTabs('Plans');
                       }}
-                      className={
-                        sideTabs == 'Plans'
-                          ? 'bg-lavenderPurpleReplica text-white font-semibold'
-                          : ''
-                      }
+                      className={`!border-none ${sideTabs == 'Plans' ? 'bg-lavenderPurpleReplica text-white font-semibold' : '!bg-gray-100'}`}
                     >
                       Plans
                     </Button>
@@ -2333,11 +3096,7 @@ const TakeOffNewPage = () => {
                       onClick={() => {
                         setsideTabs('TakeOff');
                       }}
-                      className={
-                        sideTabs == 'TakeOff'
-                          ? 'bg-lavenderPurpleReplica text-white font-semibold'
-                          : ''
-                      }
+                      className={`!border-none ${sideTabs == 'TakeOff' ? 'bg-lavenderPurpleReplica text-white font-semibold' : '!bg-gray-100'}`}
                     >
                       Takeoff
                     </Button>
@@ -2345,11 +3104,7 @@ const TakeOffNewPage = () => {
                       onClick={() => {
                         setsideTabs('WBS');
                       }}
-                      className={
-                        sideTabs == 'WBS'
-                          ? 'bg-lavenderPurpleReplica text-white font-semibold'
-                          : ''
-                      }
+                      className={`!border-none ${sideTabs == 'WBS' ? 'bg-lavenderPurpleReplica text-white font-semibold' : '!bg-gray-100'}`}
                     >
                       WBS / Category
                     </Button>
@@ -2375,9 +3130,9 @@ const TakeOffNewPage = () => {
                   </div>
                 </div>
                 {/* lower */}
-                <div className="h-[25%] flex justify-between gap-x-3 items-center">
+                <div className="h-[30%] flex justify-between gap-x-3 items-center">
                   <div className="grow flex gap-x-4 items-center">
-                    <MenuUnfoldOutlined className="text-lavenderPurpleReplica text-[20px]" />
+                    <MenuOutlined className="text-lavenderPurpleReplica text-[20px]" />
                     <span className="font-inter font-[200] text-gray-800">
                       {sideTabs == 'Plans'
                         ? 'Plan & Documents'
@@ -2406,15 +3161,15 @@ const TakeOffNewPage = () => {
                       <Select
                         className="!w-52 !mb-1"
                         style={{ width: 300 }}
-                        placeholder="Select Category"
-                        onSelect={(value: any) => {
-                          if (selectedCate === value) {
-                            setselectedCate(null);
-                          } else {
-                            setselectedCate(value);
-                          }
-                        }}
-                        value={selectedCate}
+                        placeholder="Category"
+                        // onSelect={(value: any) => {
+                        //   if (selectedCate === value) {
+                        //     setselectedCate(null);
+                        //   } else {
+                        //     setselectedCate(value);
+                        //   }
+                        // }}
+                        value={"Category"}
                         dropdownRender={(menu) => (
                           <>
                             {menu}
@@ -2433,6 +3188,20 @@ const TakeOffNewPage = () => {
                                 type="text"
                                 icon={<PlusOutlined />}
                                 onClick={() => {
+                                  updateCategories(
+                                    [
+                                      ...(Array.isArray(takeOff?.categories)
+                                        ? takeOff.categories
+                                        : []),
+                                      categoryText,
+                                    ],
+                                    [
+                                      ...(Array.isArray(takeOff?.subCategories)
+                                        ? takeOff.subCategories
+                                        : []),
+                                    ]
+                                  );
+                                  // setDraw((ps:any)=>({...ps,categories:[...(Array.isArray(ps?.categories) ? ps?.categories : []),categoryText]}));
                                   setcategoryList((ps: any) => [
                                     ...ps,
                                     categoryText,
@@ -2445,28 +3214,55 @@ const TakeOffNewPage = () => {
                             </Space>
                           </>
                         )}
-                        options={categoryList.map((item: any) => ({
-                          label: item,
-                          value: item,
-                        }))}
-                      />
+                      // options={[...(Array.isArray(takeOff?.categories) ? takeOff?.categories : [])].map((item: any) => ({ label: item, value: item }))}
+                      >
+                        {[
+                          ...(Array.isArray(takeOff?.categories)
+                            ? takeOff.categories
+                            : []),
+                        ].map((item: any, index: number) => (
+                          <Option key={index + ''} value={item}>
+                            <span>{item}</span>
+                            <span style={{ float: 'right' }}>
+                              <DeleteOutlined
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  updateCategories(
+                                    takeOff.categories.filter(
+                                      (i: string) => i != item
+                                    ),
+                                    [
+                                      ...(Array.isArray(takeOff?.subCategories)
+                                        ? takeOff.subCategories
+                                        : []),
+                                    ]
+                                  );
+                                  setselectedCate(null);
+                                  setselectedSubCate(null);
+                                }}
+                              />
+                            </span>
+                          </Option>
+                        ))}
+                      </Select>
                       <Select
                         className="!w-52 !mb-1"
+                        disabled={!selectedCate}
                         style={{ width: 300 }}
-                        placeholder="Select SubCategory"
-                        onSelect={(value: any) => {
-                          if (selectedSubCate === value) {
-                            setselectedSubCate(null);
-                          } else {
-                            setselectedSubCate(value);
-                          }
-                        }}
-                        value={selectedSubCate}
+                        placeholder="SubCategory"
+                        // onSelect={(value: any) => {
+                        //   if (selectedSubCate === value) {
+                        //     setselectedSubCate(null);
+                        //   } else {
+                        //     setselectedSubCate(value);
+                        //   }
+                        // }}
+                        value={"Sub Category"}
                         dropdownRender={(menu) => (
                           <>
                             {menu}
                             <Divider style={{ margin: '8px 0' }} />
-                            <Space style={{ padding: '0 8px 4px' }}>
+                            {selectedCate && <Space style={{ padding: '0 8px 4px' }}>
                               <Input
                                 placeholder="Please enter item"
                                 // ref={inputRef}
@@ -2480,23 +3276,67 @@ const TakeOffNewPage = () => {
                                 type="text"
                                 icon={<PlusOutlined />}
                                 onClick={() => {
+                                  if (!selectedCate) {
+                                    return
+                                  }
+                                  updateCategories(
+                                    [
+                                      ...(Array.isArray(takeOff?.categories)
+                                        ? takeOff.categories
+                                        : []),
+                                    ],
+                                    [
+                                      ...(Array.isArray(takeOff?.subCategories)
+                                        ? takeOff.subCategories
+                                        : []),
+                                      subcategoryText + "-" + selectedCate,
+                                    ]
+                                  );
+                                  // setDraw((ps:any)=>({...ps,subCategories:[...(Array.isArray(ps?.subCategories) ? ps?.subCategories : []),subcategoryText]}));
                                   setsubcategoryList((ps: any) => [
                                     ...ps,
-                                    subcategoryText,
+                                    subcategoryText + "-" + selectedCate,
                                   ]);
                                   setsubcategoryText('');
                                 }}
                               >
                                 Add
                               </Button>
-                            </Space>
+                            </Space>}
                           </>
                         )}
-                        options={subcategoryList.map((item: any) => ({
-                          label: item,
-                          value: item,
-                        }))}
-                      />
+                      // options={[...(Array.isArray(takeOff?.subCategories) ? takeOff?.subCategories : [])].map((item: any) => (
+                      //   { label: item, value: item }
+                      // ))}
+                      >
+                        {[
+                          ...(Array.isArray(takeOff?.subCategories)
+                            ? takeOff.subCategories.filter((val: string) => val?.includes(selectedCate))
+                            : []),
+                        ].map((item: any, index: number) => (
+                          <Option key={index + ''} value={item}>
+                            <span>{item?.split('-')[0]}</span>
+                            <span style={{ float: 'right' }}>
+                              <DeleteOutlined
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  updateCategories(
+                                    [
+                                      ...(Array.isArray(takeOff?.categories)
+                                        ? takeOff.categories
+                                        : []),
+                                    ],
+                                    takeOff.subCategories.filter(
+                                      (i: string) => i != item
+                                    )
+                                  );
+                                  setselectedSubCate(null);
+                                }}
+                              />
+                            </span>
+                          </Option>
+                        ))}
+                      </Select>
                     </div>
                   )}
                 </div>
@@ -2521,6 +3361,17 @@ const TakeOffNewPage = () => {
                     style={{ backgroundColor: 'transparent' }}
                     rowClassName={'table-row-transparent'}
                     rootClassName="table-row-transparent"
+                    expandedRowKeys={expandedKeys.files}
+                    onExpand={(expanded, record) => {
+                      if (expanded) {
+                        setexpandedKeys((ps) => ({
+                          ...ps,
+                          files: [record.key],
+                        }));
+                      } else {
+                        setexpandedKeys((ps) => ({ ...ps, files: [] }));
+                      }
+                    }}
                   />
                 </div>
               )}
@@ -2543,35 +3394,351 @@ const TakeOffNewPage = () => {
                     style={{ backgroundColor: 'transparent' }}
                     rowClassName={'table-row-transparent'}
                     rootClassName="table-row-transparent"
+                  // expandedRowKeys={expandedKeys.takeOff}
+                  // onExpand={(expanded, record) => {
+                  //   if (expanded) {
+                  //     setexpandedKeys(ps => ({ ...ps, takeOff: [record.key] }))
+                  //   } else {
+                  //     setexpandedKeys(ps => ({ ...ps, takeOff: [] }))
+                  //   }
+                  // }}
                   />
                 </div>
               )}
               {sideTabs == 'WBS' && (
-                <div className="grow flex !border-black">
-                  <Table
-                    columns={tableColumns}
-                    expandable={{
-                      // expandedRowRender: (record) => <p style={{ margin: 0 }}>{record.description}</p>,
-                      rowExpandable: (record) => record?.isParent == true,
-                      // expandIcon:(record:any) => <DownOutlined />
-                    }}
-                    // dataSource={groupDataForFileTable(pages)}
-                    dataSource={tableData}
-                    className="grow bg-transparent transparent-table"
-                    scroll={{ y: 580 }}
-                    pagination={false}
-                    showHeader={true}
-                    // bordered
-                    style={{ backgroundColor: 'transparent' }}
-                    rowClassName={'table-row-transparent'}
-                    rootClassName="table-row-transparent"
-                  />
+                <div className="grow !border-black p-2 overflow-y-auto max-h-[70%]">
+                  {/* <Table
+                columns={tableColumns}
+                expandable={{
+                  // expandedRowRender: (record) => <p style={{ margin: 0 }}>{record.description}</p>,
+                  rowExpandable: (record) => record?.isParent == true,
+                  // expandIcon:(record:any) => <DownOutlined />
+                }}
+                // dataSource={groupDataForFileTable(pages)}
+                dataSource={tableData}
+                className='grow bg-transparent transparent-table'
+                scroll={{ y: 580 }}
+                pagination={false}
+                showHeader={true}
+                // bordered
+                style={{ backgroundColor: 'transparent' }}
+                rowClassName={'table-row-transparent'}
+                rootClassName='table-row-transparent'
+              /> */}
+                  {/* <div className="flex flex-col w-full">
+                    <div className="w-full flex">
+                      <span
+                        className="border p-3 cursor-pointer"
+                        onClick={() => {
+                          setcatDDOpen((ps) => !ps);
+                        }}
+                      >
+                        {catDDOpen ? (
+                          <DownOutlined
+                            style={{ strokeWidth: 30, stroke: 'black' }}
+                          />
+                        ) : (
+                          <RightOutlined
+                            style={{ strokeWidth: 30, stroke: 'black' }}
+                          />
+                        )}
+                      </span>
+                      <div className="flex justify-start items-center border px-3 grow gap-x-2 !bg-gray-100">
+                        <FileOutlined
+                          className="text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 p-1 rounded-full text-sm"
+                          style={{ strokeWidth: 30, stroke: '#007ab6' }}
+                        />
+                        <span className="font-bold">Category</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col w-full overflow-y-auto max-h-[250px]">
+                      {catDDOpen &&
+                        Array.isArray(takeOff?.categories) &&
+                        takeOff?.categories?.map((i: any, ind: number) => {
+                          return (
+                            <div
+                              className={`w-full border p-4 flex justify-between grow ${selectedCate == i ? 'bg-lavenderPurpleReplica bg-opacity-15' : 'hover:bg-gray-100'}`}
+                              key={ind}
+                            >
+                              <span>{i}</span>
+                              {selectedCate == i ? (
+                                <Button
+                                  size="small"
+                                  className="border-2 rounded-full ml-2"
+                                  onClick={() => {
+                                    setselectedCate(null);
+                                    setselectedSubCate(null);
+                                  }}
+                                >
+                                  unselect
+                                </Button>
+                              ) : (
+                                <Button
+                                  size="small"
+                                  className="border-2 rounded-full ml-2"
+                                  onClick={() => {
+                                    setselectedCate(i);
+                                  }}
+                                >
+                                  select
+                                </Button>
+                              )}
+                            </div>
+                          );
+                        })}
+                    </div>
+                  </div>
+                  <div className="flex flex-col w-full">
+                    <div className="w-full flex">
+                      <span
+                        className="border p-3 cursor-pointer"
+                        onClick={() => {
+                          setsubcateDDOpen((ps) => !ps);
+                        }}
+                      >
+                        {subcateDDOpen ? (
+                          <DownOutlined
+                            style={{ strokeWidth: 30, stroke: 'black' }}
+                          />
+                        ) : (
+                          <RightOutlined
+                            style={{ strokeWidth: 30, stroke: 'black' }}
+                          />
+                        )}
+                      </span>
+                      <div className="flex justify-start items-center border px-3 grow gap-x-2 !bg-gray-100">
+                        <FileOutlined
+                          className="text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 p-1 rounded-full text-sm"
+                          style={{ strokeWidth: 30, stroke: '#007ab6' }}
+                        />
+                        <span className="font-bold">Sub Category</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col w-full overflow-y-auto max-h-[250px]">
+                      {subcateDDOpen &&
+                        Array.isArray(takeOff?.subCategories) &&
+                        takeOff?.subCategories?.map((i: any, ind: number) => {
+                          return (
+                            <div
+                              className={`w-full border p-4 flex justify-between grow ${selectedSubCate == i ? 'bg-lavenderPurpleReplica bg-opacity-15' : 'hover:bg-gray-100'}`}
+                              key={ind}
+                            >
+                              <span>{i}</span>
+                              {selectedCate && (
+                                <>
+                                  {selectedSubCate == i ? (
+                                    <Button
+                                      size="small"
+                                      className="border-2 rounded-full ml-2"
+                                      onClick={() => {
+                                        setselectedSubCate(null);
+                                      }}
+                                    >
+                                      unselect
+                                    </Button>
+                                  ) : (
+                                    <Button
+                                      size="small"
+                                      className="border-2 rounded-full ml-2"
+                                      onClick={() => {
+                                        setselectedSubCate(i);
+                                      }}
+                                    >
+                                      select
+                                    </Button>
+                                  )}
+                                </>
+                              )}
+                            </div>
+                          );
+                        })}
+                    </div>
+                  </div> */}
+                  <div className="flex flex-col w-full">
+                    {
+                      Array.isArray(takeOff?.categories) &&
+                      takeOff?.categories?.map((categ: any, ind: number) => {
+                        return (
+                          <div key={ind}>
+                            <div className="w-full flex">
+                              <span
+                                className="border p-3 cursor-pointer"
+                                onClick={() => {
+                                  if (catopened.some(val => val == ind)) {
+                                    setcatopened(ps => ps.filter(val => val != ind))
+                                  } else {
+                                    setcatopened(ps => ([...ps, ind]))
+                                  }
+                                }}
+                              >
+                                {catopened.some(val => val == ind) ? (
+                                  <DownOutlined
+                                    style={{ strokeWidth: 30, stroke: 'black' }}
+                                  />
+                                ) : (
+                                  <RightOutlined
+                                    style={{ strokeWidth: 30, stroke: 'black' }}
+                                  />
+                                )}
+                              </span>
+                              <div className={`flex justify-between px-3 grow items-center border ${selectedCate == categ ? 'bg-lavenderPurpleReplica bg-opacity-15' : '!bg-gray-100'}`}>
+                                <div className={`flex justify-start items-center gap-x-2 `}>
+                                  <FileOutlined
+                                    className="text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 p-1 rounded-full text-sm"
+                                    style={{ strokeWidth: 30, stroke: '#007ab6' }}
+                                  />
+                                  <span className="font-bold"><EditableText key={categ} initialText={categ} onPressEnter={(vl) => {
+                                    updateCategories(
+                                      takeOff.categories.map((cit: string, cin: number) => {
+                                        if (cin == ind) {
+                                          return vl
+                                        } else {
+                                          return cit
+                                        }
+                                      }),
+                                      [
+                                        ...(Array.isArray(takeOff?.subCategories)
+                                          ? takeOff.subCategories.map((sit: string) => {
+                                            if (sit.includes(categ)) {
+                                              const [ls, lc] = sit.split('-')
+                                              console.log(lc)
+                                              return ls + "-" + vl
+                                            } else {
+                                              return sit
+                                            }
+                                          })
+                                          : []),
+                                      ]
+                                    );
+                                  }} toolTip={'Double Click to edit'} /></span>
+                                </div>
+                                <div className='flex justify-end gap-2' >
+                                  {selectedCate == categ ? (
+                                    <Button
+                                      size="small"
+                                      className="border-2 rounded-full ml-2"
+                                      onClick={() => {
+                                        setselectedCate(null);
+                                        setselectedSubCate(null);
+                                      }}
+                                    >
+                                      unselect
+                                    </Button>
+                                  ) : (
+                                    <Button
+                                      size="small"
+                                      className="border-2 rounded-full ml-2"
+                                      onClick={() => {
+                                        setselectedCate(categ);
+                                      }}
+                                    >
+                                      select
+                                    </Button>
+                                  )}
+                                  <DeleteOutlined className='cursor-pointer' onClick={() => {
+                                    updateCategories(
+                                      takeOff.categories.filter(
+                                        (cit: string) => cit != categ
+                                      ),
+                                      [
+                                        ...(Array.isArray(takeOff?.subCategories)
+                                          ? takeOff.subCategories
+                                          : []),
+                                      ]
+                                    );
+                                    setselectedCate(null);
+                                    setselectedSubCate(null);
+                                  }} />
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex flex-col w-full overflow-y-auto max-h-[250px]">
+                              {catopened.some(val => val == ind) &&
+                                Array.isArray(takeOff?.subCategories) &&
+                                takeOff?.subCategories?.filter((val: any) => val?.includes(categ))?.map((subcateg: any, sind: number) => {
+                                  return (
+                                    <div
+                                      className={`w-full border p-4 flex justify-between grow ${selectedSubCate == subcateg ? 'bg-lavenderPurpleReplica bg-opacity-15' : 'hover:bg-gray-100'}`}
+                                      key={sind}
+                                    >
+                                      <span><EditableText key={subcateg} initialText={subcateg?.split('-')[0]} onPressEnter={(vl) => {
+                                        updateCategories(
+                                          [...(Array.isArray(takeOff.categories) ? takeOff.categories : [])],
+                                          [
+                                            ...(Array.isArray(takeOff?.subCategories)
+                                              ? takeOff.subCategories.map((sit: string) => {
+                                                if (sit == subcateg) {
+                                                  const [ls, lc] = sit.split('-')
+                                                  console.log(ls)
+                                                  return vl + "-" + lc
+                                                } else {
+                                                  return sit
+                                                }
+                                              })
+                                              : []),
+                                          ]
+                                        );
+                                      }} toolTip={'Double Click to edit'} /></span>
+                                      <div className='flex gap-2'>
+                                        {selectedSubCate == subcateg ? (
+                                          <Button
+                                            size="small"
+                                            className="border-2 rounded-full ml-2"
+                                            onClick={() => {
+                                              setselectedSubCate(null);
+                                            }}
+                                          >
+                                            unselect
+                                          </Button>
+                                        ) : (
+                                          <Button
+                                            size="small"
+                                            className="border-2 rounded-full ml-2"
+                                            onClick={() => {
+                                              setselectedCate(categ)
+                                              setselectedSubCate(subcateg)
+                                            }}
+                                          >
+                                            select
+                                          </Button>
+                                        )}
+                                        <DeleteOutlined className='cursor-pointer' onClick={() => {
+                                          updateCategories(
+                                            [
+                                              ...(Array.isArray(takeOff?.categories)
+                                                ? takeOff.categories
+                                                : []),
+                                            ],
+                                            takeOff.subCategories.filter(
+                                              (sit: string) => sit != subcateg
+                                            )
+                                          );
+                                          setselectedSubCate(null)
+                                        }} />
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                            </div>
+                          </div>
+                        )
+                      })
+                    }
+                  </div>
                 </div>
               )}
+              <div
+                id="handle"
+                className="w-1 bg-lavenderPurpleReplica bg rounded-r-2xl absolute h-full right-0 top-0 cursor-col-resize bg-opacity-0 hover:bg-opacity-100"
+                draggable
+              ></div>
             </div>
           )}
           {/* Take Off New */}
-          <div className="h-[100%] w-[73%] grow rounded-2xl shadow-secondaryTwist border relative">
+          <div
+            id="right-side"
+            className="h-[100%] w-[71%] grow rounded-2xl shadow-secondaryTwist border relative !bg-white"
+          >
             <div
               className="z-50 absolute top-[25px] left-[-13px] cursor-pointer border-[2px] rounded-full flex justify-center items-center p-1 text-gray-600 bg-white"
               onClick={() => {
@@ -2619,17 +3786,16 @@ const TakeOffNewPage = () => {
                 )}
 
                 <div className="py-6 h-[709px] relative">
-                  <div className="absolute top-10 left-16 flex gap-x-3 p-3 z-40">
+                  <div className="absolute top-1 left-2 flex gap-x-3 p-3 z-40">
                     <Button
                       onClick={() => {
                         setselectedTakeOffTab('overview');
                       }}
-                      icon={<MenuUnfoldOutlined />}
-                      className={
-                        selectedTakeOffTab == 'overview'
-                          ? 'bg-lavenderPurpleReplica text-white font-semibold'
-                          : ''
+                      icon={
+                        <AppstoreOutlined className="!font-[800]] !text-xl" />
                       }
+                      size="large"
+                      className={`!border-none ${selectedTakeOffTab == 'overview' ? 'bg-lavenderPurpleReplica !bg-opacity-10 text-lavenderPurpleReplica' : '!bg-gray-100'}`}
                     >
                       Overview
                     </Button>
@@ -2638,22 +3804,20 @@ const TakeOffNewPage = () => {
                       selectedPagesList?.map((pg: any, index: number) => {
                         return (
                           <Button
-                            className={
-                              selectedTakeOffTab == 'page' &&
-                              selectedPage?.pageId == pg?.pageId
-                                ? 'bg-lavenderPurpleReplica text-white font-semibold'
-                                : ''
-                            }
+                            size="large"
+                            className={`!border-none ${selectedTakeOffTab == 'page' && selectedPage?.pageId == pg?.pageId ? 'bg-lavenderPurpleReplica !bg-opacity-10 text-lavenderPurpleReplica font-semibold' : '!bg-gray-100'}`}
                             onClick={() => {
                               setselectedPage(pg);
                               setselectedTakeOffTab('page');
                             }}
                             key={index}
-                            icon={<FilePdfOutlined />}
+                            icon={
+                              <BorderLeftOutlined className="!font-[800]] !text-xl" />
+                            }
                           >
                             {pg?.name ? pg?.name?.slice(0, 15) : ''}
                             <span
-                              className="cursor-pointer ml-5"
+                              className="cursor-pointer ml-5 !font-light"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 console.log('filtered crossed here');
@@ -2677,7 +3841,7 @@ const TakeOffNewPage = () => {
                                 }
                               }}
                             >
-                              x
+                              <CloseOutlined />
                             </span>
                           </Button>
                         );
@@ -2686,7 +3850,7 @@ const TakeOffNewPage = () => {
             <div>First Page</div> */}
                   </div>
                   {selectedTakeOffTab == 'page' && (
-                    <div className="absolute top-10 right-[50px] flex z-40 border rounded-lg bg-slate-50">
+                    <div className="absolute top-3 right-[50px] flex z-40 rounded-lg bg-slate-50 shadow-md !border">
                       <span
                         onClick={handleZoomIn}
                         className="border-r py-3 px-5 cursor-pointer"
@@ -2703,12 +3867,27 @@ const TakeOffNewPage = () => {
                         <Select
                           value={scalUnits}
                           options={[
-                            { value: 'feet', label: <span>Feets</span> },
-                            { value: 'meter', label: <span>Meters</span> },
+                            { value: 'feet', label: <span>Feet</span> },
+                            { value: 'meter', label: <span>Meter</span> },
                           ]}
                           onSelect={setscalUnits}
                         />
                       </span>
+                      <span
+                        onClick={() => {
+                          setisDrag((ps) => !ps);
+                        }}
+                        className={`py-3 px-5 cursor-pointer border-r rounded ${isDrag ? 'bg-blue-500' : ''}`}
+                      >
+                        <DragOutlined />
+                      </span>
+                    </div>
+                  )}
+                  {selectedTakeOffTab == 'page' && selectedPage && (
+                    <div className="absolute top-16 right-[50px] flex z-40 rounded-lg bg-slate-50 !border py-1 px-2">
+                      Scale : {selectedPage?.scale?.xScale ?? `1'=1'`}
+                      <br />
+                      Precision : {selectedPage?.scale?.precision}
                     </div>
                   )}
                   {selectedTakeOffTab == 'page' && (
@@ -2729,7 +3908,7 @@ const TakeOffNewPage = () => {
                         key={`draw-${0}`}
                         selectedTool={tool}
                         scale={
-                          scaleData?.[`${0 + 1}`] || {
+                          selectedPage?.scale || {
                             xScale: `1in=1in`,
                             yScale: `1in=1in`,
                             precision: '1',
@@ -2772,57 +3951,136 @@ const TakeOffNewPage = () => {
                         fillColor={fillColor}
                         countType={countType}
                         scaleUnits={scalUnits}
+                        isDrag={isDrag}
+                        selectedShape={selectedShape}
+                        setSelectedShape={setSelectedShape}
+                        handleDragEnd={handleDragEnd}
                       />
                     )}
                     {selectedTakeOffTab == 'overview' && (
-                      <div className="w-full flex justify-center items-center p-5">
-                        <div className="grow flex flex-wrap gap-3 mt-32">
-                          {takeOff &&
-                            takeOff?.pages &&
-                            Array.isArray(takeOff?.pages) &&
-                            takeOff?.pages?.map((page: any, index: number) => {
-                              return (
-                                <>
-                                  <div
-                                    key={page?.pageId}
-                                    className="relative cursor-pointer border rounded-2xl"
-                                    onClick={() => {
-                                      setselectedTakeOffTab('page');
-                                      if (
-                                        !selectedPagesList?.find(
-                                          (i: any) => i?.pageId == page?.pageId
-                                        )
-                                      ) {
-                                        //@ts-ignore
-                                        setselectedPagesList((ps: any) => [
-                                          ...ps,
-                                          page,
-                                        ]);
-                                      }
-                                      setselectedPage(page);
-                                    }}
-                                  >
-                                    <NextImage
-                                      className="rounded-t-2xl"
-                                      src={page?.src}
-                                      width={250}
-                                      height={300}
-                                      alt=""
-                                      onLoad={() => handleImageLoad(index)}
-                                    />
-                                    {isImgLoading(index) && (
-                                      <div className="rounded-t-2xl absolute top-0 left-0 w-[100%] h-[100%] bg-slate-300 flex justify-center items-center bg-opacity-30">
-                                        <Spin />
-                                      </div>
-                                    )}
-                                    <div className="py-5 px-3">
-                                      {page?.name?.slice(0, 30) ?? 'Unkonw'}
-                                    </div>
-                                  </div>
-                                </>
-                              );
-                            })}
-                        </div>
+                      <div className="w-full flex justify-center items-center p-5 flex-col mt-14">
+                        {Array.isArray(takeOff?.files) &&
+                          takeOff.files.map((fl: any, flind: number) => {
+                            return (
+                              <div
+                                className="flex flex-col w-full mb-5"
+                                key={flind}
+                              >
+                                <div
+                                  onClick={() => {
+                                    if (
+                                      closedFilesIndArray?.some(
+                                        (i) => i == flind
+                                      )
+                                    ) {
+                                      setclosedFilesIndArray((ps) =>
+                                        ps.filter((i) => i != flind)
+                                      );
+                                    } else {
+                                      setclosedFilesIndArray((ps) => [
+                                        ...ps,
+                                        flind,
+                                      ]);
+                                    }
+                                  }}
+                                  className="my-5 flex cursor-pointer bg-lavenderPurpleReplica bg-opacity-10 w-max p-2 rounded-xl text-lavenderPurpleReplica items-center gap-x-2"
+                                >
+                                  <FolderFilled className="text-3xl" />
+                                  <span>{fl?.name?.slice(0, 40)}</span>
+                                </div>
+                                <div className="grow flex flex-wrap gap-3 gap-y-5">
+                                  {!closedFilesIndArray?.some(
+                                    (i: any) => i == flind
+                                  ) &&
+                                    Array.isArray(takeOff?.pages) &&
+                                    takeOff?.pages
+                                      ?.filter(
+                                        (i: any) => i?.fileId == fl?.fileId
+                                      )
+                                      ?.slice()
+                                      ?.sort(
+                                        (a: any, b: any) => a?.index - b?.index
+                                      )
+                                      ?.map((page: any, index: number) => {
+                                        return (
+                                          <>
+                                            <div
+                                              key={page?.pageId}
+                                              className="relative cursor-pointer border rounded-2xl"
+                                              onClick={() => {
+                                                setselectedTakeOffTab('page');
+                                                if (
+                                                  !selectedPagesList?.find(
+                                                    (i: any) =>
+                                                      i?.pageId == page?.pageId
+                                                  )
+                                                ) {
+                                                  setselectedPagesList(
+                                                    //@ts-ignore
+                                                    (ps: any) => [...ps, page]
+                                                  );
+                                                }
+                                                setselectedPage(page);
+                                              }}
+                                            >
+                                              <NextImage
+                                                className="rounded-t-2xl"
+                                                src={page?.src}
+                                                width={getWidth(page, 300)}
+                                                height={300}
+                                                alt=""
+                                                onLoad={() =>
+                                                  handleImageLoad(index)
+                                                }
+                                              />
+                                              {isImgLoading(index) && (
+                                                <div className="rounded-t-2xl absolute top-0 left-0 w-[100%] h-[100%] bg-slate-300 flex justify-center items-center bg-opacity-30">
+                                                  <Spin />
+                                                </div>
+                                              )}
+                                              <div className="flex justify-between items-center w-full px-3 py-5 !bg-gray-100 !rounded-b-2xl">
+                                                <div className="font-[500] text-gray-600">
+                                                  {page?.name?.slice(0, 30) ??
+                                                    'Unkonw'}
+                                                </div>
+                                                <div
+                                                  onClick={(e) => {
+                                                    e.stopPropagation();
+                                                  }}
+                                                >
+                                                  <Dropdown
+                                                    overlay={menu(page)}
+                                                    trigger={['click']}
+                                                  >
+                                                    <MoreOutlined
+                                                      onClick={(e) => {
+                                                        e.stopPropagation();
+                                                      }}
+                                                      className="cursor-pointer text-[20px]"
+                                                    />
+                                                  </Dropdown>
+                                                </div>
+                                              </div>
+                                              <div
+                                                className="absolute top-[-14px] right-[-5px] rounded-full border text-xl flex items-center justify-center w-9 h-9 bg-white cursor-pointer text-gray-500"
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  handleMenuClick(
+                                                    'delete',
+                                                    page
+                                                  );
+                                                }}
+                                              >
+                                                <CloseOutlined />
+                                              </div>
+                                            </div>
+                                          </>
+                                        );
+                                      })}
+                                </div>
+                              </div>
+                            );
+                          })}
                       </div>
                     )}
                     {selectedTakeOffTab == 'file' && (
@@ -2921,39 +4179,72 @@ const TakeOffNewPage = () => {
                             </div>
                           </div> */}
                           <div className="grow flex w-full">
-                            {fullData?.files &&
-                              Array.isArray(fullData?.files) &&
-                              fullData?.files?.length > 0 && (
+                            {/* {fullData?.files && Array.isArray(fullData?.files) && fullData?.files?.length > 0 && <div className='flex flex-col gap-y-7 w-[40%]'>
+                              {fullData?.files && Array.isArray(fullData?.files) && fullData?.files?.length > 0 &&
+                                <CustomButton
+                                  text={`Add ${selectedFiles?.length} files to workspace`}
+                                  className="!w-auto"
+                                  // icon="plus.svg"
+                                  iconwidth={20}
+                                  iconheight={20}
+                                  isLoading={isApiCalling}
+                                  onClick={() => {
+                                    // setprogressModalOpen(true) 
+                                    addFileToWorkspace()
+                                  }}
+                                />
+                              }
+                              {selectedFiles && Array.isArray(selectedFiles) && selectedFiles?.length > 0 && <h4 className='text-gray-600'>{selectedFiles?.length} uploaded files</h4>}
+                              <ul className='list-none flex flex-col gap-y-5'>
+                                {
+                                  fullData?.files && Array.isArray(fullData?.files) && fullData?.files?.length > 0 && fullData?.files?.map((it: any, ind: number) => {
+                                    const totalProgress = fullData?.pages?.filter((i: any) => { return i?.fileId == it?.fileId })
+                                    return <li key={ind} className='inline-flex gap-3 items-center justify-center'>
+                                      <img src={'/fileCSV.png'} alt='' width={35} height={35} />
+                                      <span data-tooltip={`${it?.name}`} className='whitespace-nowrap text-gray-500'>{`${it?.name?.slice(0, 4)}`}</span>
+                                      <Progress percent={(totalProgress && Array.isArray(totalProgress) ? Math.ceil((totalProgress?.length / it?.totalPages) * 100) : 0)} strokeColor={'#007AB6'} />
+                                    </li>
+                                  })
+                                }
+                              </ul>
+                            </div>} */}
+                            {selectedFiles &&
+                              Array.isArray(selectedFiles) &&
+                              selectedFiles?.length > 0 && (
                                 <div className="flex flex-col gap-y-7 w-[40%]">
-                                  {fullData?.files &&
-                                    Array.isArray(fullData?.files) &&
-                                    fullData?.files?.length > 0 && (
+                                  {selectedFiles &&
+                                    Array.isArray(selectedFiles) &&
+                                    selectedFiles?.length > 0 && (
                                       <CustomButton
                                         text={`Add ${selectedFiles?.length} files to workspace`}
                                         className="!w-auto"
                                         // icon="plus.svg"
                                         iconwidth={20}
                                         iconheight={20}
-                                        isLoading={isApiCalling}
+                                        isLoading={fileLoading}
                                         onClick={() => {
                                           // setprogressModalOpen(true)
-                                          addFileToWorkspace();
+                                          // addFileToWorkspace()
+                                          if (!fileLoading) {
+                                            if (
+                                              edit_id &&
+                                              edit_id?.length > 0
+                                            ) {
+                                              getTakeOffDetails(edit_id);
+                                              setselectedFiles([]);
+                                            }
+                                          }
                                         }}
                                       />
                                     )}
                                   {/* {selectedFiles && Array.isArray(selectedFiles) && selectedFiles?.length > 0 && <h4 className='text-gray-600'>{selectedFiles?.length} uploaded files</h4>} */}
                                   <ul className="list-none flex flex-col gap-y-5">
-                                    {fullData?.files &&
-                                      Array.isArray(fullData?.files) &&
-                                      fullData?.files?.length > 0 &&
-                                      fullData?.files?.map(
+                                    {selectedFiles &&
+                                      Array.isArray(selectedFiles) &&
+                                      selectedFiles?.length > 0 &&
+                                      selectedFiles?.map(
                                         (it: any, ind: number) => {
-                                          const totalProgress =
-                                            fullData?.pages?.filter(
-                                              (i: any) => {
-                                                return i?.fileId == it?.fileId;
-                                              }
-                                            );
+                                          // const totalProgress = fullData?.pages?.filter((i: any) => { return i?.fileId == it?.fileId })
                                           return (
                                             <li
                                               key={ind}
@@ -2969,19 +4260,20 @@ const TakeOffNewPage = () => {
                                                 data-tooltip={`${it?.name}`}
                                                 className="whitespace-nowrap text-gray-500"
                                               >{`${it?.name?.slice(0, 4)}`}</span>
-                                              <Progress
-                                                percent={
-                                                  totalProgress &&
-                                                  Array.isArray(totalProgress)
-                                                    ? Math.ceil(
-                                                        (totalProgress?.length /
-                                                          it?.totalPages) *
-                                                          100
-                                                      )
-                                                    : 0
-                                                }
-                                                strokeColor={'#007AB6'}
-                                              />
+                                              {/* <Progress percent={(totalProgress && Array.isArray(totalProgress) ? Math.ceil((totalProgress?.length / it?.totalPages) * 100) : 0)} strokeColor={'#007AB6'} /> */}
+                                              {fileState.find(
+                                                (i) => i.name == it?.name
+                                              )?.status != 'failed' && (
+                                                  <Progress
+                                                    percent={
+                                                      fileState.find(
+                                                        (i) => i.name == it?.name
+                                                      )?.uploadProgress ?? 1
+                                                    }
+                                                    strokeColor={'#007AB6'}
+                                                  />
+                                                )}
+                                              <span className="text-sm text-gray-500">{`(${fileState.find((i) => i.name == it?.name)?.status})`}</span>
                                             </li>
                                           );
                                         }
@@ -2997,7 +4289,6 @@ const TakeOffNewPage = () => {
                                 <input
                                   type="file"
                                   accept="application/pdf"
-                                  multiple
                                   id="file-selector"
                                   className="hidden absolute top-0 left-0"
                                   style={{ display: 'none' }}
@@ -3050,18 +4341,21 @@ const TakeOffNewPage = () => {
                   {/* <DrawTable /> */}
                   {/* Second Bar to do it At Bottom */}
                   {selectedTakeOffTab == 'page' && (
-                    <Draggable>
+                    <Draggable disabled={iscolorpickeropen}>
                       <div className="bg-[#F2F2F2] h-[52px] flex flex-row items-center justify-center mb-10 px-4 gap-6 rounded-lg border">
-                        <div className="flex flex-row gap-2 items-center">
+                        {/* <div className="flex flex-row gap-2 items-center">
                           <label>Totals:</label>
                           <Select value="Length ----" />
-                        </div>
+                        </div> */}
                         <div className="flex flex-row gap-2 items-center">
                           <label>Units:</label>
                           <Select
                             className="w-[64px]"
                             value={unit}
-                            onChange={(value) => setUnit(value)}
+                            onChange={(value) => {
+                              setUnit(value);
+                              updateColorSizes('textUnit', value);
+                            }}
                           >
                             {Units.map((item) => (
                               <Select.Option value={item} key={item}>
@@ -3076,7 +4370,10 @@ const TakeOffNewPage = () => {
                             min={1}
                             max={76}
                             value={border}
-                            onChange={(value) => value && setBorder(value)}
+                            onChange={(value) => {
+                              if (value) setBorder(value);
+                              updateColorSizes('strokeWidth', value);
+                            }}
                           />
                         </div>
                         <div className="flex flex-row gap-2 items-center">
@@ -3084,20 +4381,29 @@ const TakeOffNewPage = () => {
                           <ColorPicker
                             value={color}
                             onChange={(color) => setColor(color.toHexString())}
+                            onChangeComplete={(color) => {
+                              updateColorSizes('stroke', color.toHexString());
+                            }}
+                            onOpenChange={setiscolorpickeropen}
                           />
                         </div>
                         <div className="flex flex-row gap-2 items-center">
                           <label>Text:</label>
                           <ColorPicker
                             value={textColor}
-                            onChangeComplete={(color) =>
-                              settextColor(color.toHexString())
-                            }
+                            onChangeComplete={(color) => {
+                              settextColor(color.toHexString());
+                              updateColorSizes(
+                                'textColor',
+                                color.toHexString()
+                              );
+                            }}
+                            onOpenChange={setiscolorpickeropen}
                           />
                         </div>
                         <div
                           className="flex flex-row gap-2 items-center"
-                          // onClick={}
+                        // onClick={}
                         >
                           <label>Fill:</label>
                           {/* <NextImage src={'/selectedScale.svg'} alt={'zoomicon'} width={19.97} height={11.31} /> */}
@@ -3105,7 +4411,12 @@ const TakeOffNewPage = () => {
                             value={fillColor ?? '#ffffff'}
                             onChangeComplete={(value) => {
                               handleRoomColorChange(value?.toRgbString());
+                              updateColorSizes(
+                                'fillColor',
+                                value?.toRgbString()
+                              );
                             }}
+                            onOpenChange={setiscolorpickeropen}
                           />
                           {/* <span
                             className={twMerge(
@@ -3147,11 +4458,13 @@ const TakeOffNewPage = () => {
                 {tool.selected === 'scale' && (
                   <ModalComponent open={showModal} setOpen={setShowModal}>
                     <ScaleModal
-                      numOfPages={uploadFileData.length}
+                      // numOfPages={uploadFileData.length}
+                      numOfPages={takeOff?.pages?.length ?? 0}
                       setModalOpen={setShowModal}
                       drawScale={drawScale}
                       setdrawScale={setdrawScale}
                       scaleLine={scaleLine}
+                      handleSetScale={handleSetScale}
                     />
                   </ModalComponent>
                 )}
@@ -3166,7 +4479,7 @@ const TakeOffNewPage = () => {
                     modalOpen={reportModal}
                   />
                 </ModalComponent>
-                <ModalComponent open={progressModalOpen} setOpen={() => {}}>
+                <ModalComponent open={progressModalOpen} setOpen={() => { }}>
                   <CreateProgressModal
                     setModalOpen={setprogressModalOpen}
                     files={selectedFiles}

@@ -4,9 +4,11 @@ export const USER_ROLES = {
   SUBCONTRACTOR: 'subcontractor',
 };
 export const userRoles = {
+  ADMIN: 'Admin',
   COMPANY: 'Company',
   PROJECT_MANAGER: 'Project Manager',
   SALES_MANAGER: 'Sales Manager',
   ESTIMATOR: 'Estimator',
   ACCOUNTS_MANAGER: 'Accounts Manager',
+  SUBCONTRACTOR: 'Subcontractor',
 };

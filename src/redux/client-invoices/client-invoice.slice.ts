@@ -5,7 +5,7 @@ import {
   fetchClientInvoices,
 } from './client-invoice.thunk';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
-import { IClientInvoice } from '@/app/interfaces/client-invoice.interface';
+import { IAIAInvoice } from '@/app/interfaces/client-invoice.interface';
 
 export const clientInvoiceSlice = createSlice({
   name: 'client-invoices',
@@ -20,9 +20,7 @@ export const clientInvoiceSlice = createSlice({
       fetchClientInvoices.fulfilled,
       (
         state,
-        action: PayloadAction<
-          IResponseInterface<{ invoices: IClientInvoice[] }>
-        >
+        action: PayloadAction<IResponseInterface<{ invoices: IAIAInvoice[] }>>
       ) => {
         state.loading = false;
         state.message = action.payload.message;
@@ -44,7 +42,7 @@ export const clientInvoiceSlice = createSlice({
       deleteClientInvoiceRequest.fulfilled,
       (
         state,
-        action: PayloadAction<IResponseInterface<{ invoice: IClientInvoice }>>
+        action: PayloadAction<IResponseInterface<{ invoice: IAIAInvoice }>>
       ) => {
         state.loading = false;
         state.message = action.payload.message;

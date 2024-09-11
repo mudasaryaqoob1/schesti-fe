@@ -22,7 +22,7 @@ import {
 } from '@ant-design/icons';
 import {
   G7State,
-  IClientInvoice,
+  IAIAInvoice,
 } from '@/app/interfaces/client-invoice.interface';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
@@ -30,8 +30,8 @@ import moment from 'moment';
 // import { disabledDate } from '@/app/utils/date.utils';
 
 type Props = {
-  phases: IClientInvoice[];
-  selectedPhase: IClientInvoice | null;
+  phases: IAIAInvoice[];
+  selectedPhase: IAIAInvoice | null;
   setSelectedPhase: (_value: string) => void;
   state: G7State;
   // eslint-disable-next-line no-unused-vars
@@ -456,12 +456,10 @@ export function G703Component({
                     theme={{
                       components: {
                         Button: {
-                          defaultBg: '#7F56D9',
+                          defaultBg: '#007AB6',
                           textHoverBg: '#fff',
                           colorPrimaryText: '#fff',
                           colorText: '#fff',
-                          colorPrimaryHover: '#fff',
-                          colorPrimaryActive: '#fff',
                         },
                       },
                     }}

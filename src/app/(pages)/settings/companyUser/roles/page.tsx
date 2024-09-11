@@ -8,8 +8,6 @@ import { OtherRoutes, Plans } from '@/app/utils/plans.utils';
 import { Checkbox, Skeleton, Tooltip } from 'antd';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
-import { useSelector } from 'react-redux';
-import { RootState } from '@/redux/store';
 import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 import companyRoleService from '@/app/services/company-role.service';
@@ -18,6 +16,8 @@ import { useSearchParams } from 'next/navigation';
 import { ISettingCompanyRole } from '@/app/interfaces/settings/comapny-role-settings.interface';
 import { useEffect, useState } from 'react';
 import moment from 'moment';
+import { useUser } from '@/app/hooks/useUser';
+import { IPricingPlan } from '@/app/interfaces/pricing-plan.interface';
 
 const CompanyRoleSchema = Yup.object().shape({
   name: Yup.string()
@@ -34,9 +34,9 @@ export default function NewCompanyRolePage() {
     null
   );
   const [isLoading, setIsLoading] = useState(false);
-  const userPlan = useSelector(
-    (state: RootState) => state.pricingPlan.userPlan
-  );
+  const user = useUser();
+  const userPlan = user?.subscription?.planId as IPricingPlan;
+
   const userPlanFeatures = userPlan ? userPlan.features.split(',') : [];
   const router = useRouterHook();
   const searchParams = useSearchParams();

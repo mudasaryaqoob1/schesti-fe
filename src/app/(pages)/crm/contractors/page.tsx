@@ -1,278 +1,349 @@
 'use client';
-import CustomButton from '@/app/component/customButton/button';
-import { InputComponent } from '@/app/component/customInput/Input';
-import { SelectComponent } from '@/app/component/customSelect/Select.component';
-import SenaryHeading from '@/app/component/headings/senaryHeading';
-import { withAuth } from '@/app/hoc/withAuth';
-import { useRouterHook } from '@/app/hooks/useRouterHook';
-import { ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
-import { CrmType } from '@/app/interfaces/crm/crm.interface';
-import { FileInterface } from '@/app/interfaces/file.interface';
-import crmContractService from '@/app/services/crm/crm-contract.service';
-import { downloadFile } from '@/app/utils/downloadFile';
-import { Routes } from '@/app/utils/plans.utils';
-import { SearchOutlined } from '@ant-design/icons';
-import { Dropdown, Tag, type MenuProps } from 'antd';
+import { useEffect, useState, useRef } from 'react';
+import { Dropdown, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import Table from 'antd/es/table';
-import { AxiosError } from 'axios';
-import moment from 'moment';
-import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import type { MenuProps } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
 
-const menuItems: MenuProps['items'] = [
+// module imports
+import { AppDispatch, RootState } from '@/redux/store';
+import TertiaryHeading from '@/app/component/headings/tertiary';
+import { bg_style } from '@/globals/tailwindvariables';
+import Button from '@/app/component/customButton/button';
+import WhiteButton from '@/app/component/customButton/white';
+import Image from 'next/image';
+import { SearchOutlined } from '@ant-design/icons';
+import { InputComponent } from '@/app/component/customInput/Input';
+import { DeleteContent } from '@/app/component/delete/DeleteContent';
+import ModalComponent from '@/app/component/modal';
+import { toast } from 'react-toastify';
+import { withAuth } from '@/app/hoc/withAuth';
+import { Routes } from '@/app/utils/plans.utils';
+import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { PreviewCSVImportFileModal } from '../components/PreviewCSVImportFileModal';
+
+import {
+  CrmContractorParsedType,
+  CrmType,
+  ICrmItem,
+  ICrmContractorModule,
+} from '@/app/interfaces/crm/crm.interface';
+import {
+  getCrmItemsThunk,
+  updateCrmItemStatusThunk,
+} from '@/redux/crm/crm.thunk';
+import {
+  deleteCrmItemById,
+  downloadCrmItemsAsCSV,
+  saveManyCrmItems,
+  uploadAndParseCSVData,
+} from '../utils';
+import {
+  insertManyCrmItemAction,
+  removeCrmItemAction,
+} from '@/redux/crm/crm.slice';
+import _ from 'lodash';
+
+import { CrmStatusFilter } from '../components/CrmStatusFilter';
+
+const items: MenuProps['items'] = [
   {
-    key: 'viewContract',
-    label: <p>View Contract</p>,
-  },
-  {
-    key: 'email',
-    label: <p>Email</p>,
-  },
-  {
-    key: 'download',
-    label: <p>Download</p>,
+    key: 'editDetails',
+    label: <p>Edit details</p>,
   },
   {
     key: 'delete',
     label: <p>Delete</p>,
   },
+  {
+    key: 'inactive',
+    label: <p>In Active</p>,
+  },
 ];
-function ContractsPage() {
-  const [data, setData] = useState<ICrmContract[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+
+const inactiveMenuItems: MenuProps['items'] = [
+  {
+    key: 'active',
+    label: <p>Active</p>,
+  },
+];
+
+const ContractorsPage = () => {
   const router = useRouterHook();
+  const dispatch = useDispatch<AppDispatch>();
+
+  const state = useSelector((state: RootState) => state.crm);
   const [search, setSearch] = useState('');
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState<string>('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<ICrmItem | null>(null);
+  const inputFileRef = useRef<HTMLInputElement | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isUploadingFile, setIsUploadingFile] = useState(false);
+  const [parseData, setParseData] = useState<CrmContractorParsedType[]>([]);
+  const [duplicates, setDuplicates] = useState<CrmContractorParsedType[]>([]);
+  const [isSavingMany, setIsSavingMany] = useState(false);
 
   useEffect(() => {
-    getCompanyContracts();
+    dispatch(getCrmItemsThunk({ module: 'contractors' }));
   }, []);
 
-  async function getCompanyContracts() {
-    setIsLoading(true);
-    try {
-      const response = await crmContractService.httpGetCompanyContracts();
-      if (response.data) {
-        setData(response.data);
-      }
-    } catch (error) {
-      const err = error as AxiosError<{ message: string }>;
-      console.log(err.response?.data);
-    } finally {
-      setIsLoading(false);
+  const handleDropdownItemClick = async (key: string, item: any) => {
+    if (key == 'delete') {
+      setSelectedItem(item);
+      setShowDeleteModal(true);
+    } else if (key == 'editDetails') {
+      router.push(`${Routes.CRM.Contractors}/edit/${item._id}`);
+    } else if (key == 'inactive') {
+      dispatch(
+        updateCrmItemStatusThunk({
+          id: item._id,
+          status: false,
+        })
+      );
+    } else if (key == 'active') {
+      dispatch(
+        updateCrmItemStatusThunk({
+          id: item._id,
+          status: true,
+        })
+      );
     }
-  }
+  };
 
-  const columns: ColumnsType<ICrmContract> = [
+  const columns: ColumnsType<ICrmContractorModule> = [
     {
-      title: 'Contract Title',
-      dataIndex: 'title',
+      title: 'Company',
+      dataIndex: 'name',
+      ellipsis: true,
     },
     {
-      title: 'Receiver Name',
-      dataIndex: 'receiver',
-      render: (receiver: CrmType) => {
-        if (
-          receiver.module === 'subcontractors' ||
-          receiver.module === 'partners'
-        ) {
-          return receiver.companyRep;
-        }
-        return `${receiver.firstName} ${receiver.lastName || ''}`;
-      },
+      title: 'Company Rep',
+      dataIndex: 'companyRep',
     },
-    {
-      title: 'Start Date',
-      dataIndex: 'startDate',
-      render: (date) => {
-        return moment(date).format('YYYY-MM-DD');
-      },
-    },
-    {
-      title: 'End Date',
-      dataIndex: 'endDate',
-      render: (date) => {
-        return moment(date).format('YYYY-MM-DD');
-      },
-    },
-    {
-      title: 'Contract File',
-      dataIndex: 'file',
-      render: (file: FileInterface) => {
-        return (
-          <div className="flex space-x-5 items-center">
-            <div className="flex items-center space-x-2">
-              <div className="p-1 rounded-md bg-schestiLightPrimary">
-                <Image
-                  alt="file"
-                  src={'/file-cyan.svg'}
-                  width={20}
-                  height={20}
-                />
-              </div>
 
-              <SenaryHeading
-                title={file.name}
-                className="text-[14px] text-schestiPrimaryBlack"
-              />
-            </div>
-
-            <div className="p-1">
-              <Image
-                alt="download"
-                src={'/download-icon.svg'}
-                width={20}
-                height={20}
-                className="cursor-pointer"
-                onClick={() => downloadFile(file.url, file.name)}
-              />
-            </div>
-          </div>
-        );
-      },
+    {
+      title: 'Email',
+      dataIndex: 'email',
+    },
+    {
+      title: 'Phone number',
+      dataIndex: 'phone',
+    },
+    {
+      title: 'Address',
+      dataIndex: 'address',
     },
     {
       title: 'Status',
       dataIndex: 'status',
-      render(value, record) {
-        if (record.status === 'draft') {
+      render: (value) => {
+        if (!value) {
           return (
-            <Tag className="rounded-full" color="#026AA2">
-              Draft
-            </Tag>
-          );
-        } else if (record.status === 'pending') {
-          return (
-            <Tag className="rounded-full" color="#175CD3">
-              Pending
-            </Tag>
-          );
-        } else if (record.status === 'archive') {
-          return (
-            <Tag className="rounded-full" color="#344054">
-              Archived
-            </Tag>
-          );
-        } else {
-          return (
-            <Tag className="rounded-full" color="#027A48">
-              Signed
+            <Tag className="rounded-full" color="red">
+              In Active
             </Tag>
           );
         }
+        return (
+          <Tag className="rounded-full" color="green">
+            Active
+          </Tag>
+        );
       },
     },
     {
       title: 'Action',
       dataIndex: 'action',
-      render(_value, record) {
-        return (
-          <Dropdown
-            menu={{
-              items: menuItems,
-              onClick({ key }) {
-                if (key === 'viewContract') {
-                  router.push(
-                    `${Routes.CRM.Contractors}/view?id=${record._id}`
-                  );
-                } else if (key === 'download') {
-                  router.push(
-                    `${Routes.CRM.Contractors}/view?id=${record._id}&download=true`
-                  );
-                }
-              },
-            }}
-            placement="bottomRight"
-          >
-            <Image
-              src={'/menuIcon.svg'}
-              alt="logo white icon"
-              width={20}
-              height={20}
-              className="active:scale-105 cursor-pointer"
-            />
-          </Dropdown>
-        );
-      },
+      align: 'center',
+      key: 'action',
+      render: (text, record) => (
+        <Dropdown
+          menu={{
+            items: record.status ? items : inactiveMenuItems,
+            onClick: (event) => {
+              const { key } = event;
+              handleDropdownItemClick(key, record);
+            },
+          }}
+          placement="bottomRight"
+        >
+          <Image
+            src={'/menuIcon.svg'}
+            alt="logo white icon"
+            width={20}
+            height={20}
+            className="active:scale-105 cursor-pointer"
+          />
+        </Dropdown>
+      ),
     },
   ];
-
-  const filteredData = data
+  const filteredData = state.data
     .filter((item) => {
-      if (!search) return true;
-      return item.title.toLowerCase().includes(search.toLowerCase());
+      if (!search) {
+        return true;
+      }
+      if (item.module === 'contractors') {
+        return (
+          item.name.toLowerCase().includes(search.toLowerCase()) ||
+          item.companyRep?.includes(search) ||
+          item.email?.includes(search) ||
+          item.phone?.includes(search) ||
+          item.address?.includes(search)
+        );
+      }
+      return true;
     })
     .filter((item) => {
-      if (!status) return true;
-      return item.status === status;
+      if (!status) {
+        return true;
+      }
+      return status === 'active' ? item.status === true : item.status === false;
     });
 
   return (
-    <div className="mt-6 p-5 !pb-[39px]  mx-4 bg-white rounded-md">
-      <div className="flex justify-between items-center">
-        <SenaryHeading
-          title="Contracts"
-          className="text-xl text-schestiPrimaryBlack font-semibold leading-7"
-        />
-        <div className="flex items-center space-x-3">
-          <div className="w-96">
-            <InputComponent
-              label=""
-              name=""
-              type="text"
-              placeholder="Search"
-              prefix={<SearchOutlined />}
-              field={{
-                value: search ? search : undefined,
-                onChange: (e) => {
-                  setSearch(e.target.value);
-                },
-                allowClear: true,
-              }}
+    <section className="mt-6 mb-[39px] mx-4 rounded-xl ">
+      {selectedItem && showDeleteModal ? (
+        <ModalComponent
+          open={showDeleteModal}
+          setOpen={setShowDeleteModal}
+          width="30%"
+        >
+          <DeleteContent
+            onClick={() =>
+              deleteCrmItemById(selectedItem._id, setIsDeleting, (item) => {
+                toast.success('Contractor deleted successfully');
+                dispatch(removeCrmItemAction(item._id));
+                setShowDeleteModal(false);
+                setSelectedItem(null);
+              })
+            }
+            isLoading={isDeleting}
+            onClose={() => setShowDeleteModal(false)}
+          />
+        </ModalComponent>
+      ) : null}
+
+      <PreviewCSVImportFileModal
+        columns={columns as any}
+        data={parseData}
+        onClose={() => setParseData([])}
+        onConfirm={() => {
+          saveManyCrmItems(
+            parseData,
+            setIsSavingMany,
+            'contractors',
+            setDuplicates,
+            (items) => {
+              dispatch(insertManyCrmItemAction(items));
+              const remainingParsedData = _.differenceBy(
+                parseData,
+                items,
+                'email'
+              );
+              setParseData(remainingParsedData);
+              if (inputFileRef.current) {
+                inputFileRef.current.value = '';
+              }
+            }
+          );
+        }}
+        duplicates={duplicates}
+        setData={setParseData}
+        isLoading={isSavingMany}
+        title="Import Contractors"
+      />
+
+      <div className={`${bg_style} p-5 border border-solid border-silverGray`}>
+        <div className="flex justify-between items-center mb-4">
+          <TertiaryHeading
+            title="Contractors List"
+            className="text-graphiteGray"
+          />
+          <div className=" flex items-center space-x-3">
+            <div className="w-96">
+              <InputComponent
+                label=""
+                type="text"
+                placeholder="Search"
+                name="search"
+                prefix={<SearchOutlined />}
+                field={{
+                  type: 'text',
+                  value: search,
+                  onChange: (e: any) => {
+                    setSearch(e.target.value);
+                  },
+                  className: '!py-2',
+                }}
+              />
+            </div>
+            <CrmStatusFilter status={status} setStatus={setStatus} />
+            <div>
+              <WhiteButton
+                text="Export"
+                className="!w-fit !py-2.5"
+                icon="/download-icon.svg"
+                iconwidth={20}
+                iconheight={20}
+                onClick={() => {
+                  downloadCrmItemsAsCSV(
+                    state.data,
+                    columns as ColumnsType<CrmType>,
+                    'contractors'
+                  );
+                }}
+              />
+            </div>
+            <div>
+              <WhiteButton
+                text="Import"
+                className="!w-fit !py-2.5"
+                icon="/uploadcloud.svg"
+                iconwidth={20}
+                iconheight={20}
+                onClick={() => {
+                  if (inputFileRef.current) {
+                    inputFileRef.current.click();
+                  }
+                }}
+                isLoading={isUploadingFile}
+                loadingText="Uploading..."
+              />
+              <input
+                ref={inputFileRef}
+                accept=".csv, .xlsx"
+                type="file"
+                name=""
+                id="importFile"
+                className="hidden"
+                onChange={uploadAndParseCSVData(
+                  setIsUploadingFile,
+                  'contractors',
+                  setParseData
+                )}
+              />
+            </div>
+            <Button
+              text="Add New Contractor"
+              className="!w-fit !py-2.5"
+              icon="/plus.svg"
+              iconwidth={20}
+              iconheight={20}
+              onClick={() => router.push(`${Routes.CRM.Contractors}/create`)}
             />
           </div>
-          <SelectComponent
-            label=""
-            name="status"
-            placeholder="Status"
-            field={{
-              value: status ? status : undefined,
-              options: [
-                { label: 'Pending', value: 'pending' },
-                { label: 'Signed', value: 'signed' },
-              ],
-              className: '!w-auto',
-              allowClear: true,
-              onChange: (value) => {
-                setStatus(value);
-              },
-              onClear() {
-                setStatus('');
-              },
-            }}
-          />
-
-          <CustomButton
-            text="Create New Contract"
-            className="!w-fit !py-2.5"
-            icon="/plus.svg"
-            iconwidth={20}
-            iconheight={20}
-            onClick={() => router.push(`${Routes.CRM.Contractors}/create`)}
-          />
         </div>
-      </div>
-
-      <div className="mt-5">
         <Table
-          columns={columns}
+          loading={state.loading}
+          columns={columns as ColumnsType<CrmType>}
           dataSource={filteredData}
-          loading={isLoading}
+          pagination={{ position: ['bottomCenter'] }}
         />
       </div>
-    </div>
+    </section>
   );
-}
+};
 
-export default withAuth(ContractsPage);
+export default withAuth(ContractorsPage);

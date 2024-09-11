@@ -16,12 +16,12 @@ import { toast } from 'react-toastify';
 import type { RcFile } from 'antd/es/upload';
 import { useMutation } from 'react-query';
 import { bidManagementService } from '@/app/services/bid-management.service';
-import { USCurrencyFormat } from '@/app/utils/format';
 import { EventOnlineForm } from './event/EventOnline';
 import { EventOnSiteForm } from './event/OnSite';
 import { EventSiteWalkThroughForm } from './event/EventSiteWalkthrough';
 import { RfiDeadline } from './event/RFIDeadline';
 import Paragraph from 'antd/es/typography/Paragraph';
+import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 
 type Props = {
   children?: React.ReactNode;
@@ -34,7 +34,7 @@ export function PostFinalize({ formik, children }: Props) {
     []
   );
   const dispatch = useDispatch<AppDispatch>();
-
+  const currency = useCurrencyFormatter();
   const fetchCompanyEmployeeHandler = useCallback(async () => {
     let result: any = await dispatch(fetchUsers({ limit: 9, page: 1 }));
 
@@ -185,7 +185,7 @@ export function PostFinalize({ formik, children }: Props) {
                 className="text-[14px] leading-6 text-[#98A2B3] font-normal"
               />
               <p className="text-[#344054] text-[14px] leading-6 font-medium ">
-                {USCurrencyFormat.format(formik.values.projectValue)}
+                {currency.format(formik.values.projectValue)}
               </p>
             </div>
             <div className="space-y-2">

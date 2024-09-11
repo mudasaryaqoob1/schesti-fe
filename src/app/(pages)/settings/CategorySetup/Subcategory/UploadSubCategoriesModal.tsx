@@ -2,10 +2,10 @@ import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import { SelectComponent } from '@/app/component/customSelect/Select.component';
 import ModalComponent from '@/app/component/modal';
+import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 import { ICategory } from '@/app/interfaces/companyInterfaces/setting.interface';
 import { ISettingSubCategoryParsedType } from '@/app/interfaces/settings/categories-settings.interface';
 import { categoriesService } from '@/app/services/categories.service';
-import { USCurrencyFormat } from '@/app/utils/format';
 import { fetchSubCategories } from '@/redux/company/settingSlices/companySetup.thunk';
 import { AppDispatch } from '@/redux/store';
 import { LoadingOutlined } from '@ant-design/icons';
@@ -28,6 +28,7 @@ export function UploadSubCategoriesModal({ open, setOpen, categories }: Props) {
     ICategory | undefined
   >(undefined);
   const [isUploading, setIsUploading] = useState(false);
+  const currency = useCurrencyFormatter();
   const [error, setError] = useState('');
   const [parsedData, setParsedData] = useState<ISettingSubCategoryParsedType[]>(
     []
@@ -162,7 +163,7 @@ export function UploadSubCategoriesModal({ open, setOpen, categories }: Props) {
                     title: 'Labour Per Hour',
                     dataIndex: 'price',
                     render(value) {
-                      return USCurrencyFormat.format(Number(value));
+                      return currency.format(Number(value));
                     },
                   },
                   {
@@ -314,7 +315,7 @@ export function UploadSubCategoriesModal({ open, setOpen, categories }: Props) {
                   title: 'Price',
                   dataIndex: 'price',
                   render(value) {
-                    return USCurrencyFormat.format(Number(value));
+                    return currency.format(Number(value));
                   },
                 },
                 {

@@ -8,4 +8,7 @@ export interface IRegisterCompany {
   country: string;
   city: string;
   state: string;
+  address: string;
+  university?: string;
+  educationalDocuments?: any[];
 }

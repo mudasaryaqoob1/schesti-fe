@@ -8,6 +8,7 @@ import { ScheduleIcon } from '../svgs/component-icons/ScheduleIcon';
 import { MeetingIcon } from '../svgs/component-icons/MeetingIcon';
 import { NetworkingIcon } from '../svgs/component-icons/NetworkIcon';
 import { SocialIcon } from '../svgs/component-icons/SocialIcon';
+import { ContractIcon } from '../svgs/component-icons/ContractsIcon';
 
 export const Routes = {
   'Bid Management': {
@@ -22,10 +23,12 @@ export const Routes = {
     Clients: '/crm/clients',
     'Sub-Contractors': '/crm/sub-contractors',
     Partners: '/crm/partners',
-    Contractors: '/crm/contractors',
     Architects: '/crm/architects',
     Vendors: '/crm/vendors',
+    Daily_Work: '/crm/daily-work',
+    Contractors: '/crm/contractors',
   },
+  Contracts: '/contracts',
   'Quantity-Takeoff': {
     Manual: '/take-off',
     'AI-Takeoff': '#',
@@ -38,6 +41,9 @@ export const Routes = {
     'Financial-Tools': '/financial/tools',
     'Standard-Invoicing': '/financial/standard-invoicing',
     'AIA-Invoicing': '/financial/aia-invoicing',
+    Expense: '/financial/expense',
+    Assets: '/financial/assets',
+    Statement: '/financial/statement',
   },
   Schedule: '/schedule',
   Meetings: '/meeting',
@@ -56,9 +62,13 @@ export const OtherRoutes = {
     Target: '/settings/target',
     'Support Tickets': '/settings/supporttickets',
     Company_Roles: '/settings/companyUser/roles',
+    Verification: '/settings/verification',
+    Trades: '/settings/trades',
+    Currency: '/settings/currency',
   },
   Upgrades: '/upgradeplans',
   Dashboard: '/dashboard',
+  Contracts: '/contracts',
 };
 
 export const Plans = {
@@ -117,7 +127,13 @@ export const planFeatureOptions = [
       { label: 'Contractors', value: Routes.CRM.Contractors },
       { label: 'Architects', value: Routes.CRM.Architects },
       { label: 'Vendors', value: Routes.CRM.Vendors },
+      { label: 'Daily Work', value: Routes.CRM.Daily_Work },
     ],
+  },
+  {
+    Icon: ContractIcon,
+    label: 'Contracts',
+    value: Routes.Contracts,
   },
 
   {
@@ -157,6 +173,9 @@ export const planFeatureOptions = [
       },
       { label: 'AIA Invoicing', value: Routes.Financial['AIA-Invoicing'] },
       { label: 'Financial Tools', value: Routes.Financial['Financial-Tools'] },
+      { label: 'Expense', value: Routes.Financial['Expense'] },
+      { label: 'Assets/Inventory', value: Routes.Financial['Assets'] },
+      { label: 'Financial Statement', value: Routes.Financial['Statement'] },
     ],
   },
 

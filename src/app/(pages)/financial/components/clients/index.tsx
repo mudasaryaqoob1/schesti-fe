@@ -1,10 +1,13 @@
+import { Popups } from '@/app/(pages)/bid-management/components/Popups';
+import { AddCrmClientForm } from '@/app/(pages)/crm/clients/components/AddCrmClientForm';
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import { InputComponent } from '@/app/component/customInput/Input';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import ModalComponent from '@/app/component/modal';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
-import { IClientInvoice } from '@/app/interfaces/client-invoice.interface';
+import { IAIAInvoice } from '@/app/interfaces/client-invoice.interface';
+import { clientInvoiceService } from '@/app/services/client-invoices.service';
 import { Routes } from '@/app/utils/plans.utils';
 import {
   deleteClientInvoiceRequest,
@@ -14,24 +17,33 @@ import { AppDispatch, RootState } from '@/redux/store';
 import {
   CloseOutlined,
   ExclamationCircleFilled,
+  PlusOutlined,
   SearchOutlined,
 } from '@ant-design/icons';
 import { Dropdown, Table, type MenuProps, Modal } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import { AxiosError } from 'axios';
 import { useFormik } from 'formik';
 import Image from 'next/image';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 
 const ValidationSchema = Yup.object({
   invoiceName: Yup.string().required('Invoice name is required'),
+  clientName: Yup.string().required('Client name is required'),
+  architectName: Yup.string().required('Architect name is required'),
 });
 
 export function Clients() {
   const router = useRouterHook();
   const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
+  const [showClientModal, setShowClientModal] = useState(false);
+  const [showArchitectModal, setShowArchitectModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   const clientInvoices = useSelector(
     (state: RootState) => state.clientInvoices.data
   );
@@ -42,12 +54,26 @@ export function Clients() {
   const formik = useFormik({
     initialValues: {
       invoiceName: '',
+      clientName: '',
+      architectName: '',
     },
     validationSchema: ValidationSchema,
-    onSubmit(values) {
-      router.push(
-        `${Routes.Financial['AIA-Invoicing']}/create?invoiceName=${values.invoiceName}`
-      );
+    async onSubmit(values) {
+      setIsLoading(true);
+      try {
+        const response =
+          await clientInvoiceService.httpCreateInitialInvoice(values);
+        if (response.data && response.data.invoice) {
+          router.push(
+            `${Routes.Financial['AIA-Invoicing']}/form?id=${response.data.invoice._id}&mode=edit`
+          );
+        }
+        setIsLoading(false);
+      } catch (error) {
+        const err = error as AxiosError<{ message: string }>;
+        toast.error(err.response?.data.message);
+        setIsLoading(false);
+      }
     },
   });
 
@@ -76,7 +102,7 @@ export function Clients() {
       label: <p>Delete</p>,
     },
   ];
-  const columns: ColumnsType<IClientInvoice> = [
+  const columns: ColumnsType<IAIAInvoice> = [
     {
       title: 'Invoice #',
       dataIndex: 'applicationNo',
@@ -167,7 +193,7 @@ export function Clients() {
 
   return (
     <div className="w-full mb-4">
-      <div className="flex justify-between flex-wrap items-center md:flex-nowrap mb-2">
+      <div className="flex  justify-between flex-wrap items-center md:flex-nowrap mb-2">
         <TertiaryHeading title="AIA Invoicing" className="text-graphiteGray" />
         <div className="flex items-center space-x-2 flex-1 justify-end">
           <div className="w-96 ">
@@ -192,6 +218,53 @@ export function Clients() {
             iconheight={20}
             onClick={() => setShowModal(true)}
           />
+
+          <ModalComponent
+            open={showClientModal}
+            setOpen={() => setShowClientModal(false)}
+            width="60%"
+          >
+            <Popups
+              title="Add Client"
+              onClose={() => setShowClientModal(false)}
+            >
+              <AddCrmClientForm
+                onClose={() => setShowClientModal(false)}
+                onSuccess={(client) => {
+                  if (client.module === 'clients') {
+                    formik.setFieldValue(
+                      'clientName',
+                      `${client.firstName} ${client.lastName}`
+                    );
+                  }
+                }}
+              />
+            </Popups>
+          </ModalComponent>
+
+          <ModalComponent
+            open={showArchitectModal}
+            setOpen={() => setShowArchitectModal(false)}
+            width="60%"
+          >
+            <Popups
+              title="Add Architect"
+              onClose={() => setShowArchitectModal(false)}
+            >
+              <AddCrmClientForm
+                onClose={() => setShowArchitectModal(false)}
+                onSuccess={(item) => {
+                  if (item.module === 'architects') {
+                    formik.setFieldValue(
+                      'architectName',
+                      `${item.firstName} ${item.lastName}`
+                    );
+                  }
+                }}
+              />
+            </Popups>
+          </ModalComponent>
+
           <ModalComponent
             open={showModal}
             setOpen={() => {
@@ -202,9 +275,9 @@ export function Clients() {
             width="40%"
           >
             <div className="bg-white border border-solid border-elboneyGray rounded-[4px] z-50">
-              <div className="flex px-6 py-2.5 justify-between bg-mistyWhite">
+              <div className="flex px-6  py-2.5 justify-between bg-schestiLightPrimary">
                 <TertiaryHeading
-                  title="Client Invoice"
+                  title="AIA Invoice"
                   className="text-graphiteGray"
                 />
                 <CloseOutlined
@@ -223,7 +296,11 @@ export function Clients() {
                   hasError={
                     formik.touched.invoiceName && !!formik.errors.invoiceName
                   }
-                  errorMessage={formik.errors.invoiceName}
+                  errorMessage={
+                    formik.touched.invoiceName && formik.errors.invoiceName
+                      ? formik.errors.invoiceName
+                      : ''
+                  }
                   field={{
                     type: 'text',
                     onChange: formik.handleChange,
@@ -232,6 +309,69 @@ export function Clients() {
                   }}
                 />
 
+                <div className="mt-2">
+                  <InputComponent
+                    label="Client Name"
+                    name="clientName"
+                    type="text"
+                    placeholder="Enter client name"
+                    label2={
+                      <div
+                        onClick={() => setShowClientModal(true)}
+                        className="text-schestiPrimary space-x-1 hover:cursor-pointer hover:underline flex items-center"
+                      >
+                        <PlusOutlined />
+                        <span>Add New</span>
+                      </div>
+                    }
+                    field={{
+                      value: formik.values.clientName,
+                      onChange: formik.handleChange,
+                      onBlur: formik.handleBlur,
+                    }}
+                    hasError={
+                      formik.touched.clientName && !!formik.errors.clientName
+                    }
+                    errorMessage={
+                      formik.touched.clientName && formik.errors.clientName
+                        ? formik.errors.clientName
+                        : ''
+                    }
+                  />
+                </div>
+
+                <div className="mt-2">
+                  <InputComponent
+                    label="Architect Name"
+                    name="architectName"
+                    type="text"
+                    placeholder="Enter architect name"
+                    label2={
+                      <div
+                        onClick={() => setShowArchitectModal(true)}
+                        className="text-schestiPrimary space-x-1 hover:cursor-pointer hover:underline flex items-center"
+                      >
+                        <PlusOutlined />
+                        <span>Add New</span>
+                      </div>
+                    }
+                    field={{
+                      value: formik.values.architectName,
+                      onChange: formik.handleChange,
+                      onBlur: formik.handleBlur,
+                    }}
+                    hasError={
+                      formik.touched.architectName &&
+                      !!formik.errors.architectName
+                    }
+                    errorMessage={
+                      formik.touched.architectName &&
+                      formik.errors.architectName
+                        ? formik.errors.architectName
+                        : ''
+                    }
+                  />
+                </div>
                 <div className="flex justify-end py-2 space-x-2">
                   <WhiteButton
                     text="Cancel"
@@ -243,7 +383,7 @@ export function Clients() {
                     className="!w-[100px]"
                     onClick={() => formik.handleSubmit()}
                     disabled={!formik.isValid}
-                    isLoading={formik.isSubmitting}
+                    isLoading={isLoading}
                   />
                 </div>
               </div>
@@ -258,6 +398,22 @@ export function Clients() {
         dataSource={filteredClientInvoices}
         pagination={{ position: ['bottomCenter'] }}
         bordered
+        expandable={{
+          expandedRowRender: () => (
+            <div className="py-1">
+              <Table
+                columns={[
+                  { title: 'Pay Application' },
+                  { title: 'Amount' },
+                  { title: 'Application Date' },
+                  { title: 'Payment Due' },
+                  { title: 'Period To' },
+                  { title: 'Action' },
+                ]}
+              />
+            </div>
+          ),
+        }}
       />
     </div>
   );

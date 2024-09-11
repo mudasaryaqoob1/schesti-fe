@@ -8,6 +8,7 @@ import { IForgotPasswordInterface } from '@/app/interfaces/authInterfaces/forgot
 import { IResetPasswordInterface } from '@/app/interfaces/authInterfaces/resetPassword.interface';
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
 import { userService } from '@/app/services/user.service';
+import { IUserInterface } from '@/app/interfaces/user.interface';
 
 export const login = createAsyncThunk(
   'auth/login',
@@ -154,6 +155,20 @@ export const verifyUserEmail = createAsyncThunk(
   async (data: string, thunkAPI) => {
     try {
       const response = await authService.verifyUserEmail(data);
+      return response;
+    } catch (error: any) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || 'Error during login'
+      );
+    }
+  }
+);
+
+export const updateUserCurrencyThunk = createAsyncThunk(
+  'user/currency',
+  async (data: IUserInterface['currency'], thunkAPI) => {
+    try {
+      const response = await userService.httpUpdateCurrency(data);
       return response;
     } catch (error: any) {
       return thunkAPI.rejectWithValue(

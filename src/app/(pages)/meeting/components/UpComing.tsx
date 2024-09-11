@@ -35,7 +35,7 @@ export function UpcomingComponent({ state, onOpenModal }: Props) {
         <NoMeetings onClick={onOpenModal} />
       ) : (
         meetings.map((item) => {
-          return <MeetingCard item={item} key={item._id} />;
+          return <MeetingCard item={item} key={item._id} shouldShowEdit />;
         })
       )}
     </div>

@@ -122,7 +122,7 @@ const ClientTable = () => {
     } else if (key == 'editClientDetail') {
       router.push(`${Routes.CRM.Clients}/edit/${client._id}`);
     } else if (key === 'createContract') {
-      router.push(`${Routes.CRM.Contractors}/create?id=${client._id}`);
+      router.push(`${Routes.Contracts}/create?receiver=${client._id}`);
     } else if (key === 'inActiveClient') {
       dispatch(
         updateCrmItemStatusThunk({
@@ -239,7 +239,11 @@ const ClientTable = () => {
       if (!search) {
         return true;
       }
-      if (item.module === 'subcontractors' || item.module === 'partners') {
+      if (
+        item.module === 'subcontractors' ||
+        item.module === 'partners' ||
+        item.module === 'contractors'
+      ) {
         return true;
       }
       return (

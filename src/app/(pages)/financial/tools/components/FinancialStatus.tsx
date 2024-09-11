@@ -1,6 +1,6 @@
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import { IResponseInterface } from '@/app/interfaces/api-response.interface';
-import { IClientInvoice } from '@/app/interfaces/client-invoice.interface';
+import { IAIAInvoice } from '@/app/interfaces/client-invoice.interface';
 import { Badge, Skeleton } from 'antd';
 import moment from 'moment';
 import { UseQueryResult } from 'react-query';
@@ -9,7 +9,7 @@ import { Column } from '@ant-design/plots';
 type Props = {
   clientInvoiceQuery: UseQueryResult<
     IResponseInterface<{
-      invoices: IClientInvoice[];
+      invoices: IAIAInvoice[];
     }>,
     unknown
   >;
@@ -54,8 +54,8 @@ export function FinancialStatus({ clientInvoiceQuery }: Props) {
         />
         <div className="flex items-center space-x-2">
           <Badge status="warning" text="Total Completed" />
-          <Badge color="#7F56D9" status="success" text="Total Receivable" />
-          <Badge color="green" status="success" text="Total Expences" />
+          <Badge color="#007AB6" status="success" text="Total Receivable" />
+          {/* <Badge color="green" status="success" text="Total Expences" /> */}
         </div>
         <div></div>
       </div>
@@ -70,7 +70,7 @@ export function FinancialStatus({ clientInvoiceQuery }: Props) {
           if (data.name === Completed) {
             return '#FAAD12';
           } else if (data.name === Receivable) {
-            return '#7F56D9';
+            return '#007AB6';
           } else {
             return '#51C41A';
           }

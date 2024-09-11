@@ -8,7 +8,7 @@ import type { ColumnsType } from 'antd/es/table';
 import { SearchOutlined } from '@ant-design/icons';
 
 import NoDataComponent from '@/app/component/noData';
-import { USCurrencyFormat } from '@/app/utils/format';
+
 import ChangeStatus from '../components/changeStatus';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import WhiteButton from '@/app/component/customButton/white';
@@ -17,6 +17,7 @@ import TertiaryHeading from '@/app/component/headings/tertiary';
 import { downloadCrmItemsAsCSV } from '@/app/(pages)/crm/utils';
 import { InputComponent } from '@/app/component/customInput/Input';
 import { estimateRequestService } from '@/app/services/estimates.service';
+import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 
 interface DataType {
   key: React.Key;
@@ -62,7 +63,7 @@ const items: MenuProps['items'] = [
 
 const EstimateRequestTable: React.FC = () => {
   const router = useRouterHook();
-
+  const currency = useCurrencyFormatter();
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -149,7 +150,7 @@ const EstimateRequestTable: React.FC = () => {
       title: 'Total Cost',
       dataIndex: 'totalCost',
       render: (text, record: any) => (
-        <span>{USCurrencyFormat.format(record.totalCost)}</span>
+        <span>{currency.format(record.totalCost)}</span>
       ),
     },
     {

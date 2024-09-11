@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 
-import { ConfigProvider, Tabs } from 'antd';
+import { Tabs } from 'antd';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
 import CustomButton from '@/app/component/customButton/button';
 import SecondaryHeading from '@/app/component/headings/Secondary';
@@ -63,48 +63,40 @@ const Meeting = () => {
         />
       </div>
       <div className="w-full mb-4 shadow rounded p-3 bg-white">
-        <ConfigProvider
-          theme={{
-            components: {
-              Tabs: {
-                inkBarColor: '#8449EB',
-              },
-            },
+        <Tabs
+          defaultActiveKey={UPCOMING_MEETING_KEY}
+          destroyInactiveTabPane
+          onChange={(type) => {
+            setTab(type);
           }}
-        >
-          <Tabs
-            defaultActiveKey={UPCOMING_MEETING_KEY}
-            destroyInactiveTabPane
-            onChange={(type) => {
-              setTab(type);
-            }}
-            items={[UPCOMING_MEETING_KEY, PREVIOUS_MEETING_KEY].map((type) => {
-              return {
-                key: type,
+          items={[UPCOMING_MEETING_KEY, PREVIOUS_MEETING_KEY].map((type) => {
+            return {
+              key: type,
 
-                label: (
-                  <QuaternaryHeading
-                    title={type}
-                    className={`${
-                      tab === type ? 'text-[#8449EB]' : 'text-[#101828]'
-                    }`}
+              label: (
+                <QuaternaryHeading
+                  title={type}
+                  className={`${
+                    tab === type
+                      ? 'text-schestiPrimary'
+                      : 'text-schestiPrimaryBlack'
+                  }`}
+                />
+              ),
+              tabKey: type,
+              children:
+                tab === UPCOMING_MEETING_KEY ? (
+                  <UpcomingComponent
+                    state={meetings}
+                    onOpenModal={() => setShowModal(true)}
                   />
+                ) : (
+                  <PreviousMeetings meetings={meetings} />
                 ),
-                tabKey: type,
-                children:
-                  tab === UPCOMING_MEETING_KEY ? (
-                    <UpcomingComponent
-                      state={meetings}
-                      onOpenModal={() => setShowModal(true)}
-                    />
-                  ) : (
-                    <PreviousMeetings meetings={meetings} />
-                  ),
-                style: {},
-              };
-            })}
-          />
-        </ConfigProvider>
+              style: {},
+            };
+          })}
+        />
       </div>
     </section>
   );

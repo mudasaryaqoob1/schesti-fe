@@ -16,6 +16,14 @@ export const meetingSlice = createSlice({
         (meeting) => meeting._id !== action.payload
       );
     },
+    updateMeetingAction(state, action: PayloadAction<IMeeting>) {
+      state.data = state.data.map((meeting) => {
+        if (meeting._id === action.payload._id) {
+          return action.payload;
+        }
+        return meeting;
+      });
+    },
   },
   extraReducers(builder) {
     builder.addCase(fetchMeetings.fulfilled, (state, action) => {
@@ -35,7 +43,7 @@ export const meetingSlice = createSlice({
     });
   },
 });
-export const { addNewMeetingAction, deleteMeetingAction } =
+export const { addNewMeetingAction, deleteMeetingAction, updateMeetingAction } =
   meetingSlice.actions;
 export const selectMeetings = (state: RootState) => state.meetings.data;
 export default meetingSlice.reducer;

@@ -1,10 +1,34 @@
+import { takeoffSummaryService } from '@/app/services/takeoffSummary.service';
 import { bg_style } from '@/globals/tailwindvariables';
 import Image from 'next/image';
-import React from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 interface IProps {
   setstep: any;
 }
 const InitialUpload = ({ setstep }: IProps) => {
+  console.log(setstep);
+  const [isLoading, setisLoading] = useState<boolean>(false);
+  const router = useRouter();
+  const makeApiCall = async () => {
+    try {
+      setisLoading(true);
+      // let asUs:any = [];
+      // const data = await takeoffSummaryService.httpCreateTakeOffNew({ projectData, selectecClient, fullData, assignedUsers: asUs })
+      const data = await takeoffSummaryService.httpCreateTakeOffNew({});
+      console.log(data, ' ===> Data after creation');
+      //@ts-ignore
+      if (data?.createdTakeOff?._id && data?.createdTakeOff?._id?.length > 0) {
+        //@ts-ignore
+        router.push(`/take-off/upload?edit_id=${data?.createdTakeOff?._id}`);
+      } else {
+        router.push('/take-off');
+      }
+    } catch (error) {
+      console.log(error, ' ===> Error while making api call');
+      setisLoading(false);
+    }
+  };
   return (
     <div className={`${bg_style} p-5 h-[75vh] flex justify-center mt-10`}>
       <div className="flex justify-between w-[90%] ">
@@ -24,8 +48,9 @@ const InitialUpload = ({ setstep }: IProps) => {
               sapiente, modi nostrum temporibus.
             </div>
             <button
+              disabled={isLoading}
               onClick={() => {
-                setstep(1);
+                makeApiCall();
               }}
               className="cursor-pointer mt-5 w-[60%] bg-lavenderPurpleReplica rounded-md text-white p-2 tracking-wide font-inter text-[14px]"
             >

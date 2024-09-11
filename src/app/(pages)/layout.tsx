@@ -35,10 +35,11 @@ const CustomNavbar = ({ children }: Props) => {
     'settings',
     'trades',
     'verification',
+    'pending',
   ];
 
   const isUnProtectedRoute =
-    pathname === '/crm/contractors/sign' ||
+    pathname === '/contracts/sign' ||
     unProtectedRoutes.includes(pathname.split('/')[1]);
 
   return (

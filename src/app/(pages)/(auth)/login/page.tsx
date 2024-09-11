@@ -56,14 +56,37 @@ const Login = () => {
     {
       role: USER_ROLES_ENUM.OWNER,
       desc: 'It is a long established fact that a reader will be distracted by the readable content of',
+      avatar: 'owner',
     },
     {
       role: USER_ROLES_ENUM.CONTRACTOR,
       desc: 'It is a long established fact that a reader will be distracted by the readable content of',
+      avatar: 'contractor',
     },
     {
       role: USER_ROLES_ENUM.SUBCONTRACTOR,
       desc: 'It is a long established fact that a reader will be distracted by the readable content of',
+      avatar: 'sub-contractor',
+    },
+    {
+      role: USER_ROLES_ENUM.PROFESSOR,
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of',
+      avatar: 'professor',
+    },
+    {
+      role: USER_ROLES_ENUM.STUDENT,
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of',
+      avatar: 'student',
+    },
+    {
+      role: USER_ROLES_ENUM.VENDOR,
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of',
+      avatar: 'vendor',
+    },
+    {
+      role: USER_ROLES_ENUM.ARCHITECT,
+      desc: 'It is a long established fact that a reader will be distracted by the readable content of',
+      avatar: 'architect',
     },
   ];
 
@@ -76,7 +99,20 @@ const Login = () => {
       setLoading(false);
       if (
         CheckOtherRoles(result.payload.data?.user.userRole) &&
-        result.payload.data.user?.isPaymentConfirm
+        (result.payload.data.user?.userRole === USER_ROLES_ENUM.PROFESSOR ||
+          result.payload.data.user?.userRole === USER_ROLES_ENUM.STUDENT) &&
+        result.payload.data.user?.isActive === 'pending'
+      ) {
+        const responseLink = navigateUserWhileAuth(result.payload.data.user);
+        if (responseLink) {
+          router.push(responseLink);
+          return;
+        } else {
+          toast.warning('You are not allowed to login. ');
+        }
+      } else if (
+        CheckOtherRoles(result.payload.data?.user.userRole) &&
+        result.payload.data.user?.subscription
       ) {
         const session = result.payload?.token;
         localStorage.setItem('schestiToken', session);
@@ -85,10 +121,10 @@ const Login = () => {
           // employee logging in
           const permissions = authUser.roles
             ? authUser.roles
-                .map((item) =>
-                  typeof item !== 'string' ? item.permissions : []
-                )
-                .flat()
+              .map((item) =>
+                typeof item !== 'string' ? item.permissions : []
+              )
+              .flat()
             : [];
           if (permissions.length > 0) {
             const permission = permissions[0];
@@ -101,18 +137,26 @@ const Login = () => {
             router.push('/dashboard');
           }
         } else {
-          router.push('/dashboard');
+          const responseLink = navigateUserWhileAuth(result.payload.data.user);
+          console.log({ responseLink });
+          if (responseLink) {
+            router.push(responseLink);
+            return;
+          } else {
+            router.push('/dashboard');
+            return;
+          }
         }
         return;
       }
-      const responseLink = navigateUserWhileAuth(result.payload.data.user);
+      // const responseLink = navigateUserWhileAuth(result.payload.data.user);
 
-      if (responseLink) {
-        router.push(responseLink);
-        return;
-      } else {
-        toast.warning('You are not allowed to login. ');
-      }
+      // if (responseLink) {
+      //   router.push(responseLink);
+      //   return;
+      // } else {
+      //   toast.warning('You are not allowed to login. ');
+      // }
     } else {
       setLoading(false);
       // if statusCode === 400 and email is not verified then redirect to checkmail page
@@ -164,7 +208,7 @@ const Login = () => {
         } else if (
           checkUserExist.statusCode == 400 &&
           checkUserExist.message ===
-            'Verify from your email and complete your profile'
+          'Verify from your email and complete your profile'
         ) {
           router.push(`/companydetails/${checkUserExist.data.user._id}`);
         } else if (

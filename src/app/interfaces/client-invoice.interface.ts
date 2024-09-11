@@ -1,3 +1,5 @@
+import { FileInterface } from './file.interface';
+
 export type G7State = {
   applicationNo: string;
   applicationDate: string;
@@ -27,7 +29,7 @@ export type G7State = {
   p5bPercentage: number;
 };
 
-export type IClientInvoice = {
+export type IAIAInvoice = {
   associatedComapny: string;
   applicationNo?: string;
   invoiceName?: string;
@@ -39,4 +41,12 @@ export type IClientInvoice = {
   _id: string;
   createdAt: string;
   updatedAt: string;
+  clientName: string;
+  architectName: string;
+
+  lienWaiverFiles: FileInterface[];
+  salesFiles: FileInterface[];
+  federalPaperFiles: FileInterface[];
+  materialsFiles: FileInterface[];
+  otherFiles: FileInterface[];
 } & G7State;

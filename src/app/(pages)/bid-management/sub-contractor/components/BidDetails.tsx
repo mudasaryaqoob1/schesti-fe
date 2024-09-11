@@ -6,7 +6,6 @@ import {
   ISaveUserBid,
   ISubmittedProjectBid,
 } from '@/app/interfaces/bid-management/bid-management.interface';
-import { USCurrencyFormat } from '@/app/utils/format';
 import { Routes } from '@/app/utils/plans.utils';
 import { Avatar, Divider } from 'antd';
 import { Country } from 'country-state-city';
@@ -35,6 +34,7 @@ import { IUserInterface } from '@/app/interfaces/user.interface';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { createProjectActivity } from '../../utils';
+import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
 
 type Props = {
   bid: IBidManagement & { userDetails: IUserInterface[] };
@@ -74,7 +74,7 @@ export function BidDetails({
   const authUser = useSelector(
     (state: RootState) => state.auth.user as { user?: IUserInterface }
   );
-
+  const currency = useCurrencyFormatter();
   const saveUserBidMutation = useMutation<
     IResponseInterface<{ projectId: ISaveUserBid }>,
     AxiosError<{ message: string }>,
@@ -337,7 +337,7 @@ export function BidDetails({
             className="text-[#475467] text-sm leading-4 font-normal"
           />
           <SenaryHeading
-            title={`${USCurrencyFormat.format(bid.projectValue)}`}
+            title={`${currency.format(bid.projectValue)}`}
             className="text-[#475467] text-sm leading-4 font-semibold"
           />
         </div>
