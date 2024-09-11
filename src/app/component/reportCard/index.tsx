@@ -65,16 +65,16 @@ const ReportCard: React.FC<Props> = ({ entity }) => {
                       key={ind}
                       className=" flex gap-x-5 items-center justify-between p-4 border"
                     >
-                      <div className="border-2  w-fit h-fit cover max-w-[50%]">
+                      {/* <div className="border-2  w-fit h-fit cover max-w-[50%]"> */}
                         <Image
                           src={thing.image}
                           width={100}
                           height={100}
                           alt={`Captured content ${index}`}
-                          style={{ width: '100%', height: '100%' }}
-                          className="image-cover"
+                          style={{ width: '50%', height: '100%' }}
+                          className="image-cover border-2 max-w-[50%]"
                         />
-                      </div>
+                      {/* </div> */}
                       <div className="grow grid grid-cols-4 gap-5 text-xs text-gray-500">
                         {/* <span className="font-medium block text-black">
                         {thing.details.projectName || 'Length Measurement'}
@@ -120,7 +120,7 @@ const ReportCard: React.FC<Props> = ({ entity }) => {
                             ></div>
                           )}
                         </span>
-                        <span>
+                        {/* <span>
                           Layer{' '}
                           <span className="font-sm block text-black">
                             {' '}
@@ -133,7 +133,7 @@ const ReportCard: React.FC<Props> = ({ entity }) => {
                             {' '}
                             {'---'}
                           </span>
-                        </span>
+                        </span> */}
                         <span>
                           Value
                           <span className="font-sm block text-black">

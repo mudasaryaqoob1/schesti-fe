@@ -21,7 +21,7 @@ interface EditableCurvedShapeProps {
   scaleUnits: string;
   scale: ScaleData;
 }
-const EditableCurvedShape: React.FC<EditableCurvedShapeProps> = ({
+const EditableArcShape: React.FC<EditableCurvedShapeProps> = ({
   cur,
   id,
   scaleUnits,
@@ -35,8 +35,9 @@ const EditableCurvedShape: React.FC<EditableCurvedShapeProps> = ({
   const [points, setPoints] = useState<number[]>([]);
   const [controlPoints, setControlPoints] = useState<ControlPoint[]>([]);
   const [area, setArea] = useState<number>(0);
+  const [dis, setDis] = useState<number | string>(0);
   const lineRef = useRef<Konva.Line>();
-  console.log(area)
+  console.log(area,dis)
   useEffect(() => {
     if (cur?.points) {
       setPoints(cur?.points);
@@ -49,7 +50,7 @@ const EditableCurvedShape: React.FC<EditableCurvedShapeProps> = ({
   useEffect(() => {
     // Initialize control points at the midpoints of each line segment
     let newControlPoints: ControlPoint[] = [];
-    for (let i = 0; i < points.length; i += 2) {
+    for (let i = 0; i < points.length; i += 4) {
       const nextIndex = (i + 2) % points.length;
       const midX = (points[i] + points[nextIndex]) / 2;
       const midY = (points[i + 1] + points[nextIndex + 1]) / 2;
@@ -65,6 +66,7 @@ const EditableCurvedShape: React.FC<EditableCurvedShapeProps> = ({
       setControlPoints(newControlPoints);
     }
     setArea(calculateArea(points, newControlPoints));
+    setDis(calculateLineDistance(points,newControlPoints));
   }, [points, scale]);
 
   console.log(points, ' ===> points of drag');
@@ -107,6 +109,7 @@ const EditableCurvedShape: React.FC<EditableCurvedShapeProps> = ({
 
     setControlPoints(newControlPoints);
     setArea(calculateArea(points, newControlPoints));
+    setDis(calculateLineDistance(points,newControlPoints));
   };
 
   const getClosestPointOnLine = (
@@ -142,7 +145,7 @@ const EditableCurvedShape: React.FC<EditableCurvedShapeProps> = ({
       const bezierPoints: number[] = [];
       for (let i = 0; i < customPoints.length; i += 2) {
         const nextIndex = (i + 2) % customPoints.length;
-        const controlIndex = i / 2;
+        const controlIndex = 0//i / 2;
         bezierPoints.push(customPoints[i], customPoints[i + 1]);
         bezierPoints.push(
           controlPoints[controlIndex].x + controlPoints[controlIndex].offsetX,
@@ -163,7 +166,6 @@ const EditableCurvedShape: React.FC<EditableCurvedShapeProps> = ({
     controlPoints: ControlPoint[],
     numSegments: number = 20
   ): number => {
-    if(!(controlPoints.length>0) || !(points?.length > 0)) return 0
     const pixelToInchScale = 144;
     // Approximate the curve with small line segments
     const approxPoints = approximateCurve(
@@ -202,9 +204,9 @@ const EditableCurvedShape: React.FC<EditableCurvedShapeProps> = ({
     // Update the draw object
     const updatedDraw = {
       ...draw,
-      curve: draw.curve.map((line: any, index: number) =>
+      arc: draw.arc.map((line: any, index: number) =>
         index === +shapeNumber
-          ? { ...line, points: points, controlPoints, text:calculateArea(points, controlPoints) ?? cur?.text }
+          ? { ...line, points: points, controlPoints, text:calculateLineDistance(points, controlPoints) ?? cur?.text }
           : line
       ),
     };
@@ -219,7 +221,7 @@ const EditableCurvedShape: React.FC<EditableCurvedShapeProps> = ({
     const approxPoints: number[] = [];
     for (let i = 0; i < points.length; i += 2) {
       const nextIndex = (i + 2) % points.length;
-      const controlIndex = i / 2;
+      const controlIndex = 0//i / 2;
 
       const x0 = points[i];
       const y0 = points[i + 1];
@@ -238,11 +240,65 @@ const EditableCurvedShape: React.FC<EditableCurvedShapeProps> = ({
     }
     return approxPoints;
   };
-  const { calculatePolygonCenter, getScaleMultiplier } = useDraw();
+
+  const calculateLineDistance = (
+    points: number[],
+    controlPoints: ControlPoint[],
+    numSegments: number = 20
+  ): number => {
+    if(!(points?.length>0) || !(controlPoints?.length>0)) return 0
+    const approximateCurve1 = (
+      points: number[],
+      controlPoints: ControlPoint[],
+      numSegments: number
+    ): number[] => {
+      const approxPoints: number[] = [];
+      for (let i = 0; i < points.length; i += 2) {
+        const nextIndex = (i + 2) % points.length;
+        const controlIndex = 0//i / 2;
+  
+        const x0 = points[i];
+        const y0 = points[i + 1];
+        const x1 =
+          controlPoints[controlIndex].x + controlPoints[controlIndex].offsetX;
+        const y1 =
+          controlPoints[controlIndex].y + controlPoints[controlIndex].offsetY;
+        const x2 = points[nextIndex];
+        const y2 = points[nextIndex + 1];
+  
+        for (let t = 0; t <= 1; t += 1 / numSegments) {
+          const x = (1 - t) * (1 - t) * x0 + 2 * (1 - t) * t * x1 + t * t * x2;
+          const y = (1 - t) * (1 - t) * y0 + 2 * (1 - t) * t * y1 + t * t * y2;
+          approxPoints.push(x, y);
+        }
+      }
+      return approxPoints;
+    };
+  
+    const approxPoints = approximateCurve1(points, controlPoints, numSegments);
+    let totalLength:any = 0;
+    for (let i = 0; i < approxPoints.length - 2; i += 4) {
+      const x1 = approxPoints[i];
+      const y1 = approxPoints[i + 1];
+      const x2 = approxPoints[i + 2];
+      const y2 = approxPoints[i + 3];
+      totalLength += Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+    }
+    const xScaleMultiplier = getScaleMultiplier(scale.xScale)
+    totalLength = totalLength/144
+    totalLength = totalLength * xScaleMultiplier
+    totalLength = convertToFeetAndInches(totalLength,scale.precision)
+    // return Number(totalLength.toFixed(2));
+    return totalLength
+  };
+  
+  
+
+  const { calculateMidpoint, getScaleMultiplier, convertToFeetAndInches } = useDraw();
 
   const { textUnit, ...rest } = cur;
   console.log(textUnit);
-  const center = calculatePolygonCenter(rest.points);
+  const center = calculateMidpoint(rest.points);
   return (
     <>
       <Line
@@ -252,7 +308,7 @@ const EditableCurvedShape: React.FC<EditableCurvedShapeProps> = ({
         stroke={selectedShape === id ? 'maroon' : cur?.stroke}
         dash={selectedShape === id ? [10, 10] : []}
         strokeWidth={cur?.strokeWidth ?? 4}
-        closed={true}
+        closed={false}
         fill={cur?.fillColor ?? 'rgba(255, 0, 0, 0.2)'}
         bezier
         draggable={false}
@@ -299,7 +355,7 @@ const EditableCurvedShape: React.FC<EditableCurvedShapeProps> = ({
           // Update the draw object
           const updatedDraw = {
             ...draw,
-            curve: draw.curve.map((line: any, index: number) =>
+            arc: draw.arc.map((line: any, index: number) =>
               index === +shapeNumber ? { ...line, points: newPoints } : line
             ),
           };
@@ -348,7 +404,8 @@ const EditableCurvedShape: React.FC<EditableCurvedShapeProps> = ({
         {...center}
         fontSize={cur?.textUnit ?? 22}
         // text={area + ' SF'}
-        text={`${calculateArea(points, controlPoints)} sq`}
+        // text={dis + ''}
+        text={`${calculateLineDistance(points,controlPoints)}`}
         offsetX={30}
         fill={cur?.textColor ?? 'red'}
       />
@@ -356,4 +413,4 @@ const EditableCurvedShape: React.FC<EditableCurvedShapeProps> = ({
   );
 };
 
-export default EditableCurvedShape;
+export default EditableArcShape;

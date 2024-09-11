@@ -84,6 +84,14 @@ import { HttpService } from '@/app/services/base.service';
 import { Option } from 'antd/es/mentions';
 // import axios from 'axios';
 
+interface ControlPoint {
+  x: number;
+  y: number;
+  index: number;
+  offsetX: number;
+  offsetY: number;
+}
+
 const groupDataForFileTable = (input: any[]) => {
   const groupedData = input?.reduce((result: any, currentItem: any) => {
     const {
@@ -677,7 +685,64 @@ const TakeOffNewPage = () => {
           settableLoading(false);
           setDraw(
             newupdatedMeasurements?.data?.measurements[
-              `${selectedPage?.pageId}`
+            `${selectedPage?.pageId}`
+            ]
+          );
+        }
+      } catch (error) {
+        settableLoading(false);
+        console.log(error, ' ===> Error while updating table data');
+      }
+    }
+  };
+
+  const updateTableCategory = async (
+    pageId: string,
+    type: any,
+    dateTime: any,
+    category: string,
+    subcategory: string | null
+  ) => {
+    console.log(
+      pageId,
+      type,
+      dateTime,
+      category,
+      subcategory,
+      'Update Run'
+    );
+    if (pageId && type && dateTime && category) {
+      try {
+        let tempTakeOff = takeOff;
+        let slpg = tempTakeOff?.measurements[pageId];
+        if (slpg) {
+          settableLoading(true);
+          slpg = {
+            ...slpg,
+            [type]: slpg[type]?.map((it: any) => {
+              if (
+                new Date(it.dateTime).valueOf() === new Date(dateTime).valueOf()
+              ) {
+                return { ...it, category, subcategory: subcategory ?? null };
+              } else {
+                return it;
+              }
+            }),
+          };
+          tempTakeOff.measurements[pageId] = slpg;
+          // console.log(tempTakeOff)
+          const newupdatedMeasurements: any =
+            await takeoffSummaryService.httpUpdateTakeoffSummary({
+              id: takeOff?._id,
+              //@ts-ignore
+              data: { measurements: tempTakeOff.measurements },
+            });
+          console.log(newupdatedMeasurements, ' ==> newupdatedMeasurements');
+          settakeOff(newupdatedMeasurements?.data);
+          settableLoading(false);
+          setDraw(
+            newupdatedMeasurements?.data?.measurements[
+            `${selectedPage?.pageId}`
             ]
           );
         }
@@ -697,6 +762,7 @@ const TakeOffNewPage = () => {
     console.log(
       pageId,
       type,
+      shapeNumber,
       keyToUpdate,
       valueToUpdate,
       'bottom bar Update Run'
@@ -730,7 +796,7 @@ const TakeOffNewPage = () => {
           settableLoading(false);
           setDraw(
             newupdatedMeasurements?.data?.measurements[
-              `${selectedPage?.pageId}`
+            `${selectedPage?.pageId}`
             ]
           );
         }
@@ -786,7 +852,7 @@ const TakeOffNewPage = () => {
           settableLoading(false);
           setDraw(
             newupdatedMeasurements?.data?.measurements[
-              `${selectedPage?.pageId}`
+            `${selectedPage?.pageId}`
             ]
           );
         }
@@ -1187,11 +1253,17 @@ const TakeOffNewPage = () => {
             <span
               className="flex items-center gap-1"
               onClick={() => {
+                if (record?.type == 'count' || record?.type == "texts") {
+                  return
+                }
                 openShap(record);
                 const pg = takeOff?.pages?.find(
                   (pgs: any) => pgs?.pageId == record?.pageId
                 );
                 if (pg) {
+                  if (record?.points && Array.isArray(record?.points) && record?.points?.length > 1) {
+                    // setStageValues(record?.points[0]-100, record?.points[1]-100)
+                  }
                   setselectedPage(pg);
                   setselectedTakeOffTab('page');
                   if (
@@ -1211,12 +1283,12 @@ const TakeOffNewPage = () => {
                     record?.pageId,
                     record?.type,
                     record?.dateTime,
-                    'stroke',
+                    ((record?.type == 'count' || record?.type == "texts") ? "textColor" : 'stroke'),
                     val.toHexString()
                   );
                 }}
                 className="!w-[2px] !h-[2px] border-none"
-                value={record?.stroke}
+                value={record?.stroke ?? record?.textColor}
               />{' '}
               <EditableText
                 initialText={record?.projectName}
@@ -1270,7 +1342,7 @@ const TakeOffNewPage = () => {
           {record?.isParent ? (
             <></>
           ) : (
-            <span className="">{text ?? record?.text ?? ''}</span>
+            <span className="">{(text) ?? record?.text ?? ''}</span>
           )}
         </div>
       ),
@@ -1331,7 +1403,50 @@ const TakeOffNewPage = () => {
           {record?.isParent ? (
             <></>
           ) : (
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-2">
+              <Popover
+                content={
+                  <>
+                    {
+                      Array.isArray(takeOff?.categories) && takeOff.categories.length > 0 && takeOff.categories.map((cat: string) => {
+                        return <div key={cat}>
+                          <h3
+                            onClick={() => {
+                              updateTableCategory(
+                                record?.pageId,
+                                record?.type,
+                                record?.dateTime,
+                                cat,
+                                null
+                              )
+                            }}
+                            className={`font-bold my-1 cursor-pointer hover:bg-lavenderPurpleReplica hover:bg-opacity-15 p-1 rounded-lg px-2 ${record?.category == cat ? 'bg-lavenderPurpleReplica bg-opacity-20' : ''}`}>{cat}</h3>
+                          {
+                            Array.isArray(takeOff?.subCategories) && takeOff.subCategories.filter((i: string) => i?.includes(cat)).map((subcat: string) => {
+                              return <li
+                                key={subcat}
+                                onClick={() => {
+                                  updateTableCategory(
+                                    record?.pageId,
+                                    record?.type,
+                                    record?.dateTime,
+                                    cat,
+                                    subcat
+                                  )
+                                }}
+                                className={`list-disc my-1 cursor-pointer hover:bg-lavenderPurpleReplica hover:bg-opacity-15 p-1 px-2 rounded-lg ${record?.subcategory == subcat ? 'bg-lavenderPurpleReplica bg-opacity-20' : ''}`}>{subcat?.split('-')[0]}</li>
+                            })
+                          }
+                        </div>
+                      })
+                    }
+                  </>
+                }
+                title="Edit WBS"
+                trigger="click"
+              >
+                <EditOutlined className="text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 rounded-full p-1" />
+              </Popover>
               <DeleteOutlined
                 className="text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 rounded-full p-1"
                 onClick={() => {
@@ -1433,6 +1548,7 @@ const TakeOffNewPage = () => {
     subCategories: any[]
   ) => {
     try {
+      settableLoading(true)
       const newupdatedMeasurements: any =
         await takeoffSummaryService.httpUpdateTakeoffSummary({
           id: takeOff?._id,
@@ -1441,10 +1557,12 @@ const TakeOffNewPage = () => {
         });
       console.log(newupdatedMeasurements, ' ==> newupdatedMeasurements');
       settakeOff(newupdatedMeasurements?.data);
+      settableLoading(false)
       // if(selectedPage?.pageId){
 
       // }
     } catch (error) {
+      settableLoading(false)
       console.log(error, ' ===> Error Occured while measuring');
     }
   };
@@ -1465,7 +1583,8 @@ const TakeOffNewPage = () => {
             }
           });
         }
-      } else if (optionsValue == '1-0') {
+        // } else if (optionsValue == '1-0') {
+      } else if (optionsValue.includes('1-')) {
         pgs = pgs.map((i: any) => {
           return { ...i, scale };
         });
@@ -1600,6 +1719,8 @@ const TakeOffNewPage = () => {
     handleWheel,
     handleZoomIn,
     handleZoomOut,
+    handleDragEnd,
+    // setStageValues
   } = useWheelZoom({
     compHeight: selectedPage.height || 600,
     compWidth: selectedPage.width || 600,
@@ -1645,23 +1766,23 @@ const TakeOffNewPage = () => {
             reportData = [
               ...reportData,
               ...(takeOff?.measurements[key][type] &&
-              Array.isArray(takeOff?.measurements[key][type]) &&
-              takeOff?.measurements[key][type]?.length > 0
+                Array.isArray(takeOff?.measurements[key][type]) &&
+                takeOff?.measurements[key][type]?.length > 0
                 ? takeOff.measurements[key][type].map((arrit: any) => {
-                    return {
-                      ...arrit,
-                      pageId: key,
-                      type,
-                      pageData: takeOff?.pages?.find(
-                        (pg: any) => pg?.pageId == key
-                      ),
-                      pageLabel: takeOff?.pages?.find(
-                        (pg: any) => pg?.pageId == key
-                      )?.pageNum,
-                      color: arrit?.stroke,
-                      config: arrit,
-                    };
-                  })
+                  return {
+                    ...arrit,
+                    pageId: key,
+                    type,
+                    pageData: takeOff?.pages?.find(
+                      (pg: any) => pg?.pageId == key
+                    ),
+                    pageLabel: takeOff?.pages?.find(
+                      (pg: any) => pg?.pageId == key
+                    )?.pageNum,
+                    color: arrit?.stroke,
+                    config: arrit,
+                  };
+                })
                 : []),
             ];
           });
@@ -1671,6 +1792,22 @@ const TakeOffNewPage = () => {
     console.log(reportData, ' ===> Take offs reportData');
     return reportData;
   };
+  // const getNumberFromText = (tx:string) => {
+  //   if(tx && `${tx}`?.length>0){
+  //     let txtArr = `${tx}`.split('')
+  //     let retArr = '';
+  //     for(let i = 0; i<txtArr?.length; i++){
+  //       if(txtArr[i] == '.'){
+  //         retArr += txtArr[i]
+  //       }else if(!isNaN(Number(txtArr[i]))){
+  //         retArr += txtArr[i]
+  //       }
+  //     }
+  //     return Number(retArr)?.toFixed(2)
+  //   }else{
+  //     return tx
+  //   }
+  // }
   //@ts-ignore
   const counterImage = new Image();
   counterImage.src = '/count-draw.png';
@@ -1752,6 +1889,7 @@ const TakeOffNewPage = () => {
           user,
           type,
           pageId,
+          text: tx
         } = currentItem;
         //curpage and scaling runtime here
         const curmpage = takeOff?.pages?.find((i: any) => i?.pageId == pageId);
@@ -1768,14 +1906,14 @@ const TakeOffNewPage = () => {
                 ? calculatePolygonPerimeter(points, scale)
                 : calcLineDistance(points, scale, true)
               : type == 'area'
-                ? calculatePolygonArea(points, scale)
+                ? calculatePolygonArea(points, scale)?.toFixed(2)
                 : type == 'volume'
                   ? calculatePolygonVolume(
-                      points,
-                      currentItem?.depth || 1,
-                      scale
-                    )
-                  : '';
+                    points,
+                    currentItem?.depth || 1,
+                    scale
+                  )?.toFixed(2)
+                  : tx;//getNumberFromText(tx);
         // Check if there's already an entry with the same projectName and pageLabel
         const existingEntry = result?.find(
           (entry: any) => entry.category === category
@@ -1954,10 +2092,10 @@ const TakeOffNewPage = () => {
                 ? calculatePolygonArea(points, scale)
                 : type == 'volume'
                   ? calculatePolygonVolume(
-                      points,
-                      currentItem?.depth || 1,
-                      scale
-                    )
+                    points,
+                    currentItem?.depth || 1,
+                    scale
+                  )
                   : '';
 
         // Check if there's already an entry with the same projectName and pageLabel
@@ -2043,72 +2181,72 @@ const TakeOffNewPage = () => {
             existingEntry?.children?.push(
               subcategory
                 ? {
-                    key: dateTime,
-                    isSubParent: true,
-                    isParent: false,
-                    category,
-                    subcategory,
-                    dateTime,
-                    points,
-                    projectName,
-                    stroke,
-                    strokeWidth,
-                    textUnit,
-                    id,
-                    lineCap,
-                    depth,
-                    x,
-                    y,
-                    user,
-                    type,
-                    pageId,
-                    text,
-                    children: [
-                      {
-                        key: dateTime,
-                        isParent: false,
-                        isChild: true,
-                        category,
-                        subcategory,
-                        dateTime,
-                        points,
-                        projectName,
-                        stroke,
-                        strokeWidth,
-                        textUnit,
-                        id,
-                        lineCap,
-                        depth,
-                        x,
-                        y,
-                        user,
-                        type,
-                        pageId,
-                        text,
-                      },
-                    ],
-                  }
+                  key: dateTime,
+                  isSubParent: true,
+                  isParent: false,
+                  category,
+                  subcategory,
+                  dateTime,
+                  points,
+                  projectName,
+                  stroke,
+                  strokeWidth,
+                  textUnit,
+                  id,
+                  lineCap,
+                  depth,
+                  x,
+                  y,
+                  user,
+                  type,
+                  pageId,
+                  text,
+                  children: [
+                    {
+                      key: dateTime,
+                      isParent: false,
+                      isChild: true,
+                      category,
+                      subcategory,
+                      dateTime,
+                      points,
+                      projectName,
+                      stroke,
+                      strokeWidth,
+                      textUnit,
+                      id,
+                      lineCap,
+                      depth,
+                      x,
+                      y,
+                      user,
+                      type,
+                      pageId,
+                      text,
+                    },
+                  ],
+                }
                 : {
-                    key: dateTime,
-                    category,
-                    subcategory,
-                    dateTime,
-                    points,
-                    projectName,
-                    stroke,
-                    strokeWidth,
-                    textUnit,
-                    id,
-                    lineCap,
-                    depth,
-                    x,
-                    y,
-                    user,
-                    isParent: false,
-                    type,
-                    pageId,
-                    text,
-                  }
+                  key: dateTime,
+                  category,
+                  subcategory,
+                  dateTime,
+                  points,
+                  projectName,
+                  stroke,
+                  strokeWidth,
+                  textUnit,
+                  id,
+                  lineCap,
+                  depth,
+                  x,
+                  y,
+                  user,
+                  isParent: false,
+                  type,
+                  pageId,
+                  text,
+                }
             );
           }
         } else {
@@ -2134,76 +2272,76 @@ const TakeOffNewPage = () => {
             text,
             children: subcategory
               ? [
-                  {
-                    key: dateTime,
-                    isSubParent: true,
-                    isParent: false,
-                    category,
-                    subcategory,
-                    dateTime,
-                    points,
-                    projectName,
-                    stroke,
-                    strokeWidth,
-                    textUnit,
-                    id,
-                    lineCap,
-                    depth,
-                    x,
-                    y,
-                    user,
-                    type,
-                    pageId,
-                    text,
-                    children: [
-                      {
-                        key: dateTime,
-                        isParent: false,
-                        isChild: true,
-                        category,
-                        subcategory,
-                        dateTime,
-                        points,
-                        projectName,
-                        stroke,
-                        strokeWidth,
-                        textUnit,
-                        id,
-                        lineCap,
-                        depth,
-                        x,
-                        y,
-                        user,
-                        type,
-                        pageId,
-                        text,
-                      },
-                    ],
-                  },
-                ]
+                {
+                  key: dateTime,
+                  isSubParent: true,
+                  isParent: false,
+                  category,
+                  subcategory,
+                  dateTime,
+                  points,
+                  projectName,
+                  stroke,
+                  strokeWidth,
+                  textUnit,
+                  id,
+                  lineCap,
+                  depth,
+                  x,
+                  y,
+                  user,
+                  type,
+                  pageId,
+                  text,
+                  children: [
+                    {
+                      key: dateTime,
+                      isParent: false,
+                      isChild: true,
+                      category,
+                      subcategory,
+                      dateTime,
+                      points,
+                      projectName,
+                      stroke,
+                      strokeWidth,
+                      textUnit,
+                      id,
+                      lineCap,
+                      depth,
+                      x,
+                      y,
+                      user,
+                      type,
+                      pageId,
+                      text,
+                    },
+                  ],
+                },
+              ]
               : [
-                  {
-                    key: dateTime,
-                    isParent: false,
-                    category,
-                    subcategory,
-                    dateTime,
-                    points,
-                    projectName,
-                    stroke,
-                    strokeWidth,
-                    textUnit,
-                    id,
-                    lineCap,
-                    depth,
-                    x,
-                    y,
-                    user,
-                    type,
-                    pageId,
-                    text,
-                  },
-                ],
+                {
+                  key: dateTime,
+                  isParent: false,
+                  category,
+                  subcategory,
+                  dateTime,
+                  points,
+                  projectName,
+                  stroke,
+                  strokeWidth,
+                  textUnit,
+                  id,
+                  lineCap,
+                  depth,
+                  x,
+                  y,
+                  user,
+                  type,
+                  pageId,
+                  text,
+                },
+              ],
           });
         }
         return result;
@@ -2216,14 +2354,14 @@ const TakeOffNewPage = () => {
         children: [
           ...(Array.isArray(takeOff?.subCategories)
             ? [
-                ...takeOff.subCategories.map((it: any, index: number) => ({
-                  category: i,
-                  isSubParent: true,
-                  isParent: false,
-                  key: new Date()?.toString() + ind + index,
-                  subcategory: it,
-                })),
-              ]
+              ...takeOff.subCategories.map((it: any, index: number) => ({
+                category: i,
+                isSubParent: true,
+                isParent: false,
+                key: new Date()?.toString() + ind + index,
+                subcategory: it,
+              })),
+            ]
             : []),
         ],
         isParent: true,
@@ -2389,6 +2527,49 @@ const TakeOffNewPage = () => {
   //     });
   //   });
   // };
+
+  const getBezierPointsCurve = (customPoints: number[], controlPoints: ControlPoint[]) => {
+    if (!(Array.isArray(controlPoints)) || !(controlPoints.length > 0)) return customPoints
+    try {
+      const bezierPoints: number[] = [];
+      for (let i = 0; i < customPoints.length; i += 2) {
+        const nextIndex = (i + 2) % customPoints.length;
+        const controlIndex = i / 2;
+        bezierPoints.push(customPoints[i], customPoints[i + 1]);
+        bezierPoints.push(
+          controlPoints[controlIndex].x + controlPoints[controlIndex].offsetX,
+          controlPoints[controlIndex].y + controlPoints[controlIndex].offsetY
+        );
+        bezierPoints.push(customPoints[nextIndex], customPoints[nextIndex + 1]);
+      }
+      console.log(bezierPoints, ' ==> bezier points in get bezier points');
+      return bezierPoints;
+    } catch (error) {
+      console.log(error);
+      return customPoints;
+    }
+  };
+
+  const getBezierPointsArc = (customPoints: number[], controlPoints: ControlPoint[]) => {
+    try {
+      const bezierPoints: number[] = [];
+      for (let i = 0; i < customPoints.length; i += 2) {
+        const nextIndex = (i + 2) % customPoints.length;
+        const controlIndex = 0//i / 2;
+        bezierPoints.push(customPoints[i], customPoints[i + 1]);
+        bezierPoints.push(
+          controlPoints[controlIndex].x + controlPoints[controlIndex].offsetX,
+          controlPoints[controlIndex].y + controlPoints[controlIndex].offsetY
+        );
+        bezierPoints.push(customPoints[nextIndex], customPoints[nextIndex + 1]);
+      }
+      console.log(bezierPoints, ' ==> bezier points in get bezier points');
+      return bezierPoints;
+    } catch (error) {
+      console.log(error);
+      return customPoints;
+    }
+  };
   const captureShape = async (
     shapeArr: any[],
     background: HTMLImageElement
@@ -2454,16 +2635,20 @@ const TakeOffNewPage = () => {
           case 'dynamic':
           case 'area':
           case 'volume':
+          case 'arc':
+          case 'curve':
             {
               // Example for a line or polygon shape
               const { points, stroke, strokeWidth, lineCap } = shape;
+              let pts = shapeType == 'curve' ? getBezierPointsCurve(points, shape?.controlPoints) : shapeType == 'arc' ? getBezierPointsArc(points, shape?.controlPoints) : points
               const line = new Konva.Line({
-                points,
+                points: pts,
                 stroke,
                 strokeWidth,
                 lineCap,
-                closed: shapeType === 'area' || shapeType === 'volume', // Close path for areas and volumes
+                closed: shapeType === 'area' || shapeType === 'volume' || shapeType == 'curve', // Close path for areas and volumes
                 fill: shape?.fillColor,
+                bezier: shapeType === 'arc' || shapeType === 'curve'
               });
               layer.add(line);
               console.warn(shape, 'sssss');
@@ -2472,7 +2657,8 @@ const TakeOffNewPage = () => {
               if (
                 shapeType === 'area' ||
                 shapeType === 'volume' ||
-                shapeType === 'dynamic'
+                shapeType === 'dynamic' ||
+                shapeType === 'curve'
               ) {
                 const { x, y } = calculatePolygonCenter(points);
                 xText = x - 20;
@@ -2557,7 +2743,7 @@ const TakeOffNewPage = () => {
       };
     });
   };
-  const imagesToPdf = (images: any) => {
+  const imagesToPdf = (images: any, name: string = 'output.pdf') => {
     try {
       const pdf = new jsPDF();
 
@@ -2577,7 +2763,7 @@ const TakeOffNewPage = () => {
         // pdf.addImage(imgData?.src, 'JPEG', 0, 0, imgData?.width, imgData?.height);
       });
 
-      pdf.save('output.pdf');
+      pdf.save(name);
     } catch (error) {
       console.log(
         error,
@@ -2586,20 +2772,80 @@ const TakeOffNewPage = () => {
     }
   };
   const [markuploading, setmarkuploading] = useState(false);
-  const downloadMarkup = async (file: any) => {
-    if (!file?.fileId) return;
+  // const downloadMarkup = async (file: any) => {
+  //   if (!file?.fileId) return;
+  //   try {
+  //     const allpgs = takeOff?.pages?.filter(
+  //       (i: any) => i?.fileId == file?.fileId
+  //     );
+  //     const arrMsr = getPageData(); // converting measurements to array
+  //     if (!Array.isArray(arrMsr) || !(arrMsr.length > 0)) {
+  //       return;
+  //     }
+  //     console.log(file, takeOff, allpgs, getPageData(), ' ===> file');
+  //     let imgArr: any[] = [];
+  //     if (allpgs && Array.isArray(allpgs) && allpgs?.length > 0) {
+  //       setmarkuploading(true);
+  //       await Promise.all(
+  //         allpgs?.slice(0, 6)?.map(async (it: any) => {
+  //           const curPgMsr = arrMsr.filter((i: any) => i?.pageId == it?.pageId);
+  //           console.log(it, curPgMsr, ' ===> file page with its measurments');
+  //           const background = await loadImage(it?.src);
+  //           if (curPgMsr && Array.isArray(curPgMsr) && curPgMsr?.length > 0) {
+  //             const img = await captureShape(
+  //               [
+  //                 ...curPgMsr.map((i) => ({
+  //                   ...i?.config,
+  //                   text: i?.text,
+  //                   name: i?.projectName,
+  //                   type: i?.type,
+  //                 })),
+  //               ],
+  //               background
+  //             );
+  //             imgArr.push(img);
+  //             // await Promise.all(
+  //             //   curPgMsr.map(async (curMsr: any) => {
+  //             //     try {
+  //             //       const img = await captureShape({ ...curMsr.config, text: curMsr.text, name: curMsr.projectName }, background, curMsr?.type ?? 'line')
+  //             //       console.log(img, " ===> file page with its measurments final images img ")
+  //             //       imgArr.push({ src: img, width: background.width, height: background.height })
+  //             //     } catch (error) {
+  //             //       console.log(error, " ===> file page with its measurments final images error ")
+  //             //     }
+  //             //   })
+  //             // )
+  //           } else {
+  //             imgArr?.push(background);
+  //           }
+  //         })
+  //       );
+  //       console.log(
+  //         imgArr,
+  //         ' ===> file page with its measurments final images'
+  //       );
+  //       imagesToPdf(imgArr?.reverse());
+  //       setmarkuploading(false);
+  //     }
+  //   } catch (error) {
+  //     setmarkuploading(false);
+  //     console.log(error);
+  //   }
+  // };
+
+  const downloadMarkupByCategory = async (file: any) => {
+    if (!file) return
     try {
-      const allpgs = takeOff?.pages?.filter(
-        (i: any) => i?.fileId == file?.fileId
-      );
-      const arrMsr = getPageData(); // converting measurements to array
-      if (!Array.isArray(arrMsr) || !(arrMsr.length > 0)) {
-        return;
-      }
-      console.log(file, takeOff, allpgs, getPageData(), ' ===> file');
+      let arrMsr = getPageData(); // converting measurements to array
+      arrMsr = Array.isArray(arrMsr) ? arrMsr?.filter(i => i?.category == file) : []
+      let requiredPages = new Set<any>([]);
+      arrMsr.forEach((msr: any) => requiredPages.add(msr?.pageId))
+      const pagesArr = Array.from(requiredPages);
+      const allpgs = takeOff?.pages?.filter((i: any) => pagesArr?.some(pg => pg == i?.pageId))
+      console.log(arrMsr, file, requiredPages, allpgs, " ===> ArrMeasurements")
       let imgArr: any[] = [];
-      if (allpgs && Array.isArray(allpgs) && allpgs?.length > 0) {
-        setmarkuploading(true);
+      if (pagesArr && pagesArr.length > 0 && allpgs && Array.isArray(allpgs) && allpgs?.length > 0) {
+        setmarkuploading(true)
         await Promise.all(
           allpgs?.slice(0, 6)?.map(async (it: any) => {
             const curPgMsr = arrMsr.filter((i: any) => i?.pageId == it?.pageId);
@@ -2618,34 +2864,20 @@ const TakeOffNewPage = () => {
                 background
               );
               imgArr.push(img);
-              // await Promise.all(
-              //   curPgMsr.map(async (curMsr: any) => {
-              //     try {
-              //       const img = await captureShape({ ...curMsr.config, text: curMsr.text, name: curMsr.projectName }, background, curMsr?.type ?? 'line')
-              //       console.log(img, " ===> file page with its measurments final images img ")
-              //       imgArr.push({ src: img, width: background.width, height: background.height })
-              //     } catch (error) {
-              //       console.log(error, " ===> file page with its measurments final images error ")
-              //     }
-              //   })
-              // )
             } else {
               imgArr?.push(background);
             }
           })
         );
-        console.log(
-          imgArr,
-          ' ===> file page with its measurments final images'
-        );
-        imagesToPdf(imgArr?.reverse());
-        setmarkuploading(false);
       }
+      imagesToPdf(imgArr, `${file}.pdf`);
+      setmarkuploading(false)
     } catch (error) {
       setmarkuploading(false);
       console.log(error);
     }
   };
+
   const [expandedKeys, setexpandedKeys] = useState({
     files: [1],
     takeOff: [1],
@@ -2665,6 +2897,9 @@ const TakeOffNewPage = () => {
         takeOff?.measurements[`${record?.pageId}`][`${record?.type}`]
       )
     ) {
+      if (record?.type == 'count' || record?.type == "texts") {
+        return
+      }
       const pg = takeOff?.pages?.find((i: any) => i?.pageId == record?.pageId);
       const shape = takeOff?.measurements[`${record?.pageId}`][
         `${record?.type}`
@@ -2748,8 +2983,8 @@ const TakeOffNewPage = () => {
     });
   }
 
-  const [catDDOpen, setcatDDOpen] = useState(true);
-  const [subcateDDOpen, setsubcateDDOpen] = useState(true);
+  // const [catDDOpen, setcatDDOpen] = useState(true);
+  const [catopened, setcatopened] = useState<number[]>([])
 
   const [closedFilesIndArray, setclosedFilesIndArray] = useState<number[]>([]);
   console.log(closedFilesIndArray, ' closed files array');
@@ -2772,16 +3007,16 @@ const TakeOffNewPage = () => {
               onClick={() => {
                 setreportModal(true);
               }}
-              // onClick={() => {
-              //   //@ts-ignore
-              //   (urlSearch && urlSearch.get('edit_id') && urlSearch.get('edit_id')?.length > 0) ? router.push(`/take-off/report?edit_id=${urlSearch.get('edit_id')}&scale=${JSON?.stringify(scaleData[1] ?? { xScale: `1in=1in`, yScale: `1in=1in`, precision: '1', })}`) : router.push('/take-off/report')
-              // }}
+            // onClick={() => {
+            //   //@ts-ignore
+            //   (urlSearch && urlSearch.get('edit_id') && urlSearch.get('edit_id')?.length > 0) ? router.push(`/take-off/report?edit_id=${urlSearch.get('edit_id')}&scale=${JSON?.stringify(scaleData[1] ?? { xScale: `1in=1in`, yScale: `1in=1in`, precision: '1', })}`) : router.push('/take-off/report')
+            // }}
             />
             <Popover
               title={'Select File'}
               content={
                 <div>
-                  {takeOff?.files &&
+                  {/* {takeOff?.files &&
                     Array.isArray(takeOff?.files) &&
                     takeOff?.files?.length > 0 &&
                     takeOff.files.map((it: any, index: number) => {
@@ -2794,6 +3029,23 @@ const TakeOffNewPage = () => {
                           }}
                         >
                           {it?.name?.slice(0, 30)}
+                        </div>
+                      );
+                    })} */}
+                  {takeOff?.categories &&
+                    Array.isArray(takeOff?.categories) &&
+                    takeOff?.categories?.length > 0 &&
+                    takeOff.categories.map((it: any, index: number) => {
+                      return (
+                        <div
+                          key={index}
+                          className="cursor-pointer hover:bg-lavenderPurpleReplica hover:text-white p-1 rounded"
+                          onClick={() => {
+                            // downloadMarkup(it);
+                            downloadMarkupByCategory(it)
+                          }}
+                        >
+                          {it?.slice(0, 30)}
                         </div>
                       );
                     })}
@@ -2810,7 +3062,7 @@ const TakeOffNewPage = () => {
                 iconheight={20}
                 isLoading={markuploading}
                 icon={<DownOutlined />}
-                // onClick={() => { downloadMarkup((takeOff?.files && Array.isArray(takeOff?.files) && takeOff?.files?.length > 0) ? takeOff?.files[0] : {}) }}
+              // onClick={() => { downloadMarkup((takeOff?.files && Array.isArray(takeOff?.files) && takeOff?.files?.length > 0) ? takeOff?.files[0] : {}) }}
               />
             </Popover>
           </div>
@@ -2909,15 +3161,15 @@ const TakeOffNewPage = () => {
                       <Select
                         className="!w-52 !mb-1"
                         style={{ width: 300 }}
-                        placeholder="Select Category"
-                        onSelect={(value: any) => {
-                          if (selectedCate === value) {
-                            setselectedCate(null);
-                          } else {
-                            setselectedCate(value);
-                          }
-                        }}
-                        value={selectedCate}
+                        placeholder="Category"
+                        // onSelect={(value: any) => {
+                        //   if (selectedCate === value) {
+                        //     setselectedCate(null);
+                        //   } else {
+                        //     setselectedCate(value);
+                        //   }
+                        // }}
+                        value={"Category"}
                         dropdownRender={(menu) => (
                           <>
                             {menu}
@@ -2962,7 +3214,7 @@ const TakeOffNewPage = () => {
                             </Space>
                           </>
                         )}
-                        // options={[...(Array.isArray(takeOff?.categories) ? takeOff?.categories : [])].map((item: any) => ({ label: item, value: item }))}
+                      // options={[...(Array.isArray(takeOff?.categories) ? takeOff?.categories : [])].map((item: any) => ({ label: item, value: item }))}
                       >
                         {[
                           ...(Array.isArray(takeOff?.categories)
@@ -2986,6 +3238,7 @@ const TakeOffNewPage = () => {
                                     ]
                                   );
                                   setselectedCate(null);
+                                  setselectedSubCate(null);
                                 }}
                               />
                             </span>
@@ -2994,21 +3247,22 @@ const TakeOffNewPage = () => {
                       </Select>
                       <Select
                         className="!w-52 !mb-1"
+                        disabled={!selectedCate}
                         style={{ width: 300 }}
-                        placeholder="Select SubCategory"
-                        onSelect={(value: any) => {
-                          if (selectedSubCate === value) {
-                            setselectedSubCate(null);
-                          } else {
-                            setselectedSubCate(value);
-                          }
-                        }}
-                        value={selectedSubCate}
+                        placeholder="SubCategory"
+                        // onSelect={(value: any) => {
+                        //   if (selectedSubCate === value) {
+                        //     setselectedSubCate(null);
+                        //   } else {
+                        //     setselectedSubCate(value);
+                        //   }
+                        // }}
+                        value={"Sub Category"}
                         dropdownRender={(menu) => (
                           <>
                             {menu}
                             <Divider style={{ margin: '8px 0' }} />
-                            <Space style={{ padding: '0 8px 4px' }}>
+                            {selectedCate && <Space style={{ padding: '0 8px 4px' }}>
                               <Input
                                 placeholder="Please enter item"
                                 // ref={inputRef}
@@ -3022,6 +3276,9 @@ const TakeOffNewPage = () => {
                                 type="text"
                                 icon={<PlusOutlined />}
                                 onClick={() => {
+                                  if (!selectedCate) {
+                                    return
+                                  }
                                   updateCategories(
                                     [
                                       ...(Array.isArray(takeOff?.categories)
@@ -3032,33 +3289,33 @@ const TakeOffNewPage = () => {
                                       ...(Array.isArray(takeOff?.subCategories)
                                         ? takeOff.subCategories
                                         : []),
-                                      subcategoryText,
+                                      subcategoryText + "-" + selectedCate,
                                     ]
                                   );
                                   // setDraw((ps:any)=>({...ps,subCategories:[...(Array.isArray(ps?.subCategories) ? ps?.subCategories : []),subcategoryText]}));
                                   setsubcategoryList((ps: any) => [
                                     ...ps,
-                                    subcategoryText,
+                                    subcategoryText + "-" + selectedCate,
                                   ]);
                                   setsubcategoryText('');
                                 }}
                               >
                                 Add
                               </Button>
-                            </Space>
+                            </Space>}
                           </>
                         )}
-                        // options={[...(Array.isArray(takeOff?.subCategories) ? takeOff?.subCategories : [])].map((item: any) => (
-                        //   { label: item, value: item }
-                        // ))}
+                      // options={[...(Array.isArray(takeOff?.subCategories) ? takeOff?.subCategories : [])].map((item: any) => (
+                      //   { label: item, value: item }
+                      // ))}
                       >
                         {[
                           ...(Array.isArray(takeOff?.subCategories)
-                            ? takeOff.subCategories
+                            ? takeOff.subCategories.filter((val: string) => val?.includes(selectedCate))
                             : []),
                         ].map((item: any, index: number) => (
                           <Option key={index + ''} value={item}>
-                            <span>{item}</span>
+                            <span>{item?.split('-')[0]}</span>
                             <span style={{ float: 'right' }}>
                               <DeleteOutlined
                                 onClick={(e) => {
@@ -3137,19 +3394,19 @@ const TakeOffNewPage = () => {
                     style={{ backgroundColor: 'transparent' }}
                     rowClassName={'table-row-transparent'}
                     rootClassName="table-row-transparent"
-                    // expandedRowKeys={expandedKeys.takeOff}
-                    // onExpand={(expanded, record) => {
-                    //   if (expanded) {
-                    //     setexpandedKeys(ps => ({ ...ps, takeOff: [record.key] }))
-                    //   } else {
-                    //     setexpandedKeys(ps => ({ ...ps, takeOff: [] }))
-                    //   }
-                    // }}
+                  // expandedRowKeys={expandedKeys.takeOff}
+                  // onExpand={(expanded, record) => {
+                  //   if (expanded) {
+                  //     setexpandedKeys(ps => ({ ...ps, takeOff: [record.key] }))
+                  //   } else {
+                  //     setexpandedKeys(ps => ({ ...ps, takeOff: [] }))
+                  //   }
+                  // }}
                   />
                 </div>
               )}
               {sideTabs == 'WBS' && (
-                <div className="grow !border-black p-2">
+                <div className="grow !border-black p-2 overflow-y-auto max-h-[70%]">
                   {/* <Table
                 columns={tableColumns}
                 expandable={{
@@ -3168,7 +3425,7 @@ const TakeOffNewPage = () => {
                 rowClassName={'table-row-transparent'}
                 rootClassName='table-row-transparent'
               /> */}
-                  <div className="flex flex-col w-full">
+                  {/* <div className="flex flex-col w-full">
                     <div className="w-full flex">
                       <span
                         className="border p-3 cursor-pointer"
@@ -3296,6 +3553,177 @@ const TakeOffNewPage = () => {
                           );
                         })}
                     </div>
+                  </div> */}
+                  <div className="flex flex-col w-full">
+                    {
+                      Array.isArray(takeOff?.categories) &&
+                      takeOff?.categories?.map((categ: any, ind: number) => {
+                        return (
+                          <div key={ind}>
+                            <div className="w-full flex">
+                              <span
+                                className="border p-3 cursor-pointer"
+                                onClick={() => {
+                                  if (catopened.some(val => val == ind)) {
+                                    setcatopened(ps => ps.filter(val => val != ind))
+                                  } else {
+                                    setcatopened(ps => ([...ps, ind]))
+                                  }
+                                }}
+                              >
+                                {catopened.some(val => val == ind) ? (
+                                  <DownOutlined
+                                    style={{ strokeWidth: 30, stroke: 'black' }}
+                                  />
+                                ) : (
+                                  <RightOutlined
+                                    style={{ strokeWidth: 30, stroke: 'black' }}
+                                  />
+                                )}
+                              </span>
+                              <div className={`flex justify-between px-3 grow items-center border ${selectedCate == categ ? 'bg-lavenderPurpleReplica bg-opacity-15' : '!bg-gray-100'}`}>
+                                <div className={`flex justify-start items-center gap-x-2 `}>
+                                  <FileOutlined
+                                    className="text-lavenderPurpleReplica bg-lavenderPurpleReplica bg-opacity-15 p-1 rounded-full text-sm"
+                                    style={{ strokeWidth: 30, stroke: '#007ab6' }}
+                                  />
+                                  <span className="font-bold"><EditableText key={categ} initialText={categ} onPressEnter={(vl) => {
+                                    updateCategories(
+                                      takeOff.categories.map((cit: string, cin: number) => {
+                                        if (cin == ind) {
+                                          return vl
+                                        } else {
+                                          return cit
+                                        }
+                                      }),
+                                      [
+                                        ...(Array.isArray(takeOff?.subCategories)
+                                          ? takeOff.subCategories.map((sit: string) => {
+                                            if (sit.includes(categ)) {
+                                              const [ls, lc] = sit.split('-')
+                                              console.log(lc)
+                                              return ls + "-" + vl
+                                            } else {
+                                              return sit
+                                            }
+                                          })
+                                          : []),
+                                      ]
+                                    );
+                                  }} toolTip={'Double Click to edit'} /></span>
+                                </div>
+                                <div className='flex justify-end gap-2' >
+                                  {selectedCate == categ ? (
+                                    <Button
+                                      size="small"
+                                      className="border-2 rounded-full ml-2"
+                                      onClick={() => {
+                                        setselectedCate(null);
+                                        setselectedSubCate(null);
+                                      }}
+                                    >
+                                      unselect
+                                    </Button>
+                                  ) : (
+                                    <Button
+                                      size="small"
+                                      className="border-2 rounded-full ml-2"
+                                      onClick={() => {
+                                        setselectedCate(categ);
+                                      }}
+                                    >
+                                      select
+                                    </Button>
+                                  )}
+                                  <DeleteOutlined className='cursor-pointer' onClick={() => {
+                                    updateCategories(
+                                      takeOff.categories.filter(
+                                        (cit: string) => cit != categ
+                                      ),
+                                      [
+                                        ...(Array.isArray(takeOff?.subCategories)
+                                          ? takeOff.subCategories
+                                          : []),
+                                      ]
+                                    );
+                                    setselectedCate(null);
+                                    setselectedSubCate(null);
+                                  }} />
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex flex-col w-full overflow-y-auto max-h-[250px]">
+                              {catopened.some(val => val == ind) &&
+                                Array.isArray(takeOff?.subCategories) &&
+                                takeOff?.subCategories?.filter((val: any) => val?.includes(categ))?.map((subcateg: any, sind: number) => {
+                                  return (
+                                    <div
+                                      className={`w-full border p-4 flex justify-between grow ${selectedSubCate == subcateg ? 'bg-lavenderPurpleReplica bg-opacity-15' : 'hover:bg-gray-100'}`}
+                                      key={sind}
+                                    >
+                                      <span><EditableText key={subcateg} initialText={subcateg?.split('-')[0]} onPressEnter={(vl) => {
+                                        updateCategories(
+                                          [...(Array.isArray(takeOff.categories) ? takeOff.categories : [])],
+                                          [
+                                            ...(Array.isArray(takeOff?.subCategories)
+                                              ? takeOff.subCategories.map((sit: string) => {
+                                                if (sit == subcateg) {
+                                                  const [ls, lc] = sit.split('-')
+                                                  console.log(ls)
+                                                  return vl + "-" + lc
+                                                } else {
+                                                  return sit
+                                                }
+                                              })
+                                              : []),
+                                          ]
+                                        );
+                                      }} toolTip={'Double Click to edit'} /></span>
+                                      <div className='flex gap-2'>
+                                        {selectedSubCate == subcateg ? (
+                                          <Button
+                                            size="small"
+                                            className="border-2 rounded-full ml-2"
+                                            onClick={() => {
+                                              setselectedSubCate(null);
+                                            }}
+                                          >
+                                            unselect
+                                          </Button>
+                                        ) : (
+                                          <Button
+                                            size="small"
+                                            className="border-2 rounded-full ml-2"
+                                            onClick={() => {
+                                              setselectedCate(categ)
+                                              setselectedSubCate(subcateg)
+                                            }}
+                                          >
+                                            select
+                                          </Button>
+                                        )}
+                                        <DeleteOutlined className='cursor-pointer' onClick={() => {
+                                          updateCategories(
+                                            [
+                                              ...(Array.isArray(takeOff?.categories)
+                                                ? takeOff.categories
+                                                : []),
+                                            ],
+                                            takeOff.subCategories.filter(
+                                              (sit: string) => sit != subcateg
+                                            )
+                                          );
+                                          setselectedSubCate(null)
+                                        }} />
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                            </div>
+                          </div>
+                        )
+                      })
+                    }
                   </div>
                 </div>
               )}
@@ -3526,6 +3954,7 @@ const TakeOffNewPage = () => {
                         isDrag={isDrag}
                         selectedShape={selectedShape}
                         setSelectedShape={setSelectedShape}
+                        handleDragEnd={handleDragEnd}
                       />
                     )}
                     {selectedTakeOffTab == 'overview' && (
@@ -3835,15 +4264,15 @@ const TakeOffNewPage = () => {
                                               {fileState.find(
                                                 (i) => i.name == it?.name
                                               )?.status != 'failed' && (
-                                                <Progress
-                                                  percent={
-                                                    fileState.find(
-                                                      (i) => i.name == it?.name
-                                                    )?.uploadProgress ?? 1
-                                                  }
-                                                  strokeColor={'#007AB6'}
-                                                />
-                                              )}
+                                                  <Progress
+                                                    percent={
+                                                      fileState.find(
+                                                        (i) => i.name == it?.name
+                                                      )?.uploadProgress ?? 1
+                                                    }
+                                                    strokeColor={'#007AB6'}
+                                                  />
+                                                )}
                                               <span className="text-sm text-gray-500">{`(${fileState.find((i) => i.name == it?.name)?.status})`}</span>
                                             </li>
                                           );
@@ -3974,7 +4403,7 @@ const TakeOffNewPage = () => {
                         </div>
                         <div
                           className="flex flex-row gap-2 items-center"
-                          // onClick={}
+                        // onClick={}
                         >
                           <label>Fill:</label>
                           {/* <NextImage src={'/selectedScale.svg'} alt={'zoomicon'} width={19.97} height={11.31} /> */}
@@ -4029,7 +4458,8 @@ const TakeOffNewPage = () => {
                 {tool.selected === 'scale' && (
                   <ModalComponent open={showModal} setOpen={setShowModal}>
                     <ScaleModal
-                      numOfPages={uploadFileData.length}
+                      // numOfPages={uploadFileData.length}
+                      numOfPages={takeOff?.pages?.length ?? 0}
                       setModalOpen={setShowModal}
                       drawScale={drawScale}
                       setdrawScale={setdrawScale}
@@ -4049,7 +4479,7 @@ const TakeOffNewPage = () => {
                     modalOpen={reportModal}
                   />
                 </ModalComponent>
-                <ModalComponent open={progressModalOpen} setOpen={() => {}}>
+                <ModalComponent open={progressModalOpen} setOpen={() => { }}>
                   <CreateProgressModal
                     setModalOpen={setprogressModalOpen}
                     files={selectedFiles}
