@@ -2,23 +2,23 @@ import Image from 'next/image'
 import React from 'react'
 import { ICommentProps } from '../SingleComment'
 import moment from 'moment'
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '@/redux/store'
-import { socialMediaService } from '@/app/services/social-media.service'
-import { setFetchComments } from '@/redux/social-media/social-media.slice'
+// import { useDispatch, useSelector } from 'react-redux'
+// import { RootState } from '@/redux/store'
+// import { socialMediaService } from '@/app/services/social-media.service'
+// import { setFetchComments } from '@/redux/social-media/social-media.slice'
 
-const ReplyComent = ({ _id, postId, content, updatedAt, associatedCompany, replyComments }: ICommentProps) => {
-    const { user } = useSelector((state: RootState) => state.auth.user);
-    const dispatch = useDispatch();
+const ReplyComent = ({ content, updatedAt, associatedCompany }: ICommentProps) => {
+    // const { user } = useSelector((state: RootState) => state.auth.user);
+    // const dispatch = useDispatch();
 
-    const deletePostCommentHandler = async () => {
-        try {
-            await socialMediaService.httpDeletePostComment(_id);
-            dispatch(setFetchComments());
-        } catch (error) {
-            console.log(error);
-        }
-    }
+    // const deletePostCommentHandler = async () => {
+    //     try {
+    //         await socialMediaService.httpDeletePostComment(_id);
+    //         dispatch(setFetchComments());
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // }
 
     return (
         <>

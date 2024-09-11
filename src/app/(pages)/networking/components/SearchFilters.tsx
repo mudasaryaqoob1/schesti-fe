@@ -62,10 +62,10 @@ const SearchFilters = () => {
     trade: '',
   };
 
-  const allTrades = trades.map((state) => ({
-    label: state.name,
-    value: state._id,
-  }));
+  // const allTrades = trades.map((state) => ({
+  //   label: state.name,
+  //   value: state._id,
+  // }));
 
   const validationSchema = Yup.object({});
 

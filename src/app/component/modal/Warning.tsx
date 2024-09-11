@@ -25,7 +25,6 @@ const WarningModal = ({
   title = 'Delete?',
   description = 'Are you sure you want to delete?',
   destroyOnClose = false,
-  onCancel,
 }: Props) => {
   return (
     <CustomModal

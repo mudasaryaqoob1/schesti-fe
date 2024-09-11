@@ -59,7 +59,8 @@ const GeneralSetting = () => {
       const { data } = await userService.httpGetCompanyDetail();
       setUserData(data.user);
     } catch (error) {
-
+      console.log(error);
+      
     }
   }, []);
 

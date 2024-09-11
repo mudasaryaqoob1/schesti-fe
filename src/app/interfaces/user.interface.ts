@@ -29,7 +29,6 @@ export type IUserInterface = IUpdateCompanyDetail & {
   socialAvatar: string;
   employee: string;
   industry: string;
-  university: string;
   organizationName: string;
   planId: string;
   stripeCustomerId: string;
