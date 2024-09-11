@@ -54,21 +54,21 @@ export function ExpenseForm({ expense, onSuccess }: Props) {
     initialValues: expense
       ? { ...expense }
       : {
-        file: undefined,
-        name: '',
-        costCode: '',
-        expenseType: '',
-        expenseDate: new Date().toISOString(),
-        invoiceNo: '',
-        totalPrice: 0,
-        project: '',
-        note: '',
-        salesTax: 0,
-        countryTax: 0,
-        paymentMethod: '',
-        reference: '',
-        repeat: '',
-      },
+          file: undefined,
+          name: '',
+          costCode: '',
+          expenseType: '',
+          expenseDate: new Date().toISOString(),
+          invoiceNo: '',
+          totalPrice: 0,
+          project: '',
+          note: '',
+          salesTax: 0,
+          countryTax: 0,
+          paymentMethod: '',
+          reference: '',
+          repeat: '',
+        },
     onSubmit: async (values) => {
       setIsSubmitting(true);
       try {
@@ -144,7 +144,7 @@ export function ExpenseForm({ expense, onSuccess }: Props) {
           itemRender={() => {
             return null;
           }}
-          onChange={() => { }}
+          onChange={() => {}}
         >
           <p className="ant-upload-drag-icon">
             <Image
@@ -201,8 +201,8 @@ export function ExpenseForm({ expense, onSuccess }: Props) {
             },
             value: formik.values.costCode ? formik.values.costCode : undefined,
             onBlur: formik.handleBlur,
-            optionFilterProp: "label",
-            showSearch: true
+            optionFilterProp: 'label',
+            showSearch: true,
           }}
           hasError={Boolean(formik.touched.costCode && formik.errors.costCode)}
           errorMessage={
@@ -224,9 +224,9 @@ export function ExpenseForm({ expense, onSuccess }: Props) {
             onChange: (val) => {
               formik.setFieldValue('costCode', val);
             },
-            optionFilterProp: "label",
+            optionFilterProp: 'label',
             onBlur: formik.handleBlur,
-            showSearch: true
+            showSearch: true,
           }}
           hasError={Boolean(formik.touched.costCode && formik.errors.costCode)}
           errorMessage={
@@ -252,8 +252,8 @@ export function ExpenseForm({ expense, onSuccess }: Props) {
                 ? formik.values.costCode
                 : undefined,
               onBlur: formik.handleBlur,
-              optionFilterProp: "label",
-              showSearch: true
+              optionFilterProp: 'label',
+              showSearch: true,
             }}
             hasError={Boolean(
               formik.touched.costCode && formik.errors.costCode
@@ -271,7 +271,7 @@ export function ExpenseForm({ expense, onSuccess }: Props) {
           name="expenseType"
           placeholder="Select expense type"
           field={{
-            className: "mt-1.5",
+            className: 'mt-1.5',
             options: [
               { label: 'Labour', value: 'Labour' },
               { label: 'Material', value: 'Material' },
@@ -357,7 +357,6 @@ export function ExpenseForm({ expense, onSuccess }: Props) {
             value: formik.values.totalPrice
               ? formik.values.totalPrice
               : undefined,
-
           }}
           hasError={Boolean(
             formik.touched.totalPrice && formik.errors.totalPrice
@@ -374,7 +373,7 @@ export function ExpenseForm({ expense, onSuccess }: Props) {
         label="Project"
         name="project"
         placeholder="Select project"
-        type='text'
+        type="text"
         field={{
           onChange: formik.handleChange,
           value: formik.values.project ? formik.values.project : undefined,
@@ -533,7 +532,7 @@ export function ExpenseForm({ expense, onSuccess }: Props) {
               name="repeat"
               placeholder="Select repeat"
               field={{
-                className: "mt-1.5",
+                className: 'mt-1.5',
                 options: [
                   { label: 'Weekly', value: 'Weekly' },
                   { label: 'Bi Weekly', value: 'Bi Weekly' },

@@ -181,7 +181,7 @@ function AssetPage() {
         open={showDrawer}
         onClose={() => {
           setSelectedItem(null);
-          setShowDrawer(false)
+          setShowDrawer(false);
         }}
         width={800}
         destroyOnClose
@@ -259,7 +259,9 @@ function AssetPage() {
               iconwidth={20}
               iconheight={20}
               onClick={() => {
-                const assets = _.filter(data.assets, item => selectedRowKeys.includes(item._id));
+                const assets = _.filter(data.assets, (item) =>
+                  selectedRowKeys.includes(item._id)
+                );
                 if (!assets.length) {
                   toast.error('No data to export');
                   return;
@@ -312,7 +314,7 @@ function AssetPage() {
           onChange: (newSelectedRowKeys: React.Key[]) => {
             setSelectedRowKeys(newSelectedRowKeys);
           },
-          selectedRowKeys
+          selectedRowKeys,
         }}
         rowKey={(item) => item._id}
       />

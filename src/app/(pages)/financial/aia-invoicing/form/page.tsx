@@ -1,19 +1,19 @@
 'use client';
 
-import { withAuth } from "@/app/hoc/withAuth";
-import { AiaInvoicingForm } from "./components";
-import { NoInvoiceFound } from "../invoice/[id]/components/NoInvoiceFound";
-import { Skeleton } from "antd";
-import { toast } from "react-toastify";
-import { AxiosError } from "axios";
-import { clientInvoiceService } from "@/app/services/client-invoices.service";
-import { useEffect, useState } from "react";
-import { IAIAInvoice } from "@/app/interfaces/client-invoice.interface";
-import { useSearchParams } from "next/navigation";
-import { AIAInvoiceFormMode, AIATabsType } from "../types";
-import { AIAInvoiceFormHeader } from "./components/Header";
-import { AIATabs } from "./components/AIATabs";
-import { AIAHistory } from "./components/History";
+import { withAuth } from '@/app/hoc/withAuth';
+import { AiaInvoicingForm } from './components';
+import { NoInvoiceFound } from '../invoice/[id]/components/NoInvoiceFound';
+import { Skeleton } from 'antd';
+import { toast } from 'react-toastify';
+import { AxiosError } from 'axios';
+import { clientInvoiceService } from '@/app/services/client-invoices.service';
+import { useEffect, useState } from 'react';
+import { IAIAInvoice } from '@/app/interfaces/client-invoice.interface';
+import { useSearchParams } from 'next/navigation';
+import { AIAInvoiceFormMode, AIATabsType } from '../types';
+import { AIAInvoiceFormHeader } from './components/Header';
+import { AIATabs } from './components/AIATabs';
+import { AIAHistory } from './components/History';
 
 function AiaInvoicingFormPage() {
   const [loading, setLoading] = useState(false);
@@ -21,8 +21,7 @@ function AiaInvoicingFormPage() {
   const [parentInvoice, setParentInvoice] = useState<IAIAInvoice | null>(null);
   const mode = searchParams.get('mode') as AIAInvoiceFormMode;
 
-  const [tab, setTab] = useState<AIATabsType>("current");
-
+  const [tab, setTab] = useState<AIATabsType>('current');
 
   useEffect(() => {
     const id = searchParams.get('id');
@@ -35,9 +34,8 @@ function AiaInvoicingFormPage() {
     if (id) {
       setLoading(true);
       try {
-        const response = await clientInvoiceService.httpGetParentInvoiceById(
-          id
-        );
+        const response =
+          await clientInvoiceService.httpGetParentInvoiceById(id);
         if (response.data) {
           setParentInvoice(response.data.invoice);
         }
@@ -57,18 +55,24 @@ function AiaInvoicingFormPage() {
   }
 
   if (mode !== 'edit' && mode !== 'view' && mode !== 'phase') {
-    return <NoInvoiceFound />
+    return <NoInvoiceFound />;
   }
 
-  return <section className="mx-4 my-2 space-y-2">
-    <AIAInvoiceFormHeader parentInvoice={parentInvoice} />
-    <AIATabs tab={tab} setTab={setTab} />
-    {tab === 'current' ? <AiaInvoicingForm
-      parentInvoice={parentInvoice}
-      setParentInvoice={setParentInvoice}
-      mode={mode}
-    /> : <AIAHistory />}
-  </section>
+  return (
+    <section className="mx-4 my-2 space-y-2">
+      <AIAInvoiceFormHeader parentInvoice={parentInvoice} />
+      <AIATabs tab={tab} setTab={setTab} />
+      {tab === 'current' ? (
+        <AiaInvoicingForm
+          parentInvoice={parentInvoice}
+          setParentInvoice={setParentInvoice}
+          mode={mode}
+        />
+      ) : (
+        <AIAHistory />
+      )}
+    </section>
+  );
 }
 
 export default withAuth(AiaInvoicingFormPage);

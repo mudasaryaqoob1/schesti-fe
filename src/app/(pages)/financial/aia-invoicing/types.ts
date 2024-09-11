@@ -1,3 +1,3 @@
-export type AIAInvoiceFormMode = "edit" | "phase" | "view";
+export type AIAInvoiceFormMode = 'edit' | 'phase' | 'view';
 
-export type AIATabsType = "current" | "history";
+export type AIATabsType = 'current' | 'history';

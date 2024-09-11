@@ -39,11 +39,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
               headerColor: '#475467',
             },
             Segmented: {
-              itemSelectedBg: "#007AB6",
-              itemSelectedColor: "#fff",
+              itemSelectedBg: '#007AB6',
+              itemSelectedColor: '#fff',
               padding: 10,
-              trackBg: "#fff"
-            }
+              trackBg: '#fff',
+            },
           },
         }}
       >

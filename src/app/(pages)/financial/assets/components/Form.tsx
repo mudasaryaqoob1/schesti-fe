@@ -54,21 +54,21 @@ export function AssetForm({ item, onSuccess }: Props) {
     initialValues: item
       ? { ...item }
       : {
-        file: undefined,
-        name: '',
-        costCode: '',
-        assetType: '',
-        assetDate: new Date().toISOString(),
-        invoiceNo: '',
-        totalPrice: 0,
-        project: '',
-        note: '',
-        salesTax: 0,
-        countryTax: 0,
-        paymentMethod: '',
-        reference: '',
-        repeat: '',
-      },
+          file: undefined,
+          name: '',
+          costCode: '',
+          assetType: '',
+          assetDate: new Date().toISOString(),
+          invoiceNo: '',
+          totalPrice: 0,
+          project: '',
+          note: '',
+          salesTax: 0,
+          countryTax: 0,
+          paymentMethod: '',
+          reference: '',
+          repeat: '',
+        },
     onSubmit: async (values) => {
       setIsSubmitting(true);
       try {
@@ -144,7 +144,7 @@ export function AssetForm({ item, onSuccess }: Props) {
           itemRender={() => {
             return null;
           }}
-          onChange={() => { }}
+          onChange={() => {}}
         >
           <p className="ant-upload-drag-icon">
             <Image
@@ -200,7 +200,7 @@ export function AssetForm({ item, onSuccess }: Props) {
               formik.setFieldValue('costCode', val);
             },
             value: formik.values.costCode ? formik.values.costCode : undefined,
-            optionFilterProp: "label",
+            optionFilterProp: 'label',
             onBlur: formik.handleBlur,
             showSearch: true,
           }}
@@ -226,8 +226,8 @@ export function AssetForm({ item, onSuccess }: Props) {
             },
             onBlur: formik.handleBlur,
             showSearch: true,
-            optionFilterProp: "label",
-            allowClear: true
+            optionFilterProp: 'label',
+            allowClear: true,
           }}
           hasError={Boolean(formik.touched.costCode && formik.errors.costCode)}
           errorMessage={
@@ -243,7 +243,7 @@ export function AssetForm({ item, onSuccess }: Props) {
             name="costCode"
             placeholder="Select description"
             field={{
-              className: "mt-1.5",
+              className: 'mt-1.5',
               options: costCodeData.map((item) => {
                 return { label: item.description, value: item.id };
               }),
@@ -255,8 +255,7 @@ export function AssetForm({ item, onSuccess }: Props) {
                 : undefined,
               onBlur: formik.handleBlur,
               showSearch: true,
-              optionFilterProp: "label",
-
+              optionFilterProp: 'label',
             }}
             hasError={Boolean(
               formik.touched.costCode && formik.errors.costCode
@@ -274,7 +273,7 @@ export function AssetForm({ item, onSuccess }: Props) {
           name="assetType"
           placeholder="Select asset type"
           field={{
-            className: "mt-1.5",
+            className: 'mt-1.5',
             options: [
               {
                 label: 'Current Assets',
@@ -392,7 +391,6 @@ export function AssetForm({ item, onSuccess }: Props) {
             value: formik.values.totalPrice
               ? formik.values.totalPrice
               : undefined,
-
           }}
           hasError={Boolean(
             formik.touched.totalPrice && formik.errors.totalPrice
@@ -409,7 +407,7 @@ export function AssetForm({ item, onSuccess }: Props) {
         label="Project"
         name="project"
         placeholder="Select project"
-        type='text'
+        type="text"
         field={{
           onChange: formik.handleChange,
           value: formik.values.project ? formik.values.project : undefined,
@@ -513,7 +511,7 @@ export function AssetForm({ item, onSuccess }: Props) {
                 name="paymentMethod"
                 placeholder="Select payment method"
                 field={{
-                  className: "mt-1.5",
+                  className: 'mt-1.5',
                   options: [
                     { label: 'Cash', value: 'Cash' },
                     { label: 'Check', value: 'Check' },

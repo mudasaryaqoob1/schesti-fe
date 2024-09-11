@@ -75,37 +75,37 @@ const Register = () => {
     {
       role: USER_ROLES_ENUM.OWNER,
       desc: 'It is a long established fact that a reader will be distracted by the readable content of',
-      avatar: "owner"
+      avatar: 'owner',
     },
     {
       role: USER_ROLES_ENUM.CONTRACTOR,
       desc: 'It is a long established fact that a reader will be distracted by the readable content of',
-      avatar: "contractor"
+      avatar: 'contractor',
     },
     {
       role: USER_ROLES_ENUM.SUBCONTRACTOR,
       desc: 'It is a long established fact that a reader will be distracted by the readable content of',
-      avatar: "sub-contractor"
+      avatar: 'sub-contractor',
     },
     {
       role: USER_ROLES_ENUM.PROFESSOR,
       desc: 'It is a long established fact that a reader will be distracted by the readable content of',
-      avatar: "professor"
+      avatar: 'professor',
     },
     {
       role: USER_ROLES_ENUM.STUDENT,
       desc: 'It is a long established fact that a reader will be distracted by the readable content of',
-      avatar: "student"
+      avatar: 'student',
     },
     {
       role: USER_ROLES_ENUM.VENDOR,
       desc: 'It is a long established fact that a reader will be distracted by the readable content of',
-      avatar: "vendor"
+      avatar: 'vendor',
     },
     {
       role: USER_ROLES_ENUM.ARCHITECT,
       desc: 'It is a long established fact that a reader will be distracted by the readable content of',
-      avatar: "architect"
+      avatar: 'architect',
     },
   ];
 
@@ -169,7 +169,7 @@ const Register = () => {
         } else if (
           checkUserExist.statusCode == 400 &&
           checkUserExist.message ===
-          'Verify from your email and complete your profile'
+            'Verify from your email and complete your profile'
         ) {
           router.push(`/companydetails/${checkUserExist.data.user._id}`);
         } else if (
@@ -331,7 +331,7 @@ const Register = () => {
                       </Checkbox>
                     </ConfigProvider>
                     {formik.errors.isTermsAccepted &&
-                      formik.touched.isTermsAccepted ? (
+                    formik.touched.isTermsAccepted ? (
                       <p className="mt-1 text-red-500">
                         {formik.errors.isTermsAccepted}
                       </p>

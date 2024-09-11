@@ -106,7 +106,7 @@ function Expense() {
             menu={{
               items: [
                 {
-                  label: "Collect Payment",
+                  label: 'Collect Payment',
                   key: 'collectPayment',
                   onClick: () => {
                     setSelectedExpense(record);
@@ -129,7 +129,6 @@ function Expense() {
                     setShowDeleteModal(true);
                   },
                 },
-
               ],
             }}
           >
@@ -266,7 +265,9 @@ function Expense() {
               iconwidth={20}
               iconheight={20}
               onClick={() => {
-                const expenses = _.filter(data.expenses, item => selectedRowKeys.includes(item._id));
+                const expenses = _.filter(data.expenses, (item) =>
+                  selectedRowKeys.includes(item._id)
+                );
                 if (!expenses.length) {
                   toast.error('No expenses selected');
                   return;
@@ -319,10 +320,9 @@ function Expense() {
           onChange: (newSelectedRowKeys: React.Key[]) => {
             setSelectedRowKeys(newSelectedRowKeys);
           },
-          selectedRowKeys
+          selectedRowKeys,
         }}
         rowKey={(item) => item._id}
-
       />
     </section>
   );

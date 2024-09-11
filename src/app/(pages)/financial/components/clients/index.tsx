@@ -61,7 +61,8 @@ export function Clients() {
     async onSubmit(values) {
       setIsLoading(true);
       try {
-        const response = await clientInvoiceService.httpCreateInitialInvoice(values);
+        const response =
+          await clientInvoiceService.httpCreateInitialInvoice(values);
         if (response.data && response.data.invoice) {
           router.push(
             `${Routes.Financial['AIA-Invoicing']}/form?id=${response.data.invoice._id}&mode=edit`
@@ -73,7 +74,6 @@ export function Clients() {
         toast.error(err.response?.data.message);
         setIsLoading(false);
       }
-
     },
   });
 
@@ -155,7 +155,7 @@ export function Clients() {
                   onOk() {
                     dispatch(deleteClientInvoiceRequest(record._id));
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
               } else if (key === 'view') {
                 router.push(
@@ -181,14 +181,14 @@ export function Clients() {
   const filteredClientInvoices =
     clientInvoices.length > 0
       ? clientInvoices.filter((invoice: any) => {
-        if (!search) {
-          return invoice;
-        }
-        return (
-          invoice.invoiceName === search ||
-          invoice!.toOwner.toLowerCase().includes(search.toLowerCase())
-        );
-      })
+          if (!search) {
+            return invoice;
+          }
+          return (
+            invoice.invoiceName === search ||
+            invoice!.toOwner.toLowerCase().includes(search.toLowerCase())
+          );
+        })
       : [];
 
   return (
@@ -222,15 +222,20 @@ export function Clients() {
           <ModalComponent
             open={showClientModal}
             setOpen={() => setShowClientModal(false)}
-            width='60%'
+            width="60%"
           >
-            <Popups title='Add Client' onClose={() => setShowClientModal(false)}>
+            <Popups
+              title="Add Client"
+              onClose={() => setShowClientModal(false)}
+            >
               <AddCrmClientForm
                 onClose={() => setShowClientModal(false)}
-                onSuccess={client => {
+                onSuccess={(client) => {
                   if (client.module === 'clients') {
-
-                    formik.setFieldValue("clientName", `${client.firstName} ${client.lastName}`)
+                    formik.setFieldValue(
+                      'clientName',
+                      `${client.firstName} ${client.lastName}`
+                    );
                   }
                 }}
               />
@@ -240,15 +245,20 @@ export function Clients() {
           <ModalComponent
             open={showArchitectModal}
             setOpen={() => setShowArchitectModal(false)}
-            width='60%'
+            width="60%"
           >
-            <Popups title='Add Architect' onClose={() => setShowArchitectModal(false)}>
+            <Popups
+              title="Add Architect"
+              onClose={() => setShowArchitectModal(false)}
+            >
               <AddCrmClientForm
                 onClose={() => setShowArchitectModal(false)}
-                onSuccess={item => {
+                onSuccess={(item) => {
                   if (item.module === 'architects') {
-
-                    formik.setFieldValue("architectName", `${item.firstName} ${item.lastName}`)
+                    formik.setFieldValue(
+                      'architectName',
+                      `${item.firstName} ${item.lastName}`
+                    );
                   }
                 }}
               />
@@ -286,7 +296,11 @@ export function Clients() {
                   hasError={
                     formik.touched.invoiceName && !!formik.errors.invoiceName
                   }
-                  errorMessage={formik.touched.invoiceName && formik.errors.invoiceName ? formik.errors.invoiceName : ''}
+                  errorMessage={
+                    formik.touched.invoiceName && formik.errors.invoiceName
+                      ? formik.errors.invoiceName
+                      : ''
+                  }
                   field={{
                     type: 'text',
                     onChange: formik.handleChange,
@@ -295,46 +309,68 @@ export function Clients() {
                   }}
                 />
 
-
                 <div className="mt-2">
                   <InputComponent
-                    label='Client Name'
-                    name='clientName'
-                    type='text'
-                    placeholder='Enter client name'
-                    label2={<div onClick={() => setShowClientModal(true)} className='text-schestiPrimary space-x-1 hover:cursor-pointer hover:underline flex items-center'>
-                      <PlusOutlined />
-                      <span>Add New</span>
-                    </div>}
+                    label="Client Name"
+                    name="clientName"
+                    type="text"
+                    placeholder="Enter client name"
+                    label2={
+                      <div
+                        onClick={() => setShowClientModal(true)}
+                        className="text-schestiPrimary space-x-1 hover:cursor-pointer hover:underline flex items-center"
+                      >
+                        <PlusOutlined />
+                        <span>Add New</span>
+                      </div>
+                    }
                     field={{
                       value: formik.values.clientName,
                       onChange: formik.handleChange,
-                      onBlur: formik.handleBlur
+                      onBlur: formik.handleBlur,
                     }}
-                    hasError={formik.touched.clientName && !!formik.errors.clientName}
-                    errorMessage={formik.touched.clientName && formik.errors.clientName ? formik.errors.clientName : ''}
+                    hasError={
+                      formik.touched.clientName && !!formik.errors.clientName
+                    }
+                    errorMessage={
+                      formik.touched.clientName && formik.errors.clientName
+                        ? formik.errors.clientName
+                        : ''
+                    }
                   />
                 </div>
 
                 <div className="mt-2">
                   <InputComponent
-                    label='Architect Name'
-                    name='architectName'
-                    type='text'
-                    placeholder='Enter architect name'
-                    label2={<div onClick={() => setShowArchitectModal(true)} className='text-schestiPrimary space-x-1 hover:cursor-pointer hover:underline flex items-center'>
-                      <PlusOutlined />
-                      <span>Add New</span>
-                    </div>}
+                    label="Architect Name"
+                    name="architectName"
+                    type="text"
+                    placeholder="Enter architect name"
+                    label2={
+                      <div
+                        onClick={() => setShowArchitectModal(true)}
+                        className="text-schestiPrimary space-x-1 hover:cursor-pointer hover:underline flex items-center"
+                      >
+                        <PlusOutlined />
+                        <span>Add New</span>
+                      </div>
+                    }
                     field={{
                       value: formik.values.architectName,
                       onChange: formik.handleChange,
-                      onBlur: formik.handleBlur
+                      onBlur: formik.handleBlur,
                     }}
-                    hasError={formik.touched.architectName && !!formik.errors.architectName}
-                    errorMessage={formik.touched.architectName && formik.errors.architectName ? formik.errors.architectName : ''}
+                    hasError={
+                      formik.touched.architectName &&
+                      !!formik.errors.architectName
+                    }
+                    errorMessage={
+                      formik.touched.architectName &&
+                      formik.errors.architectName
+                        ? formik.errors.architectName
+                        : ''
+                    }
                   />
-
                 </div>
                 <div className="flex justify-end py-2 space-x-2">
                   <WhiteButton

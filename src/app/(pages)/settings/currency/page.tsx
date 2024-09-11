@@ -25,10 +25,10 @@ function CurrencyPage() {
     initialValues: authUser
       ? authUser.currency
       : {
-        locale: 'en-US',
-        code: 'USD',
-        symbol: '$',
-      },
+          locale: 'en-US',
+          code: 'USD',
+          symbol: '$',
+        },
     onSubmit: async (values) => {
       dispatch(updateUserCurrencyThunk(values))
         .catch((err) => {

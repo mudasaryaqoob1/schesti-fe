@@ -6,13 +6,11 @@ import { HttpService } from './base.service';
 class ClientInvoiceService extends HttpService {
   private readonly prefix: string = 'api/client-invoices';
 
-  httpCreateInitialInvoice = (
-    data: {
-      clientName: string;
-      architectName: string;
-      invoiceName: string;
-    }
-  ): Promise<IResponseInterface<{ invoice: IAIAInvoice }>> =>
+  httpCreateInitialInvoice = (data: {
+    clientName: string;
+    architectName: string;
+    invoiceName: string;
+  }): Promise<IResponseInterface<{ invoice: IAIAInvoice }>> =>
     this.post(`${this.prefix}/create`, data);
 
   httpAddNewInvoice = (
@@ -20,14 +18,17 @@ class ClientInvoiceService extends HttpService {
   ): Promise<IResponseInterface<{ invoice: IAIAInvoice }>> =>
     this.post(`${this.prefix}/createInvoice`, data);
 
-
   httpUploadInvoiceDocuments = (
     id: string,
     data: {
-      "otherFiles": FileInterface[], "salesFiles": FileInterface[], "materialsFiles": FileInterface[], "federalPaperFiles": FileInterface[], "lienWaiverFiles": FileInterface[]
+      otherFiles: FileInterface[];
+      salesFiles: FileInterface[];
+      materialsFiles: FileInterface[];
+      federalPaperFiles: FileInterface[];
+      lienWaiverFiles: FileInterface[];
     }
-  ): Promise<IResponseInterface<IAIAInvoice>> => this.post(`${this.prefix}/upload/${id}`, data);
-
+  ): Promise<IResponseInterface<IAIAInvoice>> =>
+    this.post(`${this.prefix}/upload/${id}`, data);
 
   httpGetParentInvoiceById = (
     id: string
