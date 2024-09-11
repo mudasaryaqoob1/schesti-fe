@@ -263,24 +263,55 @@ export function AiaInvoicingForm({
 
         const totalAmount = originalContractSum + changeOrderNetChanges;
         const amountPaid = Number(sumColumns(data.data, 6).toFixed(2));
-        clientInvoiceService
-            .httpAddNewInvoice({
-                ...data,
-                totalAmount,
-                amountPaid,
-            })
-            .then((response) => {
-                if (response.statusCode == 201) {
-                    toast.success('Invoice created successfully');
-                    takeScreenshot(ref.current);
-                    setShowDownload(true);
-                }
-            })
-            .catch(({ response }: any) => {
-                if (response?.data.message === 'Validation Failed') {
-                    toast.error('Please fill the required fields.');
-                }
-            });
+
+        if (mode === 'edit') {
+            clientInvoiceService
+                .httpUpdateParentInvoice(parentInvoice._id, {
+                    ...data,
+                    totalAmount,
+                    amountPaid,
+                })
+                .then((response) => {
+                    if (response.statusCode == 201) {
+                        toast.success('Data saved successfully');
+                        takeScreenshot(ref.current);
+                        setShowDownload(true);
+                    }
+                })
+                .catch(({ response }: any) => {
+                    if (response?.data.message === 'Validation Failed') {
+                        toast.error('Please fill the required fields.');
+                    } else {
+                        toast.error(response?.data.message);
+                    }
+                });
+        } else if (mode === 'phase') {
+            clientInvoiceService
+                .httpCreateNewInvoicePhase(parentInvoice._id, {
+                    ...data,
+                    totalAmount,
+                    amountPaid,
+                })
+                .then((response) => {
+                    if (response.statusCode == 201 && response.data) {
+                        toast.success('Invoice created successfully');
+                        takeScreenshot(ref.current);
+                        setShowDownload(true);
+                        // setSelectedPhase(response.data.invoice);
+                    }
+                })
+                .catch(({ response }) => {
+                    if (response?.data.message === 'Validation Failed') {
+                        toast.error('Please fill the required fields.');
+                    } else {
+                        toast.error(response?.data.message);
+                    }
+                });
+        } else {
+            toast.error("Invalid mode");
+        }
+
+
     }
 
     function downloadPdf() {
