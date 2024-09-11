@@ -96,14 +96,10 @@ export function AiaInvoicingForm({
                         setAllPhases(phases);
                         setSelectedPhase(_selectedPhase);
                         // copy the values;
-                        // updateG7StateFromPhase({ ..._selectedPhase });
-
-                        const data = updatePreviousApplicationColumn(_selectedPhase);
-                        _selectedPhase.applicationDate = '';
-                        _selectedPhase.periodTo = '';
-                        setG7State({ ..._selectedPhase, data });
+                        updateG7StateFromPhase({ ..._selectedPhase });
                     }
                 } catch (error) {
+                    console.log(error);
                     toast.error('Something went wrong');
                 }
             })();
@@ -153,7 +149,7 @@ export function AiaInvoicingForm({
         const data = updatePreviousApplicationColumn(phase);
         phase.applicationDate = '';
         phase.periodTo = '';
-        setG7State(prev => ({ ...prev, ...phase, data }));
+        setG7State({ ...phase, data });
     }
 
     function updatePreviousApplicationColumn(_selectedPhase: IAIAInvoice) {
@@ -342,6 +338,7 @@ export function AiaInvoicingForm({
     }
 
     console.log(g7State);
+
     return (
         <>
             <div className="px-4 py-2 shadow-md rounded-lg border border-silverGray  bg-white">
