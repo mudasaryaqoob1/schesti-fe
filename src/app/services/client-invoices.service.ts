@@ -1,14 +1,34 @@
 import { IResponseInterface } from '../interfaces/api-response.interface';
 import { G7State, IAIAInvoice } from '../interfaces/client-invoice.interface';
+import { FileInterface } from '../interfaces/file.interface';
 import { HttpService } from './base.service';
 
 class ClientInvoiceService extends HttpService {
   private readonly prefix: string = 'api/client-invoices';
 
+  httpCreateInitialInvoice = (data: {
+    clientName: string;
+    architectName: string;
+    invoiceName: string;
+  }): Promise<IResponseInterface<{ invoice: IAIAInvoice }>> =>
+    this.post(`${this.prefix}/create`, data);
+
   httpAddNewInvoice = (
     data: G7State
   ): Promise<IResponseInterface<{ invoice: IAIAInvoice }>> =>
     this.post(`${this.prefix}/createInvoice`, data);
+
+  httpUploadInvoiceDocuments = (
+    id: string,
+    data: {
+      otherFiles: FileInterface[];
+      salesFiles: FileInterface[];
+      materialsFiles: FileInterface[];
+      federalPaperFiles: FileInterface[];
+      lienWaiverFiles: FileInterface[];
+    }
+  ): Promise<IResponseInterface<IAIAInvoice>> =>
+    this.post(`${this.prefix}/upload/${id}`, data);
 
   httpGetParentInvoiceById = (
     id: string

@@ -75,30 +75,37 @@ const Register = () => {
     {
       role: USER_ROLES_ENUM.OWNER,
       desc: 'It is a long established fact that a reader will be distracted by the readable content of',
+      avatar: 'owner',
     },
     {
       role: USER_ROLES_ENUM.CONTRACTOR,
       desc: 'It is a long established fact that a reader will be distracted by the readable content of',
+      avatar: 'contractor',
     },
     {
       role: USER_ROLES_ENUM.SUBCONTRACTOR,
       desc: 'It is a long established fact that a reader will be distracted by the readable content of',
+      avatar: 'sub-contractor',
     },
     {
       role: USER_ROLES_ENUM.PROFESSOR,
       desc: 'It is a long established fact that a reader will be distracted by the readable content of',
+      avatar: 'professor',
     },
     {
       role: USER_ROLES_ENUM.STUDENT,
       desc: 'It is a long established fact that a reader will be distracted by the readable content of',
+      avatar: 'student',
     },
     {
       role: USER_ROLES_ENUM.VENDOR,
       desc: 'It is a long established fact that a reader will be distracted by the readable content of',
+      avatar: 'vendor',
     },
     {
       role: USER_ROLES_ENUM.ARCHITECT,
       desc: 'It is a long established fact that a reader will be distracted by the readable content of',
+      avatar: 'architect',
     },
   ];
 

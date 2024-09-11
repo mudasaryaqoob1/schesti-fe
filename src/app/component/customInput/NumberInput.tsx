@@ -1,11 +1,11 @@
-import { Input, type InputRef, type InputProps } from 'antd';
+import { type InputNumberProps, InputNumber } from 'antd';
 import clsx, { ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
 type Props = {
   label: string;
   labelStyle?: ClassValue;
-  label2?: string | React.ReactNode;
+  label2?: string;
   label2Style?: ClassValue;
   name: string;
   prefix?: React.ReactNode;
@@ -13,20 +13,18 @@ type Props = {
   maxLength?: number;
   inputStyle?: ClassValue;
   hasError?: boolean;
-  field?: InputProps & React.RefAttributes<InputRef>;
-  type: string;
+  field?: InputNumberProps & React.RefAttributes<HTMLInputElement>;
   suffix?: any;
   errorMessage?: string;
   step?: string;
 };
 
-export function InputComponent({
+export function NumberInputComponent({
   label,
   label2,
   label2Style,
   labelStyle,
   name,
-  type,
   prefix,
   placeholder,
   maxLength,
@@ -50,29 +48,26 @@ export function InputComponent({
         htmlFor={name}
       >
         {label}{' '}
-        {typeof label2 === 'string' ? (
+        {label2 && (
           <span
             className={twMerge(clsx('text-right text-[#98A2B3]', label2Style))}
           >
             {label2}
           </span>
-        ) : (
-          label2
         )}
       </label>
 
       {/* <Field name={name} id={name}>
       {({ field }: { field: any }) => ( */}
-      <Input
+      <InputNumber
         id={name}
-        type={type}
         prefix={prefix}
         min="0"
         className={twMerge(
           clsx(
             `border ${
               hasError ? 'border-red-500' : 'border-gray-200'
-            } !w-full !rounded-lg focus:border-blue-500 !px-3.5 !py-2.5 !mt-1.5 ${
+            } !w-full !rounded-lg focus:border-blue-500 !px-1.5 !py-1.5 !mt-1.5 ${
               inputStyle && inputStyle
             }`
           )
@@ -81,6 +76,9 @@ export function InputComponent({
         {...rest}
         placeholder={placeholder}
         status={hasError ? 'error' : undefined}
+        step={'0.01'}
+        stringMode
+        precision={2}
         {...field}
       />
       {errorMessage ? (

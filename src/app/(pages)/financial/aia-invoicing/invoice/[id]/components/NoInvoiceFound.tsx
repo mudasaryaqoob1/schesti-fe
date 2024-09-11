@@ -2,6 +2,7 @@ import CustomButton from '@/app/component/customButton/button';
 import Description from '@/app/component/description';
 import SecondaryHeading from '@/app/component/headings/Secondary';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { Routes } from '@/app/utils/plans.utils';
 import { Image } from 'antd';
 
 export function NoInvoiceFound() {
@@ -37,7 +38,7 @@ export function NoInvoiceFound() {
               icon="/plus.svg"
               iconwidth={20}
               iconheight={20}
-              onClick={() => router.push('/invoices/aia-invoicing')}
+              onClick={() => router.push(Routes.Financial['AIA-Invoicing'])}
             />
           </div>
         </div>

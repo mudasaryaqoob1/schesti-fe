@@ -23,11 +23,15 @@ import Image from 'next/image';
 import { DeleteContent } from '@/app/component/delete/DeleteContent';
 import ModalComponent from '@/app/component/modal';
 import { Excel } from 'antd-table-saveas-excel';
+import _ from 'lodash';
 
 function Expense() {
   const [search, setSearch] = useState('');
   const [showDrawer, setShowDrawer] = useState(false);
   const [isloading, setIsloading] = useState(false);
+
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
   const currency = useCurrencyFormatter();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedExpense, setSelectedExpense] =
@@ -52,9 +56,7 @@ function Expense() {
   const columns: ColumnsType<IFinancialExpense> = [
     {
       title: 'Expense#',
-      render(value, record, index) {
-        return index + 1;
-      },
+      dataIndex: 'invoiceNo',
     },
     { title: 'Expense Name', dataIndex: 'name' },
     { title: 'Project', dataIndex: 'project' },
@@ -73,7 +75,7 @@ function Expense() {
       },
     },
     {
-      title: 'Price',
+      title: 'Cost',
       dataIndex: 'totalPrice',
       render(value) {
         return currency.format(value);
@@ -103,6 +105,14 @@ function Expense() {
           <Dropdown
             menu={{
               items: [
+                {
+                  label: 'Collect Payment',
+                  key: 'collectPayment',
+                  onClick: () => {
+                    setSelectedExpense(record);
+                    setShowDrawer(true);
+                  },
+                },
                 {
                   label: 'Edit',
                   key: 'edit',
@@ -178,7 +188,10 @@ function Expense() {
       <Drawer
         title="Expense"
         open={showDrawer}
-        onClose={() => setShowDrawer(false)}
+        onClose={() => {
+          setSelectedExpense(null);
+          setShowDrawer(false);
+        }}
         width={800}
         destroyOnClose
       >
@@ -252,8 +265,11 @@ function Expense() {
               iconwidth={20}
               iconheight={20}
               onClick={() => {
-                if (!data.expenses.length) {
-                  toast.error('No data to export');
+                const expenses = _.filter(data.expenses, (item) =>
+                  selectedRowKeys.includes(item._id)
+                );
+                if (!expenses.length) {
+                  toast.error('No expenses selected');
                   return;
                 }
                 const excel = new Excel();
@@ -261,7 +277,7 @@ function Expense() {
                   .addSheet('Expenses')
                   // exlcude file columns  as  well
                   .addColumns(columns.slice(0, columns.length - 2) as any)
-                  .addDataSource(data.expenses)
+                  .addDataSource(expenses)
                   .saveAs('Expenses.xlsx');
               }}
             />
@@ -300,6 +316,13 @@ function Expense() {
         })}
         bordered
         loading={isloading}
+        rowSelection={{
+          onChange: (newSelectedRowKeys: React.Key[]) => {
+            setSelectedRowKeys(newSelectedRowKeys);
+          },
+          selectedRowKeys,
+        }}
+        rowKey={(item) => item._id}
       />
     </section>
   );

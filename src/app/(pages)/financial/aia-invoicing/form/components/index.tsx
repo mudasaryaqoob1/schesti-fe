@@ -1,48 +1,56 @@
-'use client';
-import { MutableRefObject, useLayoutEffect, useRef, useState } from 'react';
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { ConfigProvider, Tabs } from 'antd';
-import { useSearchParams } from 'next/navigation';
-import { HttpService } from '@/app/services/base.service';
-import { selectToken } from '@/redux/authSlices/auth.selector';
-import TertiaryHeading from '@/app/component/headings/tertiary';
 import QuaternaryHeading from '@/app/component/headings/quaternary';
-import { G703Component } from './components/G703';
-import { G702Component } from './components/G702';
-import { generateData } from './utils';
-import { G7State } from '@/app/interfaces/client-invoice.interface';
+import { G703Component } from '../components/G703';
+import { G702Component } from '../components/G702';
+import { generateData } from '../utils';
+import {
+  G7State,
+  IAIAInvoice,
+} from '@/app/interfaces/client-invoice.interface';
 import { clientInvoiceService } from '@/app/services/client-invoices.service';
 import { toast } from 'react-toastify';
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
 import { useScreenshot } from '@breezeos-dev/use-react-screenshot';
 import jsPDF from 'jspdf';
-import { ClientInvoiceHeader } from '../components/ClientInvoiceHeader';
-import { ClientInvoiceFooter } from '../components/ClientInvoiceFooter';
+import { ClientInvoiceHeader } from '../../components/ClientInvoiceHeader';
+import { ClientInvoiceFooter } from '../../components/ClientInvoiceFooter';
 import QuinaryHeading from '@/app/component/headings/quinary';
 import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateCompany.interface';
-import { withAuth } from '@/app/hoc/withAuth';
-import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { AIAForms } from './Forms';
+import { AIAInvoiceFormMode } from '../../types';
+import moment from 'moment';
 
 const G703_KEY = 'G703';
 const G702_KEY = 'G702';
-function CreateClientInvoicePage() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-  const router = useRouterHook();
+const FORMS_KEY = 'Forms';
 
+type Props = {
+  parentInvoice: IAIAInvoice;
+  setParentInvoice: React.Dispatch<React.SetStateAction<IAIAInvoice | null>>;
+  mode: AIAInvoiceFormMode;
+};
+export function AiaInvoicingForm({
+  parentInvoice,
+  setParentInvoice,
+  mode,
+}: Props) {
   const auth = useSelector((state: RootState) => state.auth);
   const user = auth.user?.user as IUpdateCompanyDetail | undefined;
 
-  const token = useSelector(selectToken);
-  const searchParams = useSearchParams();
-  const invoiceName = searchParams.get('invoiceName');
   const [tab, setTab] = useState(G703_KEY);
   const ref = useRef<HTMLDivElement>();
   const [image, takeScreenshot] = useScreenshot();
   const [showDownload, setShowDownload] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
 
+  // all phases of the parent invoice
+  const [allPhases, setAllPhases] = useState<IAIAInvoice[]>([]);
+  // selected phase will be from allPhases and will be the latest last phase
+  const [selectedPhase, setSelectedPhase] = useState<IAIAInvoice | null>(null);
   const [g7State, setG7State] = useState<G7State>({
     applicationNo: '',
     invoiceName: '',
@@ -69,14 +77,41 @@ function CreateClientInvoicePage() {
     amountPaid: 0,
   });
 
-  useLayoutEffect(() => {
-    if (token) {
-      HttpService.setToken(token);
-      if (invoiceName) {
-        handleG7State('invoiceName', invoiceName);
-      }
+  useEffect(() => {
+    if (parentInvoice._id && mode === 'phase') {
+      (async function () {
+        try {
+          // get all the phases of the invoice
+          const response = await clientInvoiceService.httpGetInvoicePhases(
+            parentInvoice._id
+          );
+          if (response.data) {
+            // add parent phase as a previous phase
+            const phases = [parentInvoice, ...response.data.invoices];
+            // sort phases by date using moment
+            phases.sort(
+              (a, b) => moment(a.createdAt).unix() - moment(b.createdAt).unix()
+            );
+            const _selectedPhase = phases[phases.length - 1];
+            setAllPhases(phases);
+            setSelectedPhase(_selectedPhase);
+            // copy the values;
+            updateG7StateFromPhase({ ..._selectedPhase });
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      })();
     }
-  }, [token, invoiceName]);
+  }, [parentInvoice]);
+
+  useEffect(() => {
+    setG7State((prev) => ({
+      ...prev,
+      invoiceName: parentInvoice.invoiceName,
+      _id: parentInvoice._id,
+    }));
+  }, [parentInvoice._id, parentInvoice.invoiceName]);
 
   function handleG7State<K extends keyof G7State>(
     key: K,
@@ -102,6 +137,35 @@ function CreateClientInvoicePage() {
       }
       return { ...prev, [key]: value };
     });
+  }
+
+  function updateG7StateFromPhase(phase: IAIAInvoice) {
+    const data = updatePreviousApplicationColumn(phase);
+    phase.applicationDate = '';
+    phase.periodTo = '';
+    setG7State({ ...phase, data });
+  }
+
+  function updatePreviousApplicationColumn(_selectedPhase: IAIAInvoice) {
+    let previousPhaseData = JSON.parse(
+      JSON.stringify(_selectedPhase.data)
+    ) as Array<string[]>;
+    const data = [...previousPhaseData];
+    const COLUMN_THIS_PERIOD = 4;
+    const COLUMN_PREVIOUS_APPLICATION = 3;
+
+    // loop over data
+    data.forEach((row) => {
+      const previousPhaseThisPeriodValue = Number(row[COLUMN_THIS_PERIOD]);
+      const previousPhasePreviousApplicationValue = Number(
+        row[COLUMN_PREVIOUS_APPLICATION]
+      );
+      const value =
+        previousPhaseThisPeriodValue + previousPhasePreviousApplicationValue;
+      row[COLUMN_PREVIOUS_APPLICATION] = value.toString();
+      row[COLUMN_THIS_PERIOD] = '';
+    });
+    return data;
   }
 
   function sumColumns(rows: Array<string[]>, column: number): number {
@@ -230,21 +294,14 @@ function CreateClientInvoicePage() {
       doc.internal.pageSize.height = height;
       doc.addImage(image, 'JPEG', 0, 0, width, height);
       setTimeout(() => {
-        doc.save(`${invoiceName}-invoice.pdf`);
+        doc.save(`${parentInvoice.invoiceName}-invoice.pdf`);
       }, 500);
       setIsDownloading(false);
     }
   }
   return (
-    <section className="mx-16 my-2">
-      <div className="p-5 shadow-md rounded-lg border border-silverGray  bg-white">
-        <div className="flex space-x-3">
-          <TertiaryHeading title="Invoice name:" className="font-medium" />
-          <TertiaryHeading title={`${invoiceName}`} />
-        </div>
-      </div>
-
-      <div className="px-4 py-2 my-5 shadow-md rounded-lg border border-silverGray  bg-white">
+    <>
+      <div className="px-4 py-2 shadow-md rounded-lg border border-silverGray  bg-white">
         <ConfigProvider
           theme={{
             components: {
@@ -276,7 +333,7 @@ function CreateClientInvoicePage() {
               setTab(key);
             }}
             activeKey={tab}
-            items={[G703_KEY, G702_KEY].map((type) => {
+            items={[G703_KEY, G702_KEY, FORMS_KEY].map((type) => {
               return {
                 key: type,
                 label: (
@@ -295,6 +352,18 @@ function CreateClientInvoicePage() {
                       handleState={handleG7State}
                       sumColumns={sumColumns}
                       updateCellValue={updateCellValue}
+                      mode={mode}
+                      phases={allPhases}
+                      selectedPhase={selectedPhase}
+                      setSelectedPhase={(value) => {
+                        let _selectedPhase = allPhases.find(
+                          (phase) => phase._id === value
+                        );
+                        if (_selectedPhase) {
+                          setSelectedPhase(_selectedPhase);
+                          updateG7StateFromPhase({ ..._selectedPhase });
+                        }
+                      }}
                     >
                       <CustomButton
                         onClick={() => setTab(G702_KEY)}
@@ -302,7 +371,7 @@ function CreateClientInvoicePage() {
                         className="!w-40"
                       />
                     </G703Component>
-                  ) : (
+                  ) : tab === G702_KEY ? (
                     <G702Component
                       state={g7State}
                       handleState={handleG7State}
@@ -334,7 +403,14 @@ function CreateClientInvoicePage() {
                         />
                       )}
                     </G702Component>
-                  ),
+                  ) : tab === FORMS_KEY ? (
+                    <AIAForms
+                      parentInvoice={parentInvoice}
+                      onParentInvoiceUpdate={(data) => {
+                        setParentInvoice(data);
+                      }}
+                    />
+                  ) : null,
               };
             })}
           />
@@ -393,7 +469,18 @@ function CreateClientInvoicePage() {
             handleState={handleG7State}
             sumColumns={sumColumns}
             updateCellValue={updateCellValue}
-            showAddAndDelete={false}
+            mode={mode}
+            phases={allPhases}
+            selectedPhase={selectedPhase}
+            setSelectedPhase={(value) => {
+              let _selectedPhase = allPhases.find(
+                (phase) => phase._id === value
+              );
+              if (_selectedPhase) {
+                setSelectedPhase(_selectedPhase);
+                updateG7StateFromPhase({ ..._selectedPhase });
+              }
+            }}
           />
         </ConfigProvider>
         {/* <div className="flex justify-end mr-8">
@@ -401,8 +488,6 @@ function CreateClientInvoicePage() {
         </div> */}
         <ClientInvoiceFooter />
       </div>
-    </section>
+    </>
   );
 }
-
-export default withAuth(CreateClientInvoicePage);

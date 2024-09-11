@@ -7,6 +7,7 @@ import ModalComponent from '@/app/component/modal';
 interface roleObject {
   role: string;
   desc: string;
+  avatar: string;
 }
 interface IProps {
   viewUserRoleModal: boolean;
@@ -57,7 +58,7 @@ const UserRolesModel = ({
                 >
                   <div className="grid grid-cols-6 gap-4">
                     <Image
-                      src={'/user.png'}
+                      src={`/${role.avatar}.svg`}
                       alt="documentIcon icon"
                       width={80}
                       height={80}

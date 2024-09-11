@@ -63,6 +63,8 @@ function CurrencyPage() {
                 formik.setFieldValue('symbol', getCurrencyObject(value).symbol);
                 formik.setFieldValue('locale', getCurrencyObject(value).locale);
               },
+              optionFilterProp: 'label',
+              showSearch: true,
             }}
             hasError={Boolean(formik.touched.code && formik.errors.code)}
             errorMessage={
