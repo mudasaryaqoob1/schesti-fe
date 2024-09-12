@@ -3,11 +3,23 @@ import WhiteButton from '@/app/component/customButton/white';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { IAIAInvoice } from '@/app/interfaces/client-invoice.interface';
 import { QRCode } from 'antd';
+import { useState } from 'react';
 
 type Props = {
   parentInvoice: IAIAInvoice;
+  onDownloadInvoice?: () => void;
 };
-export function AIAInvoiceFormHeader({ parentInvoice }: Props) {
+export function AIAInvoiceFormHeader({ parentInvoice, onDownloadInvoice }: Props) {
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  function handleDownload() {
+    setIsDownloading(true);
+    if (onDownloadInvoice) {
+      onDownloadInvoice();
+    }
+    setIsDownloading(false);
+  }
+
   return (
     <div className="p-5 shadow-md flex justify-between items-center rounded-lg border border-silverGray  bg-white">
       <div className="flex space-x-3">
@@ -24,7 +36,7 @@ export function AIAInvoiceFormHeader({ parentInvoice }: Props) {
           text="Email"
           className="!w-fit !bg-schestiLightPrimary !border-schestiLightPrimary"
         />
-        <CustomButton text="Download invoice" className="!w-fit" />
+        <CustomButton text="Download invoice" className="!w-fit" onClick={handleDownload} isLoading={isDownloading} />
       </div>
     </div>
   );
