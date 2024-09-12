@@ -299,6 +299,7 @@ function Expense() {
           position: ['bottomCenter'],
           total: data.count,
           current: pagination.page,
+
           onChange(page, pageSize) {
             setPagination({ ...pagination, page, limit: pageSize });
           },
@@ -310,6 +311,10 @@ function Expense() {
             return (
               item.name.toLowerCase().includes(search.toLowerCase()) ||
               item.note.toLowerCase().includes(search.toLowerCase())
+              || item.invoiceNo.toLowerCase().includes(search.toLowerCase())
+              || item.project.toLowerCase().includes(search.toLowerCase())
+              || item.totalPrice.toString().toLowerCase().includes(search.toLowerCase())
+
             );
           }
           return true;

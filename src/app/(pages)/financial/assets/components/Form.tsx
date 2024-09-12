@@ -54,21 +54,21 @@ export function AssetForm({ item, onSuccess }: Props) {
     initialValues: item
       ? { ...item }
       : {
-          file: undefined,
-          name: '',
-          costCode: '',
-          assetType: '',
-          assetDate: new Date().toISOString(),
-          invoiceNo: '',
-          totalPrice: 0,
-          project: '',
-          note: '',
-          salesTax: 0,
-          countryTax: 0,
-          paymentMethod: '',
-          reference: '',
-          repeat: '',
-        },
+        file: undefined,
+        name: '',
+        costCode: '',
+        assetType: '',
+        assetDate: new Date().toISOString(),
+        invoiceNo: '',
+        totalPrice: 0,
+        project: '',
+        note: '',
+        salesTax: 0,
+        countryTax: 0,
+        paymentMethod: '',
+        reference: '',
+        repeat: '',
+      },
     onSubmit: async (values) => {
       setIsSubmitting(true);
       try {
@@ -144,7 +144,7 @@ export function AssetForm({ item, onSuccess }: Props) {
           itemRender={() => {
             return null;
           }}
-          onChange={() => {}}
+          onChange={() => { }}
         >
           <p className="ant-upload-drag-icon">
             <Image
@@ -406,7 +406,7 @@ export function AssetForm({ item, onSuccess }: Props) {
       <InputComponent
         label="Project"
         name="project"
-        placeholder="Select project"
+        placeholder="Type project"
         type="text"
         field={{
           onChange: formik.handleChange,
@@ -573,7 +573,7 @@ export function AssetForm({ item, onSuccess }: Props) {
                   { label: 'Monthly', value: 'Monthly' },
                   { label: 'Bi Month', value: 'Bi Month' },
                   { label: 'Annually', value: 'Annually' },
-                  { label: 'Bi Annually', value: 'Bi Annually' },
+                  { label: 'Semi Annually', value: 'Semi Annually' },
                 ],
                 onChange: (val) => {
                   formik.setFieldValue('repeat', val);
