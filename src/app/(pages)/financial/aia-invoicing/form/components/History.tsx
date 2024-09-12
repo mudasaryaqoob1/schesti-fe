@@ -16,7 +16,7 @@ type Props = {
 export function AIAHistory({ parentInvoice }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<IAIAInvoice[]>([]);
-
+  const [search, setSearch] = useState('');
 
   useEffect(() => {
     getParentInvoices(parentInvoice._id);
@@ -68,7 +68,13 @@ export function AIAHistory({ parentInvoice }: Props) {
   ];
 
 
-  const filteredData = data;
+  const filteredData = data.filter((item) => {
+    if (!search) {
+      return true;
+    }
+    return item.invoiceName?.toLowerCase().includes(search.toLowerCase()) || item.applicationNo?.toLowerCase().includes(search.toLowerCase())
+      || item.toOwner?.toLowerCase().includes(search.toLowerCase()) || item.project?.toLowerCase().includes(search.toLowerCase());
+  });
 
   return (
     <div className="p-5 space-y-5 shadow-md rounded-lg border border-silverGray  bg-white">
@@ -88,6 +94,12 @@ export function AIAHistory({ parentInvoice }: Props) {
               height={20}
             />
           }
+          field={{
+            value: search,
+            onChange: (e) => {
+              setSearch(e.target.value);
+            },
+          }}
         />
       </div>
 
