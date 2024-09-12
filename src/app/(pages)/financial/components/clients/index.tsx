@@ -29,6 +29,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
+import { AIAInvoicePhasesTable } from '../../aia-invoicing/form/components/PhasesTable';
 
 const ValidationSchema = Yup.object({
   invoiceName: Yup.string().required('Invoice name is required'),
@@ -43,7 +44,7 @@ export function Clients() {
   const [showClientModal, setShowClientModal] = useState(false);
   const [showArchitectModal, setShowArchitectModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [expandedRows, setExpandedRows] = useState<readonly React.Key[]>([]);
   const clientInvoices = useSelector(
     (state: RootState) => state.clientInvoices.data
   );
@@ -403,21 +404,15 @@ export function Clients() {
         pagination={{ position: ['bottomCenter'] }}
         bordered
         expandable={{
-          expandedRowRender: () => (
-            <div className="py-1">
-              <Table
-                columns={[
-                  { title: 'Pay Application' },
-                  { title: 'Amount' },
-                  { title: 'Application Date' },
-                  { title: 'Payment Due' },
-                  { title: 'Period To' },
-                  { title: 'Action' },
-                ]}
-              />
-            </div>
+          expandedRowRender: (record) => (
+            <AIAInvoicePhasesTable parentInvoice={record} key={record._id} />
           ),
+          expandedRowKeys: expandedRows,
+          onExpandedRowsChange(expandedKeys) {
+            setExpandedRows(expandedKeys);
+          },
         }}
+        rowKey={(row) => row._id}
       />
     </div>
   );
