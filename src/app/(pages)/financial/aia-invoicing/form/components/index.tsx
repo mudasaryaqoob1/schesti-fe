@@ -405,6 +405,7 @@ export function AiaInvoicingForm({
                                                     updateG7StateFromPhase({ ..._selectedPhase });
                                                 }
                                             }}
+                                            showAddAndDelete={mode !== 'view'}
                                         >
                                             <CustomButton
                                                 onClick={() => setTab(G702_KEY)}
@@ -420,6 +421,7 @@ export function AiaInvoicingForm({
                                             sumColumns={sumColumns}
                                             previousPhaseState={selectedPhase}
                                             mode={mode}
+                                            showValidation={mode !== 'view'}
 
                                         >
                                             <WhiteButton

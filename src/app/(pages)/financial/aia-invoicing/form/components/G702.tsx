@@ -82,7 +82,7 @@ export function G702Component({
             </label>
             <div className="flex flex-col">
               <Input
-                className="px-2 py-2 border border-gray-300 outline-none"
+                className={`px-2 py-2 border border-gray-300 outline-none ${mode === 'view' ? "pointer-events-none" : ""}`}
                 type="text"
                 value={state.toOwner}
                 onChange={(e) => handleState('toOwner', e.target.value)}
@@ -99,7 +99,7 @@ export function G702Component({
                 PROJECT:
               </label>
               <Input
-                className="px-2 py-2  border border-gray-300 outline-none"
+                className={`px-2 py-2 border border-gray-300 outline-none ${mode === 'view' ? "pointer-events-none" : ""}`}
                 type="text"
                 value={state.project}
                 onChange={(e) => handleState('project', e.target.value)}
@@ -110,7 +110,7 @@ export function G702Component({
                 Address:
               </label>
               <Input
-                className="px-2 py-1 border border-gray-300 outline-none"
+                className={`px-2 py-1 border border-gray-300 outline-none ${mode === 'view' ? "pointer-events-none" : ""} `}
                 type="text"
                 value={state.address}
                 onChange={(e) => handleState('address', e.target.value)}
@@ -122,7 +122,7 @@ export function G702Component({
               </label>
               <div className="w-full">
                 <Input
-                  className="border border-gray-300 outline-none"
+                  className={`border border-gray-300 outline-none ${mode === 'view' ? "pointer-events-none" : ""}`}
                   type="text"
                   value={state.viaEngineer}
                   onChange={(e) => handleState('viaEngineer', e.target.value)}
@@ -139,7 +139,7 @@ export function G702Component({
                 APPLICATION NO:
               </label>
               <input
-                className="px-2 py-2  border border-gray-300 outline-none"
+                className={`px-2 py-2 border border-gray-300 outline-none ${mode === 'view' ? "pointer-events-none" : ""}`}
                 type="text"
                 value={state.applicationNo}
               />
@@ -150,7 +150,7 @@ export function G702Component({
               </label>
               <DatePicker
                 id="application-date"
-                className="px-2  rounded-none py-[7px] border border-gray-300 outline-none"
+                className={"px-2  rounded-none py-[7px] border border-gray-300 outline-none pointer-events-none"}
                 value={
                   !state.applicationDate
                     ? undefined
@@ -167,7 +167,7 @@ export function G702Component({
               </label>
               <DatePicker
                 id="application-date"
-                className="px-2  rounded-none py-[7px] border border-gray-300 outline-none"
+                className="px-2  rounded-none py-[7px] border border-gray-300 outline-none pointer-events-none"
                 value={!state.periodTo ? undefined : dayjs(state.periodTo)}
                 onChange={(_d, dateString) =>
                   handleState('periodTo', dateString as string)
@@ -179,7 +179,7 @@ export function G702Component({
                 PROJECT NO:
               </label>
               <input
-                className="px-2 py-1 border border-gray-300 outline-none"
+                className="px-2 py-1 border border-gray-300 outline-none pointer-events-none"
                 type="text"
                 value={state.projectNo}
               />
@@ -190,10 +190,12 @@ export function G702Component({
             <Checkbox
               checked={state.distributionTo === 'architect'}
               onChange={() => handleState('distributionTo', 'architect')}
+              disabled={mode === 'view'}
             >
               <QuinaryHeading title="ARCHITECT" />
             </Checkbox>
             <Checkbox
+              disabled={mode === 'view'}
               checked={state.distributionTo === 'contractor'}
               onChange={() => handleState('distributionTo', 'contractor')}
             >
@@ -220,7 +222,7 @@ export function G702Component({
                   title="1. ORIGINAL CONTRACT SUM  ................................"
                 />
                 <Input
-                  className="px-2 py-1 border border-gray-300 "
+                  className="px-2 py-1 border border-gray-300 pointer-events-none"
                   type="number"
                   value={originalContractSum.toFixed(2)}
                   prefix="$"
@@ -232,7 +234,7 @@ export function G702Component({
                   title="2. Net change by Change Orders  ................................"
                 />
                 <Input
-                  className="px-2 py-1 border border-gray-300 "
+                  className="px-2 py-1 border border-gray-300 pointer-events-none"
                   type="number"
                   prefix="$"
                   value={changeOrderNetChanges.toFixed(2)}
@@ -244,7 +246,7 @@ export function G702Component({
                   title="3. CONTRACT SUM TO DATE (Line 1 ± 2) $  ................................"
                 />
                 <Input
-                  className="px-2 py-1 border border-gray-300 "
+                  className="px-2 py-1 border border-gray-300 pointer-events-none "
                   type="number"
                   prefix="$"
                   value={p3Total.toFixed(2)}
@@ -256,7 +258,7 @@ export function G702Component({
                   title="4. TOTAL COMPLETED & STORED TO DATE (Column G on G703)   .............."
                 />
                 <Input
-                  className="px-2 py-1 border border-gray-300 "
+                  className="px-2 py-1 border border-gray-300 pointer-events-none"
                   type="number"
                   prefix="$"
                   value={sumColumns(state.data, 6).toFixed(2)}
@@ -270,7 +272,7 @@ export function G702Component({
                     <div className="flex items-center col-span-2 space-x-2">
                       <QuinaryHeading title="a." />
                       <Input
-                        className="px-2 py-1 w-16 border border-gray-300 "
+                        className={`px-2 py-1 w-16 border border-gray-300 ${mode === 'view' ? 'pointer-events-none' : ''} `}
                         type="number"
                         prefix="%"
                         value={state.p5aPercentage}
@@ -281,7 +283,7 @@ export function G702Component({
                       <QuinaryHeading title="of Completed Work $" />
                     </div>
                     <Input
-                      className="px-2 py-1 border border-gray-300 "
+                      className="px-2 py-1 border border-gray-300 pointer-events-none"
                       type="number"
                       prefix="$"
                       value={sumColumns(state.data, 9).toFixed(2)}
@@ -297,7 +299,7 @@ export function G702Component({
                     <div className="flex items-center col-span-2 space-x-2">
                       <QuinaryHeading title="b." />
                       <Input
-                        className="px-2 py-1 w-16 border border-gray-300 "
+                        className={`px-2 py-1 w-16 border border-gray-300 ${mode === 'view' ? 'pointer-events-none' : ''} `}
                         type="number"
                         prefix="%"
                         value={state.p5bPercentage}
@@ -308,7 +310,7 @@ export function G702Component({
                       <QuinaryHeading title="% of Stored Material " />
                     </div>
                     <Input
-                      className="px-2 py-1 border border-gray-300 "
+                      className="px-2 py-1 border border-gray-300 pointer-events-none "
                       type="number"
                       prefix="$"
                       value={resultOf_P5b.toFixed(2)}
@@ -323,7 +325,7 @@ export function G702Component({
                         title="Total Retainage ( Lines 5a + 5b or Total in Colum I of G703"
                       />
                       <Input
-                        className="px-2 py-1 border border-gray-300 "
+                        className="px-2 py-1 border border-gray-300 pointer-events-none "
                         type="number"
                         prefix="$"
                         value={p5Total.toFixed(2)}
@@ -339,7 +341,7 @@ export function G702Component({
                   title="6. TOTAL EARNED LESS RETAINAGE Total in Column I of G703)"
                 />
                 <Input
-                  className="px-2 py-1 border border-gray-300 "
+                  className="px-2 py-1 border border-gray-300 pointer-events-none "
                   type="number"
                   prefix="$"
                   value={p6Total.toFixed(2)}
@@ -352,7 +354,7 @@ export function G702Component({
                   title="7. LESS PREVIOUS CERTIFICATES FOR PAYMENT (Line 6 from prior Certificate)"
                 />
                 <Input
-                  className="px-2 py-1 border border-gray-300 "
+                  className="px-2 py-1 border border-gray-300 pointer-events-none "
                   type="number"
                   prefix="$"
                   value={previousP7Total.toFixed(2)}
@@ -365,7 +367,7 @@ export function G702Component({
                   title="8. CURRENT PAYMENT DUE"
                 />
                 <Input
-                  className="px-2 py-1 border border-gray-300 "
+                  className="px-2 py-1 border border-gray-300 pointer-events-none "
                   type="number"
                   prefix="$"
                   value={p8Total.toFixed(2)}
@@ -377,7 +379,7 @@ export function G702Component({
                   title="9. BALANCE TO FINISH, INCLUDING RETAINAGE $ (Line 3 less Line 6)"
                 />
                 <Input
-                  className="px-2 py-1 border border-gray-300 "
+                  className="px-2 py-1 border border-gray-300 pointer-events-none "
                   type="number"
                   value={p9Total.toFixed(2)}
                   defaultValue={0.0}
@@ -409,7 +411,7 @@ export function G702Component({
                     <Input
                       type="number"
                       prefix="$"
-                      className="px-2 py-1 outline-none focus:outline-none border-none hover:border-none focus-within:border-none focus-within:outline-none focus-visible:outline-none !shadow-none"
+                      className={`px-2 py-1 outline-none focus:outline-none border-none hover:border-none focus-within:border-none focus-within:outline-none focus-visible:outline-none !shadow-none ${mode === 'view' ? 'pointer-events-none' : ''}`}
                       value={state.totalAdditionPreviousMonth}
                       onChange={(e) => {
                         handleState(
@@ -423,7 +425,7 @@ export function G702Component({
                     <Input
                       type="number"
                       prefix="$"
-                      className="px-2 py-1 outline-none focus:outline-none border-none hover:border-none focus-within:border-none focus-within:outline-none focus-visible:outline-none !shadow-none"
+                      className={`px-2 py-1 outline-none focus:outline-none border-none hover:border-none focus-within:border-none focus-within:outline-none focus-visible:outline-none !shadow-none ${mode === 'view' ? 'pointer-events-none' : ''}`}
                       value={state.totalDeductionPreviousMonth}
                       onChange={(e) => {
                         handleState(
@@ -442,7 +444,7 @@ export function G702Component({
                     <Input
                       type="number"
                       prefix="$"
-                      className="px-2  outline-none focus:outline-none border-none hover:border-none focus-within:border-none focus-within:outline-none focus-visible:outline-none !shadow-none"
+                      className={`px-2  outline-none focus:outline-none border-none hover:border-none focus-within:border-none focus-within:outline-none focus-visible:outline-none !shadow-none ${mode === 'view' ? 'pointer-events-none' : ''}`}
                       value={state.totalAdditionThisMonth}
                       onChange={(e) => {
                         handleState(
@@ -456,7 +458,7 @@ export function G702Component({
                     <Input
                       type="number"
                       prefix="$"
-                      className="px-2 py-1 outline-none focus:outline-none border-none hover:border-none focus-within:border-none focus-within:outline-none focus-visible:outline-none !shadow-none"
+                      className={`px-2 py-1 outline-none focus:outline-none border-none hover:border-none focus-within:border-none focus-within:outline-none focus-visible:outline-none !shadow-none ${mode === 'view' ? 'pointer-events-none' : ''}`}
                       value={state.totalDeductionThisMonth}
                       onChange={(e) => {
                         handleState(
@@ -599,6 +601,29 @@ export function G702Component({
                 </div>
                 <QuinaryHeading title="This Certificate is not negotiable. The AMOUNT CERTIFIED is payable only to the Contractor named herein. Issuance, payment and acceptance of payment are without prejudice to any rights of the Owner or Contractor under this Contract." />
               </div>
+
+              <div className="space-y-2 pt-3">
+                <TertiaryHeading title="CLIENT:" className="text-sm" />
+                <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2">
+                    <QuinaryHeading title="AMOUNT CERTIFIED:" />
+                    <input
+                      className="px-2 py-1 border border-gray-300 outline-none"
+                      type="number"
+                      disabled
+                    />
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <QuinaryHeading title="AMOUNT CERTIFIED:" />
+                    <input
+                      className="px-2 py-1 border border-gray-300 outline-none"
+                      type="text"
+                      disabled
+                    />
+                  </div>
+                </div>
+                <QuinaryHeading title="This Certificate is not negotiable. The AMOUNT CERTIFIED is payable only to the Contractor named herein. Issuance, payment and acceptance of payment are without prejudice to any rights of the Owner or Contractor under this Contract." />
+              </div>
             </div>
           </div>
         </div>
@@ -665,7 +690,7 @@ const changeOrderSummaryAdditionSum =
                 PROJECT:
               </label>
               <Input
-                className="px-2 py-2  border border-gray-300 outline-none"
+                className={`px-2 py-2 border border-gray-300 outline-none ${mode === 'view' ? "pointer-events-none" : ""}`}
                 type="text"
                 value={state.project}
                 onChange={(e) => handleState('project', e.target.value)}
@@ -705,7 +730,7 @@ const changeOrderSummaryAdditionSum =
                 APPLICATION NO:
               </label>
               <input
-                className="px-2 py-2  border border-gray-300 outline-none"
+                className={`px-2 py-2 border border-gray-300 outline-none ${mode === 'view' ? "pointer-events-none" : ""}`}
                 type="text"
                 value={state.applicationNo}
               />
