@@ -147,8 +147,10 @@ export function AiaInvoicingForm({
 
     function updateG7StateFromPhase(phase: IAIAInvoice) {
         const data = updatePreviousApplicationColumn(phase);
-        phase.applicationDate = '';
-        phase.periodTo = '';
+        if (mode !== 'view') {
+            phase.applicationDate = '';
+            phase.periodTo = '';
+        }
         setG7State({ ...phase, data });
     }
 

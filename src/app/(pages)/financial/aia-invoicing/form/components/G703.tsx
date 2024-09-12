@@ -139,7 +139,7 @@ export function G703Component({
             </label>
             <div className="col-span-2">
               <Input
-                className="px-2 py-1  border border-gray-300 "
+                className={`px-2 py-1  border border-gray-300 ${mode === 'view' ? "pointer-events-none" : ""}`}
                 type="text"
                 value={state.applicationNo}
                 onChange={(e) => handleState('applicationNo', e.target.value)}
@@ -157,7 +157,7 @@ export function G703Component({
             <div className="col-span-2">
               <DatePicker
                 id="application-date"
-                className="px-2 w-full rounded-none py-[7px] border border-gray-300 outline-none"
+                className={`px-2 w-full rounded-none py-[7px] border border-gray-300 outline-none ${mode === 'view' ? "pointer-events-none" : ""}`}
                 value={state.applicationDate ? dayjs(state.applicationDate) : undefined}
                 onChange={(_d, dateString) =>
                   handleState('applicationDate', dateString as string)
@@ -179,7 +179,7 @@ export function G703Component({
             <div className="col-span-2">
               <DatePicker
                 id="application-date"
-                className="px-4 w-full rounded-none py-[7px] border border-gray-300 outline-none"
+                className={`px-4 w-full rounded-none py-[7px] border border-gray-300 outline-none ${mode === 'view' ? "pointer-events-none" : ""}`}
                 value={!state.periodTo ? undefined : dayjs(state.periodTo)}
                 onChange={(_d, dateString) =>
                   handleState('periodTo', dateString as string)
@@ -200,7 +200,7 @@ export function G703Component({
             </label>
             <div className="col-span-2">
               <Input
-                className="px-2 py-1  border border-gray-300 "
+                className={`px-2 py-1  border border-gray-300 ${mode === 'view' ? "pointer-events-none" : ""}`}
                 type="text"
                 value={state.projectNo}
                 onChange={(e) => handleState('projectNo', e.target.value)}
@@ -261,6 +261,7 @@ export function G703Component({
                   onChange={(e) => {
                     updateCellValue(index, 1, e.target.value);
                   }}
+                  className={mode === 'view' ? 'pointer-events-none' : undefined}
                 />
               );
             }}
@@ -275,6 +276,8 @@ export function G703Component({
               }
               return (
                 <Input
+                  className={mode === 'view' ? 'pointer-events-none' : undefined}
+
                   value={getCellValue(record, 2)}
                   type="number"
                   prefix="$"
@@ -296,7 +299,9 @@ export function G703Component({
                 }
                 let columnF = Number(getCellValue(record, 3));
                 return (
-                  <Input value={columnF} prefix="$" type="number" disabled />
+                  <Input
+                    className={mode === 'view' ? 'pointer-events-none' : undefined}
+                    value={columnF} prefix="$" type="number" disabled />
                 );
               }}
             />
@@ -314,6 +319,8 @@ export function G703Component({
 
                 return (
                   <Input
+                    className={mode === 'view' ? 'pointer-events-none' : undefined}
+
                     value={value}
                     prefix="$"
                     type="number"
@@ -345,6 +352,8 @@ export function G703Component({
               }
               return (
                 <Input
+                  className={mode === 'view' ? 'pointer-events-none' : undefined}
+
                   value={value}
                   type="number"
                   prefix="$"
@@ -375,6 +384,8 @@ export function G703Component({
 
                 return (
                   <Input
+                    className={mode === 'view' ? 'pointer-events-none' : undefined}
+
                     value={`${(columnD + columnE + columnF).toFixed(2)}`}
                     type="number"
                     prefix="$"
@@ -392,6 +403,8 @@ export function G703Component({
                 }
                 return (
                   <Input
+                    className={mode === 'view' ? 'pointer-events-none' : undefined}
+
                     type="number"
                     prefix="%"
                     value={`${Number(record[7]).toFixed(2)}`}
@@ -410,6 +423,8 @@ export function G703Component({
               }
               return (
                 <Input
+                  className={mode === 'view' ? 'pointer-events-none' : undefined}
+
                   prefix="$"
                   value={Number(record[8]).toFixed(2)}
                   type="number"
@@ -432,6 +447,8 @@ export function G703Component({
               }
               return (
                 <Input
+                  className={mode === 'view' ? 'pointer-events-none' : undefined}
+
                   type="number"
                   prefix="$"
                   value={`${Number(record[9]).toFixed(2)}`}
@@ -440,7 +457,7 @@ export function G703Component({
             }}
           />
 
-          <Column
+          {mode !== 'view' ? <Column
             title=""
             className="border-none border-b"
             align="center"
@@ -492,7 +509,7 @@ export function G703Component({
                 />
               );
             }}
-          />
+          /> : null}
         </Table>
       </div>
       {/* END Spreadsheet */}

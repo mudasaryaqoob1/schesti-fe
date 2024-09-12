@@ -161,7 +161,9 @@ export function Clients() {
                 });
               } else if (key === 'view') {
                 router.push(
-                  `${Routes.Financial['AIA-Invoicing']}/view/${record._id}`
+                  // `${Routes.Financial['AIA-Invoicing']}/view/${record._id}`
+                  `${Routes.Financial['AIA-Invoicing']}/form?id=${record._id}&mode=view`
+
                 );
               }
             },
