@@ -66,7 +66,7 @@ const UserRolesModel = ({
 
                     <div className="flex flex-col items-start justify-start gap-[8px] col-start-2 col-span-4">
                       <div className="leading-[20px] font-semibold capitalize">
-                        {role?.role}
+                        {role?.role.includes('owner') ? 'Owner/Client' : role?.role}
                       </div>
                       <div className="text-sm leading-[24px] text-gray-400">
                         It is a long established fact that a reader will be
