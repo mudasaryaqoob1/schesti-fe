@@ -69,7 +69,7 @@ function AiaInvoicingFormPage() {
           mode={mode}
         />
       ) : (
-        <AIAHistory />
+        <AIAHistory parentInvoice={parentInvoice} />
       )}
     </section>
   );
