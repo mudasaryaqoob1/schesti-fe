@@ -464,7 +464,7 @@ export function AiaInvoicingForm({
             </div>
             <div
                 ref={ref as MutableRefObject<HTMLDivElement>}
-                className="space-y-5 w-full absolute -left-[2500px] border p-6"
+                className="space-y-5 w-full fixed top-0 -left-[2500px] border p-6"
             // className="space-y-5 w-full border p-6"
             >
                 <ClientInvoiceHeader />
@@ -508,7 +508,7 @@ export function AiaInvoicingForm({
                         updateRetainage={updateRetainage}
                         sumColumns={sumColumns}
                         showValidation={false}
-                        mode={mode}
+                        mode={"view"}
                         previousPhaseState={selectedPhase}
 
                     />
@@ -518,7 +518,8 @@ export function AiaInvoicingForm({
                         handleState={handleG7State}
                         sumColumns={sumColumns}
                         updateCellValue={updateCellValue}
-                        mode={mode}
+                        mode={"view"}
+                        showAddAndDelete={false}
                         phases={allPhases}
                         selectedPhase={selectedPhase}
                         setSelectedPhase={(value) => {

@@ -59,7 +59,7 @@ function AiaInvoicingFormPage() {
   }
 
   return (
-    <section className="mx-4 my-2 space-y-2">
+    <section className="mx-4 my-2 space-y-2 relative">
       <AIAInvoiceFormHeader parentInvoice={parentInvoice} />
       <AIATabs tab={tab} setTab={setTab} />
       {tab === 'current' ? (
