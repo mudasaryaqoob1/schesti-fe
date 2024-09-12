@@ -42,7 +42,11 @@ export const AiaInvoicingForm = forwardRef<{
         const user = auth.user?.user as IUpdateCompanyDetail | undefined;
         const [tab, setTab] = useState(G703_KEY);
         const ref = useRef<HTMLDivElement>();
-        const [image, takeScreenshot] = useScreenshot();
+
+        let AIA_TABS_KEYS = [
+            G703_KEY,
+            G702_KEY
+        ]
 
         // all phases of the parent invoice
         const [allPhases, setAllPhases] = useState<IAIAInvoice[]>([]);
@@ -335,6 +339,10 @@ export const AiaInvoicingForm = forwardRef<{
             handleDownloadPdfFromRef(ref, parentInvoice.invoiceName, false)
         }
 
+        if (mode !== 'view') {
+            AIA_TABS_KEYS = [G703_KEY, G702_KEY, FORMS_KEY];
+        }
+
         return (
             <>
                 <div className="px-4 py-2 shadow-md rounded-lg border border-silverGray  bg-white">
@@ -369,7 +377,7 @@ export const AiaInvoicingForm = forwardRef<{
                                 setTab(key);
                             }}
                             activeKey={tab}
-                            items={[G703_KEY, G702_KEY, FORMS_KEY].map((type) => {
+                            items={AIA_TABS_KEYS.map((type) => {
                                 return {
                                     key: type,
                                     label: (
