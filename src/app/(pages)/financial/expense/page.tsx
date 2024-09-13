@@ -6,7 +6,7 @@ import { InputComponent } from '@/app/component/customInput/Input';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { withAuth } from '@/app/hoc/withAuth';
 import { SearchOutlined } from '@ant-design/icons';
-import { Drawer, Dropdown } from 'antd';
+import { Drawer, Dropdown, Tag } from 'antd';
 import Table, { type ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 import { ExpenseForm } from './components/Form';
@@ -89,6 +89,23 @@ function Expense() {
       dataIndex: 'expenseDate',
       render(value) {
         return moment(value).format('DD-MM-YYYY');
+      },
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      render(value) {
+        if (value === 'paid') {
+          return <Tag color='green'>
+            Paid
+          </Tag>
+        }
+        else if (value === 'unpaid') {
+          return <Tag color='red'>
+            Unpaid
+          </Tag>
+        }
+        return null
       },
     },
     {
