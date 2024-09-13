@@ -24,6 +24,7 @@ import { DeleteContent } from '@/app/component/delete/DeleteContent';
 import ModalComponent from '@/app/component/modal';
 import { Excel } from 'antd-table-saveas-excel';
 import _ from 'lodash';
+import { CollectExpensePayment } from './components/CollectPayment';
 
 function Expense() {
   const [search, setSearch] = useState('');
@@ -31,6 +32,8 @@ function Expense() {
   const [isloading, setIsloading] = useState(false);
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
+  const [showCollectModal, setShowCollectModal] = useState(false);
 
   const currency = useCurrencyFormatter();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -110,7 +113,7 @@ function Expense() {
                   key: 'collectPayment',
                   onClick: () => {
                     setSelectedExpense(record);
-                    setShowDrawer(true);
+                    setShowCollectModal(true);
                   },
                 },
                 {
@@ -234,6 +237,35 @@ function Expense() {
             onClose={() => setShowDeleteModal(false)}
           />
         </ModalComponent>
+      ) : null}
+
+      {showCollectModal && selectedExpense ? (
+        <Drawer
+          open={showCollectModal}
+          onClose={() => {
+            setSelectedExpense(null);
+            setShowCollectModal(false);
+          }}
+          width={800}
+          destroyOnClose
+        >
+          <CollectExpensePayment
+            expense={selectedExpense}
+            onSuccess={(expense) => {
+              setData({
+                ...data,
+                expenses: data.expenses.map((item) => {
+                  if (item._id === selectedExpense._id) {
+                    return expense;
+                  }
+                  return item;
+                }),
+              });
+              setShowCollectModal(false);
+              setSelectedExpense(null);
+            }}
+          />
+        </Drawer>
       ) : null}
 
       <div className="flex justify-between items-center mb-4">

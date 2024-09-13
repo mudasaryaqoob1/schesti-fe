@@ -20,4 +20,7 @@ export interface IFinancialExpense {
   user: string | IUserInterface;
   createdAt: string;
   updatedAt: string;
+  status: "paid" | "unpaid";
+  transactionDate: string;
+  additionalDetails: string;
 }
