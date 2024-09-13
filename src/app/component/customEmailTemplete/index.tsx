@@ -21,7 +21,7 @@ type IProps = {
   cc?: boolean;
   invite?: boolean;
   setEmailModal: Function;
-  submitHandler: Function;
+  submitHandler: (_data: FormData) => void;
   isFileUploadShow: Boolean;
 };
 
@@ -29,7 +29,7 @@ const ValidationSchema = Yup.object().shape({
   to: Yup.string().email().required('To Email is required'),
   cc: Yup.string().email().optional(),
   subject: Yup.string().required('Subject is required'),
-  description: Yup.string().optional(),
+  description: Yup.string().required("Description can't be empty"),
   file: Yup.mixed(),
 });
 
@@ -93,7 +93,7 @@ const CustomEmailTemplate = ({
     >
       <div className="space-y-3">
         <div className="flex text-sm w-full">
-          <span className="flex !rounded-tl !rounded-bl pt-[15px] w-[40px] justify-center bg-[#f9f5ff]">
+          <span className="flex !rounded-tl !rounded-bl pt-[15px] w-[40px] justify-center bg-schestiLightPrimary">
             To
           </span>
           <span className="w-full">
@@ -122,7 +122,7 @@ const CustomEmailTemplate = ({
         {cc && (
           <div className="space-y-1">
             <div className="flex text-sm w-full">
-              <span className="flex !rounded-tl !rounded-bl pt-[15px] w-[40px] justify-center bg-[#f9f5ff]">
+              <span className="flex !rounded-tl !rounded-bl pt-[15px] w-[40px] justify-center bg-schestiLightPrimary">
                 CC
               </span>
               <span className="w-full">
@@ -154,7 +154,7 @@ const CustomEmailTemplate = ({
 
         <div className="space-y-1">
           <div className="flex text-sm w-full">
-            <span className="flex !rounded-tl !rounded-bl pt-[15px] w-[85px] justify-center bg-[#f9f5ff]">
+            <span className="flex !rounded-tl !rounded-bl pt-[15px] w-[85px] justify-center bg-schestiLightPrimary">
               Subject
             </span>
             <span className="w-full">
@@ -175,7 +175,7 @@ const CustomEmailTemplate = ({
                 }
                 errorMessage={
                   sendEmailFormik.touched.subject &&
-                  sendEmailFormik.errors.subject
+                    sendEmailFormik.errors.subject
                     ? sendEmailFormik.errors.subject
                     : ''
                 }
