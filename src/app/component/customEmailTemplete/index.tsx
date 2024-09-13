@@ -198,7 +198,7 @@ const CustomEmailTemplate = ({
               sendEmailFormik.touched.description &&
               !!sendEmailFormik.errors.description
             }
-            errorMessage={sendEmailFormik.errors.description}
+            errorMessage={sendEmailFormik.touched.description && sendEmailFormik.errors.description ? sendEmailFormik.errors.description : ''}
           />
         </div>
         {isFileUploadShow ? (
