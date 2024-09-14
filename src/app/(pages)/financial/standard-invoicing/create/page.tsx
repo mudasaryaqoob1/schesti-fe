@@ -31,6 +31,7 @@ import { fetchCompanySubcontractors } from '@/redux/company/company.thunk';
 import { ISubcontract } from '@/app/interfaces/companyEmployeeInterfaces/subcontractor.interface';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { useCurrencyFormatter } from '@/app/hooks/useCurrencyFormatter';
+import { ListCrmItems } from '@/app/(pages)/contracts/components/ListCrmItems';
 
 const subcontractorSchema = Yup.object({
   companyRep: Yup.string().required('Company Rep is required!'),
@@ -285,7 +286,7 @@ const CreateInvoice = () => {
   ];
 
   return (
-    <section className="mx-16 my-2">
+    <section className="mx-4 my-2">
       <Formik
         initialValues={
           selectedSubcontractorDetail
@@ -309,7 +310,7 @@ const CreateInvoice = () => {
             <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
               {/* Modal */}
               <ModalComponent open={showModal} setOpen={setShowModal}>
-                <ExistingSubContractor
+                {/* <ExistingSubContractor
                   setModalOpen={setShowModal}
                   onSelectSubcontract={({
                     address,
@@ -324,6 +325,19 @@ const CreateInvoice = () => {
                     setFieldValue('subContractorPhoneNumber', phone);
                     setFieldValue('companyRep', companyRep);
                   }}
+                /> */}
+
+                <ListCrmItems
+                  onClose={() => setShowModal(false)}
+                  onItemClick={item => {
+                    setFieldValue('subContractorAddress', item.address);
+                    setFieldValue('subContractorCompanyName', item.companyName);
+                    setFieldValue('subContractorEmail', item.email);
+                    setFieldValue('subContractorPhoneNumber', item.phone);
+                    setFieldValue('companyRep', item.name);
+                    setShowModal(false);
+                  }}
+                  title='Select Item'
                 />
               </ModalComponent>
               {/* END  Modal */}
@@ -380,7 +394,7 @@ const CreateInvoice = () => {
                     }
                     errorMessage={
                       touched.subContractorPhoneNumber &&
-                      errors.subContractorPhoneNumber
+                        errors.subContractorPhoneNumber
                         ? errors.subContractorPhoneNumber
                         : ''
                     }
@@ -451,7 +465,7 @@ const CreateInvoice = () => {
                         onBlur: handleBlur,
                       }}
                       hasError={touched.issueDate && !!errors.issueDate}
-                      errorMessage={errors.issueDate}
+                      errorMessage={touched.issueDate && errors.issueDate ? errors.issueDate : ''}
                     />
                     <DateInputComponent
                       label="Due Date"
@@ -464,7 +478,7 @@ const CreateInvoice = () => {
                         onBlur: handleBlur,
                       }}
                       hasError={touched.dueDate && !!errors.dueDate}
-                      errorMessage={errors.dueDate}
+                      errorMessage={touched.dueDate && errors.dueDate ? errors.dueDate : ''}
                     />
                   </div>
                 </div>

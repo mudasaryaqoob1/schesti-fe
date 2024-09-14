@@ -23,6 +23,7 @@ import { Routes } from '@/app/utils/plans.utils';
 import { withAuth } from '@/app/hoc/withAuth';
 import { PhoneNumberInputWithLable } from '@/app/component/phoneNumberInput/PhoneNumberInputWithLable';
 import { useRouterHook } from '@/app/hooks/useRouterHook';
+import { ListCrmItems } from '@/app/(pages)/contracts/components/ListCrmItems';
 
 const SubcontractorSchema = Yup.object({
   companyRep: Yup.string().required('Company Rep is required!'),
@@ -254,7 +255,7 @@ const EditSubcontractorInvoice = () => {
   }
 
   return (
-    <section className="mx-16 my-2">
+    <section className="mx-4 my-2">
       <Formik
         initialValues={invoiceData ? invoiceData : initialValues}
         enableReinitialize={true}
@@ -274,7 +275,7 @@ const EditSubcontractorInvoice = () => {
             <Form name="basic" onSubmit={handleSubmit} autoComplete="off">
               {/* Modal */}
               <ModalComponent open={showModal} setOpen={setShowModal}>
-                <ExistingSubContractor
+                {/* <ExistingSubContractor
                   setModalOpen={setShowModal}
                   onSelectSubcontract={({
                     address,
@@ -289,6 +290,18 @@ const EditSubcontractorInvoice = () => {
                     setFieldValue('subContractorPhoneNumber', phone);
                     setFieldValue('companyRep', companyRep);
                   }}
+                /> */}
+                <ListCrmItems
+                  onClose={() => setShowModal(false)}
+                  onItemClick={item => {
+                    setFieldValue('subContractorAddress', item.address);
+                    setFieldValue('subContractorCompanyName', item.companyName);
+                    setFieldValue('subContractorEmail', item.email);
+                    setFieldValue('subContractorPhoneNumber', item.phone);
+                    setFieldValue('companyRep', item.name);
+                    setShowModal(false);
+                  }}
+                  title='Select Item'
                 />
               </ModalComponent>
               {/* END  Modal */}
@@ -345,7 +358,7 @@ const EditSubcontractorInvoice = () => {
                     }
                     errorMessage={
                       touched.subContractorPhoneNumber &&
-                      errors.subContractorPhoneNumber
+                        errors.subContractorPhoneNumber
                         ? errors.subContractorPhoneNumber
                         : ''
                     }
