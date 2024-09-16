@@ -23,10 +23,33 @@ type IProps = {
   setEmailModal: Function;
   submitHandler: (_data: FormData) => void;
   isFileUploadShow: Boolean;
+  isSubmitting?: boolean
 };
 
 const ValidationSchema = Yup.object().shape({
-  to: Yup.string().email().required('To Email is required'),
+  to: Yup.string()
+    .test({
+      message: ({ value }) => {
+        const emailAddresses = (value as string).split(',');
+        const invalidEmails = emailAddresses.filter(
+          (email) => !Yup.string().email().isValidSync(email)
+        );
+        if (invalidEmails.length > 0) {
+          return `Invalid email(s): ${invalidEmails.join(', ')}`;
+        }
+        return true;
+      },
+      test: (value) => {
+        if (!value) {
+          return true; // Allow empty string when the field is not required
+        }
+        const emailAddresses = value.split(',');
+        return emailAddresses.every((email) =>
+          Yup.string().email().isValidSync(email)
+        );
+      },
+    })
+    .required('Email is required'),
   cc: Yup.string().email().optional(),
   subject: Yup.string().required('Subject is required'),
   description: Yup.string().required("Description can't be empty"),
@@ -40,8 +63,9 @@ const CustomEmailTemplate = ({
   setEmailModal,
   submitHandler,
   isFileUploadShow,
+  isSubmitting = false
 }: IProps) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [isFileUploading] = useState(false);
 
   const sendEmailFormik = useFormik<Omit<ISendEmail, 'projectId'>>({
@@ -53,7 +77,6 @@ const CustomEmailTemplate = ({
       file: undefined,
     },
     async onSubmit(values, helpers) {
-      setIsSubmitting(true);
       try {
         const formData = new FormData();
         formData.append('to', values.to);
@@ -70,7 +93,6 @@ const CustomEmailTemplate = ({
         const err = error as AxiosError<{ message: string }>;
         toast.error(err.response?.data.message || 'An error occurred');
       } finally {
-        setIsSubmitting(false);
         helpers.resetForm();
       }
     },
@@ -87,7 +109,6 @@ const CustomEmailTemplate = ({
       title="Email"
       onClose={() => {
         sendEmailFormik.resetForm();
-        setIsSubmitting(false);
         setEmailModal(false);
       }}
     >
@@ -100,7 +121,7 @@ const CustomEmailTemplate = ({
             <InputComponent
               label=""
               type="text"
-              placeholder="Type an Email"
+              placeholder="Type an Email with comma separated"
               name="to"
               inputStyle="!mt-0 !rounded-tr !rounded-br !rounded-tl-none !rounded-bl-none"
               field={{
