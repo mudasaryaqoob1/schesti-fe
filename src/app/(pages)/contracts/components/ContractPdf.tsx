@@ -150,7 +150,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
         }
         setTools((prev) => {
           return prev.map((tool) => {
-            return tool.id === item.id ? item : tool;
+            return tool.id === item.id ? { ...item, date: new Date().toISOString() } : tool;
           });
         });
       }

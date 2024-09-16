@@ -20,6 +20,7 @@ import { ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
 import { GetStandardToolIcon } from './GetIcon';
 import SignaturePad from 'react-signature-pad-wrapper';
 import { FileInterface } from '@/app/interfaces/file.interface';
+import moment from 'moment';
 
 type Props = {
   item: ToolState;
@@ -61,14 +62,14 @@ export function StandardToolItem({
         {selectedTool ? (
           <ModalComponent
             open={true}
-            setOpen={() => {}}
+            setOpen={() => { }}
             width="300px"
             key={selectedTool.tool}
             className={'!bg-transparent !h-fit'}
           >
             <Popups
               title="Add Standard Tools"
-              onClose={onClose ? onClose : () => {}}
+              onClose={onClose ? onClose : () => { }}
             >
               <StandardToolInput
                 contract={contract}
@@ -198,20 +199,38 @@ function RenderStandardInputValue({
     if (item.value) {
       if (typeof item.value === 'string') {
         return <p className="capitalize">{item.value}</p>;
-      } else if ('url' in item.value) {
+      } else if ('url' in item.value && item.tool === 'signature') {
         return (
-          <Image
-            alt="comment"
-            src={item.value.url}
-            width={80}
-            height={40}
-            objectFit="contain"
-          />
+          <div>
+            <Image
+              alt="comment"
+              src={item.value.url}
+              width={80}
+              height={40}
+              objectFit="contain"
+            />
+
+            {item.date ? <div className='text-[10px]'>
+              {moment(new Date()).format('DD MMM YYYY HH:mm:ss')}
+            </div> : null}
+          </div>
         );
-      } else if (item.tool === 'signature' && 'font' in item.value) {
+      } else if ("url" in item.value) {
+        return <Image
+          alt="comment"
+          src={item.value.url}
+          width={80}
+          height={40}
+          objectFit="contain"
+        />
+      }
+      else if (item.tool === 'signature' && 'font' in item.value) {
         return (
-          <div className="text-[20px]">
+          <div className="text-[20px] text-center">
             <ChooseFont text={item.value.value} chooseFont={item.value.font} />
+            {item.date ? <div className='text-[10px]'>
+              {moment(new Date()).format('DD MMM YYYY HH:mm:ss')}
+            </div> : null}
           </div>
         );
       }
@@ -322,9 +341,9 @@ function GetInitialToolValue({
   const initialVal =
     signature && typeof signature.value != 'undefined'
       ? (signature.value as any)?.value
-          .split(' ')
-          .map((word: string) => word.charAt(0))
-          .join('')
+        .split(' ')
+        .map((word: string) => word.charAt(0))
+        .join('')
       : '';
   console.log({ signature, tools });
   const [value, setValue] = useState(

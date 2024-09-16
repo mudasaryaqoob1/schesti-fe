@@ -6,11 +6,11 @@ export type StandardToolType = 'signature' | 'initials' | 'comment' | 'date';
 type SignatureState = {
   tool: 'signature';
   value?:
-    | {
-        font: ChooseFontType;
-        value: string;
-      }
-    | FileInterface;
+  | {
+    font: ChooseFontType;
+    value: string;
+  }
+  | FileInterface;
 };
 
 type InitialsState = {
@@ -31,6 +31,7 @@ type DateState = {
 export type ToolState = {
   position: { x: number; y: number };
   id: string;
+  date?: string;
 } & (SignatureState | InitialsState | CommentState | DateState);
 
 export type PdfContractMode =
