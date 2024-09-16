@@ -40,7 +40,7 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
   ({ mode, pdfFile, tools, setTools, contract, color = '#007ab6' }, ref) => {
     // const [activePage, setActivePage] = useState<null | number>(1)
     // const canvasRefs = useRef<HTMLCanvasElement[]>([]);
-    const { PDFJs } = usePDFJS(async () => {});
+    const { PDFJs } = usePDFJS(async () => { });
     const containerRef = useRef<HTMLDivElement>(null);
     const pdfContainerRef = useRef<HTMLDivElement>(null);
     const [selectedTool, setSelectedTool] = useState<ToolState | null>(null);
@@ -184,8 +184,8 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
     }
 
     return (
-      <Spin spinning={isLoading} indicator={<LoadingOutlined spin />}>
-        <div className="flex gap-6 ">
+      <div className="flex gap-6 ">
+        <Spin spinning={isLoading} indicator={<LoadingOutlined spin />}>
           <div className="w-[950px]" ref={pdfContainerRef}>
             <DroppableArea
               onDrop={function (item, offset) {
@@ -245,10 +245,10 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
                   ) : mode === 'view-fields' || mode === 'view-values' ? (
                     <StandardToolItem
                       color={color}
-                      onClick={() => {}}
-                      onClose={() => {}}
+                      onClick={() => { }}
+                      onClose={() => { }}
                       selectedTool={selectedTool}
-                      onChange={() => {}}
+                      onChange={() => { }}
                       mode={mode}
                       item={item}
                       key={item.id}
@@ -259,66 +259,68 @@ export const ContractPdf = forwardRef<{ handleAction: () => void }, Props>(
               </div>
             </DroppableArea>
           </div>
-          {mode === 'edit-fields' ? (
-            <div className="flex flex-col space-y-3 rounded-md bg-white h-fit p-4 ">
-              <SenaryHeading
-                title="Standard Tools"
-                className="text-xl  font-semibold"
+        </Spin>
+
+        {mode === 'edit-fields' ? (
+          <div className="flex flex-col space-y-3 rounded-md bg-white h-fit p-4 ">
+            <SenaryHeading
+              title="Standard Tools"
+              className="text-xl  font-semibold"
+            />
+            <DraggableTool type="signature">
+              <ToolButton
+                text="Signature"
+                Icon={<SignatureOutlined />}
+                style={{
+                  backgroundColor: `${hexToRgba(color, 0.1)}`,
+                  border: `1px solid ${hexToRgba(color, 0.1)}`,
+                  color,
+                }}
               />
-              <DraggableTool type="signature">
-                <ToolButton
-                  text="Signature"
-                  Icon={<SignatureOutlined />}
-                  style={{
-                    backgroundColor: `${hexToRgba(color, 0.1)}`,
-                    border: `1px solid ${hexToRgba(color, 0.1)}`,
-                    color,
-                  }}
-                />
-              </DraggableTool>
+            </DraggableTool>
 
-              <DraggableTool type="initials">
-                <ToolButton
-                  text="Initials"
-                  style={{
-                    backgroundColor: `${hexToRgba(color, 0.1)}`,
-                    border: `1px solid ${hexToRgba(color, 0.1)}`,
-                    color,
-                  }}
-                  Icon={<FontSizeOutlined />}
-                />
-              </DraggableTool>
+            <DraggableTool type="initials">
+              <ToolButton
+                text="Initials"
+                style={{
+                  backgroundColor: `${hexToRgba(color, 0.1)}`,
+                  border: `1px solid ${hexToRgba(color, 0.1)}`,
+                  color,
+                }}
+                Icon={<FontSizeOutlined />}
+              />
+            </DraggableTool>
 
-              <DraggableTool type="comment">
-                <ToolButton
-                  text="Comments"
-                  style={{
-                    backgroundColor: `${hexToRgba(color, 0.1)}`,
-                    border: `1px solid ${hexToRgba(color, 0.1)}`,
-                    color,
-                  }}
-                  Icon={<CommentOutlined />}
-                />
-              </DraggableTool>
+            <DraggableTool type="comment">
+              <ToolButton
+                text="Comments"
+                style={{
+                  backgroundColor: `${hexToRgba(color, 0.1)}`,
+                  border: `1px solid ${hexToRgba(color, 0.1)}`,
+                  color,
+                }}
+                Icon={<CommentOutlined />}
+              />
+            </DraggableTool>
 
-              <DraggableTool type="date">
-                <ToolButton
-                  text="Date"
-                  style={{
-                    backgroundColor: `${hexToRgba(color, 0.1)}`,
-                    border: `1px solid ${hexToRgba(color, 0.1)}`,
-                    color,
-                  }}
-                  Icon={<CalendarOutlined />}
-                />
-              </DraggableTool>
-            </div>
-          ) : null}
-        </div>
-        {/* <div ref={containerRef} className="border border-black"></div> */}
-      </Spin>
+            <DraggableTool type="date">
+              <ToolButton
+                text="Date"
+                style={{
+                  backgroundColor: `${hexToRgba(color, 0.1)}`,
+                  border: `1px solid ${hexToRgba(color, 0.1)}`,
+                  color,
+                }}
+                Icon={<CalendarOutlined />}
+              />
+            </DraggableTool>
+          </div>
+        ) : null}
+      </div>
     );
   }
 );
 
 ContractPdf.displayName = 'ContractPdf';
+
+// {/* <div ref={containerRef} className="border border-black"></div> */}

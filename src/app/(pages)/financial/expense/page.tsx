@@ -126,7 +126,7 @@ function Expense() {
             menu={{
               items: [
                 {
-                  label: 'Collect Payment',
+                  label: 'Make a Payment',
                   key: 'collectPayment',
                   onClick: () => {
                     setSelectedExpense(record);
@@ -263,6 +263,7 @@ function Expense() {
             setSelectedExpense(null);
             setShowCollectModal(false);
           }}
+          title="Make a Payment"
           width={800}
           destroyOnClose
         >

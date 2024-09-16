@@ -82,7 +82,7 @@ export function CollectExpensePayment({ expense, onSuccess }: Props) {
           field={{
             className: 'mt-2',
             onChange: (value) => formik.setFieldValue('paymentMethod', value),
-            value: formik.values.paymentMethod,
+            value: formik.values.paymentMethod ? formik.values.paymentMethod : undefined,
             onBlur: formik.handleBlur,
             options: [
               { label: 'Cash', value: 'Cash' },
