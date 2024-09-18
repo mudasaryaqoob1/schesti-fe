@@ -40,7 +40,7 @@ export function AccumulatedDepreciationTable({ formik }: Props) {
         </tr>
 
         <tr className="border-b border-border dark:border-border">
-          <td className="p-4">Lands</td>
+          <td className="p-4">Accum {"Dep'n"} Building</td>
           <td className="p-4 text-center max-w-12">
             <NumberInputComponent
               label=""
