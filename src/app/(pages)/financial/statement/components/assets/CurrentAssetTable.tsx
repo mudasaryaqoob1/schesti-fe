@@ -89,7 +89,7 @@ export function CurrentAssetTable({ formik }: Props) {
               prefix="$"
               placeholder=""
               field={{
-                className: "border-none pointer-events-none",
+                className: "pointer-events-none",
                 value: 0.00
               }}
             />
@@ -106,7 +106,7 @@ export function CurrentAssetTable({ formik }: Props) {
               prefix="$"
               placeholder=""
               field={{
-                className: "border-none pointer-events-none",
+                className: "pointer-events-none",
                 value: 0.00
               }}
             />
