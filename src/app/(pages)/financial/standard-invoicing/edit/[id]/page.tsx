@@ -632,7 +632,7 @@ const EditSubcontractorInvoice = () => {
                   <div className="flex items-center space-x-2">
                     <QuaternaryHeading title="Discount:" />
                     <QuinaryHeading
-                      title={`%${values['discount']}`}
+                      title={`${values['discount']}%`}
                       className="font-bold"
                     />
                   </div>
@@ -640,7 +640,7 @@ const EditSubcontractorInvoice = () => {
                   <div className="flex items-center space-x-2">
                     <QuaternaryHeading title="Taxes:" />
                     <QuinaryHeading
-                      title={`%${values['taxes']}`}
+                      title={`${values['taxes']}%`}
                       className="font-bold"
                     />
                   </div>
@@ -648,7 +648,7 @@ const EditSubcontractorInvoice = () => {
                   <div className="flex items-center space-x-2">
                     <QuaternaryHeading title="Profit And Overhead:" />
                     <QuinaryHeading
-                      title={`%${values['profitAndOverhead']}`}
+                      title={`${values['profitAndOverhead']}%`}
                       className="font-bold"
                     />
                   </div>
