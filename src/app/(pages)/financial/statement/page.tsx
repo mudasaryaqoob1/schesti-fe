@@ -19,6 +19,7 @@ import { DirectExpenseTable } from './components/income-statement/DirectExpenseT
 import { TotalExpense } from './components/income-statement/TotalExpense';
 import { OverheadExpenseTable } from './components/income-statement/OverheadExpense';
 import { TotalIndirectExpense } from './components/income-statement/TotalndirectExpense';
+import { DatePicker } from 'antd';
 
 function FinancialStatementPage() {
   return (
@@ -27,9 +28,8 @@ function FinancialStatementPage() {
         <div className="flex items-center space-x-4">
           <PrimaryHeading title="Financial Statement" className="text-[20px]" />
 
-          <SenaryHeading
-            title="From January 1, 2024 to June 30, 2024"
-            className="text-schestiLightBlack"
+          <DatePicker.RangePicker
+            className='border-none'
           />
         </div>
 
