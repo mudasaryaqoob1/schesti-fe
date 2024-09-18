@@ -39,6 +39,9 @@ class UserService extends HttpService {
   httpGetCompanyDetail = (): Promise<IResponseInterface> =>
     this.get(`${this.userPrefix}/companyDetail`);
 
+  httpGetCompanyInfo = (id: string): Promise<IResponseInterface> =>
+    this.get(`${this.userPrefix}/companyDetail/${id}`);
+
   httpGetUsers = (
     page: number,
     limit: number = 9,
@@ -127,8 +130,17 @@ class UserService extends HttpService {
   ): Promise<IResponseInterface<any>> =>
     this.post(`${this.partnerPrefix}/updatePartner/${partnerId}`, data);
 
+  updateSocialProfile = (
+    id: string | string[],
+    body: { socialName: string; socialAvatar?: string }
+  ): Promise<IResponseInterface<any>> =>
+    this.post(`${this.userPrefix}/updateSocialProfile/${id}`, body);
+
   httpDeletePartner = (partnerId: string): Promise<IResponseInterface> =>
     this.post(`${this.partnerPrefix}/deletePartner/${partnerId}`);
+
+  httpIsBlocked = (): Promise<IResponseInterface<any>> =>
+    this.get(`${this.userPrefix}/isBlocked`);
 
   httpUploadCrmPartnersCsvAndParse = (
     data: FormData

@@ -26,6 +26,7 @@ import bidManagementOwnerReducer from './bid-management/owner.slice';
 import companyRolesReducer from './company-roles/company-roles.slice';
 import crmReducer from './crm/crm.slice';
 import networkSlice from './network/network.slice';
+import socialMediaSlice from './social-media/social-media.slice';
 
 export type RootState = {
   auth: typeof authReducer;
@@ -51,6 +52,7 @@ export type RootState = {
   companyRoles: typeof companyRolesReducer;
   crm: typeof crmReducer;
   network: typeof networkSlice;
+  socialMedia: typeof socialMediaSlice;
 };
 const persistConfig = {
   key: 'root',
@@ -83,5 +85,6 @@ const rootReducer = combineReducers<RootState>({
   companyRoles: companyRolesReducer,
   crm: crmReducer,
   network: networkSlice,
+  socialMedia: socialMediaSlice
 });
 export default persistReducer(persistConfig, rootReducer);

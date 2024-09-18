@@ -5,12 +5,12 @@ import * as Yup from 'yup';
 import Image from 'next/image';
 import { Country, State } from 'country-state-city';
 import { useDispatch, useSelector } from 'react-redux';
-import { tradeService } from '@/app/services/trade.service';
 import Errormsg from '@/app/component/errorMessage';
 import {
   setSelectedStates,
   setSelectedTrades,
 } from '@/redux/network/network.slice';
+import { useTrades } from '@/app/hooks/useTrades';
 
 type FilterInitTypes = { country: string; state: string; trade: string };
 
@@ -32,10 +32,10 @@ const SearchFilters = () => {
   const {
     user: { user },
   } = useSelector((state: any) => state.auth);
+  const { tradeCategoryFilters, trades } = useTrades();
+
   const [country, setCountry] = useState(user.country || '');
   const [state, setState] = useState(user?.state || '');
-  const [trades, setTrades] = useState<Trade[]>([]);
-  const [isTradeExist, setIsTradeExist] = useState(false);
   const [isStateExist, setIsStateExist] = useState(false);
   const {
     selectedStates,
@@ -46,26 +46,11 @@ const SearchFilters = () => {
   } = useSelector((state: any) => state.network);
   const dispatch = useDispatch();
 
-  const getAllTrades = async () => {
-    try {
-      const {
-        data: { trades },
-      }: any = await tradeService.httpGetAllTrades();
-      setTrades(trades);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  useEffect(() => {
-    getAllTrades();
-  }, []);
-
   useEffect(() => {
     setTimeout(() => {
       setIsStateExist(false);
-      setIsTradeExist(false);
     }, 3000);
-  }, [isStateExist, isTradeExist]);
+  }, [isStateExist]);
 
   const states = State.getAllStates()
     .filter((state) => state.countryCode === country)
@@ -77,15 +62,32 @@ const SearchFilters = () => {
     trade: '',
   };
 
-  const allTrades = trades.map((state) => ({
-    label: state.name,
-    value: state._id,
-  }));
+  // const allTrades = trades.map((state) => ({
+  //   label: state.name,
+  //   value: state._id,
+  // }));
 
   const validationSchema = Yup.object({});
 
   // submit handler
-  const submitHandler = async () => {};
+  const submitHandler = async () => { };
+
+  const tradesOptions = tradeCategoryFilters.map((parent) => {
+    return {
+      label: <span>{parent.label}</span>,
+      title: parent.label,
+      options: trades
+        .filter((trade) => trade.tradeCategoryId._id === parent.value)
+        .map((child) => {
+          return {
+            label: <span>{child.name}</span>,
+            value: child._id,
+          };
+        }),
+    };
+  });
+
+  console.log(tradeCategoryFilters, 'tradeCategoryFilters...', trades);
 
   return (
     <section className="w-full mt-3.5 shadow rounded-xl p-6 bg-white">
@@ -187,33 +189,19 @@ const SearchFilters = () => {
                 </div>
               </div>
 
-              <div className="mt-5">
-                {isTradeExist && (
-                  <div className="flex justify-end">
-                    <Errormsg>Trade already exist</Errormsg>
-                  </div>
-                )}
+              <div className="mt-3">
                 <SelectComponent
                   label="Trades"
-                  name="trade"
+                  name="bidTrades"
                   placeholder="Select Trade"
                   field={{
-                    options: allTrades,
-                    value: values.trade,
-                    showSearch: true,
-                    onChange(value) {
-                      if (selectedTrades.includes(value)) {
-                        setIsTradeExist(true);
-                      } else {
-                        setIsStateExist(false);
-                        dispatch(setSelectedTrades([...selectedTrades, value]));
-                        setFieldValue('trade', value);
-                      }
+                    options: tradesOptions,
+                    mode: 'tags',
+                    value: selectedTrades,
+                    onChange(trades) {
+                      dispatch(setSelectedTrades(trades));
                     },
                     onBlur: handleBlur,
-                    onClear() {
-                      setFieldValue('trade', '');
-                    },
                   }}
                   errorMessage={
                     touched.state && errors.state ? errors.state : ''

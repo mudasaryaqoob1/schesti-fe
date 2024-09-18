@@ -49,6 +49,7 @@ export default {
         graylighty: '#E5E1E6',
         darkgrayish: '#464646',
         darkGray: '#8B8B8B',
+        blueOrchid: '#3348FF',
         // Deep and Dark Colors
         royalIndigo: '#036',
         obsidianBlack: '#1A141F',
@@ -69,12 +70,15 @@ export default {
         lightblue: 'rgba(49, 89, 254, 0.10)',
         darkblue: '#3159FE',
         lightenGreyish: '#949494',
+        pattensBlue: '#DBF4FF',
+        paleBlueLily: '#CCECFB',
         wedgeWood: '#5A7184',
         vividRed: '#EC2224',
         ebonyClay: '#1D2939',
         monsoon: '#84818A',
         rangoonGreen: '#1C1C1C',
         osloGrey: '#848C9D',
+        stormGrey: "#67727E",
         // Schesti Color Palette
         schestiPrimary: '#007AB6',
         schestiLightPrimary: '#E6F2F8',
@@ -85,6 +89,7 @@ export default {
         schestiLightBlack: '#667085',
         schestiLightGray: '#EAECF0',
         schestiPrimaryBG: '#F8F8F8',
+        mercury: '#E1E5EA'
       },
       boxShadow: {
         // Soft Glow for Primary Element

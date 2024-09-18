@@ -13,6 +13,7 @@ export type IUserInterface = IUpdateCompanyDetail & {
   providerId: string;
   providerType: string;
   name: string;
+  socialName: string;
   firstName?: string;
   lastName?: string;
   roles?: string[] | ISettingCompanyRole[];
@@ -24,6 +25,8 @@ export type IUserInterface = IUpdateCompanyDetail & {
   address: string;
   companyLogo: string;
   companyName: string;
+  avatar: string;
+  socialAvatar: string;
   employee: string;
   industry: string;
   organizationName: string;
