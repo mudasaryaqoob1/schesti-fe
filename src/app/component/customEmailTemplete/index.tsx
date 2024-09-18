@@ -23,7 +23,7 @@ type IProps = {
   setEmailModal: Function;
   submitHandler: (_data: FormData) => void;
   isFileUploadShow: Boolean;
-  isSubmitting?: boolean
+  isSubmitting?: boolean;
 };
 
 const ValidationSchema = Yup.object().shape({
@@ -63,9 +63,8 @@ const CustomEmailTemplate = ({
   setEmailModal,
   submitHandler,
   isFileUploadShow,
-  isSubmitting = false
+  isSubmitting = false,
 }: IProps) => {
-
   const [isFileUploading] = useState(false);
 
   const sendEmailFormik = useFormik<Omit<ISendEmail, 'projectId'>>({
@@ -196,7 +195,7 @@ const CustomEmailTemplate = ({
                 }
                 errorMessage={
                   sendEmailFormik.touched.subject &&
-                    sendEmailFormik.errors.subject
+                  sendEmailFormik.errors.subject
                     ? sendEmailFormik.errors.subject
                     : ''
                 }
@@ -219,7 +218,12 @@ const CustomEmailTemplate = ({
               sendEmailFormik.touched.description &&
               !!sendEmailFormik.errors.description
             }
-            errorMessage={sendEmailFormik.touched.description && sendEmailFormik.errors.description ? sendEmailFormik.errors.description : ''}
+            errorMessage={
+              sendEmailFormik.touched.description &&
+              sendEmailFormik.errors.description
+                ? sendEmailFormik.errors.description
+                : ''
+            }
           />
         </div>
         {isFileUploadShow ? (

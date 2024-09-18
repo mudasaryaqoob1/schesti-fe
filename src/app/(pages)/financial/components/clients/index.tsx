@@ -146,7 +146,6 @@ export function Clients() {
                   // `${Routes.Financial['AIA-Invoicing']}/invoice/${record._id}`
                   `${Routes.Financial['AIA-Invoicing']}/form?id=${record._id}&mode=phase`
                 );
-
               } else if (key === 'delete') {
                 Modal.confirm({
                   title: 'Are you sure delete this invoice?',
@@ -158,13 +157,12 @@ export function Clients() {
                   onOk() {
                     dispatch(deleteClientInvoiceRequest(record._id));
                   },
-                  onCancel() { },
+                  onCancel() {},
                 });
               } else if (key === 'view') {
                 router.push(
                   // `${Routes.Financial['AIA-Invoicing']}/view/${record._id}`
                   `${Routes.Financial['AIA-Invoicing']}/form?id=${record._id}&mode=view`
-
                 );
               }
             },
@@ -186,14 +184,14 @@ export function Clients() {
   const filteredClientInvoices =
     clientInvoices.length > 0
       ? clientInvoices.filter((invoice: any) => {
-        if (!search) {
-          return invoice;
-        }
-        return (
-          invoice.invoiceName === search ||
-          invoice!.toOwner.toLowerCase().includes(search.toLowerCase())
-        );
-      })
+          if (!search) {
+            return invoice;
+          }
+          return (
+            invoice.invoiceName === search ||
+            invoice!.toOwner.toLowerCase().includes(search.toLowerCase())
+          );
+        })
       : [];
 
   return (
@@ -371,7 +369,7 @@ export function Clients() {
                     }
                     errorMessage={
                       formik.touched.architectName &&
-                        formik.errors.architectName
+                      formik.errors.architectName
                         ? formik.errors.architectName
                         : ''
                     }

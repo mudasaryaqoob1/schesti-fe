@@ -70,47 +70,46 @@ function CreateContractPage() {
     // @ts-ignore
     initialValues: contract
       ? {
-        title: contract.title,
-        startDate: contract.startDate,
-        endDate: contract.endDate,
-        description: contract.description,
-        projectName: contract.projectName,
-        projectNo: contract.projectNo,
-        file: contract.file,
-        receipts: contract.receipts,
-      }
+          title: contract.title,
+          startDate: contract.startDate,
+          endDate: contract.endDate,
+          description: contract.description,
+          projectName: contract.projectName,
+          projectNo: contract.projectNo,
+          file: contract.file,
+          receipts: contract.receipts,
+        }
       : {
-        title: '',
-        startDate: new Date().toISOString(),
-        endDate: '',
-        description: '',
-        projectName: '',
-        projectNo: '',
-        file: undefined as any,
-        receipts: [
-          {
-            color: chooseRandomColor(),
-            companyName: '',
-            email: '',
-            name: '',
-            tools: [],
-            type: 'sender',
-          },
-          {
-            color: chooseRandomColor(),
-            companyName: '',
-            email: '',
-            name: '',
-            tools: [],
-            type: 'receiver',
-          },
-        ],
-      },
+          title: '',
+          startDate: new Date().toISOString(),
+          endDate: '',
+          description: '',
+          projectName: '',
+          projectNo: '',
+          file: undefined as any,
+          receipts: [
+            {
+              color: chooseRandomColor(),
+              companyName: '',
+              email: '',
+              name: '',
+              tools: [],
+              type: 'sender',
+            },
+            {
+              color: chooseRandomColor(),
+              companyName: '',
+              email: '',
+              name: '',
+              tools: [],
+              type: 'receiver',
+            },
+          ],
+        },
     async onSubmit(values) {
       const isEdit = searchParams.get('edit');
       if (isEdit && isEdit === 'true' && contract) {
         if (!isNextLoading) {
-
           setIsLoading(true);
         }
         try {
@@ -517,9 +516,9 @@ function CreateContractPage() {
                           getSenderOrReceiverFieldErrorAndTouched('name', index)
                             .touched
                             ? getSenderOrReceiverFieldErrorAndTouched(
-                              'name',
-                              index
-                            ).error
+                                'name',
+                                index
+                              ).error
                             : ''
                         }
                       />
@@ -551,9 +550,9 @@ function CreateContractPage() {
                             index
                           ).touched
                             ? getSenderOrReceiverFieldErrorAndTouched(
-                              'companyName',
-                              index
-                            ).error
+                                'companyName',
+                                index
+                              ).error
                             : ''
                         }
                       />
@@ -583,9 +582,9 @@ function CreateContractPage() {
                         getSenderOrReceiverFieldErrorAndTouched('email', index)
                           .touched
                           ? getSenderOrReceiverFieldErrorAndTouched(
-                            'email',
-                            index
-                          ).error
+                              'email',
+                              index
+                            ).error
                           : ''
                       }
                     />
@@ -658,9 +657,9 @@ function CreateContractPage() {
                           getSenderOrReceiverFieldErrorAndTouched('name', index)
                             .touched
                             ? getSenderOrReceiverFieldErrorAndTouched(
-                              'name',
-                              index
-                            ).error
+                                'name',
+                                index
+                              ).error
                             : ''
                         }
                       />
@@ -692,9 +691,9 @@ function CreateContractPage() {
                             index
                           ).touched
                             ? getSenderOrReceiverFieldErrorAndTouched(
-                              'companyName',
-                              index
-                            ).error
+                                'companyName',
+                                index
+                              ).error
                             : ''
                         }
                       />
@@ -724,9 +723,9 @@ function CreateContractPage() {
                         getSenderOrReceiverFieldErrorAndTouched('email', index)
                           .touched
                           ? getSenderOrReceiverFieldErrorAndTouched(
-                            'email',
-                            index
-                          ).error
+                              'email',
+                              index
+                            ).error
                           : ''
                       }
                     />

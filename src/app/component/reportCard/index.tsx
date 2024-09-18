@@ -66,14 +66,14 @@ const ReportCard: React.FC<Props> = ({ entity }) => {
                       className=" flex gap-x-5 items-center justify-between p-4 border"
                     >
                       {/* <div className="border-2  w-fit h-fit cover max-w-[50%]"> */}
-                        <Image
-                          src={thing.image}
-                          width={100}
-                          height={100}
-                          alt={`Captured content ${index}`}
-                          style={{ width: '50%', height: '100%' }}
-                          className="image-cover border-2 max-w-[50%]"
-                        />
+                      <Image
+                        src={thing.image}
+                        width={100}
+                        height={100}
+                        alt={`Captured content ${index}`}
+                        style={{ width: '50%', height: '100%' }}
+                        className="image-cover border-2 max-w-[50%]"
+                      />
                       {/* </div> */}
                       <div className="grow grid grid-cols-4 gap-5 text-xs text-gray-500">
                         {/* <span className="font-medium block text-black">

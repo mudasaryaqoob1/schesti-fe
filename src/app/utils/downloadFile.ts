@@ -1,5 +1,5 @@
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 export const downloadFile = (url: string, name: string) => {
   fetch(url)
@@ -16,8 +16,11 @@ export const downloadFile = (url: string, name: string) => {
     });
 };
 
-
-export function handleDownloadPdfFromRef(ref: React.MutableRefObject<HTMLDivElement | undefined>, filename: string, isScrollable = true) {
+export function handleDownloadPdfFromRef(
+  ref: React.MutableRefObject<HTMLDivElement | undefined>,
+  filename: string,
+  isScrollable = true
+) {
   const container = ref.current!;
   if (isScrollable) {
     container.style.height = 'auto'; // Temporarily expand the container
@@ -45,6 +48,5 @@ export function handleDownloadPdfFromRef(ref: React.MutableRefObject<HTMLDivElem
       // Restore the original height
       container.style.height = ''; // Remove inline style to revert to original
     }
-
   });
 }

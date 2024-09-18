@@ -14,7 +14,10 @@ type Props = {
   parentInvoice: IAIAInvoice;
   onDownloadInvoice?: () => void;
 };
-export function AIAInvoiceFormHeader({ parentInvoice, onDownloadInvoice }: Props) {
+export function AIAInvoiceFormHeader({
+  parentInvoice,
+  onDownloadInvoice,
+}: Props) {
   const [isDownloading, setIsDownloading] = useState(false);
   const [showEmailModal, setShowEmailModal] = useState(false);
 
@@ -31,10 +34,10 @@ export function AIAInvoiceFormHeader({ parentInvoice, onDownloadInvoice }: Props
       <ModalComponent
         open={showEmailModal}
         setOpen={setShowEmailModal}
-        width='50%'
+        width="50%"
       >
         <CustomEmailTemplate
-          to=''
+          to=""
           setEmailModal={setShowEmailModal}
           isFileUploadShow={false}
           submitHandler={async (formData) => {
@@ -67,7 +70,12 @@ export function AIAInvoiceFormHeader({ parentInvoice, onDownloadInvoice }: Props
             className="!w-fit !bg-schestiLightPrimary !border-schestiLightPrimary"
             onClick={() => setShowEmailModal(true)}
           />
-          <CustomButton text="Download invoice" className="!w-fit" onClick={handleDownload} isLoading={isDownloading} />
+          <CustomButton
+            text="Download invoice"
+            className="!w-fit"
+            onClick={handleDownload}
+            isLoading={isDownloading}
+          />
         </div>
       </div>
     </>

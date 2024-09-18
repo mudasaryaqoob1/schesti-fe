@@ -96,16 +96,11 @@ function Expense() {
       dataIndex: 'status',
       render(value) {
         if (value === 'paid') {
-          return <Tag color='green'>
-            Paid
-          </Tag>
+          return <Tag color="green">Paid</Tag>;
+        } else if (value === 'unpaid') {
+          return <Tag color="red">Unpaid</Tag>;
         }
-        else if (value === 'unpaid') {
-          return <Tag color='red'>
-            Unpaid
-          </Tag>
-        }
-        return null
+        return null;
       },
     },
     {
@@ -360,11 +355,13 @@ function Expense() {
           if (search) {
             return (
               item.name.toLowerCase().includes(search.toLowerCase()) ||
-              item.note.toLowerCase().includes(search.toLowerCase())
-              || item.invoiceNo.toLowerCase().includes(search.toLowerCase())
-              || item.project.toLowerCase().includes(search.toLowerCase())
-              || item.totalPrice.toString().toLowerCase().includes(search.toLowerCase())
-
+              item.note.toLowerCase().includes(search.toLowerCase()) ||
+              item.invoiceNo.toLowerCase().includes(search.toLowerCase()) ||
+              item.project.toLowerCase().includes(search.toLowerCase()) ||
+              item.totalPrice
+                .toString()
+                .toLowerCase()
+                .includes(search.toLowerCase())
             );
           }
           return true;

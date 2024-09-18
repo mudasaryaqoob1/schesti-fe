@@ -484,7 +484,7 @@ const ScaleModal = ({
                     </Select.Option>
                   ))}
                 </Select>
-                <span className='text-3xl text-gray-400' >=</span>
+                <span className="text-3xl text-gray-400">=</span>
                 <Input
                   value={secondValueX}
                   className={`!w-[115px] ${

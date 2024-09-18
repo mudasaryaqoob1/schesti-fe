@@ -12,7 +12,7 @@ import { toast } from 'react-toastify';
 
 type Props = {
   parentInvoice: IAIAInvoice;
-}
+};
 export function AIAHistory({ parentInvoice }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<IAIAInvoice[]>([]);
@@ -67,13 +67,16 @@ export function AIAHistory({ parentInvoice }: Props) {
     },
   ];
 
-
   const filteredData = data.filter((item) => {
     if (!search) {
       return true;
     }
-    return item.invoiceName?.toLowerCase().includes(search.toLowerCase()) || item.applicationNo?.toLowerCase().includes(search.toLowerCase())
-      || item.toOwner?.toLowerCase().includes(search.toLowerCase()) || item.project?.toLowerCase().includes(search.toLowerCase());
+    return (
+      item.invoiceName?.toLowerCase().includes(search.toLowerCase()) ||
+      item.applicationNo?.toLowerCase().includes(search.toLowerCase()) ||
+      item.toOwner?.toLowerCase().includes(search.toLowerCase()) ||
+      item.project?.toLowerCase().includes(search.toLowerCase())
+    );
   });
 
   return (
@@ -106,71 +109,70 @@ export function AIAHistory({ parentInvoice }: Props) {
       <div>
         <div className="grid grid-cols-7 px-4 gap-3">
           <TertiaryHeading
-            title='Invoice #'
-            className='text-schestiLightBlack font-normal text-sm'
+            title="Invoice #"
+            className="text-schestiLightBlack font-normal text-sm"
           />
           <TertiaryHeading
-            className='text-schestiLightBlack font-normal text-sm'
+            className="text-schestiLightBlack font-normal text-sm"
             title="Invoice Name"
           />
           <TertiaryHeading
-            className='text-schestiLightBlack font-normal text-sm'
+            className="text-schestiLightBlack font-normal text-sm"
             title="Owner Name"
           />
           <TertiaryHeading
-            className='text-schestiLightBlack font-normal text-sm'
+            className="text-schestiLightBlack font-normal text-sm"
             title="Project Name"
           />
           <TertiaryHeading
-            className='text-schestiLightBlack font-normal text-sm'
+            className="text-schestiLightBlack font-normal text-sm"
             title="Address"
           />
           <TertiaryHeading
-            className='text-schestiLightBlack font-normal text-sm'
+            className="text-schestiLightBlack font-normal text-sm"
             title="Distributed To"
           />
           <TertiaryHeading
-            className='text-schestiLightBlack font-normal text-sm'
+            className="text-schestiLightBlack font-normal text-sm"
             title="Invoices"
           />
         </div>
 
-        <div className='grid grid-cols-7 gap-3 mt-4 p-4 rounded-md bg-schestiLightPrimary'>
+        <div className="grid grid-cols-7 gap-3 mt-4 p-4 rounded-md bg-schestiLightPrimary">
           <TertiaryHeading
             title={parentInvoice.applicationNo}
-            className='text-schestiPrimaryBlack text-sm'
+            className="text-schestiPrimaryBlack text-sm"
           />
           <TertiaryHeading
             title={parentInvoice.invoiceName}
-            className='text-schestiPrimaryBlack text-sm'
+            className="text-schestiPrimaryBlack text-sm"
           />
 
           <TertiaryHeading
             title={parentInvoice.toOwner}
-            className='text-schestiPrimaryBlack text-sm'
+            className="text-schestiPrimaryBlack text-sm"
           />
           <TertiaryHeading
             title={parentInvoice.project}
-            className='text-schestiPrimaryBlack text-sm'
+            className="text-schestiPrimaryBlack text-sm"
           />
           <TertiaryHeading
             title={parentInvoice.address}
-            className='text-schestiPrimaryBlack text-sm'
+            className="text-schestiPrimaryBlack text-sm"
           />
 
           <TertiaryHeading
             title={parentInvoice.distributionTo}
-            className='text-schestiPrimaryBlack text-sm uppercase'
+            className="text-schestiPrimaryBlack text-sm uppercase"
           />
 
           <TertiaryHeading
             title={data.length.toString()}
-            className='text-schestiPrimaryBlack text-sm'
+            className="text-schestiPrimaryBlack text-sm"
           />
-
         </div>
 
-        <div className='p-4 bg-schestiPrimaryBG'>
+        <div className="p-4 bg-schestiPrimaryBG">
           <Table
             columns={columns}
             dataSource={filteredData}

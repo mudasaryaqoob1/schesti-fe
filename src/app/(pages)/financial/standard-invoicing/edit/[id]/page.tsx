@@ -293,7 +293,7 @@ const EditSubcontractorInvoice = () => {
                 /> */}
                 <ListCrmItems
                   onClose={() => setShowModal(false)}
-                  onItemClick={item => {
+                  onItemClick={(item) => {
                     setFieldValue('subContractorAddress', item.address);
                     setFieldValue('subContractorCompanyName', item.companyName);
                     setFieldValue('subContractorEmail', item.email);
@@ -301,7 +301,7 @@ const EditSubcontractorInvoice = () => {
                     setFieldValue('companyRep', item.name);
                     setShowModal(false);
                   }}
-                  title='Select Item'
+                  title="Select Item"
                 />
               </ModalComponent>
               {/* END  Modal */}
@@ -358,7 +358,7 @@ const EditSubcontractorInvoice = () => {
                     }
                     errorMessage={
                       touched.subContractorPhoneNumber &&
-                        errors.subContractorPhoneNumber
+                      errors.subContractorPhoneNumber
                         ? errors.subContractorPhoneNumber
                         : ''
                     }

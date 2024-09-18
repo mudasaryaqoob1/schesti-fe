@@ -329,7 +329,7 @@ const CreateInvoice = () => {
 
                 <ListCrmItems
                   onClose={() => setShowModal(false)}
-                  onItemClick={item => {
+                  onItemClick={(item) => {
                     setFieldValue('subContractorAddress', item.address);
                     setFieldValue('subContractorCompanyName', item.companyName);
                     setFieldValue('subContractorEmail', item.email);
@@ -337,7 +337,7 @@ const CreateInvoice = () => {
                     setFieldValue('companyRep', item.name);
                     setShowModal(false);
                   }}
-                  title='Select Item'
+                  title="Select Item"
                 />
               </ModalComponent>
               {/* END  Modal */}
@@ -394,7 +394,7 @@ const CreateInvoice = () => {
                     }
                     errorMessage={
                       touched.subContractorPhoneNumber &&
-                        errors.subContractorPhoneNumber
+                      errors.subContractorPhoneNumber
                         ? errors.subContractorPhoneNumber
                         : ''
                     }
@@ -465,7 +465,11 @@ const CreateInvoice = () => {
                         onBlur: handleBlur,
                       }}
                       hasError={touched.issueDate && !!errors.issueDate}
-                      errorMessage={touched.issueDate && errors.issueDate ? errors.issueDate : ''}
+                      errorMessage={
+                        touched.issueDate && errors.issueDate
+                          ? errors.issueDate
+                          : ''
+                      }
                     />
                     <DateInputComponent
                       label="Due Date"
@@ -478,7 +482,9 @@ const CreateInvoice = () => {
                         onBlur: handleBlur,
                       }}
                       hasError={touched.dueDate && !!errors.dueDate}
-                      errorMessage={touched.dueDate && errors.dueDate ? errors.dueDate : ''}
+                      errorMessage={
+                        touched.dueDate && errors.dueDate ? errors.dueDate : ''
+                      }
                     />
                   </div>
                 </div>

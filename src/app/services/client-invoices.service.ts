@@ -15,7 +15,7 @@ class ClientInvoiceService extends HttpService {
 
   httpUpdateParentInvoice = (
     id: string,
-    data: G7State,
+    data: G7State
   ): Promise<IResponseInterface<{ invoice: IAIAInvoice }>> =>
     this.post(`${this.prefix}/update/${id}`, data);
 

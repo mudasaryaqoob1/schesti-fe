@@ -84,10 +84,7 @@ export function ListCrmItems({ title, onClose, onItemClick }: Props) {
           <Skeleton />
         </div>
       ) : items.length === 0 ? (
-        <NoDataComponent
-          title="List"
-          description="No Data Found"
-        />
+        <NoDataComponent title="List" description="No Data Found" />
       ) : (
         items.map((item) => {
           return (
@@ -109,16 +106,16 @@ export function ListCrmItems({ title, onClose, onItemClick }: Props) {
                   {' '}
                   <span className="text-schestiLightBlack">Name: </span>{' '}
                   {item.module === 'subcontractors' ||
-                    item.module === 'partners' ||
-                    item.module === 'contractors'
+                  item.module === 'partners' ||
+                  item.module === 'contractors'
                     ? item.companyRep
                     : `${item.firstName} ${item.lastName || ''}`}
                 </p>
                 <p>
                   <span className="text-schestiLightBlack">Company: </span>{' '}
                   {item.module === 'subcontractors' ||
-                    item.module === 'partners' ||
-                    item.module === 'contractors'
+                  item.module === 'partners' ||
+                  item.module === 'contractors'
                     ? item.name
                     : item.companyName}
                 </p>

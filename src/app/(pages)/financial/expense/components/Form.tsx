@@ -54,21 +54,21 @@ export function ExpenseForm({ expense, onSuccess }: Props) {
     initialValues: expense
       ? { ...expense }
       : {
-        file: undefined,
-        name: '',
-        costCode: '',
-        expenseType: '',
-        expenseDate: new Date().toISOString(),
-        invoiceNo: '',
-        totalPrice: 0,
-        project: '',
-        note: '',
-        salesTax: 0,
-        countryTax: 0,
-        paymentMethod: '',
-        reference: '',
-        repeat: '',
-      },
+          file: undefined,
+          name: '',
+          costCode: '',
+          expenseType: '',
+          expenseDate: new Date().toISOString(),
+          invoiceNo: '',
+          totalPrice: 0,
+          project: '',
+          note: '',
+          salesTax: 0,
+          countryTax: 0,
+          paymentMethod: '',
+          reference: '',
+          repeat: '',
+        },
     onSubmit: async (values) => {
       setIsSubmitting(true);
       try {
@@ -144,7 +144,7 @@ export function ExpenseForm({ expense, onSuccess }: Props) {
           itemRender={() => {
             return null;
           }}
-          onChange={() => { }}
+          onChange={() => {}}
         >
           <p className="ant-upload-drag-icon">
             <Image

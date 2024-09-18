@@ -62,14 +62,14 @@ export function StandardToolItem({
         {selectedTool ? (
           <ModalComponent
             open={true}
-            setOpen={() => { }}
+            setOpen={() => {}}
             width="300px"
             key={selectedTool.tool}
             className={'!bg-transparent !h-fit'}
           >
             <Popups
               title="Add Standard Tools"
-              onClose={onClose ? onClose : () => { }}
+              onClose={onClose ? onClose : () => {}}
             >
               <StandardToolInput
                 contract={contract}
@@ -210,27 +210,32 @@ function RenderStandardInputValue({
               objectFit="contain"
             />
 
-            {item.date ? <div className='text-[10px]'>
-              {moment(new Date()).format('DD MMM YYYY HH:mm:ss')}
-            </div> : null}
+            {item.date ? (
+              <div className="text-[10px]">
+                {moment(new Date()).format('DD MMM YYYY HH:mm:ss')}
+              </div>
+            ) : null}
           </div>
         );
-      } else if ("url" in item.value) {
-        return <Image
-          alt="comment"
-          src={item.value.url}
-          width={80}
-          height={40}
-          objectFit="contain"
-        />
-      }
-      else if (item.tool === 'signature' && 'font' in item.value) {
+      } else if ('url' in item.value) {
+        return (
+          <Image
+            alt="comment"
+            src={item.value.url}
+            width={80}
+            height={40}
+            objectFit="contain"
+          />
+        );
+      } else if (item.tool === 'signature' && 'font' in item.value) {
         return (
           <div className="text-[20px] text-center">
             <ChooseFont text={item.value.value} chooseFont={item.value.font} />
-            {item.date ? <div className='text-[10px]'>
-              {moment(new Date()).format('DD MMM YYYY HH:mm:ss')}
-            </div> : null}
+            {item.date ? (
+              <div className="text-[10px]">
+                {moment(new Date()).format('DD MMM YYYY HH:mm:ss')}
+              </div>
+            ) : null}
           </div>
         );
       }
@@ -341,9 +346,9 @@ function GetInitialToolValue({
   const initialVal =
     signature && typeof signature.value != 'undefined'
       ? (signature.value as any)?.value
-        .split(' ')
-        .map((word: string) => word.charAt(0))
-        .join('')
+          .split(' ')
+          .map((word: string) => word.charAt(0))
+          .join('')
       : '';
   console.log({ signature, tools });
   const [value, setValue] = useState(

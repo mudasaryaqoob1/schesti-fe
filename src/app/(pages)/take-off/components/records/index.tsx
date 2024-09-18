@@ -156,26 +156,26 @@ const Records = () => {
     router.push(`/take-off/upload?edit_id=${item?._id}`);
   };
   const [search, setsearch] = useState<any>('');
-  const [isModalOpen, setisModalOpen] = useState(false)
-  const [takeOff, settakeOff] = useState<any>({})
-  const [fetchloading, setfetchloading] = useState(false)
+  const [isModalOpen, setisModalOpen] = useState(false);
+  const [takeOff, settakeOff] = useState<any>({});
+  const [fetchloading, setfetchloading] = useState(false);
   const handleDownloadClick = async (id: string) => {
     if (!id) {
       toast.error('Invalid selection');
-      return
+      return;
     }
     try {
-      setfetchloading(true)
+      setfetchloading(true);
       const data = await takeoffSummaryService.httpGetSignleTakeOffSummary(id);
       console.log(data, ' ===> Data coming for single record of summaruy');
-      settakeOff(data?.data)
-      setfetchloading(false)
-      setisModalOpen(true)
+      settakeOff(data?.data);
+      setfetchloading(false);
+      setisModalOpen(true);
     } catch (error) {
-      setfetchloading(false)
-      console.log(error)
+      setfetchloading(false);
+      console.log(error);
     }
-  }
+  };
 
   return (
     <div className={`${bg_style} p-5`}>
@@ -209,13 +209,14 @@ const Records = () => {
           <input type="text" placeholder="Search" className="ml-2 outline-none flex-1 text-gray-600" />
         </div> */}
       </div>
-      <Table search={search} handleEditClick={handleEditClick} handleEditDetailsClick={handleEditDetailsClick} handleDownloadClick={handleDownloadClick} />
+      <Table
+        search={search}
+        handleEditClick={handleEditClick}
+        handleEditDetailsClick={handleEditDetailsClick}
+        handleDownloadClick={handleDownloadClick}
+      />
       {/* <Pagination /> */}
-      <ModalComponent
-        open={isModalOpen}
-        setOpen={setisModalOpen}
-        width="100vw"
-      >
+      <ModalComponent open={isModalOpen} setOpen={setisModalOpen} width="100vw">
         <ReportModal
           setModalOpen={setisModalOpen}
           takeOff={takeOff}

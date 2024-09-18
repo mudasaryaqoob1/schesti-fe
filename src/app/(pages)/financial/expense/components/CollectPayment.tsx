@@ -27,7 +27,6 @@ const CollectPaymentSchema = Yup.object().shape({
 export function CollectExpensePayment({ expense, onSuccess }: Props) {
   const [loading, setLoading] = useState(false);
 
-
   const formik = useFormik({
     initialValues: {
       amount: expense.totalPrice,
@@ -39,11 +38,14 @@ export function CollectExpensePayment({ expense, onSuccess }: Props) {
     onSubmit: async (values) => {
       setLoading(true);
       try {
-        const response = await financialExpenseService.httpUpdateExpense({
-          ...values,
-          transactionDate: dayjs(values.transactionDate).format('YYYY-MM-DD'),
-          status: "paid",
-        }, expense._id);
+        const response = await financialExpenseService.httpUpdateExpense(
+          {
+            ...values,
+            transactionDate: dayjs(values.transactionDate).format('YYYY-MM-DD'),
+            status: 'paid',
+          },
+          expense._id
+        );
         if (response.data) {
           toast.success('Payment collected successfully');
           onSuccess(response.data);
@@ -82,7 +84,9 @@ export function CollectExpensePayment({ expense, onSuccess }: Props) {
           field={{
             className: 'mt-2',
             onChange: (value) => formik.setFieldValue('paymentMethod', value),
-            value: formik.values.paymentMethod ? formik.values.paymentMethod : undefined,
+            value: formik.values.paymentMethod
+              ? formik.values.paymentMethod
+              : undefined,
             onBlur: formik.handleBlur,
             options: [
               { label: 'Cash', value: 'Cash' },

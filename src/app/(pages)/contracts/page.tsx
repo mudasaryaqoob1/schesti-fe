@@ -244,9 +244,7 @@ function ContractsPage() {
 
   return (
     <div className="mt-6 p-5 !pb-[39px]  mx-4 bg-white rounded-md">
-
-      <ModalComponent open={showEmailModal} setOpen={setShowEmailModal} >
-
+      <ModalComponent open={showEmailModal} setOpen={setShowEmailModal}>
         <CustomEmailTemplate
           isFileUploadShow={false}
           setEmailModal={setShowEmailModal}
@@ -265,7 +263,7 @@ function ContractsPage() {
               setIsSubmittingEmail(false);
             }
           }}
-          to=''
+          to=""
           isSubmitting={isSubmittingEmail}
         />
       </ModalComponent>

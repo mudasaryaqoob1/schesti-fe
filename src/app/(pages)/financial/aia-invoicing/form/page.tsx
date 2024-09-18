@@ -24,8 +24,8 @@ function AiaInvoicingFormPage() {
   const [tab, setTab] = useState<AIATabsType>('current');
 
   const downloadRef = useRef<{
-    handleDownloadPdf: () => void
-  }>(null)
+    handleDownloadPdf: () => void;
+  }>(null);
 
   useEffect(() => {
     const id = searchParams.get('id');
@@ -64,7 +64,10 @@ function AiaInvoicingFormPage() {
 
   return (
     <section className="mx-4 my-2 space-y-2 relative">
-      <AIAInvoiceFormHeader parentInvoice={parentInvoice} onDownloadInvoice={() => downloadRef.current?.handleDownloadPdf()} />
+      <AIAInvoiceFormHeader
+        parentInvoice={parentInvoice}
+        onDownloadInvoice={() => downloadRef.current?.handleDownloadPdf()}
+      />
       <AIATabs tab={tab} setTab={setTab} />
       {tab === 'current' ? (
         <AiaInvoicingForm

@@ -26,13 +26,14 @@ export function G702Component({
   previousPhaseState,
   children,
   showValidation = true,
-  mode
+  mode,
 }: Props) {
-
-
-  const changeOrderSummaryAdditionSum = state.totalAdditionThisMonth + state.totalAdditionPreviousMonth;
-  const changeOrderSummaryDeductionSum = state.totalDeductionThisMonth + state.totalDeductionPreviousMonth;
-  const changeOrderNetChanges = changeOrderSummaryAdditionSum - changeOrderSummaryDeductionSum;
+  const changeOrderSummaryAdditionSum =
+    state.totalAdditionThisMonth + state.totalAdditionPreviousMonth;
+  const changeOrderSummaryDeductionSum =
+    state.totalDeductionThisMonth + state.totalDeductionPreviousMonth;
+  const changeOrderNetChanges =
+    changeOrderSummaryAdditionSum - changeOrderSummaryDeductionSum;
   const originalContractSum = sumColumns(state.data, 2);
   const p5b = Number(sumColumns(state.data, 5));
   const resultOf_P5b = p5b * (state.p5bPercentage / 100);
@@ -54,16 +55,26 @@ export function G702Component({
     p9Total = p3Total - 0 - p8Total; // Point 7 value not defined, using 0
   } else if (mode === 'phase' || mode === 'view') {
     // Calculate p7Total and other phase-specific values
-    const previousPhaseStateDataSum = previousPhaseState ? sumColumns(previousPhaseState.data, 6) : 0;
+    const previousPhaseStateDataSum = previousPhaseState
+      ? sumColumns(previousPhaseState.data, 6)
+      : 0;
     p7Total = Number(previousPhaseStateDataSum) - p5Total;
     p8Total = p6Total - p7Total; // Using point 7 value
     p9Total = p3Total - p7Total - p8Total; // Using point 7 value
 
     // Additional calculations for previous phase data
-    previousP5b = previousPhaseState ? Number(sumColumns(previousPhaseState.data, 5)) : 0;
-    previousResultOf_P5b = previousPhaseState ? previousP5b * (previousPhaseState.p5bPercentage / 100) : 0;
-    previousP5Total = previousPhaseState ? Number(sumColumns(previousPhaseState.data, 9)) + previousResultOf_P5b : 0;
-    previousP7Total = Number(previousPhaseState ? sumColumns(previousPhaseState.data, 6) : 0) - previousP5Total;
+    previousP5b = previousPhaseState
+      ? Number(sumColumns(previousPhaseState.data, 5))
+      : 0;
+    previousResultOf_P5b = previousPhaseState
+      ? previousP5b * (previousPhaseState.p5bPercentage / 100)
+      : 0;
+    previousP5Total = previousPhaseState
+      ? Number(sumColumns(previousPhaseState.data, 9)) + previousResultOf_P5b
+      : 0;
+    previousP7Total =
+      Number(previousPhaseState ? sumColumns(previousPhaseState.data, 6) : 0) -
+      previousP5Total;
   }
 
   return (
@@ -82,7 +93,7 @@ export function G702Component({
             </label>
             <div className="flex flex-col">
               <Input
-                className={`px-2 py-2 border border-gray-300 outline-none ${mode === 'view' ? "pointer-events-none" : ""}`}
+                className={`px-2 py-2 border border-gray-300 outline-none ${mode === 'view' ? 'pointer-events-none' : ''}`}
                 type="text"
                 value={state.toOwner}
                 onChange={(e) => handleState('toOwner', e.target.value)}
@@ -99,7 +110,7 @@ export function G702Component({
                 PROJECT:
               </label>
               <Input
-                className={`px-2 py-2 border border-gray-300 outline-none ${mode === 'view' ? "pointer-events-none" : ""}`}
+                className={`px-2 py-2 border border-gray-300 outline-none ${mode === 'view' ? 'pointer-events-none' : ''}`}
                 type="text"
                 value={state.project}
                 onChange={(e) => handleState('project', e.target.value)}
@@ -110,7 +121,7 @@ export function G702Component({
                 Address:
               </label>
               <Input
-                className={`px-2 py-1 border border-gray-300 outline-none ${mode === 'view' ? "pointer-events-none" : ""} `}
+                className={`px-2 py-1 border border-gray-300 outline-none ${mode === 'view' ? 'pointer-events-none' : ''} `}
                 type="text"
                 value={state.address}
                 onChange={(e) => handleState('address', e.target.value)}
@@ -122,7 +133,7 @@ export function G702Component({
               </label>
               <div className="w-full">
                 <Input
-                  className={`border border-gray-300 outline-none ${mode === 'view' ? "pointer-events-none" : ""}`}
+                  className={`border border-gray-300 outline-none ${mode === 'view' ? 'pointer-events-none' : ''}`}
                   type="text"
                   value={state.viaEngineer}
                   onChange={(e) => handleState('viaEngineer', e.target.value)}
@@ -139,7 +150,7 @@ export function G702Component({
                 APPLICATION NO:
               </label>
               <input
-                className={`px-2 py-2 border border-gray-300 outline-none ${mode === 'view' ? "pointer-events-none" : ""}`}
+                className={`px-2 py-2 border border-gray-300 outline-none ${mode === 'view' ? 'pointer-events-none' : ''}`}
                 type="text"
                 value={state.applicationNo}
               />
@@ -150,7 +161,9 @@ export function G702Component({
               </label>
               <DatePicker
                 id="application-date"
-                className={"px-2  rounded-none py-[7px] border border-gray-300 outline-none pointer-events-none"}
+                className={
+                  'px-2  rounded-none py-[7px] border border-gray-300 outline-none pointer-events-none'
+                }
                 value={
                   !state.applicationDate
                     ? undefined
@@ -631,11 +644,8 @@ export function G702Component({
 
       <div className="flex justify-end space-x-4">{children}</div>
     </div>
-
   );
 }
-
-
 
 /*
 
