@@ -2,7 +2,6 @@
 
 import CustomButton from '@/app/component/customButton/button';
 import PrimaryHeading from '@/app/component/headings/primary';
-import SenaryHeading from '@/app/component/headings/senaryHeading';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { withAuth } from '@/app/hoc/withAuth';
 import { CurrentAssetTable } from './components/assets/CurrentAssetTable';
@@ -20,8 +19,24 @@ import { TotalExpense } from './components/income-statement/TotalExpense';
 import { OverheadExpenseTable } from './components/income-statement/OverheadExpense';
 import { TotalIndirectExpense } from './components/income-statement/TotalndirectExpense';
 import { DatePicker } from 'antd';
+import { IFinancialStatementState } from './types';
+import { useFormik } from 'formik';
 
 function FinancialStatementPage() {
+  const formik = useFormik<IFinancialStatementState>({
+    initialValues: {
+      assets: {
+        firstCitizenBankPayables: 0.0,
+        firstCitizenBankRevenue: 0.0,
+        cashClearing: 50.0,
+        startUpInventory: 0.0,
+      }
+    },
+    onSubmit() {
+
+    },
+  })
+
   return (
     <section className="mt-6  space-y-4 mb-[39px] mx-4 rounded-xl bg-white p-5">
       <div className="flex justify-between items-center">
@@ -39,7 +54,9 @@ function FinancialStatementPage() {
       {/* Assets */}
       <div className="p-4 border space-y-2 rounded-md">
         <TertiaryHeading title="Assets" />
-        <CurrentAssetTable />
+        <CurrentAssetTable
+          formik={formik}
+        />
         <LongTermAssetTable />
         <AccumulatedDepreciationTable />
         <AssetTotal />
