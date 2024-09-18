@@ -8,5 +8,14 @@ export type IFinancialStatementState = {
         // Accumulated Depreciation
         accumulatedDepreciationVehicle: number;
         totalAccumulatedDepreciation: number;
+    },
+
+    liabilities: {
+        healthInsurancePayable: number,
+        shareHoldersPayable: number,
+        totalLongTermLiabilities: number,
+        statePayrollTaxesPayable: number,
+
+
     }
 }

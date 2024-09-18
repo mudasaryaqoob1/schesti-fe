@@ -33,6 +33,12 @@ function FinancialStatementPage() {
 
         accumulatedDepreciationVehicle: 0.0,
         totalAccumulatedDepreciation: 0.0,
+      },
+      liabilities: {
+        healthInsurancePayable: 0.0,
+        shareHoldersPayable: 0.0,
+        totalLongTermLiabilities: 0.0,
+        statePayrollTaxesPayable: 0.0,
       }
     },
     onSubmit() {
@@ -72,7 +78,9 @@ function FinancialStatementPage() {
       <div className="p-4 border space-y-2 rounded-md">
         <TertiaryHeading title="Liabilities" />
 
-        <CurrentLiabilitiesTable />
+        <CurrentLiabilitiesTable
+          formik={formik}
+        />
         <LongTermLiabilitiesTable />
         <TotalLiabilities />
       </div>
