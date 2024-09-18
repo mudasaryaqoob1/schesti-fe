@@ -21,8 +21,6 @@ import { clientInvoiceService } from '@/app/services/client-invoices.service';
 import { toast } from 'react-toastify';
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
-import { useScreenshot } from '@breezeos-dev/use-react-screenshot';
-import jsPDF from 'jspdf';
 import { ClientInvoiceHeader } from '../../components/ClientInvoiceHeader';
 import { ClientInvoiceFooter } from '../../components/ClientInvoiceFooter';
 import QuinaryHeading from '@/app/component/headings/quinary';
@@ -386,9 +384,8 @@ export const AiaInvoicingForm = forwardRef<
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className={`${
-                      tab === type ? 'text-schestiPrimary' : 'text-black'
-                    }`}
+                    className={`${tab === type ? 'text-schestiPrimary' : 'text-black'
+                      }`}
                   />
                 ),
                 tabKey: type,
@@ -460,7 +457,7 @@ export const AiaInvoicingForm = forwardRef<
       <div
         ref={ref as MutableRefObject<HTMLDivElement>}
         className="space-y-5 w-full fixed top-0 -left-[2500px] border p-6"
-        // className="space-y-5 w-full border p-6"
+      // className="space-y-5 w-full border p-6"
       >
         <ClientInvoiceHeader />
         <div className="flex justify-end w-full">
@@ -535,3 +532,5 @@ export const AiaInvoicingForm = forwardRef<
     </>
   );
 });
+
+AiaInvoicingForm.displayName = "Invoicing Form"
