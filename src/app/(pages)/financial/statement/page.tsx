@@ -30,6 +30,9 @@ function FinancialStatementPage() {
         firstCitizenBankRevenue: 0.0,
         cashClearing: 50.0,
         startUpInventory: 0.0,
+
+        accumulatedDepreciationVehicle: 0.0,
+        totalAccumulatedDepreciation: 0.0,
       }
     },
     onSubmit() {
@@ -58,7 +61,9 @@ function FinancialStatementPage() {
           formik={formik}
         />
         <LongTermAssetTable />
-        <AccumulatedDepreciationTable />
+        <AccumulatedDepreciationTable
+          formik={formik}
+        />
         <AssetTotal />
       </div>
 

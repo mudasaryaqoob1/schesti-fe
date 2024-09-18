@@ -4,5 +4,9 @@ export type IFinancialStatementState = {
         firstCitizenBankRevenue: number,
         cashClearing: number,
         startUpInventory: number,
+
+        // Accumulated Depreciation
+        accumulatedDepreciationVehicle: number;
+        totalAccumulatedDepreciation: number;
     }
 }
