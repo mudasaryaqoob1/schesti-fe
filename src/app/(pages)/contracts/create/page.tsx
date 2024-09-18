@@ -172,10 +172,13 @@ function CreateContractPage() {
             } as FileInterface,
           });
           if (response.data) {
-            toast.success('Contract created successfully');
-            router.push(
-              `${Routes.Contracts}/edit-contract?contractId=${response.data._id}`
-            );
+            if (isNextLoading) {
+              router.push(
+                `${Routes.Contracts}/edit-contract?contractId=${response.data._id}`
+              );
+            } else {
+              router.push(`${Routes.Contracts}`);
+            }
           }
         } catch (error) {
           toast.error('Unable to create contract');
