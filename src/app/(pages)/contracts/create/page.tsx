@@ -58,6 +58,7 @@ function CreateContractPage() {
   const [showList, setShowList] = useState(false);
   const router = useRouterHook();
   const [isLoading, setIsLoading] = useState(false);
+  const [isNextLoading, setIsNextLoading] = useState(false);
   const [contract, setContract] = useState<ICrmContract | null>(null);
 
   const contractId = searchParams.get('id');
@@ -66,6 +67,7 @@ function CreateContractPage() {
   const formik = useFormik<
     Omit<CreateContractData, 'status'> | Omit<UpdateContractData, 'status'>
   >({
+    // @ts-ignore
     initialValues: contract
       ? {
           title: contract.title,
@@ -107,7 +109,9 @@ function CreateContractPage() {
     async onSubmit(values) {
       const isEdit = searchParams.get('edit');
       if (isEdit && isEdit === 'true' && contract) {
-        setIsLoading(true);
+        if (!isNextLoading) {
+          setIsLoading(true);
+        }
         try {
           let data: UpdateContractData = {
             ...values,
@@ -141,9 +145,12 @@ function CreateContractPage() {
           toast.error('Unable to update contract');
         } finally {
           setIsLoading(false);
+          setIsNextLoading(false);
         }
       } else {
-        setIsLoading(true);
+        if (!isNextLoading) {
+          setIsLoading(true);
+        }
         try {
           const url = await new AwsS3(values.file, 'documents/crm/').getS3URL();
           const valFile = values.file as unknown as RcFile;
@@ -267,6 +274,18 @@ function CreateContractPage() {
               formik.submitForm();
             }}
             isLoading={isLoading}
+            loadingText="Saving..."
+          />
+
+          <CustomButton
+            text="Next"
+            className="!w-fit !bg-schestiLightPrimary !text-schestiPrimary"
+            onClick={() => {
+              formik.setFieldTouched('file', true);
+              setIsNextLoading(true);
+              formik.submitForm();
+            }}
+            isLoading={isNextLoading}
             loadingText="Saving..."
           />
         </div>

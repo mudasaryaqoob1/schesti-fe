@@ -8,6 +8,8 @@ export type ContractPartyType = {
   email: string;
   name: string;
   type: 'sender' | 'receiver';
+  phone: string;
+  address: string;
   tools: ToolState[];
   color: string;
   _id?: string;

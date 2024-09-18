@@ -6,7 +6,7 @@ import { InputComponent } from '@/app/component/customInput/Input';
 import TertiaryHeading from '@/app/component/headings/tertiary';
 import { withAuth } from '@/app/hoc/withAuth';
 import { SearchOutlined } from '@ant-design/icons';
-import { Drawer, Dropdown } from 'antd';
+import { Drawer, Dropdown, Tag } from 'antd';
 import Table, { type ColumnsType } from 'antd/es/table';
 import { useEffect, useState } from 'react';
 import { ExpenseForm } from './components/Form';
@@ -24,6 +24,7 @@ import { DeleteContent } from '@/app/component/delete/DeleteContent';
 import ModalComponent from '@/app/component/modal';
 import { Excel } from 'antd-table-saveas-excel';
 import _ from 'lodash';
+import { CollectExpensePayment } from './components/CollectPayment';
 
 function Expense() {
   const [search, setSearch] = useState('');
@@ -31,6 +32,8 @@ function Expense() {
   const [isloading, setIsloading] = useState(false);
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
+  const [showCollectModal, setShowCollectModal] = useState(false);
 
   const currency = useCurrencyFormatter();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -89,6 +92,18 @@ function Expense() {
       },
     },
     {
+      title: 'Status',
+      dataIndex: 'status',
+      render(value) {
+        if (value === 'paid') {
+          return <Tag color="green">Paid</Tag>;
+        } else if (value === 'unpaid') {
+          return <Tag color="red">Unpaid</Tag>;
+        }
+        return null;
+      },
+    },
+    {
       title: 'File',
       dataIndex: 'file',
       render(value?: FileInterface) {
@@ -106,11 +121,11 @@ function Expense() {
             menu={{
               items: [
                 {
-                  label: 'Collect Payment',
+                  label: 'Make a Payment',
                   key: 'collectPayment',
                   onClick: () => {
                     setSelectedExpense(record);
-                    setShowDrawer(true);
+                    setShowCollectModal(true);
                   },
                 },
                 {
@@ -236,6 +251,36 @@ function Expense() {
         </ModalComponent>
       ) : null}
 
+      {showCollectModal && selectedExpense ? (
+        <Drawer
+          open={showCollectModal}
+          onClose={() => {
+            setSelectedExpense(null);
+            setShowCollectModal(false);
+          }}
+          title="Make a Payment"
+          width={800}
+          destroyOnClose
+        >
+          <CollectExpensePayment
+            expense={selectedExpense}
+            onSuccess={(expense) => {
+              setData({
+                ...data,
+                expenses: data.expenses.map((item) => {
+                  if (item._id === selectedExpense._id) {
+                    return expense;
+                  }
+                  return item;
+                }),
+              });
+              setShowCollectModal(false);
+              setSelectedExpense(null);
+            }}
+          />
+        </Drawer>
+      ) : null}
+
       <div className="flex justify-between items-center mb-4">
         <TertiaryHeading title="Expense" className="text-graphiteGray" />
         <div className=" flex items-center space-x-3">
@@ -299,6 +344,7 @@ function Expense() {
           position: ['bottomCenter'],
           total: data.count,
           current: pagination.page,
+
           onChange(page, pageSize) {
             setPagination({ ...pagination, page, limit: pageSize });
           },
@@ -309,7 +355,13 @@ function Expense() {
           if (search) {
             return (
               item.name.toLowerCase().includes(search.toLowerCase()) ||
-              item.note.toLowerCase().includes(search.toLowerCase())
+              item.note.toLowerCase().includes(search.toLowerCase()) ||
+              item.invoiceNo.toLowerCase().includes(search.toLowerCase()) ||
+              item.project.toLowerCase().includes(search.toLowerCase()) ||
+              item.totalPrice
+                .toString()
+                .toLowerCase()
+                .includes(search.toLowerCase())
             );
           }
           return true;

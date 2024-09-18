@@ -6,6 +6,7 @@ import { Skeleton } from 'antd';
 import { useEffect, useState } from 'react';
 import { formatCrmModuleType } from '../../crm/utils';
 import { ContractPartyType } from '@/app/interfaces/crm/crm-contract.interface';
+import { NoDataComponent } from '@/app/component/noData/NoDataComponent';
 
 type Props = {
   title: string;
@@ -83,7 +84,7 @@ export function ListCrmItems({ title, onClose, onItemClick }: Props) {
           <Skeleton />
         </div>
       ) : items.length === 0 ? (
-        <div>No Data found</div>
+        <NoDataComponent title="List" description="No Data Found" />
       ) : (
         items.map((item) => {
           return (
@@ -95,6 +96,8 @@ export function ListCrmItems({ title, onClose, onItemClick }: Props) {
                   companyName: getItemCompany(item),
                   email: item.email,
                   name: getItemName(item),
+                  address: item.address,
+                  phone: item.phone,
                 })
               }
             >

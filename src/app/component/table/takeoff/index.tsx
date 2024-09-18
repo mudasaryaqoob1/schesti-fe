@@ -48,7 +48,7 @@ const columns: ColumnsType<DataType> = [
 export interface ITableProps {
   handleEditClick: (item: any) => void;
   handleEditDetailsClick: (item: any) => void;
-  handleDownloadClick:(id:string) =>void;
+  handleDownloadClick: (id: string) => void;
   search: any;
 }
 const Index: React.FC<ITableProps> = ({
@@ -71,11 +71,11 @@ const Index: React.FC<ITableProps> = ({
     } else if (e.key === 'edit_details') {
       // Handle delete action
       console.log('View Details action', record);
-      handleEditDetailsClick(record)
-    }else if (e.key === 'download') {
+      handleEditDetailsClick(record);
+    } else if (e.key === 'download') {
       // Handle delete action
       console.log('Download action', record);
-      handleDownloadClick(record?._id ?? null)
+      handleDownloadClick(record?._id ?? null);
     }
   };
 
@@ -115,11 +115,14 @@ const Index: React.FC<ITableProps> = ({
         createdAt: string;
         deadline: any;
         pages?: any;
-        categories?:string[];
+        categories?: string[];
       }) => ({
         key: item?._id, // Assume each item? has a unique id
         name: item?.name,
-        scope: (Array.isArray(item.categories) && item.categories?.length>0) ? item.categories?.slice(0,3).join(', ') : '',//item?.pages?.length?.toString(), // Ensure scope is a string
+        scope:
+          Array.isArray(item.categories) && item.categories?.length > 0
+            ? item.categories?.slice(0, 3).join(', ')
+            : '', //item?.pages?.length?.toString(), // Ensure scope is a string
         createdAt: moment(item?.createdAt).format('DD MMM YYYY, HH:mm'),
         deadline: moment(item?.deadline).format('DD MMM YYYY'),
         action: (

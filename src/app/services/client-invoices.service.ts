@@ -13,10 +13,11 @@ class ClientInvoiceService extends HttpService {
   }): Promise<IResponseInterface<{ invoice: IAIAInvoice }>> =>
     this.post(`${this.prefix}/create`, data);
 
-  httpAddNewInvoice = (
+  httpUpdateParentInvoice = (
+    id: string,
     data: G7State
   ): Promise<IResponseInterface<{ invoice: IAIAInvoice }>> =>
-    this.post(`${this.prefix}/createInvoice`, data);
+    this.post(`${this.prefix}/update/${id}`, data);
 
   httpUploadInvoiceDocuments = (
     id: string,

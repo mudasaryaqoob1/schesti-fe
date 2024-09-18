@@ -199,11 +199,11 @@ const EditableText: React.FC<EditableTextProps> = ({
   //     if (stage) {
   //       const stageContainer = stage.container();
   //       const parentElement = stageContainer.parentElement;
-  
+
   //       if (parentElement) {
   //         const parentWidth = parentElement.clientWidth;
   //         const parentHeight = parentElement.clientHeight;
-  
+
   //         return {
   //           position: 'fixed',
   //           top: '50%',
@@ -217,7 +217,7 @@ const EditableText: React.FC<EditableTextProps> = ({
   //       }
   //     }
   //   }
-  
+
   //   return {
   //     position: 'fixed',
   //     top: '50%',
@@ -227,7 +227,6 @@ const EditableText: React.FC<EditableTextProps> = ({
   //     height: 'auto',
   //   };
   // };
-
 
   return (
     <>
@@ -240,7 +239,7 @@ const EditableText: React.FC<EditableTextProps> = ({
         y={y}
         draggable
         onMouseDown={(e) => {
-          e.cancelBubble = true
+          e.cancelBubble = true;
         }}
         onDblClick={handleDblClick}
         // onClick={(e) => {
@@ -306,8 +305,8 @@ const EditableText: React.FC<EditableTextProps> = ({
               border: '1px solid #ccc', // Border for the input
               borderRadius: '15px', // Rounded corners for the input
               boxShadow: '0 4px 8px rgba(0, 0, 0, 0.5)', // Add a subtle shadow
-              opacity:80
-            }
+              opacity: 80,
+            },
           }}
         >
           {/* <span className='text-red-600 cursor-pointer' onClick={()=>{handleDelete(text)}}>X</span> */}
@@ -335,7 +334,7 @@ const EditableText: React.FC<EditableTextProps> = ({
               //@ts-ignore
               color: textRef.current?.fill() || 'black',
               boxSizing: 'border-box',
-              outline:'none'
+              outline: 'none',
             }}
           />
         </Html>

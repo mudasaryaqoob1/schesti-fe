@@ -21,15 +21,38 @@ type IProps = {
   cc?: boolean;
   invite?: boolean;
   setEmailModal: Function;
-  submitHandler: Function;
+  submitHandler: (_data: FormData) => void;
   isFileUploadShow: Boolean;
+  isSubmitting?: boolean;
 };
 
 const ValidationSchema = Yup.object().shape({
-  to: Yup.string().email().required('To Email is required'),
+  to: Yup.string()
+    .test({
+      message: ({ value }) => {
+        const emailAddresses = (value as string).split(',');
+        const invalidEmails = emailAddresses.filter(
+          (email) => !Yup.string().email().isValidSync(email)
+        );
+        if (invalidEmails.length > 0) {
+          return `Invalid email(s): ${invalidEmails.join(', ')}`;
+        }
+        return true;
+      },
+      test: (value) => {
+        if (!value) {
+          return true; // Allow empty string when the field is not required
+        }
+        const emailAddresses = value.split(',');
+        return emailAddresses.every((email) =>
+          Yup.string().email().isValidSync(email)
+        );
+      },
+    })
+    .required('Email is required'),
   cc: Yup.string().email().optional(),
   subject: Yup.string().required('Subject is required'),
-  description: Yup.string().optional(),
+  description: Yup.string().required("Description can't be empty"),
   file: Yup.mixed(),
 });
 
@@ -40,8 +63,8 @@ const CustomEmailTemplate = ({
   setEmailModal,
   submitHandler,
   isFileUploadShow,
+  isSubmitting = false,
 }: IProps) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFileUploading] = useState(false);
 
   const sendEmailFormik = useFormik<Omit<ISendEmail, 'projectId'>>({
@@ -53,7 +76,6 @@ const CustomEmailTemplate = ({
       file: undefined,
     },
     async onSubmit(values, helpers) {
-      setIsSubmitting(true);
       try {
         const formData = new FormData();
         formData.append('to', values.to);
@@ -70,7 +92,6 @@ const CustomEmailTemplate = ({
         const err = error as AxiosError<{ message: string }>;
         toast.error(err.response?.data.message || 'An error occurred');
       } finally {
-        setIsSubmitting(false);
         helpers.resetForm();
       }
     },
@@ -87,20 +108,19 @@ const CustomEmailTemplate = ({
       title="Email"
       onClose={() => {
         sendEmailFormik.resetForm();
-        setIsSubmitting(false);
         setEmailModal(false);
       }}
     >
       <div className="space-y-3">
         <div className="flex text-sm w-full">
-          <span className="flex !rounded-tl !rounded-bl pt-[15px] w-[40px] justify-center bg-[#f9f5ff]">
+          <span className="flex !rounded-tl !rounded-bl pt-[15px] w-[40px] justify-center bg-schestiLightPrimary">
             To
           </span>
           <span className="w-full">
             <InputComponent
               label=""
               type="text"
-              placeholder="Type an Email"
+              placeholder="Type an Email with comma separated"
               name="to"
               inputStyle="!mt-0 !rounded-tr !rounded-br !rounded-tl-none !rounded-bl-none"
               field={{
@@ -122,7 +142,7 @@ const CustomEmailTemplate = ({
         {cc && (
           <div className="space-y-1">
             <div className="flex text-sm w-full">
-              <span className="flex !rounded-tl !rounded-bl pt-[15px] w-[40px] justify-center bg-[#f9f5ff]">
+              <span className="flex !rounded-tl !rounded-bl pt-[15px] w-[40px] justify-center bg-schestiLightPrimary">
                 CC
               </span>
               <span className="w-full">
@@ -154,7 +174,7 @@ const CustomEmailTemplate = ({
 
         <div className="space-y-1">
           <div className="flex text-sm w-full">
-            <span className="flex !rounded-tl !rounded-bl pt-[15px] w-[85px] justify-center bg-[#f9f5ff]">
+            <span className="flex !rounded-tl !rounded-bl pt-[15px] w-[85px] justify-center bg-schestiLightPrimary">
               Subject
             </span>
             <span className="w-full">
@@ -198,7 +218,12 @@ const CustomEmailTemplate = ({
               sendEmailFormik.touched.description &&
               !!sendEmailFormik.errors.description
             }
-            errorMessage={sendEmailFormik.errors.description}
+            errorMessage={
+              sendEmailFormik.touched.description &&
+              sendEmailFormik.errors.description
+                ? sendEmailFormik.errors.description
+                : ''
+            }
           />
         </div>
         {isFileUploadShow ? (

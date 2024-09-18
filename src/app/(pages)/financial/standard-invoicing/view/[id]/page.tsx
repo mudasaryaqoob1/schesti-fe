@@ -93,9 +93,9 @@ function ViewSubcontractorInvoicePage() {
   }
 
   const invoiceData = invoiceQuery.data.data.invoice;
-  console.log({ invoiceData });
+
   return (
-    <section className="mx-16 my-2">
+    <section className="mx-4 my-2">
       <div className="p-5 flex flex-col rounded-lg border border-silverGray shadow-secondaryShadow2 bg-white">
         <div className="flex flex-wrap justify-between items-center">
           <div className="flex items-center space-x-5">

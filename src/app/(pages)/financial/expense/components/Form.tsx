@@ -372,7 +372,7 @@ export function ExpenseForm({ expense, onSuccess }: Props) {
       <InputComponent
         label="Project"
         name="project"
-        placeholder="Select project"
+        placeholder="Type project"
         type="text"
         field={{
           onChange: formik.handleChange,
@@ -539,7 +539,7 @@ export function ExpenseForm({ expense, onSuccess }: Props) {
                   { label: 'Monthly', value: 'Monthly' },
                   { label: 'Bi Month', value: 'Bi Month' },
                   { label: 'Annually', value: 'Annually' },
-                  { label: 'Bi Annually', value: 'Bi Annually' },
+                  { label: 'Semi Annually', value: 'Semi Annually' },
                 ],
                 onChange: (val) => {
                   formik.setFieldValue('repeat', val);

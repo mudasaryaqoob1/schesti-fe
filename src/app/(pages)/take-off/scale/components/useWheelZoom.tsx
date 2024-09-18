@@ -22,11 +22,15 @@ const useWheelZoom = ({
 
   const scaleBy = 1.1; // Control the zoom intensity
 
-  const setStageValues = (argX:number|null=null, argY:number|null=null, stageScale:number|null=null) => {
-    if(argX) setStageX(argX)
-    if(argY) setStageY(argY)
-    if(stageScale) setStageScale(stageScale)
-  }
+  const setStageValues = (
+    argX: number | null = null,
+    argY: number | null = null,
+    stageScale: number | null = null
+  ) => {
+    if (argX) setStageX(argX);
+    if (argY) setStageY(argY);
+    if (stageScale) setStageScale(stageScale);
+  };
 
   const handleDragEnd = (e: KonvaEventObject<DragEvent>) => {
     const newX = e.target.x();
@@ -86,7 +90,7 @@ const useWheelZoom = ({
     handleZoomIn,
     handleZoomOut,
     handleDragEnd,
-    setStageValues
+    setStageValues,
   };
 };
 

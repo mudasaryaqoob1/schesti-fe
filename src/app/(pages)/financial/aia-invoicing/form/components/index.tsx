@@ -1,4 +1,11 @@
-import { MutableRefObject, useEffect, useRef, useState } from 'react';
+import {
+  MutableRefObject,
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/redux/store';
 import { ConfigProvider, Tabs } from 'antd';
@@ -14,8 +21,6 @@ import { clientInvoiceService } from '@/app/services/client-invoices.service';
 import { toast } from 'react-toastify';
 import CustomButton from '@/app/component/customButton/button';
 import WhiteButton from '@/app/component/customButton/white';
-import { useScreenshot } from '@breezeos-dev/use-react-screenshot';
-import jsPDF from 'jspdf';
 import { ClientInvoiceHeader } from '../../components/ClientInvoiceHeader';
 import { ClientInvoiceFooter } from '../../components/ClientInvoiceFooter';
 import QuinaryHeading from '@/app/component/headings/quinary';
@@ -23,6 +28,7 @@ import { IUpdateCompanyDetail } from '@/app/interfaces/companyInterfaces/updateC
 import { AIAForms } from './Forms';
 import { AIAInvoiceFormMode } from '../../types';
 import moment from 'moment';
+import { handleDownloadPdfFromRef } from '@/app/utils/downloadFile';
 
 const G703_KEY = 'G703';
 const G702_KEY = 'G702';
@@ -33,19 +39,18 @@ type Props = {
   setParentInvoice: React.Dispatch<React.SetStateAction<IAIAInvoice | null>>;
   mode: AIAInvoiceFormMode;
 };
-export function AiaInvoicingForm({
-  parentInvoice,
-  setParentInvoice,
-  mode,
-}: Props) {
+export const AiaInvoicingForm = forwardRef<
+  {
+    handleDownloadPdf: () => void;
+  },
+  Props
+>(({ parentInvoice, setParentInvoice, mode }, downloadRef) => {
   const auth = useSelector((state: RootState) => state.auth);
   const user = auth.user?.user as IUpdateCompanyDetail | undefined;
-
   const [tab, setTab] = useState(G703_KEY);
   const ref = useRef<HTMLDivElement>();
-  const [image, takeScreenshot] = useScreenshot();
-  const [showDownload, setShowDownload] = useState(false);
-  const [isDownloading, setIsDownloading] = useState(false);
+
+  let AIA_TABS_KEYS = [G703_KEY, G702_KEY];
 
   // all phases of the parent invoice
   const [allPhases, setAllPhases] = useState<IAIAInvoice[]>([]);
@@ -77,8 +82,12 @@ export function AiaInvoicingForm({
     amountPaid: 0,
   });
 
+  useImperativeHandle(downloadRef, () => ({
+    handleDownloadPdf: () => downloadPdf(),
+  }));
+
   useEffect(() => {
-    if (parentInvoice._id && mode === 'phase') {
+    if (parentInvoice._id && (mode === 'phase' || mode === 'view')) {
       (async function () {
         try {
           // get all the phases of the invoice
@@ -100,18 +109,23 @@ export function AiaInvoicingForm({
           }
         } catch (error) {
           console.log(error);
+          toast.error('Something went wrong');
         }
       })();
     }
-  }, [parentInvoice]);
+  }, [parentInvoice, mode]);
 
   useEffect(() => {
-    setG7State((prev) => ({
-      ...prev,
-      invoiceName: parentInvoice.invoiceName,
-      _id: parentInvoice._id,
-    }));
-  }, [parentInvoice._id, parentInvoice.invoiceName]);
+    if ((parentInvoice._id && mode === 'view') || mode === 'phase') {
+      return;
+    } else if (mode === 'edit') {
+      setG7State((prev) => ({
+        ...prev,
+        invoiceName: parentInvoice.invoiceName,
+        _id: parentInvoice._id,
+      }));
+    }
+  }, [parentInvoice._id, parentInvoice.invoiceName, mode]);
 
   function handleG7State<K extends keyof G7State>(
     key: K,
@@ -141,8 +155,10 @@ export function AiaInvoicingForm({
 
   function updateG7StateFromPhase(phase: IAIAInvoice) {
     const data = updatePreviousApplicationColumn(phase);
-    phase.applicationDate = '';
-    phase.periodTo = '';
+    if (mode !== 'view') {
+      phase.applicationDate = '';
+      phase.periodTo = '';
+    }
     setG7State({ ...phase, data });
   }
 
@@ -263,42 +279,71 @@ export function AiaInvoicingForm({
 
     const totalAmount = originalContractSum + changeOrderNetChanges;
     const amountPaid = Number(sumColumns(data.data, 6).toFixed(2));
-    clientInvoiceService
-      .httpAddNewInvoice({
-        ...data,
-        totalAmount,
-        amountPaid,
-      })
-      .then((response) => {
-        if (response.statusCode == 201) {
-          toast.success('Invoice created successfully');
-          takeScreenshot(ref.current);
-          setShowDownload(true);
-        }
-      })
-      .catch(({ response }: any) => {
-        if (response?.data.message === 'Validation Failed') {
-          toast.error('Please fill the required fields.');
-        }
-      });
+
+    if (mode === 'edit') {
+      clientInvoiceService
+        .httpUpdateParentInvoice(parentInvoice._id, {
+          ...data,
+          totalAmount,
+          amountPaid,
+        })
+        .then((response) => {
+          if (response.statusCode == 201) {
+            toast.success('Data saved successfully');
+          }
+        })
+        .catch(({ response }: any) => {
+          if (response?.data.message === 'Validation Failed') {
+            toast.error('Please fill the required fields.');
+          } else {
+            toast.error(response?.data.message);
+          }
+        });
+    } else if (mode === 'phase') {
+      clientInvoiceService
+        .httpCreateNewInvoicePhase(parentInvoice._id, {
+          ...data,
+          totalAmount,
+          amountPaid,
+        })
+        .then((response) => {
+          if (response.statusCode == 201 && response.data) {
+            toast.success('Invoice created successfully');
+            // setSelectedPhase(response.data.invoice);
+          }
+        })
+        .catch(({ response }) => {
+          if (response?.data.message === 'Validation Failed') {
+            toast.error('Please fill the required fields.');
+          } else {
+            toast.error(response?.data.message);
+          }
+        });
+    } else {
+      toast.error('Invalid mode');
+    }
   }
 
   function downloadPdf() {
-    setIsDownloading(true);
-    var doc = new jsPDF('portrait', 'in', 'a0');
-    if (image) {
-      const imgProps = doc.getImageProperties(image);
-      const width = doc.internal.pageSize.getWidth();
-      const ratio = width / imgProps.width;
-      const height = ratio * imgProps.height;
-      doc.internal.pageSize.height = height;
-      doc.addImage(image, 'JPEG', 0, 0, width, height);
-      setTimeout(() => {
-        doc.save(`${parentInvoice.invoiceName}-invoice.pdf`);
-      }, 500);
-      setIsDownloading(false);
-    }
+    // takeScreenshot(ref.current);
+    // var doc = new jsPDF('portrait', 'in', 'a0');
+    // if (image) {
+    //     const imgProps = doc.getImageProperties(image);
+    //     const width = doc.internal.pageSize.getWidth();
+    //     const ratio = width / imgProps.width;
+    //     const height = ratio * imgProps.height;
+    //     doc.internal.pageSize.height = height;
+    //     doc.addImage(image, 'JPEG', 0, 0, width, height);
+    //     doc.save(`${parentInvoice.invoiceName}-invoice.pdf`);
+    // }
+
+    handleDownloadPdfFromRef(ref, parentInvoice.invoiceName, false);
   }
+
+  if (mode !== 'view') {
+    AIA_TABS_KEYS = [G703_KEY, G702_KEY, FORMS_KEY];
+  }
+
   return (
     <>
       <div className="px-4 py-2 shadow-md rounded-lg border border-silverGray  bg-white">
@@ -333,15 +378,14 @@ export function AiaInvoicingForm({
               setTab(key);
             }}
             activeKey={tab}
-            items={[G703_KEY, G702_KEY, FORMS_KEY].map((type) => {
+            items={AIA_TABS_KEYS.map((type) => {
               return {
                 key: type,
                 label: (
                   <QuaternaryHeading
                     title={type}
-                    className={`${
-                      tab === type ? 'text-schestiPrimary' : 'text-black'
-                    }`}
+                    className={`${tab === type ? 'text-schestiPrimary' : 'text-black'
+                      }`}
                   />
                 ),
                 tabKey: type,
@@ -364,6 +408,7 @@ export function AiaInvoicingForm({
                           updateG7StateFromPhase({ ..._selectedPhase });
                         }
                       }}
+                      showAddAndDelete={mode !== 'view'}
                     >
                       <CustomButton
                         onClick={() => setTab(G702_KEY)}
@@ -377,6 +422,9 @@ export function AiaInvoicingForm({
                       handleState={handleG7State}
                       updateRetainage={updateRetainage}
                       sumColumns={sumColumns}
+                      previousPhaseState={selectedPhase}
+                      mode={mode}
+                      showValidation={mode !== 'view'}
                     >
                       <WhiteButton
                         onClick={() => {
@@ -385,23 +433,13 @@ export function AiaInvoicingForm({
                         text="Previous"
                         className="!w-40"
                       />
-                      {showDownload ? (
-                        <CustomButton
-                          text={
-                            isDownloading ? 'Downloading...' : 'Download PDF'
-                          }
-                          onClick={() => downloadPdf()}
-                          className="!w-48"
-                        />
-                      ) : (
-                        <CustomButton
-                          text="Create"
-                          className="!w-48"
-                          onClick={() => {
-                            handleSubmit(g7State);
-                          }}
-                        />
-                      )}
+                      <CustomButton
+                        text="Create"
+                        className="!w-48"
+                        onClick={() => {
+                          handleSubmit(g7State);
+                        }}
+                      />
                     </G702Component>
                   ) : tab === FORMS_KEY ? (
                     <AIAForms
@@ -418,14 +456,14 @@ export function AiaInvoicingForm({
       </div>
       <div
         ref={ref as MutableRefObject<HTMLDivElement>}
-        className="space-y-5 w-full absolute -left-[2500px] border p-6"
-        // className="space-y-5 w-full border p-6"
+        className="space-y-5 w-full fixed top-0 -left-[2500px] border p-6"
+      // className="space-y-5 w-full border p-6"
       >
         <ClientInvoiceHeader />
         <div className="flex justify-end w-full">
           {/* <div>
-            <img width={100} height={100}  alt='logo' src={user?.avatar ? user?.avatar : '/logo.svg'} />
-          </div> */}
+                <img width={100} height={100}  alt='logo' src={user?.avatar ? user?.avatar : '/logo.svg'} />
+              </div> */}
           <div>
             <QuinaryHeading title={user!.name} />
             <QuinaryHeading title={user!.email || ''} className="mt-1" />
@@ -462,6 +500,8 @@ export function AiaInvoicingForm({
             updateRetainage={updateRetainage}
             sumColumns={sumColumns}
             showValidation={false}
+            mode={'view'}
+            previousPhaseState={selectedPhase}
           />
           <ClientInvoiceFooter />
           <G703Component
@@ -469,7 +509,8 @@ export function AiaInvoicingForm({
             handleState={handleG7State}
             sumColumns={sumColumns}
             updateCellValue={updateCellValue}
-            mode={mode}
+            mode={'view'}
+            showAddAndDelete={false}
             phases={allPhases}
             selectedPhase={selectedPhase}
             setSelectedPhase={(value) => {
@@ -484,10 +525,12 @@ export function AiaInvoicingForm({
           />
         </ConfigProvider>
         {/* <div className="flex justify-end mr-8">
-          <Image width={100} height={20} alt="logo" src="/powered-by.png" />
-        </div> */}
+              <Image width={100} height={20} alt="logo" src="/powered-by.png" />
+            </div> */}
         <ClientInvoiceFooter />
       </div>
     </>
   );
-}
+});
+
+AiaInvoicingForm.displayName = "Invoicing Form"

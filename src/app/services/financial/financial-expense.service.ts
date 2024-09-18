@@ -7,6 +7,8 @@ export type ICreateFinancialExpense = Omit<
   '_id' | 'createdAt' | 'updatedAt' | 'user'
 >;
 
+export type IUpdateFinancialExpense = Partial<ICreateFinancialExpense>;
+
 class FinancialExpenseService extends HttpService {
   private readonly prefix = 'api/financial/expense';
 
@@ -31,7 +33,7 @@ class FinancialExpenseService extends HttpService {
     this.delete(`${this.prefix}/delete/${expenseId}`);
 
   httpUpdateExpense = (
-    data: ICreateFinancialExpense,
+    data: IUpdateFinancialExpense,
     expenseId: string
   ): Promise<IResponseInterface<IFinancialExpense>> =>
     this.put(`${this.prefix}/update/${expenseId}`, data);

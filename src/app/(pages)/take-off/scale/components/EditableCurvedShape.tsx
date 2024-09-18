@@ -36,7 +36,7 @@ const EditableCurvedShape: React.FC<EditableCurvedShapeProps> = ({
   const [controlPoints, setControlPoints] = useState<ControlPoint[]>([]);
   const [area, setArea] = useState<number>(0);
   const lineRef = useRef<Konva.Line>();
-  console.log(area)
+  console.log(area);
   useEffect(() => {
     if (cur?.points) {
       setPoints(cur?.points);
@@ -163,7 +163,7 @@ const EditableCurvedShape: React.FC<EditableCurvedShapeProps> = ({
     controlPoints: ControlPoint[],
     numSegments: number = 20
   ): number => {
-    if(!(controlPoints.length>0) || !(points?.length > 0)) return 0
+    if (!(controlPoints.length > 0) || !(points?.length > 0)) return 0;
     const pixelToInchScale = 144;
     // Approximate the curve with small line segments
     const approxPoints = approximateCurve(
@@ -204,7 +204,12 @@ const EditableCurvedShape: React.FC<EditableCurvedShapeProps> = ({
       ...draw,
       curve: draw.curve.map((line: any, index: number) =>
         index === +shapeNumber
-          ? { ...line, points: points, controlPoints, text:calculateArea(points, controlPoints) ?? cur?.text }
+          ? {
+              ...line,
+              points: points,
+              controlPoints,
+              text: calculateArea(points, controlPoints) ?? cur?.text,
+            }
           : line
       ),
     };

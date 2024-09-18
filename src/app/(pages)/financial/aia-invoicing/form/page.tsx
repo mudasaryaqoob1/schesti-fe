@@ -7,7 +7,7 @@ import { Skeleton } from 'antd';
 import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
 import { clientInvoiceService } from '@/app/services/client-invoices.service';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { IAIAInvoice } from '@/app/interfaces/client-invoice.interface';
 import { useSearchParams } from 'next/navigation';
 import { AIAInvoiceFormMode, AIATabsType } from '../types';
@@ -22,6 +22,10 @@ function AiaInvoicingFormPage() {
   const mode = searchParams.get('mode') as AIAInvoiceFormMode;
 
   const [tab, setTab] = useState<AIATabsType>('current');
+
+  const downloadRef = useRef<{
+    handleDownloadPdf: () => void;
+  }>(null);
 
   useEffect(() => {
     const id = searchParams.get('id');
@@ -59,17 +63,21 @@ function AiaInvoicingFormPage() {
   }
 
   return (
-    <section className="mx-4 my-2 space-y-2">
-      <AIAInvoiceFormHeader parentInvoice={parentInvoice} />
+    <section className="mx-4 my-2 space-y-2 relative">
+      <AIAInvoiceFormHeader
+        parentInvoice={parentInvoice}
+        onDownloadInvoice={() => downloadRef.current?.handleDownloadPdf()}
+      />
       <AIATabs tab={tab} setTab={setTab} />
       {tab === 'current' ? (
         <AiaInvoicingForm
+          ref={downloadRef}
           parentInvoice={parentInvoice}
           setParentInvoice={setParentInvoice}
           mode={mode}
         />
       ) : (
-        <AIAHistory />
+        <AIAHistory parentInvoice={parentInvoice} />
       )}
     </section>
   );

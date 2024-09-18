@@ -41,7 +41,6 @@ interface ControlPoint {
   offsetY: number;
 }
 
-
 const groupByCategory = (items: dataInterface[]): dataInterface[][] => {
   console.log(items, ' ===> Data interface');
 
@@ -106,23 +105,23 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
             reportData = [
               ...reportData,
               ...(takeOff?.measurements[key][type] &&
-                Array.isArray(takeOff?.measurements[key][type]) &&
-                takeOff?.measurements[key][type]?.length > 0
+              Array.isArray(takeOff?.measurements[key][type]) &&
+              takeOff?.measurements[key][type]?.length > 0
                 ? takeOff.measurements[key][type].map((arrit: any) => {
-                  return {
-                    ...arrit,
-                    pageId: key,
-                    type,
-                    pageData: takeOff?.pages?.find(
-                      (pg: any) => pg?.pageId == key
-                    ),
-                    pageLabel: takeOff?.pages?.find(
-                      (pg: any) => pg?.pageId == key
-                    )?.pageNum,
-                    color: arrit?.stroke,
-                    config: arrit,
-                  };
-                })
+                    return {
+                      ...arrit,
+                      pageId: key,
+                      type,
+                      pageData: takeOff?.pages?.find(
+                        (pg: any) => pg?.pageId == key
+                      ),
+                      pageLabel: takeOff?.pages?.find(
+                        (pg: any) => pg?.pageId == key
+                      )?.pageNum,
+                      color: arrit?.stroke,
+                      config: arrit,
+                    };
+                  })
                 : []),
             ];
           });
@@ -627,8 +626,12 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
   //   }
   // }, [reportData, uploadFileData])
 
-  const getBezierPointsCurve = (customPoints: number[], controlPoints: ControlPoint[]) => {
-    if (!(Array.isArray(controlPoints)) || !(controlPoints.length > 0)) return customPoints
+  const getBezierPointsCurve = (
+    customPoints: number[],
+    controlPoints: ControlPoint[]
+  ) => {
+    if (!Array.isArray(controlPoints) || !(controlPoints.length > 0))
+      return customPoints;
     try {
       const bezierPoints: number[] = [];
       for (let i = 0; i < customPoints.length; i += 2) {
@@ -649,12 +652,15 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
     }
   };
 
-  const getBezierPointsArc = (customPoints: number[], controlPoints: ControlPoint[]) => {
+  const getBezierPointsArc = (
+    customPoints: number[],
+    controlPoints: ControlPoint[]
+  ) => {
     try {
       const bezierPoints: number[] = [];
       for (let i = 0; i < customPoints.length; i += 2) {
         const nextIndex = (i + 2) % customPoints.length;
-        const controlIndex = 0//i / 2;
+        const controlIndex = 0; //i / 2;
         bezierPoints.push(customPoints[i], customPoints[i + 1]);
         bezierPoints.push(
           controlPoints[controlIndex].x + controlPoints[controlIndex].offsetX,
@@ -696,7 +702,7 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
           img.onload = () => {
             let wi = img.width;
             let hi = img.height;
-            let nw = 1000//img.width;
+            let nw = 1000; //img.width;
             let nh = nw * (hi / wi);
             img.width = nw;
             img.height = nh;
@@ -717,7 +723,7 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
         shapeType: string,
         scale: ScaleData
       ) => {
-        console.log(shape, shapeType, " ===> Shape inside generate reports")
+        console.log(shape, shapeType, ' ===> Shape inside generate reports');
         const container = document.createElement('div');
         container.style.display = 'none';
         document.body.appendChild(container);
@@ -779,22 +785,19 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
             case 'volume':
               {
                 const { points, stroke, strokeWidth, lineCap } = shape;
-                let scaledPoints = points.map(
-                  (point: number, index: number) =>
-                    index % 2 === 0 ? point * scaleX : point * scaleY
+                let scaledPoints = points.map((point: number, index: number) =>
+                  index % 2 === 0 ? point * scaleX : point * scaleY
                 );
                 if (shapeType == 'curve') {
-                  let pnts = getBezierPointsCurve(points, shape?.controlPoints)
-                  scaledPoints = pnts.map(
-                    (point: number, index: number) =>
-                      index % 2 === 0 ? point * scaleX : point * scaleY
+                  let pnts = getBezierPointsCurve(points, shape?.controlPoints);
+                  scaledPoints = pnts.map((point: number, index: number) =>
+                    index % 2 === 0 ? point * scaleX : point * scaleY
                   );
                 }
                 if (shapeType == 'arc') {
-                  let pnts = getBezierPointsArc(points, shape?.controlPoints)
-                  scaledPoints = pnts.map(
-                    (point: number, index: number) =>
-                      index % 2 === 0 ? point * scaleX : point * scaleY
+                  let pnts = getBezierPointsArc(points, shape?.controlPoints);
+                  scaledPoints = pnts.map((point: number, index: number) =>
+                    index % 2 === 0 ? point * scaleX : point * scaleY
                   );
                 }
 
@@ -809,20 +812,25 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
                         ? calculatePolygonArea(points, scale)
                         : shapeType == 'volume'
                           ? calculatePolygonVolume(
-                            points,
-                            shape?.depth || 1,
-                            scale
-                          )
-                          : (shapeType == 'arc' || shapeType == 'curve') ? (shape?.text ?? '') : '';
+                              points,
+                              shape?.depth || 1,
+                              scale
+                            )
+                          : shapeType == 'arc' || shapeType == 'curve'
+                            ? shape?.text ?? ''
+                            : '';
 
                 const line = new Konva.Line({
                   points: scaledPoints,
                   stroke,
                   strokeWidth,
                   lineCap,
-                  closed: shapeType === 'area' || shapeType === 'volume' || shapeType == 'curve',
+                  closed:
+                    shapeType === 'area' ||
+                    shapeType === 'volume' ||
+                    shapeType == 'curve',
                   fill: shape?.fillColor,
-                  bezier: shapeType === 'arc' || shapeType === 'curve'
+                  bezier: shapeType === 'arc' || shapeType === 'curve',
                 });
                 layer.add(line);
 
@@ -938,12 +946,12 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
                 ps.map((it, ind) =>
                   ind === i
                     ? {
-                      details: {
-                        ...it.details,
-                        text: batchResults[0]?.details?.text,
-                      },
-                      image: batchResults[0].image,
-                    }
+                        details: {
+                          ...it.details,
+                          text: batchResults[0]?.details?.text,
+                        },
+                        image: batchResults[0].image,
+                      }
                     : it
                 )
               );
@@ -979,18 +987,18 @@ const ReportModal = ({ setModalOpen, takeOff }: Props) => {
     };
   }, []);
   console.log(data, ' ===> data to capture');
-  const [downloadLoading, setdownloadLoading] = useState(false)
+  const [downloadLoading, setdownloadLoading] = useState(false);
   const donwnloadpdf = async () => {
     try {
-      setdownloadLoading(true)
-      await generatePDF('capture')
-      setdownloadLoading(false)
+      setdownloadLoading(true);
+      await generatePDF('capture');
+      setdownloadLoading(false);
     } catch (error) {
-      setdownloadLoading(false)
+      setdownloadLoading(false);
       console.log(error);
-      toast.error('Error while downloading')
+      toast.error('Error while downloading');
     }
-  }
+  };
 
   return (
     <div className="py-2.5 px-6 bg-white border border-solid border-elboneyGray rounded-[4px] z-50 w-[90vw] h-[90vh] flex flex-col">

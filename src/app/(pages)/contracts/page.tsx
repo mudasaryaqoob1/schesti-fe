@@ -1,5 +1,6 @@
 'use client';
 import CustomButton from '@/app/component/customButton/button';
+import CustomEmailTemplate from '@/app/component/customEmailTemplete';
 import { InputComponent } from '@/app/component/customInput/Input';
 import { SelectComponent } from '@/app/component/customSelect/Select.component';
 import { DeleteContent } from '@/app/component/delete/DeleteContent';
@@ -10,6 +11,7 @@ import { useRouterHook } from '@/app/hooks/useRouterHook';
 import { ICrmContract } from '@/app/interfaces/crm/crm-contract.interface';
 import { FileInterface } from '@/app/interfaces/file.interface';
 import crmContractService from '@/app/services/crm/crm-contract.service';
+import emailService from '@/app/services/email.service';
 import { downloadFile } from '@/app/utils/downloadFile';
 import { Routes } from '@/app/utils/plans.utils';
 import { SearchOutlined } from '@ant-design/icons';
@@ -57,7 +59,8 @@ function ContractsPage() {
   const router = useRouterHook();
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
-
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [isSubmittingEmail, setIsSubmittingEmail] = useState(false);
   useEffect(() => {
     getCompanyContracts();
   }, []);
@@ -209,6 +212,8 @@ function ContractsPage() {
                   router.push(
                     `${Routes.Contracts}/edit-contract?contractId=${record._id}`
                   );
+                } else if (key === 'email') {
+                  setShowEmailModal(true);
                 }
               },
             }}
@@ -239,6 +244,29 @@ function ContractsPage() {
 
   return (
     <div className="mt-6 p-5 !pb-[39px]  mx-4 bg-white rounded-md">
+      <ModalComponent open={showEmailModal} setOpen={setShowEmailModal}>
+        <CustomEmailTemplate
+          isFileUploadShow={false}
+          setEmailModal={setShowEmailModal}
+          submitHandler={async (formData) => {
+            setIsSubmittingEmail(true);
+            try {
+              const response = await emailService.httpSendEmail(formData);
+              if (response.statusCode === 200) {
+                toast.success('Email sent successfully');
+                setShowEmailModal(false);
+              }
+            } catch (error) {
+              const err = error as AxiosError<{ message: string }>;
+              toast.error(err.response?.data.message);
+            } finally {
+              setIsSubmittingEmail(false);
+            }
+          }}
+          to=""
+          isSubmitting={isSubmittingEmail}
+        />
+      </ModalComponent>
       {selectedItem && showDeleteModal ? (
         <ModalComponent
           open={showDeleteModal}

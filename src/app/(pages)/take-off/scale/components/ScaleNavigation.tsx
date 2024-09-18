@@ -3,7 +3,11 @@ import NextImage from 'next/image';
 import { twMerge } from 'tailwind-merge';
 import { bg_style } from '@/globals/tailwindvariables';
 import { SCALE_NAVIGATION, ScaleInterface } from '../../types';
-import { CommentOutlined, Loading3QuartersOutlined, RadiusSettingOutlined } from '@ant-design/icons';
+import {
+  CommentOutlined,
+  Loading3QuartersOutlined,
+  RadiusSettingOutlined,
+} from '@ant-design/icons';
 // import { Input} from 'antd';
 // const { TextArea } = Input;
 
