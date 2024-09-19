@@ -26,8 +26,6 @@ function FinancialStatementPage() {
   const formik = useFormik<IFinancialStatementState>({
     initialValues: {
       assets: {
-        firstCitizenBankPayables: 0.0,
-        firstCitizenBankRevenue: 0.0,
         cashClearing: 50.0,
         startUpInventory: 0.0,
 

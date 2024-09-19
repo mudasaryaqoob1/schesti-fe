@@ -18,41 +18,16 @@ export function CurrentAssetTable({ formik }: Props) {
 
       <tbody className="text-sm">
         <tr className="border-b border-border dark:border-border">
-          <td className="p-4">First Citizens Bank Payables</td>
+          <td className="p-4">Cash on Bank</td>
           <td className="p-4 text-center max-w-12">
             <NumberInputComponent
               label=""
-              name="assets.firstCitizenBankPayables"
+              name=""
               prefix="$"
               placeholder=""
               field={{
-                className: "",
-                value: formik.values.assets.firstCitizenBankPayables ? formik.values.assets.firstCitizenBankPayables : undefined,
-                onChange: val => {
-                  formik.setFieldValue('assets.firstCitizenBankPayables', val as number)
-                }
-
-              }}
-            />
-          </td>
-          <td className="p-4"></td>
-        </tr>
-
-        <tr className="border-b border-border dark:border-border">
-          <td className="p-4">First Citizens Bank Revenue</td>
-          <td className="p-4 text-center max-w-12">
-            <NumberInputComponent
-              label=""
-              name="assets.firstCitizenBankRevenue"
-              prefix="$"
-              placeholder=""
-              field={{
-                className: "",
-                value: formik.values.assets.firstCitizenBankRevenue ? formik.values.assets.firstCitizenBankRevenue : undefined,
-                onChange: val => {
-                  formik.setFieldValue('assets.firstCitizenBankRevenue', val as number)
-                }
-
+                className: "pointer-events-none",
+                value: 10.0,
               }}
             />
           </td>
