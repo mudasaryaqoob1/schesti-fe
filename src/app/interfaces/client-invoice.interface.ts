@@ -49,4 +49,6 @@ export type IAIAInvoice = {
   federalPaperFiles: FileInterface[];
   materialsFiles: FileInterface[];
   otherFiles: FileInterface[];
+
+  isParent: boolean;
 } & G7State;

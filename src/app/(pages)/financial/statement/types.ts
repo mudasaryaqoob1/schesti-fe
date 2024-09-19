@@ -22,3 +22,13 @@ export type IFinancialStatementState = {
         retainedEarnings: number,
     }
 }
+
+
+export type IFinancialStatementCalculatedValues = {
+    assets: {
+        cashOnBank: number,
+        totalStandardInvoices: number,
+        contractReceivable: number,
+        totalCurrentAssets: () => number,
+    }
+}

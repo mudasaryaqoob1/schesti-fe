@@ -1,11 +1,14 @@
 import { NumberInputComponent } from "@/app/component/customInput/NumberInput";
-import { IFinancialStatementState } from "../../types";
+import { IFinancialStatementCalculatedValues, IFinancialStatementState } from "../../types";
 import type { FormikProps } from "formik";
+import { USCurrencyFormat } from "@/app/utils/format";
 
 type Props = {
   formik: FormikProps<IFinancialStatementState>;
+  calculatedValues: IFinancialStatementCalculatedValues;
 }
-export function CurrentAssetTable({ formik }: Props) {
+export function CurrentAssetTable({ formik, calculatedValues }: Props) {
+
   return (
     <table className="w-full">
       <thead>
@@ -27,7 +30,7 @@ export function CurrentAssetTable({ formik }: Props) {
               placeholder=""
               field={{
                 className: "pointer-events-none",
-                value: 10.0,
+                value: calculatedValues.assets.cashOnBank,
               }}
             />
           </td>
@@ -44,9 +47,9 @@ export function CurrentAssetTable({ formik }: Props) {
               placeholder=""
               field={{
                 className: "",
-                value: formik.values.assets.cashClearing ? formik.values.assets.cashClearing : undefined,
+                value: formik.values.assets.cashClearing,
                 onChange: val => {
-                  formik.setFieldValue('assets.cashClearing', val as number)
+                  formik.setFieldValue('assets.cashClearing', Number(val) as number)
                 }
               }}
             />
@@ -65,7 +68,7 @@ export function CurrentAssetTable({ formik }: Props) {
               placeholder=""
               field={{
                 className: "pointer-events-none",
-                value: 0.00
+                value: calculatedValues.assets.contractReceivable
               }}
             />
           </td>
@@ -82,7 +85,7 @@ export function CurrentAssetTable({ formik }: Props) {
               placeholder=""
               field={{
                 className: "pointer-events-none",
-                value: 0.00
+                value: calculatedValues.assets.totalStandardInvoices
               }}
             />
           </td>
@@ -99,9 +102,9 @@ export function CurrentAssetTable({ formik }: Props) {
               placeholder=""
               field={{
                 className: "",
-                value: formik.values.assets.startUpInventory ? formik.values.assets.startUpInventory : undefined,
+                value: formik.values.assets.startUpInventory,
                 onChange: val => {
-                  formik.setFieldValue('assets.startUpInventory', val as number)
+                  formik.setFieldValue('assets.startUpInventory', Number(val) as number)
                 }
               }}
             />
@@ -113,7 +116,7 @@ export function CurrentAssetTable({ formik }: Props) {
         <tr className="border-b border-border dark:border-border">
           <td className="p-4 font-bold">Total Current Assets</td>
           <td className="p-4"></td>
-          <td className="p-4 font-bold text-center">$52,358.00</td>
+          <td className="p-4 font-bold text-center">{USCurrencyFormat.format(calculatedValues.assets.totalCurrentAssets())}</td>
         </tr>
       </tbody>
     </table>

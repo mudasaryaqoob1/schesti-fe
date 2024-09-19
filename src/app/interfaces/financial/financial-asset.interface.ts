@@ -5,7 +5,7 @@ export interface IFinancialAsset {
   _id: string;
   name: string;
   costCode: number;
-  assetType: string;
+  assetType: 'Cash on Bank' | 'Contract Receivable' | 'Startup Inventory' | 'Vehicles' | 'Lands' | 'Equipments' | 'Buildings' | 'Vehicles  Accumulated Depreciation';
   assetDate: string;
   invoiceNo: string;
   totalPrice: number;

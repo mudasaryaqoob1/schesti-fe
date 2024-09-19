@@ -15,7 +15,7 @@ import { OperatingIncomeTable } from './components/income-statement/OperatingInc
 import { DirectExpenseTable } from './components/income-statement/DirectExpenseTable';
 import { OverheadExpenseTable } from './components/income-statement/OverheadExpense';
 import { DatePicker, Skeleton } from 'antd';
-import { IFinancialStatementState } from './types';
+import { IFinancialStatementCalculatedValues, IFinancialStatementState } from './types';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import financialStatement from '@/app/services/financial/financial-statement';
@@ -26,6 +26,7 @@ import { IInvoice } from '@/app/interfaces/invoices.interface';
 import { IAIAInvoice } from '@/app/interfaces/client-invoice.interface';
 import { IFinancialExpense } from '@/app/interfaces/financial/financial-expense.interface';
 import { IFinancialAsset } from '@/app/interfaces/financial/financial-asset.interface';
+import { getCashonBankFromAssets } from './utils';
 
 function FinancialStatementPage() {
   const [dates, setDates] = useState({
@@ -73,8 +74,6 @@ function FinancialStatementPage() {
   }
 
 
-  console.log(data);
-
 
   const formik = useFormik<IFinancialStatementState>({
     initialValues: {
@@ -116,6 +115,30 @@ function FinancialStatementPage() {
     </div>
   }
 
+  function getCalculatedValues() {
+    const aiaInvoicesReceiveables = data.aiainvoices.filter(invoice => invoice.isParent).map((invoice) => {
+      // get receivable amount
+      const receiveables = invoice.amountPaid;
+      return receiveables;
+    });
+
+    const values: IFinancialStatementCalculatedValues = {
+      assets: {
+        cashOnBank: getCashonBankFromAssets(data.assets).reduce((acc, curr) => acc + curr.totalPrice, 0),
+        totalStandardInvoices: data.standardInvoices.reduce((acc, curr) => acc + curr.amount, 0),
+        contractReceivable: aiaInvoicesReceiveables.reduce((acc, curr) => acc + curr, 0),
+        totalCurrentAssets: function () {
+          return this.cashOnBank + this.totalStandardInvoices + this.contractReceivable + formik.values.assets.cashClearing + formik.values.assets.startUpInventory
+        }
+      }
+    };
+    return () => {
+      return values as IFinancialStatementCalculatedValues;
+    }
+  }
+
+  const calculatedValues = getCalculatedValues();
+
   return (
     <section className="mt-6  space-y-4 mb-[39px] mx-4 rounded-xl bg-white p-5">
       <div className="flex justify-between items-center">
@@ -144,6 +167,7 @@ function FinancialStatementPage() {
         <TertiaryHeading title="Assets" />
         <CurrentAssetTable
           formik={formik}
+          calculatedValues={calculatedValues()}
         />
         <LongTermAssetTable />
         <AccumulatedDepreciationTable
