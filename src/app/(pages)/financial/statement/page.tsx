@@ -14,11 +14,51 @@ import { EquityTable } from './components/equity/EquityTable';
 import { OperatingIncomeTable } from './components/income-statement/OperatingIncomeTable';
 import { DirectExpenseTable } from './components/income-statement/DirectExpenseTable';
 import { OverheadExpenseTable } from './components/income-statement/OverheadExpense';
-import { DatePicker } from 'antd';
+import { DatePicker, Skeleton } from 'antd';
 import { IFinancialStatementState } from './types';
 import { useFormik } from 'formik';
+import { useEffect, useState } from 'react';
+import financialStatement from '@/app/services/financial/financial-statement';
+import { toast } from 'react-toastify';
+import { AxiosError } from 'axios';
 
 function FinancialStatementPage() {
+  const [dates, setDates] = useState({
+    start: new Date(),
+    end: new Date(),
+  })
+
+  const [data, setData] = useState({});
+
+  const [loading, setLoading] = useState(false);
+
+
+  useEffect(() => {
+    getFinancialStatement();
+  }, [dates]);
+
+  async function getFinancialStatement() {
+    setLoading(true);
+    try {
+      const response = await financialStatement.httpGetAllFinancialStatements(
+        dates.start,
+        dates.end
+      );
+      if (response.data) {
+        setData(response.data);
+      }
+    }
+    catch (error) {
+      const err = error as AxiosError<{ message: string }>;
+      toast.error(err.response?.data.message);
+    }
+    finally {
+      setLoading(false);
+    }
+  }
+
+
+
   const formik = useFormik<IFinancialStatementState>({
     initialValues: {
       assets: {
@@ -45,6 +85,19 @@ function FinancialStatementPage() {
 
     },
   })
+
+  if (loading) {
+    return <div className='grid grid-cols-2 gap-3'>
+      <Skeleton />
+      <Skeleton />
+      <Skeleton />
+      <Skeleton />
+      <Skeleton />
+      <Skeleton />
+      <Skeleton />
+      <Skeleton />
+    </div>
+  }
 
   return (
     <section className="mt-6  space-y-4 mb-[39px] mx-4 rounded-xl bg-white p-5">
